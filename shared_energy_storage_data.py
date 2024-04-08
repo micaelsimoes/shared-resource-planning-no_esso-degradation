@@ -526,8 +526,7 @@ def _process_results(shared_ess_data, model):
             processed_results['results'][year][day] = dict()
             processed_results['results'][year][day]['obj'] = 0.00
             processed_results['results'][year][day]['scenarios'] = {
-                'p': dict(), 'p_up': dict(), 'p_down': dict(),
-                'soc': dict(), 'soc_percent': dict()
+                'p': dict(), 'soc': dict(), 'soc_percent': dict()
             }
 
             processed_results['results'][year][day]['scenarios']['relaxation_slacks'] = dict()
@@ -566,26 +565,18 @@ def _process_results(shared_ess_data, model):
                 capacity_available = pe.value(model.es_e_capacity_available[e, y])
                 if not isclose(capacity_available, 0.0, abs_tol=1e-3):
                     processed_results['results'][year][day]['scenarios']['p'][node_id] = []
-                    processed_results['results'][year][day]['scenarios']['p_up'][node_id] = []
-                    processed_results['results'][year][day]['scenarios']['p_down'][node_id] = []
                     processed_results['results'][year][day]['scenarios']['soc'][node_id] = []
                     processed_results['results'][year][day]['scenarios']['soc_percent'][node_id] = []
                     for p in model.periods:
                         p_net = pe.value(model.es_pch[e, y, d, p] - model.es_pdch[e, y, d, p])
-                        p_up = pe.value(model.es_pup[e, y, d, p])
-                        p_down = pe.value(model.es_pdown[e, y, d, p])
                         soc = pe.value(model.es_soc[e, y, d, p])
                         soc_perc = soc / capacity_available
                         processed_results['results'][year][day]['scenarios']['p'][node_id].append(p_net)
-                        processed_results['results'][year][day]['scenarios']['p_up'][node_id].append(p_up)
-                        processed_results['results'][year][day]['scenarios']['p_down'][node_id].append(p_down)
                         processed_results['results'][year][day]['scenarios']['soc'][node_id].append(soc)
                         processed_results['results'][year][day]['scenarios']['soc_percent'][node_id].append(soc_perc)
                 else:
                     # No energy capacity available
                     processed_results['results'][year][day]['scenarios']['p'][node_id] = ['N/A' for _ in model.periods]
-                    processed_results['results'][year][day]['scenarios']['p_up'][node_id] = ['N/A' for _ in model.periods]
-                    processed_results['results'][year][day]['scenarios']['p_down'][node_id] = ['N/A' for _ in model.periods]
                     processed_results['results'][year][day]['scenarios']['soc'][node_id] = ['N/A' for _ in model.periods]
                     processed_results['results'][year][day]['scenarios']['soc_percent'][node_id] = ['N/A' for _ in model.periods]
 
