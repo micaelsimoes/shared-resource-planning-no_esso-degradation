@@ -55,6 +55,15 @@ class SharedEnergyStorageData:
                 shared_energy_storage.dn_name = planning_problem.distribution_networks[node_id].name
                 self.shared_energy_storages[year].append(shared_energy_storage)
 
+    def get_shared_energy_storage_idx(self, node_id):
+        repr_years = [year for year in self.years]
+        for i in range(len(self.shared_energy_storages[repr_years[0]])):
+            shared_energy_storage = self.shared_energy_storages[repr_years[0]][i]
+            if shared_energy_storage.bus == node_id:
+                return i
+        print(f'[ERROR] Network {self.name}. Node {node_id} does not have a shared energy storage system! Check network.')
+        exit(ERROR_NETWORK_FILE)
+
     def update_data_with_candidate_solution(self, candidate_solution):
         for year in self.years:
             for shared_ess in self.shared_energy_storages[year]:
