@@ -43,6 +43,13 @@ class NetworkData:
                 results[year][day] = self.network[year][day].run_smopf(model[year][day], self.params, from_warm_start=from_warm_start)
         return results
 
+    def compute_primal_value(self, model):
+        obj = 0.0
+        for year in self.years:
+            for day in self.days:
+                obj += self.network[year][day].compute_objective_function_value(model[year][day], self.params) * self.years[year] * self.days[day]
+        return obj
+
     def update_model_with_candidate_solution(self, model, candidate_solution):
         _update_model_with_candidate_solution(self, model, candidate_solution)
 
