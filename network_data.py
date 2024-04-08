@@ -52,6 +52,9 @@ class NetworkData:
         filename = os.path.join(self.data_dir, self.name, self.params_file)
         self.params.read_parameters_from_file(filename)
 
+    def process_results(self, model, results=dict()):
+        return _process_results(self, model, results)
+
 
 # ======================================================================================================================
 #  NETWORK DATA read function
@@ -86,6 +89,42 @@ def _read_network_data(network_planning):
                 network_planning.network[year][day].print_network_to_screen()
             if network_planning.params.plot_diagram:
                 network_planning.network[year][day].plot_diagram()
+
+
+# ======================================================================================================================
+#  NETWORK PLANNING results functions
+# ======================================================================================================================
+def _process_results(network_planning, models, optimization_results):
+    processed_results = dict()
+    processed_results['results'] = dict()
+    processed_results['of_value'] = _get_objective_function_value(network_planning, models)
+    for year in network_planning.years:
+        processed_results['results'][year] = dict()
+        for day in network_planning.days:
+            model = models[year][day]
+            result = optimization_results[year][day]
+            network = network_planning.network[year][day]
+            processed_results['results'][year][day] = network.process_results(model, network_planning.params, result)
+    return processed_results
+
+
+def _get_objective_function_value(network_planning, models):
+
+    years = [year for year in network_planning.years]
+
+    of_value = 0.0
+    initial_year = years[0]
+    if network_planning.is_transmission:
+        for y in range(len(network_planning.years)):
+            year = years[y]
+            num_years = network_planning.years[year]
+            annualization = 1 / ((1 + network_planning.discount_factor) ** (int(year) - int(initial_year)))
+            for day in network_planning.days:
+                num_days = network_planning.days[day]
+                network = network_planning.network[year][day]
+                model = models[year][day]
+                of_value += annualization * num_days * num_years * network.compute_objective_function_value(model, network_planning.params)
+    return of_value
 
 
 # ======================================================================================================================
