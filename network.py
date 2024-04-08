@@ -50,6 +50,18 @@ class Network:
         print(f'[ERROR] Network {self.name}. No REF NODE found! Check network.')
         exit(ERROR_NETWORK_FILE)
 
+    def get_interface_branch_rating(self):
+        if not self.is_transmission:
+            ref_node_id = self.get_reference_node_id()
+            interface_branch_rating = 0.00
+            for branch in self.branches:
+                if branch.fbus == ref_node_id or branch.tbus == ref_node_id:
+                    interface_branch_rating += branch.rate
+            return interface_branch_rating
+        else:
+            print(f'[ERROR] Network {self.name}. Function get_interface_branch_rating() NOT APPLICABLE to TRANSMISSION NETWORK.')
+            exit(ERROR_NETWORK_FILE)
+
     def get_node_idx(self, node_id):
         for i in range(len(self.nodes)):
             if self.nodes[i].bus_i == node_id:
