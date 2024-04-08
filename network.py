@@ -43,6 +43,9 @@ class Network:
     def run_smopf(self, model, params, from_warm_start=False):
         return _run_smopf(self, model, params, from_warm_start=from_warm_start)
 
+    def compute_objective_function_value(self, model, params):
+        return _compute_objective_function_value(self, model, params)
+
     def get_reference_node_id(self):
         for node in self.nodes:
             if node.type == BUS_REF:
@@ -166,9 +169,6 @@ class Network:
 
     def process_results(self, model, params, results=dict()):
         return _process_results(self, model, params, results=results)
-
-    def compute_objective_function_value(self, model, params):
-        return _compute_objective_function_value(self, model, params)
 
     def compute_series_admittance(self):
         for branch in self.branches:
