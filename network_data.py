@@ -1,6 +1,7 @@
 import os
 from network import Network
 from network_parameters import NetworkParameters
+from helper_functions import *
 
 
 # ======================================================================================================================
@@ -51,6 +52,9 @@ class NetworkData:
     def read_network_parameters(self):
         filename = os.path.join(self.data_dir, self.name, self.params_file)
         self.params.read_parameters_from_file(filename)
+
+    def update_data_with_candidate_solution(self, candidate_solution):
+        _update_data_with_candidate_solution(self, candidate_solution)
 
     def process_results(self, model, results=dict()):
         return _process_results(self, model, results)
@@ -130,6 +134,30 @@ def _get_objective_function_value(network_planning, models):
 # ======================================================================================================================
 #  OTHER (auxiliary) functions
 # ======================================================================================================================
+def _update_data_with_candidate_solution(network_planning, candidate_solution):
+    if network_planning.is_transmission:
+        for node_id in network_planning.active_distribution_network_nodes:
+            for year in network_planning.years:
+                for day in network_planning.days:
+                    shared_ess_idx = network_planning.network[year][day].get_shared_energy_storage_idx(node_id)
+                    network_planning.network[year][day].shared_energy_storages[shared_ess_idx].s = candidate_solution[node_id][year]['s'] / network_planning.network[year][day].baseMVA
+                    network_planning.network[year][day].shared_energy_storages[shared_ess_idx].e = candidate_solution[node_id][year]['e'] / network_planning.network[year][day].baseMVA
+                    network_planning.network[year][day].shared_energy_storages[shared_ess_idx].e_init = candidate_solution[node_id][year]['e'] * ENERGY_STORAGE_RELATIVE_INIT_SOC / network_planning.network[year][day].baseMVA
+                    network_planning.network[year][day].shared_energy_storages[shared_ess_idx].e_min = candidate_solution[node_id][year]['e'] * ENERGY_STORAGE_MIN_ENERGY_STORED / network_planning.network[year][day].baseMVA
+                    network_planning.network[year][day].shared_energy_storages[shared_ess_idx].e_max = candidate_solution[node_id][year]['e'] * ENERGY_STORAGE_MAX_ENERGY_STORED / network_planning.network[year][day].baseMVA
+    else:
+        tn_node_id = network_planning.tn_connection_nodeid
+        for year in network_planning.years:
+            for day in network_planning.days:
+                ref_node_id = network_planning.network[year][day].get_reference_node_id()
+                shared_ess_idx = network_planning.network[year][day].get_shared_energy_storage_idx(ref_node_id)
+                network_planning.network[year][day].shared_energy_storages[shared_ess_idx].s = candidate_solution[tn_node_id][year]['s'] / network_planning.network[year][day].baseMVA
+                network_planning.network[year][day].shared_energy_storages[shared_ess_idx].e = candidate_solution[tn_node_id][year]['e'] / network_planning.network[year][day].baseMVA
+                network_planning.network[year][day].shared_energy_storages[shared_ess_idx].e_init = candidate_solution[tn_node_id][year]['e'] * ENERGY_STORAGE_RELATIVE_INIT_SOC / network_planning.network[year][day].baseMVA
+                network_planning.network[year][day].shared_energy_storages[shared_ess_idx].e_min = candidate_solution[tn_node_id][year]['e'] * ENERGY_STORAGE_MIN_ENERGY_STORED / network_planning.network[year][day].baseMVA
+                network_planning.network[year][day].shared_energy_storages[shared_ess_idx].e_max = candidate_solution[tn_node_id][year]['e'] * ENERGY_STORAGE_MAX_ENERGY_STORED / network_planning.network[year][day].baseMVA
+
+
 def _update_model_with_candidate_solution(network, model, candidate_solution):
     if network.is_transmission:
         for year in network.years:
