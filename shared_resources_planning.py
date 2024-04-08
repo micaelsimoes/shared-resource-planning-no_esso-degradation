@@ -56,6 +56,9 @@ class SharedResourcesPlanning:
         if print_results:
             self.write_operational_planning_results_without_coordination_to_excel(models, results)
 
+    def update_admm_consensus_variables(self, tso_model, dso_models, esso_model, consensus_vars, dual_vars, consensus_vars_prev_iter, params):
+        _update_admm_consensus_variables(self, tso_model, dso_models, esso_model, consensus_vars, dual_vars, consensus_vars_prev_iter, params)
+
     def read_planning_problem(self):
         _read_planning_problem(self)
 
@@ -772,8 +775,6 @@ def update_shared_energy_storage_model_to_admm(shared_ess_data, model, params):
     model.objective.expr = obj
 
     return model
-
-
 
 
 # ======================================================================================================================
