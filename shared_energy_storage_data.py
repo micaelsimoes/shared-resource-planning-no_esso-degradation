@@ -417,9 +417,9 @@ def _write_optimization_results_to_excel(shared_ess_data, data_dir, results, sha
     _write_ess_capacity_investment_to_excel(shared_ess_data, wb, shared_ess_capacity['investment'])
     _write_ess_capacity_available_to_excel(shared_ess_data, wb, shared_ess_capacity['available'])
     _write_shared_energy_storage_results_to_excel(shared_ess_data, wb, results['results'])
-    _write_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['results'])
-    if shared_ess_data.params.ess_relax_capacity_relative:
-        _write_relaxation_slacks_yoy_results_to_excel(shared_ess_data, wb, results)
+    #_write_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['results'])
+    #if shared_ess_data.params.ess_relax_capacity_relative:
+        #_write_relaxation_slacks_yoy_results_to_excel(shared_ess_data, wb, results)
 
     results_filename = os.path.join(data_dir, f'{shared_ess_data.name}_shared_ess_results.xlsx')
     try:
@@ -594,50 +594,55 @@ def _write_shared_energy_storage_results_to_excel(shared_ess_data, workbook, res
 
     # Write Header
     sheet.cell(row=row_idx, column=1).value = 'Node ID'
-    sheet.cell(row=row_idx, column=2).value = 'Year'
-    sheet.cell(row=row_idx, column=3).value = 'Day'
-    sheet.cell(row=row_idx, column=4).value = 'Quantity'
+    sheet.cell(row=row_idx, column=2).value = 'Year Investment'
+    sheet.cell(row=row_idx, column=3).value = 'Year Current'
+    sheet.cell(row=row_idx, column=4).value = 'Day'
+    sheet.cell(row=row_idx, column=5).value = 'Quantity'
     for p in range(shared_ess_data.num_instants):
-        sheet.cell(row=row_idx, column=p + 5).value = p
+        sheet.cell(row=row_idx, column=p + 6).value = p
     row_idx = row_idx + 1
 
-    for year in results:
-        for day in results[year]:
+    for year_inv in results:
+        for year_curr in results[year_inv]:
+            for day in results[year_inv][year_curr]:
 
-            for node_id in results[year][day]['scenarios']['p']:
+                for node_id in results[year_inv][year_curr][day]['p']:
 
-                # - Active Power
-                sheet.cell(row=row_idx, column=1).value = node_id
-                sheet.cell(row=row_idx, column=2).value = int(year)
-                sheet.cell(row=row_idx, column=3).value = day
-                sheet.cell(row=row_idx, column=4).value = 'P, [MW]'
-                for p in range(shared_ess_data.num_instants):
-                    pc = results[year][day]['scenarios']['p'][node_id][p]
-                    sheet.cell(row=row_idx, column=p + 5).value = pc
-                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
-                row_idx = row_idx + 1
+                    # - Active Power
+                    sheet.cell(row=row_idx, column=1).value = node_id
+                    sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                    sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                    sheet.cell(row=row_idx, column=4).value = day
+                    sheet.cell(row=row_idx, column=5).value = 'P, [MW]'
+                    for p in range(shared_ess_data.num_instants):
+                        pc = results[year_inv][year_curr][day]['p'][node_id][p]
+                        sheet.cell(row=row_idx, column=p + 6).value = pc
+                        sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
+                    row_idx = row_idx + 1
 
-                # - SoC, [MWh]
-                sheet.cell(row=row_idx, column=1).value = node_id
-                sheet.cell(row=row_idx, column=2).value = int(year)
-                sheet.cell(row=row_idx, column=3).value = day
-                sheet.cell(row=row_idx, column=4).value = 'SoC, [MWh]'
-                for p in range(shared_ess_data.num_instants):
-                    soc = results[year][day]['scenarios']['soc'][node_id][p]
-                    sheet.cell(row=row_idx, column=p + 5).value = soc
-                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
-                row_idx = row_idx + 1
+                    # - SoC, [MWh]
+                    sheet.cell(row=row_idx, column=1).value = node_id
+                    sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                    sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                    sheet.cell(row=row_idx, column=4).value = day
+                    sheet.cell(row=row_idx, column=5).value = 'SoC, [MWh]'
+                    for p in range(shared_ess_data.num_instants):
+                        soc = results[year_inv][year_curr][day]['soc'][node_id][p]
+                        sheet.cell(row=row_idx, column=p + 6).value = soc
+                        sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
+                    row_idx = row_idx + 1
 
-                # - SoC, [%]
-                sheet.cell(row=row_idx, column=1).value = node_id
-                sheet.cell(row=row_idx, column=2).value = int(year)
-                sheet.cell(row=row_idx, column=3).value = day
-                sheet.cell(row=row_idx, column=4).value = 'SoC, [%]'
-                for p in range(shared_ess_data.num_instants):
-                    soc_perc = results[year][day]['scenarios']['soc_percent'][node_id][p]
-                    sheet.cell(row=row_idx, column=p + 5).value = soc_perc
-                    sheet.cell(row=row_idx, column=p + 5).number_format = perc_style
-                row_idx = row_idx + 1
+                    # - SoC, [%]
+                    sheet.cell(row=row_idx, column=1).value = node_id
+                    sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                    sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                    sheet.cell(row=row_idx, column=4).value = day
+                    sheet.cell(row=row_idx, column=5).value = 'SoC, [%]'
+                    for p in range(shared_ess_data.num_instants):
+                        soc_perc = results[year_inv][year_curr][day]['soc_percent'][node_id][p]
+                        sheet.cell(row=row_idx, column=p + 6).value = soc_perc
+                        sheet.cell(row=row_idx, column=p + 6).number_format = perc_style
+                    row_idx = row_idx + 1
 
 
 def _write_relaxation_slacks_results_to_excel(shared_ess_data, workbook, results):
