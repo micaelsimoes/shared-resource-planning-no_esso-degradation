@@ -121,6 +121,8 @@ def _build_subproblem_model(shared_ess_data):
     model.es_soc_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_pch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_pdch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+    if shared_ess_data.params.ess_relax_comp:
+        model.es_penalty_comp = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_s_rated_per_unit.fix(0.00)
     model.es_e_rated_per_unit.fix(0.00)
 
@@ -196,8 +198,11 @@ def _build_subproblem_model(shared_ess_data):
                             model.energy_storage_balance.add(model.es_soc_per_unit[e, y_inv, y, d, p] - soc_init == pch * eff_charge - pdch / eff_discharge)
 
                         # Charging/discharging complementarity constraint
-                        model.energy_storage_ch_dch_exclusion.add(pch * pdch >= -SMALL_TOLERANCE)
-                        model.energy_storage_ch_dch_exclusion.add(pch * pdch <= SMALL_TOLERANCE)
+                        if shared_ess_data.params.ess_relax_comp:
+                            model.energy_storage_ch_dch_exclusion.add(pch * pdch <= model.es_penalty_comp[e, y_inv, y, d, p])
+                        else:
+                            model.energy_storage_ch_dch_exclusion.add(pch * pdch >= -SMALL_TOLERANCE)
+                            model.energy_storage_ch_dch_exclusion.add(pch * pdch <= SMALL_TOLERANCE)
 
                     model.energy_storage_day_balance.add(model.es_soc_per_unit[e, y_inv, y, d, len(model.periods) - 1] == soc_final)
 
@@ -205,11 +210,15 @@ def _build_subproblem_model(shared_ess_data):
     # Objective function
     slack_penalty = 0.0
     for e in model.energy_storages:
-        for y in model.years:
+        for y_inv in model.years:
 
             # Slack penalties
-            slack_penalty += PENALTY_ESS_SLACK_FEASIBILITY * (model.slack_s_up[e, y] + model.slack_s_down[e, y])
-            slack_penalty += PENALTY_ESS_SLACK_FEASIBILITY * (model.slack_e_up[e, y] + model.slack_e_down[e, y])
+            slack_penalty += PENALTY_ESS_SLACK_FEASIBILITY * (model.slack_s_up[e, y_inv] + model.slack_s_down[e, y_inv])
+            slack_penalty += PENALTY_ESS_SLACK_FEASIBILITY * (model.slack_e_up[e, y_inv] + model.slack_e_down[e, y_inv])
+
+            for y in model.years:
+                if shared_ess_data.params.ess_relax_comp:
+                    slack_penalty += PENALTY_ESS_COMPLEMENTARITY * model.es_penalty_comp[e, y_inv, y, d, p]
 
     model.objective = pe.Objective(sense=pe.minimize, expr=slack_penalty)
 
