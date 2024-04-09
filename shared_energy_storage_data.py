@@ -348,131 +348,31 @@ def _process_results(shared_ess_data, model):
     repr_days = [day for day in shared_ess_data.days]
     repr_years = [year for year in shared_ess_data.years]
 
-    for y in model.years:
-
-        year = repr_years[y]
-        processed_results['results'][year] = dict()
-        for d in model.days:
-
-            day = repr_days[d]
-            processed_results['results'][year][day] = dict()
-            processed_results['results'][year][day]['obj'] = 0.00
-            processed_results['results'][year][day]['scenarios'] = {
-                'p': dict(), 'soc': dict(), 'soc_percent': dict()
-            }
-
-            processed_results['results'][year][day]['scenarios']['relaxation_slacks'] = dict()
-            processed_results['results'][year][day]['scenarios']['relaxation_slacks']['slack_s_up'] = dict()
-            processed_results['results'][year][day]['scenarios']['relaxation_slacks']['slack_s_down'] = dict()
-            processed_results['results'][year][day]['scenarios']['relaxation_slacks']['slack_e_up'] = dict()
-            processed_results['results'][year][day]['scenarios']['relaxation_slacks']['slack_e_down'] = dict()
-            if shared_ess_data.params.ess_relax_comp:
-                processed_results['results'][year][day]['scenarios']['relaxation_slacks']['comp'] = dict()
-            if shared_ess_data.params.ess_relax_soc:
-                processed_results['results'][year][day]['scenarios']['relaxation_slacks']['soc_up'] = dict()
-                processed_results['results'][year][day]['scenarios']['relaxation_slacks']['soc_down'] = dict()
-            if shared_ess_data.params.ess_relax_day_balance:
-                processed_results['results'][year][day]['scenarios']['relaxation_slacks']['day_balance_up'] = dict()
-                processed_results['results'][year][day]['scenarios']['relaxation_slacks']['day_balance_down'] = dict()
-            if shared_ess_data.params.ess_relax_capacity_available:
-                processed_results['results'][year][day]['scenarios']['relaxation_slacks']['capacity_available_up'] = dict()
-                processed_results['results'][year][day]['scenarios']['relaxation_slacks']['capacity_available_down'] = dict()
-            if shared_ess_data.params.ess_relax_installed_capacity:
-                processed_results['results'][year][day]['scenarios']['relaxation_slacks']['s_rated_up'] = dict()
-                processed_results['results'][year][day]['scenarios']['relaxation_slacks']['s_rated_down'] = dict()
-                processed_results['results'][year][day]['scenarios']['relaxation_slacks']['e_rated_up'] = dict()
-                processed_results['results'][year][day]['scenarios']['relaxation_slacks']['e_rated_down'] = dict()
-            if shared_ess_data.params.ess_relax_capacity_degradation:
-                processed_results['results'][year][day]['scenarios']['relaxation_slacks']['capacity_degradation_up'] = dict()
-                processed_results['results'][year][day]['scenarios']['relaxation_slacks']['capacity_degradation_down'] = dict()
-            if shared_ess_data.params.ess_relax_capacity_relative:
-                processed_results['results'][year][day]['scenarios']['relaxation_slacks']['relative_capacity_up'] = dict()
-                processed_results['results'][year][day]['scenarios']['relaxation_slacks']['relative_capacity_down'] = dict()
-            if shared_ess_data.params.ess_interface_relax:
-                processed_results['results'][year][day]['scenarios']['relaxation_slacks']['expected_p_up'] = dict()
-                processed_results['results'][year][day]['scenarios']['relaxation_slacks']['expected_p_down'] = dict()
-
-            for e in model.energy_storages:
-                node_id = shared_ess_data.shared_energy_storages[year][e].bus
-                capacity_available = pe.value(model.es_e_capacity_available[e, y])
-                if not isclose(capacity_available, 0.0, abs_tol=1e-3):
-                    processed_results['results'][year][day]['scenarios']['p'][node_id] = []
-                    processed_results['results'][year][day]['scenarios']['soc'][node_id] = []
-                    processed_results['results'][year][day]['scenarios']['soc_percent'][node_id] = []
+    for y_inv in model.years:
+        year_inv = repr_years[y_inv]
+        processed_results['results'][year_inv] = dict()
+        processed_results['results'][year_inv] = dict()
+        for y_curr in model.years:
+            year_curr = repr_years[y_curr]
+            processed_results['results'][year_inv][year_curr] = dict()
+            for d in model.days:
+                day = repr_days[d]
+                processed_results['results'][year_inv][year_curr][day] = {'p': dict(), 'soc': dict(), 'soc_percent': dict()}
+                for e in model.energy_storages:
+                    node_id = shared_ess_data.shared_energy_storages[year_curr][e].bus
+                    capacity = pe.value(model.es_e_rated_per_unit[e, y_inv, y_curr])
+                    if isclose(capacity, 0.0, abs_tol=SMALL_TOLERANCE):
+                        capacity = 1.00
+                    processed_results['results'][year_inv][year_curr][day]['p'][node_id] = []
+                    processed_results['results'][year_inv][year_curr][day]['soc'][node_id] = []
+                    processed_results['results'][year_inv][year_curr][day]['soc_percent'][node_id] = []
                     for p in model.periods:
-                        p_net = pe.value(model.es_pch[e, y, d, p] - model.es_pdch[e, y, d, p])
-                        soc = pe.value(model.es_soc[e, y, d, p])
-                        soc_perc = soc / capacity_available
-                        processed_results['results'][year][day]['scenarios']['p'][node_id].append(p_net)
-                        processed_results['results'][year][day]['scenarios']['soc'][node_id].append(soc)
-                        processed_results['results'][year][day]['scenarios']['soc_percent'][node_id].append(soc_perc)
-                else:
-                    # No energy capacity available
-                    processed_results['results'][year][day]['scenarios']['p'][node_id] = ['N/A' for _ in model.periods]
-                    processed_results['results'][year][day]['scenarios']['soc'][node_id] = ['N/A' for _ in model.periods]
-                    processed_results['results'][year][day]['scenarios']['soc_percent'][node_id] = ['N/A' for _ in model.periods]
-
-            for e in model.energy_storages:
-
-                node_id = shared_ess_data.shared_energy_storages[year][e].bus
-                processed_results['results'][year][day]['scenarios']['relaxation_slacks']['slack_s_up'][node_id] = pe.value(model.slack_s_up[e, y])
-                processed_results['results'][year][day]['scenarios']['relaxation_slacks']['slack_s_down'][node_id] = pe.value(model.slack_s_down[e, y])
-                processed_results['results'][year][day]['scenarios']['relaxation_slacks']['slack_e_up'][node_id] = pe.value(model.slack_e_up[e, y])
-                processed_results['results'][year][day]['scenarios']['relaxation_slacks']['slack_e_down'][node_id] = pe.value(model.slack_e_down[e, y])
-
-                if shared_ess_data.params.ess_relax_comp:
-                    processed_results['results'][year][day]['scenarios']['relaxation_slacks']['comp'][node_id] = []
-                    for p in model.periods:
-                        comp = pe.value(model.es_penalty_comp[e, y, d, p])
-                        processed_results['results'][year][day]['scenarios']['relaxation_slacks']['comp'][node_id].append(comp)
-
-                if shared_ess_data.params.ess_relax_soc:
-                    processed_results['results'][year][day]['scenarios']['relaxation_slacks']['soc_up'][node_id] = []
-                    processed_results['results'][year][day]['scenarios']['relaxation_slacks']['soc_down'][node_id] = []
-                    for p in model.periods:
-                        soc_up = pe.value(model.es_penalty_soc_up[e, y, d, p])
-                        soc_down = pe.value(model.es_penalty_soc_down[e, y, d, p])
-                        processed_results['results'][year][day]['scenarios']['relaxation_slacks']['soc_up'][node_id].append(soc_up)
-                        processed_results['results'][year][day]['scenarios']['relaxation_slacks']['soc_down'][node_id].append(soc_down)
-
-                if shared_ess_data.params.ess_relax_day_balance:
-                    balance_up = pe.value(model.es_penalty_day_balance_up[e, y, d])
-                    balance_down = pe.value(model.es_penalty_day_balance_down[e, y, d])
-                    processed_results['results'][year][day]['scenarios']['relaxation_slacks']['day_balance_up'][node_id] = balance_up
-                    processed_results['results'][year][day]['scenarios']['relaxation_slacks']['day_balance_down'][node_id] = balance_down
-
-                if shared_ess_data.params.ess_relax_capacity_available:
-                    capacity_available_up = pe.value(model.es_penalty_capacity_available_up[e, y])
-                    capacity_available_down = pe.value(model.es_penalty_capacity_available_down[e, y])
-                    processed_results['results'][year][day]['scenarios']['relaxation_slacks']['capacity_available_up'][node_id] = capacity_available_up
-                    processed_results['results'][year][day]['scenarios']['relaxation_slacks']['capacity_available_down'][node_id] = capacity_available_down
-
-                if shared_ess_data.params.ess_relax_installed_capacity:
-                    processed_results['results'][year][day]['scenarios']['relaxation_slacks']['s_rated_up'][node_id] = pe.value(model.es_penalty_s_rated_up[e, y])
-                    processed_results['results'][year][day]['scenarios']['relaxation_slacks']['s_rated_down'][node_id] = pe.value(model.es_penalty_s_rated_down[e, y])
-                    processed_results['results'][year][day]['scenarios']['relaxation_slacks']['e_rated_up'][node_id] = pe.value(model.es_penalty_e_rated_up[e, y])
-                    processed_results['results'][year][day]['scenarios']['relaxation_slacks']['e_rated_down'][node_id] = pe.value(model.es_penalty_e_rated_down[e, y])
-
-                if shared_ess_data.params.ess_relax_capacity_degradation:
-                    processed_results['results'][year][day]['scenarios']['relaxation_slacks']['capacity_degradation_up'][node_id] = pe.value(model.es_penalty_e_capacity_degradation_up[e, y])
-                    processed_results['results'][year][day]['scenarios']['relaxation_slacks']['capacity_degradation_down'][node_id] = pe.value(model.es_penalty_e_capacity_degradation_down[e, y])
-
-                if shared_ess_data.params.ess_relax_capacity_relative:
-                    processed_results['results'][year][day]['scenarios']['relaxation_slacks']['relative_capacity_up'][node_id] = dict()
-                    processed_results['results'][year][day]['scenarios']['relaxation_slacks']['relative_capacity_down'][node_id] = dict()
-                    for y2 in model.years:
-                        year2 = repr_years[y2]
-                        processed_results['results'][year][day]['scenarios']['relaxation_slacks']['relative_capacity_up'][node_id][year2] = pe.value(model.es_penalty_e_relative_capacity_up[e, y, y2])
-                        processed_results['results'][year][day]['scenarios']['relaxation_slacks']['relative_capacity_down'][node_id][year2] = pe.value(model.es_penalty_e_relative_capacity_down[e, y, y2])
-
-                if shared_ess_data.params.ess_interface_relax:
-                    processed_results['results'][year][day]['scenarios']['relaxation_slacks']['expected_p_up'][node_id] = []
-                    processed_results['results'][year][day]['scenarios']['relaxation_slacks']['expected_p_down'][node_id] = []
-                    for p in model.periods:
-                        expected_p_up = pe.value(model.es_penalty_expected_p_up[e, y, d, p])
-                        expected_p_down = pe.value(model.es_penalty_expected_p_down[e, y, d, p])
-                        processed_results['results'][year][day]['scenarios']['relaxation_slacks']['expected_p_up'][node_id].append(expected_p_up)
-                        processed_results['results'][year][day]['scenarios']['relaxation_slacks']['expected_p_down'][node_id].append(expected_p_down)
+                        p_net = pe.value(model.es_pch_per_unit[e, y_inv, y_curr, d, p] - model.es_pdch_per_unit[e, y_inv, y_curr, d, p])
+                        soc = pe.value(model.es_soc_per_unit[e, y_inv, y_curr, d, p])
+                        soc_perc = soc / capacity
+                        processed_results['results'][year_inv][year_curr][day]['p'][node_id].append(p_net)
+                        processed_results['results'][year_inv][year_curr][day]['soc'][node_id].append(soc)
+                        processed_results['results'][year_inv][year_curr][day]['soc_percent'][node_id].append(soc_perc)
 
     return processed_results
 
