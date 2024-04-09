@@ -92,7 +92,12 @@ def shared_resources_planning(working_directory, specification_filename):
     esso_model = planning_problem.shared_ess_data.build_subproblem()
     planning_problem.shared_ess_data.update_model_with_candidate_solution(esso_model, candidate_solution['investment'])
     results = planning_problem.shared_ess_data.optimize(esso_model)
-    planning_problem.shared_ess_data.write_optimization_results_to_excel(esso_model)
+    esso_model.es_s_investment.pprint()
+    esso_model.es_e_investment.pprint()
+    esso_model.es_s_rated_per_unit.pprint()
+    esso_model.es_e_rated_per_unit.pprint()
+    esso_model.es_soc_per_unit.pprint()
+    #planning_problem.shared_ess_data.write_optimization_results_to_excel(esso_model)
 
     print('==========================================================================================================')
     print('                                                 END                                                      ')
