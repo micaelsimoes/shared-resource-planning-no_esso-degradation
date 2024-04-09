@@ -378,8 +378,7 @@ def _build_subproblem_model(shared_ess_data):
                     for p in model.periods:
                         slack_penalty += PENALTY_ESS_EXPECTED_VALUES * (model.es_penalty_expected_p_up[e, y, d, p] + model.es_penalty_expected_p_down[e, y, d, p])
 
-    obj = slack_penalty
-    model.objective = pe.Objective(sense=pe.minimize, expr=obj)
+    model.objective = pe.Objective(sense=pe.minimize, expr=slack_penalty)
 
     # Define that we want the duals
     model.ipopt_zL_out = pe.Suffix(direction=pe.Suffix.IMPORT)  # Ipopt bound multipliers (obtained from solution)
