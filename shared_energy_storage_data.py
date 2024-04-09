@@ -109,8 +109,8 @@ def _build_subproblem_model(shared_ess_data):
     # Variables
     model.es_s_investment = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_investment = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.es_s_investment_fixed = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.es_e_investment_fixed = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_s_rated_total = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_e_rated_total = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.slack_s_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.slack_s_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.slack_e_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
@@ -126,6 +126,19 @@ def _build_subproblem_model(shared_ess_data):
 
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
+    # - Yearly Power and Energy ratings as a function of yearly investments
+    model.rated_s_capacity = pe.ConstraintList()
+    model.rated_e_capacity = pe.ConstraintList()
+    for e in model.energy_storages:
+        for y in model.years:
+            total_s_capacity = 0.00
+            total_e_capacity = 0.00
+            for y_inv in model.years:
+                total_s_capacity += model.es_s_rated_per_unit[e, y_inv, y]
+                total_e_capacity += model.es_e_rated_per_unit[e, y_inv, y]
+            model.rated_s_capacity.add(model.es_s_rated_total[e, y] == total_s_capacity)
+            model.rated_e_capacity.add(model.es_e_rated_total[e, y] == total_e_capacity)
+
     # - Rated capacities of each investment
     model.rated_s_capacity_unit = pe.ConstraintList()
     model.rated_e_capacity_unit = pe.ConstraintList()
@@ -187,15 +200,6 @@ def _build_subproblem_model(shared_ess_data):
                         model.energy_storage_ch_dch_exclusion.add(pch * pdch <= SMALL_TOLERANCE)
 
                     model.energy_storage_day_balance.add(model.es_soc_per_unit[e, y_inv, y, d, len(model.periods) - 1] == soc_final)
-
-    # - Sensitivities - Einv and Sinv as a function of Einv_fixed and Sinv_fixed
-    model.sensitivities_s = pe.ConstraintList()
-    model.sensitivities_e = pe.ConstraintList()
-    for e in model.energy_storages:
-        for y in model.years:
-            # Note: slack variables added to ensure feasibility (numerical issues)
-            model.sensitivities_s.add(model.es_s_investment[e, y] + model.slack_s_up[e, y] - model.slack_s_down[e, y] == model.es_s_investment_fixed[e, y])
-            model.sensitivities_e.add(model.es_e_investment[e, y] + model.slack_e_up[e, y] - model.slack_e_down[e, y] == model.es_e_investment_fixed[e, y])
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective function
