@@ -107,163 +107,50 @@ def _build_subproblem_model(shared_ess_data):
 
     # ------------------------------------------------------------------------------------------------------------------
     # Variables
-    model.es_s_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)  # Total rated power capacity (considering calendar life)
-    model.es_e_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)  # Total rated energy capacity (considering calendar life, not considering degradation)
-    model.es_s_investment = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)  # Investment in power capacity in year y (complicating variable)
-    model.es_e_investment = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)  # Invesment in energy capacity in year y (complicating variable)
-    model.es_s_investment_fixed = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)  # Benders' -- used to get the dual variables (sensitivities)
-    model.es_e_investment_fixed = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)  # (...)
-    model.es_e_capacity_available = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)  # Total Energy capacity available in year y (based on degradation)
-    model.es_e_capacity_degradation = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)  # Energy capacity degradation in year y (based on ESS utilization)
-    model.es_e_relative_capacity = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals)  # Relative energy capacity available in year y (based on degradation)
-    model.es_soc = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals)
-    model.es_pch = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-    model.es_pdch = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-    model.es_expected_p = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals, initialize=0.00)
-    model.slack_s_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)  # Benders' -- ensures feasibility of the subproblem (numerical issues)
-    model.slack_s_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)  # (...)
-    model.slack_e_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)  # (...)
-    model.slack_e_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)  # (...)
-    if shared_ess_data.params.ess_relax_comp:
-        model.es_penalty_comp = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    if shared_ess_data.params.ess_relax_soc:
-        model.es_penalty_soc_up = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-        model.es_penalty_soc_down = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-    if shared_ess_data.params.ess_relax_day_balance:
-        model.es_penalty_day_balance_up = pe.Var(model.energy_storages, model.years, model.days, domain=pe.NonNegativeReals, initialize=0.00)
-        model.es_penalty_day_balance_down = pe.Var(model.energy_storages, model.years, model.days, domain=pe.NonNegativeReals, initialize=0.00)
-    if shared_ess_data.params.ess_relax_capacity_available:
-        model.es_penalty_capacity_available_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-        model.es_penalty_capacity_available_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-    if shared_ess_data.params.ess_relax_installed_capacity:
-        model.es_penalty_s_rated_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-        model.es_penalty_s_rated_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-        model.es_penalty_e_rated_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-        model.es_penalty_e_rated_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    if shared_ess_data.params.ess_relax_capacity_degradation:
-        model.es_penalty_e_capacity_degradation_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-        model.es_penalty_e_capacity_degradation_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    if shared_ess_data.params.ess_relax_capacity_relative:
-        model.es_penalty_e_relative_capacity_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-        model.es_penalty_e_relative_capacity_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    if shared_ess_data.params.ess_interface_relax:
-        model.es_penalty_expected_p_up = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-        model.es_penalty_expected_p_down = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+    model.es_s_investment = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_e_investment = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_s_investment_fixed = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_e_investment_fixed = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.slack_s_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.slack_s_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.slack_e_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.slack_e_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
 
-    for e in model.energy_storages:
-        for y in model.years:
-            model.es_e_capacity_degradation[e, y].setub(1.00)
-            model.es_e_capacity_degradation[e, y].fix(1.00)
-            e_init = shared_ess_data.shared_energy_storages[repr_years[y]][e].e
-            for d in model.days:
-                for p in model.periods:
-                    model.es_soc[e, y, d, p] = e_init * ENERGY_STORAGE_RELATIVE_INIT_SOC
-            for x in model.years:
-                model.es_e_relative_capacity[e, y, x].fix(0.00)
-                if shared_ess_data.params.ess_relax_capacity_relative:
-                    model.es_penalty_e_relative_capacity_up[e, y, x].fix(0.00)
-                    model.es_penalty_e_relative_capacity_down[e, y, x].fix(0.00)
+    model.es_s_rated_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_e_rated_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_soc_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_pch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+    model.es_pdch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+    model.es_s_rated_per_unit.fix(0.00)
+    model.es_e_rated_per_unit.fix(0.00)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
-    # - Yearly Power and Energy ratings as a function of yearly investments
-    model.rated_s_capacity = pe.ConstraintList()
-    model.rated_e_capacity = pe.ConstraintList()
+    # - Rated capacities of each investment
+    model.rated_s_capacity_unit = pe.ConstraintList()
+    model.rated_e_capacity_unit = pe.ConstraintList()
     for e in model.energy_storages:
-        total_s_capacity_per_year = [0.0 for _ in model.years]
-        total_e_capacity_per_year = [0.0 for _ in model.years]
-        for y in model.years:
-            shared_energy_storage = shared_ess_data.shared_energy_storages[repr_years[y]][e]
-            tcal_norm = round(shared_energy_storage.t_cal / (shared_ess_data.years[repr_years[y]]))
-            max_tcal_norm = min(y + tcal_norm, len(shared_ess_data.years))
-            for x in range(y, max_tcal_norm):
-                total_s_capacity_per_year[x] += model.es_s_investment[e, y]
-                total_e_capacity_per_year[x] += model.es_e_investment[e, y]
-        for y in model.years:
-            if shared_ess_data.params.ess_relax_installed_capacity:
-                model.rated_s_capacity.add(model.es_s_rated[e, y] - total_s_capacity_per_year[y] == model.es_penalty_s_rated_up[e, y] - model.es_penalty_s_rated_down[e, y])
-                model.rated_s_capacity.add(model.es_e_rated[e, y] - total_e_capacity_per_year[y] == model.es_penalty_e_rated_up[e, y] - model.es_penalty_e_rated_down[e, y])
-            else:
-                model.rated_s_capacity.add(model.es_s_rated[e, y] - total_s_capacity_per_year[y] >= -SMALL_TOLERANCE)
-                model.rated_s_capacity.add(model.es_s_rated[e, y] - total_s_capacity_per_year[y] <= SMALL_TOLERANCE)
-                model.rated_e_capacity.add(model.es_e_rated[e, y] - total_e_capacity_per_year[y] >= -SMALL_TOLERANCE)
-                model.rated_e_capacity.add(model.es_e_rated[e, y] - total_e_capacity_per_year[y] <= SMALL_TOLERANCE)
+        for y_inv in model.years:
+            shared_energy_storage = shared_ess_data.shared_energy_storages[repr_years[y_inv]][e]
+            tcal_norm = round(shared_energy_storage.t_cal / (shared_ess_data.years[repr_years[y_inv]]))
+            max_tcal_norm = min(y_inv + tcal_norm, len(shared_ess_data.years))
+            for y in range(y_inv, max_tcal_norm):
+                model.es_s_rated_per_unit[e, y_inv, y].fixed = False
+                model.es_e_rated_per_unit[e, y_inv, y].fixed = False
+                model.rated_s_capacity_unit.add(model.es_s_rated_per_unit[e, y_inv, y] == model.es_s_investment[e, y_inv])
+                model.rated_e_capacity_unit.add(model.es_e_rated_per_unit[e, y_inv, y] == model.es_e_investment[e, y_inv])
 
-    # - Energy capacities available in year y (as a function of degradation)
-    model.energy_storage_available_e_capacity = pe.ConstraintList()
-    for e in model.energy_storages:
-        for y in model.years:
-            capacity_e_available_year_y = model.es_e_investment[e, y] * model.es_e_relative_capacity[e, y, y]
-            for x in range(y - 1, -1, -1):
-                capacity_e_available_year_y += model.es_e_investment[e, x] * model.es_e_relative_capacity[e, x, y]
-            if shared_ess_data.params.ess_relax_capacity_available:
-                model.energy_storage_available_e_capacity.add(model.es_e_capacity_available[e, y] - capacity_e_available_year_y == model.es_penalty_capacity_available_up[e, y] - model.es_penalty_capacity_available_down[e, y])
-            else:
-                model.energy_storage_available_e_capacity.add(model.es_e_capacity_available[e, y] - capacity_e_available_year_y >= -SMALL_TOLERANCE)
-                model.energy_storage_available_e_capacity.add(model.es_e_capacity_available[e, y] - capacity_e_available_year_y <= SMALL_TOLERANCE)
-
-    # - Yearly degradation
-    model.energy_storage_yearly_degradation = pe.ConstraintList()
-    for e in model.energy_storages:
-        for y in model.years:
-
-            year = repr_years[y]
-            shared_energy_storage = shared_ess_data.shared_energy_storages[year][e]
-            cl_nom = shared_energy_storage.cl_nom
-            dod_nom = shared_energy_storage.dod_nom
-
-            total_ch_dch_day = 0.0
-            total_available_capacity = cl_nom * dod_nom * 2 * model.es_e_capacity_available[e, y]
-            for d in model.days:
-                day = repr_days[d]
-                num_days = shared_ess_data.days[day]
-                for p in model.periods:
-                    pch = model.es_pch[e, y, d, p]
-                    pdch = model.es_pdch[e, y, d, p]
-                    total_ch_dch_day += (num_days / 365) * (pch + pdch)
-            if shared_ess_data.params.ess_relax_capacity_degradation:
-                model.energy_storage_yearly_degradation.add(model.es_e_capacity_degradation[e, y] * total_available_capacity - total_ch_dch_day == model.es_penalty_e_capacity_degradation_up[e, y] - model.es_penalty_e_capacity_degradation_down[e, y])
-            else:
-                model.energy_storage_yearly_degradation.add(model.es_e_capacity_degradation[e, y] * total_available_capacity - total_ch_dch_day >= -SMALL_TOLERANCE)
-                model.energy_storage_yearly_degradation.add(model.es_e_capacity_degradation[e, y] * total_available_capacity - total_ch_dch_day <= SMALL_TOLERANCE)
-
-    # - Relative energy capacity
-    # - Reflects the degradation of the capacity invested on ESS e in year Y at year X ahead
-    model.energy_storage_relative_e_capacity = pe.ConstraintList()
-    for e in model.energy_storages:
-        for y in model.years:
-
-            year = repr_years[y]
-            shared_energy_storage = shared_ess_data.shared_energy_storages[year][e]
-            tcal_norm = round(shared_energy_storage.t_cal / shared_ess_data.years[repr_years[y]])
-            max_tcal_norm = min(y + tcal_norm, len(shared_ess_data.years))
-
-            # - Relative capacity
-            relative_capacity_year_y_in_x = 1.0
-            model.es_e_capacity_degradation[e, y].fixed = False
-            model.es_e_relative_capacity[e, y, y].fix(relative_capacity_year_y_in_x)
-            for x in range(y + 1, max_tcal_norm):
-                model.es_e_capacity_degradation[e, x].fixed = False
-                model.es_e_relative_capacity[e, y, x].fixed = False
-                relative_capacity_year_y_in_x *= (1 - model.es_e_capacity_degradation[e, x - 1]) ** (total_days * shared_ess_data.years[repr_years[y]])          # Relative capacity in year y reflects the accumulated degradation
-                if shared_ess_data.params.ess_relax_capacity_relative:
-                    model.es_penalty_e_relative_capacity_up[e, y, x].fixed = False
-                    model.es_penalty_e_relative_capacity_down[e, y, x].fixed = False
-                    model.energy_storage_relative_e_capacity.add(model.es_e_relative_capacity[e, y, x] - relative_capacity_year_y_in_x == model.es_penalty_e_relative_capacity_up[e, y, x] - model.es_penalty_e_relative_capacity_down[e, y, x])
-                else:
-                    model.energy_storage_relative_e_capacity.add(model.es_e_relative_capacity[e, y, x] - relative_capacity_year_y_in_x >= -SMALL_TOLERANCE)
-                    model.energy_storage_relative_e_capacity.add(model.es_e_relative_capacity[e, y, x] - relative_capacity_year_y_in_x <= SMALL_TOLERANCE)
-
-    # - P, Q, S, SoC, Pup and Pdown as a function of available capacities
+    # - P, Q, S, SoC, per unit as a function of available capacities
     model.energy_storage_limits = pe.ConstraintList()
     for e in model.energy_storages:
-        for y in model.years:
-            for d in model.days:
-                for p in model.periods:
-                    model.energy_storage_limits.add(model.es_pch[e, y, d, p] <= model.es_s_rated[e, y])
-                    model.energy_storage_limits.add(model.es_pdch[e, y, d, p] <= model.es_s_rated[e, y])
-                    model.energy_storage_limits.add(model.es_soc[e, y, d, p] >= model.es_e_capacity_available[e, y] * ENERGY_STORAGE_MIN_ENERGY_STORED)
-                    model.energy_storage_limits.add(model.es_soc[e, y, d, p] <= model.es_e_capacity_available[e, y] * ENERGY_STORAGE_MAX_ENERGY_STORED)
+        for y_inv in model.years:
+            for y in model.years:
+                for d in model.days:
+                    for p in model.periods:
+                        model.energy_storage_limits.add(model.es_pch_per_unit[e, y_inv, y, d, p] <= model.es_s_rated_per_unit[e, y_inv, y])
+                        model.energy_storage_limits.add(model.es_pdch_per_unit[e, y_inv, y, d, p] <= model.es_s_rated_per_unit[e, y_inv, y])
+                        model.energy_storage_limits.add(model.es_soc_per_unit[e, y_inv, y, d, p] >= model.es_e_rated_per_unit[e, y_inv, y] * ENERGY_STORAGE_MIN_ENERGY_STORED)
+                        model.energy_storage_limits.add(model.es_soc_per_unit[e, y_inv, y, d, p] <= model.es_e_rated_per_unit[e, y_inv, y] * ENERGY_STORAGE_MAX_ENERGY_STORED)
 
     # - Shared ESS operation
     model.energy_storage_operation = pe.ConstraintList()
@@ -271,57 +158,35 @@ def _build_subproblem_model(shared_ess_data):
     model.energy_storage_day_balance = pe.ConstraintList()
     model.energy_storage_ch_dch_exclusion = pe.ConstraintList()
     model.energy_storage_expected_power = pe.ConstraintList()
+    model.secondary_reserve = pe.ConstraintList()
     for e in model.energy_storages:
-        for y in model.years:
+        for y_inv in model.years:
 
-            year = repr_years[y]
-            shared_energy_storage = shared_ess_data.shared_energy_storages[year][e]
+            year_inv = repr_years[y_inv]
+            shared_energy_storage = shared_ess_data.shared_energy_storages[year_inv][e]
             eff_charge, eff_discharge = shared_energy_storage.eff_ch, shared_energy_storage.eff_dch
-            soc_init = model.es_e_capacity_available[e, y] * ENERGY_STORAGE_RELATIVE_INIT_SOC
-            soc_final = model.es_e_capacity_available[e, y] * ENERGY_STORAGE_RELATIVE_INIT_SOC
 
-            for d in model.days:
-                for p in model.periods:
+            for y in model.years:
 
-                    pch = model.es_pch[e, y, d, p]
-                    pdch = model.es_pdch[e, y, d, p]
+                soc_init = model.es_e_rated_per_unit[e, y_inv, y] * ENERGY_STORAGE_RELATIVE_INIT_SOC
+                soc_final = model.es_e_rated_per_unit[e, y_inv, y] * ENERGY_STORAGE_RELATIVE_INIT_SOC
 
-                    if p > 0:
-                        if shared_ess_data.params.ess_relax_soc:
-                            model.energy_storage_balance.add(model.es_soc[e, y, d, p] - model.es_soc[e, y, d, p - 1] - (pch * eff_charge - pdch / eff_discharge) == model.es_penalty_soc_up[e, y, d, p] - model.es_penalty_soc_down[e, y, d, p])
+                for d in model.days:
+                    for p in model.periods:
+
+                        pch = model.es_pch_per_unit[e, y_inv, y, d, p]
+                        pdch = model.es_pdch_per_unit[e, y_inv, y, d, p]
+
+                        if p > 0:
+                            model.energy_storage_balance.add(model.es_soc_per_unit[e, y_inv, y, d, p] - model.es_soc_per_unit[e, y_inv, y, d, p - 1] == pch * eff_charge - pdch / eff_discharge)
                         else:
-                            model.energy_storage_balance.add(model.es_soc[e, y, d, p] - model.es_soc[e, y, d, p - 1] - (pch * eff_charge - pdch / eff_discharge) >= -SMALL_TOLERANCE)
-                            model.energy_storage_balance.add(model.es_soc[e, y, d, p] - model.es_soc[e, y, d, p - 1] - (pch * eff_charge - pdch / eff_discharge) <= SMALL_TOLERANCE)
-                    else:
-                        if shared_ess_data.params.ess_relax_soc:
-                            model.energy_storage_balance.add(model.es_soc[e, y, d, p] - soc_init - (pch * eff_charge - pdch / eff_discharge) == model.es_penalty_soc_up[e, y, d, p] - model.es_penalty_soc_down[e, y, d, p])
-                        else:
-                            model.energy_storage_balance.add(model.es_soc[e, y, d, p] - soc_init - (pch * eff_charge - pdch / eff_discharge) >= -SMALL_TOLERANCE)
-                            model.energy_storage_balance.add(model.es_soc[e, y, d, p] - soc_init - (pch * eff_charge - pdch / eff_discharge) <= SMALL_TOLERANCE)
+                            model.energy_storage_balance.add(model.es_soc_per_unit[e, y_inv, y, d, p] - soc_init == pch * eff_charge - pdch / eff_discharge)
 
-                    # Charging/discharging complementarity constraint
-                    if shared_ess_data.params.ess_relax_comp:
-                        model.energy_storage_ch_dch_exclusion.add(pch * pdch <= model.es_penalty_comp[e, y, d, p])
-                    else:
-                        # NLP formulation
+                        # Charging/discharging complementarity constraint
                         model.energy_storage_ch_dch_exclusion.add(pch * pdch >= -SMALL_TOLERANCE)
                         model.energy_storage_ch_dch_exclusion.add(pch * pdch <= SMALL_TOLERANCE)
 
-                if shared_ess_data.params.ess_relax_day_balance:
-                    model.energy_storage_day_balance.add(model.es_soc[e, y, d, len(model.periods) - 1] - soc_final == model.es_penalty_day_balance_up[e, y, d] - model.es_penalty_day_balance_down[e, y, d])
-                else:
-                    model.energy_storage_day_balance.add(model.es_soc[e, y, d, len(model.periods) - 1] - soc_final >= -SMALL_TOLERANCE)
-                    model.energy_storage_day_balance.add(model.es_soc[e, y, d, len(model.periods) - 1] - soc_final <= SMALL_TOLERANCE)
-
-            # Expected P and Q
-            for d in model.days:
-                for p in model.periods:
-                    expected_p = (model.es_pch[e, y, d, p] - model.es_pdch[e, y, d, p])
-                    if shared_ess_data.params.ess_interface_relax:
-                        model.energy_storage_expected_power.add(model.es_expected_p[e, y, d, p] - expected_p == model.es_penalty_expected_p_up[e, y, d, p] - model.es_penalty_expected_p_down[e, y, d, p])
-                    else:
-                        model.energy_storage_expected_power.add(model.es_expected_p[e, y, d, p] - expected_p >= -SMALL_TOLERANCE)
-                        model.energy_storage_expected_power.add(model.es_expected_p[e, y, d, p] - expected_p <= SMALL_TOLERANCE)
+                    model.energy_storage_day_balance.add(model.es_soc_per_unit[e, y_inv, y, d, len(model.periods) - 1] == soc_final)
 
     # - Sensitivities - Einv and Sinv as a function of Einv_fixed and Sinv_fixed
     model.sensitivities_s = pe.ConstraintList()
@@ -337,46 +202,10 @@ def _build_subproblem_model(shared_ess_data):
     slack_penalty = 0.0
     for e in model.energy_storages:
         for y in model.years:
-            for d in model.days:
-
-                for p in model.periods:
-
-                    if shared_ess_data.params.ess_relax_comp:
-                        slack_penalty += PENALTY_ESS_COMPLEMENTARITY * model.es_penalty_comp[e, y, d, p]
-
-                    if shared_ess_data.params.ess_relax_soc:
-                        slack_penalty += PENALTY_ESS_SOC * (model.es_penalty_soc_up[e, y, d, p] + model.es_penalty_soc_down[e, y, d, p])
-
-                if shared_ess_data.params.ess_relax_day_balance:
-                    slack_penalty += PENALTY_ESS_DAY_BALANCE * (model.es_penalty_day_balance_up[e, y, d] + model.es_penalty_day_balance_down[e, y, d])
 
             # Slack penalties
             slack_penalty += PENALTY_ESS_SLACK_FEASIBILITY * (model.slack_s_up[e, y] + model.slack_s_down[e, y])
             slack_penalty += PENALTY_ESS_SLACK_FEASIBILITY * (model.slack_e_up[e, y] + model.slack_e_down[e, y])
-
-            # Capacity available penalties
-            if shared_ess_data.params.ess_relax_capacity_available:
-                slack_penalty += PENALTY_ESS_CAPACITY_AVAILABLE * (model.es_penalty_capacity_available_up[e, y] + model.es_penalty_capacity_available_down[e, y])
-
-            # Installed capacity penalties
-            if shared_ess_data.params.ess_relax_installed_capacity:
-                slack_penalty += PENALTY_ESS_CAPACITY_INSTALLED * (model.es_penalty_s_rated_up[e, y] + model.es_penalty_s_rated_down[e, y])
-                slack_penalty += PENALTY_ESS_CAPACITY_INSTALLED * (model.es_penalty_e_rated_up[e, y] + model.es_penalty_e_rated_down[e, y])
-
-            # Capacity degradation penalties
-            if shared_ess_data.params.ess_relax_capacity_degradation:
-                slack_penalty += PENALTY_ESS_CAPACITY_DEGRADATION * (model.es_penalty_e_capacity_degradation_up[e, y] + model.es_penalty_e_capacity_degradation_down[e, y])
-
-            # Relative capacity penalties
-            if shared_ess_data.params.ess_relax_capacity_relative:
-                for x in model.years:
-                    slack_penalty += PENALTY_ESS_CAPACITY_RELATIVE * (model.es_penalty_e_relative_capacity_up[e, y, x] + model.es_penalty_e_relative_capacity_down[e, y, x])
-
-            # Expected active power
-            if shared_ess_data.params.ess_interface_relax:
-                for d in model.days:
-                    for p in model.periods:
-                        slack_penalty += PENALTY_ESS_EXPECTED_VALUES * (model.es_penalty_expected_p_up[e, y, d, p] + model.es_penalty_expected_p_down[e, y, d, p])
 
     model.objective = pe.Objective(sense=pe.minimize, expr=slack_penalty)
 
