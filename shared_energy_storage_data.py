@@ -264,8 +264,8 @@ def _update_model_with_candidate_solution(shared_ess_data, model, candidate_solu
         for y in model.years:
             year = repr_years[y]
             node_id = shared_ess_data.shared_energy_storages[year][e].bus
-            model.es_s_investment_fixed[e, y].fix(candidate_solution[node_id][year]['s'])
-            model.es_e_investment_fixed[e, y].fix(candidate_solution[node_id][year]['e'])
+            model.es_s_investment[e, y].fix(candidate_solution[node_id][year]['s'])
+            model.es_e_investment[e, y].fix(candidate_solution[node_id][year]['e'])
 
 
 # ======================================================================================================================
@@ -499,9 +499,9 @@ def _get_investment_and_available_capacities(shared_ess_data, model):
             ess_capacity['investment'][node_id][year]['energy'] = pe.value(model.es_e_investment[e, y])
 
             ess_capacity['available'][node_id][year] = dict()
-            ess_capacity['available'][node_id][year]['power'] = pe.value(model.es_s_rated[e, y])
-            ess_capacity['available'][node_id][year]['energy'] = pe.value(model.es_e_capacity_available[e, y])
-            ess_capacity['available'][node_id][year]['degradation_factor'] = pe.value(model.es_e_capacity_degradation[e, y])
+            ess_capacity['available'][node_id][year]['power'] = pe.value(model.es_s_rated_total[e, y])
+            ess_capacity['available'][node_id][year]['energy'] = pe.value(model.es_e_rated_total[e, y]) # Change later!
+            ess_capacity['available'][node_id][year]['degradation_factor'] = 0.00
 
     return ess_capacity
 
