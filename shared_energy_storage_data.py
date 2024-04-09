@@ -456,20 +456,6 @@ def _write_main_info_to_excel(shared_ess_data, workbook, results):
             col_idx += 1
     sheet.cell(row=line_idx, column=col_idx).value = 'Total'
 
-    # Objective function value
-    col_idx = 2
-    line_idx += 1
-    total_of = 0.0
-    sheet.cell(row=line_idx, column=1).value = 'Objective (cost), [€]'
-    for year in shared_ess_data.years:
-        for day in shared_ess_data.days:
-            total_of += results['results'][year][day]['obj']
-            sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['obj']
-            sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
-            col_idx += 1
-    sheet.cell(row=line_idx, column=col_idx).value = total_of
-    sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
-
 
 def _write_ess_capacity_investment_to_excel(shared_ess_data, workbook, results):
 
