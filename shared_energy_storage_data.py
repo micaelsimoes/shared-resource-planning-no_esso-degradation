@@ -127,6 +127,7 @@ def _build_subproblem_model(shared_ess_data):
         model.es_penalty_comp = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_s_rated_per_unit.fix(0.00)
     model.es_e_rated_per_unit.fix(0.00)
+    model.es_avg_ch_dch_day.fix(0.00)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
@@ -154,6 +155,7 @@ def _build_subproblem_model(shared_ess_data):
             for y in range(y_inv, max_tcal_norm):
                 model.es_s_rated_per_unit[e, y_inv, y].fixed = False
                 model.es_e_rated_per_unit[e, y_inv, y].fixed = False
+                model.es_avg_ch_dch_day[e, y_inv, y].fixed = False
                 model.rated_s_capacity_unit.add(model.es_s_rated_per_unit[e, y_inv, y] == model.es_s_investment[e, y_inv])
                 model.rated_e_capacity_unit.add(model.es_e_rated_per_unit[e, y_inv, y] == model.es_e_investment[e, y_inv])
 
@@ -185,6 +187,7 @@ def _build_subproblem_model(shared_ess_data):
                 model.energy_storage_charging_discharging.add(model.es_avg_ch_dch_day[e, y_inv, y] == avg_ch_dch)
 
     # - Capacity degradation
+    '''
     model.energy_storage_capacity_degradation = pe.ConstraintList()
     for e in model.energy_storages:
         for y in model.years:
@@ -202,6 +205,7 @@ def _build_subproblem_model(shared_ess_data):
                 if y_inv > 0:
                     previous_year_deg = model.es_degradation_per_unit[e, y_inv - 1, y]
                 model.energy_storage_capacity_degradation.add((model.es_degradation_per_unit[e, y_inv, y] - previous_year_deg) * (rated_capacity * 2 * eq_cycle_number) == (avg_ch_dch_day))
+    '''
 
     # - Shared ESS operation
     model.energy_storage_operation = pe.ConstraintList()
