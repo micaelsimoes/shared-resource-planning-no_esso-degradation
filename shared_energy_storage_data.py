@@ -69,10 +69,14 @@ class SharedEnergyStorageData:
     def process_results(self, model):
         return _process_results(self, model)
 
+    def process_soh_results(self, model):
+        return _process_soh_results(self, model)
+
     def write_optimization_results_to_excel(self, model):
         shared_ess_capacity = self.get_investment_and_available_capacities(model)
         processed_results = self.process_results(model)
-        _write_optimization_results_to_excel(self, self.results_dir, processed_results, shared_ess_capacity)
+        soh_processed_results = self.process_soh_results(model)
+        _write_optimization_results_to_excel(self, self.results_dir, processed_results, soh_processed_results, shared_ess_capacity)
 
     def update_data_with_candidate_solution(self, candidate_solution):
         for year in self.years:
@@ -420,57 +424,59 @@ def _process_results(shared_ess_data, model):
             processed_results['results'][year_inv][year_curr] = dict()
             for d in model.days:
                 day = repr_days[d]
-                processed_results['results'][year_inv][year_curr][day] = {'p': dict(), 'soc': dict(), 'soc_percent': dict(),
-                                                                          'avg_ch_dch': dict(),
-                                                                          'soh_day': dict(), 'degradation_day': dict(),
-                                                                          'soh_year': dict(), 'degradation_year': dict(),
-                                                                          'soh_unit_cumul': dict(), 'degradation_unit_cumul': dict(),
-                                                                          'pch': dict(), 'pdch': dict(), 'comp': dict()}
+                processed_results['results'][year_inv][year_curr][day] = {'p': dict(), 'soc': dict(), 'soc_percent': dict(), 'comp': dict()}
                 for e in model.energy_storages:
                     node_id = shared_ess_data.shared_energy_storages[year_curr][e].bus
                     capacity = pe.value(model.es_e_rated_per_unit[e, y_inv, y_curr])
                     if isclose(capacity, 0.0, abs_tol=SMALL_TOLERANCE):
                         capacity = 1.00
                     processed_results['results'][year_inv][year_curr][day]['p'][node_id] = []
-                    processed_results['results'][year_inv][year_curr][day]['pch'][node_id] = []
-                    processed_results['results'][year_inv][year_curr][day]['pdch'][node_id] = []
                     processed_results['results'][year_inv][year_curr][day]['comp'][node_id] = []
                     processed_results['results'][year_inv][year_curr][day]['soc'][node_id] = []
                     processed_results['results'][year_inv][year_curr][day]['soc_percent'][node_id] = []
-                    processed_results['results'][year_inv][year_curr][day]['avg_ch_dch'][node_id] = []
-                    processed_results['results'][year_inv][year_curr][day]['soh_day'][node_id] = []
-                    processed_results['results'][year_inv][year_curr][day]['degradation_day'][node_id] = []
-                    processed_results['results'][year_inv][year_curr][day]['soh_year'][node_id] = []
-                    processed_results['results'][year_inv][year_curr][day]['degradation_year'][node_id] = []
-                    processed_results['results'][year_inv][year_curr][day]['soh_unit_cumul'][node_id] = []
-                    processed_results['results'][year_inv][year_curr][day]['degradation_unit_cumul'][node_id] = []
                     for p in model.periods:
-                        pch = pe.value(model.es_pch_per_unit[e, y_inv, y_curr, d, p])
-                        pdch = pe.value(model.es_pdch_per_unit[e, y_inv, y_curr, d, p])
-                        comp = pe.value(model.es_penalty_comp[e, y_inv, y_curr, d, p])
                         p_net = pe.value(model.es_pch_per_unit[e, y_inv, y_curr, d, p] - model.es_pdch_per_unit[e, y_inv, y_curr, d, p])
+                        comp = pe.value(model.es_penalty_comp[e, y_inv, y_curr, d, p])
                         soc = pe.value(model.es_soc_per_unit[e, y_inv, y_curr, d, p])
                         soc_perc = soc / capacity
-                        avg_ch_dch = pe.value(model.es_avg_ch_dch_day[e, y_inv, y_curr])
-                        soh_day = pe.value(model.es_soh_per_unit_day[e, y_inv, y_curr])
-                        degradation_avg_day = pe.value(model.es_degradation_per_unit_day[e, y_inv, y_curr])
-                        soh_year = pe.value(model.es_soh_per_unit_year[e, y_inv, y_curr])
-                        degradation_year = pe.value(model.es_degradation_per_unit_year[e, y_inv, y_curr])
-                        soh_unit_cumul = pe.value(model.es_soh_per_unit_cumul[e, y_inv, y_curr])
-                        degradation_unit_cumul = pe.value(model.es_degradation_per_unit_cumul[e, y_inv, y_curr])
                         processed_results['results'][year_inv][year_curr][day]['p'][node_id].append(p_net)
-                        processed_results['results'][year_inv][year_curr][day]['pch'][node_id].append(pch)
-                        processed_results['results'][year_inv][year_curr][day]['pdch'][node_id].append(pdch)
                         processed_results['results'][year_inv][year_curr][day]['comp'][node_id].append(comp)
                         processed_results['results'][year_inv][year_curr][day]['soc'][node_id].append(soc)
                         processed_results['results'][year_inv][year_curr][day]['soc_percent'][node_id].append(soc_perc)
-                        processed_results['results'][year_inv][year_curr][day]['avg_ch_dch'][node_id].append(avg_ch_dch)
-                        processed_results['results'][year_inv][year_curr][day]['soh_day'][node_id].append(soh_day)
-                        processed_results['results'][year_inv][year_curr][day]['degradation_day'][node_id].append(degradation_avg_day)
-                        processed_results['results'][year_inv][year_curr][day]['soh_year'][node_id].append(soh_year)
-                        processed_results['results'][year_inv][year_curr][day]['degradation_year'][node_id].append(degradation_year)
-                        processed_results['results'][year_inv][year_curr][day]['soh_unit_cumul'][node_id].append(soh_unit_cumul)
-                        processed_results['results'][year_inv][year_curr][day]['degradation_unit_cumul'][node_id].append(degradation_unit_cumul)
+
+    return processed_results
+
+
+def _process_soh_results(shared_ess_data, model):
+
+    processed_results = dict()
+    repr_years = [year for year in shared_ess_data.years]
+
+    for y_inv in model.years:
+        year_inv = repr_years[y_inv]
+        processed_results[year_inv] = dict()
+        processed_results[year_inv] = dict()
+        for y_curr in model.years:
+            year_curr = repr_years[y_curr]
+            processed_results[year_inv][year_curr] = {
+                'soh_day': dict(), 'degradation_day': dict(),
+                'soh_year': dict(), 'degradation_year': dict(),
+                'soh_cumul': dict(), 'degradation_cumul': dict()
+            }
+            for e in model.energy_storages:
+                node_id = shared_ess_data.shared_energy_storages[year_curr][e].bus
+                soh_day = pe.value(model.es_soh_per_unit_day[e, y_inv, y_curr])
+                degradation_day = pe.value(model.es_degradation_per_unit_day[e, y_inv, y_curr])
+                soh_year = pe.value(model.es_soh_per_unit_year[e, y_inv, y_curr])
+                degradation_year = pe.value(model.es_degradation_per_unit_year[e, y_inv, y_curr])
+                soh_cumul = pe.value(model.es_soh_per_unit_cumul[e, y_inv, y_curr])
+                degradation_cumul = pe.value(model.es_degradation_per_unit_cumul[e, y_inv, y_curr])
+                processed_results[year_inv][year_curr]['soh_day'][node_id] = soh_day
+                processed_results[year_inv][year_curr]['degradation_day'][node_id] = degradation_day
+                processed_results[year_inv][year_curr]['soh_year'][node_id] = soh_year
+                processed_results[year_inv][year_curr]['degradation_year'][node_id] = degradation_year
+                processed_results[year_inv][year_curr]['soh_cumul'][node_id] = soh_cumul
+                processed_results[year_inv][year_curr]['degradation_cumul'][node_id] = degradation_cumul
 
     return processed_results
 
@@ -507,7 +513,7 @@ def _get_investment_and_available_capacities(shared_ess_data, model):
 # ======================================================================================================================
 #   Shared ESS -- Write Results
 # ======================================================================================================================
-def _write_optimization_results_to_excel(shared_ess_data, data_dir, results, shared_ess_capacity):
+def _write_optimization_results_to_excel(shared_ess_data, data_dir, results, soh_results, shared_ess_capacity):
 
     wb = Workbook()
 
@@ -515,6 +521,7 @@ def _write_optimization_results_to_excel(shared_ess_data, data_dir, results, sha
     _write_ess_capacity_investment_to_excel(shared_ess_data, wb, shared_ess_capacity['investment'])
     _write_ess_capacity_available_to_excel(shared_ess_data, wb, shared_ess_capacity['available'])
     _write_shared_energy_storage_results_to_excel(shared_ess_data, wb, results['results'])
+    _write_shared_energy_storage_soh_results_to_excel(shared_ess_data, wb, soh_results)
     #_write_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['results'])
     #if shared_ess_data.params.ess_relax_capacity_relative:
         #_write_relaxation_slacks_yoy_results_to_excel(shared_ess_data, wb, results)
@@ -685,7 +692,6 @@ def _write_ess_capacity_available_to_excel(shared_ess_data, workbook, results):
 def _write_shared_energy_storage_results_to_excel(shared_ess_data, workbook, results):
 
     sheet = workbook.create_sheet('Shared Energy Storage')
-    repr_days = [day for day in shared_ess_data.days]
 
     row_idx = 1
     decimal_style = '0.00'
@@ -716,30 +722,6 @@ def _write_shared_energy_storage_results_to_excel(shared_ess_data, workbook, res
                     for p in range(shared_ess_data.num_instants):
                         pc = results[year_inv][year_curr][day]['p'][node_id][p]
                         sheet.cell(row=row_idx, column=p + 6).value = pc
-                        sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
-                    row_idx = row_idx + 1
-
-                    # - Active Power, charging
-                    sheet.cell(row=row_idx, column=1).value = node_id
-                    sheet.cell(row=row_idx, column=2).value = int(year_inv)
-                    sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                    sheet.cell(row=row_idx, column=4).value = day
-                    sheet.cell(row=row_idx, column=5).value = 'Pch, [MW]'
-                    for p in range(shared_ess_data.num_instants):
-                        pch = results[year_inv][year_curr][day]['pch'][node_id][p]
-                        sheet.cell(row=row_idx, column=p + 6).value = pch
-                        sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
-                    row_idx = row_idx + 1
-
-                    # - Active Power, discharging
-                    sheet.cell(row=row_idx, column=1).value = node_id
-                    sheet.cell(row=row_idx, column=2).value = int(year_inv)
-                    sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                    sheet.cell(row=row_idx, column=4).value = day
-                    sheet.cell(row=row_idx, column=5).value = 'Pdch, [MW]'
-                    for p in range(shared_ess_data.num_instants):
-                        pdch = results[year_inv][year_curr][day]['pdch'][node_id][p]
-                        sheet.cell(row=row_idx, column=p + 6).value = pdch
                         sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
                     row_idx = row_idx + 1
 
@@ -779,90 +761,85 @@ def _write_shared_energy_storage_results_to_excel(shared_ess_data, workbook, res
                         sheet.cell(row=row_idx, column=p + 6).number_format = perc_style
                     row_idx = row_idx + 1
 
-            for node_id in results[year_inv][year_curr][repr_days[0]]['degradation_day']:
 
-                # - Average charge/discharge per day
-                sheet.cell(row=row_idx, column=1).value = node_id
-                sheet.cell(row=row_idx, column=2).value = int(year_inv)
-                sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                sheet.cell(row=row_idx, column=4).value = 'N/A'
-                sheet.cell(row=row_idx, column=5).value = 'Average charge/discharge, [MVAh]'
-                for p in range(shared_ess_data.num_instants):
-                    avg_ch_dch = results[year_inv][year_curr][repr_days[0]]['avg_ch_dch'][node_id][p]
-                    sheet.cell(row=row_idx, column=p + 6).value = avg_ch_dch
-                    sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
-                row_idx = row_idx + 1
+def _write_shared_energy_storage_soh_results_to_excel(shared_ess_data, workbook, results):
+
+    sheet = workbook.create_sheet('Shared ESSs, Degradation')
+
+    row_idx = 1
+    perc_style = '0.00%'
+
+    # Write Header
+    sheet.cell(row=row_idx, column=1).value = 'Node ID'
+    sheet.cell(row=row_idx, column=2).value = 'Year Investment'
+    sheet.cell(row=row_idx, column=3).value = 'Year Current'
+    sheet.cell(row=row_idx, column=4).value = 'Quantity'
+    sheet.cell(row=row_idx, column=5).value = 'Value, [%]'
+    row_idx = row_idx + 1
+
+    for year_inv in results:
+        for year_curr in results[year_inv]:
+            for node_id in results[year_inv][year_curr]['degradation_day']:
+
+                soh_day = results[year_inv][year_curr]['soh_day'][node_id]
+                degradation_day = results[year_inv][year_curr]['degradation_day'][node_id]
+                soh_year = results[year_inv][year_curr]['soh_year'][node_id]
+                degradation_year = results[year_inv][year_curr]['degradation_year'][node_id]
+                soh_cumul = results[year_inv][year_curr]['soh_cumul'][node_id]
+                degradation_cumul = results[year_inv][year_curr]['degradation_cumul'][node_id]
 
                 # - SoH, average day
                 sheet.cell(row=row_idx, column=1).value = node_id
                 sheet.cell(row=row_idx, column=2).value = int(year_inv)
                 sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                sheet.cell(row=row_idx, column=4).value = 'N/A'
-                sheet.cell(row=row_idx, column=5).value = 'SoH day, [%]'
-                for p in range(shared_ess_data.num_instants):
-                    soh_day = results[year_inv][year_curr][repr_days[0]]['soh_day'][node_id][p]
-                    sheet.cell(row=row_idx, column=p + 6).value = soh_day
-                    sheet.cell(row=row_idx, column=p + 6).number_format = perc_style
+                sheet.cell(row=row_idx, column=4).value = 'SoH, day'
+                sheet.cell(row=row_idx, column=5).value = soh_day
+                sheet.cell(row=row_idx, column=5).number_format = perc_style
                 row_idx = row_idx + 1
 
                 # - Degradation, average day
                 sheet.cell(row=row_idx, column=1).value = node_id
                 sheet.cell(row=row_idx, column=2).value = int(year_inv)
                 sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                sheet.cell(row=row_idx, column=4).value = 'N/A'
-                sheet.cell(row=row_idx, column=5).value = 'Degradation avg. day, [%]'
-                for p in range(shared_ess_data.num_instants):
-                    degradation_day = results[year_inv][year_curr][repr_days[0]]['degradation_day'][node_id][p]
-                    sheet.cell(row=row_idx, column=p + 6).value = degradation_day
-                    sheet.cell(row=row_idx, column=p + 6).number_format = perc_style
+                sheet.cell(row=row_idx, column=4).value = 'Degradation, day'
+                sheet.cell(row=row_idx, column=5).value = degradation_day
+                sheet.cell(row=row_idx, column=5).number_format = perc_style
                 row_idx = row_idx + 1
 
                 # - SoH, year
                 sheet.cell(row=row_idx, column=1).value = node_id
                 sheet.cell(row=row_idx, column=2).value = int(year_inv)
                 sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                sheet.cell(row=row_idx, column=4).value = 'N/A'
-                sheet.cell(row=row_idx, column=5).value = 'SoH year, [%]'
-                for p in range(shared_ess_data.num_instants):
-                    soh_day = results[year_inv][year_curr][repr_days[0]]['soh_year'][node_id][p]
-                    sheet.cell(row=row_idx, column=p + 6).value = soh_day
-                    sheet.cell(row=row_idx, column=p + 6).number_format = perc_style
+                sheet.cell(row=row_idx, column=4).value = 'SoH, year'
+                sheet.cell(row=row_idx, column=5).value = soh_year
+                sheet.cell(row=row_idx, column=5).number_format = perc_style
                 row_idx = row_idx + 1
 
                 # - Degradation, year
                 sheet.cell(row=row_idx, column=1).value = node_id
                 sheet.cell(row=row_idx, column=2).value = int(year_inv)
                 sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                sheet.cell(row=row_idx, column=4).value = 'N/A'
-                sheet.cell(row=row_idx, column=5).value = 'Degradation year, [%]'
-                for p in range(shared_ess_data.num_instants):
-                    degradation_day = results[year_inv][year_curr][repr_days[0]]['degradation_year'][node_id][p]
-                    sheet.cell(row=row_idx, column=p + 6).value = degradation_day
-                    sheet.cell(row=row_idx, column=p + 6).number_format = perc_style
+                sheet.cell(row=row_idx, column=4).value = 'Degradation, year'
+                sheet.cell(row=row_idx, column=5).value = degradation_year
+                sheet.cell(row=row_idx, column=5).number_format = perc_style
                 row_idx = row_idx + 1
 
                 # - SoH, year
                 sheet.cell(row=row_idx, column=1).value = node_id
                 sheet.cell(row=row_idx, column=2).value = int(year_inv)
                 sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                sheet.cell(row=row_idx, column=4).value = 'N/A'
-                sheet.cell(row=row_idx, column=5).value = 'SoH cumul., [%]'
-                for p in range(shared_ess_data.num_instants):
-                    soh_cumul = results[year_inv][year_curr][repr_days[0]]['soh_unit_cumul'][node_id][p]
-                    sheet.cell(row=row_idx, column=p + 6).value = soh_cumul
-                    sheet.cell(row=row_idx, column=p + 6).number_format = perc_style
+                sheet.cell(row=row_idx, column=4).value = 'SoH, cumul.'
+                sheet.cell(row=row_idx, column=5).value = soh_cumul
+                sheet.cell(row=row_idx, column=5).number_format = perc_style
                 row_idx = row_idx + 1
 
                 # - Degradation, cumulative
                 sheet.cell(row=row_idx, column=1).value = node_id
                 sheet.cell(row=row_idx, column=2).value = int(year_inv)
                 sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                sheet.cell(row=row_idx, column=4).value = 'N/A'
-                sheet.cell(row=row_idx, column=5).value = 'Degradation cumul., [%]'
-                for p in range(shared_ess_data.num_instants):
-                    degradation_cumul = results[year_inv][year_curr][repr_days[0]]['degradation_unit_cumul'][node_id][p]
-                    sheet.cell(row=row_idx, column=p + 6).value = degradation_cumul
-                    sheet.cell(row=row_idx, column=p + 6).number_format = perc_style
+                sheet.cell(row=row_idx, column=4).value = 'Degradation, cumul.'
+                sheet.cell(row=row_idx, column=5).value = degradation_cumul
+                sheet.cell(row=row_idx, column=5).number_format = perc_style
                 row_idx = row_idx + 1
 
 
