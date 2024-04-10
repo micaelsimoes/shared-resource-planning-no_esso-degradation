@@ -127,6 +127,7 @@ def _build_subproblem_model(shared_ess_data):
     model.es_soh_per_unit_year = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
     model.es_degradation_per_unit_year = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
     model.es_soh_per_unit_cumul = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
+    model.es_degradation_per_unit_cumul = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
     if shared_ess_data.params.ess_relax_comp:
         model.es_penalty_comp = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_s_rated_per_unit.fix(0.00)
@@ -208,6 +209,7 @@ def _build_subproblem_model(shared_ess_data):
                 model.es_soh_per_unit_year[e, y_inv, y].fixed = False
                 model.es_degradation_per_unit_year[e, y_inv, y].fixed = False
                 model.es_soh_per_unit_cumul[e, y_inv, y].fixed = False
+                model.es_degradation_per_unit_cumul[e, y_inv, y].fixed = False
                 previous_soh = 1.00
                 if y > 0:
                     previous_soh = model.es_soh_per_unit_cumul[e, y_inv, y - 1]
@@ -217,6 +219,7 @@ def _build_subproblem_model(shared_ess_data):
                 model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_year[e, y_inv, y] == model.es_soh_per_unit_day[e, y_inv, y]**(365 * 10))
                 model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_year[e, y_inv, y] == 1.00 - model.es_soh_per_unit_year[e, y_inv, y])
                 model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[e, y_inv, y] == previous_soh * model.es_soh_per_unit_year[e, y_inv, y])
+                model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_cumul[e, y_inv, y] == 1.00 - model.es_soh_per_unit_cumul[e, y_inv, y])
 
     # - Shared ESS operation
     model.energy_storage_operation = pe.ConstraintList()
@@ -421,7 +424,7 @@ def _process_results(shared_ess_data, model):
                                                                           'avg_ch_dch': dict(),
                                                                           'soh_day': dict(), 'degradation_day': dict(),
                                                                           'soh_year': dict(), 'degradation_year': dict(),
-                                                                          'soh_unit_cumul': dict(),
+                                                                          'soh_unit_cumul': dict(), 'degradation_unit_cumul': dict(),
                                                                           'pch': dict(), 'pdch': dict(), 'comp': dict()}
                 for e in model.energy_storages:
                     node_id = shared_ess_data.shared_energy_storages[year_curr][e].bus
@@ -440,6 +443,7 @@ def _process_results(shared_ess_data, model):
                     processed_results['results'][year_inv][year_curr][day]['soh_year'][node_id] = []
                     processed_results['results'][year_inv][year_curr][day]['degradation_year'][node_id] = []
                     processed_results['results'][year_inv][year_curr][day]['soh_unit_cumul'][node_id] = []
+                    processed_results['results'][year_inv][year_curr][day]['degradation_unit_cumul'][node_id] = []
                     for p in model.periods:
                         pch = pe.value(model.es_pch_per_unit[e, y_inv, y_curr, d, p])
                         pdch = pe.value(model.es_pdch_per_unit[e, y_inv, y_curr, d, p])
@@ -453,6 +457,7 @@ def _process_results(shared_ess_data, model):
                         soh_year = pe.value(model.es_soh_per_unit_year[e, y_inv, y_curr])
                         degradation_year = pe.value(model.es_degradation_per_unit_year[e, y_inv, y_curr])
                         soh_unit_cumul = pe.value(model.es_soh_per_unit_cumul[e, y_inv, y_curr])
+                        degradation_unit_cumul = pe.value(model.es_degradation_per_unit_cumul[e, y_inv, y_curr])
                         processed_results['results'][year_inv][year_curr][day]['p'][node_id].append(p_net)
                         processed_results['results'][year_inv][year_curr][day]['pch'][node_id].append(pch)
                         processed_results['results'][year_inv][year_curr][day]['pdch'][node_id].append(pdch)
@@ -465,6 +470,7 @@ def _process_results(shared_ess_data, model):
                         processed_results['results'][year_inv][year_curr][day]['soh_year'][node_id].append(soh_year)
                         processed_results['results'][year_inv][year_curr][day]['degradation_year'][node_id].append(degradation_year)
                         processed_results['results'][year_inv][year_curr][day]['soh_unit_cumul'][node_id].append(soh_unit_cumul)
+                        processed_results['results'][year_inv][year_curr][day]['degradation_unit_cumul'][node_id].append(degradation_unit_cumul)
 
     return processed_results
 
@@ -844,6 +850,18 @@ def _write_shared_energy_storage_results_to_excel(shared_ess_data, workbook, res
                 for p in range(shared_ess_data.num_instants):
                     soh_cumul = results[year_inv][year_curr][repr_days[0]]['soh_unit_cumul'][node_id][p]
                     sheet.cell(row=row_idx, column=p + 6).value = soh_cumul
+                    sheet.cell(row=row_idx, column=p + 6).number_format = perc_style
+                row_idx = row_idx + 1
+
+                # - Degradation, cumulative
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'N/A'
+                sheet.cell(row=row_idx, column=5).value = 'Degradation cumul., [%]'
+                for p in range(shared_ess_data.num_instants):
+                    degradation_cumul = results[year_inv][year_curr][repr_days[0]]['degradation_unit_cumul'][node_id][p]
+                    sheet.cell(row=row_idx, column=p + 6).value = degradation_cumul
                     sheet.cell(row=row_idx, column=p + 6).number_format = perc_style
                 row_idx = row_idx + 1
 
