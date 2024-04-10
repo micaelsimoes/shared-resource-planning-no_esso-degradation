@@ -121,13 +121,16 @@ def _build_subproblem_model(shared_ess_data):
     model.es_soc_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_pch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_pdch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-    model.es_degradation_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_avg_ch_dch_day = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
+    model.es_soh_per_unit_day = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
+    model.es_degradation_per_unit_day = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
     if shared_ess_data.params.ess_relax_comp:
         model.es_penalty_comp = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_s_rated_per_unit.fix(0.00)
     model.es_e_rated_per_unit.fix(0.00)
     model.es_avg_ch_dch_day.fix(0.00)
+    model.es_soh_per_unit_day.fix(0.00)
+    model.es_degradation_per_unit_day.fix(0.00)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
@@ -155,7 +158,6 @@ def _build_subproblem_model(shared_ess_data):
             for y in range(y_inv, max_tcal_norm):
                 model.es_s_rated_per_unit[e, y_inv, y].fixed = False
                 model.es_e_rated_per_unit[e, y_inv, y].fixed = False
-                model.es_avg_ch_dch_day[e, y_inv, y].fixed = False
                 model.rated_s_capacity_unit.add(model.es_s_rated_per_unit[e, y_inv, y] == model.es_s_investment[e, y_inv])
                 model.rated_e_capacity_unit.add(model.es_e_rated_per_unit[e, y_inv, y] == model.es_e_investment[e, y_inv])
 
@@ -187,25 +189,19 @@ def _build_subproblem_model(shared_ess_data):
                 model.energy_storage_charging_discharging.add(model.es_avg_ch_dch_day[e, y_inv, y] == avg_ch_dch)
 
     # - Capacity degradation
-    '''
     model.energy_storage_capacity_degradation = pe.ConstraintList()
     for e in model.energy_storages:
-        for y in model.years:
-            year = repr_years[y]
-            shared_energy_storage = shared_ess_data.shared_energy_storages[year][e]
-            tcal_norm = round(shared_energy_storage.t_cal / (shared_ess_data.years[year]))
-            min_tcal_norm = max(y - tcal_norm + 1, 0)
-            eq_cycle_number = shared_energy_storage.cl_nom
-            for y_inv in range(y, min_tcal_norm - 1, -1):
-                year_inv = repr_years[y_inv]
-                num_years = shared_ess_data.years[year_inv]
-                rated_capacity = model.es_e_rated_per_unit[e, y_inv, y]
-                avg_ch_dch_day = model.es_avg_ch_dch_day[e, y_inv, y]
-                previous_year_deg = 0.00
-                if y_inv > 0:
-                    previous_year_deg = model.es_degradation_per_unit[e, y_inv - 1, y]
-                model.energy_storage_capacity_degradation.add((model.es_degradation_per_unit[e, y_inv, y] - previous_year_deg) * (rated_capacity * 2 * eq_cycle_number) == (avg_ch_dch_day))
-    '''
+        for y_inv in model.years:
+            shared_energy_storage = shared_ess_data.shared_energy_storages[repr_years[y_inv]][e]
+            tcal_norm = round(shared_energy_storage.t_cal / (shared_ess_data.years[repr_years[y_inv]]))
+            max_tcal_norm = min(y_inv + tcal_norm, len(shared_ess_data.years))
+            for y in range(y_inv, max_tcal_norm):
+                model.es_avg_ch_dch_day[e, y_inv, y].fixed = False
+                model.es_soh_per_unit_day[e, y_inv, y].fixed = False
+                model.es_degradation_per_unit_day[e, y_inv, y].fixed = False
+                model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_day[e, y_inv, y] <= model.es_e_investment[e, y_inv])    # ensures that degradation is 0 for years without investment
+                model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_day[e, y_inv, y] == 1 - model.es_degradation_per_unit_day[e, y_inv, y])
+                model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_day[e, y_inv, y] * (2 * shared_energy_storage.cl_nom * model.es_e_rated_per_unit[e, y_inv, y]) == model.es_avg_ch_dch_day[e, y_inv, y])
 
     # - Shared ESS operation
     model.energy_storage_operation = pe.ConstraintList()
@@ -241,8 +237,7 @@ def _build_subproblem_model(shared_ess_data):
                         if shared_ess_data.params.ess_relax_comp:
                             model.energy_storage_ch_dch_exclusion.add(pch * pdch <= model.es_penalty_comp[e, y_inv, y, d, p])
                         else:
-                            model.energy_storage_ch_dch_exclusion.add(pch * pdch >= -SMALL_TOLERANCE)
-                            model.energy_storage_ch_dch_exclusion.add(pch * pdch <= SMALL_TOLERANCE)
+                            model.energy_storage_ch_dch_exclusion.add(pch * pdch == 0.00)
 
                     model.energy_storage_day_balance.add(model.es_soc_per_unit[e, y_inv, y, d, len(model.periods) - 1] == soc_final)
 
@@ -408,7 +403,8 @@ def _process_results(shared_ess_data, model):
             for d in model.days:
                 day = repr_days[d]
                 processed_results['results'][year_inv][year_curr][day] = {'p': dict(), 'soc': dict(), 'soc_percent': dict(),
-                                                                          'degradation': dict(), 'avg_ch_dch': dict(),
+                                                                          'avg_ch_dch': dict(),
+                                                                          'soh_day': dict(), 'degradation_day': dict(),
                                                                           'pch': dict(), 'pdch': dict(), 'comp': dict()}
                 for e in model.energy_storages:
                     node_id = shared_ess_data.shared_energy_storages[year_curr][e].bus
@@ -421,8 +417,9 @@ def _process_results(shared_ess_data, model):
                     processed_results['results'][year_inv][year_curr][day]['comp'][node_id] = []
                     processed_results['results'][year_inv][year_curr][day]['soc'][node_id] = []
                     processed_results['results'][year_inv][year_curr][day]['soc_percent'][node_id] = []
-                    processed_results['results'][year_inv][year_curr][day]['degradation'][node_id] = []
                     processed_results['results'][year_inv][year_curr][day]['avg_ch_dch'][node_id] = []
+                    processed_results['results'][year_inv][year_curr][day]['soh_day'][node_id] = []
+                    processed_results['results'][year_inv][year_curr][day]['degradation_day'][node_id] = []
                     for p in model.periods:
                         pch = pe.value(model.es_pch_per_unit[e, y_inv, y_curr, d, p])
                         pdch = pe.value(model.es_pdch_per_unit[e, y_inv, y_curr, d, p])
@@ -430,16 +427,18 @@ def _process_results(shared_ess_data, model):
                         p_net = pe.value(model.es_pch_per_unit[e, y_inv, y_curr, d, p] - model.es_pdch_per_unit[e, y_inv, y_curr, d, p])
                         soc = pe.value(model.es_soc_per_unit[e, y_inv, y_curr, d, p])
                         soc_perc = soc / capacity
-                        degradation = pe.value(model.es_degradation_per_unit[e, y_inv, y_curr])
                         avg_ch_dch = pe.value(model.es_avg_ch_dch_day[e, y_inv, y_curr])
+                        soh_day = pe.value(model.es_soh_per_unit_day[e, y_inv, y_curr])
+                        degradation_avg_day = pe.value(model.es_degradation_per_unit_day[e, y_inv, y_curr])
                         processed_results['results'][year_inv][year_curr][day]['p'][node_id].append(p_net)
                         processed_results['results'][year_inv][year_curr][day]['pch'][node_id].append(pch)
                         processed_results['results'][year_inv][year_curr][day]['pdch'][node_id].append(pdch)
                         processed_results['results'][year_inv][year_curr][day]['comp'][node_id].append(comp)
                         processed_results['results'][year_inv][year_curr][day]['soc'][node_id].append(soc)
                         processed_results['results'][year_inv][year_curr][day]['soc_percent'][node_id].append(soc_perc)
-                        processed_results['results'][year_inv][year_curr][day]['degradation'][node_id].append(degradation)
                         processed_results['results'][year_inv][year_curr][day]['avg_ch_dch'][node_id].append(avg_ch_dch)
+                        processed_results['results'][year_inv][year_curr][day]['soh_day'][node_id].append(soh_day)
+                        processed_results['results'][year_inv][year_curr][day]['degradation_day'][node_id].append(degradation_avg_day)
 
     return processed_results
 
@@ -748,19 +747,7 @@ def _write_shared_energy_storage_results_to_excel(shared_ess_data, workbook, res
                         sheet.cell(row=row_idx, column=p + 6).number_format = perc_style
                     row_idx = row_idx + 1
 
-            for node_id in results[year_inv][year_curr][repr_days[0]]['degradation']:
-
-                # - Degradation
-                sheet.cell(row=row_idx, column=1).value = node_id
-                sheet.cell(row=row_idx, column=2).value = int(year_inv)
-                sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                sheet.cell(row=row_idx, column=4).value = 'N/A'
-                sheet.cell(row=row_idx, column=5).value = 'Degradation, [%]'
-                for p in range(shared_ess_data.num_instants):
-                    degradation = results[year_inv][year_curr][repr_days[0]]['degradation'][node_id][p]
-                    sheet.cell(row=row_idx, column=p + 6).value = degradation
-                    sheet.cell(row=row_idx, column=p + 6).number_format = perc_style
-                row_idx = row_idx + 1
+            for node_id in results[year_inv][year_curr][repr_days[0]]['degradation_day']:
 
                 # - Average charge/discharge per day
                 sheet.cell(row=row_idx, column=1).value = node_id
@@ -772,6 +759,30 @@ def _write_shared_energy_storage_results_to_excel(shared_ess_data, workbook, res
                     avg_ch_dch = results[year_inv][year_curr][repr_days[0]]['avg_ch_dch'][node_id][p]
                     sheet.cell(row=row_idx, column=p + 6).value = avg_ch_dch
                     sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - SoH, average day
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'N/A'
+                sheet.cell(row=row_idx, column=5).value = 'SoH day, [%]'
+                for p in range(shared_ess_data.num_instants):
+                    soh_day = results[year_inv][year_curr][repr_days[0]]['soh_day'][node_id][p]
+                    sheet.cell(row=row_idx, column=p + 6).value = soh_day
+                    sheet.cell(row=row_idx, column=p + 6).number_format = perc_style
+                row_idx = row_idx + 1
+
+                # - Degradation, average day
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'N/A'
+                sheet.cell(row=row_idx, column=5).value = 'Degradation avg. day, [%]'
+                for p in range(shared_ess_data.num_instants):
+                    degradation_day = results[year_inv][year_curr][repr_days[0]]['degradation_day'][node_id][p]
+                    sheet.cell(row=row_idx, column=p + 6).value = degradation_day
+                    sheet.cell(row=row_idx, column=p + 6).number_format = perc_style
                 row_idx = row_idx + 1
 
 
