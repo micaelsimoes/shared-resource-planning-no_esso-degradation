@@ -745,6 +745,18 @@ def _write_ess_capacity_rated_available_to_excel(shared_ess_data, workbook, resu
             sheet.cell(row=row_idx, column=col_idx).number_format = num_style
             col_idx = col_idx + 1
 
+        # SoH
+        col_idx = 1
+        row_idx = row_idx + 1
+        sheet.cell(row=row_idx, column=col_idx).value = node_id
+        col_idx = col_idx + 1
+        sheet.cell(row=row_idx, column=col_idx).value = 'SoH, [%]'
+        col_idx = col_idx + 1
+        for year in shared_ess_data.years:
+            sheet.cell(row=row_idx, column=col_idx).value = results['available'][node_id][year]['soh']
+            sheet.cell(row=row_idx, column=col_idx).number_format = perc_style
+            col_idx = col_idx + 1
+
         # Degradation factor
         col_idx = 1
         row_idx = row_idx + 1
