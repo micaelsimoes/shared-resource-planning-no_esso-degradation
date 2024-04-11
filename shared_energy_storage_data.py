@@ -115,6 +115,8 @@ def _build_subproblem_model(shared_ess_data):
     model.es_e_investment = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_s_rated_total = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_rated_total = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_s_available_total = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_e_available_total = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.slack_s_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.slack_s_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.slack_e_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
@@ -159,6 +161,19 @@ def _build_subproblem_model(shared_ess_data):
                 total_e_capacity += model.es_e_rated_per_unit[e, y_inv, y]
             model.rated_s_capacity.add(model.es_s_rated_total[e, y] == total_s_capacity)
             model.rated_e_capacity.add(model.es_e_rated_total[e, y] == total_e_capacity)
+
+    # - Yearly Power and Energy Capacity available as a function of yearly investments
+    model.available_s_capacity = pe.ConstraintList()
+    model.available_e_capacity = pe.ConstraintList()
+    for e in model.energy_storages:
+        for y in model.years:
+            available_s_capacity = 0.00
+            available_e_capacity = 0.00
+            for y_inv in model.years:
+                available_s_capacity += model.es_s_available_per_unit[e, y_inv, y]
+                available_e_capacity += model.es_e_available_per_unit[e, y_inv, y]
+            model.available_s_capacity.add(model.es_s_available_total[e, y] == available_s_capacity)
+            model.available_e_capacity.add(model.es_e_available_total[e, y] == available_e_capacity)
 
     # - Rated capacities of each investment
     model.rated_s_capacity_unit = pe.ConstraintList()
@@ -505,7 +520,7 @@ def _process_soh_results(shared_ess_data, model):
 def _get_investment_and_available_capacities(shared_ess_data, model):
 
     years = [year for year in shared_ess_data.years]
-    ess_capacity = {'investment': dict(), 'available': dict()}
+    ess_capacity = {'investment': dict(), 'rated': dict(), 'available': dict()}
 
     # - Investment in Power and Energy Capacity (per year)
     # - Power and Energy capacities available (per representative day)
@@ -513,6 +528,7 @@ def _get_investment_and_available_capacities(shared_ess_data, model):
 
         node_id = shared_ess_data.shared_energy_storages[years[0]][e].bus
         ess_capacity['investment'][node_id] = dict()
+        ess_capacity['rated'][node_id] = dict()
         ess_capacity['available'][node_id] = dict()
 
         for y in model.years:
@@ -523,9 +539,13 @@ def _get_investment_and_available_capacities(shared_ess_data, model):
             ess_capacity['investment'][node_id][year]['power'] = pe.value(model.es_s_investment[e, y])
             ess_capacity['investment'][node_id][year]['energy'] = pe.value(model.es_e_investment[e, y])
 
+            ess_capacity['rated'][node_id][year] = dict()
+            ess_capacity['rated'][node_id][year]['power'] = pe.value(model.es_s_rated_total[e, y])
+            ess_capacity['rated'][node_id][year]['energy'] = pe.value(model.es_e_rated_total[e, y])
+
             ess_capacity['available'][node_id][year] = dict()
-            ess_capacity['available'][node_id][year]['power'] = pe.value(model.es_s_rated_total[e, y])
-            ess_capacity['available'][node_id][year]['energy'] = pe.value(model.es_e_rated_total[e, y]) # Change later!
+            ess_capacity['available'][node_id][year]['power'] = pe.value(model.es_s_available_total[e, y])
+            ess_capacity['available'][node_id][year]['energy'] = pe.value(model.es_e_available_total[e, y])
             ess_capacity['available'][node_id][year]['degradation_factor'] = 0.00
 
     return ess_capacity
@@ -540,7 +560,7 @@ def _write_optimization_results_to_excel(shared_ess_data, data_dir, results, soh
 
     _write_main_info_to_excel(shared_ess_data, wb, results)
     _write_ess_capacity_investment_to_excel(shared_ess_data, wb, shared_ess_capacity['investment'])
-    _write_ess_capacity_available_to_excel(shared_ess_data, wb, shared_ess_capacity['available'])
+    _write_ess_capacity_rated_available_to_excel(shared_ess_data, wb, shared_ess_capacity)
     _write_shared_energy_storage_results_to_excel(shared_ess_data, wb, results['results'])
     _write_shared_energy_storage_soh_results_to_excel(shared_ess_data, wb, soh_results)
     #_write_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['results'])
@@ -652,7 +672,7 @@ def _write_ess_capacity_investment_to_excel(shared_ess_data, workbook, results):
             sheet.cell(row=line_idx, column=y + 3).number_format = num_style
 
 
-def _write_ess_capacity_available_to_excel(shared_ess_data, workbook, results):
+def _write_ess_capacity_rated_available_to_excel(shared_ess_data, workbook, results):
 
     sheet = workbook.create_sheet('Capacity Available')
 
@@ -670,44 +690,67 @@ def _write_ess_capacity_available_to_excel(shared_ess_data, workbook, results):
         col_idx = col_idx + 1
 
     # Write investment values, power and energy
-    for node_id in results:
+    for node_id in results['rated']:
 
-        # Power capacity
+        # Power, rated
         col_idx = 1
         row_idx = row_idx + 1
         sheet.cell(row=row_idx, column=col_idx).value = node_id
         col_idx = col_idx + 1
-        sheet.cell(row=row_idx, column=col_idx).value = 'S, [MVA]'
+        sheet.cell(row=row_idx, column=col_idx).value = 'Srated, [MVA]'
         col_idx = col_idx + 1
         for year in shared_ess_data.years:
-            sheet.cell(row=row_idx, column=col_idx).value = results[node_id][year]['power']
+            sheet.cell(row=row_idx, column=col_idx).value = results['rated'][node_id][year]['power']
             sheet.cell(row=row_idx, column=col_idx).number_format = num_style
             col_idx = col_idx + 1
 
-        # Energy capacity
+        # Capacity, rated
         col_idx = 1
         row_idx = row_idx + 1
         sheet.cell(row=row_idx, column=col_idx).value = node_id
         col_idx = col_idx + 1
-        sheet.cell(row=row_idx, column=col_idx).value = 'E, [MVAh]'
+        sheet.cell(row=row_idx, column=col_idx).value = 'Erated, [MVA]'
         col_idx = col_idx + 1
         for year in shared_ess_data.years:
-            sheet.cell(row=row_idx, column=col_idx).value = results[node_id][year]['energy']
+            sheet.cell(row=row_idx, column=col_idx).value = results['rated'][node_id][year]['energy']
+            sheet.cell(row=row_idx, column=col_idx).number_format = num_style
+            col_idx = col_idx + 1
+
+        # Power, available
+        col_idx = 1
+        row_idx = row_idx + 1
+        sheet.cell(row=row_idx, column=col_idx).value = node_id
+        col_idx = col_idx + 1
+        sheet.cell(row=row_idx, column=col_idx).value = 'Savailable, [MVA]'
+        col_idx = col_idx + 1
+        for year in shared_ess_data.years:
+            sheet.cell(row=row_idx, column=col_idx).value = results['available'][node_id][year]['power']
+            sheet.cell(row=row_idx, column=col_idx).number_format = num_style
+            col_idx = col_idx + 1
+
+        # Capacity, available
+        col_idx = 1
+        row_idx = row_idx + 1
+        sheet.cell(row=row_idx, column=col_idx).value = node_id
+        col_idx = col_idx + 1
+        sheet.cell(row=row_idx, column=col_idx).value = 'Eavailable, [MVAh]'
+        col_idx = col_idx + 1
+        for year in shared_ess_data.years:
+            sheet.cell(row=row_idx, column=col_idx).value = results['available'][node_id][year]['energy']
             sheet.cell(row=row_idx, column=col_idx).number_format = num_style
             col_idx = col_idx + 1
 
         # Degradation factor
-        if "degradation_factor" in results[node_id][year]:
-            col_idx = 1
-            row_idx = row_idx + 1
-            sheet.cell(row=row_idx, column=col_idx).value = node_id
+        col_idx = 1
+        row_idx = row_idx + 1
+        sheet.cell(row=row_idx, column=col_idx).value = node_id
+        col_idx = col_idx + 1
+        sheet.cell(row=row_idx, column=col_idx).value = 'Degradation factor, [%]'
+        col_idx = col_idx + 1
+        for year in shared_ess_data.years:
+            sheet.cell(row=row_idx, column=col_idx).value = results['available'][node_id][year]['degradation_factor']
+            sheet.cell(row=row_idx, column=col_idx).number_format = perc_style
             col_idx = col_idx + 1
-            sheet.cell(row=row_idx, column=col_idx).value = 'Degradation factor'
-            col_idx = col_idx + 1
-            for year in shared_ess_data.years:
-                sheet.cell(row=row_idx, column=col_idx).value = results[node_id][year]['degradation_factor']
-                sheet.cell(row=row_idx, column=col_idx).number_format = perc_style
-                col_idx = col_idx + 1
 
 
 def _write_shared_energy_storage_results_to_excel(shared_ess_data, workbook, results):
