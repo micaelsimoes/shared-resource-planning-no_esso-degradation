@@ -66,17 +66,17 @@ class SharedEnergyStorageData:
         print(f'[ERROR] Network {self.name}. Node {node_id} does not have a shared energy storage system! Check network.')
         exit(ERROR_NETWORK_FILE)
 
-    def process_results(self, model):
-        return _process_results(self, model)
+    def process_results_aggregated(self, model):
+        return _process_results_aggregated(self, model)
 
     def process_soh_results(self, model):
         return _process_soh_results(self, model)
 
     def write_optimization_results_to_excel(self, model):
         shared_ess_capacity = self.get_investment_and_available_capacities(model)
-        processed_results = self.process_results(model)
+        processed_results_aggregated = self.process_results_aggregated(model)
         soh_processed_results = self.process_soh_results(model)
-        _write_optimization_results_to_excel(self, self.results_dir, processed_results, soh_processed_results, shared_ess_capacity)
+        _write_optimization_results_to_excel(self, self.results_dir, processed_results_aggregated, shared_ess_capacity)
 
     def update_data_with_candidate_solution(self, candidate_solution):
         for year in self.years:
@@ -301,9 +301,12 @@ def _build_subproblem_model(shared_ess_data):
             for d in model.days:
                 for p in model.periods:
                     agg_pnet = 0.00
+                    agg_soc = 0.00
                     for y_inv in model.years:
                         agg_pnet += (model.es_pch_per_unit[e, y_inv, y, d, p] - model.es_pdch_per_unit[e, y_inv, y, d, p])
+                        agg_soc += model.es_soc_per_unit[e, y_inv, y, d, p]
                     model.energy_storage_operation_agg.add(model.es_pnet[e, y, d, p] == agg_pnet)
+                    model.energy_storage_operation_agg.add(model.es_soc[e, y, d, p] == agg_soc)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective function
@@ -444,44 +447,35 @@ def _get_investment_costs_from_excel_file(filename, sheet_name, num_years):
 # ======================================================================================================================
 #   Shared ESS -- Process results
 # ======================================================================================================================
-def _process_results(shared_ess_data, model):
+def _process_results_aggregated(shared_ess_data, model):
 
-    processed_results = {
-        'of_value': 0.00,
-        'results': dict()
-    }
+    processed_results = dict()
 
     repr_days = [day for day in shared_ess_data.days]
     repr_years = [year for year in shared_ess_data.years]
 
-    for y_inv in model.years:
-        year_inv = repr_years[y_inv]
-        processed_results['results'][year_inv] = dict()
-        processed_results['results'][year_inv] = dict()
-        for y_curr in model.years:
-            year_curr = repr_years[y_curr]
-            processed_results['results'][year_inv][year_curr] = dict()
-            for d in model.days:
-                day = repr_days[d]
-                processed_results['results'][year_inv][year_curr][day] = {'p': dict(), 'soc': dict(), 'soc_percent': dict(), 'comp': dict()}
-                for e in model.energy_storages:
-                    node_id = shared_ess_data.shared_energy_storages[year_curr][e].bus
-                    capacity = pe.value(model.es_e_rated_per_unit[e, y_inv, y_curr])
-                    if isclose(capacity, 0.0, abs_tol=SMALL_TOLERANCE):
-                        capacity = 1.00
-                    processed_results['results'][year_inv][year_curr][day]['p'][node_id] = []
-                    processed_results['results'][year_inv][year_curr][day]['comp'][node_id] = []
-                    processed_results['results'][year_inv][year_curr][day]['soc'][node_id] = []
-                    processed_results['results'][year_inv][year_curr][day]['soc_percent'][node_id] = []
-                    for p in model.periods:
-                        p_net = pe.value(model.es_pch_per_unit[e, y_inv, y_curr, d, p] - model.es_pdch_per_unit[e, y_inv, y_curr, d, p])
-                        comp = pe.value(model.es_penalty_comp[e, y_inv, y_curr, d, p])
-                        soc = pe.value(model.es_soc_per_unit[e, y_inv, y_curr, d, p])
-                        soc_perc = soc / capacity
-                        processed_results['results'][year_inv][year_curr][day]['p'][node_id].append(p_net)
-                        processed_results['results'][year_inv][year_curr][day]['comp'][node_id].append(comp)
-                        processed_results['results'][year_inv][year_curr][day]['soc'][node_id].append(soc)
-                        processed_results['results'][year_inv][year_curr][day]['soc_percent'][node_id].append(soc_perc)
+    for y in model.years:
+        year = repr_years[y]
+        processed_results[year] = dict()
+        for d in model.days:
+            day = repr_days[d]
+            processed_results[year][day] = dict()
+            for e in model.energy_storages:
+                node_id = shared_ess_data.shared_energy_storages[year][e].bus
+                capacity = pe.value(model.es_e_available[e, y])
+                if isclose(capacity, 0.00, rel_tol=SMALL_TOLERANCE):
+                    capacity = 1.00
+                processed_results[year][day][node_id] = dict()
+                processed_results[year][day][node_id]['p'] = list()
+                processed_results[year][day][node_id]['soc'] = list()
+                processed_results[year][day][node_id]['soc_perc'] = list()
+                for p in model.periods:
+                    p_net = pe.value(model.es_pnet[e, y, d, p])
+                    soc = pe.value(model.es_soc[e, y, d, p])
+                    soc_perc = soc / capacity
+                    processed_results[year][day][node_id]['p'].append(p_net)
+                    processed_results[year][day][node_id]['soc'].append(soc)
+                    processed_results[year][day][node_id]['soc_perc'].append(soc_perc)
 
     return processed_results
 
@@ -568,15 +562,15 @@ def _get_investment_and_available_capacities(shared_ess_data, model):
 # ======================================================================================================================
 #   Shared ESS -- Write Results
 # ======================================================================================================================
-def _write_optimization_results_to_excel(shared_ess_data, data_dir, results, soh_results, shared_ess_capacity):
+def _write_optimization_results_to_excel(shared_ess_data, data_dir, results_aggregated, shared_ess_capacity):
 
     wb = Workbook()
 
-    _write_main_info_to_excel(shared_ess_data, wb, results)
+    #_write_main_info_to_excel(shared_ess_data, wb, results)
     _write_ess_capacity_investment_to_excel(shared_ess_data, wb, shared_ess_capacity['investment'])
     _write_ess_capacity_rated_available_to_excel(shared_ess_data, wb, shared_ess_capacity)
-    _write_shared_energy_storage_results_to_excel(shared_ess_data, wb, results['results'])
-    _write_shared_energy_storage_soh_results_to_excel(shared_ess_data, wb, soh_results)
+    _write_aggregated_shared_energy_storage_results_to_excel(shared_ess_data, wb, results_aggregated)
+    #_write_shared_energy_storage_soh_results_to_excel(shared_ess_data, wb, soh_results)
     #_write_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['results'])
     #if shared_ess_data.params.ess_relax_capacity_relative:
         #_write_relaxation_slacks_yoy_results_to_excel(shared_ess_data, wb, results)
@@ -779,7 +773,7 @@ def _write_ess_capacity_rated_available_to_excel(shared_ess_data, workbook, resu
             col_idx = col_idx + 1
 
 
-def _write_shared_energy_storage_results_to_excel(shared_ess_data, workbook, results):
+def _write_aggregated_shared_energy_storage_results_to_excel(shared_ess_data, workbook, results):
 
     sheet = workbook.create_sheet('Shared Energy Storage')
 
@@ -789,67 +783,49 @@ def _write_shared_energy_storage_results_to_excel(shared_ess_data, workbook, res
 
     # Write Header
     sheet.cell(row=row_idx, column=1).value = 'Node ID'
-    sheet.cell(row=row_idx, column=2).value = 'Year Investment'
-    sheet.cell(row=row_idx, column=3).value = 'Year Current'
-    sheet.cell(row=row_idx, column=4).value = 'Day'
-    sheet.cell(row=row_idx, column=5).value = 'Quantity'
+    sheet.cell(row=row_idx, column=2).value = 'Year'
+    sheet.cell(row=row_idx, column=3).value = 'Day'
+    sheet.cell(row=row_idx, column=4).value = 'Quantity'
     for p in range(shared_ess_data.num_instants):
-        sheet.cell(row=row_idx, column=p + 6).value = p
+        sheet.cell(row=row_idx, column=p + 5).value = p
     row_idx = row_idx + 1
 
-    for year_inv in results:
-        for year_curr in results[year_inv]:
-            for day in results[year_inv][year_curr]:
+    for node_id in shared_ess_data.active_distribution_network_nodes:
+        for year in results:
+            for day in results[year]:
 
-                for node_id in results[year_inv][year_curr][day]['p']:
+                # - Active Power
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year)
+                sheet.cell(row=row_idx, column=3).value = day
+                sheet.cell(row=row_idx, column=4).value = 'P, [MW]'
+                for p in range(shared_ess_data.num_instants):
+                    pnet = results[year][day][node_id]['p'][p]
+                    sheet.cell(row=row_idx, column=p + 5).value = pnet
+                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
+                row_idx = row_idx + 1
 
-                    # - Active Power
-                    sheet.cell(row=row_idx, column=1).value = node_id
-                    sheet.cell(row=row_idx, column=2).value = int(year_inv)
-                    sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                    sheet.cell(row=row_idx, column=4).value = day
-                    sheet.cell(row=row_idx, column=5).value = 'P, [MW]'
-                    for p in range(shared_ess_data.num_instants):
-                        pc = results[year_inv][year_curr][day]['p'][node_id][p]
-                        sheet.cell(row=row_idx, column=p + 6).value = pc
-                        sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
-                    row_idx = row_idx + 1
+                # - SoC, [MWh]
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year)
+                sheet.cell(row=row_idx, column=3).value = day
+                sheet.cell(row=row_idx, column=4).value = 'SoC, [MWh]'
+                for p in range(shared_ess_data.num_instants):
+                    soc = results[year][day][node_id]['soc'][p]
+                    sheet.cell(row=row_idx, column=p + 5).value = soc
+                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
+                row_idx = row_idx + 1
 
-                    # - Charging complementarity penalty
-                    sheet.cell(row=row_idx, column=1).value = node_id
-                    sheet.cell(row=row_idx, column=2).value = int(year_inv)
-                    sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                    sheet.cell(row=row_idx, column=4).value = day
-                    sheet.cell(row=row_idx, column=5).value = 'Comp'
-                    for p in range(shared_ess_data.num_instants):
-                        comp = results[year_inv][year_curr][day]['comp'][node_id][p]
-                        sheet.cell(row=row_idx, column=p + 6).value = comp
-                        sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
-                    row_idx = row_idx + 1
-
-                    # - SoC, [MWh]
-                    sheet.cell(row=row_idx, column=1).value = node_id
-                    sheet.cell(row=row_idx, column=2).value = int(year_inv)
-                    sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                    sheet.cell(row=row_idx, column=4).value = day
-                    sheet.cell(row=row_idx, column=5).value = 'SoC, [MWh]'
-                    for p in range(shared_ess_data.num_instants):
-                        soc = results[year_inv][year_curr][day]['soc'][node_id][p]
-                        sheet.cell(row=row_idx, column=p + 6).value = soc
-                        sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
-                    row_idx = row_idx + 1
-
-                    # - SoC, [%]
-                    sheet.cell(row=row_idx, column=1).value = node_id
-                    sheet.cell(row=row_idx, column=2).value = int(year_inv)
-                    sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                    sheet.cell(row=row_idx, column=4).value = day
-                    sheet.cell(row=row_idx, column=5).value = 'SoC, [%]'
-                    for p in range(shared_ess_data.num_instants):
-                        soc_perc = results[year_inv][year_curr][day]['soc_percent'][node_id][p]
-                        sheet.cell(row=row_idx, column=p + 6).value = soc_perc
-                        sheet.cell(row=row_idx, column=p + 6).number_format = perc_style
-                    row_idx = row_idx + 1
+                # - SoC, [%]
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year)
+                sheet.cell(row=row_idx, column=3).value = day
+                sheet.cell(row=row_idx, column=4).value = 'SoC, [%]'
+                for p in range(shared_ess_data.num_instants):
+                    soc_perc = results[year][day][node_id]['soc_perc'][p]
+                    sheet.cell(row=row_idx, column=p + 5).value = soc_perc
+                    sheet.cell(row=row_idx, column=p + 5).number_format = perc_style
+                row_idx = row_idx + 1
 
 
 def _write_shared_energy_storage_soh_results_to_excel(shared_ess_data, workbook, results):
