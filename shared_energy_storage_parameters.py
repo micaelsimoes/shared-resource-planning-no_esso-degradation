@@ -13,6 +13,8 @@ class SharedEnergyStorageParameters:
         self.min_pe_factor = 0.10                       # Minimum S/E factor (related to the ESS technology)
         self.max_pe_factor = 4.00                       # Maximum S/E factor (related to the ESS technology)
         self.ess_relax_comp = True                      # Charging/Discharging complementarity (relax/use slack variables or not)
+        self.ess_relax_rating = True                    # Rated power and energy capacity (relax/use slack variables or not)
+        self.ess_relax_available = True                 # Available power and energy capacity (relax/use slack variables or not)
         self.slacks_used = False
         self.plot_results = False                       # Plot results
         self.print_results_to_file = False              # Write results to file
