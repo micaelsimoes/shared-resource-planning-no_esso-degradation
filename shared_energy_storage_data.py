@@ -78,11 +78,14 @@ class SharedEnergyStorageData:
     def process_soh_results_detailed(self, model):
         return _process_soh_results_detailed(self, model)
 
-    def get_relaxation_variables_aggregated(self, model):
-        return _get_relaxation_variables_aggregated(self, model)
+    def process_relaxation_variables_aggregated(self, model):
+        return _process_relaxation_variables_aggregated(self, model)
 
-    def get_relaxation_variables_detailed(self, model):
-        return _get_relaxation_variables_detailed(self, model)
+    def process_relaxation_variables_detailed(self, model):
+        return _process_relaxation_variables_detailed(self, model)
+
+    def process_relaxation_variables_operation(self, model):
+        return _process_relaxation_variables_operation(self, model)
 
     def write_optimization_results_to_excel(self, model):
         results = {'capacity': self.get_investment_and_available_capacities(model),
@@ -91,8 +94,9 @@ class SharedEnergyStorageData:
                    'soh': {'aggregated': self.process_soh_results_aggregated(model),
                            'detailed': self.process_soh_results_detailed(model)},
                    'relaxation_variables': {
-                       'aggregated': self.get_relaxation_variables_aggregated(model),
-                       'detailed': self.get_relaxation_variables_detailed(model),
+                       'aggregated': self.process_relaxation_variables_aggregated(model),
+                       'detailed': self.process_relaxation_variables_detailed(model),
+                       'operation': self.process_relaxation_variables_operation(model),
                    }
                 }
         _write_optimization_results_to_excel(self, self.results_dir, results)
@@ -152,8 +156,18 @@ def _build_subproblem_model(shared_ess_data):
 
     model.es_s_rated_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_rated_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    if shared_ess_data.params.ess_relax_rating:
+        model.es_penalty_s_rated_per_unit_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+        model.es_penalty_s_rated_per_unit_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+        model.es_penalty_e_rated_per_unit_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+        model.es_penalty_e_rated_per_unit_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_s_available_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_available_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    if shared_ess_data.params.ess_relax_available:
+        model.es_penalty_s_available_per_unit_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+        model.es_penalty_s_available_per_unit_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+        model.es_penalty_e_available_per_unit_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+        model.es_penalty_e_available_per_unit_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_soc_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_pch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_pdch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
@@ -227,8 +241,12 @@ def _build_subproblem_model(shared_ess_data):
             for y in range(y_inv, max_tcal_norm):
                 model.es_s_rated_per_unit[e, y_inv, y].fixed = False
                 model.es_e_rated_per_unit[e, y_inv, y].fixed = False
-                model.rated_s_capacity_unit.add(model.es_s_rated_per_unit[e, y_inv, y] == model.es_s_investment[e, y_inv])
-                model.rated_e_capacity_unit.add(model.es_e_rated_per_unit[e, y_inv, y] == model.es_e_investment[e, y_inv])
+                if shared_ess_data.params.ess_relax_rating:
+                    model.rated_s_capacity_unit.add(model.es_s_rated_per_unit[e, y_inv, y] == model.es_s_investment[e, y_inv] + model.es_penalty_s_rated_per_unit_up[e, y_inv, y] - model.es_penalty_s_rated_per_unit_down[e, y_inv, y])
+                    model.rated_e_capacity_unit.add(model.es_e_rated_per_unit[e, y_inv, y] == model.es_e_investment[e, y_inv] + model.es_penalty_e_rated_per_unit_up[e, y_inv, y] - model.es_penalty_e_rated_per_unit_down[e, y_inv, y])
+                else:
+                    model.rated_s_capacity_unit.add(model.es_s_rated_per_unit[e, y_inv, y] == model.es_s_investment[e, y_inv])
+                    model.rated_e_capacity_unit.add(model.es_e_rated_per_unit[e, y_inv, y] == model.es_e_investment[e, y_inv])
 
     # - Available capacities of each investment
     model.available_s_capacity_unit = pe.ConstraintList()
@@ -236,8 +254,12 @@ def _build_subproblem_model(shared_ess_data):
     for e in model.energy_storages:
         for y_inv in model.years:
             for y in model.years:
-                model.available_s_capacity_unit.add(model.es_s_available_per_unit[e, y_inv, y] == model.es_s_rated_per_unit[e, y_inv, y])
-                model.available_e_capacity_unit.add(model.es_e_available_per_unit[e, y_inv, y] == model.es_e_rated_per_unit[e, y_inv, y] * model.es_soh_per_unit_cumul[e, y_inv, y])
+                if shared_ess_data.params.ess_relax_available:
+                    model.available_s_capacity_unit.add(model.es_s_available_per_unit[e, y_inv, y] == model.es_s_rated_per_unit[e, y_inv, y] + model.es_penalty_s_available_per_unit_up[e, y_inv, y] - model.es_penalty_s_available_per_unit_down[e, y_inv, y])
+                    model.available_e_capacity_unit.add(model.es_e_available_per_unit[e, y_inv, y] == model.es_e_rated_per_unit[e, y_inv, y] * model.es_soh_per_unit_cumul[e, y_inv, y] + model.es_penalty_e_available_per_unit_up[e, y_inv, y] - model.es_penalty_e_available_per_unit_down[e, y_inv, y])
+                else:
+                    model.available_s_capacity_unit.add(model.es_s_available_per_unit[e, y_inv, y] == model.es_s_rated_per_unit[e, y_inv, y])
+                    model.available_e_capacity_unit.add(model.es_e_available_per_unit[e, y_inv, y] == model.es_e_rated_per_unit[e, y_inv, y] * model.es_soh_per_unit_cumul[e, y_inv, y])
 
     # - Sum of charging and discharging power for the yearly average day (aux, used to estimate degradation of ESSs)
     model.energy_storage_charging_discharging = pe.ConstraintList()
@@ -361,12 +383,20 @@ def _build_subproblem_model(shared_ess_data):
                             slack_penalty += PENALTY_ESS_COMPLEMENTARITY * model.es_penalty_comp[e, y_inv, y, d, p]
 
             # - Aggregated rated power and energy capacity
-            slack_penalty += PENALTY_ESS_CAPACITY_INSTALLED * (model.es_penalty_s_rated_up[e, y_inv] + model.es_penalty_s_rated_down[e, y_inv])
-            slack_penalty += PENALTY_ESS_CAPACITY_INSTALLED * (model.es_penalty_e_rated_up[e, y_inv] + model.es_penalty_e_rated_down[e, y_inv])
+            if shared_ess_data.params.ess_relax_rating:
+                slack_penalty += PENALTY_ESS_CAPACITY_INSTALLED * (model.es_penalty_s_rated_up[e, y_inv] + model.es_penalty_s_rated_down[e, y_inv])
+                slack_penalty += PENALTY_ESS_CAPACITY_INSTALLED * (model.es_penalty_e_rated_up[e, y_inv] + model.es_penalty_e_rated_down[e, y_inv])
+                for y in model.years:
+                    slack_penalty += PENALTY_ESS_CAPACITY_INSTALLED * (model.es_penalty_s_rated_per_unit_up[e, y_inv, y] + model.es_penalty_s_rated_per_unit_down[e, y_inv, y])
+                    slack_penalty += PENALTY_ESS_CAPACITY_INSTALLED * (model.es_penalty_e_rated_per_unit_up[e, y_inv, y] + model.es_penalty_e_rated_per_unit_down[e, y_inv, y])
 
             # - Aggregated available power and energy capacity
-            slack_penalty += PENALTY_ESS_CAPACITY_AVAILABLE * (model.es_penalty_s_available_up[e, y_inv] + model.es_penalty_s_available_down[e, y_inv])
-            slack_penalty += PENALTY_ESS_CAPACITY_AVAILABLE * (model.es_penalty_e_available_up[e, y_inv] + model.es_penalty_e_available_down[e, y_inv])
+            if shared_ess_data.params.ess_relax_available:
+                slack_penalty += PENALTY_ESS_CAPACITY_AVAILABLE * (model.es_penalty_s_available_up[e, y_inv] + model.es_penalty_s_available_down[e, y_inv])
+                slack_penalty += PENALTY_ESS_CAPACITY_AVAILABLE * (model.es_penalty_e_available_up[e, y_inv] + model.es_penalty_e_available_down[e, y_inv])
+                for y in model.years:
+                    slack_penalty += PENALTY_ESS_CAPACITY_AVAILABLE * (model.es_penalty_s_available_per_unit_up[e, y_inv, y] + model.es_penalty_s_available_per_unit_down[e, y_inv, y])
+                    slack_penalty += PENALTY_ESS_CAPACITY_AVAILABLE * (model.es_penalty_e_available_per_unit_up[e, y_inv, y] + model.es_penalty_e_available_per_unit_down[e, y_inv, y])
 
     model.objective = pe.Objective(sense=pe.minimize, expr=slack_penalty)
 
@@ -636,7 +666,7 @@ def _process_soh_results_detailed(shared_ess_data, model):
     return processed_results
 
 
-def _get_relaxation_variables_aggregated(shared_ess_data, model):
+def _process_relaxation_variables_aggregated(shared_ess_data, model):
 
     processed_results = dict()
     repr_years = [year for year in shared_ess_data.years]
@@ -667,7 +697,47 @@ def _get_relaxation_variables_aggregated(shared_ess_data, model):
     return processed_results
 
 
-def _get_relaxation_variables_detailed(shared_ess_data, model):
+def _process_relaxation_variables_detailed(shared_ess_data, model):
+
+    processed_results = dict()
+    repr_years = [year for year in shared_ess_data.years]
+
+    for y_inv in model.years:
+        year_inv = repr_years[y_inv]
+        processed_results[year_inv] = dict()
+        for y_curr in model.years:
+            year_curr = repr_years[y_curr]
+            processed_results[year_inv][year_curr] = dict()
+            for e in model.energy_storages:
+                node_id = shared_ess_data.shared_energy_storages[year_curr][e].bus
+                processed_results[year_inv][year_curr][node_id] = dict()
+
+                # - Rated power and energy capacity
+                if shared_ess_data.params.ess_relax_rating:
+                    s_rated_up = pe.value(model.es_penalty_s_rated_per_unit_up[e, y_inv, y_curr])
+                    s_rated_down = pe.value(model.es_penalty_s_rated_per_unit_down[e, y_inv, y_curr])
+                    e_rated_up = pe.value(model.es_penalty_e_rated_per_unit_up[e, y_inv, y_curr])
+                    e_rated_down = pe.value(model.es_penalty_e_rated_per_unit_down[e, y_inv, y_curr])
+                    processed_results[year_inv][year_curr][node_id]['s_rated_up'] = s_rated_up
+                    processed_results[year_inv][year_curr][node_id]['s_rated_down'] = s_rated_down
+                    processed_results[year_inv][year_curr][node_id]['e_rated_up'] = e_rated_up
+                    processed_results[year_inv][year_curr][node_id]['e_rated_down'] = e_rated_down
+
+                # - Available power and energy capacity
+                if shared_ess_data.params.ess_relax_available:
+                    s_available_up = pe.value(model.es_penalty_s_available_per_unit_up[e, y_inv, y_curr])
+                    s_available_down = pe.value(model.es_penalty_s_available_per_unit_down[e, y_inv, y_curr])
+                    e_available_up = pe.value(model.es_penalty_e_available_per_unit_up[e, y_inv, y_curr])
+                    e_available_down = pe.value(model.es_penalty_e_available_per_unit_down[e, y_inv, y_curr])
+                    processed_results[year_inv][year_curr][node_id]['s_available_up'] = s_available_up
+                    processed_results[year_inv][year_curr][node_id]['s_available_down'] = s_available_down
+                    processed_results[year_inv][year_curr][node_id]['e_available_up'] = e_available_up
+                    processed_results[year_inv][year_curr][node_id]['e_available_down'] = e_available_down
+
+    return processed_results
+
+
+def _process_relaxation_variables_operation(shared_ess_data, model):
 
     processed_results = dict()
     repr_days = [day for day in shared_ess_data.days]
@@ -746,6 +816,7 @@ def _write_optimization_results_to_excel(shared_ess_data, data_dir, results):
     _write_detailed_shared_energy_storage_soh_results_to_excel(shared_ess_data, wb, results['soh']['detailed'])
     _write_aggregated_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['aggregated'])
     _write_detailed_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['detailed'])
+    _write_operation_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['operation'])
 
     results_filename = os.path.join(data_dir, f'{shared_ess_data.name}_shared_ess_results.xlsx')
     try:
@@ -1328,6 +1399,107 @@ def _write_aggregated_relaxation_slacks_results_to_excel(shared_ess_data, workbo
 def _write_detailed_relaxation_slacks_results_to_excel(shared_ess_data, workbook, results):
 
     sheet = workbook.create_sheet('Relaxation Slacks, detailed')
+
+    row_idx = 1
+    decimal_style = '0.00'
+
+    # Write Header
+    sheet.cell(row=row_idx, column=1).value = 'Node ID'
+    sheet.cell(row=row_idx, column=2).value = 'Year Investment'
+    sheet.cell(row=row_idx, column=3).value = 'Year Current'
+    sheet.cell(row=row_idx, column=4).value = 'Quantity'
+    sheet.cell(row=row_idx, column=5).value = 'Value'
+    row_idx = row_idx + 1
+
+    for node_id in shared_ess_data.active_distribution_network_nodes:
+        for year_inv in results:
+            for year_curr in results[year_inv]:
+
+                s_rated_up = results[year_inv][year_curr][node_id]['s_rated_up']
+                s_rated_down = results[year_inv][year_curr][node_id]['s_rated_down']
+                e_rated_up = results[year_inv][year_curr][node_id]['e_rated_up']
+                e_rated_down = results[year_inv][year_curr][node_id]['e_rated_down']
+                s_available_up = results[year_inv][year_curr][node_id]['s_available_up']
+                s_available_down = results[year_inv][year_curr][node_id]['s_available_down']
+                e_available_up = results[year_inv][year_curr][node_id]['e_available_up']
+                e_available_down = results[year_inv][year_curr][node_id]['e_available_down']
+
+                # - Srated, up
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'Srated up, [MVA]'
+                sheet.cell(row=row_idx, column=5).value = s_rated_up
+                sheet.cell(row=row_idx, column=5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - Srated, down
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'Srated down, [MVA]'
+                sheet.cell(row=row_idx, column=5).value = s_rated_down
+                sheet.cell(row=row_idx, column=5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - Erated, up
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'Erated up, [MVA]'
+                sheet.cell(row=row_idx, column=5).value = e_rated_up
+                sheet.cell(row=row_idx, column=5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - Erated, down
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'Erated down, [MVA]'
+                sheet.cell(row=row_idx, column=5).value = e_rated_down
+                sheet.cell(row=row_idx, column=5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - Savailable, up
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'Savailable up, [MVA]'
+                sheet.cell(row=row_idx, column=5).value = s_available_up
+                sheet.cell(row=row_idx, column=5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - Savailable, down
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'Savailable down, [MVA]'
+                sheet.cell(row=row_idx, column=5).value = s_available_down
+                sheet.cell(row=row_idx, column=5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - Eavailable, up
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'Eavailable up, [MVA]'
+                sheet.cell(row=row_idx, column=5).value = e_available_up
+                sheet.cell(row=row_idx, column=5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - Eavailable, down
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'Eavailable down, [MVA]'
+                sheet.cell(row=row_idx, column=5).value = e_available_down
+                sheet.cell(row=row_idx, column=5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+
+def _write_operation_relaxation_slacks_results_to_excel(shared_ess_data, workbook, results):
+
+    sheet = workbook.create_sheet('Relaxation Slacks, operation')
 
     row_idx = 1
     decimal_style = '0.00'
