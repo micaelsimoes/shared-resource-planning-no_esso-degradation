@@ -119,6 +119,8 @@ def _build_subproblem_model(shared_ess_data):
     model.es_e_available = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_soh = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_degradation = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_soc = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_pnet = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals, initialize=0.0)
 
     model.es_s_rated_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_rated_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
@@ -261,7 +263,6 @@ def _build_subproblem_model(shared_ess_data):
     model.energy_storage_day_balance = pe.ConstraintList()
     model.energy_storage_ch_dch_exclusion = pe.ConstraintList()
     model.energy_storage_expected_power = pe.ConstraintList()
-    model.secondary_reserve = pe.ConstraintList()
     for e in model.energy_storages:
         for y_inv in model.years:
 
@@ -292,6 +293,17 @@ def _build_subproblem_model(shared_ess_data):
                             model.energy_storage_ch_dch_exclusion.add(pch * pdch == 0.00)
 
                     model.energy_storage_day_balance.add(model.es_soc_per_unit[e, y_inv, y, d, len(model.periods) - 1] == soc_final)
+
+    # - Shared ESS operation, aggregated
+    model.energy_storage_operation_agg = pe.ConstraintList()
+    for e in model.energy_storages:
+        for y in model.years:
+            for d in model.days:
+                for p in model.periods:
+                    agg_pnet = 0.00
+                    for y_inv in model.years:
+                        agg_pnet += (model.es_pch_per_unit[e, y_inv, y, d, p] - model.es_pdch_per_unit[e, y_inv, y, d, p])
+                    model.energy_storage_operation_agg.add(model.es_pnet[e, y, d, p] == agg_pnet)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective function
