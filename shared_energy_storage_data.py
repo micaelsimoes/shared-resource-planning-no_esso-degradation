@@ -78,12 +78,16 @@ class SharedEnergyStorageData:
     def process_soh_results_detailed(self, model):
         return _process_soh_results_detailed(self, model)
 
+    def get_relaxation_variables(self, model):
+        return _get_relaxation_variables(self, model)
+
     def write_optimization_results_to_excel(self, model):
         results = {'capacity': self.get_investment_and_available_capacities(model),
                    'operation': {'aggregated': self.process_results_aggregated(model),
                                  'detailed': self.process_results_detailed(model)},
                    'soh': {'aggregated': self.process_soh_results_aggregated(model),
-                           'detailed': self.process_soh_results_detailed(model)}
+                           'detailed': self.process_soh_results_detailed(model)},
+                   'relaxation_variables': self.get_relaxation_variables(model)
                    }
         _write_optimization_results_to_excel(self, self.results_dir, results)
 
@@ -598,6 +602,35 @@ def _process_soh_results_detailed(shared_ess_data, model):
     return processed_results
 
 
+def _get_relaxation_variables(shared_ess_data, model):
+
+    processed_results = dict()
+    repr_days = [day for day in shared_ess_data.days]
+    repr_years = [year for year in shared_ess_data.years]
+
+    for y_inv in model.years:
+        year_inv = repr_years[y_inv]
+        processed_results[year_inv] = dict()
+        for y_curr in model.years:
+            year_curr = repr_years[y_curr]
+            processed_results[year_inv][year_curr] = dict()
+            for d in model.days:
+                day = repr_days[d]
+                processed_results[year_inv][year_curr][day] = dict()
+                for e in model.energy_storages:
+                    node_id = shared_ess_data.shared_energy_storages[year_curr][e].bus
+                    processed_results[year_inv][year_curr][day][node_id] = dict()
+
+                    # - Complementarity
+                    if shared_ess_data.params.ess_relax_comp:
+                        processed_results[year_inv][year_curr][day][node_id]['comp'] = list()
+                        for p in model.periods:
+                            comp = pe.value(model.es_penalty_comp[e, y_inv, y_curr, d, p])
+                            processed_results[year_inv][year_curr][day][node_id]['comp'].append(comp)
+
+    return processed_results
+
+
 def _get_investment_and_available_capacities(shared_ess_data, model):
 
     years = [year for year in shared_ess_data.years]
@@ -646,7 +679,7 @@ def _write_optimization_results_to_excel(shared_ess_data, data_dir, results):
     _write_detailed_shared_energy_storage_operation_results_to_excel(shared_ess_data, wb, results['operation']['detailed'])
     _write_aggregated_shared_energy_storage_soh_results_to_excel(shared_ess_data, wb, results['soh']['aggregated'])
     _write_detailed_shared_energy_storage_soh_results_to_excel(shared_ess_data, wb, results['soh']['detailed'])
-    #_write_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['results'])
+    _write_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables'])
     #if shared_ess_data.params.ess_relax_capacity_relative:
         #_write_relaxation_slacks_yoy_results_to_excel(shared_ess_data, wb, results)
 
@@ -1146,267 +1179,33 @@ def _write_relaxation_slacks_results_to_excel(shared_ess_data, workbook, results
 
     # Write Header
     sheet.cell(row=row_idx, column=1).value = 'Node ID'
-    sheet.cell(row=row_idx, column=2).value = 'Year'
-    sheet.cell(row=row_idx, column=3).value = 'Day'
-    sheet.cell(row=row_idx, column=4).value = 'Quantity'
-    sheet.cell(row=row_idx, column=5).value = 'Market Scenario'
-    sheet.cell(row=row_idx, column=6).value = 'Operation Scenario'
+    sheet.cell(row=row_idx, column=2).value = 'Year Investment'
+    sheet.cell(row=row_idx, column=3).value = 'Year Current'
+    sheet.cell(row=row_idx, column=4).value = 'Day'
+    sheet.cell(row=row_idx, column=5).value = 'Quantity'
     for p in range(shared_ess_data.num_instants):
-        sheet.cell(row=row_idx, column=p + 7).value = p
+        sheet.cell(row=row_idx, column=p + 6).value = p
     row_idx = row_idx + 1
 
-    for year in results:
-        for day in results[year]:
-            for s_m in results[year][day]['scenarios']:
-                for s_o in results[year][day]['scenarios'][s_m]:
-                    for node_id in results[year][day]['scenarios']['relaxation_slacks']['slack_s_up']:
+    for node_id in shared_ess_data.active_distribution_network_nodes:
+        for year_inv in results:
+            for year_curr in results[year_inv]:
+                for day in results[year_inv][year_curr]:
 
-                        # Slack, Sup
+                    # - Complementarity
+                    if shared_ess_data.params.ess_relax_comp:
                         sheet.cell(row=row_idx, column=1).value = node_id
-                        sheet.cell(row=row_idx, column=2).value = int(year)
-                        sheet.cell(row=row_idx, column=3).value = day
-                        sheet.cell(row=row_idx, column=4).value = 'Investment, slack_s_up'
-                        sheet.cell(row=row_idx, column=5).value = s_m
-                        sheet.cell(row=row_idx, column=6).value = s_o
+                        sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                        sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                        sheet.cell(row=row_idx, column=4).value = day
+                        sheet.cell(row=row_idx, column=5).value = 'Complementary'
                         for p in range(shared_ess_data.num_instants):
-                            sheet.cell(row=row_idx, column=p + 7).value = results[year][day]['scenarios']['relaxation_slacks']['slack_s_up'][node_id]
-                            sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
+                            comp = results[year_inv][year_curr][day][node_id]['comp'][p]
+                            sheet.cell(row=row_idx, column=p + 6).value = comp
+                            sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
                         row_idx = row_idx + 1
 
-                        # Slack, Sdown
-                        sheet.cell(row=row_idx, column=1).value = node_id
-                        sheet.cell(row=row_idx, column=2).value = int(year)
-                        sheet.cell(row=row_idx, column=3).value = day
-                        sheet.cell(row=row_idx, column=4).value = 'Investment, slack_s_down'
-                        sheet.cell(row=row_idx, column=5).value = s_m
-                        sheet.cell(row=row_idx, column=6).value = s_o
-                        for p in range(shared_ess_data.num_instants):
-                            sheet.cell(row=row_idx, column=p + 7).value = results[year][day]['scenarios']['relaxation_slacks']['slack_s_down'][node_id]
-                            sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                        row_idx = row_idx + 1
-
-                        # Slack, Eup
-                        sheet.cell(row=row_idx, column=1).value = node_id
-                        sheet.cell(row=row_idx, column=2).value = int(year)
-                        sheet.cell(row=row_idx, column=3).value = day
-                        sheet.cell(row=row_idx, column=4).value = 'Investment, slack_e_up'
-                        sheet.cell(row=row_idx, column=5).value = s_m
-                        sheet.cell(row=row_idx, column=6).value = s_o
-                        for p in range(shared_ess_data.num_instants):
-                            sheet.cell(row=row_idx, column=p + 7).value = results[year][day]['scenarios']['relaxation_slacks']['slack_e_up'][node_id]
-                            sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                        row_idx = row_idx + 1
-
-                        # Slack, Edown
-                        sheet.cell(row=row_idx, column=1).value = node_id
-                        sheet.cell(row=row_idx, column=2).value = int(year)
-                        sheet.cell(row=row_idx, column=3).value = day
-                        sheet.cell(row=row_idx, column=4).value = 'Investment, slack_e_down'
-                        sheet.cell(row=row_idx, column=5).value = s_m
-                        sheet.cell(row=row_idx, column=6).value = s_o
-                        for p in range(shared_ess_data.num_instants):
-                            sheet.cell(row=row_idx, column=p + 7).value = results[year][day]['scenarios']['relaxation_slacks']['slack_e_down'][node_id]
-                            sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                        row_idx = row_idx + 1
-
-                        # Slack, Comp
-                        if shared_ess_data.params.ess_relax_comp:
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'comp'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
-                            for p in range(shared_ess_data.num_instants):
-                                sheet.cell(row=row_idx, column=p + 7).value = results[year][day]['scenarios']['relaxation_slacks']['comp'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                            row_idx = row_idx + 1
-
-                        # Slack, SoC
-                        if shared_ess_data.params.ess_relax_soc:
-
-                            # Slack, soc, up
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'soc_up'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
-                            for p in range(shared_ess_data.num_instants):
-                                sheet.cell(row=row_idx, column=p + 7).value = results[year][day]['scenarios']['relaxation_slacks']['soc_up'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                            row_idx = row_idx + 1
-
-                            # Slack, soc, down
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'soc_down'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
-                            for p in range(shared_ess_data.num_instants):
-                                sheet.cell(row=row_idx, column=p + 7).value = results[year][day]['scenarios']['relaxation_slacks']['soc_down'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                            row_idx = row_idx + 1
-
-                        # Slack, day balance
-                        if shared_ess_data.params.ess_relax_day_balance:
-
-                            # Slack, day balance, up
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'day_balance_up'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
-                            for p in range(shared_ess_data.num_instants):
-                                sheet.cell(row=row_idx, column=p + 7).value = results[year][day]['scenarios']['relaxation_slacks']['day_balance_up'][node_id]
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                            row_idx = row_idx + 1
-
-                            # Slack, day balance, down
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'day_balance_down'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
-                            for p in range(shared_ess_data.num_instants):
-                                sheet.cell(row=row_idx, column=p + 7).value = results[year][day]['scenarios']['relaxation_slacks']['day_balance_up'][node_id]
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                            row_idx = row_idx + 1
-
-                        # Capacity available
-                        if shared_ess_data.params.ess_relax_capacity_available:
-
-                            # Slack, capacity available, up
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'capacity_available_up'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
-                            for p in range(shared_ess_data.num_instants):
-                                sheet.cell(row=row_idx, column=p + 7).value = results[year][day]['scenarios']['relaxation_slacks']['capacity_available_up'][node_id]
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                            row_idx = row_idx + 1
-
-                            # Slack, capacity available, down
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'capacity_available_down'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
-                            for p in range(shared_ess_data.num_instants):
-                                sheet.cell(row=row_idx, column=p + 7).value = results[year][day]['scenarios']['relaxation_slacks']['capacity_available_down'][node_id]
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                            row_idx = row_idx + 1
-
-                        # Installed capacity
-                        if shared_ess_data.params.ess_relax_installed_capacity:
-
-                            # Slack, s_rated, up
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 's_rated_up'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
-                            for p in range(shared_ess_data.num_instants):
-                                sheet.cell(row=row_idx, column=p + 7).value = results[year][day]['scenarios']['relaxation_slacks']['s_rated_up'][node_id]
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                            row_idx = row_idx + 1
-
-                            # Slack, s_rated, down
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 's_rated_down'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
-                            for p in range(shared_ess_data.num_instants):
-                                sheet.cell(row=row_idx, column=p + 7).value = results[year][day]['scenarios']['relaxation_slacks']['s_rated_down'][node_id]
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                            row_idx = row_idx + 1
-
-                            # Slack, e_rated, up
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'e_rated_up'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
-                            for p in range(shared_ess_data.num_instants):
-                                sheet.cell(row=row_idx, column=p + 7).value = results[year][day]['scenarios']['relaxation_slacks']['e_rated_up'][node_id]
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                            row_idx = row_idx + 1
-
-                            # Slack, e_rated, down
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'e_rated_down'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
-                            for p in range(shared_ess_data.num_instants):
-                                sheet.cell(row=row_idx, column=p + 7).value = results[year][day]['scenarios']['relaxation_slacks']['e_rated_down'][node_id]
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                            row_idx = row_idx + 1
-
-                        # Capacity degradation
-                        if shared_ess_data.params.ess_relax_capacity_degradation:
-
-                            # Slack, capacity available, up
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'capacity_degradation_up'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
-                            for p in range(shared_ess_data.num_instants):
-                                sheet.cell(row=row_idx, column=p + 7).value = results[year][day]['scenarios']['relaxation_slacks']['capacity_degradation_up'][node_id]
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                            row_idx = row_idx + 1
-
-                            # Slack, capacity available, down
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'capacity_degradation_down'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
-                            for p in range(shared_ess_data.num_instants):
-                                sheet.cell(row=row_idx, column=p + 7).value = results[year][day]['scenarios']['relaxation_slacks']['capacity_degradation_down'][node_id]
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                            row_idx = row_idx + 1
-
-                        # Expected values
-                        if shared_ess_data.params.ess_interface_relax:
-
-                            # - Expected active power, up
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'expected_p_up'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
-                            for p in range(shared_ess_data.num_instants):
-                                sheet.cell(row=row_idx, column=p + 7).value = results[year][day]['scenarios']['relaxation_slacks']['expected_p_up'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                            row_idx = row_idx + 1
-
-                            # - Expected active power, down
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'expected_p_down'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
-                            for p in range(shared_ess_data.num_instants):
-                                sheet.cell(row=row_idx, column=p + 7).value = results[year][day]['scenarios']['relaxation_slacks']['expected_p_down'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                            row_idx = row_idx + 1
+    return results
 
 
 def _write_relaxation_slacks_yoy_results_to_excel(shared_ess_data, workbook, results):
