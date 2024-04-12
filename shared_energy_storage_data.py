@@ -172,6 +172,9 @@ def _build_subproblem_model(shared_ess_data):
     model.es_pch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_pdch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_avg_ch_dch_day = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
+    if shared_ess_data.params.ess_relax_ch_dch_avg:
+        model.es_penalty_avg_ch_dch_day_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
+        model.es_penalty_avg_ch_dch_day_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_soh_per_unit_day = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
     model.es_degradation_per_unit_day = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
     model.es_soh_per_unit_year = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
@@ -274,7 +277,10 @@ def _build_subproblem_model(shared_ess_data):
                         pch = model.es_pch_per_unit[e, y_inv, y, d, p]
                         pdch = model.es_pdch_per_unit[e, y_inv, y, d, p]
                         avg_ch_dch += (num_days / 365.00) * (pch + pdch)
-                model.energy_storage_charging_discharging.add(model.es_avg_ch_dch_day[e, y_inv, y] == avg_ch_dch)
+                if shared_ess_data.params.ess_relax_ch_dch_avg:
+                    model.energy_storage_charging_discharging.add(model.es_avg_ch_dch_day[e, y_inv, y] == avg_ch_dch + model.es_penalty_avg_ch_dch_day_up[e, y_inv, y] - model.es_penalty_avg_ch_dch_day_down[e, y_inv, y])
+                else:
+                    model.energy_storage_charging_discharging.add(model.es_avg_ch_dch_day[e, y_inv, y] == avg_ch_dch)
 
     # - Capacity degradation
     model.energy_storage_capacity_degradation = pe.ConstraintList()
@@ -397,6 +403,10 @@ def _build_subproblem_model(shared_ess_data):
                 for y in model.years:
                     slack_penalty += PENALTY_ESS_CAPACITY_AVAILABLE * (model.es_penalty_s_available_per_unit_up[e, y_inv, y] + model.es_penalty_s_available_per_unit_down[e, y_inv, y])
                     slack_penalty += PENALTY_ESS_CAPACITY_AVAILABLE * (model.es_penalty_e_available_per_unit_up[e, y_inv, y] + model.es_penalty_e_available_per_unit_down[e, y_inv, y])
+
+            if shared_ess_data.params.ess_relax_ch_dch_avg:
+                for y in model.years:
+                    slack_penalty += PENALTY_ESS_AVERAGE_DAY_CYCLE * (model.es_penalty_avg_ch_dch_day_up[e, y_inv, y] + model.es_penalty_avg_ch_dch_day_down[e, y_inv, y])
 
     model.objective = pe.Objective(sense=pe.minimize, expr=slack_penalty)
 
@@ -733,6 +743,13 @@ def _process_relaxation_variables_detailed(shared_ess_data, model):
                     processed_results[year_inv][year_curr][node_id]['s_available_down'] = s_available_down
                     processed_results[year_inv][year_curr][node_id]['e_available_up'] = e_available_up
                     processed_results[year_inv][year_curr][node_id]['e_available_down'] = e_available_down
+
+                # - Average charge/discharge per representative day
+                if shared_ess_data.params.ess_relax_ch_dch_avg:
+                    avg_ch_dch_up = pe.value(model.es_penalty_avg_ch_dch_day_up[e, y_inv, y_curr])
+                    avg_ch_dch_down = pe.value(model.es_penalty_avg_ch_dch_day_down[e, y_inv, y_curr])
+                    processed_results[year_inv][year_curr][node_id]['avg_ch_dch_up'] = avg_ch_dch_up
+                    processed_results[year_inv][year_curr][node_id]['avg_ch_dch_down'] = avg_ch_dch_down
 
     return processed_results
 
@@ -1423,6 +1440,8 @@ def _write_detailed_relaxation_slacks_results_to_excel(shared_ess_data, workbook
                 s_available_down = results[year_inv][year_curr][node_id]['s_available_down']
                 e_available_up = results[year_inv][year_curr][node_id]['e_available_up']
                 e_available_down = results[year_inv][year_curr][node_id]['e_available_down']
+                avg_ch_dch_up = results[year_inv][year_curr][node_id]['avg_ch_dch_up']
+                avg_ch_dch_down = results[year_inv][year_curr][node_id]['avg_ch_dch_down']
 
                 # - Srated, up
                 sheet.cell(row=row_idx, column=1).value = node_id
@@ -1493,6 +1512,24 @@ def _write_detailed_relaxation_slacks_results_to_excel(shared_ess_data, workbook
                 sheet.cell(row=row_idx, column=3).value = int(year_curr)
                 sheet.cell(row=row_idx, column=4).value = 'Eavailable down, [MVA]'
                 sheet.cell(row=row_idx, column=5).value = e_available_down
+                sheet.cell(row=row_idx, column=5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - Ech_dch, up
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'Ech_dch up, [MVAh]'
+                sheet.cell(row=row_idx, column=5).value = avg_ch_dch_up
+                sheet.cell(row=row_idx, column=5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - Ech_dch, down
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'Ech_dch down, [MVAh]'
+                sheet.cell(row=row_idx, column=5).value = avg_ch_dch_down
                 sheet.cell(row=row_idx, column=5).number_format = decimal_style
                 row_idx = row_idx + 1
 
