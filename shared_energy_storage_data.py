@@ -202,18 +202,6 @@ def _build_subproblem_model(shared_ess_data):
                 model.available_s_capacity_unit.add(model.es_s_available_per_unit[e, y_inv, y] == model.es_s_rated_per_unit[e, y_inv, y])
                 model.available_e_capacity_unit.add(model.es_e_available_per_unit[e, y_inv, y] == model.es_e_rated_per_unit[e, y_inv, y] * model.es_soh_per_unit_cumul[e, y_inv, y])
 
-    # - P, Q, S, SoC, per unit as a function of available capacities
-    model.energy_storage_limits = pe.ConstraintList()
-    for e in model.energy_storages:
-        for y_inv in model.years:
-            for y in model.years:
-                for d in model.days:
-                    for p in model.periods:
-                        model.energy_storage_limits.add(model.es_pch_per_unit[e, y_inv, y, d, p] <= model.es_s_rated_per_unit[e, y_inv, y])
-                        model.energy_storage_limits.add(model.es_pdch_per_unit[e, y_inv, y, d, p] <= model.es_s_rated_per_unit[e, y_inv, y])
-                        model.energy_storage_limits.add(model.es_soc_per_unit[e, y_inv, y, d, p] >= model.es_e_rated_per_unit[e, y_inv, y] * ENERGY_STORAGE_MIN_ENERGY_STORED)
-                        model.energy_storage_limits.add(model.es_soc_per_unit[e, y_inv, y, d, p] <= model.es_e_rated_per_unit[e, y_inv, y] * ENERGY_STORAGE_MAX_ENERGY_STORED)
-
     # - Sum of charging and discharging power for the yearly average day (aux, used to estimate degradation of ESSs)
     model.energy_storage_charging_discharging = pe.ConstraintList()
     for e in model.energy_storages:
@@ -259,7 +247,19 @@ def _build_subproblem_model(shared_ess_data):
                 model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_cumul[e, y_inv, y] == 1.00 - model.es_soh_per_unit_cumul[e, y_inv, y])
                 model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_year[e, y_inv, y] >= shared_energy_storage.soh_min)              # ensures a minimum SoH
 
-    # - Shared ESS operation
+    # - P, Q, S, SoC, per unit as a function of available capacities
+    model.energy_storage_limits = pe.ConstraintList()
+    for e in model.energy_storages:
+        for y_inv in model.years:
+            for y in model.years:
+                for d in model.days:
+                    for p in model.periods:
+                        model.energy_storage_limits.add(model.es_pch_per_unit[e, y_inv, y, d, p] <= model.es_s_available_per_unit[e, y_inv, y])
+                        model.energy_storage_limits.add(model.es_pdch_per_unit[e, y_inv, y, d, p] <= model.es_s_available_per_unit[e, y_inv, y])
+                        model.energy_storage_limits.add(model.es_soc_per_unit[e, y_inv, y, d, p] >= model.es_e_available_per_unit[e, y_inv, y] * ENERGY_STORAGE_MIN_ENERGY_STORED)
+                        model.energy_storage_limits.add(model.es_soc_per_unit[e, y_inv, y, d, p] <= model.es_e_available_per_unit[e, y_inv, y] * ENERGY_STORAGE_MAX_ENERGY_STORED)
+
+    # - Shared ESS operation, per unit
     model.energy_storage_operation = pe.ConstraintList()
     model.energy_storage_balance = pe.ConstraintList()
     model.energy_storage_day_balance = pe.ConstraintList()
@@ -275,8 +275,8 @@ def _build_subproblem_model(shared_ess_data):
 
             for y in model.years:
 
-                soc_init = model.es_e_rated_per_unit[e, y_inv, y] * ENERGY_STORAGE_RELATIVE_INIT_SOC
-                soc_final = model.es_e_rated_per_unit[e, y_inv, y] * ENERGY_STORAGE_RELATIVE_INIT_SOC
+                soc_init = model.es_e_available_per_unit[e, y_inv, y] * ENERGY_STORAGE_RELATIVE_INIT_SOC
+                soc_final = model.es_e_available_per_unit[e, y_inv, y] * ENERGY_STORAGE_RELATIVE_INIT_SOC
 
                 for d in model.days:
                     for p in model.periods:
