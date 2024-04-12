@@ -111,9 +111,8 @@ def _build_subproblem_model(shared_ess_data):
 
     model = pe.ConcreteModel()
     model.name = 'ESSO, Operational Planning'
-    repr_years = [year for year in shared_ess_data.years]
     repr_days = [day for day in shared_ess_data.days]
-    total_days = sum([shared_ess_data.days[day] for day in shared_ess_data.days])
+    repr_years = [year for year in shared_ess_data.years]
 
     # ------------------------------------------------------------------------------------------------------------------
     # Sets
