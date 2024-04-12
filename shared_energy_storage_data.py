@@ -640,7 +640,6 @@ def _write_optimization_results_to_excel(shared_ess_data, data_dir, results):
 
     wb = Workbook()
 
-    #_write_main_info_to_excel(shared_ess_data, wb, results)
     _write_ess_capacity_investment_to_excel(shared_ess_data, wb, results['capacity']['investment'])
     _write_ess_capacity_rated_available_to_excel(shared_ess_data, wb, results['capacity'])
     _write_aggregated_shared_energy_storage_operation_results_to_excel(shared_ess_data, wb, results['operation']['aggregated'])
@@ -664,32 +663,10 @@ def _write_optimization_results_to_excel(shared_ess_data, data_dir, results):
         wb.save(backup_filename)
 
 
-def _write_main_info_to_excel(shared_ess_data, workbook, results):
-
-    sheet = workbook.worksheets[0]
-    sheet.title = 'Main Info'
-
-    decimal_style = '0.00'
-    line_idx = 1
-
-    # Write Header
-    col_idx = 2
-    for year in shared_ess_data.years:
-        for _ in shared_ess_data.days:
-            sheet.cell(row=line_idx, column=col_idx).value = year
-            col_idx += 1
-    col_idx = 2
-    line_idx += 1
-    for _ in shared_ess_data.years:
-        for day in shared_ess_data.days:
-            sheet.cell(row=line_idx, column=col_idx).value = day
-            col_idx += 1
-    sheet.cell(row=line_idx, column=col_idx).value = 'Total'
-
-
 def _write_ess_capacity_investment_to_excel(shared_ess_data, workbook, results):
 
-    sheet = workbook.create_sheet('Capacity Investment')
+    sheet = workbook.worksheets[0]
+    sheet.title = 'Capacity Investment'
 
     years = [year for year in shared_ess_data.years]
 
