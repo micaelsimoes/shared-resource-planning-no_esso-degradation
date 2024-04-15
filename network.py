@@ -184,7 +184,6 @@ class Network:
 # ======================================================================================================================
 def _build_model(network, params):
 
-    s_base = network.baseMVA
     network.compute_series_admittance()
     ref_node_id = network.get_reference_node_id()
 
@@ -760,13 +759,11 @@ def _build_model(network, params):
                                 Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
 
                     if params.node_balance_relax:
-                        model.node_balance_cons_p.add(Pg - Pd - Pi == model.node_balance_penalty_p_up[i, s_m, s_o, p] - model.node_balance_penalty_p_down[i, s_m, s_o, p])
-                        model.node_balance_cons_q.add(Qg - Qd - Qi == model.node_balance_penalty_q_up[i, s_m, s_o, p] + model.node_balance_penalty_q_down[i, s_m, s_o, p])
+                        model.node_balance_cons_p.add(Pg == Pd + Pi + model.node_balance_penalty_p_up[i, s_m, s_o, p] - model.node_balance_penalty_p_down[i, s_m, s_o, p])
+                        model.node_balance_cons_q.add(Qg == Qd + Qi + model.node_balance_penalty_q_up[i, s_m, s_o, p] + model.node_balance_penalty_q_down[i, s_m, s_o, p])
                     else:
-                        model.node_balance_cons_p.add(Pg - Pd - Pi >= -SMALL_TOLERANCE)
-                        model.node_balance_cons_p.add(Pg - Pd - Pi <= SMALL_TOLERANCE)
-                        model.node_balance_cons_q.add(Qg - Qd - Qi >= -SMALL_TOLERANCE)
-                        model.node_balance_cons_q.add(Qg - Qd - Qi <= SMALL_TOLERANCE)
+                        model.node_balance_cons_p.add(Pg == Pd + Pi)
+                        model.node_balance_cons_q.add(Qg == Qd + Qi)
 
     # - Branch Power Flow constraints (current)
     model.branch_power_flow_cons = pe.ConstraintList()
@@ -790,13 +787,12 @@ def _build_model(network, params):
 
                     iij_sqr = (branch.g**2 + branch.b**2) * ((ei - ej)**2 + (fi - fj)**2)
                     if params.branch_current_relax:
-                        model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] - iij_sqr == model.iij_sqr_penalty_up[b, s_m, s_o, p] - model.iij_sqr_penalty_down[b, s_m, s_o, p])
+                        model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] == iij_sqr + model.iij_sqr_penalty_up[b, s_m, s_o, p] - model.iij_sqr_penalty_down[b, s_m, s_o, p])
                     else:
-                        model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] - iij_sqr >= -SMALL_TOLERANCE)
-                        model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] - iij_sqr <= SMALL_TOLERANCE)
+                        model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] == iij_sqr)
 
                     if params.slack_line_limits:
-                        model.branch_power_flow_lims.add(model.iij_sqr[b, s_m, s_o, p] - rating**2 <= model.slack_iij_sqr[b, s_m, s_o, p])
+                        model.branch_power_flow_lims.add(model.iij_sqr[b, s_m, s_o, p] <= rating**2 + model.slack_iij_sqr[b, s_m, s_o, p])
                     else:
                         model.branch_power_flow_lims.add(model.iij_sqr[b, s_m, s_o, p] <= rating**2)
 
@@ -820,16 +816,13 @@ def _build_model(network, params):
                         expected_vmag_sqr += (model.e_actual[node_idx, s_m, s_o, p] ** 2 + model.f_actual[node_idx, s_m, s_o, p] ** 2) * omega_m * omega_o
 
                 if params.interface_pf_relax:
-                    model.expected_interface_voltage.add(model.expected_interface_vmag_sqr[dn, p] - expected_vmag_sqr == model.penalty_expected_interface_vmag_sqr_up[dn, p] - model.penalty_expected_interface_vmag_sqr_down[dn, p])
-                    model.expected_interface_pf.add(model.expected_interface_pf_p[dn, p] - expected_pf_p == model.penalty_expected_interface_pf_p_up[dn, p] - model.penalty_expected_interface_pf_p_down[dn, p])
-                    model.expected_interface_pf.add(model.expected_interface_pf_q[dn, p] - expected_pf_q == model.penalty_expected_interface_pf_q_up[dn, p] - model.penalty_expected_interface_pf_q_down[dn, p])
+                    model.expected_interface_voltage.add(model.expected_interface_vmag_sqr[dn, p] == expected_vmag_sqr + model.penalty_expected_interface_vmag_sqr_up[dn, p] - model.penalty_expected_interface_vmag_sqr_down[dn, p])
+                    model.expected_interface_pf.add(model.expected_interface_pf_p[dn, p] == expected_pf_p + model.penalty_expected_interface_pf_p_up[dn, p] - model.penalty_expected_interface_pf_p_down[dn, p])
+                    model.expected_interface_pf.add(model.expected_interface_pf_q[dn, p] == expected_pf_q + model.penalty_expected_interface_pf_q_up[dn, p] - model.penalty_expected_interface_pf_q_down[dn, p])
                 else:
-                    model.expected_interface_voltage.add(model.expected_interface_vmag_sqr[dn, p] - expected_vmag_sqr >= -SMALL_TOLERANCE)
-                    model.expected_interface_voltage.add(model.expected_interface_vmag_sqr[dn, p] - expected_vmag_sqr <= SMALL_TOLERANCE)
-                    model.expected_interface_pf.add(model.expected_interface_pf_p[dn, p] - expected_pf_p >= -SMALL_TOLERANCE)
-                    model.expected_interface_pf.add(model.expected_interface_pf_p[dn, p] - expected_pf_p <= SMALL_TOLERANCE)
-                    model.expected_interface_pf.add(model.expected_interface_pf_q[dn, p] - expected_pf_q >= -SMALL_TOLERANCE)
-                    model.expected_interface_pf.add(model.expected_interface_pf_q[dn, p] - expected_pf_q <= SMALL_TOLERANCE)
+                    model.expected_interface_voltage.add(model.expected_interface_vmag_sqr[dn, p] == expected_vmag_sqr)
+                    model.expected_interface_pf.add(model.expected_interface_pf_p[dn, p] == expected_pf_p)
+                    model.expected_interface_pf.add(model.expected_interface_pf_q[dn, p] == expected_pf_q)
     else:
         ref_node_idx = network.get_node_idx(ref_node_id)
         ref_gen_idx = network.get_reference_gen_idx()
@@ -846,16 +839,13 @@ def _build_model(network, params):
                     expected_vmag_sqr += (model.e_actual[ref_node_idx, s_m, s_o, p] ** 2) * omega_m * omega_s
 
             if params.interface_pf_relax:
-                model.expected_interface_voltage.add(model.expected_interface_vmag_sqr[p] - expected_vmag_sqr == model.penalty_expected_interface_vmag_sqr_up[p] - model.penalty_expected_interface_vmag_sqr_down[p])
-                model.expected_interface_pf.add(model.expected_interface_pf_p[p] - expected_pf_p == model.penalty_expected_interface_pf_p_up[p] - model.penalty_expected_interface_pf_p_down[p])
-                model.expected_interface_pf.add(model.expected_interface_pf_q[p] - expected_pf_q == model.penalty_expected_interface_pf_q_up[p] - model.penalty_expected_interface_pf_q_down[p])
+                model.expected_interface_voltage.add(model.expected_interface_vmag_sqr[p] == expected_vmag_sqr + model.penalty_expected_interface_vmag_sqr_up[p] - model.penalty_expected_interface_vmag_sqr_down[p])
+                model.expected_interface_pf.add(model.expected_interface_pf_p[p] == expected_pf_p + model.penalty_expected_interface_pf_p_up[p] - model.penalty_expected_interface_pf_p_down[p])
+                model.expected_interface_pf.add(model.expected_interface_pf_q[p] == expected_pf_q + model.penalty_expected_interface_pf_q_up[p] - model.penalty_expected_interface_pf_q_down[p])
             else:
-                model.expected_interface_voltage.add(model.expected_interface_vmag_sqr[p] - expected_vmag_sqr >= -SMALL_TOLERANCE)
-                model.expected_interface_voltage.add(model.expected_interface_vmag_sqr[p] - expected_vmag_sqr <= SMALL_TOLERANCE)
-                model.expected_interface_pf.add(model.expected_interface_pf_p[p] - expected_pf_p >= -SMALL_TOLERANCE)
-                model.expected_interface_pf.add(model.expected_interface_pf_p[p] - expected_pf_p <= SMALL_TOLERANCE)
-                model.expected_interface_pf.add(model.expected_interface_pf_q[p] - expected_pf_q >= -SMALL_TOLERANCE)
-                model.expected_interface_pf.add(model.expected_interface_pf_q[p] - expected_pf_q <= SMALL_TOLERANCE)
+                model.expected_interface_voltage.add(model.expected_interface_vmag_sqr[p] == expected_vmag_sqr)
+                model.expected_interface_pf.add(model.expected_interface_pf_p[p] == expected_pf_p)
+                model.expected_interface_pf.add(model.expected_interface_pf_q[p] == expected_pf_q)
 
     # - Expected Shared ESS Power (explicit definition)
     if len(network.shared_energy_storages) > 0:
@@ -872,10 +862,9 @@ def _build_model(network, params):
                             pdch = model.shared_es_pdch[e, s_m, s_o, p]
                             expected_sess_p += (pch - pdch) * omega_m * omega_o
                     if params.interface_ess_relax:
-                        model.expected_shared_ess_power.add(model.expected_shared_ess_p[e, p] - expected_sess_p == model.penalty_expected_shared_ess_p_up[e, p] - model.penalty_expected_shared_ess_p_down[e, p])
+                        model.expected_shared_ess_power.add(model.expected_shared_ess_p[e, p] == expected_sess_p + model.penalty_expected_shared_ess_p_up[e, p] - model.penalty_expected_shared_ess_p_down[e, p])
                     else:
-                        model.expected_shared_ess_power.add(model.expected_shared_ess_p[e, p] - expected_sess_p >= -SMALL_TOLERANCE)
-                        model.expected_shared_ess_power.add(model.expected_shared_ess_p[e, p] - expected_sess_p <= SMALL_TOLERANCE)
+                        model.expected_shared_ess_power.add(model.expected_shared_ess_p[e, p] == expected_sess_p)
         else:
             shared_ess_idx = network.get_shared_energy_storage_idx(ref_node_id)
             for p in model.periods:
@@ -888,10 +877,9 @@ def _build_model(network, params):
                         pdch = model.shared_es_pdch[shared_ess_idx, s_m, s_o, p]
                         expected_sess_p += (pch - pdch) * omega_m * omega_s
                 if params.interface_ess_relax:
-                    model.expected_shared_ess_power.add(model.expected_shared_ess_p[p] - expected_sess_p == model.penalty_expected_shared_ess_p_up[p] - model.penalty_expected_shared_ess_p_down[p])
+                    model.expected_shared_ess_power.add(model.expected_shared_ess_p[p] == expected_sess_p + model.penalty_expected_shared_ess_p_up[p] - model.penalty_expected_shared_ess_p_down[p])
                 else:
-                    model.expected_shared_ess_power.add(model.expected_shared_ess_p[p] - expected_sess_p >= -SMALL_TOLERANCE)
-                    model.expected_shared_ess_power.add(model.expected_shared_ess_p[p] - expected_sess_p <= SMALL_TOLERANCE)
+                    model.expected_shared_ess_power.add(model.expected_shared_ess_p[p] == expected_sess_p)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective Function
