@@ -120,6 +120,15 @@ class SharedEnergyStorageData:
         _write_ess_capacity_investment_to_excel(self, workbook, shared_ess_capacity['investment'])
         _write_ess_capacity_rated_available_to_excel(self, workbook, shared_ess_capacity)
 
+    def write_aggregated_relaxation_slacks_results_to_excel(self, workbook, results):
+        _write_aggregated_relaxation_slacks_results_to_excel(self, workbook, results)
+
+    def write_detailed_relaxation_slacks_results_to_excel(self, workbook, results):
+        _write_detailed_relaxation_slacks_results_to_excel(self, workbook, results)
+
+    def write_operation_relaxation_slacks_results_to_excel(self, workbook, results):
+        _write_operation_relaxation_slacks_results_to_excel(self, workbook, results)
+
 
 # ======================================================================================================================
 #  OPERATIONAL PLANNING functions
