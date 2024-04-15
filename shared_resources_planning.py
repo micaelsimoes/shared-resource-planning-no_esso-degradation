@@ -986,6 +986,42 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
     return res
 
 
+def update_shared_energy_storages_coordination_model_and_solve(planning_problem, model, ess_req, dual_ess, ess_prev, params, from_warm_start=False):
+
+    print('[INFO] \t\t - Updating Shared ESS...')
+    shared_ess_data = planning_problem.shared_ess_data
+    days = [day for day in planning_problem.days]
+    years = [year for year in planning_problem.years]
+
+    rho_esso = params.rho['ess']['esso']
+    if params.adaptive_penalty:
+        rho_esso = pe.value(model.rho) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+    model.rho.fix(rho_esso)
+
+    for e in model.energy_storages:
+        for y in model.years:
+            year = years[y]
+            node_id = shared_ess_data.shared_energy_storages[year][e].bus
+            for d in model.days:
+                day = days[d]
+                for p in model.periods:
+                    p_req = (ess_req['tso'][node_id][year][day]['p'][p] + ess_req['dso'][node_id][year][day]['p'][p]) * 0.50
+                    p_prev = ess_prev['esso'][node_id][year][day]['p'][p]
+                    dual_p_req = (dual_ess['esso']['tso'][node_id][year][day]['p'][p] + dual_ess['esso']['dso'][node_id][year][day]['p'][p]) * 0.50
+                    dual_p_prev = dual_ess['esso']['prev'][node_id][year][day]['p'][p]
+                    model.p_req[e, y, d, p].fix(p_req)
+                    model.p_prev[e, y, d, p].fix(p_prev)
+                    model.dual_p_req[e, y, d, p].fix(dual_p_req)
+                    model.dual_p_prev[e, y, d, p].fix(dual_p_prev)
+
+    # Solve!
+    res = shared_ess_data.optimize(model, from_warm_start=from_warm_start)
+    if res.solver.status != po.SolverStatus.ok:
+        print('[WARNING] Shared ESS operational planning did not converge!')
+
+    return res
+
+
 # ======================================================================================================================
 #  OPERATIONAL PLANNING WITHOUT COORDINATION functions
 # ======================================================================================================================
