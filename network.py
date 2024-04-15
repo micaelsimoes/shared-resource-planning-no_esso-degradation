@@ -967,6 +967,13 @@ def _build_model(network, params):
                             slack_f = model.slack_f_up[i, s_m, s_o, p] + model.slack_f_down[i, s_m, s_o, p]
                             obj_scenario += PENALTY_SLACK_VOLTAGE * (slack_e + slack_f)
 
+                if params.voltage_relax:
+                    for i in model.nodes:
+                        for p in model.periods:
+                            penalty_e = model.e_penalty_up[i, s_m, s_o, p] + model.e_penalty_down[i, s_m, s_o, p]
+                            penalty_f = model.f_penalty_up[i, s_m, s_o, p] + model.f_penalty_down[i, s_m, s_o, p]
+                            obj_scenario += PENALTY_SLACK_VOLTAGE * (penalty_e + penalty_f)
+
                 # Branch power flow slacks
                 if params.slack_line_limits:
                     for b in model.branches:
