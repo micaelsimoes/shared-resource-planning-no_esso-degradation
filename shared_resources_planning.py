@@ -1303,7 +1303,7 @@ def _process_operational_planning_results(operational_planning_problem, tso_mode
         dso_model = dso_models[node_id]
         distribution_network = distribution_networks[node_id]
         processed_results['dso'][node_id] = distribution_network.process_results(dso_model, optimization_results['dso'][node_id])
-    processed_results['esso'] = shared_ess_data.process_results_aggregated(esso_model)
+    processed_results['esso'] = shared_ess_data.process_results(esso_model)
     processed_results['interface'] = _process_results_interface_power_flow(operational_planning_problem, tso_model, dso_models)
 
     return processed_results
@@ -2091,7 +2091,7 @@ def _write_shared_energy_storages_results_to_excel(planning_problem, workbook, r
 
     # ESSO's results
     for year in results['esso']:
-        for day in results['esso'][year]:
+        for day in results['esso']['operation']['aggregated'][year]:
             for node_id in planning_problem.active_distribution_network_nodes:
 
                 # Active power
@@ -2104,7 +2104,7 @@ def _write_shared_energy_storages_results_to_excel(planning_problem, workbook, r
                 sheet.cell(row=row_idx, column=6).value = 'N/A'
                 sheet.cell(row=row_idx, column=7).value = 'N/A'
                 for p in range(planning_problem.num_instants):
-                    ess_p = results['esso'][year][day][node_id]['p'][p]
+                    ess_p = results['esso']['operation']['aggregated'][year][day][node_id]['p'][p]
                     sheet.cell(row=row_idx, column=p + 8).value = ess_p
                     sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
 
@@ -2118,7 +2118,7 @@ def _write_shared_energy_storages_results_to_excel(planning_problem, workbook, r
                 sheet.cell(row=row_idx, column=6).value = 'N/A'
                 sheet.cell(row=row_idx, column=7).value = 'N/A'
                 for p in range(planning_problem.num_instants):
-                    ess_soc = results['esso'][year][day][node_id]['soc'][p]
+                    ess_soc = results['esso']['operation']['aggregated'][year][day][node_id]['soc'][p]
                     sheet.cell(row=row_idx, column=p + 8).value = ess_soc
                     sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
 
@@ -2132,7 +2132,7 @@ def _write_shared_energy_storages_results_to_excel(planning_problem, workbook, r
                 sheet.cell(row=row_idx, column=6).value = 'N/A'
                 sheet.cell(row=row_idx, column=7).value = 'N/A'
                 for p in range(planning_problem.num_instants):
-                    ess_soc_percent = results['esso'][year][day][node_id]['soc_perc'][p]
+                    ess_soc_percent = results['esso']['operation']['aggregated'][year][day][node_id]['soc_perc'][p]
                     sheet.cell(row=row_idx, column=p + 8).value = ess_soc_percent
                     sheet.cell(row=row_idx, column=p + 8).number_format = percent_style
 

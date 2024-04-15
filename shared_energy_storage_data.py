@@ -66,6 +66,19 @@ class SharedEnergyStorageData:
         print(f'[ERROR] Network {self.name}. Node {node_id} does not have a shared energy storage system! Check network.')
         exit(ERROR_NETWORK_FILE)
 
+    def process_results(self, model):
+        results = {'capacity': self.get_investment_and_available_capacities(model),
+                   'operation': {'aggregated': self.process_results_aggregated(model),
+                                 'detailed': self.process_results_detailed(model)},
+                   'soh': {'aggregated': self.process_soh_results_aggregated(model),
+                           'detailed': self.process_soh_results_detailed(model)},
+                   'relaxation_variables': {
+                       'aggregated': self.process_relaxation_variables_aggregated(model),
+                       'detailed': self.process_relaxation_variables_detailed(model),
+                       'operation': self.process_relaxation_variables_operation(model)}
+                   }
+        return results
+
     def process_results_aggregated(self, model):
         return _process_results_aggregated(self, model)
 
@@ -90,19 +103,6 @@ class SharedEnergyStorageData:
     def write_optimization_results_to_excel(self, model):
         results = self.process_results(self, model)
         _write_optimization_results_to_excel(self, self.results_dir, results)
-
-    def process_results(self, model):
-        results = {'capacity': self.get_investment_and_available_capacities(model),
-                   'operation': {'aggregated': self.process_results_aggregated(model),
-                                 'detailed': self.process_results_detailed(model)},
-                   'soh': {'aggregated': self.process_soh_results_aggregated(model),
-                           'detailed': self.process_soh_results_detailed(model)},
-                   'relaxation_variables': {
-                       'aggregated': self.process_relaxation_variables_aggregated(model),
-                       'detailed': self.process_relaxation_variables_detailed(model),
-                       'operation': self.process_relaxation_variables_operation(model)}
-                   }
-        return results
 
     def update_data_with_candidate_solution(self, candidate_solution):
         for year in self.years:
