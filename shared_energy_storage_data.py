@@ -117,7 +117,7 @@ class SharedEnergyStorageData:
         return _get_investment_and_available_capacities(self, model)
 
     def write_ess_results_to_excel(self, workbook, shared_ess_capacity):
-        _write_ess_capacity_investment_to_excel(self, workbook, shared_ess_capacity['investment'])
+        _write_ess_capacity_investment_to_excel(self, workbook, shared_ess_capacity['investment'], initial_sheet=False)
         _write_ess_capacity_rated_available_to_excel(self, workbook, shared_ess_capacity)
 
     def write_aggregated_relaxation_slacks_results_to_excel(self, workbook, results):
@@ -931,10 +931,13 @@ def _write_optimization_results_to_excel(shared_ess_data, data_dir, results):
         wb.save(backup_filename)
 
 
-def _write_ess_capacity_investment_to_excel(shared_ess_data, workbook, results):
+def _write_ess_capacity_investment_to_excel(shared_ess_data, workbook, results, initial_sheet=True):
 
-    sheet = workbook.worksheets[0]
-    sheet.title = 'Capacity Investment'
+    if initial_sheet:
+        sheet = workbook.worksheets[0]
+        sheet.title = 'Capacity Investment'
+    else:
+        sheet = workbook.create_sheet('Capacity Investment')
 
     years = [year for year in shared_ess_data.years]
 
