@@ -759,12 +759,16 @@ def _process_relaxation_variables_detailed(shared_ess_data, model):
                 if shared_ess_data.params.ess_relax_degradation:
                     avg_ch_dch_up = pe.value(model.es_penalty_avg_ch_dch_day_up[e, y_inv, y_curr])
                     avg_ch_dch_down = pe.value(model.es_penalty_avg_ch_dch_day_down[e, y_inv, y_curr])
-                    processed_results[year_inv][year_curr][node_id]['avg_ch_dch_up'] = avg_ch_dch_up
-                    processed_results[year_inv][year_curr][node_id]['avg_ch_dch_down'] = avg_ch_dch_down
                     degradation_day_up = pe.value(model.es_penalty_degradation_per_unit_day_up[e, y_inv, y_curr])
                     degradation_day_down = pe.value(model.es_penalty_degradation_per_unit_day_down[e, y_inv, y_curr])
+                    soh_day_up = pe.value(model.es_penalty_soh_per_unit_day_up[e, y_inv, y_curr])
+                    soh_day_down = pe.value(model.es_penalty_soh_per_unit_day_down[e, y_inv, y_curr])
+                    processed_results[year_inv][year_curr][node_id]['avg_ch_dch_up'] = avg_ch_dch_up
+                    processed_results[year_inv][year_curr][node_id]['avg_ch_dch_down'] = avg_ch_dch_down
                     processed_results[year_inv][year_curr][node_id]['degradation_day_up'] = degradation_day_up
                     processed_results[year_inv][year_curr][node_id]['degradation_day_down'] = degradation_day_down
+                    processed_results[year_inv][year_curr][node_id]['soh_day_up'] = soh_day_up
+                    processed_results[year_inv][year_curr][node_id]['soh_day_down'] = soh_day_down
 
     return processed_results
 
@@ -1459,6 +1463,8 @@ def _write_detailed_relaxation_slacks_results_to_excel(shared_ess_data, workbook
                 avg_ch_dch_down = results[year_inv][year_curr][node_id]['avg_ch_dch_down']
                 degradation_day_up = results[year_inv][year_curr][node_id]['degradation_day_up']
                 degradation_day_down = results[year_inv][year_curr][node_id]['degradation_day_down']
+                soh_day_up = results[year_inv][year_curr][node_id]['soh_day_up']
+                soh_day_down = results[year_inv][year_curr][node_id]['soh_day_down']
 
                 # - Srated, up
                 sheet.cell(row=row_idx, column=1).value = node_id
@@ -1565,6 +1571,24 @@ def _write_detailed_relaxation_slacks_results_to_excel(shared_ess_data, workbook
                 sheet.cell(row=row_idx, column=3).value = int(year_curr)
                 sheet.cell(row=row_idx, column=4).value = 'Deg_day down, [MVAh]'
                 sheet.cell(row=row_idx, column=5).value = degradation_day_down
+                sheet.cell(row=row_idx, column=5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - SoH_day, up
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'SoH_day up, [MVAh]'
+                sheet.cell(row=row_idx, column=5).value = soh_day_up
+                sheet.cell(row=row_idx, column=5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - SoH_day, down
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'SoH_day down, [MVAh]'
+                sheet.cell(row=row_idx, column=5).value = soh_day_down
                 sheet.cell(row=row_idx, column=5).number_format = decimal_style
                 row_idx = row_idx + 1
 
