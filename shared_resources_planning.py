@@ -357,7 +357,7 @@ def create_shared_energy_storage_model(shared_ess_data, sess_vars, candidate_sol
             for d in esso_model.days:
                 day = days[d]
                 for p in esso_model.periods:
-                    shared_ess_p = pe.value(esso_model.es_expected_p[e, y, d, p])
+                    shared_ess_p = pe.value(esso_model.es_pnet[e, y, d, p])
                     sess_vars[node_id][year][day]['p'][p] = shared_ess_p
 
     return esso_model
@@ -566,7 +566,7 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                 day = repr_days[d]
                 shared_ess_vars['esso'][node_id][year][day]['p'] = [0.0 for _ in range(planning_problem.num_instants)]
                 for p in sess_model.periods:
-                    shared_ess_vars['esso'][node_id][year][day]['p'][p] = pe.value(sess_model.es_expected_p[shared_ess_idx, y, d, p])
+                    shared_ess_vars['esso'][node_id][year][day]['p'][p] = pe.value(sess_model.es_pnet[shared_ess_idx, y, d, p])
 
         # Shared Energy Storage - Power requested by TSO
         for y in range(len(repr_years)):
@@ -871,8 +871,8 @@ def update_shared_energy_storage_model_to_admm(shared_ess_data, model, params):
                 rating_s = 1.00     # Do not balance residuals
             for d in model.days:
                 for p in model.periods:
-                    constraint_p_req = (model.es_expected_p[e, y, d, p] - model.p_req[e, y, d, p]) / (2 * rating_s)
-                    constraint_p_prev = (model.es_expected_p[e, y, d, p] - model.p_prev[e, y, d, p]) / (2 * rating_s)
+                    constraint_p_req = (model.es_pnet[e, y, d, p] - model.p_req[e, y, d, p]) / (2 * rating_s)
+                    constraint_p_prev = (model.es_pnet[e, y, d, p] - model.p_prev[e, y, d, p]) / (2 * rating_s)
                     obj += model.dual_p_req[e, y, d, p] * (constraint_p_req)
                     obj += model.dual_p_prev[e, y, d, p] * (constraint_p_prev)
                     obj += (model.rho / 2) * (constraint_p_req) ** 2
