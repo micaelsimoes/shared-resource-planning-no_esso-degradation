@@ -70,6 +70,12 @@ class SharedResourcesPlanning:
         filename = os.path.join(self.data_dir, self.params_file)
         self.params.read_parameters_from_file(filename)
 
+    def write_operational_planning_results_to_excel(self, optimization_models, results, primal_evolution=list()):
+        filename = os.path.join(self.results_dir, self.name + '_operational_planning_results.xlsx')
+        processed_results = _process_operational_planning_results(self, optimization_models['tso'], optimization_models['dso'], optimization_models['esso'], results)
+        shared_ess_capacity = self.shared_ess_data.get_investment_and_available_capacities(optimization_models['esso'])
+        _write_operational_planning_results_to_excel(self, processed_results, primal_evolution=primal_evolution, shared_ess_capacity=shared_ess_capacity, filename=filename)
+
     def write_operational_planning_results_without_coordination_to_excel(self, optimization_models, results):
         filename = os.path.join(self.results_dir, self.name + '_operational_planning_results_no_coordination.xlsx')
         processed_results = _process_operational_planning_results_no_coordination(self, optimization_models['tso'], optimization_models['dso'], results)
@@ -1280,6 +1286,29 @@ def _get_market_costs_from_excel_file(filename, sheet_name, num_scenarios):
 # ======================================================================================================================
 #  RESULTS PROCESSING functions
 # ======================================================================================================================
+def _process_operational_planning_results(operational_planning_problem, tso_model, dso_models, esso_model, optimization_results):
+
+    transmission_network = operational_planning_problem.transmission_network
+    distribution_networks = operational_planning_problem.distribution_networks
+    shared_ess_data = operational_planning_problem.shared_ess_data
+
+    processed_results = dict()
+    processed_results['tso'] = dict()
+    processed_results['dso'] = dict()
+    processed_results['esso'] = dict()
+    processed_results['interface'] = dict()
+
+    processed_results['tso'] = transmission_network.process_results(tso_model, optimization_results['tso'])
+    for node_id in distribution_networks:
+        dso_model = dso_models[node_id]
+        distribution_network = distribution_networks[node_id]
+        processed_results['dso'][node_id] = distribution_network.process_results(dso_model, optimization_results['dso'][node_id])
+    processed_results['esso'] = shared_ess_data.process_results(esso_model)
+    processed_results['interface'] = _process_results_interface_power_flow(operational_planning_problem, tso_model, dso_models)
+
+    return processed_results
+
+
 def _process_operational_planning_results_no_coordination(planning_problem, tso_model, dso_models, optimization_results):
 
     transmission_network = planning_problem.transmission_network
@@ -1294,6 +1323,24 @@ def _process_operational_planning_results_no_coordination(planning_problem, tso_
         dso_model = dso_models[node_id]
         distribution_network = distribution_networks[node_id]
         processed_results['dso'][node_id] = distribution_network.process_results(dso_model, optimization_results['dso'][node_id])
+
+    return processed_results
+
+
+def _process_results_interface_power_flow(planning_problem, tso_model, dso_models):
+
+    transmission_network = planning_problem.transmission_network
+    distribution_networks = planning_problem.distribution_networks
+
+    processed_results = dict()
+    processed_results['tso'] = dict()
+    processed_results['dso'] = dict()
+
+    processed_results['tso'] = transmission_network.process_results_interface_power_flow(tso_model)
+    for node_id in distribution_networks:
+        dso_model = dso_models[node_id]
+        distribution_network = distribution_networks[node_id]
+        processed_results['dso'][node_id] = distribution_network.process_results_interface_power_flow(dso_model)
 
     return processed_results
 
