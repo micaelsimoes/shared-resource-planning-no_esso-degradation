@@ -116,6 +116,10 @@ class SharedEnergyStorageData:
     def get_investment_and_available_capacities(self, model):
         return _get_investment_and_available_capacities(self, model)
 
+    def write_ess_results_to_excel(self, workbook, shared_ess_capacity):
+        _write_ess_capacity_investment_to_excel(self, workbook, shared_ess_capacity['capacity']['investment'])
+        _write_ess_capacity_rated_available_to_excel(self, workbook, shared_ess_capacity['capacity'])
+
 
 # ======================================================================================================================
 #  OPERATIONAL PLANNING functions
