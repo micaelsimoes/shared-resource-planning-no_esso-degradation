@@ -816,9 +816,9 @@ def update_distribution_models_to_admm(distribution_networks, models, params):
                 dso_model[year][day].rho_ess = pe.Var(domain=pe.NonNegativeReals)
                 dso_model[year][day].rho_ess.fix(params.rho['ess'][distribution_network.network[year][day].name])
                 dso_model[year][day].p_ess_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)          # Shared ESS - active power requested (TSO/ESSO)
-                dso_model[year][day].p_ess_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)         # Shared ESS - active power - previous iteration
+                #dso_model[year][day].p_ess_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)         # Shared ESS - active power - previous iteration
                 dso_model[year][day].dual_ess_p_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)     # Dual variable - Shared ESS active power
-                dso_model[year][day].dual_ess_p_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)    # Dual variable - Shared ESS active power - previous iterations
+                #dso_model[year][day].dual_ess_p_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)    # Dual variable - Shared ESS active power - previous iterations
 
                 # Objective function - augmented Lagrangian
                 obj = dso_model[year][day].objective.expr / max(abs(init_of_value), 1.00)
@@ -840,11 +840,11 @@ def update_distribution_models_to_admm(distribution_networks, models, params):
                     sess_rating = 1.00
                 for p in dso_model[year][day].periods:
                     constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_req[p]) / sess_rating
-                    constraint_ess_p_prev = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_prev[p]) / sess_rating
+                    #constraint_ess_p_prev = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_prev[p]) / sess_rating
                     obj += dso_model[year][day].dual_ess_p_req[p] * (constraint_ess_p_req)
-                    obj += dso_model[year][day].dual_ess_p_prev[p] * (constraint_ess_p_prev)
+                    #obj += dso_model[year][day].dual_ess_p_prev[p] * (constraint_ess_p_prev)
                     obj += (dso_model[year][day].rho_ess / 2) * (constraint_ess_p_req) ** 2
-                    obj += (dso_model[year][day].rho_ess / 2) * (constraint_ess_p_prev) ** 2
+                    #obj += (dso_model[year][day].rho_ess / 2) * (constraint_ess_p_prev) ** 2
 
                 dso_model[year][day].objective.expr = obj
 
@@ -972,9 +972,9 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
                 # Update SHARED ENERGY STORAGE variables (if existent)
                 for p in model[year][day].periods:
                     model[year][day].dual_ess_p_req[p].fix(dual_ess['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].dual_ess_p_prev[p].fix(dual_ess['prev'][node_id][year][day]['p'][p] / s_base)
+                    #model[year][day].dual_ess_p_prev[p].fix(dual_ess['prev'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].p_ess_req[p].fix(ess_req[node_id][year][day]['p'][p] / s_base)
-                    model[year][day].p_ess_req[p].fix(ess_prev[node_id][year][day]['p'][p] / s_base)
+                    #model[year][day].p_ess_req[p].fix(ess_prev[node_id][year][day]['p'][p] / s_base)
 
         # Solve!
         res[node_id] = distribution_network.optimize(model, from_warm_start=from_warm_start)
