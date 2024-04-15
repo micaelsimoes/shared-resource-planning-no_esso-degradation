@@ -247,7 +247,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     print('[INFO] \t - Execution time: {:.2f} s'.format(total_execution_time))
 
     optim_models = {'tso': tso_model, 'dso': dso_models, 'esso': esso_model}
-    sensitivities = shared_ess_data.get_sensitivities(esso_model)
+    sensitivities = transmission_network.get_sensitivities(tso_model, results['tso'])
 
     return results, optim_models, sensitivities, primal_evolution
 

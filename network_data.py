@@ -52,6 +52,9 @@ class NetworkData:
                 obj += self.network[year][day].compute_objective_function_value(model[year][day], self.params) * self.years[year] * self.days[day]
         return obj
 
+    def get_sensitivities(self, model):
+        return _get_sensitivities(self, model)
+
     def update_model_with_candidate_solution(self, model, candidate_solution):
         _update_model_with_candidate_solution(self, model, candidate_solution)
 
@@ -2352,6 +2355,49 @@ def _write_relaxation_slacks_results_to_excel(network_planning, workbook, result
 # ======================================================================================================================
 #  OTHER (auxiliary) functions
 # ======================================================================================================================
+def _get_sensitivities(network_planning, model):
+
+    sensitivities = {'s': dict(), 'e': dict()}
+    years = [year for year in network_planning.years]
+    for year in network_planning.years:
+        sensitivities['s'][year] = dict()
+        sensitivities['e'][year] = dict()
+        for node_id in network_planning.active_distribution_network_nodes:
+            sensitivities['s'][year][node_id] = 0.00
+            sensitivities['e'][year][node_id] = 0.00
+
+    for year in network_planning.years:
+
+        num_years = network_planning.years[year]
+        annualization = 1 / ((1 + network_planning.discount_factor) ** (int(year) - int(years[0])))
+
+        for day in network_planning.days:
+
+            num_days = network_planning.days[day]
+            model_repr_day = model[year][day]
+
+            for c in model_repr_day.shared_energy_storage_s_sensitivities:
+                node_id = network_planning.active_distribution_network_nodes[c - 1]  # Note: the sensitivity constraints start at "1"
+                sensitivity_s = model_repr_day.dual[model_repr_day.shared_energy_storage_s_sensitivities[c]] * network_planning.network[year][day].baseMVA
+                if sensitivities['s'][year][node_id] == 'N/A':
+                    sensitivities['s'][year][node_id] = num_days * sensitivity_s
+                else:
+                    sensitivities['s'][year][node_id] += num_days * sensitivity_s
+
+            for c in model_repr_day.shared_energy_storage_e_sensitivities:
+                node_id = network_planning.active_distribution_network_nodes[c - 1]
+                sensitivity_e = model_repr_day.dual[model_repr_day.shared_energy_storage_e_sensitivities[c]] * network_planning.network[year][day].baseMVA
+                if sensitivities['e'][year][node_id] == 'N/A':
+                    sensitivities['e'][year][node_id] = num_days * sensitivity_e
+                else:
+                    sensitivities['e'][year][node_id] += num_days * sensitivity_e
+
+        sensitivities['s'][year][node_id] *= num_years * annualization
+        sensitivities['e'][year][node_id] *= num_years * annualization
+
+    return sensitivities
+
+
 def _update_data_with_candidate_solution(network_planning, candidate_solution):
     if network_planning.is_transmission:
         for node_id in network_planning.active_distribution_network_nodes:
