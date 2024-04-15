@@ -1448,22 +1448,6 @@ def _write_operational_planning_main_info_to_excel(planning_problem, workbook, r
             sheet.cell(row=line_idx, column=col_idx).value = day
             col_idx += 1
 
-    # ESSO
-    if 'esso' in results:
-        line_idx += 1
-        col_idx = 1
-        sheet.cell(row=line_idx, column=col_idx).value = 'ESSO'
-        col_idx += 1
-        sheet.cell(row=line_idx, column=col_idx).value = '-'
-        col_idx += 1
-        sheet.cell(row=line_idx, column=col_idx).value = 'Objective (cost), [€]'
-        col_idx += 1
-        for year in results['esso']['results']:
-            for day in results['esso']['results'][year]:
-                sheet.cell(row=line_idx, column=col_idx).value = results['esso']['results'][year][day]['obj']
-                sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
-                col_idx += 1
-
     # TSO
     line_idx = _write_operational_planning_main_info_per_operator(planning_problem.transmission_network, sheet, 'TSO', line_idx, results['tso']['results'])
 
