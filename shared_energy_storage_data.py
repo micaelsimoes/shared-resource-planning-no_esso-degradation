@@ -400,10 +400,11 @@ def _build_subproblem_model(shared_ess_data):
                     model.energy_storage_operation_agg.add(model.es_soc[e, y, d, p] == agg_soc)
 
     # - Sinv and Einv fixing constraints
+    model.energy_storage_capacity_fixing = pe.ConstraintList()
     for e in model.energy_storages:
         for y in model.years:
-            model.sensitivities_s.add(model.es_s_investment[e, y] == model.es_s_investment_fixed[e, y] + model.es_s_investment_slack_up[e, y] - model.es_s_investment_slack_down[e, y])
-            model.sensitivities_e.add(model.es_e_investment[e, y] == model.es_e_investment_fixed[e, y] + model.es_e_investment_slack_up[e, y] - model.es_e_investment_slack_down[e, y])
+            model.energy_storage_capacity_fixing.add(model.es_s_investment[e, y] == model.es_s_investment_fixed[e, y] + model.es_s_investment_slack_up[e, y] - model.es_s_investment_slack_down[e, y])
+            model.energy_storage_capacity_fixing.add(model.es_e_investment[e, y] == model.es_e_investment_fixed[e, y] + model.es_e_investment_slack_up[e, y] - model.es_e_investment_slack_down[e, y])
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective function
