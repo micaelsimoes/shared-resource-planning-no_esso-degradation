@@ -757,10 +757,10 @@ def update_transmission_model_to_admm(transmission_network, model, distribution_
 
             for e in model[year][day].active_distribution_networks:
                 rating = transmission_network.network[year][day].shared_energy_storages[e].s
-                if isclose(rating, 0.00, abs_tol=1e-3/s_base):
+                if isclose(rating, 0.00, abs_tol=SMALL_TOLERANCE):
                     rating = 1.00       # Do not balance residuals
                 for p in model[year][day].periods:
-                    constraint_ess_p = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_req[e, p]) / (2 * rating)
+                    constraint_ess_p = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_req[e, p]) / rating
                     #constraint_ess_p_prev = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_prev[e, p]) / (2 * rating)
                     obj += model[year][day].dual_ess_p_req[e, p] * constraint_ess_p
                     #obj += model[year][day].dual_ess_p_prev[e, p] * constraint_ess_p_prev
@@ -836,11 +836,11 @@ def update_distribution_models_to_admm(distribution_networks, models, params):
                 # Augmented Lagrangian -- Shared ESS (residual balancing)
                 sess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
                 sess_rating = distribution_network.network[year][day].shared_energy_storages[sess_idx].s
-                if isclose(sess_rating, 0.00, abs_tol=1e-3 / s_base):  # Do not balance residuals
+                if isclose(sess_rating, 0.00, abs_tol=SMALL_TOLERANCE):  # Do not balance residuals
                     sess_rating = 1.00
                 for p in dso_model[year][day].periods:
-                    constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_req[p]) / (2 * sess_rating)
-                    constraint_ess_p_prev = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_prev[p]) / (2 * sess_rating)
+                    constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_req[p]) / sess_rating
+                    constraint_ess_p_prev = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_prev[p]) / sess_rating
                     obj += dso_model[year][day].dual_ess_p_req[p] * (constraint_ess_p_req)
                     obj += dso_model[year][day].dual_ess_p_prev[p] * (constraint_ess_p_prev)
                     obj += (dso_model[year][day].rho_ess / 2) * (constraint_ess_p_req) ** 2
@@ -867,12 +867,12 @@ def update_shared_energy_storage_model_to_admm(shared_ess_data, model, params):
     for e in model.energy_storages:
         for y in model.years:
             rating_s = pe.value(model.es_s_rated[e, y])
-            if isclose(rating_s, 0.0, rel_tol=1e-3):
+            if isclose(rating_s, 0.0, rel_tol=SMALL_TOLERANCE):
                 rating_s = 1.00     # Do not balance residuals
             for d in model.days:
                 for p in model.periods:
-                    constraint_p_req = (model.es_pnet[e, y, d, p] - model.p_req[e, y, d, p]) / (2 * rating_s)
-                    constraint_p_prev = (model.es_pnet[e, y, d, p] - model.p_prev[e, y, d, p]) / (2 * rating_s)
+                    constraint_p_req = (model.es_pnet[e, y, d, p] - model.p_req[e, y, d, p]) / rating_s
+                    constraint_p_prev = (model.es_pnet[e, y, d, p] - model.p_prev[e, y, d, p]) / rating_s
                     obj += model.dual_p_req[e, y, d, p] * (constraint_p_req)
                     obj += model.dual_p_prev[e, y, d, p] * (constraint_p_prev)
                     obj += (model.rho / 2) * (constraint_p_req) ** 2
