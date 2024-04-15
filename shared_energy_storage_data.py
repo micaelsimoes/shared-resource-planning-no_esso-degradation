@@ -148,7 +148,7 @@ def _build_subproblem_model(shared_ess_data):
         model.es_penalty_s_available_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
         model.es_penalty_e_available_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
         model.es_penalty_e_available_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.es_e_soh = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_e_soh = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=1.0)
     model.es_e_degradation = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_soc = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_pnet = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals, initialize=0.0)
@@ -575,7 +575,7 @@ def _process_results_aggregated(shared_ess_data, model):
             for e in model.energy_storages:
                 node_id = shared_ess_data.shared_energy_storages[year][e].bus
                 capacity = pe.value(model.es_e_available[e, y])
-                if isclose(capacity, 0.00, rel_tol=SMALL_TOLERANCE):
+                if isclose(capacity, 0.00, abs_tol=SMALL_TOLERANCE):
                     capacity = 1.00
                 processed_results[year][day][node_id] = dict()
                 processed_results[year][day][node_id]['p'] = list()
