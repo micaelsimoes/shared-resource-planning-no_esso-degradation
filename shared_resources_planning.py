@@ -257,7 +257,7 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
     # Build model, fix candidate solution, and Run S-MPOPF model
     transmission_network.update_data_with_candidate_solution(candidate_solution)
     tso_model = transmission_network.build_model()
-    transmission_network.update_model_with_candidate_solution(tso_model, candidate_solution)
+    #transmission_network.update_model_with_candidate_solution(tso_model, candidate_solution)
     for node_id in transmission_network.active_distribution_network_nodes:
         for year in transmission_network.years:
             for day in transmission_network.days:
@@ -314,7 +314,7 @@ def create_distribution_networks_models(distribution_networks, interface_vars, s
         # Build model, fix candidate solution, and Run S-MPOPF model
         distribution_network.update_data_with_candidate_solution(candidate_solution)
         dso_model = distribution_network.build_model()
-        distribution_network.update_model_with_candidate_solution(dso_model, candidate_solution)
+        #distribution_network.update_model_with_candidate_solution(dso_model, candidate_solution)
         distribution_network.optimize(dso_model)
 
         # Get initial interface PF values
@@ -737,9 +737,7 @@ def update_transmission_model_to_admm(transmission_network, model, distribution_
             model[year][day].rho_ess = pe.Var(domain=pe.NonNegativeReals)
             model[year][day].rho_ess.fix(params.rho['ess'][transmission_network.name])
             model[year][day].p_ess_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)         # Shared ESS - Active power requested (DSO/ESSO)
-            #model[year][day].p_ess_prev = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)         # Shared ESS - Active power - previous iteration
             model[year][day].dual_ess_p_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)        # Dual variable - Shared ESS active power
-            #model[year][day].dual_ess_p_prev = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)        # Dual variable - Shared ESS active power - previous iteration
 
             # Objective function - augmented Lagrangian
             obj = model[year][day].objective.expr / abs(init_of_value)
@@ -761,11 +759,8 @@ def update_transmission_model_to_admm(transmission_network, model, distribution_
                     rating = 1.00       # Do not balance residuals
                 for p in model[year][day].periods:
                     constraint_ess_p = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_req[e, p]) / rating
-                    #constraint_ess_p_prev = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_prev[e, p]) / (2 * rating)
                     obj += model[year][day].dual_ess_p_req[e, p] * constraint_ess_p
-                    #obj += model[year][day].dual_ess_p_prev[e, p] * constraint_ess_p_prev
                     obj += (model[year][day].rho_ess / 2) * constraint_ess_p ** 2
-                    #obj += (model[year][day].rho_ess / 2) * constraint_ess_p_prev ** 2
 
             model[year][day].objective.expr = obj
 
@@ -816,9 +811,7 @@ def update_distribution_models_to_admm(distribution_networks, models, params):
                 dso_model[year][day].rho_ess = pe.Var(domain=pe.NonNegativeReals)
                 dso_model[year][day].rho_ess.fix(params.rho['ess'][distribution_network.network[year][day].name])
                 dso_model[year][day].p_ess_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)          # Shared ESS - active power requested (TSO/ESSO)
-                #dso_model[year][day].p_ess_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)         # Shared ESS - active power - previous iteration
                 dso_model[year][day].dual_ess_p_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)     # Dual variable - Shared ESS active power
-                #dso_model[year][day].dual_ess_p_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)    # Dual variable - Shared ESS active power - previous iterations
 
                 # Objective function - augmented Lagrangian
                 obj = dso_model[year][day].objective.expr / max(abs(init_of_value), 1.00)
@@ -840,11 +833,8 @@ def update_distribution_models_to_admm(distribution_networks, models, params):
                     sess_rating = 1.00
                 for p in dso_model[year][day].periods:
                     constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_req[p]) / sess_rating
-                    #constraint_ess_p_prev = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_prev[p]) / sess_rating
                     obj += dso_model[year][day].dual_ess_p_req[p] * (constraint_ess_p_req)
-                    #obj += dso_model[year][day].dual_ess_p_prev[p] * (constraint_ess_p_prev)
                     obj += (dso_model[year][day].rho_ess / 2) * (constraint_ess_p_req) ** 2
-                    #obj += (dso_model[year][day].rho_ess / 2) * (constraint_ess_p_prev) ** 2
 
                 dso_model[year][day].objective.expr = obj
 
@@ -3864,13 +3854,11 @@ def _get_initial_candidate_solution(planning_problem):
             candidate_solution['total_capacity'][node_id][year] = dict()
             candidate_solution['total_capacity'][node_id][year]['s'] = 0.00
             candidate_solution['total_capacity'][node_id][year]['e'] = 0.00
-            '''
             if year == 2020 or year == 2040:
                 candidate_solution['investment'][node_id][year]['s'] = 1.00
                 candidate_solution['investment'][node_id][year]['e'] = 1.00
             candidate_solution['total_capacity'][node_id][year]['s'] = 1.00
             candidate_solution['total_capacity'][node_id][year]['e'] = 1.00
-            '''
     return candidate_solution
 
 
