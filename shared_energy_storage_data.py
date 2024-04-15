@@ -171,12 +171,13 @@ def _build_subproblem_model(shared_ess_data):
     model.es_pch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_pdch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_avg_ch_dch_day = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-    if shared_ess_data.params.ess_relax_ch_dch_avg:
-        model.es_penalty_avg_ch_dch_day_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-        model.es_penalty_avg_ch_dch_day_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_soh_per_unit_day = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
     model.es_degradation_per_unit_day = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
     if shared_ess_data.params.ess_relax_degradation:
+        model.es_penalty_avg_ch_dch_day_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
+        model.es_penalty_avg_ch_dch_day_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
+        model.es_penalty_soh_per_unit_day_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=1.00)
+        model.es_penalty_soh_per_unit_day_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=1.00)
         model.es_penalty_degradation_per_unit_day_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
         model.es_penalty_degradation_per_unit_day_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_soh_per_unit_year = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
@@ -279,7 +280,7 @@ def _build_subproblem_model(shared_ess_data):
                         pch = model.es_pch_per_unit[e, y_inv, y, d, p]
                         pdch = model.es_pdch_per_unit[e, y_inv, y, d, p]
                         avg_ch_dch += (num_days / 365.00) * (pch + pdch)
-                if shared_ess_data.params.ess_relax_ch_dch_avg:
+                if shared_ess_data.params.ess_relax_degradation:
                     model.energy_storage_charging_discharging.add(model.es_avg_ch_dch_day[e, y_inv, y] == avg_ch_dch + model.es_penalty_avg_ch_dch_day_up[e, y_inv, y] - model.es_penalty_avg_ch_dch_day_down[e, y_inv, y])
                 else:
                     model.energy_storage_charging_discharging.add(model.es_avg_ch_dch_day[e, y_inv, y] == avg_ch_dch)
@@ -308,9 +309,11 @@ def _build_subproblem_model(shared_ess_data):
                 model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_day[e, y_inv, y] <= model.es_e_investment[e, y_inv])    # ensures that degradation is 0 for years without investment
                 if shared_ess_data.params.ess_relax_degradation:
                     model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_day[e, y_inv, y] * (2 * shared_energy_storage.cl_nom * model.es_e_rated_per_unit[e, y_inv, y]) == avg_ch_dch_day + model.es_penalty_degradation_per_unit_day_up[e, y_inv, y] - model.es_penalty_degradation_per_unit_day_down[e, y_inv, y])
+                    model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_day[e, y_inv, y] == 1.00 - model.es_degradation_per_unit_day[e, y_inv, y] + model.es_penalty_soh_per_unit_day_up[e, y_inv, y] - model.es_penalty_soh_per_unit_day_down[e, y_inv, y])
                 else:
                     model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_day[e, y_inv, y] * (2 * shared_energy_storage.cl_nom * model.es_e_rated_per_unit[e, y_inv, y]) == avg_ch_dch_day)
-                model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_day[e, y_inv, y] == 1.00 - model.es_degradation_per_unit_day[e, y_inv, y])
+                    model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_day[e, y_inv, y] == 1.00 - model.es_degradation_per_unit_day[e, y_inv, y])
+
                 model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_year[e, y_inv, y] == model.es_soh_per_unit_day[e, y_inv, y]**(365 * num_years))
                 model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_year[e, y_inv, y] == 1.00 - model.es_soh_per_unit_year[e, y_inv, y])
                 model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[e, y_inv, y] == previous_soh * model.es_soh_per_unit_year[e, y_inv, y])
@@ -409,14 +412,12 @@ def _build_subproblem_model(shared_ess_data):
                     slack_penalty += PENALTY_ESS_CAPACITY_AVAILABLE * (model.es_penalty_s_available_per_unit_up[e, y_inv, y] + model.es_penalty_s_available_per_unit_down[e, y_inv, y])
                     slack_penalty += PENALTY_ESS_CAPACITY_AVAILABLE * (model.es_penalty_e_available_per_unit_up[e, y_inv, y] + model.es_penalty_e_available_per_unit_down[e, y_inv, y])
 
-            # - Average charging/discharging per representative day
-            if shared_ess_data.params.ess_relax_ch_dch_avg:
-                for y in model.years:
-                    slack_penalty += PENALTY_ESS_AVERAGE_DAY_CYCLE * (model.es_penalty_avg_ch_dch_day_up[e, y_inv, y] + model.es_penalty_avg_ch_dch_day_down[e, y_inv, y])
-
+            # - Degradation model slack variables
             if shared_ess_data.params.ess_relax_degradation:
                 for y in model.years:
+                    slack_penalty += PENALTY_ESS_AVERAGE_DAY_CYCLE * (model.es_penalty_avg_ch_dch_day_up[e, y_inv, y] + model.es_penalty_avg_ch_dch_day_down[e, y_inv, y])
                     slack_penalty += PENALTY_ESS_DEGRADATION * (model.es_penalty_degradation_per_unit_day_up[e, y_inv, y] + model.es_penalty_degradation_per_unit_day_down[e, y_inv, y])
+                    slack_penalty += PENALTY_ESS_DEGRADATION * (model.es_penalty_soh_per_unit_day_up[e, y_inv, y] + model.es_penalty_soh_per_unit_day_down[e, y_inv, y])
 
     model.objective = pe.Objective(sense=pe.minimize, expr=slack_penalty)
 
@@ -754,15 +755,12 @@ def _process_relaxation_variables_detailed(shared_ess_data, model):
                     processed_results[year_inv][year_curr][node_id]['e_available_up'] = e_available_up
                     processed_results[year_inv][year_curr][node_id]['e_available_down'] = e_available_down
 
-                # - Average charge/discharge per representative day
-                if shared_ess_data.params.ess_relax_ch_dch_avg:
+                # - Degradation
+                if shared_ess_data.params.ess_relax_degradation:
                     avg_ch_dch_up = pe.value(model.es_penalty_avg_ch_dch_day_up[e, y_inv, y_curr])
                     avg_ch_dch_down = pe.value(model.es_penalty_avg_ch_dch_day_down[e, y_inv, y_curr])
                     processed_results[year_inv][year_curr][node_id]['avg_ch_dch_up'] = avg_ch_dch_up
                     processed_results[year_inv][year_curr][node_id]['avg_ch_dch_down'] = avg_ch_dch_down
-
-                # - Degradation
-                if shared_ess_data.params.ess_relax_degradation:
                     degradation_day_up = pe.value(model.es_penalty_degradation_per_unit_day_up[e, y_inv, y_curr])
                     degradation_day_down = pe.value(model.es_penalty_degradation_per_unit_day_down[e, y_inv, y_curr])
                     processed_results[year_inv][year_curr][node_id]['degradation_day_up'] = degradation_day_up

@@ -15,7 +15,6 @@ class SharedEnergyStorageParameters:
         self.ess_relax_comp = True                      # Charging/Discharging complementarity (relax/use slack variables or not)
         self.ess_relax_rating = True                    # Rated power and energy capacity (relax/use slack variables or not)
         self.ess_relax_available = True                 # Available power and energy capacity (relax/use slack variables or not)
-        self.ess_relax_ch_dch_avg = True                # Average energy charged/discharged per representative day (relax/use slack variables or not)
         self.ess_relax_degradation = True               # Degradation variables (relax/use slack variables or not)
         self.slacks_used = False
         self.plot_results = False                       # Plot results
