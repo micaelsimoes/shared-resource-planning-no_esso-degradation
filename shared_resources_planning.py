@@ -1348,6 +1348,48 @@ def _process_results_interface_power_flow(planning_problem, tso_model, dso_model
 # ======================================================================================================================
 #  RESULTS OPERATIONAL PLANNING - write functions
 # ======================================================================================================================
+def _write_operational_planning_results_to_excel(planning_problem, results, primal_evolution=list(), shared_ess_capacity=dict(), filename='operation_planning_results'):
+
+    wb = Workbook()
+
+    _write_operational_planning_main_info_to_excel(planning_problem, wb, results)
+    _write_shared_ess_specifications(wb, planning_problem.shared_ess_data)
+    if shared_ess_capacity:
+        planning_problem.shared_ess_data.write_ess_results_to_excel(wb, shared_ess_capacity)
+    planning_problem.shared_ess_data.write_secondary_reserve_bands_to_excel(wb, results['esso']['results'])
+
+    if primal_evolution:
+        _write_objective_function_evolution_to_excel(wb, primal_evolution)
+
+    # Interface Power Flow
+    _write_interface_power_flow_results_to_excel(planning_problem, wb, results['interface'])
+
+    # Shared Energy Storages results
+    _write_shared_energy_storages_results_to_excel(planning_problem, wb, results)
+
+    #  TSO and DSOs' results
+    _write_network_voltage_results_to_excel(planning_problem, wb, results)
+    _write_network_consumption_results_to_excel(planning_problem, wb, results)
+    _write_network_generation_results_to_excel(planning_problem, wb, results)
+    _write_network_branch_results_to_excel(planning_problem, wb, results, 'losses')
+    _write_network_branch_results_to_excel(planning_problem, wb, results, 'ratio')
+    _write_network_branch_results_to_excel(planning_problem, wb, results, 'current_perc')
+    _write_network_branch_power_flow_results_to_excel(planning_problem, wb, results)
+    _write_network_energy_storages_results_to_excel(planning_problem, wb, results)
+    _write_relaxation_slacks_results_to_excel(planning_problem, wb, results)
+
+    # Save results
+    try:
+        wb.save(filename)
+    except:
+        from datetime import datetime
+        now = datetime.now()
+        current_time = now.strftime("%Y-%m-%d_%H-%M-%S")
+        backup_filename = f"{filename.replace('.xlsx', '')}_{current_time}.xlsx"
+        print(f"[WARNING] Results saved to file {backup_filename}.xlsx")
+        wb.save(backup_filename)
+
+
 def _write_operational_planning_results_no_coordination_to_excel(planning_problem, results, filename='operation_planning_results_no_coordination'):
 
     wb = Workbook()
@@ -1612,6 +1654,31 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
             col_idx += 1
 
     return line_idx
+
+
+def _write_shared_ess_specifications(workbook, shared_ess_info):
+
+    sheet = workbook.create_sheet('Shared ESS Specifications')
+
+    decimal_style = '0.000'
+
+    # Write Header
+    row_idx = 1
+    sheet.cell(row=row_idx, column=1).value = 'Year'
+    sheet.cell(row=row_idx, column=2).value = 'Node ID'
+    sheet.cell(row=row_idx, column=3).value = 'Sinst, [MVA]'
+    sheet.cell(row=row_idx, column=4).value = 'Einst, [MVAh]'
+
+    # Write Shared ESS specifications
+    for year in shared_ess_info.years:
+        for shared_ess in shared_ess_info.shared_energy_storages[year]:
+            row_idx = row_idx + 1
+            sheet.cell(row=row_idx, column=1).value = year
+            sheet.cell(row=row_idx, column=2).value = shared_ess.bus
+            sheet.cell(row=row_idx, column=3).value = shared_ess.s
+            sheet.cell(row=row_idx, column=3).number_format = decimal_style
+            sheet.cell(row=row_idx, column=4).value = shared_ess.e
+            sheet.cell(row=row_idx, column=4).number_format = decimal_style
 
 
 def _write_network_voltage_results_to_excel(planning_problem, workbook, results):
