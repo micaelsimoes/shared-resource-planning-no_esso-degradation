@@ -746,10 +746,10 @@ def update_transmission_model_to_admm(transmission_network, model, distribution_
             for dn in model[year][day].active_distribution_networks:
                 node_id = transmission_network.active_distribution_network_nodes[dn]
                 distribution_network = distribution_networks[node_id]
-                interface_branch_rating = distribution_network.network[year][day].get_interface_branch_rating()
+                interface_branch_rating = distribution_network.network[year][day].get_interface_branch_rating() / s_base
                 for p in model[year][day].periods:
-                    constraint_p_req = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_req[dn, p]) / abs(interface_branch_rating)
-                    constraint_q_req = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_req[dn, p]) / abs(interface_branch_rating)
+                    constraint_p_req = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_req[dn, p]) / interface_branch_rating
+                    constraint_q_req = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_req[dn, p]) / interface_branch_rating
                     obj += model[year][day].dual_pf_p_req[dn, p] * constraint_p_req
                     obj += model[year][day].dual_pf_q_req[dn, p] * constraint_q_req
                     obj += (model[year][day].rho_pf / 2) * constraint_p_req ** 2
@@ -824,10 +824,10 @@ def update_distribution_models_to_admm(distribution_networks, models, params):
                 obj = dso_model[year][day].objective.expr / max(abs(init_of_value), 1.00)
 
                 # Augmented Lagrangian -- Interface power flow (residual balancing)
-                interface_branch_rating = distribution_network.network[year][day].get_interface_branch_rating()
+                interface_branch_rating = distribution_network.network[year][day].get_interface_branch_rating() / s_base
                 for p in dso_model[year][day].periods:
-                    constraint_p_req = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_req[p]) / abs(interface_branch_rating)
-                    constraint_q_req = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_req[p]) / abs(interface_branch_rating)
+                    constraint_p_req = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_req[p]) / interface_branch_rating
+                    constraint_q_req = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_req[p]) / interface_branch_rating
                     obj += (dso_model[year][day].dual_pf_p[p]) * (constraint_p_req)
                     obj += (dso_model[year][day].dual_pf_q[p]) * (constraint_q_req)
                     obj += (dso_model[year][day].rho_pf / 2) * (constraint_p_req) ** 2
