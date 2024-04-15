@@ -170,6 +170,9 @@ class Network:
     def process_results(self, model, params, results=dict()):
         return _process_results(self, model, params, results=results)
 
+    def process_results_interface_power_flow(self, model):
+        return _process_results_interface_power_flow(self, model)
+
     def compute_series_admittance(self):
         for branch in self.branches:
             branch.g = branch.r / (branch.r ** 2 + branch.x ** 2)
@@ -2044,6 +2047,44 @@ def _process_results(network, model, params, results=dict()):
                             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['ess_p_down'][node_id].append(slack_ess_p_down)
 
     return processed_results
+
+
+def _process_results_interface_power_flow(network, model):
+
+    results = dict()
+
+    if network.is_transmission:
+        for dn in model.active_distribution_networks:
+
+            node_id = network.active_distribution_network_nodes[dn]
+            node_idx = network.get_node_idx(node_id)
+
+            # Power flow results per market and operation scenario
+            results[node_id] = dict()
+            for s_m in model.scenarios_market:
+                results[node_id][s_m] = dict()
+                for s_o in model.scenarios_operation:
+                    results[node_id][s_m][s_o] = dict()
+                    results[node_id][s_m][s_o]['p'] = [0.0 for _ in model.periods]
+                    results[node_id][s_m][s_o]['q'] = [0.0 for _ in model.periods]
+                    for p in model.periods:
+                        results[node_id][s_m][s_o]['p'][p] = pe.value(model.pc[node_idx, s_m, s_o, p]) * network.baseMVA
+                        results[node_id][s_m][s_o]['q'][p] = pe.value(model.qc[node_idx, s_m, s_o, p]) * network.baseMVA
+    else:
+
+        # Power flow results per market and operation scenario
+        ref_gen_idx = network.get_reference_gen_idx()
+        for s_m in model.scenarios_market:
+            results[s_m] = dict()
+            for s_o in model.scenarios_operation:
+                results[s_m][s_o] = dict()
+                results[s_m][s_o]['p'] = [0.0 for _ in model.periods]
+                results[s_m][s_o]['q'] = [0.0 for _ in model.periods]
+                for p in model.periods:
+                    results[s_m][s_o]['p'][p] = pe.value(model.pg[ref_gen_idx, s_m, s_o, p]) * network.baseMVA
+                    results[s_m][s_o]['q'][p] = pe.value(model.qg[ref_gen_idx, s_m, s_o, p]) * network.baseMVA
+
+    return results
 
 
 def _compute_objective_function_value(network, model, params):
