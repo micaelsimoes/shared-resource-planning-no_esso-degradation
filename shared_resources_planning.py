@@ -2132,7 +2132,7 @@ def _write_shared_energy_storages_results_to_excel(planning_problem, workbook, r
                 sheet.cell(row=row_idx, column=6).value = 'N/A'
                 sheet.cell(row=row_idx, column=7).value = 'N/A'
                 for p in range(planning_problem.num_instants):
-                    ess_soc_percent = results['esso'][year][day][node_id]['soc_percent'][p]
+                    ess_soc_percent = results['esso'][year][day][node_id]['soc_perc'][p]
                     sheet.cell(row=row_idx, column=p + 8).value = ess_soc_percent
                     sheet.cell(row=row_idx, column=p + 8).number_format = percent_style
 
