@@ -134,6 +134,12 @@ def _build_subproblem_model(shared_ess_data):
     # Variables
     model.es_s_investment = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_investment = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_s_investment_fixed = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_e_investment_fixed = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_s_investment_slack_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_s_investment_slack_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_e_investment_slack_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_s_investment_slack_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_s_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     if shared_ess_data.params.ess_relax_rating:
@@ -393,11 +399,21 @@ def _build_subproblem_model(shared_ess_data):
                     model.energy_storage_operation_agg.add(model.es_pnet[e, y, d, p] == agg_pnet)
                     model.energy_storage_operation_agg.add(model.es_soc[e, y, d, p] == agg_soc)
 
+    # - Sinv and Einv fixing constraints
+    for e in model.energy_storages:
+        for y in model.years:
+            model.sensitivities_s.add(model.es_s_investment[e, y] == model.es_s_investment_fixed[e, y] + model.es_s_investment_slack_up[e, y] - model.es_s_investment_slack_down[e, y])
+            model.sensitivities_e.add(model.es_e_investment[e, y] == model.es_e_investment_fixed[e, y] + model.es_e_investment_slack_up[e, y] - model.es_e_investment_slack_down[e, y])
+
     # ------------------------------------------------------------------------------------------------------------------
     # Objective function
     slack_penalty = 0.0
     for e in model.energy_storages:
         for y_inv in model.years:
+
+            # Slacks for investment fixing
+            slack_penalty += PENALTY_ESS_SLACK * (model.es_s_investment_slack_up[e, y_inv] + model.es_s_investment_slack_down[e, y_inv])
+            slack_penalty += PENALTY_ESS_SLACK * (model.es_e_investment_slack_up[e, y_inv] + model.es_e_investment_slack_down[e, y_inv])
 
             # - Complementarity penalty
             if shared_ess_data.params.ess_relax_comp:
@@ -485,8 +501,8 @@ def _update_model_with_candidate_solution(shared_ess_data, model, candidate_solu
         for y in model.years:
             year = repr_years[y]
             node_id = shared_ess_data.shared_energy_storages[year][e].bus
-            model.es_s_investment[e, y].fix(candidate_solution[node_id][year]['s'])
-            model.es_e_investment[e, y].fix(candidate_solution[node_id][year]['e'])
+            model.es_s_investment_fixed[e, y].fix(candidate_solution[node_id][year]['s'])
+            model.es_e_investment_fixed[e, y].fix(candidate_solution[node_id][year]['e'])
 
 
 # ======================================================================================================================
