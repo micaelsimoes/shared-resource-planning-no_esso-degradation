@@ -88,6 +88,10 @@ class SharedEnergyStorageData:
         return _process_relaxation_variables_operation(self, model)
 
     def write_optimization_results_to_excel(self, model):
+        results = self.process_results(self, model)
+        _write_optimization_results_to_excel(self, self.results_dir, results)
+
+    def process_results(self, model):
         results = {'capacity': self.get_investment_and_available_capacities(model),
                    'operation': {'aggregated': self.process_results_aggregated(model),
                                  'detailed': self.process_results_detailed(model)},
@@ -98,7 +102,7 @@ class SharedEnergyStorageData:
                        'detailed': self.process_relaxation_variables_detailed(model),
                        'operation': self.process_relaxation_variables_operation(model)}
                    }
-        _write_optimization_results_to_excel(self, self.results_dir, results)
+        return results
 
     def update_data_with_candidate_solution(self, candidate_solution):
         for year in self.years:
