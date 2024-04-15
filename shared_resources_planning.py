@@ -1356,7 +1356,6 @@ def _write_operational_planning_results_to_excel(planning_problem, results, prim
     _write_shared_ess_specifications(wb, planning_problem.shared_ess_data)
     if shared_ess_capacity:
         planning_problem.shared_ess_data.write_ess_results_to_excel(wb, shared_ess_capacity)
-    planning_problem.shared_ess_data.write_secondary_reserve_bands_to_excel(wb, results['esso']['results'])
 
     if primal_evolution:
         _write_objective_function_evolution_to_excel(wb, primal_evolution)
@@ -1663,6 +1662,26 @@ def _write_shared_ess_specifications(workbook, shared_ess_info):
             sheet.cell(row=row_idx, column=3).number_format = decimal_style
             sheet.cell(row=row_idx, column=4).value = shared_ess.e
             sheet.cell(row=row_idx, column=4).number_format = decimal_style
+
+
+def _write_objective_function_evolution_to_excel(workbook, primal_evolution):
+
+    sheet = workbook.create_sheet('Primal Evolution')
+
+    decimal_style = '0.000000'
+    row_idx = 1
+
+    # Write Header
+    sheet.cell(row=row_idx, column=1).value = 'Iteration'
+    sheet.cell(row=row_idx, column=2).value = 'OF value'
+    row_idx = row_idx + 1
+    for i in range(len(primal_evolution)):
+        sheet.cell(row=row_idx, column=1).value = i
+        sheet.cell(row=row_idx, column=2).value = primal_evolution[i]
+        sheet.cell(row=row_idx, column=2).number_format = decimal_style
+        sheet.cell(row=row_idx, column=2).value = primal_evolution[i]
+        sheet.cell(row=row_idx, column=2).number_format = decimal_style
+        row_idx = row_idx + 1
 
 
 def _write_network_voltage_results_to_excel(planning_problem, workbook, results):
