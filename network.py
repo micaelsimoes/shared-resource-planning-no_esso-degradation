@@ -218,7 +218,7 @@ def _build_model(network, params):
         model.e_penalty_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
         model.e_penalty_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
         model.f_penalty_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-        model.e_penalty_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.f_penalty_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     for i in model.nodes:
         node = network.nodes[i]
         e_lb, e_ub = -node.v_max, node.v_max
@@ -402,17 +402,14 @@ def _build_model(network, params):
         model.es_sdch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.es_pdch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.es_qdch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
-        if params.ess_relax_comp:
+        if params.ess_relax:
             model.es_penalty_comp = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        if params.ess_relax_apparent_power:
             model.es_penalty_sch_up = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
             model.es_penalty_sch_down = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
             model.es_penalty_sdch_up = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
             model.es_penalty_sdch_down = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        if params.ess_relax_soc:
             model.es_penalty_soc_up = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
             model.es_penalty_soc_down = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        if params.ess_relax_day_balance:
             model.es_penalty_day_balance_up = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
             model.es_penalty_day_balance_down = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
         for e in model.energy_storages:
@@ -444,12 +441,10 @@ def _build_model(network, params):
     model.shared_es_soc = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals)
     model.shared_es_pch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.shared_es_pdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    if params.ess_relax_comp:
+    if params.ess_relax:
         model.shared_es_penalty_comp = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    if params.ess_relax_soc:
         model.shared_es_penalty_soc_up = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.shared_es_penalty_soc_down = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    if params.ess_relax_day_balance:
         model.shared_es_penalty_day_balance_up = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
         model.shared_es_penalty_day_balance_down = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
     for e in model.shared_energy_storages:
@@ -531,21 +526,20 @@ def _build_model(network, params):
                             e = model.e_actual[i, s_m, s_o, p]
                             f = model.e_actual[i, s_m, s_o, p]
                             if params.gen_v_relax:
-                                model.voltage_cons.add(e ** 2 + f ** 2 - vg[p] ** 2 == model.gen_v_penalty_up[i, s_m, s_o, p] - model.gen_v_penalty_down[i, s_m, s_o, p])
+                                model.voltage_cons.add(e ** 2 + f ** 2 == vg[p] ** 2 + model.gen_v_penalty_up[i, s_m, s_o, p] - model.gen_v_penalty_down[i, s_m, s_o, p])
                             else:
-                                model.voltage_cons.add(e ** 2 + f ** 2 - vg[p] ** 2 >= -SMALL_TOLERANCE)
-                                model.voltage_cons.add(e ** 2 + f ** 2 - vg[p] ** 2 <= SMALL_TOLERANCE)
+                                model.voltage_cons.add(e ** 2 + f ** 2 == vg[p] ** 2)
                         else:
                             # - Voltage at the bus is not controlled
                             e = model.e_actual[i, s_m, s_o, p]
                             f = model.f_actual[i, s_m, s_o, p]
-                            model.voltage_cons.add(e ** 2 + f ** 2 >= node.v_min**2 - SMALL_TOLERANCE)
-                            model.voltage_cons.add(e ** 2 + f ** 2 <= node.v_max**2 + SMALL_TOLERANCE)
+                            model.voltage_cons.add(e ** 2 + f ** 2 >= node.v_min**2)
+                            model.voltage_cons.add(e ** 2 + f ** 2 <= node.v_max**2)
                     else:
                         e = model.e_actual[i, s_m, s_o, p]
                         f = model.f_actual[i, s_m, s_o, p]
-                        model.voltage_cons.add(e ** 2 + f ** 2 >= node.v_min**2 - SMALL_TOLERANCE)
-                        model.voltage_cons.add(e ** 2 + f ** 2 <= node.v_max**2 + SMALL_TOLERANCE)
+                        model.voltage_cons.add(e ** 2 + f ** 2 >= node.v_min**2)
+                        model.voltage_cons.add(e ** 2 + f ** 2 <= node.v_max**2)
 
     # - Flexible Loads -- Daily energy balance
     if params.fl_reg:
@@ -558,11 +552,9 @@ def _build_model(network, params):
                         p_up += model.flex_p_up[i, s_m, s_o, p]
                         p_down += model.flex_p_down[i, s_m, s_o, p]
                     if not params.fl_relax:
-                        # - FL energy balance added as a strict constraint
-                        model.fl_p_balance.add(p_up - p_down >= -SMALL_TOLERANCE)   # Note: helps with convergence (numerical issues)
-                        model.fl_p_balance.add(p_up - p_down <= SMALL_TOLERANCE)
+                        model.fl_p_balance.add(p_up == p_down)
                     else:
-                        model.fl_p_balance.add(p_up - p_down == model.flex_penalty_up[i, s_m, s_o] - model.flex_penalty_down[i, s_m, s_o])
+                        model.fl_p_balance.add(p_up == p_down + model.flex_penalty_up[i, s_m, s_o] - model.flex_penalty_down[i, s_m, s_o])
 
     # - Energy Storage constraints
     if params.es_reg:
@@ -623,7 +615,7 @@ def _build_model(network, params):
                                 model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] - soc_init - (sch * eff_charge - sdch / eff_discharge) <= (1/s_base) * SMALL_TOLERANCE)
 
                         # Charging/discharging complementarity constraints
-                        if params.ess_relax_comp:
+                        if params.ess_relax:
                             model.energy_storage_ch_dch_exclusion.add(sch * sdch <= model.es_penalty_comp[e, s_m, s_o, p])
                         else:
                             # NLP formulation
@@ -671,32 +663,28 @@ def _build_model(network, params):
 
                     # State-of-Charge
                     if p > 0:
-                        if params.ess_relax_soc:
-                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] - model.shared_es_soc[e, s_m, s_o, p - 1] - (pch * eff_charge - pdch / eff_discharge) == model.shared_es_penalty_soc_up[e, s_m, s_o, p] - model.shared_es_penalty_soc_down[e, s_m, s_o, p])
+                        if params.ess_relax:
+                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == model.shared_es_soc[e, s_m, s_o, p - 1] + (pch * eff_charge - pdch / eff_discharge) + model.shared_es_penalty_soc_up[e, s_m, s_o, p] - model.shared_es_penalty_soc_down[e, s_m, s_o, p])
                         else:
-                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] - model.shared_es_soc[e, s_m, s_o, p - 1] - (pch * eff_charge - pdch / eff_discharge) >= -SMALL_TOLERANCE)
-                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] - model.shared_es_soc[e, s_m, s_o, p - 1] - (pch * eff_charge - pdch / eff_discharge) <= SMALL_TOLERANCE)
+                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == model.shared_es_soc[e, s_m, s_o, p - 1] + (pch * eff_charge - pdch / eff_discharge))
                     else:
-                        if params.ess_relax_soc:
-                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] - soc_init - (pch * eff_charge - pdch / eff_discharge) == model.shared_es_penalty_soc_up[e, s_m, s_o, p] - model.shared_es_penalty_soc_down[e, s_m, s_o, p])
+                        if params.ess_relax:
+                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == soc_init + (pch * eff_charge - pdch / eff_discharge) + model.shared_es_penalty_soc_up[e, s_m, s_o, p] - model.shared_es_penalty_soc_down[e, s_m, s_o, p])
                         else:
-                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] - soc_init - (pch * eff_charge - pdch / eff_discharge) >= -SMALL_TOLERANCE)
-                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] - soc_init - (pch * eff_charge - pdch / eff_discharge) <= SMALL_TOLERANCE)
+                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == soc_init + (pch * eff_charge - pdch / eff_discharge))
 
                     # Charging/discharging complementarity constraints
-                    if params.ess_relax_comp:
+                    if params.ess_relax:
                         model.shared_energy_storage_ch_dch_exclusion.add(pch * pdch <= model.shared_es_penalty_comp[e, s_m, s_o, p])
                     else:
                         # NLP formulation
-                        model.shared_energy_storage_ch_dch_exclusion.add(pch * pdch >= -(1/s_base) * SMALL_TOLERANCE)
-                        model.shared_energy_storage_ch_dch_exclusion.add(pch * pdch <= (1/s_base) * SMALL_TOLERANCE)
+                        model.shared_energy_storage_ch_dch_exclusion.add(pch * pdch == 0.00)
 
                 # Day balance
-                if params.ess_relax_day_balance:
-                    model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] - soc_final == model.shared_es_penalty_day_balance_up[e, s_m, s_o] - model.shared_es_penalty_day_balance_down[e, s_m, s_o])
+                if params.ess_relax:
+                    model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final + model.shared_es_penalty_day_balance_up[e, s_m, s_o] - model.shared_es_penalty_day_balance_down[e, s_m, s_o])
                 else:
-                    model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] - soc_final >= -SMALL_TOLERANCE)
-                    model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] - soc_final <= SMALL_TOLERANCE)
+                    model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final)
 
         model.shared_energy_storage_s_sensitivities.add(model.shared_es_s_rated[e] + model.shared_es_s_slack_up[e] - model.shared_es_s_slack_down[e] == model.shared_es_s_rated_fixed[e])
         model.shared_energy_storage_e_sensitivities.add(model.shared_es_e_rated[e] + model.shared_es_e_slack_up[e] - model.shared_es_e_slack_down[e] == model.shared_es_e_rated_fixed[e])
@@ -982,24 +970,18 @@ def _build_model(network, params):
                             obj_scenario += PENALTY_SLACK_BRANCH_FLOW * slack_iij_sqr
 
                 # ESS constraints penalty
-                for e in model.energy_storages:
-                    for p in model.periods:
-                        if params.ess_relax_comp:
+                if params.ess_relax:
+                    for e in model.energy_storages:
+                        for p in model.periods:
                             obj_scenario += PENALTY_ESS_COMPLEMENTARITY * model.es_penalty_comp[e, s_m, s_o, p]
-                        if params.ess_relax_apparent_power:
                             obj_scenario += PENALTY_ESS_APPARENT_POWER * (model.es_penalty_sch_up[e, s_m, s_o, p] + model.es_penalty_sch_down[e, s_m, s_o, p])
                             obj_scenario += PENALTY_ESS_APPARENT_POWER * (model.es_penalty_sdch_up[e, s_m, s_o, p] + model.es_penalty_sdch_down[e, s_m, s_o, p])
-                        if params.ess_relax_soc:
                             obj_scenario += PENALTY_ESS_SOC * (model.es_penalty_soc_up[e, s_m, s_o, p] + model.es_penalty_soc_down[e, s_m, s_o, p])
-                    if params.ess_relax_day_balance:
                         obj_scenario += PENALTY_ESS_DAY_BALANCE * (model.es_penalty_day_balance_up[e, s_m, s_o] + model.es_penalty_day_balance_down[e, s_m, s_o])
-                for e in model.shared_energy_storages:
-                    for p in model.periods:
-                        if params.ess_relax_comp:
+                    for e in model.shared_energy_storages:
+                        for p in model.periods:
                             obj_scenario += PENALTY_ESS_COMPLEMENTARITY * model.shared_es_penalty_comp[e, s_m, s_o, p]
-                        if params.ess_relax_soc:
                             obj_scenario += PENALTY_ESS_SOC * (model.shared_es_penalty_soc_up[e, s_m, s_o, p] + model.shared_es_penalty_soc_down[e, s_m, s_o, p])
-                    if params.ess_relax_day_balance:
                         obj_scenario += PENALTY_ESS_DAY_BALANCE * (model.shared_es_penalty_day_balance_up[e, s_m, s_o] + model.shared_es_penalty_day_balance_down[e, s_m, s_o])
 
                 # Node balance penalty
@@ -1073,6 +1055,13 @@ def _build_model(network, params):
                             slack_f = model.slack_f_up[i, s_m, s_o, p] + model.slack_f_down[i, s_m, s_o, p]
                             obj_scenario += PENALTY_SLACK_VOLTAGE * (slack_e + slack_f)
 
+                if params.voltage_relax:
+                    for i in model.nodes:
+                        for p in model.periods:
+                            penalty_e = model.e_penalty_up[i, s_m, s_o, p] + model.e_penalty_down[i, s_m, s_o, p]
+                            penalty_f = model.f_penalty_up[i, s_m, s_o, p] + model.f_penalty_down[i, s_m, s_o, p]
+                            obj_scenario += PENALTY_SLACK_VOLTAGE * (penalty_e + penalty_f)
+
                 # Generation curtailment
                 if params.rg_curt:
                     for g in model.generators:
@@ -1095,24 +1084,18 @@ def _build_model(network, params):
                         obj_scenario += PENALTY_FLEX * (model.flex_penalty_up[i, s_m, s_o] + model.flex_penalty_down[i, s_m, s_o])
 
                 # ESS constraints penalty
-                for e in model.energy_storages:
-                    for p in model.periods:
-                        if params.ess_relax_comp:
+                if params.ess_relax:
+                    for e in model.energy_storages:
+                        for p in model.periods:
                             obj_scenario += PENALTY_ESS_COMPLEMENTARITY * model.es_penalty_comp[e, s_m, s_o, p]
-                        if params.ess_relax_apparent_power:
                             obj_scenario += PENALTY_ESS_APPARENT_POWER * (model.es_penalty_sch_up[e, s_m, s_o, p] + model.es_penalty_sch_down[e, s_m, s_o, p])
                             obj_scenario += PENALTY_ESS_APPARENT_POWER * (model.es_penalty_sdch_up[e, s_m, s_o, p] + model.es_penalty_sdch_down[e, s_m, s_o, p])
-                        if params.ess_relax_soc:
                             obj_scenario += PENALTY_ESS_SOC * (model.es_penalty_soc_up[e, s_m, s_o, p] + model.es_penalty_soc_down[e, s_m, s_o, p])
-                    if params.ess_relax_day_balance:
                         obj_scenario += PENALTY_ESS_DAY_BALANCE * (model.es_penalty_day_balance_up[e, s_m, s_o] + model.es_penalty_day_balance_down[e, s_m, s_o])
-                for e in model.shared_energy_storages:
-                    for p in model.periods:
-                        if params.ess_relax_comp:
+                    for e in model.shared_energy_storages:
+                        for p in model.periods:
                             obj_scenario += PENALTY_ESS_COMPLEMENTARITY * model.shared_es_penalty_comp[e, s_m, s_o, p]
-                        if params.ess_relax_soc:
                             obj_scenario += PENALTY_ESS_SOC * (model.shared_es_penalty_soc_up[e, s_m, s_o, p] + model.shared_es_penalty_soc_down[e, s_m, s_o, p])
-                    if params.ess_relax_day_balance:
                         obj_scenario += PENALTY_ESS_DAY_BALANCE * (model.shared_es_penalty_day_balance_up[e, s_m, s_o] + model.shared_es_penalty_day_balance_down[e, s_m, s_o])
 
                 # Node balance penalty
@@ -1671,27 +1654,23 @@ def _process_results(network, model, params, results=dict()):
                 if params.slack_line_limits:
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current'] = dict()
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'] = dict()
-                if params.ess_relax_comp or params.ess_relax_apparent_power or params.ess_relax_soc or params.ess_relax_day_balance:
+                if params.ess_relax:
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages'] = dict()
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'] = dict()
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_up'] = dict()
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_down'] = dict()
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_up'] = dict()
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_down'] = dict()
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_up'] = dict()
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_down'] = dict()
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['day_balance_up'] = dict()
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['day_balance_down'] = dict()
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages'] = dict()
-                    if params.ess_relax_comp:
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'] = dict()
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'] = dict()
-                    if params.ess_relax_apparent_power:
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_up'] = dict()
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_down'] = dict()
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_up'] = dict()
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_down'] = dict()
-                    if params.ess_relax_soc:
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_up'] = dict()
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_down'] = dict()
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_up'] = dict()
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_down'] = dict()
-                    if params.ess_relax_day_balance:
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['day_balance_up'] = dict()
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['day_balance_down'] = dict()
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['day_balance_up'] = dict()
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['day_balance_down'] = dict()
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'] = dict()
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_up'] = dict()
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_down'] = dict()
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['day_balance_up'] = dict()
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['day_balance_down'] = dict()
                 if params.fl_relax:
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility'] = dict()
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_up'] = dict()
@@ -1921,62 +1900,50 @@ def _process_results(network, model, params, results=dict()):
                             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][b].append(slack_iij_sqr)
 
                 # Shared ESS
-                if params.ess_relax_comp or params.ess_relax_apparent_power or params.ess_relax_soc or params.ess_relax_day_balance:
+                if params.ess_relax:
                     for e in model.shared_energy_storages:
                         node_id = network.shared_energy_storages[e].bus
-                        if params.ess_relax_comp:
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'][node_id] = []
-                        if params.ess_relax_soc:
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_up'][node_id] = []
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_down'][node_id] = []
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'][node_id] = []
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_up'][node_id] = []
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_down'][node_id] = []
                         for p in model.periods:
-                            if params.ess_relax_comp:
-                                slack_comp = pe.value(model.shared_es_penalty_comp[e, s_m, s_o, p])
-                                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'][node_id].append(slack_comp)
-                            if params.ess_relax_soc:
-                                slack_soc_up = pe.value(model.shared_es_penalty_soc_up[e, s_m, s_o, p])
-                                slack_soc_down = pe.value(model.shared_es_penalty_soc_down[e, s_m, s_o, p])
-                                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_up'][node_id].append(slack_soc_up)
-                                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_down'][node_id].append(slack_soc_down)
-                        if params.ess_relax_day_balance:
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['day_balance_up'][node_id] = pe.value(model.shared_es_penalty_day_balance_up[e, s_m, s_o])
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['day_balance_down'][node_id] = pe.value(model.shared_es_penalty_day_balance_down[e, s_m, s_o])
+                            slack_comp = pe.value(model.shared_es_penalty_comp[e, s_m, s_o, p])
+                            slack_soc_up = pe.value(model.shared_es_penalty_soc_up[e, s_m, s_o, p])
+                            slack_soc_down = pe.value(model.shared_es_penalty_soc_down[e, s_m, s_o, p])
+                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'][node_id].append(slack_comp)
+                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_up'][node_id].append(slack_soc_up)
+                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_down'][node_id].append(slack_soc_down)
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['day_balance_up'][node_id] = pe.value(model.shared_es_penalty_day_balance_up[e, s_m, s_o])
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['day_balance_down'][node_id] = pe.value(model.shared_es_penalty_day_balance_down[e, s_m, s_o])
 
                 # ESS
-                if params.ess_relax_comp or params.ess_relax_apparent_power or params.ess_relax_soc or params.ess_relax_day_balance:
+                if params.ess_relax:
                     for e in model.energy_storages:
                         node_id = network.energy_storages[e].bus
-                        if params.ess_relax_comp:
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'][node_id] = []
-                        if params.ess_relax_apparent_power:
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_up'][node_id] = []
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_down'][node_id] = []
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_up'][node_id] = []
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_down'][node_id] = []
-                        if params.ess_relax_soc:
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_up'][node_id] = []
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_down'][node_id] = []
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'][node_id] = []
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_up'][node_id] = []
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_down'][node_id] = []
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_up'][node_id] = []
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_down'][node_id] = []
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_up'][node_id] = []
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_down'][node_id] = []
                         for p in model.periods:
-                            if params.ess_relax_comp:
-                                slack_comp = pe.value(model.es_penalty_comp[e, s_m, s_o, p])
-                                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'][node_id].append(slack_comp)
-                            if params.ess_relax_apparent_power:
-                                slack_sch_up = pe.value(model.es_penalty_sch_up[e, s_m, s_o, p])
-                                slack_sch_down = pe.value(model.es_penalty_sch_down[e, s_m, s_o, p])
-                                slack_sdch_up = pe.value(model.es_penalty_sdch_up[e, s_m, s_o, p])
-                                slack_sdch_down = pe.value(model.es_penalty_sdch_down[e, s_m, s_o, p])
-                                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_up'][node_id].append(slack_sch_up)
-                                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_down'][node_id].append(slack_sch_down)
-                                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_up'][node_id].append(slack_sdch_up)
-                                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_down'][node_id].append(slack_sdch_down)
-                            if params.ess_relax_soc:
-                                slack_soc_up = pe.value(model.es_penalty_soc_up[e, s_m, s_o, p])
-                                slack_soc_down = pe.value(model.es_penalty_soc_down[e, s_m, s_o, p])
-                                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_up'][node_id].append(slack_soc_up)
-                                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_down'][node_id].append(slack_soc_down)
-                        if params.ess_relax_day_balance:
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['day_balance_up'][node_id] = pe.value(model.es_penalty_day_balance_up[e, s_m, s_o])
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['day_balance_down'][node_id] = pe.value(model.es_penalty_day_balance_down[e, s_m, s_o])
+                            slack_comp = pe.value(model.es_penalty_comp[e, s_m, s_o, p])
+                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'][node_id].append(slack_comp)
+                            slack_sch_up = pe.value(model.es_penalty_sch_up[e, s_m, s_o, p])
+                            slack_sch_down = pe.value(model.es_penalty_sch_down[e, s_m, s_o, p])
+                            slack_sdch_up = pe.value(model.es_penalty_sdch_up[e, s_m, s_o, p])
+                            slack_sdch_down = pe.value(model.es_penalty_sdch_down[e, s_m, s_o, p])
+                            slack_soc_up = pe.value(model.es_penalty_soc_up[e, s_m, s_o, p])
+                            slack_soc_down = pe.value(model.es_penalty_soc_down[e, s_m, s_o, p])
+                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_up'][node_id].append(slack_sch_up)
+                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_down'][node_id].append(slack_sch_down)
+                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_up'][node_id].append(slack_sdch_up)
+                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_down'][node_id].append(slack_sdch_down)
+                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_up'][node_id].append(slack_soc_up)
+                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_down'][node_id].append(slack_soc_down)
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['day_balance_up'][node_id] = pe.value(model.es_penalty_day_balance_up[e, s_m, s_o])
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['day_balance_down'][node_id] = pe.value(model.es_penalty_day_balance_down[e, s_m, s_o])
 
                 # Flex daily balance
                 if params.fl_reg and params.fl_relax:

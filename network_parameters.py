@@ -17,11 +17,8 @@ class NetworkParameters:
         self.enforce_vg = False
         self.slack_line_limits = False
         self.slack_voltage_limits = False
-        self.voltage_relax = False
-        self.ess_relax_comp = False
-        self.ess_relax_apparent_power = False
-        self.ess_relax_soc = False
-        self.ess_relax_day_balance = False
+        self.voltage_relax = True
+        self.ess_relax = True
         self.fl_relax = False
         self.node_balance_relax = False
         self.branch_current_relax = False
@@ -57,10 +54,8 @@ def _read_network_parameters_from_file(parameters, filename):
     parameters.enforce_vg = params_data['enforce_vg']
     parameters.slack_line_limits = params_data['slack_line_limits']
     parameters.slack_voltage_limits = params_data['slack_voltage_limits']
-    parameters.ess_relax_comp = params_data['ess_relax_comp']
-    parameters.ess_relax_apparent_power = params_data['ess_relax_apparent_power']
-    parameters.ess_relax_soc = params_data['ess_relax_soc']
-    parameters.ess_relax_day_balance = params_data['ess_relax_day_balance']
+    parameters.voltage_relax = params_data['voltage_relax']
+    parameters.ess_relax = params_data['ess_relax']
     parameters.fl_relax = params_data['fl_relax']
     parameters.node_balance_relax = params_data['node_balance_relax']
     parameters.branch_current_relax = params_data['branch_current_relax']
@@ -72,8 +67,7 @@ def _read_network_parameters_from_file(parameters, filename):
     parameters.plot_diagram = params_data['plot_diagram']
     parameters.print_results_to_file = params_data['print_results_to_file']
 
-    if parameters.slack_voltage_limits or parameters.slack_line_limits or \
-            parameters.ess_relax_comp or parameters.ess_relax_apparent_power or parameters.ess_relax_soc or parameters.ess_relax_day_balance or \
-            parameters.fl_relax or parameters.node_balance_relax or parameters.branch_current_relax or \
-            parameters.interface_pf_relax or parameters.interface_ess_relax:
+    if any([parameters.slack_voltage_limits, parameters.voltage_relax, parameters.slack_line_limits,
+            parameters.ess_relax, parameters.fl_relax, parameters.node_balance_relax, parameters.branch_current_relax,
+            parameters.interface_pf_relax, parameters.interface_ess_relax]):
         parameters.slacks_used = True
