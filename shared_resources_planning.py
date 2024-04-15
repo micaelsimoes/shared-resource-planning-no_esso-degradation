@@ -2090,7 +2090,7 @@ def _write_shared_energy_storages_results_to_excel(planning_problem, workbook, r
                     sheet.cell(row=row_idx, column=p + 8).number_format = percent_style
 
     # ESSO's results
-    for year in results['esso']:
+    for year in results['esso']['operation']['aggregated']:
         for day in results['esso']['operation']['aggregated'][year]:
             for node_id in planning_problem.active_distribution_network_nodes:
 
