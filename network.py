@@ -591,42 +591,36 @@ def _build_model(network, params):
                         model.energy_storage_operation.add(qdch <= tan(max_phi) * pdch)
                         model.energy_storage_operation.add(qdch >= tan(min_phi) * pdch)
 
-                        if params.ess_relax_apparent_power:
-                            model.energy_storage_operation.add(sch ** 2 - (pch ** 2 + qch ** 2) == model.es_penalty_sch_up[e, s_m, s_o, p] - model.es_penalty_sch_down[e, s_m, s_o, p])
-                            model.energy_storage_operation.add(sdch ** 2 - (pdch ** 2 + qdch ** 2) == model.es_penalty_sdch_up[e, s_m, s_o, p] - model.es_penalty_sdch_down[e, s_m, s_o, p])
+                        if params.ess_relax:
+                            model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2 + model.es_penalty_sch_up[e, s_m, s_o, p] - model.es_penalty_sch_down[e, s_m, s_o, p])
+                            model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2 + model.es_penalty_sdch_up[e, s_m, s_o, p] - model.es_penalty_sdch_down[e, s_m, s_o, p])
                         else:
-                            model.energy_storage_operation.add(sch ** 2 - (pch ** 2 + qch ** 2) >= -(1/s_base) * SMALL_TOLERANCE)
-                            model.energy_storage_operation.add(sch ** 2 - (pch ** 2 + qch ** 2) <= (1/s_base) * SMALL_TOLERANCE)
-                            model.energy_storage_operation.add(sdch ** 2 - (pdch ** 2 + qdch ** 2) >= -(1/s_base) * SMALL_TOLERANCE)
-                            model.energy_storage_operation.add(sdch ** 2 - (pdch ** 2 + qdch ** 2) <= (1/s_base) * SMALL_TOLERANCE)
+                            model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
+                            model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
 
                         # State-of-Charge
                         if p > 0:
-                            if params.ess_relax_soc:
-                                model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] - model.es_soc[e, s_m, s_o, p - 1] - (sch * eff_charge - sdch / eff_discharge) == model.es_penalty_soc_up[e, s_m, s_o, p] - model.es_penalty_soc_down[e, s_m, s_o, p])
+                            if params.ess_relax:
+                                model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] == model.es_soc[e, s_m, s_o, p - 1] + (sch * eff_charge - sdch / eff_discharge) + model.es_penalty_soc_up[e, s_m, s_o, p] - model.es_penalty_soc_down[e, s_m, s_o, p])
                             else:
-                                model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] - model.es_soc[e, s_m, s_o, p - 1] - (sch * eff_charge - sdch / eff_discharge) >= -SMALL_TOLERANCE)
-                                model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] - model.es_soc[e, s_m, s_o, p - 1] - (sch * eff_charge - sdch / eff_discharge) <= SMALL_TOLERANCE)
+                                model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] == model.es_soc[e, s_m, s_o, p - 1] + (sch * eff_charge - sdch / eff_discharge))
                         else:
-                            if params.ess_relax_soc:
-                                model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] - soc_init - (sch * eff_charge - sdch / eff_discharge) == model.es_penalty_soc_up[e, s_m, s_o, p] - model.es_penalty_soc_down[e, s_m, s_o, p])
+                            if params.ess_relax:
+                                model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] == soc_init + (sch * eff_charge - sdch / eff_discharge) + model.es_penalty_soc_up[e, s_m, s_o, p] - model.es_penalty_soc_down[e, s_m, s_o, p])
                             else:
-                                model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] - soc_init - (sch * eff_charge - sdch / eff_discharge) >= -(1/s_base) * SMALL_TOLERANCE)
-                                model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] - soc_init - (sch * eff_charge - sdch / eff_discharge) <= (1/s_base) * SMALL_TOLERANCE)
+                                model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] == soc_init + (sch * eff_charge - sdch / eff_discharge))
 
                         # Charging/discharging complementarity constraints
                         if params.ess_relax:
                             model.energy_storage_ch_dch_exclusion.add(sch * sdch <= model.es_penalty_comp[e, s_m, s_o, p])
                         else:
                             # NLP formulation
-                            model.energy_storage_ch_dch_exclusion.add(sch * sdch >= -(1/s_base) * SMALL_TOLERANCE)   # Note: helps with convergence
-                            model.energy_storage_ch_dch_exclusion.add(sch * sdch <= (1/s_base) * SMALL_TOLERANCE)
+                            model.energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
 
-                    if params.ess_relax_day_balance:
-                        model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] - soc_final == model.es_penalty_day_balance_up[e, s_m, s_o] - model.es_penalty_day_balance_down[e, s_m, s_o])
+                    if params.ess_relax:
+                        model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final + model.es_penalty_day_balance_up[e, s_m, s_o] - model.es_penalty_day_balance_down[e, s_m, s_o])
                     else:
-                        model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] - soc_final >= -SMALL_TOLERANCE)
-                        model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] - soc_final <= SMALL_TOLERANCE)
+                        model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final)
 
     # - Shared Energy Storage constraints
     model.shared_energy_storage_balance = pe.ConstraintList()
