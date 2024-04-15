@@ -16,7 +16,6 @@ class SharedEnergyStorageParameters:
         self.ess_relax_rating = True                    # Rated power and energy capacity (relax/use slack variables or not)
         self.ess_relax_available = True                 # Available power and energy capacity (relax/use slack variables or not)
         self.ess_relax_degradation = True               # Degradation variables (relax/use slack variables or not)
-        self.slacks_used = False
         self.plot_results = False                       # Plot results
         self.print_results_to_file = False              # Write results to file
         self.verbose = False                            # Verbose -- Bool
@@ -35,8 +34,7 @@ def _read_parameters_from_file(planning_parameters, filename):
     planning_parameters.min_pe_factor = float(params_data['min_pe_factor'])
     planning_parameters.max_pe_factor = float(params_data['max_pe_factor'])
     planning_parameters.ess_relax_comp = bool(params_data['ess_relax_comp'])
+    planning_parameters.ess_relax_available = bool(params_data['ess_relax_available'])
+    planning_parameters.ess_relax_degradation = bool(params_data['ess_relax_degradation'])
     planning_parameters.print_results_to_file = bool(params_data['print_results_to_file'])
     planning_parameters.solver_params.read_solver_parameters(params_data['solver'])
-
-    if planning_parameters.ess_relax_comp:
-        planning_parameters.slacks_used = True
