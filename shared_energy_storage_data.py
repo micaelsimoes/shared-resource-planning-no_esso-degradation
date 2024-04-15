@@ -171,17 +171,22 @@ def _build_subproblem_model(shared_ess_data):
     model.es_pch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_pdch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_avg_ch_dch_day = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-    model.es_soh_per_unit_day = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
+    model.es_soh_per_unit_day = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=1.00, bounds=(0.00, 1.00))
     model.es_degradation_per_unit_day = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
+    model.es_soh_per_unit_year = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=1.00, bounds=(0.00, 1.00))
+    model.es_degradation_per_unit_year = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
     if shared_ess_data.params.ess_relax_degradation:
         model.es_penalty_avg_ch_dch_day_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
         model.es_penalty_avg_ch_dch_day_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-        model.es_penalty_soh_per_unit_day_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=1.00)
-        model.es_penalty_soh_per_unit_day_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=1.00)
+        model.es_penalty_soh_per_unit_day_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
+        model.es_penalty_soh_per_unit_day_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
         model.es_penalty_degradation_per_unit_day_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
         model.es_penalty_degradation_per_unit_day_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-    model.es_soh_per_unit_year = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
-    model.es_degradation_per_unit_year = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
+        model.es_penalty_soh_per_unit_year_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
+        model.es_penalty_soh_per_unit_year_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
+        model.es_penalty_degradation_per_unit_year_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
+        model.es_penalty_degradation_per_unit_year_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
+
     model.es_soh_per_unit_cumul = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
     model.es_degradation_per_unit_cumul = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
     if shared_ess_data.params.ess_relax_comp:
@@ -310,12 +315,14 @@ def _build_subproblem_model(shared_ess_data):
                 if shared_ess_data.params.ess_relax_degradation:
                     model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_day[e, y_inv, y] * (2 * shared_energy_storage.cl_nom * model.es_e_rated_per_unit[e, y_inv, y]) == avg_ch_dch_day + model.es_penalty_degradation_per_unit_day_up[e, y_inv, y] - model.es_penalty_degradation_per_unit_day_down[e, y_inv, y])
                     model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_day[e, y_inv, y] == 1.00 - model.es_degradation_per_unit_day[e, y_inv, y] + model.es_penalty_soh_per_unit_day_up[e, y_inv, y] - model.es_penalty_soh_per_unit_day_down[e, y_inv, y])
+                    model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_year[e, y_inv, y] == model.es_soh_per_unit_day[e, y_inv, y] ** (365 * num_years) + model.es_penalty_soh_per_unit_year_up[e, y_inv, y] - model.es_penalty_soh_per_unit_year_down[e, y_inv, y])
+                    model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_year[e, y_inv, y] == 1.00 - model.es_soh_per_unit_year[e, y_inv, y] + model.es_penalty_degradation_per_unit_year_up[e, y_inv, y] - model.es_penalty_degradation_per_unit_year_down[e, y_inv, y])
                 else:
                     model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_day[e, y_inv, y] * (2 * shared_energy_storage.cl_nom * model.es_e_rated_per_unit[e, y_inv, y]) == avg_ch_dch_day)
                     model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_day[e, y_inv, y] == 1.00 - model.es_degradation_per_unit_day[e, y_inv, y])
+                    model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_year[e, y_inv, y] == model.es_soh_per_unit_day[e, y_inv, y] ** (365 * num_years))
+                    model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_year[e, y_inv, y] == 1.00 - model.es_soh_per_unit_year[e, y_inv, y])
 
-                model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_year[e, y_inv, y] == model.es_soh_per_unit_day[e, y_inv, y]**(365 * num_years))
-                model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_year[e, y_inv, y] == 1.00 - model.es_soh_per_unit_year[e, y_inv, y])
                 model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[e, y_inv, y] == previous_soh * model.es_soh_per_unit_year[e, y_inv, y])
                 model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_cumul[e, y_inv, y] == 1.00 - model.es_soh_per_unit_cumul[e, y_inv, y])
                 model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_year[e, y_inv, y] >= shared_energy_storage.soh_min)              # ensures a minimum SoH
@@ -415,9 +422,11 @@ def _build_subproblem_model(shared_ess_data):
             # - Degradation model slack variables
             if shared_ess_data.params.ess_relax_degradation:
                 for y in model.years:
-                    slack_penalty += PENALTY_ESS_AVERAGE_DAY_CYCLE * (model.es_penalty_avg_ch_dch_day_up[e, y_inv, y] + model.es_penalty_avg_ch_dch_day_down[e, y_inv, y])
+                    slack_penalty += PENALTY_ESS_DEGRADATION * (model.es_penalty_avg_ch_dch_day_up[e, y_inv, y] + model.es_penalty_avg_ch_dch_day_down[e, y_inv, y])
                     slack_penalty += PENALTY_ESS_DEGRADATION * (model.es_penalty_degradation_per_unit_day_up[e, y_inv, y] + model.es_penalty_degradation_per_unit_day_down[e, y_inv, y])
                     slack_penalty += PENALTY_ESS_DEGRADATION * (model.es_penalty_soh_per_unit_day_up[e, y_inv, y] + model.es_penalty_soh_per_unit_day_down[e, y_inv, y])
+                    slack_penalty += PENALTY_ESS_DEGRADATION * (model.es_penalty_degradation_per_unit_year_up[e, y_inv, y] + model.es_penalty_degradation_per_unit_year_down[e, y_inv, y])
+                    slack_penalty += PENALTY_ESS_DEGRADATION * (model.es_penalty_soh_per_unit_year_up[e, y_inv, y] + model.es_penalty_soh_per_unit_year_down[e, y_inv, y])
 
     model.objective = pe.Objective(sense=pe.minimize, expr=slack_penalty)
 
@@ -763,12 +772,20 @@ def _process_relaxation_variables_detailed(shared_ess_data, model):
                     degradation_day_down = pe.value(model.es_penalty_degradation_per_unit_day_down[e, y_inv, y_curr])
                     soh_day_up = pe.value(model.es_penalty_soh_per_unit_day_up[e, y_inv, y_curr])
                     soh_day_down = pe.value(model.es_penalty_soh_per_unit_day_down[e, y_inv, y_curr])
+                    degradation_year_up = pe.value(model.es_penalty_degradation_per_unit_year_up[e, y_inv, y_curr])
+                    degradation_year_down = pe.value(model.es_penalty_degradation_per_unit_year_down[e, y_inv, y_curr])
+                    soh_year_up = pe.value(model.es_penalty_soh_per_unit_year_up[e, y_inv, y_curr])
+                    soh_year_down = pe.value(model.es_penalty_soh_per_unit_year_down[e, y_inv, y_curr])
                     processed_results[year_inv][year_curr][node_id]['avg_ch_dch_up'] = avg_ch_dch_up
                     processed_results[year_inv][year_curr][node_id]['avg_ch_dch_down'] = avg_ch_dch_down
                     processed_results[year_inv][year_curr][node_id]['degradation_day_up'] = degradation_day_up
                     processed_results[year_inv][year_curr][node_id]['degradation_day_down'] = degradation_day_down
                     processed_results[year_inv][year_curr][node_id]['soh_day_up'] = soh_day_up
                     processed_results[year_inv][year_curr][node_id]['soh_day_down'] = soh_day_down
+                    processed_results[year_inv][year_curr][node_id]['degradation_year_up'] = degradation_year_up
+                    processed_results[year_inv][year_curr][node_id]['degradation_year_down'] = degradation_year_down
+                    processed_results[year_inv][year_curr][node_id]['soh_year_up'] = soh_year_up
+                    processed_results[year_inv][year_curr][node_id]['soh_year_down'] = soh_year_down
 
     return processed_results
 
@@ -1465,6 +1482,10 @@ def _write_detailed_relaxation_slacks_results_to_excel(shared_ess_data, workbook
                 degradation_day_down = results[year_inv][year_curr][node_id]['degradation_day_down']
                 soh_day_up = results[year_inv][year_curr][node_id]['soh_day_up']
                 soh_day_down = results[year_inv][year_curr][node_id]['soh_day_down']
+                degradation_year_up = results[year_inv][year_curr][node_id]['degradation_year_up']
+                degradation_year_down = results[year_inv][year_curr][node_id]['degradation_year_down']
+                soh_year_up = results[year_inv][year_curr][node_id]['soh_year_up']
+                soh_year_down = results[year_inv][year_curr][node_id]['soh_year_down']
 
                 # - Srated, up
                 sheet.cell(row=row_idx, column=1).value = node_id
@@ -1589,6 +1610,42 @@ def _write_detailed_relaxation_slacks_results_to_excel(shared_ess_data, workbook
                 sheet.cell(row=row_idx, column=3).value = int(year_curr)
                 sheet.cell(row=row_idx, column=4).value = 'SoH_day down, [MVAh]'
                 sheet.cell(row=row_idx, column=5).value = soh_day_down
+                sheet.cell(row=row_idx, column=5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - Deg_year, up
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'Deg_year up, [MVAh]'
+                sheet.cell(row=row_idx, column=5).value = degradation_year_up
+                sheet.cell(row=row_idx, column=5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - Deg_year, down
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'Deg_year down, [MVAh]'
+                sheet.cell(row=row_idx, column=5).value = degradation_year_down
+                sheet.cell(row=row_idx, column=5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - SoH_year, up
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'SoH_year up, [MVAh]'
+                sheet.cell(row=row_idx, column=5).value = soh_year_up
+                sheet.cell(row=row_idx, column=5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - SoH_year, down
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'SoH_year down, [MVAh]'
+                sheet.cell(row=row_idx, column=5).value = soh_year_down
                 sheet.cell(row=row_idx, column=5).number_format = decimal_style
                 row_idx = row_idx + 1
 
