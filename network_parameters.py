@@ -17,6 +17,7 @@ class NetworkParameters:
         self.enforce_vg = False
         self.slack_line_limits = False
         self.slack_voltage_limits = False
+        self.voltage_relax = False
         self.ess_relax_comp = False
         self.ess_relax_apparent_power = False
         self.ess_relax_soc = False

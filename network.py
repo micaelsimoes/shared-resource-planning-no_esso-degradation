@@ -214,6 +214,11 @@ def _build_model(network, params):
         model.slack_e_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
         model.slack_f_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
         model.slack_f_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+    if params.voltage_relax:
+        model.e_penalty_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.e_penalty_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.f_penalty_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.e_penalty_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     for i in model.nodes:
         node = network.nodes[i]
         e_lb, e_ub = -node.v_max, node.v_max
@@ -509,10 +514,13 @@ def _build_model(network, params):
                     if params.slack_voltage_limits:
                         e_actual += model.slack_e_up[i, s_m, s_o, p] - model.slack_e_down[i, s_m, s_o, p]
                         f_actual += model.slack_f_up[i, s_m, s_o, p] - model.slack_f_down[i, s_m, s_o, p]
-                    model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] - e_actual <= SMALL_TOLERANCE)
-                    model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] - e_actual >= -SMALL_TOLERANCE)
-                    model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] - f_actual <= SMALL_TOLERANCE)
-                    model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] - f_actual >= -SMALL_TOLERANCE)
+
+                    if params.voltage_relax:
+                        model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] == e_actual)
+                        model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] == f_actual)
+                    else:
+                        model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] == e_actual + model.e_penalty_up[i, s_m, s_o, p] - model.e_penalty_down[i, s_m, s_o, p])
+                        model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] == f_actual + model.f_penalty_up[i, s_m, s_o, p] - model.f_penalty_down[i, s_m, s_o, p])
 
                     # voltage magnitude constraints
                     if node.type == BUS_PV:
