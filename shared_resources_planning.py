@@ -1303,8 +1303,7 @@ def _process_operational_planning_results(operational_planning_problem, tso_mode
         dso_model = dso_models[node_id]
         distribution_network = distribution_networks[node_id]
         processed_results['dso'][node_id] = distribution_network.process_results(dso_model, optimization_results['dso'][node_id])
-    results_esso = shared_ess_data.process_results(esso_model)
-    processed_results['esso'] = results_esso['operation']['aggregated']
+    processed_results['esso'] = shared_ess_data.process_results_aggregated(esso_model)
     processed_results['interface'] = _process_results_interface_power_flow(operational_planning_problem, tso_model, dso_models)
 
     return processed_results
