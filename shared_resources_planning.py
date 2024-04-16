@@ -162,10 +162,9 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         primal_evolution.append(compute_primal_value(planning_problem, tso_model, dso_models))
 
         # 2.3 STOPPING CRITERIA evaluation
-        if iter >= 1:
-            convergence = check_admm_convergence(planning_problem, consensus_vars, consensus_vars_prev_iter, admm_parameters)
-            if convergence:
-                break
+        convergence = check_admm_convergence(planning_problem, consensus_vars, consensus_vars_prev_iter, admm_parameters)
+        if convergence:
+            break
 
         # --------------------------------------------------------------------------------------------------------------
         # 3. Solve DSOs problems
