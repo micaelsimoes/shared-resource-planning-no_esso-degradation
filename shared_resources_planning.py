@@ -821,10 +821,10 @@ def update_distribution_models_to_admm(distribution_networks, models, params):
                 dso_model[year][day].q_pf_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)    # Reactive power - requested by transmission network
                 dso_model[year][day].dual_pf_p_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)   # Dual variable - active power
                 dso_model[year][day].dual_pf_q_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)   # Dual variable - reactive power
-                dso_model[year][day].p_pf_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)    # Active power - previous iteration
-                dso_model[year][day].q_pf_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)    # Reactive power - previous iteration
-                dso_model[year][day].dual_pf_p_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Dual variable - previous iteration
-                dso_model[year][day].dual_pf_q_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Dual variable - previous iteration
+                #dso_model[year][day].p_pf_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)    # Active power - previous iteration
+                #dso_model[year][day].q_pf_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)    # Reactive power - previous iteration
+                #dso_model[year][day].dual_pf_p_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Dual variable - previous iteration
+                #dso_model[year][day].dual_pf_q_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Dual variable - previous iteration
 
                 dso_model[year][day].rho_ess = pe.Var(domain=pe.NonNegativeReals)
                 dso_model[year][day].rho_ess.fix(params.rho['ess'][distribution_network.network[year][day].name])
@@ -839,16 +839,16 @@ def update_distribution_models_to_admm(distribution_networks, models, params):
                 for p in dso_model[year][day].periods:
                     constraint_p_req = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_req[p]) / interface_branch_rating
                     constraint_q_req = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_req[p]) / interface_branch_rating
-                    constraint_p_prev = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_prev[p]) / interface_branch_rating
-                    constraint_q_prev = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_prev[p]) / interface_branch_rating
+                    #constraint_p_prev = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_prev[p]) / interface_branch_rating
+                    #constraint_q_prev = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_prev[p]) / interface_branch_rating
                     obj += (dso_model[year][day].dual_pf_p_req[p]) * (constraint_p_req)
                     obj += (dso_model[year][day].dual_pf_q_req[p]) * (constraint_q_req)
                     obj += (dso_model[year][day].rho_pf / 2) * (constraint_p_req) ** 2
                     obj += (dso_model[year][day].rho_pf / 2) * (constraint_q_req) ** 2
-                    obj += (dso_model[year][day].dual_pf_p_prev[p]) * (constraint_p_prev)
-                    obj += (dso_model[year][day].dual_pf_q_prev[p]) * (constraint_q_prev)
-                    obj += (dso_model[year][day].rho_pf / 2) * (constraint_p_prev) ** 2
-                    obj += (dso_model[year][day].rho_pf / 2) * (constraint_q_prev) ** 2
+                    #obj += (dso_model[year][day].dual_pf_p_prev[p]) * (constraint_p_prev)
+                    #obj += (dso_model[year][day].dual_pf_q_prev[p]) * (constraint_q_prev)
+                    #obj += (dso_model[year][day].rho_pf / 2) * (constraint_p_prev) ** 2
+                    #obj += (dso_model[year][day].rho_pf / 2) * (constraint_q_prev) ** 2
 
                 # Augmented Lagrangian -- Shared ESS (residual balancing)
                 sess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
