@@ -112,10 +112,10 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     consensus_vars, dual_vars, consensus_vars_prev_iter = create_admm_variables(planning_problem)
 
     # Create Operational Planning models
-    dso_models = create_distribution_networks_models(distribution_networks, consensus_vars['interface']['pf']['dso'], consensus_vars['ess']['dso'], candidate_solution['total_capacity'])
+    dso_models = create_distribution_networks_models(distribution_networks, consensus_vars['interface']['pf']['dso'], consensus_vars_prev_iter['interface']['pf']['dso'], consensus_vars['ess']['dso'], candidate_solution['total_capacity'])
     update_distribution_models_to_admm(distribution_networks, dso_models, admm_parameters)
 
-    tso_model = create_transmission_network_model(transmission_network, consensus_vars['interface']['v'], consensus_vars['interface']['pf'], consensus_vars['ess']['tso'], candidate_solution['total_capacity'])
+    tso_model = create_transmission_network_model(transmission_network, consensus_vars['interface']['v'], consensus_vars['interface']['pf'], consensus_vars_prev_iter['interface']['pf'], consensus_vars['ess']['tso'], candidate_solution['total_capacity'])
     update_transmission_model_to_admm(transmission_network, tso_model, distribution_networks, admm_parameters)
 
     esso_model = create_shared_energy_storage_model(shared_ess_data, consensus_vars['ess']['esso'], candidate_solution['investment'])
@@ -239,7 +239,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     return results, optim_models, sensitivities, primal_evolution
 
 
-def create_transmission_network_model(transmission_network, interface_v_vars, interface_pf_vars, sess_vars, candidate_solution):
+def create_transmission_network_model(transmission_network, interface_v_vars, interface_pf_vars, interface_pf_vars_prev_iter, sess_vars, candidate_solution):
 
     # Build model, fix candidate solution, and Run S-MPOPF model
     transmission_network.update_data_with_candidate_solution(candidate_solution)
@@ -275,6 +275,8 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                     interface_v_vars[node_id][year][day][p] = v_mag
                     interface_pf_vars['tso'][node_id][year][day]['p'][p] = interface_pf_p
                     interface_pf_vars['tso'][node_id][year][day]['q'][p] = interface_pf_q
+                    interface_pf_vars_prev_iter['tso'][node_id][year][day]['p'][p] = interface_pf_p
+                    interface_pf_vars_prev_iter['tso'][node_id][year][day]['q'][p] = interface_pf_q
 
     # Get initial Shared ESS values
     for year in transmission_network.years:
@@ -290,7 +292,7 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
     return tso_model
 
 
-def create_distribution_networks_models(distribution_networks, interface_vars, sess_vars, candidate_solution):
+def create_distribution_networks_models(distribution_networks, interface_vars, interface_vars_prev_iter, sess_vars, candidate_solution):
 
     dso_models = dict()
 
@@ -313,6 +315,8 @@ def create_distribution_networks_models(distribution_networks, interface_vars, s
                     interface_pf_q = pe.value(dso_model[year][day].expected_interface_pf_q[p]) * s_base
                     interface_vars[node_id][year][day]['p'][p] = interface_pf_p
                     interface_vars[node_id][year][day]['q'][p] = interface_pf_q
+                    interface_vars_prev_iter[node_id][year][day]['p'][p] = interface_pf_p
+                    interface_vars_prev_iter[node_id][year][day]['q'][p] = interface_pf_q
 
         # Get initial Shared ESS values
         for year in distribution_network.years:
