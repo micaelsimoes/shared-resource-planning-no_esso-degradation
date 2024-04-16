@@ -149,14 +149,14 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         if debug_flag:
             for node_id in planning_problem.active_distribution_network_nodes:
                 print(f"Node {node_id}")
-                for year in consensus_vars['interface']['pf']['tso'][node_id]:
+                for year in consensus_vars['interface']['pf']['tso']['current'][node_id]:
                     print(f"\tYear {year}")
-                    for day in consensus_vars['interface']['pf']['tso'][node_id][year]:
+                    for day in consensus_vars['interface']['pf']['tso']['current'][node_id][year]:
                         print(f"\t\tDay {day}")
-                        print(f"\t\t\tTSO, P  {consensus_vars['interface']['pf']['tso'][node_id][year][day]['p']}")
-                        print(f"\t\t\tDSO, P  {consensus_vars['interface']['pf']['dso'][node_id][year][day]['p']}")
-                        print(f"\t\t\tTSO, Q  {consensus_vars['interface']['pf']['tso'][node_id][year][day]['q']}")
-                        print(f"\t\t\tDSO, Q  {consensus_vars['interface']['pf']['dso'][node_id][year][day]['q']}")
+                        print(f"\t\t\tTSO, P  {consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p']}")
+                        print(f"\t\t\tDSO, P  {consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p']}")
+                        print(f"\t\t\tTSO, Q  {consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q']}")
+                        print(f"\t\t\tDSO, Q  {consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q']}")
 
         # 2.2 Update primal evolution
         primal_evolution.append(compute_primal_value(planning_problem, tso_model, dso_models))
@@ -181,14 +181,14 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         if debug_flag:
             for node_id in planning_problem.active_distribution_network_nodes:
                 print(f"Node {node_id}")
-                for year in consensus_vars['interface']['pf']['tso'][node_id]:
+                for year in consensus_vars['interface']['pf']['tso']['current'][node_id]:
                     print(f"\tYear {year}")
-                    for day in consensus_vars['interface']['pf']['tso'][node_id][year]:
+                    for day in consensus_vars['interface']['pf']['tso']['current'][node_id][year]:
                         print(f"\t\tDay {day}")
-                        print(f"\t\t\tTSO, P  {consensus_vars['interface']['pf']['tso'][node_id][year][day]['p']}")
-                        print(f"\t\t\tDSO, P  {consensus_vars['interface']['pf']['dso'][node_id][year][day]['p']}")
-                        print(f"\t\t\tTSO, Q  {consensus_vars['interface']['pf']['tso'][node_id][year][day]['q']}")
-                        print(f"\t\t\tDSO, Q  {consensus_vars['interface']['pf']['dso'][node_id][year][day]['q']}")
+                        print(f"\t\t\tTSO, P  {consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p']}")
+                        print(f"\t\t\tDSO, P  {consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p']}")
+                        print(f"\t\t\tTSO, Q  {consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q']}")
+                        print(f"\t\t\tDSO, Q  {consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q']}")
 
         # 3.2 Update primal evolution
         primal_evolution.append(compute_primal_value(planning_problem, tso_model, dso_models))
