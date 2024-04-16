@@ -916,8 +916,8 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
                     model[year][day].q_pf_req[dn, p].fix(pf_req['current'][node_id][year][day]['q'][p] / s_base)
                     model[year][day].dual_pf_p_prev[dn, p].fix(dual_pf['prev'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].dual_pf_q_prev[dn, p].fix(dual_pf['prev'][node_id][year][day]['q'][p] / s_base)
-                    model[year][day].p_pf_prev[dn, p].fix(pf_prev[node_id][year][day]['p'][p] / s_base)
-                    model[year][day].q_pf_prev[dn, p].fix(pf_prev[node_id][year][day]['q'][p] / s_base)
+                    model[year][day].p_pf_prev[dn, p].fix(pf_req['prev'][node_id][year][day]['p'][p] / s_base)
+                    model[year][day].q_pf_prev[dn, p].fix(pf_req['prev'][node_id][year][day]['q'][p] / s_base)
 
                 # Update shared ESS capacity and power requests
                 shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(node_id)
@@ -977,7 +977,7 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
                     model[year][day].dual_pf_p_prev[p].fix(dual_pf['prev'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].dual_pf_q_prev[p].fix(dual_pf['prev'][node_id][year][day]['q'][p] / s_base)
                     model[year][day].p_pf_prev[p].fix(pf_req['prev'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].q_pf_prev[p].fix(pf_req['prev'[node_id][year][day]['q'][p] / s_base)
+                    model[year][day].q_pf_prev[p].fix(pf_req['prev'][node_id][year][day]['q'][p] / s_base)
 
 
                 # Update SHARED ENERGY STORAGE variables (if existent)
