@@ -75,7 +75,9 @@ class SharedEnergyStorageData:
                    'relaxation_variables': {
                        'aggregated': self.process_relaxation_variables_aggregated(model),
                        'detailed': self.process_relaxation_variables_detailed(model),
-                       'operation': self.process_relaxation_variables_operation(model)}
+                       'operation': {
+                           'aggregated': self.process_relaxation_variables_operation_aggregated(model),
+                           'detailed': self.process_relaxation_variables_operation_detailed(model)}}
                    }
         return results
 
@@ -97,11 +99,14 @@ class SharedEnergyStorageData:
     def process_relaxation_variables_detailed(self, model):
         return _process_relaxation_variables_detailed(self, model)
 
-    def process_relaxation_variables_operation(self, model):
-        return _process_relaxation_variables_operation(self, model)
+    def process_relaxation_variables_operation_aggregated(self, model):
+        return _process_relaxation_variables_operation_aggregated(self, model)
+
+    def process_relaxation_variables_operation_detailed(self, model):
+        return _process_relaxation_variables_operation_detailed(self, model)
 
     def write_optimization_results_to_excel(self, model):
-        results = self.process_results(self, model)
+        results = self.process_results(model)
         _write_optimization_results_to_excel(self, self.results_dir, results)
 
     def update_data_with_candidate_solution(self, candidate_solution):
@@ -127,7 +132,8 @@ class SharedEnergyStorageData:
         _write_detailed_relaxation_slacks_results_to_excel(self, workbook, results)
 
     def write_operation_relaxation_slacks_results_to_excel(self, workbook, results):
-        _write_operation_relaxation_slacks_results_to_excel(self, workbook, results)
+        _write_aggregated_operation_relaxation_slacks_results_to_excel(self, workbook, results['aggregated'])
+        _write_detailed_operation_relaxation_slacks_results_to_excel(self, workbook, results['detailed'])
 
 
 # ======================================================================================================================
@@ -847,7 +853,39 @@ def _process_relaxation_variables_detailed(shared_ess_data, model):
     return processed_results
 
 
-def _process_relaxation_variables_operation(shared_ess_data, model):
+def _process_relaxation_variables_operation_aggregated(shared_ess_data, model):
+
+    processed_results = dict()
+    repr_days = [day for day in shared_ess_data.days]
+    repr_years = [year for year in shared_ess_data.years]
+
+    for y in model.years:
+        year = repr_years[y]
+        processed_results[year] = dict()
+        for d in model.days:
+            day = repr_days[d]
+            processed_results[year][day] = dict()
+            for e in model.energy_storages:
+                node_id = shared_ess_data.shared_energy_storages[year][e].bus
+                processed_results[year][day][node_id] = dict()
+                processed_results[year][day][node_id]['pnet_up'] = list()
+                processed_results[year][day][node_id]['pnet_down'] = list()
+                processed_results[year][day][node_id]['soc_up'] = list()
+                processed_results[year][day][node_id]['soc_down'] = list()
+                for p in model.periods:
+                    pnet_up = pe.value(model.es_penalty_pnet_up[e, y, d, p])
+                    pnet_down = pe.value(model.es_penalty_pnet_down[e, y, d, p])
+                    soc_up = pe.value(model.es_penalty_soc_up[e, y, d, p])
+                    soc_down = pe.value(model.es_penalty_soc_up[e, y, d, p])
+                    processed_results[year][day][node_id]['pnet_up'].append(pnet_up)
+                    processed_results[year][day][node_id]['pnet_down'].append(pnet_down)
+                    processed_results[year][day][node_id]['soc_up'].append(soc_up)
+                    processed_results[year][day][node_id]['soc_down'].append(soc_down)
+
+    return processed_results
+
+
+def _process_relaxation_variables_operation_detailed(shared_ess_data, model):
 
     processed_results = dict()
     repr_days = [day for day in shared_ess_data.days]
@@ -926,7 +964,8 @@ def _write_optimization_results_to_excel(shared_ess_data, data_dir, results):
     _write_detailed_shared_energy_storage_soh_results_to_excel(shared_ess_data, wb, results['soh']['detailed'])
     _write_aggregated_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['aggregated'])
     _write_detailed_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['detailed'])
-    _write_operation_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['operation'])
+    _write_aggregated_operation_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['operation']['aggregated'])
+    _write_detailed_operation_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['operation']['detailed'])
 
     results_filename = os.path.join(data_dir, f'{shared_ess_data.name}_shared_ess_results.xlsx')
     try:
@@ -1750,9 +1789,74 @@ def _write_detailed_relaxation_slacks_results_to_excel(shared_ess_data, workbook
                 row_idx = row_idx + 1
 
 
-def _write_operation_relaxation_slacks_results_to_excel(shared_ess_data, workbook, results):
+def _write_aggregated_operation_relaxation_slacks_results_to_excel(shared_ess_data, workbook, results):
 
-    sheet = workbook.create_sheet('Relaxation Slacks, operation')
+    sheet = workbook.create_sheet('Slacks operation, aggregated')
+
+    row_idx = 1
+    decimal_style = '0.00'
+
+    # Write Header
+    sheet.cell(row=row_idx, column=1).value = 'Node ID'
+    sheet.cell(row=row_idx, column=2).value = 'Year'
+    sheet.cell(row=row_idx, column=3).value = 'Day'
+    sheet.cell(row=row_idx, column=4).value = 'Quantity'
+    for p in range(shared_ess_data.num_instants):
+        sheet.cell(row=row_idx, column=p + 5).value = p
+    row_idx = row_idx + 1
+
+    for node_id in shared_ess_data.active_distribution_network_nodes:
+        for year in results:
+            for day in results[year]:
+
+                # Pnet, up
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year)
+                sheet.cell(row=row_idx, column=3).value = day
+                sheet.cell(row=row_idx, column=4).value = 'Pnet, up'
+                for p in range(shared_ess_data.num_instants):
+                    pnet_up = results[year][day][node_id]['pnet_up'][p]
+                    sheet.cell(row=row_idx, column=p + 5).value = pnet_up
+                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # Pnet, down
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year)
+                sheet.cell(row=row_idx, column=3).value = day
+                sheet.cell(row=row_idx, column=4).value = 'Pnet, down'
+                for p in range(shared_ess_data.num_instants):
+                    pnet_down = results[year][day][node_id]['pnet_down'][p]
+                    sheet.cell(row=row_idx, column=p + 5).value = pnet_down
+                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # SoC, up
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year)
+                sheet.cell(row=row_idx, column=3).value = day
+                sheet.cell(row=row_idx, column=4).value = 'SoC, up'
+                for p in range(shared_ess_data.num_instants):
+                    soc_up = results[year][day][node_id]['soc_up'][p]
+                    sheet.cell(row=row_idx, column=p + 5).value = soc_up
+                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # SoC, down
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year)
+                sheet.cell(row=row_idx, column=3).value = day
+                sheet.cell(row=row_idx, column=4).value = 'SoC, down'
+                for p in range(shared_ess_data.num_instants):
+                    soc_down = results[year][day][node_id]['soc_down'][p]
+                    sheet.cell(row=row_idx, column=p + 5).value = soc_down
+                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+
+def _write_detailed_operation_relaxation_slacks_results_to_excel(shared_ess_data, workbook, results):
+
+    sheet = workbook.create_sheet('Slacks operation, detailed')
 
     row_idx = 1
     decimal_style = '0.00'
