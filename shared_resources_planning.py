@@ -737,10 +737,10 @@ def update_transmission_model_to_admm(transmission_network, model, distribution_
             model[year][day].q_pf_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)        # Reactive power - requested by distribution networks
             model[year][day].dual_pf_p_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - active power requested
             model[year][day].dual_pf_q_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - reactive power requested
-            model[year][day].p_pf_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)        # Active power - previous iteration
-            model[year][day].q_pf_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)        # Reactive power - previous iteration
-            model[year][day].dual_pf_p_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - previous iteration
-            model[year][day].dual_pf_q_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - previous iteration
+            #model[year][day].p_pf_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)        # Active power - previous iteration
+            #model[year][day].q_pf_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)        # Reactive power - previous iteration
+            #model[year][day].dual_pf_p_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - previous iteration
+            #model[year][day].dual_pf_q_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - previous iteration
 
             model[year][day].rho_ess = pe.Var(domain=pe.NonNegativeReals)
             model[year][day].rho_ess.fix(params.rho['ess'][transmission_network.name])
@@ -756,16 +756,16 @@ def update_transmission_model_to_admm(transmission_network, model, distribution_
                 for p in model[year][day].periods:
                     constraint_p_req = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_req[dn, p]) / interface_branch_rating
                     constraint_q_req = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_req[dn, p]) / interface_branch_rating
-                    constraint_p_prev = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_prev[dn, p]) / interface_branch_rating
-                    constraint_q_prev = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_prev[dn, p]) / interface_branch_rating
+                    #constraint_p_prev = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_prev[dn, p]) / interface_branch_rating
+                    #constraint_q_prev = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_prev[dn, p]) / interface_branch_rating
                     obj += model[year][day].dual_pf_p_req[dn, p] * constraint_p_req
                     obj += model[year][day].dual_pf_q_req[dn, p] * constraint_q_req
                     obj += (model[year][day].rho_pf / 2) * constraint_p_req ** 2
                     obj += (model[year][day].rho_pf / 2) * constraint_q_req ** 2
-                    obj += model[year][day].dual_pf_p_prev[dn, p] * constraint_p_prev
-                    obj += model[year][day].dual_pf_q_prev[dn, p] * constraint_q_prev
-                    obj += (model[year][day].rho_pf / 2) * constraint_p_prev ** 2
-                    obj += (model[year][day].rho_pf / 2) * constraint_q_prev ** 2
+                    #obj += model[year][day].dual_pf_p_prev[dn, p] * constraint_p_prev
+                    #obj += model[year][day].dual_pf_q_prev[dn, p] * constraint_q_prev
+                    #obj += (model[year][day].rho_pf / 2) * constraint_p_prev ** 2
+                    #obj += (model[year][day].rho_pf / 2) * constraint_q_prev ** 2
 
             for e in model[year][day].active_distribution_networks:
                 rating = transmission_network.network[year][day].shared_energy_storages[e].s
