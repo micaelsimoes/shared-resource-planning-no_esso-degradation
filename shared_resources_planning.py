@@ -861,19 +861,20 @@ def update_distribution_models_to_admm(distribution_networks, models, params):
 
                 # Add ADMM variables
                 dso_model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
-                dso_model[year][day].rho_v.fix(params.rho['e'][distribution_network.network[year][day].name])
+                dso_model[year][day].rho_v.fix(params.rho['v'][distribution_network.network[year][day].name])
+                dso_model[year][day].v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)
+                dso_model[year][day].dual_v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)   # Dual variable - active power
+                dso_model[year][day].v_sqr_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)    # Active power - previous iteration
+                dso_model[year][day].dual_v_sqr_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Dual variable - previous iteration
+
                 dso_model[year][day].rho_pf = pe.Var(domain=pe.NonNegativeReals)
                 dso_model[year][day].rho_pf.fix(params.rho['pf'][distribution_network.network[year][day].name])
-                dso_model[year][day].v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)
                 dso_model[year][day].p_pf_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)    # Active power - requested by transmission network
                 dso_model[year][day].q_pf_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)    # Reactive power - requested by transmission network
-                dso_model[year][day].dual_v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)   # Dual variable - active power
                 dso_model[year][day].dual_pf_p_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)   # Dual variable - active power
                 dso_model[year][day].dual_pf_q_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)   # Dual variable - reactive power
-                dso_model[year][day].v_sqr_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)    # Active power - previous iteration
                 dso_model[year][day].p_pf_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)    # Active power - previous iteration
                 dso_model[year][day].q_pf_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)    # Reactive power - previous iteration
-                dso_model[year][day].dual_v_sqr_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Dual variable - previous iteration
                 dso_model[year][day].dual_pf_p_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Dual variable - previous iteration
                 dso_model[year][day].dual_pf_q_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Dual variable - previous iteration
 
