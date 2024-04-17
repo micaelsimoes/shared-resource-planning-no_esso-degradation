@@ -571,10 +571,10 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                     error_vsqr_req_dso = interface_vars['v_sqr']['dso']['current'][node_id][year][day][p] - interface_vars['v_sqr']['tso']['current'][node_id][year][day][p]
                     error_p_pf_req_dso = interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p] - interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p]
                     error_q_pf_req_dso = interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p] - interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p]
-                    dual_vars['v_sqr']['tso']['current'][node_id][year][day][p] += params.rho['pf'][transmission_network.name] * error_vsqr_req_tso
+                    dual_vars['v_sqr']['tso']['current'][node_id][year][day][p] += params.rho['v'][transmission_network.name] * error_vsqr_req_tso
                     dual_vars['pf']['tso']['current'][node_id][year][day]['p'][p] += params.rho['pf'][transmission_network.name] * error_p_pf_req_tso
                     dual_vars['pf']['tso']['current'][node_id][year][day]['q'][p] += params.rho['pf'][transmission_network.name] * error_q_pf_req_tso
-                    dual_vars['v_sqr']['dso']['current'][node_id][year][day][p] += params.rho['pf'][distribution_network.name] * error_vsqr_req_dso
+                    dual_vars['v_sqr']['dso']['current'][node_id][year][day][p] += params.rho['v'][distribution_network.name] * error_vsqr_req_dso
                     dual_vars['pf']['dso']['current'][node_id][year][day]['p'][p] += params.rho['pf'][distribution_network.name] * error_p_pf_req_dso
                     dual_vars['pf']['dso']['current'][node_id][year][day]['q'][p] += params.rho['pf'][distribution_network.name] * error_q_pf_req_dso
 
@@ -584,10 +584,10 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                     error_vsqr_prev_dso = interface_vars['v_sqr']['dso']['current'][node_id][year][day][p] - interface_vars['v_sqr']['dso']['prev'][node_id][year][day][p]
                     error_p_pf_prev_dso = interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p] - interface_vars['pf']['dso']['prev'][node_id][year][day]['p'][p]
                     error_q_pf_prev_dso = interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p] - interface_vars['pf']['dso']['prev'][node_id][year][day]['q'][p]
-                    dual_vars['v_sqr']['tso']['prev'][node_id][year][day][p] += params.rho['pf'][transmission_network.name] * error_vsqr_prev_tso
+                    dual_vars['v_sqr']['tso']['prev'][node_id][year][day][p] += params.rho['v'][transmission_network.name] * error_vsqr_prev_tso
                     dual_vars['pf']['tso']['prev'][node_id][year][day]['p'][p] += params.rho['pf'][transmission_network.name] * error_p_pf_prev_tso
                     dual_vars['pf']['tso']['prev'][node_id][year][day]['q'][p] += params.rho['pf'][transmission_network.name] * error_q_pf_prev_tso
-                    dual_vars['v_sqr']['dso']['prev'][node_id][year][day][p] += params.rho['pf'][transmission_network.name] * error_vsqr_prev_dso
+                    dual_vars['v_sqr']['dso']['prev'][node_id][year][day][p] += params.rho['v'][transmission_network.name] * error_vsqr_prev_dso
                     dual_vars['pf']['dso']['prev'][node_id][year][day]['p'][p] += params.rho['pf'][distribution_network.name] * error_p_pf_prev_dso
                     dual_vars['pf']['dso']['prev'][node_id][year][day]['q'][p] += params.rho['pf'][distribution_network.name] * error_q_pf_prev_dso
 
