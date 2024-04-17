@@ -999,30 +999,6 @@ def _build_model(network, params):
                             obj_scenario += PENALTY_GEN_SETPOINT * (model.gen_v_penalty_up[i, s_m, s_o, p] + model.gen_v_penalty_up[i, s_m, s_o, p])
 
                 obj += obj_scenario * omega_market * omega_oper
-
-        if network.is_transmission:
-            for dn in model.active_distribution_networks:
-                for p in model.periods:
-                    if params.interface_pf_relax:
-                        obj += PENALTY_INTERFACE_VOLTAGE * (model.penalty_expected_interface_vmag_sqr_up[dn, p] + model.penalty_expected_interface_vmag_sqr_down[dn, p])
-                        obj += PENALTY_INTERFACE_POWER_FLOW * (model.penalty_expected_interface_pf_p_up[dn, p] + model.penalty_expected_interface_pf_p_down[dn, p])
-                        obj += PENALTY_INTERFACE_POWER_FLOW * (model.penalty_expected_interface_pf_q_up[dn, p] + model.penalty_expected_interface_pf_q_down[dn, p])
-                    if params.interface_ess_relax:
-                        obj += PENALTY_INTERFACE_ESS * (model.penalty_expected_shared_ess_p_up[dn, p] + model.penalty_expected_shared_ess_p_down[dn, p])
-        else:
-            for p in model.periods:
-                if params.interface_pf_relax:
-                    obj += PENALTY_INTERFACE_VOLTAGE * (model.penalty_expected_interface_vmag_sqr_up[p] + model.penalty_expected_interface_vmag_sqr_down[p])
-                    obj += PENALTY_INTERFACE_POWER_FLOW * (model.penalty_expected_interface_pf_p_up[p] + model.penalty_expected_interface_pf_p_down[p])
-                    obj += PENALTY_INTERFACE_POWER_FLOW * (model.penalty_expected_interface_pf_q_up[p] + model.penalty_expected_interface_pf_q_down[p])
-                if params.interface_ess_relax:
-                    obj += PENALTY_INTERFACE_ESS * (model.penalty_expected_shared_ess_p_up[p] + model.penalty_expected_shared_ess_p_down[p])
-
-        for e in model.shared_energy_storages:
-            obj += PENALTY_ESS_SLACK * (model.shared_es_s_slack_up[e] + model.shared_es_s_slack_down[e])
-            obj += PENALTY_ESS_SLACK * (model.shared_es_e_slack_up[e] + model.shared_es_e_slack_down[e])
-
-        model.objective = pe.Objective(sense=pe.minimize, expr=obj)
     elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
 
         # Congestion Management
@@ -1113,34 +1089,40 @@ def _build_model(network, params):
                             obj_scenario += PENALTY_GEN_SETPOINT * (model.gen_v_penalty_up[i, s_m, s_o, p] + model.gen_v_penalty_up[i, s_m, s_o, p])
 
                 obj += obj_scenario * omega_market * omega_oper
-
-        if network.is_transmission:
-            for dn in model.active_distribution_networks:
-                for p in model.periods:
-                    if params.interface_pf_relax:
-                        obj += PENALTY_INTERFACE_VOLTAGE * (model.penalty_expected_interface_vmag_sqr_up[dn, p] + model.penalty_expected_interface_vmag_sqr_down[dn, p])
-                        obj += PENALTY_INTERFACE_POWER_FLOW * (model.penalty_expected_interface_pf_p_up[dn, p] + model.penalty_expected_interface_pf_p_down[dn, p])
-                        obj += PENALTY_INTERFACE_POWER_FLOW * (model.penalty_expected_interface_pf_q_up[dn, p] + model.penalty_expected_interface_pf_q_down[dn, p])
-                    if params.interface_ess_relax:
-                        obj += PENALTY_INTERFACE_ESS * (model.penalty_expected_shared_ess_p_up[dn, p] + model.penalty_expected_shared_ess_p_down[dn, p])
-                        obj += PENALTY_INTERFACE_ESS * (model.penalty_expected_shared_ess_q_up[dn, p] + model.penalty_expected_shared_ess_q_down[dn, p])
-        else:
-            for p in model.periods:
-                if params.interface_pf_relax:
-                    obj += PENALTY_INTERFACE_VOLTAGE * (model.penalty_expected_interface_vmag_sqr_up[p] + model.penalty_expected_interface_vmag_sqr_down[p])
-                    obj += PENALTY_INTERFACE_POWER_FLOW * (model.penalty_expected_interface_pf_p_up[p] + model.penalty_expected_interface_pf_p_down[p])
-                    obj += PENALTY_INTERFACE_POWER_FLOW * (model.penalty_expected_interface_pf_q_up[p] + model.penalty_expected_interface_pf_q_down[p])
-                if params.interface_ess_relax:
-                    obj += PENALTY_INTERFACE_ESS * (model.penalty_expected_shared_ess_p_up[p] + model.penalty_expected_shared_ess_p_down[p])
-
-        for e in model.shared_energy_storages:
-            obj += PENALTY_ESS_SLACK * (model.shared_es_s_slack_up[e] + model.shared_es_s_slack_down[e])
-            obj += PENALTY_ESS_SLACK * (model.shared_es_e_slack_up[e] + model.shared_es_e_slack_down[e])
-
-        model.objective = pe.Objective(sense=pe.minimize, expr=obj)
     else:
         print(f'[ERROR] Unrecognized or invalid objective. Objective = {params.obj_type}. Exiting...')
         exit(ERROR_NETWORK_MODEL)
+
+    if network.is_transmission:
+        for dn in model.active_distribution_networks:
+            node_id = network.active_distribution_network_nodes[dn]
+            node_idx = network.get_node_idx(node_id)
+            for p in model.periods:
+                if params.interface_pf_relax:
+                    obj += PENALTY_INTERFACE_VOLTAGE * (model.penalty_expected_interface_vmag_sqr_up[dn, p] + model.penalty_expected_interface_vmag_sqr_down[dn, p])
+                    obj += PENALTY_INTERFACE_POWER_FLOW * (model.penalty_expected_interface_pf_p_up[dn, p] + model.penalty_expected_interface_pf_p_down[dn, p])
+                    obj += PENALTY_INTERFACE_POWER_FLOW * (model.penalty_expected_interface_pf_q_up[dn, p] + model.penalty_expected_interface_pf_q_down[dn, p])
+                if params.interface_ess_relax:
+                    obj += PENALTY_INTERFACE_ESS * (model.penalty_expected_shared_ess_p_up[dn, p] + model.penalty_expected_shared_ess_p_down[dn, p])
+                    obj += PENALTY_INTERFACE_ESS * (model.penalty_expected_shared_ess_q_up[dn, p] + model.penalty_expected_shared_ess_q_down[dn, p])
+                if params.interface_harmonization:
+                    obj += HARMONIZATION_PENALTY * (model.expected_interface_pf_p[dn, p] - model.pc[node_idx, s_m, s_o, p])
+                    obj += HARMONIZATION_PENALTY * (model.expected_interface_pf_q[dn, p] - model.qc[node_idx, s_m, s_o, p])
+    else:
+        for p in model.periods:
+            if params.interface_pf_relax:
+                obj += PENALTY_INTERFACE_VOLTAGE * (model.penalty_expected_interface_vmag_sqr_up[p] + model.penalty_expected_interface_vmag_sqr_down[p])
+                obj += PENALTY_INTERFACE_POWER_FLOW * (model.penalty_expected_interface_pf_p_up[p] + model.penalty_expected_interface_pf_p_down[p])
+                obj += PENALTY_INTERFACE_POWER_FLOW * (model.penalty_expected_interface_pf_q_up[p] + model.penalty_expected_interface_pf_q_down[p])
+            if params.interface_ess_relax:
+                obj += PENALTY_INTERFACE_ESS * (model.penalty_expected_shared_ess_p_up[p] + model.penalty_expected_shared_ess_p_down[p])
+
+    for e in model.shared_energy_storages:
+        obj += PENALTY_ESS_SLACK * (model.shared_es_s_slack_up[e] + model.shared_es_s_slack_down[e])
+        obj += PENALTY_ESS_SLACK * (model.shared_es_e_slack_up[e] + model.shared_es_e_slack_down[e])
+
+    model.objective = pe.Objective(sense=pe.minimize, expr=obj)
+
 
     # Model suffixes (used for warm start)
     model.ipopt_zL_out = pe.Suffix(direction=pe.Suffix.IMPORT)  # Ipopt bound multipliers (obtained from solution)

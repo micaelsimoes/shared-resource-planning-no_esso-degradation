@@ -839,16 +839,6 @@ def update_transmission_model_to_admm(transmission_network, model, distribution_
                     obj += model[year][day].dual_ess_p_req[e, p] * constraint_ess_p
                     obj += (model[year][day].rho_ess / 2) * constraint_ess_p ** 2
 
-            # Interface PF harmonization
-            for dn in model[year][day].active_distribution_networks:
-                node_id = transmission_network.network[year][day].active_distribution_network_nodes[dn]
-                node_idx = transmission_network.network[year][day].get_node_idx(node_id)
-                for p in model[year][day].periods:
-                    for s_m in model[year][day].scenarios_market:
-                        for s_o in model[year][day].scenarios_operation:
-                            obj += HARMONIZATION_PENALTY * (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].pc[node_idx, s_m, s_o, p]) / interface_branch_rating
-                            obj += HARMONIZATION_PENALTY * (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].qc[node_idx, s_m, s_o, p]) / interface_branch_rating
-
             model[year][day].objective.expr = obj
 
 
@@ -946,13 +936,6 @@ def update_distribution_models_to_admm(distribution_networks, models, params):
                     constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_req[p]) / sess_rating
                     obj += dso_model[year][day].dual_ess_p_req[p] * (constraint_ess_p_req)
                     obj += (dso_model[year][day].rho_ess / 2) * (constraint_ess_p_req) ** 2
-
-                # Interface PF harmonization
-                for p in dso_model[year][day].periods:
-                    for s_m in dso_model[year][day].scenarios_market:
-                        for s_o in dso_model[year][day].scenarios_operation:
-                            obj += HARMONIZATION_PENALTY * (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p]) / interface_branch_rating
-                            obj += HARMONIZATION_PENALTY * (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p]) / interface_branch_rating
 
                 dso_model[year][day].objective.expr = obj
 
