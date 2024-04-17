@@ -520,9 +520,9 @@ def _update_previous_consensus_variables(planning_problem, consensus_vars):
             for day in planning_problem.days:
                 for p in range(planning_problem.num_instants):
                     consensus_vars['interface']['v_sqr']['tso']['prev'][node_id][year][day][p] = copy(consensus_vars['interface']['v_sqr']['tso']['current'][node_id][year][day][p])
+                    consensus_vars['interface']['v_sqr']['dso']['prev'][node_id][year][day][p] = copy(consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day][p])
                     consensus_vars['interface']['pf']['tso']['prev'][node_id][year][day]['p'][p] = copy(consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p'][p])
                     consensus_vars['interface']['pf']['tso']['prev'][node_id][year][day]['q'][p] = copy(consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p])
-                    consensus_vars['interface']['v_sqr']['dso']['prev'][node_id][year][day][p] = copy(consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day][p])
                     consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['p'][p] = copy(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p])
                     consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['q'][p] = copy(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p])
                     consensus_vars['ess']['tso']['prev'][node_id][year][day]['p'][p] = copy(consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p])
@@ -764,6 +764,8 @@ def update_transmission_model_to_admm(transmission_network, model, distribution_
                             model[year][day].qc[node_idx, s_m, s_o, p].setlb(None)
 
             # Add ADMM variables
+            model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
+            model[year][day].rho_v.fix(params.rho['v'][transmission_network.name])
             model[year][day].rho_pf = pe.Var(domain=pe.NonNegativeReals)
             model[year][day].rho_pf.fix(params.rho['pf'][transmission_network.name])
             model[year][day].v_sqr_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.NonNegativeReals)
@@ -772,8 +774,10 @@ def update_transmission_model_to_admm(transmission_network, model, distribution_
             model[year][day].dual_v_sqr_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - active power requested
             model[year][day].dual_pf_p_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - active power requested
             model[year][day].dual_pf_q_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - reactive power requested
+            model[year][day].v_sqr_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)        # Active power - previous iteration
             model[year][day].p_pf_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)        # Active power - previous iteration
             model[year][day].q_pf_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)        # Reactive power - previous iteration
+            model[year][day].dual_v_sqr_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - previous iteration
             model[year][day].dual_pf_p_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - previous iteration
             model[year][day].dual_pf_q_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - previous iteration
 
@@ -792,6 +796,7 @@ def update_transmission_model_to_admm(transmission_network, model, distribution_
                     constraint_v_req = (model[year][day].expected_interface_vmag_sqr[dn, p] - model[year][day].v_sqr_req[dn, p])
                     constraint_p_req = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_req[dn, p]) / interface_branch_rating
                     constraint_q_req = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_req[dn, p]) / interface_branch_rating
+                    constraint_v_prev = (model[year][day].expected_interface_vmag_sqr[dn, p] - model[year][day].v_sqr_prev[dn, p])
                     constraint_p_prev = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_prev[dn, p]) / interface_branch_rating
                     constraint_q_prev = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_prev[dn, p]) / interface_branch_rating
                     obj += model[year][day].dual_v_sqr_req[dn, p] * constraint_v_req
@@ -800,8 +805,10 @@ def update_transmission_model_to_admm(transmission_network, model, distribution_
                     obj += (model[year][day].rho_pf / 2) * constraint_v_req ** 2
                     obj += (model[year][day].rho_pf / 2) * constraint_p_req ** 2
                     obj += (model[year][day].rho_pf / 2) * constraint_q_req ** 2
+                    obj += model[year][day].dual_v_sqr_prev[dn, p] * constraint_v_prev
                     obj += model[year][day].dual_pf_p_prev[dn, p] * constraint_p_prev
                     obj += model[year][day].dual_pf_q_prev[dn, p] * constraint_q_prev
+                    obj += (model[year][day].rho_v / 2) * constraint_v_prev ** 2
                     obj += (model[year][day].rho_pf / 2) * constraint_p_prev ** 2
                     obj += (model[year][day].rho_pf / 2) * constraint_q_prev ** 2
 
@@ -853,6 +860,8 @@ def update_distribution_models_to_admm(distribution_networks, models, params):
                             dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].setlb(None)
 
                 # Add ADMM variables
+                dso_model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
+                dso_model[year][day].rho_v.fix(params.rho['e'][distribution_network.network[year][day].name])
                 dso_model[year][day].rho_pf = pe.Var(domain=pe.NonNegativeReals)
                 dso_model[year][day].rho_pf.fix(params.rho['pf'][distribution_network.network[year][day].name])
                 dso_model[year][day].v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)
@@ -861,8 +870,10 @@ def update_distribution_models_to_admm(distribution_networks, models, params):
                 dso_model[year][day].dual_v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)   # Dual variable - active power
                 dso_model[year][day].dual_pf_p_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)   # Dual variable - active power
                 dso_model[year][day].dual_pf_q_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)   # Dual variable - reactive power
+                dso_model[year][day].v_sqr_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)    # Active power - previous iteration
                 dso_model[year][day].p_pf_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)    # Active power - previous iteration
                 dso_model[year][day].q_pf_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)    # Reactive power - previous iteration
+                dso_model[year][day].dual_v_sqr_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Dual variable - previous iteration
                 dso_model[year][day].dual_pf_p_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Dual variable - previous iteration
                 dso_model[year][day].dual_pf_q_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Dual variable - previous iteration
 
@@ -880,15 +891,19 @@ def update_distribution_models_to_admm(distribution_networks, models, params):
                     constraint_vmag_req = (dso_model[year][day].expected_interface_vmag_sqr[p] - dso_model[year][day].v_sqr_req[p])
                     constraint_p_req = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_req[p]) / interface_branch_rating
                     constraint_q_req = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_req[p]) / interface_branch_rating
+                    constraint_vmag_prev = (dso_model[year][day].expected_interface_vmag_sqr[p] - dso_model[year][day].v_sqr_prev[p])
                     constraint_p_prev = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_prev[p]) / interface_branch_rating
                     constraint_q_prev = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_prev[p]) / interface_branch_rating
                     obj += (dso_model[year][day].dual_v_sqr_req[p]) * (constraint_vmag_req)
                     obj += (dso_model[year][day].dual_pf_p_req[p]) * (constraint_p_req)
                     obj += (dso_model[year][day].dual_pf_q_req[p]) * (constraint_q_req)
+                    obj += (dso_model[year][day].rho_v / 2) * (constraint_vmag_req) ** 2
                     obj += (dso_model[year][day].rho_pf / 2) * (constraint_p_req) ** 2
                     obj += (dso_model[year][day].rho_pf / 2) * (constraint_q_req) ** 2
+                    obj += (dso_model[year][day].dual_v_sqr_prev[p]) * (constraint_vmag_prev)
                     obj += (dso_model[year][day].dual_pf_p_prev[p]) * (constraint_p_prev)
                     obj += (dso_model[year][day].dual_pf_q_prev[p]) * (constraint_q_prev)
+                    obj += (dso_model[year][day].rho_v / 2) * (constraint_vmag_prev) ** 2
                     obj += (dso_model[year][day].rho_pf / 2) * (constraint_p_prev) ** 2
                     obj += (dso_model[year][day].rho_pf / 2) * (constraint_q_prev) ** 2
 
@@ -948,13 +963,16 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
 
             s_base = transmission_network.network[year][day].baseMVA
 
+            rho_v = params.rho['v'][transmission_network.name]
             rho_pf = params.rho['pf'][transmission_network.name]
             rho_ess = params.rho['ess'][transmission_network.name]
             if params.adaptive_penalty:
+                rho_v = pe.value(model[year][day].rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
                 rho_pf = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
                 rho_ess = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
 
             # Update Rho parameter
+            model[year][day].rho_v.fix(rho_v)
             model[year][day].rho_pf.fix(rho_pf)
             model[year][day].rho_ess.fix(rho_ess)
 
@@ -970,8 +988,10 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
                     model[year][day].v_sqr_req[dn, p].fix(vsqr_req['current'][node_id][year][day][p])
                     model[year][day].p_pf_req[dn, p].fix(pf_req['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].q_pf_req[dn, p].fix(pf_req['current'][node_id][year][day]['q'][p] / s_base)
+                    model[year][day].dual_v_sqr_prev[dn, p].fix(dual_vsqr['prev'][node_id][year][day][p] / s_base)
                     model[year][day].dual_pf_p_prev[dn, p].fix(dual_pf['prev'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].dual_pf_q_prev[dn, p].fix(dual_pf['prev'][node_id][year][day]['q'][p] / s_base)
+                    model[year][day].v_sqr_prev[dn, p].fix(vsqr_req['prev'][node_id][year][day][p])
                     model[year][day].p_pf_prev[dn, p].fix(pf_req['prev'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].q_pf_prev[dn, p].fix(pf_req['prev'][node_id][year][day]['q'][p] / s_base)
 
@@ -1010,13 +1030,16 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
 
                 s_base = distribution_network.network[year][day].baseMVA
 
+                rho_v = params.rho['v'][distribution_network.name]
                 rho_pf = params.rho['pf'][distribution_network.name]
                 rho_ess = params.rho['ess'][distribution_network.name]
                 if params.adaptive_penalty:
+                    rho_v = pe.value(model[year][day].rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
                     rho_pf = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
                     rho_ess = pe.value(model[year][day].rho_ess) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
 
                 # Update Rho parameter
+                model[year][day].rho_v.fix(rho_v)
                 model[year][day].rho_pf.fix(rho_pf)
                 model[year][day].rho_ess.fix(rho_ess)
 
@@ -1028,8 +1051,10 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
                     model[year][day].v_sqr_req[p].fix(vsqr_req['current'][node_id][year][day][p])
                     model[year][day].p_pf_req[p].fix(pf_req['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].q_pf_req[p].fix(pf_req['current'][node_id][year][day]['q'][p] / s_base)
+                    model[year][day].dual_v_sqr_req[p].fix(dual_vsqr['prev'][node_id][year][day][p] / s_base)
                     model[year][day].dual_pf_p_prev[p].fix(dual_pf['prev'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].dual_pf_q_prev[p].fix(dual_pf['prev'][node_id][year][day]['q'][p] / s_base)
+                    model[year][day].v_sqr_prev[p].fix(vsqr_req['prev'][node_id][year][day][p])
                     model[year][day].p_pf_prev[p].fix(pf_req['prev'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].q_pf_prev[p].fix(pf_req['prev'][node_id][year][day]['q'][p] / s_base)
 
