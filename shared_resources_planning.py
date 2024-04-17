@@ -766,18 +766,19 @@ def update_transmission_model_to_admm(transmission_network, model, distribution_
             # Add ADMM variables
             model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
             model[year][day].rho_v.fix(params.rho['v'][transmission_network.name])
+            model[year][day].v_sqr_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.NonNegativeReals)
+            model[year][day].dual_v_sqr_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - active power requested
+            model[year][day].v_sqr_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)        # Active power - previous iteration
+            model[year][day].dual_v_sqr_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - previous iteration
+
             model[year][day].rho_pf = pe.Var(domain=pe.NonNegativeReals)
             model[year][day].rho_pf.fix(params.rho['pf'][transmission_network.name])
-            model[year][day].v_sqr_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.NonNegativeReals)
             model[year][day].p_pf_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)        # Active power - requested by distribution networks
             model[year][day].q_pf_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)        # Reactive power - requested by distribution networks
-            model[year][day].dual_v_sqr_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - active power requested
             model[year][day].dual_pf_p_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - active power requested
             model[year][day].dual_pf_q_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - reactive power requested
-            model[year][day].v_sqr_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)        # Active power - previous iteration
             model[year][day].p_pf_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)        # Active power - previous iteration
             model[year][day].q_pf_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)        # Reactive power - previous iteration
-            model[year][day].dual_v_sqr_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - previous iteration
             model[year][day].dual_pf_p_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - previous iteration
             model[year][day].dual_pf_q_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - previous iteration
 
