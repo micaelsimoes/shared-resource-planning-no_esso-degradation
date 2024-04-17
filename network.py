@@ -1104,7 +1104,6 @@ def _build_model(network, params):
                     obj += PENALTY_INTERFACE_POWER_FLOW * (model.penalty_expected_interface_pf_q_up[dn, p] + model.penalty_expected_interface_pf_q_down[dn, p])
                 if params.interface_ess_relax:
                     obj += PENALTY_INTERFACE_ESS * (model.penalty_expected_shared_ess_p_up[dn, p] + model.penalty_expected_shared_ess_p_down[dn, p])
-                    obj += PENALTY_INTERFACE_ESS * (model.penalty_expected_shared_ess_q_up[dn, p] + model.penalty_expected_shared_ess_q_down[dn, p])
                 if params.interface_harmonization:
                     obj += HARMONIZATION_PENALTY * (model.expected_interface_pf_p[dn, p] - model.pc[node_idx, s_m, s_o, p])
                     obj += HARMONIZATION_PENALTY * (model.expected_interface_pf_q[dn, p] - model.qc[node_idx, s_m, s_o, p])
