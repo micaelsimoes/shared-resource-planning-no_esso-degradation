@@ -1105,8 +1105,10 @@ def _build_model(network, params):
                 if params.interface_ess_relax:
                     obj += PENALTY_INTERFACE_ESS * (model.penalty_expected_shared_ess_p_up[dn, p] + model.penalty_expected_shared_ess_p_down[dn, p])
                 if params.interface_harmonization:
-                    obj += HARMONIZATION_PENALTY * (model.expected_interface_pf_p[dn, p] - model.pc[node_idx, s_m, s_o, p])
-                    obj += HARMONIZATION_PENALTY * (model.expected_interface_pf_q[dn, p] - model.qc[node_idx, s_m, s_o, p])
+                    for s_m in model.scenarios_market:
+                        for s_o in model.scenarios_operation:
+                            obj += HARMONIZATION_PENALTY * (model.expected_interface_pf_p[dn, p] - model.pc[node_idx, s_m, s_o, p]) ** 2
+                            obj += HARMONIZATION_PENALTY * (model.expected_interface_pf_q[dn, p] - model.qc[node_idx, s_m, s_o, p]) ** 2
     else:
         for p in model.periods:
             if params.interface_pf_relax:
