@@ -154,8 +154,8 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
                     print(f"\tYear {year}")
                     for day in consensus_vars['interface']['pf']['tso']['current'][node_id][year]:
                         print(f"\t\tDay {day}")
-                        print(f"\t\t\tTSO, V  {sqrt(consensus_vars['interface']['v_sqr']['tso']['current'][node_id][year][day])}")
-                        print(f"\t\t\tTSO, V  {sqrt(consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day])}")
+                        print(f"\t\t\tTSO, V  {consensus_vars['interface']['v_sqr']['tso']['current'][node_id][year][day]}")
+                        print(f"\t\t\tDSO, V  {consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day]}")
                         print(f"\t\t\tTSO, P  {consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p']}")
                         print(f"\t\t\tDSO, P  {consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p']}")
                         print(f"\t\t\tTSO, Q  {consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q']}")
@@ -188,8 +188,8 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
                     print(f"\tYear {year}")
                     for day in consensus_vars['interface']['pf']['tso']['current'][node_id][year]:
                         print(f"\t\tDay {day}")
-                        print(f"\t\t\tTSO, V  {sqrt(consensus_vars['interface']['v_sqr']['tso']['current'][node_id][year][day])}")
-                        print(f"\t\t\tTSO, V  {sqrt(consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day])}")
+                        print(f"\t\t\tTSO, V  {consensus_vars['interface']['v_sqr']['tso']['current'][node_id][year][day]}")
+                        print(f"\t\t\tDSO, V  {consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day]}")
                         print(f"\t\t\tTSO, P  {consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p']}")
                         print(f"\t\t\tDSO, P  {consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p']}")
                         print(f"\t\t\tTSO, Q  {consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q']}")
