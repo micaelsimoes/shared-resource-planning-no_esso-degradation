@@ -124,6 +124,23 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
                                                      consensus_vars, dual_vars,
                                                      admm_parameters)
+    if debug_flag:
+        for node_id in planning_problem.active_distribution_network_nodes:
+            print(f"Node {node_id}")
+            for year in consensus_vars['interface']['pf']['tso']['current'][node_id]:
+                print(f"\tYear {year}")
+                for day in consensus_vars['interface']['pf']['tso']['current'][node_id][year]:
+                    print(f"\t\tDay {day}")
+                    print(f"\t\t\tTSO, V     {consensus_vars['interface']['v_sqr']['tso']['current'][node_id][year][day]}")
+                    print(f"\t\t\tDSO, V     {consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day]}")
+                    print(f"\t\t\tTSO, P     {consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p']}")
+                    print(f"\t\t\tDSO, P     {consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p']}")
+                    print(f"\t\t\tTSO, Q     {consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q']}")
+                    print(f"\t\t\tDSO, Q     {consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q']}")
+                    # print(f"\t\t\tESS, TSO   {consensus_vars['ess']['tso']['current'][node_id][year][day]['p']}")
+                    # print(f"\t\t\tESS, DSO   {consensus_vars['ess']['dso']['current'][node_id][year][day]['p']}")
+                    # print(f"\t\t\tESS, ESSO  {consensus_vars['ess']['esso']['current'][node_id][year][day]['p']}")
+
 
     # ------------------------------------------------------------------------------------------------------------------
     # ADMM -- Main cycle
@@ -383,7 +400,7 @@ def create_admm_variables(planning_problem):
     consensus_variables = {
         'interface': {
             'v_sqr': {'tso': {'current': dict(), 'prev': dict()},
-                   'dso': {'current': dict(), 'prev': dict()}},
+                      'dso': {'current': dict(), 'prev': dict()}},
             'pf': {'tso': {'current': dict(), 'prev': dict()},
                    'dso': {'current': dict(), 'prev': dict()}}
         },
@@ -587,7 +604,7 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                     dual_vars['v_sqr']['tso']['prev'][node_id][year][day][p] += params.rho['v'][transmission_network.name] * error_vsqr_prev_tso
                     dual_vars['pf']['tso']['prev'][node_id][year][day]['p'][p] += params.rho['pf'][transmission_network.name] * error_p_pf_prev_tso
                     dual_vars['pf']['tso']['prev'][node_id][year][day]['q'][p] += params.rho['pf'][transmission_network.name] * error_q_pf_prev_tso
-                    dual_vars['v_sqr']['dso']['prev'][node_id][year][day][p] += params.rho['v'][transmission_network.name] * error_vsqr_prev_dso
+                    dual_vars['v_sqr']['dso']['prev'][node_id][year][day][p] += params.rho['v'][distribution_network.name] * error_vsqr_prev_dso
                     dual_vars['pf']['dso']['prev'][node_id][year][day]['p'][p] += params.rho['pf'][distribution_network.name] * error_p_pf_prev_dso
                     dual_vars['pf']['dso']['prev'][node_id][year][day]['q'][p] += params.rho['pf'][distribution_network.name] * error_q_pf_prev_dso
 
@@ -768,8 +785,6 @@ def update_transmission_model_to_admm(transmission_network, model, distribution_
             model[year][day].rho_v.fix(params.rho['v'][transmission_network.name])
             model[year][day].v_sqr_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.NonNegativeReals)
             model[year][day].dual_v_sqr_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - active power requested
-            model[year][day].v_sqr_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)        # Active power - previous iteration
-            model[year][day].dual_v_sqr_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - previous iteration
 
             model[year][day].rho_pf = pe.Var(domain=pe.NonNegativeReals)
             model[year][day].rho_pf.fix(params.rho['pf'][transmission_network.name])

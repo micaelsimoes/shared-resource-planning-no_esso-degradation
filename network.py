@@ -462,6 +462,12 @@ def _build_model(network, params):
     if network.is_transmission:
         model.active_distribution_networks = range(len(network.active_distribution_network_nodes))
         model.expected_interface_vmag_sqr = pe.Var(model.active_distribution_networks, model.periods, domain=pe.NonNegativeReals, initialize=1.0)
+        for dn in model.active_distribution_networks:
+            node_id = network.active_distribution_network_nodes[dn]
+            v_min, v_max = network.get_node_voltage_limits(node_id)
+            for p in model.periods:
+                model.expected_interface_vmag_sqr[dn, p].setub(v_max**2)
+                model.expected_interface_vmag_sqr[dn, p].setlb(v_min**2)
         model.expected_interface_pf_p = pe.Var(model.active_distribution_networks, model.periods, domain=pe.Reals, initialize=0.0)
         model.expected_interface_pf_q = pe.Var(model.active_distribution_networks, model.periods, domain=pe.Reals, initialize=0.0)
         if params.interface_pf_relax:
@@ -473,6 +479,10 @@ def _build_model(network, params):
             model.penalty_expected_interface_pf_q_down = pe.Var(model.active_distribution_networks, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     else:
         model.expected_interface_vmag_sqr = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=1.0)
+        v_min, v_max = network.get_node_voltage_limits(ref_node_id)
+        for p in model.periods:
+            model.expected_interface_vmag_sqr[p].setub(v_max**2)
+            model.expected_interface_vmag_sqr[p].setlb(v_min**2)
         model.expected_interface_pf_p = pe.Var(model.periods, domain=pe.Reals, initialize=0.0)
         model.expected_interface_pf_q = pe.Var(model.periods, domain=pe.Reals, initialize=0.0)
         if params.interface_pf_relax:
