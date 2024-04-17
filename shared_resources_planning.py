@@ -785,6 +785,8 @@ def update_transmission_model_to_admm(transmission_network, model, distribution_
             model[year][day].rho_v.fix(params.rho['v'][transmission_network.name])
             model[year][day].v_sqr_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.NonNegativeReals)
             model[year][day].dual_v_sqr_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - active power requested
+            model[year][day].v_sqr_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.NonNegativeReals)
+            model[year][day].dual_v_sqr_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - active power requested
 
             model[year][day].rho_pf = pe.Var(domain=pe.NonNegativeReals)
             model[year][day].rho_pf.fix(params.rho['pf'][transmission_network.name])
@@ -1068,7 +1070,7 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
                     model[year][day].v_sqr_req[p].fix(vsqr_req['current'][node_id][year][day][p])
                     model[year][day].p_pf_req[p].fix(pf_req['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].q_pf_req[p].fix(pf_req['current'][node_id][year][day]['q'][p] / s_base)
-                    model[year][day].dual_v_sqr_req[p].fix(dual_vsqr['prev'][node_id][year][day][p] / s_base)
+                    model[year][day].dual_v_sqr_prev[p].fix(dual_vsqr['prev'][node_id][year][day][p] / s_base)
                     model[year][day].dual_pf_p_prev[p].fix(dual_pf['prev'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].dual_pf_q_prev[p].fix(dual_pf['prev'][node_id][year][day]['q'][p] / s_base)
                     model[year][day].v_sqr_prev[p].fix(vsqr_req['prev'][node_id][year][day][p])
