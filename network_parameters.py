@@ -25,6 +25,7 @@ class NetworkParameters:
         self.gen_v_relax = False
         self.interface_pf_relax = False
         self.interface_ess_relax = False
+        self.interface_harmonization = True
         self.slacks_used = False
         self.print_to_screen = False
         self.plot_diagram = False
