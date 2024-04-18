@@ -63,6 +63,7 @@ def _read_network_parameters_from_file(parameters, filename):
     parameters.gen_v_relax = params_data['gen_v_relax']
     parameters.interface_pf_relax = params_data['interface_pf_relax']
     parameters.interface_ess_relax = params_data['interface_ess_relax']
+    parameters.interface_harmonization = params_data['interface_harmonization']
     parameters.solver_params.read_solver_parameters(params_data['solver'])
     parameters.print_to_screen = params_data['print_to_screen']
     parameters.plot_diagram = params_data['plot_diagram']
