@@ -700,20 +700,21 @@ def consensus_convergence(planning_problem, consensus_vars, params):
                     sum_abs += abs(round(consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['ess']['esso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION))
                     num_elems += 2
 
-    if sum_abs > params.tol_consensus * num_elems:
-        if not isclose(sum_abs, params.tol_consensus * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol_consensus):
-            print('[INFO]\t\t - Convergence consensus constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol_consensus * num_elems))
+    if sum_abs > params.tol['consensus'] * num_elems:
+        if not isclose(sum_abs, params.tol['consensus'] * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['consensus']):
+            print('[INFO]\t\t - Convergence consensus constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
             return False
-        print('[INFO]\t\t - Convergence consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol_consensus * num_elems))
+        print('[INFO]\t\t - Convergence consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
         return True
 
-    print('[INFO]\t\t - Convergence consensus constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol_consensus * num_elems))
+    print('[INFO]\t\t - Convergence consensus constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
     return True
 
 
 def stationary_convergence(planning_problem, consensus_vars, params):
 
     rho_esso = params.rho['ess']['esso']
+    rho_tso_v = params.rho['v'][planning_problem.transmission_network.name]
     rho_tso_pf = params.rho['pf'][planning_problem.transmission_network.name]
     rho_tso_ess = params.rho['ess'][planning_problem.transmission_network.name]
     sum_abs = 0.0
@@ -721,14 +722,15 @@ def stationary_convergence(planning_problem, consensus_vars, params):
 
     # Interface Power Flow
     for node_id in planning_problem.distribution_networks:
+        rho_dso_v = params.rho['v'][planning_problem.distribution_networks[node_id].name]
         rho_dso_pf = params.rho['pf'][planning_problem.distribution_networks[node_id].name]
         for year in planning_problem.years:
             for day in planning_problem.days:
                 for p in range(planning_problem.num_instants):
-                    sum_abs += rho_tso_pf * abs(round(consensus_vars['interface']['v_sqr']['tso']['current'][node_id][year][day][p], ERROR_PRECISION) - round(consensus_vars['interface']['v_sqr']['tso']['prev'][node_id][year][day][p], ERROR_PRECISION))
+                    sum_abs += rho_tso_v * abs(round(consensus_vars['interface']['v_sqr']['tso']['current'][node_id][year][day][p], ERROR_PRECISION) - round(consensus_vars['interface']['v_sqr']['tso']['prev'][node_id][year][day][p], ERROR_PRECISION))
                     sum_abs += rho_tso_pf * abs(round(consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['interface']['pf']['tso']['prev'][node_id][year][day]['p'][p], ERROR_PRECISION))
                     sum_abs += rho_tso_pf * abs(round(consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['interface']['pf']['tso']['prev'][node_id][year][day]['q'][p], ERROR_PRECISION))
-                    sum_abs += rho_dso_pf * abs(round(consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day][p], ERROR_PRECISION) - round(consensus_vars['interface']['v_sqr']['dso']['prev'][node_id][year][day][p], ERROR_PRECISION))
+                    sum_abs += rho_dso_v * abs(round(consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day][p], ERROR_PRECISION) - round(consensus_vars['interface']['v_sqr']['dso']['prev'][node_id][year][day][p], ERROR_PRECISION))
                     sum_abs += rho_dso_pf * abs(round(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['p'][p], ERROR_PRECISION))
                     sum_abs += rho_dso_pf * abs(round(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['q'][p], ERROR_PRECISION))
                     num_elems += 6
@@ -745,14 +747,14 @@ def stationary_convergence(planning_problem, consensus_vars, params):
                     sum_abs += rho_esso * abs(round(consensus_vars['ess']['esso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['ess']['esso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION))
                     num_elems += 3
 
-    if sum_abs > params.tol * num_elems:
-        if not isclose(sum_abs, params.tol_stationarity * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol_stationarity):
-            print('[INFO]\t\t - Convergence stationary constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol_stationarity * num_elems))
+    if sum_abs > params.tol['stationarity'] * num_elems:
+        if not isclose(sum_abs, params.tol['stationarity'] * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['stationarity']):
+            print('[INFO]\t\t - Convergence stationary constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
             return False
-        print('[INFO]\t\t - Convergence stationary constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol_stationarity * num_elems))
+        print('[INFO]\t\t - Convergence stationary constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
         return True
 
-    print('[INFO]\t\t - Convergence stationary constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol_stationarity * num_elems))
+    print('[INFO]\t\t - Convergence stationary constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
     return True
 
 

@@ -4,7 +4,7 @@
 class ADMMParameters:
 
     def __init__(self):
-        self.tol = 1e-3
+        self.tol = {'consensus': 1e-3, 'stationarity': 1e-3}
         self.num_max_iters = 1000
         self.adaptive_penalty = False
         self.rho = {'pf': dict(), 'ess': dict()}
@@ -14,8 +14,8 @@ class ADMMParameters:
 
 
 def _read_parameters_from_file(admm_params, params_data):
-    admm_params.tol_consensus = float(params_data['tol_consensus'])
-    admm_params.tol_stationarity = float(params_data['tol_stationarity'])
+    admm_params.tol['consensus'] = float(params_data['tol']['consensus'])
+    admm_params.tol['stationarity'] = float(params_data['tol']['stationarity'])
     admm_params.num_max_iters = int(params_data['num_max_iters'])
     admm_params.adaptive_penalty = bool(params_data['adaptive_penalty'])
     admm_params.rho['v'] = params_data['rho']['v']
