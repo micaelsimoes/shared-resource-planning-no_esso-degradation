@@ -14,7 +14,8 @@ class ADMMParameters:
 
 
 def _read_parameters_from_file(admm_params, params_data):
-    admm_params.tol = float(params_data['tol'])
+    admm_params.tol_consensus = float(params_data['tol_consensus'])
+    admm_params.tol_stationarity = float(params_data['tol_stationarity'])
     admm_params.num_max_iters = int(params_data['num_max_iters'])
     admm_params.adaptive_penalty = bool(params_data['adaptive_penalty'])
     admm_params.rho['v'] = params_data['rho']['v']

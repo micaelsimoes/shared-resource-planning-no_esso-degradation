@@ -700,14 +700,14 @@ def consensus_convergence(planning_problem, consensus_vars, params):
                     sum_abs += abs(round(consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['ess']['esso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION))
                     num_elems += 2
 
-    if sum_abs > params.tol * num_elems:
-        if not isclose(sum_abs, params.tol * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol):
-            print('[INFO]\t\t - Convergence consensus constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol * num_elems))
+    if sum_abs > params.tol_consensus * num_elems:
+        if not isclose(sum_abs, params.tol_consensus * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol_consensus):
+            print('[INFO]\t\t - Convergence consensus constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol_consensus * num_elems))
             return False
-        print('[INFO]\t\t - Convergence consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol * num_elems))
+        print('[INFO]\t\t - Convergence consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol_consensus * num_elems))
         return True
 
-    print('[INFO]\t\t - Convergence consensus constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol * num_elems))
+    print('[INFO]\t\t - Convergence consensus constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol_consensus * num_elems))
     return True
 
 
@@ -746,13 +746,13 @@ def stationary_convergence(planning_problem, consensus_vars, params):
                     num_elems += 3
 
     if sum_abs > params.tol * num_elems:
-        if not isclose(sum_abs, params.tol * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol):
-            print('[INFO]\t\t - Convergence stationary constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol * num_elems))
+        if not isclose(sum_abs, params.tol_stationarity * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol_stationarity):
+            print('[INFO]\t\t - Convergence stationary constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol_stationarity * num_elems))
             return False
-        print('[INFO]\t\t - Convergence stationary constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol * num_elems))
+        print('[INFO]\t\t - Convergence stationary constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol_stationarity * num_elems))
         return True
 
-    print('[INFO]\t\t - Convergence stationary constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol * num_elems))
+    print('[INFO]\t\t - Convergence stationary constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol_stationarity * num_elems))
     return True
 
 
