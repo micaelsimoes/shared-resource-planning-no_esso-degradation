@@ -1104,7 +1104,7 @@ def _build_model(network, params):
                     obj += PENALTY_INTERFACE_POWER_FLOW * (model.penalty_expected_interface_pf_q_up[dn, p] + model.penalty_expected_interface_pf_q_down[dn, p])
                 if params.interface_ess_relax:
                     obj += PENALTY_INTERFACE_ESS * (model.penalty_expected_shared_ess_p_up[dn, p] + model.penalty_expected_shared_ess_p_down[dn, p])
-                if params.interface_harmonization:
+                if params.interface_harmonization and params.obj_type == OBJ_MIN_COST:
                     for s_m in model.scenarios_market:
                         for s_o in model.scenarios_operation:
                             obj += HARMONIZATION_PENALTY * (model.expected_interface_pf_p[dn, p] - model.pc[node_idx, s_m, s_o, p]) ** 2
@@ -1119,7 +1119,7 @@ def _build_model(network, params):
                 obj += PENALTY_INTERFACE_ESS * (model.penalty_expected_shared_ess_p_up[p] + model.penalty_expected_shared_ess_p_down[p])
             if params.interface_harmonization:
                 ref_gen_idx = network.get_reference_gen_idx()
-                for s_m in model.scenarios_market:
+                for s_m in model.scenarios_market and params.obj_type == OBJ_MIN_COST:
                     for s_o in model.scenarios_operation:
                         obj += HARMONIZATION_PENALTY * (model.expected_interface_pf_p[p] - model.pg[ref_gen_idx, s_m, s_o, p]) ** 2
                         obj += HARMONIZATION_PENALTY * (model.expected_interface_pf_q[p] - model.qg[ref_gen_idx, s_m, s_o, p]) ** 2
