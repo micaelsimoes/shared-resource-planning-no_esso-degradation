@@ -1132,12 +1132,11 @@ def _build_model(network, params):
                         obj += HARMONIZATION_PENALTY * (model.expected_interface_pf_q[p] - model.qg[ref_gen_idx, s_m, s_o, p]) ** 2
         if params.interface_harmonization:
             shared_ess_idx = network.get_shared_energy_storage_idx(ref_node_id)
-            for e in model.shared_energy_storages:
-                for s_m in model.scenarios_market:
-                    for s_o in model.scenarios_operation:
-                        for p in model.periods:
-                            expected_p = model.shared_es_pch[shared_ess_idx, s_m, s_o, p] - model.shared_es_pdch[shared_ess_idx, s_m, s_o, p]
-                            obj += HARMONIZATION_PENALTY * (model.expected_shared_ess_p[p] - expected_p) ** 2
+            for s_m in model.scenarios_market:
+                for s_o in model.scenarios_operation:
+                    for p in model.periods:
+                        expected_p = model.shared_es_pch[shared_ess_idx, s_m, s_o, p] - model.shared_es_pdch[shared_ess_idx, s_m, s_o, p]
+                        obj += HARMONIZATION_PENALTY * (model.expected_shared_ess_p[p] - expected_p) ** 2
 
     for e in model.shared_energy_storages:
         obj += PENALTY_ESS_SLACK * (model.shared_es_s_slack_up[e] + model.shared_es_s_slack_down[e])
