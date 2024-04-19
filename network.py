@@ -1144,7 +1144,6 @@ def _build_model(network, params):
 
     model.objective = pe.Objective(sense=pe.minimize, expr=obj)
 
-
     # Model suffixes (used for warm start)
     model.ipopt_zL_out = pe.Suffix(direction=pe.Suffix.IMPORT)  # Ipopt bound multipliers (obtained from solution)
     model.ipopt_zU_out = pe.Suffix(direction=pe.Suffix.IMPORT)
