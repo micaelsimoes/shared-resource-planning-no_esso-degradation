@@ -778,12 +778,19 @@ def update_transmission_model_to_admm(transmission_network, model, distribution_
                 for s_m in model[year][day].scenarios_market:
                     for s_o in model[year][day].scenarios_operation:
                         for p in model[year][day].periods:
+
                             model[year][day].pc[node_idx, s_m, s_o, p].fixed = False
                             model[year][day].pc[node_idx, s_m, s_o, p].setub(None)
                             model[year][day].pc[node_idx, s_m, s_o, p].setlb(None)
                             model[year][day].qc[node_idx, s_m, s_o, p].fixed = False
                             model[year][day].qc[node_idx, s_m, s_o, p].setub(None)
                             model[year][day].qc[node_idx, s_m, s_o, p].setlb(None)
+
+                            if transmission_network.params.slack_voltage_limits:
+                                model[year][day].slack_e_up[node_idx, s_m, s_o, p].fix(0.00)
+                                model[year][day].slack_e_down[node_idx, s_m, s_o, p].fix(0.00)
+                                model[year][day].slack_f_up[node_idx, s_m, s_o, p].fix(0.00)
+                                model[year][day].slack_f_down[node_idx, s_m, s_o, p].fix(0.00)
 
             # Add ADMM variables
             model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
@@ -946,11 +953,11 @@ def update_distribution_models_to_admm(distribution_networks, models, params):
 
                 # Augmented Lagrangian -- Shared ESS (residual balancing)
                 sess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
-                sess_rating = distribution_network.network[year][day].shared_energy_storages[sess_idx].s
+                sess_rating = pe.value(dso_model[year][day].shared_es_s_rated_fixed[sess_idx])
                 if isclose(sess_rating, 0.00, abs_tol=SMALL_TOLERANCE):  # Do not balance residuals
                     sess_rating = 1.00
                 for p in dso_model[year][day].periods:
-                    constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_req[p]) / sess_rating
+                    constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_req[p]) / (2 * sess_rating)
                     obj += dso_model[year][day].dual_ess_p_req[p] * (constraint_ess_p_req)
                     obj += (dso_model[year][day].rho_ess / 2) * (constraint_ess_p_req) ** 2
 
