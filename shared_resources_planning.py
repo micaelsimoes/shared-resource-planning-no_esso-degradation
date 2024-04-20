@@ -559,9 +559,12 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
             for day in planning_problem.days:
                 s_base = planning_problem.transmission_network.network[year][day].baseMVA
                 for p in tso_model[year][day].periods:
-                    interface_vars['v_sqr']['tso']['current'][node_id][year][day][p] = pe.value(tso_model[year][day].expected_interface_vmag_sqr[dn, p])
-                    interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p] = pe.value(tso_model[year][day].expected_interface_pf_p[dn, p]) * s_base
-                    interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p] = pe.value(tso_model[year][day].expected_interface_pf_q[dn, p]) * s_base
+                    v_req = pe.value(tso_model[year][day].expected_interface_vmag_sqr[dn, p])
+                    p_req = pe.value(tso_model[year][day].expected_interface_pf_p[dn, p]) * s_base
+                    q_req = pe.value(tso_model[year][day].expected_interface_pf_q[dn, p]) * s_base
+                    interface_vars['v_sqr']['tso']['current'][node_id][year][day][p] = v_req
+                    interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p] = p_req
+                    interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p] = q_req
 
     # Distribution Network - Update PF at the TN-DN interface
     for node_id in distribution_networks:
@@ -858,7 +861,6 @@ def update_distribution_models_to_admm(distribution_networks, models, params):
 
                 s_base = distribution_network.network[year][day].baseMVA
                 ref_node_id = distribution_network.network[year][day].get_reference_node_id()
-                ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
 
                 init_of_value = 1.00
                 if distribution_network.params.obj_type == OBJ_MIN_COST:
@@ -869,9 +871,15 @@ def update_distribution_models_to_admm(distribution_networks, models, params):
                 for s_m in dso_model[year][day].scenarios_market:
                     for s_o in dso_model[year][day].scenarios_operation:
                         for p in dso_model[year][day].periods:
+
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].fixed = False
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setub(None)
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setlb(None)
+                            if params.slack_voltage_limits:
+                                dso_model[year][day].slack_e_up[ref_node_idx, s_m, s_o, p].fix(0.00)
+                                dso_model[year][day].slack_e_down[ref_node_idx, s_m, s_o, p].fix(0.00)
+                                dso_model[year][day].slack_f_up[ref_node_idx, s_m, s_o, p].fix(0.00)
+                                dso_model[year][day].slack_f_down[ref_node_idx, s_m, s_o, p].fix(0.00)
 
                             dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].fixed = False
                             dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].setub(None)
@@ -879,6 +887,13 @@ def update_distribution_models_to_admm(distribution_networks, models, params):
                             dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].fixed = False
                             dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].setub(None)
                             dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].setlb(None)
+
+                if params.slack_line_limits:
+                    for b in dso_model[year][day].branches:
+                        for s_m in dso_model[year][day].scenarios_market:
+                            for s_o in dso_model[year][day].scenarios_operation:
+                                for p in dso_model[year][day].periods:
+                                    dso_model[year][day].slack_iij_sqr[b, s_m, s_o, p].fix(0.00)
 
                 # Add ADMM variables
                 dso_model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
