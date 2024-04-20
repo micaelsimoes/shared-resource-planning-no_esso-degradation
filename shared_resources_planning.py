@@ -112,13 +112,13 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     consensus_vars, dual_vars = create_admm_variables(planning_problem)
 
     # Create Operational Planning models
-    dso_models = create_distribution_networks_models(distribution_networks, consensus_vars['interface']['pf']['dso'], consensus_vars['ess']['dso'], candidate_solution['total_capacity'])
+    dso_models, results['dso'] = create_distribution_networks_models(distribution_networks, consensus_vars['interface']['pf']['dso'], consensus_vars['ess']['dso'], candidate_solution['total_capacity'])
     update_distribution_models_to_admm(distribution_networks, dso_models, admm_parameters)
 
-    tso_model = create_transmission_network_model(transmission_network, consensus_vars['interface']['v_sqr'], consensus_vars['interface']['pf'], consensus_vars['ess']['tso'], candidate_solution['total_capacity'])
+    tso_model, results['tso'] = create_transmission_network_model(transmission_network, consensus_vars['interface']['v_sqr'], consensus_vars['interface']['pf'], consensus_vars['ess']['tso'], candidate_solution['total_capacity'])
     update_transmission_model_to_admm(transmission_network, tso_model, distribution_networks, admm_parameters)
 
-    esso_model = create_shared_energy_storage_model(shared_ess_data, consensus_vars['ess']['esso'], candidate_solution['investment'])
+    esso_model, results['esso'] = create_shared_energy_storage_model(shared_ess_data, consensus_vars['ess']['esso'], candidate_solution['investment'])
     update_shared_energy_storage_model_to_admm(shared_ess_data, esso_model, admm_parameters)
 
     planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
@@ -268,6 +268,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
 
 def create_transmission_network_model(transmission_network, interface_v_vars, interface_pf_vars, sess_vars, candidate_solution):
 
+
     # Build model, fix candidate solution, and Run S-MPOPF model
     transmission_network.update_data_with_candidate_solution(candidate_solution)
     tso_model = transmission_network.build_model()
@@ -287,7 +288,7 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                             if transmission_network.params.fl_reg:
                                 tso_model[year][day].flex_p_up[node_idx, s_m, s_o, p].fix(0.0)
                                 tso_model[year][day].flex_p_down[node_idx, s_m, s_o, p].fix(0.0)
-    transmission_network.optimize(tso_model)
+    results = transmission_network.optimize(tso_model)
 
     for year in transmission_network.years:
         for day in transmission_network.days:
@@ -313,12 +314,13 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                     sess_vars['current'][node_id][year][day]['p'][p] = shared_ess_p
                     sess_vars['prev'][node_id][year][day]['p'][p] = shared_ess_p
 
-    return tso_model
+    return tso_model, results
 
 
 def create_distribution_networks_models(distribution_networks, interface_vars, sess_vars, candidate_solution):
 
     dso_models = dict()
+    results = dict()
 
     for node_id in distribution_networks:
 
@@ -328,7 +330,7 @@ def create_distribution_networks_models(distribution_networks, interface_vars, s
         distribution_network.update_data_with_candidate_solution(candidate_solution)
         dso_model = distribution_network.build_model()
         distribution_network.update_model_with_candidate_solution(dso_model, candidate_solution)
-        distribution_network.optimize(dso_model)
+        results[node_id] = distribution_network.optimize(dso_model)
 
         for year in distribution_network.years:
             for day in distribution_network.days:
@@ -350,7 +352,7 @@ def create_distribution_networks_models(distribution_networks, interface_vars, s
 
         dso_models[node_id] = dso_model
 
-    return dso_models
+    return dso_models, results
 
 
 def create_shared_energy_storage_model(shared_ess_data, sess_vars, candidate_solution):
@@ -361,7 +363,7 @@ def create_shared_energy_storage_model(shared_ess_data, sess_vars, candidate_sol
     shared_ess_data.update_data_with_candidate_solution(candidate_solution)
     esso_model = shared_ess_data.build_subproblem()
     shared_ess_data.update_model_with_candidate_solution(esso_model, candidate_solution)
-    shared_ess_data.optimize(esso_model)
+    results = shared_ess_data.optimize(esso_model)
 
     for e in esso_model.energy_storages:
         node_id = shared_ess_data.active_distribution_network_nodes[e]
@@ -374,7 +376,7 @@ def create_shared_energy_storage_model(shared_ess_data, sess_vars, candidate_sol
                     sess_vars['current'][node_id][year][day]['p'][p] = shared_ess_p
                     sess_vars['prev'][node_id][year][day]['p'][p] = shared_ess_p
 
-    return esso_model
+    return esso_model, results
 
 
 def compute_primal_value(planning_problem, tso_model, dso_models):
