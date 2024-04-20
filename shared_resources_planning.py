@@ -557,14 +557,16 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
         node_id = planning_problem.active_distribution_network_nodes[dn]
         for year in planning_problem.years:
             for day in planning_problem.days:
-                s_base = planning_problem.transmission_network.network[year][day].baseMVA
+                s_base = transmission_network.network[year][day].baseMVA
+                vmin, vmax = transmission_network.network[year][day].get_node_voltage_limits(node_id)
+                s_max = distribution_networks[node_id].network[year][day].get_interface_branch_rating()
                 for p in tso_model[year][day].periods:
                     v_req = pe.value(tso_model[year][day].expected_interface_vmag_sqr[dn, p])
                     p_req = pe.value(tso_model[year][day].expected_interface_pf_p[dn, p]) * s_base
                     q_req = pe.value(tso_model[year][day].expected_interface_pf_q[dn, p]) * s_base
-                    interface_vars['v_sqr']['tso']['current'][node_id][year][day][p] = v_req
-                    interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p] = p_req
-                    interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p] = q_req
+                    interface_vars['v_sqr']['tso']['current'][node_id][year][day][p] = min(max(v_req, vmin), vmax)
+                    interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p] = min(max(p_req, -s_max), s_max)
+                    interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p] = min(max(q_req, -s_max), s_max)
 
     # Distribution Network - Update PF at the TN-DN interface
     for node_id in distribution_networks:
@@ -573,10 +575,15 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
         for year in planning_problem.years:
             for day in planning_problem.days:
                 s_base = distribution_network.network[year][day].baseMVA
+                vmin, vmax = transmission_network.network[year][day].get_node_voltage_limits(node_id)
+                s_max = distribution_network.network[year][day].get_interface_branch_rating()
                 for p in dso_model[year][day].periods:
-                    interface_vars['v_sqr']['dso']['current'][node_id][year][day][p] = pe.value(dso_model[year][day].expected_interface_vmag_sqr[p])
-                    interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p] = pe.value(dso_model[year][day].expected_interface_pf_p[p]) * s_base
-                    interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p] = pe.value(dso_model[year][day].expected_interface_pf_q[p]) * s_base
+                    v_req = pe.value(dso_model[year][day].expected_interface_vmag_sqr[p])
+                    p_req = pe.value(dso_model[year][day].expected_interface_pf_p[p]) * s_base
+                    q_req = pe.value(dso_model[year][day].expected_interface_pf_q[p]) * s_base
+                    interface_vars['v_sqr']['dso']['current'][node_id][year][day][p] = min(max(v_req, vmin), vmax)
+                    interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p] = min(max(p_req, -s_max), s_max)
+                    interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p] = min(max(q_req, -s_max), s_max)
 
     # Update Lambdas
     for node_id in distribution_networks:
@@ -629,10 +636,12 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
         for y in sess_model.years:
             year = repr_years[y]
             shared_ess_idx = shared_ess_data.get_shared_energy_storage_idx(node_id)
+            s_max = pe.value(sess_model.es_s_rated[shared_ess_idx, y])
             for d in sess_model.days:
                 day = repr_days[d]
                 for p in sess_model.periods:
-                    shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] = pe.value(sess_model.es_pnet[shared_ess_idx, y, d, p])
+                    p_req = pe.value(sess_model.es_pnet[shared_ess_idx, y, d, p])
+                    shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] = min(max(p_req, -s_max), s_max)
 
         # Shared Energy Storage - Power requested by TSO
         for y in range(len(repr_years)):
@@ -641,8 +650,10 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                 day = repr_days[d]
                 s_base = transmission_network.network[year][day].baseMVA
                 shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(node_id)
+                s_max = pe.value(tso_model[year][day].shared_es_s_rated_fixed[shared_ess_idx]) * s_base
                 for p in tso_model[year][day].periods:
-                    shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] = pe.value(tso_model[year][day].expected_shared_ess_p[shared_ess_idx, p]) * s_base
+                    p_req = pe.value(tso_model[year][day].expected_shared_ess_p[shared_ess_idx, p]) * s_base
+                    shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] = min(max(p_req, -s_max), s_max)
 
         # Shared Energy Storage - Power requested by DSO
         for y in range(len(repr_years)):
@@ -650,8 +661,12 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
             for d in range(len(repr_days)):
                 day = repr_days[d]
                 s_base = distribution_network.network[year][day].baseMVA
+                ref_node_id = distribution_network.network[year][day].get_reference_node_id()
+                shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
+                s_max = pe.value(dso_model[year][day].shared_es_s_rated_fixed[shared_ess_idx]) * s_base
                 for p in dso_model[year][day].periods:
-                    shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] = pe.value(dso_model[year][day].expected_shared_ess_p[p]) * s_base
+                    p_req = pe.value(dso_model[year][day].expected_shared_ess_p[p]) * s_base
+                    shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] = min(max(p_req, -s_max), s_max)
 
         # Update dual variables Shared ESS
         for year in planning_problem.years:
