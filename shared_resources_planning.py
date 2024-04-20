@@ -875,7 +875,7 @@ def update_distribution_models_to_admm(distribution_networks, models, params):
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].fixed = False
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setub(None)
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setlb(None)
-                            if params.slack_voltage_limits:
+                            if distribution_network.params.slack_voltage_limits:
                                 dso_model[year][day].slack_e_up[ref_node_idx, s_m, s_o, p].fix(0.00)
                                 dso_model[year][day].slack_e_down[ref_node_idx, s_m, s_o, p].fix(0.00)
                                 dso_model[year][day].slack_f_up[ref_node_idx, s_m, s_o, p].fix(0.00)
@@ -888,7 +888,7 @@ def update_distribution_models_to_admm(distribution_networks, models, params):
                             dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].setub(None)
                             dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].setlb(None)
 
-                if params.slack_line_limits:
+                if distribution_network.params.slack_line_limits:
                     for b in dso_model[year][day].branches:
                         for s_m in dso_model[year][day].scenarios_market:
                             for s_o in dso_model[year][day].scenarios_operation:
