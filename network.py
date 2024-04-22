@@ -298,9 +298,7 @@ def _build_model(network, params):
 
     # - Branch current (squared)
     model.iij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.iij_sqr_actual = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.slack_iij_sqr_up = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.slack_iij_sqr_down = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    model.slack_iij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     for b in model.branches:
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
@@ -693,9 +691,8 @@ def _build_model(network, params):
 
                     # iij_sqr_actual definition
                     iij_sqr = (branch.g**2 + branch.b**2) * ((ei - ej)**2 + (fi - fj)**2)
-                    model.branch_power_flow_cons.add(model.iij_sqr[i, s_m, s_o, p] == iij_sqr)
-                    model.branch_power_flow_cons.add(model.iij_sqr_actual[i, s_m, s_o, p] == iij_sqr + model.slack_iij_sqr_up[b, s_m, s_o, p] - model.slack_iij_sqr_down[b, s_m, s_o, p])
-                    model.branch_power_flow_lims.add(model.iij_sqr_actual[i, s_m, s_o, p] <= rating ** 2)
+                    model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] == iij_sqr)
+                    model.branch_power_flow_lims.add(model.iij_sqr[b, s_m, s_o, p] - model.slack_iij_sqr[b, s_m, s_o, p] <= rating ** 2)
 
     # - Expected Interface Power Flow (explicit definition)
     model.expected_interface_pf = pe.ConstraintList()
@@ -855,9 +852,8 @@ def _build_model(network, params):
             # Branch power flow slacks
             for b in model.branches:
                 for p in model.periods:
-                    slack_iij_sqr_up = model.slack_iij_sqr_up[b, s_m, s_o, p]
-                    slack_iij_sqr_down = model.slack_iij_sqr_down[b, s_m, s_o, p]
-                    obj += PENALTY_SLACK * (slack_iij_sqr_up + slack_iij_sqr_down)
+                    slack_iij_sqr = model.slack_iij_sqr[b, s_m, s_o, p]
+                    obj += PENALTY_SLACK * slack_iij_sqr
 
     model.objective = pe.Objective(sense=pe.minimize, expr=obj)
 
