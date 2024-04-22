@@ -1095,15 +1095,16 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
     perc_style = '0.00%'
 
     # Write Header
-    sheet.cell(row=row_idx, column=1).value = 'From Node ID'
-    sheet.cell(row=row_idx, column=2).value = 'To Node ID'
-    sheet.cell(row=row_idx, column=3).value = 'Year'
-    sheet.cell(row=row_idx, column=4).value = 'Day'
-    sheet.cell(row=row_idx, column=5).value = 'Quantity'
-    sheet.cell(row=row_idx, column=6).value = 'Market Scenario'
-    sheet.cell(row=row_idx, column=7).value = 'Operation Scenario'
+    sheet.cell(row=row_idx, column=1).value = 'BranchID'
+    sheet.cell(row=row_idx, column=2).value = 'From Node ID'
+    sheet.cell(row=row_idx, column=3).value = 'To Node ID'
+    sheet.cell(row=row_idx, column=4).value = 'Year'
+    sheet.cell(row=row_idx, column=5).value = 'Day'
+    sheet.cell(row=row_idx, column=6).value = 'Quantity'
+    sheet.cell(row=row_idx, column=7).value = 'Market Scenario'
+    sheet.cell(row=row_idx, column=8).value = 'Operation Scenario'
     for p in range(network_planning.num_instants):
-        sheet.cell(row=row_idx, column=p + 8).value = p
+        sheet.cell(row=row_idx, column=p + 9).value = p
     row_idx = row_idx + 1
 
     for year in results:
@@ -1112,26 +1113,28 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
             network = network_planning.network[year][day]
 
             expected_values = {'pij': {}, 'pji': {}, 'qij': {}, 'qji': {}, 'sij': {}, 'sji': {}}
-            for k in range(len(network.branches)):
-                expected_values['pij'][k] = [0.0 for _ in range(network.num_instants)]
-                expected_values['pji'][k] = [0.0 for _ in range(network.num_instants)]
-                expected_values['qij'][k] = [0.0 for _ in range(network.num_instants)]
-                expected_values['qji'][k] = [0.0 for _ in range(network.num_instants)]
-                expected_values['sij'][k] = [0.0 for _ in range(network.num_instants)]
-                expected_values['sji'][k] = [0.0 for _ in range(network.num_instants)]
+            for branch in network.branches:
+                branch_id = branch.branch_id
+                expected_values['pij'][branch_id] = [0.0 for _ in range(network.num_instants)]
+                expected_values['pji'][branch_id] = [0.0 for _ in range(network.num_instants)]
+                expected_values['qij'][branch_id] = [0.0 for _ in range(network.num_instants)]
+                expected_values['qji'][branch_id] = [0.0 for _ in range(network.num_instants)]
+                expected_values['sij'][branch_id] = [0.0 for _ in range(network.num_instants)]
+                expected_values['sji'][branch_id] = [0.0 for _ in range(network.num_instants)]
 
             for s_m in results[year][day]['scenarios']:
                 omega_m = network.prob_market_scenarios[s_m]
                 for s_o in results[year][day]['scenarios'][s_m]:
                     omega_s = network.prob_operation_scenarios[s_o]
-                    for k in range(len(network.branches)):
+                    for branch in network.branches:
 
-                        branch = network.branches[k]
+                        branch_id = branch.branch_id
                         rating = branch.rate
                         if rating == 0.0:
                             rating = BRANCH_UNKNOWN_RATING
 
                         # Pij, [MW]
+                        sheet.cell(row=row_idx, column=1).value = branch_id
                         sheet.cell(row=row_idx, column=1).value = branch.fbus
                         sheet.cell(row=row_idx, column=2).value = branch.tbus
                         sheet.cell(row=row_idx, column=3).value = int(year)
@@ -1140,13 +1143,14 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
                         sheet.cell(row=row_idx, column=6).value = s_m
                         sheet.cell(row=row_idx, column=7).value = s_o
                         for p in range(network.num_instants):
-                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['pij'][k][p]
+                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['pij'][branch_id][p]
                             sheet.cell(row=row_idx, column=p + 8).value = value
                             sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
-                            expected_values['pij'][k][p] += value * omega_m * omega_s
+                            expected_values['pij'][branch_id][p] += value * omega_m * omega_s
                         row_idx = row_idx + 1
 
                         # Pij, [%]
+                        sheet.cell(row=row_idx, column=1).value = branch_id
                         sheet.cell(row=row_idx, column=1).value = branch.fbus
                         sheet.cell(row=row_idx, column=2).value = branch.tbus
                         sheet.cell(row=row_idx, column=3).value = int(year)
@@ -1155,12 +1159,13 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
                         sheet.cell(row=row_idx, column=6).value = s_m
                         sheet.cell(row=row_idx, column=7).value = s_o
                         for p in range(network.num_instants):
-                            value = abs(results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['pij'][k][p] / rating)
+                            value = abs(results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['pij'][branch_id][p] / rating)
                             sheet.cell(row=row_idx, column=p + 8).value = value
                             sheet.cell(row=row_idx, column=p + 8).number_format = perc_style
                         row_idx = row_idx + 1
 
                         # Pji, [MW]
+                        sheet.cell(row=row_idx, column=1).value = branch_id
                         sheet.cell(row=row_idx, column=1).value = branch.tbus
                         sheet.cell(row=row_idx, column=2).value = branch.fbus
                         sheet.cell(row=row_idx, column=3).value = int(year)
@@ -1169,13 +1174,14 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
                         sheet.cell(row=row_idx, column=6).value = s_m
                         sheet.cell(row=row_idx, column=7).value = s_o
                         for p in range(network.num_instants):
-                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['pji'][k][p]
+                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['pji'][branch_id][p]
                             sheet.cell(row=row_idx, column=p + 8).value = value
                             sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
-                            expected_values['pji'][k][p] += value * omega_m * omega_s
+                            expected_values['pji'][branch_id][p] += value * omega_m * omega_s
                         row_idx = row_idx + 1
 
                         # Pji, [%]
+                        sheet.cell(row=row_idx, column=1).value = branch_id
                         sheet.cell(row=row_idx, column=1).value = branch.tbus
                         sheet.cell(row=row_idx, column=2).value = branch.fbus
                         sheet.cell(row=row_idx, column=3).value = int(year)
@@ -1184,12 +1190,13 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
                         sheet.cell(row=row_idx, column=6).value = s_m
                         sheet.cell(row=row_idx, column=7).value = s_o
                         for p in range(network.num_instants):
-                            value = abs(results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['pji'][k][p] / rating)
+                            value = abs(results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['pji'][branch_id][p] / rating)
                             sheet.cell(row=row_idx, column=p + 8).value = value
                             sheet.cell(row=row_idx, column=p + 8).number_format = perc_style
                         row_idx = row_idx + 1
 
                         # Qij, [MVAr]
+                        sheet.cell(row=row_idx, column=1).value = branch_id
                         sheet.cell(row=row_idx, column=1).value = branch.fbus
                         sheet.cell(row=row_idx, column=2).value = branch.tbus
                         sheet.cell(row=row_idx, column=3).value = int(year)
@@ -1198,13 +1205,14 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
                         sheet.cell(row=row_idx, column=6).value = s_m
                         sheet.cell(row=row_idx, column=7).value = s_o
                         for p in range(network.num_instants):
-                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['qij'][k][p]
+                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['qij'][branch_id][p]
                             sheet.cell(row=row_idx, column=p + 8).value = value
                             sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
-                            expected_values['qij'][k][p] += value * omega_m * omega_s
+                            expected_values['qij'][branch_id][p] += value * omega_m * omega_s
                         row_idx = row_idx + 1
 
                         # Qij, [%]
+                        sheet.cell(row=row_idx, column=1).value = branch_id
                         sheet.cell(row=row_idx, column=1).value = branch.fbus
                         sheet.cell(row=row_idx, column=2).value = branch.tbus
                         sheet.cell(row=row_idx, column=3).value = int(year)
@@ -1213,12 +1221,13 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
                         sheet.cell(row=row_idx, column=6).value = s_m
                         sheet.cell(row=row_idx, column=7).value = s_o
                         for p in range(network.num_instants):
-                            value = abs(results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['qij'][k][p] / rating)
+                            value = abs(results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['qij'][branch_id][p] / rating)
                             sheet.cell(row=row_idx, column=p + 8).value = value
                             sheet.cell(row=row_idx, column=p + 8).number_format = perc_style
                         row_idx = row_idx + 1
 
                         # Qji, [MW]
+                        sheet.cell(row=row_idx, column=1).value = branch_id
                         sheet.cell(row=row_idx, column=1).value = branch.tbus
                         sheet.cell(row=row_idx, column=2).value = branch.fbus
                         sheet.cell(row=row_idx, column=3).value = int(year)
@@ -1227,13 +1236,14 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
                         sheet.cell(row=row_idx, column=6).value = s_m
                         sheet.cell(row=row_idx, column=7).value = s_o
                         for p in range(network.num_instants):
-                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['qji'][k][p]
+                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['qji'][branch_id][p]
                             sheet.cell(row=row_idx, column=p + 8).value = value
                             sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
-                            expected_values['qji'][k][p] += value * omega_m * omega_s
+                            expected_values['qji'][branch_id][p] += value * omega_m * omega_s
                         row_idx = row_idx + 1
 
                         # Qji, [%]
+                        sheet.cell(row=row_idx, column=1).value = branch_id
                         sheet.cell(row=row_idx, column=1).value = branch.tbus
                         sheet.cell(row=row_idx, column=2).value = branch.fbus
                         sheet.cell(row=row_idx, column=3).value = int(year)
@@ -1242,12 +1252,13 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
                         sheet.cell(row=row_idx, column=6).value = s_m
                         sheet.cell(row=row_idx, column=7).value = s_o
                         for p in range(network.num_instants):
-                            value = abs(results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['qji'][k][p] / rating)
+                            value = abs(results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['qji'][branch_id][p] / rating)
                             sheet.cell(row=row_idx, column=p + 8).value = value
                             sheet.cell(row=row_idx, column=p + 8).number_format = perc_style
                         row_idx = row_idx + 1
 
                         # Sij, [MVA]
+                        sheet.cell(row=row_idx, column=1).value = branch_id
                         sheet.cell(row=row_idx, column=1).value = branch.fbus
                         sheet.cell(row=row_idx, column=2).value = branch.tbus
                         sheet.cell(row=row_idx, column=3).value = int(year)
@@ -1256,13 +1267,14 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
                         sheet.cell(row=row_idx, column=6).value = s_m
                         sheet.cell(row=row_idx, column=7).value = s_o
                         for p in range(network.num_instants):
-                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['sij'][k][p]
+                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['sij'][branch_id][p]
                             sheet.cell(row=row_idx, column=p + 8).value = value
                             sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
-                            expected_values['sij'][k][p] += value * omega_m * omega_s
+                            expected_values['sij'][branch_id][p] += value * omega_m * omega_s
                         row_idx = row_idx + 1
 
                         # Sij, [%]
+                        sheet.cell(row=row_idx, column=1).value = branch_id
                         sheet.cell(row=row_idx, column=1).value = branch.fbus
                         sheet.cell(row=row_idx, column=2).value = branch.tbus
                         sheet.cell(row=row_idx, column=3).value = int(year)
@@ -1271,12 +1283,13 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
                         sheet.cell(row=row_idx, column=6).value = s_m
                         sheet.cell(row=row_idx, column=7).value = s_o
                         for p in range(network.num_instants):
-                            value = abs(results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['sij'][k][p] / rating)
+                            value = abs(results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['sij'][branch_id][p] / rating)
                             sheet.cell(row=row_idx, column=p + 8).value = value
                             sheet.cell(row=row_idx, column=p + 8).number_format = perc_style
                         row_idx = row_idx + 1
 
                         # Sji, [MW]
+                        sheet.cell(row=row_idx, column=1).value = branch_id
                         sheet.cell(row=row_idx, column=1).value = branch.tbus
                         sheet.cell(row=row_idx, column=2).value = branch.fbus
                         sheet.cell(row=row_idx, column=3).value = int(year)
@@ -1285,13 +1298,14 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
                         sheet.cell(row=row_idx, column=6).value = s_m
                         sheet.cell(row=row_idx, column=7).value = s_o
                         for p in range(network.num_instants):
-                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][k][p]
+                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][branch_id][p]
                             sheet.cell(row=row_idx, column=p + 8).value = value
                             sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
-                            expected_values['sji'][k][p] += value * omega_m * omega_s
+                            expected_values['sji'][branch_id][p] += value * omega_m * omega_s
                         row_idx = row_idx + 1
 
                         # Sji, [%]
+                        sheet.cell(row=row_idx, column=1).value = branch_id
                         sheet.cell(row=row_idx, column=1).value = branch.tbus
                         sheet.cell(row=row_idx, column=2).value = branch.fbus
                         sheet.cell(row=row_idx, column=3).value = int(year)
@@ -1300,14 +1314,14 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
                         sheet.cell(row=row_idx, column=6).value = s_m
                         sheet.cell(row=row_idx, column=7).value = s_o
                         for p in range(network.num_instants):
-                            value = abs(results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][k][p] / rating)
+                            value = abs(results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][branch_id][p] / rating)
                             sheet.cell(row=row_idx, column=p + 8).value = value
                             sheet.cell(row=row_idx, column=p + 8).number_format = perc_style
                         row_idx = row_idx + 1
 
-            for k in range(len(network.branches)):
+            for branch in network.branches:
 
-                branch = network.branches[k]
+                branch_id = branch.branch_id
                 rating = branch.rate
                 if rating == 0.0:
                     rating = BRANCH_UNKNOWN_RATING
@@ -1321,7 +1335,7 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
                 sheet.cell(row=row_idx, column=6).value = 'Expected'
                 sheet.cell(row=row_idx, column=7).value = '-'
                 for p in range(network.num_instants):
-                    sheet.cell(row=row_idx, column=p + 8).value = expected_values['pij'][k][p]
+                    sheet.cell(row=row_idx, column=p + 8).value = expected_values['pij'][branch_id][p]
                     sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                 row_idx = row_idx + 1
 
@@ -1334,7 +1348,7 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
                 sheet.cell(row=row_idx, column=6).value = 'Expected'
                 sheet.cell(row=row_idx, column=7).value = '-'
                 for p in range(network.num_instants):
-                    sheet.cell(row=row_idx, column=p + 8).value = abs(expected_values['pij'][k][p]) / rating
+                    sheet.cell(row=row_idx, column=p + 8).value = abs(expected_values['pij'][branch_id][p]) / rating
                     sheet.cell(row=row_idx, column=p + 8).number_format = perc_style
                 row_idx = row_idx + 1
 
@@ -1347,7 +1361,7 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
                 sheet.cell(row=row_idx, column=6).value = 'Expected'
                 sheet.cell(row=row_idx, column=7).value = '-'
                 for p in range(network.num_instants):
-                    sheet.cell(row=row_idx, column=p + 8).value = expected_values['pji'][k][p]
+                    sheet.cell(row=row_idx, column=p + 8).value = expected_values['pji'][branch_id][p]
                     sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                 row_idx = row_idx + 1
 
@@ -1360,7 +1374,7 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
                 sheet.cell(row=row_idx, column=6).value = 'Expected'
                 sheet.cell(row=row_idx, column=7).value = '-'
                 for p in range(network.num_instants):
-                    sheet.cell(row=row_idx, column=p + 8).value = abs(expected_values['pji'][k][p]) / rating
+                    sheet.cell(row=row_idx, column=p + 8).value = abs(expected_values['pji'][branch_id][p]) / rating
                     sheet.cell(row=row_idx, column=p + 8).number_format = perc_style
                 row_idx = row_idx + 1
 
@@ -1373,7 +1387,7 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
                 sheet.cell(row=row_idx, column=6).value = 'Expected'
                 sheet.cell(row=row_idx, column=7).value = '-'
                 for p in range(network.num_instants):
-                    sheet.cell(row=row_idx, column=p + 8).value = expected_values['qij'][k][p]
+                    sheet.cell(row=row_idx, column=p + 8).value = expected_values['qij'][branch_id][p]
                     sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                 row_idx = row_idx + 1
 
@@ -1386,7 +1400,7 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
                 sheet.cell(row=row_idx, column=6).value = 'Expected'
                 sheet.cell(row=row_idx, column=7).value = '-'
                 for p in range(network.num_instants):
-                    sheet.cell(row=row_idx, column=p + 8).value = abs(expected_values['qij'][k][p]) / rating
+                    sheet.cell(row=row_idx, column=p + 8).value = abs(expected_values['qij'][branch_id][p]) / rating
                     sheet.cell(row=row_idx, column=p + 8).number_format = perc_style
                 row_idx = row_idx + 1
 
@@ -1399,7 +1413,7 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
                 sheet.cell(row=row_idx, column=6).value = 'Expected'
                 sheet.cell(row=row_idx, column=7).value = '-'
                 for p in range(network.num_instants):
-                    sheet.cell(row=row_idx, column=p + 8).value = expected_values['qji'][k][p]
+                    sheet.cell(row=row_idx, column=p + 8).value = expected_values['qji'][branch_id][p]
                     sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                 row_idx = row_idx + 1
 
@@ -1412,7 +1426,7 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
                 sheet.cell(row=row_idx, column=6).value = 'Expected'
                 sheet.cell(row=row_idx, column=7).value = '-'
                 for p in range(network.num_instants):
-                    sheet.cell(row=row_idx, column=p + 8).value = abs(expected_values['qji'][k][p]) / rating
+                    sheet.cell(row=row_idx, column=p + 8).value = abs(expected_values['qji'][branch_id][p]) / rating
                     sheet.cell(row=row_idx, column=p + 8).number_format = perc_style
                 row_idx = row_idx + 1
 
@@ -1425,7 +1439,7 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
                 sheet.cell(row=row_idx, column=6).value = 'Expected'
                 sheet.cell(row=row_idx, column=7).value = '-'
                 for p in range(network.num_instants):
-                    sheet.cell(row=row_idx, column=p + 8).value = expected_values['sij'][k][p]
+                    sheet.cell(row=row_idx, column=p + 8).value = expected_values['sij'][branch_id][p]
                     sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                 row_idx = row_idx + 1
 
@@ -1438,7 +1452,7 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
                 sheet.cell(row=row_idx, column=6).value = 'Expected'
                 sheet.cell(row=row_idx, column=7).value = '-'
                 for p in range(network.num_instants):
-                    sheet.cell(row=row_idx, column=p + 8).value = abs(expected_values['sij'][k][p]) / rating
+                    sheet.cell(row=row_idx, column=p + 8).value = abs(expected_values['sij'][branch_id][p]) / rating
                     sheet.cell(row=row_idx, column=p + 8).number_format = perc_style
                 row_idx = row_idx + 1
 
@@ -1451,7 +1465,7 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
                 sheet.cell(row=row_idx, column=6).value = 'Expected'
                 sheet.cell(row=row_idx, column=7).value = '-'
                 for p in range(network.num_instants):
-                    sheet.cell(row=row_idx, column=p + 8).value = expected_values['sji'][k][p]
+                    sheet.cell(row=row_idx, column=p + 8).value = expected_values['sji'][branch_id][p]
                     sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                 row_idx = row_idx + 1
 
@@ -1464,7 +1478,7 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
                 sheet.cell(row=row_idx, column=6).value = 'Expected'
                 sheet.cell(row=row_idx, column=7).value = '-'
                 for p in range(network.num_instants):
-                    sheet.cell(row=row_idx, column=p + 8).value = abs(expected_values['sji'][k][p]) / rating
+                    sheet.cell(row=row_idx, column=p + 8).value = abs(expected_values['sji'][branch_id][p]) / rating
                     sheet.cell(row=row_idx, column=p + 8).number_format = perc_style
                 row_idx = row_idx + 1
 
