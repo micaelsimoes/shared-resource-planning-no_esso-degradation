@@ -37,6 +37,7 @@ class Network:
         self.prob_market_scenarios = list()             # Probability of market (price) scenarios
         self.prob_operation_scenarios = list()          # Probability of operation (generation and consumption) scenarios
         self.cost_energy_p = list()
+        self.cost_flex = list()
 
     def build_model(self, params):
         _pre_process_network(self)
@@ -2119,6 +2120,7 @@ def _compute_objective_function_value(network, model, params):
     if params.obj_type == OBJ_MIN_COST:
 
         c_p = network.cost_energy_p
+        c_flex = network.cost_flex
 
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
@@ -2133,12 +2135,9 @@ def _compute_objective_function_value(network, model, params):
 
                 # Demand side flexibility
                 if params.fl_reg:
-                    for i in model.nodes:
-                        node = network.nodes[i]
+                    for c in model.loads:
                         for p in model.periods:
-                            cost_flex = node.flexibility.cost[p]
-                            flex_up = pe.value(model.flex_p_up[i, s_m, s_o, p])
-                            obj_scenario += cost_flex * network.baseMVA * flex_up
+                            obj_scenario += c_flex[s_m][p] * network.baseMVA * pe.value(model.flex_p_up[c, s_m, s_o, p])
 
                 # Load curtailment
                 if params.l_curt:
@@ -2214,11 +2213,11 @@ def _compute_total_load(network, model, params):
     for s_m in model.scenarios_market:
         for s_o in model.scenarios_operation:
             total_load_scenario = 0.0
-            for i in model.nodes:
+            for c in model.loads:
                 for p in model.periods:
-                    total_load_scenario += network.baseMVA * pe.value(model.pc[i, s_m, s_o, p])
+                    total_load_scenario += network.baseMVA * pe.value(model.pc[c, s_m, s_o, p])
                     if params.l_curt:
-                        total_load_scenario -= network.baseMVA * pe.value(model.pc_curt[i, s_m, s_o, p])
+                        total_load_scenario -= network.baseMVA * pe.value(model.pc_curt[c, s_m, s_o, p])
 
             total_load += total_load_scenario * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
 
@@ -2340,9 +2339,9 @@ def _compute_flexibility_used(network, model, params):
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
                 flexibility_used_scenario = 0.0
-                for i in model.nodes:
+                for c in model.loads:
                     for p in model.periods:
-                        flexibility_used_scenario += pe.value(model.flex_p_up[i, s_m, s_o, p]) * network.baseMVA
+                        flexibility_used_scenario += pe.value(model.flex_p_up[c, s_m, s_o, p]) * network.baseMVA
 
                 flexibility_used += flexibility_used_scenario * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
 
