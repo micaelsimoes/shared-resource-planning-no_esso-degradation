@@ -700,7 +700,7 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
                 sheet.cell(row=row_idx, column=6).value = 'Expected'
                 sheet.cell(row=row_idx, column=7).value = '-'
                 for p in range(network.num_instants):
-                    sheet.cell(row=row_idx, column=p + 8).value = expected_pc[node_id][p]
+                    sheet.cell(row=row_idx, column=p + 8).value = expected_pc[load_id][p]
                     sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                 row_idx = row_idx + 1
 
@@ -715,7 +715,7 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
                     sheet.cell(row=row_idx, column=6).value = 'Expected'
                     sheet.cell(row=row_idx, column=7).value = '-'
                     for p in range(network.num_instants):
-                        sheet.cell(row=row_idx, column=p + 8).value = expected_flex_up[node_id][p]
+                        sheet.cell(row=row_idx, column=p + 8).value = expected_flex_up[load_id][p]
                         sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                     row_idx = row_idx + 1
 
@@ -728,7 +728,7 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
                     sheet.cell(row=row_idx, column=6).value = 'Expected'
                     sheet.cell(row=row_idx, column=7).value = '-'
                     for p in range(network.num_instants):
-                        sheet.cell(row=row_idx, column=p + 8).value = expected_flex_down[node_id][p]
+                        sheet.cell(row=row_idx, column=p + 8).value = expected_flex_down[load_id][p]
                         sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                     row_idx = row_idx + 1
 
@@ -743,7 +743,7 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
                     sheet.cell(row=row_idx, column=6).value = 'Expected'
                     sheet.cell(row=row_idx, column=7).value = '-'
                     for p in range(network.num_instants):
-                        sheet.cell(row=row_idx, column=p + 8).value = expected_pc_curt[node_id][p]
+                        sheet.cell(row=row_idx, column=p + 8).value = expected_pc_curt[load_id][p]
                         sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                         if expected_pc_curt[node_id][p] >= SMALL_TOLERANCE:
                             sheet.cell(row=row_idx, column=p + 8).fill = violation_fill
@@ -760,7 +760,7 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
                     sheet.cell(row=row_idx, column=5).value = 'Expected'
                     sheet.cell(row=row_idx, column=6).value = '-'
                     for p in range(network.num_instants):
-                        sheet.cell(row=row_idx, column=p + 7).value = expected_pnet[node_id][p]
+                        sheet.cell(row=row_idx, column=p + 7).value = expected_pnet[load_id][p]
                         sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                     row_idx = row_idx + 1
 
@@ -773,7 +773,7 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
                 sheet.cell(row=row_idx, column=6).value = 'Expected'
                 sheet.cell(row=row_idx, column=7).value = '-'
                 for p in range(network.num_instants):
-                    sheet.cell(row=row_idx, column=p + 8).value = expected_qc[node_id][p]
+                    sheet.cell(row=row_idx, column=p + 8).value = expected_qc[load_id][p]
                     sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                 row_idx = row_idx + 1
 
@@ -788,7 +788,7 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
                     sheet.cell(row=row_idx, column=6).value = 'Expected'
                     sheet.cell(row=row_idx, column=7).value = '-'
                     for p in range(network.num_instants):
-                        sheet.cell(row=row_idx, column=p + 8).value = expected_qc_curt[node_id][p]
+                        sheet.cell(row=row_idx, column=p + 8).value = expected_qc_curt[load_id][p]
                         sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                         if expected_qc_curt[node_id][p] >= SMALL_TOLERANCE:
                             sheet.cell(row=row_idx, column=p + 8).fill = violation_fill
@@ -803,7 +803,7 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
                     sheet.cell(row=row_idx, column=6).value = 'Expected'
                     sheet.cell(row=row_idx, column=7).value = '-'
                     for p in range(network.num_instants):
-                        sheet.cell(row=row_idx, column=p + 8).value = expected_qnet[node_id][p]
+                        sheet.cell(row=row_idx, column=p + 8).value = expected_qnet[load_id][p]
                         sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                     row_idx = row_idx + 1
 
