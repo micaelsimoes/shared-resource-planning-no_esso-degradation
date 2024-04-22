@@ -817,8 +817,8 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
     violation_fill = PatternFill(start_color='FFFF0000', end_color='FFFF0000', fill_type='solid')
 
     # Write Header
-    sheet.cell(row=row_idx, column=1).value = 'Node ID'
     sheet.cell(row=row_idx, column=2).value = 'Generator ID'
+    sheet.cell(row=row_idx, column=1).value = 'Node ID'
     sheet.cell(row=row_idx, column=3).value = 'Type'
     sheet.cell(row=row_idx, column=4).value = 'Year'
     sheet.cell(row=row_idx, column=5).value = 'Day'
@@ -849,15 +849,15 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                 omega_m = network.prob_market_scenarios[s_m]
                 for s_o in results[year][day]['scenarios'][s_m]:
                     omega_s = network.prob_operation_scenarios[s_o]
-                    for g in results[year][day]['scenarios'][s_m][s_o]['generation']['pg']:
+                    for generator in network.generators:
 
-                        node_id = network.generators[g].bus
-                        gen_id = network.generators[g].gen_id
+                        gen_id = generator.gen_id
+                        node_id = generator.bus
                         gen_type = network.get_gen_type(gen_id)
 
                         # Active Power
-                        sheet.cell(row=row_idx, column=1).value = node_id
-                        sheet.cell(row=row_idx, column=2).value = gen_id
+                        sheet.cell(row=row_idx, column=1).value = gen_id
+                        sheet.cell(row=row_idx, column=2).value = node_id
                         sheet.cell(row=row_idx, column=3).value = gen_type
                         sheet.cell(row=row_idx, column=4).value = int(year)
                         sheet.cell(row=row_idx, column=5).value = day
@@ -874,8 +874,8 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                         if network_planning.params.rg_curt:
 
                             # Active Power curtailment
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = gen_id
+                            sheet.cell(row=row_idx, column=1).value = gen_id
+                            sheet.cell(row=row_idx, column=2).value = node_id
                             sheet.cell(row=row_idx, column=3).value = gen_type
                             sheet.cell(row=row_idx, column=4).value = int(year)
                             sheet.cell(row=row_idx, column=5).value = day
@@ -892,8 +892,8 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                             row_idx = row_idx + 1
 
                             # Active Power net
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = gen_id
+                            sheet.cell(row=row_idx, column=1).value = gen_id
+                            sheet.cell(row=row_idx, column=2).value = node_id
                             sheet.cell(row=row_idx, column=3).value = gen_type
                             sheet.cell(row=row_idx, column=4).value = int(year)
                             sheet.cell(row=row_idx, column=5).value = day
@@ -908,8 +908,8 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                             row_idx = row_idx + 1
 
                         # Reactive Power
-                        sheet.cell(row=row_idx, column=1).value = node_id
-                        sheet.cell(row=row_idx, column=2).value = gen_id
+                        sheet.cell(row=row_idx, column=1).value = gen_id
+                        sheet.cell(row=row_idx, column=2).value = node_id
                         sheet.cell(row=row_idx, column=3).value = gen_type
                         sheet.cell(row=row_idx, column=4).value = int(year)
                         sheet.cell(row=row_idx, column=5).value = day
@@ -930,8 +930,8 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                 gen_type = network.get_gen_type(gen_id)
 
                 # Active Power
-                sheet.cell(row=row_idx, column=1).value = node_id
-                sheet.cell(row=row_idx, column=2).value = gen_id
+                sheet.cell(row=row_idx, column=1).value = gen_id
+                sheet.cell(row=row_idx, column=2).value = node_id
                 sheet.cell(row=row_idx, column=3).value = gen_type
                 sheet.cell(row=row_idx, column=4).value = int(year)
                 sheet.cell(row=row_idx, column=5).value = day
@@ -946,8 +946,8 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                 if network_planning.params.rg_curt:
 
                     # Active Power curtailment
-                    sheet.cell(row=row_idx, column=1).value = node_id
-                    sheet.cell(row=row_idx, column=2).value = gen_id
+                    sheet.cell(row=row_idx, column=1).value = gen_id
+                    sheet.cell(row=row_idx, column=2).value = node_id
                     sheet.cell(row=row_idx, column=3).value = gen_type
                     sheet.cell(row=row_idx, column=4).value = int(year)
                     sheet.cell(row=row_idx, column=5).value = day
@@ -962,8 +962,8 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                     row_idx = row_idx + 1
 
                     # Active Power net
-                    sheet.cell(row=row_idx, column=1).value = node_id
-                    sheet.cell(row=row_idx, column=2).value = gen_id
+                    sheet.cell(row=row_idx, column=1).value = gen_id
+                    sheet.cell(row=row_idx, column=2).value = node_id
                     sheet.cell(row=row_idx, column=3).value = gen_type
                     sheet.cell(row=row_idx, column=4).value = int(year)
                     sheet.cell(row=row_idx, column=5).value = day
@@ -976,8 +976,8 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                     row_idx = row_idx + 1
 
                 # Reactive Power
-                sheet.cell(row=row_idx, column=1).value = node_id
-                sheet.cell(row=row_idx, column=2).value = gen_id
+                sheet.cell(row=row_idx, column=1).value = gen_id
+                sheet.cell(row=row_idx, column=2).value = node_id
                 sheet.cell(row=row_idx, column=3).value = gen_type
                 sheet.cell(row=row_idx, column=4).value = int(year)
                 sheet.cell(row=row_idx, column=5).value = day
