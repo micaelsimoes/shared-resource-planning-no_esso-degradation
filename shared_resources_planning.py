@@ -1342,6 +1342,7 @@ def _read_planning_problem(planning_problem):
     transmission_network.discount_factor = planning_problem.discount_factor
     transmission_network.prob_market_scenarios = planning_problem.prob_market_scenarios
     transmission_network.cost_energy_p = planning_problem.cost_energy_p
+    transmission_network.cost_flex = planning_problem.cost_flex
     transmission_network.params_file = planning_data['TransmissionNetwork']['params_file']
     transmission_network.read_network_parameters()
     if transmission_network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
