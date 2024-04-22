@@ -1396,21 +1396,21 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['consumption']['pc_curt'][load_id] = []
                     processed_results['scenarios'][s_m][s_o]['consumption']['qc_curt'][load_id] = []
                 for p in model.periods:
-                    pc = pe.value(model.pc[i, s_m, s_o, p]) * network.baseMVA
-                    qc = pe.value(model.qc[i, s_m, s_o, p]) * network.baseMVA
+                    pc = pe.value(model.pc[c, s_m, s_o, p]) * network.baseMVA
+                    qc = pe.value(model.qc[c, s_m, s_o, p]) * network.baseMVA
                     processed_results['scenarios'][s_m][s_o]['consumption']['pc'][load_id].append(pc)
                     processed_results['scenarios'][s_m][s_o]['consumption']['qc'][load_id].append(qc)
                     processed_results['scenarios'][s_m][s_o]['consumption']['pc_net'][load_id][p] += pc
                     processed_results['scenarios'][s_m][s_o]['consumption']['qc_net'][load_id][p] += qc
                     if params.fl_reg:
-                        pup = pe.value(model.flex_p_up[i, s_m, s_o, p]) * network.baseMVA
-                        pdown = pe.value(model.flex_p_down[i, s_m, s_o, p]) * network.baseMVA
+                        pup = pe.value(model.flex_p_up[c, s_m, s_o, p]) * network.baseMVA
+                        pdown = pe.value(model.flex_p_down[c, s_m, s_o, p]) * network.baseMVA
                         processed_results['scenarios'][s_m][s_o]['consumption']['p_up'][load_id].append(pup)
                         processed_results['scenarios'][s_m][s_o]['consumption']['p_down'][load_id].append(pdown)
                         processed_results['scenarios'][s_m][s_o]['consumption']['pc_net'][load_id][p] += pup - pdown
                     if params.l_curt:
-                        pc_curt = pe.value(model.pc_curt[i, s_m, s_o, p]) * network.baseMVA
-                        qc_curt = pe.value(model.qc_curt[i, s_m, s_o, p]) * network.baseMVA
+                        pc_curt = pe.value(model.pc_curt[c, s_m, s_o, p]) * network.baseMVA
+                        qc_curt = pe.value(model.qc_curt[c, s_m, s_o, p]) * network.baseMVA
                         processed_results['scenarios'][s_m][s_o]['consumption']['pc_curt'][load_id].append(pc_curt)
                         processed_results['scenarios'][s_m][s_o]['consumption']['pc_net'][load_id][p] -= pc_curt
                         processed_results['scenarios'][s_m][s_o]['consumption']['qc_curt'][load_id].append(qc_curt)
