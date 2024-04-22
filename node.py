@@ -15,14 +15,6 @@ class Node:
         self.base_kv = 0.0                    # baseKV, base voltage (kV)
         self.v_max = 1.10                     # maxVm, maximum voltage magnitude (p.u.)
         self.v_min = 0.90                     # minVm, minimum voltage magnitude (p.u.)
-        self.flexibility = NodeFlexibility()  # Flexibility structure
 
 
-# ======================================================================================================================
-#   Class NODE FLEXIBILITY
-# ======================================================================================================================
-class NodeFlexibility:
 
-    def __init__(self):
-        self.upward = list()                # Note: FL - increase consumption
-        self.downward = list()
