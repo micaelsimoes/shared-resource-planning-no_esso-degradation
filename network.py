@@ -4,6 +4,7 @@ import pyomo.opt as po
 import pyomo.environ as pe
 from math import acos, pi, tan, sqrt, atan2, isclose
 from node import Node
+from load import Load
 from branch import Branch
 from generator import Generator
 from energy_storage import EnergyStorage
@@ -28,6 +29,7 @@ class Network:
         self.is_transmission = False
         self.baseMVA = 100.0
         self.nodes = list()
+        self.loads = list()
         self.branches = list()
         self.generators = list()
         self.energy_storages = list()
@@ -1205,7 +1207,7 @@ def _read_network_from_json_file(network, filename):
     network.baseMVA = float(network_data['baseMVA'])
 
     # Nodes
-    for node_data in network_data['bus']:
+    for node_data in network_data['nodes']:
         node = Node()
         node.bus_i = int(node_data['bus_i'])
         node.type = int(node_data['type'])
@@ -1217,7 +1219,7 @@ def _read_network_from_json_file(network, filename):
         network.nodes.append(node)
 
     # Generators
-    for gen_data in network_data['gen']:
+    for gen_data in network_data['generators']:
         generator = Generator()
         generator.gen_id = int(gen_data['gen_id'])
         generator.bus = int(gen_data['bus'])
@@ -1245,8 +1247,20 @@ def _read_network_from_json_file(network, filename):
             generator.gen_type = GEN_RES_CONTROLLABLE
         network.generators.append(generator)
 
+    # Loads
+    for load_data in network_data['loads']:
+        load = Load()
+        load.load_id = int(load_data['load_id'])
+        load.bus = int(load_data['bus'])
+        if not network.node_exists(load.bus):
+            print(f'[ERROR] Load {load.load_id }. Node {load.bus} does not exist! Exiting...')
+            exit(ERROR_NETWORK_FILE)
+        load.status = int(load_data['status'])
+        load.fl_reg = int(load_data['fl_reg'])
+        network.loads.append(load)
+
     # Lines
-    for line_data in network_data['line']:
+    for line_data in network_data['lines']:
         branch = Branch()
         branch.branch_id = int(line_data['branch_id'])
         branch.fbus = int(line_data['fbus'])
@@ -1265,8 +1279,8 @@ def _read_network_from_json_file(network, filename):
         network.branches.append(branch)
 
     # Transformers
-    if 'transformer' in network_data:
-        for transf_data in network_data['transformer']:
+    if 'transformers' in network_data:
+        for transf_data in network_data['transformers']:
             branch = Branch()
             branch.branch_id = int(transf_data['branch_id'])
             branch.fbus = int(transf_data['fbus'])
@@ -1288,7 +1302,7 @@ def _read_network_from_json_file(network, filename):
             network.branches.append(branch)
 
     # Energy Storages
-    if 'energy_storage' in network_data:
+    if 'energy_storages' in network_data:
         for energy_storage_data in network_data['energy_storage']:
             energy_storage = EnergyStorage()
             energy_storage.es_id = int(energy_storage_data['es_id'])
@@ -1368,8 +1382,7 @@ def _read_network_operational_data_from_file(network, filename):
         },
         'flexibility': {
             'upward': dict(),
-            'downward': dict(),
-            'cost': dict()
+            'downward': dict()
         },
         'generation': {
             'pg': dict(), 'qg': dict(), 'status': list()
@@ -1424,21 +1437,15 @@ def _read_network_operational_data_from_file(network, filename):
     # Flexibility data
     flex_up_p = _get_consumption_flexibility_data_from_excel_file(filename, f'UpFlex, {network.day}')
     if not flex_up_p:
-        for node in network.nodes:
-            flex_up_p[node.bus_i] = [0.0 for _ in range(network.num_instants)]
+        for load in network.loads:
+            flex_up_p[load.load_id] = [0.0 for _ in range(network.num_instants)]
     data['flexibility']['upward'] = flex_up_p
 
     flex_down_p = _get_consumption_flexibility_data_from_excel_file(filename, f'DownFlex, {network.day}')
     if not flex_down_p:
-        for node in network.nodes:
-            flex_down_p[node.bus_i] = [0.0 for _ in range(network.num_instants)]
+        for load in network.loads:
+            flex_down_p[load.load_id] = [0.0 for _ in range(network.num_instants)]
     data['flexibility']['downward'] = flex_down_p
-
-    flex_cost = _get_consumption_flexibility_data_from_excel_file(filename, f'CostFlex, {network.day}')
-    if not flex_cost:
-        for node in network.nodes:
-            flex_cost[node.bus_i] = [0.0 for _ in range(network.num_instants)]
-    data['flexibility']['cost'] = flex_cost
 
     return data
 
@@ -1543,23 +1550,21 @@ def _get_generator_status_from_excel_file(filename, sheet_name):
 
 def _update_network_with_excel_data(network, data):
 
-    for node in network.nodes:
+    for load in network.loads:
 
-        node_id = node.bus_i
-        node.pd = dict()         # Note: Changes Pd and Qd fields to dicts (per scenario)
-        node.qd = dict()
+        load_id = load.load_id
+        load.pd = dict()         # Note: Changes Pd and Qd fields to dicts (per scenario)
+        load.qd = dict()
 
         for s in range(len(network.prob_operation_scenarios)):
-            pc = _get_consumption_from_data(data, node_id, network.num_instants, s, DATA_ACTIVE_POWER)
-            qc = _get_consumption_from_data(data, node_id, network.num_instants, s, DATA_REACTIVE_POWER)
-            node.pd[s] = [instant / network.baseMVA for instant in pc]
-            node.qd[s] = [instant / network.baseMVA for instant in qc]
-        flex_up_p = _get_flexibility_from_data(data, node_id, network.num_instants, DATA_UPWARD_FLEXIBILITY)
-        flex_down_p = _get_flexibility_from_data(data, node_id, network.num_instants, DATA_DOWNWARD_FLEXIBILITY)
-        flex_cost = _get_flexibility_from_data(data, node_id, network.num_instants, DATA_COST_FLEXIBILITY)
-        node.flexibility.upward = [p / network.baseMVA for p in flex_up_p]
-        node.flexibility.downward = [q / network.baseMVA for q in flex_down_p]
-        node.flexibility.cost = flex_cost
+            pc = _get_consumption_from_data(data, load_id, network.num_instants, s, DATA_ACTIVE_POWER)
+            qc = _get_consumption_from_data(data, load_id, network.num_instants, s, DATA_REACTIVE_POWER)
+            load.pd[s] = [instant / network.baseMVA for instant in pc]
+            load.qd[s] = [instant / network.baseMVA for instant in qc]
+        flex_up_p = _get_flexibility_from_data(data, load_id, network.num_instants, DATA_UPWARD_FLEXIBILITY)
+        flex_down_p = _get_flexibility_from_data(data, load_id, network.num_instants, DATA_DOWNWARD_FLEXIBILITY)
+        load.flexibility.upward = [p / network.baseMVA for p in flex_up_p]
+        load.flexibility.downward = [q / network.baseMVA for q in flex_down_p]
 
     for generator in network.generators:
 
