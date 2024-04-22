@@ -336,13 +336,13 @@ def _build_model(network, params):
     if params.l_curt:
         model.pc_curt = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.qc_curt = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        for i in model.nodes:
+        for c in model.nodes:
             node = network.nodes[i]
             for s_m in model.scenarios_market:
                 for s_o in model.scenarios_operation:
                     for p in model.periods:
-                        model.pc_curt[i, s_m, s_o, p].setub(max(node.pd[s_o][p], 0.00))
-                        model.qc_curt[i, s_m, s_o, p].setub(max(node.qd[s_o][p], 0.00))
+                        model.pc_curt[c, s_m, s_o, p].setub(max(node.pd[s_o][p], 0.00))
+                        model.qc_curt[c, s_m, s_o, p].setub(max(node.qd[s_o][p], 0.00))
 
     # - Transformers
     model.r = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.0)

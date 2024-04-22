@@ -510,14 +510,15 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
     violation_fill = PatternFill(start_color='FFFF0000', end_color='FFFF0000', fill_type='solid')
 
     # Write Header
-    sheet.cell(row=row_idx, column=1).value = 'Node ID'
-    sheet.cell(row=row_idx, column=2).value = 'Year'
-    sheet.cell(row=row_idx, column=3).value = 'Day'
-    sheet.cell(row=row_idx, column=4).value = 'Quantity'
-    sheet.cell(row=row_idx, column=5).value = 'Market Scenario'
-    sheet.cell(row=row_idx, column=6).value = 'Operation Scenario'
+    sheet.cell(row=row_idx, column=1).value = 'Load ID'
+    sheet.cell(row=row_idx, column=2).value = 'Node ID'
+    sheet.cell(row=row_idx, column=3).value = 'Year'
+    sheet.cell(row=row_idx, column=4).value = 'Day'
+    sheet.cell(row=row_idx, column=5).value = 'Quantity'
+    sheet.cell(row=row_idx, column=6).value = 'Market Scenario'
+    sheet.cell(row=row_idx, column=7).value = 'Operation Scenario'
     for p in range(network_planning.num_instants):
-        sheet.cell(row=row_idx, column=p + 7).value = p
+        sheet.cell(row=row_idx, column=p + 8).value = p
     row_idx = row_idx + 1
 
     for year in results:
@@ -533,144 +534,156 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
             expected_qc = dict()
             expected_qc_curt = dict()
             expected_qnet = dict()
-            for node in network.nodes:
-                expected_pc[node.bus_i] = [0.0 for _ in range(network.num_instants)]
-                expected_flex_up[node.bus_i] = [0.0 for _ in range(network.num_instants)]
-                expected_flex_down[node.bus_i] = [0.0 for _ in range(network.num_instants)]
-                expected_pc_curt[node.bus_i] = [0.0 for _ in range(network.num_instants)]
-                expected_pnet[node.bus_i] = [0.0 for _ in range(network.num_instants)]
-                expected_qc[node.bus_i] = [0.0 for _ in range(network.num_instants)]
-                expected_qc_curt[node.bus_i] = [0.0 for _ in range(network.num_instants)]
-                expected_qnet[node.bus_i] = [0.0 for _ in range(network.num_instants)]
+            for load in network.loads:
+                expected_pc[load.load_id] = [0.0 for _ in range(network.num_instants)]
+                expected_flex_up[load.load_id] = [0.0 for _ in range(network.num_instants)]
+                expected_flex_down[load.load_id] = [0.0 for _ in range(network.num_instants)]
+                expected_pc_curt[load.load_id] = [0.0 for _ in range(network.num_instants)]
+                expected_pnet[load.load_id] = [0.0 for _ in range(network.num_instants)]
+                expected_qc[load.load_id] = [0.0 for _ in range(network.num_instants)]
+                expected_qc_curt[load.load_id] = [0.0 for _ in range(network.num_instants)]
+                expected_qnet[load.load_id] = [0.0 for _ in range(network.num_instants)]
 
             for s_m in results[year][day]['scenarios']:
                 omega_m = network.prob_market_scenarios[s_m]
                 for s_o in results[year][day]['scenarios'][s_m]:
                     omega_s = network.prob_operation_scenarios[s_o]
-                    for node_id in results[year][day]['scenarios'][s_m][s_o]['consumption']['pc']:
+
+                    for load in network.loads:
+
+                        load_id = load.load_id
+                        node_id = load.bus
 
                         # - Active Power
-                        sheet.cell(row=row_idx, column=1).value = node_id
-                        sheet.cell(row=row_idx, column=2).value = int(year)
-                        sheet.cell(row=row_idx, column=3).value = day
-                        sheet.cell(row=row_idx, column=4).value = 'Pc, [MW]'
-                        sheet.cell(row=row_idx, column=5).value = s_m
-                        sheet.cell(row=row_idx, column=6).value = s_o
+                        sheet.cell(row=row_idx, column=1).value = load_id
+                        sheet.cell(row=row_idx, column=2).value = node_id
+                        sheet.cell(row=row_idx, column=3).value = int(year)
+                        sheet.cell(row=row_idx, column=4).value = day
+                        sheet.cell(row=row_idx, column=5).value = 'Pc, [MW]'
+                        sheet.cell(row=row_idx, column=6).value = s_m
+                        sheet.cell(row=row_idx, column=7).value = s_o
                         for p in range(network.num_instants):
-                            pc = results[year][day]['scenarios'][s_m][s_o]['consumption']['pc'][node_id][p]
-                            sheet.cell(row=row_idx, column=p + 7).value = pc
-                            sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                            expected_pc[node_id][p] += pc * omega_m * omega_s
+                            pc = results[year][day]['scenarios'][s_m][s_o]['consumption']['pc'][load_id][p]
+                            sheet.cell(row=row_idx, column=p + 8).value = pc
+                            sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
+                            expected_pc[load_id][p] += pc * omega_m * omega_s
                         row_idx = row_idx + 1
 
                         if network_planning.params.fl_reg:
 
                             # - Flexibility, up
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'Flex Up, [MW]'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
+                            sheet.cell(row=row_idx, column=1).value = load_id
+                            sheet.cell(row=row_idx, column=2).value = node_id
+                            sheet.cell(row=row_idx, column=3).value = int(year)
+                            sheet.cell(row=row_idx, column=4).value = day
+                            sheet.cell(row=row_idx, column=5).value = 'Flex Up, [MW]'
+                            sheet.cell(row=row_idx, column=6).value = s_m
+                            sheet.cell(row=row_idx, column=7).value = s_o
                             for p in range(network.num_instants):
-                                flex = results[year][day]['scenarios'][s_m][s_o]['consumption']['p_up'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 7).value = flex
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                                expected_flex_up[node_id][p] += flex * omega_m * omega_s
+                                flex = results[year][day]['scenarios'][s_m][s_o]['consumption']['p_up'][load_id][p]
+                                sheet.cell(row=row_idx, column=p + 8).value = flex
+                                sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
+                                expected_flex_up[load_id][p] += flex * omega_m * omega_s
                             row_idx = row_idx + 1
 
                             # - Flexibility, down
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'Flex Down, [MW]'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
+                            sheet.cell(row=row_idx, column=1).value = load_id
+                            sheet.cell(row=row_idx, column=2).value = node_id
+                            sheet.cell(row=row_idx, column=3).value = int(year)
+                            sheet.cell(row=row_idx, column=4).value = day
+                            sheet.cell(row=row_idx, column=5).value = 'Flex Down, [MW]'
+                            sheet.cell(row=row_idx, column=6).value = s_m
+                            sheet.cell(row=row_idx, column=7).value = s_o
                             for p in range(network.num_instants):
-                                flex = results[year][day]['scenarios'][s_m][s_o]['consumption']['p_down'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 7).value = flex
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                                expected_flex_down[node_id][p] += flex * omega_m * omega_s
+                                flex = results[year][day]['scenarios'][s_m][s_o]['consumption']['p_down'][load_id][p]
+                                sheet.cell(row=row_idx, column=p + 8).value = flex
+                                sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
+                                expected_flex_down[load_id][p] += flex * omega_m * omega_s
                             row_idx = row_idx + 1
 
                         if network_planning.params.l_curt:
 
                             # - Active power curtailment
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'Pc_curt, [MW]'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
+                            sheet.cell(row=row_idx, column=1).value = load_id
+                            sheet.cell(row=row_idx, column=2).value = node_id
+                            sheet.cell(row=row_idx, column=3).value = int(year)
+                            sheet.cell(row=row_idx, column=4).value = day
+                            sheet.cell(row=row_idx, column=5).value = 'Pc_curt, [MW]'
+                            sheet.cell(row=row_idx, column=6).value = s_m
+                            sheet.cell(row=row_idx, column=7).value = s_o
                             for p in range(network.num_instants):
-                                pc_curt = results[year][day]['scenarios'][s_m][s_o]['consumption']['pc_curt'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 7).value = pc_curt
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
+                                pc_curt = results[year][day]['scenarios'][s_m][s_o]['consumption']['pc_curt'][load_id][p]
+                                sheet.cell(row=row_idx, column=p + 8).value = pc_curt
+                                sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                                 if pc_curt > SMALL_TOLERANCE:
-                                    sheet.cell(row=row_idx, column=p + 7).fill = violation_fill
-                                expected_pc_curt[node_id][p] += pc_curt * omega_m * omega_s
+                                    sheet.cell(row=row_idx, column=p + 8).fill = violation_fill
+                                expected_pc_curt[load_id][p] += pc_curt * omega_m * omega_s
                             row_idx = row_idx + 1
 
                         if network_planning.params.fl_reg or network_planning.params.l_curt:
 
                             # - Active power net consumption
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'Pc_net, [MW]'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
+                            sheet.cell(row=row_idx, column=1).value = load_id
+                            sheet.cell(row=row_idx, column=2).value = node_id
+                            sheet.cell(row=row_idx, column=3).value = int(year)
+                            sheet.cell(row=row_idx, column=4).value = day
+                            sheet.cell(row=row_idx, column=5).value = 'Pc_net, [MW]'
+                            sheet.cell(row=row_idx, column=6).value = s_m
+                            sheet.cell(row=row_idx, column=7).value = s_o
                             for p in range(network.num_instants):
-                                p_net = results[year][day]['scenarios'][s_m][s_o]['consumption']['pc_net'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 7).value = p_net
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                                expected_pnet[node_id][p] += p_net * omega_m * omega_s
+                                p_net = results[year][day]['scenarios'][s_m][s_o]['consumption']['pc_net'][load_id][p]
+                                sheet.cell(row=row_idx, column=p + 8).value = p_net
+                                sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
+                                expected_pnet[load_id][p] += p_net * omega_m * omega_s
                             row_idx = row_idx + 1
 
                         # - Reactive power
-                        sheet.cell(row=row_idx, column=1).value = node_id
-                        sheet.cell(row=row_idx, column=2).value = int(year)
-                        sheet.cell(row=row_idx, column=3).value = day
-                        sheet.cell(row=row_idx, column=4).value = 'Qc, [MVAr]'
-                        sheet.cell(row=row_idx, column=5).value = s_m
-                        sheet.cell(row=row_idx, column=6).value = s_o
+                        sheet.cell(row=row_idx, column=1).value = load_id
+                        sheet.cell(row=row_idx, column=2).value = node_id
+                        sheet.cell(row=row_idx, column=3).value = int(year)
+                        sheet.cell(row=row_idx, column=4).value = day
+                        sheet.cell(row=row_idx, column=5).value = 'Qc, [MVAr]'
+                        sheet.cell(row=row_idx, column=6).value = s_m
+                        sheet.cell(row=row_idx, column=7).value = s_o
                         for p in range(network.num_instants):
-                            qc = results[year][day]['scenarios'][s_m][s_o]['consumption']['qc'][node_id][p]
-                            sheet.cell(row=row_idx, column=p + 7).value = qc
-                            sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                            expected_qc[node_id][p] += qc * omega_m * omega_s
+                            qc = results[year][day]['scenarios'][s_m][s_o]['consumption']['qc'][load_id][p]
+                            sheet.cell(row=row_idx, column=p + 8).value = qc
+                            sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
+                            expected_qc[load_id][p] += qc * omega_m * omega_s
                         row_idx = row_idx + 1
 
                         if network_planning.params.l_curt:
 
                             # - Reactive power curtailment
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'Qc_curt, [MW]'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
+                            sheet.cell(row=row_idx, column=1).value = load_id
+                            sheet.cell(row=row_idx, column=2).value = node_id
+                            sheet.cell(row=row_idx, column=3).value = int(year)
+                            sheet.cell(row=row_idx, column=4).value = day
+                            sheet.cell(row=row_idx, column=5).value = 'Qc_curt, [MW]'
+                            sheet.cell(row=row_idx, column=6).value = s_m
+                            sheet.cell(row=row_idx, column=7).value = s_o
                             for p in range(network.num_instants):
-                                qc_curt = results[year][day]['scenarios'][s_m][s_o]['consumption']['qc_curt'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 7).value = qc_curt
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
+                                qc_curt = results[year][day]['scenarios'][s_m][s_o]['consumption']['qc_curt'][load_id][p]
+                                sheet.cell(row=row_idx, column=p + 8).value = qc_curt
+                                sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                                 if qc_curt > SMALL_TOLERANCE:
-                                    sheet.cell(row=row_idx, column=p + 7).fill = violation_fill
-                                expected_qc_curt[node_id][p] += qc_curt * omega_m * omega_s
+                                    sheet.cell(row=row_idx, column=p + 8).fill = violation_fill
+                                expected_qc_curt[load_id][p] += qc_curt * omega_m * omega_s
                             row_idx = row_idx + 1
 
                             # - Reactive power net consumption
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'Qc_net, [MW]'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
+                            sheet.cell(row=row_idx, column=1).value = load_id
+                            sheet.cell(row=row_idx, column=2).value = node_id
+                            sheet.cell(row=row_idx, column=3).value = int(year)
+                            sheet.cell(row=row_idx, column=4).value = day
+                            sheet.cell(row=row_idx, column=5).value = 'Qc_net, [MW]'
+                            sheet.cell(row=row_idx, column=6).value = s_m
+                            sheet.cell(row=row_idx, column=7).value = s_o
                             for p in range(network.num_instants):
-                                q_net = results[year][day]['scenarios'][s_m][s_o]['consumption']['qc_net'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 7).value = q_net
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                                expected_qnet[node_id][p] += q_net * omega_m * omega_s
+                                q_net = results[year][day]['scenarios'][s_m][s_o]['consumption']['qc_net'][load_id][p]
+                                sheet.cell(row=row_idx, column=p + 8).value = q_net
+                                sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
+                                expected_qnet[load_id][p] += q_net * omega_m * omega_s
                             row_idx = row_idx + 1
 
             for node in network.nodes:
