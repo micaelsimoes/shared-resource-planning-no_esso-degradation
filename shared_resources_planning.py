@@ -34,6 +34,7 @@ class SharedResourcesPlanning:
         self.num_instants = int()
         self.discount_factor = float()
         self.cost_energy_p = dict()
+        self.cost_flex = dict()
         self.prob_market_scenarios = list()
         self.distribution_networks = dict()
         self.transmission_network = NetworkData()
@@ -1391,8 +1392,10 @@ def _read_market_data_from_file(planning_problem):
             num_scenarios, prob_scenarios = _get_market_scenarios_info_from_excel_file(filename, 'Scenarios')
             planning_problem.prob_market_scenarios = prob_scenarios
             planning_problem.cost_energy_p[year] = dict()
+            planning_problem.cost_flex[year] = dict()
             for day in planning_problem.days:
                 planning_problem.cost_energy_p[year][day] = _get_market_costs_from_excel_file(filename, f'Cp, {day}', num_scenarios)
+                planning_problem.cost_flex[year][day] = _get_market_costs_from_excel_file(filename, f'Flex, {day}', num_scenarios)
     except:
         print(f'[ERROR] Reading market data from file(s). Exiting...')
         exit(ERROR_SPECIFICATION_FILE)
