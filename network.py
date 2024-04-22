@@ -201,6 +201,7 @@ def _build_model(network, params):
     model.scenarios_market = range(len(network.prob_market_scenarios))
     model.scenarios_operation = range(len(network.prob_operation_scenarios))
     model.nodes = range(len(network.nodes))
+    model.loads = range(len(network.loads))
     model.generators = range(len(network.generators))
     model.branches = range(len(network.branches))
     model.energy_storages = range(len(network.energy_storages))
@@ -223,6 +224,11 @@ def _build_model(network, params):
         model.e_penalty_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
         model.f_penalty_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
         model.f_penalty_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+    if params.node_balance_relax:
+        model.node_balance_penalty_p_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.node_balance_penalty_p_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.node_balance_penalty_q_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.node_balance_penalty_q_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     for i in model.nodes:
         node = network.nodes[i]
         e_lb, e_ub = -node.v_max, node.v_max
@@ -336,35 +342,34 @@ def _build_model(network, params):
                             model.slack_iij_sqr[b, s_m, s_o, p].fix(0.0)
 
     # - Loads
-    model.pc = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
-    model.qc = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
-    for i in model.nodes:
-        node = network.nodes[i]
+    model.pc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
+    model.qc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
+    for c in model.loads:
+        load = network.loads[c]
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
                 for p in model.periods:
-                    model.pc[i, s_m, s_o, p].fix(node.pd[s_o][p])
-                    model.qc[i, s_m, s_o, p].fix(node.qd[s_o][p])
-    if params.node_balance_relax:
-        model.node_balance_penalty_p_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.node_balance_penalty_p_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.node_balance_penalty_q_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.node_balance_penalty_q_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+                    model.pc[c, s_m, s_o, p].fix(load.pd[s_o][p])
+                    model.qc[c, s_m, s_o, p].fix(load.qd[s_o][p])
     if params.fl_reg:
-        model.flex_p_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.flex_p_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.flex_p_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.flex_p_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         if params.fl_relax:
-            model.flex_penalty_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
-            model.flex_penalty_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
-        for i in model.nodes:
-            node = network.nodes[i]
+            model.flex_penalty_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
+            model.flex_penalty_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
+        for c in model.loads:
+            load = network.loads[c]
             for s_m in model.scenarios_market:
                 for s_o in model.scenarios_operation:
                     for p in model.periods:
-                        flex_up = node.flexibility.upward[p]
-                        flex_down = node.flexibility.downward[p]
-                        model.flex_p_up[i, s_m, s_o, p].setub(abs(max(flex_up, flex_down)))
-                        model.flex_p_down[i, s_m, s_o, p].setub(abs(max(flex_up, flex_down)))
+                        if load.fl_reg:
+                            flex_up = load.flexibility.upward[p]
+                            flex_down = load.flexibility.downward[p]
+                            model.flex_p_up[c, s_m, s_o, p].setub(abs(max(flex_up, flex_down)))
+                            model.flex_p_down[c, s_m, s_o, p].setub(abs(max(flex_up, flex_down)))
+                        else:
+                            model.flex_p_up[c, s_m, s_o, p].setub(abs(max(flex_up, flex_down)))
+                            model.flex_p_down[c, s_m, s_o, p].setub(abs(max(flex_up, flex_down)))
     if params.l_curt:
         model.pc_curt = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.qc_curt = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -558,17 +563,17 @@ def _build_model(network, params):
     # - Flexible Loads -- Daily energy balance
     if params.fl_reg:
         model.fl_p_balance = pe.ConstraintList()
-        for i in model.nodes:
+        for c in model.loads:
             for s_m in model.scenarios_market:
                 for s_o in model.scenarios_operation:
                     p_up, p_down = 0.0, 0.0
                     for p in model.periods:
-                        p_up += model.flex_p_up[i, s_m, s_o, p]
-                        p_down += model.flex_p_down[i, s_m, s_o, p]
+                        p_up += model.flex_p_up[c, s_m, s_o, p]
+                        p_down += model.flex_p_down[c, s_m, s_o, p]
                     if not params.fl_relax:
                         model.fl_p_balance.add(p_up == p_down)
                     else:
-                        model.fl_p_balance.add(p_up == p_down + model.flex_penalty_up[i, s_m, s_o] - model.flex_penalty_down[i, s_m, s_o])
+                        model.fl_p_balance.add(p_up == p_down + model.flex_penalty_up[c, s_m, s_o] - model.flex_penalty_down[c, s_m, s_o])
 
     # - Energy Storage constraints
     if params.es_reg:
@@ -707,13 +712,17 @@ def _build_model(network, params):
 
                     node = network.nodes[i]
 
-                    Pd = model.pc[i, s_m, s_o, p]
-                    Qd = model.qc[i, s_m, s_o, p]
-                    if params.fl_reg:
-                        Pd += (model.flex_p_up[i, s_m, s_o, p] - model.flex_p_down[i, s_m, s_o, p])
-                    if params.l_curt:
-                        Pd -= model.pc_curt[i, s_m, s_o, p]
-                        Qd -= model.qc_curt[i, s_m, s_o, p]
+                    Pd = 0.00
+                    Qd = 0.00
+                    for c in model.loads:
+                        if network.loads[c].bus == node.bus_i:
+                            Pd += model.pc[c, s_m, s_o, p]
+                            Qd += model.qc[c, s_m, s_o, p]
+                            if params.fl_reg and network.loads[c].fl_reg:
+                                Pd += (model.flex_p_up[c, s_m, s_o, p] - model.flex_p_down[c, s_m, s_o, p])
+                            if params.l_curt:
+                                Pd -= model.pc_curt[i, s_m, s_o, p]
+                                Qd -= model.qc_curt[i, s_m, s_o, p]
                     if params.es_reg:
                         for e in model.energy_storages:
                             if network.energy_storages[e].bus == node.bus_i:
@@ -903,6 +912,7 @@ def _build_model(network, params):
 
         # Cost minimization
         c_p = network.cost_energy_p
+        c_flex = network.cost_flex
         for s_m in model.scenarios_market:
             omega_market = network.prob_market_scenarios[s_m]
             for s_o in model.scenarios_operation:
@@ -919,21 +929,19 @@ def _build_model(network, params):
 
                 # Demand side flexibility
                 if params.fl_reg:
-                    for i in model.nodes:
-                        node = network.nodes[i]
+                    for c in model.loads:
                         for p in model.periods:
-                            cost_flex = node.flexibility.cost[p]
-                            flex_p_down = model.flex_p_up[i, s_m, s_o, p]
-                            obj_scenario += cost_flex * network.baseMVA * (flex_p_down)
+                            flex_p_down = model.flex_p_down[c, s_m, s_o, p]
+                            obj_scenario += c_flex[s_m][p] * network.baseMVA * flex_p_down
                         if params.fl_relax:
-                            obj_scenario += PENALTY_FLEX * (model.flex_penalty_up[i, s_m, s_o] + model.flex_penalty_down[i, s_m, s_o])
+                            obj_scenario += PENALTY_FLEX * (model.flex_penalty_up[c, s_m, s_o] + model.flex_penalty_down[c, s_m, s_o])
 
                 # Load curtailment
                 if params.l_curt:
-                    for i in model.nodes:
+                    for c in model.loads:
                         for p in model.periods:
-                            pc_curt = model.pc_curt[i, s_m, s_o, p]
-                            qc_curt = model.qc_curt[i, s_m, s_o, p]
+                            pc_curt = model.pc_curt[c, s_m, s_o, p]
+                            qc_curt = model.qc_curt[c, s_m, s_o, p]
                             obj_scenario += COST_CONSUMPTION_CURTAILMENT * network.baseMVA * (pc_curt)
                             obj_scenario += COST_CONSUMPTION_CURTAILMENT * network.baseMVA * (qc_curt)
 
