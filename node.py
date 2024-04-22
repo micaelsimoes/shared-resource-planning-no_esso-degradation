@@ -26,4 +26,3 @@ class NodeFlexibility:
     def __init__(self):
         self.upward = list()                # Note: FL - increase consumption
         self.downward = list()
-        self.cost = list()
