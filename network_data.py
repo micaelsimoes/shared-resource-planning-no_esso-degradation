@@ -1012,6 +1012,7 @@ def _write_network_branch_results_to_excel(network_planning, workbook, results, 
     sheet = workbook.create_sheet(sheet_name)
 
     # Write Header
+    sheet.cell(row=row_idx, column=1).value = 'BranchID'
     sheet.cell(row=row_idx, column=1).value = 'From Node ID'
     sheet.cell(row=row_idx, column=2).value = 'To Node ID'
     sheet.cell(row=row_idx, column=3).value = 'Year'
@@ -1029,57 +1030,59 @@ def _write_network_branch_results_to_excel(network_planning, workbook, results, 
             network = network_planning.network[year][day]
 
             expected_values = dict()
-            for k in range(len(network.branches)):
-                expected_values[k] = [0.0 for _ in range(network.num_instants)]
+            for branch in network.branches:
+                expected_values[branch.branch_id] = [0.0 for _ in range(network.num_instants)]
 
             for s_m in results[year][day]['scenarios']:
                 omega_m = network.prob_market_scenarios[s_m]
                 for s_o in results[year][day]['scenarios'][s_m]:
                     omega_s = network.prob_operation_scenarios[s_o]
-                    for k in results[year][day]['scenarios'][s_m][s_o]['branches'][result_type]:
-                        branch = network.branches[k]
+                    for branch in network.branches:
+                        branch_id = branch.branch_id
                         if not(result_type == 'ratio' and not branch.is_transformer):
 
-                            sheet.cell(row=row_idx, column=1).value = branch.fbus
-                            sheet.cell(row=row_idx, column=2).value = branch.tbus
-                            sheet.cell(row=row_idx, column=3).value = int(year)
-                            sheet.cell(row=row_idx, column=4).value = day
-                            sheet.cell(row=row_idx, column=5).value = aux_string
-                            sheet.cell(row=row_idx, column=6).value = s_m
-                            sheet.cell(row=row_idx, column=7).value = s_o
+                            sheet.cell(row=row_idx, column=1).value = branch_id
+                            sheet.cell(row=row_idx, column=2).value = branch.fbus
+                            sheet.cell(row=row_idx, column=3).value = branch.tbus
+                            sheet.cell(row=row_idx, column=4).value = int(year)
+                            sheet.cell(row=row_idx, column=5).value = day
+                            sheet.cell(row=row_idx, column=6).value = aux_string
+                            sheet.cell(row=row_idx, column=7).value = s_m
+                            sheet.cell(row=row_idx, column=8).value = s_o
                             for p in range(network.num_instants):
-                                value = results[year][day]['scenarios'][s_m][s_o]['branches'][result_type][k][p]
+                                value = results[year][day]['scenarios'][s_m][s_o]['branches'][result_type][branch_id][p]
                                 if result_type == 'current_perc':
-                                    sheet.cell(row=row_idx, column=p + 8).value = value
-                                    sheet.cell(row=row_idx, column=p + 8).number_format = perc_style
+                                    sheet.cell(row=row_idx, column=p + 9).value = value
+                                    sheet.cell(row=row_idx, column=p + 9).number_format = perc_style
                                     if value > 1.0 + SMALL_TOLERANCE:
-                                        sheet.cell(row=row_idx, column=p + 8).fill = violation_fill
+                                        sheet.cell(row=row_idx, column=p + 9).fill = violation_fill
                                 else:
-                                    sheet.cell(row=row_idx, column=p + 8).value = value
-                                    sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
-                                expected_values[k][p] += value * omega_m * omega_s
+                                    sheet.cell(row=row_idx, column=p + 9).value = value
+                                    sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                                expected_values[branch_id][p] += value * omega_m * omega_s
                             row_idx = row_idx + 1
 
-            for k in range(len(network.branches)):
-                branch = network.branches[k]
+            for branch in network.branches:
+                branch_id = branch.branch_id
                 if not (result_type == 'ratio' and not branch.is_transformer):
 
-                    sheet.cell(row=row_idx, column=1).value = branch.fbus
-                    sheet.cell(row=row_idx, column=2).value = branch.tbus
-                    sheet.cell(row=row_idx, column=3).value = int(year)
-                    sheet.cell(row=row_idx, column=4).value = day
-                    sheet.cell(row=row_idx, column=5).value = aux_string
-                    sheet.cell(row=row_idx, column=6).value = 'Expected'
-                    sheet.cell(row=row_idx, column=7).value = '-'
+                    sheet.cell(row=row_idx, column=1).value = branch_id
+                    sheet.cell(row=row_idx, column=2).value = branch.fbus
+                    sheet.cell(row=row_idx, column=3).value = branch.tbus
+                    sheet.cell(row=row_idx, column=4).value = int(year)
+                    sheet.cell(row=row_idx, column=5).value = day
+                    sheet.cell(row=row_idx, column=6).value = aux_string
+                    sheet.cell(row=row_idx, column=7).value = 'Expected'
+                    sheet.cell(row=row_idx, column=8).value = '-'
                     for p in range(network.num_instants):
                         if result_type == 'current_perc':
-                            sheet.cell(row=row_idx, column=p + 8).value = expected_values[k][p]
-                            sheet.cell(row=row_idx, column=p + 8).number_format = perc_style
-                            if expected_values[k][p] > 1.0 + SMALL_TOLERANCE:
-                                sheet.cell(row=row_idx, column=p + 8).fill = violation_fill
+                            sheet.cell(row=row_idx, column=p + 9).value = expected_values[branch_id][p]
+                            sheet.cell(row=row_idx, column=p + 9).number_format = perc_style
+                            if expected_values[branch_id][p] > 1.0 + SMALL_TOLERANCE:
+                                sheet.cell(row=row_idx, column=p + 9).fill = violation_fill
                         else:
-                            sheet.cell(row=row_idx, column=p + 8).value = expected_values[k][p]
-                            sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
+                            sheet.cell(row=row_idx, column=p + 9).value = expected_values[branch_id][p]
+                            sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
                     row_idx = row_idx + 1
 
 
