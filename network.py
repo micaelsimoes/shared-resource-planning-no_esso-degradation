@@ -325,6 +325,9 @@ def _build_model(network, params):
     if params.fl_reg:
         model.flex_p_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.flex_p_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        if params.slacks:
+            model.slack_flex_p_balance_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+            model.slack_flex_p_balance_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         for c in model.loads:
             load = network.loads[c]
             for s_m in model.scenarios_market:
@@ -338,6 +341,8 @@ def _build_model(network, params):
                         else:
                             model.flex_p_up[c, s_m, s_o, p].setub(abs(max(flex_up, flex_down)))
                             model.flex_p_down[c, s_m, s_o, p].setub(abs(max(flex_up, flex_down)))
+                            model.slack_flex_p_balance_up[c, s_m, s_o, p].fix(0.00)
+                            model.slack_flex_p_balance_down[c, s_m, s_o, p].fix(0.00)
     if params.l_curt:
         model.pc_curt = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.qc_curt = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -492,7 +497,10 @@ def _build_model(network, params):
                         for p in model.periods:
                             p_up += model.flex_p_up[c, s_m, s_o, p]
                             p_down += model.flex_p_down[c, s_m, s_o, p]
-                        model.fl_p_balance.add(p_up == p_down)
+                        if params.slacks:
+                            model.fl_p_balance.add(p_up == p_down + model.slack_flex_p_balance_up[c, s_m, s_o] - model.slack_flex_p_balance_down[c, s_m, s_o])
+                        else:
+                            model.fl_p_balance.add(p_up == p_down)
 
     # - Energy Storage constraints
     if params.es_reg:
@@ -859,6 +867,16 @@ def _build_model(network, params):
                 for p in model.periods:
                     slack_iij_sqr = model.slack_iij_sqr[b, s_m, s_o, p]
                     obj += PENALTY_SLACK * slack_iij_sqr
+
+    if params.slacks:
+
+        for s_m in model.scenarios_market:
+            for s_o in model.scenarios_operation:
+
+                # Flexibility day balance
+                for c in model.loads:
+                    slack_flex = model.slack_flex_p_balance_up[c, s_m, s_o] + model.slack_flex_p_balance_down[c, s_m, s_o]
+                    obj += PENALTY_SLACK * slack_flex
 
     model.objective = pe.Objective(sense=pe.minimize, expr=obj)
 
