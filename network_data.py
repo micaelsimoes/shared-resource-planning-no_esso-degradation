@@ -759,8 +759,8 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
                     sheet.cell(row=row_idx, column=5).value = 'Expected'
                     sheet.cell(row=row_idx, column=6).value = '-'
                     for p in range(network.num_instants):
-                        sheet.cell(row=row_idx, column=p + 7).value = expected_pnet[load_id][p]
-                        sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
+                        sheet.cell(row=row_idx, column=p + 8).value = expected_pnet[load_id][p]
+                        sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                     row_idx = row_idx + 1
 
                 # - Reactive power
