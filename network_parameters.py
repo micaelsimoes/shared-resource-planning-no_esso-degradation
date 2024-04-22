@@ -47,8 +47,3 @@ def _read_network_parameters_from_file(parameters, filename):
     parameters.print_to_screen = params_data['print_to_screen']
     parameters.plot_diagram = params_data['plot_diagram']
     parameters.print_results_to_file = params_data['print_results_to_file']
-
-    if any([parameters.slack_voltage_limits, parameters.voltage_relax, parameters.slack_line_limits,
-            parameters.ess_relax, parameters.fl_relax, parameters.node_balance_relax, parameters.branch_current_relax,
-            parameters.interface_pf_relax, parameters.interface_ess_relax]):
-        parameters.slacks_used = True
