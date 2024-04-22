@@ -1360,64 +1360,14 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['energy_storages']['soc'] = dict()
                 processed_results['scenarios'][s_m][s_o]['energy_storages']['soc_percent'] = dict()
 
-            if params.slacks_used:
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks'] = dict()
-                if params.slacks:
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_up'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_down'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_up'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_down'] = dict()
-                if params.slack_line_limits:
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'] = dict()
-                if params.ess_relax:
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_up'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_down'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_up'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_down'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_up'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_down'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['day_balance_up'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['day_balance_down'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_up'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_down'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['day_balance_up'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['day_balance_down'] = dict()
-                if params.fl_relax:
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_up'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_down'] = dict()
-                if params.node_balance_relax:
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_up'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_down'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_up'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_down'] = dict()
-                if params.branch_current_relax:
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_current'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_current']['iij_sqr_up'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_current']['iij_sqr_down'] = dict()
-                if params.gen_v_relax:
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['gen_voltage'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['gen_voltage']['v_up'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['gen_voltage']['v_down'] = dict()
-                if params.interface_pf_relax or params.interface_ess_relax:
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface'] = dict()
-                    if params.interface_pf_relax:
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['vmag_sqr_up'] = dict()
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['vmag_sqr_down'] = dict()
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_p_up'] = dict()
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_p_down'] = dict()
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_q_up'] = dict()
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_q_down'] = dict()
-                    if params.interface_ess_relax:
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['ess_p_up'] = dict()
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['ess_p_down'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_up'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_down'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_up'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_down'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'] = dict()
 
             # Voltage
             for i in model.nodes:
@@ -1433,143 +1383,138 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['voltage']['vang'][node_id].append(v_ang)
 
             # Consumption
-            for i in model.nodes:
-                node = network.nodes[i]
-                processed_results['scenarios'][s_m][s_o]['consumption']['pc'][node.bus_i] = []
-                processed_results['scenarios'][s_m][s_o]['consumption']['qc'][node.bus_i] = []
-                processed_results['scenarios'][s_m][s_o]['consumption']['pc_net'][node.bus_i] = [0.00 for _ in range(network.num_instants)]
-                processed_results['scenarios'][s_m][s_o]['consumption']['qc_net'][node.bus_i] = [0.00 for _ in range(network.num_instants)]
+            for c in model.loads:
+                load_id = network.loads[c].load_id
+                processed_results['scenarios'][s_m][s_o]['consumption']['pc'][load_id] = []
+                processed_results['scenarios'][s_m][s_o]['consumption']['qc'][load_id] = []
+                processed_results['scenarios'][s_m][s_o]['consumption']['pc_net'][load_id] = [0.00 for _ in range(network.num_instants)]
+                processed_results['scenarios'][s_m][s_o]['consumption']['qc_net'][load_id] = [0.00 for _ in range(network.num_instants)]
                 if params.fl_reg:
-                    processed_results['scenarios'][s_m][s_o]['consumption']['p_up'][node.bus_i] = []
-                    processed_results['scenarios'][s_m][s_o]['consumption']['p_down'][node.bus_i] = []
+                    processed_results['scenarios'][s_m][s_o]['consumption']['p_up'][load_id] = []
+                    processed_results['scenarios'][s_m][s_o]['consumption']['p_down'][load_id] = []
                 if params.l_curt:
-                    processed_results['scenarios'][s_m][s_o]['consumption']['pc_curt'][node.bus_i] = []
-                    processed_results['scenarios'][s_m][s_o]['consumption']['qc_curt'][node.bus_i] = []
+                    processed_results['scenarios'][s_m][s_o]['consumption']['pc_curt'][load_id] = []
+                    processed_results['scenarios'][s_m][s_o]['consumption']['qc_curt'][load_id] = []
                 for p in model.periods:
                     pc = pe.value(model.pc[i, s_m, s_o, p]) * network.baseMVA
                     qc = pe.value(model.qc[i, s_m, s_o, p]) * network.baseMVA
-                    processed_results['scenarios'][s_m][s_o]['consumption']['pc'][node.bus_i].append(pc)
-                    processed_results['scenarios'][s_m][s_o]['consumption']['qc'][node.bus_i].append(qc)
-                    processed_results['scenarios'][s_m][s_o]['consumption']['pc_net'][node.bus_i][p] += pc
-                    processed_results['scenarios'][s_m][s_o]['consumption']['qc_net'][node.bus_i][p] += qc
+                    processed_results['scenarios'][s_m][s_o]['consumption']['pc'][load_id].append(pc)
+                    processed_results['scenarios'][s_m][s_o]['consumption']['qc'][load_id].append(qc)
+                    processed_results['scenarios'][s_m][s_o]['consumption']['pc_net'][load_id][p] += pc
+                    processed_results['scenarios'][s_m][s_o]['consumption']['qc_net'][load_id][p] += qc
                     if params.fl_reg:
                         pup = pe.value(model.flex_p_up[i, s_m, s_o, p]) * network.baseMVA
                         pdown = pe.value(model.flex_p_down[i, s_m, s_o, p]) * network.baseMVA
-                        processed_results['scenarios'][s_m][s_o]['consumption']['p_up'][node.bus_i].append(pup)
-                        processed_results['scenarios'][s_m][s_o]['consumption']['p_down'][node.bus_i].append(pdown)
-                        processed_results['scenarios'][s_m][s_o]['consumption']['pc_net'][node.bus_i][p] += pup - pdown
+                        processed_results['scenarios'][s_m][s_o]['consumption']['p_up'][load_id].append(pup)
+                        processed_results['scenarios'][s_m][s_o]['consumption']['p_down'][load_id].append(pdown)
+                        processed_results['scenarios'][s_m][s_o]['consumption']['pc_net'][load_id][p] += pup - pdown
                     if params.l_curt:
                         pc_curt = pe.value(model.pc_curt[i, s_m, s_o, p]) * network.baseMVA
                         qc_curt = pe.value(model.qc_curt[i, s_m, s_o, p]) * network.baseMVA
-                        processed_results['scenarios'][s_m][s_o]['consumption']['pc_curt'][node.bus_i].append(pc_curt)
-                        processed_results['scenarios'][s_m][s_o]['consumption']['pc_net'][node.bus_i][p] -= pc_curt
-                        processed_results['scenarios'][s_m][s_o]['consumption']['qc_curt'][node.bus_i].append(qc_curt)
-                        processed_results['scenarios'][s_m][s_o]['consumption']['qc_net'][node.bus_i][p] -= qc_curt
+                        processed_results['scenarios'][s_m][s_o]['consumption']['pc_curt'][load_id].append(pc_curt)
+                        processed_results['scenarios'][s_m][s_o]['consumption']['pc_net'][load_id][p] -= pc_curt
+                        processed_results['scenarios'][s_m][s_o]['consumption']['qc_curt'][load_id].append(qc_curt)
+                        processed_results['scenarios'][s_m][s_o]['consumption']['qc_net'][load_id][p] -= qc_curt
 
             # Generation
             for g in model.generators:
-                processed_results['scenarios'][s_m][s_o]['generation']['pg'][g] = []
-                processed_results['scenarios'][s_m][s_o]['generation']['qg'][g] = []
-                processed_results['scenarios'][s_m][s_o]['generation']['pg_net'][g] = [0.00 for _ in range(network.num_instants)]
+                gen_id = network.generators[g].gen_id
+                processed_results['scenarios'][s_m][s_o]['generation']['pg'][gen_id] = []
+                processed_results['scenarios'][s_m][s_o]['generation']['qg'][gen_id] = []
+                processed_results['scenarios'][s_m][s_o]['generation']['pg_net'][gen_id] = [0.00 for _ in range(network.num_instants)]
                 if params.rg_curt:
-                    processed_results['scenarios'][s_m][s_o]['generation']['pg_curt'][g] = []
+                    processed_results['scenarios'][s_m][s_o]['generation']['pg_curt'][gen_id] = []
                 for p in model.periods:
                     pg = pe.value(model.pg[g, s_m, s_o, p]) * network.baseMVA
                     qg = pe.value(model.qg[g, s_m, s_o, p]) * network.baseMVA
-                    processed_results['scenarios'][s_m][s_o]['generation']['pg'][g].append(pg)
-                    processed_results['scenarios'][s_m][s_o]['generation']['qg'][g].append(qg)
-                    processed_results['scenarios'][s_m][s_o]['generation']['pg_net'][g][p] += pg
+                    processed_results['scenarios'][s_m][s_o]['generation']['pg'][gen_id].append(pg)
+                    processed_results['scenarios'][s_m][s_o]['generation']['qg'][gen_id].append(qg)
+                    processed_results['scenarios'][s_m][s_o]['generation']['pg_net'][gen_id][p] += pg
                     if params.rg_curt:
                         pg_curt = pe.value(model.pg_curt[g, s_m, s_o, p]) * network.baseMVA
-                        processed_results['scenarios'][s_m][s_o]['generation']['pg_curt'][g].append(pg_curt)
-                        processed_results['scenarios'][s_m][s_o]['generation']['pg_net'][g][p] -= pg_curt
+                        processed_results['scenarios'][s_m][s_o]['generation']['pg_curt'][gen_id].append(pg_curt)
+                        processed_results['scenarios'][s_m][s_o]['generation']['pg_net'][gen_id][p] -= pg_curt
 
             # Branch current, transformers' ratio
             for k in model.branches:
 
-                rating = network.branches[k].rate / network.baseMVA
+                branch = network.branches[k]
+                branch_id = branch.branch_id
+                rating = branch.rate / network.baseMVA
                 if rating == 0.0:
                     rating = BRANCH_UNKNOWN_RATING
 
-                processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['pij'][k] = []
-                processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['pji'][k] = []
-                processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['qij'][k] = []
-                processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['qji'][k] = []
-                processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sij'][k] = []
-                processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][k] = []
-                processed_results['scenarios'][s_m][s_o]['branches']['current_perc'][k] = []
-                processed_results['scenarios'][s_m][s_o]['branches']['losses'][k] = []
-                if network.branches[k].is_transformer:
-                    processed_results['scenarios'][s_m][s_o]['branches']['ratio'][k] = []
+                processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['pij'][branch_id] = []
+                processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['pji'][branch_id] = []
+                processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['qij'][branch_id] = []
+                processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['qji'][branch_id] = []
+                processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sij'][branch_id] = []
+                processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][branch_id] = []
+                processed_results['scenarios'][s_m][s_o]['branches']['current_perc'][branch_id] = []
+                processed_results['scenarios'][s_m][s_o]['branches']['losses'][branch_id] = []
+                if branch.is_transformer:
+                    processed_results['scenarios'][s_m][s_o]['branches']['ratio'][branch_id] = []
                 for p in model.periods:
 
                     # Power flows
-                    pij, qij = _get_branch_power_flow(network, params, network.branches[k], network.branches[k].fbus, network.branches[k].tbus, model, s_m, s_o, p)
-                    pji, qji = _get_branch_power_flow(network, params, network.branches[k], network.branches[k].tbus, network.branches[k].fbus, model, s_m, s_o, p)
+                    pij, qij = _get_branch_power_flow(network, params, branch, branch.fbus, branch.tbus, model, s_m, s_o, p)
+                    pji, qji = _get_branch_power_flow(network, params, branch, branch.tbus, branch.fbus, model, s_m, s_o, p)
                     sij_sqr = pij**2 + qij**2
                     sji_sqr = pji**2 + qji**2
-                    processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['pij'][k].append(pij)
-                    processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['pji'][k].append(pji)
-                    processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['qij'][k].append(qij)
-                    processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['qji'][k].append(qji)
-                    processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sij'][k].append(sqrt(sij_sqr))
-                    processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][k].append(sqrt(sji_sqr))
+                    processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['pij'][branch_id].append(pij)
+                    processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['pji'][branch_id].append(pji)
+                    processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['qij'][branch_id].append(qij)
+                    processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['qji'][branch_id].append(qji)
+                    processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sij'][branch_id].append(sqrt(sij_sqr))
+                    processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][branch_id].append(sqrt(sji_sqr))
 
                     # Current
                     iij_sqr = abs(pe.value(model.iij_sqr[k, s_m, s_o, p]))
-                    processed_results['scenarios'][s_m][s_o]['branches']['current_perc'][k].append(sqrt(iij_sqr) / rating)
+                    processed_results['scenarios'][s_m][s_o]['branches']['current_perc'][branch_id].append(sqrt(iij_sqr) / rating)
 
                     # Losses (active power)
                     p_losses = _get_branch_power_losses(network, params, model, k, s_m, s_o, p)
-                    processed_results['scenarios'][s_m][s_o]['branches']['losses'][k].append(p_losses)
+                    processed_results['scenarios'][s_m][s_o]['branches']['losses'][branch_id].append(p_losses)
 
                     # Ratio
-                    if network.branches[k].is_transformer:
+                    if branch.is_transformer:
                         r_ij = pe.value(model.r[k, s_m, s_o, p])
-                        processed_results['scenarios'][s_m][s_o]['branches']['ratio'][k].append(r_ij)
+                        processed_results['scenarios'][s_m][s_o]['branches']['ratio'][branch_id].append(r_ij)
 
             # Energy Storage devices
             if params.es_reg:
                 for e in model.energy_storages:
-                    node_id = network.energy_storages[e].bus
+                    es_id = network.energy_storages[e].es_id
                     capacity = network.energy_storages[e].e * network.baseMVA
-                    processed_results['scenarios'][s_m][s_o]['energy_storages']['p'][node_id] = []
-                    processed_results['scenarios'][s_m][s_o]['energy_storages']['q'][node_id] = []
-                    processed_results['scenarios'][s_m][s_o]['energy_storages']['s'][node_id] = []
-                    processed_results['scenarios'][s_m][s_o]['energy_storages']['soc'][node_id] = []
-                    processed_results['scenarios'][s_m][s_o]['energy_storages']['soc_percent'][node_id] = []
+                    if isclose(capacity, 0.0, abs_tol=1e-6):
+                        capacity = 1.00
+                    processed_results['scenarios'][s_m][s_o]['energy_storages']['p'][es_id] = []
+                    processed_results['scenarios'][s_m][s_o]['energy_storages']['q'][es_id] = []
+                    processed_results['scenarios'][s_m][s_o]['energy_storages']['s'][es_id] = []
+                    processed_results['scenarios'][s_m][s_o]['energy_storages']['soc'][es_id] = []
+                    processed_results['scenarios'][s_m][s_o]['energy_storages']['soc_percent'][es_id] = []
                     for p in model.periods:
-                        if capacity > 0.0:
-                            sch = pe.value(model.es_sch[e, s_m, s_o, p]) * network.baseMVA
-                            pch = pe.value(model.es_pch[e, s_m, s_o, p]) * network.baseMVA
-                            qch = pe.value(model.es_qch[e, s_m, s_o, p]) * network.baseMVA
-                            sdch = pe.value(model.es_sdch[e, s_m, s_o, p]) * network.baseMVA
-                            pdch = pe.value(model.es_pdch[e, s_m, s_o, p]) * network.baseMVA
-                            qdch = pe.value(model.es_qdch[e, s_m, s_o, p]) * network.baseMVA
-                            soc_ess = pe.value(model.es_soc[e, s_m, s_o, p]) * network.baseMVA
-                            processed_results['scenarios'][s_m][s_o]['energy_storages']['p'][node_id].append(pch - pdch)
-                            processed_results['scenarios'][s_m][s_o]['energy_storages']['q'][node_id].append(qch - qdch)
-                            processed_results['scenarios'][s_m][s_o]['energy_storages']['s'][node_id].append(sch - sdch)
-                            processed_results['scenarios'][s_m][s_o]['energy_storages']['soc'][node_id].append(soc_ess)
-                            processed_results['scenarios'][s_m][s_o]['energy_storages']['soc_percent'][node_id].append(soc_ess / capacity)
-                        else:
-                            processed_results['scenarios'][s_m][s_o]['energy_storages']['p'][node_id].append('N/A')
-                            processed_results['scenarios'][s_m][s_o]['energy_storages']['q'][node_id].append('N/A')
-                            processed_results['scenarios'][s_m][s_o]['energy_storages']['s'][node_id].append('N/A')
-                            processed_results['scenarios'][s_m][s_o]['energy_storages']['soc'][node_id].append('N/A')
-                            processed_results['scenarios'][s_m][s_o]['energy_storages']['soc_percent'][node_id].append('N/A')
+                        s_ess = pe.value(model.es_sch[e, s_m, s_o, p] - model.es_sdch[e, s_m, s_o, p]) * network.baseMVA
+                        p_ess = pe.value(model.es_pch[e, s_m, s_o, p] - model.es_pdch[e, s_m, s_o, p]) * network.baseMVA
+                        q_ess = pe.value(model.es_qch[e, s_m, s_o, p] - model.es_qdch[e, s_m, s_o, p]) * network.baseMVA
+                        soc_ess = pe.value(model.es_soc[e, s_m, s_o, p]) * network.baseMVA
+                        processed_results['scenarios'][s_m][s_o]['energy_storages']['p'][es_id].append(p_ess)
+                        processed_results['scenarios'][s_m][s_o]['energy_storages']['q'][es_id].append(q_ess)
+                        processed_results['scenarios'][s_m][s_o]['energy_storages']['s'][es_id].append(s_ess)
+                        processed_results['scenarios'][s_m][s_o]['energy_storages']['soc'][es_id].append(soc_ess)
+                        processed_results['scenarios'][s_m][s_o]['energy_storages']['soc_percent'][es_id].append(soc_ess / capacity)
 
             # Flexible loads
             if params.fl_reg:
-                for i in model.nodes:
-                    node_id = network.nodes[i].bus_i
-                    processed_results['scenarios'][s_m][s_o]['consumption']['p_up'][node_id] = []
-                    processed_results['scenarios'][s_m][s_o]['consumption']['p_down'][node_id] = []
+                for i in model.loads:
+                    load_id = network.loads[i].load_id
+                    processed_results['scenarios'][s_m][s_o]['consumption']['p_up'][load_id] = []
+                    processed_results['scenarios'][s_m][s_o]['consumption']['p_down'][load_id] = []
                     for p in model.periods:
                         p_up = pe.value(model.flex_p_up[i, s_m, s_o, p]) * network.baseMVA
                         p_down = pe.value(model.flex_p_down[i, s_m, s_o, p]) * network.baseMVA
-                        processed_results['scenarios'][s_m][s_o]['consumption']['p_up'][node_id].append(p_up)
-                        processed_results['scenarios'][s_m][s_o]['consumption']['p_down'][node_id].append(p_down)
+                        processed_results['scenarios'][s_m][s_o]['consumption']['p_up'][load_id].append(p_up)
+                        processed_results['scenarios'][s_m][s_o]['consumption']['p_down'][load_id].append(p_down)
 
             # Shared Energy Storages
             for e in model.shared_energy_storages:
@@ -1587,196 +1532,29 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['shared_energy_storages']['soc'][node_id].append(soc_ess)
                     processed_results['scenarios'][s_m][s_o]['shared_energy_storages']['soc_percent'][node_id].append(soc_ess / capacity)
 
-            # Slack variable penalties
-            if params.slacks_used:
+            # Voltage slacks
+            for i in model.nodes:
+                node_id = network.nodes[i].bus_i
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_up'][node_id] = []
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_down'][node_id] = []
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_up'][node_id] = []
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_down'][node_id] = []
+                for p in model.periods:
+                    slack_e_up = pe.value(model.slack_e_up[i, s_m, s_o, p])
+                    slack_e_down = pe.value(model.slack_e_down[i, s_m, s_o, p])
+                    slack_f_up = pe.value(model.slack_f_up[i, s_m, s_o, p])
+                    slack_f_down = pe.value(model.slack_f_down[i, s_m, s_o, p])
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_up'][node_id].append(slack_e_up)
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_down'][node_id].append(slack_e_down)
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_up'][node_id].append(slack_f_up)
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_down'][node_id].append(slack_f_down)
 
-                # Voltage slacks
-                if params.slacks:
-                    for i in model.nodes:
-                        node_id = network.nodes[i].bus_i
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_up'][node_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_down'][node_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_up'][node_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_down'][node_id] = []
-                        for p in model.periods:
-                            slack_e_up = pe.value(model.slack_e_up[i, s_m, s_o, p])
-                            slack_e_down = pe.value(model.slack_e_down[i, s_m, s_o, p])
-                            slack_f_up = pe.value(model.slack_f_up[i, s_m, s_o, p])
-                            slack_f_down = pe.value(model.slack_f_down[i, s_m, s_o, p])
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_up'][node_id].append(slack_e_up)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_down'][node_id].append(slack_e_down)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_up'][node_id].append(slack_f_up)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_down'][node_id].append(slack_f_down)
-
-                # Branch current slacks
-                if params.slack_line_limits:
-                    for b in model.branches:
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][b] = []
-                        for p in model.periods:
-                            slack_iij_sqr = pe.value(model.slack_iij_sqr[b, s_m, s_o, p])
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][b].append(slack_iij_sqr)
-
-                # Shared ESS
-                if params.ess_relax:
-                    for e in model.shared_energy_storages:
-                        node_id = network.shared_energy_storages[e].bus
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'][node_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_up'][node_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_down'][node_id] = []
-                        for p in model.periods:
-                            slack_comp = pe.value(model.shared_es_penalty_comp[e, s_m, s_o, p])
-                            slack_soc_up = pe.value(model.shared_es_penalty_soc_up[e, s_m, s_o, p])
-                            slack_soc_down = pe.value(model.shared_es_penalty_soc_down[e, s_m, s_o, p])
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'][node_id].append(slack_comp)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_up'][node_id].append(slack_soc_up)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_down'][node_id].append(slack_soc_down)
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['day_balance_up'][node_id] = pe.value(model.shared_es_penalty_day_balance_up[e, s_m, s_o])
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['day_balance_down'][node_id] = pe.value(model.shared_es_penalty_day_balance_down[e, s_m, s_o])
-
-                # ESS
-                if params.ess_relax:
-                    for e in model.energy_storages:
-                        node_id = network.energy_storages[e].bus
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'][node_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_up'][node_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_down'][node_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_up'][node_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_down'][node_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_up'][node_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_down'][node_id] = []
-                        for p in model.periods:
-                            slack_comp = pe.value(model.es_penalty_comp[e, s_m, s_o, p])
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'][node_id].append(slack_comp)
-                            slack_sch_up = pe.value(model.es_penalty_sch_up[e, s_m, s_o, p])
-                            slack_sch_down = pe.value(model.es_penalty_sch_down[e, s_m, s_o, p])
-                            slack_sdch_up = pe.value(model.es_penalty_sdch_up[e, s_m, s_o, p])
-                            slack_sdch_down = pe.value(model.es_penalty_sdch_down[e, s_m, s_o, p])
-                            slack_soc_up = pe.value(model.es_penalty_soc_up[e, s_m, s_o, p])
-                            slack_soc_down = pe.value(model.es_penalty_soc_down[e, s_m, s_o, p])
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_up'][node_id].append(slack_sch_up)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_down'][node_id].append(slack_sch_down)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_up'][node_id].append(slack_sdch_up)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_down'][node_id].append(slack_sdch_down)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_up'][node_id].append(slack_soc_up)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_down'][node_id].append(slack_soc_down)
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['day_balance_up'][node_id] = pe.value(model.es_penalty_day_balance_up[e, s_m, s_o])
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['day_balance_down'][node_id] = pe.value(model.es_penalty_day_balance_down[e, s_m, s_o])
-
-                # Flex daily balance
-                if params.fl_reg and params.fl_relax:
-                    for i in model.nodes:
-                        node_id = network.nodes[i].bus_i
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_up'][node_id] = pe.value(model.flex_penalty_up[i, s_m, s_o])
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_down'][node_id] = pe.value(model.flex_penalty_down[i, s_m, s_o])
-
-                # Node balance
-                if params.node_balance_relax:
-                    for i in model.nodes:
-                        node_id = network.nodes[i].bus_i
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_up'][node_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_down'][node_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_up'][node_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_down'][node_id] = []
-                        for p in model.periods:
-                            slack_p_up = pe.value(model.node_balance_penalty_p_up[i, s_m, s_o, p])
-                            slack_p_down = pe.value(model.node_balance_penalty_p_down[i, s_m, s_o, p])
-                            slack_q_up = pe.value(model.node_balance_penalty_q_up[i, s_m, s_o, p])
-                            slack_q_down = pe.value(model.node_balance_penalty_q_down[i, s_m, s_o, p])
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_up'][node_id].append(slack_p_up)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_down'][node_id].append(slack_p_down)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_up'][node_id].append(slack_q_up)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_down'][node_id].append(slack_q_down)
-
-                # Branch current
-                if params.branch_current_relax:
-                    for b in model.branches:
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_current']['iij_sqr_up'][b] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_current']['iij_sqr_down'][b] = []
-                        for p in model.periods:
-                            slack_iij_sqr_up = pe.value(model.iij_sqr_penalty_up[b, s_m, s_o, p])
-                            slack_iij_sqr_down = pe.value(model.iij_sqr_penalty_down[b, s_m, s_o, p])
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_current']['iij_sqr_up'][b].append(slack_iij_sqr_up)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_current']['iij_sqr_down'][b].append(slack_iij_sqr_down)
-
-                # Generators' voltage set-point
-                if params.enforce_vg and params.gen_v_relax:
-                    for i in model.nodes:
-                        node_id = network.nodes[i].bus_i
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['gen_voltage']['v_up'][node_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['gen_voltage']['v_up'][node_id] = []
-                        for p in model.periods:
-                            slack_v_up = pe.value(model.gen_v_penalty_up[i, s_m, s_o, p])
-                            slack_v_down = pe.value(model.gen_v_penalty_down[i, s_m, s_o, p])
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['gen_voltage']['v_up'][node_id].append(slack_v_up)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['gen_voltage']['v_up'][node_id].append(slack_v_down)
-
-                # Interface PF and Vmag
-                if params.interface_pf_relax:
-                    if network.is_transmission:
-                        for dn in model.active_distribution_networks:
-                            node_id = network.active_distribution_network_nodes[dn]
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['vmag_sqr_up'][node_id] = []
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['vmag_sqr_down'][node_id] = []
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_p_up'][node_id] = []
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_p_down'][node_id] = []
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_q_up'][node_id] = []
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_q_down'][node_id] = []
-                            for p in model.periods:
-                                slack_vmag_up = pe.value(model.penalty_expected_interface_vmag_sqr_up[dn, p])
-                                slack_vmag_down = pe.value(model.penalty_expected_interface_vmag_sqr_down[dn, p])
-                                slack_pf_p_up = pe.value(model.penalty_expected_interface_pf_p_up[dn, p])
-                                slack_pf_p_down = pe.value(model.penalty_expected_interface_pf_p_down[dn, p])
-                                slack_pf_q_up = pe.value(model.penalty_expected_interface_pf_q_up[dn, p])
-                                slack_pf_q_down = pe.value(model.penalty_expected_interface_pf_q_down[dn, p])
-                                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['vmag_sqr_up'][node_id].append(slack_vmag_up)
-                                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['vmag_sqr_down'][node_id].append(slack_vmag_down)
-                                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_p_up'][node_id].append(slack_pf_p_up)
-                                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_p_down'][node_id].append(slack_pf_p_down)
-                                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_q_up'][node_id].append(slack_pf_q_up)
-                                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_q_down'][node_id].append(slack_pf_q_down)
-                    else:
-                        node_id = network.get_reference_node_id()
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['vmag_sqr_up'][node_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['vmag_sqr_down'][node_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_p_up'][node_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_p_down'][node_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_q_up'][node_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_q_down'][node_id] = []
-                        for p in model.periods:
-                            slack_vmag_up = pe.value(model.penalty_expected_interface_vmag_sqr_up[p])
-                            slack_vmag_down = pe.value(model.penalty_expected_interface_vmag_sqr_down[p])
-                            slack_pf_p_up = pe.value(model.penalty_expected_interface_pf_p_up[p])
-                            slack_pf_p_down = pe.value(model.penalty_expected_interface_pf_p_down[p])
-                            slack_pf_q_up = pe.value(model.penalty_expected_interface_pf_q_up[p])
-                            slack_pf_q_down = pe.value(model.penalty_expected_interface_pf_q_down[p])
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['vmag_sqr_up'][node_id].append(slack_vmag_up)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['vmag_sqr_down'][node_id].append(slack_vmag_down)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_p_up'][node_id].append(slack_pf_p_up)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_p_down'][node_id].append(slack_pf_p_down)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_q_up'][node_id].append(slack_pf_q_up)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_q_down'][node_id].append(slack_pf_q_down)
-
-                # Interface Shared ESS
-                if params.interface_ess_relax:
-                    if network.is_transmission:
-                        for dn in model.active_distribution_networks:
-                            node_id = network.active_distribution_network_nodes[dn]
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['ess_p_up'][node_id] = []
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['ess_p_down'][node_id] = []
-                            for p in model.periods:
-                                slack_ess_p_up = pe.value(model.penalty_expected_shared_ess_p_up[dn, p])
-                                slack_ess_p_down = pe.value(model.penalty_expected_shared_ess_p_down[dn, p])
-                                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['ess_p_up'][node_id].append(slack_ess_p_up)
-                                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['ess_p_down'][node_id].append(slack_ess_p_down)
-                    else:
-                        node_id = network.get_reference_node_id()
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['ess_p_up'][node_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['ess_p_down'][node_id] = []
-                        for p in model.periods:
-                            slack_ess_p_up = pe.value(model.penalty_expected_shared_ess_p_up[p])
-                            slack_ess_p_down = pe.value(model.penalty_expected_shared_ess_p_down[p])
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['ess_p_up'][node_id].append(slack_ess_p_up)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['ess_p_down'][node_id].append(slack_ess_p_down)
+            # Branch current slacks
+            for b in model.branches:
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][b] = []
+                for p in model.periods:
+                    slack_iij_sqr = pe.value(model.slack_iij_sqr[b, s_m, s_o, p])
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][b].append(slack_iij_sqr)
 
     return processed_results
 
