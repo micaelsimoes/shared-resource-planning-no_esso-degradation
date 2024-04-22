@@ -250,6 +250,11 @@ def _build_model(network, params):
                         model.e[i, s_m, s_o, p].setub(e_ub)
                         model.f[i, s_m, s_o, p].setlb(f_lb)
                         model.f[i, s_m, s_o, p].setub(f_ub)
+    if params.slacks:
+        model.slack_node_balance_p_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_node_balance_p_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_node_balance_q_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_node_balance_q_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
 
     # - Generation
     model.pg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
@@ -597,8 +602,8 @@ def _build_model(network, params):
                 # Day balance
                 model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final)
 
-        model.shared_energy_storage_s_sensitivities.add(model.shared_es_s_rated[e] + model.shared_es_s_slack_up[e] - model.shared_es_s_slack_down[e] == model.shared_es_s_rated_fixed[e])
-        model.shared_energy_storage_e_sensitivities.add(model.shared_es_e_rated[e] + model.shared_es_e_slack_up[e] - model.shared_es_e_slack_down[e] == model.shared_es_e_rated_fixed[e])
+        model.shared_energy_storage_s_sensitivities.add(model.shared_es_s_rated[e] == model.shared_es_s_rated_fixed[e] + model.shared_es_s_slack_up[e] - model.shared_es_s_slack_down[e])
+        model.shared_energy_storage_e_sensitivities.add(model.shared_es_e_rated[e] == model.shared_es_e_rated_fixed[e] + model.shared_es_e_slack_up[e] - model.shared_es_e_slack_down[e])
 
     # - Node Balance constraints
     model.node_balance_cons_p = pe.ConstraintList()
@@ -680,8 +685,12 @@ def _build_model(network, params):
                                 Qi -= (branch.b + branch.b_sh * 0.5) * (ei ** 2 + fi ** 2)
                                 Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
 
-                    model.node_balance_cons_p.add(Pg == Pd + Pi)
-                    model.node_balance_cons_q.add(Qg == Qd + Qi)
+                    if params.slacks:
+                        model.node_balance_cons_p.add(Pg == Pd + Pi + model.slack_node_balance_p_up[i, s_m, s_o, p] - model.slack_node_balance_p_down[i, s_m, s_o, p])
+                        model.node_balance_cons_q.add(Qg == Qd + Qi + model.slack_node_balance_q_up[i, s_m, s_o, p] - model.slack_node_balance_q_down[i, s_m, s_o, p])
+                    else:
+                        model.node_balance_cons_p.add(Pg == Pd + Pi)
+                        model.node_balance_cons_q.add(Qg == Qd + Qi)
 
     # - Branch Power Flow constraints (current)
     model.branch_power_flow_cons = pe.ConstraintList()
@@ -869,10 +878,22 @@ def _build_model(network, params):
                     slack_iij_sqr = model.slack_iij_sqr[b, s_m, s_o, p]
                     obj += PENALTY_SLACK * slack_iij_sqr
 
+    for e in model.shared_energy_storages:
+        slack_s = model.shared_es_s_slack_up[e] + model.shared_es_s_slack_down[e]
+        slack_e = model.shared_es_e_slack_up[e] + model.shared_es_e_slack_down[e]
+        obj += PENALTY_SLACK * (slack_s + slack_e)
+
     if params.slacks:
 
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
+
+                # Node balance
+                for i in model.nodes:
+                    for p in model.periods:
+                        slack_p = model.slack_node_balance_p_up[i, s_m, s_o, p] + model.slack_node_balance_p_down[i, s_m, s_o, p]
+                        slack_q = model.slack_node_balance_q_up[i, s_m, s_o, p] + model.slack_node_balance_q_down[i, s_m, s_o, p]
+                        obj += PENALTY_SLACK * (slack_p + slack_q)
 
                 # Flexibility day balance
                 for c in model.loads:
