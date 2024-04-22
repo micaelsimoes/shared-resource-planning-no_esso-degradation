@@ -865,7 +865,7 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                         sheet.cell(row=row_idx, column=7).value = s_m
                         sheet.cell(row=row_idx, column=8).value = s_o
                         for p in range(network.num_instants):
-                            pg = results[year][day]['scenarios'][s_m][s_o]['generation']['pg'][g][p]
+                            pg = results[year][day]['scenarios'][s_m][s_o]['generation']['pg'][gen_id][p]
                             sheet.cell(row=row_idx, column=p + 9).value = pg
                             sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
                             expected_pg[gen_id][p] += pg * omega_m * omega_s
@@ -883,7 +883,7 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                             sheet.cell(row=row_idx, column=7).value = s_m
                             sheet.cell(row=row_idx, column=8).value = s_o
                             for p in range(network.num_instants):
-                                pg_curt = results[year][day]['scenarios'][s_m][s_o]['generation']['pg_curt'][g][p]
+                                pg_curt = results[year][day]['scenarios'][s_m][s_o]['generation']['pg_curt'][gen_id][p]
                                 sheet.cell(row=row_idx, column=p + 9).value = pg_curt
                                 sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
                                 if pg_curt > SMALL_TOLERANCE:
@@ -901,7 +901,7 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                             sheet.cell(row=row_idx, column=7).value = s_m
                             sheet.cell(row=row_idx, column=8).value = s_o
                             for p in range(network.num_instants):
-                                pg_net = results[year][day]['scenarios'][s_m][s_o]['generation']['pg_net'][g][p]
+                                pg_net = results[year][day]['scenarios'][s_m][s_o]['generation']['pg_net'][gen_id][p]
                                 sheet.cell(row=row_idx, column=p + 9).value = pg_net
                                 sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
                                 expected_pg_net[gen_id][p] += pg_net * omega_m * omega_s
@@ -917,7 +917,7 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                         sheet.cell(row=row_idx, column=7).value = s_m
                         sheet.cell(row=row_idx, column=8).value = s_o
                         for p in range(network.num_instants):
-                            qg = results[year][day]['scenarios'][s_m][s_o]['generation']['qg'][g][p]
+                            qg = results[year][day]['scenarios'][s_m][s_o]['generation']['qg'][gen_id][p]
                             sheet.cell(row=row_idx, column=p + 9).value = qg
                             sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
                             expected_qg[gen_id][p] += qg * omega_m * omega_s
