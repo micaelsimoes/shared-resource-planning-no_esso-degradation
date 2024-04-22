@@ -326,8 +326,8 @@ def _build_model(network, params):
         model.flex_p_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.flex_p_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         if params.slacks:
-            model.slack_flex_p_balance_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-            model.slack_flex_p_balance_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+            model.slack_flex_p_balance_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
+            model.slack_flex_p_balance_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
         for c in model.loads:
             load = network.loads[c]
             for s_m in model.scenarios_market:
@@ -341,18 +341,19 @@ def _build_model(network, params):
                         else:
                             model.flex_p_up[c, s_m, s_o, p].setub(abs(max(flex_up, flex_down)))
                             model.flex_p_down[c, s_m, s_o, p].setub(abs(max(flex_up, flex_down)))
-                            model.slack_flex_p_balance_up[c, s_m, s_o, p].fix(0.00)
-                            model.slack_flex_p_balance_down[c, s_m, s_o, p].fix(0.00)
+                    if not load.fl_reg:
+                        model.slack_flex_p_balance_up[c, s_m, s_o].fix(0.00)
+                        model.slack_flex_p_balance_down[c, s_m, s_o].fix(0.00)
     if params.l_curt:
-        model.pc_curt = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.qc_curt = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        for c in model.nodes:
-            node = network.nodes[i]
+        model.pc_curt = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.qc_curt = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        for c in model.loads:
+            load = network.loads[c]
             for s_m in model.scenarios_market:
                 for s_o in model.scenarios_operation:
                     for p in model.periods:
-                        model.pc_curt[c, s_m, s_o, p].setub(max(node.pd[s_o][p], 0.00))
-                        model.qc_curt[c, s_m, s_o, p].setub(max(node.qd[s_o][p], 0.00))
+                        model.pc_curt[c, s_m, s_o, p].setub(max(load.pd[s_o][p], 0.00))
+                        model.qc_curt[c, s_m, s_o, p].setub(max(load.qd[s_o][p], 0.00))
 
     # - Transformers
     model.r = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.0)
