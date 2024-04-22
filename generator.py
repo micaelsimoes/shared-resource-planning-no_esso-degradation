@@ -15,8 +15,8 @@ class Generator:
         self.qmin = 0.0                     # Qmin, minimum reactive power output (MVAr)
         self.vg = 0.0                       # Vg, voltage magnitude setpoint (p.u.)
         self.status = 0                     # status:
-                                            #   >  0 - machine in service,
-                                            #   <= 0 - machine out of service)
+                                            #   1 - machine in service
+                                            #   0 - machine out of service
         self.pre_processed = False
         self.gen_type = GEN_CONV
 
