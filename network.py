@@ -1648,10 +1648,10 @@ def _process_results(network, model, params, results=dict()):
         s_down = pe.value(model.shared_es_s_slack_down[e])
         e_up = pe.value(model.shared_es_e_slack_up[e])
         e_down = pe.value(model.shared_es_e_slack_down[e])
-        processed_results['scenarios']['shared_ess']['s_up'][node_id] = s_up
-        processed_results['scenarios']['shared_ess']['s_down'][node_id] = s_down
-        processed_results['scenarios']['shared_ess']['e_up'][node_id] = e_up
-        processed_results['scenarios']['shared_ess']['e_down'][node_id] = e_down
+        processed_results['relaxation_slacks']['shared_ess']['s_up'][node_id] = s_up
+        processed_results['relaxation_slacks']['shared_ess']['s_down'][node_id] = s_down
+        processed_results['relaxation_slacks']['shared_ess']['e_up'][node_id] = e_up
+        processed_results['relaxation_slacks']['shared_ess']['e_down'][node_id] = e_down
 
     return processed_results
 
