@@ -1827,9 +1827,14 @@ def _write_relaxation_slacks_results_to_excel(network_planning, workbook, result
 
     for year in results:
         for day in results[year]:
+            network = network_planning.network[year][day]
             for s_m in results[year][day]['scenarios']:
                 for s_o in results[year][day]['scenarios'][s_m]:
-                    for node_id in results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_up']:
+
+                    # Voltage slacks
+                    for node in network.nodes:
+
+                        node_id = node.bus_i
 
                         # - e_up
                         sheet.cell(row=row_idx, column=1).value = node_id
@@ -1883,16 +1888,11 @@ def _write_relaxation_slacks_results_to_excel(network_planning, workbook, result
                             sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                         row_idx = row_idx + 1
 
-    for year in results:
-        for day in results[year]:
-            network = network_planning.network[year][day]
-            for s_m in results[year][day]['scenarios']:
-                for s_o in results[year][day]['scenarios'][s_m]:
-                    for k in results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr']:
+                    # Branch current slacks
+                    for branch in network.branches:
 
-                        branch_id = network.branches[k].branch_id
+                        branch_id = branch.branch_id
 
-                        # - iij_sqr
                         sheet.cell(row=row_idx, column=1).value = branch_id
                         sheet.cell(row=row_idx, column=2).value = int(year)
                         sheet.cell(row=row_idx, column=3).value = day
@@ -1900,8 +1900,39 @@ def _write_relaxation_slacks_results_to_excel(network_planning, workbook, result
                         sheet.cell(row=row_idx, column=5).value = s_m
                         sheet.cell(row=row_idx, column=6).value = s_o
                         for p in range(network_planning.num_instants):
-                            iij_sqr = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][k][p]
+                            iij_sqr = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][branch_id][p]
                             sheet.cell(row=row_idx, column=p + 7).value = iij_sqr
+                            sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
+                        row_idx = row_idx + 1
+
+                    # Load flexibility
+                    for load in network.loads:
+
+                        load_id = load.load_id
+
+                        # flex balance, up
+                        sheet.cell(row=row_idx, column=1).value = load_id
+                        sheet.cell(row=row_idx, column=2).value = int(year)
+                        sheet.cell(row=row_idx, column=3).value = day
+                        sheet.cell(row=row_idx, column=4).value = 'Flex. balance, up'
+                        sheet.cell(row=row_idx, column=5).value = s_m
+                        sheet.cell(row=row_idx, column=6).value = s_o
+                        for p in range(network_planning.num_instants):
+                            flex_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['up'][load_id][p]
+                            sheet.cell(row=row_idx, column=p + 7).value = flex_up
+                            sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
+                        row_idx = row_idx + 1
+
+                        # flex balance, down
+                        sheet.cell(row=row_idx, column=1).value = load_id
+                        sheet.cell(row=row_idx, column=2).value = int(year)
+                        sheet.cell(row=row_idx, column=3).value = day
+                        sheet.cell(row=row_idx, column=4).value = 'Flex. balance, down'
+                        sheet.cell(row=row_idx, column=5).value = s_m
+                        sheet.cell(row=row_idx, column=6).value = s_o
+                        for p in range(network_planning.num_instants):
+                            flex_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['down'][load_id][p]
+                            sheet.cell(row=row_idx, column=p + 7).value = flex_down
                             sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                         row_idx = row_idx + 1
 
