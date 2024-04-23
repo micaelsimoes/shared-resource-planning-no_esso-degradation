@@ -383,7 +383,7 @@ def _build_model(network, params):
 
     # - Energy Storage devices
     if params.es_reg:
-        model.es_soc = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals)
+        model.es_soc = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
         model.es_sch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.es_pch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.es_qch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
@@ -406,17 +406,19 @@ def _build_model(network, params):
                         model.es_pdch[e, s_m, s_o, p].setub(energy_storage.s)
                         model.es_qdch[e, s_m, s_o, p].setub(energy_storage.s)
                         model.es_qdch[e, s_m, s_o, p].setlb(-energy_storage.s)
+        if params.slacks:
+            model.slack_es_comp = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
 
     # - Shared Energy Storage devices
-    model.shared_es_s_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals)
-    model.shared_es_e_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals)
-    model.shared_es_s_rated_fixed = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals)          # Benders' -- used to get the dual variables (sensitivities)
-    model.shared_es_e_rated_fixed = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals)          # (...)
+    model.shared_es_s_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)
+    model.shared_es_e_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)
+    model.shared_es_s_rated_fixed = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)          # Benders' -- used to get the dual variables (sensitivities)
+    model.shared_es_e_rated_fixed = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)          # (...)
     model.shared_es_s_slack_up = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)             # Benders' -- ensures feasibility of the subproblem
     model.shared_es_s_slack_down = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)           # (...)
     model.shared_es_e_slack_up = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)
     model.shared_es_e_slack_down = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)
-    model.shared_es_soc = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals)
+    model.shared_es_soc = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     model.shared_es_pch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.shared_es_pdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     for e in model.shared_energy_storages:
@@ -427,6 +429,8 @@ def _build_model(network, params):
             for s_o in model.scenarios_operation:
                 for p in model.periods:
                     model.shared_es_soc[e, s_m, s_o, p] = shared_energy_storage.e * ENERGY_STORAGE_RELATIVE_INIT_SOC
+    if params.slacks:
+        model.slack_shared_es_comp = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
 
     # - Expected interface power flow
     if network.is_transmission:
@@ -553,7 +557,10 @@ def _build_model(network, params):
                             model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] == soc_init + (sch * eff_charge - sdch / eff_discharge))
 
                         # Charging/discharging complementarity constraints
-                        model.energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
+                        if params.slacks:
+                            model.energy_storage_ch_dch_exclusion.add(sch * sdch <= model.slack_es_comp[e, s_m, s_o, p])
+                        else:
+                            model.energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
 
                     model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final)
 
@@ -597,7 +604,10 @@ def _build_model(network, params):
                         model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == soc_init + (pch * eff_charge - pdch / eff_discharge))
 
                     # Charging/discharging complementarity constraints
-                    model.shared_energy_storage_ch_dch_exclusion.add(pch * pdch == 0.00)
+                    if params.slacks:
+                        model.shared_energy_storage_ch_dch_exclusion.add(pch * pdch <= model.slack_shared_es_comp[e, s_m, s_o, p])
+                    else:
+                        model.shared_energy_storage_ch_dch_exclusion.add(pch * pdch == 0.00)
 
                 # Day balance
                 model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final)
@@ -876,6 +886,18 @@ def _build_model(network, params):
                 for p in model.periods:
                     slack_iij_sqr = model.slack_iij_sqr[b, s_m, s_o, p]
                     obj += PENALTY_SLACK * slack_iij_sqr
+
+            # ESS slacks
+            for e in model.energy_storages:
+                for p in model.periods:
+                    slack_comp = model.slack_es_comp[e, s_m, s_o, p]
+                    obj += PENALTY_SLACK * slack_comp
+
+            # Shared ESS slacks
+            for e in model.shared_energy_storages:
+                for p in model.periods:
+                    slack_comp = model.slack_shared_es_comp[e, s_m, s_o, p]
+                    obj += PENALTY_SLACK * slack_comp
 
     for e in model.shared_energy_storages:
         slack_s = model.shared_es_s_slack_up[e] + model.shared_es_s_slack_down[e]
