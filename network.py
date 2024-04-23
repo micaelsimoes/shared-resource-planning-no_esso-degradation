@@ -1125,9 +1125,9 @@ def _read_network_from_json_file(network, filename):
                 exit(ERROR_NETWORK_FILE)
             energy_storage.s = float(energy_storage_data['s']) / network.baseMVA
             energy_storage.e = float(energy_storage_data['e']) / network.baseMVA
-            energy_storage.e_init = float(energy_storage_data['e_init']) / network.baseMVA
-            energy_storage.e_min = float(energy_storage_data['e_min']) / network.baseMVA
-            energy_storage.e_max = float(energy_storage_data['e_max']) / network.baseMVA
+            energy_storage.e_init = energy_storage.e * ENERGY_STORAGE_RELATIVE_INIT_SOC
+            energy_storage.e_min = energy_storage.e * ENERGY_STORAGE_MIN_ENERGY_STORED
+            energy_storage.e_max = energy_storage.e * ENERGY_STORAGE_MAX_ENERGY_STORED
             energy_storage.eff_ch = float(energy_storage_data['eff_ch'])
             energy_storage.eff_dch = float(energy_storage_data['eff_dch'])
             energy_storage.max_pf = float(energy_storage_data['max_pf'])
