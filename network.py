@@ -1713,25 +1713,74 @@ def _process_results(network, model, params, results=dict()):
                     slack_comp = pe.value(model.slack_shared_es_comp[e, s_m, s_o, p])
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['comp'][node_id].append(slack_comp)
 
-    # Relaxation slacks (investment)
+    # Relaxation slacks
     processed_results['relaxation_slacks'] = dict()
-    processed_results['relaxation_slacks']['shared_ess'] = dict()
-    processed_results['relaxation_slacks']['shared_ess']['s_up'] = dict()
-    processed_results['relaxation_slacks']['shared_ess']['s_down'] = dict()
-    processed_results['relaxation_slacks']['shared_ess']['e_up'] = dict()
-    processed_results['relaxation_slacks']['shared_ess']['e_down'] = dict()
 
-    # Shared ESS slacks
+    # - Relaxation slacks (investment)
+    processed_results['relaxation_slacks']['investment'] = dict()
+    processed_results['relaxation_slacks']['investment']['shared_ess'] = dict()
+    processed_results['relaxation_slacks']['investment']['shared_ess']['s_up'] = dict()
+    processed_results['relaxation_slacks']['investment']['shared_ess']['s_down'] = dict()
+    processed_results['relaxation_slacks']['investment']['shared_ess']['e_up'] = dict()
+    processed_results['relaxation_slacks']['investment']['shared_ess']['e_down'] = dict()
+
+    # -Shared ESS slacks
     for e in model.shared_energy_storages:
         node_id = network.shared_energy_storages[e].bus
         s_up = pe.value(model.shared_es_s_slack_up[e])
         s_down = pe.value(model.shared_es_s_slack_down[e])
         e_up = pe.value(model.shared_es_e_slack_up[e])
         e_down = pe.value(model.shared_es_e_slack_down[e])
-        processed_results['relaxation_slacks']['shared_ess']['s_up'][node_id] = s_up
-        processed_results['relaxation_slacks']['shared_ess']['s_down'][node_id] = s_down
-        processed_results['relaxation_slacks']['shared_ess']['e_up'][node_id] = e_up
-        processed_results['relaxation_slacks']['shared_ess']['e_down'][node_id] = e_down
+        processed_results['relaxation_slacks']['investment']['shared_ess']['s_up'][node_id] = s_up
+        processed_results['relaxation_slacks']['investment']['shared_ess']['s_down'][node_id] = s_down
+        processed_results['relaxation_slacks']['investment']['shared_ess']['e_up'][node_id] = e_up
+        processed_results['relaxation_slacks']['investment']['shared_ess']['e_down'][node_id] = e_down
+
+    # - Relaxation slacks (interface)
+    processed_results['relaxation_slacks']['interface'] = dict()
+    processed_results['relaxation_slacks']['interface']['vmag_up'] = dict()
+    processed_results['relaxation_slacks']['interface']['vmag_down'] = dict()
+    processed_results['relaxation_slacks']['interface']['pf_p_up'] = dict()
+    processed_results['relaxation_slacks']['interface']['pf_p_down'] = dict()
+    processed_results['relaxation_slacks']['interface']['pf_q_up'] = dict()
+    processed_results['relaxation_slacks']['interface']['pf_q_down'] = dict()
+    if network.is_transmission:
+        for dn in model.active_distribution_network_nodes:
+            node_id = network.active_distribution_network_nodes[dn]
+            processed_results['relaxation_slacks']['interface']['vmag_up'][node_id] = []
+            processed_results['relaxation_slacks']['interface']['vmag_down'][node_id] = []
+            processed_results['relaxation_slacks']['interface']['pf_p_up'][node_id] = []
+            processed_results['relaxation_slacks']['interface']['pf_p_down'][node_id] = []
+            processed_results['relaxation_slacks']['interface']['pf_q_up'][node_id] = []
+            processed_results['relaxation_slacks']['interface']['pf_q_down'][node_id] = []
+            for p in model.periods:
+                vmag_up = pe.value(model.slack_expected_interface_vmag_sqr_up[dn, p])
+                vmag_down = pe.value(model.slack_expected_interface_vmag_sqr_down[dn, p])
+                pf_p_up = pe.value(model.slack_expected_interface_pf_p_up[dn, p])
+                pf_p_down = pe.value(model.slack_expected_interface_pf_p_down[dn, p])
+                pf_q_up = pe.value(model.slack_expected_interface_pf_q_up[dn, p])
+                pf_q_down = pe.value(model.slack_expected_interface_pf_q_down[dn, p])
+                processed_results['relaxation_slacks']['interface']['vmag_up'][node_id].append(vmag_up)
+                processed_results['relaxation_slacks']['interface']['vmag_down'][node_id].append(vmag_down)
+                processed_results['relaxation_slacks']['interface']['pf_p_up'][node_id].append(pf_p_up)
+                processed_results['relaxation_slacks']['interface']['pf_p_down'][node_id].append(pf_p_down)
+                processed_results['relaxation_slacks']['interface']['pf_q_up'][node_id].append(pf_q_up)
+                processed_results['relaxation_slacks']['interface']['pf_q_down'][node_id].append(pf_q_down)
+    else:
+        node_id = network.get_reference_node_id()
+        for p in model.periods:
+            vmag_up = pe.value(model.slack_expected_interface_vmag_sqr_up[p])
+            vmag_down = pe.value(model.slack_expected_interface_vmag_sqr_down[p])
+            pf_p_up = pe.value(model.slack_expected_interface_pf_p_up[p])
+            pf_p_down = pe.value(model.slack_expected_interface_pf_p_down[p])
+            pf_q_up = pe.value(model.slack_expected_interface_pf_q_up[p])
+            pf_q_down = pe.value(model.slack_expected_interface_pf_q_down[p])
+            processed_results['relaxation_slacks']['interface']['vmag_up'][node_id].append(vmag_up)
+            processed_results['relaxation_slacks']['interface']['vmag_down'][node_id].append(vmag_down)
+            processed_results['relaxation_slacks']['interface']['pf_p_up'][node_id].append(pf_p_up)
+            processed_results['relaxation_slacks']['interface']['pf_p_down'][node_id].append(pf_p_down)
+            processed_results['relaxation_slacks']['interface']['pf_q_up'][node_id].append(pf_q_up)
+            processed_results['relaxation_slacks']['interface']['pf_q_down'][node_id].append(pf_q_down)
 
     return processed_results
 
