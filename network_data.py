@@ -1505,7 +1505,7 @@ def _write_network_energy_storage_results_to_excel(network_planning, workbook, r
     perc_style = '0.00%'
 
     # Write Header
-    sheet.cell(row=row_idx, column=1).value = 'Node ID'
+    sheet.cell(row=row_idx, column=1).value = 'ESS ID'
     sheet.cell(row=row_idx, column=2).value = 'Year'
     sheet.cell(row=row_idx, column=3).value = 'Day'
     sheet.cell(row=row_idx, column=4).value = 'Quantity'
@@ -1527,164 +1527,167 @@ def _write_network_energy_storage_results_to_excel(network_planning, workbook, r
             expected_soc_perc = dict()
 
             for energy_storage in network.energy_storages:
-                expected_p[energy_storage.bus] = [0.0 for _ in range(network.num_instants)]
-                expected_q[energy_storage.bus] = [0.0 for _ in range(network.num_instants)]
-                expected_s[energy_storage.bus] = [0.0 for _ in range(network.num_instants)]
-                expected_soc[energy_storage.bus] = [0.0 for _ in range(network.num_instants)]
-                expected_soc_perc[energy_storage.bus] = [0.0 for _ in range(network.num_instants)]
+                es_id = energy_storage.es_id
+                expected_p[es_id] = [0.0 for _ in range(network.num_instants)]
+                expected_q[es_id] = [0.0 for _ in range(network.num_instants)]
+                expected_s[es_id] = [0.0 for _ in range(network.num_instants)]
+                expected_soc[es_id] = [0.0 for _ in range(network.num_instants)]
+                expected_soc_perc[es_id] = [0.0 for _ in range(network.num_instants)]
 
             for s_m in results[year][day]['scenarios']:
                 omega_m = network.prob_market_scenarios[s_m]
                 for s_o in results[year][day]['scenarios'][s_m]:
                     omega_s = network.prob_operation_scenarios[s_o]
-                    for node_id in results[year][day]['scenarios'][s_m][s_o]['energy_storages']['p']:
+                    for energy_storage in network.energy_storages:
+
+                        es_id = energy_storage.es_id
 
                         # - Active Power
-                        sheet.cell(row=row_idx, column=1).value = node_id
+                        sheet.cell(row=row_idx, column=1).value = es_id
                         sheet.cell(row=row_idx, column=2).value = int(year)
                         sheet.cell(row=row_idx, column=3).value = day
                         sheet.cell(row=row_idx, column=4).value = 'P, [MW]'
                         sheet.cell(row=row_idx, column=5).value = s_m
                         sheet.cell(row=row_idx, column=6).value = s_o
                         for p in range(network.num_instants):
-                            pc = results[year][day]['scenarios'][s_m][s_o]['energy_storages']['p'][node_id][p]
+                            pc = results[year][day]['scenarios'][s_m][s_o]['energy_storages']['p'][es_id][p]
                             sheet.cell(row=row_idx, column=p + 7).value = pc
                             sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                             if pc != 'N/A':
-                                expected_p[node_id][p] += pc * omega_m * omega_s
+                                expected_p[es_id][p] += pc * omega_m * omega_s
                             else:
-                                expected_p[node_id][p] = 'N/A'
+                                expected_p[es_id][p] = 'N/A'
                         row_idx = row_idx + 1
 
                         # - Reactive Power
-                        sheet.cell(row=row_idx, column=1).value = node_id
+                        sheet.cell(row=row_idx, column=1).value = es_id
                         sheet.cell(row=row_idx, column=2).value = int(year)
                         sheet.cell(row=row_idx, column=3).value = day
                         sheet.cell(row=row_idx, column=4).value = 'Q, [MVAr]'
                         sheet.cell(row=row_idx, column=5).value = s_m
                         sheet.cell(row=row_idx, column=6).value = s_o
                         for p in range(network.num_instants):
-                            qc = results[year][day]['scenarios'][s_m][s_o]['energy_storages']['q'][node_id][p]
+                            qc = results[year][day]['scenarios'][s_m][s_o]['energy_storages']['q'][es_id][p]
                             sheet.cell(row=row_idx, column=p + 7).value = qc
                             sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                             if qc != 'N/A':
-                                expected_q[node_id][p] += qc * omega_m * omega_s
+                                expected_q[es_id][p] += qc * omega_m * omega_s
                             else:
-                                expected_q[node_id][p] = 'N/A'
+                                expected_q[es_id][p] = 'N/A'
                         row_idx = row_idx + 1
 
                         # - Apparent Power
-                        sheet.cell(row=row_idx, column=1).value = node_id
+                        sheet.cell(row=row_idx, column=1).value = es_id
                         sheet.cell(row=row_idx, column=2).value = int(year)
                         sheet.cell(row=row_idx, column=3).value = day
                         sheet.cell(row=row_idx, column=4).value = 'S, [MVA]'
                         sheet.cell(row=row_idx, column=5).value = s_m
                         sheet.cell(row=row_idx, column=6).value = s_o
                         for p in range(network.num_instants):
-                            sc = results[year][day]['scenarios'][s_m][s_o]['energy_storages']['s'][node_id][p]
+                            sc = results[year][day]['scenarios'][s_m][s_o]['energy_storages']['s'][es_id][p]
                             sheet.cell(row=row_idx, column=p + 7).value = sc
                             sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                             if sc != 'N/A':
-                                expected_s[node_id][p] += sc * omega_m * omega_s
+                                expected_s[es_id][p] += sc * omega_m * omega_s
                             else:
-                                expected_s[node_id][p] = 'N/A'
+                                expected_s[es_id][p] = 'N/A'
                         row_idx = row_idx + 1
 
                         # - SoC, [MWh]
-                        sheet.cell(row=row_idx, column=1).value = node_id
+                        sheet.cell(row=row_idx, column=1).value = es_id
                         sheet.cell(row=row_idx, column=2).value = int(year)
                         sheet.cell(row=row_idx, column=3).value = day
                         sheet.cell(row=row_idx, column=4).value = 'SoC, [MWh]'
                         sheet.cell(row=row_idx, column=5).value = s_m
                         sheet.cell(row=row_idx, column=6).value = s_o
                         for p in range(network.num_instants):
-                            soc = results[year][day]['scenarios'][s_m][s_o]['energy_storages']['soc'][node_id][p]
+                            soc = results[year][day]['scenarios'][s_m][s_o]['energy_storages']['soc'][es_id][p]
                             sheet.cell(row=row_idx, column=p + 7).value = soc
                             sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                             if soc != 'N/A':
-                                expected_soc[node_id][p] += soc * omega_m * omega_s
+                                expected_soc[es_id][p] += soc * omega_m * omega_s
                             else:
-                                expected_soc[node_id][p] = 'N/A'
+                                expected_soc[es_id][p] = 'N/A'
                         row_idx = row_idx + 1
 
                         # - SoC, [%]
-                        sheet.cell(row=row_idx, column=1).value = node_id
+                        sheet.cell(row=row_idx, column=1).value = es_id
                         sheet.cell(row=row_idx, column=2).value = int(year)
                         sheet.cell(row=row_idx, column=3).value = day
                         sheet.cell(row=row_idx, column=4).value = 'SoC, [%]'
                         sheet.cell(row=row_idx, column=5).value = s_m
                         sheet.cell(row=row_idx, column=6).value = s_o
                         for p in range(network.num_instants):
-                            soc_perc = results[year][day]['scenarios'][s_m][s_o]['energy_storages']['soc_percent'][node_id][p]
+                            soc_perc = results[year][day]['scenarios'][s_m][s_o]['energy_storages']['soc_percent'][es_id][p]
                             sheet.cell(row=row_idx, column=p + 7).value = soc_perc
                             sheet.cell(row=row_idx, column=p + 7).number_format = perc_style
                             if soc_perc != 'N/A':
-                                expected_soc_perc[node_id][p] += soc_perc * omega_m * omega_s
+                                expected_soc_perc[es_id][p] += soc_perc * omega_m * omega_s
                             else:
-                                expected_soc_perc[node_id][p] = 'N/A'
+                                expected_soc_perc[es_id][p] = 'N/A'
                         row_idx = row_idx + 1
 
             for energy_storage in network.energy_storages:
 
-                node_id = energy_storage.bus
+                es_id = energy_storage.es_id
 
                 # - Active Power
-                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=1).value = es_id
                 sheet.cell(row=row_idx, column=2).value = int(year)
                 sheet.cell(row=row_idx, column=3).value = day
                 sheet.cell(row=row_idx, column=4).value = 'P, [MW]'
                 sheet.cell(row=row_idx, column=5).value = 'Expected'
                 sheet.cell(row=row_idx, column=6).value = '-'
                 for p in range(network.num_instants):
-                    sheet.cell(row=row_idx, column=p + 7).value = expected_p[node_id][p]
+                    sheet.cell(row=row_idx, column=p + 7).value = expected_p[es_id][p]
                     sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                 row_idx = row_idx + 1
 
                 # - Reactive Power
-                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=1).value = es_id
                 sheet.cell(row=row_idx, column=2).value = int(year)
                 sheet.cell(row=row_idx, column=3).value = day
                 sheet.cell(row=row_idx, column=4).value = 'Q, [MVAr]'
                 sheet.cell(row=row_idx, column=5).value = 'Expected'
                 sheet.cell(row=row_idx, column=6).value = '-'
                 for p in range(network.num_instants):
-                    sheet.cell(row=row_idx, column=p + 7).value = expected_q[node_id][p]
+                    sheet.cell(row=row_idx, column=p + 7).value = expected_q[es_id][p]
                     sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                 row_idx = row_idx + 1
 
                 # - Apparent Power
-                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=1).value = es_id
                 sheet.cell(row=row_idx, column=2).value = int(year)
                 sheet.cell(row=row_idx, column=3).value = day
                 sheet.cell(row=row_idx, column=4).value = 'S, [MVA]'
                 sheet.cell(row=row_idx, column=5).value = 'Expected'
                 sheet.cell(row=row_idx, column=6).value = '-'
                 for p in range(network.num_instants):
-                    sheet.cell(row=row_idx, column=p + 7).value = expected_s[node_id][p]
+                    sheet.cell(row=row_idx, column=p + 7).value = expected_s[es_id][p]
                     sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                 row_idx = row_idx + 1
 
                 # - SoC, [MWh]
-                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=1).value = es_id
                 sheet.cell(row=row_idx, column=2).value = int(year)
                 sheet.cell(row=row_idx, column=3).value = day
                 sheet.cell(row=row_idx, column=4).value = 'SoC, [MWh]'
                 sheet.cell(row=row_idx, column=5).value = 'Expected'
                 sheet.cell(row=row_idx, column=6).value = '-'
                 for p in range(network.num_instants):
-                    sheet.cell(row=row_idx, column=p + 7).value = expected_soc[node_id][p]
+                    sheet.cell(row=row_idx, column=p + 7).value = expected_soc[es_id][p]
                     sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                 row_idx = row_idx + 1
 
                 # - SoC, [%]
-                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=1).value = es_id
                 sheet.cell(row=row_idx, column=2).value = int(year)
                 sheet.cell(row=row_idx, column=3).value = day
                 sheet.cell(row=row_idx, column=4).value = 'SoC, [%]'
                 sheet.cell(row=row_idx, column=5).value = 'Expected'
                 sheet.cell(row=row_idx, column=6).value = '-'
                 for p in range(network.num_instants):
-                    sheet.cell(row=row_idx, column=p + 7).value = expected_soc_perc[node_id][p]
+                    sheet.cell(row=row_idx, column=p + 7).value = expected_soc_perc[es_id][p]
                     sheet.cell(row=row_idx, column=p + 7).number_format = perc_style
                 row_idx = row_idx + 1
 
