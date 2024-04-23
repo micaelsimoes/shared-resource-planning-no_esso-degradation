@@ -1863,7 +1863,7 @@ def _write_relaxation_slacks_investment_results_to_excel(network_planning, workb
                 sheet.cell(row=row_idx, column=1).value = node_id
                 sheet.cell(row=row_idx, column=2).value = int(year)
                 sheet.cell(row=row_idx, column=3).value = day
-                sheet.cell(row=row_idx, column=4).value = 'Shared ESS, e_up'
+                sheet.cell(row=row_idx, column=4).value = 'Shared ESS, e_down'
                 sheet.cell(row=row_idx, column=5).value = e_down
                 sheet.cell(row=row_idx, column=5).number_format = decimal_style
                 row_idx = row_idx + 1
