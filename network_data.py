@@ -173,7 +173,7 @@ def _write_optimization_results_to_excel(network_planning, data_dir, processed_r
     _write_network_branch_power_flow_results_to_excel(network_planning, wb, processed_results['results'])
     if network_planning.params.es_reg:
         _write_network_energy_storage_results_to_excel(network_planning, wb, processed_results['results'])
-    _write_relaxation_slacks_results_to_excel(network_planning, wb, processed_results['results'])
+    _write_relaxation_slacks_scenarios_results_to_excel(network_planning, wb, processed_results['results'])
 
     results_filename = os.path.join(data_dir, f'{network_planning.name}_results.xlsx')
     try:
@@ -1806,7 +1806,7 @@ def _write_shared_network_energy_storage_results_to_excel(network_planning, work
                 row_idx = row_idx + 1
 
 
-def _write_relaxation_slacks_results_to_excel(network_planning, workbook, results):
+def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbook, results):
 
     sheet = workbook.create_sheet('Relaxation Slacks')
     params = network_planning.params
