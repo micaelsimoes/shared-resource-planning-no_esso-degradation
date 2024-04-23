@@ -1116,7 +1116,7 @@ def _read_network_from_json_file(network, filename):
 
     # Energy Storages
     if 'energy_storages' in network_data:
-        for energy_storage_data in network_data['energy_storage']:
+        for energy_storage_data in network_data['energy_storages']:
             energy_storage = EnergyStorage()
             energy_storage.es_id = int(energy_storage_data['es_id'])
             energy_storage.bus = int(energy_storage_data['bus'])
