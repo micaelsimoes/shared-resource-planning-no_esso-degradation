@@ -818,10 +818,7 @@ def _build_model(network, params):
                         pch = model.shared_es_pch[shared_ess_idx, s_m, s_o, p]
                         pdch = model.shared_es_pdch[shared_ess_idx, s_m, s_o, p]
                         expected_sess_p += (pch - pdch) * omega_m * omega_s
-                if params.interface_ess_relax:
-                    model.expected_shared_ess_power.add(model.expected_shared_ess_p[p] == expected_sess_p + model.penalty_expected_shared_ess_p_up[p] - model.penalty_expected_shared_ess_p_down[p])
-                else:
-                    model.expected_shared_ess_power.add(model.expected_shared_ess_p[p] == expected_sess_p)
+                model.expected_shared_ess_power.add(model.expected_shared_ess_p[p] == expected_sess_p)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective Function
@@ -1768,6 +1765,12 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['relaxation_slacks']['interface']['pf_q_down'][node_id].append(pf_q_down)
     else:
         node_id = network.get_reference_node_id()
+        processed_results['relaxation_slacks']['interface']['vmag_up'][node_id] = []
+        processed_results['relaxation_slacks']['interface']['vmag_down'][node_id] = []
+        processed_results['relaxation_slacks']['interface']['pf_p_up'][node_id] = []
+        processed_results['relaxation_slacks']['interface']['pf_p_down'][node_id] = []
+        processed_results['relaxation_slacks']['interface']['pf_q_up'][node_id] = []
+        processed_results['relaxation_slacks']['interface']['pf_q_down'][node_id] = []
         for p in model.periods:
             vmag_up = pe.value(model.slack_expected_interface_vmag_sqr_up[p])
             vmag_down = pe.value(model.slack_expected_interface_vmag_sqr_down[p])
