@@ -1710,7 +1710,7 @@ def _process_results(network, model, params, results=dict()):
                 node_id = network.shared_energy_storages[e].bus
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['comp'][node_id] = []
                 for p in model.periods:
-                    slack_comp = pe.value(model.slack_es_comp[e, s_m, s_o, p])
+                    slack_comp = pe.value(model.slack_shared_es_comp[e, s_m, s_o, p])
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['comp'][node_id].append(slack_comp)
 
     # Relaxation slacks (investment)
