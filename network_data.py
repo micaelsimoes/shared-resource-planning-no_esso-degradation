@@ -1809,13 +1809,13 @@ def _write_shared_network_energy_storage_results_to_excel(network_planning, work
 
 def _write_relaxation_slacks_investment_results_to_excel(network_planning, workbook, results):
 
-    sheet = workbook.create_sheet('Relaxation Slacks')
+    sheet = workbook.create_sheet('Relaxation Slacks, Investment')
 
     row_idx = 1
     decimal_style = '0.00'
 
     # Write Header
-    sheet.cell(row=row_idx, column=1).value = 'Node ID / Branch ID'
+    sheet.cell(row=row_idx, column=1).value = 'Node ID'
     sheet.cell(row=row_idx, column=2).value = 'Year'
     sheet.cell(row=row_idx, column=3).value = 'Day'
     sheet.cell(row=row_idx, column=4).value = 'Quantity'
@@ -1870,7 +1870,7 @@ def _write_relaxation_slacks_investment_results_to_excel(network_planning, workb
 
 def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbook, results):
 
-    sheet = workbook.create_sheet('Relaxation Slacks')
+    sheet = workbook.create_sheet('Relaxation Slacks, Operation')
 
     row_idx = 1
     decimal_style = '0.00'
