@@ -1742,7 +1742,7 @@ def _process_results(network, model, params, results=dict()):
     processed_results['relaxation_slacks']['interface']['pf_q_up'] = dict()
     processed_results['relaxation_slacks']['interface']['pf_q_down'] = dict()
     if network.is_transmission:
-        for dn in model.active_distribution_network_nodes:
+        for dn in model.active_distribution_networks:
             node_id = network.active_distribution_network_nodes[dn]
             processed_results['relaxation_slacks']['interface']['vmag_up'][node_id] = []
             processed_results['relaxation_slacks']['interface']['vmag_down'][node_id] = []
