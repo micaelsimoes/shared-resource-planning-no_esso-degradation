@@ -465,7 +465,7 @@ def _build_model(network, params):
             model.slack_expected_interface_pf_p_up = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=0.00)
             model.slack_expected_interface_pf_p_down = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=0.00)
             model.slack_expected_interface_pf_q_up = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-            model.slack_expected_interface_pf_q_down = pe.Var(domain=pe.NonNegativeReals, initialize=0.00)
+            model.slack_expected_interface_pf_q_down = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=0.00)
 
     # - Expected Shared ESS power variables
     if network.is_transmission:
