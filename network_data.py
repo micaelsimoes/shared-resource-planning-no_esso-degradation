@@ -1142,7 +1142,7 @@ def _write_network_branch_power_flow_results_to_excel(network_planning, workbook
                         sheet.cell(row=row_idx, column=5).value = day
                         sheet.cell(row=row_idx, column=6).value = 'P, [MW]'
                         sheet.cell(row=row_idx, column=7).value = s_m
-                        sheet.cell(row=row_idx, column=9).value = s_o
+                        sheet.cell(row=row_idx, column=8).value = s_o
                         for p in range(network.num_instants):
                             value = results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['pij'][branch_id][p]
                             sheet.cell(row=row_idx, column=p + 9).value = value
