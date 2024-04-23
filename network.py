@@ -1409,6 +1409,14 @@ def _process_results(network, model, params, results=dict()):
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_down'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['up'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['down'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_up'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_down'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_up'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_down'] = dict()
 
             # Voltage
             for i in model.nodes:
@@ -1596,6 +1604,29 @@ def _process_results(network, model, params, results=dict()):
                 for p in model.periods:
                     slack_iij_sqr = pe.value(model.slack_iij_sqr[b, s_m, s_o, p])
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][b].append(slack_iij_sqr)
+
+            # Flexibility slacks
+            for c in model.loads:
+                load_id = network.loads[c].load_id
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['up'][load_id] = [0.00 for _ in range(network.num_instants)]
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['down'][load_id] = [0.00 for _ in range(network.num_instants)]
+                slack_flex_up = pe.value(model.flex_p_up[c, s_m, s_o, p])
+                slack_flex_down = pe.value(model.flex_p_down[c, s_m, s_o, p])
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['up'][load_id][network.num_instants-1] = slack_flex_up
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['down'][load_id][network.num_instants-1] = slack_flex_down
+
+            # Node balance slacks
+            for i in model.nodes:
+                node_id = network.nodes[i].bus_i
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_up'][node_id] = []
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_down'][node_id] = []
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_up'][node_id] = []
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_down'][node_id] = []
+                for p in model.periods:
+                    slack_p_up = pe.value(model.slack_node_balance_p_up[i, s_m, s_o, p])
+                    slack_p_down = pe.value(model.slack_node_balance_p_down[i, s_m, s_o, p])
+                    slack_q_up = pe.value(model.slack_node_balance_q_up[i, s_m, s_o, p])
+                    slack_q_down = pe.value(model.slack_node_balance_q_down[i, s_m, s_o, p])
 
     # Relaxation slacks (investment)
     processed_results['relaxation_slacks'] = dict()
