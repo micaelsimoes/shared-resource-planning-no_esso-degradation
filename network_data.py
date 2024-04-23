@@ -1829,7 +1829,7 @@ def _write_relaxation_slacks_investment_results_to_excel(network_planning, workb
             # Shared ESS slacks
             for shared_energy_storage in network.shared_energy_storages:
 
-                node_id = shared_energy_storage.node_id
+                node_id = shared_energy_storage.bus
 
                 s_up = results['relaxation_slacks']['shared_ess']['s_up'][node_id]
                 sheet.cell(row=row_idx, column=1).value = node_id
