@@ -412,10 +412,10 @@ def _build_model(network, params):
     model.shared_es_e_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals)
     model.shared_es_s_rated_fixed = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals)          # Benders' -- used to get the dual variables (sensitivities)
     model.shared_es_e_rated_fixed = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals)          # (...)
-    model.shared_es_s_slack_up = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals)             # Benders' -- ensures feasibility of the subproblem
-    model.shared_es_s_slack_down = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals)           # (...)
-    model.shared_es_e_slack_up = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals)
-    model.shared_es_e_slack_down = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals)
+    model.shared_es_s_slack_up = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)             # Benders' -- ensures feasibility of the subproblem
+    model.shared_es_s_slack_down = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)           # (...)
+    model.shared_es_e_slack_up = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)
+    model.shared_es_e_slack_down = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)
     model.shared_es_soc = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals)
     model.shared_es_pch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.shared_es_pdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -1409,6 +1409,11 @@ def _process_results(network, model, params, results=dict()):
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_down'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_ess'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_ess']['s_up'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_ess']['s_down'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_ess']['e_up'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_ess']['e_down'] = dict()
 
             # Voltage
             for i in model.nodes:
@@ -1596,6 +1601,18 @@ def _process_results(network, model, params, results=dict()):
                 for p in model.periods:
                     slack_iij_sqr = pe.value(model.slack_iij_sqr[b, s_m, s_o, p])
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][b].append(slack_iij_sqr)
+
+            # Shared ESS slacks
+            for e in model.shared_energy_storages:
+                node_id = network.shared_energy_storages[e].bus
+                s_up = pe.value(model.shared_es_s_slack_up[e])
+                s_down = pe.value(model.shared_es_s_slack_down[e])
+                e_up = pe.value(model.shared_es_e_slack_up[e])
+                e_down = pe.value(model.shared_es_e_slack_down[e])
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_ess']['s_up'][node_id] = s_up
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_ess']['s_down'][node_id] = s_down
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_ess']['e_up'][node_id] = e_up
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_ess']['e_down'][node_id] = e_down
 
     return processed_results
 
