@@ -752,12 +752,12 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
 
                     # - Active power net consumption
                     sheet.cell(row=row_idx, column=1).value = load_id
-                    sheet.cell(row=row_idx, column=1).value = node_id
-                    sheet.cell(row=row_idx, column=2).value = int(year)
-                    sheet.cell(row=row_idx, column=3).value = day
-                    sheet.cell(row=row_idx, column=4).value = 'Pc_net, [MW]'
-                    sheet.cell(row=row_idx, column=5).value = 'Expected'
-                    sheet.cell(row=row_idx, column=6).value = '-'
+                    sheet.cell(row=row_idx, column=2).value = node_id
+                    sheet.cell(row=row_idx, column=3).value = int(year)
+                    sheet.cell(row=row_idx, column=4).value = day
+                    sheet.cell(row=row_idx, column=5).value = 'Pc_net, [MW]'
+                    sheet.cell(row=row_idx, column=6).value = 'Expected'
+                    sheet.cell(row=row_idx, column=7).value = '-'
                     for p in range(network.num_instants):
                         sheet.cell(row=row_idx, column=p + 8).value = expected_pnet[load_id][p]
                         sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
