@@ -772,10 +772,7 @@ def _build_model(network, params):
                             pch = model.shared_es_pch[e, s_m, s_o, p]
                             pdch = model.shared_es_pdch[e, s_m, s_o, p]
                             expected_sess_p += (pch - pdch) * omega_m * omega_o
-                    if params.interface_ess_relax:
-                        model.expected_shared_ess_power.add(model.expected_shared_ess_p[e, p] == expected_sess_p + model.penalty_expected_shared_ess_p_up[e, p] - model.penalty_expected_shared_ess_p_down[e, p])
-                    else:
-                        model.expected_shared_ess_power.add(model.expected_shared_ess_p[e, p] == expected_sess_p)
+                    model.expected_shared_ess_power.add(model.expected_shared_ess_p[e, p] == expected_sess_p)
         else:
             shared_ess_idx = network.get_shared_energy_storage_idx(ref_node_id)
             for p in model.periods:
