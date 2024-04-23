@@ -1319,6 +1319,7 @@ def _read_planning_problem(planning_problem):
         distribution_network.discount_factor = planning_problem.discount_factor
         distribution_network.prob_market_scenarios = planning_problem.prob_market_scenarios
         distribution_network.cost_energy_p = planning_problem.cost_energy_p
+        distribution_network.cost_flex = planning_problem.cost_flex
         distribution_network.params_file = params_file
         distribution_network.read_network_parameters()
         if distribution_network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
