@@ -1600,10 +1600,11 @@ def _process_results(network, model, params, results=dict()):
 
             # Branch current slacks
             for b in model.branches:
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][b] = []
+                branch_id = network.branches[b].branch_id
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][branch_id] = []
                 for p in model.periods:
                     slack_iij_sqr = pe.value(model.slack_iij_sqr[b, s_m, s_o, p])
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][b].append(slack_iij_sqr)
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][branch_id].append(slack_iij_sqr)
 
             # Flexibility slacks
             for c in model.loads:
@@ -1627,6 +1628,10 @@ def _process_results(network, model, params, results=dict()):
                     slack_p_down = pe.value(model.slack_node_balance_p_down[i, s_m, s_o, p])
                     slack_q_up = pe.value(model.slack_node_balance_q_up[i, s_m, s_o, p])
                     slack_q_down = pe.value(model.slack_node_balance_q_down[i, s_m, s_o, p])
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_up'][node_id].append(slack_p_up)
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_down'][node_id].append(slack_p_down)
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_up'][node_id].append(slack_q_up)
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_down'][node_id].append(slack_q_down)
 
     # Relaxation slacks (investment)
     processed_results['relaxation_slacks'] = dict()
