@@ -1877,7 +1877,7 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
     decimal_style = '0.00'
 
     # Write Header
-    sheet.cell(row=row_idx, column=1).value = 'Node ID / Branch ID'
+    sheet.cell(row=row_idx, column=1).value = 'Resource ID'
     sheet.cell(row=row_idx, column=2).value = 'Year'
     sheet.cell(row=row_idx, column=3).value = 'Day'
     sheet.cell(row=row_idx, column=4).value = 'Quantity'
@@ -2052,6 +2052,42 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
                         for p in range(network_planning.num_instants):
                             q_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_down'][node_id][p]
                             sheet.cell(row=row_idx, column=p + 7).value = q_down
+                            sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
+                        row_idx = row_idx + 1
+
+                    # ESS
+                    for energy_storage in network.energy_storages:
+
+                        es_id = energy_storage.es_id
+
+                        # - comp
+                        sheet.cell(row=row_idx, column=1).value = es_id
+                        sheet.cell(row=row_idx, column=2).value = int(year)
+                        sheet.cell(row=row_idx, column=3).value = day
+                        sheet.cell(row=row_idx, column=4).value = 'Energy Storage, comp'
+                        sheet.cell(row=row_idx, column=5).value = s_m
+                        sheet.cell(row=row_idx, column=6).value = s_o
+                        for p in range(network_planning.num_instants):
+                            comp = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['comp'][es_id][p]
+                            sheet.cell(row=row_idx, column=p + 7).value = comp
+                            sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
+                        row_idx = row_idx + 1
+
+                    # Shared ESS
+                    for shared_energy_storage in network.shared_energy_storages:
+
+                        node_id = shared_energy_storage.bus
+
+                        # - comp
+                        sheet.cell(row=row_idx, column=1).value = node_id
+                        sheet.cell(row=row_idx, column=2).value = int(year)
+                        sheet.cell(row=row_idx, column=3).value = day
+                        sheet.cell(row=row_idx, column=4).value = 'Shared Energy Storage, comp'
+                        sheet.cell(row=row_idx, column=5).value = s_m
+                        sheet.cell(row=row_idx, column=6).value = s_o
+                        for p in range(network_planning.num_instants):
+                            comp = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['comp'][node_id][p]
+                            sheet.cell(row=row_idx, column=p + 7).value = comp
                             sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                         row_idx = row_idx + 1
 

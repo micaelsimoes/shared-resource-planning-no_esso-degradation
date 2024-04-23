@@ -1438,6 +1438,10 @@ def _process_results(network, model, params, results=dict()):
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_down'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_up'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_down'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['comp'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['comp'] = dict()
 
             # Voltage
             for i in model.nodes:
@@ -1653,6 +1657,22 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_down'][node_id].append(slack_p_down)
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_up'][node_id].append(slack_q_up)
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_down'][node_id].append(slack_q_down)
+
+            # ESS slacks
+            for e in model.energy_storages:
+                es_id = network.energy_storages[e].es_id
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['comp'][es_id] = []
+                for p in model.periods:
+                    slack_comp = pe.value(model.slack_es_comp[e, s_m, s_o, p])
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['comp'][es_id].append(slack_comp)
+
+            # Shares ESS slacks
+            for e in model.shared_energy_storages:
+                node_id = network.shared_energy_storages[e].bus
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['comp'][node_id] = []
+                for p in model.periods:
+                    slack_comp = pe.value(model.slack_es_comp[e, s_m, s_o, p])
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['comp'][node_id].append(slack_comp)
 
     # Relaxation slacks (investment)
     processed_results['relaxation_slacks'] = dict()
