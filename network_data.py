@@ -1824,6 +1824,7 @@ def _write_relaxation_slacks_investment_results_to_excel(network_planning, workb
 
     for year in results:
         for day in results[year]:
+
             network = network_planning.network[year][day]
 
             # Shared ESS slacks
@@ -1831,7 +1832,7 @@ def _write_relaxation_slacks_investment_results_to_excel(network_planning, workb
 
                 node_id = shared_energy_storage.bus
 
-                s_up = results['relaxation_slacks']['shared_ess']['s_up'][node_id]
+                s_up = results[year][day]['relaxation_slacks']['shared_ess']['s_up'][node_id]
                 sheet.cell(row=row_idx, column=1).value = node_id
                 sheet.cell(row=row_idx, column=2).value = int(year)
                 sheet.cell(row=row_idx, column=3).value = day
@@ -1840,7 +1841,7 @@ def _write_relaxation_slacks_investment_results_to_excel(network_planning, workb
                 sheet.cell(row=row_idx, column=5).number_format = decimal_style
                 row_idx = row_idx + 1
 
-                s_down = results['relaxation_slacks']['shared_ess']['s_down'][node_id]
+                s_down = results[year][day]['relaxation_slacks']['shared_ess']['s_down'][node_id]
                 sheet.cell(row=row_idx, column=1).value = node_id
                 sheet.cell(row=row_idx, column=2).value = int(year)
                 sheet.cell(row=row_idx, column=3).value = day
@@ -1849,7 +1850,7 @@ def _write_relaxation_slacks_investment_results_to_excel(network_planning, workb
                 sheet.cell(row=row_idx, column=5).number_format = decimal_style
                 row_idx = row_idx + 1
 
-                e_up = results['relaxation_slacks']['shared_ess']['e_up'][node_id]
+                e_up = results[year][day]['relaxation_slacks']['shared_ess']['e_up'][node_id]
                 sheet.cell(row=row_idx, column=1).value = node_id
                 sheet.cell(row=row_idx, column=2).value = int(year)
                 sheet.cell(row=row_idx, column=3).value = day
@@ -1858,7 +1859,7 @@ def _write_relaxation_slacks_investment_results_to_excel(network_planning, workb
                 sheet.cell(row=row_idx, column=5).number_format = decimal_style
                 row_idx = row_idx + 1
 
-                e_down = results['relaxation_slacks']['shared_ess']['e_down'][node_id]
+                e_down = results[year][day]['relaxation_slacks']['shared_ess']['e_down'][node_id]
                 sheet.cell(row=row_idx, column=1).value = node_id
                 sheet.cell(row=row_idx, column=2).value = int(year)
                 sheet.cell(row=row_idx, column=3).value = day
