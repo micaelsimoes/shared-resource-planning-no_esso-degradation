@@ -570,12 +570,8 @@ def _build_model(network, params):
                         model.energy_storage_operation.add(qdch >= tan(min_phi) * pdch)
 
                         if params.slacks:
-                            #model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2 + model.slack_es_sch_up[e, s_m, s_o, p] - model.slack_es_sch_down[e, s_m, s_o, p])
-                            #model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2 + model.slack_es_sdch_up[e, s_m, s_o, p] - model.slack_es_sdch_down[e, s_m, s_o, p])
-                            model.energy_storage_operation.add(sch ** 2 <= pch ** 2 + qch ** 2 - model.slack_es_sch_up[e, s_m, s_o, p])
-                            model.energy_storage_operation.add(sch ** 2 >= pch ** 2 + qch ** 2 + model.slack_es_sch_down[e, s_m, s_o, p])
-                            model.energy_storage_operation.add(sdch ** 2 <= pdch ** 2 + qdch ** 2 - model.slack_es_sdch_up[e, s_m, s_o, p])
-                            model.energy_storage_operation.add(sdch ** 2 >= pdch ** 2 + qdch ** 2 + model.slack_es_sdch_down[e, s_m, s_o, p])
+                            model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2 + model.slack_es_sch_up[e, s_m, s_o, p] - model.slack_es_sch_down[e, s_m, s_o, p])
+                            model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2 + model.slack_es_sdch_up[e, s_m, s_o, p] - model.slack_es_sdch_down[e, s_m, s_o, p])
                         else:
                             model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
                             model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
@@ -933,40 +929,6 @@ def _build_model(network, params):
                     slack_iij_sqr = model.slack_iij_sqr[b, s_m, s_o, p]
                     obj += PENALTY_SLACK * slack_iij_sqr
 
-            # ESS slacks
-            for e in model.energy_storages:
-                for p in model.periods:
-                    slack_comp = model.slack_es_comp[e, s_m, s_o, p]
-                    slack_sch = model.slack_es_sch_up[e, s_m, s_o, p] + model.slack_es_sch_down[e, s_m, s_o, p]
-                    slack_sdch = model.slack_es_sdch_up[e, s_m, s_o, p] + model.slack_es_sdch_down[e, s_m, s_o, p]
-                    slack_soc = model.slack_es_soc_up[e, s_m, s_o, p] + model.slack_es_soc_down[e, s_m, s_o, p]
-                    obj += PENALTY_SLACK * slack_comp
-                    obj += PENALTY_SLACK * 1e2 * (slack_sch + slack_sdch)
-                    obj += PENALTY_SLACK * slack_soc
-                slack_soc_final = model.slack_es_soc_final_up[e, s_m, s_o] + model.slack_es_soc_final_down[e, s_m, s_o]
-                obj += PENALTY_SLACK * slack_soc_final
-
-            # Shared ESS slacks
-            for e in model.shared_energy_storages:
-                for p in model.periods:
-                    slack_comp = model.slack_shared_es_comp[e, s_m, s_o, p]
-                    obj += PENALTY_SLACK * slack_comp
-
-            # Interface slacks
-            if network.is_transmission:
-                for dn in model.active_distribution_networks:
-                    for p in model.periods:
-                        slack_vmag = model.slack_expected_interface_vmag_sqr_up[dn, p] + model.slack_expected_interface_vmag_sqr_down[dn, p]
-                        slack_p = model.slack_expected_interface_pf_p_up[dn, p] + model.slack_expected_interface_pf_p_down[dn, p]
-                        slack_q = model.slack_expected_interface_pf_q_up[dn, p] + model.slack_expected_interface_pf_q_down[dn, p]
-                        obj += PENALTY_SLACK * 1e-2 * (slack_vmag + slack_p + slack_q)
-            else:
-                for p in model.periods:
-                    slack_vmag = model.slack_expected_interface_vmag_sqr_up[p] + model.slack_expected_interface_vmag_sqr_down[p]
-                    slack_p = model.slack_expected_interface_pf_p_up[p] + model.slack_expected_interface_pf_p_down[p]
-                    slack_q = model.slack_expected_interface_pf_q_up[p] + model.slack_expected_interface_pf_q_down[p]
-                    obj += PENALTY_SLACK * 1e-2 * (slack_vmag + slack_p + slack_q)
-
     for e in model.shared_energy_storages:
         slack_s = model.shared_es_s_slack_up[e] + model.shared_es_s_slack_down[e]
         slack_e = model.shared_es_e_slack_up[e] + model.shared_es_e_slack_down[e]
@@ -988,6 +950,38 @@ def _build_model(network, params):
                 for c in model.loads:
                     slack_flex = model.slack_flex_p_balance_up[c, s_m, s_o] + model.slack_flex_p_balance_down[c, s_m, s_o]
                     obj += PENALTY_SLACK * slack_flex
+
+                # ESS slacks
+                for e in model.energy_storages:
+                    for p in model.periods:
+                        slack_comp = model.slack_es_comp[e, s_m, s_o, p]
+                        slack_sch = model.slack_es_sch_up[e, s_m, s_o, p] + model.slack_es_sch_down[e, s_m, s_o, p]
+                        slack_sdch = model.slack_es_sdch_up[e, s_m, s_o, p] + model.slack_es_sdch_down[e, s_m, s_o, p]
+                        slack_soc = model.slack_es_soc_up[e, s_m, s_o, p] + model.slack_es_soc_down[e, s_m, s_o, p]
+                        obj += PENALTY_SLACK * (slack_comp + slack_sch + slack_sdch + slack_soc)
+                    slack_soc_final = model.slack_es_soc_final_up[e, s_m, s_o] + model.slack_es_soc_final_down[e, s_m, s_o]
+                    obj += PENALTY_SLACK * slack_soc_final
+
+                # Shared ESS slacks
+                for e in model.shared_energy_storages:
+                    for p in model.periods:
+                        slack_comp = model.slack_shared_es_comp[e, s_m, s_o, p]
+                        obj += PENALTY_SLACK * slack_comp
+
+                # Interface slacks
+                if network.is_transmission:
+                    for dn in model.active_distribution_networks:
+                        for p in model.periods:
+                            slack_vmag = model.slack_expected_interface_vmag_sqr_up[dn, p] + model.slack_expected_interface_vmag_sqr_down[dn, p]
+                            slack_p = model.slack_expected_interface_pf_p_up[dn, p] + model.slack_expected_interface_pf_p_down[dn, p]
+                            slack_q = model.slack_expected_interface_pf_q_up[dn, p] + model.slack_expected_interface_pf_q_down[dn, p]
+                            obj += PENALTY_SLACK * (slack_vmag + slack_p + slack_q)
+                else:
+                    for p in model.periods:
+                        slack_vmag = model.slack_expected_interface_vmag_sqr_up[p] + model.slack_expected_interface_vmag_sqr_down[p]
+                        slack_p = model.slack_expected_interface_pf_p_up[p] + model.slack_expected_interface_pf_p_down[p]
+                        slack_q = model.slack_expected_interface_pf_q_up[p] + model.slack_expected_interface_pf_q_down[p]
+                        obj += PENALTY_SLACK * (slack_vmag + slack_p + slack_q)
 
     model.objective = pe.Objective(sense=pe.minimize, expr=obj)
 
