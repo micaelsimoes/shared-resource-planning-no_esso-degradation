@@ -412,6 +412,8 @@ def _build_model(network, params):
             model.slack_es_sch_down = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
             model.slack_es_sdch_up = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
             model.slack_es_sdch_down = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+            model.slack_es_soc_up = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+            model.slack_es_soc_down = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
 
     # - Shared Energy Storage devices
     model.shared_es_s_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)
@@ -574,9 +576,15 @@ def _build_model(network, params):
 
                         # State-of-Charge
                         if p > 0:
-                            model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] == model.es_soc[e, s_m, s_o, p - 1] + (sch * eff_charge - sdch / eff_discharge))
+                            if params.slacks:
+                                model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] == model.es_soc[e, s_m, s_o, p - 1] + (sch * eff_charge - sdch / eff_discharge) + model.slack_es_soc_up[e, s_m, s_o, p] - model.slack_es_soc_down[e, s_m, s_o, p])
+                            else:
+                                model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] == model.es_soc[e, s_m, s_o, p - 1] + (sch * eff_charge - sdch / eff_discharge))
                         else:
-                            model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] == soc_init + (sch * eff_charge - sdch / eff_discharge))
+                            if params.slacks:
+                                model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] == soc_init + (sch * eff_charge - sdch / eff_discharge) + model.slack_es_soc_up[e, s_m, s_o, p] - model.slack_es_soc_down[e, s_m, s_o, p])
+                            else:
+                                model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] == soc_init + (sch * eff_charge - sdch / eff_discharge))
 
                         # Charging/discharging complementarity constraints
                         if params.slacks:
@@ -922,7 +930,8 @@ def _build_model(network, params):
                     slack_comp = model.slack_es_comp[e, s_m, s_o, p]
                     slack_sch = model.slack_es_sch_up[e, s_m, s_o, p] + model.slack_es_sch_down[e, s_m, s_o, p]
                     slack_sdch = model.slack_es_sdch_up[e, s_m, s_o, p] + model.slack_es_sdch_down[e, s_m, s_o, p]
-                    obj += PENALTY_SLACK * (slack_comp + slack_sch + slack_sdch)
+                    slack_soc = model.slack_es_soc_up[e, s_m, s_o, p] + model.slack_es_soc_down[e, s_m, s_o, p]
+                    obj += PENALTY_SLACK * (slack_comp + slack_sch + slack_sdch + slack_soc)
 
             # Shared ESS slacks
             for e in model.shared_energy_storages:
