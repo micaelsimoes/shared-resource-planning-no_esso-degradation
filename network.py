@@ -937,7 +937,7 @@ def _build_model(network, params):
                     slack_sdch = model.slack_es_sdch_up[e, s_m, s_o, p] + model.slack_es_sdch_down[e, s_m, s_o, p]
                     slack_soc = model.slack_es_soc_up[e, s_m, s_o, p] + model.slack_es_soc_down[e, s_m, s_o, p]
                     obj += PENALTY_SLACK * (slack_comp + slack_sch + slack_sdch + slack_soc)
-                slack_soc_final = model.slack_es_soc_final_up[e, s_m, s_o, p] + model.slack_es_soc_final_down[e, s_m, s_o, p]
+                slack_soc_final = model.slack_es_soc_final_up[e, s_m, s_o] + model.slack_es_soc_final_down[e, s_m, s_o]
                 obj += PENALTY_SLACK * slack_soc_final
 
             # Shared ESS slacks
