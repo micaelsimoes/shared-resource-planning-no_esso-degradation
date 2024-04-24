@@ -408,6 +408,10 @@ def _build_model(network, params):
                         model.es_qdch[e, s_m, s_o, p].setlb(-energy_storage.s)
         if params.slacks:
             model.slack_es_comp = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+            model.slack_es_sch_up = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+            model.slack_es_sch_down = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+            model.slack_es_sdch_up = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+            model.slack_es_sdch_down = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
 
     # - Shared Energy Storage devices
     model.shared_es_s_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)
@@ -561,8 +565,12 @@ def _build_model(network, params):
                         model.energy_storage_operation.add(qdch <= tan(max_phi) * pdch)
                         model.energy_storage_operation.add(qdch >= tan(min_phi) * pdch)
 
-                        model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
-                        model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
+                        if params.slacks:
+                            model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2 + model.slack_es_sch_up[e, s_m, s_o, p] - model.slack_es_sch_down[e, s_m, s_o, p])
+                            model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2 + model.slack_es_sdch_up[e, s_m, s_o, p] - model.slack_es_sdch_down[e, s_m, s_o, p])
+                        else:
+                            model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
+                            model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
 
                         # State-of-Charge
                         if p > 0:
