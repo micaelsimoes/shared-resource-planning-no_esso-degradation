@@ -67,13 +67,14 @@ def shared_resources_planning(working_directory, specification_filename):
     #planning_problem.run_without_coordination(print_results=True)
     '''
 
+    '''
     transmission_network = planning_problem.transmission_network
     tn_model = transmission_network.build_model()
     results = transmission_network.optimize(tn_model)
     processed_results = transmission_network.process_results(tn_model, results)
     transmission_network.write_optimization_results_to_excel(processed_results)
-
     '''
+
     distribution_networks = planning_problem.distribution_networks
     for node_id in distribution_networks:
         distribution_network = distribution_networks[node_id]
@@ -81,7 +82,6 @@ def shared_resources_planning(working_directory, specification_filename):
         results = distribution_network.optimize(dn_model)
         processed_results = distribution_network.process_results(dn_model, results)
         distribution_network.write_optimization_results_to_excel(processed_results)
-    '''
 
     '''
     candidate_solution = planning_problem.get_initial_candidate_solution()
