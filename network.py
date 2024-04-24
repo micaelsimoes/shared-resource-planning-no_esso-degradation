@@ -570,8 +570,12 @@ def _build_model(network, params):
                         model.energy_storage_operation.add(qdch >= tan(min_phi) * pdch)
 
                         if params.slacks:
-                            model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2 + model.slack_es_sch_up[e, s_m, s_o, p] - model.slack_es_sch_down[e, s_m, s_o, p])
-                            model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2 + model.slack_es_sdch_up[e, s_m, s_o, p] - model.slack_es_sdch_down[e, s_m, s_o, p])
+                            #model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2 + model.slack_es_sch_up[e, s_m, s_o, p] - model.slack_es_sch_down[e, s_m, s_o, p])
+                            #model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2 + model.slack_es_sdch_up[e, s_m, s_o, p] - model.slack_es_sdch_down[e, s_m, s_o, p])
+                            model.energy_storage_operation.add(sch ** 2 <= pch ** 2 + qch ** 2 - model.slack_es_sch_up[e, s_m, s_o, p])
+                            model.energy_storage_operation.add(sch ** 2 >= pch ** 2 + qch ** 2 + model.slack_es_sch_down[e, s_m, s_o, p])
+                            model.energy_storage_operation.add(sdch ** 2 <= pdch ** 2 + qdch ** 2 - model.slack_es_sdch_up[e, s_m, s_o, p])
+                            model.energy_storage_operation.add(sdch ** 2 >= pdch ** 2 + qdch ** 2 + model.slack_es_sdch_down[e, s_m, s_o, p])
                         else:
                             model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
                             model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
