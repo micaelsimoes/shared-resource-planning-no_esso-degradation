@@ -592,7 +592,10 @@ def _build_model(network, params):
                         else:
                             model.energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
 
-                    model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final)
+                    if params.slacks:
+                        model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final + model.slack_es_soc_final_up[e, s_m, s_o] - model.slack_es_soc_final_down[e, s_m, s_o])
+                    else:
+                        model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final)
 
     # - Shared Energy Storage constraints
     model.shared_energy_storage_balance = pe.ConstraintList()
@@ -932,6 +935,8 @@ def _build_model(network, params):
                     slack_sdch = model.slack_es_sdch_up[e, s_m, s_o, p] + model.slack_es_sdch_down[e, s_m, s_o, p]
                     slack_soc = model.slack_es_soc_up[e, s_m, s_o, p] + model.slack_es_soc_down[e, s_m, s_o, p]
                     obj += PENALTY_SLACK * (slack_comp + slack_sch + slack_sdch + slack_soc)
+                slack_soc_final = model.slack_es_soc_final_up[e, s_m, s_o, p] + model.slack_es_soc_final_down[e, s_m, s_o, p]
+                obj += PENALTY_SLACK * slack_soc_final
 
             # Shared ESS slacks
             for e in model.shared_energy_storages:
