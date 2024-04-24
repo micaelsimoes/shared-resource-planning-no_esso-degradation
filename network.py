@@ -947,20 +947,22 @@ def _build_model(network, params):
                         obj += PENALTY_SLACK * (slack_p + slack_q)
 
                 # Flexibility day balance
-                for c in model.loads:
-                    slack_flex = model.slack_flex_p_balance_up[c, s_m, s_o] + model.slack_flex_p_balance_down[c, s_m, s_o]
-                    obj += PENALTY_SLACK * slack_flex
+                if params.fl_reg:
+                    for c in model.loads:
+                        slack_flex = model.slack_flex_p_balance_up[c, s_m, s_o] + model.slack_flex_p_balance_down[c, s_m, s_o]
+                        obj += PENALTY_SLACK * slack_flex
 
                 # ESS slacks
-                for e in model.energy_storages:
-                    for p in model.periods:
-                        slack_comp = model.slack_es_comp[e, s_m, s_o, p]
-                        slack_sch = model.slack_es_sch_up[e, s_m, s_o, p] + model.slack_es_sch_down[e, s_m, s_o, p]
-                        slack_sdch = model.slack_es_sdch_up[e, s_m, s_o, p] + model.slack_es_sdch_down[e, s_m, s_o, p]
-                        slack_soc = model.slack_es_soc_up[e, s_m, s_o, p] + model.slack_es_soc_down[e, s_m, s_o, p]
-                        obj += PENALTY_SLACK * (slack_comp + slack_sch + slack_sdch + slack_soc)
-                    slack_soc_final = model.slack_es_soc_final_up[e, s_m, s_o] + model.slack_es_soc_final_down[e, s_m, s_o]
-                    obj += PENALTY_SLACK * slack_soc_final
+                if params.es_reg:
+                    for e in model.energy_storages:
+                        for p in model.periods:
+                            slack_comp = model.slack_es_comp[e, s_m, s_o, p]
+                            slack_sch = model.slack_es_sch_up[e, s_m, s_o, p] + model.slack_es_sch_down[e, s_m, s_o, p]
+                            slack_sdch = model.slack_es_sdch_up[e, s_m, s_o, p] + model.slack_es_sdch_down[e, s_m, s_o, p]
+                            slack_soc = model.slack_es_soc_up[e, s_m, s_o, p] + model.slack_es_soc_down[e, s_m, s_o, p]
+                            obj += PENALTY_SLACK * (slack_comp + slack_sch + slack_sdch + slack_soc)
+                        slack_soc_final = model.slack_es_soc_final_up[e, s_m, s_o] + model.slack_es_soc_final_down[e, s_m, s_o]
+                        obj += PENALTY_SLACK * slack_soc_final
 
                 # Shared ESS slacks
                 for e in model.shared_energy_storages:
@@ -1492,26 +1494,28 @@ def _process_results(network, model, params, results=dict()):
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_down'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['up'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['down'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_up'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_down'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_up'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_down'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['comp'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['sch_up'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['sch_down'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['sdch_up'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['sdch_down'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['soc_up'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['soc_down'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['soc_final_up'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['soc_final_down'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['comp'] = dict()
+            if params.fl_reg:
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['up'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['down'] = dict()
+            if params.es_reg:
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['comp'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['sch_up'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['sch_down'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['sdch_up'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['sdch_down'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['soc_up'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['soc_down'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['soc_final_up'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['soc_final_down'] = dict()
 
             # Voltage
             for i in model.nodes:
@@ -1701,16 +1705,6 @@ def _process_results(network, model, params, results=dict()):
                     slack_iij_sqr = pe.value(model.slack_iij_sqr[b, s_m, s_o, p])
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][branch_id].append(slack_iij_sqr)
 
-            # Flexibility slacks
-            for c in model.loads:
-                load_id = network.loads[c].load_id
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['up'][load_id] = [0.00 for _ in range(network.num_instants)]
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['down'][load_id] = [0.00 for _ in range(network.num_instants)]
-                slack_flex_up = pe.value(model.flex_p_up[c, s_m, s_o, p])
-                slack_flex_down = pe.value(model.flex_p_down[c, s_m, s_o, p])
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['up'][load_id][network.num_instants-1] = slack_flex_up
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['down'][load_id][network.num_instants-1] = slack_flex_down
-
             # Node balance slacks
             for i in model.nodes:
                 node_id = network.nodes[i].bus_i
@@ -1728,38 +1722,6 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_up'][node_id].append(slack_q_up)
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_down'][node_id].append(slack_q_down)
 
-            # ESS slacks
-            for e in model.energy_storages:
-                es_id = network.energy_storages[e].es_id
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['comp'][es_id] = []
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['sch_up'][es_id] = []
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['sch_down'][es_id] = []
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['sdch_up'][es_id] = []
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['sdch_down'][es_id] = []
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['soc_up'][es_id] = []
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['soc_down'][es_id] = []
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['soc_final_up'][es_id] = [0.00 for _ in range(network.num_instants)]
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['soc_final_down'][es_id] = [0.00 for _ in range(network.num_instants)]
-                for p in model.periods:
-                    slack_comp = pe.value(model.slack_es_comp[e, s_m, s_o, p])
-                    slack_sch_up = pe.value(model.slack_es_sch_up[e, s_m, s_o, p])
-                    slack_sch_down = pe.value(model.slack_es_sch_down[e, s_m, s_o, p])
-                    slack_sdch_up = pe.value(model.slack_es_sdch_up[e, s_m, s_o, p])
-                    slack_sdch_down = pe.value(model.slack_es_sdch_down[e, s_m, s_o, p])
-                    slack_soc_up = pe.value(model.slack_es_soc_up[e, s_m, s_o, p])
-                    slack_soc_down = pe.value(model.slack_es_soc_down[e, s_m, s_o, p])
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['comp'][es_id].append(slack_comp)
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['sch_up'][es_id].append(slack_sch_up)
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['sch_down'][es_id].append(slack_sch_down)
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['sdch_up'][es_id].append(slack_sdch_up)
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['sdch_down'][es_id].append(slack_sdch_down)
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['soc_up'][es_id].append(slack_soc_up)
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['soc_down'][es_id].append(slack_soc_down)
-                slack_soc_final_up = pe.value(model.slack_es_soc_final_up[e, s_m, s_o])
-                slack_soc_final_down = pe.value(model.slack_es_soc_final_down[e, s_m, s_o])
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['soc_final_up'][es_id][network.num_instants-1] = slack_soc_final_up
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['soc_final_down'][es_id][network.num_instants-1] = slack_soc_final_down
-
             # Shares ESS slacks
             for e in model.shared_energy_storages:
                 node_id = network.shared_energy_storages[e].bus
@@ -1767,6 +1729,50 @@ def _process_results(network, model, params, results=dict()):
                 for p in model.periods:
                     slack_comp = pe.value(model.slack_shared_es_comp[e, s_m, s_o, p])
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['comp'][node_id].append(slack_comp)
+
+            # Flexibility slacks
+            if params.fl_reg:
+                for c in model.loads:
+                    load_id = network.loads[c].load_id
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['up'][load_id] = [0.00 for _ in range(network.num_instants)]
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['down'][load_id] = [0.00 for _ in range(network.num_instants)]
+                    slack_flex_up = pe.value(model.flex_p_up[c, s_m, s_o, p])
+                    slack_flex_down = pe.value(model.flex_p_down[c, s_m, s_o, p])
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['up'][load_id][network.num_instants-1] = slack_flex_up
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['down'][load_id][network.num_instants-1] = slack_flex_down
+
+            # ESS slacks
+            if params.es_reg:
+                for e in model.energy_storages:
+                    es_id = network.energy_storages[e].es_id
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['comp'][es_id] = []
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['sch_up'][es_id] = []
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['sch_down'][es_id] = []
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['sdch_up'][es_id] = []
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['sdch_down'][es_id] = []
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['soc_up'][es_id] = []
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['soc_down'][es_id] = []
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['soc_final_up'][es_id] = [0.00 for _ in range(network.num_instants)]
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['soc_final_down'][es_id] = [0.00 for _ in range(network.num_instants)]
+                    for p in model.periods:
+                        slack_comp = pe.value(model.slack_es_comp[e, s_m, s_o, p])
+                        slack_sch_up = pe.value(model.slack_es_sch_up[e, s_m, s_o, p])
+                        slack_sch_down = pe.value(model.slack_es_sch_down[e, s_m, s_o, p])
+                        slack_sdch_up = pe.value(model.slack_es_sdch_up[e, s_m, s_o, p])
+                        slack_sdch_down = pe.value(model.slack_es_sdch_down[e, s_m, s_o, p])
+                        slack_soc_up = pe.value(model.slack_es_soc_up[e, s_m, s_o, p])
+                        slack_soc_down = pe.value(model.slack_es_soc_down[e, s_m, s_o, p])
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['comp'][es_id].append(slack_comp)
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['sch_up'][es_id].append(slack_sch_up)
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['sch_down'][es_id].append(slack_sch_down)
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['sdch_up'][es_id].append(slack_sdch_up)
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['sdch_down'][es_id].append(slack_sdch_down)
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['soc_up'][es_id].append(slack_soc_up)
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['soc_down'][es_id].append(slack_soc_down)
+                    slack_soc_final_up = pe.value(model.slack_es_soc_final_up[e, s_m, s_o])
+                    slack_soc_final_down = pe.value(model.slack_es_soc_final_down[e, s_m, s_o])
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['soc_final_up'][es_id][network.num_instants-1] = slack_soc_final_up
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storage']['soc_final_down'][es_id][network.num_instants-1] = slack_soc_final_down
 
     # Relaxation slacks
     processed_results['relaxation_slacks'] = dict()
@@ -1912,10 +1918,10 @@ def _compute_objective_function_value(network, model, params):
 
                 # Load curtailment
                 if params.l_curt:
-                    for i in model.nodes:
+                    for c in model.loads:
                         for p in model.periods:
-                            pc_curt = pe.value(model.pc_curt[i, s_m, s_o, p])
-                            qc_curt = pe.value(model.qc_curt[i, s_m, s_o, p])
+                            pc_curt = pe.value(model.pc_curt[c, s_m, s_o, p])
+                            qc_curt = pe.value(model.qc_curt[c, s_m, s_o, p])
                             obj_scenario += (COST_CONSUMPTION_CURTAILMENT * network.baseMVA) * pc_curt
                             obj_scenario += (COST_CONSUMPTION_CURTAILMENT * network.baseMVA) * qc_curt
 
@@ -2085,9 +2091,9 @@ def _compute_load_curtailment(network, model, params):
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
                 load_curtailment_scenario = 0.0
-                for i in model.nodes:
+                for c in model.loads:
                     for p in model.periods:
-                        load_curtailment_scenario += pe.value(model.pc_curt[i, s_m, s_o, p]) * network.baseMVA
+                        load_curtailment_scenario += pe.value(model.pc_curt[c, s_m, s_o, p]) * network.baseMVA
 
                 load_curtailment += load_curtailment_scenario * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
 
