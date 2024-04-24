@@ -920,7 +920,9 @@ def _build_model(network, params):
             for e in model.energy_storages:
                 for p in model.periods:
                     slack_comp = model.slack_es_comp[e, s_m, s_o, p]
-                    obj += PENALTY_SLACK * slack_comp
+                    slack_sch = model.slack_es_sch_up[e, s_m, s_o, p] + model.slack_es_sch_down[e, s_m, s_o, p]
+                    slack_sdch = model.slack_es_sdch_up[e, s_m, s_o, p] + model.slack_es_sdch_down[e, s_m, s_o, p]
+                    obj += PENALTY_SLACK * (slack_comp + slack_sch + slack_sdch)
 
             # Shared ESS slacks
             for e in model.shared_energy_storages:
