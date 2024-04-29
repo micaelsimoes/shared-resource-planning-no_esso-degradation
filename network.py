@@ -1537,6 +1537,10 @@ def _process_results(network, model, params, results=dict()):
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_down'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['comp'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['soc_up'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['soc_down'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['soc_final_up'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['soc_final_down'] = dict()
             if params.fl_reg:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex'] = dict()
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['up'] = dict()
@@ -1771,6 +1775,8 @@ def _process_results(network, model, params, results=dict()):
                     slack_soc_up = pe.value(model.slack_shared_es_soc_up[e, s_m, s_o, p])
                     slack_soc_down = pe.value(model.slack_shared_es_soc_down[e, s_m, s_o, p])
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['comp'][node_id].append(slack_comp)
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['soc_up'][node_id].append(slack_soc_up)
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['soc_down'][node_id].append(slack_soc_down)
                 slack_soc_final_up = pe.value(model.slack_shared_es_soc_final_up[e, s_m, s_o])
                 slack_soc_final_down = pe.value(model.slack_shared_es_soc_final_down[e, s_m, s_o])
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['soc_final_up'][node_id][network.num_instants-1] = slack_soc_final_up
