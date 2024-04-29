@@ -1762,9 +1762,19 @@ def _process_results(network, model, params, results=dict()):
             for e in model.shared_energy_storages:
                 node_id = network.shared_energy_storages[e].bus
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['comp'][node_id] = []
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['soc_up'][node_id] = []
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['soc_down'][node_id] = []
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['soc_final_up'][node_id] = [0.00 for _ in range(network.num_instants)]
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['soc_final_down'][node_id] = [0.00 for _ in range(network.num_instants)]
                 for p in model.periods:
                     slack_comp = pe.value(model.slack_shared_es_comp[e, s_m, s_o, p])
+                    slack_soc_up = pe.value(model.slack_shared_es_soc_up[e, s_m, s_o, p])
+                    slack_soc_down = pe.value(model.slack_shared_es_soc_down[e, s_m, s_o, p])
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['comp'][node_id].append(slack_comp)
+                slack_soc_final_up = pe.value(model.slack_shared_es_soc_final_up[e, s_m, s_o])
+                slack_soc_final_down = pe.value(model.slack_shared_es_soc_final_down[e, s_m, s_o])
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['soc_final_up'][node_id][network.num_instants-1] = slack_soc_final_up
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['soc_final_down'][node_id][network.num_instants-1] = slack_soc_final_down
 
             # Flexibility slacks
             if params.fl_reg:
@@ -1841,6 +1851,8 @@ def _process_results(network, model, params, results=dict()):
     processed_results['relaxation_slacks']['interface']['pf_p_down'] = dict()
     processed_results['relaxation_slacks']['interface']['pf_q_up'] = dict()
     processed_results['relaxation_slacks']['interface']['pf_q_down'] = dict()
+    processed_results['relaxation_slacks']['interface']['ess_p_up'] = dict()
+    processed_results['relaxation_slacks']['interface']['ess_p_down'] = dict()
     if network.is_transmission:
         for dn in model.active_distribution_networks:
             node_id = network.active_distribution_network_nodes[dn]
@@ -1863,6 +1875,15 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['relaxation_slacks']['interface']['pf_p_down'][node_id].append(pf_p_down)
                 processed_results['relaxation_slacks']['interface']['pf_q_up'][node_id].append(pf_q_up)
                 processed_results['relaxation_slacks']['interface']['pf_q_down'][node_id].append(pf_q_down)
+        for e in model.shared_energy_storages:
+            node_id = network.shared_energy_storages[e].bus
+            processed_results['relaxation_slacks']['interface']['ess_p_up'][node_id] = []
+            processed_results['relaxation_slacks']['interface']['ess_p_down'][node_id] = []
+            for p in model.periods:
+                p_up = pe.value(model.slack_expected_shared_ess_p_up[e, p])
+                p_down = pe.value(model.slack_expected_shared_ess_p_down[e, p])
+                processed_results['relaxation_slacks']['interface']['ess_p_up'][node_id].append(p_up)
+                processed_results['relaxation_slacks']['interface']['ess_p_down'][node_id].append(p_down)
     else:
         node_id = network.get_reference_node_id()
         processed_results['relaxation_slacks']['interface']['vmag_up'][node_id] = []
@@ -1871,6 +1892,9 @@ def _process_results(network, model, params, results=dict()):
         processed_results['relaxation_slacks']['interface']['pf_p_down'][node_id] = []
         processed_results['relaxation_slacks']['interface']['pf_q_up'][node_id] = []
         processed_results['relaxation_slacks']['interface']['pf_q_down'][node_id] = []
+        processed_results['relaxation_slacks']['interface']['pf_q_down'][node_id] = []
+        processed_results['relaxation_slacks']['interface']['ess_p_up'][node_id] = []
+        processed_results['relaxation_slacks']['interface']['ess_p_down'][node_id] = []
         for p in model.periods:
             vmag_up = pe.value(model.slack_expected_interface_vmag_sqr_up[p])
             vmag_down = pe.value(model.slack_expected_interface_vmag_sqr_down[p])
@@ -1878,12 +1902,16 @@ def _process_results(network, model, params, results=dict()):
             pf_p_down = pe.value(model.slack_expected_interface_pf_p_down[p])
             pf_q_up = pe.value(model.slack_expected_interface_pf_q_up[p])
             pf_q_down = pe.value(model.slack_expected_interface_pf_q_down[p])
+            ess_p_up = pe.value(model.slack_expected_shared_ess_p_up[p])
+            ess_p_down = pe.value(model.slack_expected_shared_ess_p_down[p])
             processed_results['relaxation_slacks']['interface']['vmag_up'][node_id].append(vmag_up)
             processed_results['relaxation_slacks']['interface']['vmag_down'][node_id].append(vmag_down)
             processed_results['relaxation_slacks']['interface']['pf_p_up'][node_id].append(pf_p_up)
             processed_results['relaxation_slacks']['interface']['pf_p_down'][node_id].append(pf_p_down)
             processed_results['relaxation_slacks']['interface']['pf_q_up'][node_id].append(pf_q_up)
             processed_results['relaxation_slacks']['interface']['pf_q_down'][node_id].append(pf_q_down)
+            processed_results['relaxation_slacks']['interface']['ess_p_up'][node_id].append(ess_p_up)
+            processed_results['relaxation_slacks']['interface']['ess_p_down'][node_id].append(ess_p_down)
 
     return processed_results
 
