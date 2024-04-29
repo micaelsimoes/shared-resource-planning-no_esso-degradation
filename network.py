@@ -926,10 +926,10 @@ def _build_model(network, params):
 
                 # Consumption curtailment
                 if params.l_curt:
-                    for i in model.nodes:
+                    for c in model.loads:
                         for p in model.periods:
-                            pc_curt = model.pc_curt[i, s_m, s_o, p]
-                            qc_curt = model.qc_curt[i, s_m, s_o, p]
+                            pc_curt = model.pc_curt[c, s_m, s_o, p]
+                            qc_curt = model.qc_curt[c, s_m, s_o, p]
                             obj_scenario += PENALTY_LOAD_CURTAILMENT * (pc_curt + qc_curt)
 
                 obj += obj_scenario * omega_market * omega_oper
@@ -2013,10 +2013,10 @@ def _compute_objective_function_value(network, model, params):
 
                 # Consumption curtailment
                 if params.l_curt:
-                    for i in model.nodes:
+                    for c in model.loads:
                         for p in model.periods:
-                            pc_curt = pe.value(model.pc_curt[i, s_m, s_o, p])
-                            qc_curt = pe.value(model.qc_curt[i, s_m, s_o, p])
+                            pc_curt = pe.value(model.pc_curt[c, s_m, s_o, p])
+                            qc_curt = pe.value(model.qc_curt[c, s_m, s_o, p])
                             obj_scenario += PENALTY_LOAD_CURTAILMENT * (pc_curt + qc_curt)
 
                 obj += obj_scenario * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
