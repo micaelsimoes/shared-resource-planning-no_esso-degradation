@@ -439,6 +439,10 @@ def _build_model(network, params):
                     model.shared_es_soc[e, s_m, s_o, p] = shared_energy_storage.e * ENERGY_STORAGE_RELATIVE_INIT_SOC
     if params.slacks:
         model.slack_shared_es_comp = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_shared_es_soc_up = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_shared_es_soc_down = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_shared_es_soc_final_up = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_shared_es_soc_final_down = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
 
     # - Expected interface power flow
     if network.is_transmission:
@@ -634,9 +638,15 @@ def _build_model(network, params):
 
                     # State-of-Charge
                     if p > 0:
-                        model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == model.shared_es_soc[e, s_m, s_o, p - 1] + (pch * eff_charge - pdch / eff_discharge))
+                        if params.slacks:
+                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == model.shared_es_soc[e, s_m, s_o, p - 1] + (pch * eff_charge - pdch / eff_discharge) + model.slack_shared_es_soc_up[e, s_m, s_o, p] - model.slack_shared_es_soc_down[e, s_m, s_o, p])
+                        else:
+                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == model.shared_es_soc[e, s_m, s_o, p - 1] + (pch * eff_charge - pdch / eff_discharge))
                     else:
-                        model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == soc_init + (pch * eff_charge - pdch / eff_discharge))
+                        if params.slacks:
+                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == soc_init + (pch * eff_charge - pdch / eff_discharge) + model.slack_shared_es_soc_up[e, s_m, s_o, p] - model.slack_shared_es_soc_down[e, s_m, s_o, p])
+                        else:
+                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == soc_init + (pch * eff_charge - pdch / eff_discharge))
 
                     # Charging/discharging complementarity constraints
                     if params.slacks:
@@ -645,7 +655,10 @@ def _build_model(network, params):
                         model.shared_energy_storage_ch_dch_exclusion.add(pch * pdch == 0.00)
 
                 # Day balance
-                model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final)
+                if params.slacks:
+                    model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final + model.slack_shared_es_soc_final_up[e, s_m, s_o] - model.slack_shared_es_soc_final_down[e, s_m, s_o])
+                else:
+                    model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final)
 
         model.shared_energy_storage_s_sensitivities.add(model.shared_es_s_rated[e] == model.shared_es_s_rated_fixed[e] + model.shared_es_s_slack_up[e] - model.shared_es_s_slack_down[e])
         model.shared_energy_storage_e_sensitivities.add(model.shared_es_e_rated[e] == model.shared_es_e_rated_fixed[e] + model.shared_es_e_slack_up[e] - model.shared_es_e_slack_down[e])
@@ -968,7 +981,10 @@ def _build_model(network, params):
                 for e in model.shared_energy_storages:
                     for p in model.periods:
                         slack_comp = model.slack_shared_es_comp[e, s_m, s_o, p]
-                        obj += PENALTY_SLACK * slack_comp
+                        slack_soc = model.slack_shared_es_soc_up[e, s_m, s_o, p] + model.slack_shared_es_soc_down[e, s_m, s_o, p]
+                        obj += PENALTY_SLACK * (slack_comp + slack_soc)
+                    slack_soc_final = model.slack_shared_es_soc_final_up[e, s_m, s_o] + model.slack_shared_es_soc_final_down[e, s_m, s_o]
+                    obj += PENALTY_SLACK * slack_soc_final
 
                 # Interface slacks
                 if network.is_transmission:
