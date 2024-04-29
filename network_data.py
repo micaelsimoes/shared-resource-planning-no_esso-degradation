@@ -1971,6 +1971,28 @@ def _write_relaxation_slacks_interface_results_to_excel(network_planning, workbo
                     sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
                 row_idx = row_idx + 1
 
+                # ess_p, up
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year)
+                sheet.cell(row=row_idx, column=3).value = day
+                sheet.cell(row=row_idx, column=4).value = 'ess_p, up'
+                for p in range(network_planning.num_instants):
+                    ess_p_up = results[year][day]['relaxation_slacks']['interface']['ess_p_up'][node_id][p]
+                    sheet.cell(row=row_idx, column=p + 5).value = ess_p_up
+                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # ess_p, down
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year)
+                sheet.cell(row=row_idx, column=3).value = day
+                sheet.cell(row=row_idx, column=4).value = 'ess_p, down'
+                for p in range(network_planning.num_instants):
+                    ess_p_down = results[year][day]['relaxation_slacks']['interface']['ess_p_down'][node_id][p]
+                    sheet.cell(row=row_idx, column=p + 5).value = ess_p_down
+                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
+                row_idx = row_idx + 1
+
 
 def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbook, results):
 
@@ -2142,6 +2164,58 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
                         for p in range(network_planning.num_instants):
                             comp = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['comp'][node_id][p]
                             sheet.cell(row=row_idx, column=p + 7).value = comp
+                            sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
+                        row_idx = row_idx + 1
+
+                        # - soc_up
+                        sheet.cell(row=row_idx, column=1).value = node_id
+                        sheet.cell(row=row_idx, column=2).value = int(year)
+                        sheet.cell(row=row_idx, column=3).value = day
+                        sheet.cell(row=row_idx, column=4).value = 'Shared Energy Storage, soc_up'
+                        sheet.cell(row=row_idx, column=5).value = s_m
+                        sheet.cell(row=row_idx, column=6).value = s_o
+                        for p in range(network_planning.num_instants):
+                            soc_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['soc_up'][node_id][p]
+                            sheet.cell(row=row_idx, column=p + 7).value = soc_up
+                            sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
+                        row_idx = row_idx + 1
+
+                        # - soc_down
+                        sheet.cell(row=row_idx, column=1).value = node_id
+                        sheet.cell(row=row_idx, column=2).value = int(year)
+                        sheet.cell(row=row_idx, column=3).value = day
+                        sheet.cell(row=row_idx, column=4).value = 'Shared Energy Storage, soc_down'
+                        sheet.cell(row=row_idx, column=5).value = s_m
+                        sheet.cell(row=row_idx, column=6).value = s_o
+                        for p in range(network_planning.num_instants):
+                            soc_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['soc_down'][node_id][p]
+                            sheet.cell(row=row_idx, column=p + 7).value = soc_down
+                            sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
+                        row_idx = row_idx + 1
+
+                        # - soc_final_up
+                        sheet.cell(row=row_idx, column=1).value = node_id
+                        sheet.cell(row=row_idx, column=2).value = int(year)
+                        sheet.cell(row=row_idx, column=3).value = day
+                        sheet.cell(row=row_idx, column=4).value = 'Shared Energy Storage, soc_final_up'
+                        sheet.cell(row=row_idx, column=5).value = s_m
+                        sheet.cell(row=row_idx, column=6).value = s_o
+                        for p in range(network_planning.num_instants):
+                            soc_final_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['soc_final_up'][node_id][p]
+                            sheet.cell(row=row_idx, column=p + 7).value = soc_final_up
+                            sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
+                        row_idx = row_idx + 1
+
+                        # - soc_final_down
+                        sheet.cell(row=row_idx, column=1).value = node_id
+                        sheet.cell(row=row_idx, column=2).value = int(year)
+                        sheet.cell(row=row_idx, column=3).value = day
+                        sheet.cell(row=row_idx, column=4).value = 'Shared Energy Storage, soc_final_down'
+                        sheet.cell(row=row_idx, column=5).value = s_m
+                        sheet.cell(row=row_idx, column=6).value = s_o
+                        for p in range(network_planning.num_instants):
+                            soc_final_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storage']['soc_final_down'][node_id][p]
+                            sheet.cell(row=row_idx, column=p + 7).value = soc_final_down
                             sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                         row_idx = row_idx + 1
 
