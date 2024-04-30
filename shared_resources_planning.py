@@ -804,7 +804,7 @@ def update_transmission_model_to_admm(transmission_network, model, distribution_
                             model[year][day].qc[node_idx, s_m, s_o, p].setub(None)
                             model[year][day].qc[node_idx, s_m, s_o, p].setlb(None)
 
-                            if transmission_network.params.slack_voltage_limits:
+                            if transmission_network.params.slacks:
                                 model[year][day].slack_e_up[node_idx, s_m, s_o, p].fix(0.00)
                                 model[year][day].slack_e_down[node_idx, s_m, s_o, p].fix(0.00)
                                 model[year][day].slack_f_up[node_idx, s_m, s_o, p].fix(0.00)
@@ -900,7 +900,7 @@ def update_distribution_models_to_admm(distribution_networks, models, params):
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].fixed = False
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setub(None)
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setlb(None)
-                            if distribution_network.params.slack_voltage_limits:
+                            if distribution_network.params.slacks:
                                 dso_model[year][day].slack_e_up[ref_node_idx, s_m, s_o, p].fix(0.00)
                                 dso_model[year][day].slack_e_down[ref_node_idx, s_m, s_o, p].fix(0.00)
                                 dso_model[year][day].slack_f_up[ref_node_idx, s_m, s_o, p].fix(0.00)
@@ -913,7 +913,7 @@ def update_distribution_models_to_admm(distribution_networks, models, params):
                             dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].setub(None)
                             dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].setlb(None)
 
-                if distribution_network.params.slack_line_limits:
+                if distribution_network.params.slacks:
                     for b in dso_model[year][day].branches:
                         for s_m in dso_model[year][day].scenarios_market:
                             for s_o in dso_model[year][day].scenarios_operation:
@@ -1189,8 +1189,7 @@ def _run_operational_planning_without_coordination(planning_problem):
     transmission_network.params.transf_reg = True
     transmission_network.params.rg_curt = True
     transmission_network.params.l_curt = True
-    transmission_network.params.slack_line_limits = True
-    transmission_network.params.slack_voltage_limits = True
+    transmission_network.params.slacks = True
     for node_id in distribution_networks:
         distribution_network = distribution_networks[node_id]
         distribution_network.params.fl_reg = False
@@ -1198,8 +1197,7 @@ def _run_operational_planning_without_coordination(planning_problem):
         distribution_network.params.transf_reg = True
         distribution_network.params.rg_curt = True
         distribution_network.params.l_curt = True
-        distribution_network.params.slack_line_limits = True
-        distribution_network.params.slack_voltage_limits = True
+        distribution_network.params.slacks = True
 
     # Shared ESS candidate solution (no shared ESS)
     candidate_solution = dict()
@@ -3738,7 +3736,7 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
                 for s_o in results[year][day]['scenarios'][s_m]:
 
                     # Voltage slacks
-                    if params.slack_voltage_limits:
+                    if params.slacks:
 
                         for node_id in results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_up']:
 
@@ -3803,7 +3801,7 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
                             row_idx = row_idx + 1
 
                     # Branch current slacks
-                    if params.slack_line_limits:
+                    if params.slacks:
 
                         # Current
                         for node_id in results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr']:
