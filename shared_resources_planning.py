@@ -3069,21 +3069,21 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
         for day in results[year]:
 
             expected_values = {'pij': {}, 'pji': {}, 'qij': {}, 'qji': {}, 'sij': {}, 'sji': {}}
-            for k in range(len(network[year][day].branches)):
-                expected_values['pij'][k] = [0.0 for _ in range(network[year][day].num_instants)]
-                expected_values['pji'][k] = [0.0 for _ in range(network[year][day].num_instants)]
-                expected_values['qij'][k] = [0.0 for _ in range(network[year][day].num_instants)]
-                expected_values['qji'][k] = [0.0 for _ in range(network[year][day].num_instants)]
-                expected_values['sij'][k] = [0.0 for _ in range(network[year][day].num_instants)]
-                expected_values['sji'][k] = [0.0 for _ in range(network[year][day].num_instants)]
+            for branch in network[year][day].branches:
+                expected_values['pij'][branch.branch_id] = [0.0 for _ in range(network[year][day].num_instants)]
+                expected_values['pji'][branch.branch_id] = [0.0 for _ in range(network[year][day].num_instants)]
+                expected_values['qij'][branch.branch_id] = [0.0 for _ in range(network[year][day].num_instants)]
+                expected_values['qji'][branch.branch_id] = [0.0 for _ in range(network[year][day].num_instants)]
+                expected_values['sij'][branch.branch_id] = [0.0 for _ in range(network[year][day].num_instants)]
+                expected_values['sji'][branch.branch_id] = [0.0 for _ in range(network[year][day].num_instants)]
 
             for s_m in results[year][day]['scenarios']:
                 omega_m = network[year][day].prob_market_scenarios[s_m]
                 for s_o in results[year][day]['scenarios'][s_m]:
                     omega_s = network[year][day].prob_operation_scenarios[s_o]
-                    for k in range(len(network[year][day].branches)):
+                    for branch in network[year][day].branches:
 
-                        branch = network[year][day].branches[k]
+                        branch_id = branch.branch_id
                         rating = branch.rate
                         if rating == 0.0:
                             rating = BRANCH_UNKNOWN_RATING
@@ -3099,10 +3099,10 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
                         sheet.cell(row=row_idx, column=8).value = s_m
                         sheet.cell(row=row_idx, column=9).value = s_o
                         for p in range(network[year][day].num_instants):
-                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['pij'][k][p]
+                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['pij'][branch_id][p]
                             sheet.cell(row=row_idx, column=p + 10).value = value
                             sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
-                            expected_values['pij'][k][p] += value * omega_m * omega_s
+                            expected_values['pij'][branch_id][p] += value * omega_m * omega_s
                         row_idx = row_idx + 1
 
                         # Pij, [%]
@@ -3116,7 +3116,7 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
                         sheet.cell(row=row_idx, column=8).value = s_m
                         sheet.cell(row=row_idx, column=9).value = s_o
                         for p in range(network[year][day].num_instants):
-                            value = abs(results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['pij'][k][p] / rating)
+                            value = abs(results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['pij'][branch_id][p] / rating)
                             sheet.cell(row=row_idx, column=p + 10).value = value
                             sheet.cell(row=row_idx, column=p + 10).number_format = perc_style
                         row_idx = row_idx + 1
@@ -3132,10 +3132,10 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
                         sheet.cell(row=row_idx, column=8).value = s_m
                         sheet.cell(row=row_idx, column=9).value = s_o
                         for p in range(network[year][day].num_instants):
-                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['pji'][k][p]
+                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['pji'][branch_id][p]
                             sheet.cell(row=row_idx, column=p + 10).value = value
                             sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
-                            expected_values['pji'][k][p] += value * omega_m * omega_s
+                            expected_values['pji'][branch_id][p] += value * omega_m * omega_s
                         row_idx = row_idx + 1
 
                         # Pji, [%]
@@ -3149,7 +3149,7 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
                         sheet.cell(row=row_idx, column=8).value = s_m
                         sheet.cell(row=row_idx, column=9).value = s_o
                         for p in range(network[year][day].num_instants):
-                            value = abs(results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['pji'][k][p] / rating)
+                            value = abs(results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['pji'][branch_id][p] / rating)
                             sheet.cell(row=row_idx, column=p + 10).value = value
                             sheet.cell(row=row_idx, column=p + 10).number_format = perc_style
                         row_idx = row_idx + 1
@@ -3165,10 +3165,10 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
                         sheet.cell(row=row_idx, column=8).value = s_m
                         sheet.cell(row=row_idx, column=9).value = s_o
                         for p in range(network[year][day].num_instants):
-                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['qij'][k][p]
+                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['qij'][branch_id][p]
                             sheet.cell(row=row_idx, column=p + 10).value = value
                             sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
-                            expected_values['qij'][k][p] += value * omega_m * omega_s
+                            expected_values['qij'][branch_id][p] += value * omega_m * omega_s
                         row_idx = row_idx + 1
 
                         # Qij, [%]
@@ -3182,7 +3182,7 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
                         sheet.cell(row=row_idx, column=8).value = s_m
                         sheet.cell(row=row_idx, column=9).value = s_o
                         for p in range(network[year][day].num_instants):
-                            value = abs(results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['qij'][k][p] / rating)
+                            value = abs(results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['qij'][branch_id][p] / rating)
                             sheet.cell(row=row_idx, column=p + 10).value = value
                             sheet.cell(row=row_idx, column=p + 10).number_format = perc_style
                         row_idx = row_idx + 1
@@ -3198,10 +3198,10 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
                         sheet.cell(row=row_idx, column=8).value = s_m
                         sheet.cell(row=row_idx, column=9).value = s_o
                         for p in range(network[year][day].num_instants):
-                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['qji'][k][p]
+                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['qji'][branch_id][p]
                             sheet.cell(row=row_idx, column=p + 10).value = value
                             sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
-                            expected_values['qji'][k][p] += value * omega_m * omega_s
+                            expected_values['qji'][branch_id][p] += value * omega_m * omega_s
                         row_idx = row_idx + 1
 
                         # Qji, [%]
@@ -3215,7 +3215,7 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
                         sheet.cell(row=row_idx, column=8).value = s_m
                         sheet.cell(row=row_idx, column=9).value = s_o
                         for p in range(network[year][day].num_instants):
-                            value = abs(results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['qji'][k][p] / rating)
+                            value = abs(results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['qji'][branch_id][p] / rating)
                             sheet.cell(row=row_idx, column=p + 10).value = value
                             sheet.cell(row=row_idx, column=p + 10).number_format = perc_style
                         row_idx = row_idx + 1
@@ -3231,10 +3231,10 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
                         sheet.cell(row=row_idx, column=8).value = s_m
                         sheet.cell(row=row_idx, column=9).value = s_o
                         for p in range(network[year][day].num_instants):
-                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['sij'][k][p]
+                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['sij'][branch_id][p]
                             sheet.cell(row=row_idx, column=p + 10).value = value
                             sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
-                            expected_values['sij'][k][p] += value * omega_m * omega_s
+                            expected_values['sij'][branch_id][p] += value * omega_m * omega_s
                         row_idx = row_idx + 1
 
                         # Sij, [%]
@@ -3248,7 +3248,7 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
                         sheet.cell(row=row_idx, column=8).value = s_m
                         sheet.cell(row=row_idx, column=9).value = s_o
                         for p in range(network[year][day].num_instants):
-                            value = abs(results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['sij'][k][p] / rating)
+                            value = abs(results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['sij'][branch_id][p] / rating)
                             sheet.cell(row=row_idx, column=p + 10).value = value
                             sheet.cell(row=row_idx, column=p + 10).number_format = perc_style
                         row_idx = row_idx + 1
@@ -3264,10 +3264,10 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
                         sheet.cell(row=row_idx, column=8).value = s_m
                         sheet.cell(row=row_idx, column=9).value = s_o
                         for p in range(network[year][day].num_instants):
-                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][k][p]
+                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][branch_id][p]
                             sheet.cell(row=row_idx, column=p + 10).value = value
                             sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
-                            expected_values['sji'][k][p] += value * omega_m * omega_s
+                            expected_values['sji'][branch_id][p] += value * omega_m * omega_s
                         row_idx = row_idx + 1
 
                         # Sji, [%]
@@ -3281,14 +3281,14 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
                         sheet.cell(row=row_idx, column=8).value = s_m
                         sheet.cell(row=row_idx, column=9).value = s_o
                         for p in range(network[year][day].num_instants):
-                            value = abs(results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][k][p] / rating)
+                            value = abs(results[year][day]['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][branch_id][p] / rating)
                             sheet.cell(row=row_idx, column=p + 10).value = value
                             sheet.cell(row=row_idx, column=p + 10).number_format = perc_style
                         row_idx = row_idx + 1
 
-            for k in range(len(network[year][day].branches)):
+            for branch in network[year][day].branches:
 
-                branch = network[year][day].branches[k]
+                branch_id
                 rating = branch.rate
                 if rating == 0.0:
                     rating = BRANCH_UNKNOWN_RATING
@@ -3304,7 +3304,7 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
                 sheet.cell(row=row_idx, column=8).value = 'Expected'
                 sheet.cell(row=row_idx, column=9).value = '-'
                 for p in range(network[year][day].num_instants):
-                    sheet.cell(row=row_idx, column=p + 10).value = expected_values['pij'][k][p]
+                    sheet.cell(row=row_idx, column=p + 10).value = expected_values['pij'][branch_id][p]
                     sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
                 row_idx = row_idx + 1
 
@@ -3319,7 +3319,7 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
                 sheet.cell(row=row_idx, column=8).value = 'Expected'
                 sheet.cell(row=row_idx, column=9).value = '-'
                 for p in range(network[year][day].num_instants):
-                    sheet.cell(row=row_idx, column=p + 10).value = abs(expected_values['pij'][k][p]) / rating
+                    sheet.cell(row=row_idx, column=p + 10).value = abs(expected_values['pij'][branch_id][p]) / rating
                     sheet.cell(row=row_idx, column=p + 10).number_format = perc_style
                 row_idx = row_idx + 1
 
@@ -3334,7 +3334,7 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
                 sheet.cell(row=row_idx, column=8).value = 'Expected'
                 sheet.cell(row=row_idx, column=9).value = '-'
                 for p in range(network[year][day].num_instants):
-                    sheet.cell(row=row_idx, column=p + 10).value = expected_values['pji'][k][p]
+                    sheet.cell(row=row_idx, column=p + 10).value = expected_values['pji'][branch_id][p]
                     sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
                 row_idx = row_idx + 1
 
@@ -3349,7 +3349,7 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
                 sheet.cell(row=row_idx, column=8).value = 'Expected'
                 sheet.cell(row=row_idx, column=9).value = '-'
                 for p in range(network[year][day].num_instants):
-                    sheet.cell(row=row_idx, column=p + 10).value = abs(expected_values['pji'][k][p]) / rating
+                    sheet.cell(row=row_idx, column=p + 10).value = abs(expected_values['pji'][branch_id][p]) / rating
                     sheet.cell(row=row_idx, column=p + 10).number_format = perc_style
                 row_idx = row_idx + 1
 
@@ -3364,7 +3364,7 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
                 sheet.cell(row=row_idx, column=8).value = 'Expected'
                 sheet.cell(row=row_idx, column=9).value = '-'
                 for p in range(network[year][day].num_instants):
-                    sheet.cell(row=row_idx, column=p + 10).value = expected_values['qij'][k][p]
+                    sheet.cell(row=row_idx, column=p + 10).value = expected_values['qij'][branch_id][p]
                     sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
                 row_idx = row_idx + 1
 
@@ -3379,7 +3379,7 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
                 sheet.cell(row=row_idx, column=8).value = 'Expected'
                 sheet.cell(row=row_idx, column=9).value = '-'
                 for p in range(network[year][day].num_instants):
-                    sheet.cell(row=row_idx, column=p + 10).value = abs(expected_values['qij'][k][p]) / rating
+                    sheet.cell(row=row_idx, column=p + 10).value = abs(expected_values['qij'][branch_id][p]) / rating
                     sheet.cell(row=row_idx, column=p + 10).number_format = perc_style
                 row_idx = row_idx + 1
 
@@ -3394,7 +3394,7 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
                 sheet.cell(row=row_idx, column=8).value = 'Expected'
                 sheet.cell(row=row_idx, column=9).value = '-'
                 for p in range(network[year][day].num_instants):
-                    sheet.cell(row=row_idx, column=p + 10).value = expected_values['qji'][k][p]
+                    sheet.cell(row=row_idx, column=p + 10).value = expected_values['qji'][branch_id][p]
                     sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
                 row_idx = row_idx + 1
 
@@ -3409,7 +3409,7 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
                 sheet.cell(row=row_idx, column=8).value = 'Expected'
                 sheet.cell(row=row_idx, column=9).value = '-'
                 for p in range(network[year][day].num_instants):
-                    sheet.cell(row=row_idx, column=p + 10).value = abs(expected_values['qji'][k][p]) / rating
+                    sheet.cell(row=row_idx, column=p + 10).value = abs(expected_values['qji'][branch_id][p]) / rating
                     sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
                 row_idx = row_idx + 1
 
@@ -3424,7 +3424,7 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
                 sheet.cell(row=row_idx, column=8).value = 'Expected'
                 sheet.cell(row=row_idx, column=9).value = '-'
                 for p in range(network[year][day].num_instants):
-                    sheet.cell(row=row_idx, column=p + 10).value = expected_values['sij'][k][p]
+                    sheet.cell(row=row_idx, column=p + 10).value = expected_values['sij'][branch_id][p]
                     sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
                 row_idx = row_idx + 1
 
@@ -3439,7 +3439,7 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
                 sheet.cell(row=row_idx, column=8).value = 'Expected'
                 sheet.cell(row=row_idx, column=9).value = '-'
                 for p in range(network[year][day].num_instants):
-                    sheet.cell(row=row_idx, column=p + 10).value = abs(expected_values['sij'][k][p]) / rating
+                    sheet.cell(row=row_idx, column=p + 10).value = abs(expected_values['sij'][branch_id][p]) / rating
                     sheet.cell(row=row_idx, column=p + 10).number_format = perc_style
                 row_idx = row_idx + 1
 
@@ -3454,7 +3454,7 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
                 sheet.cell(row=row_idx, column=8).value = 'Expected'
                 sheet.cell(row=row_idx, column=9).value = '-'
                 for p in range(network[year][day].num_instants):
-                    sheet.cell(row=row_idx, column=p + 10).value = expected_values['sji'][k][p]
+                    sheet.cell(row=row_idx, column=p + 10).value = expected_values['sji'][branch_id][p]
                     sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
                 row_idx = row_idx + 1
 
@@ -3469,7 +3469,7 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
                 sheet.cell(row=row_idx, column=8).value = 'Expected'
                 sheet.cell(row=row_idx, column=9).value = '-'
                 for p in range(network[year][day].num_instants):
-                    sheet.cell(row=row_idx, column=p + 10).value = abs(expected_values['sji'][k][p]) / rating
+                    sheet.cell(row=row_idx, column=p + 10).value = abs(expected_values['sji'][branch_id][p]) / rating
                     sheet.cell(row=row_idx, column=p + 10).number_format = perc_style
                 row_idx = row_idx + 1
 
