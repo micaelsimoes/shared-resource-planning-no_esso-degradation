@@ -2752,10 +2752,10 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                 omega_m = network[year][day].prob_market_scenarios[s_m]
                 for s_o in results[year][day]['scenarios'][s_m]:
                     omega_s = network[year][day].prob_operation_scenarios[s_o]
-                    for g in results[year][day]['scenarios'][s_m][s_o]['generation']['pg']:
+                    for generator in network[year][day].generators:
 
-                        node_id = network[year][day].generators[g].bus
-                        gen_id = network[year][day].generators[g].gen_id
+                        node_id = generator.bus
+                        gen_id = generator.gen_id
                         gen_type = network[year][day].get_gen_type(gen_id)
 
                         # Active Power
