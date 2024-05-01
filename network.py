@@ -1550,9 +1550,9 @@ def _process_results(network, model, params, results=dict()):
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_q_down'] = dict()
 
             if params.fl_reg:
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['up'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['down'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_up'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_down'] = dict()
             if params.es_reg:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages'] = dict()
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'] = dict()
@@ -1839,12 +1839,12 @@ def _process_results(network, model, params, results=dict()):
             if params.fl_reg:
                 for c in model.loads:
                     load_id = network.loads[c].load_id
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['up'][load_id] = [0.00 for _ in range(network.num_instants)]
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['down'][load_id] = [0.00 for _ in range(network.num_instants)]
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_up'][load_id] = [0.00 for _ in range(network.num_instants)]
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_down'][load_id] = [0.00 for _ in range(network.num_instants)]
                     slack_flex_up = pe.value(model.flex_p_up[c, s_m, s_o, p])
                     slack_flex_down = pe.value(model.flex_p_down[c, s_m, s_o, p])
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['up'][load_id][network.num_instants-1] = slack_flex_up
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['down'][load_id][network.num_instants-1] = slack_flex_down
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_up'][load_id][network.num_instants-1] = slack_flex_up
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_down'][load_id][network.num_instants-1] = slack_flex_down
 
             # ESS slacks
             if params.es_reg:
