@@ -449,31 +449,30 @@ def _build_subproblem_model(shared_ess_data):
                     slack_penalty += PENALTY_SLACK * (model.es_penalty_pnet_up[e, y_inv, d, p] + model.es_penalty_pnet_down[e, y_inv, d, p])
                     slack_penalty += PENALTY_SLACK * (model.es_penalty_soc_up[e, y_inv, d, p] + model.es_penalty_soc_down[e, y_inv, d, p])
 
-            # - Complementarity penalty
+
             if shared_ess_data.params.slacks:
+
+                # - Complementarity penalty
                 for y in model.years:
                     for d in model.days:
                         for p in model.periods:
                             slack_penalty += PENALTY_SLACK * model.es_penalty_comp[e, y_inv, y, d, p]
 
-            # - Aggregated rated power and energy capacity
-            if shared_ess_data.params.slacks:
+                # - Aggregated rated power and energy capacity
                 slack_penalty += PENALTY_SLACK * (model.es_penalty_s_rated_up[e, y_inv] + model.es_penalty_s_rated_down[e, y_inv])
                 slack_penalty += PENALTY_SLACK * (model.es_penalty_e_rated_up[e, y_inv] + model.es_penalty_e_rated_down[e, y_inv])
                 for y in model.years:
                     slack_penalty += PENALTY_SLACK * (model.es_penalty_s_rated_per_unit_up[e, y_inv, y] + model.es_penalty_s_rated_per_unit_down[e, y_inv, y])
                     slack_penalty += PENALTY_SLACK * (model.es_penalty_e_rated_per_unit_up[e, y_inv, y] + model.es_penalty_e_rated_per_unit_down[e, y_inv, y])
 
-            # - Aggregated available power and energy capacity
-            if shared_ess_data.params.slacks:
+                # - Aggregated available power and energy capacity
                 slack_penalty += PENALTY_SLACK * (model.es_penalty_s_available_up[e, y_inv] + model.es_penalty_s_available_down[e, y_inv])
                 slack_penalty += PENALTY_SLACK * (model.es_penalty_e_available_up[e, y_inv] + model.es_penalty_e_available_down[e, y_inv])
                 for y in model.years:
                     slack_penalty += PENALTY_SLACK * (model.es_penalty_s_available_per_unit_up[e, y_inv, y] + model.es_penalty_s_available_per_unit_down[e, y_inv, y])
                     slack_penalty += PENALTY_SLACK * (model.es_penalty_e_available_per_unit_up[e, y_inv, y] + model.es_penalty_e_available_per_unit_down[e, y_inv, y])
 
-            # - Degradation model slack variables
-            if shared_ess_data.params.slacks:
+                # - Degradation model slack variables
                 for y in model.years:
                     slack_penalty += PENALTY_SLACK * (model.es_penalty_avg_ch_dch_day_up[e, y_inv, y] + model.es_penalty_avg_ch_dch_day_down[e, y_inv, y])
                     slack_penalty += PENALTY_SLACK * (model.es_penalty_degradation_per_unit_day_up[e, y_inv, y] + model.es_penalty_degradation_per_unit_day_down[e, y_inv, y])
