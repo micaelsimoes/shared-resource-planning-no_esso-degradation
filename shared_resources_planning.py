@@ -1265,7 +1265,7 @@ def _run_operational_planning_without_coordination(planning_problem):
 
 def create_interface_power_flow_variables(planning_problem):
     consensus_vars, _ = create_admm_variables(planning_problem)
-    return consensus_vars['interface']['pf']['dso']
+    return consensus_vars['interface']['pf']['dso']['current']
 
 
 # ======================================================================================================================
