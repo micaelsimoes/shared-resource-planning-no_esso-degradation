@@ -4061,7 +4061,7 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
                             sheet.cell(row=row_idx, column=7).value = s_m
                             sheet.cell(row=row_idx, column=8).value = s_o
                             for p in range(network[year][day].num_instants):
-                                slack_es_day_balance = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['day_balance_down'][node_id][p]
+                                slack_es_day_balance = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final_down'][node_id][p]
                                 sheet.cell(row=row_idx, column=p + 9).value = slack_es_day_balance
                                 sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
                             row_idx = row_idx + 1
