@@ -797,8 +797,9 @@ def _process_relaxation_variables_detailed(shared_ess_data, model):
                 node_id = shared_ess_data.shared_energy_storages[year_curr][e].bus
                 processed_results[year_inv][year_curr][node_id] = dict()
 
-                # - Rated power and energy capacity
-                if shared_ess_data.params.ess_relax_rating:
+                if shared_ess_data.params.slacks:
+
+                    # - Rated power and energy capacity
                     s_rated_up = pe.value(model.es_penalty_s_rated_per_unit_up[e, y_inv, y_curr])
                     s_rated_down = pe.value(model.es_penalty_s_rated_per_unit_down[e, y_inv, y_curr])
                     e_rated_up = pe.value(model.es_penalty_e_rated_per_unit_up[e, y_inv, y_curr])
@@ -808,8 +809,7 @@ def _process_relaxation_variables_detailed(shared_ess_data, model):
                     processed_results[year_inv][year_curr][node_id]['e_rated_up'] = e_rated_up
                     processed_results[year_inv][year_curr][node_id]['e_rated_down'] = e_rated_down
 
-                # - Available power and energy capacity
-                if shared_ess_data.params.ess_relax_available:
+                    # - Available power and energy capacity
                     s_available_up = pe.value(model.es_penalty_s_available_per_unit_up[e, y_inv, y_curr])
                     s_available_down = pe.value(model.es_penalty_s_available_per_unit_down[e, y_inv, y_curr])
                     e_available_up = pe.value(model.es_penalty_e_available_per_unit_up[e, y_inv, y_curr])
@@ -819,8 +819,7 @@ def _process_relaxation_variables_detailed(shared_ess_data, model):
                     processed_results[year_inv][year_curr][node_id]['e_available_up'] = e_available_up
                     processed_results[year_inv][year_curr][node_id]['e_available_down'] = e_available_down
 
-                # - Degradation
-                if shared_ess_data.params.ess_relax_degradation:
+                    # - Degradation
                     avg_ch_dch_up = pe.value(model.es_penalty_avg_ch_dch_day_up[e, y_inv, y_curr])
                     avg_ch_dch_down = pe.value(model.es_penalty_avg_ch_dch_day_down[e, y_inv, y_curr])
                     degradation_day_up = pe.value(model.es_penalty_degradation_per_unit_day_up[e, y_inv, y_curr])
