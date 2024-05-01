@@ -1875,7 +1875,7 @@ def _write_detailed_operation_relaxation_slacks_results_to_excel(shared_ess_data
                 for day in results[year_inv][year_curr]:
 
                     # - Complementarity
-                    if shared_ess_data.params.ess_relax_comp:
+                    if shared_ess_data.params.slacks:
                         sheet.cell(row=row_idx, column=1).value = node_id
                         sheet.cell(row=row_idx, column=2).value = int(year_inv)
                         sheet.cell(row=row_idx, column=3).value = int(year_curr)
