@@ -2967,8 +2967,8 @@ def _write_network_branch_results_per_operator(network, sheet, operator_type, ro
         for day in results[year]:
 
             expected_values = dict()
-            for k in range(len(network[year][day].branches)):
-                expected_values[k] = [0.0 for _ in range(network[year][day].num_instants)]
+            for branch in network[year][day].branches:
+                expected_values[branch.branch_id] = [0.0 for _ in range(network[year][day].num_instants)]
 
             for s_m in results[year][day]['scenarios']:
                 omega_m = network[year][day].prob_market_scenarios[s_m]
@@ -2999,7 +2999,7 @@ def _write_network_branch_results_per_operator(network, sheet, operator_type, ro
                                 else:
                                     sheet.cell(row=row_idx, column=p + 10).value = value
                                     sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
-                                expected_values[k][p] += value * omega_m * omega_s
+                                expected_values[branch_id][p] += value * omega_m * omega_s
                             row_idx = row_idx + 1
 
             for branch in network[year][day].branches:
@@ -3019,10 +3019,10 @@ def _write_network_branch_results_per_operator(network, sheet, operator_type, ro
                         if result_type == 'current_perc':
                             sheet.cell(row=row_idx, column=p + 10).value = expected_values[branch_id][p]
                             sheet.cell(row=row_idx, column=p + 10).number_format = perc_style
-                            if expected_values[k][p] > 1.0:
+                            if expected_values[branch_id][p] > 1.0:
                                 sheet.cell(row=row_idx, column=p + 10).fill = violation_fill
                         else:
-                            sheet.cell(row=row_idx, column=p + 10).value = expected_values[k][p]
+                            sheet.cell(row=row_idx, column=p + 10).value = expected_values[branch_id][p]
                             sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
                     row_idx = row_idx + 1
 
