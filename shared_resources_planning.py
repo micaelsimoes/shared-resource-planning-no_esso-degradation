@@ -3834,9 +3834,7 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
                                 sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
                             row_idx = row_idx + 1
 
-                    # Shared ESS slacks
-                    if params.ess_relax:
-
+                        # Shared ESS slacks
                         # - Complementarity
                         for node_id in results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp']:
                             sheet.cell(row=row_idx, column=1).value = operator_type
@@ -3919,7 +3917,7 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
                             row_idx = row_idx + 1
 
                     # ESS slacks
-                    if params.es_reg and params.ess_relax:
+                    if params.es_reg and params.slacks:
 
                         # - Complementarity
                         for node_id in results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp']:
