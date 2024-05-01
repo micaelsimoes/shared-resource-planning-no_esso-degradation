@@ -3729,14 +3729,16 @@ def _write_relaxation_slacks_results_network_operators_to_excel(planning_problem
     tso_results = results['tso']['results']
     transmission_network = planning_problem.transmission_network.network
     tn_params = planning_problem.transmission_network.params
-    row_idx = _write_relaxation_slacks_results_per_operator(transmission_network, sheet, 'TSO', row_idx, tso_results, tn_params)
+    if tn_params.slacks:
+        row_idx = _write_relaxation_slacks_results_per_operator(transmission_network, sheet, 'TSO', row_idx, tso_results, tn_params)
 
     # Write results -- DSOs
     for tn_node_id in results['dso']:
         dso_results = results['dso'][tn_node_id]['results']
         distribution_network = planning_problem.distribution_networks[tn_node_id].network
         dn_params = planning_problem.distribution_networks[tn_node_id].params
-        row_idx = _write_relaxation_slacks_results_per_operator(distribution_network, sheet, 'DSO', row_idx, dso_results, dn_params, tn_node_id=tn_node_id)
+        if dn_params.slacks:
+            row_idx = _write_relaxation_slacks_results_per_operator(distribution_network, sheet, 'DSO', row_idx, dso_results, dn_params, tn_node_id=tn_node_id)
 
 
 def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type, row_idx, results, params, tn_node_id='-'):
@@ -3749,90 +3751,85 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
                 for s_o in results[year][day]['scenarios'][s_m]:
 
                     # Voltage slacks
-                    if params.slacks:
+                    for node_id in results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_up']:
 
-                        for node_id in results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_up']:
+                        # - e_up
+                        sheet.cell(row=row_idx, column=1).value = operator_type
+                        sheet.cell(row=row_idx, column=2).value = tn_node_id
+                        sheet.cell(row=row_idx, column=3).value = node_id
+                        sheet.cell(row=row_idx, column=4).value = int(year)
+                        sheet.cell(row=row_idx, column=5).value = day
+                        sheet.cell(row=row_idx, column=6).value = 'Voltage, e_up'
+                        sheet.cell(row=row_idx, column=7).value = s_m
+                        sheet.cell(row=row_idx, column=8).value = s_o
+                        for p in range(network[year][day].num_instants):
+                            e_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_up'][node_id][p]
+                            sheet.cell(row=row_idx, column=p + 9).value = e_up
+                            sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                        row_idx = row_idx + 1
 
-                            # - e_up
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Voltage, e_up'
-                            sheet.cell(row=row_idx, column=7).value = s_m
-                            sheet.cell(row=row_idx, column=8).value = s_o
-                            for p in range(network[year][day].num_instants):
-                                e_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_up'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = e_up
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
+                        # - e_down
+                        sheet.cell(row=row_idx, column=1).value = operator_type
+                        sheet.cell(row=row_idx, column=2).value = tn_node_id
+                        sheet.cell(row=row_idx, column=3).value = node_id
+                        sheet.cell(row=row_idx, column=4).value = int(year)
+                        sheet.cell(row=row_idx, column=5).value = day
+                        sheet.cell(row=row_idx, column=6).value = 'Voltage, e_down'
+                        sheet.cell(row=row_idx, column=7).value = s_m
+                        sheet.cell(row=row_idx, column=8).value = s_o
+                        for p in range(network[year][day].num_instants):
+                            e_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_down'][node_id][p]
+                            sheet.cell(row=row_idx, column=p + 9).value = e_down
+                            sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                        row_idx = row_idx + 1
 
-                            # - e_down
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Voltage, e_down'
-                            sheet.cell(row=row_idx, column=7).value = s_m
-                            sheet.cell(row=row_idx, column=8).value = s_o
-                            for p in range(network[year][day].num_instants):
-                                e_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_down'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = e_down
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
+                        # - f_up
+                        sheet.cell(row=row_idx, column=1).value = operator_type
+                        sheet.cell(row=row_idx, column=2).value = tn_node_id
+                        sheet.cell(row=row_idx, column=3).value = node_id
+                        sheet.cell(row=row_idx, column=4).value = int(year)
+                        sheet.cell(row=row_idx, column=5).value = day
+                        sheet.cell(row=row_idx, column=6).value = 'Voltage, f_up'
+                        sheet.cell(row=row_idx, column=7).value = s_m
+                        sheet.cell(row=row_idx, column=8).value = s_o
+                        for p in range(network[year][day].num_instants):
+                            f_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_up'][node_id][p]
+                            sheet.cell(row=row_idx, column=p + 9).value = f_up
+                            sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                        row_idx = row_idx + 1
 
-                            # - f_up
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Voltage, f_up'
-                            sheet.cell(row=row_idx, column=7).value = s_m
-                            sheet.cell(row=row_idx, column=8).value = s_o
-                            for p in range(network[year][day].num_instants):
-                                f_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_up'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = f_up
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
-
-                            # - f_down
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Voltage, f_down'
-                            sheet.cell(row=row_idx, column=7).value = s_m
-                            sheet.cell(row=row_idx, column=8).value = s_o
-                            for p in range(network[year][day].num_instants):
-                                f_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_down'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = f_down
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
+                        # - f_down
+                        sheet.cell(row=row_idx, column=1).value = operator_type
+                        sheet.cell(row=row_idx, column=2).value = tn_node_id
+                        sheet.cell(row=row_idx, column=3).value = node_id
+                        sheet.cell(row=row_idx, column=4).value = int(year)
+                        sheet.cell(row=row_idx, column=5).value = day
+                        sheet.cell(row=row_idx, column=6).value = 'Voltage, f_down'
+                        sheet.cell(row=row_idx, column=7).value = s_m
+                        sheet.cell(row=row_idx, column=8).value = s_o
+                        for p in range(network[year][day].num_instants):
+                            f_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_down'][node_id][p]
+                            sheet.cell(row=row_idx, column=p + 9).value = f_down
+                            sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                        row_idx = row_idx + 1
 
                     # Branch current slacks
-                    if params.slacks:
+                    for node_id in results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr']:
 
-                        # Current
-                        for node_id in results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr']:
-
-                            # - Charging
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Current, iij_sqr'
-                            sheet.cell(row=row_idx, column=7).value = s_m
-                            sheet.cell(row=row_idx, column=8).value = s_o
-                            for p in range(network[year][day].num_instants):
-                                iij_sqr = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = iij_sqr
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
+                        # - Charging
+                        sheet.cell(row=row_idx, column=1).value = operator_type
+                        sheet.cell(row=row_idx, column=2).value = tn_node_id
+                        sheet.cell(row=row_idx, column=3).value = node_id
+                        sheet.cell(row=row_idx, column=4).value = int(year)
+                        sheet.cell(row=row_idx, column=5).value = day
+                        sheet.cell(row=row_idx, column=6).value = 'Current, iij_sqr'
+                        sheet.cell(row=row_idx, column=7).value = s_m
+                        sheet.cell(row=row_idx, column=8).value = s_o
+                        for p in range(network[year][day].num_instants):
+                            iij_sqr = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][node_id][p]
+                            sheet.cell(row=row_idx, column=p + 9).value = iij_sqr
+                            sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                        row_idx = row_idx + 1
 
                         # Shared ESS slacks
                         # - Complementarity
@@ -3913,7 +3910,7 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
                             row_idx = row_idx + 1
 
                     # ESS slacks
-                    if params.es_reg and params.slacks:
+                    if params.es_reg:
 
                         # - Complementarity
                         for node_id in results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp']:
@@ -4056,7 +4053,7 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
                             row_idx = row_idx + 1
 
                     # - Flexibility day balance slacks
-                    if params.fl_relax:
+                    if params.fl_reg:
                         for node_id in results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_up']:
 
                             sheet.cell(row=row_idx, column=1).value = operator_type
@@ -4092,196 +4089,193 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
                             row_idx = row_idx + 1
 
                     # - Node balance
-                    if params.node_balance_relax:
-                        for node_id in results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_up']:
+                    for node_id in results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_up']:
 
-                            # p_up
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Node Balance, p_up'
-                            sheet.cell(row=row_idx, column=7).value = s_m
-                            sheet.cell(row=row_idx, column=8).value = s_o
-                            for p in range(network[year][day].num_instants):
-                                slack_p_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_up'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = slack_p_up
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
+                        # p_up
+                        sheet.cell(row=row_idx, column=1).value = operator_type
+                        sheet.cell(row=row_idx, column=2).value = tn_node_id
+                        sheet.cell(row=row_idx, column=3).value = node_id
+                        sheet.cell(row=row_idx, column=4).value = int(year)
+                        sheet.cell(row=row_idx, column=5).value = day
+                        sheet.cell(row=row_idx, column=6).value = 'Node Balance, p_up'
+                        sheet.cell(row=row_idx, column=7).value = s_m
+                        sheet.cell(row=row_idx, column=8).value = s_o
+                        for p in range(network[year][day].num_instants):
+                            slack_p_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_up'][node_id][p]
+                            sheet.cell(row=row_idx, column=p + 9).value = slack_p_up
+                            sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                        row_idx = row_idx + 1
 
-                            # p_down
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Node Balance, p_down'
-                            sheet.cell(row=row_idx, column=7).value = s_m
-                            sheet.cell(row=row_idx, column=8).value = s_o
-                            for p in range(network[year][day].num_instants):
-                                slack_p_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_down'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = slack_p_down
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
+                        # p_down
+                        sheet.cell(row=row_idx, column=1).value = operator_type
+                        sheet.cell(row=row_idx, column=2).value = tn_node_id
+                        sheet.cell(row=row_idx, column=3).value = node_id
+                        sheet.cell(row=row_idx, column=4).value = int(year)
+                        sheet.cell(row=row_idx, column=5).value = day
+                        sheet.cell(row=row_idx, column=6).value = 'Node Balance, p_down'
+                        sheet.cell(row=row_idx, column=7).value = s_m
+                        sheet.cell(row=row_idx, column=8).value = s_o
+                        for p in range(network[year][day].num_instants):
+                            slack_p_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_down'][node_id][p]
+                            sheet.cell(row=row_idx, column=p + 9).value = slack_p_down
+                            sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                        row_idx = row_idx + 1
 
-                            # q_up
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Node Balance, q_up'
-                            sheet.cell(row=row_idx, column=7).value = s_m
-                            sheet.cell(row=row_idx, column=8).value = s_o
-                            for p in range(network[year][day].num_instants):
-                                slack_q_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_up'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = slack_q_up
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
+                        # q_up
+                        sheet.cell(row=row_idx, column=1).value = operator_type
+                        sheet.cell(row=row_idx, column=2).value = tn_node_id
+                        sheet.cell(row=row_idx, column=3).value = node_id
+                        sheet.cell(row=row_idx, column=4).value = int(year)
+                        sheet.cell(row=row_idx, column=5).value = day
+                        sheet.cell(row=row_idx, column=6).value = 'Node Balance, q_up'
+                        sheet.cell(row=row_idx, column=7).value = s_m
+                        sheet.cell(row=row_idx, column=8).value = s_o
+                        for p in range(network[year][day].num_instants):
+                            slack_q_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_up'][node_id][p]
+                            sheet.cell(row=row_idx, column=p + 9).value = slack_q_up
+                            sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                        row_idx = row_idx + 1
 
-                            # q_down
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Node Balance, q_down'
-                            sheet.cell(row=row_idx, column=7).value = s_m
-                            sheet.cell(row=row_idx, column=8).value = s_o
-                            for p in range(network[year][day].num_instants):
-                                slack_q_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_down'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = slack_q_down
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
+                        # q_down
+                        sheet.cell(row=row_idx, column=1).value = operator_type
+                        sheet.cell(row=row_idx, column=2).value = tn_node_id
+                        sheet.cell(row=row_idx, column=3).value = node_id
+                        sheet.cell(row=row_idx, column=4).value = int(year)
+                        sheet.cell(row=row_idx, column=5).value = day
+                        sheet.cell(row=row_idx, column=6).value = 'Node Balance, q_down'
+                        sheet.cell(row=row_idx, column=7).value = s_m
+                        sheet.cell(row=row_idx, column=8).value = s_o
+                        for p in range(network[year][day].num_instants):
+                            slack_q_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_down'][node_id][p]
+                            sheet.cell(row=row_idx, column=p + 9).value = slack_q_down
+                            sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                        row_idx = row_idx + 1
 
                     # Generators' voltage set-point
-                    if params.gen_v_relax:
-                        for node_id in results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['gen_voltage']['v_up']:
+                    for node_id in results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['gen_voltage']['v_up']:
 
-                            # v_up
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Generator voltage, v_up'
-                            sheet.cell(row=row_idx, column=7).value = s_m
-                            sheet.cell(row=row_idx, column=8).value = s_o
-                            for p in range(network[year][day].num_instants):
-                                slack_v_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['gen_voltage']['v_up'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = slack_v_up
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
+                        # v_up
+                        sheet.cell(row=row_idx, column=1).value = operator_type
+                        sheet.cell(row=row_idx, column=2).value = tn_node_id
+                        sheet.cell(row=row_idx, column=3).value = node_id
+                        sheet.cell(row=row_idx, column=4).value = int(year)
+                        sheet.cell(row=row_idx, column=5).value = day
+                        sheet.cell(row=row_idx, column=6).value = 'Generator voltage, v_up'
+                        sheet.cell(row=row_idx, column=7).value = s_m
+                        sheet.cell(row=row_idx, column=8).value = s_o
+                        for p in range(network[year][day].num_instants):
+                            slack_v_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['gen_voltage']['v_up'][node_id][p]
+                            sheet.cell(row=row_idx, column=p + 9).value = slack_v_up
+                            sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                        row_idx = row_idx + 1
 
-                            # v_down
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Generator voltage, v_down'
-                            sheet.cell(row=row_idx, column=7).value = s_m
-                            sheet.cell(row=row_idx, column=8).value = s_o
-                            for p in range(network[year][day].num_instants):
-                                slack_v_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['gen_voltage']['v_down'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = slack_v_down
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
+                        # v_down
+                        sheet.cell(row=row_idx, column=1).value = operator_type
+                        sheet.cell(row=row_idx, column=2).value = tn_node_id
+                        sheet.cell(row=row_idx, column=3).value = node_id
+                        sheet.cell(row=row_idx, column=4).value = int(year)
+                        sheet.cell(row=row_idx, column=5).value = day
+                        sheet.cell(row=row_idx, column=6).value = 'Generator voltage, v_down'
+                        sheet.cell(row=row_idx, column=7).value = s_m
+                        sheet.cell(row=row_idx, column=8).value = s_o
+                        for p in range(network[year][day].num_instants):
+                            slack_v_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['gen_voltage']['v_down'][node_id][p]
+                            sheet.cell(row=row_idx, column=p + 9).value = slack_v_down
+                            sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                        row_idx = row_idx + 1
 
                     # Interface
-                    if params.interface_pf_relax:
-                        for node_id in results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['vmag_sqr_up']:
+                    for node_id in results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['vmag_sqr_up']:
 
-                            # vmag, up
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Interface, vmag up'
-                            sheet.cell(row=row_idx, column=7).value = 'N/A'
-                            sheet.cell(row=row_idx, column=8).value = 'N/A'
-                            for p in range(network[year][day].num_instants):
-                                slack_v_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['vmag_sqr_up'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = slack_v_up
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
+                        # vmag, up
+                        sheet.cell(row=row_idx, column=1).value = operator_type
+                        sheet.cell(row=row_idx, column=2).value = tn_node_id
+                        sheet.cell(row=row_idx, column=3).value = node_id
+                        sheet.cell(row=row_idx, column=4).value = int(year)
+                        sheet.cell(row=row_idx, column=5).value = day
+                        sheet.cell(row=row_idx, column=6).value = 'Interface, vmag up'
+                        sheet.cell(row=row_idx, column=7).value = 'N/A'
+                        sheet.cell(row=row_idx, column=8).value = 'N/A'
+                        for p in range(network[year][day].num_instants):
+                            slack_v_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['vmag_sqr_up'][node_id][p]
+                            sheet.cell(row=row_idx, column=p + 9).value = slack_v_up
+                            sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                        row_idx = row_idx + 1
 
-                            # vmag, down
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Interface, vmag down'
-                            sheet.cell(row=row_idx, column=7).value = 'N/A'
-                            sheet.cell(row=row_idx, column=8).value = 'N/A'
-                            for p in range(network[year][day].num_instants):
-                                slack_v_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['vmag_sqr_down'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = slack_v_down
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
+                        # vmag, down
+                        sheet.cell(row=row_idx, column=1).value = operator_type
+                        sheet.cell(row=row_idx, column=2).value = tn_node_id
+                        sheet.cell(row=row_idx, column=3).value = node_id
+                        sheet.cell(row=row_idx, column=4).value = int(year)
+                        sheet.cell(row=row_idx, column=5).value = day
+                        sheet.cell(row=row_idx, column=6).value = 'Interface, vmag down'
+                        sheet.cell(row=row_idx, column=7).value = 'N/A'
+                        sheet.cell(row=row_idx, column=8).value = 'N/A'
+                        for p in range(network[year][day].num_instants):
+                            slack_v_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['vmag_sqr_down'][node_id][p]
+                            sheet.cell(row=row_idx, column=p + 9).value = slack_v_down
+                            sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                        row_idx = row_idx + 1
 
-                            # pf_p, up
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Interface, pf_p up'
-                            sheet.cell(row=row_idx, column=7).value = 'N/A'
-                            sheet.cell(row=row_idx, column=8).value = 'N/A'
-                            for p in range(network[year][day].num_instants):
-                                slack_pf_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_p_up'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = slack_pf_up
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
+                        # pf_p, up
+                        sheet.cell(row=row_idx, column=1).value = operator_type
+                        sheet.cell(row=row_idx, column=2).value = tn_node_id
+                        sheet.cell(row=row_idx, column=3).value = node_id
+                        sheet.cell(row=row_idx, column=4).value = int(year)
+                        sheet.cell(row=row_idx, column=5).value = day
+                        sheet.cell(row=row_idx, column=6).value = 'Interface, pf_p up'
+                        sheet.cell(row=row_idx, column=7).value = 'N/A'
+                        sheet.cell(row=row_idx, column=8).value = 'N/A'
+                        for p in range(network[year][day].num_instants):
+                            slack_pf_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_p_up'][node_id][p]
+                            sheet.cell(row=row_idx, column=p + 9).value = slack_pf_up
+                            sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                        row_idx = row_idx + 1
 
-                            # pf_p, down
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Interface, pf_p down'
-                            sheet.cell(row=row_idx, column=7).value = 'N/A'
-                            sheet.cell(row=row_idx, column=8).value = 'N/A'
-                            for p in range(network[year][day].num_instants):
-                                slack_pf_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_p_down'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = slack_pf_down
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
+                        # pf_p, down
+                        sheet.cell(row=row_idx, column=1).value = operator_type
+                        sheet.cell(row=row_idx, column=2).value = tn_node_id
+                        sheet.cell(row=row_idx, column=3).value = node_id
+                        sheet.cell(row=row_idx, column=4).value = int(year)
+                        sheet.cell(row=row_idx, column=5).value = day
+                        sheet.cell(row=row_idx, column=6).value = 'Interface, pf_p down'
+                        sheet.cell(row=row_idx, column=7).value = 'N/A'
+                        sheet.cell(row=row_idx, column=8).value = 'N/A'
+                        for p in range(network[year][day].num_instants):
+                            slack_pf_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_p_down'][node_id][p]
+                            sheet.cell(row=row_idx, column=p + 9).value = slack_pf_down
+                            sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                        row_idx = row_idx + 1
 
-                            # pf_q, up
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Interface, pf_q up'
-                            sheet.cell(row=row_idx, column=7).value = 'N/A'
-                            sheet.cell(row=row_idx, column=8).value = 'N/A'
-                            for p in range(network[year][day].num_instants):
-                                slack_pf_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_q_up'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = slack_pf_up
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
+                        # pf_q, up
+                        sheet.cell(row=row_idx, column=1).value = operator_type
+                        sheet.cell(row=row_idx, column=2).value = tn_node_id
+                        sheet.cell(row=row_idx, column=3).value = node_id
+                        sheet.cell(row=row_idx, column=4).value = int(year)
+                        sheet.cell(row=row_idx, column=5).value = day
+                        sheet.cell(row=row_idx, column=6).value = 'Interface, pf_q up'
+                        sheet.cell(row=row_idx, column=7).value = 'N/A'
+                        sheet.cell(row=row_idx, column=8).value = 'N/A'
+                        for p in range(network[year][day].num_instants):
+                            slack_pf_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_q_up'][node_id][p]
+                            sheet.cell(row=row_idx, column=p + 9).value = slack_pf_up
+                            sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                        row_idx = row_idx + 1
 
-                            # pf_q, down
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Interface, pf_q down'
-                            sheet.cell(row=row_idx, column=7).value = 'N/A'
-                            sheet.cell(row=row_idx, column=8).value = 'N/A'
-                            for p in range(network[year][day].num_instants):
-                                slack_pf_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_q_down'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = slack_pf_down
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
+                        # pf_q, down
+                        sheet.cell(row=row_idx, column=1).value = operator_type
+                        sheet.cell(row=row_idx, column=2).value = tn_node_id
+                        sheet.cell(row=row_idx, column=3).value = node_id
+                        sheet.cell(row=row_idx, column=4).value = int(year)
+                        sheet.cell(row=row_idx, column=5).value = day
+                        sheet.cell(row=row_idx, column=6).value = 'Interface, pf_q down'
+                        sheet.cell(row=row_idx, column=7).value = 'N/A'
+                        sheet.cell(row=row_idx, column=8).value = 'N/A'
+                        for p in range(network[year][day].num_instants):
+                            slack_pf_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['interface']['pf_q_down'][node_id][p]
+                            sheet.cell(row=row_idx, column=p + 9).value = slack_pf_down
+                            sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                        row_idx = row_idx + 1
 
     return row_idx
 
