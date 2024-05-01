@@ -2974,8 +2974,10 @@ def _write_network_branch_results_per_operator(network, sheet, operator_type, ro
                 omega_m = network[year][day].prob_market_scenarios[s_m]
                 for s_o in results[year][day]['scenarios'][s_m]:
                     omega_s = network[year][day].prob_operation_scenarios[s_o]
-                    for k in results[year][day]['scenarios'][s_m][s_o]['branches'][result_type]:
-                        branch = network[year][day].branches[k]
+                    for branch in network[year][day].branches:
+
+                        branch_id = branch.branch_id
+
                         if not(result_type == 'ratio' and not branch.is_transformer):
 
                             sheet.cell(row=row_idx, column=1).value = operator_type
@@ -2988,7 +2990,7 @@ def _write_network_branch_results_per_operator(network, sheet, operator_type, ro
                             sheet.cell(row=row_idx, column=8).value = s_m
                             sheet.cell(row=row_idx, column=9).value = s_o
                             for p in range(network[year][day].num_instants):
-                                value = results[year][day]['scenarios'][s_m][s_o]['branches'][result_type][k][p]
+                                value = results[year][day]['scenarios'][s_m][s_o]['branches'][result_type][branch_id][p]
                                 if result_type == 'current_perc':
                                     sheet.cell(row=row_idx, column=p + 10).value = value
                                     sheet.cell(row=row_idx, column=p + 10).number_format = perc_style
@@ -3000,8 +3002,8 @@ def _write_network_branch_results_per_operator(network, sheet, operator_type, ro
                                 expected_values[k][p] += value * omega_m * omega_s
                             row_idx = row_idx + 1
 
-            for k in range(len(network[year][day].branches)):
-                branch = network[year][day].branches[k]
+            for branch in network[year][day].branches:
+                branch_id = branch.branch_id
                 if not (result_type == 'ratio' and not branch.is_transformer):
 
                     sheet.cell(row=row_idx, column=1).value = operator_type
@@ -3015,7 +3017,7 @@ def _write_network_branch_results_per_operator(network, sheet, operator_type, ro
                     sheet.cell(row=row_idx, column=9).value = '-'
                     for p in range(network[year][day].num_instants):
                         if result_type == 'current_perc':
-                            sheet.cell(row=row_idx, column=p + 10).value = expected_values[k][p]
+                            sheet.cell(row=row_idx, column=p + 10).value = expected_values[branch_id][p]
                             sheet.cell(row=row_idx, column=p + 10).number_format = perc_style
                             if expected_values[k][p] > 1.0:
                                 sheet.cell(row=row_idx, column=p + 10).fill = violation_fill
