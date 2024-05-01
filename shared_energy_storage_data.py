@@ -903,7 +903,7 @@ def _process_relaxation_variables_operation_detailed(shared_ess_data, model):
                     processed_results[year_inv][year_curr][day][node_id] = dict()
 
                     # - Complementarity
-                    if shared_ess_data.params.ess_relax_comp:
+                    if shared_ess_data.params.slacks:
                         processed_results[year_inv][year_curr][day][node_id]['comp'] = list()
                         for p in model.periods:
                             comp = pe.value(model.es_penalty_comp[e, y_inv, y_curr, d, p])
