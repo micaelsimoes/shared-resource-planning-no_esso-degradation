@@ -839,8 +839,8 @@ def update_transmission_model_to_admm(transmission_network, model, initial_inter
             for dn in model[year][day].active_distribution_networks:
                 node_id = transmission_network.active_distribution_network_nodes[dn]
                 for p in model[year][day].periods:
-                    init_p = initial_interface_pf['dso'][node_id][year][day]['p'][p] / s_base
-                    init_q = initial_interface_pf['dso'][node_id][year][day]['q'][p] / s_base
+                    init_p = initial_interface_pf['dso']['current'][node_id][year][day]['p'][p] / s_base
+                    init_q = initial_interface_pf['dso']['current'][node_id][year][day]['q'][p] / s_base
                     constraint_v_req = (model[year][day].expected_interface_vmag_sqr[dn, p] - model[year][day].v_sqr_req[dn, p])
                     constraint_p_req = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_req[dn, p]) / abs(init_p)
                     constraint_q_req = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_req[dn, p]) / abs(init_q)
@@ -950,8 +950,8 @@ def update_distribution_models_to_admm(distribution_networks, models, initial_in
                 # Augmented Lagrangian -- Interface power flow (residual balancing)
                 #interface_branch_rating = distribution_network.network[year][day].get_interface_branch_rating() / s_base
                 for p in dso_model[year][day].periods:
-                    init_pf_p = initial_interface_pf[node_id][year][day]['p'][p] / s_base
-                    init_pf_q = initial_interface_pf[node_id][year][day]['q'][p] / s_base
+                    init_pf_p = initial_interface_pf['current'][node_id][year][day]['p'][p] / s_base
+                    init_pf_q = initial_interface_pf['current'][node_id][year][day]['q'][p] / s_base
                     constraint_vmag_req = (dso_model[year][day].expected_interface_vmag_sqr[p] - dso_model[year][day].v_sqr_req[p])
                     constraint_p_req = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_req[p]) / abs(init_pf_p)
                     constraint_q_req = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_req[p]) / abs(init_pf_q)
