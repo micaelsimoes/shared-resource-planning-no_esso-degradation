@@ -72,7 +72,7 @@ class NetworkData:
     def process_results(self, model, results=dict()):
         return _process_results(self, model, results)
 
-    def process_results_interface_power_flow(self, model):
+    def process_results_interface(self, model):
         results = dict()
         for year in self.years:
             results[year] = dict()
