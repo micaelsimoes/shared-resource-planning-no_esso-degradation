@@ -1524,7 +1524,7 @@ def _write_operational_planning_results_to_excel(planning_problem, results, prim
         _write_objective_function_evolution_to_excel(wb, primal_evolution)
 
     # Interface Power Flow
-    _write_interface_power_flow_results_to_excel(planning_problem, wb, results['interface'])
+    _write_interface_results_to_excel(planning_problem, wb, results['interface'])
 
     # Shared Energy Storages results
     _write_shared_energy_storages_results_to_excel(planning_problem, wb, results)
@@ -1847,7 +1847,7 @@ def _write_objective_function_evolution_to_excel(workbook, primal_evolution):
         row_idx = row_idx + 1
 
 
-def _write_interface_power_flow_results_to_excel(planning_problem, workbook, results):
+def _write_interface_results_to_excel(planning_problem, workbook, results):
 
     sheet = workbook.create_sheet('Interface PF')
 
@@ -1870,12 +1870,28 @@ def _write_interface_power_flow_results_to_excel(planning_problem, workbook, res
     for year in results['tso']:
         for day in results['tso'][year]:
             for node_id in results['tso'][year][day]:
+                expected_vmag = [0.0 for _ in range(planning_problem.num_instants)]
                 expected_p = [0.0 for _ in range(planning_problem.num_instants)]
                 expected_q = [0.0 for _ in range(planning_problem.num_instants)]
                 for s_m in results['tso'][year][day][node_id]:
                     omega_m = planning_problem.transmission_network.network[year][day].prob_market_scenarios[s_m]
                     for s_o in results['tso'][year][day][node_id][s_m]:
                         omega_s = planning_problem.transmission_network.network[year][day].prob_operation_scenarios[s_o]
+
+                        # Voltage magnitude
+                        sheet.cell(row=row_idx, column=1).value = node_id
+                        sheet.cell(row=row_idx, column=2).value = 'TSO'
+                        sheet.cell(row=row_idx, column=3).value = int(year)
+                        sheet.cell(row=row_idx, column=4).value = day
+                        sheet.cell(row=row_idx, column=5).value = 'Vmag, [p.u.]'
+                        sheet.cell(row=row_idx, column=6).value = s_m
+                        sheet.cell(row=row_idx, column=7).value = s_o
+                        for p in range(planning_problem.num_instants):
+                            interface_vmag = results['tso'][year][day][node_id][s_m][s_o]['v'][p]
+                            sheet.cell(row=row_idx, column=p + 8).value = interface_vmag
+                            sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
+                            expected_vmag[p] += interface_vmag * omega_m * omega_s
+                        row_idx += 1
 
                         # Active Power
                         sheet.cell(row=row_idx, column=1).value = node_id
@@ -1912,6 +1928,19 @@ def _write_interface_power_flow_results_to_excel(planning_problem, workbook, res
                 sheet.cell(row=row_idx, column=2).value = 'TSO'
                 sheet.cell(row=row_idx, column=3).value = int(year)
                 sheet.cell(row=row_idx, column=4).value = day
+                sheet.cell(row=row_idx, column=5).value = 'Vmag, [p.u.]'
+                sheet.cell(row=row_idx, column=6).value = 'Expected'
+                sheet.cell(row=row_idx, column=7).value = '-'
+                for p in range(planning_problem.num_instants):
+                    sheet.cell(row=row_idx, column=p + 8).value = expected_vmag[p]
+                    sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
+                row_idx += 1
+
+                # Expected Active Power
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = 'TSO'
+                sheet.cell(row=row_idx, column=3).value = int(year)
+                sheet.cell(row=row_idx, column=4).value = day
                 sheet.cell(row=row_idx, column=5).value = 'P, [MW]'
                 sheet.cell(row=row_idx, column=6).value = 'Expected'
                 sheet.cell(row=row_idx, column=7).value = '-'
@@ -1937,12 +1966,28 @@ def _write_interface_power_flow_results_to_excel(planning_problem, workbook, res
     for node_id in results['dso']:
         for year in results['dso'][node_id]:
             for day in results['dso'][node_id][year]:
+                expected_vmag = [0.0 for _ in range(planning_problem.num_instants)]
                 expected_p = [0.0 for _ in range(planning_problem.num_instants)]
                 expected_q = [0.0 for _ in range(planning_problem.num_instants)]
                 for s_m in results['dso'][node_id][year][day]:
                     omega_m = planning_problem.distribution_networks[node_id].network[year][day].prob_market_scenarios[s_m]
                     for s_o in results['dso'][node_id][year][day][s_m]:
                         omega_s = planning_problem.distribution_networks[node_id].network[year][day].prob_operation_scenarios[s_o]
+
+                        # Voltage magnitude
+                        sheet.cell(row=row_idx, column=1).value = node_id
+                        sheet.cell(row=row_idx, column=2).value = 'DSO'
+                        sheet.cell(row=row_idx, column=3).value = int(year)
+                        sheet.cell(row=row_idx, column=4).value = day
+                        sheet.cell(row=row_idx, column=5).value = 'Vmag, [p.u.]'
+                        sheet.cell(row=row_idx, column=6).value = s_m
+                        sheet.cell(row=row_idx, column=7).value = s_o
+                        for p in range(planning_problem.num_instants):
+                            interface_vmag = results['dso'][node_id][year][day][s_m][s_o]['v'][p]
+                            sheet.cell(row=row_idx, column=p + 8).value = interface_vmag
+                            sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
+                            expected_vmag[p] += interface_vmag * omega_m * omega_s
+                        row_idx += 1
 
                         # Active Power
                         sheet.cell(row=row_idx, column=1).value = node_id
@@ -1973,6 +2018,19 @@ def _write_interface_power_flow_results_to_excel(planning_problem, workbook, res
                             sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                             expected_q[p] += interface_q * omega_m * omega_s
                         row_idx += 1
+
+                # Expected Voltage magnitude
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = 'DSO'
+                sheet.cell(row=row_idx, column=3).value = int(year)
+                sheet.cell(row=row_idx, column=4).value = day
+                sheet.cell(row=row_idx, column=5).value = 'V, [p.u.]'
+                sheet.cell(row=row_idx, column=6).value = 'Expected'
+                sheet.cell(row=row_idx, column=7).value = '-'
+                for p in range(planning_problem.num_instants):
+                    sheet.cell(row=row_idx, column=p + 8).value = expected_vmag[p]
+                    sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
+                row_idx += 1
 
                 # Expected Active Power
                 sheet.cell(row=row_idx, column=1).value = node_id
