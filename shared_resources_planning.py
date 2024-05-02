@@ -10,6 +10,7 @@ import pyomo.environ as pe
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill
 from network_data import NetworkData
+from load import Load
 from shared_energy_storage import SharedEnergyStorage
 from planning_parameters import PlanningParameters
 from shared_energy_storage_data import SharedEnergyStorageData
@@ -122,9 +123,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     esso_model, results['esso'] = create_shared_energy_storage_model(shared_ess_data, consensus_vars['ess']['esso'], candidate_solution['investment'])
     update_shared_energy_storage_model_to_admm(shared_ess_data, esso_model, admm_parameters)
 
-    planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
-                                                     consensus_vars, dual_vars,
-                                                     admm_parameters)
+    planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model, consensus_vars, dual_vars, admm_parameters)
     if debug_flag:
         for node_id in planning_problem.active_distribution_network_nodes:
             print(f"Node {node_id}")
@@ -277,18 +276,18 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
     for node_id in transmission_network.active_distribution_network_nodes:
         for year in transmission_network.years:
             for day in transmission_network.days:
-                node_idx = transmission_network.network[year][day].get_node_idx(node_id)
+                adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(node_id)
                 s_base = transmission_network.network[year][day].baseMVA
                 for s_m in tso_model[year][day].scenarios_market:
                     for s_o in tso_model[year][day].scenarios_operation:
                         for p in tso_model[year][day].periods:
                             pc = interface_pf_vars['dso']['current'][node_id][year][day]['p'][p] / s_base
                             qc = interface_pf_vars['dso']['current'][node_id][year][day]['q'][p] / s_base
-                            tso_model[year][day].pc[node_idx, s_m, s_o, p].fix(pc)
-                            tso_model[year][day].qc[node_idx, s_m, s_o, p].fix(qc)
+                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fix(pc)
+                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].fix(qc)
                             if transmission_network.params.fl_reg:
-                                tso_model[year][day].flex_p_up[node_idx, s_m, s_o, p].fix(0.0)
-                                tso_model[year][day].flex_p_down[node_idx, s_m, s_o, p].fix(0.0)
+                                tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].fix(0.0)
+                                tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].fix(0.0)
     results = transmission_network.optimize(tso_model)
 
     for year in transmission_network.years:
@@ -792,17 +791,18 @@ def update_transmission_model_to_admm(transmission_network, model, distribution_
 
             # Free Pc and Qc at the connection point with distribution networks
             for node_id in transmission_network.active_distribution_network_nodes:
+                adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(node_id)
                 node_idx = transmission_network.network[year][day].get_node_idx(node_id)
                 for s_m in model[year][day].scenarios_market:
                     for s_o in model[year][day].scenarios_operation:
                         for p in model[year][day].periods:
 
-                            model[year][day].pc[node_idx, s_m, s_o, p].fixed = False
-                            model[year][day].pc[node_idx, s_m, s_o, p].setub(None)
-                            model[year][day].pc[node_idx, s_m, s_o, p].setlb(None)
-                            model[year][day].qc[node_idx, s_m, s_o, p].fixed = False
-                            model[year][day].qc[node_idx, s_m, s_o, p].setub(None)
-                            model[year][day].qc[node_idx, s_m, s_o, p].setlb(None)
+                            model[year][day].pc[adn_load_idx, s_m, s_o, p].fixed = False
+                            model[year][day].pc[adn_load_idx, s_m, s_o, p].setub(None)
+                            model[year][day].pc[adn_load_idx, s_m, s_o, p].setlb(None)
+                            model[year][day].qc[adn_load_idx, s_m, s_o, p].fixed = False
+                            model[year][day].qc[adn_load_idx, s_m, s_o, p].setub(None)
+                            model[year][day].qc[adn_load_idx, s_m, s_o, p].setlb(None)
 
                             if transmission_network.params.slacks:
                                 model[year][day].slack_e_up[node_idx, s_m, s_o, p].fix(0.00)
@@ -1375,6 +1375,9 @@ def _read_planning_problem(planning_problem):
     # Planning Parameters
     planning_problem.params_file = planning_data['PlanningParameters']['params_file']
     planning_problem.read_planning_parameters_from_file()
+
+    # Add ADN nodes to Transmission Network
+    _add_adn_node_to_transmission_network(planning_problem)
 
     # Add Shared Energy Storages to Transmission and Distribution Networks
     _add_shared_energy_storage_to_transmission_network(planning_problem)
@@ -4356,6 +4359,24 @@ def _get_initial_candidate_solution(planning_problem):
             candidate_solution['total_capacity'][node_id][year]['e'] = 1.00
             '''
     return candidate_solution
+
+
+def _add_adn_node_to_transmission_network(planning_problem):
+    for year in planning_problem.years:
+        for day in planning_problem.days:
+            for node_id in planning_problem.distribution_networks:
+                if not planning_problem.transmission_network.network[year][day].adn_load_exists(node_id):
+                    adn_load = Load()
+                    adn_load.bus = node_id
+                    adn_load.load_id = f'ADN_{node_id}'
+                    adn_load.pd = dict()
+                    adn_load.qd = dict()
+                    for s_o in range(len(planning_problem.transmission_network.network[year][day].prob_operation_scenarios)):
+                        adn_load.pd[s_o] = [0.00 for _ in range(planning_problem.num_instants)]
+                        adn_load.qd[s_o] = [0.00 for _ in range(planning_problem.num_instants)]
+                    adn_load.fl_reg = False
+                    adn_load.status = 1
+                    planning_problem.transmission_network.network[year][day].loads.append(adn_load)
 
 
 def _add_shared_energy_storage_to_transmission_network(planning_problem):

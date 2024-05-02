@@ -92,10 +92,23 @@ class Network:
         exit(ERROR_NETWORK_FILE)
 
     def node_exists(self, node_id):
-        for i in range(len(self.nodes)):
-            if self.nodes[i].bus_i == node_id:
+        for node in self.nodes:
+            if node.bus_i == node_id:
                 return True
         return False
+
+    def adn_load_exists(self, node_id):
+        for load in self.loads:
+            if load.bus == node_id:
+                return True
+        return False
+
+    def get_adn_load_idx(self, node_id):
+        for c in range(len(self.loads)):
+            if self.loads[c].bus == node_id:
+                return c
+        print(f'[ERROR] Network {self.name}. Node ID {node_id} does not have an ADN! Check network model.')
+        exit(ERROR_NETWORK_FILE)
 
     def get_branch_idx(self, branch):
         for b in range(len(self.branches)):

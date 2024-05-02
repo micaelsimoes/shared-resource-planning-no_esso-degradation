@@ -8,7 +8,7 @@ class Load:
         self.bus = -1                           # bus number
         self.pd = 0.00                          # Active power consumption
         self.qd = 0.00                          # Reactive power consumption
-        self.status = 0                         # status:
+        self.status = 1                         # status:
                                                 #   1 - machine in service
                                                 #   0 - machine out of service
         self.fl_reg = False                     # Indicates if the load is flexible
