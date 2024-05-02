@@ -188,8 +188,8 @@ class Network:
     def process_results(self, model, params, results=dict()):
         return _process_results(self, model, params, results=results)
 
-    def process_results_interface_power_flow(self, model):
-        return _process_results_interface_power_flow(self, model)
+    def process_results_interface(self, model):
+        return _process_results_interface(self, model)
 
     def compute_series_admittance(self):
         for branch in self.branches:
@@ -1988,7 +1988,7 @@ def _process_results(network, model, params, results=dict()):
     return processed_results
 
 
-def _process_results_interface_power_flow(network, model):
+def _process_results_interface(network, model):
 
     results = dict()
 
@@ -1996,7 +1996,8 @@ def _process_results_interface_power_flow(network, model):
         for dn in model.active_distribution_networks:
 
             node_id = network.active_distribution_network_nodes[dn]
-            node_idx = network.get_adn_load_idx(node_id)
+            node_idx = network.get_node_idx(node_id)
+            load_idx = network.get_adn_load_idx(node_id)
 
             # Power flow results per market and operation scenario
             results[node_id] = dict()
@@ -2004,24 +2005,36 @@ def _process_results_interface_power_flow(network, model):
                 results[node_id][s_m] = dict()
                 for s_o in model.scenarios_operation:
                     results[node_id][s_m][s_o] = dict()
+                    results[node_id][s_m][s_o]['v'] = [1.0 for _ in model.periods]
                     results[node_id][s_m][s_o]['p'] = [0.0 for _ in model.periods]
                     results[node_id][s_m][s_o]['q'] = [0.0 for _ in model.periods]
                     for p in model.periods:
-                        results[node_id][s_m][s_o]['p'][p] = pe.value(model.pc[node_idx, s_m, s_o, p]) * network.baseMVA
-                        results[node_id][s_m][s_o]['q'][p] = pe.value(model.qc[node_idx, s_m, s_o, p]) * network.baseMVA
+                        vmag = sqrt(pe.value(model.e_actual[node_idx, s_m, s_o, p]**2 + model.f_actual[node_idx, s_m, s_o, p]**2))
+                        pf_p = pe.value(model.pc[load_idx, s_m, s_o, p]) * network.baseMVA
+                        pf_q = pe.value(model.qc[load_idx, s_m, s_o, p]) * network.baseMVA
+                        results[node_id][s_m][s_o]['v'][p] = vmag
+                        results[node_id][s_m][s_o]['p'][p] = pf_p
+                        results[node_id][s_m][s_o]['q'][p] = pf_q
     else:
 
         # Power flow results per market and operation scenario
+        ref_node_id = network.get_reference_node_id()
+        ref_node_idx = network.get_node_idx(ref_node_id)
         ref_gen_idx = network.get_reference_gen_idx()
         for s_m in model.scenarios_market:
             results[s_m] = dict()
             for s_o in model.scenarios_operation:
                 results[s_m][s_o] = dict()
+                results[s_m][s_o]['v'] = [0.0 for _ in model.periods]
                 results[s_m][s_o]['p'] = [0.0 for _ in model.periods]
                 results[s_m][s_o]['q'] = [0.0 for _ in model.periods]
                 for p in model.periods:
-                    results[s_m][s_o]['p'][p] = pe.value(model.pg[ref_gen_idx, s_m, s_o, p]) * network.baseMVA
-                    results[s_m][s_o]['q'][p] = pe.value(model.qg[ref_gen_idx, s_m, s_o, p]) * network.baseMVA
+                    vmag = pe.value(model.e_actual[ref_node_idx, s_m, s_o, p])
+                    pf_p = pe.value(model.pg[ref_gen_idx, s_m, s_o, p]) * network.baseMVA
+                    pf_q = pe.value(model.qg[ref_gen_idx, s_m, s_o, p]) * network.baseMVA
+                    results[s_m][s_o]['v'][p] = pf_p
+                    results[s_m][s_o]['p'][p] = pf_p
+                    results[s_m][s_o]['q'][p] = pf_q
 
     return results
 

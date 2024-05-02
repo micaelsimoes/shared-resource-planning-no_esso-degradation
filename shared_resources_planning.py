@@ -1467,7 +1467,7 @@ def _process_operational_planning_results(operational_planning_problem, tso_mode
         distribution_network = distribution_networks[node_id]
         processed_results['dso'][node_id] = distribution_network.process_results(dso_model, optimization_results['dso'][node_id])
     processed_results['esso'] = shared_ess_data.process_results(esso_model)
-    processed_results['interface'] = _process_results_interface_power_flow(operational_planning_problem, tso_model, dso_models)
+    processed_results['interface'] = _process_results_interface(operational_planning_problem, tso_model, dso_models)
 
     return processed_results
 
@@ -1490,7 +1490,7 @@ def _process_operational_planning_results_no_coordination(planning_problem, tso_
     return processed_results
 
 
-def _process_results_interface_power_flow(planning_problem, tso_model, dso_models):
+def _process_results_interface(planning_problem, tso_model, dso_models):
 
     transmission_network = planning_problem.transmission_network
     distribution_networks = planning_problem.distribution_networks
@@ -1499,11 +1499,11 @@ def _process_results_interface_power_flow(planning_problem, tso_model, dso_model
     processed_results['tso'] = dict()
     processed_results['dso'] = dict()
 
-    processed_results['tso'] = transmission_network.process_results_interface_power_flow(tso_model)
+    processed_results['tso'] = transmission_network.process_results_interface(tso_model)
     for node_id in distribution_networks:
         dso_model = dso_models[node_id]
         distribution_network = distribution_networks[node_id]
-        processed_results['dso'][node_id] = distribution_network.process_results_interface_power_flow(dso_model)
+        processed_results['dso'][node_id] = distribution_network.process_results_interface(dso_model)
 
     return processed_results
 

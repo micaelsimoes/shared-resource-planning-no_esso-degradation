@@ -77,7 +77,7 @@ class NetworkData:
         for year in self.years:
             results[year] = dict()
             for day in self.days:
-                results[year][day] = self.network[year][day].process_results_interface_power_flow(model[year][day])
+                results[year][day] = self.network[year][day].process_results_interface(model[year][day])
         return results
 
     def write_optimization_results_to_excel(self, results):
