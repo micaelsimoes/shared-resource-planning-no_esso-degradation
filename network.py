@@ -1996,7 +1996,7 @@ def _process_results_interface_power_flow(network, model):
         for dn in model.active_distribution_networks:
 
             node_id = network.active_distribution_network_nodes[dn]
-            node_idx = network.get_node_idx(node_id)
+            node_idx = network.get_adn_load_idx(node_id)
 
             # Power flow results per market and operation scenario
             results[node_id] = dict()
