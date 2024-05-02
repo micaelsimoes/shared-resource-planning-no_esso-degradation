@@ -2024,7 +2024,7 @@ def _write_interface_results_to_excel(planning_problem, workbook, results):
                 sheet.cell(row=row_idx, column=2).value = 'DSO'
                 sheet.cell(row=row_idx, column=3).value = int(year)
                 sheet.cell(row=row_idx, column=4).value = day
-                sheet.cell(row=row_idx, column=5).value = 'V, [p.u.]'
+                sheet.cell(row=row_idx, column=5).value = 'Vmag, [p.u.]'
                 sheet.cell(row=row_idx, column=6).value = 'Expected'
                 sheet.cell(row=row_idx, column=7).value = '-'
                 for p in range(planning_problem.num_instants):

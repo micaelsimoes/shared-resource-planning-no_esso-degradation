@@ -2032,7 +2032,7 @@ def _process_results_interface(network, model):
                     vmag = pe.value(model.e_actual[ref_node_idx, s_m, s_o, p])
                     pf_p = pe.value(model.pg[ref_gen_idx, s_m, s_o, p]) * network.baseMVA
                     pf_q = pe.value(model.qg[ref_gen_idx, s_m, s_o, p]) * network.baseMVA
-                    results[s_m][s_o]['v'][p] = pf_p
+                    results[s_m][s_o]['v'][p] = vmag
                     results[s_m][s_o]['p'][p] = pf_p
                     results[s_m][s_o]['q'][p] = pf_q
 
