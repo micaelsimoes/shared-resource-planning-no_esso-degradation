@@ -2252,7 +2252,7 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
                         row_idx = row_idx + 1
 
                         # - sch_up
-                        sheet.cell(row=row_idx, column=1).value = es_id
+                        sheet.cell(row=row_idx, column=1).value = node_id
                         sheet.cell(row=row_idx, column=2).value = int(year)
                         sheet.cell(row=row_idx, column=3).value = day
                         sheet.cell(row=row_idx, column=4).value = 'Shared Energy Storage, sch_up'
@@ -2265,7 +2265,7 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
                         row_idx = row_idx + 1
 
                         # - sch_down
-                        sheet.cell(row=row_idx, column=1).value = es_id
+                        sheet.cell(row=row_idx, column=1).value = node_id
                         sheet.cell(row=row_idx, column=2).value = int(year)
                         sheet.cell(row=row_idx, column=3).value = day
                         sheet.cell(row=row_idx, column=4).value = 'Shared Energy Storage, sch_down'
@@ -2278,7 +2278,7 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
                         row_idx = row_idx + 1
 
                         # - sdch_up
-                        sheet.cell(row=row_idx, column=1).value = es_id
+                        sheet.cell(row=row_idx, column=1).value = node_id
                         sheet.cell(row=row_idx, column=2).value = int(year)
                         sheet.cell(row=row_idx, column=3).value = day
                         sheet.cell(row=row_idx, column=4).value = 'Shared Energy Storage, sdch_up'
@@ -2291,7 +2291,7 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
                         row_idx = row_idx + 1
 
                         # - sdch_down
-                        sheet.cell(row=row_idx, column=1).value = es_id
+                        sheet.cell(row=row_idx, column=1).value = node_id
                         sheet.cell(row=row_idx, column=2).value = int(year)
                         sheet.cell(row=row_idx, column=3).value = day
                         sheet.cell(row=row_idx, column=4).value = 'Shared Energy Storage, sdch_down'
