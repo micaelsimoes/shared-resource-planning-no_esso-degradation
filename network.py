@@ -1771,10 +1771,10 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['shared_energy_storages']['soc'][node_id] = []
                 processed_results['scenarios'][s_m][s_o]['shared_energy_storages']['soc_percent'][node_id] = []
                 for p in model.periods:
-                    s_ess = pe.value(model.shared_es_sch[e, s_m, s_o, p] - model.shared_es_sdch[e, s_m, s_o, p]) * network.baseMVA
-                    p_ess = pe.value(model.shared_es_pch[e, s_m, s_o, p] - model.shared_es_pdch[e, s_m, s_o, p]) * network.baseMVA
-                    q_ess = pe.value(model.shared_es_qch[e, s_m, s_o, p] - model.shared_es_qdch[e, s_m, s_o, p]) * network.baseMVA
-                    soc_ess = pe.value(model.shared_es_soc[e, s_m, s_o, p]) * network.baseMVA
+                    s_ess = pe.value(model.shared_es_sch[e,  p] - model.shared_es_sdch[e, p]) * network.baseMVA
+                    p_ess = pe.value(model.shared_es_pch[e, p] - model.shared_es_pdch[e, p]) * network.baseMVA
+                    q_ess = pe.value(model.shared_es_qch[e, p] - model.shared_es_qdch[e, p]) * network.baseMVA
+                    soc_ess = pe.value(model.shared_es_soc[e, p]) * network.baseMVA
                     processed_results['scenarios'][s_m][s_o]['shared_energy_storages']['p'][node_id].append(p_ess)
                     processed_results['scenarios'][s_m][s_o]['shared_energy_storages']['q'][node_id].append(q_ess)
                     processed_results['scenarios'][s_m][s_o]['shared_energy_storages']['s'][node_id].append(s_ess)
@@ -1836,13 +1836,13 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final_up'][node_id] = [0.00 for _ in range(network.num_instants)]
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final_down'][node_id] = [0.00 for _ in range(network.num_instants)]
                 for p in model.periods:
-                    slack_comp = pe.value(model.slack_shared_es_comp[e, s_m, s_o, p])
-                    slack_sch_up = pe.value(model.slack_shared_es_sch_up[e, s_m, s_o, p])
-                    slack_sch_down = pe.value(model.slack_shared_es_sch_down[e, s_m, s_o, p])
-                    slack_sdch_up = pe.value(model.slack_shared_es_sdch_up[e, s_m, s_o, p])
-                    slack_sdch_down = pe.value(model.slack_shared_es_sdch_down[e, s_m, s_o, p])
-                    slack_soc_up = pe.value(model.slack_shared_es_soc_up[e, s_m, s_o, p])
-                    slack_soc_down = pe.value(model.slack_shared_es_soc_down[e, s_m, s_o, p])
+                    slack_comp = pe.value(model.slack_shared_es_comp[e, p])
+                    slack_sch_up = pe.value(model.slack_shared_es_sch_up[e, p])
+                    slack_sch_down = pe.value(model.slack_shared_es_sch_down[e, p])
+                    slack_sdch_up = pe.value(model.slack_shared_es_sdch_up[e, p])
+                    slack_sdch_down = pe.value(model.slack_shared_es_sdch_down[e, p])
+                    slack_soc_up = pe.value(model.slack_shared_es_soc_up[e, p])
+                    slack_soc_down = pe.value(model.slack_shared_es_soc_down[e, p])
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'][node_id].append(slack_comp)
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sch_up'][node_id].append(slack_sch_up)
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sch_down'][node_id].append(slack_sch_down)
@@ -1850,8 +1850,8 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sdch_down'][node_id].append(slack_sdch_down)
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_up'][node_id].append(slack_soc_up)
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_down'][node_id].append(slack_soc_down)
-                slack_soc_final_up = pe.value(model.slack_shared_es_soc_final_up[e, s_m, s_o])
-                slack_soc_final_down = pe.value(model.slack_shared_es_soc_final_down[e, s_m, s_o])
+                slack_soc_final_up = pe.value(model.slack_shared_es_soc_final_up[e])
+                slack_soc_final_down = pe.value(model.slack_shared_es_soc_final_down[e])
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final_up'][node_id][network.num_instants-1] = slack_soc_final_up
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final_down'][node_id][network.num_instants-1] = slack_soc_final_down
 
