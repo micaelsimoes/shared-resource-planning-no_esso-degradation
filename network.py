@@ -448,8 +448,6 @@ def _build_model(network, params):
     model.shared_es_qdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     for e in model.shared_energy_storages:
         shared_energy_storage = network.shared_energy_storages[e]
-        model.shared_es_s_rated_fixed[e].fix(shared_energy_storage.s)
-        model.shared_es_e_rated_fixed[e].fix(shared_energy_storage.e)
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
                 for p in model.periods:
