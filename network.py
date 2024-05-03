@@ -445,7 +445,7 @@ def _build_model(network, params):
     model.shared_es_qch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.shared_es_sdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.shared_es_pdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.shared_es_pdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+    model.shared_es_qdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     for e in model.shared_energy_storages:
         shared_energy_storage = network.shared_energy_storages[e]
         model.shared_es_s_rated_fixed[e].fix(shared_energy_storage.s)
@@ -749,6 +749,7 @@ def _build_model(network, params):
                     for e in model.shared_energy_storages:
                         if network.shared_energy_storages[e].bus == node.bus_i:
                             Pd += (model.shared_es_pch[e, s_m, s_o, p] - model.shared_es_pdch[e, s_m, s_o, p])
+                            Qd += (model.shared_es_qch[e, s_m, s_o, p] - model.shared_es_qdch[e, s_m, s_o, p])
 
                     Pg = 0.0
                     Qg = 0.0
@@ -890,32 +891,44 @@ def _build_model(network, params):
             for e in model.shared_energy_storages:
                 for p in model.periods:
                     expected_sess_p = 0.0
+                    expected_sess_q = 0.0
                     for s_m in model.scenarios_market:
                         omega_m = network.prob_market_scenarios[s_m]
                         for s_o in model.scenarios_operation:
                             omega_o = network.prob_operation_scenarios[s_o]
                             pch = model.shared_es_pch[e, s_m, s_o, p]
                             pdch = model.shared_es_pdch[e, s_m, s_o, p]
+                            qch = model.shared_es_qch[e, s_m, s_o, p]
+                            qdch = model.shared_es_qdch[e, s_m, s_o, p]
                             expected_sess_p += (pch - pdch) * omega_m * omega_o
+                            expected_sess_p += (qch - qdch) * omega_m * omega_o
                     if params.slacks:
                         model.expected_shared_ess_power.add(model.expected_shared_ess_p[e, p] == expected_sess_p + model.slack_expected_shared_ess_p_up[e, p] - model.slack_expected_shared_ess_p_down[e, p])
+                        model.expected_shared_ess_power.add(model.expected_shared_ess_q[e, p] == expected_sess_q + model.slack_expected_shared_ess_q_up[e, p] - model.slack_expected_shared_ess_q_down[e, p])
                     else:
                         model.expected_shared_ess_power.add(model.expected_shared_ess_p[e, p] == expected_sess_p)
+                        model.expected_shared_ess_power.add(model.expected_shared_ess_q[e, p] == expected_sess_q)
         else:
             shared_ess_idx = network.get_shared_energy_storage_idx(ref_node_id)
             for p in model.periods:
                 expected_sess_p = 0.0
+                expected_sess_q = 0.0
                 for s_m in model.scenarios_market:
                     omega_m = network.prob_market_scenarios[s_m]
                     for s_o in model.scenarios_operation:
                         omega_s = network.prob_operation_scenarios[s_o]
                         pch = model.shared_es_pch[shared_ess_idx, s_m, s_o, p]
                         pdch = model.shared_es_pdch[shared_ess_idx, s_m, s_o, p]
+                        qch = model.shared_es_qch[shared_ess_idx, s_m, s_o, p]
+                        qdch = model.shared_es_qdch[shared_ess_idx, s_m, s_o, p]
                         expected_sess_p += (pch - pdch) * omega_m * omega_s
+                        expected_sess_q += (qch - qdch) * omega_m * omega_s
                 if params.slacks:
                     model.expected_shared_ess_power.add(model.expected_shared_ess_p[p] == expected_sess_p + model.slack_expected_shared_ess_p_up[p] - model.slack_expected_shared_ess_p_down[p])
+                    model.expected_shared_ess_power.add(model.expected_shared_ess_q[p] == expected_sess_q + model.slack_expected_shared_ess_q_up[p] - model.slack_expected_shared_ess_q_down[p])
                 else:
                     model.expected_shared_ess_power.add(model.expected_shared_ess_p[p] == expected_sess_p)
+                    model.expected_shared_ess_power.add(model.expected_shared_ess_q[p] == expected_sess_q)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective Function
@@ -1022,7 +1035,8 @@ def _build_model(network, params):
         for e in model.shared_energy_storages:
             for p in model.periods:
                 slack_p = model.slack_expected_shared_ess_p_up[e, p] + model.slack_expected_shared_ess_p_down[e, p]
-                obj += PENALTY_SLACK * slack_p
+                slack_q = model.slack_expected_shared_ess_q_up[e, p] + model.slack_expected_shared_ess_q_down[e, p]
+                obj += PENALTY_SLACK * (slack_p + slack_q)
     else:
         for p in model.periods:
             slack_vmag = model.slack_expected_interface_vmag_sqr_up[p] + model.slack_expected_interface_vmag_sqr_down[p]
@@ -1030,7 +1044,8 @@ def _build_model(network, params):
             slack_q = model.slack_expected_interface_pf_q_up[p] + model.slack_expected_interface_pf_q_down[p]
             obj += PENALTY_SLACK * (slack_vmag + slack_p + slack_q)
             slack_p_ess = model.slack_expected_shared_ess_p_up[p] + model.slack_expected_shared_ess_p_down[p]
-            obj += PENALTY_SLACK * slack_p_ess
+            slack_q_ess = model.slack_expected_shared_ess_q_up[p] + model.slack_expected_shared_ess_q_down[p]
+            obj += PENALTY_SLACK * (slack_p_ess + slack_q_ess)
 
     # Operation slacks
     if params.slacks:
