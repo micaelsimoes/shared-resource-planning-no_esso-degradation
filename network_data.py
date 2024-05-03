@@ -2039,7 +2039,7 @@ def _write_relaxation_slacks_interface_results_to_excel(network_planning, workbo
                 sheet.cell(row=row_idx, column=3).value = day
                 sheet.cell(row=row_idx, column=4).value = 'ess_p, up'
                 for p in range(network_planning.num_instants):
-                    ess_p_up = results[year][day]['relaxation_slacks']['interface']['shared_ess_p_up'][node_id][p]
+                    ess_p_up = results[year][day]['relaxation_slacks']['interface']['ess_p_up'][node_id][p]
                     sheet.cell(row=row_idx, column=p + 5).value = ess_p_up
                     sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
                 row_idx = row_idx + 1
@@ -2050,7 +2050,7 @@ def _write_relaxation_slacks_interface_results_to_excel(network_planning, workbo
                 sheet.cell(row=row_idx, column=3).value = day
                 sheet.cell(row=row_idx, column=4).value = 'ess_p, down'
                 for p in range(network_planning.num_instants):
-                    ess_p_down = results[year][day]['relaxation_slacks']['interface']['shared_ess_p_down'][node_id][p]
+                    ess_p_down = results[year][day]['relaxation_slacks']['interface']['ess_p_down'][node_id][p]
                     sheet.cell(row=row_idx, column=p + 5).value = ess_p_down
                     sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
                 row_idx = row_idx + 1
@@ -2061,7 +2061,7 @@ def _write_relaxation_slacks_interface_results_to_excel(network_planning, workbo
                 sheet.cell(row=row_idx, column=3).value = day
                 sheet.cell(row=row_idx, column=4).value = 'ess_q, up'
                 for p in range(network_planning.num_instants):
-                    ess_q_up = results[year][day]['relaxation_slacks']['interface']['shared_ess_q_up'][node_id][p]
+                    ess_q_up = results[year][day]['relaxation_slacks']['interface']['ess_q_up'][node_id][p]
                     sheet.cell(row=row_idx, column=p + 5).value = ess_q_up
                     sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
                 row_idx = row_idx + 1
@@ -2072,7 +2072,7 @@ def _write_relaxation_slacks_interface_results_to_excel(network_planning, workbo
                 sheet.cell(row=row_idx, column=3).value = day
                 sheet.cell(row=row_idx, column=4).value = 'ess_q, down'
                 for p in range(network_planning.num_instants):
-                    ess_q_up = results[year][day]['relaxation_slacks']['interface']['shared_ess_q_down'][node_id][p]
+                    ess_q_up = results[year][day]['relaxation_slacks']['interface']['ess_q_down'][node_id][p]
                     sheet.cell(row=row_idx, column=p + 5).value = ess_q_up
                     sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
                 row_idx = row_idx + 1
