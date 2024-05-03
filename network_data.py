@@ -1717,11 +1717,15 @@ def _write_shared_network_energy_storage_results_to_excel(network_planning, work
             network = network_planning.network[year][day]
 
             expected_p = dict()
+            expected_q = dict()
+            expected_s = dict()
             expected_soc = dict()
             expected_soc_perc = dict()
 
             for energy_storage in network.shared_energy_storages:
                 expected_p[energy_storage.bus] = [0.0 for _ in range(network.num_instants)]
+                expected_q[energy_storage.bus] = [0.0 for _ in range(network.num_instants)]
+                expected_s[energy_storage.bus] = [0.0 for _ in range(network.num_instants)]
                 expected_soc[energy_storage.bus] = [0.0 for _ in range(network.num_instants)]
                 expected_soc_perc[energy_storage.bus] = [0.0 for _ in range(network.num_instants)]
 
@@ -1746,6 +1750,40 @@ def _write_shared_network_energy_storage_results_to_excel(network_planning, work
                                 expected_p[node_id][p] += pc * omega_m * omega_s
                             else:
                                 expected_p[node_id][p] = 'N/A'
+                        row_idx = row_idx + 1
+
+                        # - Reactive Power
+                        sheet.cell(row=row_idx, column=1).value = node_id
+                        sheet.cell(row=row_idx, column=2).value = int(year)
+                        sheet.cell(row=row_idx, column=3).value = day
+                        sheet.cell(row=row_idx, column=4).value = 'Q, [MVAr]'
+                        sheet.cell(row=row_idx, column=5).value = s_m
+                        sheet.cell(row=row_idx, column=6).value = s_o
+                        for p in range(network.num_instants):
+                            qc = results[year][day]['scenarios'][s_m][s_o]['shared_energy_storages']['q'][node_id][p]
+                            sheet.cell(row=row_idx, column=p + 7).value = qc
+                            sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
+                            if qc != 'N/A':
+                                expected_q[node_id][p] += qc * omega_m * omega_s
+                            else:
+                                expected_q[node_id][p] = 'N/A'
+                        row_idx = row_idx + 1
+
+                        # - Apparent Power
+                        sheet.cell(row=row_idx, column=1).value = node_id
+                        sheet.cell(row=row_idx, column=2).value = int(year)
+                        sheet.cell(row=row_idx, column=3).value = day
+                        sheet.cell(row=row_idx, column=4).value = 'S, [MVA]'
+                        sheet.cell(row=row_idx, column=5).value = s_m
+                        sheet.cell(row=row_idx, column=6).value = s_o
+                        for p in range(network.num_instants):
+                            sc = results[year][day]['scenarios'][s_m][s_o]['shared_energy_storages']['s'][node_id][p]
+                            sheet.cell(row=row_idx, column=p + 7).value = sc
+                            sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
+                            if sc != 'N/A':
+                                expected_s[node_id][p] += sc * omega_m * omega_s
+                            else:
+                                expected_s[node_id][p] = 'N/A'
                         row_idx = row_idx + 1
 
                         # - SoC, [MWh]
@@ -1795,6 +1833,30 @@ def _write_shared_network_energy_storage_results_to_excel(network_planning, work
                 sheet.cell(row=row_idx, column=6).value = '-'
                 for p in range(network.num_instants):
                     sheet.cell(row=row_idx, column=p + 7).value = expected_p[node_id][p]
+                    sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - Reactive Power
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year)
+                sheet.cell(row=row_idx, column=3).value = day
+                sheet.cell(row=row_idx, column=4).value = 'Q, [MVAr]'
+                sheet.cell(row=row_idx, column=5).value = 'Expected'
+                sheet.cell(row=row_idx, column=6).value = '-'
+                for p in range(network.num_instants):
+                    sheet.cell(row=row_idx, column=p + 7).value = expected_q[node_id][p]
+                    sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - Apparent Power
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year)
+                sheet.cell(row=row_idx, column=3).value = day
+                sheet.cell(row=row_idx, column=4).value = 'S, [MVA]'
+                sheet.cell(row=row_idx, column=5).value = 'Expected'
+                sheet.cell(row=row_idx, column=6).value = '-'
+                for p in range(network.num_instants):
+                    sheet.cell(row=row_idx, column=p + 7).value = expected_s[node_id][p]
                     sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                 row_idx = row_idx + 1
 
