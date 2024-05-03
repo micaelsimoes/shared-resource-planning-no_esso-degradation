@@ -433,8 +433,6 @@ def _build_model(network, params):
     # - Shared Energy Storage devices
     model.shared_es_s_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)
     model.shared_es_e_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)
-    model.shared_es_s_rated_fixed = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)          # Benders' -- used to get the dual variables (sensitivities)
-    model.shared_es_e_rated_fixed = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)          # (...)
     model.shared_es_s_slack_up = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)             # Benders' -- ensures feasibility of the subproblem
     model.shared_es_s_slack_down = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)           # (...)
     model.shared_es_e_slack_up = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)
@@ -448,8 +446,8 @@ def _build_model(network, params):
     model.shared_es_qdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     for e in model.shared_energy_storages:
         shared_energy_storage = network.shared_energy_storages[e]
-        model.shared_es_s_rated_fixed[e].fix(shared_energy_storage.s)
-        model.shared_es_e_rated_fixed[e].fix(shared_energy_storage.e)
+        model.shared_es_s_rated[e].fix(shared_energy_storage.s)
+        model.shared_es_e_rated[e].fix(shared_energy_storage.e)
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
                 for p in model.periods:
@@ -717,8 +715,8 @@ def _build_model(network, params):
                 else:
                     model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final)
 
-        model.shared_energy_storage_s_sensitivities.add(model.shared_es_s_rated[e] == model.shared_es_s_rated_fixed[e] + model.shared_es_s_slack_up[e] - model.shared_es_s_slack_down[e])
-        model.shared_energy_storage_e_sensitivities.add(model.shared_es_e_rated[e] == model.shared_es_e_rated_fixed[e] + model.shared_es_e_slack_up[e] - model.shared_es_e_slack_down[e])
+        #model.shared_energy_storage_s_sensitivities.add(model.shared_es_s_rated[e] == model.shared_es_s_rated_fixed[e] + model.shared_es_s_slack_up[e] - model.shared_es_s_slack_down[e])
+        #model.shared_energy_storage_e_sensitivities.add(model.shared_es_e_rated[e] == model.shared_es_e_rated_fixed[e] + model.shared_es_e_slack_up[e] - model.shared_es_e_slack_down[e])
 
     # - Node Balance constraints
     model.node_balance_cons_p = pe.ConstraintList()
