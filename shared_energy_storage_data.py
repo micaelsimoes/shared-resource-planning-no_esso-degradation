@@ -1,5 +1,5 @@
 import os
-from math import isclose
+from math import isclose, acos, tan
 import pandas as pd
 import pyomo.opt as po
 import pyomo.environ as pe
@@ -181,6 +181,7 @@ def _build_subproblem_model(shared_ess_data):
     model.es_e_degradation = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_soc = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_pnet = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals, initialize=0.0)
+    model.es_qnet = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals, initialize=0.0)
     model.es_penalty_pnet_up = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_penalty_pnet_down = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_penalty_soc_up = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -202,8 +203,12 @@ def _build_subproblem_model(shared_ess_data):
         model.es_penalty_e_available_per_unit_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
         model.es_penalty_e_available_per_unit_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_soc_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_sch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_pch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+    model.es_qch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.Reals, initialize=0.00)
+    model.es_sdch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_pdch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+    model.es_qdch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.Reals, initialize=0.00)
     model.es_avg_ch_dch_day = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_soh_per_unit_day = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=1.00, bounds=(0.00, 1.00))
     model.es_degradation_per_unit_day = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
@@ -317,9 +322,9 @@ def _build_subproblem_model(shared_ess_data):
                     day = repr_days[d]
                     num_days = shared_ess_data.days[day]
                     for p in model.periods:
-                        pch = model.es_pch_per_unit[e, y_inv, y, d, p]
-                        pdch = model.es_pdch_per_unit[e, y_inv, y, d, p]
-                        avg_ch_dch += (num_days / 365.00) * (pch + pdch)
+                        sch = model.es_sch_per_unit[e, y_inv, y, d, p]
+                        sdch = model.es_sdch_per_unit[e, y_inv, y, d, p]
+                        avg_ch_dch += (num_days / 365.00) * (sch + sdch)
                 if shared_ess_data.params.slacks:
                     model.energy_storage_charging_discharging.add(model.es_avg_ch_dch_day[e, y_inv, y] == avg_ch_dch + model.es_penalty_avg_ch_dch_day_up[e, y_inv, y] - model.es_penalty_avg_ch_dch_day_down[e, y_inv, y])
                 else:
@@ -386,18 +391,40 @@ def _build_subproblem_model(shared_ess_data):
 
             year_inv = repr_years[y_inv]
             shared_energy_storage = shared_ess_data.shared_energy_storages[year_inv][e]
-            eff_charge, eff_discharge = shared_energy_storage.eff_ch, shared_energy_storage.eff_dch
+            eff_charge = shared_energy_storage.eff_ch
+            eff_discharge = shared_energy_storage.eff_dch
+            max_phi = acos(shared_energy_storage.max_pf)
+            min_phi = acos(shared_energy_storage.min_pf)
 
             for y in model.years:
 
+                s_max = model.es_s_available_per_unit[e, y_inv, y]
                 soc_init = model.es_e_available_per_unit[e, y_inv, y] * ENERGY_STORAGE_RELATIVE_INIT_SOC
                 soc_final = model.es_e_available_per_unit[e, y_inv, y] * ENERGY_STORAGE_RELATIVE_INIT_SOC
 
                 for d in model.days:
                     for p in model.periods:
 
+                        sch = model.es_pch_per_unit[e, y_inv, y, d, p]
                         pch = model.es_pch_per_unit[e, y_inv, y, d, p]
+                        qch = model.es_pch_per_unit[e, y_inv, y, d, p]
+                        sdch = model.es_pdch_per_unit[e, y_inv, y, d, p]
                         pdch = model.es_pdch_per_unit[e, y_inv, y, d, p]
+                        qdch = model.es_pdch_per_unit[e, y_inv, y, d, p]
+
+                        model.energy_storage_operation.add(sch <= s_max)
+                        model.energy_storage_operation.add(pch <= s_max)
+                        model.energy_storage_operation.add(qch <= s_max)
+                        model.energy_storage_operation.add(qch <= tan(max_phi) * pch)
+                        model.energy_storage_operation.add(qch >= -s_max)
+                        model.energy_storage_operation.add(qch >= tan(min_phi) * pch)
+
+                        model.energy_storage_operation.add(sdch <= s_max)
+                        model.energy_storage_operation.add(pdch <= s_max)
+                        model.energy_storage_operation.add(qdch <= s_max)
+                        model.energy_storage_operation.add(qdch <= tan(max_phi) * pdch)
+                        model.energy_storage_operation.add(qdch >= -s_max)
+                        model.energy_storage_operation.add(qdch >= tan(min_phi) * pdch)
 
                         if p > 0:
                             model.energy_storage_balance.add(model.es_soc_per_unit[e, y_inv, y, d, p] - model.es_soc_per_unit[e, y_inv, y, d, p - 1] == pch * eff_charge - pdch / eff_discharge)
@@ -406,9 +433,9 @@ def _build_subproblem_model(shared_ess_data):
 
                         # Charging/discharging complementarity constraint
                         if shared_ess_data.params.slacks:
-                            model.energy_storage_ch_dch_exclusion.add(pch * pdch <= model.es_penalty_comp[e, y_inv, y, d, p])
+                            model.energy_storage_ch_dch_exclusion.add(sch * sdch <= model.es_penalty_comp[e, y_inv, y, d, p])
                         else:
-                            model.energy_storage_ch_dch_exclusion.add(pch * pdch == 0.00)
+                            model.energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
 
                     model.energy_storage_day_balance.add(model.es_soc_per_unit[e, y_inv, y, d, len(model.periods) - 1] == soc_final)
 
@@ -419,11 +446,14 @@ def _build_subproblem_model(shared_ess_data):
             for d in model.days:
                 for p in model.periods:
                     agg_pnet = 0.00
+                    agg_qnet = 0.00
                     agg_soc = 0.00
                     for y_inv in model.years:
                         agg_pnet += (model.es_pch_per_unit[e, y_inv, y, d, p] - model.es_pdch_per_unit[e, y_inv, y, d, p])
+                        agg_pnet += (model.es_qch_per_unit[e, y_inv, y, d, p] - model.es_qdch_per_unit[e, y_inv, y, d, p])
                         agg_soc += model.es_soc_per_unit[e, y_inv, y, d, p]
                     model.energy_storage_operation_agg.add(model.es_pnet[e, y, d, p] == agg_pnet + model.es_penalty_pnet_up[e, y, d, p] - model.es_penalty_pnet_down[e, y, d, p])
+                    model.energy_storage_operation_agg.add(model.es_qnet[e, y, d, p] == agg_qnet + model.es_penalty_qnet_up[e, y, d, p] - model.es_penalty_qnet_down[e, y, d, p])
                     model.energy_storage_operation_agg.add(model.es_soc[e, y, d, p] == agg_soc + model.es_penalty_soc_up[e, y, d, p] - model.es_penalty_soc_down[e, y, d, p])
 
     # - Sinv and Einv fixing constraints
