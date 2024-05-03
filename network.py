@@ -439,29 +439,27 @@ def _build_model(network, params):
     model.shared_es_s_slack_down = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)           # (...)
     model.shared_es_e_slack_up = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)
     model.shared_es_e_slack_down = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)
-    model.shared_es_soc = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-    model.shared_es_sch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.shared_es_pch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.shared_es_qch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
-    model.shared_es_sdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.shared_es_pdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.shared_es_qdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+    model.shared_es_soc = pe.Var(model.shared_energy_storages, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+    model.shared_es_sch = pe.Var(model.shared_energy_storages, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    model.shared_es_pch = pe.Var(model.shared_energy_storages, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    model.shared_es_qch = pe.Var(model.shared_energy_storages, model.periods, domain=pe.Reals, initialize=0.0)
+    model.shared_es_sdch = pe.Var(model.shared_energy_storages, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    model.shared_es_pdch = pe.Var(model.shared_energy_storages, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    model.shared_es_qdch = pe.Var(model.shared_energy_storages, model.periods, domain=pe.Reals, initialize=0.0)
     for e in model.shared_energy_storages:
         shared_energy_storage = network.shared_energy_storages[e]
-        for s_m in model.scenarios_market:
-            for s_o in model.scenarios_operation:
-                for p in model.periods:
-                    model.shared_es_soc[e, s_m, s_o, p] = shared_energy_storage.e * ENERGY_STORAGE_RELATIVE_INIT_SOC
+        for p in model.periods:
+            model.shared_es_soc[e, p] = shared_energy_storage.e * ENERGY_STORAGE_RELATIVE_INIT_SOC
     if params.slacks:
-        model.slack_shared_es_comp = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_shared_es_sch_up = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_shared_es_sch_down = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_shared_es_sdch_up = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_shared_es_sdch_down = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_shared_es_soc_up = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_shared_es_soc_down = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_shared_es_soc_final_up = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_shared_es_soc_final_down = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_shared_es_comp = pe.Var(model.shared_energy_storages, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_shared_es_sch_up = pe.Var(model.shared_energy_storages, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_shared_es_sch_down = pe.Var(model.shared_energy_storages, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_shared_es_sdch_up = pe.Var(model.shared_energy_storages, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_shared_es_sdch_down = pe.Var(model.shared_energy_storages, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_shared_es_soc_up = pe.Var(model.shared_energy_storages, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_shared_es_soc_down = pe.Var(model.shared_energy_storages, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_shared_es_soc_final_up = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_shared_es_soc_final_down = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.0)
 
     # - Expected interface power flow
     if network.is_transmission:
@@ -655,65 +653,63 @@ def _build_model(network, params):
         soc_init = model.shared_es_e_rated[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC
         soc_final = model.shared_es_e_rated[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC
 
-        for s_m in model.scenarios_market:
-            for s_o in model.scenarios_operation:
-                for p in model.periods:
+        for p in model.periods:
 
-                    sch = model.shared_es_sch[e, s_m, s_o, p]
-                    pch = model.shared_es_pch[e, s_m, s_o, p]
-                    qch = model.shared_es_qch[e, s_m, s_o, p]
-                    sdch = model.shared_es_sdch[e, s_m, s_o, p]
-                    pdch = model.shared_es_pdch[e, s_m, s_o, p]
-                    qdch = model.shared_es_qdch[e, s_m, s_o, p]
+            sch = model.shared_es_sch[e, p]
+            pch = model.shared_es_pch[e, p]
+            qch = model.shared_es_qch[e, p]
+            sdch = model.shared_es_sdch[e, p]
+            pdch = model.shared_es_pdch[e, p]
+            qdch = model.shared_es_qdch[e, p]
 
-                    # ESS operation
-                    model.shared_energy_storage_operation.add(sch <= s_max)
-                    model.shared_energy_storage_operation.add(pch <= s_max)
-                    model.shared_energy_storage_operation.add(qch <= s_max)
-                    model.shared_energy_storage_operation.add(qch <= tan(max_phi) * pch)
-                    model.shared_energy_storage_operation.add(qch >= -s_max)
-                    model.shared_energy_storage_operation.add(qch >= tan(min_phi) * pch)
+            # ESS operation
+            model.shared_energy_storage_operation.add(sch <= s_max)
+            model.shared_energy_storage_operation.add(pch <= s_max)
+            model.shared_energy_storage_operation.add(qch <= s_max)
+            model.shared_energy_storage_operation.add(qch <= tan(max_phi) * pch)
+            model.shared_energy_storage_operation.add(qch >= -s_max)
+            model.shared_energy_storage_operation.add(qch >= tan(min_phi) * pch)
 
-                    model.shared_energy_storage_operation.add(sdch <= s_max)
-                    model.shared_energy_storage_operation.add(pdch <= s_max)
-                    model.shared_energy_storage_operation.add(qdch <= s_max)
-                    model.shared_energy_storage_operation.add(qdch <= tan(max_phi) * pdch)
-                    model.shared_energy_storage_operation.add(qdch >= -s_max)
-                    model.shared_energy_storage_operation.add(qdch >= tan(min_phi) * pdch)
+            model.shared_energy_storage_operation.add(sdch <= s_max)
+            model.shared_energy_storage_operation.add(pdch <= s_max)
+            model.shared_energy_storage_operation.add(qdch <= s_max)
+            model.shared_energy_storage_operation.add(qdch <= tan(max_phi) * pdch)
+            model.shared_energy_storage_operation.add(qdch >= -s_max)
+            model.shared_energy_storage_operation.add(qdch >= tan(min_phi) * pdch)
 
-                    model.shared_energy_storage_operation.add(model.shared_es_soc[e, s_m, s_o, p] <= soc_max)
-                    model.shared_energy_storage_operation.add(model.shared_es_soc[e, s_m, s_o, p] >= soc_min)
+            model.shared_energy_storage_operation.add(model.shared_es_soc[e, p] <= soc_max)
+            model.shared_energy_storage_operation.add(model.shared_es_soc[e, p] >= soc_min)
 
-                    if params.slacks:
-                        model.shared_energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2 + model.slack_shared_es_sch_up[e, s_m, s_o, p] - model.slack_shared_es_sch_down[e, s_m, s_o, p])
-                        model.shared_energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2 + model.slack_shared_es_sdch_up[e, s_m, s_o, p] - model.slack_shared_es_sdch_down[e, s_m, s_o, p])
-                    else:
-                        model.shared_energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
-                        model.shared_energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
+            if params.slacks:
+                model.shared_energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2 + model.slack_shared_es_sch_up[e, p] - model.slack_shared_es_sch_down[e, p])
+                model.shared_energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2 + model.slack_shared_es_sdch_up[e, p] - model.slack_shared_es_sdch_down[e, p])
+            else:
+                model.shared_energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
+                model.shared_energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
 
-                    # State-of-Charge
-                    if p > 0:
-                        if params.slacks:
-                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == model.shared_es_soc[e, s_m, s_o, p - 1] + (pch * eff_charge - pdch / eff_discharge) + model.slack_shared_es_soc_up[e, s_m, s_o, p] - model.slack_shared_es_soc_down[e, s_m, s_o, p])
-                        else:
-                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == model.shared_es_soc[e, s_m, s_o, p - 1] + (pch * eff_charge - pdch / eff_discharge))
-                    else:
-                        if params.slacks:
-                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == soc_init + (pch * eff_charge - pdch / eff_discharge) + model.slack_shared_es_soc_up[e, s_m, s_o, p] - model.slack_shared_es_soc_down[e, s_m, s_o, p])
-                        else:
-                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == soc_init + (pch * eff_charge - pdch / eff_discharge))
-
-                    # Charging/discharging complementarity constraints
-                    if params.slacks:
-                        model.shared_energy_storage_ch_dch_exclusion.add(pch * pdch <= model.slack_shared_es_comp[e, s_m, s_o, p])
-                    else:
-                        model.shared_energy_storage_ch_dch_exclusion.add(pch * pdch == 0.00)
-
-                # Day balance
+            # State-of-Charge
+            if p > 0:
                 if params.slacks:
-                    model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final + model.slack_shared_es_soc_final_up[e, s_m, s_o] - model.slack_shared_es_soc_final_down[e, s_m, s_o])
+                    model.shared_energy_storage_balance.add(model.shared_es_soc[e, p] == model.shared_es_soc[e, p - 1] + (pch * eff_charge - pdch / eff_discharge) + model.slack_shared_es_soc_up[e, p] - model.slack_shared_es_soc_down[e, p])
                 else:
-                    model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final)
+                    model.shared_energy_storage_balance.add(model.shared_es_soc[e, p] == model.shared_es_soc[e, p - 1] + (pch * eff_charge - pdch / eff_discharge))
+            else:
+                if params.slacks:
+                    model.shared_energy_storage_balance.add(model.shared_es_soc[e, p] == soc_init + (pch * eff_charge - pdch / eff_discharge) + model.slack_shared_es_soc_up[e, p] - model.slack_shared_es_soc_down[e, p])
+                else:
+                    model.shared_energy_storage_balance.add(model.shared_es_soc[e, p] == soc_init + (pch * eff_charge - pdch / eff_discharge))
+
+            # Charging/discharging complementarity constraints
+            if params.slacks:
+                model.shared_energy_storage_ch_dch_exclusion.add(pch * pdch <= model.slack_shared_es_comp[e, p])
+            else:
+                model.shared_energy_storage_ch_dch_exclusion.add(pch * pdch == 0.00)
+
+        # Day balance
+        if params.slacks:
+            model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, len(model.periods) - 1] == soc_final + model.slack_shared_es_soc_final_up[e] - model.slack_shared_es_soc_final_down[e])
+        else:
+            model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, len(model.periods) - 1] == soc_final)
 
         model.shared_energy_storage_s_sensitivities.add(model.shared_es_s_rated[e] == model.shared_es_s_rated_fixed[e] + model.shared_es_s_slack_up[e] - model.shared_es_s_slack_down[e])
         model.shared_energy_storage_e_sensitivities.add(model.shared_es_e_rated[e] == model.shared_es_e_rated_fixed[e] + model.shared_es_e_slack_up[e] - model.shared_es_e_slack_down[e])
@@ -746,8 +742,8 @@ def _build_model(network, params):
                                 Qd += (model.es_qch[e, s_m, s_o, p] - model.es_qdch[e, s_m, s_o, p])
                     for e in model.shared_energy_storages:
                         if network.shared_energy_storages[e].bus == node.bus_i:
-                            Pd += (model.shared_es_pch[e, s_m, s_o, p] - model.shared_es_pdch[e, s_m, s_o, p])
-                            Qd += (model.shared_es_qch[e, s_m, s_o, p] - model.shared_es_qdch[e, s_m, s_o, p])
+                            Pd += (model.shared_es_pch[e, p] - model.shared_es_pdch[e, p])
+                            Qd += (model.shared_es_qch[e, p] - model.shared_es_qdch[e, p])
 
                     Pg = 0.0
                     Qg = 0.0
@@ -888,18 +884,12 @@ def _build_model(network, params):
         if network.is_transmission:
             for e in model.shared_energy_storages:
                 for p in model.periods:
-                    expected_sess_p = 0.0
-                    expected_sess_q = 0.0
-                    for s_m in model.scenarios_market:
-                        omega_m = network.prob_market_scenarios[s_m]
-                        for s_o in model.scenarios_operation:
-                            omega_o = network.prob_operation_scenarios[s_o]
-                            pch = model.shared_es_pch[e, s_m, s_o, p]
-                            pdch = model.shared_es_pdch[e, s_m, s_o, p]
-                            qch = model.shared_es_qch[e, s_m, s_o, p]
-                            qdch = model.shared_es_qdch[e, s_m, s_o, p]
-                            expected_sess_p += (pch - pdch) * omega_m * omega_o
-                            expected_sess_q += (qch - qdch) * omega_m * omega_o
+                    pch = model.shared_es_pch[e, p]
+                    pdch = model.shared_es_pdch[e, p]
+                    qch = model.shared_es_qch[e, p]
+                    qdch = model.shared_es_qdch[e, p]
+                    expected_sess_p = (pch - pdch)
+                    expected_sess_q = (qch - qdch)
                     if params.slacks:
                         model.expected_shared_ess_power.add(model.expected_shared_ess_p[e, p] == expected_sess_p + model.slack_expected_shared_ess_p_up[e, p] - model.slack_expected_shared_ess_p_down[e, p])
                         model.expected_shared_ess_power.add(model.expected_shared_ess_q[e, p] == expected_sess_q + model.slack_expected_shared_ess_q_up[e, p] - model.slack_expected_shared_ess_q_down[e, p])
@@ -909,18 +899,12 @@ def _build_model(network, params):
         else:
             shared_ess_idx = network.get_shared_energy_storage_idx(ref_node_id)
             for p in model.periods:
-                expected_sess_p = 0.0
-                expected_sess_q = 0.0
-                for s_m in model.scenarios_market:
-                    omega_m = network.prob_market_scenarios[s_m]
-                    for s_o in model.scenarios_operation:
-                        omega_s = network.prob_operation_scenarios[s_o]
-                        pch = model.shared_es_pch[shared_ess_idx, s_m, s_o, p]
-                        pdch = model.shared_es_pdch[shared_ess_idx, s_m, s_o, p]
-                        qch = model.shared_es_qch[shared_ess_idx, s_m, s_o, p]
-                        qdch = model.shared_es_qdch[shared_ess_idx, s_m, s_o, p]
-                        expected_sess_p += (pch - pdch) * omega_m * omega_s
-                        expected_sess_q += (qch - qdch) * omega_m * omega_s
+                pch = model.shared_es_pch[shared_ess_idx, p]
+                pdch = model.shared_es_pdch[shared_ess_idx, p]
+                qch = model.shared_es_qch[shared_ess_idx, p]
+                qdch = model.shared_es_qdch[shared_ess_idx, p]
+                expected_sess_p = (pch - pdch)
+                expected_sess_q = (qch - qdch)
                 if params.slacks:
                     model.expected_shared_ess_power.add(model.expected_shared_ess_p[p] == expected_sess_p + model.slack_expected_shared_ess_p_up[p] - model.slack_expected_shared_ess_p_down[p])
                     model.expected_shared_ess_power.add(model.expected_shared_ess_q[p] == expected_sess_q + model.slack_expected_shared_ess_q_up[p] - model.slack_expected_shared_ess_q_down[p])
@@ -1076,16 +1060,16 @@ def _build_model(network, params):
                         slack_soc_final = model.slack_es_soc_final_up[e, s_m, s_o] + model.slack_es_soc_final_down[e, s_m, s_o]
                         obj += PENALTY_SLACK * slack_soc_final
 
-                # Shared ESS slacks
-                for e in model.shared_energy_storages:
-                    for p in model.periods:
-                        slack_comp = model.slack_shared_es_comp[e, s_m, s_o, p]
-                        slack_sch = model.slack_shared_es_sch_up[e, s_m, s_o, p] + model.slack_shared_es_sch_down[e, s_m, s_o, p]
-                        slack_sdch = model.slack_shared_es_sdch_up[e, s_m, s_o, p] + model.slack_shared_es_sdch_down[e, s_m, s_o, p]
-                        slack_soc = model.slack_shared_es_soc_up[e, s_m, s_o, p] + model.slack_shared_es_soc_down[e, s_m, s_o, p]
-                        obj += PENALTY_SLACK * (slack_comp + slack_sch + slack_sdch + slack_soc)
-                    slack_soc_final = model.slack_shared_es_soc_final_up[e, s_m, s_o] + model.slack_shared_es_soc_final_down[e, s_m, s_o]
-                    obj += PENALTY_SLACK * slack_soc_final
+        # Shared ESS slacks
+        for e in model.shared_energy_storages:
+            for p in model.periods:
+                slack_comp = model.slack_shared_es_comp[e, p]
+                slack_sch = model.slack_shared_es_sch_up[e, p] + model.slack_shared_es_sch_down[e, p]
+                slack_sdch = model.slack_shared_es_sdch_up[e,  p] + model.slack_shared_es_sdch_down[e, p]
+                slack_soc = model.slack_shared_es_soc_up[e, p] + model.slack_shared_es_soc_down[e, p]
+                obj += PENALTY_SLACK * (slack_comp + slack_sch + slack_sdch + slack_soc)
+            slack_soc_final = model.slack_shared_es_soc_final_up[e] + model.slack_shared_es_soc_final_down[e]
+            obj += PENALTY_SLACK * slack_soc_final
 
     model.objective = pe.Objective(sense=pe.minimize, expr=obj)
 
