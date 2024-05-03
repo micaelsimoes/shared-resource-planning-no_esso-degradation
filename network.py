@@ -901,7 +901,7 @@ def _build_model(network, params):
                             qch = model.shared_es_qch[e, s_m, s_o, p]
                             qdch = model.shared_es_qdch[e, s_m, s_o, p]
                             expected_sess_p += (pch - pdch) * omega_m * omega_o
-                            expected_sess_p += (qch - qdch) * omega_m * omega_o
+                            expected_sess_q += (qch - qdch) * omega_m * omega_o
                     if params.slacks:
                         model.expected_shared_ess_power.add(model.expected_shared_ess_p[e, p] == expected_sess_p + model.slack_expected_shared_ess_p_up[e, p] - model.slack_expected_shared_ess_p_down[e, p])
                         model.expected_shared_ess_power.add(model.expected_shared_ess_q[e, p] == expected_sess_q + model.slack_expected_shared_ess_q_up[e, p] - model.slack_expected_shared_ess_q_down[e, p])
