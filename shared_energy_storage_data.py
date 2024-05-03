@@ -184,6 +184,8 @@ def _build_subproblem_model(shared_ess_data):
     model.es_qnet = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals, initialize=0.0)
     model.es_penalty_pnet_up = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_penalty_pnet_down = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_penalty_qnet_up = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_penalty_qnet_down = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_penalty_soc_up = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_penalty_soc_down = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     if shared_ess_data.params.slacks:
@@ -477,8 +479,8 @@ def _build_subproblem_model(shared_ess_data):
             for d in model.days:
                 for p in model.periods:
                     slack_penalty += PENALTY_SLACK * (model.es_penalty_pnet_up[e, y_inv, d, p] + model.es_penalty_pnet_down[e, y_inv, d, p])
+                    slack_penalty += PENALTY_SLACK * (model.es_penalty_qnet_up[e, y_inv, d, p] + model.es_penalty_qnet_down[e, y_inv, d, p])
                     slack_penalty += PENALTY_SLACK * (model.es_penalty_soc_up[e, y_inv, d, p] + model.es_penalty_soc_down[e, y_inv, d, p])
-
 
             if shared_ess_data.params.slacks:
 
@@ -898,15 +900,21 @@ def _process_relaxation_variables_operation_aggregated(shared_ess_data, model):
                 processed_results[year][day][node_id] = dict()
                 processed_results[year][day][node_id]['pnet_up'] = list()
                 processed_results[year][day][node_id]['pnet_down'] = list()
+                processed_results[year][day][node_id]['qnet_up'] = list()
+                processed_results[year][day][node_id]['qnet_down'] = list()
                 processed_results[year][day][node_id]['soc_up'] = list()
                 processed_results[year][day][node_id]['soc_down'] = list()
                 for p in model.periods:
                     pnet_up = pe.value(model.es_penalty_pnet_up[e, y, d, p])
                     pnet_down = pe.value(model.es_penalty_pnet_down[e, y, d, p])
+                    qnet_up = pe.value(model.es_penalty_qnet_up[e, y, d, p])
+                    qnet_down = pe.value(model.es_penalty_qnet_down[e, y, d, p])
                     soc_up = pe.value(model.es_penalty_soc_up[e, y, d, p])
                     soc_down = pe.value(model.es_penalty_soc_up[e, y, d, p])
                     processed_results[year][day][node_id]['pnet_up'].append(pnet_up)
                     processed_results[year][day][node_id]['pnet_down'].append(pnet_down)
+                    processed_results[year][day][node_id]['qnet_up'].append(qnet_up)
+                    processed_results[year][day][node_id]['qnet_down'].append(qnet_down)
                     processed_results[year][day][node_id]['soc_up'].append(soc_up)
                     processed_results[year][day][node_id]['soc_down'].append(soc_down)
 
