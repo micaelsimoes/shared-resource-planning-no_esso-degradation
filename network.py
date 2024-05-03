@@ -705,9 +705,9 @@ def _build_model(network, params):
 
                     # Charging/discharging complementarity constraints
                     if params.slacks:
-                        model.shared_energy_storage_ch_dch_exclusion.add(pch * pdch <= model.slack_shared_es_comp[e, s_m, s_o, p])
+                        model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch <= model.slack_shared_es_comp[e, s_m, s_o, p])
                     else:
-                        model.shared_energy_storage_ch_dch_exclusion.add(pch * pdch == 0.00)
+                        model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
 
                 # Day balance
                 if params.slacks:
