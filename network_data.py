@@ -2369,7 +2369,7 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
                             sheet.cell(row=row_idx, column=5).value = s_m
                             sheet.cell(row=row_idx, column=6).value = s_o
                             for p in range(network_planning.num_instants):
-                                flex_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['up'][load_id][p]
+                                flex_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_up'][load_id][p]
                                 sheet.cell(row=row_idx, column=p + 7).value = flex_up
                                 sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                             row_idx = row_idx + 1
@@ -2382,7 +2382,7 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
                             sheet.cell(row=row_idx, column=5).value = s_m
                             sheet.cell(row=row_idx, column=6).value = s_o
                             for p in range(network_planning.num_instants):
-                                flex_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['flex']['down'][load_id][p]
+                                flex_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_down'][load_id][p]
                                 sheet.cell(row=row_idx, column=p + 7).value = flex_down
                                 sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                             row_idx = row_idx + 1
