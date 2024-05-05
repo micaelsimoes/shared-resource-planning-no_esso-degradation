@@ -193,8 +193,6 @@ def _build_subproblem_model(shared_ess_data):
     model.slack_es_qnet_down = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.slack_es_soc_up = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.slack_es_soc_down = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    if shared_ess_data.params.slacks:
-        model.slack_es_comp = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_s_rated_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_rated_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     if shared_ess_data.params.slacks:
@@ -216,6 +214,14 @@ def _build_subproblem_model(shared_ess_data):
     model.es_sdch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_pdch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_qdch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.Reals, initialize=0.00)
+    if shared_ess_data.params.slacks:
+        model.slack_es_comp_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_es_sch_per_unit_up = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_es_sch_per_unit_down = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_es_sdch_per_unit_up = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_es_sdch_per_unit_down = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_es_soc_per_unit_up = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_es_soc_per_unit_down = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_avg_ch_dch_day = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_soh_per_unit_day = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=1.00, bounds=(0.00, 1.00))
     model.es_degradation_per_unit_day = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
@@ -224,7 +230,6 @@ def _build_subproblem_model(shared_ess_data):
     model.es_soh_per_unit_cumul = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=1.00, bounds=(0.00, 1.00))
     model.es_degradation_per_unit_cumul = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
     if shared_ess_data.params.slacks:
-        model.slack_es_avg_ch_dch_day_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
         model.slack_es_avg_ch_dch_day_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
         model.slack_es_avg_ch_dch_day_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
         model.slack_es_soh_per_unit_day_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
@@ -430,8 +435,6 @@ def _build_subproblem_model(shared_ess_data):
             shared_energy_storage = shared_ess_data.shared_energy_storages[year_inv][e]
             eff_charge = shared_energy_storage.eff_ch
             eff_discharge = shared_energy_storage.eff_dch
-            max_phi = acos(shared_energy_storage.max_pf)
-            min_phi = acos(shared_energy_storage.min_pf)
 
             for y in model.years:
 
@@ -449,28 +452,27 @@ def _build_subproblem_model(shared_ess_data):
                         pdch = model.es_pdch_per_unit[e, y_inv, y, d, p]
                         qdch = model.es_pdch_per_unit[e, y_inv, y, d, p]
 
-                        model.energy_storage_operation.add(sch <= s_max)
-                        model.energy_storage_operation.add(pch <= s_max)
-                        model.energy_storage_operation.add(qch <= s_max)
-                        model.energy_storage_operation.add(qch <= tan(max_phi) * pch)
-                        model.energy_storage_operation.add(qch >= -s_max)
-                        model.energy_storage_operation.add(qch >= tan(min_phi) * pch)
-
-                        model.energy_storage_operation.add(sdch <= s_max)
-                        model.energy_storage_operation.add(pdch <= s_max)
-                        model.energy_storage_operation.add(qdch <= s_max)
-                        model.energy_storage_operation.add(qdch <= tan(max_phi) * pdch)
-                        model.energy_storage_operation.add(qdch >= -s_max)
-                        model.energy_storage_operation.add(qdch >= tan(min_phi) * pdch)
+                        if shared_ess_data.params.slacks:
+                            model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2 + model.slack_es_sch_per_unit_up[e, y_inv, y, d, p] - model.slack_es_sch_per_unit_down[e, y_inv, y, d, p])
+                            model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2 + model.slack_es_sdch_per_unit_up[e, y_inv, y, d, p] - model.slack_es_sdch_per_unit_down[e, y_inv, y, d, p])
+                        else:
+                            model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
+                            model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
 
                         if p > 0:
-                            model.energy_storage_balance.add(model.es_soc_per_unit[e, y_inv, y, d, p] - model.es_soc_per_unit[e, y_inv, y, d, p - 1] == sch * eff_charge - sdch / eff_discharge)
+                            if shared_ess_data.params.slacks:
+                                model.energy_storage_balance.add(model.es_soc_per_unit[e, y_inv, y, d, p] - model.es_soc_per_unit[e, y_inv, y, d, p - 1] == sch * eff_charge - sdch / eff_discharge + model.slack_es_soc_per_unit_up[e, y_inv, y, d, p] - model.slack_es_soc_per_unit_down[e, y_inv, y, d, p])
+                            else:
+                                model.energy_storage_balance.add(model.es_soc_per_unit[e, y_inv, y, d, p] - model.es_soc_per_unit[e, y_inv, y, d, p - 1] == sch * eff_charge - sdch / eff_discharge)
                         else:
-                            model.energy_storage_balance.add(model.es_soc_per_unit[e, y_inv, y, d, p] - soc_init == sch * eff_charge - sdch / eff_discharge)
+                            if shared_ess_data.params.slacks:
+                                model.energy_storage_balance.add(model.es_soc_per_unit[e, y_inv, y, d, p] - soc_init == sch * eff_charge - sdch / eff_discharge + model.slack_es_soc_per_unit_up[e, y_inv, y, d, p] - model.slack_es_soc_per_unit_down[e, y_inv, y, d, p])
+                            else:
+                                model.energy_storage_balance.add(model.es_soc_per_unit[e, y_inv, y, d, p] - soc_init == sch * eff_charge - sdch / eff_discharge)
 
                         # Charging/discharging complementarity constraint
                         if shared_ess_data.params.slacks:
-                            model.energy_storage_ch_dch_exclusion.add(sch * sdch <= model.slack_es_comp[e, y_inv, y, d, p])
+                            model.energy_storage_ch_dch_exclusion.add(sch * sdch <= model.slack_es_comp_per_unit[e, y_inv, y, d, p])
                         else:
                             model.energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
 
@@ -523,7 +525,10 @@ def _build_subproblem_model(shared_ess_data):
                 for y in model.years:
                     for d in model.days:
                         for p in model.periods:
-                            slack_penalty += PENALTY_SLACK * model.slack_es_comp[e, y_inv, y, d, p]
+                            slack_penalty += PENALTY_SLACK * model.slack_es_comp_per_unit[e, y_inv, y, d, p]
+                            slack_penalty += PENALTY_SLACK * (model.slack_es_sch_per_unit_up[e, y_inv, y, d, p] + model.slack_es_sch_per_unit_down[e, y_inv, y, d, p])
+                            slack_penalty += PENALTY_SLACK * (model.slack_es_sdch_per_unit_up[e, y_inv, y, d, p] + model.slack_es_sdch_per_unit_down[e, y_inv, y, d, p])
+                            slack_penalty += PENALTY_SLACK * (model.slack_es_soc_per_unit_up[e, y_inv, y, d, p] + model.slack_es_soc_per_unit_down[e, y_inv, y, d, p])
 
                 # - Aggregated rated power and energy capacity
                 slack_penalty += PENALTY_SLACK * (model.slack_es_s_rated_up[e, y_inv] + model.slack_es_s_rated_down[e, y_inv])
@@ -989,7 +994,7 @@ def _process_relaxation_variables_operation_detailed(shared_ess_data, model):
                     if shared_ess_data.params.slacks:
                         processed_results[year_inv][year_curr][day][node_id]['comp'] = list()
                         for p in model.periods:
-                            comp = pe.value(model.slack_es_comp[e, y_inv, y_curr, d, p])
+                            comp = pe.value(model.slack_es_comp_per_unit[e, y_inv, y_curr, d, p])
                             processed_results[year_inv][year_curr][day][node_id]['comp'].append(comp)
 
     return processed_results
