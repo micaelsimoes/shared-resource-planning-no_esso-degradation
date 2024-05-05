@@ -694,14 +694,14 @@ def _build_model(network, params):
                     # State-of-Charge
                     if p > 0:
                         if params.slacks:
-                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == model.shared_es_soc[e, s_m, s_o, p - 1] + (pch * eff_charge - pdch / eff_discharge) + model.slack_shared_es_soc_up[e, s_m, s_o, p] - model.slack_shared_es_soc_down[e, s_m, s_o, p])
+                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == model.shared_es_soc[e, s_m, s_o, p - 1] + (sch * eff_charge - sdch / eff_discharge) + model.slack_shared_es_soc_up[e, s_m, s_o, p] - model.slack_shared_es_soc_down[e, s_m, s_o, p])
                         else:
-                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == model.shared_es_soc[e, s_m, s_o, p - 1] + (pch * eff_charge - pdch / eff_discharge))
+                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == model.shared_es_soc[e, s_m, s_o, p - 1] + (sch * eff_charge - sdch / eff_discharge))
                     else:
                         if params.slacks:
-                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == soc_init + (pch * eff_charge - pdch / eff_discharge) + model.slack_shared_es_soc_up[e, s_m, s_o, p] - model.slack_shared_es_soc_down[e, s_m, s_o, p])
+                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == soc_init + (sch * eff_charge - sdch / eff_discharge) + model.slack_shared_es_soc_up[e, s_m, s_o, p] - model.slack_shared_es_soc_down[e, s_m, s_o, p])
                         else:
-                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == soc_init + (pch * eff_charge - pdch / eff_discharge))
+                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == soc_init + (sch * eff_charge - sdch / eff_discharge))
 
                     # Charging/discharging complementarity constraints
                     if params.slacks:
