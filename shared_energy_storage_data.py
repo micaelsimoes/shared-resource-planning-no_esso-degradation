@@ -837,13 +837,13 @@ def _write_optimization_results_to_excel(shared_ess_data, data_dir, results):
 
     _write_ess_capacity_investment_to_excel(shared_ess_data, wb, results['capacity']['investment'])
     _write_ess_capacity_rated_available_to_excel(shared_ess_data, wb, results['capacity'])
-    _write_aggregated_shared_energy_storage_operation_results_to_excel(shared_ess_data, wb, results['operation']['aggregated'])
+    #_write_aggregated_shared_energy_storage_operation_results_to_excel(shared_ess_data, wb, results['operation']['aggregated'])
     _write_detailed_shared_energy_storage_operation_results_to_excel(shared_ess_data, wb, results['operation']['detailed'])
-    _write_aggregated_shared_energy_storage_soh_results_to_excel(shared_ess_data, wb, results['soh']['aggregated'])
+    #_write_aggregated_shared_energy_storage_soh_results_to_excel(shared_ess_data, wb, results['soh']['aggregated'])
     _write_detailed_shared_energy_storage_soh_results_to_excel(shared_ess_data, wb, results['soh']['detailed'])
-    _write_aggregated_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['aggregated'])
-    _write_detailed_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['detailed'])
-    _write_aggregated_operation_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['operation']['aggregated'])
+    #_write_aggregated_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['aggregated'])
+    #_write_detailed_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['detailed'])
+    #_write_aggregated_operation_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['operation']['aggregated'])
     _write_detailed_operation_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['operation']['detailed'])
 
     results_filename = os.path.join(data_dir, f'{shared_ess_data.name}_shared_ess_results.xlsx')
@@ -1262,12 +1262,14 @@ def _write_detailed_shared_energy_storage_soh_results_to_excel(shared_ess_data, 
                 e_rated = results[year_inv][year_curr]['e_rated'][node_id]
                 s_available = results[year_inv][year_curr]['s_available'][node_id]
                 e_available = results[year_inv][year_curr]['e_available'][node_id]
-                soh_day = results[year_inv][year_curr]['soh_day'][node_id]
-                degradation_day = results[year_inv][year_curr]['degradation_day'][node_id]
+                soh_unit = results[year_inv][year_curr]['soh_unit'][node_id]
+                degradation_unit = results[year_inv][year_curr]['degradation_unit'][node_id]
+                '''
                 soh_year = results[year_inv][year_curr]['soh_year'][node_id]
                 degradation_year = results[year_inv][year_curr]['degradation_year'][node_id]
                 soh_cumul = results[year_inv][year_curr]['soh_cumul'][node_id]
                 degradation_cumul = results[year_inv][year_curr]['degradation_cumul'][node_id]
+                '''
 
                 # - Srated, average day
                 sheet.cell(row=row_idx, column=1).value = node_id
@@ -1310,7 +1312,7 @@ def _write_detailed_shared_energy_storage_soh_results_to_excel(shared_ess_data, 
                 sheet.cell(row=row_idx, column=2).value = int(year_inv)
                 sheet.cell(row=row_idx, column=3).value = int(year_curr)
                 sheet.cell(row=row_idx, column=4).value = 'SoH day, [%]'
-                sheet.cell(row=row_idx, column=5).value = soh_day
+                sheet.cell(row=row_idx, column=5).value = soh_unit
                 sheet.cell(row=row_idx, column=5).number_format = perc_style
                 row_idx = row_idx + 1
 
@@ -1319,10 +1321,11 @@ def _write_detailed_shared_energy_storage_soh_results_to_excel(shared_ess_data, 
                 sheet.cell(row=row_idx, column=2).value = int(year_inv)
                 sheet.cell(row=row_idx, column=3).value = int(year_curr)
                 sheet.cell(row=row_idx, column=4).value = 'Degradation day, [%]'
-                sheet.cell(row=row_idx, column=5).value = degradation_day
+                sheet.cell(row=row_idx, column=5).value = degradation_unit
                 sheet.cell(row=row_idx, column=5).number_format = perc_style
                 row_idx = row_idx + 1
 
+                '''
                 # - SoH, year
                 sheet.cell(row=row_idx, column=1).value = node_id
                 sheet.cell(row=row_idx, column=2).value = int(year_inv)
@@ -1358,6 +1361,7 @@ def _write_detailed_shared_energy_storage_soh_results_to_excel(shared_ess_data, 
                 sheet.cell(row=row_idx, column=5).value = degradation_cumul
                 sheet.cell(row=row_idx, column=5).number_format = perc_style
                 row_idx = row_idx + 1
+                '''
 
 
 def _write_aggregated_relaxation_slacks_results_to_excel(shared_ess_data, workbook, results):
