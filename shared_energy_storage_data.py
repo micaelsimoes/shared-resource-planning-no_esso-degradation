@@ -231,10 +231,7 @@ def _build_subproblem_model(shared_ess_data):
                         sch = model.es_sch_per_unit[e, y_inv, y, d, p]
                         sdch = model.es_sdch_per_unit[e, y_inv, y, d, p]
                         avg_ch_dch += (num_days / 365.00) * (sch + sdch)
-                if shared_ess_data.params.slacks:
-                    model.energy_storage_charging_discharging.add(model.es_avg_ch_dch_per_unit[e, y_inv, y] == avg_ch_dch + model.slack_es_avg_ch_dch_per_unit_up[e, y_inv, y] - model.slack_es_avg_ch_dch_per_unit_up[e, y_inv, y])
-                else:
-                    model.energy_storage_charging_discharging.add(model.es_avg_ch_dch_per_unit[e, y_inv, y] == avg_ch_dch)
+                model.energy_storage_charging_discharging.add(model.es_avg_ch_dch_per_unit[e, y_inv, y] == avg_ch_dch)
 
     # - Capacity degradation
     model.energy_storage_capacity_degradation = pe.ConstraintList()
