@@ -70,17 +70,17 @@ class SharedEnergyStorageData:
         results = dict()
         results['capacity'] = self.get_investment_and_available_capacities(model)
         results['operation'] = dict()
-        results['operation']['aggregated'] = self.process_results_aggregated(model)
+        #results['operation']['aggregated'] = self.process_results_aggregated(model)
         results['operation']['detailed'] = self.process_results_detailed(model)
         results['soh'] = dict()
-        results['soh']['aggregated'] = self.process_soh_results_aggregated(model)
+        #results['soh']['aggregated'] = self.process_soh_results_aggregated(model)
         results['soh']['detailed'] = self.process_soh_results_detailed(model)
         if self.params.slacks:
             results['relaxation_variables'] = dict()
-            results['relaxation_variables']['aggregated'] = self.process_relaxation_variables_aggregated(model)
+            #results['relaxation_variables']['aggregated'] = self.process_relaxation_variables_aggregated(model)
             results['relaxation_variables']['detailed'] = self.process_relaxation_variables_detailed(model)
             results['relaxation_variables']['operation'] = dict()
-            results['relaxation_variables']['operation']['aggregated'] = self.process_relaxation_variables_operation_aggregated(model)
+            #results['relaxation_variables']['operation']['aggregated'] = self.process_relaxation_variables_operation_aggregated(model)
             results['relaxation_variables']['operation']['detailed'] = self.process_relaxation_variables_operation_detailed(model)
         return results
 
@@ -604,9 +604,7 @@ def _process_soh_results_detailed(shared_ess_data, model):
             processed_results[year_inv][year_curr] = {
                 's_rated': dict(), 'e_rated': dict(),
                 's_available': dict(), 'e_available': dict(),
-                'soh_day': dict(), 'degradation_day': dict(),
-                'soh_year': dict(), 'degradation_year': dict(),
-                'soh_cumul': dict(), 'degradation_cumul': dict()
+                'es_soh_per_unit': dict(), 'degradation_unit': dict()
             }
             for e in model.energy_storages:
                 node_id = shared_ess_data.shared_energy_storages[year_curr][e].bus
@@ -614,22 +612,14 @@ def _process_soh_results_detailed(shared_ess_data, model):
                 e_rated = pe.value(model.es_e_rated_per_unit[e, y_inv, y_curr])
                 s_available = pe.value(model.es_s_available_per_unit[e, y_inv, y_curr])
                 e_available = pe.value(model.es_e_available_per_unit[e, y_inv, y_curr])
-                soh_day = pe.value(model.es_soh_per_unit_day[e, y_inv, y_curr])
-                degradation_day = pe.value(model.es_degradation_per_unit_day[e, y_inv, y_curr])
-                soh_year = pe.value(model.es_soh_per_unit_year[e, y_inv, y_curr])
-                degradation_year = pe.value(model.es_degradation_per_unit_year[e, y_inv, y_curr])
-                soh_cumul = pe.value(model.es_soh_per_unit_cumul[e, y_inv, y_curr])
-                degradation_cumul = pe.value(model.es_degradation_per_unit_cumul[e, y_inv, y_curr])
+                soh_unit = pe.value(model.es_soh_per_unit[e, y_inv, y_curr])
+                degradation_unit = pe.value(model.es_degradation_per_unit[e, y_inv, y_curr])
                 processed_results[year_inv][year_curr]['s_rated'][node_id] = s_rated
                 processed_results[year_inv][year_curr]['e_rated'][node_id] = e_rated
                 processed_results[year_inv][year_curr]['s_available'][node_id] = s_available
                 processed_results[year_inv][year_curr]['e_available'][node_id] = e_available
-                processed_results[year_inv][year_curr]['soh_day'][node_id] = soh_day
-                processed_results[year_inv][year_curr]['degradation_day'][node_id] = degradation_day
-                processed_results[year_inv][year_curr]['soh_year'][node_id] = soh_year
-                processed_results[year_inv][year_curr]['degradation_year'][node_id] = degradation_year
-                processed_results[year_inv][year_curr]['soh_cumul'][node_id] = soh_cumul
-                processed_results[year_inv][year_curr]['degradation_cumul'][node_id] = degradation_cumul
+                processed_results[year_inv][year_curr]['soh_unit'][node_id] = soh_unit
+                processed_results[year_inv][year_curr]['degradation_unit'][node_id] = degradation_unit
 
     return processed_results
 
