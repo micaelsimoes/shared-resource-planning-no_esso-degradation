@@ -210,7 +210,12 @@ def _build_subproblem_model(shared_ess_data):
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
 
-    # - Available yearly Power and Energy Capacity as a function of yearly investments
+    # - Sinv and Einv fixing constraints
+    model.energy_storage_capacity_fixing = pe.ConstraintList()
+    for e in model.energy_storages:
+        for y in model.years:
+            model.energy_storage_capacity_fixing.add(model.es_s_investment[e, y] == model.es_s_investment_fixed[e, y] + model.es_s_investment_slack_up[e, y] - model.es_s_investment_slack_down[e, y])
+            model.energy_storage_capacity_fixing.add(model.es_e_investment[e, y] == model.es_e_investment_fixed[e, y] + model.es_e_investment_slack_up[e, y] - model.es_e_investment_slack_down[e, y])
 
     # - Rated capacities of each investment
     model.rated_s_capacity_unit = pe.ConstraintList()
@@ -221,8 +226,6 @@ def _build_subproblem_model(shared_ess_data):
             tcal_norm = round(shared_energy_storage.t_cal / (shared_ess_data.years[repr_years[y_inv]]))
             max_tcal_norm = min(y_inv + tcal_norm, len(shared_ess_data.years))
             for y in range(y_inv, max_tcal_norm):
-                model.es_s_rated_per_unit[e, y_inv, y].fixed = False
-                model.es_e_rated_per_unit[e, y_inv, y].fixed = False
                 if shared_ess_data.params.slacks:
                     model.rated_s_capacity_unit.add(model.es_s_rated_per_unit[e, y_inv, y] == model.es_s_investment[e, y_inv] + model.slack_es_s_rated_per_unit_up[e, y_inv, y] - model.slack_es_s_rated_per_unit_down[e, y_inv, y])
                     model.rated_e_capacity_unit.add(model.es_e_rated_per_unit[e, y_inv, y] == model.es_e_investment[e, y_inv] + model.slack_es_e_rated_per_unit_up[e, y_inv, y] - model.slack_es_e_rated_per_unit_down[e, y_inv, y])
@@ -412,12 +415,7 @@ def _build_subproblem_model(shared_ess_data):
                     model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] == agg_qnet + model.slack_es_snet_up[e, y, d, p] - model.slack_es_snet_down[e, y, d, p])
                     model.energy_storage_operation_agg.add(model.es_soc[e, y, d, p] == agg_soc + model.slack_es_soc_up[e, y, d, p] - model.slack_es_soc_down[e, y, d, p])
 
-    # - Sinv and Einv fixing constraints
-    model.energy_storage_capacity_fixing = pe.ConstraintList()
-    for e in model.energy_storages:
-        for y in model.years:
-            model.energy_storage_capacity_fixing.add(model.es_s_investment[e, y] == model.es_s_investment_fixed[e, y] + model.es_s_investment_slack_up[e, y] - model.es_s_investment_slack_down[e, y])
-            model.energy_storage_capacity_fixing.add(model.es_e_investment[e, y] == model.es_e_investment_fixed[e, y] + model.es_e_investment_slack_up[e, y] - model.es_e_investment_slack_down[e, y])
+
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective function
