@@ -184,6 +184,8 @@ def _build_subproblem_model(shared_ess_data):
     model.es_degradation_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
     model.es_soh_per_unit_cumul = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=1.00, bounds=(0.00, 1.00))
     model.es_degradation_per_unit_cumul = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
+    if shared_ess_data.params.slacks:
+        model.slack_es_comp_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
@@ -311,31 +313,19 @@ def _build_subproblem_model(shared_ess_data):
                         pdch = model.es_pdch_per_unit[e, y_inv, y, d, p]
                         qdch = model.es_pdch_per_unit[e, y_inv, y, d, p]
 
-                        if shared_ess_data.params.slacks:
-                            model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2 + model.slack_es_sch_per_unit_up[e, y_inv, y, d, p] - model.slack_es_sch_per_unit_down[e, y_inv, y, d, p])
-                            model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2 + model.slack_es_sdch_per_unit_up[e, y_inv, y, d, p] - model.slack_es_sdch_per_unit_down[e, y_inv, y, d, p])
-                        else:
-                            model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
-                            model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
+                        model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
+                        model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
 
                         if p > 0:
-                            if shared_ess_data.params.slacks:
-                                model.energy_storage_balance.add(model.es_soc_per_unit[e, y_inv, y, d, p] - model.es_soc_per_unit[e, y_inv, y, d, p - 1] == sch * eff_charge - sdch / eff_discharge + model.slack_es_soc_per_unit_up[e, y_inv, y, d, p] - model.slack_es_soc_per_unit_down[e, y_inv, y, d, p])
-                            else:
-                                model.energy_storage_balance.add(model.es_soc_per_unit[e, y_inv, y, d, p] - model.es_soc_per_unit[e, y_inv, y, d, p - 1] == sch * eff_charge - sdch / eff_discharge)
+                            model.energy_storage_balance.add(model.es_soc_per_unit[e, y_inv, y, d, p] - model.es_soc_per_unit[e, y_inv, y, d, p - 1] == sch * eff_charge - sdch / eff_discharge)
                         else:
-                            if shared_ess_data.params.slacks:
-                                model.energy_storage_balance.add(model.es_soc_per_unit[e, y_inv, y, d, p] - soc_init == sch * eff_charge - sdch / eff_discharge + model.slack_es_soc_per_unit_up[e, y_inv, y, d, p] - model.slack_es_soc_per_unit_down[e, y_inv, y, d, p])
-                            else:
-                                model.energy_storage_balance.add(model.es_soc_per_unit[e, y_inv, y, d, p] - soc_init == sch * eff_charge - sdch / eff_discharge)
+                            model.energy_storage_balance.add(model.es_soc_per_unit[e, y_inv, y, d, p] - soc_init == sch * eff_charge - sdch / eff_discharge)
 
                         # Charging/discharging complementarity constraint
                         if shared_ess_data.params.slacks:
                             model.energy_storage_ch_dch_exclusion.add(sch * sdch <= model.slack_es_comp_per_unit[e, y_inv, y, d, p])
                         else:
                             model.energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
-
-                    #model.energy_storage_day_balance.add(model.es_soc_per_unit[e, y_inv, y, d, len(model.periods) - 1] == soc_final)
 
     # - Shared ESS operation, aggregated
     model.energy_storage_operation_agg = pe.ConstraintList()
