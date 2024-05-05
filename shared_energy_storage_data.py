@@ -158,15 +158,6 @@ def _build_subproblem_model(shared_ess_data):
 
     # ------------------------------------------------------------------------------------------------------------------
     # Variables
-    model.es_s_investment = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.es_e_investment = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.es_s_investment_fixed = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.es_e_investment_fixed = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.es_s_investment_slack_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.es_s_investment_slack_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.es_e_investment_slack_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.es_e_investment_slack_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-
     model.es_s_rated_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_rated_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_s_available_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
@@ -196,81 +187,21 @@ def _build_subproblem_model(shared_ess_data):
         model.slack_es_sdch_per_unit_down = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.slack_es_soc_per_unit_up = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.slack_es_soc_per_unit_down = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.es_avg_ch_dch_day = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-    model.es_soh_per_unit_day = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=1.00, bounds=(0.00, 1.00))
-    model.es_degradation_per_unit_day = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
-    model.es_soh_per_unit_year = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=1.00, bounds=(0.00, 1.00))
-    model.es_degradation_per_unit_year = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
-    model.es_soh_per_unit_cumul = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=1.00, bounds=(0.00, 1.00))
-    model.es_degradation_per_unit_cumul = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
+    model.es_avg_ch_dch_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
+    model.es_soh_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=1.00, bounds=(0.00, 1.00))
+    model.es_degradation_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
     if shared_ess_data.params.slacks:
-        model.slack_es_avg_ch_dch_day_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_es_avg_ch_dch_day_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_es_soh_per_unit_day_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_es_soh_per_unit_day_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_es_avg_ch_dch_per_unit_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_es_avg_ch_dch_per_unit_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_es_soh_per_unit_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_es_soh_per_unit_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
         model.slack_es_degradation_per_unit_day_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
         model.slack_es_degradation_per_unit_day_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_es_soh_per_unit_year_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_es_soh_per_unit_year_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_es_degradation_per_unit_year_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_es_degradation_per_unit_year_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_es_soh_per_unit_cumul_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_es_soh_per_unit_cumul_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_es_degradation_per_unit_cumul_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_es_degradation_per_unit_cumul_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-    model.es_s_rated_per_unit.fix(0.00)
-    model.es_e_rated_per_unit.fix(0.00)
-    model.es_avg_ch_dch_day.fix(0.00)
-    model.es_soh_per_unit_day.fix(1.00)
-    model.es_degradation_per_unit_day.fix(0.00)
-    model.es_soh_per_unit_year.fix(1.00)
-    model.es_degradation_per_unit_year.fix(0.00)
-    model.es_soh_per_unit_cumul.fix(1.00)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
-    # - Rated yearly Power and Energy Capacity as a function of yearly investments
-    model.rated_s_capacity = pe.ConstraintList()
-    model.rated_e_capacity = pe.ConstraintList()
-    for e in model.energy_storages:
-        for y in model.years:
-            total_s_capacity = 0.00
-            total_e_capacity = 0.00
-            for y_inv in model.years:
-                total_s_capacity += model.es_s_rated_per_unit[e, y_inv, y]
-                total_e_capacity += model.es_e_rated_per_unit[e, y_inv, y]
-
-            if shared_ess_data.params.slacks:
-                model.rated_s_capacity.add(model.es_s_rated[e, y] == total_s_capacity + model.slack_es_s_rated_up[e, y] - model.slack_es_s_rated_down[e, y])
-                model.rated_s_capacity.add(model.es_e_rated[e, y] == total_e_capacity + model.slack_es_e_rated_up[e, y] - model.slack_es_e_rated_down[e, y])
-            else:
-                model.rated_s_capacity.add(model.es_s_rated[e, y] == total_s_capacity)
-                model.rated_e_capacity.add(model.es_e_rated[e, y] == total_e_capacity)
 
     # - Available yearly Power and Energy Capacity as a function of yearly investments
-    model.available_s_capacity = pe.ConstraintList()
-    model.available_e_capacity = pe.ConstraintList()
-    for e in model.energy_storages:
-        for y in model.years:
-            available_s_capacity = 0.00
-            available_e_capacity = 0.00
-            for y_inv in model.years:
-                available_s_capacity += model.es_s_available_per_unit[e, y_inv, y]
-                available_e_capacity += model.es_e_available_per_unit[e, y_inv, y]
-
-            if shared_ess_data.params.slacks:
-                model.available_s_capacity.add(model.es_s_available[e, y] == available_s_capacity + model.slack_es_s_available_up[e, y] - model.slack_es_s_available_down[e, y])
-                model.available_e_capacity.add(model.es_e_available[e, y] == available_e_capacity + model.slack_es_e_available_up[e, y] - model.slack_es_e_available_down[e, y])
-            else:
-                model.available_s_capacity.add(model.es_s_available[e, y] == available_s_capacity)
-                model.available_e_capacity.add(model.es_e_available[e, y] == available_e_capacity)
-
-            if shared_ess_data.params.slacks:
-                model.available_e_capacity.add(model.es_e_available[e, y] == model.es_e_rated[e, y] * model.es_e_soh[e, y] + model.slack_es_e_degradation_up[e, y] - model.slack_es_e_degradation_down[e, y])
-                model.available_e_capacity.add(model.es_e_soh[e, y] == 1 - model.es_e_degradation[e, y] + model.slack_es_e_soh_up[e, y] - model.slack_es_e_soh_down[e, y])
-            else:
-                model.available_e_capacity.add(model.es_e_available[e, y] == model.es_e_rated[e, y] * model.es_e_soh[e, y])
-                model.available_e_capacity.add(model.es_e_soh[e, y] == 1 - model.es_e_degradation[e, y])
 
     # - Rated capacities of each investment
     model.rated_s_capacity_unit = pe.ConstraintList()
