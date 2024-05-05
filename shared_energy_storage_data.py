@@ -604,7 +604,7 @@ def _process_soh_results_detailed(shared_ess_data, model):
             processed_results[year_inv][year_curr] = {
                 's_rated': dict(), 'e_rated': dict(),
                 's_available': dict(), 'e_available': dict(),
-                'es_soh_per_unit': dict(), 'degradation_unit': dict()
+                'es_soh_unit': dict(), 'degradation_unit': dict()
             }
             for e in model.energy_storages:
                 node_id = shared_ess_data.shared_energy_storages[year_curr][e].bus
