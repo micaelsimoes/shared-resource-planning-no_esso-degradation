@@ -168,8 +168,6 @@ def _build_subproblem_model(shared_ess_data):
     model.es_e_investment_slack_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_s_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.es_s_available = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.es_e_available = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
 
     model.es_s_rated_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_rated_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
@@ -824,7 +822,6 @@ def _get_investment_and_available_capacities(shared_ess_data, model):
         node_id = shared_ess_data.shared_energy_storages[years[0]][e].bus
         ess_capacity['investment'][node_id] = dict()
         ess_capacity['rated'][node_id] = dict()
-        ess_capacity['available'][node_id] = dict()
 
         for y in model.years:
 
@@ -837,12 +834,6 @@ def _get_investment_and_available_capacities(shared_ess_data, model):
             ess_capacity['rated'][node_id][year] = dict()
             ess_capacity['rated'][node_id][year]['power'] = pe.value(model.es_s_rated[e, y])
             ess_capacity['rated'][node_id][year]['energy'] = pe.value(model.es_e_rated[e, y])
-
-            ess_capacity['available'][node_id][year] = dict()
-            ess_capacity['available'][node_id][year]['power'] = pe.value(model.es_s_available[e, y])
-            ess_capacity['available'][node_id][year]['energy'] = pe.value(model.es_e_available[e, y])
-            ess_capacity['available'][node_id][year]['soh'] = pe.value(model.es_e_soh[e, y])
-            ess_capacity['available'][node_id][year]['degradation_factor'] = pe.value(model.es_e_degradation[e, y])
 
     return ess_capacity
 
