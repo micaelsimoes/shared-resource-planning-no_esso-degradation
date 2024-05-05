@@ -173,6 +173,8 @@ def _build_subproblem_model(shared_ess_data):
     model.es_e_rated_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_s_available_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_available_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_s_rated_per_unit.fix(0.00)
+    model.es_e_rated_per_unit.fix(0.00)
 
     model.es_soc_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_sch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
@@ -207,6 +209,8 @@ def _build_subproblem_model(shared_ess_data):
             tcal_norm = round(shared_energy_storage.t_cal / (shared_ess_data.years[repr_years[y_inv]]))
             max_tcal_norm = min(y_inv + tcal_norm, len(shared_ess_data.years))
             for y in range(y_inv, max_tcal_norm):
+                model.es_s_rated_per_unit[e, y_inv, y].fixed = False
+                model.es_e_rated_per_unit[e, y_inv, y].fixed = False
                 model.rated_s_capacity_unit.add(model.es_s_rated_per_unit[e, y_inv, y] == model.es_s_investment[e, y_inv])
                 model.rated_e_capacity_unit.add(model.es_e_rated_per_unit[e, y_inv, y] == model.es_e_investment[e, y_inv])
 
