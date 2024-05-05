@@ -241,9 +241,9 @@ def _build_subproblem_model(shared_ess_data):
             tcal_norm = round(shared_energy_storage.t_cal / (shared_ess_data.years[repr_years[y_inv]]))
             max_tcal_norm = min(y_inv + tcal_norm, len(shared_ess_data.years))
             for y in range(y_inv, max_tcal_norm):
-                model.energy_storage_capacity_degradation.add(model.es_soh_per_unit[e, y_inv, y] >= shared_energy_storage.soh_min)                 # ensures a minimum SoH
                 model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit[e, y_inv, y] * (2 * shared_energy_storage.cl_nom * model.es_e_available_per_unit[e, y_inv, y]) == model.es_avg_ch_dch_per_unit[e, y_inv, y])
                 model.energy_storage_capacity_degradation.add(model.es_soh_per_unit[e, y_inv, y] == 1.00 - model.es_degradation_per_unit[e, y_inv, y])
+                model.energy_storage_capacity_degradation.add(model.es_soh_per_unit[e, y_inv, y] >= shared_energy_storage.soh_min)
 
     # - P, Q, S, SoC, per unit as a function of available capacities
     model.energy_storage_limits = pe.ConstraintList()
@@ -324,28 +324,6 @@ def _build_subproblem_model(shared_ess_data):
                         else:
                             model.energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
 
-    # - Shared ESS operation, aggregated
-    model.energy_storage_operation_agg = pe.ConstraintList()
-    for e in model.energy_storages:
-        for y in model.years:
-            for d in model.days:
-                for p in model.periods:
-                    agg_pnet = 0.00
-                    agg_qnet = 0.00
-                    agg_snet = 0.00
-                    agg_soc = 0.00
-                    for y_inv in model.years:
-                        agg_pnet += (model.es_pch_per_unit[e, y_inv, y, d, p] - model.es_pdch_per_unit[e, y_inv, y, d, p])
-                        agg_pnet += (model.es_qch_per_unit[e, y_inv, y, d, p] - model.es_qdch_per_unit[e, y_inv, y, d, p])
-                        agg_pnet += (model.es_sch_per_unit[e, y_inv, y, d, p] - model.es_sdch_per_unit[e, y_inv, y, d, p])
-                        agg_soc += model.es_soc_per_unit[e, y_inv, y, d, p]
-                    model.energy_storage_operation_agg.add(model.es_pnet[e, y, d, p] == agg_pnet + model.slack_es_pnet_up[e, y, d, p] - model.slack_es_pnet_down[e, y, d, p])
-                    model.energy_storage_operation_agg.add(model.es_qnet[e, y, d, p] == agg_qnet + model.slack_es_qnet_up[e, y, d, p] - model.slack_es_qnet_down[e, y, d, p])
-                    model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] == agg_qnet + model.slack_es_snet_up[e, y, d, p] - model.slack_es_snet_down[e, y, d, p])
-                    model.energy_storage_operation_agg.add(model.es_soc[e, y, d, p] == agg_soc + model.slack_es_soc_up[e, y, d, p] - model.slack_es_soc_down[e, y, d, p])
-
-
-
     # ------------------------------------------------------------------------------------------------------------------
     # Objective function
     slack_penalty = 0.0
@@ -356,14 +334,6 @@ def _build_subproblem_model(shared_ess_data):
             slack_penalty += PENALTY_SLACK * (model.es_s_investment_slack_up[e, y_inv] + model.es_s_investment_slack_down[e, y_inv])
             slack_penalty += PENALTY_SLACK * (model.es_e_investment_slack_up[e, y_inv] + model.es_e_investment_slack_down[e, y_inv])
 
-            # Slacks for expected active power and SoC
-            for d in model.days:
-                for p in model.periods:
-                    slack_penalty += PENALTY_SLACK * (model.slack_es_pnet_up[e, y_inv, d, p] + model.slack_es_pnet_down[e, y_inv, d, p])
-                    slack_penalty += PENALTY_SLACK * (model.slack_es_qnet_up[e, y_inv, d, p] + model.slack_es_qnet_down[e, y_inv, d, p])
-                    slack_penalty += PENALTY_SLACK * (model.slack_es_snet_up[e, y_inv, d, p] + model.slack_es_snet_down[e, y_inv, d, p])
-                    slack_penalty += PENALTY_SLACK * (model.slack_es_soc_up[e, y_inv, d, p] + model.slack_es_soc_down[e, y_inv, d, p])
-
             if shared_ess_data.params.slacks:
 
                 # - Complementarity penalty
@@ -371,35 +341,6 @@ def _build_subproblem_model(shared_ess_data):
                     for d in model.days:
                         for p in model.periods:
                             slack_penalty += PENALTY_SLACK * model.slack_es_comp_per_unit[e, y_inv, y, d, p]
-                            slack_penalty += PENALTY_SLACK * (model.slack_es_sch_per_unit_up[e, y_inv, y, d, p] + model.slack_es_sch_per_unit_down[e, y_inv, y, d, p])
-                            slack_penalty += PENALTY_SLACK * (model.slack_es_sdch_per_unit_up[e, y_inv, y, d, p] + model.slack_es_sdch_per_unit_down[e, y_inv, y, d, p])
-                            slack_penalty += PENALTY_SLACK * (model.slack_es_soc_per_unit_up[e, y_inv, y, d, p] + model.slack_es_soc_per_unit_down[e, y_inv, y, d, p])
-
-                # - Aggregated rated power and energy capacity
-                slack_penalty += PENALTY_SLACK * (model.slack_es_s_rated_up[e, y_inv] + model.slack_es_s_rated_down[e, y_inv])
-                slack_penalty += PENALTY_SLACK * (model.slack_es_e_rated_up[e, y_inv] + model.slack_es_e_rated_down[e, y_inv])
-                for y in model.years:
-                    slack_penalty += PENALTY_SLACK * (model.slack_es_s_rated_per_unit_up[e, y_inv, y] + model.slack_es_s_rated_per_unit_down[e, y_inv, y])
-                    slack_penalty += PENALTY_SLACK * (model.slack_es_e_rated_per_unit_up[e, y_inv, y] + model.slack_es_e_rated_per_unit_down[e, y_inv, y])
-
-                # - Aggregated available power and energy capacity
-                slack_penalty += PENALTY_SLACK * (model.slack_es_s_available_up[e, y_inv] + model.slack_es_s_available_down[e, y_inv])
-                slack_penalty += PENALTY_SLACK * (model.slack_es_e_available_up[e, y_inv] + model.slack_es_e_available_down[e, y_inv])
-                slack_penalty += PENALTY_SLACK * (model.slack_es_e_degradation_up[e, y_inv] + model.slack_es_e_degradation_down[e, y_inv])
-                slack_penalty += PENALTY_SLACK * (model.slack_es_e_soh_up[e, y_inv] + model.slack_es_e_soh_down[e, y_inv])
-                for y in model.years:
-                    slack_penalty += PENALTY_SLACK * (model.slack_es_s_available_per_unit_up[e, y_inv, y] + model.slack_es_s_available_per_unit_down[e, y_inv, y])
-                    slack_penalty += PENALTY_SLACK * (model.slack_es_e_available_per_unit_up[e, y_inv, y] + model.slack_es_e_available_per_unit_down[e, y_inv, y])
-
-                # - Degradation model slack variables
-                for y in model.years:
-                    slack_penalty += PENALTY_SLACK * (model.slack_es_avg_ch_dch_day_up[e, y_inv, y] + model.slack_es_avg_ch_dch_day_down[e, y_inv, y])
-                    slack_penalty += PENALTY_SLACK * (model.slack_es_degradation_per_unit_day_up[e, y_inv, y] + model.slack_es_degradation_per_unit_day_down[e, y_inv, y])
-                    slack_penalty += PENALTY_SLACK * (model.slack_es_soh_per_unit_day_up[e, y_inv, y] + model.slack_es_soh_per_unit_day_down[e, y_inv, y])
-                    slack_penalty += PENALTY_SLACK * (model.slack_es_degradation_per_unit_year_up[e, y_inv, y] + model.slack_es_degradation_per_unit_year_down[e, y_inv, y])
-                    slack_penalty += PENALTY_SLACK * (model.slack_es_soh_per_unit_year_up[e, y_inv, y] + model.slack_es_soh_per_unit_year_down[e, y_inv, y])
-                    slack_penalty += PENALTY_SLACK * (model.slack_es_degradation_per_unit_cumul_up[e, y_inv, y] + model.slack_es_degradation_per_unit_cumul_down[e, y_inv, y])
-                    slack_penalty += PENALTY_SLACK * (model.slack_es_soh_per_unit_cumul_up[e, y_inv, y] + model.slack_es_soh_per_unit_cumul_down[e, y_inv, y])
 
     model.objective = pe.Objective(sense=pe.minimize, expr=slack_penalty)
 
