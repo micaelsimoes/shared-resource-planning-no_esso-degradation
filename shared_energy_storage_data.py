@@ -166,6 +166,8 @@ def _build_subproblem_model(shared_ess_data):
     model.es_s_investment_slack_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_investment_slack_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_investment_slack_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_s_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_e_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
 
     model.es_s_rated_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_rated_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
@@ -189,7 +191,6 @@ def _build_subproblem_model(shared_ess_data):
 
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
-
     # - Sinv and Einv fixing constraints
     model.energy_storage_capacity_fixing = pe.ConstraintList()
     for e in model.energy_storages:
@@ -208,6 +209,19 @@ def _build_subproblem_model(shared_ess_data):
             for y in range(y_inv, max_tcal_norm):
                 model.rated_s_capacity_unit.add(model.es_s_rated_per_unit[e, y_inv, y] == model.es_s_investment[e, y_inv])
                 model.rated_e_capacity_unit.add(model.es_e_rated_per_unit[e, y_inv, y] == model.es_e_investment[e, y_inv])
+
+    # - Rated yearly capacities as a function of yearly investments
+    model.rated_s_capacity = pe.ConstraintList()
+    model.rated_e_capacity = pe.ConstraintList()
+    for e in model.energy_storages:
+        for y in model.years:
+            total_s_capacity = 0.00
+            total_e_capacity = 0.00
+            for y_inv in model.years:
+                total_s_capacity += model.es_s_rated_per_unit[e, y_inv, y]
+                total_e_capacity += model.es_e_rated_per_unit[e, y_inv, y]
+            model.rated_s_capacity.add(model.es_s_rated[e, y] == total_s_capacity)
+            model.rated_e_capacity.add(model.es_e_rated[e, y] == total_e_capacity)
 
     # - Available capacities of each investment
     model.available_s_capacity_unit = pe.ConstraintList()
