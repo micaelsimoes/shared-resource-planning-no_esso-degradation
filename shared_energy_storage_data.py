@@ -67,18 +67,21 @@ class SharedEnergyStorageData:
         exit(ERROR_NETWORK_FILE)
 
     def process_results(self, model):
-        results = {'capacity': self.get_investment_and_available_capacities(model),
-                   'operation': {'aggregated': self.process_results_aggregated(model),
-                                 'detailed': self.process_results_detailed(model)},
-                   'soh': {'aggregated': self.process_soh_results_aggregated(model),
-                           'detailed': self.process_soh_results_detailed(model)},
-                   'relaxation_variables': {
-                       'aggregated': self.process_relaxation_variables_aggregated(model),
-                       'detailed': self.process_relaxation_variables_detailed(model),
-                       'operation': {
-                           'aggregated': self.process_relaxation_variables_operation_aggregated(model),
-                           'detailed': self.process_relaxation_variables_operation_detailed(model)}}
-                   }
+        results = dict()
+        results['capacity'] = self.get_investment_and_available_capacities(model)
+        results['operation'] = dict()
+        results['operation']['aggregated'] = self.process_results_aggregated(model)
+        results['operation']['detailed'] = self.process_results_detailed(model)
+        results['soh'] = dict()
+        results['soh']['aggregated'] = self.process_soh_results_aggregated(model)
+        results['soh']['detailed'] = self.process_soh_results_detailed(model)
+        if self.params.slacks:
+            results['relaxation_variables'] = dict()
+            results['relaxation_variables']['aggregated'] = self.process_relaxation_variables_aggregated(model)
+            results['relaxation_variables']['detailed'] = self.process_relaxation_variables_detailed(model)
+            results['relaxation_variables']['operation'] = dict()
+            results['relaxation_variables']['operation']['aggregated'] = self.process_relaxation_variables_operation_aggregated(model)
+            results['relaxation_variables']['operation']['detailed'] = self.process_relaxation_variables_operation_detailed(model)
         return results
 
     def process_results_aggregated(self, model):
