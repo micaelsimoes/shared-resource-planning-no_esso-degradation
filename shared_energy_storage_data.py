@@ -78,7 +78,7 @@ class SharedEnergyStorageData:
         if self.params.slacks:
             results['relaxation_variables'] = dict()
             #results['relaxation_variables']['aggregated'] = self.process_relaxation_variables_aggregated(model)
-            results['relaxation_variables']['detailed'] = self.process_relaxation_variables_detailed(model)
+            #results['relaxation_variables']['detailed'] = self.process_relaxation_variables_detailed(model)
             results['relaxation_variables']['operation'] = dict()
             #results['relaxation_variables']['operation']['aggregated'] = self.process_relaxation_variables_operation_aggregated(model)
             results['relaxation_variables']['operation']['detailed'] = self.process_relaxation_variables_operation_detailed(model)
@@ -976,6 +976,7 @@ def _write_ess_capacity_rated_available_to_excel(shared_ess_data, workbook, resu
             sheet.cell(row=row_idx, column=col_idx).number_format = num_style
             col_idx = col_idx + 1
 
+        '''
         # Power, available
         col_idx = 1
         row_idx = row_idx + 1
@@ -1023,6 +1024,7 @@ def _write_ess_capacity_rated_available_to_excel(shared_ess_data, workbook, resu
             sheet.cell(row=row_idx, column=col_idx).value = results['available'][node_id][year]['degradation_factor']
             sheet.cell(row=row_idx, column=col_idx).number_format = perc_style
             col_idx = col_idx + 1
+        '''
 
 
 def _write_aggregated_shared_energy_storage_operation_results_to_excel(shared_ess_data, workbook, results):
