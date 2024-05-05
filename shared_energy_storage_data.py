@@ -179,6 +179,11 @@ def _build_subproblem_model(shared_ess_data):
         model.slack_es_e_available_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_soh = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=1.0)
     model.es_e_degradation = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    if shared_ess_data.params.slacks:
+        model.slack_es_e_soh_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_es_e_soh_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_es_e_degradation_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_es_e_degradation_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_soc = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_pnet = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals, initialize=0.0)
     model.es_qnet = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals, initialize=0.0)
@@ -219,6 +224,7 @@ def _build_subproblem_model(shared_ess_data):
     model.es_soh_per_unit_cumul = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=1.00, bounds=(0.00, 1.00))
     model.es_degradation_per_unit_cumul = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
     if shared_ess_data.params.slacks:
+        model.slack_es_avg_ch_dch_day_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
         model.slack_es_avg_ch_dch_day_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
         model.slack_es_avg_ch_dch_day_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
         model.slack_es_soh_per_unit_day_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
@@ -280,8 +286,12 @@ def _build_subproblem_model(shared_ess_data):
                 model.available_s_capacity.add(model.es_s_available[e, y] == available_s_capacity)
                 model.available_e_capacity.add(model.es_e_available[e, y] == available_e_capacity)
 
-            model.available_e_capacity.add(model.es_e_available[e, y] == model.es_s_rated[e, y] * model.es_e_soh[e, y])
-            model.available_e_capacity.add(model.es_e_soh[e, y] == 1 - model.es_e_degradation[e, y])
+            if shared_ess_data.params.slacks:
+                model.available_e_capacity.add(model.es_e_available[e, y] == model.es_e_rated[e, y] * model.es_e_soh[e, y] + model.slack_es_e_degradation_up[e, y] - model.slack_es_e_degradation_down[e, y])
+                model.available_e_capacity.add(model.es_e_soh[e, y] == 1 - model.es_e_degradation[e, y] + model.slack_es_e_soh_up[e, y] - model.slack_es_e_soh_down[e, y])
+            else:
+                model.available_e_capacity.add(model.es_e_available[e, y] == model.es_e_rated[e, y] * model.es_e_soh[e, y])
+                model.available_e_capacity.add(model.es_e_soh[e, y] == 1 - model.es_e_degradation[e, y])
 
     # - Rated capacities of each investment
     model.rated_s_capacity_unit = pe.ConstraintList()
@@ -525,6 +535,8 @@ def _build_subproblem_model(shared_ess_data):
                 # - Aggregated available power and energy capacity
                 slack_penalty += PENALTY_SLACK * (model.slack_es_s_available_up[e, y_inv] + model.slack_es_s_available_down[e, y_inv])
                 slack_penalty += PENALTY_SLACK * (model.slack_es_e_available_up[e, y_inv] + model.slack_es_e_available_down[e, y_inv])
+                slack_penalty += PENALTY_SLACK * (model.slack_es_e_degradation_up[e, y_inv] + model.slack_es_e_degradation_down[e, y_inv])
+                slack_penalty += PENALTY_SLACK * (model.slack_es_e_soh_up[e, y_inv] + model.slack_es_e_soh_down[e, y_inv])
                 for y in model.years:
                     slack_penalty += PENALTY_SLACK * (model.slack_es_s_available_per_unit_up[e, y_inv, y] + model.slack_es_s_available_per_unit_down[e, y_inv, y])
                     slack_penalty += PENALTY_SLACK * (model.slack_es_e_available_per_unit_up[e, y_inv, y] + model.slack_es_e_available_per_unit_down[e, y_inv, y])
@@ -826,6 +838,10 @@ def _process_relaxation_variables_aggregated(shared_ess_data, model):
             s_available_down = pe.value(model.slack_es_s_available_down[e, y])
             e_available_up = pe.value(model.slack_es_e_available_up[e, y])
             e_available_down = pe.value(model.slack_es_e_available_down[e, y])
+            soh_up = pe.value(model.slack_es_e_soh_up[e, y])
+            soh_down = pe.value(model.slack_es_e_soh_down[e, y])
+            degradation_up = pe.value(model.slack_es_e_degradation_up[e, y])
+            degradation_down = pe.value(model.slack_es_e_degradation_down[e, y])
             processed_results[year][node_id]['s_rated_up'] = s_rated_up
             processed_results[year][node_id]['s_rated_down'] = s_rated_down
             processed_results[year][node_id]['e_rated_up'] = e_rated_up
@@ -834,6 +850,10 @@ def _process_relaxation_variables_aggregated(shared_ess_data, model):
             processed_results[year][node_id]['s_available_down'] = s_available_down
             processed_results[year][node_id]['e_available_up'] = e_available_up
             processed_results[year][node_id]['e_available_down'] = e_available_down
+            processed_results[year][node_id]['soh_up'] = soh_up
+            processed_results[year][node_id]['soh_down'] = soh_down
+            processed_results[year][node_id]['degradation_up'] = degradation_up
+            processed_results[year][node_id]['degradation_down'] = degradation_down
 
     return processed_results
 
