@@ -204,7 +204,7 @@ def _build_subproblem_model(shared_ess_data):
                 model.es_e_rated_per_unit[e, y_inv, y].fixed = False
                 model.rated_s_capacity_unit.add(model.es_s_rated_per_unit[e, y_inv, y] == model.es_s_investment[e, y_inv])
                 model.rated_e_capacity_unit.add(model.es_e_rated_per_unit[e, y_inv, y] == model.es_e_investment[e, y_inv])
-                model.rated_e_capacity_unit.add(model.es_degradation_per_unit[e, y_inv, y] <= model.es_e_investment[e, y_inv])  # Note: avoids non-fixed variable to assume values
+                model.rated_e_capacity_unit.add(model.es_degradation_per_unit[e, y_inv, y] <= model.es_e_investment_fixed[e, y_inv])  # Note: avoids non-fixed variable to assume values
 
     # - Rated yearly capacities as a function of yearly investments
     model.rated_s_capacity = pe.ConstraintList()
