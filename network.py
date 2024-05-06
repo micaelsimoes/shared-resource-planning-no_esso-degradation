@@ -1984,21 +1984,15 @@ def _process_results(network, model, params, results=dict()):
             processed_results['relaxation_slacks']['interface']['ess_p_down'][node_id] = []
             processed_results['relaxation_slacks']['interface']['ess_q_up'][node_id] = []
             processed_results['relaxation_slacks']['interface']['ess_q_down'][node_id] = []
-            processed_results['relaxation_slacks']['interface']['ess_s_up'][node_id] = []
-            processed_results['relaxation_slacks']['interface']['ess_s_down'][node_id] = []
             for p in model.periods:
                 p_up = pe.value(model.slack_expected_shared_ess_p_up[e, p])
                 p_down = pe.value(model.slack_expected_shared_ess_p_down[e, p])
                 q_up = pe.value(model.slack_expected_shared_ess_q_up[e, p])
                 q_down = pe.value(model.slack_expected_shared_ess_q_down[e, p])
-                s_up = pe.value(model.slack_expected_shared_ess_s_up[e, p])
-                s_down = pe.value(model.slack_expected_shared_ess_q_down[e, p])
                 processed_results['relaxation_slacks']['interface']['ess_p_up'][node_id].append(p_up)
                 processed_results['relaxation_slacks']['interface']['ess_p_down'][node_id].append(p_down)
                 processed_results['relaxation_slacks']['interface']['ess_q_up'][node_id].append(q_up)
                 processed_results['relaxation_slacks']['interface']['ess_q_down'][node_id].append(q_down)
-                processed_results['relaxation_slacks']['interface']['ess_s_up'][node_id].append(s_up)
-                processed_results['relaxation_slacks']['interface']['ess_s_down'][node_id].append(s_down)
     else:
         node_id = network.get_reference_node_id()
         processed_results['relaxation_slacks']['interface']['vmag_up'][node_id] = []
@@ -2012,8 +2006,6 @@ def _process_results(network, model, params, results=dict()):
         processed_results['relaxation_slacks']['interface']['ess_p_down'][node_id] = []
         processed_results['relaxation_slacks']['interface']['ess_q_up'][node_id] = []
         processed_results['relaxation_slacks']['interface']['ess_q_down'][node_id] = []
-        processed_results['relaxation_slacks']['interface']['ess_s_up'][node_id] = []
-        processed_results['relaxation_slacks']['interface']['ess_s_down'][node_id] = []
         for p in model.periods:
             vmag_up = pe.value(model.slack_expected_interface_vmag_sqr_up[p])
             vmag_down = pe.value(model.slack_expected_interface_vmag_sqr_down[p])
@@ -2025,8 +2017,6 @@ def _process_results(network, model, params, results=dict()):
             ess_p_down = pe.value(model.slack_expected_shared_ess_p_down[p])
             ess_q_up = pe.value(model.slack_expected_shared_ess_q_up[p])
             ess_q_down = pe.value(model.slack_expected_shared_ess_q_down[p])
-            ess_s_up = pe.value(model.slack_expected_shared_ess_s_up[p])
-            ess_s_down = pe.value(model.slack_expected_shared_ess_s_down[p])
             processed_results['relaxation_slacks']['interface']['vmag_up'][node_id].append(vmag_up)
             processed_results['relaxation_slacks']['interface']['vmag_down'][node_id].append(vmag_down)
             processed_results['relaxation_slacks']['interface']['pf_p_up'][node_id].append(pf_p_up)
@@ -2037,8 +2027,6 @@ def _process_results(network, model, params, results=dict()):
             processed_results['relaxation_slacks']['interface']['ess_p_down'][node_id].append(ess_p_down)
             processed_results['relaxation_slacks']['interface']['ess_q_up'][node_id].append(ess_q_up)
             processed_results['relaxation_slacks']['interface']['ess_q_down'][node_id].append(ess_q_down)
-            processed_results['relaxation_slacks']['interface']['ess_s_up'][node_id].append(ess_s_up)
-            processed_results['relaxation_slacks']['interface']['ess_s_down'][node_id].append(ess_s_down)
 
     return processed_results
 
