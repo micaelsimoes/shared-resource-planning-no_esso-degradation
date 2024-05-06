@@ -168,8 +168,6 @@ def _build_subproblem_model(shared_ess_data):
     model.es_e_investment_slack_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_s_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.es_s_available = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.es_e_available = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_soc = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_snet = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals, initialize=0.0)
     model.es_penalty_snet_up = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -239,19 +237,6 @@ def _build_subproblem_model(shared_ess_data):
             for y in model.years:
                 model.available_s_capacity_unit.add(model.es_s_available_per_unit[e, y_inv, y] == model.es_s_rated_per_unit[e, y_inv, y])
                 model.available_e_capacity_unit.add(model.es_e_available_per_unit[e, y_inv, y] == model.es_e_rated_per_unit[e, y_inv, y] * model.es_soh_per_unit_cumul[e, y_inv, y])
-
-    # Available yearly capacitites as a funtion of yearly investment and degradation
-    model.available_s_capacity = pe.ConstraintList()
-    model.available_e_capacity = pe.ConstraintList()
-    for e in model.energy_storages:
-        for y in model.years:
-            available_s_capacity = 0.00
-            available_e_capacity = 0.00
-            for y_inv in model.years:
-                available_s_capacity += model.es_s_available_per_unit[e, y_inv, y]
-                available_e_capacity += model.es_e_available_per_unit[e, y_inv, y]
-            model.rated_s_capacity.add(model.es_s_available[e, y] == available_s_capacity)
-            model.rated_e_capacity.add(model.es_e_available[e, y] == available_e_capacity)
 
     # - Sum of charging and discharging power for the yearly average day (aux, used to estimate degradation of ESSs)
     model.energy_storage_charging_discharging = pe.ConstraintList()
@@ -838,11 +823,20 @@ def _get_investment_and_available_capacities(shared_ess_data, model):
             ess_capacity['rated'][node_id][year]['power'] = pe.value(model.es_s_rated[e, y])
             ess_capacity['rated'][node_id][year]['energy'] = pe.value(model.es_e_rated[e, y])
 
+            s_available = 0.00
+            e_available = 0.00
+            for y_inv in model.years:
+                s_available += pe.value(model.es_s_available_per_unit[e, y_inv, y])
+                e_available += pe.value(model.es_e_available_per_unit[e, y_inv, y])
+
+            soh = 0.00
+            if not isclose(e_available, 0.00, abs_tol=1e-6):
+                soh = pe.value(model.es_e_available[e, y] / model.es_e_rated[e, y])
             ess_capacity['available'][node_id][year] = dict()
-            ess_capacity['available'][node_id][year]['power'] = pe.value(model.es_s_available[e, y])
-            ess_capacity['available'][node_id][year]['energy'] = pe.value(model.es_e_available[e, y])
-            ess_capacity['available'][node_id][year]['soh'] = pe.value(model.es_e_available[e, y] / model.es_e_rated[e, y])
-            ess_capacity['available'][node_id][year]['degradation_factor'] = 1 - pe.value(model.es_e_available[e, y] / model.es_e_rated[e, y])
+            ess_capacity['available'][node_id][year]['power'] = s_available
+            ess_capacity['available'][node_id][year]['energy'] = e_available
+            ess_capacity['available'][node_id][year]['soh'] = soh
+            ess_capacity['available'][node_id][year]['degradation_factor'] = 1 - soh
 
     return ess_capacity
 
