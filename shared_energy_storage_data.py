@@ -665,12 +665,37 @@ def _process_relaxation_variables_operation_detailed(shared_ess_data, model):
                     node_id = shared_ess_data.shared_energy_storages[year_curr][e].bus
                     processed_results[year_inv][year_curr][day][node_id] = dict()
 
-                    # - Complementarity
                     if shared_ess_data.params.slacks:
+
+                        # - Complementarity
                         processed_results[year_inv][year_curr][day][node_id]['comp'] = list()
                         for p in model.periods:
                             comp = pe.value(model.slack_es_comp_per_unit[e, y_inv, y_curr, d, p])
                             processed_results[year_inv][year_curr][day][node_id]['comp'].append(comp)
+
+                        # - Sch, up
+                        processed_results[year_inv][year_curr][day][node_id]['sch_up'] = list()
+                        for p in model.periods:
+                            sch_up = pe.value(model.slack_es_sch_up_per_unit[e, y_inv, y_curr, d, p])
+                            processed_results[year_inv][year_curr][day][node_id]['sch_up'].append(sch_up)
+
+                        # - Sch, down
+                        processed_results[year_inv][year_curr][day][node_id]['sch_down'] = list()
+                        for p in model.periods:
+                            sch_down = pe.value(model.slack_es_sch_down_per_unit[e, y_inv, y_curr, d, p])
+                            processed_results[year_inv][year_curr][day][node_id]['sch_down'].append(sch_up)
+
+                        # - Sdch, up
+                        processed_results[year_inv][year_curr][day][node_id]['sdch_up'] = list()
+                        for p in model.periods:
+                            sdch_up = pe.value(model.slack_es_sdch_up_per_unit[e, y_inv, y_curr, d, p])
+                            processed_results[year_inv][year_curr][day][node_id]['sdch_up'].append(sdch_up)
+
+                        # - Sdch, down
+                        processed_results[year_inv][year_curr][day][node_id]['sdch_down'] = list()
+                        for p in model.periods:
+                            sdch_down = pe.value(model.slack_es_sdch_down_per_unit[e, y_inv, y_curr, d, p])
+                            processed_results[year_inv][year_curr][day][node_id]['sdch_down'].append(sdch_down)
 
     return processed_results
 
