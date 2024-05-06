@@ -499,7 +499,9 @@ def _process_results_aggregated(shared_ess_data, model):
             processed_results[year][day] = dict()
             for e in model.energy_storages:
                 node_id = shared_ess_data.shared_energy_storages[year][e].bus
-                capacity = pe.value(model.es_e_available[e, y])
+                capacity = 0.00
+                for y_inv in model.years:
+                    capacity += pe.value(model.es_e_available_per_unit[e, y_inv, y])
                 if isclose(capacity, 0.00, abs_tol=SMALL_TOLERANCE):
                     capacity = 1.00
                 processed_results[year][day][node_id] = dict()
@@ -830,7 +832,7 @@ def _get_investment_and_available_capacities(shared_ess_data, model):
                 e_available += pe.value(model.es_e_available_per_unit[e, y_inv, y])
 
             soh = 0.00
-            if not isclose(e_available, 0.00, abs_tol=1e-6):
+            if not isclose(e_available, 0.00, abs_tol=SMALL_TOLERANCE):
                 soh = pe.value(model.es_e_available[e, y] / model.es_e_rated[e, y])
             ess_capacity['available'][node_id][year] = dict()
             ess_capacity['available'][node_id][year]['power'] = s_available
