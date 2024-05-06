@@ -375,8 +375,8 @@ def create_shared_energy_storage_model(shared_ess_data, sess_vars, candidate_sol
             for d in esso_model.days:
                 day = days[d]
                 for p in esso_model.periods:
-                    preq = (sess_vars['tso']['current'][node_id][year][day]['p'][p] + sess_vars['dso']['current'][node_id][year][day]['p'][p]) * 0.50
-                    qreq = (sess_vars['tso']['current'][node_id][year][day]['q'][p] + sess_vars['dso']['current'][node_id][year][day]['q'][p]) * 0.50
+                    preq = sess_vars['tso']['current'][node_id][year][day]['p'][p]
+                    qreq = sess_vars['tso']['current'][node_id][year][day]['q'][p]
                     esso_model.es_pnet[e, y, d, p].fix(preq)
                     esso_model.es_pnet[e, y, d, p].fix(qreq)
     results = shared_ess_data.optimize(esso_model)
