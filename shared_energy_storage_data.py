@@ -987,7 +987,6 @@ def _write_ess_capacity_rated_available_to_excel(shared_ess_data, workbook, resu
             sheet.cell(row=row_idx, column=col_idx).number_format = num_style
             col_idx = col_idx + 1
 
-        '''
         # Power, available
         col_idx = 1
         row_idx = row_idx + 1
@@ -1035,7 +1034,6 @@ def _write_ess_capacity_rated_available_to_excel(shared_ess_data, workbook, resu
             sheet.cell(row=row_idx, column=col_idx).value = results['available'][node_id][year]['degradation_factor']
             sheet.cell(row=row_idx, column=col_idx).number_format = perc_style
             col_idx = col_idx + 1
-        '''
 
 
 def _write_aggregated_shared_energy_storage_operation_results_to_excel(shared_ess_data, workbook, results):
