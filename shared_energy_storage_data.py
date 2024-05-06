@@ -77,10 +77,10 @@ class SharedEnergyStorageData:
         results['soh']['detailed'] = self.process_soh_results_detailed(model)
         if self.params.slacks:
             results['relaxation_variables'] = dict()
-            #results['relaxation_variables']['aggregated'] = self.process_relaxation_variables_aggregated(model)
-            #results['relaxation_variables']['detailed'] = self.process_relaxation_variables_detailed(model)
+            results['relaxation_variables']['aggregated'] = self.process_relaxation_variables_aggregated(model)
+            results['relaxation_variables']['detailed'] = self.process_relaxation_variables_detailed(model)
             results['relaxation_variables']['operation'] = dict()
-            #results['relaxation_variables']['operation']['aggregated'] = self.process_relaxation_variables_operation_aggregated(model)
+            results['relaxation_variables']['operation']['aggregated'] = self.process_relaxation_variables_operation_aggregated(model)
             results['relaxation_variables']['operation']['detailed'] = self.process_relaxation_variables_operation_detailed(model)
         return results
 
