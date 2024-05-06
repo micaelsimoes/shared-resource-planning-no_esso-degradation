@@ -77,10 +77,7 @@ class SharedEnergyStorageData:
         results['soh']['detailed'] = self.process_soh_results_detailed(model)
         if self.params.slacks:
             results['relaxation_variables'] = dict()
-            results['relaxation_variables']['aggregated'] = self.process_relaxation_variables_aggregated(model)
-            results['relaxation_variables']['detailed'] = self.process_relaxation_variables_detailed(model)
             results['relaxation_variables']['operation'] = dict()
-            results['relaxation_variables']['operation']['aggregated'] = self.process_relaxation_variables_operation_aggregated(model)
             results['relaxation_variables']['operation']['detailed'] = self.process_relaxation_variables_operation_detailed(model)
         return results
 
@@ -95,15 +92,6 @@ class SharedEnergyStorageData:
 
     def process_soh_results_detailed(self, model):
         return _process_soh_results_detailed(self, model)
-
-    def process_relaxation_variables_aggregated(self, model):
-        return _process_relaxation_variables_aggregated(self, model)
-
-    def process_relaxation_variables_detailed(self, model):
-        return _process_relaxation_variables_detailed(self, model)
-
-    def process_relaxation_variables_operation_aggregated(self, model):
-        return _process_relaxation_variables_operation_aggregated(self, model)
 
     def process_relaxation_variables_operation_detailed(self, model):
         return _process_relaxation_variables_operation_detailed(self, model)
@@ -626,153 +614,6 @@ def _process_soh_results_detailed(shared_ess_data, model):
                 processed_results[year_inv][year_curr]['degradation_unit'][node_id] = degradation_unit
                 processed_results[year_inv][year_curr]['soh_cumul'][node_id] = soh_cumul
                 processed_results[year_inv][year_curr]['degradation_cumul'][node_id] = soh_cumul
-
-    return processed_results
-
-
-def _process_relaxation_variables_aggregated(shared_ess_data, model):
-
-    processed_results = dict()
-    repr_years = [year for year in shared_ess_data.years]
-
-    for y in model.years:
-        year = repr_years[y]
-        processed_results[year] = dict()
-        for e in model.energy_storages:
-            node_id = shared_ess_data.shared_energy_storages[year][e].bus
-            processed_results[year][node_id] = dict()
-            s_rated_up = pe.value(model.slack_es_s_rated_up[e, y])
-            s_rated_down = pe.value(model.slack_es_s_rated_down[e, y])
-            e_rated_up = pe.value(model.slack_es_e_rated_up[e, y])
-            e_rated_down = pe.value(model.slack_es_e_rated_down[e, y])
-            s_available_up = pe.value(model.slack_es_s_available_up[e, y])
-            s_available_down = pe.value(model.slack_es_s_available_down[e, y])
-            e_available_up = pe.value(model.slack_es_e_available_up[e, y])
-            e_available_down = pe.value(model.slack_es_e_available_down[e, y])
-            soh_up = pe.value(model.slack_es_e_soh_up[e, y])
-            soh_down = pe.value(model.slack_es_e_soh_down[e, y])
-            degradation_up = pe.value(model.slack_es_e_degradation_up[e, y])
-            degradation_down = pe.value(model.slack_es_e_degradation_down[e, y])
-            processed_results[year][node_id]['s_rated_up'] = s_rated_up
-            processed_results[year][node_id]['s_rated_down'] = s_rated_down
-            processed_results[year][node_id]['e_rated_up'] = e_rated_up
-            processed_results[year][node_id]['e_rated_down'] = e_rated_down
-            processed_results[year][node_id]['s_available_up'] = s_available_up
-            processed_results[year][node_id]['s_available_down'] = s_available_down
-            processed_results[year][node_id]['e_available_up'] = e_available_up
-            processed_results[year][node_id]['e_available_down'] = e_available_down
-            processed_results[year][node_id]['soh_up'] = soh_up
-            processed_results[year][node_id]['soh_down'] = soh_down
-            processed_results[year][node_id]['degradation_up'] = degradation_up
-            processed_results[year][node_id]['degradation_down'] = degradation_down
-
-    return processed_results
-
-
-def _process_relaxation_variables_detailed(shared_ess_data, model):
-
-    processed_results = dict()
-    repr_years = [year for year in shared_ess_data.years]
-
-    for y_inv in model.years:
-        year_inv = repr_years[y_inv]
-        processed_results[year_inv] = dict()
-        for y_curr in model.years:
-            year_curr = repr_years[y_curr]
-            processed_results[year_inv][year_curr] = dict()
-            for e in model.energy_storages:
-                node_id = shared_ess_data.shared_energy_storages[year_curr][e].bus
-                processed_results[year_inv][year_curr][node_id] = dict()
-
-                if shared_ess_data.params.slacks:
-
-                    # - Rated power and energy capacity
-                    s_rated_up = pe.value(model.slack_es_s_rated_per_unit_up[e, y_inv, y_curr])
-                    s_rated_down = pe.value(model.slack_es_s_rated_per_unit_down[e, y_inv, y_curr])
-                    e_rated_up = pe.value(model.slack_es_e_rated_per_unit_up[e, y_inv, y_curr])
-                    e_rated_down = pe.value(model.slack_es_e_rated_per_unit_down[e, y_inv, y_curr])
-                    processed_results[year_inv][year_curr][node_id]['s_rated_up'] = s_rated_up
-                    processed_results[year_inv][year_curr][node_id]['s_rated_down'] = s_rated_down
-                    processed_results[year_inv][year_curr][node_id]['e_rated_up'] = e_rated_up
-                    processed_results[year_inv][year_curr][node_id]['e_rated_down'] = e_rated_down
-
-                    # - Available power and energy capacity
-                    s_available_up = pe.value(model.slack_es_s_available_per_unit_up[e, y_inv, y_curr])
-                    s_available_down = pe.value(model.slack_es_s_available_per_unit_down[e, y_inv, y_curr])
-                    e_available_up = pe.value(model.slack_es_e_available_per_unit_up[e, y_inv, y_curr])
-                    e_available_down = pe.value(model.slack_es_e_available_per_unit_down[e, y_inv, y_curr])
-                    processed_results[year_inv][year_curr][node_id]['s_available_up'] = s_available_up
-                    processed_results[year_inv][year_curr][node_id]['s_available_down'] = s_available_down
-                    processed_results[year_inv][year_curr][node_id]['e_available_up'] = e_available_up
-                    processed_results[year_inv][year_curr][node_id]['e_available_down'] = e_available_down
-
-                    # - Degradation
-                    avg_ch_dch_up = pe.value(model.slack_es_avg_ch_dch_day_up[e, y_inv, y_curr])
-                    avg_ch_dch_down = pe.value(model.slack_es_avg_ch_dch_day_down[e, y_inv, y_curr])
-                    degradation_day_up = pe.value(model.slack_es_degradation_per_unit_day_up[e, y_inv, y_curr])
-                    degradation_day_down = pe.value(model.slack_es_degradation_per_unit_day_down[e, y_inv, y_curr])
-                    soh_day_up = pe.value(model.slack_es_soh_per_unit_day_up[e, y_inv, y_curr])
-                    soh_day_down = pe.value(model.slack_es_soh_per_unit_day_down[e, y_inv, y_curr])
-                    degradation_year_up = pe.value(model.slack_es_degradation_per_unit_year_up[e, y_inv, y_curr])
-                    degradation_year_down = pe.value(model.slack_es_degradation_per_unit_year_down[e, y_inv, y_curr])
-                    soh_year_up = pe.value(model.slack_es_soh_per_unit_year_up[e, y_inv, y_curr])
-                    soh_year_down = pe.value(model.slack_es_soh_per_unit_year_down[e, y_inv, y_curr])
-                    degradation_cumul_up = pe.value(model.slack_es_degradation_per_unit_cumul_up[e, y_inv, y_curr])
-                    degradation_cumul_down = pe.value(model.slack_es_degradation_per_unit_cumul_down[e, y_inv, y_curr])
-                    soh_cumul_up = pe.value(model.slack_es_soh_per_unit_cumul_up[e, y_inv, y_curr])
-                    soh_cumul_down = pe.value(model.slack_es_soh_per_unit_cumul_down[e, y_inv, y_curr])
-                    processed_results[year_inv][year_curr][node_id]['avg_ch_dch_up'] = avg_ch_dch_up
-                    processed_results[year_inv][year_curr][node_id]['avg_ch_dch_down'] = avg_ch_dch_down
-                    processed_results[year_inv][year_curr][node_id]['degradation_day_up'] = degradation_day_up
-                    processed_results[year_inv][year_curr][node_id]['degradation_day_down'] = degradation_day_down
-                    processed_results[year_inv][year_curr][node_id]['soh_day_up'] = soh_day_up
-                    processed_results[year_inv][year_curr][node_id]['soh_day_down'] = soh_day_down
-                    processed_results[year_inv][year_curr][node_id]['degradation_year_up'] = degradation_year_up
-                    processed_results[year_inv][year_curr][node_id]['degradation_year_down'] = degradation_year_down
-                    processed_results[year_inv][year_curr][node_id]['soh_year_up'] = soh_year_up
-                    processed_results[year_inv][year_curr][node_id]['soh_year_down'] = soh_year_down
-                    processed_results[year_inv][year_curr][node_id]['degradation_cumul_up'] = degradation_cumul_up
-                    processed_results[year_inv][year_curr][node_id]['degradation_cumul_down'] = degradation_cumul_down
-                    processed_results[year_inv][year_curr][node_id]['soh_cumul_up'] = soh_cumul_up
-                    processed_results[year_inv][year_curr][node_id]['soh_cumul_down'] = soh_cumul_down
-
-    return processed_results
-
-
-def _process_relaxation_variables_operation_aggregated(shared_ess_data, model):
-
-    processed_results = dict()
-    repr_days = [day for day in shared_ess_data.days]
-    repr_years = [year for year in shared_ess_data.years]
-
-    for y in model.years:
-        year = repr_years[y]
-        processed_results[year] = dict()
-        for d in model.days:
-            day = repr_days[d]
-            processed_results[year][day] = dict()
-            for e in model.energy_storages:
-                node_id = shared_ess_data.shared_energy_storages[year][e].bus
-                processed_results[year][day][node_id] = dict()
-                processed_results[year][day][node_id]['pnet_up'] = list()
-                processed_results[year][day][node_id]['pnet_down'] = list()
-                processed_results[year][day][node_id]['qnet_up'] = list()
-                processed_results[year][day][node_id]['qnet_down'] = list()
-                processed_results[year][day][node_id]['soc_up'] = list()
-                processed_results[year][day][node_id]['soc_down'] = list()
-                for p in model.periods:
-                    pnet_up = pe.value(model.slack_es_pnet_up[e, y, d, p])
-                    pnet_down = pe.value(model.slack_es_pnet_down[e, y, d, p])
-                    qnet_up = pe.value(model.slack_es_qnet_up[e, y, d, p])
-                    qnet_down = pe.value(model.slack_es_qnet_down[e, y, d, p])
-                    soc_up = pe.value(model.slack_es_soc_up[e, y, d, p])
-                    soc_down = pe.value(model.slack_es_soc_up[e, y, d, p])
-                    processed_results[year][day][node_id]['pnet_up'].append(pnet_up)
-                    processed_results[year][day][node_id]['pnet_down'].append(pnet_down)
-                    processed_results[year][day][node_id]['qnet_up'].append(qnet_up)
-                    processed_results[year][day][node_id]['qnet_down'].append(qnet_down)
-                    processed_results[year][day][node_id]['soc_up'].append(soc_up)
-                    processed_results[year][day][node_id]['soc_down'].append(soc_down)
 
     return processed_results
 
