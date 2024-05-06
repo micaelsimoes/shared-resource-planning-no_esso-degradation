@@ -121,6 +121,14 @@ class SharedEnergyStorageData:
                 shared_ess.e_min = candidate_solution[shared_ess.bus][year]['e'] * ENERGY_STORAGE_MIN_ENERGY_STORED
                 shared_ess.e_max = candidate_solution[shared_ess.bus][year]['e'] * ENERGY_STORAGE_MAX_ENERGY_STORED
 
+    def get_available_capacities(self, model, ess_idx, year_idx):
+        s_available = 0.00
+        e_available = 0.00
+        for y_inv in model.years:
+            s_available += pe.value(model.es_s_available_per_unit[ess_idx, y_inv, year_idx])
+            e_available += pe.value(model.es_e_available_per_unit[ess_idx, y_inv, year_idx])
+        return s_available, e_available
+
     def get_investment_and_available_capacities(self, model):
         return _get_investment_and_available_capacities(self, model)
 
@@ -499,9 +507,7 @@ def _process_results_aggregated(shared_ess_data, model):
             processed_results[year][day] = dict()
             for e in model.energy_storages:
                 node_id = shared_ess_data.shared_energy_storages[year][e].bus
-                capacity = 0.00
-                for y_inv in model.years:
-                    capacity += pe.value(model.es_e_available_per_unit[e, y_inv, y])
+                _, capacity = shared_ess_data.get_available_capacities(model, e, y)
                 if isclose(capacity, 0.00, abs_tol=SMALL_TOLERANCE):
                     capacity = 1.00
                 processed_results[year][day][node_id] = dict()
@@ -571,9 +577,10 @@ def _process_soh_results_aggregated(shared_ess_data, model):
             node_id = shared_ess_data.shared_energy_storages[year][e].bus
             s_rated = pe.value(model.es_s_rated[e, y])
             e_rated = pe.value(model.es_e_rated[e, y])
-            s_available = pe.value(model.es_s_available[e, y])
-            e_available = pe.value(model.es_e_available[e, y])
-            soh = e_available / s_available
+            s_available, e_available = shared_ess_data.get_available_capacities(model, e, y)
+            soh = 0.00
+            if not isclose(e_available, 0.00, abs_tol=SMALL_TOLERANCE):
+                soh = pe.value(model.es_e_available[e, y] / model.es_e_rated[e, y])
             degradation = 1 - soh
             processed_results[year]['s_rated'][node_id] = s_rated
             processed_results[year]['e_rated'][node_id] = e_rated
@@ -825,12 +832,7 @@ def _get_investment_and_available_capacities(shared_ess_data, model):
             ess_capacity['rated'][node_id][year]['power'] = pe.value(model.es_s_rated[e, y])
             ess_capacity['rated'][node_id][year]['energy'] = pe.value(model.es_e_rated[e, y])
 
-            s_available = 0.00
-            e_available = 0.00
-            for y_inv in model.years:
-                s_available += pe.value(model.es_s_available_per_unit[e, y_inv, y])
-                e_available += pe.value(model.es_e_available_per_unit[e, y_inv, y])
-
+            s_available, e_available = shared_ess_data.get_available_capacities(model, e, y)
             soh = 0.00
             if not isclose(e_available, 0.00, abs_tol=SMALL_TOLERANCE):
                 soh = pe.value(model.es_e_available[e, y] / model.es_e_rated[e, y])
