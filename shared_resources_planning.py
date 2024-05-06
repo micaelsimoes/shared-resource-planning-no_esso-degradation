@@ -384,9 +384,17 @@ def create_shared_energy_storage_model(shared_ess_data, sess_vars, candidate_sol
             for d in esso_model.days:
                 day = days[d]
                 for p in esso_model.periods:
+
                     shared_ess_s = pe.value(esso_model.es_snet[e, y, d, p])
+                    shared_ess_p = pe.value(esso_model.es_pnet[e, y, d, p])
+                    shared_ess_q = pe.value(esso_model.es_qnet[e, y, d, p])
+
                     sess_vars['current'][node_id][year][day]['s'][p] = shared_ess_s
+                    sess_vars['current'][node_id][year][day]['p'][p] = shared_ess_p
+                    sess_vars['current'][node_id][year][day]['q'][p] = shared_ess_q
                     sess_vars['prev'][node_id][year][day]['s'][p] = shared_ess_s
+                    sess_vars['prev'][node_id][year][day]['p'][p] = shared_ess_p
+                    sess_vars['prev'][node_id][year][day]['q'][p] = shared_ess_q
 
     return esso_model, results
 
