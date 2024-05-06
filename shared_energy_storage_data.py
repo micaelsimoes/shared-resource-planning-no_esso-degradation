@@ -585,8 +585,8 @@ def _process_soh_results_aggregated(shared_ess_data, model):
             e_rated = pe.value(model.es_e_rated[e, y])
             s_available = pe.value(model.es_s_available[e, y])
             e_available = pe.value(model.es_e_available[e, y])
-            soh = pe.value(model.es_e_soh[e, y])
-            degradation = pe.value(model.es_e_degradation[e, y])
+            soh = e_available / s_available
+            degradation = 1 - soh
             processed_results[year]['s_rated'][node_id] = s_rated
             processed_results[year]['e_rated'][node_id] = e_rated
             processed_results[year]['s_available'][node_id] = s_available
