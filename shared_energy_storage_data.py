@@ -272,6 +272,7 @@ def _build_subproblem_model(shared_ess_data):
     model.energy_storage_capacity_degradation = pe.ConstraintList()
     for e in model.energy_storages:
         for y_inv in model.years:
+            num_years = shared_ess_data.years[repr_years[y_inv]]
             shared_energy_storage = shared_ess_data.shared_energy_storages[repr_years[y_inv]][e]
             tcal_norm = round(shared_energy_storage.t_cal / (shared_ess_data.years[repr_years[y_inv]]))
             max_tcal_norm = min(y_inv + tcal_norm, len(shared_ess_data.years))
@@ -284,7 +285,7 @@ def _build_subproblem_model(shared_ess_data):
                 prev_deg = 0.00
                 if y > 0:
                     prev_deg = model.es_degradation_per_unit_cumul[e, y_inv, y - 1]
-                model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_cumul[e, y_inv, y] == prev_deg + (model.es_degradation_per_unit[e, y_inv, y]) ** (10 * 365))
+                model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_cumul[e, y_inv, y] == prev_deg + (model.es_degradation_per_unit[e, y_inv, y]) ** (num_years * 365))
                 model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[e, y_inv, y] == 1.00 - model.es_degradation_per_unit_cumul[e, y_inv, y])
 
     # - P, Q, S, SoC, per unit as a function of available capacities
