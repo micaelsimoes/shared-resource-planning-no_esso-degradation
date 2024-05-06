@@ -280,25 +280,10 @@ def _build_subproblem_model(shared_ess_data):
                     for p in model.periods:
 
                         sch = model.es_sch_per_unit[e, y_inv, y, d, p]
-                        pch = model.es_pch_per_unit[e, y_inv, y, d, p]
-                        qch = model.es_pch_per_unit[e, y_inv, y, d, p]
                         sdch = model.es_sdch_per_unit[e, y_inv, y, d, p]
-                        pdch = model.es_pdch_per_unit[e, y_inv, y, d, p]
-                        qdch = model.es_qdch_per_unit[e, y_inv, y, d, p]
 
                         model.energy_storage_limits.add(sch <= s_max)
-                        model.energy_storage_limits.add(pch <= s_max)
-                        model.energy_storage_limits.add(qch <= s_max)
-                        model.energy_storage_limits.add(qch <= tan(max_phi) * pch)
-                        model.energy_storage_limits.add(qch >= -s_max)
-                        model.energy_storage_limits.add(qch >= tan(min_phi) * pch)
-
                         model.energy_storage_limits.add(sdch <= s_max)
-                        model.energy_storage_limits.add(pdch <= s_max)
-                        model.energy_storage_limits.add(qdch <= s_max)
-                        model.energy_storage_limits.add(qdch <= tan(max_phi) * pdch)
-                        model.energy_storage_limits.add(qdch >= -s_max)
-                        model.energy_storage_limits.add(qdch >= tan(min_phi) * pdch)
 
                         model.energy_storage_limits.add(model.es_soc_per_unit[e, y_inv, y, d, p] >= model.es_e_available_per_unit[e, y_inv, y] * ENERGY_STORAGE_MIN_ENERGY_STORED)
                         model.energy_storage_limits.add(model.es_soc_per_unit[e, y_inv, y, d, p] <= model.es_e_available_per_unit[e, y_inv, y] * ENERGY_STORAGE_MAX_ENERGY_STORED)
@@ -324,15 +309,8 @@ def _build_subproblem_model(shared_ess_data):
                 for d in model.days:
                     for p in model.periods:
 
-                        sch = model.es_pch_per_unit[e, y_inv, y, d, p]
-                        pch = model.es_pch_per_unit[e, y_inv, y, d, p]
-                        qch = model.es_pch_per_unit[e, y_inv, y, d, p]
-                        sdch = model.es_pdch_per_unit[e, y_inv, y, d, p]
-                        pdch = model.es_pdch_per_unit[e, y_inv, y, d, p]
-                        qdch = model.es_pdch_per_unit[e, y_inv, y, d, p]
-
-                        model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
-                        model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
+                        sch = model.es_sch_per_unit[e, y_inv, y, d, p]
+                        sdch = model.es_sdch_per_unit[e, y_inv, y, d, p]
 
                         if p > 0:
                             model.energy_storage_balance.add(model.es_soc_per_unit[e, y_inv, y, d, p] - model.es_soc_per_unit[e, y_inv, y, d, p - 1] == sch * eff_charge - sdch / eff_discharge)
@@ -550,14 +528,14 @@ def _process_results_detailed(shared_ess_data, model):
                     if isclose(capacity, 0.00, abs_tol=SMALL_TOLERANCE):
                         capacity = 1.00
                     processed_results[year_inv][year_curr][day][node_id] = dict()
-                    processed_results[year_inv][year_curr][day][node_id]['p'] = list()
+                    processed_results[year_inv][year_curr][day][node_id]['s'] = list()
                     processed_results[year_inv][year_curr][day][node_id]['soc'] = list()
                     processed_results[year_inv][year_curr][day][node_id]['soc_perc'] = list()
                     for p in model.periods:
-                        p_net = pe.value(model.es_pch_per_unit[e, y_inv, y_curr, d, p] - model.es_pdch_per_unit[e, y_inv, y_curr, d, p])
+                        s_net = pe.value(model.es_sch_per_unit[e, y_inv, y_curr, d, p] - model.es_sdch_per_unit[e, y_inv, y_curr, d, p])
                         soc = pe.value(model.es_soc_per_unit[e, y_inv, y_curr, d, p])
                         soc_perc = soc / capacity
-                        processed_results[year_inv][year_curr][day][node_id]['p'].append(p_net)
+                        processed_results[year_inv][year_curr][day][node_id]['s'].append(s_net)
                         processed_results[year_inv][year_curr][day][node_id]['soc'].append(soc)
                         processed_results[year_inv][year_curr][day][node_id]['soc_perc'].append(soc_perc)
 
@@ -1135,14 +1113,14 @@ def _write_detailed_shared_energy_storage_operation_results_to_excel(shared_ess_
             for year_curr in results[year_inv]:
                 for day in results[year_inv][year_curr]:
 
-                    # - Active Power
+                    # - Apparent Power
                     sheet.cell(row=row_idx, column=1).value = node_id
                     sheet.cell(row=row_idx, column=2).value = int(year_inv)
                     sheet.cell(row=row_idx, column=3).value = int(year_curr)
                     sheet.cell(row=row_idx, column=4).value = day
-                    sheet.cell(row=row_idx, column=5).value = 'P, [MW]'
+                    sheet.cell(row=row_idx, column=5).value = 'S, [MVA]'
                     for p in range(shared_ess_data.num_instants):
-                        pnet = results[year_inv][year_curr][day][node_id]['p'][p]
+                        pnet = results[year_inv][year_curr][day][node_id]['s'][p]
                         sheet.cell(row=row_idx, column=p + 6).value = pnet
                         sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
                     row_idx = row_idx + 1
