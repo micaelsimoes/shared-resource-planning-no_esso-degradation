@@ -353,13 +353,10 @@ def create_distribution_networks_models(distribution_networks, interface_vars, s
                     # Get initial Shared ESS values
                     p_ess = pe.value(dso_model[year][day].expected_shared_ess_p[p]) * s_base
                     q_ess = pe.value(dso_model[year][day].expected_shared_ess_q[p]) * s_base
-                    s_ess = pe.value(dso_model[year][day].expected_shared_ess_s[p]) * s_base
                     sess_vars['current'][node_id][year][day]['p'][p] = p_ess
                     sess_vars['current'][node_id][year][day]['q'][p] = q_ess
-                    sess_vars['current'][node_id][year][day]['s'][p] = s_ess
                     sess_vars['prev'][node_id][year][day]['p'][p] = p_ess
                     sess_vars['prev'][node_id][year][day]['q'][p] = q_ess
-                    sess_vars['prev'][node_id][year][day]['s'][p] = s_ess
 
         dso_models[node_id] = dso_model
 
