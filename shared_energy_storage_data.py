@@ -517,14 +517,14 @@ def _process_results_aggregated(shared_ess_data, model):
                 if isclose(capacity, 0.00, abs_tol=SMALL_TOLERANCE):
                     capacity = 1.00
                 processed_results[year][day][node_id] = dict()
-                processed_results[year][day][node_id]['p'] = list()
+                processed_results[year][day][node_id]['s'] = list()
                 processed_results[year][day][node_id]['soc'] = list()
                 processed_results[year][day][node_id]['soc_perc'] = list()
                 for p in model.periods:
                     s_net = pe.value(model.es_snet[e, y, d, p])
                     soc = pe.value(model.es_soc[e, y, d, p])
                     soc_perc = soc / capacity
-                    processed_results[year][day][node_id]['q'].append(s_net)
+                    processed_results[year][day][node_id]['s'].append(s_net)
                     processed_results[year][day][node_id]['soc'].append(soc)
                     processed_results[year][day][node_id]['soc_perc'].append(soc_perc)
 
