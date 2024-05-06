@@ -510,30 +510,30 @@ def create_admm_variables(planning_problem):
                 consensus_variables['interface']['pf']['dso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
                 consensus_variables['ess']['tso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants, 's': [0.0] * num_instants}
                 consensus_variables['ess']['dso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants, 's': [0.0] * num_instants}
-                consensus_variables['ess']['esso']['current'][node_id][year][day] = {'s': [0.0] * num_instants}
+                consensus_variables['ess']['esso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants, 's': [0.0] * num_instants}
                 consensus_variables['interface']['v_sqr']['tso']['prev'][node_id][year][day] = [1.0] * num_instants
                 consensus_variables['interface']['v_sqr']['dso']['prev'][node_id][year][day] = [1.0] * num_instants
                 consensus_variables['interface']['pf']['tso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
                 consensus_variables['interface']['pf']['dso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
                 consensus_variables['ess']['tso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants, 's': [0.0] * num_instants}
                 consensus_variables['ess']['dso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants, 's': [0.0] * num_instants}
-                consensus_variables['ess']['esso']['prev'][node_id][year][day] = {'s': [0.0] * num_instants}
+                consensus_variables['ess']['esso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants, 's': [0.0] * num_instants}
 
                 dual_variables['v_sqr']['tso']['current'][node_id][year][day] = [0.0] * planning_problem.num_instants
                 dual_variables['v_sqr']['dso']['current'][node_id][year][day] = [0.0] * planning_problem.num_instants
-                dual_variables['pf']['tso']['current'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants, 's': [0.0] * num_instants}
-                dual_variables['pf']['dso']['current'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants, 's': [0.0] * num_instants}
+                dual_variables['pf']['tso']['current'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
+                dual_variables['pf']['dso']['current'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
                 dual_variables['ess']['tso']['current'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants, 's': [0.0] * num_instants}
                 dual_variables['ess']['dso']['current'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants, 's': [0.0] * num_instants}
-                dual_variables['ess']['esso']['current']['tso'][node_id][year][day] = {'s': [0.0] * num_instants}
-                dual_variables['ess']['esso']['current']['dso'][node_id][year][day] = {'s': [0.0] * num_instants}
+                dual_variables['ess']['esso']['current']['tso'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants, 's': [0.0] * num_instants}
+                dual_variables['ess']['esso']['current']['dso'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants, 's': [0.0] * num_instants}
                 dual_variables['v_sqr']['tso']['prev'][node_id][year][day] = [0.0] * planning_problem.num_instants
                 dual_variables['v_sqr']['dso']['prev'][node_id][year][day] = [0.0] * planning_problem.num_instants
-                dual_variables['pf']['tso']['prev'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants, 's': [0.0] * num_instants}
-                dual_variables['pf']['dso']['prev'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants, 's': [0.0] * num_instants}
+                dual_variables['pf']['tso']['prev'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
+                dual_variables['pf']['dso']['prev'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
                 dual_variables['ess']['tso']['prev'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants, 's': [0.0] * num_instants}
                 dual_variables['ess']['dso']['prev'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants, 's': [0.0] * num_instants}
-                dual_variables['ess']['esso']['prev'][node_id][year][day] = {'s': [0.0] * num_instants}
+                dual_variables['ess']['esso']['prev'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants, 's': [0.0] * num_instants}
 
     return consensus_variables, dual_variables
 
