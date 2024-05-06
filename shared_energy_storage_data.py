@@ -171,7 +171,11 @@ def _build_subproblem_model(shared_ess_data):
 
     model.es_soc_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_sch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+    model.es_pch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+    model.es_qch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.Reals, initialize=0.00)
     model.es_sdch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+    model.es_pdch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+    model.es_qdch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.Reals, initialize=0.00)
     model.es_avg_ch_dch_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_soh_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=1.00, bounds=(0.00, 1.00))
     model.es_degradation_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
@@ -179,6 +183,11 @@ def _build_subproblem_model(shared_ess_data):
     model.es_degradation_per_unit_cumul = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
     if shared_ess_data.params.slacks:
         model.slack_es_comp_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_es_sch_up_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_es_sch_down_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_es_sch_up_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_es_sdch_up_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_es_sdch_down_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_soh_per_unit.fix(1.00)
     model.es_degradation_per_unit.fix(0.00)
 
@@ -266,16 +275,30 @@ def _build_subproblem_model(shared_ess_data):
     model.energy_storage_limits = pe.ConstraintList()
     for e in model.energy_storages:
         for y_inv in model.years:
+            shared_energy_storage = shared_ess_data.shared_energy_storages[repr_years[y_inv]][e]
+            max_phi = acos(shared_energy_storage.max_pf)
+            min_phi = acos(shared_energy_storage.min_pf)
             for y in model.years:
                 s_max = model.es_s_available_per_unit[e, y_inv, y]
                 for d in model.days:
                     for p in model.periods:
 
                         sch = model.es_sch_per_unit[e, y_inv, y, d, p]
+                        pch = model.es_pch_per_unit[e, y_inv, y, d, p]
+                        qch = model.es_qch_per_unit[e, y_inv, y, d, p]
                         sdch = model.es_sdch_per_unit[e, y_inv, y, d, p]
+                        pdch = model.es_pdch_per_unit[e, y_inv, y, d, p]
+                        qdch = model.es_qdch_per_unit[e, y_inv, y, d, p]
 
                         model.energy_storage_limits.add(sch <= s_max)
+                        model.energy_storage_limits.add(pch <= s_max)
+                        model.energy_storage_limits.add(qch <= s_max * tan(max_phi))
+                        model.energy_storage_limits.add(qch >= s_max * tan(min_phi))
+                        model.energy_storage_limits.add(qch >= -s_max)
                         model.energy_storage_limits.add(sdch <= s_max)
+                        model.energy_storage_limits.add(pdch <= s_max)
+                        model.energy_storage_limits.add(qdch <= s_max * tan(max_phi))
+                        model.energy_storage_limits.add(qdch >= s_max * tan(min_phi))
 
                         model.energy_storage_limits.add(model.es_soc_per_unit[e, y_inv, y, d, p] >= model.es_e_available_per_unit[e, y_inv, y] * ENERGY_STORAGE_MIN_ENERGY_STORED)
                         model.energy_storage_limits.add(model.es_soc_per_unit[e, y_inv, y, d, p] <= model.es_e_available_per_unit[e, y_inv, y] * ENERGY_STORAGE_MAX_ENERGY_STORED)
@@ -302,7 +325,18 @@ def _build_subproblem_model(shared_ess_data):
                     for p in model.periods:
 
                         sch = model.es_sch_per_unit[e, y_inv, y, d, p]
+                        pch = model.es_pch_per_unit[e, y_inv, y, d, p]
+                        qch = model.es_qch_per_unit[e, y_inv, y, d, p]
                         sdch = model.es_sdch_per_unit[e, y_inv, y, d, p]
+                        pdch = model.es_pdch_per_unit[e, y_inv, y, d, p]
+                        qdch = model.es_qdch_per_unit[e, y_inv, y, d, p]
+
+                        if shared_ess_data.params.slacks:
+                            model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2 + model.slack_es_sch_up_per_unit[e, y_inv, y, d, p] - model.slack_es_sch_down_per_unit[e, y_inv, y, d, p])
+                            model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2 + model.slack_es_sdch_up_per_unit[e, y_inv, y, d, p] - model.slack_es_sdch_down_per_unit[e, y_inv, y, d, p])
+                        else:
+                            model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
+                            model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
 
                         if p > 0:
                             model.energy_storage_balance.add(model.es_soc_per_unit[e, y_inv, y, d, p] - model.es_soc_per_unit[e, y_inv, y, d, p - 1] == sch * eff_charge - sdch / eff_discharge)
@@ -346,6 +380,8 @@ def _build_subproblem_model(shared_ess_data):
                     for d in model.days:
                         for p in model.periods:
                             slack_penalty += PENALTY_SLACK * model.slack_es_comp_per_unit[e, y_inv, y, d, p]
+                            slack_penalty += PENALTY_SLACK * (model.slack_es_sch_up_per_unit[e, y_inv, y, d, p] + model.slack_es_sch_down_per_unit[e, y_inv, y, d, p])
+                            slack_penalty += PENALTY_SLACK * (model.slack_es_sdch_up_per_unit[e, y_inv, y, d, p] + model.slack_es_sdch_down_per_unit[e, y_inv, y, d, p])
 
     model.objective = pe.Objective(sense=pe.minimize, expr=slack_penalty)
 
