@@ -2516,11 +2516,39 @@ def _write_shared_energy_storages_results_to_excel(planning_problem, workbook, r
                 sheet.cell(row=row_idx, column=3).value = int(year)
                 sheet.cell(row=row_idx, column=4).value = day
                 sheet.cell(row=row_idx, column=5).value = 'P, [MW]'
-                sheet.cell(row=row_idx, column=6).value = 'N/A'
-                sheet.cell(row=row_idx, column=7).value = 'N/A'
+                sheet.cell(row=row_idx, column=6).value = 'Expected'
+                sheet.cell(row=row_idx, column=7).value = '-'
                 for p in range(planning_problem.num_instants):
                     ess_p = results['esso']['operation']['aggregated'][year][day][node_id]['p'][p]
                     sheet.cell(row=row_idx, column=p + 8).value = ess_p
+                    sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
+
+                # Reactive power
+                row_idx = row_idx + 1
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = 'ESSO'
+                sheet.cell(row=row_idx, column=3).value = int(year)
+                sheet.cell(row=row_idx, column=4).value = day
+                sheet.cell(row=row_idx, column=5).value = 'Q, [MVAr]'
+                sheet.cell(row=row_idx, column=6).value = 'Expected'
+                sheet.cell(row=row_idx, column=7).value = '-'
+                for p in range(planning_problem.num_instants):
+                    ess_q = results['esso']['operation']['aggregated'][year][day][node_id]['q'][p]
+                    sheet.cell(row=row_idx, column=p + 8).value = ess_q
+                    sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
+
+                # Apparent power
+                row_idx = row_idx + 1
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = 'ESSO'
+                sheet.cell(row=row_idx, column=3).value = int(year)
+                sheet.cell(row=row_idx, column=4).value = day
+                sheet.cell(row=row_idx, column=5).value = 'S, [MVA]'
+                sheet.cell(row=row_idx, column=6).value = 'Expected'
+                sheet.cell(row=row_idx, column=7).value = '-'
+                for p in range(planning_problem.num_instants):
+                    ess_s = results['esso']['operation']['aggregated'][year][day][node_id]['s'][p]
+                    sheet.cell(row=row_idx, column=p + 8).value = ess_s
                     sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
 
                 # State-of-Charge, [MVAh]
@@ -2530,8 +2558,8 @@ def _write_shared_energy_storages_results_to_excel(planning_problem, workbook, r
                 sheet.cell(row=row_idx, column=3).value = int(year)
                 sheet.cell(row=row_idx, column=4).value = day
                 sheet.cell(row=row_idx, column=5).value = 'SoC, [MVAh]'
-                sheet.cell(row=row_idx, column=6).value = 'N/A'
-                sheet.cell(row=row_idx, column=7).value = 'N/A'
+                sheet.cell(row=row_idx, column=6).value = 'Expected'
+                sheet.cell(row=row_idx, column=7).value = '-'
                 for p in range(planning_problem.num_instants):
                     ess_soc = results['esso']['operation']['aggregated'][year][day][node_id]['soc'][p]
                     sheet.cell(row=row_idx, column=p + 8).value = ess_soc
@@ -2544,8 +2572,8 @@ def _write_shared_energy_storages_results_to_excel(planning_problem, workbook, r
                 sheet.cell(row=row_idx, column=3).value = int(year)
                 sheet.cell(row=row_idx, column=4).value = day
                 sheet.cell(row=row_idx, column=5).value = 'SoC, [%]'
-                sheet.cell(row=row_idx, column=6).value = 'N/A'
-                sheet.cell(row=row_idx, column=7).value = 'N/A'
+                sheet.cell(row=row_idx, column=6).value = 'Expected'
+                sheet.cell(row=row_idx, column=7).value = '-'
                 for p in range(planning_problem.num_instants):
                     ess_soc_percent = results['esso']['operation']['aggregated'][year][day][node_id]['soc_perc'][p]
                     sheet.cell(row=row_idx, column=p + 8).value = ess_soc_percent
