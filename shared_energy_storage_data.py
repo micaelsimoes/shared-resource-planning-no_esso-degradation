@@ -580,7 +580,7 @@ def _process_soh_results_aggregated(shared_ess_data, model):
             s_available, e_available = shared_ess_data.get_available_capacities(model, e, y)
             soh = 0.00
             if not isclose(e_available, 0.00, abs_tol=SMALL_TOLERANCE):
-                soh = pe.value(model.es_e_available[e, y] / model.es_e_rated[e, y])
+                soh = e_available / e_rated
             degradation = 1 - soh
             processed_results[year]['s_rated'][node_id] = s_rated
             processed_results[year]['e_rated'][node_id] = e_rated
@@ -835,7 +835,7 @@ def _get_investment_and_available_capacities(shared_ess_data, model):
             s_available, e_available = shared_ess_data.get_available_capacities(model, e, y)
             soh = 0.00
             if not isclose(e_available, 0.00, abs_tol=SMALL_TOLERANCE):
-                soh = pe.value(model.es_e_available[e, y] / model.es_e_rated[e, y])
+                soh = e_available / pe.value(model.es_e_rated[e, y])
             ess_capacity['available'][node_id][year] = dict()
             ess_capacity['available'][node_id][year]['power'] = s_available
             ess_capacity['available'][node_id][year]['energy'] = e_available
