@@ -1538,7 +1538,6 @@ def _write_operational_planning_results_to_excel(planning_problem, results, prim
     _write_network_branch_results_to_excel(planning_problem, wb, results, 'current_perc')
     _write_network_branch_power_flow_results_to_excel(planning_problem, wb, results)
     _write_network_energy_storages_results_to_excel(planning_problem, wb, results)
-    _write_relaxation_slacks_results_to_excel(planning_problem, wb, results)
 
     # Save results
     try:
@@ -3775,8 +3774,6 @@ def _write_network_energy_storages_results_per_operator(network, sheet, operator
 
 def _write_relaxation_slacks_results_to_excel(planning_problem, workbook, results):
     _write_relaxation_slacks_results_network_operators_to_excel(planning_problem, workbook, results)
-    planning_problem.shared_ess_data.write_aggregated_relaxation_slacks_results_to_excel(workbook, results['esso']['relaxation_variables']['aggregated'])
-    planning_problem.shared_ess_data.write_detailed_relaxation_slacks_results_to_excel(workbook, results['esso']['relaxation_variables']['detailed'])
 
 
 def _write_relaxation_slacks_results_no_coordination_to_excel(planning_problem, workbook, results):
