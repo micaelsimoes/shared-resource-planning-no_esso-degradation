@@ -248,8 +248,8 @@ def _build_subproblem_model(shared_ess_data):
             available_s_capacity = 0.00
             available_e_capacity = 0.00
             for y_inv in model.years:
-                total_s_capacity += model.es_s_available_per_unit[e, y_inv, y]
-                total_e_capacity += model.es_e_available_per_unit[e, y_inv, y]
+                available_s_capacity += model.es_s_available_per_unit[e, y_inv, y]
+                available_e_capacity += model.es_e_available_per_unit[e, y_inv, y]
             model.rated_s_capacity.add(model.es_s_available[e, y] == available_s_capacity)
             model.rated_e_capacity.add(model.es_e_available[e, y] == available_e_capacity)
 
@@ -823,6 +823,7 @@ def _get_investment_and_available_capacities(shared_ess_data, model):
         node_id = shared_ess_data.shared_energy_storages[years[0]][e].bus
         ess_capacity['investment'][node_id] = dict()
         ess_capacity['rated'][node_id] = dict()
+        ess_capacity['available'][node_id] = dict()
 
         for y in model.years:
 
@@ -835,6 +836,12 @@ def _get_investment_and_available_capacities(shared_ess_data, model):
             ess_capacity['rated'][node_id][year] = dict()
             ess_capacity['rated'][node_id][year]['power'] = pe.value(model.es_s_rated[e, y])
             ess_capacity['rated'][node_id][year]['energy'] = pe.value(model.es_e_rated[e, y])
+
+            ess_capacity['available'][node_id][year] = dict()
+            ess_capacity['available'][node_id][year]['power'] = pe.value(model.es_s_available[e, y])
+            ess_capacity['available'][node_id][year]['energy'] = pe.value(model.es_e_available[e, y])
+            ess_capacity['available'][node_id][year]['soh'] = pe.value(model.es_e_available[e, y] / model.es_e_rated[e, y])
+            ess_capacity['available'][node_id][year]['degradation_factor'] = 1 - pe.value(model.es_e_available[e, y] / model.es_e_rated[e, y])
 
     return ess_capacity
 
