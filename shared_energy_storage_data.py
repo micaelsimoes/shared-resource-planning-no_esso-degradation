@@ -1246,8 +1246,9 @@ def _write_detailed_operation_relaxation_slacks_results_to_excel(shared_ess_data
             for year_curr in results[year_inv]:
                 for day in results[year_inv][year_curr]:
 
-                    # - Complementarity
                     if shared_ess_data.params.slacks:
+
+                        # - Complementarity
                         sheet.cell(row=row_idx, column=1).value = node_id
                         sheet.cell(row=row_idx, column=2).value = int(year_inv)
                         sheet.cell(row=row_idx, column=3).value = int(year_curr)
@@ -1256,6 +1257,54 @@ def _write_detailed_operation_relaxation_slacks_results_to_excel(shared_ess_data
                         for p in range(shared_ess_data.num_instants):
                             comp = results[year_inv][year_curr][day][node_id]['comp'][p]
                             sheet.cell(row=row_idx, column=p + 6).value = comp
+                            sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
+                        row_idx = row_idx + 1
+
+                        # - Sch, up
+                        sheet.cell(row=row_idx, column=1).value = node_id
+                        sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                        sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                        sheet.cell(row=row_idx, column=4).value = day
+                        sheet.cell(row=row_idx, column=5).value = 'Sch, up'
+                        for p in range(shared_ess_data.num_instants):
+                            sch_up = results[year_inv][year_curr][day][node_id]['sch_up'][p]
+                            sheet.cell(row=row_idx, column=p + 6).value = sch_up
+                            sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
+                        row_idx = row_idx + 1
+
+                        # - Sch, down
+                        sheet.cell(row=row_idx, column=1).value = node_id
+                        sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                        sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                        sheet.cell(row=row_idx, column=4).value = day
+                        sheet.cell(row=row_idx, column=5).value = 'Sch, down'
+                        for p in range(shared_ess_data.num_instants):
+                            sch_down = results[year_inv][year_curr][day][node_id]['sch_down'][p]
+                            sheet.cell(row=row_idx, column=p + 6).value = sch_down
+                            sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
+                        row_idx = row_idx + 1
+
+                        # - Sdch, up
+                        sheet.cell(row=row_idx, column=1).value = node_id
+                        sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                        sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                        sheet.cell(row=row_idx, column=4).value = day
+                        sheet.cell(row=row_idx, column=5).value = 'Sdch, up'
+                        for p in range(shared_ess_data.num_instants):
+                            sdch_up = results[year_inv][year_curr][day][node_id]['sdch_up'][p]
+                            sheet.cell(row=row_idx, column=p + 6).value = sdch_up
+                            sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
+                        row_idx = row_idx + 1
+
+                        # - Sdch, down
+                        sheet.cell(row=row_idx, column=1).value = node_id
+                        sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                        sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                        sheet.cell(row=row_idx, column=4).value = day
+                        sheet.cell(row=row_idx, column=5).value = 'Sdch, down'
+                        for p in range(shared_ess_data.num_instants):
+                            sdch_down = results[year_inv][year_curr][day][node_id]['sdch_down'][p]
+                            sheet.cell(row=row_idx, column=p + 6).value = sdch_down
                             sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
                         row_idx = row_idx + 1
 
