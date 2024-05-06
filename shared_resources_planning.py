@@ -311,13 +311,10 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                     # Get initial Shared ESS values
                     shared_ess_p = pe.value(tso_model[year][day].expected_shared_ess_p[shared_ess_idx, p]) * s_base
                     shared_ess_q = pe.value(tso_model[year][day].expected_shared_ess_q[shared_ess_idx, p]) * s_base
-                    shared_ess_s = pe.value(tso_model[year][day].expected_shared_ess_s[shared_ess_idx, p]) * s_base
                     sess_vars['current'][node_id][year][day]['p'][p] = shared_ess_p
                     sess_vars['current'][node_id][year][day]['q'][p] = shared_ess_q
-                    sess_vars['current'][node_id][year][day]['s'][p] = shared_ess_s
                     sess_vars['prev'][node_id][year][day]['p'][p] = shared_ess_p
                     sess_vars['prev'][node_id][year][day]['q'][p] = shared_ess_q
-                    sess_vars['prev'][node_id][year][day]['s'][p] = shared_ess_s
 
     return tso_model, results
 
