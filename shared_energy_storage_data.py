@@ -79,6 +79,7 @@ class SharedEnergyStorageData:
             results['relaxation_variables'] = dict()
             results['relaxation_variables']['investment'] = self.process_relaxation_variables_investment(model)
             results['relaxation_variables']['operation'] = dict()
+            results['relaxation_variables']['operation']['aggregated'] = self.process_relaxation_variables_operation_aggregated(model)
             results['relaxation_variables']['operation']['detailed'] = self.process_relaxation_variables_operation_detailed(model)
         return results
 
@@ -96,6 +97,9 @@ class SharedEnergyStorageData:
 
     def process_relaxation_variables_investment(self, model):
         return _process_relaxation_variables_investment(self, model)
+
+    def process_relaxation_variables_operation_aggregated(self, model):
+        return _process_relaxation_variables_operation_aggregated(self, model)
 
     def process_relaxation_variables_operation_detailed(self, model):
         return _process_relaxation_variables_operation_detailed(self, model)
@@ -687,6 +691,37 @@ def _process_relaxation_variables_investment(shared_ess_data, model):
     return processed_results
 
 
+def _process_relaxation_variables_operation_aggregated(shared_ess_data, model):
+
+    processed_results = dict()
+    repr_days = [day for day in shared_ess_data.days]
+    repr_years = [year for year in shared_ess_data.years]
+
+    for y in model.years:
+        year = repr_years[y]
+        processed_results[year] = dict()
+        for d in model.days:
+            day = repr_days[d]
+            processed_results[year][day] = dict()
+            for e in model.energy_storages:
+                node_id = shared_ess_data.shared_energy_storages[year][e].bus
+                processed_results[year][day][node_id] = dict()
+
+                processed_results[year][day][node_id]['pnet_up'] = list()
+                processed_results[year][day][node_id]['pnet_down'] = list()
+                processed_results[year][day][node_id]['qnet_up'] = list()
+                processed_results[year][day][node_id]['qnet_down'] = list()
+                for p in model.periods:
+                    pnet_up = pe.value(model.slack_es_pnet_up[e, y, d, p])
+                    pnet_down = pe.value(model.slack_es_pnet_down[e, y, d, p])
+                    qnet_up = pe.value(model.slack_es_qnet_up[e, y, d, p])
+                    qnet_down = pe.value(model.slack_es_qnet_down[e, y, d, p])
+                    processed_results[year][day][node_id]['pnet_up'].append(pnet_up)
+                    processed_results[year][day][node_id]['pnet_down'].append(pnet_down)
+                    processed_results[year][day][node_id]['qnet_up'].append(qnet_up)
+                    processed_results[year][day][node_id]['qnet_down'].append(qnet_down)
+
+
 def _process_relaxation_variables_operation_detailed(shared_ess_data, model):
 
     processed_results = dict()
@@ -770,6 +805,7 @@ def _write_optimization_results_to_excel(shared_ess_data, data_dir, results):
     _write_aggregated_shared_energy_storage_soh_results_to_excel(shared_ess_data, wb, results['soh']['aggregated'])
     _write_detailed_shared_energy_storage_soh_results_to_excel(shared_ess_data, wb, results['soh']['detailed'])
     _write_investment_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['investment'])
+    _write_aggregated_operation_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['operation']['aggregated'])
     _write_detailed_operation_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['operation']['detailed'])
 
     results_filename = os.path.join(data_dir, f'{shared_ess_data.name}_shared_ess_results.xlsx')
@@ -1336,6 +1372,71 @@ def _write_investment_relaxation_slacks_results_to_excel(shared_ess_data, workbo
             sheet.cell(row=row_idx, column=4).value = results[year_inv][node_id]['e_down']
             sheet.cell(row=row_idx, column=4).number_format = decimal_style
             row_idx = row_idx + 1
+
+
+def _write_aggregated_operation_relaxation_slacks_results_to_excel(shared_ess_data, workbook, results):
+
+    sheet = workbook.create_sheet('Slacks operation, aggregated')
+
+    row_idx = 1
+    decimal_style = '0.00'
+
+    # Write Header
+    sheet.cell(row=row_idx, column=1).value = 'Node ID'
+    sheet.cell(row=row_idx, column=2).value = 'Year'
+    sheet.cell(row=row_idx, column=3).value = 'Day'
+    sheet.cell(row=row_idx, column=4).value = 'Quantity'
+    for p in range(shared_ess_data.num_instants):
+        sheet.cell(row=row_idx, column=p + 5).value = p
+    row_idx = row_idx + 1
+
+    for node_id in shared_ess_data.active_distribution_network_nodes:
+        for year in results:
+            for day in results[year]:
+
+                # - Pnet, up
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year)
+                sheet.cell(row=row_idx, column=3).value = day
+                sheet.cell(row=row_idx, column=4).value = 'Pnet, up'
+                for p in range(shared_ess_data.num_instants):
+                    pnet_up = results[year][day][node_id]['pnet_up'][p]
+                    sheet.cell(row=row_idx, column=p + 5).value = pnet_up
+                    sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - Pnet, down
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year)
+                sheet.cell(row=row_idx, column=3).value = day
+                sheet.cell(row=row_idx, column=4).value = 'Pnet, down'
+                for p in range(shared_ess_data.num_instants):
+                    pnet_down = results[year][day][node_id]['pnet_down'][p]
+                    sheet.cell(row=row_idx, column=p + 5).value = pnet_down
+                    sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - Qnet, up
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year)
+                sheet.cell(row=row_idx, column=3).value = day
+                sheet.cell(row=row_idx, column=4).value = 'Qnet, up'
+                for p in range(shared_ess_data.num_instants):
+                    qnet_up = results[year][day][node_id]['qnet_up'][p]
+                    sheet.cell(row=row_idx, column=p + 5).value = qnet_up
+                    sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - Qnet, down
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year)
+                sheet.cell(row=row_idx, column=3).value = day
+                sheet.cell(row=row_idx, column=4).value = 'Qnet, down'
+                for p in range(shared_ess_data.num_instants):
+                    qnet_down = results[year][day][node_id]['qnet_down'][p]
+                    sheet.cell(row=row_idx, column=p + 5).value = qnet_down
+                    sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
+                row_idx = row_idx + 1
 
 
 def _write_detailed_operation_relaxation_slacks_results_to_excel(shared_ess_data, workbook, results):
