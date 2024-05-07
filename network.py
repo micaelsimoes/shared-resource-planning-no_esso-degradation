@@ -708,8 +708,6 @@ def _build_model(network, params):
                         model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch <= model.slack_shared_es_comp[e, s_m, s_o, p])
                     else:
                         model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
-                        model.shared_energy_storage_ch_dch_exclusion.add(pch * pdch == 0.00)
-                        model.shared_energy_storage_ch_dch_exclusion.add(qch * qdch == 0.00)
 
                 # Day balance
                 if params.slacks:
@@ -1018,7 +1016,7 @@ def _build_model(network, params):
                     slack_iij_sqr = model.slack_iij_sqr[b, s_m, s_o, p]
                     obj += PENALTY_SLACK * slack_iij_sqr
 
-    # Sensitities' slacks
+    # Sensitivities' slacks
     for e in model.shared_energy_storages:
         slack_s = model.shared_es_s_slack_up[e] + model.shared_es_s_slack_down[e]
         slack_e = model.shared_es_e_slack_up[e] + model.shared_es_e_slack_down[e]
