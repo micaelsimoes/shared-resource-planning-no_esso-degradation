@@ -173,10 +173,6 @@ def _build_subproblem_model(shared_ess_data):
     model.slack_es_pnet_down = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.slack_es_qnet_up = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.slack_es_qnet_down = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.slack_es_pnet_up.fix(0.00)
-    model.slack_es_pnet_down.fix(0.00)
-    model.slack_es_qnet_up.fix(0.00)
-    model.slack_es_qnet_down.fix(0.00)
 
     model.es_s_rated_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_rated_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
@@ -279,8 +275,8 @@ def _build_subproblem_model(shared_ess_data):
                 prev_soh = 1.00
                 if y > 0:
                     prev_soh = model.es_soh_per_unit_cumul[e, y_inv, y - 1]
-                model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[e, y_inv, y] == prev_soh * model.es_soh_per_unit[e, y_inv, y] ** (num_years * 365))
-                model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_cumul[e, y_inv, y] == 1.00 - prev_soh)
+                model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[e, y_inv, y] == prev_soh * model.es_soh_per_unit[e, y_inv, y])
+                model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_cumul[e, y_inv, y] == 1.00 - model.es_soh_per_unit_cumul[e, y_inv, y])
 
     # - P, Q, S, SoC, per unit as a function of available capacities
     model.energy_storage_limits = pe.ConstraintList()
@@ -397,8 +393,8 @@ def _build_subproblem_model(shared_ess_data):
                 # Aggregation slacks
                 for d in model.days:
                     for p in model.periods:
-                        slack_penalty += PENALTY_SLACK * 1e6 * (model.slack_es_pnet_up[e, y_inv, d, p] + model.slack_es_pnet_down[e, y_inv, d, p])
-                        slack_penalty += PENALTY_SLACK * 1e6 * (model.slack_es_qnet_up[e, y_inv, d, p] + model.slack_es_qnet_down[e, y_inv, d, p])
+                        slack_penalty += PENALTY_SLACK * 1e12 * (model.slack_es_pnet_up[e, y_inv, d, p] + model.slack_es_pnet_down[e, y_inv, d, p])
+                        slack_penalty += PENALTY_SLACK * 1e12 * (model.slack_es_qnet_up[e, y_inv, d, p] + model.slack_es_qnet_down[e, y_inv, d, p])
 
     model.objective = pe.Objective(sense=pe.minimize, expr=slack_penalty)
 
