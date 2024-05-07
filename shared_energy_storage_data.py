@@ -679,10 +679,10 @@ def _process_relaxation_variables_investment(shared_ess_data, model):
         for e in model.energy_storages:
             node_id = shared_ess_data.shared_energy_storages[year_inv][e].bus
             processed_results[year_inv][node_id] = dict()
-            processed_results[year_inv][node_id]['s_up'] = model.es_s_investment_slack_up[e, y_inv]
-            processed_results[year_inv][node_id]['s_down'] = model.es_s_investment_slack_down[e, y_inv]
-            processed_results[year_inv][node_id]['e_up'] = model.es_e_investment_slack_up[e, y_inv]
-            processed_results[year_inv][node_id]['e_down'] = model.es_e_investment_slack_down[e, y_inv]
+            processed_results[year_inv][node_id]['s_up'] = pe.value(model.es_s_investment_slack_up[e, y_inv])
+            processed_results[year_inv][node_id]['s_down'] = pe.value(model.es_s_investment_slack_down[e, y_inv])
+            processed_results[year_inv][node_id]['e_up'] = pe.value(model.es_e_investment_slack_up[e, y_inv])
+            processed_results[year_inv][node_id]['e_down'] = pe.value(model.es_e_investment_slack_down[e, y_inv])
 
     return processed_results
 
@@ -1299,8 +1299,7 @@ def _write_investment_relaxation_slacks_results_to_excel(shared_ess_data, workbo
     sheet.cell(row=row_idx, column=1).value = 'Node ID'
     sheet.cell(row=row_idx, column=2).value = 'Year Investment'
     sheet.cell(row=row_idx, column=3).value = 'Quantity'
-    for p in range(shared_ess_data.num_instants):
-        sheet.cell(row=row_idx, column=p + 4).value = p
+    sheet.cell(row=row_idx, column=4).value = 'Value'
     row_idx = row_idx + 1
 
     for node_id in shared_ess_data.active_distribution_network_nodes:
@@ -1309,41 +1308,33 @@ def _write_investment_relaxation_slacks_results_to_excel(shared_ess_data, workbo
             # - Sup
             sheet.cell(row=row_idx, column=1).value = node_id
             sheet.cell(row=row_idx, column=2).value = int(year_inv)
-            sheet.cell(row=row_idx, column=5).value = 'S, up'
-            for p in range(shared_ess_data.num_instants):
-                s_up = results[year_inv][node_id]['s_up'][p]
-                sheet.cell(row=row_idx, column=p + 6).value = s_up
-                sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
+            sheet.cell(row=row_idx, column=3).value = 'S, up'
+            sheet.cell(row=row_idx, column=4).value = results[year_inv][node_id]['s_up']
+            sheet.cell(row=row_idx, column=4).number_format = decimal_style
             row_idx = row_idx + 1
 
             # - Sdown
             sheet.cell(row=row_idx, column=1).value = node_id
             sheet.cell(row=row_idx, column=2).value = int(year_inv)
-            sheet.cell(row=row_idx, column=5).value = 'S, down'
-            for p in range(shared_ess_data.num_instants):
-                s_down = results[year_inv][node_id]['s_down'][p]
-                sheet.cell(row=row_idx, column=p + 6).value = s_down
-                sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
+            sheet.cell(row=row_idx, column=3).value = 'S, down'
+            sheet.cell(row=row_idx, column=4).value = results[year_inv][node_id]['s_down']
+            sheet.cell(row=row_idx, column=4).number_format = decimal_style
             row_idx = row_idx + 1
 
             # - Eup
             sheet.cell(row=row_idx, column=1).value = node_id
             sheet.cell(row=row_idx, column=2).value = int(year_inv)
-            sheet.cell(row=row_idx, column=5).value = 'E, up'
-            for p in range(shared_ess_data.num_instants):
-                e_up = results[year_inv][node_id]['e_up'][p]
-                sheet.cell(row=row_idx, column=p + 6).value = e_up
-                sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
+            sheet.cell(row=row_idx, column=3).value = 'E, up'
+            sheet.cell(row=row_idx, column=4).value = results[year_inv][node_id]['e_up']
+            sheet.cell(row=row_idx, column=4).number_format = decimal_style
             row_idx = row_idx + 1
 
             # - Edown
             sheet.cell(row=row_idx, column=1).value = node_id
             sheet.cell(row=row_idx, column=2).value = int(year_inv)
-            sheet.cell(row=row_idx, column=5).value = 'E, down'
-            for p in range(shared_ess_data.num_instants):
-                e_down = results[year_inv][node_id]['e_down'][p]
-                sheet.cell(row=row_idx, column=p + 6).value = e_down
-                sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
+            sheet.cell(row=row_idx, column=3).value = 'E, down'
+            sheet.cell(row=row_idx, column=4).value = results[year_inv][node_id]['e_down']
+            sheet.cell(row=row_idx, column=4).number_format = decimal_style
             row_idx = row_idx + 1
 
 
