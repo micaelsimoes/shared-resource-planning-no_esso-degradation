@@ -288,24 +288,6 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                                 tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].fix(0.0)
                                 tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].fix(0.0)
     results = transmission_network.optimize(tso_model)
-    processed_results = transmission_network.process_results(tso_model, results)
-    transmission_network.write_optimization_results_to_excel(processed_results)
-    for year in transmission_network.years:
-        for day in transmission_network.days:
-            s_base = transmission_network.network[year][day].baseMVA
-            print(f'Year {year}, day {day}:')
-            for e in tso_model[year][day].shared_energy_storages:
-                for s_m in tso_model[year][day].scenarios_market:
-                    for s_o in tso_model[year][day].scenarios_operation:
-                        for p in tso_model[year][day].periods:
-                            pch = pe.value(tso_model[year][day].shared_es_pch[e, s_m, s_o, p]) * s_base
-                            qch = pe.value(tso_model[year][day].shared_es_qch[e, s_m, s_o, p]) * s_base
-                            sch = pe.value(tso_model[year][day].shared_es_sch[e, s_m, s_o, p]) * s_base
-                            pdch = pe.value(tso_model[year][day].shared_es_pdch[e, s_m, s_o, p]) * s_base
-                            qdch = pe.value(tso_model[year][day].shared_es_qdch[e, s_m, s_o, p]) * s_base
-                            sdch = pe.value(tso_model[year][day].shared_es_sdch[e, s_m, s_o, p]) * s_base
-                            print('Sch[{},{},{},{}]  = {:.3f}\t{:.3f}\t{:.3f}\t'.format(e, s_m, s_o, p, pch, qch, sch))
-                            print('Sdch[{},{},{},{}] = {:.3f}\t{:.3f}\t{:.3f}\t'.format(e, s_m, s_o, p, pdch, qdch, sdch))
 
     for year in transmission_network.years:
         for day in transmission_network.days:
