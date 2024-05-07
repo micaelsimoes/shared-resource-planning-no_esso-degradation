@@ -721,6 +721,8 @@ def _process_relaxation_variables_operation_aggregated(shared_ess_data, model):
                     processed_results[year][day][node_id]['qnet_up'].append(qnet_up)
                     processed_results[year][day][node_id]['qnet_down'].append(qnet_down)
 
+    return processed_results
+
 
 def _process_relaxation_variables_operation_detailed(shared_ess_data, model):
 
