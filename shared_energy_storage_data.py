@@ -189,10 +189,6 @@ def _build_subproblem_model(shared_ess_data):
     model.es_degradation_per_unit_cumul = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
     if shared_ess_data.params.slacks:
         model.slack_es_comp_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_es_sch_up_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_es_sch_down_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_es_sdch_up_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_es_sdch_down_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_soh_per_unit.fix(1.00)
     model.es_degradation_per_unit.fix(0.00)
 
@@ -336,12 +332,8 @@ def _build_subproblem_model(shared_ess_data):
                         pdch = model.es_pdch_per_unit[e, y_inv, y, d, p]
                         qdch = model.es_qdch_per_unit[e, y_inv, y, d, p]
 
-                        if shared_ess_data.params.slacks:
-                            model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2 + model.slack_es_sch_up_per_unit[e, y_inv, y, d, p] - model.slack_es_sch_down_per_unit[e, y_inv, y, d, p])
-                            model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2 + model.slack_es_sdch_up_per_unit[e, y_inv, y, d, p] - model.slack_es_sdch_down_per_unit[e, y_inv, y, d, p])
-                        else:
-                            model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
-                            model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
+                        model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
+                        model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
 
                         if p > 0:
                             model.energy_storage_balance.add(model.es_soc_per_unit[e, y_inv, y, d, p] - model.es_soc_per_unit[e, y_inv, y, d, p - 1] == sch * eff_charge - sdch / eff_discharge)
@@ -391,8 +383,6 @@ def _build_subproblem_model(shared_ess_data):
                     for d in model.days:
                         for p in model.periods:
                             slack_penalty += PENALTY_SLACK * model.slack_es_comp_per_unit[e, y_inv, y, d, p]
-                            slack_penalty += PENALTY_SLACK * (model.slack_es_sch_up_per_unit[e, y_inv, y, d, p] + model.slack_es_sch_down_per_unit[e, y_inv, y, d, p])
-                            slack_penalty += PENALTY_SLACK * (model.slack_es_sdch_up_per_unit[e, y_inv, y, d, p] + model.slack_es_sdch_down_per_unit[e, y_inv, y, d, p])
 
                 # Aggregation slacks
                 for d in model.days:
@@ -703,30 +693,6 @@ def _process_relaxation_variables_operation_detailed(shared_ess_data, model):
                         for p in model.periods:
                             comp = pe.value(model.slack_es_comp_per_unit[e, y_inv, y_curr, d, p])
                             processed_results[year_inv][year_curr][day][node_id]['comp'].append(comp)
-
-                        # - Sch, up
-                        processed_results[year_inv][year_curr][day][node_id]['sch_up'] = list()
-                        for p in model.periods:
-                            sch_up = pe.value(model.slack_es_sch_up_per_unit[e, y_inv, y_curr, d, p])
-                            processed_results[year_inv][year_curr][day][node_id]['sch_up'].append(sch_up)
-
-                        # - Sch, down
-                        processed_results[year_inv][year_curr][day][node_id]['sch_down'] = list()
-                        for p in model.periods:
-                            sch_down = pe.value(model.slack_es_sch_down_per_unit[e, y_inv, y_curr, d, p])
-                            processed_results[year_inv][year_curr][day][node_id]['sch_down'].append(sch_up)
-
-                        # - Sdch, up
-                        processed_results[year_inv][year_curr][day][node_id]['sdch_up'] = list()
-                        for p in model.periods:
-                            sdch_up = pe.value(model.slack_es_sdch_up_per_unit[e, y_inv, y_curr, d, p])
-                            processed_results[year_inv][year_curr][day][node_id]['sdch_up'].append(sdch_up)
-
-                        # - Sdch, down
-                        processed_results[year_inv][year_curr][day][node_id]['sdch_down'] = list()
-                        for p in model.periods:
-                            sdch_down = pe.value(model.slack_es_sdch_down_per_unit[e, y_inv, y_curr, d, p])
-                            processed_results[year_inv][year_curr][day][node_id]['sdch_down'].append(sdch_down)
 
     return processed_results
 
@@ -1334,54 +1300,6 @@ def _write_detailed_operation_relaxation_slacks_results_to_excel(shared_ess_data
                         for p in range(shared_ess_data.num_instants):
                             comp = results[year_inv][year_curr][day][node_id]['comp'][p]
                             sheet.cell(row=row_idx, column=p + 6).value = comp
-                            sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
-                        row_idx = row_idx + 1
-
-                        # - Sch, up
-                        sheet.cell(row=row_idx, column=1).value = node_id
-                        sheet.cell(row=row_idx, column=2).value = int(year_inv)
-                        sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                        sheet.cell(row=row_idx, column=4).value = day
-                        sheet.cell(row=row_idx, column=5).value = 'Sch, up'
-                        for p in range(shared_ess_data.num_instants):
-                            sch_up = results[year_inv][year_curr][day][node_id]['sch_up'][p]
-                            sheet.cell(row=row_idx, column=p + 6).value = sch_up
-                            sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
-                        row_idx = row_idx + 1
-
-                        # - Sch, down
-                        sheet.cell(row=row_idx, column=1).value = node_id
-                        sheet.cell(row=row_idx, column=2).value = int(year_inv)
-                        sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                        sheet.cell(row=row_idx, column=4).value = day
-                        sheet.cell(row=row_idx, column=5).value = 'Sch, down'
-                        for p in range(shared_ess_data.num_instants):
-                            sch_down = results[year_inv][year_curr][day][node_id]['sch_down'][p]
-                            sheet.cell(row=row_idx, column=p + 6).value = sch_down
-                            sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
-                        row_idx = row_idx + 1
-
-                        # - Sdch, up
-                        sheet.cell(row=row_idx, column=1).value = node_id
-                        sheet.cell(row=row_idx, column=2).value = int(year_inv)
-                        sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                        sheet.cell(row=row_idx, column=4).value = day
-                        sheet.cell(row=row_idx, column=5).value = 'Sdch, up'
-                        for p in range(shared_ess_data.num_instants):
-                            sdch_up = results[year_inv][year_curr][day][node_id]['sdch_up'][p]
-                            sheet.cell(row=row_idx, column=p + 6).value = sdch_up
-                            sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
-                        row_idx = row_idx + 1
-
-                        # - Sdch, down
-                        sheet.cell(row=row_idx, column=1).value = node_id
-                        sheet.cell(row=row_idx, column=2).value = int(year_inv)
-                        sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                        sheet.cell(row=row_idx, column=4).value = day
-                        sheet.cell(row=row_idx, column=5).value = 'Sdch, down'
-                        for p in range(shared_ess_data.num_instants):
-                            sdch_down = results[year_inv][year_curr][day][node_id]['sdch_down'][p]
-                            sheet.cell(row=row_idx, column=p + 6).value = sdch_down
                             sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
                         row_idx = row_idx + 1
 
