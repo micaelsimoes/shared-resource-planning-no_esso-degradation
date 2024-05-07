@@ -288,6 +288,7 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                                 tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].fix(0.0)
                                 tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].fix(0.0)
     results = transmission_network.optimize(tso_model)
+    transmission_network.write_optimization_results_to_excel(tso_model)
 
     for year in transmission_network.years:
         for day in transmission_network.days:
