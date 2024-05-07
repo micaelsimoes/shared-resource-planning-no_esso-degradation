@@ -589,13 +589,19 @@ def _process_results_detailed(shared_ess_data, model):
                         capacity = 1.00
                     processed_results[year_inv][year_curr][day][node_id] = dict()
                     processed_results[year_inv][year_curr][day][node_id]['s'] = list()
+                    processed_results[year_inv][year_curr][day][node_id]['p'] = list()
+                    processed_results[year_inv][year_curr][day][node_id]['q'] = list()
                     processed_results[year_inv][year_curr][day][node_id]['soc'] = list()
                     processed_results[year_inv][year_curr][day][node_id]['soc_perc'] = list()
                     for p in model.periods:
                         s_net = pe.value(model.es_sch_per_unit[e, y_inv, y_curr, d, p] - model.es_sdch_per_unit[e, y_inv, y_curr, d, p])
+                        p_net = pe.value(model.es_pch_per_unit[e, y_inv, y_curr, d, p] - model.es_pdch_per_unit[e, y_inv, y_curr, d, p])
+                        q_net = pe.value(model.es_qch_per_unit[e, y_inv, y_curr, d, p] - model.es_qdch_per_unit[e, y_inv, y_curr, d, p])
                         soc = pe.value(model.es_soc_per_unit[e, y_inv, y_curr, d, p])
                         soc_perc = soc / capacity
                         processed_results[year_inv][year_curr][day][node_id]['s'].append(s_net)
+                        processed_results[year_inv][year_curr][day][node_id]['p'].append(p_net)
+                        processed_results[year_inv][year_curr][day][node_id]['q'].append(q_net)
                         processed_results[year_inv][year_curr][day][node_id]['soc'].append(soc)
                         processed_results[year_inv][year_curr][day][node_id]['soc_perc'].append(soc_perc)
 
