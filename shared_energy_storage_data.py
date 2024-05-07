@@ -173,6 +173,10 @@ def _build_subproblem_model(shared_ess_data):
     model.slack_es_pnet_down = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.slack_es_qnet_up = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.slack_es_qnet_down = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    model.slack_es_pnet_up.fix(0.00)
+    model.slack_es_pnet_down.fix(0.00)
+    model.slack_es_qnet_up.fix(0.00)
+    model.slack_es_qnet_down(0.00)
 
     model.es_s_rated_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_rated_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
