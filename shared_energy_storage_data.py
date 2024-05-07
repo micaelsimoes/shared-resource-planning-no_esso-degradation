@@ -193,8 +193,6 @@ def _build_subproblem_model(shared_ess_data):
         model.slack_es_sch_down_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
         model.slack_es_sdch_up_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
         model.slack_es_sdch_down_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_es_degradation_per_unit_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_es_degradation_per_unit_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_soh_per_unit.fix(1.00)
     model.es_degradation_per_unit.fix(0.00)
 
@@ -269,10 +267,7 @@ def _build_subproblem_model(shared_ess_data):
             for y in range(y_inv, max_tcal_norm):
                 model.es_soh_per_unit.fixed = False
                 model.es_degradation_per_unit.fixed = False
-                if shared_ess_data.params.slacks:
-                    model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit[e, y_inv, y] * (2 * shared_energy_storage.cl_nom * model.es_e_available_per_unit[e, y_inv, y]) == model.es_avg_ch_dch_per_unit[e, y_inv, y] + model.slack_es_degradation_per_unit_up[e, y_inv, y] - model.slack_es_degradation_per_unit_down[e, y_inv, y])
-                else:
-                    model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit[e, y_inv, y] * (2 * shared_energy_storage.cl_nom * model.es_e_available_per_unit[e, y_inv, y]) == model.es_avg_ch_dch_per_unit[e, y_inv, y])
+                model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit[e, y_inv, y] * (2 * shared_energy_storage.cl_nom * model.es_e_available_per_unit[e, y_inv, y]) == model.es_avg_ch_dch_per_unit[e, y_inv, y])
                 model.energy_storage_capacity_degradation.add(model.es_soh_per_unit[e, y_inv, y] == 1.00 - model.es_degradation_per_unit[e, y_inv, y])
                 model.energy_storage_capacity_degradation.add(model.es_soh_per_unit[e, y_inv, y] >= shared_energy_storage.soh_min)
                 prev_soh = 1.00
@@ -405,10 +400,6 @@ def _build_subproblem_model(shared_ess_data):
                         slack_penalty += PENALTY_SLACK * (model.slack_es_snet_up[e, y_inv, d, p] + model.slack_es_snet_down[e, y_inv, d, p])
                         slack_penalty += PENALTY_SLACK * (model.slack_es_pnet_up[e, y_inv, d, p] + model.slack_es_pnet_down[e, y_inv, d, p])
                         slack_penalty += PENALTY_SLACK * (model.slack_es_qnet_up[e, y_inv, d, p] + model.slack_es_qnet_down[e, y_inv, d, p])
-
-                # Degradation slacks
-                for y in model.years:
-                    slack_penalty += PENALTY_SLACK * (model.slack_es_degradation_per_unit_up[e, y_inv, y] + model.slack_es_degradation_per_unit_down[e, y_inv, y])
 
     model.objective = pe.Objective(sense=pe.minimize, expr=slack_penalty)
 
