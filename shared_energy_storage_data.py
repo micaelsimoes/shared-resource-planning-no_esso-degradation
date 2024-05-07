@@ -280,7 +280,7 @@ def _build_subproblem_model(shared_ess_data):
                 model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[e, y_inv, y] == prev_soh * (model.es_soh_per_unit[e, y_inv, y]) ** (365.00 * num_years))
                 model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[e, y_inv, y] >= shared_energy_storage.soh_min)
                 model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_cumul[e, y_inv, y] == 1.00 - model.es_soh_per_unit_cumul[e, y_inv, y])
-            for y in range(y_inv, 0, -1):
+            for y in range(y_inv - 1, -1, -1):
                 model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit[e, y_inv, y] <= model.es_s_investment_fixed[e, y])
                 model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_cumul[e, y_inv, y] <= model.es_s_investment_fixed[e, y])
 
