@@ -381,8 +381,8 @@ def _build_subproblem_model(shared_ess_data):
         for y_inv in model.years:
 
             # Slacks for investment fixing
-            slack_penalty += PENALTY_SLACK * (model.es_s_investment_slack_up[e, y_inv] + model.es_s_investment_slack_down[e, y_inv])
-            slack_penalty += PENALTY_SLACK * (model.es_e_investment_slack_up[e, y_inv] + model.es_e_investment_slack_down[e, y_inv])
+            slack_penalty += PENALTY_SLACK * 1e6 * (model.es_s_investment_slack_up[e, y_inv] + model.es_s_investment_slack_down[e, y_inv])
+            slack_penalty += PENALTY_SLACK * 1e6 * (model.es_e_investment_slack_up[e, y_inv] + model.es_e_investment_slack_down[e, y_inv])
 
             if shared_ess_data.params.slacks:
 
