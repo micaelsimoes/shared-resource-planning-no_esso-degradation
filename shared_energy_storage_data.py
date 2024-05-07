@@ -176,7 +176,7 @@ def _build_subproblem_model(shared_ess_data):
     model.slack_es_pnet_up.fix(0.00)
     model.slack_es_pnet_down.fix(0.00)
     model.slack_es_qnet_up.fix(0.00)
-    model.slack_es_qnet_down(0.00)
+    model.slack_es_qnet_down.fix(0.00)
 
     model.es_s_rated_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_rated_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
@@ -273,13 +273,13 @@ def _build_subproblem_model(shared_ess_data):
             for y in range(y_inv, max_tcal_norm):
                 model.es_soh_per_unit.fixed = False
                 model.es_degradation_per_unit.fixed = False
-                model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit[e, y_inv, y] * (2 * shared_energy_storage.cl_nom * model.es_e_rated_per_unit[e, y_inv, y]) * 1000 == model.es_avg_ch_dch_per_unit[e, y_inv, y])
+                model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit[e, y_inv, y] * (2 * shared_energy_storage.cl_nom * model.es_e_rated_per_unit[e, y_inv, y]) == model.es_avg_ch_dch_per_unit[e, y_inv, y])
                 model.energy_storage_capacity_degradation.add(model.es_soh_per_unit[e, y_inv, y] == 1.00 - model.es_degradation_per_unit[e, y_inv, y])
                 model.energy_storage_capacity_degradation.add(model.es_soh_per_unit[e, y_inv, y] >= shared_energy_storage.soh_min)
                 prev_soh = 1.00
                 if y > 0:
                     prev_soh = model.es_soh_per_unit_cumul[e, y_inv, y - 1]
-                model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[e, y_inv, y] == prev_soh ** (num_years * 365))
+                model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[e, y_inv, y] == prev_soh * model.es_soh_per_unit[e, y_inv, y] ** (num_years * 365))
                 model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_cumul[e, y_inv, y] == 1.00 - prev_soh)
 
     # - P, Q, S, SoC, per unit as a function of available capacities
