@@ -288,7 +288,24 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                                 tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].fix(0.0)
                                 tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].fix(0.0)
     results = transmission_network.optimize(tso_model)
-    transmission_network.write_optimization_results_to_excel(tso_model)
+    processed_results = transmission_network.process_results(tso_model, results)
+    transmission_network.write_optimization_results_to_excel(processed_results)
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+            s_base = transmission_network.network[year][day].baseMVA
+            print(f'Year {year}, day {day}:')
+            for e in tso_model[year][day].shared_energy_storages:
+                for s_m in tso_model[year][day].scenarios_market:
+                    for s_o in tso_model[year][day].scenarios_operation:
+                        for p in tso_model[year][day].periods:
+                            pch = pe.value(tso_model[year][day].shared_es_pch[e, s_m, s_o, p]) * s_base
+                            qch = pe.value(tso_model[year][day].shared_es_qch[e, s_m, s_o, p]) * s_base
+                            sch = pe.value(tso_model[year][day].shared_es_sch[e, s_m, s_o, p]) * s_base
+                            pdch = pe.value(tso_model[year][day].shared_es_pdch[e, s_m, s_o, p]) * s_base
+                            qdch = pe.value(tso_model[year][day].shared_es_qdch[e, s_m, s_o, p]) * s_base
+                            sdch = pe.value(tso_model[year][day].shared_es_sdch[e, s_m, s_o, p]) * s_base
+                            print('Sch[{},{},{},{}]  = {:.3f}\t{:.3f}\t{:.3f}\t'.format(e, s_m, s_o, p, pch, qch, sch))
+                            print('Sdch[{},{},{},{}] = {:.3f}\t{:.3f}\t{:.3f}\t'.format(e, s_m, s_o, p, pdch, qdch, sdch))
 
     for year in transmission_network.years:
         for day in transmission_network.days:
@@ -376,8 +393,8 @@ def create_shared_energy_storage_model(shared_ess_data, sess_vars, candidate_sol
             for d in esso_model.days:
                 day = days[d]
                 for p in esso_model.periods:
-                    preq = sess_vars['tso']['current'][node_id][year][day]['p'][p]
-                    qreq = sess_vars['tso']['current'][node_id][year][day]['q'][p]
+                    preq = sess_vars['dso']['current'][node_id][year][day]['p'][p]
+                    qreq = sess_vars['dso']['current'][node_id][year][day]['q'][p]
                     esso_model.es_pnet[e, y, d, p].fix(preq)
                     esso_model.es_qnet[e, y, d, p].fix(qreq)
     results = shared_ess_data.optimize(esso_model)
@@ -4540,11 +4557,13 @@ def _get_initial_candidate_solution(planning_problem):
             candidate_solution['total_capacity'][node_id][year] = dict()
             candidate_solution['total_capacity'][node_id][year]['s'] = 0.00
             candidate_solution['total_capacity'][node_id][year]['e'] = 0.00
+            '''
             if year == 2024 or year == 2044:
                 candidate_solution['investment'][node_id][year]['s'] = 1.00
                 candidate_solution['investment'][node_id][year]['e'] = 1.00
             candidate_solution['total_capacity'][node_id][year]['s'] = 1.00
             candidate_solution['total_capacity'][node_id][year]['e'] = 1.00
+            '''
     return candidate_solution
 
 
