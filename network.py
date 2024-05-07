@@ -454,6 +454,8 @@ def _build_model(network, params):
                     model.shared_es_soc[e, s_m, s_o, p] = shared_energy_storage.e * ENERGY_STORAGE_RELATIVE_INIT_SOC
     if params.slacks:
         model.slack_shared_es_comp = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_shared_es_comp_p = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_shared_es_comp_q = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.slack_shared_es_sch_up = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.slack_shared_es_sch_down = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.slack_shared_es_sdch_up = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -706,8 +708,12 @@ def _build_model(network, params):
                     # Charging/discharging complementarity constraints
                     if params.slacks:
                         model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch <= model.slack_shared_es_comp[e, s_m, s_o, p])
+                        model.shared_energy_storage_ch_dch_exclusion.add(pch * pdch <= model.slack_shared_es_comp_p[e, s_m, s_o, p])
+                        model.shared_energy_storage_ch_dch_exclusion.add(qch * qdch <= model.slack_shared_es_comp_q[e, s_m, s_o, p])
                     else:
                         model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
+                        model.shared_energy_storage_ch_dch_exclusion.add(pch * pdch == 0.00)
+                        model.shared_energy_storage_ch_dch_exclusion.add(qch * qdch == 0.00)
 
                 # Day balance
                 if params.slacks:
