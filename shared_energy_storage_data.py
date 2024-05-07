@@ -268,7 +268,8 @@ def _build_subproblem_model(shared_ess_data):
             for y in range(y_inv, max_tcal_norm):
                 model.es_soh_per_unit.fixed = False
                 model.es_degradation_per_unit.fixed = False
-                model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit[e, y_inv, y] * (2 * shared_energy_storage.cl_nom * model.es_e_rated_per_unit[e, y_inv, y]) == model.es_avg_ch_dch_per_unit[e, y_inv, y])
+                #model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit[e, y_inv, y] * (2 * shared_energy_storage.cl_nom * model.es_e_rated_per_unit[e, y_inv, y]) == model.es_avg_ch_dch_per_unit[e, y_inv, y])
+                model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit[e, y_inv, y] == 0.00)
                 model.energy_storage_capacity_degradation.add(model.es_soh_per_unit[e, y_inv, y] == 1.00 - model.es_degradation_per_unit[e, y_inv, y])
                 model.energy_storage_capacity_degradation.add(model.es_soh_per_unit[e, y_inv, y] >= shared_energy_storage.soh_min)
                 prev_soh = 1.00
@@ -314,10 +315,6 @@ def _build_subproblem_model(shared_ess_data):
     model.energy_storage_expected_power = pe.ConstraintList()
     for e in model.energy_storages:
         for y_inv in model.years:
-
-            year_inv = repr_years[y_inv]
-            shared_energy_storage = shared_ess_data.shared_energy_storages[year_inv][e]
-
             for y in model.years:
                 for d in model.days:
                     for p in model.periods:
@@ -347,7 +344,6 @@ def _build_subproblem_model(shared_ess_data):
                     agg_snet = 0.00
                     agg_pnet = 0.00
                     agg_qnet = 0.00
-                    agg_soc = 0.00
                     for y_inv in model.years:
                         agg_snet += (model.es_sch_per_unit[e, y_inv, y, d, p] - model.es_sdch_per_unit[e, y_inv, y, d, p])
                         agg_pnet += (model.es_pch_per_unit[e, y_inv, y, d, p] - model.es_pdch_per_unit[e, y_inv, y, d, p])
