@@ -454,8 +454,6 @@ def _build_model(network, params):
                     model.shared_es_soc[e, s_m, s_o, p] = shared_energy_storage.e * ENERGY_STORAGE_RELATIVE_INIT_SOC
     if params.slacks:
         model.slack_shared_es_comp = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_shared_es_comp_p = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_shared_es_comp_q = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.slack_shared_es_sch_up = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.slack_shared_es_sch_down = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.slack_shared_es_sdch_up = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -708,8 +706,6 @@ def _build_model(network, params):
                     # Charging/discharging complementarity constraints
                     if params.slacks:
                         model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch <= model.slack_shared_es_comp[e, s_m, s_o, p])
-                        model.shared_energy_storage_ch_dch_exclusion.add(pch * pdch <= model.slack_shared_es_comp_p[e, s_m, s_o, p])
-                        model.shared_energy_storage_ch_dch_exclusion.add(qch * qdch <= model.slack_shared_es_comp_q[e, s_m, s_o, p])
                     else:
                         model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
                         model.shared_energy_storage_ch_dch_exclusion.add(pch * pdch == 0.00)
@@ -1086,12 +1082,10 @@ def _build_model(network, params):
                 for e in model.shared_energy_storages:
                     for p in model.periods:
                         slack_comp = model.slack_shared_es_comp[e, s_m, s_o, p]
-                        slack_comp_p = model.slack_shared_es_comp_p[e, s_m, s_o, p]
-                        slack_comp_q = model.slack_shared_es_comp_q[e, s_m, s_o, p]
                         slack_sch = model.slack_shared_es_sch_up[e, s_m, s_o, p] + model.slack_shared_es_sch_down[e, s_m, s_o, p]
                         slack_sdch = model.slack_shared_es_sdch_up[e, s_m, s_o, p] + model.slack_shared_es_sdch_down[e, s_m, s_o, p]
                         slack_soc = model.slack_shared_es_soc_up[e, s_m, s_o, p] + model.slack_shared_es_soc_down[e, s_m, s_o, p]
-                        obj += PENALTY_SLACK * (slack_comp + slack_comp_p + slack_comp_q + slack_sch + slack_sdch + slack_soc)
+                        obj += PENALTY_SLACK * (slack_comp + slack_sch + slack_sdch + slack_soc)
                     slack_soc_final = model.slack_shared_es_soc_final_up[e, s_m, s_o] + model.slack_shared_es_soc_final_down[e, s_m, s_o]
                     obj += PENALTY_SLACK * slack_soc_final
 
