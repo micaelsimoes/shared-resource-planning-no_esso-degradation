@@ -272,8 +272,8 @@ def _build_subproblem_model(shared_ess_data):
                 model.es_degradation_per_unit[e, y_inv, y].fixed = False
                 model.es_soh_per_unit_cumul[e, y_inv, y].fixed = False
                 model.es_degradation_per_unit_cumul[e, y_inv, y].fixed = False
-                model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit[e, y_inv, y] <= model.es_s_investment_fixed[e, y_inv])          # Note:
-                model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_cumul[e, y_inv, y] <= model.es_s_investment_fixed[e, y_inv])
+                #model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit[e, y_inv, y] <= model.es_s_investment_fixed[e, y_inv])          # Note:
+                #model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_cumul[e, y_inv, y] <= model.es_s_investment_fixed[e, y_inv])
                 model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit[e, y_inv, y] * (2 * shared_energy_storage.cl_nom * model.es_e_rated_per_unit[e, y_inv, y]) == model.es_avg_ch_dch_per_unit[e, y_inv, y])
                 model.energy_storage_capacity_degradation.add(model.es_soh_per_unit[e, y_inv, y] == 1.00 - model.es_degradation_per_unit[e, y_inv, y])
                 model.energy_storage_capacity_degradation.add(model.es_soh_per_unit[e, y_inv, y] >= shared_energy_storage.soh_min)
