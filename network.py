@@ -898,8 +898,6 @@ def _build_model(network, params):
                             pdch = model.shared_es_pdch[e, s_m, s_o, p]
                             qch = model.shared_es_qch[e, s_m, s_o, p]
                             qdch = model.shared_es_qdch[e, s_m, s_o, p]
-                            sch = model.shared_es_sch[e, s_m, s_o, p]
-                            sdch = model.shared_es_sdch[e, s_m, s_o, p]
                             expected_sess_p += (pch - pdch) * omega_m * omega_o
                             expected_sess_q += (qch - qdch) * omega_m * omega_o
                     if params.slacks:
@@ -921,8 +919,6 @@ def _build_model(network, params):
                         pdch = model.shared_es_pdch[shared_ess_idx, s_m, s_o, p]
                         qch = model.shared_es_qch[shared_ess_idx, s_m, s_o, p]
                         qdch = model.shared_es_qdch[shared_ess_idx, s_m, s_o, p]
-                        sch = model.shared_es_sch[shared_ess_idx, s_m, s_o, p]
-                        sdch = model.shared_es_sdch[shared_ess_idx, s_m, s_o, p]
                         expected_sess_p += (pch - pdch) * omega_m * omega_s
                         expected_sess_q += (qch - qdch) * omega_m * omega_s
                 if params.slacks:
