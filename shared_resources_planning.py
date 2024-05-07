@@ -2201,9 +2201,9 @@ def _write_shared_energy_storages_results_to_excel(planning_problem, workbook, r
                             sheet.cell(row=row_idx, column=p + 8).value = ess_q
                             sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                             if ess_q != 'N/A':
-                                expected_p[node_id][p] += ess_q * omega_m * omega_s
+                                expected_q[node_id][p] += ess_q * omega_m * omega_s
                             else:
-                                expected_p[node_id][p] = ess_q
+                                expected_q[node_id][p] = ess_q
 
                         # Apparent power
                         row_idx = row_idx + 1
@@ -2219,9 +2219,9 @@ def _write_shared_energy_storages_results_to_excel(planning_problem, workbook, r
                             sheet.cell(row=row_idx, column=p + 8).value = ess_s
                             sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                             if ess_s != 'N/A':
-                                expected_p[node_id][p] += ess_s * omega_m * omega_s
+                                expected_s[node_id][p] += ess_s * omega_m * omega_s
                             else:
-                                expected_p[node_id][p] = ess_s
+                                expected_s[node_id][p] = ess_s
 
                         # State-of-Charge, [MVAh]
                         row_idx = row_idx + 1
@@ -2380,9 +2380,9 @@ def _write_shared_energy_storages_results_to_excel(planning_problem, workbook, r
                             sheet.cell(row=row_idx, column=p + 8).value = ess_q
                             sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                             if ess_q != 'N/A':
-                                expected_p[p] += ess_q * omega_m * omega_s
+                                expected_q[p] += ess_q * omega_m * omega_s
                             else:
-                                expected_p[p] = ess_q
+                                expected_q[p] = ess_q
 
                         # Apparent power
                         row_idx = row_idx + 1
@@ -2398,9 +2398,9 @@ def _write_shared_energy_storages_results_to_excel(planning_problem, workbook, r
                             sheet.cell(row=row_idx, column=p + 8).value = ess_s
                             sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                             if ess_s != 'N/A':
-                                expected_p[p] += ess_s * omega_m * omega_s
+                                expected_s[p] += ess_s * omega_m * omega_s
                             else:
-                                expected_p[p] = ess_s
+                                expected_s[p] = ess_s
 
                         # State-of-Charge, [MVAh]
                         row_idx = row_idx + 1
