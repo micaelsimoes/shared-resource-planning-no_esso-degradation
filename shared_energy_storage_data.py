@@ -268,13 +268,14 @@ def _build_subproblem_model(shared_ess_data):
             for y in range(y_inv, max_tcal_norm):
                 model.es_soh_per_unit.fixed = False
                 model.es_degradation_per_unit.fixed = False
-                model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit[e, y_inv, y] * (2 * shared_energy_storage.cl_nom * model.es_e_rated_per_unit[e, y_inv, y]) == model.es_avg_ch_dch_per_unit[e, y_inv, y])
+                #model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit[e, y_inv, y] * (2 * shared_energy_storage.cl_nom * model.es_e_rated_per_unit[e, y_inv, y]) == model.es_avg_ch_dch_per_unit[e, y_inv, y])
+                model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit[e, y_inv, y] == 1)
                 model.energy_storage_capacity_degradation.add(model.es_soh_per_unit[e, y_inv, y] == 1.00 - model.es_degradation_per_unit[e, y_inv, y])
                 model.energy_storage_capacity_degradation.add(model.es_soh_per_unit[e, y_inv, y] >= shared_energy_storage.soh_min)
                 prev_soh = 1.00
                 if y > 0:
                     prev_soh = model.es_soh_per_unit_cumul[e, y_inv, y - 1]
-                model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[e, y_inv, y] == prev_soh * model.es_soh_per_unit[e, y_inv, y])
+                model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[e, y_inv, y] == prev_soh * (model.es_soh_per_unit[e, y_inv, y]) ** (365.00 * num_years))
                 model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_cumul[e, y_inv, y] == 1.00 - model.es_soh_per_unit_cumul[e, y_inv, y])
 
     # - P, Q, S, SoC, per unit as a function of available capacities
