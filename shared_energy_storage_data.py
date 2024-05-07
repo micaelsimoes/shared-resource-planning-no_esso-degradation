@@ -1404,7 +1404,7 @@ def _write_aggregated_operation_relaxation_slacks_results_to_excel(shared_ess_da
                 for p in range(shared_ess_data.num_instants):
                     pnet_up = results[year][day][node_id]['pnet_up'][p]
                     sheet.cell(row=row_idx, column=p + 5).value = pnet_up
-                    sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
+                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
                 row_idx = row_idx + 1
 
                 # - Pnet, down
@@ -1415,7 +1415,7 @@ def _write_aggregated_operation_relaxation_slacks_results_to_excel(shared_ess_da
                 for p in range(shared_ess_data.num_instants):
                     pnet_down = results[year][day][node_id]['pnet_down'][p]
                     sheet.cell(row=row_idx, column=p + 5).value = pnet_down
-                    sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
+                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
                 row_idx = row_idx + 1
 
                 # - Qnet, up
@@ -1426,7 +1426,7 @@ def _write_aggregated_operation_relaxation_slacks_results_to_excel(shared_ess_da
                 for p in range(shared_ess_data.num_instants):
                     qnet_up = results[year][day][node_id]['qnet_up'][p]
                     sheet.cell(row=row_idx, column=p + 5).value = qnet_up
-                    sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
+                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
                 row_idx = row_idx + 1
 
                 # - Qnet, down
@@ -1437,7 +1437,7 @@ def _write_aggregated_operation_relaxation_slacks_results_to_excel(shared_ess_da
                 for p in range(shared_ess_data.num_instants):
                     qnet_down = results[year][day][node_id]['qnet_down'][p]
                     sheet.cell(row=row_idx, column=p + 5).value = qnet_down
-                    sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
+                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
                 row_idx = row_idx + 1
 
 
