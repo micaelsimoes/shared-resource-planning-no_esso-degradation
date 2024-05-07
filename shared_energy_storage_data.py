@@ -979,14 +979,36 @@ def _write_aggregated_shared_energy_storage_operation_results_to_excel(shared_es
         for year in results:
             for day in results[year]:
 
+                # - Active Power
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year)
+                sheet.cell(row=row_idx, column=3).value = day
+                sheet.cell(row=row_idx, column=4).value = 'P, [MW]'
+                for p in range(shared_ess_data.num_instants):
+                    pnet = results[year][day][node_id]['p'][p]
+                    sheet.cell(row=row_idx, column=p + 5).value = pnet
+                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - Reactive Power
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year)
+                sheet.cell(row=row_idx, column=3).value = day
+                sheet.cell(row=row_idx, column=4).value = 'Q, [MVAr]'
+                for p in range(shared_ess_data.num_instants):
+                    qnet = results[year][day][node_id]['q'][p]
+                    sheet.cell(row=row_idx, column=p + 5).value = qnet
+                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
+                row_idx = row_idx + 1
+
                 # - Apparent Power
                 sheet.cell(row=row_idx, column=1).value = node_id
                 sheet.cell(row=row_idx, column=2).value = int(year)
                 sheet.cell(row=row_idx, column=3).value = day
                 sheet.cell(row=row_idx, column=4).value = 'S, [MVA]'
                 for p in range(shared_ess_data.num_instants):
-                    pnet = results[year][day][node_id]['s'][p]
-                    sheet.cell(row=row_idx, column=p + 5).value = pnet
+                    snet = results[year][day][node_id]['s'][p]
+                    sheet.cell(row=row_idx, column=p + 5).value = snet
                     sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
                 row_idx = row_idx + 1
 
@@ -1036,6 +1058,30 @@ def _write_detailed_shared_energy_storage_operation_results_to_excel(shared_ess_
             for year_curr in results[year_inv]:
                 for day in results[year_inv][year_curr]:
 
+                    # - Active Power
+                    sheet.cell(row=row_idx, column=1).value = node_id
+                    sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                    sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                    sheet.cell(row=row_idx, column=4).value = day
+                    sheet.cell(row=row_idx, column=5).value = 'P, [MW]'
+                    for p in range(shared_ess_data.num_instants):
+                        pnet = results[year_inv][year_curr][day][node_id]['p'][p]
+                        sheet.cell(row=row_idx, column=p + 6).value = pnet
+                        sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
+                    row_idx = row_idx + 1
+
+                    # - Reactive Power
+                    sheet.cell(row=row_idx, column=1).value = node_id
+                    sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                    sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                    sheet.cell(row=row_idx, column=4).value = day
+                    sheet.cell(row=row_idx, column=5).value = 'Q, [MVAr]'
+                    for p in range(shared_ess_data.num_instants):
+                        qnet = results[year_inv][year_curr][day][node_id]['q'][p]
+                        sheet.cell(row=row_idx, column=p + 6).value = qnet
+                        sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
+                    row_idx = row_idx + 1
+
                     # - Apparent Power
                     sheet.cell(row=row_idx, column=1).value = node_id
                     sheet.cell(row=row_idx, column=2).value = int(year_inv)
@@ -1043,8 +1089,8 @@ def _write_detailed_shared_energy_storage_operation_results_to_excel(shared_ess_
                     sheet.cell(row=row_idx, column=4).value = day
                     sheet.cell(row=row_idx, column=5).value = 'S, [MVA]'
                     for p in range(shared_ess_data.num_instants):
-                        pnet = results[year_inv][year_curr][day][node_id]['s'][p]
-                        sheet.cell(row=row_idx, column=p + 6).value = pnet
+                        snet = results[year_inv][year_curr][day][node_id]['s'][p]
+                        sheet.cell(row=row_idx, column=p + 6).value = snet
                         sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
                     row_idx = row_idx + 1
 
