@@ -768,10 +768,10 @@ def consensus_convergence(planning_problem, consensus_vars, params):
             # Shared Energy Storage
             for node_id in planning_problem.active_distribution_network_nodes:
                 for p in range(planning_problem.num_instants):
-                    sum_abs += abs(round(consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['ess']['esso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION))
-                    sum_abs += abs(round(consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['ess']['esso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION))
-                    sum_abs += abs(round(consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['ess']['esso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION))
-                    sum_abs += abs(round(consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['ess']['esso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION))
+                    sum_abs += abs(round(consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION))
+                    sum_abs += abs(round(consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION))
+                    sum_abs += abs(round(consensus_vars['ess']['tso']['current'][node_id][year][day]['s'][p], ERROR_PRECISION) - round(consensus_vars['ess']['esso']['current'][node_id][year][day]['s'][p], ERROR_PRECISION))
+                    sum_abs += abs(round(consensus_vars['ess']['dso']['current'][node_id][year][day]['s'][p], ERROR_PRECISION) - round(consensus_vars['ess']['esso']['current'][node_id][year][day]['s'][p], ERROR_PRECISION))
                     num_elems += 4
 
     if sum_abs > params.tol['consensus'] * num_elems:
@@ -818,11 +818,12 @@ def stationary_convergence(planning_problem, consensus_vars, params):
                 for p in range(planning_problem.num_instants):
                     sum_abs += rho_tso_ess * abs(round(consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['ess']['tso']['prev'][node_id][year][day]['p'][p], ERROR_PRECISION))
                     sum_abs += rho_tso_ess * abs(round(consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['ess']['tso']['prev'][node_id][year][day]['q'][p], ERROR_PRECISION))
+                    sum_abs += rho_tso_ess * abs(round(consensus_vars['ess']['tso']['current'][node_id][year][day]['s'][p], ERROR_PRECISION) - round(consensus_vars['ess']['tso']['prev'][node_id][year][day]['s'][p], ERROR_PRECISION))
                     sum_abs += rho_dso_ess * abs(round(consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p], ERROR_PRECISION))
                     sum_abs += rho_dso_ess * abs(round(consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p], ERROR_PRECISION))
-                    sum_abs += rho_esso * abs(round(consensus_vars['ess']['esso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['ess']['esso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION))
-                    sum_abs += rho_esso * abs(round(consensus_vars['ess']['esso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['ess']['esso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION))
-                    num_elems += 6
+                    sum_abs += rho_dso_ess * abs(round(consensus_vars['ess']['dso']['current'][node_id][year][day]['s'][p], ERROR_PRECISION) - round(consensus_vars['ess']['dso']['prev'][node_id][year][day]['s'][p], ERROR_PRECISION))
+                    sum_abs += rho_esso * abs(round(consensus_vars['ess']['esso']['current'][node_id][year][day]['s'][p], ERROR_PRECISION) - round(consensus_vars['ess']['esso']['current'][node_id][year][day]['s'][p], ERROR_PRECISION))
+                    num_elems += 7
 
     if sum_abs > params.tol['stationarity'] * num_elems:
         if not isclose(sum_abs, params.tol['stationarity'] * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['stationarity']):
