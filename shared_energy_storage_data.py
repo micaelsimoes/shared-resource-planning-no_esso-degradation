@@ -138,7 +138,6 @@ class SharedEnergyStorageData:
         if self.params.slacks:
             _write_detailed_degradation_relaxation_slacks_results_to_excel(self, workbook, results['relaxation_variables']['degradation']['detailed'])
             _write_aggregated_operation_relaxation_slacks_results_to_excel(self, workbook, results['relaxation_variables']['operation']['aggregated'])
-            _write_detailed_operation_relaxation_slacks_results_to_excel(self, workbook, results['relaxation_variables']['operation']['detailed'])
 
 
 # ======================================================================================================================
@@ -1256,42 +1255,3 @@ def _write_aggregated_operation_relaxation_slacks_results_to_excel(shared_ess_da
                     sheet.cell(row=row_idx, column=p + 5).value = snet_down
                     sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
                 row_idx = row_idx + 1
-
-
-def _write_detailed_operation_relaxation_slacks_results_to_excel(shared_ess_data, workbook, results):
-
-    sheet = workbook.create_sheet('Slacks operation, detailed')
-
-    row_idx = 1
-    decimal_style = '0.00'
-
-    # Write Header
-    sheet.cell(row=row_idx, column=1).value = 'Node ID'
-    sheet.cell(row=row_idx, column=2).value = 'Year Investment'
-    sheet.cell(row=row_idx, column=3).value = 'Year Current'
-    sheet.cell(row=row_idx, column=4).value = 'Day'
-    sheet.cell(row=row_idx, column=5).value = 'Quantity'
-    for p in range(shared_ess_data.num_instants):
-        sheet.cell(row=row_idx, column=p + 6).value = p
-    row_idx = row_idx + 1
-
-    for node_id in shared_ess_data.active_distribution_network_nodes:
-        for year_inv in results:
-            for year_curr in results[year_inv]:
-                for day in results[year_inv][year_curr]:
-
-                    if shared_ess_data.params.slacks:
-
-                        # - Complementarity
-                        sheet.cell(row=row_idx, column=1).value = node_id
-                        sheet.cell(row=row_idx, column=2).value = int(year_inv)
-                        sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                        sheet.cell(row=row_idx, column=4).value = day
-                        sheet.cell(row=row_idx, column=5).value = 'Complementary'
-                        for p in range(shared_ess_data.num_instants):
-                            comp = results[year_inv][year_curr][day][node_id]['comp'][p]
-                            sheet.cell(row=row_idx, column=p + 6).value = comp
-                            sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
-                        row_idx = row_idx + 1
-
-    return results
