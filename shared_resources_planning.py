@@ -1112,10 +1112,8 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
                 for p in model[year][day].periods:
                     model[year][day].dual_ess_p_req[shared_ess_idx, p].fix(dual_ess['tso']['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].dual_ess_q_req[shared_ess_idx, p].fix(dual_ess['tso']['current'][node_id][year][day]['q'][p] / s_base)
-                    model[year][day].dual_ess_s_req[shared_ess_idx, p].fix(dual_ess['tso']['current'][node_id][year][day]['s'][p] / s_base)
-                    model[year][day].p_ess_req[shared_ess_idx, p].fix(ess_req['dso']['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].q_ess_req[shared_ess_idx, p].fix(ess_req['dso']['current'][node_id][year][day]['q'][p] / s_base)
-                    model[year][day].s_ess_req[shared_ess_idx, p].fix(ess_req['esso']['current'][node_id][year][day]['s'][p] / s_base)
+                    model[year][day].p_ess_req[shared_ess_idx, p].fix(ess_req['esso']['current'][node_id][year][day]['p'][p] / s_base)
+                    model[year][day].q_ess_req[shared_ess_idx, p].fix(ess_req['esso']['current'][node_id][year][day]['q'][p] / s_base)
 
     # Solve!
     res = transmission_network.optimize(model, from_warm_start=from_warm_start)
