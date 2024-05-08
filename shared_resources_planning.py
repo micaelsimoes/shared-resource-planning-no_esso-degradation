@@ -1176,10 +1176,8 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
                 for p in model[year][day].periods:
                     model[year][day].dual_ess_p_req[p].fix(dual_ess['dso']['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].dual_ess_q_req[p].fix(dual_ess['dso']['current'][node_id][year][day]['q'][p] / s_base)
-                    model[year][day].dual_ess_s_req[p].fix(dual_ess['dso']['current'][node_id][year][day]['s'][p] / s_base)
-                    model[year][day].p_ess_req[p].fix(ess_req['tso']['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].q_ess_req[p].fix(ess_req['tso']['current'][node_id][year][day]['q'][p] / s_base)
-                    model[year][day].s_ess_req[p].fix(ess_req['esso']['current'][node_id][year][day]['s'][p] / s_base)
+                    model[year][day].p_ess_req[p].fix(ess_req['esso']['current'][node_id][year][day]['p'][p] / s_base)
+                    model[year][day].q_ess_req[p].fix(ess_req['esso']['current'][node_id][year][day]['q'][p] / s_base)
 
         # Solve!
         res[node_id] = distribution_network.optimize(model, from_warm_start=from_warm_start)
