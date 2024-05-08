@@ -3743,13 +3743,14 @@ def _write_network_energy_storages_results_to_excel(planning_problem, workbook, 
     sheet.cell(row=row_idx, column=1).value = 'Operator'
     sheet.cell(row=row_idx, column=2).value = 'Connection Node ID'
     sheet.cell(row=row_idx, column=3).value = 'Network Node ID'
-    sheet.cell(row=row_idx, column=4).value = 'Year'
-    sheet.cell(row=row_idx, column=5).value = 'Day'
-    sheet.cell(row=row_idx, column=6).value = 'Quantity'
-    sheet.cell(row=row_idx, column=7).value = 'Market Scenario'
-    sheet.cell(row=row_idx, column=8).value = 'Operation Scenario'
+    sheet.cell(row=row_idx, column=4).value = 'ESS ID'
+    sheet.cell(row=row_idx, column=5).value = 'Year'
+    sheet.cell(row=row_idx, column=6).value = 'Day'
+    sheet.cell(row=row_idx, column=7).value = 'Quantity'
+    sheet.cell(row=row_idx, column=8).value = 'Market Scenario'
+    sheet.cell(row=row_idx, column=9).value = 'Operation Scenario'
     for p in range(planning_problem.num_instants):
-        sheet.cell(row=row_idx, column=p + 9).value = p
+        sheet.cell(row=row_idx, column=p + 10).value = p
     row_idx = row_idx + 1
 
     # Write results -- TSO
