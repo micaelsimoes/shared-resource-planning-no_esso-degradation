@@ -79,9 +79,9 @@ class SharedEnergyStorageData:
         results['relaxation_variables']['investment'] = self.process_relaxation_variables_investment(model)
         if self.params.slacks:
             results['relaxation_variables']['degradation'] = dict()
-            results['relaxation_variables']['degradation']['detailed'] = self.process_relaxation_variables_degradation_detailed(model)
+            results['relaxation_variables']['degradation']['detailed'] = dict()
             results['relaxation_variables']['operation'] = dict()
-            results['relaxation_variables']['operation']['aggregated'] = self.process_relaxation_variables_operation_aggregated(model)
+            results['relaxation_variables']['operation']['aggregated'] = dict()
         return results
 
     def process_results_aggregated(self, model):
@@ -98,12 +98,6 @@ class SharedEnergyStorageData:
 
     def process_relaxation_variables_investment(self, model):
         return _process_relaxation_variables_investment(self, model)
-
-    def process_relaxation_variables_degradation_detailed(self, model):
-        return _process_relaxation_variables_degradation_detailed(self, model)
-
-    def process_relaxation_variables_operation_aggregated(self, model):
-        return _process_relaxation_variables_operation_aggregated(self, model)
 
     def write_optimization_results_to_excel(self, model):
         results = self.process_results(model)
@@ -263,10 +257,7 @@ def _build_subproblem_model(shared_ess_data):
                 model.es_degradation_per_unit[e, y_inv, y].fixed = False
                 model.es_soh_per_unit_cumul[e, y_inv, y].fixed = False
                 model.es_degradation_per_unit_cumul[e, y_inv, y].fixed = False
-                if shared_ess_data.params.slacks:
-                    model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit[e, y_inv, y] * (2 * shared_energy_storage.cl_nom * model.es_e_rated_per_unit[e, y_inv, y]) == model.es_avg_ch_dch_per_unit[e, y_inv, y] + model.slack_es_degradation_per_unit_up[e, y_inv, y] - model.slack_es_degradation_per_unit_down[e, y_inv, y])
-                else:
-                    model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit[e, y_inv, y] * (2 * shared_energy_storage.cl_nom * model.es_e_rated_per_unit[e, y_inv, y]) == model.es_avg_ch_dch_per_unit[e, y_inv, y])
+                model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit[e, y_inv, y] * (2 * shared_energy_storage.cl_nom * model.es_e_rated_per_unit[e, y_inv, y]) == model.es_avg_ch_dch_per_unit[e, y_inv, y])
                 model.energy_storage_capacity_degradation.add(model.es_soh_per_unit[e, y_inv, y] == 1.00 - model.es_degradation_per_unit[e, y_inv, y])
                 prev_soh = 1.00
                 if y > 0:
@@ -282,7 +273,6 @@ def _build_subproblem_model(shared_ess_data):
     model.energy_storage_limits = pe.ConstraintList()
     for e in model.energy_storages:
         for y_inv in model.years:
-            shared_energy_storage = shared_ess_data.shared_energy_storages[repr_years[y_inv]][e]
             for y in model.years:
                 s_max = model.es_s_available_per_unit[e, y_inv, y]
                 for d in model.days:
@@ -303,10 +293,7 @@ def _build_subproblem_model(shared_ess_data):
                     agg_snet = 0.00
                     for y_inv in model.years:
                         agg_snet += (model.es_sch_per_unit[e, y_inv, y, d, p] - model.es_sdch_per_unit[e, y_inv, y, d, p])
-                    if shared_ess_data.params.slacks:
-                        model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] == agg_snet + model.slack_es_snet_up[e, y, d, p] - model.slack_es_snet_down[e, y, d, p])
-                    else:
-                        model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] == agg_snet)
+                    model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] == agg_snet)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective function
@@ -317,17 +304,6 @@ def _build_subproblem_model(shared_ess_data):
             # Slacks for investment fixing
             slack_penalty += PENALTY_SLACK * (model.es_s_investment_slack_up[e, y_inv] + model.es_s_investment_slack_down[e, y_inv])
             slack_penalty += PENALTY_SLACK * (model.es_e_investment_slack_up[e, y_inv] + model.es_e_investment_slack_down[e, y_inv])
-
-            if shared_ess_data.params.slacks:
-
-                # Degradation slacks
-                for y in model.years:
-                    slack_penalty += PENALTY_SLACK * (model.slack_es_degradation_per_unit_up[e, y_inv, y] + model.slack_es_degradation_per_unit_down[e, y_inv, y])
-
-                # Aggregation slacks
-                for d in model.days:
-                    for p in model.periods:
-                        slack_penalty += PENALTY_SLACK * (model.slack_es_snet_up[e, y_inv, d, p] + model.slack_es_snet_down[e, y_inv, d, p])
 
     model.objective = pe.Objective(sense=pe.minimize, expr=slack_penalty)
 
@@ -590,56 +566,6 @@ def _process_relaxation_variables_investment(shared_ess_data, model):
             processed_results[year_inv][node_id]['s_down'] = pe.value(model.es_s_investment_slack_down[e, y_inv])
             processed_results[year_inv][node_id]['e_up'] = pe.value(model.es_e_investment_slack_up[e, y_inv])
             processed_results[year_inv][node_id]['e_down'] = pe.value(model.es_e_investment_slack_down[e, y_inv])
-
-    return processed_results
-
-
-def _process_relaxation_variables_degradation_detailed(shared_ess_data, model):
-
-    processed_results = dict()
-    repr_years = [year for year in shared_ess_data.years]
-
-    for y_inv in model.years:
-        year_inv = repr_years[y_inv]
-        processed_results[year_inv] = dict()
-        for y_curr in model.years:
-            year_curr = repr_years[y_curr]
-            processed_results[year_inv][year_curr] = {
-                'degradation_up': dict(), 'degradation_down': dict()
-            }
-            for e in model.energy_storages:
-                node_id = shared_ess_data.shared_energy_storages[year_curr][e].bus
-                degradation_up = pe.value(model.slack_es_degradation_per_unit_up[e, y_inv, y_curr])
-                degradation_down = pe.value(model.slack_es_degradation_per_unit_down[e, y_inv, y_curr])
-                processed_results[year_inv][year_curr]['degradation_up'][node_id] = degradation_up
-                processed_results[year_inv][year_curr]['degradation_down'][node_id] = degradation_down
-
-    return processed_results
-
-
-def _process_relaxation_variables_operation_aggregated(shared_ess_data, model):
-
-    processed_results = dict()
-    repr_days = [day for day in shared_ess_data.days]
-    repr_years = [year for year in shared_ess_data.years]
-
-    for y in model.years:
-        year = repr_years[y]
-        processed_results[year] = dict()
-        for d in model.days:
-            day = repr_days[d]
-            processed_results[year][day] = dict()
-            for e in model.energy_storages:
-                node_id = shared_ess_data.shared_energy_storages[year][e].bus
-                processed_results[year][day][node_id] = dict()
-
-                processed_results[year][day][node_id]['snet_up'] = list()
-                processed_results[year][day][node_id]['snet_down'] = list()
-                for p in model.periods:
-                    snet_up = pe.value(model.slack_es_snet_up[e, y, d, p])
-                    snet_down = pe.value(model.slack_es_snet_down[e, y, d, p])
-                    processed_results[year][day][node_id]['snet_up'].append(snet_up)
-                    processed_results[year][day][node_id]['snet_down'].append(snet_down)
 
     return processed_results
 
