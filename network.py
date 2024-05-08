@@ -2053,8 +2053,8 @@ def _process_results(network, model, params, results=dict()):
             processed_results['relaxation_slacks']['interface']['ess_p_down'][node_id].append(ess_p_down)
             processed_results['relaxation_slacks']['interface']['ess_q_up'][node_id].append(ess_q_up)
             processed_results['relaxation_slacks']['interface']['ess_q_down'][node_id].append(ess_q_down)
-            processed_results['relaxation_slacks']['interface']['ess_s_up'][node_id].append(ess_q_up)
-            processed_results['relaxation_slacks']['interface']['ess_s_down'][node_id].append(ess_q_down)
+            processed_results['relaxation_slacks']['interface']['ess_s_up'][node_id].append(ess_s_up)
+            processed_results['relaxation_slacks']['interface']['ess_s_down'][node_id].append(ess_s_down)
 
     return processed_results
 
