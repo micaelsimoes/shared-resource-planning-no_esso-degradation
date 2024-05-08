@@ -189,6 +189,11 @@ def _build_subproblem_model(shared_ess_data):
     model.es_e_rated_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_s_available_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_available_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    if shared_ess_data.params.slacks:
+        model.slack_es_s_rated_per_unit_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_es_s_rated_per_unit_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_es_e_rated_per_unit_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_es_e_rated_per_unit_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_s_rated_per_unit.fix(0.00)
     model.es_e_rated_per_unit.fix(0.00)
 
@@ -232,8 +237,12 @@ def _build_subproblem_model(shared_ess_data):
             for y in range(y_inv, max_tcal_norm):
                 model.es_s_rated_per_unit[e, y_inv, y].fixed = False
                 model.es_e_rated_per_unit[e, y_inv, y].fixed = False
-                model.rated_s_capacity_unit.add(model.es_s_rated_per_unit[e, y_inv, y] == model.es_s_investment[e, y_inv])
-                model.rated_e_capacity_unit.add(model.es_e_rated_per_unit[e, y_inv, y] == model.es_e_investment[e, y_inv])
+                if shared_ess_data.params.slacks:
+                    model.rated_s_capacity_unit.add(model.es_s_rated_per_unit[e, y_inv, y] == model.es_s_investment[e, y_inv] + model.slack_es_s_rated_per_unit_up[e, y_inv, y] - model.slack_es_s_rated_per_unit_down[e, y_inv, y])
+                    model.rated_e_capacity_unit.add(model.es_e_rated_per_unit[e, y_inv, y] == model.es_e_investment[e, y_inv] + model.slack_es_e_rated_per_unit_up[e, y_inv, y] - model.slack_es_e_rated_per_unit_down[e, y_inv, y])
+                else:
+                    model.rated_s_capacity_unit.add(model.es_s_rated_per_unit[e, y_inv, y] == model.es_s_investment[e, y_inv])
+                    model.rated_e_capacity_unit.add(model.es_e_rated_per_unit[e, y_inv, y] == model.es_e_investment[e, y_inv])
 
     # - Rated yearly capacities as a function of yearly investments
     model.rated_s_capacity = pe.ConstraintList()
@@ -391,8 +400,10 @@ def _build_subproblem_model(shared_ess_data):
 
             if shared_ess_data.params.slacks:
 
-                # Degradation slacks
+                # Investment and Degradation slacks
                 for y in model.years:
+                    slack_penalty += PENALTY_SLACK * (model.slack_es_s_rated_per_unit_up[e, y_inv, y] + model.slack_es_s_rated_per_unit_down[e, y_inv, y])
+                    slack_penalty += PENALTY_SLACK * (model.slack_es_e_rated_per_unit_up[e, y_inv, y] + model.slack_es_e_rated_per_unit_down[e, y_inv, y])
                     slack_penalty += PENALTY_SLACK * (model.slack_es_degradation_per_unit_up[e, y_inv, y] + model.slack_es_degradation_per_unit_down[e, y_inv, y])
 
                 # Operation slacks
@@ -702,12 +713,22 @@ def _process_relaxation_variables_degradation_detailed(shared_ess_data, model):
         for y_curr in model.years:
             year_curr = repr_years[y_curr]
             processed_results[year_inv][year_curr] = {
+                's_rated_up': dict(), 's_rated_down': dict(),
+                'e_rated_up': dict(), 'e_rated_down': dict(),
                 'degradation_up': dict(), 'degradation_down': dict()
             }
             for e in model.energy_storages:
                 node_id = shared_ess_data.shared_energy_storages[year_curr][e].bus
+                s_rated_up = pe.value(model.slack_es_s_rated_per_unit_up[e, y_inv, y_curr])
+                s_rated_down = pe.value(model.slack_es_s_rated_per_unit_down[e, y_inv, y_curr])
+                e_rated_up = pe.value(model.slack_es_e_rated_per_unit_up[e, y_inv, y_curr])
+                e_rated_down = pe.value(model.slack_es_e_rated_per_unit_down[e, y_inv, y_curr])
                 degradation_up = pe.value(model.slack_es_degradation_per_unit_up[e, y_inv, y_curr])
                 degradation_down = pe.value(model.slack_es_degradation_per_unit_down[e, y_inv, y_curr])
+                processed_results[year_inv][year_curr]['s_rated_up'][node_id] = s_rated_up
+                processed_results[year_inv][year_curr]['s_rated_down'][node_id] = s_rated_down
+                processed_results[year_inv][year_curr]['e_rated_up'][node_id] = e_rated_up
+                processed_results[year_inv][year_curr]['e_rated_down'][node_id] = e_rated_down
                 processed_results[year_inv][year_curr]['degradation_up'][node_id] = degradation_up
                 processed_results[year_inv][year_curr]['degradation_down'][node_id] = degradation_down
 
@@ -1368,6 +1389,42 @@ def _write_detailed_degradation_relaxation_slacks_results_to_excel(shared_ess_da
     for node_id in shared_ess_data.active_distribution_network_nodes:
         for year_inv in results:
             for year_curr in results[year_inv]:
+
+                # - Srated per unit, up
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'Srated unit, up'
+                sheet.cell(row=row_idx, column=5).value = results[year_inv][year_curr]['s_rated_up'][node_id]
+                sheet.cell(row=row_idx, column=5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - Srated per unit, down
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'Srated unit, down'
+                sheet.cell(row=row_idx, column=5).value = results[year_inv][year_curr]['s_rated_down'][node_id]
+                sheet.cell(row=row_idx, column=5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - Erated per unit, up
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'Erated unit, up'
+                sheet.cell(row=row_idx, column=5).value = results[year_inv][year_curr]['e_rated_up'][node_id]
+                sheet.cell(row=row_idx, column=5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - Erated per unit, down
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'Erated unit, down'
+                sheet.cell(row=row_idx, column=5).value = results[year_inv][year_curr]['e_rated_down'][node_id]
+                sheet.cell(row=row_idx, column=5).number_format = decimal_style
+                row_idx = row_idx + 1
 
                 # - Degradation per unit, up
                 sheet.cell(row=row_idx, column=1).value = node_id
