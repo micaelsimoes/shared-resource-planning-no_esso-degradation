@@ -295,29 +295,16 @@ def _build_subproblem_model(shared_ess_data):
     for e in model.energy_storages:
         for y_inv in model.years:
             shared_energy_storage = shared_ess_data.shared_energy_storages[repr_years[y_inv]][e]
-            max_phi = acos(shared_energy_storage.max_pf)
-            min_phi = acos(shared_energy_storage.min_pf)
             for y in model.years:
                 s_max = model.es_s_available_per_unit[e, y_inv, y]
                 for d in model.days:
                     for p in model.periods:
 
                         sch = model.es_sch_per_unit[e, y_inv, y, d, p]
-                        pch = model.es_pch_per_unit[e, y_inv, y, d, p]
-                        qch = model.es_qch_per_unit[e, y_inv, y, d, p]
                         sdch = model.es_sdch_per_unit[e, y_inv, y, d, p]
-                        pdch = model.es_pdch_per_unit[e, y_inv, y, d, p]
-                        qdch = model.es_qdch_per_unit[e, y_inv, y, d, p]
 
                         model.energy_storage_limits.add(sch <= s_max)
-                        model.energy_storage_limits.add(pch <= s_max)
-                        model.energy_storage_limits.add(qch <= s_max * tan(max_phi))
-                        model.energy_storage_limits.add(qch >= s_max * tan(min_phi))
-                        model.energy_storage_limits.add(qch >= -s_max)
                         model.energy_storage_limits.add(sdch <= s_max)
-                        model.energy_storage_limits.add(pdch <= s_max)
-                        model.energy_storage_limits.add(qdch <= s_max * tan(max_phi))
-                        model.energy_storage_limits.add(qdch >= s_max * tan(min_phi))
 
     # - Shared ESS operation, per unit
     model.energy_storage_operation = pe.ConstraintList()
@@ -332,14 +319,7 @@ def _build_subproblem_model(shared_ess_data):
                     for p in model.periods:
 
                         sch = model.es_sch_per_unit[e, y_inv, y, d, p]
-                        pch = model.es_pch_per_unit[e, y_inv, y, d, p]
-                        qch = model.es_qch_per_unit[e, y_inv, y, d, p]
                         sdch = model.es_sdch_per_unit[e, y_inv, y, d, p]
-                        pdch = model.es_pdch_per_unit[e, y_inv, y, d, p]
-                        qdch = model.es_qdch_per_unit[e, y_inv, y, d, p]
-
-                        model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
-                        model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
 
                         # Charging/discharging complementarity constraint
                         if shared_ess_data.params.slacks:
@@ -354,19 +334,11 @@ def _build_subproblem_model(shared_ess_data):
             for d in model.days:
                 for p in model.periods:
                     agg_snet = 0.00
-                    agg_pnet = 0.00
-                    agg_qnet = 0.00
                     for y_inv in model.years:
                         agg_snet += (model.es_sch_per_unit[e, y_inv, y, d, p] - model.es_sdch_per_unit[e, y_inv, y, d, p])
-                        agg_pnet += (model.es_pch_per_unit[e, y_inv, y, d, p] - model.es_pdch_per_unit[e, y_inv, y, d, p])
-                        agg_qnet += (model.es_qch_per_unit[e, y_inv, y, d, p] - model.es_qdch_per_unit[e, y_inv, y, d, p])
                     if shared_ess_data.params.slacks:
-                        model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] == agg_pnet + model.slack_es_snet_up[e, y, d, p] - model.slack_es_snet_down[e, y, d, p])
-                        model.energy_storage_operation_agg.add(model.es_pnet[e, y, d, p] == agg_pnet + model.slack_es_pnet_up[e, y, d, p] - model.slack_es_pnet_down[e, y, d, p])
-                        model.energy_storage_operation_agg.add(model.es_qnet[e, y, d, p] == agg_qnet + model.slack_es_qnet_up[e, y, d, p] - model.slack_es_qnet_down[e, y, d, p])
+                        model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] == agg_snet + model.slack_es_snet_up[e, y, d, p] - model.slack_es_snet_down[e, y, d, p])
                     else:
-                        model.energy_storage_operation_agg.add(model.es_pnet[e, y, d, p] == agg_pnet)
-                        model.energy_storage_operation_agg.add(model.es_qnet[e, y, d, p] == agg_qnet)
                         model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] == agg_snet)
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -395,8 +367,6 @@ def _build_subproblem_model(shared_ess_data):
                 for d in model.days:
                     for p in model.periods:
                         slack_penalty += PENALTY_SLACK * (model.slack_es_snet_up[e, y_inv, d, p] + model.slack_es_snet_down[e, y_inv, d, p])
-                        slack_penalty += PENALTY_SLACK * (model.slack_es_pnet_up[e, y_inv, d, p] + model.slack_es_pnet_down[e, y_inv, d, p])
-                        slack_penalty += PENALTY_SLACK * (model.slack_es_qnet_up[e, y_inv, d, p] + model.slack_es_qnet_down[e, y_inv, d, p])
 
     model.objective = pe.Objective(sense=pe.minimize, expr=slack_penalty)
 
