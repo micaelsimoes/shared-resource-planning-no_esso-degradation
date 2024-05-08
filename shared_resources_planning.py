@@ -2493,6 +2493,34 @@ def _write_shared_energy_storages_results_to_excel(planning_problem, workbook, r
         for day in results['esso']['operation']['aggregated'][year]:
             for node_id in planning_problem.active_distribution_network_nodes:
 
+                # Active power
+                row_idx = row_idx + 1
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = 'ESSO'
+                sheet.cell(row=row_idx, column=3).value = int(year)
+                sheet.cell(row=row_idx, column=4).value = day
+                sheet.cell(row=row_idx, column=5).value = 'P, [MW]'
+                sheet.cell(row=row_idx, column=6).value = 'Expected'
+                sheet.cell(row=row_idx, column=7).value = '-'
+                for p in range(planning_problem.num_instants):
+                    ess_p = results['esso']['operation']['aggregated'][year][day][node_id]['p'][p]
+                    sheet.cell(row=row_idx, column=p + 8).value = ess_p
+                    sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
+
+                # Reactive power
+                row_idx = row_idx + 1
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = 'ESSO'
+                sheet.cell(row=row_idx, column=3).value = int(year)
+                sheet.cell(row=row_idx, column=4).value = day
+                sheet.cell(row=row_idx, column=5).value = 'Q, [MVAr]'
+                sheet.cell(row=row_idx, column=6).value = 'Expected'
+                sheet.cell(row=row_idx, column=7).value = '-'
+                for p in range(planning_problem.num_instants):
+                    ess_q = results['esso']['operation']['aggregated'][year][day][node_id]['q'][p]
+                    sheet.cell(row=row_idx, column=p + 8).value = ess_q
+                    sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
+
                 # Apparent power
                 row_idx = row_idx + 1
                 sheet.cell(row=row_idx, column=1).value = node_id
