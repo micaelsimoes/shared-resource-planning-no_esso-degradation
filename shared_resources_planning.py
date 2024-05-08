@@ -1058,18 +1058,15 @@ def update_shared_energy_storage_model_to_admm(shared_ess_data, model, params):
         for y in model.years:
             for d in model.days:
                 for p in model.periods:
-                    model.es_pnet[e, y, d, p].fixed = False
-                    model.es_qnet[e, y, d, p].fixed = False
+                    model.es_snet[e, y, d, p].fixed = False
 
     # Add ADMM variables
     model.rho = pe.Var(domain=pe.NonNegativeReals)
     model.rho.fix(params.rho['ess']['esso'])
 
     # Active and Reactive power requested by TSO and DSOs
-    model.p_req = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)            # Active power - TSO & DSO
-    model.q_req = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)            # Reactive power - TSO & DSO
-    model.dual_p_req = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)       # Dual variables - TSO & DSO
-    model.dual_q_req = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)       # Dual variables - TSO & DSO
+    model.s_req = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)            # Active power - TSO & DSO
+    model.dual_s_req = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)       # Dual variables - TSO & DSO
 
     # Objective function - augmented Lagrangian
     init_of_value = pe.value(model.objective)
@@ -1081,12 +1078,9 @@ def update_shared_energy_storage_model_to_admm(shared_ess_data, model, params):
                 rating_s = 1.00     # Do not balance residuals
             for d in model.days:
                 for p in model.periods:
-                    constraint_p_req = (model.es_pnet[e, y, d, p] - model.p_req[e, y, d, p]) / rating_s
-                    constraint_q_req = (model.es_qnet[e, y, d, p] - model.q_req[e, y, d, p]) / rating_s
-                    obj += model.dual_p_req[e, y, d, p] * constraint_p_req
-                    obj += model.dual_q_req[e, y, d, p] * constraint_q_req
-                    obj += (model.rho / 2) * constraint_p_req ** 2
-                    obj += (model.rho / 2) * constraint_q_req ** 2
+                    constraint_s_req = (model.es_snet[e, y, d, p] - model.s_req[e, y, d, p]) / rating_s
+                    obj += model.dual_s_req[e, y, d, p] * constraint_s_req
+                    obj += (model.rho / 2) * constraint_s_req ** 2
 
     model.objective.expr = obj
 
