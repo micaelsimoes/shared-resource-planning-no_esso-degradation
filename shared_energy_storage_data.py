@@ -380,13 +380,13 @@ def _build_subproblem_model(shared_ess_data):
                         agg_pnet += (model.es_pch_per_unit[e, y_inv, y, d, p] - model.es_pdch_per_unit[e, y_inv, y, d, p])
                         agg_qnet += (model.es_qch_per_unit[e, y_inv, y, d, p] - model.es_qdch_per_unit[e, y_inv, y, d, p])
                     if shared_ess_data.params.slacks:
-                        model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] == agg_pnet + model.slack_es_snet_up[e, y, d, p] - model.slack_es_snet_down[e, y, d, p])
+                        model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] == agg_snet + model.slack_es_snet_up[e, y, d, p] - model.slack_es_snet_down[e, y, d, p])
                         model.energy_storage_operation_agg.add(model.es_pnet[e, y, d, p] == agg_pnet + model.slack_es_pnet_up[e, y, d, p] - model.slack_es_pnet_down[e, y, d, p])
                         model.energy_storage_operation_agg.add(model.es_qnet[e, y, d, p] == agg_qnet + model.slack_es_qnet_up[e, y, d, p] - model.slack_es_qnet_down[e, y, d, p])
                     else:
+                        model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] == agg_snet)
                         model.energy_storage_operation_agg.add(model.es_pnet[e, y, d, p] == agg_pnet)
                         model.energy_storage_operation_agg.add(model.es_qnet[e, y, d, p] == agg_qnet)
-                        model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] == agg_snet)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective function
