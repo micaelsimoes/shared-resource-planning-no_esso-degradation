@@ -1094,7 +1094,7 @@ def _write_detailed_shared_energy_storage_soh_results_to_excel(shared_ess_data, 
                 sheet.cell(row=row_idx, column=1).value = node_id
                 sheet.cell(row=row_idx, column=2).value = int(year_inv)
                 sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                sheet.cell(row=row_idx, column=4).value = 'SoH day, [%]'
+                sheet.cell(row=row_idx, column=4).value = 'SoH unit, [%]'
                 sheet.cell(row=row_idx, column=5).value = soh_unit
                 sheet.cell(row=row_idx, column=5).number_format = perc_style
                 row_idx = row_idx + 1
@@ -1103,7 +1103,7 @@ def _write_detailed_shared_energy_storage_soh_results_to_excel(shared_ess_data, 
                 sheet.cell(row=row_idx, column=1).value = node_id
                 sheet.cell(row=row_idx, column=2).value = int(year_inv)
                 sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                sheet.cell(row=row_idx, column=4).value = 'Degradation day, [%]'
+                sheet.cell(row=row_idx, column=4).value = 'Degradation unit, [%]'
                 sheet.cell(row=row_idx, column=5).value = degradation_unit
                 sheet.cell(row=row_idx, column=5).number_format = perc_style
                 row_idx = row_idx + 1
