@@ -194,7 +194,6 @@ def _build_subproblem_model(shared_ess_data):
     model.es_soh_per_unit_cumul = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=1.00, bounds=(0.00, 1.00))
     model.es_degradation_per_unit_cumul = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
     if shared_ess_data.params.slacks:
-        model.slack_es_comp_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
         model.slack_es_degradation_per_unit_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
         model.slack_es_degradation_per_unit_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_soh_per_unit.fix(1.00)
@@ -305,27 +304,6 @@ def _build_subproblem_model(shared_ess_data):
 
                         model.energy_storage_limits.add(sch <= s_max)
                         model.energy_storage_limits.add(sdch <= s_max)
-
-    # - Shared ESS operation, per unit
-    model.energy_storage_operation = pe.ConstraintList()
-    model.energy_storage_balance = pe.ConstraintList()
-    model.energy_storage_day_balance = pe.ConstraintList()
-    model.energy_storage_ch_dch_exclusion = pe.ConstraintList()
-    model.energy_storage_expected_power = pe.ConstraintList()
-    for e in model.energy_storages:
-        for y_inv in model.years:
-            for y in model.years:
-                for d in model.days:
-                    for p in model.periods:
-
-                        sch = model.es_sch_per_unit[e, y_inv, y, d, p]
-                        sdch = model.es_sdch_per_unit[e, y_inv, y, d, p]
-
-                        # Charging/discharging complementarity constraint
-                        if shared_ess_data.params.slacks:
-                            model.energy_storage_ch_dch_exclusion.add(sch * sdch <= model.slack_es_comp_per_unit[e, y_inv, y, d, p])
-                        else:
-                            model.energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
 
     # - Shared ESS operation, aggregated
     model.energy_storage_operation_agg = pe.ConstraintList()
