@@ -1060,7 +1060,7 @@ def update_shared_energy_storage_model_to_admm(shared_ess_data, model, params):
                 for p in model.periods:
                     constraint_p_req = (model.es_pnet[e, y, d, p] - model.p_req[e, y, d, p]) / rating_s
                     constraint_q_req = (model.es_qnet[e, y, d, p] - model.q_req[e, y, d, p]) / rating_s
-                    obj += model.dual_s_req[e, y, d, p] * constraint_p_req
+                    obj += model.dual_p_req[e, y, d, p] * constraint_p_req
                     obj += model.dual_q_req[e, y, d, p] * constraint_q_req
                     obj += (model.rho / 2) * constraint_p_req ** 2
                     obj += (model.rho / 2) * constraint_q_req ** 2
