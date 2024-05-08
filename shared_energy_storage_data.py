@@ -509,20 +509,11 @@ def _process_results_aggregated(shared_ess_data, model):
             processed_results[year][day] = dict()
             for e in model.energy_storages:
                 node_id = shared_ess_data.shared_energy_storages[year][e].bus
-                _, capacity = shared_ess_data.get_available_capacities(model, e, y)
-                if isclose(capacity, 0.00, abs_tol=SMALL_TOLERANCE):
-                    capacity = 1.00
                 processed_results[year][day][node_id] = dict()
                 processed_results[year][day][node_id]['s'] = list()
-                processed_results[year][day][node_id]['p'] = list()
-                processed_results[year][day][node_id]['q'] = list()
                 for p in model.periods:
                     s_net = pe.value(model.es_snet[e, y, d, p])
-                    p_net = pe.value(model.es_pnet[e, y, d, p])
-                    q_net = pe.value(model.es_qnet[e, y, d, p])
                     processed_results[year][day][node_id]['s'].append(s_net)
-                    processed_results[year][day][node_id]['p'].append(p_net)
-                    processed_results[year][day][node_id]['q'].append(q_net)
 
     return processed_results
 
@@ -545,20 +536,11 @@ def _process_results_detailed(shared_ess_data, model):
                 processed_results[year_inv][year_curr][day] = dict()
                 for e in model.energy_storages:
                     node_id = shared_ess_data.shared_energy_storages[year_curr][e].bus
-                    capacity = pe.value(model.es_e_available_per_unit[e, y_inv, y_curr])
-                    if isclose(capacity, 0.00, abs_tol=SMALL_TOLERANCE):
-                        capacity = 1.00
                     processed_results[year_inv][year_curr][day][node_id] = dict()
                     processed_results[year_inv][year_curr][day][node_id]['s'] = list()
-                    processed_results[year_inv][year_curr][day][node_id]['p'] = list()
-                    processed_results[year_inv][year_curr][day][node_id]['q'] = list()
                     for p in model.periods:
                         s_net = pe.value(model.es_sch_per_unit[e, y_inv, y_curr, d, p] - model.es_sdch_per_unit[e, y_inv, y_curr, d, p])
-                        p_net = pe.value(model.es_pch_per_unit[e, y_inv, y_curr, d, p] - model.es_pdch_per_unit[e, y_inv, y_curr, d, p])
-                        q_net = pe.value(model.es_qch_per_unit[e, y_inv, y_curr, d, p] - model.es_qdch_per_unit[e, y_inv, y_curr, d, p])
                         processed_results[year_inv][year_curr][day][node_id]['s'].append(s_net)
-                        processed_results[year_inv][year_curr][day][node_id]['p'].append(p_net)
-                        processed_results[year_inv][year_curr][day][node_id]['q'].append(q_net)
 
     return processed_results
 
@@ -690,19 +672,13 @@ def _process_relaxation_variables_operation_aggregated(shared_ess_data, model):
                 node_id = shared_ess_data.shared_energy_storages[year][e].bus
                 processed_results[year][day][node_id] = dict()
 
-                processed_results[year][day][node_id]['pnet_up'] = list()
-                processed_results[year][day][node_id]['pnet_down'] = list()
-                processed_results[year][day][node_id]['qnet_up'] = list()
-                processed_results[year][day][node_id]['qnet_down'] = list()
+                processed_results[year][day][node_id]['snet_up'] = list()
+                processed_results[year][day][node_id]['snet_down'] = list()
                 for p in model.periods:
-                    pnet_up = pe.value(model.slack_es_pnet_up[e, y, d, p])
-                    pnet_down = pe.value(model.slack_es_pnet_down[e, y, d, p])
-                    qnet_up = pe.value(model.slack_es_qnet_up[e, y, d, p])
-                    qnet_down = pe.value(model.slack_es_qnet_down[e, y, d, p])
-                    processed_results[year][day][node_id]['pnet_up'].append(pnet_up)
-                    processed_results[year][day][node_id]['pnet_down'].append(pnet_down)
-                    processed_results[year][day][node_id]['qnet_up'].append(qnet_up)
-                    processed_results[year][day][node_id]['qnet_down'].append(qnet_down)
+                    snet_up = pe.value(model.slack_es_snet_up[e, y, d, p])
+                    snet_down = pe.value(model.slack_es_snet_down[e, y, d, p])
+                    processed_results[year][day][node_id]['snet_up'].append(snet_up)
+                    processed_results[year][day][node_id]['snet_down'].append(snet_down)
 
     return processed_results
 
@@ -789,7 +765,7 @@ def _write_optimization_results_to_excel(shared_ess_data, data_dir, results):
     _write_detailed_shared_energy_storage_operation_results_to_excel(shared_ess_data, wb, results['operation']['detailed'])
     _write_aggregated_shared_energy_storage_soh_results_to_excel(shared_ess_data, wb, results['soh']['aggregated'])
     _write_detailed_shared_energy_storage_soh_results_to_excel(shared_ess_data, wb, results['soh']['detailed'])
-    shared_ess_data.write_relaxation_slacks_results_to_excel(wb, results['relaxation_variables'])
+    shared_ess_data.write_relaxation_slacks_results_to_excel(wb, results)
 
     results_filename = os.path.join(data_dir, f'{shared_ess_data.name}_shared_ess_results.xlsx')
     try:
@@ -976,7 +952,6 @@ def _write_aggregated_shared_energy_storage_operation_results_to_excel(shared_es
 
     row_idx = 1
     decimal_style = '0.00'
-    perc_style = '0.00%'
 
     # Write Header
     sheet.cell(row=row_idx, column=1).value = 'Node ID'
@@ -991,29 +966,7 @@ def _write_aggregated_shared_energy_storage_operation_results_to_excel(shared_es
         for year in results:
             for day in results[year]:
 
-                # - Active Power
-                sheet.cell(row=row_idx, column=1).value = node_id
-                sheet.cell(row=row_idx, column=2).value = int(year)
-                sheet.cell(row=row_idx, column=3).value = day
-                sheet.cell(row=row_idx, column=4).value = 'P, [MW]'
-                for p in range(shared_ess_data.num_instants):
-                    pnet = results[year][day][node_id]['p'][p]
-                    sheet.cell(row=row_idx, column=p + 5).value = pnet
-                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
-                row_idx = row_idx + 1
-
-                # - Reactive Power
-                sheet.cell(row=row_idx, column=1).value = node_id
-                sheet.cell(row=row_idx, column=2).value = int(year)
-                sheet.cell(row=row_idx, column=3).value = day
-                sheet.cell(row=row_idx, column=4).value = 'Q, [MVAr]'
-                for p in range(shared_ess_data.num_instants):
-                    qnet = results[year][day][node_id]['q'][p]
-                    sheet.cell(row=row_idx, column=p + 5).value = qnet
-                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
-                row_idx = row_idx + 1
-
-                # - Apparent Power
+               # - Apparent Power
                 sheet.cell(row=row_idx, column=1).value = node_id
                 sheet.cell(row=row_idx, column=2).value = int(year)
                 sheet.cell(row=row_idx, column=3).value = day
@@ -1047,30 +1000,6 @@ def _write_detailed_shared_energy_storage_operation_results_to_excel(shared_ess_
         for year_inv in results:
             for year_curr in results[year_inv]:
                 for day in results[year_inv][year_curr]:
-
-                    # - Active Power
-                    sheet.cell(row=row_idx, column=1).value = node_id
-                    sheet.cell(row=row_idx, column=2).value = int(year_inv)
-                    sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                    sheet.cell(row=row_idx, column=4).value = day
-                    sheet.cell(row=row_idx, column=5).value = 'P, [MW]'
-                    for p in range(shared_ess_data.num_instants):
-                        pnet = results[year_inv][year_curr][day][node_id]['p'][p]
-                        sheet.cell(row=row_idx, column=p + 6).value = pnet
-                        sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
-                    row_idx = row_idx + 1
-
-                    # - Reactive Power
-                    sheet.cell(row=row_idx, column=1).value = node_id
-                    sheet.cell(row=row_idx, column=2).value = int(year_inv)
-                    sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                    sheet.cell(row=row_idx, column=4).value = day
-                    sheet.cell(row=row_idx, column=5).value = 'Q, [MVAr]'
-                    for p in range(shared_ess_data.num_instants):
-                        qnet = results[year_inv][year_curr][day][node_id]['q'][p]
-                        sheet.cell(row=row_idx, column=p + 6).value = qnet
-                        sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
-                    row_idx = row_idx + 1
 
                     # - Apparent Power
                     sheet.cell(row=row_idx, column=1).value = node_id
@@ -1368,47 +1297,25 @@ def _write_aggregated_operation_relaxation_slacks_results_to_excel(shared_ess_da
         for year in results:
             for day in results[year]:
 
-                # - Pnet, up
+                # - Snet, up
                 sheet.cell(row=row_idx, column=1).value = node_id
                 sheet.cell(row=row_idx, column=2).value = int(year)
                 sheet.cell(row=row_idx, column=3).value = day
-                sheet.cell(row=row_idx, column=4).value = 'Pnet, up'
+                sheet.cell(row=row_idx, column=4).value = 'Snet, up'
                 for p in range(shared_ess_data.num_instants):
-                    pnet_up = results[year][day][node_id]['pnet_up'][p]
-                    sheet.cell(row=row_idx, column=p + 5).value = pnet_up
+                    snet_up = results[year][day][node_id]['snet_up'][p]
+                    sheet.cell(row=row_idx, column=p + 5).value = snet_up
                     sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
                 row_idx = row_idx + 1
 
-                # - Pnet, down
+                # - Snet, down
                 sheet.cell(row=row_idx, column=1).value = node_id
                 sheet.cell(row=row_idx, column=2).value = int(year)
                 sheet.cell(row=row_idx, column=3).value = day
-                sheet.cell(row=row_idx, column=4).value = 'Pnet, down'
+                sheet.cell(row=row_idx, column=4).value = 'Snet, down'
                 for p in range(shared_ess_data.num_instants):
-                    pnet_down = results[year][day][node_id]['pnet_down'][p]
-                    sheet.cell(row=row_idx, column=p + 5).value = pnet_down
-                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
-                row_idx = row_idx + 1
-
-                # - Qnet, up
-                sheet.cell(row=row_idx, column=1).value = node_id
-                sheet.cell(row=row_idx, column=2).value = int(year)
-                sheet.cell(row=row_idx, column=3).value = day
-                sheet.cell(row=row_idx, column=4).value = 'Qnet, up'
-                for p in range(shared_ess_data.num_instants):
-                    qnet_up = results[year][day][node_id]['qnet_up'][p]
-                    sheet.cell(row=row_idx, column=p + 5).value = qnet_up
-                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
-                row_idx = row_idx + 1
-
-                # - Qnet, down
-                sheet.cell(row=row_idx, column=1).value = node_id
-                sheet.cell(row=row_idx, column=2).value = int(year)
-                sheet.cell(row=row_idx, column=3).value = day
-                sheet.cell(row=row_idx, column=4).value = 'Qnet, down'
-                for p in range(shared_ess_data.num_instants):
-                    qnet_down = results[year][day][node_id]['qnet_down'][p]
-                    sheet.cell(row=row_idx, column=p + 5).value = qnet_down
+                    snet_down = results[year][day][node_id]['snet_down'][p]
+                    sheet.cell(row=row_idx, column=p + 5).value = snet_down
                     sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
                 row_idx = row_idx + 1
 
