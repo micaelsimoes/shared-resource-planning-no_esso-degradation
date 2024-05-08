@@ -486,9 +486,15 @@ def _process_results_aggregated(shared_ess_data, model):
                 node_id = shared_ess_data.shared_energy_storages[year][e].bus
                 processed_results[year][day][node_id] = dict()
                 processed_results[year][day][node_id]['s'] = list()
+                processed_results[year][day][node_id]['p'] = list()
+                processed_results[year][day][node_id]['q'] = list()
                 for p in model.periods:
                     s_net = pe.value(model.es_snet[e, y, d, p])
+                    p_net = pe.value(model.es_pnet[e, y, d, p])
+                    q_net = pe.value(model.es_qnet[e, y, d, p])
                     processed_results[year][day][node_id]['s'].append(s_net)
+                    processed_results[year][day][node_id]['p'].append(p_net)
+                    processed_results[year][day][node_id]['q'].append(q_net)
 
     return processed_results
 
@@ -891,7 +897,29 @@ def _write_aggregated_shared_energy_storage_operation_results_to_excel(shared_es
         for year in results:
             for day in results[year]:
 
-               # - Apparent Power
+                # - Active Power
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year)
+                sheet.cell(row=row_idx, column=3).value = day
+                sheet.cell(row=row_idx, column=4).value = 'P, [MW]'
+                for p in range(shared_ess_data.num_instants):
+                    pnet = results[year][day][node_id]['p'][p]
+                    sheet.cell(row=row_idx, column=p + 5).value = pnet
+                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - Reactive Power
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year)
+                sheet.cell(row=row_idx, column=3).value = day
+                sheet.cell(row=row_idx, column=4).value = 'Q, [MVAr]'
+                for p in range(shared_ess_data.num_instants):
+                    qnet = results[year][day][node_id]['q'][p]
+                    sheet.cell(row=row_idx, column=p + 5).value = qnet
+                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - Apparent Power
                 sheet.cell(row=row_idx, column=1).value = node_id
                 sheet.cell(row=row_idx, column=2).value = int(year)
                 sheet.cell(row=row_idx, column=3).value = day
