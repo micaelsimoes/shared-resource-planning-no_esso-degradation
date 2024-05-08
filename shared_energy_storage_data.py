@@ -335,12 +335,6 @@ def _build_subproblem_model(shared_ess_data):
                 for y in model.years:
                     slack_penalty += PENALTY_SLACK * (model.slack_es_degradation_per_unit_up[e, y_inv, y] + model.slack_es_degradation_per_unit_down[e, y_inv, y])
 
-                # Operation slacks
-                for y in model.years:
-                    for d in model.days:
-                        for p in model.periods:
-                            slack_penalty += PENALTY_SLACK * model.slack_es_comp_per_unit[e, y_inv, y, d, p]
-
                 # Aggregation slacks
                 for d in model.days:
                     for p in model.periods:
