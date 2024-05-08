@@ -62,7 +62,7 @@ def shared_resources_planning(working_directory, specification_filename):
     planning_problem.plot_diagram()
 
     candidate_solution = planning_problem.get_initial_candidate_solution()
-    planning_problem.run_operational_planning(candidate_solution=candidate_solution, print_results=True, debug_flag=False)
+    #planning_problem.run_operational_planning(candidate_solution=candidate_solution, print_results=True, debug_flag=False)
     #planning_problem.run_without_coordination(print_results=True)
 
     '''
@@ -80,19 +80,18 @@ def shared_resources_planning(working_directory, specification_filename):
     for node_id in distribution_networks:
         distribution_network = distribution_networks[node_id]
         dn_model = distribution_network.build_model()
+        distribution_network.update_model_with_candidate_solution(dn_model, candidate_solution['total_capacity'])
         results = distribution_network.optimize(dn_model)
         processed_results = distribution_network.process_results(dn_model, results)
         distribution_network.write_optimization_results_to_excel(processed_results)
     '''
 
-    '''
     candidate_solution = planning_problem.get_initial_candidate_solution()
     planning_problem.shared_ess_data.update_data_with_candidate_solution(candidate_solution['total_capacity'])
     esso_model = planning_problem.shared_ess_data.build_subproblem()
     planning_problem.shared_ess_data.update_model_with_candidate_solution(esso_model, candidate_solution['investment'])
     results = planning_problem.shared_ess_data.optimize(esso_model)
     planning_problem.shared_ess_data.write_optimization_results_to_excel(esso_model)
-    '''
 
     print('==========================================================================================================')
     print('                                                 END                                                      ')
