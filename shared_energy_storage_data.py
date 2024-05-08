@@ -82,7 +82,6 @@ class SharedEnergyStorageData:
             results['relaxation_variables']['degradation']['detailed'] = self.process_relaxation_variables_degradation_detailed(model)
             results['relaxation_variables']['operation'] = dict()
             results['relaxation_variables']['operation']['aggregated'] = self.process_relaxation_variables_operation_aggregated(model)
-            results['relaxation_variables']['operation']['detailed'] = self.process_relaxation_variables_operation_detailed(model)
         return results
 
     def process_results_aggregated(self, model):
@@ -105,9 +104,6 @@ class SharedEnergyStorageData:
 
     def process_relaxation_variables_operation_aggregated(self, model):
         return _process_relaxation_variables_operation_aggregated(self, model)
-
-    def process_relaxation_variables_operation_detailed(self, model):
-        return _process_relaxation_variables_operation_detailed(self, model)
 
     def write_optimization_results_to_excel(self, model):
         results = self.process_results(model)
@@ -651,36 +647,6 @@ def _process_relaxation_variables_operation_aggregated(shared_ess_data, model):
                     snet_down = pe.value(model.slack_es_snet_down[e, y, d, p])
                     processed_results[year][day][node_id]['snet_up'].append(snet_up)
                     processed_results[year][day][node_id]['snet_down'].append(snet_down)
-
-    return processed_results
-
-
-def _process_relaxation_variables_operation_detailed(shared_ess_data, model):
-
-    processed_results = dict()
-    repr_days = [day for day in shared_ess_data.days]
-    repr_years = [year for year in shared_ess_data.years]
-
-    for y_inv in model.years:
-        year_inv = repr_years[y_inv]
-        processed_results[year_inv] = dict()
-        for y_curr in model.years:
-            year_curr = repr_years[y_curr]
-            processed_results[year_inv][year_curr] = dict()
-            for d in model.days:
-                day = repr_days[d]
-                processed_results[year_inv][year_curr][day] = dict()
-                for e in model.energy_storages:
-                    node_id = shared_ess_data.shared_energy_storages[year_curr][e].bus
-                    processed_results[year_inv][year_curr][day][node_id] = dict()
-
-                    if shared_ess_data.params.slacks:
-
-                        # - Complementarity
-                        processed_results[year_inv][year_curr][day][node_id]['comp'] = list()
-                        for p in model.periods:
-                            comp = pe.value(model.slack_es_comp_per_unit[e, y_inv, y_curr, d, p])
-                            processed_results[year_inv][year_curr][day][node_id]['comp'].append(comp)
 
     return processed_results
 
