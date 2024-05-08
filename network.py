@@ -1051,7 +1051,7 @@ def _build_model(network, params):
             obj += PENALTY_SLACK * (slack_vmag + slack_p + slack_q)
             slack_p_ess = model.slack_expected_shared_ess_p_up[p] + model.slack_expected_shared_ess_p_down[p]
             slack_q_ess = model.slack_expected_shared_ess_q_up[p] + model.slack_expected_shared_ess_q_down[p]
-            obj += PENALTY_SLACK * (slack_p_ess + slack_q_ess + slack_s_ess)
+            obj += PENALTY_SLACK * (slack_p_ess + slack_q_ess)
 
     # Operation slacks
     if params.slacks:
@@ -2031,8 +2031,6 @@ def _process_results(network, model, params, results=dict()):
             processed_results['relaxation_slacks']['interface']['ess_p_down'][node_id].append(ess_p_down)
             processed_results['relaxation_slacks']['interface']['ess_q_up'][node_id].append(ess_q_up)
             processed_results['relaxation_slacks']['interface']['ess_q_down'][node_id].append(ess_q_down)
-            processed_results['relaxation_slacks']['interface']['ess_s_up'][node_id].append(ess_s_up)
-            processed_results['relaxation_slacks']['interface']['ess_s_down'][node_id].append(ess_s_down)
 
     return processed_results
 
