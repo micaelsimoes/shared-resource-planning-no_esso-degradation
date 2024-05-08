@@ -305,6 +305,9 @@ def _build_subproblem_model(shared_ess_data):
             slack_penalty += PENALTY_SLACK * (model.es_s_investment_slack_up[e, y_inv] + model.es_s_investment_slack_down[e, y_inv])
             slack_penalty += PENALTY_SLACK * (model.es_e_investment_slack_up[e, y_inv] + model.es_e_investment_slack_down[e, y_inv])
 
+            for y in model.years:
+                slack_penalty += model.es_degradation_per_unit[e, y_inv, y]
+
     model.objective = pe.Objective(sense=pe.minimize, expr=slack_penalty)
 
     # Define that we want the duals
