@@ -502,25 +502,19 @@ def _build_model(network, params):
     if network.is_transmission:
         model.expected_shared_ess_p = pe.Var(model.shared_energy_storages, model.periods, domain=pe.Reals, initialize=0.0)
         model.expected_shared_ess_q = pe.Var(model.shared_energy_storages, model.periods, domain=pe.Reals, initialize=0.0)
-        model.expected_shared_ess_s = pe.Var(model.shared_energy_storages, model.periods, domain=pe.Reals, initialize=0.0)
         if params.slacks:
             model.slack_expected_shared_ess_p_up = pe.Var(model.shared_energy_storages, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
             model.slack_expected_shared_ess_p_down = pe.Var(model.shared_energy_storages, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
             model.slack_expected_shared_ess_q_up = pe.Var(model.shared_energy_storages, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
             model.slack_expected_shared_ess_q_down = pe.Var(model.shared_energy_storages, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-            model.slack_expected_shared_ess_s_up = pe.Var(model.shared_energy_storages, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-            model.slack_expected_shared_ess_s_down = pe.Var(model.shared_energy_storages, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     else:
         model.expected_shared_ess_p = pe.Var(model.periods, domain=pe.Reals, initialize=0.0)
         model.expected_shared_ess_q = pe.Var(model.periods, domain=pe.Reals, initialize=0.0)
-        model.expected_shared_ess_s = pe.Var(model.periods, domain=pe.Reals, initialize=0.0)
         if params.slacks:
             model.slack_expected_shared_ess_p_up = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=0.0)
             model.slack_expected_shared_ess_p_down = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=0.0)
             model.slack_expected_shared_ess_q_up = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=0.0)
             model.slack_expected_shared_ess_q_down = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-            model.slack_expected_shared_ess_s_up = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-            model.slack_expected_shared_ess_s_down = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=0.0)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
@@ -913,11 +907,9 @@ def _build_model(network, params):
                     if params.slacks:
                         model.expected_shared_ess_power.add(model.expected_shared_ess_p[e, p] == expected_sess_p + model.slack_expected_shared_ess_p_up[e, p] - model.slack_expected_shared_ess_p_down[e, p])
                         model.expected_shared_ess_power.add(model.expected_shared_ess_q[e, p] == expected_sess_q + model.slack_expected_shared_ess_q_up[e, p] - model.slack_expected_shared_ess_q_down[e, p])
-                        model.expected_shared_ess_power.add(model.expected_shared_ess_s[e, p] == expected_sess_s + model.slack_expected_shared_ess_s_up[e, p] - model.slack_expected_shared_ess_s_down[e, p])
                     else:
                         model.expected_shared_ess_power.add(model.expected_shared_ess_p[e, p] == expected_sess_p)
                         model.expected_shared_ess_power.add(model.expected_shared_ess_q[e, p] == expected_sess_q)
-                        model.expected_shared_ess_power.add(model.expected_shared_ess_s[e, p] == expected_sess_s)
         else:
             shared_ess_idx = network.get_shared_energy_storage_idx(ref_node_id)
             for p in model.periods:
@@ -940,11 +932,9 @@ def _build_model(network, params):
                 if params.slacks:
                     model.expected_shared_ess_power.add(model.expected_shared_ess_p[p] == expected_sess_p + model.slack_expected_shared_ess_p_up[p] - model.slack_expected_shared_ess_p_down[p])
                     model.expected_shared_ess_power.add(model.expected_shared_ess_q[p] == expected_sess_q + model.slack_expected_shared_ess_q_up[p] - model.slack_expected_shared_ess_q_down[p])
-                    model.expected_shared_ess_power.add(model.expected_shared_ess_s[p] == expected_sess_s + model.slack_expected_shared_ess_s_up[p] - model.slack_expected_shared_ess_s_down[p])
                 else:
                     model.expected_shared_ess_power.add(model.expected_shared_ess_p[p] == expected_sess_p)
                     model.expected_shared_ess_power.add(model.expected_shared_ess_q[p] == expected_sess_q)
-                    model.expected_shared_ess_power.add(model.expected_shared_ess_s[p] == expected_sess_s)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective Function
@@ -1052,7 +1042,6 @@ def _build_model(network, params):
             for p in model.periods:
                 slack_p = model.slack_expected_shared_ess_p_up[e, p] + model.slack_expected_shared_ess_p_down[e, p]
                 slack_q = model.slack_expected_shared_ess_q_up[e, p] + model.slack_expected_shared_ess_q_down[e, p]
-                slack_s = model.slack_expected_shared_ess_s_up[e, p] + model.slack_expected_shared_ess_s_down[e, p]
                 obj += PENALTY_SLACK * (slack_p + slack_q + slack_s)
     else:
         for p in model.periods:
@@ -1062,7 +1051,6 @@ def _build_model(network, params):
             obj += PENALTY_SLACK * (slack_vmag + slack_p + slack_q)
             slack_p_ess = model.slack_expected_shared_ess_p_up[p] + model.slack_expected_shared_ess_p_down[p]
             slack_q_ess = model.slack_expected_shared_ess_q_up[p] + model.slack_expected_shared_ess_q_down[p]
-            slack_s_ess = model.slack_expected_shared_ess_s_up[p] + model.slack_expected_shared_ess_s_down[p]
             obj += PENALTY_SLACK * (slack_p_ess + slack_q_ess + slack_s_ess)
 
     # Operation slacks
@@ -2000,21 +1988,15 @@ def _process_results(network, model, params, results=dict()):
             processed_results['relaxation_slacks']['interface']['ess_p_down'][node_id] = []
             processed_results['relaxation_slacks']['interface']['ess_q_up'][node_id] = []
             processed_results['relaxation_slacks']['interface']['ess_q_down'][node_id] = []
-            processed_results['relaxation_slacks']['interface']['ess_s_up'][node_id] = []
-            processed_results['relaxation_slacks']['interface']['ess_s_down'][node_id] = []
             for p in model.periods:
                 p_up = pe.value(model.slack_expected_shared_ess_p_up[e, p])
                 p_down = pe.value(model.slack_expected_shared_ess_p_down[e, p])
                 q_up = pe.value(model.slack_expected_shared_ess_q_up[e, p])
                 q_down = pe.value(model.slack_expected_shared_ess_q_down[e, p])
-                s_up = pe.value(model.slack_expected_shared_ess_s_up[e, p])
-                s_down = pe.value(model.slack_expected_shared_ess_s_down[e, p])
                 processed_results['relaxation_slacks']['interface']['ess_p_up'][node_id].append(p_up)
                 processed_results['relaxation_slacks']['interface']['ess_p_down'][node_id].append(p_down)
                 processed_results['relaxation_slacks']['interface']['ess_q_up'][node_id].append(q_up)
                 processed_results['relaxation_slacks']['interface']['ess_q_down'][node_id].append(q_down)
-                processed_results['relaxation_slacks']['interface']['ess_s_up'][node_id].append(s_up)
-                processed_results['relaxation_slacks']['interface']['ess_s_down'][node_id].append(s_down)
     else:
         node_id = network.get_reference_node_id()
         processed_results['relaxation_slacks']['interface']['vmag_up'][node_id] = []
@@ -2028,8 +2010,6 @@ def _process_results(network, model, params, results=dict()):
         processed_results['relaxation_slacks']['interface']['ess_p_down'][node_id] = []
         processed_results['relaxation_slacks']['interface']['ess_q_up'][node_id] = []
         processed_results['relaxation_slacks']['interface']['ess_q_down'][node_id] = []
-        processed_results['relaxation_slacks']['interface']['ess_s_up'][node_id] = []
-        processed_results['relaxation_slacks']['interface']['ess_s_down'][node_id] = []
         for p in model.periods:
             vmag_up = pe.value(model.slack_expected_interface_vmag_sqr_up[p])
             vmag_down = pe.value(model.slack_expected_interface_vmag_sqr_down[p])
@@ -2041,8 +2021,6 @@ def _process_results(network, model, params, results=dict()):
             ess_p_down = pe.value(model.slack_expected_shared_ess_p_down[p])
             ess_q_up = pe.value(model.slack_expected_shared_ess_q_up[p])
             ess_q_down = pe.value(model.slack_expected_shared_ess_q_down[p])
-            ess_s_up = pe.value(model.slack_expected_shared_ess_s_up[p])
-            ess_s_down = pe.value(model.slack_expected_shared_ess_s_down[p])
             processed_results['relaxation_slacks']['interface']['vmag_up'][node_id].append(vmag_up)
             processed_results['relaxation_slacks']['interface']['vmag_down'][node_id].append(vmag_down)
             processed_results['relaxation_slacks']['interface']['pf_p_up'][node_id].append(pf_p_up)
