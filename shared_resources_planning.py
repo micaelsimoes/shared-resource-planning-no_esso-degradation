@@ -554,11 +554,8 @@ def _update_previous_consensus_variables(planning_problem, consensus_vars):
                     consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['q'][p] = copy(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p])
                     consensus_vars['ess']['tso']['prev'][node_id][year][day]['p'][p] = copy(consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p])
                     consensus_vars['ess']['tso']['prev'][node_id][year][day]['q'][p] = copy(consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p])
-                    consensus_vars['ess']['tso']['prev'][node_id][year][day]['s'][p] = copy(consensus_vars['ess']['tso']['current'][node_id][year][day]['s'][p])
                     consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p] = copy(consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p])
                     consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p] = copy(consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p])
-                    consensus_vars['ess']['dso']['prev'][node_id][year][day]['s'][p] = copy(consensus_vars['ess']['dso']['current'][node_id][year][day]['s'][p])
-                    consensus_vars['ess']['esso']['prev'][node_id][year][day]['s'][p] = copy(consensus_vars['ess']['esso']['current'][node_id][year][day]['s'][p])
 
 
 def _update_interface_power_flow_variables(planning_problem, tso_model, dso_models, interface_vars, dual_vars, params):
