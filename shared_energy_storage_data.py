@@ -341,7 +341,7 @@ def _build_subproblem_model(shared_ess_data):
                 for d in model.days:
                     for p in model.periods:
                         slack_penalty += PENALTY_SLACK * (model.slack_es_snet_up[e, y_inv, d, p] + model.slack_es_snet_down[e, y_inv, d, p])
-                        slack_penalty += PENALTY_SLACK * (model.slack_es_snet_def_up[e, y, d, p] + model.slack_es_snet_def_down[e, y, d, p])
+                        slack_penalty += PENALTY_SLACK * (model.slack_es_snet_def_up[e, y_inv, d, p] + model.slack_es_snet_def_down[e, y_inv, d, p])
 
     model.objective = pe.Objective(sense=pe.minimize, expr=slack_penalty)
 
