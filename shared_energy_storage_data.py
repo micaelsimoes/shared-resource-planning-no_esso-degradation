@@ -137,8 +137,12 @@ class SharedEnergyStorageData:
         _write_ess_capacity_investment_to_excel(self, workbook, shared_ess_capacity['investment'], initial_sheet=False)
         _write_ess_capacity_rated_available_to_excel(self, workbook, shared_ess_capacity)
 
-    def write_operation_relaxation_slacks_results_to_excel(self, workbook, results):
-        _write_detailed_operation_relaxation_slacks_results_to_excel(self, workbook, results['detailed'])
+    def write_relaxation_slacks_results_to_excel(self, workbook, results):
+        _write_investment_relaxation_slacks_results_to_excel(self, workbook, results['relaxation_variables']['investment'])
+        if self.params.slacks:
+            _write_detailed_degradation_relaxation_slacks_results_to_excel(self, workbook, results['relaxation_variables']['degradation']['detailed'])
+            _write_aggregated_operation_relaxation_slacks_results_to_excel(self, workbook, results['relaxation_variables']['operation']['aggregated'])
+            _write_detailed_operation_relaxation_slacks_results_to_excel(self, workbook, results['relaxation_variables']['operation']['detailed'])
 
 
 # ======================================================================================================================
@@ -825,11 +829,7 @@ def _write_optimization_results_to_excel(shared_ess_data, data_dir, results):
     _write_detailed_shared_energy_storage_operation_results_to_excel(shared_ess_data, wb, results['operation']['detailed'])
     _write_aggregated_shared_energy_storage_soh_results_to_excel(shared_ess_data, wb, results['soh']['aggregated'])
     _write_detailed_shared_energy_storage_soh_results_to_excel(shared_ess_data, wb, results['soh']['detailed'])
-    _write_investment_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['investment'])
-    if shared_ess_data.params.slacks:
-        _write_detailed_degradation_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['degradation']['detailed'])
-        _write_aggregated_operation_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['operation']['aggregated'])
-        _write_detailed_operation_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['operation']['detailed'])
+    shared_ess_data.write_relaxation_slacks_results_to_excel(wb, results['relaxation_variables'])
 
     results_filename = os.path.join(data_dir, f'{shared_ess_data.name}_shared_ess_results.xlsx')
     try:
