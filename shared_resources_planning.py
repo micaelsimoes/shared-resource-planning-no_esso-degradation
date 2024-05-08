@@ -651,8 +651,10 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
             for d in sess_model.days:
                 day = repr_days[d]
                 for p in sess_model.periods:
-                    s_req = pe.value(sess_model.es_snet[shared_ess_idx, y, d, p])
-                    shared_ess_vars['esso']['current'][node_id][year][day]['s'][p] = min(max(s_req, -s_max), s_max)
+                    p_req = pe.value(sess_model.es_pnet[shared_ess_idx, y, d, p])
+                    q_req = pe.value(sess_model.es_qnet[shared_ess_idx, y, d, p])
+                    shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] = min(max(p_req, -s_max), s_max)
+                    shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] = min(max(q_req, -s_max), s_max)
 
         # Power requested by TSO
         for y in range(len(repr_years)):
@@ -665,10 +667,8 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                 for p in tso_model[year][day].periods:
                     p_req = pe.value(tso_model[year][day].expected_shared_ess_p[shared_ess_idx, p]) * s_base
                     q_req = pe.value(tso_model[year][day].expected_shared_ess_q[shared_ess_idx, p]) * s_base
-                    s_req = pe.value(tso_model[year][day].expected_shared_ess_s[shared_ess_idx, p]) * s_base
                     shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] = min(max(p_req, -s_max), s_max)
                     shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] = min(max(q_req, -s_max), s_max)
-                    shared_ess_vars['tso']['current'][node_id][year][day]['s'][p] = min(max(s_req, -s_max), s_max)
 
         # Power requested by DSO
         for y in range(len(repr_years)):
@@ -682,10 +682,8 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                 for p in dso_model[year][day].periods:
                     p_req = pe.value(dso_model[year][day].expected_shared_ess_p[p]) * s_base
                     q_req = pe.value(dso_model[year][day].expected_shared_ess_q[p]) * s_base
-                    s_req = pe.value(dso_model[year][day].expected_shared_ess_s[p]) * s_base
                     shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] = min(max(p_req, -s_max), s_max)
                     shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] = min(max(q_req, -s_max), s_max)
-                    shared_ess_vars['dso']['current'][node_id][year][day]['s'][p] = min(max(s_req, -s_max), s_max)
 
         # Update dual variables Shared ESS
         for year in planning_problem.years:
@@ -694,37 +692,35 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
 
                     error_p_tso_dso = shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['p'][p]
                     error_q_tso_dso = shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['q'][p]
-                    error_s_tso_esso = shared_ess_vars['tso']['current'][node_id][year][day]['s'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['s'][p]
                     error_p_dso_tso = shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['p'][p]
                     error_q_dso_tso = shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['q'][p]
-                    error_s_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['s'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['s'][p]
-                    error_s_esso_tso = shared_ess_vars['esso']['current'][node_id][year][day]['s'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['s'][p]
-                    error_s_esso_dso = shared_ess_vars['esso']['current'][node_id][year][day]['s'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['s'][p]
+                    error_p_esso_tso = shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['p'][p]
+                    error_q_esso_tso = shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['q'][p]
+                    error_p_esso_dso = shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['p'][p]
+                    error_q_esso_dso = shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['q'][p]
 
                     error_p_tso_prev = shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['tso']['prev'][node_id][year][day]['p'][p]
                     error_q_tso_prev = shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['tso']['prev'][node_id][year][day]['q'][p]
-                    error_s_tso_prev = shared_ess_vars['tso']['current'][node_id][year][day]['s'][p] - shared_ess_vars['tso']['prev'][node_id][year][day]['s'][p]
                     error_p_dso_prev = shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['dso']['prev'][node_id][year][day]['p'][p]
                     error_q_dso_prev = shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['dso']['prev'][node_id][year][day]['q'][p]
-                    error_s_dso_prev = shared_ess_vars['dso']['current'][node_id][year][day]['s'][p] - shared_ess_vars['dso']['prev'][node_id][year][day]['s'][p]
-                    error_s_esso_prev = shared_ess_vars['esso']['current'][node_id][year][day]['s'][p] - shared_ess_vars['esso']['prev'][node_id][year][day]['s'][p]
+                    error_p_esso_prev = shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['esso']['prev'][node_id][year][day]['p'][p]
+                    error_q_esso_prev = shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['esso']['prev'][node_id][year][day]['q'][p]
 
                     dual_vars['tso']['current'][node_id][year][day]['p'][p] += params.rho['ess'][transmission_network.name] * error_p_tso_dso
                     dual_vars['tso']['current'][node_id][year][day]['q'][p] += params.rho['ess'][transmission_network.name] * error_q_tso_dso
-                    dual_vars['tso']['current'][node_id][year][day]['s'][p] += params.rho['ess'][transmission_network.name] * error_s_tso_esso
                     dual_vars['dso']['current'][node_id][year][day]['p'][p] += params.rho['ess'][distribution_network.name] * error_p_dso_tso
                     dual_vars['dso']['current'][node_id][year][day]['q'][p] += params.rho['ess'][distribution_network.name] * error_q_dso_tso
-                    dual_vars['dso']['current'][node_id][year][day]['s'][p] += params.rho['ess'][distribution_network.name] * error_s_dso_esso
-                    dual_vars['esso']['current']['tso'][node_id][year][day]['s'][p] += params.rho['ess']['esso'] * error_s_esso_tso
-                    dual_vars['esso']['current']['dso'][node_id][year][day]['s'][p] += params.rho['ess']['esso'] * error_s_esso_dso
+                    dual_vars['esso']['current']['tso'][node_id][year][day]['p'][p] += params.rho['ess']['esso'] * error_p_esso_tso
+                    dual_vars['esso']['current']['tso'][node_id][year][day]['q'][p] += params.rho['ess']['esso'] * error_q_esso_tso
+                    dual_vars['esso']['current']['dso'][node_id][year][day]['p'][p] += params.rho['ess']['esso'] * error_p_esso_dso
+                    dual_vars['esso']['current']['dso'][node_id][year][day]['q'][p] += params.rho['ess']['esso'] * error_q_esso_dso
 
                     dual_vars['tso']['prev'][node_id][year][day]['p'][p] += params.rho['ess'][transmission_network.name] * error_p_tso_prev
                     dual_vars['tso']['prev'][node_id][year][day]['q'][p] += params.rho['ess'][transmission_network.name] * error_q_tso_prev
-                    dual_vars['tso']['prev'][node_id][year][day]['s'][p] += params.rho['ess'][transmission_network.name] * error_s_tso_prev
                     dual_vars['dso']['prev'][node_id][year][day]['p'][p] += params.rho['ess'][distribution_network.name] * error_p_dso_prev
                     dual_vars['dso']['prev'][node_id][year][day]['q'][p] += params.rho['ess'][distribution_network.name] * error_q_dso_prev
-                    dual_vars['dso']['prev'][node_id][year][day]['s'][p] += params.rho['ess'][distribution_network.name] * error_s_dso_prev
-                    dual_vars['esso']['prev'][node_id][year][day]['s'][p] += params.rho['ess']['esso'] * error_s_esso_prev
+                    dual_vars['esso']['prev'][node_id][year][day]['p'][p] += params.rho['ess']['esso'] * error_p_esso_prev
+                    dual_vars['esso']['prev'][node_id][year][day]['q'][p] += params.rho['ess']['esso'] * error_q_esso_prev
 
 
 def check_admm_convergence(planning_problem, consensus_vars, params):
