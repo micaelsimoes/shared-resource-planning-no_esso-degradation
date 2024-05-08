@@ -1603,7 +1603,7 @@ def _write_operational_planning_results_to_excel(planning_problem, results, prim
     _write_network_branch_results_to_excel(planning_problem, wb, results, 'current_perc')
     _write_network_branch_power_flow_results_to_excel(planning_problem, wb, results)
     _write_network_energy_storages_results_to_excel(planning_problem, wb, results)
-    planning_problem.shared_ess_data.write_relaxation_slacks_results_to_excel(wb, results['esso']['relaxation_variables'])
+    planning_problem.shared_ess_data.write_relaxation_slacks_results_to_excel(wb, results['esso'])
 
     # Save results
     try:
