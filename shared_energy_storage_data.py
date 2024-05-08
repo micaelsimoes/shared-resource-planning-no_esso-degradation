@@ -78,6 +78,8 @@ class SharedEnergyStorageData:
         results['relaxation_variables'] = dict()
         results['relaxation_variables']['investment'] = self.process_relaxation_variables_investment(model)
         if self.params.slacks:
+            results['relaxation_variables']['degradation'] = dict()
+            results['relaxation_variables']['degradation']['detailed'] = self.process_relaxation_variables_degradation_detailed(model)
             results['relaxation_variables']['operation'] = dict()
             results['relaxation_variables']['operation']['aggregated'] = self.process_relaxation_variables_operation_aggregated(model)
             results['relaxation_variables']['operation']['detailed'] = self.process_relaxation_variables_operation_detailed(model)
@@ -97,6 +99,9 @@ class SharedEnergyStorageData:
 
     def process_relaxation_variables_investment(self, model):
         return _process_relaxation_variables_investment(self, model)
+
+    def process_relaxation_variables_degradation_detailed(self, model):
+        return _process_relaxation_variables_degradation_detailed(self, model)
 
     def process_relaxation_variables_operation_aggregated(self, model):
         return _process_relaxation_variables_operation_aggregated(self, model)
@@ -658,7 +663,7 @@ def _process_soh_results_detailed(shared_ess_data, model):
                 processed_results[year_inv][year_curr]['soh_unit'][node_id] = soh_unit
                 processed_results[year_inv][year_curr]['degradation_unit'][node_id] = degradation_unit
                 processed_results[year_inv][year_curr]['soh_cumul'][node_id] = soh_cumul
-                processed_results[year_inv][year_curr]['degradation_cumul'][node_id] = soh_cumul
+                processed_results[year_inv][year_curr]['degradation_cumul'][node_id] = degradation_cumul
 
     return processed_results
 
@@ -678,6 +683,29 @@ def _process_relaxation_variables_investment(shared_ess_data, model):
             processed_results[year_inv][node_id]['s_down'] = pe.value(model.es_s_investment_slack_down[e, y_inv])
             processed_results[year_inv][node_id]['e_up'] = pe.value(model.es_e_investment_slack_up[e, y_inv])
             processed_results[year_inv][node_id]['e_down'] = pe.value(model.es_e_investment_slack_down[e, y_inv])
+
+    return processed_results
+
+
+def _process_relaxation_variables_degradation_detailed(shared_ess_data, model):
+
+    processed_results = dict()
+    repr_years = [year for year in shared_ess_data.years]
+
+    for y_inv in model.years:
+        year_inv = repr_years[y_inv]
+        processed_results[year_inv] = dict()
+        for y_curr in model.years:
+            year_curr = repr_years[y_curr]
+            processed_results[year_inv][year_curr] = {
+                'degradation_up': dict(), 'degradation_down': dict()
+            }
+            for e in model.energy_storages:
+                node_id = shared_ess_data.shared_energy_storages[year_curr][e].bus
+                degradation_up = pe.value(model.slack_es_degradation_per_unit_up[e, y_inv, y_curr])
+                degradation_down = pe.value(model.slack_es_degradation_per_unit_down[e, y_inv, y_curr])
+                processed_results[year_inv][year_curr]['degradation_up'][node_id] = degradation_up
+                processed_results[year_inv][year_curr]['degradation_down'][node_id] = degradation_down
 
     return processed_results
 
@@ -799,6 +827,7 @@ def _write_optimization_results_to_excel(shared_ess_data, data_dir, results):
     _write_detailed_shared_energy_storage_soh_results_to_excel(shared_ess_data, wb, results['soh']['detailed'])
     _write_investment_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['investment'])
     if shared_ess_data.params.slacks:
+        _write_detailed_degradation_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['degradation']['detailed'])
         _write_aggregated_operation_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['operation']['aggregated'])
         _write_detailed_operation_relaxation_slacks_results_to_excel(shared_ess_data, wb, results['relaxation_variables']['operation']['detailed'])
 
@@ -1320,6 +1349,43 @@ def _write_investment_relaxation_slacks_results_to_excel(shared_ess_data, workbo
             sheet.cell(row=row_idx, column=4).value = results[year_inv][node_id]['e_down']
             sheet.cell(row=row_idx, column=4).number_format = decimal_style
             row_idx = row_idx + 1
+
+
+def _write_detailed_degradation_relaxation_slacks_results_to_excel(shared_ess_data, workbook, results):
+
+    sheet = workbook.create_sheet('Slacks degradation, detailed')
+
+    row_idx = 1
+    decimal_style = '0.00'
+
+    # Write Header
+    sheet.cell(row=row_idx, column=1).value = 'Node ID'
+    sheet.cell(row=row_idx, column=2).value = 'Year Investment'
+    sheet.cell(row=row_idx, column=3).value = 'Year Current'
+    sheet.cell(row=row_idx, column=4).value = 'Quantity'
+    sheet.cell(row=row_idx, column=5).value = 'Value'
+
+    for node_id in shared_ess_data.active_distribution_network_nodes:
+        for year_inv in results:
+            for year_curr in results[year_inv]:
+
+                # - Degradation per unit, up
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'Degradation unit, up'
+                sheet.cell(row=row_idx, column=5).value = results[year_inv][year_curr]['degradation_up'][node_id]
+                sheet.cell(row=row_idx, column=5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - Degradation per unit, down
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'Degradation unit, down'
+                sheet.cell(row=row_idx, column=5).value = results[year_inv][year_curr]['degradation_down'][node_id]
+                sheet.cell(row=row_idx, column=5).number_format = decimal_style
+                row_idx = row_idx + 1
 
 
 def _write_aggregated_operation_relaxation_slacks_results_to_excel(shared_ess_data, workbook, results):
