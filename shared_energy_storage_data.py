@@ -170,6 +170,9 @@ def _build_subproblem_model(shared_ess_data):
     model.es_s_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_snet = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals, initialize=0.0)
+    if shared_ess_data.params.slacks:
+        model.slack_es_snet_up = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_es_snet_down = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
 
     model.es_s_rated_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_rated_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
@@ -301,7 +304,10 @@ def _build_subproblem_model(shared_ess_data):
                     agg_snet = 0.00
                     for y_inv in model.years:
                         agg_snet += (model.es_sch_per_unit[e, y_inv, y, d, p] - model.es_sdch_per_unit[e, y_inv, y, d, p])
-                    model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] == agg_snet)
+                    if shared_ess_data.params.slacks:
+                        model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] == agg_snet + model.slack_es_snet_up[e, y, d, p] - model.slack_es_snet_down[e, y, d, p])
+                    else:
+                        model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] == agg_snet)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective function
@@ -320,6 +326,11 @@ def _build_subproblem_model(shared_ess_data):
                     for d in model.days:
                         for p in model.periods:
                             slack_penalty += PENALTY_SLACK * (model.slack_es_ch_comp_per_unit[e, y_inv, y, d, p])
+
+                # Expected power slacks
+                for d in model.days:
+                    for p in model.periods:
+                        slack_penalty += PENALTY_SLACK * (model.slack_es_snet_up[e, y_inv, d, p] + model.slack_es_snet_down[e, y_inv, d, p])
 
     model.objective = pe.Objective(sense=pe.minimize, expr=slack_penalty)
 
