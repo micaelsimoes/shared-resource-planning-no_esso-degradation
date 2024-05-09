@@ -152,18 +152,17 @@ class SharedEnergyStorageData:
 # ======================================================================================================================
 #  MASTER PROBLEM  functions
 # ======================================================================================================================
-def _build_master_problem(planning_problem):
+def _build_master_problem(shared_ess_data):
 
-    shared_ess_data = planning_problem.shared_ess_data
-    years = [year for year in planning_problem.years]
+    years = [year for year in shared_ess_data.years]
 
     model = pe.ConcreteModel()
     model.name = "ESS Optimization -- Benders' Master Problem"
 
     # ------------------------------------------------------------------------------------------------------------------
     # Sets
-    model.years = range(len(planning_problem.years))
-    model.energy_storages = range(len(planning_problem.active_distribution_network_nodes))
+    model.years = range(len(shared_ess_data.years))
+    model.energy_storages = range(len(shared_ess_data.active_distribution_network_nodes))
 
     # ------------------------------------------------------------------------------------------------------------------
     # Decision variables
