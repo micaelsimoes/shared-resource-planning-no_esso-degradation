@@ -1705,8 +1705,28 @@ def _write_planning_results_to_excel(planning_problem, results, bound_evolution=
     _write_operational_planning_main_info_to_excel(planning_problem, wb, results)
     _write_shared_ess_specifications(wb, planning_problem.shared_ess_data)
 
+    if bound_evolution:
+        _write_bound_evolution_to_excel(wb, bound_evolution)
+
     if shared_ess_capacity:
         planning_problem.shared_ess_data.write_ess_results_to_excel(wb, shared_ess_capacity)
+
+    # Interface Power Flow
+    _write_interface_results_to_excel(planning_problem, wb, results['interface'])
+
+    # Shared Energy Storages results
+    _write_shared_energy_storages_results_to_excel(planning_problem, wb, results)
+
+    #  TSO and DSOs' results
+    _write_network_voltage_results_to_excel(planning_problem, wb, results)
+    _write_network_consumption_results_to_excel(planning_problem, wb, results)
+    _write_network_generation_results_to_excel(planning_problem, wb, results)
+    _write_network_branch_results_to_excel(planning_problem, wb, results, 'losses')
+    _write_network_branch_results_to_excel(planning_problem, wb, results, 'ratio')
+    _write_network_branch_results_to_excel(planning_problem, wb, results, 'current_perc')
+    _write_network_branch_power_flow_results_to_excel(planning_problem, wb, results)
+    _write_network_energy_storages_results_to_excel(planning_problem, wb, results)
+    planning_problem.shared_ess_data.write_relaxation_slacks_results_to_excel(wb, results['esso'])
 
     # Save results
     try:
@@ -1718,6 +1738,43 @@ def _write_planning_results_to_excel(planning_problem, results, bound_evolution=
         backup_filename = f"{filename.replace('.xlsx', '')}_{current_time}.xlsx"
         print(f"[WARNING] Results saved to file {backup_filename}.xlsx")
         wb.save(backup_filename)
+
+
+def _write_bound_evolution_to_excel(workbook, bound_evolution):
+
+    sheet = workbook.create_sheet('Convergence Characteristic')
+
+    lower_bound = bound_evolution['lower_bound']
+    upper_bound = bound_evolution['upper_bound']
+    num_lines = max(len(upper_bound), len(lower_bound))
+
+    num_style = '0.00'
+
+    # Write header
+    line_idx = 1
+    sheet.cell(row=line_idx, column=1).value = 'Iteration'
+    sheet.cell(row=line_idx, column=2).value = 'Lower Bound, [NPV Mm.u.]'
+    sheet.cell(row=line_idx, column=3).value = 'Upper Bound, [NPV Mm.u.]'
+
+    # Iterations
+    line_idx = 2
+    for i in range(num_lines):
+        sheet.cell(row=line_idx, column=1).value = i
+        line_idx += 1
+
+    # Lower bound
+    line_idx = 2
+    for value in lower_bound:
+        sheet.cell(row=line_idx, column=2).value = value / 1e6
+        sheet.cell(row=line_idx, column=2).number_format = num_style
+        line_idx += 1
+
+    # Upper bound
+    line_idx = 2
+    for value in upper_bound:
+        sheet.cell(row=line_idx, column=3).value = value / 1e6
+        sheet.cell(row=line_idx, column=3).number_format = num_style
+        line_idx += 1
 
 
 # ======================================================================================================================
