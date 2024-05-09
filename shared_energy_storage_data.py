@@ -649,6 +649,7 @@ def _process_relaxation_variables_operation_aggregated(shared_ess_data, model):
 
     return processed_results
 
+
 def _process_relaxation_variables_operation_detailed(shared_ess_data, model):
 
     processed_results = dict()
