@@ -158,6 +158,12 @@ def _run_planning_problem(planning_problem):
         lower_bound = pe.value(master_problem_model.alpha)
         lower_bound_evolution.append(lower_bound)
 
+        #  - Convergence check
+        if isclose(upper_bound, lower_bound, abs_tol=benders_parameters.tol_abs, rel_tol=benders_parameters.tol_rel) or lower_bound > upper_bound:
+            lower_bound_evolution.append(lower_bound)
+            convergence = True
+            break
+
         from_warm_start = True
 
     if not convergence:
