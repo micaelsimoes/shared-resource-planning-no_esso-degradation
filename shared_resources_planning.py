@@ -120,6 +120,14 @@ def _run_planning_problem(planning_problem):
     master_problem_model = planning_problem.build_master_problem()
     shared_ess_data.optimize(master_problem_model)
 
+    # Benders' main cycle
+    while iter < benders_parameters.num_max_iters and not convergence:
+
+        print(f'=============================================== ITERATION #{iter} ==============================================')
+        print(f'[INFO] Iter {iter}. LB = {lower_bound}, UB = {upper_bound}')
+
+        _print_candidate_solution(candidate_solution)
+
 
 # ======================================================================================================================
 #  MASTER PROBLEM  functions
@@ -4688,3 +4696,26 @@ def _add_shared_energy_storage_to_distribution_network(planning_problem):
                 shared_energy_storage.e = shared_energy_storage.e / s_base
                 planning_problem.distribution_networks[node_id].network[year][day].shared_energy_storages.append(shared_energy_storage)
 
+
+def _print_candidate_solution(candidate_solution):
+
+    print('[INFO] Candidate solution:')
+
+    # Header
+    print('\t\t{:3}\t{:10}\t'.format('', 'Capacity'), end='')
+    for node_id in candidate_solution['total_capacity']:
+        for year in candidate_solution['total_capacity'][node_id]:
+            print(f'{year}\t', end='')
+        print()
+        break
+
+    # Values
+    for node_id in candidate_solution['total_capacity']:
+        print('\t\t{:3}\t{:10}\t'.format(node_id, 'S, [MVA]'), end='')
+        for year in candidate_solution['total_capacity'][node_id]:
+            print("{:.3f}\t".format(candidate_solution['total_capacity'][node_id][year]['s']), end='')
+        print()
+        print('\t\t{:3}\t{:10}\t'.format(node_id, 'E, [MVAh]'), end='')
+        for year in candidate_solution['total_capacity'][node_id]:
+            print("{:.3f}\t".format(candidate_solution['total_capacity'][node_id][year]['e']), end='')
+        print()
