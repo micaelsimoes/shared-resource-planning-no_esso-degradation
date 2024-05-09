@@ -240,6 +240,13 @@ def _build_master_problem(shared_ess_data):
     obj = investment_cost + model.alpha
     model.objective = pe.Objective(sense=pe.minimize, expr=obj)
 
+    # Define that we want the duals
+    model.ipopt_zL_out = pe.Suffix(direction=pe.Suffix.IMPORT)  # Ipopt bound multipliers (obtained from solution)
+    model.ipopt_zU_out = pe.Suffix(direction=pe.Suffix.IMPORT)
+    model.ipopt_zL_in = pe.Suffix(direction=pe.Suffix.EXPORT)  # Ipopt bound multipliers (sent to solver)
+    model.ipopt_zU_in = pe.Suffix(direction=pe.Suffix.EXPORT)
+    model.dual = pe.Suffix(direction=pe.Suffix.IMPORT_EXPORT)
+
     return model
 
 
