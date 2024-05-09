@@ -65,6 +65,9 @@ class SharedResourcesPlanning:
     def build_master_problem(self):
         return _build_master_problem(self)
 
+    def get_upper_bound(self, model):
+        return _get_upper_bound(self, model)
+
     def update_admm_consensus_variables(self, tso_model, dso_models, esso_model, consensus_vars, dual_vars, params):
         _update_admm_consensus_variables(self, tso_model, dso_models, esso_model, consensus_vars, dual_vars, params)
 
@@ -128,7 +131,6 @@ def _run_planning_problem(planning_problem):
 
         _print_candidate_solution(candidate_solution)
 
-        '''
         # 1. Subproblem
         # 1.1. Solve operational planning, with fixed investment variables,
         # 1.2. Get coupling constraints' sensitivities (subproblem)
@@ -136,7 +138,7 @@ def _run_planning_problem(planning_problem):
         operational_results, lower_level_models, sensitivities, _ = planning_problem.run_operational_planning(candidate_solution, print_results=False)
         upper_bound = planning_problem.get_upper_bound(lower_level_models['tso'])
         upper_bound_evolution.append(upper_bound)
-        '''
+
 
 
         iter += 1
@@ -156,6 +158,21 @@ def _run_planning_problem(planning_problem):
     print('[INFO] Execution time: {:.2f} s'.format(total_execution_time))
     bound_evolution = {'lower_bound': lower_bound_evolution, 'upper_bound': upper_bound_evolution}
     planning_problem.write_planning_results_to_excel(lower_level_models, operational_results, bound_evolution, execution_time=total_execution_time)
+
+
+def _get_upper_bound(planning_problem, model):
+    upper_bound = 0.00
+    years = [year for year in planning_problem.years]
+    for year in planning_problem.years:
+        num_years = planning_problem.years[year]
+        annualization = 1 / ((1 + planning_problem.discount_factor) ** (int(year) - int(years[0])))
+        for day in planning_problem.days:
+            num_days = planning_problem.days[day]
+            network = planning_problem.transmission_network.network[year][day]
+            params = planning_problem.transmission_network.params
+            obj_repr_day = network.compute_objective_function_value(model[year][day], params)
+            upper_bound += num_days * num_years * annualization * obj_repr_day
+    return upper_bound
 
 
 # ======================================================================================================================
@@ -251,6 +268,10 @@ def _build_master_problem(planning_problem):
     model.objective = pe.Objective(sense=pe.minimize, expr=obj)
 
     return model
+
+
+
+
 
 
 # ======================================================================================================================
