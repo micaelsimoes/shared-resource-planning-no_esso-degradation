@@ -128,6 +128,13 @@ def _run_planning_problem(planning_problem):
 
         _print_candidate_solution(candidate_solution)
 
+        # 1. Subproblem
+        # 1.1. Solve operational planning, with fixed investment variables,
+        # 1.2. Get coupling constraints' sensitivities (subproblem)
+        # 1.3. Get OF value (upper bound) from the subproblem
+        operational_results, lower_level_models, sensitivities, _ = planning_problem.run_operational_planning(candidate_solution, print_results=False)
+        upper_bound = planning_problem.get_upper_bound(lower_level_models['tso'])
+        upper_bound_evolution.append(upper_bound)
 
 
         iter += 1
@@ -4665,11 +4672,13 @@ def _get_initial_candidate_solution(planning_problem):
             candidate_solution['total_capacity'][node_id][year] = dict()
             candidate_solution['total_capacity'][node_id][year]['s'] = 0.00
             candidate_solution['total_capacity'][node_id][year]['e'] = 0.00
+            '''
             if year == 2024 or year == 2044:
                 candidate_solution['investment'][node_id][year]['s'] = 1.00
                 candidate_solution['investment'][node_id][year]['e'] = 1.00
             candidate_solution['total_capacity'][node_id][year]['s'] = 1.00
             candidate_solution['total_capacity'][node_id][year]['e'] = 1.00
+            '''
     return candidate_solution
 
 
