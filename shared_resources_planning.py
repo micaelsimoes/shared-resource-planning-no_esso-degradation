@@ -118,6 +118,7 @@ def _run_planning_problem(planning_problem):
 
     start = time.time()
     master_problem_model = planning_problem.build_master_problem()
+    shared_ess_data.optimize(master_problem_model)
 
 
 # ======================================================================================================================
