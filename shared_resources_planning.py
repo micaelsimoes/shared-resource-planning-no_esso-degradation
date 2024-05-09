@@ -152,6 +152,7 @@ def _run_planning_problem(planning_problem):
         # 2.2. Run master problem optimization
         # 2.3. Get new capacity values, and the value of alpha (lower bound)
         planning_problem.add_benders_cut(master_problem_model, upper_bound, sensitivities, candidate_solution)
+        print(sensitivities)
         shared_ess_data.optimize(master_problem_model, from_warm_start=from_warm_start)
         candidate_solution = shared_ess_data.get_candidate_solution(master_problem_model)
         lower_bound = pe.value(master_problem_model.alpha)
