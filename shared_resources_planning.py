@@ -43,6 +43,10 @@ class SharedResourcesPlanning:
         self.active_distribution_network_nodes = list()
         self.params = PlanningParameters()
 
+    def run_planning_problem(self):
+        print('[INFO] Running PLANNING PROBLEM...')
+        _run_planning_problem(self)
+
     def run_operational_planning(self, candidate_solution=dict(), print_results=False, debug_flag=False):
         print('[INFO] Running OPERATIONAL PLANNING...')
         if not candidate_solution:
@@ -88,6 +92,26 @@ class SharedResourcesPlanning:
 
     def plot_diagram(self):
         _plot_networkx_diagram(self)
+
+
+# ======================================================================================================================
+#  PLANNING functions
+# ======================================================================================================================
+def _run_planning_problem(planning_problem):
+
+    shared_ess_data = planning_problem.shared_ess_data
+    shared_ess_parameters = shared_ess_data.params
+    benders_parameters = planning_problem.params.benders
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # 0. Initialization
+    iter = 1
+    convergence = False
+    lower_bound = -1e12
+    upper_bound = 1e12
+    lower_bound_evolution = [lower_bound]
+    upper_bound_evolution = [upper_bound]
+    candidate_solution = planning_problem.get_initial_candidate_solution()
 
 
 # ======================================================================================================================
