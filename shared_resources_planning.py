@@ -68,6 +68,9 @@ class SharedResourcesPlanning:
     def get_upper_bound(self, model):
         return _get_upper_bound(self, model)
 
+    def add_benders_cut(self, model, upper_bound, sensitivities, candidate_solution):
+        _add_benders_cut(self, model, upper_bound, sensitivities, candidate_solution)
+
     def update_admm_consensus_variables(self, tso_model, dso_models, esso_model, consensus_vars, dual_vars, params):
         _update_admm_consensus_variables(self, tso_model, dso_models, esso_model, consensus_vars, dual_vars, params)
 
@@ -113,6 +116,7 @@ def _run_planning_problem(planning_problem):
     # 0. Initialization
     iter = 1
     convergence = False
+    from_warm_start = False
     lower_bound = -1e12
     upper_bound = 1e12
     lower_bound_evolution = [lower_bound]
@@ -152,10 +156,12 @@ def _run_planning_problem(planning_problem):
         # 2.2. Run master problem optimization
         # 2.3. Get new capacity values, and the value of alpha (lower bound)
         planning_problem.add_benders_cut(master_problem_model, upper_bound, sensitivities, candidate_solution)
-        shared_ess_data.optimize(master_problem_model)
+        shared_ess_data.optimize(master_problem_model, from_warm_start=from_warm_start)
         candidate_solution = shared_ess_data.get_candidate_solution(master_problem_model)
         lower_bound = pe.value(master_problem_model.alpha)
         lower_bound_evolution.append(lower_bound)
+
+        from_warm_start = True
 
     if not convergence:
         print('[WARNING] Convergence not obtained!')
@@ -183,6 +189,20 @@ def _get_upper_bound(planning_problem, model):
             obj_repr_day = network.compute_objective_function_value(model[year][day], params)
             upper_bound += num_days * num_years * annualization * obj_repr_day
     return upper_bound
+
+
+def _add_benders_cut(planning_problem, model, upper_bound, sensitivities, candidate_solution):
+    years = [year for year in planning_problem.years]
+    benders_cut = upper_bound
+    for e in model.energy_storages:
+        node_id = planning_problem.active_distribution_network_nodes[e]
+        for y in model.years:
+            year = years[y]
+            if sensitivities['s'][year][node_id] != 'N/A':
+                benders_cut += sensitivities['s'][year][node_id] * (model.es_s_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['s'])
+            if sensitivities['e'][year][node_id] != 'N/A':
+                benders_cut += sensitivities['e'][year][node_id] * (model.es_e_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['e'])
+    model.benders_cuts.add(model.alpha >= benders_cut)
 
 
 # ======================================================================================================================
@@ -278,10 +298,6 @@ def _build_master_problem(planning_problem):
     model.objective = pe.Objective(sense=pe.minimize, expr=obj)
 
     return model
-
-
-
-
 
 
 # ======================================================================================================================
