@@ -775,8 +775,8 @@ def _process_relaxation_variables_degradation_detailed(shared_ess_data, model):
                     # - Degradation per unit
                     degradation_per_unit_up = pe.value(model.slack_es_degradation_per_unit_up[e, y_inv, y_curr])
                     degradation_per_unit_down = pe.value(model.slack_es_degradation_per_unit_down[e, y_inv, y_curr])
-                    processed_results[year_inv][year_curr][node_id]['degradation_per_unit_up'] = degradation_per_unit_up
-                    processed_results[year_inv][year_curr][node_id]['degradation_per_unit_down'] = degradation_per_unit_down
+                    processed_results[year_inv][year_curr][node_id]['degradation_up'] = degradation_per_unit_up
+                    processed_results[year_inv][year_curr][node_id]['degradation_down'] = degradation_per_unit_down
 
     return processed_results
 
@@ -1416,7 +1416,7 @@ def _write_detailed_degradation_relaxation_slacks_results_to_excel(shared_ess_da
                 sheet.cell(row=row_idx, column=2).value = int(year_inv)
                 sheet.cell(row=row_idx, column=3).value = int(year_curr)
                 sheet.cell(row=row_idx, column=4).value = 'Degradation unit, up'
-                sheet.cell(row=row_idx, column=5).value = results[year_inv][year_curr]['degradation_up'][node_id]
+                sheet.cell(row=row_idx, column=5).value = results[year_inv][year_curr][node_id]['degradation_up']
                 sheet.cell(row=row_idx, column=5).number_format = decimal_style
                 row_idx = row_idx + 1
 
@@ -1425,7 +1425,7 @@ def _write_detailed_degradation_relaxation_slacks_results_to_excel(shared_ess_da
                 sheet.cell(row=row_idx, column=2).value = int(year_inv)
                 sheet.cell(row=row_idx, column=3).value = int(year_curr)
                 sheet.cell(row=row_idx, column=4).value = 'Degradation unit, down'
-                sheet.cell(row=row_idx, column=5).value = results[year_inv][year_curr]['degradation_down'][node_id]
+                sheet.cell(row=row_idx, column=5).value = results[year_inv][year_curr][node_id]['degradation_down']
                 sheet.cell(row=row_idx, column=5).number_format = decimal_style
                 row_idx = row_idx + 1
 
