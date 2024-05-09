@@ -82,7 +82,7 @@ class SharedEnergyStorageData:
             results['relaxation_variables']['degradation']['aggregated'] = dict()
             results['relaxation_variables']['degradation']['detailed'] = dict()
             results['relaxation_variables']['operation'] = dict()
-            results['relaxation_variables']['operation']['aggregated'] = dict()
+            results['relaxation_variables']['operation']['aggregated'] = self.process_relaxation_variables_operation_aggregated(model)
             results['relaxation_variables']['operation']['detailed'] = self.process_relaxation_variables_operation_detailed(model)
         return results
 
@@ -100,6 +100,9 @@ class SharedEnergyStorageData:
 
     def process_relaxation_variables_investment(self, model):
         return _process_relaxation_variables_investment(self, model)
+
+    def process_relaxation_variables_operation_aggregated(self, model):
+        return _process_relaxation_variables_operation_aggregated(self, model)
 
     def process_relaxation_variables_operation_detailed(self, model):
         return _process_relaxation_variables_operation_detailed(self, model)
@@ -613,6 +616,38 @@ def _process_relaxation_variables_investment(shared_ess_data, model):
 
     return processed_results
 
+
+def _process_relaxation_variables_operation_aggregated(shared_ess_data, model):
+
+    processed_results = dict()
+    repr_days = [day for day in shared_ess_data.days]
+    repr_years = [year for year in shared_ess_data.years]
+
+    for y in model.years:
+        year = repr_years[y]
+        processed_results[year] = dict()
+        for d in model.days:
+            day = repr_days[d]
+            processed_results[year][day] = dict()
+            for e in model.energy_storages:
+                node_id = shared_ess_data.shared_energy_storages[year][e].bus
+                processed_results[year][day][node_id] = dict()
+                if shared_ess_data.params.slacks:
+                    processed_results[year][day][node_id]['snet_up'] = list()
+                    processed_results[year][day][node_id]['snet_down'] = list()
+                    processed_results[year][day][node_id]['snet_def_up'] = list()
+                    processed_results[year][day][node_id]['snet_def_down'] = list()
+                    for p in model.periods:
+                        slack_es_snet_up = pe.value(model.slack_es_snet_up[e, y, d, p])
+                        slack_es_snet_down = pe.value(model.slack_es_snet_up[e, y, d, p])
+                        slack_es_snet_def_up = pe.value(model.slack_es_snet_def_up[e, y, d, p])
+                        slack_es_snet_def_down = pe.value(model.slack_es_snet_def_down[e, y, d, p])
+                        processed_results[year][day][node_id]['snet_up'].append(slack_es_snet_up)
+                        processed_results[year][day][node_id]['snet_down'].append(slack_es_snet_down)
+                        processed_results[year][day][node_id]['snet_def_up'].append(slack_es_snet_def_up)
+                        processed_results[year][day][node_id]['snet_def_down'].append(slack_es_snet_def_down)
+
+    return processed_results
 
 def _process_relaxation_variables_operation_detailed(shared_ess_data, model):
 
