@@ -128,6 +128,7 @@ def _run_planning_problem(planning_problem):
 
         _print_candidate_solution(candidate_solution)
 
+        '''
         # 1. Subproblem
         # 1.1. Solve operational planning, with fixed investment variables,
         # 1.2. Get coupling constraints' sensitivities (subproblem)
@@ -135,6 +136,7 @@ def _run_planning_problem(planning_problem):
         operational_results, lower_level_models, sensitivities, _ = planning_problem.run_operational_planning(candidate_solution, print_results=False)
         upper_bound = planning_problem.get_upper_bound(lower_level_models['tso'])
         upper_bound_evolution.append(upper_bound)
+        '''
 
 
         iter += 1
