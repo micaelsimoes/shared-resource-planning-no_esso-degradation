@@ -1307,6 +1307,28 @@ def _write_aggregated_operation_relaxation_slacks_results_to_excel(shared_ess_da
                     sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
                 row_idx = row_idx + 1
 
+                # - Snet definition, up
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year)
+                sheet.cell(row=row_idx, column=3).value = day
+                sheet.cell(row=row_idx, column=4).value = 'Snet definition, up'
+                for p in range(shared_ess_data.num_instants):
+                    snet_def_up = results[year][day][node_id]['snet_def_up'][p]
+                    sheet.cell(row=row_idx, column=p + 5).value = snet_def_up
+                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - Snet definition, down
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year)
+                sheet.cell(row=row_idx, column=3).value = day
+                sheet.cell(row=row_idx, column=4).value = 'Snet definition, down'
+                for p in range(shared_ess_data.num_instants):
+                    snet_def_down = results[year][day][node_id]['snet_def_down'][p]
+                    sheet.cell(row=row_idx, column=p + 5).value = snet_def_down
+                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
+                row_idx = row_idx + 1
+
 
 def _write_detailed_operation_relaxation_slacks_results_to_excel(shared_ess_data, workbook, results):
 
