@@ -62,9 +62,6 @@ class SharedResourcesPlanning:
         if print_results:
             self.write_operational_planning_results_without_coordination_to_excel(models, results)
 
-    def build_master_problem(self):
-        return _build_master_problem(self)
-
     def get_upper_bound(self, model):
         return _get_upper_bound(self, model)
 
@@ -109,7 +106,6 @@ class SharedResourcesPlanning:
 def _run_planning_problem(planning_problem):
 
     shared_ess_data = planning_problem.shared_ess_data
-    shared_ess_parameters = shared_ess_data.params
     benders_parameters = planning_problem.params.benders
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -124,7 +120,7 @@ def _run_planning_problem(planning_problem):
     candidate_solution = planning_problem.get_initial_candidate_solution()
 
     start = time.time()
-    master_problem_model = planning_problem.build_master_problem()
+    master_problem_model = planning_problem.shared_ess_data.build_master_problem()
     shared_ess_data.optimize(master_problem_model)
 
     # Benders' main cycle
@@ -203,101 +199,6 @@ def _add_benders_cut(planning_problem, model, upper_bound, sensitivities, candid
             if sensitivities['e'][year][node_id] != 'N/A':
                 benders_cut += sensitivities['e'][year][node_id] * (model.es_e_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['e'])
     model.benders_cuts.add(model.alpha >= benders_cut)
-
-
-# ======================================================================================================================
-#  MASTER PROBLEM  functions
-# ======================================================================================================================
-def _build_master_problem(planning_problem):
-
-    shared_ess_data = planning_problem.shared_ess_data
-    years = [year for year in planning_problem.years]
-
-    model = pe.ConcreteModel()
-    model.name = "ESS Optimization -- Benders' Master Problem"
-
-    # ------------------------------------------------------------------------------------------------------------------
-    # Sets
-    model.years = range(len(planning_problem.years))
-    model.energy_storages = range(len(planning_problem.active_distribution_network_nodes))
-
-    # ------------------------------------------------------------------------------------------------------------------
-    # Decision variables
-    model.es_s_invesment = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)     # Investment in power capacity in year y
-    model.es_e_invesment = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)     # Investment in energy capacity in year y
-    model.es_s_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)         # Total rated power capacity (considering calendar life)
-    model.es_e_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)         # Total rated energy capacity (considering calendar life, not considering degradation)
-    model.alpha = pe.Var(domain=pe.Reals)                                                             # alpha (associated with cuts) will try to rebuild y in the original problem
-    model.alpha.setlb(-shared_ess_data.params.budget * 1e3)
-
-    # ------------------------------------------------------------------------------------------------------------------
-    # Constraints
-    # - Yearly Power and Energy ratings as a function of yearly investments
-    model.rated_s_capacity = pe.ConstraintList()
-    model.rated_e_capacity = pe.ConstraintList()
-    for e in model.energy_storages:
-        total_s_capacity_per_year = [0.0 for _ in model.years]
-        total_e_capacity_per_year = [0.0 for _ in model.years]
-        for y in model.years:
-            year = years[y]
-            num_years = shared_ess_data.years[year]
-            shared_energy_storage = shared_ess_data.shared_energy_storages[year][e]
-            tcal_norm = round(shared_energy_storage.t_cal / num_years)
-            max_tcal_norm = min(y + tcal_norm, len(shared_ess_data.years))
-            for x in range(y, max_tcal_norm):
-                total_s_capacity_per_year[x] += model.es_s_invesment[e, y]
-                total_e_capacity_per_year[x] += model.es_e_invesment[e, y]
-        for y in model.years:
-            model.rated_s_capacity.add(model.es_s_rated[e, y] == total_s_capacity_per_year[y])
-            model.rated_e_capacity.add(model.es_e_rated[e, y] == total_e_capacity_per_year[y])
-
-    # - Maximum Energy Capacity (related to space constraints)
-    model.energy_storage_maximum_capacity = pe.ConstraintList()
-    for e in model.energy_storages:
-        for y in model.years:
-            model.energy_storage_maximum_capacity.add(model.es_e_rated[e, y] <= shared_ess_data.params.max_capacity)
-
-    # - S/E factor
-    model.energy_storage_power_to_energy_factor = pe.ConstraintList()
-    for e in model.energy_storages:
-        for y in model.years:
-            model.energy_storage_power_to_energy_factor.add(model.es_s_rated[e, y] >= model.es_e_rated[e, y] * shared_ess_data.params.min_pe_factor)
-            model.energy_storage_power_to_energy_factor.add(model.es_s_rated[e, y] <= model.es_e_rated[e, y] * shared_ess_data.params.max_pe_factor)
-
-    # - Maximum Investment Cost
-    investment_cost_total = 0.0
-    model.energy_storage_investment = pe.ConstraintList()
-    for y in model.years:
-        year = years[y]
-        c_inv_s = shared_ess_data.cost_investment['power_capacity'][year]
-        c_inv_e = shared_ess_data.cost_investment['energy_capacity'][year]
-        annualization = 1 / ((1 + shared_ess_data.discount_factor) ** (int(year) - int(years[0])))
-        for e in model.energy_storages:
-            investment_cost_total += annualization * model.es_s_invesment[e, y] * c_inv_s
-            investment_cost_total += annualization * model.es_e_invesment[e, y] * c_inv_e
-    model.energy_storage_investment.add(investment_cost_total <= shared_ess_data.params.budget)
-
-    # Benders' cuts
-    model.benders_cuts = pe.ConstraintList()
-
-    # Objective function
-    investment_cost = 0.0
-    for e in model.energy_storages:
-        for y in model.years:
-
-            year = years[y]
-            c_inv_s = shared_ess_data.cost_investment['power_capacity'][year]
-            c_inv_e = shared_ess_data.cost_investment['energy_capacity'][year]
-            annualization = 1 / ((1 + shared_ess_data.discount_factor) ** (int(year) - int(years[0])))
-
-            # Investment Cost
-            investment_cost += annualization * model.es_s_invesment[e, y] * c_inv_s
-            investment_cost += annualization * model.es_e_invesment[e, y] * c_inv_e
-
-    obj = investment_cost + model.alpha
-    model.objective = pe.Objective(sense=pe.minimize, expr=obj)
-
-    return model
 
 
 # ======================================================================================================================
