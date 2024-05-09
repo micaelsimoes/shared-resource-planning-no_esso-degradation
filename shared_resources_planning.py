@@ -1064,14 +1064,14 @@ def update_shared_energy_storage_model_to_admm(shared_ess_data, model, params):
     model.rho.fix(params.rho['ess']['esso'])
 
     # Active and Reactive power requested by TSO and DSOs
-    model.p_req_tso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)            # Active power - TSO & DSO
-    model.q_req_tso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)            # Reactive power - TSO & DSO
-    model.p_req_dso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)            # Active power - TSO & DSO
-    model.q_req_dso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)            # Reactive power - TSO & DSO
-    model.dual_p_req_tso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)       # Dual variables - TSO & DSO
-    model.dual_q_req_tso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)       # Dual variables - TSO & DSO
-    model.dual_p_req_dso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)       # Dual variables - TSO & DSO
-    model.dual_q_req_dso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)       # Dual variables - TSO & DSO
+    model.p_req_tso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)            # Active power - TSO
+    model.q_req_tso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)            # Reactive power - TSO
+    model.p_req_dso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)            # Active power DSO
+    model.q_req_dso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)            # Reactive power - DSO
+    model.dual_p_req_tso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)       # Dual variables - TSO
+    model.dual_q_req_tso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)       # Dual variables - TSO
+    model.dual_p_req_dso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)       # Dual variables - DSO
+    model.dual_q_req_dso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)       # Dual variables - DSO
 
     # Objective function - augmented Lagrangian
     init_of_value = pe.value(model.objective)
