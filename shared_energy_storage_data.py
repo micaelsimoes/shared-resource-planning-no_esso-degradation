@@ -86,7 +86,7 @@ class SharedEnergyStorageData:
         if self.params.slacks:
             results['relaxation_variables']['degradation'] = dict()
             results['relaxation_variables']['degradation']['aggregated'] = dict()
-            results['relaxation_variables']['degradation']['detailed'] = dict()
+            results['relaxation_variables']['degradation']['detailed'] = self.process_relaxation_variables_degradation_detailed(model)
             results['relaxation_variables']['operation'] = dict()
             results['relaxation_variables']['operation']['aggregated'] = self.process_relaxation_variables_operation_aggregated(model)
             results['relaxation_variables']['operation']['detailed'] = self.process_relaxation_variables_operation_detailed(model)
@@ -106,6 +106,9 @@ class SharedEnergyStorageData:
 
     def process_relaxation_variables_investment(self, model):
         return _process_relaxation_variables_investment(self, model)
+
+    def process_relaxation_variables_degradation_detailed(self, model):
+        return _process_relaxation_variables_degradation_detailed(self, model)
 
     def process_relaxation_variables_operation_aggregated(self, model):
         return _process_relaxation_variables_operation_aggregated(self, model)
@@ -748,6 +751,32 @@ def _process_relaxation_variables_investment(shared_ess_data, model):
             processed_results[year_inv][node_id]['s_down'] = pe.value(model.es_s_investment_slack_down[e, y_inv])
             processed_results[year_inv][node_id]['e_up'] = pe.value(model.es_e_investment_slack_up[e, y_inv])
             processed_results[year_inv][node_id]['e_down'] = pe.value(model.es_e_investment_slack_down[e, y_inv])
+
+    return processed_results
+
+
+def _process_relaxation_variables_degradation_detailed(shared_ess_data, model):
+
+    processed_results = dict()
+    repr_years = [year for year in shared_ess_data.years]
+
+    for y_inv in model.years:
+        year_inv = repr_years[y_inv]
+        processed_results[year_inv] = dict()
+        for y_curr in model.years:
+            year_curr = repr_years[y_curr]
+            processed_results[year_inv][year_curr] = dict()
+            for e in model.energy_storages:
+                node_id = shared_ess_data.shared_energy_storages[year_curr][e].bus
+                processed_results[year_inv][year_curr][node_id] = dict()
+
+                if shared_ess_data.params.slacks:
+
+                    # - Degradation per unit
+                    degradation_per_unit_up = pe.value(model.slack_es_degradation_per_unit_up[e, y_inv, y_curr])
+                    degradation_per_unit_down = pe.value(model.slack_es_degradation_per_unit_down[e, y_inv, y_curr])
+                    processed_results[year_inv][year_curr][node_id]['degradation_per_unit_up'] = degradation_per_unit_up
+                    processed_results[year_inv][year_curr][node_id]['degradation_per_unit_down'] = degradation_per_unit_down
 
     return processed_results
 
