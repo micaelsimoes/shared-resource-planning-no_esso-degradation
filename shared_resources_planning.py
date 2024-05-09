@@ -139,13 +139,23 @@ def _run_planning_problem(planning_problem):
         upper_bound = planning_problem.get_upper_bound(lower_level_models['tso'])
         upper_bound_evolution.append(upper_bound)
 
-
+        #  - Convergence check
+        if isclose(upper_bound, lower_bound, abs_tol=benders_parameters.tol_abs, rel_tol=benders_parameters.tol_rel) or lower_bound > upper_bound:
+            lower_bound_evolution.append(lower_bound)
+            convergence = True
+            break
 
         iter += 1
 
-
-
-
+        # 2. Solve Master problem
+        # 2.1. Add Benders' cut, based on the sensitivities obtained from the subproblem
+        # 2.2. Run master problem optimization
+        # 2.3. Get new capacity values, and the value of alpha (lower bound)
+        planning_problem.add_benders_cut(master_problem_model, upper_bound, sensitivities, candidate_solution)
+        shared_ess_data.optimize(master_problem_model)
+        candidate_solution = shared_ess_data.get_candidate_solution(master_problem_model)
+        lower_bound = pe.value(master_problem_model.alpha)
+        lower_bound_evolution.append(lower_bound)
 
     if not convergence:
         print('[WARNING] Convergence not obtained!')
