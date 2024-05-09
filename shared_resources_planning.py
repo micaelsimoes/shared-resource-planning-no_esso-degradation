@@ -1709,6 +1709,18 @@ def _write_planning_results_to_excel(planning_problem, results, bound_evolution=
     if shared_ess_capacity:
         planning_problem.shared_ess_data.write_ess_results_to_excel(wb, shared_ess_capacity)
 
+    # Save results
+    try:
+        wb.save(filename)
+    except:
+        from datetime import datetime
+        now = datetime.now()
+        current_time = now.strftime("%Y-%m-%d_%H-%M-%S")
+        backup_filename = f"{filename.replace('.xlsx', '')}_{current_time}.xlsx"
+        print(f"[WARNING] Results saved to file {backup_filename}.xlsx")
+        wb.save(backup_filename)
+
+
 # ======================================================================================================================
 #  RESULTS OPERATIONAL PLANNING - write functions
 # ======================================================================================================================
