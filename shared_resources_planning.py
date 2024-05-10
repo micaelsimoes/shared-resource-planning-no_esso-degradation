@@ -230,7 +230,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     print('[INFO]\t\t - Initializing...')
 
     start = time.time()
-    from_warm_start = True
+    from_warm_start = False
     primal_evolution = list()
 
     # Create ADMM variables
@@ -281,7 +281,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
                                                                           consensus_vars['interface']['v_sqr']['dso'], dual_vars['v_sqr']['tso'],
                                                                           consensus_vars['interface']['pf']['dso'], dual_vars['pf']['tso'],
                                                                           consensus_vars['ess'], dual_vars['ess'],
-                                                                          admm_parameters, from_warm_start=False)
+                                                                          admm_parameters, from_warm_start=True)
 
         # 2.1 Update ADMM CONSENSUS variables
         planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
@@ -318,7 +318,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
                                                                            consensus_vars['interface']['v_sqr']['tso'], dual_vars['v_sqr']['dso'],
                                                                            consensus_vars['interface']['pf']['tso'], dual_vars['pf']['dso'],
                                                                            consensus_vars['ess'], dual_vars['ess'],
-                                                                           admm_parameters, from_warm_start=from_warm_start)
+                                                                           admm_parameters, from_warm_start=True)
 
         # 3.1 Update ADMM CONSENSUS variables
         planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
