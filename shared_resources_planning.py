@@ -250,6 +250,7 @@ def _run_operational_planning(planning_problem, candidate_solution, optim_models
         esso_model, results['esso'] = create_shared_energy_storage_model(shared_ess_data, consensus_vars['ess'], candidate_solution['investment'])
         update_shared_energy_storage_model_to_admm(shared_ess_data, esso_model, admm_parameters)
     else:
+        from_warm_start = True
         tso_model = optim_models['tso']
         dso_models = optim_models['dso']
         esso_model = optim_models['esso']
