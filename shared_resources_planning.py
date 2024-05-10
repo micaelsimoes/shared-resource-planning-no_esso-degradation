@@ -257,14 +257,14 @@ def _run_operational_planning(planning_problem, candidate_solution, optim_models
         esso_model = optim_models['esso']
 
         # Update models
-        transmission_network.update_data_with_candidate_solution(candidate_solution)
-        transmission_network.update_model_with_candidate_solution(tso_model, candidate_solution)
+        transmission_network.update_data_with_candidate_solution(candidate_solution['total_capacity'])
+        transmission_network.update_model_with_candidate_solution(tso_model, candidate_solution['total_capacity'])
         for node_id in distribution_networks:
             distribution_network = distribution_networks[node_id]
-            distribution_network.update_data_with_candidate_solution(candidate_solution)
-            distribution_network.update_model_with_candidate_solution(dso_models[node_id], candidate_solution)
-        shared_ess_data.update_data_with_candidate_solution(candidate_solution)
-        shared_ess_data.update_model_with_candidate_solution(esso_model, candidate_solution)
+            distribution_network.update_data_with_candidate_solution(candidate_solution['total_capacity'])
+            distribution_network.update_model_with_candidate_solution(dso_models[node_id], candidate_solution['total_capacity'])
+        shared_ess_data.update_data_with_candidate_solution(candidate_solution['investment'])
+        shared_ess_data.update_model_with_candidate_solution(esso_model, candidate_solution['investment'])
 
     planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model, consensus_vars, dual_vars, admm_parameters)
     if debug_flag:
