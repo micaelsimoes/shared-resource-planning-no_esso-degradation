@@ -241,6 +241,7 @@ def _run_operational_planning(planning_problem, candidate_solution, optim_models
 
     # Create Operational Planning models
     if not optim_models:
+
         dso_models, results['dso'] = create_distribution_networks_models(distribution_networks, consensus_vars['interface']['pf']['dso'], consensus_vars['ess']['dso'], candidate_solution['total_capacity'])
         update_distribution_models_to_admm(distribution_networks, dso_models, consensus_vars['interface']['pf']['dso'], admm_parameters)
 
@@ -254,6 +255,16 @@ def _run_operational_planning(planning_problem, candidate_solution, optim_models
         tso_model = optim_models['tso']
         dso_models = optim_models['dso']
         esso_model = optim_models['esso']
+
+        # Update models
+        transmission_network.update_data_with_candidate_solution(candidate_solution)
+        transmission_network.update_model_with_candidate_solution(tso_model, candidate_solution)
+        for node_id in distribution_networks:
+            distribution_network = distribution_networks[node_id]
+            distribution_network.update_data_with_candidate_solution(candidate_solution)
+            distribution_network.update_model_with_candidate_solution(dso_models[node_id], candidate_solution)
+        shared_ess_data.update_data_with_candidate_solution(candidate_solution)
+        shared_ess_data.update_model_with_candidate_solution(esso_model, candidate_solution)
 
     planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model, consensus_vars, dual_vars, admm_parameters)
     if debug_flag:
