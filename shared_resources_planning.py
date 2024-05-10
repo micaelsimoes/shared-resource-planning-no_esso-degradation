@@ -230,15 +230,15 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     print('[INFO]\t\t - Initializing...')
 
     start = time.time()
-    from_warm_start = False
+    from_warm_start = True
     primal_evolution = list()
 
     # Create ADMM variables
     consensus_vars, dual_vars = create_admm_variables(planning_problem)
 
     # Create Operational Planning models
-    dso_models, results['dso'] = create_distribution_networks_models(distribution_networks, consensus_vars['interface']['pf']['dso'], consensus_vars['ess']['dso'], candidate_solution['total_capacity'])
-    update_distribution_models_to_admm(distribution_networks, dso_models, consensus_vars['interface']['pf']['dso'], admm_parameters)
+    dso_models, results['dso'] = create_distribution_networks_models(distribution_networks, consensus_vars['interface']['pf']['dso'], consensus_vars['ess']['dso'], candidate_solution['total_capacity'], admm_parameters)
+    update_distribution_models_to_admm(distribution_networks, dso_models, consensus_vars['interface']['pf']['dso'])
 
     tso_model, results['tso'] = create_transmission_network_model(transmission_network, consensus_vars['interface']['v_sqr'], consensus_vars['interface']['pf'], consensus_vars['ess']['tso'], candidate_solution['total_capacity'])
     update_transmission_model_to_admm(transmission_network, tso_model, consensus_vars['interface']['pf'], admm_parameters)
@@ -442,7 +442,7 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
     return tso_model, results
 
 
-def create_distribution_networks_models(distribution_networks, interface_vars, sess_vars, candidate_solution):
+def create_distribution_networks_models(distribution_networks, interface_vars, sess_vars, candidate_solution, params):
 
     dso_models = dict()
     results = dict()
@@ -451,9 +451,37 @@ def create_distribution_networks_models(distribution_networks, interface_vars, s
 
         distribution_network = distribution_networks[node_id]
 
-        # Build model, fix candidate solution, and Run S-MPOPF model
+        # Build model, add ADMM variables
         distribution_network.update_data_with_candidate_solution(candidate_solution)
         dso_model = distribution_network.build_model()
+
+        # Add ADMM variables
+        dso_model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
+        dso_model[year][day].rho_v.fix(params.rho['v'][distribution_network.network[year][day].name])
+        dso_model[year][day].v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)
+        dso_model[year][day].dual_v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Dual variable - active power
+        dso_model[year][day].v_sqr_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Active power - previous iteration
+        dso_model[year][day].dual_v_sqr_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Dual variable - previous iteration
+
+        dso_model[year][day].rho_pf = pe.Var(domain=pe.NonNegativeReals)
+        dso_model[year][day].rho_pf.fix(params.rho['pf'][distribution_network.network[year][day].name])
+        dso_model[year][day].p_pf_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Active power - requested by transmission network
+        dso_model[year][day].q_pf_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Reactive power - requested by transmission network
+        dso_model[year][day].dual_pf_p_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Dual variable - active power
+        dso_model[year][day].dual_pf_q_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Dual variable - reactive power
+        dso_model[year][day].p_pf_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Active power - previous iteration
+        dso_model[year][day].q_pf_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Reactive power - previous iteration
+        dso_model[year][day].dual_pf_p_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Dual variable - previous iteration
+        dso_model[year][day].dual_pf_q_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Dual variable - previous iteration
+
+        dso_model[year][day].rho_ess = pe.Var(domain=pe.NonNegativeReals)
+        dso_model[year][day].rho_ess.fix(params.rho['ess'][distribution_network.network[year][day].name])
+        dso_model[year][day].p_ess_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Shared ESS - active power requested (TSO)
+        dso_model[year][day].dual_ess_p_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Dual variable - Shared ESS active power
+        dso_model[year][day].q_ess_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Shared ESS - reactive power requested (TSO)
+        dso_model[year][day].dual_ess_q_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Dual variable - Shared ESS reactive power
+
+        # Fix candidate solution, and Run S-MPOPF model
         distribution_network.update_model_with_candidate_solution(dso_model, candidate_solution)
         results[node_id] = distribution_network.optimize(dso_model)
 
@@ -1038,7 +1066,7 @@ def update_transmission_model_to_admm(transmission_network, model, initial_inter
             model[year][day].objective.expr = obj
 
 
-def update_distribution_models_to_admm(distribution_networks, models, initial_interface_pf, params):
+def update_distribution_models_to_admm(distribution_networks, models, initial_interface_pf):
 
     for node_id in distribution_networks:
 
@@ -1086,31 +1114,7 @@ def update_distribution_models_to_admm(distribution_networks, models, initial_in
                                 for p in dso_model[year][day].periods:
                                     dso_model[year][day].slack_iij_sqr[b, s_m, s_o, p].fix(0.00)
 
-                # Add ADMM variables
-                dso_model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
-                dso_model[year][day].rho_v.fix(params.rho['v'][distribution_network.network[year][day].name])
-                dso_model[year][day].v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)
-                dso_model[year][day].dual_v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)   # Dual variable - active power
-                dso_model[year][day].v_sqr_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)    # Active power - previous iteration
-                dso_model[year][day].dual_v_sqr_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Dual variable - previous iteration
 
-                dso_model[year][day].rho_pf = pe.Var(domain=pe.NonNegativeReals)
-                dso_model[year][day].rho_pf.fix(params.rho['pf'][distribution_network.network[year][day].name])
-                dso_model[year][day].p_pf_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)    # Active power - requested by transmission network
-                dso_model[year][day].q_pf_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)    # Reactive power - requested by transmission network
-                dso_model[year][day].dual_pf_p_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)   # Dual variable - active power
-                dso_model[year][day].dual_pf_q_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)   # Dual variable - reactive power
-                dso_model[year][day].p_pf_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)    # Active power - previous iteration
-                dso_model[year][day].q_pf_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)    # Reactive power - previous iteration
-                dso_model[year][day].dual_pf_p_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Dual variable - previous iteration
-                dso_model[year][day].dual_pf_q_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)  # Dual variable - previous iteration
-
-                dso_model[year][day].rho_ess = pe.Var(domain=pe.NonNegativeReals)
-                dso_model[year][day].rho_ess.fix(params.rho['ess'][distribution_network.network[year][day].name])
-                dso_model[year][day].p_ess_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)          # Shared ESS - active power requested (TSO)
-                dso_model[year][day].dual_ess_p_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)     # Dual variable - Shared ESS active power
-                dso_model[year][day].q_ess_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)          # Shared ESS - reactive power requested (TSO)
-                dso_model[year][day].dual_ess_q_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)     # Dual variable - Shared ESS reactive power
 
                 # Objective function - augmented Lagrangian
                 obj = dso_model[year][day].objective.expr / max(abs(init_of_value), 1.00)
