@@ -51,7 +51,7 @@ class SharedResourcesPlanning:
         print('[INFO] Running OPERATIONAL PLANNING...')
         if not candidate_solution:
             candidate_solution = self.get_initial_candidate_solution()
-        results, models, sensitivities, primal_evolution = _run_operational_planning(self, candidate_solution, models=models, debug_flag=debug_flag)
+        results, models, sensitivities, primal_evolution = _run_operational_planning(self, candidate_solution, optim_models=models, debug_flag=debug_flag)
         if print_results:
             self.write_operational_planning_results_to_excel(models, results, primal_evolution)
         return results, models, sensitivities, primal_evolution
