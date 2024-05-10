@@ -47,11 +47,11 @@ class SharedResourcesPlanning:
         print('[INFO] Running PLANNING PROBLEM...')
         _run_planning_problem(self)
 
-    def run_operational_planning(self, candidate_solution=dict(), print_results=False, debug_flag=False):
+    def run_operational_planning(self, candidate_solution=dict(), models=dict(), print_results=False, debug_flag=False):
         print('[INFO] Running OPERATIONAL PLANNING...')
         if not candidate_solution:
             candidate_solution = self.get_initial_candidate_solution()
-        results, models, sensitivities, primal_evolution = _run_operational_planning(self, candidate_solution, debug_flag=debug_flag)
+        results, models, sensitivities, primal_evolution = _run_operational_planning(self, candidate_solution, models=models, debug_flag=debug_flag)
         if print_results:
             self.write_operational_planning_results_to_excel(models, results, primal_evolution)
         return results, models, sensitivities, primal_evolution
@@ -141,7 +141,10 @@ def _run_planning_problem(planning_problem):
         # 1.1. Solve operational planning, with fixed investment variables,
         # 1.2. Get coupling constraints' sensitivities (subproblem)
         # 1.3. Get OF value (upper bound) from the subproblem
-        operational_results, lower_level_models, sensitivities, _ = planning_problem.run_operational_planning(candidate_solution, print_results=False)
+        if iter > 1:
+            operational_results, lower_level_models, sensitivities, _ = planning_problem.run_operational_planning(candidate_solution, models=lower_level_models, print_results=False)
+        else:
+            operational_results, lower_level_models, sensitivities, _ = planning_problem.run_operational_planning(candidate_solution, print_results=False)
         upper_bound = planning_problem.get_upper_bound(lower_level_models['tso'])
         upper_bound_evolution.append(upper_bound)
 
@@ -216,7 +219,7 @@ def _add_benders_cut(planning_problem, model, upper_bound, sensitivities, candid
 # ======================================================================================================================
 #  OPERATIONAL PLANNING functions
 # ======================================================================================================================
-def _run_operational_planning(planning_problem, candidate_solution, debug_flag=False):
+def _run_operational_planning(planning_problem, candidate_solution, optim_models=dict(), debug_flag=False):
 
     transmission_network = planning_problem.transmission_network
     distribution_networks = planning_problem.distribution_networks
@@ -237,14 +240,19 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     consensus_vars, dual_vars = create_admm_variables(planning_problem)
 
     # Create Operational Planning models
-    dso_models, results['dso'] = create_distribution_networks_models(distribution_networks, consensus_vars['interface']['pf']['dso'], consensus_vars['ess']['dso'], candidate_solution['total_capacity'])
-    update_distribution_models_to_admm(distribution_networks, dso_models, consensus_vars['interface']['pf']['dso'], admm_parameters)
+    if not optim_models:
+        dso_models, results['dso'] = create_distribution_networks_models(distribution_networks, consensus_vars['interface']['pf']['dso'], consensus_vars['ess']['dso'], candidate_solution['total_capacity'])
+        update_distribution_models_to_admm(distribution_networks, dso_models, consensus_vars['interface']['pf']['dso'], admm_parameters)
 
-    tso_model, results['tso'] = create_transmission_network_model(transmission_network, consensus_vars['interface']['v_sqr'], consensus_vars['interface']['pf'], consensus_vars['ess']['tso'], candidate_solution['total_capacity'])
-    update_transmission_model_to_admm(transmission_network, tso_model, consensus_vars['interface']['pf'], admm_parameters)
+        tso_model, results['tso'] = create_transmission_network_model(transmission_network, consensus_vars['interface']['v_sqr'], consensus_vars['interface']['pf'], consensus_vars['ess']['tso'], candidate_solution['total_capacity'])
+        update_transmission_model_to_admm(transmission_network, tso_model, consensus_vars['interface']['pf'], admm_parameters)
 
-    esso_model, results['esso'] = create_shared_energy_storage_model(shared_ess_data, consensus_vars['ess'], candidate_solution['investment'])
-    update_shared_energy_storage_model_to_admm(shared_ess_data, esso_model, admm_parameters)
+        esso_model, results['esso'] = create_shared_energy_storage_model(shared_ess_data, consensus_vars['ess'], candidate_solution['investment'])
+        update_shared_energy_storage_model_to_admm(shared_ess_data, esso_model, admm_parameters)
+    else:
+        tso_model = optim_models['tso']
+        dso_models = optim_models['dso']
+        esso_model = optim_models['esso']
 
     planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model, consensus_vars, dual_vars, admm_parameters)
     if debug_flag:
