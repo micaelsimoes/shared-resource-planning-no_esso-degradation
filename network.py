@@ -1042,13 +1042,14 @@ def _build_model(network, params):
             for p in model.periods:
                 slack_p = model.slack_expected_shared_ess_p_up[e, p] + model.slack_expected_shared_ess_p_down[e, p]
                 slack_q = model.slack_expected_shared_ess_q_up[e, p] + model.slack_expected_shared_ess_q_down[e, p]
-                obj += PENALTY_SLACK * (slack_p + slack_q + slack_s)
+                obj += PENALTY_SLACK * (slack_p + slack_q)
     else:
         for p in model.periods:
             slack_vmag = model.slack_expected_interface_vmag_sqr_up[p] + model.slack_expected_interface_vmag_sqr_down[p]
             slack_p = model.slack_expected_interface_pf_p_up[p] + model.slack_expected_interface_pf_p_down[p]
             slack_q = model.slack_expected_interface_pf_q_up[p] + model.slack_expected_interface_pf_q_down[p]
             obj += PENALTY_SLACK * (slack_vmag + slack_p + slack_q)
+
             slack_p_ess = model.slack_expected_shared_ess_p_up[p] + model.slack_expected_shared_ess_p_down[p]
             slack_q_ess = model.slack_expected_shared_ess_q_up[p] + model.slack_expected_shared_ess_q_down[p]
             obj += PENALTY_SLACK * (slack_p_ess + slack_q_ess)
