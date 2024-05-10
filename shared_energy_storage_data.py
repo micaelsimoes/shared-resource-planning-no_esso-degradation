@@ -695,7 +695,7 @@ def _process_soh_results_aggregated(shared_ess_data, model):
             s_rated = pe.value(model.es_s_rated[e, y])
             e_rated = pe.value(model.es_e_rated[e, y])
             s_available, e_available = shared_ess_data.get_available_capacities(model, e, y)
-            soh = 0.00
+            soh = 1.00
             if not isclose(e_available, 0.00, abs_tol=SMALL_TOLERANCE):
                 soh = e_available / e_rated
             degradation = 1 - soh
