@@ -1406,6 +1406,7 @@ def _write_detailed_degradation_relaxation_slacks_results_to_excel(shared_ess_da
     sheet.cell(row=row_idx, column=3).value = 'Year Current'
     sheet.cell(row=row_idx, column=4).value = 'Quantity'
     sheet.cell(row=row_idx, column=5).value = 'Value'
+    row_idx = row_idx + 1
 
     for node_id in shared_ess_data.active_distribution_network_nodes:
         for year_inv in results:
