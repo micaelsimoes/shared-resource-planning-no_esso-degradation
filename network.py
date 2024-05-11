@@ -1106,7 +1106,7 @@ def _build_model(network, params):
 
     # Primal definition
     model.primal_cons = pe.ConstraintList()
-    model.primal_cons.add(model.primal == model.objective)
+    model.primal_cons.add(model.primal == obj)
 
     # Model suffixes (used for warm start)
     model.ipopt_zL_out = pe.Suffix(direction=pe.Suffix.IMPORT)  # Ipopt bound multipliers (obtained from solution)
