@@ -1313,6 +1313,7 @@ def update_shared_energy_storages_coordination_model_and_solve(planning_problem,
             for d in model.days:
                 day = days[d]
                 for p in model.periods:
+
                     p_req_tso = ess_req['tso']['current'][node_id][year][day]['p'][p]
                     p_req_dso = ess_req['dso']['current'][node_id][year][day]['p'][p]
                     q_req_tso = ess_req['tso']['current'][node_id][year][day]['q'][p]
@@ -1321,14 +1322,15 @@ def update_shared_energy_storages_coordination_model_and_solve(planning_problem,
                     dual_p_req_dso = dual_ess['esso']['current']['dso'][node_id][year][day]['p'][p]
                     dual_q_req_tso = dual_ess['esso']['current']['tso'][node_id][year][day]['q'][p]
                     dual_q_req_dso = dual_ess['esso']['current']['dso'][node_id][year][day]['q'][p]
-                    model.p_req_tso[e, y, d, p].fix(p_req_tso)
-                    model.p_req_dso[e, y, d, p].fix(p_req_dso)
-                    model.q_req_tso[e, y, d, p].fix(q_req_tso)
-                    model.q_req_dso[e, y, d, p].fix(q_req_dso)
-                    model.dual_p_req_tso[e, y, d, p].fix(dual_p_req_tso)
-                    model.dual_p_req_dso[e, y, d, p].fix(dual_p_req_dso)
-                    model.dual_q_req_tso[e, y, d, p].fix(dual_q_req_tso)
-                    model.dual_q_req_dso[e, y, d, p].fix(dual_q_req_dso)
+
+                    p_req = (p_req_tso + p_req_dso) * 0.50
+                    q_req = (q_req_tso + q_req_dso) * 0.50
+                    dual_p_req = (dual_p_req_tso + dual_p_req_dso) * 0.50
+                    dual_q_req = (dual_q_req_tso + dual_q_req_dso) * 0.50
+                    model.p_req[e, y, d, p].fix(p_req)
+                    model.q_req[e, y, d, p].fix(q_req)
+                    model.dual_p_req[e, y, d, p].fix(dual_p_req)
+                    model.dual_q_req[e, y, d, p].fix(dual_q_req)
 
     # Solve!
     res = shared_ess_data.optimize(model, from_warm_start=from_warm_start)
