@@ -116,6 +116,8 @@ def _run_planning_problem(planning_problem):
 
     shared_ess_data = planning_problem.shared_ess_data
     benders_parameters = planning_problem.params.benders
+    lower_level_models = dict()
+    operational_results = dict()
 
     # ------------------------------------------------------------------------------------------------------------------
     # 0. Initialization
@@ -271,10 +273,10 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     # ------------------------------------------------------------------------------------------------------------------
     # ADMM -- Main cycle
     # ------------------------------------------------------------------------------------------------------------------
-    convergence, num_iter = False, 1
-    for iter in range(admm_parameters.num_max_iters):
+    convergence, iter = False, 1
+    for iter in range(iter, admm_parameters.num_max_iters):
 
-        print(f'[INFO]\t - ADMM. Iter {num_iter}...')
+        print(f'[INFO]\t - ADMM. Iter {iter}...')
 
         iter_start = time.time()
 
@@ -372,15 +374,14 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
             break
 
         iter_end = time.time()
-        print('[INFO] \t - Iter {}: {:.2f} s'.format(num_iter, iter_end - iter_start))
-        num_iter += 1
+        print('[INFO] \t - Iter {}: {:.2f} s'.format(iter, iter_end - iter_start))
 
         from_warm_start = True
 
     if not convergence:
         print(f'[WARNING] ADMM did NOT converge in {admm_parameters.num_max_iters} iterations!')
     else:
-        print(f'[INFO] \t - ADMM converged in {iter + 1} iterations.')
+        print(f'[INFO] \t - ADMM converged in {iter} iterations.')
 
     end = time.time()
     total_execution_time = end - start
@@ -2296,7 +2297,7 @@ def _write_interface_results_to_excel(planning_problem, workbook, results):
                 sheet.cell(row=row_idx, column=5).value = 'Q, [MVAr]'
                 sheet.cell(row=row_idx, column=6).value = 'Expected'
                 sheet.cell(row=row_idx, column=7).value = '-'
-                for p in range(len(results['dso'][node_id][year][day][s_m][s_o]['q'])):
+                for p in range(planning_problem.num_instants):
                     sheet.cell(row=row_idx, column=p + 8).value = expected_q[p]
                     sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                 row_idx += 1
@@ -3724,7 +3725,7 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
 
             for branch in network[year][day].branches:
 
-                branch_id
+                branch_id = branch.branch_id
                 rating = branch.rate
                 if rating == 0.0:
                     rating = BRANCH_UNKNOWN_RATING
@@ -4068,6 +4069,7 @@ def _write_network_energy_storages_results_per_operator(network, sheet, operator
             for energy_storage in network[year][day].energy_storages:
 
                 es_id = energy_storage.es_id
+                node_id = energy_storage.bus
 
                 # - Active Power
                 sheet.cell(row=row_idx, column=1).value = operator_type
