@@ -65,6 +65,9 @@ class SharedResourcesPlanning:
     def get_upper_bound(self, model):
         return _get_upper_bound(self, model)
 
+    def get_primal_value(self, tso_model, dso_models, esso_model):
+        return _get_primal_value(self, tso_model, dso_models, esso_model)
+
     def add_benders_cut(self, model, upper_bound, sensitivities, candidate_solution):
         _add_benders_cut(self, model, upper_bound, sensitivities, candidate_solution)
 
@@ -299,7 +302,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
                         #print(f"\t\t\tESS, ESSO  {consensus_vars['ess']['esso']['current'][node_id][year][day]['p']}")
 
         # 2.2 Update primal evolution
-        primal_evolution.append(compute_primal_value(planning_problem, tso_model, dso_models))
+        primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
 
         # 2.3 STOPPING CRITERIA evaluation
         convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
@@ -336,7 +339,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
                         #print(f"\t\t\tESS, ESSO  {consensus_vars['ess']['esso']['current'][node_id][year][day]['p']}")
 
         # 3.2 Update primal evolution
-        primal_evolution.append(compute_primal_value(planning_problem, tso_model, dso_models))
+        primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
 
         # 3.3 STOPPING CRITERIA evaluation
         convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
@@ -355,7 +358,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
                                                          admm_parameters)
 
         # 4.2 Update primal evolution
-        primal_evolution.append(compute_primal_value(planning_problem, tso_model, dso_models))
+        primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
 
         # 4.3 STOPPING CRITERIA evaluation
         convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
@@ -504,15 +507,17 @@ def create_shared_energy_storage_model(shared_ess_data, sess_vars, candidate_sol
     return esso_model, results
 
 
-def compute_primal_value(planning_problem, tso_model, dso_models):
+def _get_primal_value(planning_problem, tso_model, dso_models, esso_model):
 
     transmission_network = planning_problem.transmission_network
     distribution_networks = planning_problem.distribution_networks
+    shared_ess_data = planning_problem.shared_ess_data
 
     primal_value = 0.0
-    primal_value += transmission_network.compute_primal_value(tso_model)
+    primal_value += transmission_network.get_primal_value(tso_model)
     for node_id in distribution_networks:
-        primal_value += distribution_networks[node_id].compute_primal_value(dso_models[node_id])
+        primal_value += distribution_networks[node_id].get_primal_value(dso_models[node_id])
+    primal_value += shared_ess_data.get_primal_value(esso_model)
 
     return primal_value
 
