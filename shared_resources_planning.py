@@ -404,6 +404,8 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                             qc = interface_pf_vars['dso']['current'][node_id][year][day]['q'][p] / s_base
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fix(pc)
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].fix(qc)
+                            tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].setub(pc * 0.25)
+                            tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].setub(pc * 0.25)
 
     results = transmission_network.optimize(tso_model)
 
