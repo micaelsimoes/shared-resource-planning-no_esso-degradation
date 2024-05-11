@@ -46,13 +46,13 @@ class NetworkData:
                 results[year][day] = self.network[year][day].run_smopf(model[year][day], self.params, from_warm_start=from_warm_start)
         return results
 
-    def compute_primal_value(self, model):
+    def get_primal_value(self, model):
         obj = 0.0
         years = [year for year in self.years]
         for year in self.years:
             annualization = 1 / ((1 + self.discount_factor) ** (int(year) - int(years[0])))
             for day in self.days:
-                obj += self.network[year][day].compute_objective_function_value(model[year][day], self.params) * self.years[year] * self.days[day] * annualization
+                obj += self.network[year][day].get_primal_value(model[year][day]) * self.years[year] * self.days[day] * annualization
         return obj
 
     def get_sensitivities(self, model):
