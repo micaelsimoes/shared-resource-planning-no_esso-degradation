@@ -197,7 +197,7 @@ def _get_upper_bound(planning_problem, model):
             num_days = planning_problem.days[day]
             network = planning_problem.transmission_network.network[year][day]
             params = planning_problem.transmission_network.params
-            obj_repr_day = network.compute_objective_function_value(model[year][day], params)
+            obj_repr_day = network.get_primal_value(model[year][day])
             upper_bound += num_days * num_years * annualization * obj_repr_day
     return upper_bound
 
