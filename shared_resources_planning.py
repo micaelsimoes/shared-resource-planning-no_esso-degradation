@@ -955,9 +955,6 @@ def update_transmission_model_to_admm(transmission_network, model, initial_inter
                             model[year][day].qc[adn_load_idx, s_m, s_o, p].fixed = False
                             model[year][day].qc[adn_load_idx, s_m, s_o, p].setub(None)
                             model[year][day].qc[adn_load_idx, s_m, s_o, p].setlb(None)
-                            if transmission_network.params.fl_reg:
-                                model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].fix(0.0)
-                                model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].fix(0.0)
 
                             if transmission_network.params.slacks:
                                 model[year][day].slack_e_up[node_idx, s_m, s_o, p].fix(0.00)
