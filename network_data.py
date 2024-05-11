@@ -46,13 +46,13 @@ class NetworkData:
                 results[year][day] = self.network[year][day].run_smopf(model[year][day], self.params, from_warm_start=from_warm_start)
         return results
 
-    def compute_primal_value(self, model):
+    def get_primal_value(self, model):
         obj = 0.0
         years = [year for year in self.years]
         for year in self.years:
             annualization = 1 / ((1 + self.discount_factor) ** (int(year) - int(years[0])))
             for day in self.days:
-                obj += self.network[year][day].compute_objective_function_value(model[year][day], self.params) * self.years[year] * self.days[day] * annualization
+                obj += self.network[year][day].get_primal_value(model[year][day]) * self.years[year] * self.days[day] * annualization
         return obj
 
     def get_sensitivities(self, model):
@@ -1816,7 +1816,7 @@ def _write_shared_network_energy_storage_results_to_excel(network_planning, work
                             soc_perc = results[year][day]['scenarios'][s_m][s_o]['shared_energy_storages']['soc_percent'][node_id][p]
                             sheet.cell(row=row_idx, column=p + 7).value = soc_perc
                             sheet.cell(row=row_idx, column=p + 7).number_format = perc_style
-                            if soc != 'N/A':
+                            if soc_perc != 'N/A':
                                 expected_soc_perc[node_id][p] += soc_perc * omega_m * omega_s
                             else:
                                 expected_soc_perc[node_id][p] = 'N/A'
@@ -2553,8 +2553,9 @@ def _get_sensitivities(network_planning, model):
                 else:
                     sensitivities['e'][year][node_id] += num_days * sensitivity_e
 
-        sensitivities['s'][year][node_id] *= num_years * annualization
-        sensitivities['e'][year][node_id] *= num_years * annualization
+        for node_id in network_planning.active_distribution_network_nodes:
+            sensitivities['s'][year][node_id] *= num_years * annualization
+            sensitivities['e'][year][node_id] *= num_years * annualization
 
     return sensitivities
 

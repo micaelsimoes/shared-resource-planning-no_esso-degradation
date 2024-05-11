@@ -48,6 +48,9 @@ class Network:
     def run_smopf(self, model, params, from_warm_start=False):
         return _run_smopf(self, model, params, from_warm_start=from_warm_start)
 
+    def get_primal_value(self, model):
+        return pe.value(model.primal)
+
     def compute_objective_function_value(self, model, params):
         return _compute_objective_function_value(self, model, params)
 
@@ -515,6 +518,9 @@ def _build_model(network, params):
             model.slack_expected_shared_ess_p_down = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=0.0)
             model.slack_expected_shared_ess_q_up = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=0.0)
             model.slack_expected_shared_ess_q_down = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+
+    # Primal
+    model.primal = pe.Var(domain=pe.Reals, initialize=0.0)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
@@ -1097,6 +1103,10 @@ def _build_model(network, params):
                     obj += PENALTY_SLACK * slack_soc_final
 
     model.objective = pe.Objective(sense=pe.minimize, expr=obj)
+
+    # Primal definition
+    model.primal_cons = pe.ConstraintList()
+    model.primal_cons.add(model.primal == obj)
 
     # Model suffixes (used for warm start)
     model.ipopt_zL_out = pe.Suffix(direction=pe.Suffix.IMPORT)  # Ipopt bound multipliers (obtained from solution)
