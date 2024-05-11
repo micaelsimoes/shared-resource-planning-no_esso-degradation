@@ -520,7 +520,7 @@ def _build_model(network, params):
             model.slack_expected_shared_ess_q_down = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=0.0)
 
     # Primal
-    model.primal = pe.Var(domain=pe.NonNegativeReals, initialize=0.0)
+    model.primal = pe.Var(domain=pe.Reals, initialize=0.0)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints

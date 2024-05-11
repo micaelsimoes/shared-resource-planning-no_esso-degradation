@@ -317,7 +317,7 @@ def _build_subproblem_model(shared_ess_data):
     model.es_soh_per_unit_cumul.fix(1.00)
 
     # Primal
-    model.primal = pe.Var(domain=pe.NonNegativeReals, initialize=0.0)
+    model.primal = pe.Var(domain=pe.Reals, initialize=0.0)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
