@@ -1034,7 +1034,7 @@ def _build_model(network, params):
     for e in model.shared_energy_storages:
         slack_s = model.shared_es_s_slack_up[e] + model.shared_es_s_slack_down[e]
         slack_e = model.shared_es_e_slack_up[e] + model.shared_es_e_slack_down[e]
-        obj += PENALTY_SLACK * (slack_s + slack_e)
+        obj += PENALTY_SLACK * 1e3 * (slack_s + slack_e)
 
     # Interface slacks
     if network.is_transmission:
@@ -1043,22 +1043,22 @@ def _build_model(network, params):
                 slack_vmag = model.slack_expected_interface_vmag_sqr_up[dn, p] + model.slack_expected_interface_vmag_sqr_down[dn, p]
                 slack_p = model.slack_expected_interface_pf_p_up[dn, p] + model.slack_expected_interface_pf_p_down[dn, p]
                 slack_q = model.slack_expected_interface_pf_q_up[dn, p] + model.slack_expected_interface_pf_q_down[dn, p]
-                obj += PENALTY_SLACK * (slack_vmag + slack_p + slack_q)
+                obj += PENALTY_SLACK * 1e2 * (slack_vmag + slack_p + slack_q)
         for e in model.shared_energy_storages:
             for p in model.periods:
                 slack_p_ess = model.slack_expected_shared_ess_p_up[e, p] + model.slack_expected_shared_ess_p_down[e, p]
                 slack_q_ess = model.slack_expected_shared_ess_q_up[e, p] + model.slack_expected_shared_ess_q_down[e, p]
-                obj += PENALTY_SLACK * (slack_p_ess + slack_q_ess)
+                obj += PENALTY_SLACK * 1e2 * (slack_p_ess + slack_q_ess)
     else:
         for p in model.periods:
             slack_vmag = model.slack_expected_interface_vmag_sqr_up[p] + model.slack_expected_interface_vmag_sqr_down[p]
             slack_p = model.slack_expected_interface_pf_p_up[p] + model.slack_expected_interface_pf_p_down[p]
             slack_q = model.slack_expected_interface_pf_q_up[p] + model.slack_expected_interface_pf_q_down[p]
-            obj += PENALTY_SLACK * (slack_vmag + slack_p + slack_q)
+            obj += PENALTY_SLACK * 1e2 *(slack_vmag + slack_p + slack_q)
 
             slack_p_ess = model.slack_expected_shared_ess_p_up[p] + model.slack_expected_shared_ess_p_down[p]
             slack_q_ess = model.slack_expected_shared_ess_q_up[p] + model.slack_expected_shared_ess_q_down[p]
-            obj += PENALTY_SLACK * (slack_p_ess + slack_q_ess)
+            obj += PENALTY_SLACK * 1e2 * (slack_p_ess + slack_q_ess)
 
     # Operation slacks
     if params.slacks:
