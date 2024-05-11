@@ -2553,8 +2553,9 @@ def _get_sensitivities(network_planning, model):
                 else:
                     sensitivities['e'][year][node_id] += num_days * sensitivity_e
 
-        sensitivities['s'][year][node_id] *= num_years * annualization
-        sensitivities['e'][year][node_id] *= num_years * annualization
+        for node_id in network_planning.active_distribution_network_nodes:
+            sensitivities['s'][year][node_id] *= num_years * annualization
+            sensitivities['e'][year][node_id] *= num_years * annualization
 
     return sensitivities
 
