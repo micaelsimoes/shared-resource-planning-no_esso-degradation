@@ -1070,13 +1070,6 @@ def update_distribution_models_to_admm(distribution_networks, models, initial_in
                             dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].setub(None)
                             dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].setlb(None)
 
-                if distribution_network.params.slacks:
-                    for b in dso_model[year][day].branches:
-                        for s_m in dso_model[year][day].scenarios_market:
-                            for s_o in dso_model[year][day].scenarios_operation:
-                                for p in dso_model[year][day].periods:
-                                    dso_model[year][day].slack_iij_sqr[b, s_m, s_o, p].fix(0.00)
-
                 # Add ADMM variables
                 dso_model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
                 dso_model[year][day].rho_v.fix(params.rho['v'][distribution_network.network[year][day].name])
