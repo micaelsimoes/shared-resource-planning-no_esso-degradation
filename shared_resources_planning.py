@@ -398,20 +398,6 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
     transmission_network.update_data_with_candidate_solution(candidate_solution)
     tso_model = transmission_network.build_model()
     transmission_network.update_model_with_candidate_solution(tso_model, candidate_solution)
-    for node_id in transmission_network.active_distribution_network_nodes:
-        for year in transmission_network.years:
-            for day in transmission_network.days:
-                adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(node_id)
-                s_base = transmission_network.network[year][day].baseMVA
-                for s_m in tso_model[year][day].scenarios_market:
-                    for s_o in tso_model[year][day].scenarios_operation:
-                        for p in tso_model[year][day].periods:
-                            pc = interface_pf_vars['dso']['current'][node_id][year][day]['p'][p] / s_base
-                            qc = interface_pf_vars['dso']['current'][node_id][year][day]['q'][p] / s_base
-                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fix(pc)
-                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].fix(qc)
-                            tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].setub(abs(pc))
-                            tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].setub(abs(pc))
 
     results = transmission_network.optimize(tso_model)
 
@@ -4747,9 +4733,7 @@ def _add_adn_node_to_transmission_network(planning_problem):
                     for s_o in range(len(planning_problem.transmission_network.network[year][day].prob_operation_scenarios)):
                         adn_load.pd[s_o] = [0.00 for _ in range(planning_problem.num_instants)]
                         adn_load.qd[s_o] = [0.00 for _ in range(planning_problem.num_instants)]
-                    adn_load.fl_reg = True
-                    adn_load.flexibility.upward = [0.00 for _ in range(planning_problem.num_instants)]
-                    adn_load.flexibility.downward = [0.00 for _ in range(planning_problem.num_instants)]
+                    adn_load.fl_reg = False
                     adn_load.status = 1
                     planning_problem.transmission_network.network[year][day].loads.append(adn_load)
 
