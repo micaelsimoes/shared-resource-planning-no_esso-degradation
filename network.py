@@ -844,6 +844,7 @@ def _build_model(network, params):
         for dn in model.active_distribution_networks:
             node_id = network.active_distribution_network_nodes[dn]
             node_idx = network.get_node_idx(node_id)
+            load_idx = network.get_adn_load_idx(node_id)
             for p in model.periods:
                 expected_pf_p = 0.0
                 expected_pf_q = 0.0
@@ -852,10 +853,8 @@ def _build_model(network, params):
                     omega_m = network.prob_market_scenarios[s_m]
                     for s_o in model.scenarios_operation:
                         omega_o = network.prob_operation_scenarios[s_o]
-                        for c in model.loads:
-                            if network.loads[c].bus == node_id:
-                                expected_pf_p += model.pc[c, s_m, s_o, p] * omega_m * omega_o
-                                expected_pf_q += model.qc[c, s_m, s_o, p] * omega_m * omega_o
+                        expected_pf_p += model.pc[load_idx, s_m, s_o, p] * omega_m * omega_o
+                        expected_pf_q += model.qc[load_idx, s_m, s_o, p] * omega_m * omega_o
                         expected_vmag_sqr += (model.e_actual[node_idx, s_m, s_o, p] ** 2 + model.f_actual[node_idx, s_m, s_o, p] ** 2) * omega_m * omega_o
                 if params.slacks:
                     model.expected_interface_voltage.add(model.expected_interface_vmag_sqr[dn, p] == expected_vmag_sqr + model.slack_expected_interface_vmag_sqr_up[dn, p] - model.slack_expected_interface_vmag_sqr_down[dn, p])
@@ -896,7 +895,6 @@ def _build_model(network, params):
                 for p in model.periods:
                     expected_sess_p = 0.0
                     expected_sess_q = 0.0
-                    expected_sess_s = 0.0
                     for s_m in model.scenarios_market:
                         omega_m = network.prob_market_scenarios[s_m]
                         for s_o in model.scenarios_operation:
@@ -905,11 +903,8 @@ def _build_model(network, params):
                             pdch = model.shared_es_pdch[e, s_m, s_o, p]
                             qch = model.shared_es_qch[e, s_m, s_o, p]
                             qdch = model.shared_es_qdch[e, s_m, s_o, p]
-                            sch = model.shared_es_sch[e, s_m, s_o, p]
-                            sdch = model.shared_es_sdch[e, s_m, s_o, p]
                             expected_sess_p += (pch - pdch) * omega_m * omega_o
                             expected_sess_q += (qch - qdch) * omega_m * omega_o
-                            expected_sess_s += (sch - sdch) * omega_m * omega_o
                     if params.slacks:
                         model.expected_shared_ess_power.add(model.expected_shared_ess_p[e, p] == expected_sess_p + model.slack_expected_shared_ess_p_up[e, p] - model.slack_expected_shared_ess_p_down[e, p])
                         model.expected_shared_ess_power.add(model.expected_shared_ess_q[e, p] == expected_sess_q + model.slack_expected_shared_ess_q_up[e, p] - model.slack_expected_shared_ess_q_down[e, p])
@@ -921,7 +916,6 @@ def _build_model(network, params):
             for p in model.periods:
                 expected_sess_p = 0.0
                 expected_sess_q = 0.0
-                expected_sess_s = 0.0
                 for s_m in model.scenarios_market:
                     omega_m = network.prob_market_scenarios[s_m]
                     for s_o in model.scenarios_operation:
@@ -930,11 +924,8 @@ def _build_model(network, params):
                         pdch = model.shared_es_pdch[shared_ess_idx, s_m, s_o, p]
                         qch = model.shared_es_qch[shared_ess_idx, s_m, s_o, p]
                         qdch = model.shared_es_qdch[shared_ess_idx, s_m, s_o, p]
-                        sch = model.shared_es_sch[shared_ess_idx, s_m, s_o, p]
-                        sdch = model.shared_es_sdch[shared_ess_idx, s_m, s_o, p]
                         expected_sess_p += (pch - pdch) * omega_m * omega_s
                         expected_sess_q += (qch - qdch) * omega_m * omega_s
-                        expected_sess_s += (sch - sdch) * omega_m * omega_s
                 if params.slacks:
                     model.expected_shared_ess_power.add(model.expected_shared_ess_p[p] == expected_sess_p + model.slack_expected_shared_ess_p_up[p] - model.slack_expected_shared_ess_p_down[p])
                     model.expected_shared_ess_power.add(model.expected_shared_ess_q[p] == expected_sess_q + model.slack_expected_shared_ess_q_up[p] - model.slack_expected_shared_ess_q_down[p])
