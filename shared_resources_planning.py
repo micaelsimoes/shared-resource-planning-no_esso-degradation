@@ -1019,8 +1019,8 @@ def update_transmission_model_to_admm(transmission_network, model, initial_inter
                 if isclose(rating, 0.00, abs_tol=SMALL_TOLERANCE):
                     rating = 1.00       # Do not balance residuals
                 for p in model[year][day].periods:
-                    constraint_ess_p = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_req[e, p]) / rating
-                    constraint_ess_q = (model[year][day].expected_shared_ess_q[e, p] - model[year][day].q_ess_req[e, p]) / rating
+                    constraint_ess_p = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_req[e, p]) / (2 * rating)
+                    constraint_ess_q = (model[year][day].expected_shared_ess_q[e, p] - model[year][day].q_ess_req[e, p]) / (2 * rating)
                     obj += model[year][day].dual_ess_p_req[e, p] * constraint_ess_p
                     obj += model[year][day].dual_ess_q_req[e, p] * constraint_ess_q
                     obj += (model[year][day].rho_ess / 2) * constraint_ess_p ** 2
@@ -1128,8 +1128,8 @@ def update_distribution_models_to_admm(distribution_networks, models, initial_in
                 if isclose(sess_rating, 0.00, abs_tol=SMALL_TOLERANCE):  # Do not balance residuals
                     sess_rating = 1.00
                 for p in dso_model[year][day].periods:
-                    constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_req[p]) / sess_rating
-                    constraint_ess_q_req = (dso_model[year][day].expected_shared_ess_q[p] - dso_model[year][day].q_ess_req[p]) / sess_rating
+                    constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_req[p]) / (2 * sess_rating)
+                    constraint_ess_q_req = (dso_model[year][day].expected_shared_ess_q[p] - dso_model[year][day].q_ess_req[p]) / (2 * sess_rating)
                     obj += dso_model[year][day].dual_ess_p_req[p] * constraint_ess_p_req
                     obj += dso_model[year][day].dual_ess_q_req[p] * constraint_ess_q_req
                     obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_p_req ** 2
@@ -1145,14 +1145,10 @@ def update_shared_energy_storage_model_to_admm(shared_ess_data, model, params):
     model.rho.fix(params.rho['ess']['esso'])
 
     # Active and Reactive power requested by TSO and DSOs
-    model.p_req_tso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)            # Active power - TSO
-    model.q_req_tso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)            # Reactive power - TSO
-    model.p_req_dso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)            # Active power DSO
-    model.q_req_dso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)            # Reactive power - DSO
-    model.dual_p_req_tso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)       # Dual variables - TSO
-    model.dual_q_req_tso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)       # Dual variables - TSO
-    model.dual_p_req_dso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)       # Dual variables - DSO
-    model.dual_q_req_dso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)       # Dual variables - DSO
+    model.p_req = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)            # Active power
+    model.q_req = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)            # Reactive power
+    model.dual_p_req = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)       # Dual variables
+    model.dual_q_req = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)       # Dual variables
 
     # Objective function - augmented Lagrangian
     init_of_value = pe.value(model.objective)
@@ -1164,18 +1160,12 @@ def update_shared_energy_storage_model_to_admm(shared_ess_data, model, params):
                 rating_s = 1.00     # Do not balance residuals
             for d in model.days:
                 for p in model.periods:
-                    constraint_p_req_tso = (model.es_pnet[e, y, d, p] - model.p_req_tso[e, y, d, p]) / rating_s
-                    constraint_q_req_tso = (model.es_qnet[e, y, d, p] - model.q_req_tso[e, y, d, p]) / rating_s
-                    constraint_p_req_dso = (model.es_pnet[e, y, d, p] - model.p_req_dso[e, y, d, p]) / rating_s
-                    constraint_q_req_dso = (model.es_qnet[e, y, d, p] - model.q_req_dso[e, y, d, p]) / rating_s
-                    obj += model.dual_p_req_tso[e, y, d, p] * constraint_p_req_tso
-                    obj += model.dual_q_req_tso[e, y, d, p] * constraint_q_req_tso
-                    obj += model.dual_p_req_dso[e, y, d, p] * constraint_p_req_dso
-                    obj += model.dual_q_req_dso[e, y, d, p] * constraint_q_req_dso
-                    obj += (model.rho / 2) * constraint_p_req_tso ** 2
-                    obj += (model.rho / 2) * constraint_q_req_tso ** 2
-                    obj += (model.rho / 2) * constraint_p_req_dso ** 2
-                    obj += (model.rho / 2) * constraint_q_req_dso ** 2
+                    constraint_p_req = (model.es_pnet[e, y, d, p] - model.p_req[e, y, d, p]) / (2 * rating_s)
+                    constraint_q_req = (model.es_qnet[e, y, d, p] - model.q_req_tso[e, y, d, p]) / (2 * rating_s)
+                    obj += model.dual_p_req[e, y, d, p] * constraint_p_req
+                    obj += model.dual_q_req[e, y, d, p] * constraint_q_req
+                    obj += (model.rho / 2) * constraint_p_req ** 2
+                    obj += (model.rho / 2) * constraint_q_req ** 2
 
     model.objective.expr = obj
 
