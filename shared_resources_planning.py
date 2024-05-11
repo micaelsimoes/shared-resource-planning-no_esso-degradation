@@ -154,8 +154,6 @@ def _run_planning_problem(planning_problem):
             convergence = True
             break
 
-        iter += 1
-
         # 2. Solve Master problem
         # 2.1. Add Benders' cut, based on the sensitivities obtained from the subproblem
         # 2.2. Run master problem optimization
@@ -166,6 +164,14 @@ def _run_planning_problem(planning_problem):
         lower_bound = pe.value(master_problem_model.alpha)
         lower_bound_evolution.append(lower_bound)
 
+        #  - Convergence check
+        if iter > 1:
+            if isclose(upper_bound, lower_bound, abs_tol=benders_parameters.tol_abs, rel_tol=benders_parameters.tol_rel) or lower_bound > upper_bound:
+                lower_bound_evolution.append(lower_bound)
+                convergence = True
+                break
+
+        iter += 1
         from_warm_start = True
 
     if not convergence:
@@ -404,8 +410,8 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                             qc = interface_pf_vars['dso']['current'][node_id][year][day]['q'][p] / s_base
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fix(pc)
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].fix(qc)
-                            tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].setub(abs(pc) * 0.25)
-                            tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].setub(abs(pc) * 0.25)
+                            tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].setub(abs(pc))
+                            tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].setub(abs(pc))
 
     results = transmission_network.optimize(tso_model)
 
