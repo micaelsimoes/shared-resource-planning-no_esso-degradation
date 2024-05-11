@@ -151,7 +151,7 @@ def _run_planning_problem(planning_problem):
         upper_bound_evolution.append(upper_bound)
 
         #  - Convergence check
-        if isclose(upper_bound, lower_bound, abs_tol=benders_parameters.tol_abs, rel_tol=benders_parameters.tol_rel) or lower_bound > upper_bound:
+        if isclose(upper_bound, lower_bound, abs_tol=benders_parameters.tol_abs, rel_tol=benders_parameters.tol_rel):
             lower_bound_evolution.append(lower_bound)
             convergence = True
             break
@@ -165,13 +165,6 @@ def _run_planning_problem(planning_problem):
         candidate_solution = shared_ess_data.get_candidate_solution(master_problem_model)
         lower_bound = pe.value(master_problem_model.alpha)
         lower_bound_evolution.append(lower_bound)
-
-        #  - Convergence check
-        if iter > 1:
-            if isclose(upper_bound, lower_bound, abs_tol=benders_parameters.tol_abs, rel_tol=benders_parameters.tol_rel) or lower_bound > upper_bound:
-                lower_bound_evolution.append(lower_bound)
-                convergence = True
-                break
 
         iter += 1
         from_warm_start = True
@@ -1148,8 +1141,7 @@ def update_shared_energy_storage_model_to_admm(shared_ess_data, model, params):
     model.dual_q_req = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)       # Dual variables
 
     # Objective function - augmented Lagrangian
-    init_of_value = pe.value(model.objective)
-    obj = model.objective.expr / abs(init_of_value)
+    obj = model.objective.expr
     for e in model.energy_storages:
         for y in model.years:
             rating_s = pe.value(model.es_s_rated[e, y])
