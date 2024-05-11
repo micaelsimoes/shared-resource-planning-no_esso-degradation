@@ -943,8 +943,8 @@ def update_transmission_model_to_admm(transmission_network, model, initial_inter
 
             # Free Pc and Qc at the connection point with distribution networks
             for node_id in transmission_network.active_distribution_network_nodes:
-                adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(node_id)
                 node_idx = transmission_network.network[year][day].get_node_idx(node_id)
+                adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(node_id)
                 for s_m in model[year][day].scenarios_market:
                     for s_o in model[year][day].scenarios_operation:
                         for p in model[year][day].periods:
