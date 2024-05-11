@@ -40,6 +40,9 @@ class SharedEnergyStorageData:
         print('[INFO] \t\t - Running Shared ESS optimization...')
         return _optimize(model, self.params.solver_params, from_warm_start=from_warm_start)
 
+    def get_primal_value(self, model):
+        return pe.value(model.primal)
+
     def update_model_with_candidate_solution(self, model, candidate_solution):
         _update_model_with_candidate_solution(self, model, candidate_solution)
 
@@ -313,6 +316,9 @@ def _build_subproblem_model(shared_ess_data):
     model.es_soh_per_unit.fix(1.00)
     model.es_soh_per_unit_cumul.fix(1.00)
 
+    # Primal
+    model.primal = pe.Var(domain=pe.Reals, initialize=0.0)
+
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
     # - Sinv and Einv fixing constraints
@@ -478,6 +484,10 @@ def _build_subproblem_model(shared_ess_data):
                         slack_penalty += PENALTY_SLACK * (model.slack_es_snet_def_up[e, y_inv, d, p] + model.slack_es_snet_def_down[e, y_inv, d, p])
 
     model.objective = pe.Objective(sense=pe.minimize, expr=slack_penalty)
+
+    # Primal definition
+    model.primal_cons = pe.ConstraintList()
+    model.primal_cons.add(model.primal == slack_penalty)
 
     # Define that we want the duals
     model.ipopt_zL_out = pe.Suffix(direction=pe.Suffix.IMPORT)  # Ipopt bound multipliers (obtained from solution)
