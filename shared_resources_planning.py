@@ -404,9 +404,7 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                             qc = interface_pf_vars['dso']['current'][node_id][year][day]['q'][p] / s_base
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fix(pc)
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].fix(qc)
-                            if transmission_network.params.fl_reg:
-                                tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].fix(0.0)
-                                tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].fix(0.0)
+
     results = transmission_network.optimize(tso_model)
 
     for year in transmission_network.years:
@@ -963,6 +961,9 @@ def update_transmission_model_to_admm(transmission_network, model, initial_inter
                             model[year][day].qc[adn_load_idx, s_m, s_o, p].fixed = False
                             model[year][day].qc[adn_load_idx, s_m, s_o, p].setub(None)
                             model[year][day].qc[adn_load_idx, s_m, s_o, p].setlb(None)
+                            if transmission_network.params.fl_reg:
+                                model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].fix(0.0)
+                                model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].fix(0.0)
 
                             if transmission_network.params.slacks:
                                 model[year][day].slack_e_up[node_idx, s_m, s_o, p].fix(0.00)
