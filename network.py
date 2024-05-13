@@ -1005,7 +1005,7 @@ def _build_model(network, params):
         exit(ERROR_NETWORK_MODEL)
 
     # Slacks
-    penalty = network.baseMVA * PENALTY_SLACK
+    penalty = PENALTY_SLACK * network.baseMVA
     for s_m in model.scenarios_market:
         for s_o in model.scenarios_operation:
 
