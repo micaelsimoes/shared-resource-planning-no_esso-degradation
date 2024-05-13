@@ -1005,6 +1005,7 @@ def _build_model(network, params):
         exit(ERROR_NETWORK_MODEL)
 
     # Slacks
+    penalty = network.baseMVA * PENALTY_SLACK
     for s_m in model.scenarios_market:
         for s_o in model.scenarios_operation:
 
@@ -1013,19 +1014,19 @@ def _build_model(network, params):
                 for p in model.periods:
                     slack_e = model.slack_e_up[i, s_m, s_o, p] + model.slack_e_down[i, s_m, s_o, p]
                     slack_f = model.slack_f_up[i, s_m, s_o, p] + model.slack_f_down[i, s_m, s_o, p]
-                    obj += PENALTY_SLACK * (slack_e + slack_f)
+                    obj += penalty * (slack_e + slack_f)
 
             # Branch power flow slacks
             for b in model.branches:
                 for p in model.periods:
                     slack_iij_sqr = model.slack_iij_sqr[b, s_m, s_o, p]
-                    obj += PENALTY_SLACK * slack_iij_sqr
+                    obj += penalty * slack_iij_sqr
 
     # Sensitivities' slacks
     for e in model.shared_energy_storages:
         slack_s = model.shared_es_s_slack_up[e] + model.shared_es_s_slack_down[e]
         slack_e = model.shared_es_e_slack_up[e] + model.shared_es_e_slack_down[e]
-        obj += PENALTY_SLACK * (slack_s + slack_e)
+        obj += penalty * (slack_s + slack_e)
 
     # Interface slacks
     if network.is_transmission:
@@ -1034,22 +1035,22 @@ def _build_model(network, params):
                 slack_vmag = model.slack_expected_interface_vmag_sqr_up[dn, p] + model.slack_expected_interface_vmag_sqr_down[dn, p]
                 slack_p = model.slack_expected_interface_pf_p_up[dn, p] + model.slack_expected_interface_pf_p_down[dn, p]
                 slack_q = model.slack_expected_interface_pf_q_up[dn, p] + model.slack_expected_interface_pf_q_down[dn, p]
-                obj += PENALTY_SLACK * (slack_vmag + slack_p + slack_q)
+                obj += penalty * (slack_vmag + slack_p + slack_q)
         for e in model.shared_energy_storages:
             for p in model.periods:
                 slack_p_ess = model.slack_expected_shared_ess_p_up[e, p] + model.slack_expected_shared_ess_p_down[e, p]
                 slack_q_ess = model.slack_expected_shared_ess_q_up[e, p] + model.slack_expected_shared_ess_q_down[e, p]
-                obj += PENALTY_SLACK * (slack_p_ess + slack_q_ess)
+                obj += penalty * (slack_p_ess + slack_q_ess)
     else:
         for p in model.periods:
             slack_vmag = model.slack_expected_interface_vmag_sqr_up[p] + model.slack_expected_interface_vmag_sqr_down[p]
             slack_p = model.slack_expected_interface_pf_p_up[p] + model.slack_expected_interface_pf_p_down[p]
             slack_q = model.slack_expected_interface_pf_q_up[p] + model.slack_expected_interface_pf_q_down[p]
-            obj += PENALTY_SLACK * (slack_vmag + slack_p + slack_q)
+            obj += penalty * (slack_vmag + slack_p + slack_q)
 
             slack_p_ess = model.slack_expected_shared_ess_p_up[p] + model.slack_expected_shared_ess_p_down[p]
             slack_q_ess = model.slack_expected_shared_ess_q_up[p] + model.slack_expected_shared_ess_q_down[p]
-            obj += PENALTY_SLACK * (slack_p_ess + slack_q_ess)
+            obj += penalty * (slack_p_ess + slack_q_ess)
 
     # Operation slacks
     if params.slacks:
@@ -1062,13 +1063,13 @@ def _build_model(network, params):
                     for p in model.periods:
                         slack_p = model.slack_node_balance_p_up[i, s_m, s_o, p] + model.slack_node_balance_p_down[i, s_m, s_o, p]
                         slack_q = model.slack_node_balance_q_up[i, s_m, s_o, p] + model.slack_node_balance_q_down[i, s_m, s_o, p]
-                        obj += PENALTY_SLACK * (slack_p + slack_q)
+                        obj += penalty * (slack_p + slack_q)
 
                 # Flexibility day balance
                 if params.fl_reg:
                     for c in model.loads:
                         slack_flex = model.slack_flex_p_balance_up[c, s_m, s_o] + model.slack_flex_p_balance_down[c, s_m, s_o]
-                        obj += PENALTY_SLACK * slack_flex
+                        obj += penalty * slack_flex
 
                 # ESS slacks
                 if params.es_reg:
@@ -1078,9 +1079,9 @@ def _build_model(network, params):
                             slack_sch = model.slack_es_sch_up[e, s_m, s_o, p] + model.slack_es_sch_down[e, s_m, s_o, p]
                             slack_sdch = model.slack_es_sdch_up[e, s_m, s_o, p] + model.slack_es_sdch_down[e, s_m, s_o, p]
                             slack_soc = model.slack_es_soc_up[e, s_m, s_o, p] + model.slack_es_soc_down[e, s_m, s_o, p]
-                            obj += PENALTY_SLACK * (slack_comp + slack_sch + slack_sdch + slack_soc)
+                            obj += penalty * (slack_comp + slack_sch + slack_sdch + slack_soc)
                         slack_soc_final = model.slack_es_soc_final_up[e, s_m, s_o] + model.slack_es_soc_final_down[e, s_m, s_o]
-                        obj += PENALTY_SLACK * slack_soc_final
+                        obj += penalty * slack_soc_final
 
                 # Shared ESS slacks
                 for e in model.shared_energy_storages:
@@ -1089,9 +1090,9 @@ def _build_model(network, params):
                         slack_sch = model.slack_shared_es_sch_up[e, s_m, s_o, p] + model.slack_shared_es_sch_down[e, s_m, s_o, p]
                         slack_sdch = model.slack_shared_es_sdch_up[e, s_m, s_o, p] + model.slack_shared_es_sdch_down[e, s_m, s_o, p]
                         slack_soc = model.slack_shared_es_soc_up[e, s_m, s_o, p] + model.slack_shared_es_soc_down[e, s_m, s_o, p]
-                        obj += PENALTY_SLACK * (slack_comp + slack_sch + slack_sdch + slack_soc)
+                        obj += penalty * (slack_comp + slack_sch + slack_sdch + slack_soc)
                     slack_soc_final = model.slack_shared_es_soc_final_up[e, s_m, s_o] + model.slack_shared_es_soc_final_down[e, s_m, s_o]
-                    obj += PENALTY_SLACK * slack_soc_final
+                    obj += penalty * slack_soc_final
 
     model.objective = pe.Objective(sense=pe.minimize, expr=obj)
 
