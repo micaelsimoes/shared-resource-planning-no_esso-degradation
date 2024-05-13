@@ -360,8 +360,8 @@ def _build_model(network, params):
                             model.flex_p_up[c, s_m, s_o, p].setub(abs(max(flex_up, flex_down)))
                             model.flex_p_down[c, s_m, s_o, p].setub(abs(max(flex_up, flex_down)))
                         else:
-                            model.flex_p_up[c, s_m, s_o, p].setub(abs(max(flex_up, flex_down)))
-                            model.flex_p_down[c, s_m, s_o, p].setub(abs(max(flex_up, flex_down)))
+                            model.flex_p_up[c, s_m, s_o, p].fix(0.00)
+                            model.flex_p_down[c, s_m, s_o, p].fix(0.00)
                     if not load.fl_reg:
                         model.slack_flex_p_balance_up[c, s_m, s_o].fix(0.00)
                         model.slack_flex_p_balance_down[c, s_m, s_o].fix(0.00)
@@ -1025,7 +1025,7 @@ def _build_model(network, params):
     for e in model.shared_energy_storages:
         slack_s = model.shared_es_s_slack_up[e] + model.shared_es_s_slack_down[e]
         slack_e = model.shared_es_e_slack_up[e] + model.shared_es_e_slack_down[e]
-        obj += PENALTY_SLACK * 10 * (slack_s + slack_e)
+        obj += PENALTY_SLACK * (slack_s + slack_e)
 
     # Interface slacks
     if network.is_transmission:
