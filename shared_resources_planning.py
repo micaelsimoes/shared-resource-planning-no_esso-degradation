@@ -240,6 +240,8 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
 
     tso_model, results['tso'] = create_transmission_network_model(transmission_network, consensus_vars['interface']['v_sqr'], consensus_vars['interface']['pf'], consensus_vars['ess']['tso'], candidate_solution['total_capacity'])
     update_transmission_model_to_admm(transmission_network, tso_model, consensus_vars['interface']['pf'], admm_parameters)
+    processed_results = transmission_network.process_results(tso_model, results['tso'])
+    transmission_network.write_optimization_results_to_excel(processed_results)
 
     esso_model, results['esso'] = create_shared_energy_storage_model(shared_ess_data, consensus_vars['ess'], candidate_solution['investment'])
     update_shared_energy_storage_model_to_admm(shared_ess_data, esso_model, admm_parameters)
@@ -404,8 +406,9 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                             qc = interface_pf_vars['dso']['current'][node_id][year][day]['q'][p] / s_base
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fix(pc)
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].fix(qc)
-                            tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].setub(abs(pc))
-                            tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].setub(abs(pc))
+                            if transmission_network.params.fl_reg:
+                                tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].setub(abs(pc))
+                                tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].setub(abs(pc))
 
     results = transmission_network.optimize(tso_model)
 
@@ -3934,13 +3937,15 @@ def _write_network_energy_storages_results_to_excel(planning_problem, workbook, 
     # Write results -- TSO
     tso_results = results['tso']['results']
     transmission_network = planning_problem.transmission_network.network
-    row_idx = _write_network_energy_storages_results_per_operator(transmission_network, sheet, 'TSO', row_idx, tso_results)
+    if planning_problem.transmission_network.params.es_reg:
+        row_idx = _write_network_energy_storages_results_per_operator(transmission_network, sheet, 'TSO', row_idx, tso_results)
 
     # Write results -- DSOs
     for tn_node_id in results['dso']:
         dso_results = results['dso'][tn_node_id]['results']
         distribution_network = planning_problem.distribution_networks[tn_node_id].network
-        row_idx = _write_network_energy_storages_results_per_operator(distribution_network, sheet, 'DSO', row_idx, dso_results, tn_node_id=tn_node_id)
+        if planning_problem.distribution_networks[tn_node_id].params.es_reg:
+            row_idx = _write_network_energy_storages_results_per_operator(distribution_network, sheet, 'DSO', row_idx, dso_results, tn_node_id=tn_node_id)
 
 
 def _write_network_energy_storages_results_per_operator(network, sheet, operator_type, row_idx, results, tn_node_id='-'):
