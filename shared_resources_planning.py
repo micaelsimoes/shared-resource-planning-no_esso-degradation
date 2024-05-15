@@ -237,6 +237,9 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     # Create Operational Planning models
     dso_models, results['dso'] = create_distribution_networks_models(distribution_networks, consensus_vars['interface']['pf']['dso'], consensus_vars['ess']['dso'], candidate_solution['total_capacity'])
     update_distribution_models_to_admm(distribution_networks, dso_models, consensus_vars['interface']['pf']['dso'], admm_parameters)
+    for node_id in distribution_networks:
+        processed_results = distribution_networks[node_id].process_results(dso_models[node_id], results['dso'][node_id])
+        distribution_networks[node_id].write_optimization_results_to_excel(processed_results)
 
     tso_model, results['tso'] = create_transmission_network_model(transmission_network, consensus_vars['interface']['v_sqr'], consensus_vars['interface']['pf'], consensus_vars['ess']['tso'], candidate_solution['total_capacity'])
     update_transmission_model_to_admm(transmission_network, tso_model, consensus_vars['interface']['pf'], admm_parameters)
