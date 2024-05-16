@@ -235,7 +235,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     consensus_vars, dual_vars = create_admm_variables(planning_problem)
 
     # Create Operational Planning models
-    dso_models, results['dso'] = create_distribution_networks_models(distribution_networks, consensus_vars['interface']['pf']['dso'], consensus_vars['ess']['dso'], candidate_solution['total_capacity'])
+    dso_models, results['dso'] = create_distribution_networks_models(distribution_networks, consensus_vars['interface']['v_sqr']['dso'], consensus_vars['interface']['pf']['dso'], consensus_vars['ess']['dso'], candidate_solution['total_capacity'])
     update_distribution_models_to_admm(distribution_networks, dso_models, consensus_vars['interface']['pf']['dso'], admm_parameters)
     for node_id in distribution_networks:
         processed_results = distribution_networks[node_id].process_results(dso_models[node_id], results['dso'][node_id])
@@ -405,13 +405,15 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                 for s_m in tso_model[year][day].scenarios_market:
                     for s_o in tso_model[year][day].scenarios_operation:
                         for p in tso_model[year][day].periods:
+                            vmag_sqr = interface_pf_vars['dso']['current'][node_id][year][day]['v_sqr'][p]
                             pc = interface_pf_vars['dso']['current'][node_id][year][day]['p'][p] / s_base
                             qc = interface_pf_vars['dso']['current'][node_id][year][day]['q'][p] / s_base
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fix(pc)
+                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fix(pc)
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].fix(qc)
                             if transmission_network.params.fl_reg:
-                                tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].setub(abs(pc))
-                                tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].setub(abs(pc))
+                                tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
 
     results = transmission_network.optimize(tso_model)
 
@@ -445,7 +447,7 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
     return tso_model, results
 
 
-def create_distribution_networks_models(distribution_networks, interface_vars, sess_vars, candidate_solution):
+def create_distribution_networks_models(distribution_networks, interface_vars_vmag, interface_vars_pf, sess_vars, candidate_solution):
 
     dso_models = dict()
     results = dict()
@@ -465,13 +467,16 @@ def create_distribution_networks_models(distribution_networks, interface_vars, s
                 s_base = distribution_network.network[year][day].baseMVA
                 for p in dso_model[year][day].periods:
 
-                    # Get initial interface PF values
+                    # Get initial interface PF and Vmag values
+                    interface_pf_vmag_sqr = pe.value(dso_model[year][day].expected_interface_vmag_sqr[p])
                     interface_pf_p = pe.value(dso_model[year][day].expected_interface_pf_p[p]) * s_base
                     interface_pf_q = pe.value(dso_model[year][day].expected_interface_pf_q[p]) * s_base
-                    interface_vars['current'][node_id][year][day]['p'][p] = interface_pf_p
-                    interface_vars['current'][node_id][year][day]['q'][p] = interface_pf_q
-                    interface_vars['prev'][node_id][year][day]['p'][p] = interface_pf_p
-                    interface_vars['prev'][node_id][year][day]['q'][p] = interface_pf_q
+                    interface_vars_vmag['current'][node_id][year][day][p] = interface_pf_vmag_sqr
+                    interface_vars_pf['current'][node_id][year][day]['p'][p] = interface_pf_p
+                    interface_vars_pf['current'][node_id][year][day]['q'][p] = interface_pf_q
+                    interface_vars_vmag['prev'][node_id][year][day][p] = interface_pf_vmag_sqr
+                    interface_vars_pf['prev'][node_id][year][day]['p'][p] = interface_pf_p
+                    interface_vars_pf['prev'][node_id][year][day]['q'][p] = interface_pf_q
 
                     # Get initial Shared ESS values
                     p_ess = pe.value(dso_model[year][day].expected_shared_ess_p[p]) * s_base
@@ -1054,25 +1059,16 @@ def update_distribution_models_to_admm(distribution_networks, models, initial_in
 
                 ref_node_idx = distribution_network.network[year][day].get_node_idx(ref_node_id)
                 ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
-                for s_m in dso_model[year][day].scenarios_market:
-                    for s_o in dso_model[year][day].scenarios_operation:
-                        for p in dso_model[year][day].periods:
 
-                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].fixed = False
-                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setub(None)
-                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setlb(None)
-                            if distribution_network.params.slacks:
-                                dso_model[year][day].slack_e_up[ref_node_idx, s_m, s_o, p].fix(0.00)
-                                dso_model[year][day].slack_e_down[ref_node_idx, s_m, s_o, p].fix(0.00)
-                                dso_model[year][day].slack_f_up[ref_node_idx, s_m, s_o, p].fix(0.00)
-                                dso_model[year][day].slack_f_down[ref_node_idx, s_m, s_o, p].fix(0.00)
+                dso_model[year][day].expected_interface_vmag_sqr.fixed = False
+                dso_model[year][day].expected_interface_vmag_sqr.setub(None)
 
-                            dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].fixed = False
-                            dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].setub(None)
-                            dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].setlb(None)
-                            dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].fixed = False
-                            dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].setub(None)
-                            dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].setlb(None)
+                dso_model[year][day].expected_interface_pf_p.fixed = False
+                dso_model[year][day].expected_interface_pf_p.setub(None)
+                dso_model[year][day].expected_interface_pf_p.setlb(None)
+                dso_model[year][day].expected_interface_pf_q.fixed = False
+                dso_model[year][day].expected_interface_pf_q.setub(None)
+                dso_model[year][day].expected_interface_pf_q.setlb(None)
 
                 # Add ADMM variables
                 dso_model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
