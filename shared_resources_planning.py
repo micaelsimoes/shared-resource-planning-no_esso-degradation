@@ -397,23 +397,18 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
     transmission_network.update_data_with_candidate_solution(candidate_solution)
     tso_model = transmission_network.build_model()
     transmission_network.update_model_with_candidate_solution(tso_model, candidate_solution)
-    for node_id in transmission_network.active_distribution_network_nodes:
+    for dn in range(len(transmission_network.active_distribution_network_nodes)):
+        node_id = transmission_network.active_distribution_network_nodes[dn]
         for year in transmission_network.years:
             for day in transmission_network.days:
-                adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(node_id)
                 s_base = transmission_network.network[year][day].baseMVA
-                for s_m in tso_model[year][day].scenarios_market:
-                    for s_o in tso_model[year][day].scenarios_operation:
-                        for p in tso_model[year][day].periods:
-                            vmag_sqr = interface_pf_vars['dso']['current'][node_id][year][day]['v_sqr'][p]
-                            pc = interface_pf_vars['dso']['current'][node_id][year][day]['p'][p] / s_base
-                            qc = interface_pf_vars['dso']['current'][node_id][year][day]['q'][p] / s_base
-                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fix(pc)
-                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fix(pc)
-                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].fix(qc)
-                            if transmission_network.params.fl_reg:
-                                tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                for p in tso_model[year][day].periods:
+                    vmag_sqr = interface_pf_vars['dso']['current'][node_id][year][day]['v_sqr'][p]
+                    pc = interface_pf_vars['dso']['current'][node_id][year][day]['p'][p] / s_base
+                    qc = interface_pf_vars['dso']['current'][node_id][year][day]['q'][p] / s_base
+                    tso_model[year][day].expected_interface_vmag_sqr[dn, p].fix(vmag_sqr)
+                    tso_model[year][day].expected_interface_pf_p[dn, p].fix(pc)
+                    tso_model[year][day].expected_interface_pf_q[dn, p].fix(qc)
 
     results = transmission_network.optimize(tso_model)
 
@@ -959,17 +954,18 @@ def update_transmission_model_to_admm(transmission_network, model, initial_inter
             s_base = transmission_network.network[year][day].baseMVA
 
             # Free Pc and Qc at the connection point with distribution networks
-            for node_id in transmission_network.active_distribution_network_nodes:
-                adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(node_id)
-                for s_m in model[year][day].scenarios_market:
-                    for s_o in model[year][day].scenarios_operation:
-                        for p in model[year][day].periods:
-                            model[year][day].pc[adn_load_idx, s_m, s_o, p].fixed = False
-                            model[year][day].pc[adn_load_idx, s_m, s_o, p].setub(None)
-                            model[year][day].pc[adn_load_idx, s_m, s_o, p].setlb(None)
-                            model[year][day].qc[adn_load_idx, s_m, s_o, p].fixed = False
-                            model[year][day].qc[adn_load_idx, s_m, s_o, p].setub(None)
-                            model[year][day].qc[adn_load_idx, s_m, s_o, p].setlb(None)
+            for dn in range(len(transmission_network.active_distribution_network_nodes)):
+                for p in model[year][day].periods:
+
+                    model[year][day].expected_interface_vmag_sqr[dn, p].fixed = False
+                    model[year][day].expected_interface_vmag_sqr[dn, p].setub(None)
+
+                    model[year][day].expected_interface_pf_p[dn, p].fixed = False
+                    model[year][day].expected_interface_pf_p[dn, p].setub(None)
+                    model[year][day].expected_interface_pf_p[dn, p].setlb(None)
+                    model[year][day].expected_interface_pf_q[dn, p].fixed = False
+                    model[year][day].expected_interface_pf_q[dn, p].setub(None)
+                    model[year][day].expected_interface_pf_q[dn, p].setlb(None)
 
             # Add ADMM variables
             model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
@@ -1002,26 +998,31 @@ def update_transmission_model_to_admm(transmission_network, model, initial_inter
             for dn in model[year][day].active_distribution_networks:
                 node_id = transmission_network.active_distribution_network_nodes[dn]
                 for p in model[year][day].periods:
+
                     init_p = initial_interface_pf['dso']['current'][node_id][year][day]['p'][p] / s_base
                     init_q = initial_interface_pf['dso']['current'][node_id][year][day]['q'][p] / s_base
+
                     constraint_v_req = (model[year][day].expected_interface_vmag_sqr[dn, p] - model[year][day].v_sqr_req[dn, p])
                     constraint_p_req = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_req[dn, p]) / abs(init_p)
                     constraint_q_req = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_req[dn, p]) / abs(init_q)
-                    constraint_v_prev = (model[year][day].expected_interface_vmag_sqr[dn, p] - model[year][day].v_sqr_prev[dn, p])
-                    constraint_p_prev = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_prev[dn, p]) / abs(init_p)
-                    constraint_q_prev = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_prev[dn, p]) / abs(init_q)
+
                     obj += model[year][day].dual_v_sqr_req[dn, p] * constraint_v_req
                     obj += model[year][day].dual_pf_p_req[dn, p] * constraint_p_req
                     obj += model[year][day].dual_pf_q_req[dn, p] * constraint_q_req
-                    obj += (model[year][day].rho_pf / 2) * constraint_v_req ** 2
-                    obj += (model[year][day].rho_pf / 2) * constraint_p_req ** 2
-                    obj += (model[year][day].rho_pf / 2) * constraint_q_req ** 2
+                    obj += (model[year][day].rho_pf / 2) * (constraint_v_req ** 2)
+                    obj += (model[year][day].rho_pf / 2) * (constraint_p_req ** 2)
+                    obj += (model[year][day].rho_pf / 2) * (constraint_q_req ** 2)
+
+                    constraint_v_prev = (model[year][day].expected_interface_vmag_sqr[dn, p] - model[year][day].v_sqr_prev[dn, p])
+                    constraint_p_prev = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_prev[dn, p]) / abs(init_p)
+                    constraint_q_prev = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_prev[dn, p]) / abs(init_q)
+
                     obj += model[year][day].dual_v_sqr_prev[dn, p] * constraint_v_prev
                     obj += model[year][day].dual_pf_p_prev[dn, p] * constraint_p_prev
                     obj += model[year][day].dual_pf_q_prev[dn, p] * constraint_q_prev
-                    obj += (model[year][day].rho_v / 2) * constraint_v_prev ** 2
-                    obj += (model[year][day].rho_pf / 2) * constraint_p_prev ** 2
-                    obj += (model[year][day].rho_pf / 2) * constraint_q_prev ** 2
+                    obj += (model[year][day].rho_v / 2) * (constraint_v_prev ** 2)
+                    obj += (model[year][day].rho_pf / 2) * (constraint_p_prev ** 2)
+                    obj += (model[year][day].rho_pf / 2) * (constraint_q_prev ** 2)
 
             for e in model[year][day].active_distribution_networks:
                 rating = transmission_network.network[year][day].shared_energy_storages[e].s
@@ -1057,9 +1058,7 @@ def update_distribution_models_to_admm(distribution_networks, models, initial_in
                 if distribution_network.params.obj_type == OBJ_MIN_COST:
                     init_of_value = pe.value(dso_model[year][day].objective)
 
-                ref_node_idx = distribution_network.network[year][day].get_node_idx(ref_node_id)
-                ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
-
+                # Free expected interface Vmag and PF
                 dso_model[year][day].expected_interface_vmag_sqr.fixed = False
                 dso_model[year][day].expected_interface_vmag_sqr.setub(None)
 
@@ -1101,26 +1100,31 @@ def update_distribution_models_to_admm(distribution_networks, models, initial_in
 
                 # Augmented Lagrangian -- Interface power flow (residual balancing)
                 for p in dso_model[year][day].periods:
+
                     init_pf_p = initial_interface_pf['current'][node_id][year][day]['p'][p] / s_base
                     init_pf_q = initial_interface_pf['current'][node_id][year][day]['q'][p] / s_base
+
                     constraint_vmag_req = (dso_model[year][day].expected_interface_vmag_sqr[p] - dso_model[year][day].v_sqr_req[p])
                     constraint_p_req = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_req[p]) / abs(init_pf_p)
                     constraint_q_req = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_req[p]) / abs(init_pf_q)
+
+                    obj += (dso_model[year][day].dual_v_sqr_req[p]) * constraint_vmag_req
+                    obj += (dso_model[year][day].dual_pf_p_req[p]) * constraint_p_req
+                    obj += (dso_model[year][day].dual_pf_q_req[p]) * constraint_q_req
+                    obj += (dso_model[year][day].rho_v / 2) * (constraint_vmag_req ** 2)
+                    obj += (dso_model[year][day].rho_pf / 2) * (constraint_p_req ** 2)
+                    obj += (dso_model[year][day].rho_pf / 2) * (constraint_q_req ** 2)
+
                     constraint_vmag_prev = (dso_model[year][day].expected_interface_vmag_sqr[p] - dso_model[year][day].v_sqr_prev[p])
                     constraint_p_prev = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_prev[p]) / abs(init_pf_p)
                     constraint_q_prev = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_prev[p]) / abs(init_pf_q)
-                    obj += (dso_model[year][day].dual_v_sqr_req[p]) * (constraint_vmag_req)
-                    obj += (dso_model[year][day].dual_pf_p_req[p]) * (constraint_p_req)
-                    obj += (dso_model[year][day].dual_pf_q_req[p]) * (constraint_q_req)
-                    obj += (dso_model[year][day].rho_v / 2) * (constraint_vmag_req) ** 2
-                    obj += (dso_model[year][day].rho_pf / 2) * (constraint_p_req) ** 2
-                    obj += (dso_model[year][day].rho_pf / 2) * (constraint_q_req) ** 2
-                    obj += (dso_model[year][day].dual_v_sqr_prev[p]) * (constraint_vmag_prev)
-                    obj += (dso_model[year][day].dual_pf_p_prev[p]) * (constraint_p_prev)
-                    obj += (dso_model[year][day].dual_pf_q_prev[p]) * (constraint_q_prev)
-                    obj += (dso_model[year][day].rho_v / 2) * (constraint_vmag_prev) ** 2
-                    obj += (dso_model[year][day].rho_pf / 2) * (constraint_p_prev) ** 2
-                    obj += (dso_model[year][day].rho_pf / 2) * (constraint_q_prev) ** 2
+
+                    obj += (dso_model[year][day].dual_v_sqr_prev[p]) * constraint_vmag_prev
+                    obj += (dso_model[year][day].dual_pf_p_prev[p]) * constraint_p_prev
+                    obj += (dso_model[year][day].dual_pf_q_prev[p]) * constraint_q_prev
+                    obj += (dso_model[year][day].rho_v / 2) * (constraint_vmag_prev ** 2)
+                    obj += (dso_model[year][day].rho_pf / 2) * (constraint_p_prev ** 2)
+                    obj += (dso_model[year][day].rho_pf / 2) * (constraint_q_prev ** 2)
 
                 # Augmented Lagrangian -- Shared ESS (residual balancing)
                 sess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
