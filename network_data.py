@@ -176,8 +176,9 @@ def _write_optimization_results_to_excel(network_planning, data_dir, processed_r
     if network_planning.params.es_reg:
         _write_network_energy_storage_results_to_excel(network_planning, wb, processed_results['results'])
     _write_relaxation_slacks_investment_results_to_excel(network_planning, wb, processed_results['results'])
-    _write_relaxation_slacks_interface_results_to_excel(network_planning, wb, processed_results['results'])
-    _write_relaxation_slacks_scenarios_results_to_excel(network_planning, wb, processed_results['results'])
+    if network_planning.params.slacks:
+        _write_relaxation_slacks_interface_results_to_excel(network_planning, wb, processed_results['results'])
+        _write_relaxation_slacks_scenarios_results_to_excel(network_planning, wb, processed_results['results'])
 
     results_filename = os.path.join(data_dir, f'{network_planning.name}_results.xlsx')
     try:
