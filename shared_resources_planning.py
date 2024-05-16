@@ -427,17 +427,12 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                     interface_v_vars['tso']['current'][node_id][year][day][p] = v_mag_sqr
                     interface_pf_vars['tso']['current'][node_id][year][day]['p'][p] = interface_pf_p
                     interface_pf_vars['tso']['current'][node_id][year][day]['q'][p] = interface_pf_q
-                    interface_v_vars['tso']['prev'][node_id][year][day][p] = v_mag_sqr
-                    interface_pf_vars['tso']['prev'][node_id][year][day]['p'][p] = interface_pf_p
-                    interface_pf_vars['tso']['prev'][node_id][year][day]['q'][p] = interface_pf_q
 
                     # Get initial Shared ESS values
                     shared_ess_p = pe.value(tso_model[year][day].expected_shared_ess_p[shared_ess_idx, p]) * s_base
                     shared_ess_q = pe.value(tso_model[year][day].expected_shared_ess_q[shared_ess_idx, p]) * s_base
                     sess_vars['current'][node_id][year][day]['p'][p] = shared_ess_p
                     sess_vars['current'][node_id][year][day]['q'][p] = shared_ess_q
-                    sess_vars['prev'][node_id][year][day]['p'][p] = shared_ess_p
-                    sess_vars['prev'][node_id][year][day]['q'][p] = shared_ess_q
 
     return tso_model, results
 
@@ -469,17 +464,12 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
                     interface_vars_vmag['current'][node_id][year][day][p] = interface_pf_vmag_sqr
                     interface_vars_pf['current'][node_id][year][day]['p'][p] = interface_pf_p
                     interface_vars_pf['current'][node_id][year][day]['q'][p] = interface_pf_q
-                    interface_vars_vmag['prev'][node_id][year][day][p] = interface_pf_vmag_sqr
-                    interface_vars_pf['prev'][node_id][year][day]['p'][p] = interface_pf_p
-                    interface_vars_pf['prev'][node_id][year][day]['q'][p] = interface_pf_q
 
                     # Get initial Shared ESS values
                     p_ess = pe.value(dso_model[year][day].expected_shared_ess_p[p]) * s_base
                     q_ess = pe.value(dso_model[year][day].expected_shared_ess_q[p]) * s_base
                     sess_vars['current'][node_id][year][day]['p'][p] = p_ess
                     sess_vars['current'][node_id][year][day]['q'][p] = q_ess
-                    sess_vars['prev'][node_id][year][day]['p'][p] = p_ess
-                    sess_vars['prev'][node_id][year][day]['q'][p] = q_ess
 
         dso_models[node_id] = dso_model
 
