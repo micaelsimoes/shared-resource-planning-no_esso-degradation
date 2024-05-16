@@ -1059,6 +1059,14 @@ def update_distribution_models_to_admm(distribution_networks, models, initial_in
 
                 s_base = distribution_network.network[year][day].baseMVA
                 ref_node_id = distribution_network.network[year][day].get_reference_node_id()
+                ref_node_idx = distribution_network.network[year][day].get_node_idx(ref_node_id)
+                for s_m in dso_model[year][day].scenarios_market:
+                    for s_o in dso_model[year][day].scenarios_operation:
+                        for p in dso_model[year][day].periods:
+                            v_min, v_max = distribution_network.network[year][day].get_node_voltage_limits(ref_node_id)
+                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].fixed = False
+                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setub(v_max)
+                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setlb(v_min)
 
                 init_of_value = 1.00
                 if distribution_network.params.obj_type == OBJ_MIN_COST:
