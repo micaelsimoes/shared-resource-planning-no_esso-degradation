@@ -948,12 +948,16 @@ def _build_model(network, params):
                 obj_scenario = 0.0
                 omega_oper = network.prob_operation_scenarios[s_o]
 
-                # Generation -- paid at market price (energy)
+                # Generation
                 for g in model.generators:
                     if network.generators[g].is_controllable():
                         for p in model.periods:
                             pg = model.pg[g, s_m, s_o, p]
                             obj_scenario += c_p[s_m][p] * network.baseMVA * pg
+                    if network.generators[g].is_curtaillable():
+                        for p in model.periods:
+                            pg_curt = model.pg_curt[g, s_m, s_o, p]
+                            obj_scenario += COST_GENERATION_CURTAILMENT * network.baseMVA * pg_curt
 
                 # Demand side flexibility
                 if params.fl_reg:
@@ -991,7 +995,7 @@ def _build_model(network, params):
                             pg_curt = model.pg_curt[g, s_m, s_o, p]
                             obj_scenario += PENALTY_GENERATION_CURTAILMENT * pg_curt
 
-                # Consumption curtailment
+                # Load curtailment
                 if params.l_curt:
                     for c in model.loads:
                         for p in model.periods:
@@ -2112,13 +2116,19 @@ def _compute_objective_function_value(network, model, params):
                 for g in model.generators:
                     if network.generators[g].is_controllable():
                         for p in model.periods:
-                            obj_scenario += c_p[s_m][p] * network.baseMVA * pe.value(model.pg[g, s_m, s_o, p])
+                            pg = pe.value(model.pg[g, s_m, s_o, p])
+                            obj_scenario += c_p[s_m][p] * network.baseMVA * pg
+                    if network.generators[g].is_curtaillable():
+                        for p in model.periods:
+                            pg_curt = pe.value(model.pg_curt[g, s_m, s_o, p])
+                            obj_scenario += COST_GENERATION_CURTAILMENT * network.baseMVA * pg_curt
 
                 # Demand side flexibility
                 if params.fl_reg:
                     for c in model.loads:
                         for p in model.periods:
-                            obj_scenario += c_flex[s_m][p] * network.baseMVA * pe.value(model.flex_p_down[c, s_m, s_o, p])
+                            flex_down = pe.value(model.flex_p_down[c, s_m, s_o, p])
+                            obj_scenario += c_flex[s_m][p] * network.baseMVA * flex_down
 
                 # Load curtailment
                 if params.l_curt:
@@ -2126,8 +2136,8 @@ def _compute_objective_function_value(network, model, params):
                         for p in model.periods:
                             pc_curt = pe.value(model.pc_curt[c, s_m, s_o, p])
                             qc_curt = pe.value(model.qc_curt[c, s_m, s_o, p])
-                            obj_scenario += (COST_CONSUMPTION_CURTAILMENT * network.baseMVA) * pc_curt
-                            obj_scenario += (COST_CONSUMPTION_CURTAILMENT * network.baseMVA) * qc_curt
+                            obj_scenario += COST_CONSUMPTION_CURTAILMENT * network.baseMVA * pc_curt
+                            obj_scenario += COST_CONSUMPTION_CURTAILMENT * network.baseMVA * qc_curt
 
                 obj += obj_scenario * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
 
