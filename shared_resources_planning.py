@@ -954,6 +954,19 @@ def update_transmission_model_to_admm(transmission_network, model, initial_inter
             s_base = transmission_network.network[year][day].baseMVA
 
             # Free Pc and Qc at the connection point with distribution networks
+            for node_id in transmission_network.active_distribution_network_nodes:
+                load_idx = transmission_network.network[year][day].get_adn_load_idx(node_id)
+                for s_m in model[year][day].scenarios_market:
+                    for s_o in model[year][day].scenarios_operation:
+                        for p in model[year][day].periods:
+                            model[year][day].pc[load_idx, s_m, s_o, p].fixed = False
+                            model[year][day].pc[load_idx, s_m, s_o, p].setub(None)
+                            model[year][day].pc[load_idx, s_m, s_o, p].setlb(None)
+                            model[year][day].qc[load_idx, s_m, s_o, p].fixed = False
+                            model[year][day].qc[load_idx, s_m, s_o, p].setub(None)
+                            model[year][day].qc[load_idx, s_m, s_o, p].setlb(None)
+
+            # Free expected vmag and interface PF
             for dn in range(len(transmission_network.active_distribution_network_nodes)):
                 for p in model[year][day].periods:
 
@@ -966,6 +979,9 @@ def update_transmission_model_to_admm(transmission_network, model, initial_inter
                     model[year][day].expected_interface_pf_q[dn, p].fixed = False
                     model[year][day].expected_interface_pf_q[dn, p].setub(None)
                     model[year][day].expected_interface_pf_q[dn, p].setlb(None)
+
+
+
 
             # Add ADMM variables
             model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
@@ -1059,6 +1075,8 @@ def update_distribution_models_to_admm(distribution_networks, models, initial_in
 
                 s_base = distribution_network.network[year][day].baseMVA
                 ref_node_id = distribution_network.network[year][day].get_reference_node_id()
+
+                # Free voltage at the interface node
                 ref_node_idx = distribution_network.network[year][day].get_node_idx(ref_node_id)
                 for s_m in dso_model[year][day].scenarios_market:
                     for s_o in dso_model[year][day].scenarios_operation:
