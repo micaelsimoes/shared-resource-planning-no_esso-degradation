@@ -311,9 +311,10 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
 
         # 2.3 STOPPING CRITERIA evaluation
-        convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
-        if convergence:
-            break
+        if iter > 1:
+            convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
+            if convergence:
+                break
 
         # --------------------------------------------------------------------------------------------------------------
         # 3. Solve DSOs problems
@@ -348,9 +349,10 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
 
         # 3.3 STOPPING CRITERIA evaluation
-        convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
-        if convergence:
-            break
+        if iter > 1:
+            convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
+            if convergence:
+                break
 
         # --------------------------------------------------------------------------------------------------------------
         # 4. Solve ESSO problem
