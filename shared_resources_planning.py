@@ -403,7 +403,7 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
             for day in transmission_network.days:
                 s_base = transmission_network.network[year][day].baseMVA
                 for p in tso_model[year][day].periods:
-                    vmag_sqr = interface_pf_vars['dso']['current'][node_id][year][day]['v_sqr'][p]
+                    vmag_sqr = interface_v_vars['dso']['current'][node_id][year][day][p]
                     pc = interface_pf_vars['dso']['current'][node_id][year][day]['p'][p] / s_base
                     qc = interface_pf_vars['dso']['current'][node_id][year][day]['q'][p] / s_base
                     tso_model[year][day].expected_interface_vmag_sqr[dn, p].fix(vmag_sqr)
