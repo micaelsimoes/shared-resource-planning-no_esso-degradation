@@ -784,58 +784,6 @@ def _build_model(network, params):
                     model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] == iij_sqr)
                     model.branch_power_flow_lims.add(model.iij_sqr[b, s_m, s_o, p] - model.slack_iij_sqr[b, s_m, s_o, p] <= rating ** 2)
 
-    # - Expected Interface Power Flow (explicit definition)
-    model.expected_interface_pf = pe.ConstraintList()
-    model.expected_interface_voltage = pe.ConstraintList()
-    if network.is_transmission:
-        for dn in model.active_distribution_networks:
-            node_id = network.active_distribution_network_nodes[dn]
-            node_idx = network.get_node_idx(node_id)
-            load_idx = network.get_adn_load_idx(node_id)
-            for p in model.periods:
-                for s_m in model.scenarios_market:
-                    for s_o in model.scenarios_operation:
-                        expected_pf_p = model.pc[load_idx, s_m, s_o, p]
-                        expected_pf_q = model.qc[load_idx, s_m, s_o, p]
-                        expected_vmag_sqr = (model.e_actual[node_idx, s_m, s_o, p] ** 2) + (model.f_actual[node_idx, s_m, s_o, p] ** 2)
-                        model.expected_interface_voltage.add(model.expected_interface_vmag_sqr[dn, p] == expected_vmag_sqr + model.slack_expected_interface_vmag_sqr_up[dn, s_m, s_o, p] - model.slack_expected_interface_vmag_sqr_down[dn, s_m, s_o, p])
-                        model.expected_interface_pf.add(model.expected_interface_pf_p[dn, p] == expected_pf_p + model.slack_expected_interface_pf_p_up[dn, s_m, s_o, p] - model.slack_expected_interface_pf_p_down[dn, s_m, s_o, p])
-                        model.expected_interface_pf.add(model.expected_interface_pf_q[dn, p] == expected_pf_q + model.slack_expected_interface_pf_q_up[dn, s_m, s_o, p] - model.slack_expected_interface_pf_q_down[dn, s_m, s_o, p])
-    else:
-        ref_node_idx = network.get_node_idx(ref_node_id)
-        ref_gen_idx = network.get_reference_gen_idx()
-        for p in model.periods:
-            for s_m in model.scenarios_market:
-                for s_o in model.scenarios_operation:
-                    expected_pf_p = model.pg[ref_gen_idx, s_m, s_o, p]
-                    expected_pf_q = model.qg[ref_gen_idx, s_m, s_o, p]
-                    expected_vmag_sqr = model.e_actual[ref_node_idx, s_m, s_o, p] ** 2
-                    model.expected_interface_voltage.add(model.expected_interface_vmag_sqr[p] == expected_vmag_sqr + model.slack_expected_interface_vmag_sqr_up[s_m, s_o, p] - model.slack_expected_interface_vmag_sqr_down[s_m, s_o, p])
-                    model.expected_interface_pf.add(model.expected_interface_pf_p[p] == expected_pf_p + model.slack_expected_interface_pf_p_up[s_m, s_o, p] - model.slack_expected_interface_pf_p_down[s_m, s_o, p])
-                    model.expected_interface_pf.add(model.expected_interface_pf_q[p] == expected_pf_q + model.slack_expected_interface_pf_q_up[s_m, s_o, p] - model.slack_expected_interface_pf_q_down[s_m, s_o, p])
-
-    # - Expected Shared ESS Power (explicit definition)
-    if len(network.shared_energy_storages) > 0:
-        model.expected_shared_ess_power = pe.ConstraintList()
-        if network.is_transmission:
-            for e in model.shared_energy_storages:
-                for p in model.periods:
-                    for s_m in model.scenarios_market:
-                        for s_o in model.scenarios_operation:
-                            expected_sess_p = model.shared_es_pch[e, s_m, s_o, p] - model.shared_es_pdch[e, s_m, s_o, p]
-                            expected_sess_q = model.shared_es_qch[e, s_m, s_o, p] - model.shared_es_qdch[e, s_m, s_o, p]
-                            model.expected_shared_ess_power.add(model.expected_shared_ess_p[e, p] == expected_sess_p + model.slack_expected_shared_ess_p_up[e, s_m, s_o, p] - model.slack_expected_shared_ess_p_down[e, s_m, s_o, p])
-                            model.expected_shared_ess_power.add(model.expected_shared_ess_q[e, p] == expected_sess_q + model.slack_expected_shared_ess_q_up[e, s_m, s_o, p] - model.slack_expected_shared_ess_q_down[e, s_m, s_o, p])
-        else:
-            shared_ess_idx = network.get_shared_energy_storage_idx(ref_node_id)
-            for p in model.periods:
-                for s_m in model.scenarios_market:
-                    for s_o in model.scenarios_operation:
-                        expected_sess_p = model.shared_es_pch[shared_ess_idx, s_m, s_o, p] - model.shared_es_pdch[shared_ess_idx, s_m, s_o, p]
-                        expected_sess_q = model.shared_es_qch[shared_ess_idx, s_m, s_o, p] - model.shared_es_qdch[shared_ess_idx, s_m, s_o, p]
-                        model.expected_shared_ess_power.add(model.expected_shared_ess_p[p] == expected_sess_p + model.slack_expected_shared_ess_p_up[s_m, s_o, p] - model.slack_expected_shared_ess_p_down[s_m, s_o, p])
-                        model.expected_shared_ess_power.add(model.expected_shared_ess_q[p] == expected_sess_q + model.slack_expected_shared_ess_q_up[s_m, s_o, p] - model.slack_expected_shared_ess_q_down[s_m, s_o, p])
-
     # ------------------------------------------------------------------------------------------------------------------
     # Objective Function
     obj = 0.0
