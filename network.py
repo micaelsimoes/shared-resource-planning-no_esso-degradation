@@ -853,12 +853,9 @@ def _build_model(network, params):
                         expected_pf_q += model.qc[load_idx, s_m, s_o, p] * omega_m * omega_o
                         expected_vmag_sqr += (model.e_actual[node_idx, s_m, s_o, p] ** 2 + model.f_actual[node_idx, s_m, s_o, p] ** 2) * omega_m * omega_o
 
-                model.expected_interface_voltage.add(model.expected_interface_vmag_sqr[dn, p] == expected_vmag_sqr)
-                model.expected_interface_pf.add(model.expected_interface_pf_p[dn, p] == expected_pf_p)
-                model.expected_interface_pf.add(model.expected_interface_pf_q[dn, p] == expected_pf_q)
-                model.expected_interface_voltage.add(model.expected_interface_vmag_sqr_actual[dn, p] == expected_vmag_sqr + model.slack_expected_interface_vmag_sqr_up[dn, p] - model.slack_expected_interface_vmag_sqr_down[dn, p])
-                model.expected_interface_pf.add(model.expected_interface_pf_p_actual[dn, p] == expected_pf_p + model.slack_expected_interface_pf_p_up[dn, p] - model.slack_expected_interface_pf_p_down[dn, p])
-                model.expected_interface_pf.add(model.expected_interface_pf_q_actual[dn, p] == expected_pf_q + model.slack_expected_interface_pf_q_up[dn, p] - model.slack_expected_interface_pf_q_down[dn, p])
+                model.expected_interface_voltage.add(model.expected_interface_vmag_sqr[dn, p] == expected_vmag_sqr + model.slack_expected_interface_vmag_sqr_up[dn, p] - model.slack_expected_interface_vmag_sqr_down[dn, p])
+                model.expected_interface_pf.add(model.expected_interface_pf_p[dn, p] == expected_pf_p + model.slack_expected_interface_pf_p_up[dn, p] - model.slack_expected_interface_pf_p_down[dn, p])
+                model.expected_interface_pf.add(model.expected_interface_pf_q[dn, p] == expected_pf_q + model.slack_expected_interface_pf_q_up[dn, p] - model.slack_expected_interface_pf_q_down[dn, p])
     else:
         ref_node_idx = network.get_node_idx(ref_node_id)
         ref_gen_idx = network.get_reference_gen_idx()
