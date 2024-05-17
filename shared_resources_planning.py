@@ -426,14 +426,14 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                             interface_pf_p = tso_model[year][day].pc[adn_load_idx, s_m, s_o, p]
                             interface_pf_q = tso_model[year][day].qc[adn_load_idx, s_m, s_o, p]
 
-                            obj += (tso_model[year][day].expected_interface_vmag_sqr[dn, p] - vmag_sqr) ** 2
-                            obj += (tso_model[year][day].expected_interface_pf_p[dn, p] - interface_pf_p) ** 2
-                            obj += (tso_model[year][day].expected_interface_pf_q[dn, p] - interface_pf_q) ** 2
+                            obj += PENALTY_SLACK * (tso_model[year][day].expected_interface_vmag_sqr[dn, p] - vmag_sqr) ** 2
+                            obj += PENALTY_SLACK * (tso_model[year][day].expected_interface_pf_p[dn, p] - interface_pf_p) ** 2
+                            obj += PENALTY_SLACK * (tso_model[year][day].expected_interface_pf_q[dn, p] - interface_pf_q) ** 2
 
                             interface_ess_p = tso_model[year][day].shared_es_pch[shared_ess_idx, s_m, s_o, p] - tso_model[year][day].shared_es_pdch[shared_ess_idx, s_m, s_o, p]
                             interface_ess_q = tso_model[year][day].shared_es_qch[shared_ess_idx, s_m, s_o, p] - tso_model[year][day].shared_es_qdch[shared_ess_idx, s_m, s_o, p]
-                            obj += (tso_model[year][day].expected_shared_ess_p[dn, p] - interface_ess_p) ** 2
-                            obj += (tso_model[year][day].expected_shared_ess_q[dn, p] - interface_ess_q) ** 2
+                            obj += PENALTY_SLACK * (tso_model[year][day].expected_shared_ess_p[dn, p] - interface_ess_p) ** 2
+                            obj += PENALTY_SLACK * (tso_model[year][day].expected_shared_ess_q[dn, p] - interface_ess_q) ** 2
 
             tso_model[year][day].objective.expr = obj
 
@@ -1031,22 +1031,6 @@ def update_transmission_model_to_admm(transmission_network, model, initial_inter
                             model[year][day].qc[load_idx, s_m, s_o, p].fixed = False
                             model[year][day].qc[load_idx, s_m, s_o, p].setub(None)
                             model[year][day].qc[load_idx, s_m, s_o, p].setlb(None)
-
-            # Free expected vmag and interface PF
-            for dn in range(len(transmission_network.active_distribution_network_nodes)):
-                node_id = transmission_network.active_distribution_network_nodes[dn]
-                v_min, v_max = transmission_network.network[year][day].get_node_voltage_limits(node_id)
-                for p in model[year][day].periods:
-                    model[year][day].expected_interface_vmag_sqr[dn, p].fixed = False
-                    model[year][day].expected_interface_vmag_sqr[dn, p].setub(v_max ** 2)
-                    model[year][day].expected_interface_vmag_sqr[dn, p].setlb(v_min ** 2)
-
-                    model[year][day].expected_interface_pf_p[dn, p].fixed = False
-                    model[year][day].expected_interface_pf_p[dn, p].setub(None)
-                    model[year][day].expected_interface_pf_p[dn, p].setlb(None)
-                    model[year][day].expected_interface_pf_q[dn, p].fixed = False
-                    model[year][day].expected_interface_pf_q[dn, p].setub(None)
-                    model[year][day].expected_interface_pf_q[dn, p].setlb(None)
 
             # Add ADMM variables
             model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
