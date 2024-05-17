@@ -475,23 +475,32 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
                 ref_node_id = distribution_network.network[year][day].get_reference_node_id()
                 ref_node_idx = distribution_network.network[year][day].get_node_idx(ref_node_id)
                 ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
+                shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
 
                 # Add interface expectation variables
                 dso_model[year][day].expected_interface_vmag_sqr = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=0.00)
                 dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
                 dso_model[year][day].expected_interface_pf_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
+                dso_model[year][day].expected_shared_ess_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
+                dso_model[year][day].expected_shared_ess_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
 
                 # Update OF
                 obj = dso_model[year][day].objective.expr
                 for s_m in dso_model[year][day].scenarios_market:
                     for s_o in dso_model[year][day].scenarios_operation:
                         for p in dso_model[year][day].periods:
+
                             vmag_sqr = dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2
                             interface_pf_p = dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p]
                             interface_pf_q = dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p]
                             obj += (dso_model[year][day].expected_interface_vmag_sqr[p] - vmag_sqr) ** 2
                             obj += (dso_model[year][day].expected_interface_pf_p[p] - interface_pf_p) ** 2
                             obj += (dso_model[year][day].expected_interface_pf_q[p] - interface_pf_q) ** 2
+
+                            interface_ess_p = dso_model[year][day].shared_es_pch[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].shared_es_pdch[shared_ess_idx, s_m, s_o, p]
+                            interface_ess_q = dso_model[year][day].shared_es_qch[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].shared_es_qdch[shared_ess_idx, s_m, s_o, p]
+                            obj += (dso_model[year][day].expected_shared_ess_p[p] - interface_ess_p) ** 2
+                            obj += (dso_model[year][day].expected_shared_ess_q[p] - interface_ess_q) ** 2
 
         # Run SMOPF
         results[node_id] = distribution_network.optimize(dso_model)
