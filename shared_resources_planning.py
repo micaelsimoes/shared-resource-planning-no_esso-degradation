@@ -408,12 +408,12 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                 for s_m in tso_model[year][day].scenarios_market:
                     for s_o in tso_model[year][day].scenarios_operation:
                         for p in tso_model[year][day].periods:
-                            tso_model.pc[load_idx, s_m, s_o, p].fixed = False
-                            tso_model.pc[load_idx, s_m, s_o, p].setub(None)
-                            tso_model.pc[load_idx, s_m, s_o, p].setlb(None)
-                            tso_model.qc[load_idx, s_m, s_o, p].fixed = False
-                            tso_model.qc[load_idx, s_m, s_o, p].setub(None)
-                            tso_model.qc[load_idx, s_m, s_o, p].setlb(None)
+                            tso_model[year][day].pc[load_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].pc[load_idx, s_m, s_o, p].setub(None)
+                            tso_model[year][day].pc[load_idx, s_m, s_o, p].setlb(None)
+                            tso_model[year][day].qc[load_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].qc[load_idx, s_m, s_o, p].setub(None)
+                            tso_model[year][day].qc[load_idx, s_m, s_o, p].setlb(None)
 
                 # Fix expected interface values
                 for p in tso_model[year][day].periods:
