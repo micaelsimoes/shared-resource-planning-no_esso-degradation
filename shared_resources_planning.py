@@ -414,6 +414,8 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                             tso_model[year][day].qc[load_idx, s_m, s_o, p].fixed = False
                             tso_model[year][day].qc[load_idx, s_m, s_o, p].setub(None)
                             tso_model[year][day].qc[load_idx, s_m, s_o, p].setlb(None)
+                            tso_model[year][day].flex_p_up[load_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].flex_p_down[load_idx, s_m, s_o, p].fixed = False
 
                 # Fix expected interface values
                 for p in tso_model[year][day].periods:
@@ -982,6 +984,8 @@ def update_transmission_model_to_admm(transmission_network, model, initial_inter
                             model[year][day].qc[load_idx, s_m, s_o, p].fixed = False
                             model[year][day].qc[load_idx, s_m, s_o, p].setub(None)
                             model[year][day].qc[load_idx, s_m, s_o, p].setlb(None)
+                            model[year][day].flex_p_up[load_idx, s_m, s_o, p].fix(0.00)
+                            model[year][day].flex_p_down[load_idx, s_m, s_o, p].fix(0.00)
 
             # Free expected vmag and interface PF
             for dn in range(len(transmission_network.active_distribution_network_nodes)):
