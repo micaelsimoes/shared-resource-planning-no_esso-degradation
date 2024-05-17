@@ -470,34 +470,24 @@ def _build_model(network, params):
     if network.is_transmission:
         model.active_distribution_networks = range(len(network.active_distribution_network_nodes))
         model.expected_interface_vmag_sqr = pe.Var(model.active_distribution_networks, model.periods, domain=pe.NonNegativeReals, initialize=1.0)
-        for dn in model.active_distribution_networks:
-            node_id = network.active_distribution_network_nodes[dn]
-            v_min, v_max = network.get_node_voltage_limits(node_id)
-            for p in model.periods:
-                model.expected_interface_vmag_sqr[dn, p].setub(v_max**2)
-                model.expected_interface_vmag_sqr[dn, p].setlb(v_min**2)
-        model.slack_expected_interface_vmag_sqr_up = pe.Var(model.active_distribution_networks, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_expected_interface_vmag_sqr_down = pe.Var(model.active_distribution_networks, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
         model.expected_interface_pf_p = pe.Var(model.active_distribution_networks, model.periods, domain=pe.Reals, initialize=0.0)
         model.expected_interface_pf_q = pe.Var(model.active_distribution_networks, model.periods, domain=pe.Reals, initialize=0.0)
-        model.slack_expected_interface_pf_p_up = pe.Var(model.active_distribution_networks, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_expected_interface_pf_p_down = pe.Var(model.active_distribution_networks, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_expected_interface_pf_q_up = pe.Var(model.active_distribution_networks, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_expected_interface_pf_q_down = pe.Var(model.active_distribution_networks, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_expected_interface_vmag_sqr_up = pe.Var(model.active_distribution_networks, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_expected_interface_vmag_sqr_down = pe.Var(model.active_distribution_networks, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_expected_interface_pf_p_up = pe.Var(model.active_distribution_networks, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_expected_interface_pf_p_down = pe.Var(model.active_distribution_networks, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_expected_interface_pf_q_up = pe.Var(model.active_distribution_networks, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_expected_interface_pf_q_down = pe.Var(model.active_distribution_networks, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     else:
         model.expected_interface_vmag_sqr = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=1.0)
-        v_min, v_max = network.get_node_voltage_limits(ref_node_id)
-        for p in model.periods:
-            model.expected_interface_vmag_sqr[p].setub(v_max**2)
-            model.expected_interface_vmag_sqr[p].setlb(v_min**2)
         model.expected_interface_pf_p = pe.Var(model.periods, domain=pe.Reals, initialize=0.0)
         model.expected_interface_pf_q = pe.Var(model.periods, domain=pe.Reals, initialize=0.0)
-        model.slack_expected_interface_vmag_sqr_up = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_expected_interface_vmag_sqr_down = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_expected_interface_pf_p_up = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_expected_interface_pf_p_down = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_expected_interface_pf_q_up = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_expected_interface_pf_q_down = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_expected_interface_vmag_sqr_up = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_expected_interface_vmag_sqr_down = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_expected_interface_pf_p_up = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_expected_interface_pf_p_down = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_expected_interface_pf_q_up = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_expected_interface_pf_q_down = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
 
     # - Expected Shared ESS power variables
     if network.is_transmission:
@@ -842,38 +832,26 @@ def _build_model(network, params):
             node_idx = network.get_node_idx(node_id)
             load_idx = network.get_adn_load_idx(node_id)
             for p in model.periods:
-                expected_pf_p = 0.0
-                expected_pf_q = 0.0
-                expected_vmag_sqr = 0.0
                 for s_m in model.scenarios_market:
-                    omega_m = network.prob_market_scenarios[s_m]
                     for s_o in model.scenarios_operation:
-                        omega_o = network.prob_operation_scenarios[s_o]
-                        expected_pf_p += model.pc[load_idx, s_m, s_o, p] * omega_m * omega_o
-                        expected_pf_q += model.qc[load_idx, s_m, s_o, p] * omega_m * omega_o
-                        expected_vmag_sqr += (model.e_actual[node_idx, s_m, s_o, p] ** 2 + model.f_actual[node_idx, s_m, s_o, p] ** 2) * omega_m * omega_o
-
-                model.expected_interface_voltage.add(model.expected_interface_vmag_sqr[dn, p] == expected_vmag_sqr + model.slack_expected_interface_vmag_sqr_up[dn, p] - model.slack_expected_interface_vmag_sqr_down[dn, p])
-                model.expected_interface_pf.add(model.expected_interface_pf_p[dn, p] == expected_pf_p + model.slack_expected_interface_pf_p_up[dn, p] - model.slack_expected_interface_pf_p_down[dn, p])
-                model.expected_interface_pf.add(model.expected_interface_pf_q[dn, p] == expected_pf_q + model.slack_expected_interface_pf_q_up[dn, p] - model.slack_expected_interface_pf_q_down[dn, p])
+                        expected_pf_p = model.pc[load_idx, s_m, s_o, p]
+                        expected_pf_q = model.qc[load_idx, s_m, s_o, p]
+                        expected_vmag_sqr = (model.e_actual[node_idx, s_m, s_o, p] ** 2) + (model.f_actual[node_idx, s_m, s_o, p] ** 2)
+                        model.expected_interface_voltage.add(model.expected_interface_vmag_sqr[dn, p] == expected_vmag_sqr + model.slack_expected_interface_vmag_sqr_up[dn, s_m, s_o, p] - model.slack_expected_interface_vmag_sqr_down[dn, s_m, s_o, p])
+                        model.expected_interface_pf.add(model.expected_interface_pf_p[dn, p] == expected_pf_p + model.slack_expected_interface_pf_p_up[dn, s_m, s_o, p] - model.slack_expected_interface_pf_p_down[dn, s_m, s_o, p])
+                        model.expected_interface_pf.add(model.expected_interface_pf_q[dn, p] == expected_pf_q + model.slack_expected_interface_pf_q_up[dn, s_m, s_o, p] - model.slack_expected_interface_pf_q_down[dn, s_m, s_o, p])
     else:
         ref_node_idx = network.get_node_idx(ref_node_id)
         ref_gen_idx = network.get_reference_gen_idx()
         for p in model.periods:
-            expected_pf_p = 0.0
-            expected_pf_q = 0.0
-            expected_vmag_sqr = 0.0
             for s_m in model.scenarios_market:
-                omega_m = network.prob_market_scenarios[s_m]
                 for s_o in model.scenarios_operation:
-                    omega_s = network.prob_operation_scenarios[s_o]
-                    expected_pf_p += model.pg[ref_gen_idx, s_m, s_o, p] * omega_m * omega_s
-                    expected_pf_q += model.qg[ref_gen_idx, s_m, s_o, p] * omega_m * omega_s
-                    expected_vmag_sqr += (model.e_actual[ref_node_idx, s_m, s_o, p] ** 2) * omega_m * omega_s
-
-            model.expected_interface_voltage.add(model.expected_interface_vmag_sqr[p] == expected_vmag_sqr + model.slack_expected_interface_vmag_sqr_up[p] - model.slack_expected_interface_vmag_sqr_down[p])
-            model.expected_interface_pf.add(model.expected_interface_pf_p[p] == expected_pf_p + model.slack_expected_interface_pf_p_up[p] - model.slack_expected_interface_pf_p_down[p])
-            model.expected_interface_pf.add(model.expected_interface_pf_q[p] == expected_pf_q + model.slack_expected_interface_pf_q_up[p] - model.slack_expected_interface_pf_q_down[p])
+                    expected_pf_p = model.pg[ref_gen_idx, s_m, s_o, p]
+                    expected_pf_q = model.qg[ref_gen_idx, s_m, s_o, p]
+                    expected_vmag_sqr = model.e_actual[ref_node_idx, s_m, s_o, p] ** 2
+                    model.expected_interface_voltage.add(model.expected_interface_vmag_sqr[p] == expected_vmag_sqr + model.slack_expected_interface_vmag_sqr_up[s_m, s_o, p] - model.slack_expected_interface_vmag_sqr_down[s_m, s_o, p])
+                    model.expected_interface_pf.add(model.expected_interface_pf_p[p] == expected_pf_p + model.slack_expected_interface_pf_p_up[s_m, s_o, p] - model.slack_expected_interface_pf_p_down[s_m, s_o, p])
+                    model.expected_interface_pf.add(model.expected_interface_pf_q[p] == expected_pf_q + model.slack_expected_interface_pf_q_up[s_m, s_o, p] - model.slack_expected_interface_pf_q_down[s_m, s_o, p])
 
     # - Expected Shared ESS Power (explicit definition)
     if len(network.shared_energy_storages) > 0:
