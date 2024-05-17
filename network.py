@@ -822,23 +822,6 @@ def _build_model(network, params):
                             obj_scenario += COST_CONSUMPTION_CURTAILMENT * network.baseMVA * (pc_curt)
                             obj_scenario += COST_CONSUMPTION_CURTAILMENT * network.baseMVA * (qc_curt)
 
-                # Difference to the expected interface values
-                for dn in model.active_distribution_networks:
-                    node_id = network.active_distribution_network_nodes[dn]
-                    node_idx = network.get_node_idx(node_id)
-                    load_idx = network.get_adn_load_idx(node_id)
-                    for p in model.periods:
-                        for s_m in model.scenarios_market:
-                            for s_o in model.scenarios_operation:
-                                expected_pf_p = model.pc[load_idx, s_m, s_o, p]
-                                expected_pf_q = model.qc[load_idx, s_m, s_o, p]
-                                expected_vmag_sqr = (model.e_actual[node_idx, s_m, s_o, p] ** 2) + (
-                                            model.f_actual[node_idx, s_m, s_o, p] ** 2)
-                                model.expected_interface_voltage.add(
-                                    model.expected_interface_vmag_sqr[dn, p] == expected_vmag_sqr +
-                                    model.slack_expected_interface_vmag_sqr_up[dn, s_m, s_o, p] -
-                                    model.slack_expected_interface_vmag_sqr_down[dn, s_m, s_o, p])
-
                 obj += obj_scenario * omega_market * omega_oper
     elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
 
