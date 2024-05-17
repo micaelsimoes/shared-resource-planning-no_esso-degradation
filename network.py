@@ -212,7 +212,6 @@ class Network:
 def _build_model(network, params):
 
     network.compute_series_admittance()
-    ref_node_id = network.get_reference_node_id()
 
     model = pe.ConcreteModel()
     model.name = network.name

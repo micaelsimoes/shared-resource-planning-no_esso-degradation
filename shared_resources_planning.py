@@ -467,8 +467,36 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
         distribution_network.update_data_with_candidate_solution(candidate_solution)
         dso_model = distribution_network.build_model()
         distribution_network.update_model_with_candidate_solution(dso_model, candidate_solution)
+
+        # Add expected interface values
+        for year in distribution_network.years:
+            for day in distribution_network.days:
+
+                ref_node_id = distribution_network.network[year][day].get_reference_node_id()
+                ref_node_idx = distribution_network.network[year][day].get_node_idx(ref_node_id)
+                ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
+
+                # Add interface expectation variables
+                dso_model[year][day].expected_interface_vmag_sqr_up = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=0.00)
+                dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
+                dso_model[year][day].expected_interface_pf_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
+
+                # Update OF
+                obj = dso_model[year][day].objective.expr
+                for s_m in dso_model[year][day].scenarios_market:
+                    for s_o in dso_model[year][day].scenarios_operation:
+                        for p in dso_model[year][day].periods:
+                            vmag_sqr = dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2
+                            interface_pf_p = dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p]
+                            interface_pf_q = dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p]
+                            obj += (dso_model[year][day].expected_interface_vmag_sqr_up[p] - vmag_sqr) ** 2
+                            obj += (dso_model[year][day].expected_interface_pf_p[p] - interface_pf_p) ** 2
+                            obj += (dso_model[year][day].expected_interface_pf_q[p] - interface_pf_q) ** 2
+
+        # Run SMOPF
         results[node_id] = distribution_network.optimize(dso_model)
 
+        # Get expected values
         for year in distribution_network.years:
             for day in distribution_network.days:
                 s_base = distribution_network.network[year][day].baseMVA
