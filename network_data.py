@@ -1971,7 +1971,7 @@ def _write_relaxation_slacks_interface_results_to_excel(network_planning, workbo
     for year in results:
         for day in results[year]:
             for s_m in results[year][day]['relaxation_slacks']['interface']:
-                for s_o in s_m in results[year][day]['relaxation_slacks']['interface'][s_m]:
+                for s_o in results[year][day]['relaxation_slacks']['interface'][s_m]:
                     for node_id in results[year][day]['relaxation_slacks']['interface'][s_m][s_o]['vmag_up']:
 
                         # vmag, up
