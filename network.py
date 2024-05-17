@@ -491,15 +491,15 @@ def _build_model(network, params):
 
     # - Expected Shared ESS power variables
     if network.is_transmission:
-        model.expected_shared_ess_p = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
-        model.expected_shared_ess_q = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+        model.expected_shared_ess_p = pe.Var(model.shared_energy_storages, model.periods, domain=pe.Reals, initialize=0.0)
+        model.expected_shared_ess_q = pe.Var(model.shared_energy_storages, model.periods, domain=pe.Reals, initialize=0.0)
         model.slack_expected_shared_ess_p_up = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.slack_expected_shared_ess_p_down = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.slack_expected_shared_ess_q_up = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.slack_expected_shared_ess_q_down = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     else:
-        model.expected_shared_ess_p = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
-        model.expected_shared_ess_q = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+        model.expected_shared_ess_p = pe.Var(model.periods, domain=pe.Reals, initialize=0.0)
+        model.expected_shared_ess_q = pe.Var(model.periods, domain=pe.Reals, initialize=0.0)
         model.slack_expected_shared_ess_p_up = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.slack_expected_shared_ess_p_down = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.slack_expected_shared_ess_q_up = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
