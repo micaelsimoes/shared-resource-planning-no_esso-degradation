@@ -415,7 +415,6 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                             tso_model[year][day].qc[load_idx, s_m, s_o, p].fixed = False
 
                 # "Fix" expected interface values
-                # - Give small flexibility to avoid infeasibility issues
                 for p in tso_model[year][day].periods:
                     vmag_sqr = interface_v_vars['dso']['current'][node_id][year][day][p]
                     pc = interface_pf_vars['dso']['current'][node_id][year][day]['p'][p] / s_base
@@ -967,26 +966,24 @@ def update_transmission_model_to_admm(transmission_network, model, initial_inter
 
             s_base = transmission_network.network[year][day].baseMVA
 
-            # Fix Vmag, Pc, Qc
-            node_idx = transmission_network.network[year][day].get_adn_load_idx(node_id)
-            load_idx = transmission_network.network[year][day].get_adn_load_idx(node_id)
-            for s_m in tso_model[year][day].scenarios_market:
-                for s_o in tso_model[year][day].scenarios_operation:
-                    for p in tso_model[year][day].periods:
-                        tso_model[year][day].e[node_idx, s_m, s_o, p].fixed = False
-                        tso_model[year][day].pc[load_idx, s_m, s_o, p].fixed = False
-                        tso_model[year][day].pc[load_idx, s_m, s_o, p].setub(None)
-                        tso_model[year][day].pc[load_idx, s_m, s_o, p].setlb(None)
-                        tso_model[year][day].qc[load_idx, s_m, s_o, p].fixed = False
-                        tso_model[year][day].qc[load_idx, s_m, s_o, p].setub(None)
-                        tso_model[year][day].qc[load_idx, s_m, s_o, p].setlb(None)
+            # Free Pc, Qc at the interface node
+            for node_id in transmission_network.active_distribution_network_nodes:
+                load_idx = transmission_network.network[year][day].get_adn_load_idx(node_id)
+                for s_m in model[year][day].scenarios_market:
+                    for s_o in model[year][day].scenarios_operation:
+                        for p in model[year][day].periods:
+                            model[year][day].pc[load_idx, s_m, s_o, p].fixed = False
+                            model[year][day].pc[load_idx, s_m, s_o, p].setub(None)
+                            model[year][day].pc[load_idx, s_m, s_o, p].setlb(None)
+                            model[year][day].qc[load_idx, s_m, s_o, p].fixed = False
+                            model[year][day].qc[load_idx, s_m, s_o, p].setub(None)
+                            model[year][day].qc[load_idx, s_m, s_o, p].setlb(None)
 
             # Free expected vmag and interface PF
             for dn in range(len(transmission_network.active_distribution_network_nodes)):
                 node_id = transmission_network.active_distribution_network_nodes[dn]
                 v_min, v_max = transmission_network.network[year][day].get_node_voltage_limits(node_id)
                 for p in model[year][day].periods:
-
                     model[year][day].expected_interface_vmag_sqr[dn, p].fixed = False
                     model[year][day].expected_interface_vmag_sqr[dn, p].setub(v_max ** 2)
                     model[year][day].expected_interface_vmag_sqr[dn, p].setlb(v_min ** 2)
