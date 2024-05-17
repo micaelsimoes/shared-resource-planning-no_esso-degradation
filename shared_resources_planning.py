@@ -477,7 +477,7 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
                 ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
 
                 # Add interface expectation variables
-                dso_model[year][day].expected_interface_vmag_sqr_up = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=0.00)
+                dso_model[year][day].expected_interface_vmag_sqr = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=0.00)
                 dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
                 dso_model[year][day].expected_interface_pf_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
 
@@ -489,7 +489,7 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
                             vmag_sqr = dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2
                             interface_pf_p = dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p]
                             interface_pf_q = dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p]
-                            obj += (dso_model[year][day].expected_interface_vmag_sqr_up[p] - vmag_sqr) ** 2
+                            obj += (dso_model[year][day].expected_interface_vmag_sqr[p] - vmag_sqr) ** 2
                             obj += (dso_model[year][day].expected_interface_pf_p[p] - interface_pf_p) ** 2
                             obj += (dso_model[year][day].expected_interface_pf_q[p] - interface_pf_q) ** 2
 
