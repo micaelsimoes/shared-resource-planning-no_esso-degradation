@@ -713,9 +713,9 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                 vmin, vmax = transmission_network.network[year][day].get_node_voltage_limits(node_id)
                 s_max = distribution_networks[node_id].network[year][day].get_interface_branch_rating()
                 for p in tso_model[year][day].periods:
-                    v_req = pe.value(tso_model[year][day].expected_interface_vmag_sqr_actual[dn, p])
-                    p_req = pe.value(tso_model[year][day].expected_interface_pf_p_actual[dn, p]) * s_base
-                    q_req = pe.value(tso_model[year][day].expected_interface_pf_q_actual[dn, p]) * s_base
+                    v_req = pe.value(tso_model[year][day].expected_interface_vmag_sqr[dn, p])
+                    p_req = pe.value(tso_model[year][day].expected_interface_pf_p[dn, p]) * s_base
+                    q_req = pe.value(tso_model[year][day].expected_interface_pf_q[dn, p]) * s_base
                     interface_vars['v_sqr']['tso']['current'][node_id][year][day][p] = min(max(v_req, vmin), vmax)
                     interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p] = min(max(p_req, -s_max), s_max)
                     interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p] = min(max(q_req, -s_max), s_max)
@@ -730,9 +730,9 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                 vmin, vmax = transmission_network.network[year][day].get_node_voltage_limits(node_id)
                 s_max = distribution_network.network[year][day].get_interface_branch_rating()
                 for p in dso_model[year][day].periods:
-                    v_req = pe.value(dso_model[year][day].expected_interface_vmag_sqr_actual[p])
-                    p_req = pe.value(dso_model[year][day].expected_interface_pf_p_actual[p]) * s_base
-                    q_req = pe.value(dso_model[year][day].expected_interface_pf_q_actual[p]) * s_base
+                    v_req = pe.value(dso_model[year][day].expected_interface_vmag_sqr[p])
+                    p_req = pe.value(dso_model[year][day].expected_interface_pf_p[p]) * s_base
+                    q_req = pe.value(dso_model[year][day].expected_interface_pf_q[p]) * s_base
                     interface_vars['v_sqr']['dso']['current'][node_id][year][day][p] = min(max(v_req, vmin), vmax)
                     interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p] = min(max(p_req, -s_max), s_max)
                     interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p] = min(max(q_req, -s_max), s_max)
