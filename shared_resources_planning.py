@@ -435,9 +435,9 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                 for p in tso_model[year][day].periods:
 
                     # Get initial interface PF values
-                    v_mag_sqr = pe.value(tso_model[year][day].expected_interface_vmag_sqr_actual[dn, p])
-                    interface_pf_p = pe.value(tso_model[year][day].expected_interface_pf_p_actual[dn, p]) * s_base
-                    interface_pf_q = pe.value(tso_model[year][day].expected_interface_pf_q_actual[dn, p]) * s_base
+                    v_mag_sqr = pe.value(tso_model[year][day].expected_interface_vmag_sqr[dn, p])
+                    interface_pf_p = pe.value(tso_model[year][day].expected_interface_pf_p[dn, p]) * s_base
+                    interface_pf_q = pe.value(tso_model[year][day].expected_interface_pf_q[dn, p]) * s_base
                     interface_v_vars['tso']['current'][node_id][year][day][p] = v_mag_sqr
                     interface_pf_vars['tso']['current'][node_id][year][day]['p'][p] = interface_pf_p
                     interface_pf_vars['tso']['current'][node_id][year][day]['q'][p] = interface_pf_q
