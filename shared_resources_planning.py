@@ -955,11 +955,13 @@ def update_transmission_model_to_admm(transmission_network, model, initial_inter
 
             # Free Pc and Qc at the connection point with distribution networks
             for node_id in transmission_network.active_distribution_network_nodes:
+                node_idx = transmission_network.network[year][day].get_node_idx(node_id)
                 load_idx = transmission_network.network[year][day].get_adn_load_idx(node_id)
                 for s_m in model[year][day].scenarios_market:
                     for s_o in model[year][day].scenarios_operation:
                         for p in model[year][day].periods:
-                            model[year][day].pc[load_idx, s_m, s_o, p].fixed = False
+                            model[year][day].e[node_idx, s_m, s_o, p].fixed = False
+                            model[year][day].f[node_idx, s_m, s_o, p].fixed = False
                             model[year][day].pc[load_idx, s_m, s_o, p].setub(None)
                             model[year][day].pc[load_idx, s_m, s_o, p].setlb(None)
                             model[year][day].qc[load_idx, s_m, s_o, p].fixed = False
@@ -1091,16 +1093,17 @@ def update_distribution_models_to_admm(distribution_networks, models, initial_in
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setlb(v_min)
 
                 # Free expected interface Vmag and PF
-                dso_model[year][day].expected_interface_vmag_sqr.fixed = False
-                dso_model[year][day].expected_interface_vmag_sqr.setub(v_max**2)
-                dso_model[year][day].expected_interface_vmag_sqr.setub(v_min**2)
+                for p in dso_model[year][day].periods:
+                    dso_model[year][day].expected_interface_vmag_sqr[p].fixed = False
+                    dso_model[year][day].expected_interface_vmag_sqr[p].setub(v_max**2)
+                    dso_model[year][day].expected_interface_vmag_sqr[p].setub(v_min**2)
 
-                dso_model[year][day].expected_interface_pf_p.fixed = False
-                dso_model[year][day].expected_interface_pf_p.setub(None)
-                dso_model[year][day].expected_interface_pf_p.setlb(None)
-                dso_model[year][day].expected_interface_pf_q.fixed = False
-                dso_model[year][day].expected_interface_pf_q.setub(None)
-                dso_model[year][day].expected_interface_pf_q.setlb(None)
+                    dso_model[year][day].expected_interface_pf_p.fixed[p] = False
+                    dso_model[year][day].expected_interface_pf_p[p].setub(None)
+                    dso_model[year][day].expected_interface_pf_p[p].setlb(None)
+                    dso_model[year][day].expected_interface_pf_q[p].fixed = False
+                    dso_model[year][day].expected_interface_pf_q[p].setub(None)
+                    dso_model[year][day].expected_interface_pf_q[p].setlb(None)
 
                 # Add ADMM variables
                 dso_model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
