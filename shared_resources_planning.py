@@ -403,12 +403,12 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
             for day in transmission_network.days:
                 s_base = transmission_network.network[year][day].baseMVA
 
-                # Free Vmag, Pc, Qc
                 load_idx = transmission_network.network[year][day].get_adn_load_idx(node_id)
                 for s_m in tso_model[year][day].scenarios_market:
                     for s_o in tso_model[year][day].scenarios_operation:
                         for p in tso_model[year][day].periods:
 
+                            # Free Pc, Qc
                             tso_model[year][day].pc[load_idx, s_m, s_o, p].fixed = False
                             tso_model[year][day].pc[load_idx, s_m, s_o, p].setub(None)
                             tso_model[year][day].pc[load_idx, s_m, s_o, p].setlb(None)
@@ -416,9 +416,12 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                             tso_model[year][day].qc[load_idx, s_m, s_o, p].setub(None)
                             tso_model[year][day].qc[load_idx, s_m, s_o, p].setlb(None)
 
+                            # Define a small flexibility, to avoid infeasibilities
                             pc = interface_pf_vars['dso']['current'][node_id][year][day]['p'][p] / s_base
-                            tso_model[year][day].flex_p_up[load_idx, s_m, s_o, p].setub(pc * 0.25)
-                            tso_model[year][day].flex_p_down[load_idx, s_m, s_o, p].setub(pc * 0.25)
+                            tso_model[year][day].flex_p_up[load_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].flex_p_up[load_idx, s_m, s_o, p].setub(pc * 0.10)
+                            tso_model[year][day].flex_p_down[load_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].flex_p_down[load_idx, s_m, s_o, p].setub(pc * 0.10)
 
                 # Fix expected interface values
                 for p in tso_model[year][day].periods:
