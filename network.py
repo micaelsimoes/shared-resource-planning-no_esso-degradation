@@ -896,10 +896,6 @@ def _build_model(network, params):
                         for p in model.periods:
                             pg = model.pg[g, s_m, s_o, p]
                             obj_scenario += c_p[s_m][p] * network.baseMVA * pg
-                    if network.generators[g].is_curtaillable():
-                        for p in model.periods:
-                            pg_curt = model.pg_curt[g, s_m, s_o, p]
-                            obj_scenario += COST_GENERATION_CURTAILMENT * network.baseMVA * pg_curt
 
                 # Demand side flexibility
                 if params.fl_reg:
@@ -916,6 +912,23 @@ def _build_model(network, params):
                             qc_curt = model.qc_curt[c, s_m, s_o, p]
                             obj_scenario += COST_CONSUMPTION_CURTAILMENT * network.baseMVA * (pc_curt)
                             obj_scenario += COST_CONSUMPTION_CURTAILMENT * network.baseMVA * (qc_curt)
+
+                # Difference to the expected interface values
+                for dn in model.active_distribution_networks:
+                    node_id = network.active_distribution_network_nodes[dn]
+                    node_idx = network.get_node_idx(node_id)
+                    load_idx = network.get_adn_load_idx(node_id)
+                    for p in model.periods:
+                        for s_m in model.scenarios_market:
+                            for s_o in model.scenarios_operation:
+                                expected_pf_p = model.pc[load_idx, s_m, s_o, p]
+                                expected_pf_q = model.qc[load_idx, s_m, s_o, p]
+                                expected_vmag_sqr = (model.e_actual[node_idx, s_m, s_o, p] ** 2) + (
+                                            model.f_actual[node_idx, s_m, s_o, p] ** 2)
+                                model.expected_interface_voltage.add(
+                                    model.expected_interface_vmag_sqr[dn, p] == expected_vmag_sqr +
+                                    model.slack_expected_interface_vmag_sqr_up[dn, s_m, s_o, p] -
+                                    model.slack_expected_interface_vmag_sqr_down[dn, s_m, s_o, p])
 
                 obj += obj_scenario * omega_market * omega_oper
     elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
@@ -982,12 +995,12 @@ def _build_model(network, params):
                         slack_vmag = model.slack_expected_interface_vmag_sqr_up[dn, s_m, s_o, p] + model.slack_expected_interface_vmag_sqr_down[dn, s_m, s_o, p]
                         slack_p = model.slack_expected_interface_pf_p_up[dn, s_m, s_o, p] + model.slack_expected_interface_pf_p_down[dn, s_m, s_o, p]
                         slack_q = model.slack_expected_interface_pf_q_up[dn, s_m, s_o, p] + model.slack_expected_interface_pf_q_down[dn, s_m, s_o, p]
-                        obj += PENALTY_SLACK * 0.10 * (slack_vmag + slack_p + slack_q)
+                        obj += PENALTY_SLACK * (slack_vmag + slack_p + slack_q)
         for e in model.shared_energy_storages:
             for p in model.periods:
                 slack_p_ess = model.slack_expected_shared_ess_p_up[e, s_m, s_o, p] + model.slack_expected_shared_ess_p_down[e, s_m, s_o, p]
                 slack_q_ess = model.slack_expected_shared_ess_q_up[e, s_m, s_o, p] + model.slack_expected_shared_ess_q_down[e, s_m, s_o, p]
-                obj += PENALTY_SLACK * 0.10 * (slack_p_ess + slack_q_ess)
+                obj += PENALTY_SLACK * (slack_p_ess + slack_q_ess)
     else:
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
@@ -995,11 +1008,11 @@ def _build_model(network, params):
                     slack_vmag = model.slack_expected_interface_vmag_sqr_up[s_m, s_o, p] + model.slack_expected_interface_vmag_sqr_down[s_m, s_o, p]
                     slack_p = model.slack_expected_interface_pf_p_up[s_m, s_o, p] + model.slack_expected_interface_pf_p_down[s_m, s_o, p]
                     slack_q = model.slack_expected_interface_pf_q_up[s_m, s_o, p] + model.slack_expected_interface_pf_q_down[s_m, s_o, p]
-                    obj += PENALTY_SLACK * 0.10 * (slack_vmag + slack_p + slack_q)
+                    obj += PENALTY_SLACK * (slack_vmag + slack_p + slack_q)
 
                     slack_p_ess = model.slack_expected_shared_ess_p_up[s_m, s_o, p] + model.slack_expected_shared_ess_p_down[s_m, s_o, p]
                     slack_q_ess = model.slack_expected_shared_ess_q_up[s_m, s_o, p] + model.slack_expected_shared_ess_q_down[s_m, s_o, p]
-                    obj += PENALTY_SLACK * 0.10 * (slack_p_ess + slack_q_ess)
+                    obj += PENALTY_SLACK * (slack_p_ess + slack_q_ess)
 
     # Operation slacks
     if params.slacks:
@@ -2064,10 +2077,6 @@ def _compute_objective_function_value(network, model, params):
                         for p in model.periods:
                             pg = pe.value(model.pg[g, s_m, s_o, p])
                             obj_scenario += c_p[s_m][p] * network.baseMVA * pg
-                    if network.generators[g].is_curtaillable():
-                        for p in model.periods:
-                            pg_curt = pe.value(model.pg_curt[g, s_m, s_o, p])
-                            obj_scenario += COST_GENERATION_CURTAILMENT * network.baseMVA * pg_curt
 
                 # Demand side flexibility
                 if params.fl_reg:

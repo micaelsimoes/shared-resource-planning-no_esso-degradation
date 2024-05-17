@@ -406,11 +406,10 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                 node_idx = transmission_network.network[year][day].get_node_idx(node_id)
                 load_idx = transmission_network.network[year][day].get_adn_load_idx(node_id)
 
-                # Free Vmag, Pc, Qc
+                # Free Pc, Qc
                 for s_m in tso_model[year][day].scenarios_market:
                     for s_o in tso_model[year][day].scenarios_operation:
                         for p in tso_model[year][day].periods:
-                            tso_model[year][day].e[node_idx, s_m, s_o, p].fixed = False
                             tso_model[year][day].pc[load_idx, s_m, s_o, p].fixed = False
                             tso_model[year][day].qc[load_idx, s_m, s_o, p].fixed = False
 
