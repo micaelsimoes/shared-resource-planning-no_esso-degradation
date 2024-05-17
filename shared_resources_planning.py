@@ -1098,7 +1098,7 @@ def update_distribution_models_to_admm(distribution_networks, models, initial_in
                     dso_model[year][day].expected_interface_vmag_sqr[p].setub(v_max**2)
                     dso_model[year][day].expected_interface_vmag_sqr[p].setub(v_min**2)
 
-                    dso_model[year][day].expected_interface_pf_p.fixed[p] = False
+                    dso_model[year][day].expected_interface_pf_p[p].fixed = False
                     dso_model[year][day].expected_interface_pf_p[p].setub(None)
                     dso_model[year][day].expected_interface_pf_p[p].setlb(None)
                     dso_model[year][day].expected_interface_pf_q[p].fixed = False
