@@ -1125,7 +1125,6 @@ def update_distribution_models_to_admm(distribution_networks, models, initial_in
 
                 s_base = distribution_network.network[year][day].baseMVA
                 ref_node_id = distribution_network.network[year][day].get_reference_node_id()
-                v_min, v_max = distribution_network.network[year][day].get_node_voltage_limits(ref_node_id)
 
                 init_of_value = 1.00
                 if distribution_network.params.obj_type == OBJ_MIN_COST:
@@ -1137,21 +1136,6 @@ def update_distribution_models_to_admm(distribution_networks, models, initial_in
                     for s_o in dso_model[year][day].scenarios_operation:
                         for p in dso_model[year][day].periods:
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].fixed = False
-                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setub(v_max)
-                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setlb(v_min)
-
-                # Free expected interface Vmag and PF
-                for p in dso_model[year][day].periods:
-                    dso_model[year][day].expected_interface_vmag_sqr[p].fixed = False
-                    dso_model[year][day].expected_interface_vmag_sqr[p].setub(v_max**2)
-                    dso_model[year][day].expected_interface_vmag_sqr[p].setub(v_min**2)
-
-                    dso_model[year][day].expected_interface_pf_p[p].fixed = False
-                    dso_model[year][day].expected_interface_pf_p[p].setub(None)
-                    dso_model[year][day].expected_interface_pf_p[p].setlb(None)
-                    dso_model[year][day].expected_interface_pf_q[p].fixed = False
-                    dso_model[year][day].expected_interface_pf_q[p].setub(None)
-                    dso_model[year][day].expected_interface_pf_q[p].setlb(None)
 
                 # Add ADMM variables
                 dso_model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
