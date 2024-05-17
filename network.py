@@ -491,19 +491,19 @@ def _build_model(network, params):
 
     # - Expected Shared ESS power variables
     if network.is_transmission:
-        model.expected_shared_ess_p = pe.Var(model.shared_energy_storages, model.periods, domain=pe.Reals, initialize=0.0)
-        model.expected_shared_ess_q = pe.Var(model.shared_energy_storages, model.periods, domain=pe.Reals, initialize=0.0)
-        model.slack_expected_shared_ess_p_up = pe.Var(model.shared_energy_storages, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_expected_shared_ess_p_down = pe.Var(model.shared_energy_storages, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_expected_shared_ess_q_up = pe.Var(model.shared_energy_storages, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_expected_shared_ess_q_down = pe.Var(model.shared_energy_storages, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.expected_shared_ess_p = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+        model.expected_shared_ess_q = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+        model.slack_expected_shared_ess_p_up = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_expected_shared_ess_p_down = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_expected_shared_ess_q_up = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_expected_shared_ess_q_down = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     else:
-        model.expected_shared_ess_p = pe.Var(model.periods, domain=pe.Reals, initialize=0.0)
-        model.expected_shared_ess_q = pe.Var(model.periods, domain=pe.Reals, initialize=0.0)
-        model.slack_expected_shared_ess_p_up = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_expected_shared_ess_p_down = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_expected_shared_ess_q_up = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_expected_shared_ess_q_down = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.expected_shared_ess_p = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+        model.expected_shared_ess_q = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+        model.slack_expected_shared_ess_p_up = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_expected_shared_ess_p_down = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_expected_shared_ess_q_up = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_expected_shared_ess_q_down = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
 
     # Primal
     model.primal = pe.Var(domain=pe.Reals, initialize=0.0)
@@ -859,37 +859,21 @@ def _build_model(network, params):
         if network.is_transmission:
             for e in model.shared_energy_storages:
                 for p in model.periods:
-                    expected_sess_p = 0.0
-                    expected_sess_q = 0.0
                     for s_m in model.scenarios_market:
-                        omega_m = network.prob_market_scenarios[s_m]
                         for s_o in model.scenarios_operation:
-                            omega_o = network.prob_operation_scenarios[s_o]
-                            pch = model.shared_es_pch[e, s_m, s_o, p]
-                            pdch = model.shared_es_pdch[e, s_m, s_o, p]
-                            qch = model.shared_es_qch[e, s_m, s_o, p]
-                            qdch = model.shared_es_qdch[e, s_m, s_o, p]
-                            expected_sess_p += (pch - pdch) * omega_m * omega_o
-                            expected_sess_q += (qch - qdch) * omega_m * omega_o
-                    model.expected_shared_ess_power.add(model.expected_shared_ess_p[e, p] == expected_sess_p + model.slack_expected_shared_ess_p_up[e, p] - model.slack_expected_shared_ess_p_down[e, p])
-                    model.expected_shared_ess_power.add(model.expected_shared_ess_q[e, p] == expected_sess_q + model.slack_expected_shared_ess_q_up[e, p] - model.slack_expected_shared_ess_q_down[e, p])
+                            expected_sess_p = model.shared_es_pch[e, s_m, s_o, p] - model.shared_es_pdch[e, s_m, s_o, p]
+                            expected_sess_q = model.shared_es_qch[e, s_m, s_o, p] - model.shared_es_qdch[e, s_m, s_o, p]
+                            model.expected_shared_ess_power.add(model.expected_shared_ess_p[e, p] == expected_sess_p + model.slack_expected_shared_ess_p_up[e, s_m, s_o, p] - model.slack_expected_shared_ess_p_down[e, s_m, s_o, p])
+                            model.expected_shared_ess_power.add(model.expected_shared_ess_q[e, p] == expected_sess_q + model.slack_expected_shared_ess_q_up[e, s_m, s_o, p] - model.slack_expected_shared_ess_q_down[e, s_m, s_o, p])
         else:
             shared_ess_idx = network.get_shared_energy_storage_idx(ref_node_id)
             for p in model.periods:
-                expected_sess_p = 0.0
-                expected_sess_q = 0.0
                 for s_m in model.scenarios_market:
-                    omega_m = network.prob_market_scenarios[s_m]
                     for s_o in model.scenarios_operation:
-                        omega_s = network.prob_operation_scenarios[s_o]
-                        pch = model.shared_es_pch[shared_ess_idx, s_m, s_o, p]
-                        pdch = model.shared_es_pdch[shared_ess_idx, s_m, s_o, p]
-                        qch = model.shared_es_qch[shared_ess_idx, s_m, s_o, p]
-                        qdch = model.shared_es_qdch[shared_ess_idx, s_m, s_o, p]
-                        expected_sess_p += (pch - pdch) * omega_m * omega_s
-                        expected_sess_q += (qch - qdch) * omega_m * omega_s
-                model.expected_shared_ess_power.add(model.expected_shared_ess_p[p] == expected_sess_p + model.slack_expected_shared_ess_p_up[p] - model.slack_expected_shared_ess_p_down[p])
-                model.expected_shared_ess_power.add(model.expected_shared_ess_q[p] == expected_sess_q + model.slack_expected_shared_ess_q_up[p] - model.slack_expected_shared_ess_q_down[p])
+                        expected_sess_p = model.shared_es_pch[shared_ess_idx, s_m, s_o, p] - model.shared_es_pdch[shared_ess_idx, s_m, s_o, p]
+                        expected_sess_q = model.shared_es_qch[shared_ess_idx, s_m, s_o, p] - model.shared_es_qdch[shared_ess_idx, s_m, s_o, p]
+                        model.expected_shared_ess_power.add(model.expected_shared_ess_p[p] == expected_sess_p + model.slack_expected_shared_ess_p_up[s_m, s_o, p] - model.slack_expected_shared_ess_p_down[s_m, s_o, p])
+                        model.expected_shared_ess_power.add(model.expected_shared_ess_q[p] == expected_sess_q + model.slack_expected_shared_ess_q_up[s_m, s_o, p] - model.slack_expected_shared_ess_q_down[s_m, s_o, p])
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective Function
