@@ -421,12 +421,9 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                     vmag_sqr = interface_v_vars['dso']['current'][node_id][year][day][p]
                     pc = abs(interface_pf_vars['dso']['current'][node_id][year][day]['p'][p]) / s_base
                     qc = abs(interface_pf_vars['dso']['current'][node_id][year][day]['q'][p]) / s_base
-                    tso_model[year][day].expected_interface_vmag_sqr[dn, p].setub(vmag_sqr * 1.05)
-                    tso_model[year][day].expected_interface_vmag_sqr[dn, p].setlb(vmag_sqr * 0.95)
-                    tso_model[year][day].expected_interface_pf_p[dn, p].setub(pc * 1.05)
-                    tso_model[year][day].expected_interface_pf_p[dn, p].setlb(pc * 0.95)
-                    tso_model[year][day].expected_interface_pf_q[dn, p].setub(qc * 1.05)
-                    tso_model[year][day].expected_interface_pf_q[dn, p].setlb(qc * 0.95)
+                    tso_model[year][day].expected_interface_vmag_sqr[dn, p].fix(vmag_sqr)
+                    tso_model[year][day].expected_interface_pf_p[dn, p].fix(pc)
+                    tso_model[year][day].expected_interface_pf_q[dn, p].fix(qc)
 
     results = transmission_network.optimize(tso_model)
 
