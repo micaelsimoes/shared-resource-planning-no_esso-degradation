@@ -502,6 +502,8 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
                             obj += (dso_model[year][day].expected_shared_ess_p[p] - interface_ess_p) ** 2
                             obj += (dso_model[year][day].expected_shared_ess_q[p] - interface_ess_q) ** 2
 
+                dso_model[year][day].objective.expr = obj
+
         # Run SMOPF
         results[node_id] = distribution_network.optimize(dso_model)
 
