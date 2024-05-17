@@ -402,6 +402,7 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
         for day in transmission_network.days:
 
             # Add expected interface values
+            tso_model[year][day].active_distribution_networks = range(len(transmission_network.active_distribution_network_nodes))
             tso_model[year][day].expected_interface_vmag_sqr = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=0.00)
             tso_model[year][day].expected_interface_pf_p = pe.Var(tso_model[year][day].active_distribution_networks, domain=pe.Reals, initialize=0.00)
             tso_model[year][day].expected_interface_pf_q = pe.Var(tso_model[year][day].active_distribution_networks, domain=pe.Reals, initialize=0.00)
