@@ -561,7 +561,6 @@ def create_shared_energy_storage_model(shared_ess_data, sess_vars, candidate_sol
     shared_ess_data.update_data_with_candidate_solution(candidate_solution)
     esso_model = shared_ess_data.build_subproblem()
     shared_ess_data.update_model_with_candidate_solution(esso_model, candidate_solution)
-    #results = shared_ess_data.optimize(esso_model)
 
     for e in esso_model.energy_storages:
         node_id = shared_ess_data.active_distribution_network_nodes[e]
@@ -577,7 +576,7 @@ def create_shared_energy_storage_model(shared_ess_data, sess_vars, candidate_sol
                     sess_vars['esso']['prev'][node_id][year][day]['p'][p] = shared_ess_p
                     sess_vars['esso']['prev'][node_id][year][day]['q'][p] = shared_ess_q
 
-    return esso_model, results
+    return esso_model
 
 
 def _get_primal_value(planning_problem, tso_model, dso_models, esso_model):
