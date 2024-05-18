@@ -475,17 +475,12 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                     interface_v_vars['tso']['current'][node_id][year][day][p] = vmag_sqr
                     interface_pf_vars['tso']['current'][node_id][year][day]['p'][p] = interface_pf_p
                     interface_pf_vars['tso']['current'][node_id][year][day]['q'][p] = interface_pf_q
-                    interface_v_vars['tso']['prev'][node_id][year][day][p] = vmag_sqr
-                    interface_pf_vars['tso']['prev'][node_id][year][day]['p'][p] = interface_pf_p
-                    interface_pf_vars['tso']['prev'][node_id][year][day]['q'][p] = interface_pf_q
 
                     # Get initial Shared ESS values
                     shared_ess_p = pe.value(tso_model[year][day].expected_shared_ess_p[shared_ess_idx, p]) * s_base
                     shared_ess_q = pe.value(tso_model[year][day].expected_shared_ess_q[shared_ess_idx, p]) * s_base
                     sess_vars['current'][node_id][year][day]['p'][p] = shared_ess_p
                     sess_vars['current'][node_id][year][day]['q'][p] = shared_ess_q
-                    sess_vars['prev'][node_id][year][day]['p'][p] = shared_ess_p
-                    sess_vars['prev'][node_id][year][day]['q'][p] = shared_ess_q
 
     return tso_model, results
 
@@ -556,17 +551,12 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
                     interface_vars_vmag['current'][node_id][year][day][p] = interface_pf_vmag_sqr
                     interface_vars_pf['current'][node_id][year][day]['p'][p] = interface_pf_p
                     interface_vars_pf['current'][node_id][year][day]['q'][p] = interface_pf_q
-                    interface_vars_vmag['prev'][node_id][year][day][p] = interface_pf_vmag_sqr
-                    interface_vars_pf['prev'][node_id][year][day]['p'][p] = interface_pf_p
-                    interface_vars_pf['prev'][node_id][year][day]['q'][p] = interface_pf_q
 
                     # Get initial Shared ESS values
                     p_ess = pe.value(dso_model[year][day].expected_shared_ess_p[p]) * s_base
                     q_ess = pe.value(dso_model[year][day].expected_shared_ess_q[p]) * s_base
                     sess_vars['current'][node_id][year][day]['p'][p] = p_ess
                     sess_vars['current'][node_id][year][day]['q'][p] = q_ess
-                    sess_vars['prev'][node_id][year][day]['p'][p] = p_ess
-                    sess_vars['prev'][node_id][year][day]['q'][p] = q_ess
 
         dso_models[node_id] = dso_model
 
@@ -593,8 +583,6 @@ def create_shared_energy_storage_model(shared_ess_data, sess_vars, candidate_sol
                     shared_ess_q = pe.value(esso_model.es_qnet[e, y, d, p])
                     sess_vars['esso']['current'][node_id][year][day]['p'][p] = shared_ess_p
                     sess_vars['esso']['current'][node_id][year][day]['q'][p] = shared_ess_q
-                    sess_vars['esso']['prev'][node_id][year][day]['p'][p] = shared_ess_p
-                    sess_vars['esso']['prev'][node_id][year][day]['q'][p] = shared_ess_q
 
     return esso_model
 
@@ -861,7 +849,6 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
         for y in sess_model.years:
             year = repr_years[y]
             shared_ess_idx = shared_ess_data.get_shared_energy_storage_idx(node_id)
-            s_max = pe.value(sess_model.es_s_rated[shared_ess_idx, y])
             for d in sess_model.days:
                 day = repr_days[d]
                 for p in sess_model.periods:
@@ -877,7 +864,6 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                 day = repr_days[d]
                 s_base = transmission_network.network[year][day].baseMVA
                 shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(node_id)
-                s_max = pe.value(tso_model[year][day].shared_es_s_rated_fixed[shared_ess_idx]) * s_base
                 for p in tso_model[year][day].periods:
                     p_req = pe.value(tso_model[year][day].expected_shared_ess_p[shared_ess_idx, p]) * s_base
                     q_req = pe.value(tso_model[year][day].expected_shared_ess_q[shared_ess_idx, p]) * s_base
@@ -892,7 +878,6 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                 s_base = distribution_network.network[year][day].baseMVA
                 ref_node_id = distribution_network.network[year][day].get_reference_node_id()
                 shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
-                s_max = pe.value(dso_model[year][day].shared_es_s_rated_fixed[shared_ess_idx]) * s_base
                 for p in dso_model[year][day].periods:
                     p_req = pe.value(dso_model[year][day].expected_shared_ess_p[p]) * s_base
                     q_req = pe.value(dso_model[year][day].expected_shared_ess_q[p]) * s_base
