@@ -1318,13 +1318,6 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
                     model[year][day].p_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].q_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['q'][p] / s_base)
 
-                    model[year][day].dual_v_sqr_prev[p].fix(dual_vsqr['prev'][node_id][year][day][p] / s_base)
-                    model[year][day].dual_pf_p_prev[p].fix(dual_pf['prev'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].dual_pf_q_prev[p].fix(dual_pf['prev'][node_id][year][day]['q'][p] / s_base)
-                    model[year][day].v_sqr_prev[p].fix(vsqr_req['dso']['prev'][node_id][year][day][p])
-                    model[year][day].p_pf_prev[p].fix(pf_req['dso']['prev'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].q_pf_prev[p].fix(pf_req['dso']['prev'][node_id][year][day]['q'][p] / s_base)
-
                 # Update SHARED ENERGY STORAGE variables (if existent)
                 for p in model[year][day].periods:
 
@@ -1332,11 +1325,6 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
                     model[year][day].dual_ess_q_req[p].fix(dual_ess['current'][node_id][year][day]['q'][p] / s_base)
                     model[year][day].p_ess_req[p].fix(ess_req['esso']['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].q_ess_req[p].fix(ess_req['esso']['current'][node_id][year][day]['q'][p] / s_base)
-
-                    model[year][day].dual_ess_p_prev[p].fix(dual_ess['prev'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].dual_ess_q_prev[p].fix(dual_ess['prev'][node_id][year][day]['q'][p] / s_base)
-                    model[year][day].p_ess_prev[p].fix(ess_req['dso']['prev'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].q_ess_prev[p].fix(ess_req['dso']['prev'][node_id][year][day]['q'][p] / s_base)
 
         # Solve!
         res[node_id] = distribution_network.optimize(model, from_warm_start=from_warm_start)
