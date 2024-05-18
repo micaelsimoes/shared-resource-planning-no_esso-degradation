@@ -279,9 +279,9 @@ def _build_subproblem_model(shared_ess_data):
     model.es_e_investment = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_s_investment_fixed = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_investment_fixed = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.es_s_investment_slack_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.es_s_investment_slack_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.es_e_investment_slack_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.slack_es_s_investment_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.slack_es_s_investment_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.slack_es_e_investment_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_investment_slack_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_s_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
@@ -311,8 +311,10 @@ def _build_subproblem_model(shared_ess_data):
     model.es_soh_per_unit_cumul = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=1.00, bounds=(0.00, 1.00))
     model.es_degradation_per_unit_cumul = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
     if shared_ess_data.params.slacks:
-        model.slack_es_soh_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_es_soh_per_unit_cumul = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_es_soh_per_unit_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_es_soh_per_unit_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_es_soh_per_unit_cumul_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_es_soh_per_unit_cumul_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_soh_per_unit.fix(1.00)
     model.es_soh_per_unit_cumul.fix(1.00)
 
@@ -325,8 +327,8 @@ def _build_subproblem_model(shared_ess_data):
     model.energy_storage_capacity_fixing = pe.ConstraintList()
     for e in model.energy_storages:
         for y in model.years:
-            model.energy_storage_capacity_fixing.add(model.es_s_investment[e, y] == model.es_s_investment_fixed[e, y] + model.es_s_investment_slack_up[e, y] - model.es_s_investment_slack_down[e, y])
-            model.energy_storage_capacity_fixing.add(model.es_e_investment[e, y] == model.es_e_investment_fixed[e, y] + model.es_e_investment_slack_up[e, y] - model.es_e_investment_slack_down[e, y])
+            model.energy_storage_capacity_fixing.add(model.es_s_investment[e, y] == model.es_s_investment_fixed[e, y] + model.slack_es_s_investment_up[e, y] - model.slack_es_s_investment_down[e, y])
+            model.energy_storage_capacity_fixing.add(model.es_e_investment[e, y] == model.es_e_investment_fixed[e, y] + model.slack_es_e_investment_up[e, y] - model.es_e_investment_slack_down[e, y])
 
     # - Rated capacities of each investment
     model.rated_s_capacity_unit = pe.ConstraintList()
@@ -396,7 +398,7 @@ def _build_subproblem_model(shared_ess_data):
 
                 model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit[e, y_inv, y] * (2 * shared_energy_storage.cl_nom * model.es_e_rated_per_unit[e, y_inv, y]) == model.es_avg_ch_dch_per_unit[e, y_inv, y])
                 if shared_ess_data.params.slacks:
-                    model.energy_storage_capacity_degradation.add(model.es_soh_per_unit[e, y_inv, y] == 1.00 - model.es_degradation_per_unit[e, y_inv, y] + model.slack_es_soh_per_unit[e, y_inv, y])
+                    model.energy_storage_capacity_degradation.add(model.es_soh_per_unit[e, y_inv, y] == 1.00 - model.es_degradation_per_unit[e, y_inv, y] + model.slack_es_soh_per_unit_up[e, y_inv, y] - model.slack_es_soh_per_unit_down[e, y_inv, y])
                 else:
                     model.energy_storage_capacity_degradation.add(model.es_soh_per_unit[e, y_inv, y] == 1.00 - model.es_degradation_per_unit[e, y_inv, y])
 
@@ -405,7 +407,7 @@ def _build_subproblem_model(shared_ess_data):
                     prev_soh = model.es_soh_per_unit_cumul[e, y_inv, y - 1]
 
                 if shared_ess_data.params.slacks:
-                    model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[e, y_inv, y] == prev_soh * ((model.es_soh_per_unit[e, y_inv, y]) ** (365.00 * num_years)) + model.slack_es_soh_per_unit_cumul[e, y_inv, y])
+                    model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[e, y_inv, y] == prev_soh * ((model.es_soh_per_unit[e, y_inv, y]) ** (365.00 * num_years)) + model.slack_es_soh_per_unit_cumul_up[e, y_inv, y] - model.slack_es_soh_per_unit_cumul_down[e, y_inv, y])
                 else:
                     model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[e, y_inv, y] == prev_soh * ((model.es_soh_per_unit[e, y_inv, y]) ** (365.00 * num_years)))
 
@@ -444,6 +446,7 @@ def _build_subproblem_model(shared_ess_data):
                     agg_snet = 0.00
                     for y_inv in model.years:
                         agg_snet += (model.es_sch_per_unit[e, y_inv, y, d, p] - model.es_sdch_per_unit[e, y_inv, y, d, p])
+
                     if shared_ess_data.params.slacks:
                         model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] == agg_snet + model.slack_es_snet_up[e, y, d, p] - model.slack_es_snet_down[e, y, d, p])
                     else:
@@ -461,15 +464,15 @@ def _build_subproblem_model(shared_ess_data):
         for y_inv in model.years:
 
             # Slacks for investment fixing
-            slack_penalty += PENALTY_SLACK * (model.es_s_investment_slack_up[e, y_inv] + model.es_s_investment_slack_down[e, y_inv])
-            slack_penalty += PENALTY_SLACK * (model.es_e_investment_slack_up[e, y_inv] + model.es_e_investment_slack_down[e, y_inv])
+            slack_penalty += PENALTY_SLACK * (model.slack_es_s_investment_up[e, y_inv] + model.slack_es_s_investment_down[e, y_inv])
+            slack_penalty += PENALTY_SLACK * (model.slack_es_e_investment_up[e, y_inv] + model.es_e_investment_slack_down[e, y_inv])
 
             if shared_ess_data.params.slacks:
 
                 # Degradation
                 for y in model.years:
-                    slack_penalty += PENALTY_SLACK * (model.slack_es_soh_per_unit[e, y_inv, y])
-                    slack_penalty += PENALTY_SLACK * (model.slack_es_soh_per_unit_cumul[e, y_inv, y])
+                    slack_penalty += PENALTY_SLACK * (model.slack_es_soh_per_unit_up[e, y_inv, y] + model.slack_es_soh_per_unit_down[e, y_inv, y])
+                    slack_penalty += PENALTY_SLACK * (model.slack_es_soh_per_unit_cumul_up[e, y_inv, y] + model.slack_es_soh_per_unit_cumul_down[e, y_inv, y])
 
                 # Complementarity
                 for y in model.years:
@@ -768,9 +771,9 @@ def _process_relaxation_variables_investment(shared_ess_data, model):
         for e in model.energy_storages:
             node_id = shared_ess_data.shared_energy_storages[year_inv][e].bus
             processed_results[year_inv][node_id] = dict()
-            processed_results[year_inv][node_id]['s_up'] = pe.value(model.es_s_investment_slack_up[e, y_inv])
-            processed_results[year_inv][node_id]['s_down'] = pe.value(model.es_s_investment_slack_down[e, y_inv])
-            processed_results[year_inv][node_id]['e_up'] = pe.value(model.es_e_investment_slack_up[e, y_inv])
+            processed_results[year_inv][node_id]['s_up'] = pe.value(model.slack_es_s_investment_up[e, y_inv])
+            processed_results[year_inv][node_id]['s_down'] = pe.value(model.slack_es_s_investment_down[e, y_inv])
+            processed_results[year_inv][node_id]['e_up'] = pe.value(model.slack_es_e_investment_up[e, y_inv])
             processed_results[year_inv][node_id]['e_down'] = pe.value(model.es_e_investment_slack_down[e, y_inv])
 
     return processed_results
@@ -794,10 +797,14 @@ def _process_relaxation_variables_degradation_detailed(shared_ess_data, model):
                 if shared_ess_data.params.slacks:
 
                     # - Degradation per unit
-                    soh_per_unit = pe.value(model.slack_es_soh_per_unit[e, y_inv, y_curr])
-                    soh_per_unit_cumul = pe.value(model.slack_es_soh_per_unit_cumul[e, y_inv, y_curr])
-                    processed_results[year_inv][year_curr][node_id]['soh_per_unit'] = soh_per_unit
-                    processed_results[year_inv][year_curr][node_id]['soh_per_unit_cumul'] = soh_per_unit_cumul
+                    soh_per_unit_up = pe.value(model.slack_es_soh_per_unit_up[e, y_inv, y_curr])
+                    soh_per_unit_down = pe.value(model.slack_es_soh_per_unit_down[e, y_inv, y_curr])
+                    soh_per_unit_cumul_up = pe.value(model.slack_es_soh_per_unit_cumul_up[e, y_inv, y_curr])
+                    soh_per_unit_cumul_down = pe.value(model.slack_es_soh_per_unit_cumul_down[e, y_inv, y_curr])
+                    processed_results[year_inv][year_curr][node_id]['soh_per_unit_up'] = soh_per_unit_up
+                    processed_results[year_inv][year_curr][node_id]['soh_per_unit_down'] = soh_per_unit_down
+                    processed_results[year_inv][year_curr][node_id]['soh_per_unit_cumul_up'] = soh_per_unit_cumul_up
+                    processed_results[year_inv][year_curr][node_id]['soh_per_unit_cumul_down'] = soh_per_unit_cumul_down
 
     return processed_results
 
@@ -1433,21 +1440,39 @@ def _write_detailed_degradation_relaxation_slacks_results_to_excel(shared_ess_da
         for year_inv in results:
             for year_curr in results[year_inv]:
 
-                # - Degradation per unit, up
+                # - SoH per unit, up
                 sheet.cell(row=row_idx, column=1).value = node_id
                 sheet.cell(row=row_idx, column=2).value = int(year_inv)
                 sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                sheet.cell(row=row_idx, column=4).value = 'SoH unit'
-                sheet.cell(row=row_idx, column=5).value = results[year_inv][year_curr][node_id]['soh_per_unit']
+                sheet.cell(row=row_idx, column=4).value = 'SoH unit, up'
+                sheet.cell(row=row_idx, column=5).value = results[year_inv][year_curr][node_id]['soh_per_unit_up']
                 sheet.cell(row=row_idx, column=5).number_format = decimal_style
                 row_idx = row_idx + 1
 
-                # - Degradation per unit, down
+                # - SoH per unit, down
                 sheet.cell(row=row_idx, column=1).value = node_id
                 sheet.cell(row=row_idx, column=2).value = int(year_inv)
                 sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                sheet.cell(row=row_idx, column=4).value = 'SoH cumul.'
-                sheet.cell(row=row_idx, column=5).value = results[year_inv][year_curr][node_id]['soh_per_unit_cumul']
+                sheet.cell(row=row_idx, column=4).value = 'SoH unit, down'
+                sheet.cell(row=row_idx, column=5).value = results[year_inv][year_curr][node_id]['soh_per_unit_down']
+                sheet.cell(row=row_idx, column=5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - SoH per unit (cumulative), up
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'SoH cumul., up'
+                sheet.cell(row=row_idx, column=5).value = results[year_inv][year_curr][node_id]['soh_per_unit_cumul_up']
+                sheet.cell(row=row_idx, column=5).number_format = decimal_style
+                row_idx = row_idx + 1
+
+                # - SoH per unit (cumulative), down
+                sheet.cell(row=row_idx, column=1).value = node_id
+                sheet.cell(row=row_idx, column=2).value = int(year_inv)
+                sheet.cell(row=row_idx, column=3).value = int(year_curr)
+                sheet.cell(row=row_idx, column=4).value = 'SoH cumul., down'
+                sheet.cell(row=row_idx, column=5).value = results[year_inv][year_curr][node_id]['soh_per_unit_cumul_down']
                 sheet.cell(row=row_idx, column=5).number_format = decimal_style
                 row_idx = row_idx + 1
 
