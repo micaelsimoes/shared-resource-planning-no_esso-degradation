@@ -247,7 +247,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     tso_model, results['tso'] = create_transmission_network_model(transmission_network, consensus_vars['interface']['v_sqr'], consensus_vars['interface']['pf'], consensus_vars['ess']['tso'], candidate_solution['total_capacity'])
     update_transmission_model_to_admm(transmission_network, tso_model, consensus_vars['interface']['pf'], admm_parameters)
 
-    esso_model, results['esso'] = create_shared_energy_storage_model(shared_ess_data, consensus_vars['ess'], candidate_solution['investment'])
+    esso_model = create_shared_energy_storage_model(shared_ess_data, consensus_vars['ess'], candidate_solution['investment'])
     update_shared_energy_storage_model_to_admm(shared_ess_data, esso_model, admm_parameters)
 
     planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model, consensus_vars, dual_vars, admm_parameters)
