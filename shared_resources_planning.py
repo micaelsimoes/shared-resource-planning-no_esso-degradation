@@ -282,9 +282,9 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         # --------------------------------------------------------------------------------------------------------------
         # 2. Solve TSO problem
         results['tso'] = update_transmission_coordination_model_and_solve(transmission_network, tso_model,
-                                                                          consensus_vars['interface']['v_sqr']['dso'], dual_vars['v_sqr']['tso'],
-                                                                          consensus_vars['interface']['pf']['dso'], dual_vars['pf']['tso'],
-                                                                          consensus_vars['ess']['esso'], dual_vars['ess']['tso'],
+                                                                          consensus_vars['interface']['v_sqr'], dual_vars['v_sqr']['tso'],
+                                                                          consensus_vars['interface']['pf'], dual_vars['pf']['tso'],
+                                                                          consensus_vars['ess'], dual_vars['ess']['tso'],
                                                                           admm_parameters, from_warm_start=from_warm_start)
 
         # 2.1 Update ADMM CONSENSUS variables
@@ -1273,22 +1273,22 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
 
                 node_id = transmission_network.active_distribution_network_nodes[dn]
 
-                # Update interface PF power requests
+                # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
                     model[year][day].dual_v_sqr_req[dn, p].fix(dual_vsqr['current'][node_id][year][day][p] / s_base)
                     model[year][day].dual_pf_p_req[dn, p].fix(dual_pf['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].dual_pf_q_req[dn, p].fix(dual_pf['current'][node_id][year][day]['q'][p] / s_base)
-                    model[year][day].v_sqr_req[dn, p].fix(vsqr_req['current'][node_id][year][day][p])
-                    model[year][day].p_pf_req[dn, p].fix(pf_req['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].q_pf_req[dn, p].fix(pf_req['current'][node_id][year][day]['q'][p] / s_base)
+                    model[year][day].v_sqr_req[dn, p].fix(vsqr_req['dso']['current'][node_id][year][day][p])
+                    model[year][day].p_pf_req[dn, p].fix(pf_req['dso']['current'][node_id][year][day]['p'][p] / s_base)
+                    model[year][day].q_pf_req[dn, p].fix(pf_req['dso']['current'][node_id][year][day]['q'][p] / s_base)
 
                 # Update shared ESS capacity and power requests
                 shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(node_id)
                 for p in model[year][day].periods:
                     model[year][day].dual_ess_p_req[shared_ess_idx, p].fix(dual_ess['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].dual_ess_q_req[shared_ess_idx, p].fix(dual_ess['current'][node_id][year][day]['q'][p] / s_base)
-                    model[year][day].p_ess_req[shared_ess_idx, p].fix(ess_req['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].q_ess_req[shared_ess_idx, p].fix(ess_req['current'][node_id][year][day]['q'][p] / s_base)
+                    model[year][day].p_ess_req[shared_ess_idx, p].fix(ess_req['esso']['current'][node_id][year][day]['p'][p] / s_base)
+                    model[year][day].q_ess_req[shared_ess_idx, p].fix(ess_req['esso']['current'][node_id][year][day]['q'][p] / s_base)
 
     # Solve!
     res = transmission_network.optimize(model, from_warm_start=from_warm_start)
