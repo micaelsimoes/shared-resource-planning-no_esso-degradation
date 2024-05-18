@@ -551,12 +551,17 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
                     interface_vars_vmag['current'][node_id][year][day][p] = interface_pf_vmag_sqr
                     interface_vars_pf['current'][node_id][year][day]['p'][p] = interface_pf_p
                     interface_vars_pf['current'][node_id][year][day]['q'][p] = interface_pf_q
+                    interface_vars_vmag['prev'][node_id][year][day][p] = interface_pf_vmag_sqr
+                    interface_vars_pf['prev'][node_id][year][day]['p'][p] = interface_pf_p
+                    interface_vars_pf['prev'][node_id][year][day]['q'][p] = interface_pf_q
 
                     # Get initial Shared ESS values
                     p_ess = pe.value(dso_model[year][day].expected_shared_ess_p[p]) * s_base
                     q_ess = pe.value(dso_model[year][day].expected_shared_ess_q[p]) * s_base
                     sess_vars['current'][node_id][year][day]['p'][p] = p_ess
                     sess_vars['current'][node_id][year][day]['q'][p] = q_ess
+                    sess_vars['prev'][node_id][year][day]['p'][p] = p_ess
+                    sess_vars['prev'][node_id][year][day]['q'][p] = q_ess
 
         dso_models[node_id] = dso_model
 
@@ -1123,8 +1128,13 @@ def update_distribution_models_to_admm(distribution_networks, models, initial_in
                 dso_model[year][day].rho_v.fix(params.rho['v'][distribution_network.network[year][day].name])
                 dso_model[year][day].v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)       # Voltage magnitude - requested by TSO
                 dso_model[year][day].dual_v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - voltage magnitude
-                dso_model[year][day].v_sqr_prev = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)      # Voltage magnitude - previous iteration
-                dso_model[year][day].dual_v_sqr_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)            # Dual variable - voltage magnitude (previous iteration)
+
+                dso_model[year][day].rho_pf = pe.Var(domain=pe.NonNegativeReals)
+                dso_model[year][day].rho_pf.fix(params.rho['pf'][distribution_network.network[year][day].name])
+                dso_model[year][day].p_pf_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)                   # Active power - requested by TSO
+                dso_model[year][day].q_pf_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)                   # Reactive power - requested by TSO
+                dso_model[year][day].dual_pf_p_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)              # Dual variable - active power
+                dso_model[year][day].dual_pf_q_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)              # Dual variable - reactive power
 
                 dso_model[year][day].rho_ess = pe.Var(domain=pe.NonNegativeReals)
                 dso_model[year][day].rho_ess.fix(params.rho['ess'][distribution_network.network[year][day].name])
@@ -1149,6 +1159,17 @@ def update_distribution_models_to_admm(distribution_networks, models, initial_in
                     obj += (dso_model[year][day].dual_v_sqr_req[p]) * constraint_vmag_req
                     obj += (dso_model[year][day].dual_pf_p_req[p]) * constraint_p_req
                     obj += (dso_model[year][day].dual_pf_q_req[p]) * constraint_q_req
+                    obj += (dso_model[year][day].rho_v / 2) * (constraint_vmag_req ** 2)
+                    obj += (dso_model[year][day].rho_pf / 2) * (constraint_p_req ** 2)
+                    obj += (dso_model[year][day].rho_pf / 2) * (constraint_q_req ** 2)
+
+                    constraint_vmag_prev = (dso_model[year][day].expected_interface_vmag_sqr[p] - dso_model[year][day].v_sqr_prev[p])
+                    constraint_p_prev = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_prev[p]) / abs(init_pf_p)
+                    constraint_q_prev = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_prev[p]) / abs(init_pf_q)
+
+                    obj += (dso_model[year][day].dual_v_sqr_prev[p]) * constraint_vmag_prev
+                    obj += (dso_model[year][day].dual_pf_p_prev[p]) * constraint_p_prev
+                    obj += (dso_model[year][day].dual_pf_q_prev[p]) * constraint_q_prev
                     obj += (dso_model[year][day].rho_v / 2) * (constraint_vmag_req ** 2)
                     obj += (dso_model[year][day].rho_pf / 2) * (constraint_p_req ** 2)
                     obj += (dso_model[year][day].rho_pf / 2) * (constraint_q_req ** 2)
