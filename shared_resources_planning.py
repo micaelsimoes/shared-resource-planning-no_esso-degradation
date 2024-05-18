@@ -458,34 +458,6 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
 
             tso_model[year][day].objective.expr = obj
 
-    # Free Pc and Qc, and fix expected interface PF
-    for year in transmission_network.years:
-        for day in transmission_network.days:
-
-            # Free Pc, Qc at the interface node
-            for node_id in transmission_network.active_distribution_network_nodes:
-                load_idx = transmission_network.network[year][day].get_adn_load_idx(node_id)
-                for s_m in tso_model[year][day].scenarios_market:
-                    for s_o in tso_model[year][day].scenarios_operation:
-                        for p in tso_model[year][day].periods:
-                            tso_model[year][day].pc[load_idx, s_m, s_o, p].fixed = False
-                            tso_model[year][day].pc[load_idx, s_m, s_o, p].setub(None)
-                            tso_model[year][day].pc[load_idx, s_m, s_o, p].setlb(None)
-                            tso_model[year][day].qc[load_idx, s_m, s_o, p].fixed = False
-                            tso_model[year][day].qc[load_idx, s_m, s_o, p].setub(None)
-                            tso_model[year][day].qc[load_idx, s_m, s_o, p].setlb(None)
-
-            # Fix expected interface Vmag, P, and Q
-            for dn in tso_model[year][day].active_distribution_networks:
-                node_id = transmission_network.active_distribution_network_nodes[dn]
-                for p in tso_model[year][day].periods:
-                    vmag_sqr = interface_v_vars['dso']['current'][node_id][year][day][p]
-                    interface_pf_p = interface_pf_vars['dso']['current'][node_id][year][day]['p'][p]
-                    interface_pf_q = interface_pf_vars['dso']['current'][node_id][year][day]['q'][p]
-                    tso_model[year][day].expected_interface_vmag_sqr[dn, p].fix(vmag_sqr)
-                    tso_model[year][day].expected_interface_pf_p[dn, p].fix(interface_pf_p)
-                    tso_model[year][day].expected_interface_pf_q[dn, p].fix(interface_pf_q)
-
     results = transmission_network.optimize(tso_model)
 
     for year in transmission_network.years:
@@ -1067,18 +1039,18 @@ def update_transmission_model_to_admm(transmission_network, model, initial_inter
 
             s_base = transmission_network.network[year][day].baseMVA
 
-            # Free expected interface Vmag, P, and Q
-            for dn in model[year][day].active_distribution_networks:
-                for p in model[year][day].periods:
-                    model[year][day].expected_interface_vmag_sqr[dn, p].fixed = False
-                    model[year][day].expected_interface_vmag_sqr[dn, p].setub(None)
-                    model[year][day].expected_interface_vmag_sqr[dn, p].setlb(None)
-                    model[year][day].expected_interface_pf_p[dn, p].fixed = False
-                    model[year][day].expected_interface_pf_p[dn, p].setub(None)
-                    model[year][day].expected_interface_pf_p[dn, p].setlb(None)
-                    model[year][day].expected_interface_pf_q[dn, p].fixed = False
-                    model[year][day].expected_interface_pf_q[dn, p].setub(None)
-                    model[year][day].expected_interface_pf_q[dn, p].setlb(None)
+            # Free Pc, Qc at the interface node
+            for node_id in transmission_network.active_distribution_network_nodes:
+                load_idx = transmission_network.network[year][day].get_adn_load_idx(node_id)
+                for s_m in model[year][day].scenarios_market:
+                    for s_o in model[year][day].scenarios_operation:
+                        for p in model[year][day].periods:
+                            model[year][day].pc[load_idx, s_m, s_o, p].fixed = False
+                            model[year][day].pc[load_idx, s_m, s_o, p].setub(None)
+                            model[year][day].pc[load_idx, s_m, s_o, p].setlb(None)
+                            model[year][day].qc[load_idx, s_m, s_o, p].fixed = False
+                            model[year][day].qc[load_idx, s_m, s_o, p].setub(None)
+                            model[year][day].qc[load_idx, s_m, s_o, p].setlb(None)
 
             # Add ADMM variables
             model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
