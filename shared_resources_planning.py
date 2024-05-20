@@ -495,6 +495,8 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
 
     # Run S-MOPF
     results = transmission_network.optimize(tso_model)
+    processed_results = transmission_network.process_results(tso_model, results)
+    transmission_network.write_optimization_results_to_excel(processed_results)
 
     # Get expected values
     for year in transmission_network.years:
