@@ -335,6 +335,25 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
             break
 
         # --------------------------------------------------------------------------------------------------------------
+        # 4. Solve ESSO problem
+        results['esso'] = update_shared_energy_storages_coordination_model_and_solve(planning_problem, esso_model,
+                                                                                     consensus_vars['ess']['tso']['current'], dual_vars['ess']['esso']['current']['tso'],
+                                                                                     admm_parameters, from_warm_start=from_warm_start)
+
+        # 4.1 Update ADMM CONSENSUS variables
+        planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
+                                                         consensus_vars, dual_vars,
+                                                         admm_parameters)
+
+        # 4.2 Update primal evolution
+        primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
+
+        # 4.3 STOPPING CRITERIA evaluation
+        convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
+        if convergence:
+            break
+
+        # --------------------------------------------------------------------------------------------------------------
         # 3. Solve DSOs problems
         results['dso'] = update_distribution_coordination_models_and_solve(distribution_networks, dso_models,
                                                                            consensus_vars['interface']['v_sqr'], dual_vars['v_sqr']['dso'],
@@ -936,8 +955,6 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
             for d in range(len(repr_days)):
                 day = repr_days[d]
                 s_base = distribution_network.network[year][day].baseMVA
-                ref_node_id = distribution_network.network[year][day].get_reference_node_id()
-                shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
                 for p in dso_model[year][day].periods:
                     p_req = pe.value(dso_model[year][day].expected_shared_ess_p[p]) * s_base
                     q_req = pe.value(dso_model[year][day].expected_shared_ess_q[p]) * s_base
