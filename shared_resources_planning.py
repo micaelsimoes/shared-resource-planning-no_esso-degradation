@@ -449,12 +449,6 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].fixed = False
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setub(None)
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setlb(None)
-                            tso_model[year][day].e[adn_node_idx, s_m, s_o, p].fixed = False
-                            tso_model[year][day].slack_e_up[adn_node_idx, s_m, s_o, p].fix(0.00)
-                            tso_model[year][day].slack_e_down[adn_node_idx, s_m, s_o, p].fix(0.00)
-                            tso_model[year][day].f[adn_node_idx, s_m, s_o, p].fixed = False
-                            tso_model[year][day].slack_f_up[adn_node_idx, s_m, s_o, p].fix(0.00)
-                            tso_model[year][day].slack_f_down[adn_node_idx, s_m, s_o, p].fix(0.00)
 
                 # Define expected interface values
                 for s_m in tso_model[year][day].scenarios_market:
