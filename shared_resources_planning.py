@@ -449,13 +449,19 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].fixed = False
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setub(None)
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setlb(None)
+                            tso_model[year][day].e[adn_node_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].slack_e_up[adn_node_idx, s_m, s_o, p].fix(0.00)
+                            tso_model[year][day].slack_e_down[adn_node_idx, s_m, s_o, p].fix(0.00)
+                            tso_model[year][day].f[adn_node_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].slack_f_up[adn_node_idx, s_m, s_o, p].fix(0.00)
+                            tso_model[year][day].slack_f_down[adn_node_idx, s_m, s_o, p].fix(0.00)
 
                 # Define expected interface values
                 for s_m in tso_model[year][day].scenarios_market:
                     for s_o in tso_model[year][day].scenarios_operation:
                         for p in tso_model[year][day].periods:
 
-                            interface_vmag_sqr = (tso_model[year][day].e_actual[adn_node_idx, s_m, s_o, p] ** 2) + (tso_model[year][day].f_actual[adn_node_idx, s_m, s_o, p] ** 2)
+                            interface_vmag_sqr = (tso_model[year][day].e[adn_node_idx, s_m, s_o, p] ** 2) + (tso_model[year][day].f[adn_node_idx, s_m, s_o, p] ** 2)
                             interface_pf_p = tso_model[year][day].pc[adn_load_idx, s_m, s_o, p]
                             interface_pf_q = tso_model[year][day].qc[adn_load_idx, s_m, s_o, p]
 
@@ -560,7 +566,7 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
                     for s_o in dso_model[year][day].scenarios_operation:
                         for p in dso_model[year][day].periods:
 
-                            vmag_sqr = dso_model[year][day].e_actual[ref_node_idx, s_m, s_o, p] ** 2
+                            vmag_sqr = dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2
                             interface_pf_p = dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p]
                             interface_pf_q = dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p]
                             obj += PENALTY_SLACK * (dso_model[year][day].expected_interface_vmag_sqr[p] - vmag_sqr) ** 2
