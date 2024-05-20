@@ -242,10 +242,10 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
 
     # Create Operational Planning models
     dso_models, results['dso'] = create_distribution_networks_models(distribution_networks, consensus_vars['interface']['v_sqr']['dso'], consensus_vars['interface']['pf']['dso'], consensus_vars['ess']['dso'], candidate_solution['total_capacity'])
-    update_distribution_models_to_admm(distribution_networks, dso_models, consensus_vars['interface']['v_sqr']['dso'], consensus_vars['interface']['pf']['dso'], admm_parameters)
+    update_distribution_models_to_admm(distribution_networks, dso_models, consensus_vars['interface']['pf']['dso'], admm_parameters)
 
     tso_model, results['tso'] = create_transmission_network_model(transmission_network, consensus_vars['interface']['v_sqr'], consensus_vars['interface']['pf'], consensus_vars['ess'], candidate_solution['total_capacity'])
-    update_transmission_model_to_admm(transmission_network, tso_model, consensus_vars['interface']['v_sqr'], consensus_vars['interface']['pf'], admm_parameters)
+    update_transmission_model_to_admm(transmission_network, tso_model, consensus_vars['interface']['pf'], admm_parameters)
 
     esso_model = create_shared_energy_storage_model(shared_ess_data, consensus_vars['ess'], candidate_solution['investment'])
     update_shared_energy_storage_model_to_admm(shared_ess_data, esso_model, admm_parameters)
@@ -1057,7 +1057,7 @@ def stationary_convergence(planning_problem, consensus_vars, params):
     return True
 
 
-def update_transmission_model_to_admm(transmission_network, model, initial_interface_vsqr, initial_interface_pf, params):
+def update_transmission_model_to_admm(transmission_network, model, initial_interface_pf, params):
 
     for year in transmission_network.years:
         for day in transmission_network.days:
@@ -1103,11 +1103,10 @@ def update_transmission_model_to_admm(transmission_network, model, initial_inter
                 node_id = transmission_network.active_distribution_network_nodes[dn]
                 for p in model[year][day].periods:
 
-                    init_vsqr = initial_interface_vsqr['dso']['current'][node_id][year][day][p]
                     init_p = initial_interface_pf['dso']['current'][node_id][year][day]['p'][p] / s_base
                     init_q = initial_interface_pf['dso']['current'][node_id][year][day]['q'][p] / s_base
 
-                    constraint_v_req = (model[year][day].expected_interface_vmag_sqr[dn, p] - model[year][day].v_sqr_req[dn, p]) / init_vsqr
+                    constraint_v_req = (model[year][day].expected_interface_vmag_sqr[dn, p] - model[year][day].v_sqr_req[dn, p])
                     constraint_p_req = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_req[dn, p]) / abs(init_p)
                     constraint_q_req = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_req[dn, p]) / abs(init_q)
 
@@ -1133,7 +1132,7 @@ def update_transmission_model_to_admm(transmission_network, model, initial_inter
             model[year][day].objective.expr = obj
 
 
-def update_distribution_models_to_admm(distribution_networks, models, initial_interface_vsqr, initial_interface_pf, params):
+def update_distribution_models_to_admm(distribution_networks, models, initial_interface_pf, params):
 
     for node_id in distribution_networks:
 
@@ -1197,11 +1196,10 @@ def update_distribution_models_to_admm(distribution_networks, models, initial_in
                 # Augmented Lagrangian -- Interface power flow (residual balancing)
                 for p in dso_model[year][day].periods:
 
-                    init_vsqr = initial_interface_vsqr['current'][node_id][year][day][p]
                     init_pf_p = initial_interface_pf['current'][node_id][year][day]['p'][p] / s_base
                     init_pf_q = initial_interface_pf['current'][node_id][year][day]['q'][p] / s_base
 
-                    constraint_vmag_req = (dso_model[year][day].expected_interface_vmag_sqr[p] - dso_model[year][day].v_sqr_req[p]) / init_vsqr
+                    constraint_vmag_req = (dso_model[year][day].expected_interface_vmag_sqr[p] - dso_model[year][day].v_sqr_req[p])
                     constraint_p_req = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_req[p]) / abs(init_pf_p)
                     constraint_q_req = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_req[p]) / abs(init_pf_q)
 
