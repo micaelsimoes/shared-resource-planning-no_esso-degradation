@@ -1216,8 +1216,8 @@ def update_shared_energy_storage_model_to_admm(shared_ess_data, model, params):
                 rating_s = 1.00     # Do not balance residuals
             for d in model.days:
                 for p in model.periods:
-                    constraint_p_req = (model.es_pnet[e, y, d, p] - model.p_req_tso[e, y, d, p]) / (2 * rating_s)
-                    constraint_q_req = (model.es_qnet[e, y, d, p] - model.q_req_tso[e, y, d, p]) / (2 * rating_s)
+                    constraint_p_req = (model.es_pnet[e, y, d, p] - model.p_req[e, y, d, p]) / (2 * rating_s)
+                    constraint_q_req = (model.es_qnet[e, y, d, p] - model.q_req[e, y, d, p]) / (2 * rating_s)
                     obj += model.dual_p_req[e, y, d, p] * constraint_p_req
                     obj += model.dual_q_req[e, y, d, p] * constraint_q_req
                     obj += (model.rho / 2) * constraint_p_req ** 2
