@@ -1372,6 +1372,8 @@ def _update_network_with_excel_data(network, data):
 # ======================================================================================================================
 def _process_results(network, model, params, results=dict()):
 
+    s_base = network.baseMVA
+
     processed_results = dict()
     processed_results['obj'] = _compute_objective_function_value(network, model, params)
     processed_results['gen_cost'] = _compute_generation_cost(network, model)
@@ -1668,10 +1670,10 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_up'][node_id] = []
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_down'][node_id] = []
                     for p in model.periods:
-                        slack_p_up = pe.value(model.slack_node_balance_p_up[i, s_m, s_o, p])
-                        slack_p_down = pe.value(model.slack_node_balance_p_down[i, s_m, s_o, p])
-                        slack_q_up = pe.value(model.slack_node_balance_q_up[i, s_m, s_o, p])
-                        slack_q_down = pe.value(model.slack_node_balance_q_down[i, s_m, s_o, p])
+                        slack_p_up = pe.value(model.slack_node_balance_p_up[i, s_m, s_o, p]) * s_base
+                        slack_p_down = pe.value(model.slack_node_balance_p_down[i, s_m, s_o, p]) * s_base
+                        slack_q_up = pe.value(model.slack_node_balance_q_up[i, s_m, s_o, p]) * s_base
+                        slack_q_down = pe.value(model.slack_node_balance_q_down[i, s_m, s_o, p]) * s_base
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_up'][node_id].append(slack_p_up)
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_down'][node_id].append(slack_p_down)
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_up'][node_id].append(slack_q_up)
@@ -1715,8 +1717,8 @@ def _process_results(network, model, params, results=dict()):
                         load_id = network.loads[c].load_id
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_up'][load_id] = [0.00 for _ in range(network.num_instants)]
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_down'][load_id] = [0.00 for _ in range(network.num_instants)]
-                        slack_flex_up = pe.value(model.flex_p_up[c, s_m, s_o, p])
-                        slack_flex_down = pe.value(model.flex_p_down[c, s_m, s_o, p])
+                        slack_flex_up = pe.value(model.slack_flex_p_balance_up[c, s_m, s_o, p]) * s_base
+                        slack_flex_down = pe.value(model.slack_flex_p_balance_down[c, s_m, s_o, p]) * s_base
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_up'][load_id][network.num_instants-1] = slack_flex_up
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_down'][load_id][network.num_instants-1] = slack_flex_down
 
