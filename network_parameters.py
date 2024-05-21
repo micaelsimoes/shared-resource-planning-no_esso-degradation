@@ -16,6 +16,7 @@ class NetworkParameters:
         self.l_curt = False
         self.enforce_vg = False
         self.slacks = False
+        self.replace_equalities = True
         self.print_to_screen = False
         self.plot_diagram = False
         self.print_results_to_file = False
