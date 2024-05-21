@@ -1209,10 +1209,16 @@ def _build_model_ineq(network, params):
                 for p in model.periods:
 
                     # e_actual and f_actual definition
-                    e_actual = model.e[i, s_m, s_o, p] + model.slack_e_up[i, s_m, s_o, p] - model.slack_e_down[i, s_m, s_o, p]
-                    f_actual = model.f[i, s_m, s_o, p] + model.slack_f_up[i, s_m, s_o, p] - model.slack_f_down[i, s_m, s_o, p]
-                    model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] == e_actual)
-                    model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] == f_actual)
+                    if params.replace_equalities:
+                        model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] <= model.e[i, s_m, s_o, p] + model.slack_e_up[i, s_m, s_o, p])
+                        model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] >= model.e[i, s_m, s_o, p] - model.slack_e_down[i, s_m, s_o, p])
+                        model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] <= model.f[i, s_m, s_o, p] + model.slack_f_up[i, s_m, s_o, p])
+                        model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] >= model.f[i, s_m, s_o, p] - model.slack_f_down[i, s_m, s_o, p])
+                    else:
+                        e_actual = model.e[i, s_m, s_o, p] + model.slack_e_up[i, s_m, s_o, p] - model.slack_e_down[i, s_m, s_o, p]
+                        f_actual = model.f[i, s_m, s_o, p] + model.slack_f_up[i, s_m, s_o, p] - model.slack_f_down[i, s_m, s_o, p]
+                        model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] == e_actual)
+                        model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] == f_actual)
 
                     # voltage magnitude constraints
                     if node.type == BUS_PV:
