@@ -1692,13 +1692,13 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final_up'][node_id] = [0.00 for _ in range(network.num_instants)]
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final_down'][node_id] = [0.00 for _ in range(network.num_instants)]
                     for p in model.periods:
-                        slack_comp = pe.value(model.slack_shared_es_comp[e, s_m, s_o, p])
-                        slack_sch_up = pe.value(model.slack_shared_es_sch_up[e, s_m, s_o, p])
-                        slack_sch_down = pe.value(model.slack_shared_es_sch_down[e, s_m, s_o, p])
-                        slack_sdch_up = pe.value(model.slack_shared_es_sdch_up[e, s_m, s_o, p])
-                        slack_sdch_down = pe.value(model.slack_shared_es_sdch_down[e, s_m, s_o, p])
-                        slack_soc_up = pe.value(model.slack_shared_es_soc_up[e, s_m, s_o, p])
-                        slack_soc_down = pe.value(model.slack_shared_es_soc_down[e, s_m, s_o, p])
+                        slack_comp = pe.value(model.slack_shared_es_comp[e, s_m, s_o, p]) * (s_base ** 2)
+                        slack_sch_up = pe.value(model.slack_shared_es_sch_up[e, s_m, s_o, p]) * (s_base ** 2)
+                        slack_sch_down = pe.value(model.slack_shared_es_sch_down[e, s_m, s_o, p]) * (s_base ** 2)
+                        slack_sdch_up = pe.value(model.slack_shared_es_sdch_up[e, s_m, s_o, p]) * (s_base ** 2)
+                        slack_sdch_down = pe.value(model.slack_shared_es_sdch_down[e, s_m, s_o, p]) * (s_base ** 2)
+                        slack_soc_up = pe.value(model.slack_shared_es_soc_up[e, s_m, s_o, p]) * s_base
+                        slack_soc_down = pe.value(model.slack_shared_es_soc_down[e, s_m, s_o, p]) * s_base
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'][node_id].append(slack_comp)
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sch_up'][node_id].append(slack_sch_up)
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sch_down'][node_id].append(slack_sch_down)
@@ -1706,8 +1706,8 @@ def _process_results(network, model, params, results=dict()):
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sdch_down'][node_id].append(slack_sdch_down)
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_up'][node_id].append(slack_soc_up)
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_down'][node_id].append(slack_soc_down)
-                    slack_soc_final_up = pe.value(model.slack_shared_es_soc_final_up[e, s_m, s_o])
-                    slack_soc_final_down = pe.value(model.slack_shared_es_soc_final_down[e, s_m, s_o])
+                    slack_soc_final_up = pe.value(model.slack_shared_es_soc_final_up[e, s_m, s_o]) * s_base
+                    slack_soc_final_down = pe.value(model.slack_shared_es_soc_final_down[e, s_m, s_o]) * s_base
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final_up'][node_id][network.num_instants-1] = slack_soc_final_up
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final_down'][node_id][network.num_instants-1] = slack_soc_final_down
 
@@ -1769,10 +1769,10 @@ def _process_results(network, model, params, results=dict()):
     # -Shared ESS slacks
     for e in model.shared_energy_storages:
         node_id = network.shared_energy_storages[e].bus
-        s_up = pe.value(model.shared_es_s_slack_up[e])
-        s_down = pe.value(model.shared_es_s_slack_down[e])
-        e_up = pe.value(model.shared_es_e_slack_up[e])
-        e_down = pe.value(model.shared_es_e_slack_down[e])
+        s_up = pe.value(model.shared_es_s_slack_up[e]) * s_base
+        s_down = pe.value(model.shared_es_s_slack_down[e]) * s_base
+        e_up = pe.value(model.shared_es_e_slack_up[e]) * s_base
+        e_down = pe.value(model.shared_es_e_slack_down[e]) * s_base
         processed_results['relaxation_slacks']['investment']['shared_ess']['s_up'][node_id] = s_up
         processed_results['relaxation_slacks']['investment']['shared_ess']['s_down'][node_id] = s_down
         processed_results['relaxation_slacks']['investment']['shared_ess']['e_up'][node_id] = e_up
