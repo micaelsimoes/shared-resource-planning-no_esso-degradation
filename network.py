@@ -665,8 +665,14 @@ def _build_model(network, params):
                     model.shared_energy_storage_operation.add(model.shared_es_soc[e, s_m, s_o, p] >= soc_min)
 
                     if params.slacks:
-                        model.shared_energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2 + model.slack_shared_es_sch_up[e, s_m, s_o, p] - model.slack_shared_es_sch_down[e, s_m, s_o, p])
-                        model.shared_energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2 + model.slack_shared_es_sdch_up[e, s_m, s_o, p] - model.slack_shared_es_sdch_down[e, s_m, s_o, p])
+                        if params.replace_equality:
+                            model.shared_energy_storage_operation.add(sch ** 2 <= pch ** 2 + qch ** 2 + model.slack_shared_es_sch_up[e, s_m, s_o, p])
+                            model.shared_energy_storage_operation.add(sch ** 2 >= pch ** 2 + qch ** 2 - model.slack_shared_es_sch_down[e, s_m, s_o, p])
+                            model.shared_energy_storage_operation.add( sdch ** 2 <= pdch ** 2 + qdch ** 2 + model.slack_shared_es_sdch_up[e, s_m, s_o, p])
+                            model.shared_energy_storage_operation.add( sdch ** 2 >= pdch ** 2 + qdch ** 2 - model.slack_shared_es_sdch_down[e, s_m, s_o, p])
+                        else:
+                            model.shared_energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2 + model.slack_shared_es_sch_up[e, s_m, s_o, p] - model.slack_shared_es_sch_down[e, s_m, s_o, p])
+                            model.shared_energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2 + model.slack_shared_es_sdch_up[e, s_m, s_o, p] - model.slack_shared_es_sdch_down[e, s_m, s_o, p])
                     else:
                         model.shared_energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
                         model.shared_energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
@@ -674,12 +680,20 @@ def _build_model(network, params):
                     # State-of-Charge
                     if p > 0:
                         if params.slacks:
-                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == model.shared_es_soc[e, s_m, s_o, p - 1] + (sch * eff_charge - sdch / eff_discharge) + model.slack_shared_es_soc_up[e, s_m, s_o, p] - model.slack_shared_es_soc_down[e, s_m, s_o, p])
+                            if params.replace_equality:
+                                model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] <= model.shared_es_soc[e, s_m, s_o, p - 1] + (sch * eff_charge - sdch / eff_discharge) + model.slack_shared_es_soc_up[e, s_m, s_o, p])
+                                model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] >= model.shared_es_soc[e, s_m, s_o, p - 1] + (sch * eff_charge - sdch / eff_discharge) - model.slack_shared_es_soc_down[e, s_m, s_o, p])
+                            else:
+                                model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == model.shared_es_soc[e, s_m, s_o, p - 1] + (sch * eff_charge - sdch / eff_discharge) + model.slack_shared_es_soc_up[e, s_m, s_o, p] - model.slack_shared_es_soc_down[e, s_m, s_o, p])
                         else:
                             model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == model.shared_es_soc[e, s_m, s_o, p - 1] + (sch * eff_charge - sdch / eff_discharge))
                     else:
                         if params.slacks:
-                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == soc_init + (sch * eff_charge - sdch / eff_discharge) + model.slack_shared_es_soc_up[e, s_m, s_o, p] - model.slack_shared_es_soc_down[e, s_m, s_o, p])
+                            if params.replace_equality:
+                                model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] <= soc_init + (sch * eff_charge - sdch / eff_discharge) + model.slack_shared_es_soc_up[e, s_m, s_o, p])
+                                model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] >= soc_init + (sch * eff_charge - sdch / eff_discharge) - model.slack_shared_es_soc_down[e, s_m, s_o, p])
+                            else:
+                                model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == soc_init + (sch * eff_charge - sdch / eff_discharge) + model.slack_shared_es_soc_up[e, s_m, s_o, p] - model.slack_shared_es_soc_down[e, s_m, s_o, p])
                         else:
                             model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == soc_init + (sch * eff_charge - sdch / eff_discharge))
 
@@ -691,7 +705,11 @@ def _build_model(network, params):
 
                 # Day balance
                 if params.slacks:
-                    model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final + model.slack_shared_es_soc_final_up[e, s_m, s_o] - model.slack_shared_es_soc_final_down[e, s_m, s_o])
+                    if params.replace_equality:
+                        model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] <= soc_final + model.slack_shared_es_soc_final_up[e, s_m, s_o])
+                        model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] >= soc_final - model.slack_shared_es_soc_final_down[e, s_m, s_o])
+                    else:
+                        model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final + model.slack_shared_es_soc_final_up[e, s_m, s_o] - model.slack_shared_es_soc_final_down[e, s_m, s_o])
                 else:
                     model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final)
 
@@ -780,8 +798,12 @@ def _build_model(network, params):
                                 Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
 
                     if params.slacks:
-                        model.node_balance_cons_p.add(Pg == Pd + Pi + model.slack_node_balance_p_up[i, s_m, s_o, p] - model.slack_node_balance_p_down[i, s_m, s_o, p])
-                        model.node_balance_cons_q.add(Qg == Qd + Qi + model.slack_node_balance_q_up[i, s_m, s_o, p] - model.slack_node_balance_q_down[i, s_m, s_o, p])
+                        if params.replace_equality:
+                            model.node_balance_cons_p.add(Pg <= Pd + Pi + model.slack_node_balance_p_up[i, s_m, s_o, p])
+                            model.node_balance_cons_q.add(Qg >= Qd + Qi - model.slack_node_balance_q_down[i, s_m, s_o, p])
+                        else:
+                            model.node_balance_cons_p.add(Pg == Pd + Pi + model.slack_node_balance_p_up[i, s_m, s_o, p] - model.slack_node_balance_p_down[i, s_m, s_o, p])
+                            model.node_balance_cons_q.add(Qg == Qd + Qi + model.slack_node_balance_q_up[i, s_m, s_o, p] - model.slack_node_balance_q_down[i, s_m, s_o, p])
                     else:
                         model.node_balance_cons_p.add(Pg == Pd + Pi)
                         model.node_balance_cons_q.add(Qg == Qd + Qi)
