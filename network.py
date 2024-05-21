@@ -1717,8 +1717,8 @@ def _process_results(network, model, params, results=dict()):
                         load_id = network.loads[c].load_id
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_up'][load_id] = [0.00 for _ in range(network.num_instants)]
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_down'][load_id] = [0.00 for _ in range(network.num_instants)]
-                        slack_flex_up = pe.value(model.slack_flex_p_balance_up[c, s_m, s_o, p]) * s_base
-                        slack_flex_down = pe.value(model.slack_flex_p_balance_down[c, s_m, s_o, p]) * s_base
+                        slack_flex_up = pe.value(model.slack_flex_p_balance_up[c, s_m, s_o]) * s_base
+                        slack_flex_down = pe.value(model.slack_flex_p_balance_down[c, s_m, s_o]) * s_base
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_up'][load_id][network.num_instants-1] = slack_flex_up
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_down'][load_id][network.num_instants-1] = slack_flex_down
 
