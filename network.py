@@ -481,8 +481,14 @@ def _build_model(network, params):
                     # e_actual and f_actual definition
                     e_actual = model.e[i, s_m, s_o, p] + model.slack_e_up[i, s_m, s_o, p] - model.slack_e_down[i, s_m, s_o, p]
                     f_actual = model.f[i, s_m, s_o, p] + model.slack_f_up[i, s_m, s_o, p] - model.slack_f_down[i, s_m, s_o, p]
-                    model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] == e_actual)
-                    model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] == f_actual)
+                    if params.relax_equalities:
+                        model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] <= e_actual + SMALL_TOLERANCE)
+                        model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] >= e_actual - SMALL_TOLERANCE)
+                        model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] <= f_actual + SMALL_TOLERANCE)
+                        model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] >= f_actual - SMALL_TOLERANCE)
+                    else:
+                        model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] == e_actual)
+                        model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] == f_actual)
 
                     # voltage magnitude constraints
                     if node.type == BUS_PV:
@@ -492,7 +498,11 @@ def _build_model(network, params):
                             vg = network.generators[gen_idx].vg
                             e = model.e[i, s_m, s_o, p]
                             f = model.f[i, s_m, s_o, p]
-                            model.voltage_cons.add(e ** 2 + f ** 2 == vg[p] ** 2)
+                            if params.relax_equalities:
+                                model.voltage_cons.add(e ** 2 + f ** 2 <= vg[p] ** 2 + SMALL_TOLERANCE)
+                                model.voltage_cons.add(e ** 2 + f ** 2 >= vg[p] ** 2 - SMALL_TOLERANCE)
+                            else:
+                                model.voltage_cons.add(e ** 2 + f ** 2 == vg[p] ** 2)
                         else:
                             # - Voltage at the bus is not controlled
                             e = model.e[i, s_m, s_o, p]
@@ -517,9 +527,17 @@ def _build_model(network, params):
                             p_up += model.flex_p_up[c, s_m, s_o, p]
                             p_down += model.flex_p_down[c, s_m, s_o, p]
                         if params.slacks:
-                            model.fl_p_balance.add(p_up == p_down + model.slack_flex_p_balance_up[c, s_m, s_o] - model.slack_flex_p_balance_down[c, s_m, s_o])
+                            if params.relax_equalities:
+                                model.fl_p_balance.add(p_up <= p_down + model.slack_flex_p_balance_up[c, s_m, s_o] - model.slack_flex_p_balance_down[c, s_m, s_o] + SMALL_TOLERANCE)
+                                model.fl_p_balance.add(p_up >= p_down + model.slack_flex_p_balance_up[c, s_m, s_o] - model.slack_flex_p_balance_down[c, s_m, s_o] - SMALL_TOLERANCE)
+                            else:
+                                model.fl_p_balance.add(p_up == p_down + model.slack_flex_p_balance_up[c, s_m, s_o] - model.slack_flex_p_balance_down[c, s_m, s_o])
                         else:
-                            model.fl_p_balance.add(p_up == p_down)
+                            if params.relax_equalities:
+                                model.fl_p_balance.add(p_up <= p_down + SMALL_TOLERANCE)
+                                model.fl_p_balance.add(p_up >= p_down - SMALL_TOLERANCE)
+                            else:
+                                model.fl_p_balance.add(p_up == p_down)
 
     # - Energy Storage constraints
     if params.es_reg:
