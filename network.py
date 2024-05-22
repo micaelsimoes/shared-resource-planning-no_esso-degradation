@@ -361,9 +361,10 @@ def _build_model(network, params):
                         else:
                             model.flex_p_up[c, s_m, s_o, p].fix(0.00)
                             model.flex_p_down[c, s_m, s_o, p].fix(0.00)
-                    if not load.fl_reg:
-                        model.slack_flex_p_balance_up[c, s_m, s_o].fix(0.00)
-                        model.slack_flex_p_balance_down[c, s_m, s_o].fix(0.00)
+                    if params.slacks:
+                        if not load.fl_reg:
+                            model.slack_flex_p_balance_up[c, s_m, s_o].fix(0.00)
+                            model.slack_flex_p_balance_down[c, s_m, s_o].fix(0.00)
     if params.l_curt:
         model.pc_curt = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.qc_curt = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
