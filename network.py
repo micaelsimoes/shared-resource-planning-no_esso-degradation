@@ -575,34 +575,63 @@ def _build_model(network, params):
                         model.energy_storage_operation.add(qdch >= tan(min_phi) * pdch)
 
                         if params.slacks:
-                            model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2 + model.slack_es_sch_up[e, s_m, s_o, p] - model.slack_es_sch_down[e, s_m, s_o, p])
-                            model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2 + model.slack_es_sdch_up[e, s_m, s_o, p] - model.slack_es_sdch_down[e, s_m, s_o, p])
+                            if params.relax_equalities:
+                                model.energy_storage_operation.add(sch ** 2 <= pch ** 2 + qch ** 2 + model.slack_es_sch_up[e, s_m, s_o, p] - model.slack_es_sch_down[e, s_m, s_o, p] + SMALL_TOLERANCE)
+                                model.energy_storage_operation.add(sch ** 2 >= pch ** 2 + qch ** 2 + model.slack_es_sch_up[e, s_m, s_o, p] - model.slack_es_sch_down[e, s_m, s_o, p] - SMALL_TOLERANCE)
+                                model.energy_storage_operation.add(sdch ** 2 <= pdch ** 2 + qdch ** 2 + model.slack_es_sdch_up[e, s_m, s_o, p] - model.slack_es_sdch_down[e, s_m, s_o, p] + SMALL_TOLERANCE)
+                                model.energy_storage_operation.add(sdch ** 2 >= pdch ** 2 + qdch ** 2 + model.slack_es_sdch_up[e, s_m, s_o, p] - model.slack_es_sdch_down[e, s_m, s_o, p] - SMALL_TOLERANCE)
+                            else:
+                                model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2 + model.slack_es_sch_up[e, s_m, s_o, p] - model.slack_es_sch_down[e, s_m, s_o, p])
+                                model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2 + model.slack_es_sdch_up[e, s_m, s_o, p] - model.slack_es_sdch_down[e, s_m, s_o, p])
                         else:
-                            model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
-                            model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
+                            if params.relax_equalities:
+                                model.energy_storage_operation.add(sch ** 2 <= pch ** 2 + qch ** 2 + SMALL_TOLERANCE)
+                                model.energy_storage_operation.add(sch ** 2 >= pch ** 2 + qch ** 2 - SMALL_TOLERANCE)
+                                model.energy_storage_operation.add(sdch ** 2 <= pdch ** 2 + qdch ** 2 + SMALL_TOLERANCE)
+                                model.energy_storage_operation.add(sdch ** 2 >= pdch ** 2 + qdch ** 2 - SMALL_TOLERANCE)
+                            else:
+                                model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
+                                model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
 
                         # State-of-Charge
+                        soc_prev = soc_init
                         if p > 0:
-                            if params.slacks:
-                                model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] == model.es_soc[e, s_m, s_o, p - 1] + (sch * eff_charge - sdch / eff_discharge) + model.slack_es_soc_up[e, s_m, s_o, p] - model.slack_es_soc_down[e, s_m, s_o, p])
+                            soc_prev = model.es_soc[e, s_m, s_o, p - 1]
+                        if params.slacks:
+                            if params.relax_equalities:
+                                model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] <= soc_prev + (sch * eff_charge - sdch / eff_discharge) + model.slack_es_soc_up[e, s_m, s_o, p] - model.slack_es_soc_down[e, s_m, s_o, p] + SMALL_TOLERANCE)
+                                model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] >= soc_prev + (sch * eff_charge - sdch / eff_discharge) + model.slack_es_soc_up[e, s_m, s_o, p] - model.slack_es_soc_down[e, s_m, s_o, p] - SMALL_TOLERANCE)
                             else:
-                                model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] == model.es_soc[e, s_m, s_o, p - 1] + (sch * eff_charge - sdch / eff_discharge))
+                                model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] == soc_prev + (sch * eff_charge - sdch / eff_discharge) + model.slack_es_soc_up[e, s_m, s_o, p] - model.slack_es_soc_down[e, s_m, s_o, p])
                         else:
-                            if params.slacks:
-                                model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] == soc_init + (sch * eff_charge - sdch / eff_discharge) + model.slack_es_soc_up[e, s_m, s_o, p] - model.slack_es_soc_down[e, s_m, s_o, p])
+                            if params.relax_equalities:
+                                model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] <= soc_prev + (sch * eff_charge - sdch / eff_discharge) + SMALL_TOLERANCE)
+                                model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] >= soc_prev + (sch * eff_charge - sdch / eff_discharge) - SMALL_TOLERANCE)
                             else:
-                                model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] == soc_init + (sch * eff_charge - sdch / eff_discharge))
+                                model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] == soc_prev + (sch * eff_charge - sdch / eff_discharge))
 
                         # Charging/discharging complementarity constraints
                         if params.slacks:
                             model.energy_storage_ch_dch_exclusion.add(sch * sdch <= model.slack_es_comp[e, s_m, s_o, p])
                         else:
-                            model.energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
+                            if params.relax_equalities:
+                                model.energy_storage_ch_dch_exclusion.add(sch * sdch <= SMALL_TOLERANCE)
+                                model.energy_storage_ch_dch_exclusion.add(sch * sdch >= -SMALL_TOLERANCE)
+                            else:
+                                model.energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
 
                     if params.slacks:
-                        model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final + model.slack_es_soc_final_up[e, s_m, s_o] - model.slack_es_soc_final_down[e, s_m, s_o])
+                        if params.relax_equalities:
+                            model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] <= soc_final + model.slack_es_soc_final_up[e, s_m, s_o] - model.slack_es_soc_final_down[e, s_m, s_o] + SMALL_TOLERANCE)
+                            model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] >= soc_final + model.slack_es_soc_final_up[e, s_m, s_o] - model.slack_es_soc_final_down[e, s_m, s_o] - SMALL_TOLERANCE)
+                        else:
+                            model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final + model.slack_es_soc_final_up[e, s_m, s_o] - model.slack_es_soc_final_down[e, s_m, s_o])
                     else:
-                        model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final)
+                        if params.relax_equalities:
+                            model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] <= soc_final + SMALL_TOLERANCE)
+                            model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] >= soc_final - SMALL_TOLERANCE)
+                        else:
+                            model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final)
 
     # - Shared Energy Storage constraints
     model.shared_energy_storage_balance = pe.ConstraintList()
@@ -655,35 +684,64 @@ def _build_model(network, params):
                     model.shared_energy_storage_operation.add(model.shared_es_soc[e, s_m, s_o, p] >= soc_min)
 
                     if params.slacks:
-                        model.shared_energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2 + model.slack_shared_es_sch_up[e, s_m, s_o, p] - model.slack_shared_es_sch_down[e, s_m, s_o, p])
-                        model.shared_energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2 + model.slack_shared_es_sdch_up[e, s_m, s_o, p] - model.slack_shared_es_sdch_down[e, s_m, s_o, p])
+                        if params.relax_equalities:
+                            model.shared_energy_storage_operation.add(sch ** 2 <= pch ** 2 + qch ** 2 + model.slack_shared_es_sch_up[e, s_m, s_o, p] - model.slack_shared_es_sch_down[e, s_m, s_o, p] + SMALL_TOLERANCE)
+                            model.shared_energy_storage_operation.add(sch ** 2 >= pch ** 2 + qch ** 2 + model.slack_shared_es_sch_up[e, s_m, s_o, p] - model.slack_shared_es_sch_down[e, s_m, s_o, p] - SMALL_TOLERANCE)
+                            model.shared_energy_storage_operation.add(sdch ** 2 <= pdch ** 2 + qdch ** 2 + model.slack_shared_es_sdch_up[e, s_m, s_o, p] - model.slack_shared_es_sdch_down[e, s_m, s_o, p] + SMALL_TOLERANCE)
+                            model.shared_energy_storage_operation.add(sdch ** 2 >= pdch ** 2 + qdch ** 2 + model.slack_shared_es_sdch_up[e, s_m, s_o, p] - model.slack_shared_es_sdch_down[e, s_m, s_o, p] - SMALL_TOLERANCE)
+                        else:
+                            model.shared_energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2 + model.slack_shared_es_sch_up[e, s_m, s_o, p] - model.slack_shared_es_sch_down[e, s_m, s_o, p])
+                            model.shared_energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2 + model.slack_shared_es_sdch_up[e, s_m, s_o, p] - model.slack_shared_es_sdch_down[e, s_m, s_o, p])
                     else:
-                        model.shared_energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
-                        model.shared_energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
+                        if params.relax_equalities:
+                            model.shared_energy_storage_operation.add(sch ** 2 <= pch ** 2 + qch ** 2 + SMALL_TOLERANCE)
+                            model.shared_energy_storage_operation.add(sch ** 2 >= pch ** 2 + qch ** 2 - SMALL_TOLERANCE)
+                            model.shared_energy_storage_operation.add(sdch ** 2 <= pdch ** 2 + qdch ** 2 + SMALL_TOLERANCE)
+                            model.shared_energy_storage_operation.add(sdch ** 2 >= pdch ** 2 + qdch ** 2 - SMALL_TOLERANCE)
+                        else:
+                            model.shared_energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
+                            model.shared_energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
 
                     # State-of-Charge
+                    soc_prev = soc_init
                     if p > 0:
-                        if params.slacks:
-                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == model.shared_es_soc[e, s_m, s_o, p - 1] + (sch * eff_charge - sdch / eff_discharge) + model.slack_shared_es_soc_up[e, s_m, s_o, p] - model.slack_shared_es_soc_down[e, s_m, s_o, p])
+                        soc_prev = model.shared_es_soc[e, s_m, s_o, p - 1]
+                    if params.slacks:
+                        if params.relax_equalities:
+                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] <= soc_prev + (sch * eff_charge - sdch / eff_discharge) + model.slack_shared_es_soc_up[e, s_m, s_o, p] - model.slack_shared_es_soc_down[e, s_m, s_o, p] + SMALL_TOLERANCE)
+                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] >= soc_prev + (sch * eff_charge - sdch / eff_discharge) + model.slack_shared_es_soc_up[e, s_m, s_o, p] - model.slack_shared_es_soc_down[e, s_m, s_o, p] - SMALL_TOLERANCE)
                         else:
-                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == model.shared_es_soc[e, s_m, s_o, p - 1] + (sch * eff_charge - sdch / eff_discharge))
+                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == soc_prev + (sch * eff_charge - sdch / eff_discharge) + model.slack_shared_es_soc_up[e, s_m, s_o, p] - model.slack_shared_es_soc_down[e, s_m, s_o, p])
                     else:
-                        if params.slacks:
-                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == soc_init + (sch * eff_charge - sdch / eff_discharge) + model.slack_shared_es_soc_up[e, s_m, s_o, p] - model.slack_shared_es_soc_down[e, s_m, s_o, p])
+                        if params.relax_equalities:
+                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] <= soc_prev + (sch * eff_charge - sdch / eff_discharge) + SMALL_TOLERANCE)
+                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] >= soc_prev + (sch * eff_charge - sdch / eff_discharge) - SMALL_TOLERANCE)
                         else:
-                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == soc_init + (sch * eff_charge - sdch / eff_discharge))
+                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == soc_prev + (sch * eff_charge - sdch / eff_discharge))
 
                     # Charging/discharging complementarity constraints
                     if params.slacks:
                         model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch <= model.slack_shared_es_comp[e, s_m, s_o, p])
                     else:
-                        model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
+                        if params.relax_equalities:
+                            model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch <= SMALL_TOLERANCE)
+                            model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch >= -SMALL_TOLERANCE)
+                        else:
+                            model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
 
                 # Day balance
                 if params.slacks:
-                    model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final + model.slack_shared_es_soc_final_up[e, s_m, s_o] - model.slack_shared_es_soc_final_down[e, s_m, s_o])
+                    if params.relax_equalities:
+                        model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] <= soc_final + model.slack_shared_es_soc_final_up[e, s_m, s_o] - model.slack_shared_es_soc_final_down[e, s_m, s_o] + SMALL_TOLERANCE)
+                        model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] >= soc_final + model.slack_shared_es_soc_final_up[e, s_m, s_o] - model.slack_shared_es_soc_final_down[e, s_m, s_o] - SMALL_TOLERANCE)
+                    else:
+                        model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final + model.slack_shared_es_soc_final_up[e, s_m, s_o] - model.slack_shared_es_soc_final_down[e, s_m, s_o])
                 else:
-                    model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final)
+                    if params.relax_equalities:
+                        model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] <= soc_final + SMALL_TOLERANCE)
+                        model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] >= soc_final - SMALL_TOLERANCE)
+                    else:
+                        model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final)
 
         model.shared_energy_storage_s_sensitivities.add(model.shared_es_s_rated[e] == model.shared_es_s_rated_fixed[e] + model.shared_es_s_slack_up[e] - model.shared_es_s_slack_down[e])
         model.shared_energy_storage_e_sensitivities.add(model.shared_es_e_rated[e] == model.shared_es_e_rated_fixed[e] + model.shared_es_e_slack_up[e] - model.shared_es_e_slack_down[e])
@@ -770,11 +828,23 @@ def _build_model(network, params):
                                 Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
 
                     if params.slacks:
-                        model.node_balance_cons_p.add(Pg == Pd + Pi + model.slack_node_balance_p_up[i, s_m, s_o, p] - model.slack_node_balance_p_down[i, s_m, s_o, p])
-                        model.node_balance_cons_q.add(Qg == Qd + Qi + model.slack_node_balance_q_up[i, s_m, s_o, p] - model.slack_node_balance_q_down[i, s_m, s_o, p])
+                        if params.relax_equalities:
+                            model.node_balance_cons_p.add(Pg <= Pd + Pi + model.slack_node_balance_p_up[i, s_m, s_o, p] - model.slack_node_balance_p_down[i, s_m, s_o, p] + SMALL_TOLERANCE)
+                            model.node_balance_cons_p.add(Pg >= Pd + Pi + model.slack_node_balance_p_up[i, s_m, s_o, p] - model.slack_node_balance_p_down[i, s_m, s_o, p] - SMALL_TOLERANCE)
+                            model.node_balance_cons_q.add(Qg <= Qd + Qi + model.slack_node_balance_q_up[i, s_m, s_o, p] - model.slack_node_balance_q_down[i, s_m, s_o, p] + SMALL_TOLERANCE)
+                            model.node_balance_cons_q.add(Qg >= Qd + Qi + model.slack_node_balance_q_up[i, s_m, s_o, p] - model.slack_node_balance_q_down[i, s_m, s_o, p] - SMALL_TOLERANCE)
+                        else:
+                            model.node_balance_cons_p.add(Pg == Pd + Pi + model.slack_node_balance_p_up[i, s_m, s_o, p] - model.slack_node_balance_p_down[i, s_m, s_o, p])
+                            model.node_balance_cons_q.add(Qg == Qd + Qi + model.slack_node_balance_q_up[i, s_m, s_o, p] - model.slack_node_balance_q_down[i, s_m, s_o, p])
                     else:
-                        model.node_balance_cons_p.add(Pg == Pd + Pi)
-                        model.node_balance_cons_q.add(Qg == Qd + Qi)
+                        if params.relax_equalities:
+                            model.node_balance_cons_p.add(Pg <= Pd + Pi + SMALL_TOLERANCE)
+                            model.node_balance_cons_p.add(Pg >= Pd + Pi - SMALL_TOLERANCE)
+                            model.node_balance_cons_q.add(Qg <= Qd + Qi + SMALL_TOLERANCE)
+                            model.node_balance_cons_q.add(Qg >= Qd + Qi - SMALL_TOLERANCE)
+                        else:
+                            model.node_balance_cons_p.add(Pg == Pd + Pi)
+                            model.node_balance_cons_q.add(Qg == Qd + Qi)
 
     # - Branch Power Flow constraints (current)
     model.branch_power_flow_cons = pe.ConstraintList()
