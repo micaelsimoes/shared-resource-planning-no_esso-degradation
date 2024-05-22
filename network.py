@@ -956,7 +956,7 @@ def _build_model(network, params):
                 for p in model.periods:
                     slack_e = model.slack_e_up[i, s_m, s_o, p] + model.slack_e_down[i, s_m, s_o, p]
                     slack_f = model.slack_f_up[i, s_m, s_o, p] + model.slack_f_down[i, s_m, s_o, p]
-                    obj += PENALTY_SLACK * (slack_e + slack_f)
+                    obj += PENALTY_SLACK * network.baseMVA * (slack_e + slack_f)
 
             # Branch power flow slacks
             for b in model.branches:
