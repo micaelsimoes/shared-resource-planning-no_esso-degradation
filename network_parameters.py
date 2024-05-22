@@ -44,6 +44,7 @@ def _read_network_parameters_from_file(parameters, filename):
     parameters.l_curt = params_data['l_curt']
     parameters.enforce_vg = params_data['enforce_vg']
     parameters.slacks = params_data['slacks']
+    parameters.relax_equalities = params_data['relax_equalities']
     parameters.solver_params.read_solver_parameters(params_data['solver'])
     parameters.print_to_screen = params_data['print_to_screen']
     parameters.plot_diagram = params_data['plot_diagram']
