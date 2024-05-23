@@ -34,11 +34,13 @@ class Slacks:
     def __init__(self):
         self.flexibility = SlacksFlexibility()
         self.ess = SlacksEnergyStorage()
+        self.shared_ess = SlacksEnergyStorage()
         self.node_balance = False
 
     def read_slacks_parameters(self, slacks_data):
         self.flexibility.read_slacks_parameters(slacks_data)
         self.ess.read_slacks_parameters(slacks_data)
+        self.shared_ess.read_slacks_parameters(slacks_data)
 
 
 class SlacksFlexibility:
