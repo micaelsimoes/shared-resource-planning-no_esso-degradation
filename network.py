@@ -974,7 +974,7 @@ def _build_model(network, params):
                     for p in model.periods:
                         if params.slacks.ess.complementarity:
                             slack_comp = model.slack_es_comp[e, s_m, s_o, p]
-                            obj += PENALTY_SLACK * (network.baseMVA ** 2) * slack_comp
+                            obj += PENALTY_SLACK * network.baseMVA * slack_comp
                         if params.slacks.ess.charging:
                             slack_sch = model.slack_es_sch_up[e, s_m, s_o, p] + model.slack_es_sch_down[e, s_m, s_o, p]
                             slack_sdch = model.slack_es_sdch_up[e, s_m, s_o, p] + model.slack_es_sdch_down[e, s_m, s_o, p]
@@ -991,7 +991,7 @@ def _build_model(network, params):
                 for p in model.periods:
                     if params.slacks.shared_ess.complementarity:
                         slack_comp = model.slack_shared_es_comp[e, s_m, s_o, p]
-                        obj += PENALTY_SLACK * (network.baseMVA ** 2) * slack_comp
+                        obj += PENALTY_SLACK * network.baseMVA * slack_comp
                     if params.slacks.shared_ess.charging:
                         slack_sch = model.slack_shared_es_sch_up[e, s_m, s_o, p] + model.slack_shared_es_sch_down[e, s_m, s_o, p]
                         slack_sdch = model.slack_shared_es_sdch_up[e, s_m, s_o, p] + model.slack_shared_es_sdch_down[e, s_m, s_o, p]
