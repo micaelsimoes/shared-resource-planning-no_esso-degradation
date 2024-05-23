@@ -6,21 +6,21 @@
 	"rg_curt": true,
 	"l_curt": false,
 	"enforce_vg": false,
-	"relax_equalities": false,
+	"relax_equalities": true,
 	"slacks": {
 		"flexibility": {
 			"day_balance": false
 		},
 		"ess": {
+				"complementarity": true,
 				"charging": false,
 				"soc": false,
-				"complementarity": true,
 				"day_balance": false
 		},
 		"shared_ess": {
+				"complementarity": true,
 				"charging": false,
 				"soc": false,
-				"complementarity": true,
 				"day_balance": false
 		},
 		"node_balance": false
