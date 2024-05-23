@@ -82,10 +82,10 @@ def shared_resources_planning(working_directory, specification_filename):
         distribution_network = distribution_networks[node_id]
         for year in planning_problem.years:
             for day in planning_problem.days:
-                distribution_network[year][day].shared_energy_storages = list()
+                distribution_network.network[year][day].shared_energy_storages = list()
         dn_model = distribution_network.build_model()
         #distribution_network.update_model_with_candidate_solution(dn_model, candidate_solution['total_capacity'])
-        results = distribution_network.network.optimize(dn_model)
+        results = distribution_network.optimize(dn_model)
         processed_results = distribution_network.process_results(dn_model, results)
         distribution_network.write_optimization_results_to_excel(processed_results)
 
