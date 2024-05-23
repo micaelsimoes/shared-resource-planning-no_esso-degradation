@@ -76,12 +76,12 @@ def shared_resources_planning(working_directory, specification_filename):
     transmission_network.write_optimization_results_to_excel(processed_results)
     '''
 
-    #candidate_solution = planning_problem.get_initial_candidate_solution()
+    candidate_solution = planning_problem.get_initial_candidate_solution()
     distribution_networks = planning_problem.distribution_networks
     for node_id in distribution_networks:
         distribution_network = distribution_networks[node_id]
         dn_model = distribution_network.build_model()
-        #distribution_network.update_model_with_candidate_solution(dn_model, candidate_solution['total_capacity'])
+        distribution_network.update_model_with_candidate_solution(dn_model, candidate_solution['total_capacity'])
         results = distribution_network.optimize(dn_model)
         processed_results = distribution_network.process_results(dn_model, results)
         distribution_network.write_optimization_results_to_excel(processed_results)
