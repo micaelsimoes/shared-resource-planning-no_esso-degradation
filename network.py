@@ -265,7 +265,7 @@ def _build_model(network, params):
                         model.e[i, s_m, s_o, p].setub(e_ub)
                         model.f[i, s_m, s_o, p].setlb(f_lb)
                         model.f[i, s_m, s_o, p].setub(f_ub)
-    if params.slacks:
+    if params.slacks.node_balance:
         model.slack_node_balance_p_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
         model.slack_node_balance_p_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
         model.slack_node_balance_q_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
@@ -345,7 +345,7 @@ def _build_model(network, params):
     if params.fl_reg:
         model.flex_p_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.flex_p_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        if params.slacks:
+        if params.slacks.flexibility.day_balance:
             model.slack_flex_p_balance_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
             model.slack_flex_p_balance_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
         for c in model.loads:
@@ -361,10 +361,9 @@ def _build_model(network, params):
                         else:
                             model.flex_p_up[c, s_m, s_o, p].fix(0.00)
                             model.flex_p_down[c, s_m, s_o, p].fix(0.00)
-                    if params.slacks:
-                        if not load.fl_reg:
-                            model.slack_flex_p_balance_up[c, s_m, s_o].fix(0.00)
-                            model.slack_flex_p_balance_down[c, s_m, s_o].fix(0.00)
+                            if params.slacks.flexibility.day_balance:
+                                model.slack_flex_p_balance_up[c, s_m, s_o].fix(0.00)
+                                model.slack_flex_p_balance_down[c, s_m, s_o].fix(0.00)
     if params.l_curt:
         model.pc_curt = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.qc_curt = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -422,14 +421,18 @@ def _build_model(network, params):
                         model.es_pdch[e, s_m, s_o, p].setub(energy_storage.s)
                         model.es_qdch[e, s_m, s_o, p].setub(energy_storage.s)
                         model.es_qdch[e, s_m, s_o, p].setlb(-energy_storage.s)
-        if params.slacks:
+
+        if params.slacks.ess.complementarity:
             model.slack_es_comp = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        if params.slacks.ess.charging:
             model.slack_es_sch_up = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
             model.slack_es_sch_down = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
             model.slack_es_sdch_up = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
             model.slack_es_sdch_down = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        if params.slacks.ess.soc:
             model.slack_es_soc_up = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
             model.slack_es_soc_down = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        if params.slacks.ess.day_balance:
             model.slack_es_soc_final_up = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
             model.slack_es_soc_final_down = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
 
