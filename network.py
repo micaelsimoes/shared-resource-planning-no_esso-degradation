@@ -2038,18 +2038,21 @@ def _compute_generation_cost(network, model):
 
 def _compute_total_load(network, model, params):
 
-    total_load = 0.0
+    total_load = {'p': 0.00, 'q': 0.00}
 
     for s_m in model.scenarios_market:
         for s_o in model.scenarios_operation:
-            total_load_scenario = 0.0
+            total_load_scenario = {'p': 0.00, 'q': 0.00}
             for c in model.loads:
                 for p in model.periods:
-                    total_load_scenario += network.baseMVA * pe.value(model.pc[c, s_m, s_o, p])
+                    total_load_scenario['p'] += network.baseMVA * pe.value(model.pc[c, s_m, s_o, p])
+                    total_load_scenario['q'] += network.baseMVA * pe.value(model.qc[c, s_m, s_o, p])
                     if params.l_curt:
-                        total_load_scenario -= network.baseMVA * pe.value(model.pc_curt[c, s_m, s_o, p])
+                        total_load_scenario['p'] -= network.baseMVA * pe.value(model.pc_curt_down[c, s_m, s_o, p] - model.pc_curt_up[c, s_m, s_o, p])
+                        total_load_scenario['q'] -= network.baseMVA * pe.value(model.qc_curt_down[c, s_m, s_o, p] - model.qc_curt_up[c, s_m, s_o, p])
 
-            total_load += total_load_scenario * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
+            total_load['p'] += total_load_scenario['p'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
+            total_load['q'] += total_load_scenario['q'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
 
     return total_load
 
