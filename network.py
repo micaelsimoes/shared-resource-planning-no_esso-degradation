@@ -926,7 +926,7 @@ def _build_model(network, params):
         print(f'[ERROR] Unrecognized or invalid objective. Objective = {params.obj_type}. Exiting...')
         exit(ERROR_NETWORK_MODEL)
 
-    # Slacks
+    # Slacks (voltage magnitude, branch current)
     for s_m in model.scenarios_market:
         for s_o in model.scenarios_operation:
 
@@ -950,46 +950,52 @@ def _build_model(network, params):
         obj += PENALTY_SLACK * network.baseMVA * (slack_s + slack_e)
 
     # Operation slacks
-    if params.slacks:
+    for s_m in model.scenarios_market:
+        for s_o in model.scenarios_operation:
 
-        for s_m in model.scenarios_market:
-            for s_o in model.scenarios_operation:
-
-                # Node balance
+            # Node balance
+            if params.slacks.node_balance:
                 for i in model.nodes:
                     for p in model.periods:
                         slack_p = model.slack_node_balance_p_up[i, s_m, s_o, p] + model.slack_node_balance_p_down[i, s_m, s_o, p]
                         slack_q = model.slack_node_balance_q_up[i, s_m, s_o, p] + model.slack_node_balance_q_down[i, s_m, s_o, p]
                         obj += PENALTY_SLACK * (slack_p + slack_q)
 
-                # Flexibility day balance
-                if params.fl_reg:
-                    for c in model.loads:
+            # Flexibility day balance
+            if params.fl_reg:
+                for c in model.loads:
+                    if params.slacks.flexibility.day_balance:
                         slack_flex = model.slack_flex_p_balance_up[c, s_m, s_o] + model.slack_flex_p_balance_down[c, s_m, s_o]
                         obj += PENALTY_SLACK * slack_flex
 
-                # ESS slacks
-                if params.es_reg:
-                    for e in model.energy_storages:
-                        for p in model.periods:
+            # ESS slacks
+            if params.es_reg:
+                for e in model.energy_storages:
+                    for p in model.periods:
+                        if params.slacks.ess.complementarity:
                             slack_comp = model.slack_es_comp[e, s_m, s_o, p]
+                            obj += PENALTY_SLACK * slack_comp
+                        if params.slacks.ess.charging:
                             slack_sch = model.slack_es_sch_up[e, s_m, s_o, p] + model.slack_es_sch_down[e, s_m, s_o, p]
                             slack_sdch = model.slack_es_sdch_up[e, s_m, s_o, p] + model.slack_es_sdch_down[e, s_m, s_o, p]
+                            obj += PENALTY_SLACK * (slack_sch + slack_sdch)
+                        if params.slacks.ess.soc:
                             slack_soc = model.slack_es_soc_up[e, s_m, s_o, p] + model.slack_es_soc_down[e, s_m, s_o, p]
-                            obj += PENALTY_SLACK * (slack_comp + slack_sch + slack_sdch + slack_soc)
+                            obj += PENALTY_SLACK * slack_soc
+                    if params.slacks.ess.day_balance:
                         slack_soc_final = model.slack_es_soc_final_up[e, s_m, s_o] + model.slack_es_soc_final_down[e, s_m, s_o]
                         obj += PENALTY_SLACK * slack_soc_final
 
-                # Shared ESS slacks
-                for e in model.shared_energy_storages:
-                    for p in model.periods:
-                        slack_comp = model.slack_shared_es_comp[e, s_m, s_o, p]
-                        slack_sch = model.slack_shared_es_sch_up[e, s_m, s_o, p] + model.slack_shared_es_sch_down[e, s_m, s_o, p]
-                        slack_sdch = model.slack_shared_es_sdch_up[e, s_m, s_o, p] + model.slack_shared_es_sdch_down[e, s_m, s_o, p]
-                        slack_soc = model.slack_shared_es_soc_up[e, s_m, s_o, p] + model.slack_shared_es_soc_down[e, s_m, s_o, p]
-                        obj += PENALTY_SLACK * (slack_comp + slack_sch + slack_sdch + slack_soc)
-                    slack_soc_final = model.slack_shared_es_soc_final_up[e, s_m, s_o] + model.slack_shared_es_soc_final_down[e, s_m, s_o]
-                    obj += PENALTY_SLACK * slack_soc_final
+            # Shared ESS slacks
+            for e in model.shared_energy_storages:
+                for p in model.periods:
+                    slack_comp = model.slack_shared_es_comp[e, s_m, s_o, p]
+                    slack_sch = model.slack_shared_es_sch_up[e, s_m, s_o, p] + model.slack_shared_es_sch_down[e, s_m, s_o, p]
+                    slack_sdch = model.slack_shared_es_sdch_up[e, s_m, s_o, p] + model.slack_shared_es_sdch_down[e, s_m, s_o, p]
+                    slack_soc = model.slack_shared_es_soc_up[e, s_m, s_o, p] + model.slack_shared_es_soc_down[e, s_m, s_o, p]
+                    obj += PENALTY_SLACK * (slack_comp + slack_sch + slack_sdch + slack_soc)
+                slack_soc_final = model.slack_shared_es_soc_final_up[e, s_m, s_o] + model.slack_shared_es_soc_final_down[e, s_m, s_o]
+                obj += PENALTY_SLACK * slack_soc_final
 
     model.objective = pe.Objective(sense=pe.minimize, expr=obj)
 
