@@ -16,7 +16,11 @@ class NetworkParameters:
         self.l_curt = False
         self.enforce_vg = False
         self.relax_equalities = False
-        self.slack_flexibility = False      # Slacks only applicable if relax_equalities are "False"
+        self.slacks_flexibility = False
+        self.slacks_ess_charging = False
+        self.slacks_ess_soc = False
+        self.slacks_ess_complementarity = False
+        self.slacks_ess_day_balance = False
         self.print_to_screen = False
         self.plot_diagram = False
         self.print_results_to_file = False
@@ -43,13 +47,12 @@ def _read_network_parameters_from_file(parameters, filename):
     parameters.rg_curt = bool(params_data['rg_curt'])
     parameters.l_curt = bool(params_data['l_curt'])
     parameters.enforce_vg = bool(params_data['enforce_vg'])
-    parameters.relax_equalities = bool(params_data['relax_equalities'])
-    if not parameters.relax_equalities:
-        parameters.slacks_flexibility = bool(params_data['slacks_flexibility'])
-        parameters.slacks_ess_charging = bool(params_data['slacks_ess_charging'])
-        parameters.slacks_ess_soc = bool(params_data['slacks_ess_soc'])
-        parameters.slacks_ess_complementarity = bool(params_data['slacks_ess_complementarity'])
-        parameters.slacks_ess_day_balance = bool(params_data['slacks_ess_day_balance'])
+    parameters.relax_equalities = bool(params_data['relax_equalities'])         # Note: applied for constraints where slacks are not used
+    parameters.slacks_flexibility = bool(params_data['slacks_flexibility'])
+    parameters.slacks_ess_charging = bool(params_data['slacks_ess_charging'])
+    parameters.slacks_ess_soc = bool(params_data['slacks_ess_soc'])
+    parameters.slacks_ess_complementarity = bool(params_data['slacks_ess_complementarity'])
+    parameters.slacks_ess_day_balance = bool(params_data['slacks_ess_day_balance'])
     parameters.solver_params.read_solver_parameters(params_data['solver'])
     parameters.print_to_screen = params_data['print_to_screen']
     parameters.plot_diagram = params_data['plot_diagram']
