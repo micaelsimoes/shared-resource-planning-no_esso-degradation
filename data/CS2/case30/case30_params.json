@@ -6,8 +6,19 @@
 	"rg_curt": true,
 	"l_curt": false,
 	"enforce_vg": false,
-	"slacks": false,
 	"relax_equalities": true,
+	"slacks": {
+		"flexibility": {
+			"day_balance": true
+		},
+		"ess": {
+				"charging": false,
+				"soc": false,
+				"complementarity": false,
+				"day_balance": false
+		},
+		"node_balance": true
+	},	
 	"solver": {
 		"name": "ipopt",
 		"linear_solver": "ma57",
