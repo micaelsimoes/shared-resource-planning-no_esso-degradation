@@ -811,15 +811,11 @@ def _build_model(network, params):
                                 Qi -= (branch.b + branch.b_sh * 0.5) * (ei ** 2 + fi ** 2)
                                 Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
 
-                    if params.slacks:
-                        if params.relax_equalities:
-                            model.node_balance_cons_p.add(Pg <= Pd + Pi + model.slack_node_balance_p_up[i, s_m, s_o, p] - model.slack_node_balance_p_down[i, s_m, s_o, p] + EQUALITY_TOLERANCE)
-                            model.node_balance_cons_p.add(Pg >= Pd + Pi + model.slack_node_balance_p_up[i, s_m, s_o, p] - model.slack_node_balance_p_down[i, s_m, s_o, p] - EQUALITY_TOLERANCE)
-                            model.node_balance_cons_q.add(Qg <= Qd + Qi + model.slack_node_balance_q_up[i, s_m, s_o, p] - model.slack_node_balance_q_down[i, s_m, s_o, p] + EQUALITY_TOLERANCE)
-                            model.node_balance_cons_q.add(Qg >= Qd + Qi + model.slack_node_balance_q_up[i, s_m, s_o, p] - model.slack_node_balance_q_down[i, s_m, s_o, p] - EQUALITY_TOLERANCE)
-                        else:
-                            model.node_balance_cons_p.add(Pg == Pd + Pi + model.slack_node_balance_p_up[i, s_m, s_o, p] - model.slack_node_balance_p_down[i, s_m, s_o, p])
-                            model.node_balance_cons_q.add(Qg == Qd + Qi + model.slack_node_balance_q_up[i, s_m, s_o, p] - model.slack_node_balance_q_down[i, s_m, s_o, p])
+                    if params.slacks.node_balance:
+                        model.node_balance_cons_p.add(Pg <= Pd + Pi + model.slack_node_balance_p_up[i, s_m, s_o, p] - model.slack_node_balance_p_down[i, s_m, s_o, p] + EQUALITY_TOLERANCE)
+                        model.node_balance_cons_p.add(Pg >= Pd + Pi + model.slack_node_balance_p_up[i, s_m, s_o, p] - model.slack_node_balance_p_down[i, s_m, s_o, p] - EQUALITY_TOLERANCE)
+                        model.node_balance_cons_q.add(Qg <= Qd + Qi + model.slack_node_balance_q_up[i, s_m, s_o, p] - model.slack_node_balance_q_down[i, s_m, s_o, p] + EQUALITY_TOLERANCE)
+                        model.node_balance_cons_q.add(Qg >= Qd + Qi + model.slack_node_balance_q_up[i, s_m, s_o, p] - model.slack_node_balance_q_down[i, s_m, s_o, p] - EQUALITY_TOLERANCE)
                     else:
                         if params.relax_equalities:
                             model.node_balance_cons_p.add(Pg <= Pd + Pi + EQUALITY_TOLERANCE)
