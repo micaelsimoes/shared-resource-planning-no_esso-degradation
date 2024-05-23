@@ -34,6 +34,7 @@ class Slacks:
     def __init__(self):
         self.flexibility = SlacksFlexibility()
         self.ess = SlacksEnergyStorage()
+        self.node_balance = False
 
     def read_slacks_parameters(self, slacks_data):
         self.flexibility.read_slacks_parameters(slacks_data)
@@ -61,14 +62,9 @@ class SlacksEnergyStorage:
 
     def read_slacks_parameters(self, slacks_data):
         if 'ess' in slacks_data:
-            if 'charging' in slacks_data['ess']:
-                self.charging = slacks_data['ess']['charging']
-            if 'soc' in slacks_data['ess']:
-                self.soc = slacks_data['ess']['soc']
-            if 'complementarity' in slacks_data['ess']:
-                self.complementarity = slacks_data['ess']['complementarity']
-            if 'day_balance' in slacks_data['ess']:
-                self.day_balance = slacks_data['ess']['day_balance']
+            _read_ess_slacks_parameters(self, slacks_data['ess'])
+        elif 'shared_ess' in slacks_data:
+            _read_ess_slacks_parameters(self, slacks_data['shared_ess'])
 
 
 # ======================================================================================================================
@@ -98,3 +94,14 @@ def _read_network_parameters_from_file(parameters, filename):
     parameters.print_to_screen = params_data['print_to_screen']
     parameters.plot_diagram = params_data['plot_diagram']
     parameters.print_results_to_file = params_data['print_results_to_file']
+
+
+def _read_ess_slacks_parameters(ess_data, slacks_data):
+    if 'charging' in slacks_data['ess']:
+        ess_data.charging = slacks_data['ess']['charging']
+    if 'soc' in slacks_data['ess']:
+        ess_data.soc = slacks_data['ess']['soc']
+    if 'complementarity' in slacks_data['ess']:
+        ess_data.complementarity = slacks_data['ess']['complementarity']
+    if 'day_balance' in slacks_data['ess']:
+        ess_data.day_balance = slacks_data['ess']['day_balance']
