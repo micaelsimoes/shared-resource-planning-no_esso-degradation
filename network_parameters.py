@@ -92,7 +92,8 @@ def _read_network_parameters_from_file(parameters, filename):
     parameters.l_curt = bool(params_data['l_curt'])
     parameters.enforce_vg = bool(params_data['enforce_vg'])
     parameters.relax_equalities = bool(params_data['relax_equalities'])
-    parameters.slacks.read_slacks_parameters(params_data['slacks'])
+    if 'slacks' in params_data:
+        parameters.slacks.read_slacks_parameters(params_data['slacks'])
     parameters.solver_params.read_solver_parameters(params_data['solver'])
     parameters.print_to_screen = params_data['print_to_screen']
     parameters.plot_diagram = params_data['plot_diagram']
