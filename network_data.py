@@ -211,12 +211,10 @@ def _write_main_info_to_excel(network_planning, workbook, results):
         for day in network_planning.days:
             sheet.cell(row=line_idx, column=col_idx).value = day
             col_idx += 1
-    sheet.cell(row=line_idx, column=col_idx).value = 'Total'
 
     # Objective function value
     col_idx = 2
     line_idx += 1
-    total_of = 0.0
     obj_string = 'Objective'
     if network_planning.params.obj_type == OBJ_MIN_COST:
         obj_string += ' (cost), [€]'
@@ -225,127 +223,130 @@ def _write_main_info_to_excel(network_planning, workbook, results):
     sheet.cell(row=line_idx, column=1).value = obj_string
     for year in network_planning.years:
         for day in network_planning.days:
-            total_of += results['results'][year][day]['obj']
             sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['obj']
             sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
             col_idx += 1
-    sheet.cell(row=line_idx, column=col_idx).value = total_of
-    sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
 
     # Total Load
     col_idx = 2
     line_idx += 1
-    total_load = 0.0
     sheet.cell(row=line_idx, column=1).value = 'Load, [MWh]'
     for year in network_planning.years:
         for day in network_planning.days:
-            total_load += results['results'][year][day]['total_load']
-            sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['total_load']
+            sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['total_load']['p']
             sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
             col_idx += 1
-    sheet.cell(row=line_idx, column=col_idx).value = total_load
-    sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+
+    col_idx = 2
+    line_idx += 1
+    sheet.cell(row=line_idx, column=1).value = 'Load, [MVArh]'
+    for year in network_planning.years:
+        for day in network_planning.days:
+            sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['total_load']['q']
+            sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+            col_idx += 1
 
     # Flexibility used
     if network_planning.params.fl_reg:
         col_idx = 2
         line_idx += 1
-        total_flex = 0.0
         sheet.cell(row=line_idx, column=1).value = 'Flexibility used, [MWh]'
         for year in network_planning.years:
             for day in network_planning.days:
-                total_flex += results['results'][year][day]['flex_used']
                 sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['flex_used']
                 sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
                 col_idx += 1
-        sheet.cell(row=line_idx, column=col_idx).value = total_flex
         sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
 
     # Total Load curtailed
     if network_planning.params.l_curt:
+
         col_idx = 2
         line_idx += 1
-        total_curt = 0.0
         sheet.cell(row=line_idx, column=1).value = 'Load curtailed, [MWh]'
         for year in network_planning.years:
             for day in network_planning.days:
-                total_curt += results['results'][year][day]['load_curt']
-                sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['load_curt']
+                sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['load_curt']['p']
                 sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
                 col_idx += 1
-        sheet.cell(row=line_idx, column=col_idx).value = total_curt
-        sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+
+        col_idx = 2
+        line_idx += 1
+        sheet.cell(row=line_idx, column=1).value = 'Load curtailed, [MVArh]'
+        for year in network_planning.years:
+            for day in network_planning.days:
+                sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['load_curt']['q']
+                sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+                col_idx += 1
 
     # Total Generation
     col_idx = 2
     line_idx += 1
-    total_gen = 0.0
     sheet.cell(row=line_idx, column=1).value = 'Generation, [MWh]'
     for year in network_planning.years:
         for day in network_planning.days:
-            total_gen += results['results'][year][day]['total_gen']
-            sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['total_gen']
+            sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['total_gen']['p']
             sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
             col_idx += 1
-    sheet.cell(row=line_idx, column=col_idx).value = total_gen
-    sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+
+    col_idx = 2
+    line_idx += 1
+    sheet.cell(row=line_idx, column=1).value = 'Generation, [MVArh]'
+    for year in network_planning.years:
+        for day in network_planning.days:
+            sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['total_gen']['q']
+            sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+            col_idx += 1
 
     # Total Renewable Generation
     col_idx = 2
     line_idx += 1
-    total_renewable_gen = 0.0
     sheet.cell(row=line_idx, column=1).value = 'Renewable generation, [MWh]'
     for year in network_planning.years:
         for day in network_planning.days:
-            total_renewable_gen += results['results'][year][day]['total_renewable_gen']
-            sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['total_renewable_gen']
+            sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['total_renewable_gen']['p']
             sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
             col_idx += 1
-    sheet.cell(row=line_idx, column=col_idx).value = total_renewable_gen
-    sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+
+    col_idx = 2
+    line_idx += 1
+    sheet.cell(row=line_idx, column=1).value = 'Renewable generation, [MVArh]'
+    for year in network_planning.years:
+        for day in network_planning.days:
+            sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['total_renewable_gen']['q']
+            sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+            col_idx += 1
 
     # Renewable Generation Curtailed
     if network_planning.params.rg_curt:
         col_idx = 2
         line_idx += 1
-        total_renewable_gen_curt = 0.0
         sheet.cell(row=line_idx, column=1).value = 'Renewable generation curtailed, [MWh]'
         for year in network_planning.years:
             for day in network_planning.days:
-                total_renewable_gen_curt += results['results'][year][day]['gen_curt']
                 sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['gen_curt']
                 sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
                 col_idx += 1
-        sheet.cell(row=line_idx, column=col_idx).value = total_renewable_gen_curt
-        sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
 
     # Losses
     col_idx = 2
     line_idx += 1
-    total_losses = 0.0
     sheet.cell(row=line_idx, column=1).value = 'Losses, [MWh]'
     for year in network_planning.years:
         for day in network_planning.days:
-            total_losses += results['results'][year][day]['losses']
             sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['losses']
             sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
             col_idx += 1
-    sheet.cell(row=line_idx, column=col_idx).value = total_losses
-    sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
 
     # Execution time
     col_idx = 2
     line_idx += 1
-    total_runtime = 0.0
     sheet.cell(row=line_idx, column=1).value = 'Execution time, [s]'
     for year in network_planning.years:
         for day in network_planning.days:
-            total_runtime += results['results'][year][day]['runtime'][0]
             sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['runtime'][0]
             sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
             col_idx += 1
-    sheet.cell(row=line_idx, column=col_idx).value = total_runtime
-    sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
 
     # Number of price (market) scenarios
     col_idx = 2
@@ -355,7 +356,6 @@ def _write_main_info_to_excel(network_planning, workbook, results):
         for day in network_planning.days:
             sheet.cell(row=line_idx, column=col_idx).value = len(network_planning.network[year][day].prob_market_scenarios)
             col_idx += 1
-    sheet.cell(row=line_idx, column=col_idx).value = 'N/A'
 
     # Number of operation (generation and consumption) scenarios
     col_idx = 2
@@ -365,7 +365,6 @@ def _write_main_info_to_excel(network_planning, workbook, results):
         for day in network_planning.days:
             sheet.cell(row=line_idx, column=col_idx).value = len(network_planning.network[year][day].prob_operation_scenarios)
             col_idx += 1
-    sheet.cell(row=line_idx, column=col_idx).value = 'N/A'
 
 
 def _write_market_cost_values_to_excel(network_planning, workbook):
