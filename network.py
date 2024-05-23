@@ -989,13 +989,19 @@ def _build_model(network, params):
             # Shared ESS slacks
             for e in model.shared_energy_storages:
                 for p in model.periods:
-                    slack_comp = model.slack_shared_es_comp[e, s_m, s_o, p]
-                    slack_sch = model.slack_shared_es_sch_up[e, s_m, s_o, p] + model.slack_shared_es_sch_down[e, s_m, s_o, p]
-                    slack_sdch = model.slack_shared_es_sdch_up[e, s_m, s_o, p] + model.slack_shared_es_sdch_down[e, s_m, s_o, p]
-                    slack_soc = model.slack_shared_es_soc_up[e, s_m, s_o, p] + model.slack_shared_es_soc_down[e, s_m, s_o, p]
-                    obj += PENALTY_SLACK * (slack_comp + slack_sch + slack_sdch + slack_soc)
-                slack_soc_final = model.slack_shared_es_soc_final_up[e, s_m, s_o] + model.slack_shared_es_soc_final_down[e, s_m, s_o]
-                obj += PENALTY_SLACK * slack_soc_final
+                    if params.slacks.shared_ess.complementarity:
+                        slack_comp = model.slack_shared_es_comp[e, s_m, s_o, p]
+                        obj += PENALTY_SLACK * slack_comp
+                    if params.slacks.shared_ess.charging:
+                        slack_sch = model.slack_shared_es_sch_up[e, s_m, s_o, p] + model.slack_shared_es_sch_down[e, s_m, s_o, p]
+                        slack_sdch = model.slack_shared_es_sdch_up[e, s_m, s_o, p] + model.slack_shared_es_sdch_down[e, s_m, s_o, p]
+                        obj += PENALTY_SLACK * (slack_sch + slack_sdch)
+                    if params.slacks.shared_ess.soc:
+                        slack_soc = model.slack_shared_es_soc_up[e, s_m, s_o, p] + model.slack_shared_es_soc_down[e, s_m, s_o, p]
+                        obj += PENALTY_SLACK * slack_soc
+                if params.slacks.shared_ess.day_balance:
+                    slack_soc_final = model.slack_shared_es_soc_final_up[e, s_m, s_o] + model.slack_shared_es_soc_final_down[e, s_m, s_o]
+                    obj += PENALTY_SLACK * slack_soc_final
 
     model.objective = pe.Objective(sense=pe.minimize, expr=obj)
 
