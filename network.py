@@ -1607,8 +1607,8 @@ def _process_results(network, model, params, results=dict()):
                         processed_results['scenarios'][s_m][s_o]['consumption']['p_down'][load_id].append(pdown)
                         processed_results['scenarios'][s_m][s_o]['consumption']['pc_net'][load_id][p] += pup - pdown
                     if params.l_curt:
-                        pc_curt = pe.value(model.pc_curt[c, s_m, s_o, p]) * network.baseMVA
-                        qc_curt = pe.value(model.qc_curt[c, s_m, s_o, p]) * network.baseMVA
+                        pc_curt = pe.value(model.pc_curt_down[c, s_m, s_o, p] - model.pc_curt_up[c, s_m, s_o, p]) * network.baseMVA
+                        qc_curt = pe.value(model.qc_curt_down[c, s_m, s_o, p] - model.qc_curt_up[c, s_m, s_o, p]) * network.baseMVA
                         processed_results['scenarios'][s_m][s_o]['consumption']['pc_curt'][load_id].append(pc_curt)
                         processed_results['scenarios'][s_m][s_o]['consumption']['pc_net'][load_id][p] -= pc_curt
                         processed_results['scenarios'][s_m][s_o]['consumption']['qc_curt'][load_id].append(qc_curt)
