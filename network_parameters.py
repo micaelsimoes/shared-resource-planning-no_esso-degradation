@@ -16,11 +16,7 @@ class NetworkParameters:
         self.l_curt = False
         self.enforce_vg = False
         self.relax_equalities = False
-        self.slacks_flexibility = False
-        self.slacks_ess_charging = False
-        self.slacks_ess_soc = False
-        self.slacks_ess_complementarity = False
-        self.slacks_ess_day_balance = False
+        self.slacks = Slacks()
         self.print_to_screen = False
         self.plot_diagram = False
         self.print_results_to_file = False
@@ -30,6 +26,31 @@ class NetworkParameters:
         _read_network_parameters_from_file(self, filename)
 
 
+# ======================================================================================================================
+#   Slack Classes
+# ======================================================================================================================
+class Slacks:
+    def __init__(self):
+        self.flexibility = SlacksFlexibility()
+        self.ess = SlacksEnergyStorage()
+
+
+class SlacksFlexibility:
+    def __init__(self):
+        self.day_balance = False
+
+
+class SlacksEnergyStorage:
+    def __init__(self):
+        self.charging = False
+        self.soc = False
+        self.complementarity = False
+        self.day_balance = False
+
+
+# ======================================================================================================================
+#   Read functions
+# ======================================================================================================================
 def _read_network_parameters_from_file(parameters, filename):
 
     params_data = convert_json_to_dict(read_json_file(filename))
