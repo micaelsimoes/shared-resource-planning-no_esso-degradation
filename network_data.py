@@ -2374,7 +2374,6 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
                                     sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                                 row_idx = row_idx + 1
 
-                                # - soc_final_down
                                 sheet.cell(row=row_idx, column=1).value = es_id
                                 sheet.cell(row=row_idx, column=2).value = int(year)
                                 sheet.cell(row=row_idx, column=3).value = day
