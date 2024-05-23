@@ -30,22 +30,45 @@ class NetworkParameters:
 #   Slack Classes
 # ======================================================================================================================
 class Slacks:
+
     def __init__(self):
         self.flexibility = SlacksFlexibility()
         self.ess = SlacksEnergyStorage()
 
+    def read_slacks_parameters(self, slacks_data):
+        self.flexibility.read_slacks_parameters(slacks_data)
+        self.ess.read_slacks_parameters(slacks_data)
+
 
 class SlacksFlexibility:
+
     def __init__(self):
         self.day_balance = False
 
+    def read_slacks_parameters(self, slacks_data):
+        if 'flexibility' in slacks_data:
+            if 'day_balance' in slacks_data['flexibility']:
+                self.day_balance = slacks_data['flexibility']['day_balance']
+
 
 class SlacksEnergyStorage:
+
     def __init__(self):
         self.charging = False
         self.soc = False
         self.complementarity = False
         self.day_balance = False
+
+    def read_slacks_parameters(self, slacks_data):
+        if 'ess' in slacks_data:
+            if 'charging' in slacks_data['ess']:
+                self.charging = slacks_data['ess']['charging']
+            if 'soc' in slacks_data['ess']:
+                self.soc = slacks_data['ess']['soc']
+            if 'complementarity' in slacks_data['ess']:
+                self.complementarity = slacks_data['ess']['complementarity']
+            if 'day_balance' in slacks_data['ess']:
+                self.day_balance = slacks_data['ess']['day_balance']
 
 
 # ======================================================================================================================
@@ -68,12 +91,8 @@ def _read_network_parameters_from_file(parameters, filename):
     parameters.rg_curt = bool(params_data['rg_curt'])
     parameters.l_curt = bool(params_data['l_curt'])
     parameters.enforce_vg = bool(params_data['enforce_vg'])
-    parameters.relax_equalities = bool(params_data['relax_equalities'])         # Note: applied for constraints where slacks are not used
-    parameters.slacks_flexibility = bool(params_data['slacks_flexibility'])
-    parameters.slacks_ess_charging = bool(params_data['slacks_ess_charging'])
-    parameters.slacks_ess_soc = bool(params_data['slacks_ess_soc'])
-    parameters.slacks_ess_complementarity = bool(params_data['slacks_ess_complementarity'])
-    parameters.slacks_ess_day_balance = bool(params_data['slacks_ess_day_balance'])
+    parameters.relax_equalities = bool(params_data['relax_equalities'])
+    parameters.slacks.read_slacks_parameters(params_data['slacks'])
     parameters.solver_params.read_solver_parameters(params_data['solver'])
     parameters.print_to_screen = params_data['print_to_screen']
     parameters.plot_diagram = params_data['plot_diagram']
