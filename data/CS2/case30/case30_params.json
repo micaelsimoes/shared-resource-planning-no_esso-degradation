@@ -6,19 +6,25 @@
 	"rg_curt": true,
 	"l_curt": false,
 	"enforce_vg": false,
-	"relax_equalities": true,
+	"relax_equalities": false,
 	"slacks": {
 		"flexibility": {
 			"day_balance": true
 		},
 		"ess": {
-				"charging": false,
-				"soc": false,
-				"complementarity": false,
-				"day_balance": false
+				"charging": true,
+				"soc": true,
+				"complementarity": true,
+				"day_balance": true
 		},
-		"node_balance": true
-	},	
+		"node_balance": true,
+		"shared_ess": {
+				"charging": true,
+				"soc": true,
+				"complementarity": true,
+				"day_balance": true
+		}
+	},
 	"solver": {
 		"name": "ipopt",
 		"linear_solver": "ma57",
