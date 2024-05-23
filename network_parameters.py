@@ -97,11 +97,11 @@ def _read_network_parameters_from_file(parameters, filename):
 
 
 def _read_ess_slacks_parameters(ess_data, slacks_data):
-    if 'charging' in slacks_data['ess']:
-        ess_data.charging = slacks_data['ess']['charging']
-    if 'soc' in slacks_data['ess']:
-        ess_data.soc = slacks_data['ess']['soc']
-    if 'complementarity' in slacks_data['ess']:
-        ess_data.complementarity = slacks_data['ess']['complementarity']
-    if 'day_balance' in slacks_data['ess']:
-        ess_data.day_balance = slacks_data['ess']['day_balance']
+    if 'charging' in slacks_data:
+        ess_data.charging = slacks_data['charging']
+    if 'soc' in slacks_data:
+        ess_data.soc = slacks_data['soc']
+    if 'complementarity' in slacks_data:
+        ess_data.complementarity = slacks_data['complementarity']
+    if 'day_balance' in slacks_data:
+        ess_data.day_balance = slacks_data['day_balance']
