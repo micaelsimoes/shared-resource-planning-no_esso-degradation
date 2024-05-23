@@ -6,24 +6,24 @@
 	"rg_curt": true,
 	"l_curt": false,
 	"enforce_vg": false,
-	"relax_equalities": false,
+	"relax_equalities": true,
 	"slacks": {
 		"flexibility": {
-			"day_balance": true
+			"day_balance": false
 		},
 		"ess": {
 				"complementarity": true,
-				"charging": true,
-				"soc": true,
-				"day_balance": true
+				"charging": false,
+				"soc": false,
+				"day_balance": false
 		},
 		"shared_ess": {
 				"complementarity": true,
-				"charging": true,
-				"soc": true,
-				"day_balance": true
+				"charging": false,
+				"soc": false,
+				"day_balance": false
 		},
-		"node_balance": true
+		"node_balance": false
 	},
 	"solver": {
 		"name": "ipopt",
