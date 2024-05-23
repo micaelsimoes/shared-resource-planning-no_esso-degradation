@@ -767,8 +767,8 @@ def _build_model(network, params):
                             if params.fl_reg and network.loads[c].fl_reg:
                                 Pd += (model.flex_p_up[c, s_m, s_o, p] - model.flex_p_down[c, s_m, s_o, p])
                             if params.l_curt:
-                                Pd -= model.pc_curt[c, s_m, s_o, p]
-                                Qd -= model.qc_curt[c, s_m, s_o, p]
+                                Pd -= (model.pc_curt_down[c, s_m, s_o, p] - model.pc_curt_up[c, s_m, s_o, p])
+                                Qd -= (model.qc_curt[c, s_m, s_o, p] - model.qc_curt_up[c, s_m, s_o, p])
                     if params.es_reg:
                         for e in model.energy_storages:
                             if network.energy_storages[e].bus == node.bus_i:
