@@ -935,13 +935,13 @@ def _build_model(network, params):
                 for p in model.periods:
                     slack_e = model.slack_e_up[i, s_m, s_o, p] + model.slack_e_down[i, s_m, s_o, p]
                     slack_f = model.slack_f_up[i, s_m, s_o, p] + model.slack_f_down[i, s_m, s_o, p]
-                    obj += PENALTY_VOLTAGE * (slack_e + slack_f)
+                    obj += PENALTY_VOLTAGE * network.baseMVA * (slack_e + slack_f)
 
             # Branch power flow slacks
             for b in model.branches:
                 for p in model.periods:
                     slack_iij_sqr = model.slack_iij_sqr[b, s_m, s_o, p]
-                    obj += PENALTY_CURRENT * slack_iij_sqr
+                    obj += PENALTY_CURRENT * network.baseMVA * slack_iij_sqr
 
     # Sensitivities' slacks
     for e in model.shared_energy_storages:
