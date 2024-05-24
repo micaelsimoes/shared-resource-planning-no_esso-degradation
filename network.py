@@ -964,7 +964,10 @@ def _build_model(network, params):
     for e in model.shared_energy_storages:
         slack_s = model.shared_es_s_slack_up[e] + model.shared_es_s_slack_down[e]
         slack_e = model.shared_es_e_slack_up[e] + model.shared_es_e_slack_down[e]
-        obj += PENALTY_SENSITIVITIES * network.baseMVA * (slack_s + slack_e)
+        if network.is_transmission:
+            obj += PENALTY_SENSITIVITIES * (network.baseMVA**2) * (slack_s + slack_e)
+        else:
+            obj += PENALTY_SENSITIVITIES * network.baseMVA * (slack_s + slack_e)
 
     # Operation slacks
     for s_m in model.scenarios_market:
