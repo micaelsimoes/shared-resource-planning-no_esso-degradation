@@ -631,7 +631,6 @@ def _build_model(network, params):
                         else:
                             if params.relax_equalities:
                                 model.energy_storage_ch_dch_exclusion.add(sch * sdch <= EQUALITY_TOLERANCE)
-                                model.energy_storage_ch_dch_exclusion.add(sch * sdch >= -EQUALITY_TOLERANCE)
                             else:
                                 model.energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
 
@@ -730,7 +729,6 @@ def _build_model(network, params):
                     else:
                         if params.relax_equalities:
                             model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch <= EQUALITY_TOLERANCE)
-                            model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch >= -EQUALITY_TOLERANCE)
                         else:
                             model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
 
