@@ -67,9 +67,6 @@ def shared_resources_planning(working_directory, specification_filename):
     #planning_problem.run_planning_problem()
 
     transmission_network = planning_problem.transmission_network
-    for year in transmission_network.years:
-        for day in transmission_network.days:
-            transmission_network.network[year][day].shared_energy_storages = list()
     candidate_solution = planning_problem.get_initial_candidate_solution()
     tn_model = transmission_network.build_model()
     transmission_network.update_model_with_candidate_solution(tn_model, candidate_solution['total_capacity'])
