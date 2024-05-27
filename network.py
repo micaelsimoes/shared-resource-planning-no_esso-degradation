@@ -979,14 +979,14 @@ def _build_model(network, params):
                     for p in model.periods:
                         slack_p = model.slack_node_balance_p_up[i, s_m, s_o, p] + model.slack_node_balance_p_down[i, s_m, s_o, p]
                         slack_q = model.slack_node_balance_q_up[i, s_m, s_o, p] + model.slack_node_balance_q_down[i, s_m, s_o, p]
-                        obj += PENALTY_SLACK * (slack_p + slack_q)
+                        obj += PENALTY_NODE_BALANCE * network.baseMVA * (slack_p + slack_q)
 
             # Flexibility day balance
             if params.fl_reg:
                 for c in model.loads:
                     if params.slacks.flexibility.day_balance:
                         slack_flex = model.slack_flex_p_balance_up[c, s_m, s_o] + model.slack_flex_p_balance_down[c, s_m, s_o]
-                        obj += PENALTY_SLACK * slack_flex
+                        obj += PENALTY_FLEXIBILITY * network.baseMVA * slack_flex
 
             # ESS slacks
             if params.es_reg:
