@@ -424,15 +424,15 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                             interface_pf_p = tso_model[year][day].pc[adn_load_idx, s_m, s_o, p]
                             interface_pf_q = tso_model[year][day].qc[adn_load_idx, s_m, s_o, p]
 
-                            obj += PENALTY_SLACK * (tso_model[year][day].expected_interface_vmag_sqr[dn, p] - interface_vmag_sqr) ** 2
-                            obj += PENALTY_SLACK * (tso_model[year][day].expected_interface_pf_p[dn, p] - interface_pf_p) ** 2
-                            obj += PENALTY_SLACK * (tso_model[year][day].expected_interface_pf_q[dn, p] - interface_pf_q) ** 2
+                            obj += PENALTY_INTERFACE_VMAG * (tso_model[year][day].expected_interface_vmag_sqr[dn, p] - interface_vmag_sqr) ** 2
+                            obj += PENALTY_INTERFACE_PF * (tso_model[year][day].expected_interface_pf_p[dn, p] - interface_pf_p) ** 2
+                            obj += PENALTY_INTERFACE_PF * (tso_model[year][day].expected_interface_pf_q[dn, p] - interface_pf_q) ** 2
 
                             interface_ess_p = tso_model[year][day].shared_es_pch[shared_ess_idx, s_m, s_o, p] - tso_model[year][day].shared_es_pdch[shared_ess_idx, s_m, s_o, p]
                             interface_ess_q = tso_model[year][day].shared_es_qch[shared_ess_idx, s_m, s_o, p] - tso_model[year][day].shared_es_qdch[shared_ess_idx, s_m, s_o, p]
 
-                            obj += PENALTY_SLACK * (tso_model[year][day].expected_shared_ess_p[dn, p] - interface_ess_p) ** 2
-                            obj += PENALTY_SLACK * (tso_model[year][day].expected_shared_ess_q[dn, p] - interface_ess_q) ** 2
+                            obj += PENALTY_INTERFACE_ESS * (tso_model[year][day].expected_shared_ess_p[dn, p] - interface_ess_p) ** 2
+                            obj += PENALTY_INTERFACE_ESS * (tso_model[year][day].expected_shared_ess_q[dn, p] - interface_ess_q) ** 2
 
             tso_model[year][day].objective.expr = obj
 
@@ -535,14 +535,14 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
                             vmag_sqr = dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2
                             interface_pf_p = dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p]
                             interface_pf_q = dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p]
-                            obj += PENALTY_SLACK * (dso_model[year][day].expected_interface_vmag_sqr[p] - vmag_sqr) ** 2
-                            obj += PENALTY_SLACK * (dso_model[year][day].expected_interface_pf_p[p] - interface_pf_p) ** 2
-                            obj += PENALTY_SLACK * (dso_model[year][day].expected_interface_pf_q[p] - interface_pf_q) ** 2
+                            obj += PENALTY_INTERFACE_VMAG * (dso_model[year][day].expected_interface_vmag_sqr[p] - vmag_sqr) ** 2
+                            obj += PENALTY_INTERFACE_PF * (dso_model[year][day].expected_interface_pf_p[p] - interface_pf_p) ** 2
+                            obj += PENALTY_INTERFACE_PF * (dso_model[year][day].expected_interface_pf_q[p] - interface_pf_q) ** 2
 
                             interface_ess_p = dso_model[year][day].shared_es_pch[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].shared_es_pdch[shared_ess_idx, s_m, s_o, p]
                             interface_ess_q = dso_model[year][day].shared_es_qch[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].shared_es_qdch[shared_ess_idx, s_m, s_o, p]
-                            obj += PENALTY_SLACK * (dso_model[year][day].expected_shared_ess_p[p] - interface_ess_p) ** 2
-                            obj += PENALTY_SLACK * (dso_model[year][day].expected_shared_ess_q[p] - interface_ess_q) ** 2
+                            obj += PENALTY_INTERFACE_ESS * (dso_model[year][day].expected_shared_ess_p[p] - interface_ess_p) ** 2
+                            obj += PENALTY_INTERFACE_ESS * (dso_model[year][day].expected_shared_ess_q[p] - interface_ess_q) ** 2
 
                 dso_model[year][day].objective.expr = obj
 
