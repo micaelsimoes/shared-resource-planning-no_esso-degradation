@@ -1900,11 +1900,9 @@ def _write_operational_planning_main_info_to_excel(planning_problem, workbook, r
     sheet = workbook.worksheets[0]
     sheet.title = 'Main Info'
 
-    decimal_style = '0.00'
-    line_idx = 1
-
     # Write Header
     col_idx = 4
+    line_idx = 1
     for year in planning_problem.years:
         for _ in planning_problem.days:
             sheet.cell(row=line_idx, column=col_idx).value = year
@@ -1970,10 +1968,21 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
     col_idx += 1
     for year in results:
         for day in results[year]:
-            load_aux = results[year][day]['total_load']
-            if network.params.l_curt:
-                load_aux -= results[year][day]['load_curt']
-            sheet.cell(row=line_idx, column=col_idx).value = load_aux
+            sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['load_curt']['p']
+            sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+            col_idx += 1
+
+    line_idx += 1
+    col_idx = 1
+    sheet.cell(row=line_idx, column=col_idx).value = operator_type
+    col_idx += 1
+    sheet.cell(row=line_idx, column=col_idx).value = tn_node_id
+    col_idx += 1
+    sheet.cell(row=line_idx, column=col_idx).value = 'Load, [MVArh]'
+    col_idx += 1
+    for year in results:
+        for day in results[year]:
+            sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['load_curt']['q']
             sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
             col_idx += 1
 
@@ -1995,6 +2004,7 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
 
     # Total Load curtailed
     if network.params.l_curt:
+
         line_idx += 1
         col_idx = 1
         sheet.cell(row=line_idx, column=col_idx).value = operator_type
@@ -2005,7 +2015,21 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
         col_idx += 1
         for year in results:
             for day in results[year]:
-                sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['load_curt']
+                sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['load_curt']['p']
+                sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+                col_idx += 1
+
+        line_idx += 1
+        col_idx = 1
+        sheet.cell(row=line_idx, column=col_idx).value = operator_type
+        col_idx += 1
+        sheet.cell(row=line_idx, column=col_idx).value = tn_node_id
+        col_idx += 1
+        sheet.cell(row=line_idx, column=col_idx).value = 'Load curtailed, [MVArh]'
+        col_idx += 1
+        for year in results:
+            for day in results[year]:
+                sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['load_curt']['q']
                 sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
                 col_idx += 1
 
@@ -2020,7 +2044,21 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
     col_idx += 1
     for year in results:
         for day in results[year]:
-            sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['total_gen']
+            sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['total_gen']['p']
+            sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+            col_idx += 1
+
+    line_idx += 1
+    col_idx = 1
+    sheet.cell(row=line_idx, column=col_idx).value = operator_type
+    col_idx += 1
+    sheet.cell(row=line_idx, column=col_idx).value = tn_node_id
+    col_idx += 1
+    sheet.cell(row=line_idx, column=col_idx).value = 'Generation, [MVArh]'
+    col_idx += 1
+    for year in results:
+        for day in results[year]:
+            sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['total_gen']['q']
             sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
             col_idx += 1
 
@@ -2035,7 +2073,21 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
     col_idx += 1
     for year in results:
         for day in results[year]:
-            sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['total_conventional_gen']
+            sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['total_conventional_gen']['p']
+            sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+            col_idx += 1
+
+    line_idx += 1
+    col_idx = 1
+    sheet.cell(row=line_idx, column=col_idx).value = operator_type
+    col_idx += 1
+    sheet.cell(row=line_idx, column=col_idx).value = tn_node_id
+    col_idx += 1
+    sheet.cell(row=line_idx, column=col_idx).value = 'Conventional Generation, [MVArh]'
+    col_idx += 1
+    for year in results:
+        for day in results[year]:
+            sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['total_conventional_gen']['q']
             sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
             col_idx += 1
 
@@ -2050,7 +2102,21 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
     col_idx += 1
     for year in results:
         for day in results[year]:
-            sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['total_renewable_gen']
+            sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['total_renewable_gen']['p']
+            sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+            col_idx += 1
+
+    line_idx += 1
+    col_idx = 1
+    sheet.cell(row=line_idx, column=col_idx).value = operator_type
+    col_idx += 1
+    sheet.cell(row=line_idx, column=col_idx).value = tn_node_id
+    col_idx += 1
+    sheet.cell(row=line_idx, column=col_idx).value = 'Renewable generation, [MVArh]'
+    col_idx += 1
+    for year in results:
+        for day in results[year]:
+            sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['total_renewable_gen']['q']
             sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
             col_idx += 1
 
