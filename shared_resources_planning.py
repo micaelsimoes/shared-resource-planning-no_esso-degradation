@@ -448,15 +448,20 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                     interface_pf_p_req = interface_pf_vars['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
                     interface_pf_q_req = interface_pf_vars['dso']['current'][adn_node_id][year][day]['q'][p] / s_base
 
-                    tso_model[year][day].expected_interface_vmag_sqr[dn, p].fix(interface_vmag_sqr_req)
-                    tso_model[year][day].expected_interface_pf_p[dn, p].fix(interface_pf_p_req)
-                    tso_model[year][day].expected_interface_pf_q[dn, p].fix(interface_pf_q_req)
+                    tso_model[year][day].expected_interface_vmag_sqr[dn, p].setub(interface_vmag_sqr_req + EQUALITY_TOLERANCE)
+                    tso_model[year][day].expected_interface_vmag_sqr[dn, p].setlb(interface_vmag_sqr_req - EQUALITY_TOLERANCE)
+                    tso_model[year][day].expected_interface_pf_p[dn, p].setub(interface_pf_p_req + EQUALITY_TOLERANCE)
+                    tso_model[year][day].expected_interface_pf_p[dn, p].setlb(interface_pf_p_req - EQUALITY_TOLERANCE)
+                    tso_model[year][day].expected_interface_pf_q[dn, p].setub(interface_pf_q_req + EQUALITY_TOLERANCE)
+                    tso_model[year][day].expected_interface_pf_q[dn, p].setlb(interface_pf_q_req - EQUALITY_TOLERANCE)
 
                     interface_ess_p = sess_vars['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
                     interface_ess_q = sess_vars['dso']['current'][adn_node_id][year][day]['q'][p] / s_base
 
-                    tso_model[year][day].expected_shared_ess_p[dn, p].fix(interface_ess_p)
-                    tso_model[year][day].expected_shared_ess_q[dn, p].fix(interface_ess_q)
+                    tso_model[year][day].expected_shared_ess_p[dn, p].setub(interface_ess_p + EQUALITY_TOLERANCE)
+                    tso_model[year][day].expected_shared_ess_p[dn, p].setlb(interface_ess_p - EQUALITY_TOLERANCE)
+                    tso_model[year][day].expected_shared_ess_q[dn, p].setub(interface_ess_q + EQUALITY_TOLERANCE)
+                    tso_model[year][day].expected_shared_ess_q[dn, p].setlb(interface_ess_q - EQUALITY_TOLERANCE)
 
     # Run S-MOPF
     results = transmission_network.optimize(tso_model)
@@ -1035,10 +1040,20 @@ def update_transmission_model_to_admm(transmission_network, model, initial_inter
             for dn in model[year][day].active_distribution_networks:
                 for p in model[year][day].periods:
                     model[year][day].expected_interface_vmag_sqr[dn, p].fixed = False
+                    model[year][day].expected_interface_vmag_sqr[dn, p].setub(None)
+                    model[year][day].expected_interface_vmag_sqr[dn, p].setlb(None)
                     model[year][day].expected_interface_pf_p[dn, p].fixed = False
+                    model[year][day].expected_interface_pf_p[dn, p].setub(None)
+                    model[year][day].expected_interface_pf_p[dn, p].setlb(None)
                     model[year][day].expected_interface_pf_q[dn, p].fixed = False
+                    model[year][day].expected_interface_pf_q[dn, p].setub(None)
+                    model[year][day].expected_interface_pf_q[dn, p].setlb(None)
                     model[year][day].expected_shared_ess_p[dn, p].fixed = False
+                    model[year][day].expected_shared_ess_p[dn, p].setub(None)
+                    model[year][day].expected_shared_ess_p[dn, p].setlb(None)
                     model[year][day].expected_shared_ess_q[dn, p].fixed = False
+                    model[year][day].expected_shared_ess_q[dn, p].setub(None)
+                    model[year][day].expected_shared_ess_q[dn, p].setlb(None)
 
             # Add ADMM variables
             model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
