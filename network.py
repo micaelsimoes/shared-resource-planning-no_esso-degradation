@@ -929,7 +929,7 @@ def _build_model(network, params):
                     for g in model.generators:
                         for p in model.periods:
                             pg_curt = model.pg_curt[g, s_m, s_o, p]
-                            obj_scenario += PENALTY_GENERATION_CURTAILMENT * pg_curt
+                            obj_scenario += PENALTY_GENERATION_CURTAILMENT * network.baseMVA * pg_curt
 
                 # Load curtailment
                 if params.l_curt:
@@ -937,7 +937,7 @@ def _build_model(network, params):
                         for p in model.periods:
                             pc_curt = (model.pc_curt_down[c, s_m, s_o, p] + model.pc_curt_up[c, s_m, s_o, p])
                             qc_curt = (model.qc_curt_down[c, s_m, s_o, p] + model.qc_curt_up[c, s_m, s_o, p])
-                            obj_scenario += PENALTY_LOAD_CURTAILMENT * (pc_curt + qc_curt)
+                            obj_scenario += PENALTY_LOAD_CURTAILMENT * network.baseMVA * (pc_curt + qc_curt)
 
                 obj += obj_scenario * omega_market * omega_oper
     else:
