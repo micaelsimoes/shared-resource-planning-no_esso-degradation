@@ -464,27 +464,27 @@ def _build_subproblem_model(shared_ess_data):
         for y_inv in model.years:
 
             # Slacks for investment fixing
-            slack_penalty += PENALTY_SLACK * (model.slack_es_s_investment_up[e, y_inv] + model.slack_es_s_investment_down[e, y_inv])
-            slack_penalty += PENALTY_SLACK * (model.slack_es_e_investment_up[e, y_inv] + model.es_e_investment_slack_down[e, y_inv])
+            slack_penalty += PENALTY_ESSO_SLACK * (model.slack_es_s_investment_up[e, y_inv] + model.slack_es_s_investment_down[e, y_inv])
+            slack_penalty += PENALTY_ESSO_SLACK * (model.slack_es_e_investment_up[e, y_inv] + model.es_e_investment_slack_down[e, y_inv])
 
             if shared_ess_data.params.slacks:
 
                 # Degradation
                 for y in model.years:
-                    slack_penalty += PENALTY_SLACK * (model.slack_es_soh_per_unit_up[e, y_inv, y] + model.slack_es_soh_per_unit_down[e, y_inv, y])
-                    slack_penalty += PENALTY_SLACK * (model.slack_es_soh_per_unit_cumul_up[e, y_inv, y] + model.slack_es_soh_per_unit_cumul_down[e, y_inv, y])
+                    slack_penalty += PENALTY_ESSO_SLACK * (model.slack_es_soh_per_unit_up[e, y_inv, y] + model.slack_es_soh_per_unit_down[e, y_inv, y])
+                    slack_penalty += PENALTY_ESSO_SLACK * (model.slack_es_soh_per_unit_cumul_up[e, y_inv, y] + model.slack_es_soh_per_unit_cumul_down[e, y_inv, y])
 
                 # Complementarity
                 for y in model.years:
                     for d in model.days:
                         for p in model.periods:
-                            slack_penalty += PENALTY_SLACK * (model.slack_es_ch_comp_per_unit[e, y_inv, y, d, p])
+                            slack_penalty += PENALTY_ESSO_SLACK * (model.slack_es_ch_comp_per_unit[e, y_inv, y, d, p])
 
                 # Expected power slacks
                 for d in model.days:
                     for p in model.periods:
-                        slack_penalty += PENALTY_SLACK * (model.slack_es_snet_up[e, y_inv, d, p] + model.slack_es_snet_down[e, y_inv, d, p])
-                        slack_penalty += PENALTY_SLACK * (model.slack_es_snet_def_up[e, y_inv, d, p] + model.slack_es_snet_def_down[e, y_inv, d, p])
+                        slack_penalty += PENALTY_ESSO_SLACK * (model.slack_es_snet_up[e, y_inv, d, p] + model.slack_es_snet_down[e, y_inv, d, p])
+                        slack_penalty += PENALTY_ESSO_SLACK * (model.slack_es_snet_def_up[e, y_inv, d, p] + model.slack_es_snet_def_down[e, y_inv, d, p])
 
     model.objective = pe.Objective(sense=pe.minimize, expr=slack_penalty)
 
