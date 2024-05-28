@@ -616,7 +616,7 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
                                 pc_curt = results[year][day]['scenarios'][s_m][s_o]['consumption']['pc_curt'][load_id][p]
                                 sheet.cell(row=row_idx, column=p + 8).value = pc_curt
                                 sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
-                                if pc_curt > SMALL_TOLERANCE:
+                                if pc_curt > SMALL_TOLERANCE or pc_curt < -SMALL_TOLERANCE:
                                     sheet.cell(row=row_idx, column=p + 8).fill = violation_fill
                                 expected_pc_curt[load_id][p] += pc_curt * omega_m * omega_s
                             row_idx = row_idx + 1
@@ -667,7 +667,7 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
                                 qc_curt = results[year][day]['scenarios'][s_m][s_o]['consumption']['qc_curt'][load_id][p]
                                 sheet.cell(row=row_idx, column=p + 8).value = qc_curt
                                 sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
-                                if qc_curt > SMALL_TOLERANCE:
+                                if qc_curt > SMALL_TOLERANCE or qc_curt < -SMALL_TOLERANCE:
                                     sheet.cell(row=row_idx, column=p + 8).fill = violation_fill
                                 expected_qc_curt[load_id][p] += qc_curt * omega_m * omega_s
                             row_idx = row_idx + 1
