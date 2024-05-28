@@ -1999,7 +1999,7 @@ def _compute_objective_function_value(network, model, params):
                     for g in model.generators:
                         for p in model.periods:
                             pg_curt = pe.value(model.pg_curt[g, s_m, s_o, p])
-                            obj_scenario += PENALTY_GENERATION_CURTAILMENT * pg_curt
+                            obj_scenario += PENALTY_GENERATION_CURTAILMENT * network.baseMVA * pg_curt
 
                 # Consumption curtailment
                 if params.l_curt:
@@ -2007,7 +2007,7 @@ def _compute_objective_function_value(network, model, params):
                         for p in model.periods:
                             pc_curt = pe.value(model.pc_curt_down[c, s_m, s_o, p] + model.pc_curt_up[c, s_m, s_o, p])
                             qc_curt = pe.value(model.qc_curt_down[c, s_m, s_o, p] + model.qc_curt_up[c, s_m, s_o, p])
-                            obj_scenario += PENALTY_LOAD_CURTAILMENT * (pc_curt + qc_curt)
+                            obj_scenario += PENALTY_LOAD_CURTAILMENT * network.baseMVA * (pc_curt + qc_curt)
 
                 obj += obj_scenario * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
 
