@@ -4,7 +4,7 @@
 	"es_reg": true,
 	"fl_reg": true,
 	"rg_curt": true,
-	"l_curt": false,
+	"l_curt": true,
 	"enforce_vg": false,
 	"relax_equalities": true,
 	"slacks": {
@@ -12,18 +12,18 @@
 			"day_balance": false
 		},
 		"ess": {
-				"complementarity": false,
+				"complementarity": true,
 				"charging": false,
 				"soc": false,
 				"day_balance": false
 		},
 		"shared_ess": {
-				"complementarity": false,
+				"complementarity": true,
 				"charging": false,
 				"soc": false,
 				"day_balance": false
 		},
-		"node_balance": true
+		"node_balance": false
 	},
 	"solver": {
 		"name": "ipopt",
