@@ -258,8 +258,8 @@ def _build_model(network, params):
                             model.f[i, s_m, s_o, p].fix(0.0)
                             model.slack_e_up[i, s_m, s_o, p].fix(0.0)
                             model.slack_e_down[i, s_m, s_o, p].fix(0.0)
-                            model.slack_f_up[i, s_m, s_o, p].fix(0.0)
-                            model.slack_f_down[i, s_m, s_o, p].fix(0.0)
+                        model.slack_f_up[i, s_m, s_o, p].fix(0.0)
+                        model.slack_f_down[i, s_m, s_o, p].fix(0.0)
                     else:
                         model.e[i, s_m, s_o, p].setlb(e_lb)
                         model.e[i, s_m, s_o, p].setub(e_ub)
