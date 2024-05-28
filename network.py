@@ -375,23 +375,19 @@ def _build_model(network, params):
                 for s_o in model.scenarios_operation:
                     for p in model.periods:
 
-                        pc_curt_down = 0.00
-                        pc_curt_up = 0.00
                         if load.pd[s_o][p] >= 0.00:
-                            pc_curt_down = load.pd[s_o][p]
+                            model.pc_curt_down[c, s_m, s_o, p].setub(load.pd[s_o][p] + SMALL_TOLERANCE)
+                            model.pc_curt_up[c, s_m, s_o, p].setub(SMALL_TOLERANCE)
                         else:
-                            pc_curt_up = abs(load.pd[s_o][p])
-                        model.pc_curt_down[c, s_m, s_o, p].setub(pc_curt_down)
-                        model.pc_curt_up[c, s_m, s_o, p].setub(pc_curt_up)
+                            model.pc_curt_up[c, s_m, s_o, p].setub(abs(load.pd[s_o][p]) + SMALL_TOLERANCE)
+                            model.pc_curt_down[c, s_m, s_o, p].setub(SMALL_TOLERANCE)
 
-                        qc_curt_down = 0.00
-                        qc_curt_up = 0.00
                         if load.qd[s_o][p] >= 0.00:
-                            qc_curt_down = load.qd[s_o][p]
+                            model.qc_curt_down[c, s_m, s_o, p].setub(load.qd[s_o][p] + SMALL_TOLERANCE)
+                            model.qc_curt_up[c, s_m, s_o, p].setub(SMALL_TOLERANCE)
                         else:
-                            qc_curt_up = abs(load.qd[s_o][p])
-                        model.qc_curt_down[c, s_m, s_o, p].setub(qc_curt_down)
-                        model.qc_curt_up[c, s_m, s_o, p].setub(qc_curt_up)
+                            model.qc_curt_up[c, s_m, s_o, p].setub(abs(load.qd[s_o][p]) + SMALL_TOLERANCE)
+                            model.qc_curt_down[c, s_m, s_o, p].setub(SMALL_TOLERANCE)
 
     # - Transformers
     model.r = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.0)
