@@ -1120,6 +1120,8 @@ def _read_network_from_json_file(network, filename):
             generator.gen_type = GEN_RES_SOLAR
         elif gen_type == 'WIND':
             generator.gen_type = GEN_RES_WIND
+        elif gen_type == 'CONN':
+            generator.gen_type = GEN_INTERCONNECTION
         elif gen_type == 'RES_OTHER':
             generator.gen_type = GEN_RES_OTHER
         elif gen_type == 'RES_CONTROLLABLE':
