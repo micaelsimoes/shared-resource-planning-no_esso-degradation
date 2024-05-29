@@ -47,8 +47,8 @@ class Slacks:
 class SlacksOperation:
 
     def __init__(self):
-        self.voltage = False
-        self.branch_flow = False
+        self.voltage = True
+        self.branch_flow = True
 
     def read_slacks_parameters(self, slacks_data):
         if 'grid_operation' in slacks_data:

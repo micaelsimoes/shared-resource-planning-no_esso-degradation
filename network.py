@@ -257,10 +257,12 @@ def _build_model(network, params):
                             vg = network.generators[ref_gen_idx].vg
                             model.e[i, s_m, s_o, p].fix(vg)
                             model.f[i, s_m, s_o, p].fix(0.0)
-                            model.slack_e_up[i, s_m, s_o, p].fix(0.0)
-                            model.slack_e_down[i, s_m, s_o, p].fix(0.0)
-                        model.slack_f_up[i, s_m, s_o, p].fix(0.0)
-                        model.slack_f_down[i, s_m, s_o, p].fix(0.0)
+                            if params.slacks.grid_operation.voltage:
+                                model.slack_e_up[i, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                model.slack_e_down[i, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                        if params.slacks.grid_operation.voltage:
+                            model.slack_f_up[i, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            model.slack_f_down[i, s_m, s_o, p].setub(SMALL_TOLERANCE)
                     else:
                         model.e[i, s_m, s_o, p].setlb(e_lb)
                         model.e[i, s_m, s_o, p].setub(e_ub)
@@ -346,14 +348,16 @@ def _build_model(network, params):
 
     # - Branch current (squared)
     model.iij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.slack_iij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    if params.slacks.grid_operation.branch_flow:
+        model.slack_iij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     for b in model.branches:
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
                 for p in model.periods:
                     if network.branches[b].status == 0:
                         model.iij_sqr[b, s_m, s_o, p].fix(0.0)
-                        model.slack_iij_sqr[b, s_m, s_o, p].fix(0.0)
+                        if params.slacks.grid_operation.branch_flow:
+                            model.slack_iij_sqr[b, s_m, s_o, p].fix(0.0)
 
     # - Loads
     model.pc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
@@ -519,8 +523,12 @@ def _build_model(network, params):
                 for p in model.periods:
 
                     # e_actual and f_actual definition
-                    e_actual = model.e[i, s_m, s_o, p] + model.slack_e_up[i, s_m, s_o, p] - model.slack_e_down[i, s_m, s_o, p]
-                    f_actual = model.f[i, s_m, s_o, p] + model.slack_f_up[i, s_m, s_o, p] - model.slack_f_down[i, s_m, s_o, p]
+                    e_actual = model.e[i, s_m, s_o, p]
+                    f_actual = model.f[i, s_m, s_o, p]
+                    if params.slacks.grid_operation.voltage:
+                        e_actual += model.slack_e_up[i, s_m, s_o, p] - model.slack_e_down[i, s_m, s_o, p]
+                        f_actual += model.slack_f_up[i, s_m, s_o, p] - model.slack_f_down[i, s_m, s_o, p]
+
                     if params.relax_equalities:
                         model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] <= e_actual + EQUALITY_TOLERANCE)
                         model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] >= e_actual - EQUALITY_TOLERANCE)
@@ -888,7 +896,12 @@ def _build_model(network, params):
                         model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] >= iij_sqr - EQUALITY_TOLERANCE)
                     else:
                         model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] == iij_sqr)
-                    model.branch_power_flow_lims.add(model.iij_sqr[b, s_m, s_o, p] - model.slack_iij_sqr[b, s_m, s_o, p] <= rating ** 2)
+
+                    # Branch flow limits
+                    if params.slacks.grid_operation.branch_flow:
+                        model.branch_power_flow_lims.add(model.iij_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_iij_sqr[b, s_m, s_o, p])
+                    else:
+                        model.branch_power_flow_lims.add(model.iij_sqr[b, s_m, s_o, p] <= rating ** 2)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective Function
@@ -961,22 +974,24 @@ def _build_model(network, params):
         print(f'[ERROR] Unrecognized or invalid objective. Objective = {params.obj_type}. Exiting...')
         exit(ERROR_NETWORK_MODEL)
 
-    # Slacks (voltage magnitude, branch current)
+    # Slacks grid operation
     for s_m in model.scenarios_market:
         for s_o in model.scenarios_operation:
 
             # Voltage slacks
-            for i in model.nodes:
-                for p in model.periods:
-                    slack_e = model.slack_e_up[i, s_m, s_o, p] + model.slack_e_down[i, s_m, s_o, p]
-                    slack_f = model.slack_f_up[i, s_m, s_o, p] + model.slack_f_down[i, s_m, s_o, p]
-                    obj += PENALTY_VOLTAGE * network.baseMVA * (slack_e + slack_f)
+            if params.slacks.grid_operation.voltage:
+                for i in model.nodes:
+                    for p in model.periods:
+                        slack_e = model.slack_e_up[i, s_m, s_o, p] + model.slack_e_down[i, s_m, s_o, p]
+                        slack_f = model.slack_f_up[i, s_m, s_o, p] + model.slack_f_down[i, s_m, s_o, p]
+                        obj += PENALTY_VOLTAGE * network.baseMVA * (slack_e + slack_f)
 
             # Branch power flow slacks
-            for b in model.branches:
-                for p in model.periods:
-                    slack_iij_sqr = model.slack_iij_sqr[b, s_m, s_o, p]
-                    obj += PENALTY_CURRENT * network.baseMVA * slack_iij_sqr
+            if params.slacks.grid_operation.branch_flow:
+                for b in model.branches:
+                    for p in model.periods:
+                        slack_iij_sqr = model.slack_iij_sqr[b, s_m, s_o, p]
+                        obj += PENALTY_CURRENT * network.baseMVA * slack_iij_sqr
 
     # Sensitivities' slacks
     '''
@@ -1552,43 +1567,55 @@ def _process_results(network, model, params, results=dict()):
 
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_up'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_down'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_up'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_down'] = dict()
+            if params.slacks.grid_operation.voltage:
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_up'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_down'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_up'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_down'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'] = dict()
+            if params.slacks.grid_operation.branch_flow:
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_up'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_down'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_up'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_down'] = dict()
+            if params.slacks.node_balance:
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_up'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_down'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_up'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_down'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sch_up'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sch_down'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sdch_up'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sdch_down'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_up'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_down'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final_up'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final_down'] = dict()
+            if params.slacks.shared_ess.complementarity:
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'] = dict()
+            if params.slacks.shared_ess.charging:
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sch_up'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sch_down'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sdch_up'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sdch_down'] = dict()
+            if params.slacks.shared_ess.soc:
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_up'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_down'] = dict()
+            if params.slacks.shared_ess.day_balance:
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final_up'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final_down'] = dict()
 
             if params.fl_reg:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_up'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_down'] = dict()
+                if params.slacks.flexibility.day_balance:
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_up'] = dict()
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_down'] = dict()
             if params.es_reg:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_up'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_down'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_up'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_down'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_up'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_down'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final_up'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final_down'] = dict()
+                if params.slacks.ess.complementarity:
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'] = dict()
+                if params.slacks.ess.charging:
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_up'] = dict()
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_down'] = dict()
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_up'] = dict()
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_down'] = dict()
+                if params.slacks.ess.soc:
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_up'] = dict()
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_down'] = dict()
+                if params.slacks.ess.day_balance:
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final_up'] = dict()
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final_down'] = dict()
 
             # Voltage
             for i in model.nodes:
