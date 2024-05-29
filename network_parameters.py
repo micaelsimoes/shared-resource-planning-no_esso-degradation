@@ -32,6 +32,7 @@ class NetworkParameters:
 class Slacks:
 
     def __init__(self):
+        self.grid_operation = SlacksOperation()
         self.flexibility = SlacksFlexibility()
         self.ess = SlacksEnergyStorage()
         self.shared_ess = SlacksEnergyStorage()
@@ -41,6 +42,20 @@ class Slacks:
         self.flexibility.read_slacks_parameters(slacks_data)
         self.ess.read_slacks_parameters(slacks_data)
         self.shared_ess.read_slacks_parameters(slacks_data)
+
+
+class SlacksOperation:
+
+    def __init__(self):
+        self.voltage = False
+        self.branch_flow = False
+
+    def read_slacks_parameters(self, slacks_data):
+        if 'grid_operation' in slacks_data:
+            if 'voltage' in slacks_data['grid_operation']:
+                self.voltage = slacks_data['grid_operation']['voltage']
+            if 'branch_flow' in slacks_data['grid_operation']:
+                self.branch_flow = slacks_data['grid_operation']['branch_flow']
 
 
 class SlacksFlexibility:
