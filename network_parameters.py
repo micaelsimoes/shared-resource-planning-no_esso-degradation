@@ -39,6 +39,7 @@ class Slacks:
         self.node_balance = False
 
     def read_slacks_parameters(self, slacks_data):
+        self.grid_operation.read_slacks_parameters(slacks_data)
         self.flexibility.read_slacks_parameters(slacks_data)
         self.ess.read_slacks_parameters(slacks_data)
         self.shared_ess.read_slacks_parameters(slacks_data)
@@ -47,8 +48,8 @@ class Slacks:
 class SlacksOperation:
 
     def __init__(self):
-        self.voltage = True
-        self.branch_flow = True
+        self.voltage = False
+        self.branch_flow = False
 
     def read_slacks_parameters(self, slacks_data):
         if 'grid_operation' in slacks_data:
