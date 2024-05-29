@@ -420,7 +420,7 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                     for s_o in tso_model[year][day].scenarios_operation:
                         for p in tso_model[year][day].periods:
 
-                            interface_vmag_sqr = (tso_model[year][day].e[adn_node_idx, s_m, s_o, p] ** 2) + (tso_model[year][day].f[adn_node_idx, s_m, s_o, p] ** 2)
+                            interface_vmag_sqr = (tso_model[year][day].e_actual[adn_node_idx, s_m, s_o, p] ** 2) + (tso_model[year][day].f_actual[adn_node_idx, s_m, s_o, p] ** 2)
                             interface_pf_p = tso_model[year][day].pc[adn_load_idx, s_m, s_o, p]
                             interface_pf_q = tso_model[year][day].qc[adn_load_idx, s_m, s_o, p]
 
