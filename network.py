@@ -1793,29 +1793,31 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['shared_energy_storages']['soc_percent'][node_id].append(soc_ess / capacity)
 
             # Voltage slacks
-            for i in model.nodes:
-                node_id = network.nodes[i].bus_i
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_up'][node_id] = []
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_down'][node_id] = []
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_up'][node_id] = []
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_down'][node_id] = []
-                for p in model.periods:
-                    slack_e_up = pe.value(model.slack_e_up[i, s_m, s_o, p])
-                    slack_e_down = pe.value(model.slack_e_down[i, s_m, s_o, p])
-                    slack_f_up = pe.value(model.slack_f_up[i, s_m, s_o, p])
-                    slack_f_down = pe.value(model.slack_f_down[i, s_m, s_o, p])
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_up'][node_id].append(slack_e_up)
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_down'][node_id].append(slack_e_down)
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_up'][node_id].append(slack_f_up)
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_down'][node_id].append(slack_f_down)
+            if params.slacks.grid_operation.voltage:
+                for i in model.nodes:
+                    node_id = network.nodes[i].bus_i
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_up'][node_id] = []
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_down'][node_id] = []
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_up'][node_id] = []
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_down'][node_id] = []
+                    for p in model.periods:
+                        slack_e_up = pe.value(model.slack_e_up[i, s_m, s_o, p])
+                        slack_e_down = pe.value(model.slack_e_down[i, s_m, s_o, p])
+                        slack_f_up = pe.value(model.slack_f_up[i, s_m, s_o, p])
+                        slack_f_down = pe.value(model.slack_f_down[i, s_m, s_o, p])
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_up'][node_id].append(slack_e_up)
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_down'][node_id].append(slack_e_down)
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_up'][node_id].append(slack_f_up)
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_down'][node_id].append(slack_f_down)
 
             # Branch current slacks
-            for b in model.branches:
-                branch_id = network.branches[b].branch_id
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][branch_id] = []
-                for p in model.periods:
-                    slack_iij_sqr = pe.value(model.slack_iij_sqr[b, s_m, s_o, p])
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][branch_id].append(slack_iij_sqr)
+            if params.slacks.grid_operation.branch_flow:
+                for b in model.branches:
+                    branch_id = network.branches[b].branch_id
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][branch_id] = []
+                    for p in model.periods:
+                        slack_iij_sqr = pe.value(model.slack_iij_sqr[b, s_m, s_o, p])
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][branch_id].append(slack_iij_sqr)
 
             # Slacks
             # - Shared ESS
