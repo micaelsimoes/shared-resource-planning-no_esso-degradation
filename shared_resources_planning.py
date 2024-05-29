@@ -279,9 +279,10 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
 
         # 2.3 STOPPING CRITERIA evaluation
-        convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
-        if convergence:
-            break
+        if iter > 1:
+            convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
+            if convergence:
+                break
 
         # --------------------------------------------------------------------------------------------------------------
         # 4. Solve ESSO problem
@@ -298,9 +299,10 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
 
         # 4.3 STOPPING CRITERIA evaluation
-        convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
-        if convergence:
-            break
+        if iter > 1:
+            convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
+            if convergence:
+                break
 
         # --------------------------------------------------------------------------------------------------------------
         # 3. Solve DSOs problems
@@ -319,9 +321,10 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
 
         # 3.3 STOPPING CRITERIA evaluation
-        convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
-        if convergence:
-            break
+        if iter > 1:
+            convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
+            if convergence:
+                break
 
         # --------------------------------------------------------------------------------------------------------------
         # 4. Solve ESSO problem
@@ -338,9 +341,10 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
 
         # 4.3 STOPPING CRITERIA evaluation
-        convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
-        if convergence:
-            break
+        if iter > 1:
+            convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
+            if convergence:
+                break
 
         if debug_flag:
             for node_id in planning_problem.active_distribution_network_nodes:
@@ -387,6 +391,8 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
     for year in transmission_network.years:
         for day in transmission_network.days:
 
+            s_base = transmission_network.network[year][day].baseMVA
+
             # Add expected interface values
             tso_model[year][day].active_distribution_networks = range(len(transmission_network.active_distribution_network_nodes))
             tso_model[year][day].expected_interface_vmag_sqr = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=0.00)
@@ -425,14 +431,14 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                             interface_pf_q = tso_model[year][day].qc[adn_load_idx, s_m, s_o, p]
 
                             obj += PENALTY_INTERFACE_VMAG * (tso_model[year][day].expected_interface_vmag_sqr[dn, p] - interface_vmag_sqr) ** 2
-                            obj += PENALTY_INTERFACE_PF * (tso_model[year][day].expected_interface_pf_p[dn, p] - interface_pf_p) ** 2
-                            obj += PENALTY_INTERFACE_PF * (tso_model[year][day].expected_interface_pf_q[dn, p] - interface_pf_q) ** 2
+                            obj += PENALTY_INTERFACE_PF * s_base * (tso_model[year][day].expected_interface_pf_p[dn, p] - interface_pf_p) ** 2
+                            obj += PENALTY_INTERFACE_PF * s_base * (tso_model[year][day].expected_interface_pf_q[dn, p] - interface_pf_q) ** 2
 
                             interface_ess_p = tso_model[year][day].shared_es_pch[shared_ess_idx, s_m, s_o, p] - tso_model[year][day].shared_es_pdch[shared_ess_idx, s_m, s_o, p]
                             interface_ess_q = tso_model[year][day].shared_es_qch[shared_ess_idx, s_m, s_o, p] - tso_model[year][day].shared_es_qdch[shared_ess_idx, s_m, s_o, p]
 
-                            obj += PENALTY_INTERFACE_ESS * (tso_model[year][day].expected_shared_ess_p[dn, p] - interface_ess_p) ** 2
-                            obj += PENALTY_INTERFACE_ESS * (tso_model[year][day].expected_shared_ess_q[dn, p] - interface_ess_q) ** 2
+                            obj += PENALTY_INTERFACE_ESS * s_base * (tso_model[year][day].expected_shared_ess_p[dn, p] - interface_ess_p) ** 2
+                            obj += PENALTY_INTERFACE_ESS * s_base * (tso_model[year][day].expected_shared_ess_q[dn, p] - interface_ess_q) ** 2
 
             tso_model[year][day].objective.expr = obj
 
@@ -514,6 +520,7 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
         for year in distribution_network.years:
             for day in distribution_network.days:
 
+                s_base = distribution_network.network[year][day].baseMVA
                 ref_node_id = distribution_network.network[year][day].get_reference_node_id()
                 ref_node_idx = distribution_network.network[year][day].get_node_idx(ref_node_id)
                 ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
@@ -535,14 +542,16 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
                             vmag_sqr = dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2
                             interface_pf_p = dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p]
                             interface_pf_q = dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p]
+
                             obj += PENALTY_INTERFACE_VMAG * (dso_model[year][day].expected_interface_vmag_sqr[p] - vmag_sqr) ** 2
-                            obj += PENALTY_INTERFACE_PF * (dso_model[year][day].expected_interface_pf_p[p] - interface_pf_p) ** 2
-                            obj += PENALTY_INTERFACE_PF * (dso_model[year][day].expected_interface_pf_q[p] - interface_pf_q) ** 2
+                            obj += PENALTY_INTERFACE_PF * s_base * (dso_model[year][day].expected_interface_pf_p[p] - interface_pf_p) ** 2
+                            obj += PENALTY_INTERFACE_PF * s_base * (dso_model[year][day].expected_interface_pf_q[p] - interface_pf_q) ** 2
 
                             interface_ess_p = dso_model[year][day].shared_es_pch[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].shared_es_pdch[shared_ess_idx, s_m, s_o, p]
                             interface_ess_q = dso_model[year][day].shared_es_qch[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].shared_es_qdch[shared_ess_idx, s_m, s_o, p]
-                            obj += PENALTY_INTERFACE_ESS * (dso_model[year][day].expected_shared_ess_p[p] - interface_ess_p) ** 2
-                            obj += PENALTY_INTERFACE_ESS * (dso_model[year][day].expected_shared_ess_q[p] - interface_ess_q) ** 2
+
+                            obj += PENALTY_INTERFACE_ESS * s_base * (dso_model[year][day].expected_shared_ess_p[p] - interface_ess_p) ** 2
+                            obj += PENALTY_INTERFACE_ESS * s_base * (dso_model[year][day].expected_shared_ess_q[p] - interface_ess_q) ** 2
 
                 dso_model[year][day].objective.expr = obj
 
@@ -1433,6 +1442,7 @@ def _run_operational_planning_without_coordination(planning_problem):
     results = {'tso': dict(), 'dso': dict(), 'esso': dict()}
 
     # Do not consider flexible resources
+    '''
     transmission_network.params.fl_reg = False
     transmission_network.params.es_reg = True
     transmission_network.params.transf_reg = True
@@ -1447,6 +1457,7 @@ def _run_operational_planning_without_coordination(planning_problem):
         distribution_network.params.rg_curt = True
         distribution_network.params.l_curt = True
         distribution_network.params.slacks = True
+    '''
 
     # Shared ESS candidate solution (no shared ESS)
     candidate_solution = dict()
