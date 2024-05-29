@@ -2137,6 +2137,7 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
 
     # Renewable Generation Curtailed
     if network.params.rg_curt:
+
         line_idx += 1
         col_idx = 1
         sheet.cell(row=line_idx, column=col_idx).value = operator_type
@@ -2147,7 +2148,21 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
         col_idx += 1
         for year in results:
             for day in results[year]:
-                sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['gen_curt']
+                sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['gen_curt']['p']
+                sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+                col_idx += 1
+
+        line_idx += 1
+        col_idx = 1
+        sheet.cell(row=line_idx, column=col_idx).value = operator_type
+        col_idx += 1
+        sheet.cell(row=line_idx, column=col_idx).value = tn_node_id
+        col_idx += 1
+        sheet.cell(row=line_idx, column=col_idx).value = 'Renewable generation curtailed, [MVArh]'
+        col_idx += 1
+        for year in results:
+            for day in results[year]:
+                sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['gen_curt']['q']
                 sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
                 col_idx += 1
 
