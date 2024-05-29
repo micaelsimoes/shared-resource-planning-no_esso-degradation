@@ -302,21 +302,40 @@ def _build_model(network, params):
                         model.pg[g, s_m, s_o, p].fix(init_pg)
                         model.qg[g, s_m, s_o, p].fix(init_qg)
     if params.rg_curt:
-        model.pg_curt = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.pg_curt_down = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.pg_curt_up = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.qg_curt_down = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.qg_curt_up = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         for g in model.generators:
             gen = network.generators[g]
             for s_m in model.scenarios_market:
                 for s_o in model.scenarios_operation:
                     for p in model.periods:
                         if gen.is_controllable():
-                            model.pg_curt[g, s_m, s_o, p].fix(0.0)
+                            model.pg_curt_down[g, s_m, s_o, p].fix(0.0)
+                            model.pg_curt_up[g, s_m, s_o, p].fix(0.0)
+                            model.qg_curt_down[g, s_m, s_o, p].fix(0.0)
+                            model.qg_curt_up[g, s_m, s_o, p].fix(0.0)
                         else:
                             if gen.is_curtaillable():
                                 # - Renewable Generation
                                 init_pg = 0.0
+                                init_qg = 0.0
                                 if gen.status[p] == 1:
-                                    init_pg = max(gen.pg[s_o][p], 0.0)
-                                model.pg_curt[g, s_m, s_o, p].setub(init_pg)
+                                    init_pg = gen.pg[s_o][p]
+                                    init_qg = gen.qg[s_o][p]
+                                if init_pg >= 0.00:
+                                    model.pg_curt_down[g, s_m, s_o, p].setub(init_pg + SMALL_TOLERANCE)
+                                    model.pg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                else:
+                                    model.pg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                    model.pg_curt_up[g, s_m, s_o, p].setub(abs(init_pg) + SMALL_TOLERANCE)
+                                if init_qg >= 0.00:
+                                    model.qg_curt_down[g, s_m, s_o, p].setub(init_qg + SMALL_TOLERANCE)
+                                    model.qg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                else:
+                                    model.qg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                    model.qg_curt_up[g, s_m, s_o, p].setub(abs(init_qg) + SMALL_TOLERANCE)
                             else:
                                 # - Generator is not curtaillable (conventional RES, ref gen, etc.)
                                 model.pg_curt[g, s_m, s_o, p].fix(0.0)
@@ -328,7 +347,7 @@ def _build_model(network, params):
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
                 for p in model.periods:
-                    if not network.branches[b].status == 1:
+                    if network.branches[b].status == 0:
                         model.iij_sqr[b, s_m, s_o, p].fix(0.0)
                         model.slack_iij_sqr[b, s_m, s_o, p].fix(0.0)
 
@@ -455,10 +474,6 @@ def _build_model(network, params):
     model.shared_es_e_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)
     model.shared_es_s_rated_fixed = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)          # Benders' -- used to get the dual variables (sensitivities)
     model.shared_es_e_rated_fixed = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)          # (...)
-    model.shared_es_s_slack_up = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)             # Benders' -- ensures feasibility of the subproblem
-    model.shared_es_s_slack_down = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)           # (...)
-    model.shared_es_e_slack_up = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)
-    model.shared_es_e_slack_down = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)
     model.shared_es_soc = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     model.shared_es_sch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.shared_es_pch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -782,9 +797,10 @@ def _build_model(network, params):
                         generator = network.generators[g]
                         if generator.bus == node.bus_i:
                             Pg += model.pg[g, s_m, s_o, p]
-                            if params.rg_curt:
-                                Pg -= model.pg_curt[g, s_m, s_o, p]
                             Qg += model.qg[g, s_m, s_o, p]
+                            if params.rg_curt:
+                                Pg -= (model.pg_curt_down[g, s_m, s_o, p] - model.pg_curt_up[g, s_m, s_o, p])
+                                Qg -= (model.qg_curt_down[g, s_m, s_o, p] - model.qg_curt_up[g, s_m, s_o, p])
 
                     ei = model.e_actual[i, s_m, s_o, p]
                     fi = model.f_actual[i, s_m, s_o, p]
@@ -924,8 +940,9 @@ def _build_model(network, params):
                 if params.rg_curt:
                     for g in model.generators:
                         for p in model.periods:
-                            pg_curt = model.pg_curt[g, s_m, s_o, p]
-                            obj_scenario += PENALTY_GENERATION_CURTAILMENT * network.baseMVA * pg_curt
+                            pg_curt = model.pg_curt_down[g, s_m, s_o, p] + model.pg_curt_up[g, s_m, s_o, p]
+                            qg_curt = model.qg_curt_down[g, s_m, s_o, p] + model.qg_curt_up[g, s_m, s_o, p]
+                            obj_scenario += PENALTY_GENERATION_CURTAILMENT * network.baseMVA * (pg_curt + qg_curt)
 
                 # Load curtailment
                 if params.l_curt:
@@ -2000,8 +2017,9 @@ def _compute_objective_function_value(network, model, params):
                 if params.rg_curt:
                     for g in model.generators:
                         for p in model.periods:
-                            pg_curt = pe.value(model.pg_curt[g, s_m, s_o, p])
-                            obj_scenario += PENALTY_GENERATION_CURTAILMENT * network.baseMVA * pg_curt
+                            pg_curt = pe.value(model.pg_curt_down[g, s_m, s_o, p] + model.pg_curt_up[g, s_m, s_o, p])
+                            qg_curt = pe.value(model.qg_curt_down[g, s_m, s_o, p] + model.qg_curt_up[g, s_m, s_o, p])
+                            obj_scenario += PENALTY_GENERATION_CURTAILMENT * network.baseMVA * (pg_curt + qg_curt)
 
                 # Consumption curtailment
                 if params.l_curt:
@@ -2070,7 +2088,8 @@ def _compute_total_generation(network, model, params):
                     total_gen_scenario['p'] += network.baseMVA * pe.value(model.pg[g, s_m, s_o, p])
                     total_gen_scenario['q'] += network.baseMVA * pe.value(model.qg[g, s_m, s_o, p])
                     if params.rg_curt:
-                        total_gen_scenario['p'] -= network.baseMVA * pe.value(model.pg_curt[g, s_m, s_o, p])
+                        total_gen_scenario['p'] -= network.baseMVA * pe.value(model.pg_curt_down[g, s_m, s_o, p] + model.pg_curt_up[g, s_m, s_o, p])
+                        total_gen_scenario['q'] -= network.baseMVA * pe.value(model.qg_curt_down[g, s_m, s_o, p] + model.qg_curt_up[g, s_m, s_o, p])
 
             total_gen['p'] += total_gen_scenario['p'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
             total_gen['q'] += total_gen_scenario['q'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
