@@ -849,12 +849,16 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
             expected_pg_curt = dict()
             expected_pg_net = dict()
             expected_qg = dict()
+            expected_qg_curt = dict()
+            expected_qg_net = dict()
 
             for generator in network.generators:
                 expected_pg[generator.gen_id] = [0.0 for _ in range(network.num_instants)]
                 expected_pg_curt[generator.gen_id] = [0.0 for _ in range(network.num_instants)]
                 expected_pg_net[generator.gen_id] = [0.0 for _ in range(network.num_instants)]
                 expected_qg[generator.gen_id] = [0.0 for _ in range(network.num_instants)]
+                expected_qg_curt[generator.gen_id] = [0.0 for _ in range(network.num_instants)]
+                expected_qg_net[generator.gen_id] = [0.0 for _ in range(network.num_instants)]
 
             for s_m in results[year][day]['scenarios']:
                 omega_m = network.prob_market_scenarios[s_m]
