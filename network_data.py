@@ -176,7 +176,6 @@ def _write_optimization_results_to_excel(network_planning, data_dir, processed_r
     _write_network_branch_power_flow_results_to_excel(network_planning, wb, processed_results['results'])
     if network_planning.params.es_reg:
         _write_network_energy_storage_results_to_excel(network_planning, wb, processed_results['results'])
-    _write_relaxation_slacks_investment_results_to_excel(network_planning, wb, processed_results['results'])
     _write_relaxation_slacks_scenarios_results_to_excel(network_planning, wb, processed_results['results'])
 
     results_filename = os.path.join(data_dir, f'{network_planning.name}_results.xlsx')
@@ -1965,68 +1964,6 @@ def _write_shared_network_energy_storage_results_to_excel(network_planning, work
                 for p in range(network.num_instants):
                     sheet.cell(row=row_idx, column=p + 7).value = expected_soc_perc[node_id][p]
                     sheet.cell(row=row_idx, column=p + 7).number_format = perc_style
-                row_idx = row_idx + 1
-
-
-def _write_relaxation_slacks_investment_results_to_excel(network_planning, workbook, results):
-
-    sheet = workbook.create_sheet('Relaxation Slacks, Investment')
-
-    row_idx = 1
-    decimal_style = '0.00'
-
-    # Write Header
-    sheet.cell(row=row_idx, column=1).value = 'Node ID'
-    sheet.cell(row=row_idx, column=2).value = 'Year'
-    sheet.cell(row=row_idx, column=3).value = 'Day'
-    sheet.cell(row=row_idx, column=4).value = 'Quantity'
-    sheet.cell(row=row_idx, column=5).value = 'Value'
-    row_idx = row_idx + 1
-
-    for year in results:
-        for day in results[year]:
-
-            network = network_planning.network[year][day]
-
-            # Shared ESS slacks
-            for shared_energy_storage in network.shared_energy_storages:
-
-                node_id = shared_energy_storage.bus
-
-                s_up = results[year][day]['relaxation_slacks']['investment']['shared_ess']['s_up'][node_id]
-                sheet.cell(row=row_idx, column=1).value = node_id
-                sheet.cell(row=row_idx, column=2).value = int(year)
-                sheet.cell(row=row_idx, column=3).value = day
-                sheet.cell(row=row_idx, column=4).value = 'Shared ESS, s_up'
-                sheet.cell(row=row_idx, column=5).value = s_up
-                sheet.cell(row=row_idx, column=5).number_format = decimal_style
-                row_idx = row_idx + 1
-
-                s_down = results[year][day]['relaxation_slacks']['investment']['shared_ess']['s_down'][node_id]
-                sheet.cell(row=row_idx, column=1).value = node_id
-                sheet.cell(row=row_idx, column=2).value = int(year)
-                sheet.cell(row=row_idx, column=3).value = day
-                sheet.cell(row=row_idx, column=4).value = 'Shared ESS, s_down'
-                sheet.cell(row=row_idx, column=5).value = s_down
-                sheet.cell(row=row_idx, column=5).number_format = decimal_style
-                row_idx = row_idx + 1
-
-                e_up = results[year][day]['relaxation_slacks']['investment']['shared_ess']['e_up'][node_id]
-                sheet.cell(row=row_idx, column=1).value = node_id
-                sheet.cell(row=row_idx, column=2).value = int(year)
-                sheet.cell(row=row_idx, column=3).value = day
-                sheet.cell(row=row_idx, column=4).value = 'Shared ESS, e_up'
-                sheet.cell(row=row_idx, column=5).value = e_up
-                sheet.cell(row=row_idx, column=5).number_format = decimal_style
-                row_idx = row_idx + 1
-
-                e_down = results[year][day]['relaxation_slacks']['investment']['shared_ess']['e_down'][node_id]
-                sheet.cell(row=row_idx, column=1).value = node_id
-                sheet.cell(row=row_idx, column=2).value = int(year)
-                sheet.cell(row=row_idx, column=3).value = day
-                sheet.cell(row=row_idx, column=4).value = 'Shared ESS, e_down'
-                sheet.cell(row=row_idx, column=5).value = e_down
-                sheet.cell(row=row_idx, column=5).number_format = decimal_style
                 row_idx = row_idx + 1
 
 

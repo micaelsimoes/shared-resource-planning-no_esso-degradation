@@ -766,9 +766,6 @@ def _build_model(network, params):
                     else:
                         model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final)
 
-        #model.shared_energy_storage_s_sensitivities.add(model.shared_es_s_rated[e] == model.shared_es_s_rated_fixed[e] + model.shared_es_s_slack_up[e] - model.shared_es_s_slack_down[e])
-        #model.shared_energy_storage_e_sensitivities.add(model.shared_es_e_rated[e] == model.shared_es_e_rated_fixed[e] + model.shared_es_e_slack_up[e] - model.shared_es_e_slack_down[e])
-
         model.shared_energy_storage_s_sensitivities.add(model.shared_es_s_rated[e] <= model.shared_es_s_rated_fixed[e])
         model.shared_energy_storage_e_sensitivities.add(model.shared_es_e_rated[e] <= model.shared_es_e_rated_fixed[e])
 
@@ -992,14 +989,6 @@ def _build_model(network, params):
                     for p in model.periods:
                         slack_iij_sqr = model.slack_iij_sqr[b, s_m, s_o, p]
                         obj += PENALTY_CURRENT * network.baseMVA * slack_iij_sqr
-
-    # Sensitivities' slacks
-    '''
-    for e in model.shared_energy_storages:
-        slack_s = model.shared_es_s_slack_up[e] + model.shared_es_s_slack_down[e]
-        slack_e = model.shared_es_e_slack_up[e] + model.shared_es_e_slack_down[e]
-        obj += PENALTY_SHARED_ESS * network.num_instants * len(network.prob_market_scenarios) * len(network.prob_operation_scenarios)  * network.baseMVA * (slack_s + slack_e)
-    '''
 
     # Operation slacks
     for s_m in model.scenarios_market:
@@ -1930,29 +1919,6 @@ def _process_results(network, model, params, results=dict()):
                         slack_soc_final_down = pe.value(model.slack_es_soc_final_down[e, s_m, s_o]) * s_base
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final_up'][es_id][network.num_instants-1] = slack_soc_final_up
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final_down'][es_id][network.num_instants-1] = slack_soc_final_down
-
-    # Relaxation slacks
-    processed_results['relaxation_slacks'] = dict()
-
-    # - Relaxation slacks (investment)
-    processed_results['relaxation_slacks']['investment'] = dict()
-    processed_results['relaxation_slacks']['investment']['shared_ess'] = dict()
-    processed_results['relaxation_slacks']['investment']['shared_ess']['s_up'] = dict()
-    processed_results['relaxation_slacks']['investment']['shared_ess']['s_down'] = dict()
-    processed_results['relaxation_slacks']['investment']['shared_ess']['e_up'] = dict()
-    processed_results['relaxation_slacks']['investment']['shared_ess']['e_down'] = dict()
-
-    # -Shared ESS slacks
-    for e in model.shared_energy_storages:
-        node_id = network.shared_energy_storages[e].bus
-        s_up = pe.value(model.shared_es_s_slack_up[e]) * s_base
-        s_down = pe.value(model.shared_es_s_slack_down[e]) * s_base
-        e_up = pe.value(model.shared_es_e_slack_up[e]) * s_base
-        e_down = pe.value(model.shared_es_e_slack_down[e]) * s_base
-        processed_results['relaxation_slacks']['investment']['shared_ess']['s_up'][node_id] = s_up
-        processed_results['relaxation_slacks']['investment']['shared_ess']['s_down'][node_id] = s_down
-        processed_results['relaxation_slacks']['investment']['shared_ess']['e_up'][node_id] = e_up
-        processed_results['relaxation_slacks']['investment']['shared_ess']['e_down'][node_id] = e_down
 
     return processed_results
 
