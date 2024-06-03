@@ -78,7 +78,7 @@ def shared_resources_planning(working_directory, specification_filename):
     print(sensitivities)
     '''
 
-    candidate_solution = planning_problem.get_initial_candidate_solution()
+    #candidate_solution = planning_problem.get_initial_candidate_solution()
     distribution_networks = planning_problem.distribution_networks
     for node_id in distribution_networks:
         distribution_network = distribution_networks[node_id]
