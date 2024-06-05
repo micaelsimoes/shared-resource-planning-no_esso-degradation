@@ -1994,7 +1994,7 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
     col_idx += 1
     for year in results:
         for day in results[year]:
-            sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['load_curt']['p']
+            sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['total_load']['p']
             sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
             col_idx += 1
 
@@ -2008,7 +2008,7 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
     col_idx += 1
     for year in results:
         for day in results[year]:
-            sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['load_curt']['q']
+            sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['total_load']['q']
             sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
             col_idx += 1
 
