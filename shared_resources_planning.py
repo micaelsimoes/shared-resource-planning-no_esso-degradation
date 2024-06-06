@@ -578,9 +578,9 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
                 shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
 
                 # Add interface expectation variables
-                dso_model[year][day].expected_interface_vmag_sqr = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=0.00)
-                dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
-                dso_model[year][day].expected_interface_pf_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
+                dso_model[year][day].expected_interface_vmag_sqr = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)
+                dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals)
+                dso_model[year][day].expected_interface_pf_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals)
                 dso_model[year][day].expected_interface_cons = pe.ConstraintList()
                 for p in dso_model[year][day].periods:
 
@@ -595,11 +595,9 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
                             expected_pf_p += omega_market * omega_oper * dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p]
                             expected_pf_q += omega_market * omega_oper * dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p]
 
-                    dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_vmag_sqr[p] == expected_vmag_sqr + SMALL_TOLERANCE)
-                    #dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_p[p] <= expected_pf_p + EQUALITY_TOLERANCE)
-                    #dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_p[p] >= expected_pf_p - EQUALITY_TOLERANCE)
-                    #dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_q[p] >= expected_pf_q + EQUALITY_TOLERANCE)
-                    #dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_q[p] <= expected_pf_q - EQUALITY_TOLERANCE)
+                    dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_vmag_sqr[p] == expected_vmag_sqr)
+                    dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_p[p] == expected_pf_p)
+                    #dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_q[p] == expected_pf_q)
 
                 '''
                 # Add expected shared ESS values
