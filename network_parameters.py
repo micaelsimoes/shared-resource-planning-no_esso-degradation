@@ -36,6 +36,7 @@ class Slacks:
         self.flexibility = SlacksFlexibility()
         self.ess = SlacksEnergyStorage()
         self.shared_ess = SlacksEnergyStorage()
+        self.expected_values = SlacksExpectedValues()
         self.node_balance = False
 
     def read_slacks_parameters(self, slacks_data):
@@ -43,6 +44,7 @@ class Slacks:
         self.flexibility.read_slacks_parameters(slacks_data)
         self.ess.read_slacks_parameters(slacks_data)
         self.shared_ess.read_slacks_parameters(slacks_data)
+        self.expected_values.read_slacks_parameters(slacks_data)
 
 
 class SlacksOperation:
@@ -83,6 +85,44 @@ class SlacksEnergyStorage:
             _read_ess_slacks_parameters(self, slacks_data['ess'])
         elif 'shared_ess' in slacks_data:
             _read_ess_slacks_parameters(self, slacks_data['shared_ess'])
+
+
+class SlacksExpectedValues:
+
+    def __init__(self):
+        self.interface = SlacksExpectedValuesInterface()
+        self.shared_ess = SlacksExpectedValuesSharedESS()
+
+    def read_slacks_parameters(self, slacks_data):
+        if 'expected_values' in slacks_data:
+            if 'interface' in slacks_data['expected_values']:
+                self.interface.read_slacks_parameters(slacks_data['expected_values']['interface'])
+            if 'shared_ess' in slacks_data['expected_values']:
+                self.shared_ess.read_slacks_parameters(slacks_data['expected_values']['shared_ess'])
+
+
+class SlacksExpectedValuesInterface:
+
+    def __init__(self):
+        self.vmag = False
+        self.p = False
+        self.q = False
+
+    def read_slacks_parameters(self, slacks_data):
+        self.vmag = slacks_data['v_mag']
+        self.p = slacks_data['p']
+        self.q = slacks_data['q']
+
+
+class SlacksExpectedValuesSharedESS:
+
+    def __init__(self):
+        self.p = False
+        self.q = False
+
+    def read_slacks_parameters(self, slacks_data):
+        self.p = slacks_data['p']
+        self.q = slacks_data['q']
 
 
 # ======================================================================================================================
