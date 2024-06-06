@@ -564,6 +564,14 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
                 dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals)
                 dso_model[year][day].expected_interface_pf_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals)
                 dso_model[year][day].expected_interface_cons = pe.ConstraintList()
+                if distribution_network.params.slacks.expected_values.interface:
+                    dso_model[year][day].slack_expected_interface_vmag_sqr_up = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)
+                    dso_model[year][day].slack_expected_interface_vmag_sqr_down = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)
+                    dso_model[year][day].slack_expected_interface_pf_p_up = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)
+                    dso_model[year][day].slack_expected_interface_pf_p_down = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)
+                    dso_model[year][day].slack_expected_interface_pf_q_up = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)
+                    dso_model[year][day].slack_expected_interface_pf_q_down = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)
+
                 for p in dso_model[year][day].periods:
 
                     expected_vmag_sqr = 0.00
@@ -577,14 +585,36 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
                             expected_pf_p += omega_market * omega_oper * dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p]
                             expected_pf_q += omega_market * omega_oper * dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p]
 
-                    dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_vmag_sqr[p] == expected_vmag_sqr)
-                    dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_p[p] == expected_pf_p)
-                    dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_q[p] == expected_pf_q)
+                    if distribution_network.params.slacks.expected_values.interface:
+                        dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_vmag_sqr[p] <= expected_vmag_sqr + dso_model[year][day].slack_expected_interface_vmag_sqr_up[p] - dso_model[year][day].slack_expected_interface_vmag_sqr_down[p] + EQUALITY_TOLERANCE)
+                        dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_vmag_sqr[p] >= expected_vmag_sqr + dso_model[year][day].slack_expected_interface_vmag_sqr_up[p] - dso_model[year][day].slack_expected_interface_vmag_sqr_down[p] - EQUALITY_TOLERANCE)
+                        dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_p[p] <= expected_pf_p + dso_model[year][day].slack_expected_interface_pf_p_up[p] - dso_model[year][day].slack_expected_interface_pf_p_down[p] + EQUALITY_TOLERANCE)
+                        dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_p[p] >= expected_pf_p + dso_model[year][day].slack_expected_interface_pf_p_up[p] - dso_model[year][day].slack_expected_interface_pf_p_down[p] - EQUALITY_TOLERANCE)
+                        dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_q[p] <= expected_pf_q + dso_model[year][day].slack_expected_interface_pf_q_up[p] - dso_model[year][day].slack_expected_interface_pf_q_down[p] + EQUALITY_TOLERANCE)
+                        dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_q[p] >= expected_pf_q + dso_model[year][day].slack_expected_interface_pf_q_up[p] - dso_model[year][day].slack_expected_interface_pf_q_down[p] - EQUALITY_TOLERANCE)
+                    else:
+                        if distribution_network.params.relax_equalities:
+                            dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_vmag_sqr[p] <= expected_vmag_sqr + EQUALITY_TOLERANCE)
+                            dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_vmag_sqr[p] >= expected_vmag_sqr - EQUALITY_TOLERANCE)
+                            dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_p[p] <= expected_pf_p + EQUALITY_TOLERANCE)
+                            dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_p[p] >= expected_pf_p - EQUALITY_TOLERANCE)
+                            dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_q[p] <= expected_pf_q + EQUALITY_TOLERANCE)
+                            dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_q[p] >= expected_pf_q - EQUALITY_TOLERANCE)
+                        else:
+                            dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_vmag_sqr[p] == expected_vmag_sqr)
+                            dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_p[p] == expected_pf_p)
+                            dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_q[p] == expected_pf_q)
 
                 # Add expected shared ESS values
                 dso_model[year][day].expected_shared_ess_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals)
                 dso_model[year][day].expected_shared_ess_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals)
                 dso_model[year][day].expected_shared_ess_cons = pe.ConstraintList()
+                if distribution_network.params.slacks.expected_values.shared_ess:
+                    dso_model[year][day].slack_expected_shared_ess_p_up = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)
+                    dso_model[year][day].slack_expected_shared_ess_p_down = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)
+                    dso_model[year][day].slack_expected_shared_ess_q_up = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)
+                    dso_model[year][day].slack_expected_shared_ess_q_down = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)
+
                 for p in dso_model[year][day].periods:
                     expected_sess_p = 0.00
                     expected_sess_q = 0.00
@@ -594,8 +624,35 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
                             omega_oper = distribution_network.network[year][day].prob_operation_scenarios[s_o]
                             expected_sess_p += omega_market * omega_oper * (dso_model[year][day].shared_es_pch[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].shared_es_pdch[shared_ess_idx, s_m, s_o, p])
                             expected_sess_q += omega_market * omega_oper * (dso_model[year][day].shared_es_qch[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].shared_es_qdch[shared_ess_idx, s_m, s_o, p])
-                    dso_model[year][day].expected_shared_ess_cons.add(dso_model[year][day].expected_shared_ess_p[p] == expected_sess_p)
-                    dso_model[year][day].expected_shared_ess_cons.add(dso_model[year][day].expected_shared_ess_q[p] == expected_sess_q)
+
+                    if distribution_network.params.slacks.expected_values.shared_ess:
+                        dso_model[year][day].expected_shared_ess_cons.add(dso_model[year][day].expected_shared_ess_p[p] <= expected_sess_p + dso_model[year][day].slack_expected_shared_ess_p_up[p] - dso_model[year][day].slack_expected_shared_ess_p_down[p] + SMALL_TOLERANCE)
+                        dso_model[year][day].expected_shared_ess_cons.add(dso_model[year][day].expected_shared_ess_p[p] >= expected_sess_p + dso_model[year][day].slack_expected_shared_ess_p_up[p] - dso_model[year][day].slack_expected_shared_ess_p_down[p] - SMALL_TOLERANCE)
+                        dso_model[year][day].expected_shared_ess_cons.add(dso_model[year][day].expected_shared_ess_q[p] <= expected_sess_q + dso_model[year][day].slack_expected_shared_ess_q_up[p] - dso_model[year][day].slack_expected_shared_ess_q_down[p] + SMALL_TOLERANCE)
+                        dso_model[year][day].expected_shared_ess_cons.add(dso_model[year][day].expected_shared_ess_q[p] >= expected_sess_q + dso_model[year][day].slack_expected_shared_ess_q_up[p] - dso_model[year][day].slack_expected_shared_ess_q_down[p] - SMALL_TOLERANCE)
+                    else:
+                        if distribution_network.params.relax_equalities:
+                            dso_model[year][day].expected_shared_ess_cons.add(dso_model[year][day].expected_shared_ess_p[p] <= expected_sess_p + SMALL_TOLERANCE)
+                            dso_model[year][day].expected_shared_ess_cons.add(dso_model[year][day].expected_shared_ess_p[p] >= expected_sess_p - SMALL_TOLERANCE)
+                            dso_model[year][day].expected_shared_ess_cons.add(dso_model[year][day].expected_shared_ess_q[p] <= expected_sess_q + SMALL_TOLERANCE)
+                            dso_model[year][day].expected_shared_ess_cons.add(dso_model[year][day].expected_shared_ess_q[p] >= expected_sess_q - SMALL_TOLERANCE)
+                        else:
+                            dso_model[year][day].expected_shared_ess_cons.add(dso_model[year][day].expected_shared_ess_p[p] == expected_sess_p)
+                            dso_model[year][day].expected_shared_ess_cons.add(dso_model[year][day].expected_shared_ess_q[p] == expected_sess_q)
+
+                # Update OF
+                if distribution_network.params.slacks.expected_values.interface or distribution_network.params.slacks.expected_values.shared_ess:
+                    obj = dso_model[year][day].objective.expr
+                    if distribution_network.params.slacks.expected_values.interface:
+                        for p in dso_model[year][day].periods:
+                            obj += PENALTY_INTERFACE_PF * (dso_model[year][day].slack_expected_interface_vmag_sqr_up[p] + dso_model[year][day].slack_expected_interface_vmag_sqr_down[p])
+                            obj += PENALTY_INTERFACE_PF * (dso_model[year][day].slack_expected_interface_pf_p_up[p] + dso_model[year][day].slack_expected_interface_pf_p_down[p])
+                            obj += PENALTY_INTERFACE_PF * (dso_model[year][day].slack_expected_interface_pf_q_up[p] + dso_model[year][day].slack_expected_interface_pf_q_down[p])
+                    if distribution_network.params.slacks.expected_values.shared_ess:
+                        for p in dso_model[year][day].periods:
+                            obj += PENALTY_INTERFACE_PF * (dso_model[year][day].slack_expected_shared_ess_p_up[p] + dso_model[year][day].slack_expected_shared_ess_p_down[p])
+                            obj += PENALTY_INTERFACE_PF * (dso_model[year][day].slack_expected_shared_ess_q_up[p] + dso_model[year][day].slack_expected_shared_ess_q_down[p])
+                    dso_model[year][day].objective.expr = obj
 
                 '''
                 # Update OF
