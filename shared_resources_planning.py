@@ -1200,7 +1200,7 @@ def update_distribution_models_to_admm(distribution_networks, models, initial_in
 
                 # Free Vmag, Pg, Qg at the interface node
                 ref_node_idx = distribution_network.network[year][day].get_node_idx(ref_node_id)
-                ref_gen_idx = distribution_network.network[year][day].network.get_reference_gen_idx()
+                ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
                 for s_m in dso_model[year][day].scenarios_market:
                     for s_o in dso_model[year][day].scenarios_operation:
                         for p in dso_model[year][day].periods:
