@@ -595,8 +595,8 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
                             expected_pf_q += omega_market * omega_oper * dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p]
                     dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_vmag_sqr[p] <= expected_vmag_sqr + EQUALITY_TOLERANCE)
                     dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_vmag_sqr[p] >= expected_vmag_sqr - EQUALITY_TOLERANCE)
-                    dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_p[p] >= expected_pf_p + EQUALITY_TOLERANCE)
-                    dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_p[p] <= expected_pf_p - EQUALITY_TOLERANCE)
+                    dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_p[p] <= expected_pf_p + EQUALITY_TOLERANCE)
+                    dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_p[p] >= expected_pf_p - EQUALITY_TOLERANCE)
                     dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_q[p] >= expected_pf_q + EQUALITY_TOLERANCE)
                     dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_q[p] <= expected_pf_q - EQUALITY_TOLERANCE)
 
