@@ -597,7 +597,7 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
 
                     dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_vmag_sqr[p] == expected_vmag_sqr)
                     dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_p[p] == expected_pf_p)
-                    #dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_q[p] == expected_pf_q)
+                    dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_q[p] == expected_pf_q)
 
                 '''
                 # Add expected shared ESS values
