@@ -502,6 +502,7 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setub(None)
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setlb(None)
 
+                    '''
                     interface_vmag_sqr_req = interface_v_vars['dso']['current'][adn_node_id][year][day][p]
                     interface_pf_p_req = interface_pf_vars['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
                     interface_pf_q_req = interface_pf_vars['dso']['current'][adn_node_id][year][day]['q'][p] / s_base
@@ -520,6 +521,7 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                     tso_model[year][day].expected_shared_ess_p[dn, p].setlb(interface_ess_p - EQUALITY_TOLERANCE)
                     tso_model[year][day].expected_shared_ess_q[dn, p].setub(interface_ess_q + EQUALITY_TOLERANCE)
                     tso_model[year][day].expected_shared_ess_q[dn, p].setlb(interface_ess_q - EQUALITY_TOLERANCE)
+                    '''
 
     # Run S-MOPF
     results = transmission_network.optimize(tso_model)
