@@ -577,6 +577,7 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
                 ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
                 shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
 
+                '''
                 # Add interface expectation variables
                 dso_model[year][day].expected_interface_vmag_sqr = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=0.00)
                 dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
@@ -617,6 +618,7 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
                     dso_model[year][day].expected_shared_ess_cons.add(dso_model[year][day].expected_shared_ess_p[p] >= expected_sess_p - EQUALITY_TOLERANCE)
                     dso_model[year][day].expected_shared_ess_cons.add(dso_model[year][day].expected_shared_ess_q[p] <= expected_sess_q + EQUALITY_TOLERANCE)
                     dso_model[year][day].expected_shared_ess_cons.add(dso_model[year][day].expected_shared_ess_q[p] >= expected_sess_q - EQUALITY_TOLERANCE)
+                '''
 
                 '''
                 # Update OF
