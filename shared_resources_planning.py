@@ -577,7 +577,6 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
                 ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
                 shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
 
-                '''
                 # Add interface expectation variables
                 dso_model[year][day].expected_interface_vmag_sqr = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=0.00)
                 dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
@@ -591,7 +590,7 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
                         omega_market = distribution_network.network[year][day].prob_market_scenarios[s_m]
                         for s_o in dso_model[year][day].scenarios_operation:
                             omega_oper = distribution_network.network[year][day].prob_operation_scenarios[s_o]
-                            expected_vmag_sqr += omega_market * omega_oper * (dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2)
+                            expected_vmag_sqr += omega_market * omega_oper * (dso_model[year][day].e_actual[ref_node_idx, s_m, s_o, p] ** 2)
                             expected_pf_p += omega_market * omega_oper * dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p]
                             expected_pf_q += omega_market * omega_oper * dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p]
                     dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_vmag_sqr[p] <= expected_vmag_sqr + EQUALITY_TOLERANCE)
@@ -601,6 +600,7 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
                     dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_q[p] >= expected_pf_q + EQUALITY_TOLERANCE)
                     dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_q[p] <= expected_pf_q - EQUALITY_TOLERANCE)
 
+                '''
                 # Add expected shared ESS values
                 dso_model[year][day].expected_shared_ess_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
                 dso_model[year][day].expected_shared_ess_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
