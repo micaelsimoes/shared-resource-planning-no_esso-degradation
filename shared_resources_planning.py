@@ -581,8 +581,12 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
                 dso_model[year][day].expected_interface_vmag_sqr = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=0.00)
                 dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
                 dso_model[year][day].expected_interface_pf_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
+                if distribution_network.network[year][day].params.slacks.expected_values.interface.vmag:
+                    dso_model[year][day].slack_expected_interface_vmag_sqr_up = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=0.00)
+                    dso_model[year][day].slack_expected_interface_vmag_sqr_down = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=0.00)
                 dso_model[year][day].expected_interface_cons = pe.ConstraintList()
                 for p in dso_model[year][day].periods:
+
                     expected_vmag_sqr = 0.00
                     expected_pf_p = 0.00
                     expected_pf_q = 0.00
@@ -593,7 +597,13 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
                             expected_vmag_sqr += omega_market * omega_oper * (dso_model[year][day].e_actual[ref_node_idx, s_m, s_o, p] ** 2)
                             expected_pf_p += omega_market * omega_oper * dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p]
                             expected_pf_q += omega_market * omega_oper * dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p]
-                    dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_vmag_sqr[p] == expected_vmag_sqr)
+
+                    if distribution_network.network[year][day].params.slacks.expected_values.interface.vmag:
+                        dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_vmag_sqr[p] <= expected_vmag_sqr + dso_model[year][day].slack_expected_interface_vmag_sqr_up[p] - dso_model[year][day].slack_expected_interface_vmag_sqr_down[p] + EQUALITY_TOLERANCE)
+                        dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_vmag_sqr[p] >= expected_vmag_sqr + dso_model[year][day].slack_expected_interface_vmag_sqr_up[p] - dso_model[year][day].slack_expected_interface_vmag_sqr_down[p] - EQUALITY_TOLERANCE)
+                    else:
+                        dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_vmag_sqr[p] <= expected_vmag_sqr + SMALL_TOLERANCE)
+                        dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_vmag_sqr[p] >= expected_vmag_sqr - SMALL_TOLERANCE)
                     #dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_p[p] <= expected_pf_p + EQUALITY_TOLERANCE)
                     #dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_p[p] >= expected_pf_p - EQUALITY_TOLERANCE)
                     #dso_model[year][day].expected_interface_cons.add(dso_model[year][day].expected_interface_pf_q[p] >= expected_pf_q + EQUALITY_TOLERANCE)
