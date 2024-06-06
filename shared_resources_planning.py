@@ -487,11 +487,19 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
             s_base = transmission_network.network[year][day].baseMVA
             for dn in tso_model[year][day].active_distribution_networks:
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
+                adn_node_idx = transmission_network.network[year][day].get_node_idx(adn_node_id)
+                adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(adn_node_id)
                 for p in tso_model[year][day].periods:
 
-                    # Free Pc, Qc at the interface node
+                    # - Free Vmag, Pc, Qc at the interface node
                     for s_m in tso_model[year][day].scenarios_market:
                         for s_o in tso_model[year][day].scenarios_operation:
+                            tso_model[year][day].e[adn_node_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].e[adn_node_idx, s_m, s_o, p].setub(transmission_network.network[year][day].nodes[adn_node_idx].v_max)
+                            tso_model[year][day].e[adn_node_idx, s_m, s_o, p].setlb(-transmission_network.network[year][day].nodes[adn_node_idx].v_max)
+                            tso_model[year][day].f[adn_node_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].f[adn_node_idx, s_m, s_o, p].setub(transmission_network.network[year][day].nodes[adn_node_idx].v_max)
+                            tso_model[year][day].f[adn_node_idx, s_m, s_o, p].setlb(-transmission_network.network[year][day].nodes[adn_node_idx].v_max)
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fixed = False
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setub(None)
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setlb(None)
@@ -503,20 +511,15 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                     interface_pf_p_req = interface_pf_vars['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
                     interface_pf_q_req = interface_pf_vars['dso']['current'][adn_node_id][year][day]['q'][p] / s_base
 
-                    tso_model[year][day].expected_interface_vmag_sqr[dn, p].setub(interface_vmag_sqr_req + EQUALITY_TOLERANCE)
-                    tso_model[year][day].expected_interface_vmag_sqr[dn, p].setlb(interface_vmag_sqr_req - EQUALITY_TOLERANCE)
-                    tso_model[year][day].expected_interface_pf_p[dn, p].setub(interface_pf_p_req + EQUALITY_TOLERANCE)
-                    tso_model[year][day].expected_interface_pf_p[dn, p].setlb(interface_pf_p_req - EQUALITY_TOLERANCE)
-                    tso_model[year][day].expected_interface_pf_q[dn, p].setub(interface_pf_q_req + EQUALITY_TOLERANCE)
-                    tso_model[year][day].expected_interface_pf_q[dn, p].setlb(interface_pf_q_req - EQUALITY_TOLERANCE)
+                    tso_model[year][day].expected_interface_vmag_sqr[dn, p].fix(interface_vmag_sqr_req)
+                    tso_model[year][day].expected_interface_pf_p[dn, p].fix(interface_pf_p_req)
+                    tso_model[year][day].expected_interface_pf_q[dn, p].fix(interface_pf_q_req)
 
                     interface_ess_p = sess_vars['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
                     interface_ess_q = sess_vars['dso']['current'][adn_node_id][year][day]['q'][p] / s_base
 
-                    tso_model[year][day].expected_shared_ess_p[dn, p].setub(interface_ess_p + EQUALITY_TOLERANCE)
-                    tso_model[year][day].expected_shared_ess_p[dn, p].setlb(interface_ess_p - EQUALITY_TOLERANCE)
-                    tso_model[year][day].expected_shared_ess_q[dn, p].setub(interface_ess_q + EQUALITY_TOLERANCE)
-                    tso_model[year][day].expected_shared_ess_q[dn, p].setlb(interface_ess_q - EQUALITY_TOLERANCE)
+                    tso_model[year][day].expected_shared_ess_p[dn, p].fix(interface_ess_p)
+                    tso_model[year][day].expected_shared_ess_q[dn, p].fix(interface_ess_q)
 
     # Run S-MOPF
     results = transmission_network.optimize(tso_model)
