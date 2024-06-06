@@ -464,7 +464,7 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                         tso_model[year][day].expected_shared_ess_cons.add(tso_model[year][day].expected_shared_ess_q[e, p] <= expected_sess_q + tso_model[year][day].slack_expected_shared_ess_q_up[e, p] - tso_model[year][day].slack_expected_shared_ess_q_down[e, p] + EQUALITY_TOLERANCE)
                         tso_model[year][day].expected_shared_ess_cons.add(tso_model[year][day].expected_shared_ess_q[e, p] >= expected_sess_q + tso_model[year][day].slack_expected_shared_ess_q_up[e, p] - tso_model[year][day].slack_expected_shared_ess_q_down[e, p] - EQUALITY_TOLERANCE)
                     else:
-                        if transmission_network.params.slacks.relax_equalities:
+                        if transmission_network.params.relax_equalities:
                             tso_model[year][day].expected_shared_ess_cons.add(tso_model[year][day].expected_shared_ess_p[e, p] <= expected_sess_p + EQUALITY_TOLERANCE)
                             tso_model[year][day].expected_shared_ess_cons.add(tso_model[year][day].expected_shared_ess_p[e, p] >= expected_sess_p - EQUALITY_TOLERANCE)
                             tso_model[year][day].expected_shared_ess_cons.add(tso_model[year][day].expected_shared_ess_q[e, p] <= expected_sess_q + EQUALITY_TOLERANCE)
