@@ -393,9 +393,9 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
 
             # Add expected interface values
             tso_model[year][day].active_distribution_networks = range(len(transmission_network.active_distribution_network_nodes))
-            tso_model[year][day].expected_interface_vmag_sqr = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=0.00)
-            tso_model[year][day].expected_interface_pf_p = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
-            tso_model[year][day].expected_interface_pf_q = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
+            tso_model[year][day].expected_interface_vmag_sqr = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.NonNegativeReals)
+            tso_model[year][day].expected_interface_pf_p = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals)
+            tso_model[year][day].expected_interface_pf_q = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals)
             tso_model[year][day].expected_interface_cons = pe.ConstraintList()
             for dn in tso_model[year][day].active_distribution_networks:
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
@@ -409,19 +409,16 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                         omega_market = transmission_network.network[year][day].prob_market_scenarios[s_m]
                         for s_o in tso_model[year][day].scenarios_operation:
                             omega_oper = transmission_network.network[year][day].prob_operation_scenarios[s_o]
-                            expected_vmag_sqr += omega_market * omega_oper * (tso_model[year][day].e_actual[adn_node_idx, s_m, s_o, p] ** 2) + (tso_model[year][day].f_actual[adn_node_idx, s_m, s_o, p] ** 2)
+                            expected_vmag_sqr += omega_market * omega_oper * (tso_model[year][day].e_actual[adn_node_idx, s_m, s_o, p] ** 2 + tso_model[year][day].f_actual[adn_node_idx, s_m, s_o, p] ** 2)
                             expected_pf_p += omega_market * omega_oper * tso_model[year][day].pc[adn_load_idx, s_m, s_o, p]
                             expected_pf_q += omega_market * omega_oper * tso_model[year][day].qc[adn_load_idx, s_m, s_o, p]
-                    tso_model[year][day].expected_interface_cons.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] <= expected_vmag_sqr + EQUALITY_TOLERANCE)
-                    tso_model[year][day].expected_interface_cons.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] >= expected_vmag_sqr - EQUALITY_TOLERANCE)
-                    tso_model[year][day].expected_interface_cons.add(tso_model[year][day].expected_interface_pf_p[dn, p] <= expected_pf_p + EQUALITY_TOLERANCE)
-                    tso_model[year][day].expected_interface_cons.add(tso_model[year][day].expected_interface_pf_p[dn, p] >= expected_pf_p - EQUALITY_TOLERANCE)
-                    tso_model[year][day].expected_interface_cons.add(tso_model[year][day].expected_interface_pf_q[dn, p] <= expected_pf_q + EQUALITY_TOLERANCE)
-                    tso_model[year][day].expected_interface_cons.add(tso_model[year][day].expected_interface_pf_q[dn, p] >= expected_pf_q - EQUALITY_TOLERANCE)
+                    tso_model[year][day].expected_interface_cons.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] == expected_vmag_sqr)
+                    tso_model[year][day].expected_interface_cons.add(tso_model[year][day].expected_interface_pf_p[dn, p] == expected_pf_p)
+                    tso_model[year][day].expected_interface_cons.add(tso_model[year][day].expected_interface_pf_q[dn, p] == expected_pf_q)
 
             # Add expected shared ESS values
-            tso_model[year][day].expected_shared_ess_p = pe.Var(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
-            tso_model[year][day].expected_shared_ess_q = pe.Var(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
+            tso_model[year][day].expected_shared_ess_p = pe.Var(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, domain=pe.Reals)
+            tso_model[year][day].expected_shared_ess_q = pe.Var(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, domain=pe.Reals)
             tso_model[year][day].expected_shared_ess_cons = pe.ConstraintList()
             for e in tso_model[year][day].shared_energy_storages:
                 for p in tso_model[year][day].periods:
@@ -433,10 +430,8 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                             omega_oper = transmission_network.network[year][day].prob_operation_scenarios[s_o]
                             expected_sess_p += omega_market * omega_oper * (tso_model[year][day].shared_es_pch[e, s_m, s_o, p] - tso_model[year][day].shared_es_pdch[e, s_m, s_o, p])
                             expected_sess_q += omega_market * omega_oper * (tso_model[year][day].shared_es_qch[e, s_m, s_o, p] - tso_model[year][day].shared_es_qdch[e, s_m, s_o, p])
-                tso_model[year][day].expected_shared_ess_cons.add(tso_model[year][day].expected_shared_ess_p[e, p] <= expected_sess_p + EQUALITY_TOLERANCE)
-                tso_model[year][day].expected_shared_ess_cons.add(tso_model[year][day].expected_shared_ess_p[e, p] >= expected_sess_p - EQUALITY_TOLERANCE)
-                tso_model[year][day].expected_shared_ess_cons.add(tso_model[year][day].expected_shared_ess_q[e, p] <= expected_sess_q + EQUALITY_TOLERANCE)
-                tso_model[year][day].expected_shared_ess_cons.add(tso_model[year][day].expected_shared_ess_q[e, p] >= expected_sess_q - EQUALITY_TOLERANCE)
+                tso_model[year][day].expected_shared_ess_cons.add(tso_model[year][day].expected_shared_ess_p[e, p] == expected_sess_p)
+                tso_model[year][day].expected_shared_ess_cons.add(tso_model[year][day].expected_shared_ess_q[e, p] == expected_sess_q)
 
             '''
             # Update OF
@@ -495,11 +490,11 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                     for s_m in tso_model[year][day].scenarios_market:
                         for s_o in tso_model[year][day].scenarios_operation:
                             tso_model[year][day].e[adn_node_idx, s_m, s_o, p].fixed = False
-                            tso_model[year][day].e[adn_node_idx, s_m, s_o, p].setub(transmission_network.network[year][day].nodes[adn_node_idx].v_max)
-                            tso_model[year][day].e[adn_node_idx, s_m, s_o, p].setlb(-transmission_network.network[year][day].nodes[adn_node_idx].v_max)
+                            tso_model[year][day].e[adn_node_idx, s_m, s_o, p].setub(None)
+                            tso_model[year][day].e[adn_node_idx, s_m, s_o, p].setlb(None)
                             tso_model[year][day].f[adn_node_idx, s_m, s_o, p].fixed = False
-                            tso_model[year][day].f[adn_node_idx, s_m, s_o, p].setub(transmission_network.network[year][day].nodes[adn_node_idx].v_max)
-                            tso_model[year][day].f[adn_node_idx, s_m, s_o, p].setlb(-transmission_network.network[year][day].nodes[adn_node_idx].v_max)
+                            tso_model[year][day].f[adn_node_idx, s_m, s_o, p].setub(None)
+                            tso_model[year][day].f[adn_node_idx, s_m, s_o, p].setlb(None)
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fixed = False
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setub(None)
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setlb(None)
