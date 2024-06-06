@@ -947,8 +947,9 @@ def _build_model(network, params):
 
             for s_o in model.scenarios_operation:
 
-                obj_scenario = 0.0
                 omega_oper = network.prob_operation_scenarios[s_o]
+
+                obj_scenario = 0.0
 
                 # Generation curtailment
                 if params.rg_curt:
@@ -973,7 +974,12 @@ def _build_model(network, params):
 
     # Slacks grid operation
     for s_m in model.scenarios_market:
+
+        omega_market = network.prob_market_scenarios[s_m]
+
         for s_o in model.scenarios_operation:
+
+            omega_oper = network.prob_operation_scenarios[s_o]
 
             # Voltage slacks
             if params.slacks.grid_operation.voltage:
@@ -981,18 +987,23 @@ def _build_model(network, params):
                     for p in model.periods:
                         slack_e = model.slack_e_up[i, s_m, s_o, p] + model.slack_e_down[i, s_m, s_o, p]
                         slack_f = model.slack_f_up[i, s_m, s_o, p] + model.slack_f_down[i, s_m, s_o, p]
-                        obj += PENALTY_VOLTAGE * network.baseMVA * (slack_e + slack_f)
+                        obj += PENALTY_VOLTAGE * network.baseMVA * omega_market * omega_oper *  (slack_e + slack_f)
 
             # Branch power flow slacks
             if params.slacks.grid_operation.branch_flow:
                 for b in model.branches:
                     for p in model.periods:
                         slack_iij_sqr = model.slack_iij_sqr[b, s_m, s_o, p]
-                        obj += PENALTY_CURRENT * network.baseMVA * slack_iij_sqr
+                        obj += PENALTY_CURRENT * network.baseMVA * omega_market * omega_oper * slack_iij_sqr
 
     # Operation slacks
     for s_m in model.scenarios_market:
+
+        omega_market = network.prob_market_scenarios[s_m]
+
         for s_o in model.scenarios_operation:
+
+            omega_oper = network.prob_operation_scenarios[s_o]
 
             # Node balance
             if params.slacks.node_balance:
@@ -1000,14 +1011,14 @@ def _build_model(network, params):
                     for p in model.periods:
                         slack_p = model.slack_node_balance_p_up[i, s_m, s_o, p] + model.slack_node_balance_p_down[i, s_m, s_o, p]
                         slack_q = model.slack_node_balance_q_up[i, s_m, s_o, p] + model.slack_node_balance_q_down[i, s_m, s_o, p]
-                        obj += PENALTY_NODE_BALANCE * network.baseMVA * (slack_p + slack_q)
+                        obj += PENALTY_NODE_BALANCE * network.baseMVA * omega_market * omega_oper * (slack_p + slack_q)
 
             # Flexibility day balance
             if params.fl_reg:
                 for c in model.loads:
                     if params.slacks.flexibility.day_balance:
                         slack_flex = model.slack_flex_p_balance_up[c, s_m, s_o] + model.slack_flex_p_balance_down[c, s_m, s_o]
-                        obj += PENALTY_FLEXIBILITY * network.baseMVA * slack_flex
+                        obj += PENALTY_FLEXIBILITY * network.baseMVA * omega_market * omega_oper * slack_flex
 
             # ESS slacks
             if params.es_reg:
@@ -1015,34 +1026,34 @@ def _build_model(network, params):
                     for p in model.periods:
                         if params.slacks.ess.complementarity:
                             slack_comp = model.slack_es_comp[e, s_m, s_o, p]
-                            obj += PENALTY_ESS * network.baseMVA * slack_comp
+                            obj += PENALTY_ESS * network.baseMVA * omega_market * omega_oper * slack_comp
                         if params.slacks.ess.charging:
                             slack_sch = model.slack_es_sch_up[e, s_m, s_o, p] + model.slack_es_sch_down[e, s_m, s_o, p]
                             slack_sdch = model.slack_es_sdch_up[e, s_m, s_o, p] + model.slack_es_sdch_down[e, s_m, s_o, p]
-                            obj += PENALTY_ESS * network.baseMVA * (slack_sch + slack_sdch)
+                            obj += PENALTY_ESS * network.baseMVA * omega_market * omega_oper * (slack_sch + slack_sdch)
                         if params.slacks.ess.soc:
                             slack_soc = model.slack_es_soc_up[e, s_m, s_o, p] + model.slack_es_soc_down[e, s_m, s_o, p]
-                            obj += PENALTY_ESS * network.baseMVA * slack_soc
+                            obj += PENALTY_ESS * network.baseMVA * omega_market * omega_oper * slack_soc
                     if params.slacks.ess.day_balance:
                         slack_soc_final = model.slack_es_soc_final_up[e, s_m, s_o] + model.slack_es_soc_final_down[e, s_m, s_o]
-                        obj += PENALTY_ESS * network.baseMVA * slack_soc_final
+                        obj += PENALTY_ESS * network.baseMVA * omega_market * omega_oper * slack_soc_final
 
             # Shared ESS slacks
             for e in model.shared_energy_storages:
                 for p in model.periods:
                     if params.slacks.shared_ess.complementarity:
                         slack_comp = model.slack_shared_es_comp[e, s_m, s_o, p]
-                        obj += PENALTY_SHARED_ESS * network.baseMVA * slack_comp
+                        obj += PENALTY_SHARED_ESS * network.baseMVA * omega_market * omega_oper * slack_comp
                     if params.slacks.shared_ess.charging:
                         slack_sch = model.slack_shared_es_sch_up[e, s_m, s_o, p] + model.slack_shared_es_sch_down[e, s_m, s_o, p]
                         slack_sdch = model.slack_shared_es_sdch_up[e, s_m, s_o, p] + model.slack_shared_es_sdch_down[e, s_m, s_o, p]
-                        obj += PENALTY_SHARED_ESS * network.baseMVA * (slack_sch + slack_sdch)
+                        obj += PENALTY_SHARED_ESS * network.baseMVA * omega_market * omega_oper * (slack_sch + slack_sdch)
                     if params.slacks.shared_ess.soc:
                         slack_soc = model.slack_shared_es_soc_up[e, s_m, s_o, p] + model.slack_shared_es_soc_down[e, s_m, s_o, p]
-                        obj += PENALTY_SHARED_ESS * network.baseMVA * slack_soc
+                        obj += PENALTY_SHARED_ESS * network.baseMVA * omega_market * omega_oper * slack_soc
                 if params.slacks.shared_ess.day_balance:
                     slack_soc_final = model.slack_shared_es_soc_final_up[e, s_m, s_o] + model.slack_shared_es_soc_final_down[e, s_m, s_o]
-                    obj += PENALTY_SHARED_ESS * network.baseMVA * slack_soc_final
+                    obj += PENALTY_SHARED_ESS * network.baseMVA * omega_market * omega_oper * slack_soc_final
 
     model.objective = pe.Objective(sense=pe.minimize, expr=obj)
 
