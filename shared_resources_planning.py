@@ -433,10 +433,10 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                             omega_oper = transmission_network.network[year][day].prob_operation_scenarios[s_o]
                             expected_sess_p += omega_market * omega_oper * (tso_model[year][day].shared_es_pch[e, s_m, s_o, p] - tso_model[year][day].shared_es_pdch[e, s_m, s_o, p])
                             expected_sess_q += omega_market * omega_oper * (tso_model[year][day].shared_es_qch[e, s_m, s_o, p] - tso_model[year][day].shared_es_qdch[e, s_m, s_o, p])
-                tso_model[year][day].expected_shared_ess_cons.add(tso_model[year][day].expected_shared_ess_p[e, p] <= expected_sess_p + EQUALITY_TOLERANCE)
-                tso_model[year][day].expected_shared_ess_cons.add(tso_model[year][day].expected_shared_ess_p[e, p] >= expected_sess_p - EQUALITY_TOLERANCE)
-                tso_model[year][day].expected_shared_ess_cons.add(tso_model[year][day].expected_shared_ess_q[e, p] <= expected_sess_q + EQUALITY_TOLERANCE)
-                tso_model[year][day].expected_shared_ess_cons.add(tso_model[year][day].expected_shared_ess_q[e, p] >= expected_sess_q - EQUALITY_TOLERANCE)
+                    tso_model[year][day].expected_shared_ess_cons.add(tso_model[year][day].expected_shared_ess_p[e, p] <= expected_sess_p + EQUALITY_TOLERANCE)
+                    tso_model[year][day].expected_shared_ess_cons.add(tso_model[year][day].expected_shared_ess_p[e, p] >= expected_sess_p - EQUALITY_TOLERANCE)
+                    tso_model[year][day].expected_shared_ess_cons.add(tso_model[year][day].expected_shared_ess_q[e, p] <= expected_sess_q + EQUALITY_TOLERANCE)
+                    tso_model[year][day].expected_shared_ess_cons.add(tso_model[year][day].expected_shared_ess_q[e, p] >= expected_sess_q - EQUALITY_TOLERANCE)
 
             '''
             # Update OF
