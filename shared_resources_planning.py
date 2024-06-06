@@ -1206,12 +1206,21 @@ def update_distribution_models_to_admm(distribution_networks, models, initial_in
                 if distribution_network.params.obj_type == OBJ_MIN_COST:
                     init_of_value = pe.value(dso_model[year][day].objective)
 
-                # Free voltage at the interface node
+                # Free Vmag, Pg, Qg at the interface node
                 ref_node_idx = distribution_network.network[year][day].get_node_idx(ref_node_id)
+                ref_gen_idx = distribution_network.network[year][day].network.get_reference_gen_idx()
                 for s_m in dso_model[year][day].scenarios_market:
                     for s_o in dso_model[year][day].scenarios_operation:
                         for p in dso_model[year][day].periods:
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].fixed = False
+                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setub(distribution_network.network[year][day].nodes[ref_node_idx].v_max)
+                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setlb(-distribution_network.network[year][day].nodes[ref_node_idx].v_max)
+                            dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].fixed = False
+                            dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].setub(None)
+                            dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].setlb(None)
+                            dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].fixed = False
+                            dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].setub(None)
+                            dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].setlb(None)
 
                 # Add ADMM variables
                 dso_model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
