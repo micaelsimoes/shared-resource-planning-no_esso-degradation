@@ -241,15 +241,15 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     consensus_vars, dual_vars = create_admm_variables(planning_problem)
 
     # Create Operational Planning models
-    dso_models, initial_values = create_distribution_networks_models(distribution_networks, candidate_solution['total_capacity'])
     tso_model = create_transmission_network_model(transmission_network, candidate_solution['total_capacity'])
+    dso_models = create_distribution_networks_models(distribution_networks, candidate_solution['total_capacity'])
     esso_model = create_shared_energy_storage_model(shared_ess_data, candidate_solution['investment'])
 
     # Run initial SMOPF to get normalization values
     normalization_values = get_normalization_values(distribution_networks, dso_models)
 
     # Update models to ADMM
-    update_transmission_model_to_admm(transmission_network, tso_model, admm_parameters)
+    update_transmission_model_to_admm(transmission_network, tso_model, normalization_values, admm_parameters)
     update_distribution_models_to_admm(distribution_networks, dso_models, admm_parameters)
     update_shared_energy_storage_model_to_admm(shared_ess_data, esso_model, admm_parameters)
 
@@ -434,13 +434,14 @@ def create_transmission_network_model(transmission_network, candidate_solution):
                     tso_model[year][day].expected_interface_values.add(tso_model[year][day].expected_shared_ess_p[e, p] == expected_sess_p)
                     tso_model[year][day].expected_interface_values.add(tso_model[year][day].expected_shared_ess_q[e, p] == expected_sess_q)
 
+    transmission_network.optimize(tso_model)
+
     return tso_model
 
 
 def create_distribution_networks_models(distribution_networks, candidate_solution):
 
     dso_models = dict()
-    initial_values = dict()
 
     for node_id in distribution_networks:
 
@@ -500,24 +501,9 @@ def create_distribution_networks_models(distribution_networks, candidate_solutio
         # Run SMOPF
         distribution_network.optimize(dso_model)
 
-        # Get expected values
-        initial_values[node_id] = dict()
-        for year in distribution_network.years:
-            initial_values[node_id][year] = dict()
-            for day in distribution_network.days:
-                initial_values[node_id][year][day] = dict()
-                initial_values[node_id][year][day]['p'] = [0.00 for _ in range(distribution_network.num_instants)]
-                initial_values[node_id][year][day]['q'] = [0.00 for _ in range(distribution_network.num_instants)]
-                s_base = distribution_network.network[year][day].baseMVA
-                for p in dso_model[year][day].periods:
-                    interface_pf_p = pe.value(dso_model[year][day].expected_interface_pf_p[p]) * s_base
-                    interface_pf_q = pe.value(dso_model[year][day].expected_interface_pf_q[p]) * s_base
-                    initial_values[node_id][year][day]['p'][p] = interface_pf_p
-                    initial_values[node_id][year][day]['p'][p] = interface_pf_q
-
         dso_models[node_id] = dso_model
 
-    return dso_models, initial_values
+    return dso_models
 
 
 def get_normalization_values(distribution_networks, dso_models):
@@ -527,9 +513,6 @@ def get_normalization_values(distribution_networks, dso_models):
     for node_id in distribution_networks:
 
         distribution_network = distribution_networks[node_id]
-
-        # Run SMOPF
-        distribution_network.optimize(dso_models[node_id])
 
         # Get expected values
         initial_values[node_id] = dict()
@@ -546,7 +529,7 @@ def get_normalization_values(distribution_networks, dso_models):
                     initial_values[node_id][year][day]['p'][p] = interface_pf_p
                     initial_values[node_id][year][day]['p'][p] = interface_pf_q
 
-    return dso_models, initial_values
+    return initial_values
 
 
 
@@ -981,7 +964,7 @@ def stationary_convergence(planning_problem, consensus_vars, params):
     return True
 
 
-def update_transmission_model_to_admm(transmission_network, model, params):
+def update_transmission_model_to_admm(transmission_network, model, initial_pf, params):
 
     for year in transmission_network.years:
         for day in transmission_network.days:
@@ -1028,13 +1011,28 @@ def update_transmission_model_to_admm(transmission_network, model, params):
             model[year][day].dual_ess_q_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)        # Dual variable - Shared ESS active power
 
             # Objective function - augmented Lagrangian
-            obj = model[year][day].objective.expr
+            init_of_value = 1.00
+            if transmission_network.params.obj_type == OBJ_MIN_COST:
+                init_of_value = abs(pe.value(model[year][day].objective))
+                if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
+                    init_of_value = 1.00
+            obj = model[year][day].objective.expr / init_of_value
+
             for dn in model[year][day].active_distribution_networks:
+                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
                 for p in model[year][day].periods:
 
+                    init_p = abs(initial_pf[adn_node_id]['p'][p])
+                    if isclose(init_p, 0.00, abs_tol=SMALL_TOLERANCE):
+                        init_p = 1.00
+
+                    init_q = abs(initial_pf[adn_node_id]['q'][p])
+                    if isclose(init_q, 0.00, abs_tol=SMALL_TOLERANCE):
+                        init_q = 1.00
+
                     constraint_v_req = (model[year][day].expected_interface_vmag_sqr[dn, p] - model[year][day].v_sqr_req[dn, p])
-                    constraint_p_req = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_req[dn, p])
-                    constraint_q_req = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_req[dn, p])
+                    constraint_p_req = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_req[dn, p]) / init_p
+                    constraint_q_req = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_req[dn, p]) / init_q
 
                     obj += model[year][day].dual_v_sqr_req[dn, p] * constraint_v_req
                     obj += model[year][day].dual_pf_p_req[dn, p] * constraint_p_req
@@ -1044,9 +1042,14 @@ def update_transmission_model_to_admm(transmission_network, model, params):
                     obj += (model[year][day].rho_pf / 2) * (constraint_q_req ** 2)
 
             for e in model[year][day].shared_energy_storages:
+
+                shared_ess_rating = abs(transmission_network.network[year][day].shared_energy_storages[e].s)
+                if isclose(shared_ess_rating, 0.00, abs_tol=SMALL_TOLERANCE):
+                    shared_ess_rating = 1.00
+
                 for p in model[year][day].periods:
-                    constraint_ess_p = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_req[e, p])
-                    constraint_ess_q = (model[year][day].expected_shared_ess_q[e, p] - model[year][day].q_ess_req[e, p])
+                    constraint_ess_p = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_req[e, p]) / shared_ess_rating
+                    constraint_ess_q = (model[year][day].expected_shared_ess_q[e, p] - model[year][day].q_ess_req[e, p]) / shared_ess_rating
                     obj += model[year][day].dual_ess_p_req[e, p] * constraint_ess_p
                     obj += model[year][day].dual_ess_q_req[e, p] * constraint_ess_q
                     obj += (model[year][day].rho_ess / 2) * constraint_ess_p ** 2
