@@ -234,7 +234,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     print('[INFO]\t\t - Initializing...')
 
     start = time.time()
-    from_warm_start = False
+    from_warm_start = True
     primal_evolution = list()
 
     # Create ADMM variables
