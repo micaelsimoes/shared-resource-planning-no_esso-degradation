@@ -7,7 +7,6 @@ class ADMMParameters:
         self.tol = {'consensus': 1e-3, 'stationarity': 1e-3}
         self.num_max_iters = 1000
         self.adaptive_penalty = False
-        self.use_previous_iter = False
         self.rho = {'pf': dict(), 'ess': dict()}
 
     def read_parameters_from_file(self, params_data):
