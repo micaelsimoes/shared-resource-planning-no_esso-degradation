@@ -479,14 +479,14 @@ def create_transmission_network_model(transmission_network, interface_v_vars, in
                 if transmission_network.params.slacks.expected_values.interface:
                     for dn in tso_model[year][day].active_distribution_networks:
                         for p in tso_model[year][day].periods:
-                            obj += PENALTY_INTERFACE_PF * (tso_model[year][day].slack_expected_interface_vmag_sqr_up[dn, p] + tso_model[year][day].slack_expected_interface_vmag_sqr_down[dn, p])
-                            obj += PENALTY_INTERFACE_PF * (tso_model[year][day].slack_expected_interface_pf_p_up[dn, p] + tso_model[year][day].slack_expected_interface_pf_p_down[dn, p])
-                            obj += PENALTY_INTERFACE_PF * (tso_model[year][day].slack_expected_interface_pf_q_up[dn, p] + tso_model[year][day].slack_expected_interface_pf_q_down[dn, p])
+                            obj += PENALTY_INTERFACE_PF * transmission_network.network[year][day].baseMVA * (tso_model[year][day].slack_expected_interface_vmag_sqr_up[dn, p] + tso_model[year][day].slack_expected_interface_vmag_sqr_down[dn, p])
+                            obj += PENALTY_INTERFACE_PF * transmission_network.network[year][day].baseMVA * (tso_model[year][day].slack_expected_interface_pf_p_up[dn, p] + tso_model[year][day].slack_expected_interface_pf_p_down[dn, p])
+                            obj += PENALTY_INTERFACE_PF * transmission_network.network[year][day].baseMVA * (tso_model[year][day].slack_expected_interface_pf_q_up[dn, p] + tso_model[year][day].slack_expected_interface_pf_q_down[dn, p])
                 if transmission_network.params.slacks.expected_values.shared_ess:
                     for e in tso_model[year][day].shared_energy_storages:
                         for p in tso_model[year][day].periods:
-                            obj += PENALTY_INTERFACE_PF * (tso_model[year][day].slack_expected_shared_ess_p_up[e, p] + tso_model[year][day].slack_expected_shared_ess_p_down[e, p])
-                            obj += PENALTY_INTERFACE_PF * (tso_model[year][day].slack_expected_shared_ess_q_up[e, p] + tso_model[year][day].slack_expected_shared_ess_q_down[e, p])
+                            obj += PENALTY_INTERFACE_PF * transmission_network.network[year][day].baseMVA * (tso_model[year][day].slack_expected_shared_ess_p_up[e, p] + tso_model[year][day].slack_expected_shared_ess_p_down[e, p])
+                            obj += PENALTY_INTERFACE_PF * transmission_network.network[year][day].baseMVA * (tso_model[year][day].slack_expected_shared_ess_q_up[e, p] + tso_model[year][day].slack_expected_shared_ess_q_down[e, p])
                 tso_model[year][day].objective.expr = obj
 
             '''
@@ -705,13 +705,13 @@ def create_distribution_networks_models(distribution_networks, interface_vars_vm
                     obj = dso_model[year][day].objective.expr
                     if distribution_network.params.slacks.expected_values.interface:
                         for p in dso_model[year][day].periods:
-                            obj += PENALTY_INTERFACE_PF * (dso_model[year][day].slack_expected_interface_vmag_sqr_up[p] + dso_model[year][day].slack_expected_interface_vmag_sqr_down[p])
-                            obj += PENALTY_INTERFACE_PF * (dso_model[year][day].slack_expected_interface_pf_p_up[p] + dso_model[year][day].slack_expected_interface_pf_p_down[p])
-                            obj += PENALTY_INTERFACE_PF * (dso_model[year][day].slack_expected_interface_pf_q_up[p] + dso_model[year][day].slack_expected_interface_pf_q_down[p])
+                            obj += PENALTY_INTERFACE_PF * distribution_network.network[year][day].baseMVA * (dso_model[year][day].slack_expected_interface_vmag_sqr_up[p] + dso_model[year][day].slack_expected_interface_vmag_sqr_down[p])
+                            obj += PENALTY_INTERFACE_PF * distribution_network.network[year][day].baseMVA * (dso_model[year][day].slack_expected_interface_pf_p_up[p] + dso_model[year][day].slack_expected_interface_pf_p_down[p])
+                            obj += PENALTY_INTERFACE_PF * distribution_network.network[year][day].baseMVA * (dso_model[year][day].slack_expected_interface_pf_q_up[p] + dso_model[year][day].slack_expected_interface_pf_q_down[p])
                     if distribution_network.params.slacks.expected_values.shared_ess:
                         for p in dso_model[year][day].periods:
-                            obj += PENALTY_INTERFACE_PF * (dso_model[year][day].slack_expected_shared_ess_p_up[p] + dso_model[year][day].slack_expected_shared_ess_p_down[p])
-                            obj += PENALTY_INTERFACE_PF * (dso_model[year][day].slack_expected_shared_ess_q_up[p] + dso_model[year][day].slack_expected_shared_ess_q_down[p])
+                            obj += PENALTY_INTERFACE_PF * distribution_network.network[year][day].baseMVA * (dso_model[year][day].slack_expected_shared_ess_p_up[p] + dso_model[year][day].slack_expected_shared_ess_p_down[p])
+                            obj += PENALTY_INTERFACE_PF * distribution_network.network[year][day].baseMVA * (dso_model[year][day].slack_expected_shared_ess_q_up[p] + dso_model[year][day].slack_expected_shared_ess_q_down[p])
                     dso_model[year][day].objective.expr = obj
 
                 '''
