@@ -241,9 +241,12 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     consensus_vars, dual_vars = create_admm_variables(planning_problem)
 
     # Create Operational Planning models
+    dso_models, initial_values = create_distribution_networks_models(distribution_networks, candidate_solution['total_capacity'])
     tso_model = create_transmission_network_model(transmission_network, candidate_solution['total_capacity'])
-    dso_models = create_distribution_networks_models(distribution_networks, candidate_solution['total_capacity'])
     esso_model = create_shared_energy_storage_model(shared_ess_data, candidate_solution['investment'])
+
+    # Run initial SMOPF to get normalization values
+    normalization_values = get_normalization_values(distribution_networks, dso_models)
 
     # Update models to ADMM
     update_transmission_model_to_admm(transmission_network, tso_model, admm_parameters)
@@ -437,6 +440,7 @@ def create_transmission_network_model(transmission_network, candidate_solution):
 def create_distribution_networks_models(distribution_networks, candidate_solution):
 
     dso_models = dict()
+    initial_values = dict()
 
     for node_id in distribution_networks:
 
@@ -493,9 +497,57 @@ def create_distribution_networks_models(distribution_networks, candidate_solutio
                     dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_shared_ess_p[p] == expected_sess_p)
                     dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_shared_ess_q[p] == expected_sess_q)
 
+        # Run SMOPF
+        distribution_network.optimize(dso_model)
+
+        # Get expected values
+        initial_values[node_id] = dict()
+        for year in distribution_network.years:
+            initial_values[node_id][year] = dict()
+            for day in distribution_network.days:
+                initial_values[node_id][year][day] = dict()
+                initial_values[node_id][year][day]['p'] = [0.00 for _ in range(distribution_network.num_instants)]
+                initial_values[node_id][year][day]['q'] = [0.00 for _ in range(distribution_network.num_instants)]
+                s_base = distribution_network.network[year][day].baseMVA
+                for p in dso_model[year][day].periods:
+                    interface_pf_p = pe.value(dso_model[year][day].expected_interface_pf_p[p]) * s_base
+                    interface_pf_q = pe.value(dso_model[year][day].expected_interface_pf_q[p]) * s_base
+                    initial_values[node_id][year][day]['p'][p] = interface_pf_p
+                    initial_values[node_id][year][day]['p'][p] = interface_pf_q
+
         dso_models[node_id] = dso_model
 
-    return dso_models
+    return dso_models, initial_values
+
+
+def get_normalization_values(distribution_networks, dso_models):
+
+    initial_values = dict()
+
+    for node_id in distribution_networks:
+
+        distribution_network = distribution_networks[node_id]
+
+        # Run SMOPF
+        distribution_network.optimize(dso_models[node_id])
+
+        # Get expected values
+        initial_values[node_id] = dict()
+        for year in distribution_network.years:
+            initial_values[node_id][year] = dict()
+            for day in distribution_network.days:
+                initial_values[node_id][year][day] = dict()
+                initial_values[node_id][year][day]['p'] = [0.00 for _ in range(distribution_network.num_instants)]
+                initial_values[node_id][year][day]['q'] = [0.00 for _ in range(distribution_network.num_instants)]
+                s_base = distribution_network.network[year][day].baseMVA
+                for p in dso_models[node_id][year][day].periods:
+                    interface_pf_p = pe.value(dso_models[node_id][year][day].expected_interface_pf_p[p]) * s_base
+                    interface_pf_q = pe.value(dso_models[node_id][year][day].expected_interface_pf_q[p]) * s_base
+                    initial_values[node_id][year][day]['p'][p] = interface_pf_p
+                    initial_values[node_id][year][day]['p'][p] = interface_pf_q
+
+    return dso_models, initial_values
+
 
 
 def create_shared_energy_storage_model(shared_ess_data, candidate_solution):
