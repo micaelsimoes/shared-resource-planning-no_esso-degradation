@@ -62,11 +62,10 @@ def shared_resources_planning(working_directory, specification_filename):
     planning_problem.plot_diagram()
 
     candidate_solution = planning_problem.get_initial_candidate_solution()
-    planning_problem.run_operational_planning(candidate_solution=candidate_solution, print_results=True, debug_flag=False)
+    #planning_problem.run_operational_planning(candidate_solution=candidate_solution, print_results=True, debug_flag=False)
     #planning_problem.run_without_coordination(print_results=True)
     #planning_problem.run_planning_problem()
 
-    '''
     transmission_network = planning_problem.transmission_network
     candidate_solution = planning_problem.get_initial_candidate_solution()
     tn_model = transmission_network.build_model()
@@ -74,9 +73,8 @@ def shared_resources_planning(working_directory, specification_filename):
     results = transmission_network.optimize(tn_model)
     processed_results = transmission_network.process_results(tn_model, results)
     transmission_network.write_optimization_results_to_excel(processed_results)
-    sensitivities = transmission_network.get_sensitivities(tn_model)
-    print(sensitivities)
-    '''
+    #sensitivities = transmission_network.get_sensitivities(tn_model)
+    #print(sensitivities)
 
     '''
     #candidate_solution = planning_problem.get_initial_candidate_solution()
