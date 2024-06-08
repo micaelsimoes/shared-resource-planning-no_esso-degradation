@@ -1022,11 +1022,11 @@ def update_transmission_model_to_admm(transmission_network, model, initial_pf, p
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
                 for p in model[year][day].periods:
 
-                    init_p = abs(initial_pf[adn_node_id]['p'][p])
+                    init_p = abs(initial_pf[adn_node_id][year][day]['p'][p])
                     if isclose(init_p, 0.00, abs_tol=SMALL_TOLERANCE):
                         init_p = 1.00
 
-                    init_q = abs(initial_pf[adn_node_id]['q'][p])
+                    init_q = abs(initial_pf[adn_node_id][year][day]['q'][p])
                     if isclose(init_q, 0.00, abs_tol=SMALL_TOLERANCE):
                         init_q = 1.00
 
