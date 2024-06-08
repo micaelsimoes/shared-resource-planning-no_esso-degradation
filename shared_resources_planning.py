@@ -565,7 +565,7 @@ def get_normalization_values(distribution_networks, dso_models):
                     interface_pf_q = pe.value(dso_models[node_id][year][day].expected_interface_pf_q[p]) * s_base
                     initial_values[node_id][year][day]['v'][p] = interface_vmag
                     initial_values[node_id][year][day]['p'][p] = interface_pf_p
-                    initial_values[node_id][year][day]['p'][p] = interface_pf_q
+                    initial_values[node_id][year][day]['q'][p] = interface_pf_q
 
     return initial_values
 
