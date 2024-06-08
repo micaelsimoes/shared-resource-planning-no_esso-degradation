@@ -242,7 +242,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
 
     # Create models, get initial power flows
     dso_models, initial_pf = create_distribution_networks_models(distribution_networks, candidate_solution['total_capacity'])
-    tso_model = create_transmission_network_model(transmission_network, candidate_solution['total_capacity'])
+    tso_model = create_transmission_network_model(transmission_network, initial_pf, candidate_solution['total_capacity'])
     esso_model = create_shared_energy_storage_model(shared_ess_data, candidate_solution['investment'])
 
     # Update models to ADMM
