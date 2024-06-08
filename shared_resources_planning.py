@@ -246,8 +246,8 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     esso_model = create_shared_energy_storage_model(shared_ess_data, candidate_solution['investment'])
 
     # Update models to ADMM
-    update_transmission_model_to_admm(transmission_network, tso_model, initial_pf, admm_parameters)
     update_distribution_models_to_admm(distribution_networks, dso_models, initial_pf, admm_parameters)
+    update_transmission_model_to_admm(transmission_network, tso_model, initial_pf, admm_parameters)
     update_shared_energy_storage_model_to_admm(shared_ess_data, esso_model, admm_parameters)
 
     # ------------------------------------------------------------------------------------------------------------------
