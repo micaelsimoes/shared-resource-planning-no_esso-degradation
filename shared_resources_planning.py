@@ -918,7 +918,6 @@ def consensus_convergence(planning_problem, consensus_vars, params):
 
 def stationary_convergence(planning_problem, consensus_vars, params):
 
-    rho_esso = params.rho['ess']['esso']
     rho_tso_v = params.rho['v'][planning_problem.transmission_network.name]
     rho_tso_pf = params.rho['pf'][planning_problem.transmission_network.name]
     rho_tso_ess = params.rho['ess'][planning_problem.transmission_network.name]
