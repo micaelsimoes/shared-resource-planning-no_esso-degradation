@@ -623,7 +623,7 @@ def create_admm_variables(planning_problem):
     dual_variables = {
         'v_sqr': {'tso': dict(), 'dso': dict()},
         'pf': {'tso': dict(), 'dso': dict()},
-        'ess': {'tso': dict(), 'dso': dict()}
+        'ess': {'tso': dict(), 'dso': dict(), 'esso': {'tso': dict(), 'dso': dict()}}
     }
 
     for dn in range(len(planning_problem.active_distribution_network_nodes)):
