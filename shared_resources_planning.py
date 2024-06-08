@@ -295,11 +295,6 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         # 2.2 Update primal evolution
         primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
 
-        # 2.3 STOPPING CRITERIA evaluation
-        convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
-        if convergence:
-            break
-
         # --------------------------------------------------------------------------------------------------------------
         # 3. Solve DSOs problems
         results['dso'] = update_distribution_coordination_models_and_solve(distribution_networks, dso_models,
@@ -334,11 +329,6 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
 
         # 4.2 Update primal evolution
         primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
-
-        # 4.3 STOPPING CRITERIA evaluation
-        convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
-        if convergence:
-            break
 
         if debug_flag:
             for node_id in planning_problem.active_distribution_network_nodes:
