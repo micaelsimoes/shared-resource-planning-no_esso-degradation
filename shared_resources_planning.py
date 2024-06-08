@@ -1119,6 +1119,9 @@ def update_distribution_models_to_admm(distribution_networks, models, initial_pf
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].fixed = False
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setub(v_max + SMALL_TOLERANCE)
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setlb(v_min - SMALL_TOLERANCE)
+                            dso_model[year][day].f[ref_node_idx, s_m, s_o, p].fixed = False
+                            dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
                             dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].fixed = False
                             dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].setub(None)
                             dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].setlb(None)
