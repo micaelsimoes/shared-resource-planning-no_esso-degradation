@@ -2,7 +2,7 @@ import os
 import time
 from copy import copy
 import pandas as pd
-from math import isclose, sqrt
+from math import isclose
 import networkx as nx
 import matplotlib.pyplot as plt
 import pyomo.opt as po
@@ -250,7 +250,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
 
     # Update models to ADMM
     update_transmission_model_to_admm(transmission_network, tso_model, normalization_values, admm_parameters)
-    update_distribution_models_to_admm(distribution_networks, dso_models, admm_parameters)
+    update_distribution_models_to_admm(distribution_networks, dso_models, normalization_values, admm_parameters)
     update_shared_energy_storage_model_to_admm(shared_ess_data, esso_model, admm_parameters)
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -974,12 +974,13 @@ def update_transmission_model_to_admm(transmission_network, model, initial_pf, p
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
                 adn_node_idx = transmission_network.network[year][day].get_node_idx(adn_node_id)
                 adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(adn_node_id)
+                _, v_max = transmission_network.network[year][day].get_node_voltage_limits(adn_node_id)
                 for p in model[year][day].periods:
                     for s_m in model[year][day].scenarios_market:
                         for s_o in model[year][day].scenarios_operation:
                             model[year][day].e[adn_node_idx, s_m, s_o, p].fixed = False
-                            model[year][day].e[adn_node_idx, s_m, s_o, p].setub(None)
-                            model[year][day].e[adn_node_idx, s_m, s_o, p].setlb(None)
+                            model[year][day].e[adn_node_idx, s_m, s_o, p].setub(v_max + SMALL_TOLERANCE)
+                            model[year][day].e[adn_node_idx, s_m, s_o, p].setlb(-v_max - SMALL_TOLERANCE)
                             model[year][day].f[adn_node_idx, s_m, s_o, p].fixed = False
                             model[year][day].f[adn_node_idx, s_m, s_o, p].setub(None)
                             model[year][day].f[adn_node_idx, s_m, s_o, p].setlb(None)
@@ -1058,7 +1059,7 @@ def update_transmission_model_to_admm(transmission_network, model, initial_pf, p
             model[year][day].objective.expr = obj
 
 
-def update_distribution_models_to_admm(distribution_networks, models, params):
+def update_distribution_models_to_admm(distribution_networks, models, initial_pf, params):
 
     for node_id in distribution_networks:
 
@@ -1069,14 +1070,18 @@ def update_distribution_models_to_admm(distribution_networks, models, params):
             for day in distribution_network.days:
 
                 ref_node_id = distribution_network.network[year][day].get_reference_node_id()
+                s_base = distribution_network.network[year][day].baseMVA
 
                 # Free Vmag, Pg, Qg at the interface node
                 ref_node_idx = distribution_network.network[year][day].get_node_idx(ref_node_id)
                 ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
+                v_min, v_max = distribution_network.network[year][day].get_node_voltage_limits(ref_node_id)
                 for s_m in dso_model[year][day].scenarios_market:
                     for s_o in dso_model[year][day].scenarios_operation:
                         for p in dso_model[year][day].periods:
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].fixed = False
+                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setub(v_max + SMALL_TOLERANCE)
+                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setlb(v_min - SMALL_TOLERANCE)
                             dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].fixed = False
                             dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].setub(None)
                             dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].setlb(None)
@@ -1105,15 +1110,27 @@ def update_distribution_models_to_admm(distribution_networks, models, params):
                 dso_model[year][day].dual_ess_q_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - Shared ESS reactive power
 
                 # Objective function - augmented Lagrangian
-                obj = dso_model[year][day].objective.expr
+                init_of_value = 1.00
+                if distribution_network.params.obj_type == OBJ_MIN_COST:
+                    init_of_value = abs(pe.value(dso_model[year][day].objective))
+                    if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
+                        init_of_value = 1.00
+                obj = dso_model[year][day].objective.expr / init_of_value
 
                 # Augmented Lagrangian -- Interface power flow (residual balancing)
                 for p in dso_model[year][day].periods:
 
+                    init_p = abs(initial_pf[node_id][year][day]['p'][p]) / s_base
+                    if isclose(init_p, 0.00, abs_tol=SMALL_TOLERANCE):
+                        init_p = 1.00
+
+                    init_q = abs(initial_pf[node_id][year][day]['q'][p]) / s_base
+                    if isclose(init_q, 0.00, abs_tol=SMALL_TOLERANCE):
+                        init_q = 1.00
 
                     constraint_vmag_req = (dso_model[year][day].expected_interface_vmag_sqr[p] - dso_model[year][day].v_sqr_req[p])
-                    constraint_p_req = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_req[p])
-                    constraint_q_req = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_req[p])
+                    constraint_p_req = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_req[p]) / init_p
+                    constraint_q_req = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_req[p]) / init_q
 
                     obj += (dso_model[year][day].dual_v_sqr_req[p]) * constraint_vmag_req
                     obj += (dso_model[year][day].dual_pf_p_req[p]) * constraint_p_req
@@ -1123,10 +1140,15 @@ def update_distribution_models_to_admm(distribution_networks, models, params):
                     obj += (dso_model[year][day].rho_pf / 2) * (constraint_q_req ** 2)
 
                 # Augmented Lagrangian -- Shared ESS (residual balancing)
+                shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
+                shared_ess_rating = abs(distribution_network.network[year][day].shared_energy_storages[shared_ess_idx].s)
+                if isclose(shared_ess_rating, 0.00, abs_tol=SMALL_TOLERANCE):
+                    shared_ess_rating = 1.00
+
                 for p in dso_model[year][day].periods:
 
-                    constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_req[p])
-                    constraint_ess_q_req = (dso_model[year][day].expected_shared_ess_q[p] - dso_model[year][day].q_ess_req[p])
+                    constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_req[p]) / shared_ess_rating
+                    constraint_ess_q_req = (dso_model[year][day].expected_shared_ess_q[p] - dso_model[year][day].q_ess_req[p]) / shared_ess_rating
 
                     obj += dso_model[year][day].dual_ess_p_req[p] * constraint_ess_p_req
                     obj += dso_model[year][day].dual_ess_q_req[p] * constraint_ess_q_req
