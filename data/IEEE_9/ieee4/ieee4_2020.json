@@ -1,0 +1,23 @@
+{
+	"baseMVA": 1.0,
+	"nodes": [
+		{"bus_i": 1, "type": 3, "Gs": 0, "Bs": 0, "baseKV": 12.5, "Vmax": 1.1, "Vmin": 0.9},
+		{"bus_i": 2, "type": 1, "Gs": 0, "Bs": 0, "baseKV": 12.5, "Vmax": 1.1, "Vmin": 0.9},
+		{"bus_i": 3, "type": 1, "Gs": 0, "Bs": 0, "baseKV": 12.5, "Vmax": 1.1, "Vmin": 0.9},
+		{"bus_i": 400, "type": 1, "Gs": 0, "Bs": 0, "baseKV": 12.5, "Vmax": 1.1, "Vmin": 0.9}
+	],
+	"generators": [
+		{"gen_id":1,"bus":1,"Pmax":10,"Pmin":-10,"Qmax":10,"Qmin":-10,"Vg":1.05,"status":1, "type": "REF"},
+		{"gen_id":2,"bus":400,"Pmax":10,"Pmin":0,"Qmax":10,"Qmin":-10,"Vg":1.05,"status":1, "type": "CONV"}
+	],
+	"loads": [
+		{"load_id": 1, "bus": 2, "status": 1, "fl_reg": 1},
+		{"load_id": 2, "bus": 3, "status": 1, "fl_reg": 1},
+		{"load_id": 3, "bus": 400, "status": 1, "fl_reg": 1}
+	],	
+	"lines": [
+		{"branch_id": 1, "fbus": 2, "tbus": 3, "r": 0.003, "x": 0.006, "b": 0.00, "rating": 100, "status": 1},
+		{"branch_id": 2, "fbus": 1, "tbus": 2, "r": 0.003, "x": 0.006, "b": 0.00, "rating": 100, "status": 1},
+		{"branch_id": 3, "fbus": 400, "tbus": 1, "r": 0.003, "x": 0.006, "b": 0.00, "rating": 100, "status": 1}
+	]
+}
