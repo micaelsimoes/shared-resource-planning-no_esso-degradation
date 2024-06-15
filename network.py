@@ -49,7 +49,7 @@ class Network:
         return _run_smopf(self, model, params, from_warm_start=from_warm_start)
 
     def get_primal_value(self, model):
-        return pe.value(model.primal)
+        return pe.value(model.objective)
 
     def compute_objective_function_value(self, model, params):
         return _compute_objective_function_value(self, model, params)
