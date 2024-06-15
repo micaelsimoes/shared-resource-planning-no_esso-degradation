@@ -461,7 +461,21 @@ def create_transmission_network_model(transmission_network, initial_pf, candidat
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setub(None)
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setlb(None)
 
-    # Fix initial interface power flows, run SMOPF
+    # Update TSO's OF to try to respect the interface power flows, run SMOPF
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+            obj = tso_model[year][day].primal
+            s_base = transmission_network.network[year][day].baseMVA
+            for dn in tso_model[year][day].active_distribution_networks:
+                for p in tso_model[year][day].periods:
+                    init_v = initial_pf[adn_node_id][year][day]['v'][p] ** 2
+                    init_p = initial_pf[adn_node_id][year][day]['p'][p] / s_base
+                    init_q = initial_pf[adn_node_id][year][day]['q'][p] / s_base
+                    obj += (tso_model[year][day].expected_interface_vmag_sqr[dn, p] - init_v) ** 2
+                    obj += (tso_model[year][day].expected_interface_pf_p[dn, p] - init_p) ** 2
+                    obj += (tso_model[year][day].expected_interface_pf_q[dn, p] - init_q) ** 2
+            tso_model[year][day].objective.expr = obj
+
     '''
     for year in transmission_network.years:
         for day in transmission_network.days:
@@ -477,7 +491,7 @@ def create_transmission_network_model(transmission_network, initial_pf, candidat
                     tso_model[year][day].expected_interface_pf_q[dn, p].setlb(init_q - EQUALITY_TOLERANCE)
     '''
 
-    #transmission_network.optimize(tso_model)
+    transmission_network.optimize(tso_model)
 
     return tso_model
 
