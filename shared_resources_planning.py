@@ -462,6 +462,7 @@ def create_transmission_network_model(transmission_network, initial_pf, candidat
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setlb(None)
 
     # Fix initial interface power flows, run SMOPF
+    '''
     for year in transmission_network.years:
         for day in transmission_network.days:
             s_base = transmission_network.network[year][day].baseMVA
@@ -474,8 +475,9 @@ def create_transmission_network_model(transmission_network, initial_pf, candidat
                     tso_model[year][day].expected_interface_pf_p[dn, p].setlb(init_p - EQUALITY_TOLERANCE)
                     tso_model[year][day].expected_interface_pf_q[dn, p].setub(init_q + EQUALITY_TOLERANCE)
                     tso_model[year][day].expected_interface_pf_q[dn, p].setlb(init_q - EQUALITY_TOLERANCE)
+    '''
 
-    transmission_network.optimize(tso_model)
+    #transmission_network.optimize(tso_model)
 
     return tso_model
 
