@@ -464,7 +464,7 @@ def create_transmission_network_model(transmission_network, initial_pf, candidat
     # Update TSO's OF to try to respect the interface power flows, run SMOPF
     for year in transmission_network.years:
         for day in transmission_network.days:
-            obj = tso_model[year][day].primal
+            obj = tso_model[year][day].objective.expr
             s_base = transmission_network.network[year][day].baseMVA
             for dn in tso_model[year][day].active_distribution_networks:
                 for p in tso_model[year][day].periods:
@@ -474,7 +474,10 @@ def create_transmission_network_model(transmission_network, initial_pf, candidat
                     obj += PENALTY_INTERFACE_PF * ((tso_model[year][day].expected_interface_vmag_sqr[dn, p] - init_v) ** 2)
                     obj += PENALTY_INTERFACE_PF * ((tso_model[year][day].expected_interface_pf_p[dn, p] - init_p) ** 2)
                     obj += PENALTY_INTERFACE_PF * ((tso_model[year][day].expected_interface_pf_q[dn, p] - init_q) ** 2)
-            tso_model[year][day].objective.expr = obj
+
+            # Deactivate original OF, add new objective to the model
+            tso_model[year][day].objective.deactivate()
+            tso_model[year][day].admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
 
     '''
     for year in transmission_network.years:
@@ -1065,7 +1068,9 @@ def update_transmission_model_to_admm(transmission_network, model, initial_pf, p
                     obj += (model[year][day].rho_ess / 2) * constraint_ess_p ** 2
                     obj += (model[year][day].rho_ess / 2) * constraint_ess_q ** 2
 
-            model[year][day].objective.expr = obj
+            # Add ADMM OF, deactivate original OF
+            model[year][day].admm_objective.expr = obj
+            model[year][day].objective.deactivate()
 
 
 def update_distribution_models_to_admm(distribution_networks, models, initial_pf, params):
@@ -1167,7 +1172,9 @@ def update_distribution_models_to_admm(distribution_networks, models, initial_pf
                     obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_p_req ** 2
                     obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_q_req ** 2
 
-                dso_model[year][day].objective.expr = obj
+                # Add ADMM OF, deactivate original OF
+                dso_model[year][day].admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
+                dso_model[year][day].objective.deactivate()
 
 
 def update_shared_energy_storage_model_to_admm(shared_ess_data, model, params):
@@ -1195,7 +1202,9 @@ def update_shared_energy_storage_model_to_admm(shared_ess_data, model, params):
                     obj += (model.rho / 2) * constraint_p_req ** 2
                     obj += (model.rho / 2) * constraint_q_req ** 2
 
-    model.objective.expr = obj
+    # Add ADMM OF, deactivate original OF
+    model.admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
+    model.objective.deactivate()
 
     return model
 

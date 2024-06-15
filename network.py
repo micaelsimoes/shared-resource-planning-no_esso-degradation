@@ -531,9 +531,6 @@ def _build_model(network, params):
         model.slack_shared_es_soc_final_up = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
         model.slack_shared_es_soc_final_down = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
 
-    # Primal
-    model.primal = pe.Var(domain=pe.Reals, initialize=0.0)
-
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
     # - Voltage
@@ -1078,10 +1075,6 @@ def _build_model(network, params):
                     obj += PENALTY_SHARED_ESS * network.baseMVA * omega_market * omega_oper * slack_soc_final
 
     model.objective = pe.Objective(sense=pe.minimize, expr=obj)
-
-    # Primal definition
-    model.primal_cons = pe.ConstraintList()
-    model.primal_cons.add(model.primal == obj)
 
     # Model suffixes (used for warm start)
     model.ipopt_zL_out = pe.Suffix(direction=pe.Suffix.IMPORT)  # Ipopt bound multipliers (obtained from solution)
