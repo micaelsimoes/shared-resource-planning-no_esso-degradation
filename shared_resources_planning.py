@@ -470,8 +470,10 @@ def create_transmission_network_model(transmission_network, initial_pf, candidat
                 for p in tso_model[year][day].periods:
                     init_p = initial_pf[adn_node_id][year][day]['p'][p] / s_base
                     init_q = initial_pf[adn_node_id][year][day]['q'][p] / s_base
-                    tso_model[year][day].expected_interface_pf_p[dn, p].fix(init_p)
-                    tso_model[year][day].expected_interface_pf_q[dn, p].fix(init_q)
+                    tso_model[year][day].expected_interface_pf_p[dn, p].setub(init_p + EQUALITY_TOLERANCE)
+                    tso_model[year][day].expected_interface_pf_p[dn, p].setlb(init_p - EQUALITY_TOLERANCE)
+                    tso_model[year][day].expected_interface_pf_q[dn, p].setub(init_q + EQUALITY_TOLERANCE)
+                    tso_model[year][day].expected_interface_pf_q[dn, p].setlb(init_q - EQUALITY_TOLERANCE)
 
     transmission_network.optimize(tso_model)
 
