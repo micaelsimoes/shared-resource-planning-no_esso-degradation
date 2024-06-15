@@ -1002,8 +1002,8 @@ def update_transmission_model_to_admm(transmission_network, model, initial_pf, p
             init_of_value = 1.00
             if transmission_network.params.obj_type == OBJ_MIN_COST:
                 init_of_value = abs(pe.value(model[year][day].objective))
-                if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
-                    init_of_value = 1.00
+            if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
+                init_of_value = 1.00
             obj = model[year][day].objective.expr / init_of_value
 
             for dn in model[year][day].active_distribution_networks:
@@ -1103,8 +1103,8 @@ def update_distribution_models_to_admm(distribution_networks, models, initial_pf
                 init_of_value = 1.00
                 if distribution_network.params.obj_type == OBJ_MIN_COST:
                     init_of_value = abs(pe.value(dso_model[year][day].objective))
-                    if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
-                        init_of_value = 1.00
+                if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
+                    init_of_value = 1.00
                 obj = dso_model[year][day].objective.expr / init_of_value
 
                 # Augmented Lagrangian -- Interface power flow (residual balancing)
