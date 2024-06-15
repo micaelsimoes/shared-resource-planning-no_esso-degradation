@@ -471,9 +471,9 @@ def create_transmission_network_model(transmission_network, initial_pf, candidat
                     init_v = initial_pf[adn_node_id][year][day]['v'][p] ** 2
                     init_p = initial_pf[adn_node_id][year][day]['p'][p] / s_base
                     init_q = initial_pf[adn_node_id][year][day]['q'][p] / s_base
-                    obj += (tso_model[year][day].expected_interface_vmag_sqr[dn, p] - init_v) ** 2
-                    obj += (tso_model[year][day].expected_interface_pf_p[dn, p] - init_p) ** 2
-                    obj += (tso_model[year][day].expected_interface_pf_q[dn, p] - init_q) ** 2
+                    obj += PENALTY_INTERFACE_PF * ((tso_model[year][day].expected_interface_vmag_sqr[dn, p] - init_v) ** 2)
+                    obj += PENALTY_INTERFACE_PF * ((tso_model[year][day].expected_interface_pf_p[dn, p] - init_p) ** 2)
+                    obj += PENALTY_INTERFACE_PF * ((tso_model[year][day].expected_interface_pf_q[dn, p] - init_q) ** 2)
             tso_model[year][day].objective.expr = obj
 
     '''
@@ -491,7 +491,9 @@ def create_transmission_network_model(transmission_network, initial_pf, candidat
                     tso_model[year][day].expected_interface_pf_q[dn, p].setlb(init_q - EQUALITY_TOLERANCE)
     '''
 
-    transmission_network.optimize(tso_model)
+    results = transmission_network.optimize(tso_model)
+    processed_results = transmission_network.process_results(tso_model, results)
+    transmission_network.write_optimization_results_to_excel(processed_results)
 
     return tso_model
 
@@ -556,7 +558,9 @@ def create_distribution_networks_models(distribution_networks, candidate_solutio
                     dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_shared_ess_q[p] == expected_sess_q)
 
         # Run SMOPF
-        distribution_network.optimize(dso_model)
+        results = distribution_network.optimize(dso_model)
+        processed_results = distribution_network.process_results(dso_model, results)
+        distribution_network.write_optimization_results_to_excel(processed_results)
 
         dso_models[node_id] = dso_model
 
