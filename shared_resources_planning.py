@@ -250,6 +250,10 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     update_transmission_model_to_admm(transmission_network, tso_model, initial_pf, admm_parameters)
     update_shared_energy_storage_model_to_admm(shared_ess_data, esso_model, admm_parameters)
 
+    planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
+                                                     consensus_vars, dual_vars,
+                                                     admm_parameters)
+
     # ------------------------------------------------------------------------------------------------------------------
     # ADMM -- Main cycle
     # ------------------------------------------------------------------------------------------------------------------
@@ -768,15 +772,13 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
         for year in planning_problem.years:
             for day in planning_problem.days:
                 s_base = transmission_network.network[year][day].baseMVA
-                vmin, vmax = transmission_network.network[year][day].get_node_voltage_limits(node_id)
-                s_max = distribution_networks[node_id].network[year][day].get_interface_branch_rating()
                 for p in tso_model[year][day].periods:
-                    v_req = pe.value(tso_model[year][day].expected_interface_vmag_sqr[dn, p])
+                    vsqr_req = pe.value(tso_model[year][day].expected_interface_vmag_sqr[dn, p])
                     p_req = pe.value(tso_model[year][day].expected_interface_pf_p[dn, p]) * s_base
                     q_req = pe.value(tso_model[year][day].expected_interface_pf_q[dn, p]) * s_base
-                    interface_vars['v_sqr']['tso']['current'][node_id][year][day][p] = min(max(v_req, vmin), vmax)
-                    interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p] = min(max(p_req, -s_max), s_max)
-                    interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p] = min(max(q_req, -s_max), s_max)
+                    interface_vars['v_sqr']['tso']['current'][node_id][year][day][p] = vsqr_req
+                    interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p] = p_req
+                    interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p] = q_req
 
     # Distribution Network - Update PF at the TN-DN interface
     for node_id in distribution_networks:
@@ -785,15 +787,13 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
         for year in planning_problem.years:
             for day in planning_problem.days:
                 s_base = distribution_network.network[year][day].baseMVA
-                vmin, vmax = transmission_network.network[year][day].get_node_voltage_limits(node_id)
-                s_max = distribution_network.network[year][day].get_interface_branch_rating()
                 for p in dso_model[year][day].periods:
-                    v_req = pe.value(dso_model[year][day].expected_interface_vmag_sqr[p])
+                    vsqr_req = pe.value(dso_model[year][day].expected_interface_vmag_sqr[p])
                     p_req = pe.value(dso_model[year][day].expected_interface_pf_p[p]) * s_base
                     q_req = pe.value(dso_model[year][day].expected_interface_pf_q[p]) * s_base
-                    interface_vars['v_sqr']['dso']['current'][node_id][year][day][p] = min(max(v_req, vmin), vmax)
-                    interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p] = min(max(p_req, -s_max), s_max)
-                    interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p] = min(max(q_req, -s_max), s_max)
+                    interface_vars['v_sqr']['dso']['current'][node_id][year][day][p] = vsqr_req
+                    interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p] = p_req
+                    interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p] = q_req
 
     # Update Lambdas
     for node_id in distribution_networks:
