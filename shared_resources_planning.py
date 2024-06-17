@@ -82,7 +82,7 @@ class SharedResourcesPlanning:
     def update_interface_power_flow_variables(self, tso_model, dso_models, interface_vars, dual_vars, params):
         _update_interface_power_flow_variables(self, tso_model, dso_models, interface_vars, dual_vars, params)
 
-    def _update_shared_energy_storage_variables(self, tso_model, dso_models, esso_model, consensus_vars, dual_vars, params):
+    def update_shared_energy_storage_variables(self, tso_model, dso_models, esso_model, consensus_vars, dual_vars, params):
         _update_shared_energy_storage_variables(self, tso_model, dso_models, esso_model, consensus_vars, dual_vars, params)
 
     def read_planning_problem(self):
