@@ -482,6 +482,7 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
             obj = tso_model[year][day].objective.expr
             s_base = transmission_network.network[year][day].baseMVA
             for dn in tso_model[year][day].active_distribution_networks:
+                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
                 for p in tso_model[year][day].periods:
                     init_v = consensus_vars['interface']['v_sqr']['dso']['current'][adn_node_id][year][day][p]
                     init_p = consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
@@ -495,7 +496,9 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
             tso_model[year][day].admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
 
     # Run SMOPF
-    transmission_network.optimize(tso_model)
+    results = transmission_network.optimize(tso_model)
+    processed_results = transmission_network.process_results(tso_model, results)
+    transmission_network.write_optimization_results_to_excel(processed_results, filename=f'{transmission_network.name}_init_')
 
     # Get initial interface PF values
     for year in transmission_network.years:
@@ -587,7 +590,9 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                     dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_shared_ess_q[p] == expected_sess_q)
 
         # Run SMOPF
-        distribution_network.optimize(dso_model)
+        results = distribution_network.optimize(dso_model)
+        processed_results = distribution_network.process_results(dso_model, results)
+        distribution_network.write_optimization_results_to_excel(processed_results, filename=f'{distribution_network.name}_init_')
 
         # Get initial interface PF values
         for year in distribution_network.years:
