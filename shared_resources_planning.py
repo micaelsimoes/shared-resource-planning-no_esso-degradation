@@ -781,16 +781,17 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
                 init_of_value = 1.00
             obj = model[year][day].objective.expr / init_of_value
 
-            avg_p = abs(average(consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['p'][p])) / s_base
-            if isclose(avg_p, 0.00, abs_tol=SMALL_TOLERANCE):
-                avg_p = 1.00
-
-            avg_q = abs(average(consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q'][p])) / s_base
-            if isclose(avg_q, 0.00, abs_tol=SMALL_TOLERANCE):
-                avg_q = 1.00
-
             for dn in model[year][day].active_distribution_networks:
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
+
+                avg_p = abs(average(consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['p'])) / s_base
+                if isclose(avg_p, 0.00, abs_tol=SMALL_TOLERANCE):
+                    avg_p = 1.00
+
+                avg_q = abs(average(consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q'])) / s_base
+                if isclose(avg_q, 0.00, abs_tol=SMALL_TOLERANCE):
+                    avg_q = 1.00
+
                 for p in model[year][day].periods:
 
                     constraint_v_req = (model[year][day].expected_interface_vmag_sqr[dn, p] - model[year][day].v_sqr_req[dn, p])
@@ -884,11 +885,11 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                     init_of_value = 1.00
                 obj = dso_model[year][day].objective.expr / init_of_value
 
-                avg_p = abs(average(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p])) / s_base
+                avg_p = abs(average(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'])) / s_base
                 if isclose(avg_p, 0.00, abs_tol=SMALL_TOLERANCE):
                     avg_p = 1.00
 
-                avg_q = abs(average(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p])) / s_base
+                avg_q = abs(average(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'])) / s_base
                 if isclose(avg_q, 0.00, abs_tol=SMALL_TOLERANCE):
                     avg_q = 1.00
 
