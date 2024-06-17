@@ -415,27 +415,28 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
     for year in transmission_network.years:
         for day in transmission_network.days:
 
+            s_base = transmission_network.network[year][day].baseMVA
+
             # Add expected interface values
             tso_model[year][day].expected_interface_values = pe.ConstraintList()
             tso_model[year][day].expected_interface_vmag_sqr = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00)
             tso_model[year][day].expected_interface_pf_p = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
             tso_model[year][day].expected_interface_pf_q = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
 
-            obj = tso_model[year][day].expr
+            obj = tso_model[year][day].objective.expr
             for dn in tso_model[year][day].active_distribution_networks:
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
                 adn_node_idx = transmission_network.network[year][day].get_node_idx(adn_node_id)
                 adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(adn_node_id)
-                shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(adn_node_id)
                 for s_m in tso_model[year][day].scenarios_market:
                     for s_o in tso_model[year][day].scenarios_operation:
                         for p in tso_model[year][day].periods:
                             vmag_sqr = tso_model[year][day].e[adn_node_idx, s_m, s_o, p] ** 2 + tso_model[year][day].f[adn_node_idx, s_m, s_o, p] ** 2
                             pf_p = tso_model[year][day].pc[adn_load_idx, s_m, s_o, p]
                             pf_q = tso_model[year][day].qc[adn_load_idx, s_m, s_o, p]
-                            obj += EXPECTED_VALUE_PENALTY * (vmag_sqr - tso_model[year][day].expected_interface_vmag_sqr[p]) ** 2     # voltage magnitude (squared)
-                            obj += EXPECTED_VALUE_PENALTY * (pf_p - tso_model[year][day].expected_interface_pf_p[p]) ** 2             # active power
-                            obj += EXPECTED_VALUE_PENALTY * (pf_q - tso_model[year][day].expected_interface_pf_q[p]) ** 2             # active power
+                            obj += EXPECTED_VALUE_PENALTY * s_base * (vmag_sqr - tso_model[year][day].expected_interface_vmag_sqr[dn, p]) ** 2     # voltage magnitude (squared)
+                            obj += EXPECTED_VALUE_PENALTY * s_base * (pf_p - tso_model[year][day].expected_interface_pf_p[dn, p]) ** 2             # active power
+                            obj += EXPECTED_VALUE_PENALTY * s_base * (pf_q - tso_model[year][day].expected_interface_pf_q[dn, p]) ** 2             # active power
 
             # Add expected shared ESS values
             tso_model[year][day].expected_shared_ess_p = pe.Var(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
@@ -446,12 +447,12 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                 for s_m in tso_model[year][day].scenarios_market:
                     for s_o in tso_model[year][day].scenarios_operation:
                         for p in tso_model[year][day].periods:
-                            ess_p = (tso_model[year][day].shared_es_pch[shared_ess_idx, s_m, s_o, p] - tso_model[year][day].shared_es_pdch[shared_ess_idx, s_m, s_o, p])
-                            ess_q = (tso_model[year][day].shared_es_qch[shared_ess_idx, s_m, s_o, p] - tso_model[year][day].shared_es_qdch[shared_ess_idx, s_m, s_o, p])
-                            obj += EXPECTED_VALUE_PENALTY * (ess_p - tso_model[year][day].expected_shared_ess_p[p]) ** 2
-                            obj += EXPECTED_VALUE_PENALTY * (ess_q - tso_model[year][day].expected_shared_ess_q[p]) ** 2
+                            ess_p = (tso_model[year][day].shared_es_pch[e, s_m, s_o, p] - tso_model[year][day].shared_es_pdch[e, s_m, s_o, p])
+                            ess_q = (tso_model[year][day].shared_es_qch[e, s_m, s_o, p] - tso_model[year][day].shared_es_qdch[e, s_m, s_o, p])
+                            obj += EXPECTED_VALUE_PENALTY * s_base * (ess_p - tso_model[year][day].expected_shared_ess_p[e, p]) ** 2
+                            obj += EXPECTED_VALUE_PENALTY * s_base * (ess_q - tso_model[year][day].expected_shared_ess_q[e, p]) ** 2
 
-            tso_model[year][day].expr = obj
+            tso_model[year][day].objective.expr = obj
 
     # Update TSO's OF to try to respect the interface power flows, run SMOPF
     for year in transmission_network.years:
@@ -524,6 +525,8 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
         for year in distribution_network.years:
             for day in distribution_network.days:
 
+                s_base = distribution_network.network[year][day].baseMVA
+
                 ref_node_id = distribution_network.network[year][day].get_reference_node_id()
                 ref_node_idx = distribution_network.network[year][day].get_node_idx(ref_node_id)
                 ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
@@ -537,7 +540,7 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                 dso_model[year][day].expected_shared_ess_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
                 dso_model[year][day].expected_shared_ess_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
 
-                obj = dso_model[year][day].expr
+                obj = dso_model[year][day].objective.expr
                 for s_m in dso_model[year][day].scenarios_market:
                     for s_o in dso_model[year][day].scenarios_operation:
                         for p in dso_model[year][day].periods:
@@ -545,16 +548,16 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                             vmag_sqr = dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2
                             pf_p = dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p]
                             pf_q = dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p]
-                            obj += EXPECTED_VALUE_PENALTY * (vmag_sqr - dso_model[year][day].expected_interface_vmag_sqr[p]) ** 2     # voltage magnitude (squared)
-                            obj += EXPECTED_VALUE_PENALTY * (pf_p - dso_model[year][day].expected_interface_pf_p[p]) ** 2             # active power
-                            obj += EXPECTED_VALUE_PENALTY * (pf_q - dso_model[year][day].expected_interface_pf_q[p]) ** 2             # reactive power
+                            obj += EXPECTED_VALUE_PENALTY * s_base * (vmag_sqr - dso_model[year][day].expected_interface_vmag_sqr[p]) ** 2     # voltage magnitude (squared)
+                            obj += EXPECTED_VALUE_PENALTY * s_base * (pf_p - dso_model[year][day].expected_interface_pf_p[p]) ** 2             # active power
+                            obj += EXPECTED_VALUE_PENALTY * s_base * (pf_q - dso_model[year][day].expected_interface_pf_q[p]) ** 2             # reactive power
 
                             ess_p = (dso_model[year][day].shared_es_pch[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].shared_es_pdch[shared_ess_idx, s_m, s_o, p])
                             ess_q = (dso_model[year][day].shared_es_qch[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].shared_es_qdch[shared_ess_idx, s_m, s_o, p])
-                            obj += EXPECTED_VALUE_PENALTY * (ess_p - dso_model[year][day].expected_shared_ess_p[p]) ** 2
-                            obj += EXPECTED_VALUE_PENALTY * (ess_q - dso_model[year][day].expected_shared_ess_q[p]) ** 2
+                            obj += EXPECTED_VALUE_PENALTY * s_base * (ess_p - dso_model[year][day].expected_shared_ess_p[p]) ** 2
+                            obj += EXPECTED_VALUE_PENALTY * s_base * (ess_q - dso_model[year][day].expected_shared_ess_q[p]) ** 2
 
-                dso_model[year][day].expr = obj
+                dso_model[year][day].objective.expr = obj
 
         # Run SMOPF
         results = distribution_network.optimize(dso_model)
