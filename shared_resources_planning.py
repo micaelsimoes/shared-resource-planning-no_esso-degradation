@@ -254,14 +254,12 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     # Create models, get initial power flows
     dso_models = create_distribution_networks_models(distribution_networks, consensus_vars, candidate_solution['total_capacity'])
     tso_model = create_transmission_network_model(transmission_network, consensus_vars, candidate_solution['total_capacity'])
-    esso_model = create_shared_energy_storage_model(shared_ess_data, candidate_solution['investment'])
+    esso_model = create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidate_solution['investment'])
 
     # Update models to ADMM
-    update_distribution_models_to_admm(distribution_networks, dso_models, initial_pf, admm_parameters)
-    update_transmission_model_to_admm(transmission_network, tso_model, initial_pf, admm_parameters)
+    update_distribution_models_to_admm(distribution_networks, dso_models, consensus_vars, admm_parameters)
+    update_transmission_model_to_admm(transmission_network, tso_model, consensus_vars, admm_parameters)
     update_shared_energy_storage_model_to_admm(shared_ess_data, esso_model, admm_parameters)
-
-    planning_problem.update_interface_power_flow_variables(tso_model, dso_models, consensus_vars['interface'], dual_vars, admm_parameters)
 
     planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
                                                      consensus_vars, dual_vars,
@@ -618,11 +616,27 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
     return dso_models
 
 
-def create_shared_energy_storage_model(shared_ess_data, candidate_solution):
+def create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidate_solution):
+
+    years = [year for year in shared_ess_data.years]
+    days = [day for day in shared_ess_data.days]
 
     shared_ess_data.update_data_with_candidate_solution(candidate_solution)
     esso_model = shared_ess_data.build_subproblem()
     shared_ess_data.update_model_with_candidate_solution(esso_model, candidate_solution)
+    shared_ess_data.optimize(esso_model)
+
+    for e in esso_model.energy_storages:
+        node_id = shared_ess_data.active_distribution_network_nodes[e]
+        for y in esso_model.years:
+            year = years[y]
+            for d in esso_model.days:
+                day = days[d]
+                for p in esso_model.periods:
+                    shared_ess_p = pe.value(esso_model.es_pnet[e, y, d, p])
+                    shared_ess_q = pe.value(esso_model.es_qnet[e, y, d, p])
+                    consensus_vars['ess']['esso']['current'][node_id][year][day]['p'][p] = shared_ess_p
+                    consensus_vars['ess']['esso']['current'][node_id][year][day]['q'][p] = shared_ess_q
 
     return esso_model
 
@@ -748,6 +762,468 @@ def create_admm_variables(planning_problem):
                 dual_variables['ess']['esso']['dso'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
 
     return consensus_variables, dual_variables
+
+
+def update_transmission_model_to_admm(transmission_network, model, consensus_vars, params):
+
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+
+            s_base = transmission_network.network[year][day].baseMVA
+
+            for dn in model[year][day].active_distribution_networks:
+                for p in model[year][day].periods:
+                    model[year][day].expected_interface_pf_p[dn, p].setub(None)
+                    model[year][day].expected_interface_pf_p[dn, p].setlb(None)
+                    model[year][day].expected_interface_pf_q[dn, p].setub(None)
+                    model[year][day].expected_interface_pf_q[dn, p].setlb(None)
+
+            # Add ADMM variables
+            model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
+            model[year][day].rho_v.fix(params.rho['v'][transmission_network.name])
+            model[year][day].v_sqr_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.NonNegativeReals)
+            model[year][day].dual_v_sqr_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - active power requested
+
+            model[year][day].rho_pf = pe.Var(domain=pe.NonNegativeReals)
+            model[year][day].rho_pf.fix(params.rho['pf'][transmission_network.name])
+            model[year][day].p_pf_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)        # Active power - requested by distribution networks
+            model[year][day].q_pf_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)        # Reactive power - requested by distribution networks
+            model[year][day].dual_pf_p_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - active power requested
+            model[year][day].dual_pf_q_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - reactive power requested
+
+            model[year][day].rho_ess = pe.Var(domain=pe.NonNegativeReals)
+            model[year][day].rho_ess.fix(params.rho['ess'][transmission_network.name])
+            model[year][day].p_ess_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)             # Shared ESS - Active power requested (DSO)
+            model[year][day].q_ess_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)             # Shared ESS - Reactive power requested (DSO)
+            model[year][day].dual_ess_p_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)        # Dual variable - Shared ESS active power
+            model[year][day].dual_ess_q_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)        # Dual variable - Shared ESS active power
+
+            # Objective function - augmented Lagrangian
+            init_of_value = 1.00
+            if transmission_network.params.obj_type == OBJ_MIN_COST:
+                init_of_value = abs(pe.value(model[year][day].objective))
+            if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
+                init_of_value = 1.00
+            obj = model[year][day].objective.expr / init_of_value
+
+            for dn in model[year][day].active_distribution_networks:
+                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
+                for p in model[year][day].periods:
+
+                    init_p = abs(consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['p'][p]) / s_base
+                    if isclose(init_p, 0.00, abs_tol=SMALL_TOLERANCE):
+                        init_p = 1.00
+
+                    init_q = abs(consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q'][p]) / s_base
+                    if isclose(init_q, 0.00, abs_tol=SMALL_TOLERANCE):
+                        init_q = 1.00
+
+                    constraint_v_req = (model[year][day].expected_interface_vmag_sqr[dn, p] - model[year][day].v_sqr_req[dn, p])
+                    constraint_p_req = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_req[dn, p]) / init_p
+                    constraint_q_req = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_req[dn, p]) / init_q
+
+                    obj += model[year][day].dual_v_sqr_req[dn, p] * constraint_v_req
+                    obj += model[year][day].dual_pf_p_req[dn, p] * constraint_p_req
+                    obj += model[year][day].dual_pf_q_req[dn, p] * constraint_q_req
+                    obj += (model[year][day].rho_pf / 2) * (constraint_v_req ** 2)
+                    obj += (model[year][day].rho_pf / 2) * (constraint_p_req ** 2)
+                    obj += (model[year][day].rho_pf / 2) * (constraint_q_req ** 2)
+
+            for e in model[year][day].shared_energy_storages:
+
+                shared_ess_rating = abs(transmission_network.network[year][day].shared_energy_storages[e].s)
+                if isclose(shared_ess_rating, 0.00, abs_tol=SMALL_TOLERANCE):
+                    shared_ess_rating = 1.00
+
+                for p in model[year][day].periods:
+                    constraint_ess_p = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_req[e, p]) / shared_ess_rating
+                    constraint_ess_q = (model[year][day].expected_shared_ess_q[e, p] - model[year][day].q_ess_req[e, p]) / shared_ess_rating
+                    obj += model[year][day].dual_ess_p_req[e, p] * constraint_ess_p
+                    obj += model[year][day].dual_ess_q_req[e, p] * constraint_ess_q
+                    obj += (model[year][day].rho_ess / 2) * constraint_ess_p ** 2
+                    obj += (model[year][day].rho_ess / 2) * constraint_ess_q ** 2
+
+            # Add ADMM OF, deactivate original OF
+            model[year][day].admm_objective.expr = obj
+            model[year][day].objective.deactivate()
+
+
+def update_distribution_models_to_admm(distribution_networks, models, consensus_vars, params):
+
+    for node_id in distribution_networks:
+
+        dso_model = models[node_id]
+        distribution_network = distribution_networks[node_id]
+
+        for year in distribution_network.years:
+            for day in distribution_network.days:
+
+                ref_node_id = distribution_network.network[year][day].get_reference_node_id()
+                s_base = distribution_network.network[year][day].baseMVA
+
+                # Free Vmag, Pg, Qg at the interface node
+                ref_node_idx = distribution_network.network[year][day].get_node_idx(ref_node_id)
+                ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
+                v_min, v_max = distribution_network.network[year][day].get_node_voltage_limits(ref_node_id)
+                for s_m in dso_model[year][day].scenarios_market:
+                    for s_o in dso_model[year][day].scenarios_operation:
+                        for p in dso_model[year][day].periods:
+                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].fixed = False
+                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setub(v_max + SMALL_TOLERANCE)
+                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setlb(v_min - SMALL_TOLERANCE)
+                            dso_model[year][day].f[ref_node_idx, s_m, s_o, p].fixed = False
+                            dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
+                            dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].fixed = False
+                            dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].setub(None)
+                            dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].setlb(None)
+                            dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].fixed = False
+                            dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].setub(None)
+                            dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].setlb(None)
+
+                # Add ADMM variables
+                dso_model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
+                dso_model[year][day].rho_v.fix(params.rho['v'][distribution_network.network[year][day].name])
+                dso_model[year][day].v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)       # Voltage magnitude - requested by TSO
+                dso_model[year][day].dual_v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - voltage magnitude
+
+                dso_model[year][day].rho_pf = pe.Var(domain=pe.NonNegativeReals)
+                dso_model[year][day].rho_pf.fix(params.rho['pf'][distribution_network.network[year][day].name])
+                dso_model[year][day].p_pf_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)                   # Active power - requested by TSO
+                dso_model[year][day].q_pf_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)                   # Reactive power - requested by TSO
+                dso_model[year][day].dual_pf_p_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)              # Dual variable - active power
+                dso_model[year][day].dual_pf_q_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)              # Dual variable - reactive power
+
+                dso_model[year][day].rho_ess = pe.Var(domain=pe.NonNegativeReals)
+                dso_model[year][day].rho_ess.fix(params.rho['ess'][distribution_network.network[year][day].name])
+                dso_model[year][day].p_ess_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)                  # Shared ESS - active power requested (TSO)
+                dso_model[year][day].q_ess_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)                  # Shared ESS - reactive power requested (TSO)
+                dso_model[year][day].dual_ess_p_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - Shared ESS active power
+                dso_model[year][day].dual_ess_q_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - Shared ESS reactive power
+
+                # Objective function - augmented Lagrangian
+                init_of_value = 1.00
+                if distribution_network.params.obj_type == OBJ_MIN_COST:
+                    init_of_value = abs(pe.value(dso_model[year][day].objective))
+                if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
+                    init_of_value = 1.00
+                obj = dso_model[year][day].objective.expr / init_of_value
+
+                # Augmented Lagrangian -- Interface power flow (residual balancing)
+                for p in dso_model[year][day].periods:
+
+                    init_p = abs(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p]) / s_base
+                    if isclose(init_p, 0.00, abs_tol=SMALL_TOLERANCE):
+                        init_p = 1.00
+
+                    init_q = abs(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p]) / s_base
+                    if isclose(init_q, 0.00, abs_tol=SMALL_TOLERANCE):
+                        init_q = 1.00
+
+                    constraint_vmag_req = (dso_model[year][day].expected_interface_vmag_sqr[p] - dso_model[year][day].v_sqr_req[p])
+                    constraint_p_req = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_req[p]) / init_p
+                    constraint_q_req = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_req[p]) / init_q
+
+                    obj += (dso_model[year][day].dual_v_sqr_req[p]) * constraint_vmag_req
+                    obj += (dso_model[year][day].dual_pf_p_req[p]) * constraint_p_req
+                    obj += (dso_model[year][day].dual_pf_q_req[p]) * constraint_q_req
+                    obj += (dso_model[year][day].rho_v / 2) * (constraint_vmag_req ** 2)
+                    obj += (dso_model[year][day].rho_pf / 2) * (constraint_p_req ** 2)
+                    obj += (dso_model[year][day].rho_pf / 2) * (constraint_q_req ** 2)
+
+                # Augmented Lagrangian -- Shared ESS (residual balancing)
+                shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
+                shared_ess_rating = abs(distribution_network.network[year][day].shared_energy_storages[shared_ess_idx].s)
+                if isclose(shared_ess_rating, 0.00, abs_tol=SMALL_TOLERANCE):
+                    shared_ess_rating = 1.00
+
+                for p in dso_model[year][day].periods:
+
+                    constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_req[p]) / shared_ess_rating
+                    constraint_ess_q_req = (dso_model[year][day].expected_shared_ess_q[p] - dso_model[year][day].q_ess_req[p]) / shared_ess_rating
+
+                    obj += dso_model[year][day].dual_ess_p_req[p] * constraint_ess_p_req
+                    obj += dso_model[year][day].dual_ess_q_req[p] * constraint_ess_q_req
+                    obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_p_req ** 2
+                    obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_q_req ** 2
+
+                # Add ADMM OF, deactivate original OF
+                dso_model[year][day].admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
+                dso_model[year][day].objective.deactivate()
+
+
+def update_shared_energy_storage_model_to_admm(shared_ess_data, model, params):
+
+    years = [year for year in shared_ess_data.years]
+
+    # Add ADMM variables
+    model.rho = pe.Var(domain=pe.NonNegativeReals)
+    model.rho.fix(params.rho['ess']['esso'])
+
+    # Active and Reactive power requested by TSO and DSOs
+    model.p_req = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)            # Active power
+    model.q_req = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)            # Reactive power
+    model.dual_p_req = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)       # Dual variables
+    model.dual_q_req = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)       # Dual variables
+
+    # Objective function - augmented Lagrangian
+    obj = model.objective.expr
+    for e in model.energy_storages:
+        for y in model.years:
+            year = years[y]
+            shared_ess_rating = shared_ess_data.shared_energy_storages[year][e].s
+            if isclose(shared_ess_rating, 0.00, abs_tol=SMALL_TOLERANCE):
+                shared_ess_rating = 1.00
+            for d in model.days:
+                for p in model.periods:
+                    constraint_p_req = (model.es_pnet[e, y, d, p] - model.p_req[e, y, d, p]) / shared_ess_rating
+                    constraint_q_req = (model.es_qnet[e, y, d, p] - model.q_req[e, y, d, p]) / shared_ess_rating
+                    obj += model.dual_p_req[e, y, d, p] * constraint_p_req
+                    obj += model.dual_q_req[e, y, d, p] * constraint_q_req
+                    obj += (model.rho / 2) * constraint_p_req ** 2
+                    obj += (model.rho / 2) * constraint_q_req ** 2
+
+    # Add ADMM OF, deactivate original OF
+    model.admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
+    model.objective.deactivate()
+
+    return model
+
+
+def update_transmission_coordination_model_and_solve(transmission_network, model, vsqr_req, dual_vsqr, pf_req, dual_pf, ess_req, dual_ess, params, from_warm_start=False):
+
+    print('[INFO] \t\t - Updating transmission network...')
+
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+
+            s_base = transmission_network.network[year][day].baseMVA
+
+            rho_v = params.rho['v'][transmission_network.name]
+            rho_pf = params.rho['pf'][transmission_network.name]
+            rho_ess = params.rho['ess'][transmission_network.name]
+            if params.adaptive_penalty:
+                rho_v = pe.value(model[year][day].rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+                rho_pf = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+                rho_ess = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+
+            # Update Rho parameter
+            model[year][day].rho_v.fix(rho_v)
+            model[year][day].rho_pf.fix(rho_pf)
+            model[year][day].rho_ess.fix(rho_ess)
+
+            for dn in model[year][day].active_distribution_networks:
+
+                node_id = transmission_network.active_distribution_network_nodes[dn]
+
+                # Update VOLTAGE and POWER FLOW variables at connection point
+                for p in model[year][day].periods:
+                    model[year][day].dual_v_sqr_req[dn, p].fix(dual_vsqr[node_id][year][day][p] / s_base)
+                    model[year][day].dual_pf_p_req[dn, p].fix(dual_pf[node_id][year][day]['p'][p] / s_base)
+                    model[year][day].dual_pf_q_req[dn, p].fix(dual_pf[node_id][year][day]['q'][p] / s_base)
+                    model[year][day].v_sqr_req[dn, p].fix(vsqr_req['dso']['current'][node_id][year][day][p])
+                    model[year][day].p_pf_req[dn, p].fix(pf_req['dso']['current'][node_id][year][day]['p'][p] / s_base)
+                    model[year][day].q_pf_req[dn, p].fix(pf_req['dso']['current'][node_id][year][day]['q'][p] / s_base)
+
+                # Update shared ESS capacity and power requests
+                shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(node_id)
+                for p in model[year][day].periods:
+                    model[year][day].dual_ess_p_req[shared_ess_idx, p].fix(dual_ess[node_id][year][day]['p'][p] / s_base)
+                    model[year][day].dual_ess_q_req[shared_ess_idx, p].fix(dual_ess[node_id][year][day]['q'][p] / s_base)
+                    model[year][day].p_ess_req[shared_ess_idx, p].fix(ess_req['esso']['current'][node_id][year][day]['p'][p] / s_base)
+                    model[year][day].q_ess_req[shared_ess_idx, p].fix(ess_req['esso']['current'][node_id][year][day]['q'][p] / s_base)
+
+    # Solve!
+    res = transmission_network.optimize(model, from_warm_start=from_warm_start)
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+            if res[year][day].solver.status == po.SolverStatus.error:
+                print(f'[ERROR] Network {model[year][day].name} did not converge!')
+                # exit(ERROR_NETWORK_OPTIMIZATION)
+    return res
+
+
+def update_distribution_coordination_models_and_solve(distribution_networks, models, vsqr_req, dual_vsqr, pf_req, dual_pf, ess_req, dual_ess, params, from_warm_start=False):
+
+    print('[INFO] \t\t - Updating distribution networks:')
+    res = dict()
+
+    for node_id in distribution_networks:
+
+        model = models[node_id]
+        distribution_network = distribution_networks[node_id]
+
+        print('[INFO] \t\t\t - Updating active distribution network connected to node {}...'.format(node_id))
+
+        for year in distribution_network.years:
+            for day in distribution_network.days:
+
+                s_base = distribution_network.network[year][day].baseMVA
+
+                rho_v = params.rho['v'][distribution_network.name]
+                rho_pf = params.rho['pf'][distribution_network.name]
+                rho_ess = params.rho['ess'][distribution_network.name]
+                if params.adaptive_penalty:
+                    rho_v = pe.value(model[year][day].rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+                    rho_pf = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+                    rho_ess = pe.value(model[year][day].rho_ess) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+
+                # Update Rho parameter
+                model[year][day].rho_v.fix(rho_v)
+                model[year][day].rho_pf.fix(rho_pf)
+                model[year][day].rho_ess.fix(rho_ess)
+
+                # Update VOLTAGE and POWER FLOW variables at connection point
+                for p in model[year][day].periods:
+
+                    model[year][day].dual_v_sqr_req[p].fix(dual_vsqr[node_id][year][day][p] / s_base)
+                    model[year][day].dual_pf_p_req[p].fix(dual_pf[node_id][year][day]['p'][p] / s_base)
+                    model[year][day].dual_pf_q_req[p].fix(dual_pf[node_id][year][day]['q'][p] / s_base)
+                    model[year][day].v_sqr_req[p].fix(vsqr_req['tso']['current'][node_id][year][day][p])
+                    model[year][day].p_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['p'][p] / s_base)
+                    model[year][day].q_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['q'][p] / s_base)
+
+                # Update SHARED ENERGY STORAGE variables (if existent)
+                for p in model[year][day].periods:
+                    model[year][day].dual_ess_p_req[p].fix(dual_ess[node_id][year][day]['p'][p] / s_base)
+                    model[year][day].dual_ess_q_req[p].fix(dual_ess[node_id][year][day]['q'][p] / s_base)
+                    model[year][day].p_ess_req[p].fix(ess_req['esso']['current'][node_id][year][day]['p'][p] / s_base)
+                    model[year][day].q_ess_req[p].fix(ess_req['esso']['current'][node_id][year][day]['q'][p] / s_base)
+
+        # Solve!
+        res[node_id] = distribution_network.optimize(model, from_warm_start=from_warm_start)
+        for year in distribution_network.years:
+            for day in distribution_network.days:
+                if res[node_id][year][day].solver.status != po.SolverStatus.ok:
+                    print(f'[WARNING] Network {model[year][day].name} did not converge!')
+                    #exit(ERROR_NETWORK_OPTIMIZATION)
+    return res
+
+
+def update_shared_energy_storages_coordination_model_and_solve(planning_problem, model, ess_req, dual_ess, params, from_warm_start=False):
+
+    print('[INFO] \t\t - Updating Shared ESS...')
+    shared_ess_data = planning_problem.shared_ess_data
+    days = [day for day in planning_problem.days]
+    years = [year for year in planning_problem.years]
+
+    rho_esso = params.rho['ess']['esso']
+    if params.adaptive_penalty:
+        rho_esso = pe.value(model.rho) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+    model.rho.fix(rho_esso)
+
+    for e in model.energy_storages:
+        for y in model.years:
+            year = years[y]
+            node_id = shared_ess_data.shared_energy_storages[year][e].bus
+            for d in model.days:
+                day = days[d]
+                for p in model.periods:
+
+                    p_req = (ess_req['tso']['current'][node_id][year][day]['p'][p] + ess_req['dso']['current'][node_id][year][day]['p'][p]) * 0.50
+                    q_req = (ess_req['tso']['current'][node_id][year][day]['q'][p] + ess_req['dso']['current'][node_id][year][day]['q'][p]) * 0.50
+                    dual_p_req = (dual_ess['tso'][node_id][year][day]['p'][p] + dual_ess['dso'][node_id][year][day]['p'][p]) * 0.50
+                    dual_q_req = (dual_ess['tso'][node_id][year][day]['q'][p] + dual_ess['dso'][node_id][year][day]['q'][p]) * 0.50
+
+                    model.p_req[e, y, d, p].fix(p_req)
+                    model.q_req[e, y, d, p].fix(q_req)
+                    model.dual_p_req[e, y, d, p].fix(dual_p_req)
+                    model.dual_q_req[e, y, d, p].fix(dual_q_req)
+
+    # Solve!
+    res = shared_ess_data.optimize(model, from_warm_start=from_warm_start)
+    if res.solver.status != po.SolverStatus.ok:
+        print('[WARNING] Shared ESS operational planning did not converge!')
+
+    return res
+
+
+def check_admm_convergence(planning_problem, consensus_vars, params):
+    if consensus_convergence(planning_problem, consensus_vars, params):
+        if stationary_convergence(planning_problem, consensus_vars, params):
+            return True
+    return False
+
+
+def consensus_convergence(planning_problem, consensus_vars, params):
+
+    sum_abs = 0.0
+    num_elems = 0
+
+    for year in planning_problem.years:
+        for day in planning_problem.days:
+
+            # Interface Power Flow
+            for node_id in planning_problem.active_distribution_network_nodes:
+                for p in range(planning_problem.num_instants):
+                    sum_abs += abs(round(consensus_vars['interface']['v_sqr']['tso']['current'][node_id][year][day][p], ERROR_PRECISION) - round(consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day][p], ERROR_PRECISION))
+                    sum_abs += abs(round(consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION))
+                    sum_abs += abs(round(consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION))
+                    num_elems += 6
+
+            # Shared Energy Storage
+            for node_id in planning_problem.active_distribution_network_nodes:
+                for p in range(planning_problem.num_instants):
+                    sum_abs += abs(round(consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION))
+                    sum_abs += abs(round(consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION))
+                    num_elems += 4
+
+    if sum_abs > params.tol['consensus'] * num_elems:
+        if not isclose(sum_abs, params.tol['consensus'] * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['consensus']):
+            print('[INFO]\t\t - Convergence consensus constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
+            return False
+        print('[INFO]\t\t - Convergence consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
+        return True
+
+    print('[INFO]\t\t - Convergence consensus constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
+    return True
+
+
+def stationary_convergence(planning_problem, consensus_vars, params):
+
+    rho_tso_v = params.rho['v'][planning_problem.transmission_network.name]
+    rho_tso_pf = params.rho['pf'][planning_problem.transmission_network.name]
+    rho_tso_ess = params.rho['ess'][planning_problem.transmission_network.name]
+    sum_abs = 0.0
+    num_elems = 0
+
+    # Interface Power Flow
+    for node_id in planning_problem.distribution_networks:
+        rho_dso_v = params.rho['v'][planning_problem.distribution_networks[node_id].name]
+        rho_dso_pf = params.rho['pf'][planning_problem.distribution_networks[node_id].name]
+        for year in planning_problem.years:
+            for day in planning_problem.days:
+                for p in range(planning_problem.num_instants):
+                    sum_abs += rho_tso_v * abs(round(consensus_vars['interface']['v_sqr']['tso']['current'][node_id][year][day][p], ERROR_PRECISION) - round(consensus_vars['interface']['v_sqr']['tso']['prev'][node_id][year][day][p], ERROR_PRECISION))
+                    sum_abs += rho_tso_pf * abs(round(consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['interface']['pf']['tso']['prev'][node_id][year][day]['p'][p], ERROR_PRECISION))
+                    sum_abs += rho_tso_pf * abs(round(consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['interface']['pf']['tso']['prev'][node_id][year][day]['q'][p], ERROR_PRECISION))
+                    sum_abs += rho_dso_v * abs(round(consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day][p], ERROR_PRECISION) - round(consensus_vars['interface']['v_sqr']['dso']['prev'][node_id][year][day][p], ERROR_PRECISION))
+                    sum_abs += rho_dso_pf * abs(round(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['p'][p], ERROR_PRECISION))
+                    sum_abs += rho_dso_pf * abs(round(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['q'][p], ERROR_PRECISION))
+                    num_elems += 6
+
+    # Shared Energy Storage
+    for node_id in planning_problem.distribution_networks:
+        distribution_network = planning_problem.distribution_networks[node_id]
+        for year in planning_problem.years:
+            for day in planning_problem.days:
+                rho_dso_ess = params.rho['ess'][distribution_network.network[year][day].name]
+                for p in range(planning_problem.num_instants):
+                    sum_abs += rho_tso_ess * abs(round(consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['ess']['tso']['prev'][node_id][year][day]['p'][p], ERROR_PRECISION))
+                    sum_abs += rho_tso_ess * abs(round(consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['ess']['tso']['prev'][node_id][year][day]['q'][p], ERROR_PRECISION))
+                    sum_abs += rho_dso_ess * abs(round(consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p], ERROR_PRECISION))
+                    sum_abs += rho_dso_ess * abs(round(consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p], ERROR_PRECISION))
+                    num_elems += 4
+
+    if sum_abs > params.tol['stationarity'] * num_elems:
+        if not isclose(sum_abs, params.tol['stationarity'] * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['stationarity']):
+            print('[INFO]\t\t - Convergence stationary constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
+            return False
+        print('[INFO]\t\t - Convergence stationary constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
+        return True
+
+    print('[INFO]\t\t - Convergence stationary constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
+    return True
 
 
 def _update_previous_consensus_variables(planning_problem, consensus_vars):
@@ -908,460 +1384,6 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                     dual_vars['esso']['tso'][node_id][year][day]['q'][p] += params.rho['ess']['esso'] * error_q_esso_tso
                     dual_vars['esso']['dso'][node_id][year][day]['p'][p] += params.rho['ess']['esso'] * error_p_esso_dso
                     dual_vars['esso']['dso'][node_id][year][day]['q'][p] += params.rho['ess']['esso'] * error_q_esso_dso
-
-
-def check_admm_convergence(planning_problem, consensus_vars, params):
-    if consensus_convergence(planning_problem, consensus_vars, params):
-        if stationary_convergence(planning_problem, consensus_vars, params):
-            return True
-    return False
-
-
-def consensus_convergence(planning_problem, consensus_vars, params):
-
-    sum_abs = 0.0
-    num_elems = 0
-
-    for year in planning_problem.years:
-        for day in planning_problem.days:
-
-            # Interface Power Flow
-            for node_id in planning_problem.active_distribution_network_nodes:
-                for p in range(planning_problem.num_instants):
-                    sum_abs += abs(round(consensus_vars['interface']['v_sqr']['tso']['current'][node_id][year][day][p], ERROR_PRECISION) - round(consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day][p], ERROR_PRECISION))
-                    sum_abs += abs(round(consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION))
-                    sum_abs += abs(round(consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION))
-                    num_elems += 6
-
-            # Shared Energy Storage
-            for node_id in planning_problem.active_distribution_network_nodes:
-                for p in range(planning_problem.num_instants):
-                    sum_abs += abs(round(consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION))
-                    sum_abs += abs(round(consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION))
-                    num_elems += 4
-
-    if sum_abs > params.tol['consensus'] * num_elems:
-        if not isclose(sum_abs, params.tol['consensus'] * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['consensus']):
-            print('[INFO]\t\t - Convergence consensus constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
-            return False
-        print('[INFO]\t\t - Convergence consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
-        return True
-
-    print('[INFO]\t\t - Convergence consensus constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
-    return True
-
-
-def stationary_convergence(planning_problem, consensus_vars, params):
-
-    rho_tso_v = params.rho['v'][planning_problem.transmission_network.name]
-    rho_tso_pf = params.rho['pf'][planning_problem.transmission_network.name]
-    rho_tso_ess = params.rho['ess'][planning_problem.transmission_network.name]
-    sum_abs = 0.0
-    num_elems = 0
-
-    # Interface Power Flow
-    for node_id in planning_problem.distribution_networks:
-        rho_dso_v = params.rho['v'][planning_problem.distribution_networks[node_id].name]
-        rho_dso_pf = params.rho['pf'][planning_problem.distribution_networks[node_id].name]
-        for year in planning_problem.years:
-            for day in planning_problem.days:
-                for p in range(planning_problem.num_instants):
-                    sum_abs += rho_tso_v * abs(round(consensus_vars['interface']['v_sqr']['tso']['current'][node_id][year][day][p], ERROR_PRECISION) - round(consensus_vars['interface']['v_sqr']['tso']['prev'][node_id][year][day][p], ERROR_PRECISION))
-                    sum_abs += rho_tso_pf * abs(round(consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['interface']['pf']['tso']['prev'][node_id][year][day]['p'][p], ERROR_PRECISION))
-                    sum_abs += rho_tso_pf * abs(round(consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['interface']['pf']['tso']['prev'][node_id][year][day]['q'][p], ERROR_PRECISION))
-                    sum_abs += rho_dso_v * abs(round(consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day][p], ERROR_PRECISION) - round(consensus_vars['interface']['v_sqr']['dso']['prev'][node_id][year][day][p], ERROR_PRECISION))
-                    sum_abs += rho_dso_pf * abs(round(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['p'][p], ERROR_PRECISION))
-                    sum_abs += rho_dso_pf * abs(round(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['q'][p], ERROR_PRECISION))
-                    num_elems += 6
-
-    # Shared Energy Storage
-    for node_id in planning_problem.distribution_networks:
-        distribution_network = planning_problem.distribution_networks[node_id]
-        for year in planning_problem.years:
-            for day in planning_problem.days:
-                rho_dso_ess = params.rho['ess'][distribution_network.network[year][day].name]
-                for p in range(planning_problem.num_instants):
-                    sum_abs += rho_tso_ess * abs(round(consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['ess']['tso']['prev'][node_id][year][day]['p'][p], ERROR_PRECISION))
-                    sum_abs += rho_tso_ess * abs(round(consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['ess']['tso']['prev'][node_id][year][day]['q'][p], ERROR_PRECISION))
-                    sum_abs += rho_dso_ess * abs(round(consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p], ERROR_PRECISION))
-                    sum_abs += rho_dso_ess * abs(round(consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p], ERROR_PRECISION))
-                    num_elems += 4
-
-    if sum_abs > params.tol['stationarity'] * num_elems:
-        if not isclose(sum_abs, params.tol['stationarity'] * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['stationarity']):
-            print('[INFO]\t\t - Convergence stationary constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
-            return False
-        print('[INFO]\t\t - Convergence stationary constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
-        return True
-
-    print('[INFO]\t\t - Convergence stationary constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
-    return True
-
-
-def update_transmission_model_to_admm(transmission_network, model, initial_pf, params):
-
-    for year in transmission_network.years:
-        for day in transmission_network.days:
-
-            for dn in model[year][day].active_distribution_networks:
-                for p in model[year][day].periods:
-                    model[year][day].expected_interface_pf_p[dn, p].setub(None)
-                    model[year][day].expected_interface_pf_p[dn, p].setlb(None)
-                    model[year][day].expected_interface_pf_q[dn, p].setub(None)
-                    model[year][day].expected_interface_pf_q[dn, p].setlb(None)
-
-            # Add ADMM variables
-            model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
-            model[year][day].rho_v.fix(params.rho['v'][transmission_network.name])
-            model[year][day].v_sqr_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.NonNegativeReals)
-            model[year][day].dual_v_sqr_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - active power requested
-
-            model[year][day].rho_pf = pe.Var(domain=pe.NonNegativeReals)
-            model[year][day].rho_pf.fix(params.rho['pf'][transmission_network.name])
-            model[year][day].p_pf_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)        # Active power - requested by distribution networks
-            model[year][day].q_pf_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)        # Reactive power - requested by distribution networks
-            model[year][day].dual_pf_p_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - active power requested
-            model[year][day].dual_pf_q_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)   # Dual variable - reactive power requested
-
-            model[year][day].rho_ess = pe.Var(domain=pe.NonNegativeReals)
-            model[year][day].rho_ess.fix(params.rho['ess'][transmission_network.name])
-            model[year][day].p_ess_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)             # Shared ESS - Active power requested (DSO)
-            model[year][day].q_ess_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)             # Shared ESS - Reactive power requested (DSO)
-            model[year][day].dual_ess_p_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)        # Dual variable - Shared ESS active power
-            model[year][day].dual_ess_q_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)        # Dual variable - Shared ESS active power
-
-            # Objective function - augmented Lagrangian
-            init_of_value = 1.00
-            if transmission_network.params.obj_type == OBJ_MIN_COST:
-                init_of_value = abs(pe.value(model[year][day].objective))
-            if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
-                init_of_value = 1.00
-            obj = model[year][day].objective.expr / init_of_value
-
-            for dn in model[year][day].active_distribution_networks:
-                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
-                for p in model[year][day].periods:
-
-                    init_p = abs(initial_pf[adn_node_id][year][day]['p'][p])
-                    if isclose(init_p, 0.00, abs_tol=SMALL_TOLERANCE):
-                        init_p = 1.00
-
-                    init_q = abs(initial_pf[adn_node_id][year][day]['q'][p])
-                    if isclose(init_q, 0.00, abs_tol=SMALL_TOLERANCE):
-                        init_q = 1.00
-
-                    constraint_v_req = (model[year][day].expected_interface_vmag_sqr[dn, p] - model[year][day].v_sqr_req[dn, p])
-                    constraint_p_req = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_req[dn, p]) / init_p
-                    constraint_q_req = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_req[dn, p]) / init_q
-
-                    obj += model[year][day].dual_v_sqr_req[dn, p] * constraint_v_req
-                    obj += model[year][day].dual_pf_p_req[dn, p] * constraint_p_req
-                    obj += model[year][day].dual_pf_q_req[dn, p] * constraint_q_req
-                    obj += (model[year][day].rho_pf / 2) * (constraint_v_req ** 2)
-                    obj += (model[year][day].rho_pf / 2) * (constraint_p_req ** 2)
-                    obj += (model[year][day].rho_pf / 2) * (constraint_q_req ** 2)
-
-            for e in model[year][day].shared_energy_storages:
-
-                shared_ess_rating = abs(transmission_network.network[year][day].shared_energy_storages[e].s)
-                if isclose(shared_ess_rating, 0.00, abs_tol=SMALL_TOLERANCE):
-                    shared_ess_rating = 1.00
-
-                for p in model[year][day].periods:
-                    constraint_ess_p = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_req[e, p]) / shared_ess_rating
-                    constraint_ess_q = (model[year][day].expected_shared_ess_q[e, p] - model[year][day].q_ess_req[e, p]) / shared_ess_rating
-                    obj += model[year][day].dual_ess_p_req[e, p] * constraint_ess_p
-                    obj += model[year][day].dual_ess_q_req[e, p] * constraint_ess_q
-                    obj += (model[year][day].rho_ess / 2) * constraint_ess_p ** 2
-                    obj += (model[year][day].rho_ess / 2) * constraint_ess_q ** 2
-
-            # Add ADMM OF, deactivate original OF
-            model[year][day].admm_objective.expr = obj
-            model[year][day].objective.deactivate()
-
-
-def update_distribution_models_to_admm(distribution_networks, models, initial_pf, params):
-
-    for node_id in distribution_networks:
-
-        dso_model = models[node_id]
-        distribution_network = distribution_networks[node_id]
-
-        for year in distribution_network.years:
-            for day in distribution_network.days:
-
-                ref_node_id = distribution_network.network[year][day].get_reference_node_id()
-                s_base = distribution_network.network[year][day].baseMVA
-
-                # Free Vmag, Pg, Qg at the interface node
-                ref_node_idx = distribution_network.network[year][day].get_node_idx(ref_node_id)
-                ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
-                v_min, v_max = distribution_network.network[year][day].get_node_voltage_limits(ref_node_id)
-                for s_m in dso_model[year][day].scenarios_market:
-                    for s_o in dso_model[year][day].scenarios_operation:
-                        for p in dso_model[year][day].periods:
-                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].fixed = False
-                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setub(v_max + SMALL_TOLERANCE)
-                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setlb(v_min - SMALL_TOLERANCE)
-                            dso_model[year][day].f[ref_node_idx, s_m, s_o, p].fixed = False
-                            dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
-                            dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].fixed = False
-                            dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].setub(None)
-                            dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].setlb(None)
-                            dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].fixed = False
-                            dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].setub(None)
-                            dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].setlb(None)
-
-                # Add ADMM variables
-                dso_model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
-                dso_model[year][day].rho_v.fix(params.rho['v'][distribution_network.network[year][day].name])
-                dso_model[year][day].v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)       # Voltage magnitude - requested by TSO
-                dso_model[year][day].dual_v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - voltage magnitude
-
-                dso_model[year][day].rho_pf = pe.Var(domain=pe.NonNegativeReals)
-                dso_model[year][day].rho_pf.fix(params.rho['pf'][distribution_network.network[year][day].name])
-                dso_model[year][day].p_pf_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)                   # Active power - requested by TSO
-                dso_model[year][day].q_pf_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)                   # Reactive power - requested by TSO
-                dso_model[year][day].dual_pf_p_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)              # Dual variable - active power
-                dso_model[year][day].dual_pf_q_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)              # Dual variable - reactive power
-
-                dso_model[year][day].rho_ess = pe.Var(domain=pe.NonNegativeReals)
-                dso_model[year][day].rho_ess.fix(params.rho['ess'][distribution_network.network[year][day].name])
-                dso_model[year][day].p_ess_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)                  # Shared ESS - active power requested (TSO)
-                dso_model[year][day].q_ess_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)                  # Shared ESS - reactive power requested (TSO)
-                dso_model[year][day].dual_ess_p_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - Shared ESS active power
-                dso_model[year][day].dual_ess_q_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - Shared ESS reactive power
-
-                # Objective function - augmented Lagrangian
-                init_of_value = 1.00
-                if distribution_network.params.obj_type == OBJ_MIN_COST:
-                    init_of_value = abs(pe.value(dso_model[year][day].objective))
-                if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
-                    init_of_value = 1.00
-                obj = dso_model[year][day].objective.expr / init_of_value
-
-                # Augmented Lagrangian -- Interface power flow (residual balancing)
-                for p in dso_model[year][day].periods:
-
-                    init_p = abs(initial_pf[node_id][year][day]['p'][p]) / s_base
-                    if isclose(init_p, 0.00, abs_tol=SMALL_TOLERANCE):
-                        init_p = 1.00
-
-                    init_q = abs(initial_pf[node_id][year][day]['q'][p]) / s_base
-                    if isclose(init_q, 0.00, abs_tol=SMALL_TOLERANCE):
-                        init_q = 1.00
-
-                    constraint_vmag_req = (dso_model[year][day].expected_interface_vmag_sqr[p] - dso_model[year][day].v_sqr_req[p])
-                    constraint_p_req = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_req[p]) / init_p
-                    constraint_q_req = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_req[p]) / init_q
-
-                    obj += (dso_model[year][day].dual_v_sqr_req[p]) * constraint_vmag_req
-                    obj += (dso_model[year][day].dual_pf_p_req[p]) * constraint_p_req
-                    obj += (dso_model[year][day].dual_pf_q_req[p]) * constraint_q_req
-                    obj += (dso_model[year][day].rho_v / 2) * (constraint_vmag_req ** 2)
-                    obj += (dso_model[year][day].rho_pf / 2) * (constraint_p_req ** 2)
-                    obj += (dso_model[year][day].rho_pf / 2) * (constraint_q_req ** 2)
-
-                # Augmented Lagrangian -- Shared ESS (residual balancing)
-                shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
-                shared_ess_rating = abs(distribution_network.network[year][day].shared_energy_storages[shared_ess_idx].s)
-                if isclose(shared_ess_rating, 0.00, abs_tol=SMALL_TOLERANCE):
-                    shared_ess_rating = 1.00
-
-                for p in dso_model[year][day].periods:
-
-                    constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_req[p]) / shared_ess_rating
-                    constraint_ess_q_req = (dso_model[year][day].expected_shared_ess_q[p] - dso_model[year][day].q_ess_req[p]) / shared_ess_rating
-
-                    obj += dso_model[year][day].dual_ess_p_req[p] * constraint_ess_p_req
-                    obj += dso_model[year][day].dual_ess_q_req[p] * constraint_ess_q_req
-                    obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_p_req ** 2
-                    obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_q_req ** 2
-
-                # Add ADMM OF, deactivate original OF
-                dso_model[year][day].admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
-                dso_model[year][day].objective.deactivate()
-
-
-def update_shared_energy_storage_model_to_admm(shared_ess_data, model, params):
-
-    # Add ADMM variables
-    model.rho = pe.Var(domain=pe.NonNegativeReals)
-    model.rho.fix(params.rho['ess']['esso'])
-
-    # Active and Reactive power requested by TSO and DSOs
-    model.p_req = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)            # Active power
-    model.q_req = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)            # Reactive power
-    model.dual_p_req = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)       # Dual variables
-    model.dual_q_req = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)       # Dual variables
-
-    # Objective function - augmented Lagrangian
-    obj = model.objective.expr
-    for e in model.energy_storages:
-        for y in model.years:
-            for d in model.days:
-                for p in model.periods:
-                    constraint_p_req = (model.es_pnet[e, y, d, p] - model.p_req[e, y, d, p])
-                    constraint_q_req = (model.es_qnet[e, y, d, p] - model.q_req[e, y, d, p])
-                    obj += model.dual_p_req[e, y, d, p] * constraint_p_req
-                    obj += model.dual_q_req[e, y, d, p] * constraint_q_req
-                    obj += (model.rho / 2) * constraint_p_req ** 2
-                    obj += (model.rho / 2) * constraint_q_req ** 2
-
-    # Add ADMM OF, deactivate original OF
-    model.admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
-    model.objective.deactivate()
-
-    return model
-
-
-def update_transmission_coordination_model_and_solve(transmission_network, model, vsqr_req, dual_vsqr, pf_req, dual_pf, ess_req, dual_ess, params, from_warm_start=False):
-
-    print('[INFO] \t\t - Updating transmission network...')
-
-    for year in transmission_network.years:
-        for day in transmission_network.days:
-
-            s_base = transmission_network.network[year][day].baseMVA
-
-            rho_v = params.rho['v'][transmission_network.name]
-            rho_pf = params.rho['pf'][transmission_network.name]
-            rho_ess = params.rho['ess'][transmission_network.name]
-            if params.adaptive_penalty:
-                rho_v = pe.value(model[year][day].rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-                rho_pf = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-                rho_ess = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-
-            # Update Rho parameter
-            model[year][day].rho_v.fix(rho_v)
-            model[year][day].rho_pf.fix(rho_pf)
-            model[year][day].rho_ess.fix(rho_ess)
-
-            for dn in model[year][day].active_distribution_networks:
-
-                node_id = transmission_network.active_distribution_network_nodes[dn]
-
-                # Update VOLTAGE and POWER FLOW variables at connection point
-                for p in model[year][day].periods:
-                    model[year][day].dual_v_sqr_req[dn, p].fix(dual_vsqr[node_id][year][day][p] / s_base)
-                    model[year][day].dual_pf_p_req[dn, p].fix(dual_pf[node_id][year][day]['p'][p] / s_base)
-                    model[year][day].dual_pf_q_req[dn, p].fix(dual_pf[node_id][year][day]['q'][p] / s_base)
-                    model[year][day].v_sqr_req[dn, p].fix(vsqr_req['dso']['current'][node_id][year][day][p])
-                    model[year][day].p_pf_req[dn, p].fix(pf_req['dso']['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].q_pf_req[dn, p].fix(pf_req['dso']['current'][node_id][year][day]['q'][p] / s_base)
-
-                # Update shared ESS capacity and power requests
-                shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(node_id)
-                for p in model[year][day].periods:
-                    model[year][day].dual_ess_p_req[shared_ess_idx, p].fix(dual_ess[node_id][year][day]['p'][p] / s_base)
-                    model[year][day].dual_ess_q_req[shared_ess_idx, p].fix(dual_ess[node_id][year][day]['q'][p] / s_base)
-                    model[year][day].p_ess_req[shared_ess_idx, p].fix(ess_req['esso']['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].q_ess_req[shared_ess_idx, p].fix(ess_req['esso']['current'][node_id][year][day]['q'][p] / s_base)
-
-    # Solve!
-    res = transmission_network.optimize(model, from_warm_start=from_warm_start)
-    for year in transmission_network.years:
-        for day in transmission_network.days:
-            if res[year][day].solver.status == po.SolverStatus.error:
-                print(f'[ERROR] Network {model[year][day].name} did not converge!')
-                # exit(ERROR_NETWORK_OPTIMIZATION)
-    return res
-
-
-def update_distribution_coordination_models_and_solve(distribution_networks, models, vsqr_req, dual_vsqr, pf_req, dual_pf, ess_req, dual_ess, params, from_warm_start=False):
-
-    print('[INFO] \t\t - Updating distribution networks:')
-    res = dict()
-
-    for node_id in distribution_networks:
-
-        model = models[node_id]
-        distribution_network = distribution_networks[node_id]
-
-        print('[INFO] \t\t\t - Updating active distribution network connected to node {}...'.format(node_id))
-
-        for year in distribution_network.years:
-            for day in distribution_network.days:
-
-                s_base = distribution_network.network[year][day].baseMVA
-
-                rho_v = params.rho['v'][distribution_network.name]
-                rho_pf = params.rho['pf'][distribution_network.name]
-                rho_ess = params.rho['ess'][distribution_network.name]
-                if params.adaptive_penalty:
-                    rho_v = pe.value(model[year][day].rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-                    rho_pf = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-                    rho_ess = pe.value(model[year][day].rho_ess) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-
-                # Update Rho parameter
-                model[year][day].rho_v.fix(rho_v)
-                model[year][day].rho_pf.fix(rho_pf)
-                model[year][day].rho_ess.fix(rho_ess)
-
-                # Update VOLTAGE and POWER FLOW variables at connection point
-                for p in model[year][day].periods:
-
-                    model[year][day].dual_v_sqr_req[p].fix(dual_vsqr[node_id][year][day][p] / s_base)
-                    model[year][day].dual_pf_p_req[p].fix(dual_pf[node_id][year][day]['p'][p] / s_base)
-                    model[year][day].dual_pf_q_req[p].fix(dual_pf[node_id][year][day]['q'][p] / s_base)
-                    model[year][day].v_sqr_req[p].fix(vsqr_req['tso']['current'][node_id][year][day][p])
-                    model[year][day].p_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].q_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['q'][p] / s_base)
-
-                # Update SHARED ENERGY STORAGE variables (if existent)
-                for p in model[year][day].periods:
-                    model[year][day].dual_ess_p_req[p].fix(dual_ess[node_id][year][day]['p'][p] / s_base)
-                    model[year][day].dual_ess_q_req[p].fix(dual_ess[node_id][year][day]['q'][p] / s_base)
-                    model[year][day].p_ess_req[p].fix(ess_req['esso']['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].q_ess_req[p].fix(ess_req['esso']['current'][node_id][year][day]['q'][p] / s_base)
-
-        # Solve!
-        res[node_id] = distribution_network.optimize(model, from_warm_start=from_warm_start)
-        for year in distribution_network.years:
-            for day in distribution_network.days:
-                if res[node_id][year][day].solver.status != po.SolverStatus.ok:
-                    print(f'[WARNING] Network {model[year][day].name} did not converge!')
-                    #exit(ERROR_NETWORK_OPTIMIZATION)
-    return res
-
-
-def update_shared_energy_storages_coordination_model_and_solve(planning_problem, model, ess_req, dual_ess, params, from_warm_start=False):
-
-    print('[INFO] \t\t - Updating Shared ESS...')
-    shared_ess_data = planning_problem.shared_ess_data
-    days = [day for day in planning_problem.days]
-    years = [year for year in planning_problem.years]
-
-    rho_esso = params.rho['ess']['esso']
-    if params.adaptive_penalty:
-        rho_esso = pe.value(model.rho) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-    model.rho.fix(rho_esso)
-
-    for e in model.energy_storages:
-        for y in model.years:
-            year = years[y]
-            node_id = shared_ess_data.shared_energy_storages[year][e].bus
-            for d in model.days:
-                day = days[d]
-                for p in model.periods:
-
-                    p_req = (ess_req['tso']['current'][node_id][year][day]['p'][p] + ess_req['dso']['current'][node_id][year][day]['p'][p]) * 0.50
-                    q_req = (ess_req['tso']['current'][node_id][year][day]['q'][p] + ess_req['dso']['current'][node_id][year][day]['q'][p]) * 0.50
-                    dual_p_req = (dual_ess['tso'][node_id][year][day]['p'][p] + dual_ess['dso'][node_id][year][day]['p'][p]) * 0.50
-                    dual_q_req = (dual_ess['tso'][node_id][year][day]['q'][p] + dual_ess['dso'][node_id][year][day]['q'][p]) * 0.50
-
-                    model.p_req[e, y, d, p].fix(p_req)
-                    model.q_req[e, y, d, p].fix(q_req)
-                    model.dual_p_req[e, y, d, p].fix(dual_p_req)
-                    model.dual_q_req[e, y, d, p].fix(dual_q_req)
-
-    # Solve!
-    res = shared_ess_data.optimize(model, from_warm_start=from_warm_start)
-    if res.solver.status != po.SolverStatus.ok:
-        print('[WARNING] Shared ESS operational planning did not converge!')
-
-    return res
 
 
 # ======================================================================================================================
