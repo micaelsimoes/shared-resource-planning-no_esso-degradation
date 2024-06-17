@@ -83,8 +83,10 @@ class NetworkData:
                 results[year][day] = self.network[year][day].process_results_interface(model[year][day])
         return results
 
-    def write_optimization_results_to_excel(self, results):
-        _write_optimization_results_to_excel(self, self.results_dir, results)
+    def write_optimization_results_to_excel(self, results, filename=str()):
+        if not filename:
+            filename = self.name
+        _write_optimization_results_to_excel(self, self.results_dir, results, filename=filename)
 
 
 # ======================================================================================================================
@@ -159,7 +161,7 @@ def _get_objective_function_value(network_planning, models):
     return of_value
 
 
-def _write_optimization_results_to_excel(network_planning, data_dir, processed_results):
+def _write_optimization_results_to_excel(network_planning, data_dir, processed_results, filename):
 
     wb = Workbook()
 
@@ -178,7 +180,7 @@ def _write_optimization_results_to_excel(network_planning, data_dir, processed_r
         _write_network_energy_storage_results_to_excel(network_planning, wb, processed_results['results'])
     _write_relaxation_slacks_scenarios_results_to_excel(network_planning, wb, processed_results['results'])
 
-    results_filename = os.path.join(data_dir, f'{network_planning.name}_results.xlsx')
+    results_filename = os.path.join(data_dir, f'{filename}_results.xlsx')
     try:
         wb.save(results_filename)
         print('[INFO] S-MPOPF Results written to {}.'.format(results_filename))
