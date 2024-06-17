@@ -72,7 +72,18 @@ class SharedResourcesPlanning:
         _add_benders_cut(self, model, upper_bound, sensitivities, candidate_solution)
 
     def update_admm_consensus_variables(self, tso_model, dso_models, esso_model, consensus_vars, dual_vars, params):
-        _update_admm_consensus_variables(self, tso_model, dso_models, esso_model, consensus_vars, dual_vars, params)
+        self.update_previous_consensus_variables(consensus_vars)
+        self.update_interface_power_flow_variables(tso_model, dso_models, consensus_vars['interface'], dual_vars, params)
+        self.update_shared_energy_storage_variables(tso_model, dso_models, esso_model, consensus_vars['ess'], dual_vars['ess'], params)
+
+    def update_previous_consensus_variables(self, consensus_vars):
+        _update_previous_consensus_variables(self, consensus_vars)
+
+    def update_interface_power_flow_variables(self, tso_model, dso_models, interface_vars, dual_vars, params):
+        _update_interface_power_flow_variables(self, tso_model, dso_models, interface_vars, dual_vars, params)
+
+    def _update_shared_energy_storage_variables(self, tso_model, dso_models, esso_model, consensus_vars, dual_vars, params):
+        _update_shared_energy_storage_variables(self, tso_model, dso_models, esso_model, consensus_vars, dual_vars, params)
 
     def read_planning_problem(self):
         _read_planning_problem(self)
@@ -241,14 +252,16 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     consensus_vars, dual_vars = create_admm_variables(planning_problem)
 
     # Create models, get initial power flows
-    dso_models, initial_pf = create_distribution_networks_models(distribution_networks, candidate_solution['total_capacity'])
-    tso_model = create_transmission_network_model(transmission_network, initial_pf, candidate_solution['total_capacity'])
+    dso_models = create_distribution_networks_models(distribution_networks, consensus_vars, candidate_solution['total_capacity'])
+    tso_model = create_transmission_network_model(transmission_network, consensus_vars, candidate_solution['total_capacity'])
     esso_model = create_shared_energy_storage_model(shared_ess_data, candidate_solution['investment'])
 
     # Update models to ADMM
     update_distribution_models_to_admm(distribution_networks, dso_models, initial_pf, admm_parameters)
     update_transmission_model_to_admm(transmission_network, tso_model, initial_pf, admm_parameters)
     update_shared_energy_storage_model_to_admm(shared_ess_data, esso_model, admm_parameters)
+
+    planning_problem.update_interface_power_flow_variables(tso_model, dso_models, consensus_vars['interface'], dual_vars, admm_parameters)
 
     planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
                                                      consensus_vars, dual_vars,
@@ -368,12 +381,37 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     return results, optim_models, sensitivities, primal_evolution
 
 
-def create_transmission_network_model(transmission_network, initial_pf, candidate_solution):
+def create_transmission_network_model(transmission_network, consensus_vars, candidate_solution):
 
     # Build model, fix candidate solution
     transmission_network.update_data_with_candidate_solution(candidate_solution)
     tso_model = transmission_network.build_model()
     transmission_network.update_model_with_candidate_solution(tso_model, candidate_solution)
+
+    # - Free Vmag, Pc, Qc at the interface nodes
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+            tso_model[year][day].active_distribution_networks = range(len(transmission_network.active_distribution_network_nodes))
+            for dn in tso_model[year][day].active_distribution_networks:
+                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
+                adn_node_idx = transmission_network.network[year][day].get_node_idx(adn_node_id)
+                adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(adn_node_id)
+                _, v_max = transmission_network.network[year][day].get_node_voltage_limits(adn_node_id)
+                for p in tso_model[year][day].periods:
+                    for s_m in tso_model[year][day].scenarios_market:
+                        for s_o in tso_model[year][day].scenarios_operation:
+                            tso_model[year][day].e[adn_node_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].e[adn_node_idx, s_m, s_o, p].setub(v_max + SMALL_TOLERANCE)
+                            tso_model[year][day].e[adn_node_idx, s_m, s_o, p].setlb(-v_max - SMALL_TOLERANCE)
+                            tso_model[year][day].f[adn_node_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].f[adn_node_idx, s_m, s_o, p].setub(v_max + SMALL_TOLERANCE)
+                            tso_model[year][day].f[adn_node_idx, s_m, s_o, p].setlb(-v_max - SMALL_TOLERANCE)
+                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setub(None)
+                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setlb(None)
+                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setub(None)
+                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setlb(None)
 
     # Update model with expected interface values
     for year in transmission_network.years:
@@ -381,7 +419,6 @@ def create_transmission_network_model(transmission_network, initial_pf, candidat
 
             # Add expected interface values
             tso_model[year][day].expected_interface_values = pe.ConstraintList()
-            tso_model[year][day].active_distribution_networks = range(len(transmission_network.active_distribution_network_nodes))
             tso_model[year][day].expected_interface_vmag_sqr = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00)
             tso_model[year][day].expected_interface_pf_p = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
             tso_model[year][day].expected_interface_pf_q = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
@@ -441,30 +478,6 @@ def create_transmission_network_model(transmission_network, initial_pf, candidat
                         tso_model[year][day].expected_interface_values.add(tso_model[year][day].expected_shared_ess_p[e, p] == expected_sess_p)
                         tso_model[year][day].expected_interface_values.add(tso_model[year][day].expected_shared_ess_q[e, p] == expected_sess_q)
 
-    # - Free Vmag, Pc, Qc at the interface nodes
-    for year in transmission_network.years:
-        for day in transmission_network.days:
-            for dn in tso_model[year][day].active_distribution_networks:
-                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
-                adn_node_idx = transmission_network.network[year][day].get_node_idx(adn_node_id)
-                adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(adn_node_id)
-                _, v_max = transmission_network.network[year][day].get_node_voltage_limits(adn_node_id)
-                for p in tso_model[year][day].periods:
-                    for s_m in tso_model[year][day].scenarios_market:
-                        for s_o in tso_model[year][day].scenarios_operation:
-                            tso_model[year][day].e[adn_node_idx, s_m, s_o, p].fixed = False
-                            tso_model[year][day].e[adn_node_idx, s_m, s_o, p].setub(v_max + SMALL_TOLERANCE)
-                            tso_model[year][day].e[adn_node_idx, s_m, s_o, p].setlb(-v_max - SMALL_TOLERANCE)
-                            tso_model[year][day].f[adn_node_idx, s_m, s_o, p].fixed = False
-                            tso_model[year][day].f[adn_node_idx, s_m, s_o, p].setub(v_max + SMALL_TOLERANCE)
-                            tso_model[year][day].f[adn_node_idx, s_m, s_o, p].setlb(-v_max - SMALL_TOLERANCE)
-                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fixed = False
-                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setub(None)
-                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setlb(None)
-                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].fixed = False
-                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setub(None)
-                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setlb(None)
-
     # Update TSO's OF to try to respect the interface power flows, run SMOPF
     for year in transmission_network.years:
         for day in transmission_network.days:
@@ -472,9 +485,9 @@ def create_transmission_network_model(transmission_network, initial_pf, candidat
             s_base = transmission_network.network[year][day].baseMVA
             for dn in tso_model[year][day].active_distribution_networks:
                 for p in tso_model[year][day].periods:
-                    init_v = initial_pf[adn_node_id][year][day]['v'][p] ** 2
-                    init_p = initial_pf[adn_node_id][year][day]['p'][p] / s_base
-                    init_q = initial_pf[adn_node_id][year][day]['q'][p] / s_base
+                    init_v = consensus_vars['interface']['v_sqr']['dso']['current'][adn_node_id][year][day][p]
+                    init_p = consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
+                    init_q = consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q'][p] / s_base
                     obj += PENALTY_INTERFACE_PF * ((tso_model[year][day].expected_interface_vmag_sqr[dn, p] - init_v) ** 2)
                     obj += PENALTY_INTERFACE_PF * ((tso_model[year][day].expected_interface_pf_p[dn, p] - init_p) ** 2)
                     obj += PENALTY_INTERFACE_PF * ((tso_model[year][day].expected_interface_pf_q[dn, p] - init_q) ** 2)
@@ -483,29 +496,40 @@ def create_transmission_network_model(transmission_network, initial_pf, candidat
             tso_model[year][day].objective.deactivate()
             tso_model[year][day].admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
 
-    '''
+    # Run SMOPF
+    transmission_network.optimize(tso_model)
+
+    # Get initial interface PF values
     for year in transmission_network.years:
         for day in transmission_network.days:
             s_base = transmission_network.network[year][day].baseMVA
             for dn in tso_model[year][day].active_distribution_networks:
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
                 for p in tso_model[year][day].periods:
-                    init_p = initial_pf[adn_node_id][year][day]['p'][p] / s_base
-                    init_q = initial_pf[adn_node_id][year][day]['q'][p] / s_base
-                    tso_model[year][day].expected_interface_pf_p[dn, p].setub(init_p + EQUALITY_TOLERANCE)
-                    tso_model[year][day].expected_interface_pf_p[dn, p].setlb(init_p - EQUALITY_TOLERANCE)
-                    tso_model[year][day].expected_interface_pf_q[dn, p].setub(init_q + EQUALITY_TOLERANCE)
-                    tso_model[year][day].expected_interface_pf_q[dn, p].setlb(init_q - EQUALITY_TOLERANCE)
-    '''
+                    interface_vsqr = pe.value(tso_model[year][day].expected_interface_vmag_sqr[dn, p])
+                    interface_pf_p = pe.value(tso_model[year][day].expected_interface_pf_p[dn, p]) * s_base
+                    interface_pf_q = pe.value(tso_model[year][day].expected_interface_pf_q[dn, p]) * s_base
+                    consensus_vars['interface']['v_sqr']['tso']['current'][adn_node_id][year][day][p] = interface_vsqr
+                    consensus_vars['interface']['pf']['tso']['current'][adn_node_id][year][day]['p'][p] = interface_pf_p
+                    consensus_vars['interface']['pf']['tso']['current'][adn_node_id][year][day]['q'][p] = interface_pf_q
 
-    results = transmission_network.optimize(tso_model)
-    processed_results = transmission_network.process_results(tso_model, results)
-    transmission_network.write_optimization_results_to_excel(processed_results)
+    # Get initial Shared ESS values
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+            s_base = transmission_network.network[year][day].baseMVA
+            for dn in tso_model[year][day].active_distribution_networks:
+                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
+                shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(adn_node_id)
+                for p in tso_model[year][day].periods:
+                    p_ess = pe.value(tso_model[year][day].expected_shared_ess_p[shared_ess_idx, p]) * s_base
+                    q_ess = pe.value(tso_model[year][day].expected_shared_ess_q[shared_ess_idx, p]) * s_base
+                    consensus_vars['ess']['tso']['current'][adn_node_id][year][day]['p'][p] = p_ess
+                    consensus_vars['ess']['tso']['current'][adn_node_id][year][day]['q'][p] = q_ess
 
     return tso_model
 
 
-def create_distribution_networks_models(distribution_networks, candidate_solution):
+def create_distribution_networks_models(distribution_networks, consensus_vars, candidate_solution):
 
     dso_models = dict()
 
@@ -565,44 +589,33 @@ def create_distribution_networks_models(distribution_networks, candidate_solutio
                     dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_shared_ess_q[p] == expected_sess_q)
 
         # Run SMOPF
-        results = distribution_network.optimize(dso_model)
-        processed_results = distribution_network.process_results(dso_model, results)
-        distribution_network.write_optimization_results_to_excel(processed_results)
+        distribution_network.optimize(dso_model)
+
+        # Get initial interface PF values
+        for year in distribution_network.years:
+            for day in distribution_network.days:
+                s_base = distribution_network.network[year][day].baseMVA
+                for p in dso_model[year][day].periods:
+                    interface_vsqr = pe.value(dso_model[year][day].expected_interface_vmag_sqr[p])
+                    interface_pf_p = pe.value(dso_model[year][day].expected_interface_pf_p[p]) * s_base
+                    interface_pf_q = pe.value(dso_model[year][day].expected_interface_pf_q[p]) * s_base
+                    consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day][p] = interface_vsqr
+                    consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p] = interface_pf_p
+                    consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p] = interface_pf_q
+
+        # Get initial Shared ESS values
+        for year in distribution_network.years:
+            for day in distribution_network.days:
+                s_base = distribution_network.network[year][day].baseMVA
+                for p in dso_model[year][day].periods:
+                    p_ess = pe.value(dso_model[year][day].expected_shared_ess_p[p]) * s_base
+                    q_ess = pe.value(dso_model[year][day].expected_shared_ess_q[p]) * s_base
+                    consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] = p_ess
+                    consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] = q_ess
 
         dso_models[node_id] = dso_model
 
-    initial_pf = get_normalization_values(distribution_networks, dso_models)
-
-    return dso_models, initial_pf
-
-
-def get_normalization_values(distribution_networks, dso_models):
-
-    initial_values = dict()
-
-    for node_id in distribution_networks:
-
-        distribution_network = distribution_networks[node_id]
-
-        # Get expected values
-        initial_values[node_id] = dict()
-        for year in distribution_network.years:
-            initial_values[node_id][year] = dict()
-            for day in distribution_network.days:
-                initial_values[node_id][year][day] = dict()
-                initial_values[node_id][year][day]['v'] = [1.00 for _ in range(distribution_network.num_instants)]
-                initial_values[node_id][year][day]['p'] = [0.00 for _ in range(distribution_network.num_instants)]
-                initial_values[node_id][year][day]['q'] = [0.00 for _ in range(distribution_network.num_instants)]
-                s_base = distribution_network.network[year][day].baseMVA
-                for p in dso_models[node_id][year][day].periods:
-                    interface_vmag = sqrt(pe.value(dso_models[node_id][year][day].expected_interface_vmag_sqr[p]))
-                    interface_pf_p = pe.value(dso_models[node_id][year][day].expected_interface_pf_p[p]) * s_base
-                    interface_pf_q = pe.value(dso_models[node_id][year][day].expected_interface_pf_q[p]) * s_base
-                    initial_values[node_id][year][day]['v'][p] = interface_vmag
-                    initial_values[node_id][year][day]['p'][p] = interface_pf_p
-                    initial_values[node_id][year][day]['q'][p] = interface_pf_q
-
-    return initial_values
+    return dso_models
 
 
 def create_shared_energy_storage_model(shared_ess_data, candidate_solution):
@@ -735,12 +748,6 @@ def create_admm_variables(planning_problem):
                 dual_variables['ess']['esso']['dso'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
 
     return consensus_variables, dual_variables
-
-
-def _update_admm_consensus_variables(planning_problem, tso_model, dso_models, esso_model, consensus_vars, dual_vars, params):
-    _update_previous_consensus_variables(planning_problem, consensus_vars)
-    _update_interface_power_flow_variables(planning_problem, tso_model, dso_models, consensus_vars['interface'], dual_vars, params)
-    _update_shared_energy_storage_variables(planning_problem, tso_model, dso_models, esso_model, consensus_vars['ess'], dual_vars['ess'], params)
 
 
 def _update_previous_consensus_variables(planning_problem, consensus_vars):
