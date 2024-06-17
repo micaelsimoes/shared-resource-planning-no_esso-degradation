@@ -41,3 +41,11 @@ def is_number(s):
         return True
     except ValueError:
         return False
+
+
+def average(lst):
+    sum_of_list = 0
+    for i in range(len(lst)):
+        sum_of_list += lst[i]
+    average = sum_of_list/len(lst)
+    return average

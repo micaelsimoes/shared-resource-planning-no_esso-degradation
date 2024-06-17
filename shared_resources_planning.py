@@ -781,21 +781,21 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
                 init_of_value = 1.00
             obj = model[year][day].objective.expr / init_of_value
 
+            avg_p = abs(average(consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['p'][p])) / s_base
+            if isclose(avg_p, 0.00, abs_tol=SMALL_TOLERANCE):
+                avg_p = 1.00
+
+            avg_q = abs(average(consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q'][p])) / s_base
+            if isclose(avg_q, 0.00, abs_tol=SMALL_TOLERANCE):
+                avg_q = 1.00
+
             for dn in model[year][day].active_distribution_networks:
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
                 for p in model[year][day].periods:
 
-                    init_p = abs(consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['p'][p]) / s_base
-                    if isclose(init_p, 0.00, abs_tol=SMALL_TOLERANCE):
-                        init_p = 1.00
-
-                    init_q = abs(consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q'][p]) / s_base
-                    if isclose(init_q, 0.00, abs_tol=SMALL_TOLERANCE):
-                        init_q = 1.00
-
                     constraint_v_req = (model[year][day].expected_interface_vmag_sqr[dn, p] - model[year][day].v_sqr_req[dn, p])
-                    constraint_p_req = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_req[dn, p]) / init_p
-                    constraint_q_req = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_req[dn, p]) / init_q
+                    constraint_p_req = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_req[dn, p]) / avg_p
+                    constraint_q_req = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_req[dn, p]) / avg_q
 
                     obj += model[year][day].dual_v_sqr_req[dn, p] * constraint_v_req
                     obj += model[year][day].dual_pf_p_req[dn, p] * constraint_p_req
@@ -884,20 +884,20 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                     init_of_value = 1.00
                 obj = dso_model[year][day].objective.expr / init_of_value
 
+                avg_p = abs(average(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p])) / s_base
+                if isclose(avg_p, 0.00, abs_tol=SMALL_TOLERANCE):
+                    avg_p = 1.00
+
+                avg_q = abs(average(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p])) / s_base
+                if isclose(avg_q, 0.00, abs_tol=SMALL_TOLERANCE):
+                    avg_q = 1.00
+
                 # Augmented Lagrangian -- Interface power flow (residual balancing)
                 for p in dso_model[year][day].periods:
 
-                    init_p = abs(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p]) / s_base
-                    if isclose(init_p, 0.00, abs_tol=SMALL_TOLERANCE):
-                        init_p = 1.00
-
-                    init_q = abs(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p]) / s_base
-                    if isclose(init_q, 0.00, abs_tol=SMALL_TOLERANCE):
-                        init_q = 1.00
-
                     constraint_vmag_req = (dso_model[year][day].expected_interface_vmag_sqr[p] - dso_model[year][day].v_sqr_req[p])
-                    constraint_p_req = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_req[p]) / init_p
-                    constraint_q_req = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_req[p]) / init_q
+                    constraint_p_req = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_req[p]) / avg_p
+                    constraint_q_req = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_req[p]) / avg_q
 
                     obj += (dso_model[year][day].dual_v_sqr_req[p]) * constraint_vmag_req
                     obj += (dso_model[year][day].dual_pf_p_req[p]) * constraint_p_req
