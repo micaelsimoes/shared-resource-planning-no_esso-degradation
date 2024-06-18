@@ -404,6 +404,11 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                             tso_model[year][day].f[adn_node_idx, s_m, s_o, p].fixed = False
                             tso_model[year][day].f[adn_node_idx, s_m, s_o, p].setub(v_max + SMALL_TOLERANCE)
                             tso_model[year][day].f[adn_node_idx, s_m, s_o, p].setlb(-v_max - SMALL_TOLERANCE)
+                            if transmission_network.network[year][day].params.slacks.grid_operation.voltage:
+                                tso_model[year][day].slack_e_up[adn_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                tso_model[year][day].slack_e_down[adn_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                tso_model[year][day].slack_f_up[adn_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                tso_model[year][day].slack_f_down[adn_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fixed = False
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setub(None)
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setlb(None)
@@ -478,12 +483,15 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
     processed_results = transmission_network.process_results(tso_model, results)
     transmission_network.write_optimization_results_to_excel(processed_results, filename=f'{transmission_network.name}_init')
 
-    # Get initial interface PF values
+    # Get initial interface PF and shared ESS values
     for year in transmission_network.years:
         for day in transmission_network.days:
             s_base = transmission_network.network[year][day].baseMVA
             for dn in tso_model[year][day].active_distribution_networks:
+
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
+                shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(adn_node_id)
+
                 for p in tso_model[year][day].periods:
                     interface_vsqr = pe.value(tso_model[year][day].expected_interface_vmag_sqr[dn, p])
                     interface_pf_p = pe.value(tso_model[year][day].expected_interface_pf_p[dn, p]) * s_base
@@ -492,14 +500,6 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                     consensus_vars['interface']['pf']['tso']['current'][adn_node_id][year][day]['p'][p] = interface_pf_p
                     consensus_vars['interface']['pf']['tso']['current'][adn_node_id][year][day]['q'][p] = interface_pf_q
 
-    # Get initial Shared ESS values
-    for year in transmission_network.years:
-        for day in transmission_network.days:
-            s_base = transmission_network.network[year][day].baseMVA
-            for dn in tso_model[year][day].active_distribution_networks:
-                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
-                shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(adn_node_id)
-                for p in tso_model[year][day].periods:
                     p_ess = pe.value(tso_model[year][day].expected_shared_ess_p[shared_ess_idx, p]) * s_base
                     q_ess = pe.value(tso_model[year][day].expected_shared_ess_q[shared_ess_idx, p]) * s_base
                     consensus_vars['ess']['tso']['current'][adn_node_id][year][day]['p'][p] = p_ess
