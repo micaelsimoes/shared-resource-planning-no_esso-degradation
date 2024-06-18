@@ -245,7 +245,6 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     print('[INFO]\t\t - Initializing...')
 
     start = time.time()
-    from_warm_start = False
     primal_evolution = list()
 
     # Create ADMM variables
@@ -281,7 +280,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
                                                                           consensus_vars['interface']['v_sqr'], dual_vars['v_sqr']['tso'],
                                                                           consensus_vars['interface']['pf'], dual_vars['pf']['tso'],
                                                                           consensus_vars['ess'], dual_vars['ess']['tso'],
-                                                                          admm_parameters, from_warm_start=from_warm_start)
+                                                                          admm_parameters, from_warm_start=True)
 
         # 1.1 Update ADMM CONSENSUS variables
         planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
@@ -300,7 +299,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         # 2. Solve ESSO problem
         results['esso'] = update_shared_energy_storages_coordination_model_and_solve(planning_problem, esso_model,
                                                                                      consensus_vars['ess'], dual_vars['ess']['esso'],
-                                                                                     admm_parameters, from_warm_start=from_warm_start)
+                                                                                     admm_parameters, from_warm_start=True)
 
         # 2.1 Update ADMM CONSENSUS variables
         planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
@@ -316,7 +315,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
                                                                            consensus_vars['interface']['v_sqr'], dual_vars['v_sqr']['dso'],
                                                                            consensus_vars['interface']['pf'], dual_vars['pf']['dso'],
                                                                            consensus_vars['ess'], dual_vars['ess']['dso'],
-                                                                           admm_parameters, from_warm_start=from_warm_start)
+                                                                           admm_parameters, from_warm_start=True)
 
         # 3.1 Update ADMM CONSENSUS variables
         planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
@@ -335,7 +334,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         # 4. Solve ESSO problem
         results['esso'] = update_shared_energy_storages_coordination_model_and_solve(planning_problem, esso_model,
                                                                                      consensus_vars['ess'], dual_vars['ess']['esso'],
-                                                                                     admm_parameters, from_warm_start=from_warm_start)
+                                                                                     admm_parameters, from_warm_start=True)
 
         # 4.1 Update ADMM CONSENSUS variables
         planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
@@ -361,8 +360,6 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
 
         iter_end = time.time()
         print('[INFO] \t - Iter {}: {:.2f} s'.format(iter, iter_end - iter_start))
-
-        from_warm_start = True
 
     if not convergence:
         print(f'[WARNING] ADMM did NOT converge in {admm_parameters.num_max_iters} iterations!')
