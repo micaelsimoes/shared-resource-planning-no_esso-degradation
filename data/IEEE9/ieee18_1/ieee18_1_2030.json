@@ -17,7 +17,7 @@
 		{"bus_i": 24, "type": 1, "Gs": 0, "Bs": 0, "baseKV": 12.5, "Vmax": 1.1, "Vmin": 0.9},
 		{"bus_i": 25, "type": 1, "Gs": 0, "Bs": 0, "baseKV": 12.5, "Vmax": 1.1, "Vmin": 0.9},
 		{"bus_i": 26, "type": 1, "Gs": 0, "Bs": 0, "baseKV": 12.5, "Vmax": 1.1, "Vmin": 0.9},
-		{"bus_i": 50, "type": 1, "Gs": 0, "Bs": 0, "baseKV": 135, "Vmax": 1.1, "Vmin": 0.9},
+		{"bus_i": 50, "type": 1, "Gs": 0, "Bs": 0, "baseKV": 345, "Vmax": 1.1, "Vmin": 0.9},
 		{"bus_i": 51, "type": 3, "Gs": 0, "Bs": 0, "baseKV": 345, "Vmax": 1.1, "Vmin": 0.9}
 	],
 	"generators": [
@@ -39,6 +39,7 @@
 		{"load_id": 8, "bus": 25, "status": 1, "fl_reg": 1}
 	],	
 	"lines": [
+		{"branch_id": 2, "fbus": 50, "tbus": 51, "r": 0.0005, "x": 0.00344, "b": 0, "rating": 150, "status": 1}
 		{"branch_id": 3, "fbus": 1, "tbus": 2, "r": 0.00431, "x": 0.01204, "b": 0.000035, "rating": 80, "status": 1},
 		{"branch_id": 4, "fbus": 2, "tbus": 3, "r": 0.00601, "x": 0.01677, "b": 0.000049, "rating": 65, "status": 1},
 		{"branch_id": 5, "fbus": 3, "tbus": 4, "r": 0.00316, "x": 0.00882, "b": 0.000026, "rating": 50, "status": 1},
@@ -57,6 +58,5 @@
 	],
 	"transformers": [
 		{"branch_id": 1, "fbus": 50, "tbus": 1, "r": 0.00312, "x": 0.06753, "b": 0, "rating": 150, "ratio": 1, "status": 1, "vmag_reg": 1},
-		{"branch_id": 2, "fbus": 50, "tbus": 51, "r": 0.0005, "x": 0.00344, "b": 0, "rating": 150, "ratio": 1, "status": 1, "vmag_reg": 1}
 	]
 }
