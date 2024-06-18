@@ -794,7 +794,7 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
                 if isclose(avg_q, 0.00, abs_tol=SMALL_TOLERANCE):
                     avg_q = 1.00
 
-                shared_ess_rating = abs(transmission_network.network[year][day].shared_energy_storages[e].s)
+                shared_ess_rating = abs(transmission_network.network[year][day].shared_energy_storages[shared_ess_idx].s)
                 if isclose(shared_ess_rating, 0.00, abs_tol=SMALL_TOLERANCE):
                     shared_ess_rating = 1.00
 
@@ -847,6 +847,11 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                             dso_model[year][day].f[ref_node_idx, s_m, s_o, p].fixed = False
                             dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
                             dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
+                            if distribution_network.network[year][day].params.grid_operation.voltage:
+                                dso_model[year][day].slack_e_up[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                dso_model[year][day].slack_e_down[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                dso_model[year][day].slack_f_up[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                dso_model[year][day].slack_f_down[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
                             dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].fixed = False
                             dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].setub(None)
                             dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].setlb(None)
@@ -890,7 +895,12 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                 if isclose(avg_q, 0.00, abs_tol=SMALL_TOLERANCE):
                     avg_q = 1.00
 
-                # Augmented Lagrangian -- Interface power flow (residual balancing)
+                shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
+                shared_ess_rating = abs(distribution_network.network[year][day].shared_energy_storages[shared_ess_idx].s)
+                if isclose(shared_ess_rating, 0.00, abs_tol=SMALL_TOLERANCE):
+                    shared_ess_rating = 1.00
+
+                # Augmented Lagrangian
                 for p in dso_model[year][day].periods:
 
                     constraint_vmag_req = (dso_model[year][day].expected_interface_vmag_sqr[p] - dso_model[year][day].v_sqr_req[p])
@@ -903,14 +913,6 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                     obj += (dso_model[year][day].rho_v / 2) * (constraint_vmag_req ** 2)
                     obj += (dso_model[year][day].rho_pf / 2) * (constraint_p_req ** 2)
                     obj += (dso_model[year][day].rho_pf / 2) * (constraint_q_req ** 2)
-
-                # Augmented Lagrangian -- Shared ESS (residual balancing)
-                shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
-                shared_ess_rating = abs(distribution_network.network[year][day].shared_energy_storages[shared_ess_idx].s)
-                if isclose(shared_ess_rating, 0.00, abs_tol=SMALL_TOLERANCE):
-                    shared_ess_rating = 1.00
-
-                for p in dso_model[year][day].periods:
 
                     constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_req[p]) / shared_ess_rating
                     constraint_ess_q_req = (dso_model[year][day].expected_shared_ess_q[p] - dso_model[year][day].q_ess_req[p]) / shared_ess_rating
