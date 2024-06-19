@@ -447,8 +447,8 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                 for s_m in tso_model[year][day].scenarios_market:
                     for s_o in tso_model[year][day].scenarios_operation:
                         for p in tso_model[year][day].periods:
-                            ess_p = (tso_model[year][day].shared_es_pch[e, s_m, s_o, p] - tso_model[year][day].shared_es_pdch[e, s_m, s_o, p])
-                            ess_q = (tso_model[year][day].shared_es_qch[e, s_m, s_o, p] - tso_model[year][day].shared_es_qdch[e, s_m, s_o, p])
+                            ess_p = tso_model[year][day].shared_es_pnet[e, s_m, s_o, p]
+                            ess_q = tso_model[year][day].shared_es_qnet[e, s_m, s_o, p]
                             obj += EXPECTED_VALUE_PENALTY * s_base * (ess_p - tso_model[year][day].expected_shared_ess_p[e, p]) ** 2
                             obj += EXPECTED_VALUE_PENALTY * s_base * (ess_q - tso_model[year][day].expected_shared_ess_q[e, p]) ** 2
 
@@ -552,10 +552,10 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                             obj += EXPECTED_VALUE_PENALTY * s_base * (pf_p - dso_model[year][day].expected_interface_pf_p[p]) ** 2             # active power
                             obj += EXPECTED_VALUE_PENALTY * s_base * (pf_q - dso_model[year][day].expected_interface_pf_q[p]) ** 2             # reactive power
 
-                            ess_p = (dso_model[year][day].shared_es_pch[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].shared_es_pdch[shared_ess_idx, s_m, s_o, p])
-                            ess_q = (dso_model[year][day].shared_es_qch[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].shared_es_qdch[shared_ess_idx, s_m, s_o, p])
-                            obj += EXPECTED_VALUE_PENALTY * s_base * (ess_p - dso_model[year][day].expected_shared_ess_p[p]) ** 2
-                            obj += EXPECTED_VALUE_PENALTY * s_base * (ess_q - dso_model[year][day].expected_shared_ess_q[p]) ** 2
+                            ess_p = dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p]
+                            ess_q = dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p]
+                            obj += EXPECTED_VALUE_PENALTY * s_base * (ess_p - dso_model[year][day].expected_shared_ess_p[p]) ** 2               # Shared ESS, active power
+                            obj += EXPECTED_VALUE_PENALTY * s_base * (ess_q - dso_model[year][day].expected_shared_ess_q[p]) ** 2               # Shared ESS, reactive power
 
                 dso_model[year][day].objective.expr = obj
 
@@ -884,6 +884,11 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                     init_of_value = 1.00
                 obj = dso_model[year][day].objective.expr / init_of_value
 
+                shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
+                shared_ess_rating = abs(distribution_network.network[year][day].shared_energy_storages[shared_ess_idx].s)
+                if isclose(shared_ess_rating, 0.00, abs_tol=SMALL_TOLERANCE):
+                    shared_ess_rating = 1.00
+
                 # Augmented Lagrangian -- Interface power flow (residual balancing)
                 for p in dso_model[year][day].periods:
 
@@ -905,14 +910,6 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                     obj += (dso_model[year][day].rho_v / 2) * (constraint_vmag_req ** 2)
                     obj += (dso_model[year][day].rho_pf / 2) * (constraint_p_req ** 2)
                     obj += (dso_model[year][day].rho_pf / 2) * (constraint_q_req ** 2)
-
-                # Augmented Lagrangian -- Shared ESS (residual balancing)
-                shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
-                shared_ess_rating = abs(distribution_network.network[year][day].shared_energy_storages[shared_ess_idx].s)
-                if isclose(shared_ess_rating, 0.00, abs_tol=SMALL_TOLERANCE):
-                    shared_ess_rating = 1.00
-
-                for p in dso_model[year][day].periods:
 
                     constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_req[p]) / shared_ess_rating
                     constraint_ess_q_req = (dso_model[year][day].expected_shared_ess_q[p] - dso_model[year][day].q_ess_req[p]) / shared_ess_rating
