@@ -969,6 +969,14 @@ def _build_model(network, params):
                             qc_curt = (model.qc_curt_down[c, s_m, s_o, p] + model.qc_curt_up[c, s_m, s_o, p])
                             obj_scenario += COST_CONSUMPTION_CURTAILMENT * network.baseMVA * (pc_curt + qc_curt)
 
+                # Generation curtailment
+                if params.rg_curt:
+                    for g in model.generators:
+                        for p in model.periods:
+                            pg_curt = model.pg_curt_down[g, s_m, s_o, p] + model.pg_curt_up[g, s_m, s_o, p]
+                            qg_curt = model.qg_curt_down[g, s_m, s_o, p] + model.qg_curt_up[g, s_m, s_o, p]
+                            obj_scenario += PENALTY_GENERATION_CURTAILMENT * network.baseMVA * (pg_curt + qg_curt)
+
                 obj += obj_scenario * omega_market * omega_oper
     elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
 
