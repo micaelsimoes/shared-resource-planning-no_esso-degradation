@@ -946,7 +946,7 @@ def _build_model(network, params):
 
                 # Generation
                 for g in model.generators:
-                    if network.generators[g].is_controllable():
+                    if network.generators[g].is_controllable() and network.is_transmission:
                         for p in model.periods:
                             pg = model.pg[g, s_m, s_o, p]
                             obj_scenario += c_p[s_m][p] * network.baseMVA * pg
