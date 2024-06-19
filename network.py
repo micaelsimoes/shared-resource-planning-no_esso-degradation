@@ -511,6 +511,8 @@ def _build_model(network, params):
     model.shared_es_sdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.shared_es_pdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.shared_es_qdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+    model.shared_es_pnet = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+    model.shared_es_qnet = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     for e in model.shared_energy_storages:
         shared_energy_storage = network.shared_energy_storages[e]
         for s_m in model.scenarios_market:
@@ -732,6 +734,14 @@ def _build_model(network, params):
                     model.shared_energy_storage_operation.add(qdch <= tan(max_phi) * pdch)
                     model.shared_energy_storage_operation.add(qdch >= -s_max)
                     model.shared_energy_storage_operation.add(qdch >= tan(min_phi) * pdch)
+
+                    # Pnet and Qnet definition
+                    if params.relax_equalities:
+                        model.shared_energy_storage_operation.add(model.shared_es_pnet[e, s_m, s_o, p] == pch - pdch)
+                        model.shared_energy_storage_operation.add(model.shared_es_qnet[e, s_m, s_o, p] == qch - qdch)
+                    else:
+                        model.shared_energy_storage_operation.add(model.shared_es_pnet[e, s_m, s_o, p] == pch - pdch + EQUALITY_TOLERANCE)
+                        model.shared_energy_storage_operation.add(model.shared_es_qnet[e, s_m, s_o, p] == qch - qdch - EQUALITY_TOLERANCE)
 
                     model.shared_energy_storage_operation.add(model.shared_es_soc[e, s_m, s_o, p] <= soc_max)
                     model.shared_energy_storage_operation.add(model.shared_es_soc[e, s_m, s_o, p] >= soc_min)
