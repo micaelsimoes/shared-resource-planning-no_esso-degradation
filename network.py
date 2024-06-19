@@ -946,7 +946,9 @@ def _build_model(network, params):
 
                 # Generation
                 for g in model.generators:
-                    if network.generators[g].is_controllable() and network.is_transmission:
+                    if network.generators[g].is_controllable():
+                        if (not network.is_transmission) and network.generators[g].gen_type == GEN_REFERENCE:
+                            continue
                         for p in model.periods:
                             pg = model.pg[g, s_m, s_o, p]
                             obj_scenario += c_p[s_m][p] * network.baseMVA * pg
@@ -955,8 +957,9 @@ def _build_model(network, params):
                 if params.fl_reg:
                     for c in model.loads:
                         for p in model.periods:
+                            flex_p_up = model.flex_p_up[c, s_m, s_o, p]
                             flex_p_down = model.flex_p_down[c, s_m, s_o, p]
-                            obj_scenario += c_flex[s_m][p] * network.baseMVA * flex_p_down
+                            obj_scenario += c_flex[s_m][p] * network.baseMVA * (flex_p_down - flex_p_up)
 
                 # Load curtailment
                 if params.l_curt:
@@ -2035,8 +2038,9 @@ def _compute_objective_function_value(network, model, params):
                 if params.fl_reg:
                     for c in model.loads:
                         for p in model.periods:
+                            flex_up = pe.value(model.flex_p_up[c, s_m, s_o, p])
                             flex_down = pe.value(model.flex_p_down[c, s_m, s_o, p])
-                            obj_scenario += c_flex[s_m][p] * network.baseMVA * flex_down
+                            obj_scenario += c_flex[s_m][p] * network.baseMVA * (flex_down - flex_up)
 
                 # Load curtailment
                 if params.l_curt:
