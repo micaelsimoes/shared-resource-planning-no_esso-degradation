@@ -404,10 +404,10 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                             tso_model[year][day].f[adn_node_idx, s_m, s_o, p].setub(v_max + SMALL_TOLERANCE)
                             tso_model[year][day].f[adn_node_idx, s_m, s_o, p].setlb(-v_max - SMALL_TOLERANCE)
                             if transmission_network.params.slacks.grid_operation.voltage:
-                                tso_model[year][day].model.slack_e_up[adn_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                tso_model[year][day].model.slack_e_down[adn_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                tso_model[year][day].model.slack_f_up[adn_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                tso_model[year][day].model.slack_f_down[adn_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                tso_model[year][day].slack_e_up[adn_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                tso_model[year][day].slack_e_down[adn_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                tso_model[year][day].slack_f_up[adn_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                tso_model[year][day].slack_f_down[adn_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fixed = False
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setub(None)
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setlb(None)
