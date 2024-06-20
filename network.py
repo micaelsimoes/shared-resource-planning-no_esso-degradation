@@ -975,7 +975,7 @@ def _build_model(network, params):
                         for p in model.periods:
                             pg_curt = model.pg_curt_down[g, s_m, s_o, p] + model.pg_curt_up[g, s_m, s_o, p]
                             qg_curt = model.qg_curt_down[g, s_m, s_o, p] + model.qg_curt_up[g, s_m, s_o, p]
-                            obj_scenario += PENALTY_GENERATION_CURTAILMENT * network.baseMVA * (pg_curt + qg_curt)
+                            obj_scenario += COST_GENERATION_CURTAILMENT * network.baseMVA * (pg_curt + qg_curt)
 
                 obj += obj_scenario * omega_market * omega_oper
     elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
@@ -2038,6 +2038,8 @@ def _compute_objective_function_value(network, model, params):
                 # Generation -- paid at market price
                 for g in model.generators:
                     if network.generators[g].is_controllable():
+                        if (not network.is_transmission) and network.generators[g].gen_type == GEN_REFERENCE:
+                            continue
                         for p in model.periods:
                             pg = pe.value(model.pg[g, s_m, s_o, p])
                             obj_scenario += c_p[s_m][p] * network.baseMVA * pg
@@ -2057,6 +2059,14 @@ def _compute_objective_function_value(network, model, params):
                             pc_curt = pe.value(model.pc_curt_down[c, s_m, s_o, p] + model.pc_curt_up[c, s_m, s_o, p])
                             qc_curt = pe.value(model.qc_curt_down[c, s_m, s_o, p] + model.qc_curt_up[c, s_m, s_o, p])
                             obj_scenario += COST_CONSUMPTION_CURTAILMENT * network.baseMVA * (pc_curt + qc_curt)
+
+                # Generation curtailment
+                if params.rg_curt:
+                    for g in model.generators:
+                        for p in model.periods:
+                            pg_curt = pe.value(model.pg_curt_down[g, s_m, s_o, p] + model.pg_curt_up[g, s_m, s_o, p])
+                            qg_curt = pe.value(model.qg_curt_down[g, s_m, s_o, p] + model.qg_curt_up[g, s_m, s_o, p])
+                            obj_scenario += COST_GENERATION_CURTAILMENT * network.baseMVA * (pg_curt + qg_curt)
 
                 obj += obj_scenario * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
 
