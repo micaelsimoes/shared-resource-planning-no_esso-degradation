@@ -264,10 +264,6 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     planning_problem.update_interface_power_flow_variables(tso_model, dso_models, consensus_vars['interface'], dual_vars, results, admm_parameters, update_tn=True, update_dns=True)
     planning_problem.update_shared_energy_storage_variables(tso_model, dso_models, esso_model, consensus_vars['ess'], dual_vars['ess'], results, admm_parameters, update_tn=True, update_dns=True)
 
-    # planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
-    #                                                  consensus_vars, dual_vars, admm_parameters,
-    #                                                  update_tn=True, update_dns=True, update_sess=True)
-
     # ------------------------------------------------------------------------------------------------------------------
     # ADMM -- Main cycle
     # ------------------------------------------------------------------------------------------------------------------
@@ -544,7 +540,6 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                 dso_model[year][day].expected_shared_ess_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
                 dso_model[year][day].expected_shared_ess_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
 
-                obj = copy(dso_model[year][day].objective.expr)
                 for s_m in dso_model[year][day].scenarios_market:
                     for s_o in dso_model[year][day].scenarios_operation:
                         for p in dso_model[year][day].periods:
@@ -552,16 +547,30 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                             vmag_sqr = dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2
                             pf_p = dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p]
                             pf_q = dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p]
-                            obj += EXPECTED_VALUE_PENALTY * s_base * (vmag_sqr - dso_model[year][day].expected_interface_vmag_sqr[p]) ** 2     # voltage magnitude (squared)
-                            obj += EXPECTED_VALUE_PENALTY * s_base * (pf_p - dso_model[year][day].expected_interface_pf_p[p]) ** 2             # active power
-                            obj += EXPECTED_VALUE_PENALTY * s_base * (pf_q - dso_model[year][day].expected_interface_pf_q[p]) ** 2             # reactive power
+
+                            if distribution_network.params.relax_equalities:
+                                dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_interface_vmag_sqr[p] <= vmag_sqr + SMALL_TOLERANCE)
+                                dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_interface_vmag_sqr[p] >= vmag_sqr - SMALL_TOLERANCE)
+                                dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_interface_pf_p[p] <= pf_p + SMALL_TOLERANCE)
+                                dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_interface_pf_p[p] >= pf_p - SMALL_TOLERANCE)
+                                dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_interface_pf_q[p] <= pf_q + SMALL_TOLERANCE)
+                                dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_interface_pf_q[p] >= pf_q - SMALL_TOLERANCE)
+                            else:
+                                dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_interface_vmag_sqr[p] == vmag_sqr)
+                                dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_interface_pf_p[p] == pf_p)
+                                dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_interface_pf_q[p] == pf_q)
 
                             ess_p = dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p]
                             ess_q = dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p]
-                            obj += EXPECTED_VALUE_PENALTY * s_base * (ess_p - dso_model[year][day].expected_shared_ess_p[p]) ** 2               # Shared ESS, active power
-                            obj += EXPECTED_VALUE_PENALTY * s_base * (ess_q - dso_model[year][day].expected_shared_ess_q[p]) ** 2               # Shared ESS, reactive power
 
-                dso_model[year][day].objective.expr = obj
+                            if distribution_network.params.relax_equalities:
+                                dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_shared_ess_p[p] <= ess_p + SMALL_TOLERANCE)
+                                dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_shared_ess_p[p] >= ess_p - SMALL_TOLERANCE)
+                                dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_shared_ess_q[p] <= ess_q + SMALL_TOLERANCE)
+                                dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_shared_ess_q[p] >= ess_q - SMALL_TOLERANCE)
+                            else:
+                                dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_shared_ess_p[p] == ess_p)
+                                dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_shared_ess_q[p] == ess_q)
 
         # Run SMOPF
         results[node_id] = distribution_network.optimize(dso_model)
