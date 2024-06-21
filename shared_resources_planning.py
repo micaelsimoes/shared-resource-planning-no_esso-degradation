@@ -2872,20 +2872,6 @@ def _write_shared_energy_storages_results_to_excel(planning_problem, workbook, r
                     sheet.cell(row=row_idx, column=p + 8).value = ess_q
                     sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
 
-                # Apparent power
-                row_idx = row_idx + 1
-                sheet.cell(row=row_idx, column=1).value = node_id
-                sheet.cell(row=row_idx, column=2).value = 'ESSO'
-                sheet.cell(row=row_idx, column=3).value = int(year)
-                sheet.cell(row=row_idx, column=4).value = day
-                sheet.cell(row=row_idx, column=5).value = 'S, [MVA]'
-                sheet.cell(row=row_idx, column=6).value = 'Expected'
-                sheet.cell(row=row_idx, column=7).value = '-'
-                for p in range(planning_problem.num_instants):
-                    ess_s = results['esso']['operation']['aggregated'][year][day][node_id]['s'][p]
-                    sheet.cell(row=row_idx, column=p + 8).value = ess_s
-                    sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
-
 
 def _write_network_voltage_results_to_excel(planning_problem, workbook, results):
 
@@ -4850,14 +4836,12 @@ def _get_initial_candidate_solution(planning_problem):
             candidate_solution['total_capacity'][node_id][year] = dict()
             candidate_solution['total_capacity'][node_id][year]['s'] = 0.00
             candidate_solution['total_capacity'][node_id][year]['e'] = 0.00
-            '''
-            if year == 2020 or year == 2035:
-                candidate_solution['investment'][node_id][year]['s'] = 1.00
-                candidate_solution['investment'][node_id][year]['e'] = 5.00
-            if (2020 <= year < 2030) or (2035 <= year < 2045):
-                candidate_solution['total_capacity'][node_id][year]['s'] = 1.00
-                candidate_solution['total_capacity'][node_id][year]['e'] = 5.00
-            '''
+            if year == 2020:
+                candidate_solution['investment'][node_id][year]['s'] = 5.00
+                candidate_solution['investment'][node_id][year]['e'] = 10.00
+            if 2020 <= year < 2040:
+                candidate_solution['total_capacity'][node_id][year]['s'] = 5.00
+                candidate_solution['total_capacity'][node_id][year]['e'] = 10.00
     return candidate_solution
 
 
