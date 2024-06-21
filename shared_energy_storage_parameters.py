@@ -43,10 +43,12 @@ class Slacks:
             self.rated_power = slacks_data['rated_capacity']
         if 'apparent_power_agg' in slacks_data:
             self.apparent_power_agg = slacks_data['apparent_power_agg']
+        if 'apparent_power_def' in slacks_data:
+            self.apparent_power_def = slacks_data['apparent_power_def']
         if 'complementarity' in slacks_data:
             self.complementarity = slacks_data['complementarity']
         if 'soh' in slacks_data:
-            self.complementarity = slacks_data['soh']
+            self.soh = slacks_data['soh']
 
 
 def _read_parameters_from_file(planning_parameters, filename):
