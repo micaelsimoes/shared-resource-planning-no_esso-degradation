@@ -288,9 +288,10 @@ def _build_subproblem_model(shared_ess_data):
     model.es_snet = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals, initialize=0.0)
     model.es_pnet = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals, initialize=0.0)
     model.es_qnet = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals, initialize=0.0)
-    if shared_ess_data.params.slacks:
+    if shared_ess_data.params.slacks.apparent_power_agg:
         model.slack_es_snet_up = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.slack_es_snet_down = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    if shared_ess_data.params.slacks.apparent_power_def:
         model.slack_es_snet_def_up = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.slack_es_snet_def_down = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
 
@@ -309,14 +310,14 @@ def _build_subproblem_model(shared_ess_data):
 
     model.es_sch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_sdch_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-    if shared_ess_data.params.slacks:
+    if shared_ess_data.params.slacks.complementarity:
         model.slack_es_ch_comp_per_unit = pe.Var(model.energy_storages, model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_avg_ch_dch_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.Reals, initialize=0.00)
     model.es_soh_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=1.00, bounds=(0.00, 1.00))
     model.es_degradation_per_unit = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
     model.es_soh_per_unit_cumul = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=1.00, bounds=(0.00, 1.00))
     model.es_degradation_per_unit_cumul = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
-    if shared_ess_data.params.slacks:
+    if shared_ess_data.params.slacks.soh:
         model.slack_es_soh_per_unit_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
         model.slack_es_soh_per_unit_down = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
         model.slack_es_soh_per_unit_cumul_up = pe.Var(model.energy_storages, model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
@@ -422,19 +423,27 @@ def _build_subproblem_model(shared_ess_data):
                 model.es_soh_per_unit_cumul[e, y_inv, y].fixed = False
 
                 model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit[e, y_inv, y] * (2 * shared_energy_storage.cl_nom * model.es_e_rated_per_unit[e, y_inv, y]) == model.es_avg_ch_dch_per_unit[e, y_inv, y])
-                if shared_ess_data.params.slacks:
+                if shared_ess_data.params.slacks.soh:
                     model.energy_storage_capacity_degradation.add(model.es_soh_per_unit[e, y_inv, y] == 1.00 - model.es_degradation_per_unit[e, y_inv, y] + model.slack_es_soh_per_unit_up[e, y_inv, y] - model.slack_es_soh_per_unit_down[e, y_inv, y])
                 else:
-                    model.energy_storage_capacity_degradation.add(model.es_soh_per_unit[e, y_inv, y] == 1.00 - model.es_degradation_per_unit[e, y_inv, y])
+                    if shared_ess_data.params.relax_equalities:
+                        model.energy_storage_capacity_degradation.add(model.es_soh_per_unit[e, y_inv, y] <= 1.00 - model.es_degradation_per_unit[e, y_inv, y] + EQUALITY_TOLERANCE)
+                        model.energy_storage_capacity_degradation.add(model.es_soh_per_unit[e, y_inv, y] >= 1.00 - model.es_degradation_per_unit[e, y_inv, y] - EQUALITY_TOLERANCE)
+                    else:
+                        model.energy_storage_capacity_degradation.add(model.es_soh_per_unit[e, y_inv, y] == 1.00 - model.es_degradation_per_unit[e, y_inv, y])
 
                 prev_soh = 1.00
                 if y > 0:
                     prev_soh = model.es_soh_per_unit_cumul[e, y_inv, y - 1]
 
-                if shared_ess_data.params.slacks:
+                if shared_ess_data.params.slacks.soh:
                     model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[e, y_inv, y] == prev_soh * ((model.es_soh_per_unit[e, y_inv, y]) ** (365.00 * num_years)) + model.slack_es_soh_per_unit_cumul_up[e, y_inv, y] - model.slack_es_soh_per_unit_cumul_down[e, y_inv, y])
                 else:
-                    model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[e, y_inv, y] == prev_soh * ((model.es_soh_per_unit[e, y_inv, y]) ** (365.00 * num_years)))
+                    if shared_ess_data.params.relax_equalities:
+                        model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[e, y_inv, y] <= prev_soh * ((model.es_soh_per_unit[e, y_inv, y]) ** (365.00 * num_years)) + EQUALITY_TOLERANCE)
+                        model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[e, y_inv, y] >= prev_soh * ((model.es_soh_per_unit[e, y_inv, y]) ** (365.00 * num_years)) - EQUALITY_TOLERANCE)
+                    else:
+                        model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[e, y_inv, y] == prev_soh * ((model.es_soh_per_unit[e, y_inv, y]) ** (365.00 * num_years)))
 
                 model.energy_storage_capacity_degradation.add(model.es_soh_per_unit[e, y_inv, y] >= shared_energy_storage.soh_min)
                 model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_cumul[e, y_inv, y] == 1.00 - model.es_soh_per_unit_cumul[e, y_inv, y])
@@ -456,10 +465,13 @@ def _build_subproblem_model(shared_ess_data):
                         model.energy_storage_limits.add(sch <= s_max)
                         model.energy_storage_limits.add(sdch <= s_max)
 
-                        if shared_ess_data.params.slacks:
+                        if shared_ess_data.params.slacks.complementarity:
                             model.energy_storage_complementarity.add(sch * sdch <= model.slack_es_ch_comp_per_unit[e, y_inv, y, d, p])
                         else:
-                            model.energy_storage_complementarity.add(sch * sdch == 0.00)
+                            if shared_ess_data.params.relax_equalities:
+                                model.energy_storage_complementarity.add(sch * sdch <= EQUALITY_TOLERANCE)
+                            else:
+                                model.energy_storage_complementarity.add(sch * sdch == 0.00)
 
     # - Shared ESS operation, aggregated
     model.energy_storage_operation_agg = pe.ConstraintList()
@@ -472,15 +484,22 @@ def _build_subproblem_model(shared_ess_data):
                     for y_inv in model.years:
                         agg_snet += (model.es_sch_per_unit[e, y_inv, y, d, p] - model.es_sdch_per_unit[e, y_inv, y, d, p])
 
-                    if shared_ess_data.params.slacks:
+                    if shared_ess_data.params.slacks.apparent_power_agg:
                         model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] == agg_snet + model.slack_es_snet_up[e, y, d, p] - model.slack_es_snet_down[e, y, d, p])
                     else:
-                        model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] == agg_snet)
+                        if shared_ess_data.params.relax_equalities:
+                            model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] <= agg_snet + SMALL_TOLERANCE)
+                            model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] >= agg_snet - SMALL_TOLERANCE)
+                        else:
+                            model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] == agg_snet)
 
-                    if shared_ess_data.params.slacks:
+                    if shared_ess_data.params.slacks.apparent_power_def:
                         model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] ** 2 == model.es_pnet[e, y, d, p] ** 2 + model.es_qnet[e, y, d, p] ** 2 + model.slack_es_snet_def_up[e, y, d, p] - model.slack_es_snet_def_down[e, y, d, p])
                     else:
-                        model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] ** 2 == model.es_pnet[e, y, d, p] ** 2 + model.es_qnet[e, y, d, p] ** 2)
+                        if shared_ess_data.params.relax_equalities:
+                            model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] ** 2 == model.es_pnet[e, y, d, p] ** 2 + model.es_qnet[e, y, d, p] ** 2)
+                        else:
+                            model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] ** 2 == model.es_pnet[e, y, d, p] ** 2 + model.es_qnet[e, y, d, p] ** 2)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective function
@@ -686,14 +705,11 @@ def _process_results_aggregated(shared_ess_data, model):
             for e in model.energy_storages:
                 node_id = shared_ess_data.shared_energy_storages[year][e].bus
                 processed_results[year][day][node_id] = dict()
-                processed_results[year][day][node_id]['s'] = list()
                 processed_results[year][day][node_id]['p'] = list()
                 processed_results[year][day][node_id]['q'] = list()
                 for p in model.periods:
-                    s_net = pe.value(model.es_snet[e, y, d, p])
                     p_net = pe.value(model.es_pnet[e, y, d, p])
                     q_net = pe.value(model.es_qnet[e, y, d, p])
-                    processed_results[year][day][node_id]['s'].append(s_net)
                     processed_results[year][day][node_id]['p'].append(p_net)
                     processed_results[year][day][node_id]['q'].append(q_net)
 
@@ -810,7 +826,7 @@ def _process_relaxation_variables_investment(shared_ess_data, model):
             processed_results[year_inv][node_id]['s_up'] = pe.value(model.slack_es_s_investment_up[e, y_inv])
             processed_results[year_inv][node_id]['s_down'] = pe.value(model.slack_es_s_investment_down[e, y_inv])
             processed_results[year_inv][node_id]['e_up'] = pe.value(model.slack_es_e_investment_up[e, y_inv])
-            processed_results[year_inv][node_id]['e_down'] = pe.value(model.es_e_investment_slack_down[e, y_inv])
+            processed_results[year_inv][node_id]['e_down'] = pe.value(model.slack_es_e_investment_down[e, y_inv])
 
     return processed_results
 
@@ -1180,17 +1196,6 @@ def _write_aggregated_shared_energy_storage_operation_results_to_excel(shared_es
                 for p in range(shared_ess_data.num_instants):
                     qnet = results[year][day][node_id]['q'][p]
                     sheet.cell(row=row_idx, column=p + 5).value = qnet
-                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
-                row_idx = row_idx + 1
-
-                # - Apparent Power
-                sheet.cell(row=row_idx, column=1).value = node_id
-                sheet.cell(row=row_idx, column=2).value = int(year)
-                sheet.cell(row=row_idx, column=3).value = day
-                sheet.cell(row=row_idx, column=4).value = 'S, [MVA]'
-                for p in range(shared_ess_data.num_instants):
-                    snet = results[year][day][node_id]['s'][p]
-                    sheet.cell(row=row_idx, column=p + 5).value = snet
                     sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
                 row_idx = row_idx + 1
 

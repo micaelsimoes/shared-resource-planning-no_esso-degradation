@@ -31,12 +31,22 @@ class Slacks:
     def __init__(self):
         self.rated_power = False
         self.rated_capacity = False
+        self.apparent_power_agg = False
+        self.apparent_power_def = False
+        self.complementarity = False
+        self.soh = False
 
     def read_slacks_parameters(self, slacks_data):
         if 'rated_power' in slacks_data:
             self.rated_power = slacks_data['rated_power']
         if 'rated_capacity' in slacks_data:
             self.rated_power = slacks_data['rated_capacity']
+        if 'apparent_power_agg' in slacks_data:
+            self.apparent_power_agg = slacks_data['apparent_power_agg']
+        if 'complementarity' in slacks_data:
+            self.complementarity = slacks_data['complementarity']
+        if 'soh' in slacks_data:
+            self.complementarity = slacks_data['soh']
 
 
 def _read_parameters_from_file(planning_parameters, filename):
