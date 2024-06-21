@@ -3,20 +3,12 @@
 	"max_capacity": 2.50,
 	"min_pe_factor": 0.10,
 	"max_pe_factor": 1.00,
-	"relax_equalities": true,
-	"slacks": {
-		"rated_power": false,
-		"rated_capacity": false,
-		"apparent_power_agg": false,
-		"apparent_power_def": false,
-		"complementarity": false,
-		"soh": false
-	},
+	"slacks": true,
+	"print_results_to_file": true,
 	"solver": {
 		"name": "ipopt",
 		"linear_solver": "ma57",
 		"solver_tol": 1e-6,
 		"verbose": false
-	},
-	"print_results_to_file": true
+	}
 }
