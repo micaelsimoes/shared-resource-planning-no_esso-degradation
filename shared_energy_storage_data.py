@@ -572,6 +572,10 @@ def _read_shared_energy_storage_data_from_file(shared_ess_data, filename):
     try:
         num_scenarios, shared_ess_data.prob_market_scenarios = _get_operational_scenarios_info_from_excel_file(filename, 'Scenarios')
         investment_costs = _get_investment_costs_from_excel_file(filename, 'Investment Cost', len(shared_ess_data.years))
+        for year in shared_ess_data.years:
+            if (year not in investment_costs['power_capacity']) or (year not in investment_costs['energy_capacity']):
+                print(f'[ERROR] Shared ESS investment costs. Missing year {year}. Exiting...')
+                exit(ERROR_OPERATIONAL_DATA_FILE)
         shared_ess_data.cost_investment = investment_costs
     except:
         print(f'[ERROR] File {filename}. Exiting...')
