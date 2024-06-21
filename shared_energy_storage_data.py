@@ -282,12 +282,18 @@ def _build_subproblem_model(shared_ess_data):
     model.slack_es_s_investment_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.slack_es_s_investment_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.slack_es_e_investment_up = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.es_e_investment_slack_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
+    model.slack_es_e_investment_down = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_s_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_snet = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals, initialize=0.0)
+    model.es_sch = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_sdch = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_pnet = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals, initialize=0.0)
+    model.es_pch = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_pdch = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_qnet = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals, initialize=0.0)
+    model.es_qch = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    model.es_qdch = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     if shared_ess_data.params.slacks:
         model.slack_es_snet_up = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.slack_es_snet_down = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -328,7 +334,7 @@ def _build_subproblem_model(shared_ess_data):
     for e in model.energy_storages:
         for y in model.years:
             model.energy_storage_capacity_fixing.add(model.es_s_investment[e, y] == model.es_s_investment_fixed[e, y] + model.slack_es_s_investment_up[e, y] - model.slack_es_s_investment_down[e, y])
-            model.energy_storage_capacity_fixing.add(model.es_e_investment[e, y] == model.es_e_investment_fixed[e, y] + model.slack_es_e_investment_up[e, y] - model.es_e_investment_slack_down[e, y])
+            model.energy_storage_capacity_fixing.add(model.es_e_investment[e, y] == model.es_e_investment_fixed[e, y] + model.slack_es_e_investment_up[e, y] - model.slack_es_e_investment_down[e, y])
 
     # - Rated capacities of each investment
     model.rated_s_capacity_unit = pe.ConstraintList()
@@ -443,19 +449,26 @@ def _build_subproblem_model(shared_ess_data):
             for d in model.days:
                 for p in model.periods:
 
-                    agg_snet = 0.00
+                    agg_sch, agg_sdch = 0.00, 0.00
+                    agg_pch, agg_pdch = 0.00, 0.00
+                    agg_qch, agg_qdch = 0.00, 0.00
                     for y_inv in model.years:
-                        agg_snet += (model.es_sch_per_unit[e, y_inv, y, d, p] - model.es_sdch_per_unit[e, y_inv, y, d, p])
+                        agg_sch += model.es_sch_per_unit[e, y_inv, y, d, p]
+                        agg_sdch += model.es_sdch_per_unit[e, y_inv, y, d, p]
+                        agg_pch += model.es_pch_per_unit[e, y_inv, y, d, p]
+                        agg_pdch += model.es_pdch_per_unit[e, y_inv, y, d, p]
+                        agg_qch += model.es_qch_per_unit[e, y_inv, y, d, p]
+                        agg_qdch += model.es_qdch_per_unit[e, y_inv, y, d, p]
 
-                    if shared_ess_data.params.slacks:
-                        model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] == agg_snet + model.slack_es_snet_up[e, y, d, p] - model.slack_es_snet_down[e, y, d, p])
-                    else:
-                        model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] == agg_snet)
-
-                    if shared_ess_data.params.slacks:
-                        model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] ** 2 == model.es_pnet[e, y, d, p] ** 2 + model.es_qnet[e, y, d, p] ** 2 + model.slack_es_snet_def_up[e, y, d, p] - model.slack_es_snet_def_down[e, y, d, p])
-                    else:
-                        model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] ** 2 == model.es_pnet[e, y, d, p] ** 2 + model.es_qnet[e, y, d, p] ** 2)
+                    model.energy_storage_operation_agg.add(model.es_sch[e, y, d, p] == agg_sch)
+                    model.energy_storage_operation_agg.add(model.es_sdch[e, y, d, p] == agg_sdch)
+                    model.energy_storage_operation_agg.add(model.es_snet[e, y, d, p] == agg_sch - agg_sdch)
+                    model.energy_storage_operation_agg.add(model.es_pch[e, y, d, p] == agg_pch)
+                    model.energy_storage_operation_agg.add(model.es_pdch[e, y, d, p] == agg_pdch)
+                    model.energy_storage_operation_agg.add(model.es_pnet[e, y, d, p] == agg_pch - agg_pdch)
+                    model.energy_storage_operation_agg.add(model.es_qch[e, y, d, p] == agg_qch)
+                    model.energy_storage_operation_agg.add(model.es_qdch[e, y, d, p] == agg_qdch)
+                    model.energy_storage_operation_agg.add(model.es_qnet[e, y, d, p] == agg_qch - agg_qdch)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective function
