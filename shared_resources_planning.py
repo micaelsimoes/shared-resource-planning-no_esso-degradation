@@ -4831,6 +4831,7 @@ def _plot_networkx_diagram(planning_problem):
             filename = os.path.join(planning_problem.diagrams_dir, f'{planning_problem.name}_{year}_{day}')
             plt.savefig(f'{filename}.pdf', bbox_inches='tight')
             plt.savefig(f'{filename}.png', bbox_inches='tight')
+            plt.close(fig)
 
 
 # ======================================================================================================================
