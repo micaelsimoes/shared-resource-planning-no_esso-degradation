@@ -618,7 +618,7 @@ def _get_investment_costs_from_excel_file(filename, sheet_name, num_years):
             'energy_capacity': dict()
         }
 
-        for i in range(num_years):
+        for i in range(len(df.columns)-1):
 
             year = int(df.iloc[0, i + 1])
 
