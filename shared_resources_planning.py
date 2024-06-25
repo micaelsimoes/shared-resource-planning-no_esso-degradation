@@ -261,8 +261,9 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     update_transmission_model_to_admm(transmission_network, tso_model, consensus_vars, admm_parameters)
     update_shared_energy_storage_model_to_admm(shared_ess_data, esso_model, admm_parameters)
 
-    planning_problem.update_interface_power_flow_variables(tso_model, dso_models, consensus_vars['interface'], dual_vars, results, admm_parameters, update_tn=True, update_dns=True)
-    planning_problem.update_shared_energy_storage_variables(tso_model, dso_models, esso_model, consensus_vars['ess'], dual_vars['ess'], results, admm_parameters, update_tn=True, update_dns=True)
+    planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model, consensus_vars, dual_vars, results, admm_parameters, update_tn=True, update_dns=True)
+    #planning_problem.update_interface_power_flow_variables(tso_model, dso_models, consensus_vars['interface'], dual_vars, results, admm_parameters, update_tn=True, update_dns=True)
+    #planning_problem.update_shared_energy_storage_variables(tso_model, dso_models, esso_model, consensus_vars['ess'], dual_vars['ess'], results, admm_parameters, update_tn=True, update_dns=True)
 
     # ------------------------------------------------------------------------------------------------------------------
     # ADMM -- Main cycle
