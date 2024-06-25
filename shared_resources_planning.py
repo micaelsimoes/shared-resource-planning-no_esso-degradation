@@ -4892,12 +4892,14 @@ def _get_initial_candidate_solution(planning_problem):
             candidate_solution['total_capacity'][node_id][year] = dict()
             candidate_solution['total_capacity'][node_id][year]['s'] = 0.00
             candidate_solution['total_capacity'][node_id][year]['e'] = 0.00
+            '''
             if year == 2020:
                 candidate_solution['investment'][node_id][year]['s'] = 5.00
                 candidate_solution['investment'][node_id][year]['e'] = 10.00
             if 2020 <= year < 2040:
                 candidate_solution['total_capacity'][node_id][year]['s'] = 5.00
                 candidate_solution['total_capacity'][node_id][year]['e'] = 10.00
+            '''
     return candidate_solution
 
 
