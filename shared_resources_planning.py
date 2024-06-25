@@ -833,7 +833,7 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
             model[year][day].q_ess_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)             # Shared ESS - Reactive power requested (DSO)
             model[year][day].dual_ess_p_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)        # Dual variable - Shared ESS active power
             model[year][day].dual_ess_q_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)        # Dual variable - Shared ESS active power
-            if params.previous_iter:
+            if params.previous_iter['ess']:
                 model[year][day].p_ess_prev = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)        # Shared ESS - previous iter active power
                 model[year][day].q_ess_prev = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)        # Shared ESS - previous iter reactive power
                 model[year][day].dual_ess_p_prev = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)   # Dual variable - previous iteration shared ESS active power
@@ -884,7 +884,7 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
                     obj += (model[year][day].rho_ess / 2) * constraint_ess_p ** 2
                     obj += (model[year][day].rho_ess / 2) * constraint_ess_q ** 2
 
-                    if params.previous_iter:
+                    if params.previous_iter['ess']:
                         constraint_ess_p_prev = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_prev[e, p]) / shared_ess_rating
                         constraint_ess_q_prev = (model[year][day].expected_shared_ess_q[e, p] - model[year][day].q_ess_prev[e, p]) / shared_ess_rating
                         obj += model[year][day].dual_ess_p_prev[e, p] * constraint_ess_p_prev
@@ -949,7 +949,7 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                 dso_model[year][day].q_ess_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)                  # Shared ESS - reactive power requested (TSO)
                 dso_model[year][day].dual_ess_p_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - Shared ESS active power
                 dso_model[year][day].dual_ess_q_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - Shared ESS reactive power
-                if params.previous_iter:
+                if params.previous_iter['ess']:
                     dso_model[year][day].p_ess_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Shared ESS - previous iteration active power
                     dso_model[year][day].q_ess_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Shared ESS - previous iteration reactive power
                     dso_model[year][day].dual_ess_p_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)        # Dual variable - previous iteration shared ESS active power
@@ -998,7 +998,7 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                     obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_p_req ** 2
                     obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_q_req ** 2
 
-                    if params.previous_iter:
+                    if params.previous_iter['ess']:
                         constraint_ess_p_prev = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_prev[p]) / shared_ess_rating
                         constraint_ess_q_prev = (dso_model[year][day].expected_shared_ess_q[p] - dso_model[year][day].q_ess_prev[p]) / shared_ess_rating
 
@@ -1092,7 +1092,7 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
                     model[year][day].dual_ess_q_req[shared_ess_idx, p].fix(dual_ess['current'][node_id][year][day]['q'][p] / s_base)
                     model[year][day].p_ess_req[shared_ess_idx, p].fix(ess_req['esso']['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].q_ess_req[shared_ess_idx, p].fix(ess_req['esso']['current'][node_id][year][day]['q'][p] / s_base)
-                    if params.previous_iter:
+                    if params.previous_iter['ess']:
                         model[year][day].dual_ess_p_prev[shared_ess_idx, p].fix(dual_ess['prev'][node_id][year][day]['p'][p] / s_base)
                         model[year][day].dual_ess_q_prev[shared_ess_idx, p].fix(dual_ess['prev'][node_id][year][day]['q'][p] / s_base)
                         model[year][day].p_ess_prev[shared_ess_idx, p].fix(ess_req['tso']['prev'][node_id][year][day]['p'][p] / s_base)
@@ -1154,7 +1154,7 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
                     model[year][day].dual_ess_q_req[p].fix(dual_ess['current'][node_id][year][day]['q'][p] / s_base)
                     model[year][day].p_ess_req[p].fix(ess_req['esso']['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].q_ess_req[p].fix(ess_req['esso']['current'][node_id][year][day]['q'][p] / s_base)
-                    if params.previous_iter:
+                    if params.previous_iter['ess']:
                         model[year][day].dual_ess_p_prev[p].fix(dual_ess['prev'][node_id][year][day]['p'][p] / s_base)
                         model[year][day].dual_ess_q_prev[p].fix(dual_ess['prev'][node_id][year][day]['q'][p] / s_base)
                         model[year][day].p_ess_prev[p].fix(ess_req['dso']['prev'][node_id][year][day]['p'][p] / s_base)
@@ -1440,7 +1440,7 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                     error_q_tso_esso = shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['q'][p]
                     dual_vars['tso']['current'][node_id][year][day]['p'][p] += params.rho['ess'][transmission_network.name] * error_p_tso_esso
                     dual_vars['tso']['current'][node_id][year][day]['q'][p] += params.rho['ess'][transmission_network.name] * error_q_tso_esso
-                    if params.previous_iter:
+                    if params.previous_iter['ess']:
                         error_p_tso_esso_prev = shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['tso']['prev'][node_id][year][day]['p'][p]
                         error_q_tso_esso_prev = shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['tso']['prev'][node_id][year][day]['q'][p]
                         dual_vars['tso']['prev'][node_id][year][day]['p'][p] += params.rho['ess'][transmission_network.name] * error_p_tso_esso_prev
@@ -1450,7 +1450,7 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                     error_q_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['q'][p]
                     dual_vars['dso']['current'][node_id][year][day]['p'][p] += params.rho['ess'][distribution_network.name] * error_p_dso_esso
                     dual_vars['dso']['current'][node_id][year][day]['q'][p] += params.rho['ess'][distribution_network.name] * error_q_dso_esso
-                    if params.previous_iter:
+                    if params.previous_iter['ess']:
                         error_p_dso_esso_prev = shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['dso']['prev'][node_id][year][day]['p'][p]
                         error_q_dso_esso_prev = shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['dso']['prev'][node_id][year][day]['q'][p]
                         dual_vars['dso']['prev'][node_id][year][day]['p'][p] += params.rho['ess'][distribution_network.name] * error_p_dso_esso_prev
