@@ -707,7 +707,9 @@ def create_admm_variables(planning_problem):
     dual_variables = {
         'v_sqr': {'tso': dict(), 'dso': dict()},
         'pf': {'tso': dict(), 'dso': dict()},
-        'ess': {'tso': dict(), 'dso': dict(), 'esso': {'tso': dict(), 'dso': dict()}}
+        'ess': {'tso': {'current': dict(), 'prev': dict()},
+                'dso': {'current': dict(), 'prev': dict()},
+                'esso': {'tso': dict(), 'dso': dict()}}
     }
 
     for dn in range(len(planning_problem.active_distribution_network_nodes)):
@@ -733,8 +735,10 @@ def create_admm_variables(planning_problem):
         dual_variables['v_sqr']['dso'][node_id] = dict()
         dual_variables['pf']['tso'][node_id] = dict()
         dual_variables['pf']['dso'][node_id] = dict()
-        dual_variables['ess']['tso'][node_id] = dict()
-        dual_variables['ess']['dso'][node_id] = dict()
+        dual_variables['ess']['tso']['current'][node_id] = dict()
+        dual_variables['ess']['tso']['prev'][node_id] = dict()
+        dual_variables['ess']['dso']['current'][node_id] = dict()
+        dual_variables['ess']['dso']['prev'][node_id] = dict()
         dual_variables['ess']['esso']['tso'][node_id] = dict()
         dual_variables['ess']['esso']['dso'][node_id] = dict()
 
@@ -759,8 +763,10 @@ def create_admm_variables(planning_problem):
             dual_variables['v_sqr']['dso'][node_id][year] = dict()
             dual_variables['pf']['tso'][node_id][year] = dict()
             dual_variables['pf']['dso'][node_id][year] = dict()
-            dual_variables['ess']['tso'][node_id][year] = dict()
-            dual_variables['ess']['dso'][node_id][year] = dict()
+            dual_variables['ess']['tso']['current'][node_id][year] = dict()
+            dual_variables['ess']['tso']['prev'][node_id][year] = dict()
+            dual_variables['ess']['dso']['current'][node_id][year] = dict()
+            dual_variables['ess']['dso']['prev'][node_id][year] = dict()
             dual_variables['ess']['esso']['tso'][node_id][year] = dict()
             dual_variables['ess']['esso']['dso'][node_id][year] = dict()
 
@@ -784,8 +790,10 @@ def create_admm_variables(planning_problem):
                 dual_variables['v_sqr']['dso'][node_id][year][day] = [0.0] * planning_problem.num_instants
                 dual_variables['pf']['tso'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
                 dual_variables['pf']['dso'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
-                dual_variables['ess']['tso'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
-                dual_variables['ess']['dso'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
+                dual_variables['ess']['tso']['current'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
+                dual_variables['ess']['tso']['prev'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
+                dual_variables['ess']['dso']['current'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
+                dual_variables['ess']['dso']['prev'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
                 dual_variables['ess']['esso']['tso'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
                 dual_variables['ess']['esso']['dso'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
 
@@ -877,8 +885,8 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
                     obj += (model[year][day].rho_ess / 2) * constraint_ess_q ** 2
 
                     if params.previous_iter:
-                        constraint_ess_p_prev = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_req[e, p]) / shared_ess_rating
-                        constraint_ess_q_prev = (model[year][day].expected_shared_ess_q[e, p] - model[year][day].q_ess_req[e, p]) / shared_ess_rating
+                        constraint_ess_p_prev = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_prev[e, p]) / shared_ess_rating
+                        constraint_ess_q_prev = (model[year][day].expected_shared_ess_q[e, p] - model[year][day].q_ess_prev[e, p]) / shared_ess_rating
                         obj += model[year][day].dual_ess_p_prev[e, p] * constraint_ess_p_prev
                         obj += model[year][day].dual_ess_q_prev[e, p] * constraint_ess_q_prev
                         obj += (model[year][day].rho_ess / 2) * constraint_ess_p_prev ** 2
@@ -991,8 +999,8 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                     obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_q_req ** 2
 
                     if params.previous_iter:
-                        constraint_ess_p_prev = (dso_model[year][day].p_ess_prev[p] - dso_model[year][day].expected_shared_ess_p[p]) / shared_ess_rating
-                        constraint_ess_q_prev = (dso_model[year][day].q_ess_prev[p] - dso_model[year][day].expected_shared_ess_q[p]) / shared_ess_rating
+                        constraint_ess_p_prev = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_prev[p]) / shared_ess_rating
+                        constraint_ess_q_prev = (dso_model[year][day].expected_shared_ess_q[p] - dso_model[year][day].q_ess_prev[p]) / shared_ess_rating
 
                         obj += dso_model[year][day].dual_ess_p_prev[p] * constraint_ess_p_prev
                         obj += dso_model[year][day].dual_ess_q_prev[p] * constraint_ess_q_prev
@@ -1080,10 +1088,15 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
                 # Update shared ESS capacity and power requests
                 shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(node_id)
                 for p in model[year][day].periods:
-                    model[year][day].dual_ess_p_req[shared_ess_idx, p].fix(dual_ess[node_id][year][day]['p'][p] / s_base)
-                    model[year][day].dual_ess_q_req[shared_ess_idx, p].fix(dual_ess[node_id][year][day]['q'][p] / s_base)
+                    model[year][day].dual_ess_p_req[shared_ess_idx, p].fix(dual_ess['current'][node_id][year][day]['p'][p] / s_base)
+                    model[year][day].dual_ess_q_req[shared_ess_idx, p].fix(dual_ess['current'][node_id][year][day]['q'][p] / s_base)
                     model[year][day].p_ess_req[shared_ess_idx, p].fix(ess_req['esso']['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].q_ess_req[shared_ess_idx, p].fix(ess_req['esso']['current'][node_id][year][day]['q'][p] / s_base)
+                    if params.previous_iter:
+                        model[year][day].dual_ess_p_prev[shared_ess_idx, p].fix(dual_ess['prev'][node_id][year][day]['p'][p] / s_base)
+                        model[year][day].dual_ess_q_prev[shared_ess_idx, p].fix(dual_ess['prev'][node_id][year][day]['q'][p] / s_base)
+                        model[year][day].p_ess_prev[shared_ess_idx, p].fix(ess_req['tso']['prev'][node_id][year][day]['p'][p] / s_base)
+                        model[year][day].q_ess_prev[shared_ess_idx, p].fix(ess_req['tso']['prev'][node_id][year][day]['q'][p] / s_base)
 
     # Solve!
     res = transmission_network.optimize(model, from_warm_start=from_warm_start)
@@ -1137,10 +1150,15 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
 
                 # Update SHARED ENERGY STORAGE variables (if existent)
                 for p in model[year][day].periods:
-                    model[year][day].dual_ess_p_req[p].fix(dual_ess[node_id][year][day]['p'][p] / s_base)
-                    model[year][day].dual_ess_q_req[p].fix(dual_ess[node_id][year][day]['q'][p] / s_base)
+                    model[year][day].dual_ess_p_req[p].fix(dual_ess['current'][node_id][year][day]['p'][p] / s_base)
+                    model[year][day].dual_ess_q_req[p].fix(dual_ess['current'][node_id][year][day]['q'][p] / s_base)
                     model[year][day].p_ess_req[p].fix(ess_req['esso']['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].q_ess_req[p].fix(ess_req['esso']['current'][node_id][year][day]['q'][p] / s_base)
+                    if params.previous_iter:
+                        model[year][day].dual_ess_p_prev[p].fix(dual_ess['prev'][node_id][year][day]['p'][p] / s_base)
+                        model[year][day].dual_ess_q_prev[p].fix(dual_ess['prev'][node_id][year][day]['q'][p] / s_base)
+                        model[year][day].p_ess_prev[p].fix(ess_req['dso']['prev'][node_id][year][day]['p'][p] / s_base)
+                        model[year][day].q_ess_prev[p].fix(ess_req['dso']['prev'][node_id][year][day]['q'][p] / s_base)
 
         # Solve!
         res[node_id] = distribution_network.optimize(model, from_warm_start=from_warm_start)
@@ -1420,17 +1438,28 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
 
                     error_p_tso_esso = shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['p'][p]
                     error_q_tso_esso = shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['q'][p]
+                    dual_vars['tso']['current'][node_id][year][day]['p'][p] += params.rho['ess'][transmission_network.name] * error_p_tso_esso
+                    dual_vars['tso']['current'][node_id][year][day]['q'][p] += params.rho['ess'][transmission_network.name] * error_q_tso_esso
+                    if params.previous_iter:
+                        error_p_tso_esso_prev = shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['tso']['prev'][node_id][year][day]['p'][p]
+                        error_q_tso_esso_prev = shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['tso']['prev'][node_id][year][day]['q'][p]
+                        dual_vars['tso']['prev'][node_id][year][day]['p'][p] += params.rho['ess'][transmission_network.name] * error_p_tso_esso_prev
+                        dual_vars['tso']['prev'][node_id][year][day]['q'][p] += params.rho['ess'][transmission_network.name] * error_q_tso_esso_prev
+
                     error_p_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['p'][p]
                     error_q_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['q'][p]
+                    dual_vars['dso']['current'][node_id][year][day]['p'][p] += params.rho['ess'][distribution_network.name] * error_p_dso_esso
+                    dual_vars['dso']['current'][node_id][year][day]['q'][p] += params.rho['ess'][distribution_network.name] * error_q_dso_esso
+                    if params.previous_iter:
+                        error_p_dso_esso_prev = shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['dso']['prev'][node_id][year][day]['p'][p]
+                        error_q_dso_esso_prev = shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['dso']['prev'][node_id][year][day]['q'][p]
+                        dual_vars['dso']['prev'][node_id][year][day]['p'][p] += params.rho['ess'][distribution_network.name] * error_p_dso_esso_prev
+                        dual_vars['dso']['prev'][node_id][year][day]['q'][p] += params.rho['ess'][distribution_network.name] * error_q_dso_esso_prev
+
                     error_p_esso_tso = shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['p'][p]
                     error_q_esso_tso = shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['q'][p]
                     error_p_esso_dso = shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['p'][p]
                     error_q_esso_dso = shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['q'][p]
-
-                    dual_vars['tso'][node_id][year][day]['p'][p] += params.rho['ess'][transmission_network.name] * error_p_tso_esso
-                    dual_vars['tso'][node_id][year][day]['q'][p] += params.rho['ess'][transmission_network.name] * error_q_tso_esso
-                    dual_vars['dso'][node_id][year][day]['p'][p] += params.rho['ess'][distribution_network.name] * error_p_dso_esso
-                    dual_vars['dso'][node_id][year][day]['q'][p] += params.rho['ess'][distribution_network.name] * error_q_dso_esso
                     dual_vars['esso']['tso'][node_id][year][day]['p'][p] += params.rho['ess']['esso'] * error_p_esso_tso
                     dual_vars['esso']['tso'][node_id][year][day]['q'][p] += params.rho['ess']['esso'] * error_q_esso_tso
                     dual_vars['esso']['dso'][node_id][year][day]['p'][p] += params.rho['ess']['esso'] * error_p_esso_dso
