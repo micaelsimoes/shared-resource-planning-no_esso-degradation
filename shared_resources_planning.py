@@ -833,6 +833,8 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
             model[year][day].v_sqr_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.NonNegativeReals)        # Square of voltage magnitude
             model[year][day].dual_v_sqr_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)              # Dual variable - voltage magnitude requested
             if params.previous_iter['v']:
+                model[year][day].rho_v_prev = pe.Var(domain=pe.NonNegativeReals)
+                model[year][day].rho_v_prev.fix(params.rho['v'][transmission_network.name])
                 model[year][day].v_sqr_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.NonNegativeReals)   # Square of voltage magnitude - previous iteration
                 model[year][day].dual_v_sqr_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)         # Dual variable - previous iteration voltage magnitude
 
@@ -843,6 +845,8 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
             model[year][day].dual_pf_p_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)               # Dual variable - active power requested
             model[year][day].dual_pf_q_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)               # Dual variable - reactive power requested
             if params.previous_iter['pf']:
+                model[year][day].rho_pf_prev = pe.Var(domain=pe.NonNegativeReals)
+                model[year][day].rho_pf_prev.fix(params.rho['pf'][transmission_network.name])
                 model[year][day].p_pf_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)               # Active power - previous iteration
                 model[year][day].q_pf_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)               # Reactive power - previous iteration
                 model[year][day].dual_pf_p_prev = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)          # Dual variable - previous iteration active power
@@ -855,6 +859,8 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
             model[year][day].dual_ess_p_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)        # Dual variable - Shared ESS active power
             model[year][day].dual_ess_q_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)        # Dual variable - Shared ESS active power
             if params.previous_iter['ess']:
+                model[year][day].rho_ess_prev = pe.Var(domain=pe.NonNegativeReals)
+                model[year][day].rho_ess_prev.fix(params.rho['ess'][transmission_network.name])
                 model[year][day].p_ess_prev = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)        # Shared ESS - previous iter active power
                 model[year][day].q_ess_prev = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)        # Shared ESS - previous iter reactive power
                 model[year][day].dual_ess_p_prev = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)   # Dual variable - previous iteration shared ESS active power
@@ -886,7 +892,7 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
                     if params.previous_iter['v']:
                         constraint_v_prev = (model[year][day].expected_interface_vmag_sqr[dn, p] - model[year][day].v_sqr_prev[dn, p])
                         obj += model[year][day].dual_v_sqr_prev[dn, p] * constraint_v_prev
-                        obj += (model[year][day].rho_v / 2) * (constraint_v_prev ** 2)
+                        obj += (model[year][day].rho_v_prev / 2) * (constraint_v_prev ** 2)
 
                     constraint_p_req = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_req[dn, p]) / init_p
                     constraint_q_req = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_req[dn, p]) / init_q
@@ -899,8 +905,8 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
                         constraint_q_prev = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_prev[dn, p]) / init_q
                         obj += model[year][day].dual_pf_p_prev[dn, p] * constraint_p_prev
                         obj += model[year][day].dual_pf_q_prev[dn, p] * constraint_q_prev
-                        obj += (model[year][day].rho_pf / 2) * (constraint_p_prev ** 2)
-                        obj += (model[year][day].rho_pf / 2) * (constraint_q_prev ** 2)
+                        obj += (model[year][day].rho_pf_prev / 2) * (constraint_p_prev ** 2)
+                        obj += (model[year][day].rho_pf_prev / 2) * (constraint_q_prev ** 2)
 
             for e in model[year][day].shared_energy_storages:
 
@@ -921,8 +927,8 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
                         constraint_ess_q_prev = (model[year][day].expected_shared_ess_q[e, p] - model[year][day].q_ess_prev[e, p]) / shared_ess_rating
                         obj += model[year][day].dual_ess_p_prev[e, p] * constraint_ess_p_prev
                         obj += model[year][day].dual_ess_q_prev[e, p] * constraint_ess_q_prev
-                        obj += (model[year][day].rho_ess / 2) * constraint_ess_p_prev ** 2
-                        obj += (model[year][day].rho_ess / 2) * constraint_ess_q_prev ** 2
+                        obj += (model[year][day].rho_ess_prev / 2) * constraint_ess_p_prev ** 2
+                        obj += (model[year][day].rho_ess_prev / 2) * constraint_ess_q_prev ** 2
 
             # Add ADMM OF, deactivate original OF
             model[year][day].admm_objective.expr = obj
