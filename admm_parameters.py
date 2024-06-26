@@ -26,10 +26,13 @@ def _read_parameters_from_file(admm_params, params_data):
     if 'previous_iter' in params_data:
         if 'v' in params_data['previous_iter']:
             admm_params.previous_iter['v'] = bool(params_data['previous_iter']['v'])
-            admm_params.rho_prev['v'] = params_data['previous_iter']['rho']['v']
+            if admm_params.previous_iter['v']:
+                admm_params.rho_prev['v'] = params_data['previous_iter']['rho']['v']
         if 'pf' in params_data['previous_iter']:
             admm_params.previous_iter['pf'] = bool(params_data['previous_iter']['pf'])
-            admm_params.rho_prev['pf'] = params_data['previous_iter']['rho']['pf']
+            if admm_params.previous_iter['pf']:
+                admm_params.rho_prev['pf'] = params_data['previous_iter']['rho']['pf']
         if 'ess' in params_data['previous_iter']:
             admm_params.previous_iter['ess'] = bool(params_data['previous_iter']['ess'])
-            admm_params.rho_prev['ess'] = params_data['previous_iter']['rho']['ess']
+            if admm_params.previous_iter['ess']:
+                admm_params.rho_prev['ess'] = params_data['previous_iter']['rho']['ess']
