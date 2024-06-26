@@ -968,6 +968,8 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                 dso_model[year][day].v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)       # Voltage magnitude - requested by TSO
                 dso_model[year][day].dual_v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - voltage magnitude
                 if params.previous_iter['v']:
+                    dso_model[year][day].rho_v_prev = pe.Var(domain=pe.NonNegativeReals)
+                    dso_model[year][day].rho_v_prev.fix(params.rho_prev['v'][distribution_network.network[year][day].name])
                     dso_model[year][day].v_sqr_prev = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)  # Voltage magnitude - previous iteration
                     dso_model[year][day].dual_v_sqr_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)        # Dual variable - previous iteration voltage magnitude
 
@@ -978,6 +980,8 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                 dso_model[year][day].dual_pf_p_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)              # Dual variable - active power
                 dso_model[year][day].dual_pf_q_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)              # Dual variable - reactive power
                 if params.previous_iter['pf']:
+                    dso_model[year][day].rho_pf_prev = pe.Var(domain=pe.NonNegativeReals)
+                    dso_model[year][day].rho_pf_prev.fix(params.rho_prev['pf'][distribution_network.network[year][day].name])
                     dso_model[year][day].p_pf_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)              # Active power - previous iteration
                     dso_model[year][day].q_pf_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)              # Reactive power - previous iteration
                     dso_model[year][day].dual_pf_p_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)         # Dual variable - previous iteration active power
@@ -990,6 +994,8 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                 dso_model[year][day].dual_ess_p_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - Shared ESS active power
                 dso_model[year][day].dual_ess_q_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - Shared ESS reactive power
                 if params.previous_iter['ess']:
+                    dso_model[year][day].rho_ess_prev = pe.Var(domain=pe.NonNegativeReals)
+                    dso_model[year][day].rho_ess_prev.fix(params.rho_prev['ess'][distribution_network.network[year][day].name])
                     dso_model[year][day].p_ess_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Shared ESS - previous iteration active power
                     dso_model[year][day].q_ess_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Shared ESS - previous iteration reactive power
                     dso_model[year][day].dual_ess_p_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)        # Dual variable - previous iteration shared ESS active power
@@ -1026,7 +1032,7 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                     if params.previous_iter['v']:
                         constraint_vmag_prev = (dso_model[year][day].expected_interface_vmag_sqr[p] - dso_model[year][day].v_sqr_prev[p])
                         obj += dso_model[year][day].dual_v_sqr_prev[p] * constraint_vmag_prev
-                        obj += (dso_model[year][day].rho_v / 2) * (constraint_vmag_prev ** 2)
+                        obj += (dso_model[year][day].rho_v_prev / 2) * (constraint_vmag_prev ** 2)
 
                     # Interface power flow
                     constraint_p_req = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_req[p]) / init_p
@@ -1040,8 +1046,8 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                         constraint_q_prev = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_prev[p]) / init_q
                         obj += (dso_model[year][day].dual_pf_p_prev[p]) * constraint_p_prev
                         obj += (dso_model[year][day].dual_pf_q_prev[p]) * constraint_q_prev
-                        obj += (dso_model[year][day].rho_pf / 2) * (constraint_p_prev ** 2)
-                        obj += (dso_model[year][day].rho_pf / 2) * (constraint_q_prev ** 2)
+                        obj += (dso_model[year][day].rho_pf_prev / 2) * (constraint_p_prev ** 2)
+                        obj += (dso_model[year][day].rho_pf_prev / 2) * (constraint_q_prev ** 2)
 
                     # Shared ESS
                     constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_req[p]) / shared_ess_rating
@@ -1055,8 +1061,8 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                         constraint_ess_q_prev = (dso_model[year][day].expected_shared_ess_q[p] - dso_model[year][day].q_ess_prev[p]) / shared_ess_rating
                         obj += dso_model[year][day].dual_ess_p_prev[p] * constraint_ess_p_prev
                         obj += dso_model[year][day].dual_ess_q_prev[p] * constraint_ess_q_prev
-                        obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_p_prev ** 2
-                        obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_q_prev ** 2
+                        obj += (dso_model[year][day].rho_ess_prev / 2) * constraint_ess_p_prev ** 2
+                        obj += (dso_model[year][day].rho_ess_prev / 2) * constraint_ess_q_prev ** 2
 
                 # Add ADMM OF, deactivate original OF
                 dso_model[year][day].admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
