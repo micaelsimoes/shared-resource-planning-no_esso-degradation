@@ -2105,8 +2105,8 @@ def _compute_objective_function_value(network, model, params):
                 if params.fl_reg:
                     for c in model.loads:
                         for p in model.periods:
-                            flex_p_up = model.flex_p_up[c, s_m, s_o, p]
-                            flex_p_down = model.flex_p_down[c, s_m, s_o, p]
+                            flex_p_up = pe.value(model.flex_p_up[c, s_m, s_o, p])
+                            flex_p_down = pe.value(model.flex_p_down[c, s_m, s_o, p])
                             obj_scenario += PENALTY_FLEXIBILITY_USAGE * network.baseMVA * (flex_p_down - flex_p_up)
 
                 obj += obj_scenario * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
