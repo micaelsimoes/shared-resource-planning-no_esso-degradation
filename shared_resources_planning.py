@@ -1160,10 +1160,10 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
 
-                    model[year][day].dual_v_sqr_req[dn, p].fix(dual_vsqr['current'][node_id][year][day][p])
+                    model[year][day].dual_v_sqr_req[dn, p].fix(dual_vsqr['current'][node_id][year][day][p] / s_base)
                     model[year][day].v_sqr_req[dn, p].fix(vsqr_req['dso']['current'][node_id][year][day][p])
                     if params.previous_iter['v']:
-                        model[year][day].dual_v_sqr_prev[dn, p].fix(dual_vsqr['prev'][node_id][year][day][p])
+                        model[year][day].dual_v_sqr_prev[dn, p].fix(dual_vsqr['prev'][node_id][year][day][p] / s_base)
                         model[year][day].v_sqr_prev[dn, p].fix(vsqr_req['tso']['prev'][node_id][year][day][p])
 
                     model[year][day].dual_pf_p_req[dn, p].fix(dual_pf['current'][node_id][year][day]['p'][p] / s_base)
@@ -1250,10 +1250,10 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
 
-                    model[year][day].dual_v_sqr_req[p].fix(dual_vsqr['current'][node_id][year][day][p])
+                    model[year][day].dual_v_sqr_req[p].fix(dual_vsqr['current'][node_id][year][day][p] / s_base)
                     model[year][day].v_sqr_req[p].fix(vsqr_req['tso']['current'][node_id][year][day][p])
                     if params.previous_iter['v']:
-                        model[year][day].dual_v_sqr_prev[p].fix(dual_vsqr['prev'][node_id][year][day][p])
+                        model[year][day].dual_v_sqr_prev[p].fix(dual_vsqr['prev'][node_id][year][day][p] / s_base)
                         model[year][day].v_sqr_prev.fix(vsqr_req['dso']['prev'][node_id][year][day][p])
 
                     model[year][day].dual_pf_p_req[p].fix(dual_pf['current'][node_id][year][day]['p'][p] / s_base)
