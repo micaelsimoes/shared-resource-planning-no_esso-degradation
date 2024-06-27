@@ -1007,6 +1007,14 @@ def _build_model(network, params):
                             qc_curt = (model.qc_curt_down[c, s_m, s_o, p] + model.qc_curt_up[c, s_m, s_o, p])
                             obj_scenario += PENALTY_LOAD_CURTAILMENT * network.baseMVA * (pc_curt + qc_curt)
 
+                # Demand side flexibility
+                if params.fl_reg:
+                    for c in model.loads:
+                        for p in model.periods:
+                            flex_p_up = model.flex_p_up[c, s_m, s_o, p]
+                            flex_p_down = model.flex_p_down[c, s_m, s_o, p]
+                            obj_scenario += PENALTY_FLEXIBILITY_USAGE * network.baseMVA * (flex_p_down - flex_p_up)
+
                 obj += obj_scenario * omega_market * omega_oper
     else:
         print(f'[ERROR] Unrecognized or invalid objective. Objective = {params.obj_type}. Exiting...')
