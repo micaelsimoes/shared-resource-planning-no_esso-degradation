@@ -1137,8 +1137,8 @@ def _run_smopf(network, model, params, from_warm_start=False):
         solver.options['tol'] = params.solver_params.solver_tol
         solver.options['mu_strategy'] = 'adaptive'
         solver.options['linear_solver'] = params.solver_params.linear_solver
-        solver.options['constr_viol_tol'] = params.solver_params.solver_tol * 1e3
         '''
+        solver.options['constr_viol_tol'] = params.solver_params.solver_tol * 1e3
         solver.options['dual_inf_tol'] = params.solver_params.solver_tol * 1e3
         solver.options['compl_inf_tol'] = params.solver_params.solver_tol * 1e3
         solver.options['acceptable_tol'] = params.solver_params.solver_tol * 1e3
