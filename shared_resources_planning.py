@@ -1474,38 +1474,45 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
 
     # Update Lambdas
     for node_id in distribution_networks:
-        distribution_network = distribution_networks[node_id]
         for year in planning_problem.years:
             for day in planning_problem.days:
                 for p in range(planning_problem.num_instants):
 
+                    rho_v_tso = pe.value(tso_model[year][day].rho_v)
+                    rho_v_dso = pe.value(dso_models[node_id][year][day].rho_v)
                     error_vsqr_req_tso = interface_vars['v_sqr']['tso']['current'][node_id][year][day][p] - interface_vars['v_sqr']['dso']['current'][node_id][year][day][p]
                     error_vsqr_req_dso = interface_vars['v_sqr']['dso']['current'][node_id][year][day][p] - interface_vars['v_sqr']['tso']['current'][node_id][year][day][p]
-                    dual_vars['v_sqr']['tso']['current'][node_id][year][day][p] += params.rho['v'][transmission_network.name] * error_vsqr_req_tso
-                    dual_vars['v_sqr']['dso']['current'][node_id][year][day][p] += params.rho['v'][distribution_network.name] * error_vsqr_req_dso
+                    dual_vars['v_sqr']['tso']['current'][node_id][year][day][p] += rho_v_tso * error_vsqr_req_tso
+                    dual_vars['v_sqr']['dso']['current'][node_id][year][day][p] += rho_v_dso * error_vsqr_req_dso
                     if params.previous_iter['v']:
+                        rho_v_tso_prev = pe.value(tso_model[year][day].rho_v_prev)
+                        rho_v_dso_prev = pe.value(dso_models[node_id][year][day].rho_v_prev)
                         error_vsqr_req_tso = interface_vars['v_sqr']['tso']['current'][node_id][year][day][p] - interface_vars['v_sqr']['tso']['prev'][node_id][year][day][p]
                         error_vsqr_req_dso = interface_vars['v_sqr']['dso']['current'][node_id][year][day][p] - interface_vars['v_sqr']['dso']['prev'][node_id][year][day][p]
-                        dual_vars['v_sqr']['tso']['prev'][node_id][year][day][p] += params.rho_prev['v'][transmission_network.name] * error_vsqr_req_tso
-                        dual_vars['v_sqr']['dso']['prev'][node_id][year][day][p] += params.rho_prev['v'][distribution_network.name] * error_vsqr_req_dso
+                        dual_vars['v_sqr']['tso']['prev'][node_id][year][day][p] += rho_v_tso_prev * error_vsqr_req_tso
+                        dual_vars['v_sqr']['dso']['prev'][node_id][year][day][p] += rho_v_dso_prev * error_vsqr_req_dso
 
+                    rho_pf_tso = pe.value(tso_model[year][day].rho_pf)
+                    rho_pf_dso = pe.value(dso_models[node_id][year][day].rho_pf)
                     error_p_pf_req_tso = interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p] - interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p]
                     error_q_pf_req_tso = interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p] - interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p]
                     error_p_pf_req_dso = interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p] - interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p]
                     error_q_pf_req_dso = interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p] - interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p]
-                    dual_vars['pf']['tso']['current'][node_id][year][day]['p'][p] += params.rho['pf'][transmission_network.name] * error_p_pf_req_tso
-                    dual_vars['pf']['tso']['current'][node_id][year][day]['q'][p] += params.rho['pf'][transmission_network.name] * error_q_pf_req_tso
-                    dual_vars['pf']['dso']['current'][node_id][year][day]['p'][p] += params.rho['pf'][distribution_network.name] * error_p_pf_req_dso
-                    dual_vars['pf']['dso']['current'][node_id][year][day]['q'][p] += params.rho['pf'][distribution_network.name] * error_q_pf_req_dso
+                    dual_vars['pf']['tso']['current'][node_id][year][day]['p'][p] += rho_pf_tso * error_p_pf_req_tso
+                    dual_vars['pf']['tso']['current'][node_id][year][day]['q'][p] += rho_pf_tso * error_q_pf_req_tso
+                    dual_vars['pf']['dso']['current'][node_id][year][day]['p'][p] += rho_pf_dso * error_p_pf_req_dso
+                    dual_vars['pf']['dso']['current'][node_id][year][day]['q'][p] += rho_pf_dso * error_q_pf_req_dso
                     if params.previous_iter['pf']:
+                        rho_pf_tso_prev = pe.value(tso_model[year][day].rho_pf_prev)
+                        rho_pf_dso_prev = pe.value(dso_models[node_id][year][day].rho_pf_prev)
                         error_p_pf_prev_tso = interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p] - interface_vars['pf']['tso']['prev'][node_id][year][day]['p'][p]
                         error_q_pf_prev_tso = interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p] - interface_vars['pf']['tso']['prev'][node_id][year][day]['q'][p]
                         error_p_pf_prev_dso = interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p] - interface_vars['pf']['dso']['prev'][node_id][year][day]['p'][p]
                         error_q_pf_prev_dso = interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p] - interface_vars['pf']['dso']['prev'][node_id][year][day]['q'][p]
-                        dual_vars['pf']['tso']['prev'][node_id][year][day]['p'][p] += params.rho_prev['pf'][transmission_network.name] * error_p_pf_prev_tso
-                        dual_vars['pf']['tso']['prev'][node_id][year][day]['q'][p] += params.rho_prev['pf'][transmission_network.name] * error_q_pf_prev_tso
-                        dual_vars['pf']['dso']['prev'][node_id][year][day]['p'][p] += params.rho_prev['pf'][distribution_network.name] * error_p_pf_prev_dso
-                        dual_vars['pf']['dso']['prev'][node_id][year][day]['q'][p] += params.rho_prev['pf'][distribution_network.name] * error_q_pf_prev_dso
+                        dual_vars['pf']['tso']['prev'][node_id][year][day]['p'][p] += rho_pf_tso_prev * error_p_pf_prev_tso
+                        dual_vars['pf']['tso']['prev'][node_id][year][day]['q'][p] += rho_pf_tso_prev * error_q_pf_prev_tso
+                        dual_vars['pf']['dso']['prev'][node_id][year][day]['p'][p] += rho_pf_dso_prev * error_p_pf_prev_dso
+                        dual_vars['pf']['dso']['prev'][node_id][year][day]['q'][p] += rho_pf_dso_prev * error_q_pf_prev_dso
 
 
 def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_models, sess_model, shared_ess_vars, dual_vars, results, params, update_tn=True, update_dns=True, update_sess=True):
@@ -1569,34 +1576,40 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
             for day in planning_problem.days:
                 for p in range(planning_problem.num_instants):
 
+                    rho_ess_tso = pe.value(tso_model[year][day].rho_ess)
+                    rho_ess_dso = pe.value(dso_models[node_id][year][day].rho_ess)
+                    rho_ess_sess = pe.value(sess_model.rho)
+
                     error_p_tso_esso = shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['p'][p]
                     error_q_tso_esso = shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['q'][p]
-                    dual_vars['tso']['current'][node_id][year][day]['p'][p] += params.rho['ess'][transmission_network.name] * error_p_tso_esso
-                    dual_vars['tso']['current'][node_id][year][day]['q'][p] += params.rho['ess'][transmission_network.name] * error_q_tso_esso
+                    dual_vars['tso']['current'][node_id][year][day]['p'][p] += rho_ess_tso * error_p_tso_esso
+                    dual_vars['tso']['current'][node_id][year][day]['q'][p] += rho_ess_tso * error_q_tso_esso
                     if params.previous_iter['ess']:
+                        rho_ess_tso_prev = pe.value(tso_model[year][day].rho_ess_prev)
                         error_p_tso_esso_prev = shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['tso']['prev'][node_id][year][day]['p'][p]
                         error_q_tso_esso_prev = shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['tso']['prev'][node_id][year][day]['q'][p]
-                        dual_vars['tso']['prev'][node_id][year][day]['p'][p] += params.rho_prev['ess'][transmission_network.name] * error_p_tso_esso_prev
-                        dual_vars['tso']['prev'][node_id][year][day]['q'][p] += params.rho_prev['ess'][transmission_network.name] * error_q_tso_esso_prev
+                        dual_vars['tso']['prev'][node_id][year][day]['p'][p] += rho_ess_tso_prev * error_p_tso_esso_prev
+                        dual_vars['tso']['prev'][node_id][year][day]['q'][p] += rho_ess_tso_prev * error_q_tso_esso_prev
 
                     error_p_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['p'][p]
                     error_q_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['q'][p]
-                    dual_vars['dso']['current'][node_id][year][day]['p'][p] += params.rho['ess'][distribution_network.name] * error_p_dso_esso
-                    dual_vars['dso']['current'][node_id][year][day]['q'][p] += params.rho['ess'][distribution_network.name] * error_q_dso_esso
+                    dual_vars['dso']['current'][node_id][year][day]['p'][p] += rho_ess_dso * error_p_dso_esso
+                    dual_vars['dso']['current'][node_id][year][day]['q'][p] += rho_ess_dso * error_q_dso_esso
                     if params.previous_iter['ess']:
+                        rho_ess_dso_prev = pe.value(dso_models[node_id][year][day].rho_ess_prev)
                         error_p_dso_esso_prev = shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['dso']['prev'][node_id][year][day]['p'][p]
                         error_q_dso_esso_prev = shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['dso']['prev'][node_id][year][day]['q'][p]
-                        dual_vars['dso']['prev'][node_id][year][day]['p'][p] += params.rho_prev['ess'][distribution_network.name] * error_p_dso_esso_prev
-                        dual_vars['dso']['prev'][node_id][year][day]['q'][p] += params.rho_prev['ess'][distribution_network.name] * error_q_dso_esso_prev
+                        dual_vars['dso']['prev'][node_id][year][day]['p'][p] += rho_ess_dso_prev * error_p_dso_esso_prev
+                        dual_vars['dso']['prev'][node_id][year][day]['q'][p] += rho_ess_dso_prev * error_q_dso_esso_prev
 
                     error_p_esso_tso = shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['p'][p]
                     error_q_esso_tso = shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['q'][p]
                     error_p_esso_dso = shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['p'][p]
                     error_q_esso_dso = shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['q'][p]
-                    dual_vars['esso']['tso'][node_id][year][day]['p'][p] += params.rho['ess']['esso'] * error_p_esso_tso
-                    dual_vars['esso']['tso'][node_id][year][day]['q'][p] += params.rho['ess']['esso'] * error_q_esso_tso
-                    dual_vars['esso']['dso'][node_id][year][day]['p'][p] += params.rho['ess']['esso'] * error_p_esso_dso
-                    dual_vars['esso']['dso'][node_id][year][day]['q'][p] += params.rho['ess']['esso'] * error_q_esso_dso
+                    dual_vars['esso']['tso'][node_id][year][day]['p'][p] += rho_ess_sess * error_p_esso_tso
+                    dual_vars['esso']['tso'][node_id][year][day]['q'][p] += rho_ess_sess * error_q_esso_tso
+                    dual_vars['esso']['dso'][node_id][year][day]['p'][p] += rho_ess_sess * error_p_esso_dso
+                    dual_vars['esso']['dso'][node_id][year][day]['q'][p] += rho_ess_sess * error_q_esso_dso
 
 
 # ======================================================================================================================
