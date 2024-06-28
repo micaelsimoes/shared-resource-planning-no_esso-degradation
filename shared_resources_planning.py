@@ -487,6 +487,21 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                         tso_model[year][day].expected_shared_ess_cons.add(tso_model[year][day].expected_shared_ess_p[e, p] == expected_sess_p)
                         tso_model[year][day].expected_shared_ess_cons.add(tso_model[year][day].expected_shared_ess_q[e, p] == expected_sess_q)
 
+    # Update OF to minimize deviations to expected interface power flow values
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+            obj = copy(tso_model[year][day].objective.expr)
+            for dn in tso_model[year][day].active_distribution_networks:
+                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
+                adn_node_idx = transmission_network.network[year][day].get_node_idx(adn_node_id)
+                adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(adn_node_id)
+                for s_m in tso_model[year][day].scenarios_market:
+                    for s_o in tso_model[year][day].scenarios_operation:
+                        for p in tso_model[year][day].periods:
+                            obj += PENALTY_PF_REGULATION * (tso_model[year][day].pc[adn_load_idx, s_m, s_o, p] - tso_model[year][day].expected_interface_pf_p[dn, p]) ** 2
+                            obj += PENALTY_PF_REGULATION * (tso_model[year][day].qc[adn_load_idx, s_m, s_o, p] - tso_model[year][day].expected_interface_pf_q[dn, p]) ** 2
+            tso_model[year][day].objective.expr = obj
+
     # Update TSO's OF to try to respect the interface power flows, run SMOPF
     for year in transmission_network.years:
         for day in transmission_network.days:
