@@ -504,7 +504,7 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                     for s_o in tso_model[year][day].scenarios_operation:
                         for p in tso_model[year][day].periods:
                             obj += PENALTY_EXPECTED_SESS_DEVIATION * (tso_model[year][day].shared_es_pnet[e, s_m, s_o, p] - tso_model[year][day].expected_shared_ess_p[dn, p]) ** 2
-                            obj += PENALTY_EXPECTED_SESS_DEVIATION * (tso_model[year][day].shared_es_Qnet[e, s_m, s_o, p] - tso_model[year][day].expected_shared_ess_q[dn, p]) ** 2
+                            obj += PENALTY_EXPECTED_SESS_DEVIATION * (tso_model[year][day].shared_es_qnet[e, s_m, s_o, p] - tso_model[year][day].expected_shared_ess_q[dn, p]) ** 2
             tso_model[year][day].objective.expr = obj
 
     # Update TSO's OF to try to respect the interface power flows, run SMOPF
