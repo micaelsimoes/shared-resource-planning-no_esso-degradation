@@ -1137,7 +1137,8 @@ def _run_smopf(network, model, params, from_warm_start=False):
 
     if params.solver_params.solver == 'ipopt':
         solver.options['tol'] = params.solver_params.solver_tol
-        solver.options['constr_viol_tol '] = params.solver_params.solver_tol * 1e3
+        solver.options['constr_viol_tol'] = params.solver_params.solver_tol * 1e3
+        solver.options['derivative_test'] = 'second-order'
         #solver.options['acceptable_tol'] = params.solver_params.solver_tol * 1e3
         #solver.options['acceptable_iter'] = 5
         solver.options['max_iter'] = 10000
