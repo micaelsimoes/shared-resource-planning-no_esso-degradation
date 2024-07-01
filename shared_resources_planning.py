@@ -1405,7 +1405,6 @@ def stationary_convergence(planning_problem, consensus_vars, params):
     rho_tso_pf = params.rho['pf'][planning_problem.transmission_network.name]
     rho_tso_ess = params.rho['ess'][planning_problem.transmission_network.name]
 
-
     # Interface Power Flow
     sum_abs = 0.0
     num_elems = 0
