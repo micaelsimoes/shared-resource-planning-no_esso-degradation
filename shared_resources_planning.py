@@ -1375,7 +1375,7 @@ def consensus_convergence(planning_problem, consensus_vars, params):
             return False
         print('[INFO]\t\t - Convergence PF consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
     else:
-        print('[INFO]\t\t - Convergence SESS consensus constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
+        print('[INFO]\t\t - Convergence PF consensus constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
 
     # Shared Energy Storage
     sum_abs = 0.0
