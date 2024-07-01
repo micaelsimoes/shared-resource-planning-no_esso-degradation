@@ -1357,13 +1357,11 @@ def check_admm_convergence(planning_problem, consensus_vars, params):
 
 def consensus_convergence(planning_problem, consensus_vars, params):
 
+    # Interface Power Flow
     sum_abs = 0.0
     num_elems = 0
-
     for year in planning_problem.years:
         for day in planning_problem.days:
-
-            # Interface Power Flow
             for node_id in planning_problem.active_distribution_network_nodes:
                 for p in range(planning_problem.num_instants):
                     sum_abs += abs(round(consensus_vars['interface']['v_sqr']['tso']['current'][node_id][year][day][p], ERROR_PRECISION) - round(consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day][p], ERROR_PRECISION))
@@ -1371,7 +1369,19 @@ def consensus_convergence(planning_problem, consensus_vars, params):
                     sum_abs += abs(round(consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION))
                     num_elems += 6
 
-            # Shared Energy Storage
+    if sum_abs > params.tol['consensus'] * num_elems:
+        if not isclose(sum_abs, params.tol['consensus'] * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['consensus']):
+            print('[INFO]\t\t - Convergence PF consensus constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
+            return False
+        print('[INFO]\t\t - Convergence PF consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
+    else:
+        print('[INFO]\t\t - Convergence SESS consensus constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
+
+    # Shared Energy Storage
+    sum_abs = 0.0
+    num_elems = 0
+    for year in planning_problem.years:
+        for day in planning_problem.days:
             for node_id in planning_problem.active_distribution_network_nodes:
                 for p in range(planning_problem.num_instants):
                     sum_abs += abs(round(consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION))
@@ -1380,12 +1390,12 @@ def consensus_convergence(planning_problem, consensus_vars, params):
 
     if sum_abs > params.tol['consensus'] * num_elems:
         if not isclose(sum_abs, params.tol['consensus'] * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['consensus']):
-            print('[INFO]\t\t - Convergence consensus constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
+            print('[INFO]\t\t - Convergence SESS consensus constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
             return False
-        print('[INFO]\t\t - Convergence consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
-        return True
+        print('[INFO]\t\t - Convergence SESS consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
+    else:
+        print('[INFO]\t\t - Convergence SESS consensus constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
 
-    print('[INFO]\t\t - Convergence consensus constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
     return True
 
 
@@ -1394,10 +1404,11 @@ def stationary_convergence(planning_problem, consensus_vars, params):
     rho_tso_v = params.rho['v'][planning_problem.transmission_network.name]
     rho_tso_pf = params.rho['pf'][planning_problem.transmission_network.name]
     rho_tso_ess = params.rho['ess'][planning_problem.transmission_network.name]
-    sum_abs = 0.0
-    num_elems = 0
+
 
     # Interface Power Flow
+    sum_abs = 0.0
+    num_elems = 0
     for node_id in planning_problem.distribution_networks:
         rho_dso_v = params.rho['v'][planning_problem.distribution_networks[node_id].name]
         rho_dso_pf = params.rho['pf'][planning_problem.distribution_networks[node_id].name]
@@ -1412,7 +1423,16 @@ def stationary_convergence(planning_problem, consensus_vars, params):
                     sum_abs += rho_dso_pf * abs(round(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['q'][p], ERROR_PRECISION))
                     num_elems += 6
 
+    if sum_abs > params.tol['stationarity'] * num_elems:
+        if not isclose(sum_abs, params.tol['stationarity'] * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['stationarity']):
+            print('[INFO]\t\t - Convergence PF stationary constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
+            return False
+        print('[INFO]\t\t - Convergence PF stationary constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
+    print('[INFO]\t\t - Convergence PF stationary constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
+
     # Shared Energy Storage
+    sum_abs = 0.0
+    num_elems = 0
     for node_id in planning_problem.distribution_networks:
         distribution_network = planning_problem.distribution_networks[node_id]
         for year in planning_problem.years:
@@ -1427,12 +1447,11 @@ def stationary_convergence(planning_problem, consensus_vars, params):
 
     if sum_abs > params.tol['stationarity'] * num_elems:
         if not isclose(sum_abs, params.tol['stationarity'] * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['stationarity']):
-            print('[INFO]\t\t - Convergence stationary constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
+            print('[INFO]\t\t - Convergence SESS stationary constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
             return False
-        print('[INFO]\t\t - Convergence stationary constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
-        return True
+        print('[INFO]\t\t - Convergence SESS stationary constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
+    print('[INFO]\t\t - Convergence SESS stationary constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
 
-    print('[INFO]\t\t - Convergence stationary constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
     return True
 
 
