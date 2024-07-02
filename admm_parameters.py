@@ -8,7 +8,7 @@ class ADMMParameters:
         self.num_max_iters = 1000
         self.adaptive_penalty = False
         self.rho = {'v': dict(), 'pf': dict(), 'ess': dict()}
-        self.previous_iter = {'v': False, 'pf': False, 'ess': True}
+        self.previous_iter = {'v': False, 'pf': False, 'ess': False}
         self.rho_prev = {'pf': dict(), 'ess': dict()}
 
     def read_parameters_from_file(self, params_data):

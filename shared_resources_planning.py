@@ -1162,7 +1162,7 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
                 if params.previous_iter['pf']:
                     rho_pf_prev = pe.value(model[year][day].rho_pf_prev) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
                 if params.previous_iter['ess']:
-                    rho_ess_prev = pe.value(model[year][day].rho_pf_prev) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+                    rho_ess_prev = pe.value(model[year][day].rho_ess_prev) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
 
             # Update Rho parameter
             model[year][day].rho_v.fix(rho_v)
@@ -1256,7 +1256,7 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
                     if params.previous_iter['pf']:
                         rho_pf_prev = pe.value(model[year][day].rho_pf_prev) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
                     if params.previous_iter['ess']:
-                        rho_ess_prev = pe.value(model[year][day].rho_pf_prev) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+                        rho_ess_prev = pe.value(model[year][day].rho_ess_prev) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
 
                 # Update Rho parameter
                 model[year][day].rho_v.fix(rho_v)
@@ -5081,11 +5081,11 @@ def _get_initial_candidate_solution(planning_problem):
             candidate_solution['total_capacity'][node_id][year]['s'] = 0.00
             candidate_solution['total_capacity'][node_id][year]['e'] = 0.00
             if year == 2030:
-                candidate_solution['investment'][node_id][year]['s'] = 1.00
-                candidate_solution['investment'][node_id][year]['e'] = 1.00
+                candidate_solution['investment'][node_id][year]['s'] = 0.00
+                candidate_solution['investment'][node_id][year]['e'] = 0.00
             if 2030 <= year < 2050:
-                candidate_solution['total_capacity'][node_id][year]['s'] = 1.00
-                candidate_solution['total_capacity'][node_id][year]['e'] = 1.00
+                candidate_solution['total_capacity'][node_id][year]['s'] = 0.00
+                candidate_solution['total_capacity'][node_id][year]['e'] = 0.00
     return candidate_solution
 
 
