@@ -890,8 +890,6 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
 
             # Objective function - augmented Lagrangian
             init_of_value = 1.00
-            if transmission_network.params.obj_type == OBJ_MIN_COST:
-                init_of_value = abs(pe.value(model[year][day].objective))
             if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
                 init_of_value = 1.00
             obj = copy(model[year][day].objective.expr) / init_of_value
@@ -937,16 +935,16 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
                     shared_ess_rating = 1.00
 
                 for p in model[year][day].periods:
-                    constraint_ess_p = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_req[e, p]) / shared_ess_rating
-                    constraint_ess_q = (model[year][day].expected_shared_ess_q[e, p] - model[year][day].q_ess_req[e, p]) / shared_ess_rating
+                    constraint_ess_p = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_req[e, p]) / (2 * shared_ess_rating)
+                    constraint_ess_q = (model[year][day].expected_shared_ess_q[e, p] - model[year][day].q_ess_req[e, p]) / (2 * shared_ess_rating)
                     obj += model[year][day].dual_ess_p_req[e, p] * constraint_ess_p
                     obj += model[year][day].dual_ess_q_req[e, p] * constraint_ess_q
                     obj += (model[year][day].rho_ess / 2) * constraint_ess_p ** 2
                     obj += (model[year][day].rho_ess / 2) * constraint_ess_q ** 2
 
                     if params.previous_iter['ess']:
-                        constraint_ess_p_prev = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_prev[e, p]) / shared_ess_rating
-                        constraint_ess_q_prev = (model[year][day].expected_shared_ess_q[e, p] - model[year][day].q_ess_prev[e, p]) / shared_ess_rating
+                        constraint_ess_p_prev = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_prev[e, p]) / (2 * shared_ess_rating)
+                        constraint_ess_q_prev = (model[year][day].expected_shared_ess_q[e, p] - model[year][day].q_ess_prev[e, p]) / (2 * shared_ess_rating)
                         obj += model[year][day].dual_ess_p_prev[e, p] * constraint_ess_p_prev
                         obj += model[year][day].dual_ess_q_prev[e, p] * constraint_ess_q_prev
                         obj += (model[year][day].rho_ess_prev / 2) * constraint_ess_p_prev ** 2
@@ -1031,8 +1029,6 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
 
                 # Objective function - augmented Lagrangian
                 init_of_value = 1.00
-                if distribution_network.params.obj_type == OBJ_MIN_COST:
-                    init_of_value = abs(pe.value(dso_model[year][day].objective))
                 if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
                     init_of_value = 1.00
                 obj = copy(dso_model[year][day].objective.expr) / init_of_value
@@ -1078,15 +1074,15 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                         obj += (dso_model[year][day].rho_pf_prev / 2) * (constraint_q_prev ** 2)
 
                     # Shared ESS
-                    constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_req[p]) / shared_ess_rating
-                    constraint_ess_q_req = (dso_model[year][day].expected_shared_ess_q[p] - dso_model[year][day].q_ess_req[p]) / shared_ess_rating
+                    constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_req[p]) / (2 * shared_ess_rating)
+                    constraint_ess_q_req = (dso_model[year][day].expected_shared_ess_q[p] - dso_model[year][day].q_ess_req[p]) / (2 * shared_ess_rating)
                     obj += dso_model[year][day].dual_ess_p_req[p] * constraint_ess_p_req
                     obj += dso_model[year][day].dual_ess_q_req[p] * constraint_ess_q_req
                     obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_p_req ** 2
                     obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_q_req ** 2
                     if params.previous_iter['ess']:
-                        constraint_ess_p_prev = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_prev[p]) / shared_ess_rating
-                        constraint_ess_q_prev = (dso_model[year][day].expected_shared_ess_q[p] - dso_model[year][day].q_ess_prev[p]) / shared_ess_rating
+                        constraint_ess_p_prev = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_prev[p]) / (2 * shared_ess_rating)
+                        constraint_ess_q_prev = (dso_model[year][day].expected_shared_ess_q[p] - dso_model[year][day].q_ess_prev[p]) / (2 * shared_ess_rating)
                         obj += dso_model[year][day].dual_ess_p_prev[p] * constraint_ess_p_prev
                         obj += dso_model[year][day].dual_ess_q_prev[p] * constraint_ess_q_prev
                         obj += (dso_model[year][day].rho_ess_prev / 2) * constraint_ess_p_prev ** 2
@@ -1121,8 +1117,8 @@ def update_shared_energy_storage_model_to_admm(shared_ess_data, model, params):
                 shared_ess_rating = 1.00
             for d in model.days:
                 for p in model.periods:
-                    constraint_p_req = (model.es_pnet[e, y, d, p] - model.p_req[e, y, d, p]) / shared_ess_rating
-                    constraint_q_req = (model.es_qnet[e, y, d, p] - model.q_req[e, y, d, p]) / shared_ess_rating
+                    constraint_p_req = (model.es_pnet[e, y, d, p] - model.p_req[e, y, d, p]) / (2 * shared_ess_rating)
+                    constraint_q_req = (model.es_qnet[e, y, d, p] - model.q_req[e, y, d, p]) / (2 * shared_ess_rating)
                     obj += model.dual_p_req[e, y, d, p] * constraint_p_req
                     obj += model.dual_q_req[e, y, d, p] * constraint_q_req
                     obj += (model.rho / 2) * constraint_p_req ** 2
