@@ -889,7 +889,7 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
                 model[year][day].dual_ess_q_prev = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)   # Dual variable - previous iteration shared ESS reactive power
 
             # Objective function - augmented Lagrangian
-            init_of_value = 1.00
+            init_of_value = abs(pe.value(model[year][day].objective))
             if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
                 init_of_value = 1.00
             obj = copy(model[year][day].objective.expr) / init_of_value
@@ -1028,7 +1028,7 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                     dso_model[year][day].dual_ess_q_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)        # Dual variable - previous iteration shared ESS reactive power
 
                 # Objective function - augmented Lagrangian
-                init_of_value = 1.00
+                init_of_value = abs(pe.value(dso_model[year][day].objective))
                 if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
                     init_of_value = 1.00
                 obj = copy(dso_model[year][day].objective.expr) / init_of_value
@@ -1108,7 +1108,11 @@ def update_shared_energy_storage_model_to_admm(shared_ess_data, model, params):
     model.dual_q_req = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)       # Dual variables
 
     # Objective function - augmented Lagrangian
-    obj = model.objective.expr
+    init_of_value = abs(pe.value(model.objective))
+    if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
+        init_of_value = 1.00
+
+    obj = copy(model.objective.expr) / init_of_value
     for e in model.energy_storages:
         for y in model.years:
             year = years[y]
