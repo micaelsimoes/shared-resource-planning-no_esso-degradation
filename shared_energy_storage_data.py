@@ -525,8 +525,8 @@ def _optimize(model, params, from_warm_start=False):
         solver.options['output_file'] = 'optim_log.txt'
 
     if params.solver == 'ipopt':
-        solver.options['tol'] = params.solver_params.solver_tol
-        solver.options['linear_solver'] = params.solver_params.linear_solver
+        solver.options['tol'] = params.solver_tol
+        solver.options['linear_solver'] = params.linear_solver
         solver.options['mu_strategy'] = 'adaptive'
 
     result = solver.solve(model, tee=params.verbose)
