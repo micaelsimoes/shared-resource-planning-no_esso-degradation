@@ -1376,8 +1376,6 @@ def consensus_convergence(planning_problem, consensus_vars, params):
             print('[INFO]\t\t - Convergence V consensus constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
             return False
         print('[INFO]\t\t - Convergence V consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
-    else:
-        print('[INFO]\t\t - Convergence V consensus constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
 
     # Interface Power Flows
     sum_abs = 0.0
@@ -1395,8 +1393,6 @@ def consensus_convergence(planning_problem, consensus_vars, params):
             print('[INFO]\t\t - Convergence PF consensus constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
             return False
         print('[INFO]\t\t - Convergence PF consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
-    else:
-        print('[INFO]\t\t - Convergence PF consensus constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
 
     # Shared Energy Storage
     sum_abs = 0.0
@@ -1414,8 +1410,8 @@ def consensus_convergence(planning_problem, consensus_vars, params):
             print('[INFO]\t\t - Convergence SESS consensus constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
             return False
         print('[INFO]\t\t - Convergence SESS consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
-    else:
-        print('[INFO]\t\t - Convergence SESS consensus constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
+
+    print('[INFO]\t\t - Convergence consensus constraints ok!')
 
     return True
 
@@ -1443,8 +1439,6 @@ def stationary_convergence(planning_problem, consensus_vars, params):
             print('[INFO]\t\t - Convergence V stationary constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
             return False
         print('[INFO]\t\t - Convergence V stationary constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
-    else:
-        print('[INFO]\t\t - Convergence V stationary constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
 
     # Interface Power Flow
     sum_abs = 0.0
@@ -1465,8 +1459,6 @@ def stationary_convergence(planning_problem, consensus_vars, params):
             print('[INFO]\t\t - Convergence PF stationary constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
             return False
         print('[INFO]\t\t - Convergence PF stationary constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
-    else:
-        print('[INFO]\t\t - Convergence PF stationary constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
 
     # Shared Energy Storage
     sum_abs = 0.0
@@ -1488,8 +1480,8 @@ def stationary_convergence(planning_problem, consensus_vars, params):
             print('[INFO]\t\t - Convergence SESS stationary constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
             return False
         print('[INFO]\t\t - Convergence SESS stationary constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
-    else:
-        print('[INFO]\t\t - Convergence SESS stationary constraints ok. {:.3f} <= {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
+
+    print('[INFO]\t\t - Convergence stationary constraints ok!')
 
     return True
 
