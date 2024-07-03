@@ -779,8 +779,8 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
 
             for dn in model[year][day].active_distribution_networks:
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
-                p_norm = max(abs(consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['p'])) / s_base
-                q_norm = max(abs(consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q'])) / s_base
+                p_norm = max([abs(value) for value in consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['p']]) / s_base
+                q_norm = max([abs(value) for value in consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q']]) / s_base
                 for p in model[year][day].periods:
 
                     '''
