@@ -1015,6 +1015,17 @@ def _build_model(network, params):
                             flex_p_down = model.flex_p_down[c, s_m, s_o, p]
                             obj_scenario += PENALTY_FLEXIBILITY_USAGE * network.baseMVA * (flex_p_down + flex_p_up)
 
+                if params.es_reg:
+                    for e in model.energy_storages:
+                        for p in model.periods:
+                            sch = model.es_sch[e, s_m, s_o, p]
+                            obj_scenario += PENALTY_ESS_USAGE * network.baseMVA * (sch)
+
+                for e in model.shared_energy_storages:
+                    for p in model.periods:
+                        sch = model.shared_es_sch[e, s_m, s_o, p]
+                        obj_scenario += PENALTY_ESS_USAGE * network.baseMVA * (sch)
+
                 obj += obj_scenario * omega_market * omega_oper
     else:
         print(f'[ERROR] Unrecognized or invalid objective. Objective = {params.obj_type}. Exiting...')
