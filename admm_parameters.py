@@ -8,8 +8,6 @@ class ADMMParameters:
         self.num_max_iters = 1000
         self.adaptive_penalty = False
         self.rho = {'v': dict(), 'pf': dict(), 'ess': dict()}
-        self.previous_iter = {'v': False, 'pf': False, 'ess': False}
-        self.rho_prev = {'pf': dict(), 'ess': dict()}
 
     def read_parameters_from_file(self, params_data):
         _read_parameters_from_file(self, params_data)
@@ -23,16 +21,3 @@ def _read_parameters_from_file(admm_params, params_data):
     admm_params.rho['v'] = params_data['rho']['v']
     admm_params.rho['pf'] = params_data['rho']['pf']
     admm_params.rho['ess'] = params_data['rho']['ess']
-    if 'previous_iter' in params_data:
-        if 'v' in params_data['previous_iter']:
-            admm_params.previous_iter['v'] = bool(params_data['previous_iter']['v'])
-            if admm_params.previous_iter['v']:
-                admm_params.rho_prev['v'] = params_data['previous_iter']['rho']['v']
-        if 'pf' in params_data['previous_iter']:
-            admm_params.previous_iter['pf'] = bool(params_data['previous_iter']['pf'])
-            if admm_params.previous_iter['pf']:
-                admm_params.rho_prev['pf'] = params_data['previous_iter']['rho']['pf']
-        if 'ess' in params_data['previous_iter']:
-            admm_params.previous_iter['ess'] = bool(params_data['previous_iter']['ess'])
-            if admm_params.previous_iter['ess']:
-                admm_params.rho_prev['ess'] = params_data['previous_iter']['rho']['ess']
