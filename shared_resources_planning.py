@@ -553,8 +553,7 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                             obj += PENALTY_EXPECTED_SESS_DEVIATION * s_base * (dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_q[p]) ** 2
 
                 # Deactivate original OF, add new objective to the model
-                dso_model[year][day].objective.deactivate()
-                dso_model[year][day].objective_init = pe.Objective(sense=pe.minimize, expr=obj)
+                dso_model[year][day].objective.expr = obj
 
         # Run SMOPF
         results[node_id] = distribution_network.optimize(dso_model)
@@ -814,7 +813,7 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
             # Objective function - augmented Lagrangian
             init_of_value = 1.00
             if transmission_network.params.obj_type == OBJ_MIN_COST:
-                init_of_value = abs(pe.value(model[year][day].objective))
+                init_of_value = abs(pe.value(model[year][day].objective_init))
             if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
                 init_of_value = 1.00
             obj = copy(model[year][day].objective.expr) / init_of_value
@@ -1016,7 +1015,7 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                         obj += (dso_model[year][day].rho_ess_prev / 2) * constraint_ess_q_prev ** 2
 
                 # Add ADMM OF, deactivate original OF
-                dso_model[year][day].objective_init.deactivate()
+                dso_model[year][day].objective.deactivate()
                 dso_model[year][day].admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
 
 
