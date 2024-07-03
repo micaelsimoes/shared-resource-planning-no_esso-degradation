@@ -1284,54 +1284,54 @@ def check_admm_convergence(planning_problem, consensus_vars, params):
 def consensus_convergence(planning_problem, consensus_vars, params):
 
     # Interface voltage magnitude
-    sum_abs = 0.0
+    sum_sqr = 0.0
     num_elems = 0
     for year in planning_problem.years:
         for day in planning_problem.days:
             for node_id in planning_problem.active_distribution_network_nodes:
                 for p in range(planning_problem.num_instants):
-                    sum_abs += abs(round(consensus_vars['interface']['v_sqr']['tso']['current'][node_id][year][day][p], ERROR_PRECISION) - round(consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day][p], ERROR_PRECISION))
+                    sum_sqr += (consensus_vars['interface']['v_sqr']['tso']['current'][node_id][year][day][p] - consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day][p]) ** 2
                     num_elems += 2
 
-    if sum_abs > params.tol['consensus'] * num_elems:
-        if not isclose(sum_abs, params.tol['consensus'] * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['consensus']):
-            print('[INFO]\t\t - Convergence V consensus constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
+    if sqrt(sum_sqr) > params.tol['consensus'] * sqrt(num_elems):
+        if not isclose(sqrt(sum_sqr), params.tol['consensus'] * sqrt(num_elems), rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['consensus']):
+            print('[INFO]\t\t - Convergence V consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr), params.tol['consensus'] * sqrt(num_elems)))
             return False
-        print('[INFO]\t\t - Convergence V consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
+        print('[INFO]\t\t - Convergence V consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sqrt(sum_sqr), params.tol['consensus'] * sqrt(num_elems)))
 
     # Interface Power Flows
-    sum_abs = 0.0
+    sum_sqr = 0.0
     num_elems = 0
     for year in planning_problem.years:
         for day in planning_problem.days:
             for node_id in planning_problem.active_distribution_network_nodes:
                 for p in range(planning_problem.num_instants):
-                    sum_abs += abs(round(consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION))
-                    sum_abs += abs(round(consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION))
+                    sum_sqr += (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p]) ** 2
+                    sum_sqr += (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p]) ** 2
                     num_elems += 4
 
-    if sum_abs > params.tol['consensus'] * num_elems:
-        if not isclose(sum_abs, params.tol['consensus'] * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['consensus']):
-            print('[INFO]\t\t - Convergence PF consensus constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
+    if sqrt(sum_sqr) > params.tol['consensus'] * sqrt(num_elems):
+        if not isclose(sqrt(sum_sqr), params.tol['consensus'] * sqrt(num_elems), rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['consensus']):
+            print('[INFO]\t\t - Convergence PF consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr), params.tol['consensus'] * sqrt(num_elems)))
             return False
-        print('[INFO]\t\t - Convergence PF consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
+        print('[INFO]\t\t - Convergence PF consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sqrt(sum_sqr), params.tol['consensus'] * sqrt(num_elems)))
 
     # Shared Energy Storage
-    sum_abs = 0.0
+    sum_sqr = 0.0
     num_elems = 0
     for year in planning_problem.years:
         for day in planning_problem.days:
             for node_id in planning_problem.active_distribution_network_nodes:
                 for p in range(planning_problem.num_instants):
-                    sum_abs += abs(round(consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION))
-                    sum_abs += abs(round(consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION))
+                    sum_sqr += (consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p]) ** 2
+                    sum_sqr += (consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p]) ** 2
                     num_elems += 4
 
-    if sum_abs > params.tol['consensus'] * num_elems:
-        if not isclose(sum_abs, params.tol['consensus'] * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['consensus']):
-            print('[INFO]\t\t - Convergence SESS consensus constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
+    if sqrt(sum_sqr) > params.tol['consensus'] * sqrt(num_elems):
+        if not isclose(sqrt(sum_sqr), params.tol['consensus'] * sqrt(num_elems), rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['consensus']):
+            print('[INFO]\t\t - Convergence SESS consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr), params.tol['consensus'] * sqrt(num_elems)))
             return False
-        print('[INFO]\t\t - Convergence SESS consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol['consensus'] * num_elems))
+        print('[INFO]\t\t - Convergence SESS consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sqrt(sum_sqr), params.tol['consensus'] * sqrt(num_elems)))
 
     print('[INFO]\t\t - Convergence consensus constraints ok!')
 
@@ -1345,45 +1345,45 @@ def stationary_convergence(planning_problem, consensus_vars, params):
     rho_tso_ess = params.rho['ess'][planning_problem.transmission_network.name]
 
     # Interface voltage magnitude
-    sum_abs = 0.0
+    sum_sqr = 0.0
     num_elems = 0
     for node_id in planning_problem.distribution_networks:
         rho_dso_v = params.rho['v'][planning_problem.distribution_networks[node_id].name]
         for year in planning_problem.years:
             for day in planning_problem.days:
                 for p in range(planning_problem.num_instants):
-                    sum_abs += rho_tso_v * abs(round(consensus_vars['interface']['v_sqr']['tso']['current'][node_id][year][day][p], ERROR_PRECISION) - round(consensus_vars['interface']['v_sqr']['tso']['prev'][node_id][year][day][p], ERROR_PRECISION))
-                    sum_abs += rho_dso_v * abs(round(consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day][p], ERROR_PRECISION) - round(consensus_vars['interface']['v_sqr']['dso']['prev'][node_id][year][day][p], ERROR_PRECISION))
+                    sum_sqr += rho_tso_v * (consensus_vars['interface']['v_sqr']['tso']['current'][node_id][year][day][p] - consensus_vars['interface']['v_sqr']['tso']['prev'][node_id][year][day][p]) ** 2
+                    sum_sqr += rho_dso_v * (consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day][p] - consensus_vars['interface']['v_sqr']['dso']['prev'][node_id][year][day][p]) ** 2
                     num_elems += 2
 
-    if sum_abs > params.tol['stationarity'] * num_elems:
-        if not isclose(sum_abs, params.tol['stationarity'] * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['stationarity']):
-            print('[INFO]\t\t - Convergence V stationary constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
+    if sqrt(sum_sqr) > params.tol['stationarity'] * sqrt(num_elems):
+        if not isclose(sqrt(sum_sqr), params.tol['stationarity'] * sqrt(num_elems), rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['stationarity']):
+            print('[INFO]\t\t - Convergence V stationary constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr), params.tol['stationarity'] * sqrt(num_elems)))
             return False
-        print('[INFO]\t\t - Convergence V stationary constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
+        print('[INFO]\t\t - Convergence V stationary constraints considered ok. {:.3f} ~= {:.3f}'.format(sqrt(sum_sqr), params.tol['stationarity'] * sqrt(num_elems)))
 
     # Interface Power Flow
-    sum_abs = 0.0
+    sum_sqr = 0.0
     num_elems = 0
     for node_id in planning_problem.distribution_networks:
         rho_dso_pf = params.rho['pf'][planning_problem.distribution_networks[node_id].name]
         for year in planning_problem.years:
             for day in planning_problem.days:
                 for p in range(planning_problem.num_instants):
-                    sum_abs += rho_tso_pf * abs(round(consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['interface']['pf']['tso']['prev'][node_id][year][day]['p'][p], ERROR_PRECISION))
-                    sum_abs += rho_tso_pf * abs(round(consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['interface']['pf']['tso']['prev'][node_id][year][day]['q'][p], ERROR_PRECISION))
-                    sum_abs += rho_dso_pf * abs(round(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['p'][p], ERROR_PRECISION))
-                    sum_abs += rho_dso_pf * abs(round(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['q'][p], ERROR_PRECISION))
+                    sum_sqr += rho_tso_pf * (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['interface']['pf']['tso']['prev'][node_id][year][day]['p'][p]) ** 2
+                    sum_sqr += rho_tso_pf * (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['interface']['pf']['tso']['prev'][node_id][year][day]['q'][p]) ** 2
+                    sum_sqr += rho_dso_pf * (consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['p'][p]) ** 2
+                    sum_sqr += rho_dso_pf * (consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['q'][p]) ** 2
                     num_elems += 4
 
-    if sum_abs > params.tol['stationarity'] * num_elems:
-        if not isclose(sum_abs, params.tol['stationarity'] * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['stationarity']):
-            print('[INFO]\t\t - Convergence PF stationary constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
+    if sqrt(sum_sqr) > params.tol['stationarity'] * sqrt(num_elems):
+        if not isclose(sqrt(sum_sqr), params.tol['stationarity'] * sqrt(num_elems), rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['stationarity']):
+            print('[INFO]\t\t - Convergence PF stationary constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr), params.tol['stationarity'] * sqrt(num_elems)))
             return False
-        print('[INFO]\t\t - Convergence PF stationary constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
+        print('[INFO]\t\t - Convergence PF stationary constraints considered ok. {:.3f} ~= {:.3f}'.format(sqrt(sum_sqr), params.tol['stationarity'] * sqrt(num_elems)))
 
     # Shared Energy Storage
-    sum_abs = 0.0
+    sum_sqr = 0.0
     num_elems = 0
     for node_id in planning_problem.distribution_networks:
         distribution_network = planning_problem.distribution_networks[node_id]
@@ -1391,17 +1391,17 @@ def stationary_convergence(planning_problem, consensus_vars, params):
             for day in planning_problem.days:
                 rho_dso_ess = params.rho['ess'][distribution_network.network[year][day].name]
                 for p in range(planning_problem.num_instants):
-                    sum_abs += rho_tso_ess * abs(round(consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['ess']['tso']['prev'][node_id][year][day]['p'][p], ERROR_PRECISION))
-                    sum_abs += rho_tso_ess * abs(round(consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['ess']['tso']['prev'][node_id][year][day]['q'][p], ERROR_PRECISION))
-                    sum_abs += rho_dso_ess * abs(round(consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p], ERROR_PRECISION) - round(consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p], ERROR_PRECISION))
-                    sum_abs += rho_dso_ess * abs(round(consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p], ERROR_PRECISION) - round(consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p], ERROR_PRECISION))
+                    sum_sqr += rho_tso_ess * (consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['p'][p]) ** 2
+                    sum_sqr += rho_tso_ess * (consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['q'][p]) ** 2
+                    sum_sqr += rho_dso_ess * (consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p]) ** 2
+                    sum_sqr += rho_dso_ess * (consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p]) ** 2
                     num_elems += 4
 
-    if sum_abs > params.tol['stationarity'] * num_elems:
-        if not isclose(sum_abs, params.tol['stationarity'] * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['stationarity']):
-            print('[INFO]\t\t - Convergence SESS stationary constraints failed. {:.3f} > {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
+    if sqrt(sum_sqr) > params.tol['stationarity'] * sqrt(num_elems):
+        if not isclose(sqrt(sum_sqr), params.tol['stationarity'] * sqrt(num_elems), rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['stationarity']):
+            print('[INFO]\t\t - Convergence SESS stationary constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr), params.tol['stationarity'] * sqrt(num_elems)))
             return False
-        print('[INFO]\t\t - Convergence SESS stationary constraints considered ok. {:.3f} ~= {:.3f}'.format(sum_abs, params.tol['stationarity'] * num_elems))
+        print('[INFO]\t\t - Convergence SESS stationary constraints considered ok. {:.3f} ~= {:.3f}'.format(sqrt(sum_sqr), params.tol['stationarity'] * sqrt(num_elems)))
 
     print('[INFO]\t\t - Convergence stationary constraints ok!')
 
