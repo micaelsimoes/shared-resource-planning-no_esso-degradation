@@ -779,8 +779,11 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
 
             for dn in model[year][day].active_distribution_networks:
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
+                p_norm = max(abs(consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['p'])) / s_base
+                q_norm = max(abs(consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q'])) / s_base
                 for p in model[year][day].periods:
 
+                    '''
                     init_p = abs(consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['p'][p]) / s_base
                     if isclose(init_p, 0.00, abs_tol=SMALL_TOLERANCE):
                         init_p = 1.00
@@ -788,13 +791,14 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
                     init_q = abs(consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q'][p]) / s_base
                     if isclose(init_q, 0.00, abs_tol=SMALL_TOLERANCE):
                         init_q = 1.00
+                    '''
 
                     constraint_v_req = (model[year][day].expected_interface_vmag_sqr[dn, p] - model[year][day].v_sqr_req[dn, p])
                     obj += model[year][day].dual_v_sqr_req[dn, p] * constraint_v_req
                     obj += (model[year][day].rho_v / 2) * (constraint_v_req ** 2)
 
-                    constraint_p_req = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_req[dn, p]) / init_p
-                    constraint_q_req = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_req[dn, p]) / init_q
+                    constraint_p_req = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_req[dn, p]) / p_norm
+                    constraint_q_req = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_req[dn, p]) / q_norm
                     obj += model[year][day].dual_pf_p_req[dn, p] * constraint_p_req
                     obj += model[year][day].dual_pf_q_req[dn, p] * constraint_q_req
                     obj += (model[year][day].rho_pf / 2) * (constraint_p_req ** 2)
