@@ -431,13 +431,11 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
             s_base = transmission_network.network[year][day].baseMVA
 
             # Add expected interface values
-            tso_model[year][day].expected_interface_values = pe.ConstraintList()
             tso_model[year][day].expected_interface_vmag_sqr = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00)
             tso_model[year][day].expected_interface_pf_p = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
             tso_model[year][day].expected_interface_pf_q = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
 
             # Add expected shared ESS values
-            tso_model[year][day].expected_shared_ess_cons = pe.ConstraintList()
             tso_model[year][day].expected_shared_ess_p = pe.Var(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
             tso_model[year][day].expected_shared_ess_q = pe.Var(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
 
@@ -470,7 +468,7 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                     init_vsqr = consensus_vars['interface']['v_sqr']['dso']['current'][adn_node_id][year][day][p]
                     init_p = consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
                     init_q = consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q'][p] / s_base
-                    obj += PENALTY_INTERFACE_PF * ((tso_model[year][day].expected_interface_vmag_sqr[dn, p] - init_vsqr) ** 2)
+                    obj += PENALTY_INTERFACE_VMAG * ((tso_model[year][day].expected_interface_vmag_sqr[dn, p] - init_vsqr) ** 2)
                     obj += PENALTY_INTERFACE_PF * ((tso_model[year][day].expected_interface_pf_p[dn, p] - init_p) ** 2)
                     obj += PENALTY_INTERFACE_PF * ((tso_model[year][day].expected_interface_pf_q[dn, p] - init_q) ** 2)
 
@@ -531,76 +529,32 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
         for year in distribution_network.years:
             for day in distribution_network.days:
 
+                s_base = distribution_network.network[year][day].baseMVA
                 ref_node_id = distribution_network.network[year][day].get_reference_node_id()
                 ref_node_idx = distribution_network.network[year][day].get_node_idx(ref_node_id)
                 ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
                 shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
 
                 # Add interface expected variables
-                dso_model[year][day].expected_interface_values = pe.ConstraintList()
                 dso_model[year][day].expected_interface_vmag_sqr = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00)
                 dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
                 dso_model[year][day].expected_interface_pf_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
-
-                dso_model[year][day].expected_shared_ess_cons = pe.ConstraintList()
                 dso_model[year][day].expected_shared_ess_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
                 dso_model[year][day].expected_shared_ess_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
 
-                for p in dso_model[year][day].periods:
-
-                    expected_vmag_sqr = 0.00
-                    expected_pf_p = 0.00
-                    expected_pf_q = 0.00
-                    expected_sess_p = 0.00
-                    expected_sess_q = 0.00
-                    for s_m in dso_model[year][day].scenarios_market:
-                        omega_market = distribution_network.network[year][day].prob_market_scenarios[s_m]
-                        for s_o in dso_model[year][day].scenarios_operation:
-                            omega_oper = distribution_network.network[year][day].prob_operation_scenarios[s_o]
-                            expected_vmag_sqr += omega_market * omega_oper * (dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2)
-                            expected_pf_p += omega_market * omega_oper * dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p]
-                            expected_pf_q += omega_market * omega_oper * dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p]
-                            expected_sess_p += omega_market * omega_oper * dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p]
-                            expected_sess_q += omega_market * omega_oper * dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p]
-
-                    if distribution_network.params.relax_equalities:
-                        dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_interface_vmag_sqr[p] <= expected_vmag_sqr + SMALL_TOLERANCE)
-                        dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_interface_vmag_sqr[p] >= expected_vmag_sqr - SMALL_TOLERANCE)
-                        dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_interface_pf_p[p] <= expected_pf_p + SMALL_TOLERANCE)
-                        dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_interface_pf_p[p] >= expected_pf_p - SMALL_TOLERANCE)
-                        dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_interface_pf_q[p] <= expected_pf_q + SMALL_TOLERANCE)
-                        dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_interface_pf_q[p] >= expected_pf_q - SMALL_TOLERANCE)
-
-                        dso_model[year][day].expected_shared_ess_cons.add(dso_model[year][day].expected_shared_ess_p[p] <= expected_sess_p + SMALL_TOLERANCE)
-                        dso_model[year][day].expected_shared_ess_cons.add(dso_model[year][day].expected_shared_ess_p[p] >= expected_sess_p - SMALL_TOLERANCE)
-                        dso_model[year][day].expected_shared_ess_cons.add(dso_model[year][day].expected_shared_ess_q[p] <= expected_sess_q + SMALL_TOLERANCE)
-                        dso_model[year][day].expected_shared_ess_cons.add(dso_model[year][day].expected_shared_ess_q[p] >= expected_sess_q - SMALL_TOLERANCE)
-                    else:
-                        dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_interface_vmag_sqr[p] == expected_vmag_sqr)
-                        dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_interface_pf_p[p] == expected_pf_p)
-                        dso_model[year][day].expected_interface_values.add(dso_model[year][day].expected_interface_pf_q[p] == expected_pf_q)
-
-                        dso_model[year][day].expected_shared_ess_cons.add(dso_model[year][day].expected_shared_ess_p[p] == expected_sess_p)
-                        dso_model[year][day].expected_shared_ess_cons.add(dso_model[year][day].expected_shared_ess_q[p] == expected_sess_q)
-
-        # Update OF to minimize deviations to expected interface power flow values
-        for year in distribution_network.years:
-            for day in distribution_network.days:
-                s_base = distribution_network.network[year][day].baseMVA
-                ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
-                shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
                 obj = copy(dso_model[year][day].objective.expr)
                 for s_m in dso_model[year][day].scenarios_market:
                     for s_o in dso_model[year][day].scenarios_operation:
                         for p in dso_model[year][day].periods:
+                            obj += PENALTY_EXPECTED_VMAG_DEVIATION * ((dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2) - dso_model[year][day].expected_interface_vmag_sqr[p]) ** 2
                             obj += PENALTY_EXPECTED_PF_DEVIATION * s_base * (dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p] - dso_model[year][day].expected_interface_pf_p[p]) ** 2
                             obj += PENALTY_EXPECTED_PF_DEVIATION * s_base * (dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p] - dso_model[year][day].expected_interface_pf_q[p]) ** 2
-                for s_m in dso_model[year][day].scenarios_market:
-                    for s_o in dso_model[year][day].scenarios_operation:
-                        for p in dso_model[year][day].periods:
                             obj += PENALTY_EXPECTED_SESS_DEVIATION * s_base * (dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_p[p]) ** 2
                             obj += PENALTY_EXPECTED_SESS_DEVIATION * s_base * (dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_q[p]) ** 2
-                dso_model[year][day].objective.expr = obj
+
+                # Deactivate original OF, add new objective to the model
+                dso_model[year][day].objective.deactivate()
+                dso_model[year][day].objective_init = pe.Objective(sense=pe.minimize, expr=obj)
 
         # Run SMOPF
         results[node_id] = distribution_network.optimize(dso_model)
@@ -923,7 +877,7 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
 
             # Add ADMM OF, deactivate original OF
             model[year][day].objective_init.deactivate()
-            model[year][day].admm_objective.expr = obj
+            model[year][day].admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
 
 
 def update_distribution_models_to_admm(distribution_networks, models, consensus_vars, params):
@@ -1062,8 +1016,8 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                         obj += (dso_model[year][day].rho_ess_prev / 2) * constraint_ess_q_prev ** 2
 
                 # Add ADMM OF, deactivate original OF
+                dso_model[year][day].objective_init.deactivate()
                 dso_model[year][day].admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
-                dso_model[year][day].objective.deactivate()
 
 
 def update_shared_energy_storage_model_to_admm(shared_ess_data, model, params):
