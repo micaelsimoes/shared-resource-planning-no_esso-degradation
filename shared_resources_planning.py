@@ -259,8 +259,6 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     update_transmission_model_to_admm(transmission_network, tso_model, consensus_vars, admm_parameters)
     update_shared_energy_storage_model_to_admm(shared_ess_data, esso_model, admm_parameters)
 
-    planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model, consensus_vars, dual_vars, results, admm_parameters, update_tn=True, update_dns=True)
-
     # ------------------------------------------------------------------------------------------------------------------
     # ADMM -- Main cycle
     # ------------------------------------------------------------------------------------------------------------------
@@ -536,6 +534,11 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                     consensus_vars['interface']['pf']['tso']['current'][adn_node_id][year][day]['q'][p] = interface_pf_q
                     consensus_vars['ess']['tso']['current'][adn_node_id][year][day]['p'][p] = p_ess
                     consensus_vars['ess']['tso']['current'][adn_node_id][year][day]['q'][p] = q_ess
+                    consensus_vars['interface']['v_sqr']['tso']['prev'][adn_node_id][year][day][p] = interface_vsqr
+                    consensus_vars['interface']['pf']['tso']['prev'][adn_node_id][year][day]['p'][p] = interface_pf_p
+                    consensus_vars['interface']['pf']['tso']['prev'][adn_node_id][year][day]['q'][p] = interface_pf_q
+                    consensus_vars['ess']['tso']['prev'][adn_node_id][year][day]['p'][p] = p_ess
+                    consensus_vars['ess']['tso']['prev'][adn_node_id][year][day]['q'][p] = q_ess
 
     return tso_model, results
 
@@ -602,6 +605,11 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                     consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p] = interface_pf_q
                     consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] = p_ess
                     consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] = q_ess
+                    consensus_vars['interface']['v_sqr']['dso']['prev'][node_id][year][day][p] = interface_vsqr
+                    consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['p'][p] = interface_pf_p
+                    consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['q'][p] = interface_pf_q
+                    consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p] = p_ess
+                    consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p] = q_ess
 
         dso_models[node_id] = dso_model
 
@@ -648,6 +656,8 @@ def create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidat
                     shared_ess_q = pe.value(esso_model.es_qnet[e, y, d, p])
                     consensus_vars['ess']['esso']['current'][node_id][year][day]['p'][p] = shared_ess_p
                     consensus_vars['ess']['esso']['current'][node_id][year][day]['q'][p] = shared_ess_q
+                    consensus_vars['ess']['esso']['prev'][node_id][year][day]['p'][p] = shared_ess_p
+                    consensus_vars['ess']['esso']['prev'][node_id][year][day]['q'][p] = shared_ess_q
 
     return esso_model, results
 
@@ -1003,11 +1013,7 @@ def update_shared_energy_storage_model_to_admm(shared_ess_data, model, params):
     model.dual_q_req = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)
 
     # Objective function - augmented Lagrangian
-    init_of_value = abs(pe.value(model.objective))
-    if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
-        init_of_value = 1.00
-
-    obj = copy(model.objective.expr) / init_of_value
+    obj = copy(model.objective.expr)
     for e in model.energy_storages:
         for y in model.years:
             year = years[y]
@@ -1025,7 +1031,7 @@ def update_shared_energy_storage_model_to_admm(shared_ess_data, model, params):
 
     # Add ADMM OF, deactivate original OF
     model.admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
-    model.objective.deactivate()
+    model.objective_init.deactivate()
 
     return model
 
