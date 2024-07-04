@@ -616,6 +616,25 @@ def create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidat
     shared_ess_data.update_data_with_candidate_solution(candidate_solution)
     esso_model = shared_ess_data.build_subproblem()
     shared_ess_data.update_model_with_candidate_solution(esso_model, candidate_solution)
+
+    # Update Shared ESSs' model to try to respect TSO's request
+    obj = copy(esso_model.objective.expr)
+    for e in esso_model.energy_storages:
+        node_id = shared_ess_data.active_distribution_network_nodes[e]
+        for y in esso_model.years:
+            year = years[y]
+            for d in esso_model.days:
+                day = days[d]
+                for p in esso_model.periods:
+                    p_req = consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p]
+                    q_req = consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p]
+                    obj += PENALTY_INTERFACE_PF * (esso_model.es_pnet[e, y, d, p] - p_req) ** 2
+                    obj += PENALTY_INTERFACE_PF * (esso_model.es_qnet[e, y, d, p] - q_req) ** 2
+
+    # Deactivate original OF, add new objective to the model
+    esso_model.objective.deactivate()
+    esso_model.objective_init = pe.Objective(sense=pe.minimize, expr=obj)
+
     results = shared_ess_data.optimize(esso_model)
 
     for e in esso_model.energy_storages:
@@ -999,8 +1018,8 @@ def update_shared_energy_storage_model_to_admm(shared_ess_data, model, params):
                 for p in model.periods:
                     constraint_p_req = (model.es_pnet[e, y, d, p] - model.p_req[e, y, d, p]) / (2 * shared_ess_rating)
                     constraint_q_req = (model.es_qnet[e, y, d, p] - model.q_req[e, y, d, p]) / (2 * shared_ess_rating)
-                    obj += model.dual_p_req_tso[e, y, d, p] * constraint_p_req
-                    obj += model.dual_q_req_tso[e, y, d, p] * constraint_q_req
+                    obj += model.dual_p_req[e, y, d, p] * constraint_p_req
+                    obj += model.dual_q_req[e, y, d, p] * constraint_q_req
                     obj += (model.rho / 2) * constraint_p_req ** 2
                     obj += (model.rho / 2) * constraint_q_req ** 2
 
@@ -4901,11 +4920,11 @@ def _get_initial_candidate_solution(planning_problem):
             candidate_solution['total_capacity'][node_id][year]['s'] = 0.00
             candidate_solution['total_capacity'][node_id][year]['e'] = 0.00
             if year == 2020:
-                candidate_solution['investment'][node_id][year]['s'] = 0.00
-                candidate_solution['investment'][node_id][year]['e'] = 0.00
+                candidate_solution['investment'][node_id][year]['s'] = 2.00
+                candidate_solution['investment'][node_id][year]['e'] = 2.00
             if 2020 <= year < 2040:
-                candidate_solution['total_capacity'][node_id][year]['s'] = 0.00
-                candidate_solution['total_capacity'][node_id][year]['e'] = 0.00
+                candidate_solution['total_capacity'][node_id][year]['s'] = 2.00
+                candidate_solution['total_capacity'][node_id][year]['e'] = 2.00
     return candidate_solution
 
 
