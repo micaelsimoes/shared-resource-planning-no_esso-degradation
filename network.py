@@ -1019,12 +1019,14 @@ def _build_model(network, params):
                     for e in model.energy_storages:
                         for p in model.periods:
                             sch = model.es_sch[e, s_m, s_o, p]
-                            obj_scenario += PENALTY_ESS_USAGE * network.baseMVA * (sch)
+                            sdch = model.es_sdch[e, s_m, s_o, p]
+                            obj_scenario += PENALTY_ESS_USAGE * network.baseMVA * (sch + sdch)
 
                 for e in model.shared_energy_storages:
                     for p in model.periods:
                         sch = model.shared_es_sch[e, s_m, s_o, p]
-                        obj_scenario += PENALTY_ESS_USAGE * network.baseMVA * (sch)
+                        sdch = model.shared_es_sdch[e, s_m, s_o, p]
+                        obj_scenario += PENALTY_ESS_USAGE * network.baseMVA * (sch + sdch)
 
                 obj += obj_scenario * omega_market * omega_oper
     else:
