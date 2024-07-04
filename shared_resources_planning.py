@@ -978,14 +978,10 @@ def update_shared_energy_storage_model_to_admm(shared_ess_data, model, params):
     model.rho.fix(params.rho['ess']['esso'])
 
     # Active and Reactive power requested by TSO and DSOs
-    model.p_req_tso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)
-    model.q_req_tso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)
-    model.p_req_dso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)
-    model.q_req_dso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)
-    model.dual_p_req_tso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)
-    model.dual_q_req_tso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)
-    model.dual_p_req_dso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)
-    model.dual_q_req_dso = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)
+    model.p_req = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)
+    model.q_req = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)
+    model.dual_p_req = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)
+    model.dual_q_req = pe.Var(model.energy_storages, model.years, model.days, model.periods, domain=pe.Reals)
 
     # Objective function - augmented Lagrangian
     init_of_value = abs(pe.value(model.objective))
@@ -1001,18 +997,12 @@ def update_shared_energy_storage_model_to_admm(shared_ess_data, model, params):
                 shared_ess_rating = 1.00
             for d in model.days:
                 for p in model.periods:
-                    constraint_p_req_tso = (model.es_pnet[e, y, d, p] - model.p_req_tso[e, y, d, p]) / (2 * shared_ess_rating)
-                    constraint_q_req_tso = (model.es_qnet[e, y, d, p] - model.q_req_tso[e, y, d, p]) / (2 * shared_ess_rating)
-                    constraint_p_req_dso = (model.es_pnet[e, y, d, p] - model.p_req_dso[e, y, d, p]) / (2 * shared_ess_rating)
-                    constraint_q_req_dso = (model.es_qnet[e, y, d, p] - model.q_req_dso[e, y, d, p]) / (2 * shared_ess_rating)
-                    obj += model.dual_p_req_tso[e, y, d, p] * constraint_p_req_tso
-                    obj += model.dual_q_req_tso[e, y, d, p] * constraint_q_req_tso
-                    obj += model.dual_p_req_dso[e, y, d, p] * constraint_p_req_dso
-                    obj += model.dual_q_req_dso[e, y, d, p] * constraint_q_req_dso
-                    obj += (model.rho / 2) * constraint_p_req_tso ** 2
-                    obj += (model.rho / 2) * constraint_q_req_tso ** 2
-                    obj += (model.rho / 2) * constraint_p_req_dso ** 2
-                    obj += (model.rho / 2) * constraint_q_req_dso ** 2
+                    constraint_p_req = (model.es_pnet[e, y, d, p] - model.p_req[e, y, d, p]) / (2 * shared_ess_rating)
+                    constraint_q_req = (model.es_qnet[e, y, d, p] - model.q_req[e, y, d, p]) / (2 * shared_ess_rating)
+                    obj += model.dual_p_req_tso[e, y, d, p] * constraint_p_req
+                    obj += model.dual_q_req_tso[e, y, d, p] * constraint_q_req
+                    obj += (model.rho / 2) * constraint_p_req ** 2
+                    obj += (model.rho / 2) * constraint_q_req ** 2
 
     # Add ADMM OF, deactivate original OF
     model.admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
