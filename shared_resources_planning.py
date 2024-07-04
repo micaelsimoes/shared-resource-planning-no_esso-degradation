@@ -282,20 +282,6 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
                                                          consensus_vars, dual_vars, results, admm_parameters,
                                                          update_tn=True)
 
-        if debug_flag:
-            for node_id in planning_problem.active_distribution_network_nodes:
-                print(f"Node {node_id}")
-                for year in consensus_vars['interface']['pf']['tso']['current'][node_id]:
-                    print(f"\tYear {year}")
-                    for day in consensus_vars['interface']['pf']['tso']['current'][node_id][year]:
-                        print(f"\t\tDay {day}")
-                        print(f"\t\t\tESS, TSO,  P   {consensus_vars['ess']['tso']['current'][node_id][year][day]['p']}")
-                        print(f"\t\t\tESS, DSO,  P   {consensus_vars['ess']['dso']['current'][node_id][year][day]['p']}")
-                        print(f"\t\t\tESS, ESSO, P  {consensus_vars['ess']['esso']['current'][node_id][year][day]['p']}")
-                        print(f"\t\t\tESS, TSO,  Q   {consensus_vars['ess']['tso']['current'][node_id][year][day]['q']}")
-                        print(f"\t\t\tESS, DSO,  Q   {consensus_vars['ess']['dso']['current'][node_id][year][day]['q']}")
-                        print(f"\t\t\tESS, ESSO, Q  {consensus_vars['ess']['esso']['current'][node_id][year][day]['q']}")
-
         # 1.2 Update primal evolution
         primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
 
@@ -303,34 +289,6 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
         if convergence:
             break
-
-        # --------------------------------------------------------------------------------------------------------------
-        # 2. Solve ESSO problem
-        results['esso'] = update_shared_energy_storages_coordination_model_and_solve(planning_problem, esso_model,
-                                                                                     consensus_vars['ess']['tso']['current'], dual_vars['ess']['esso']['tso'],
-                                                                                     admm_parameters, from_warm_start=from_warm_start)
-
-        # 2.1 Update ADMM CONSENSUS variables
-        planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
-                                                         consensus_vars, dual_vars, results, admm_parameters,
-                                                         update_sess=True)
-
-        if debug_flag:
-            for node_id in planning_problem.active_distribution_network_nodes:
-                print(f"Node {node_id}")
-                for year in consensus_vars['interface']['pf']['tso']['current'][node_id]:
-                    print(f"\tYear {year}")
-                    for day in consensus_vars['interface']['pf']['tso']['current'][node_id][year]:
-                        print(f"\t\tDay {day}")
-                        print(f"\t\t\tESS, TSO,  P   {consensus_vars['ess']['tso']['current'][node_id][year][day]['p']}")
-                        print(f"\t\t\tESS, DSO,  P   {consensus_vars['ess']['dso']['current'][node_id][year][day]['p']}")
-                        print(f"\t\t\tESS, ESSO, P  {consensus_vars['ess']['esso']['current'][node_id][year][day]['p']}")
-                        print(f"\t\t\tESS, TSO,  Q   {consensus_vars['ess']['tso']['current'][node_id][year][day]['q']}")
-                        print(f"\t\t\tESS, DSO,  Q   {consensus_vars['ess']['dso']['current'][node_id][year][day]['q']}")
-                        print(f"\t\t\tESS, ESSO, Q  {consensus_vars['ess']['esso']['current'][node_id][year][day]['q']}")
-
-        # 2.2 Update primal evolution
-        primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
 
         # --------------------------------------------------------------------------------------------------------------
         # 3. Solve DSOs problems
@@ -698,13 +656,9 @@ def create_admm_variables(planning_problem):
     }
 
     dual_variables = {
-        'v_sqr': {'tso': {'current': dict(), 'prev': dict()},
-                  'dso': {'current': dict(), 'prev': dict()}},
-        'pf': {'tso': {'current': dict(), 'prev': dict()},
-               'dso': {'current': dict(), 'prev': dict()}},
-        'ess': {'tso': {'current': dict(), 'prev': dict()},
-                'dso': {'current': dict(), 'prev': dict()},
-                'esso': {'tso': dict(), 'dso': dict()}}
+        'v_sqr': {'tso': dict(), 'dso': dict()},
+        'pf': {'tso': dict(), 'dso': dict()},
+        'ess': {'tso': dict(), 'dso': dict(), 'esso': dict()}
     }
 
     for dn in range(len(planning_problem.active_distribution_network_nodes)):
@@ -726,20 +680,13 @@ def create_admm_variables(planning_problem):
         consensus_variables['ess']['dso']['prev'][node_id] = dict()
         consensus_variables['ess']['esso']['prev'][node_id] = dict()
 
-        dual_variables['v_sqr']['tso']['current'][node_id] = dict()
-        dual_variables['v_sqr']['tso']['prev'][node_id] = dict()
-        dual_variables['v_sqr']['dso']['current'][node_id] = dict()
-        dual_variables['v_sqr']['dso']['prev'][node_id] = dict()
-        dual_variables['pf']['tso']['current'][node_id] = dict()
-        dual_variables['pf']['tso']['prev'][node_id] = dict()
-        dual_variables['pf']['dso']['current'][node_id] = dict()
-        dual_variables['pf']['dso']['prev'][node_id] = dict()
-        dual_variables['ess']['tso']['current'][node_id] = dict()
-        dual_variables['ess']['tso']['prev'][node_id] = dict()
-        dual_variables['ess']['dso']['current'][node_id] = dict()
-        dual_variables['ess']['dso']['prev'][node_id] = dict()
-        dual_variables['ess']['esso']['tso'][node_id] = dict()
-        dual_variables['ess']['esso']['dso'][node_id] = dict()
+        dual_variables['v_sqr']['tso'][node_id] = dict()
+        dual_variables['v_sqr']['dso'][node_id] = dict()
+        dual_variables['pf']['tso'][node_id] = dict()
+        dual_variables['pf']['dso'][node_id] = dict()
+        dual_variables['ess']['tso'][node_id] = dict()
+        dual_variables['ess']['dso'][node_id] = dict()
+        dual_variables['ess']['esso'][node_id] = dict()
 
         for year in planning_problem.years:
 
@@ -758,22 +705,16 @@ def create_admm_variables(planning_problem):
             consensus_variables['ess']['esso']['current'][node_id][year] = dict()
             consensus_variables['ess']['esso']['prev'][node_id][year] = dict()
 
-            dual_variables['v_sqr']['tso']['current'][node_id][year] = dict()
-            dual_variables['v_sqr']['tso']['prev'][node_id][year] = dict()
-            dual_variables['v_sqr']['dso']['current'][node_id][year] = dict()
-            dual_variables['v_sqr']['dso']['prev'][node_id][year] = dict()
-            dual_variables['pf']['tso']['current'][node_id][year] = dict()
-            dual_variables['pf']['tso']['prev'][node_id][year] = dict()
-            dual_variables['pf']['dso']['current'][node_id][year] = dict()
-            dual_variables['pf']['dso']['prev'][node_id][year] = dict()
-            dual_variables['ess']['tso']['current'][node_id][year] = dict()
-            dual_variables['ess']['tso']['prev'][node_id][year] = dict()
-            dual_variables['ess']['dso']['current'][node_id][year] = dict()
-            dual_variables['ess']['dso']['prev'][node_id][year] = dict()
-            dual_variables['ess']['esso']['tso'][node_id][year] = dict()
-            dual_variables['ess']['esso']['dso'][node_id][year] = dict()
+            dual_variables['v_sqr']['tso'][node_id][year] = dict()
+            dual_variables['v_sqr']['dso'][node_id][year] = dict()
+            dual_variables['pf']['tso'][node_id][year] = dict()
+            dual_variables['pf']['dso'][node_id][year] = dict()
+            dual_variables['ess']['tso'][node_id][year] = dict()
+            dual_variables['ess']['dso'][node_id][year] = dict()
+            dual_variables['ess']['esso'][node_id][year] = dict()
 
             for day in planning_problem.days:
+
                 consensus_variables['interface']['v_sqr']['tso']['current'][node_id][year][day] = [1.0] * num_instants
                 consensus_variables['interface']['v_sqr']['dso']['current'][node_id][year][day] = [1.0] * num_instants
                 consensus_variables['interface']['pf']['tso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
@@ -789,20 +730,13 @@ def create_admm_variables(planning_problem):
                 consensus_variables['ess']['dso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
                 consensus_variables['ess']['esso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
 
-                dual_variables['v_sqr']['tso']['current'][node_id][year][day] = [0.0] * planning_problem.num_instants
-                dual_variables['v_sqr']['tso']['prev'][node_id][year][day] = [0.0] * planning_problem.num_instants
-                dual_variables['v_sqr']['dso']['current'][node_id][year][day] = [0.0] * planning_problem.num_instants
-                dual_variables['v_sqr']['dso']['prev'][node_id][year][day] = [0.0] * planning_problem.num_instants
-                dual_variables['pf']['tso']['current'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
-                dual_variables['pf']['tso']['prev'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
-                dual_variables['pf']['dso']['current'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
-                dual_variables['pf']['dso']['prev'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
-                dual_variables['ess']['tso']['current'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
-                dual_variables['ess']['tso']['prev'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
-                dual_variables['ess']['dso']['current'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
-                dual_variables['ess']['dso']['prev'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
-                dual_variables['ess']['esso']['tso'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
-                dual_variables['ess']['esso']['dso'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
+                dual_variables['v_sqr']['tso'][node_id][year][day] = [0.0] * planning_problem.num_instants
+                dual_variables['v_sqr']['dso'][node_id][year][day] = [0.0] * planning_problem.num_instants
+                dual_variables['pf']['tso'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
+                dual_variables['pf']['dso'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
+                dual_variables['ess']['tso'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
+                dual_variables['ess']['dso'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
+                dual_variables['ess']['esso'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
 
     return consensus_variables, dual_variables
 
@@ -1475,18 +1409,14 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                         dual_vars['tso']['current'][node_id][year][day]['q'][p] += rho_ess_tso * error_q_tso_esso
 
                     if update_dns:
-                        error_p_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['p'][p]
-                        error_q_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['q'][p]
+                        error_p_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['p'][p]
+                        error_q_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['q'][p]
                         dual_vars['dso']['current'][node_id][year][day]['p'][p] += rho_ess_dso * error_p_dso_esso
                         dual_vars['dso']['current'][node_id][year][day]['q'][p] += rho_ess_dso * error_q_dso_esso
 
                     if update_sess:
-                        error_p_esso_tso = shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['p'][p]
-                        error_q_esso_tso = shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['q'][p]
                         error_p_esso_dso = shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['p'][p]
                         error_q_esso_dso = shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['q'][p]
-                        dual_vars['esso']['tso'][node_id][year][day]['p'][p] += rho_ess_sess * error_p_esso_tso
-                        dual_vars['esso']['tso'][node_id][year][day]['q'][p] += rho_ess_sess * error_q_esso_tso
                         dual_vars['esso']['dso'][node_id][year][day]['p'][p] += rho_ess_sess * error_p_esso_dso
                         dual_vars['esso']['dso'][node_id][year][day]['q'][p] += rho_ess_sess * error_q_esso_dso
 
