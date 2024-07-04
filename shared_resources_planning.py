@@ -307,7 +307,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         # --------------------------------------------------------------------------------------------------------------
         # 2. Solve ESSO problem
         results['esso'] = update_shared_energy_storages_coordination_model_and_solve(planning_problem, esso_model,
-                                                                                     consensus_vars['ess'], dual_vars['ess']['esso'],
+                                                                                     consensus_vars['ess']['tso']['current'], dual_vars['ess']['esso']['tso'],
                                                                                      admm_parameters, from_warm_start=from_warm_start)
 
         # 2.1 Update ADMM CONSENSUS variables
@@ -370,7 +370,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         # --------------------------------------------------------------------------------------------------------------
         # 4. Solve ESSO problem
         results['esso'] = update_shared_energy_storages_coordination_model_and_solve(planning_problem, esso_model,
-                                                                                     consensus_vars['ess'], dual_vars['ess']['esso'],
+                                                                                     consensus_vars['ess']['dso']['current'], dual_vars['ess']['esso']['dso'],
                                                                                      admm_parameters, from_warm_start=from_warm_start)
 
         # 4.1 Update ADMM CONSENSUS variables
@@ -1166,23 +1166,15 @@ def update_shared_energy_storages_coordination_model_and_solve(planning_problem,
                 day = days[d]
                 for p in model.periods:
 
-                    p_req_tso = ess_req['tso']['current'][node_id][year][day]['p'][p]
-                    q_req_tso = ess_req['tso']['current'][node_id][year][day]['q'][p]
-                    p_req_dso = ess_req['dso']['current'][node_id][year][day]['p'][p]
-                    q_req_dso = ess_req['dso']['current'][node_id][year][day]['q'][p]
-                    dual_p_req_tso = dual_ess['tso'][node_id][year][day]['p'][p]
-                    dual_q_req_tso = dual_ess['tso'][node_id][year][day]['q'][p]
-                    dual_p_req_dso = dual_ess['dso'][node_id][year][day]['p'][p]
-                    dual_q_req_dso = dual_ess['dso'][node_id][year][day]['q'][p]
+                    p_req = ess_req[node_id][year][day]['p'][p]
+                    q_req = ess_req[node_id][year][day]['q'][p]
+                    dual_p_req = dual_ess[node_id][year][day]['p'][p]
+                    dual_q_req = dual_ess[node_id][year][day]['q'][p]
 
-                    model.p_req_tso[e, y, d, p].fix(p_req_tso)
-                    model.q_req_tso[e, y, d, p].fix(q_req_tso)
-                    model.p_req_dso[e, y, d, p].fix(p_req_dso)
-                    model.q_req_dso[e, y, d, p].fix(q_req_dso)
-                    model.dual_p_req_tso[e, y, d, p].fix(dual_p_req_tso)
-                    model.dual_q_req_tso[e, y, d, p].fix(dual_q_req_tso)
-                    model.dual_p_req_dso[e, y, d, p].fix(dual_p_req_dso)
-                    model.dual_q_req_dso[e, y, d, p].fix(dual_q_req_dso)
+                    model.p_req[e, y, d, p].fix(p_req)
+                    model.q_req[e, y, d, p].fix(q_req)
+                    model.dual_p_req[e, y, d, p].fix(dual_p_req)
+                    model.dual_q_req[e, y, d, p].fix(dual_q_req)
 
     # Solve!
     res = shared_ess_data.optimize(model, from_warm_start=from_warm_start)
