@@ -1127,55 +1127,25 @@ def check_admm_convergence(planning_problem, consensus_vars, params):
 
 def consensus_convergence(planning_problem, consensus_vars, params):
 
-    # Interface voltage magnitude
     sum_sqr = 0.0
     num_elems = 0
+
     for year in planning_problem.years:
         for day in planning_problem.days:
             for node_id in planning_problem.active_distribution_network_nodes:
                 for p in range(planning_problem.num_instants):
                     sum_sqr += (consensus_vars['interface']['v_sqr']['tso']['current'][node_id][year][day][p] - consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day][p]) ** 2
-                    num_elems += 2
-
-    if sqrt(sum_sqr) > params.tol['consensus'] * sqrt(num_elems):
-        if not isclose(sqrt(sum_sqr), params.tol['consensus'] * sqrt(num_elems), rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['consensus']):
-            print('[INFO]\t\t - Convergence V consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr), params.tol['consensus'] * sqrt(num_elems)))
-            return False
-        print('[INFO]\t\t - Convergence V consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sqrt(sum_sqr), params.tol['consensus'] * sqrt(num_elems)))
-
-    # Interface Power Flows
-    sum_sqr = 0.0
-    num_elems = 0
-    for year in planning_problem.years:
-        for day in planning_problem.days:
-            for node_id in planning_problem.active_distribution_network_nodes:
-                for p in range(planning_problem.num_instants):
                     sum_sqr += (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p]) ** 2
                     sum_sqr += (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p]) ** 2
-                    num_elems += 4
-
-    if sqrt(sum_sqr) > params.tol['consensus'] * sqrt(num_elems):
-        if not isclose(sqrt(sum_sqr), params.tol['consensus'] * sqrt(num_elems), rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['consensus']):
-            print('[INFO]\t\t - Convergence PF consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr), params.tol['consensus'] * sqrt(num_elems)))
-            return False
-        print('[INFO]\t\t - Convergence PF consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sqrt(sum_sqr), params.tol['consensus'] * sqrt(num_elems)))
-
-    # Shared Energy Storage
-    sum_sqr = 0.0
-    num_elems = 0
-    for year in planning_problem.years:
-        for day in planning_problem.days:
-            for node_id in planning_problem.active_distribution_network_nodes:
-                for p in range(planning_problem.num_instants):
                     sum_sqr += (consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p]) ** 2
                     sum_sqr += (consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p]) ** 2
-                    num_elems += 4
+                    num_elems += 10
 
     if sqrt(sum_sqr) > params.tol['consensus'] * sqrt(num_elems):
         if not isclose(sqrt(sum_sqr), params.tol['consensus'] * sqrt(num_elems), rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['consensus']):
-            print('[INFO]\t\t - Convergence SESS consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr), params.tol['consensus'] * sqrt(num_elems)))
+            print('[INFO]\t\t - Convergence consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr), params.tol['consensus'] * sqrt(num_elems)))
             return False
-        print('[INFO]\t\t - Convergence SESS consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sqrt(sum_sqr), params.tol['consensus'] * sqrt(num_elems)))
+        print('[INFO]\t\t - Convergence consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sqrt(sum_sqr), params.tol['consensus'] * sqrt(num_elems)))
 
     print('[INFO]\t\t - Convergence consensus constraints ok!')
 
