@@ -328,7 +328,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         # --------------------------------------------------------------------------------------------------------------
         # 4. Solve ESSO problem
         results['esso'] = update_shared_energy_storages_coordination_model_and_solve(planning_problem, esso_model,
-                                                                                     consensus_vars['ess']['dso']['current'], dual_vars['ess']['esso']['dso'],
+                                                                                     consensus_vars['ess'], dual_vars['ess']['esso'],
                                                                                      admm_parameters, from_warm_start=from_warm_start)
 
         # 4.1 Update ADMM CONSENSUS variables
