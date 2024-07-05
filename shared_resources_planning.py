@@ -791,7 +791,6 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
                     p_norm = 1.00
 
                 q_norm = max([abs(value) for value in consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q']]) / s_base
-                q_norm = max([abs(value) for value in consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q']])
                 if isclose(q_norm, 0.00, abs_tol=SMALL_TOLERANCE):
                     q_norm = 1.00
 
