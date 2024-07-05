@@ -291,14 +291,14 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
             break
 
         # --------------------------------------------------------------------------------------------------------------
-        # 3. Solve DSOs problems
+        # 2. Solve DSOs problems
         results['dso'] = update_distribution_coordination_models_and_solve(distribution_networks, dso_models,
                                                                            consensus_vars['interface']['v_sqr'], dual_vars['v_sqr']['dso'],
                                                                            consensus_vars['interface']['pf'], dual_vars['pf']['dso'],
                                                                            consensus_vars['ess'], dual_vars['ess']['dso'],
                                                                            admm_parameters, from_warm_start=from_warm_start)
 
-        # 3.1 Update ADMM CONSENSUS variables
+        # 2.1 Update ADMM CONSENSUS variables
         planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
                                                          consensus_vars, dual_vars, results, admm_parameters,
                                                          update_dns=True)
@@ -317,21 +317,21 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
                         print(f"\t\t\tESS, DSO,  Q   {consensus_vars['ess']['dso']['current'][node_id][year][day]['q']}")
                         print(f"\t\t\tESS, ESSO, Q  {consensus_vars['ess']['esso']['current'][node_id][year][day]['q']}")
 
-        # 3.2 Update primal evolution
+        # 2.2 Update primal evolution
         primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
 
-        # 3.3 STOPPING CRITERIA evaluation
+        # 2.3 STOPPING CRITERIA evaluation
         convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
         if convergence:
             break
 
         # --------------------------------------------------------------------------------------------------------------
-        # 4. Solve ESSO problem
+        # 3. Solve ESSO problem
         results['esso'] = update_shared_energy_storages_coordination_model_and_solve(planning_problem, esso_model,
                                                                                      consensus_vars['ess'], dual_vars['ess']['esso'],
                                                                                      admm_parameters, from_warm_start=from_warm_start)
 
-        # 4.1 Update ADMM CONSENSUS variables
+        # 3.1 Update ADMM CONSENSUS variables
         planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
                                                          consensus_vars, dual_vars, results, admm_parameters,
                                                          update_sess=True)
@@ -350,7 +350,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
                         print(f"\t\t\tESS, DSO,  Q   {consensus_vars['ess']['dso']['current'][node_id][year][day]['q']}")
                         print(f"\t\t\tESS, ESSO, Q  {consensus_vars['ess']['esso']['current'][node_id][year][day]['q']}")
 
-        # 4.2 Update primal evolution
+        # 3.2 Update primal evolution
         primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
 
 
