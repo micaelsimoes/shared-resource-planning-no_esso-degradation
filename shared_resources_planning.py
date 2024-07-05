@@ -785,8 +785,16 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
 
             for dn in model[year][day].active_distribution_networks:
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
+
                 p_norm = max([abs(value) for value in consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['p']]) / s_base
+                if isclose(p_norm, 0.00, abs_tol=SMALL_TOLERANCE):
+                    p_norm = 1.00
+
                 q_norm = max([abs(value) for value in consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q']]) / s_base
+                q_norm = max([abs(value) for value in consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q']])
+                if isclose(q_norm, 0.00, abs_tol=SMALL_TOLERANCE):
+                    q_norm = 1.00
+
                 for p in model[year][day].periods:
 
                     '''
@@ -896,15 +904,15 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                     shared_ess_rating = 1.00
 
                 # Augmented Lagrangian -- Interface power flow (residual balancing)
+                p_norm = max([abs(value) for value in consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p']])
+                if isclose(p_norm, 0.00, abs_tol=SMALL_TOLERANCE):
+                    p_norm = 1.00
+
+                q_norm = max([abs(value) for value in consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q']])
+                if isclose(q_norm, 0.00, abs_tol=SMALL_TOLERANCE):
+                    q_norm = 1.00
+
                 for p in dso_model[year][day].periods:
-
-                    init_p = abs(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p]) / s_base
-                    if isclose(init_p, 0.00, abs_tol=SMALL_TOLERANCE):
-                        init_p = 1.00
-
-                    init_q = abs(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p]) / s_base
-                    if isclose(init_q, 0.00, abs_tol=SMALL_TOLERANCE):
-                        init_q = 1.00
 
                     # Voltage magnitude
                     constraint_vmag_req = (dso_model[year][day].expected_interface_vmag_sqr[p] - dso_model[year][day].v_sqr_req[p])
@@ -912,8 +920,8 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                     obj += (dso_model[year][day].rho_v / 2) * (constraint_vmag_req ** 2)
 
                     # Interface power flow
-                    constraint_p_req = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_req[p]) / init_p
-                    constraint_q_req = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_req[p]) / init_q
+                    constraint_p_req = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_req[p]) / p_norm
+                    constraint_q_req = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_req[p]) / q_norm
                     obj += (dso_model[year][day].dual_pf_p_req[p]) * constraint_p_req
                     obj += (dso_model[year][day].dual_pf_q_req[p]) * constraint_q_req
                     obj += (dso_model[year][day].rho_pf / 2) * (constraint_p_req ** 2)
