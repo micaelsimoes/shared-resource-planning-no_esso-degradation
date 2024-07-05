@@ -1417,8 +1417,8 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                     if update_sess:
                         error_p_esso_dso = shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['p'][p]
                         error_q_esso_dso = shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['q'][p]
-                        dual_vars['esso']['dso'][node_id][year][day]['p'][p] += rho_ess_sess * error_p_esso_dso
-                        dual_vars['esso']['dso'][node_id][year][day]['q'][p] += rho_ess_sess * error_q_esso_dso
+                        dual_vars['esso'][node_id][year][day]['p'][p] += rho_ess_sess * error_p_esso_dso
+                        dual_vars['esso'][node_id][year][day]['q'][p] += rho_ess_sess * error_q_esso_dso
 
 
 # ======================================================================================================================
