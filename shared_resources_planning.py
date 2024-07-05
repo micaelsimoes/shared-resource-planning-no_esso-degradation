@@ -1146,8 +1146,8 @@ def consensus_convergence(planning_problem, consensus_vars, params):
             print('[INFO]\t\t - Convergence consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr), params.tol['consensus'] * sqrt(num_elems)))
             return False
         print('[INFO]\t\t - Convergence consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sqrt(sum_sqr), params.tol['consensus'] * sqrt(num_elems)))
-
-    print('[INFO]\t\t - Convergence consensus constraints ok! {:.3f} <= {:.3f}'.format(sqrt(sum_sqr), params.tol['consensus'] * sqrt(num_elems)))
+    else:
+        print('[INFO]\t\t - Convergence consensus constraints ok!')
 
     return True
 
@@ -1185,8 +1185,8 @@ def stationary_convergence(planning_problem, consensus_vars, params):
             print('[INFO]\t\t - Convergence stationary constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr), params.tol['stationarity'] * sqrt(num_elems)))
             return False
         print('[INFO]\t\t - Convergence stationary constraints considered ok. {:.3f} ~= {:.3f}'.format(sqrt(sum_sqr), params.tol['stationarity'] * sqrt(num_elems)))
-
-    print('[INFO]\t\t - Convergence stationary constraints ok! {:.3f} <= {:.3f}'.format(sqrt(sum_sqr), params.tol['stationarity'] * sqrt(num_elems)))
+    else:
+        print('[INFO]\t\t - Convergence stationary constraints ok!')
 
     return True
 
