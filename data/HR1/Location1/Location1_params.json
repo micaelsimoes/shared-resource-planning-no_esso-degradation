@@ -6,11 +6,37 @@
 	"rg_curt": true,
 	"l_curt": false,
 	"enforce_vg": false,
-	"slacks": true,
+	"relax_equalities": true,
+	"slacks": {
+		"grid_operation": {
+			"voltage": true,
+			"branch_flow": true
+		},
+		"flexibility": {
+			"day_balance": false
+		},
+		"ess": {
+				"complementarity": false,
+				"charging": false,
+				"soc": false,
+				"day_balance": false
+		},
+		"shared_ess": {
+				"complementarity": false,
+				"charging": false,
+				"soc": false,
+				"day_balance": false
+		},
+		"expected_values": {
+			"interface" : false,
+			"shared_ess": false
+		},
+		"node_balance": false
+	},
 	"solver": {
 		"name": "ipopt",
-		"linear_solver": "ma57",
-		"solver_tol": 1e-6,
+		"linear_solver": "ma97",
+		"solver_tol": 1e-5,
 		"verbose": false
 	},
 	"print_to_screen": false,
