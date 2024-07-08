@@ -958,8 +958,8 @@ def _build_model(network, params):
 
                     sji_sqr = pji ** 2 + qji ** 2
 
-                    iij_sqr = (branch.g**2 + branch.b**2) * ((ei - ej)**2 + (fi - fj)**2)  # Note: simplified version -- might cause problems for transformers
-                    # iij_sqr = (branch.g ** 2 + branch.b ** 2) * (ei ** 2 + fi ** 2 + rij ** 2 * (ej ** 2 + fj ** 2) - 2 * rij * (ei * ej + fi * fj))    # iij_sqr_actual definition
+                    #iij_sqr = (branch.g**2 + branch.b**2) * ((ei - ej)**2 + (fi - fj)**2)  # Note: simplified version -- might cause problems for transformers
+                    iij_sqr = (branch.g ** 2 + branch.b ** 2) * (ei ** 2 + fi ** 2 + rij ** 2 * (ej ** 2 + fj ** 2) - 2 * rij * (ei * ej + fi * fj))    # iij_sqr_actual definition
 
                     if params.relax_equalities:
                         model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] <= iij_sqr + EQUALITY_TOLERANCE)
@@ -967,13 +967,15 @@ def _build_model(network, params):
                         model.branch_power_flow_cons.add(model.sij_sqr[b, s_m, s_o, p] <= sij_sqr + EQUALITY_TOLERANCE)
                         model.branch_power_flow_cons.add(model.sij_sqr[b, s_m, s_o, p] >= sij_sqr - EQUALITY_TOLERANCE)
                         model.branch_power_flow_cons.add(model.sji_sqr[b, s_m, s_o, p] <= sji_sqr + EQUALITY_TOLERANCE)
-                        model.branch_power_flow_cons.add(model.sji_sqr[b, s_m, s_o, p] >= sji_sqr -EQUALITY_TOLERANCE)
+                        model.branch_power_flow_cons.add(model.sji_sqr[b, s_m, s_o, p] >= sji_sqr - EQUALITY_TOLERANCE)
                     else:
                         model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] == iij_sqr)
                         model.branch_power_flow_cons.add(model.sij_sqr[b, s_m, s_o, p] == sij_sqr)
                         model.branch_power_flow_cons.add(model.sji_sqr[b, s_m, s_o, p] == sji_sqr)
 
                     # Branch flow limits
+                    model.branch_power_flow_lims.add(model.iij_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_iij_sqr[b, s_m, s_o, p])
+                    '''
                     if branch.is_transformer:
                         if params.slacks.grid_operation.branch_flow:
                             model.branch_power_flow_lims.add(model.sij_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_sij_sqr[b, s_m, s_o, p])
@@ -986,6 +988,7 @@ def _build_model(network, params):
                             model.branch_power_flow_lims.add(model.iij_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_iij_sqr[b, s_m, s_o, p])
                         else:
                             model.branch_power_flow_lims.add(model.iij_sqr[b, s_m, s_o, p] <= rating ** 2)
+                    '''
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective Function
