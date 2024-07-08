@@ -385,26 +385,17 @@ def _build_model(network, params):
                 for p in model.periods:
 
                     if branch.is_transformer:
-                        model.iij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                        model.sij_sqr[b, s_m, s_o, p].setub(rating)
-                        model.sji_sqr[b, s_m, s_o, p].setub(rating)
                         if params.slacks.grid_operation.branch_flow:
                             model.slack_iij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
                             model.slack_sij_sqr[b, s_m, s_o, p].setub(SIJ_VIOLATION_ALLOWED * rating)
                             model.slack_sji_sqr[b, s_m, s_o, p].setub(SIJ_VIOLATION_ALLOWED * rating)
                     else:
-                        model.iij_sqr[b, s_m, s_o, p].setub(rating)
-                        model.sij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                        model.sji_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
                         if params.slacks.grid_operation.branch_flow:
                             model.slack_iij_sqr[b, s_m, s_o, p].setub(SIJ_VIOLATION_ALLOWED * rating)
                             model.slack_sij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
                             model.slack_sji_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
 
                     if network.branches[b].status == 0:
-                        model.iij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                        model.sij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                        model.sji_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
                         if params.slacks.grid_operation.branch_flow:
                             model.slack_iij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
                             model.slack_sij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
