@@ -1838,11 +1838,9 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][branch_id] = []
                 processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['iij'][branch_id] = []
                 processed_results['scenarios'][s_m][s_o]['branches']['losses'][branch_id] = []
-                if params.branch_limit_type == BRANCH_LIMIT_CURRENT:
-                    processed_results['scenarios'][s_m][s_o]['branches']['limits']['iij_perc'][branch_id] = []
-                elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
-                    processed_results['scenarios'][s_m][s_o]['branches']['limits']['sij_perc'][branch_id] = []
-                    processed_results['scenarios'][s_m][s_o]['branches']['limits']['sji_perc'][branch_id] = []
+                processed_results['scenarios'][s_m][s_o]['branches']['limits']['iij_perc'][branch_id] = []
+                processed_results['scenarios'][s_m][s_o]['branches']['limits']['sij_perc'][branch_id] = []
+                processed_results['scenarios'][s_m][s_o]['branches']['limits']['sji_perc'][branch_id] = []
                 if branch.is_transformer:
                     processed_results['scenarios'][s_m][s_o]['branches']['ratio'][branch_id] = []
 
@@ -1863,11 +1861,9 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][branch_id].append(sji)
                     processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['iij'][branch_id].append(iij)
 
-                    if params.branch_limit_type == BRANCH_LIMIT_CURRENT:
-                        processed_results['scenarios'][s_m][s_o]['branches']['limits']['iij_perc'][branch_id].append(iij / rating)
-                    elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
-                        processed_results['scenarios'][s_m][s_o]['branches']['limits']['sij_perc'][branch_id].append(sij / rating)
-                        processed_results['scenarios'][s_m][s_o]['branches']['limits']['sji_perc'][branch_id].append(sji / rating)
+                    processed_results['scenarios'][s_m][s_o]['branches']['limits']['iij_perc'][branch_id].append(iij / rating)
+                    processed_results['scenarios'][s_m][s_o]['branches']['limits']['sij_perc'][branch_id].append(sij / rating)
+                    processed_results['scenarios'][s_m][s_o]['branches']['limits']['sji_perc'][branch_id].append(sji / rating)
 
                     # Losses (active power)
                     p_losses = _get_branch_power_losses(network, params, model, k, s_m, s_o, p)
