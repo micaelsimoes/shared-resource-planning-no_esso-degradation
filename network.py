@@ -942,7 +942,7 @@ def _build_model(network, params):
                         model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] >= sij_sqr - EQUALITY_TOLERANCE)
                     else:
                         #model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] == iij_sqr)
-                        model.branch_power_flow_cons.add(model.sij_sqr[b, s_m, s_o, p] == sij_sqr)
+                        model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] == sij_sqr)
 
                     # Branch flow limits
                     if params.slacks.grid_operation.branch_flow:
