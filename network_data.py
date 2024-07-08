@@ -1085,7 +1085,7 @@ def _write_network_branch_results_to_excel(network_planning, workbook, results, 
     elif result_type == 'ratio':
         sheet_name = 'Transformer Ratio'
         aux_string = 'Ratio'
-    elif result_type == 'Limits':
+    elif result_type == 'current_perc':
         sheet_name = 'Branch Loading'
         aux_string = 'I, [%]'
 
