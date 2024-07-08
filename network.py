@@ -924,6 +924,7 @@ def _build_model(network, params):
                     iij_sqr += bij_sh ** 2 * (ei ** 2 + fi ** 2)
                     iij_sqr += 2 * branch.g * bij_sh * (((rij ** 2) * fi - rij * fj) * ei - ((rij ** 2) * ei - rij * ej) * fi)
                     iij_sqr += 2 * branch.b * bij_sh * (((rij ** 2) * ei - rij * ej) * ei + ((rij ** 2) * fi - rij * fj) * fi)
+
                     if params.relax_equalities:
                         model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] <= iij_sqr + EQUALITY_TOLERANCE)
                         model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] >= iij_sqr - EQUALITY_TOLERANCE)
