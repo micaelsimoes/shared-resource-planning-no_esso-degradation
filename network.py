@@ -1696,12 +1696,6 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['energy_storages']['soc'] = dict()
                 processed_results['scenarios'][s_m][s_o]['energy_storages']['soc_percent'] = dict()
 
-            if params.branch_limit_type == BRANCH_LIMIT_CURRENT:
-                processed_results['scenarios'][s_m][s_o]['branches']['flow_perc']['iij'] = dict()
-            elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
-                processed_results['scenarios'][s_m][s_o]['branches']['flow_perc']['sij'] = dict()
-                processed_results['scenarios'][s_m][s_o]['branches']['flow_perc']['sji'] = dict()
-
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage'] = dict()
             if params.slacks.grid_operation.voltage:
@@ -1845,37 +1839,26 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['qji'][branch_id] = []
                 processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sij'][branch_id] = []
                 processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][branch_id] = []
+                processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['iij'][branch_id] = []
                 processed_results['scenarios'][s_m][s_o]['branches']['losses'][branch_id] = []
-                if params.branch_limit_type == BRANCH_LIMIT_CURRENT:
-                    processed_results['scenarios'][s_m][s_o]['branches']['flow_perc']['iij'][branch_id] = []
-                elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
-                    processed_results['scenarios'][s_m][s_o]['branches']['flow_perc']['sij'][branch_id] = []
-                    processed_results['scenarios'][s_m][s_o]['branches']['flow_perc']['sji'][branch_id] = []
                 if branch.is_transformer:
                     processed_results['scenarios'][s_m][s_o]['branches']['ratio'][branch_id] = []
                 for p in model.periods:
 
                     # Power flows
-                    pij, qij = _get_branch_power_flow(network, params, branch, branch.fbus, branch.tbus, model, s_m, s_o, p)
-                    pji, qji = _get_branch_power_flow(network, params, branch, branch.tbus, branch.fbus, model, s_m, s_o, p)
+                    pij, qij = _get_branch_power_flow(network, branch, branch.fbus, branch.tbus, model, s_m, s_o, p)
+                    pji, qji = _get_branch_power_flow(network, branch, branch.tbus, branch.fbus, model, s_m, s_o, p)
                     sij_sqr = pij**2 + qij**2
                     sji_sqr = pji**2 + qji**2
+                    iij = _get_branch_current(network, branch, model, s_m, s_o, p)
+
                     processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['pij'][branch_id].append(pij)
                     processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['pji'][branch_id].append(pji)
                     processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['qij'][branch_id].append(qij)
                     processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['qji'][branch_id].append(qji)
                     processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sij'][branch_id].append(sqrt(sij_sqr))
                     processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][branch_id].append(sqrt(sji_sqr))
-
-                    # Branch limits
-                    if params.branch_limit_type == BRANCH_LIMIT_CURRENT:
-                        iij_sqr = abs(pe.value(model.iij_sqr[k, s_m, s_o, p]))
-                        processed_results['scenarios'][s_m][s_o]['branches']['flow_perc']['iij'][branch_id].append(sqrt(iij_sqr) / rating)
-                    elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
-                        sij_sqr = abs(pe.value(model.sij_sqr[k, s_m, s_o, p]))
-                        sji_sqr = abs(pe.value(model.sij_sqr[k, s_m, s_o, p]))
-                        processed_results['scenarios'][s_m][s_o]['branches']['flow_perc']['sij'][branch_id].append(sqrt(sij_sqr) / rating)
-                        processed_results['scenarios'][s_m][s_o]['branches']['flow_perc']['sji'][branch_id].append(sqrt(sji_sqr) / rating)
+                    processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['iij'][branch_id].append(iij)
 
                     # Losses (active power)
                     p_losses = _get_branch_power_losses(network, params, model, k, s_m, s_o, p)
@@ -2571,13 +2554,13 @@ def _get_branch_power_losses(network, params, model, branch_idx, s_m, s_o, p):
 
     # Active power flow, from i to j and from j to i
     branch = network.branches[branch_idx]
-    pij, _ = _get_branch_power_flow(network, params, branch, branch.fbus, branch.tbus, model, s_m, s_o, p)
-    pji, _ = _get_branch_power_flow(network, params, branch, branch.tbus, branch.fbus, model, s_m, s_o, p)
+    pij, _ = _get_branch_power_flow(network, branch, branch.fbus, branch.tbus, model, s_m, s_o, p)
+    pji, _ = _get_branch_power_flow(network, branch, branch.tbus, branch.fbus, model, s_m, s_o, p)
 
     return abs(pij + pji)
 
 
-def _get_branch_power_flow(network, params, branch, fbus, tbus, model, s_m, s_o, p):
+def _get_branch_power_flow(network, branch, fbus, tbus, model, s_m, s_o, p):
 
     fbus_idx = network.get_node_idx(fbus)
     tbus_idx = network.get_node_idx(tbus)
@@ -2612,6 +2595,22 @@ def _get_branch_power_flow(network, params, branch, fbus, tbus, model, s_m, s_o,
 
     return pij * network.baseMVA, qij * network.baseMVA
 
+
+def _get_branch_current(network, branch, model, s_m, s_o, p):
+
+    branch_idx = network.get_branch_idx(branch)
+    fbus_idx = network.get_node_idx(branch.fbus)
+    tbus_idx = network.get_node_idx(branch.tbus)
+
+    rij = 1 / pe.value(model.r[branch_idx, s_m, s_o, p])
+    ei = pe.value(model.e_actual[fbus_idx, s_m, s_o, p])
+    fi = pe.value(model.f_actual[fbus_idx, s_m, s_o, p])
+    ej = pe.value(model.e_actual[tbus_idx, s_m, s_o, p])
+    fj = pe.value(model.f_actual[tbus_idx, s_m, s_o, p])
+
+    iij_sqr = (branch.g ** 2 + branch.b ** 2) * (ei ** 2 + fi ** 2 + rij ** 2 * (ej ** 2 + fj ** 2) - 2 * rij * (ei * ej + fi * fj))
+
+    return sqrt(iij_sqr)
 
 def _get_info_from_results(results, info_string):
     i = str(results).lower().find(info_string.lower()) + len(info_string)
