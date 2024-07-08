@@ -1691,11 +1691,9 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['energy_storages']['soc'] = dict()
                 processed_results['scenarios'][s_m][s_o]['energy_storages']['soc_percent'] = dict()
 
-            if params.branch_limit_type == BRANCH_LIMIT_CURRENT:
-                processed_results['scenarios'][s_m][s_o]['branches']['limits']['iij_perc'] = dict()
-            else:
-                processed_results['scenarios'][s_m][s_o]['branches']['limits']['sij_perc'] = dict()
-                processed_results['scenarios'][s_m][s_o]['branches']['limits']['sji_perc'] = dict()
+            processed_results['scenarios'][s_m][s_o]['branches']['limits']['iij_perc'] = dict()
+            processed_results['scenarios'][s_m][s_o]['branches']['limits']['sij_perc'] = dict()
+            processed_results['scenarios'][s_m][s_o]['branches']['limits']['sji_perc'] = dict()
 
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage'] = dict()
@@ -1706,11 +1704,9 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_down'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits'] = dict()
             if params.slacks.grid_operation.branch_flow:
-                if params.branch_limit_type == BRANCH_LIMIT_CURRENT:
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['iij_sqr'] = dict()
-                elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['sij_sqr'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['sji_sqr'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['iij_sqr'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['sij_sqr'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['sji_sqr'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance'] = dict()
             if params.slacks.node_balance:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_up'] = dict()
