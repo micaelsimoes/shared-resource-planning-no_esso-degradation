@@ -481,8 +481,7 @@ def _build_model(network, params):
                             model.r[i, s_m, s_o, p].setub(branch.ratio + SMALL_TOLERANCE)            # Voltage regulation device, use given ratio
                             model.r[i, s_m, s_o, p].setlb(branch.ratio - SMALL_TOLERANCE)
                         else:
-                            model.r[i, s_m, s_o, p].setub(1.00 + SMALL_TOLERANCE)
-                            model.r[i, s_m, s_o, p].setlb(1.00 - SMALL_TOLERANCE)
+                            model.r[i, s_m, s_o, p].fix(0.00)
 
     # - Energy Storage devices
     if params.es_reg:
