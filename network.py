@@ -915,7 +915,7 @@ def _build_model(network, params):
                     ej = model.e_actual[tnode_idx, s_m, s_o, p]
                     fj = model.f_actual[tnode_idx, s_m, s_o, p]
 
-                    rij = model.r[b]
+                    rij = model.r[b, s_m, s_o, p]
                     bij_sh = branch.b_sh * 0.50
 
                     # iij_sqr_actual definition
