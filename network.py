@@ -1856,7 +1856,7 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][branch_id].append(sqrt(sji_sqr))
 
                     # Branch limits
-                    if params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
+                    if params.branch_limit_type == BRANCH_LIMIT_CURRENT:
                         iij_sqr = abs(pe.value(model.iij_sqr[k, s_m, s_o, p]))
                         processed_results['scenarios'][s_m][s_o]['branches']['iij_perc'][branch_id].append(sqrt(iij_sqr) / rating)
                     elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
