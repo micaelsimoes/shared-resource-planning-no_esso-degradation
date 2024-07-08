@@ -940,20 +940,54 @@ def _build_model(network, params):
                     ej = model.e_actual[tnode_idx, s_m, s_o, p]
                     fj = model.f_actual[tnode_idx, s_m, s_o, p]
 
-                    # iij_sqr_actual definition
-                    #iij_sqr = (branch.g**2 + branch.b**2) * ((ei - ej)**2 + (fi - fj)**2)  # simplified version -- might cause problems for transformers
-                    iij_sqr = (branch.g**2 + branch.b**2) * (ei ** 2 + fi ** 2 + rij ** 2 * (ej ** 2 + fj ** 2) - 2 * rij * (ei * ej + fi * fj))
-                    if params.relax_equalities:
-                        model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] <= iij_sqr + EQUALITY_TOLERANCE)
-                        model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] >= iij_sqr - EQUALITY_TOLERANCE)
-                    else:
-                        model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] == iij_sqr)
+                    if params.branch_limit_type == BRANCH_LIMIT_CURRENT:
 
-                    # Branch flow limits
-                    if params.slacks.grid_operation.branch_flow:
-                        model.branch_power_flow_lims.add(model.iij_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_iij_sqr[b, s_m, s_o, p])
-                    else:
-                        model.branch_power_flow_lims.add(model.iij_sqr[b, s_m, s_o, p] <= rating ** 2)
+                        # iij_sqr_actual definition
+                        #iij_sqr = (branch.g**2 + branch.b**2) * ((ei - ej)**2 + (fi - fj)**2)  # simplified version -- might cause problems for transformers
+                        iij_sqr = (branch.g**2 + branch.b**2) * (ei ** 2 + fi ** 2 + rij ** 2 * (ej ** 2 + fj ** 2) - 2 * rij * (ei * ej + fi * fj))
+
+                        if params.relax_equalities:
+                            model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] <= iij_sqr + EQUALITY_TOLERANCE)
+                            model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] >= iij_sqr - EQUALITY_TOLERANCE)
+                        else:
+                            model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] == iij_sqr)
+
+                        # Branch flow limits
+                        if params.slacks.grid_operation.branch_flow:
+                            model.branch_power_flow_lims.add(model.iij_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_iij_sqr[b, s_m, s_o, p])
+                        else:
+                            model.branch_power_flow_lims.add(model.iij_sqr[b, s_m, s_o, p] <= rating ** 2)
+
+                    elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
+
+                        pij = branch.g * (ei ** 2 + fi ** 2) * rij ** 2
+                        pij -= branch.g * (ei * ej + fi * fj) * rij
+                        pij -= branch.b * (fi * ej - ei * fj) * rij
+
+                        qij = - (branch.b + branch.b_sh * 0.50) * (ei ** 2 + fi ** 2) * rij ** 2
+                        qij += branch.b * (ei * ej + fi * fj) * rij
+                        qij -= branch.g * (fi * ej - ei * fj) * rij
+
+                        sij_sqr = pij ** 2 + qij ** 2
+
+                        pji = branch.g * (ej ** 2 + fj ** 2)
+                        pji -= branch.g * (ej * ei + fj * fi) * rij
+                        pji -= branch.b * (fj * ei - ej * fi) * rij
+
+                        qji = - (branch.b + branch.b_sh * 0.50) * (ej ** 2 + fj ** 2)
+                        qji += branch.b * (ej * ei + fj * fi) * rij
+                        qji -= branch.g * (fj * ei - ej * fi) * rij
+
+                        sji_sqr = pji ** 2 + qji ** 2
+
+                        if params.relax_equalities:
+                            model.branch_power_flow_cons.add(model.sij_sqr[b, s_m, s_o, p] <= sij_sqr + SMALL_TOLERANCE)
+                            model.branch_power_flow_cons.add(model.sij_sqr[b, s_m, s_o, p] >= sij_sqr -SMALL_TOLERANCE)
+                            model.branch_power_flow_cons.add(model.sji_sqr[b, s_m, s_o, p] <= sji_sqr + SMALL_TOLERANCE)
+                            model.branch_power_flow_cons.add(model.sji_sqr[b, s_m, s_o, p] >= sji_sqr -SMALL_TOLERANCE)
+                        else:
+                            model.branch_power_flow_cons.add(model.sij_sqr[b, s_m, s_o, p] == sij_sqr)
+                            model.branch_power_flow_cons.add(model.sji_sqr[b, s_m, s_o, p] == sji_sqr)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective Function
