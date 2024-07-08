@@ -1140,9 +1140,9 @@ def _write_network_branch_results_to_excel(network_planning, workbook, results, 
                                 value = 0.00
                                 if result_type == 'limits':
                                     if network_planning.params.branch_limit_type == BRANCH_LIMIT_CURRENT:
-                                        value = results[year][day]['scenarios'][s_m][s_o]['branches'][result_type]['iij'][branch_id][p]
+                                        value = results[year][day]['scenarios'][s_m][s_o]['branches'][result_type]['iij_perc'][branch_id][p]
                                     elif network_planning.params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
-                                        value = (results[year][day]['scenarios'][s_m][s_o]['branches'][result_type]['sij'][branch_id][p] + results[year][day]['scenarios'][s_m][s_o]['branches'][result_type]['sji'][branch_id][p]) * 0.50
+                                        value = (results[year][day]['scenarios'][s_m][s_o]['branches'][result_type]['sij_perc'][branch_id][p] + results[year][day]['scenarios'][s_m][s_o]['branches'][result_type]['sji_perc'][branch_id][p]) * 0.50
                                     sheet.cell(row=row_idx, column=p + 9).value = value
                                     sheet.cell(row=row_idx, column=p + 9).number_format = perc_style
                                     if value > 1.0 + VIOLATION_TOLERANCE:
