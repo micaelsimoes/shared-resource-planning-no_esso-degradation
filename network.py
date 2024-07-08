@@ -387,7 +387,7 @@ def _build_model(network, params):
                             model.iij_sqr[b, s_m, s_o, p].setub(rating)
                             if params.slacks.grid_operation.branch_flow:
                                 model.slack_iij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                    elif params.line_limit_type == BRANCH_LIMIT_APPARENT_POWER:
+                    elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
                         model.sij_sqr[b, s_m, s_o, p].setub(rating)
                         model.sji_sqr[b, s_m, s_o, p].setub(rating)
                         if params.slacks.grid_operation.branch_flow:
