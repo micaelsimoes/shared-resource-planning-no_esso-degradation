@@ -15,6 +15,7 @@ class NetworkParameters:
         self.rg_curt = False
         self.l_curt = False
         self.enforce_vg = False
+        self.branch_limit_type = BRANCH_LIMIT_CURRENT
         self.relax_equalities = False
         self.slacks = Slacks()
         self.print_to_screen = False
