@@ -1703,7 +1703,7 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_down'] = dict()
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_up'] = dict()
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_down'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits'] = dict()
             if params.slacks.grid_operation.branch_flow:
                 if params.branch_limit_type == BRANCH_LIMIT_CURRENT:
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['iij_sqr'] = dict()
