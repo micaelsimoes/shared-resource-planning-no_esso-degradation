@@ -87,13 +87,6 @@ class Network:
         print(f'[ERROR] Network {self.name}. Node {node_id} not found! Check network.')
         exit(ERROR_NETWORK_FILE)
 
-    def get_node_base_kv(self, node_id):
-        for node in self.nodes:
-            if node.bus_i == node_id:
-                return node.base_kv
-        print(f'[ERROR] Network {self.name}. Node {node_id} not found! Check network.')
-        exit(ERROR_NETWORK_FILE)
-
     def get_node_voltage_limits(self, node_id):
         for node in self.nodes:
             if node.bus_i == node_id:
@@ -365,41 +358,23 @@ def _build_model(network, params):
                                 model.qg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
                                 model.qg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
 
-    # Branch power flow
+    # - Branch current (squared)
     model.iij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.sij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.sji_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     if params.slacks.grid_operation.branch_flow:
         model.slack_iij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_sij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_sji_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     for b in model.branches:
-
         branch = network.branches[b]
         rating = branch.rate / network.baseMVA
         if rating == 0.0:
             rating = BRANCH_UNKNOWN_RATING
-
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
                 for p in model.periods:
-
-                    if branch.is_transformer:
-                        if params.slacks.grid_operation.branch_flow:
-                            model.slack_iij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.slack_sij_sqr[b, s_m, s_o, p].setub(SIJ_VIOLATION_ALLOWED * rating)
-                            model.slack_sji_sqr[b, s_m, s_o, p].setub(SIJ_VIOLATION_ALLOWED * rating)
-                    else:
-                        if params.slacks.grid_operation.branch_flow:
-                            model.slack_iij_sqr[b, s_m, s_o, p].setub(SIJ_VIOLATION_ALLOWED * rating)
-                            model.slack_sij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.slack_sji_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-
                     if network.branches[b].status == 0:
+                        model.iij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                        model.slack_iij_sqr[b, s_m, s_o, p].setub(SIJ_VIOLATION_ALLOWED * rating)
                         if params.slacks.grid_operation.branch_flow:
                             model.slack_iij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.slack_sij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.slack_sji_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
 
     # - Loads
     model.pc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
@@ -481,7 +456,8 @@ def _build_model(network, params):
                             model.r[i, s_m, s_o, p].setub(branch.ratio + SMALL_TOLERANCE)            # Voltage regulation device, use given ratio
                             model.r[i, s_m, s_o, p].setlb(branch.ratio - SMALL_TOLERANCE)
                         else:
-                            model.r[i, s_m, s_o, p].fix(1.00)
+                            model.r[i, s_m, s_o, p].setub(1.00 + SMALL_TOLERANCE)
+                            model.r[i, s_m, s_o, p].setlb(1.00 - SMALL_TOLERANCE)
 
     # - Energy Storage devices
     if params.es_reg:
@@ -934,62 +910,24 @@ def _build_model(network, params):
                     fnode_idx = network.get_node_idx(branch.fbus)
                     tnode_idx = network.get_node_idx(branch.tbus)
 
-                    rij = model.r[b, s_m, s_o, p]
                     ei = model.e_actual[fnode_idx, s_m, s_o, p]
                     fi = model.f_actual[fnode_idx, s_m, s_o, p]
                     ej = model.e_actual[tnode_idx, s_m, s_o, p]
                     fj = model.f_actual[tnode_idx, s_m, s_o, p]
 
-                    pij = branch.g * (ei ** 2 + fi ** 2) * rij ** 2
-                    pij -= branch.g * (ei * ej + fi * fj) * rij
-                    pij -= branch.b * (fi * ej - ei * fj) * rij
-                    qij = - (branch.b + branch.b_sh * 0.50) * (ei ** 2 + fi ** 2) * rij ** 2
-                    qij += branch.b * (ei * ej + fi * fj) * rij
-                    qij -= branch.g * (fi * ej - ei * fj) * rij
-                    sij_sqr = pij ** 2 + qij ** 2
-
-                    pji = branch.g * (ej ** 2 + fj ** 2)
-                    pji -= branch.g * (ej * ei + fj * fi) * rij
-                    pji -= branch.b * (fj * ei - ej * fi) * rij
-                    qji = - (branch.b + branch.b_sh * 0.50) * (ej ** 2 + fj ** 2)
-                    qji += branch.b * (ej * ei + fj * fi) * rij
-                    qji -= branch.g * (fj * ei - ej * fi) * rij
-
-                    sji_sqr = pji ** 2 + qji ** 2
-
-                    #iij_sqr = (branch.g**2 + branch.b**2) * ((ei - ej)**2 + (fi - fj)**2)  # Note: simplified version -- might cause problems for transformers
-                    iij_sqr = (branch.g ** 2 + branch.b ** 2) * (ei ** 2 + fi ** 2 + rij ** 2 * (ej ** 2 + fj ** 2) - 2 * rij * (ei * ej + fi * fj))    # iij_sqr_actual definition
-
+                    # iij_sqr_actual definition
+                    iij_sqr = (branch.g**2 + branch.b**2) * ((ei - ej)**2 + (fi - fj)**2)
                     if params.relax_equalities:
-                        #model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] <= iij_sqr + EQUALITY_TOLERANCE)
-                        #model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] >= iij_sqr - EQUALITY_TOLERANCE)
-                        model.branch_power_flow_cons.add(model.sij_sqr[b, s_m, s_o, p] <= sij_sqr + EQUALITY_TOLERANCE)
-                        model.branch_power_flow_cons.add(model.sij_sqr[b, s_m, s_o, p] >= sij_sqr - EQUALITY_TOLERANCE)
-                        #model.branch_power_flow_cons.add(model.sji_sqr[b, s_m, s_o, p] <= sji_sqr + EQUALITY_TOLERANCE)
-                        #model.branch_power_flow_cons.add(model.sji_sqr[b, s_m, s_o, p] >= sji_sqr - EQUALITY_TOLERANCE)
+                        model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] <= iij_sqr + EQUALITY_TOLERANCE)
+                        model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] >= iij_sqr - EQUALITY_TOLERANCE)
                     else:
-                        #model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] == iij_sqr)
-                        model.branch_power_flow_cons.add(model.sij_sqr[b, s_m, s_o, p] == sij_sqr)
-                        #model.branch_power_flow_cons.add(model.sji_sqr[b, s_m, s_o, p] == sji_sqr)
+                        model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] == iij_sqr)
 
                     # Branch flow limits
-                    #model.branch_power_flow_lims.add(model.iij_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_iij_sqr[b, s_m, s_o, p])
-                    model.branch_power_flow_lims.add(model.sij_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_sij_sqr[b, s_m, s_o, p])
-                    #model.branch_power_flow_lims.add(model.sji_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_sji_sqr[b, s_m, s_o, p])
-                    '''
-                    if branch.is_transformer:
-                        if params.slacks.grid_operation.branch_flow:
-                            model.branch_power_flow_lims.add(model.sij_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_sij_sqr[b, s_m, s_o, p])
-                            model.branch_power_flow_lims.add(model.sji_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_sji_sqr[b, s_m, s_o, p])
-                        else:
-                            model.branch_power_flow_lims.add(model.sij_sqr[b, s_m, s_o, p] <= rating ** 2)
-                            model.branch_power_flow_lims.add(model.sji_sqr[b, s_m, s_o, p] <= rating ** 2)
+                    if params.slacks.grid_operation.branch_flow:
+                        model.branch_power_flow_lims.add(model.iij_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_iij_sqr[b, s_m, s_o, p])
                     else:
-                        if params.slacks.grid_operation.branch_flow:
-                            model.branch_power_flow_lims.add(model.iij_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_iij_sqr[b, s_m, s_o, p])
-                        else:
-                            model.branch_power_flow_lims.add(model.iij_sqr[b, s_m, s_o, p] <= rating ** 2)
-                    '''
+                        model.branch_power_flow_lims.add(model.iij_sqr[b, s_m, s_o, p] <= rating ** 2)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective Function
@@ -1130,9 +1068,7 @@ def _build_model(network, params):
                 for b in model.branches:
                     for p in model.periods:
                         slack_iij_sqr = model.slack_iij_sqr[b, s_m, s_o, p]
-                        slack_sij_sqr = model.slack_sij_sqr[b, s_m, s_o, p]
-                        slack_sji_sqr = model.slack_sji_sqr[b, s_m, s_o, p]
-                        obj += PENALTY_CURRENT * network.baseMVA * omega_market * omega_oper * (slack_iij_sqr + slack_sij_sqr + slack_sji_sqr)
+                        obj += PENALTY_CURRENT * network.baseMVA * omega_market * omega_oper * slack_iij_sqr
 
     # Operation slacks
     for s_m in model.scenarios_market:
@@ -1667,8 +1603,8 @@ def _process_results(network, model, params, results=dict()):
                 'voltage': {'vmag': {}, 'vang': {}},
                 'consumption': {'pc': {}, 'qc': {}, 'pc_net': {}, 'qc_net': {}},
                 'generation': {'pg': {}, 'qg': {}, 'pg_net': {}, 'qg_net': {}},
-                'branches': {'power_flow': {'pij': {}, 'pji': {}, 'qij': {}, 'qji': {}, 'sij': {}, 'sji': {}, 'iij': {}},
-                             'losses': {}, 'ratio': {}, 'limits': {}},
+                'branches': {'power_flow': {'pij': {}, 'pji': {}, 'qij': {}, 'qji': {}, 'sij': {}, 'sji': {}},
+                             'current_perc': {}, 'losses': {}, 'ratio': {}},
                 'energy_storages': {'p': {}, 'q': {}, 's': {}, 'soc': {}, 'soc_percent': {}},
                 'shared_energy_storages': {'p': {}, 'q': {}, 's': {}, 'soc': {}, 'soc_percent': {}}
             }
@@ -1695,10 +1631,6 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['energy_storages']['soc'] = dict()
                 processed_results['scenarios'][s_m][s_o]['energy_storages']['soc_percent'] = dict()
 
-            processed_results['scenarios'][s_m][s_o]['branches']['limits']['iij_perc'] = dict()
-            processed_results['scenarios'][s_m][s_o]['branches']['limits']['sij_perc'] = dict()
-            processed_results['scenarios'][s_m][s_o]['branches']['limits']['sji_perc'] = dict()
-
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage'] = dict()
             if params.slacks.grid_operation.voltage:
@@ -1706,11 +1638,9 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_down'] = dict()
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_up'] = dict()
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_down'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current'] = dict()
             if params.slacks.grid_operation.branch_flow:
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['iij_sqr'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['sij_sqr'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['sji_sqr'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance'] = dict()
             if params.slacks.node_balance:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_up'] = dict()
@@ -1825,15 +1755,14 @@ def _process_results(network, model, params, results=dict()):
                         processed_results['scenarios'][s_m][s_o]['generation']['pg_net'][gen_id][p] -= pg_curt
                         processed_results['scenarios'][s_m][s_o]['generation']['qg_net'][gen_id][p] -= qg_curt
 
-            # Branch power flows, transformers' ratio
+            # Branch current, transformers' ratio
             for k in model.branches:
 
                 branch = network.branches[k]
                 branch_id = branch.branch_id
-                rating = branch.rate
+                rating = branch.rate / network.baseMVA
                 if rating == 0.0:
                     rating = BRANCH_UNKNOWN_RATING
-                fbus_vbase = network.get_node_base_kv(branch.fbus)
 
                 processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['pij'][branch_id] = []
                 processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['pji'][branch_id] = []
@@ -1841,34 +1770,27 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['qji'][branch_id] = []
                 processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sij'][branch_id] = []
                 processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][branch_id] = []
-                processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['iij'][branch_id] = []
+                processed_results['scenarios'][s_m][s_o]['branches']['current_perc'][branch_id] = []
                 processed_results['scenarios'][s_m][s_o]['branches']['losses'][branch_id] = []
-                processed_results['scenarios'][s_m][s_o]['branches']['limits']['iij_perc'][branch_id] = []
-                processed_results['scenarios'][s_m][s_o]['branches']['limits']['sij_perc'][branch_id] = []
-                processed_results['scenarios'][s_m][s_o]['branches']['limits']['sji_perc'][branch_id] = []
                 if branch.is_transformer:
                     processed_results['scenarios'][s_m][s_o]['branches']['ratio'][branch_id] = []
-
                 for p in model.periods:
 
                     # Power flows
-                    pij, qij = _get_branch_power_flow(network, branch, branch.fbus, branch.tbus, model, s_m, s_o, p)
-                    pji, qji = _get_branch_power_flow(network, branch, branch.tbus, branch.fbus, model, s_m, s_o, p)
-                    sij = sqrt(pij**2 + qij**2)
-                    sji = sqrt(pji**2 + qji**2)
-                    iij = _get_branch_current(network, branch, model, s_m, s_o, p)
-
+                    pij, qij = _get_branch_power_flow(network, params, branch, branch.fbus, branch.tbus, model, s_m, s_o, p)
+                    pji, qji = _get_branch_power_flow(network, params, branch, branch.tbus, branch.fbus, model, s_m, s_o, p)
+                    sij_sqr = pij**2 + qij**2
+                    sji_sqr = pji**2 + qji**2
                     processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['pij'][branch_id].append(pij)
                     processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['pji'][branch_id].append(pji)
                     processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['qij'][branch_id].append(qij)
                     processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['qji'][branch_id].append(qji)
-                    processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sij'][branch_id].append(sij)
-                    processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][branch_id].append(sji)
-                    processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['iij'][branch_id].append(iij)
+                    processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sij'][branch_id].append(sqrt(sij_sqr))
+                    processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][branch_id].append(sqrt(sji_sqr))
 
-                    processed_results['scenarios'][s_m][s_o]['branches']['limits']['iij_perc'][branch_id].append(iij / (rating / fbus_vbase))
-                    processed_results['scenarios'][s_m][s_o]['branches']['limits']['sij_perc'][branch_id].append(sij / rating)
-                    processed_results['scenarios'][s_m][s_o]['branches']['limits']['sji_perc'][branch_id].append(sji / rating)
+                    # Current
+                    iij_sqr = abs(pe.value(model.iij_sqr[k, s_m, s_o, p]))
+                    processed_results['scenarios'][s_m][s_o]['branches']['current_perc'][branch_id].append(sqrt(iij_sqr) / rating)
 
                     # Losses (active power)
                     p_losses = _get_branch_power_losses(network, params, model, k, s_m, s_o, p)
@@ -1954,20 +1876,14 @@ def _process_results(network, model, params, results=dict()):
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_up'][node_id].append(slack_f_up)
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_down'][node_id].append(slack_f_down)
 
-            # Branch power flow slacks
+            # Branch current slacks
             if params.slacks.grid_operation.branch_flow:
                 for b in model.branches:
                     branch_id = network.branches[b].branch_id
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['iij_sqr'][branch_id] = []
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['sij_sqr'][branch_id] = []
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['sji_sqr'][branch_id] = []
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][branch_id] = []
                     for p in model.periods:
                         slack_iij_sqr = pe.value(model.slack_iij_sqr[b, s_m, s_o, p])
-                        slack_sij_sqr = pe.value(model.slack_sij_sqr[b, s_m, s_o, p])
-                        slack_sji_sqr = pe.value(model.slack_sij_sqr[b, s_m, s_o, p])
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['iij_sqr'][branch_id].append(slack_iij_sqr)
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['sij_sqr'][branch_id].append(slack_sij_sqr)
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['sji_sqr'][branch_id].append(slack_sji_sqr)
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][branch_id].append(slack_iij_sqr)
 
             # Slacks
             # - Shared ESS
@@ -2561,13 +2477,13 @@ def _get_branch_power_losses(network, params, model, branch_idx, s_m, s_o, p):
 
     # Active power flow, from i to j and from j to i
     branch = network.branches[branch_idx]
-    pij, _ = _get_branch_power_flow(network, branch, branch.fbus, branch.tbus, model, s_m, s_o, p)
-    pji, _ = _get_branch_power_flow(network, branch, branch.tbus, branch.fbus, model, s_m, s_o, p)
+    pij, _ = _get_branch_power_flow(network, params, branch, branch.fbus, branch.tbus, model, s_m, s_o, p)
+    pji, _ = _get_branch_power_flow(network, params, branch, branch.tbus, branch.fbus, model, s_m, s_o, p)
 
     return abs(pij + pji)
 
 
-def _get_branch_power_flow(network, branch, fbus, tbus, model, s_m, s_o, p):
+def _get_branch_power_flow(network, params, branch, fbus, tbus, model, s_m, s_o, p):
 
     fbus_idx = network.get_node_idx(fbus)
     tbus_idx = network.get_node_idx(tbus)
@@ -2602,22 +2518,6 @@ def _get_branch_power_flow(network, branch, fbus, tbus, model, s_m, s_o, p):
 
     return pij * network.baseMVA, qij * network.baseMVA
 
-
-def _get_branch_current(network, branch, model, s_m, s_o, p):
-
-    branch_idx = network.get_branch_idx(branch)
-    fbus_idx = network.get_node_idx(branch.fbus)
-    tbus_idx = network.get_node_idx(branch.tbus)
-
-    rij = 1 / pe.value(model.r[branch_idx, s_m, s_o, p])
-    ei = pe.value(model.e_actual[fbus_idx, s_m, s_o, p])
-    fi = pe.value(model.f_actual[fbus_idx, s_m, s_o, p])
-    ej = pe.value(model.e_actual[tbus_idx, s_m, s_o, p])
-    fj = pe.value(model.f_actual[tbus_idx, s_m, s_o, p])
-
-    iij_sqr = (branch.g ** 2 + branch.b ** 2) * (ei ** 2 + fi ** 2 + rij ** 2 * (ej ** 2 + fj ** 2) - 2 * rij * (ei * ej + fi * fj))
-
-    return sqrt(abs(iij_sqr))
 
 def _get_info_from_results(results, info_string):
     i = str(results).lower().find(info_string.lower()) + len(info_string)
