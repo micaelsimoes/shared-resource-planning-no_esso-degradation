@@ -2501,7 +2501,7 @@ def _get_branch_power_flow(network, params, branch, fbus, tbus, model, s_m, s_o,
     else:
         direction = 0
 
-    rij = 1 / pe.value(model.r[branch_idx, s_m, s_o, p])
+    rij = pe.value(model.r[branch_idx, s_m, s_o, p])
     ei = pe.value(model.e_actual[fbus_idx, s_m, s_o, p])
     fi = pe.value(model.f_actual[fbus_idx, s_m, s_o, p])
     ej = pe.value(model.e_actual[tbus_idx, s_m, s_o, p])
