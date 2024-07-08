@@ -1088,8 +1088,6 @@ def _write_network_branch_results_to_excel(network_planning, workbook, results, 
     elif result_type == 'limits':
         sheet_name = 'Branch Loading'
         aux_string = 'I, [%]'
-        if network_planning.params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
-            aux_string = 'S, [%]'
 
     row_idx = 1
     decimal_style = '0.00'
@@ -1139,10 +1137,7 @@ def _write_network_branch_results_to_excel(network_planning, workbook, results, 
                             for p in range(network.num_instants):
                                 value = 0.00
                                 if result_type == 'limits':
-                                    if network_planning.params.branch_limit_type == BRANCH_LIMIT_CURRENT:
-                                        value = results[year][day]['scenarios'][s_m][s_o]['branches'][result_type]['iij_perc'][branch_id][p]
-                                    elif network_planning.params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
-                                        value = (results[year][day]['scenarios'][s_m][s_o]['branches'][result_type]['sij_perc'][branch_id][p] + results[year][day]['scenarios'][s_m][s_o]['branches'][result_type]['sji_perc'][branch_id][p]) * 0.50
+                                    value = results[year][day]['scenarios'][s_m][s_o]['branches'][result_type]['iij_perc'][branch_id][p]
                                     sheet.cell(row=row_idx, column=p + 9).value = value
                                     sheet.cell(row=row_idx, column=p + 9).number_format = perc_style
                                     if value > 1.0 + VIOLATION_TOLERANCE:
@@ -2064,20 +2059,8 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
 
                             branch_id = branch.branch_id
 
-                            if network_planning.params.branch_limit_type == BRANCH_LIMIT_CURRENT:
-                                sheet.cell(row=row_idx, column=1).value = branch_id
-                                sheet.cell(row=row_idx, column=2).value = int(year)
-                                sheet.cell(row=row_idx, column=3).value = day
-                                sheet.cell(row=row_idx, column=4).value = 'Current, iij_sqr'
-                                sheet.cell(row=row_idx, column=5).value = s_m
-                                sheet.cell(row=row_idx, column=6).value = s_o
-                                for p in range(network_planning.num_instants):
-                                    iij_sqr = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['iij_sqr'][branch_id][p]
-                                    sheet.cell(row=row_idx, column=p + 7).value = iij_sqr
-                                    sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                                row_idx = row_idx + 1
+                            if branch.is_transformer:
 
-                            elif network_planning.params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
                                 sheet.cell(row=row_idx, column=1).value = branch_id
                                 sheet.cell(row=row_idx, column=2).value = int(year)
                                 sheet.cell(row=row_idx, column=3).value = day
@@ -2085,7 +2068,8 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
                                 sheet.cell(row=row_idx, column=5).value = s_m
                                 sheet.cell(row=row_idx, column=6).value = s_o
                                 for p in range(network_planning.num_instants):
-                                    sij_sqr = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['sij_sqr'][branch_id][p]
+                                    sij_sqr = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks'][
+                                        'branch_flow_limits']['sij_sqr'][branch_id][p]
                                     sheet.cell(row=row_idx, column=p + 7).value = sij_sqr
                                     sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                                 row_idx = row_idx + 1
@@ -2097,8 +2081,23 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
                                 sheet.cell(row=row_idx, column=5).value = s_m
                                 sheet.cell(row=row_idx, column=6).value = s_o
                                 for p in range(network_planning.num_instants):
-                                    sji_sqr = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['sji_sqr'][branch_id][p]
+                                    sji_sqr = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks'][
+                                        'branch_flow_limits']['sji_sqr'][branch_id][p]
                                     sheet.cell(row=row_idx, column=p + 7).value = sji_sqr
+                                    sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
+                                row_idx = row_idx + 1
+
+                            elif network_planning.params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
+
+                                sheet.cell(row=row_idx, column=1).value = branch_id
+                                sheet.cell(row=row_idx, column=2).value = int(year)
+                                sheet.cell(row=row_idx, column=3).value = day
+                                sheet.cell(row=row_idx, column=4).value = 'Current, iij_sqr'
+                                sheet.cell(row=row_idx, column=5).value = s_m
+                                sheet.cell(row=row_idx, column=6).value = s_o
+                                for p in range(network_planning.num_instants):
+                                    iij_sqr = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['iij_sqr'][branch_id][p]
+                                    sheet.cell(row=row_idx, column=p + 7).value = iij_sqr
                                     sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                                 row_idx = row_idx + 1
 
