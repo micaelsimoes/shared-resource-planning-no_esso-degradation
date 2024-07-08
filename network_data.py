@@ -174,7 +174,7 @@ def _write_optimization_results_to_excel(network_planning, data_dir, processed_r
     _write_network_generation_results_to_excel(network_planning, wb, processed_results['results'])
     _write_network_branch_results_to_excel(network_planning, wb, processed_results['results'], 'losses')
     _write_network_branch_results_to_excel(network_planning, wb, processed_results['results'], 'ratio')
-    _write_network_branch_results_to_excel(network_planning, wb, processed_results['results'], 'Limits')
+    _write_network_branch_results_to_excel(network_planning, wb, processed_results['results'], 'branch_flow_limits')
     _write_network_branch_power_flow_results_to_excel(network_planning, wb, processed_results['results'])
     if network_planning.params.es_reg:
         _write_network_energy_storage_results_to_excel(network_planning, wb, processed_results['results'])
