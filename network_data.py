@@ -2058,23 +2058,49 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
                                 sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                             row_idx = row_idx + 1
 
-                    # Branch current slacks
+                    # Branch power flow slacks
                     if network_planning.params.slacks.grid_operation.branch_flow:
                         for branch in network.branches:
 
                             branch_id = branch.branch_id
 
-                            sheet.cell(row=row_idx, column=1).value = branch_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'Current, iij_sqr'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
-                            for p in range(network_planning.num_instants):
-                                iij_sqr = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][branch_id][p]
-                                sheet.cell(row=row_idx, column=p + 7).value = iij_sqr
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                            row_idx = row_idx + 1
+                            if network_planning.params.branch_limit_type == BRANCH_LIMIT_CURRENT:
+                                sheet.cell(row=row_idx, column=1).value = branch_id
+                                sheet.cell(row=row_idx, column=2).value = int(year)
+                                sheet.cell(row=row_idx, column=3).value = day
+                                sheet.cell(row=row_idx, column=4).value = 'Current, iij_sqr'
+                                sheet.cell(row=row_idx, column=5).value = s_m
+                                sheet.cell(row=row_idx, column=6).value = s_o
+                                for p in range(network_planning.num_instants):
+                                    iij_sqr = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['iij_sqr'][branch_id][p]
+                                    sheet.cell(row=row_idx, column=p + 7).value = iij_sqr
+                                    sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
+                                row_idx = row_idx + 1
+
+                            elif network_planning.params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
+                                sheet.cell(row=row_idx, column=1).value = branch_id
+                                sheet.cell(row=row_idx, column=2).value = int(year)
+                                sheet.cell(row=row_idx, column=3).value = day
+                                sheet.cell(row=row_idx, column=4).value = 'Apparent Power, sij_sqr'
+                                sheet.cell(row=row_idx, column=5).value = s_m
+                                sheet.cell(row=row_idx, column=6).value = s_o
+                                for p in range(network_planning.num_instants):
+                                    sij_sqr = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['sij_sqr'][branch_id][p]
+                                    sheet.cell(row=row_idx, column=p + 7).value = sij_sqr
+                                    sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
+                                row_idx = row_idx + 1
+
+                                sheet.cell(row=row_idx, column=1).value = branch_id
+                                sheet.cell(row=row_idx, column=2).value = int(year)
+                                sheet.cell(row=row_idx, column=3).value = day
+                                sheet.cell(row=row_idx, column=4).value = 'Apparent Power, sji_sqr'
+                                sheet.cell(row=row_idx, column=5).value = s_m
+                                sheet.cell(row=row_idx, column=6).value = s_o
+                                for p in range(network_planning.num_instants):
+                                    sji_sqr = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['sji_sqr'][branch_id][p]
+                                    sheet.cell(row=row_idx, column=p + 7).value = sji_sqr
+                                    sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
+                                row_idx = row_idx + 1
 
                     # Node balance
                     if network_planning.params.slacks.node_balance:
