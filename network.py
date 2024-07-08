@@ -917,14 +917,18 @@ def _build_model(network, params):
                     fnode_idx = network.get_node_idx(branch.fbus)
                     tnode_idx = network.get_node_idx(branch.tbus)
 
-                    rij = model.r[b, s_m, s_o, p]
                     ei = model.e_actual[fnode_idx, s_m, s_o, p]
                     fi = model.f_actual[fnode_idx, s_m, s_o, p]
                     ej = model.e_actual[tnode_idx, s_m, s_o, p]
                     fj = model.f_actual[tnode_idx, s_m, s_o, p]
 
-                    # Capitanescu (2018)
-                    iij_sqr = (branch.g ** 2 + branch.b ** 2) * (ei ** 2 + fi ** 2 + rij ** 2 * (ej ** 2 + fj ** 2) - 2 * rij * (ei * ej + fi * fj))
+                    # iij_sqr_actual definition
+                    rij = model.r[b, s_m, s_o, p]
+                    #iij_sqr = (branch.g**2 + branch.b**2) * ((ei - ej)**2 + (fi - fj)**2)  # Simplified
+
+                    iij_sqr = (branch.g ** 2 + branch.b ** 2) * (ei ** 2 + fi ** 2)
+                    iij_sqr += (branch.g ** 2 + branch.b ** 2) * (rij ** 2 * (ej ** 2 + fj **2))
+                    iij_sqr -= (branch.g ** 2 + branch.b ** 2) * (2 * rij * (ei * ej ** 2 + fi * fj))
 
                     '''
                     # Monticelli (1983)
