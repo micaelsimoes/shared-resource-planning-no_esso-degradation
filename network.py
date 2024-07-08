@@ -1791,6 +1791,8 @@ def _process_results(network, model, params, results=dict()):
 
                     # Current
                     iij_sqr = abs(pe.value(model.iij_sqr[k, s_m, s_o, p]))
+                    if branch_id == 29:
+                        print('stop')
                     processed_results['scenarios'][s_m][s_o]['branches']['current_perc'][branch_id].append(sqrt(iij_sqr) / rating)
 
                     # Losses (active power)
