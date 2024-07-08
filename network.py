@@ -2615,7 +2615,7 @@ def _get_branch_current(network, branch, model, s_m, s_o, p):
 
     iij_sqr = (branch.g ** 2 + branch.b ** 2) * (ei ** 2 + fi ** 2 + rij ** 2 * (ej ** 2 + fj ** 2) - 2 * rij * (ei * ej + fi * fj))
 
-    return sqrt(iij_sqr)
+    return sqrt(abs(iij_sqr))
 
 def _get_info_from_results(results, info_string):
     i = str(results).lower().find(info_string.lower()) + len(info_string)
