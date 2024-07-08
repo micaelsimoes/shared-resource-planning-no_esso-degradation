@@ -1845,8 +1845,8 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['branches']['flow_perc']['iij'][branch_id] = []
                 elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
                     processed_results['scenarios'][s_m][s_o]['branches']['flow_perc']['sij'] = []
-                    processed_results['scenarios'][s_m][s_o]['branches']['flow_perc']['sji'][branch_id] = []
-                    processed_results['scenarios'][s_m][s_o]['branches']['flow_perc']['sij'] = []
+                    processed_results['scenarios'][s_m][s_o]['branches']['flow_perc']['sij'][branch_id] = []
+                    processed_results['scenarios'][s_m][s_o]['branches']['flow_perc']['sji'] = []
                     processed_results['scenarios'][s_m][s_o]['branches']['flow_perc']['sji'][branch_id] = []
                 processed_results['scenarios'][s_m][s_o]['branches']['sij_perc'][branch_id] = []
                 processed_results['scenarios'][s_m][s_o]['branches']['sji_perc'][branch_id] = []
