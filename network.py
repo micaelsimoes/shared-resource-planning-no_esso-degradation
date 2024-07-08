@@ -924,7 +924,7 @@ def _build_model(network, params):
 
                     # iij_sqr_actual definition
                     #iij_sqr = (branch.g**2 + branch.b**2) * ((ei - ej)**2 + (fi - fj)**2)
-                    rij = model.transf_r[b, s_m, s_o, p]
+                    rij = model.r[b, s_m, s_o, p]
                     bij_sh = branch.b_sh * 0.50
                     iij_sqr = (branch.g ** 2 + branch.b ** 2) * (((rij ** 2) * ei - rij * ej) ** 2 + ((rij ** 2) * fi - rij * fj) ** 2)
                     iij_sqr += bij_sh ** 2 * (ei ** 2 + fi ** 2)
