@@ -1085,9 +1085,11 @@ def _write_network_branch_results_to_excel(network_planning, workbook, results, 
     elif result_type == 'ratio':
         sheet_name = 'Transformer Ratio'
         aux_string = 'Ratio'
-    elif result_type == 'current_perc':
+    elif result_type == 'limits':
         sheet_name = 'Branch Loading'
         aux_string = 'I, [%]'
+        if network_planning.params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
+            aux_string = 'S, [%]'
 
     row_idx = 1
     decimal_style = '0.00'
@@ -1135,13 +1137,18 @@ def _write_network_branch_results_to_excel(network_planning, workbook, results, 
                             sheet.cell(row=row_idx, column=7).value = s_m
                             sheet.cell(row=row_idx, column=8).value = s_o
                             for p in range(network.num_instants):
-                                value = results[year][day]['scenarios'][s_m][s_o]['branches'][result_type][branch_id][p]
-                                if result_type == 'Limits':
+                                value = 0.00
+                                if result_type == 'limits':
+                                    if network_planning.params.branch_limit_type == BRANCH_LIMIT_CURRENT:
+                                        value = results[year][day]['scenarios'][s_m][s_o]['branches'][result_type]['iij'][branch_id][p]
+                                    elif network_planning.params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
+                                        value = (results[year][day]['scenarios'][s_m][s_o]['branches'][result_type]['sij'][branch_id][p] + results[year][day]['scenarios'][s_m][s_o]['branches'][result_type]['sji'][branch_id][p]) * 0.50
                                     sheet.cell(row=row_idx, column=p + 9).value = value
                                     sheet.cell(row=row_idx, column=p + 9).number_format = perc_style
                                     if value > 1.0 + VIOLATION_TOLERANCE:
                                         sheet.cell(row=row_idx, column=p + 9).fill = violation_fill
                                 else:
+                                    value = results[year][day]['scenarios'][s_m][s_o]['branches'][result_type][branch_id][p]
                                     sheet.cell(row=row_idx, column=p + 9).value = value
                                     sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
                                 expected_values[branch_id][p] += value * omega_m * omega_s
@@ -1160,7 +1167,7 @@ def _write_network_branch_results_to_excel(network_planning, workbook, results, 
                     sheet.cell(row=row_idx, column=7).value = 'Expected'
                     sheet.cell(row=row_idx, column=8).value = '-'
                     for p in range(network.num_instants):
-                        if result_type == 'Limits':
+                        if result_type == 'limits':
                             sheet.cell(row=row_idx, column=p + 9).value = expected_values[branch_id][p]
                             sheet.cell(row=row_idx, column=p + 9).number_format = perc_style
                             if expected_values[branch_id][p] > 1.0 + VIOLATION_TOLERANCE:
