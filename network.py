@@ -363,7 +363,7 @@ def _build_model(network, params):
         model.iij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         if params.slacks.grid_operation.branch_flow:
             model.slack_iij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    elif params.line_limit_type == BRANCH_LIMIT_APPARENT_POWER:
+    elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
         model.sij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.sji_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         if params.slacks.grid_operation.branch_flow:
