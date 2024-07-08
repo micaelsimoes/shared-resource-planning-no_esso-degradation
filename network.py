@@ -1950,7 +1950,7 @@ def _process_results(network, model, params, results=dict()):
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_up'][node_id].append(slack_f_up)
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_down'][node_id].append(slack_f_down)
 
-            # Branch current slacks
+            # Branch power flow slacks
             if params.slacks.grid_operation.branch_flow:
                 for b in model.branches:
                     branch_id = network.branches[b].branch_id
