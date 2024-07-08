@@ -399,7 +399,7 @@ def _build_model(network, params):
                         if params.slacks.grid_operation.branch_flow:
                             model.slack_iij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
                             model.slack_sij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.slack_sij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            model.slack_sji_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
 
     # - Loads
     model.pc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
