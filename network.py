@@ -917,24 +917,27 @@ def _build_model(network, params):
                     fnode_idx = network.get_node_idx(branch.fbus)
                     tnode_idx = network.get_node_idx(branch.tbus)
 
+                    rij = model.r[b, s_m, s_o, p]
                     ei = model.e_actual[fnode_idx, s_m, s_o, p]
                     fi = model.f_actual[fnode_idx, s_m, s_o, p]
                     ej = model.e_actual[tnode_idx, s_m, s_o, p]
                     fj = model.f_actual[tnode_idx, s_m, s_o, p]
 
-                    # iij_sqr_actual definition
-                    rij = model.r[b, s_m, s_o, p]
-                    #iij_sqr = (branch.g**2 + branch.b**2) * ((ei - ej)**2 + (fi - fj)**2)  # Simplified
-                    iij_sqr = (branch.g ** 2 + branch.b ** 2) * (ei ** 2 + fi ** 2)
-                    iij_sqr += (branch.g ** 2 + branch.b ** 2) * (rij ** 2 * (ej ** 2 + fj **2))
-                    iij_sqr -= (branch.g ** 2 + branch.b ** 2) * (2 * rij * (ei * ej ** 2 + fi * fj))
-                    '''
-                    bij_sh = branch.b_sh * 0.50
-                    iij_sqr = (branch.g ** 2 + branch.b ** 2) * (((rij ** 2) * ei - rij * ej) ** 2 + ((rij ** 2) * fi - rij * fj) ** 2)
-                    iij_sqr += bij_sh ** 2 * (ei ** 2 + fi ** 2)
-                    iij_sqr += 2 * branch.g * bij_sh * (((rij ** 2) * fi - rij * fj) * ei - ((rij ** 2) * ei - rij * ej) * fi)
-                    iij_sqr += 2 * branch.b * bij_sh * (((rij ** 2) * ei - rij * ej) * ei + ((rij ** 2) * fi - rij * fj) * fi)
-                    '''
+                    if branch.is_transformer:
+                        # Capitanescu (2018)
+                        iij_sqr = (branch.g ** 2 + branch.b ** 2) * (ei ** 2 + fi ** 2 + rij ** 2 * (ej ** 2 + fj ** 2) - 2 * rij * (ei * ej + fi * fj))
+                        '''
+                        # Monticelli (1983)
+                        bij_sh = branch.b_sh * 0.50
+                        iij_sqr = (branch.g ** 2 + branch.b ** 2) * (((rij ** 2) * ei - rij * ej) ** 2 + ((rij ** 2) * fi - rij * fj) ** 2)
+                        iij_sqr += bij_sh ** 2 * (ei ** 2 + fi ** 2)
+                        iij_sqr += 2 * branch.g * bij_sh * (((rij ** 2) * fi - rij * fj) * ei - ((rij ** 2) * ei - rij * ej) * fi)
+                        iij_sqr += 2 * branch.b * bij_sh * (((rij ** 2) * ei - rij * ej) * ei + ((rij ** 2) * fi - rij * fj) * fi)
+                        '''
+                    else:
+                        iij_sqr = (branch.g**2 + branch.b**2) * ((ei - ej)**2 + (fi - fj)**2)  # Simplified
+
+
 
                     if params.relax_equalities:
                         model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] <= iij_sqr + EQUALITY_TOLERANCE)
