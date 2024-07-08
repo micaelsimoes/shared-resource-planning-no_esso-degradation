@@ -358,22 +358,23 @@ def _build_model(network, params):
                                 model.qg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
                                 model.qg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
 
-    # - Branch apparent power (squared)
-    model.sij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.sji_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    # - Branch current (squared)
+    model.iij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     if params.slacks.grid_operation.branch_flow:
-        model.slack_sij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_sji_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_iij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     for b in model.branches:
-        if not network.branches[b].status == 1:
-            for s_m in model.scenarios_market:
-                for s_o in model.scenarios_operation:
-                    for p in model.periods:
-                        model.sij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                        model.sji_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                        if params.slack_line_limits:
-                            model.slack_sij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.slack_sji_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
+        branch = network.branches[b]
+        rating = branch.rate / network.baseMVA
+        if rating == 0.0:
+            rating = BRANCH_UNKNOWN_RATING
+        for s_m in model.scenarios_market:
+            for s_o in model.scenarios_operation:
+                for p in model.periods:
+                    if network.branches[b].status == 0:
+                        model.iij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                        model.slack_iij_sqr[b, s_m, s_o, p].setub(SIJ_VIOLATION_ALLOWED * rating)
+                        if params.slacks.grid_operation.branch_flow:
+                            model.slack_iij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
 
     # - Loads
     model.pc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
@@ -909,50 +910,25 @@ def _build_model(network, params):
                     fnode_idx = network.get_node_idx(branch.fbus)
                     tnode_idx = network.get_node_idx(branch.tbus)
 
-                    ei = model.e[fnode_idx, s_m, s_o, p]
-                    fi = model.f[fnode_idx, s_m, s_o, p]
-                    ej = model.e[tnode_idx, s_m, s_o, p]
-                    fj = model.f[tnode_idx, s_m, s_o, p]
-                    if params.slacks.grid_operation.voltage:
-                        ei += model.slack_e_up[fnode_idx, s_m, s_o, p] - model.slack_e_down[fnode_idx, s_m, s_o, p]
-                        fi += model.slack_f_up[fnode_idx, s_m, s_o, p] - model.slack_f_down[fnode_idx, s_m, s_o, p]
-                        ej += model.slack_e_up[tnode_idx, s_m, s_o, p] - model.slack_e_down[tnode_idx, s_m, s_o, p]
-                        fj += model.slack_f_up[tnode_idx, s_m, s_o, p] - model.slack_f_down[tnode_idx, s_m, s_o, p]
-
                     rij = model.r[b, s_m, s_o, p]
+                    ei = model.e_actual[fnode_idx, s_m, s_o, p]
+                    fi = model.f_actual[fnode_idx, s_m, s_o, p]
+                    ej = model.e_actual[tnode_idx, s_m, s_o, p]
+                    fj = model.f_actual[tnode_idx, s_m, s_o, p]
 
-                    pij = branch.g * (ei ** 2 + fi ** 2) * rij ** 2
-                    pij -= branch.g * (ei * ej + fi * fj) * rij
-                    pij -= branch.b * (fi * ej - ei * fj) * rij
-
-                    qij = - (branch.b + branch.b_sh * 0.50) * (ei ** 2 + fi ** 2) * rij ** 2
-                    qij += branch.b * (ei * ej + fi * fj) * rij
-                    qij -= branch.g * (fi * ej - ei * fj) * rij
-
-                    sij_sqr = pij ** 2 + qij ** 2
-
-                    pji = branch.g * (ej ** 2 + fj ** 2)
-                    pji -= branch.g * (ej * ei + fj * fi) * rij
-                    pji -= branch.b * (fj * ei - ej * fi) * rij
-
-                    qji = - (branch.b + branch.b_sh * 0.50) * (ej ** 2 + fj ** 2)
-                    qji += branch.b * (ej * ei + fj * fi) * rij
-                    qji -= branch.g * (fj * ei - ej * fi) * rij
-
-                    sji_sqr = pji ** 2 + qji ** 2
-
-                    model.branch_power_flow_cons.add(model.sij_sqr[b, s_m, s_o, p] - sij_sqr >= -SMALL_TOLERANCE)
-                    model.branch_power_flow_cons.add(model.sij_sqr[b, s_m, s_o, p] - sij_sqr <= SMALL_TOLERANCE)
-
-                    model.branch_power_flow_cons.add(model.sji_sqr[b, s_m, s_o, p] - sji_sqr >= -SMALL_TOLERANCE)
-                    model.branch_power_flow_cons.add(model.sji_sqr[b, s_m, s_o, p] - sji_sqr <= SMALL_TOLERANCE)
-
-                    if params.slacks.grid_operation.branch_flow:
-                        model.branch_power_flow_lims.add(model.sij_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_sij_sqr[b, s_m, s_o, p])
-                        model.branch_power_flow_lims.add(model.sji_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_sji_sqr[b, s_m, s_o, p])
+                    # iij_sqr_actual definition
+                    iij_sqr = (branch.g**2 + branch.b**2) * ((ei - ej)**2 + (fi - fj)**2)
+                    if params.relax_equalities:
+                        model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] <= iij_sqr + EQUALITY_TOLERANCE)
+                        model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] >= iij_sqr - EQUALITY_TOLERANCE)
                     else:
-                        model.branch_power_flow_lims.add(model.sij_sqr[b, s_m, s_o, p] <= rating ** 2)
-                        model.branch_power_flow_lims.add(model.sji_sqr[b, s_m, s_o, p] <= rating ** 2)
+                        model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] == iij_sqr)
+
+                    # Branch flow limits
+                    if params.slacks.grid_operation.branch_flow:
+                        model.branch_power_flow_lims.add(model.iij_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_iij_sqr[b, s_m, s_o, p])
+                    else:
+                        model.branch_power_flow_lims.add(model.iij_sqr[b, s_m, s_o, p] <= rating ** 2)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective Function
@@ -1092,9 +1068,8 @@ def _build_model(network, params):
             if params.slacks.grid_operation.branch_flow:
                 for b in model.branches:
                     for p in model.periods:
-                        slack_sij_sqr = model.slack_sij_sqr[b, s_m, s_o, p]
-                        slack_sji_sqr = model.slack_sji_sqr[b, s_m, s_o, p]
-                        obj += PENALTY_CURRENT * network.baseMVA * omega_market * omega_oper * (slack_sij_sqr + slack_sji_sqr)
+                        slack_iij_sqr = model.slack_iij_sqr[b, s_m, s_o, p]
+                        obj += PENALTY_CURRENT * network.baseMVA * omega_market * omega_oper * slack_iij_sqr
 
     # Operation slacks
     for s_m in model.scenarios_market:
