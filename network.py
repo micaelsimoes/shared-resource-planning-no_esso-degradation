@@ -1668,8 +1668,8 @@ def _process_results(network, model, params, results=dict()):
                 'voltage': {'vmag': {}, 'vang': {}},
                 'consumption': {'pc': {}, 'qc': {}, 'pc_net': {}, 'qc_net': {}},
                 'generation': {'pg': {}, 'qg': {}, 'pg_net': {}, 'qg_net': {}},
-                'branches': {'power_flow': {'pij': {}, 'pji': {}, 'qij': {}, 'qji': {}, 'sij': {}, 'sji': {}},
-                             'flow_perc': {}, 'losses': {}, 'ratio': {}},
+                'branches': {'power_flow': {'pij': {}, 'pji': {}, 'qij': {}, 'qji': {}, 'sij': {}, 'sji': {}, 'iij': {}},
+                             'losses': {}, 'ratio': {}},
                 'energy_storages': {'p': {}, 'q': {}, 's': {}, 'soc': {}, 'soc_percent': {}},
                 'shared_energy_storages': {'p': {}, 'q': {}, 's': {}, 'soc': {}, 'soc_percent': {}}
             }
@@ -1695,6 +1695,12 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['energy_storages']['s'] = dict()
                 processed_results['scenarios'][s_m][s_o]['energy_storages']['soc'] = dict()
                 processed_results['scenarios'][s_m][s_o]['energy_storages']['soc_percent'] = dict()
+
+            if params.branch_limit_type == BRANCH_LIMIT_CURRENT:
+                processed_results['scenarios'][s_m][s_o]['branches']['flow_perc']['iij'] = dict()
+            elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
+                processed_results['scenarios'][s_m][s_o]['branches']['flow_perc']['sij'] = dict()
+                processed_results['scenarios'][s_m][s_o]['branches']['flow_perc']['sji'] = dict()
 
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage'] = dict()
@@ -1839,18 +1845,12 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['qji'][branch_id] = []
                 processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sij'][branch_id] = []
                 processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][branch_id] = []
-                processed_results['scenarios'][s_m][s_o]['branches']['flow_perc'][branch_id] = []
+                processed_results['scenarios'][s_m][s_o]['branches']['losses'][branch_id] = []
                 if params.branch_limit_type == BRANCH_LIMIT_CURRENT:
-                    processed_results['scenarios'][s_m][s_o]['branches']['flow_perc']['iij'] = []
                     processed_results['scenarios'][s_m][s_o]['branches']['flow_perc']['iij'][branch_id] = []
                 elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
-                    processed_results['scenarios'][s_m][s_o]['branches']['flow_perc']['sij'] = []
                     processed_results['scenarios'][s_m][s_o]['branches']['flow_perc']['sij'][branch_id] = []
-                    processed_results['scenarios'][s_m][s_o]['branches']['flow_perc']['sji'] = []
                     processed_results['scenarios'][s_m][s_o]['branches']['flow_perc']['sji'][branch_id] = []
-                processed_results['scenarios'][s_m][s_o]['branches']['sij_perc'][branch_id] = []
-                processed_results['scenarios'][s_m][s_o]['branches']['sji_perc'][branch_id] = []
-                processed_results['scenarios'][s_m][s_o]['branches']['losses'][branch_id] = []
                 if branch.is_transformer:
                     processed_results['scenarios'][s_m][s_o]['branches']['ratio'][branch_id] = []
                 for p in model.periods:
