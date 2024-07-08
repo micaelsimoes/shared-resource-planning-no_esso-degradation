@@ -917,7 +917,8 @@ def _build_model(network, params):
                     fj = model.f_actual[tnode_idx, s_m, s_o, p]
 
                     # iij_sqr_actual definition
-                    iij_sqr = (branch.g**2 + branch.b**2) * ((ei - ej)**2 + (fi - fj)**2)
+                    #iij_sqr = (branch.g**2 + branch.b**2) * ((ei - ej)**2 + (fi - fj)**2)
+                    iij_sqr = (branch.g**2 + branch.b**2) * (ei ** 2 + fi ** 2 + rij ** 2 * (ej ** 2 + fj ** 2) - 2 * rij * (ei * ej + fi * fj))
                     if params.relax_equalities:
                         model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] <= iij_sqr + EQUALITY_TOLERANCE)
                         model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] >= iij_sqr - EQUALITY_TOLERANCE)
