@@ -365,7 +365,7 @@ def _build_model(network, params):
                                 model.qg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
                                 model.qg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
 
-    # - Branch current (squared)
+    # - Branch limits (squared)
     model.iij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     if params.slacks.grid_operation.branch_flow:
         model.slack_iij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -923,13 +923,18 @@ def _build_model(network, params):
                     fj = model.f_actual[tnode_idx, s_m, s_o, p]
 
                     # iij_sqr_actual definition
-                    #iij_sqr = (branch.g**2 + branch.b**2) * ((ei - ej)**2 + (fi - fj)**2)
                     rij = model.r[b, s_m, s_o, p]
+                    #iij_sqr = (branch.g**2 + branch.b**2) * ((ei - ej)**2 + (fi - fj)**2)  # Simplified
+                    iij_sqr = (branch.g ** 2 + branch.b ** 2) * (ei ** 2 + fi ** 2)
+                    iij_sqr += (branch.g ** 2 + branch.b ** 2) * (rij ** 2 * (ej ** 2 + fj **2))
+                    iij_sqr -= (branch.g ** 2 + branch.b ** 2) * (2 * rij * (ei * ej ** 2 + fi * fj))
+                    '''
                     bij_sh = branch.b_sh * 0.50
                     iij_sqr = (branch.g ** 2 + branch.b ** 2) * (((rij ** 2) * ei - rij * ej) ** 2 + ((rij ** 2) * fi - rij * fj) ** 2)
                     iij_sqr += bij_sh ** 2 * (ei ** 2 + fi ** 2)
                     iij_sqr += 2 * branch.g * bij_sh * (((rij ** 2) * fi - rij * fj) * ei - ((rij ** 2) * ei - rij * ej) * fi)
                     iij_sqr += 2 * branch.b * bij_sh * (((rij ** 2) * ei - rij * ej) * ei + ((rij ** 2) * fi - rij * fj) * fi)
+                    '''
 
                     if params.relax_equalities:
                         model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] <= iij_sqr + EQUALITY_TOLERANCE)
