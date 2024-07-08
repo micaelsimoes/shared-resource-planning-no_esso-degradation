@@ -1127,8 +1127,13 @@ def _build_model(network, params):
             if params.slacks.grid_operation.branch_flow:
                 for b in model.branches:
                     for p in model.periods:
-                        slack_iij_sqr = model.slack_iij_sqr[b, s_m, s_o, p]
-                        obj += PENALTY_CURRENT * network.baseMVA * omega_market * omega_oper * slack_iij_sqr
+                        if params.branch_limit_type == BRANCH_LIMIT_CURRENT:
+                            slack_iij_sqr = model.slack_iij_sqr[b, s_m, s_o, p]
+                            obj += PENALTY_CURRENT * network.baseMVA * omega_market * omega_oper * slack_iij_sqr
+                        elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
+                            slack_sij_sqr = model.slack_sij_sqr[b, s_m, s_o, p]
+                            slack_sji_sqr = model.slack_sji_sqr[b, s_m, s_o, p]
+                            obj += PENALTY_CURRENT * network.baseMVA * omega_market * omega_oper * (slack_sij_sqr + slack_sji_sqr)
 
     # Operation slacks
     for s_m in model.scenarios_market:
