@@ -1829,6 +1829,7 @@ def _process_results(network, model, params, results=dict()):
                 rating = branch.rate
                 if rating == 0.0:
                     rating = BRANCH_UNKNOWN_RATING
+                fbus_vbase = network.get_node_base_kv(branch.fbus)
 
                 processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['pij'][branch_id] = []
                 processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['pji'][branch_id] = []
@@ -1861,7 +1862,7 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][branch_id].append(sji)
                     processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['iij'][branch_id].append(iij)
 
-                    processed_results['scenarios'][s_m][s_o]['branches']['limits']['iij_perc'][branch_id].append(iij / rating)
+                    processed_results['scenarios'][s_m][s_o]['branches']['limits']['iij_perc'][branch_id].append(iij / (rating / fbus_vbase))
                     processed_results['scenarios'][s_m][s_o]['branches']['limits']['sij_perc'][branch_id].append(sij / rating)
                     processed_results['scenarios'][s_m][s_o]['branches']['limits']['sji_perc'][branch_id].append(sji / rating)
 
@@ -1953,19 +1954,16 @@ def _process_results(network, model, params, results=dict()):
             if params.slacks.grid_operation.branch_flow:
                 for b in model.branches:
                     branch_id = network.branches[b].branch_id
-                    if params.branch_limit_type == BRANCH_LIMIT_CURRENT:
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['iij_sqr'][branch_id] = []
-                        for p in model.periods:
-                            slack_iij_sqr = pe.value(model.slack_iij_sqr[b, s_m, s_o, p])
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['iij_sqr'][branch_id].append(slack_iij_sqr)
-                    elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['sij_sqr'][branch_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['sji_sqr'][branch_id] = []
-                        for p in model.periods:
-                            slack_sij_sqr = pe.value(model.slack_sij_sqr[b, s_m, s_o, p])
-                            slack_sji_sqr = pe.value(model.slack_sij_sqr[b, s_m, s_o, p])
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['sij_sqr'][branch_id].append(slack_sij_sqr)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['sji_sqr'][branch_id].append(slack_sji_sqr)
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['iij_sqr'][branch_id] = []
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['sij_sqr'][branch_id] = []
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['sji_sqr'][branch_id] = []
+                    for p in model.periods:
+                        slack_iij_sqr = pe.value(model.slack_iij_sqr[b, s_m, s_o, p])
+                        slack_sij_sqr = pe.value(model.slack_sij_sqr[b, s_m, s_o, p])
+                        slack_sji_sqr = pe.value(model.slack_sij_sqr[b, s_m, s_o, p])
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['iij_sqr'][branch_id].append(slack_iij_sqr)
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['sij_sqr'][branch_id].append(slack_sij_sqr)
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow_limits']['sji_sqr'][branch_id].append(slack_sji_sqr)
 
             # Slacks
             # - Shared ESS
