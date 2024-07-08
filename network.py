@@ -87,6 +87,13 @@ class Network:
         print(f'[ERROR] Network {self.name}. Node {node_id} not found! Check network.')
         exit(ERROR_NETWORK_FILE)
 
+    def get_node_base_kv(self, node_id):
+        for node in self.nodes:
+            if node.bus_i == node_id:
+                return node.base_kv
+        print(f'[ERROR] Network {self.name}. Node {node_id} not found! Check network.')
+        exit(ERROR_NETWORK_FILE)
+
     def get_node_voltage_limits(self, node_id):
         for node in self.nodes:
             if node.bus_i == node_id:
@@ -1761,7 +1768,7 @@ def _process_results(network, model, params, results=dict()):
 
                 branch = network.branches[k]
                 branch_id = branch.branch_id
-                rating = branch.rate / network.baseMVA
+                rating = branch.rate
                 if rating == 0.0:
                     rating = BRANCH_UNKNOWN_RATING
 
@@ -1790,8 +1797,8 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][branch_id].append(sqrt(sji_sqr))
 
                     # Current
-                    iij_sqr = abs(pe.value(model.iij_sqr[k, s_m, s_o, p]))
-                    processed_results['scenarios'][s_m][s_o]['branches']['current_perc'][branch_id].append(sqrt(iij_sqr) / rating)
+                    iij = sqrt(abs(pe.value(model.iij_sqr[k, s_m, s_o, p])))
+                    processed_results['scenarios'][s_m][s_o]['branches']['current_perc'][branch_id].append(iij / (rating / network.get_node_base_kv(branch.fbus)))
 
                     # Losses (active power)
                     p_losses = _get_branch_power_losses(network, params, model, k, s_m, s_o, p)
