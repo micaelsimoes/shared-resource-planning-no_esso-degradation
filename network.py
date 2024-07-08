@@ -983,11 +983,11 @@ def _build_model(network, params):
                         if params.relax_equalities:
                             model.branch_power_flow_cons.add(model.sij_sqr[b, s_m, s_o, p] <= sij_sqr + SMALL_TOLERANCE)
                             model.branch_power_flow_cons.add(model.sij_sqr[b, s_m, s_o, p] >= sij_sqr -SMALL_TOLERANCE)
-                            model.branch_power_flow_cons.add(model.sji_sqr[b, s_m, s_o, p] <= sji_sqr + SMALL_TOLERANCE)
-                            model.branch_power_flow_cons.add(model.sji_sqr[b, s_m, s_o, p] >= sji_sqr -SMALL_TOLERANCE)
+                            #model.branch_power_flow_cons.add(model.sji_sqr[b, s_m, s_o, p] <= sji_sqr + SMALL_TOLERANCE)
+                            #model.branch_power_flow_cons.add(model.sji_sqr[b, s_m, s_o, p] >= sji_sqr -SMALL_TOLERANCE)
                         else:
                             model.branch_power_flow_cons.add(model.sij_sqr[b, s_m, s_o, p] == sij_sqr)
-                            model.branch_power_flow_cons.add(model.sji_sqr[b, s_m, s_o, p] == sji_sqr)
+                            #model.branch_power_flow_cons.add(model.sji_sqr[b, s_m, s_o, p] == sji_sqr)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective Function
