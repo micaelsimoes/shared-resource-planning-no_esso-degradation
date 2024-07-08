@@ -359,18 +359,21 @@ def _build_model(network, params):
                                 model.qg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
 
     # - Branch apparent power (squared)
-    model.sij_sqr = pe.Var(model.branches, domain=pe.NonNegativeReals, initialize=0.0)
-    model.sji_sqr = pe.Var(model.branches, domain=pe.NonNegativeReals, initialize=0.0)
-    if params.slack_line_limits:
-        model.slack_sij_sqr = pe.Var(model.branches, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_sji_sqr = pe.Var(model.branches, domain=pe.NonNegativeReals, initialize=0.0)
+    model.sij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    model.sji_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    if params.slacks.grid_operation.branch_flow:
+        model.slack_sij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_sji_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     for b in model.branches:
         if not network.branches[b].status == 1:
-            model.sij_sqr[b].setub(SMALL_TOLERANCE)
-            model.sji_sqr[b].setub(SMALL_TOLERANCE)
-            if params.slack_line_limits:
-                model.slack_sij_sqr[b].setub(SMALL_TOLERANCE)
-                model.slack_sji_sqr[b].setub(SMALL_TOLERANCE)
+            for s_m in model.scenarios_market:
+                for s_o in model.scenarios_operation:
+                    for p in model.periods:
+                        model.sij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                        model.sji_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                        if params.slack_line_limits:
+                            model.slack_sij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            model.slack_sji_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
 
     # - Loads
     model.pc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
@@ -906,17 +909,17 @@ def _build_model(network, params):
                     fnode_idx = network.get_node_idx(branch.fbus)
                     tnode_idx = network.get_node_idx(branch.tbus)
 
-                    ei = model.e[fnode_idx]
-                    fi = model.f[fnode_idx]
-                    ej = model.e[tnode_idx]
-                    fj = model.f[tnode_idx]
-                    if params.slack_voltage_limits:
-                        ei += model.slack_e_up[fnode_idx] - model.slack_e_down[fnode_idx]
-                        fi += model.slack_f_up[fnode_idx] - model.slack_f_down[fnode_idx]
-                        ej += model.slack_e_up[tnode_idx] - model.slack_e_down[tnode_idx]
-                        fj += model.slack_f_up[tnode_idx] - model.slack_f_down[tnode_idx]
+                    ei = model.e[fnode_idx, s_m, s_o, p]
+                    fi = model.f[fnode_idx, s_m, s_o, p]
+                    ej = model.e[tnode_idx, s_m, s_o, p]
+                    fj = model.f[tnode_idx, s_m, s_o, p]
+                    if params.slacks.grid_operation.voltage:
+                        ei += model.slack_e_up[fnode_idx, s_m, s_o, p] - model.slack_e_down[fnode_idx, s_m, s_o, p]
+                        fi += model.slack_f_up[fnode_idx, s_m, s_o, p] - model.slack_f_down[fnode_idx, s_m, s_o, p]
+                        ej += model.slack_e_up[tnode_idx, s_m, s_o, p] - model.slack_e_down[tnode_idx, s_m, s_o, p]
+                        fj += model.slack_f_up[tnode_idx, s_m, s_o, p] - model.slack_f_down[tnode_idx, s_m, s_o, p]
 
-                    rij = model.transf_r[b]
+                    rij = model.r[b, s_m, s_o, p]
 
                     pij = branch.g * (ei ** 2 + fi ** 2) * rij ** 2
                     pij -= branch.g * (ei * ej + fi * fj) * rij
@@ -938,18 +941,18 @@ def _build_model(network, params):
 
                     sji_sqr = pji ** 2 + qji ** 2
 
-                    model.branch_power_flow_cons.add(model.sij_sqr[b] - sij_sqr >= -SMALL_TOLERANCE)
-                    model.branch_power_flow_cons.add(model.sij_sqr[b] - sij_sqr <= SMALL_TOLERANCE)
+                    model.branch_power_flow_cons.add(model.sij_sqr[b, s_m, s_o, p] - sij_sqr >= -SMALL_TOLERANCE)
+                    model.branch_power_flow_cons.add(model.sij_sqr[b, s_m, s_o, p] - sij_sqr <= SMALL_TOLERANCE)
 
-                    model.branch_power_flow_cons.add(model.sji_sqr[b] - sji_sqr >= -SMALL_TOLERANCE)
-                    model.branch_power_flow_cons.add(model.sji_sqr[b] - sji_sqr <= SMALL_TOLERANCE)
+                    model.branch_power_flow_cons.add(model.sji_sqr[b, s_m, s_o, p] - sji_sqr >= -SMALL_TOLERANCE)
+                    model.branch_power_flow_cons.add(model.sji_sqr[b, s_m, s_o, p] - sji_sqr <= SMALL_TOLERANCE)
 
-                    if params.slack_line_limits:
-                        model.branch_power_flow_lims.add(model.sij_sqr[b] <= rating ** 2 + model.slack_sij_sqr[b])
-                        model.branch_power_flow_lims.add(model.sji_sqr[b] <= rating ** 2 + model.slack_sji_sqr[b])
+                    if params.slacks.grid_operation.branch_flow:
+                        model.branch_power_flow_lims.add(model.sij_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_sij_sqr[b, s_m, s_o, p])
+                        model.branch_power_flow_lims.add(model.sji_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_sji_sqr[b, s_m, s_o, p])
                     else:
-                        model.branch_power_flow_lims.add(model.sij_sqr[b] <= rating ** 2)
-                        model.branch_power_flow_lims.add(model.sji_sqr[b] <= rating ** 2)
+                        model.branch_power_flow_lims.add(model.sij_sqr[b, s_m, s_o, p] <= rating ** 2)
+                        model.branch_power_flow_lims.add(model.sji_sqr[b, s_m, s_o, p] <= rating ** 2)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective Function
