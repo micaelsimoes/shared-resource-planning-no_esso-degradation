@@ -366,56 +366,22 @@ def _build_model(network, params):
                                 model.qg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
 
     # - Branch power flows (squared)
-    model.pij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.qij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.sij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.iij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.pji_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.qji_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.sji_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.iji_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    if params.slacks.grid_operation.branch_flow:
-        model.slack_pij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_qij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_sij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_iij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_pji_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_qji_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_sji_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_iji_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    for b in model.branches:
-        branch = network.branches[b]
-        rating = branch.rate / network.baseMVA
-        if rating == 0.0:
-            rating = BRANCH_UNKNOWN_RATING
-        for s_m in model.scenarios_market:
-            for s_o in model.scenarios_operation:
-                for p in model.periods:
-                    if params.slacks.grid_operation.branch_flow:
-                        model.slack_pij_sqr[b, s_m, s_o, p].setub(SIJ_VIOLATION_ALLOWED * rating)
-                        model.slack_qij_sqr[b, s_m, s_o, p].setub(SIJ_VIOLATION_ALLOWED * rating)
-                        model.slack_sij_sqr[b, s_m, s_o, p].setub(SIJ_VIOLATION_ALLOWED * rating)
-                        model.slack_pji_sqr[b, s_m, s_o, p].setub(SIJ_VIOLATION_ALLOWED * rating)
-                        model.slack_qji_sqr[b, s_m, s_o, p].setub(SIJ_VIOLATION_ALLOWED * rating)
-                        model.slack_sji_sqr[b, s_m, s_o, p].setub(SIJ_VIOLATION_ALLOWED * rating)
-                        model.slack_iji_sqr[b, s_m, s_o, p].setub(SIJ_VIOLATION_ALLOWED * rating)
-                    if network.branches[b].status == 0:
-                        model.pij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                        model.qij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                        model.sij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                        model.pji_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                        model.qji_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                        model.sji_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                        model.sji_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                        if params.slacks.grid_operation.branch_flow:
-                            model.slack_pij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.slack_qij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.slack_sij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.slack_iij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.slack_pji_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.slack_qji_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.slack_sji_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.slack_iji_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
+    if params.branch_limit_type == BRANCH_LIMIT_CURRENT:
+        model.iij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.iji_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        if params.slacks.grid_operation.branch_flow:
+            model.slack_iij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+            model.slack_iji_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        for b in model.branches:
+            if not network.branches[b].status:
+                for s_m in model.scenarios_market:
+                    for s_o in model.scenarios_operation:
+                        for p in model.periods:
+                            model.iij_sqr[b, s_m, s_o, p].fix(0.00)
+                            model.iji_sqr[b, s_m, s_o, p].fix(0.00)
+                            if params.slacks.grid_operation.branch_flow:
+                                model.slack_iij_sqr[b, s_m, s_o, p].fix(0.00)
+                                model.slack_iji_sqr[b, s_m, s_o, p].fix(0.00)
 
     # - Loads
     model.pc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
