@@ -4230,9 +4230,9 @@ def _write_network_energy_storages_results_to_excel(planning_problem, workbook, 
 
     # Write Header
     sheet.cell(row=row_idx, column=1).value = 'Operator'
-    sheet.cell(row=row_idx, column=2).value = 'Connection Node ID'
-    sheet.cell(row=row_idx, column=3).value = 'Network Node ID'
+    sheet.cell(row=row_idx, column=2).value = 'ADN Node ID'
     sheet.cell(row=row_idx, column=4).value = 'ESS ID'
+    sheet.cell(row=row_idx, column=3).value = 'Node ID'
     sheet.cell(row=row_idx, column=5).value = 'Year'
     sheet.cell(row=row_idx, column=6).value = 'Day'
     sheet.cell(row=row_idx, column=7).value = 'Quantity'
@@ -4289,8 +4289,8 @@ def _write_network_energy_storages_results_per_operator(network, sheet, operator
                         # - Active Power
                         sheet.cell(row=row_idx, column=1).value = operator_type
                         sheet.cell(row=row_idx, column=2).value = tn_node_id
-                        sheet.cell(row=row_idx, column=3).value = node_id
-                        sheet.cell(row=row_idx, column=4).value = es_id
+                        sheet.cell(row=row_idx, column=3).value = es_id
+                        sheet.cell(row=row_idx, column=4).value = node_id
                         sheet.cell(row=row_idx, column=5).value = int(year)
                         sheet.cell(row=row_idx, column=6).value = day
                         sheet.cell(row=row_idx, column=7).value = 'P, [MW]'
@@ -4306,8 +4306,8 @@ def _write_network_energy_storages_results_per_operator(network, sheet, operator
                         # - Reactive Power
                         sheet.cell(row=row_idx, column=1).value = operator_type
                         sheet.cell(row=row_idx, column=2).value = tn_node_id
-                        sheet.cell(row=row_idx, column=3).value = node_id
-                        sheet.cell(row=row_idx, column=4).value = es_id
+                        sheet.cell(row=row_idx, column=3).value = es_id
+                        sheet.cell(row=row_idx, column=4).value = node_id
                         sheet.cell(row=row_idx, column=5).value = int(year)
                         sheet.cell(row=row_idx, column=6).value = day
                         sheet.cell(row=row_idx, column=7).value = 'Q, [MVAr]'
@@ -4323,8 +4323,8 @@ def _write_network_energy_storages_results_per_operator(network, sheet, operator
                         # - Apparent Power
                         sheet.cell(row=row_idx, column=1).value = operator_type
                         sheet.cell(row=row_idx, column=2).value = tn_node_id
-                        sheet.cell(row=row_idx, column=3).value = node_id
-                        sheet.cell(row=row_idx, column=4).value = es_id
+                        sheet.cell(row=row_idx, column=3).value = es_id
+                        sheet.cell(row=row_idx, column=4).value = node_id
                         sheet.cell(row=row_idx, column=5).value = int(year)
                         sheet.cell(row=row_idx, column=6).value = day
                         sheet.cell(row=row_idx, column=7).value = 'S, [MVA]'
@@ -4340,8 +4340,8 @@ def _write_network_energy_storages_results_per_operator(network, sheet, operator
                         # State-of-Charge, [MWh]
                         sheet.cell(row=row_idx, column=1).value = operator_type
                         sheet.cell(row=row_idx, column=2).value = tn_node_id
-                        sheet.cell(row=row_idx, column=3).value = node_id
-                        sheet.cell(row=row_idx, column=4).value = es_id
+                        sheet.cell(row=row_idx, column=3).value = es_id
+                        sheet.cell(row=row_idx, column=4).value = node_id
                         sheet.cell(row=row_idx, column=5).value = int(year)
                         sheet.cell(row=row_idx, column=6).value = day
                         sheet.cell(row=row_idx, column=7).value = 'SoC, [MWh]'
@@ -4360,8 +4360,8 @@ def _write_network_energy_storages_results_per_operator(network, sheet, operator
                         # State-of-Charge, [%]
                         sheet.cell(row=row_idx, column=1).value = operator_type
                         sheet.cell(row=row_idx, column=2).value = tn_node_id
-                        sheet.cell(row=row_idx, column=3).value = node_id
-                        sheet.cell(row=row_idx, column=4).value = es_id
+                        sheet.cell(row=row_idx, column=3).value = es_id
+                        sheet.cell(row=row_idx, column=4).value = node_id
                         sheet.cell(row=row_idx, column=5).value = int(year)
                         sheet.cell(row=row_idx, column=6).value = day
                         sheet.cell(row=row_idx, column=7).value = 'SoC, [%]'
@@ -4385,8 +4385,8 @@ def _write_network_energy_storages_results_per_operator(network, sheet, operator
                 # - Active Power
                 sheet.cell(row=row_idx, column=1).value = operator_type
                 sheet.cell(row=row_idx, column=2).value = tn_node_id
-                sheet.cell(row=row_idx, column=3).value = node_id
-                sheet.cell(row=row_idx, column=4).value = es_id
+                sheet.cell(row=row_idx, column=3).value = es_id
+                sheet.cell(row=row_idx, column=4).value = node_id
                 sheet.cell(row=row_idx, column=5).value = int(year)
                 sheet.cell(row=row_idx, column=6).value = day
                 sheet.cell(row=row_idx, column=7).value = 'P, [MW]'
@@ -4400,8 +4400,8 @@ def _write_network_energy_storages_results_per_operator(network, sheet, operator
                 # - Reactive Power
                 sheet.cell(row=row_idx, column=1).value = operator_type
                 sheet.cell(row=row_idx, column=2).value = tn_node_id
-                sheet.cell(row=row_idx, column=3).value = node_id
-                sheet.cell(row=row_idx, column=4).value = es_id
+                sheet.cell(row=row_idx, column=3).value = es_id
+                sheet.cell(row=row_idx, column=4).value = node_id
                 sheet.cell(row=row_idx, column=5).value = int(year)
                 sheet.cell(row=row_idx, column=6).value = day
                 sheet.cell(row=row_idx, column=7).value = 'Q, [MVAr]'
@@ -4415,8 +4415,8 @@ def _write_network_energy_storages_results_per_operator(network, sheet, operator
                 # - Apparent Power
                 sheet.cell(row=row_idx, column=1).value = operator_type
                 sheet.cell(row=row_idx, column=2).value = tn_node_id
-                sheet.cell(row=row_idx, column=3).value = node_id
-                sheet.cell(row=row_idx, column=4).value = es_id
+                sheet.cell(row=row_idx, column=3).value = es_id
+                sheet.cell(row=row_idx, column=4).value = node_id
                 sheet.cell(row=row_idx, column=5).value = int(year)
                 sheet.cell(row=row_idx, column=6).value = day
                 sheet.cell(row=row_idx, column=7).value = 'S, [MVA]'
@@ -4430,8 +4430,8 @@ def _write_network_energy_storages_results_per_operator(network, sheet, operator
                 # State-of-Charge, [MWh]
                 sheet.cell(row=row_idx, column=1).value = operator_type
                 sheet.cell(row=row_idx, column=2).value = tn_node_id
-                sheet.cell(row=row_idx, column=3).value = node_id
-                sheet.cell(row=row_idx, column=4).value = es_id
+                sheet.cell(row=row_idx, column=3).value = es_id
+                sheet.cell(row=row_idx, column=4).value = node_id
                 sheet.cell(row=row_idx, column=5).value = int(year)
                 sheet.cell(row=row_idx, column=6).value = day
                 sheet.cell(row=row_idx, column=7).value = 'SoC, [MWh]'
@@ -4445,8 +4445,8 @@ def _write_network_energy_storages_results_per_operator(network, sheet, operator
                 # State-of-Charge, [%]
                 sheet.cell(row=row_idx, column=1).value = operator_type
                 sheet.cell(row=row_idx, column=2).value = tn_node_id
-                sheet.cell(row=row_idx, column=3).value = node_id
-                sheet.cell(row=row_idx, column=4).value = es_id
+                sheet.cell(row=row_idx, column=3).value = es_id
+                sheet.cell(row=row_idx, column=4).value = node_id
                 sheet.cell(row=row_idx, column=5).value = int(year)
                 sheet.cell(row=row_idx, column=6).value = day
                 sheet.cell(row=row_idx, column=7).value = 'SoC, [%]'
