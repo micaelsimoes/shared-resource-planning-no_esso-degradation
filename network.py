@@ -1239,8 +1239,8 @@ def _read_network_from_json_file(network, filename):
         node = Node()
         node.bus_i = int(node_data['bus_i'])
         node.type = int(node_data['type'])
-        node.gs = float(node_data['Gs']) / network.baseMVA
-        node.bs = float(node_data['Bs']) / network.baseMVA
+        node.gs = float(node_data['Gs']) * network.baseMVA
+        node.bs = float(node_data['Bs']) * network.baseMVA
         node.base_kv = float(node_data['baseKV'])
         node.v_max = float(node_data['Vmax'])
         node.v_min = float(node_data['Vmin'])
