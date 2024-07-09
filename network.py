@@ -1093,7 +1093,7 @@ def _build_model(network, params):
             if params.slacks.grid_operation.branch_flow:
                 for b in model.branches:
                     for p in model.periods:
-                        if params.branch_limit_type == BRANCH_LIMIT_CURRENT
+                        if params.branch_limit_type == BRANCH_LIMIT_CURRENT:
                             slack_iij_sqr = (model.slack_iij_sqr[b, s_m, s_o, p])
                             slack_iji_sqr = (model.slack_iji_sqr[b, s_m, s_o, p])
                             obj += PENALTY_CURRENT * network.baseMVA * omega_market * omega_oper * (slack_iij_sqr + slack_iji_sqr)
