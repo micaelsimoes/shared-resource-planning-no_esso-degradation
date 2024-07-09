@@ -1837,7 +1837,7 @@ def _process_results(network, model, params, results=dict()):
 
                     # Current
                     iij = sqrt(abs(pe.value(model.iij_sqr[k, s_m, s_o, p])))
-                    processed_results['scenarios'][s_m][s_o]['branches']['current_perc'][branch_id].append(iij / (rating / network.get_node_base_kv(branch.fbus)))
+                    processed_results['scenarios'][s_m][s_o]['branches']['current_perc'][branch_id].append(iij / rating)
 
                     # Losses (active power)
                     p_losses = _get_branch_power_losses(network, params, model, k, s_m, s_o, p)
