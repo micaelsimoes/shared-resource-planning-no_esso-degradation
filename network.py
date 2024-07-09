@@ -2502,7 +2502,7 @@ def _get_branch_power_flow(network, params, branch, fbus, tbus, model, s_m, s_o,
     tbus_idx = network.get_node_idx(tbus)
     branch_idx = network.get_branch_idx(branch)
 
-    rij = pe.value(model.transf_r[branch_idx])
+    rij = pe.value(model.r[branch_idx])
     ei = pe.value(model.e[fbus_idx])
     fi = pe.value(model.f[fbus_idx])
     ej = pe.value(model.e[tbus_idx])
