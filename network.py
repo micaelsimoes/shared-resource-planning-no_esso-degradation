@@ -1668,7 +1668,7 @@ def _process_results(network, model, params, results=dict()):
                 'consumption': {'pc': {}, 'qc': {}, 'pc_net': {}, 'qc_net': {}},
                 'generation': {'pg': {}, 'qg': {}, 'pg_net': {}, 'qg_net': {}},
                 'branches': {'power_flow': {'pij': {}, 'pji': {}, 'qij': {}, 'qji': {}, 'sij': {}, 'sji': {}},
-                             'flow_perc': {}, 'losses': {}, 'ratio': {}},
+                             'losses': {}, 'ratio': {}},
                 'energy_storages': {'p': {}, 'q': {}, 's': {}, 'soc': {}, 'soc_percent': {}},
                 'shared_energy_storages': {'p': {}, 'q': {}, 's': {}, 'soc': {}, 'soc_percent': {}}
             }
@@ -1702,10 +1702,10 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_down'] = dict()
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_up'] = dict()
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_down'] = dict()
-            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current'] = dict()
+            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow'] = dict()
             if params.slacks.grid_operation.branch_flow:
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['flow_ij_sqr'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['flow_ji_sqr'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ij_sqr'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ji_sqr'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance'] = dict()
             if params.slacks.node_balance:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_up'] = dict()
@@ -1853,12 +1853,6 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sij'][branch_id].append(sqrt(sij_sqr))
                     processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][branch_id].append(sqrt(sji_sqr))
 
-                    # Branch flow (limits)
-                    flow_ij = sqrt(abs(pe.value(model.flow_ij_sqr[k, s_m, s_o, p])))
-                    flow_ji = sqrt(abs(pe.value(model.flow_ji_sqr[k, s_m, s_o, p])))
-                    processed_results['scenarios'][s_m][s_o]['branches']['flow_perc'][branch_id].append(flow_ij / rating)
-                    processed_results['scenarios'][s_m][s_o]['branches']['flow_perc'][branch_id].append(flow_ji / rating)
-
                     # Losses (active power)
                     p_losses = _get_branch_power_losses(network, params, model, k, s_m, s_o, p)
                     processed_results['scenarios'][s_m][s_o]['branches']['losses'][branch_id].append(p_losses)
@@ -1947,7 +1941,7 @@ def _process_results(network, model, params, results=dict()):
             if params.slacks.grid_operation.branch_flow:
                 for b in model.branches:
                     branch_id = network.branches[b].branch_id
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][branch_id] = []
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flow_perc']['iij_sqr'][branch_id] = []
                     for p in model.periods:
                         slack_flow_ij_sqr = pe.value(model.slack_flow_ij_sqr[b, s_m, s_o, p])
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][branch_id].append(slack_flow_ij_sqr)
