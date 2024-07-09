@@ -3639,15 +3639,16 @@ def _write_network_branch_loading_results_to_excel(planning_problem, workbook, r
     # Write Header
     sheet.cell(row=row_idx, column=1).value = 'Operator'
     sheet.cell(row=row_idx, column=2).value = 'Connection Node ID'
-    sheet.cell(row=row_idx, column=3).value = 'From Node ID'
-    sheet.cell(row=row_idx, column=4).value = 'To Node ID'
-    sheet.cell(row=row_idx, column=5).value = 'Year'
-    sheet.cell(row=row_idx, column=6).value = 'Day'
-    sheet.cell(row=row_idx, column=7).value = 'Quantity'
-    sheet.cell(row=row_idx, column=8).value = 'Market Scenario'
-    sheet.cell(row=row_idx, column=9).value = 'Operation Scenario'
+    sheet.cell(row=row_idx, column=3).value = 'Branch ID'
+    sheet.cell(row=row_idx, column=4).value = 'From Node ID'
+    sheet.cell(row=row_idx, column=5).value = 'To Node ID'
+    sheet.cell(row=row_idx, column=6).value = 'Year'
+    sheet.cell(row=row_idx, column=7).value = 'Day'
+    sheet.cell(row=row_idx, column=8).value = 'Quantity'
+    sheet.cell(row=row_idx, column=9).value = 'Market Scenario'
+    sheet.cell(row=row_idx, column=10).value = 'Operation Scenario'
     for p in range(planning_problem.num_instants):
-        sheet.cell(row=row_idx, column=p + 10).value = p
+        sheet.cell(row=row_idx, column=p + 11).value = p
     row_idx = row_idx + 1
 
     # Write results -- TSO
@@ -3754,37 +3755,39 @@ def _write_network_branch_loading_results_per_operator(network, sheet, operator_
                 # flow ij, [%]
                 sheet.cell(row=row_idx, column=1).value = operator_type
                 sheet.cell(row=row_idx, column=2).value = tn_node_id
-                sheet.cell(row=row_idx, column=3).value = branch.fbus
-                sheet.cell(row=row_idx, column=4).value = branch.tbus
-                sheet.cell(row=row_idx, column=5).value = int(year)
-                sheet.cell(row=row_idx, column=6).value = day
-                sheet.cell(row=row_idx, column=7).value = 'Flow_ij, [%]'
-                sheet.cell(row=row_idx, column=8).value = 'Expected'
-                sheet.cell(row=row_idx, column=9).value = '-'
+                sheet.cell(row=row_idx, column=3).value = branch.branch_id
+                sheet.cell(row=row_idx, column=4).value = branch.fbus
+                sheet.cell(row=row_idx, column=5).value = branch.tbus
+                sheet.cell(row=row_idx, column=6).value = int(year)
+                sheet.cell(row=row_idx, column=7).value = day
+                sheet.cell(row=row_idx, column=8).value = 'Flow_ij, [%]'
+                sheet.cell(row=row_idx, column=9).value = 'Expected'
+                sheet.cell(row=row_idx, column=10).value = '-'
                 for p in range(network[year][day].num_instants):
                     value = expected_values['flow_ij'][branch.branch_id][p]
-                    sheet.cell(row=row_idx, column=p + 10).value = value
-                    sheet.cell(row=row_idx, column=p + 10).number_format = perc_style
+                    sheet.cell(row=row_idx, column=p + 11).value = value
+                    sheet.cell(row=row_idx, column=p + 11).number_format = perc_style
                     if value > 1.00 + VIOLATION_TOLERANCE:
-                        sheet.cell(row=row_idx, column=p + 10).fill = violation_fill
+                        sheet.cell(row=row_idx, column=p + 11).fill = violation_fill
                 row_idx = row_idx + 1
 
                 # flow ji, [%]
                 sheet.cell(row=row_idx, column=1).value = operator_type
                 sheet.cell(row=row_idx, column=2).value = tn_node_id
                 sheet.cell(row=row_idx, column=3).value = branch.tbus
-                sheet.cell(row=row_idx, column=4).value = branch.fbus
-                sheet.cell(row=row_idx, column=5).value = int(year)
-                sheet.cell(row=row_idx, column=6).value = day
-                sheet.cell(row=row_idx, column=7).value = 'Flow_ji, [%]'
-                sheet.cell(row=row_idx, column=8).value = 'Expected'
-                sheet.cell(row=row_idx, column=9).value = '-'
+                sheet.cell(row=row_idx, column=4).value = branch.tbus
+                sheet.cell(row=row_idx, column=5).value = branch.fbus
+                sheet.cell(row=row_idx, column=6).value = int(year)
+                sheet.cell(row=row_idx, column=7).value = day
+                sheet.cell(row=row_idx, column=8).value = 'Flow_ji, [%]'
+                sheet.cell(row=row_idx, column=9).value = 'Expected'
+                sheet.cell(row=row_idx, column=10).value = '-'
                 for p in range(network[year][day].num_instants):
                     value = expected_values['flow_ji'][branch.branch_id][p]
-                    sheet.cell(row=row_idx, column=p + 10).value = value
-                    sheet.cell(row=row_idx, column=p + 10).number_format = perc_style
+                    sheet.cell(row=row_idx, column=p + 11).value = value
+                    sheet.cell(row=row_idx, column=p + 11).number_format = perc_style
                     if value > 1.00 + VIOLATION_TOLERANCE:
-                        sheet.cell(row=row_idx, column=p + 10).fill = violation_fill
+                        sheet.cell(row=row_idx, column=p + 11).fill = violation_fill
                 row_idx = row_idx + 1
 
     return row_idx

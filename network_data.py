@@ -1163,7 +1163,7 @@ def _write_network_branch_loading_results_to_excel(network_planning, workbook, r
     violation_fill = PatternFill(start_color='FFFF0000', end_color='FFFF0000', fill_type='solid')
 
     # Write Header
-    sheet.cell(row=row_idx, column=1).value = 'BranchID'
+    sheet.cell(row=row_idx, column=1).value = 'Branch ID'
     sheet.cell(row=row_idx, column=2).value = 'From Node ID'
     sheet.cell(row=row_idx, column=3).value = 'To Node ID'
     sheet.cell(row=row_idx, column=4).value = 'Year'
