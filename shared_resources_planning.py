@@ -3638,7 +3638,7 @@ def _write_network_branch_loading_results_to_excel(planning_problem, workbook, r
 
     # Write Header
     sheet.cell(row=row_idx, column=1).value = 'Operator'
-    sheet.cell(row=row_idx, column=2).value = 'Connection Node ID'
+    sheet.cell(row=row_idx, column=2).value = 'ADN Node ID'
     sheet.cell(row=row_idx, column=3).value = 'Branch ID'
     sheet.cell(row=row_idx, column=4).value = 'From Node ID'
     sheet.cell(row=row_idx, column=5).value = 'To Node ID'
@@ -3660,37 +3660,6 @@ def _write_network_branch_loading_results_to_excel(planning_problem, workbook, r
         dso_results = results['dso'][tn_node_id]['results']
         distribution_network = planning_problem.distribution_networks[tn_node_id].network
         row_idx = _write_network_branch_loading_results_per_operator(distribution_network, sheet, 'DSO', row_idx, dso_results, tn_node_id=tn_node_id)
-
-
-def _write_network_branch_power_flow_results_to_excel(planning_problem, workbook, results):
-
-    sheet = workbook.create_sheet('Power Flows')
-
-    row_idx = 1
-
-    # Write Header
-    sheet.cell(row=row_idx, column=1).value = 'Operator'
-    sheet.cell(row=row_idx, column=2).value = 'Connection Node ID'
-    sheet.cell(row=row_idx, column=3).value = 'From Node ID'
-    sheet.cell(row=row_idx, column=4).value = 'To Node ID'
-    sheet.cell(row=row_idx, column=5).value = 'Year'
-    sheet.cell(row=row_idx, column=6).value = 'Day'
-    sheet.cell(row=row_idx, column=7).value = 'Quantity'
-    sheet.cell(row=row_idx, column=8).value = 'Market Scenario'
-    sheet.cell(row=row_idx, column=9).value = 'Operation Scenario'
-    for p in range(planning_problem.num_instants):
-        sheet.cell(row=row_idx, column=p + 10).value = p
-    row_idx = row_idx + 1
-
-    # Write results -- TSO
-    transmission_network = planning_problem.transmission_network.network
-    row_idx = _write_network_power_flow_results_per_operator(transmission_network, sheet, 'TSO', row_idx, results['tso']['results'])
-
-    # Write results -- DSOs
-    for tn_node_id in results['dso']:
-        dso_results = results['dso'][tn_node_id]['results']
-        distribution_network = planning_problem.distribution_networks[tn_node_id].network
-        row_idx = _write_network_power_flow_results_per_operator(distribution_network, sheet, 'DSO', row_idx, dso_results, tn_node_id=tn_node_id)
 
 
 def _write_network_branch_loading_results_per_operator(network, sheet, operator_type, row_idx, results, tn_node_id='-'):
@@ -3791,6 +3760,38 @@ def _write_network_branch_loading_results_per_operator(network, sheet, operator_
                 row_idx = row_idx + 1
 
     return row_idx
+
+
+def _write_network_branch_power_flow_results_to_excel(planning_problem, workbook, results):
+
+    sheet = workbook.create_sheet('Power Flows')
+
+    row_idx = 1
+
+    # Write Header
+    sheet.cell(row=row_idx, column=1).value = 'Operator'
+    sheet.cell(row=row_idx, column=2).value = 'ADN Node ID'
+    sheet.cell(row=row_idx, column=3).value = 'Branch ID'
+    sheet.cell(row=row_idx, column=4).value = 'From Node ID'
+    sheet.cell(row=row_idx, column=5).value = 'To Node ID'
+    sheet.cell(row=row_idx, column=6).value = 'Year'
+    sheet.cell(row=row_idx, column=7).value = 'Day'
+    sheet.cell(row=row_idx, column=8).value = 'Quantity'
+    sheet.cell(row=row_idx, column=9).value = 'Market Scenario'
+    sheet.cell(row=row_idx, column=10).value = 'Operation Scenario'
+    for p in range(planning_problem.num_instants):
+        sheet.cell(row=row_idx, column=p + 11).value = p
+    row_idx = row_idx + 1
+
+    # Write results -- TSO
+    transmission_network = planning_problem.transmission_network.network
+    row_idx = _write_network_power_flow_results_per_operator(transmission_network, sheet, 'TSO', row_idx, results['tso']['results'])
+
+    # Write results -- DSOs
+    for tn_node_id in results['dso']:
+        dso_results = results['dso'][tn_node_id]['results']
+        distribution_network = planning_problem.distribution_networks[tn_node_id].network
+        row_idx = _write_network_power_flow_results_per_operator(distribution_network, sheet, 'DSO', row_idx, dso_results, tn_node_id=tn_node_id)
 
 
 def _write_network_power_flow_results_per_operator(network, sheet, operator_type, row_idx, results, tn_node_id='-'):
@@ -4029,181 +4030,193 @@ def _write_network_power_flow_results_per_operator(network, sheet, operator_type
                 # Pij, [MW]
                 sheet.cell(row=row_idx, column=1).value = operator_type
                 sheet.cell(row=row_idx, column=2).value = tn_node_id
-                sheet.cell(row=row_idx, column=3).value = branch.fbus
-                sheet.cell(row=row_idx, column=4).value = branch.tbus
-                sheet.cell(row=row_idx, column=5).value = int(year)
-                sheet.cell(row=row_idx, column=6).value = day
-                sheet.cell(row=row_idx, column=7).value = 'P, [MW]'
-                sheet.cell(row=row_idx, column=8).value = 'Expected'
-                sheet.cell(row=row_idx, column=9).value = '-'
+                sheet.cell(row=row_idx, column=3).value = branch.branch_id
+                sheet.cell(row=row_idx, column=4).value = branch.fbus
+                sheet.cell(row=row_idx, column=5).value = branch.tbus
+                sheet.cell(row=row_idx, column=6).value = int(year)
+                sheet.cell(row=row_idx, column=7).value = day
+                sheet.cell(row=row_idx, column=8).value = 'P, [MW]'
+                sheet.cell(row=row_idx, column=9).value = 'Expected'
+                sheet.cell(row=row_idx, column=10).value = '-'
                 for p in range(network[year][day].num_instants):
-                    sheet.cell(row=row_idx, column=p + 10).value = expected_values['pij'][branch_id][p]
-                    sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
+                    sheet.cell(row=row_idx, column=p + 11).value = expected_values['pij'][branch_id][p]
+                    sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
                 row_idx = row_idx + 1
 
                 # Pij, [%]
                 sheet.cell(row=row_idx, column=1).value = operator_type
                 sheet.cell(row=row_idx, column=2).value = tn_node_id
-                sheet.cell(row=row_idx, column=3).value = branch.fbus
-                sheet.cell(row=row_idx, column=4).value = branch.tbus
-                sheet.cell(row=row_idx, column=5).value = int(year)
-                sheet.cell(row=row_idx, column=6).value = day
-                sheet.cell(row=row_idx, column=7).value = 'P, [%]'
-                sheet.cell(row=row_idx, column=8).value = 'Expected'
-                sheet.cell(row=row_idx, column=9).value = '-'
+                sheet.cell(row=row_idx, column=3).value = branch.branch_id
+                sheet.cell(row=row_idx, column=4).value = branch.fbus
+                sheet.cell(row=row_idx, column=5).value = branch.tbus
+                sheet.cell(row=row_idx, column=6).value = int(year)
+                sheet.cell(row=row_idx, column=7).value = day
+                sheet.cell(row=row_idx, column=8).value = 'P, [%]'
+                sheet.cell(row=row_idx, column=9).value = 'Expected'
+                sheet.cell(row=row_idx, column=10).value = '-'
                 for p in range(network[year][day].num_instants):
-                    sheet.cell(row=row_idx, column=p + 10).value = abs(expected_values['pij'][branch_id][p]) / rating
-                    sheet.cell(row=row_idx, column=p + 10).number_format = perc_style
+                    sheet.cell(row=row_idx, column=p + 11).value = abs(expected_values['pij'][branch_id][p]) / rating
+                    sheet.cell(row=row_idx, column=p + 11).number_format = perc_style
                 row_idx = row_idx + 1
 
                 # Pji, [MW]
                 sheet.cell(row=row_idx, column=1).value = operator_type
                 sheet.cell(row=row_idx, column=2).value = tn_node_id
-                sheet.cell(row=row_idx, column=3).value = branch.tbus
-                sheet.cell(row=row_idx, column=4).value = branch.fbus
-                sheet.cell(row=row_idx, column=5).value = int(year)
-                sheet.cell(row=row_idx, column=6).value = day
-                sheet.cell(row=row_idx, column=7).value = 'P, [MW]'
-                sheet.cell(row=row_idx, column=8).value = 'Expected'
-                sheet.cell(row=row_idx, column=9).value = '-'
+                sheet.cell(row=row_idx, column=3).value = branch.branch_id
+                sheet.cell(row=row_idx, column=4).value = branch.tbus
+                sheet.cell(row=row_idx, column=5).value = branch.fbus
+                sheet.cell(row=row_idx, column=6).value = int(year)
+                sheet.cell(row=row_idx, column=7).value = day
+                sheet.cell(row=row_idx, column=8).value = 'P, [MW]'
+                sheet.cell(row=row_idx, column=9).value = 'Expected'
+                sheet.cell(row=row_idx, column=10).value = '-'
                 for p in range(network[year][day].num_instants):
-                    sheet.cell(row=row_idx, column=p + 10).value = expected_values['pji'][branch_id][p]
-                    sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
+                    sheet.cell(row=row_idx, column=p + 11).value = expected_values['pji'][branch_id][p]
+                    sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
                 row_idx = row_idx + 1
 
                 # Pji, [%]
                 sheet.cell(row=row_idx, column=1).value = operator_type
                 sheet.cell(row=row_idx, column=2).value = tn_node_id
-                sheet.cell(row=row_idx, column=3).value = branch.tbus
-                sheet.cell(row=row_idx, column=4).value = branch.fbus
-                sheet.cell(row=row_idx, column=5).value = int(year)
-                sheet.cell(row=row_idx, column=6).value = day
-                sheet.cell(row=row_idx, column=7).value = 'P, [%]'
+                sheet.cell(row=row_idx, column=3).value = branch.branch_id
+                sheet.cell(row=row_idx, column=4).value = branch.tbus
+                sheet.cell(row=row_idx, column=5).value = branch.fbus
+                sheet.cell(row=row_idx, column=6).value = int(year)
+                sheet.cell(row=row_idx, column=7).value = day
+                sheet.cell(row=row_idx, column=8).value = 'P, [%]'
                 sheet.cell(row=row_idx, column=8).value = 'Expected'
-                sheet.cell(row=row_idx, column=9).value = '-'
+                sheet.cell(row=row_idx, column=10).value = '-'
                 for p in range(network[year][day].num_instants):
-                    sheet.cell(row=row_idx, column=p + 10).value = abs(expected_values['pji'][branch_id][p]) / rating
-                    sheet.cell(row=row_idx, column=p + 10).number_format = perc_style
+                    sheet.cell(row=row_idx, column=p + 11).value = abs(expected_values['pji'][branch_id][p]) / rating
+                    sheet.cell(row=row_idx, column=p + 11).number_format = perc_style
                 row_idx = row_idx + 1
 
                 # Qij, [MVAr]
                 sheet.cell(row=row_idx, column=1).value = operator_type
                 sheet.cell(row=row_idx, column=2).value = tn_node_id
-                sheet.cell(row=row_idx, column=3).value = branch.fbus
-                sheet.cell(row=row_idx, column=4).value = branch.tbus
-                sheet.cell(row=row_idx, column=5).value = int(year)
-                sheet.cell(row=row_idx, column=6).value = day
-                sheet.cell(row=row_idx, column=7).value = 'Q, [MVAr]'
-                sheet.cell(row=row_idx, column=8).value = 'Expected'
-                sheet.cell(row=row_idx, column=9).value = '-'
+                sheet.cell(row=row_idx, column=3).value = branch.branch_id
+                sheet.cell(row=row_idx, column=4).value = branch.fbus
+                sheet.cell(row=row_idx, column=5).value = branch.tbus
+                sheet.cell(row=row_idx, column=6).value = int(year)
+                sheet.cell(row=row_idx, column=7).value = day
+                sheet.cell(row=row_idx, column=8).value = 'Q, [MVAr]'
+                sheet.cell(row=row_idx, column=9).value = 'Expected'
+                sheet.cell(row=row_idx, column=10).value = '-'
                 for p in range(network[year][day].num_instants):
-                    sheet.cell(row=row_idx, column=p + 10).value = expected_values['qij'][branch_id][p]
-                    sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
+                    sheet.cell(row=row_idx, column=p + 11).value = expected_values['qij'][branch_id][p]
+                    sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
                 row_idx = row_idx + 1
 
                 # Qij, [%]
                 sheet.cell(row=row_idx, column=1).value = operator_type
                 sheet.cell(row=row_idx, column=2).value = tn_node_id
-                sheet.cell(row=row_idx, column=3).value = branch.fbus
-                sheet.cell(row=row_idx, column=4).value = branch.tbus
-                sheet.cell(row=row_idx, column=5).value = int(year)
-                sheet.cell(row=row_idx, column=6).value = day
-                sheet.cell(row=row_idx, column=7).value = 'Q, [%]'
-                sheet.cell(row=row_idx, column=8).value = 'Expected'
-                sheet.cell(row=row_idx, column=9).value = '-'
+                sheet.cell(row=row_idx, column=3).value = branch.branch_id
+                sheet.cell(row=row_idx, column=4).value = branch.fbus
+                sheet.cell(row=row_idx, column=5).value = branch.tbus
+                sheet.cell(row=row_idx, column=6).value = int(year)
+                sheet.cell(row=row_idx, column=7).value = day
+                sheet.cell(row=row_idx, column=8).value = 'Q, [%]'
+                sheet.cell(row=row_idx, column=9).value = 'Expected'
+                sheet.cell(row=row_idx, column=10).value = '-'
                 for p in range(network[year][day].num_instants):
-                    sheet.cell(row=row_idx, column=p + 10).value = abs(expected_values['qij'][branch_id][p]) / rating
-                    sheet.cell(row=row_idx, column=p + 10).number_format = perc_style
+                    sheet.cell(row=row_idx, column=p + 11).value = abs(expected_values['qij'][branch_id][p]) / rating
+                    sheet.cell(row=row_idx, column=p + 11).number_format = perc_style
                 row_idx = row_idx + 1
 
                 # Qji, [MVAr]
                 sheet.cell(row=row_idx, column=1).value = operator_type
                 sheet.cell(row=row_idx, column=2).value = tn_node_id
-                sheet.cell(row=row_idx, column=3).value = branch.tbus
-                sheet.cell(row=row_idx, column=4).value = branch.fbus
-                sheet.cell(row=row_idx, column=5).value = int(year)
-                sheet.cell(row=row_idx, column=6).value = day
-                sheet.cell(row=row_idx, column=7).value = 'Q, [MVAr]'
-                sheet.cell(row=row_idx, column=8).value = 'Expected'
-                sheet.cell(row=row_idx, column=9).value = '-'
+                sheet.cell(row=row_idx, column=3).value = branch.branch_id
+                sheet.cell(row=row_idx, column=4).value = branch.tbus
+                sheet.cell(row=row_idx, column=5).value = branch.fbus
+                sheet.cell(row=row_idx, column=6).value = int(year)
+                sheet.cell(row=row_idx, column=7).value = day
+                sheet.cell(row=row_idx, column=8).value = 'Q, [MVAr]'
+                sheet.cell(row=row_idx, column=9).value = 'Expected'
+                sheet.cell(row=row_idx, column=10).value = '-'
                 for p in range(network[year][day].num_instants):
-                    sheet.cell(row=row_idx, column=p + 10).value = expected_values['qji'][branch_id][p]
-                    sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
+                    sheet.cell(row=row_idx, column=p + 11).value = expected_values['qji'][branch_id][p]
+                    sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
                 row_idx = row_idx + 1
 
                 # Qji, [%]
                 sheet.cell(row=row_idx, column=1).value = operator_type
                 sheet.cell(row=row_idx, column=2).value = tn_node_id
-                sheet.cell(row=row_idx, column=3).value = branch.tbus
-                sheet.cell(row=row_idx, column=4).value = branch.fbus
-                sheet.cell(row=row_idx, column=5).value = int(year)
-                sheet.cell(row=row_idx, column=6).value = day
-                sheet.cell(row=row_idx, column=7).value = 'Q, [%]'
-                sheet.cell(row=row_idx, column=8).value = 'Expected'
-                sheet.cell(row=row_idx, column=9).value = '-'
+                sheet.cell(row=row_idx, column=3).value = branch.branch_id
+                sheet.cell(row=row_idx, column=4).value = branch.tbus
+                sheet.cell(row=row_idx, column=5).value = branch.fbus
+                sheet.cell(row=row_idx, column=6).value = int(year)
+                sheet.cell(row=row_idx, column=7).value = day
+                sheet.cell(row=row_idx, column=8).value = 'Q, [%]'
+                sheet.cell(row=row_idx, column=9).value = 'Expected'
+                sheet.cell(row=row_idx, column=10).value = '-'
                 for p in range(network[year][day].num_instants):
-                    sheet.cell(row=row_idx, column=p + 10).value = abs(expected_values['qji'][branch_id][p]) / rating
-                    sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
+                    sheet.cell(row=row_idx, column=p + 11).value = abs(expected_values['qji'][branch_id][p]) / rating
+                    sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
                 row_idx = row_idx + 1
 
                 # Sij, [MVA]
                 sheet.cell(row=row_idx, column=1).value = operator_type
                 sheet.cell(row=row_idx, column=2).value = tn_node_id
-                sheet.cell(row=row_idx, column=3).value = branch.fbus
-                sheet.cell(row=row_idx, column=4).value = branch.tbus
-                sheet.cell(row=row_idx, column=5).value = int(year)
-                sheet.cell(row=row_idx, column=6).value = day
-                sheet.cell(row=row_idx, column=7).value = 'S, [MVA]'
-                sheet.cell(row=row_idx, column=8).value = 'Expected'
-                sheet.cell(row=row_idx, column=9).value = '-'
+                sheet.cell(row=row_idx, column=3).value = branch.branch_id
+                sheet.cell(row=row_idx, column=4).value = branch.fbus
+                sheet.cell(row=row_idx, column=5).value = branch.tbus
+                sheet.cell(row=row_idx, column=6).value = int(year)
+                sheet.cell(row=row_idx, column=7).value = day
+                sheet.cell(row=row_idx, column=8).value = 'S, [MVA]'
+                sheet.cell(row=row_idx, column=9).value = 'Expected'
+                sheet.cell(row=row_idx, column=10).value = '-'
                 for p in range(network[year][day].num_instants):
-                    sheet.cell(row=row_idx, column=p + 10).value = expected_values['sij'][branch_id][p]
-                    sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
+                    sheet.cell(row=row_idx, column=p + 11).value = expected_values['sij'][branch_id][p]
+                    sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
                 row_idx = row_idx + 1
 
                 # Sij, [%]
                 sheet.cell(row=row_idx, column=1).value = operator_type
                 sheet.cell(row=row_idx, column=2).value = tn_node_id
-                sheet.cell(row=row_idx, column=3).value = branch.fbus
-                sheet.cell(row=row_idx, column=4).value = branch.tbus
-                sheet.cell(row=row_idx, column=5).value = int(year)
-                sheet.cell(row=row_idx, column=6).value = day
-                sheet.cell(row=row_idx, column=7).value = 'S, [%]'
-                sheet.cell(row=row_idx, column=8).value = 'Expected'
-                sheet.cell(row=row_idx, column=9).value = '-'
+                sheet.cell(row=row_idx, column=3).value = branch.branch_id
+                sheet.cell(row=row_idx, column=4).value = branch.fbus
+                sheet.cell(row=row_idx, column=5).value = branch.tbus
+                sheet.cell(row=row_idx, column=6).value = int(year)
+                sheet.cell(row=row_idx, column=7).value = day
+                sheet.cell(row=row_idx, column=8).value = 'S, [%]'
+                sheet.cell(row=row_idx, column=9).value = 'Expected'
+                sheet.cell(row=row_idx, column=10).value = '-'
                 for p in range(network[year][day].num_instants):
-                    sheet.cell(row=row_idx, column=p + 10).value = abs(expected_values['sij'][branch_id][p]) / rating
-                    sheet.cell(row=row_idx, column=p + 10).number_format = perc_style
+                    sheet.cell(row=row_idx, column=p + 11).value = abs(expected_values['sij'][branch_id][p]) / rating
+                    sheet.cell(row=row_idx, column=p + 11).number_format = perc_style
                 row_idx = row_idx + 1
 
                 # Sji, [MVA]
                 sheet.cell(row=row_idx, column=1).value = operator_type
                 sheet.cell(row=row_idx, column=2).value = tn_node_id
-                sheet.cell(row=row_idx, column=3).value = branch.tbus
-                sheet.cell(row=row_idx, column=4).value = branch.fbus
-                sheet.cell(row=row_idx, column=5).value = int(year)
-                sheet.cell(row=row_idx, column=6).value = day
-                sheet.cell(row=row_idx, column=7).value = 'S, [MVA]'
-                sheet.cell(row=row_idx, column=8).value = 'Expected'
-                sheet.cell(row=row_idx, column=9).value = '-'
+                sheet.cell(row=row_idx, column=3).value = branch.branch_id
+                sheet.cell(row=row_idx, column=4).value = branch.tbus
+                sheet.cell(row=row_idx, column=5).value = branch.fbus
+                sheet.cell(row=row_idx, column=6).value = int(year)
+                sheet.cell(row=row_idx, column=7).value = day
+                sheet.cell(row=row_idx, column=8).value = 'S, [MVA]'
+                sheet.cell(row=row_idx, column=9).value = 'Expected'
+                sheet.cell(row=row_idx, column=10).value = '-'
                 for p in range(network[year][day].num_instants):
-                    sheet.cell(row=row_idx, column=p + 10).value = expected_values['sji'][branch_id][p]
-                    sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
+                    sheet.cell(row=row_idx, column=p + 11).value = expected_values['sji'][branch_id][p]
+                    sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
                 row_idx = row_idx + 1
 
                 # Sji, [%]
                 sheet.cell(row=row_idx, column=1).value = operator_type
                 sheet.cell(row=row_idx, column=2).value = tn_node_id
-                sheet.cell(row=row_idx, column=3).value = branch.tbus
-                sheet.cell(row=row_idx, column=4).value = branch.fbus
-                sheet.cell(row=row_idx, column=5).value = int(year)
-                sheet.cell(row=row_idx, column=6).value = day
-                sheet.cell(row=row_idx, column=7).value = 'S, [%]'
-                sheet.cell(row=row_idx, column=8).value = 'Expected'
-                sheet.cell(row=row_idx, column=9).value = '-'
+                sheet.cell(row=row_idx, column=3).value = branch.branch_id
+                sheet.cell(row=row_idx, column=4).value = branch.tbus
+                sheet.cell(row=row_idx, column=5).value = branch.fbus
+                sheet.cell(row=row_idx, column=6).value = int(year)
+                sheet.cell(row=row_idx, column=7).value = day
+                sheet.cell(row=row_idx, column=8).value = 'S, [%]'
+                sheet.cell(row=row_idx, column=9).value = 'Expected'
+                sheet.cell(row=row_idx, column=10).value = '-'
                 for p in range(network[year][day].num_instants):
-                    sheet.cell(row=row_idx, column=p + 10).value = abs(expected_values['sji'][branch_id][p]) / rating
-                    sheet.cell(row=row_idx, column=p + 10).number_format = perc_style
+                    sheet.cell(row=row_idx, column=p + 11).value = abs(expected_values['sji'][branch_id][p]) / rating
+                    sheet.cell(row=row_idx, column=p + 11).number_format = perc_style
                 row_idx = row_idx + 1
 
     return row_idx
