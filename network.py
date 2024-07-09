@@ -926,21 +926,34 @@ def _build_model(network, params):
                     #iij_sqr = (branch.g**2 + branch.b**2) * ((ei - ej)**2 + (fi - fj)**2)  # Simplified
 
                     rij = model.r[b, s_m, s_o, p]
-                    iij_sqr = (branch.g ** 2 + branch.b ** 2) * (ei ** 2 + fi ** 2)
-                    iij_sqr += (branch.g ** 2 + branch.b ** 2) * ((rij ** 2) * (ej ** 2 + fj ** 2))
-                    iij_sqr -= (branch.g ** 2 + branch.b ** 2) * (2 * rij * (ei * ej + fi * fj))
+                    bij_sh = branch.b_sh * 0.50
+
+                    iij_sqr = (branch.g ** 2 + branch.b ** 2) * (((rij ** 2) * ei - rij * ej) ** 2 + ((rij ** 2) * fi - rij * fj) ** 2)
+                    iij_sqr += bij_sh ** 2 * (ei ** 2 + fi ** 2)
+                    iij_sqr += 2 * branch.g * bij_sh * (((rij ** 2) * fi - rij * fj) * ei - ((rij ** 2) * ei - rij * ej) * fi)
+                    iij_sqr += 2 * branch.b * bij_sh * (((rij ** 2) * ei - rij * ej) * ei + ((rij ** 2) * fi - rij * fj) * fi)
+
+                    iji_sqr = (branch.g ** 2 + branch.b ** 2) * ((ej - rij * ei) ** 2 + (fj - rij * fi) ** 2)
+                    iji_sqr += bij_sh ** 2 * (ej ** 2 + fj ** 2)
+                    iji_sqr += 2 * branch.g * bij_sh * ((fj - rij * fi) * ej - (ej - rij * ei) * fj)
+                    iji_sqr += 2 * branch.b * bij_sh * ((ej - rij * ei) * ej + (fj - rij * fi) * fj)
 
                     if params.relax_equalities:
                         model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] <= iij_sqr + EQUALITY_TOLERANCE)
                         model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] >= iij_sqr - EQUALITY_TOLERANCE)
+                        model.branch_power_flow_cons.add(model.iji_sqr[b, s_m, s_o, p] <= iji_sqr + EQUALITY_TOLERANCE)
+                        model.branch_power_flow_cons.add(model.iji_sqr[b, s_m, s_o, p] >= iji_sqr - EQUALITY_TOLERANCE)
                     else:
                         model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] == iij_sqr)
+                        model.branch_power_flow_cons.add(model.iji_sqr[b, s_m, s_o, p] == iji_sqr)
 
                     # Branch flow limits
                     if params.slacks.grid_operation.branch_flow:
                         model.branch_power_flow_lims.add(model.iij_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_iij_sqr[b, s_m, s_o, p])
+                        model.branch_power_flow_lims.add(model.iji_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_iji_sqr[b, s_m, s_o, p])
                     else:
                         model.branch_power_flow_lims.add(model.iij_sqr[b, s_m, s_o, p] <= rating ** 2)
+                        model.branch_power_flow_lims.add(model.iji_sqr[b, s_m, s_o, p] <= rating ** 2)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective Function
@@ -1080,8 +1093,10 @@ def _build_model(network, params):
             if params.slacks.grid_operation.branch_flow:
                 for b in model.branches:
                     for p in model.periods:
-                        slack_iij_sqr = model.slack_iij_sqr[b, s_m, s_o, p]
-                        obj += PENALTY_CURRENT * network.baseMVA * omega_market * omega_oper * slack_iij_sqr
+                        if params.branch_limit_type == BRANCH_LIMIT_CURRENT
+                            slack_iij_sqr = (model.slack_iij_sqr[b, s_m, s_o, p])
+                            slack_iji_sqr = (model.slack_iji_sqr[b, s_m, s_o, p])
+                            obj += PENALTY_CURRENT * network.baseMVA * omega_market * omega_oper * (slack_iij_sqr + slack_iji_sqr)
 
     # Operation slacks
     for s_m in model.scenarios_market:
