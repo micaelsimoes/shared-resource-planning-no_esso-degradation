@@ -3239,9 +3239,9 @@ def _write_network_generation_results_to_excel(planning_problem, workbook, resul
 
     # Write Header
     sheet.cell(row=row_idx, column=1).value = 'Operator'
-    sheet.cell(row=row_idx, column=2).value = 'Connection Node ID'
-    sheet.cell(row=row_idx, column=3).value = 'Network Node ID'
-    sheet.cell(row=row_idx, column=4).value = 'Generator ID'
+    sheet.cell(row=row_idx, column=2).value = 'ADN Node ID'
+    sheet.cell(row=row_idx, column=3).value = 'Generator ID'
+    sheet.cell(row=row_idx, column=4).value = 'Node ID'
     sheet.cell(row=row_idx, column=5).value = 'Type'
     sheet.cell(row=row_idx, column=6).value = 'Year'
     sheet.cell(row=row_idx, column=7).value = 'Day'
@@ -3277,11 +3277,15 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
             expected_pg_curt = dict()
             expected_pg_net = dict()
             expected_qg = dict()
+            expected_qg_curt = dict()
+            expected_qg_net = dict()
             for generator in network[year][day].generators:
                 expected_pg[generator.gen_id] = [0.0 for _ in range(network[year][day].num_instants)]
                 expected_pg_curt[generator.gen_id] = [0.0 for _ in range(network[year][day].num_instants)]
                 expected_pg_net[generator.gen_id] = [0.0 for _ in range(network[year][day].num_instants)]
                 expected_qg[generator.gen_id] = [0.0 for _ in range(network[year][day].num_instants)]
+                expected_qg_curt[generator.gen_id] = [0.0 for _ in range(network[year][day].num_instants)]
+                expected_qg_net[generator.gen_id] = [0.0 for _ in range(network.num_instants)]
 
             for s_m in results[year][day]['scenarios']:
                 omega_m = network[year][day].prob_market_scenarios[s_m]
@@ -3296,8 +3300,8 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                         # Active Power
                         sheet.cell(row=row_idx, column=1).value = operator_type
                         sheet.cell(row=row_idx, column=2).value = tn_node_id
-                        sheet.cell(row=row_idx, column=3).value = node_id
-                        sheet.cell(row=row_idx, column=4).value = gen_id
+                        sheet.cell(row=row_idx, column=3).value = gen_id
+                        sheet.cell(row=row_idx, column=4).value = node_id
                         sheet.cell(row=row_idx, column=5).value = gen_type
                         sheet.cell(row=row_idx, column=6).value = int(year)
                         sheet.cell(row=row_idx, column=7).value = day
@@ -3316,8 +3320,8 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                             # Active Power curtailment
                             sheet.cell(row=row_idx, column=1).value = operator_type
                             sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = gen_id
+                            sheet.cell(row=row_idx, column=3).value = gen_id
+                            sheet.cell(row=row_idx, column=4).value = node_id
                             sheet.cell(row=row_idx, column=5).value = gen_type
                             sheet.cell(row=row_idx, column=6).value = int(year)
                             sheet.cell(row=row_idx, column=7).value = day
@@ -3336,8 +3340,8 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                             # Active Power net
                             sheet.cell(row=row_idx, column=1).value = operator_type
                             sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = gen_id
+                            sheet.cell(row=row_idx, column=3).value = gen_id
+                            sheet.cell(row=row_idx, column=4).value = node_id
                             sheet.cell(row=row_idx, column=5).value = gen_type
                             sheet.cell(row=row_idx, column=6).value = int(year)
                             sheet.cell(row=row_idx, column=7).value = day
@@ -3354,8 +3358,8 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                         # Reactive Power
                         sheet.cell(row=row_idx, column=1).value = operator_type
                         sheet.cell(row=row_idx, column=2).value = tn_node_id
-                        sheet.cell(row=row_idx, column=3).value = node_id
-                        sheet.cell(row=row_idx, column=4).value = gen_id
+                        sheet.cell(row=row_idx, column=3).value = gen_id
+                        sheet.cell(row=row_idx, column=4).value = node_id
                         sheet.cell(row=row_idx, column=5).value = gen_type
                         sheet.cell(row=row_idx, column=6).value = int(year)
                         sheet.cell(row=row_idx, column=7).value = day
@@ -3369,6 +3373,46 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                             expected_qg[gen_id][p] += qg * omega_m * omega_s
                         row_idx = row_idx + 1
 
+                        if params.rg_curt:
+
+                            # Reactive Power curtailment
+                            sheet.cell(row=row_idx, column=1).value = operator_type
+                            sheet.cell(row=row_idx, column=2).value = tn_node_id
+                            sheet.cell(row=row_idx, column=3).value = gen_id
+                            sheet.cell(row=row_idx, column=4).value = node_id
+                            sheet.cell(row=row_idx, column=5).value = gen_type
+                            sheet.cell(row=row_idx, column=6).value = int(year)
+                            sheet.cell(row=row_idx, column=7).value = day
+                            sheet.cell(row=row_idx, column=8).value = 'Qg_curt, [MW]'
+                            sheet.cell(row=row_idx, column=9).value = s_m
+                            sheet.cell(row=row_idx, column=10).value = s_o
+                            for p in range(network[year][day].num_instants):
+                                qg_curt = results[year][day]['scenarios'][s_m][s_o]['generation']['qg_curt'][gen_id][p]
+                                sheet.cell(row=row_idx, column=p + 11).value = qg_curt
+                                sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
+                                if qg_curt > SMALL_TOLERANCE:
+                                    sheet.cell(row=row_idx, column=p + 11).fill = violation_fill
+                                expected_qg_curt[gen_id][p] += qg_curt * omega_m * omega_s
+                            row_idx = row_idx + 1
+
+                            # Reactive Power net
+                            sheet.cell(row=row_idx, column=1).value = operator_type
+                            sheet.cell(row=row_idx, column=2).value = tn_node_id
+                            sheet.cell(row=row_idx, column=3).value = gen_id
+                            sheet.cell(row=row_idx, column=4).value = node_id
+                            sheet.cell(row=row_idx, column=5).value = gen_type
+                            sheet.cell(row=row_idx, column=6).value = int(year)
+                            sheet.cell(row=row_idx, column=7).value = day
+                            sheet.cell(row=row_idx, column=8).value = 'Qg_net, [MW]'
+                            sheet.cell(row=row_idx, column=9).value = s_m
+                            sheet.cell(row=row_idx, column=10).value = s_o
+                            for p in range(network[year][day].num_instants):
+                                qg_net = results[year][day]['scenarios'][s_m][s_o]['generation']['qg_net'][gen_id][p]
+                                sheet.cell(row=row_idx, column=p + 11).value = qg_net
+                                sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
+                                expected_qg_net[gen_id][p] += qg_net * omega_m * omega_s
+                            row_idx = row_idx + 1
+
             for generator in network[year][day].generators:
 
                 node_id = generator.bus
@@ -3378,8 +3422,8 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                 # Active Power
                 sheet.cell(row=row_idx, column=1).value = operator_type
                 sheet.cell(row=row_idx, column=2).value = tn_node_id
-                sheet.cell(row=row_idx, column=3).value = node_id
-                sheet.cell(row=row_idx, column=4).value = gen_id
+                sheet.cell(row=row_idx, column=3).value = gen_id
+                sheet.cell(row=row_idx, column=4).value = node_id
                 sheet.cell(row=row_idx, column=5).value = gen_type
                 sheet.cell(row=row_idx, column=6).value = int(year)
                 sheet.cell(row=row_idx, column=7).value = day
@@ -3396,8 +3440,8 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                     # Active Power curtailment
                     sheet.cell(row=row_idx, column=1).value = operator_type
                     sheet.cell(row=row_idx, column=2).value = tn_node_id
-                    sheet.cell(row=row_idx, column=3).value = node_id
-                    sheet.cell(row=row_idx, column=4).value = gen_id
+                    sheet.cell(row=row_idx, column=3).value = gen_id
+                    sheet.cell(row=row_idx, column=4).value = node_id
                     sheet.cell(row=row_idx, column=5).value = gen_type
                     sheet.cell(row=row_idx, column=6).value = int(year)
                     sheet.cell(row=row_idx, column=7).value = day
@@ -3414,8 +3458,8 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                     # Active Power net
                     sheet.cell(row=row_idx, column=1).value = operator_type
                     sheet.cell(row=row_idx, column=2).value = tn_node_id
-                    sheet.cell(row=row_idx, column=3).value = node_id
-                    sheet.cell(row=row_idx, column=4).value = gen_id
+                    sheet.cell(row=row_idx, column=3).value = gen_id
+                    sheet.cell(row=row_idx, column=4).value = node_id
                     sheet.cell(row=row_idx, column=5).value = gen_type
                     sheet.cell(row=row_idx, column=6).value = int(year)
                     sheet.cell(row=row_idx, column=7).value = day
@@ -3430,8 +3474,8 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                 # Reactive Power
                 sheet.cell(row=row_idx, column=1).value = operator_type
                 sheet.cell(row=row_idx, column=2).value = tn_node_id
-                sheet.cell(row=row_idx, column=3).value = node_id
-                sheet.cell(row=row_idx, column=4).value = gen_id
+                sheet.cell(row=row_idx, column=3).value = gen_id
+                sheet.cell(row=row_idx, column=4).value = node_id
                 sheet.cell(row=row_idx, column=5).value = gen_type
                 sheet.cell(row=row_idx, column=6).value = int(year)
                 sheet.cell(row=row_idx, column=7).value = day
@@ -3442,6 +3486,42 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                     sheet.cell(row=row_idx, column=p + 11).value = expected_qg[gen_id][p]
                     sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
                 row_idx = row_idx + 1
+
+                if params.rg_curt:
+
+                    # Rective Power curtailment
+                    sheet.cell(row=row_idx, column=1).value = operator_type
+                    sheet.cell(row=row_idx, column=2).value = tn_node_id
+                    sheet.cell(row=row_idx, column=3).value = gen_id
+                    sheet.cell(row=row_idx, column=4).value = node_id
+                    sheet.cell(row=row_idx, column=5).value = gen_type
+                    sheet.cell(row=row_idx, column=6).value = int(year)
+                    sheet.cell(row=row_idx, column=7).value = day
+                    sheet.cell(row=row_idx, column=8).value = 'Qg_curt, [MW]'
+                    sheet.cell(row=row_idx, column=9).value = 'Expected'
+                    sheet.cell(row=row_idx, column=10).value = '-'
+                    for p in range(network[year][day].num_instants):
+                        sheet.cell(row=row_idx, column=p + 11).value = expected_qg_curt[gen_id][p]
+                        sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
+                        if expected_qg_curt[gen_id][p] > SMALL_TOLERANCE:
+                            sheet.cell(row=row_idx, column=p + 11).fill = violation_fill
+                    row_idx = row_idx + 1
+
+                    # Reactive Power net
+                    sheet.cell(row=row_idx, column=1).value = operator_type
+                    sheet.cell(row=row_idx, column=2).value = tn_node_id
+                    sheet.cell(row=row_idx, column=3).value = gen_id
+                    sheet.cell(row=row_idx, column=4).value = node_id
+                    sheet.cell(row=row_idx, column=5).value = gen_type
+                    sheet.cell(row=row_idx, column=6).value = int(year)
+                    sheet.cell(row=row_idx, column=7).value = day
+                    sheet.cell(row=row_idx, column=8).value = 'Qg_net, [MW]'
+                    sheet.cell(row=row_idx, column=9).value = 'Expected'
+                    sheet.cell(row=row_idx, column=10).value = '-'
+                    for p in range(network[year][day].num_instants):
+                        sheet.cell(row=row_idx, column=p + 11).value = expected_qg_net[gen_id][p]
+                        sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
+                    row_idx = row_idx + 1
 
     return row_idx
 
