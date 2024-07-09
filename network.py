@@ -922,7 +922,7 @@ def _build_model(network, params):
                     ej = model.e_actual[tnode_idx, s_m, s_o, p]
                     fj = model.f_actual[tnode_idx, s_m, s_o, p]
 
-                    if params.branch_limit_type == BRANCH_LIMIT_CURRENT:
+                    if params.branch_limit_type == BRANCH_LIMIT_CURRENT or (params.branch_limit_type == BRANCH_LIMIT_MIXED and not branch.is_transformer):
 
                         bij_sh = branch.b_sh * 0.50
 
@@ -952,7 +952,8 @@ def _build_model(network, params):
                         else:
                             model.branch_power_flow_lims.add(model.flow_ij_sqr[b, s_m, s_o, p] <= rating ** 2)
                             model.branch_power_flow_lims.add(model.flow_ji_sqr[b, s_m, s_o, p] <= rating ** 2)
-                    elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
+
+                    elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER or (params.branch_limit_type == BRANCH_LIMIT_MIXED and branch.is_transformer):
 
                         pij = branch.g * (ei ** 2 + fi ** 2) * rij ** 2
                         pij -= branch.g * (ei * ej + fi * fj) * rij
