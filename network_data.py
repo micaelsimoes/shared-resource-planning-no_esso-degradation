@@ -1239,7 +1239,8 @@ def _write_network_branch_loading_results_to_excel(network_planning, workbook, r
                 sheet.cell(row=row_idx, column=7).value = 'Expected'
                 sheet.cell(row=row_idx, column=8).value = '-'
                 for p in range(network.num_instants):
-                    sheet.cell(row=row_idx, column=p + 9).value = abs(expected_values['flow_ij'][branch.branch_id][p])
+                    value = expected_values['flow_ij'][branch.branch_id][p]
+                    sheet.cell(row=row_idx, column=p + 9).value = value
                     sheet.cell(row=row_idx, column=p + 9).number_format = perc_style
                     if value > 1.00 + VIOLATION_TOLERANCE:
                         sheet.cell(row=row_idx, column=p + 9).fill = violation_fill
