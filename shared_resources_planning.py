@@ -3674,8 +3674,8 @@ def _write_network_branch_loading_results_per_operator(network, sheet, operator_
 
             expected_values = {'flow_ij': {}, 'flow_ji': {}}
             for branch in network[year][day].branches:
-                expected_values['flow_ij'][branch.branch_id] = [0.0 for _ in range(network.num_instants)]
-                expected_values['flow_ji'][branch.branch_id] = [0.0 for _ in range(network.num_instants)]
+                expected_values['flow_ij'][branch.branch_id] = [0.0 for _ in range(network[year][day].num_instants)]
+                expected_values['flow_ji'][branch.branch_id] = [0.0 for _ in range(network[year][day].num_instants)]
 
             for s_m in results[year][day]['scenarios']:
                 omega_m = network[year][day].prob_market_scenarios[s_m]
