@@ -1154,7 +1154,7 @@ def _write_network_branch_results_to_excel(network_planning, workbook, results, 
                     row_idx = row_idx + 1
 
 
-def _write_network_branch_loading_results_to_excel(network_planning, workbook, results, result_type):
+def _write_network_branch_loading_results_to_excel(network_planning, workbook, results):
 
     sheet = workbook.create_sheet('Branch Loading')
 
