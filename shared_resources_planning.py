@@ -4231,8 +4231,8 @@ def _write_network_energy_storages_results_to_excel(planning_problem, workbook, 
     # Write Header
     sheet.cell(row=row_idx, column=1).value = 'Operator'
     sheet.cell(row=row_idx, column=2).value = 'ADN Node ID'
-    sheet.cell(row=row_idx, column=4).value = 'ESS ID'
-    sheet.cell(row=row_idx, column=3).value = 'Node ID'
+    sheet.cell(row=row_idx, column=3).value = 'ESS ID'
+    sheet.cell(row=row_idx, column=4).value = 'Node ID'
     sheet.cell(row=row_idx, column=5).value = 'Year'
     sheet.cell(row=row_idx, column=6).value = 'Day'
     sheet.cell(row=row_idx, column=7).value = 'Quantity'
