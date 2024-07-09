@@ -856,7 +856,7 @@ def _build_model(network, params):
                         branch = network.branches[b]
                         if branch.fbus == node.bus_i or branch.tbus == node.bus_i:
 
-                            rij = 1 / model.r[b, s_m, s_o, p]
+                            rij = model.r[b, s_m, s_o, p]
 
                             if branch.fbus == node.bus_i:
 
@@ -868,9 +868,9 @@ def _build_model(network, params):
                                 ej = model.e_actual[tnode_idx, s_m, s_o, p]
                                 fj = model.f_actual[tnode_idx, s_m, s_o, p]
 
-                                Pi += branch.g * (ei ** 2 + fi ** 2) * rij**2
+                                Pi += branch.g * (ei ** 2 + fi ** 2) * rij ** 2
                                 Pi -= rij * (branch.g * (ei * ej + fi * fj) + branch.b * (fi * ej - ei * fj))
-                                Qi -= (branch.b + branch.b_sh * 0.5) * (ei ** 2 + fi ** 2) * rij**2
+                                Qi -= (branch.b + branch.b_sh * 0.5) * (ei ** 2 + fi ** 2) * rij ** 2
                                 Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
                             else:
 
@@ -927,17 +927,8 @@ def _build_model(network, params):
                     #iij_sqr = (branch.g**2 + branch.b**2) * ((ei - ej)**2 + (fi - fj)**2)  # Simplified
 
                     iij_sqr = (branch.g ** 2 + branch.b ** 2) * (ei ** 2 + fi ** 2)
-                    iij_sqr += (branch.g ** 2 + branch.b ** 2) * (rij ** 2 * (ej ** 2 + fj **2))
-                    iij_sqr -= (branch.g ** 2 + branch.b ** 2) * (2 * rij * (ei * ej ** 2 + fi * fj))
-
-                    '''
-                    # Monticelli (1983)
-                    bij_sh = branch.b_sh * 0.50
-                    iij_sqr = (branch.g ** 2 + branch.b ** 2) * (((rij ** 2) * ei - rij * ej) ** 2 + ((rij ** 2) * fi - rij * fj) ** 2)
-                    iij_sqr += bij_sh ** 2 * (ei ** 2 + fi ** 2)
-                    iij_sqr += 2 * branch.g * bij_sh * (((rij ** 2) * fi - rij * fj) * ei - ((rij ** 2) * ei - rij * ej) * fi)
-                    iij_sqr += 2 * branch.b * bij_sh * (((rij ** 2) * ei - rij * ej) * ei + ((rij ** 2) * fi - rij * fj) * fi)
-                    '''
+                    iij_sqr += (branch.g ** 2 + branch.b ** 2) * (rij ** 2 * (ej ** 2 + fj ** 2))
+                    iij_sqr -= (branch.g ** 2 + branch.b ** 2) * (2 * rij * (ei * ej + fi * fj))
 
                     if params.relax_equalities:
                         model.branch_power_flow_cons.add(model.iij_sqr[b, s_m, s_o, p] <= iij_sqr + EQUALITY_TOLERANCE)
@@ -2510,23 +2501,19 @@ def _get_branch_power_flow(network, params, branch, fbus, tbus, model, s_m, s_o,
     fbus_idx = network.get_node_idx(fbus)
     tbus_idx = network.get_node_idx(tbus)
     branch_idx = network.get_branch_idx(branch)
+
+    rij = pe.value(model.transf_r[branch_idx])
+    ei = pe.value(model.e[fbus_idx])
+    fi = pe.value(model.f[fbus_idx])
+    ej = pe.value(model.e[tbus_idx])
+    fj = pe.value(model.f[tbus_idx])
+
     if branch.fbus == fbus:
-        direction = 1
-    else:
-        direction = 0
-
-    rij = pe.value(model.r[branch_idx, s_m, s_o, p])
-    ei = pe.value(model.e_actual[fbus_idx, s_m, s_o, p])
-    fi = pe.value(model.f_actual[fbus_idx, s_m, s_o, p])
-    ej = pe.value(model.e_actual[tbus_idx, s_m, s_o, p])
-    fj = pe.value(model.f_actual[tbus_idx, s_m, s_o, p])
-
-    if direction:
-        pij = branch.g * (ei ** 2 + fi ** 2) * rij**2
+        pij = branch.g * (ei ** 2 + fi ** 2) * rij ** 2
         pij -= branch.g * (ei * ej + fi * fj) * rij
         pij -= branch.b * (fi * ej - ei * fj) * rij
 
-        qij = - (branch.b + branch.b_sh * 0.50) * (ei ** 2 + fi ** 2) * rij**2
+        qij = - (branch.b + branch.b_sh * 0.50) * (ei ** 2 + fi ** 2) * rij ** 2
         qij += branch.b * (ei * ej + fi * fj) * rij
         qij -= branch.g * (fi * ej - ei * fj) * rij
     else:
