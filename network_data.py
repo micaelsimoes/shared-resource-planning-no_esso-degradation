@@ -174,7 +174,7 @@ def _write_optimization_results_to_excel(network_planning, data_dir, processed_r
     _write_network_generation_results_to_excel(network_planning, wb, processed_results['results'])
     _write_network_branch_results_to_excel(network_planning, wb, processed_results['results'], 'losses')
     _write_network_branch_results_to_excel(network_planning, wb, processed_results['results'], 'ratio')
-    _write_network_branch_results_to_excel(network_planning, wb, processed_results['results'], 'current_perc')
+    _write_network_branch_results_to_excel(network_planning, wb, processed_results['results'], 'branch_flow')
     _write_network_branch_power_flow_results_to_excel(network_planning, wb, processed_results['results'])
     if network_planning.params.es_reg:
         _write_network_energy_storage_results_to_excel(network_planning, wb, processed_results['results'])
@@ -1087,7 +1087,7 @@ def _write_network_branch_results_to_excel(network_planning, workbook, results, 
         aux_string = 'Ratio'
     elif result_type == 'current_perc':
         sheet_name = 'Branch Loading'
-        aux_string = 'I, [%]'
+        aux_string = 'Flow, [%]'
 
     row_idx = 1
     decimal_style = '0.00'
@@ -1135,13 +1135,14 @@ def _write_network_branch_results_to_excel(network_planning, workbook, results, 
                             sheet.cell(row=row_idx, column=7).value = s_m
                             sheet.cell(row=row_idx, column=8).value = s_o
                             for p in range(network.num_instants):
-                                value = results[year][day]['scenarios'][s_m][s_o]['branches'][result_type][branch_id][p]
-                                if result_type == 'current_perc':
+                                if result_type == 'branch_flow':
+                                    value = results[year][day]['scenarios'][s_m][s_o]['branches'][result_type]['flow_ij_sqr'][branch_id][p]
                                     sheet.cell(row=row_idx, column=p + 9).value = value
                                     sheet.cell(row=row_idx, column=p + 9).number_format = perc_style
                                     if value > 1.0 + VIOLATION_TOLERANCE:
                                         sheet.cell(row=row_idx, column=p + 9).fill = violation_fill
                                 else:
+                                    value = results[year][day]['scenarios'][s_m][s_o]['branches'][result_type][branch_id][p]
                                     sheet.cell(row=row_idx, column=p + 9).value = value
                                     sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
                                 expected_values[branch_id][p] += value * omega_m * omega_s
@@ -1160,7 +1161,7 @@ def _write_network_branch_results_to_excel(network_planning, workbook, results, 
                     sheet.cell(row=row_idx, column=7).value = 'Expected'
                     sheet.cell(row=row_idx, column=8).value = '-'
                     for p in range(network.num_instants):
-                        if result_type == 'current_perc':
+                        if result_type == 'branch_flow':
                             sheet.cell(row=row_idx, column=p + 9).value = expected_values[branch_id][p]
                             sheet.cell(row=row_idx, column=p + 9).number_format = perc_style
                             if expected_values[branch_id][p] > 1.0 + VIOLATION_TOLERANCE:
