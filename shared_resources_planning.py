@@ -3673,7 +3673,7 @@ def _write_network_branch_loading_results_per_operator(network, sheet, operator_
         for day in results[year]:
 
             expected_values = {'flow_ij': {}, 'flow_ji': {}}
-            for branch in network.branches:
+            for branch in network[year][day].branches:
                 expected_values['flow_ij'][branch.branch_id] = [0.0 for _ in range(network.num_instants)]
                 expected_values['flow_ji'][branch.branch_id] = [0.0 for _ in range(network.num_instants)]
 
