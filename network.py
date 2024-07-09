@@ -1835,7 +1835,6 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['qji'][branch_id] = []
                 processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sij'][branch_id] = []
                 processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][branch_id] = []
-                processed_results['scenarios'][s_m][s_o]['branches']['flow_perc'][branch_id] = []
                 processed_results['scenarios'][s_m][s_o]['branches']['losses'][branch_id] = []
                 if branch.is_transformer:
                     processed_results['scenarios'][s_m][s_o]['branches']['ratio'][branch_id] = []
@@ -1941,10 +1940,13 @@ def _process_results(network, model, params, results=dict()):
             if params.slacks.grid_operation.branch_flow:
                 for b in model.branches:
                     branch_id = network.branches[b].branch_id
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flow_perc']['iij_sqr'][branch_id] = []
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ij_sqr'][branch_id] = []
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ji_sqr'][branch_id] = []
                     for p in model.periods:
                         slack_flow_ij_sqr = pe.value(model.slack_flow_ij_sqr[b, s_m, s_o, p])
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['current']['iij_sqr'][branch_id].append(slack_flow_ij_sqr)
+                        slack_flow_ji_sqr = pe.value(model.slack_flow_ij_sqr[b, s_m, s_o, p])
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ij_sqr'][branch_id].append(slack_flow_ij_sqr)
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ji_sqr'][branch_id].append(slack_flow_ji_sqr)
 
             # Slacks
             # - Shared ESS
