@@ -2537,10 +2537,10 @@ def _get_branch_power_flow(network, params, branch, fbus, tbus, model, s_m, s_o,
     branch_idx = network.get_branch_idx(branch)
 
     rij = pe.value(model.r[branch_idx, s_m, s_o, p])
-    ei = pe.value(model.e[fbus_idx, s_m, s_o, p])
-    fi = pe.value(model.f[fbus_idx, s_m, s_o, p])
-    ej = pe.value(model.e[tbus_idx, s_m, s_o, p])
-    fj = pe.value(model.f[tbus_idx, s_m, s_o, p])
+    ei = pe.value(model.e_actual[fbus_idx, s_m, s_o, p])
+    fi = pe.value(model.f_actual[fbus_idx, s_m, s_o, p])
+    ej = pe.value(model.e_actual[tbus_idx, s_m, s_o, p])
+    fj = pe.value(model.f_actual[tbus_idx, s_m, s_o, p])
 
     if branch.fbus == fbus:
         pij = branch.g * (ei ** 2 + fi ** 2) * rij ** 2
