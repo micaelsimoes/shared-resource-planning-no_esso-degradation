@@ -4826,7 +4826,7 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
 
                     # Load flexibility
                     if params.fl_reg:
-                        for load in network.loads:
+                        for load in network[year][day].loads:
 
                             load_id = load.load_id
 
@@ -4863,7 +4863,7 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
 
                     # ESS
                     if params.es_reg:
-                        for energy_storage in network.energy_storages:
+                        for energy_storage in network[year][day].energy_storages:
 
                             es_id = energy_storage.es_id
 
