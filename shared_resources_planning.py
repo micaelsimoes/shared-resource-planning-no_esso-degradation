@@ -3285,7 +3285,7 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                 expected_pg_net[generator.gen_id] = [0.0 for _ in range(network[year][day].num_instants)]
                 expected_qg[generator.gen_id] = [0.0 for _ in range(network[year][day].num_instants)]
                 expected_qg_curt[generator.gen_id] = [0.0 for _ in range(network[year][day].num_instants)]
-                expected_qg_net[generator.gen_id] = [0.0 for _ in range(network.num_instants)]
+                expected_qg_net[generator.gen_id] = [0.0 for _ in range(network[year][day].num_instants)]
 
             for s_m in results[year][day]['scenarios']:
                 omega_m = network[year][day].prob_market_scenarios[s_m]
