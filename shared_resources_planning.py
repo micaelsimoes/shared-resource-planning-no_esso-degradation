@@ -3533,24 +3533,24 @@ def _write_network_branch_results_to_excel(planning_problem, workbook, results, 
         sheet_name = 'Branch Losses'
     elif result_type == 'ratio':
         sheet_name = 'Transformer Ratio'
-    elif result_type == 'current_perc':
-        sheet_name = 'Branch Loading'
+
     sheet = workbook.create_sheet(sheet_name)
 
     row_idx = 1
 
     # Write Header
     sheet.cell(row=row_idx, column=1).value = 'Operator'
-    sheet.cell(row=row_idx, column=2).value = 'Connection Node ID'
-    sheet.cell(row=row_idx, column=3).value = 'From Node ID'
-    sheet.cell(row=row_idx, column=4).value = 'To Node ID'
-    sheet.cell(row=row_idx, column=5).value = 'Year'
-    sheet.cell(row=row_idx, column=6).value = 'Day'
-    sheet.cell(row=row_idx, column=7).value = 'Quantity'
-    sheet.cell(row=row_idx, column=8).value = 'Market Scenario'
-    sheet.cell(row=row_idx, column=9).value = 'Operation Scenario'
+    sheet.cell(row=row_idx, column=2).value = 'ADN Node ID'
+    sheet.cell(row=row_idx, column=3).value = 'Branch ID'
+    sheet.cell(row=row_idx, column=4).value = 'From Node ID'
+    sheet.cell(row=row_idx, column=5).value = 'To Node ID'
+    sheet.cell(row=row_idx, column=6).value = 'Year'
+    sheet.cell(row=row_idx, column=7).value = 'Day'
+    sheet.cell(row=row_idx, column=8).value = 'Quantity'
+    sheet.cell(row=row_idx, column=9).value = 'Market Scenario'
+    sheet.cell(row=row_idx, column=10).value = 'Operation Scenario'
     for p in range(planning_problem.num_instants):
-        sheet.cell(row=row_idx, column=p + 10).value = p
+        sheet.cell(row=row_idx, column=p + 11).value = p
     row_idx = row_idx + 1
 
     # Write results -- TSO
@@ -3567,8 +3567,6 @@ def _write_network_branch_results_to_excel(planning_problem, workbook, results, 
 def _write_network_branch_results_per_operator(network, sheet, operator_type, row_idx, results, result_type, tn_node_id='-'):
 
     decimal_style = '0.00'
-    perc_style = '0.00%'
-    violation_fill = PatternFill(start_color='FFFF0000', end_color='FFFF0000', fill_type='solid')
 
     aux_string = str()
     if result_type == 'losses':
@@ -3595,17 +3593,18 @@ def _write_network_branch_results_per_operator(network, sheet, operator_type, ro
 
                             sheet.cell(row=row_idx, column=1).value = operator_type
                             sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = branch.fbus
-                            sheet.cell(row=row_idx, column=4).value = branch.tbus
-                            sheet.cell(row=row_idx, column=5).value = int(year)
-                            sheet.cell(row=row_idx, column=6).value = day
-                            sheet.cell(row=row_idx, column=7).value = aux_string
-                            sheet.cell(row=row_idx, column=8).value = s_m
-                            sheet.cell(row=row_idx, column=9).value = s_o
+                            sheet.cell(row=row_idx, column=3).value = branch.branch_id
+                            sheet.cell(row=row_idx, column=4).value = branch.fbus
+                            sheet.cell(row=row_idx, column=5).value = branch.tbus
+                            sheet.cell(row=row_idx, column=6).value = int(year)
+                            sheet.cell(row=row_idx, column=7).value = day
+                            sheet.cell(row=row_idx, column=8).value = aux_string
+                            sheet.cell(row=row_idx, column=9).value = s_m
+                            sheet.cell(row=row_idx, column=10).value = s_o
                             for p in range(network[year][day].num_instants):
                                 value = results[year][day]['scenarios'][s_m][s_o]['branches'][result_type][branch_id][p]
-                                sheet.cell(row=row_idx, column=p + 10).value = value
-                                sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
+                                sheet.cell(row=row_idx, column=p + 11).value = value
+                                sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
                                 expected_values[branch_id][p] += value * omega_m * omega_s
                             row_idx = row_idx + 1
 
@@ -3615,16 +3614,17 @@ def _write_network_branch_results_per_operator(network, sheet, operator_type, ro
 
                     sheet.cell(row=row_idx, column=1).value = operator_type
                     sheet.cell(row=row_idx, column=2).value = tn_node_id
-                    sheet.cell(row=row_idx, column=3).value = branch.fbus
-                    sheet.cell(row=row_idx, column=4).value = branch.tbus
-                    sheet.cell(row=row_idx, column=5).value = int(year)
-                    sheet.cell(row=row_idx, column=6).value = day
-                    sheet.cell(row=row_idx, column=7).value = aux_string
-                    sheet.cell(row=row_idx, column=8).value = 'Expected'
-                    sheet.cell(row=row_idx, column=9).value = '-'
+                    sheet.cell(row=row_idx, column=3).value = branch.branch_id
+                    sheet.cell(row=row_idx, column=4).value = branch.fbus
+                    sheet.cell(row=row_idx, column=5).value = branch.tbus
+                    sheet.cell(row=row_idx, column=6).value = int(year)
+                    sheet.cell(row=row_idx, column=7).value = day
+                    sheet.cell(row=row_idx, column=8).value = aux_string
+                    sheet.cell(row=row_idx, column=9).value = 'Expected'
+                    sheet.cell(row=row_idx, column=10).value = '-'
                     for p in range(network[year][day].num_instants):
-                        sheet.cell(row=row_idx, column=p + 10).value = expected_values[branch_id][p]
-                        sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
+                        sheet.cell(row=row_idx, column=p + 11).value = expected_values[branch_id][p]
+                        sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
                     row_idx = row_idx + 1
 
     return row_idx

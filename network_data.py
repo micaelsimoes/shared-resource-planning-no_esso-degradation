@@ -1092,7 +1092,7 @@ def _write_network_branch_results_to_excel(network_planning, workbook, results, 
     sheet = workbook.create_sheet(sheet_name)
 
     # Write Header
-    sheet.cell(row=row_idx, column=1).value = 'BranchID'
+    sheet.cell(row=row_idx, column=1).value = 'Branch ID'
     sheet.cell(row=row_idx, column=2).value = 'From Node ID'
     sheet.cell(row=row_idx, column=3).value = 'To Node ID'
     sheet.cell(row=row_idx, column=4).value = 'Year'
