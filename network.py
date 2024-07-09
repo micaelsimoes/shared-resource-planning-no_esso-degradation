@@ -1807,7 +1807,7 @@ def _process_results(network, model, params, results=dict()):
 
                 branch = network.branches[k]
                 branch_id = branch.branch_id
-                rating = branch.rate
+                rating = branch.rate / network.baseMVA
                 if rating == 0.0:
                     rating = BRANCH_UNKNOWN_RATING
 
