@@ -16,7 +16,7 @@ class NetworkParameters:
         self.l_curt = False
         self.enforce_vg = False
         self.relax_equalities = False
-        self.branch_limit_type = BRANCH_LIMIT_MIXED
+        self.branch_limit_type = BRANCH_LIMIT_CURRENT
         self.slacks = Slacks()
         self.print_to_screen = False
         self.plot_diagram = False
@@ -123,6 +123,16 @@ def _read_network_parameters_from_file(parameters, filename):
     parameters.l_curt = bool(params_data['l_curt'])
     parameters.enforce_vg = bool(params_data['enforce_vg'])
     parameters.relax_equalities = bool(params_data['relax_equalities'])
+    if 'branch_limit_type' in params_data:
+        if params_data['branch_limit_type'] == 'CURRENT':
+            parameters.branch_limit_type = BRANCH_LIMIT_CURRENT
+        elif params_data['branch_limit_type'] == 'APPARENT_POWER':
+            parameters.branch_limit_type = BRANCH_LIMIT_APPARENT_POWER
+        elif params_data['branch_limit_type'] == 'MIXED':
+            parameters.branch_limit_type = BRANCH_LIMIT_MIXED
+        else:
+            print('[ERROR] Invalid objective type. Exiting...')
+            exit(ERROR_PARAMS_FILE)
     if 'slacks' in params_data:
         parameters.slacks.read_slacks_parameters(params_data['slacks'])
     parameters.solver_params.read_solver_parameters(params_data['solver'])
