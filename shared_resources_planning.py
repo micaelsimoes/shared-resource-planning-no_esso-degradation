@@ -2838,7 +2838,7 @@ def _write_network_voltage_results_to_excel(planning_problem, workbook, results)
 
     # Write Header
     sheet.cell(row=row_idx, column=1).value = 'Operator'
-    sheet.cell(row=row_idx, column=2).value = 'Connection Node ID'
+    sheet.cell(row=row_idx, column=2).value = 'ADN Node ID'
     sheet.cell(row=row_idx, column=3).value = 'Network Node ID'
     sheet.cell(row=row_idx, column=4).value = 'Year'
     sheet.cell(row=row_idx, column=5).value = 'Day'
@@ -2964,9 +2964,9 @@ def _write_network_consumption_results_to_excel(planning_problem, workbook, resu
 
     # Write Header
     sheet.cell(row=row_idx, column=1).value = 'Operator'
-    sheet.cell(row=row_idx, column=2).value = 'Connection Node ID'
-    sheet.cell(row=row_idx, column=3).value = 'Network Node ID'
+    sheet.cell(row=row_idx, column=2).value = 'ADN Node ID'
     sheet.cell(row=row_idx, column=4).value = 'Load ID'
+    sheet.cell(row=row_idx, column=3).value = 'Node ID'
     sheet.cell(row=row_idx, column=5).value = 'Year'
     sheet.cell(row=row_idx, column=6).value = 'Day'
     sheet.cell(row=row_idx, column=7).value = 'Quantity'
@@ -3021,8 +3021,8 @@ def _write_network_consumption_results_per_operator(network, params, sheet, oper
                         # - Active Power
                         sheet.cell(row=row_idx, column=1).value = operator_type
                         sheet.cell(row=row_idx, column=2).value = tn_node_id
-                        sheet.cell(row=row_idx, column=3).value = load.bus
-                        sheet.cell(row=row_idx, column=4).value = load.load_id
+                        sheet.cell(row=row_idx, column=3).value = load.load_id
+                        sheet.cell(row=row_idx, column=4).value = load.bus
                         sheet.cell(row=row_idx, column=5).value = int(year)
                         sheet.cell(row=row_idx, column=6).value = day
                         sheet.cell(row=row_idx, column=7).value = 'Pc, [MW]'
@@ -3040,8 +3040,8 @@ def _write_network_consumption_results_per_operator(network, params, sheet, oper
                             # - Flexibility, up
                             sheet.cell(row=row_idx, column=1).value = operator_type
                             sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = load.bus
-                            sheet.cell(row=row_idx, column=4).value = load.load_id
+                            sheet.cell(row=row_idx, column=3).value = load.load_id
+                            sheet.cell(row=row_idx, column=4).value = load.bus
                             sheet.cell(row=row_idx, column=5).value = int(year)
                             sheet.cell(row=row_idx, column=6).value = day
                             sheet.cell(row=row_idx, column=7).value = 'Flex Up, [MW]'
@@ -3057,8 +3057,8 @@ def _write_network_consumption_results_per_operator(network, params, sheet, oper
                             # - Flexibility, down
                             sheet.cell(row=row_idx, column=1).value = operator_type
                             sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = load.bus
-                            sheet.cell(row=row_idx, column=4).value = load.load_id
+                            sheet.cell(row=row_idx, column=3).value = load.load_id
+                            sheet.cell(row=row_idx, column=4).value = load.bus
                             sheet.cell(row=row_idx, column=5).value = int(year)
                             sheet.cell(row=row_idx, column=6).value = day
                             sheet.cell(row=row_idx, column=7).value = 'Flex Down, [MW]'
@@ -3076,8 +3076,8 @@ def _write_network_consumption_results_per_operator(network, params, sheet, oper
                             # - Active power curtailment
                             sheet.cell(row=row_idx, column=1).value = operator_type
                             sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = load.bus
-                            sheet.cell(row=row_idx, column=4).value = load.load_id
+                            sheet.cell(row=row_idx, column=3).value = load.load_id
+                            sheet.cell(row=row_idx, column=4).value = load.bus
                             sheet.cell(row=row_idx, column=5).value = int(year)
                             sheet.cell(row=row_idx, column=6).value = day
                             sheet.cell(row=row_idx, column=7).value = 'Pc_curt, [MW]'
@@ -3097,8 +3097,8 @@ def _write_network_consumption_results_per_operator(network, params, sheet, oper
                             # - Active power net consumption
                             sheet.cell(row=row_idx, column=1).value = operator_type
                             sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = load.bus
-                            sheet.cell(row=row_idx, column=4).value = load.load_id
+                            sheet.cell(row=row_idx, column=3).value = load.load_id
+                            sheet.cell(row=row_idx, column=4).value = load.bus
                             sheet.cell(row=row_idx, column=5).value = int(year)
                             sheet.cell(row=row_idx, column=6).value = day
                             sheet.cell(row=row_idx, column=7).value = 'Pc_net, [MW]'
@@ -3114,8 +3114,8 @@ def _write_network_consumption_results_per_operator(network, params, sheet, oper
                         # - Reactive power
                         sheet.cell(row=row_idx, column=1).value = operator_type
                         sheet.cell(row=row_idx, column=2).value = tn_node_id
-                        sheet.cell(row=row_idx, column=3).value = load.bus
-                        sheet.cell(row=row_idx, column=4).value = load.load_id
+                        sheet.cell(row=row_idx, column=3).value = load.load_id
+                        sheet.cell(row=row_idx, column=4).value = load.bus
                         sheet.cell(row=row_idx, column=5).value = int(year)
                         sheet.cell(row=row_idx, column=6).value = day
                         sheet.cell(row=row_idx, column=7).value = 'Qc, [MVAr]'
@@ -3133,8 +3133,8 @@ def _write_network_consumption_results_per_operator(network, params, sheet, oper
                 # - Active Power
                 sheet.cell(row=row_idx, column=1).value = operator_type
                 sheet.cell(row=row_idx, column=2).value = tn_node_id
-                sheet.cell(row=row_idx, column=3).value = load.bus
-                sheet.cell(row=row_idx, column=4).value = load.load_id
+                sheet.cell(row=row_idx, column=3).value = load.load_id
+                sheet.cell(row=row_idx, column=4).value = load.bus
                 sheet.cell(row=row_idx, column=5).value = int(year)
                 sheet.cell(row=row_idx, column=6).value = day
                 sheet.cell(row=row_idx, column=7).value = 'Pc, [MW]'
@@ -3150,8 +3150,8 @@ def _write_network_consumption_results_per_operator(network, params, sheet, oper
                     # - Flexibility, up
                     sheet.cell(row=row_idx, column=1).value = operator_type
                     sheet.cell(row=row_idx, column=2).value = tn_node_id
-                    sheet.cell(row=row_idx, column=3).value = load.bus
-                    sheet.cell(row=row_idx, column=4).value = load.load_id
+                    sheet.cell(row=row_idx, column=3).value = load.load_id
+                    sheet.cell(row=row_idx, column=4).value = load.bus
                     sheet.cell(row=row_idx, column=5).value = int(year)
                     sheet.cell(row=row_idx, column=6).value = day
                     sheet.cell(row=row_idx, column=7).value = 'Flex Up, [MW]'
@@ -3165,8 +3165,8 @@ def _write_network_consumption_results_per_operator(network, params, sheet, oper
                     # - Flexibility, down
                     sheet.cell(row=row_idx, column=1).value = operator_type
                     sheet.cell(row=row_idx, column=2).value = tn_node_id
-                    sheet.cell(row=row_idx, column=3).value = load.bus
-                    sheet.cell(row=row_idx, column=4).value = load.load_id
+                    sheet.cell(row=row_idx, column=3).value = load.load_id
+                    sheet.cell(row=row_idx, column=4).value = load.bus
                     sheet.cell(row=row_idx, column=5).value = int(year)
                     sheet.cell(row=row_idx, column=6).value = day
                     sheet.cell(row=row_idx, column=7).value = 'Flex Down, [MW]'
@@ -3182,8 +3182,8 @@ def _write_network_consumption_results_per_operator(network, params, sheet, oper
                     # - Load curtailment (active power)
                     sheet.cell(row=row_idx, column=1).value = operator_type
                     sheet.cell(row=row_idx, column=2).value = tn_node_id
-                    sheet.cell(row=row_idx, column=3).value = load.bus
-                    sheet.cell(row=row_idx, column=4).value = load.load_id
+                    sheet.cell(row=row_idx, column=3).value = load.load_id
+                    sheet.cell(row=row_idx, column=4).value = load.bus
                     sheet.cell(row=row_idx, column=5).value = int(year)
                     sheet.cell(row=row_idx, column=6).value = day
                     sheet.cell(row=row_idx, column=7).value = 'Pc_curt, [MW]'
@@ -3201,8 +3201,8 @@ def _write_network_consumption_results_per_operator(network, params, sheet, oper
                     # - Active power net consumption
                     sheet.cell(row=row_idx, column=1).value = operator_type
                     sheet.cell(row=row_idx, column=2).value = tn_node_id
-                    sheet.cell(row=row_idx, column=3).value = load.bus
-                    sheet.cell(row=row_idx, column=4).value = load.load_id
+                    sheet.cell(row=row_idx, column=3).value = load.load_id
+                    sheet.cell(row=row_idx, column=4).value = load.bus
                     sheet.cell(row=row_idx, column=5).value = int(year)
                     sheet.cell(row=row_idx, column=6).value = day
                     sheet.cell(row=row_idx, column=7).value = 'Pc_net, [MW]'
@@ -3216,8 +3216,8 @@ def _write_network_consumption_results_per_operator(network, params, sheet, oper
                 # - Reactive power
                 sheet.cell(row=row_idx, column=1).value = operator_type
                 sheet.cell(row=row_idx, column=2).value = tn_node_id
-                sheet.cell(row=row_idx, column=3).value = load.bus
-                sheet.cell(row=row_idx, column=4).value = load.load_id
+                sheet.cell(row=row_idx, column=3).value = load.load_id
+                sheet.cell(row=row_idx, column=4).value = load.bus
                 sheet.cell(row=row_idx, column=5).value = int(year)
                 sheet.cell(row=row_idx, column=6).value = day
                 sheet.cell(row=row_idx, column=7).value = 'Qc, [MVAr]'
