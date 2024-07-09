@@ -1182,9 +1182,8 @@ def _write_network_branch_loading_results_to_excel(network_planning, workbook, r
 
             expected_values = {'flow_ij': {}, 'flow_ji': {}}
             for branch in network.branches:
-                branch_id = branch.branch_id
-                expected_values['flow_ij'][branch_id] = [0.0 for _ in range(network.num_instants)]
-                expected_values['flow_ji'][branch_id] = [0.0 for _ in range(network.num_instants)]
+                expected_values['flow_ij'][branch.branch_id] = [0.0 for _ in range(network.num_instants)]
+                expected_values['flow_ji'][branch.branch_id] = [0.0 for _ in range(network.num_instants)]
 
             for s_m in results[year][day]['scenarios']:
                 omega_m = network.prob_market_scenarios[s_m]
@@ -1193,7 +1192,7 @@ def _write_network_branch_loading_results_to_excel(network_planning, workbook, r
                     for branch in network.branches:
 
                         # flow ij, [%]
-                        sheet.cell(row=row_idx, column=1).value = branch_id
+                        sheet.cell(row=row_idx, column=1).value = branch.branch_id
                         sheet.cell(row=row_idx, column=2).value = branch.fbus
                         sheet.cell(row=row_idx, column=3).value = branch.tbus
                         sheet.cell(row=row_idx, column=4).value = int(year)
@@ -1231,7 +1230,7 @@ def _write_network_branch_loading_results_to_excel(network_planning, workbook, r
             for branch in network.branches:
 
                 # flow ij, [%]
-                sheet.cell(row=row_idx, column=1).value = branch_id
+                sheet.cell(row=row_idx, column=1).value = branch.branch_id
                 sheet.cell(row=row_idx, column=2).value = branch.fbus
                 sheet.cell(row=row_idx, column=3).value = branch.tbus
                 sheet.cell(row=row_idx, column=4).value = int(year)
