@@ -2967,8 +2967,8 @@ def _write_network_consumption_results_to_excel(planning_problem, workbook, resu
     # Write Header
     sheet.cell(row=row_idx, column=1).value = 'Operator'
     sheet.cell(row=row_idx, column=2).value = 'ADN Node ID'
-    sheet.cell(row=row_idx, column=4).value = 'Load ID'
-    sheet.cell(row=row_idx, column=3).value = 'Node ID'
+    sheet.cell(row=row_idx, column=3).value = 'Load ID'
+    sheet.cell(row=row_idx, column=4).value = 'Node ID'
     sheet.cell(row=row_idx, column=5).value = 'Year'
     sheet.cell(row=row_idx, column=6).value = 'Day'
     sheet.cell(row=row_idx, column=7).value = 'Quantity'
