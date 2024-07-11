@@ -804,8 +804,7 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
                 shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(adn_node_id)
                 for p in model[year][day].periods:
                     model[year][day].expected_interface_vmag_sqr[dn, p].fixed = False
-                    model[year][day].expected_interface_vmag_sqr[dn, p].setub = False
-                    model[year][day].expected_interface_vmag_sqr[dn, p].setlb = False
+                    model[year][day].expected_interface_vmag_sqr[dn, p].setub(None)
                     model[year][day].expected_interface_pf_p[dn, p].fixed = False
                     model[year][day].expected_interface_pf_p[dn, p].setub(None)
                     model[year][day].expected_interface_pf_p[dn, p].setlb(None)
