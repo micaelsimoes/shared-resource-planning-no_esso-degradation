@@ -479,21 +479,21 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
     # Update TSO's OF to try to respect the interface power flows, run SMOPF
     for year in transmission_network.years:
         for day in transmission_network.days:
-            obj = copy(tso_model[year][day].objective.expr)
             s_base = transmission_network.network[year][day].baseMVA
             for dn in tso_model[year][day].active_distribution_networks:
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
+                shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(adn_node_id)
                 for p in tso_model[year][day].periods:
                     init_vsqr = consensus_vars['interface']['v_sqr']['dso']['current'][adn_node_id][year][day][p]
-                    init_p = consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
-                    init_q = consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q'][p] / s_base
-                    obj += PENALTY_INTERFACE_VMAG * ((tso_model[year][day].expected_interface_vmag_sqr[dn, p] - init_vsqr) ** 2)
-                    obj += PENALTY_INTERFACE_PF * ((tso_model[year][day].expected_interface_pf_p[dn, p] - init_p) ** 2)
-                    obj += PENALTY_INTERFACE_PF * ((tso_model[year][day].expected_interface_pf_q[dn, p] - init_q) ** 2)
-
-            # Deactivate original OF, add new objective to the model
-            tso_model[year][day].objective.deactivate()
-            tso_model[year][day].objective_init = pe.Objective(sense=pe.minimize, expr=obj)
+                    init_pf_p = consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
+                    init_pf_q = consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q'][p] / s_base
+                    init_ess_p = consensus_vars['interface']['ess']['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
+                    init_ess_q = consensus_vars['interface']['ess']['dso']['current'][adn_node_id][year][day]['q'][p] / s_base
+                    tso_model[year][day].expected_interface_vmag_sqr[dn, p].fix(init_vsqr)
+                    tso_model[year][day].expected_interface_pf_p[dn, p].fix(init_pf_p)
+                    tso_model[year][day].expected_interface_pf_q[dn, p].fix(init_pf_q)
+                    tso_model[year][day].expected_shared_ess_p[shared_ess_idx, p].fix(init_ess_p)
+                    tso_model[year][day].expected_shared_ess_q[shared_ess_idx, p].fix(init_ess_q)
 
     # Run SMOPF
     results = transmission_network.optimize(tso_model)
