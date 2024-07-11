@@ -743,8 +743,10 @@ def _build_model(network, params):
 
                     # Pnet and Qnet definition
                     if params.relax_equalities:
-                        model.shared_energy_storage_operation.add(model.shared_es_pnet[e, s_m, s_o, p] == pch - pdch)
-                        model.shared_energy_storage_operation.add(model.shared_es_qnet[e, s_m, s_o, p] == qch - qdch)
+                        model.shared_energy_storage_operation.add(model.shared_es_pnet[e, s_m, s_o, p] <= pch - pdch + EQUALITY_TOLERANCE)
+                        model.shared_energy_storage_operation.add(model.shared_es_pnet[e, s_m, s_o, p] >= pch - pdch - EQUALITY_TOLERANCE)
+                        model.shared_energy_storage_operation.add(model.shared_es_qnet[e, s_m, s_o, p] <= qch - qdch + EQUALITY_TOLERANCE)
+                        model.shared_energy_storage_operation.add(model.shared_es_qnet[e, s_m, s_o, p] >= qch - qdch - EQUALITY_TOLERANCE)
                     else:
                         model.shared_energy_storage_operation.add(model.shared_es_pnet[e, s_m, s_o, p] == pch - pdch + EQUALITY_TOLERANCE)
                         model.shared_energy_storage_operation.add(model.shared_es_qnet[e, s_m, s_o, p] == qch - qdch - EQUALITY_TOLERANCE)
