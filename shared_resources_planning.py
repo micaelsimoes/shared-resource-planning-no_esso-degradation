@@ -411,13 +411,13 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setub(None)
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setlb(None)
                             if transmission_network.params.fl_reg:
-                                tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                                tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].fix(0.00)
+                                tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].fix(0.00)
                             if transmission_network.params.l_curt:
-                                tso_model[year][day].pc_curt_down[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                                tso_model[year][day].pc_curt_up[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                                tso_model[year][day].qc_curt_down[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                                tso_model[year][day].qc_curt_up[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                tso_model[year][day].pc_curt_down[adn_load_idx, s_m, s_o, p].fix(0.00)
+                                tso_model[year][day].pc_curt_up[adn_load_idx, s_m, s_o, p].fix(0.00)
+                                tso_model[year][day].qc_curt_down[adn_load_idx, s_m, s_o, p].fix(0.00)
+                                tso_model[year][day].qc_curt_up[adn_load_idx, s_m, s_o, p].fix(0.00)
 
     # Update model with expected interface values
     for year in transmission_network.years:
@@ -573,8 +573,8 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                             expected_vmag_sqr += omega_market * omega_oper * (dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2)
                             expected_pf_p += omega_market * omega_oper * dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p]
                             expected_pf_q += omega_market * omega_oper * dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p]
-                            expected_ess_p += omega_market * omega_oper * dso_model[year][day].shared_es_pnet[ref_gen_idx, s_m, s_o, p]
-                            expected_ess_q += omega_market * omega_oper * dso_model[year][day].shared_es_qnet[ref_gen_idx, s_m, s_o, p]
+                            expected_ess_p += omega_market * omega_oper * dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p]
+                            expected_ess_q += omega_market * omega_oper * dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p]
                     if distribution_network.params.relax_equalities:
                         dso_model[year][day].expected_interface_vmag.add(dso_model[year][day].expected_interface_vmag_sqr[p] <= expected_vmag_sqr + EQUALITY_TOLERANCE)
                         dso_model[year][day].expected_interface_vmag.add(dso_model[year][day].expected_interface_vmag_sqr[p] >= expected_vmag_sqr - EQUALITY_TOLERANCE)
