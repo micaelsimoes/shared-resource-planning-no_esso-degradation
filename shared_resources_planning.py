@@ -455,9 +455,9 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                         tso_model[year][day].expected_interface_pf.add(tso_model[year][day].expected_interface_pf_q[dn, p] <= expected_pf_q + EQUALITY_TOLERANCE)
                         tso_model[year][day].expected_interface_pf.add(tso_model[year][day].expected_interface_pf_q[dn, p] >= expected_pf_q - EQUALITY_TOLERANCE)
                     else:
-                        tso_model[year][day].expected_interface_vmag_sqr.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] == expected_vmag_sqr)
-                        tso_model[year][day].expected_interface_pf_p.add(tso_model[year][day].expected_interface_pf_p[dn, p] == expected_pf_p)
-                        tso_model[year][day].expected_interface_pf_p.add(tso_model[year][day].expected_interface_pf_q[dn, p] == expected_pf_q)
+                        tso_model[year][day].expected_interface_vmag.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] == expected_vmag_sqr)
+                        tso_model[year][day].expected_interface_pf.add(tso_model[year][day].expected_interface_pf_p[dn, p] == expected_pf_p)
+                        tso_model[year][day].expected_interface_pf.add(tso_model[year][day].expected_interface_pf_q[dn, p] == expected_pf_q)
 
             tso_model[year][day].expected_interface_ess = pe.ConstraintList()
             for e in tso_model[year][day].shared_energy_storages:
