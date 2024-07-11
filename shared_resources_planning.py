@@ -448,12 +448,12 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                             expected_pf_p += omega_market * omega_oper * tso_model[year][day].pc[adn_load_idx, s_m, s_o, p]
                             expected_pf_q += omega_market * omega_oper * tso_model[year][day].qc[adn_load_idx, s_m, s_o, p]
                     if transmission_network.params.relax_equalities:
-                        tso_model[year][day].expected_interface_vmag_sqr.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] <= expected_vmag_sqr + EQUALITY_TOLERANCE)
-                        tso_model[year][day].expected_interface_vmag_sqr.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] >= expected_vmag_sqr - EQUALITY_TOLERANCE)
-                        tso_model[year][day].expected_interface_pf_p.add(tso_model[year][day].expected_interface_pf_p[dn, p] <= expected_pf_p + EQUALITY_TOLERANCE)
-                        tso_model[year][day].expected_interface_pf_p.add(tso_model[year][day].expected_interface_pf_p[dn, p] >= expected_pf_p - EQUALITY_TOLERANCE)
-                        tso_model[year][day].expected_interface_pf_p.add(tso_model[year][day].expected_interface_pf_q[dn, p] <= expected_pf_q + EQUALITY_TOLERANCE)
-                        tso_model[year][day].expected_interface_pf_p.add(tso_model[year][day].expected_interface_pf_q[dn, p] >= expected_pf_q - EQUALITY_TOLERANCE)
+                        tso_model[year][day].expected_interface_vmag.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] <= expected_vmag_sqr + EQUALITY_TOLERANCE)
+                        tso_model[year][day].expected_interface_vmag.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] >= expected_vmag_sqr - EQUALITY_TOLERANCE)
+                        tso_model[year][day].expected_interface_pf.add(tso_model[year][day].expected_interface_pf_p[dn, p] <= expected_pf_p + EQUALITY_TOLERANCE)
+                        tso_model[year][day].expected_interface_pf.add(tso_model[year][day].expected_interface_pf_p[dn, p] >= expected_pf_p - EQUALITY_TOLERANCE)
+                        tso_model[year][day].expected_interface_pf.add(tso_model[year][day].expected_interface_pf_q[dn, p] <= expected_pf_q + EQUALITY_TOLERANCE)
+                        tso_model[year][day].expected_interface_pf.add(tso_model[year][day].expected_interface_pf_q[dn, p] >= expected_pf_q - EQUALITY_TOLERANCE)
                     else:
                         tso_model[year][day].expected_interface_vmag_sqr.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] == expected_vmag_sqr)
                         tso_model[year][day].expected_interface_pf_p.add(tso_model[year][day].expected_interface_pf_p[dn, p] == expected_pf_p)
