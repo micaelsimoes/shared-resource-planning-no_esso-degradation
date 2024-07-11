@@ -469,7 +469,7 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                             omega_oper = transmission_network.network[year][day].prob_operation_scenarios[s_o]
                             expected_ess_p += omega_market * omega_oper * tso_model[year][day].shared_es_pnet[e, s_m, s_o, p]
                             expected_ess_q += omega_market * omega_oper * tso_model[year][day].shared_es_qnet[e, s_m, s_o, p]
-                    if transmission_network.network[year][day].params.relax_equalities:
+                    if transmission_network.params.relax_equalities:
                         tso_model[year][day].expected_interface_ess.add(tso_model[year][day].expected_shared_ess_p[e, p] <= expected_ess_p + EQUALITY_TOLERANCE)
                         tso_model[year][day].expected_interface_ess.add(tso_model[year][day].expected_shared_ess_p[e, p] >= expected_ess_p - EQUALITY_TOLERANCE)
                         tso_model[year][day].expected_interface_ess.add(tso_model[year][day].expected_shared_ess_q[e, p] <= expected_ess_q + EQUALITY_TOLERANCE)
