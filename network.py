@@ -1043,6 +1043,7 @@ def _build_model(network, params):
                             qg_curt = model.qg_curt_down[g, s_m, s_o, p] + model.qg_curt_up[g, s_m, s_o, p]
                             obj_scenario += COST_GENERATION_CURTAILMENT * network.baseMVA * (pg_curt + qg_curt)
 
+                # ESS utilization
                 if params.es_reg:
                     for e in model.energy_storages:
                         for p in model.periods:
@@ -1050,6 +1051,7 @@ def _build_model(network, params):
                             sdch = model.es_sdch[e, s_m, s_o, p]
                             obj_scenario += PENALTY_ESS_USAGE * network.baseMVA * (sch + sdch)
 
+                # Shared ESS utilization
                 for e in model.shared_energy_storages:
                     for p in model.periods:
                         sch = model.shared_es_sch[e, s_m, s_o, p]
@@ -1094,6 +1096,7 @@ def _build_model(network, params):
                             flex_p_down = model.flex_p_down[c, s_m, s_o, p]
                             obj_scenario += PENALTY_FLEXIBILITY_USAGE * network.baseMVA * (flex_p_down + flex_p_up)
 
+                # ESS utilization
                 if params.es_reg:
                     for e in model.energy_storages:
                         for p in model.periods:
@@ -1101,6 +1104,7 @@ def _build_model(network, params):
                             sdch = model.es_sdch[e, s_m, s_o, p]
                             obj_scenario += PENALTY_ESS_USAGE * network.baseMVA * (sch + sdch)
 
+                # Shared ESS utilization
                 for e in model.shared_energy_storages:
                     for p in model.periods:
                         sch = model.shared_es_sch[e, s_m, s_o, p]
