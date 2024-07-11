@@ -826,9 +826,7 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
             model[year][day].dual_ess_q_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)        # Dual variable - Shared ESS active power
 
             # Objective function - augmented Lagrangian
-            init_of_value = 1.00
-            if transmission_network.params.obj_type == OBJ_MIN_COST:
-                init_of_value = abs(pe.value(model[year][day].objective))
+            init_of_value = abs(pe.value(model[year][day].objective))
             if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
                 init_of_value = SMALL_TOLERANCE
             obj = copy(model[year][day].objective.expr) / init_of_value
@@ -929,9 +927,7 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                 dso_model[year][day].dual_ess_q_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - Shared ESS reactive power
 
                 # Objective function - augmented Lagrangian
-                init_of_value = 1.00
-                if distribution_network.params.obj_type == OBJ_MIN_COST:
-                    init_of_value = abs(pe.value(dso_model[year][day].objective))
+                init_of_value = SMALL_TOLERANCE
                 if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
                     init_of_value = SMALL_TOLERANCE
                 obj = copy(dso_model[year][day].objective.expr) / init_of_value
