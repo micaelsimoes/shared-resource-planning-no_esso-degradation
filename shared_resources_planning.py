@@ -535,9 +535,9 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                 obj = copy(dso_model[year][day].objective.expr)
                 dso_model[year][day].interface_cons = pe.ConstraintList()
                 for p in dso_model[year][day].periods:
-                    expected_vmag_sqr = 0.00
-                    expected_pf_p = 0.00
-                    expected_pf_q = 0.00
+                    #expected_vmag_sqr = 0.00
+                    #expected_pf_p = 0.00
+                    #expected_pf_q = 0.00
                     expected_ess_p = 0.00
                     expected_ess_q = 0.00
                     for s_m in dso_model[year][day].scenarios_market:
@@ -550,8 +550,8 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                             #obj += PENALTY_EXPECTED_SESS_DEVIATION * s_base * (dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_p[p]) ** 2
                             #obj += PENALTY_EXPECTED_SESS_DEVIATION * s_base * (dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_q[p]) ** 2
                             #expected_vmag_sqr += omega_market * omega_oper * (dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2)
-                            expected_pf_p += omega_market * omega_oper * dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p]
-                            expected_pf_q += omega_market * omega_oper * dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p]
+                            #expected_pf_p += omega_market * omega_oper * dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p]
+                            #expected_pf_q += omega_market * omega_oper * dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p]
                             expected_ess_p += omega_market * omega_oper * dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p]
                             expected_ess_q += omega_market * omega_oper * dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p]
                     if distribution_network.params.relax_equalities:
