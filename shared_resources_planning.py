@@ -556,8 +556,8 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                     for s_m in dso_model[year][day].scenarios_market:
                         omega_market = distribution_network.network[year][day].prob_market_scenarios[s_m]
                         for s_o in dso_model[year][day].scenarios_operation:
-                            omega_market = distribution_network.network[year][day].prob_market_scenarios[s_m]
-                            expected_vmag_sqr += (dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2)
+                            omega_oper = distribution_network.network[year][day].prob_operation_scenarios[s_o]
+                            expected_vmag_sqr += omega_market * omega_oper * (dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2)
                     dso_model[year][day].interface_cons.add(dso_model[year][day].expected_interface_vmag_sqr[p] == expected_vmag_sqr)
 
         # Run SMOPF
