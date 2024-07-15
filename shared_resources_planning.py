@@ -883,7 +883,7 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
 
                 shared_ess_rating = abs(transmission_network.network[year][day].shared_energy_storages[e].s)
                 if isclose(shared_ess_rating, 0.00, abs_tol=SMALL_TOLERANCE):
-                    shared_ess_rating = SMALL_TOLERANCE
+                    shared_ess_rating = 1.00
 
                 for p in model[year][day].periods:
                     constraint_ess_p = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_req[e, p]) / (2 * shared_ess_rating)
@@ -950,26 +950,28 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                 dso_model[year][day].dual_ess_q_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - Shared ESS reactive power
 
                 # Objective function - augmented Lagrangian
-                init_of_value = SMALL_TOLERANCE
+                init_of_value = 1.00
+                if distribution_network.params.obj_type == OBJ_MIN_COST:
+                    init_of_value = abs(pe.value(dso_model[year][day].objective))
                 if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
-                    init_of_value = SMALL_TOLERANCE
+                    init_of_value = 1.00
                 obj = copy(dso_model[year][day].objective.expr) / init_of_value
 
                 shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
                 shared_ess_rating = abs(distribution_network.network[year][day].shared_energy_storages[shared_ess_idx].s)
                 if isclose(shared_ess_rating, 0.00, abs_tol=SMALL_TOLERANCE):
-                    shared_ess_rating = SMALL_TOLERANCE
+                    shared_ess_rating = 1.00
 
                 # Augmented Lagrangian -- Interface power flow (residual balancing)
+                p_norm = max([abs(value) for value in consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p']])
+                if isclose(p_norm, 0.00, abs_tol=SMALL_TOLERANCE):
+                    p_norm = 1.00
+
+                q_norm = max([abs(value) for value in consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q']])
+                if isclose(q_norm, 0.00, abs_tol=SMALL_TOLERANCE):
+                    q_norm = 1.00
+
                 for p in dso_model[year][day].periods:
-
-                    p_norm = abs(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p]) / s_base
-                    if isclose(p_norm, 0.00, abs_tol=SMALL_TOLERANCE):
-                        p_norm = SMALL_TOLERANCE
-
-                    q_norm = abs(consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p]) / s_base
-                    if isclose(q_norm, 0.00, abs_tol=SMALL_TOLERANCE):
-                        q_norm = SMALL_TOLERANCE
 
                     # Voltage magnitude
                     constraint_vmag_req = (dso_model[year][day].expected_interface_vmag_sqr[p] - dso_model[year][day].v_sqr_req[p])
