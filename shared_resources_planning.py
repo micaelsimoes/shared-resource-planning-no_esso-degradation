@@ -879,7 +879,8 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
                     obj += (model[year][day].rho_ess / 2) * constraint_ess_q ** 2
 
             # Add ADMM OF, deactivate original OF
-            model[year][day].objective_init.deactivate()
+            model[year][day].objective.deactivate()
+            #model[year][day].objective_init.deactivate()
             model[year][day].admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
 
 
