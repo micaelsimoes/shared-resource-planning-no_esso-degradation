@@ -839,26 +839,34 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
             model[year][day].dual_ess_q_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)        # Dual variable - Shared ESS active power
 
             # Objective function - augmented Lagrangian
-            init_of_value = 1.00
-            if transmission_network.params.obj_type == OBJ_MIN_COST:
-                init_of_value = abs(pe.value(model[year][day].objective))
+            init_of_value = abs(pe.value(model[year][day].objective))
             if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
-                init_of_value = 1.00
+                init_of_value = SMALL_TOLERANCE
             obj = copy(model[year][day].objective.expr) / init_of_value
 
             for dn in model[year][day].active_distribution_networks:
 
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
 
+                p_norm = max([abs(value) for value in consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['p']]) / s_base
+                if isclose(p_norm, 0.00, abs_tol=SMALL_TOLERANCE):
+                    p_norm = 1.00
+
+                q_norm = max([abs(value) for value in consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q']]) / s_base
+                if isclose(q_norm, 0.00, abs_tol=SMALL_TOLERANCE):
+                    q_norm = 1.00
+
                 for p in model[year][day].periods:
 
-                    p_norm = abs(consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['p'][p]) / s_base
-                    if isclose(p_norm, 0.00, abs_tol=SMALL_TOLERANCE):
-                        p_norm = SMALL_TOLERANCE
+                    '''
+                    init_p = abs(consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['p'][p]) / s_base
+                    if isclose(init_p, 0.00, abs_tol=SMALL_TOLERANCE):
+                        init_p = 1.00
 
-                    q_norm = abs(consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q'][p]) / s_base
-                    if isclose(q_norm, 0.00, abs_tol=SMALL_TOLERANCE):
-                        q_norm = SMALL_TOLERANCE
+                    init_q = abs(consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q'][p]) / s_base
+                    if isclose(init_q, 0.00, abs_tol=SMALL_TOLERANCE):
+                        init_q = 1.00
+                    '''
 
                     constraint_v_req = (model[year][day].expected_interface_vmag_sqr[dn, p] - model[year][day].v_sqr_req[dn, p])
                     obj += model[year][day].dual_v_sqr_req[dn, p] * constraint_v_req
