@@ -47,13 +47,15 @@ class SharedResourcesPlanning:
         print('[INFO] Running PLANNING PROBLEM...')
         _run_planning_problem(self)
 
-    def run_operational_planning(self, candidate_solution=dict(), print_results=False, debug_flag=False):
+    def run_operational_planning(self, candidate_solution=dict(), print_results=False, filename=str(), debug_flag=False):
         print('[INFO] Running OPERATIONAL PLANNING...')
         if not candidate_solution:
             candidate_solution = self.get_initial_candidate_solution()
         results, models, sensitivities, primal_evolution = _run_operational_planning(self, candidate_solution, debug_flag=debug_flag)
         if print_results:
-            self.write_operational_planning_results_to_excel(models, results, primal_evolution)
+            if not filename:
+                filename = self.name
+            self.write_operational_planning_results_to_excel(models, results, filename=filename, primal_evolution=primal_evolution)
         return results, models, sensitivities, primal_evolution
 
     def run_without_coordination(self, print_results=False):
@@ -98,8 +100,9 @@ class SharedResourcesPlanning:
         shared_ess_capacity = self.shared_ess_data.get_investment_and_available_capacities(operational_planning_models['esso'])
         _write_planning_results_to_excel(self, processed_results, bound_evolution=bound_evolution, shared_ess_capacity=shared_ess_capacity, filename=filename)
 
-    def write_operational_planning_results_to_excel(self, optimization_models, results, primal_evolution=list()):
-        filename = os.path.join(self.results_dir, self.name + '_operational_planning_results.xlsx')
+    def write_operational_planning_results_to_excel(self, optimization_models, results, filename=str(), primal_evolution=list()):
+        if not filename:
+            filename = 'operational_planning_results'
         processed_results = _process_operational_planning_results(self, optimization_models['tso'], optimization_models['dso'], optimization_models['esso'], results)
         shared_ess_capacity = self.shared_ess_data.get_investment_and_available_capacities(optimization_models['esso'])
         _write_operational_planning_results_to_excel(self, processed_results, primal_evolution=primal_evolution, shared_ess_capacity=shared_ess_capacity, filename=filename)
@@ -153,7 +156,7 @@ def _run_planning_problem(planning_problem):
         # 1.1. Solve operational planning, with fixed investment variables,
         # 1.2. Get coupling constraints' sensitivities (subproblem)
         # 1.3. Get OF value (upper bound) from the subproblem
-        operational_results, lower_level_models, sensitivities, _ = planning_problem.run_operational_planning(candidate_solution, print_results=False)
+        operational_results, lower_level_models, sensitivities, _ = planning_problem.run_operational_planning(candidate_solution, print_results=True, filename=f'{planning_problem.name}_operational_planning_iter{iter}')
         upper_bound = planning_problem.get_upper_bound(lower_level_models['tso'])
         upper_bound_evolution.append(upper_bound)
 
@@ -1791,7 +1794,7 @@ def _write_bound_evolution_to_excel(workbook, bound_evolution):
 # ======================================================================================================================
 #  RESULTS OPERATIONAL PLANNING - write functions
 # ======================================================================================================================
-def _write_operational_planning_results_to_excel(planning_problem, results, primal_evolution=list(), shared_ess_capacity=dict(), filename='operation_planning_results'):
+def _write_operational_planning_results_to_excel(planning_problem, results, primal_evolution=list(), shared_ess_capacity=dict(), filename='operation_planning'):
 
     wb = Workbook()
 
@@ -1822,13 +1825,15 @@ def _write_operational_planning_results_to_excel(planning_problem, results, prim
     planning_problem.shared_ess_data.write_relaxation_slacks_results_to_excel(wb, results['esso'])
 
     # Save results
+    results_filename = os.path.join(planning_problem.data_dir, f'{filename}_operational_planning_results.xlsx')
     try:
-        wb.save(filename)
+        wb.save(results_filename)
+        print('[INFO] Operational Planning Results written to {}.'.format(results_filename))
     except:
         from datetime import datetime
         now = datetime.now()
         current_time = now.strftime("%Y-%m-%d_%H-%M-%S")
-        backup_filename = f"{filename.replace('.xlsx', '')}_{current_time}.xlsx"
+        backup_filename = os.path.join(planning_problem.data_dir, f"{filename.replace('.xlsx', '')}_{current_time}.xlsx")
         print(f"[WARNING] Results saved to file {backup_filename}.xlsx")
         wb.save(backup_filename)
 
