@@ -544,7 +544,6 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                     for s_m in dso_model[year][day].scenarios_market:
                         for s_o in dso_model[year][day].scenarios_operation:
                             #obj += PENALTY_EXPECTED_VMAG_DEVIATION * ((dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2) - dso_model[year][day].expected_interface_vmag_sqr[p]) ** 2
-                            expected_vmag_sqr += (dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2)
                             obj += PENALTY_EXPECTED_PF_DEVIATION * s_base * (dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p] - dso_model[year][day].expected_interface_pf_p[p]) ** 2
                             obj += PENALTY_EXPECTED_PF_DEVIATION * s_base * (dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p] - dso_model[year][day].expected_interface_pf_q[p]) ** 2
                             obj += PENALTY_EXPECTED_SESS_DEVIATION * s_base * (dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_p[p]) ** 2
