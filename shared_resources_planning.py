@@ -1825,7 +1825,7 @@ def _write_operational_planning_results_to_excel(planning_problem, results, prim
     planning_problem.shared_ess_data.write_relaxation_slacks_results_to_excel(wb, results['esso'])
 
     # Save results
-    results_filename = os.path.join(planning_problem.data_dir, f'{filename}_operational_planning_results.xlsx')
+    results_filename = os.path.join(planning_problem.results_dir, f'{filename}_operational_planning_results.xlsx')
     try:
         wb.save(results_filename)
         print('[INFO] Operational Planning Results written to {}.'.format(results_filename))
