@@ -1868,8 +1868,8 @@ def _write_network_energy_storage_results_to_excel(network_planning, workbook, r
 
                 # - SoC, [%]
                 sheet.cell(row=row_idx, column=1).value = es_id
-                sheet.cell(row=row_idx, column=2).value = int(year)
-                sheet.cell(row=row_idx, column=3).value = node_id
+                sheet.cell(row=row_idx, column=2).value = node_id
+                sheet.cell(row=row_idx, column=3).value = int(year)
                 sheet.cell(row=row_idx, column=4).value = day
                 sheet.cell(row=row_idx, column=5).value = 'SoC, [%]'
                 sheet.cell(row=row_idx, column=6).value = 'Expected'
