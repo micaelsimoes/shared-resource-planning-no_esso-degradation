@@ -461,9 +461,13 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                     init_vsqr = consensus_vars['interface']['v_sqr']['dso']['current'][adn_node_id][year][day][p]
                     init_p = consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
                     init_q = consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q'][p] / s_base
+                    init_ess_p = consensus_vars['ess']['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
+                    init_ess_q = consensus_vars['ess']['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
                     obj += PENALTY_INTERFACE_VMAG * ((tso_model[year][day].expected_interface_vmag_sqr[dn, p] - init_vsqr) ** 2)
                     obj += PENALTY_INTERFACE_PF * ((tso_model[year][day].expected_interface_pf_p[dn, p] - init_p) ** 2)
                     obj += PENALTY_INTERFACE_PF * ((tso_model[year][day].expected_interface_pf_q[dn, p] - init_q) ** 2)
+                    obj += PENALTY_INTERFACE_PF * ((tso_model[year][day].expected_shared_ess_p[dn, p] - init_ess_p) ** 2)
+                    obj += PENALTY_INTERFACE_PF * ((tso_model[year][day].expected_shared_ess_q[dn, p] - init_ess_q) ** 2)
 
             # Deactivate original OF, add new objective to the model
             tso_model[year][day].objective.deactivate()
