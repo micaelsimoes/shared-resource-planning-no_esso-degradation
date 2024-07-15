@@ -3690,38 +3690,40 @@ def _write_network_branch_loading_results_per_operator(network, sheet, operator_
                         # flow ij, [%]
                         sheet.cell(row=row_idx, column=1).value = operator_type
                         sheet.cell(row=row_idx, column=2).value = tn_node_id
-                        sheet.cell(row=row_idx, column=3).value = branch.fbus
-                        sheet.cell(row=row_idx, column=4).value = branch.tbus
-                        sheet.cell(row=row_idx, column=5).value = int(year)
-                        sheet.cell(row=row_idx, column=6).value = day
-                        sheet.cell(row=row_idx, column=7).value = 'Flow_ij, [%]'
-                        sheet.cell(row=row_idx, column=8).value = s_m
-                        sheet.cell(row=row_idx, column=9).value = s_o
+                        sheet.cell(row=row_idx, column=3).value = branch.branch_id
+                        sheet.cell(row=row_idx, column=4).value = branch.fbus
+                        sheet.cell(row=row_idx, column=5).value = branch.tbus
+                        sheet.cell(row=row_idx, column=6).value = int(year)
+                        sheet.cell(row=row_idx, column=7).value = day
+                        sheet.cell(row=row_idx, column=8).value = 'Flow_ij, [%]'
+                        sheet.cell(row=row_idx, column=9).value = s_m
+                        sheet.cell(row=row_idx, column=10).value = s_o
                         for p in range(network[year][day].num_instants):
                             value = results[year][day]['scenarios'][s_m][s_o]['branches']['branch_flow']['flow_ij_perc'][branch.branch_id][p]
-                            sheet.cell(row=row_idx, column=p + 10).value = value
-                            sheet.cell(row=row_idx, column=p + 10).number_format = perc_style
+                            sheet.cell(row=row_idx, column=p + 11).value = value
+                            sheet.cell(row=row_idx, column=p + 11).number_format = perc_style
                             if value > 1.00 + VIOLATION_TOLERANCE:
-                                sheet.cell(row=row_idx, column=p + 9).fill = violation_fill
+                                sheet.cell(row=row_idx, column=p + 11).fill = violation_fill
                             expected_values['flow_ij'][branch.branch_id][p] += value * omega_m * omega_s
                         row_idx = row_idx + 1
 
                         # flow ji, [%]
                         sheet.cell(row=row_idx, column=1).value = operator_type
                         sheet.cell(row=row_idx, column=2).value = tn_node_id
-                        sheet.cell(row=row_idx, column=3).value = branch.tbus
-                        sheet.cell(row=row_idx, column=4).value = branch.fbus
-                        sheet.cell(row=row_idx, column=5).value = int(year)
-                        sheet.cell(row=row_idx, column=6).value = day
-                        sheet.cell(row=row_idx, column=7).value = 'Flow_ji, [%]'
-                        sheet.cell(row=row_idx, column=8).value = s_m
-                        sheet.cell(row=row_idx, column=9).value = s_o
+                        sheet.cell(row=row_idx, column=3).value = branch.branch_id
+                        sheet.cell(row=row_idx, column=4).value = branch.tbus
+                        sheet.cell(row=row_idx, column=5).value = branch.fbus
+                        sheet.cell(row=row_idx, column=6).value = int(year)
+                        sheet.cell(row=row_idx, column=7).value = day
+                        sheet.cell(row=row_idx, column=8).value = 'Flow_ji, [%]'
+                        sheet.cell(row=row_idx, column=9).value = s_m
+                        sheet.cell(row=row_idx, column=10).value = s_o
                         for p in range(network[year][day].num_instants):
                             value = results[year][day]['scenarios'][s_m][s_o]['branches']['branch_flow']['flow_ij_perc'][branch.branch_id][p]
-                            sheet.cell(row=row_idx, column=p + 10).value = value
-                            sheet.cell(row=row_idx, column=p + 10).number_format = perc_style
+                            sheet.cell(row=row_idx, column=p + 11).value = value
+                            sheet.cell(row=row_idx, column=p + 11).number_format = perc_style
                             if value > 1.00 + VIOLATION_TOLERANCE:
-                                sheet.cell(row=row_idx, column=p + 9).fill = violation_fill
+                                sheet.cell(row=row_idx, column=p + 11).fill = violation_fill
                             expected_values['flow_ji'][branch.branch_id][p] += value * omega_m * omega_s
                         row_idx = row_idx + 1
 
