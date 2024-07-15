@@ -442,7 +442,7 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                 for s_m in tso_model[year][day].scenarios_market:
                     for s_o in tso_model[year][day].scenarios_operation:
                         for p in tso_model[year][day].periods:
-                            obj += PENALTY_EXPECTED_VMAG_DEVIATION * ((tso_model[year][day].e[adn_node_idx, s_m, s_o, p] ** 2 + tso_model[year][day].f[adn_node_idx, s_m, s_o, p] ** 2) - tso_model[year][day].expected_interface_vmag_sqr[dn, p]) ** 2
+                            #obj += PENALTY_EXPECTED_VMAG_DEVIATION * ((tso_model[year][day].e[adn_node_idx, s_m, s_o, p] ** 2 + tso_model[year][day].f[adn_node_idx, s_m, s_o, p] ** 2) - tso_model[year][day].expected_interface_vmag_sqr[dn, p]) ** 2
                             obj += PENALTY_EXPECTED_PF_DEVIATION * s_base * (tso_model[year][day].pc[adn_load_idx, s_m, s_o, p] - tso_model[year][day].expected_interface_pf_p[dn, p]) ** 2
                             obj += PENALTY_EXPECTED_PF_DEVIATION * s_base * (tso_model[year][day].qc[adn_load_idx, s_m, s_o, p] - tso_model[year][day].expected_interface_pf_q[dn, p]) ** 2
             for e in tso_model[year][day].shared_energy_storages:
@@ -452,6 +452,19 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                             obj += PENALTY_EXPECTED_SESS_DEVIATION * s_base * (tso_model[year][day].shared_es_pnet[e, s_m, s_o, p] - tso_model[year][day].expected_shared_ess_p[e, p]) ** 2
                             obj += PENALTY_EXPECTED_SESS_DEVIATION * s_base * (tso_model[year][day].shared_es_qnet[e, s_m, s_o, p] - tso_model[year][day].expected_shared_ess_q[e, p]) ** 2
             tso_model[year][day].objective.expr = obj
+
+            tso_model[year][day].interface_cons = pe.ConstraintList()
+            for dn in tso_model[year][day].active_distribution_networks:
+                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
+                adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(adn_node_id)
+                for p in tso_model[year][day].periods:
+                    expected_vmag_sqr = 0.00
+                    for s_m in tso_model[year][day].scenarios_market:
+                        omega_market = transmission_network.network[year][day].prob_market_scenarios[s_m]
+                        for s_o in tso_model[year][day].scenarios_operation:
+                            omega_oper = transmission_network.network[year][day].prob_operation_scenarios[s_o]
+                            expected_vmag_sqr += omega_market * omega_oper * (tso_model[year][day].e[adn_node_idx, s_m, s_o, p] ** 2 + tso_model[year][day].f[adn_node_idx, s_m, s_o, p] ** 2)
+                    tso_model[year][day].interface_cons.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] == expected_vmag_sqr)
 
     # Update TSO's OF to try to respect the interface power flows, run SMOPF
     for year in transmission_network.years:
