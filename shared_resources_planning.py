@@ -554,6 +554,7 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                             #expected_pf_q += omega_market * omega_oper * dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p]
                             #expected_ess_p += omega_market * omega_oper * dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p]
                             #expected_ess_q += omega_market * omega_oper * dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p]
+                    '''
                     if distribution_network.params.relax_equalities:
                         dso_model[year][day].interface_cons.add(dso_model[year][day].expected_interface_vmag_sqr[p] <= expected_vmag_sqr + EQUALITY_TOLERANCE)
                         dso_model[year][day].interface_cons.add(dso_model[year][day].expected_interface_vmag_sqr[p] >= expected_vmag_sqr - EQUALITY_TOLERANCE)
@@ -571,6 +572,7 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                         dso_model[year][day].interface_cons.add(dso_model[year][day].expected_interface_pf_q[p] == expected_pf_q)
                         dso_model[year][day].interface_cons.add(dso_model[year][day].expected_shared_ess_p[p] == expected_ess_p)
                         dso_model[year][day].interface_cons.add(dso_model[year][day].expected_shared_ess_q[p] == expected_ess_q)
+                    '''
                 dso_model[year][day].objective.expr = obj
 
         # Run SMOPF
