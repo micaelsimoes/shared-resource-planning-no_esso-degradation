@@ -479,11 +479,13 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                     init_q = consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q'][p] / s_base
                     init_ess_p = consensus_vars['ess']['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
                     init_ess_q = consensus_vars['ess']['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
-                    obj += PENALTY_INTERFACE_VMAG * ((tso_model[year][day].expected_interface_vmag_sqr[dn, p] - init_vsqr) ** 2)
+                    #obj += PENALTY_INTERFACE_VMAG * ((tso_model[year][day].expected_interface_vmag_sqr[dn, p] - init_vsqr) ** 2)
                     obj += PENALTY_INTERFACE_PF * ((tso_model[year][day].expected_interface_pf_p[dn, p] - init_p) ** 2)
                     obj += PENALTY_INTERFACE_PF * ((tso_model[year][day].expected_interface_pf_q[dn, p] - init_q) ** 2)
                     obj += PENALTY_INTERFACE_PF * ((tso_model[year][day].expected_shared_ess_p[dn, p] - init_ess_p) ** 2)
                     obj += PENALTY_INTERFACE_PF * ((tso_model[year][day].expected_shared_ess_q[dn, p] - init_ess_q) ** 2)
+
+                    tso_model[year][day].expected_interface_vmag_sqr[dn, p].fix(init_vsqr)
 
             # Deactivate original OF, add new objective to the model
             tso_model[year][day].objective.deactivate()
@@ -780,6 +782,8 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
 
             for dn in model[year][day].active_distribution_networks:
                 for p in model[year][day].periods:
+                    model[year][day].expected_interface_vmag_sqr[dn, p].fixed = False
+                    model[year][day].expected_interface_vmag_sqr[dn, p].setub(None)
                     model[year][day].expected_interface_pf_p[dn, p].setub(None)
                     model[year][day].expected_interface_pf_p[dn, p].setlb(None)
                     model[year][day].expected_interface_pf_q[dn, p].setub(None)
