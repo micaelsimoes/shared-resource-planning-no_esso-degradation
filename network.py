@@ -261,8 +261,8 @@ def _build_model(network, params):
                         model.slack_f_down[i, s_m, s_o, p].setub(VMAG_VIOLATION_ALLOWED * f_ub)
                     if node.type == BUS_REF:
                         if network.is_transmission:
-                            model.e[i, s_m, s_o, p].setub(e_ub + SMALL_TOLERANCE)
-                            model.e[i, s_m, s_o, p].setlb(e_lb - SMALL_TOLERANCE)
+                            model.e[i, s_m, s_o, p].setub(e_ub)
+                            model.e[i, s_m, s_o, p].setlb(e_lb)
                             model.f[i, s_m, s_o, p].setub(SMALL_TOLERANCE)
                             model.f[i, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
                         else:
@@ -571,24 +571,24 @@ def _build_model(network, params):
                             # - Enforce voltage controlled bus
                             gen_idx = network.get_gen_idx(node.bus_i)
                             vg = network.generators[gen_idx].vg
-                            e = model.e[i, s_m, s_o, p]
-                            f = model.f[i, s_m, s_o, p]
+                            e_sqr = model.e_sqr[i, s_m, s_o, p]
+                            f_sqr = model.f_sqr[i, s_m, s_o, p]
                             if params.relax_equalities:
-                                model.voltage_cons.add(e ** 2 + f ** 2 <= vg[p] ** 2 + EQUALITY_TOLERANCE)
-                                model.voltage_cons.add(e ** 2 + f ** 2 >= vg[p] ** 2 - EQUALITY_TOLERANCE)
+                                model.voltage_cons.add(e_sqr + f_sqr <= vg[p] ** 2 + EQUALITY_TOLERANCE)
+                                model.voltage_cons.add(e_sqr + f_sqr >= vg[p] ** 2 - EQUALITY_TOLERANCE)
                             else:
-                                model.voltage_cons.add(e ** 2 + f ** 2 == vg[p] ** 2)
+                                model.voltage_cons.add(e_sqr + f_sqr == vg[p] ** 2)
                         else:
                             # - Voltage at the bus is not controlled
-                            e = model.e[i, s_m, s_o, p]
-                            f = model.f[i, s_m, s_o, p]
-                            model.voltage_cons.add(e ** 2 + f ** 2 >= node.v_min**2)
-                            model.voltage_cons.add(e ** 2 + f ** 2 <= node.v_max**2)
+                            e_sqr = model.e_sqr[i, s_m, s_o, p]
+                            f_sqr = model.f_sqr[i, s_m, s_o, p]
+                            model.voltage_cons.add(e_sqr + f_sqr >= node.v_min ** 2)
+                            model.voltage_cons.add(e_sqr + f_sqr <= node.v_max ** 2)
                     else:
-                        e = model.e[i, s_m, s_o, p]
-                        f = model.f[i, s_m, s_o, p]
-                        model.voltage_cons.add(e ** 2 + f ** 2 >= node.v_min**2)
-                        model.voltage_cons.add(e ** 2 + f ** 2 <= node.v_max**2)
+                        e_sqr = model.e_sqr[i, s_m, s_o, p]
+                        f_sqr = model.f_sqr[i, s_m, s_o, p]
+                        model.voltage_cons.add(e_sqr + f_sqr >= node.v_min**2)
+                        model.voltage_cons.add(e_sqr + f_sqr <= node.v_max**2)
 
     # - Flexible Loads -- Daily energy balance
     if params.fl_reg:
