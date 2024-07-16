@@ -559,19 +559,28 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                 dso_model[year][day].expected_shared_ess_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
                 dso_model[year][day].expected_shared_ess_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
 
-                '''
                 obj = copy(dso_model[year][day].objective.expr)
-                for s_m in dso_model[year][day].scenarios_market:
-                    for s_o in dso_model[year][day].scenarios_operation:
-                        for p in dso_model[year][day].periods:
-                            obj += PENALTY_EXPECTED_VMAG_DEVIATION * ((dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2) - dso_model[year][day].expected_interface_vmag_sqr[p]) ** 2
+                for p in dso_model[year][day].periods:
+                    for s_m in dso_model[year][day].scenarios_market:
+                        for s_o in dso_model[year][day].scenarios_operation:
+                            # obj += PENALTY_EXPECTED_VMAG_DEVIATION * ((dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2) - dso_model[year][day].expected_interface_vmag_sqr[p]) ** 2
                             obj += PENALTY_EXPECTED_PF_DEVIATION * s_base * (dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p] - dso_model[year][day].expected_interface_pf_p[p]) ** 2
                             obj += PENALTY_EXPECTED_PF_DEVIATION * s_base * (dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p] - dso_model[year][day].expected_interface_pf_q[p]) ** 2
                             obj += PENALTY_EXPECTED_SESS_DEVIATION * s_base * (dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_p[p]) ** 2
                             obj += PENALTY_EXPECTED_SESS_DEVIATION * s_base * (dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_q[p]) ** 2
                 dso_model[year][day].objective.expr = obj
-                '''
 
+                dso_model[year][day].interface_cons = pe.ConstraintList()
+                for p in dso_model[year][day].periods:
+                    expected_vmag_sqr = 0.00
+                    for s_m in dso_model[year][day].scenarios_market:
+                        omega_market = distribution_network.network[year][day].prob_market_scenarios[s_m]
+                        for s_o in dso_model[year][day].scenarios_operation:
+                            omega_oper = distribution_network.network[year][day].prob_operation_scenarios[s_o]
+                            expected_vmag_sqr += omega_market * omega_oper * (dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2)
+                    dso_model[year][day].interface_cons.add(dso_model[year][day].expected_interface_vmag_sqr[p] == expected_vmag_sqr)
+
+                '''
                 dso_model[year][day].interface_cons = pe.ConstraintList()
                 for s_m in dso_model[year][day].scenarios_market:
                     for s_o in dso_model[year][day].scenarios_operation:
@@ -593,6 +602,7 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                                 dso_model[year][day].interface_cons.add(dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p] == dso_model[year][day].expected_interface_pf_q[p])
                                 dso_model[year][day].interface_cons.add(dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p] == dso_model[year][day].expected_shared_ess_p[p])
                                 dso_model[year][day].interface_cons.add(dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p] == dso_model[year][day].expected_shared_ess_q[p])
+                '''
 
         # Run SMOPF
         results[node_id] = distribution_network.optimize(dso_model)
