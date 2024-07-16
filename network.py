@@ -478,6 +478,12 @@ def _build_model(network, params):
         model.es_sdch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.es_pdch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.es_qdch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+        model.es_sch_sqr = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.es_pch_sqr = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.es_qch_sqr = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.es_sdch_sqr = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.es_pdch_sqr = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.es_qdch_sqr = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         for e in model.energy_storages:
             energy_storage = network.energy_storages[e]
             for s_m in model.scenarios_market:
@@ -494,6 +500,12 @@ def _build_model(network, params):
                         model.es_pdch[e, s_m, s_o, p].setub(energy_storage.s)
                         model.es_qdch[e, s_m, s_o, p].setub(energy_storage.s)
                         model.es_qdch[e, s_m, s_o, p].setlb(-energy_storage.s)
+                        model.es_sch_sqr[e, s_m, s_o, p].setub(energy_storage.s ** 2)
+                        model.es_pch_sqr[e, s_m, s_o, p].setub(energy_storage.s ** 2)
+                        model.es_qch_sqr[e, s_m, s_o, p].setub(energy_storage.s ** 2)
+                        model.es_sdch_sqr[e, s_m, s_o, p].setub(energy_storage.s ** 2)
+                        model.es_pdch_sqr[e, s_m, s_o, p].setub(energy_storage.s ** 2)
+                        model.es_qdch_sqr[e, s_m, s_o, p].setub(energy_storage.s ** 2)
 
         if params.slacks.ess.complementarity:
             model.slack_es_comp = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -769,7 +781,14 @@ def _build_model(network, params):
                     model.shared_energy_storage_operation.add(model.shared_es_qdch[e, s_m, s_o, p] <= s_max)
                     model.shared_energy_storage_operation.add(model.shared_es_qdch[e, s_m, s_o, p] <= tan(max_phi) * model.shared_es_pdch[e, s_m, s_o, p])
                     model.shared_energy_storage_operation.add(model.shared_es_qdch[e, s_m, s_o, p] >= -s_max)
-                    model.shared_energy_storage_operation.add(model.shared_es_qdch[e, s_m, s_o, p] >= tan(min_phi) * model.shared_es_spch[e, s_m, s_o, p])
+                    model.shared_energy_storage_operation.add(model.shared_es_qdch[e, s_m, s_o, p] >= tan(min_phi) * model.shared_es_pdch[e, s_m, s_o, p])
+
+                    model.shared_energy_storage_operation.add(model.shared_es_sch_sqr[e, s_m, s_o, p] <= s_max ** 2)
+                    model.shared_energy_storage_operation.add(model.shared_es_pch_sqr[e, s_m, s_o, p] <= s_max ** 2)
+                    model.shared_energy_storage_operation.add(model.shared_es_qch_sqr[e, s_m, s_o, p] <= s_max ** 2)
+                    model.shared_energy_storage_operation.add(model.shared_es_sdch_sqr[e, s_m, s_o, p] <= s_max ** 2)
+                    model.shared_energy_storage_operation.add(model.shared_es_pdch_sqr[e, s_m, s_o, p] <= s_max ** 2)
+                    model.shared_energy_storage_operation.add(model.shared_es_qdch_sqr[e, s_m, s_o, p] <= s_max ** 2)
 
                     # Pnet and Qnet definition
                     if params.relax_equalities:
