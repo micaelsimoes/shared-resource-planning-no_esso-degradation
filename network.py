@@ -1025,7 +1025,7 @@ def _build_model(network, params):
                         for p in model.periods:
                             flex_p_up = model.flex_p_up[c, s_m, s_o, p]
                             flex_p_down = model.flex_p_down[c, s_m, s_o, p]
-                            obj_scenario += c_flex[s_m][p] * network.baseMVA * (flex_p_down - flex_p_up)
+                            obj_scenario += c_flex[s_m][p] * network.baseMVA * (flex_p_down + flex_p_up)
 
                 # Load curtailment
                 if params.l_curt:
@@ -2158,7 +2158,7 @@ def _compute_objective_function_value(network, model, params):
                         for p in model.periods:
                             flex_up = pe.value(model.flex_p_up[c, s_m, s_o, p])
                             flex_down = pe.value(model.flex_p_down[c, s_m, s_o, p])
-                            obj_scenario += c_flex[s_m][p] * network.baseMVA * (flex_down - flex_up)
+                            obj_scenario += c_flex[s_m][p] * network.baseMVA * (flex_down + flex_up)
 
                 # Load curtailment
                 if params.l_curt:
@@ -2387,6 +2387,7 @@ def _compute_flexibility_used(network, model, params):
                 for c in model.loads:
                     for p in model.periods:
                         flexibility_used_scenario += pe.value(model.flex_p_up[c, s_m, s_o, p]) * network.baseMVA
+                        flexibility_used_scenario += pe.value(model.flex_p_down[c, s_m, s_o, p]) * network.baseMVA
 
                 flexibility_used += flexibility_used_scenario * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
 
