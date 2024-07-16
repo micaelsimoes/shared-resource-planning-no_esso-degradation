@@ -244,6 +244,8 @@ def _build_model(network, params):
     model.f_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.e_sqr = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0)
     model.f_sqr = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    model.e_actual_sqr = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0)
+    model.f_actual_sqr = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     if params.slacks.grid_operation.voltage:
         model.slack_e_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
         model.slack_e_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
@@ -589,9 +591,15 @@ def _build_model(network, params):
                         model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] >= e_actual - EQUALITY_TOLERANCE)
                         model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] <= f_actual + EQUALITY_TOLERANCE)
                         model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] >= f_actual - EQUALITY_TOLERANCE)
+                        model.voltage_cons.add(model.e_actual_sqr[i, s_m, s_o, p] <= e_actual ** 2 + EQUALITY_TOLERANCE)
+                        model.voltage_cons.add(model.e_actual_sqr[i, s_m, s_o, p] >= e_actual ** 2 - EQUALITY_TOLERANCE)
+                        model.voltage_cons.add(model.f_actual_sqr[i, s_m, s_o, p] <= f_actual ** 2 + EQUALITY_TOLERANCE)
+                        model.voltage_cons.add(model.f_actual_sqr[i, s_m, s_o, p] >= f_actual ** 2 - EQUALITY_TOLERANCE)
                     else:
                         model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] == e_actual)
                         model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] == f_actual)
+                        model.voltage_cons.add(model.e_actual_sqr[i, s_m, s_o, p] == e_actual ** 2)
+                        model.voltage_cons.add(model.f_actual_sqr[i, s_m, s_o, p] == f_actual ** 2)
 
                     # voltage magnitude constraints
                     if node.type == BUS_PV:
@@ -615,8 +623,8 @@ def _build_model(network, params):
                     else:
                         e_sqr = model.e_sqr[i, s_m, s_o, p]
                         f_sqr = model.f_sqr[i, s_m, s_o, p]
-                        model.voltage_cons.add(e_sqr + f_sqr >= node.v_min**2)
-                        model.voltage_cons.add(e_sqr + f_sqr <= node.v_max**2)
+                        model.voltage_cons.add(e_sqr + f_sqr >= node.v_min ** 2)
+                        model.voltage_cons.add(e_sqr + f_sqr <= node.v_max ** 2)
 
     # - Flexible Loads -- Daily energy balance
     if params.fl_reg:
@@ -897,11 +905,11 @@ def _build_model(network, params):
                                 Pg -= (model.pg_curt_down[g, s_m, s_o, p] - model.pg_curt_up[g, s_m, s_o, p])
                                 Qg -= (model.qg_curt_down[g, s_m, s_o, p] - model.qg_curt_up[g, s_m, s_o, p])
 
-                    ei = model.e_actual[i, s_m, s_o, p]
-                    fi = model.f_actual[i, s_m, s_o, p]
+                    ei_sqr = model.e_actual_sqr[i, s_m, s_o, p]
+                    fi_sqr = model.f_actual_sqr[i, s_m, s_o, p]
 
-                    Pi = node.gs * (ei ** 2 + fi ** 2)
-                    Qi = -node.bs * (ei ** 2 + fi ** 2)
+                    Pi = node.gs * (ei_sqr + fi_sqr)
+                    Qi = -node.bs * (ei_sqr + fi_sqr)
                     for b in range(len(network.branches)):
                         branch = network.branches[b]
                         if branch.fbus == node.bus_i or branch.tbus == node.bus_i:
@@ -918,9 +926,9 @@ def _build_model(network, params):
                                 ej = model.e_actual[tnode_idx, s_m, s_o, p]
                                 fj = model.f_actual[tnode_idx, s_m, s_o, p]
 
-                                Pi += branch.g * (ei ** 2 + fi ** 2) * rij ** 2
+                                Pi += branch.g * (ei_sqr + fi_sqr) * rij ** 2
                                 Pi -= rij * (branch.g * (ei * ej + fi * fj) + branch.b * (fi * ej - ei * fj))
-                                Qi -= (branch.b + branch.b_sh * 0.5) * (ei ** 2 + fi ** 2) * rij ** 2
+                                Qi -= (branch.b + branch.b_sh * 0.5) * (ei_sqr + fi_sqr) * rij ** 2
                                 Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
                             else:
 
@@ -932,9 +940,9 @@ def _build_model(network, params):
                                 ej = model.e_actual[tnode_idx, s_m, s_o, p]
                                 fj = model.f_actual[tnode_idx, s_m, s_o, p]
 
-                                Pi += branch.g * (ei ** 2 + fi ** 2)
+                                Pi += branch.g * (ei_sqr + fi_sqr)
                                 Pi -= rij * (branch.g * (ei * ej + fi * fj) + branch.b * (fi * ej - ei * fj))
-                                Qi -= (branch.b + branch.b_sh * 0.5) * (ei ** 2 + fi ** 2)
+                                Qi -= (branch.b + branch.b_sh * 0.5) * (ei_sqr + fi_sqr)
                                 Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
 
                     if params.slacks.node_balance:
@@ -978,7 +986,7 @@ def _build_model(network, params):
                         bij_sh = branch.b_sh * 0.50
 
                         iij_sqr = (branch.g ** 2 + branch.b ** 2) * (((rij ** 2) * ei - rij * ej) ** 2 + ((rij ** 2) * fi - rij * fj) ** 2)
-                        iij_sqr += bij_sh ** 2 * (ei ** 2 + fi ** 2)
+                        iij_sqr += bij_sh ** 2 * (ei_sqr + fi_sqr)
                         iij_sqr += 2 * branch.g * bij_sh * (((rij ** 2) * fi - rij * fj) * ei - ((rij ** 2) * ei - rij * ej) * fi)
                         iij_sqr += 2 * branch.b * bij_sh * (((rij ** 2) * ei - rij * ej) * ei + ((rij ** 2) * fi - rij * fj) * fi)
 
@@ -1006,11 +1014,11 @@ def _build_model(network, params):
 
                     elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER or (params.branch_limit_type == BRANCH_LIMIT_MIXED and branch.is_transformer):
 
-                        pij = branch.g * (ei ** 2 + fi ** 2) * rij ** 2
+                        pij = branch.g * (ei_sqr + fi_sqr) * rij ** 2
                         pij -= branch.g * (ei * ej + fi * fj) * rij
                         pij -= branch.b * (fi * ej - ei * fj) * rij
 
-                        qij = - (branch.b + branch.b_sh * 0.50) * (ei ** 2 + fi ** 2) * rij ** 2
+                        qij = - (branch.b + branch.b_sh * 0.50) * (ei_sqr + fi_sqr) * rij ** 2
                         qij += branch.b * (ei * ej + fi * fj) * rij
                         qij -= branch.g * (fi * ej - ei * fj) * rij
 
@@ -1812,7 +1820,7 @@ def _process_results(network, model, params, results=dict()):
                 for p in model.periods:
                     e = pe.value(model.e_actual[i, s_m, s_o, p])
                     f = pe.value(model.f_actual[i, s_m, s_o, p])
-                    v_mag = sqrt(e**2 + f**2)
+                    v_mag = sqrt(e ** 2 + f ** 2)
                     v_ang = atan2(f, e) * (180.0 / pi)
                     processed_results['scenarios'][s_m][s_o]['voltage']['vmag'][node_id].append(v_mag)
                     processed_results['scenarios'][s_m][s_o]['voltage']['vang'][node_id].append(v_ang)
@@ -1901,8 +1909,8 @@ def _process_results(network, model, params, results=dict()):
                     # Power flows
                     pij, qij = _get_branch_power_flow(network, params, branch, branch.fbus, branch.tbus, model, s_m, s_o, p)
                     pji, qji = _get_branch_power_flow(network, params, branch, branch.tbus, branch.fbus, model, s_m, s_o, p)
-                    sij_sqr = pij**2 + qij**2
-                    sji_sqr = pji**2 + qji**2
+                    sij_sqr = pij ** 2 + qij ** 2
+                    sji_sqr = pji ** 2 + qji ** 2
                     processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['pij'][branch_id].append(pij)
                     processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['pji'][branch_id].append(pji)
                     processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['qij'][branch_id].append(qij)
@@ -2148,7 +2156,7 @@ def _process_results_interface(network, model):
                     results[node_id][s_m][s_o]['p'] = [0.0 for _ in model.periods]
                     results[node_id][s_m][s_o]['q'] = [0.0 for _ in model.periods]
                     for p in model.periods:
-                        vmag = sqrt(pe.value(model.e_actual[node_idx, s_m, s_o, p]**2 + model.f_actual[node_idx, s_m, s_o, p]**2))
+                        vmag = sqrt(pe.value(model.e_actual[node_idx, s_m, s_o, p] ** 2 + model.f_actual[node_idx, s_m, s_o, p] ** 2))
                         pf_p = pe.value(model.pc[load_idx, s_m, s_o, p]) * network.baseMVA
                         pf_q = pe.value(model.qc[load_idx, s_m, s_o, p]) * network.baseMVA
                         results[node_id][s_m][s_o]['v'][p] = vmag
