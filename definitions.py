@@ -55,7 +55,7 @@ PENALTY_EXPECTED_VMAG_DEVIATION = 1e3
 PENALTY_EXPECTED_PF_DEVIATION = 1e6
 PENALTY_EXPECTED_SESS_DEVIATION = 1e6
 
-VMAG_VIOLATION_ALLOWED = 0.15   # Over/undervoltage allowed, ratio (±15%)
+VMAG_VIOLATION_ALLOWED = 0.10   # Over/undervoltage allowed, ratio (±15%)
 SIJ_VIOLATION_ALLOWED = 0.50    # Branch power flow allowed, ratio (+50%)
 
 DATA_ACTIVE_POWER = 1
