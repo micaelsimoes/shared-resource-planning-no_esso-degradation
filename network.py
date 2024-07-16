@@ -242,6 +242,8 @@ def _build_model(network, params):
     model.f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.e_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.0)
     model.f_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+    model.e_sqr = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0)
+    model.f_sqr = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     if params.slacks.grid_operation.voltage:
         model.slack_e_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
         model.slack_e_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
@@ -254,6 +256,8 @@ def _build_model(network, params):
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
                 for p in model.periods:
+                    model.e_sqr[i, s_m, s_o, p].setub(e_ub ** 2)
+                    model.f_sqr[i, s_m, s_o, p].setub(f_ub ** 2)
                     if params.slacks.grid_operation.voltage:
                         model.slack_e_up[i, s_m, s_o, p].setub(VMAG_VIOLATION_ALLOWED * e_ub)
                         model.slack_e_down[i, s_m, s_o, p].setub(VMAG_VIOLATION_ALLOWED * e_ub)
@@ -548,6 +552,12 @@ def _build_model(network, params):
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
                 for p in model.periods:
+
+                    # e_sqr and f_sqr
+                    model.voltage_cons.add(model.e_sqr[i, s_m, s_o, p] <= model.e[i, s_m, s_o, p] ** 2 + EQUALITY_TOLERANCE)
+                    model.voltage_cons.add(model.e_sqr[i, s_m, s_o, p] >= model.e[i, s_m, s_o, p] ** 2 - EQUALITY_TOLERANCE)
+                    model.voltage_cons.add(model.f_sqr[i, s_m, s_o, p] <= model.f[i, s_m, s_o, p] ** 2 + EQUALITY_TOLERANCE)
+                    model.voltage_cons.add(model.f_sqr[i, s_m, s_o, p] >= model.f[i, s_m, s_o, p] ** 2 - EQUALITY_TOLERANCE)
 
                     # e_actual and f_actual definition
                     e_actual = model.e[i, s_m, s_o, p]
