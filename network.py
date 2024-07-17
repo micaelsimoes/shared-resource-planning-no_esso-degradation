@@ -1118,8 +1118,7 @@ def _build_model(network, params):
                 for b in model.branches:
                     for p in model.periods:
                         slack_flow_ij_sqr = (model.slack_flow_ij_sqr[b, s_m, s_o, p])
-                        slack_flow_ji_sqr = (model.slack_flow_ji_sqr[b, s_m, s_o, p])
-                        obj += PENALTY_CURRENT * network.baseMVA * omega_market * omega_oper * (slack_flow_ij_sqr + slack_flow_ji_sqr)
+                        obj += PENALTY_CURRENT * network.baseMVA * omega_market * omega_oper * slack_flow_ij_sqr
 
     # Operation slacks
     for s_m in model.scenarios_market:
