@@ -936,11 +936,11 @@ def _build_model(network, params):
                         if params.relax_equalities:
                             model.branch_power_flow_cons.add(model.flow_ij_sqr[b, s_m, s_o, p] <= iij_sqr + EQUALITY_TOLERANCE)
                             model.branch_power_flow_cons.add(model.flow_ij_sqr[b, s_m, s_o, p] >= iij_sqr - EQUALITY_TOLERANCE)
-                            #model.branch_power_flow_cons.add(model.flow_ji_sqr[b, s_m, s_o, p] <= iji_sqr + EQUALITY_TOLERANCE)
-                            #model.branch_power_flow_cons.add(model.flow_ji_sqr[b, s_m, s_o, p] >= iji_sqr - EQUALITY_TOLERANCE)
+                            model.branch_power_flow_cons.add(model.flow_ji_sqr[b, s_m, s_o, p] <= iji_sqr + EQUALITY_TOLERANCE)
+                            model.branch_power_flow_cons.add(model.flow_ji_sqr[b, s_m, s_o, p] >= iji_sqr - EQUALITY_TOLERANCE)
                         else:
                             model.branch_power_flow_cons.add(model.flow_ij_sqr[b, s_m, s_o, p] == iij_sqr)
-                            #model.branch_power_flow_cons.add(model.flow_ji_sqr[b, s_m, s_o, p] == iji_sqr)
+                            model.branch_power_flow_cons.add(model.flow_ji_sqr[b, s_m, s_o, p] == iji_sqr)
 
                         # Branch flow limits
                         if params.slacks.grid_operation.branch_flow:
@@ -962,24 +962,24 @@ def _build_model(network, params):
 
                         sij_sqr = pij ** 2 + qij ** 2
 
-                        #pji = branch.g * (ej ** 2 + fj ** 2)
-                        #pji -= branch.g * (ej * ei + fj * fi) * rij
-                        #pji -= branch.b * (fj * ei - ej * fi) * rij
+                        pji = branch.g * (ej ** 2 + fj ** 2)
+                        pji -= branch.g * (ej * ei + fj * fi) * rij
+                        pji -= branch.b * (fj * ei - ej * fi) * rij
 
-                        #qji = - (branch.b + branch.b_sh * 0.50) * (ej ** 2 + fj ** 2)
-                        #qji += branch.b * (ej * ei + fj * fi) * rij
-                        #qji -= branch.g * (fj * ei - ej * fi) * rij
+                        qji = - (branch.b + branch.b_sh * 0.50) * (ej ** 2 + fj ** 2)
+                        qji += branch.b * (ej * ei + fj * fi) * rij
+                        qji -= branch.g * (fj * ei - ej * fi) * rij
 
-                        #sji_sqr = pji ** 2 + qji ** 2
+                        sji_sqr = pji ** 2 + qji ** 2
 
                         if params.relax_equalities:
                             model.branch_power_flow_cons.add(model.flow_ij_sqr[b, s_m, s_o, p] <= sij_sqr + EQUALITY_TOLERANCE)
                             model.branch_power_flow_cons.add(model.flow_ij_sqr[b, s_m, s_o, p] >= sij_sqr - EQUALITY_TOLERANCE)
-                            #model.branch_power_flow_cons.add(model.flow_ji_sqr[b, s_m, s_o, p] <= sji_sqr + EQUALITY_TOLERANCE)
-                            #model.branch_power_flow_cons.add(model.flow_ji_sqr[b, s_m, s_o, p] >= sji_sqr - EQUALITY_TOLERANCE)
+                            model.branch_power_flow_cons.add(model.flow_ji_sqr[b, s_m, s_o, p] <= sji_sqr + EQUALITY_TOLERANCE)
+                            model.branch_power_flow_cons.add(model.flow_ji_sqr[b, s_m, s_o, p] >= sji_sqr - EQUALITY_TOLERANCE)
                         else:
                             model.branch_power_flow_cons.add(model.flow_ij_sqr[b, s_m, s_o, p] == sij_sqr)
-                            #model.branch_power_flow_cons.add(model.flow_ji_sqr[b, s_m, s_o, p] == sji_sqr)
+                            model.branch_power_flow_cons.add(model.flow_ji_sqr[b, s_m, s_o, p] == sji_sqr)
 
                         # Branch flow limits
                         if params.slacks.grid_operation.branch_flow:
