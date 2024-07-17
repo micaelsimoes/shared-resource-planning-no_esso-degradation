@@ -256,12 +256,13 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     tso_model, results['tso'] = create_transmission_network_model(transmission_network, candidate_solution['total_capacity'])
     dso_models, results['dso'] = create_distribution_networks_models(distribution_networks, candidate_solution['total_capacity'])
     esso_model, results['esso'] = create_shared_energy_storage_model(shared_ess_data, candidate_solution['investment'])
-    planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model, consensus_vars, dual_vars, results, admm_parameters, update_tn=True, update_dns=True, update_sess=True)
 
     # Update models to ADMM
     update_transmission_model_to_admm(transmission_network, tso_model, consensus_vars, admm_parameters)
     update_distribution_models_to_admm(distribution_networks, dso_models, consensus_vars, admm_parameters)
     update_shared_energy_storage_model_to_admm(shared_ess_data, esso_model, admm_parameters)
+
+    planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model, consensus_vars, dual_vars, results, admm_parameters, update_tn=True, update_dns=True, update_sess=True)
 
     # ------------------------------------------------------------------------------------------------------------------
     # ADMM -- Main cycle
