@@ -253,9 +253,10 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     consensus_vars, dual_vars = create_admm_variables(planning_problem)
 
     # Create ADN models, get initial power flows
-    tso_model, results['tso'] = create_transmission_network_model(transmission_network, consensus_vars, candidate_solution['total_capacity'])
-    dso_models, results['dso'] = create_distribution_networks_models(distribution_networks, consensus_vars, candidate_solution['total_capacity'])
-    esso_model, results['esso'] = create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidate_solution['investment'])
+    tso_model, results['tso'] = create_transmission_network_model(transmission_network, candidate_solution['total_capacity'])
+    dso_models, results['dso'] = create_distribution_networks_models(distribution_networks, candidate_solution['total_capacity'])
+    esso_model, results['esso'] = create_shared_energy_storage_model(shared_ess_data, candidate_solution['investment'])
+    planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model, consensus_vars, dual_vars, results, admm_parameters, update_tn=True, update_dns=True, update_sess=True)
 
     # Update models to ADMM
     update_transmission_model_to_admm(transmission_network, tso_model, consensus_vars, admm_parameters)
@@ -377,7 +378,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     return results, optim_models, sensitivities, primal_evolution
 
 
-def create_transmission_network_model(transmission_network, consensus_vars, candidate_solution):
+def create_transmission_network_model(transmission_network, candidate_solution):
 
     # Build model, fix candidate solution
     transmission_network.update_data_with_candidate_solution(candidate_solution)
@@ -432,34 +433,10 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
     processed_results = transmission_network.process_results(tso_model, results)
     transmission_network.write_optimization_results_to_excel(processed_results, filename=f'{transmission_network.name}_init')
 
-    # Get initial interface and shared ESS values
-    for year in transmission_network.years:
-        for day in transmission_network.days:
-            s_base = transmission_network.network[year][day].baseMVA
-            for dn in tso_model[year][day].active_distribution_networks:
-                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
-                shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(adn_node_id)
-                for p in tso_model[year][day].periods:
-                    interface_vsqr = pe.value(tso_model[year][day].expected_interface_vmag_sqr[dn, p])
-                    interface_pf_p = pe.value(tso_model[year][day].expected_interface_pf_p[dn, p]) * s_base
-                    interface_pf_q = pe.value(tso_model[year][day].expected_interface_pf_q[dn, p]) * s_base
-                    p_ess = pe.value(tso_model[year][day].expected_shared_ess_p[shared_ess_idx, p]) * s_base
-                    q_ess = pe.value(tso_model[year][day].expected_shared_ess_q[shared_ess_idx, p]) * s_base
-                    consensus_vars['interface']['v_sqr']['tso']['current'][adn_node_id][year][day][p] = interface_vsqr
-                    consensus_vars['interface']['pf']['tso']['current'][adn_node_id][year][day]['p'][p] = interface_pf_p
-                    consensus_vars['interface']['pf']['tso']['current'][adn_node_id][year][day]['q'][p] = interface_pf_q
-                    consensus_vars['ess']['tso']['current'][adn_node_id][year][day]['p'][p] = p_ess
-                    consensus_vars['ess']['tso']['current'][adn_node_id][year][day]['q'][p] = q_ess
-                    consensus_vars['interface']['v_sqr']['tso']['prev'][adn_node_id][year][day][p] = interface_vsqr
-                    consensus_vars['interface']['pf']['tso']['prev'][adn_node_id][year][day]['p'][p] = interface_pf_p
-                    consensus_vars['interface']['pf']['tso']['prev'][adn_node_id][year][day]['q'][p] = interface_pf_q
-                    consensus_vars['ess']['tso']['prev'][adn_node_id][year][day]['p'][p] = p_ess
-                    consensus_vars['ess']['tso']['prev'][adn_node_id][year][day]['q'][p] = q_ess
-
     return tso_model, results
 
 
-def create_distribution_networks_models(distribution_networks, consensus_vars, candidate_solution):
+def create_distribution_networks_models(distribution_networks, candidate_solution):
 
     dso_models = dict()
     results = dict()
@@ -516,33 +493,12 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
         processed_results = distribution_network.process_results(dso_model, results[node_id])
         distribution_network.write_optimization_results_to_excel(processed_results, filename=f'{distribution_network.name}_init')
 
-        # Get initial interface and shared ESS values
-        for year in distribution_network.years:
-            for day in distribution_network.days:
-                s_base = distribution_network.network[year][day].baseMVA
-                for p in dso_model[year][day].periods:
-                    interface_vsqr = pe.value(dso_model[year][day].expected_interface_vmag_sqr[p])
-                    interface_pf_p = pe.value(dso_model[year][day].expected_interface_pf_p[p]) * s_base
-                    interface_pf_q = pe.value(dso_model[year][day].expected_interface_pf_q[p]) * s_base
-                    p_ess = pe.value(dso_model[year][day].expected_shared_ess_p[p]) * s_base
-                    q_ess = pe.value(dso_model[year][day].expected_shared_ess_q[p]) * s_base
-                    consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day][p] = interface_vsqr
-                    consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p] = interface_pf_p
-                    consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p] = interface_pf_q
-                    consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] = p_ess
-                    consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] = q_ess
-                    consensus_vars['interface']['v_sqr']['dso']['prev'][node_id][year][day][p] = interface_vsqr
-                    consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['p'][p] = interface_pf_p
-                    consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['q'][p] = interface_pf_q
-                    consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p] = p_ess
-                    consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p] = q_ess
-
         dso_models[node_id] = dso_model
 
     return dso_models, results
 
 
-def create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidate_solution):
+def create_shared_energy_storage_model(shared_ess_data, candidate_solution):
 
     years = [year for year in shared_ess_data.years]
     days = [day for day in shared_ess_data.days]
@@ -551,34 +507,7 @@ def create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidat
     esso_model = shared_ess_data.build_subproblem()
     shared_ess_data.update_model_with_candidate_solution(esso_model, candidate_solution)
 
-    # Fix TSO's request
-    for e in esso_model.energy_storages:
-        node_id = shared_ess_data.active_distribution_network_nodes[e]
-        for y in esso_model.years:
-            year = years[y]
-            for d in esso_model.days:
-                day = days[d]
-                for p in esso_model.periods:
-                    p_req = consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p]
-                    q_req = consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p]
-                    esso_model.es_pnet[e, y, d, p].fix(p_req)
-                    esso_model.es_qnet[e, y, d, p].fix(q_req)
-
     results = shared_ess_data.optimize(esso_model)
-
-    for e in esso_model.energy_storages:
-        node_id = shared_ess_data.active_distribution_network_nodes[e]
-        for y in esso_model.years:
-            year = years[y]
-            for d in esso_model.days:
-                day = days[d]
-                for p in esso_model.periods:
-                    shared_ess_p = pe.value(esso_model.es_pnet[e, y, d, p])
-                    shared_ess_q = pe.value(esso_model.es_qnet[e, y, d, p])
-                    consensus_vars['ess']['esso']['current'][node_id][year][day]['p'][p] = shared_ess_p
-                    consensus_vars['ess']['esso']['current'][node_id][year][day]['q'][p] = shared_ess_q
-                    consensus_vars['ess']['esso']['prev'][node_id][year][day]['p'][p] = shared_ess_p
-                    consensus_vars['ess']['esso']['prev'][node_id][year][day]['q'][p] = shared_ess_q
 
     return esso_model, results
 
