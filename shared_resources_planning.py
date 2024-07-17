@@ -559,8 +559,8 @@ def create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidat
             for d in esso_model.days:
                 day = days[d]
                 for p in esso_model.periods:
-                    p_req = consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p]
-                    q_req = consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p]
+                    p_req = consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p]
+                    q_req = consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p]
                     esso_model.es_pnet[e, y, d, p].fix(p_req)
                     esso_model.es_qnet[e, y, d, p].fix(q_req)
 
