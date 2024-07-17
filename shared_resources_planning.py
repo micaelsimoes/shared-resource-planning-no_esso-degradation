@@ -551,6 +551,19 @@ def create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidat
     esso_model = shared_ess_data.build_subproblem()
     shared_ess_data.update_model_with_candidate_solution(esso_model, candidate_solution)
 
+    # Fix TSO's request
+    for e in esso_model.energy_storages:
+        node_id = shared_ess_data.active_distribution_network_nodes[e]
+        for y in esso_model.years:
+            year = years[y]
+            for d in esso_model.days:
+                day = days[d]
+                for p in esso_model.periods:
+                    p_req = consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p]
+                    q_req = consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p]
+                    esso_model.es_pnet[e, y, d, p].fix(p_req)
+                    esso_model.es_qnet[e, y, d, p].fix(q_req)
+
     results = shared_ess_data.optimize(esso_model)
 
     for e in esso_model.energy_storages:
