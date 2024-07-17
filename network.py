@@ -285,10 +285,10 @@ def _build_model(network, params):
                             model.slack_f_up[i, s_m, s_o, p].setub(SMALL_TOLERANCE)
                             model.slack_f_down[i, s_m, s_o, p].setub(SMALL_TOLERANCE)
                     else:
-                        model.e[i, s_m, s_o, p].setub(e_ub + SMALL_TOLERANCE)
-                        model.e[i, s_m, s_o, p].setlb(e_lb - SMALL_TOLERANCE)
-                        model.f[i, s_m, s_o, p].setub(f_ub + SMALL_TOLERANCE)
-                        model.f[i, s_m, s_o, p].setlb(f_lb - SMALL_TOLERANCE)
+                        model.e[i, s_m, s_o, p].setub(e_ub)
+                        model.e[i, s_m, s_o, p].setlb(e_lb)
+                        model.f[i, s_m, s_o, p].setub(f_ub)
+                        model.f[i, s_m, s_o, p].setlb(f_lb)
     if params.slacks.node_balance:
         model.slack_node_balance_p_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
         model.slack_node_balance_p_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
@@ -449,6 +449,7 @@ def _build_model(network, params):
 
     # - Transformers
     model.r = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.0)
+    model.r_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0)
     for i in model.branches:
         branch = network.branches[i]
         for s_m in model.scenarios_market:
@@ -459,17 +460,25 @@ def _build_model(network, params):
                         if params.transf_reg and branch.vmag_reg:
                             model.r[i, s_m, s_o, p].setub(TRANSFORMER_MAXIMUM_RATIO)
                             model.r[i, s_m, s_o, p].setlb(TRANSFORMER_MINIMUM_RATIO)
+                            model.r_sqr[i, s_m, s_o, p].setub(TRANSFORMER_MAXIMUM_RATIO ** 2)
+                            model.r_sqr[i, s_m, s_o, p].setlb(TRANSFORMER_MINIMUM_RATIO ** 2)
                         else:
                             model.r[i, s_m, s_o, p].setub(branch.ratio + SMALL_TOLERANCE)
                             model.r[i, s_m, s_o, p].setlb(branch.ratio - SMALL_TOLERANCE)
+                            model.r_sqr[i, s_m, s_o, p].setub(branch.ratio ** 2 + SMALL_TOLERANCE)
+                            model.r_sqr[i, s_m, s_o, p].setlb(branch.ratio ** 2 - SMALL_TOLERANCE)
                     else:
                         # - Line, or FACTS
                         if branch.ratio != 0.0:
                             model.r[i, s_m, s_o, p].setub(branch.ratio + SMALL_TOLERANCE)            # Voltage regulation device, use given ratio
                             model.r[i, s_m, s_o, p].setlb(branch.ratio - SMALL_TOLERANCE)
+                            model.r_sqr[i, s_m, s_o, p].setub(branch.ratio ** 2 + SMALL_TOLERANCE)
+                            model.r_sqr[i, s_m, s_o, p].setlb(branch.ratio ** 2 - SMALL_TOLERANCE)
                         else:
                             model.r[i, s_m, s_o, p].setub(1.00 + SMALL_TOLERANCE)
                             model.r[i, s_m, s_o, p].setlb(1.00 - SMALL_TOLERANCE)
+                            model.r_sqr[i, s_m, s_o, p].setub(1.00 + SMALL_TOLERANCE)
+                            model.r_sqr[i, s_m, s_o, p].setlb(1.00 - SMALL_TOLERANCE)
 
     # - Energy Storage devices
     if params.es_reg:
@@ -574,10 +583,8 @@ def _build_model(network, params):
                 for p in model.periods:
 
                     # e_sqr and f_sqr
-                    model.voltage_cons.add(model.e_sqr[i, s_m, s_o, p] <= model.e[i, s_m, s_o, p] ** 2 + EQUALITY_TOLERANCE)
-                    model.voltage_cons.add(model.e_sqr[i, s_m, s_o, p] >= model.e[i, s_m, s_o, p] ** 2 - EQUALITY_TOLERANCE)
-                    model.voltage_cons.add(model.f_sqr[i, s_m, s_o, p] <= model.f[i, s_m, s_o, p] ** 2 + EQUALITY_TOLERANCE)
-                    model.voltage_cons.add(model.f_sqr[i, s_m, s_o, p] >= model.f[i, s_m, s_o, p] ** 2 - EQUALITY_TOLERANCE)
+                    model.voltage_cons.add(model.e_sqr[i, s_m, s_o, p] == model.e[i, s_m, s_o, p] ** 2)
+                    model.voltage_cons.add(model.f_sqr[i, s_m, s_o, p] == model.f[i, s_m, s_o, p] ** 2)
 
                     # e_actual and f_actual definition
                     e_actual = model.e[i, s_m, s_o, p]
@@ -670,18 +677,12 @@ def _build_model(network, params):
                     for p in model.periods:
 
                         # S, P, and Q squared definition
-                        model.energy_storage_operation.add(model.es_sch_sqr[e, s_m, s_o, p] <= model.es_sch[e, s_m, s_o, p] ** 2 + EQUALITY_TOLERANCE)
-                        model.energy_storage_operation.add(model.es_sch_sqr[e, s_m, s_o, p] >= model.es_sch[e, s_m, s_o, p] ** 2 - EQUALITY_TOLERANCE)
-                        model.energy_storage_operation.add(model.es_pch_sqr[e, s_m, s_o, p] <= model.es_pch[e, s_m, s_o, p] ** 2 + EQUALITY_TOLERANCE)
-                        model.energy_storage_operation.add(model.es_pch_sqr[e, s_m, s_o, p] >= model.es_pch[e, s_m, s_o, p] ** 2 - EQUALITY_TOLERANCE)
-                        model.energy_storage_operation.add(model.es_qch_sqr[e, s_m, s_o, p] <= model.es_qch[e, s_m, s_o, p] ** 2 + EQUALITY_TOLERANCE)
-                        model.energy_storage_operation.add(model.es_qch_sqr[e, s_m, s_o, p] >= model.es_qch[e, s_m, s_o, p] ** 2 - EQUALITY_TOLERANCE)
-                        model.energy_storage_operation.add(model.es_sdch_sqr[e, s_m, s_o, p] <= model.es_sdch[e, s_m, s_o, p] ** 2 + EQUALITY_TOLERANCE)
-                        model.energy_storage_operation.add(model.es_sdch_sqr[e, s_m, s_o, p] >= model.es_sdch[e, s_m, s_o, p] ** 2 - EQUALITY_TOLERANCE)
-                        model.energy_storage_operation.add(model.es_pdch_sqr[e, s_m, s_o, p] <= model.es_pdch[e, s_m, s_o, p] ** 2 + EQUALITY_TOLERANCE)
-                        model.energy_storage_operation.add(model.es_pdch_sqr[e, s_m, s_o, p] >= model.es_pdch[e, s_m, s_o, p] ** 2 - EQUALITY_TOLERANCE)
-                        model.energy_storage_operation.add(model.es_qdch_sqr[e, s_m, s_o, p] <= model.es_qdch[e, s_m, s_o, p] ** 2 + EQUALITY_TOLERANCE)
-                        model.energy_storage_operation.add(model.es_qdch_sqr[e, s_m, s_o, p] >= model.es_qdch[e, s_m, s_o, p] ** 2 - EQUALITY_TOLERANCE)
+                        model.energy_storage_operation.add(model.es_sch_sqr[e, s_m, s_o, p] == model.es_sch[e, s_m, s_o, p] ** 2)
+                        model.energy_storage_operation.add(model.es_pch_sqr[e, s_m, s_o, p] == model.es_pch[e, s_m, s_o, p] ** 2)
+                        model.energy_storage_operation.add(model.es_qch_sqr[e, s_m, s_o, p] == model.es_qch[e, s_m, s_o, p] ** 2)
+                        model.energy_storage_operation.add(model.es_sdch_sqr[e, s_m, s_o, p] == model.es_sdch[e, s_m, s_o, p] ** 2)
+                        model.energy_storage_operation.add(model.es_pdch_sqr[e, s_m, s_o, p] == model.es_pdch[e, s_m, s_o, p] ** 2)
+                        model.energy_storage_operation.add(model.es_qdch_sqr[e, s_m, s_o, p] == model.es_qdch[e, s_m, s_o, p] ** 2)
 
                         # ESS operation
                         model.energy_storage_operation.add(model.es_qch[e, s_m, s_o, p] <= tan(max_phi) * model.es_pch[e, s_m, s_o, p])
@@ -915,6 +916,7 @@ def _build_model(network, params):
                         if branch.fbus == node.bus_i or branch.tbus == node.bus_i:
 
                             rij = model.r[b, s_m, s_o, p]
+                            rij_sqr = model.r_sqr[b, s_m, s_o, p]
 
                             if branch.fbus == node.bus_i:
 
@@ -926,9 +928,9 @@ def _build_model(network, params):
                                 ej = model.e_actual[tnode_idx, s_m, s_o, p]
                                 fj = model.f_actual[tnode_idx, s_m, s_o, p]
 
-                                Pi += branch.g * (ei_sqr + fi_sqr) * rij ** 2
+                                Pi += branch.g * (ei_sqr + fi_sqr) * rij_sqr
                                 Pi -= rij * (branch.g * (ei * ej + fi * fj) + branch.b * (fi * ej - ei * fj))
-                                Qi -= (branch.b + branch.b_sh * 0.5) * (ei_sqr + fi_sqr) * rij ** 2
+                                Qi -= (branch.b + branch.b_sh * 0.5) * (ei_sqr + fi_sqr) * rij_sqr
                                 Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
                             else:
 
@@ -976,6 +978,7 @@ def _build_model(network, params):
                     tnode_idx = network.get_node_idx(branch.tbus)
 
                     rij = model.r[b, s_m, s_o, p]
+                    rij_sqr = model.r_sqr[b, s_m, s_o, p]
                     ei = model.e_actual[fnode_idx, s_m, s_o, p]
                     fi = model.f_actual[fnode_idx, s_m, s_o, p]
                     ej = model.e_actual[tnode_idx, s_m, s_o, p]
@@ -985,10 +988,10 @@ def _build_model(network, params):
 
                         bij_sh = branch.b_sh * 0.50
 
-                        iij_sqr = (branch.g ** 2 + branch.b ** 2) * (((rij ** 2) * ei - rij * ej) ** 2 + ((rij ** 2) * fi - rij * fj) ** 2)
+                        iij_sqr = (branch.g ** 2 + branch.b ** 2) * ((rij_sqr * ei - rij * ej) ** 2 + (rij_sqr * fi - rij * fj) ** 2)
                         iij_sqr += bij_sh ** 2 * (ei_sqr + fi_sqr)
-                        iij_sqr += 2 * branch.g * bij_sh * (((rij ** 2) * fi - rij * fj) * ei - ((rij ** 2) * ei - rij * ej) * fi)
-                        iij_sqr += 2 * branch.b * bij_sh * (((rij ** 2) * ei - rij * ej) * ei + ((rij ** 2) * fi - rij * fj) * fi)
+                        iij_sqr += 2 * branch.g * bij_sh * ((rij_sqr * fi - rij * fj) * ei - (rij_sqr * ei - rij * ej) * fi)
+                        iij_sqr += 2 * branch.b * bij_sh * ((rij_sqr * ei - rij * ej) * ei + (rij_sqr * fi - rij * fj) * fi)
 
                         iji_sqr = (branch.g ** 2 + branch.b ** 2) * ((ej - rij * ei) ** 2 + (fj - rij * fi) ** 2)
                         iji_sqr += bij_sh ** 2 * (ej ** 2 + fj ** 2)
@@ -1014,11 +1017,11 @@ def _build_model(network, params):
 
                     elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER or (params.branch_limit_type == BRANCH_LIMIT_MIXED and branch.is_transformer):
 
-                        pij = branch.g * (ei_sqr + fi_sqr) * rij ** 2
+                        pij = branch.g * (ei_sqr + fi_sqr) * rij_sqr
                         pij -= branch.g * (ei * ej + fi * fj) * rij
                         pij -= branch.b * (fi * ej - ei * fj) * rij
 
-                        qij = - (branch.b + branch.b_sh * 0.50) * (ei_sqr + fi_sqr) * rij ** 2
+                        qij = - (branch.b + branch.b_sh * 0.50) * (ei_sqr + fi_sqr) * rij_sqr
                         qij += branch.b * (ei * ej + fi * fj) * rij
                         qij -= branch.g * (fi * ej - ei * fj) * rij
 
