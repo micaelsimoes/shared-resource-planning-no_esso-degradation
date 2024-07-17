@@ -466,6 +466,7 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                     tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_shared_ess_q[e, p] == expected_ess_q)
 
     # Fix interface power flows, run SMOPF
+    '''
     for year in transmission_network.years:
         for day in transmission_network.days:
             s_base = transmission_network.network[year][day].baseMVA
@@ -483,6 +484,7 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                     tso_model[year][day].expected_interface_pf_q[dn, p].fix(init_q)
                     tso_model[year][day].expected_shared_ess_p[dn, p].fix(init_ess_p)
                     tso_model[year][day].expected_shared_ess_q[dn, p].fix(init_ess_q)
+    '''
 
     # Run SMOPF
     results = transmission_network.optimize(tso_model)
