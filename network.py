@@ -374,11 +374,11 @@ def _build_model(network, params):
             for s_m in model.scenarios_market:
                 for s_o in model.scenarios_operation:
                     for p in model.periods:
-                        model.flow_ij_sqr[b, s_m, s_o, p].fix(0.00)
-                        model.flow_ji_sqr[b, s_m, s_o, p].fix(0.00)
+                        model.flow_ij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                        model.flow_ji_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
                         if params.slacks.grid_operation.branch_flow:
-                            model.slack_flow_ij_sqr[b, s_m, s_o, p].fix(0.00)
-                            model.slack_flow_ji_sqr[b, s_m, s_o, p].fix(0.00)
+                            model.slack_flow_ij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            model.slack_flow_ji_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
 
     # - Loads
     model.pc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
