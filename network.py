@@ -273,13 +273,13 @@ def _build_model(network, params):
                                 model.slack_e_down[i, s_m, s_o, p].setub(SMALL_TOLERANCE)
                         model.f[i, s_m, s_o, p].fix(0.00)
                         if params.slacks.grid_operation.voltage:
-                            model.slack_f_up[i, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.slack_f_down[i, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            model.slack_f_up[i, s_m, s_o, p].fix(0.00)
+                            model.slack_f_down[i, s_m, s_o, p].fix(0.00)
                     else:
-                        model.e[i, s_m, s_o, p].setub(e_ub + SMALL_TOLERANCE)
-                        model.e[i, s_m, s_o, p].setlb(e_lb - SMALL_TOLERANCE)
-                        model.f[i, s_m, s_o, p].setub(f_ub + SMALL_TOLERANCE)
-                        model.f[i, s_m, s_o, p].setlb(f_lb - SMALL_TOLERANCE)
+                        model.e[i, s_m, s_o, p].setub(e_ub)
+                        model.e[i, s_m, s_o, p].setlb(e_lb)
+                        model.f[i, s_m, s_o, p].setub(f_ub)
+                        model.f[i, s_m, s_o, p].setlb(f_lb)
     if params.slacks.node_balance:
         model.slack_node_balance_p_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
         model.slack_node_balance_p_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
