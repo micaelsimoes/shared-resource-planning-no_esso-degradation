@@ -406,8 +406,8 @@ def _build_model(network, params):
                         if load.fl_reg:
                             flex_up = load.flexibility.upward[p]
                             flex_down = load.flexibility.downward[p]
-                            model.flex_p_up[c, s_m, s_o, p].setub(abs(max(flex_up, flex_down)))
-                            model.flex_p_down[c, s_m, s_o, p].setub(abs(max(flex_up, flex_down)))
+                            model.flex_p_up[c, s_m, s_o, p].setub(abs(flex_up))
+                            model.flex_p_down[c, s_m, s_o, p].setub(abs(flex_down))
                         else:
                             model.flex_p_up[c, s_m, s_o, p].setub(SMALL_TOLERANCE)
                             model.flex_p_down[c, s_m, s_o, p].setub(SMALL_TOLERANCE)
