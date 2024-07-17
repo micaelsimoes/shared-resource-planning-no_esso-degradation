@@ -301,10 +301,10 @@ def _build_model(network, params):
                         if gen.status[p] == 1:
                             model.pg[g, s_m, s_o, p] = (pg_lb + pg_ub) * 0.50
                             model.qg[g, s_m, s_o, p] = (qg_lb + qg_ub) * 0.50
-                            model.pg[g, s_m, s_o, p].setub(pg_ub + SMALL_TOLERANCE)
-                            model.pg[g, s_m, s_o, p].setlb(pg_lb - SMALL_TOLERANCE)
-                            model.qg[g, s_m, s_o, p].setub(qg_ub + SMALL_TOLERANCE)
-                            model.qg[g, s_m, s_o, p].setlb(qg_lb - SMALL_TOLERANCE)
+                            model.pg[g, s_m, s_o, p].setub(pg_ub)
+                            model.pg[g, s_m, s_o, p].setlb(pg_lb)
+                            model.qg[g, s_m, s_o, p].setub(qg_ub)
+                            model.qg[g, s_m, s_o, p].setlb(qg_lb)
                         else:
                             model.pg[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
                             model.pg[g, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
