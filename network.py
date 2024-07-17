@@ -301,10 +301,10 @@ def _build_model(network, params):
                         if gen.status[p] == 1:
                             model.pg[g, s_m, s_o, p] = (pg_lb + pg_ub) * 0.50
                             model.qg[g, s_m, s_o, p] = (qg_lb + qg_ub) * 0.50
-                            model.pg[g, s_m, s_o, p].setub(pg_ub + SMALL_TOLERANCE)
-                            model.pg[g, s_m, s_o, p].setlb(pg_lb - SMALL_TOLERANCE)
-                            model.qg[g, s_m, s_o, p].setub(qg_ub + SMALL_TOLERANCE)
-                            model.qg[g, s_m, s_o, p].setlb(qg_lb - SMALL_TOLERANCE)
+                            model.pg[g, s_m, s_o, p].setlb(pg_lb)
+                            model.pg[g, s_m, s_o, p].setub(pg_ub)
+                            model.qg[g, s_m, s_o, p].setlb(qg_lb)
+                            model.qg[g, s_m, s_o, p].setub(qg_ub)
                         else:
                             model.pg[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
                             model.pg[g, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
@@ -345,7 +345,7 @@ def _build_model(network, params):
                                     init_pg = gen.pg[s_o][p]
                                     init_qg = gen.qg[s_o][p]
                                 if init_pg >= 0.00:
-                                    model.pg_curt_down[g, s_m, s_o, p].setub(abs(init_pg) + SMALL_TOLERANCE)
+                                    model.pg_curt_down[g, s_m, s_o, p].setub(init_pg + SMALL_TOLERANCE)
                                     model.pg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
                                 else:
                                     model.pg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
