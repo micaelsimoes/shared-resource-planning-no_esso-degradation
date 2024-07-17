@@ -305,10 +305,8 @@ def _build_model(network, params):
                             model.qg[g, s_m, s_o, p].setlb(qg_lb)
                             model.qg[g, s_m, s_o, p].setub(qg_ub)
                         else:
-                            model.pg[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.pg[g, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
-                            model.qg[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.qg[g, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
+                            model.pg[g, s_m, s_o, p].fix(0.00)
+                            model.qg[g, s_m, s_o, p].fix(0.00)
                     else:
                         # Non-conventional generator
                         init_pg = 0.0
@@ -331,10 +329,10 @@ def _build_model(network, params):
                 for s_o in model.scenarios_operation:
                     for p in model.periods:
                         if gen.is_controllable():
-                            model.pg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.pg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.qg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.qg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            model.pg_curt_down[g, s_m, s_o, p].fix(0.00)
+                            model.pg_curt_up[g, s_m, s_o, p].fix(0.00)
+                            model.qg_curt_down[g, s_m, s_o, p].fix(0.00)
+                            model.qg_curt_up[g, s_m, s_o, p].fix(0.00)
                         else:
                             if gen.is_curtaillable():
                                 # - Renewable Generation
@@ -344,23 +342,23 @@ def _build_model(network, params):
                                     init_pg = gen.pg[s_o][p]
                                     init_qg = gen.qg[s_o][p]
                                 if init_pg >= 0.00:
-                                    model.pg_curt_down[g, s_m, s_o, p].setub(init_pg + SMALL_TOLERANCE)
-                                    model.pg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                    model.pg_curt_down[g, s_m, s_o, p].setub(abs(init_pg))
+                                    model.pg_curt_up[g, s_m, s_o, p].fix(0.00)
                                 else:
-                                    model.pg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                    model.pg_curt_up[g, s_m, s_o, p].setub(abs(init_pg) + SMALL_TOLERANCE)
+                                    model.pg_curt_down[g, s_m, s_o, p].fix(0.00)
+                                    model.pg_curt_up[g, s_m, s_o, p].setub(abs(init_pg))
                                 if init_qg >= 0.00:
-                                    model.qg_curt_down[g, s_m, s_o, p].setub(init_qg + SMALL_TOLERANCE)
-                                    model.qg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                    model.qg_curt_down[g, s_m, s_o, p].setub(abs(init_qg))
+                                    model.qg_curt_up[g, s_m, s_o, p].fix(0.00)
                                 else:
-                                    model.qg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                    model.qg_curt_up[g, s_m, s_o, p].setub(abs(init_qg) + SMALL_TOLERANCE)
+                                    model.qg_curt_down[g, s_m, s_o, p].fix(0.00)
+                                    model.qg_curt_up[g, s_m, s_o, p].setub(abs(init_qg))
                             else:
                                 # - Generator is not curtaillable (conventional RES, ref gen, etc.)
-                                model.pg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                model.pg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                model.qg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                model.qg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                model.pg_curt_down[g, s_m, s_o, p].fix(0.00)
+                                model.pg_curt_up[g, s_m, s_o, p].fix(0.00)
+                                model.qg_curt_down[g, s_m, s_o, p].fix(0.00)
+                                model.qg_curt_up[g, s_m, s_o, p].fix(0.00)
 
     # - Branch power flows (squared) -- used in branch limits
     model.flow_ij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
