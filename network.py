@@ -914,6 +914,8 @@ def _build_model(network, params):
                     tnode_idx = network.get_node_idx(branch.tbus)
 
                     rij = model.r[b, s_m, s_o, p]
+                    if not branch.is_transformer:
+                        rij = 1.00
                     ei = model.e_actual[fnode_idx, s_m, s_o, p]
                     fi = model.f_actual[fnode_idx, s_m, s_o, p]
                     ej = model.e_actual[tnode_idx, s_m, s_o, p]
