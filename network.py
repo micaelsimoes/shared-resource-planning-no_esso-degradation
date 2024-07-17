@@ -1654,7 +1654,7 @@ def _process_results(network, model, params, results=dict()):
                 'consumption': {'pc': {}, 'qc': {}, 'pc_net': {}, 'qc_net': {}},
                 'generation': {'pg': {}, 'qg': {}, 'pg_net': {}, 'qg_net': {}},
                 'branches': {'power_flow': {'pij': {}, 'pji': {}, 'qij': {}, 'qji': {}, 'sij': {}, 'sji': {}},
-                             'losses': {}, 'ratio': {}, 'branch_flow': {'flow_ij_perc': {}, 'flow_ji_perc': {}}},
+                             'losses': {}, 'ratio': {}, 'branch_flow': {'flow_ij_perc': {}}},
                 'energy_storages': {'p': {}, 'q': {}, 's': {}, 'soc': {}, 'soc_percent': {}},
                 'shared_energy_storages': {'p': {}, 'q': {}, 's': {}, 'soc': {}, 'soc_percent': {}}
             }
@@ -1823,7 +1823,6 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][branch_id] = []
                 processed_results['scenarios'][s_m][s_o]['branches']['losses'][branch_id] = []
                 processed_results['scenarios'][s_m][s_o]['branches']['branch_flow']['flow_ij_perc'][branch_id] = []
-                processed_results['scenarios'][s_m][s_o]['branches']['branch_flow']['flow_ji_perc'][branch_id] = []
                 if branch.is_transformer:
                     processed_results['scenarios'][s_m][s_o]['branches']['ratio'][branch_id] = []
                 for p in model.periods:
@@ -1851,9 +1850,7 @@ def _process_results(network, model, params, results=dict()):
 
                     # Branch flow (limits)
                     flow_ij_perc = sqrt(pe.value(model.flow_ij_sqr[k, s_m, s_o, p])) / rating
-                    flow_ji_perc = sqrt(pe.value(model.flow_ji_sqr[k, s_m, s_o, p])) / rating
                     processed_results['scenarios'][s_m][s_o]['branches']['branch_flow']['flow_ij_perc'][branch_id].append(flow_ij_perc)
-                    processed_results['scenarios'][s_m][s_o]['branches']['branch_flow']['flow_ji_perc'][branch_id].append(flow_ji_perc)
 
             # Energy Storage devices
             if params.es_reg:
