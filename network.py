@@ -1691,7 +1691,6 @@ def _process_results(network, model, params, results=dict()):
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow'] = dict()
             if params.slacks.grid_operation.branch_flow:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ij_sqr'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ji_sqr'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance'] = dict()
             if params.slacks.node_balance:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_up'] = dict()
@@ -1932,12 +1931,9 @@ def _process_results(network, model, params, results=dict()):
                 for b in model.branches:
                     branch_id = network.branches[b].branch_id
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ij_sqr'][branch_id] = []
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ji_sqr'][branch_id] = []
                     for p in model.periods:
                         slack_flow_ij_sqr = pe.value(model.slack_flow_ij_sqr[b, s_m, s_o, p])
-                        slack_flow_ji_sqr = pe.value(model.slack_flow_ij_sqr[b, s_m, s_o, p])
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ij_sqr'][branch_id].append(slack_flow_ij_sqr)
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ji_sqr'][branch_id].append(slack_flow_ji_sqr)
 
             # Slacks
             # - Shared ESS
