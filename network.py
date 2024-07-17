@@ -457,13 +457,8 @@ def _build_model(network, params):
                             model.r[i, s_m, s_o, p].setub(branch.ratio + SMALL_TOLERANCE)
                             model.r[i, s_m, s_o, p].setlb(branch.ratio - SMALL_TOLERANCE)
                     else:
-                        # - Line, or FACTS
-                        if branch.ratio != 0.0:
-                            model.r[i, s_m, s_o, p].setub(branch.ratio + SMALL_TOLERANCE)            # Voltage regulation device, use given ratio
-                            model.r[i, s_m, s_o, p].setlb(branch.ratio - SMALL_TOLERANCE)
-                        else:
-                            model.r[i, s_m, s_o, p].setub(1.00 + SMALL_TOLERANCE)
-                            model.r[i, s_m, s_o, p].setlb(1.00 - SMALL_TOLERANCE)
+                        model.r[i, s_m, s_o, p].setub(1.00 + SMALL_TOLERANCE)
+                        model.r[i, s_m, s_o, p].setlb(1.00 - SMALL_TOLERANCE)
 
     # - Energy Storage devices
     if params.es_reg:
@@ -858,9 +853,10 @@ def _build_model(network, params):
                         if branch.fbus == node.bus_i or branch.tbus == node.bus_i:
 
                             rij = model.r[b, s_m, s_o, p]
+                            if not branch.is_transformer:
+                                rij = 1.00
 
                             if branch.fbus == node.bus_i:
-
                                 fnode_idx = network.get_node_idx(branch.fbus)
                                 tnode_idx = network.get_node_idx(branch.tbus)
 
@@ -874,7 +870,6 @@ def _build_model(network, params):
                                 Qi -= (branch.b + branch.b_sh * 0.5) * (ei ** 2 + fi ** 2) * rij ** 2
                                 Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
                             else:
-
                                 fnode_idx = network.get_node_idx(branch.tbus)
                                 tnode_idx = network.get_node_idx(branch.fbus)
 
