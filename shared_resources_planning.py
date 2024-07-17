@@ -3719,10 +3719,9 @@ def _write_network_branch_loading_results_per_operator(network, sheet, operator_
     for year in results:
         for day in results[year]:
 
-            expected_values = {'flow_ij': {}, 'flow_ji': {}}
+            expected_values = {'flow_ij': {}}
             for branch in network[year][day].branches:
                 expected_values['flow_ij'][branch.branch_id] = [0.0 for _ in range(network[year][day].num_instants)]
-                expected_values['flow_ji'][branch.branch_id] = [0.0 for _ in range(network[year][day].num_instants)]
 
             for s_m in results[year][day]['scenarios']:
                 omega_m = network[year][day].prob_market_scenarios[s_m]
@@ -3750,26 +3749,6 @@ def _write_network_branch_loading_results_per_operator(network, sheet, operator_
                             expected_values['flow_ij'][branch.branch_id][p] += value * omega_m * omega_s
                         row_idx = row_idx + 1
 
-                        # flow ji, [%]
-                        sheet.cell(row=row_idx, column=1).value = operator_type
-                        sheet.cell(row=row_idx, column=2).value = tn_node_id
-                        sheet.cell(row=row_idx, column=3).value = branch.branch_id
-                        sheet.cell(row=row_idx, column=4).value = branch.tbus
-                        sheet.cell(row=row_idx, column=5).value = branch.fbus
-                        sheet.cell(row=row_idx, column=6).value = int(year)
-                        sheet.cell(row=row_idx, column=7).value = day
-                        sheet.cell(row=row_idx, column=8).value = 'Flow_ji, [%]'
-                        sheet.cell(row=row_idx, column=9).value = s_m
-                        sheet.cell(row=row_idx, column=10).value = s_o
-                        for p in range(network[year][day].num_instants):
-                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['branch_flow']['flow_ij_perc'][branch.branch_id][p]
-                            sheet.cell(row=row_idx, column=p + 11).value = value
-                            sheet.cell(row=row_idx, column=p + 11).number_format = perc_style
-                            if value > 1.00 + VIOLATION_TOLERANCE:
-                                sheet.cell(row=row_idx, column=p + 11).fill = violation_fill
-                            expected_values['flow_ji'][branch.branch_id][p] += value * omega_m * omega_s
-                        row_idx = row_idx + 1
-
             for branch in network[year][day].branches:
 
                 # flow ij, [%]
@@ -3785,25 +3764,6 @@ def _write_network_branch_loading_results_per_operator(network, sheet, operator_
                 sheet.cell(row=row_idx, column=10).value = '-'
                 for p in range(network[year][day].num_instants):
                     value = expected_values['flow_ij'][branch.branch_id][p]
-                    sheet.cell(row=row_idx, column=p + 11).value = value
-                    sheet.cell(row=row_idx, column=p + 11).number_format = perc_style
-                    if value > 1.00 + VIOLATION_TOLERANCE:
-                        sheet.cell(row=row_idx, column=p + 11).fill = violation_fill
-                row_idx = row_idx + 1
-
-                # flow ji, [%]
-                sheet.cell(row=row_idx, column=1).value = operator_type
-                sheet.cell(row=row_idx, column=2).value = tn_node_id
-                sheet.cell(row=row_idx, column=3).value = branch.tbus
-                sheet.cell(row=row_idx, column=4).value = branch.tbus
-                sheet.cell(row=row_idx, column=5).value = branch.fbus
-                sheet.cell(row=row_idx, column=6).value = int(year)
-                sheet.cell(row=row_idx, column=7).value = day
-                sheet.cell(row=row_idx, column=8).value = 'Flow_ji, [%]'
-                sheet.cell(row=row_idx, column=9).value = 'Expected'
-                sheet.cell(row=row_idx, column=10).value = '-'
-                for p in range(network[year][day].num_instants):
-                    value = expected_values['flow_ji'][branch.branch_id][p]
                     sheet.cell(row=row_idx, column=p + 11).value = value
                     sheet.cell(row=row_idx, column=p + 11).number_format = perc_style
                     if value > 1.00 + VIOLATION_TOLERANCE:
@@ -4647,21 +4607,6 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
                             for p in range(network[year][day].num_instants):
                                 iij_sqr = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ij_sqr'][branch_id][p]
                                 sheet.cell(row=row_idx, column=p + 9).value = iij_sqr
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
-
-                            # - flow_ji
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = branch_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Flow_ji_sqr'
-                            sheet.cell(row=row_idx, column=7).value = s_m
-                            sheet.cell(row=row_idx, column=8).value = s_o
-                            for p in range(network[year][day].num_instants):
-                                iji_sqr = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ji_sqr'][branch_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = iji_sqr
                                 sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
                             row_idx = row_idx + 1
 
