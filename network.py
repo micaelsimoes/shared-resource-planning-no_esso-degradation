@@ -426,14 +426,14 @@ def _build_model(network, params):
                     for p in model.periods:
 
                         if load.pd[s_o][p] >= 0.00:
-                            model.pc_curt_down[c, s_m, s_o, p].setub(load.pd[s_o][p] + SMALL_TOLERANCE)
+                            model.pc_curt_down[c, s_m, s_o, p].setub(abs(load.pd[s_o][p]) + SMALL_TOLERANCE)
                             model.pc_curt_up[c, s_m, s_o, p].setub(SMALL_TOLERANCE)
                         else:
                             model.pc_curt_up[c, s_m, s_o, p].setub(abs(load.pd[s_o][p]) + SMALL_TOLERANCE)
                             model.pc_curt_down[c, s_m, s_o, p].setub(SMALL_TOLERANCE)
 
                         if load.qd[s_o][p] >= 0.00:
-                            model.qc_curt_down[c, s_m, s_o, p].setub(load.qd[s_o][p] + SMALL_TOLERANCE)
+                            model.qc_curt_down[c, s_m, s_o, p].setub(abs(load.qd[s_o][p]) + SMALL_TOLERANCE)
                             model.qc_curt_up[c, s_m, s_o, p].setub(SMALL_TOLERANCE)
                         else:
                             model.qc_curt_up[c, s_m, s_o, p].setub(abs(load.qd[s_o][p]) + SMALL_TOLERANCE)
