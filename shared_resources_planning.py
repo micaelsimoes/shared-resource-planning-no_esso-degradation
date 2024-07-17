@@ -450,11 +450,6 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                     consensus_vars['interface']['pf']['tso']['current'][adn_node_id][year][day]['q'][p] = interface_pf_q
                     consensus_vars['ess']['tso']['current'][adn_node_id][year][day]['p'][p] = p_ess
                     consensus_vars['ess']['tso']['current'][adn_node_id][year][day]['q'][p] = q_ess
-                    consensus_vars['interface']['v_sqr']['tso']['prev'][adn_node_id][year][day][p] = interface_vsqr
-                    consensus_vars['interface']['pf']['tso']['prev'][adn_node_id][year][day]['p'][p] = interface_pf_p
-                    consensus_vars['interface']['pf']['tso']['prev'][adn_node_id][year][day]['q'][p] = interface_pf_q
-                    consensus_vars['ess']['tso']['prev'][adn_node_id][year][day]['p'][p] = p_ess
-                    consensus_vars['ess']['tso']['prev'][adn_node_id][year][day]['q'][p] = q_ess
 
     return tso_model, results
 
@@ -531,11 +526,6 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                     consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p] = interface_pf_q
                     consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] = p_ess
                     consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] = q_ess
-                    consensus_vars['interface']['v_sqr']['dso']['prev'][node_id][year][day][p] = interface_vsqr
-                    consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['p'][p] = interface_pf_p
-                    consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['q'][p] = interface_pf_q
-                    consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p] = p_ess
-                    consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p] = q_ess
 
         dso_models[node_id] = dso_model
 
@@ -567,8 +557,6 @@ def create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidat
                     shared_ess_q = pe.value(esso_model.es_qnet[e, y, d, p])
                     consensus_vars['ess']['esso']['current'][node_id][year][day]['p'][p] = shared_ess_p
                     consensus_vars['ess']['esso']['current'][node_id][year][day]['q'][p] = shared_ess_q
-                    consensus_vars['ess']['esso']['prev'][node_id][year][day]['p'][p] = shared_ess_p
-                    consensus_vars['ess']['esso']['prev'][node_id][year][day]['q'][p] = shared_ess_q
 
     return esso_model, results
 
