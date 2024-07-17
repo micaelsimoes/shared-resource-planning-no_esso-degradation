@@ -1005,7 +1005,7 @@ def _build_model(network, params):
                         for p in model.periods:
                             flex_p_up = model.flex_p_up[c, s_m, s_o, p]
                             flex_p_down = model.flex_p_down[c, s_m, s_o, p]
-                            obj_scenario += c_flex[s_m][p] * network.baseMVA * (flex_p_down + flex_p_up)
+                            obj_scenario += c_flex[s_m][p] * network.baseMVA * (flex_p_down - flex_p_up)
 
                 # Load curtailment
                 if params.l_curt:
