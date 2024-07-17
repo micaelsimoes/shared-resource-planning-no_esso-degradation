@@ -388,7 +388,7 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
     for year in transmission_network.years:
         for day in transmission_network.days:
 
-            s_base = transmission_network.network[year][day].baseMVA
+            tso_model[year][day].active_distribution_networks = range(len(transmission_network.active_distribution_network_nodes))
 
             # Add expected interface and shared ESS values
             tso_model[year][day].expected_interface_vmag_sqr = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00)
@@ -480,7 +480,6 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
     # - Free Vmag, Pc, Qc at the interface nodes
     for year in transmission_network.years:
         for day in transmission_network.days:
-            tso_model[year][day].active_distribution_networks = range(len(transmission_network.active_distribution_network_nodes))
             for dn in tso_model[year][day].active_distribution_networks:
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
                 adn_node_idx = transmission_network.network[year][day].get_node_idx(adn_node_id)
