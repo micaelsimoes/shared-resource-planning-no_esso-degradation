@@ -1180,10 +1180,9 @@ def _write_network_branch_loading_results_to_excel(network_planning, workbook, r
 
             network = network_planning.network[year][day]
 
-            expected_values = {'flow_ij': {}, 'flow_ji': {}}
+            expected_values = {'flow_ij': {}}
             for branch in network.branches:
                 expected_values['flow_ij'][branch.branch_id] = [0.0 for _ in range(network.num_instants)]
-                expected_values['flow_ji'][branch.branch_id] = [0.0 for _ in range(network.num_instants)]
 
             for s_m in results[year][day]['scenarios']:
                 omega_m = network.prob_market_scenarios[s_m]
@@ -1209,24 +1208,6 @@ def _write_network_branch_loading_results_to_excel(network_planning, workbook, r
                             expected_values['flow_ij'][branch.branch_id][p] += value * omega_m * omega_s
                         row_idx = row_idx + 1
 
-                        # flow ji, [%]
-                        sheet.cell(row=row_idx, column=1).value = branch.branch_id
-                        sheet.cell(row=row_idx, column=2).value = branch.tbus
-                        sheet.cell(row=row_idx, column=3).value = branch.fbus
-                        sheet.cell(row=row_idx, column=4).value = int(year)
-                        sheet.cell(row=row_idx, column=5).value = day
-                        sheet.cell(row=row_idx, column=6).value = 'Flow_ji, [%]'
-                        sheet.cell(row=row_idx, column=7).value = s_m
-                        sheet.cell(row=row_idx, column=8).value = s_o
-                        for p in range(network.num_instants):
-                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['branch_flow']['flow_ji_perc'][branch.branch_id][p]
-                            sheet.cell(row=row_idx, column=p + 9).value = value
-                            sheet.cell(row=row_idx, column=p + 9).number_format = perc_style
-                            if value > 1.00 + VIOLATION_TOLERANCE:
-                                sheet.cell(row=row_idx, column=p + 9).fill = violation_fill
-                            expected_values['flow_ji'][branch.branch_id][p] += value * omega_m * omega_s
-                        row_idx = row_idx + 1
-
             for branch in network.branches:
 
                 # flow ij, [%]
@@ -1241,22 +1222,6 @@ def _write_network_branch_loading_results_to_excel(network_planning, workbook, r
                 for p in range(network.num_instants):
                     value = expected_values['flow_ij'][branch.branch_id][p]
                     sheet.cell(row=row_idx, column=p + 9).value = value
-                    sheet.cell(row=row_idx, column=p + 9).number_format = perc_style
-                    if value > 1.00 + VIOLATION_TOLERANCE:
-                        sheet.cell(row=row_idx, column=p + 9).fill = violation_fill
-                row_idx = row_idx + 1
-
-                # flow ji, [%]
-                sheet.cell(row=row_idx, column=1).value = branch.branch_id
-                sheet.cell(row=row_idx, column=2).value = branch.tbus
-                sheet.cell(row=row_idx, column=3).value = branch.fbus
-                sheet.cell(row=row_idx, column=4).value = int(year)
-                sheet.cell(row=row_idx, column=5).value = day
-                sheet.cell(row=row_idx, column=6).value = 'Flow_ji, [%]'
-                sheet.cell(row=row_idx, column=7).value = 'Expected'
-                sheet.cell(row=row_idx, column=8).value = '-'
-                for p in range(network.num_instants):
-                    sheet.cell(row=row_idx, column=p + 9).value = abs(expected_values['flow_ji'][branch.branch_id][p])
                     sheet.cell(row=row_idx, column=p + 9).number_format = perc_style
                     if value > 1.00 + VIOLATION_TOLERANCE:
                         sheet.cell(row=row_idx, column=p + 9).fill = violation_fill
