@@ -273,6 +273,27 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         iter_start = time.time()
 
         # --------------------------------------------------------------------------------------------------------------
+        # 1. Solve TSO problem
+        results['tso'] = update_transmission_coordination_model_and_solve(transmission_network, tso_model,
+                                                                          consensus_vars['interface']['v_sqr'], dual_vars['v_sqr']['tso'],
+                                                                          consensus_vars['interface']['pf'], dual_vars['pf']['tso'],
+                                                                          consensus_vars['ess'], dual_vars['ess']['tso'],
+                                                                          admm_parameters, from_warm_start=from_warm_start)
+
+        # 1.1 Update ADMM CONSENSUS variables
+        planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
+                                                         consensus_vars, dual_vars, results, admm_parameters,
+                                                         update_tn=True)
+
+        # 1.2 Update primal evolution
+        primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
+
+        # 1.3 STOPPING CRITERIA evaluation
+        convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
+        if convergence:
+            break
+
+        # --------------------------------------------------------------------------------------------------------------
         # 2. Solve DSOs problems
         results['dso'] = update_distribution_coordination_models_and_solve(distribution_networks, dso_models,
                                                                            consensus_vars['interface']['v_sqr'], dual_vars['v_sqr']['dso'],
@@ -303,27 +324,6 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
 
         # 2.3 STOPPING CRITERIA evaluation
-        convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
-        if convergence:
-            break
-
-        # --------------------------------------------------------------------------------------------------------------
-        # 1. Solve TSO problem
-        results['tso'] = update_transmission_coordination_model_and_solve(transmission_network, tso_model,
-                                                                          consensus_vars['interface']['v_sqr'], dual_vars['v_sqr']['tso'],
-                                                                          consensus_vars['interface']['pf'], dual_vars['pf']['tso'],
-                                                                          consensus_vars['ess'], dual_vars['ess']['tso'],
-                                                                          admm_parameters, from_warm_start=from_warm_start)
-
-        # 1.1 Update ADMM CONSENSUS variables
-        planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
-                                                         consensus_vars, dual_vars, results, admm_parameters,
-                                                         update_tn=True)
-
-        # 1.2 Update primal evolution
-        primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
-
-        # 1.3 STOPPING CRITERIA evaluation
         convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
         if convergence:
             break
