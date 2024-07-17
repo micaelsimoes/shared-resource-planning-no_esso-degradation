@@ -345,7 +345,7 @@ def _build_model(network, params):
                                     init_pg = gen.pg[s_o][p]
                                     init_qg = gen.qg[s_o][p]
                                 if init_pg >= 0.00:
-                                    model.pg_curt_down[g, s_m, s_o, p].setub(init_pg + SMALL_TOLERANCE)
+                                    model.pg_curt_down[g, s_m, s_o, p].setub(abs(init_pg) + SMALL_TOLERANCE)
                                     model.pg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
                                 else:
                                     model.pg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
