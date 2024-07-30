@@ -176,8 +176,8 @@ def _build_master_problem(shared_ess_data):
     model.es_e_invesment = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)     # Investment in energy capacity in year y
     model.es_s_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)         # Total rated power capacity (considering calendar life)
     model.es_e_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)         # Total rated energy capacity (considering calendar life, not considering degradation)
-    model.alpha = pe.Var(domain=pe.Reals)                                                             # alpha (associated with cuts) will try to rebuild y in the original problem
-    model.alpha.setlb(-shared_ess_data.params.budget * 1e3)
+    model.alpha = pe.Var(domain=pe.Reals)                                                                   # alpha (associated with cuts) will try to rebuild y in the original problem
+    model.alpha.setlb(-shared_ess_data.params.budget * 1e12)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
