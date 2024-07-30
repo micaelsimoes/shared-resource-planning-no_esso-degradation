@@ -11,8 +11,8 @@
 	],
 	"generators": [
 		{"gen_id":1,"bus":1,"Pmax":40,"Pmin":-40,"Qmax":40,"Qmin":-40,"Vg":1.05,"status":1,"type":"REF"},
-		{"gen_id":5,"bus":3,"Pmax":0.125,"Pmin":0,"Qmax":0.125,"Qmin":-0.125,"Vg":1.05,"status":1,"type":"PV"},
-		{"gen_id":6,"bus":4,"Pmax":0.425,"Pmin":0,"Qmax":0.425,"Qmin":-0.425,"Vg":1.05,"status":1,"type":"PV"}
+		{"gen_id":5,"bus":3,"Pmax":5.09,"Pmin":0,"Qmax":5.09,"Qmin":-5.09,"Vg":1.05,"status":1,"type":"PV"},
+		{"gen_id":6,"bus":4,"Pmax":1.69,"Pmin":0,"Qmax":1.69,"Qmin":-1.69,"Vg":1.05,"status":1,"type":"PV"}
 	],
 	"loads": [
 		{"load_id": 1, "bus": 3, "status": 1, "fl_reg": 1},
@@ -32,5 +32,7 @@
 		{"branch_id": 33, "fbus": 5, "tbus": 6, "r": 0.07875, "x": 0.875, "b": 0, "rating": 8, "ratio": 1, "status": 0, "vmag_reg": 1}
 	],
 	"energy_storages": [
+		{"es_id": 1, "bus": 2, "s": 0.48, "e": 0.48, "eff_ch": 1.00, "eff_dch": 0.95, "max_pf": 0.80, "min_pf": -0.80},
+		{"es_id": 2, "bus": 6, "s": 0.16, "e": 0.16, "eff_ch": 1.00, "eff_dch": 0.95, "max_pf": 0.80, "min_pf": -0.80}
 	]
 }
