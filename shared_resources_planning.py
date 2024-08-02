@@ -51,12 +51,12 @@ class SharedResourcesPlanning:
         print('[INFO] Running OPERATIONAL PLANNING...')
         if not candidate_solution:
             candidate_solution = self.get_initial_candidate_solution()
-        results, models, sensitivities, primal_evolution = _run_operational_planning(self, candidate_solution, debug_flag=debug_flag)
+        convergence, results, models, sensitivities, primal_evolution = _run_operational_planning(self, candidate_solution, debug_flag=debug_flag)
         if print_results:
             if not filename:
                 filename = self.name
             self.write_operational_planning_results_to_excel(models, results, filename=filename, primal_evolution=primal_evolution)
-        return results, models, sensitivities, primal_evolution
+        return convergence, results, models, sensitivities, primal_evolution
 
     def run_without_coordination(self, print_results=False):
         print('[INFO] Running PLANNING PROBLEM WITHOUT COORDINATION...')
@@ -70,8 +70,8 @@ class SharedResourcesPlanning:
     def get_primal_value(self, tso_model, dso_models, esso_model):
         return _get_primal_value(self, tso_model, dso_models, esso_model)
 
-    def add_benders_cut(self, model, upper_bound, sensitivities, candidate_solution):
-        _add_benders_cut(self, model, upper_bound, sensitivities, candidate_solution)
+    def add_benders_cut(self, model, upper_bound, convergence, sensitivities, candidate_solution):
+        _add_benders_cut(self, model, upper_bound, convergence, sensitivities, candidate_solution)
 
     def update_admm_consensus_variables(self, tso_model, dso_models, esso_model, consensus_vars, dual_vars, results, params, update_tn=False, update_dns=False, update_sess=False):
         self.update_interface_power_flow_variables(tso_model, dso_models, consensus_vars['interface'], dual_vars, results, params, update_tn=update_tn, update_dns=update_dns)
@@ -156,8 +156,10 @@ def _run_planning_problem(planning_problem):
         # 1.1. Solve operational planning, with fixed investment variables,
         # 1.2. Get coupling constraints' sensitivities (subproblem)
         # 1.3. Get OF value (upper bound) from the subproblem
-        operational_results, lower_level_models, sensitivities, _ = planning_problem.run_operational_planning(candidate_solution, print_results=True, filename=f'{planning_problem.name}_iter{iter}')
-        upper_bound = planning_problem.get_upper_bound(lower_level_models['tso'])
+        operational_convergence, operational_results, lower_level_models, sensitivities, _ = planning_problem.run_operational_planning(candidate_solution, print_results=True, filename=f'{planning_problem.name}_iter{iter}')
+        upper_bound = upper_bound_evolution[-1]
+        if operational_convergence:
+            upper_bound = planning_problem.get_upper_bound(lower_level_models['tso'])
         upper_bound_evolution.append(upper_bound)
 
         #  - Convergence check
@@ -170,14 +172,14 @@ def _run_planning_problem(planning_problem):
         # 2.1. Add Benders' cut, based on the sensitivities obtained from the subproblem
         # 2.2. Run master problem optimization
         # 2.3. Get new capacity values, and the value of alpha (lower bound)
-        planning_problem.add_benders_cut(master_problem_model, upper_bound, sensitivities, candidate_solution)
+        planning_problem.add_benders_cut(master_problem_model, upper_bound, operational_convergence, sensitivities, candidate_solution)
         shared_ess_data.optimize(master_problem_model, from_warm_start=from_warm_start)
         candidate_solution = shared_ess_data.get_candidate_solution(master_problem_model)
         lower_bound = pe.value(master_problem_model.alpha)
         lower_bound_evolution.append(lower_bound)
 
-        #  - Convergence check
         '''
+        #  - Convergence check
         if isclose(upper_bound, lower_bound, abs_tol=benders_parameters.tol_abs, rel_tol=benders_parameters.tol_rel):
             lower_bound_evolution.append(lower_bound)
             convergence = True
@@ -215,18 +217,32 @@ def _get_upper_bound(planning_problem, model):
     return upper_bound
 
 
-def _add_benders_cut(planning_problem, model, upper_bound, sensitivities, candidate_solution):
+def _add_benders_cut(planning_problem, model, upper_bound, convergence, sensitivities, candidate_solution):
     years = [year for year in planning_problem.years]
-    benders_cut = upper_bound
-    for e in model.energy_storages:
-        node_id = planning_problem.active_distribution_network_nodes[e]
-        for y in model.years:
-            year = years[y]
-            if sensitivities['s'][year][node_id] != 'N/A':
-                benders_cut += sensitivities['s'][year][node_id] * (model.es_s_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['s'])
-            if sensitivities['e'][year][node_id] != 'N/A':
-                benders_cut += sensitivities['e'][year][node_id] * (model.es_e_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['e'])
-    model.benders_cuts.add(model.alpha >= benders_cut)
+    if convergence:
+        # If subproblem converged, add optimality cut
+        print("[INFO] Benders' decomposition. Adding optimality cut...")
+        benders_cut = upper_bound
+        for e in model.energy_storages:
+            node_id = planning_problem.active_distribution_network_nodes[e]
+            for y in model.years:
+                year = years[y]
+                if sensitivities['s'][year][node_id] != 'N/A':
+                    benders_cut += sensitivities['s'][year][node_id] * (model.es_s_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['s'])
+                if sensitivities['e'][year][node_id] != 'N/A':
+                    benders_cut += sensitivities['e'][year][node_id] * (model.es_e_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['e'])
+        model.benders_cuts.add(model.alpha >= benders_cut)
+    else:
+        # If subproblem did not converge, add feasibility cut
+        print("[INFO] Benders' decomposition. Adding feasibility cut...")
+        for e in model.energy_storages:
+            node_id = planning_problem.active_distribution_network_nodes[e]
+            for y in model.years:
+                year = years[y]
+                if sensitivities['s'][year][node_id] != 'N/A':
+                    model.benders_cuts.add(model.es_s_rated[e, y] > abs(candidate_solution['total_capacity'][node_id][year]['s']) + SMALL_TOLERANCE)
+                if sensitivities['e'][year][node_id] != 'N/A':
+                    model.benders_cuts.add(model.es_e_rated[e, y] > abs(candidate_solution['total_capacity'][node_id][year]['e']) + SMALL_TOLERANCE)
 
 
 # ======================================================================================================================
@@ -374,7 +390,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     optim_models = {'tso': tso_model, 'dso': dso_models, 'esso': esso_model}
     sensitivities = transmission_network.get_sensitivities(tso_model)
 
-    return results, optim_models, sensitivities, primal_evolution
+    return convergence, results, optim_models, sensitivities, primal_evolution
 
 
 def create_transmission_network_model(transmission_network, consensus_vars, candidate_solution):
@@ -421,7 +437,9 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                     expected_ess_p = 0.00
                     expected_ess_q = 0.00
                     for s_m in tso_model[year][day].scenarios_market:
+                        omega_market = transmission_network.network[year][day].prob_market_scenarios[s_m]
                         for s_o in tso_model[year][day].scenarios_operation:
+                            omega_oper = transmission_network.network[year][day].prob_operation_scenarios[s_o]
                             expected_ess_p += omega_market * omega_oper * tso_model[year][day].shared_es_pnet[e, s_m, s_o, p]
                             expected_ess_q += omega_market * omega_oper * tso_model[year][day].shared_es_qnet[e, s_m, s_o, p]
                     tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_shared_ess_p[e, p] == expected_ess_p)
