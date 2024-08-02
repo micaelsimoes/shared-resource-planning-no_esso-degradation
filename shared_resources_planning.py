@@ -240,9 +240,9 @@ def _add_benders_cut(planning_problem, model, upper_bound, convergence, sensitiv
             for y in model.years:
                 year = years[y]
                 if sensitivities['s'][year][node_id] != 'N/A':
-                    model.benders_cuts.add(model.es_s_rated[e, y] > abs(candidate_solution['total_capacity'][node_id][year]['s']) + SMALL_TOLERANCE)
+                    model.benders_cuts.add(model.es_s_rated[e, y] >= abs(candidate_solution['total_capacity'][node_id][year]['s']))
                 if sensitivities['e'][year][node_id] != 'N/A':
-                    model.benders_cuts.add(model.es_e_rated[e, y] > abs(candidate_solution['total_capacity'][node_id][year]['e']) + SMALL_TOLERANCE)
+                    model.benders_cuts.add(model.es_e_rated[e, y] >= abs(candidate_solution['total_capacity'][node_id][year]['e']))
 
 
 # ======================================================================================================================
