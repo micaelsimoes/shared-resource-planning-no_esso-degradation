@@ -1,5 +1,5 @@
 import os
-from math import isclose, acos, tan
+from math import isclose
 import pandas as pd
 import pyomo.opt as po
 import pyomo.environ as pe
@@ -29,6 +29,7 @@ class SharedEnergyStorageData:
         self.prob_market_scenarios = dict()         # Probability of market (price) scenarios
         self.cost_investment = dict()
         self.params = SharedEnergyStorageParameters()
+        self.active_distribution_network_nodes = list()
 
     def build_master_problem(self):
         return _build_master_problem(self)

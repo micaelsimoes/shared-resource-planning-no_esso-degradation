@@ -28,6 +28,7 @@ class NetworkData:
         self.cost_flex = dict()
         self.prob_market_scenarios = dict()
         self.is_transmission = False
+        self.active_distribution_network_nodes = list()
 
     def build_model(self):
         network_models = dict()
