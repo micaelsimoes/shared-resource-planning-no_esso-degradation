@@ -2507,22 +2507,17 @@ def _get_sensitivities(network_planning, model):
             for c in model_repr_day.shared_energy_storage_s_sensitivities:
                 node_id = network_planning.active_distribution_network_nodes[c - 1]  # Note: the sensitivity constraints start at "1"
                 sensitivity_s = model_repr_day.dual[model_repr_day.shared_energy_storage_s_sensitivities[c]] * network_planning.network[year][day].baseMVA
-                if sensitivities['s'][year][node_id] == 'N/A':
-                    sensitivities['s'][year][node_id] = num_days * sensitivity_s
-                else:
-                    sensitivities['s'][year][node_id] += num_days * sensitivity_s
+                sensitivities['s'][year][node_id] += num_days * sensitivity_s
 
             for c in model_repr_day.shared_energy_storage_e_sensitivities:
                 node_id = network_planning.active_distribution_network_nodes[c - 1]
                 sensitivity_e = model_repr_day.dual[model_repr_day.shared_energy_storage_e_sensitivities[c]] * network_planning.network[year][day].baseMVA
-                if sensitivities['e'][year][node_id] == 'N/A':
-                    sensitivities['e'][year][node_id] = num_days * sensitivity_e
-                else:
-                    sensitivities['e'][year][node_id] += num_days * sensitivity_e
-
+                sensitivities['e'][year][node_id] += num_days * sensitivity_e
+        '''
         for node_id in network_planning.active_distribution_network_nodes:
             sensitivities['s'][year][node_id] *= num_years * annualization
             sensitivities['e'][year][node_id] *= num_years * annualization
+        '''
 
     return sensitivities
 
