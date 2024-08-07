@@ -1848,7 +1848,7 @@ def _process_results(network, model, params, results=dict()):
                         processed_results['scenarios'][s_m][s_o]['branches']['ratio'][branch_id].append(r_ij)
 
                     # Branch flow (limits)
-                    flow_ij_perc = sqrt(pe.value(model.flow_ij_sqr[k, s_m, s_o, p])) / rating
+                    flow_ij_perc = sqrt(abs(pe.value(model.flow_ij_sqr[k, s_m, s_o, p]))) / rating
                     processed_results['scenarios'][s_m][s_o]['branches']['branch_flow']['flow_ij_perc'][branch_id].append(flow_ij_perc)
 
             # Energy Storage devices
