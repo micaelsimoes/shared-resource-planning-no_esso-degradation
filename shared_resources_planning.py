@@ -157,12 +157,10 @@ def _run_planning_problem(planning_problem):
         # 1.2. Get coupling constraints' sensitivities (subproblem)
         # 1.3. Get OF value (upper bound) from the subproblem
         operational_convergence, operational_results, lower_level_models, sensitivities, _ = planning_problem.run_operational_planning(candidate_solution, print_results=True, filename=f'{planning_problem.name}_iter{iter}')
-        add_cut = False
         upper_bound = upper_bound_evolution[-1]
         if operational_convergence:
             upper_bound = planning_problem.get_upper_bound(lower_level_models['tso'])
-            if upper_bound < min(upper_bound_evolution):
-                add_cut = True
+        upper_bound = min(min(upper_bound_evolution), upper_bound)
         upper_bound_evolution.append(upper_bound)
 
         #  - Convergence check
@@ -175,8 +173,7 @@ def _run_planning_problem(planning_problem):
         # 2.1. Add Benders' cut, based on the sensitivities obtained from the subproblem
         # 2.2. Run master problem optimization
         # 2.3. Get new capacity values, and the value of alpha (lower bound)
-        if add_cut:
-            planning_problem.add_benders_cut(master_problem_model, upper_bound, operational_convergence, sensitivities, candidate_solution)
+        planning_problem.add_benders_cut(master_problem_model, upper_bound, operational_convergence, sensitivities, candidate_solution)
         shared_ess_data.optimize(master_problem_model, from_warm_start=from_warm_start)
         candidate_solution = shared_ess_data.get_candidate_solution(master_problem_model)
         lower_bound = pe.value(master_problem_model.alpha)
