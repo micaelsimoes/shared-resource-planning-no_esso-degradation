@@ -2497,7 +2497,8 @@ def _get_sensitivities(network_planning, model):
     for year in network_planning.years:
 
         num_years = network_planning.years[year]
-        annualization = 1 / ((1 + network_planning.discount_factor) ** (int(year) - int(years[0])))
+        #annualization = 1 / ((1 + network_planning.discount_factor) ** (int(year) - int(years[0])))
+        annualization = 1.00
 
         for day in network_planning.days:
 
