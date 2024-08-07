@@ -223,7 +223,7 @@ def _add_benders_cut(planning_problem, model, upper_bound, convergence, sensitiv
     if convergence:
         # If subproblem converged, add optimality cut
         print("[INFO] Benders' decomposition. Adding optimality cut...")
-        benders_cut = upper_bound
+        benders_cut = 0.00
         for e in model.energy_storages:
             node_id = planning_problem.active_distribution_network_nodes[e]
             for y in model.years:
@@ -245,7 +245,7 @@ def _add_benders_cut(planning_problem, model, upper_bound, convergence, sensitiv
                     benders_cut += sensitivities['s'][year][node_id] * (candidate_solution['total_capacity'][node_id][year]['s'] - model.es_s_rated[e, y])
                 if sensitivities['e'][year][node_id] != 'N/A':
                     benders_cut += sensitivities['e'][year][node_id] * (candidate_solution['total_capacity'][node_id][year]['e'] - model.es_e_rated[e, y])
-        model.benders_cuts.add(model.alpha >= benders_cut)
+        model.benders_cuts.add(0.00 >= benders_cut)
 
 
 # ======================================================================================================================
