@@ -223,28 +223,28 @@ def _add_benders_cut(planning_problem, model, upper_bound, convergence, sensitiv
     if convergence:
         # If subproblem converged, add optimality cut
         print("[INFO] Benders' decomposition. Adding optimality cut...")
-        benders_cut = 0.00
+        benders_cut = upper_bound
         for e in model.energy_storages:
             node_id = planning_problem.active_distribution_network_nodes[e]
             for y in model.years:
                 year = years[y]
                 if sensitivities['s'][year][node_id] != 'N/A':
-                    benders_cut += sensitivities['s'][year][node_id] * (candidate_solution['total_capacity'][node_id][year]['s'] - model.es_s_rated[e, y])
+                    benders_cut += sensitivities['s'][year][node_id] * (model.es_s_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['s'])
                 if sensitivities['e'][year][node_id] != 'N/A':
-                    benders_cut += sensitivities['e'][year][node_id] * (candidate_solution['total_capacity'][node_id][year]['e'] - model.es_e_rated[e, y])
+                    benders_cut += sensitivities['e'][year][node_id] * (model.es_e_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['e'])
         model.benders_cuts.add(model.alpha >= benders_cut)
     else:
         # If subproblem did not converge, add feasibility cut
         print("[INFO] Benders' decomposition. Adding feasibility cut...")
-        benders_cut = 0.00
+        benders_cut = upper_bound
         for e in model.energy_storages:
             node_id = planning_problem.active_distribution_network_nodes[e]
             for y in model.years:
                 year = years[y]
                 if sensitivities['s'][year][node_id] != 'N/A':
-                    benders_cut += sensitivities['s'][year][node_id] * (candidate_solution['total_capacity'][node_id][year]['s'] - model.es_s_rated[e, y])
+                    benders_cut += sensitivities['s'][year][node_id] * (model.es_s_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['s'])
                 if sensitivities['e'][year][node_id] != 'N/A':
-                    benders_cut += sensitivities['e'][year][node_id] * (candidate_solution['total_capacity'][node_id][year]['e'] - model.es_e_rated[e, y])
+                    benders_cut += sensitivities['e'][year][node_id] * (model.es_e_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['e'])
         model.benders_cuts.add(0.00 >= benders_cut)
 
 
