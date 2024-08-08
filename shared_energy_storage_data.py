@@ -570,11 +570,9 @@ def _read_shared_energy_storage_data_from_file(shared_ess_data, filename):
 
     try:
         num_scenarios, shared_ess_data.prob_market_scenarios = _get_operational_scenarios_info_from_excel_file(filename, 'Scenarios')
-        investment_costs = _get_investment_costs_from_excel_file(filename, 'Investment Cost', len(shared_ess_data.years))
-        for year in shared_ess_data.years:
-            if (year not in investment_costs['power_capacity']) or (year not in investment_costs['energy_capacity']):
-                print(f'[ERROR] Shared ESS investment costs. Missing year {year}. Exiting...')
-                exit(ERROR_OPERATIONAL_DATA_FILE)
+        investment_costs = dict()
+        investment_costs['power'] = _get_investment_costs_from_excel_file(filename, 'Investment Cost, Power', num_scenarios, shared_ess_data.years)
+        investment_costs['capacity'] = _get_investment_costs_from_excel_file(filename, 'Investment Cost, Capacity', num_scenarios, shared_ess_data.years)
         shared_ess_data.cost_investment = investment_costs
     except:
         print(f'[ERROR] File {filename}. Exiting...')
@@ -607,28 +605,25 @@ def _get_operational_scenarios_info_from_excel_file(filename, sheet_name):
     return num_scenarios, prob_scenarios
 
 
-def _get_investment_costs_from_excel_file(filename, sheet_name, num_years):
+def _get_investment_costs_from_excel_file(filename, sheet_name, num_scenarios, years):
 
     try:
-
         df = pd.read_excel(filename, sheet_name=sheet_name, header=None)
-        data = {
-            'power_capacity': dict(),
-            'energy_capacity': dict()
-        }
-
-        for i in range(len(df.columns)-1):
-
-            year = int(df.iloc[0, i + 1])
-
-            if is_number(df.iloc[1, i + 1]):
-                data['power_capacity'][year] = float(df.iloc[1, i + 1])
-
-            if is_number(df.iloc[2, i + 1]):
-                data['energy_capacity'][year] = float(df.iloc[2, i + 1])
-
+        data = dict()
+        for i in range(num_scenarios):
+            data[i] = dict()
+            for year in years:
+                year_found = False
+                for j in range(len(df.columns) - 1):
+                    year_excel = int(df.iloc[0, j + 1])
+                    if year == year_excel:
+                        year_found = True
+                        if is_number(df.iloc[i + 1, j + 1]):
+                            data[i][year] = float(df.iloc[i + 1, j + 1])
+                if not year_found:
+                    print('[ERROR] Workbook {}. Year {} not found!'.format(filename, year))
+                    exit(ERROR_MARKET_DATA_FILE)
         return data
-
     except:
         print('[ERROR] Workbook {}. Sheet {} does not exist.'.format(filename, sheet_name))
         exit(ERROR_MARKET_DATA_FILE)
