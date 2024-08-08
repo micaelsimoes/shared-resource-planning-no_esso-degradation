@@ -181,13 +181,15 @@ def _build_master_problem(shared_ess_data):
 
     # ------------------------------------------------------------------------------------------------------------------
     # Decision variables
-    model.es_s_investment = pe.Var(model.energy_storages, model.years, model.scenarios_market, domain=pe.NonNegativeReals)   # Investment in power capacity in year y
-    model.es_e_investment = pe.Var(model.energy_storages, model.years, model.scenarios_market, domain=pe.NonNegativeReals)   # Investment in energy capacity in year y
-    model.es_s_rated = pe.Var(model.energy_storages, model.years, model.scenarios_market, domain=pe.NonNegativeReals)       # Total rated power capacity per investment scenario (considering calendar life)
-    model.es_e_rated = pe.Var(model.energy_storages, model.years, model.scenarios_market, domain=pe.NonNegativeReals)       # Total rated energy capacity per investment scenario (considering calendar life, not considering degradation)
-    model.expected_es_s_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)                      # Total expected rated power capacity (considering calendar life)
-    model.expected_es_e_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)                      # Total expected rated energy capacity (considering calendar life, not considering degradation)
-    model.alpha = pe.Var(domain=pe.Reals)                                                                                         # alpha (associated with cuts) will try to rebuild y in the original problem
+    model.es_s_investment = pe.Var(model.energy_storages, model.years, model.scenarios_market, domain=pe.NonNegativeReals)      # Investment in power capacity in year y
+    model.es_e_investment = pe.Var(model.energy_storages, model.years, model.scenarios_market, domain=pe.NonNegativeReals)      # Investment in energy capacity in year y
+    model.es_s_rated = pe.Var(model.energy_storages, model.years, model.scenarios_market, domain=pe.NonNegativeReals)           # Rated power capacity per investment scenario (considering calendar life)
+    model.es_e_rated = pe.Var(model.energy_storages, model.years, model.scenarios_market, domain=pe.NonNegativeReals)           # Rated energy capacity per investment scenario (considering calendar life, not considering degradation)
+    model.expected_es_s_investment = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)                     # Total expected investment in power capacity in year y
+    model.expected_es_e_investment = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)                     # Total expected investment in energy capacity in year y
+    model.expected_es_s_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)                          # Total expected rated power capacity (considering calendar life)
+    model.expected_es_e_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)                          # Total expected rated energy capacity (considering calendar life, not considering degradation)
+    model.alpha = pe.Var(domain=pe.Reals)                                                                                             # alpha (associated with cuts) will try to rebuild y in the original problem
     model.alpha.setlb(-shared_ess_data.params.budget * 1e3)
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -231,12 +233,18 @@ def _build_master_problem(shared_ess_data):
     model.energy_storage_expected_values = pe.ConstraintList()
     for e in model.energy_storages:
         for y in model.years:
+            expected_s_investment = 0.00
+            expected_e_investment = 0.00
             expected_s_rated = 0.00
             expected_e_rated = 0.00
             for s_m in model.scenarios_market:
                 omega_m = shared_ess_data.prob_market_scenarios[s_m]
+                expected_s_investment += omega_m * model.expected_es_s_investment[e, y, s_m]
+                expected_e_investment += omega_m * model.expected_es_e_investment[e, y, s_m]
                 expected_s_rated += omega_m * model.es_s_rated[e, y, s_m]
                 expected_e_rated += omega_m * model.es_e_rated[e, y, s_m]
+            model.energy_storage_expected_values.add(model.expected_es_s_investment[e, y] == expected_s_investment)
+            model.energy_storage_expected_values.add(model.expected_es_e_investment[e, y] == expected_e_investment)
             model.energy_storage_expected_values.add(model.expected_es_s_rated[e, y] == expected_s_rated)
             model.energy_storage_expected_values.add(model.expected_es_e_rated[e, y] == expected_e_rated)
 
@@ -585,8 +593,8 @@ def _get_candidate_solution(self, model):
         for y in model.years:
             year = years[y]
             candidate_solution['investment'][node_id][year] = dict()
-            candidate_solution['investment'][node_id][year]['s'] = abs(pe.value(model.es_s_investment[e, y]))
-            candidate_solution['investment'][node_id][year]['e'] = abs(pe.value(model.es_e_investment[e, y]))
+            candidate_solution['investment'][node_id][year]['s'] = abs(pe.value(model.expected_es_s_investment[e, y]))
+            candidate_solution['investment'][node_id][year]['e'] = abs(pe.value(model.expected_es_e_investment[e, y]))
             candidate_solution['total_capacity'][node_id][year] = dict()
             candidate_solution['total_capacity'][node_id][year]['s'] = abs(pe.value(model.expected_es_s_rated[e, y]))
             candidate_solution['total_capacity'][node_id][year]['e'] = abs(pe.value(model.expected_es_e_rated[e, y]))
