@@ -239,8 +239,8 @@ def _build_master_problem(shared_ess_data):
             expected_e_rated = 0.00
             for s_m in model.scenarios_market:
                 omega_m = shared_ess_data.prob_market_scenarios[s_m]
-                expected_s_investment += omega_m * model.expected_es_s_investment[e, y, s_m]
-                expected_e_investment += omega_m * model.expected_es_e_investment[e, y, s_m]
+                expected_s_investment += omega_m * model.es_s_investment[e, y, s_m]
+                expected_e_investment += omega_m * model.es_e_investment[e, y, s_m]
                 expected_s_rated += omega_m * model.es_s_rated[e, y, s_m]
                 expected_e_rated += omega_m * model.es_e_rated[e, y, s_m]
             model.energy_storage_expected_values.add(model.expected_es_s_investment[e, y] == expected_s_investment)
