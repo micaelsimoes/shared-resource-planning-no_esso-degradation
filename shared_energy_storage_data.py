@@ -970,10 +970,10 @@ def _get_investment_cost_and_rated_capacity(shared_ess_data, model):
             expected_cost_energy = 0.00
             for s_m in model.scenarios_market:
                 omega_market = shared_ess_data.prob_market_scenarios[s_m]
-                ess_investment['capacity'][node_id][year]['power'][s_m] = pe.value(model.es_s_rated[e, y, s_m])
-                ess_investment['capacity'][node_id][year]['energy'][s_m] = pe.value(model.es_e_rated[e, y, s_m])
-                ess_investment['cost'][node_id][year]['power'][s_m] = shared_ess_data.cost_investment['power'][s_m][year] * pe.value(model.es_s_rated[e, y, s_m])
-                ess_investment['cost'][node_id][year]['energy'][s_m] = shared_ess_data.cost_investment['energy'][s_m][year] * pe.value(model.es_e_rated[e, y, s_m])
+                ess_investment['capacity'][node_id][year]['power'][s_m] = pe.value(model.es_s_investment[e, y, s_m])
+                ess_investment['capacity'][node_id][year]['energy'][s_m] = pe.value(model.es_e_investment[e, y, s_m])
+                ess_investment['cost'][node_id][year]['power'][s_m] = shared_ess_data.cost_investment['power'][s_m][year] * pe.value(model.es_s_investment[e, y, s_m])
+                ess_investment['cost'][node_id][year]['energy'][s_m] = shared_ess_data.cost_investment['energy'][s_m][year] * pe.value(model.es_e_investment[e, y, s_m])
                 expected_rated_power += omega_market * ess_investment['capacity'][node_id][year]['power'][s_m]
                 expected_rated_energy += omega_market * ess_investment['capacity'][node_id][year]['energy'][s_m]
                 expected_cost_power += omega_market * ess_investment['cost'][node_id][year]['power'][s_m]
