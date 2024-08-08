@@ -1017,11 +1017,14 @@ def _write_optimization_results_to_excel(shared_ess_data, data_dir, results):
 def _write_ess_costs_to_excel(shared_ess_data, workbook, results):
 
     sheet = workbook.create_sheet('Shared ESS Cost')
+    num_style = '0.00'
 
     years = [year for year in shared_ess_data.years]
-    num_style = '0.00'
-    total_cost_power = 0.00
-    total_cost_energy = 0.00
+    total_cost_power = dict()
+    total_cost_energy = dict()
+    for year in years:
+        total_cost_power[year] = 0.00
+        total_cost_energy[year] = 0.00
 
     # Write Header
     line_idx = 1
@@ -1105,7 +1108,7 @@ def _write_ess_costs_to_excel(shared_ess_data, workbook, results):
             year = years[y]
             sheet.cell(row=line_idx, column=y + 4).value = results['cost'][node_id][year]['power']['expected']
             sheet.cell(row=line_idx, column=y + 4).number_format = num_style
-            total_cost_power += results['cost'][node_id][year]['power']['expected']
+            total_cost_power[year] += results['cost'][node_id][year]['power']['expected']
 
         # Expected Cost Energy
         line_idx = line_idx + 1
@@ -1116,7 +1119,7 @@ def _write_ess_costs_to_excel(shared_ess_data, workbook, results):
             year = years[y]
             sheet.cell(row=line_idx, column=y + 4).value = results['cost'][node_id][year]['energy']['expected']
             sheet.cell(row=line_idx, column=y + 4).number_format = num_style
-            total_cost_energy += results['cost'][node_id][year]['energy']['expected']
+            total_cost_energy[year] += results['cost'][node_id][year]['energy']['expected']
 
     # - Total
     line_idx = line_idx + 1
@@ -1124,7 +1127,7 @@ def _write_ess_costs_to_excel(shared_ess_data, workbook, results):
     sheet.cell(row=line_idx, column=2).value = 'Cost, [€]'
     sheet.cell(row=line_idx, column=3).value = 'Expected'
     for y in range(len(years)):
-        sheet.cell(row=line_idx, column=y + 4).value = total_cost_power + total_cost_energy
+        sheet.cell(row=line_idx, column=y + 4).value = total_cost_power[year] + total_cost_energy[year]
         sheet.cell(row=line_idx, column=y + 4).number_format = num_style
 
 
