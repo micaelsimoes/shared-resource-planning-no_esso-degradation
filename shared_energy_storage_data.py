@@ -920,8 +920,8 @@ def _get_available_capacity(shared_ess_data, model):
             ess_capacity['investment'][node_id][year]['energy'] = pe.value(model.es_e_investment[e, y])
 
             ess_capacity['rated'][node_id][year] = dict()
-            ess_capacity['rated'][node_id][year]['power'] = pe.value(model.expected_es_s_rated[e, y])
-            ess_capacity['rated'][node_id][year]['energy'] = pe.value(model.expected_es_e_rated[e, y])
+            ess_capacity['rated'][node_id][year]['power'] = pe.value(model.es_s_rated[e, y])
+            ess_capacity['rated'][node_id][year]['energy'] = pe.value(model.es_e_rated[e, y])
 
             s_available, e_available = shared_ess_data.get_available_capacities(model, e, y)
             soh = 0.00

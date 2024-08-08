@@ -98,7 +98,7 @@ class SharedResourcesPlanning:
         filename = os.path.join(self.results_dir, self.name + '_planning_results.xlsx')
         processed_results = _process_operational_planning_results(self, operational_planning_models['tso'], operational_planning_models['dso'], operational_planning_models['esso'], operational_results)
         shared_ess_cost = self.shared_ess_data.get_investment_cost_and_rated_capacity(master_problem_model)
-        shared_ess_capacity = self.shared_ess_data.get_available_capacity(master_problem_model)
+        shared_ess_capacity = self.shared_ess_data.get_available_capacity(operational_planning_models['esso'])
         _write_planning_results_to_excel(self, processed_results, bound_evolution=bound_evolution, shared_ess_cost=shared_ess_cost, shared_ess_capacity=shared_ess_capacity, filename=filename)
 
     def write_operational_planning_results_to_excel(self, optimization_models, results, filename=str(), primal_evolution=list()):
