@@ -230,9 +230,9 @@ def _add_benders_cut(planning_problem, model, upper_bound, convergence, sensitiv
             for y in model.years:
                 year = years[y]
                 if sensitivities['s'][year][node_id] != 'N/A':
-                    benders_cut += sensitivities['s'][year][node_id] * (model.es_s_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['s'])
+                    benders_cut += sensitivities['s'][year][node_id] * (model.expected_es_s_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['s'])
                 if sensitivities['e'][year][node_id] != 'N/A':
-                    benders_cut += sensitivities['e'][year][node_id] * (model.es_e_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['e'])
+                    benders_cut += sensitivities['e'][year][node_id] * (model.expected_es_e_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['e'])
         model.benders_cuts.add(model.alpha >= benders_cut)
     else:
         # If subproblem did not converge, add feasibility cut
@@ -243,9 +243,9 @@ def _add_benders_cut(planning_problem, model, upper_bound, convergence, sensitiv
             for y in model.years:
                 year = years[y]
                 if sensitivities['s'][year][node_id] != 'N/A':
-                    benders_cut += sensitivities['s'][year][node_id] * (model.es_s_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['s'])
+                    benders_cut += sensitivities['s'][year][node_id] * (model.expected_es_s_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['s'])
                 if sensitivities['e'][year][node_id] != 'N/A':
-                    benders_cut += sensitivities['e'][year][node_id] * (model.es_e_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['e'])
+                    benders_cut += sensitivities['e'][year][node_id] * (model.expected_es_e_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['e'])
         model.benders_cuts.add(0.00 >= benders_cut)
 
 
