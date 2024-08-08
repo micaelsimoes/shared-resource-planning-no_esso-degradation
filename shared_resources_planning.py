@@ -94,17 +94,18 @@ class SharedResourcesPlanning:
         filename = os.path.join(self.data_dir, self.params_file)
         self.params.read_parameters_from_file(filename)
 
-    def write_planning_results_to_excel(self, operational_planning_models, operational_results=dict(), bound_evolution=dict(), execution_time=float()):
+    def write_planning_results_to_excel(self, master_problem_model, operational_planning_models, operational_results=dict(), bound_evolution=dict(), execution_time=float()):
         filename = os.path.join(self.results_dir, self.name + '_planning_results.xlsx')
         processed_results = _process_operational_planning_results(self, operational_planning_models['tso'], operational_planning_models['dso'], operational_planning_models['esso'], operational_results)
-        shared_ess_capacity = self.shared_ess_data.get_investment_and_available_capacities(operational_planning_models['esso'])
-        _write_planning_results_to_excel(self, processed_results, bound_evolution=bound_evolution, shared_ess_capacity=shared_ess_capacity, filename=filename)
+        shared_ess_cost = self.shared_ess_data.get_investment_cost_and_rated_capacity(master_problem_model)
+        shared_ess_capacity = self.shared_ess_data.get_available_capacity(master_problem_model)
+        _write_planning_results_to_excel(self, processed_results, bound_evolution=bound_evolution, shared_ess_cost=shared_ess_cost, shared_ess_capacity=shared_ess_capacity, filename=filename)
 
     def write_operational_planning_results_to_excel(self, optimization_models, results, filename=str(), primal_evolution=list()):
         if not filename:
             filename = 'operational_planning_results'
         processed_results = _process_operational_planning_results(self, optimization_models['tso'], optimization_models['dso'], optimization_models['esso'], results)
-        shared_ess_capacity = self.shared_ess_data.get_investment_and_available_capacities(optimization_models['esso'])
+        shared_ess_capacity = self.shared_ess_data.get_available_capacity(optimization_models['esso'])
         _write_operational_planning_results_to_excel(self, processed_results, primal_evolution=primal_evolution, shared_ess_capacity=shared_ess_capacity, filename=filename)
 
     def write_operational_planning_results_without_coordination_to_excel(self, optimization_models, results):
@@ -200,7 +201,7 @@ def _run_planning_problem(planning_problem):
     total_execution_time = end - start
     print('[INFO] Execution time: {:.2f} s'.format(total_execution_time))
     bound_evolution = {'lower_bound': lower_bound_evolution, 'upper_bound': upper_bound_evolution}
-    planning_problem.write_planning_results_to_excel(lower_level_models, operational_results, bound_evolution, execution_time=total_execution_time)
+    planning_problem.write_planning_results_to_excel(master_problem_model, lower_level_models, operational_results, bound_evolution, execution_time=total_execution_time)
 
 
 def _get_upper_bound(planning_problem, model):
@@ -1751,7 +1752,7 @@ def _process_results_interface(planning_problem, tso_model, dso_models):
 # ======================================================================================================================
 #  RESULTS PLANNING - write functions
 # ======================================================================================================================
-def _write_planning_results_to_excel(planning_problem, results, bound_evolution=dict(), shared_ess_capacity=dict(), filename='planing_results'):
+def _write_planning_results_to_excel(planning_problem, results, bound_evolution=dict(), shared_ess_cost=dict(), shared_ess_capacity=dict(), filename='planing_results'):
 
     wb = Workbook()
 
@@ -1762,7 +1763,13 @@ def _write_planning_results_to_excel(planning_problem, results, bound_evolution=
         _write_bound_evolution_to_excel(wb, bound_evolution)
 
     if shared_ess_capacity:
-        planning_problem.shared_ess_data.write_ess_results_to_excel(wb, shared_ess_capacity)
+        write_investment = True
+        if shared_ess_cost:
+            write_investment = False
+        planning_problem.shared_ess_data.write_ess_capacity_results_to_excel(wb, shared_ess_capacity, write_investment=write_investment)
+
+    if shared_ess_cost:
+        planning_problem.shared_ess_data.write_ess_costs_to_excel(wb, shared_ess_cost)
 
     # Interface Power Flow
     _write_interface_results_to_excel(planning_problem, wb, results['interface'])
@@ -1841,7 +1848,7 @@ def _write_operational_planning_results_to_excel(planning_problem, results, prim
     _write_operational_planning_main_info_to_excel(planning_problem, wb, results)
     _write_shared_ess_specifications(wb, planning_problem.shared_ess_data)
     if shared_ess_capacity:
-        planning_problem.shared_ess_data.write_ess_results_to_excel(wb, shared_ess_capacity)
+        planning_problem.shared_ess_data.write_ess_capacity_results_to_excel(wb, shared_ess_capacity)
 
     if primal_evolution:
         _write_objective_function_evolution_to_excel(wb, primal_evolution)
