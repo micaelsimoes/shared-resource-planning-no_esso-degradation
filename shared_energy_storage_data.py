@@ -78,7 +78,7 @@ class SharedEnergyStorageData:
 
     def process_results(self, model):
         results = dict()
-        results['capacity'] = self.get_investment_and_available_capacities(model)
+        results['capacity'] = self.get_available_capacity(model)
         results['operation'] = dict()
         results['operation']['aggregated'] = self.process_results_aggregated(model)
         results['operation']['detailed'] = self.process_results_detailed(model)
@@ -141,11 +141,18 @@ class SharedEnergyStorageData:
             e_available += pe.value(model.es_e_available_per_unit[ess_idx, y_inv, year_idx])
         return s_available, e_available
 
-    def get_investment_and_available_capacities(self, model):
-        return _get_investment_and_available_capacities(self, model)
+    def get_available_capacity(self, model):
+        return _get_available_capacity(self, model)
 
-    def write_ess_results_to_excel(self, workbook, shared_ess_capacity):
-        _write_ess_capacity_investment_to_excel(self, workbook, shared_ess_capacity['investment'], initial_sheet=False)
+    def get_investment_cost_and_rated_capacity(self, model):
+        return _get_investment_cost_and_rated_capacity(self, model)
+
+    def write_ess_costs_to_excel(self, workbook, shared_ess_cost):
+        _write_ess_costs_to_excel(self, workbook, shared_ess_cost)
+
+    def write_ess_capacity_results_to_excel(self, workbook, shared_ess_capacity, write_investment=True):
+        if write_investment:
+            _write_ess_capacity_investment_to_excel(self, workbook, shared_ess_capacity['investment'], initial_sheet=False)
         _write_ess_capacity_rated_available_to_excel(self, workbook, shared_ess_capacity)
 
     def write_relaxation_slacks_results_to_excel(self, workbook, results):
@@ -890,7 +897,7 @@ def _process_relaxation_variables_operation_detailed(shared_ess_data, model):
     return processed_results
 
 
-def _get_investment_and_available_capacities(shared_ess_data, model):
+def _get_available_capacity(shared_ess_data, model):
 
     years = [year for year in shared_ess_data.years]
     ess_capacity = {'investment': dict(), 'rated': dict(), 'available': dict()}
@@ -929,6 +936,48 @@ def _get_investment_and_available_capacities(shared_ess_data, model):
     return ess_capacity
 
 
+def _get_investment_cost_and_rated_capacity(shared_ess_data, model):
+
+    years = [year for year in shared_ess_data.years]
+    ess_investment = {'capacity': dict(), 'cost': dict()}
+
+    # - Investment in Power and Energy Capacity (per year)
+    # - Power and Energy capacities available (per representative day)
+    for e in model.energy_storages:
+
+        node_id = shared_ess_data.shared_energy_storages[years[0]][e].bus
+        ess_investment['capacity'][node_id] = dict()
+        ess_investment['cost'][node_id] = dict()
+
+        for y in model.years:
+
+            year = years[y]
+
+            ess_investment['capacity'][node_id][year] = {'power': dict(), 'energy': dict()}
+            ess_investment['cost'][node_id][year] = {'power': dict(), 'energy': dict()}
+
+            expected_rated_power = 0.00
+            expected_rated_energy = 0.00
+            expected_cost_power = 0.00
+            expected_cost_energy = 0.00
+            for s_m in model.scenarios_market:
+                omega_market = shared_ess_data.prob_market_scenarios[s_m]
+                ess_investment['capacity'][node_id][year]['power'][s_m] = pe.value(model.es_s_rated[e, y, s_m])
+                ess_investment['capacity'][node_id][year]['energy'][s_m] = pe.value(model.es_e_rated[e, y, s_m])
+                ess_investment['cost'][node_id][year]['power'][s_m] = shared_ess_data.cost_investment['power'][s_m][year] * pe.value(model.es_s_rated[e, y, s_m])
+                ess_investment['cost'][node_id][year]['energy'][s_m] = shared_ess_data.cost_investment['energy'][s_m][year] * pe.value(model.es_e_rated[e, y, s_m])
+                expected_rated_power += omega_market * ess_investment['capacity'][node_id][year]['power'][s_m]
+                expected_rated_energy += omega_market * ess_investment['capacity'][node_id][year]['energy'][s_m]
+                expected_cost_power += omega_market * ess_investment['cost'][node_id][year]['power'][s_m]
+                expected_cost_energy += omega_market * ess_investment['cost'][node_id][year]['energy'][s_m]
+            ess_investment['capacity'][node_id][year]['power']['expected'] = expected_rated_power
+            ess_investment['capacity'][node_id][year]['energy']['expected'] = expected_rated_energy
+            ess_investment['cost'][node_id][year]['power']['expected'] = expected_cost_power
+            ess_investment['cost'][node_id][year]['energy']['expected'] = expected_cost_energy
+
+    return ess_investment
+
+
 # ======================================================================================================================
 #   Shared ESS -- Write Results
 # ======================================================================================================================
@@ -955,6 +1004,120 @@ def _write_optimization_results_to_excel(shared_ess_data, data_dir, results):
         backup_filename = os.path.join(data_dir, f'{shared_ess_data.name}_shared_ess_results_{current_time}.xlsx')
         print('[INFO] S-MPOPF Results written to {}.'.format(backup_filename))
         wb.save(backup_filename)
+
+
+def _write_ess_costs_to_excel(shared_ess_data, workbook, results):
+
+    sheet = workbook.create_sheet('Shared ESS Cost')
+
+    years = [year for year in shared_ess_data.years]
+    num_style = '0.00'
+    total_cost_power = 0.00
+    total_cost_energy = 0.00
+
+    # Write Header
+    line_idx = 1
+    sheet.cell(row=line_idx, column=1).value = 'Node'
+    sheet.cell(row=line_idx, column=2).value = 'Quantity'
+    sheet.cell(row=line_idx, column=3).value = 'Scenario'
+    for y in range(len(years)):
+        year = years[y]
+        sheet.cell(row=line_idx, column=y + 4).value = int(year)
+
+    # Write investment costs, power and energy
+    for node_id in shared_ess_data.active_distribution_network_nodes:
+        for s_m in range(len(shared_ess_data.prob_market_scenarios)):
+
+            # Power
+            line_idx = line_idx + 1
+            sheet.cell(row=line_idx, column=1).value = node_id
+            sheet.cell(row=line_idx, column=2).value = 'S, [MVA]'
+            sheet.cell(row=line_idx, column=3).value = s_m
+            for y in range(len(years)):
+                year = years[y]
+                sheet.cell(row=line_idx, column=y + 4).value = results['capacity'][node_id][year]['power'][s_m]
+                sheet.cell(row=line_idx, column=y + 4).number_format = num_style
+
+            # Energy
+            line_idx = line_idx + 1
+            sheet.cell(row=line_idx, column=1).value = node_id
+            sheet.cell(row=line_idx, column=2).value = 'E, [MVAh]'
+            sheet.cell(row=line_idx, column=3).value = s_m
+            for y in range(len(years)):
+                year = years[y]
+                sheet.cell(row=line_idx, column=y + 4).value = results['capacity'][node_id][year]['energy'][s_m]
+                sheet.cell(row=line_idx, column=y + 4).number_format = num_style
+
+            # Cost Power
+            line_idx = line_idx + 1
+            sheet.cell(row=line_idx, column=1).value = node_id
+            sheet.cell(row=line_idx, column=2).value = 'Cost S, [€]'
+            sheet.cell(row=line_idx, column=3).value = s_m
+            for y in range(len(years)):
+                year = years[y]
+                sheet.cell(row=line_idx, column=y + 4).value = results['cost'][node_id][year]['power'][s_m]
+                sheet.cell(row=line_idx, column=y + 4).number_format = num_style
+
+            # Cost Energy
+            line_idx = line_idx + 1
+            sheet.cell(row=line_idx, column=1).value = node_id
+            sheet.cell(row=line_idx, column=2).value = 'Cost E, [€]'
+            sheet.cell(row=line_idx, column=3).value = s_m
+            for y in range(len(years)):
+                year = years[y]
+                sheet.cell(row=line_idx, column=y + 4).value = results['cost'][node_id][year]['energy'][s_m]
+                sheet.cell(row=line_idx, column=y + 4).number_format = num_style
+
+        # Expected Power
+        line_idx = line_idx + 1
+        sheet.cell(row=line_idx, column=1).value = node_id
+        sheet.cell(row=line_idx, column=2).value = 'S, [MVA]'
+        sheet.cell(row=line_idx, column=3).value = 'Expected'
+        for y in range(len(years)):
+            year = years[y]
+            sheet.cell(row=line_idx, column=y + 4).value = results['capacity'][node_id][year]['power']['expected']
+            sheet.cell(row=line_idx, column=y + 4).number_format = num_style
+
+        # Expected Energy
+        line_idx = line_idx + 1
+        sheet.cell(row=line_idx, column=1).value = node_id
+        sheet.cell(row=line_idx, column=2).value = 'E, [MVAh]'
+        sheet.cell(row=line_idx, column=3).value = 'Expected'
+        for y in range(len(years)):
+            year = years[y]
+            sheet.cell(row=line_idx, column=y + 4).value = results['capacity'][node_id][year]['energy']['expected']
+            sheet.cell(row=line_idx, column=y + 4).number_format = num_style
+
+        # Expected Cost Power
+        line_idx = line_idx + 1
+        sheet.cell(row=line_idx, column=1).value = node_id
+        sheet.cell(row=line_idx, column=2).value = 'Cost S, [€]'
+        sheet.cell(row=line_idx, column=3).value = 'Expected'
+        for y in range(len(years)):
+            year = years[y]
+            sheet.cell(row=line_idx, column=y + 4).value = results['cost'][node_id][year]['power']['expected']
+            sheet.cell(row=line_idx, column=y + 4).number_format = num_style
+            total_cost_power += results['cost'][node_id][year]['power']['expected']
+
+        # Expected Cost Energy
+        line_idx = line_idx + 1
+        sheet.cell(row=line_idx, column=1).value = node_id
+        sheet.cell(row=line_idx, column=2).value = 'Cost E, [€]'
+        sheet.cell(row=line_idx, column=3).value = 'Expected'
+        for y in range(len(years)):
+            year = years[y]
+            sheet.cell(row=line_idx, column=y + 4).value = results['cost'][node_id][year]['energy']['expected']
+            sheet.cell(row=line_idx, column=y + 4).number_format = num_style
+            total_cost_energy += results['cost'][node_id][year]['energy']['expected']
+
+    # - Total
+    line_idx = line_idx + 1
+    sheet.cell(row=line_idx, column=1).value = 'Total'
+    sheet.cell(row=line_idx, column=2).value = 'Cost, [€]'
+    sheet.cell(row=line_idx, column=3).value = 'Expected'
+    for y in range(len(years)):
+        sheet.cell(row=line_idx, column=y + 4).value = total_cost_power + total_cost_energy
+        sheet.cell(row=line_idx, column=y + 4).number_format = num_style
 
 
 def _write_ess_capacity_investment_to_excel(shared_ess_data, workbook, results, initial_sheet=True):
@@ -996,37 +1159,6 @@ def _write_ess_capacity_investment_to_excel(shared_ess_data, workbook, results, 
         for y in range(len(years)):
             year = years[y]
             sheet.cell(row=line_idx, column=y + 3).value = results[node_id][year]['energy']
-            sheet.cell(row=line_idx, column=y + 3).number_format = num_style
-
-        # Power capacity cost
-        line_idx = line_idx + 1
-        sheet.cell(row=line_idx, column=1).value = node_id
-        sheet.cell(row=line_idx, column=2).value = 'Cost S, [m.u.]'
-        for y in range(len(years)):
-            year = years[y]
-            cost_s = shared_ess_data.cost_investment['power'][year] * results[node_id][year]['power']
-            sheet.cell(row=line_idx, column=y + 3).value = cost_s
-            sheet.cell(row=line_idx, column=y + 3).number_format = num_style
-
-        # Energy capacity cost
-        line_idx = line_idx + 1
-        sheet.cell(row=line_idx, column=1).value = node_id
-        sheet.cell(row=line_idx, column=2).value = 'Cost E, [m.u.]'
-        for y in range(len(years)):
-            year = years[y]
-            cost_e = shared_ess_data.cost_investment['energy'][year] * results[node_id][year]['energy']
-            sheet.cell(row=line_idx, column=y + 3).value = cost_e
-            sheet.cell(row=line_idx, column=y + 3).number_format = num_style
-
-        # Total capacity cost
-        line_idx = line_idx + 1
-        sheet.cell(row=line_idx, column=1).value = node_id
-        sheet.cell(row=line_idx, column=2).value = 'Cost Total, [m.u.]'
-        for y in range(len(years)):
-            year = years[y]
-            cost_s = shared_ess_data.cost_investment['power'][year] * results[node_id][year]['power']
-            cost_e = shared_ess_data.cost_investment['energy'][year] * results[node_id][year]['energy']
-            sheet.cell(row=line_idx, column=y + 3).value = cost_s + cost_e
             sheet.cell(row=line_idx, column=y + 3).number_format = num_style
 
 
