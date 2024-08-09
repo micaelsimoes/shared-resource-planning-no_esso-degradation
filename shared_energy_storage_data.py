@@ -1127,6 +1127,7 @@ def _write_ess_costs_to_excel(shared_ess_data, workbook, results):
     sheet.cell(row=line_idx, column=2).value = 'Cost, [€]'
     sheet.cell(row=line_idx, column=3).value = 'Expected'
     for y in range(len(years)):
+        year = years[y]
         sheet.cell(row=line_idx, column=y + 4).value = total_cost_power[year] + total_cost_energy[year]
         sheet.cell(row=line_idx, column=y + 4).number_format = num_style
 
