@@ -567,17 +567,7 @@ def _optimize(model, params, from_warm_start=False):
     return result
 
 
-def _update_model_with_candidate_solution(shared_ess_data, model, candidate_solution):
-    repr_years = [year for year in shared_ess_data.years]
-    for e in model.energy_storages:
-        for y in model.years:
-            year = repr_years[y]
-            node_id = shared_ess_data.shared_energy_storages[year][e].bus
-            model.es_s_investment_fixed[e, y].fix(candidate_solution[node_id][year]['s'])
-            model.es_e_investment_fixed[e, y].fix(candidate_solution[node_id][year]['e'])
-
-
-def _update_model_with_candidate_solution_decomposed(shared_ess_data, models, candidate_solution):
+def _update_model_with_candidate_solution(shared_ess_data, models, candidate_solution):
     repr_years = [year for year in shared_ess_data.years]
     for node_id in models:
         for y in models[node_id].years:
