@@ -1136,38 +1136,38 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
     return res
 
 
-def update_shared_energy_storages_coordination_model_and_solve(planning_problem, model, ess_req, dual_ess, params, from_warm_start=False):
+def update_shared_energy_storages_coordination_model_and_solve(planning_problem, models, ess_req, dual_ess, params, from_warm_start=False):
 
     print('[INFO] \t\t - Updating Shared ESS...')
     shared_ess_data = planning_problem.shared_ess_data
     days = [day for day in planning_problem.days]
     years = [year for year in planning_problem.years]
 
-    rho_esso = params.rho['ess']['esso']
-    if params.adaptive_penalty:
-        rho_esso = pe.value(model.rho) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-    model.rho.fix(rho_esso)
+    for node_id in planning_problem.active_distribution_network_nodes:
 
-    for e in model.energy_storages:
-        for y in model.years:
+        rho_esso = params.rho['ess']['esso']
+        if params.adaptive_penalty:
+            rho_esso = pe.value(models[node_id].rho) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+        models[node_id].rho.fix(rho_esso)
+
+        for y in models[node_id].years:
             year = years[y]
-            node_id = shared_ess_data.shared_energy_storages[year][e].bus
-            for d in model.days:
+            for d in models[node_id].days:
                 day = days[d]
-                for p in model.periods:
+                for p in models[node_id].periods:
 
                     p_req = ess_req['dso']['current'][node_id][year][day]['p'][p]
                     q_req = ess_req['dso']['current'][node_id][year][day]['q'][p]
                     dual_p_req = dual_ess[node_id][year][day]['p'][p]
                     dual_q_req = dual_ess[node_id][year][day]['q'][p]
 
-                    model.p_req[e, y, d, p].fix(p_req)
-                    model.q_req[e, y, d, p].fix(q_req)
-                    model.dual_p_req[e, y, d, p].fix(dual_p_req)
-                    model.dual_q_req[e, y, d, p].fix(dual_q_req)
+                    models[node_id].p_req[y, d, p].fix(p_req)
+                    models[node_id].q_req[y, d, p].fix(q_req)
+                    models[node_id].dual_p_req[y, d, p].fix(dual_p_req)
+                    models[node_id].dual_q_req[y, d, p].fix(dual_q_req)
 
     # Solve!
-    res = shared_ess_data.optimize(model, from_warm_start=from_warm_start)
+    res = shared_ess_data.optimize(models, from_warm_start=from_warm_start)
     if res.solver.status != po.SolverStatus.ok:
         print('[WARNING] Shared ESS operational planning did not converge!')
 
