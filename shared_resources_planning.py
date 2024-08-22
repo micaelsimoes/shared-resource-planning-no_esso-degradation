@@ -1224,17 +1224,18 @@ def stationary_convergence(planning_problem, consensus_vars, params):
         rho_dso_ess = params.rho['ess'][planning_problem.distribution_networks[node_id].name]
         for year in planning_problem.years:
             for day in planning_problem.days:
+                s_base = planning_problem.transmission_network.network[year][day].baseMVA
                 for p in range(planning_problem.num_instants):
-                    sum_sqr += rho_tso_v * (consensus_vars['interface']['v_sqr']['tso']['current'][node_id][year][day][p] - consensus_vars['interface']['v_sqr']['tso']['prev'][node_id][year][day][p]) ** 2
-                    sum_sqr += rho_dso_v * (consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day][p] - consensus_vars['interface']['v_sqr']['dso']['prev'][node_id][year][day][p]) ** 2
-                    sum_sqr += rho_tso_pf * (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['interface']['pf']['tso']['prev'][node_id][year][day]['p'][p]) ** 2
-                    sum_sqr += rho_tso_pf * (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['interface']['pf']['tso']['prev'][node_id][year][day]['q'][p]) ** 2
-                    sum_sqr += rho_dso_pf * (consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['p'][p]) ** 2
-                    sum_sqr += rho_dso_pf * (consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['q'][p]) ** 2
-                    sum_sqr += rho_tso_ess * (consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['p'][p]) ** 2
-                    sum_sqr += rho_tso_ess * (consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['q'][p]) ** 2
-                    sum_sqr += rho_dso_ess * (consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p]) ** 2
-                    sum_sqr += rho_dso_ess * (consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p]) ** 2
+                    sum_sqr += rho_tso_v * (sqrt(consensus_vars['interface']['v_sqr']['tso']['current'][node_id][year][day][p]) - sqrt(consensus_vars['interface']['v_sqr']['tso']['prev'][node_id][year][day][p])) ** 2
+                    sum_sqr += rho_dso_v * (sqrt(consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day][p]) - sqrt(consensus_vars['interface']['v_sqr']['dso']['prev'][node_id][year][day][p])) ** 2
+                    sum_sqr += rho_tso_pf * (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p'][p] / s_base - consensus_vars['interface']['pf']['tso']['prev'][node_id][year][day]['p'][p] / s_base) ** 2
+                    sum_sqr += rho_tso_pf * (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p] / s_base - consensus_vars['interface']['pf']['tso']['prev'][node_id][year][day]['q'][p] / s_base) ** 2
+                    sum_sqr += rho_dso_pf * (consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p] / s_base - consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['p'][p] / s_base) ** 2
+                    sum_sqr += rho_dso_pf * (consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p] / s_base - consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['q'][p] / s_base) ** 2
+                    sum_sqr += rho_tso_ess * (consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] / s_base - consensus_vars['ess']['tso']['prev'][node_id][year][day]['p'][p] / s_base) ** 2
+                    sum_sqr += rho_tso_ess * (consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] / s_base - consensus_vars['ess']['tso']['prev'][node_id][year][day]['q'][p] / s_base) ** 2
+                    sum_sqr += rho_dso_ess * (consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] / s_base - consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p] / s_base) ** 2
+                    sum_sqr += rho_dso_ess * (consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] / s_base - consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p] / s_base) ** 2
                     num_elems += 10
 
     if sqrt(sum_sqr) > params.tol['stationarity'] * num_elems:
