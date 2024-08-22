@@ -1168,8 +1168,9 @@ def update_shared_energy_storages_coordination_model_and_solve(planning_problem,
 
     # Solve!
     res = shared_ess_data.optimize(models, from_warm_start=from_warm_start)
-    if res.solver.status != po.SolverStatus.ok:
-        print('[WARNING] Shared ESS operational planning did not converge!')
+    for node_id in planning_problem.active_distribution_network_nodes:
+        if res[node_id].solver.status != po.SolverStatus.ok:
+            print(f'[WARNING] Shared ESS operational planning node {node_id} did not converge!')
 
     return res
 
