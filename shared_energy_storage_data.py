@@ -58,11 +58,8 @@ class SharedEnergyStorageData:
     def get_primal_value(self, model):
         return pe.value(model.objective)
 
-    def update_model_with_candidate_solution(self, model, candidate_solution):
-        _update_model_with_candidate_solution(self, model, candidate_solution)
-
     def update_model_with_candidate_solution_decomposed(self, models, candidate_solution):
-        _update_model_with_candidate_solution_decomposed(self, models, candidate_solution)
+        _update_model_with_candidate_solution(self, models, candidate_solution)
 
     def get_candidate_solution(self, model):
         return _get_candidate_solution(self, model)
