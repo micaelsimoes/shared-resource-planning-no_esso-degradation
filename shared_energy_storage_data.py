@@ -47,6 +47,14 @@ class SharedEnergyStorageData:
         print('[INFO] \t\t - Running Shared ESS optimization...')
         return _optimize(model, self.params.solver_params, from_warm_start=from_warm_start)
 
+    def optimize_decomposed(self, models, from_warm_start=False):
+        print('[INFO] \t\t - Running Shared ESS optimization...')
+        results = dict()
+        for node_id in self.active_distribution_network_nodes:
+            print(f'[INFO] \t\t\t - Node {node_id}...')
+            results[node_id] = self.optimize(models[node_id], from_warm_start=from_warm_start)
+        return results
+
     def get_primal_value(self, model):
         return pe.value(model.objective)
 
@@ -105,32 +113,80 @@ class SharedEnergyStorageData:
             results['relaxation_variables']['operation']['detailed'] = self.process_relaxation_variables_operation_detailed(model)
         return results
 
+    def process_results_decomposed(self, models):
+        results = dict()
+        results['capacity'] = self.get_available_capacity_decomposed(models)
+        results['operation'] = dict()
+        results['operation']['aggregated'] = self.process_results_aggregated_decomposed(models)
+        results['operation']['detailed'] = self.process_results_detailed_decomposed(models)
+        results['soh'] = dict()
+        results['soh']['aggregated'] = self.process_soh_results_aggregated_decomposed(models)
+        results['soh']['detailed'] = self.process_soh_results_detailed_decomposed(models)
+        results['relaxation_variables'] = dict()
+        results['relaxation_variables']['investment'] = self.process_relaxation_variables_investment_decomposed(models)
+        if self.params.slacks:
+            results['relaxation_variables']['degradation'] = dict()
+            results['relaxation_variables']['degradation']['aggregated'] = dict()
+            results['relaxation_variables']['degradation']['detailed'] = self.process_relaxation_variables_degradation_detailed_decomposed(models)
+            results['relaxation_variables']['operation'] = dict()
+            results['relaxation_variables']['operation']['aggregated'] = self.process_relaxation_variables_operation_aggregated_decomposed(models)
+            results['relaxation_variables']['operation']['detailed'] = self.process_relaxation_variables_operation_detailed_decomposed(models)
+        return results
+
     def process_results_aggregated(self, model):
         return _process_results_aggregated(self, model)
+
+    def process_results_aggregated_decomposed(self, models):
+        return _process_results_aggregated_decomposed(self, models)
 
     def process_results_detailed(self, model):
         return _process_results_detailed(self, model)
 
+    def process_results_detailed_decomposed(self, models):
+        return _process_results_detailed_decomposed(self, models)
+
     def process_soh_results_aggregated(self, model):
         return _process_soh_results_aggregated(self, model)
+
+    def process_soh_results_aggregated_decomposed(self, models):
+        return _process_soh_results_aggregated_decomposed(self, models)
 
     def process_soh_results_detailed(self, model):
         return _process_soh_results_detailed(self, model)
 
+    def process_soh_results_detailed_decomposed(self, models):
+        return _process_soh_results_detailed_decomposed(self, models)
+
     def process_relaxation_variables_investment(self, model):
         return _process_relaxation_variables_investment(self, model)
+
+    def process_relaxation_variables_investment_decomposed(self, models):
+        return _process_relaxation_variables_investment_decomposed(self, models)
 
     def process_relaxation_variables_degradation_detailed(self, model):
         return _process_relaxation_variables_degradation_detailed(self, model)
 
+    def process_relaxation_variables_degradation_detailed_decomposed(self, models):
+        return _process_relaxation_variables_degradation_detailed_decomposed(self, models)
+
     def process_relaxation_variables_operation_aggregated(self, model):
         return _process_relaxation_variables_operation_aggregated(self, model)
+
+    def process_relaxation_variables_operation_aggregated_decomposed(self, models):
+        return _process_relaxation_variables_operation_aggregated_decomposed(self, models)
 
     def process_relaxation_variables_operation_detailed(self, model):
         return _process_relaxation_variables_operation_detailed(self, model)
 
+    def process_relaxation_variables_operation_detailed_decomposed(self, models):
+        return _process_relaxation_variables_operation_detailed_decomposed(self, models)
+
     def write_optimization_results_to_excel(self, model):
         results = self.process_results(model)
+        _write_optimization_results_to_excel(self, self.results_dir, results)
+
+    def write_optimization_results_to_excel_decomposed(self, models):
+        results = self.process_results_decomposed(models)
         _write_optimization_results_to_excel(self, self.results_dir, results)
 
     def update_data_with_candidate_solution(self, candidate_solution):
@@ -150,8 +206,19 @@ class SharedEnergyStorageData:
             e_available += pe.value(model.es_e_available_per_unit[ess_idx, y_inv, year_idx])
         return s_available, e_available
 
+    def get_available_capacities_decomposed(self, model, year_idx):
+        s_available = 0.00
+        e_available = 0.00
+        for y_inv in model.years:
+            s_available += pe.value(model.es_s_available_per_unit[y_inv, year_idx])
+            e_available += pe.value(model.es_e_available_per_unit[y_inv, year_idx])
+        return s_available, e_available
+
     def get_available_capacity(self, model):
         return _get_available_capacity(self, model)
+
+    def get_available_capacity_decomposed(self, models):
+        return _get_available_capacity_decomposed(self, models)
 
     def get_investment_cost_and_rated_capacity(self, model):
         return _get_investment_cost_and_rated_capacity(self, model)
@@ -935,6 +1002,35 @@ def _process_results_aggregated(shared_ess_data, model):
     return processed_results
 
 
+def _process_results_aggregated_decomposed(shared_ess_data, models):
+
+    processed_results = dict()
+
+    repr_days = [day for day in shared_ess_data.days]
+    repr_years = [year for year in shared_ess_data.years]
+    for year in repr_years:
+        processed_results[year] = dict()
+        for day in repr_days:
+            processed_results[year][day] = dict()
+            for node_id in shared_ess_data.active_distribution_network_nodes:
+                processed_results[year][day][node_id] = dict()
+                processed_results[year][day][node_id]['p'] = list()
+                processed_results[year][day][node_id]['q'] = list()
+
+    for node_id in shared_ess_data.active_distribution_network_nodes:
+        for y in models[node_id].years:
+            year = repr_years[y]
+            for d in models[node_id].days:
+                day = repr_days[d]
+                for p in models[node_id].periods:
+                    p_net = pe.value(models[node_id].es_pnet[y, d, p])
+                    q_net = pe.value(models[node_id].es_qnet[y, d, p])
+                    processed_results[year][day][node_id]['p'].append(p_net)
+                    processed_results[year][day][node_id]['q'].append(q_net)
+
+    return processed_results
+
+
 def _process_results_detailed(shared_ess_data, model):
 
     processed_results = dict()
@@ -962,6 +1058,36 @@ def _process_results_detailed(shared_ess_data, model):
     return processed_results
 
 
+def _process_results_detailed_decomposed(shared_ess_data, models):
+
+    repr_days = [day for day in shared_ess_data.days]
+    repr_years = [year for year in shared_ess_data.years]
+
+    processed_results = dict()
+    for year_inv in repr_years:
+        processed_results[year_inv] = dict()
+        for year_curr in repr_years:
+            processed_results[year_inv][year_curr] = dict()
+            for day in repr_days:
+                processed_results[year_inv][year_curr][day] = dict()
+                for node_id in shared_ess_data.active_distribution_network_nodes:
+                    processed_results[year_inv][year_curr][day][node_id] = dict()
+                    processed_results[year_inv][year_curr][day][node_id]['s'] = list()
+
+    for node_id in shared_ess_data.active_distribution_network_nodes:
+        for y_inv in models[node_id].years:
+            year_inv = repr_years[y_inv]
+            for y_curr in models[node_id].years:
+                year_curr = repr_years[y_curr]
+                for d in models[node_id].days:
+                    day = repr_days[d]
+                    for p in models[node_id].periods:
+                        s_net = pe.value(models[node_id].es_sch_per_unit[y_inv, y_curr, d, p] - models[node_id].es_sdch_per_unit[y_inv, y_curr, d, p])
+                        processed_results[year_inv][year_curr][day][node_id]['s'].append(s_net)
+
+    return processed_results
+
+
 def _process_soh_results_aggregated(shared_ess_data, model):
 
     processed_results = dict()
@@ -979,6 +1105,38 @@ def _process_soh_results_aggregated(shared_ess_data, model):
             s_rated = pe.value(model.es_s_rated[e, y])
             e_rated = pe.value(model.es_e_rated[e, y])
             s_available, e_available = shared_ess_data.get_available_capacities(model, e, y)
+            soh = 1.00
+            if not isclose(e_available, 0.00, abs_tol=SMALL_TOLERANCE):
+                soh = e_available / e_rated
+            degradation = 1 - soh
+            processed_results[year]['s_rated'][node_id] = s_rated
+            processed_results[year]['e_rated'][node_id] = e_rated
+            processed_results[year]['s_available'][node_id] = s_available
+            processed_results[year]['e_available'][node_id] = e_available
+            processed_results[year]['soh'][node_id] = soh
+            processed_results[year]['degradation'][node_id] = degradation
+
+    return processed_results
+
+
+def _process_soh_results_aggregated_decomposed(shared_ess_data, models):
+
+    repr_years = [year for year in shared_ess_data.years]
+
+    processed_results = dict()
+    for year in repr_years:
+        processed_results[year] = {
+            's_rated': dict(), 'e_rated': dict(),
+            's_available': dict(), 'e_available': dict(),
+            'soh': dict(), 'degradation': dict()
+        }
+
+    for node_id in shared_ess_data.active_distribution_network_nodes:
+        for y in models[node_id].years:
+            year = repr_years[y]
+            s_rated = pe.value(models[node_id].es_s_rated[y])
+            e_rated = pe.value(models[node_id].es_e_rated[y])
+            s_available, e_available = shared_ess_data.get_available_capacities_decomposed(models[node_id], y)
             soh = 1.00
             if not isclose(e_available, 0.00, abs_tol=SMALL_TOLERANCE):
                 soh = e_available / e_rated
@@ -1031,6 +1189,46 @@ def _process_soh_results_detailed(shared_ess_data, model):
     return processed_results
 
 
+def _process_soh_results_detailed_decomposed(shared_ess_data, models):
+
+    repr_years = [year for year in shared_ess_data.years]
+
+    processed_results = dict()
+    for year_inv in repr_years:
+        processed_results[year_inv] = dict()
+        for year_curr in repr_years:
+            processed_results[year_inv][year_curr] = {
+                's_rated': dict(), 'e_rated': dict(),
+                's_available': dict(), 'e_available': dict(),
+                'soh_unit': dict(), 'degradation_unit': dict(),
+                'soh_cumul': dict(), 'degradation_cumul': dict()
+            }
+
+    for node_id in shared_ess_data.active_distribution_network_nodes:
+        for y_inv in models[node_id].years:
+            year_inv = repr_years[y_inv]
+            for y_curr in models[node_id].years:
+                year_curr = repr_years[y_curr]
+                s_rated = pe.value(models[node_id].es_s_rated_per_unit[y_inv, y_curr])
+                e_rated = pe.value(models[node_id].es_e_rated_per_unit[y_inv, y_curr])
+                s_available = pe.value(models[node_id].es_s_available_per_unit[y_inv, y_curr])
+                e_available = pe.value(models[node_id].es_e_available_per_unit[y_inv, y_curr])
+                soh_unit = pe.value(models[node_id].es_soh_per_unit[y_inv, y_curr])
+                degradation_unit = pe.value(models[node_id].es_degradation_per_unit[y_inv, y_curr])
+                soh_cumul = pe.value(models[node_id].es_soh_per_unit_cumul[y_inv, y_curr])
+                degradation_cumul = pe.value(models[node_id].es_degradation_per_unit_cumul[y_inv, y_curr])
+                processed_results[year_inv][year_curr]['s_rated'][node_id] = s_rated
+                processed_results[year_inv][year_curr]['e_rated'][node_id] = e_rated
+                processed_results[year_inv][year_curr]['s_available'][node_id] = s_available
+                processed_results[year_inv][year_curr]['e_available'][node_id] = e_available
+                processed_results[year_inv][year_curr]['soh_unit'][node_id] = soh_unit
+                processed_results[year_inv][year_curr]['degradation_unit'][node_id] = degradation_unit
+                processed_results[year_inv][year_curr]['soh_cumul'][node_id] = soh_cumul
+                processed_results[year_inv][year_curr]['degradation_cumul'][node_id] = degradation_cumul
+
+    return processed_results
+
+
 def _process_relaxation_variables_investment(shared_ess_data, model):
 
     processed_results = dict()
@@ -1046,6 +1244,28 @@ def _process_relaxation_variables_investment(shared_ess_data, model):
             processed_results[year_inv][node_id]['s_down'] = pe.value(model.slack_es_s_investment_down[e, y_inv])
             processed_results[year_inv][node_id]['e_up'] = pe.value(model.slack_es_e_investment_up[e, y_inv])
             processed_results[year_inv][node_id]['e_down'] = pe.value(model.slack_es_e_investment_down[e, y_inv])
+
+    return processed_results
+
+
+def _process_relaxation_variables_investment_decomposed(shared_ess_data, models):
+
+    repr_years = [year for year in shared_ess_data.years]
+
+    processed_results = dict()
+    for year_inv in repr_years:
+        processed_results[year_inv] = dict()
+        for node_id in shared_ess_data.active_distribution_network_nodes:
+            processed_results[year_inv][node_id] = dict()
+
+    for node_id in shared_ess_data.active_distribution_network_nodes:
+        for y_inv in models[node_id].years:
+            year_inv = repr_years[y_inv]
+            processed_results[year_inv][node_id] = dict()
+            processed_results[year_inv][node_id]['s_up'] = pe.value(models[node_id].slack_es_s_investment_up[y_inv])
+            processed_results[year_inv][node_id]['s_down'] = pe.value(models[node_id].slack_es_s_investment_down[y_inv])
+            processed_results[year_inv][node_id]['e_up'] = pe.value(models[node_id].slack_es_e_investment_up[y_inv])
+            processed_results[year_inv][node_id]['e_down'] = pe.value(models[node_id].slack_es_e_investment_down[y_inv])
 
     return processed_results
 
@@ -1072,6 +1292,37 @@ def _process_relaxation_variables_degradation_detailed(shared_ess_data, model):
                     soh_per_unit_down = pe.value(model.slack_es_soh_per_unit_down[e, y_inv, y_curr])
                     soh_per_unit_cumul_up = pe.value(model.slack_es_soh_per_unit_cumul_up[e, y_inv, y_curr])
                     soh_per_unit_cumul_down = pe.value(model.slack_es_soh_per_unit_cumul_down[e, y_inv, y_curr])
+                    processed_results[year_inv][year_curr][node_id]['soh_per_unit_up'] = soh_per_unit_up
+                    processed_results[year_inv][year_curr][node_id]['soh_per_unit_down'] = soh_per_unit_down
+                    processed_results[year_inv][year_curr][node_id]['soh_per_unit_cumul_up'] = soh_per_unit_cumul_up
+                    processed_results[year_inv][year_curr][node_id]['soh_per_unit_cumul_down'] = soh_per_unit_cumul_down
+
+    return processed_results
+
+
+def _process_relaxation_variables_degradation_detailed_decomposed(shared_ess_data, models):
+
+    repr_years = [year for year in shared_ess_data.years]
+
+    processed_results = dict()
+    for year_inv in repr_years:
+        processed_results[year_inv] = dict()
+        for year_curr in repr_years:
+            processed_results[year_inv][year_curr] = dict()
+            for node_id in shared_ess_data.active_distribution_network_nodes:
+                processed_results[year_inv][year_curr][node_id] = dict()
+
+    for node_id in shared_ess_data.active_distribution_network_nodes:
+        for y_inv in models[node_id].years:
+            year_inv = repr_years[y_inv]
+            for y_curr in models[node_id].years:
+                year_curr = repr_years[y_curr]
+                if shared_ess_data.params.slacks:
+                    # - Degradation per unit
+                    soh_per_unit_up = pe.value(models[node_id].slack_es_soh_per_unit_up[y_inv, y_curr])
+                    soh_per_unit_down = pe.value(models[node_id].slack_es_soh_per_unit_down[y_inv, y_curr])
+                    soh_per_unit_cumul_up = pe.value(models[node_id].slack_es_soh_per_unit_cumul_up[y_inv, y_curr])
+                    soh_per_unit_cumul_down = pe.value(models[node_id].slack_es_soh_per_unit_cumul_down[y_inv, y_curr])
                     processed_results[year_inv][year_curr][node_id]['soh_per_unit_up'] = soh_per_unit_up
                     processed_results[year_inv][year_curr][node_id]['soh_per_unit_down'] = soh_per_unit_down
                     processed_results[year_inv][year_curr][node_id]['soh_per_unit_cumul_up'] = soh_per_unit_cumul_up
@@ -1113,6 +1364,42 @@ def _process_relaxation_variables_operation_aggregated(shared_ess_data, model):
     return processed_results
 
 
+def _process_relaxation_variables_operation_aggregated_decomposed(shared_ess_data, models):
+
+    repr_days = [day for day in shared_ess_data.days]
+    repr_years = [year for year in shared_ess_data.years]
+
+    processed_results = dict()
+    for year in repr_years:
+        processed_results[year] = dict()
+        for day in repr_days:
+            processed_results[year][day] = dict()
+            for node_id in shared_ess_data.active_distribution_network_nodes:
+                processed_results[year][day][node_id] = dict()
+                if shared_ess_data.params.slacks:
+                    processed_results[year][day][node_id]['snet_up'] = list()
+                    processed_results[year][day][node_id]['snet_down'] = list()
+                    processed_results[year][day][node_id]['snet_def_up'] = list()
+                    processed_results[year][day][node_id]['snet_def_down'] = list()
+
+    for node_id in shared_ess_data.active_distribution_network_nodes:
+        for y in models[node_id].years:
+            year = repr_years[y]
+            for d in models[node_id].days:
+                day = repr_days[d]
+                for p in models[node_id].periods:
+                    slack_es_snet_up = pe.value(models[node_id].slack_es_snet_up[y, d, p])
+                    slack_es_snet_down = pe.value(models[node_id].slack_es_snet_up[y, d, p])
+                    slack_es_snet_def_up = pe.value(models[node_id].slack_es_snet_def_up[y, d, p])
+                    slack_es_snet_def_down = pe.value(models[node_id].slack_es_snet_def_down[y, d, p])
+                    processed_results[year][day][node_id]['snet_up'].append(slack_es_snet_up)
+                    processed_results[year][day][node_id]['snet_down'].append(slack_es_snet_down)
+                    processed_results[year][day][node_id]['snet_def_up'].append(slack_es_snet_def_up)
+                    processed_results[year][day][node_id]['snet_def_down'].append(slack_es_snet_def_down)
+
+    return processed_results
+
+
 def _process_relaxation_variables_operation_detailed(shared_ess_data, model):
 
     processed_results = dict()
@@ -1138,6 +1425,38 @@ def _process_relaxation_variables_operation_detailed(shared_ess_data, model):
                         processed_results[year_inv][year_curr][day][node_id]['comp'] = list()
                         for p in model.periods:
                             comp = pe.value(model.slack_es_ch_comp_per_unit[e, y_inv, y_curr, d, p])
+                            processed_results[year_inv][year_curr][day][node_id]['comp'].append(comp)
+
+    return processed_results
+
+
+def _process_relaxation_variables_operation_detailed_decomposed(shared_ess_data, models):
+
+    repr_days = [day for day in shared_ess_data.days]
+    repr_years = [year for year in shared_ess_data.years]
+
+    processed_results = dict()
+    for year_inv in repr_years:
+        processed_results[year_inv] = dict()
+        for year_curr in repr_years:
+            processed_results[year_inv][year_curr] = dict()
+            for day in repr_days:
+                processed_results[year_inv][year_curr][day] = dict()
+                for node_id in shared_ess_data.active_distribution_network_nodes:
+                    processed_results[year_inv][year_curr][day][node_id] = dict()
+                    processed_results[year_inv][year_curr][day][node_id]['comp'] = list()
+
+    for node_id in shared_ess_data.active_distribution_network_nodes:
+        for y_inv in models[node_id].years:
+            year_inv = repr_years[y_inv]
+            for y_curr in models[node_id].years:
+                year_curr = repr_years[y_curr]
+                for d in models[node_id].days:
+                    day = repr_days[d]
+                    if shared_ess_data.params.slacks:
+                        # - Complementarity
+                        for p in models[node_id].periods:
+                            comp = pe.value(models[node_id].slack_es_ch_comp_per_unit[y_inv, y_curr, d, p])
                             processed_results[year_inv][year_curr][day][node_id]['comp'].append(comp)
 
     return processed_results
@@ -1173,6 +1492,44 @@ def _get_available_capacity(shared_ess_data, model):
             soh = 0.00
             if not isclose(e_available, 0.00, abs_tol=SMALL_TOLERANCE):
                 soh = e_available / pe.value(model.es_e_rated[e, y])
+            ess_capacity['available'][node_id][year] = dict()
+            ess_capacity['available'][node_id][year]['power'] = s_available
+            ess_capacity['available'][node_id][year]['energy'] = e_available
+            ess_capacity['available'][node_id][year]['soh'] = soh
+            ess_capacity['available'][node_id][year]['degradation_factor'] = 1 - soh
+
+    return ess_capacity
+
+
+def _get_available_capacity_decomposed(shared_ess_data, models):
+
+    years = [year for year in shared_ess_data.years]
+    ess_capacity = {'investment': dict(), 'rated': dict(), 'available': dict()}
+
+    # - Investment in Power and Energy Capacity (per year)
+    # - Power and Energy capacities available (per representative day)
+    for node_id in shared_ess_data.active_distribution_network_nodes:
+
+        ess_capacity['investment'][node_id] = dict()
+        ess_capacity['rated'][node_id] = dict()
+        ess_capacity['available'][node_id] = dict()
+
+        for y in models[node_id].years:
+
+            year = years[y]
+
+            ess_capacity['investment'][node_id][year] = dict()
+            ess_capacity['investment'][node_id][year]['power'] = pe.value(models[node_id].es_s_investment[y])
+            ess_capacity['investment'][node_id][year]['energy'] = pe.value(models[node_id].es_e_investment[y])
+
+            ess_capacity['rated'][node_id][year] = dict()
+            ess_capacity['rated'][node_id][year]['power'] = pe.value(models[node_id].es_s_rated[y])
+            ess_capacity['rated'][node_id][year]['energy'] = pe.value(models[node_id].es_e_rated[y])
+
+            s_available, e_available = shared_ess_data.get_available_capacities_decomposed(models[node_id], y)
+            soh = 0.00
+            if not isclose(e_available, 0.00, abs_tol=SMALL_TOLERANCE):
+                soh = e_available / pe.value(models[node_id].es_e_rated[y])
             ess_capacity['available'][node_id][year] = dict()
             ess_capacity['available'][node_id][year]['power'] = s_available
             ess_capacity['available'][node_id][year]['energy'] = e_available
