@@ -1067,6 +1067,54 @@ def update_shared_energy_storage_model_to_admm(shared_ess_data, model, params):
     return model
 
 
+def update_shared_energy_storage_model_to_admm_decomposed(shared_ess_data, models, params):
+
+    years = [year for year in shared_ess_data.years]
+
+    for node_id in shared_ess_data.active_distribution_networks:
+
+        shared_ess_idx = shared_ess_data.get_shared_energy_storage_idx(node_id)
+
+        # Add ADMM variables
+        models[node_id].rho = pe.Var(domain=pe.NonNegativeReals)
+        models[node_id].rho.fix(params.rho['ess']['esso'])
+
+        # Free Pnet, Qnet
+        for y in models[node_id].years:
+            for d in models[node_id].days:
+                for p in models[node_id].periods:
+                    models[node_id].es_pnet[y, d, p].fixed = False
+                    models[node_id].es_qnet[y, d, p].fixed = False
+
+        # Active and Reactive power requested by TSO and DSOs
+        models[node_id].p_req = pe.Var(models[node_id].years, models[node_id].days, models[node_id].periods, domain=pe.Reals)
+        models[node_id].q_req = pe.Var(models[node_id].years, models[node_id].days, models[node_id].periods, domain=pe.Reals)
+        models[node_id].dual_p_req = pe.Var(models[node_id].years, models[node_id].days, models[node_id].periods, domain=pe.Reals)
+        models[node_id].dual_q_req = pe.Var(models[node_id].years, models[node_id].days, models[node_id].periods, domain=pe.Reals)
+
+        # Objective function - augmented Lagrangian
+        obj = copy(models[node_id].objective.expr)
+        for y in models[node_id].years:
+            year = years[y]
+            shared_ess_rating = shared_ess_data.shared_energy_storages[year][shared_ess_idx].s
+            if isclose(shared_ess_rating, 0.00, abs_tol=SMALL_TOLERANCE):
+                shared_ess_rating = 1.00
+            for d in models[node_id].days:
+                for p in models[node_id].periods:
+                    constraint_p_req = (models[node_id].es_pnet[y, d, p] - models[node_id].p_req[y, d, p]) / (2 * shared_ess_rating)
+                    constraint_q_req = (models[node_id].es_qnet[y, d, p] - models[node_id].q_req[y, d, p]) / (2 * shared_ess_rating)
+                    obj += models[node_id].dual_p_req[y, d, p] * constraint_p_req
+                    obj += models[node_id].dual_q_req[y, d, p] * constraint_q_req
+                    obj += (models[node_id].rho / 2) * constraint_p_req ** 2
+                    obj += (models[node_id].rho / 2) * constraint_q_req ** 2
+
+        # Add ADMM OF, deactivate original OF
+        models[node_id].admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
+        models[node_id].objective.deactivate()
+
+    return models
+
+
 def update_transmission_coordination_model_and_solve(transmission_network, model, vsqr_req, dual_vsqr, pf_req, dual_pf, ess_req, dual_ess, params, from_warm_start=False):
 
     print('[INFO] \t\t - Updating transmission network...')
