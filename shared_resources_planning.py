@@ -275,8 +275,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     # Create ADN models, get initial power flows
     tso_model, results['tso'] = create_transmission_network_model(transmission_network, consensus_vars, candidate_solution['total_capacity'])
     dso_models, results['dso'] = create_distribution_networks_models(distribution_networks, consensus_vars, candidate_solution['total_capacity'])
-    esso_model, results['esso'] = create_shared_energy_storage_model(shared_ess_data, consensus_vars,
-                                                                     candidate_solution['investment'])
+    esso_model, results['esso'] = create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidate_solution['investment'])
 
     # Update models to ADMM
     update_transmission_model_to_admm(transmission_network, tso_model, consensus_vars, admm_parameters)
@@ -1189,13 +1188,14 @@ def consensus_convergence(planning_problem, consensus_vars, params):
 
     for year in planning_problem.years:
         for day in planning_problem.days:
+            s_base = planning_problem.transmission_network.network[year][day].baseMVA
             for node_id in planning_problem.active_distribution_network_nodes:
                 for p in range(planning_problem.num_instants):
-                    sum_sqr += (consensus_vars['interface']['v_sqr']['tso']['current'][node_id][year][day][p] - consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day][p]) ** 2
-                    sum_sqr += (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p]) ** 2
-                    sum_sqr += (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p]) ** 2
-                    sum_sqr += (consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p]) ** 2
-                    sum_sqr += (consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p]) ** 2
+                    sum_sqr += (sqrt(consensus_vars['interface']['v_sqr']['tso']['current'][node_id][year][day][p]) - sqrt(consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day][p])) ** 2
+                    sum_sqr += (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p'][p] / s_base - consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p] / s_base) ** 2
+                    sum_sqr += (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p] / s_base - consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p] / s_base) ** 2
+                    sum_sqr += (consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] / s_base - consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] / s_base) ** 2
+                    sum_sqr += (consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] / s_base - consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] / s_base) ** 2
                     num_elems += 10
 
     if sqrt(sum_sqr) > params.tol['consensus'] * num_elems:
