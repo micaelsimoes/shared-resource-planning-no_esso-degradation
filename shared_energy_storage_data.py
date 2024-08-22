@@ -48,8 +48,11 @@ class SharedEnergyStorageData:
             results[node_id] = _optimize(models[node_id], self.params.solver_params, from_warm_start=from_warm_start)
         return results
 
-    def get_primal_value(self, model):
-        return pe.value(model.objective)
+    def get_primal_value(self, models):
+        objective = 0.00
+        for node_id in self.active_distribution_network_nodes:
+            objective += pe.value(models[node_id].objective)
+        return objective
 
     def update_model_with_candidate_solution(self, models, candidate_solution):
         _update_model_with_candidate_solution(self, models, candidate_solution)
