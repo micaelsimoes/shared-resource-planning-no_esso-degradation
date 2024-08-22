@@ -573,7 +573,7 @@ def create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidat
     # Build model, fix candidate solution
     shared_ess_data.update_data_with_candidate_solution(candidate_solution)
     esso_model = shared_ess_data.build_subproblem()
-    shared_ess_data.update_model_with_candidate_solution_decomposed(esso_model, candidate_solution)
+    shared_ess_data.update_model_with_candidate_solution(esso_model, candidate_solution)
 
     # Fix TSO's request
     for node_id in shared_ess_data.active_distribution_network_nodes:
@@ -588,7 +588,7 @@ def create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidat
                     esso_model[node_id].es_qnet[y, d, p].fix(q_req)
 
     # Run optimization
-    results = shared_ess_data.optimize_decomposed(esso_model)
+    results = shared_ess_data.optimize(esso_model)
 
     # Get initial shared ESS values
     for node_id in shared_ess_data.active_distribution_network_nodes:
