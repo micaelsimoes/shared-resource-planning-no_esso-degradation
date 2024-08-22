@@ -280,7 +280,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     # Update models to ADMM
     update_transmission_model_to_admm(transmission_network, tso_model, consensus_vars, admm_parameters)
     update_distribution_models_to_admm(distribution_networks, dso_models, consensus_vars, admm_parameters)
-    update_shared_energy_storage_model_to_admm(shared_ess_data, esso_model, admm_parameters)
+    update_shared_energy_storage_model_to_admm_decomposed(shared_ess_data, esso_model, admm_parameters)
 
     # ------------------------------------------------------------------------------------------------------------------
     # ADMM -- Main cycle
