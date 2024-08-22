@@ -1071,7 +1071,7 @@ def update_shared_energy_storage_model_to_admm_decomposed(shared_ess_data, model
 
     years = [year for year in shared_ess_data.years]
 
-    for node_id in shared_ess_data.active_distribution_networks:
+    for node_id in shared_ess_data.active_distribution_network_nodes:
 
         shared_ess_idx = shared_ess_data.get_shared_energy_storage_idx(node_id)
 
