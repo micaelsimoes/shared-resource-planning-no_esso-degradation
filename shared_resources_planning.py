@@ -571,8 +571,8 @@ def create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidat
 
     # Build model, fix candidate solution
     shared_ess_data.update_data_with_candidate_solution(candidate_solution)
-    esso_model = shared_ess_data.build_subproblem()
-    shared_ess_data.update_model_with_candidate_solution(esso_model, candidate_solution)
+    esso_model = shared_ess_data.build_subproblem_decomposed()
+    shared_ess_data.update_model_with_candidate_solution_decomposed(esso_model, candidate_solution)
 
     # Fix TSO's request
     for e in esso_model.energy_storages:

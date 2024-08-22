@@ -52,7 +52,7 @@ class SharedEnergyStorageData:
         results = dict()
         for node_id in self.active_distribution_network_nodes:
             print(f'[INFO] \t\t\t - Node {node_id}...')
-            results[node_id] = self.optimize(models[node_id], from_warm_start=from_warm_start)
+            results[node_id] = _optimize(models[node_id], self.params.solver_params, from_warm_start=from_warm_start)
         return results
 
     def get_primal_value(self, model):
