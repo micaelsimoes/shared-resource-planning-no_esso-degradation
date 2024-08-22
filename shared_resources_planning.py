@@ -1340,15 +1340,14 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
 
         # Power requested by ESSO
         if update_sess:
-            for y in sess_model.years:
+            for y in sess_model[node_id].years:
                 year = repr_years[y]
-                if results['esso'].solver.status == po.SolverStatus.ok:
-                    shared_ess_idx = shared_ess_data.get_shared_energy_storage_idx(node_id)
-                    for d in sess_model.days:
+                if results['esso'][node_id].solver.status == po.SolverStatus.ok:
+                    for d in sess_model[node_id].days:
                         day = repr_days[d]
-                        for p in sess_model.periods:
-                            p_req = pe.value(sess_model.es_pnet[shared_ess_idx, y, d, p])
-                            q_req = pe.value(sess_model.es_qnet[shared_ess_idx, y, d, p])
+                        for p in sess_model[node_id].periods:
+                            p_req = pe.value(sess_model[node_id].es_pnet[y, d, p])
+                            q_req = pe.value(sess_model[node_id].es_qnet[y, d, p])
                             shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] = p_req
                             shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] = q_req
 
