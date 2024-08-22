@@ -302,9 +302,9 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
                                                                           admm_parameters, from_warm_start=from_warm_start)
 
         # 1.1 Update ADMM CONSENSUS variables
-        planning_problem.update_admm_consensus_variables_decomposed(tso_model, dso_models, esso_model,
-                                                                    consensus_vars, dual_vars, results, admm_parameters,
-                                                                    update_tn=True)
+        planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
+                                                         consensus_vars, dual_vars, results, admm_parameters,
+                                                         update_tn=True)
 
         # 1.2 Update primal evolution
         primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
