@@ -1520,7 +1520,7 @@ def _update_shared_energy_storage_variables_decomposed(planning_problem, tso_mod
     repr_days = [day for day in planning_problem.days]
     repr_years = [year for year in planning_problem.years]
 
-    for node_id in distribution_networks:
+    for node_id in planning_problem.active_distribution_network_nodes:
 
         dso_model = dso_models[node_id]
         distribution_network = distribution_networks[node_id]
@@ -1579,7 +1579,7 @@ def _update_shared_energy_storage_variables_decomposed(planning_problem, tso_mod
 
                     rho_ess_tso = pe.value(tso_model[year][day].rho_ess)
                     rho_ess_dso = pe.value(dso_models[node_id][year][day].rho_ess)
-                    rho_ess_sess = pe.value(sess_model.rho)
+                    rho_ess_sess = pe.value(sess_model[node_id].rho)
 
                     if update_tn:
                         error_p_tso_esso = shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['p'][p]
