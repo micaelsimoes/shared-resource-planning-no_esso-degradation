@@ -275,7 +275,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     # Create ADN models, get initial power flows
     tso_model, results['tso'] = create_transmission_network_model(transmission_network, consensus_vars, candidate_solution['total_capacity'])
     dso_models, results['dso'] = create_distribution_networks_models(distribution_networks, consensus_vars, candidate_solution['total_capacity'])
-    esso_model, results['esso'] = create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidate_solution['investment'])
+    esso_model, results['esso'] = create_shared_energy_storage_model_decomposed(shared_ess_data, consensus_vars, candidate_solution['investment'])
 
     # Update models to ADMM
     update_transmission_model_to_admm(transmission_network, tso_model, consensus_vars, admm_parameters)
@@ -572,6 +572,50 @@ def create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidat
     # Build model, fix candidate solution
     shared_ess_data.update_data_with_candidate_solution(candidate_solution)
     esso_model = shared_ess_data.build_subproblem()
+    shared_ess_data.update_model_with_candidate_solution(esso_model, candidate_solution)
+
+    # Fix TSO's request
+    for e in esso_model.energy_storages:
+        node_id = shared_ess_data.active_distribution_network_nodes[e]
+        for y in esso_model.years:
+            year = years[y]
+            for d in esso_model.days:
+                day = days[d]
+                for p in esso_model.periods:
+                    p_req = consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p]
+                    q_req = consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p]
+                    esso_model.es_pnet[e, y, d, p].fix(p_req)
+                    esso_model.es_qnet[e, y, d, p].fix(q_req)
+
+    # Run optimization
+    results = shared_ess_data.optimize(esso_model)
+
+    # Get initial shared ESS values
+    for e in esso_model.energy_storages:
+        node_id = shared_ess_data.active_distribution_network_nodes[e]
+        for y in esso_model.years:
+            year = years[y]
+            for d in esso_model.days:
+                day = days[d]
+                for p in esso_model.periods:
+                    shared_ess_p = pe.value(esso_model.es_pnet[e, y, d, p])
+                    shared_ess_q = pe.value(esso_model.es_qnet[e, y, d, p])
+                    consensus_vars['ess']['esso']['current'][node_id][year][day]['p'][p] = shared_ess_p
+                    consensus_vars['ess']['esso']['current'][node_id][year][day]['q'][p] = shared_ess_q
+                    consensus_vars['ess']['esso']['prev'][node_id][year][day]['p'][p] = shared_ess_p
+                    consensus_vars['ess']['esso']['prev'][node_id][year][day]['q'][p] = shared_ess_q
+
+    return esso_model, results
+
+
+def create_shared_energy_storage_model_decomposed(shared_ess_data, consensus_vars, candidate_solution):
+
+    years = [year for year in shared_ess_data.years]
+    days = [day for day in shared_ess_data.days]
+
+    # Build model, fix candidate solution
+    shared_ess_data.update_data_with_candidate_solution(candidate_solution)
+    esso_model = shared_ess_data.build_subproblem_decomposed()
     shared_ess_data.update_model_with_candidate_solution(esso_model, candidate_solution)
 
     # Fix TSO's request
