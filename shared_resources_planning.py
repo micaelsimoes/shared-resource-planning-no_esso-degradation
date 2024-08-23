@@ -1203,7 +1203,7 @@ def consensus_convergence(planning_problem, consensus_vars, params):
                     num_elems += 5
 
     if sqrt(sum_sqr) > params.tol['consensus'] * num_elems:
-        if not isclose(sqrt(sum_sqr), params.tol['consensus'] * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['consensus']):
+        if not isclose(sqrt(sum_sqr), params.tol['consensus'] * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=ADMM_CONVERGENCE_ABS_TOL):
             print('[INFO]\t\t - Convergence consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr), params.tol['consensus'] * num_elems))
             return False
         print('[INFO]\t\t - Convergence consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sqrt(sum_sqr), params.tol['consensus'] * num_elems))
@@ -1243,7 +1243,7 @@ def stationary_convergence(planning_problem, consensus_vars, params):
                     num_elems += 10
 
     if sqrt(sum_sqr) > params.tol['stationarity'] * num_elems:
-        if not isclose(sqrt(sum_sqr), params.tol['stationarity'] * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=params.tol['stationarity']):
+        if not isclose(sqrt(sum_sqr), params.tol['stationarity'] * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=ADMM_CONVERGENCE_ABS_TOL):
             print('[INFO]\t\t - Convergence stationary constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr), params.tol['stationarity'] * num_elems))
             return False
         print('[INFO]\t\t - Convergence stationary constraints considered ok. {:.3f} ~= {:.3f}'.format(sqrt(sum_sqr), params.tol['stationarity'] * num_elems))
