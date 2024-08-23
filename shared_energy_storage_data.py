@@ -40,8 +40,12 @@ class SharedEnergyStorageData:
             subproblem[node_id] = _build_subproblem(self, node_id)
         return subproblem
 
+    def optimize_master_problem(self, model, from_warm_start=False):
+        print('[INFO] \t\t - Running Shared ESS optimization (master problem)...')
+        return _optimize(model, self.params.solver_params, from_warm_start=from_warm_start)
+
     def optimize(self, models, from_warm_start=False):
-        print('[INFO] \t\t - Running Shared ESS optimization...')
+        print('[INFO] \t\t - Running Shared ESS optimization (subproblem)...')
         results = dict()
         for node_id in self.active_distribution_network_nodes:
             print(f'[INFO] \t\t\t - Node {node_id}...')
