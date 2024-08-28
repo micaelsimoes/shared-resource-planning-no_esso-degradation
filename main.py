@@ -62,9 +62,9 @@ def shared_resources_planning(working_directory, specification_filename):
     planning_problem.plot_diagram()
 
     candidate_solution = planning_problem.get_initial_candidate_solution()
-    planning_problem.run_operational_planning(candidate_solution=candidate_solution, print_results=True, debug_flag=True)
+    # planning_problem.run_operational_planning(candidate_solution=candidate_solution, print_results=True, debug_flag=True)
     # planning_problem.run_without_coordination(print_results=True)
-    # planning_problem.run_planning_problem()
+    planning_problem.run_planning_problem()
 
     # transmission_network = planning_problem.transmission_network
     # candidate_solution = planning_problem.get_initial_candidate_solution()
