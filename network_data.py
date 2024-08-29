@@ -2498,7 +2498,7 @@ def _get_sensitivities(network_planning, model):
 
         num_years = network_planning.years[year]
         #annualization = 1 / ((1 + network_planning.discount_factor) ** (int(year) - int(years[0])))
-        annualization = 1.00
+        # annualization = 1.00
 
         for day in network_planning.days:
 
@@ -2507,14 +2507,14 @@ def _get_sensitivities(network_planning, model):
 
             for c in model_repr_day.shared_energy_storage_s_sensitivities:
                 node_id = network_planning.active_distribution_network_nodes[c - 1]  # Note: the sensitivity constraints start at "1"
-                sensitivity_s = model_repr_day.dual[model_repr_day.shared_energy_storage_s_sensitivities[c]] * network_planning.network[year][day].baseMVA
-                # sensitivity_s = model_repr_day.dual[model_repr_day.shared_energy_storage_s_sensitivities[c]]
+                # sensitivity_s = model_repr_day.dual[model_repr_day.shared_energy_storage_s_sensitivities[c]] * network_planning.network[year][day].baseMVA
+                sensitivity_s = model_repr_day.dual[model_repr_day.shared_energy_storage_s_sensitivities[c]]
                 sensitivities['s'][year][node_id] += (num_days / 365.00) * sensitivity_s
 
             for c in model_repr_day.shared_energy_storage_e_sensitivities:
                 node_id = network_planning.active_distribution_network_nodes[c - 1]
-                sensitivity_e = model_repr_day.dual[model_repr_day.shared_energy_storage_e_sensitivities[c]] * network_planning.network[year][day].baseMVA
-                # sensitivity_e = model_repr_day.dual[model_repr_day.shared_energy_storage_e_sensitivities[c]]
+                # sensitivity_e = model_repr_day.dual[model_repr_day.shared_energy_storage_e_sensitivities[c]] * network_planning.network[year][day].baseMVA
+                sensitivity_e = model_repr_day.dual[model_repr_day.shared_energy_storage_e_sensitivities[c]]
                 sensitivities['e'][year][node_id] += (num_days / 365.00) * sensitivity_e
 
         # for node_id in network_planning.active_distribution_network_nodes:
