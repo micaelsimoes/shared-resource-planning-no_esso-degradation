@@ -2497,8 +2497,8 @@ def _get_sensitivities(network_planning, model):
     for year in network_planning.years:
 
         num_years = network_planning.years[year]
-        #annualization = 1 / ((1 + network_planning.discount_factor) ** (int(year) - int(years[0])))
-        # annualization = 1.00
+        # annualization = 1 / ((1 + network_planning.discount_factor) ** (int(year) - int(years[0])))
+        annualization = 1.00
 
         for day in network_planning.days:
 
@@ -2519,9 +2519,9 @@ def _get_sensitivities(network_planning, model):
                 sensitivity_e = model_repr_day.dual[model_repr_day.shared_energy_storage_e_sensitivities[c]] / network_planning.network[year][day].baseMVA
                 sensitivities['e'][year][node_id] += (num_days / 365.00) * sensitivity_e
 
-        # for node_id in network_planning.active_distribution_network_nodes:
-        #     sensitivities['s'][year][node_id] *= 365.00 * num_years * annualization
-        #     sensitivities['e'][year][node_id] *= 365.00 * num_years * annualization
+        for node_id in network_planning.active_distribution_network_nodes:
+            sensitivities['s'][year][node_id] *= 365.00 * num_years * annualization
+            sensitivities['e'][year][node_id] *= 365.00 * num_years * annualization
 
     return sensitivities
 
