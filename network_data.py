@@ -2517,9 +2517,11 @@ def _get_sensitivities(network_planning, model):
                 # sensitivity_e = model_repr_day.dual[model_repr_day.shared_energy_storage_e_sensitivities[c]]
                 sensitivities['e'][year][node_id] += (num_days / 365.00) * sensitivity_e
 
+        '''
         for node_id in network_planning.active_distribution_network_nodes:
             sensitivities['s'][year][node_id] *= 365.00 * num_years * annualization
             sensitivities['e'][year][node_id] *= 365.00 * num_years * annualization
+        '''
 
     return sensitivities
 
