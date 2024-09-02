@@ -2486,7 +2486,6 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
 def _get_sensitivities(network_planning, model):
 
     sensitivities = {'s': dict(), 'e': dict()}
-    years = [year for year in network_planning.years]
     for year in network_planning.years:
         sensitivities['s'][year] = dict()
         sensitivities['e'][year] = dict()
