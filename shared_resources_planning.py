@@ -1442,24 +1442,6 @@ def _run_operational_planning_without_coordination(planning_problem):
     distribution_networks = planning_problem.distribution_networks
     results = {'tso': dict(), 'dso': dict(), 'esso': dict()}
 
-    # Do not consider flexible resources
-    '''
-    transmission_network.params.fl_reg = False
-    transmission_network.params.es_reg = True
-    transmission_network.params.transf_reg = True
-    transmission_network.params.rg_curt = True
-    transmission_network.params.l_curt = True
-    transmission_network.params.slacks = True
-    for node_id in distribution_networks:
-        distribution_network = distribution_networks[node_id]
-        distribution_network.params.fl_reg = False
-        distribution_network.params.es_reg = True
-        distribution_network.params.transf_reg = True
-        distribution_network.params.rg_curt = True
-        distribution_network.params.l_curt = True
-        distribution_network.params.slacks = True
-    '''
-
     # Shared ESS candidate solution (no shared ESS)
     candidate_solution = dict()
     for e in range(len(planning_problem.active_distribution_network_nodes)):
