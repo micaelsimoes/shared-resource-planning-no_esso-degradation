@@ -2500,14 +2500,14 @@ def _pre_process_network(network):
             processed_branch.rate = sum([branch.rate for branch in connected_parallel_branches])
             processed_branch.ratio = branch.ratio
             processed_branch.pre_processed = True
-            for branch in parallel_branches:
-                branch.pre_processed = True
+            for branch_parallel in parallel_branches:
+                branch_parallel.pre_processed = True
             processed_branches.append(processed_branch)
         else:
-            for branch in parallel_branches:
-                branch.pre_processed = True
-            for branch in connected_parallel_branches:
-                processed_branches.append(branch)
+            for branch_parallel in parallel_branches:
+                branch_parallel.pre_processed = True
+            for branch_parallel in connected_parallel_branches:
+                processed_branches.append(branch_parallel)
 
     network.nodes = processed_nodes
     network.generators = processed_gens
