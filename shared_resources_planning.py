@@ -1525,7 +1525,7 @@ def _run_operational_planning_without_coordination(planning_problem):
         for year in transmission_network.years:
             for day in transmission_network.days:
 
-                node_idx = transmission_network.network[year][day].get_node_idx(node_id)
+                load_idx = transmission_network.network[year][day].get_adn_load_idx(node_id)
                 s_base = transmission_network.network[year][day].baseMVA
 
                 # - Fix expected interface PF
@@ -1533,20 +1533,20 @@ def _run_operational_planning_without_coordination(planning_problem):
                     for s_o in tso_model[year][day].scenarios_operation:
                         for p in tso_model[year][day].periods:
 
-                            tso_model[year][day].pc[node_idx, s_m, s_o, p].fixed = False
-                            tso_model[year][day].pc[node_idx, s_m, s_o, p].setub(None)
-                            tso_model[year][day].pc[node_idx, s_m, s_o, p].setlb(None)
-                            tso_model[year][day].qc[node_idx, s_m, s_o, p].fixed = False
-                            tso_model[year][day].qc[node_idx, s_m, s_o, p].setub(None)
-                            tso_model[year][day].qc[node_idx, s_m, s_o, p].setlb(None)
+                            tso_model[year][day].pc[load_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].pc[load_idx, s_m, s_o, p].setub(None)
+                            tso_model[year][day].pc[load_idx, s_m, s_o, p].setlb(None)
+                            tso_model[year][day].qc[load_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].qc[load_idx, s_m, s_o, p].setub(None)
+                            tso_model[year][day].qc[load_idx, s_m, s_o, p].setlb(None)
 
                             pc = interface_pf[node_id][year][day]['p'][p] / s_base
                             qc = interface_pf[node_id][year][day]['q'][p] / s_base
-                            tso_model[year][day].pc[node_idx, s_m, s_o, p].fix(pc)
-                            tso_model[year][day].qc[node_idx, s_m, s_o, p].fix(qc)
+                            tso_model[year][day].pc[load_idx, s_m, s_o, p].fix(pc)
+                            tso_model[year][day].qc[load_idx, s_m, s_o, p].fix(qc)
                             if transmission_network.params.fl_reg:
-                                tso_model[year][day].flex_p_up[node_idx, s_m, s_o, p].fix(0.0)
-                                tso_model[year][day].flex_p_down[node_idx, s_m, s_o, p].fix(0.0)
+                                tso_model[year][day].flex_p_up[load_idx, s_m, s_o, p].fix(0.0)
+                                tso_model[year][day].flex_p_down[load_idx, s_m, s_o, p].fix(0.0)
 
     results['tso'] = transmission_network.optimize(tso_model)
 
