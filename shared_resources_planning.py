@@ -1532,10 +1532,16 @@ def _run_operational_planning_without_coordination(planning_problem):
                 for s_m in tso_model[year][day].scenarios_market:
                     for s_o in tso_model[year][day].scenarios_operation:
                         for p in tso_model[year][day].periods:
+
+                            tso_model[year][day].pc[node_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].pc[node_idx, s_m, s_o, p].setub(None)
+                            tso_model[year][day].pc[node_idx, s_m, s_o, p].setlb(None)
+                            tso_model[year][day].qc[node_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].qc[node_idx, s_m, s_o, p].setub(None)
+                            tso_model[year][day].qc[node_idx, s_m, s_o, p].setlb(None)
+
                             pc = interface_pf[node_id][year][day]['p'][p] / s_base
                             qc = interface_pf[node_id][year][day]['q'][p] / s_base
-                            tso_model[year][day].pc[node_idx, s_m, s_o, p].fixed = False
-                            tso_model[year][day].qc[node_idx, s_m, s_o, p].fixed = False
                             tso_model[year][day].pc[node_idx, s_m, s_o, p].fix(pc)
                             tso_model[year][day].qc[node_idx, s_m, s_o, p].fix(qc)
                             if transmission_network.params.fl_reg:
