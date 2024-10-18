@@ -1518,6 +1518,7 @@ def _run_operational_planning_without_coordination(planning_problem):
         dso_models[node_id] = dso_model
 
     # Create TSO Operational Planning model
+    transmission_network.update_data_with_candidate_solution(candidate_solution)
     tso_model = transmission_network.build_model()
     transmission_network.update_model_with_candidate_solution(tso_model, candidate_solution)
     for node_id in transmission_network.active_distribution_network_nodes:
@@ -1533,6 +1534,8 @@ def _run_operational_planning_without_coordination(planning_problem):
                         for p in tso_model[year][day].periods:
                             pc = interface_pf[node_id][year][day]['p'][p] / s_base
                             qc = interface_pf[node_id][year][day]['q'][p] / s_base
+                            tso_model[year][day].pc[node_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].qc[node_idx, s_m, s_o, p].fixed = False
                             tso_model[year][day].pc[node_idx, s_m, s_o, p].fix(pc)
                             tso_model[year][day].qc[node_idx, s_m, s_o, p].fix(qc)
                             if transmission_network.params.fl_reg:
