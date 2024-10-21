@@ -275,13 +275,13 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     consensus_vars, dual_vars = create_admm_variables(planning_problem)
 
     # Create ADN models, get initial power flows
-    tso_model, results['tso'] = create_transmission_network_model(transmission_network, consensus_vars, candidate_solution['total_capacity'])
     dso_models, results['dso'] = create_distribution_networks_models(distribution_networks, consensus_vars, candidate_solution['total_capacity'])
+    tso_model, results['tso'] = create_transmission_network_model(transmission_network, consensus_vars, candidate_solution['total_capacity'])
     esso_model, results['esso'] = create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidate_solution['investment'])
 
     # Update models to ADMM
-    update_transmission_model_to_admm(transmission_network, tso_model, consensus_vars, admm_parameters)
     update_distribution_models_to_admm(distribution_networks, dso_models, consensus_vars, admm_parameters)
+    update_transmission_model_to_admm(transmission_network, tso_model, consensus_vars, admm_parameters)
     update_shared_energy_storage_model_to_admm(shared_ess_data, esso_model, admm_parameters)
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -295,49 +295,14 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         iter_start = time.time()
 
         # --------------------------------------------------------------------------------------------------------------
-        # 1. Solve TSO problem
-        results['tso'] = update_transmission_coordination_model_and_solve(transmission_network, tso_model,
-                                                                          consensus_vars['interface']['v_sqr'], dual_vars['v_sqr']['tso'],
-                                                                          consensus_vars['interface']['pf'], dual_vars['pf']['tso'],
-                                                                          consensus_vars['ess'], dual_vars['ess']['tso'],
-                                                                          admm_parameters, from_warm_start=from_warm_start)
-
-        # 1.1 Update ADMM CONSENSUS variables
-        planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
-                                                         consensus_vars, dual_vars, results, admm_parameters,
-                                                         update_tn=True)
-
-        if debug_flag:
-            for node_id in planning_problem.active_distribution_network_nodes:
-                print(f"Node {node_id}")
-                for year in consensus_vars['interface']['pf']['tso']['current'][node_id]:
-                    print(f"\tYear {year}")
-                    for day in consensus_vars['interface']['pf']['tso']['current'][node_id][year]:
-                        print(f"\t\tDay {day}")
-                        print(f"\t\t\tESS, TSO,  P   {consensus_vars['ess']['tso']['current'][node_id][year][day]['p']}")
-                        # print(f"\t\t\tESS, DSO,  P   {consensus_vars['ess']['dso']['current'][node_id][year][day]['p']}")
-                        # print(f"\t\t\tESS, ESSO, P  {consensus_vars['ess']['esso']['current'][node_id][year][day]['p']}")
-                        print(f"\t\t\tESS, TSO,  Q   {consensus_vars['ess']['tso']['current'][node_id][year][day]['q']}")
-                        # print(f"\t\t\tESS, DSO,  Q   {consensus_vars['ess']['dso']['current'][node_id][year][day]['q']}")
-                        # print(f"\t\t\tESS, ESSO, Q  {consensus_vars['ess']['esso']['current'][node_id][year][day]['q']}")
-
-        # 1.2 Update primal evolution
-        primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
-
-        # 1.3 STOPPING CRITERIA evaluation
-        convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
-        if convergence:
-            break
-
-        # --------------------------------------------------------------------------------------------------------------
-        # 2. Solve DSOs problems
+        # 1. Solve DSOs problems
         results['dso'] = update_distribution_coordination_models_and_solve(distribution_networks, dso_models,
                                                                            consensus_vars['interface']['v_sqr'], dual_vars['v_sqr']['dso'],
                                                                            consensus_vars['interface']['pf'], dual_vars['pf']['dso'],
                                                                            consensus_vars['ess'], dual_vars['ess']['dso'],
                                                                            admm_parameters, from_warm_start=from_warm_start)
 
-        # 2.1 Update ADMM CONSENSUS variables
+        # 1.1 Update ADMM CONSENSUS variables
         planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
                                                          consensus_vars, dual_vars, results, admm_parameters,
                                                          update_dns=True)
@@ -356,6 +321,41 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
                         print(f"\t\t\tESS, DSO,  Q   {consensus_vars['ess']['dso']['current'][node_id][year][day]['q']}")
                         # print(f"\t\t\tESS, ESSO, Q  {consensus_vars['ess']['esso']['current'][node_id][year][day]['q']}")
 
+        # 1.2 Update primal evolution
+        primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
+
+        # 1.3 STOPPING CRITERIA evaluation
+        convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
+        if convergence:
+            break
+
+        # --------------------------------------------------------------------------------------------------------------
+        # 2. Solve TSO problem
+        results['tso'] = update_transmission_coordination_model_and_solve(transmission_network, tso_model,
+                                                                          consensus_vars['interface']['v_sqr'], dual_vars['v_sqr']['tso'],
+                                                                          consensus_vars['interface']['pf'], dual_vars['pf']['tso'],
+                                                                          consensus_vars['ess'], dual_vars['ess']['tso'],
+                                                                          admm_parameters, from_warm_start=from_warm_start)
+
+        # 2.1 Update ADMM CONSENSUS variables
+        planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
+                                                         consensus_vars, dual_vars, results, admm_parameters,
+                                                         update_tn=True)
+
+        if debug_flag:
+            for node_id in planning_problem.active_distribution_network_nodes:
+                print(f"Node {node_id}")
+                for year in consensus_vars['interface']['pf']['tso']['current'][node_id]:
+                    print(f"\tYear {year}")
+                    for day in consensus_vars['interface']['pf']['tso']['current'][node_id][year]:
+                        print(f"\t\tDay {day}")
+                        print(f"\t\t\tESS, TSO,  P   {consensus_vars['ess']['tso']['current'][node_id][year][day]['p']}")
+                        # print(f"\t\t\tESS, DSO,  P   {consensus_vars['ess']['dso']['current'][node_id][year][day]['p']}")
+                        # print(f"\t\t\tESS, ESSO, P  {consensus_vars['ess']['esso']['current'][node_id][year][day]['p']}")
+                        print(f"\t\t\tESS, TSO,  Q   {consensus_vars['ess']['tso']['current'][node_id][year][day]['q']}")
+                        # print(f"\t\t\tESS, DSO,  Q   {consensus_vars['ess']['dso']['current'][node_id][year][day]['q']}")
+                        # print(f"\t\t\tESS, ESSO, Q  {consensus_vars['ess']['esso']['current'][node_id][year][day]['q']}")
+
         # 2.2 Update primal evolution
         primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
 
@@ -363,6 +363,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
         if convergence:
             break
+
 
         # --------------------------------------------------------------------------------------------------------------
         # 3. Solve ESSO problem
@@ -468,6 +469,83 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                             expected_ess_q += omega_market * omega_oper * tso_model[year][day].shared_es_qnet[e, s_m, s_o, p]
                     tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_shared_ess_p[e, p] == expected_ess_p)
                     tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_shared_ess_q[e, p] == expected_ess_q)
+
+    # Set initial PF values, run OPF
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+
+            s_base = transmission_network.network[year][day].baseMVA
+
+            tso_model[year][day].initial_interface_vmag_sqr = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00)
+
+            # Free Vmag, Pc, Qc at the interface nodes
+            for dn in tso_model[year][day].active_distribution_networks:
+                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
+                adn_node_idx = transmission_network.network[year][day].get_node_idx(adn_node_id)
+                adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(adn_node_id)
+                for s_m in tso_model[year][day].scenarios_market:
+                    for s_o in tso_model[year][day].scenarios_operation:
+                        for p in tso_model[year][day].periods:
+
+                            tso_model[year][day].e[adn_node_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].e[adn_node_idx, s_m, s_o, p].setub(None)
+                            tso_model[year][day].e[adn_node_idx, s_m, s_o, p].setlb(None)
+                            tso_model[year][day].f[adn_node_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].f[adn_node_idx, s_m, s_o, p].setub(None)
+                            tso_model[year][day].f[adn_node_idx, s_m, s_o, p].setlb(None)
+                            if transmission_network.params.slacks.grid_operation.voltage:
+                                tso_model[year][day].slack_e_up[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                tso_model[year][day].slack_e_down[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                tso_model[year][day].slack_f_up[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                tso_model[year][day].slack_f_down[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+
+                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setub(None)
+                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setlb(None)
+                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setub(None)
+                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setlb(None)
+                            if transmission_network.params.fl_reg:
+                                tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                            if transmission_network.params.l_curt:
+                                tso_model[year][day].pc_curt_down[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                tso_model[year][day].pc_curt_up[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                tso_model[year][day].qc_curt_down[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                tso_model[year][day].qc_curt_up[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+
+            # Free P, Q of shares ESSs
+            for e in tso_model[year][day].shared_energy_storages:
+                for s_m in tso_model[year][day].scenarios_market:
+                    for s_o in tso_model[year][day].scenarios_operation:
+                        for p in tso_model[year][day].periods:
+                            tso_model[year][day].shared_es_pnet[e, s_m, s_o, p].setub(None)
+                            tso_model[year][day].shared_es_pnet[e, s_m, s_o, p].setlb(None)
+                            tso_model[year][day].shared_es_qnet[e, s_m, s_o, p].setub(None)
+                            tso_model[year][day].shared_es_qnet[e, s_m, s_o, p].setlb(None)
+
+            # Fix initial values
+            for dn in tso_model[year][day].active_distribution_networks:
+                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
+                shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(adn_node_id)
+                for p in tso_model[year][day].periods:
+
+                    interface_vmag_sqr = consensus_vars['interface']['v_sqr']['dso']['current'][adn_node_id][year][day][p]
+                    interface_pf_p = consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
+                    interface_pf_q = consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q'][p] / s_base
+                    shared_ess_p = consensus_vars['ess']['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
+                    shared_ess_q = consensus_vars['ess']['dso']['current'][adn_node_id][year][day]['q'][p] / s_base
+
+                    tso_model[year][day].expected_interface_vmag_sqr[dn, p].setub(max(interface_vmag_sqr * 1.10, interface_vmag_sqr * 0.90))
+                    tso_model[year][day].expected_interface_vmag_sqr[dn, p].setlb(min(interface_vmag_sqr * 1.10, interface_vmag_sqr * 0.90))
+                    tso_model[year][day].expected_interface_pf_p[dn, p].setub(max(interface_pf_p * 1.10, interface_pf_p * 0.90))
+                    tso_model[year][day].expected_interface_pf_p[dn, p].setlb(min(interface_pf_p * 1.10, interface_pf_p * 0.90))
+                    tso_model[year][day].expected_interface_pf_q[dn, p].setub(max(interface_pf_q * 1.10, interface_pf_q * 0.90))
+                    tso_model[year][day].expected_interface_pf_q[dn, p].setlb(min(interface_pf_q * 1.10, interface_pf_q * 0.90))
+                    tso_model[year][day].expected_shared_ess_p[shared_ess_idx, p].setub(max(shared_ess_p * 1.10, shared_ess_p * 0.90))
+                    tso_model[year][day].expected_shared_ess_p[shared_ess_idx, p].setlb(min(shared_ess_p * 1.10, shared_ess_p * 0.90))
+                    tso_model[year][day].expected_shared_ess_q[shared_ess_idx, p].setub(max(shared_ess_q * 1.10, shared_ess_q * 0.90))
+                    tso_model[year][day].expected_shared_ess_q[shared_ess_idx, p].setlb(min(shared_ess_q * 1.10, shared_ess_q * 0.90))
 
     # Run SMOPF
     results = transmission_network.optimize(tso_model)
@@ -830,16 +908,6 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
 
                 for p in model[year][day].periods:
 
-                    '''
-                    init_p = abs(consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['p'][p]) / s_base
-                    if isclose(init_p, 0.00, abs_tol=SMALL_TOLERANCE):
-                        init_p = 1.00
-
-                    init_q = abs(consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q'][p]) / s_base
-                    if isclose(init_q, 0.00, abs_tol=SMALL_TOLERANCE):
-                        init_q = 1.00
-                    '''
-
                     constraint_v_req = (model[year][day].expected_interface_vmag_sqr[dn, p] - model[year][day].v_sqr_req[dn, p])
                     obj += model[year][day].dual_v_sqr_req[dn, p] * constraint_v_req
                     obj += (model[year][day].rho_v / 2) * (constraint_v_req ** 2)
@@ -1175,8 +1243,8 @@ def update_shared_energy_storages_coordination_model_and_solve(planning_problem,
                 day = days[d]
                 for p in models[node_id].periods:
 
-                    p_req = ess_req['dso']['current'][node_id][year][day]['p'][p]
-                    q_req = ess_req['dso']['current'][node_id][year][day]['q'][p]
+                    p_req = ess_req['tso']['current'][node_id][year][day]['p'][p]
+                    q_req = ess_req['tso']['current'][node_id][year][day]['q'][p]
                     dual_p_req = dual_ess[node_id][year][day]['p'][p]
                     dual_q_req = dual_ess[node_id][year][day]['q'][p]
 
@@ -1415,22 +1483,22 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                     rho_ess_sess = pe.value(sess_model[node_id].rho)
 
                     if update_tn:
-                        error_p_tso_esso = shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['p'][p]
-                        error_q_tso_esso = shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['q'][p]
-                        dual_vars['tso'][node_id][year][day]['p'][p] += rho_ess_tso * error_p_tso_esso
-                        dual_vars['tso'][node_id][year][day]['q'][p] += rho_ess_tso * error_q_tso_esso
+                        error_p_tso_dso = shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['p'][p]
+                        error_q_tso_dso = shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['q'][p]
+                        dual_vars['tso'][node_id][year][day]['p'][p] += rho_ess_tso * error_p_tso_dso
+                        dual_vars['tso'][node_id][year][day]['q'][p] += rho_ess_tso * error_q_tso_dso
 
                     if update_dns:
-                        error_p_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['p'][p]
-                        error_q_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['q'][p]
+                        error_p_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['p'][p]
+                        error_q_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['q'][p]
                         dual_vars['dso'][node_id][year][day]['p'][p] += rho_ess_dso * error_p_dso_esso
                         dual_vars['dso'][node_id][year][day]['q'][p] += rho_ess_dso * error_q_dso_esso
 
                     if update_sess:
-                        error_p_esso_dso = shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['p'][p]
-                        error_q_esso_dso = shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['q'][p]
-                        dual_vars['esso'][node_id][year][day]['p'][p] += rho_ess_sess * error_p_esso_dso
-                        dual_vars['esso'][node_id][year][day]['q'][p] += rho_ess_sess * error_q_esso_dso
+                        error_p_esso_tso = shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['p'][p]
+                        error_q_esso_tso = shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['q'][p]
+                        dual_vars['esso'][node_id][year][day]['p'][p] += rho_ess_sess * error_p_esso_tso
+                        dual_vars['esso'][node_id][year][day]['q'][p] += rho_ess_sess * error_q_esso_tso
 
 
 # ======================================================================================================================
