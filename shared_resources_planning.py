@@ -1284,7 +1284,7 @@ def consensus_convergence(planning_problem, consensus_vars, params):
                     sum_sqr += (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p]) ** 2
                     sum_sqr += (consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p]) ** 2
                     sum_sqr += (consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p]) ** 2
-                    num_elems += 5
+                    num_elems += 10
 
     if sqrt(sum_sqr) > params.tol['consensus'] * num_elems:
         if not isclose(sqrt(sum_sqr), params.tol['consensus'] * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=ADMM_CONVERGENCE_ABS_TOL):
