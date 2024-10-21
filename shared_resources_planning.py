@@ -1356,9 +1356,9 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                             interface_vars['pf']['tso']['prev'][node_id][year][day]['p'][p] = copy(interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p])
                             interface_vars['pf']['tso']['prev'][node_id][year][day]['q'][p] = copy(interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p])
 
-                            vsqr_req = pe.value(tso_model[year][day].expected_interface_vmag_sqr[dn, p])
-                            p_req = pe.value(tso_model[year][day].expected_interface_pf_p[dn, p]) * s_base
-                            q_req = pe.value(tso_model[year][day].expected_interface_pf_q[dn, p]) * s_base
+                            vsqr_req = round(pe.value(tso_model[year][day].expected_interface_vmag_sqr[dn, p]), 4)
+                            p_req = round(pe.value(tso_model[year][day].expected_interface_pf_p[dn, p]), 4) * s_base
+                            q_req = round(pe.value(tso_model[year][day].expected_interface_pf_q[dn, p]), 4) * s_base
                             interface_vars['v_sqr']['tso']['current'][node_id][year][day][p] = vsqr_req
                             interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p] = p_req
                             interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p] = q_req
@@ -1378,9 +1378,9 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                             interface_vars['pf']['dso']['prev'][node_id][year][day]['p'][p] = copy(interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p])
                             interface_vars['pf']['dso']['prev'][node_id][year][day]['q'][p] = copy(interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p])
 
-                            vsqr_req = pe.value(dso_model[year][day].expected_interface_vmag_sqr[p])
-                            p_req = pe.value(dso_model[year][day].expected_interface_pf_p[p]) * s_base
-                            q_req = pe.value(dso_model[year][day].expected_interface_pf_q[p]) * s_base
+                            vsqr_req = round(pe.value(dso_model[year][day].expected_interface_vmag_sqr[p]), 4)
+                            p_req = round(pe.value(dso_model[year][day].expected_interface_pf_p[p]), 4) * s_base
+                            q_req = round(pe.value(dso_model[year][day].expected_interface_pf_q[p]), 4) * s_base
                             interface_vars['v_sqr']['dso']['current'][node_id][year][day][p] = vsqr_req
                             interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p] = p_req
                             interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p] = q_req
@@ -1435,8 +1435,8 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                     for d in sess_model[node_id].days:
                         day = repr_days[d]
                         for p in sess_model[node_id].periods:
-                            p_req = pe.value(sess_model[node_id].es_pnet[y, d, p])
-                            q_req = pe.value(sess_model[node_id].es_qnet[y, d, p])
+                            p_req = round(pe.value(sess_model[node_id].es_pnet[y, d, p]), 4)
+                            q_req = round(pe.value(sess_model[node_id].es_qnet[y, d, p]), 4)
                             shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] = p_req
                             shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] = q_req
 
@@ -1452,8 +1452,8 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                         for p in tso_model[year][day].periods:
                             shared_ess_vars['tso']['prev'][node_id][year][day]['p'][p] = copy(shared_ess_vars['tso']['current'][node_id][year][day]['p'][p])
                             shared_ess_vars['tso']['prev'][node_id][year][day]['q'][p] = copy(shared_ess_vars['tso']['current'][node_id][year][day]['q'][p])
-                            p_req = pe.value(tso_model[year][day].expected_shared_ess_p[shared_ess_idx, p]) * s_base
-                            q_req = pe.value(tso_model[year][day].expected_shared_ess_q[shared_ess_idx, p]) * s_base
+                            p_req = round(pe.value(tso_model[year][day].expected_shared_ess_p[shared_ess_idx, p]), 4) * s_base
+                            q_req = round(pe.value(tso_model[year][day].expected_shared_ess_q[shared_ess_idx, p]), 4) * s_base
                             shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] = p_req
                             shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] = q_req
 
@@ -1468,8 +1468,8 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                         for p in dso_model[year][day].periods:
                             shared_ess_vars['dso']['prev'][node_id][year][day]['p'][p] = copy(shared_ess_vars['dso']['current'][node_id][year][day]['p'][p])
                             shared_ess_vars['dso']['prev'][node_id][year][day]['q'][p] = copy(shared_ess_vars['dso']['current'][node_id][year][day]['q'][p])
-                            p_req = pe.value(dso_model[year][day].expected_shared_ess_p[p]) * s_base
-                            q_req = pe.value(dso_model[year][day].expected_shared_ess_q[p]) * s_base
+                            p_req = round(pe.value(dso_model[year][day].expected_shared_ess_p[p]), 4) * s_base
+                            q_req = round(pe.value(dso_model[year][day].expected_shared_ess_q[p]), 4) * s_base
                             shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] = p_req
                             shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] = q_req
 
