@@ -90,7 +90,6 @@ class SharedResourcesPlanning:
         _read_market_data_from_file(self)
 
     def read_planning_parameters_from_file(self):
-        print(f'[INFO] Reading PLANNING PARAMETERS from file...')
         filename = os.path.join(self.data_dir, self.params_file)
         self.params.read_parameters_from_file(filename)
 
@@ -1640,6 +1639,7 @@ def _read_planning_problem(planning_problem):
     planning_problem.num_instants = planning_data['NumInstants']
 
     # Market Data
+    print('[INFO] Reading MARKET DATA from file(s)...')
     planning_problem.discount_factor = planning_data['DiscountFactor']
     planning_problem.market_data_file = planning_data['MarketData']
     planning_problem.read_market_data_from_file()
@@ -1702,6 +1702,7 @@ def _read_planning_problem(planning_problem):
     planning_problem.transmission_network = transmission_network
 
     # Shared ESS
+    print('[INFO] Reading SHARED ESS DATA from file(s)...')
     shared_ess_data = SharedEnergyStorageData()
     shared_ess_data.name = planning_problem.name
     shared_ess_data.data_dir = planning_problem.data_dir
@@ -1721,6 +1722,7 @@ def _read_planning_problem(planning_problem):
     planning_problem.shared_ess_data = shared_ess_data
 
     # Planning Parameters
+    print(f'[INFO] Reading PLANNING PARAMETERS from file...')
     planning_problem.params_file = planning_data['PlanningParameters']['params_file']
     planning_problem.read_planning_parameters_from_file()
 
