@@ -1530,16 +1530,12 @@ def _run_operational_planning_without_coordination(planning_problem):
                 dso_model[year][day].expected_interface_vmag_sqr = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00)
                 dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
                 dso_model[year][day].expected_interface_pf_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
-                dso_model[year][day].expected_shared_ess_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
-                dso_model[year][day].expected_shared_ess_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
 
                 dso_model[year][day].interface_expected_values = pe.ConstraintList()
                 for p in dso_model[year][day].periods:
                     expected_vmag_sqr = 0.00
                     expected_pf_p = 0.00
                     expected_pf_q = 0.00
-                    expected_ess_p = 0.00
-                    expected_ess_q = 0.00
                     for s_m in dso_model[year][day].scenarios_market:
                         omega_market = distribution_network.network[year][day].prob_market_scenarios[s_m]
                         for s_o in dso_model[year][day].scenarios_operation:
@@ -1547,13 +1543,12 @@ def _run_operational_planning_without_coordination(planning_problem):
                             expected_vmag_sqr += omega_market * omega_oper * dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2
                             expected_pf_p += omega_market * omega_oper * dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p]
                             expected_pf_q += omega_market * omega_oper * dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p]
-                            expected_ess_p += omega_market * omega_oper * dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p]
-                            expected_ess_q += omega_market * omega_oper * dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p]
+                            dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p].fix(0.00)
+                            dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p].fix(0.00)
+
                     dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_vmag_sqr[p] == expected_vmag_sqr)
                     dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_pf_p[p] == expected_pf_p)
                     dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_pf_q[p] == expected_pf_q)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_shared_ess_p[p] == expected_ess_p)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_shared_ess_q[p] == expected_ess_q)
 
         results['dso'][node_id] = distribution_network.optimize(dso_model)
 
@@ -1576,6 +1571,7 @@ def _run_operational_planning_without_coordination(planning_problem):
             for day in transmission_network.days:
 
                 adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(node_id)
+                shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(node_id)
                 s_base = transmission_network.network[year][day].baseMVA
 
                 # - Fix expected interface PF
@@ -1589,6 +1585,8 @@ def _run_operational_planning_without_coordination(planning_problem):
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].fixed = False
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setub(None)
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setlb(None)
+                            tso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p].fix(0.00)
+                            tso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p].setlb(0.00)
 
                             pc = interface_pf[node_id][year][day]['p'][p] / s_base
                             qc = interface_pf[node_id][year][day]['q'][p] / s_base
