@@ -595,7 +595,6 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
         for year in distribution_network.years:
             for day in distribution_network.days:
 
-                s_base = distribution_network.network[year][day].baseMVA
                 ref_node_id = distribution_network.network[year][day].get_reference_node_id()
                 ref_node_idx = distribution_network.network[year][day].get_node_idx(ref_node_id)
                 ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
@@ -1520,7 +1519,6 @@ def _run_operational_planning_without_coordination(planning_problem):
         for year in distribution_network.years:
             for day in distribution_network.days:
 
-                s_base = distribution_network.network[year][day].baseMVA
                 ref_node_id = distribution_network.network[year][day].get_reference_node_id()
                 ref_node_idx = distribution_network.network[year][day].get_node_idx(ref_node_id)
                 ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
