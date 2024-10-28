@@ -436,7 +436,7 @@ def _build_model(network, params):
                             model.qc_curt_down[c, s_m, s_o, p].setub(SMALL_TOLERANCE)
 
     # - Transformers
-    model.r = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.0)
+    model.r = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0)
     for i in model.branches:
         branch = network.branches[i]
         for s_m in model.scenarios_market:
