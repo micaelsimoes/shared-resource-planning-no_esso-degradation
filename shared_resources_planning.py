@@ -1115,7 +1115,7 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
             for dn in model[year][day].active_distribution_networks:
 
                 node_id = transmission_network.active_distribution_network_nodes[dn]
-                v_base = transmission_network.get_node_base_kv(node_id)
+                v_base = transmission_network.network[year][day].get_node_base_kv(node_id)
 
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
