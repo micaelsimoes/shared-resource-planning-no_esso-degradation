@@ -318,9 +318,9 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
                         # print(f"\t\t\tPF, DSO,  Q   {consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q']}")
                         print(f"\t\t\tESS, TSO,  P   {consensus_vars['ess']['tso']['current'][node_id][year][day]['p']}")
                         print(f"\t\t\tESS, DSO,  P   {consensus_vars['ess']['dso']['current'][node_id][year][day]['p']}")
+                        print(f"\t\t\tESS, TSO,  Q   {consensus_vars['ess']['tso']['current'][node_id][year][day]['q']}")
+                        print(f"\t\t\tESS, DSO,  Q   {consensus_vars['ess']['dso']['current'][node_id][year][day]['q']}")
                         # print(f"\t\t\tESS, ESSO, P  {consensus_vars['ess']['esso']['current'][node_id][year][day]['p']}")
-                        # print(f"\t\t\tESS, TSO,  Q   {consensus_vars['ess']['tso']['current'][node_id][year][day]['q']}")
-                        # print(f"\t\t\tESS, DSO,  Q   {consensus_vars['ess']['dso']['current'][node_id][year][day]['q']}")
                         # print(f"\t\t\tESS, ESSO, Q  {consensus_vars['ess']['esso']['current'][node_id][year][day]['q']}")
 
         # 1.2 Update primal evolution
@@ -356,9 +356,9 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
                         # print(f"\t\t\tPF, TSO,  Q   {consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q']}")
                         print(f"\t\t\tESS, TSO,  P   {consensus_vars['ess']['tso']['current'][node_id][year][day]['p']}")
                         print(f"\t\t\tESS, DSO,  P   {consensus_vars['ess']['dso']['current'][node_id][year][day]['p']}")
+                        print(f"\t\t\tESS, TSO,  Q   {consensus_vars['ess']['tso']['current'][node_id][year][day]['q']}")
+                        print(f"\t\t\tESS, DSO,  Q   {consensus_vars['ess']['dso']['current'][node_id][year][day]['q']}")
                         # print(f"\t\t\tESS, ESSO, P  {consensus_vars['ess']['esso']['current'][node_id][year][day]['p']}")
-                        # print(f"\t\t\tESS, TSO,  Q   {consensus_vars['ess']['tso']['current'][node_id][year][day]['q']}")
-                        # print(f"\t\t\tESS, DSO,  Q   {consensus_vars['ess']['dso']['current'][node_id][year][day]['q']}")
                         # print(f"\t\t\tESS, ESSO, Q  {consensus_vars['ess']['esso']['current'][node_id][year][day]['q']}")
 
         # 2.2 Update primal evolution
@@ -1248,8 +1248,8 @@ def consensus_convergence(planning_problem, consensus_vars, params):
                     num_elems += 2
 
     if (convergence_by_type('CONSENSUS Vmag', sum_sqr_v, num_elems * 2, params.tol['consensus']['v']) and
-        convergence_by_type('CONSENSUS PF', sum_sqr_v, num_elems * 4, params.tol['consensus']['pf']) and
-        convergence_by_type('CONSENSUS ESS', sum_sqr_v, num_elems * 4, params.tol['consensus']['ess'])):
+        convergence_by_type('CONSENSUS PF', sum_sqr_pf, num_elems * 4, params.tol['consensus']['pf']) and
+        convergence_by_type('CONSENSUS ESS', sum_sqr_ess, num_elems * 4, params.tol['consensus']['ess'])):
         return True
     return False
 
@@ -1282,8 +1282,8 @@ def stationary_convergence(planning_problem, consensus_vars, params):
                     num_elems += 1
 
     if (convergence_by_type('STATIONARITY Vmag', sum_sqr_v, num_elems * 2, params.tol['stationarity']['v']) and
-        convergence_by_type('STATIONARITY PF', sum_sqr_v, num_elems * 4, params.tol['stationarity']['pf']) and
-        convergence_by_type('STATIONARITY ESS', sum_sqr_v, num_elems * 4, params.tol['stationarity']['ess'])):
+        convergence_by_type('STATIONARITY PF', sum_sqr_pf, num_elems * 4, params.tol['stationarity']['pf']) and
+        convergence_by_type('STATIONARITY ESS', sum_sqr_ess, num_elems * 4, params.tol['stationarity']['ess'])):
         return True
     return False
 
