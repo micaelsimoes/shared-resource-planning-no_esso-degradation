@@ -1202,7 +1202,7 @@ def consensus_convergence(planning_problem, consensus_vars, params):
         for day in planning_problem.days:
             for node_id in planning_problem.active_distribution_network_nodes:
                 for p in range(planning_problem.num_instants):
-                    sum_sqr += (sqrt(consensus_vars['interface']['v']['tso']['current'][node_id][year][day][p]) - sqrt(consensus_vars['interface']['v']['dso']['current'][node_id][year][day][p])) ** 2
+                    sum_sqr += (consensus_vars['interface']['v']['tso']['current'][node_id][year][day][p] - consensus_vars['interface']['v']['dso']['current'][node_id][year][day][p]) ** 2
                     sum_sqr += (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p]) ** 2
                     sum_sqr += (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p]) ** 2
                     sum_sqr += (consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p]) ** 2
@@ -1236,8 +1236,8 @@ def stationary_convergence(planning_problem, consensus_vars, params):
         for year in planning_problem.years:
             for day in planning_problem.days:
                 for p in range(planning_problem.num_instants):
-                    sum_sqr += rho_tso_v * (sqrt(consensus_vars['interface']['v']['tso']['current'][node_id][year][day][p]) - sqrt(consensus_vars['interface']['v']['tso']['prev'][node_id][year][day][p])) ** 2
-                    sum_sqr += rho_dso_v * (sqrt(consensus_vars['interface']['v']['dso']['current'][node_id][year][day][p]) - sqrt(consensus_vars['interface']['v']['dso']['prev'][node_id][year][day][p])) ** 2
+                    sum_sqr += rho_tso_v * (consensus_vars['interface']['v']['tso']['current'][node_id][year][day][p] - consensus_vars['interface']['v']['tso']['prev'][node_id][year][day][p]) ** 2
+                    sum_sqr += rho_dso_v * (consensus_vars['interface']['v']['dso']['current'][node_id][year][day][p] - consensus_vars['interface']['v']['dso']['prev'][node_id][year][day][p]) ** 2
                     sum_sqr += rho_tso_pf * (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['interface']['pf']['tso']['prev'][node_id][year][day]['p'][p]) ** 2
                     sum_sqr += rho_tso_pf * (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['interface']['pf']['tso']['prev'][node_id][year][day]['q'][p]) ** 2
                     sum_sqr += rho_dso_pf * (consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['p'][p]) ** 2
@@ -1318,11 +1318,11 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                     rho_v_tso = pe.value(tso_model[year][day].rho_v)
                     rho_v_dso = pe.value(dso_models[node_id][year][day].rho_v)
                     if update_tn:
-                        error_vsqr_req_tso = interface_vars['v']['tso']['current'][node_id][year][day][p] - interface_vars['v']['dso']['current'][node_id][year][day][p]
-                        dual_vars['v']['tso'][node_id][year][day][p] += rho_v_tso * error_vsqr_req_tso
+                        error_v_req_tso = interface_vars['v']['tso']['current'][node_id][year][day][p] - interface_vars['v']['dso']['current'][node_id][year][day][p]
+                        dual_vars['v']['tso'][node_id][year][day][p] += rho_v_tso * error_v_req_tso
                     if update_dns:
-                        error_vsqr_req_dso = interface_vars['v']['dso']['current'][node_id][year][day][p] - interface_vars['v']['tso']['current'][node_id][year][day][p]
-                        dual_vars['v']['dso'][node_id][year][day][p] += rho_v_dso * error_vsqr_req_dso
+                        error_v_req_dso = interface_vars['v']['dso']['current'][node_id][year][day][p] - interface_vars['v']['tso']['current'][node_id][year][day][p]
+                        dual_vars['v']['dso'][node_id][year][day][p] += rho_v_dso * error_v_req_dso
 
                     rho_pf_tso = pe.value(tso_model[year][day].rho_pf)
                     rho_pf_dso = pe.value(dso_models[node_id][year][day].rho_pf)
