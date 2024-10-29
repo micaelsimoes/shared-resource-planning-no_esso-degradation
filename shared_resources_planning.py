@@ -517,9 +517,10 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
             s_base = transmission_network.network[year][day].baseMVA
             for dn in tso_model[year][day].active_distribution_networks:
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
+                v_base = transmission_network.network[year][day].get_node_base_kv(adn_node_id)
                 shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(adn_node_id)
                 for p in tso_model[year][day].periods:
-                    interface_vmag_sqr = consensus_vars['interface']['v_sqr']['dso']['current'][adn_node_id][year][day][p]
+                    interface_vmag_sqr = consensus_vars['interface']['v_sqr']['dso']['current'][adn_node_id][year][day][p] / v_base ** 2
                     interface_pf_p = consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
                     interface_pf_q = consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q'][p] / s_base
                     shared_ess_p = consensus_vars['ess']['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
