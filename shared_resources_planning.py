@@ -542,9 +542,10 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
             s_base = transmission_network.network[year][day].baseMVA
             for dn in tso_model[year][day].active_distribution_networks:
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
+                v_base = transmission_network.network[year][day].get_node_base_kv(adn_node_id)
                 shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(adn_node_id)
                 for p in tso_model[year][day].periods:
-                    interface_vsqr = pe.value(tso_model[year][day].expected_interface_vmag_sqr[dn, p])
+                    interface_vsqr = pe.value(tso_model[year][day].expected_interface_vmag_sqr[dn, p]) * v_base ** 2
                     interface_pf_p = pe.value(tso_model[year][day].expected_interface_pf_p[dn, p]) * s_base
                     interface_pf_q = pe.value(tso_model[year][day].expected_interface_pf_q[dn, p]) * s_base
                     p_ess = pe.value(tso_model[year][day].expected_shared_ess_p[shared_ess_idx, p]) * s_base
