@@ -6,8 +6,16 @@
 	},
 	"admm": {
 		"tol": {
-			"consensus": 1e-4,
-			"stationarity": 1e-4
+			"consensus": {
+				"v": 1e-3,
+				"pf": 1e-4,
+				"ess": 1e-4
+			},
+			"stationarity": {
+				"v": 1e-3,
+				"pf": 1e-4,
+				"ess": 1e-4
+			}
 		},
 		"num_max_iters": 100,
 		"adaptive_penalty": true,
