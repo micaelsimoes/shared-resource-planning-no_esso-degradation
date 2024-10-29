@@ -787,8 +787,10 @@ def create_admm_variables(planning_problem):
 
             for day in planning_problem.days:
 
-                consensus_variables['interface']['v_sqr']['tso']['current'][node_id][year][day] = [1.0] * num_instants
-                consensus_variables['interface']['v_sqr']['dso']['current'][node_id][year][day] = [1.0] * num_instants
+                node_base_kv = planning_problem.transmission_network.network[year][day].get_node_base_kv(node_id)
+
+                consensus_variables['interface']['v_sqr']['tso']['current'][node_id][year][day] = [node_base_kv] * num_instants
+                consensus_variables['interface']['v_sqr']['dso']['current'][node_id][year][day] = [node_base_kv] * num_instants
                 consensus_variables['interface']['pf']['tso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
                 consensus_variables['interface']['pf']['dso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
                 consensus_variables['ess']['tso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
