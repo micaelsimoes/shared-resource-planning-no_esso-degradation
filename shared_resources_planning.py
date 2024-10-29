@@ -1293,8 +1293,6 @@ def convergence_by_type(type, sum_sqr_error, num_elems, tol):
             print('[INFO]\t\t - Convergence consensus {} constraints failed. {:.3f} > {:.3f}'.format(type, sqrt(sum_sqr_error), tol * num_elems))
             return False
         print('[INFO]\t\t - Convergence consensus {} constraints considered ok. {:.3f} ~= {:.3f}'.format(type, sqrt(sum_sqr_error), tol * num_elems))
-    else:
-        print(f'[INFO]\t\t - Convergence consensus {type} constraints ok!')
     return True
 
 
