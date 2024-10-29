@@ -919,11 +919,11 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                 for s_m in dso_model[year][day].scenarios_market:
                     for s_o in dso_model[year][day].scenarios_operation:
                         for p in dso_model[year][day].periods:
-                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].fixed = False
-                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setub(v_max + SMALL_TOLERANCE)
-                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setlb(v_min - SMALL_TOLERANCE)
-                            dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
+                            # dso_model[year][day].e[ref_node_idx, s_m, s_o, p].fixed = False
+                            # dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setub(v_max + SMALL_TOLERANCE)
+                            # dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setlb(v_min - SMALL_TOLERANCE)
+                            # dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            # dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
                             if distribution_network.params.slacks.grid_operation.voltage:
                                 dso_model[year][day].slack_e_up[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
                                 dso_model[year][day].slack_e_down[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
