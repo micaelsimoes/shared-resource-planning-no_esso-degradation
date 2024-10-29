@@ -1255,7 +1255,7 @@ def consensus_convergence(planning_problem, consensus_vars, params):
 
 def consensus_by_type(type, sum_sqr_error, num_elems, tol):
     if sqrt(sum_sqr_error) > tol * num_elems:
-        if not isclose(sqrt(sum_sqr_error), tol['consensus']['v'] * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=ADMM_CONVERGENCE_ABS_TOL):
+        if not isclose(sqrt(sum_sqr_error), tol * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=ADMM_CONVERGENCE_ABS_TOL):
             print('[INFO]\t\t - Convergence consensus {} constraints failed. {:.3f} > {:.3f}'.format(type, sqrt(sum_sqr_error), tol * num_elems))
             return False
         print('[INFO]\t\t - Convergence consensus {} constraints considered ok. {:.3f} ~= {:.3f}'.format(type, sqrt(sum_sqr_error), tol * num_elems))
