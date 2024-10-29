@@ -482,12 +482,9 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                             expected_vmag_sqr += omega_market * omega_oper * (tso_model[year][day].e[adn_node_idx, s_m, s_o, p] ** 2 + tso_model[year][day].f[adn_node_idx, s_m, s_o, p] ** 2)
                             expected_pf_p += omega_market * omega_oper * tso_model[year][day].pc[adn_load_idx, s_m, s_o, p]
                             expected_pf_q += omega_market * omega_oper * tso_model[year][day].qc[adn_load_idx, s_m, s_o, p]
-                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] <= expected_vmag_sqr + SMALL_TOLERANCE)
-                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] >= expected_vmag_sqr - SMALL_TOLERANCE)
-                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_p[dn, p] <= expected_pf_p + SMALL_TOLERANCE)
-                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_p[dn, p] >= expected_pf_p - SMALL_TOLERANCE)
-                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_q[dn, p] <= expected_pf_q + SMALL_TOLERANCE)
-                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_q[dn, p] >= expected_pf_q - SMALL_TOLERANCE)
+                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] == expected_vmag_sqr)
+                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_p[dn, p] == expected_pf_p)
+                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_q[dn, p] == expected_pf_q)
             for e in tso_model[year][day].shared_energy_storages:
                 for p in tso_model[year][day].periods:
                     expected_ess_p = 0.00
@@ -498,10 +495,8 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                             omega_oper = transmission_network.network[year][day].prob_operation_scenarios[s_o]
                             expected_ess_p += omega_market * omega_oper * tso_model[year][day].shared_es_pnet[e, s_m, s_o, p]
                             expected_ess_q += omega_market * omega_oper * tso_model[year][day].shared_es_qnet[e, s_m, s_o, p]
-                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_shared_ess_p[e, p] <= expected_ess_p + SMALL_TOLERANCE)
-                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_shared_ess_p[e, p] >= expected_ess_p - SMALL_TOLERANCE)
-                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_shared_ess_q[e, p] <= expected_ess_q + SMALL_TOLERANCE)
-                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_shared_ess_q[e, p] >= expected_ess_q - SMALL_TOLERANCE)
+                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_shared_ess_p[e, p] == expected_ess_p)
+                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_shared_ess_q[e, p] == expected_ess_q)
 
     # Fix initial values, run OPF
     for year in transmission_network.years:
@@ -602,16 +597,11 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                             expected_pf_q += omega_market * omega_oper * dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p]
                             expected_ess_p += omega_market * omega_oper * dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p]
                             expected_ess_q += omega_market * omega_oper * dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p]
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_vmag_sqr[p] <= expected_vmag_sqr + SMALL_TOLERANCE)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_vmag_sqr[p] >= expected_vmag_sqr - SMALL_TOLERANCE)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_pf_p[p] <= expected_pf_p + SMALL_TOLERANCE)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_pf_p[p] >= expected_pf_p - SMALL_TOLERANCE)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_pf_q[p] <= expected_pf_q + SMALL_TOLERANCE)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_pf_q[p] >= expected_pf_q - SMALL_TOLERANCE)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_shared_ess_p[p] <= expected_ess_p + SMALL_TOLERANCE)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_shared_ess_p[p] >= expected_ess_p - SMALL_TOLERANCE)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_shared_ess_q[p] <= expected_ess_q + SMALL_TOLERANCE)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_shared_ess_q[p] >= expected_ess_q - SMALL_TOLERANCE)
+                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_vmag_sqr[p] == expected_vmag_sqr)
+                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_pf_p[p] == expected_pf_p)
+                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_pf_q[p] == expected_pf_q)
+                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_shared_ess_p[p] == expected_ess_p)
+                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_shared_ess_q[p] == expected_ess_q)
 
         # Run SMOPF
         results[node_id] = distribution_network.optimize(dso_model)
@@ -1074,9 +1064,9 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
 
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
-                    model[year][day].dual_v_sqr_req[dn, p].fix(dual_vsqr[node_id][year][day][p])
-                    model[year][day].dual_pf_p_req[dn, p].fix(dual_pf[node_id][year][day]['p'][p])
-                    model[year][day].dual_pf_q_req[dn, p].fix(dual_pf[node_id][year][day]['q'][p])
+                    model[year][day].dual_v_sqr_req[dn, p].fix(dual_vsqr[node_id][year][day][p] / v_base ** 2)
+                    model[year][day].dual_pf_p_req[dn, p].fix(dual_pf[node_id][year][day]['p'][p] / s_base)
+                    model[year][day].dual_pf_q_req[dn, p].fix(dual_pf[node_id][year][day]['q'][p] / s_base)
                     model[year][day].v_sqr_req[dn, p].fix(vsqr_req['dso']['current'][node_id][year][day][p] / v_base ** 2)
                     model[year][day].p_pf_req[dn, p].fix(pf_req['dso']['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].q_pf_req[dn, p].fix(pf_req['dso']['current'][node_id][year][day]['q'][p] / s_base)
@@ -1084,8 +1074,8 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
                 # Update shared ESS capacity and power requests
                 shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(node_id)
                 for p in model[year][day].periods:
-                    model[year][day].dual_ess_p_req[shared_ess_idx, p].fix(dual_ess[node_id][year][day]['p'][p])
-                    model[year][day].dual_ess_q_req[shared_ess_idx, p].fix(dual_ess[node_id][year][day]['q'][p])
+                    model[year][day].dual_ess_p_req[shared_ess_idx, p].fix(dual_ess[node_id][year][day]['p'][p] / s_base)
+                    model[year][day].dual_ess_q_req[shared_ess_idx, p].fix(dual_ess[node_id][year][day]['q'][p] / s_base)
                     model[year][day].p_ess_req[shared_ess_idx, p].fix(ess_req['esso']['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].q_ess_req[shared_ess_idx, p].fix(ess_req['esso']['current'][node_id][year][day]['q'][p] / s_base)
 
@@ -1133,17 +1123,17 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
 
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
-                    model[year][day].dual_v_sqr_req[p].fix(dual_vsqr[node_id][year][day][p])
-                    model[year][day].dual_pf_p_req[p].fix(dual_pf[node_id][year][day]['p'][p])
-                    model[year][day].dual_pf_q_req[p].fix(dual_pf[node_id][year][day]['q'][p])
+                    model[year][day].dual_v_sqr_req[p].fix(dual_vsqr[node_id][year][day][p] / v_base ** 2)
+                    model[year][day].dual_pf_p_req[p].fix(dual_pf[node_id][year][day]['p'][p] / s_base)
+                    model[year][day].dual_pf_q_req[p].fix(dual_pf[node_id][year][day]['q'][p] / s_base)
                     model[year][day].v_sqr_req[p].fix(vsqr_req['tso']['current'][node_id][year][day][p] / v_base ** 2)
                     model[year][day].p_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].q_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['q'][p] / s_base)
 
                 # Update SHARED ENERGY STORAGE variables (if existent)
                 for p in model[year][day].periods:
-                    model[year][day].dual_ess_p_req[p].fix(dual_ess[node_id][year][day]['p'][p])
-                    model[year][day].dual_ess_q_req[p].fix(dual_ess[node_id][year][day]['q'][p])
+                    model[year][day].dual_ess_p_req[p].fix(dual_ess[node_id][year][day]['p'][p] / s_base)
+                    model[year][day].dual_ess_q_req[p].fix(dual_ess[node_id][year][day]['q'][p] / s_base)
                     model[year][day].p_ess_req[p].fix(ess_req['tso']['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].q_ess_req[p].fix(ess_req['tso']['current'][node_id][year][day]['q'][p] / s_base)
 
