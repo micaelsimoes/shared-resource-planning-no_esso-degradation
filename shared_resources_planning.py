@@ -867,46 +867,26 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
             model[year][day].dual_ess_q_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)        # Dual variable - Shared ESS active power
 
             # Objective function - augmented Lagrangian
-            init_of_value = 1.00
-            if transmission_network.params.obj_type == OBJ_MIN_COST:
-                init_of_value = abs(pe.value(model[year][day].objective))
-            if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
-                init_of_value = 1.00
-            obj = copy(model[year][day].objective.expr) / init_of_value
+            obj = copy(model[year][day].objective.expr)
 
             for dn in model[year][day].active_distribution_networks:
-                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
-
-                p_norm = max([abs(value) for value in consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['p']]) / s_base
-                if isclose(p_norm, 0.00, abs_tol=SMALL_TOLERANCE):
-                    p_norm = 1.00
-
-                q_norm = max([abs(value) for value in consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q']]) / s_base
-                if isclose(q_norm, 0.00, abs_tol=SMALL_TOLERANCE):
-                    q_norm = 1.00
-
                 for p in model[year][day].periods:
 
                     constraint_v_req = (model[year][day].expected_interface_vmag_sqr[dn, p] - model[year][day].v_sqr_req[dn, p])
                     obj += model[year][day].dual_v_sqr_req[dn, p] * constraint_v_req
                     obj += (model[year][day].rho_v / 2) * (constraint_v_req ** 2)
 
-                    constraint_p_req = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_req[dn, p]) / p_norm
-                    constraint_q_req = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_req[dn, p]) / q_norm
+                    constraint_p_req = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_req[dn, p])
+                    constraint_q_req = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_req[dn, p])
                     obj += model[year][day].dual_pf_p_req[dn, p] * constraint_p_req
                     obj += model[year][day].dual_pf_q_req[dn, p] * constraint_q_req
                     obj += (model[year][day].rho_pf / 2) * (constraint_p_req ** 2)
                     obj += (model[year][day].rho_pf / 2) * (constraint_q_req ** 2)
 
             for e in model[year][day].shared_energy_storages:
-
-                shared_ess_rating = abs(transmission_network.network[year][day].shared_energy_storages[e].s)
-                if isclose(shared_ess_rating, 0.00, abs_tol=SMALL_TOLERANCE):
-                    shared_ess_rating = 1.00
-
                 for p in model[year][day].periods:
-                    constraint_ess_p = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_req[e, p]) / (2 * shared_ess_rating)
-                    constraint_ess_q = (model[year][day].expected_shared_ess_q[e, p] - model[year][day].q_ess_req[e, p]) / (2 * shared_ess_rating)
+                    constraint_ess_p = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_req[e, p])
+                    constraint_ess_q = (model[year][day].expected_shared_ess_q[e, p] - model[year][day].q_ess_req[e, p])
                     obj += model[year][day].dual_ess_p_req[e, p] * constraint_ess_p
                     obj += model[year][day].dual_ess_q_req[e, p] * constraint_ess_q
                     obj += (model[year][day].rho_ess / 2) * constraint_ess_p ** 2
