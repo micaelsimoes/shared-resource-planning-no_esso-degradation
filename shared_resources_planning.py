@@ -5193,14 +5193,8 @@ def _get_initial_candidate_solution(planning_problem):
             candidate_solution['investment'][node_id][year]['s'] = 0.00
             candidate_solution['investment'][node_id][year]['e'] = 0.00
             candidate_solution['total_capacity'][node_id][year] = dict()
-            candidate_solution['total_capacity'][node_id][year]['s'] = 2.50 * 100
-            candidate_solution['total_capacity'][node_id][year]['e'] = 2.50 * 100
-            if year == 2025:
-                candidate_solution['investment'][node_id][year]['s'] = 0.00
-                candidate_solution['investment'][node_id][year]['e'] = 0.00
-            if 2025 <= year < 2045:
-                candidate_solution['total_capacity'][node_id][year]['s'] = 0.00
-                candidate_solution['total_capacity'][node_id][year]['e'] = 0.00
+            candidate_solution['total_capacity'][node_id][year]['s'] = 10.00
+            candidate_solution['total_capacity'][node_id][year]['e'] = 10.00
     return candidate_solution
 
 
