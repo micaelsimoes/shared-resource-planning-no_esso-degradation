@@ -1227,6 +1227,7 @@ def update_shared_energy_storages_coordination_model_and_solve(planning_problem,
 def check_admm_convergence(planning_problem, consensus_vars, params):
     if consensus_convergence(planning_problem, consensus_vars, params):
         if stationary_convergence(planning_problem, consensus_vars, params):
+            print(f'[INFO]\t\t - Converged!')
             return True
     return False
 
@@ -1290,9 +1291,9 @@ def stationary_convergence(planning_problem, consensus_vars, params):
 def convergence_by_type(type, sum_sqr_error, num_elems, tol):
     if sqrt(sum_sqr_error) > tol * num_elems:
         if not isclose(sqrt(sum_sqr_error), tol * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=ADMM_CONVERGENCE_ABS_TOL):
-            print('[INFO]\t\t - Convergence consensus {} constraints failed. {:.3f} > {:.3f}'.format(type, sqrt(sum_sqr_error), tol * num_elems))
+            print('[INFO]\t\t - Convergence {} constraints failed. {:.3f} > {:.3f}'.format(type, sqrt(sum_sqr_error), tol * num_elems))
             return False
-        print('[INFO]\t\t - Convergence consensus {} constraints considered ok. {:.3f} ~= {:.3f}'.format(type, sqrt(sum_sqr_error), tol * num_elems))
+        print('[INFO]\t\t - Convergence {} constraints considered ok. {:.3f} ~= {:.3f}'.format(type, sqrt(sum_sqr_error), tol * num_elems))
     return True
 
 
@@ -5192,8 +5193,8 @@ def _get_initial_candidate_solution(planning_problem):
             candidate_solution['investment'][node_id][year]['s'] = 0.00
             candidate_solution['investment'][node_id][year]['e'] = 0.00
             candidate_solution['total_capacity'][node_id][year] = dict()
-            candidate_solution['total_capacity'][node_id][year]['s'] = 0.00
-            candidate_solution['total_capacity'][node_id][year]['e'] = 0.00
+            candidate_solution['total_capacity'][node_id][year]['s'] = 2.50
+            candidate_solution['total_capacity'][node_id][year]['e'] = 2.50
             if year == 2025:
                 candidate_solution['investment'][node_id][year]['s'] = 0.00
                 candidate_solution['investment'][node_id][year]['e'] = 0.00
