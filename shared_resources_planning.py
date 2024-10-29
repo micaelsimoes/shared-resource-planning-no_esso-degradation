@@ -1158,6 +1158,8 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
         for year in distribution_network.years:
             for day in distribution_network.days:
 
+                ref_node_id = distribution_network.network[year][day].get_reference_node_id()
+                v_base = distribution_network.network[year][day].get_node_base_kv(ref_node_id)
                 s_base = distribution_network.network[year][day].baseMVA
 
                 rho_v = params.rho['v'][distribution_network.name]
@@ -1175,11 +1177,10 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
 
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
-
-                    model[year][day].dual_v_sqr_req[p].fix(dual_vsqr[node_id][year][day][p] / s_base)
-                    model[year][day].v_sqr_req[p].fix(vsqr_req['tso']['current'][node_id][year][day][p])
-                    model[year][day].dual_pf_p_req[p].fix(dual_pf[node_id][year][day]['p'][p] / s_base)
-                    model[year][day].dual_pf_q_req[p].fix(dual_pf[node_id][year][day]['q'][p] / s_base)
+                    model[year][day].dual_v_sqr_req[p].fix(dual_vsqr[node_id][year][day][p])
+                    model[year][day].dual_pf_p_req[p].fix(dual_pf[node_id][year][day]['p'][p])
+                    model[year][day].dual_pf_q_req[p].fix(dual_pf[node_id][year][day]['q'][p])
+                    model[year][day].v_sqr_req[p].fix(vsqr_req['tso']['current'][node_id][year][day][p] / v_base ** 2)
                     model[year][day].p_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].q_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['q'][p] / s_base)
 
