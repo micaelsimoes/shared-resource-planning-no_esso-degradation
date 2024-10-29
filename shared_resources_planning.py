@@ -1708,6 +1708,8 @@ def _read_planning_problem(planning_problem):
     planning_problem.params_file = planning_data['PlanningParameters']['params_file']
     planning_problem.read_planning_parameters_from_file()
 
+    _check_interface_nodes_base_voltage_consistency(planning_problem)
+
     # Add ADN nodes to Transmission Network
     _add_adn_node_to_transmission_network(planning_problem)
 
@@ -5209,6 +5211,18 @@ def _get_initial_candidate_solution(planning_problem):
                 candidate_solution['total_capacity'][node_id][year]['s'] = 0.00
                 candidate_solution['total_capacity'][node_id][year]['e'] = 0.00
     return candidate_solution
+
+
+def _check_interface_nodes_base_voltage_consistency(planning_problem):
+    for year in planning_problem.years:
+        for day in planning_problem.days:
+            for node_id in planning_problem.distribution_networks:
+                tn_node_base_kv = planning_problem.transmission_network.network[year][day].get_node_base_kv(node_id)
+                dn_ref_node_id = planning_problem.distribution_networks[node_id].network[year][day].get_reference_node_id()
+                dn_node_base_kv = planning_problem.distribution_networks[node_id].network[year][day].get_node_base_kv(dn_ref_node_id)
+                if not isclose(tn_node_base_kv, dn_node_base_kv, rel_tol=5e-2):
+                    print(f'[ERROR] Inconsistent TN-DN base voltage at node {node_id}, year {year}, day {day}! Check network(s). Exiting')
+                    exit(ERROR_SPECIFICATION_FILE)
 
 
 def _add_adn_node_to_transmission_network(planning_problem):
