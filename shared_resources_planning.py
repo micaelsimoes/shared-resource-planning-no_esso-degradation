@@ -627,9 +627,11 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
         # Get initial interface and shared ESS values
         for year in distribution_network.years:
             for day in distribution_network.days:
+                ref_node_id = distribution_network.network[year][day].get_reference_node_id()
                 s_base = distribution_network.network[year][day].baseMVA
+                v_base = distribution_network.network[year][day].get_node_base_kv(ref_node_id)
                 for p in dso_model[year][day].periods:
-                    interface_vsqr = pe.value(dso_model[year][day].expected_interface_vmag_sqr[p])
+                    interface_vsqr = pe.value(dso_model[year][day].expected_interface_vmag_sqr[p]) * v_base ** 2
                     interface_pf_p = pe.value(dso_model[year][day].expected_interface_pf_p[p]) * s_base
                     interface_pf_q = pe.value(dso_model[year][day].expected_interface_pf_q[p]) * s_base
                     p_ess = pe.value(dso_model[year][day].expected_shared_ess_p[p]) * s_base
@@ -789,8 +791,8 @@ def create_admm_variables(planning_problem):
 
                 node_base_kv = planning_problem.transmission_network.network[year][day].get_node_base_kv(node_id)
 
-                consensus_variables['interface']['v_sqr']['tso']['current'][node_id][year][day] = [node_base_kv] * num_instants
-                consensus_variables['interface']['v_sqr']['dso']['current'][node_id][year][day] = [node_base_kv] * num_instants
+                consensus_variables['interface']['v_sqr']['tso']['current'][node_id][year][day] = [node_base_kv ** 2] * num_instants
+                consensus_variables['interface']['v_sqr']['dso']['current'][node_id][year][day] = [node_base_kv ** 2] * num_instants
                 consensus_variables['interface']['pf']['tso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
                 consensus_variables['interface']['pf']['dso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
                 consensus_variables['ess']['tso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
