@@ -313,9 +313,9 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
                     print(f"\tYear {year}")
                     for day in consensus_vars['interface']['pf']['tso']['current'][node_id][year]:
                         print(f"\t\tDay {day}")
-                        print(f"\t\t\tPF, DSO,  V   {sqrt(consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day])}")
+                        print(f"\t\t\tPF, DSO,  V   {[sqrt(vsqr) for vsqr in consensus_vars['interface']['v_sqr']['dso']['current'][node_id][year][day]]}")
                         print(f"\t\t\tPF, DSO,  P   {consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p']}")
-                        print(f"\t\t\tPF, DSO,  Q   {consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p']}")
+                        print(f"\t\t\tPF, DSO,  Q   {consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q']}")
                         # print(f"\t\t\tESS, TSO,  P   {consensus_vars['ess']['tso']['current'][node_id][year][day]['p']}")
                         # print(f"\t\t\tESS, DSO,  P   {consensus_vars['ess']['dso']['current'][node_id][year][day]['p']}")
                         # print(f"\t\t\tESS, ESSO, P  {consensus_vars['ess']['esso']['current'][node_id][year][day]['p']}")
@@ -351,9 +351,9 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
                     print(f"\tYear {year}")
                     for day in consensus_vars['interface']['pf']['tso']['current'][node_id][year]:
                         print(f"\t\tDay {day}")
-                        print(f"\t\t\tPF, TSO,  V   {[sqrt(value) for value in consensus_vars['interface']['v_sqr']['tso']['current'][node_id][year][day]]}")
+                        print(f"\t\t\tPF, TSO,  V   {[sqrt(vsqr) for vsqr in consensus_vars['interface']['v_sqr']['tso']['current'][node_id][year][day]]}")
                         print(f"\t\t\tPF, TSO,  P   {consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p']}")
-                        print(f"\t\t\tPF, TSO,  Q   {consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p']}")
+                        print(f"\t\t\tPF, TSO,  Q   {consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q']}")
                         # print(f"\t\t\tESS, TSO,  P   {consensus_vars['ess']['tso']['current'][node_id][year][day]['p']}")
                         # print(f"\t\t\tESS, DSO,  P   {consensus_vars['ess']['dso']['current'][node_id][year][day]['p']}")
                         # print(f"\t\t\tESS, ESSO, P  {consensus_vars['ess']['esso']['current'][node_id][year][day]['p']}")
