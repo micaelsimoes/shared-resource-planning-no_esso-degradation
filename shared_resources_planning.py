@@ -1233,28 +1233,34 @@ def check_admm_convergence(planning_problem, consensus_vars, params):
 
 def consensus_convergence(planning_problem, consensus_vars, params):
 
-    sum_sqr = 0.0
+    sum_sqr_v, sum_sqr_pf, sum_sqr_ess = 0.00, 0.00, 0.00
     num_elems = 0
-
     for year in planning_problem.years:
         for day in planning_problem.days:
             for node_id in planning_problem.active_distribution_network_nodes:
                 for p in range(planning_problem.num_instants):
-                    sum_sqr += (consensus_vars['interface']['v']['tso']['current'][node_id][year][day][p] - consensus_vars['interface']['v']['dso']['current'][node_id][year][day][p]) ** 2
-                    sum_sqr += (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p]) ** 2
-                    sum_sqr += (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p]) ** 2
-                    sum_sqr += (consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p]) ** 2
-                    sum_sqr += (consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p]) ** 2
-                    num_elems += 10
+                    sum_sqr_v += (consensus_vars['interface']['v']['tso']['current'][node_id][year][day][p] - consensus_vars['interface']['v']['dso']['current'][node_id][year][day][p]) ** 2
+                    sum_sqr_pf += (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p]) ** 2
+                    sum_sqr_pf += (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p]) ** 2
+                    sum_sqr_ess += (consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p]) ** 2
+                    sum_sqr_ess += (consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p]) ** 2
+                    num_elems += 2
 
-    if sqrt(sum_sqr) > params.tol['consensus'] * num_elems:
-        if not isclose(sqrt(sum_sqr), params.tol['consensus'] * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=ADMM_CONVERGENCE_ABS_TOL):
-            print('[INFO]\t\t - Convergence consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr), params.tol['consensus'] * num_elems))
+    if (consensus_by_type('Vmag', sum_sqr_v, num_elems * 2, params.tol['consensus']['v']) and
+        consensus_by_type('PF', sum_sqr_v, num_elems * 4, params.tol['consensus']['pf']) and
+        consensus_by_type('ESS', sum_sqr_v, num_elems * 4, params.tol['consensus']['ess'])):
+        return True
+    return False
+
+
+def consensus_by_type(type, sum_sqr_error, num_elems, tol):
+    if sqrt(sum_sqr_error) > tol * num_elems:
+        if not isclose(sqrt(sum_sqr_error), tol['consensus']['v'] * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=ADMM_CONVERGENCE_ABS_TOL):
+            print('[INFO]\t\t - Convergence consensus {} constraints failed. {:.3f} > {:.3f}'.format(type, sqrt(sum_sqr_error), tol * num_elems))
             return False
-        print('[INFO]\t\t - Convergence consensus constraints considered ok. {:.3f} ~= {:.3f}'.format(sqrt(sum_sqr), params.tol['consensus'] * num_elems))
+        print('[INFO]\t\t - Convergence consensus {} constraints considered ok. {:.3f} ~= {:.3f}'.format(type, sqrt(sum_sqr_error), tol * num_elems))
     else:
         print('[INFO]\t\t - Convergence consensus constraints ok!')
-
     return True
 
 
