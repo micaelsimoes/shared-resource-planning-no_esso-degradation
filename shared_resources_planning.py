@@ -1280,9 +1280,9 @@ def stationary_convergence(planning_problem, consensus_vars, params):
                     sum_sqr_ess += rho_dso_ess * (consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p]) ** 2
                     num_elems += 1
 
-    if (convergence_by_type('STATIONARITY Vmag', sum_sqr_v, num_elems * 2, params.tol['consensus']['v']) and
-        convergence_by_type('STATIONARITY PF', sum_sqr_v, num_elems * 4, params.tol['consensus']['pf']) and
-        convergence_by_type('STATIONARITY ESS', sum_sqr_v, num_elems * 4, params.tol['consensus']['ess'])):
+    if (convergence_by_type('STATIONARITY Vmag', sum_sqr_v, num_elems * 2, params.tol['stationarity']['v']) and
+        convergence_by_type('STATIONARITY PF', sum_sqr_v, num_elems * 4, params.tol['stationarity']['pf']) and
+        convergence_by_type('STATIONARITY ESS', sum_sqr_v, num_elems * 4, params.tol['stationarity']['ess'])):
         return True
     return False
 
