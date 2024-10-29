@@ -1329,34 +1329,29 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
     for node_id in distribution_networks:
         for year in planning_problem.years:
             for day in planning_problem.days:
-
-                v_base = transmission_network.network[year][day].get_node_base_kv(node_id)  # Note: same for TN and ADNs
-                s_base_tn = transmission_network.network[year][day].baseMVA
-                s_base_dn = distribution_networks[node_id].network[year][day].baseMVA
-
                 for p in range(planning_problem.num_instants):
 
                     rho_v_tso = pe.value(tso_model[year][day].rho_v)
                     rho_v_dso = pe.value(dso_models[node_id][year][day].rho_v)
                     if update_tn:
                         error_vsqr_req_tso = interface_vars['v_sqr']['tso']['current'][node_id][year][day][p] - interface_vars['v_sqr']['dso']['current'][node_id][year][day][p]
-                        dual_vars['v_sqr']['tso'][node_id][year][day][p] += rho_v_tso * error_vsqr_req_tso / v_base ** 2
+                        dual_vars['v_sqr']['tso'][node_id][year][day][p] += rho_v_tso * error_vsqr_req_tso
                     if update_dns:
                         error_vsqr_req_dso = interface_vars['v_sqr']['dso']['current'][node_id][year][day][p] - interface_vars['v_sqr']['tso']['current'][node_id][year][day][p]
-                        dual_vars['v_sqr']['dso'][node_id][year][day][p] += rho_v_dso * error_vsqr_req_dso / v_base ** 2
+                        dual_vars['v_sqr']['dso'][node_id][year][day][p] += rho_v_dso * error_vsqr_req_dso
 
                     rho_pf_tso = pe.value(tso_model[year][day].rho_pf)
                     rho_pf_dso = pe.value(dso_models[node_id][year][day].rho_pf)
                     if update_tn:
                         error_p_pf_req_tso = interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p] - interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p]
                         error_q_pf_req_tso = interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p] - interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p]
-                        dual_vars['pf']['tso'][node_id][year][day]['p'][p] += rho_pf_tso * error_p_pf_req_tso / s_base_tn
-                        dual_vars['pf']['tso'][node_id][year][day]['q'][p] += rho_pf_tso * error_q_pf_req_tso / s_base_tn
+                        dual_vars['pf']['tso'][node_id][year][day]['p'][p] += rho_pf_tso * error_p_pf_req_tso
+                        dual_vars['pf']['tso'][node_id][year][day]['q'][p] += rho_pf_tso * error_q_pf_req_tso
                     if update_dns:
                         error_p_pf_req_dso = interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p] - interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p]
                         error_q_pf_req_dso = interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p] - interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p]
-                        dual_vars['pf']['dso'][node_id][year][day]['p'][p] += rho_pf_dso * error_p_pf_req_dso / s_base_dn
-                        dual_vars['pf']['dso'][node_id][year][day]['q'][p] += rho_pf_dso * error_q_pf_req_dso / s_base_dn
+                        dual_vars['pf']['dso'][node_id][year][day]['p'][p] += rho_pf_dso * error_p_pf_req_dso
+                        dual_vars['pf']['dso'][node_id][year][day]['q'][p] += rho_pf_dso * error_q_pf_req_dso
 
 
 def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_models, sess_model, shared_ess_vars, dual_vars, results, params, update_tn=True, update_dns=True, update_sess=True):
@@ -1421,10 +1416,6 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
         # Update dual variables Shared ESS
         for year in planning_problem.years:
             for day in planning_problem.days:
-
-                s_base_tn = transmission_network.network[year][day].baseMVA
-                s_base_dn = distribution_network.network[year][day].baseMVA
-
                 for p in range(planning_problem.num_instants):
 
                     rho_ess_tso = pe.value(tso_model[year][day].rho_ess)
@@ -1434,14 +1425,14 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                     if update_tn:
                         error_p_tso_dso = shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['p'][p]
                         error_q_tso_dso = shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['q'][p]
-                        dual_vars['tso'][node_id][year][day]['p'][p] += rho_ess_tso * error_p_tso_dso / s_base_tn
-                        dual_vars['tso'][node_id][year][day]['q'][p] += rho_ess_tso * error_q_tso_dso / s_base_tn
+                        dual_vars['tso'][node_id][year][day]['p'][p] += rho_ess_tso * error_p_tso_dso
+                        dual_vars['tso'][node_id][year][day]['q'][p] += rho_ess_tso * error_q_tso_dso
 
                     if update_dns:
                         error_p_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['p'][p]
                         error_q_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['q'][p]
-                        dual_vars['dso'][node_id][year][day]['p'][p] += rho_ess_dso * error_p_dso_esso / s_base_dn
-                        dual_vars['dso'][node_id][year][day]['q'][p] += rho_ess_dso * error_q_dso_esso / s_base_dn
+                        dual_vars['dso'][node_id][year][day]['p'][p] += rho_ess_dso * error_p_dso_esso
+                        dual_vars['dso'][node_id][year][day]['q'][p] += rho_ess_dso * error_q_dso_esso
 
                     if update_sess:
                         error_p_esso_tso = shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['p'][p]
