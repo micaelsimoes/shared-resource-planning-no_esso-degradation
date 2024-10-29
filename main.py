@@ -71,7 +71,7 @@ def shared_resources_planning(working_directory, specification_filename):
     # for year in transmission_network.years:
     #     for day in transmission_network.days:
     #         transmission_network.network[year][day].shared_energy_storages = list()
-    transmission_network.update_data_with_candidate_solution(candidate_solution)
+    transmission_network.update_data_with_candidate_solution(candidate_solution['total_capacity'])
     tn_model = transmission_network.build_model()
     transmission_network.update_model_with_candidate_solution(tn_model, candidate_solution['total_capacity'])
     results = transmission_network.optimize(tn_model)
@@ -85,7 +85,7 @@ def shared_resources_planning(working_directory, specification_filename):
         # for year in distribution_network.years:
         #     for day in distribution_network.days:
         #         distribution_network.network[year][day].shared_energy_storages = list()
-        distribution_network.update_data_with_candidate_solution(candidate_solution)
+        distribution_network.update_data_with_candidate_solution(candidate_solution['total_capacity'])
         dn_model = distribution_network.build_model()
         distribution_network.update_model_with_candidate_solution(dn_model, candidate_solution['total_capacity'])
         results = distribution_network.optimize(dn_model)
