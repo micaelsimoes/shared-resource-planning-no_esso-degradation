@@ -89,8 +89,8 @@ def shared_resources_planning(working_directory, specification_filename):
         dn_model = distribution_network.build_model()
         for year in distribution_network.years:
             for day in distribution_network.days:
-                dn_model[year][day].penalty_gen_curtailment.fix(10.00)
-                dn_model[year][day].penalty_flex_usage.fix(10.00)
+                dn_model[year][day].penalty_gen_curtailment.fix(0.00)
+                dn_model[year][day].penalty_flex_usage.fix(0.00)
                 dn_model[year][day].penalty_ess_usage.fix(0.00)
         distribution_network.update_model_with_candidate_solution(dn_model, candidate_solution['total_capacity'])
         results = distribution_network.optimize(dn_model)
