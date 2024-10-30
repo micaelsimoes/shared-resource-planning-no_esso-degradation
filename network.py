@@ -530,14 +530,15 @@ def _build_model(network, params):
 
     # Costs (penalties)
     # Note: defined as variables (bus fixed) so that they can be changed later, if needed
-    model.penalty_gen_curtailment = pe.Var(domain=pe.NonNegativeReals)
-    model.penalty_load_curtailment = pe.Var(domain=pe.NonNegativeReals)
-    model.penalty_flex_usage = pe.Var(domain=pe.NonNegativeReals)
     model.penalty_ess_usage = pe.Var(domain=pe.NonNegativeReals)
-    model.penalty_gen_curtailment.fix(PENALTY_GENERATION_CURTAILMENT)
-    model.penalty_load_curtailment.fix(PENALTY_LOAD_CURTAILMENT)
     model.penalty_flex_usage.fix(PENALTY_FLEXIBILITY_USAGE)
-    model.penalty_ess_usage.fix(PENALTY_ESS_USAGE)
+    if not network.is_transmission:
+        model.penalty_gen_curtailment = pe.Var(domain=pe.NonNegativeReals)
+        model.penalty_load_curtailment = pe.Var(domain=pe.NonNegativeReals)
+        model.penalty_flex_usage = pe.Var(domain=pe.NonNegativeReals)
+        model.penalty_gen_curtailment.fix(PENALTY_GENERATION_CURTAILMENT)
+        model.penalty_load_curtailment.fix(PENALTY_LOAD_CURTAILMENT)
+        model.penalty_flex_usage.fix(PENALTY_FLEXIBILITY_USAGE)
 
 
     # ------------------------------------------------------------------------------------------------------------------

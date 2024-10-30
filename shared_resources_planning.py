@@ -501,7 +501,9 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
     # Fix initial values, run OPF
     for year in transmission_network.years:
         for day in transmission_network.days:
+
             s_base = transmission_network.network[year][day].baseMVA
+
             for dn in tso_model[year][day].active_distribution_networks:
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
                 v_base = transmission_network.network[year][day].get_node_base_kv(adn_node_id)
@@ -517,6 +519,11 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                     tso_model[year][day].expected_interface_pf_q[dn, p].fix(interface_pf_q)
                     tso_model[year][day].expected_shared_ess_p[shared_ess_idx, p].fix(shared_ess_p)
                     tso_model[year][day].expected_shared_ess_q[shared_ess_idx, p].fix(shared_ess_q)
+
+    # Update penalties (for the coordination procedure)
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+            tso_model[year][day].penalty_ess_usage.fix(0.00)
 
     # Run SMOPF
     results = transmission_network.optimize(tso_model)
