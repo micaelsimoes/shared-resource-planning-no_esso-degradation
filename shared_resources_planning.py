@@ -1577,7 +1577,7 @@ def _run_operational_planning_without_coordination(planning_problem):
                 shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(node_id)
                 s_base = transmission_network.network[year][day].baseMVA
 
-                tso_model[year][day].interface_expected_values = pe.ConstraintList()
+                tso_model[year][day].voltage_fixing_cons = pe.ConstraintList()
 
                 # - Fix expected interface PF
                 for s_m in tso_model[year][day].scenarios_market:
@@ -1594,7 +1594,7 @@ def _run_operational_planning_without_coordination(planning_problem):
                             tso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p].setlb(0.00)
 
                             vsqr = interface_v[node_id][year][day][p] ** 2
-                            tso_model[year][day].interface_expected_values.add(tso_model[year][day].e[adn_node_idx, s_m, s_o, p] ** 2 + tso_model[year][day].f[adn_node_idx, s_m, s_o, p] ** 2 == vsqr)
+                            tso_model[year][day].voltage_fixing_cons.add(tso_model[year][day].e[adn_node_idx, s_m, s_o, p] ** 2 + tso_model[year][day].f[adn_node_idx, s_m, s_o, p] ** 2 == vsqr)
                             if transmission_network.params.slacks.grid_operation.voltage:
                                 tso_model[year][day].slack_e_up[adn_node_idx, s_m, s_o, p].fix(0.0)
                                 tso_model[year][day].slack_e_down[adn_node_idx, s_m, s_o, p].fix(0.0)
