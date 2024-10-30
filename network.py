@@ -534,7 +534,7 @@ def _build_model(network, params):
     model.penalty_load_curtailment = pe.Var(domain=pe.NonNegativeReals)
     model.penalty_flex_usage = pe.Var(domain=pe.NonNegativeReals)
     model.penalty_ess_usage = pe.Var(domain=pe.NonNegativeReals)
-    model.penalty_gen_curtailment.fix(PENALTY_LOAD_CURTAILMENT)
+    model.penalty_gen_curtailment.fix(PENALTY_GENERATION_CURTAILMENT)
     model.penalty_load_curtailment.fix(PENALTY_LOAD_CURTAILMENT)
     model.penalty_flex_usage.fix(PENALTY_FLEXIBILITY_USAGE)
     model.penalty_ess_usage.fix(PENALTY_ESS_USAGE)
