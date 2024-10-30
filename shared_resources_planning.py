@@ -519,7 +519,7 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                     interface_pf_q = consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q'][p] / s_base
                     shared_ess_p = consensus_vars['ess']['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
                     shared_ess_q = consensus_vars['ess']['dso']['current'][adn_node_id][year][day]['q'][p] / s_base
-                    tso_model[year][day].expected_interface_vmag_sqr[dn, p].fix(interface_v ** 2)
+                    tso_model[year][day].expected_interface_vmag_sqr[dn, p].fix(interface_v)
                     tso_model[year][day].expected_interface_pf_p[dn, p].fix(interface_pf_p)
                     tso_model[year][day].expected_interface_pf_q[dn, p].fix(interface_pf_q)
                     tso_model[year][day].expected_shared_ess_p[shared_ess_idx, p].fix(shared_ess_p)
@@ -651,15 +651,6 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                     consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['q'][p] = interface_pf_q
                     consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p] = p_ess
                     consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p] = q_ess
-
-
-                    # Fix initial values! Debug!
-                    dso_model[year][day].expected_interface_vmag_sqr[p].fix(pe.value(dso_model[year][day].expected_interface_vmag_sqr[p]))
-                    dso_model[year][day].expected_interface_pf_p[p].fix(dso_model[year][day].expected_interface_pf_p[p])
-                    dso_model[year][day].expected_interface_pf_q[p].fix(dso_model[year][day].expected_interface_pf_q[p])
-                    dso_model[year][day].expected_shared_ess_p[p].fix(dso_model[year][day].expected_shared_ess_p[p])
-                    dso_model[year][day].expected_shared_ess_q[p].fix(dso_model[year][day].expected_shared_ess_q[p])
-
 
         dso_models[node_id] = dso_model
 
@@ -839,24 +830,24 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
             s_base = transmission_network.network[year][day].baseMVA
 
             # Free expected values
-            # for dn in model[year][day].active_distribution_networks:
-            #     adn_node_id = transmission_network.active_distribution_network_nodes[dn]
-            #     v_min, v_max = transmission_network.network[year][day].get_node_voltage_limits(adn_node_id)
-            #     shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(adn_node_id)
-            #     for p in model[year][day].periods:
-            #         model[year][day].expected_interface_vmag_sqr[dn, p].fixed = False
-            #         model[year][day].expected_interface_vmag_sqr[dn, p].setub(v_max ** 2 + SMALL_TOLERANCE)
-            #         model[year][day].expected_interface_vmag_sqr[dn, p].setlb(v_min ** 2 - SMALL_TOLERANCE)
-            #         model[year][day].expected_interface_pf_p[dn, p].fixed = False
-            #         model[year][day].expected_interface_pf_p[dn, p].setub(None)
-            #         model[year][day].expected_interface_pf_p[dn, p].setlb(None)
-            #         model[year][day].expected_interface_pf_q[dn, p].fixed = False
-            #         model[year][day].expected_interface_pf_q[dn, p].setub(None)
-            #         model[year][day].expected_interface_pf_q[dn, p].setlb(None)
-            #         model[year][day].expected_shared_ess_p[shared_ess_idx, p].setub(None)
-            #         model[year][day].expected_shared_ess_p[shared_ess_idx, p].setlb(None)
-            #         model[year][day].expected_shared_ess_q[shared_ess_idx, p].setub(None)
-            #         model[year][day].expected_shared_ess_q[shared_ess_idx, p].setlb(None)
+            for dn in model[year][day].active_distribution_networks:
+                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
+                v_min, v_max = transmission_network.network[year][day].get_node_voltage_limits(adn_node_id)
+                shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(adn_node_id)
+                for p in model[year][day].periods:
+                    model[year][day].expected_interface_vmag_sqr[dn, p].fixed = False
+                    model[year][day].expected_interface_vmag_sqr[dn, p].setub(v_max ** 2 + SMALL_TOLERANCE)
+                    model[year][day].expected_interface_vmag_sqr[dn, p].setlb(v_min ** 2 - SMALL_TOLERANCE)
+                    model[year][day].expected_interface_pf_p[dn, p].fixed = False
+                    model[year][day].expected_interface_pf_p[dn, p].setub(None)
+                    model[year][day].expected_interface_pf_p[dn, p].setlb(None)
+                    model[year][day].expected_interface_pf_q[dn, p].fixed = False
+                    model[year][day].expected_interface_pf_q[dn, p].setub(None)
+                    model[year][day].expected_interface_pf_q[dn, p].setlb(None)
+                    model[year][day].expected_shared_ess_p[shared_ess_idx, p].setub(None)
+                    model[year][day].expected_shared_ess_p[shared_ess_idx, p].setlb(None)
+                    model[year][day].expected_shared_ess_q[shared_ess_idx, p].setub(None)
+                    model[year][day].expected_shared_ess_q[shared_ess_idx, p].setlb(None)
 
             # Add ADMM variables
             model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
