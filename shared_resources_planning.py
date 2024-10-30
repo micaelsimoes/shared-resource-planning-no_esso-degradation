@@ -1504,7 +1504,7 @@ def _run_operational_planning_without_coordination(planning_problem):
             candidate_solution[node_id][year]['e'] = 0.00
 
     # Create interface PF variables
-    interface_pf = create_interface_power_flow_variables(planning_problem)
+    interface_v, interface_pf = create_interface_power_flow_variables(planning_problem)
 
     # Create DSOs' Operational Planning models
     dso_models = dict()
@@ -1558,6 +1558,7 @@ def _run_operational_planning_without_coordination(planning_problem):
             for day in distribution_network.days:
                 s_base = distribution_network.network[year][day].baseMVA
                 for p in dso_model[year][day].periods:
+                    interface_v[node_id][year][day][p] = sqrt(pe.value(dso_model[year][day].expected_interface_vmag_sqr[p]))
                     interface_pf[node_id][year][day]['p'][p] = pe.value(dso_model[year][day].expected_interface_pf_p[p]) * s_base
                     interface_pf[node_id][year][day]['q'][p] = pe.value(dso_model[year][day].expected_interface_pf_q[p]) * s_base
 
@@ -1589,8 +1590,10 @@ def _run_operational_planning_without_coordination(planning_problem):
                             tso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p].fix(0.00)
                             tso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p].setlb(0.00)
 
+                            vsqr = interface_v[node_id][year][day][p] ** 2
                             pc = interface_pf[node_id][year][day]['p'][p] / s_base
                             qc = interface_pf[node_id][year][day]['q'][p] / s_base
+                            tso_model[year][day].expected[adn_load_idx, s_m, s_o, p].fix(pc)
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fix(pc)
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].fix(qc)
                             if transmission_network.params.fl_reg:
@@ -1606,7 +1609,7 @@ def _run_operational_planning_without_coordination(planning_problem):
 
 def create_interface_power_flow_variables(planning_problem):
     consensus_vars, _ = create_admm_variables(planning_problem)
-    return consensus_vars['interface']['pf']['dso']['current']
+    return consensus_vars['interface']['v']['dso']['current'], consensus_vars['interface']['pf']['dso']['current']
 
 
 # ======================================================================================================================
