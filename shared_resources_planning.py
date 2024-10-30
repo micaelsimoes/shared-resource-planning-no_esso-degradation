@@ -574,6 +574,10 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                 ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
                 shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
 
+                # Update penalties (for the coordination procedure)
+                dso_model[year][day].penalty_flex_usage.fix(0.00)
+                dso_model[year][day].penalty_ess_usage.fix(0.00)
+
                 # Add interface expected variables
                 dso_model[year][day].expected_interface_vmag_sqr = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00)
                 dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
@@ -914,10 +918,6 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                 ref_node_idx = distribution_network.network[year][day].get_node_idx(ref_node_id)
                 ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
                 v_min, v_max = distribution_network.network[year][day].get_node_voltage_limits(ref_node_id)
-
-                # Update penalties (for the coordination procedure)
-                dso_model[year][day].penalty_flex_usage.fix(0.00)
-                dso_model[year][day].penalty_ess_usage.fix(0.00)
 
                 # Update Vmag, Pg, Qg limits at the interface node
                 for s_m in dso_model[year][day].scenarios_market:
@@ -5197,8 +5197,8 @@ def _get_initial_candidate_solution(planning_problem):
             candidate_solution['investment'][node_id][year]['s'] = 0.00
             candidate_solution['investment'][node_id][year]['e'] = 0.00
             candidate_solution['total_capacity'][node_id][year] = dict()
-            candidate_solution['total_capacity'][node_id][year]['s'] = 10.00
-            candidate_solution['total_capacity'][node_id][year]['e'] = 10.00
+            candidate_solution['total_capacity'][node_id][year]['s'] = 0.00
+            candidate_solution['total_capacity'][node_id][year]['e'] = 0.00
     return candidate_solution
 
 
