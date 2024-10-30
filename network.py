@@ -528,6 +528,18 @@ def _build_model(network, params):
         model.slack_shared_es_soc_final_up = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
         model.slack_shared_es_soc_final_down = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
 
+    # Costs (penalties)
+    # Note: defined as variables (bus fixed) so that they can be changed later, if needed
+    model.penalty_gen_curtailment = pe.Var(domain=pe.NonNegativeReals)
+    model.penalty_load_curtailment = pe.Var(domain=pe.NonNegativeReals)
+    model.penalty_flex_usage = pe.Var(domain=pe.NonNegativeReals)
+    model.penalty_ess_usage = pe.Var(domain=pe.NonNegativeReals)
+    model.penalty_gen_curtailment.fix(PENALTY_LOAD_CURTAILMENT)
+    model.penalty_load_curtailment.fix(PENALTY_LOAD_CURTAILMENT)
+    model.penalty_flex_usage.fix(PENALTY_FLEXIBILITY_USAGE)
+    model.penalty_ess_usage.fix(PENALTY_ESS_USAGE)
+
+
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
     # - Voltage
@@ -1029,14 +1041,14 @@ def _build_model(network, params):
                         for p in model.periods:
                             sch = model.es_sch[e, s_m, s_o, p]
                             sdch = model.es_sdch[e, s_m, s_o, p]
-                            obj_scenario += PENALTY_ESS_USAGE * network.baseMVA * (sch + sdch)
+                            obj_scenario += model.penalty_ess_usage * network.baseMVA * (sch + sdch)
 
                 # Shared ESS utilization
                 for e in model.shared_energy_storages:
                     for p in model.periods:
                         sch = model.shared_es_sch[e, s_m, s_o, p]
                         sdch = model.shared_es_sdch[e, s_m, s_o, p]
-                        obj_scenario += PENALTY_ESS_USAGE * network.baseMVA * (sch + sdch)
+                        obj_scenario += model.penalty_ess_usage * network.baseMVA * (sch + sdch)
 
                 obj += obj_scenario * omega_market * omega_oper
     elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
@@ -1058,7 +1070,7 @@ def _build_model(network, params):
                         for p in model.periods:
                             pg_curt = model.pg_curt_down[g, s_m, s_o, p] + model.pg_curt_up[g, s_m, s_o, p]
                             qg_curt = model.qg_curt_down[g, s_m, s_o, p] + model.qg_curt_up[g, s_m, s_o, p]
-                            obj_scenario += PENALTY_GENERATION_CURTAILMENT * network.baseMVA * (pg_curt + qg_curt)
+                            obj_scenario += model.penalty_gen_curtailment * network.baseMVA * (pg_curt + qg_curt)
 
                 # Load curtailment
                 if params.l_curt:
@@ -1066,7 +1078,7 @@ def _build_model(network, params):
                         for p in model.periods:
                             pc_curt = (model.pc_curt_down[c, s_m, s_o, p] + model.pc_curt_up[c, s_m, s_o, p])
                             qc_curt = (model.qc_curt_down[c, s_m, s_o, p] + model.qc_curt_up[c, s_m, s_o, p])
-                            obj_scenario += PENALTY_LOAD_CURTAILMENT * network.baseMVA * (pc_curt + qc_curt)
+                            obj_scenario += model.penalty_load_curtailment * network.baseMVA * (pc_curt + qc_curt)
 
                 # Demand side flexibility
                 if params.fl_reg:
@@ -1074,7 +1086,7 @@ def _build_model(network, params):
                         for p in model.periods:
                             flex_p_up = model.flex_p_up[c, s_m, s_o, p]
                             flex_p_down = model.flex_p_down[c, s_m, s_o, p]
-                            obj_scenario += PENALTY_FLEXIBILITY_USAGE * network.baseMVA * (flex_p_down + flex_p_up)
+                            obj_scenario += model.penalty_flex_usage * network.baseMVA * (flex_p_down + flex_p_up)
 
                 # ESS utilization
                 if params.es_reg:
@@ -1082,14 +1094,14 @@ def _build_model(network, params):
                         for p in model.periods:
                             sch = model.es_sch[e, s_m, s_o, p]
                             sdch = model.es_sdch[e, s_m, s_o, p]
-                            obj_scenario += PENALTY_ESS_USAGE * network.baseMVA * (sch + sdch)
+                            obj_scenario += model.penalty_ess_usage * network.baseMVA * (sch + sdch)
 
                 # Shared ESS utilization
                 for e in model.shared_energy_storages:
                     for p in model.periods:
                         sch = model.shared_es_sch[e, s_m, s_o, p]
                         sdch = model.shared_es_sdch[e, s_m, s_o, p]
-                        obj_scenario += PENALTY_ESS_USAGE * network.baseMVA * (sch + sdch)
+                        obj_scenario += model.penalty_ess_usage * network.baseMVA * (sch + sdch)
 
                 obj += obj_scenario * omega_market * omega_oper
     else:
@@ -2152,6 +2164,10 @@ def _compute_objective_function_value(network, model, params):
 
     elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
 
+        pen_gen_curtailment = pe.value(model.penalty_gen_curtailment)
+        pen_load_curtailment = pe.value(model.penalty_load_curtailment)
+        pen_flex_usage = pe.value(model.penalty_flex_usage)
+
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
 
@@ -2163,7 +2179,7 @@ def _compute_objective_function_value(network, model, params):
                         for p in model.periods:
                             pg_curt = pe.value(model.pg_curt_down[g, s_m, s_o, p] + model.pg_curt_up[g, s_m, s_o, p])
                             qg_curt = pe.value(model.qg_curt_down[g, s_m, s_o, p] + model.qg_curt_up[g, s_m, s_o, p])
-                            obj_scenario += PENALTY_GENERATION_CURTAILMENT * network.baseMVA * (pg_curt + qg_curt)
+                            obj_scenario += pen_gen_curtailment * network.baseMVA * (pg_curt + qg_curt)
 
                 # Consumption curtailment
                 if params.l_curt:
@@ -2171,7 +2187,7 @@ def _compute_objective_function_value(network, model, params):
                         for p in model.periods:
                             pc_curt = pe.value(model.pc_curt_down[c, s_m, s_o, p] + model.pc_curt_up[c, s_m, s_o, p])
                             qc_curt = pe.value(model.qc_curt_down[c, s_m, s_o, p] + model.qc_curt_up[c, s_m, s_o, p])
-                            obj_scenario += PENALTY_LOAD_CURTAILMENT * network.baseMVA * (pc_curt + qc_curt)
+                            obj_scenario += pen_load_curtailment * network.baseMVA * (pc_curt + qc_curt)
 
                 # Demand side flexibility
                 if params.fl_reg:
@@ -2179,7 +2195,7 @@ def _compute_objective_function_value(network, model, params):
                         for p in model.periods:
                             flex_p_up = pe.value(model.flex_p_up[c, s_m, s_o, p])
                             flex_p_down = pe.value(model.flex_p_down[c, s_m, s_o, p])
-                            obj_scenario += PENALTY_FLEXIBILITY_USAGE * network.baseMVA * (flex_p_down + flex_p_up)
+                            obj_scenario += pen_flex_usage * network.baseMVA * (flex_p_down + flex_p_up)
 
                 obj += obj_scenario * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
 
