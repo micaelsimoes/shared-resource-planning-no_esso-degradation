@@ -652,6 +652,15 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                     consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p] = p_ess
                     consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p] = q_ess
 
+
+                    # Fix initial values! Debug!
+                    dso_model[year][day].expected_interface_vmag_sqr[p].fix(pe.value(dso_model[year][day].expected_interface_vmag_sqr[p]))
+                    dso_model[year][day].expected_interface_pf_p[p].fix(dso_model[year][day].expected_interface_pf_p[p])
+                    dso_model[year][day].expected_interface_pf_q[p].fix(dso_model[year][day].expected_interface_pf_q[p])
+                    dso_model[year][day].expected_shared_ess_p[p].fix(dso_model[year][day].expected_shared_ess_p[p])
+                    dso_model[year][day].expected_shared_ess_q[p].fix(dso_model[year][day].expected_shared_ess_q[p])
+
+
         dso_models[node_id] = dso_model
 
     return dso_models, results
