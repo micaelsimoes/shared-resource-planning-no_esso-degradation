@@ -1246,42 +1246,40 @@ def update_shared_energy_storages_coordination_model_and_solve(planning_problem,
 
 
 def check_admm_convergence(planning_problem, consensus_vars, params):
-    if consensus_convergence(planning_problem, consensus_vars, params):
-        if stationary_convergence(planning_problem, consensus_vars, params):
+    if check_consensus_convergence(planning_problem, consensus_vars, params):
+        if check_stationary_convergence(planning_problem, consensus_vars, params):
             print(f'[INFO]\t\t - Converged!')
             return True
     return False
 
 
-def consensus_convergence(planning_problem, consensus_vars, params):
+def check_consensus_convergence(planning_problem, consensus_vars, params):
 
-    sum_sqr_v, sum_sqr_pf, sum_sqr_ess = 0.00, 0.00, 0.00
+    sum_sqr_error = 0.00
     num_elems = 0
     for year in planning_problem.years:
         for day in planning_problem.days:
             for node_id in planning_problem.active_distribution_network_nodes:
                 for p in range(planning_problem.num_instants):
-                    sum_sqr_v += (consensus_vars['interface']['v']['tso']['current'][node_id][year][day][p] - consensus_vars['interface']['v']['dso']['current'][node_id][year][day][p]) ** 2
-                    sum_sqr_pf += (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p]) ** 2
-                    sum_sqr_pf += (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p]) ** 2
-                    sum_sqr_ess += (consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p]) ** 2
-                    sum_sqr_ess += (consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p]) ** 2
-                    num_elems += 2
+                    sum_sqr_error += (consensus_vars['interface']['v']['tso']['current'][node_id][year][day][p] - consensus_vars['interface']['v']['dso']['current'][node_id][year][day][p]) ** 2
+                    sum_sqr_error += (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p]) ** 2
+                    sum_sqr_error += (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p]) ** 2
+                    sum_sqr_error += (consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p]) ** 2
+                    sum_sqr_error += (consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p]) ** 2
+                    num_elems += 10
 
-    if (convergence_by_type('CONSENSUS Vmag', sum_sqr_v, num_elems * 2, params.tol['consensus']['v']) and
-        convergence_by_type('CONSENSUS PF', sum_sqr_pf, num_elems * 4, params.tol['consensus']['pf']) and
-        convergence_by_type('CONSENSUS ESS', sum_sqr_ess, num_elems * 4, params.tol['consensus']['ess'])):
+    if error_within_limits('CONSENSUS', sum_sqr_error, num_elems, params.tol['consensus']):
         return True
     return False
 
 
-def stationary_convergence(planning_problem, consensus_vars, params):
+def check_stationary_convergence(planning_problem, consensus_vars, params):
 
     rho_tso_v = params.rho['v'][planning_problem.transmission_network.name]
     rho_tso_pf = params.rho['pf'][planning_problem.transmission_network.name]
     rho_tso_ess = params.rho['ess'][planning_problem.transmission_network.name]
 
-    sum_sqr_v, sum_sqr_pf, sum_sqr_ess = 0.00, 0.00, 0.00
+    sum_sqr_error = 0.00
     num_elems = 0
     for node_id in planning_problem.distribution_networks:
         rho_dso_v = params.rho['v'][planning_problem.distribution_networks[node_id].name]
@@ -1290,26 +1288,24 @@ def stationary_convergence(planning_problem, consensus_vars, params):
         for year in planning_problem.years:
             for day in planning_problem.days:
                 for p in range(planning_problem.num_instants):
-                    sum_sqr_v += rho_tso_v * (consensus_vars['interface']['v']['tso']['current'][node_id][year][day][p] - consensus_vars['interface']['v']['tso']['prev'][node_id][year][day][p]) ** 2
-                    sum_sqr_v += rho_dso_v * (consensus_vars['interface']['v']['dso']['current'][node_id][year][day][p] - consensus_vars['interface']['v']['dso']['prev'][node_id][year][day][p]) ** 2
-                    sum_sqr_pf += rho_tso_pf * (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['interface']['pf']['tso']['prev'][node_id][year][day]['p'][p]) ** 2
-                    sum_sqr_pf += rho_tso_pf * (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['interface']['pf']['tso']['prev'][node_id][year][day]['q'][p]) ** 2
-                    sum_sqr_pf += rho_dso_pf * (consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['p'][p]) ** 2
-                    sum_sqr_pf += rho_dso_pf * (consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['q'][p]) ** 2
-                    sum_sqr_ess += rho_tso_ess * (consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['p'][p]) ** 2
-                    sum_sqr_ess += rho_tso_ess * (consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['q'][p]) ** 2
-                    sum_sqr_ess += rho_dso_ess * (consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p]) ** 2
-                    sum_sqr_ess += rho_dso_ess * (consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p]) ** 2
-                    num_elems += 1
+                    sum_sqr_error += rho_tso_v * (consensus_vars['interface']['v']['tso']['current'][node_id][year][day][p] - consensus_vars['interface']['v']['tso']['prev'][node_id][year][day][p]) ** 2
+                    sum_sqr_error += rho_dso_v * (consensus_vars['interface']['v']['dso']['current'][node_id][year][day][p] - consensus_vars['interface']['v']['dso']['prev'][node_id][year][day][p]) ** 2
+                    sum_sqr_error += rho_tso_pf * (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['interface']['pf']['tso']['prev'][node_id][year][day]['p'][p]) ** 2
+                    sum_sqr_error += rho_tso_pf * (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['interface']['pf']['tso']['prev'][node_id][year][day]['q'][p]) ** 2
+                    sum_sqr_error += rho_dso_pf * (consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['p'][p]) ** 2
+                    sum_sqr_error += rho_dso_pf * (consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['interface']['pf']['dso']['prev'][node_id][year][day]['q'][p]) ** 2
+                    sum_sqr_error += rho_tso_ess * (consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['p'][p]) ** 2
+                    sum_sqr_error += rho_tso_ess * (consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['q'][p]) ** 2
+                    sum_sqr_error += rho_dso_ess * (consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p]) ** 2
+                    sum_sqr_error += rho_dso_ess * (consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p]) ** 2
+                    num_elems += 10
 
-    if (convergence_by_type('STATIONARITY Vmag', sum_sqr_v, num_elems * 2, params.tol['stationarity']['v']) and
-        convergence_by_type('STATIONARITY PF', sum_sqr_pf, num_elems * 4, params.tol['stationarity']['pf']) and
-        convergence_by_type('STATIONARITY ESS', sum_sqr_ess, num_elems * 4, params.tol['stationarity']['ess'])):
+    if error_within_limits('STATIONARITY', sum_sqr_error, num_elems, params.tol['stationarity']):
         return True
     return False
 
 
-def convergence_by_type(type, sum_sqr_error, num_elems, tol):
+def error_within_limits(type, sum_sqr_error, num_elems, tol):
     if sqrt(sum_sqr_error) > tol * num_elems:
         if not isclose(sqrt(sum_sqr_error), tol * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=ADMM_CONVERGENCE_ABS_TOL):
             print('[INFO]\t\t - Convergence {} constraints failed. {:.3f} > {:.3f}'.format(type, sqrt(sum_sqr_error), tol * num_elems))
