@@ -843,7 +843,7 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
             # Update costs (penalties) for the coordination procedure
             model[year][day].penalty_ess_usage.fix(0.00)
             if transmission_network.params.obj_type == OBJ_MIN_COST:
-                model[year][day].cost_res_curtailment.fix(0.00)
+                model[year][day].cost_res_curtailment.fix(COST_GENERATION_CURTAILMENT)
                 model[year][day].cost_load_curtailment.fix(COST_CONSUMPTION_CURTAILMENT)
             elif transmission_network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
                 model[year][day].penalty_gen_curtailment.fix(0.00)
