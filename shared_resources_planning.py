@@ -1568,16 +1568,17 @@ def _run_operational_planning_without_coordination(planning_problem):
     transmission_network.update_data_with_candidate_solution(candidate_solution)
     tso_model = transmission_network.build_model()
     transmission_network.update_model_with_candidate_solution(tso_model, candidate_solution)
-    for node_id in transmission_network.active_distribution_network_nodes:
-        for year in transmission_network.years:
-            for day in transmission_network.days:
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+
+            s_base = transmission_network.network[year][day].baseMVA
+            tso_model[year][day].interface_expected_values = pe.ConstraintList()
+
+            for node_id in transmission_network.active_distribution_network_nodes:
 
                 adn_node_idx = transmission_network.network[year][day].get_node_idx(node_id)
                 adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(node_id)
                 shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(node_id)
-                s_base = transmission_network.network[year][day].baseMVA
-
-                tso_model[year][day].interface_expected_values = pe.ConstraintList()
 
                 # - Fix expected interface PF
                 for s_m in tso_model[year][day].scenarios_market:
