@@ -532,14 +532,21 @@ def _build_model(network, params):
     # Note: defined as variables (bus fixed) so that they can be changed later, if needed
     model.penalty_ess_usage = pe.Var(domain=pe.NonNegativeReals)
     model.penalty_ess_usage.fix(PENALTY_FLEXIBILITY_USAGE)
-    if not network.is_transmission:
+    if params.obj_type == OBJ_MIN_COST:
+        model.cost_res_curtailment = pe.Var(domain=pe.NonNegativeReals)
+        model.cost_load_curtailment = pe.Var(domain=pe.NonNegativeReals)
+        model.cost_res_curtailment.fix(COST_GENERATION_CURTAILMENT)
+        model.cost_load_curtailment.fix(COST_CONSUMPTION_CURTAILMENT)
+    elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
         model.penalty_gen_curtailment = pe.Var(domain=pe.NonNegativeReals)
         model.penalty_load_curtailment = pe.Var(domain=pe.NonNegativeReals)
         model.penalty_flex_usage = pe.Var(domain=pe.NonNegativeReals)
         model.penalty_gen_curtailment.fix(PENALTY_GENERATION_CURTAILMENT)
         model.penalty_load_curtailment.fix(PENALTY_LOAD_CURTAILMENT)
         model.penalty_flex_usage.fix(PENALTY_FLEXIBILITY_USAGE)
-
+    else:
+        print(f'[ERROR] Unrecognized or invalid objective. Objective = {params.obj_type}. Exiting...')
+        exit(ERROR_NETWORK_MODEL)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
@@ -1026,7 +1033,7 @@ def _build_model(network, params):
                         for p in model.periods:
                             pc_curt = (model.pc_curt_down[c, s_m, s_o, p] + model.pc_curt_up[c, s_m, s_o, p])
                             qc_curt = (model.qc_curt_down[c, s_m, s_o, p] + model.qc_curt_up[c, s_m, s_o, p])
-                            obj_scenario += COST_CONSUMPTION_CURTAILMENT * network.baseMVA * (pc_curt + qc_curt)
+                            obj_scenario += model.cost_load_curtailment * network.baseMVA * (pc_curt + qc_curt)
 
                 # Generation curtailment
                 if params.rg_curt:
@@ -1034,7 +1041,7 @@ def _build_model(network, params):
                         for p in model.periods:
                             pg_curt = model.pg_curt_down[g, s_m, s_o, p] + model.pg_curt_up[g, s_m, s_o, p]
                             qg_curt = model.qg_curt_down[g, s_m, s_o, p] + model.qg_curt_up[g, s_m, s_o, p]
-                            obj_scenario += COST_GENERATION_CURTAILMENT * network.baseMVA * (pg_curt + qg_curt)
+                            obj_scenario += model.cost_res_curtailment * network.baseMVA * (pg_curt + qg_curt)
 
                 # ESS utilization
                 if params.es_reg:
@@ -1105,9 +1112,6 @@ def _build_model(network, params):
                         obj_scenario += model.penalty_ess_usage * network.baseMVA * (sch + sdch)
 
                 obj += obj_scenario * omega_market * omega_oper
-    else:
-        print(f'[ERROR] Unrecognized or invalid objective. Objective = {params.obj_type}. Exiting...')
-        exit(ERROR_NETWORK_MODEL)
 
     # Slacks grid operation
     for s_m in model.scenarios_market:
@@ -2122,6 +2126,8 @@ def _compute_objective_function_value(network, model, params):
 
         c_p = network.cost_energy_p
         c_flex = network.cost_flex
+        cost_res_curt = pe.value(model.cost_res_curtailment)
+        cost_load_curt = pe.value(model.cost_load_curtailment)
 
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
@@ -2151,7 +2157,7 @@ def _compute_objective_function_value(network, model, params):
                         for p in model.periods:
                             pc_curt = pe.value(model.pc_curt_down[c, s_m, s_o, p] + model.pc_curt_up[c, s_m, s_o, p])
                             qc_curt = pe.value(model.qc_curt_down[c, s_m, s_o, p] + model.qc_curt_up[c, s_m, s_o, p])
-                            obj_scenario += COST_CONSUMPTION_CURTAILMENT * network.baseMVA * (pc_curt + qc_curt)
+                            obj_scenario += cost_load_curt * network.baseMVA * (pc_curt + qc_curt)
 
                 # Generation curtailment
                 if params.rg_curt:
@@ -2159,7 +2165,7 @@ def _compute_objective_function_value(network, model, params):
                         for p in model.periods:
                             pg_curt = pe.value(model.pg_curt_down[g, s_m, s_o, p] + model.pg_curt_up[g, s_m, s_o, p])
                             qg_curt = pe.value(model.qg_curt_down[g, s_m, s_o, p] + model.qg_curt_up[g, s_m, s_o, p])
-                            obj_scenario += COST_GENERATION_CURTAILMENT * network.baseMVA * (pg_curt + qg_curt)
+                            obj_scenario += cost_res_curt * network.baseMVA * (pg_curt + qg_curt)
 
                 obj += obj_scenario * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
 
