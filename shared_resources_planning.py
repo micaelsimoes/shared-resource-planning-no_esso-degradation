@@ -525,11 +525,6 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                     tso_model[year][day].expected_shared_ess_p[shared_ess_idx, p].fix(shared_ess_p)
                     tso_model[year][day].expected_shared_ess_q[shared_ess_idx, p].fix(shared_ess_q)
 
-    # Update penalties (for the coordination procedure)
-    for year in transmission_network.years:
-        for day in transmission_network.days:
-            tso_model[year][day].penalty_ess_usage.fix(0.00)
-
     # Run SMOPF
     results = transmission_network.optimize(tso_model)
     # processed_results = transmission_network.process_results(tso_model, results)
@@ -585,10 +580,6 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                 ref_node_idx = distribution_network.network[year][day].get_node_idx(ref_node_id)
                 ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
                 shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
-
-                # Update penalties (for the coordination procedure)
-                dso_model[year][day].penalty_flex_usage.fix(0.00)
-                dso_model[year][day].penalty_ess_usage.fix(0.00)
 
                 # Add interface expected variables
                 dso_model[year][day].expected_interface_vmag_sqr = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00)
@@ -849,6 +840,16 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
                     model[year][day].expected_shared_ess_q[shared_ess_idx, p].setub(None)
                     model[year][day].expected_shared_ess_q[shared_ess_idx, p].setlb(None)
 
+            # Update costs (penalties) for the coordination procedure
+            model[year][day].penalty_ess_usage.fix(0.00)
+            if params.obj_type == OBJ_MIN_COST:
+                model[year][day].cost_res_curtailment.fix(0.00)
+                model[year][day].cost_load_curtailment.fix(COST_CONSUMPTION_CURTAILMENT)
+            elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
+                model[year][day].penalty_gen_curtailment.fix(0.00)
+                model[year][day].penalty_load_curtailment.fix(PENALTY_LOAD_CURTAILMENT)
+                model[year][day].penalty_flex_usage.fix(0.00)
+
             # Add ADMM variables
             model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
             model[year][day].rho_v.fix(params.rho['v'][transmission_network.name])
@@ -975,6 +976,16 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                     dso_model[year][day].expected_shared_ess_q[p].fixed = False
                     dso_model[year][day].expected_shared_ess_q[p].setub(None)
                     dso_model[year][day].expected_shared_ess_q[p].setlb(None)
+
+                # Update costs (penalties) for the coordination procedure
+                dso_model[year][day].penalty_ess_usage.fix(0.00)
+                if params.obj_type == OBJ_MIN_COST:
+                    dso_model[year][day].cost_res_curtailment.fix(0.00)
+                    dso_model[year][day].cost_load_curtailment.fix(COST_CONSUMPTION_CURTAILMENT)
+                elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
+                    dso_model[year][day].penalty_gen_curtailment.fix(0.00)
+                    dso_model[year][day].penalty_load_curtailment.fix(PENALTY_LOAD_CURTAILMENT)
+                    dso_model[year][day].penalty_flex_usage.fix(0.00)
 
                 # Add ADMM variables
                 dso_model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
