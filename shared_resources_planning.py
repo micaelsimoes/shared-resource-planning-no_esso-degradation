@@ -279,9 +279,9 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     esso_model, results['esso'] = create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidate_solution['investment'])
 
     # Update models to ADMM
-    update_distribution_models_to_admm(distribution_networks, dso_models, consensus_vars, admm_parameters)
-    update_transmission_model_to_admm(transmission_network, tso_model, consensus_vars, admm_parameters)
-    update_shared_energy_storage_model_to_admm(shared_ess_data, esso_model, admm_parameters)
+    update_distribution_models_to_admm(planning_problem, dso_models, admm_parameters)
+    update_transmission_model_to_admm(planning_problem, tso_model, admm_parameters)
+    update_shared_energy_storage_model_to_admm(planning_problem, esso_model, admm_parameters)
 
     # ------------------------------------------------------------------------------------------------------------------
     # ADMM -- Main cycle
@@ -799,7 +799,10 @@ def create_admm_variables(planning_problem):
     return consensus_variables, dual_variables
 
 
-def update_transmission_model_to_admm(transmission_network, model, consensus_vars, params):
+def update_transmission_model_to_admm(planning_problem, model, params):
+
+    transmission_network = planning_problem.transmission_network
+    distribution_networks = planning_problem.distribution_networks
 
     for year in transmission_network.years:
         for day in transmission_network.days:
@@ -865,15 +868,11 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
             obj = copy(model[year][day].objective.expr) / init_of_value
 
             for dn in model[year][day].active_distribution_networks:
+
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
 
-                p_norm = max([abs(value) for value in consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['p']]) / s_base
-                if isclose(p_norm, 0.00, abs_tol=SMALL_TOLERANCE):
-                    p_norm = 1.00
-
-                q_norm = max([abs(value) for value in consensus_vars['interface']['pf']['dso']['current'][adn_node_id][year][day]['q']]) / s_base
-                if isclose(q_norm, 0.00, abs_tol=SMALL_TOLERANCE):
-                    q_norm = 1.00
+                distribution_network = distribution_networks[adn_node_id]
+                interface_transf_rating = distribution_network.network[year][day].get_interface_branch_rating() / s_base
 
                 for p in model[year][day].periods:
 
@@ -881,8 +880,8 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
                     obj += model[year][day].dual_v_sqr_req[dn, p] * constraint_v_req
                     obj += (model[year][day].rho_v / 2) * (constraint_v_req ** 2)
 
-                    constraint_p_req = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_req[dn, p]) / p_norm
-                    constraint_q_req = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_req[dn, p]) / q_norm
+                    constraint_p_req = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_req[dn, p]) / interface_transf_rating
+                    constraint_q_req = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_req[dn, p]) / interface_transf_rating
                     obj += model[year][day].dual_pf_p_req[dn, p] * constraint_p_req
                     obj += model[year][day].dual_pf_q_req[dn, p] * constraint_q_req
                     obj += (model[year][day].rho_pf / 2) * (constraint_p_req ** 2)
@@ -907,7 +906,9 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
             model[year][day].admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
 
 
-def update_distribution_models_to_admm(distribution_networks, models, consensus_vars, params):
+def update_distribution_models_to_admm(planning_problem, models, params):
+
+    distribution_networks = planning_problem.distribution_networks
 
     for node_id in distribution_networks:
 
@@ -1007,13 +1008,7 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                     shared_ess_rating = 1.00
 
                 # Augmented Lagrangian -- Interface power flow (residual balancing)
-                p_norm = max([abs(value) for value in consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p']]) / s_base
-                if isclose(p_norm, 0.00, abs_tol=SMALL_TOLERANCE):
-                    p_norm = 1.00
-
-                q_norm = max([abs(value) for value in consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q']]) / s_base
-                if isclose(q_norm, 0.00, abs_tol=SMALL_TOLERANCE):
-                    q_norm = 1.00
+                interface_transf_rating = distribution_network.network[year][day].get_interface_branch_rating() / s_base
 
                 for p in dso_model[year][day].periods:
 
@@ -1023,8 +1018,8 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                     obj += (dso_model[year][day].rho_v / 2) * (constraint_vmag_req ** 2)
 
                     # Interface power flow
-                    constraint_p_req = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_req[p]) / p_norm
-                    constraint_q_req = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_req[p]) / q_norm
+                    constraint_p_req = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_req[p]) / interface_transf_rating
+                    constraint_q_req = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_req[p]) / interface_transf_rating
                     obj += (dso_model[year][day].dual_pf_p_req[p]) * constraint_p_req
                     obj += (dso_model[year][day].dual_pf_q_req[p]) * constraint_q_req
                     obj += (dso_model[year][day].rho_pf / 2) * (constraint_p_req ** 2)
@@ -1043,8 +1038,9 @@ def update_distribution_models_to_admm(distribution_networks, models, consensus_
                 dso_model[year][day].admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
 
 
-def update_shared_energy_storage_model_to_admm(shared_ess_data, models, params):
+def update_shared_energy_storage_model_to_admm(planning_problem, models, params):
 
+    shared_ess_data = planning_problem.shared_ess_data
     years = [year for year in shared_ess_data.years]
 
     for node_id in shared_ess_data.active_distribution_network_nodes:
