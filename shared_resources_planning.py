@@ -1100,11 +1100,11 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
 
             s_base = transmission_network.network[year][day].baseMVA
 
-            rho_v = params.rho['v'][transmission_network.name]
+            # rho_v = params.rho['v'][transmission_network.name]
             rho_pf = params.rho['pf'][transmission_network.name]
             rho_ess = params.rho['ess'][transmission_network.name]
             if params.adaptive_penalty:
-                rho_v = pe.value(model[year][day].rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+                # rho_v = pe.value(model[year][day].rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
                 rho_pf = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
                 rho_ess = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
 
@@ -1164,11 +1164,11 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
                 v_base = distribution_network.network[year][day].get_node_base_kv(ref_node_id)
                 s_base = distribution_network.network[year][day].baseMVA
 
-                rho_v = params.rho['v'][distribution_network.name]
+                # rho_v = params.rho['v'][distribution_network.name]
                 rho_pf = params.rho['pf'][distribution_network.name]
                 rho_ess = params.rho['ess'][distribution_network.name]
                 if params.adaptive_penalty:
-                    rho_v = pe.value(model[year][day].rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+                    # rho_v = pe.value(model[year][day].rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
                     rho_pf = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
                     rho_ess = pe.value(model[year][day].rho_ess) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
 
