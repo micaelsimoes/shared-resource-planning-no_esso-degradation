@@ -1372,10 +1372,10 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                             interface_vars['pf']['tso']['prev'][node_id][year][day]['p'][p] = copy(interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p])
                             interface_vars['pf']['tso']['prev'][node_id][year][day]['q'][p] = copy(interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p])
 
-                            v_req = sqrt(pe.value(tso_model[year][day].expected_interface_vmag_sqr[dn, p])) * v_base
+                            # v_req = sqrt(pe.value(tso_model[year][day].expected_interface_vmag_sqr[dn, p])) * v_base
                             p_req = pe.value(tso_model[year][day].expected_interface_pf_p[dn, p]) * s_base
                             q_req = pe.value(tso_model[year][day].expected_interface_pf_q[dn, p]) * s_base
-                            interface_vars['v']['tso']['current'][node_id][year][day][p] = v_req
+                            # interface_vars['v']['tso']['current'][node_id][year][day][p] = v_req
                             interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p] = p_req
                             interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p] = q_req
 
@@ -1396,10 +1396,10 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                             interface_vars['pf']['dso']['prev'][node_id][year][day]['p'][p] = copy(interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p])
                             interface_vars['pf']['dso']['prev'][node_id][year][day]['q'][p] = copy(interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p])
 
-                            v_req = sqrt(pe.value(dso_model[year][day].expected_interface_vmag_sqr[p])) * v_base
+                            # v_req = sqrt(pe.value(dso_model[year][day].expected_interface_vmag_sqr[p])) * v_base
                             p_req = pe.value(dso_model[year][day].expected_interface_pf_p[p]) * s_base
                             q_req = pe.value(dso_model[year][day].expected_interface_pf_q[p]) * s_base
-                            interface_vars['v']['dso']['current'][node_id][year][day][p] = v_req
+                            # interface_vars['v']['dso']['current'][node_id][year][day][p] = v_req
                             interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p] = p_req
                             interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p] = q_req
 
