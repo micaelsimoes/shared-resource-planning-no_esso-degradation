@@ -1268,9 +1268,9 @@ def check_consensus_convergence(planning_problem, consensus_vars, params, debug_
                     num_elems_ess += 4
 
     convergence = True
-    if error_within_limits(sum_sqr_error_pf, num_elems_pf, params.tol['consensus']):
-        if error_within_limits(sum_sqr_error_ess, num_elems_ess, params.tol['consensus']):
-            if error_within_limits(sum_sqr_error_vmag, num_elems_vmag, params.tol['consensus']):
+    if error_within_limits(sum_sqr_error_pf, num_elems_pf, params.tol['consensus']['pf']):
+        if error_within_limits(sum_sqr_error_ess, num_elems_ess, params.tol['consensus']['ess']):
+            if error_within_limits(sum_sqr_error_vmag, num_elems_vmag, params.tol['consensus']['v']):
                 print('[INFO]\t\t - Consensus constraints ok!')
             else:
                 convergence = False
@@ -1323,9 +1323,9 @@ def check_stationary_convergence(planning_problem, consensus_vars, params):
                     num_elems_ess += 4
 
     convergence = True
-    if error_within_limits(sum_sqr_error_pf, num_elems_pf, params.tol['stationarity']):
-        if error_within_limits(sum_sqr_error_ess, num_elems_ess, params.tol['stationarity']):
-            if error_within_limits(sum_sqr_error_vmag, num_elems_vmag, params.tol['stationarity']):
+    if error_within_limits(sum_sqr_error_pf, num_elems_pf, params.tol['stationarity']['pf']):
+        if error_within_limits(sum_sqr_error_ess, num_elems_ess, params.tol['stationarity']['ess']):
+            if error_within_limits(sum_sqr_error_vmag, num_elems_vmag, params.tol['stationarity']['v']):
                 print('[INFO]\t\t - Stationary constraints ok!')
             else:
                 convergence = False
