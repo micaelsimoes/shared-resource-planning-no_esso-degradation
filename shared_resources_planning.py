@@ -840,10 +840,10 @@ def update_transmission_model_to_admm(planning_problem, model, params):
                 model[year][day].penalty_flex_usage.fix(0.00)
 
             # Add ADMM variables
-            model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
-            model[year][day].rho_v.fix(params.rho['v'][transmission_network.name])
-            model[year][day].v_sqr_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.NonNegativeReals)        # Square of voltage magnitude
-            model[year][day].dual_v_sqr_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)              # Dual variable - voltage magnitude requested
+            # model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
+            # model[year][day].rho_v.fix(params.rho['v'][transmission_network.name])
+            # model[year][day].v_sqr_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.NonNegativeReals)        # Square of voltage magnitude
+            # model[year][day].dual_v_sqr_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)              # Dual variable - voltage magnitude requested
 
             model[year][day].rho_pf = pe.Var(domain=pe.NonNegativeReals)
             model[year][day].rho_pf.fix(params.rho['pf'][transmission_network.name])
@@ -977,10 +977,10 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                     dso_model[year][day].penalty_flex_usage.fix(0.00)
 
                 # Add ADMM variables
-                dso_model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
-                dso_model[year][day].rho_v.fix(params.rho['v'][distribution_network.network[year][day].name])
-                dso_model[year][day].v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)       # Voltage magnitude - requested by TSO
-                dso_model[year][day].dual_v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - voltage magnitude
+                # dso_model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
+                # dso_model[year][day].rho_v.fix(params.rho['v'][distribution_network.network[year][day].name])
+                # dso_model[year][day].v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)       # Voltage magnitude - requested by TSO
+                # dso_model[year][day].dual_v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - voltage magnitude
 
                 dso_model[year][day].rho_pf = pe.Var(domain=pe.NonNegativeReals)
                 dso_model[year][day].rho_pf.fix(params.rho['pf'][distribution_network.network[year][day].name])
