@@ -815,9 +815,11 @@ def update_transmission_model_to_admm(planning_problem, model, params):
                 v_min, v_max = transmission_network.network[year][day].get_node_voltage_limits(adn_node_id)
                 shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(adn_node_id)
                 for p in model[year][day].periods:
+                    '''
                     model[year][day].expected_interface_vmag_sqr[dn, p].fixed = False
                     model[year][day].expected_interface_vmag_sqr[dn, p].setub(v_max ** 2 + SMALL_TOLERANCE)
                     model[year][day].expected_interface_vmag_sqr[dn, p].setlb(v_min ** 2 - SMALL_TOLERANCE)
+                    '''
                     model[year][day].expected_interface_pf_p[dn, p].fixed = False
                     model[year][day].expected_interface_pf_p[dn, p].setub(None)
                     model[year][day].expected_interface_pf_p[dn, p].setlb(None)
@@ -928,6 +930,7 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                 for s_m in dso_model[year][day].scenarios_market:
                     for s_o in dso_model[year][day].scenarios_operation:
                         for p in dso_model[year][day].periods:
+                            '''
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].fixed = False
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setub(v_max + SMALL_TOLERANCE)
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setlb(v_min - SMALL_TOLERANCE)
@@ -938,6 +941,7 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                                 dso_model[year][day].slack_e_down[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
                                 dso_model[year][day].slack_f_up[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
                                 dso_model[year][day].slack_f_down[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            '''
                             dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].fixed = False
                             dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].fixed = False
                             if distribution_network.params.rg_curt:
