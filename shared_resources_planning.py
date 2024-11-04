@@ -1096,16 +1096,16 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
 
             s_base = transmission_network.network[year][day].baseMVA
 
-            rho_v = params.rho['v'][transmission_network.name]
+            # rho_v = params.rho['v'][transmission_network.name]
             rho_pf = params.rho['pf'][transmission_network.name]
             rho_ess = params.rho['ess'][transmission_network.name]
             if params.adaptive_penalty:
-                rho_v = pe.value(model[year][day].rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+                # rho_v = pe.value(model[year][day].rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
                 rho_pf = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
                 rho_ess = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
 
             # Update Rho parameter
-            model[year][day].rho_v.fix(rho_v)
+            # model[year][day].rho_v.fix(rho_v)
             model[year][day].rho_pf.fix(rho_pf)
             model[year][day].rho_ess.fix(rho_ess)
 
@@ -1116,10 +1116,10 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
 
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
-                    model[year][day].dual_v_sqr_req[dn, p].fix((dual_v[node_id][year][day][p] / v_base) ** 2)
+                    # model[year][day].dual_v_sqr_req[dn, p].fix((dual_v[node_id][year][day][p] / v_base) ** 2)
                     model[year][day].dual_pf_p_req[dn, p].fix(dual_pf[node_id][year][day]['p'][p] / s_base)
                     model[year][day].dual_pf_q_req[dn, p].fix(dual_pf[node_id][year][day]['q'][p] / s_base)
-                    model[year][day].v_sqr_req[dn, p].fix((v_req['dso']['current'][node_id][year][day][p] / v_base) ** 2)
+                    # model[year][day].v_sqr_req[dn, p].fix((v_req['dso']['current'][node_id][year][day][p] / v_base) ** 2)
                     model[year][day].p_pf_req[dn, p].fix(pf_req['dso']['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].q_pf_req[dn, p].fix(pf_req['dso']['current'][node_id][year][day]['q'][p] / s_base)
 
@@ -1160,25 +1160,25 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
                 v_base = distribution_network.network[year][day].get_node_base_kv(ref_node_id)
                 s_base = distribution_network.network[year][day].baseMVA
 
-                rho_v = params.rho['v'][distribution_network.name]
+                # rho_v = params.rho['v'][distribution_network.name]
                 rho_pf = params.rho['pf'][distribution_network.name]
                 rho_ess = params.rho['ess'][distribution_network.name]
                 if params.adaptive_penalty:
-                    rho_v = pe.value(model[year][day].rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+                    # rho_v = pe.value(model[year][day].rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
                     rho_pf = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
                     rho_ess = pe.value(model[year][day].rho_ess) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
 
                 # Update Rho parameter
-                model[year][day].rho_v.fix(rho_v)
+                # model[year][day].rho_v.fix(rho_v)
                 model[year][day].rho_pf.fix(rho_pf)
                 model[year][day].rho_ess.fix(rho_ess)
 
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
-                    model[year][day].dual_v_sqr_req[p].fix((dual_v[node_id][year][day][p] / v_base) ** 2)
+                    # model[year][day].dual_v_sqr_req[p].fix((dual_v[node_id][year][day][p] / v_base) ** 2)
                     model[year][day].dual_pf_p_req[p].fix(dual_pf[node_id][year][day]['p'][p] / s_base)
                     model[year][day].dual_pf_q_req[p].fix(dual_pf[node_id][year][day]['q'][p] / s_base)
-                    model[year][day].v_sqr_req[p].fix((v_req['tso']['current'][node_id][year][day][p] / v_base) ** 2)
+                    # model[year][day].v_sqr_req[p].fix((v_req['tso']['current'][node_id][year][day][p] / v_base) ** 2)
                     model[year][day].p_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].q_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['q'][p] / s_base)
 
