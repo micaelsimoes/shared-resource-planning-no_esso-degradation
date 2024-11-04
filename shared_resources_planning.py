@@ -815,9 +815,9 @@ def update_transmission_model_to_admm(planning_problem, model, params):
                 v_min, v_max = transmission_network.network[year][day].get_node_voltage_limits(adn_node_id)
                 shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(adn_node_id)
                 for p in model[year][day].periods:
-                    model[year][day].expected_interface_vmag_sqr[dn, p].fixed = False
-                    model[year][day].expected_interface_vmag_sqr[dn, p].setub(v_max ** 2 + SMALL_TOLERANCE)
-                    model[year][day].expected_interface_vmag_sqr[dn, p].setlb(v_min ** 2 - SMALL_TOLERANCE)
+                    # model[year][day].expected_interface_vmag_sqr[dn, p].fixed = False
+                    # model[year][day].expected_interface_vmag_sqr[dn, p].setub(v_max ** 2 + SMALL_TOLERANCE)
+                    # model[year][day].expected_interface_vmag_sqr[dn, p].setlb(v_min ** 2 - SMALL_TOLERANCE)
                     model[year][day].expected_interface_pf_p[dn, p].fixed = False
                     model[year][day].expected_interface_pf_p[dn, p].setub(None)
                     model[year][day].expected_interface_pf_p[dn, p].setlb(None)
@@ -950,9 +950,9 @@ def update_distribution_models_to_admm(planning_problem, models, params):
 
                 # Update expected interface values limits
                 for p in dso_model[year][day].periods:
-                    dso_model[year][day].expected_interface_vmag_sqr[p].fixed = False
-                    dso_model[year][day].expected_interface_vmag_sqr[p].setub(None)
-                    dso_model[year][day].expected_interface_vmag_sqr[p].setlb(None)
+                    # dso_model[year][day].expected_interface_vmag_sqr[p].fixed = False
+                    # dso_model[year][day].expected_interface_vmag_sqr[p].setub(None)
+                    # dso_model[year][day].expected_interface_vmag_sqr[p].setlb(None)
                     dso_model[year][day].expected_interface_pf_p[p].fixed = False
                     dso_model[year][day].expected_interface_pf_p[p].setub(None)
                     dso_model[year][day].expected_interface_pf_p[p].setlb(None)
