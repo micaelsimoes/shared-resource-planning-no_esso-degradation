@@ -852,12 +852,12 @@ def update_transmission_model_to_admm(planning_problem, model, params):
             model[year][day].dual_pf_p_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)               # Dual variable - active power requested
             model[year][day].dual_pf_q_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)               # Dual variable - reactive power requested
 
-            model[year][day].rho_ess = pe.Var(domain=pe.NonNegativeReals)
-            model[year][day].rho_ess.fix(params.rho['ess'][transmission_network.name])
-            model[year][day].p_ess_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)             # Shared ESS - Active power requested (DSO)
-            model[year][day].q_ess_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)             # Shared ESS - Reactive power requested (DSO)
-            model[year][day].dual_ess_p_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)        # Dual variable - Shared ESS active power
-            model[year][day].dual_ess_q_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)        # Dual variable - Shared ESS active power
+            # model[year][day].rho_ess = pe.Var(domain=pe.NonNegativeReals)
+            # model[year][day].rho_ess.fix(params.rho['ess'][transmission_network.name])
+            # model[year][day].p_ess_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)             # Shared ESS - Active power requested (DSO)
+            # model[year][day].q_ess_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)             # Shared ESS - Reactive power requested (DSO)
+            # model[year][day].dual_ess_p_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)        # Dual variable - Shared ESS active power
+            # model[year][day].dual_ess_q_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)        # Dual variable - Shared ESS active power
 
             # Objective function - augmented Lagrangian
             init_of_value = 1.00
@@ -893,13 +893,13 @@ def update_transmission_model_to_admm(planning_problem, model, params):
                 if isclose(shared_ess_rating, 0.00, abs_tol=SMALL_TOLERANCE):
                     shared_ess_rating = 1.00
 
-                for p in model[year][day].periods:
-                    constraint_ess_p = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_req[e, p]) / (2 * shared_ess_rating)
-                    constraint_ess_q = (model[year][day].expected_shared_ess_q[e, p] - model[year][day].q_ess_req[e, p]) / (2 * shared_ess_rating)
-                    obj += model[year][day].dual_ess_p_req[e, p] * constraint_ess_p
-                    obj += model[year][day].dual_ess_q_req[e, p] * constraint_ess_q
-                    obj += (model[year][day].rho_ess / 2) * constraint_ess_p ** 2
-                    obj += (model[year][day].rho_ess / 2) * constraint_ess_q ** 2
+                # for p in model[year][day].periods:
+                #     constraint_ess_p = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_req[e, p]) / (2 * shared_ess_rating)
+                #     constraint_ess_q = (model[year][day].expected_shared_ess_q[e, p] - model[year][day].q_ess_req[e, p]) / (2 * shared_ess_rating)
+                #     obj += model[year][day].dual_ess_p_req[e, p] * constraint_ess_p
+                #     obj += model[year][day].dual_ess_q_req[e, p] * constraint_ess_q
+                #     obj += (model[year][day].rho_ess / 2) * constraint_ess_p ** 2
+                #     obj += (model[year][day].rho_ess / 2) * constraint_ess_q ** 2
 
             # Add ADMM OF, deactivate original OF
             model[year][day].objective.deactivate()
@@ -987,12 +987,12 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                 dso_model[year][day].dual_pf_p_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)              # Dual variable - active power
                 dso_model[year][day].dual_pf_q_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)              # Dual variable - reactive power
 
-                dso_model[year][day].rho_ess = pe.Var(domain=pe.NonNegativeReals)
-                dso_model[year][day].rho_ess.fix(params.rho['ess'][distribution_network.network[year][day].name])
-                dso_model[year][day].p_ess_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)                  # Shared ESS - active power requested (TSO)
-                dso_model[year][day].q_ess_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)                  # Shared ESS - reactive power requested (TSO)
-                dso_model[year][day].dual_ess_p_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - Shared ESS active power
-                dso_model[year][day].dual_ess_q_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - Shared ESS reactive power
+                # dso_model[year][day].rho_ess = pe.Var(domain=pe.NonNegativeReals)
+                # dso_model[year][day].rho_ess.fix(params.rho['ess'][distribution_network.network[year][day].name])
+                # dso_model[year][day].p_ess_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)                  # Shared ESS - active power requested (TSO)
+                # dso_model[year][day].q_ess_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)                  # Shared ESS - reactive power requested (TSO)
+                # dso_model[year][day].dual_ess_p_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - Shared ESS active power
+                # dso_model[year][day].dual_ess_q_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - Shared ESS reactive power
 
                 # Objective function - augmented Lagrangian
                 init_of_value = 1.00
@@ -1026,12 +1026,12 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                     obj += (dso_model[year][day].rho_pf / 2) * (constraint_q_req ** 2)
 
                     # Shared ESS
-                    constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_req[p]) / (2 * shared_ess_rating)
-                    constraint_ess_q_req = (dso_model[year][day].expected_shared_ess_q[p] - dso_model[year][day].q_ess_req[p]) / (2 * shared_ess_rating)
-                    obj += dso_model[year][day].dual_ess_p_req[p] * constraint_ess_p_req
-                    obj += dso_model[year][day].dual_ess_q_req[p] * constraint_ess_q_req
-                    obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_p_req ** 2
-                    obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_q_req ** 2
+                    # constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_req[p]) / (2 * shared_ess_rating)
+                    # constraint_ess_q_req = (dso_model[year][day].expected_shared_ess_q[p] - dso_model[year][day].q_ess_req[p]) / (2 * shared_ess_rating)
+                    # obj += dso_model[year][day].dual_ess_p_req[p] * constraint_ess_p_req
+                    # obj += dso_model[year][day].dual_ess_q_req[p] * constraint_ess_q_req
+                    # obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_p_req ** 2
+                    # obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_q_req ** 2
 
                 # Add ADMM OF, deactivate original OF
                 dso_model[year][day].objective.deactivate()
