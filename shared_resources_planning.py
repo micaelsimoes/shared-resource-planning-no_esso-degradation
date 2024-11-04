@@ -377,24 +377,22 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
 
 def print_debug_info(planning_problem, consensus_vars, print_vmag=False, print_pf=False, print_ess=False):
     for node_id in planning_problem.active_distribution_network_nodes:
-        print(f"Node {node_id}")
         for year in consensus_vars['interface']['pf']['tso']['current'][node_id]:
             print(f"\tYear {year}")
             for day in consensus_vars['interface']['pf']['tso']['current'][node_id][year]:
-                print(f"\t\tDay {day}")
                 if print_vmag:
-                    print(f"\t\t\tPF, TSO,  V   {consensus_vars['interface']['v']['tso']['current'][node_id][year][day]}")
-                    print(f"\t\t\tPF, DSO,  V   {consensus_vars['interface']['v']['dso']['current'][node_id][year][day]}")
+                    print(f"\tNode {node_id}, {year}, {day}, PF, TSO,  V  {consensus_vars['interface']['v']['tso']['current'][node_id][year][day]}")
+                    print(f"\tNode {node_id}, {year}, {day}, PF, DSO,  V  {consensus_vars['interface']['v']['dso']['current'][node_id][year][day]}")
                 if print_pf:
-                    print(f"\t\t\tPF, TSO,  P   {consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p']}")
-                    print(f"\t\t\tPF, DSO,  P   {consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p']}")
-                    print(f"\t\t\tPF, TSO,  Q   {consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q']}")
-                    print(f"\t\t\tPF, DSO,  Q   {consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q']}")
+                    print(f"\tNode {node_id}, {year}, {day}, PF, TSO,  P {consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p']}")
+                    print(f"\tNode {node_id}, {year}, {day}, PF, DSO,  P {consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p']}")
+                    print(f"\tNode {node_id}, {year}, {day}, PF, TSO,  Q {consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q']}")
+                    print(f"\tNode {node_id}, {year}, {day}, PF, DSO,  Q {consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q']}")
                 if print_ess:
-                    print(f"\t\t\tESS, TSO,  P   {consensus_vars['ess']['tso']['current'][node_id][year][day]['p']}")
-                    print(f"\t\t\tESS, DSO,  P   {consensus_vars['ess']['dso']['current'][node_id][year][day]['p']}")
-                    print(f"\t\t\tESS, TSO,  Q   {consensus_vars['ess']['tso']['current'][node_id][year][day]['q']}")
-                    print(f"\t\t\tESS, DSO,  Q   {consensus_vars['ess']['dso']['current'][node_id][year][day]['q']}")
+                    print(f"\tNode {node_id}, {year}, {day}, ESS, TSO,  P {consensus_vars['ess']['tso']['current'][node_id][year][day]['p']}")
+                    print(f"\tNode {node_id}, {year}, {day}, ESS, DSO,  P {consensus_vars['ess']['dso']['current'][node_id][year][day]['p']}")
+                    print(f"\tNode {node_id}, {year}, {day}, ESS, TSO,  Q {consensus_vars['ess']['tso']['current'][node_id][year][day]['q']}")
+                    print(f"\tNode {node_id}, {year}, {day}, ESS, DSO,  Q {consensus_vars['ess']['dso']['current'][node_id][year][day]['q']}")
 
 
 def create_transmission_network_model(transmission_network, consensus_vars, candidate_solution):
