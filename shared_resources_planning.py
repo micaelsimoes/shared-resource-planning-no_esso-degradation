@@ -1488,31 +1488,31 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                             shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] = q_req
 
         # Update dual variables Shared ESS
-        for year in planning_problem.years:
-            for day in planning_problem.days:
-                for p in range(planning_problem.num_instants):
-
-                    rho_ess_tso = pe.value(tso_model[year][day].rho_ess)
-                    rho_ess_dso = pe.value(dso_models[node_id][year][day].rho_ess)
-                    rho_ess_sess = pe.value(sess_model[node_id].rho)
-
-                    if update_tn:
-                        error_p_tso_dso = shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['p'][p]
-                        error_q_tso_dso = shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['q'][p]
-                        dual_vars['tso'][node_id][year][day]['p'][p] += rho_ess_tso * error_p_tso_dso
-                        dual_vars['tso'][node_id][year][day]['q'][p] += rho_ess_tso * error_q_tso_dso
-
-                    if update_dns:
-                        error_p_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['p'][p]
-                        error_q_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['q'][p]
-                        dual_vars['dso'][node_id][year][day]['p'][p] += rho_ess_dso * error_p_dso_esso
-                        dual_vars['dso'][node_id][year][day]['q'][p] += rho_ess_dso * error_q_dso_esso
-
-                    if update_sess:
-                        error_p_esso_tso = shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['p'][p]
-                        error_q_esso_tso = shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['q'][p]
-                        dual_vars['esso'][node_id][year][day]['p'][p] += rho_ess_sess * error_p_esso_tso
-                        dual_vars['esso'][node_id][year][day]['q'][p] += rho_ess_sess * error_q_esso_tso
+        # for year in planning_problem.years:
+        #     for day in planning_problem.days:
+        #         for p in range(planning_problem.num_instants):
+        #
+        #             rho_ess_tso = pe.value(tso_model[year][day].rho_ess)
+        #             rho_ess_dso = pe.value(dso_models[node_id][year][day].rho_ess)
+        #             rho_ess_sess = pe.value(sess_model[node_id].rho)
+        #
+        #             if update_tn:
+        #                 error_p_tso_dso = shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['p'][p]
+        #                 error_q_tso_dso = shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['q'][p]
+        #                 dual_vars['tso'][node_id][year][day]['p'][p] += rho_ess_tso * error_p_tso_dso
+        #                 dual_vars['tso'][node_id][year][day]['q'][p] += rho_ess_tso * error_q_tso_dso
+        #
+        #             if update_dns:
+        #                 error_p_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['p'][p]
+        #                 error_q_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['q'][p]
+        #                 dual_vars['dso'][node_id][year][day]['p'][p] += rho_ess_dso * error_p_dso_esso
+        #                 dual_vars['dso'][node_id][year][day]['q'][p] += rho_ess_dso * error_q_dso_esso
+        #
+        #             if update_sess:
+        #                 error_p_esso_tso = shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['p'][p]
+        #                 error_q_esso_tso = shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['q'][p]
+        #                 dual_vars['esso'][node_id][year][day]['p'][p] += rho_ess_sess * error_p_esso_tso
+        #                 dual_vars['esso'][node_id][year][day]['q'][p] += rho_ess_sess * error_q_esso_tso
 
 
 # ======================================================================================================================
