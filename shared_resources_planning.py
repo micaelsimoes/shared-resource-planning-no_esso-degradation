@@ -869,6 +869,10 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
             model[year][day].q_ess_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)             # Shared ESS - Reactive power requested (DSO)
             model[year][day].dual_ess_p_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)        # Dual variable - Shared ESS active power
             model[year][day].dual_ess_q_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)        # Dual variable - Shared ESS active power
+            model[year][day].p_ess_prev = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)                    # Shared ESS - Previous iteration active power
+            model[year][day].q_ess_prev = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)                    # Shared ESS - Previous iteration reactive power
+            model[year][day].dual_ess_p_prev = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)               # Dual variable - Previous iteration shared ESS active power
+            model[year][day].dual_ess_q_prev = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)               # Dual variable - Previous iteration shared ESS reactive power
 
             # Objective function - augmented Lagrangian
             init_of_value = 1.00
@@ -915,6 +919,13 @@ def update_transmission_model_to_admm(transmission_network, model, consensus_var
                     obj += model[year][day].dual_ess_q_req[e, p] * constraint_ess_q
                     obj += (model[year][day].rho_ess / 2) * constraint_ess_p ** 2
                     obj += (model[year][day].rho_ess / 2) * constraint_ess_q ** 2
+
+                    constraint_ess_p_prev = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_prev[e, p]) / (2 * shared_ess_rating)
+                    constraint_ess_q_prev = (model[year][day].expected_shared_ess_q[e, p] - model[year][day].q_ess_prev[e, p]) / (2 * shared_ess_rating)
+                    obj += model[year][day].dual_ess_p_prev[e, p] * constraint_ess_p_prev
+                    obj += model[year][day].dual_ess_q_prev[e, p] * constraint_ess_q_prev
+                    obj += (model[year][day].rho_ess / 2) * constraint_ess_p_prev ** 2
+                    obj += (model[year][day].rho_ess / 2) * constraint_ess_q_prev ** 2
 
             # Add ADMM OF, deactivate original OF
             model[year][day].objective.deactivate()
