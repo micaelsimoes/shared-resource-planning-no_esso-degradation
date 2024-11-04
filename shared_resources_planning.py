@@ -1288,19 +1288,19 @@ def check_consensus_convergence(planning_problem, consensus_vars, params):
                     num_elems_ess += 4
 
     convergence = True
-    if error_within_limits(sum_sqr_error_vmag, num_elems_vmag, params.tol['consensus']):
-        if error_within_limits(sum_sqr_error_pf, num_elems_pf, params.tol['consensus']):
-            if error_within_limits(sum_sqr_error_ess, num_elems_ess, params.tol['consensus']):
+    if error_within_limits(sum_sqr_error_pf, num_elems_pf, params.tol['consensus']):
+        if error_within_limits(sum_sqr_error_ess, num_elems_ess, params.tol['consensus']):
+            if error_within_limits(sum_sqr_error_vmag, num_elems_vmag, params.tol['consensus']):
                 print('[INFO]\t\t - Consensus constraints ok!')
             else:
                 convergence = False
-                print('[INFO]\t\t - Convergence shared ESS consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_ess), params.tol['consensus'] * num_elems_ess))
+                print('[INFO]\t\t - Convergence interface Vmag consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_vmag), params.tol['consensus'] * num_elems_vmag))
         else:
             convergence = False
-            print('[INFO]\t\t - Convergence interface PF consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_pf), params.tol['consensus'] * num_elems_pf))
+            print('[INFO]\t\t - Convergence shared ESS consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_ess), params.tol['consensus'] * num_elems_ess))
     else:
+        print('[INFO]\t\t - Convergence interface PF consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_pf), params.tol['consensus'] * num_elems_pf))
         convergence = False
-        print('[INFO]\t\t - Convergence interface Vmag consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_vmag), params.tol['consensus'] * num_elems_vmag))
 
     return convergence
 
@@ -1337,19 +1337,19 @@ def check_stationary_convergence(planning_problem, consensus_vars, params):
                     num_elems_ess += 4
 
     convergence = True
-    if error_within_limits(sum_sqr_error_vmag, num_elems_vmag, params.tol['stationarity']):
-        if error_within_limits(sum_sqr_error_pf, num_elems_pf, params.tol['stationarity']):
-            if error_within_limits(sum_sqr_error_pf, num_elems_pf, params.tol['stationarity']):
+    if error_within_limits(sum_sqr_error_pf, num_elems_pf, params.tol['stationarity']):
+        if error_within_limits(sum_sqr_error_ess, num_elems_ess, params.tol['stationarity']):
+            if error_within_limits(sum_sqr_error_vmag, num_elems_vmag, params.tol['stationarity']):
                 print('[INFO]\t\t - Stationary constraints ok!')
             else:
                 convergence = False
-                print('[INFO]\t\t - Convergence shared ESS stationary constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_ess), params.tol['consensus'] * num_elems_ess))
+                print('[INFO]\t\t - Convergence interface Vmag stationary constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_vmag), params.tol['consensus'] * num_elems_vmag))
         else:
             convergence = False
-            print('[INFO]\t\t - Convergence interface PF stationary constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_pf), params.tol['consensus'] * num_elems_pf))
+            print('[INFO]\t\t - Convergence shared ESS stationary constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_ess), params.tol['consensus'] * num_elems_ess))
     else:
         convergence = False
-        print('[INFO]\t\t - Convergence interface Vmag stationary constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_vmag), params.tol['consensus'] * num_elems_vmag))
+        print('[INFO]\t\t - Convergence interface PF stationary constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_pf), params.tol['consensus'] * num_elems_pf))
 
     return convergence
 
