@@ -815,11 +815,9 @@ def update_transmission_model_to_admm(planning_problem, model, params):
                 v_min, v_max = transmission_network.network[year][day].get_node_voltage_limits(adn_node_id)
                 shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(adn_node_id)
                 for p in model[year][day].periods:
-                    '''
                     model[year][day].expected_interface_vmag_sqr[dn, p].fixed = False
                     model[year][day].expected_interface_vmag_sqr[dn, p].setub(v_max ** 2 + SMALL_TOLERANCE)
                     model[year][day].expected_interface_vmag_sqr[dn, p].setlb(v_min ** 2 - SMALL_TOLERANCE)
-                    '''
                     model[year][day].expected_interface_pf_p[dn, p].fixed = False
                     model[year][day].expected_interface_pf_p[dn, p].setub(None)
                     model[year][day].expected_interface_pf_p[dn, p].setlb(None)
@@ -878,9 +876,11 @@ def update_transmission_model_to_admm(planning_problem, model, params):
 
                 for p in model[year][day].periods:
 
+                    '''
                     constraint_v_req = (model[year][day].expected_interface_vmag_sqr[dn, p] - model[year][day].v_sqr_req[dn, p])
                     obj += model[year][day].dual_v_sqr_req[dn, p] * constraint_v_req
                     obj += (model[year][day].rho_v / 2) * (constraint_v_req ** 2)
+                    '''
 
                     constraint_p_req = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_req[dn, p]) / interface_transf_rating
                     constraint_q_req = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_req[dn, p]) / interface_transf_rating
@@ -930,7 +930,6 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                 for s_m in dso_model[year][day].scenarios_market:
                     for s_o in dso_model[year][day].scenarios_operation:
                         for p in dso_model[year][day].periods:
-                            '''
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].fixed = False
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setub(v_max + SMALL_TOLERANCE)
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setlb(v_min - SMALL_TOLERANCE)
@@ -941,7 +940,6 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                                 dso_model[year][day].slack_e_down[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
                                 dso_model[year][day].slack_f_up[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
                                 dso_model[year][day].slack_f_down[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            '''
                             dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].fixed = False
                             dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].fixed = False
                             if distribution_network.params.rg_curt:
@@ -1017,9 +1015,11 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                 for p in dso_model[year][day].periods:
 
                     # Voltage magnitude
+                    '''
                     constraint_vmag_req = (dso_model[year][day].expected_interface_vmag_sqr[p] - dso_model[year][day].v_sqr_req[p])
                     obj += (dso_model[year][day].dual_v_sqr_req[p]) * constraint_vmag_req
                     obj += (dso_model[year][day].rho_v / 2) * (constraint_vmag_req ** 2)
+                    '''
 
                     # Interface power flow
                     constraint_p_req = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_req[p]) / interface_transf_rating
@@ -1270,6 +1270,7 @@ def check_consensus_convergence(planning_problem, consensus_vars, params, debug_
     convergence = True
     if error_within_limits(sum_sqr_error_pf, num_elems_pf, params.tol['consensus']['pf']):
         if error_within_limits(sum_sqr_error_ess, num_elems_ess, params.tol['consensus']['ess']):
+            '''
             if error_within_limits(sum_sqr_error_vmag, num_elems_vmag, params.tol['consensus']['v']):
                 print('[INFO]\t\t - Consensus constraints ok!')
             else:
@@ -1277,6 +1278,7 @@ def check_consensus_convergence(planning_problem, consensus_vars, params, debug_
                 print('[INFO]\t\t - Convergence interface Vmag consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_vmag), params.tol['consensus']['v'] * num_elems_vmag))
                 if debug_flag:
                     print_debug_info(planning_problem, consensus_vars, print_vmag=True)
+            '''
         else:
             convergence = False
             print('[INFO]\t\t - Convergence shared ESS consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_ess), params.tol['consensus']['ess'] * num_elems_ess))
@@ -1325,11 +1327,13 @@ def check_stationary_convergence(planning_problem, consensus_vars, params):
     convergence = True
     if error_within_limits(sum_sqr_error_pf, num_elems_pf, params.tol['stationarity']['pf']):
         if error_within_limits(sum_sqr_error_ess, num_elems_ess, params.tol['stationarity']['ess']):
+            '''
             if error_within_limits(sum_sqr_error_vmag, num_elems_vmag, params.tol['stationarity']['v']):
                 print('[INFO]\t\t - Stationary constraints ok!')
             else:
                 convergence = False
                 print('[INFO]\t\t - Convergence interface Vmag stationary constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_vmag), params.tol['stationarity']['v'] * num_elems_vmag))
+            '''
         else:
             convergence = False
             print('[INFO]\t\t - Convergence shared ESS stationary constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_ess), params.tol['stationarity']['ess'] * num_elems_ess))
