@@ -1312,7 +1312,7 @@ def check_stationary_convergence(planning_problem, consensus_vars, params):
     rho_tso_ess = params.rho['ess'][planning_problem.transmission_network.name]
 
     sum_sqr_error_vmag, sum_sqr_error_pf, sum_sqr_error_ess = 0.00, 0.00, 0.00
-    num_elems_vmag, num_elems_pf, num_elems_ess = 0
+    num_elems_vmag, num_elems_pf, num_elems_ess = 0, 0, 0
     for node_id in planning_problem.distribution_networks:
         rho_dso_v = params.rho['v'][planning_problem.distribution_networks[node_id].name]
         rho_dso_pf = params.rho['pf'][planning_problem.distribution_networks[node_id].name]
