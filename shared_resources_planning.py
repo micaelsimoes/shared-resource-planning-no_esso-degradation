@@ -306,31 +306,11 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
                                                          consensus_vars, dual_vars, results, admm_parameters,
                                                          update_dns=True)
 
-        if debug_flag:
-            for node_id in planning_problem.active_distribution_network_nodes:
-                print(f"Node {node_id}")
-                for year in consensus_vars['interface']['pf']['tso']['current'][node_id]:
-                    print(f"\tYear {year}")
-                    for day in consensus_vars['interface']['pf']['tso']['current'][node_id][year]:
-                        print(f"\t\tDay {day}")
-                        print(f"\t\t\tPF, TSO,  V   {consensus_vars['interface']['v']['tso']['current'][node_id][year][day]}")
-                        print(f"\t\t\tPF, DSO,  V   {consensus_vars['interface']['v']['dso']['current'][node_id][year][day]}")
-                        print(f"\t\t\tPF, TSO,  P   {consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p']}")
-                        print(f"\t\t\tPF, DSO,  P   {consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p']}")
-                        print(f"\t\t\tPF, TSO,  Q   {consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q']}")
-                        print(f"\t\t\tPF, DSO,  Q   {consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q']}")
-                        print(f"\t\t\tESS, TSO,  P   {consensus_vars['ess']['tso']['current'][node_id][year][day]['p']}")
-                        print(f"\t\t\tESS, DSO,  P   {consensus_vars['ess']['dso']['current'][node_id][year][day]['p']}")
-                        print(f"\t\t\tESS, TSO,  Q   {consensus_vars['ess']['tso']['current'][node_id][year][day]['q']}")
-                        print(f"\t\t\tESS, DSO,  Q   {consensus_vars['ess']['dso']['current'][node_id][year][day]['q']}")
-                        # print(f"\t\t\tESS, ESSO, P  {consensus_vars['ess']['esso']['current'][node_id][year][day]['p']}")
-                        # print(f"\t\t\tESS, ESSO, Q  {consensus_vars['ess']['esso']['current'][node_id][year][day]['q']}")
-
         # 1.2 Update primal evolution
         primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
 
         # 1.3 STOPPING CRITERIA evaluation
-        convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
+        convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters, debug_flag=debug_flag)
         if convergence:
             break
 
@@ -347,31 +327,11 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
                                                          consensus_vars, dual_vars, results, admm_parameters,
                                                          update_tn=True)
 
-        if debug_flag:
-            for node_id in planning_problem.active_distribution_network_nodes:
-                print(f"Node {node_id}")
-                for year in consensus_vars['interface']['pf']['tso']['current'][node_id]:
-                    print(f"\tYear {year}")
-                    for day in consensus_vars['interface']['pf']['tso']['current'][node_id][year]:
-                        print(f"\t\tDay {day}")
-                        print(f"\t\t\tPF, TSO,  V   {consensus_vars['interface']['v']['tso']['current'][node_id][year][day]}")
-                        print(f"\t\t\tPF, DSO,  V   {consensus_vars['interface']['v']['dso']['current'][node_id][year][day]}")
-                        print(f"\t\t\tPF, TSO,  P   {consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p']}")
-                        print(f"\t\t\tPF, DSO,  P   {consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p']}")
-                        print(f"\t\t\tPF, TSO,  Q   {consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q']}")
-                        print(f"\t\t\tPF, DSO,  Q   {consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q']}")
-                        print(f"\t\t\tESS, TSO,  P   {consensus_vars['ess']['tso']['current'][node_id][year][day]['p']}")
-                        print(f"\t\t\tESS, DSO,  P   {consensus_vars['ess']['dso']['current'][node_id][year][day]['p']}")
-                        print(f"\t\t\tESS, TSO,  Q   {consensus_vars['ess']['tso']['current'][node_id][year][day]['q']}")
-                        print(f"\t\t\tESS, DSO,  Q   {consensus_vars['ess']['dso']['current'][node_id][year][day]['q']}")
-                        # print(f"\t\t\tESS, ESSO, P  {consensus_vars['ess']['esso']['current'][node_id][year][day]['p']}")
-                        # print(f"\t\t\tESS, ESSO, Q  {consensus_vars['ess']['esso']['current'][node_id][year][day]['q']}")
-
         # 2.2 Update primal evolution
         primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
 
         # 2.3 STOPPING CRITERIA evaluation
-        convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
+        convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters, debug_flag=debug_flag)
         if convergence:
             break
 
@@ -413,6 +373,28 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     sensitivities = transmission_network.get_sensitivities(tso_model)
 
     return convergence, results, optim_models, sensitivities, primal_evolution
+
+
+def print_debug_info(planning_problem, consensus_vars, print_vmag=False, print_pf=False, print_ess=False):
+    for node_id in planning_problem.active_distribution_network_nodes:
+        print(f"Node {node_id}")
+        for year in consensus_vars['interface']['pf']['tso']['current'][node_id]:
+            print(f"\tYear {year}")
+            for day in consensus_vars['interface']['pf']['tso']['current'][node_id][year]:
+                print(f"\t\tDay {day}")
+                if print_vmag:
+                    print(f"\t\t\tPF, TSO,  V   {consensus_vars['interface']['v']['tso']['current'][node_id][year][day]}")
+                    print(f"\t\t\tPF, DSO,  V   {consensus_vars['interface']['v']['dso']['current'][node_id][year][day]}")
+                if print_pf:
+                    print(f"\t\t\tPF, TSO,  P   {consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p']}")
+                    print(f"\t\t\tPF, DSO,  P   {consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p']}")
+                    print(f"\t\t\tPF, TSO,  Q   {consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q']}")
+                    print(f"\t\t\tPF, DSO,  Q   {consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q']}")
+                if print_ess:
+                    print(f"\t\t\tESS, TSO,  P   {consensus_vars['ess']['tso']['current'][node_id][year][day]['p']}")
+                    print(f"\t\t\tESS, DSO,  P   {consensus_vars['ess']['dso']['current'][node_id][year][day]['p']}")
+                    print(f"\t\t\tESS, TSO,  Q   {consensus_vars['ess']['tso']['current'][node_id][year][day]['q']}")
+                    print(f"\t\t\tESS, DSO,  Q   {consensus_vars['ess']['dso']['current'][node_id][year][day]['q']}")
 
 
 def create_transmission_network_model(transmission_network, consensus_vars, candidate_solution):
@@ -1262,15 +1244,15 @@ def update_shared_energy_storages_coordination_model_and_solve(planning_problem,
     return res
 
 
-def check_admm_convergence(planning_problem, consensus_vars, params):
-    if check_consensus_convergence(planning_problem, consensus_vars, params):
+def check_admm_convergence(planning_problem, consensus_vars, params, debug_flag=False):
+    if check_consensus_convergence(planning_problem, consensus_vars, params, debug_flag=debug_flag):
         if check_stationary_convergence(planning_problem, consensus_vars, params):
             print(f'[INFO]\t\t - Converged!')
             return True
     return False
 
 
-def check_consensus_convergence(planning_problem, consensus_vars, params):
+def check_consensus_convergence(planning_problem, consensus_vars, params, debug_flag=False):
 
     sum_sqr_error_vmag, sum_sqr_error_pf, sum_sqr_error_ess = 0.00, 0.00, 0.00
     num_elems_vmag, num_elems_pf, num_elems_ess = 0, 0, 0
@@ -1295,12 +1277,18 @@ def check_consensus_convergence(planning_problem, consensus_vars, params):
             else:
                 convergence = False
                 print('[INFO]\t\t - Convergence interface Vmag consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_vmag), params.tol['consensus'] * num_elems_vmag))
+                if debug_flag:
+                    print_debug_info(planning_problem, consensus_vars, print_vmag=True)
         else:
             convergence = False
             print('[INFO]\t\t - Convergence shared ESS consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_ess), params.tol['consensus'] * num_elems_ess))
+            if debug_flag:
+                print_debug_info(planning_problem, consensus_vars, print_ess=True)
     else:
-        print('[INFO]\t\t - Convergence interface PF consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_pf), params.tol['consensus'] * num_elems_pf))
         convergence = False
+        print('[INFO]\t\t - Convergence interface PF consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_pf), params.tol['consensus'] * num_elems_pf))
+        if debug_flag:
+            print_debug_info(planning_problem, consensus_vars, print_pf=True)
 
     return convergence
 
