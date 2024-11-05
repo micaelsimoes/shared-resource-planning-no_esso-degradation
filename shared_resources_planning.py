@@ -1264,25 +1264,25 @@ def check_consensus_convergence(planning_problem, consensus_vars, params, debug_
                     num_elems_ess += 4
 
     convergence = True
-    if error_within_limits(sum_sqr_error_pf, num_elems_pf, params.tol['consensus']['pf']):
-        if error_within_limits(sum_sqr_error_vmag, num_elems_vmag, params.tol['consensus']['v']):
-            if error_within_limits(sum_sqr_error_ess, num_elems_ess, params.tol['consensus']['ess']):
+    if error_within_limits(sum_sqr_error_ess, num_elems_ess, params.tol['consensus']['ess']):
+        if error_within_limits(sum_sqr_error_pf, num_elems_pf, params.tol['consensus']['pf']):
+            if error_within_limits(sum_sqr_error_vmag, num_elems_vmag, params.tol['consensus']['v']):
                 print('[INFO]\t\t - Consensus constraints ok!')
             else:
                 convergence = False
-                print('[INFO]\t\t - Convergence shared ESS consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_ess), params.tol['consensus']['ess'] * num_elems_ess))
+                print('[INFO]\t\t - Convergence interface Vmag consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_vmag), params.tol['consensus']['v'] * num_elems_vmag))
                 if debug_flag:
-                    print_debug_info(planning_problem, consensus_vars, print_ess=True)
+                    print_debug_info(planning_problem, consensus_vars, print_vmag=True)
         else:
             convergence = False
-            print('[INFO]\t\t - Convergence interface Vmag consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_vmag), params.tol['consensus']['v'] * num_elems_vmag))
+            print('[INFO]\t\t - Convergence interface PF consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_pf), params.tol['consensus']['pf'] * num_elems_pf))
             if debug_flag:
-                print_debug_info(planning_problem, consensus_vars, print_vmag=True)
+                print_debug_info(planning_problem, consensus_vars, print_pf=True)
     else:
         convergence = False
-        print('[INFO]\t\t - Convergence interface PF consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_pf), params.tol['consensus']['pf'] * num_elems_pf))
+        print('[INFO]\t\t - Convergence shared ESS consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_ess), params.tol['consensus']['ess'] * num_elems_ess))
         if debug_flag:
-            print_debug_info(planning_problem, consensus_vars, print_pf=True)
+            print_debug_info(planning_problem, consensus_vars, print_ess=True)
 
     return convergence
 
