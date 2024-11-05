@@ -864,14 +864,8 @@ def update_transmission_model_to_admm(planning_problem, model, params):
             if transmission_network.params.obj_type == OBJ_MIN_COST:
                 init_of_value = abs(pe.value(model[year][day].objective))
             if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
-                init_of_value = 1.00
-
-
-            init_of_value = 1.00
+                init_of_value = 0.01
             obj = copy(model[year][day].objective.expr) / init_of_value
-
-
-
 
             for dn in model[year][day].active_distribution_networks:
 
@@ -879,11 +873,6 @@ def update_transmission_model_to_admm(planning_problem, model, params):
 
                 distribution_network = distribution_networks[adn_node_id]
                 interface_transf_rating = distribution_network.network[year][day].get_interface_branch_rating() / s_base
-
-                interface_transf_rating = 1.00
-
-
-
 
                 for p in model[year][day].periods:
 
@@ -903,11 +892,6 @@ def update_transmission_model_to_admm(planning_problem, model, params):
                 shared_ess_rating = abs(transmission_network.network[year][day].shared_energy_storages[e].s)
                 if isclose(shared_ess_rating, 0.00, abs_tol=SMALL_TOLERANCE):
                     shared_ess_rating = 1.00
-
-
-
-                shared_ess_rating = 1.00
-
 
                 for p in model[year][day].periods:
                     constraint_ess_p = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_req[e, p]) / (2 * shared_ess_rating)
@@ -1016,14 +1000,7 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                     init_of_value = abs(pe.value(dso_model[year][day].objective))
                 if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
                     init_of_value = 1.00
-
-
-
-                init_of_value = 1.00
                 obj = copy(dso_model[year][day].objective.expr) / init_of_value
-
-
-
 
                 shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
                 shared_ess_rating = abs(distribution_network.network[year][day].shared_energy_storages[shared_ess_idx].s)
@@ -1032,14 +1009,6 @@ def update_distribution_models_to_admm(planning_problem, models, params):
 
                 # Augmented Lagrangian -- Interface power flow (residual balancing)
                 interface_transf_rating = distribution_network.network[year][day].get_interface_branch_rating() / s_base
-
-
-
-                shared_ess_rating = 1.00
-                interface_transf_rating = 1.00
-
-
-
 
                 for p in dso_model[year][day].periods:
 
