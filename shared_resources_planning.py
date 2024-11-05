@@ -1255,12 +1255,14 @@ def check_consensus_convergence(planning_problem, consensus_vars, params, debug_
             for node_id in planning_problem.active_distribution_network_nodes:
                 for p in range(planning_problem.num_instants):
                     sum_sqr_error_vmag += (consensus_vars['interface']['v']['tso']['current'][node_id][year][day][p] - consensus_vars['interface']['v']['dso']['current'][node_id][year][day][p]) ** 2
+                    num_elems_vmag += 2
+
                     sum_sqr_error_pf += (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['p'][p]) ** 2
                     sum_sqr_error_pf += (consensus_vars['interface']['pf']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['interface']['pf']['dso']['current'][node_id][year][day]['q'][p]) ** 2
+                    num_elems_pf += 4
+
                     sum_sqr_error_ess += (consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p]) ** 2
                     sum_sqr_error_ess += (consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p]) ** 2
-                    num_elems_vmag += 2
-                    num_elems_pf += 4
                     num_elems_ess += 4
 
     convergence = True
