@@ -1026,12 +1026,12 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                     obj += (dso_model[year][day].rho_pf / 2) * (constraint_q_req ** 2)
 
                     # Shared ESS
-                    constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_req[p]) / (2 * shared_ess_rating)
-                    constraint_ess_q_req = (dso_model[year][day].expected_shared_ess_q[p] - dso_model[year][day].q_ess_req[p]) / (2 * shared_ess_rating)
-                    obj += (dso_model[year][day].dual_ess_p_req[p]) * constraint_ess_p_req
-                    obj += (dso_model[year][day].dual_ess_q_req[p]) * constraint_ess_q_req
-                    obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_p_req ** 2
-                    obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_q_req ** 2
+                    # constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_req[p]) / (2 * shared_ess_rating)
+                    # constraint_ess_q_req = (dso_model[year][day].expected_shared_ess_q[p] - dso_model[year][day].q_ess_req[p]) / (2 * shared_ess_rating)
+                    # obj += (dso_model[year][day].dual_ess_p_req[p]) * constraint_ess_p_req
+                    # obj += (dso_model[year][day].dual_ess_q_req[p]) * constraint_ess_q_req
+                    # obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_p_req ** 2
+                    # obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_q_req ** 2
 
                 # Add ADMM OF, deactivate original OF
                 dso_model[year][day].objective.deactivate()
