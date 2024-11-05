@@ -1117,8 +1117,8 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
                     # model[year][day].dual_v_sqr_req[dn, p].fix((dual_v[node_id][year][day][p] / v_base) ** 2)
-                    model[year][day].dual_pf_p_req[dn, p].fix(dual_pf[node_id][year][day]['p'][p] / s_base)
-                    model[year][day].dual_pf_q_req[dn, p].fix(dual_pf[node_id][year][day]['q'][p] / s_base)
+                    model[year][day].dual_pf_p_req[dn, p].fix(dual_pf[node_id][year][day]['p'][p])
+                    model[year][day].dual_pf_q_req[dn, p].fix(dual_pf[node_id][year][day]['q'][p])
                     # model[year][day].v_sqr_req[dn, p].fix((v_req['dso']['current'][node_id][year][day][p] / v_base) ** 2)
                     model[year][day].p_pf_req[dn, p].fix(pf_req['dso']['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].q_pf_req[dn, p].fix(pf_req['dso']['current'][node_id][year][day]['q'][p] / s_base)
@@ -1126,8 +1126,8 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
                 # Update shared ESS capacity and power requests
                 shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(node_id)
                 # for p in model[year][day].periods:
-                #     model[year][day].dual_ess_p_req[shared_ess_idx, p].fix(dual_ess[node_id][year][day]['p'][p] / s_base)
-                #     model[year][day].dual_ess_q_req[shared_ess_idx, p].fix(dual_ess[node_id][year][day]['q'][p] / s_base)
+                #     model[year][day].dual_ess_p_req[shared_ess_idx, p].fix(dual_ess[node_id][year][day]['p'][p])
+                #     model[year][day].dual_ess_q_req[shared_ess_idx, p].fix(dual_ess[node_id][year][day]['q'][p])
                 #     model[year][day].p_ess_req[shared_ess_idx, p].fix(ess_req['dso']['current'][node_id][year][day]['p'][p] / s_base)
                 #     model[year][day].q_ess_req[shared_ess_idx, p].fix(ess_req['dso']['current'][node_id][year][day]['q'][p] / s_base)
 
@@ -1176,16 +1176,16 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
                     # model[year][day].dual_v_sqr_req[p].fix((dual_v[node_id][year][day][p] / v_base) ** 2)
-                    model[year][day].dual_pf_p_req[p].fix(dual_pf[node_id][year][day]['p'][p] / s_base)
-                    model[year][day].dual_pf_q_req[p].fix(dual_pf[node_id][year][day]['q'][p] / s_base)
+                    model[year][day].dual_pf_p_req[p].fix(dual_pf[node_id][year][day]['p'][p])
+                    model[year][day].dual_pf_q_req[p].fix(dual_pf[node_id][year][day]['q'][p])
                     # model[year][day].v_sqr_req[p].fix((v_req['tso']['current'][node_id][year][day][p] / v_base) ** 2)
                     model[year][day].p_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].q_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['q'][p] / s_base)
 
                 # Update SHARED ENERGY STORAGE variables (if existent)
                 # for p in model[year][day].periods:
-                    # model[year][day].dual_ess_p_req[p].fix(dual_ess[node_id][year][day]['p'][p] / s_base)
-                    # model[year][day].dual_ess_q_req[p].fix(dual_ess[node_id][year][day]['q'][p] / s_base)
+                    # model[year][day].dual_ess_p_req[p].fix(dual_ess[node_id][year][day]['p'][p])
+                    # model[year][day].dual_ess_q_req[p].fix(dual_ess[node_id][year][day]['q'][p])
                     # model[year][day].p_ess_req[p].fix(ess_req['esso']['current'][node_id][year][day]['p'][p] / s_base)
                     # model[year][day].q_ess_req[p].fix(ess_req['esso']['current'][node_id][year][day]['q'][p] / s_base)
 
@@ -1399,8 +1399,13 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
 
     # Update Lambdas
     for node_id in distribution_networks:
+        distribution_network = distribution_networks[node_id]
         for year in planning_problem.years:
             for day in planning_problem.days:
+                ref_node_id = distribution_network.network[year][day].get_reference_node_id()
+                v_base = distribution_network.network[year][day].get_node_base_kv(ref_node_id)
+                s_base_dn = distribution_network.network[year][day].baseMVA
+                s_base_tn = transmission_network.network[year][day].baseMVA
                 for p in range(planning_problem.num_instants):
 
                     # rho_v_tso = pe.value(tso_model[year][day].rho_v)
@@ -1417,13 +1422,13 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                     if update_tn:
                         error_p_pf_req_tso = interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p] - interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p]
                         error_q_pf_req_tso = interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p] - interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p]
-                        dual_vars['pf']['tso'][node_id][year][day]['p'][p] += rho_pf_tso * error_p_pf_req_tso
-                        dual_vars['pf']['tso'][node_id][year][day]['q'][p] += rho_pf_tso * error_q_pf_req_tso
+                        dual_vars['pf']['tso'][node_id][year][day]['p'][p] += rho_pf_tso * (error_p_pf_req_tso / s_base_tn)
+                        dual_vars['pf']['tso'][node_id][year][day]['q'][p] += rho_pf_tso * (error_q_pf_req_tso / s_base_tn)
                     if update_dns:
                         error_p_pf_req_dso = interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p] - interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p]
                         error_q_pf_req_dso = interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p] - interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p]
-                        dual_vars['pf']['dso'][node_id][year][day]['p'][p] += rho_pf_dso * error_p_pf_req_dso
-                        dual_vars['pf']['dso'][node_id][year][day]['q'][p] += rho_pf_dso * error_q_pf_req_dso
+                        dual_vars['pf']['dso'][node_id][year][day]['p'][p] += rho_pf_dso * (error_p_pf_req_dso / s_base_dn)
+                        dual_vars['pf']['dso'][node_id][year][day]['q'][p] += rho_pf_dso * (error_q_pf_req_dso / s_base_dn)
 
 
 def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_models, sess_model, shared_ess_vars, dual_vars, results, params, update_tn=True, update_dns=True, update_sess=True):
