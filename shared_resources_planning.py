@@ -840,10 +840,10 @@ def update_transmission_model_to_admm(planning_problem, model, params):
                 model[year][day].penalty_flex_usage.fix(0.00)
 
             # Add ADMM variables
-            # model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
-            # model[year][day].rho_v.fix(params.rho['v'][transmission_network.name])
-            # model[year][day].v_sqr_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.NonNegativeReals)        # Square of voltage magnitude
-            # model[year][day].dual_v_sqr_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)              # Dual variable - voltage magnitude requested
+            model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
+            model[year][day].rho_v.fix(params.rho['v'][transmission_network.name])
+            model[year][day].v_sqr_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.NonNegativeReals)        # Square of voltage magnitude
+            model[year][day].dual_v_sqr_req = pe.Var(model[year][day].active_distribution_networks, model[year][day].periods, domain=pe.Reals)              # Dual variable - voltage magnitude requested
 
             model[year][day].rho_pf = pe.Var(domain=pe.NonNegativeReals)
             model[year][day].rho_pf.fix(params.rho['pf'][transmission_network.name])
@@ -876,9 +876,9 @@ def update_transmission_model_to_admm(planning_problem, model, params):
 
                 for p in model[year][day].periods:
 
-                    # constraint_v_req = (model[year][day].expected_interface_vmag_sqr[dn, p] - model[year][day].v_sqr_req[dn, p])
-                    # obj += model[year][day].dual_v_sqr_req[dn, p] * constraint_v_req
-                    # obj += (model[year][day].rho_v / 2) * (constraint_v_req ** 2)
+                    constraint_v_req = (model[year][day].expected_interface_vmag_sqr[dn, p] - model[year][day].v_sqr_req[dn, p])
+                    obj += model[year][day].dual_v_sqr_req[dn, p] * constraint_v_req
+                    obj += (model[year][day].rho_v / 2) * (constraint_v_req ** 2)
 
                     constraint_p_req = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_req[dn, p]) / interface_transf_rating
                     constraint_q_req = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_req[dn, p]) / interface_transf_rating
@@ -975,10 +975,10 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                     dso_model[year][day].penalty_flex_usage.fix(0.00)
 
                 # Add ADMM variables
-                # dso_model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
-                # dso_model[year][day].rho_v.fix(params.rho['v'][distribution_network.network[year][day].name])
-                # dso_model[year][day].v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)       # Voltage magnitude - requested by TSO
-                # dso_model[year][day].dual_v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - voltage magnitude
+                dso_model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
+                dso_model[year][day].rho_v.fix(params.rho['v'][distribution_network.network[year][day].name])
+                dso_model[year][day].v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)       # Voltage magnitude - requested by TSO
+                dso_model[year][day].dual_v_sqr_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - voltage magnitude
 
                 dso_model[year][day].rho_pf = pe.Var(domain=pe.NonNegativeReals)
                 dso_model[year][day].rho_pf.fix(params.rho['pf'][distribution_network.network[year][day].name])
@@ -1013,17 +1013,17 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                 for p in dso_model[year][day].periods:
 
                     # Voltage magnitude
-                    # constraint_vmag_req = (dso_model[year][day].expected_interface_vmag_sqr[p] - dso_model[year][day].v_sqr_req[p])
-                    # obj += (dso_model[year][day].dual_v_sqr_req[p]) * constraint_vmag_req
-                    # obj += (dso_model[year][day].rho_v / 2) * (constraint_vmag_req ** 2)
+                    constraint_vmag_req = (dso_model[year][day].expected_interface_vmag_sqr[p] - dso_model[year][day].v_sqr_req[p])
+                    obj += (dso_model[year][day].dual_v_sqr_req[p]) * constraint_vmag_req
+                    obj += (dso_model[year][day].rho_v / 2) * (constraint_vmag_req ** 2)
 
                     # Interface power flow
                     constraint_p_req = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_req[p]) / interface_transf_rating
                     constraint_q_req = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_req[p]) / interface_transf_rating
                     obj += (dso_model[year][day].dual_pf_p_req[p]) * constraint_p_req
                     obj += (dso_model[year][day].dual_pf_q_req[p]) * constraint_q_req
-                    obj += (dso_model[year][day].rho_pf / 2) * (constraint_p_req ** 2)
-                    obj += (dso_model[year][day].rho_pf / 2) * (constraint_q_req ** 2)
+                    obj += (dso_model[year][day].rho_pf / (2 * s_base)) * (constraint_p_req ** 2)
+                    obj += (dso_model[year][day].rho_pf / (2 * s_base)) * (constraint_q_req ** 2)
 
                     # Shared ESS
                     # constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_req[p]) / (2 * shared_ess_rating)
@@ -1096,16 +1096,16 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
 
             s_base = transmission_network.network[year][day].baseMVA
 
-            # rho_v = params.rho['v'][transmission_network.name]
+            rho_v = params.rho['v'][transmission_network.name]
             rho_pf = params.rho['pf'][transmission_network.name]
             # rho_ess = params.rho['ess'][transmission_network.name]
             if params.adaptive_penalty:
-                # rho_v = pe.value(model[year][day].rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+                rho_v = pe.value(model[year][day].rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
                 rho_pf = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
                 # rho_ess = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
 
             # Update Rho parameter
-            # model[year][day].rho_v.fix(rho_v)
+            model[year][day].rho_v.fix(rho_v)
             model[year][day].rho_pf.fix(rho_pf)
             # model[year][day].rho_ess.fix(rho_ess)
 
@@ -1116,10 +1116,10 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
 
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
-                    # model[year][day].dual_v_sqr_req[dn, p].fix((dual_v[node_id][year][day][p] / v_base) ** 2)
+                    model[year][day].dual_v_sqr_req[dn, p].fix(dual_v[node_id][year][day][p] ** 2)
                     model[year][day].dual_pf_p_req[dn, p].fix(dual_pf[node_id][year][day]['p'][p])
                     model[year][day].dual_pf_q_req[dn, p].fix(dual_pf[node_id][year][day]['q'][p])
-                    # model[year][day].v_sqr_req[dn, p].fix((v_req['dso']['current'][node_id][year][day][p] / v_base) ** 2)
+                    model[year][day].v_sqr_req[dn, p].fix((v_req['dso']['current'][node_id][year][day][p] / v_base) ** 2)
                     model[year][day].p_pf_req[dn, p].fix(pf_req['dso']['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].q_pf_req[dn, p].fix(pf_req['dso']['current'][node_id][year][day]['q'][p] / s_base)
 
@@ -1160,25 +1160,25 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
                 v_base = distribution_network.network[year][day].get_node_base_kv(ref_node_id)
                 s_base = distribution_network.network[year][day].baseMVA
 
-                # rho_v = params.rho['v'][distribution_network.name]
+                rho_v = params.rho['v'][distribution_network.name]
                 rho_pf = params.rho['pf'][distribution_network.name]
                 # rho_ess = params.rho['ess'][distribution_network.name]
                 if params.adaptive_penalty:
-                    # rho_v = pe.value(model[year][day].rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+                    rho_v = pe.value(model[year][day].rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
                     rho_pf = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
                     # rho_ess = pe.value(model[year][day].rho_ess) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
 
                 # Update Rho parameter
-                # model[year][day].rho_v.fix(rho_v)
+                model[year][day].rho_v.fix(rho_v)
                 model[year][day].rho_pf.fix(rho_pf)
                 # model[year][day].rho_ess.fix(rho_ess)
 
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
-                    # model[year][day].dual_v_sqr_req[p].fix((dual_v[node_id][year][day][p] / v_base) ** 2)
+                    model[year][day].dual_v_sqr_req[p].fix(dual_v[node_id][year][day][p] ** 2)
                     model[year][day].dual_pf_p_req[p].fix(dual_pf[node_id][year][day]['p'][p])
                     model[year][day].dual_pf_q_req[p].fix(dual_pf[node_id][year][day]['q'][p])
-                    # model[year][day].v_sqr_req[p].fix((v_req['tso']['current'][node_id][year][day][p] / v_base) ** 2)
+                    model[year][day].v_sqr_req[p].fix((v_req['tso']['current'][node_id][year][day][p] / v_base) ** 2)
                     model[year][day].p_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].q_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['q'][p] / s_base)
 
@@ -1408,14 +1408,14 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                 s_base_tn = transmission_network.network[year][day].baseMVA
                 for p in range(planning_problem.num_instants):
 
-                    # rho_v_tso = pe.value(tso_model[year][day].rho_v)
-                    # rho_v_dso = pe.value(dso_models[node_id][year][day].rho_v)
-                    # if update_tn:
-                    #     error_v_req_tso = interface_vars['v']['tso']['current'][node_id][year][day][p] - interface_vars['v']['dso']['current'][node_id][year][day][p]
-                    #     dual_vars['v']['tso'][node_id][year][day][p] += rho_v_tso * error_v_req_tso
-                    # if update_dns:
-                    #     error_v_req_dso = interface_vars['v']['dso']['current'][node_id][year][day][p] - interface_vars['v']['tso']['current'][node_id][year][day][p]
-                    #     dual_vars['v']['dso'][node_id][year][day][p] += rho_v_dso * error_v_req_dso
+                    rho_v_tso = pe.value(tso_model[year][day].rho_v)
+                    rho_v_dso = pe.value(dso_models[node_id][year][day].rho_v)
+                    if update_tn:
+                        error_v_req_tso = interface_vars['v']['tso']['current'][node_id][year][day][p] - interface_vars['v']['dso']['current'][node_id][year][day][p]
+                        dual_vars['v']['tso'][node_id][year][day][p] += rho_v_tso * (error_v_req_tso / v_base)
+                    if update_dns:
+                        error_v_req_dso = interface_vars['v']['dso']['current'][node_id][year][day][p] - interface_vars['v']['tso']['current'][node_id][year][day][p]
+                        dual_vars['v']['dso'][node_id][year][day][p] += rho_v_dso * (error_v_req_dso / v_base)
 
                     rho_pf_tso = pe.value(tso_model[year][day].rho_pf)
                     rho_pf_dso = pe.value(dso_models[node_id][year][day].rho_pf)
