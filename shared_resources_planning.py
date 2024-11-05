@@ -283,6 +283,10 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     update_transmission_model_to_admm(planning_problem, tso_model, admm_parameters)
     update_shared_energy_storage_model_to_admm(planning_problem, esso_model, admm_parameters)
 
+    planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
+                                                     consensus_vars, dual_vars, results, admm_parameters,
+                                                     update_tn=True, update_dns=True, update_sess=True)
+
     # ------------------------------------------------------------------------------------------------------------------
     # ADMM -- Main cycle
     # ------------------------------------------------------------------------------------------------------------------
