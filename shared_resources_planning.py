@@ -882,8 +882,8 @@ def update_transmission_model_to_admm(planning_problem, model, params):
 
                     constraint_p_req = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_req[dn, p]) / interface_transf_rating
                     constraint_q_req = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].q_pf_req[dn, p]) / interface_transf_rating
-                    obj += model[year][day].dual_pf_p_req[dn, p] * constraint_p_req
-                    obj += model[year][day].dual_pf_q_req[dn, p] * constraint_q_req
+                    obj += (model[year][day].dual_pf_p_req[dn, p] * s_base) * constraint_p_req
+                    obj += (model[year][day].dual_pf_q_req[dn, p] * s_base) * constraint_q_req
                     obj += (model[year][day].rho_pf / 2) * (constraint_p_req ** 2)
                     obj += (model[year][day].rho_pf / 2) * (constraint_q_req ** 2)
 
@@ -896,10 +896,10 @@ def update_transmission_model_to_admm(planning_problem, model, params):
                 for p in model[year][day].periods:
                     constraint_ess_p = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_req[e, p]) / (2 * shared_ess_rating)
                     constraint_ess_q = (model[year][day].expected_shared_ess_q[e, p] - model[year][day].q_ess_req[e, p]) / (2 * shared_ess_rating)
-                    obj += model[year][day].dual_ess_p_req[e, p] * constraint_ess_p
-                    obj += model[year][day].dual_ess_q_req[e, p] * constraint_ess_q
-                    obj += (model[year][day].rho_ess / 2) * constraint_ess_p ** 2
-                    obj += (model[year][day].rho_ess / 2) * constraint_ess_q ** 2
+                    obj += (model[year][day].dual_ess_p_req[e, p] * s_base) * constraint_ess_p
+                    obj += (model[year][day].dual_ess_q_req[e, p] * s_base) * constraint_ess_q
+                    obj += (model[year][day].rho_ess * s_base / 2) * constraint_ess_p ** 2
+                    obj += (model[year][day].rho_ess * s_base / 2) * constraint_ess_q ** 2
 
             # Add ADMM OF, deactivate original OF
             model[year][day].objective.deactivate()
@@ -1021,18 +1021,18 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                     # Interface power flow
                     constraint_p_req = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_req[p]) / interface_transf_rating
                     constraint_q_req = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_req[p]) / interface_transf_rating
-                    obj += (dso_model[year][day].dual_pf_p_req[p]) * constraint_p_req
-                    obj += (dso_model[year][day].dual_pf_q_req[p]) * constraint_q_req
-                    obj += (dso_model[year][day].rho_pf / 2) * (constraint_p_req ** 2)
-                    obj += (dso_model[year][day].rho_pf / 2) * (constraint_q_req ** 2)
+                    obj += (dso_model[year][day].dual_pf_p_req[p] * s_base) * constraint_p_req
+                    obj += (dso_model[year][day].dual_pf_q_req[p] * s_base) * constraint_q_req
+                    obj += (dso_model[year][day].rho_pf  * s_base / 2) * (constraint_p_req ** 2)
+                    obj += (dso_model[year][day].rho_pf  * s_base / 2) * (constraint_q_req ** 2)
 
                     # Shared ESS
                     constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_req[p]) / (2 * shared_ess_rating)
                     constraint_ess_q_req = (dso_model[year][day].expected_shared_ess_q[p] - dso_model[year][day].q_ess_req[p]) / (2 * shared_ess_rating)
-                    obj += dso_model[year][day].dual_ess_p_req[p] * constraint_ess_p_req
-                    obj += dso_model[year][day].dual_ess_q_req[p] * constraint_ess_q_req
-                    obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_p_req ** 2
-                    obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_q_req ** 2
+                    obj += (dso_model[year][day].dual_ess_p_req[p] * s_base) * constraint_ess_p_req
+                    obj += (dso_model[year][day].dual_ess_q_req[p] * s_base) * constraint_ess_q_req
+                    obj += (dso_model[year][day].rho_ess * s_base / 2) * constraint_ess_p_req ** 2
+                    obj += (dso_model[year][day].rho_ess * s_base / 2) * constraint_ess_q_req ** 2
 
                 # Add ADMM OF, deactivate original OF
                 dso_model[year][day].objective.deactivate()
@@ -1118,17 +1118,17 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
                     model[year][day].dual_v_sqr_req[dn, p].fix((dual_v[node_id][year][day][p] / v_base) ** 2)
-                    model[year][day].dual_pf_p_req[dn, p].fix(dual_pf[node_id][year][day]['p'][p] / s_base)
-                    model[year][day].dual_pf_q_req[dn, p].fix(dual_pf[node_id][year][day]['q'][p] / s_base)
+                    model[year][day].dual_pf_p_req[dn, p].fix(dual_pf[node_id][year][day]['p'][p] * s_base)
+                    model[year][day].dual_pf_q_req[dn, p].fix(dual_pf[node_id][year][day]['q'][p] * s_base)
                     model[year][day].v_sqr_req[dn, p].fix((v_req['dso']['current'][node_id][year][day][p] / v_base) ** 2)
-                    model[year][day].p_pf_req[dn, p].fix(pf_req['dso']['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].q_pf_req[dn, p].fix(pf_req['dso']['current'][node_id][year][day]['q'][p] / s_base)
+                    model[year][day].p_pf_req[dn, p].fix(pf_req['dso']['current'][node_id][year][day]['p'][p] * s_base)
+                    model[year][day].q_pf_req[dn, p].fix(pf_req['dso']['current'][node_id][year][day]['q'][p] * s_base)
 
                 # Update shared ESS capacity and power requests
                 shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(node_id)
                 for p in model[year][day].periods:
-                    model[year][day].dual_ess_p_req[shared_ess_idx, p].fix(dual_ess[node_id][year][day]['p'][p] / s_base)
-                    model[year][day].dual_ess_q_req[shared_ess_idx, p].fix(dual_ess[node_id][year][day]['q'][p] / s_base)
+                    model[year][day].dual_ess_p_req[shared_ess_idx, p].fix(dual_ess[node_id][year][day]['p'][p] * s_base)
+                    model[year][day].dual_ess_q_req[shared_ess_idx, p].fix(dual_ess[node_id][year][day]['q'][p] * s_base)
                     model[year][day].p_ess_req[shared_ess_idx, p].fix(ess_req['dso']['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].q_ess_req[shared_ess_idx, p].fix(ess_req['dso']['current'][node_id][year][day]['q'][p] / s_base)
 
@@ -1177,16 +1177,16 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
                     model[year][day].dual_v_sqr_req[p].fix((dual_v[node_id][year][day][p] / v_base) ** 2)
-                    model[year][day].dual_pf_p_req[p].fix(dual_pf[node_id][year][day]['p'][p] / s_base)
-                    model[year][day].dual_pf_q_req[p].fix(dual_pf[node_id][year][day]['q'][p] / s_base)
+                    model[year][day].dual_pf_p_req[p].fix(dual_pf[node_id][year][day]['p'][p] * s_base)
+                    model[year][day].dual_pf_q_req[p].fix(dual_pf[node_id][year][day]['q'][p] * s_base)
                     model[year][day].v_sqr_req[p].fix((v_req['tso']['current'][node_id][year][day][p] / v_base) ** 2)
                     model[year][day].p_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].q_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['q'][p] / s_base)
 
                 # Update SHARED ENERGY STORAGE variables (if existent)
                 for p in model[year][day].periods:
-                    model[year][day].dual_ess_p_req[p].fix(dual_ess[node_id][year][day]['p'][p] / s_base)
-                    model[year][day].dual_ess_q_req[p].fix(dual_ess[node_id][year][day]['q'][p] / s_base)
+                    model[year][day].dual_ess_p_req[p].fix(dual_ess[node_id][year][day]['p'][p] * s_base)
+                    model[year][day].dual_ess_q_req[p].fix(dual_ess[node_id][year][day]['q'][p] * s_base)
                     model[year][day].p_ess_req[p].fix(ess_req['esso']['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].q_ess_req[p].fix(ess_req['esso']['current'][node_id][year][day]['q'][p] / s_base)
 
