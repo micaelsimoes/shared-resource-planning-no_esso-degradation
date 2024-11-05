@@ -1274,12 +1274,12 @@ def check_consensus_convergence(planning_problem, consensus_vars, params, debug_
                 convergence = False
                 print('[INFO]\t\t - Convergence interface Vmag consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_vmag), params.tol['consensus']['v'] * num_elems_vmag))
                 if debug_flag:
-                    print_debug_info(planning_problem, consensus_vars, print_ess=True)
+                    print_debug_info(planning_problem, consensus_vars, print_vmag=True)
         else:
             convergence = False
             print('[INFO]\t\t - Convergence shared ESS consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_ess), params.tol['consensus']['ess'] * num_elems_ess))
             if debug_flag:
-                print_debug_info(planning_problem, consensus_vars, print_vmag=True)
+                print_debug_info(planning_problem, consensus_vars, print_ess=True)
     else:
         convergence = False
         print('[INFO]\t\t - Convergence interface PF consensus constraints failed. {:.3f} > {:.3f}'.format(sqrt(sum_sqr_error_pf), params.tol['consensus']['pf'] * num_elems_pf))
