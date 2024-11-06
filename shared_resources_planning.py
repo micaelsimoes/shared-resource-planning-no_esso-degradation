@@ -1403,25 +1403,29 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
             for day in planning_problem.days:
                 for p in range(planning_problem.num_instants):
 
-                    rho_v_tso = pe.value(tso_model[year][day].rho_v)
-                    rho_pf_tso = pe.value(tso_model[year][day].rho_pf)
+                    if update_tn:
+                        rho_v_tso = pe.value(tso_model[year][day].rho_v)
+                        rho_pf_tso = pe.value(tso_model[year][day].rho_pf)
 
-                    error_v_req_tso = interface_vars['v']['tso']['current'][node_id][year][day][p] - interface_vars['v']['dso']['current'][node_id][year][day][p]
-                    error_p_pf_req_tso = interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p] - interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p]
-                    error_q_pf_req_tso = interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p] - interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p]
-                    dual_vars['v']['tso'][node_id][year][day][p] += rho_v_tso * error_v_req_tso
-                    dual_vars['pf']['tso'][node_id][year][day]['p'][p] += rho_pf_tso * error_p_pf_req_tso
-                    dual_vars['pf']['tso'][node_id][year][day]['q'][p] += rho_pf_tso * error_q_pf_req_tso
+                        error_v_req_tso = interface_vars['v']['tso']['current'][node_id][year][day][p] - interface_vars['v']['dso']['current'][node_id][year][day][p]
+                        error_p_pf_req_tso = interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p] - interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p]
+                        error_q_pf_req_tso = interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p] - interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p]
 
-                    rho_v_dso = pe.value(dso_models[node_id][year][day].rho_v)
-                    rho_pf_dso = pe.value(dso_models[node_id][year][day].rho_pf)
+                        dual_vars['v']['tso'][node_id][year][day][p] += rho_v_tso * error_v_req_tso
+                        dual_vars['pf']['tso'][node_id][year][day]['p'][p] += rho_pf_tso * error_p_pf_req_tso
+                        dual_vars['pf']['tso'][node_id][year][day]['q'][p] += rho_pf_tso * error_q_pf_req_tso
 
-                    error_v_req_dso = interface_vars['v']['dso']['current'][node_id][year][day][p] - interface_vars['v']['tso']['current'][node_id][year][day][p]
-                    error_p_pf_req_dso = interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p] - interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p]
-                    error_q_pf_req_dso = interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p] - interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p]
-                    dual_vars['v']['dso'][node_id][year][day][p] += rho_v_dso * error_v_req_dso
-                    dual_vars['pf']['dso'][node_id][year][day]['p'][p] += rho_pf_dso * error_p_pf_req_dso
-                    dual_vars['pf']['dso'][node_id][year][day]['q'][p] += rho_pf_dso * error_q_pf_req_dso
+                    if update_dns:
+                        rho_v_dso = pe.value(dso_models[node_id][year][day].rho_v)
+                        rho_pf_dso = pe.value(dso_models[node_id][year][day].rho_pf)
+
+                        error_v_req_dso = interface_vars['v']['dso']['current'][node_id][year][day][p] - interface_vars['v']['tso']['current'][node_id][year][day][p]
+                        error_p_pf_req_dso = interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p] - interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p]
+                        error_q_pf_req_dso = interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p] - interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p]
+
+                        dual_vars['v']['dso'][node_id][year][day][p] += rho_v_dso * error_v_req_dso
+                        dual_vars['pf']['dso'][node_id][year][day]['p'][p] += rho_pf_dso * error_p_pf_req_dso
+                        dual_vars['pf']['dso'][node_id][year][day]['q'][p] += rho_pf_dso * error_q_pf_req_dso
 
 
 def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_models, sess_model, shared_ess_vars, dual_vars, results, params, update_tn=True, update_dns=True, update_sess=True):
