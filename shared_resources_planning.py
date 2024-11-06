@@ -700,102 +700,130 @@ def create_admm_variables(planning_problem):
     num_instants = planning_problem.num_instants
 
     consensus_variables = {
-        'interface': {
-            'v': {'tso': {'current': dict(), 'prev': dict()},
-                  'dso': {'current': dict(), 'prev': dict()}},
-            'pf': {'tso': {'current': dict(), 'prev': dict()},
-                   'dso': {'current': dict(), 'prev': dict()}}
-        },
+        'v': {'tso': {'current': dict(), 'prev': dict()},
+              'dso': {'current': dict(), 'prev': dict()}},
+        'pf': {'tso': {'current': dict(), 'prev': dict()},
+               'dso': {'current': dict(), 'prev': dict()}},
         'ess': {'tso': {'current': dict(), 'prev': dict()},
                 'dso': {'current': dict(), 'prev': dict()},
-                'esso': {'current': dict(), 'prev': dict()}
-        }
+                'esso': {'current': dict(), 'prev': dict()}}
     }
 
     dual_variables = {
-        'v': {'tso': dict(), 'dso': dict()},
-        'pf': {'tso': dict(), 'dso': dict()},
-        'ess': {'tso': dict(), 'dso': dict(), 'esso': dict()}
+        'v': {'tso': {'current': dict(), 'prev': dict()},
+              'dso': {'current': dict(), 'prev': dict()}},
+        'pf': {'tso': {'current': dict(), 'prev': dict()},
+               'dso': {'current': dict(), 'prev': dict()}},
+        'ess': {'tso': {'current': dict(), 'prev': dict()},
+                'dso': {'current': dict(), 'prev': dict()},
+                'esso': {'current': dict(), 'prev': dict()}}
     }
 
     for dn in range(len(planning_problem.active_distribution_network_nodes)):
 
         node_id = planning_problem.active_distribution_network_nodes[dn]
 
-        consensus_variables['interface']['v']['tso']['current'][node_id] = dict()
-        consensus_variables['interface']['v']['dso']['current'][node_id] = dict()
-        consensus_variables['interface']['v']['tso']['prev'][node_id] = dict()
-        consensus_variables['interface']['v']['dso']['prev'][node_id] = dict()
-        consensus_variables['interface']['pf']['tso']['current'][node_id] = dict()
-        consensus_variables['interface']['pf']['dso']['current'][node_id] = dict()
-        consensus_variables['interface']['pf']['tso']['prev'][node_id] = dict()
-        consensus_variables['interface']['pf']['dso']['prev'][node_id] = dict()
+        consensus_variables['v']['tso']['current'][node_id] = dict()
+        consensus_variables['v']['dso']['current'][node_id] = dict()
+        consensus_variables['pf']['tso']['current'][node_id] = dict()
+        consensus_variables['pf']['dso']['current'][node_id] = dict()
         consensus_variables['ess']['tso']['current'][node_id] = dict()
         consensus_variables['ess']['dso']['current'][node_id] = dict()
         consensus_variables['ess']['esso']['current'][node_id] = dict()
+
+        consensus_variables['v']['tso']['prev'][node_id] = dict()
+        consensus_variables['v']['dso']['prev'][node_id] = dict()
+        consensus_variables['pf']['tso']['prev'][node_id] = dict()
+        consensus_variables['pf']['dso']['prev'][node_id] = dict()
         consensus_variables['ess']['tso']['prev'][node_id] = dict()
         consensus_variables['ess']['dso']['prev'][node_id] = dict()
         consensus_variables['ess']['esso']['prev'][node_id] = dict()
 
-        dual_variables['v']['tso'][node_id] = dict()
-        dual_variables['v']['dso'][node_id] = dict()
-        dual_variables['pf']['tso'][node_id] = dict()
-        dual_variables['pf']['dso'][node_id] = dict()
-        dual_variables['ess']['tso'][node_id] = dict()
-        dual_variables['ess']['dso'][node_id] = dict()
-        dual_variables['ess']['esso'][node_id] = dict()
+        dual_variables['v']['tso']['current'][node_id] = dict()
+        dual_variables['v']['dso']['current'][node_id] = dict()
+        dual_variables['pf']['tso']['current'][node_id] = dict()
+        dual_variables['pf']['dso']['current'][node_id] = dict()
+        dual_variables['ess']['tso']['current'][node_id] = dict()
+        dual_variables['ess']['dso']['current'][node_id] = dict()
+        dual_variables['ess']['esso']['current'][node_id] = dict()
+
+        dual_variables['v']['tso']['prev'][node_id] = dict()
+        dual_variables['v']['dso']['prev'][node_id] = dict()
+        dual_variables['pf']['tso']['prev'][node_id] = dict()
+        dual_variables['pf']['dso']['prev'][node_id] = dict()
+        dual_variables['ess']['tso']['prev'][node_id] = dict()
+        dual_variables['ess']['dso']['prev'][node_id] = dict()
+        dual_variables['ess']['esso']['prev'][node_id] = dict()
 
         for year in planning_problem.years:
 
-            consensus_variables['interface']['v']['tso']['current'][node_id][year] = dict()
-            consensus_variables['interface']['v']['tso']['prev'][node_id][year] = dict()
-            consensus_variables['interface']['v']['dso']['current'][node_id][year] = dict()
-            consensus_variables['interface']['v']['dso']['prev'][node_id][year] = dict()
-            consensus_variables['interface']['pf']['tso']['current'][node_id][year] = dict()
-            consensus_variables['interface']['pf']['tso']['prev'][node_id][year] = dict()
-            consensus_variables['interface']['pf']['dso']['current'][node_id][year] = dict()
-            consensus_variables['interface']['pf']['dso']['prev'][node_id][year] = dict()
+            consensus_variables['v']['tso']['current'][node_id][year] = dict()
+            consensus_variables['v']['dso']['current'][node_id][year] = dict()
+            consensus_variables['pf']['tso']['current'][node_id][year] = dict()
+            consensus_variables['pf']['dso']['current'][node_id][year] = dict()
             consensus_variables['ess']['tso']['current'][node_id][year] = dict()
-            consensus_variables['ess']['tso']['prev'][node_id][year] = dict()
             consensus_variables['ess']['dso']['current'][node_id][year] = dict()
-            consensus_variables['ess']['dso']['prev'][node_id][year] = dict()
             consensus_variables['ess']['esso']['current'][node_id][year] = dict()
+
+            consensus_variables['v']['tso']['prev'][node_id][year] = dict()
+            consensus_variables['v']['dso']['prev'][node_id][year] = dict()
+            consensus_variables['pf']['tso']['prev'][node_id][year] = dict()
+            consensus_variables['pf']['dso']['prev'][node_id][year] = dict()
+            consensus_variables['ess']['tso']['prev'][node_id][year] = dict()
+            consensus_variables['ess']['dso']['prev'][node_id][year] = dict()
             consensus_variables['ess']['esso']['prev'][node_id][year] = dict()
 
-            dual_variables['v']['tso'][node_id][year] = dict()
-            dual_variables['v']['dso'][node_id][year] = dict()
-            dual_variables['pf']['tso'][node_id][year] = dict()
-            dual_variables['pf']['dso'][node_id][year] = dict()
-            dual_variables['ess']['tso'][node_id][year] = dict()
-            dual_variables['ess']['dso'][node_id][year] = dict()
-            dual_variables['ess']['esso'][node_id][year] = dict()
+            dual_variables['v']['tso']['current'][node_id][year] = dict()
+            dual_variables['v']['dso']['current'][node_id][year] = dict()
+            dual_variables['pf']['tso']['current'][node_id][year] = dict()
+            dual_variables['pf']['dso']['current'][node_id][year] = dict()
+            dual_variables['ess']['tso']['current'][node_id][year] = dict()
+            dual_variables['ess']['dso']['current'][node_id][year] = dict()
+            dual_variables['ess']['esso']['current'][node_id][year] = dict()
+
+            dual_variables['v']['tso']['prev'][node_id][year] = dict()
+            dual_variables['v']['dso']['prev'][node_id][year] = dict()
+            dual_variables['pf']['tso']['prev'][node_id][year] = dict()
+            dual_variables['pf']['dso']['prev'][node_id][year] = dict()
+            dual_variables['ess']['tso']['prev'][node_id][year] = dict()
+            dual_variables['ess']['dso']['prev'][node_id][year] = dict()
+            dual_variables['ess']['esso']['prev'][node_id][year] = dict()
 
             for day in planning_problem.days:
 
                 node_base_kv = planning_problem.transmission_network.network[year][day].get_node_base_kv(node_id)
 
-                consensus_variables['interface']['v']['tso']['current'][node_id][year][day] = [node_base_kv] * num_instants
-                consensus_variables['interface']['v']['dso']['current'][node_id][year][day] = [node_base_kv] * num_instants
-                consensus_variables['interface']['pf']['tso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
-                consensus_variables['interface']['pf']['dso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
+                consensus_variables['v']['tso']['current'][node_id][year][day] = [node_base_kv] * num_instants
+                consensus_variables['v']['dso']['current'][node_id][year][day] = [node_base_kv] * num_instants
+                consensus_variables['pf']['tso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
+                consensus_variables['pf']['dso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
                 consensus_variables['ess']['tso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
                 consensus_variables['ess']['dso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
                 consensus_variables['ess']['esso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
-                consensus_variables['interface']['v']['tso']['prev'][node_id][year][day] = [node_base_kv] * num_instants
-                consensus_variables['interface']['v']['dso']['prev'][node_id][year][day] = [node_base_kv] * num_instants
-                consensus_variables['interface']['pf']['tso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
-                consensus_variables['interface']['pf']['dso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
+
+                consensus_variables['v']['tso']['prev'][node_id][year][day] = [node_base_kv] * num_instants
+                consensus_variables['v']['dso']['prev'][node_id][year][day] = [node_base_kv] * num_instants
+                consensus_variables['pf']['tso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
+                consensus_variables['pf']['dso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
                 consensus_variables['ess']['tso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
                 consensus_variables['ess']['dso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
                 consensus_variables['ess']['esso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
 
-                dual_variables['v']['tso'][node_id][year][day] = [0.0] * planning_problem.num_instants
-                dual_variables['v']['dso'][node_id][year][day] = [0.0] * planning_problem.num_instants
-                dual_variables['pf']['tso'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
-                dual_variables['pf']['dso'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
-                dual_variables['ess']['tso'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
-                dual_variables['ess']['dso'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
-                dual_variables['ess']['esso'][node_id][year][day] = {'p': [0.0] * planning_problem.num_instants, 'q': [0.0] * num_instants}
+                dual_variables['v']['tso']['current'][node_id][year][day] = [0.0] * planning_problem.num_instants
+                dual_variables['v']['dso']['current'][node_id][year][day] = [0.0] * planning_problem.num_instants
+                dual_variables['pf']['tso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
+                dual_variables['pf']['dso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
+                dual_variables['ess']['tso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
+                dual_variables['ess']['dso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
+                dual_variables['ess']['esso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
+
+                dual_variables['v']['tso']['prev'][node_id][year][day] = [0.0] * planning_problem.num_instants
+                dual_variables['v']['dso']['prev'][node_id][year][day] = [0.0] * planning_problem.num_instants
+                dual_variables['pf']['tso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
+                dual_variables['pf']['dso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
+                dual_variables['ess']['tso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
+                dual_variables['ess']['dso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
+                dual_variables['ess']['esso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
 
     return consensus_variables, dual_variables
 
