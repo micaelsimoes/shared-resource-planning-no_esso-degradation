@@ -1019,6 +1019,9 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                 dso_model[year][day].dual_ess_p_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - Shared ESS active power
                 dso_model[year][day].dual_ess_q_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - Shared ESS reactive power
 
+                if params.previous_iter:
+                    print()
+
                 # Objective function - augmented Lagrangian
                 init_of_value = 1.00
                 if distribution_network.params.obj_type == OBJ_MIN_COST:
