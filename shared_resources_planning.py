@@ -706,14 +706,22 @@ def create_admm_variables(planning_problem):
     }
 
     dual_variables = {
-        'v': {'tso': {'current': dict(), 'prev': dict()},
-              'dso': {'current': dict(), 'prev': dict()}},
-        'pf': {'tso': {'current': dict(), 'prev': dict()},
-               'dso': {'current': dict(), 'prev': dict()}},
-        'ess': {'tso': {'current': dict(), 'prev': dict()},
-                'dso': {'current': dict(), 'prev': dict()},
-                'esso': {'current': dict(), 'prev': dict()}}
+        'v': {'tso': {'current': dict()}, 'dso': {'current': dict()}},
+        'pf': {'tso': {'current': dict()}, 'dso': {'current': dict()}},
+        'ess': {'tso': {'current': dict()}, 'dso': {'current': dict()}, 'esso': {'current': dict()}}
     }
+
+    if planning_problem.params.admm.previous_iter['v']:
+        dual_variables['v']['tso']['prev'] = dict()
+        dual_variables['v']['dso']['prev'] = dict()
+
+    if planning_problem.params.admm.previous_iter['pf']:
+        dual_variables['pf']['tso']['prev'] = dict()
+        dual_variables['pf']['dso']['prev'] = dict()
+
+    if planning_problem.params.admm.previous_iter['ess']:
+        dual_variables['ess']['tso']['prev'] = dict()
+        dual_variables['ess']['dso']['prev'] = dict()
 
     for dn in range(len(planning_problem.active_distribution_network_nodes)):
 
@@ -743,13 +751,17 @@ def create_admm_variables(planning_problem):
         dual_variables['ess']['dso']['current'][node_id] = dict()
         dual_variables['ess']['esso']['current'][node_id] = dict()
 
-        dual_variables['v']['tso']['prev'][node_id] = dict()
-        dual_variables['v']['dso']['prev'][node_id] = dict()
-        dual_variables['pf']['tso']['prev'][node_id] = dict()
-        dual_variables['pf']['dso']['prev'][node_id] = dict()
-        dual_variables['ess']['tso']['prev'][node_id] = dict()
-        dual_variables['ess']['dso']['prev'][node_id] = dict()
-        dual_variables['ess']['esso']['prev'][node_id] = dict()
+        if planning_problem.params.admm.previous_iter['v']:
+            dual_variables['v']['tso']['prev'][node_id] = dict()
+            dual_variables['v']['dso']['prev'][node_id] = dict()
+
+        if planning_problem.params.admm.previous_iter['pf']:
+            dual_variables['pf']['tso']['prev'][node_id] = dict()
+            dual_variables['pf']['dso']['prev'][node_id] = dict()
+
+        if planning_problem.params.admm.previous_iter['ess']:
+            dual_variables['ess']['tso']['prev'][node_id] = dict()
+            dual_variables['ess']['dso']['prev'][node_id] = dict()
 
         for year in planning_problem.years:
 
@@ -777,13 +789,17 @@ def create_admm_variables(planning_problem):
             dual_variables['ess']['dso']['current'][node_id][year] = dict()
             dual_variables['ess']['esso']['current'][node_id][year] = dict()
 
-            dual_variables['v']['tso']['prev'][node_id][year] = dict()
-            dual_variables['v']['dso']['prev'][node_id][year] = dict()
-            dual_variables['pf']['tso']['prev'][node_id][year] = dict()
-            dual_variables['pf']['dso']['prev'][node_id][year] = dict()
-            dual_variables['ess']['tso']['prev'][node_id][year] = dict()
-            dual_variables['ess']['dso']['prev'][node_id][year] = dict()
-            dual_variables['ess']['esso']['prev'][node_id][year] = dict()
+            if planning_problem.params.admm.previous_iter['v']:
+                dual_variables['v']['tso']['prev'][node_id][year] = dict()
+                dual_variables['v']['dso']['prev'][node_id][year] = dict()
+
+            if planning_problem.params.admm.previous_iter['pf']:
+                dual_variables['pf']['tso']['prev'][node_id][year] = dict()
+                dual_variables['pf']['dso']['prev'][node_id][year] = dict()
+
+            if planning_problem.params.admm.previous_iter['ess']:
+                dual_variables['ess']['tso']['prev'][node_id][year] = dict()
+                dual_variables['ess']['dso']['prev'][node_id][year] = dict()
 
             for day in planning_problem.days:
 
@@ -813,13 +829,17 @@ def create_admm_variables(planning_problem):
                 dual_variables['ess']['dso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
                 dual_variables['ess']['esso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
 
-                dual_variables['v']['tso']['prev'][node_id][year][day] = [0.0] * planning_problem.num_instants
-                dual_variables['v']['dso']['prev'][node_id][year][day] = [0.0] * planning_problem.num_instants
-                dual_variables['pf']['tso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
-                dual_variables['pf']['dso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
-                dual_variables['ess']['tso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
-                dual_variables['ess']['dso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
-                dual_variables['ess']['esso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
+                if planning_problem.params.admm.previous_iter['v']:
+                    dual_variables['v']['tso']['prev'][node_id][year][day] = [0.0] * planning_problem.num_instants
+                    dual_variables['v']['dso']['prev'][node_id][year][day] = [0.0] * planning_problem.num_instants
+
+                if planning_problem.params.admm.previous_iter['pf']:
+                    dual_variables['pf']['tso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
+                    dual_variables['pf']['dso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
+
+                if planning_problem.params.admm.previous_iter['ess']:
+                    dual_variables['ess']['tso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
+                    dual_variables['ess']['dso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
 
     return consensus_variables, dual_variables
 
