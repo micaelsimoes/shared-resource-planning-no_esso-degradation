@@ -1019,11 +1019,21 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                 dso_model[year][day].dual_ess_p_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - Shared ESS active power
                 dso_model[year][day].dual_ess_q_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - Shared ESS reactive power
 
+                if params.previous_iter['v']:
+                    dso_model[year][day].v_sqr_prev = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)  # Voltage magnitude - previous iteration
+                    dso_model[year][day].dual_v_sqr_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)        # Dual variable - previous iteration interface voltage magnitude
+
+                if params.previous_iter['pf']:
+                    dso_model[year][day].p_pf_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)              # Active power - previous iteration
+                    dso_model[year][day].q_pf_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)              # Reactive power - previous iteration
+                    dso_model[year][day].dual_pf_p_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)         # Dual variable - interface active power
+                    dso_model[year][day].dual_pf_q_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)         # Dual variable - interface reactive power
+
                 if params.previous_iter['ess']:
-                    dso_model[year][day].p_ess_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)              # Shared ESS - previous iteration active power
-                    dso_model[year][day].q_ess_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)              # Shared ESS - previous iteration reactive power
-                    dso_model[year][day].dual_ess_p_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)         # Dual variable - Shared ESS previous iteration active power
-                    dso_model[year][day].dual_ess_q_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)         # Dual variable - Shared ESS previous iteration reactive power
+                    dso_model[year][day].p_ess_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Shared ESS - previous iteration active power
+                    dso_model[year][day].q_ess_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Shared ESS - previous iteration reactive power
+                    dso_model[year][day].dual_ess_p_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)        # Dual variable - Shared ESS previous iteration active power
+                    dso_model[year][day].dual_ess_q_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)        # Dual variable - Shared ESS previous iteration reactive power
 
                 # Objective function - augmented Lagrangian
                 init_of_value = 1.00
@@ -1064,9 +1074,26 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                     obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_p_req ** 2
                     obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_q_req ** 2
 
+                    if params.previous_iter['v']:
+                        constraint_vmag_prev = (dso_model[year][day].expected_interface_vmag_sqr[p] - dso_model[year][day].v_sqr_prev[p])
+                        obj += (dso_model[year][day].dual_v_sqr_prev[p]) * constraint_vmag_prev
+                        obj += (dso_model[year][day].rho_v / 2) * (constraint_vmag_prev ** 2)
+
+                    if params.previous_iter['pf']:
+                        constraint_p_prev = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_prev[p]) / interface_transf_rating
+                        constraint_q_prev = (dso_model[year][day].expected_interface_pf_q[p] - dso_model[year][day].q_pf_prev[p]) / interface_transf_rating
+                        obj += (dso_model[year][day].dual_pf_p_prev[p]) * constraint_p_prev
+                        obj += (dso_model[year][day].dual_pf_q_prev[p]) * constraint_q_prev
+                        obj += (dso_model[year][day].rho_pf / 2) * (constraint_p_prev ** 2)
+                        obj += (dso_model[year][day].rho_pf / 2) * (constraint_q_prev ** 2)
+
                     if params.previous_iter['ess']:
                         constraint_ess_p_prev = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_prev[p]) / (2 * shared_ess_rating)
                         constraint_ess_q_prev = (dso_model[year][day].expected_shared_ess_q[p] - dso_model[year][day].q_ess_prev[p]) / (2 * shared_ess_rating)
+                        obj += (dso_model[year][day].dual_ess_p_prev[p]) * constraint_ess_p_prev
+                        obj += (dso_model[year][day].dual_ess_q_prev[p]) * constraint_ess_q_prev
+                        obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_p_prev ** 2
+                        obj += (dso_model[year][day].rho_ess / 2) * constraint_ess_q_prev ** 2
 
                 # Add ADMM OF, deactivate original OF
                 dso_model[year][day].objective.deactivate()
@@ -5318,11 +5345,11 @@ def _get_initial_candidate_solution(planning_problem):
         candidate_solution['total_capacity'][node_id] = dict()
         for year in planning_problem.years:
             candidate_solution['investment'][node_id][year] = dict()
-            candidate_solution['investment'][node_id][year]['s'] = 2.50
-            candidate_solution['investment'][node_id][year]['e'] = 2.50
+            candidate_solution['investment'][node_id][year]['s'] = 1.00
+            candidate_solution['investment'][node_id][year]['e'] = 1.00
             candidate_solution['total_capacity'][node_id][year] = dict()
-            candidate_solution['total_capacity'][node_id][year]['s'] = 2.50
-            candidate_solution['total_capacity'][node_id][year]['e'] = 2.50
+            candidate_solution['total_capacity'][node_id][year]['s'] = 1.00
+            candidate_solution['total_capacity'][node_id][year]['e'] = 1.00
     return candidate_solution
 
 
