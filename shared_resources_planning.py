@@ -1503,6 +1503,8 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                     for d in sess_model[node_id].days:
                         day = repr_days[d]
                         for p in sess_model[node_id].periods:
+                            shared_ess_vars['esso']['prev'][node_id][year][day]['p'][p] = copy(shared_ess_vars['esso']['current'][node_id][year][day]['p'][p])
+                            shared_ess_vars['esso']['prev'][node_id][year][day]['q'][p] = copy(shared_ess_vars['esso']['current'][node_id][year][day]['q'][p])
                             p_req = pe.value(sess_model[node_id].es_pnet[y, d, p])
                             q_req = pe.value(sess_model[node_id].es_qnet[y, d, p])
                             shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] = p_req
@@ -1566,6 +1568,12 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                         error_q_esso_tso = shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['q'][p]
                         dual_vars['esso']['current'][node_id][year][day]['p'][p] += rho_ess_sess * error_p_esso_tso
                         dual_vars['esso']['current'][node_id][year][day]['q'][p] += rho_ess_sess * error_q_esso_tso
+
+                        if params.previous_iter['ess']:
+                            error_p_esso_prev = shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['esso']['prev'][node_id][year][day]['p'][p]
+                            error_q_esso_prev = shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['q'][p]
+                            dual_vars['esso']['prev'][node_id][year][day]['p'][p] += rho_ess_sess * error_p_esso_prev
+                            dual_vars['esso']['prev'][node_id][year][day]['q'][p] += rho_ess_sess * error_q_esso_prev
 
 
 
@@ -5310,11 +5318,11 @@ def _get_initial_candidate_solution(planning_problem):
         candidate_solution['total_capacity'][node_id] = dict()
         for year in planning_problem.years:
             candidate_solution['investment'][node_id][year] = dict()
-            candidate_solution['investment'][node_id][year]['s'] = 0.00
-            candidate_solution['investment'][node_id][year]['e'] = 0.00
+            candidate_solution['investment'][node_id][year]['s'] = 2.50
+            candidate_solution['investment'][node_id][year]['e'] = 2.50
             candidate_solution['total_capacity'][node_id][year] = dict()
-            candidate_solution['total_capacity'][node_id][year]['s'] = 0.00
-            candidate_solution['total_capacity'][node_id][year]['e'] = 0.00
+            candidate_solution['total_capacity'][node_id][year]['s'] = 2.50
+            candidate_solution['total_capacity'][node_id][year]['e'] = 2.50
     return candidate_solution
 
 
