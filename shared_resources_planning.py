@@ -358,6 +358,8 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         # 3.3 STOPPING CRITERIA evaluation
         convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters)
         if convergence:
+            iter_end = time.time()
+            print('[INFO] \t - Iter {}: {:.2f} s'.format(iter, iter_end - iter_start))
             break
 
         iter_end = time.time()
