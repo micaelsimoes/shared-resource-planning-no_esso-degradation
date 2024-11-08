@@ -4,8 +4,8 @@
 class ADMMParameters:
 
     def __init__(self):
-        self.tol = {'consensus': {'v': 1e-2, 'pf': 1e-3, 'ess': 1e-3},
-                    'stationarity': {'v': 1e-2, 'pf': 1e-3, 'ess': 1e-3}}
+        self.tol = {'consensus': {'v': 0.1e-2, 'pf': 0.1e-2, 'ess': 1e-2},
+                    'stationarity': {'v': 0.5e-2, 'pf': 0.5e-2, 'ess': 5e-2}}
         self.num_max_iters = 1000
         self.adaptive_penalty = False
         self.previous_iter = {'v': False, 'pf': False, 'ess': False}
