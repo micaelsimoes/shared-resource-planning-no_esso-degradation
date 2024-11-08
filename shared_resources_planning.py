@@ -301,9 +301,9 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         # --------------------------------------------------------------------------------------------------------------
         # 1. Solve DSOs problems
         results['dso'] = update_distribution_coordination_models_and_solve(distribution_networks, dso_models,
-                                                                           consensus_vars['v']['tso'], dual_vars['v']['dso'],
-                                                                           consensus_vars['pf']['tso'], dual_vars['pf']['dso'],
-                                                                           consensus_vars['ess']['esso'], dual_vars['ess']['dso'],
+                                                                           consensus_vars['v'], dual_vars['v']['dso'],
+                                                                           consensus_vars['pf'], dual_vars['pf']['dso'],
+                                                                           consensus_vars['ess'], dual_vars['ess']['dso'],
                                                                            admm_parameters, from_warm_start=from_warm_start)
 
         # 1.1 Update ADMM CONSENSUS variables
@@ -1295,20 +1295,34 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
 
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
+
                     model[year][day].dual_v_sqr_req[p].fix((dual_v['current'][node_id][year][day][p] / v_base) ** 2)
-                    model[year][day].v_sqr_req[p].fix((v_req['current'][node_id][year][day][p] / v_base) ** 2)
+                    model[year][day].v_sqr_req[p].fix((v_req['tso']['current'][node_id][year][day][p] / v_base) ** 2)
+                    if params.previous_iter['v']:
+                        model[year][day].dual_v_sqr_prev[p].fix((dual_v['prev'][node_id][year][day][p] / v_base) ** 2)
+                        model[year][day].v_sqr_prev[p].fix((v_req['dso']['prev'][node_id][year][day][p] / v_base) ** 2)
 
                     model[year][day].dual_pf_p_req[p].fix(dual_pf['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].dual_pf_q_req[p].fix(dual_pf['current'][node_id][year][day]['q'][p] / s_base)
-                    model[year][day].p_pf_req[p].fix(pf_req['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].q_pf_req[p].fix(pf_req['current'][node_id][year][day]['q'][p] / s_base)
+                    model[year][day].p_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['p'][p] / s_base)
+                    model[year][day].q_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['q'][p] / s_base)
+                    if params.previous_iter['pf']:
+                        model[year][day].dual_pf_p_prev[p].fix(dual_pf['prev'][node_id][year][day]['p'][p] / s_base)
+                        model[year][day].dual_pf_q_prev[p].fix(dual_pf['prev'][node_id][year][day]['q'][p] / s_base)
+                        model[year][day].p_pf_prev[p].fix(pf_req['dso']['prev'][node_id][year][day]['p'][p] / s_base)
+                        model[year][day].q_pf_prev[p].fix(pf_req['dso']['prev'][node_id][year][day]['q'][p] / s_base)
 
                 # Update SHARED ENERGY STORAGE variables (if existent)
                 for p in model[year][day].periods:
                     model[year][day].dual_ess_p_req[p].fix(dual_ess['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].dual_ess_q_req[p].fix(dual_ess['current'][node_id][year][day]['q'][p] / s_base)
-                    model[year][day].p_ess_req[p].fix(ess_req['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].q_ess_req[p].fix(ess_req['current'][node_id][year][day]['q'][p] / s_base)
+                    model[year][day].p_ess_req[p].fix(ess_req['tso']['current'][node_id][year][day]['p'][p] / s_base)
+                    model[year][day].q_ess_req[p].fix(ess_req['tso']['current'][node_id][year][day]['q'][p] / s_base)
+                    if params.previous_iter['ess']:
+                        model[year][day].dual_ess_p_prev[p].fix(dual_ess['prev'][node_id][year][day]['p'][p] / s_base)
+                        model[year][day].dual_ess_q_prev[p].fix(dual_ess['prev'][node_id][year][day]['q'][p] / s_base)
+                        model[year][day].p_ess_prev[p].fix(ess_req['dso']['prev'][node_id][year][day]['p'][p] / s_base)
+                        model[year][day].q_ess_prev[p].fix(ess_req['dso']['prev'][node_id][year][day]['q'][p] / s_base)
 
         # Solve!
         res[node_id] = distribution_network.optimize(model, from_warm_start=from_warm_start)
@@ -5429,11 +5443,11 @@ def _get_initial_candidate_solution(planning_problem):
         candidate_solution['total_capacity'][node_id] = dict()
         for year in planning_problem.years:
             candidate_solution['investment'][node_id][year] = dict()
-            candidate_solution['investment'][node_id][year]['s'] = 0.00
-            candidate_solution['investment'][node_id][year]['e'] = 0.00
+            candidate_solution['investment'][node_id][year]['s'] = 2.50
+            candidate_solution['investment'][node_id][year]['e'] = 5.00
             candidate_solution['total_capacity'][node_id][year] = dict()
-            candidate_solution['total_capacity'][node_id][year]['s'] = 0.00
-            candidate_solution['total_capacity'][node_id][year]['e'] = 0.00
+            candidate_solution['total_capacity'][node_id][year]['s'] = 2.50
+            candidate_solution['total_capacity'][node_id][year]['e'] = 5.00
     return candidate_solution
 
 
