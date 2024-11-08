@@ -1687,13 +1687,6 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                         dual_vars['esso']['current'][node_id][year][day]['p'][p] += rho_ess_sess * error_p_esso_tso
                         dual_vars['esso']['current'][node_id][year][day]['q'][p] += rho_ess_sess * error_q_esso_tso
 
-                        if params.previous_iter['ess']:
-                            error_p_esso_prev = shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['esso']['prev'][node_id][year][day]['p'][p]
-                            error_q_esso_prev = shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['q'][p]
-                            dual_vars['esso']['prev'][node_id][year][day]['p'][p] += rho_ess_sess * error_p_esso_prev
-                            dual_vars['esso']['prev'][node_id][year][day]['q'][p] += rho_ess_sess * error_q_esso_prev
-
-
 
 # ======================================================================================================================
 #  OPERATIONAL PLANNING WITHOUT COORDINATION functions
