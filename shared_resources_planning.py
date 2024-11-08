@@ -301,9 +301,9 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         # --------------------------------------------------------------------------------------------------------------
         # 1. Solve DSOs problems
         results['dso'] = update_distribution_coordination_models_and_solve(distribution_networks, dso_models,
-                                                                           consensus_vars['v']['tso'], dual_vars['v']['dso'],
-                                                                           consensus_vars['pf']['tso'], dual_vars['pf']['dso'],
-                                                                           consensus_vars['ess']['esso'], dual_vars['ess']['dso'],
+                                                                           consensus_vars['v'], dual_vars['v']['dso'],
+                                                                           consensus_vars['pf'], dual_vars['pf']['dso'],
+                                                                           consensus_vars['ess'], dual_vars['ess']['dso'],
                                                                            admm_parameters, from_warm_start=from_warm_start)
 
         # 1.1 Update ADMM CONSENSUS variables
@@ -317,14 +317,16 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         # 1.3 STOPPING CRITERIA evaluation
         convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters, debug_flag=debug_flag)
         if convergence:
+            iter_end = time.time()
+            print('[INFO] \t - Iter {}: {:.2f} s'.format(iter, iter_end - iter_start))
             break
 
         # --------------------------------------------------------------------------------------------------------------
         # 2. Solve TSO problem
         results['tso'] = update_transmission_coordination_model_and_solve(transmission_network, tso_model,
-                                                                          consensus_vars['v']['dso'], dual_vars['v']['tso'],
-                                                                          consensus_vars['pf']['dso'], dual_vars['pf']['tso'],
-                                                                          consensus_vars['ess']['dso'], dual_vars['ess']['tso'],
+                                                                          consensus_vars['v'], dual_vars['v']['tso'],
+                                                                          consensus_vars['pf'], dual_vars['pf']['tso'],
+                                                                          consensus_vars['ess'], dual_vars['ess']['tso'],
                                                                           admm_parameters, from_warm_start=from_warm_start)
 
         # 2.1 Update ADMM CONSENSUS variables
@@ -338,6 +340,8 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         # 2.3 STOPPING CRITERIA evaluation
         convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters, debug_flag=debug_flag)
         if convergence:
+            iter_end = time.time()
+            print('[INFO] \t - Iter {}: {:.2f} s'.format(iter, iter_end - iter_start))
             break
 
 
@@ -1198,17 +1202,22 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
                     model[year][day].dual_v_sqr_req[dn, p].fix((dual_v['current'][node_id][year][day][p] / v_base) ** 2)
                     model[year][day].dual_pf_p_req[dn, p].fix(dual_pf['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].dual_pf_q_req[dn, p].fix(dual_pf['current'][node_id][year][day]['q'][p] / s_base)
-                    model[year][day].v_sqr_req[dn, p].fix((v_req['current'][node_id][year][day][p] / v_base) ** 2)
-                    model[year][day].p_pf_req[dn, p].fix(pf_req['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].q_pf_req[dn, p].fix(pf_req['current'][node_id][year][day]['q'][p] / s_base)
+                    model[year][day].v_sqr_req[dn, p].fix((v_req['dso']['current'][node_id][year][day][p] / v_base) ** 2)
+                    model[year][day].p_pf_req[dn, p].fix(pf_req['dso']['current'][node_id][year][day]['p'][p] / s_base)
+                    model[year][day].q_pf_req[dn, p].fix(pf_req['dso']['current'][node_id][year][day]['q'][p] / s_base)
+                    if params.previous_iter['pf']:
+                        model[year][day].dual_pf_p_prev[dn, p].fix(dual_pf['prev'][node_id][year][day]['p'][p] / s_base)
+                        model[year][day].dual_pf_q_prev[dn, p].fix(dual_pf['prev'][node_id][year][day]['q'][p] / s_base)
+                        model[year][day].p_pf_prev[dn, p].fix(pf_req['tso']['prev'][node_id][year][day]['p'][p] / s_base)
+                        model[year][day].q_pf_prev[dn, p].fix(pf_req['tso']['prev'][node_id][year][day]['q'][p] / s_base)
 
                 # Update shared ESS capacity and power requests
                 shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(node_id)
                 for p in model[year][day].periods:
                     model[year][day].dual_ess_p_req[shared_ess_idx, p].fix(dual_ess['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].dual_ess_q_req[shared_ess_idx, p].fix(dual_ess['current'][node_id][year][day]['q'][p] / s_base)
-                    model[year][day].p_ess_req[shared_ess_idx, p].fix(ess_req['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].q_ess_req[shared_ess_idx, p].fix(ess_req['current'][node_id][year][day]['q'][p] / s_base)
+                    model[year][day].p_ess_req[shared_ess_idx, p].fix(ess_req['dso']['current'][node_id][year][day]['p'][p] / s_base)
+                    model[year][day].q_ess_req[shared_ess_idx, p].fix(ess_req['dso']['current'][node_id][year][day]['q'][p] / s_base)
 
     # Solve!
     res = transmission_network.optimize(model, from_warm_start=from_warm_start)
@@ -1255,19 +1264,23 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
                     model[year][day].dual_v_sqr_req[p].fix((dual_v['current'][node_id][year][day][p] / v_base) ** 2)
-                    model[year][day].v_sqr_req[p].fix((v_req['current'][node_id][year][day][p] / v_base) ** 2)
-
+                    model[year][day].v_sqr_req[p].fix((v_req['tso']['current'][node_id][year][day][p] / v_base) ** 2)
                     model[year][day].dual_pf_p_req[p].fix(dual_pf['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].dual_pf_q_req[p].fix(dual_pf['current'][node_id][year][day]['q'][p] / s_base)
-                    model[year][day].p_pf_req[p].fix(pf_req['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].q_pf_req[p].fix(pf_req['current'][node_id][year][day]['q'][p] / s_base)
+                    model[year][day].p_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['p'][p] / s_base)
+                    model[year][day].q_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['q'][p] / s_base)
+                    if params.previous_iter['pf']:
+                        model[year][day].dual_pf_p_prev[p].fix(dual_pf['prev'][node_id][year][day]['p'][p] / s_base)
+                        model[year][day].dual_pf_q_prev[p].fix(dual_pf['prev'][node_id][year][day]['q'][p] / s_base)
+                        model[year][day].p_pf_prev[p].fix(pf_req['dso']['prev'][node_id][year][day]['p'][p] / s_base)
+                        model[year][day].q_pf_prev[p].fix(pf_req['dso']['prev'][node_id][year][day]['q'][p] / s_base)
 
                 # Update SHARED ENERGY STORAGE variables (if existent)
                 for p in model[year][day].periods:
                     model[year][day].dual_ess_p_req[p].fix(dual_ess['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].dual_ess_q_req[p].fix(dual_ess['current'][node_id][year][day]['q'][p] / s_base)
-                    model[year][day].p_ess_req[p].fix(ess_req['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].q_ess_req[p].fix(ess_req['current'][node_id][year][day]['q'][p] / s_base)
+                    model[year][day].p_ess_req[p].fix(ess_req['esso']['current'][node_id][year][day]['p'][p] / s_base)
+                    model[year][day].q_ess_req[p].fix(ess_req['esso']['current'][node_id][year][day]['q'][p] / s_base)
 
         # Solve!
         res[node_id] = distribution_network.optimize(model, from_warm_start=from_warm_start)
