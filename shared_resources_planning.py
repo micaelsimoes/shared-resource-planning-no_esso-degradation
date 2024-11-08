@@ -1588,6 +1588,7 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                         for p in sess_model[node_id].periods:
                             shared_ess_vars['esso']['prev'][node_id][year][day]['p'][p] = copy(shared_ess_vars['esso']['current'][node_id][year][day]['p'][p])
                             shared_ess_vars['esso']['prev'][node_id][year][day]['q'][p] = copy(shared_ess_vars['esso']['current'][node_id][year][day]['q'][p])
+
                             p_req = pe.value(sess_model[node_id].es_pnet[y, d, p])
                             q_req = pe.value(sess_model[node_id].es_qnet[y, d, p])
                             shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] = p_req
@@ -1605,6 +1606,7 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                         for p in tso_model[year][day].periods:
                             shared_ess_vars['tso']['prev'][node_id][year][day]['p'][p] = copy(shared_ess_vars['tso']['current'][node_id][year][day]['p'][p])
                             shared_ess_vars['tso']['prev'][node_id][year][day]['q'][p] = copy(shared_ess_vars['tso']['current'][node_id][year][day]['q'][p])
+
                             p_req = pe.value(tso_model[year][day].expected_shared_ess_p[shared_ess_idx, p]) * s_base
                             q_req = pe.value(tso_model[year][day].expected_shared_ess_q[shared_ess_idx, p]) * s_base
                             shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] = p_req
@@ -1621,6 +1623,7 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                         for p in dso_model[year][day].periods:
                             shared_ess_vars['dso']['prev'][node_id][year][day]['p'][p] = copy(shared_ess_vars['dso']['current'][node_id][year][day]['p'][p])
                             shared_ess_vars['dso']['prev'][node_id][year][day]['q'][p] = copy(shared_ess_vars['dso']['current'][node_id][year][day]['q'][p])
+
                             p_req = pe.value(dso_model[year][day].expected_shared_ess_p[p]) * s_base
                             q_req = pe.value(dso_model[year][day].expected_shared_ess_q[p]) * s_base
                             shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] = p_req
