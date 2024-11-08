@@ -2156,7 +2156,7 @@ def _write_operational_planning_results_to_excel(planning_problem, results, prim
         from datetime import datetime
         now = datetime.now()
         current_time = now.strftime("%Y-%m-%d_%H-%M-%S")
-        backup_filename = os.path.join(planning_problem.data_dir, f"{filename.replace('.xlsx', '')}_{current_time}.xlsx")
+        backup_filename = os.path.join(planning_problem.results_dir, f"{filename.replace('.xlsx', '')}_{current_time}.xlsx")
         print(f"[WARNING] Results saved to file {backup_filename}.xlsx")
         wb.save(backup_filename)
 
