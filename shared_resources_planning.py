@@ -1232,8 +1232,8 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
 
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
-                    model[year][day].dual_v_sqr_req[p].fix((dual_v['current'][node_id][year][day][p] / v_base) ** 2)
-                    model[year][day].v_sqr_req[p].fix((v_req['tso']['current'][node_id][year][day][p] / v_base) ** 2)
+                    model[year][day].dual_v_sqr_req[p].fix(dual_v['current'][node_id][year][day][p] / v_base)
+                    model[year][day].v_sqr_req[p].fix(v_req['tso']['current'][node_id][year][day][p] / v_base)
                     model[year][day].dual_pf_p_req[p].fix(dual_pf['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].dual_pf_q_req[p].fix(dual_pf['current'][node_id][year][day]['q'][p] / s_base)
                     model[year][day].p_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['p'][p] / s_base)
@@ -5347,11 +5347,11 @@ def _get_initial_candidate_solution(planning_problem):
         candidate_solution['total_capacity'][node_id] = dict()
         for year in planning_problem.years:
             candidate_solution['investment'][node_id][year] = dict()
-            candidate_solution['investment'][node_id][year]['s'] = 1.00
-            candidate_solution['investment'][node_id][year]['e'] = 1.00
+            candidate_solution['investment'][node_id][year]['s'] = 0.00
+            candidate_solution['investment'][node_id][year]['e'] = 0.00
             candidate_solution['total_capacity'][node_id][year] = dict()
-            candidate_solution['total_capacity'][node_id][year]['s'] = 2.00
-            candidate_solution['total_capacity'][node_id][year]['e'] = 2.00
+            candidate_solution['total_capacity'][node_id][year]['s'] = 0.00
+            candidate_solution['total_capacity'][node_id][year]['e'] = 0.00
     return candidate_solution
 
 
