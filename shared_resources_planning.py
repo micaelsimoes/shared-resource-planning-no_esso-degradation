@@ -1449,7 +1449,7 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                             vsqr_req = pe.value(tso_model[year][day].expected_interface_vmag_sqr[dn, p]) * (v_base ** 2)
                             p_req = pe.value(tso_model[year][day].expected_interface_pf_p[dn, p]) * s_base
                             q_req = pe.value(tso_model[year][day].expected_interface_pf_q[dn, p]) * s_base
-                            interface_vars['v']['tso']['current'][node_id][year][day][p] = vsqr_req
+                            interface_vars['v_sqr']['tso']['current'][node_id][year][day][p] = vsqr_req
                             interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p] = p_req
                             interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p] = q_req
 
