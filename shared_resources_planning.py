@@ -301,7 +301,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         # --------------------------------------------------------------------------------------------------------------
         # 1. Solve DSOs problems
         results['dso'] = update_distribution_coordination_models_and_solve(distribution_networks, dso_models,
-                                                                           consensus_vars['v'], dual_vars['v']['dso'],
+                                                                           consensus_vars['v_sqr'], dual_vars['v_sqr']['dso'],
                                                                            consensus_vars['pf'], dual_vars['pf']['dso'],
                                                                            consensus_vars['ess'], dual_vars['ess']['dso'],
                                                                            admm_parameters, from_warm_start=from_warm_start)
@@ -1192,7 +1192,7 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
     return res
 
 
-def update_distribution_coordination_models_and_solve(distribution_networks, models, v_req, dual_v, pf_req, dual_pf, ess_req, dual_ess, params, from_warm_start=False):
+def update_distribution_coordination_models_and_solve(distribution_networks, models, vsqr_req, dual_vsqr, pf_req, dual_pf, ess_req, dual_ess, params, from_warm_start=False):
 
     print('[INFO] \t\t - Updating distribution networks:')
     res = dict()
@@ -1232,8 +1232,8 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
 
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
-                    model[year][day].dual_v_sqr_req[p].fix(dual_v['current'][node_id][year][day][p] / v_base)
-                    model[year][day].v_sqr_req[p].fix(v_req['tso']['current'][node_id][year][day][p] / v_base)
+                    model[year][day].dual_v_sqr_req[p].fix(dual_vsqr['current'][node_id][year][day][p] / (v_base ** 2))
+                    model[year][day].v_sqr_req[p].fix(vsqr_req['tso']['current'][node_id][year][day][p] / (v_base ** 2))
                     model[year][day].dual_pf_p_req[p].fix(dual_pf['current'][node_id][year][day]['p'][p] / s_base)
                     model[year][day].dual_pf_q_req[p].fix(dual_pf['current'][node_id][year][day]['q'][p] / s_base)
                     model[year][day].p_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['p'][p] / s_base)
