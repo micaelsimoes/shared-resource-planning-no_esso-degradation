@@ -1326,7 +1326,7 @@ def check_consensus_convergence(planning_problem, consensus_vars, params, debug_
                     shared_ess_rating = 1.00
 
                 for p in range(planning_problem.num_instants):
-                    sum_rel_abs_error_vmag += abs(consensus_vars['v']['tso']['current'][node_id][year][day][p] - consensus_vars['v']['dso']['current'][node_id][year][day][p]) / interface_v_base
+                    sum_rel_abs_error_vmag += abs(consensus_vars['v_sqr']['tso']['current'][node_id][year][day][p] - consensus_vars['v_sqr']['dso']['current'][node_id][year][day][p]) / (interface_v_base ** 2)
                     num_elems_vmag += 2
 
                     sum_rel_abs_error_pf += abs(consensus_vars['pf']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['pf']['dso']['current'][node_id][year][day]['p'][p]) / interface_transf_rating
