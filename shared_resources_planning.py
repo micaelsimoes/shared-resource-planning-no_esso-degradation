@@ -392,8 +392,8 @@ def print_debug_info(planning_problem, consensus_vars, print_vmag=False, print_p
             print(f"\tYear {year}")
             for day in planning_problem.days:
                 if print_vmag:
-                    print(f"\tNode {node_id}, {year}, {day}, PF, TSO,  V  {consensus_vars['v']['tso']['current'][node_id][year][day]}")
-                    print(f"\tNode {node_id}, {year}, {day}, PF, DSO,  V  {consensus_vars['v']['dso']['current'][node_id][year][day]}")
+                    print(f"\tNode {node_id}, {year}, {day}, PF, TSO,  V  {sqrt(consensus_vars['v_sqr']['tso']['current'][node_id][year][day])}")
+                    print(f"\tNode {node_id}, {year}, {day}, PF, DSO,  V  {sqrt(consensus_vars['v_sqr']['dso']['current'][node_id][year][day])}")
                 if print_pf:
                     print(f"\tNode {node_id}, {year}, {day}, PF, TSO,  P {consensus_vars['pf']['tso']['current'][node_id][year][day]['p']}")
                     print(f"\tNode {node_id}, {year}, {day}, PF, DSO,  P {consensus_vars['pf']['dso']['current'][node_id][year][day]['p']}")
@@ -1326,7 +1326,7 @@ def check_consensus_convergence(planning_problem, consensus_vars, params, debug_
                     shared_ess_rating = 1.00
 
                 for p in range(planning_problem.num_instants):
-                    sum_rel_abs_error_vmag += abs(consensus_vars['v_sqr']['tso']['current'][node_id][year][day][p] - consensus_vars['v_sqr']['dso']['current'][node_id][year][day][p]) / (interface_v_base ** 2)
+                    sum_rel_abs_error_vmag += abs(sqrt(consensus_vars['v_sqr']['tso']['current'][node_id][year][day][p]) - sqrt(consensus_vars['v_sqr']['dso']['current'][node_id][year][day][p])) / interface_v_base
                     num_elems_vmag += 2
 
                     sum_rel_abs_error_pf += abs(consensus_vars['pf']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['pf']['dso']['current'][node_id][year][day]['p'][p]) / interface_transf_rating
@@ -1386,8 +1386,8 @@ def check_stationary_convergence(planning_problem, consensus_vars, params):
                     shared_ess_rating = 1.00
 
                 for p in range(planning_problem.num_instants):
-                    sum_rel_abs_error_vmag += rho_tso_v * abs(consensus_vars['v_sqr']['tso']['current'][node_id][year][day][p] - consensus_vars['v_sqr']['tso']['prev'][node_id][year][day][p]) / (interface_v_base ** 2)
-                    sum_rel_abs_error_vmag += rho_dso_v * abs(consensus_vars['v_sqr']['dso']['current'][node_id][year][day][p] - consensus_vars['v_sqr']['dso']['prev'][node_id][year][day][p]) / (interface_v_base ** 2)
+                    sum_rel_abs_error_vmag += rho_tso_v * abs(sqrt(consensus_vars['v_sqr']['tso']['current'][node_id][year][day][p]) - sqrt(consensus_vars['v_sqr']['tso']['prev'][node_id][year][day][p])) / interface_v_base
+                    sum_rel_abs_error_vmag += rho_dso_v * abs(sqrt(consensus_vars['v_sqr']['dso']['current'][node_id][year][day][p]) - sqrt(consensus_vars['v_sqr']['dso']['prev'][node_id][year][day][p])) / interface_v_base
                     num_elems_vmag += 2
 
                     sum_rel_abs_error_pf += rho_tso_pf * abs(consensus_vars['pf']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['pf']['tso']['prev'][node_id][year][day]['p'][p]) / interface_transf_rating
