@@ -1680,7 +1680,7 @@ def _run_operational_planning_without_coordination(planning_problem):
             for day in distribution_network.days:
                 s_base = distribution_network.network[year][day].baseMVA
                 for p in dso_model[year][day].periods:
-                    interface_v[node_id][year][day][p] = sqrt(pe.value(dso_model[year][day].expected_interface_vmag_sqr[p]))
+                    interface_v_sqr[node_id][year][day][p] = pe.value(dso_model[year][day].expected_interface_vmag_sqr[p])
                     interface_pf[node_id][year][day]['p'][p] = pe.value(dso_model[year][day].expected_interface_pf_p[p]) * s_base
                     interface_pf[node_id][year][day]['q'][p] = pe.value(dso_model[year][day].expected_interface_pf_q[p]) * s_base
 
@@ -1716,7 +1716,7 @@ def _run_operational_planning_without_coordination(planning_problem):
                             tso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p].fix(0.00)
                             tso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p].setlb(0.00)
 
-                            vsqr = interface_v[node_id][year][day][p] ** 2
+                            v_sqr = interface_v_sqr[node_id][year][day][p]
                             tso_model[year][day].interface_expected_values.add(tso_model[year][day].e[adn_node_idx, s_m, s_o, p] ** 2 + tso_model[year][day].f[adn_node_idx, s_m, s_o, p] ** 2 == vsqr)
 
                             if transmission_network.params.slacks.grid_operation.voltage:
