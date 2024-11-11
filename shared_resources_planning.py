@@ -392,8 +392,8 @@ def print_debug_info(planning_problem, consensus_vars, print_vmag=False, print_p
             print(f"\tYear {year}")
             for day in planning_problem.days:
                 if print_vmag:
-                    print(f"\tNode {node_id}, {year}, {day}, PF, TSO,  V  {sqrt(consensus_vars['v_sqr']['tso']['current'][node_id][year][day])}")
-                    print(f"\tNode {node_id}, {year}, {day}, PF, DSO,  V  {sqrt(consensus_vars['v_sqr']['dso']['current'][node_id][year][day])}")
+                    print(f"\tNode {node_id}, {year}, {day}, PF, TSO,  V  {[sqrt(vmag) for vmag in consensus_vars['v_sqr']['tso']['current'][node_id][year][day]]}")
+                    print(f"\tNode {node_id}, {year}, {day}, PF, DSO,  V  {[sqrt(vmag) for vmag in consensus_vars['v_sqr']['dso']['current'][node_id][year][day]]}")
                 if print_pf:
                     print(f"\tNode {node_id}, {year}, {day}, PF, TSO,  P {consensus_vars['pf']['tso']['current'][node_id][year][day]['p']}")
                     print(f"\tNode {node_id}, {year}, {day}, PF, DSO,  P {consensus_vars['pf']['dso']['current'][node_id][year][day]['p']}")
