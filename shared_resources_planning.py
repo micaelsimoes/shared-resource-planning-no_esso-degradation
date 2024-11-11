@@ -510,10 +510,10 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
                 v_base = transmission_network.network[year][day].get_node_base_kv(adn_node_id)
                 for p in tso_model[year][day].periods:
-                    interface_v = consensus_vars['v']['dso']['current'][adn_node_id][year][day][p] / v_base
+                    interface_v_sqr = consensus_vars['v_sqr']['dso']['current'][adn_node_id][year][day][p] / (v_base ** 2)
                     interface_pf_p = consensus_vars['pf']['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
                     interface_pf_q = consensus_vars['pf']['dso']['current'][adn_node_id][year][day]['q'][p] / s_base
-                    tso_model[year][day].expected_interface_vmag_sqr[dn, p].fix(interface_v)
+                    tso_model[year][day].expected_interface_vmag_sqr[dn, p].fix(interface_v_sqr)
                     tso_model[year][day].expected_interface_pf_p[dn, p].fix(interface_pf_p)
                     tso_model[year][day].expected_interface_pf_q[dn, p].fix(interface_pf_q)
 
@@ -531,12 +531,12 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                 v_base = transmission_network.network[year][day].get_node_base_kv(adn_node_id)
                 shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(adn_node_id)
                 for p in tso_model[year][day].periods:
-                    interface_v = sqrt(pe.value(tso_model[year][day].expected_interface_vmag_sqr[dn, p])) * v_base
+                    interface_v_sqr = pe.value(tso_model[year][day].expected_interface_vmag_sqr[dn, p]) * (v_base ** 2)
                     interface_pf_p = pe.value(tso_model[year][day].expected_interface_pf_p[dn, p]) * s_base
                     interface_pf_q = pe.value(tso_model[year][day].expected_interface_pf_q[dn, p]) * s_base
                     p_ess = pe.value(tso_model[year][day].expected_shared_ess_p[shared_ess_idx, p]) * s_base
                     q_ess = pe.value(tso_model[year][day].expected_shared_ess_q[shared_ess_idx, p]) * s_base
-                    consensus_vars['v']['tso']['current'][adn_node_id][year][day][p] = interface_v
+                    consensus_vars['v_sqr']['tso']['current'][adn_node_id][year][day][p] = interface_v_sqr
                     consensus_vars['pf']['tso']['current'][adn_node_id][year][day]['p'][p] = interface_pf_p
                     consensus_vars['pf']['tso']['current'][adn_node_id][year][day]['q'][p] = interface_pf_q
                     consensus_vars['ess']['tso']['current'][adn_node_id][year][day]['p'][p] = p_ess
@@ -615,13 +615,13 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                 v_base = distribution_network.network[year][day].get_node_base_kv(ref_node_id)
                 for p in dso_model[year][day].periods:
 
-                    interface_v = sqrt(pe.value(dso_model[year][day].expected_interface_vmag_sqr[p])) * v_base
+                    interface_v_sqr = pe.value(dso_model[year][day].expected_interface_vmag_sqr[p]) * (v_base ** 2)
                     interface_pf_p = pe.value(dso_model[year][day].expected_interface_pf_p[p]) * s_base
                     interface_pf_q = pe.value(dso_model[year][day].expected_interface_pf_q[p]) * s_base
                     p_ess = pe.value(dso_model[year][day].expected_shared_ess_p[p]) * s_base
                     q_ess = pe.value(dso_model[year][day].expected_shared_ess_q[p]) * s_base
 
-                    consensus_vars['v']['dso']['current'][node_id][year][day][p] = interface_v
+                    consensus_vars['v_sqr']['dso']['current'][node_id][year][day][p] = interface_v_sqr
                     consensus_vars['pf']['dso']['current'][node_id][year][day]['p'][p] = interface_pf_p
                     consensus_vars['pf']['dso']['current'][node_id][year][day]['q'][p] = interface_pf_q
                     consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] = p_ess
