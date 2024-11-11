@@ -37,4 +37,4 @@ def _read_parameters_from_file(admm_params, params_data):
     admm_params.previous_iter['ess']['tso'] = bool(params_data['previous_iteration']['ess']['tso'])
     admm_params.previous_iter['ess']['dso'] = bool(params_data['previous_iteration']['ess']['dso'])
     if admm_params.previous_iter['ess']['tso'] or admm_params.previous_iter['ess']['dso']:
-        admm_params.rho_previous_iter['ess'] = params_data['rho']['rho_previous_iter']
+        admm_params.rho_previous_iter['ess'] = params_data['rho_previous_iter']['ess']
