@@ -164,7 +164,7 @@ def _run_planning_problem(planning_problem):
         upper_bound_evolution.append(upper_bound)
 
         #  - Convergence check
-        if isclose(abs(upper_bound - lower_bound)/abs(lower_bound), 1.00, abs_tol=benders_parameters.tol_rel, rel_tol=benders_parameters.tol_rel):
+        if iter > 1 and isclose(abs(upper_bound - lower_bound)/abs(upper_bound), 1.00, abs_tol=benders_parameters.tol_rel, rel_tol=benders_parameters.tol_rel):
             lower_bound_evolution.append(lower_bound)
             convergence = True
             break
@@ -180,14 +180,6 @@ def _run_planning_problem(planning_problem):
 
         # Get new candidate solution
         candidate_solution = shared_ess_data.get_candidate_solution(master_problem_model)
-
-        '''
-        #  - Convergence check
-        if isclose(upper_bound, lower_bound, abs_tol=benders_parameters.tol_abs, rel_tol=benders_parameters.tol_rel):
-            lower_bound_evolution.append(lower_bound)
-            convergence = True
-            break
-        '''
 
         iter += 1
         from_warm_start = True
