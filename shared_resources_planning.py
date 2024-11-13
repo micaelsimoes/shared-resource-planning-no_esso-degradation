@@ -134,7 +134,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
     iter = 1
     convergence = False
     from_warm_start = False
-    lower_bound = -1e12
+    lower_bound = 1e-12
     upper_bound = 1e12
     lower_bound_evolution = [lower_bound]
     upper_bound_evolution = [upper_bound]
@@ -164,7 +164,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         upper_bound_evolution.append(upper_bound)
 
         #  - Convergence check
-        if iter > 1 and isclose(abs(upper_bound - lower_bound)/abs(upper_bound), 0.00, abs_tol=benders_parameters.tol_rel, rel_tol=benders_parameters.tol_rel):
+        if isclose(abs(upper_bound - lower_bound)/abs(upper_bound), 0.00, abs_tol=benders_parameters.tol_rel, rel_tol=benders_parameters.tol_rel):
             lower_bound_evolution.append(lower_bound)
             convergence = True
             break
