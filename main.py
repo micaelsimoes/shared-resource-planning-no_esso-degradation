@@ -85,7 +85,7 @@ def shared_resources_planning(working_directory, specification_filename):
     for node_id in distribution_networks:
         distribution_network = distribution_networks[node_id]
         distribution_network.params.branch_limit_type = BRANCH_LIMIT_MIXED
-        distribution_network.params.solver_params.linear_solver = 'ma57'
+        distribution_network.params.solver_params.linear_solver = 'ma97'
         # for year in distribution_network.years:
         #     for day in distribution_network.days:
         #         distribution_network.network[year][day].shared_energy_storages = list()
@@ -98,14 +98,14 @@ def shared_resources_planning(working_directory, specification_filename):
         distribution_network.update_model_with_candidate_solution(dn_model, candidate_solution['total_capacity'])
         results = distribution_network.optimize(dn_model)
         processed_results = distribution_network.process_results(dn_model, results)
-        distribution_network.write_optimization_results_to_excel(processed_results, filename=f'{distribution_network.name}_LIMIT MIXED_MA57')
+        distribution_network.write_optimization_results_to_excel(processed_results, filename=f'{distribution_network.name}_LIMIT MIXED_MA97')
 
     candidate_solution = planning_problem.get_initial_candidate_solution()
     distribution_networks = planning_problem.distribution_networks
     for node_id in distribution_networks:
         distribution_network = distribution_networks[node_id]
         distribution_network.params.branch_limit_type = BRANCH_LIMIT_CURRENT_SIMPLIFIED
-        distribution_network.params.solver_params.linear_solver = 'ma57'
+        distribution_network.params.solver_params.linear_solver = 'ma97'
         # for year in distribution_network.years:
         #     for day in distribution_network.days:
         #         distribution_network.network[year][day].shared_energy_storages = list()
@@ -118,7 +118,7 @@ def shared_resources_planning(working_directory, specification_filename):
         distribution_network.update_model_with_candidate_solution(dn_model, candidate_solution['total_capacity'])
         results = distribution_network.optimize(dn_model)
         processed_results = distribution_network.process_results(dn_model, results)
-        distribution_network.write_optimization_results_to_excel(processed_results, filename=f'{distribution_network.name}_LIMIT ISIMP_MA57')
+        distribution_network.write_optimization_results_to_excel(processed_results, filename=f'{distribution_network.name}_LIMIT ISIMP_MA97')
 
 
     # candidate_solution = planning_problem.get_initial_candidate_solution()
