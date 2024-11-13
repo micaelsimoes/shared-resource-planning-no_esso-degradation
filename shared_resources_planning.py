@@ -43,9 +43,9 @@ class SharedResourcesPlanning:
         self.active_distribution_network_nodes = list()
         self.params = PlanningParameters()
 
-    def run_planning_problem(self):
+    def run_planning_problem(self, debug_flag=False):
         print('[INFO] Running PLANNING PROBLEM...')
-        _run_planning_problem(self)
+        _run_planning_problem(self, debug_flag=debug_flag)
 
     def run_operational_planning(self, candidate_solution=dict(), print_results=False, filename=str(), debug_flag=False):
         print('[INFO] Running OPERATIONAL PLANNING...')
@@ -122,7 +122,7 @@ class SharedResourcesPlanning:
 # ======================================================================================================================
 #  PLANNING functions
 # ======================================================================================================================
-def _run_planning_problem(planning_problem):
+def _run_planning_problem(planning_problem, debug_flag=False):
 
     shared_ess_data = planning_problem.shared_ess_data
     benders_parameters = planning_problem.params.benders
@@ -156,7 +156,7 @@ def _run_planning_problem(planning_problem):
         # 1.1. Solve operational planning, with fixed investment variables,
         # 1.2. Get coupling constraints' sensitivities (subproblem)
         # 1.3. Get OF value (upper bound) from the subproblem
-        operational_convergence, operational_results, lower_level_models, sensitivities, _ = planning_problem.run_operational_planning(candidate_solution, print_results=True, filename=f'{planning_problem.name}_iter{iter}')
+        operational_convergence, operational_results, lower_level_models, sensitivities, _ = planning_problem.run_operational_planning(candidate_solution, print_results=debug_flag, filename=f'{planning_problem.name}_iter{iter}')
         upper_bound = upper_bound_evolution[-1]
         if operational_convergence:
             upper_bound = planning_problem.get_upper_bound(lower_level_models['tso'])
