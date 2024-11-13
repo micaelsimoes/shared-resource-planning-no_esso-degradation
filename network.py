@@ -935,6 +935,8 @@ def _build_model(network, params):
                     ej = model.e_actual[tnode_idx, s_m, s_o, p]
                     fj = model.f_actual[tnode_idx, s_m, s_o, p]
 
+                    flow_ij_sqr = 0.00
+
                     if params.branch_limit_type == BRANCH_LIMIT_CURRENT:
 
                         bij_sh = branch.b_sh * 0.50
@@ -953,6 +955,8 @@ def _build_model(network, params):
 
                     elif params.branch_limit_type == BRANCH_LIMIT_CURRENT_SIMPLIFIED:
 
+                        iij_sqr = (branch.g ** 2 + branch.b ** 2) * ((ei - ej) ** 2 + (fi - fj) ** 2)
+                        flow_ij_sqr = iij_sqr
 
                     elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
 
