@@ -990,6 +990,7 @@ def _build_model(network, params):
                             sij_sqr = pij ** 2 + qij ** 2
                             flow_ij_sqr = sij_sqr
                         else:
+                            bij_sh = branch.b_sh * 0.50
                             iij_sqr = (branch.g ** 2 + branch.b ** 2) * (((rij ** 2) * ei - rij * ej) ** 2 + ((rij ** 2) * fi - rij * fj) ** 2)
                             iij_sqr += bij_sh ** 2 * (ei ** 2 + fi ** 2)
                             iij_sqr += 2 * branch.g * bij_sh * (((rij ** 2) * fi - rij * fj) * ei - ((rij ** 2) * ei - rij * ej) * fi)
