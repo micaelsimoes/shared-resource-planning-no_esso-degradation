@@ -1,6 +1,8 @@
 import os
 import sys
 import getopt
+
+from definitions import BRANCH_LIMIT_CURRENT, BRANCH_LIMIT_MIXED, BRANCH_LIMIT_CURRENT_SIMPLIFIED
 from shared_resources_planning import SharedResourcesPlanning
 
 
@@ -62,9 +64,9 @@ def shared_resources_planning(working_directory, specification_filename):
     # planning_problem.plot_diagram()
 
     candidate_solution = planning_problem.get_initial_candidate_solution()
-    planning_problem.run_without_coordination(print_results=True)
+    # planning_problem.run_without_coordination(print_results=True)
     # planning_problem.run_operational_planning(candidate_solution=candidate_solution, print_results=True, debug_flag=True)
-    planning_problem.run_planning_problem()
+    # planning_problem.run_planning_problem()
 
     # candidate_solution = planning_problem.get_initial_candidate_solution()
     # transmission_network = planning_problem.transmission_network
@@ -78,23 +80,46 @@ def shared_resources_planning(working_directory, specification_filename):
     # processed_results = transmission_network.process_results(tn_model, results)
     # transmission_network.write_optimization_results_to_excel(processed_results)
 
-    # candidate_solution = planning_problem.get_initial_candidate_solution()
-    # distribution_networks = planning_problem.distribution_networks
-    # for node_id in distribution_networks:
-    #     distribution_network = distribution_networks[node_id]
-    #     # for year in distribution_network.years:
-    #     #     for day in distribution_network.days:
-    #     #         distribution_network.network[year][day].shared_energy_storages = list()
-    #     distribution_network.update_data_with_candidate_solution(candidate_solution['total_capacity'])
-    #     dn_model = distribution_network.build_model()
-    #     for year in distribution_network.years:
-    #         for day in distribution_network.days:
-    #             dn_model[year][day].penalty_flex_usage.fix(0.00)
-    #             dn_model[year][day].penalty_ess_usage.fix(0.00)
-    #     distribution_network.update_model_with_candidate_solution(dn_model, candidate_solution['total_capacity'])
-    #     results = distribution_network.optimize(dn_model)
-    #     processed_results = distribution_network.process_results(dn_model, results)
-    #     distribution_network.write_optimization_results_to_excel(processed_results)
+    candidate_solution = planning_problem.get_initial_candidate_solution()
+    distribution_networks = planning_problem.distribution_networks
+    for node_id in distribution_networks:
+        distribution_network = distribution_networks[node_id]
+        distribution_network.params.branch_limit_type = BRANCH_LIMIT_MIXED
+        distribution_network.params.solver_params.linear_solver = 'ma57'
+        # for year in distribution_network.years:
+        #     for day in distribution_network.days:
+        #         distribution_network.network[year][day].shared_energy_storages = list()
+        distribution_network.update_data_with_candidate_solution(candidate_solution['total_capacity'])
+        dn_model = distribution_network.build_model()
+        for year in distribution_network.years:
+            for day in distribution_network.days:
+                dn_model[year][day].penalty_flex_usage.fix(0.00)
+                dn_model[year][day].penalty_ess_usage.fix(0.00)
+        distribution_network.update_model_with_candidate_solution(dn_model, candidate_solution['total_capacity'])
+        results = distribution_network.optimize(dn_model)
+        processed_results = distribution_network.process_results(dn_model, results)
+        distribution_network.write_optimization_results_to_excel(processed_results, filename=f'{distribution_network.name}_LIMIT MIXED_MA57')
+
+    candidate_solution = planning_problem.get_initial_candidate_solution()
+    distribution_networks = planning_problem.distribution_networks
+    for node_id in distribution_networks:
+        distribution_network = distribution_networks[node_id]
+        distribution_network.params.branch_limit_type = BRANCH_LIMIT_CURRENT_SIMPLIFIED
+        distribution_network.params.solver_params.linear_solver = 'ma57'
+        # for year in distribution_network.years:
+        #     for day in distribution_network.days:
+        #         distribution_network.network[year][day].shared_energy_storages = list()
+        distribution_network.update_data_with_candidate_solution(candidate_solution['total_capacity'])
+        dn_model = distribution_network.build_model()
+        for year in distribution_network.years:
+            for day in distribution_network.days:
+                dn_model[year][day].penalty_flex_usage.fix(0.00)
+                dn_model[year][day].penalty_ess_usage.fix(0.00)
+        distribution_network.update_model_with_candidate_solution(dn_model, candidate_solution['total_capacity'])
+        results = distribution_network.optimize(dn_model)
+        processed_results = distribution_network.process_results(dn_model, results)
+        distribution_network.write_optimization_results_to_excel(processed_results, filename=f'{distribution_network.name}_LIMIT ISIMP_MA57')
+
 
     # candidate_solution = planning_problem.get_initial_candidate_solution()
     # planning_problem.shared_ess_data.update_data_with_candidate_solution(candidate_solution['total_capacity'])
