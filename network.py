@@ -1010,9 +1010,6 @@ def _build_model(network, params):
                     else:
                         model.branch_power_flow_lims.add(model.flow_ij_sqr[b, s_m, s_o, p] <= rating ** 2)
 
-
-
-
     # ------------------------------------------------------------------------------------------------------------------
     # Objective Function
     obj = 0.0
