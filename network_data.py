@@ -26,7 +26,6 @@ class NetworkData:
         self.params = NetworkParameters()
         self.cost_energy_p = dict()
         self.cost_flex = dict()
-        self.prob_market_scenarios = dict()
         self.is_transmission = False
         self.active_distribution_network_nodes = list()
 
@@ -111,9 +110,6 @@ def _read_network_data(network_planning):
             network_planning.network[year][day].day = day
             network_planning.network[year][day].num_instants = network_planning.num_instants
             network_planning.network[year][day].is_transmission = network_planning.is_transmission
-            network_planning.network[year][day].prob_market_scenarios = network_planning.prob_market_scenarios
-            network_planning.network[year][day].cost_energy_p = network_planning.cost_energy_p[year][day]
-            network_planning.network[year][day].cost_flex = network_planning.cost_flex[year][day]
             network_planning.network[year][day].operational_data_file = f'{network_planning.name}_{year}.xlsx'
 
             # Read info from file(s)

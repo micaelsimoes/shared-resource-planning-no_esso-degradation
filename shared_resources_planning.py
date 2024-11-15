@@ -36,7 +36,7 @@ class SharedResourcesPlanning:
         self.discount_factor = float()
         self.cost_energy_p = dict()
         self.cost_flex = dict()
-        self.prob_market_scenarios = list()
+        self.prob_market_scenarios = dict()
         self.distribution_networks = dict()
         self.transmission_network = NetworkData()
         self.shared_ess_data = SharedEnergyStorageData()
@@ -1785,14 +1785,19 @@ def _read_planning_problem(planning_problem):
         distribution_network.days = planning_problem.days
         distribution_network.num_instants = planning_problem.num_instants
         distribution_network.discount_factor = planning_problem.discount_factor
-        distribution_network.prob_market_scenarios = planning_problem.prob_market_scenarios
         distribution_network.cost_energy_p = planning_problem.cost_energy_p
         distribution_network.cost_flex = planning_problem.cost_flex
         distribution_network.params_file = params_file
         distribution_network.read_network_parameters()
-        if distribution_network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
-            distribution_network.prob_market_scenarios = [1.00]
         distribution_network.read_network_data()
+        for year in distribution_network.years:
+            for day in distribution_network.days:
+                if distribution_network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
+                    distribution_network.network[year][day].prob_market_scenarios = [1.00]
+                else:
+                    distribution_network.network[year][day].prob_market_scenarios = planning_problem.prob_market_scenarios[year]
+                    distribution_network.network[year][day].cost_energy_p = planning_problem.cost_energy_p[year][day]
+                    distribution_network.network[year][day].cost_flex = planning_problem.cost_flex[year][day]
         distribution_network.tn_connection_nodeid = connection_nodeid
         planning_problem.distribution_networks[connection_nodeid] = distribution_network
     planning_problem.active_distribution_network_nodes = [node_id for node_id in planning_problem.distribution_networks]
@@ -1809,18 +1814,21 @@ def _read_planning_problem(planning_problem):
     transmission_network.days = planning_problem.days
     transmission_network.num_instants = planning_problem.num_instants
     transmission_network.discount_factor = planning_problem.discount_factor
-    transmission_network.prob_market_scenarios = planning_problem.prob_market_scenarios
     transmission_network.cost_energy_p = planning_problem.cost_energy_p
     transmission_network.cost_flex = planning_problem.cost_flex
     transmission_network.params_file = planning_data['TransmissionNetwork']['params_file']
     transmission_network.read_network_parameters()
-    if transmission_network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
-        transmission_network.prob_market_scenarios = [1.00]
     transmission_network.read_network_data()
-    transmission_network.active_distribution_network_nodes = [node_id for node_id in planning_problem.distribution_networks]
     for year in transmission_network.years:
         for day in transmission_network.days:
             transmission_network.network[year][day].active_distribution_network_nodes = transmission_network.active_distribution_network_nodes
+            if transmission_network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
+                transmission_network.network[year][day].prob_market_scenarios = [1.00]
+            else:
+                transmission_network.network[year][day].prob_market_scenarios = planning_problem.prob_market_scenarios[year]
+                transmission_network.network[year][day].cost_energy_p = planning_problem.cost_energy_p[year][day]
+                transmission_network.network[year][day].cost_flex = planning_problem.cost_flex[year][day]
+    transmission_network.active_distribution_network_nodes = [node_id for node_id in planning_problem.distribution_networks]
     planning_problem.transmission_network = transmission_network
 
     # Shared ESS
@@ -1867,7 +1875,7 @@ def _read_market_data_from_file(planning_problem):
         for year in planning_problem.years:
             filename = os.path.join(planning_problem.data_dir, 'Market Data', f'{planning_problem.market_data_file}_{year}.xlsx')
             num_scenarios, prob_scenarios = _get_market_scenarios_info_from_excel_file(filename, 'Scenarios')
-            planning_problem.prob_market_scenarios = prob_scenarios
+            planning_problem.prob_market_scenarios[year] = prob_scenarios
             planning_problem.cost_energy_p[year] = dict()
             planning_problem.cost_flex[year] = dict()
             for day in planning_problem.days:

@@ -2229,18 +2229,16 @@ def _compute_generation_cost(network, model):
     gen_cost = 0.0
 
     c_p = network.cost_energy_p
-    #c_q = network.cost_energy_q
 
     for s_m in model.scenarios_market:
-        for s_o in model.scenarios_operation:
-            gen_cost_scenario = 0.0
-            for g in model.generators:
-                if network.generators[g].is_controllable():
-                    for p in model.periods:
-                        gen_cost_scenario += c_p[s_m][p] * network.baseMVA * pe.value(model.pg[g, s_m, s_o, p])
-                        #gen_cost_scenario += c_q[s_m][p] * network.baseMVA * pe.value(model.qg[g, s_m, s_o, p])
-
-            gen_cost += gen_cost_scenario * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
+        if s_m in c_p:      # Note: Only exists for COST minimization
+            for s_o in model.scenarios_operation:
+                gen_cost_scenario = 0.0
+                for g in model.generators:
+                    if network.generators[g].is_controllable():
+                        for p in model.periods:
+                            gen_cost_scenario += c_p[s_m][p] * network.baseMVA * pe.value(model.pg[g, s_m, s_o, p])
+                gen_cost += gen_cost_scenario * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
 
     return gen_cost
 
