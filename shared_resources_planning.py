@@ -841,9 +841,9 @@ def update_transmission_model_to_admm(planning_problem, model, params):
                 model[year][day].cost_res_curtailment.fix(COST_GENERATION_CURTAILMENT)
                 model[year][day].cost_load_curtailment.fix(COST_CONSUMPTION_CURTAILMENT)
             elif transmission_network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
-                model[year][day].penalty_gen_curtailment.fix(1e-6)
+                model[year][day].penalty_gen_curtailment.fix(1e-2)
                 model[year][day].penalty_load_curtailment.fix(PENALTY_LOAD_CURTAILMENT)
-                model[year][day].penalty_flex_usage.fix(1e-6)
+                model[year][day].penalty_flex_usage.fix(1e-3)
 
             # Add ADMM variables
             model[year][day].rho_v = pe.Var(domain=pe.NonNegativeReals)
