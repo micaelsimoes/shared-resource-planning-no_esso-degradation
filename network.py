@@ -531,7 +531,7 @@ def _build_model(network, params):
     # Costs (penalties)
     # Note: defined as variables (bus fixed) so that they can be changed later, if needed
     model.penalty_ess_usage = pe.Var(domain=pe.NonNegativeReals)
-    model.penalty_ess_usage.fix(PENALTY_FLEXIBILITY_USAGE)
+    model.penalty_ess_usage.fix(PENALTY_ESS_USAGE)
     if params.obj_type == OBJ_MIN_COST:
         model.cost_res_curtailment = pe.Var(domain=pe.NonNegativeReals)
         model.cost_load_curtailment = pe.Var(domain=pe.NonNegativeReals)
