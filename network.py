@@ -40,6 +40,7 @@ class Network:
         self.prob_operation_scenarios = list()          # Probability of operation (generation and consumption) scenarios
         self.cost_energy_p = list()
         self.cost_flex = list()
+        self.active_distribution_network_nodes = list()
 
     def build_model(self, params):
         _pre_process_network(self)
