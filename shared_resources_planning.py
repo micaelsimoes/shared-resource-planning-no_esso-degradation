@@ -1792,6 +1792,8 @@ def _read_planning_problem(planning_problem):
         distribution_network.read_network_data()
         for year in distribution_network.years:
             for day in distribution_network.days:
+                distribution_network.network[year][day].is_transmission = False
+                distribution_network.network[year][day].tn_connection_nodeid = connection_nodeid
                 if distribution_network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
                     distribution_network.network[year][day].prob_market_scenarios = [1.00]
                 else:
@@ -1821,6 +1823,7 @@ def _read_planning_problem(planning_problem):
     transmission_network.read_network_data()
     for year in transmission_network.years:
         for day in transmission_network.days:
+            transmission_network.network[year][day].is_transmission = True
             transmission_network.network[year][day].active_distribution_network_nodes = transmission_network.active_distribution_network_nodes
             if transmission_network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
                 transmission_network.network[year][day].prob_market_scenarios = [1.00]
