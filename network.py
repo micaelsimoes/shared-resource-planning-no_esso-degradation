@@ -703,7 +703,10 @@ def _build_model(network, params):
                         #         model.energy_storage_ch_dch_exclusion.add(sch * sdch <= EQUALITY_TOLERANCE)
                         #     else:
                         #         model.energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
-                        model.energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
+                        if params.slacks.ess.complementarity:
+                            model.energy_storage_ch_dch_exclusion.add(sch * sdch <= model.slack_es_comp[e, s_m, s_o, p])
+                        else:
+                            model.energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
 
                     # if params.slacks.ess.day_balance:
                     #     model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] <= soc_final + model.slack_es_soc_final_up[e, s_m, s_o] - model.slack_es_soc_final_down[e, s_m, s_o] + EQUALITY_TOLERANCE)
