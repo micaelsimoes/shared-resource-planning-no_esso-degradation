@@ -1245,6 +1245,8 @@ def _run_smopf(network, model, params, from_warm_start=False):
     if params.solver_params.solver == 'ipopt':
         solver.options['tol'] = params.solver_params.solver_tol
         solver.options['linear_solver'] = params.solver_params.linear_solver
+        if params.solver_params.linear_solver == 'ma97':
+            os.environ["OMP NUM THREADS"] = "8"
         solver.options['mu_strategy'] = 'adaptive'
 
     result = solver.solve(model, tee=params.solver_params.verbose)
