@@ -289,8 +289,8 @@ def _build_model(network, params):
                 for p in model.periods:
                     if gen.is_controllable():
                         if gen.status[p] == 1:
-                            model.pg[g, s_m, s_o, p] = 0.00
-                            model.qg[g, s_m, s_o, p] = 0.00
+                            model.pg[g, s_m, s_o, p] = max(0.00, pg_lb)
+                            model.qg[g, s_m, s_o, p] = max(0.00, qg_lb)
                             model.pg[g, s_m, s_o, p].setub(pg_ub)
                             model.pg[g, s_m, s_o, p].setlb(pg_lb)
                             model.qg[g, s_m, s_o, p].setub(qg_ub)
