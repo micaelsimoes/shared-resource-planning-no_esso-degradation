@@ -670,10 +670,10 @@ def _build_model(network, params):
                             model.energy_storage_operation.add(sdch ** 2 >= pdch ** 2 + qdch ** 2 + model.slack_es_sdch_up[e, s_m, s_o, p] - model.slack_es_sdch_down[e, s_m, s_o, p] - EQUALITY_TOLERANCE)
                         else:
                             if params.relax_equalities:
-                                model.energy_storage_operation.add(sch ** 2 <= pch ** 2 + qch ** 2 + EQUALITY_TOLERANCE)
-                                model.energy_storage_operation.add(sch ** 2 >= pch ** 2 + qch ** 2 - EQUALITY_TOLERANCE)
-                                model.energy_storage_operation.add(sdch ** 2 <= pdch ** 2 + qdch ** 2 + EQUALITY_TOLERANCE)
-                                model.energy_storage_operation.add(sdch ** 2 >= pdch ** 2 + qdch ** 2 - EQUALITY_TOLERANCE)
+                                model.energy_storage_operation.add(sch ** 2 <= pch ** 2 + qch ** 2 + EQUALITY_TOLERANCE * 0.10)
+                                model.energy_storage_operation.add(sch ** 2 >= pch ** 2 + qch ** 2 - EQUALITY_TOLERANCE * 0.10)
+                                model.energy_storage_operation.add(sdch ** 2 <= pdch ** 2 + qdch ** 2 + EQUALITY_TOLERANCE * 0.10)
+                                model.energy_storage_operation.add(sdch ** 2 >= pdch ** 2 + qdch ** 2 - EQUALITY_TOLERANCE *0.10)
                             else:
                                 model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
                                 model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
