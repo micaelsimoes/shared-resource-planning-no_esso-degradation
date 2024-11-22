@@ -38,7 +38,6 @@ class Slacks:
         self.ess = SlacksEnergyStorage()
         self.shared_ess = SlacksEnergyStorage()
         self.expected_values = SlacksExpectedValues()
-        self.node_balance = False
 
     def read_slacks_parameters(self, slacks_data):
         self.grid_operation.read_slacks_parameters(slacks_data)
