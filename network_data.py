@@ -2073,7 +2073,7 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
                             sheet.cell(row=row_idx, column=5).value = s_m
                             sheet.cell(row=row_idx, column=6).value = s_o
                             for p in range(network_planning.num_instants):
-                                e_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_up'][node_id][p]
+                                e_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e'][node_id][p]
                                 sheet.cell(row=row_idx, column=p + 7).value = e_up
                                 sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                             row_idx = row_idx + 1
@@ -2086,7 +2086,7 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
                             sheet.cell(row=row_idx, column=5).value = s_m
                             sheet.cell(row=row_idx, column=6).value = s_o
                             for p in range(network_planning.num_instants):
-                                f_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_up'][node_id][p]
+                                f_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f'][node_id][p]
                                 sheet.cell(row=row_idx, column=p + 7).value = f_up
                                 sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                             row_idx = row_idx + 1
