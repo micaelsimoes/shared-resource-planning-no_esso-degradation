@@ -1,8 +1,6 @@
 import os
 import sys
 import getopt
-
-from definitions import BRANCH_LIMIT_CURRENT, BRANCH_LIMIT_MIXED, BRANCH_LIMIT_CURRENT_SIMPLIFIED
 from shared_resources_planning import SharedResourcesPlanning
 
 
