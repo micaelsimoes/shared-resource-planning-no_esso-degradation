@@ -388,10 +388,8 @@ def _build_model(network, params):
                                 model.slack_flex_p_balance_up[c, s_m, s_o].setub(SMALL_TOLERANCE)
                                 model.slack_flex_p_balance_down[c, s_m, s_o].setub(SMALL_TOLERANCE)
     if params.l_curt:
-        model.pc_curt_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
-        model.pc_curt_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
-        model.qc_curt_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
-        model.qc_curt_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+        model.pc_curt = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+        model.qc_curt = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
         for c in model.loads:
             load = network.loads[c]
             for s_m in model.scenarios_market:
@@ -799,8 +797,8 @@ def _build_model(network, params):
                             if params.fl_reg and network.loads[c].fl_reg:
                                 Pd += (model.flex_p_up[c, s_m, s_o, p] - model.flex_p_down[c, s_m, s_o, p])
                             if params.l_curt:
-                                Pd -= (model.pc_curt_down[c, s_m, s_o, p] - model.pc_curt_up[c, s_m, s_o, p])
-                                Qd -= (model.qc_curt_down[c, s_m, s_o, p] - model.qc_curt_up[c, s_m, s_o, p])
+                                Pd -= model.pc_curt[c, s_m, s_o, p]
+                                Qd -= model.qc_curt[c, s_m, s_o, p]
                     if params.es_reg:
                         for e in model.energy_storages:
                             if network.energy_storages[e].bus == node.bus_i:
@@ -1005,9 +1003,9 @@ def _build_model(network, params):
                 if params.l_curt:
                     for c in model.loads:
                         for p in model.periods:
-                            pc_curt = (model.pc_curt_down[c, s_m, s_o, p] + model.pc_curt_up[c, s_m, s_o, p])
-                            qc_curt = (model.qc_curt_down[c, s_m, s_o, p] + model.qc_curt_up[c, s_m, s_o, p])
-                            obj_scenario += model.cost_load_curtailment * network.baseMVA * (pc_curt + qc_curt)
+                            pc_curt_sqr = model.pc_curt[c, s_m, s_o, p] ** 2
+                            qc_curt_sqr = model.qc_curt[c, s_m, s_o, p] ** 2
+                            obj_scenario += model.cost_load_curtailment * network.baseMVA * (pc_curt_sqr + qc_curt_sqr)
 
                 # Generation curtailment
                 if params.rg_curt:
@@ -1058,9 +1056,9 @@ def _build_model(network, params):
                 if params.l_curt:
                     for c in model.loads:
                         for p in model.periods:
-                            pc_curt = (model.pc_curt_down[c, s_m, s_o, p] + model.pc_curt_up[c, s_m, s_o, p])
-                            qc_curt = (model.qc_curt_down[c, s_m, s_o, p] + model.qc_curt_up[c, s_m, s_o, p])
-                            obj_scenario += model.penalty_load_curtailment * network.baseMVA * (pc_curt + qc_curt)
+                            pc_curt_sqr = model.pc_curt[c, s_m, s_o, p] ** 2
+                            qc_curt_sqr = model.qc_curt[c, s_m, s_o, p] ** 2
+                            obj_scenario += model.penalty_load_curtailment * network.baseMVA * (pc_curt_sqr + qc_curt_sqr)
 
                 # Demand side flexibility
                 if params.fl_reg:
@@ -1748,8 +1746,8 @@ def _process_results(network, model, params, results=dict()):
                         processed_results['scenarios'][s_m][s_o]['consumption']['p_down'][load_id].append(pdown)
                         processed_results['scenarios'][s_m][s_o]['consumption']['pc_net'][load_id][p] += pup - pdown
                     if params.l_curt:
-                        pc_curt = pe.value(model.pc_curt_down[c, s_m, s_o, p] - model.pc_curt_up[c, s_m, s_o, p]) * network.baseMVA
-                        qc_curt = pe.value(model.qc_curt_down[c, s_m, s_o, p] - model.qc_curt_up[c, s_m, s_o, p]) * network.baseMVA
+                        pc_curt = pe.value(model.pc_curt[c, s_m, s_o, p]) * network.baseMVA
+                        qc_curt = pe.value(model.qc_curt[c, s_m, s_o, p]) * network.baseMVA
                         processed_results['scenarios'][s_m][s_o]['consumption']['pc_curt'][load_id].append(pc_curt)
                         processed_results['scenarios'][s_m][s_o]['consumption']['pc_net'][load_id][p] -= pc_curt
                         processed_results['scenarios'][s_m][s_o]['consumption']['qc_curt'][load_id].append(qc_curt)
@@ -2089,9 +2087,9 @@ def _compute_objective_function_value(network, model, params):
                 if params.l_curt:
                     for c in model.loads:
                         for p in model.periods:
-                            pc_curt = pe.value(model.pc_curt_down[c, s_m, s_o, p] + model.pc_curt_up[c, s_m, s_o, p])
-                            qc_curt = pe.value(model.qc_curt_down[c, s_m, s_o, p] + model.qc_curt_up[c, s_m, s_o, p])
-                            obj_scenario += cost_load_curt * network.baseMVA * (pc_curt + qc_curt)
+                            pc_curt_sqr = pe.value(model.pc_curt[c, s_m, s_o, p]) ** 2
+                            qc_curt_sqr = pe.value(model.qc_curt[c, s_m, s_o, p]) ** 2
+                            obj_scenario += cost_load_curt * network.baseMVA * (pc_curt_sqr + qc_curt_sqr)
 
                 # Generation curtailment
                 if params.rg_curt:
@@ -2126,9 +2124,9 @@ def _compute_objective_function_value(network, model, params):
                 if params.l_curt:
                     for c in model.loads:
                         for p in model.periods:
-                            pc_curt = pe.value(model.pc_curt_down[c, s_m, s_o, p] + model.pc_curt_up[c, s_m, s_o, p])
-                            qc_curt = pe.value(model.qc_curt_down[c, s_m, s_o, p] + model.qc_curt_up[c, s_m, s_o, p])
-                            obj_scenario += pen_load_curtailment * network.baseMVA * (pc_curt + qc_curt)
+                            pc_curt_sqr = pe.value(model.pc_curt_down[c, s_m, s_o, p]) ** 2
+                            qc_curt_sqr = pe.value(model.qc_curt_down[c, s_m, s_o, p]) ** 2
+                            obj_scenario += pen_load_curtailment * network.baseMVA * (pc_curt_sqr + qc_curt_sqr)
 
                 # Demand side flexibility
                 if params.fl_reg:
@@ -2174,8 +2172,8 @@ def _compute_total_load(network, model, params):
                     total_load_scenario['p'] += network.baseMVA * pe.value(model.pc[c, s_m, s_o, p])
                     total_load_scenario['q'] += network.baseMVA * pe.value(model.qc[c, s_m, s_o, p])
                     if params.l_curt:
-                        total_load_scenario['p'] -= network.baseMVA * pe.value(model.pc_curt_down[c, s_m, s_o, p] - model.pc_curt_up[c, s_m, s_o, p])
-                        total_load_scenario['q'] -= network.baseMVA * pe.value(model.qc_curt_down[c, s_m, s_o, p] - model.qc_curt_up[c, s_m, s_o, p])
+                        total_load_scenario['p'] -= network.baseMVA * pe.value(model.pc_curt[c, s_m, s_o, p])
+                        total_load_scenario['q'] -= network.baseMVA * pe.value(model.qc_curt[c, s_m, s_o, p])
 
             total_load['p'] += total_load_scenario['p'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
             total_load['q'] += total_load_scenario['q'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
@@ -2294,8 +2292,8 @@ def _compute_load_curtailment(network, model, params):
                 load_curtailment_scenario = {'p': 0.00, 'q': 0.00}
                 for c in model.loads:
                     for p in model.periods:
-                        load_curtailment_scenario['p'] += pe.value(model.pc_curt_down[c, s_m, s_o, p] - model.pc_curt_up[c, s_m, s_o, p]) * network.baseMVA
-                        load_curtailment_scenario['q'] += pe.value(model.qc_curt_down[c, s_m, s_o, p] - model.qc_curt_up[c, s_m, s_o, p]) * network.baseMVA
+                        load_curtailment_scenario['p'] += abs(pe.value(model.pc_curt[c, s_m, s_o, p])) * network.baseMVA
+                        load_curtailment_scenario['q'] += abs(pe.value(model.qc_curt[c, s_m, s_o, p])) * network.baseMVA
 
                 load_curtailment['p'] += load_curtailment_scenario['p'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
                 load_curtailment['q'] += load_curtailment_scenario['q'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
