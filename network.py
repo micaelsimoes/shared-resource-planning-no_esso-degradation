@@ -376,6 +376,13 @@ def _build_model(network, params):
                         model.flow_ij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
                         if params.slacks.grid_operation.branch_flow:
                             model.slack_flow_ij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
+        else:
+            if params.slacks.grid_operation.branch_flow:
+                for s_m in model.scenarios_market:
+                    for s_o in model.scenarios_operation:
+                        for p in model.periods:
+                            rating = network.branches[b].rate / network.baseMVA
+                            model.slack_flow_ij_sqr[b, s_m, s_o, p].setub(SIJ_VIOLATION_ALLOWED * rating)
 
     # - Loads
     model.pc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
@@ -657,10 +664,10 @@ def _build_model(network, params):
                         model.energy_storage_operation.add(qdch >= tan(min_phi) * pdch)
 
                         if params.slacks.ess.charging:
-                            model.energy_storage_operation.add(sch ** 2 <= pch ** 2 + qch ** 2 + model.slack_es_sch_up[e, s_m, s_o, p] - model.slack_es_sch_down[e, s_m, s_o, p] + EQUALITY_TOLERANCE)
-                            model.energy_storage_operation.add(sch ** 2 >= pch ** 2 + qch ** 2 + model.slack_es_sch_up[e, s_m, s_o, p] - model.slack_es_sch_down[e, s_m, s_o, p] - EQUALITY_TOLERANCE)
-                            model.energy_storage_operation.add(sdch ** 2 <= pdch ** 2 + qdch ** 2 + model.slack_es_sdch_up[e, s_m, s_o, p] - model.slack_es_sdch_down[e, s_m, s_o, p] + EQUALITY_TOLERANCE)
-                            model.energy_storage_operation.add(sdch ** 2 >= pdch ** 2 + qdch ** 2 + model.slack_es_sdch_up[e, s_m, s_o, p] - model.slack_es_sdch_down[e, s_m, s_o, p] - EQUALITY_TOLERANCE)
+                            model.energy_storage_operation.add(sch ** 2 <= pch ** 2 + qch ** 2 + model.slack_es_sch_up[e, s_m, s_o, p] - model.slack_es_sch_down[e, s_m, s_o, p])
+                            model.energy_storage_operation.add(sch ** 2 >= pch ** 2 + qch ** 2 + model.slack_es_sch_up[e, s_m, s_o, p] - model.slack_es_sch_down[e, s_m, s_o, p])
+                            model.energy_storage_operation.add(sdch ** 2 <= pdch ** 2 + qdch ** 2 + model.slack_es_sdch_up[e, s_m, s_o, p] - model.slack_es_sdch_down[e, s_m, s_o, p])
+                            model.energy_storage_operation.add(sdch ** 2 >= pdch ** 2 + qdch ** 2 + model.slack_es_sdch_up[e, s_m, s_o, p] - model.slack_es_sdch_down[e, s_m, s_o, p])
                         else:
                             if params.relax_equalities:
                                 model.energy_storage_operation.add(sch ** 2 <= pch ** 2 + qch ** 2 + EQUALITY_TOLERANCE)
