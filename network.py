@@ -397,20 +397,10 @@ def _build_model(network, params):
             for s_m in model.scenarios_market:
                 for s_o in model.scenarios_operation:
                     for p in model.periods:
-
-                        if load.pd[s_o][p] >= 0.00:
-                            model.pc_curt_down[c, s_m, s_o, p].setub(abs(load.pd[s_o][p]) + SMALL_TOLERANCE)
-                            model.pc_curt_up[c, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                        else:
-                            model.pc_curt_up[c, s_m, s_o, p].setub(abs(load.pd[s_o][p]) + SMALL_TOLERANCE)
-                            model.pc_curt_down[c, s_m, s_o, p].setub(SMALL_TOLERANCE)
-
-                        if load.qd[s_o][p] >= 0.00:
-                            model.qc_curt_down[c, s_m, s_o, p].setub(abs(load.qd[s_o][p]) + SMALL_TOLERANCE)
-                            model.qc_curt_up[c, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                        else:
-                            model.qc_curt_up[c, s_m, s_o, p].setub(abs(load.qd[s_o][p]) + SMALL_TOLERANCE)
-                            model.qc_curt_down[c, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                        model.pc_curt[c, s_m, s_o, p].setub(max(load.pd[s_o][p], 0.00))
+                        model.pc_curt[c, s_m, s_o, p].setlb(min(load.pd[s_o][p], 0.00))
+                        model.qc_curt[c, s_m, s_o, p].setub(max(load.qd[s_o][p], 0.00))
+                        model.qc_curt[c, s_m, s_o, p].setub(min(load.qd[s_o][p], 0.00))
 
     # - Transformers
     model.r = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0)
@@ -425,11 +415,9 @@ def _build_model(network, params):
                             model.r[i, s_m, s_o, p].setub(TRANSFORMER_MAXIMUM_RATIO)
                             model.r[i, s_m, s_o, p].setlb(TRANSFORMER_MINIMUM_RATIO)
                         else:
-                            model.r[i, s_m, s_o, p].setub(branch.ratio + SMALL_TOLERANCE)
-                            model.r[i, s_m, s_o, p].setlb(branch.ratio - SMALL_TOLERANCE)
+                            model.r[i, s_m, s_o, p].fix(branch.ratio)
                     else:
-                        model.r[i, s_m, s_o, p].setub(1.00 + SMALL_TOLERANCE)
-                        model.r[i, s_m, s_o, p].setlb(1.00 - SMALL_TOLERANCE)
+                        model.r[i, s_m, s_o, p].fix(1.00)
 
     # - Energy Storage devices
     if params.es_reg:
