@@ -1908,8 +1908,8 @@ def _process_results(network, model, params, results=dict()):
                     for p in model.periods:
                         slack_e = pe.value(model.slack_e[i, s_m, s_o, p])
                         slack_f = pe.value(model.slack_f[i, s_m, s_o, p])
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_up'][node_id].append(slack_e)
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_up'][node_id].append(slack_f)
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e'][node_id].append(slack_e)
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f'][node_id].append(slack_f)
 
             # Branch current slacks
             if params.slacks.grid_operation.branch_flow:
