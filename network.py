@@ -672,8 +672,6 @@ def _build_model(network, params):
                             else:
                                 model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
                                 model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
-                        model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
-                        model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
 
                         # State-of-Charge
                         soc_prev = soc_init
