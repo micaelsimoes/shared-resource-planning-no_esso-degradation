@@ -2392,7 +2392,7 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
                                 sheet.cell(row=row_idx, column=5).value = s_m
                                 sheet.cell(row=row_idx, column=6).value = s_o
                                 for p in range(network_planning.num_instants):
-                                    sdch_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_up'][es_id][p]
+                                    sdch_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch'][es_id][p]
                                     sheet.cell(row=row_idx, column=p + 7).value = sdch_up
                                     sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                                 row_idx = row_idx + 1
