@@ -487,12 +487,6 @@ def _build_model(network, params):
 
         if params.slacks.ess.complementarity:
             model.slack_es_comp = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        if params.slacks.ess.charging:
-            model.slack_es_sch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
-            model.slack_es_sdch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
-        if params.slacks.ess.soc:
-            model.slack_es_soc_up = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-            model.slack_es_soc_down = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         if params.slacks.ess.day_balance:
             model.slack_es_soc_final_up = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
             model.slack_es_soc_final_down = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
@@ -657,18 +651,14 @@ def _build_model(network, params):
                         model.energy_storage_operation.add(qdch <= tan(max_phi) * pdch)
                         model.energy_storage_operation.add(qdch >= tan(min_phi) * pdch)
 
-                        if params.slacks.ess.charging:
-                            model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2 + model.slack_es_sch[e, s_m, s_o, p])
-                            model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2 + model.slack_es_sdch[e, s_m, s_o, p])
+                        if params.relax_equalities:
+                            model.energy_storage_operation.add(sch ** 2 <= pch ** 2 + qch ** 2 + EQUALITY_TOLERANCE * 0.10)
+                            model.energy_storage_operation.add(sch ** 2 >= pch ** 2 + qch ** 2 - EQUALITY_TOLERANCE * 0.10)
+                            model.energy_storage_operation.add(sdch ** 2 <= pdch ** 2 + qdch ** 2 + EQUALITY_TOLERANCE * 0.10)
+                            model.energy_storage_operation.add(sdch ** 2 >= pdch ** 2 + qdch ** 2 - EQUALITY_TOLERANCE * 0.10)
                         else:
-                            if params.relax_equalities:
-                                model.energy_storage_operation.add(sch ** 2 <= pch ** 2 + qch ** 2 + EQUALITY_TOLERANCE * 0.10)
-                                model.energy_storage_operation.add(sch ** 2 >= pch ** 2 + qch ** 2 - EQUALITY_TOLERANCE * 0.10)
-                                model.energy_storage_operation.add(sdch ** 2 <= pdch ** 2 + qdch ** 2 + EQUALITY_TOLERANCE * 0.10)
-                                model.energy_storage_operation.add(sdch ** 2 >= pdch ** 2 + qdch ** 2 - EQUALITY_TOLERANCE * 0.10)
-                            else:
-                                model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
-                                model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
+                            model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
+                            model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
 
                         # Charging/discharging complementarity constraints
                         if params.slacks.ess.complementarity:
@@ -1183,13 +1173,6 @@ def _build_model(network, params):
                         if params.slacks.ess.complementarity:
                             slack_comp = model.slack_es_comp[e, s_m, s_o, p]
                             obj += PENALTY_ESS * network.baseMVA * omega_market * omega_oper * slack_comp
-                        if params.slacks.ess.charging:
-                            slack_sch_sqr = model.slack_es_sch[e, s_m, s_o, p] ** 2
-                            slack_sdch_sqr = model.slack_es_sdch[e, s_m, s_o, p] ** 2
-                            obj += PENALTY_ESS ** 2 * network.baseMVA * omega_market * omega_oper * (slack_sch_sqr + slack_sdch_sqr)
-                        if params.slacks.ess.soc:
-                            slack_soc = model.slack_es_soc_up[e, s_m, s_o, p] + model.slack_es_soc_down[e, s_m, s_o, p]
-                            obj += PENALTY_ESS * network.baseMVA * omega_market * omega_oper * slack_soc
                     if params.slacks.ess.day_balance:
                         slack_soc_final = model.slack_es_soc_final_up[e, s_m, s_o] + model.slack_es_soc_final_down[e, s_m, s_o]
                         obj += PENALTY_ESS * network.baseMVA * omega_market * omega_oper * slack_soc_final
@@ -1750,12 +1733,6 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages'] = dict()
                 if params.slacks.ess.complementarity:
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'] = dict()
-                if params.slacks.ess.charging:
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch'] = dict()
-                if params.slacks.ess.soc:
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_up'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_down'] = dict()
                 if params.slacks.ess.day_balance:
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final_up'] = dict()
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final_down'] = dict()
@@ -2030,12 +2007,6 @@ def _process_results(network, model, params, results=dict()):
                     es_id = network.energy_storages[e].es_id
                     if params.slacks.ess.complementarity:
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'][es_id] = []
-                    if params.slacks.ess.charging:
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch'][es_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch'][es_id] = []
-                    if params.slacks.ess.soc:
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_up'][es_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_down'][es_id] = []
                     if params.slacks.ess.day_balance:
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final_up'][es_id] = [0.00 for _ in range(network.num_instants)]
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final_down'][es_id] = [0.00 for _ in range(network.num_instants)]
