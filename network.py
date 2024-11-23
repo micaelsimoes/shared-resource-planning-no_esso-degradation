@@ -255,9 +255,10 @@ def _build_model(network, params):
                 for p in model.periods:
                     if params.slacks.grid_operation.voltage:
                         model.slack_e[i, s_m, s_o, p].setub(VMAG_VIOLATION_ALLOWED * e_ub)
+                        model.slack_e[i, s_m, s_o, p].setlb(VMAG_VIOLATION_ALLOWED * e_lb)
                         model.slack_f[i, s_m, s_o, p].setub(VMAG_VIOLATION_ALLOWED * f_ub)
+                        model.slack_f[i, s_m, s_o, p].setlb(VMAG_VIOLATION_ALLOWED * f_lb)
                     if node.type == BUS_REF:
-
                         if network.is_transmission:
                             model.e[i, s_m, s_o, p].setub(e_ub)
                             model.e[i, s_m, s_o, p].setlb(e_lb)
@@ -267,7 +268,6 @@ def _build_model(network, params):
                             model.e[i, s_m, s_o, p].fix(vg)
                             if params.slacks.grid_operation.voltage:
                                 model.slack_e[i, s_m, s_o, p].fix(0.00)
-
                         model.f[i, s_m, s_o, p].fix(0.00)
                         if params.slacks.grid_operation.voltage:
                             model.slack_f[i, s_m, s_o, p].fix(0.00)
@@ -1097,7 +1097,8 @@ def _build_model(network, params):
                     for p in model.periods:
                         slack_e_sqr = model.slack_e[i, s_m, s_o, p] ** 2
                         slack_f_sqr = model.slack_f[i, s_m, s_o, p] ** 2
-                        obj += PENALTY_VOLTAGE * network.baseMVA * omega_market * omega_oper * (slack_e_sqr + slack_f_sqr)
+                        obj += PENALTY_VOLTAGE * network.baseMVA * omega_market * omega_oper * slack_e_sqr
+                        obj += PENALTY_VOLTAGE * network.baseMVA * omega_market * omega_oper * slack_f_sqr
 
             # Branch power flow slacks
             if params.slacks.grid_operation.branch_flow:
