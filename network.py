@@ -1672,9 +1672,7 @@ def _process_results(network, model, params, results=dict()):
             if params.slacks.shared_ess.complementarity:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'] = dict()
             if params.slacks.shared_ess.day_balance:
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final_up'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final_down'] = dict()
-
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final'] = dict()
             if params.fl_reg:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility'] = dict()
                 if params.slacks.flexibility.day_balance:
