@@ -76,8 +76,6 @@ class SlacksFlexibility:
 class SlacksEnergyStorage:
 
     def __init__(self):
-        self.charging = False
-        self.soc = False
         self.complementarity = False
         self.day_balance = False
 
