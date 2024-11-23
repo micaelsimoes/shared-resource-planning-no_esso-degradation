@@ -268,7 +268,8 @@ def _build_model(network, params):
                             model.e[i, s_m, s_o, p].setub(vg + SMALL_TOLERANCE)
                             model.e[i, s_m, s_o, p].setlb(vg - SMALL_TOLERANCE)
                             if params.slacks.grid_operation.voltage:
-                                model.slack_e[i, s_m, s_o, p].fix(0.00)
+                                model.slack_e[i, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                model.slack_e[i, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
                         model.f[i, s_m, s_o, p].setub(SMALL_TOLERANCE)
                         model.f[i, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
                         if params.slacks.grid_operation.voltage:
