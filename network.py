@@ -710,14 +710,12 @@ def _build_model(network, params):
                     model.shared_energy_storage_operation.add(pch <= s_max)
                     model.shared_energy_storage_operation.add(qch <= s_max)
                     model.shared_energy_storage_operation.add(qch <= tan(max_phi) * pch)
-                    model.shared_energy_storage_operation.add(qch >= -s_max)
                     model.shared_energy_storage_operation.add(qch >= tan(min_phi) * pch)
 
                     model.shared_energy_storage_operation.add(sdch <= s_max)
                     model.shared_energy_storage_operation.add(pdch <= s_max)
                     model.shared_energy_storage_operation.add(qdch <= s_max)
                     model.shared_energy_storage_operation.add(qdch <= tan(max_phi) * pdch)
-                    model.shared_energy_storage_operation.add(qdch >= -s_max)
                     model.shared_energy_storage_operation.add(qdch >= tan(min_phi) * pdch)
 
                     # Pnet and Qnet definition
@@ -742,20 +740,6 @@ def _build_model(network, params):
                         model.shared_energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
                         model.shared_energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
 
-                    # State-of-Charge
-                    soc_prev = soc_init
-                    if p > 0:
-                        soc_prev = model.shared_es_soc[e, s_m, s_o, p - 1]
-                    if params.slacks.shared_ess.soc:
-                        model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] <= soc_prev + (sch * eff_charge - sdch / eff_discharge) + model.slack_shared_es_soc_up[e, s_m, s_o, p] - model.slack_shared_es_soc_down[e, s_m, s_o, p] + EQUALITY_TOLERANCE)
-                        model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] >= soc_prev + (sch * eff_charge - sdch / eff_discharge) + model.slack_shared_es_soc_up[e, s_m, s_o, p] - model.slack_shared_es_soc_down[e, s_m, s_o, p] - EQUALITY_TOLERANCE)
-                    else:
-                        if params.relax_equalities:
-                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] <= soc_prev + (sch * eff_charge - sdch / eff_discharge) + EQUALITY_TOLERANCE)
-                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] >= soc_prev + (sch * eff_charge - sdch / eff_discharge) - EQUALITY_TOLERANCE)
-                        else:
-                            model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == soc_prev + (sch * eff_charge - sdch / eff_discharge))
-
                     # Charging/discharging complementarity constraints
                     if params.slacks.shared_ess.complementarity:
                         model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch <= model.slack_shared_es_comp[e, s_m, s_o, p])
@@ -764,6 +748,16 @@ def _build_model(network, params):
                             model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch <= EQUALITY_TOLERANCE)
                         else:
                             model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
+
+                    # State-of-Charge
+                    soc_prev = soc_init
+                    if p > 0:
+                        soc_prev = model.shared_es_soc[e, s_m, s_o, p - 1]
+                    if params.relax_equalities:
+                        model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] <= soc_prev + (sch * eff_charge - sdch / eff_discharge) + EQUALITY_TOLERANCE)
+                        model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] >= soc_prev + (sch * eff_charge - sdch / eff_discharge) - EQUALITY_TOLERANCE)
+                    else:
+                        model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == soc_prev + (sch * eff_charge - sdch / eff_discharge))
 
                 # Day balance
                 if params.slacks.shared_ess.day_balance:
