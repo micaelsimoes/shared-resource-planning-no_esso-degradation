@@ -1688,14 +1688,6 @@ def _process_results(network, model, params, results=dict()):
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages'] = dict()
             if params.slacks.shared_ess.complementarity:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'] = dict()
-            if params.slacks.shared_ess.charging:
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sch_up'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sch_down'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sdch_up'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sdch_down'] = dict()
-            if params.slacks.shared_ess.soc:
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_up'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_down'] = dict()
             if params.slacks.shared_ess.day_balance:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final_up'] = dict()
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final_down'] = dict()
@@ -1914,14 +1906,6 @@ def _process_results(network, model, params, results=dict()):
                 node_id = network.shared_energy_storages[e].bus
                 if params.slacks.shared_ess.complementarity:
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'][node_id] = []
-                if params.slacks.shared_ess.charging:
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sch_up'][node_id] = []
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sch_down'][node_id] = []
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sdch_up'][node_id] = []
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sdch_down'][node_id] = []
-                if params.slacks.shared_ess.soc:
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_up'][node_id] = []
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_down'][node_id] = []
                 if params.slacks.shared_ess.day_balance:
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final_up'][node_id] = [0.00 for _ in range(network.num_instants)]
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final_down'][node_id] = [0.00 for _ in range(network.num_instants)]
@@ -1929,20 +1913,6 @@ def _process_results(network, model, params, results=dict()):
                     if params.slacks.shared_ess.complementarity:
                         slack_comp = pe.value(model.slack_shared_es_comp[e, s_m, s_o, p]) * (s_base ** 2)
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'][node_id].append(slack_comp)
-                    if params.slacks.shared_ess.charging:
-                        slack_sch_up = pe.value(model.slack_shared_es_sch_up[e, s_m, s_o, p]) * (s_base ** 2)
-                        slack_sch_down = pe.value(model.slack_shared_es_sch_down[e, s_m, s_o, p]) * (s_base ** 2)
-                        slack_sdch_up = pe.value(model.slack_shared_es_sdch_up[e, s_m, s_o, p]) * (s_base ** 2)
-                        slack_sdch_down = pe.value(model.slack_shared_es_sdch_down[e, s_m, s_o, p]) * (s_base ** 2)
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sch_up'][node_id].append(slack_sch_up)
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sch_down'][node_id].append(slack_sch_down)
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sdch_up'][node_id].append(slack_sdch_up)
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sdch_down'][node_id].append(slack_sdch_down)
-                    if params.slacks.shared_ess.soc:
-                        slack_soc_up = pe.value(model.slack_shared_es_soc_up[e, s_m, s_o, p]) * s_base
-                        slack_soc_down = pe.value(model.slack_shared_es_soc_down[e, s_m, s_o, p]) * s_base
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_up'][node_id].append(slack_soc_up)
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_down'][node_id].append(slack_soc_down)
                 if params.slacks.shared_ess.day_balance:
                     slack_soc_final_up = pe.value(model.slack_shared_es_soc_final_up[e, s_m, s_o]) * s_base
                     slack_soc_final_down = pe.value(model.slack_shared_es_soc_final_down[e, s_m, s_o]) * s_base
