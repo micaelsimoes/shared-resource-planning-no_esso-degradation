@@ -320,16 +320,18 @@ def _build_model(network, params):
                         model.qg[g, s_m, s_o, p].setub(init_qg + SMALL_TOLERANCE)
                         model.qg[g, s_m, s_o, p].setlb(init_qg - SMALL_TOLERANCE)
     if params.rg_curt:
-        model.pg_curt = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
-        model.qg_curt = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+        model.pg_curt_down = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.pg_curt_up = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.qg_curt_down = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.qg_curt_up = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         for g in model.generators:
             gen = network.generators[g]
             for s_m in model.scenarios_market:
                 for s_o in model.scenarios_operation:
                     for p in model.periods:
                         if gen.is_controllable():
-                            model.pg_curt[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.pg_curt[g, s_m, s_o, p].setlb(SMALL_TOLERANCE)
+                            model.pg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            model.pg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
                             model.qg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
                             model.qg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
                         else:
