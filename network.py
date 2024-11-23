@@ -281,10 +281,8 @@ def _build_model(network, params):
                         model.f[i, s_m, s_o, p].setub(f_ub + SMALL_TOLERANCE)
                         model.f[i, s_m, s_o, p].setlb(f_lb - SMALL_TOLERANCE)
     if params.slacks.node_balance:
-        model.slack_node_balance_p_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_node_balance_p_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_node_balance_q_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_node_balance_q_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_node_balance_p = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_node_balance_q = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
 
     # - Generation
     model.pg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
@@ -864,8 +862,8 @@ def _build_model(network, params):
                                 Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
 
                     if params.slacks.node_balance:
-                        model.node_balance_cons_p.add(Pg == Pd + Pi + model.slack_node_balance_p_up[i, s_m, s_o, p] - model.slack_node_balance_p_down[i, s_m, s_o, p])
-                        model.node_balance_cons_q.add(Qg == Qd + Qi + model.slack_node_balance_q_up[i, s_m, s_o, p] - model.slack_node_balance_q_down[i, s_m, s_o, p])
+                        model.node_balance_cons_p.add(Pg == Pd + Pi + model.slack_node_balance_p[i, s_m, s_o, p])
+                        model.node_balance_cons_q.add(Qg == Qd + Qi + model.slack_node_balance_q[i, s_m, s_o, p])
                     else:
                         if params.relax_equalities:
                             model.node_balance_cons_p.add(Pg <= Pd + Pi + EQUALITY_TOLERANCE)
@@ -1130,9 +1128,9 @@ def _build_model(network, params):
             if params.slacks.node_balance:
                 for i in model.nodes:
                     for p in model.periods:
-                        slack_p = model.slack_node_balance_p_up[i, s_m, s_o, p] + model.slack_node_balance_p_down[i, s_m, s_o, p]
-                        slack_q = model.slack_node_balance_q_up[i, s_m, s_o, p] + model.slack_node_balance_q_down[i, s_m, s_o, p]
-                        obj += PENALTY_NODE_BALANCE * network.baseMVA * omega_market * omega_oper * (slack_p + slack_q)
+                        slack_p_sqr = model.slack_node_balance_p[i, s_m, s_o, p]
+                        slack_q_sqr = model.slack_node_balance_q[i, s_m, s_o, p]
+                        obj += PENALTY_NODE_BALANCE * network.baseMVA * omega_market * omega_oper * (slack_p_sqr + slack_q_sqr)
 
             # Flexibility day balance
             if params.fl_reg:
@@ -1674,10 +1672,8 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ij_sqr'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance'] = dict()
             if params.slacks.node_balance:
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_up'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_down'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_up'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_down'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages'] = dict()
             if params.slacks.shared_ess.complementarity:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'] = dict()
@@ -1912,19 +1908,13 @@ def _process_results(network, model, params, results=dict()):
             if params.slacks.node_balance:
                 for i in model.nodes:
                     node_id = network.nodes[i].bus_i
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_up'][node_id] = []
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_down'][node_id] = []
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_up'][node_id] = []
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_down'][node_id] = []
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p'][node_id] = []
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q'][node_id] = []
                     for p in model.periods:
-                        slack_p_up = pe.value(model.slack_node_balance_p_up[i, s_m, s_o, p]) * s_base
-                        slack_p_down = pe.value(model.slack_node_balance_p_down[i, s_m, s_o, p]) * s_base
-                        slack_q_up = pe.value(model.slack_node_balance_q_up[i, s_m, s_o, p]) * s_base
-                        slack_q_down = pe.value(model.slack_node_balance_q_down[i, s_m, s_o, p]) * s_base
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_up'][node_id].append(slack_p_up)
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p_down'][node_id].append(slack_p_down)
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_up'][node_id].append(slack_q_up)
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q_down'][node_id].append(slack_q_down)
+                        slack_p = pe.value(model.slack_node_balance_p[i, s_m, s_o, p]) * s_base
+                        slack_q = pe.value(model.slack_node_balance_q[i, s_m, s_o, p]) * s_base
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p'][node_id].append(slack_p)
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q'][node_id].append(slack_q)
 
             # - Flexibility
             if params.fl_reg:
