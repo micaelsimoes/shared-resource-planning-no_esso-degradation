@@ -281,8 +281,8 @@ def _build_model(network, params):
                         model.f[i, s_m, s_o, p].setub(f_ub + SMALL_TOLERANCE)
                         model.f[i, s_m, s_o, p].setlb(f_lb - SMALL_TOLERANCE)
     if params.slacks.node_balance:
-        model.slack_node_balance_p = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_node_balance_q = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.slack_node_balance_p = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
+        model.slack_node_balance_q = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
 
     # - Generation
     model.pg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
@@ -1128,8 +1128,8 @@ def _build_model(network, params):
             if params.slacks.node_balance:
                 for i in model.nodes:
                     for p in model.periods:
-                        slack_p_sqr = model.slack_node_balance_p[i, s_m, s_o, p]
-                        slack_q_sqr = model.slack_node_balance_q[i, s_m, s_o, p]
+                        slack_p_sqr = model.slack_node_balance_p[i, s_m, s_o, p] ** 2
+                        slack_q_sqr = model.slack_node_balance_q[i, s_m, s_o, p] ** 2
                         obj += PENALTY_NODE_BALANCE * network.baseMVA * omega_market * omega_oper * (slack_p_sqr + slack_q_sqr)
 
             # Flexibility day balance
