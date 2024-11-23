@@ -10,33 +10,29 @@
 	"branch_limit_type": "MIXED",
 	"slacks": {
 		"grid_operation": {
-			"voltage": false,
-			"branch_flow": false
+			"voltage": true,
+			"branch_flow": true
 		},
 		"flexibility": {
-			"day_balance": false
+			"day_balance": true
 		},
 		"ess": {
-				"complementarity": false,
-				"charging": false,
-				"soc": false,
-				"day_balance": false
+				"complementarity": true,
+				"day_balance": true
 		},
 		"shared_ess": {
-				"complementarity": false,
-				"charging": false,
-				"soc": false,
-				"day_balance": false
+				"complementarity": true,
+				"day_balance": true
 		},
 		"expected_values": {
 			"interface" : false,
 			"shared_ess": false
 		},
-		"node_balance": false
+		"node_balance": true
 	},
 	"solver": {
 		"name": "ipopt",
-		"linear_solver": "ma97",
+		"linear_solver": "ma57",
 		"solver_tol": 1e-6,
 		"verbose": false
 	},
