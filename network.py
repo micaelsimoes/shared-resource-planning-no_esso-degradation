@@ -398,8 +398,7 @@ def _build_model(network, params):
         model.flex_p_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.flex_p_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         if params.slacks.flexibility.day_balance:
-            model.slack_flex_p_balance_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
-            model.slack_flex_p_balance_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
+            model.slack_flex_p_balance = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.Reals, initialize=0.0)
         for c in model.loads:
             load = network.loads[c]
             for s_m in model.scenarios_market:
@@ -414,8 +413,8 @@ def _build_model(network, params):
                             model.flex_p_up[c, s_m, s_o, p].setub(SMALL_TOLERANCE)
                             model.flex_p_down[c, s_m, s_o, p].setub(SMALL_TOLERANCE)
                             if params.slacks.flexibility.day_balance:
-                                model.slack_flex_p_balance_up[c, s_m, s_o].setub(SMALL_TOLERANCE)
-                                model.slack_flex_p_balance_down[c, s_m, s_o].setub(SMALL_TOLERANCE)
+                                model.slack_flex_p_balance[c, s_m, s_o].setub(SMALL_TOLERANCE)
+                                model.slack_flex_p_balance[c, s_m, s_o].setlb(-SMALL_TOLERANCE)
     if params.l_curt:
         model.pc_curt_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.pc_curt_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -617,7 +616,7 @@ def _build_model(network, params):
                             p_up += model.flex_p_up[c, s_m, s_o, p]
                             p_down += model.flex_p_down[c, s_m, s_o, p]
                         if params.slacks.flexibility.day_balance:
-                            model.fl_p_balance.add(p_up == p_down + model.slack_flex_p_balance_up[c, s_m, s_o] - model.slack_flex_p_balance_down[c, s_m, s_o])
+                            model.fl_p_balance.add(p_up == p_down + model.slack_flex_p_balance[c, s_m, s_o])
                         else:
                             if params.relax_equalities:
                                 model.fl_p_balance.add(p_up <= p_down + EQUALITY_TOLERANCE)
@@ -1178,8 +1177,8 @@ def _build_model(network, params):
             if params.fl_reg:
                 for c in model.loads:
                     if params.slacks.flexibility.day_balance:
-                        slack_flex = model.slack_flex_p_balance_up[c, s_m, s_o] + model.slack_flex_p_balance_down[c, s_m, s_o]
-                        obj += PENALTY_FLEXIBILITY * network.baseMVA * omega_market * omega_oper * slack_flex
+                        slack_flex_sqr = model.slack_flex_p_balance[c, s_m, s_o] ** 2
+                        obj += PENALTY_FLEXIBILITY * network.baseMVA * omega_market * omega_oper * slack_flex_sqr
 
             # ESS slacks
             if params.es_reg:
@@ -1750,8 +1749,7 @@ def _process_results(network, model, params, results=dict()):
             if params.fl_reg:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility'] = dict()
                 if params.slacks.flexibility.day_balance:
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_up'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_down'] = dict()
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance'] = dict()
             if params.es_reg:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages'] = dict()
                 if params.slacks.ess.complementarity:
@@ -2028,12 +2026,9 @@ def _process_results(network, model, params, results=dict()):
                 for c in model.loads:
                     load_id = network.loads[c].load_id
                     if params.slacks.flexibility.day_balance:
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_up'][load_id] = [0.00 for _ in range(network.num_instants)]
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_down'][load_id] = [0.00 for _ in range(network.num_instants)]
-                        slack_flex_up = pe.value(model.slack_flex_p_balance_up[c, s_m, s_o]) * s_base
-                        slack_flex_down = pe.value(model.slack_flex_p_balance_down[c, s_m, s_o]) * s_base
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_up'][load_id][network.num_instants-1] = slack_flex_up
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_down'][load_id][network.num_instants-1] = slack_flex_down
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance'][load_id] = [0.00 for _ in range(network.num_instants)]
+                        slack_flex = pe.value(model.slack_flex_p_balance_up[c, s_m, s_o]) * s_base
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance'][load_id][network.num_instants-1] = slack_flex
 
             # - ESS slacks
             if params.es_reg:
