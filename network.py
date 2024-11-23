@@ -266,11 +266,11 @@ def _build_model(network, params):
                             vg = network.generators[ref_gen_idx].vg
                             model.e[i, s_m, s_o, p].fix(vg)
                             if params.slacks.grid_operation.voltage:
-                                model.slack_e[i, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                model.slack_e[i, s_m, s_o, p].fix(0.00)
 
                         model.f[i, s_m, s_o, p].fix(0.00)
                         if params.slacks.grid_operation.voltage:
-                            model.slack_f[i, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            model.slack_f[i, s_m, s_o, p].fix(0.00)
                     else:
                         model.e[i, s_m, s_o, p].setub(e_ub)
                         model.e[i, s_m, s_o, p].setlb(e_lb)
@@ -522,11 +522,8 @@ def _build_model(network, params):
                 for p in model.periods:
 
                     # e_actual and f_actual definition
-                    e_actual = model.e[i, s_m, s_o, p]
-                    f_actual = model.f[i, s_m, s_o, p]
-                    if params.slacks.grid_operation.voltage:
-                        e_actual += model.slack_e[i, s_m, s_o, p]
-                        f_actual += model.slack_f[i, s_m, s_o, p]
+                    e_actual = model.e_actual[i, s_m, s_o, p]
+                    f_actual = model.f_actual[i, s_m, s_o, p]
 
                     if params.relax_equalities:
                         model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] <= e_actual + EQUALITY_TOLERANCE)
