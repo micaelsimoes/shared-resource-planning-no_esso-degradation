@@ -1699,8 +1699,7 @@ def _process_results(network, model, params, results=dict()):
                 if params.slacks.ess.complementarity:
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'] = dict()
                 if params.slacks.ess.day_balance:
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final_up'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final_down'] = dict()
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final'] = dict()
 
             # Voltage
             for i in model.nodes:
@@ -1951,15 +1950,14 @@ def _process_results(network, model, params, results=dict()):
                     if params.slacks.ess.complementarity:
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'][es_id] = []
                     if params.slacks.ess.day_balance:
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final_up'][es_id] = [0.00 for _ in range(network.num_instants)]
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final_down'][es_id] = [0.00 for _ in range(network.num_instants)]
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final'][es_id] = 0.00
                     for p in model.periods:
                         if params.slacks.ess.complementarity:
                             slack_comp = pe.value(model.slack_es_comp[e, s_m, s_o, p]) * (s_base ** 2)
                             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'][es_id].append(slack_comp)
                     if params.slacks.ess.day_balance:
                         slack_soc_final = pe.value(model.slack_es_soc_final[e, s_m, s_o]) * s_base
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final'][es_id][network.num_instants-1] = slack_soc_final
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final'][es_id] = slack_soc_final
 
     return processed_results
 
