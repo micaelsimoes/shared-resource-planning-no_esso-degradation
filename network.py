@@ -1751,10 +1751,8 @@ def _process_results(network, model, params, results=dict()):
                 if params.slacks.ess.complementarity:
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'] = dict()
                 if params.slacks.ess.charging:
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_up'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_down'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_up'] = dict()
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_down'] = dict()
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch'] = dict()
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch'] = dict()
                 if params.slacks.ess.soc:
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_up'] = dict()
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_down'] = dict()
@@ -2033,10 +2031,8 @@ def _process_results(network, model, params, results=dict()):
                     if params.slacks.ess.complementarity:
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'][es_id] = []
                     if params.slacks.ess.charging:
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_up'][es_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_down'][es_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_up'][es_id] = []
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_down'][es_id] = []
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch'][es_id] = []
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch'][es_id] = []
                     if params.slacks.ess.soc:
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_up'][es_id] = []
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_down'][es_id] = []
@@ -2050,10 +2046,8 @@ def _process_results(network, model, params, results=dict()):
                         if params.slacks.ess.charging:
                             slack_sch = pe.value(model.slack_es_sch[e, s_m, s_o, p]) * (s_base ** 2)
                             slack_sdch = pe.value(model.slack_es_sdch[e, s_m, s_o, p]) * (s_base ** 2)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_up'][es_id].append(slack_sch_up)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_down'][es_id].append(slack_sch_down)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_up'][es_id].append(slack_sdch_up)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_down'][es_id].append(slack_sdch_down)
+                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch'][es_id].append(slack_sch)
+                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch'][es_id].append(slack_sdch)
                         if params.slacks.ess.soc:
                             slack_soc_up = pe.value(model.slack_es_soc_up[e, s_m, s_o, p]) * s_base
                             slack_soc_down = pe.value(model.slack_es_soc_down[e, s_m, s_o, p]) * s_base
