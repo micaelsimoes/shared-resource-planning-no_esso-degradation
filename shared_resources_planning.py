@@ -428,10 +428,10 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                             tso_model[year][day].f[adn_node_idx, s_m, s_o, p].setub(v_max + SMALL_TOLERANCE)
                             tso_model[year][day].f[adn_node_idx, s_m, s_o, p].setlb(-v_max - SMALL_TOLERANCE)
                             if transmission_network.params.slacks.grid_operation.voltage:
-                                tso_model[year][day].slack_e_up[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                                tso_model[year][day].slack_e_down[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                                tso_model[year][day].slack_f_up[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                                tso_model[year][day].slack_f_down[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                tso_model[year][day].slack_e[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                tso_model[year][day].slack_e[adn_node_idx, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
+                                tso_model[year][day].slack_f[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                tso_model[year][day].slack_f[adn_node_idx, s_m, s_o, p].setub(-EQUALITY_TOLERANCE)
 
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fixed = False
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setub(None)
@@ -952,10 +952,10 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                             dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
                             dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
                             if distribution_network.params.slacks.grid_operation.voltage:
-                                dso_model[year][day].slack_e_up[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                dso_model[year][day].slack_e_down[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                dso_model[year][day].slack_f_up[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                dso_model[year][day].slack_f_down[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                dso_model[year][day].slack_e[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                dso_model[year][day].slack_e[ref_node_idx, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
+                                dso_model[year][day].slack_f[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                dso_model[year][day].slack_f[ref_node_idx, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
                             dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].fixed = False
                             dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].fixed = False
                             if distribution_network.params.rg_curt:
@@ -1712,10 +1712,8 @@ def _run_operational_planning_without_coordination(planning_problem):
                             tso_model[year][day].interface_expected_values.add(tso_model[year][day].e[adn_node_idx, s_m, s_o, p] ** 2 + tso_model[year][day].f[adn_node_idx, s_m, s_o, p] ** 2 == v_sqr)
 
                             if transmission_network.params.slacks.grid_operation.voltage:
-                                tso_model[year][day].slack_e_up[adn_node_idx, s_m, s_o, p].fix(0.0)
-                                tso_model[year][day].slack_e_down[adn_node_idx, s_m, s_o, p].fix(0.0)
-                                tso_model[year][day].slack_f_down[adn_node_idx, s_m, s_o, p].fix(0.0)
-                                tso_model[year][day].slack_f_down[adn_node_idx, s_m, s_o, p].fix(0.0)
+                                tso_model[year][day].slack_e[adn_node_idx, s_m, s_o, p].fix(0.0)
+                                tso_model[year][day].slack_f[adn_node_idx, s_m, s_o, p].fix(0.0)
 
                             pc = interface_pf[node_id][year][day]['p'][p] / s_base
                             qc = interface_pf[node_id][year][day]['q'][p] / s_base
