@@ -4790,63 +4790,33 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
 
                             node_id = node.bus_i
 
-                            # - e_up
+                            # - e
                             sheet.cell(row=row_idx, column=1).value = operator_type
                             sheet.cell(row=row_idx, column=2).value = tn_node_id
                             sheet.cell(row=row_idx, column=3).value = node_id
                             sheet.cell(row=row_idx, column=4).value = int(year)
                             sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Voltage, e_up'
+                            sheet.cell(row=row_idx, column=6).value = 'Voltage, e'
                             sheet.cell(row=row_idx, column=7).value = s_m
                             sheet.cell(row=row_idx, column=8).value = s_o
                             for p in range(network[year][day].num_instants):
-                                e_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_up'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = e_up
+                                slack_e = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e'][node_id][p]
+                                sheet.cell(row=row_idx, column=p + 9).value = slack_e
                                 sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
                             row_idx = row_idx + 1
 
-                            # - e_down
+                            # - f
                             sheet.cell(row=row_idx, column=1).value = operator_type
                             sheet.cell(row=row_idx, column=2).value = tn_node_id
                             sheet.cell(row=row_idx, column=3).value = node_id
                             sheet.cell(row=row_idx, column=4).value = int(year)
                             sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Voltage, e_down'
+                            sheet.cell(row=row_idx, column=6).value = 'Voltage, f'
                             sheet.cell(row=row_idx, column=7).value = s_m
                             sheet.cell(row=row_idx, column=8).value = s_o
                             for p in range(network[year][day].num_instants):
-                                e_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e_down'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = e_down
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
-
-                            # - f_up
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Voltage, f_up'
-                            sheet.cell(row=row_idx, column=7).value = s_m
-                            sheet.cell(row=row_idx, column=8).value = s_o
-                            for p in range(network[year][day].num_instants):
-                                f_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_up'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = f_up
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
-
-                            # - f_down
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Voltage, f_down'
-                            sheet.cell(row=row_idx, column=7).value = s_m
-                            sheet.cell(row=row_idx, column=8).value = s_o
-                            for p in range(network[year][day].num_instants):
-                                f_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f_down'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = f_down
+                                slack_f = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f'][node_id][p]
+                                sheet.cell(row=row_idx, column=p + 9).value = slack_f
                                 sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
                             row_idx = row_idx + 1
 
