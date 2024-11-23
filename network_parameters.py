@@ -46,6 +46,7 @@ class Slacks:
         self.ess.read_slacks_parameters(slacks_data)
         self.shared_ess.read_slacks_parameters(slacks_data)
         self.expected_values.read_slacks_parameters(slacks_data)
+        self.node_balance = bool(slacks_data["node_balance"])
 
 
 class SlacksOperation:
