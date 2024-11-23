@@ -1186,7 +1186,7 @@ def _build_model(network, params):
                         if params.slacks.ess.charging:
                             slack_sch_sqr = model.slack_es_sch[e, s_m, s_o, p] ** 2
                             slack_sdch_sqr = model.slack_es_sdch[e, s_m, s_o, p] ** 2
-                            obj += PENALTY_ESS * network.baseMVA * omega_market * omega_oper * (slack_sch_sqr + slack_sdch_sqr)
+                            obj += PENALTY_ESS ** 2 * network.baseMVA * omega_market * omega_oper * (slack_sch_sqr + slack_sdch_sqr)
                         if params.slacks.ess.soc:
                             slack_soc = model.slack_es_soc_up[e, s_m, s_o, p] + model.slack_es_soc_down[e, s_m, s_o, p]
                             obj += PENALTY_ESS * network.baseMVA * omega_market * omega_oper * slack_soc
