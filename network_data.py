@@ -2303,24 +2303,12 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
                                 sheet.cell(row=row_idx, column=1).value = load_id
                                 sheet.cell(row=row_idx, column=2).value = int(year)
                                 sheet.cell(row=row_idx, column=3).value = day
-                                sheet.cell(row=row_idx, column=4).value = 'Flex. balance, up'
+                                sheet.cell(row=row_idx, column=4).value = 'Flex. balance'
                                 sheet.cell(row=row_idx, column=5).value = s_m
                                 sheet.cell(row=row_idx, column=6).value = s_o
                                 for p in range(network_planning.num_instants):
-                                    flex_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_up'][load_id][p]
-                                    sheet.cell(row=row_idx, column=p + 7).value = flex_up
-                                    sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                                row_idx = row_idx + 1
-
-                                sheet.cell(row=row_idx, column=1).value = load_id
-                                sheet.cell(row=row_idx, column=2).value = int(year)
-                                sheet.cell(row=row_idx, column=3).value = day
-                                sheet.cell(row=row_idx, column=4).value = 'Flex. balance, down'
-                                sheet.cell(row=row_idx, column=5).value = s_m
-                                sheet.cell(row=row_idx, column=6).value = s_o
-                                for p in range(network_planning.num_instants):
-                                    flex_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance_down'][load_id][p]
-                                    sheet.cell(row=row_idx, column=p + 7).value = flex_down
+                                    day_balance = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance'][load_id][p]
+                                    sheet.cell(row=row_idx, column=p + 7).value = day_balance
                                     sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                                 row_idx = row_idx + 1
 
