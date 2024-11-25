@@ -36,7 +36,6 @@ class Slacks:
         self.flexibility = SlacksFlexibility()
         self.ess = SlacksEnergyStorage()
         self.shared_ess = SlacksEnergyStorage()
-        self.expected_values = SlacksExpectedValues()
         self.node_balance = False
 
     def read_slacks_parameters(self, slacks_data):
@@ -44,7 +43,6 @@ class Slacks:
         self.flexibility.read_slacks_parameters(slacks_data)
         self.ess.read_slacks_parameters(slacks_data)
         self.shared_ess.read_slacks_parameters(slacks_data)
-        self.expected_values.read_slacks_parameters(slacks_data)
         self.node_balance = bool(slacks_data["node_balance"])
 
 
