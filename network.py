@@ -614,7 +614,7 @@ def _build_model(network, params):
 
                         if params.slacks.ess.complementarity:
                             model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2 + model.slack_es_ch[e, s_m, s_o, p])
-                            model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2 + model.slack_es_ch[e, s_m, s_o, p])
+                            model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2 + model.slack_es_dch[e, s_m, s_o, p])
                         else:
                             model.energy_storage_operation.add(sch ** 2 <= pch ** 2 + qch ** 2 + EQUALITY_TOLERANCE)
                             model.energy_storage_operation.add(sch ** 2 >= pch ** 2 + qch ** 2 - EQUALITY_TOLERANCE)
@@ -696,8 +696,8 @@ def _build_model(network, params):
                     model.shared_energy_storage_operation.add(model.shared_es_soc[e, s_m, s_o, p] >= soc_min)
 
                     if params.slacks.shared_ess.charging:
-                        model.shared_energy_storage_operation.add(sch ** 2 <= pch ** 2 + qch ** 2 + model.slack_shared_es_ch[e, s_m, s_o, p])
-                        model.shared_energy_storage_operation.add(sdch ** 2 <= pdch ** 2 + qdch ** 2 + model.slack_shared_es_dch[e, s_m, s_o, p])
+                        model.shared_energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2 + model.slack_shared_es_ch[e, s_m, s_o, p])
+                        model.shared_energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2 + model.slack_shared_es_dch[e, s_m, s_o, p])
                     else:
                         model.shared_energy_storage_operation.add(sch ** 2 <= pch ** 2 + qch ** 2 + EQUALITY_TOLERANCE)
                         model.shared_energy_storage_operation.add(sch ** 2 >= pch ** 2 + qch ** 2 - EQUALITY_TOLERANCE)
