@@ -294,72 +294,40 @@ def _build_model(network, params):
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
                 for p in model.periods:
-                    if gen.is_controllable():
-                        if gen.status[p] == 1:
-                            model.pg[g, s_m, s_o, p] = (pg_lb + pg_ub) * 0.50
-                            model.qg[g, s_m, s_o, p] = (qg_lb + qg_ub) * 0.50
-                            model.pg[g, s_m, s_o, p].setub(pg_ub)
-                            model.pg[g, s_m, s_o, p].setlb(pg_lb)
-                            model.qg[g, s_m, s_o, p].setub(qg_ub)
-                            model.qg[g, s_m, s_o, p].setlb(qg_lb)
-                        else:
-                            model.pg[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.pg[g, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
-                            model.qg[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.qg[g, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
+                    if gen.status[p] == 1:
+                        model.pg[g, s_m, s_o, p] = (pg_lb + pg_ub) * 0.50
+                        model.qg[g, s_m, s_o, p] = (qg_lb + qg_ub) * 0.50
+                        model.pg[g, s_m, s_o, p].setub(pg_ub)
+                        model.pg[g, s_m, s_o, p].setlb(pg_lb)
+                        model.qg[g, s_m, s_o, p].setub(qg_ub)
+                        model.qg[g, s_m, s_o, p].setlb(qg_lb)
                     else:
-                        # Non-conventional generator
-                        init_pg = 0.0
-                        init_qg = 0.0
-                        if gen.status[p] == 1:
-                            init_pg = gen.pg[s_o][p]
-                            init_qg = gen.qg[s_o][p]
-                        model.pg[g, s_m, s_o, p].setub(init_pg + SMALL_TOLERANCE)
-                        model.pg[g, s_m, s_o, p].setlb(init_pg - SMALL_TOLERANCE)
-                        model.qg[g, s_m, s_o, p].setub(init_qg + SMALL_TOLERANCE)
-                        model.qg[g, s_m, s_o, p].setlb(init_qg - SMALL_TOLERANCE)
+                        model.pg[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                        model.pg[g, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
+                        model.qg[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                        model.qg[g, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
     if params.rg_curt:
-        model.pg_curt_down = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.pg_curt_up = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.qg_curt_down = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.qg_curt_up = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.sg_sqr = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.sg_curt_sqr = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         for g in model.generators:
             gen = network.generators[g]
             for s_m in model.scenarios_market:
                 for s_o in model.scenarios_operation:
                     for p in model.periods:
                         if gen.is_controllable():
-                            model.pg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.pg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.qg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.qg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            model.sg_curt_sqr[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
                         else:
                             if gen.is_curtaillable():
                                 # - Renewable Generation
-                                init_pg = 0.0
-                                init_qg = 0.0
+                                init_sg_sqr = 0.0
                                 if gen.status[p] == 1:
-                                    init_pg = gen.pg[s_o][p]
-                                    init_qg = gen.qg[s_o][p]
-                                if init_pg >= 0.00:
-                                    model.pg_curt_down[g, s_m, s_o, p].setub(init_pg + SMALL_TOLERANCE)
-                                    model.pg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                else:
-                                    model.pg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                    model.pg_curt_up[g, s_m, s_o, p].setub(abs(init_pg) + SMALL_TOLERANCE)
-                                if init_qg >= 0.00:
-                                    model.qg_curt_down[g, s_m, s_o, p].setub(init_qg + SMALL_TOLERANCE)
-                                    model.qg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                else:
-                                    model.qg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                    model.qg_curt_up[g, s_m, s_o, p].setub(abs(init_qg) + SMALL_TOLERANCE)
+                                    init_sg_sqr = gen.pg[s_o][p] ** 2 + gen.qg[s_o][p] ** 2
+                                model.sg_sqr[g, s_m, s_o, p].setub(init_sg_sqr)
+                                model.sg_curt_sqr[g, s_m, s_o, p].setub(init_sg_sqr)
                             else:
                                 # - Generator is not curtaillable (conventional RES, ref gen, etc.)
-                                model.pg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                model.pg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                model.qg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                model.qg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                model.sg_sqr[g, s_m, s_o, p].setub(init_sg_sqr)
+                                model.sg_curt_sqr[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
 
     # - Branch power flows (squared) -- used in branch limits
     model.flow_ij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -568,10 +536,8 @@ def _build_model(network, params):
                     for p in model.periods:
                         pg = model.pg[g, s_m, s_o, p]
                         qg = model.qg[g, s_m, s_o, p]
-                        if params.rg_curt:
-                            pg -= (model.pg_curt_down[g, s_m, s_o, p] - model.pg_curt_up[g, s_m, s_o, p])
-                            qg -= (model.qg_curt_down[g, s_m, s_o, p] - model.qg_curt_up[g, s_m, s_o, p])
-                        model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] == pg ** 2 + qg ** 2)
+                        model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] <= pg ** 2 + qg ** 2 + EQUALITY_TOLERANCE)
+                        model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] >= pg ** 2 + qg ** 2 - EQUALITY_TOLERANCE)
 
     # - Flexible Loads -- Daily energy balance
     if params.fl_reg:
@@ -779,9 +745,6 @@ def _build_model(network, params):
                         if generator.bus == node.bus_i:
                             Pg += model.pg[g, s_m, s_o, p]
                             Qg += model.qg[g, s_m, s_o, p]
-                            if params.rg_curt:
-                                Pg -= (model.pg_curt_down[g, s_m, s_o, p] - model.pg_curt_up[g, s_m, s_o, p])
-                                Qg -= (model.qg_curt_down[g, s_m, s_o, p] - model.qg_curt_up[g, s_m, s_o, p])
 
                     ei = model.e_actual[i, s_m, s_o, p]
                     fi = model.f_actual[i, s_m, s_o, p]
@@ -987,9 +950,8 @@ def _build_model(network, params):
                 if params.rg_curt:
                     for g in model.generators:
                         for p in model.periods:
-                            pg_curt = model.pg_curt_down[g, s_m, s_o, p] + model.pg_curt_up[g, s_m, s_o, p]
-                            qg_curt = model.qg_curt_down[g, s_m, s_o, p] + model.qg_curt_up[g, s_m, s_o, p]
-                            obj_scenario += model.cost_res_curtailment * network.baseMVA * (pg_curt + qg_curt)
+                            sg_curt_sqr = model.sg_curt_sqr[g, s_m, s_o, p]
+                            obj_scenario += model.cost_res_curtailment * network.baseMVA * sg_curt_sqr
 
                 # ESS utilization
                 if params.es_reg:
