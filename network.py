@@ -510,26 +510,6 @@ def _build_model(network, params):
     if params.slacks.shared_ess.day_balance:
         model.slack_shared_es_soc_final = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
 
-    # Costs (penalties)
-    # Note: defined as variables (bus fixed) so that they can be changed later, if needed
-    model.penalty_ess_usage = pe.Var(domain=pe.NonNegativeReals)
-    model.penalty_ess_usage.fix(PENALTY_ESS_USAGE)
-    if params.obj_type == OBJ_MIN_COST:
-        model.cost_res_curtailment = pe.Var(domain=pe.NonNegativeReals)
-        model.cost_load_curtailment = pe.Var(domain=pe.NonNegativeReals)
-        model.cost_res_curtailment.fix(COST_GENERATION_CURTAILMENT)
-        model.cost_load_curtailment.fix(COST_CONSUMPTION_CURTAILMENT)
-    elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
-        model.penalty_gen_curtailment = pe.Var(domain=pe.NonNegativeReals)
-        model.penalty_load_curtailment = pe.Var(domain=pe.NonNegativeReals)
-        model.penalty_flex_usage = pe.Var(domain=pe.NonNegativeReals)
-        model.penalty_gen_curtailment.fix(PENALTY_GENERATION_CURTAILMENT)
-        model.penalty_load_curtailment.fix(PENALTY_LOAD_CURTAILMENT)
-        model.penalty_flex_usage.fix(PENALTY_FLEXIBILITY_USAGE)
-    else:
-        print(f'[ERROR] Unrecognized or invalid objective. Objective = {params.obj_type}. Exiting...')
-        exit(ERROR_NETWORK_MODEL)
-
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
     # - Voltage
@@ -560,7 +540,6 @@ def _build_model(network, params):
                             vg = network.generators[gen_idx].vg
                             e = model.e[i, s_m, s_o, p]
                             f = model.f[i, s_m, s_o, p]
-
                             model.voltage_cons.add(e ** 2 + f ** 2 <= vg[p] ** 2 + EQUALITY_TOLERANCE)
                             model.voltage_cons.add(e ** 2 + f ** 2 >= vg[p] ** 2 - EQUALITY_TOLERANCE)
                         else:
@@ -918,6 +897,26 @@ def _build_model(network, params):
                             model.branch_power_flow_lims.add(model.flow_ij_sqr[b, s_m, s_o, p] <= rating ** 2)
 
     # ------------------------------------------------------------------------------------------------------------------
+    # Costs (penalties)
+    # Note: defined as variables (bus fixed) so that they can be changed later, if needed
+    model.penalty_ess_usage = pe.Var(domain=pe.NonNegativeReals)
+    model.penalty_ess_usage.fix(PENALTY_ESS_USAGE)
+    if params.obj_type == OBJ_MIN_COST:
+        model.cost_res_curtailment = pe.Var(domain=pe.NonNegativeReals)
+        model.cost_load_curtailment = pe.Var(domain=pe.NonNegativeReals)
+        model.cost_res_curtailment.fix(COST_GENERATION_CURTAILMENT)
+        model.cost_load_curtailment.fix(COST_CONSUMPTION_CURTAILMENT)
+    elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
+        model.penalty_gen_curtailment = pe.Var(domain=pe.NonNegativeReals)
+        model.penalty_load_curtailment = pe.Var(domain=pe.NonNegativeReals)
+        model.penalty_flex_usage = pe.Var(domain=pe.NonNegativeReals)
+        model.penalty_gen_curtailment.fix(PENALTY_GENERATION_CURTAILMENT)
+        model.penalty_load_curtailment.fix(PENALTY_LOAD_CURTAILMENT)
+        model.penalty_flex_usage.fix(PENALTY_FLEXIBILITY_USAGE)
+    else:
+        print(f'[ERROR] Unrecognized or invalid objective. Objective = {params.obj_type}. Exiting...')
+        exit(ERROR_NETWORK_MODEL)
+
     # Objective Function
     obj = 0.0
     if params.obj_type == OBJ_MIN_COST:
