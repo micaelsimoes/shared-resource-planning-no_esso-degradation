@@ -959,10 +959,7 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                             dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p].fixed = False
                             dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p].fixed = False
                             if distribution_network.params.rg_curt:
-                                dso_model[year][day].pg_curt_down[ref_gen_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                dso_model[year][day].pg_curt_up[ref_gen_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                dso_model[year][day].qg_curt_down[ref_gen_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                dso_model[year][day].qg_curt_up[ref_gen_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                dso_model[year][day].sg_curt[ref_gen_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
 
                 # Update expected interface values limits
                 for p in dso_model[year][day].periods:

@@ -308,6 +308,7 @@ def _build_model(network, params):
                         model.qg[g, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
     if params.rg_curt:
         model.sg_net = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.sg_init = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.sg_curt = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         for g in model.generators:
             generator = network.generators[g]
@@ -316,6 +317,7 @@ def _build_model(network, params):
                     for p in model.periods:
                         if generator.is_controllable():
                             model.sg_net[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            model.sg_init[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
                             model.sg_curt[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
                         else:
                             if generator.is_curtaillable():
@@ -324,10 +326,13 @@ def _build_model(network, params):
                                 if generator.status[p] == 1:
                                     init_sg = sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
                                 model.sg_net[g, s_m, s_o, p].setub(init_sg)
+                                model.sg_init[g, s_m, s_o, p].setub(init_sg + SMALL_TOLERANCE)
+                                model.sg_init[g, s_m, s_o, p].setlb(init_sg - SMALL_TOLERANCE)
                                 model.sg_curt[g, s_m, s_o, p].setub(init_sg)
                             else:
                                 # - Generator is not curtaillable (conventional RES, ref gen, etc.)
                                 model.sg_net[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                model.sg_init[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
                                 model.sg_curt[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
 
     # - Branch power flows (squared) -- used in branch limits
@@ -547,8 +552,8 @@ def _build_model(network, params):
                         model.generation_apparent_power.add(model.sg_net[g, s_m, s_o, p] ** 2 <= pg ** 2 + qg ** 2 + EQUALITY_TOLERANCE)
                         model.generation_apparent_power.add(model.sg_net[g, s_m, s_o, p] ** 2 >= pg ** 2 + qg ** 2 - EQUALITY_TOLERANCE)
 
-                        model.generation_apparent_power.add(model.sg_curt[g, s_m, s_o, p] <= init_sg - model.sg_net[g, s_m, s_o, p] + EQUALITY_TOLERANCE)
-                        model.generation_apparent_power.add(model.sg_curt[g, s_m, s_o, p] >= init_sg - model.sg_net[g, s_m, s_o, p] - EQUALITY_TOLERANCE)
+                        model.generation_apparent_power.add(model.sg_net[g, s_m, s_o, p]  <= model.sg_init[g, s_m, s_o, p] - model.sg_curt[g, s_m, s_o, p] + EQUALITY_TOLERANCE)
+                        model.generation_apparent_power.add(model.sg_net[g, s_m, s_o, p]  >= model.sg_init[g, s_m, s_o, p] - model.sg_curt[g, s_m, s_o, p] - EQUALITY_TOLERANCE)
 
                         if generator.power_factor_control:
                             # Power factor control, variable phi
