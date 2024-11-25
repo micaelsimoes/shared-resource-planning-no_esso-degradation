@@ -536,15 +536,25 @@ def _build_model(network, params):
             for s_m in model.scenarios_market:
                 for s_o in model.scenarios_operation:
                     for p in model.periods:
+
                         pg = model.pg[g, s_m, s_o, p]
                         qg = model.qg[g, s_m, s_o, p]
                         model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] <= pg ** 2 + qg ** 2 + EQUALITY_TOLERANCE)
                         model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] >= pg ** 2 + qg ** 2 - EQUALITY_TOLERANCE)
                         model.generation_apparent_power.add(model.sg[g, s_m, s_o, p] ** 2 <= model.sg_sqr[g, s_m, s_o, p] + EQUALITY_TOLERANCE)
                         model.generation_apparent_power.add(model.sg[g, s_m, s_o, p] ** 2 >= model.sg_sqr[g, s_m, s_o, p] - EQUALITY_TOLERANCE)
+
                         if generator.power_factor_control:
-                            max_phi = acos(energy_storage.max_pf)
-                            min_phi = acos(energy_storage.min_pf)
+                            # Power factor control, variable phi
+                            max_phi = acos(generator.max_pf)
+                            min_phi = acos(generator.min_pf)
+                            model.energy_storage_operation.add(qg <= tan(max_phi) * pg)
+                            model.energy_storage_operation.add(qg >= tan(min_phi) * pg)
+                        else:
+                            # No power factor control, maintain given phi
+                            phi = atan2(generator.qg[s_o][p], generator.pg[s_o][p])
+                            model.energy_storage_operation.add(qg <= tan(phi) * pg + EQUALITY_TOLERANCE)
+                            model.energy_storage_operation.add(qg >= tan(phi) * pg + EQUALITY_TOLERANCE)
 
 
     # - Flexible Loads -- Daily energy balance
