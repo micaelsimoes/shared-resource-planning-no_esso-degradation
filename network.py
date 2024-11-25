@@ -2101,7 +2101,7 @@ def _compute_renewable_generation(network, model, params):
 
     for s_m in model.scenarios_market:
         for s_o in model.scenarios_operation:
-            total_renewable_gen_scenario = {'p': 0.00, 'q': 0.00}
+            total_renewable_gen_scenario = {'p': 0.00, 'q': 0.00, 's': 0.00}
             for g in model.generators:
                 if network.generators[g].is_renewable():
                     for p in model.periods:
