@@ -569,7 +569,8 @@ def _build_model(network, params):
                     if params.rg_curt:
                         pg -= (model.pg_curt_down[g, s_m, s_o, p] - model.pg_curt_up[g, s_m, s_o, p])
                         qg -= (model.qg_curt_down[g, s_m, s_o, p] - model.qg_curt_up[g, s_m, s_o, p])
-                    model.generation_apparent_power.add(model.sg[g, s_m, s_o, p] ** 2 == pg ** 2 + qg ** 2)
+                    model.generation_apparent_power.add(model.sg[g, s_m, s_o, p] ** 2 <= pg ** 2 + qg ** 2 + EQUALITY_TOLERANCE)
+                    model.generation_apparent_power.add(model.sg[g, s_m, s_o, p] ** 2 >= pg ** 2 + qg ** 2 - EQUALITY_TOLERANCE)
 
     # - Flexible Loads -- Daily energy balance
     if params.fl_reg:
