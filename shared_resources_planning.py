@@ -3677,52 +3677,58 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                         if generator.is_curtaillable() and params.rg_curt:
 
                             # Apparent Power
-                            sheet.cell(row=row_idx, column=1).value = gen_id
-                            sheet.cell(row=row_idx, column=2).value = node_id
-                            sheet.cell(row=row_idx, column=3).value = gen_type
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Sg, [MVA]'
-                            sheet.cell(row=row_idx, column=7).value = s_m
-                            sheet.cell(row=row_idx, column=8).value = s_o
+                            sheet.cell(row=row_idx, column=1).value = operator_type
+                            sheet.cell(row=row_idx, column=2).value = tn_node_id
+                            sheet.cell(row=row_idx, column=3).value = gen_id
+                            sheet.cell(row=row_idx, column=4).value = node_id
+                            sheet.cell(row=row_idx, column=5).value = gen_type
+                            sheet.cell(row=row_idx, column=6).value = int(year)
+                            sheet.cell(row=row_idx, column=7).value = day
+                            sheet.cell(row=row_idx, column=8).value = 'Sg, [MVA]'
+                            sheet.cell(row=row_idx, column=9).value = s_m
+                            sheet.cell(row=row_idx, column=10).value = s_o
                             for p in range(network[year][day].num_instants):
                                 sg = results[year][day]['scenarios'][s_m][s_o]['generation']['sg'][gen_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = sg
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                                sheet.cell(row=row_idx, column=p + 11).value = sg
+                                sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
                                 expected_sg[gen_id][p] += sg * omega_m * omega_s
                             row_idx = row_idx + 1
 
                             # Apparent Power curtailment
-                            sheet.cell(row=row_idx, column=1).value = gen_id
-                            sheet.cell(row=row_idx, column=2).value = node_id
-                            sheet.cell(row=row_idx, column=3).value = gen_type
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Sg_curt, [MVA]'
-                            sheet.cell(row=row_idx, column=7).value = s_m
-                            sheet.cell(row=row_idx, column=8).value = s_o
+                            sheet.cell(row=row_idx, column=1).value = operator_type
+                            sheet.cell(row=row_idx, column=2).value = tn_node_id
+                            sheet.cell(row=row_idx, column=3).value = gen_id
+                            sheet.cell(row=row_idx, column=4).value = node_id
+                            sheet.cell(row=row_idx, column=5).value = gen_type
+                            sheet.cell(row=row_idx, column=6).value = int(year)
+                            sheet.cell(row=row_idx, column=7).value = day
+                            sheet.cell(row=row_idx, column=8).value = 'Sg_curt, [MVA]'
+                            sheet.cell(row=row_idx, column=9).value = s_m
+                            sheet.cell(row=row_idx, column=10).value = s_o
                             for p in range(network[year][day].num_instants):
                                 sg_curt = results[year][day]['scenarios'][s_m][s_o]['generation']['sg_curt'][gen_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = sg_curt
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                                sheet.cell(row=row_idx, column=p + 11).value = sg_curt
+                                sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
                                 if not isclose(sg_curt, 0.00, abs_tol=VIOLATION_TOLERANCE):
-                                    sheet.cell(row=row_idx, column=p + 9).fill = violation_fill
+                                    sheet.cell(row=row_idx, column=p + 11).fill = violation_fill
                                 expected_sg_curt[gen_id][p] += sg_curt * omega_m * omega_s
                             row_idx = row_idx + 1
 
                             # Apparent Power Net
-                            sheet.cell(row=row_idx, column=1).value = gen_id
-                            sheet.cell(row=row_idx, column=2).value = node_id
-                            sheet.cell(row=row_idx, column=3).value = gen_type
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Sg_net, [MVA]'
-                            sheet.cell(row=row_idx, column=7).value = s_m
-                            sheet.cell(row=row_idx, column=8).value = s_o
+                            sheet.cell(row=row_idx, column=1).value = operator_type
+                            sheet.cell(row=row_idx, column=2).value = tn_node_id
+                            sheet.cell(row=row_idx, column=3).value = gen_id
+                            sheet.cell(row=row_idx, column=4).value = node_id
+                            sheet.cell(row=row_idx, column=5).value = gen_type
+                            sheet.cell(row=row_idx, column=6).value = int(year)
+                            sheet.cell(row=row_idx, column=7).value = day
+                            sheet.cell(row=row_idx, column=8).value = 'Sg_net, [MVA]'
+                            sheet.cell(row=row_idx, column=9).value = s_m
+                            sheet.cell(row=row_idx, column=10).value = s_o
                             for p in range(network[year][day].num_instants):
                                 sg_net = results[year][day]['scenarios'][s_m][s_o]['generation']['sg_net'][gen_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = sg_net
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                                sheet.cell(row=row_idx, column=p + 11).value = sg_net
+                                sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
                                 expected_sg_net[gen_id][p] += sg_net * omega_m * omega_s
                             row_idx = row_idx + 1
 
@@ -3803,47 +3809,53 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                 if generator.is_curtaillable() and params.rg_curt:
 
                     # Apparent Power
-                    sheet.cell(row=row_idx, column=1).value = gen_id
-                    sheet.cell(row=row_idx, column=2).value = node_id
-                    sheet.cell(row=row_idx, column=3).value = gen_type
-                    sheet.cell(row=row_idx, column=4).value = int(year)
-                    sheet.cell(row=row_idx, column=5).value = day
-                    sheet.cell(row=row_idx, column=6).value = 'Sg, [MVA]'
-                    sheet.cell(row=row_idx, column=7).value = 'Expected'
-                    sheet.cell(row=row_idx, column=8).value = '-'
+                    sheet.cell(row=row_idx, column=1).value = operator_type
+                    sheet.cell(row=row_idx, column=2).value = tn_node_id
+                    sheet.cell(row=row_idx, column=3).value = gen_id
+                    sheet.cell(row=row_idx, column=4).value = node_id
+                    sheet.cell(row=row_idx, column=5).value = gen_type
+                    sheet.cell(row=row_idx, column=6).value = int(year)
+                    sheet.cell(row=row_idx, column=7).value = day
+                    sheet.cell(row=row_idx, column=8).value = 'Sg, [MVA]'
+                    sheet.cell(row=row_idx, column=9).value = 'Expected'
+                    sheet.cell(row=row_idx, column=10).value = '-'
                     for p in range(network[year][day].num_instants):
-                        sheet.cell(row=row_idx, column=p + 9).value = expected_sg[gen_id][p]
-                        sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                        sheet.cell(row=row_idx, column=p + 11).value = expected_sg[gen_id][p]
+                        sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
                     row_idx = row_idx + 1
 
                     # Apparent Power curtailment
-                    sheet.cell(row=row_idx, column=1).value = gen_id
-                    sheet.cell(row=row_idx, column=2).value = node_id
-                    sheet.cell(row=row_idx, column=3).value = gen_type
-                    sheet.cell(row=row_idx, column=4).value = int(year)
-                    sheet.cell(row=row_idx, column=5).value = day
-                    sheet.cell(row=row_idx, column=6).value = 'Sg_curt, [MVA]'
-                    sheet.cell(row=row_idx, column=7).value = 'Expected'
-                    sheet.cell(row=row_idx, column=8).value = '-'
+                    sheet.cell(row=row_idx, column=1).value = operator_type
+                    sheet.cell(row=row_idx, column=2).value = tn_node_id
+                    sheet.cell(row=row_idx, column=3).value = gen_id
+                    sheet.cell(row=row_idx, column=4).value = node_id
+                    sheet.cell(row=row_idx, column=5).value = gen_type
+                    sheet.cell(row=row_idx, column=6).value = int(year)
+                    sheet.cell(row=row_idx, column=7).value = day
+                    sheet.cell(row=row_idx, column=8).value = 'Sg_curt, [MVA]'
+                    sheet.cell(row=row_idx, column=9).value = 'Expected'
+                    sheet.cell(row=row_idx, column=10).value = '-'
                     for p in range(network[year][day].num_instants):
-                        sheet.cell(row=row_idx, column=p + 9).value = expected_sg_curt[gen_id][p]
-                        sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                        sheet.cell(row=row_idx, column=p + 11).value = expected_sg_curt[gen_id][p]
+                        sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
                         if not isclose(expected_sg_curt[gen_id][p], 0.00, abs_tol=VIOLATION_TOLERANCE):
-                            sheet.cell(row=row_idx, column=p + 9).fill = violation_fill
+                            sheet.cell(row=row_idx, column=p + 11).fill = violation_fill
                     row_idx = row_idx + 1
 
                     # Apparent Power Net
-                    sheet.cell(row=row_idx, column=1).value = gen_id
-                    sheet.cell(row=row_idx, column=2).value = node_id
-                    sheet.cell(row=row_idx, column=3).value = gen_type
-                    sheet.cell(row=row_idx, column=4).value = int(year)
-                    sheet.cell(row=row_idx, column=5).value = day
-                    sheet.cell(row=row_idx, column=6).value = 'Sg_net, [MVA]'
-                    sheet.cell(row=row_idx, column=7).value = 'Expected'
-                    sheet.cell(row=row_idx, column=8).value = '-'
+                    sheet.cell(row=row_idx, column=1).value = operator_type
+                    sheet.cell(row=row_idx, column=2).value = tn_node_id
+                    sheet.cell(row=row_idx, column=3).value = gen_id
+                    sheet.cell(row=row_idx, column=4).value = node_id
+                    sheet.cell(row=row_idx, column=5).value = gen_type
+                    sheet.cell(row=row_idx, column=6).value = int(year)
+                    sheet.cell(row=row_idx, column=7).value = day
+                    sheet.cell(row=row_idx, column=8).value = 'Sg_net, [MVA]'
+                    sheet.cell(row=row_idx, column=9).value = 'Expected'
+                    sheet.cell(row=row_idx, column=10).value = '-'
                     for p in range(network[year][day].num_instants):
-                        sheet.cell(row=row_idx, column=p + 9).value = expected_sg_net[gen_id][p]
-                        sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                        sheet.cell(row=row_idx, column=p + 11).value = expected_sg_net[gen_id][p]
+                        sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
                     row_idx = row_idx + 1
 
     return row_idx
