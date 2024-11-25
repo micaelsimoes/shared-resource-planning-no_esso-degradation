@@ -314,21 +314,16 @@ def _build_model(network, params):
             for s_m in model.scenarios_market:
                 for s_o in model.scenarios_operation:
                     for p in model.periods:
-                        if generator.is_controllable():
-                            model.sg_sqr[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.sg_curt[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                        if generator.is_curtaillable():
+                            # - Renewable Generation
+                            init_sg = 0.0
+                            if generator.status[p] == 1:
+                                init_sg = sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
+                            model.sg_sqr[g, s_m, s_o, p].setub(init_sg ** 2)
+                            model.sg_curt[g, s_m, s_o, p].setub(init_sg)
                         else:
-                            if generator.is_curtaillable():
-                                # - Renewable Generation
-                                init_sg = 0.0
-                                if generator.status[p] == 1:
-                                    init_sg = sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
-                                model.sg_sqr[g, s_m, s_o, p].setub(init_sg ** 2)
-                                model.sg_curt[g, s_m, s_o, p].setub(init_sg)
-                            else:
-                                # - Generator is not curtaillable (conventional RES, ref gen, etc.)
-                                model.sg_sqr[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                model.sg_curt[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            # - Generator is not curtaillable (conventional RES, ref gen, etc.)
+                            model.sg_curt[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
 
     # - Branch power flows (squared) -- used in branch limits
     model.flow_ij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -540,15 +535,15 @@ def _build_model(network, params):
                         pg = model.pg[g, s_m, s_o, p]
                         qg = model.qg[g, s_m, s_o, p]
 
-                        init_sg_sqr = 0.00
+                        init_sg = 0.00
                         if generator.status[p] == 1:
-                            init_sg_sqr = generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2
+                            init_sg = sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
 
                         model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] <= pg ** 2 + qg ** 2 + EQUALITY_TOLERANCE)
                         model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] >= pg ** 2 + qg ** 2 - EQUALITY_TOLERANCE)
 
-                        model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] <= (init_sg_sqr - model.sg_curt[g, s_m, s_o, p])**2 + EQUALITY_TOLERANCE)
-                        model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] >= (init_sg_sqr - model.sg_curt[g, s_m, s_o, p])**2 - EQUALITY_TOLERANCE)
+                        model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] <= (init_sg - model.sg_curt[g, s_m, s_o, p])**2 + EQUALITY_TOLERANCE)
+                        model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] >= (init_sg - model.sg_curt[g, s_m, s_o, p])**2 - EQUALITY_TOLERANCE)
 
                         if generator.power_factor_control:
                             # Power factor control, variable phi
