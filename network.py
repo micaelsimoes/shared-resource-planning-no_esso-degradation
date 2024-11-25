@@ -287,7 +287,6 @@ def _build_model(network, params):
     # - Generation
     model.pg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.qg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
-    model.sg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     for g in model.generators:
         gen = network.generators[g]
         pg_ub, pg_lb = gen.pmax, gen.pmin
@@ -324,6 +323,7 @@ def _build_model(network, params):
         model.pg_curt_up = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.qg_curt_down = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.qg_curt_up = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.sg_sqr = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         for g in model.generators:
             gen = network.generators[g]
             for s_m in model.scenarios_market:
@@ -569,8 +569,7 @@ def _build_model(network, params):
                     if params.rg_curt:
                         pg -= (model.pg_curt_down[g, s_m, s_o, p] - model.pg_curt_up[g, s_m, s_o, p])
                         qg -= (model.qg_curt_down[g, s_m, s_o, p] - model.qg_curt_up[g, s_m, s_o, p])
-                    # model.generation_apparent_power.add(model.sg[g, s_m, s_o, p] ** 2 <= pg ** 2 + qg ** 2 + EQUALITY_TOLERANCE)
-                    # model.generation_apparent_power.add(model.sg[g, s_m, s_o, p] ** 2 >= pg ** 2 + qg ** 2 - EQUALITY_TOLERANCE)
+                    model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] == pg ** 2 + qg ** 2)
 
     # - Flexible Loads -- Daily energy balance
     if params.fl_reg:
