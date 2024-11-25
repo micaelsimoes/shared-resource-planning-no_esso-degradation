@@ -307,6 +307,7 @@ def _build_model(network, params):
                         model.qg[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
                         model.qg[g, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
     if params.rg_curt:
+        model.sg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.sg_sqr = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.sg_curt = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         for g in model.generators:
@@ -319,6 +320,7 @@ def _build_model(network, params):
                             init_sg = 0.0
                             if generator.status[p] == 1:
                                 init_sg = sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
+                            model.sg[g, s_m, s_o, p].setub(init_sg)
                             model.sg_sqr[g, s_m, s_o, p].setub(init_sg ** 2)
                             model.sg_curt[g, s_m, s_o, p].setub(init_sg)
                         else:
@@ -534,6 +536,7 @@ def _build_model(network, params):
 
                         pg = model.pg[g, s_m, s_o, p]
                         qg = model.qg[g, s_m, s_o, p]
+                        sg = model.sg[g, s_m, s_o, p]
 
                         init_sg = 0.00
                         if generator.status[p] == 1:
@@ -541,9 +544,10 @@ def _build_model(network, params):
 
                         model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] <= pg ** 2 + qg ** 2 + EQUALITY_TOLERANCE)
                         model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] >= pg ** 2 + qg ** 2 - EQUALITY_TOLERANCE)
-
-                        model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] <= (init_sg - model.sg_curt[g, s_m, s_o, p])**2 + EQUALITY_TOLERANCE)
-                        model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] >= (init_sg - model.sg_curt[g, s_m, s_o, p])**2 - EQUALITY_TOLERANCE)
+                        model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] <= sg ** 2 + EQUALITY_TOLERANCE)
+                        model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] >= sg ** 2 - EQUALITY_TOLERANCE)
+                        model.generation_apparent_power.add(sg <= init_sg - model.sg_sqr[g, s_m, s_o, p] + EQUALITY_TOLERANCE)
+                        model.generation_apparent_power.add(sg >= init_sg - model.sg_sqr[g, s_m, s_o, p] - EQUALITY_TOLERANCE)
 
                         if generator.power_factor_control:
                             # Power factor control, variable phi
