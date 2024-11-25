@@ -560,11 +560,9 @@ def _build_model(network, params):
                             vg = network.generators[gen_idx].vg
                             e = model.e[i, s_m, s_o, p]
                             f = model.f[i, s_m, s_o, p]
-                            if params.relax_equalities:
-                                model.voltage_cons.add(e ** 2 + f ** 2 <= vg[p] ** 2 + EQUALITY_TOLERANCE)
-                                model.voltage_cons.add(e ** 2 + f ** 2 >= vg[p] ** 2 - EQUALITY_TOLERANCE)
-                            else:
-                                model.voltage_cons.add(e ** 2 + f ** 2 == vg[p] ** 2)
+
+                            model.voltage_cons.add(e ** 2 + f ** 2 <= vg[p] ** 2 + EQUALITY_TOLERANCE)
+                            model.voltage_cons.add(e ** 2 + f ** 2 >= vg[p] ** 2 - EQUALITY_TOLERANCE)
                         else:
                             # - Voltage at the bus is not controlled
                             e = model.e[i, s_m, s_o, p]
@@ -591,11 +589,8 @@ def _build_model(network, params):
                         if params.slacks.flexibility.day_balance:
                             model.fl_p_balance.add(p_up == p_down + model.slack_flex_p_balance[c, s_m, s_o])
                         else:
-                            if params.relax_equalities:
-                                model.fl_p_balance.add(p_up <= p_down + EQUALITY_TOLERANCE)
-                                model.fl_p_balance.add(p_up >= p_down - EQUALITY_TOLERANCE)
-                            else:
-                                model.fl_p_balance.add(p_up == p_down)
+                            model.fl_p_balance.add(p_up <= p_down + EQUALITY_TOLERANCE)
+                            model.fl_p_balance.add(p_up >= p_down - EQUALITY_TOLERANCE)
 
     # - Energy Storage constraints
     if params.es_reg:
@@ -632,42 +627,30 @@ def _build_model(network, params):
                         model.energy_storage_operation.add(qdch <= tan(max_phi) * pdch)
                         model.energy_storage_operation.add(qdch >= tan(min_phi) * pdch)
 
-                        if params.relax_equalities:
-                            model.energy_storage_operation.add(sch ** 2 <= pch ** 2 + qch ** 2 + EQUALITY_TOLERANCE)
-                            model.energy_storage_operation.add(sch ** 2 >= pch ** 2 + qch ** 2 - EQUALITY_TOLERANCE)
-                            model.energy_storage_operation.add(sdch ** 2 <= pdch ** 2 + qdch ** 2 + EQUALITY_TOLERANCE)
-                            model.energy_storage_operation.add(sdch ** 2 >= pdch ** 2 + qdch ** 2 - EQUALITY_TOLERANCE)
-                        else:
-                            model.energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
-                            model.energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
+                        model.energy_storage_operation.add(sch ** 2 <= pch ** 2 + qch ** 2 + EQUALITY_TOLERANCE)
+                        model.energy_storage_operation.add(sch ** 2 >= pch ** 2 + qch ** 2 - EQUALITY_TOLERANCE)
+                        model.energy_storage_operation.add(sdch ** 2 <= pdch ** 2 + qdch ** 2 + EQUALITY_TOLERANCE)
+                        model.energy_storage_operation.add(sdch ** 2 >= pdch ** 2 + qdch ** 2 - EQUALITY_TOLERANCE)
 
                         # Charging/discharging complementarity constraints
                         if params.slacks.ess.complementarity:
                             model.energy_storage_ch_dch_exclusion.add(sch * sdch <= model.slack_es_comp[e, s_m, s_o, p])
                         else:
-                            if params.relax_equalities:
-                                model.energy_storage_ch_dch_exclusion.add(sch * sdch <= EQUALITY_TOLERANCE)
-                            else:
-                                model.energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
+                            model.energy_storage_ch_dch_exclusion.add(sch * sdch <= EQUALITY_TOLERANCE)
 
                         # State-of-Charge
                         soc_prev = soc_init
                         if p > 0:
                             soc_prev = model.es_soc[e, s_m, s_o, p - 1]
-                        if params.relax_equalities:
-                            model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] <= soc_prev + (sch * eff_charge - sdch / eff_discharge) + EQUALITY_TOLERANCE)
-                            model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] >= soc_prev + (sch * eff_charge - sdch / eff_discharge) - EQUALITY_TOLERANCE)
-                        else:
-                            model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] == soc_prev + (sch * eff_charge - sdch / eff_discharge))
+
+                        model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] <= soc_prev + (sch * eff_charge - sdch / eff_discharge) + EQUALITY_TOLERANCE)
+                        model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] >= soc_prev + (sch * eff_charge - sdch / eff_discharge) - EQUALITY_TOLERANCE)
 
                     if params.slacks.ess.day_balance:
                         model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final + model.slack_es_soc_final[e, s_m, s_o])
                     else:
-                        if params.relax_equalities:
-                            model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] <= soc_final + EQUALITY_TOLERANCE)
-                            model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] >= soc_final - EQUALITY_TOLERANCE)
-                        else:
-                            model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final)
+                        model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] <= soc_final + EQUALITY_TOLERANCE)
+                        model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] >= soc_final - EQUALITY_TOLERANCE)
 
     # - Shared Energy Storage constraints
     model.shared_energy_storage_balance = pe.ConstraintList()
@@ -715,56 +698,39 @@ def _build_model(network, params):
                     model.shared_energy_storage_operation.add(qdch >= tan(min_phi) * pdch)
 
                     # Pnet and Qnet definition
-                    if params.relax_equalities:
-                        model.shared_energy_storage_operation.add(model.shared_es_pnet[e, s_m, s_o, p] <= pch - pdch + EQUALITY_TOLERANCE)
-                        model.shared_energy_storage_operation.add(model.shared_es_pnet[e, s_m, s_o, p] >= pch - pdch - EQUALITY_TOLERANCE)
-                        model.shared_energy_storage_operation.add(model.shared_es_qnet[e, s_m, s_o, p] <= qch - qdch + EQUALITY_TOLERANCE)
-                        model.shared_energy_storage_operation.add(model.shared_es_qnet[e, s_m, s_o, p] >= qch - qdch - EQUALITY_TOLERANCE)
-                    else:
-                        model.shared_energy_storage_operation.add(model.shared_es_pnet[e, s_m, s_o, p] == pch - pdch + EQUALITY_TOLERANCE)
-                        model.shared_energy_storage_operation.add(model.shared_es_qnet[e, s_m, s_o, p] == qch - qdch - EQUALITY_TOLERANCE)
+                    model.shared_energy_storage_operation.add(model.shared_es_pnet[e, s_m, s_o, p] <= pch - pdch + EQUALITY_TOLERANCE)
+                    model.shared_energy_storage_operation.add(model.shared_es_pnet[e, s_m, s_o, p] >= pch - pdch - EQUALITY_TOLERANCE)
+                    model.shared_energy_storage_operation.add(model.shared_es_qnet[e, s_m, s_o, p] <= qch - qdch + EQUALITY_TOLERANCE)
+                    model.shared_energy_storage_operation.add(model.shared_es_qnet[e, s_m, s_o, p] >= qch - qdch - EQUALITY_TOLERANCE)
 
                     model.shared_energy_storage_operation.add(model.shared_es_soc[e, s_m, s_o, p] <= soc_max)
                     model.shared_energy_storage_operation.add(model.shared_es_soc[e, s_m, s_o, p] >= soc_min)
 
-                    if params.relax_equalities:
-                        model.shared_energy_storage_operation.add(sch ** 2 <= pch ** 2 + qch ** 2 + EQUALITY_TOLERANCE)
-                        model.shared_energy_storage_operation.add(sch ** 2 >= pch ** 2 + qch ** 2 - EQUALITY_TOLERANCE)
-                        model.shared_energy_storage_operation.add(sdch ** 2 <= pdch ** 2 + qdch ** 2 + EQUALITY_TOLERANCE)
-                        model.shared_energy_storage_operation.add(sdch ** 2 >= pdch ** 2 + qdch ** 2 - EQUALITY_TOLERANCE)
-                    else:
-                        model.shared_energy_storage_operation.add(sch ** 2 == pch ** 2 + qch ** 2)
-                        model.shared_energy_storage_operation.add(sdch ** 2 == pdch ** 2 + qdch ** 2)
+                    model.shared_energy_storage_operation.add(sch ** 2 <= pch ** 2 + qch ** 2 + EQUALITY_TOLERANCE)
+                    model.shared_energy_storage_operation.add(sch ** 2 >= pch ** 2 + qch ** 2 - EQUALITY_TOLERANCE)
+                    model.shared_energy_storage_operation.add(sdch ** 2 <= pdch ** 2 + qdch ** 2 + EQUALITY_TOLERANCE)
+                    model.shared_energy_storage_operation.add(sdch ** 2 >= pdch ** 2 + qdch ** 2 - EQUALITY_TOLERANCE)
 
                     # Charging/discharging complementarity constraints
                     if params.slacks.shared_ess.complementarity:
                         model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch <= model.slack_shared_es_comp[e, s_m, s_o, p])
                     else:
-                        if params.relax_equalities:
-                            model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch <= EQUALITY_TOLERANCE)
-                        else:
-                            model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
+                        model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch <= EQUALITY_TOLERANCE)
 
                     # State-of-Charge
                     soc_prev = soc_init
                     if p > 0:
                         soc_prev = model.shared_es_soc[e, s_m, s_o, p - 1]
-                    if params.relax_equalities:
-                        model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] <= soc_prev + (sch * eff_charge - sdch / eff_discharge) + EQUALITY_TOLERANCE)
-                        model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] >= soc_prev + (sch * eff_charge - sdch / eff_discharge) - EQUALITY_TOLERANCE)
-                    else:
-                        model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] == soc_prev + (sch * eff_charge - sdch / eff_discharge))
+                    model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] <= soc_prev + (sch * eff_charge - sdch / eff_discharge) + EQUALITY_TOLERANCE)
+                    model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] >= soc_prev + (sch * eff_charge - sdch / eff_discharge) - EQUALITY_TOLERANCE)
 
                 # Day balance
                 if params.slacks.shared_ess.day_balance:
                     model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] <= soc_final + model.slack_shared_es_soc_final[e, s_m, s_o])
                     model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] >= soc_final + model.slack_shared_es_soc_final[e, s_m, s_o])
                 else:
-                    if params.relax_equalities:
-                        model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] <= soc_final + EQUALITY_TOLERANCE)
-                        model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] >= soc_final - EQUALITY_TOLERANCE)
-                    else:
-                        model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final)
+                    model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] <= soc_final + EQUALITY_TOLERANCE)
+                    model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] >= soc_final - EQUALITY_TOLERANCE)
 
         model.shared_energy_storage_s_sensitivities.add(model.shared_es_s_rated[e] <= model.shared_es_s_rated_fixed[e])
         model.shared_energy_storage_e_sensitivities.add(model.shared_es_e_rated[e] <= model.shared_es_e_rated_fixed[e])
@@ -855,14 +821,10 @@ def _build_model(network, params):
                         model.node_balance_cons_p.add(Pg == Pd + Pi + model.slack_node_balance_p[i, s_m, s_o, p])
                         model.node_balance_cons_q.add(Qg == Qd + Qi + model.slack_node_balance_q[i, s_m, s_o, p])
                     else:
-                        if params.relax_equalities:
-                            model.node_balance_cons_p.add(Pg <= Pd + Pi + EQUALITY_TOLERANCE)
-                            model.node_balance_cons_p.add(Pg >= Pd + Pi - EQUALITY_TOLERANCE)
-                            model.node_balance_cons_q.add(Qg <= Qd + Qi + EQUALITY_TOLERANCE)
-                            model.node_balance_cons_q.add(Qg >= Qd + Qi - EQUALITY_TOLERANCE)
-                        else:
-                            model.node_balance_cons_p.add(Pg == Pd + Pi)
-                            model.node_balance_cons_q.add(Qg == Qd + Qi)
+                        model.node_balance_cons_p.add(Pg <= Pd + Pi + EQUALITY_TOLERANCE)
+                        model.node_balance_cons_p.add(Pg >= Pd + Pi - EQUALITY_TOLERANCE)
+                        model.node_balance_cons_q.add(Qg <= Qd + Qi + EQUALITY_TOLERANCE)
+                        model.node_balance_cons_q.add(Qg >= Qd + Qi - EQUALITY_TOLERANCE)
 
     # - Branch Power Flow constraints (current)
     model.branch_power_flow_cons = pe.ConstraintList()
@@ -950,11 +912,8 @@ def _build_model(network, params):
                             flow_ij_sqr = iij_sqr
 
                     # Flow_ij, definition
-                    if params.relax_equalities:
-                        model.branch_power_flow_cons.add(model.flow_ij_sqr[b, s_m, s_o, p] <= flow_ij_sqr + EQUALITY_TOLERANCE)
-                        model.branch_power_flow_cons.add(model.flow_ij_sqr[b, s_m, s_o, p] >= flow_ij_sqr - EQUALITY_TOLERANCE)
-                    else:
-                        model.branch_power_flow_cons.add(model.flow_ij_sqr[b, s_m, s_o, p] == flow_ij_sqr)
+                    model.branch_power_flow_cons.add(model.flow_ij_sqr[b, s_m, s_o, p] <= flow_ij_sqr + EQUALITY_TOLERANCE)
+                    model.branch_power_flow_cons.add(model.flow_ij_sqr[b, s_m, s_o, p] >= flow_ij_sqr - EQUALITY_TOLERANCE)
 
                     # Branch flow limits
                     if branch.status:
