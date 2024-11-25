@@ -321,7 +321,6 @@ def _build_model(network, params):
                             if generator.status[p] == 1:
                                 init_sg = sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
                             model.sg[g, s_m, s_o, p].setub(init_sg)
-                            model.sg_sqr[g, s_m, s_o, p].setub(init_sg ** 2)
                             model.sg_curt[g, s_m, s_o, p].setub(init_sg)
                         else:
                             # - Generator is not curtaillable (conventional RES, ref gen, etc.)
@@ -542,12 +541,9 @@ def _build_model(network, params):
                         if generator.status[p] == 1:
                             init_sg = sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
 
-                        model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] <= pg ** 2 + qg ** 2 + EQUALITY_TOLERANCE)
-                        model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] >= pg ** 2 + qg ** 2 - EQUALITY_TOLERANCE)
-                        model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] <= sg ** 2 + EQUALITY_TOLERANCE)
-                        model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] >= sg ** 2 - EQUALITY_TOLERANCE)
-                        model.generation_apparent_power.add(sg <= init_sg - model.sg_sqr[g, s_m, s_o, p] + EQUALITY_TOLERANCE)
-                        model.generation_apparent_power.add(sg >= init_sg - model.sg_sqr[g, s_m, s_o, p] - EQUALITY_TOLERANCE)
+                        model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] >= pg ** 2 + qg ** 2)
+                        model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] <= sg ** 2)
+                        model.generation_apparent_power.add(sg >= init_sg - model.sg_curt[g, s_m, s_o, p])
 
                         if generator.power_factor_control:
                             # Power factor control, variable phi
