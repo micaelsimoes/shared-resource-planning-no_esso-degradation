@@ -3667,7 +3667,7 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                             sheet.cell(row=row_idx, column=8).value = 'Qg_net, [MW]'
                             sheet.cell(row=row_idx, column=9).value = s_m
                             sheet.cell(row=row_idx, column=10).value = s_o
-                            for p in range(network.num_instants):
+                            for p in range(network[year][day].num_instants):
                                 qg_net = results[year][day]['scenarios'][s_m][s_o]['generation']['qg_net'][gen_id][p]
                                 sheet.cell(row=row_idx, column=p + 11).value = qg_net
                                 sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
@@ -3685,7 +3685,7 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                             sheet.cell(row=row_idx, column=6).value = 'Sg, [MVA]'
                             sheet.cell(row=row_idx, column=7).value = s_m
                             sheet.cell(row=row_idx, column=8).value = s_o
-                            for p in range(network.num_instants):
+                            for p in range(network[year][day].num_instants):
                                 sg = results[year][day]['scenarios'][s_m][s_o]['generation']['sg'][gen_id][p]
                                 sheet.cell(row=row_idx, column=p + 9).value = sg
                                 sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
@@ -3701,7 +3701,7 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                             sheet.cell(row=row_idx, column=6).value = 'Sg_curt, [MVA]'
                             sheet.cell(row=row_idx, column=7).value = s_m
                             sheet.cell(row=row_idx, column=8).value = s_o
-                            for p in range(network.num_instants):
+                            for p in range(network[year][day].num_instants):
                                 sg_curt = results[year][day]['scenarios'][s_m][s_o]['generation']['sg_curt'][gen_id][p]
                                 sheet.cell(row=row_idx, column=p + 9).value = sg_curt
                                 sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
@@ -3719,7 +3719,7 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                             sheet.cell(row=row_idx, column=6).value = 'Sg_net, [MVA]'
                             sheet.cell(row=row_idx, column=7).value = s_m
                             sheet.cell(row=row_idx, column=8).value = s_o
-                            for p in range(network.num_instants):
+                            for p in range(network[year][day].num_instants):
                                 sg_net = results[year][day]['scenarios'][s_m][s_o]['generation']['sg_net'][gen_id][p]
                                 sheet.cell(row=row_idx, column=p + 9).value = sg_net
                                 sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
@@ -3743,7 +3743,7 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                 sheet.cell(row=row_idx, column=8).value = 'Pg, [MW]'
                 sheet.cell(row=row_idx, column=9).value = 'Expected'
                 sheet.cell(row=row_idx, column=10).value = '-'
-                for p in range(network.num_instants):
+                for p in range(network[year][day].num_instants):
                     sheet.cell(row=row_idx, column=p + 11).value = expected_pg[gen_id][p]
                     sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
                 row_idx = row_idx + 1
@@ -3761,7 +3761,7 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                     sheet.cell(row=row_idx, column=8).value = 'Pg_net, [MW]'
                     sheet.cell(row=row_idx, column=9).value = 'Expected'
                     sheet.cell(row=row_idx, column=10).value = '-'
-                    for p in range(network.num_instants):
+                    for p in range(network[year][day].num_instants):
                         sheet.cell(row=row_idx, column=p + 11).value = expected_pg_net[gen_id][p]
                         sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
                     row_idx = row_idx + 1
@@ -3777,7 +3777,7 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                 sheet.cell(row=row_idx, column=8).value = 'Qg, [MVAr]'
                 sheet.cell(row=row_idx, column=9).value = 'Expected'
                 sheet.cell(row=row_idx, column=10).value = '-'
-                for p in range(network.num_instants):
+                for p in range(network[year][day].num_instants):
                     sheet.cell(row=row_idx, column=p + 11).value = expected_qg[gen_id][p]
                     sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
                 row_idx = row_idx + 1
@@ -3795,13 +3795,12 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                     sheet.cell(row=row_idx, column=8).value = 'Qg_net, [MW]'
                     sheet.cell(row=row_idx, column=9).value = 'Expected'
                     sheet.cell(row=row_idx, column=10).value = '-'
-                    for p in range(network.num_instants):
+                    for p in range(network[year][day].num_instants):
                         sheet.cell(row=row_idx, column=p + 11).value = expected_qg_net[gen_id][p]
                         sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
                     row_idx = row_idx + 1
 
-                # Apparent Power
-                if generator.is_curtaillable() and params.rg_curt:
+                if generator.is_curtaillable() and network_planning.params.rg_curt:
 
                     # Apparent Power
                     sheet.cell(row=row_idx, column=1).value = gen_id
@@ -3812,7 +3811,7 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                     sheet.cell(row=row_idx, column=6).value = 'Sg, [MVA]'
                     sheet.cell(row=row_idx, column=7).value = 'Expected'
                     sheet.cell(row=row_idx, column=8).value = '-'
-                    for p in range(network.num_instants):
+                    for p in range(network[year][day].num_instants):
                         sheet.cell(row=row_idx, column=p + 9).value = expected_sg[gen_id][p]
                         sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
                     row_idx = row_idx + 1
@@ -3826,7 +3825,7 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                     sheet.cell(row=row_idx, column=6).value = 'Sg_curt, [MVA]'
                     sheet.cell(row=row_idx, column=7).value = 'Expected'
                     sheet.cell(row=row_idx, column=8).value = '-'
-                    for p in range(network.num_instants):
+                    for p in range(network[year][day].num_instants):
                         sheet.cell(row=row_idx, column=p + 9).value = expected_sg_curt[gen_id][p]
                         sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
                         if not isclose(expected_sg_curt[gen_id][p], 0.00, abs_tol=VIOLATION_TOLERANCE):
@@ -3842,7 +3841,7 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                     sheet.cell(row=row_idx, column=6).value = 'Sg_net, [MVA]'
                     sheet.cell(row=row_idx, column=7).value = 'Expected'
                     sheet.cell(row=row_idx, column=8).value = '-'
-                    for p in range(network.num_instants):
+                    for p in range(network[year][day].num_instants):
                         sheet.cell(row=row_idx, column=p + 9).value = expected_sg_net[gen_id][p]
                         sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
                     row_idx = row_idx + 1
