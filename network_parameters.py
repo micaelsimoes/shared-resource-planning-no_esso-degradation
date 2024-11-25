@@ -121,7 +121,6 @@ def _read_network_parameters_from_file(parameters, filename):
     parameters.rg_curt = bool(params_data['rg_curt'])
     parameters.l_curt = bool(params_data['l_curt'])
     parameters.enforce_vg = bool(params_data['enforce_vg'])
-    parameters.relax_equalities = bool(params_data['relax_equalities'])
     if 'branch_limit_type' in params_data:
         if params_data['branch_limit_type'] == 'CURRENT':
             parameters.branch_limit_type = BRANCH_LIMIT_CURRENT

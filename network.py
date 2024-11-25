@@ -276,10 +276,10 @@ def _build_model(network, params):
                             model.slack_f[i, s_m, s_o, p].setub(SMALL_TOLERANCE)
                             model.slack_f[i, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
                     else:
-                        model.e[i, s_m, s_o, p].setub(e_ub + SMALL_TOLERANCE)
-                        model.e[i, s_m, s_o, p].setlb(e_lb - SMALL_TOLERANCE)
-                        model.f[i, s_m, s_o, p].setub(f_ub + SMALL_TOLERANCE)
-                        model.f[i, s_m, s_o, p].setlb(f_lb - SMALL_TOLERANCE)
+                        model.e[i, s_m, s_o, p].setub(e_ub)
+                        model.e[i, s_m, s_o, p].setlb(e_lb)
+                        model.f[i, s_m, s_o, p].setub(f_ub)
+                        model.f[i, s_m, s_o, p].setlb(f_lb)
     if params.slacks.node_balance:
         model.slack_node_balance_p = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
         model.slack_node_balance_q = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
