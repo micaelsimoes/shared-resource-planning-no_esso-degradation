@@ -1698,9 +1698,9 @@ def _process_results(network, model, params, results=dict()):
                         pg_net = pe.value(model.pg[g, s_m, s_o, p]) * network.baseMVA
                         qg_net = pe.value(model.qg[g, s_m, s_o, p]) * network.baseMVA
                         sg_net = sqrt(pe.value(model.sg_sqr[g, s_m, s_o, p])) * network.baseMVA
-                        processed_results['scenarios'][s_m][s_o]['generation']['pg_net'][gen_id][p].append(pg_net)
-                        processed_results['scenarios'][s_m][s_o]['generation']['qg_net'][gen_id][p].append(qg_net)
-                        processed_results['scenarios'][s_m][s_o]['generation']['sg_net'][gen_id][p].append(sg_net)
+                        processed_results['scenarios'][s_m][s_o]['generation']['pg_net'][gen_id].append(pg_net)
+                        processed_results['scenarios'][s_m][s_o]['generation']['qg_net'][gen_id].append(qg_net)
+                        processed_results['scenarios'][s_m][s_o]['generation']['sg_net'][gen_id].append(sg_net)
                         if params.rg_curt:
                             sg_curt = sqrt(pe.value(model.sg_curt_sqr[g, s_m, s_o, p])) * network.baseMVA
                             processed_results['scenarios'][s_m][s_o]['generation']['sg_curt'][gen_id].append(sg_curt)
