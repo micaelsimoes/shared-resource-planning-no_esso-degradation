@@ -1072,8 +1072,8 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                     sheet.cell(row=row_idx, column=4).value = int(year)
                     sheet.cell(row=row_idx, column=5).value = day
                     sheet.cell(row=row_idx, column=6).value = 'Sg, [MVA]'
-                    sheet.cell(row=row_idx, column=7).value = s_m
-                    sheet.cell(row=row_idx, column=8).value = s_o
+                    sheet.cell(row=row_idx, column=7).value = 'Expected'
+                    sheet.cell(row=row_idx, column=8).value = '-'
                     for p in range(network.num_instants):
                         sheet.cell(row=row_idx, column=p + 9).value = expected_sg[gen_id][p]
                         sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
@@ -1086,8 +1086,8 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                     sheet.cell(row=row_idx, column=4).value = int(year)
                     sheet.cell(row=row_idx, column=5).value = day
                     sheet.cell(row=row_idx, column=6).value = 'Sg_curt, [MVA]'
-                    sheet.cell(row=row_idx, column=7).value = s_m
-                    sheet.cell(row=row_idx, column=8).value = s_o
+                    sheet.cell(row=row_idx, column=7).value = 'Expected'
+                    sheet.cell(row=row_idx, column=8).value = '-'
                     for p in range(network.num_instants):
                         sheet.cell(row=row_idx, column=p + 9).value = expected_sg_curt[gen_id][p]
                         sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
@@ -1102,8 +1102,8 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                     sheet.cell(row=row_idx, column=4).value = int(year)
                     sheet.cell(row=row_idx, column=5).value = day
                     sheet.cell(row=row_idx, column=6).value = 'Sg_net, [MVA]'
-                    sheet.cell(row=row_idx, column=7).value = s_m
-                    sheet.cell(row=row_idx, column=8).value = s_o
+                    sheet.cell(row=row_idx, column=7).value = 'Expected'
+                    sheet.cell(row=row_idx, column=8).value = '-'
                     for p in range(network.num_instants):
                         sheet.cell(row=row_idx, column=p + 9).value = expected_sg_net[gen_id][p]
                         sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
