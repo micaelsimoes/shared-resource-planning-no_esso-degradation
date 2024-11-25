@@ -851,7 +851,6 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
             expected_sg = dict()
             expected_sg_curt = dict()
             expected_sg_net = dict()
-
             for generator in network.generators:
                 expected_pg[generator.gen_id] = [0.0 for _ in range(network.num_instants)]
                 expected_qg[generator.gen_id] = [0.0 for _ in range(network.num_instants)]
@@ -1017,7 +1016,6 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                 # Active Power Net
                 if generator.is_curtaillable() and network_planning.params.rg_curt:
 
-                    # Active Power net
                     sheet.cell(row=row_idx, column=1).value = gen_id
                     sheet.cell(row=row_idx, column=2).value = node_id
                     sheet.cell(row=row_idx, column=3).value = gen_type
