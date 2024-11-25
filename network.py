@@ -1591,8 +1591,7 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['consumption']['qc_curt'] = dict()
 
             if params.rg_curt:
-                processed_results['scenarios'][s_m][s_o]['generation']['pg_curt'] = dict()
-                processed_results['scenarios'][s_m][s_o]['generation']['qg_curt'] = dict()
+                processed_results['scenarios'][s_m][s_o]['generation']['sg_curt'] = dict()
 
             if params.es_reg:
                 processed_results['scenarios'][s_m][s_o]['energy_storages']['p'] = dict()
