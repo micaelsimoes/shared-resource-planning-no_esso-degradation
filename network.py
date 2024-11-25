@@ -904,7 +904,7 @@ def _build_model(network, params):
                     # Branch flow limits
                     if branch.status:
                         if params.slacks.grid_operation.branch_flow:
-                            model.branch_power_flow_lims.add(model.flow_ij_sqr[b, s_m, s_o, p] == rating ** 2 + model.slack_flow_ij_sqr[b, s_m, s_o, p])
+                            model.branch_power_flow_lims.add(model.flow_ij_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_flow_ij_sqr[b, s_m, s_o, p])
                         else:
                             model.branch_power_flow_lims.add(model.flow_ij_sqr[b, s_m, s_o, p] <= rating ** 2)
 
