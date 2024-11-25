@@ -694,7 +694,7 @@ def _build_model(network, params):
                     if params.slacks.shared_ess.complementarity:
                         model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch <= model.slack_shared_es_comp[e, s_m, s_o, p])
                     else:
-                        model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch <= EQUALITY_TOLERANCE)
+                        model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch <= EQUALITY_TOLERANCE * 1e-3)
 
                     # State-of-Charge
                     soc_prev = soc_init
