@@ -533,10 +533,8 @@ def _build_model(network, params):
                         e_actual += model.slack_e[i, s_m, s_o, p]
                         f_actual += model.slack_f[i, s_m, s_o, p]
 
-                    model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] <= e_actual + EQUALITY_TOLERANCE)
-                    model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] >= e_actual - EQUALITY_TOLERANCE)
-                    model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] <= f_actual + EQUALITY_TOLERANCE)
-                    model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] >= f_actual - EQUALITY_TOLERANCE)
+                    model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] == e_actual)
+                    model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] == f_actual)
 
                     # voltage magnitude constraints
                     if node.type == BUS_PV:
@@ -623,7 +621,7 @@ def _build_model(network, params):
 
                         # Charging/discharging complementarity constraints
                         if params.slacks.ess.complementarity:
-                            model.energy_storage_ch_dch_exclusion.add(sch * sdch <= model.slack_es_comp[e, s_m, s_o, p])
+                            model.energy_storage_ch_dch_exclusion.add(sch * sdch == model.slack_es_comp[e, s_m, s_o, p])
                         else:
                             model.energy_storage_ch_dch_exclusion.add(sch * sdch <= EQUALITY_TOLERANCE)
 
@@ -706,7 +704,7 @@ def _build_model(network, params):
 
                     # Charging/discharging complementarity constraints
                     if params.slacks.shared_ess.complementarity:
-                        model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch <= model.slack_shared_es_comp[e, s_m, s_o, p])
+                        model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch == model.slack_shared_es_comp[e, s_m, s_o, p])
                     else:
                         model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch <= EQUALITY_TOLERANCE)
 
