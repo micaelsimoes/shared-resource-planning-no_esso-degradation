@@ -315,7 +315,7 @@ def _build_model(network, params):
                 for s_o in model.scenarios_operation:
                     for p in model.periods:
                         if gen.is_controllable():
-                            model.sg_curt_sqr[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            model.sg_curt_sqr[g, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                         else:
                             if gen.is_curtaillable():
                                 # - Renewable Generation
@@ -327,7 +327,7 @@ def _build_model(network, params):
                             else:
                                 # - Generator is not curtaillable (conventional RES, ref gen, etc.)
                                 model.sg_sqr[g, s_m, s_o, p].setub(init_sg_sqr)
-                                model.sg_curt_sqr[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                                model.sg_curt_sqr[g, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
 
     # - Branch power flows (squared) -- used in branch limits
     model.flow_ij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
