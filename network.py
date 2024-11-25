@@ -1684,8 +1684,7 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['generation']['pg_net'][gen_id] = [0.00 for _ in range(network.num_instants)]
                 processed_results['scenarios'][s_m][s_o]['generation']['qg_net'][gen_id] = [0.00 for _ in range(network.num_instants)]
                 if params.rg_curt:
-                    processed_results['scenarios'][s_m][s_o]['generation']['pg_curt'][gen_id] = []
-                    processed_results['scenarios'][s_m][s_o]['generation']['qg_curt'][gen_id] = []
+                    processed_results['scenarios'][s_m][s_o]['generation']['sg_curt'][gen_id] = []
                 for p in model.periods:
                     pg = pe.value(model.pg[g, s_m, s_o, p]) * network.baseMVA
                     qg = pe.value(model.qg[g, s_m, s_o, p]) * network.baseMVA
@@ -1694,12 +1693,8 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['generation']['pg_net'][gen_id][p] += pg
                     processed_results['scenarios'][s_m][s_o]['generation']['qg_net'][gen_id][p] += qg
                     if params.rg_curt:
-                        pg_curt = pe.value(model.pg_curt_down[g, s_m, s_o, p] - model.pg_curt_up[g, s_m, s_o, p]) * network.baseMVA
-                        qg_curt = pe.value(model.qg_curt_down[g, s_m, s_o, p] - model.qg_curt_up[g, s_m, s_o, p]) * network.baseMVA
-                        processed_results['scenarios'][s_m][s_o]['generation']['pg_curt'][gen_id].append(pg_curt)
-                        processed_results['scenarios'][s_m][s_o]['generation']['qg_curt'][gen_id].append(qg_curt)
-                        processed_results['scenarios'][s_m][s_o]['generation']['pg_net'][gen_id][p] -= pg_curt
-                        processed_results['scenarios'][s_m][s_o]['generation']['qg_net'][gen_id][p] -= qg_curt
+                        sg_curt = sqrt(pe.value(model.sg_curt_sqr[g, s_m, s_o, p])) * network.baseMVA
+                        processed_results['scenarios'][s_m][s_o]['generation']['sg_curt'][gen_id].append(sg_curt)
 
             # Branch current, transformers' ratio
             for k in model.branches:
