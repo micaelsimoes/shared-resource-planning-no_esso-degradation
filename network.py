@@ -295,8 +295,8 @@ def _build_model(network, params):
             for s_o in model.scenarios_operation:
                 for p in model.periods:
                     if generator.status[p] == 1:
-                        model.pg[g, s_m, s_o, p] = (pg_lb + pg_ub) * 0.50
-                        model.qg[g, s_m, s_o, p] = (qg_lb + qg_ub) * 0.50
+                        model.pg[g, s_m, s_o, p] = pg_lb
+                        model.qg[g, s_m, s_o, p] = qg_lb
                         model.pg[g, s_m, s_o, p].setub(pg_ub)
                         model.pg[g, s_m, s_o, p].setlb(pg_lb)
                         model.qg[g, s_m, s_o, p].setub(qg_ub)
@@ -541,9 +541,9 @@ def _build_model(network, params):
                         if generator.status[p] == 1:
                             init_sg = sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
 
-                        model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] >= pg ** 2 + qg ** 2)
-                        model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] <= sg ** 2)
-                        model.generation_apparent_power.add(sg >= init_sg - model.sg_curt[g, s_m, s_o, p])
+                        model.generation_apparent_power.add(sg == init_sg - model.sg_curt[g, s_m, s_o, p])
+                        model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] == sg ** 2)
+                        model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] == pg ** 2 + qg ** 2)
 
                         if generator.power_factor_control:
                             # Power factor control, variable phi
