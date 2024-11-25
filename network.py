@@ -548,14 +548,13 @@ def _build_model(network, params):
                             # Power factor control, variable phi
                             max_phi = acos(generator.max_pf)
                             min_phi = acos(generator.min_pf)
-                            model.energy_storage_operation.add(qg <= tan(max_phi) * pg)
-                            model.energy_storage_operation.add(qg >= tan(min_phi) * pg)
+                            model.generation_power_factor.add(qg <= tan(max_phi) * pg)
+                            model.generation_power_factor.add(qg >= tan(min_phi) * pg)
                         else:
                             # No power factor control, maintain given phi
                             phi = atan2(generator.qg[s_o][p], generator.pg[s_o][p])
-                            model.energy_storage_operation.add(qg <= tan(phi) * pg + EQUALITY_TOLERANCE)
-                            model.energy_storage_operation.add(qg >= tan(phi) * pg + EQUALITY_TOLERANCE)
-
+                            model.generation_power_factor.add(qg <= tan(phi) * pg + EQUALITY_TOLERANCE)
+                            model.generation_power_factor.add(qg >= tan(phi) * pg + EQUALITY_TOLERANCE)
 
     # - Flexible Loads -- Daily energy balance
     if params.fl_reg:
