@@ -288,13 +288,13 @@ def _build_model(network, params):
     model.pg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.qg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     for g in model.generators:
-        gen = network.generators[g]
-        pg_ub, pg_lb = gen.pmax, gen.pmin
-        qg_ub, qg_lb = gen.qmax, gen.qmin
+        generator = network.generators[g]
+        pg_ub, pg_lb = generator.pmax, generator.pmin
+        qg_ub, qg_lb = generator.qmax, generator.qmin
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
                 for p in model.periods:
-                    if gen.status[p] == 1:
+                    if generator.status[p] == 1:
                         model.pg[g, s_m, s_o, p] = (pg_lb + pg_ub) * 0.50
                         model.qg[g, s_m, s_o, p] = (qg_lb + qg_ub) * 0.50
                         model.pg[g, s_m, s_o, p].setub(pg_ub)
@@ -310,19 +310,19 @@ def _build_model(network, params):
         model.sg_net = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.sg_curt = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         for g in model.generators:
-            gen = network.generators[g]
+            generator = network.generators[g]
             for s_m in model.scenarios_market:
                 for s_o in model.scenarios_operation:
                     for p in model.periods:
-                        if gen.is_controllable():
+                        if generator.is_controllable():
                             model.sg_net[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
                             model.sg_curt[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
                         else:
-                            if gen.is_curtaillable():
+                            if generator.is_curtaillable():
                                 # - Renewable Generation
                                 init_sg = 0.0
-                                if gen.status[p] == 1:
-                                    init_sg = sqrt(gen.pg[s_o][p] ** 2 + gen.qg[s_o][p] ** 2)
+                                if generator.status[p] == 1:
+                                    init_sg = sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
                                 model.sg_net[g, s_m, s_o, p].setub(init_sg)
                                 model.sg_curt[g, s_m, s_o, p].setub(init_sg)
                             else:
@@ -541,8 +541,8 @@ def _build_model(network, params):
                         qg = model.qg[g, s_m, s_o, p]
 
                         init_sg = 0.00
-                        if gen.status[p] == 1:
-                            init_sg = sqrt(gen.pg[s_o][p] ** 2 + gen.qg[s_o][p] ** 2)
+                        if generator.status[p] == 1:
+                            init_sg = sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
 
                         model.generation_apparent_power.add(model.sg_net[g, s_m, s_o, p] ** 2 <= pg ** 2 + qg ** 2 + EQUALITY_TOLERANCE)
                         model.generation_apparent_power.add(model.sg_net[g, s_m, s_o, p] ** 2 >= pg ** 2 + qg ** 2 - EQUALITY_TOLERANCE)
