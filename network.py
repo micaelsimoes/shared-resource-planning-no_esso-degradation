@@ -287,6 +287,7 @@ def _build_model(network, params):
     # - Generation
     model.pg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.qg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+    model.sg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     for g in model.generators:
         gen = network.generators[g]
         pg_ub, pg_lb = gen.pmax, gen.pmin
@@ -557,6 +558,18 @@ def _build_model(network, params):
                         f = model.f[i, s_m, s_o, p]
                         model.voltage_cons.add(e ** 2 + f ** 2 >= node.v_min**2)
                         model.voltage_cons.add(e ** 2 + f ** 2 <= node.v_max**2)
+
+    model.generation_apparent_power = pe.ConstraintList()
+    for g in model.generators:
+        for s_m in model.scenarios_market:
+            for s_o in model.scenarios_operation:
+                for p in model.periods:
+                    pg = model.pg[g, s_m, s_o, p]
+                    qg = model.qg[g, s_m, s_o, p]
+                    if params.rg_curt:
+                        pg -= (model.pg_curt_down[g, s_m, s_o, p] - model.pg_curt_up[g, s_m, s_o, p])
+                        qg -= (model.qg_curt_down[g, s_m, s_o, p] - model.qg_curt_up[g, s_m, s_o, p])
+                    model.generation_apparent_power.add(model.sg[g, s_m, s_o, p] ** 2 == pg ** 2 + qg ** 2)
 
     # - Flexible Loads -- Daily energy balance
     if params.fl_reg:
