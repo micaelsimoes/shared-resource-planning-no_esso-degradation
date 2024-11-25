@@ -898,8 +898,7 @@ def _build_model(network, params):
                             flow_ij_sqr = iij_sqr
 
                     # Flow_ij, definition
-                    model.branch_power_flow_cons.add(model.flow_ij_sqr[b, s_m, s_o, p] <= flow_ij_sqr + EQUALITY_TOLERANCE)
-                    model.branch_power_flow_cons.add(model.flow_ij_sqr[b, s_m, s_o, p] >= flow_ij_sqr - EQUALITY_TOLERANCE)
+                    model.branch_power_flow_cons.add(model.flow_ij_sqr[b, s_m, s_o, p] == flow_ij_sqr)
 
                     # Branch flow limits
                     if branch.status:
