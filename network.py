@@ -1977,9 +1977,8 @@ def _compute_objective_function_value(network, model, params):
                 if params.rg_curt:
                     for g in model.generators:
                         for p in model.periods:
-                            pg_curt = pe.value(model.pg_curt_down[g, s_m, s_o, p] + model.pg_curt_up[g, s_m, s_o, p])
-                            qg_curt = pe.value(model.qg_curt_down[g, s_m, s_o, p] + model.qg_curt_up[g, s_m, s_o, p])
-                            obj_scenario += cost_res_curt * network.baseMVA * (pg_curt + qg_curt)
+                            sg_curt = sqrt(pe.value(model.sg_curt_sqr[g, s_m, s_o, p]))
+                            obj_scenario += cost_res_curt * network.baseMVA * (sg_curt)
 
                 obj += obj_scenario * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
 
