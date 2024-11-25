@@ -561,15 +561,17 @@ def _build_model(network, params):
 
     model.generation_apparent_power = pe.ConstraintList()
     for g in model.generators:
-        for s_m in model.scenarios_market:
-            for s_o in model.scenarios_operation:
-                for p in model.periods:
-                    pg = model.pg[g, s_m, s_o, p]
-                    qg = model.qg[g, s_m, s_o, p]
-                    if params.rg_curt:
-                        pg -= (model.pg_curt_down[g, s_m, s_o, p] - model.pg_curt_up[g, s_m, s_o, p])
-                        qg -= (model.qg_curt_down[g, s_m, s_o, p] - model.qg_curt_up[g, s_m, s_o, p])
-                    model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] == pg ** 2 + qg ** 2)
+        generator = network.generators[g]
+        if generator.is_curtaillable():
+            for s_m in model.scenarios_market:
+                for s_o in model.scenarios_operation:
+                    for p in model.periods:
+                        pg = model.pg[g, s_m, s_o, p]
+                        qg = model.qg[g, s_m, s_o, p]
+                        if params.rg_curt:
+                            pg -= (model.pg_curt_down[g, s_m, s_o, p] - model.pg_curt_up[g, s_m, s_o, p])
+                            qg -= (model.qg_curt_down[g, s_m, s_o, p] - model.qg_curt_up[g, s_m, s_o, p])
+                        model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] == pg ** 2 + qg ** 2)
 
     # - Flexible Loads -- Daily energy balance
     if params.fl_reg:
