@@ -544,11 +544,11 @@ def _build_model(network, params):
                         if gen.status[p] == 1:
                             init_sg = sqrt(gen.pg[s_o][p] ** 2 + gen.qg[s_o][p] ** 2)
 
-                        model.generation_apparent_power.add(model.sg_net[g, s_m, s_o, p] ** 2 <= pg ** 2 + qg ** 2 + EQUALITY_TOLERANCE)
-                        model.generation_apparent_power.add(model.sg_net[g, s_m, s_o, p] ** 2 >= pg ** 2 + qg ** 2 - EQUALITY_TOLERANCE)
+                        model.generation_apparent_power.add(model.sg[g, s_m, s_o, p] ** 2 <= pg ** 2 + qg ** 2 + EQUALITY_TOLERANCE)
+                        model.generation_apparent_power.add(model.sg[g, s_m, s_o, p] ** 2 >= pg ** 2 + qg ** 2 - EQUALITY_TOLERANCE)
 
-                        model.generation_apparent_power.add(model.sg_curt[g, s_m, s_o, p] <= init_sg - model.sg_net[g, s_m, s_o, p] + EQUALITY_TOLERANCE)
-                        model.generation_apparent_power.add(model.sg_curt[g, s_m, s_o, p] >= init_sg - model.sg_net[g, s_m, s_o, p] - EQUALITY_TOLERANCE)
+                        model.generation_apparent_power.add(model.sg_curt[g, s_m, s_o, p] <= init_sg - model.sg[g, s_m, s_o, p] + EQUALITY_TOLERANCE)
+                        model.generation_apparent_power.add(model.sg_curt[g, s_m, s_o, p] >= init_sg - model.sg[g, s_m, s_o, p] - EQUALITY_TOLERANCE)
 
                         if generator.power_factor_control:
                             # Power factor control, variable phi
