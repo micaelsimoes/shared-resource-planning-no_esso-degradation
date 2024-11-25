@@ -3800,7 +3800,7 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                         sheet.cell(row=row_idx, column=p + 11).number_format = decimal_style
                     row_idx = row_idx + 1
 
-                if generator.is_curtaillable() and network_planning.params.rg_curt:
+                if generator.is_curtaillable() and params.rg_curt:
 
                     # Apparent Power
                     sheet.cell(row=row_idx, column=1).value = gen_id
