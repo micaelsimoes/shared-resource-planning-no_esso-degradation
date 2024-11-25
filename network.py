@@ -323,12 +323,10 @@ def _build_model(network, params):
                                 init_sg_sqr = 0.0
                                 if gen.status[p] == 1:
                                     init_sg_sqr = gen.pg[s_o][p] ** 2 + gen.qg[s_o][p] ** 2
-                                model.sg[g, s_m, s_o, p].setub(sqrt(init_sg_sqr))
                                 model.sg_curt[g, s_m, s_o, p].setub(init_sg_sqr)
                                 model.sg_sqr[g, s_m, s_o, p].setub(init_sg_sqr)
                             else:
                                 # - Generator is not curtaillable (conventional RES, ref gen, etc.)
-                                model.sg[g, s_m, s_o, p].setub(sqrt(init_sg_sqr))
                                 model.sg_curt[g, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                                 model.sg_sqr[g, s_m, s_o, p].setub(init_sg_sqr)
 
@@ -531,6 +529,7 @@ def _build_model(network, params):
                         model.voltage_cons.add(e ** 2 + f ** 2 <= node.v_max**2)
 
     model.generation_apparent_power = pe.ConstraintList()
+    model.generation_power_factor = pe.ConstraintList()
     for g in model.generators:
         generator = network.generators[g]
         if generator.is_curtaillable():
@@ -543,6 +542,10 @@ def _build_model(network, params):
                         model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] >= pg ** 2 + qg ** 2 - EQUALITY_TOLERANCE)
                         model.generation_apparent_power.add(model.sg[g, s_m, s_o, p] ** 2 <= model.sg_sqr[g, s_m, s_o, p] + EQUALITY_TOLERANCE)
                         model.generation_apparent_power.add(model.sg[g, s_m, s_o, p] ** 2 >= model.sg_sqr[g, s_m, s_o, p] - EQUALITY_TOLERANCE)
+                        if generator.power_factor_control:
+                            max_phi = acos(energy_storage.max_pf)
+                            min_phi = acos(energy_storage.min_pf)
+
 
     # - Flexible Loads -- Daily energy balance
     if params.fl_reg:
