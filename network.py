@@ -1691,7 +1691,7 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['generation']['sg_net'][gen_id] = []
                     processed_results['scenarios'][s_m][s_o]['generation']['sg_curt'][gen_id] = []
                 for p in model.periods:
-                    if generator.is_curtaillable():
+                    if generator.is_curtaillable() and params.rg_curt:
                         pg = generator.pg[s_o][p] * network.baseMVA
                         qg = generator.qg[s_o][p] * network.baseMVA
                         sg = sqrt(pg ** 2 + qg ** 2)

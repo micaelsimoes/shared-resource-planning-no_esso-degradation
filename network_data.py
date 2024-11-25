@@ -848,14 +848,18 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
             expected_pg_net = dict()
             expected_qg = dict()
             expected_qg_net = dict()
+            expected_sg = dict()
             expected_sg_curt = dict()
+            expected_sg_net = dict()
 
             for generator in network.generators:
                 expected_pg[generator.gen_id] = [0.0 for _ in range(network.num_instants)]
-                expected_pg_net[generator.gen_id] = [0.0 for _ in range(network.num_instants)]
                 expected_qg[generator.gen_id] = [0.0 for _ in range(network.num_instants)]
+                expected_sg[generator.gen_id] = [0.0 for _ in range(network.num_instants)]
+                expected_pg_net[generator.gen_id] = [0.0 for _ in range(network.num_instants)]
                 expected_qg_net[generator.gen_id] = [0.0 for _ in range(network.num_instants)]
                 expected_sg_curt[generator.gen_id] = [0.0 for _ in range(network.num_instants)]
+                expected_sg_net[generator.gen_id] = [0.0 for _ in range(network.num_instants)]
 
             for s_m in results[year][day]['scenarios']:
                 omega_m = network.prob_market_scenarios[s_m]
@@ -883,6 +887,25 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                             expected_pg[gen_id][p] += pg * omega_m * omega_s
                         row_idx = row_idx + 1
 
+                        # Active Power Net
+                        if generator.is_curtaillable() and network_planning.params.rg_curt:
+
+                            # Active Power net
+                            sheet.cell(row=row_idx, column=1).value = gen_id
+                            sheet.cell(row=row_idx, column=2).value = node_id
+                            sheet.cell(row=row_idx, column=3).value = gen_type
+                            sheet.cell(row=row_idx, column=4).value = int(year)
+                            sheet.cell(row=row_idx, column=5).value = day
+                            sheet.cell(row=row_idx, column=6).value = 'Pg_net, [MW]'
+                            sheet.cell(row=row_idx, column=7).value = s_m
+                            sheet.cell(row=row_idx, column=8).value = s_o
+                            for p in range(network.num_instants):
+                                pg_net = results[year][day]['scenarios'][s_m][s_o]['generation']['pg_net'][gen_id][p]
+                                sheet.cell(row=row_idx, column=p + 9).value = pg_net
+                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                                expected_pg_net[gen_id][p] += pg_net * omega_m * omega_s
+                            row_idx = row_idx + 1
+
                         # Reactive Power
                         sheet.cell(row=row_idx, column=1).value = gen_id
                         sheet.cell(row=row_idx, column=2).value = node_id
@@ -899,7 +922,43 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                             expected_qg[gen_id][p] += qg * omega_m * omega_s
                         row_idx = row_idx + 1
 
-                        if network_planning.params.rg_curt:
+                        # Reactive Power Net
+                        if generator.is_curtaillable() and network_planning.params.rg_curt:
+
+                            # Active Power net
+                            sheet.cell(row=row_idx, column=1).value = gen_id
+                            sheet.cell(row=row_idx, column=2).value = node_id
+                            sheet.cell(row=row_idx, column=3).value = gen_type
+                            sheet.cell(row=row_idx, column=4).value = int(year)
+                            sheet.cell(row=row_idx, column=5).value = day
+                            sheet.cell(row=row_idx, column=6).value = 'Qg_net, [MW]'
+                            sheet.cell(row=row_idx, column=7).value = s_m
+                            sheet.cell(row=row_idx, column=8).value = s_o
+                            for p in range(network.num_instants):
+                                pg_net = results[year][day]['scenarios'][s_m][s_o]['generation']['qg_net'][gen_id][p]
+                                sheet.cell(row=row_idx, column=p + 9).value = pg_net
+                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                                expected_qg_net[gen_id][p] += pg_net * omega_m * omega_s
+                            row_idx = row_idx + 1
+
+                        # Apparent Power
+                        if generator.is_curtaillable() and network_planning.params.rg_curt:
+
+                            # Apparent Power
+                            sheet.cell(row=row_idx, column=1).value = gen_id
+                            sheet.cell(row=row_idx, column=2).value = node_id
+                            sheet.cell(row=row_idx, column=3).value = gen_type
+                            sheet.cell(row=row_idx, column=4).value = int(year)
+                            sheet.cell(row=row_idx, column=5).value = day
+                            sheet.cell(row=row_idx, column=6).value = 'Sg, [MVA]'
+                            sheet.cell(row=row_idx, column=7).value = s_m
+                            sheet.cell(row=row_idx, column=8).value = s_o
+                            for p in range(network.num_instants):
+                                sg = results[year][day]['scenarios'][s_m][s_o]['generation']['sg'][gen_id][p]
+                                sheet.cell(row=row_idx, column=p + 9).value = sg
+                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                                expected_sg[gen_id][p] += sg * omega_m * omega_s
+                            row_idx = row_idx + 1
 
                             # Apparent Power curtailment
                             sheet.cell(row=row_idx, column=1).value = gen_id
@@ -917,6 +976,22 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                                 if not isclose(sg_curt, 0.00, abs_tol=VIOLATION_TOLERANCE):
                                     sheet.cell(row=row_idx, column=p + 9).fill = violation_fill
                                 expected_sg_curt[gen_id][p] += sg_curt * omega_m * omega_s
+                            row_idx = row_idx + 1
+
+                            # Apparent Power Net
+                            sheet.cell(row=row_idx, column=1).value = gen_id
+                            sheet.cell(row=row_idx, column=2).value = node_id
+                            sheet.cell(row=row_idx, column=3).value = gen_type
+                            sheet.cell(row=row_idx, column=4).value = int(year)
+                            sheet.cell(row=row_idx, column=5).value = day
+                            sheet.cell(row=row_idx, column=6).value = 'Sg_net, [MVA]'
+                            sheet.cell(row=row_idx, column=7).value = s_m
+                            sheet.cell(row=row_idx, column=8).value = s_o
+                            for p in range(network.num_instants):
+                                sg_net = results[year][day]['scenarios'][s_m][s_o]['generation']['sg_net'][gen_id][p]
+                                sheet.cell(row=row_idx, column=p + 9).value = sg_net
+                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                                expected_sg_net[gen_id][p] += sg_net * omega_m * omega_s
                             row_idx = row_idx + 1
 
             for generator in network.generators:
@@ -939,6 +1014,23 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                     sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
                 row_idx = row_idx + 1
 
+                # Active Power Net
+                if generator.is_curtaillable() and network_planning.params.rg_curt:
+
+                    # Active Power net
+                    sheet.cell(row=row_idx, column=1).value = gen_id
+                    sheet.cell(row=row_idx, column=2).value = node_id
+                    sheet.cell(row=row_idx, column=3).value = gen_type
+                    sheet.cell(row=row_idx, column=4).value = int(year)
+                    sheet.cell(row=row_idx, column=5).value = day
+                    sheet.cell(row=row_idx, column=6).value = 'Pg_net, [MW]'
+                    sheet.cell(row=row_idx, column=7).value = 'Expected'
+                    sheet.cell(row=row_idx, column=8).value = '-'
+                    for p in range(network.num_instants):
+                        sheet.cell(row=row_idx, column=p + 9).value = expected_pg_net[gen_id][p]
+                        sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                    row_idx = row_idx + 1
+
                 # Reactive Power
                 sheet.cell(row=row_idx, column=1).value = gen_id
                 sheet.cell(row=row_idx, column=2).value = node_id
@@ -953,7 +1045,39 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                     sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
                 row_idx = row_idx + 1
 
-                if network_planning.params.rg_curt:
+                # Reactive Power Net
+                if generator.is_curtaillable() and network_planning.params.rg_curt:
+
+                    # Reactive Power net
+                    sheet.cell(row=row_idx, column=1).value = gen_id
+                    sheet.cell(row=row_idx, column=2).value = node_id
+                    sheet.cell(row=row_idx, column=3).value = gen_type
+                    sheet.cell(row=row_idx, column=4).value = int(year)
+                    sheet.cell(row=row_idx, column=5).value = day
+                    sheet.cell(row=row_idx, column=6).value = 'Qg_net, [MW]'
+                    sheet.cell(row=row_idx, column=7).value = 'Expected'
+                    sheet.cell(row=row_idx, column=8).value = '-'
+                    for p in range(network.num_instants):
+                        sheet.cell(row=row_idx, column=p + 9).value = expected_pg_net[gen_id][p]
+                        sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                    row_idx = row_idx + 1
+
+                # Apparent Power
+                if generator.is_curtaillable() and network_planning.params.rg_curt:
+
+                    # Apparent Power
+                    sheet.cell(row=row_idx, column=1).value = gen_id
+                    sheet.cell(row=row_idx, column=2).value = node_id
+                    sheet.cell(row=row_idx, column=3).value = gen_type
+                    sheet.cell(row=row_idx, column=4).value = int(year)
+                    sheet.cell(row=row_idx, column=5).value = day
+                    sheet.cell(row=row_idx, column=6).value = 'Sg, [MVA]'
+                    sheet.cell(row=row_idx, column=7).value = s_m
+                    sheet.cell(row=row_idx, column=8).value = s_o
+                    for p in range(network.num_instants):
+                        sheet.cell(row=row_idx, column=p + 9).value = expected_sg[gen_id][p]
+                        sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                    row_idx = row_idx + 1
 
                     # Apparent Power curtailment
                     sheet.cell(row=row_idx, column=1).value = gen_id
@@ -961,14 +1085,28 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                     sheet.cell(row=row_idx, column=3).value = gen_type
                     sheet.cell(row=row_idx, column=4).value = int(year)
                     sheet.cell(row=row_idx, column=5).value = day
-                    sheet.cell(row=row_idx, column=6).value = 'Sg_curt, [MW]'
-                    sheet.cell(row=row_idx, column=7).value = 'Expected'
-                    sheet.cell(row=row_idx, column=8).value = '-'
+                    sheet.cell(row=row_idx, column=6).value = 'Sg_curt, [MVA]'
+                    sheet.cell(row=row_idx, column=7).value = s_m
+                    sheet.cell(row=row_idx, column=8).value = s_o
                     for p in range(network.num_instants):
                         sheet.cell(row=row_idx, column=p + 9).value = expected_sg_curt[gen_id][p]
                         sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
                         if not isclose(expected_sg_curt[gen_id][p], 0.00, abs_tol=VIOLATION_TOLERANCE):
                             sheet.cell(row=row_idx, column=p + 9).fill = violation_fill
+                    row_idx = row_idx + 1
+
+                    # Apparent Power Net
+                    sheet.cell(row=row_idx, column=1).value = gen_id
+                    sheet.cell(row=row_idx, column=2).value = node_id
+                    sheet.cell(row=row_idx, column=3).value = gen_type
+                    sheet.cell(row=row_idx, column=4).value = int(year)
+                    sheet.cell(row=row_idx, column=5).value = day
+                    sheet.cell(row=row_idx, column=6).value = 'Sg_net, [MVA]'
+                    sheet.cell(row=row_idx, column=7).value = s_m
+                    sheet.cell(row=row_idx, column=8).value = s_o
+                    for p in range(network.num_instants):
+                        sheet.cell(row=row_idx, column=p + 9).value = expected_sg_net[gen_id][p]
+                        sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
                     row_idx = row_idx + 1
 
 
