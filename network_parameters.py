@@ -75,6 +75,7 @@ class SlacksEnergyStorage:
 
     def __init__(self):
         self.complementarity = False
+        self.charging = False
         self.day_balance = False
 
     def read_slacks_parameters(self, slacks_data):
@@ -139,5 +140,7 @@ def _read_network_parameters_from_file(parameters, filename):
 def _read_ess_slacks_parameters(ess_data, slacks_data):
     if 'complementarity' in slacks_data:
         ess_data.complementarity = slacks_data['complementarity']
+    if 'charging' in slacks_data:
+        ess_data.charging = slacks_data['charging']
     if 'day_balance' in slacks_data:
         ess_data.day_balance = slacks_data['day_balance']
