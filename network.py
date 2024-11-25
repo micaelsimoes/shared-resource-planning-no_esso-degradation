@@ -867,11 +867,6 @@ def _build_model(network, params):
                         # iji_sqr += 2 * branch.g * bij_sh * ((fj - rij * fi) * ej - (ej - rij * ei) * fj)
                         # iji_sqr += 2 * branch.b * bij_sh * ((ej - rij * ei) * ej + (fj - rij * fi) * fj)
 
-                    elif params.branch_limit_type == BRANCH_LIMIT_CURRENT_SIMPLIFIED:
-
-                        iij_sqr = (branch.g ** 2 + branch.b ** 2) * ((ei - ej) ** 2 + (fi - fj) ** 2)
-                        flow_ij_sqr = iij_sqr
-
                     elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
 
                         pij = branch.g * (ei ** 2 + fi ** 2) * rij ** 2

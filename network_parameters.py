@@ -121,8 +121,6 @@ def _read_network_parameters_from_file(parameters, filename):
     if 'branch_limit_type' in params_data:
         if params_data['branch_limit_type'] == 'CURRENT':
             parameters.branch_limit_type = BRANCH_LIMIT_CURRENT
-        elif params_data['branch_limit_type'] == 'CURRENT_SIMPLIFIED':
-            parameters.branch_limit_type = BRANCH_LIMIT_CURRENT_SIMPLIFIED
         elif params_data['branch_limit_type'] == 'APPARENT_POWER':
             parameters.branch_limit_type = BRANCH_LIMIT_APPARENT_POWER
         elif params_data['branch_limit_type'] == 'MIXED':
