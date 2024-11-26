@@ -557,8 +557,8 @@ def _build_model(network, params):
                             model.voltage_cons.add(e ** 2 + f ** 2 >= node.v_min**2)
                             model.voltage_cons.add(e ** 2 + f ** 2 <= node.v_max**2)
                     else:
-                        e = model.e[i, s_m, s_o, p]
-                        f = model.f[i, s_m, s_o, p]
+                        e = model.e_actual[i, s_m, s_o, p]
+                        f = model.f_actual[i, s_m, s_o, p]
                         model.voltage_cons.add(e ** 2 + f ** 2 >= node.v_min**2)
                         model.voltage_cons.add(e ** 2 + f ** 2 <= node.v_max**2)
 
