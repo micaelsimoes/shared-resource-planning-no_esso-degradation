@@ -256,10 +256,10 @@ def _build_model(network, params):
             for s_o in model.scenarios_operation:
                 for p in model.periods:
                     if params.slacks.grid_operation.voltage:
-                        model.slack_e_up[i, s_m, s_o, p].setub(VMAG_VIOLATION_ALLOWED * e_ub)
-                        model.slack_e_down[i, s_m, s_o, p].setub(VMAG_VIOLATION_ALLOWED * e_ub)
-                        model.slack_f_up[i, s_m, s_o, p].setub(VMAG_VIOLATION_ALLOWED * f_ub)
-                        model.slack_f_down[i, s_m, s_o, p].setub(VMAG_VIOLATION_ALLOWED * f_ub)
+                        model.slack_e_up[i, s_m, s_o, p].setub(VMAG_VIOLATION_ALLOWED)
+                        model.slack_e_down[i, s_m, s_o, p].setub(VMAG_VIOLATION_ALLOWED)
+                        model.slack_f_up[i, s_m, s_o, p].setub(VMAG_VIOLATION_ALLOWED)
+                        model.slack_f_down[i, s_m, s_o, p].setub(VMAG_VIOLATION_ALLOWED)
                     if node.type == BUS_REF:
                         if network.is_transmission:
                             model.e[i, s_m, s_o, p].setub(e_ub + SMALL_TOLERANCE)
