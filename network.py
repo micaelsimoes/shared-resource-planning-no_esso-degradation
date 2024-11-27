@@ -290,77 +290,45 @@ def _build_model(network, params):
     model.pg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.qg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     for g in model.generators:
-        gen = network.generators[g]
-        pg_ub, pg_lb = gen.pmax, gen.pmin
-        qg_ub, qg_lb = gen.qmax, gen.qmin
+        generator = network.generators[g]
+        pg_ub, pg_lb = generator.pmax, generator.pmin
+        qg_ub, qg_lb = generator.qmax, generator.qmin
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
                 for p in model.periods:
-                    if gen.is_controllable():
-                        if gen.status[p] == 1:
-                            model.pg[g, s_m, s_o, p] = (pg_lb + pg_ub) * 0.50
-                            model.qg[g, s_m, s_o, p] = (qg_lb + qg_ub) * 0.50
-                            model.pg[g, s_m, s_o, p].setub(pg_ub)
-                            model.pg[g, s_m, s_o, p].setlb(pg_lb)
-                            model.qg[g, s_m, s_o, p].setub(qg_ub)
-                            model.qg[g, s_m, s_o, p].setlb(qg_lb)
-                        else:
-                            model.pg[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.pg[g, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
-                            model.qg[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.qg[g, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
+                    if generator.status[p] == 1:
+                        model.pg[g, s_m, s_o, p] = max(pg_lb, 0.00)
+                        model.qg[g, s_m, s_o, p] = max(qg_lb, 0.00)
+                        model.pg[g, s_m, s_o, p].setub(pg_ub)
+                        model.pg[g, s_m, s_o, p].setlb(pg_lb)
+                        model.qg[g, s_m, s_o, p].setub(qg_ub)
+                        model.qg[g, s_m, s_o, p].setlb(qg_lb)
                     else:
-                        # Non-conventional generator
-                        init_pg = 0.0
-                        init_qg = 0.0
-                        if gen.status[p] == 1:
-                            init_pg = gen.pg[s_o][p]
-                            init_qg = gen.qg[s_o][p]
-                        model.pg[g, s_m, s_o, p].setub(init_pg + SMALL_TOLERANCE)
-                        model.pg[g, s_m, s_o, p].setlb(init_pg - SMALL_TOLERANCE)
-                        model.qg[g, s_m, s_o, p].setub(init_qg + SMALL_TOLERANCE)
-                        model.qg[g, s_m, s_o, p].setlb(init_qg - SMALL_TOLERANCE)
+                        model.pg[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                        model.pg[g, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
+                        model.qg[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                        model.qg[g, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
     if params.rg_curt:
-        model.pg_curt_down = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.pg_curt_up = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.qg_curt_down = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.qg_curt_up = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.sg_abs = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.sg_sqr = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.sg_curt = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         for g in model.generators:
-            gen = network.generators[g]
+            generator = network.generators[g]
             for s_m in model.scenarios_market:
                 for s_o in model.scenarios_operation:
                     for p in model.periods:
-                        if gen.is_controllable():
-                            model.pg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.pg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.qg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.qg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                        if generator.is_curtaillable():
+                            # - Renewable Generation
+                            init_sg = 0.0
+                            if generator.status[p] == 1:
+                                init_sg = sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
+                            model.sg_abs[g, s_m, s_o, p].setub(init_sg)
+                            model.sg_sqr[g, s_m, s_o, p].setub(init_sg ** 2)
+                            model.sg_curt[g, s_m, s_o, p].setub(init_sg)
                         else:
-                            if gen.is_curtaillable():
-                                # - Renewable Generation
-                                init_pg = 0.0
-                                init_qg = 0.0
-                                if gen.status[p] == 1:
-                                    init_pg = gen.pg[s_o][p]
-                                    init_qg = gen.qg[s_o][p]
-                                if init_pg >= 0.00:
-                                    model.pg_curt_down[g, s_m, s_o, p].setub(init_pg + SMALL_TOLERANCE)
-                                    model.pg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                else:
-                                    model.pg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                    model.pg_curt_up[g, s_m, s_o, p].setub(abs(init_pg) + SMALL_TOLERANCE)
-                                if init_qg >= 0.00:
-                                    model.qg_curt_down[g, s_m, s_o, p].setub(init_qg + SMALL_TOLERANCE)
-                                    model.qg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                else:
-                                    model.qg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                    model.qg_curt_up[g, s_m, s_o, p].setub(abs(init_qg) + SMALL_TOLERANCE)
-                            else:
-                                # - Generator is not curtaillable (conventional RES, ref gen, etc.)
-                                model.pg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                model.pg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                model.qg_curt_down[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                model.qg_curt_up[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            model.sg_abs[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            model.sg_sqr[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            model.sg_curt[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
 
     # - Branch power flows (squared) -- used in branch limits
     model.flow_ij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -561,6 +529,33 @@ def _build_model(network, params):
                         f = model.f[i, s_m, s_o, p]
                         model.voltage_cons.add(e ** 2 + f ** 2 >= node.v_min**2)
                         model.voltage_cons.add(e ** 2 + f ** 2 <= node.v_max**2)
+
+    model.generation_apparent_power = pe.ConstraintList()
+    model.generation_power_factor = pe.ConstraintList()
+    if params.rg_curt:
+        for g in model.generators:
+            generator = network.generators[g]
+            for s_m in model.scenarios_market:
+                for s_o in model.scenarios_operation:
+                    for p in model.periods:
+                        if generator.is_curtaillable():
+                            init_sg = 0.0
+                            if generator.status[p] == 1:
+                                init_sg = sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
+                            model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] == model.pg[g, s_m, s_o, p] ** 2 + model.qg[g, s_m, s_o, p] ** 2)
+                            model.generation_apparent_power.add(model.sg_abs[g, s_m, s_o, p] ** 2 == model.sg_sqr[g, s_m, s_o, p])
+                            model.generation_apparent_power.add(model.sg_abs[g, s_m, s_o, p] == init_sg - model.sg_curt[g, s_m, s_o, p])
+                            if generator.power_factor_control:
+                                # Power factor control, variable phi
+                                max_phi = acos(generator.max_pf)
+                                min_phi = acos(generator.min_pf)
+                                model.generation_power_factor.add(model.qg[g, s_m, s_o, p] <= tan(max_phi) * model.pg[g, s_m, s_o, p])
+                                model.generation_power_factor.add(model.qg[g, s_m, s_o, p] >= tan(min_phi) * model.pg[g, s_m, s_o, p])
+                            else:
+                                # No power factor control, maintain given phi
+                                phi = atan2(generator.qg[s_o][p], generator.pg[s_o][p])
+                                model.generation_power_factor.add(model.qg[g, s_m, s_o, p] <= tan(phi) * model.pg[g, s_m, s_o, p] + SMALL_TOLERANCE)
+                                model.generation_power_factor.add(model.qg[g, s_m, s_o, p] >= tan(phi) * model.pg[g, s_m, s_o, p] - SMALL_TOLERANCE)
 
     # - Flexible Loads -- Daily energy balance
     if params.fl_reg:
@@ -768,9 +763,6 @@ def _build_model(network, params):
                         if generator.bus == node.bus_i:
                             Pg += model.pg[g, s_m, s_o, p]
                             Qg += model.qg[g, s_m, s_o, p]
-                            if params.rg_curt:
-                                Pg -= (model.pg_curt_down[g, s_m, s_o, p] - model.pg_curt_up[g, s_m, s_o, p])
-                                Qg -= (model.qg_curt_down[g, s_m, s_o, p] - model.qg_curt_up[g, s_m, s_o, p])
 
                     ei = model.e_actual[i, s_m, s_o, p]
                     fi = model.f_actual[i, s_m, s_o, p]
@@ -975,10 +967,10 @@ def _build_model(network, params):
                 # Generation curtailment
                 if params.rg_curt:
                     for g in model.generators:
-                        for p in model.periods:
-                            pg_curt = model.pg_curt_down[g, s_m, s_o, p] + model.pg_curt_up[g, s_m, s_o, p]
-                            qg_curt = model.qg_curt_down[g, s_m, s_o, p] + model.qg_curt_up[g, s_m, s_o, p]
-                            obj_scenario += model.cost_res_curtailment * network.baseMVA * (pg_curt + qg_curt)
+                        if network.generators[g].is_curtaillable():
+                            for p in model.periods:
+                                sg_curt = model.sg_curt[g, s_m, s_o, p]
+                                obj_scenario += model.cost_res_curtailment * network.baseMVA * sg_curt
 
                 # ESS utilization
                 if params.es_reg:
@@ -1010,12 +1002,11 @@ def _build_model(network, params):
                 obj_scenario = 0.0
 
                 # Generation curtailment
-                if params.rg_curt:
-                    for g in model.generators:
-                        for p in model.periods:
-                            pg_curt = model.pg_curt_down[g, s_m, s_o, p] + model.pg_curt_up[g, s_m, s_o, p]
-                            qg_curt = model.qg_curt_down[g, s_m, s_o, p] + model.qg_curt_up[g, s_m, s_o, p]
-                            obj_scenario += model.penalty_gen_curtailment * network.baseMVA * (pg_curt + qg_curt)
+                # if params.rg_curt:
+                #     for g in model.generators:
+                #         for p in model.periods:
+                #             sg_curt = model.sg_curt[g, s_m, s_o, p]
+                #             obj_scenario += model.penalty_gen_curtailment * network.baseMVA * sg_curt
 
                 # Load curtailment
                 if params.l_curt:
@@ -1600,7 +1591,7 @@ def _process_results(network, model, params, results=dict()):
             processed_results['scenarios'][s_m][s_o] = {
                 'voltage': {'vmag': {}, 'vang': {}},
                 'consumption': {'pc': {}, 'qc': {}, 'pc_net': {}, 'qc_net': {}},
-                'generation': {'pg': {}, 'qg': {}, 'pg_net': {}, 'qg_net': {}},
+                'generation': {'pg': {}, 'qg': {}, 'sg': {}},
                 'branches': {'power_flow': {'pij': {}, 'pji': {}, 'qij': {}, 'qji': {}, 'sij': {}, 'sji': {}},
                              'losses': {}, 'ratio': {}, 'branch_flow': {'flow_ij_perc': {}}},
                 'energy_storages': {'p': {}, 'q': {}, 's': {}, 'soc': {}, 'soc_percent': {}},
@@ -1619,8 +1610,10 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['consumption']['qc_curt'] = dict()
 
             if params.rg_curt:
-                processed_results['scenarios'][s_m][s_o]['generation']['pg_curt'] = dict()
-                processed_results['scenarios'][s_m][s_o]['generation']['qg_curt'] = dict()
+                processed_results['scenarios'][s_m][s_o]['generation']['pg_net'] = dict()
+                processed_results['scenarios'][s_m][s_o]['generation']['qg_net'] = dict()
+                processed_results['scenarios'][s_m][s_o]['generation']['sg_net'] = dict()
+                processed_results['scenarios'][s_m][s_o]['generation']['sg_curt'] = dict()
 
             if params.es_reg:
                 processed_results['scenarios'][s_m][s_o]['energy_storages']['p'] = dict()
@@ -1708,28 +1701,36 @@ def _process_results(network, model, params, results=dict()):
 
             # Generation
             for g in model.generators:
-                gen_id = network.generators[g].gen_id
+                generator = network.generators[g]
+                gen_id = generator.gen_id
                 processed_results['scenarios'][s_m][s_o]['generation']['pg'][gen_id] = []
                 processed_results['scenarios'][s_m][s_o]['generation']['qg'][gen_id] = []
-                processed_results['scenarios'][s_m][s_o]['generation']['pg_net'][gen_id] = [0.00 for _ in range(network.num_instants)]
-                processed_results['scenarios'][s_m][s_o]['generation']['qg_net'][gen_id] = [0.00 for _ in range(network.num_instants)]
+                processed_results['scenarios'][s_m][s_o]['generation']['sg'][gen_id] = []
                 if params.rg_curt:
-                    processed_results['scenarios'][s_m][s_o]['generation']['pg_curt'][gen_id] = []
-                    processed_results['scenarios'][s_m][s_o]['generation']['qg_curt'][gen_id] = []
+                    processed_results['scenarios'][s_m][s_o]['generation']['pg_net'][gen_id] = []
+                    processed_results['scenarios'][s_m][s_o]['generation']['qg_net'][gen_id] = []
+                    processed_results['scenarios'][s_m][s_o]['generation']['sg_net'][gen_id] = []
+                    processed_results['scenarios'][s_m][s_o]['generation']['sg_curt'][gen_id] = []
                 for p in model.periods:
-                    pg = pe.value(model.pg[g, s_m, s_o, p]) * network.baseMVA
-                    qg = pe.value(model.qg[g, s_m, s_o, p]) * network.baseMVA
+                    if generator.is_curtaillable() and params.rg_curt:
+                        pg = generator.pg[s_o][p] * network.baseMVA
+                        qg = generator.qg[s_o][p] * network.baseMVA
+                        sg = sqrt(pg ** 2 + qg ** 2)
+                        pg_net = pe.value(model.pg[g, s_m, s_o, p]) * network.baseMVA
+                        qg_net = pe.value(model.qg[g, s_m, s_o, p]) * network.baseMVA
+                        sg_net = pe.value(model.sg_abs[g, s_m, s_o, p]) * network.baseMVA
+                        sg_curt = pe.value(model.sg_curt[g, s_m, s_o, p]) * network.baseMVA
+                        processed_results['scenarios'][s_m][s_o]['generation']['pg_net'][gen_id].append(pg_net)
+                        processed_results['scenarios'][s_m][s_o]['generation']['qg_net'][gen_id].append(qg_net)
+                        processed_results['scenarios'][s_m][s_o]['generation']['sg_net'][gen_id].append(sg_net)
+                        processed_results['scenarios'][s_m][s_o]['generation']['sg_curt'][gen_id].append(sg_curt)
+                    else:
+                        pg = pe.value(model.pg[g, s_m, s_o, p]) * network.baseMVA
+                        qg = pe.value(model.qg[g, s_m, s_o, p]) * network.baseMVA
+                        sg = sqrt(pg ** 2 + qg ** 2)
                     processed_results['scenarios'][s_m][s_o]['generation']['pg'][gen_id].append(pg)
                     processed_results['scenarios'][s_m][s_o]['generation']['qg'][gen_id].append(qg)
-                    processed_results['scenarios'][s_m][s_o]['generation']['pg_net'][gen_id][p] += pg
-                    processed_results['scenarios'][s_m][s_o]['generation']['qg_net'][gen_id][p] += qg
-                    if params.rg_curt:
-                        pg_curt = pe.value(model.pg_curt_down[g, s_m, s_o, p] - model.pg_curt_up[g, s_m, s_o, p]) * network.baseMVA
-                        qg_curt = pe.value(model.qg_curt_down[g, s_m, s_o, p] - model.qg_curt_up[g, s_m, s_o, p]) * network.baseMVA
-                        processed_results['scenarios'][s_m][s_o]['generation']['pg_curt'][gen_id].append(pg_curt)
-                        processed_results['scenarios'][s_m][s_o]['generation']['qg_curt'][gen_id].append(qg_curt)
-                        processed_results['scenarios'][s_m][s_o]['generation']['pg_net'][gen_id][p] -= pg_curt
-                        processed_results['scenarios'][s_m][s_o]['generation']['qg_net'][gen_id][p] -= qg_curt
+                    processed_results['scenarios'][s_m][s_o]['generation']['sg'][gen_id].append(sg)
 
             # Branch current, transformers' ratio
             for k in model.branches:
@@ -2012,9 +2013,8 @@ def _compute_objective_function_value(network, model, params):
                 if params.rg_curt:
                     for g in model.generators:
                         for p in model.periods:
-                            pg_curt = pe.value(model.pg_curt_down[g, s_m, s_o, p] + model.pg_curt_up[g, s_m, s_o, p])
-                            qg_curt = pe.value(model.qg_curt_down[g, s_m, s_o, p] + model.qg_curt_up[g, s_m, s_o, p])
-                            obj_scenario += cost_res_curt * network.baseMVA * (pg_curt + qg_curt)
+                            sg_curt = pe.value(model.sg_curt[g, s_m, s_o, p])
+                            obj_scenario += cost_res_curt * network.baseMVA * (sg_curt)
 
                 obj += obj_scenario * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
 
@@ -2033,9 +2033,8 @@ def _compute_objective_function_value(network, model, params):
                 if params.rg_curt:
                     for g in model.generators:
                         for p in model.periods:
-                            pg_curt = pe.value(model.pg_curt_down[g, s_m, s_o, p] + model.pg_curt_up[g, s_m, s_o, p])
-                            qg_curt = pe.value(model.qg_curt_down[g, s_m, s_o, p] + model.qg_curt_up[g, s_m, s_o, p])
-                            obj_scenario += pen_gen_curtailment * network.baseMVA * (pg_curt + qg_curt)
+                            sg_curt = pe.value(model.sg_curt[g, s_m, s_o, p])
+                            obj_scenario += pen_gen_curtailment * network.baseMVA * sg_curt
 
                 # Consumption curtailment
                 if params.l_curt:
@@ -2109,10 +2108,6 @@ def _compute_total_generation(network, model, params):
                 for p in model.periods:
                     total_gen_scenario['p'] += network.baseMVA * pe.value(model.pg[g, s_m, s_o, p])
                     total_gen_scenario['q'] += network.baseMVA * pe.value(model.qg[g, s_m, s_o, p])
-                    if params.rg_curt:
-                        total_gen_scenario['p'] -= network.baseMVA * pe.value(model.pg_curt_down[g, s_m, s_o, p] + model.pg_curt_up[g, s_m, s_o, p])
-                        total_gen_scenario['q'] -= network.baseMVA * pe.value(model.qg_curt_down[g, s_m, s_o, p] + model.qg_curt_up[g, s_m, s_o, p])
-
             total_gen['p'] += total_gen_scenario['p'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
             total_gen['q'] += total_gen_scenario['q'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
 
@@ -2131,10 +2126,6 @@ def _compute_conventional_generation(network, model, params):
                     for p in model.periods:
                         total_gen_scenario['p'] += network.baseMVA * pe.value(model.pg[g, s_m, s_o, p])
                         total_gen_scenario['q'] += network.baseMVA * pe.value(model.qg[g, s_m, s_o, p])
-                        if params.rg_curt:
-                            total_gen_scenario['p'] -= network.baseMVA * pe.value(model.pg_curt_down[g, s_m, s_o, p] - model.pg_curt_up[g, s_m, s_o, p])
-                            total_gen_scenario['q'] -= network.baseMVA * pe.value(model.qg_curt_down[g, s_m, s_o, p] - model.qg_curt_up[g, s_m, s_o, p])
-
             total_gen['p'] += total_gen_scenario['p'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
             total_gen['q'] += total_gen_scenario['q'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
 
@@ -2143,22 +2134,21 @@ def _compute_conventional_generation(network, model, params):
 
 def _compute_renewable_generation(network, model, params):
 
-    total_renewable_gen = {'p': 0.00, 'q': 0.00}
+    total_renewable_gen = {'p': 0.00, 'q': 0.00, 's': 0.00}
 
     for s_m in model.scenarios_market:
         for s_o in model.scenarios_operation:
-            total_renewable_gen_scenario = {'p': 0.00, 'q': 0.00}
+            total_renewable_gen_scenario = {'p': 0.00, 'q': 0.00, 's': 0.00}
             for g in model.generators:
                 if network.generators[g].is_renewable():
                     for p in model.periods:
                         total_renewable_gen_scenario['p'] += network.baseMVA * pe.value(model.pg[g, s_m, s_o, p])
                         total_renewable_gen_scenario['q'] += network.baseMVA * pe.value(model.qg[g, s_m, s_o, p])
                         if params.rg_curt:
-                            total_renewable_gen_scenario['p'] -= network.baseMVA * pe.value(model.pg_curt_down[g, s_m, s_o, p] - model.pg_curt_up[g, s_m, s_o, p])
-                            total_renewable_gen_scenario['p'] -= network.baseMVA * pe.value(model.qg_curt_down[g, s_m, s_o, p] - model.qg_curt_up[g, s_m, s_o, p])
-
+                            total_renewable_gen_scenario['s'] += network.baseMVA * pe.value(model.sg_abs[g, s_m, s_o, p])
             total_renewable_gen['p'] += total_renewable_gen_scenario['p'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
             total_renewable_gen['q'] += total_renewable_gen_scenario['q'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
+            total_renewable_gen['s'] += total_renewable_gen_scenario['s'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
 
     return total_renewable_gen
 
@@ -2181,20 +2171,19 @@ def _compute_losses(network, model, params):
 
 def _compute_generation_curtailment(network, model, params):
 
-    gen_curtailment = {'p': 0.00, 'q': 0.00}
+    gen_curtailment = {'p': 0.00, 'q': 0.00, 's': 0.00}
 
     if params.rg_curt:
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
-                gen_curtailment_scenario = {'p': 0.00, 'q': 0.00}
+                gen_curtailment_scenario = {'p': 0.00, 'q': 0.00, 's': 0.00}
                 for g in model.generators:
                     if network.generators[g].is_curtaillable():
                         for p in model.periods:
-                            gen_curtailment_scenario['p'] += pe.value(model.pg_curt_down[g, s_m, s_o, p] - model.pg_curt_up[g, s_m, s_o, p]) * network.baseMVA
-                            gen_curtailment_scenario['q'] += pe.value(model.qg_curt_down[g, s_m, s_o, p] - model.qg_curt_up[g, s_m, s_o, p]) * network.baseMVA
-
+                            gen_curtailment_scenario['s'] += pe.value(model.sg_curt[g, s_m, s_o, p]) * network.baseMVA
                 gen_curtailment['p'] += gen_curtailment_scenario['p'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
                 gen_curtailment['q'] += gen_curtailment_scenario['q'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
+                gen_curtailment['s'] += gen_curtailment_scenario['s'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
 
     return gen_curtailment
 

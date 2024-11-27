@@ -19,6 +19,9 @@ class Generator:
                                             #   0 - machine out of service
         self.pre_processed = False
         self.gen_type = GEN_CONV
+        self.power_factor_control = True    # Power factor control
+        self.max_pf = 0.80                  # - Maximum power factor
+        self.min_pf = -0.80                 # - Minimum power factor
 
     def is_controllable(self):
         if self.gen_type in GEN_CONTROLLABLE_TYPES:
