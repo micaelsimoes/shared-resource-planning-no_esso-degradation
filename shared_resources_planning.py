@@ -2350,7 +2350,7 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
     col_idx += 1
     sheet.cell(row=line_idx, column=col_idx).value = tn_node_id
     col_idx += 1
-    sheet.cell(row=line_idx, column=col_idx).value = 'Renewable generation, [MW]'
+    sheet.cell(row=line_idx, column=col_idx).value = 'Renewable generation, [MWh]'
     col_idx += 1
     for year in results:
         for day in results[year]:
@@ -2364,7 +2364,7 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
     col_idx += 1
     sheet.cell(row=line_idx, column=col_idx).value = tn_node_id
     col_idx += 1
-    sheet.cell(row=line_idx, column=col_idx).value = 'Renewable generation, [MVAr]'
+    sheet.cell(row=line_idx, column=col_idx).value = 'Renewable generation, [MVArh]'
     col_idx += 1
     for year in results:
         for day in results[year]:
