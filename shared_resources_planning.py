@@ -2350,25 +2350,11 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
     col_idx += 1
     sheet.cell(row=line_idx, column=col_idx).value = tn_node_id
     col_idx += 1
-    sheet.cell(row=line_idx, column=col_idx).value = 'Renewable generation, [MWh]'
+    sheet.cell(row=line_idx, column=col_idx).value = 'Renewable generation, [MVAh]'
     col_idx += 1
     for year in results:
         for day in results[year]:
-            sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['total_renewable_gen']['p']
-            sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
-            col_idx += 1
-
-    line_idx += 1
-    col_idx = 1
-    sheet.cell(row=line_idx, column=col_idx).value = operator_type
-    col_idx += 1
-    sheet.cell(row=line_idx, column=col_idx).value = tn_node_id
-    col_idx += 1
-    sheet.cell(row=line_idx, column=col_idx).value = 'Renewable generation, [MVArh]'
-    col_idx += 1
-    for year in results:
-        for day in results[year]:
-            sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['total_renewable_gen']['q']
+            sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['total_renewable_gen']['s']
             sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
             col_idx += 1
 
@@ -2381,21 +2367,7 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
         col_idx += 1
         sheet.cell(row=line_idx, column=col_idx).value = tn_node_id
         col_idx += 1
-        sheet.cell(row=line_idx, column=col_idx).value = 'Renewable generation curtailed, [MWh]'
-        col_idx += 1
-        for year in results:
-            for day in results[year]:
-                sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['gen_curt']['p']
-                sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
-                col_idx += 1
-
-        line_idx += 1
-        col_idx = 1
-        sheet.cell(row=line_idx, column=col_idx).value = operator_type
-        col_idx += 1
-        sheet.cell(row=line_idx, column=col_idx).value = tn_node_id
-        col_idx += 1
-        sheet.cell(row=line_idx, column=col_idx).value = 'Renewable generation curtailed, [MVArh]'
+        sheet.cell(row=line_idx, column=col_idx).value = 'Renewable generation curtailed, [MVAh]'
         col_idx += 1
         for year in results:
             for day in results[year]:
