@@ -1709,13 +1709,7 @@ def _run_operational_planning_without_coordination(planning_problem):
                             tso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p].setlb(0.00)
 
                             v_sqr = interface_v_sqr[node_id][year][day][p]
-                            tso_model[year][day].interface_expected_values.add(tso_model[year][day].e[adn_node_idx, s_m, s_o, p] ** 2 + tso_model[year][day].f[adn_node_idx, s_m, s_o, p] ** 2 == v_sqr)
-
-                            if transmission_network.params.slacks.grid_operation.voltage:
-                                tso_model[year][day].slack_e_up[adn_node_idx, s_m, s_o, p].fix(0.0)
-                                tso_model[year][day].slack_e_down[adn_node_idx, s_m, s_o, p].fix(0.0)
-                                tso_model[year][day].slack_f_down[adn_node_idx, s_m, s_o, p].fix(0.0)
-                                tso_model[year][day].slack_f_down[adn_node_idx, s_m, s_o, p].fix(0.0)
+                            tso_model[year][day].interface_expected_values.add(tso_model[year][day].e_actual[adn_node_idx, s_m, s_o, p] ** 2 + tso_model[year][day].f_actual[adn_node_idx, s_m, s_o, p] ** 2 == v_sqr)
 
                             pc = interface_pf[node_id][year][day]['p'][p] / s_base
                             qc = interface_pf[node_id][year][day]['q'][p] / s_base

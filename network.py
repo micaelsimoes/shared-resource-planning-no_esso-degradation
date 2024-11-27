@@ -250,6 +250,8 @@ def _build_model(network, params):
         model.slack_f_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     for i in model.nodes:
         node = network.nodes[i]
+        if network.name == 'case9' and node.bus_i == 9:
+            print()
         e_lb, e_ub = -node.v_max, node.v_max
         f_lb, f_ub = -node.v_max, node.v_max
         for s_m in model.scenarios_market:
