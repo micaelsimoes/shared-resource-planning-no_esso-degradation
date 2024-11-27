@@ -1706,7 +1706,7 @@ def _run_operational_planning_without_coordination(planning_problem):
                             tso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p].setlb(0.00)
 
                             v_sqr = interface_v_sqr[node_id][year][day][p]
-                            # tso_model[year][day].interface_expected_values.add(tso_model[year][day].e_actual[adn_node_idx, s_m, s_o, p] ** 2 + tso_model[year][day].f_actual[adn_node_idx, s_m, s_o, p] ** 2 == v_sqr)
+                            tso_model[year][day].interface_expected_values.add(tso_model[year][day].e_actual[adn_node_idx, s_m, s_o, p] ** 2 + tso_model[year][day].f_actual[adn_node_idx, s_m, s_o, p] ** 2 == v_sqr)
 
                             pc = interface_pf[node_id][year][day]['p'][p] / s_base
                             qc = interface_pf[node_id][year][day]['q'][p] / s_base
