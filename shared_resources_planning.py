@@ -307,11 +307,12 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         primal_evolution.append(planning_problem.get_primal_value(tso_model, dso_models, esso_model))
 
         # 1.3 STOPPING CRITERIA evaluation
-        convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters, debug_flag=debug_flag)
-        if convergence:
-            iter_end = time.time()
-            print('[INFO] \t - Iter {}: {:.2f} s'.format(iter, iter_end - iter_start))
-            break
+        if iter > 1:
+            convergence = check_admm_convergence(planning_problem, consensus_vars, admm_parameters, debug_flag=debug_flag)
+            if convergence:
+                iter_end = time.time()
+                print('[INFO] \t - Iter {}: {:.2f} s'.format(iter, iter_end - iter_start))
+                break
 
         # --------------------------------------------------------------------------------------------------------------
         # 2. Solve TSO problem
