@@ -549,13 +549,13 @@ def _build_model(network, params):
                                 # Power factor control, variable phi
                                 max_phi = acos(generator.max_pf)
                                 min_phi = acos(generator.min_pf)
-                                model.generation_power_factor.add(model.qg[g, s_m, s_o, p] <= tan(max_phi) * model.pg[g, s_m, s_o, p])
-                                model.generation_power_factor.add(model.qg[g, s_m, s_o, p] >= tan(min_phi) * model.pg[g, s_m, s_o, p])
+                                # model.generation_power_factor.add(model.qg[g, s_m, s_o, p] <= tan(max_phi) * model.pg[g, s_m, s_o, p])
+                                # model.generation_power_factor.add(model.qg[g, s_m, s_o, p] >= tan(min_phi) * model.pg[g, s_m, s_o, p])
                             else:
                                 # No power factor control, maintain given phi
                                 phi = atan2(generator.qg[s_o][p], generator.pg[s_o][p])
-                                model.generation_power_factor.add(model.qg[g, s_m, s_o, p] <= tan(phi) * model.pg[g, s_m, s_o, p] + SMALL_TOLERANCE)
-                                model.generation_power_factor.add(model.qg[g, s_m, s_o, p] >= tan(phi) * model.pg[g, s_m, s_o, p] - SMALL_TOLERANCE)
+                                # model.generation_power_factor.add(model.qg[g, s_m, s_o, p] <= tan(phi) * model.pg[g, s_m, s_o, p] + SMALL_TOLERANCE)
+                                # model.generation_power_factor.add(model.qg[g, s_m, s_o, p] >= tan(phi) * model.pg[g, s_m, s_o, p] - SMALL_TOLERANCE)
 
     # - Flexible Loads -- Daily energy balance
     if params.fl_reg:
