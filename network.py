@@ -549,8 +549,8 @@ def _build_model(network, params):
                                 # Power factor control, variable phi
                                 max_phi = acos(generator.max_pf)
                                 min_phi = acos(generator.min_pf)
-                                # model.generation_power_factor.add(model.qg[g, s_m, s_o, p] <= tan(max_phi) * model.pg[g, s_m, s_o, p])
-                                # model.generation_power_factor.add(model.qg[g, s_m, s_o, p] >= tan(min_phi) * model.pg[g, s_m, s_o, p])
+                                model.generation_power_factor.add(model.qg[g, s_m, s_o, p] <= tan(max_phi) * model.pg[g, s_m, s_o, p])
+                                model.generation_power_factor.add(model.qg[g, s_m, s_o, p] >= tan(min_phi) * model.pg[g, s_m, s_o, p])
                             else:
                                 # No power factor control, maintain given phi
                                 phi = atan2(generator.qg[s_o][p], generator.pg[s_o][p])
@@ -1152,8 +1152,6 @@ def _run_smopf(network, model, params, from_warm_start=False):
         solver.options['tol'] = params.solver_params.solver_tol
         solver.options['linear_solver'] = params.solver_params.linear_solver
         solver.options['mu_strategy'] = 'adaptive'
-        solver.options['acceptable_tol'] = params.solver_params.solver_tol * 1e3
-        solver.options['acceptable_iter'] = 5
 
     result = solver.solve(model, tee=params.solver_params.verbose)
 
