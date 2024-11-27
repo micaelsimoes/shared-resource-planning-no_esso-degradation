@@ -945,7 +945,7 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                             sheet.cell(row=row_idx, column=3).value = gen_type
                             sheet.cell(row=row_idx, column=4).value = int(year)
                             sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Qg_curt, [MW]'
+                            sheet.cell(row=row_idx, column=6).value = 'Qg_curt, [MVAr]'
                             sheet.cell(row=row_idx, column=7).value = s_m
                             sheet.cell(row=row_idx, column=8).value = s_o
                             for p in range(network.num_instants):
@@ -963,7 +963,7 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                             sheet.cell(row=row_idx, column=3).value = gen_type
                             sheet.cell(row=row_idx, column=4).value = int(year)
                             sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Qg_net, [MW]'
+                            sheet.cell(row=row_idx, column=6).value = 'Qg_net, [MVAr]'
                             sheet.cell(row=row_idx, column=7).value = s_m
                             sheet.cell(row=row_idx, column=8).value = s_o
                             for p in range(network.num_instants):
@@ -1047,7 +1047,7 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                     sheet.cell(row=row_idx, column=3).value = gen_type
                     sheet.cell(row=row_idx, column=4).value = int(year)
                     sheet.cell(row=row_idx, column=5).value = day
-                    sheet.cell(row=row_idx, column=6).value = 'Qg_curt, [MW]'
+                    sheet.cell(row=row_idx, column=6).value = 'Qg_curt, [MVAr]'
                     sheet.cell(row=row_idx, column=7).value = 'Expected'
                     sheet.cell(row=row_idx, column=8).value = '-'
                     for p in range(network.num_instants):
@@ -1063,7 +1063,7 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                     sheet.cell(row=row_idx, column=3).value = gen_type
                     sheet.cell(row=row_idx, column=4).value = int(year)
                     sheet.cell(row=row_idx, column=5).value = day
-                    sheet.cell(row=row_idx, column=6).value = 'Qg_net, [MW]'
+                    sheet.cell(row=row_idx, column=6).value = 'Qg_net, [MVAr]'
                     sheet.cell(row=row_idx, column=7).value = 'Expected'
                     sheet.cell(row=row_idx, column=8).value = '-'
                     for p in range(network.num_instants):

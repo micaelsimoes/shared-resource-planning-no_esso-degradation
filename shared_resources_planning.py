@@ -3658,7 +3658,7 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                             sheet.cell(row=row_idx, column=5).value = gen_type
                             sheet.cell(row=row_idx, column=6).value = int(year)
                             sheet.cell(row=row_idx, column=7).value = day
-                            sheet.cell(row=row_idx, column=8).value = 'Qg_net, [MW]'
+                            sheet.cell(row=row_idx, column=8).value = 'Qg_net, [MVAr]'
                             sheet.cell(row=row_idx, column=9).value = s_m
                             sheet.cell(row=row_idx, column=10).value = s_o
                             for p in range(network[year][day].num_instants):
@@ -3792,7 +3792,7 @@ def _write_network_generation_results_per_operator(network, params, sheet, opera
                     sheet.cell(row=row_idx, column=5).value = gen_type
                     sheet.cell(row=row_idx, column=6).value = int(year)
                     sheet.cell(row=row_idx, column=7).value = day
-                    sheet.cell(row=row_idx, column=8).value = 'Qg_net, [MW]'
+                    sheet.cell(row=row_idx, column=8).value = 'Qg_net, [MVAr]'
                     sheet.cell(row=row_idx, column=9).value = 'Expected'
                     sheet.cell(row=row_idx, column=10).value = '-'
                     for p in range(network[year][day].num_instants):
