@@ -1708,7 +1708,6 @@ def _run_operational_planning_without_coordination(planning_problem):
 
                             v_sqr = interface_v_sqr[node_id][year][day][p]
                             tso_model[year][day].interface_expected_values.add(tso_model[year][day].e[adn_node_idx, s_m, s_o, p] ** 2 + tso_model[year][day].f[adn_node_idx, s_m, s_o, p] ** 2 == v_sqr)
-
                             if transmission_network.params.slacks.grid_operation.voltage:
                                 tso_model[year][day].slack_e[adn_node_idx, s_m, s_o, p].fix(0.0)
                                 tso_model[year][day].slack_f[adn_node_idx, s_m, s_o, p].fix(0.0)
