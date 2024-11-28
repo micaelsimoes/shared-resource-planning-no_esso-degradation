@@ -1200,7 +1200,7 @@ def _read_network_from_json_file(network, filename):
         generator.qmax = float(gen_data['Qmax']) / network.baseMVA
         generator.qmin = float(gen_data['Qmin']) / network.baseMVA
         generator.vg = float(gen_data['Vg'])
-        generator.status = float(gen_data['status'])
+        generator.status = bool(gen_data['status'])
         gen_type = gen_data['type']
         if gen_type == 'REF':
             generator.gen_type = GEN_REFERENCE
@@ -1226,8 +1226,8 @@ def _read_network_from_json_file(network, filename):
         if not network.node_exists(load.bus):
             print(f'[ERROR] Load {load.load_id }. Node {load.bus} does not exist! Exiting...')
             exit(ERROR_NETWORK_FILE)
-        load.status = int(load_data['status'])
-        load.fl_reg = int(load_data['fl_reg'])
+        load.status = bool(load_data['status'])
+        load.fl_reg = bool(load_data['fl_reg'])
         network.loads.append(load)
 
     # Lines
@@ -1246,7 +1246,7 @@ def _read_network_from_json_file(network, filename):
         branch.x = float(line_data['x'])
         branch.b_sh = float(line_data['b'])
         branch.rate = float(line_data['rating'])
-        branch.status = int(line_data['status'])
+        branch.status = bool(line_data['status'])
         network.branches.append(branch)
 
     # Transformers
@@ -2254,13 +2254,13 @@ def _plot_networkx_diagram(network, data_dir='data'):
         branch = branches[i]
         if branch['type'] == 'line':
             graph.add_edge(branch['data'].fbus, branch['data'].tbus)
-            if branch['data'].status == 1:
+            if branch['data'].status:
                 line_list.append((branch['data'].fbus, branch['data'].tbus))
             else:
                 open_line_list.append((branch['data'].fbus, branch['data'].tbus))
         if branch['type'] == 'transformer':
             graph.add_edge(branch['data'].fbus, branch['data'].tbus)
-            if branch['data'].status == 1:
+            if branch['data'].status:
                 transf_list.append((branch['data'].fbus, branch['data'].tbus))
             else:
                 open_transf_list.append((branch['data'].fbus, branch['data'].tbus))
