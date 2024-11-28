@@ -1618,7 +1618,7 @@ def _run_operational_planning_without_coordination(planning_problem):
     # Create interface PF variables
     interface_v_sqr, interface_pf = create_interface_power_flow_variables(planning_problem)
 
-    # Create DSOs' Operational Planning models
+    # Create DSOs' Operational Planning models, run initial SMOPF
     dso_models = dict()
     for node_id in distribution_networks:
 
@@ -1677,6 +1677,7 @@ def _run_operational_planning_without_coordination(planning_problem):
         dso_models[node_id] = dso_model
 
     # Create TSO Operational Planning model
+    # - Run SMOPF with interface fixed power flows
     transmission_network.update_data_with_candidate_solution(candidate_solution)
     tso_model = transmission_network.build_model()
     transmission_network.update_model_with_candidate_solution(tso_model, candidate_solution)
