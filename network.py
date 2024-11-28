@@ -255,9 +255,9 @@ def _build_model(network, params):
                 for p in model.periods:
                     if params.slacks.grid_operation.voltage:
                         model.slack_e[i, s_m, s_o, p].setub(VMAG_VIOLATION_ALLOWED)
-                        model.slack_e[i, s_m, s_o, p].setlb(VMAG_VIOLATION_ALLOWED)
+                        model.slack_e[i, s_m, s_o, p].setlb(-VMAG_VIOLATION_ALLOWED)
                         model.slack_f[i, s_m, s_o, p].setub(VMAG_VIOLATION_ALLOWED)
-                        model.slack_f[i, s_m, s_o, p].setlb(VMAG_VIOLATION_ALLOWED)
+                        model.slack_f[i, s_m, s_o, p].setlb(-VMAG_VIOLATION_ALLOWED)
                     if node.type == BUS_REF:
                         if network.is_transmission:
                             model.e[i, s_m, s_o, p].setub(e_ub)
@@ -501,10 +501,8 @@ def _build_model(network, params):
                         e_actual += model.slack_e[i, s_m, s_o, p]
                         f_actual += model.slack_f[i, s_m, s_o, p]
 
-                    model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] <= e_actual + EQUALITY_TOLERANCE)
-                    model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] >= e_actual - EQUALITY_TOLERANCE)
-                    model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] <= f_actual + EQUALITY_TOLERANCE)
-                    model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] >= f_actual + EQUALITY_TOLERANCE)
+                    model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] == e_actual)
+                    model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] == f_actual)
 
                     # voltage magnitude constraints
                     if node.type == BUS_PV:
