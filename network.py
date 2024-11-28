@@ -1226,8 +1226,8 @@ def _read_network_from_json_file(network, filename):
         if not network.node_exists(load.bus):
             print(f'[ERROR] Load {load.load_id }. Node {load.bus} does not exist! Exiting...')
             exit(ERROR_NETWORK_FILE)
-        load.status = bool(load_data['status'])
-        load.fl_reg = bool(load_data['fl_reg'])
+        load.status = int(load_data['status'])
+        load.fl_reg = int(load_data['fl_reg'])
         network.loads.append(load)
 
     # Lines
@@ -1246,7 +1246,7 @@ def _read_network_from_json_file(network, filename):
         branch.x = float(line_data['x'])
         branch.b_sh = float(line_data['b'])
         branch.rate = float(line_data['rating'])
-        branch.status = bool(line_data['status'])
+        branch.status = int(line_data['status'])
         network.branches.append(branch)
 
     # Transformers
