@@ -294,7 +294,7 @@ def _build_model(network, params):
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
                 for p in model.periods:
-                    if generator.status[p] == 1:
+                    if generator.status[p]:
                         model.pg[g, s_m, s_o, p] = max(pg_lb, 0.00)
                         model.qg[g, s_m, s_o, p] = max(qg_lb, 0.00)
                         model.pg[g, s_m, s_o, p].setub(pg_ub)
@@ -318,7 +318,7 @@ def _build_model(network, params):
                         if generator.is_curtaillable():
                             # - Renewable Generation
                             init_sg = 0.0
-                            if generator.status[p] == 1:
+                            if generator.status[p]:
                                 init_sg = sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
                             model.sg_abs[g, s_m, s_o, p].setub(init_sg)
                             model.sg_sqr[g, s_m, s_o, p].setub(init_sg ** 2)
@@ -536,7 +536,7 @@ def _build_model(network, params):
                     for p in model.periods:
                         if generator.is_curtaillable():
                             init_sg = 0.0
-                            if generator.status[p] == 1:
+                            if generator.status[p]:
                                 init_sg = sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
                             model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] <= model.pg[g, s_m, s_o, p] ** 2 + model.qg[g, s_m, s_o, p] ** 2 + SMALL_TOLERANCE)
                             model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] >= model.pg[g, s_m, s_o, p] ** 2 + model.qg[g, s_m, s_o, p] ** 2 - SMALL_TOLERANCE)
@@ -1399,11 +1399,7 @@ def _read_network_operational_data_from_file(network, filename):
             data['generation']['qg'][i] = qg_scenario
 
     # Generators status. Note: common to all scenarios
-    gen_status = _get_generator_status_from_excel_file(filename, f'GenStatus, {network.day}')
-    if not gen_status:
-        for g in range(len(network.generators)):
-            gen_status.append([network.generators[g].status for _ in range(network.num_instants)])
-    data['generation']['status'] = gen_status
+    data['generation']['status'] = _get_generator_status_from_excel_file(filename, f'GenStatus, {network.day}')
 
     # Flexibility data
     flex_up_p = _get_consumption_flexibility_data_from_excel_file(filename, f'UpFlex, {network.day}')
@@ -1503,15 +1499,9 @@ def _get_generator_status_from_excel_file(filename, sheet_name):
         status_values = dict()
         for i in range(num_rows):
             gen_id = data.iloc[i, 0]
-            status_values[gen_id] = [0 for _ in range(num_cols - 1)]
-        for node_id in status_values:
-            status_values_gen = [0 for _ in range(num_cols - 1)]
-            for i in range(0, num_rows):
-                aux_node_id = data.iloc[i, 0]
-                if aux_node_id == node_id:
-                    for j in range(0, num_cols - 1):
-                        status_values_gen[j] += data.iloc[i, j + 1]
-            status_values[node_id] = status_values_gen
+            status_values[gen_id] = list()
+            for j in range(0, num_cols - 1):
+                status_values[gen_id].append(bool(data.iloc[i, j + 1]))
     except:
         print(f'[WARNING] Workbook {filename}. Sheet {sheet_name} does not exist.')
         status_values = list()
@@ -1554,7 +1544,10 @@ def _update_network_with_excel_data(network, data):
                 generator.qg[s] = [0.00 for _ in range(network.num_instants)]
 
         # Status
-        generator.status = data['generation']['status'][generator.gen_id]
+        if generator.gen_id in data['generation']['status']:
+            generator.status = data['generation']['status'][generator.gen_id]
+        else:
+            generator.status = [generator.status for _ in range(network.num_instants)]
 
     network.data_loaded = True
 
