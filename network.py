@@ -1200,7 +1200,7 @@ def _read_network_from_json_file(network, filename):
         generator.qmax = float(gen_data['Qmax']) / network.baseMVA
         generator.qmin = float(gen_data['Qmin']) / network.baseMVA
         generator.vg = float(gen_data['Vg'])
-        generator.status = int(gen_data['status'])
+        generator.status = float(gen_data['status'])
         gen_type = gen_data['type']
         if gen_type == 'REF':
             generator.gen_type = GEN_REFERENCE

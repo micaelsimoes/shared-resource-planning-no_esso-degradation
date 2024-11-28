@@ -5173,13 +5173,13 @@ def _plot_networkx_diagram(planning_problem):
                 branch = branches[i]
                 if branch['type'] == 'line':
                     graph.add_edge(branch['data'].fbus, branch['data'].tbus)
-                    if branch['data'].status:
+                    if branch['data'].status == 1:
                         line_list.append((branch['data'].fbus, branch['data'].tbus))
                     else:
                         open_line_list.append((branch['data'].fbus, branch['data'].tbus))
                 if branch['type'] == 'transformer':
                     graph.add_edge(branch['data'].fbus, branch['data'].tbus)
-                    if branch['data'].status:
+                    if branch['data'].status == 1:
                         transf_list.append((branch['data'].fbus, branch['data'].tbus))
                     else:
                         open_transf_list.append((branch['data'].fbus, branch['data'].tbus))
