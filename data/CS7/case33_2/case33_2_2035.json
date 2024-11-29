@@ -37,10 +37,10 @@
 	],
 	"generators": [
 		{"gen_id":1,"bus":1,"Pmax":100,"Pmin":-100,"Qmax":100,"Qmin":-100,"Vg":1,"status":1, "type": "REF"},
-		{"gen_id":2,"bus":22,"Pmax":5.00,"Pmin":0.00,"Qmax":5.00,"Qmin":-5.00,"Vg":1.00,"status":1, "type": "WIND"},
-		{"gen_id":5,"bus":25,"Pmax":10.00,"Pmin":0.00,"Qmax":10.00,"Qmin":-10.00,"Vg":1.00,"status":1, "type": "PV"},
-		{"gen_id":6,"bus":23,"Pmax":10.00,"Pmin":0.00,"Qmax":10.00,"Qmin":-10.00,"Vg":1.00,"status":1, "type": "PV"},
-		{"gen_id":7,"bus":18,"Pmax":10.00,"Pmin":0.00,"Qmax":10.00,"Qmin":-10.00,"Vg":1.00,"status":1, "type": "PV"}
+		{"gen_id":2,"bus":22,"Pmax":5.00,"Pmin":0.00,"Qmax":5.00,"Qmin":-5.00,"Vg":1.00,"status":1, "type": "WIND", "pf_control": 1, "pf_max": 0.80, "pf_min": -0.80},
+		{"gen_id":5,"bus":25,"Pmax":10.00,"Pmin":0.00,"Qmax":10.00,"Qmin":-10.00,"Vg":1.00,"status":1, "type": "PV", "pf_control": 1, "pf_max": 0.80, "pf_min": -0.80},
+		{"gen_id":6,"bus":23,"Pmax":10.00,"Pmin":0.00,"Qmax":10.00,"Qmin":-10.00,"Vg":1.00,"status":1, "type": "PV", "pf_control": 1, "pf_max": 0.80, "pf_min": -0.80},
+		{"gen_id":7,"bus":18,"Pmax":10.00,"Pmin":0.00,"Qmax":10.00,"Qmin":-10.00,"Vg":1.00,"status":1, "type": "PV", "pf_control": 1, "pf_max": 0.80, "pf_min": -0.80}
 	],
 	"loads": [
 		{"load_id": 1, "bus": 2, "status": 1, "fl_reg": 1},
