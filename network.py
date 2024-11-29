@@ -1216,6 +1216,12 @@ def _read_network_from_json_file(network, filename):
             generator.gen_type = GEN_RES_OTHER
         elif gen_type == 'RES_CONTROLLABLE':
             generator.gen_type = GEN_RES_CONTROLLABLE
+        if 'pf_control' in gen_data:
+            generator.power_factor_control = bool(gen_data['pf_control'])
+            if 'pf_max' in gen_data:
+                generator.max_pf = float(gen_data['pf_max'])
+            if 'pf_min' in gen_data:
+                generator.min_pf = float(gen_data['pf_min'])
         network.generators.append(generator)
 
     # Loads
