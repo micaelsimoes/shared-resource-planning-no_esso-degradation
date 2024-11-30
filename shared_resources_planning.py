@@ -1995,6 +1995,7 @@ def _write_planning_results_to_excel(planning_problem, results, bound_evolution=
     wb = Workbook()
 
     _write_operational_planning_main_info_to_excel(planning_problem, wb, results)
+    _write_operational_planning_main_info_to_excel_detailed(planning_problem, wb, results)
     _write_shared_ess_specifications(wb, planning_problem.shared_ess_data)
 
     if bound_evolution:
@@ -2084,6 +2085,7 @@ def _write_operational_planning_results_to_excel(planning_problem, results, prim
     wb = Workbook()
 
     _write_operational_planning_main_info_to_excel(planning_problem, wb, results)
+    _write_operational_planning_main_info_to_excel_detailed(planning_problem, wb, results)
     _write_shared_ess_specifications(wb, planning_problem.shared_ess_data)
     if shared_ess_capacity:
         planning_problem.shared_ess_data.write_ess_capacity_results_to_excel(wb, shared_ess_capacity)
@@ -2128,6 +2130,7 @@ def _write_operational_planning_results_no_coordination_to_excel(planning_proble
     wb = Workbook()
 
     _write_operational_planning_main_info_to_excel(planning_problem, wb, results)
+    _write_operational_planning_main_info_to_excel_detailed(planning_problem, wb, results)
 
     #  TSO and DSOs' results
     _write_network_voltage_results_to_excel(planning_problem, wb, results)
@@ -2450,6 +2453,59 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
         for day in results[year]:
             sheet.cell(row=line_idx, column=col_idx).value = len(network.network[year][day].prob_operation_scenarios)
             col_idx += 1
+
+    return line_idx
+
+
+def _write_operational_planning_main_info_to_excel_detailed(planning_problem, workbook, results):
+
+    sheet = workbook.create_sheet('Main Info, Detailed')
+
+    # Write Header -- Year
+    line_idx = 1
+    sheet.cell(row=line_idx, column=1).value = 'Operator'
+    sheet.cell(row=line_idx, column=2).value = 'ADN Node ID'
+    sheet.cell(row=line_idx, column=3).value = 'Year'
+    sheet.cell(row=line_idx, column=4).value = 'Day'
+    sheet.cell(row=line_idx, column=5).value = 'Market Scenario'
+    sheet.cell(row=line_idx, column=6).value = 'Operation Scenario'
+    sheet.cell(row=line_idx, column=7).value = 'Probability, [%]'
+    sheet.cell(row=line_idx, column=8).value = 'OF Value'
+
+    # TSO
+    line_idx += 1
+    line_idx = _write_operational_planning_main_info_per_operator_detailed(planning_problem.transmission_network, sheet, 'TSO', line_idx, results['tso']['results'])
+
+    # DSOs
+    for tn_node_id in results['dso']:
+        dso_results = results['dso'][tn_node_id]['results']
+        distribution_network = planning_problem.distribution_networks[tn_node_id]
+        line_idx = _write_operational_planning_main_info_per_operator_detailed(distribution_network, sheet, 'DSO', line_idx, dso_results, tn_node_id=tn_node_id)
+
+
+def _write_operational_planning_main_info_per_operator_detailed(network, sheet, operator_type, line_idx, results, tn_node_id='-'):
+
+    decimal_style = '0.00'
+    percent_style = '0.00%'
+
+    sheet.cell(row=line_idx, column=1).value = operator_type
+    for year in results:
+        for day in results[year]:
+            for s_m in results[year][day]['detailed']['obj']['scenarios']:
+                for s_o in results[year][day]['detailed']['obj']['scenarios'][s_m]:
+
+                    sheet.cell(row=line_idx, column=1).value = operator_type
+                    sheet.cell(row=line_idx, column=2).value = tn_node_id
+                    sheet.cell(row=line_idx, column=3).value = int(year)
+                    sheet.cell(row=line_idx, column=4).value = day
+                    sheet.cell(row=line_idx, column=5).value = s_m
+                    sheet.cell(row=line_idx, column=6).value = s_o
+                    sheet.cell(row=line_idx, column=7).value = results[year][day]['detailed']['obj']['scenarios'][s_m][s_o]['probability']
+                    sheet.cell(row=line_idx, column=7).number_format = percent_style
+                    sheet.cell(row=line_idx, column=8).value = results[year][day]['detailed']['obj']['scenarios'][s_m][s_o]['value']
+                    sheet.cell(row=line_idx, column=8).number_format = decimal_style
+
+                    line_idx += 1
 
     return line_idx
 

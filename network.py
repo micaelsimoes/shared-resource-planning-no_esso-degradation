@@ -199,6 +199,9 @@ class Network:
     def process_results(self, model, params, results=dict()):
         return _process_results(self, model, params, results=results)
 
+    def process_results_detailed(self, model, params):
+        return _process_results_detailed(self, model, params)
+
     def process_results_interface(self, model):
         return _process_results_interface(self, model)
 
@@ -1576,6 +1579,7 @@ def _process_results(network, model, params, results=dict()):
     processed_results['gen_curt'] = _compute_generation_curtailment(network, model, params)
     processed_results['load_curt'] = _compute_load_curtailment(network, model, params)
     processed_results['flex_used'] = _compute_flexibility_used(network, model, params)
+    processed_results['detailed'] = _process_results_detailed(network, model, params)
     if results:
         processed_results['runtime'] = float(_get_info_from_results(results, 'Time:').strip()),
 
@@ -1907,6 +1911,15 @@ def _process_results(network, model, params, results=dict()):
     return processed_results
 
 
+
+def _process_results_detailed(network, model, params):
+
+    processed_results = dict()
+    processed_results['obj'] = _compute_objective_function_value_detailed(network, model, params)
+
+    return processed_results
+
+
 def _process_results_interface(network, model):
 
     results = dict()
@@ -2043,6 +2056,104 @@ def _compute_objective_function_value(network, model, params):
                             obj_scenario += pen_flex_usage * network.baseMVA * (flex_p_down + flex_p_up)
 
                 obj += obj_scenario * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
+
+    return obj
+
+
+def _compute_objective_function_value_detailed(network, model, params):
+
+    obj = dict()
+    obj['scenarios'] = dict()
+
+    if params.obj_type == OBJ_MIN_COST:
+
+        c_p = network.cost_energy_p
+        c_flex = network.cost_flex
+        cost_res_curt = pe.value(model.cost_res_curtailment)
+        cost_load_curt = pe.value(model.cost_load_curtailment)
+
+        for s_m in model.scenarios_market:
+
+            obj['scenarios'][s_m] = dict()
+
+            for s_o in model.scenarios_operation:
+
+                prob_scn = network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
+
+                obj['scenarios'][s_m][s_o] = dict()
+                obj['scenarios'][s_m][s_o]['value'] = 0.00
+                obj['scenarios'][s_m][s_o]['probability'] = prob_scn
+
+                # Generation -- paid at market price
+                for g in model.generators:
+                    if network.generators[g].is_controllable():
+                        if (not network.is_transmission) and network.generators[g].gen_type == GEN_REFERENCE:
+                            continue
+                        for p in model.periods:
+                            pg = pe.value(model.pg[g, s_m, s_o, p])
+                            obj['scenarios'][s_m][s_o]['value'] += c_p[s_m][p] * network.baseMVA * pg
+
+                # Demand side flexibility
+                if params.fl_reg:
+                    for c in model.loads:
+                        for p in model.periods:
+                            flex_up = pe.value(model.flex_p_up[c, s_m, s_o, p])
+                            flex_down = pe.value(model.flex_p_down[c, s_m, s_o, p])
+                            obj['scenarios'][s_m][s_o]['value'] += c_flex[s_m][p] * network.baseMVA * (flex_down + flex_up)
+
+                # Load curtailment
+                if params.l_curt:
+                    for c in model.loads:
+                        for p in model.periods:
+                            pc_curt = pe.value(model.pc_curt_down[c, s_m, s_o, p] + model.pc_curt_up[c, s_m, s_o, p])
+                            qc_curt = pe.value(model.qc_curt_down[c, s_m, s_o, p] + model.qc_curt_up[c, s_m, s_o, p])
+                            obj['scenarios'][s_m][s_o]['value'] += cost_load_curt * network.baseMVA * (pc_curt + qc_curt)
+
+                # Generation curtailment
+                if params.rg_curt:
+                    for g in model.generators:
+                        for p in model.periods:
+                            sg_curt = pe.value(model.sg_curt[g, s_m, s_o, p])
+                            obj['scenarios'][s_m][s_o]['value'] += cost_res_curt * network.baseMVA * (sg_curt)
+
+    elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
+
+        pen_gen_curtailment = pe.value(model.penalty_gen_curtailment)
+        pen_load_curtailment = pe.value(model.penalty_load_curtailment)
+        pen_flex_usage = pe.value(model.penalty_flex_usage)
+
+        for s_m in model.scenarios_market:
+
+            obj['scenarios'][s_m] = dict()
+
+            for s_o in model.scenarios_operation:
+
+                obj['scenarios'][s_m][s_o] = dict()
+                obj['scenarios'][s_m][s_o]['value'] = 0.00
+                obj['scenarios'][s_m][s_o]['probability'] = network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
+
+                # Generation curtailment
+                if params.rg_curt:
+                    for g in model.generators:
+                        for p in model.periods:
+                            sg_curt = pe.value(model.sg_curt[g, s_m, s_o, p])
+                            obj['scenarios'][s_m][s_o]['value'] += pen_gen_curtailment * network.baseMVA * sg_curt
+
+                # Consumption curtailment
+                if params.l_curt:
+                    for c in model.loads:
+                        for p in model.periods:
+                            pc_curt = pe.value(model.pc_curt_down[c, s_m, s_o, p] + model.pc_curt_up[c, s_m, s_o, p])
+                            qc_curt = pe.value(model.qc_curt_down[c, s_m, s_o, p] + model.qc_curt_up[c, s_m, s_o, p])
+                            obj['scenarios'][s_m][s_o]['value'] += pen_load_curtailment * network.baseMVA * (pc_curt + qc_curt)
+
+                # Demand side flexibility
+                if params.fl_reg:
+                    for c in model.loads:
+                        for p in model.periods:
+                            flex_p_up = pe.value(model.flex_p_up[c, s_m, s_o, p])
+                            flex_p_down = pe.value(model.flex_p_down[c, s_m, s_o, p])
+                            obj['scenarios'][s_m][s_o]['value'] += pen_flex_usage * network.baseMVA * (flex_p_down + flex_p_up)
 
     return obj
 
