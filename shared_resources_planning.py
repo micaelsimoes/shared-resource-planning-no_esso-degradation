@@ -1821,12 +1821,12 @@ def _run_operational_planning_without_coordination(planning_problem):
             for dn in tso_model[year][day].active_distribution_networks:
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
                 for p in tso_model[year][day].periods:
-                    interface_v_sqr = interface_v_sqr[adn_node_id][year][day][p]
-                    interface_pf_p = interface_pf[adn_node_id][year][day]['p'][p] / s_base
-                    interface_pf_q = interface_pf[adn_node_id][year][day]['q'][p] / s_base
-                    tso_model[year][day].expected_interface_vmag_sqr[dn, p].fix(interface_v_sqr)
-                    tso_model[year][day].expected_interface_pf_p[dn, p].fix(interface_pf_p)
-                    tso_model[year][day].expected_interface_pf_q[dn, p].fix(interface_pf_q)
+                    v_sqr_req = interface_v_sqr[adn_node_id][year][day][p]
+                    p_req = interface_pf[adn_node_id][year][day]['p'][p] / s_base
+                    q_req = interface_pf[adn_node_id][year][day]['q'][p] / s_base
+                    tso_model[year][day].expected_interface_vmag_sqr[dn, p].fix(v_sqr_req)
+                    tso_model[year][day].expected_interface_pf_p[dn, p].fix(p_req)
+                    tso_model[year][day].expected_interface_pf_q[dn, p].fix(q_req)
 
     results['tso'] = transmission_network.optimize(tso_model)
 
