@@ -512,8 +512,6 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
 
     # Run SMOPF
     results = transmission_network.optimize(tso_model)
-    # processed_results = transmission_network.process_results(tso_model, results)
-    # transmission_network.write_optimization_results_to_excel(processed_results, filename=f'{transmission_network.name}_init')
 
     # Get initial interface and shared ESS values
     for year in transmission_network.years:
@@ -595,10 +593,29 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                     dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_shared_ess_q[p] <= expected_ess_q + SMALL_TOLERANCE)
                     dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_shared_ess_q[p] >= expected_ess_q - SMALL_TOLERANCE)
 
+        # Regularization -- Added to OF to minimize deviations from scenarios to expected values
+        for year in distribution_network.years:
+            for day in distribution_network.days:
+
+                ref_node_id = distribution_network.network[year][day].get_reference_node_id()
+                ref_node_idx = distribution_network.network[year][day].get_node_idx(ref_node_id)
+                ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
+                shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
+
+                obj = copy(dso_model[year][day].objective.expr)
+                dso_model[year][day].penalty_regularization = pe.Var(domain=pe.NonNegativeReals)
+                dso_model[year][day].penalty_regularization.fix(PENALTY_REGULARIZATION)
+                for s_m in dso_model[year][day].scenarios_market:
+                    for s_o in dso_model[year][day].scenarios_operation:
+                        for p in dso_model[year][day].periods:
+                            obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2 - dso_model[year][day].expected_interface_vmag_sqr[p]) ** 2
+                            obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p] - dso_model[year][day].expected_interface_pf_p[p]) ** 2
+                            obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p] - dso_model[year][day].expected_interface_pf_q[p]) ** 2
+                            obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_p[p]) ** 2
+                            obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_q[p]) ** 2
+
         # Run SMOPF
         results[node_id] = distribution_network.optimize(dso_model)
-        # processed_results = distribution_network.process_results(dso_model, results[node_id])
-        # distribution_network.write_optimization_results_to_excel(processed_results, filename=f'{distribution_network.name}_init')
 
         # Get initial interface and shared ESS values
         for year in distribution_network.years:
@@ -1052,18 +1069,6 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                     shared_ess_rating = 0.01
 
                 interface_transf_rating = distribution_network.network[year][day].get_interface_branch_rating() / s_base
-
-                # Regularization -- Added to OF to minimize deviations from scenarios to expected values
-                dso_model[year][day].penalty_regularization = pe.Var(domain=pe.NonNegativeReals)
-                dso_model[year][day].penalty_regularization.fix(PENALTY_REGULARIZATION)
-                for s_m in dso_model[year][day].scenarios_market:
-                    for s_o in dso_model[year][day].scenarios_operation:
-                        for p in dso_model[year][day].periods:
-                            obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2 - dso_model[year][day].expected_interface_vmag_sqr[p]) ** 2
-                            obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p] - dso_model[year][day].expected_interface_pf_p[p]) ** 2
-                            obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p] - dso_model[year][day].expected_interface_pf_q[p]) ** 2
-                            obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_p[p]) ** 2
-                            obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_q[p]) ** 2
 
                 # Augmented Lagrangian -- Interface power flow (residual balancing)
                 for p in dso_model[year][day].periods:
