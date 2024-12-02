@@ -962,7 +962,7 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                 ref_node_id = distribution_network.network[year][day].get_reference_node_id()
                 ref_node_idx = distribution_network.network[year][day].get_node_idx(ref_node_id)
                 ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
-                v_min, v_max = distribution_network.network[year][day].get_node_voltage_limits(ref_node_id)
+                _, v_max = distribution_network.network[year][day].get_node_voltage_limits(ref_node_id)
 
                 # Update Vmag, Pg, Qg limits at the interface node
                 for s_m in dso_model[year][day].scenarios_market:
@@ -970,7 +970,7 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                         for p in dso_model[year][day].periods:
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].fixed = False
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setub(v_max + SMALL_TOLERANCE)
-                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setlb(v_min - SMALL_TOLERANCE)
+                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setlb(-v_max - SMALL_TOLERANCE)
                             dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
                             dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
                             if distribution_network.params.slacks.grid_operation.voltage:
