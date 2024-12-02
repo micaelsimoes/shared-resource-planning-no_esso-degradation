@@ -1664,6 +1664,7 @@ def _run_operational_planning_without_coordination(planning_problem):
         distribution_network.update_model_with_candidate_solution(dso_model, candidate_solution)
 
         # Update model with expected interface values
+        # Regularization -- Added to OF to minimize deviations from scenarios to expected values
         for year in distribution_network.years:
             for day in distribution_network.days:
 
@@ -1695,6 +1696,18 @@ def _run_operational_planning_without_coordination(planning_problem):
                     dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_vmag_sqr[p] == expected_vmag_sqr)
                     dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_pf_p[p] == expected_pf_p)
                     dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_pf_q[p] == expected_pf_q)
+
+                obj = copy(dso_model[year][day].objective.expr)
+                dso_model[year][day].penalty_regularization = pe.Var(domain=pe.NonNegativeReals)
+                dso_model[year][day].penalty_regularization.fix(PENALTY_REGULARIZATION)
+                for s_m in dso_model[year][day].scenarios_market:
+                    for s_o in dso_model[year][day].scenarios_operation:
+                        for p in dso_model[year][day].periods:
+                            obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2 - dso_model[year][day].expected_interface_vmag_sqr[p]) ** 2
+                            obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p] - dso_model[year][day].expected_interface_pf_p[p]) ** 2
+                            obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p] - dso_model[year][day].expected_interface_pf_q[p]) ** 2
+
+                dso_model[year][day].objective.expr = obj
 
         results['dso'][node_id] = distribution_network.optimize(dso_model)
 
