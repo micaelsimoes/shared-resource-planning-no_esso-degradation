@@ -881,6 +881,27 @@ def update_transmission_model_to_admm(planning_problem, model, params):
                 init_of_value = 0.01
             obj = copy(model[year][day].objective.expr) / init_of_value
 
+            # Regularization -- Added to OF to minimize deviations from scenarios to expected values
+            model[year][day].penalty_regularization = pe.Var(domain=pe.NonNegativeReals)
+            model[year][day].penalty_regularization.fix(PENALTY_REGULARIZATION)
+            for dn in  model[year][day].active_distribution_networks:
+                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
+                adn_node_idx = transmission_network.network[year][day].get_node_idx(adn_node_id)
+                adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(adn_node_id)
+                for s_m in model[year][day].scenarios_market:
+                    for s_o in model[year][day].scenarios_operation:
+                        for p in model[year][day].periods:
+                            obj += model[year][day].penalty_regularization * ((model[year][day].e[adn_node_idx, s_m, s_o, p] ** 2 + model[year][day].f[adn_node_idx, s_m, s_o, p] ** 2) - model[year][day].expected_interface_vmag_sqr[dn, p]) ** 2
+                            obj += model[year][day].penalty_regularization * (model[year][day].pc[adn_load_idx, s_m, s_o, p] - model[year][day].expected_interface_pf_p[dn, p]) ** 2
+                            obj += model[year][day].penalty_regularization * (model[year][day].qc[adn_load_idx, s_m, s_o, p] - model[year][day].expected_interface_pf_q[dn, p]) ** 2
+                            obj += model[year][day].penalty_regularization * (model[year][day].qc[adn_load_idx, s_m, s_o, p] - model[year][day].expected_interface_pf_q[dn, p]) ** 2
+            for e in model[year][day].shared_energy_storages:
+                for s_m in model[year][day].scenarios_market:
+                    for s_o in model[year][day].scenarios_operation:
+                        for p in model[year][day].periods:
+                            obj += model[year][day].penalty_regularization * (model[year][day].shared_es_pnet[e, s_m, s_o, p] - model[year][day].expected_shared_ess_p[e, p]) ** 2
+                            obj += model[year][day].penalty_regularization * (model[year][day].shared_es_qnet[e, s_m, s_o, p] - model[year][day].expected_shared_ess_q[e, p]) ** 2
+
             for dn in model[year][day].active_distribution_networks:
 
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
