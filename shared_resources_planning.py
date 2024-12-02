@@ -613,6 +613,7 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                             obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p] - dso_model[year][day].expected_interface_pf_q[p]) ** 2
                             obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_p[p]) ** 2
                             obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_q[p]) ** 2
+                dso_model[year][day].objective.expr = obj
 
         # Run SMOPF
         results[node_id] = distribution_network.optimize(dso_model)
@@ -1708,7 +1709,6 @@ def _run_operational_planning_without_coordination(planning_problem):
                             obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2 - dso_model[year][day].expected_interface_vmag_sqr[p]) ** 2
                             obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p] - dso_model[year][day].expected_interface_pf_p[p]) ** 2
                             obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p] - dso_model[year][day].expected_interface_pf_q[p]) ** 2
-
                 dso_model[year][day].objective.expr = obj
 
         results['dso'][node_id] = distribution_network.optimize(dso_model)
