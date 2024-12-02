@@ -75,15 +75,20 @@ class NetworkData:
     def process_results(self, model, results=dict()):
         return _process_results(self, model, results)
 
-    def process_results_detailed(self, model, results=dict()):
-        return _process_results_detailed(self, model, results)
-
     def process_results_interface(self, model):
         results = dict()
         for year in self.years:
             results[year] = dict()
             for day in self.days:
                 results[year][day] = self.network[year][day].process_results_interface(model[year][day])
+        return results
+
+    def process_results_summary_detail(self, model):
+        results = dict()
+        for year in self.years:
+            results[year] = dict()
+            for day in self.days:
+                results[year][day] = self.network[year][day].process_results_summary_detail(model[year][day])
         return results
 
     def write_optimization_results_to_excel(self, results, filename=str()):
@@ -139,18 +144,6 @@ def _process_results(network_planning, models, optimization_results):
             result = optimization_results[year][day]
             network = network_planning.network[year][day]
             processed_results['results'][year][day] = network.process_results(model, network_planning.params, result)
-    return processed_results
-
-
-def _process_results_detailed(network_planning, models, optimization_results):
-    processed_results = dict()
-    for year in network_planning.years:
-        processed_results[year] = dict()
-        for day in network_planning.days:
-            model = models[year][day]
-            result = optimization_results[year][day]
-            network = network_planning.network[year][day]
-            processed_results[year][day] = network.process_results_detailed(model, network_planning.params, result)
     return processed_results
 
 

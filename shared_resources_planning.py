@@ -2054,6 +2054,7 @@ def _process_operational_planning_results(operational_planning_problem, tso_mode
     processed_results['dso'] = dict()
     processed_results['esso'] = dict()
     processed_results['interface'] = dict()
+    processed_results['summary_detail'] = dict()
 
     processed_results['tso'] = transmission_network.process_results(tso_model, optimization_results['tso'])
     for node_id in distribution_networks:
@@ -2062,6 +2063,7 @@ def _process_operational_planning_results(operational_planning_problem, tso_mode
         processed_results['dso'][node_id] = distribution_network.process_results(dso_model, optimization_results['dso'][node_id])
     processed_results['esso'] = shared_ess_data.process_results(esso_model)
     processed_results['interface'] = _process_results_interface(operational_planning_problem, tso_model, dso_models)
+    processed_results['summary_detail'] = _process_results_summary_detail(operational_planning_problem, tso_model, dso_models)
 
     return processed_results
 
@@ -2100,6 +2102,21 @@ def _process_results_interface(planning_problem, tso_model, dso_models):
         processed_results['dso'][node_id] = distribution_network.process_results_interface(dso_model)
 
     return processed_results
+
+
+def _process_results_summary_detail(planning_problem, tso_model, dso_models):
+
+    transmission_network = planning_problem.transmission_network
+    distribution_networks = planning_problem.distribution_networks
+
+    processed_results = dict()
+    processed_results['tso'] = dict()
+    processed_results['dso'] = dict()
+
+    processed_results['tso'] = transmission_network.process_results_summary_detail(tso_model)
+
+
+
 
 
 # ======================================================================================================================
