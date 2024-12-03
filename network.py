@@ -202,8 +202,8 @@ class Network:
     def process_results_interface(self, model):
         return _process_results_interface(self, model)
 
-    def process_results_summary_detail(self, model):
-        return _process_results_summary_detail(self, model)
+    def process_results_summary_detail(self, model, params):
+        return _process_results_summary_detail(self, model, params)
 
     def compute_series_admittance(self):
         for branch in self.branches:
@@ -1573,7 +1573,7 @@ def _process_results(network, model, params, results=dict()):
     processed_results['gen_cost'] = _compute_generation_cost(network, model)
     processed_results['total_load'] = _compute_total_load(network, model, params)
     processed_results['total_gen'] = _compute_total_generation(network, model, params)
-    processed_results['total_conventional_gen'] = _compute_conventional_generation(network, model, params)
+    processed_results['total_conventional_gen'] = _compute_conventional_generation(network, model)
     processed_results['total_renewable_gen'] = _compute_renewable_generation(network, model, params)
     processed_results['losses'] = _compute_losses(network, model, params)
     processed_results['gen_curt'] = _compute_generation_curtailment(network, model, params)
@@ -1913,6 +1913,7 @@ def _process_results(network, model, params, results=dict()):
 def _process_results_summary_detail(network, model, params):
 
     results = dict()
+    results['scenarios'] = dict()
 
     for s_m in model.scenarios_market:
 
@@ -1933,10 +1934,12 @@ def _process_results_summary_detail(network, model, params):
             results['scenarios'][s_m][s_o]['cost_flexibility'] = _compute_cost_flexibility_per_scenario(network, model, params, s_m, s_o)
             results['scenarios'][s_m][s_o]['generation'] = _compute_generation_per_scenario(network, model, s_m, s_o)
             results['scenarios'][s_m][s_o]['generation_conventional'] = _compute_conventional_generation_per_scenario(network, model, s_m, s_o)
-            results['scenarios'][s_m][s_o]['generation_conventional_cost'] = _compute_cost_conventional_generation_per_scenario(network, model, s_m, s_o)
+            results['scenarios'][s_m][s_o]['generation_conventional_cost'] = _compute_cost_conventional_generation_per_scenario(network, model, params, s_m, s_o)
             results['scenarios'][s_m][s_o]['generation_renewable'] = _compute_renewable_generation_per_scenario(network, model, params, s_m, s_o)
             results['scenarios'][s_m][s_o]['generation_renewable_curtailed'] = _compute_renewable_generation_curtailed_per_scenario(network, model, params, s_m, s_o)
             results['scenarios'][s_m][s_o]['losses'] = _compute_losses_per_scenario(network, model, params, s_m, s_o)
+
+    return results
 
 
 def _process_results_interface(network, model):
@@ -2154,18 +2157,6 @@ def _compute_objective_function_value_per_scenario(network, model, params, s_m, 
     return obj
 
 
-def _compute_conventional_generation_per_scenario(network, model, s_m, s_o):
-    cost = 0.00
-    for g in model.generators:
-        if network.generators[g].is_controllable():
-            if (not network.is_transmission) and network.generators[g].gen_type == GEN_REFERENCE:
-                continue
-            for p in model.periods:
-                pg = pe.value(model.pg[g, s_m, s_o, p])
-                cost += network.baseMVA * pg
-    return cost
-
-
 def _compute_generation_cost(network, model):
 
     gen_cost = 0.0
@@ -2185,16 +2176,17 @@ def _compute_generation_cost(network, model):
     return gen_cost
 
 
-def _compute_cost_conventional_generation_per_scenario(network, model, s_m, s_o):
+def _compute_cost_conventional_generation_per_scenario(network, model, params, s_m, s_o):
     cost = 0.00
-    c_p = network.cost_energy_p[s_m]
-    for g in model.generators:
-        if network.generators[g].is_controllable():
-            if (not network.is_transmission) and network.generators[g].gen_type == GEN_REFERENCE:
-                continue
-            for p in model.periods:
-                pg = pe.value(model.pg[g, s_m, s_o, p])
-                cost += c_p[s_m][p] * network.baseMVA * pg
+    if params.obj_type == OBJ_MIN_COST:
+        c_p = network.cost_energy_p[s_m]
+        for g in model.generators:
+            if network.generators[g].is_controllable():
+                if (not network.is_transmission) and network.generators[g].gen_type == GEN_REFERENCE:
+                    continue
+                for p in model.periods:
+                    pg = pe.value(model.pg[g, s_m, s_o, p])
+                    cost += c_p[p] * network.baseMVA * pg
     return cost
 
 
@@ -2257,7 +2249,7 @@ def _compute_generation_per_scenario(network, model, s_m, s_o):
     return total_gen
 
 
-def _compute_conventional_generation(network, model, params):
+def _compute_conventional_generation(network, model):
 
     total_gen = {'p': 0.00, 'q': 0.00}
 
@@ -2272,6 +2264,16 @@ def _compute_conventional_generation(network, model, params):
             total_gen['p'] += total_gen_scenario['p'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
             total_gen['q'] += total_gen_scenario['q'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
 
+    return total_gen
+
+
+def _compute_conventional_generation_per_scenario(network, model, s_m, s_o):
+    total_gen = {'p': 0.00, 'q': 0.00}
+    for g in model.generators:
+        if network.generators[g].gen_type == GEN_CONV:
+            for p in model.periods:
+                total_gen['p'] += network.baseMVA * pe.value(model.pg[g, s_m, s_o, p])
+                total_gen['q'] += network.baseMVA * pe.value(model.qg[g, s_m, s_o, p])
     return total_gen
 
 
@@ -2421,12 +2423,13 @@ def _compute_flexibility_per_scenario(network, model, params, s_m, s_o):
 
 def _compute_cost_flexibility_per_scenario(network, model, params, s_m, s_o):
     cost = 0.0
-    c_flex = network.cost_flex[s_m]
-    if params.fl_reg:
-        for c in model.loads:
-            for p in model.periods:
-                cost += c_flex[s_m][p] * pe.value(model.flex_p_up[c, s_m, s_o, p]) * network.baseMVA
-                cost += c_flex[s_m][p] * pe.value(model.flex_p_down[c, s_m, s_o, p]) * network.baseMVA
+    if params.obj_type == OBJ_MIN_COST:
+        c_flex = network.cost_flex[s_m]
+        if params.fl_reg:
+            for c in model.loads:
+                for p in model.periods:
+                    cost += c_flex[p] * pe.value(model.flex_p_up[c, s_m, s_o, p]) * network.baseMVA
+                    cost += c_flex[p] * pe.value(model.flex_p_down[c, s_m, s_o, p]) * network.baseMVA
     return cost
 
 

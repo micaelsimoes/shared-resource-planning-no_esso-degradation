@@ -2076,12 +2076,14 @@ def _process_operational_planning_results_no_coordination(planning_problem, tso_
     processed_results = dict()
     processed_results['tso'] = dict()
     processed_results['dso'] = dict()
+    processed_results['summary_detail'] = dict()
 
     processed_results['tso'] = transmission_network.process_results(tso_model, optimization_results['tso'])
     for node_id in distribution_networks:
         dso_model = dso_models[node_id]
         distribution_network = distribution_networks[node_id]
         processed_results['dso'][node_id] = distribution_network.process_results(dso_model, optimization_results['dso'][node_id])
+    processed_results['summary_detail'] = _process_results_summary_detail(planning_problem, tso_model, dso_models)
 
     return processed_results
 
@@ -2114,9 +2116,12 @@ def _process_results_summary_detail(planning_problem, tso_model, dso_models):
     processed_results['dso'] = dict()
 
     processed_results['tso'] = transmission_network.process_results_summary_detail(tso_model)
+    for node_id in distribution_networks:
+        dso_model = dso_models[node_id]
+        distribution_network = distribution_networks[node_id]
+        processed_results['dso'][node_id] = distribution_network.process_results_summary_detail(dso_model)
 
-
-
+    return processed_results
 
 
 # ======================================================================================================================
@@ -2127,7 +2132,7 @@ def _write_planning_results_to_excel(planning_problem, results, bound_evolution=
     wb = Workbook()
 
     _write_operational_planning_main_info_to_excel(planning_problem, wb, results)
-    _write_operational_planning_main_info_to_excel_detailed(planning_problem, wb, results)
+    _write_operational_planning_main_info_to_excel_detailed(planning_problem, wb, results['summary_detail'])
     _write_shared_ess_specifications(wb, planning_problem.shared_ess_data)
 
     if bound_evolution:
@@ -2217,7 +2222,7 @@ def _write_operational_planning_results_to_excel(planning_problem, results, prim
     wb = Workbook()
 
     _write_operational_planning_main_info_to_excel(planning_problem, wb, results)
-    _write_operational_planning_main_info_to_excel_detailed(planning_problem, wb, results)
+    _write_operational_planning_main_info_to_excel_detailed(planning_problem, wb, results['summary_detail'])
     _write_shared_ess_specifications(wb, planning_problem.shared_ess_data)
     if shared_ess_capacity:
         planning_problem.shared_ess_data.write_ess_capacity_results_to_excel(wb, shared_ess_capacity)
@@ -2262,7 +2267,7 @@ def _write_operational_planning_results_no_coordination_to_excel(planning_proble
     wb = Workbook()
 
     _write_operational_planning_main_info_to_excel(planning_problem, wb, results)
-    _write_operational_planning_main_info_to_excel_detailed(planning_problem, wb, results)
+    _write_operational_planning_main_info_to_excel_detailed(planning_problem, wb, results['summary_detail'])
 
     #  TSO and DSOs' results
     _write_network_voltage_results_to_excel(planning_problem, wb, results)
@@ -2603,14 +2608,28 @@ def _write_operational_planning_main_info_to_excel_detailed(planning_problem, wo
     sheet.cell(row=line_idx, column=6).value = 'Operation Scenario'
     sheet.cell(row=line_idx, column=7).value = 'Probability, [%]'
     sheet.cell(row=line_idx, column=8).value = 'OF Value'
+    sheet.cell(row=line_idx, column=9).value = 'Load, [MWh]'
+    sheet.cell(row=line_idx, column=10).value = 'Load, [MVArh]'
+    sheet.cell(row=line_idx, column=11).value = 'Flexibility used, [MWh]'
+    sheet.cell(row=line_idx, column=12).value = 'Flexibility Cost, [€]'
+    sheet.cell(row=line_idx, column=13).value = 'Generation, [MWh]'
+    sheet.cell(row=line_idx, column=14).value = 'Generation, [MVArh]'
+    sheet.cell(row=line_idx, column=15).value = 'Conventional Generation, [MWh]'
+    sheet.cell(row=line_idx, column=16).value = 'Conventional Generation, [MVArh]'
+    sheet.cell(row=line_idx, column=17).value = 'Conventional Generation Cost, [€]'
+    sheet.cell(row=line_idx, column=18).value = 'Renewable Generation, [MWh]'
+    sheet.cell(row=line_idx, column=19).value = 'Renewable Generation, [MVArh]'
+    sheet.cell(row=line_idx, column=20).value = 'Renewable Generation, [MVAh]'
+    sheet.cell(row=line_idx, column=21).value = 'Renewable Generation Curtailed, [MVAh]'
+    sheet.cell(row=line_idx, column=22).value = 'Losses, [MWh]'
 
     # TSO
     line_idx += 1
-    line_idx = _write_operational_planning_main_info_per_operator_detailed(planning_problem.transmission_network, sheet, 'TSO', line_idx, results['tso']['results'])
+    line_idx = _write_operational_planning_main_info_per_operator_detailed(planning_problem.transmission_network, sheet, 'TSO', line_idx, results['tso'])
 
     # DSOs
     for tn_node_id in results['dso']:
-        dso_results = results['dso'][tn_node_id]['results']
+        dso_results = results['dso'][tn_node_id]
         distribution_network = planning_problem.distribution_networks[tn_node_id]
         line_idx = _write_operational_planning_main_info_per_operator_detailed(distribution_network, sheet, 'DSO', line_idx, dso_results, tn_node_id=tn_node_id)
 
@@ -2623,8 +2642,8 @@ def _write_operational_planning_main_info_per_operator_detailed(network, sheet, 
     sheet.cell(row=line_idx, column=1).value = operator_type
     for year in results:
         for day in results[year]:
-            for s_m in results[year][day]['detailed']['obj']['scenarios']:
-                for s_o in results[year][day]['detailed']['obj']['scenarios'][s_m]:
+            for s_m in results[year][day]['scenarios']:
+                for s_o in results[year][day]['scenarios'][s_m]:
 
                     sheet.cell(row=line_idx, column=1).value = operator_type
                     sheet.cell(row=line_idx, column=2).value = tn_node_id
@@ -2632,10 +2651,58 @@ def _write_operational_planning_main_info_per_operator_detailed(network, sheet, 
                     sheet.cell(row=line_idx, column=4).value = day
                     sheet.cell(row=line_idx, column=5).value = s_m
                     sheet.cell(row=line_idx, column=6).value = s_o
-                    sheet.cell(row=line_idx, column=7).value = results[year][day]['detailed']['obj']['scenarios'][s_m][s_o]['probability']
+
+                    # Probability, [%]
+                    sheet.cell(row=line_idx, column=7).value = results[year][day]['scenarios'][s_m][s_o]['probability']
                     sheet.cell(row=line_idx, column=7).number_format = percent_style
-                    sheet.cell(row=line_idx, column=8).value = results[year][day]['detailed']['obj']['scenarios'][s_m][s_o]['value']
+
+                    # OF
+                    sheet.cell(row=line_idx, column=8).value = results[year][day]['scenarios'][s_m][s_o]['obj']
                     sheet.cell(row=line_idx, column=8).number_format = decimal_style
+
+                    # Load
+                    sheet.cell(row=line_idx, column=9).value = results[year][day]['scenarios'][s_m][s_o]['load']['p']
+                    sheet.cell(row=line_idx, column=9).number_format = decimal_style
+                    sheet.cell(row=line_idx, column=10).value = results[year][day]['scenarios'][s_m][s_o]['load']['q']
+                    sheet.cell(row=line_idx, column=10).number_format = decimal_style
+
+                    # Flexibility, [MWh]
+                    sheet.cell(row=line_idx, column=11).value = results[year][day]['scenarios'][s_m][s_o]['flexibility']
+                    sheet.cell(row=line_idx, column=11).number_format = decimal_style
+
+                    # Flexibility Cost, [€]
+                    sheet.cell(row=line_idx, column=12).value = results[year][day]['scenarios'][s_m][s_o]['cost_flexibility']
+                    sheet.cell(row=line_idx, column=12).number_format = decimal_style
+
+                    # Generation
+                    sheet.cell(row=line_idx, column=13).value = results[year][day]['scenarios'][s_m][s_o]['generation']['p']
+                    sheet.cell(row=line_idx, column=13).number_format = decimal_style
+                    sheet.cell(row=line_idx, column=14).value = results[year][day]['scenarios'][s_m][s_o]['generation']['q']
+                    sheet.cell(row=line_idx, column=14).number_format = decimal_style
+
+                    # Conventional Generation
+                    sheet.cell(row=line_idx, column=15).value = results[year][day]['scenarios'][s_m][s_o]['generation_conventional']['p']
+                    sheet.cell(row=line_idx, column=15).number_format = decimal_style
+                    sheet.cell(row=line_idx, column=16).value = results[year][day]['scenarios'][s_m][s_o]['generation_conventional']['q']
+                    sheet.cell(row=line_idx, column=16).number_format = decimal_style
+
+                    # Conventional Generation Cost
+                    sheet.cell(row=line_idx, column=17).value = results[year][day]['scenarios'][s_m][s_o]['generation_conventional_cost']
+                    sheet.cell(row=line_idx, column=17).number_format = decimal_style
+
+                    # Renewable Generation
+                    sheet.cell(row=line_idx, column=18).value = results[year][day]['scenarios'][s_m][s_o]['generation_renewable']['p']
+                    sheet.cell(row=line_idx, column=18).number_format = decimal_style
+                    sheet.cell(row=line_idx, column=19).value = results[year][day]['scenarios'][s_m][s_o]['generation_renewable']['q']
+                    sheet.cell(row=line_idx, column=19).number_format = decimal_style
+                    sheet.cell(row=line_idx, column=20).value = results[year][day]['scenarios'][s_m][s_o]['generation_renewable']['s']
+                    sheet.cell(row=line_idx, column=20).number_format = decimal_style
+                    sheet.cell(row=line_idx, column=21).value = results[year][day]['scenarios'][s_m][s_o]['generation_renewable_curtailed']['s']
+                    sheet.cell(row=line_idx, column=21).number_format = decimal_style
+
+                    # Losses
+                    sheet.cell(row=line_idx, column=22).value = results[year][day]['scenarios'][s_m][s_o]['losses']
+                    sheet.cell(row=line_idx, column=22).number_format = decimal_style
 
                     line_idx += 1
 
