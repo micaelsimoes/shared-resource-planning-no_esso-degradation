@@ -6,7 +6,6 @@
 	"rg_curt": true,
 	"l_curt": false,
 	"enforce_vg": false,
-	"relax_equalities": true,
 	"branch_limit_type": "MIXED",
 	"slacks": {
 		"grid_operation": {
@@ -22,13 +21,9 @@
 			"day_balance": false
 		},
 		"shared_ess": {
-			"complementarity": false,
+			"complementarity": true,
 			"charging": false,
 			"day_balance": false
-		},
-		"expected_values": {
-			"interface" : false,
-			"shared_ess": false
 		},
 		"node_balance": false
 	},
