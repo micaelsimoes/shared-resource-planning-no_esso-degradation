@@ -46,6 +46,10 @@ class Network:
         _pre_process_network(self)
         return _build_model(self, params)
 
+    def build_model_v2(self, params):
+        _pre_process_network(self)
+        return _build_model_v2(self, params)
+
     def run_smopf(self, model, params, from_warm_start=False):
         return _run_smopf(self, model, params, from_warm_start=from_warm_start)
 
@@ -1130,6 +1134,593 @@ def _build_model(network, params):
     model.dual = pe.Suffix(direction=pe.Suffix.IMPORT_EXPORT)  # Obtain dual solutions from previous solve and send to warm start
 
     return model
+
+
+def _build_model_v2(network, params):
+
+    network.compute_series_admittance()
+
+    model = pe.ConcreteModel()
+    model.name = network.name
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # Sets
+    model.periods = range(network.num_instants)
+    model.scenarios_market = range(len(network.prob_market_scenarios))
+    model.scenarios_operation = range(len(network.prob_operation_scenarios))
+    model.nodes = range(len(network.nodes))
+    model.loads = range(len(network.loads))
+    model.generators = range(len(network.generators))
+    model.branches = range(len(network.branches))
+    model.energy_storages = range(len(network.energy_storages))
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # Decision variables
+    # - Voltage
+    model.e = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.0)
+    model.f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+    for i in model.nodes:
+        node = network.nodes[i]
+        e_lb, e_ub = -node.v_max, node.v_max
+        f_lb, f_ub = -node.v_max, node.v_max
+        for s_m in model.scenarios_market:
+            for s_o in model.scenarios_operation:
+                for p in model.periods:
+                    if node.type == BUS_REF:
+                        if network.is_transmission:
+                            model.e[i, s_m, s_o, p].setub(e_ub)
+                            model.e[i, s_m, s_o, p].setlb(e_lb)
+                        else:
+                            ref_gen_idx = network.get_gen_idx(node.bus_i)
+                            vg = network.generators[ref_gen_idx].vg
+                            model.e[i, s_m, s_o, p].fix(vg)
+                        model.f[i, s_m, s_o, p].fix(0.00)
+                    else:
+                        model.e[i, s_m, s_o, p].setub(e_ub)
+                        model.e[i, s_m, s_o, p].setlb(e_lb)
+                        model.f[i, s_m, s_o, p].setub(f_ub)
+                        model.f[i, s_m, s_o, p].setlb(f_lb)
+
+    # - Generation
+    model.pg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+    model.qg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+    for g in model.generators:
+        generator = network.generators[g]
+        pg_ub, pg_lb = generator.pmax, generator.pmin
+        qg_ub, qg_lb = generator.qmax, generator.qmin
+        for s_m in model.scenarios_market:
+            for s_o in model.scenarios_operation:
+                for p in model.periods:
+                    if generator.status[p]:
+                        model.pg[g, s_m, s_o, p] = max(pg_lb, 0.00)
+                        model.qg[g, s_m, s_o, p] = max(qg_lb, 0.00)
+                        model.pg[g, s_m, s_o, p].setub(pg_ub)
+                        model.pg[g, s_m, s_o, p].setlb(pg_lb)
+                        model.qg[g, s_m, s_o, p].setub(qg_ub)
+                        model.qg[g, s_m, s_o, p].setlb(qg_lb)
+                    else:
+                        model.pg[g, s_m, s_o, p].fix(0.00)
+                        model.qg[g, s_m, s_o, p].fix(0.00)
+    if params.rg_curt:
+        model.sg_abs = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.sg_sqr = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.sg_curt = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        for g in model.generators:
+            generator = network.generators[g]
+            for s_m in model.scenarios_market:
+                for s_o in model.scenarios_operation:
+                    for p in model.periods:
+                        if generator.is_curtaillable():
+                            # - Renewable Generation
+                            init_sg = 0.0
+                            if generator.status[p]:
+                                init_sg = sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
+                            model.sg_abs[g, s_m, s_o, p].setub(init_sg)
+                            model.sg_sqr[g, s_m, s_o, p].setub(init_sg ** 2)
+                            model.sg_curt[g, s_m, s_o, p].setub(init_sg)
+                        else:
+                            model.sg_abs[g, s_m, s_o, p].fix(0.00)
+                            model.sg_sqr[g, s_m, s_o, p].fix(0.00)
+                            model.sg_curt[g, s_m, s_o, p].fix(0.00)
+
+    # - Branch power flows (squared) -- used in branch limits
+    model.flow_ij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    if params.slacks.grid_operation.branch_flow:
+        model.slack_flow_ij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    for b in model.branches:
+        for s_m in model.scenarios_market:
+            for s_o in model.scenarios_operation:
+                for p in model.periods:
+                    if network.branches[b].status:
+                        if params.slacks.grid_operation.branch_flow:
+                            rating = network.branches[b].rate / network.baseMVA
+                            model.slack_flow_ij_sqr[b, s_m, s_o, p].setub(SIJ_VIOLATION_ALLOWED * rating)
+                    else:
+                        model.flow_ij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                        if params.slacks.grid_operation.branch_flow:
+                            model.slack_flow_ij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
+
+# - Loads
+    model.pc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
+    model.qc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
+    for c in model.loads:
+        load = network.loads[c]
+        for s_m in model.scenarios_market:
+            for s_o in model.scenarios_operation:
+                for p in model.periods:
+                    model.pc[c, s_m, s_o, p].fix(load.pd[s_o][p])
+                    model.qc[c, s_m, s_o, p].fix(load.qd[s_o][p] + SMALL_TOLERANCE)
+    if params.fl_reg:
+        model.flex_p_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.flex_p_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        for c in model.loads:
+            load = network.loads[c]
+            for s_m in model.scenarios_market:
+                for s_o in model.scenarios_operation:
+                    for p in model.periods:
+                        if load.fl_reg:
+                            flex_up = load.flexibility.upward[p]
+                            flex_down = load.flexibility.downward[p]
+                            model.flex_p_up[c, s_m, s_o, p].setub(abs(flex_up))
+                            model.flex_p_down[c, s_m, s_o, p].setub(abs(flex_down))
+                        else:
+                            model.flex_p_up[c, s_m, s_o, p].fix(0.00)
+                            model.flex_p_down[c, s_m, s_o, p].fix(0.00)
+
+    # - Transformers
+    model.r = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0)
+    for i in model.branches:
+        branch = network.branches[i]
+        for s_m in model.scenarios_market:
+            for s_o in model.scenarios_operation:
+                for p in model.periods:
+                    if branch.is_transformer:
+                        # - Transformer
+                        if params.transf_reg and branch.vmag_reg:
+                            model.r[i, s_m, s_o, p].setub(TRANSFORMER_MAXIMUM_RATIO)
+                            model.r[i, s_m, s_o, p].setlb(TRANSFORMER_MINIMUM_RATIO)
+                        else:
+                            model.r[i, s_m, s_o, p].fix(branch.ratio)
+                    else:
+                        model.r[i, s_m, s_o, p].fix(1.00)
+
+    # - Energy Storage devices
+    if params.es_reg:
+        model.es_soc = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.es_sch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.es_pch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.es_qch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+        model.es_sdch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.es_pdch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.es_qdch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+        for e in model.energy_storages:
+            energy_storage = network.energy_storages[e]
+            for s_m in model.scenarios_market:
+                for s_o in model.scenarios_operation:
+                    for p in model.periods:
+                        model.es_soc[e, s_m, s_o, p] = energy_storage.e_init
+                        model.es_soc[e, s_m, s_o, p].setlb(energy_storage.e_min)
+                        model.es_soc[e, s_m, s_o, p].setub(energy_storage.e_max)
+                        model.es_sch[e, s_m, s_o, p].setub(energy_storage.s)
+                        model.es_pch[e, s_m, s_o, p].setub(energy_storage.s)
+                        model.es_qch[e, s_m, s_o, p].setub(energy_storage.s)
+                        model.es_qch[e, s_m, s_o, p].setlb(-energy_storage.s)
+                        model.es_sdch[e, s_m, s_o, p].setub(energy_storage.s)
+                        model.es_pdch[e, s_m, s_o, p].setub(energy_storage.s)
+                        model.es_qdch[e, s_m, s_o, p].setub(energy_storage.s)
+                        model.es_qdch[e, s_m, s_o, p].setlb(-energy_storage.s)
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # Constraints
+    # - Voltage
+    model.voltage_cons = pe.ConstraintList()
+    for i in model.nodes:
+        node = network.nodes[i]
+        for s_m in model.scenarios_market:
+            for s_o in model.scenarios_operation:
+                for p in model.periods:
+
+                    # voltage magnitude constraints
+                    if node.type == BUS_PV:
+                        if params.enforce_vg:
+                            # - Enforce voltage controlled bus
+                            gen_idx = network.get_gen_idx(node.bus_i)
+                            vg = network.generators[gen_idx].vg
+                            e = model.e[i, s_m, s_o, p]
+                            f = model.f[i, s_m, s_o, p]
+                            model.voltage_cons.add(e ** 2 + f ** 2 == vg[p] ** 2)
+                        else:
+                            # - Voltage at the bus is not controlled
+                            e = model.e[i, s_m, s_o, p]
+                            f = model.f[i, s_m, s_o, p]
+                            model.voltage_cons.add(e ** 2 + f ** 2 >= node.v_min**2)
+                            model.voltage_cons.add(e ** 2 + f ** 2 <= node.v_max**2)
+                    else:
+                        e = model.e[i, s_m, s_o, p]
+                        f = model.f[i, s_m, s_o, p]
+                        model.voltage_cons.add(e ** 2 + f ** 2 >= node.v_min**2)
+                        model.voltage_cons.add(e ** 2 + f ** 2 <= node.v_max**2)
+
+    model.generation_apparent_power = pe.ConstraintList()
+    model.generation_power_factor = pe.ConstraintList()
+    if params.rg_curt:
+        for g in model.generators:
+            generator = network.generators[g]
+            for s_m in model.scenarios_market:
+                for s_o in model.scenarios_operation:
+                    for p in model.periods:
+                        if generator.is_curtaillable():
+                            init_sg = 0.0
+                            if generator.status[p]:
+                                init_sg = sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
+                            model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] == model.pg[g, s_m, s_o, p] ** 2 + model.qg[g, s_m, s_o, p] ** 2)
+                            model.generation_apparent_power.add(model.sg_abs[g, s_m, s_o, p] ** 2 == model.sg_sqr[g, s_m, s_o, p])
+                            model.generation_apparent_power.add(model.sg_abs[g, s_m, s_o, p] == init_sg - model.sg_curt[g, s_m, s_o, p])
+                            if generator.power_factor_control:
+                                # Power factor control, variable phi
+                                max_phi = acos(generator.max_pf)
+                                min_phi = acos(generator.min_pf)
+                                model.generation_power_factor.add(model.qg[g, s_m, s_o, p] <= tan(max_phi) * model.pg[g, s_m, s_o, p])
+                                model.generation_power_factor.add(model.qg[g, s_m, s_o, p] >= tan(min_phi) * model.pg[g, s_m, s_o, p])
+                            else:
+                                # No power factor control, maintain given phi
+                                phi = atan2(generator.qg[s_o][p], generator.pg[s_o][p])
+                                model.generation_power_factor.add(model.qg[g, s_m, s_o, p] <= tan(phi) * model.pg[g, s_m, s_o, p] + SMALL_TOLERANCE)
+                                model.generation_power_factor.add(model.qg[g, s_m, s_o, p] >= tan(phi) * model.pg[g, s_m, s_o, p] - SMALL_TOLERANCE)
+
+    # - Flexible Loads -- Daily energy balance
+    if params.fl_reg:
+        model.fl_p_balance = pe.ConstraintList()
+        for c in model.loads:
+            if network.loads[c].fl_reg:
+                for s_m in model.scenarios_market:
+                    for s_o in model.scenarios_operation:
+                        p_up, p_down = 0.0, 0.0
+                        for p in model.periods:
+                            p_up += model.flex_p_up[c, s_m, s_o, p]
+                            p_down += model.flex_p_down[c, s_m, s_o, p]
+                        model.fl_p_balance.add(p_up == p_down)
+
+    # - Energy Storage constraints
+    if params.es_reg:
+
+        model.energy_storage_balance = pe.ConstraintList()
+        model.energy_storage_operation = pe.ConstraintList()
+        model.energy_storage_day_balance = pe.ConstraintList()
+        model.energy_storage_ch_dch_exclusion = pe.ConstraintList()
+
+        for e in model.energy_storages:
+
+            energy_storage = network.energy_storages[e]
+            soc_init = energy_storage.e_init
+            soc_final = energy_storage.e_init
+            eff_charge = energy_storage.eff_ch
+            eff_discharge = energy_storage.eff_dch
+            max_phi = acos(energy_storage.max_pf)
+            min_phi = acos(energy_storage.min_pf)
+
+            for s_m in model.scenarios_market:
+                for s_o in model.scenarios_operation:
+                    for p in model.periods:
+
+                        sch = model.es_sch[e, s_m, s_o, p]
+                        pch = model.es_pch[e, s_m, s_o, p]
+                        qch = model.es_qch[e, s_m, s_o, p]
+                        sdch = model.es_sdch[e, s_m, s_o, p]
+                        pdch = model.es_pdch[e, s_m, s_o, p]
+                        qdch = model.es_qdch[e, s_m, s_o, p]
+
+                        # ESS operation
+                        model.energy_storage_operation.add(qch <= tan(max_phi) * pch)
+                        model.energy_storage_operation.add(qch >= tan(min_phi) * pch)
+                        model.energy_storage_operation.add(qdch <= tan(max_phi) * pdch)
+                        model.energy_storage_operation.add(qdch >= tan(min_phi) * pdch)
+
+                        # Charging/discharging complementarity constraints
+                        model.energy_storage_ch_dch_exclusion.add(sch * sdch == 0.00)
+
+                        # State-of-Charge
+                        soc_prev = soc_init
+                        if p > 0:
+                            soc_prev = model.es_soc[e, s_m, s_o, p - 1]
+                        model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] == soc_prev + (sch * eff_charge - sdch / eff_discharge))
+
+                    model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final)
+
+    # - Node Balance constraints
+    model.node_balance_cons_p = pe.ConstraintList()
+    model.node_balance_cons_q = pe.ConstraintList()
+    for s_m in model.scenarios_market:
+        for s_o in model.scenarios_operation:
+            for p in model.periods:
+                for i in range(len(network.nodes)):
+
+                    node = network.nodes[i]
+                    ei = model.e[i, s_m, s_o, p]
+                    fi = model.f[i, s_m, s_o, p]
+
+                    Pd = 0.00
+                    Qd = 0.00
+                    for c in model.loads:
+                        if network.loads[c].bus == node.bus_i:
+                            Pd += model.pc[c, s_m, s_o, p]
+                            Qd += model.qc[c, s_m, s_o, p]
+                            if params.fl_reg and network.loads[c].fl_reg:
+                                Pd += (model.flex_p_up[c, s_m, s_o, p] - model.flex_p_down[c, s_m, s_o, p])
+                    if params.es_reg:
+                        for e in model.energy_storages:
+                            if network.energy_storages[e].bus == node.bus_i:
+                                Pd += (model.es_pch[e, s_m, s_o, p] - model.es_pdch[e, s_m, s_o, p])
+                                Qd += (model.es_qch[e, s_m, s_o, p] - model.es_qdch[e, s_m, s_o, p])
+
+                    Pg = 0.0
+                    Qg = 0.0
+                    for g in model.generators:
+                        generator = network.generators[g]
+                        if generator.bus == node.bus_i:
+                            Pg += model.pg[g, s_m, s_o, p]
+                            Qg += model.qg[g, s_m, s_o, p]
+
+                    Pi = node.gs * (ei ** 2 + fi ** 2)
+                    Qi = -node.bs * (ei ** 2 + fi ** 2)
+                    for b in range(len(network.branches)):
+                        branch = network.branches[b]
+                        if branch.fbus == node.bus_i or branch.tbus == node.bus_i:
+
+                            rij = model.r[b, s_m, s_o, p]
+
+                            if branch.fbus == node.bus_i:
+                                fnode_idx = network.get_node_idx(branch.fbus)
+                                tnode_idx = network.get_node_idx(branch.tbus)
+
+                                ei = model.e[fnode_idx, s_m, s_o, p]
+                                fi = model.f[fnode_idx, s_m, s_o, p]
+                                ej = model.e[tnode_idx, s_m, s_o, p]
+                                fj = model.f[tnode_idx, s_m, s_o, p]
+
+                                Pi += branch.g * (ei ** 2 + fi ** 2) * rij ** 2
+                                Pi -= rij * (branch.g * (ei * ej + fi * fj) + branch.b * (fi * ej - ei * fj))
+                                Qi -= (branch.b + branch.b_sh * 0.5) * (ei ** 2 + fi ** 2) * rij ** 2
+                                Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
+                            else:
+                                fnode_idx = network.get_node_idx(branch.tbus)
+                                tnode_idx = network.get_node_idx(branch.fbus)
+
+                                ei = model.e[fnode_idx, s_m, s_o, p]
+                                fi = model.f[fnode_idx, s_m, s_o, p]
+                                ej = model.e[tnode_idx, s_m, s_o, p]
+                                fj = model.f[tnode_idx, s_m, s_o, p]
+
+                                Pi += branch.g * (ei ** 2 + fi ** 2)
+                                Pi -= rij * (branch.g * (ei * ej + fi * fj) + branch.b * (fi * ej - ei * fj))
+                                Qi -= (branch.b + branch.b_sh * 0.5) * (ei ** 2 + fi ** 2)
+                                Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
+
+                    model.node_balance_cons_p.add(Pi == Pg - Pd)
+                    model.node_balance_cons_q.add(Qi == Qd - Qg)
+
+    # - Branch Power Flow constraints (current)
+    model.branch_power_flow_cons = pe.ConstraintList()
+    model.branch_power_flow_lims = pe.ConstraintList()
+    for s_m in model.scenarios_market:
+        for s_o in model.scenarios_operation:
+            for p in model.periods:
+                for b in model.branches:
+
+                    branch = network.branches[b]
+                    rating = branch.rate / network.baseMVA
+                    if rating == 0.0:
+                        rating = BRANCH_UNKNOWN_RATING
+                    fnode_idx = network.get_node_idx(branch.fbus)
+                    tnode_idx = network.get_node_idx(branch.tbus)
+
+                    rij = model.r[b, s_m, s_o, p]
+                    ei = model.e[fnode_idx, s_m, s_o, p]
+                    fi = model.f[fnode_idx, s_m, s_o, p]
+                    ej = model.e[tnode_idx, s_m, s_o, p]
+                    fj = model.f[tnode_idx, s_m, s_o, p]
+
+                    flow_ij_sqr = 0.00
+
+                    if params.branch_limit_type == BRANCH_LIMIT_CURRENT:
+
+                        bij_sh = branch.b_sh * 0.50
+
+                        iij_sqr = (branch.g ** 2 + branch.b ** 2) * (((rij ** 2) * ei - rij * ej) ** 2 + ((rij ** 2) * fi - rij * fj) ** 2)
+                        iij_sqr += bij_sh ** 2 * (ei ** 2 + fi ** 2)
+                        iij_sqr += 2 * branch.g * bij_sh * (((rij ** 2) * fi - rij * fj) * ei - ((rij ** 2) * ei - rij * ej) * fi)
+                        iij_sqr += 2 * branch.b * bij_sh * (((rij ** 2) * ei - rij * ej) * ei + ((rij ** 2) * fi - rij * fj) * fi)
+                        flow_ij_sqr = iij_sqr
+
+                        # Previous (approximation?)
+                        # iji_sqr = (branch.g ** 2 + branch.b ** 2) * ((ej - rij * ei) ** 2 + (fj - rij * fi) ** 2)
+                        # iji_sqr += bij_sh ** 2 * (ej ** 2 + fj ** 2)
+                        # iji_sqr += 2 * branch.g * bij_sh * ((fj - rij * fi) * ej - (ej - rij * ei) * fj)
+                        # iji_sqr += 2 * branch.b * bij_sh * ((ej - rij * ei) * ej + (fj - rij * fi) * fj)
+
+                    elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
+
+                        pij = branch.g * (ei ** 2 + fi ** 2) * rij ** 2
+                        pij -= branch.g * (ei * ej + fi * fj) * rij
+                        pij -= branch.b * (fi * ej - ei * fj) * rij
+                        qij = - (branch.b + branch.b_sh * 0.50) * (ei ** 2 + fi ** 2) * rij ** 2
+                        qij += branch.b * (ei * ej + fi * fj) * rij
+                        qij -= branch.g * (fi * ej - ei * fj) * rij
+                        sij_sqr = pij ** 2 + qij ** 2
+                        flow_ij_sqr = sij_sqr
+
+                        # Without rij
+                        # pji = branch.g * (ej ** 2 + fj ** 2)
+                        # pji -= branch.g * (ej * ei + fj * fi) * rij
+                        # pji -= branch.b * (fj * ei - ej * fi) * rij
+                        # qji = - (branch.b + branch.b_sh * 0.50) * (ej ** 2 + fj ** 2)
+                        # qji += branch.b * (ej * ei + fj * fi) * rij
+                        # qji -= branch.g * (fj * ei - ej * fi) * rij
+                        # sji_sqr = pji ** 2 + qji ** 2
+
+                    elif params.branch_limit_type == BRANCH_LIMIT_MIXED:
+
+                        if branch.is_transformer:
+                            pij = branch.g * (ei ** 2 + fi ** 2) * rij ** 2
+                            pij -= branch.g * (ei * ej + fi * fj) * rij
+                            pij -= branch.b * (fi * ej - ei * fj) * rij
+                            qij = - (branch.b + branch.b_sh * 0.50) * (ei ** 2 + fi ** 2) * rij ** 2
+                            qij += branch.b * (ei * ej + fi * fj) * rij
+                            qij -= branch.g * (fi * ej - ei * fj) * rij
+                            sij_sqr = pij ** 2 + qij ** 2
+                            flow_ij_sqr = sij_sqr
+                        else:
+                            bij_sh = branch.b_sh * 0.50
+                            iij_sqr = (branch.g ** 2 + branch.b ** 2) * (((rij ** 2) * ei - rij * ej) ** 2 + ((rij ** 2) * fi - rij * fj) ** 2)
+                            iij_sqr += bij_sh ** 2 * (ei ** 2 + fi ** 2)
+                            iij_sqr += 2 * branch.g * bij_sh * (((rij ** 2) * fi - rij * fj) * ei - ((rij ** 2) * ei - rij * ej) * fi)
+                            iij_sqr += 2 * branch.b * bij_sh * (((rij ** 2) * ei - rij * ej) * ei + ((rij ** 2) * fi - rij * fj) * fi)
+                            flow_ij_sqr = iij_sqr
+
+                    # Flow_ij, definition
+                    model.branch_power_flow_cons.add(model.flow_ij_sqr[b, s_m, s_o, p] == flow_ij_sqr)
+
+                    # Branch flow limits
+                    if branch.status:
+                        if params.slacks.grid_operation.branch_flow:
+                            model.branch_power_flow_lims.add(model.flow_ij_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_flow_ij_sqr[b, s_m, s_o, p])
+                        else:
+                            model.branch_power_flow_lims.add(model.flow_ij_sqr[b, s_m, s_o, p] <= rating ** 2)
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # Costs (penalties)
+    # Note: defined as variables (bus fixed) so that they can be changed later, if needed
+    model.penalty_ess_usage = pe.Var(domain=pe.NonNegativeReals)
+    model.penalty_ess_usage.fix(PENALTY_ESS_USAGE)
+    if params.obj_type == OBJ_MIN_COST:
+        model.cost_res_curtailment = pe.Var(domain=pe.NonNegativeReals)
+        model.cost_load_curtailment = pe.Var(domain=pe.NonNegativeReals)
+        model.cost_res_curtailment.fix(COST_GENERATION_CURTAILMENT)
+        model.cost_load_curtailment.fix(COST_CONSUMPTION_CURTAILMENT)
+    elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
+        model.penalty_gen_curtailment = pe.Var(domain=pe.NonNegativeReals)
+        model.penalty_load_curtailment = pe.Var(domain=pe.NonNegativeReals)
+        model.penalty_flex_usage = pe.Var(domain=pe.NonNegativeReals)
+        model.penalty_gen_curtailment.fix(PENALTY_GENERATION_CURTAILMENT)
+        model.penalty_load_curtailment.fix(PENALTY_LOAD_CURTAILMENT)
+        model.penalty_flex_usage.fix(PENALTY_FLEXIBILITY_USAGE)
+    else:
+        print(f'[ERROR] Unrecognized or invalid objective. Objective = {params.obj_type}. Exiting...')
+        exit(ERROR_NETWORK_MODEL)
+
+    # Objective Function
+    obj = 0.0
+    if params.obj_type == OBJ_MIN_COST:
+
+        # Cost minimization
+        c_p = network.cost_energy_p
+        c_flex = network.cost_flex
+        for s_m in model.scenarios_market:
+            omega_market = network.prob_market_scenarios[s_m]
+            for s_o in model.scenarios_operation:
+
+                obj_scenario = 0.0
+                omega_oper = network.prob_operation_scenarios[s_o]
+
+                # Generation
+                for g in model.generators:
+                    if network.generators[g].is_controllable():
+                        if (not network.is_transmission) and network.generators[g].gen_type == GEN_REFERENCE:
+                            continue
+                        for p in model.periods:
+                            pg = model.pg[g, s_m, s_o, p]
+                            obj_scenario += c_p[s_m][p] * network.baseMVA * pg
+
+                # Demand side flexibility
+                if params.fl_reg:
+                    for c in model.loads:
+                        for p in model.periods:
+                            flex_p_up = model.flex_p_up[c, s_m, s_o, p]
+                            flex_p_down = model.flex_p_down[c, s_m, s_o, p]
+                            obj_scenario += c_flex[s_m][p] * network.baseMVA * (flex_p_down + flex_p_up)
+
+                # Generation curtailment
+                if params.rg_curt:
+                    for g in model.generators:
+                        if network.generators[g].is_curtaillable():
+                            for p in model.periods:
+                                sg_curt = model.sg_curt[g, s_m, s_o, p]
+                                obj_scenario += model.cost_res_curtailment * network.baseMVA * sg_curt
+
+                # ESS utilization
+                if params.es_reg:
+                    for e in model.energy_storages:
+                        for p in model.periods:
+                            sch = model.es_sch[e, s_m, s_o, p]
+                            sdch = model.es_sdch[e, s_m, s_o, p]
+                            obj_scenario += model.penalty_ess_usage * network.baseMVA * (sch + sdch)
+
+                obj += obj_scenario * omega_market * omega_oper
+    elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
+
+        # Congestion Management
+        for s_m in model.scenarios_market:
+
+            omega_market = network.prob_market_scenarios[s_m]
+
+            for s_o in model.scenarios_operation:
+
+                omega_oper = network.prob_operation_scenarios[s_o]
+
+                obj_scenario = 0.0
+
+                # Generation curtailment
+                # if params.rg_curt:
+                #     for g in model.generators:
+                #         for p in model.periods:
+                #             sg_curt = model.sg_curt[g, s_m, s_o, p]
+                #             obj_scenario += model.penalty_gen_curtailment * network.baseMVA * sg_curt
+
+                # Demand side flexibility
+                if params.fl_reg:
+                    for c in model.loads:
+                        for p in model.periods:
+                            flex_p_up = model.flex_p_up[c, s_m, s_o, p]
+                            flex_p_down = model.flex_p_down[c, s_m, s_o, p]
+                            obj_scenario += model.penalty_flex_usage * network.baseMVA * (flex_p_down + flex_p_up)
+
+                # ESS utilization
+                if params.es_reg:
+                    for e in model.energy_storages:
+                        for p in model.periods:
+                            sch = model.es_sch[e, s_m, s_o, p]
+                            sdch = model.es_sdch[e, s_m, s_o, p]
+                            obj_scenario += model.penalty_ess_usage * network.baseMVA * (sch + sdch)
+
+                obj += obj_scenario * omega_market * omega_oper
+
+    # Slacks grid operation
+    for s_m in model.scenarios_market:
+
+        omega_market = network.prob_market_scenarios[s_m]
+
+        for s_o in model.scenarios_operation:
+
+            omega_oper = network.prob_operation_scenarios[s_o]
+
+            # Branch power flow slacks
+            if params.slacks.grid_operation.branch_flow:
+                for b in model.branches:
+                    for p in model.periods:
+                        slack_flow_ij_sqr = (model.slack_flow_ij_sqr[b, s_m, s_o, p])
+                        obj += PENALTY_CURRENT * network.baseMVA * omega_market * omega_oper * slack_flow_ij_sqr
+
+    model.objective = pe.Objective(sense=pe.minimize, expr=obj)
+
+    # Model suffixes (used for warm start)
+    model.ipopt_zL_out = pe.Suffix(direction=pe.Suffix.IMPORT)  # Ipopt bound multipliers (obtained from solution)
+    model.ipopt_zU_out = pe.Suffix(direction=pe.Suffix.IMPORT)
+    model.ipopt_zL_in = pe.Suffix(direction=pe.Suffix.EXPORT)  # Ipopt bound multipliers (sent to solver)
+    model.ipopt_zU_in = pe.Suffix(direction=pe.Suffix.EXPORT)
+    model.dual = pe.Suffix(direction=pe.Suffix.IMPORT_EXPORT)  # Obtain dual solutions from previous solve and send to warm start
+
+    return model
+
 
 
 def _run_smopf(network, model, params, from_warm_start=False):
