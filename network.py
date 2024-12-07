@@ -1153,12 +1153,15 @@ def _build_model_v2(network, params):
     model.generators = range(len(network.generators))
     model.branches = range(len(network.branches))
     model.energy_storages = range(len(network.energy_storages))
+    model.shared_energy_storages = range(len(network.shared_energy_storages))
 
     # ------------------------------------------------------------------------------------------------------------------
     # Decision variables
     # - Voltage
     model.e = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.0)
     model.f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+    model.e_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.0)
+    model.f_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     for i in model.nodes:
         node = network.nodes[i]
         e_lb, e_ub = -node.v_max, node.v_max
@@ -1320,6 +1323,9 @@ def _build_model_v2(network, params):
             for s_o in model.scenarios_operation:
                 for p in model.periods:
 
+                    model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] == model.e[i, s_m, s_o, p])
+                    model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] == model.f[i, s_m, s_o, p])
+
                     # voltage magnitude constraints
                     if node.type == BUS_PV:
                         if params.enforce_vg:
@@ -1468,6 +1474,8 @@ def _build_model_v2(network, params):
                         if branch.fbus == node.bus_i or branch.tbus == node.bus_i:
 
                             rij = model.r[b, s_m, s_o, p]
+                            if not branch.is_transformer:
+                                rij = 1.00
 
                             if branch.fbus == node.bus_i:
                                 fnode_idx = network.get_node_idx(branch.fbus)
@@ -1722,7 +1730,6 @@ def _build_model_v2(network, params):
     return model
 
 
-
 def _run_smopf(network, model, params, from_warm_start=False):
 
     solver = po.SolverFactory(params.solver_params.solver, executable=params.solver_params.solver_path)
@@ -1748,13 +1755,23 @@ def _run_smopf(network, model, params, from_warm_start=False):
 
     result = solver.solve(model, tee=params.solver_params.verbose)
 
-    '''
     import logging
     from pyomo.util.infeasible import log_infeasible_constraints
-    filename = os.path.join(os.getcwd(), 'example.log')
-    print(log_infeasible_constraints(model, log_expression=True, log_variables=True))
-    #logging.basicConfig(filename=filename, encoding='utf-8', level=logging.INFO)
-    '''
+
+    # Create a logger object with DEBUG level
+    logging_logger = logging.getLogger()
+    logging_logger.setLevel(logging.DEBUG)
+
+    # Create a console handler
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+
+    # add the handler to the logger
+    logging_logger.addHandler(ch)
+
+    # Log the infeasible constraints of pyomo object
+    print("Displaying Infeasible Constraints")
+    log_infeasible_constraints(model, log_expression=True, log_variables=True, logger=logging_logger)
 
     return result
 
@@ -2902,18 +2919,14 @@ def _compute_renewable_generation_per_scenario(network, model, params, s_m, s_o)
 
 
 def _compute_losses(network, model, params):
-
     power_losses = 0.0
-
     for s_m in model.scenarios_market:
         for s_o in model.scenarios_operation:
             power_losses_scenario = 0.0
             for k in model.branches:
                 for p in model.periods:
                     power_losses_scenario += _get_branch_power_losses(network, params, model, k, s_m, s_o, p)
-
             power_losses += power_losses_scenario * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
-
     return power_losses
 
 
