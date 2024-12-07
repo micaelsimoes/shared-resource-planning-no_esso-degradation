@@ -531,21 +531,21 @@ def _build_model(network, params):
                             # - Enforce voltage controlled bus
                             gen_idx = network.get_gen_idx(node.bus_i)
                             vg = network.generators[gen_idx].vg
-                            ei_sqr = model.e_sqr[i, i, s_m, s_o, p]
-                            fi_sqr = model.f[i, i, s_m, s_o, p]
-                            model.voltage_cons.add(ei_sqr + fi_sqr <= vg[p] ** 2 + EQUALITY_TOLERANCE)
-                            model.voltage_cons.add(ei_sqr + fi_sqr >= vg[p] ** 2 - EQUALITY_TOLERANCE)
+                            e = model.e[i, s_m, s_o, p]
+                            f = model.f[i, s_m, s_o, p]
+                            model.voltage_cons.add(e ** 2 + f ** 2 <= vg[p] ** 2 + EQUALITY_TOLERANCE)
+                            model.voltage_cons.add(e ** 2 + f ** 2 >= vg[p] ** 2 - EQUALITY_TOLERANCE)
                         else:
                             # - Voltage at the bus is not controlled
-                            ei_sqr = model.e_sqr[i, i, s_m, s_o, p]
-                            fi_sqr = model.f[i, i, s_m, s_o, p]
-                            model.voltage_cons.add(ei_sqr + fi_sqr >= node.v_min**2)
-                            model.voltage_cons.add(ei_sqr + fi_sqr <= node.v_max**2)
+                            e = model.e[i, s_m, s_o, p]
+                            f = model.f[i, s_m, s_o, p]
+                            model.voltage_cons.add(e ** 2 + f ** 2 >= node.v_min**2)
+                            model.voltage_cons.add(e ** 2 + f ** 2 <= node.v_max**2)
                     else:
-                        ei_sqr = model.ei_ej[i, i, s_m, s_o, p]
-                        fi_sqr = model.fi_fj[i, i, s_m, s_o, p]
-                        model.voltage_cons.add(ei_sqr + fi_sqr >= node.v_min**2)
-                        model.voltage_cons.add(ei_sqr + fi_sqr <= node.v_max**2)
+                        e = model.e[i, s_m, s_o, p]
+                        f = model.f[i, s_m, s_o, p]
+                        model.voltage_cons.add(e ** 2 + f ** 2 >= node.v_min**2)
+                        model.voltage_cons.add(e ** 2 + f ** 2 <= node.v_max**2)
 
     model.generation_apparent_power = pe.ConstraintList()
     model.generation_power_factor = pe.ConstraintList()
@@ -784,11 +784,11 @@ def _build_model(network, params):
                             Pg += model.pg[g, s_m, s_o, p]
                             Qg += model.qg[g, s_m, s_o, p]
 
-                    ei_sqr = model.e_sqr[i, i, s_m, s_o, p]
-                    fi_sqr = model.f_sqr[i, i, s_m, s_o, p]
+                    ei = model.e_actual[i, s_m, s_o, p]
+                    fi = model.f_actual[i, s_m, s_o, p]
 
-                    Pi = node.gs * (ei_sqr + fi_sqr)
-                    Qi = -node.bs * (ei_sqr + fi_sqr)
+                    Pi = node.gs * (ei ** 2 + fi ** 2)
+                    Qi = -node.bs * (ei ** 2 + fi ** 2)
                     for b in range(len(network.branches)):
                         branch = network.branches[b]
                         if branch.fbus == node.bus_i or branch.tbus == node.bus_i:
@@ -801,14 +801,14 @@ def _build_model(network, params):
                                 fnode_idx = network.get_node_idx(branch.fbus)
                                 tnode_idx = network.get_node_idx(branch.tbus)
 
-                                ei_sqr = model.e_sqr[fnode_idx, fnode_idx, s_m, s_o, p]
-                                fi_sqr = model.f_sqr[fnode_idx, fnode_idx, s_m, s_o, p]
-                                ei_ej = model.e_sqr[fnode_idx, tnode_idx, s_m, s_o, p]
-                                fi_fj = model.f_sqr[fnode_idx, tnode_idx, s_m, s_o, p]
+                                ei = model.e_actual[fnode_idx, s_m, s_o, p]
+                                fi = model.f_actual[fnode_idx, s_m, s_o, p]
+                                ej = model.e_actual[tnode_idx, s_m, s_o, p]
+                                fj = model.f_actual[tnode_idx, s_m, s_o, p]
 
-                                Pi += branch.g * (ei_sqr + fi_sqr) * rij ** 2
-                                Pi -= rij * (branch.g * (ei_ej + fi_fj) + branch.b * (fi * ej - ei * fj))
-                                Qi -= (branch.b + branch.b_sh * 0.5) * (ei_sqr + fi ** 2) * rij ** 2
+                                Pi += branch.g * (ei ** 2 + fi ** 2) * rij ** 2
+                                Pi -= rij * (branch.g * (ei * ej + fi * fj) + branch.b * (fi * ej - ei * fj))
+                                Qi -= (branch.b + branch.b_sh * 0.5) * (ei ** 2 + fi ** 2) * rij ** 2
                                 Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
                             else:
                                 fnode_idx = network.get_node_idx(branch.tbus)
