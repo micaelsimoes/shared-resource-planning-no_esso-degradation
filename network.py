@@ -2322,18 +2322,14 @@ def _compute_renewable_generation_per_scenario(network, model, params, s_m, s_o)
 
 
 def _compute_losses(network, model, params):
-
     power_losses = 0.0
-
     for s_m in model.scenarios_market:
         for s_o in model.scenarios_operation:
             power_losses_scenario = 0.0
             for k in model.branches:
                 for p in model.periods:
                     power_losses_scenario += _get_branch_power_losses(network, params, model, k, s_m, s_o, p)
-
             power_losses += power_losses_scenario * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
-
     return power_losses
 
 
