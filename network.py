@@ -542,8 +542,8 @@ def _build_model(network, params):
                             model.voltage_cons.add(ei_sqr + fi_sqr >= node.v_min**2)
                             model.voltage_cons.add(ei_sqr + fi_sqr <= node.v_max**2)
                     else:
-                        ei_sqr = model.e_sqr[i, i, s_m, s_o, p]
-                        fi_sqr = model.f[i, i, s_m, s_o, p]
+                        ei_sqr = model.ei_ej[i, i, s_m, s_o, p]
+                        fi_sqr = model.fi_fj[i, i, s_m, s_o, p]
                         model.voltage_cons.add(ei_sqr + fi_sqr >= node.v_min**2)
                         model.voltage_cons.add(ei_sqr + fi_sqr <= node.v_max**2)
 
