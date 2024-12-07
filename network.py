@@ -494,7 +494,6 @@ def _build_model(network, params):
                     if params.slacks.grid_operation.voltage:
                         e_actual += model.slack_e[i, s_m, s_o, p]
                         f_actual += model.slack_f[i, s_m, s_o, p]
-
                     model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] == e_actual)
                     model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] == f_actual)
 
@@ -506,8 +505,7 @@ def _build_model(network, params):
                             vg = network.generators[gen_idx].vg
                             e = model.e[i, s_m, s_o, p]
                             f = model.f[i, s_m, s_o, p]
-                            model.voltage_cons.add(e ** 2 + f ** 2 <= vg[p] ** 2 + EQUALITY_TOLERANCE)
-                            model.voltage_cons.add(e ** 2 + f ** 2 >= vg[p] ** 2 - EQUALITY_TOLERANCE)
+                            model.voltage_cons.add(e ** 2 + f ** 2 == vg[p] ** 2)
                         else:
                             # - Voltage at the bus is not controlled
                             e = model.e[i, s_m, s_o, p]
