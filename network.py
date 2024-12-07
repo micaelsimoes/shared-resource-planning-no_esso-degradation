@@ -259,6 +259,16 @@ def _build_model(network, params):
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
                 for p in model.periods:
+
+                    # Bilinear terms
+                    for j in model.nodes:
+                        model.ei_ej[i, j, s_m, s_o, p].setub((e_ub * (1 + VMAG_VIOLATION_ALLOWED))** 2)
+                        model.ei_ej[i, j, s_m, s_o, p].setlb(-(e_ub * (1 + VMAG_VIOLATION_ALLOWED))** 2)
+                        model.fi_fj[i, j, s_m, s_o, p].setub((e_ub * (1 + VMAG_VIOLATION_ALLOWED))** 2)
+                        model.fi_fj[i, j, s_m, s_o, p].setlb(-(e_ub * (1 + VMAG_VIOLATION_ALLOWED))** 2)
+                        model.ei_fj[i, j, s_m, s_o, p].setub((e_ub * (1 + VMAG_VIOLATION_ALLOWED)) ** 2)
+                        model.ei_fj[i, j, s_m, s_o, p].setlb(-(e_ub * (1 + VMAG_VIOLATION_ALLOWED)) ** 2)
+
                     if params.slacks.grid_operation.voltage:
                         model.slack_e[i, s_m, s_o, p].setub(VMAG_VIOLATION_ALLOWED)
                         model.slack_e[i, s_m, s_o, p].setlb(-VMAG_VIOLATION_ALLOWED)
