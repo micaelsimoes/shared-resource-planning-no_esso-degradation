@@ -268,16 +268,16 @@ def _build_model(network, params):
                         else:
                             ref_gen_idx = network.get_gen_idx(node.bus_i)
                             vg = network.generators[ref_gen_idx].vg
-                            model.e[i, s_m, s_o, p].setub(vg + SMALL_TOLERANCE)
-                            model.e[i, s_m, s_o, p].setlb(vg - SMALL_TOLERANCE)
+                            model.e[i, s_m, s_o, p].setub(vg + EQUALITY_TOLERANCE)
+                            model.e[i, s_m, s_o, p].setlb(vg - EQUALITY_TOLERANCE)
                             if params.slacks.grid_operation.voltage:
-                                model.slack_e[i, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                model.slack_e[i, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
-                        model.f[i, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                        model.f[i, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
+                                model.slack_e[i, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                model.slack_e[i, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
+                        model.f[i, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                        model.f[i, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
                         if params.slacks.grid_operation.voltage:
-                            model.slack_f[i, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.slack_f[i, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
+                            model.slack_f[i, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                            model.slack_f[i, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
                     else:
                         model.e[i, s_m, s_o, p].setub(e_ub)
                         model.e[i, s_m, s_o, p].setlb(e_lb)
@@ -305,10 +305,10 @@ def _build_model(network, params):
                         model.qg[g, s_m, s_o, p].setub(qg_ub)
                         model.qg[g, s_m, s_o, p].setlb(qg_lb)
                     else:
-                        model.pg[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                        model.pg[g, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
-                        model.qg[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                        model.qg[g, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
+                        model.pg[g, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                        model.pg[g, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
+                        model.qg[g, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                        model.qg[g, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
     if params.rg_curt:
         model.sg_abs = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.sg_sqr = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -327,9 +327,9 @@ def _build_model(network, params):
                             model.sg_sqr[g, s_m, s_o, p].setub(init_sg ** 2)
                             model.sg_curt[g, s_m, s_o, p].setub(init_sg)
                         else:
-                            model.sg_abs[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.sg_sqr[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.sg_curt[g, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            model.sg_abs[g, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                            model.sg_sqr[g, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                            model.sg_curt[g, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
 
     # - Branch power flows (squared) -- used in branch limits
     model.flow_ij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -344,9 +344,9 @@ def _build_model(network, params):
                             rating = network.branches[b].rate / network.baseMVA
                             model.slack_flow_ij_sqr[b, s_m, s_o, p].setub(SIJ_VIOLATION_ALLOWED * rating)
                     else:
-                        model.flow_ij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                        model.flow_ij_sqr[b, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                         if params.slacks.grid_operation.branch_flow:
-                            model.slack_flow_ij_sqr[b, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            model.slack_flow_ij_sqr[b, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
 
     # - Loads
     model.pc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
@@ -356,10 +356,10 @@ def _build_model(network, params):
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
                 for p in model.periods:
-                    model.pc[c, s_m, s_o, p].setub(load.pd[s_o][p] + SMALL_TOLERANCE)
-                    model.pc[c, s_m, s_o, p].setlb(load.pd[s_o][p] - SMALL_TOLERANCE)
-                    model.qc[c, s_m, s_o, p].setub(load.qd[s_o][p] + SMALL_TOLERANCE)
-                    model.qc[c, s_m, s_o, p].setlb(load.qd[s_o][p] - SMALL_TOLERANCE)
+                    model.pc[c, s_m, s_o, p].setub(load.pd[s_o][p] + EQUALITY_TOLERANCE)
+                    model.pc[c, s_m, s_o, p].setlb(load.pd[s_o][p] - EQUALITY_TOLERANCE)
+                    model.qc[c, s_m, s_o, p].setub(load.qd[s_o][p] + EQUALITY_TOLERANCE)
+                    model.qc[c, s_m, s_o, p].setlb(load.qd[s_o][p] - EQUALITY_TOLERANCE)
     if params.fl_reg:
         model.flex_p_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.flex_p_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -376,11 +376,11 @@ def _build_model(network, params):
                             model.flex_p_up[c, s_m, s_o, p].setub(abs(flex_up))
                             model.flex_p_down[c, s_m, s_o, p].setub(abs(flex_down))
                         else:
-                            model.flex_p_up[c, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            model.flex_p_down[c, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            model.flex_p_up[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                            model.flex_p_down[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                             if params.slacks.flexibility.day_balance:
-                                model.slack_flex_p_balance[c, s_m, s_o].setub(SMALL_TOLERANCE)
-                                model.slack_flex_p_balance[c, s_m, s_o].setlb(-SMALL_TOLERANCE)
+                                model.slack_flex_p_balance[c, s_m, s_o].setub(EQUALITY_TOLERANCE)
+                                model.slack_flex_p_balance[c, s_m, s_o].setlb(-EQUALITY_TOLERANCE)
     if params.l_curt:
         model.pc_curt_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.pc_curt_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -393,18 +393,18 @@ def _build_model(network, params):
                     for p in model.periods:
 
                         if load.pd[s_o][p] >= 0.00:
-                            model.pc_curt_down[c, s_m, s_o, p].setub(abs(load.pd[s_o][p]) + SMALL_TOLERANCE)
-                            model.pc_curt_up[c, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            model.pc_curt_down[c, s_m, s_o, p].setub(abs(load.pd[s_o][p]))
+                            model.pc_curt_up[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                         else:
-                            model.pc_curt_up[c, s_m, s_o, p].setub(abs(load.pd[s_o][p]) + SMALL_TOLERANCE)
-                            model.pc_curt_down[c, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            model.pc_curt_up[c, s_m, s_o, p].setub(abs(load.pd[s_o][p]))
+                            model.pc_curt_down[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
 
                         if load.qd[s_o][p] >= 0.00:
-                            model.qc_curt_down[c, s_m, s_o, p].setub(abs(load.qd[s_o][p]) + SMALL_TOLERANCE)
-                            model.qc_curt_up[c, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            model.qc_curt_down[c, s_m, s_o, p].setub(abs(load.qd[s_o][p]))
+                            model.qc_curt_up[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                         else:
-                            model.qc_curt_up[c, s_m, s_o, p].setub(abs(load.qd[s_o][p]) + SMALL_TOLERANCE)
-                            model.qc_curt_down[c, s_m, s_o, p].setub(SMALL_TOLERANCE)
+                            model.qc_curt_up[c, s_m, s_o, p].setub(abs(load.qd[s_o][p]))
+                            model.qc_curt_down[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
 
     # - Transformers
     model.r = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0)
@@ -419,11 +419,11 @@ def _build_model(network, params):
                             model.r[i, s_m, s_o, p].setub(TRANSFORMER_MAXIMUM_RATIO)
                             model.r[i, s_m, s_o, p].setlb(TRANSFORMER_MINIMUM_RATIO)
                         else:
-                            model.r[i, s_m, s_o, p].setub(branch.ratio + SMALL_TOLERANCE)
-                            model.r[i, s_m, s_o, p].setlb(branch.ratio - SMALL_TOLERANCE)
+                            model.r[i, s_m, s_o, p].setub(branch.ratio + EQUALITY_TOLERANCE)
+                            model.r[i, s_m, s_o, p].setlb(branch.ratio - EQUALITY_TOLERANCE)
                     else:
-                        model.r[i, s_m, s_o, p].setub(1.00 + SMALL_TOLERANCE)
-                        model.r[i, s_m, s_o, p].setlb(1.00 - SMALL_TOLERANCE)
+                        model.r[i, s_m, s_o, p].setub(1.00 + EQUALITY_TOLERANCE)
+                        model.r[i, s_m, s_o, p].setlb(1.00 - EQUALITY_TOLERANCE)
 
     # - Energy Storage devices
     if params.es_reg:
@@ -540,12 +540,12 @@ def _build_model(network, params):
                             init_sg = 0.0
                             if generator.status[p]:
                                 init_sg = sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
-                            model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] <= model.pg[g, s_m, s_o, p] ** 2 + model.qg[g, s_m, s_o, p] ** 2 + SMALL_TOLERANCE)
-                            model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] >= model.pg[g, s_m, s_o, p] ** 2 + model.qg[g, s_m, s_o, p] ** 2 - SMALL_TOLERANCE)
-                            model.generation_apparent_power.add(model.sg_abs[g, s_m, s_o, p] ** 2 <= model.sg_sqr[g, s_m, s_o, p] + SMALL_TOLERANCE)
-                            model.generation_apparent_power.add(model.sg_abs[g, s_m, s_o, p] ** 2 >= model.sg_sqr[g, s_m, s_o, p] - SMALL_TOLERANCE)
-                            model.generation_apparent_power.add(model.sg_abs[g, s_m, s_o, p] <= init_sg - model.sg_curt[g, s_m, s_o, p] + SMALL_TOLERANCE)
-                            model.generation_apparent_power.add(model.sg_abs[g, s_m, s_o, p] >= init_sg - model.sg_curt[g, s_m, s_o, p] - SMALL_TOLERANCE)
+                            model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] <= model.pg[g, s_m, s_o, p] ** 2 + model.qg[g, s_m, s_o, p] ** 2 + EQUALITY_TOLERANCE)
+                            model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] >= model.pg[g, s_m, s_o, p] ** 2 + model.qg[g, s_m, s_o, p] ** 2 - EQUALITY_TOLERANCE)
+                            model.generation_apparent_power.add(model.sg_abs[g, s_m, s_o, p] ** 2 <= model.sg_sqr[g, s_m, s_o, p] + EQUALITY_TOLERANCE)
+                            model.generation_apparent_power.add(model.sg_abs[g, s_m, s_o, p] ** 2 >= model.sg_sqr[g, s_m, s_o, p] - EQUALITY_TOLERANCE)
+                            model.generation_apparent_power.add(model.sg_abs[g, s_m, s_o, p] <= init_sg - model.sg_curt[g, s_m, s_o, p] + EQUALITY_TOLERANCE)
+                            model.generation_apparent_power.add(model.sg_abs[g, s_m, s_o, p] >= init_sg - model.sg_curt[g, s_m, s_o, p] - EQUALITY_TOLERANCE)
                             if generator.power_factor_control:
                                 # Power factor control, variable phi
                                 max_phi = acos(generator.max_pf)
@@ -555,8 +555,8 @@ def _build_model(network, params):
                             else:
                                 # No power factor control, maintain given phi
                                 phi = atan2(generator.qg[s_o][p], generator.pg[s_o][p])
-                                model.generation_power_factor.add(model.qg[g, s_m, s_o, p] <= tan(phi) * model.pg[g, s_m, s_o, p] + SMALL_TOLERANCE)
-                                model.generation_power_factor.add(model.qg[g, s_m, s_o, p] >= tan(phi) * model.pg[g, s_m, s_o, p] - SMALL_TOLERANCE)
+                                model.generation_power_factor.add(model.qg[g, s_m, s_o, p] <= tan(phi) * model.pg[g, s_m, s_o, p] + EQUALITY_TOLERANCE)
+                                model.generation_power_factor.add(model.qg[g, s_m, s_o, p] >= tan(phi) * model.pg[g, s_m, s_o, p] - EQUALITY_TOLERANCE)
 
     # - Flexible Loads -- Daily energy balance
     if params.fl_reg:
