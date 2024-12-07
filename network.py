@@ -503,10 +503,12 @@ def _build_model(network, params):
                         fi = model.f_actual[i, s_m, s_o, p]
                         ej = model.e_actual[j, s_m, s_o, p]
                         fj = model.f_actual[j, s_m, s_o, p]
-                        model.voltage_cons.add(model.e_sqr[i, s_m, s_o, p] <= ei * ej + EQUALITY_TOLERANCE)
-                        model.voltage_cons.add(model.e_sqr[i, s_m, s_o, p] >= ei * ej - EQUALITY_TOLERANCE)
-                        model.voltage_cons.add(model.f_sqr[i, s_m, s_o, p] <= fi * fj + EQUALITY_TOLERANCE)
-                        model.voltage_cons.add(model.f_sqr[i, s_m, s_o, p] >= fi * fj - EQUALITY_TOLERANCE)
+                        model.voltage_cons.add(model.ei_ej[i, s_m, s_o, p] <= ei * ej + EQUALITY_TOLERANCE)
+                        model.voltage_cons.add(model.ei_ej[i, s_m, s_o, p] >= ei * ej - EQUALITY_TOLERANCE)
+                        model.voltage_cons.add(model.fi_fj[i, s_m, s_o, p] <= fi * fj + EQUALITY_TOLERANCE)
+                        model.voltage_cons.add(model.fi_fj[i, s_m, s_o, p] >= fi * fj - EQUALITY_TOLERANCE)
+                        model.voltage_cons.add(model.ei_fj[i, s_m, s_o, p] <= ei * fj + EQUALITY_TOLERANCE)
+                        model.voltage_cons.add(model.ei_fj[i, s_m, s_o, p] >= ei * fj - EQUALITY_TOLERANCE)
 
     for i in model.nodes:
         node = network.nodes[i]
