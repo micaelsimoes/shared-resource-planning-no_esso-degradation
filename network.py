@@ -505,8 +505,10 @@ def _build_model(network, params):
                     if params.slacks.grid_operation.voltage:
                         e_actual += model.slack_e[i, s_m, s_o, p]
                         f_actual += model.slack_f[i, s_m, s_o, p]
-                    model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] == e_actual)
-                    model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] == f_actual)
+                    model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] <= e_actual + EQUALITY_TOLERANCE)
+                    model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] >= e_actual - EQUALITY_TOLERANCE)
+                    model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] <= f_actual + EQUALITY_TOLERANCE)
+                    model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] >= f_actual - EQUALITY_TOLERANCE)
 
                     # voltage magnitude constraints
                     if node.type == BUS_PV:
