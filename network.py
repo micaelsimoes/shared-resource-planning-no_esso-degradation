@@ -246,9 +246,6 @@ def _build_model(network, params):
     model.f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.e_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.0)
     model.f_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
-    model.ei_ej = pe.Var(model.nodes, model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.0)
-    model.fi_fj = pe.Var(model.nodes, model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
-    model.ei_fj = pe.Var(model.nodes, model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     if params.slacks.grid_operation.voltage:
         model.slack_e = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
         model.slack_f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
@@ -259,17 +256,6 @@ def _build_model(network, params):
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
                 for p in model.periods:
-
-                    # Bilinear terms
-                    for j in model.nodes:
-                        v_bilenar_ub = (e_ub * (1 + VMAG_VIOLATION_ALLOWED))** 2
-                        v_bilenar_lb = - (e_ub * (1 + VMAG_VIOLATION_ALLOWED))** 2
-                        model.ei_ej[i, j, s_m, s_o, p].setub(v_bilenar_ub)
-                        model.ei_ej[i, j, s_m, s_o, p].setlb(v_bilenar_lb)
-                        model.fi_fj[i, j, s_m, s_o, p].setub(v_bilenar_ub)
-                        model.fi_fj[i, j, s_m, s_o, p].setlb(v_bilenar_lb)
-                        model.ei_fj[i, j, s_m, s_o, p].setub(v_bilenar_ub)
-                        model.ei_fj[i, j, s_m, s_o, p].setlb(v_bilenar_lb)
 
                     if params.slacks.grid_operation.voltage:
                         model.slack_e[i, s_m, s_o, p].setub(VMAG_VIOLATION_ALLOWED)
@@ -293,11 +279,6 @@ def _build_model(network, params):
                         if params.slacks.grid_operation.voltage:
                             model.slack_f[i, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                             model.slack_f[i, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
-                        for j in model.nodes:
-                            model.ei_fj[i, j, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                            model.ei_fj[i, j, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
-                            model.fi_fj[i, j, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                            model.fi_fj[i, j, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
                     else:
                         model.e[i, s_m, s_o, p].setub(e_ub)
                         model.e[i, s_m, s_o, p].setlb(e_lb)
@@ -510,24 +491,6 @@ def _build_model(network, params):
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
     # - Voltage
-    # - Bilinear terms
-    model.voltage_bilinear_terms = pe.ConstraintList()
-    for i in model.nodes:
-        for j in model.nodes:
-            for s_m in model.scenarios_market:
-                for s_o in model.scenarios_operation:
-                    for p in model.periods:
-                        ei = model.e_actual[i, s_m, s_o, p]
-                        fi = model.f_actual[i, s_m, s_o, p]
-                        ej = model.e_actual[j, s_m, s_o, p]
-                        fj = model.f_actual[j, s_m, s_o, p]
-                        model.voltage_bilinear_terms.add(model.ei_ej[i, j, s_m, s_o, p] <= ei * ej + EQUALITY_TOLERANCE)
-                        model.voltage_bilinear_terms.add(model.ei_ej[i, j, s_m, s_o, p] >= ei * ej - EQUALITY_TOLERANCE)
-                        model.voltage_bilinear_terms.add(model.fi_fj[i, j, s_m, s_o, p] <= fi * fj + EQUALITY_TOLERANCE)
-                        model.voltage_bilinear_terms.add(model.fi_fj[i, j, s_m, s_o, p] >= fi * fj - EQUALITY_TOLERANCE)
-                        model.voltage_bilinear_terms.add(model.ei_fj[i, j, s_m, s_o, p] <= ei * fj + EQUALITY_TOLERANCE)
-                        model.voltage_bilinear_terms.add(model.ei_fj[i, j, s_m, s_o, p] >= ei * fj - EQUALITY_TOLERANCE)
-
     # - Voltage magnitude
     model.voltage_cons = pe.ConstraintList()
     for i in model.nodes:
