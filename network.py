@@ -817,11 +817,11 @@ def _build_model(network, params):
                                     vmag_sqr = model.vmag_sqr[fnode_idx, s_m, s_o, p]
 
                                     Pi += branch.g * vmag_sqr * rij_sqr
-                                    Pi -= rij * branch.g * (ei * ej + fi * fj)
-                                    Pi -= rij * branch.b * (ej * fi - ei * fj)
+                                    Pi -= rij * branch.g * (ei * ej) + rij * branch.g * (fi * fj)
+                                    Pi -= rij * branch.b * (ej * fi) - rij * branch.b  *(ei * fj)
                                     Qi -= (branch.b + branch.b_sh * 0.5) * vmag_sqr * rij_sqr
-                                    Qi += rij * branch.b * (ei * ej + fi * fj)
-                                    Qi -= rij * branch.g * (ej * fi - ei * fj)
+                                    Qi += rij * branch.b * (ei * ej) + rij * branch.b * (fi * fj)
+                                    Qi -= rij * branch.g * (ej * fi) - rij * branch.g * (ei * fj)
                                 else:
                                     fnode_idx = network.get_node_idx(branch.tbus)
                                     tnode_idx = network.get_node_idx(branch.fbus)
@@ -833,11 +833,11 @@ def _build_model(network, params):
                                     vmag_sqr = model.vmag_sqr[fnode_idx, s_m, s_o, p]
 
                                     Pi += branch.g * vmag_sqr
-                                    Pi -= rij * branch.g * (ei * ej + fi * fj)
-                                    Pi -= rij * branch.b * (ej * fi - ei * fj)
+                                    Pi -= rij * branch.g * (ei * ej) + rij * branch.g * (fi * fj)
+                                    Pi -= rij * branch.b * (ej * fi) - rij * branch.b * (ei * fj)
                                     Qi -= (branch.b + branch.b_sh * 0.5) * vmag_sqr
-                                    Qi += rij * branch.b * (ei * ej + fi * fj)
-                                    Qi -= rij * branch.g * (ej * fi - ei * fj)
+                                    Qi += rij * branch.b * (ei * ej) + rij * branch.b * (fi * fj)
+                                    Qi -= rij * branch.g * (ej * fi) - rij * branch.g * (ei * fj)
 
                     if params.slacks.node_balance:
                         model.node_balance_cons_p.add(Pg == Pd + Pi + model.slack_node_balance_p[i, s_m, s_o, p])
@@ -883,10 +883,13 @@ def _build_model(network, params):
 
                             bij_sh = branch.b_sh * 0.50
 
-                            iij_sqr = (branch.g ** 2 + branch.b ** 2) * ((rij_sqr * ei - rij * ej) ** 2 + (rij_sqr * fi - rij * fj) ** 2)
+                            iij_sqr = (branch.g ** 2 + branch.b ** 2) * (rij_sqr * ei - rij * ej) ** 2
+                            iij_sqr += (branch.g ** 2 + branch.b ** 2) * (rij_sqr * fi - rij * fj) ** 2
                             iij_sqr += bij_sh ** 2 * fnode_vmag_sqr
-                            iij_sqr += 2 * branch.g * bij_sh * ((rij_sqr * fi - rij * fj) * ei - (rij_sqr * ei - rij * ej) * fi)
-                            iij_sqr += 2 * branch.b * bij_sh * ((rij_sqr * ei - rij * ej) * ei + (rij_sqr * fi - rij * fj) * fi)
+                            iij_sqr += 2 * branch.g * bij_sh * (rij_sqr * fi - rij * fj) * ei
+                            iij_sqr -= 2 * branch.g * bij_sh * (rij_sqr * ei - rij * ej) * fi
+                            iij_sqr += 2 * branch.b * bij_sh * (rij_sqr * ei - rij * ej) * ei
+                            iij_sqr += 2 * branch.b * bij_sh * (rij_sqr * fi - rij * fj) * fi
                             flow_ij_sqr = iij_sqr
 
                             # Previous (approximation?)
@@ -928,10 +931,13 @@ def _build_model(network, params):
                                 flow_ij_sqr = sij_sqr
                             else:
                                 bij_sh = branch.b_sh * 0.50
-                                iij_sqr = (branch.g ** 2 + branch.b ** 2) * ((rij_sqr * ei - rij * ej) ** 2 + (rij_sqr * fi - rij * fj) ** 2)
+                                iij_sqr = (branch.g ** 2 + branch.b ** 2) * (rij_sqr * ei - rij * ej) ** 2
+                                iij_sqr += (branch.g ** 2 + branch.b ** 2) * (rij_sqr * fi - rij * fj) ** 2
                                 iij_sqr += bij_sh ** 2 * fnode_vmag_sqr
-                                iij_sqr += 2 * branch.g * bij_sh * ((rij_sqr * fi - rij * fj) * ei - (rij_sqr * ei - rij * ej) * fi)
-                                iij_sqr += 2 * branch.b * bij_sh * ((rij_sqr * ei - rij * ej) * ei + (rij_sqr * fi - rij * fj) * fi)
+                                iij_sqr += 2 * branch.g * bij_sh * (rij_sqr * fi - rij * fj) * ei
+                                iij_sqr -= 2 * branch.g * bij_sh * (rij_sqr * ei - rij * ej) * fi
+                                iij_sqr += 2 * branch.b * bij_sh * (rij_sqr * ei - rij * ej) * ei
+                                iij_sqr += 2 * branch.b * bij_sh * (rij_sqr * fi - rij * fj) * fi
                                 flow_ij_sqr = iij_sqr
 
                         # Flow_ij, definition
