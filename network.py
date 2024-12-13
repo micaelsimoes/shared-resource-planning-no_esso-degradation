@@ -543,6 +543,10 @@ def _build_model(network, params):
                         model.voltage_cons.add(e ** 2 + f ** 2 >= node.v_min**2)
                         model.voltage_cons.add(e ** 2 + f ** 2 <= node.v_max**2)
 
+    model.voltage_bilinear_terms = pe.ConstraintList()
+    for b in model.branches:
+        branch = network.branches[b]
+
     #- Transformers' ratio squared
     model.transf_ratio_sqr = pe.ConstraintList()
     for b in range(len(network.branches)):
@@ -856,65 +860,46 @@ def _build_model(network, params):
                 for b in model.branches:
 
                     branch = network.branches[b]
-                    rating = branch.rate / network.baseMVA
-                    if rating == 0.0:
-                        rating = BRANCH_UNKNOWN_RATING
-                    fnode_idx = network.get_node_idx(branch.fbus)
-                    tnode_idx = network.get_node_idx(branch.tbus)
+                    if branch.status:
 
-                    rij = model.r[b, s_m, s_o, p]
-                    rij_sqr = model.r[b, s_m, s_o, p]
-                    if not branch.is_transformer or not branch.vmag_reg:
-                        rij = 1.00
-                        rij_sqr = 1.00
+                        rating = branch.rate / network.baseMVA
+                        if rating == 0.0:
+                            rating = BRANCH_UNKNOWN_RATING
+                        fnode_idx = network.get_node_idx(branch.fbus)
+                        tnode_idx = network.get_node_idx(branch.tbus)
 
-                    ei = model.e_actual[fnode_idx, s_m, s_o, p]
-                    fi = model.f_actual[fnode_idx, s_m, s_o, p]
-                    ej = model.e_actual[tnode_idx, s_m, s_o, p]
-                    fj = model.f_actual[tnode_idx, s_m, s_o, p]
-                    fnode_vmag_sqr = model.vmag_sqr[fnode_idx, s_m, s_o, p]
+                        rij = model.r[b, s_m, s_o, p]
+                        rij_sqr = model.r[b, s_m, s_o, p]
+                        if not branch.is_transformer or not branch.vmag_reg:
+                            rij = 1.00
+                            rij_sqr = 1.00
 
-                    flow_ij_sqr = 0.00
+                        ei = model.e_actual[fnode_idx, s_m, s_o, p]
+                        fi = model.f_actual[fnode_idx, s_m, s_o, p]
+                        ej = model.e_actual[tnode_idx, s_m, s_o, p]
+                        fj = model.f_actual[tnode_idx, s_m, s_o, p]
+                        fnode_vmag_sqr = model.vmag_sqr[fnode_idx, s_m, s_o, p]
 
-                    if params.branch_limit_type == BRANCH_LIMIT_CURRENT:
+                        flow_ij_sqr = 0.00
 
-                        bij_sh = branch.b_sh * 0.50
+                        if params.branch_limit_type == BRANCH_LIMIT_CURRENT:
 
-                        iij_sqr = (branch.g ** 2 + branch.b ** 2) * ((rij_sqr * ei - rij * ej) ** 2 + (rij_sqr * fi - rij * fj) ** 2)
-                        iij_sqr += bij_sh ** 2 * fnode_vmag_sqr
-                        iij_sqr += 2 * branch.g * bij_sh * ((rij_sqr * fi - rij * fj) * ei - (rij_sqr * ei - rij * ej) * fi)
-                        iij_sqr += 2 * branch.b * bij_sh * ((rij_sqr * ei - rij * ej) * ei + (rij_sqr * fi - rij * fj) * fi)
-                        flow_ij_sqr = iij_sqr
+                            bij_sh = branch.b_sh * 0.50
 
-                        # Previous (approximation?)
-                        # iji_sqr = (branch.g ** 2 + branch.b ** 2) * ((ej - rij * ei) ** 2 + (fj - rij * fi) ** 2)
-                        # iji_sqr += bij_sh ** 2 * (ej ** 2 + fj ** 2)
-                        # iji_sqr += 2 * branch.g * bij_sh * ((fj - rij * fi) * ej - (ej - rij * ei) * fj)
-                        # iji_sqr += 2 * branch.b * bij_sh * ((ej - rij * ei) * ej + (fj - rij * fi) * fj)
+                            iij_sqr = (branch.g ** 2 + branch.b ** 2) * ((rij_sqr * ei - rij * ej) ** 2 + (rij_sqr * fi - rij * fj) ** 2)
+                            iij_sqr += bij_sh ** 2 * fnode_vmag_sqr
+                            iij_sqr += 2 * branch.g * bij_sh * ((rij_sqr * fi - rij * fj) * ei - (rij_sqr * ei - rij * ej) * fi)
+                            iij_sqr += 2 * branch.b * bij_sh * ((rij_sqr * ei - rij * ej) * ei + (rij_sqr * fi - rij * fj) * fi)
+                            flow_ij_sqr = iij_sqr
 
-                    elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
+                            # Previous (approximation?)
+                            # iji_sqr = (branch.g ** 2 + branch.b ** 2) * ((ej - rij * ei) ** 2 + (fj - rij * fi) ** 2)
+                            # iji_sqr += bij_sh ** 2 * (ej ** 2 + fj ** 2)
+                            # iji_sqr += 2 * branch.g * bij_sh * ((fj - rij * fi) * ej - (ej - rij * ei) * fj)
+                            # iji_sqr += 2 * branch.b * bij_sh * ((ej - rij * ei) * ej + (fj - rij * fi) * fj)
 
-                        pij = branch.g * fnode_vmag_sqr * rij_sqr
-                        pij -= branch.g * (ei * ej + fi * fj) * rij
-                        pij -= branch.b * (fi * ej - ei * fj) * rij
-                        qij = - (branch.b + branch.b_sh * 0.50) * fnode_vmag_sqr * rij_sqr
-                        qij += branch.b * (ei * ej + fi * fj) * rij
-                        qij -= branch.g * (fi * ej - ei * fj) * rij
-                        sij_sqr = pij ** 2 + qij ** 2
-                        flow_ij_sqr = sij_sqr
+                        elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
 
-                        # Without rij
-                        # pji = branch.g * (ej ** 2 + fj ** 2)
-                        # pji -= branch.g * (ej * ei + fj * fi) * rij
-                        # pji -= branch.b * (fj * ei - ej * fi) * rij
-                        # qji = - (branch.b + branch.b_sh * 0.50) * (ej ** 2 + fj ** 2)
-                        # qji += branch.b * (ej * ei + fj * fi) * rij
-                        # qji -= branch.g * (fj * ei - ej * fi) * rij
-                        # sji_sqr = pji ** 2 + qji ** 2
-
-                    elif params.branch_limit_type == BRANCH_LIMIT_MIXED:
-
-                        if branch.is_transformer:
                             pij = branch.g * fnode_vmag_sqr * rij_sqr
                             pij -= branch.g * (ei * ej + fi * fj) * rij
                             pij -= branch.b * (fi * ej - ei * fj) * rij
@@ -923,24 +908,45 @@ def _build_model(network, params):
                             qij -= branch.g * (fi * ej - ei * fj) * rij
                             sij_sqr = pij ** 2 + qij ** 2
                             flow_ij_sqr = sij_sqr
-                        else:
-                            bij_sh = branch.b_sh * 0.50
-                            iij_sqr = (branch.g ** 2 + branch.b ** 2) * ((rij_sqr * ei - rij * ej) ** 2 + (rij_sqr * fi - rij * fj) ** 2)
-                            iij_sqr += bij_sh ** 2 * fnode_vmag_sqr
-                            iij_sqr += 2 * branch.g * bij_sh * ((rij_sqr * fi - rij * fj) * ei - (rij_sqr * ei - rij * ej) * fi)
-                            iij_sqr += 2 * branch.b * bij_sh * ((rij_sqr * ei - rij * ej) * ei + (rij_sqr * fi - rij * fj) * fi)
-                            flow_ij_sqr = iij_sqr
 
-                    # Flow_ij, definition
-                    model.branch_power_flow_cons.add(model.flow_ij_sqr[b, s_m, s_o, p] <= flow_ij_sqr + EQUALITY_TOLERANCE)
-                    model.branch_power_flow_cons.add(model.flow_ij_sqr[b, s_m, s_o, p] >= flow_ij_sqr - EQUALITY_TOLERANCE)
+                            # Without rij
+                            # pji = branch.g * (ej ** 2 + fj ** 2)
+                            # pji -= branch.g * (ej * ei + fj * fi) * rij
+                            # pji -= branch.b * (fj * ei - ej * fi) * rij
+                            # qji = - (branch.b + branch.b_sh * 0.50) * (ej ** 2 + fj ** 2)
+                            # qji += branch.b * (ej * ei + fj * fi) * rij
+                            # qji -= branch.g * (fj * ei - ej * fi) * rij
+                            # sji_sqr = pji ** 2 + qji ** 2
 
-                    # Branch flow limits
-                    if branch.status:
-                        if params.slacks.grid_operation.branch_flow:
-                            model.branch_power_flow_lims.add(model.flow_ij_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_flow_ij_sqr[b, s_m, s_o, p])
-                        else:
-                            model.branch_power_flow_lims.add(model.flow_ij_sqr[b, s_m, s_o, p] <= rating ** 2)
+                        elif params.branch_limit_type == BRANCH_LIMIT_MIXED:
+
+                            if branch.is_transformer:
+                                pij = branch.g * fnode_vmag_sqr * rij_sqr
+                                pij -= branch.g * (ei * ej + fi * fj) * rij
+                                pij -= branch.b * (fi * ej - ei * fj) * rij
+                                qij = - (branch.b + branch.b_sh * 0.50) * fnode_vmag_sqr * rij_sqr
+                                qij += branch.b * (ei * ej + fi * fj) * rij
+                                qij -= branch.g * (fi * ej - ei * fj) * rij
+                                sij_sqr = pij ** 2 + qij ** 2
+                                flow_ij_sqr = sij_sqr
+                            else:
+                                bij_sh = branch.b_sh * 0.50
+                                iij_sqr = (branch.g ** 2 + branch.b ** 2) * ((rij_sqr * ei - rij * ej) ** 2 + (rij_sqr * fi - rij * fj) ** 2)
+                                iij_sqr += bij_sh ** 2 * fnode_vmag_sqr
+                                iij_sqr += 2 * branch.g * bij_sh * ((rij_sqr * fi - rij * fj) * ei - (rij_sqr * ei - rij * ej) * fi)
+                                iij_sqr += 2 * branch.b * bij_sh * ((rij_sqr * ei - rij * ej) * ei + (rij_sqr * fi - rij * fj) * fi)
+                                flow_ij_sqr = iij_sqr
+
+                        # Flow_ij, definition
+                        model.branch_power_flow_cons.add(model.flow_ij_sqr[b, s_m, s_o, p] <= flow_ij_sqr + EQUALITY_TOLERANCE)
+                        model.branch_power_flow_cons.add(model.flow_ij_sqr[b, s_m, s_o, p] >= flow_ij_sqr - EQUALITY_TOLERANCE)
+
+                        # Branch flow limits
+                        if branch.status:
+                            if params.slacks.grid_operation.branch_flow:
+                                model.branch_power_flow_lims.add(model.flow_ij_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_flow_ij_sqr[b, s_m, s_o, p])
+                            else:
+                                model.branch_power_flow_lims.add(model.flow_ij_sqr[b, s_m, s_o, p] <= rating ** 2)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Costs (penalties)
@@ -1190,7 +1196,6 @@ def _run_smopf(network, model, params, from_warm_start=False):
         solver.options['tol'] = params.solver_params.solver_tol
         solver.options['linear_solver'] = params.solver_params.linear_solver
         solver.options['mu_strategy'] = 'adaptive'
-        solver.options['fixed_variable_treatment'] = 'make_parameter_nodual'
 
     result = solver.solve(model, tee=params.solver_params.verbose)
 
