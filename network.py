@@ -1190,6 +1190,7 @@ def _run_smopf(network, model, params, from_warm_start=False):
         solver.options['tol'] = params.solver_params.solver_tol
         solver.options['linear_solver'] = params.solver_params.linear_solver
         solver.options['mu_strategy'] = 'adaptive'
+        solver.options['fixed_variable_treatment'] = 'make_parameter_nodual'
 
     result = solver.solve(model, tee=params.solver_params.verbose)
 
