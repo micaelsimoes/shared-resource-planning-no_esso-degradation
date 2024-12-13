@@ -890,13 +890,14 @@ def _build_model(network, params):
                             iij_sqr -= 2 * branch.g * bij_sh * (rij_sqr * ei - rij * ej) * fi
                             iij_sqr += 2 * branch.b * bij_sh * (rij_sqr * ei - rij * ej) * ei
                             iij_sqr += 2 * branch.b * bij_sh * (rij_sqr * fi - rij * fj) * fi
-                            flow_ij_sqr = iij_sqr
 
                             # Previous (approximation?)
                             # iji_sqr = (branch.g ** 2 + branch.b ** 2) * ((ej - rij * ei) ** 2 + (fj - rij * fi) ** 2)
                             # iji_sqr += bij_sh ** 2 * (ej ** 2 + fj ** 2)
                             # iji_sqr += 2 * branch.g * bij_sh * ((fj - rij * fi) * ej - (ej - rij * ei) * fj)
                             # iji_sqr += 2 * branch.b * bij_sh * ((ej - rij * ei) * ej + (fj - rij * fi) * fj)
+
+                            flow_ij_sqr = iij_sqr
 
                         elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
 
@@ -907,7 +908,6 @@ def _build_model(network, params):
                             qij += branch.b * (ei * ej + fi * fj) * rij
                             qij -= branch.g * (ej * fi - ei * fj) * rij
                             sij_sqr = pij ** 2 + qij ** 2
-                            flow_ij_sqr = sij_sqr
 
                             # Without rij
                             # pji = branch.g * (ej ** 2 + fj ** 2)
@@ -917,6 +917,8 @@ def _build_model(network, params):
                             # qji += branch.b * (ej * ei + fj * fi) * rij
                             # qji -= branch.g * (fj * ei - ej * fi) * rij
                             # sji_sqr = pji ** 2 + qji ** 2
+
+                            flow_ij_sqr = sij_sqr
 
                         elif params.branch_limit_type == BRANCH_LIMIT_MIXED:
 
@@ -931,13 +933,19 @@ def _build_model(network, params):
                                 flow_ij_sqr = sij_sqr
                             else:
                                 bij_sh = branch.b_sh * 0.50
-                                iij_sqr = (branch.g ** 2 + branch.b ** 2) * (rij_sqr * ei - rij * ej) ** 2
-                                iij_sqr += (branch.g ** 2 + branch.b ** 2) * (rij_sqr * fi - rij * fj) ** 2
-                                iij_sqr += bij_sh ** 2 * fnode_vmag_sqr
-                                iij_sqr += 2 * branch.g * bij_sh * (rij_sqr * fi - rij * fj) * ei
-                                iij_sqr -= 2 * branch.g * bij_sh * (rij_sqr * ei - rij * ej) * fi
-                                iij_sqr += 2 * branch.b * bij_sh * (rij_sqr * ei - rij * ej) * ei
-                                iij_sqr += 2 * branch.b * bij_sh * (rij_sqr * fi - rij * fj) * fi
+                                # iij_sqr = (branch.g ** 2 + branch.b ** 2) * (rij_sqr * ei - rij * ej) ** 2
+                                # iij_sqr += (branch.g ** 2 + branch.b ** 2) * (rij_sqr * fi - rij * fj) ** 2
+                                # iij_sqr += bij_sh ** 2 * fnode_vmag_sqr
+                                # iij_sqr += 2 * branch.g * bij_sh * (rij_sqr * fi - rij * fj) * ei
+                                # iij_sqr -= 2 * branch.g * bij_sh * (rij_sqr * ei - rij * ej) * fi
+                                # iij_sqr += 2 * branch.b * bij_sh * (rij_sqr * ei - rij * ej) * ei
+                                # iij_sqr += 2 * branch.b * bij_sh * (rij_sqr * fi - rij * fj) * fi
+
+                                iji_sqr = (branch.g ** 2 + branch.b ** 2) * ((ej - rij * ei) ** 2 + (fj - rij * fi) ** 2)
+                                iji_sqr += bij_sh ** 2 * (ej ** 2 + fj ** 2)
+                                iji_sqr += 2 * branch.g * bij_sh * ((fj - rij * fi) * ej - (ej - rij * ei) * fj)
+                                iji_sqr += 2 * branch.b * bij_sh * ((ej - rij * ei) * ej + (fj - rij * fi) * fj)
+
                                 flow_ij_sqr = iij_sqr
 
                         # Flow_ij, definition
