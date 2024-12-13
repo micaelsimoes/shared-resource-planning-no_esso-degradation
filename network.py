@@ -543,6 +543,21 @@ def _build_model(network, params):
                         model.voltage_cons.add(e ** 2 + f ** 2 >= node.v_min**2)
                         model.voltage_cons.add(e ** 2 + f ** 2 <= node.v_max**2)
 
+    #- Transformers' ratio squared
+    model.transf_ratio_sqr = pe.ConstraintList()
+    for b in range(len(network.branches)):
+        branch = network.branches[b]
+        for s_m in model.scenarios_market:
+            for s_o in model.scenarios_operation:
+                for p in model.periods:
+                    rij = model.r[b, s_m, s_o, p]
+                    rij_sqr = model.r_sqr[b, s_m, s_o, p]
+                    if not branch.is_transformer:
+                        rij = 1.00
+                        rij_sqr = 1.00
+                    model.transf_ratio_sqr.add(model.r_sqr[b, s_m, s_o, p] <= model.r[b, s_m, s_o, p] + EQUALITY_TOLERANCE)
+                    model.transf_ratio_sqr.add(model.r_sqr[b, s_m, s_o, p] >= model.r[b, s_m, s_o, p] - EQUALITY_TOLERANCE)
+
     model.generation_apparent_power = pe.ConstraintList()
     model.generation_power_factor = pe.ConstraintList()
     if params.rg_curt:
