@@ -550,7 +550,7 @@ def _build_model(network, params):
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
                 for p in model.periods:
-                    if branch.is_transformer:
+                    if branch.is_transformer and branch.vmag_reg:
                         if branch.transf_reg:
                             model.transf_ratio_sqr.add(model.r_sqr[b, s_m, s_o, p] <= model.r[b, s_m, s_o, p] + EQUALITY_TOLERANCE)
                             model.transf_ratio_sqr.add(model.r_sqr[b, s_m, s_o, p] >= model.r[b, s_m, s_o, p] - EQUALITY_TOLERANCE)
