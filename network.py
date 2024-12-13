@@ -564,10 +564,6 @@ def _build_model(network, params):
                         model.voltage_bilinear_terms.add(model.fi_fj[fnode_idx, tnode_idx, s_m, s_o, p] <= model.f_actual[fnode_idx, s_m, s_o, p] * model.f_actual[tnode_idx, s_m, s_o, p] + EQUALITY_TOLERANCE)
                         model.voltage_bilinear_terms.add(model.fi_fj[fnode_idx, tnode_idx, s_m, s_o, p] >= model.f_actual[fnode_idx, s_m, s_o, p] * model.f_actual[tnode_idx, s_m, s_o, p] - EQUALITY_TOLERANCE)
 
-                        model.ei_fj[fnode_idx, tnode_idx, s_m, s_o, p].fixed = False
-                        model.voltage_bilinear_terms.add(model.ei_fj[fnode_idx, tnode_idx, s_m, s_o, p] <= model.e_actual[fnode_idx, s_m, s_o, p] * model.f_actual[tnode_idx, s_m, s_o, p] + EQUALITY_TOLERANCE)
-                        model.voltage_bilinear_terms.add(model.ei_fj[fnode_idx, tnode_idx, s_m, s_o, p] >= model.e_actual[fnode_idx, s_m, s_o, p] * model.f_actual[tnode_idx, s_m, s_o, p] - EQUALITY_TOLERANCE)
-
     #- Transformers' ratio squared
     model.transf_ratio_sqr = pe.ConstraintList()
     for b in range(len(network.branches)):
