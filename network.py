@@ -557,18 +557,16 @@ def _build_model(network, params):
                 for s_o in model.scenarios_operation:
                     for p in model.periods:
                         model.ei_ej[fnode_idx, tnode_idx, s_m, s_o, p].fixed = False
-                        model.ei_ej[tnode_idx, fnode_idx, s_m, s_o, p].fixed = False
                         model.voltage_bilinear_terms.add(model.ei_ej[fnode_idx, tnode_idx, s_m, s_o, p] <= model.e_actual[fnode_idx, s_m, s_o, p] * model.e_actual[tnode_idx, s_m, s_o, p] + EQUALITY_TOLERANCE)
                         model.voltage_bilinear_terms.add(model.ei_ej[fnode_idx, tnode_idx, s_m, s_o, p] >= model.e_actual[fnode_idx, s_m, s_o, p] * model.e_actual[tnode_idx, s_m, s_o, p] - EQUALITY_TOLERANCE)
-                        model.voltage_bilinear_terms.add(model.ei_ej[tnode_idx, fnode_idx, s_m, s_o, p] <= model.e_actual[fnode_idx, s_m, s_o, p] * model.e_actual[tnode_idx, s_m, s_o, p] + EQUALITY_TOLERANCE)
-                        model.voltage_bilinear_terms.add(model.ei_ej[tnode_idx, fnode_idx, s_m, s_o, p] >= model.e_actual[fnode_idx, s_m, s_o, p] * model.e_actual[tnode_idx, s_m, s_o, p] - EQUALITY_TOLERANCE)
 
                         model.fi_fj[fnode_idx, tnode_idx, s_m, s_o, p].fixed = False
-                        model.fi_fj[tnode_idx, fnode_idx, s_m, s_o, p].fixed = False
                         model.voltage_bilinear_terms.add(model.fi_fj[fnode_idx, tnode_idx, s_m, s_o, p] <= model.f_actual[fnode_idx, s_m, s_o, p] * model.f_actual[tnode_idx, s_m, s_o, p] + EQUALITY_TOLERANCE)
                         model.voltage_bilinear_terms.add(model.fi_fj[fnode_idx, tnode_idx, s_m, s_o, p] >= model.f_actual[fnode_idx, s_m, s_o, p] * model.f_actual[tnode_idx, s_m, s_o, p] - EQUALITY_TOLERANCE)
-                        model.voltage_bilinear_terms.add(model.fi_fj[tnode_idx, fnode_idx, s_m, s_o, p] <= model.f_actual[fnode_idx, s_m, s_o, p] * model.f_actual[tnode_idx, s_m, s_o, p] + EQUALITY_TOLERANCE)
-                        model.voltage_bilinear_terms.add(model.fi_fj[tnode_idx, fnode_idx, s_m, s_o, p] >= model.f_actual[fnode_idx, s_m, s_o, p] * model.f_actual[tnode_idx, s_m, s_o, p] - EQUALITY_TOLERANCE)
+
+                        model.ei_fj[fnode_idx, tnode_idx, s_m, s_o, p].fixed = False
+                        model.voltage_bilinear_terms.add(model.ei_fj[fnode_idx, tnode_idx, s_m, s_o, p] <= model.e_actual[fnode_idx, s_m, s_o, p] * model.f_actual[tnode_idx, s_m, s_o, p] + EQUALITY_TOLERANCE)
+                        model.voltage_bilinear_terms.add(model.ei_fj[fnode_idx, tnode_idx, s_m, s_o, p] >= model.e_actual[fnode_idx, s_m, s_o, p] * model.f_actual[tnode_idx, s_m, s_o, p] - EQUALITY_TOLERANCE)
 
     #- Transformers' ratio squared
     model.transf_ratio_sqr = pe.ConstraintList()
@@ -859,8 +857,8 @@ def _build_model(network, params):
                                     ej = model.e_actual[tnode_idx, s_m, s_o, p]
                                     fj = model.f_actual[tnode_idx, s_m, s_o, p]
                                     vmag_sqr = model.vmag_sqr[fnode_idx, s_m, s_o, p]
-                                    ei_ej = model.ei_ej[fnode_idx, tnode_idx, s_m, s_o, p]
-                                    fi_fj = model.fi_fj[fnode_idx, tnode_idx, s_m, s_o, p]
+                                    ei_ej = model.ei_ej[tnode_idx, fnode_idx, s_m, s_o, p]
+                                    fi_fj = model.fi_fj[tnode_idx, fnode_idx, s_m, s_o, p]
 
                                     Pi += branch.g * vmag_sqr
                                     Pi -= rij * branch.g * (ei_ej + fi_fj)
