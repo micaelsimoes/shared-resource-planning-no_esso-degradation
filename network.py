@@ -816,11 +816,15 @@ def _build_model(network, params):
                                 ej = model.e_actual[tnode_idx, s_m, s_o, p]
                                 fj = model.f_actual[tnode_idx, s_m, s_o, p]
                                 vmag_sqr = model.vmag_sqr[fnode_idx, s_m, s_o, p]
+                                rij_ei = model.rij_ei[fnode_idx, s_m, s_o, p]
+                                rij_fi = model.rij_fi[fnode_idx, s_m, s_o, p]
 
                                 Pi += branch.g * vmag_sqr * rij ** 2
-                                Pi -= rij * (branch.g * (ei * ej + fi * fj) + branch.b * (fi * ej - ei * fj))
+                                Pi -= branch.g * rij_ei * ej + rij_fi * fj
+                                Pi -= branch.b * rij_fi * ej - rij_ei * fj
                                 Qi -= (branch.b + branch.b_sh * 0.5) * vmag_sqr * rij ** 2
-                                Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
+                                Qi += branch.b * rij_ei * ej + rij_fi * fj
+                                Qi -= branch.g * rij_fi * ej - rij_ei * fj
                             else:
                                 fnode_idx = network.get_node_idx(branch.tbus)
                                 tnode_idx = network.get_node_idx(branch.fbus)
