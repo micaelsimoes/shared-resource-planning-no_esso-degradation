@@ -773,12 +773,8 @@ def _build_model(network, params):
                             Pg += model.pg[g, s_m, s_o, p]
                             Qg += model.qg[g, s_m, s_o, p]
 
-                    ei = model.e_actual[i, s_m, s_o, p]
-                    fi = model.f_actual[i, s_m, s_o, p]
-                    vmag_sqr = model.vmag_sqr[i, s_m, s_o, p]
-
-                    Pi = node.gs * vmag_sqr
-                    Qi = -node.bs * vmag_sqr
+                    Pi = node.gs * model.vmag_sqr[i, s_m, s_o, p]
+                    Qi = -node.bs * model.vmag_sqr[i, s_m, s_o, p]
                     for b in range(len(network.branches)):
                         branch = network.branches[b]
                         if branch.fbus == node.bus_i or branch.tbus == node.bus_i:
@@ -799,7 +795,7 @@ def _build_model(network, params):
 
                                 Pi += branch.g * vmag_sqr * rij ** 2
                                 Pi -= rij * (branch.g * (ei * ej + fi * fj) + branch.b * (fi * ej - ei * fj))
-                                Qi -= (branch.b + branch.b_sh * 0.5) * (ei ** 2 + fi ** 2) * rij ** 2
+                                Qi -= (branch.b + branch.b_sh * 0.5) * vmag_sqr * rij ** 2
                                 Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
                             else:
                                 fnode_idx = network.get_node_idx(branch.tbus)
@@ -813,7 +809,7 @@ def _build_model(network, params):
 
                                 Pi += branch.g * vmag_sqr
                                 Pi -= rij * (branch.g * (ei * ej + fi * fj) + branch.b * (fi * ej - ei * fj))
-                                Qi -= (branch.b + branch.b_sh * 0.5) * (ei ** 2 + fi ** 2)
+                                Qi -= (branch.b + branch.b_sh * 0.5) * vmag_sqr
                                 Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
 
                     if params.slacks.node_balance:
