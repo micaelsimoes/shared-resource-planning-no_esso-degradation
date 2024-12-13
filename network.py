@@ -550,13 +550,10 @@ def _build_model(network, params):
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
                 for p in model.periods:
-                    rij = model.r[b, s_m, s_o, p]
-                    rij_sqr = model.r_sqr[b, s_m, s_o, p]
-                    if not branch.is_transformer:
-                        rij = 1.00
-                        rij_sqr = 1.00
-                    model.transf_ratio_sqr.add(model.r_sqr[b, s_m, s_o, p] <= model.r[b, s_m, s_o, p] + EQUALITY_TOLERANCE)
-                    model.transf_ratio_sqr.add(model.r_sqr[b, s_m, s_o, p] >= model.r[b, s_m, s_o, p] - EQUALITY_TOLERANCE)
+                    if branch.is_transformer:
+                        if branch.transf_reg:
+                            model.transf_ratio_sqr.add(model.r_sqr[b, s_m, s_o, p] <= model.r[b, s_m, s_o, p] + EQUALITY_TOLERANCE)
+                            model.transf_ratio_sqr.add(model.r_sqr[b, s_m, s_o, p] >= model.r[b, s_m, s_o, p] - EQUALITY_TOLERANCE)
 
     model.generation_apparent_power = pe.ConstraintList()
     model.generation_power_factor = pe.ConstraintList()
@@ -803,7 +800,7 @@ def _build_model(network, params):
 
                             rij = model.r[b, s_m, s_o, p]
                             rij_sqr = model.r_sqr[b, s_m, s_o, p]
-                            if not branch.is_transformer:
+                            if not branch.is_transformer or not branch.vmag_reg:
                                 rij = 1.00
                                 rij_sqr = 1.00
 
@@ -862,7 +859,7 @@ def _build_model(network, params):
 
                     rij = model.r[b, s_m, s_o, p]
                     rij_sqr = model.r[b, s_m, s_o, p]
-                    if not branch.is_transformer:
+                    if not branch.is_transformer or not branch.vmag_reg:
                         rij = 1.00
                         rij_sqr = 1.00
 
