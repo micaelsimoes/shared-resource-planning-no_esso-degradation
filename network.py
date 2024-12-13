@@ -246,6 +246,7 @@ def _build_model(network, params):
     model.f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.e_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.0)
     model.f_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+    model.vmag_sqr = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     if params.slacks.grid_operation.voltage:
         model.slack_e = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
         model.slack_f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
@@ -509,6 +510,10 @@ def _build_model(network, params):
                     model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] <= f_actual + EQUALITY_TOLERANCE)
                     model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] >= f_actual - EQUALITY_TOLERANCE)
 
+                    # vmag_sqr definition
+                    model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] <= e_actual ** 2 + f_actual ** 2 + EQUALITY_TOLERANCE)
+                    model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] >= e_actual ** 2 + f_actual ** 2 - EQUALITY_TOLERANCE)
+
                     # voltage magnitude constraints
                     if node.type == BUS_PV:
                         if params.enforce_vg:
@@ -770,9 +775,10 @@ def _build_model(network, params):
 
                     ei = model.e_actual[i, s_m, s_o, p]
                     fi = model.f_actual[i, s_m, s_o, p]
+                    vmag_sqr = model.vmag_sqr[i, s_m, s_o, p]
 
-                    Pi = node.gs * (ei ** 2 + fi ** 2)
-                    Qi = -node.bs * (ei ** 2 + fi ** 2)
+                    Pi = node.gs * vmag_sqr
+                    Qi = -node.bs * vmag_sqr
                     for b in range(len(network.branches)):
                         branch = network.branches[b]
                         if branch.fbus == node.bus_i or branch.tbus == node.bus_i:
@@ -789,8 +795,9 @@ def _build_model(network, params):
                                 fi = model.f_actual[fnode_idx, s_m, s_o, p]
                                 ej = model.e_actual[tnode_idx, s_m, s_o, p]
                                 fj = model.f_actual[tnode_idx, s_m, s_o, p]
+                                vmag_sqr = model.vmag_sqr[fnode_idx, s_m, s_o, p]
 
-                                Pi += branch.g * (ei ** 2 + fi ** 2) * rij ** 2
+                                Pi += branch.g * vmag_sqr * rij ** 2
                                 Pi -= rij * (branch.g * (ei * ej + fi * fj) + branch.b * (fi * ej - ei * fj))
                                 Qi -= (branch.b + branch.b_sh * 0.5) * (ei ** 2 + fi ** 2) * rij ** 2
                                 Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
@@ -802,8 +809,9 @@ def _build_model(network, params):
                                 fi = model.f_actual[fnode_idx, s_m, s_o, p]
                                 ej = model.e_actual[tnode_idx, s_m, s_o, p]
                                 fj = model.f_actual[tnode_idx, s_m, s_o, p]
+                                vmag_sqr = model.vmag_sqr[fnode_idx, s_m, s_o, p]
 
-                                Pi += branch.g * (ei ** 2 + fi ** 2)
+                                Pi += branch.g * vmag_sqr
                                 Pi -= rij * (branch.g * (ei * ej + fi * fj) + branch.b * (fi * ej - ei * fj))
                                 Qi -= (branch.b + branch.b_sh * 0.5) * (ei ** 2 + fi ** 2)
                                 Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
@@ -839,6 +847,7 @@ def _build_model(network, params):
                     fi = model.f_actual[fnode_idx, s_m, s_o, p]
                     ej = model.e_actual[tnode_idx, s_m, s_o, p]
                     fj = model.f_actual[tnode_idx, s_m, s_o, p]
+                    fnode_vmag_sqr = model.vmag_sqr[fnode_idx, s_m, s_o, p]
 
                     flow_ij_sqr = 0.00
 
@@ -847,7 +856,7 @@ def _build_model(network, params):
                         bij_sh = branch.b_sh * 0.50
 
                         iij_sqr = (branch.g ** 2 + branch.b ** 2) * (((rij ** 2) * ei - rij * ej) ** 2 + ((rij ** 2) * fi - rij * fj) ** 2)
-                        iij_sqr += bij_sh ** 2 * (ei ** 2 + fi ** 2)
+                        iij_sqr += bij_sh ** 2 * fnode_vmag_sqr
                         iij_sqr += 2 * branch.g * bij_sh * (((rij ** 2) * fi - rij * fj) * ei - ((rij ** 2) * ei - rij * ej) * fi)
                         iij_sqr += 2 * branch.b * bij_sh * (((rij ** 2) * ei - rij * ej) * ei + ((rij ** 2) * fi - rij * fj) * fi)
                         flow_ij_sqr = iij_sqr
@@ -860,10 +869,10 @@ def _build_model(network, params):
 
                     elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
 
-                        pij = branch.g * (ei ** 2 + fi ** 2) * rij ** 2
+                        pij = branch.g * fnode_vmag_sqr * rij ** 2
                         pij -= branch.g * (ei * ej + fi * fj) * rij
                         pij -= branch.b * (fi * ej - ei * fj) * rij
-                        qij = - (branch.b + branch.b_sh * 0.50) * (ei ** 2 + fi ** 2) * rij ** 2
+                        qij = - (branch.b + branch.b_sh * 0.50) * fnode_vmag_sqr * rij ** 2
                         qij += branch.b * (ei * ej + fi * fj) * rij
                         qij -= branch.g * (fi * ej - ei * fj) * rij
                         sij_sqr = pij ** 2 + qij ** 2
@@ -881,10 +890,10 @@ def _build_model(network, params):
                     elif params.branch_limit_type == BRANCH_LIMIT_MIXED:
 
                         if branch.is_transformer:
-                            pij = branch.g * (ei ** 2 + fi ** 2) * rij ** 2
+                            pij = branch.g * fnode_vmag_sqr * rij ** 2
                             pij -= branch.g * (ei * ej + fi * fj) * rij
                             pij -= branch.b * (fi * ej - ei * fj) * rij
-                            qij = - (branch.b + branch.b_sh * 0.50) * (ei ** 2 + fi ** 2) * rij ** 2
+                            qij = - (branch.b + branch.b_sh * 0.50) * fnode_vmag_sqr * rij ** 2
                             qij += branch.b * (ei * ej + fi * fj) * rij
                             qij -= branch.g * (fi * ej - ei * fj) * rij
                             sij_sqr = pij ** 2 + qij ** 2
@@ -892,7 +901,7 @@ def _build_model(network, params):
                         else:
                             bij_sh = branch.b_sh * 0.50
                             iij_sqr = (branch.g ** 2 + branch.b ** 2) * (((rij ** 2) * ei - rij * ej) ** 2 + ((rij ** 2) * fi - rij * fj) ** 2)
-                            iij_sqr += bij_sh ** 2 * (ei ** 2 + fi ** 2)
+                            iij_sqr += bij_sh ** 2 * fnode_vmag_sqr
                             iij_sqr += 2 * branch.g * bij_sh * (((rij ** 2) * fi - rij * fj) * ei - ((rij ** 2) * ei - rij * ej) * fi)
                             iij_sqr += 2 * branch.b * bij_sh * (((rij ** 2) * ei - rij * ej) * ei + ((rij ** 2) * fi - rij * fj) * fi)
                             flow_ij_sqr = iij_sqr
