@@ -126,6 +126,8 @@ def _read_network_parameters_from_file(parameters, filename):
             parameters.branch_limit_type = BRANCH_LIMIT_APPARENT_POWER
         elif params_data['branch_limit_type'] == 'MIXED':
             parameters.branch_limit_type = BRANCH_LIMIT_MIXED
+        elif params_data['branch_limit_type'] == 'CURRENT_SIMPLIFIED':
+            parameters.branch_limit_type = BRANCH_LIMIT_CURRENT_SIMPLIFIED
         else:
             print('[ERROR] Invalid objective type. Exiting...')
             exit(ERROR_PARAMS_FILE)
