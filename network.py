@@ -552,9 +552,8 @@ def _build_model(network, params):
                 for s_o in model.scenarios_operation:
                     for p in model.periods:
                         if params.transf_reg and branch.is_transformer and branch.vmag_reg:
-                            if branch.transf_reg:
-                                model.transf_ratio_sqr.add(model.r_sqr[b, s_m, s_o, p] <= model.r[b, s_m, s_o, p] + EQUALITY_TOLERANCE)
-                                model.transf_ratio_sqr.add(model.r_sqr[b, s_m, s_o, p] >= model.r[b, s_m, s_o, p] - EQUALITY_TOLERANCE)
+                            model.transf_ratio_sqr.add(model.r_sqr[b, s_m, s_o, p] <= model.r[b, s_m, s_o, p] + EQUALITY_TOLERANCE)
+                            model.transf_ratio_sqr.add(model.r_sqr[b, s_m, s_o, p] >= model.r[b, s_m, s_o, p] - EQUALITY_TOLERANCE)
 
     model.generation_apparent_power = pe.ConstraintList()
     model.generation_power_factor = pe.ConstraintList()
