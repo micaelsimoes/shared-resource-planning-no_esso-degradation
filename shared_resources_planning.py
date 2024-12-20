@@ -1740,7 +1740,7 @@ def _run_operational_planning_without_coordination(planning_problem):
             obj = copy(tso_model[year][day].objective.expr)
             tso_model[year][day].active_distribution_networks = range(len(transmission_network.active_distribution_network_nodes))
             tso_model[year][day].penalty_regularization = pe.Var(domain=pe.NonNegativeReals)
-            tso_model[year][day].penalty_regularization.fix(1e6)
+            tso_model[year][day].penalty_regularization.fix(1e12)
 
             # Free Vmag, Pc, Qc at the interface nodes
             for dn in tso_model[year][day].active_distribution_networks:
