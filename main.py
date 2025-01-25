@@ -1,7 +1,6 @@
 import os
 import sys
 import getopt
-from definitions import *
 from shared_resources_planning import SharedResourcesPlanning
 
 
@@ -87,6 +86,10 @@ def shared_resources_planning(working_directory, specification_filename):
         #         distribution_network.network[year][day].shared_energy_storages = list()
         distribution_network.update_data_with_candidate_solution(candidate_solution['total_capacity'])
         dn_model = distribution_network.build_model()
+        for year in distribution_network.years:
+            for day in distribution_network.days:
+                dn_model[year][day].penalty_flex_usage.fix(0.00)
+                dn_model[year][day].penalty_ess_usage.fix(0.00)
         distribution_network.update_model_with_candidate_solution(dn_model, candidate_solution['total_capacity'])
         results = distribution_network.optimize(dn_model)
         processed_results = distribution_network.process_results(dn_model, results)
