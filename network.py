@@ -621,10 +621,18 @@ def _build_model(network, params):
                             model.energy_storage_operation.add(sdch ** 2 >= pdch ** 2 + qdch ** 2 - EQUALITY_TOLERANCE)
 
                         # Charging/discharging complementarity constraints
-                        if params.slacks.ess.complementarity:
-                            model.energy_storage_ch_dch_exclusion.add(sch * sdch == model.slack_es_comp[e, s_m, s_o, p])
-                        else:
-                            model.energy_storage_ch_dch_exclusion.add(sch * sdch <= EQUALITY_TOLERANCE)
+                        if params.ess_model == ESS_MODEL_EXACT:
+                            if params.slacks.ess.complementarity:
+                                model.energy_storage_ch_dch_exclusion.add(sch * sdch == model.slack_es_comp[e, s_m, s_o, p])
+                            else:
+                                model.energy_storage_ch_dch_exclusion.add(sch * sdch <= EQUALITY_TOLERANCE)
+                        elif params.ess_model == ESS_MODEL_LP_EXTENDED:
+                            soc_prev = soc_init
+                            if p > 0:
+                                soc_prev = model.es_soc[e, s_m, s_o, p - 1]
+                            model.energy_storage_operation.add(sch * eff_charge <= energy_storage.e - soc_prev)
+                            model.energy_storage_operation.add(sdch <= (soc_prev - energy_storage.e) * eff_discharge)
+                            model.energy_storage_operation.add(sdch <= energy_storage.s - sch)
 
                         # State-of-Charge
                         soc_prev = soc_init
@@ -656,10 +664,11 @@ def _build_model(network, params):
         min_phi = acos(shared_energy_storage.min_pf)
 
         s_max = model.shared_es_s_rated[e]
-        soc_max = model.shared_es_e_rated[e] * ENERGY_STORAGE_MAX_ENERGY_STORED
-        soc_min = model.shared_es_e_rated[e] * ENERGY_STORAGE_MIN_ENERGY_STORED
-        soc_init = model.shared_es_e_rated[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC
-        soc_final = model.shared_es_e_rated[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC
+        e_max = model.shared_es_e_rated[e]
+        soc_max = e_max * ENERGY_STORAGE_MAX_ENERGY_STORED
+        soc_min = e_max * ENERGY_STORAGE_MIN_ENERGY_STORED
+        soc_init = e_max * ENERGY_STORAGE_RELATIVE_INIT_SOC
+        soc_final = e_max * ENERGY_STORAGE_RELATIVE_INIT_SOC
 
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
@@ -704,10 +713,18 @@ def _build_model(network, params):
                         model.shared_energy_storage_operation.add(sdch ** 2 >= pdch ** 2 + qdch ** 2 - EQUALITY_TOLERANCE)
 
                     # Charging/discharging complementarity constraints
-                    if params.slacks.shared_ess.complementarity:
-                        model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch == model.slack_shared_es_comp[e, s_m, s_o, p])
-                    else:
-                        model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch <= EQUALITY_TOLERANCE)
+                    if params.ess_model == ESS_MODEL_EXACT:
+                        if params.slacks.shared_ess.complementarity:
+                            model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch == model.slack_shared_es_comp[e, s_m, s_o, p])
+                        else:
+                            model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch <= EQUALITY_TOLERANCE)
+                    elif params.ess_model == ESS_MODEL_LP_EXTENDED:
+                        soc_prev = soc_init
+                        if p > 0:
+                            soc_prev = model.shared_es_soc[e, s_m, s_o, p - 1]
+                        model.shared_energy_storage_operation.add(sch * eff_charge <= e_max - soc_prev)
+                        model.shared_energy_storage_operation.add(sdch <= (soc_prev - e_max) * eff_discharge)
+                        model.shared_energy_storage_operation.add(sdch <= s_max - sch)
 
                     # State-of-Charge
                     soc_prev = soc_init
@@ -724,8 +741,8 @@ def _build_model(network, params):
                     model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] <= soc_final + EQUALITY_TOLERANCE)
                     model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] >= soc_final - EQUALITY_TOLERANCE)
 
-        model.shared_energy_storage_s_sensitivities.add(model.shared_es_s_rated[e] <= model.shared_es_s_rated_fixed[e])
-        model.shared_energy_storage_e_sensitivities.add(model.shared_es_e_rated[e] <= model.shared_es_e_rated_fixed[e])
+        model.shared_energy_storage_s_sensitivities.add(s_max <= model.shared_es_s_rated_fixed[e])
+        model.shared_energy_storage_e_sensitivities.add(e_max <= model.shared_es_e_rated_fixed[e])
 
     # - Node Balance constraints
     model.node_balance_cons_p = pe.ConstraintList()
