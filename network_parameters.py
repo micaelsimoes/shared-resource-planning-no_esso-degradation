@@ -123,8 +123,11 @@ def _read_network_parameters_from_file(parameters, filename):
     if 'ess_model' in params_data:
         if params_data['ess_model'] == 'EXACT':
             parameters.ess_model = ESS_MODEL_EXACT
-        elif params_data['ess_model'] == 'LP_EXTENDED':
-            parameters.ess_model = ESS_MODEL_LP_EXTENDED
+        elif params_data['ess_model'] == 'LP_SIMPLIFIED':
+            parameters.ess_model = ESS_MODEL_LP_SIMPLIFIED
+        else:
+            print('[ERROR] Invalid ESS model type. Exiting...')
+            exit(ERROR_PARAMS_FILE)
     if 'branch_limit_type' in params_data:
         if params_data['branch_limit_type'] == 'CURRENT':
             parameters.branch_limit_type = BRANCH_LIMIT_CURRENT

@@ -626,19 +626,11 @@ def _build_model(network, params):
                                 model.energy_storage_ch_dch_exclusion.add(sch * sdch == model.slack_es_comp[e, s_m, s_o, p])
                             else:
                                 model.energy_storage_ch_dch_exclusion.add(sch * sdch <= EQUALITY_TOLERANCE)
-                        elif params.ess_model == ESS_MODEL_LP_EXTENDED:
-                            soc_prev = soc_init
-                            if p > 0:
-                                soc_prev = model.es_soc[e, s_m, s_o, p - 1]
-                            model.energy_storage_operation.add(sch * eff_charge <= energy_storage.e - soc_prev)
-                            model.energy_storage_operation.add(sdch <= (soc_prev - energy_storage.e) * eff_discharge)
-                            model.energy_storage_operation.add(sdch <= energy_storage.s - sch)
 
                         # State-of-Charge
                         soc_prev = soc_init
                         if p > 0:
                             soc_prev = model.es_soc[e, s_m, s_o, p - 1]
-
                         model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] <= soc_prev + (sch * eff_charge - sdch / eff_discharge) + EQUALITY_TOLERANCE)
                         model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] >= soc_prev + (sch * eff_charge - sdch / eff_discharge) - EQUALITY_TOLERANCE)
 
@@ -718,13 +710,6 @@ def _build_model(network, params):
                             model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch == model.slack_shared_es_comp[e, s_m, s_o, p])
                         else:
                             model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch <= EQUALITY_TOLERANCE)
-                    elif params.ess_model == ESS_MODEL_LP_EXTENDED:
-                        soc_prev = soc_init
-                        if p > 0:
-                            soc_prev = model.shared_es_soc[e, s_m, s_o, p - 1]
-                        model.shared_energy_storage_operation.add(sch * eff_charge <= e_max - soc_prev)
-                        model.shared_energy_storage_operation.add(sdch <= (soc_prev - e_max) * eff_discharge)
-                        model.shared_energy_storage_operation.add(sdch <= s_max - sch)
 
                     # State-of-Charge
                     soc_prev = soc_init
