@@ -479,7 +479,7 @@ def _build_model(network, params):
             for s_o in model.scenarios_operation:
                 for p in model.periods:
                     model.shared_es_soc[e, s_m, s_o, p] = shared_energy_storage.e * ENERGY_STORAGE_RELATIVE_INIT_SOC
-    if params.slacks.shared_ess.complementarity:
+    if params.ess_model == ESS_MODEL_EXACT and params.slacks.shared_ess.complementarity:
         model.slack_shared_es_comp = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     if params.slacks.shared_ess.charging:
         model.slack_shared_es_ch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.Reals, initialize=0.0)
