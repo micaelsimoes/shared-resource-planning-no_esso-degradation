@@ -15,6 +15,7 @@ class NetworkParameters:
         self.rg_curt = False
         self.l_curt = False
         self.enforce_vg = False
+        self.ess_model = ESS_MODEL_EXACT
         self.branch_limit_type = BRANCH_LIMIT_CURRENT
         self.slacks = Slacks()
         self.print_to_screen = False
@@ -119,6 +120,11 @@ def _read_network_parameters_from_file(parameters, filename):
     parameters.rg_curt = bool(params_data['rg_curt'])
     parameters.l_curt = bool(params_data['l_curt'])
     parameters.enforce_vg = bool(params_data['enforce_vg'])
+    if 'ess_model' in params_data:
+        if params_data['ess_model'] == 'EXACT':
+            parameters.ess_model = ESS_MODEL_EXACT
+        elif params_data['ess_model'] == 'LP_EXTENDED':
+            parameters.ess_model = ESS_MODEL_LP_EXTENDED
     if 'branch_limit_type' in params_data:
         if params_data['branch_limit_type'] == 'CURRENT':
             parameters.branch_limit_type = BRANCH_LIMIT_CURRENT
