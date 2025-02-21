@@ -125,6 +125,8 @@ def _read_network_parameters_from_file(parameters, filename):
             parameters.ess_model = ESS_MODEL_EXACT
         elif params_data['ess_model'] == 'LP_SIMPLIFIED':
             parameters.ess_model = ESS_MODEL_LP_SIMPLIFIED
+        elif params_data['ess_model'] == 'LP_RELAXED':
+            parameters.ess_model = ESS_MODEL_LP_RELAXED
         else:
             print('[ERROR] Invalid ESS model type. Exiting...')
             exit(ERROR_PARAMS_FILE)

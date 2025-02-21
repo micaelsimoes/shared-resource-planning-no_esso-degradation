@@ -486,6 +486,9 @@ def _build_model(network, params):
         model.slack_shared_es_dch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.Reals, initialize=0.0)
     if params.slacks.shared_ess.day_balance:
         model.slack_shared_es_soc_final = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.Reals, initialize=0.0)
+    if params.ess_model == ESS_MODEL_LP_RELAXED:
+        model.shared_es_y = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=(0.00, 1.00), initialize=0.0)
+        model.shared_es_z = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=(0.00, 1.00), initialize=0.0)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
@@ -674,17 +677,24 @@ def _build_model(network, params):
                     qdch = model.shared_es_qdch[e, s_m, s_o, p]
 
                     # ESS operation
-                    model.shared_energy_storage_operation.add(sch <= s_max)
+                    if params.ess_model in [ESS_MODEL_EXACT, ESS_MODEL_LP_SIMPLIFIED]:
+                        model.shared_energy_storage_operation.add(sch <= s_max)
                     model.shared_energy_storage_operation.add(pch <= s_max)
                     model.shared_energy_storage_operation.add(qch <= s_max)
                     model.shared_energy_storage_operation.add(qch <= tan(max_phi) * pch)
                     model.shared_energy_storage_operation.add(qch >= tan(min_phi) * pch)
 
-                    model.shared_energy_storage_operation.add(sdch <= s_max)
+                    if params.ess_model in [ESS_MODEL_EXACT, ESS_MODEL_LP_SIMPLIFIED]:
+                        model.shared_energy_storage_operation.add(sdch <= s_max)
                     model.shared_energy_storage_operation.add(pdch <= s_max)
                     model.shared_energy_storage_operation.add(qdch <= s_max)
                     model.shared_energy_storage_operation.add(qdch <= tan(max_phi) * pdch)
                     model.shared_energy_storage_operation.add(qdch >= tan(min_phi) * pdch)
+
+                    if params.ess_model == ESS_MODEL_LP_RELAXED:
+                        model.shared_energy_storage_operation.add(sch <= s_max * model.shared_es_z[e, s_m, s_o, p])
+                        model.shared_energy_storage_operation.add(sdch <= s_max * model.shared_es_y[e, s_m, s_o, p])
+                        model.shared_energy_storage_operation.add(model.shared_es_z[e, s_m, s_o, p] + model.shared_es_y[e, s_m, s_o, p] <= 1)
 
                     # Pnet and Qnet definition
                     model.shared_energy_storage_operation.add(model.shared_es_pnet[e, s_m, s_o, p] <= pch - pdch + EQUALITY_TOLERANCE)
@@ -710,13 +720,17 @@ def _build_model(network, params):
                             model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch == model.slack_shared_es_comp[e, s_m, s_o, p])
                         else:
                             model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch <= EQUALITY_TOLERANCE)
+                    elif params.ess_model == ESS_MODEL_LP_RELAXED:
+                        model.shared_energy_storage_operation.add(sch <= s_max)
+
 
                     # State-of-Charge
-                    soc_prev = soc_init
-                    if p > 0:
-                        soc_prev = model.shared_es_soc[e, s_m, s_o, p - 1]
-                    model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] <= soc_prev + (sch * eff_charge - sdch / eff_discharge) + EQUALITY_TOLERANCE)
-                    model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] >= soc_prev + (sch * eff_charge - sdch / eff_discharge) - EQUALITY_TOLERANCE)
+                    if params.ess_model in [ESS_MODEL_EXACT, ESS_MODEL_LP_SIMPLIFIED, ESS_MODEL_LP_RELAXED]:
+                        soc_prev = soc_init
+                        if p > 0:
+                            soc_prev = model.shared_es_soc[e, s_m, s_o, p - 1]
+                        model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] <= soc_prev + (sch * eff_charge - sdch / eff_discharge) + EQUALITY_TOLERANCE)
+                        model.shared_energy_storage_balance.add(model.shared_es_soc[e, s_m, s_o, p] >= soc_prev + (sch * eff_charge - sdch / eff_discharge) - EQUALITY_TOLERANCE)
 
                 # Day balance
                 if params.slacks.shared_ess.day_balance:
