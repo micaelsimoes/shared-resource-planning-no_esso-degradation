@@ -1807,6 +1807,7 @@ def _write_network_energy_storage_results_to_excel(network_planning, workbook, r
             for energy_storage in network.energy_storages:
 
                 es_id = energy_storage.es_id
+                node_id = energy_storage.bus
 
                 # - Active Power
                 sheet.cell(row=row_idx, column=1).value = es_id
