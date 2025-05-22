@@ -1821,13 +1821,13 @@ def _process_results(network, model, params, results=dict()):
             if params.fl_reg:
                 for i in model.loads:
                     load_id = network.loads[i].load_id
-                    processed_results['scenarios'][s_m][s_o]['consumption']['p_up'][load_id] = []
-                    processed_results['scenarios'][s_m][s_o]['consumption']['p_down'][load_id] = []
+                    processed_results['scenarios'][s_m][s_o]['consumption']['pc_flex'][load_id] = []
+                    processed_results['scenarios'][s_m][s_o]['consumption']['qc_flex'][load_id] = []
                     for p in model.periods:
-                        p_up = pe.value(model.flex_p_up[i, s_m, s_o, p]) * network.baseMVA
-                        p_down = pe.value(model.flex_p_down[i, s_m, s_o, p]) * network.baseMVA
-                        processed_results['scenarios'][s_m][s_o]['consumption']['p_up'][load_id].append(p_up)
-                        processed_results['scenarios'][s_m][s_o]['consumption']['p_down'][load_id].append(p_down)
+                        pc_flex = pe.value(model.flex_p_up[i, s_m, s_o, p] + model.flex_p_down[i, s_m, s_o, p]) * network.baseMVA
+                        qc_flex = pe.value(model.flex_p_up[i, s_m, s_o, p] + model.flex_p_down[i, s_m, s_o, p]) * network.baseMVA
+                        processed_results['scenarios'][s_m][s_o]['consumption']['pc_flex'][load_id].append(pc_flex)
+                        processed_results['scenarios'][s_m][s_o]['consumption']['qc_flex'][load_id].append(qc_flex)
 
             # Shared Energy Storages
             for e in model.shared_energy_storages:
