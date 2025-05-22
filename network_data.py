@@ -715,6 +715,23 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
                                 expected_qnet[load_id][p] += q_net * omega_m * omega_s
                             row_idx = row_idx + 1
 
+                        if network_planning.params.fl_reg or network_planning.params.l_curt:
+
+                            # - Reactive power net consumption
+                            sheet.cell(row=row_idx, column=1).value = load_id
+                            sheet.cell(row=row_idx, column=2).value = node_id
+                            sheet.cell(row=row_idx, column=3).value = int(year)
+                            sheet.cell(row=row_idx, column=4).value = day
+                            sheet.cell(row=row_idx, column=5).value = 'Qc_net, [MVAr]'
+                            sheet.cell(row=row_idx, column=6).value = s_m
+                            sheet.cell(row=row_idx, column=7).value = s_o
+                            for p in range(network.num_instants):
+                                q_net = results[year][day]['scenarios'][s_m][s_o]['consumption']['qc_net'][load_id][p]
+                                sheet.cell(row=row_idx, column=p + 8).value = q_net
+                                sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
+                                expected_qnet[load_id][p] += q_net * omega_m * omega_s
+                            row_idx = row_idx + 1
+
             for load in network.loads:
 
                 load_id = load.load_id
@@ -831,6 +848,21 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
                     sheet.cell(row=row_idx, column=3).value = int(year)
                     sheet.cell(row=row_idx, column=4).value = day
                     sheet.cell(row=row_idx, column=5).value = 'Qc_net, [MW]'
+                    sheet.cell(row=row_idx, column=6).value = 'Expected'
+                    sheet.cell(row=row_idx, column=7).value = '-'
+                    for p in range(network.num_instants):
+                        sheet.cell(row=row_idx, column=p + 8).value = expected_qnet[load_id][p]
+                        sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
+                    row_idx = row_idx + 1
+
+                if network_planning.params.fl_reg or network_planning.params.l_curt:
+
+                    # - Reactive power net consumption
+                    sheet.cell(row=row_idx, column=1).value = load_id
+                    sheet.cell(row=row_idx, column=2).value = node_id
+                    sheet.cell(row=row_idx, column=3).value = int(year)
+                    sheet.cell(row=row_idx, column=4).value = day
+                    sheet.cell(row=row_idx, column=5).value = 'Qc_net, [MVAr]'
                     sheet.cell(row=row_idx, column=6).value = 'Expected'
                     sheet.cell(row=row_idx, column=7).value = '-'
                     for p in range(network.num_instants):
