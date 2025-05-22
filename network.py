@@ -363,6 +363,8 @@ def _build_model(network, params):
     if params.fl_reg:
         model.flex_p_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.flex_p_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.flex_q_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.flex_q_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         if params.slacks.flexibility.day_balance:
             model.slack_flex_p_balance = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.Reals, initialize=0.0)
         for c in model.loads:
@@ -381,6 +383,8 @@ def _build_model(network, params):
                             if params.slacks.flexibility.day_balance:
                                 model.slack_flex_p_balance[c, s_m, s_o].setub(EQUALITY_TOLERANCE)
                                 model.slack_flex_p_balance[c, s_m, s_o].setlb(-EQUALITY_TOLERANCE)
+                        model.flex_q_up[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                        model.flex_q_down[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
     if params.l_curt:
         model.pc_curt_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.pc_curt_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -745,6 +749,7 @@ def _build_model(network, params):
                             Qd += model.qc[c, s_m, s_o, p]
                             if params.fl_reg and network.loads[c].fl_reg:
                                 Pd += (model.flex_p_up[c, s_m, s_o, p] - model.flex_p_down[c, s_m, s_o, p])
+                                Pd += (model.flex_q_up[c, s_m, s_o, p] - model.flex_q_down[c, s_m, s_o, p])
                             if params.l_curt:
                                 Pd -= (model.pc_curt_down[c, s_m, s_o, p] - model.pc_curt_up[c, s_m, s_o, p])
                                 Qd -= (model.qc_curt_down[c, s_m, s_o, p] - model.qc_curt_up[c, s_m, s_o, p])
@@ -954,9 +959,9 @@ def _build_model(network, params):
                 if params.fl_reg:
                     for c in model.loads:
                         for p in model.periods:
-                            flex_p_up = model.flex_p_up[c, s_m, s_o, p]
-                            flex_p_down = model.flex_p_down[c, s_m, s_o, p]
-                            obj_scenario += c_flex[s_m][p] * network.baseMVA * (flex_p_down + flex_p_up)
+                            flex_pc = model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p]
+                            flex_qc = model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]
+                            obj_scenario += c_flex[s_m][p] * network.baseMVA * (flex_pc + flex_qc)
 
                 # Load curtailment
                 if params.l_curt:
@@ -1022,9 +1027,9 @@ def _build_model(network, params):
                 if params.fl_reg:
                     for c in model.loads:
                         for p in model.periods:
-                            flex_p_up = model.flex_p_up[c, s_m, s_o, p]
-                            flex_p_down = model.flex_p_down[c, s_m, s_o, p]
-                            obj_scenario += model.penalty_flex_usage * network.baseMVA * (flex_p_down + flex_p_up)
+                            flex_pc = (model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p])
+                            flex_qc = (model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p])
+                            obj_scenario += model.penalty_flex_usage * network.baseMVA * (flex_pc + flex_qc)
 
                 # ESS utilization
                 if params.es_reg:
