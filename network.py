@@ -1619,8 +1619,8 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['branches']['ratio'] = dict()
 
             if params.fl_reg:
-                processed_results['scenarios'][s_m][s_o]['consumption']['p_up'] = dict()
-                processed_results['scenarios'][s_m][s_o]['consumption']['p_down'] = dict()
+                processed_results['scenarios'][s_m][s_o]['consumption']['pc_flex'] = dict()
+                processed_results['scenarios'][s_m][s_o]['consumption']['qc_flex'] = dict()
 
             if params.l_curt:
                 processed_results['scenarios'][s_m][s_o]['consumption']['pc_curt'] = dict()
@@ -1688,8 +1688,8 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['consumption']['pc_net'][load_id] = [0.00 for _ in range(network.num_instants)]
                 processed_results['scenarios'][s_m][s_o]['consumption']['qc_net'][load_id] = [0.00 for _ in range(network.num_instants)]
                 if params.fl_reg:
-                    processed_results['scenarios'][s_m][s_o]['consumption']['p_up'][load_id] = []
-                    processed_results['scenarios'][s_m][s_o]['consumption']['p_down'][load_id] = []
+                    processed_results['scenarios'][s_m][s_o]['consumption']['pc_flex'][load_id] = []
+                    processed_results['scenarios'][s_m][s_o]['consumption']['qc_flex'][load_id] = []
                 if params.l_curt:
                     processed_results['scenarios'][s_m][s_o]['consumption']['pc_curt'][load_id] = []
                     processed_results['scenarios'][s_m][s_o]['consumption']['qc_curt'][load_id] = []
@@ -1701,17 +1701,18 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['consumption']['pc_net'][load_id][p] += pc
                     processed_results['scenarios'][s_m][s_o]['consumption']['qc_net'][load_id][p] += qc
                     if params.fl_reg:
-                        pup = pe.value(model.flex_p_up[c, s_m, s_o, p]) * network.baseMVA
-                        pdown = pe.value(model.flex_p_down[c, s_m, s_o, p]) * network.baseMVA
-                        processed_results['scenarios'][s_m][s_o]['consumption']['p_up'][load_id].append(pup)
-                        processed_results['scenarios'][s_m][s_o]['consumption']['p_down'][load_id].append(pdown)
-                        processed_results['scenarios'][s_m][s_o]['consumption']['pc_net'][load_id][p] += pup - pdown
+                        pc_flex = pe.value(model.flex_p_up[c, s_m, s_o, p] - model.flex_p_down[c, s_m, s_o, p]) * network.baseMVA
+                        qc_flex = pe.value(model.flex_q_up[c, s_m, s_o, p] - model.flex_q_down[c, s_m, s_o, p]) * network.baseMVA
+                        processed_results['scenarios'][s_m][s_o]['consumption']['pc_flex'][load_id].append(pc_flex)
+                        processed_results['scenarios'][s_m][s_o]['consumption']['qc_flex'][load_id].append(qc_flex)
+                        processed_results['scenarios'][s_m][s_o]['consumption']['pc_net'][load_id][p] += pc_flex
+                        processed_results['scenarios'][s_m][s_o]['consumption']['qc_net'][load_id][p] += qc_flex
                     if params.l_curt:
                         pc_curt = pe.value(model.pc_curt_down[c, s_m, s_o, p] - model.pc_curt_up[c, s_m, s_o, p]) * network.baseMVA
                         qc_curt = pe.value(model.qc_curt_down[c, s_m, s_o, p] - model.qc_curt_up[c, s_m, s_o, p]) * network.baseMVA
                         processed_results['scenarios'][s_m][s_o]['consumption']['pc_curt'][load_id].append(pc_curt)
-                        processed_results['scenarios'][s_m][s_o]['consumption']['pc_net'][load_id][p] -= pc_curt
                         processed_results['scenarios'][s_m][s_o]['consumption']['qc_curt'][load_id].append(qc_curt)
+                        processed_results['scenarios'][s_m][s_o]['consumption']['pc_net'][load_id][p] -= pc_curt
                         processed_results['scenarios'][s_m][s_o]['consumption']['qc_net'][load_id][p] -= qc_curt
 
             # Generation
@@ -1980,8 +1981,8 @@ def _process_results_interface(network, model):
                     results[node_id][s_m][s_o]['q'] = [0.0 for _ in model.periods]
                     for p in model.periods:
                         vmag = sqrt(pe.value(model.e_actual[node_idx, s_m, s_o, p]**2 + model.f_actual[node_idx, s_m, s_o, p]**2))
-                        pf_p = pe.value(model.pc[load_idx, s_m, s_o, p]) * network.baseMVA
-                        pf_q = pe.value(model.qc[load_idx, s_m, s_o, p]) * network.baseMVA
+                        pf_p = pe.value(model.pc[load_idx, s_m, s_o, p] + model.flex_p_up[load_idx, s_m, s_o, p] - model.flex_p_down[load_idx, s_m, s_o, p]) * network.baseMVA
+                        pf_q = pe.value(model.qc[load_idx, s_m, s_o, p] + model.flex_q_up[load_idx, s_m, s_o, p] - model.flex_q_down[load_idx, s_m, s_o, p]) * network.baseMVA
                         results[node_id][s_m][s_o]['v'][p] = vmag
                         results[node_id][s_m][s_o]['p'][p] = pf_p
                         results[node_id][s_m][s_o]['q'][p] = pf_q
@@ -2038,9 +2039,9 @@ def _compute_objective_function_value(network, model, params):
                 if params.fl_reg:
                     for c in model.loads:
                         for p in model.periods:
-                            flex_up = pe.value(model.flex_p_up[c, s_m, s_o, p])
-                            flex_down = pe.value(model.flex_p_down[c, s_m, s_o, p])
-                            obj_scenario += c_flex[s_m][p] * network.baseMVA * (flex_down + flex_up)
+                            pc_flex = pe.value(model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p])
+                            qc_flex = pe.value(model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p])
+                            obj_scenario += c_flex[s_m][p] * network.baseMVA * (pc_flex + qc_flex)
 
                 # Load curtailment
                 if params.l_curt:
@@ -2089,9 +2090,9 @@ def _compute_objective_function_value(network, model, params):
                 if params.fl_reg:
                     for c in model.loads:
                         for p in model.periods:
-                            flex_p_up = pe.value(model.flex_p_up[c, s_m, s_o, p])
-                            flex_p_down = pe.value(model.flex_p_down[c, s_m, s_o, p])
-                            obj_scenario += pen_flex_usage * network.baseMVA * (flex_p_down + flex_p_up)
+                            pc_flex = pe.value(model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p])
+                            qc_flex = pe.value(model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p])
+                            obj_scenario += pen_flex_usage * network.baseMVA * (pc_flex + qc_flex)
 
                 obj += obj_scenario * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
 
@@ -2122,9 +2123,9 @@ def _compute_objective_function_value_per_scenario(network, model, params, s_m, 
         if params.fl_reg:
             for c in model.loads:
                 for p in model.periods:
-                    flex_up = pe.value(model.flex_p_up[c, s_m, s_o, p])
-                    flex_down = pe.value(model.flex_p_down[c, s_m, s_o, p])
-                    obj += c_flex[s_m][p] * network.baseMVA * (flex_down + flex_up)
+                    pc_flex = pe.value(model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p])
+                    qc_flex = pe.value(model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p])
+                    obj += c_flex[s_m][p] * network.baseMVA * (pc_flex + qc_flex)
 
         # Load curtailment
         if params.l_curt:
@@ -2166,9 +2167,9 @@ def _compute_objective_function_value_per_scenario(network, model, params, s_m, 
         if params.fl_reg:
             for c in model.loads:
                 for p in model.periods:
-                    flex_p_up = pe.value(model.flex_p_up[c, s_m, s_o, p])
-                    flex_p_down = pe.value(model.flex_p_down[c, s_m, s_o, p])
-                    obj += pen_flex_usage * network.baseMVA * (flex_p_down + flex_p_up)
+                    pc_flex = pe.value(model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p])
+                    qc_flex = pe.value(model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p])
+                    obj += pen_flex_usage * network.baseMVA * (pc_flex + qc_flex)
 
     return obj
 
@@ -2217,6 +2218,9 @@ def _compute_total_load(network, model, params):
                 for p in model.periods:
                     total_load_scenario['p'] += network.baseMVA * pe.value(model.pc[c, s_m, s_o, p])
                     total_load_scenario['q'] += network.baseMVA * pe.value(model.qc[c, s_m, s_o, p])
+                    if params.fl_reg:
+                        total_load_scenario['p'] += network.baseMVA * pe.value(model.flex_p_up[c, s_m, s_o, p] - model.flex_p_down[c, s_m, s_o, p])
+                        total_load_scenario['q'] += network.baseMVA * pe.value(model.flex_q_up[c, s_m, s_o, p] - model.flex_q_down[c, s_m, s_o, p])
                     if params.l_curt:
                         total_load_scenario['p'] -= network.baseMVA * pe.value(model.pc_curt_down[c, s_m, s_o, p] - model.pc_curt_up[c, s_m, s_o, p])
                         total_load_scenario['q'] -= network.baseMVA * pe.value(model.qc_curt_down[c, s_m, s_o, p] - model.qc_curt_up[c, s_m, s_o, p])
@@ -2407,29 +2411,29 @@ def _compute_load_curtailment_per_scenario(network, model, params, s_m, s_o):
 
 def _compute_flexibility_used(network, model, params):
 
-    flexibility_used = 0.0
+    flexibility_used = {'p': 0.0, 'q': 0.0}
 
     if params.fl_reg:
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
-                flexibility_used_scenario = 0.0
+                flexibility_used_scenario = {'p': 0.0, 'q': 0.0}
                 for c in model.loads:
                     for p in model.periods:
-                        flexibility_used_scenario += pe.value(model.flex_p_up[c, s_m, s_o, p]) * network.baseMVA
-                        flexibility_used_scenario += pe.value(model.flex_p_down[c, s_m, s_o, p]) * network.baseMVA
-
-                flexibility_used += flexibility_used_scenario * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
+                        flexibility_used_scenario['p'] += pe.value(model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p]) * network.baseMVA
+                        flexibility_used_scenario['q'] += pe.value(model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]) * network.baseMVA
+                flexibility_used['p'] += flexibility_used_scenario['p'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
+                flexibility_used['q'] += flexibility_used_scenario['q'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
 
     return flexibility_used
 
 
 def _compute_flexibility_per_scenario(network, model, params, s_m, s_o):
-    flexibility_used = 0.0
+    flexibility_used = {'p': 0.0, 'q': 0.0}
     if params.fl_reg:
         for c in model.loads:
             for p in model.periods:
-                flexibility_used += pe.value(model.flex_p_up[c, s_m, s_o, p]) * network.baseMVA
-                flexibility_used += pe.value(model.flex_p_down[c, s_m, s_o, p]) * network.baseMVA
+                flexibility_used['p'] += pe.value(model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p]) * network.baseMVA
+                flexibility_used['q'] += pe.value(model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]) * network.baseMVA
     return flexibility_used
 
 
@@ -2440,8 +2444,8 @@ def _compute_cost_flexibility_per_scenario(network, model, params, s_m, s_o):
         if params.fl_reg:
             for c in model.loads:
                 for p in model.periods:
-                    cost += c_flex[p] * pe.value(model.flex_p_up[c, s_m, s_o, p]) * network.baseMVA
-                    cost += c_flex[p] * pe.value(model.flex_p_down[c, s_m, s_o, p]) * network.baseMVA
+                    cost += c_flex[p] * pe.value(model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p]) * network.baseMVA
+                    cost += c_flex[p] * pe.value(model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]) * network.baseMVA
     return cost
 
 
