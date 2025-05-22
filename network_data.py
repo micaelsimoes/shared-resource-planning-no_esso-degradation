@@ -555,21 +555,21 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
             network = network_planning.network[year][day]
 
             expected_pc = dict()
-            expected_flex_up = dict()
-            expected_flex_down = dict()
-            expected_pc_curt = dict()
-            expected_pnet = dict()
             expected_qc = dict()
+            expected_pc_flex = dict()
+            expected_qc_flex = dict()
+            expected_pc_curt = dict()
             expected_qc_curt = dict()
+            expected_pnet = dict()
             expected_qnet = dict()
             for load in network.loads:
                 expected_pc[load.load_id] = [0.0 for _ in range(network.num_instants)]
-                expected_flex_up[load.load_id] = [0.0 for _ in range(network.num_instants)]
-                expected_flex_down[load.load_id] = [0.0 for _ in range(network.num_instants)]
-                expected_pc_curt[load.load_id] = [0.0 for _ in range(network.num_instants)]
-                expected_pnet[load.load_id] = [0.0 for _ in range(network.num_instants)]
                 expected_qc[load.load_id] = [0.0 for _ in range(network.num_instants)]
+                expected_pc_flex[load.load_id] = [0.0 for _ in range(network.num_instants)]
+                expected_qc_flex[load.load_id] = [0.0 for _ in range(network.num_instants)]
+                expected_pc_curt[load.load_id] = [0.0 for _ in range(network.num_instants)]
                 expected_qc_curt[load.load_id] = [0.0 for _ in range(network.num_instants)]
+                expected_pnet[load.load_id] = [0.0 for _ in range(network.num_instants)]
                 expected_qnet[load.load_id] = [0.0 for _ in range(network.num_instants)]
 
             for s_m in results[year][day]['scenarios']:
@@ -599,34 +599,19 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
 
                         if network_planning.params.fl_reg:
 
-                            # - Flexibility, up
+                            # - Flexibility, Pc
                             sheet.cell(row=row_idx, column=1).value = load_id
                             sheet.cell(row=row_idx, column=2).value = node_id
                             sheet.cell(row=row_idx, column=3).value = int(year)
                             sheet.cell(row=row_idx, column=4).value = day
-                            sheet.cell(row=row_idx, column=5).value = 'Flex Up, [MW]'
+                            sheet.cell(row=row_idx, column=5).value = 'Pc_flex, [MW]'
                             sheet.cell(row=row_idx, column=6).value = s_m
                             sheet.cell(row=row_idx, column=7).value = s_o
                             for p in range(network.num_instants):
-                                flex = results[year][day]['scenarios'][s_m][s_o]['consumption']['p_up'][load_id][p]
-                                sheet.cell(row=row_idx, column=p + 8).value = flex
+                                pc_flex = results[year][day]['scenarios'][s_m][s_o]['consumption']['pc_flex'][load_id][p]
+                                sheet.cell(row=row_idx, column=p + 8).value = pc_flex
                                 sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
-                                expected_flex_up[load_id][p] += flex * omega_m * omega_s
-                            row_idx = row_idx + 1
-
-                            # - Flexibility, down
-                            sheet.cell(row=row_idx, column=1).value = load_id
-                            sheet.cell(row=row_idx, column=2).value = node_id
-                            sheet.cell(row=row_idx, column=3).value = int(year)
-                            sheet.cell(row=row_idx, column=4).value = day
-                            sheet.cell(row=row_idx, column=5).value = 'Flex Down, [MW]'
-                            sheet.cell(row=row_idx, column=6).value = s_m
-                            sheet.cell(row=row_idx, column=7).value = s_o
-                            for p in range(network.num_instants):
-                                flex = results[year][day]['scenarios'][s_m][s_o]['consumption']['p_down'][load_id][p]
-                                sheet.cell(row=row_idx, column=p + 8).value = flex
-                                sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
-                                expected_flex_down[load_id][p] += flex * omega_m * omega_s
+                                expected_pc_flex[load_id][p] += pc_flex * omega_m * omega_s
                             row_idx = row_idx + 1
 
                         if network_planning.params.l_curt:
@@ -679,6 +664,22 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
                             sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                             expected_qc[load_id][p] += qc * omega_m * omega_s
                         row_idx = row_idx + 1
+
+                        if network_planning.params.fl_reg:
+
+                            sheet.cell(row=row_idx, column=1).value = load_id
+                            sheet.cell(row=row_idx, column=2).value = node_id
+                            sheet.cell(row=row_idx, column=3).value = int(year)
+                            sheet.cell(row=row_idx, column=4).value = day
+                            sheet.cell(row=row_idx, column=5).value = 'Qc_flex, [MVAr]'
+                            sheet.cell(row=row_idx, column=6).value = s_m
+                            sheet.cell(row=row_idx, column=7).value = s_o
+                            for p in range(network.num_instants):
+                                qc_flex = results[year][day]['scenarios'][s_m][s_o]['consumption']['qc_flex'][load_id][p]
+                                sheet.cell(row=row_idx, column=p + 8).value = qc_flex
+                                sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
+                                expected_qc_flex[load_id][p] += qc_flex * omega_m * omega_s
+                            row_idx = row_idx + 1
 
                         if network_planning.params.l_curt:
 
@@ -734,29 +735,16 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
 
                 if network_planning.params.fl_reg:
 
-                    # - Flexibility, up
+                    # - Flexibility, Pc
                     sheet.cell(row=row_idx, column=1).value = load_id
                     sheet.cell(row=row_idx, column=2).value = node_id
                     sheet.cell(row=row_idx, column=3).value = int(year)
                     sheet.cell(row=row_idx, column=4).value = day
-                    sheet.cell(row=row_idx, column=5).value = 'Flex Up, [MW]'
+                    sheet.cell(row=row_idx, column=5).value = 'Pc_flex, [MW]'
                     sheet.cell(row=row_idx, column=6).value = 'Expected'
                     sheet.cell(row=row_idx, column=7).value = '-'
                     for p in range(network.num_instants):
-                        sheet.cell(row=row_idx, column=p + 8).value = expected_flex_up[load_id][p]
-                        sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
-                    row_idx = row_idx + 1
-
-                    # - Flexibility, down
-                    sheet.cell(row=row_idx, column=1).value = load_id
-                    sheet.cell(row=row_idx, column=2).value = node_id
-                    sheet.cell(row=row_idx, column=3).value = int(year)
-                    sheet.cell(row=row_idx, column=4).value = day
-                    sheet.cell(row=row_idx, column=5).value = 'Flex Down, [MW]'
-                    sheet.cell(row=row_idx, column=6).value = 'Expected'
-                    sheet.cell(row=row_idx, column=7).value = '-'
-                    for p in range(network.num_instants):
-                        sheet.cell(row=row_idx, column=p + 8).value = expected_flex_down[load_id][p]
+                        sheet.cell(row=row_idx, column=p + 8).value = expected_pc_flex[load_id][p]
                         sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                     row_idx = row_idx + 1
 
@@ -804,6 +792,21 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
                     sheet.cell(row=row_idx, column=p + 8).value = expected_qc[load_id][p]
                     sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                 row_idx = row_idx + 1
+
+                if network_planning.params.fl_reg:
+
+                    # - Flexibility, Qc
+                    sheet.cell(row=row_idx, column=1).value = load_id
+                    sheet.cell(row=row_idx, column=2).value = node_id
+                    sheet.cell(row=row_idx, column=3).value = int(year)
+                    sheet.cell(row=row_idx, column=4).value = day
+                    sheet.cell(row=row_idx, column=5).value = 'Qc_flex, [MVAr]'
+                    sheet.cell(row=row_idx, column=6).value = 'Expected'
+                    sheet.cell(row=row_idx, column=7).value = '-'
+                    for p in range(network.num_instants):
+                        sheet.cell(row=row_idx, column=p + 8).value = expected_qc_flex[load_id][p]
+                        sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
+                    row_idx = row_idx + 1
 
                 if network_planning.params.l_curt:
 
