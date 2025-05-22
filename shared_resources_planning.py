@@ -435,15 +435,15 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                                 tso_model[year][day].slack_f[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                                 tso_model[year][day].slack_f[adn_node_idx, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
 
-                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fixed = False
-                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setub(None)
-                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setlb(None)
-                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].fixed = False
-                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setub(None)
-                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setlb(None)
-                            if transmission_network.params.fl_reg:
-                                tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                                tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                            init_solution = consensus_vars['pf']['dso']['current'][adn_node_id]
+                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setub(init_solution[year][day]['p'][p] / s_base + EQUALITY_TOLERANCE)
+                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setlb(init_solution[year][day]['p'][p] / s_base - EQUALITY_TOLERANCE)
+                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setub(init_solution[year][day]['q'][p] / s_base + EQUALITY_TOLERANCE)
+                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setlb(init_solution[year][day]['q'][p] / s_base - EQUALITY_TOLERANCE)
+                            tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].setub(None)
+                            tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].setub(None)
+                            tso_model[year][day].flex_q_up[adn_load_idx, s_m, s_o, p].setub(None)
+                            tso_model[year][day].flex_q_down[adn_load_idx, s_m, s_o, p].setub(None)
                             if transmission_network.params.l_curt:
                                 tso_model[year][day].pc_curt_down[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                                 tso_model[year][day].pc_curt_up[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
@@ -470,8 +470,8 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                         for s_o in tso_model[year][day].scenarios_operation:
                             omega_oper = transmission_network.network[year][day].prob_operation_scenarios[s_o]
                             expected_vmag_sqr += omega_market * omega_oper * (tso_model[year][day].e[adn_node_idx, s_m, s_o, p] ** 2 + tso_model[year][day].f[adn_node_idx, s_m, s_o, p] ** 2)
-                            expected_pf_p += omega_market * omega_oper * tso_model[year][day].pc[adn_load_idx, s_m, s_o, p]
-                            expected_pf_q += omega_market * omega_oper * tso_model[year][day].qc[adn_load_idx, s_m, s_o, p]
+                            expected_pf_p += omega_market * omega_oper * (tso_model[year][day].pc[adn_load_idx, s_m, s_o, p] + tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p] - tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p])
+                            expected_pf_q += omega_market * omega_oper * (tso_model[year][day].qc[adn_load_idx, s_m, s_o, p] + tso_model[year][day].flex_q_up[adn_load_idx, s_m, s_o, p] - tso_model[year][day].flex_q_down[adn_load_idx, s_m, s_o, p])
                     tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] <= expected_vmag_sqr + SMALL_TOLERANCE)
                     tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] >= expected_vmag_sqr - SMALL_TOLERANCE)
                     tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_p[dn, p] <= expected_pf_p + SMALL_TOLERANCE)
