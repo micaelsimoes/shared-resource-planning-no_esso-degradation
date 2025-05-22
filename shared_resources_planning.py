@@ -3566,18 +3566,22 @@ def _write_network_consumption_results_per_operator(network, params, sheet, oper
         for day in results[year]:
 
             expected_pc = dict()
-            expected_flex_up = dict()
-            expected_flex_down = dict()
+            expected_pc_flex = dict()
             expected_pc_curt = dict()
             expected_pnet = dict()
             expected_qc = dict()
+            expected_qc_flex = dict()
+            expected_qc_curt = dict()
+            expected_qnet = dict()
             for load in network[year][day].loads:
                 expected_pc[load.load_id] = [0.0 for _ in range(network[year][day].num_instants)]
-                expected_flex_up[load.load_id] = [0.0 for _ in range(network[year][day].num_instants)]
-                expected_flex_down[load.load_id] = [0.0 for _ in range(network[year][day].num_instants)]
+                expected_pc_flex[load.load_id] = [0.0 for _ in range(network[year][day].num_instants)]
                 expected_pc_curt[load.load_id] = [0.0 for _ in range(network[year][day].num_instants)]
                 expected_pnet[load.load_id] = [0.0 for _ in range(network[year][day].num_instants)]
                 expected_qc[load.load_id] = [0.0 for _ in range(network[year][day].num_instants)]
+                expected_qc_flex[load.load_id] = [0.0 for _ in range(network[year][day].num_instants)]
+                expected_qc_curt[load.load_id] = [0.0 for _ in range(network[year][day].num_instants)]
+                expected_qnet[load.load_id] = [0.0 for _ in range(network[year][day].num_instants)]
 
             for s_m in results[year][day]['scenarios']:
                 omega_m = network[year][day].prob_market_scenarios[s_m]
@@ -3604,38 +3608,21 @@ def _write_network_consumption_results_per_operator(network, params, sheet, oper
 
                         if params.fl_reg:
 
-                            # - Flexibility, up
+                            # - Flexibility, Pc
                             sheet.cell(row=row_idx, column=1).value = operator_type
                             sheet.cell(row=row_idx, column=2).value = tn_node_id
                             sheet.cell(row=row_idx, column=3).value = load.load_id
                             sheet.cell(row=row_idx, column=4).value = load.bus
                             sheet.cell(row=row_idx, column=5).value = int(year)
                             sheet.cell(row=row_idx, column=6).value = day
-                            sheet.cell(row=row_idx, column=7).value = 'Flex Up, [MW]'
+                            sheet.cell(row=row_idx, column=7).value = 'Pc_flex, [MW]'
                             sheet.cell(row=row_idx, column=8).value = s_m
                             sheet.cell(row=row_idx, column=9).value = s_o
                             for p in range(network[year][day].num_instants):
-                                flex = results[year][day]['scenarios'][s_m][s_o]['consumption']['p_up'][load.load_id][p]
-                                sheet.cell(row=row_idx, column=p + 10).value = flex
+                                pc_flex = results[year][day]['scenarios'][s_m][s_o]['consumption']['pc_flex'][load.load_id][p]
+                                sheet.cell(row=row_idx, column=p + 10).value = pc_flex
                                 sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
-                                expected_flex_up[load.load_id][p] += flex * omega_m * omega_s
-                            row_idx = row_idx + 1
-
-                            # - Flexibility, down
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = load.load_id
-                            sheet.cell(row=row_idx, column=4).value = load.bus
-                            sheet.cell(row=row_idx, column=5).value = int(year)
-                            sheet.cell(row=row_idx, column=6).value = day
-                            sheet.cell(row=row_idx, column=7).value = 'Flex Down, [MW]'
-                            sheet.cell(row=row_idx, column=8).value = s_m
-                            sheet.cell(row=row_idx, column=9).value = s_o
-                            for p in range(network[year][day].num_instants):
-                                flex = results[year][day]['scenarios'][s_m][s_o]['consumption']['p_down'][load.load_id][p]
-                                sheet.cell(row=row_idx, column=p + 10).value = flex
-                                sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
-                                expected_flex_down[load.load_id][p] += flex * omega_m * omega_s
+                                expected_pc_flex[load.load_id][p] += pc_flex * omega_m * omega_s
                             row_idx = row_idx + 1
 
                         if params.l_curt:
@@ -3695,6 +3682,65 @@ def _write_network_consumption_results_per_operator(network, params, sheet, oper
                             expected_qc[load.load_id][p] += qc * omega_m * omega_s
                         row_idx = row_idx + 1
 
+                        if params.fl_reg:
+
+                            # - Flexibility, Qc
+                            sheet.cell(row=row_idx, column=1).value = operator_type
+                            sheet.cell(row=row_idx, column=2).value = tn_node_id
+                            sheet.cell(row=row_idx, column=3).value = load.load_id
+                            sheet.cell(row=row_idx, column=4).value = load.bus
+                            sheet.cell(row=row_idx, column=5).value = int(year)
+                            sheet.cell(row=row_idx, column=6).value = day
+                            sheet.cell(row=row_idx, column=7).value = 'Qc_flex, [MVAr]'
+                            sheet.cell(row=row_idx, column=8).value = s_m
+                            sheet.cell(row=row_idx, column=9).value = s_o
+                            for p in range(network[year][day].num_instants):
+                                qc_flex = results[year][day]['scenarios'][s_m][s_o]['consumption']['qc_flex'][load.load_id][p]
+                                sheet.cell(row=row_idx, column=p + 10).value = qc_flex
+                                sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
+                                expected_qc_flex[load.load_id][p] += qc_flex * omega_m * omega_s
+                            row_idx = row_idx + 1
+
+                        if params.l_curt:
+
+                            # - Reactive power curtailment
+                            sheet.cell(row=row_idx, column=1).value = operator_type
+                            sheet.cell(row=row_idx, column=2).value = tn_node_id
+                            sheet.cell(row=row_idx, column=3).value = load.load_id
+                            sheet.cell(row=row_idx, column=4).value = load.bus
+                            sheet.cell(row=row_idx, column=5).value = int(year)
+                            sheet.cell(row=row_idx, column=6).value = day
+                            sheet.cell(row=row_idx, column=7).value = 'Qc_curt, [MVAr]'
+                            sheet.cell(row=row_idx, column=8).value = s_m
+                            sheet.cell(row=row_idx, column=9).value = s_o
+                            for p in range(network[year][day].num_instants):
+                                qc_curt = results[year][day]['scenarios'][s_m][s_o]['consumption']['qc_curt'][load.load_id][p]
+                                sheet.cell(row=row_idx, column=p + 10).value = qc_curt
+                                sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
+                                if qc_curt >= SMALL_TOLERANCE:
+                                    sheet.cell(row=row_idx, column=p + 10).fill = violation_fill
+                                expected_qc_curt[load.load_id][p] += qc_curt * omega_m * omega_s
+                            row_idx = row_idx + 1
+
+                        if params.fl_reg or params.l_curt:
+
+                            # - Reactive power net consumption
+                            sheet.cell(row=row_idx, column=1).value = operator_type
+                            sheet.cell(row=row_idx, column=2).value = tn_node_id
+                            sheet.cell(row=row_idx, column=3).value = load.load_id
+                            sheet.cell(row=row_idx, column=4).value = load.bus
+                            sheet.cell(row=row_idx, column=5).value = int(year)
+                            sheet.cell(row=row_idx, column=6).value = day
+                            sheet.cell(row=row_idx, column=7).value = 'Qc_net, [MVAr]'
+                            sheet.cell(row=row_idx, column=8).value = s_m
+                            sheet.cell(row=row_idx, column=9).value = s_o
+                            for p in range(network[year][day].num_instants):
+                                q_net = results[year][day]['scenarios'][s_m][s_o]['consumption']['qc_net'][load.load_id][p]
+                                sheet.cell(row=row_idx, column=p + 10).value = q_net
+                                sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
+                                expected_qnet[load.load_id][p] += q_net * omega_m * omega_s
+                            row_idx = row_idx + 1
+
             for load in network[year][day].loads:
 
                 # - Active Power
@@ -3714,33 +3760,18 @@ def _write_network_consumption_results_per_operator(network, params, sheet, oper
 
                 if params.fl_reg:
 
-                    # - Flexibility, up
+                    # - Flexibility, active power
                     sheet.cell(row=row_idx, column=1).value = operator_type
                     sheet.cell(row=row_idx, column=2).value = tn_node_id
                     sheet.cell(row=row_idx, column=3).value = load.load_id
                     sheet.cell(row=row_idx, column=4).value = load.bus
                     sheet.cell(row=row_idx, column=5).value = int(year)
                     sheet.cell(row=row_idx, column=6).value = day
-                    sheet.cell(row=row_idx, column=7).value = 'Flex Up, [MW]'
+                    sheet.cell(row=row_idx, column=7).value = 'Pc_flex, [MW]'
                     sheet.cell(row=row_idx, column=8).value = 'Expected'
                     sheet.cell(row=row_idx, column=9).value = '-'
                     for p in range(network[year][day].num_instants):
-                        sheet.cell(row=row_idx, column=p + 10).value = expected_flex_up[load.load_id][p]
-                        sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
-                    row_idx = row_idx + 1
-
-                    # - Flexibility, down
-                    sheet.cell(row=row_idx, column=1).value = operator_type
-                    sheet.cell(row=row_idx, column=2).value = tn_node_id
-                    sheet.cell(row=row_idx, column=3).value = load.load_id
-                    sheet.cell(row=row_idx, column=4).value = load.bus
-                    sheet.cell(row=row_idx, column=5).value = int(year)
-                    sheet.cell(row=row_idx, column=6).value = day
-                    sheet.cell(row=row_idx, column=7).value = 'Flex Down, [MW]'
-                    sheet.cell(row=row_idx, column=8).value = 'Expected'
-                    sheet.cell(row=row_idx, column=9).value = '-'
-                    for p in range(network[year][day].num_instants):
-                        sheet.cell(row=row_idx, column=p + 10).value = expected_flex_down[load.load_id][p]
+                        sheet.cell(row=row_idx, column=p + 10).value = expected_pc_flex[load.load_id][p]
                         sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
                     row_idx = row_idx + 1
 
@@ -3794,6 +3825,59 @@ def _write_network_consumption_results_per_operator(network, params, sheet, oper
                     sheet.cell(row=row_idx, column=p + 10).value = expected_qc[load.load_id][p]
                     sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
                 row_idx = row_idx + 1
+
+                if params.fl_reg:
+
+                    # - Flexibility, reactive power
+                    sheet.cell(row=row_idx, column=1).value = operator_type
+                    sheet.cell(row=row_idx, column=2).value = tn_node_id
+                    sheet.cell(row=row_idx, column=3).value = load.load_id
+                    sheet.cell(row=row_idx, column=4).value = load.bus
+                    sheet.cell(row=row_idx, column=5).value = int(year)
+                    sheet.cell(row=row_idx, column=6).value = day
+                    sheet.cell(row=row_idx, column=7).value = 'Qc_flex, [MW]'
+                    sheet.cell(row=row_idx, column=8).value = 'Expected'
+                    sheet.cell(row=row_idx, column=9).value = '-'
+                    for p in range(network[year][day].num_instants):
+                        sheet.cell(row=row_idx, column=p + 10).value = expected_qc_flex[load.load_id][p]
+                        sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
+                    row_idx = row_idx + 1
+
+                if params.l_curt:
+
+                    # - Load curtailment (reactive power)
+                    sheet.cell(row=row_idx, column=1).value = operator_type
+                    sheet.cell(row=row_idx, column=2).value = tn_node_id
+                    sheet.cell(row=row_idx, column=3).value = load.load_id
+                    sheet.cell(row=row_idx, column=4).value = load.bus
+                    sheet.cell(row=row_idx, column=5).value = int(year)
+                    sheet.cell(row=row_idx, column=6).value = day
+                    sheet.cell(row=row_idx, column=7).value = 'Qc_curt, [MW]'
+                    sheet.cell(row=row_idx, column=8).value = 'Expected'
+                    sheet.cell(row=row_idx, column=9).value = '-'
+                    for p in range(network[year][day].num_instants):
+                        sheet.cell(row=row_idx, column=p + 10).value = expected_qc_curt[load.load_id][p]
+                        sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
+                        if expected_pc_curt[load.load_id][p] >= SMALL_TOLERANCE:
+                            sheet.cell(row=row_idx, column=p + 9).fill = violation_fill
+                    row_idx = row_idx + 1
+
+                if params.fl_reg or params.l_curt:
+
+                    # - Reactive power net consumption
+                    sheet.cell(row=row_idx, column=1).value = operator_type
+                    sheet.cell(row=row_idx, column=2).value = tn_node_id
+                    sheet.cell(row=row_idx, column=3).value = load.load_id
+                    sheet.cell(row=row_idx, column=4).value = load.bus
+                    sheet.cell(row=row_idx, column=5).value = int(year)
+                    sheet.cell(row=row_idx, column=6).value = day
+                    sheet.cell(row=row_idx, column=7).value = 'Qc_net, [MVAr]'
+                    sheet.cell(row=row_idx, column=8).value = 'Expected'
+                    sheet.cell(row=row_idx, column=9).value = '-'
+                    for p in range(network[year][day].num_instants):
+                        sheet.cell(row=row_idx, column=p + 10).value = expected_qnet[load.load_id][p]
+                        sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
+                    row_idx = row_idx + 1
 
     return row_idx
 
