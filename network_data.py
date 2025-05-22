@@ -260,7 +260,17 @@ def _write_main_info_to_excel(network_planning, workbook, results):
         sheet.cell(row=line_idx, column=1).value = 'Flexibility used, [MWh]'
         for year in network_planning.years:
             for day in network_planning.days:
-                sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['flex_used']
+                sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['flex_used']['p']
+                sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+                col_idx += 1
+        sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+
+        col_idx = 2
+        line_idx += 1
+        sheet.cell(row=line_idx, column=1).value = 'Flexibility used, [MVArh]'
+        for year in network_planning.years:
+            for day in network_planning.days:
+                sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['flex_used']['q']
                 sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
                 col_idx += 1
         sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style

@@ -2394,7 +2394,21 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
         col_idx += 1
         for year in results:
             for day in results[year]:
-                sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['flex_used']
+                sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['flex_used']['p']
+                sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+                col_idx += 1
+
+        line_idx += 1
+        col_idx = 1
+        sheet.cell(row=line_idx, column=col_idx).value = operator_type
+        col_idx += 1
+        sheet.cell(row=line_idx, column=col_idx).value = tn_node_id
+        col_idx += 1
+        sheet.cell(row=line_idx, column=col_idx).value = 'Flexibility used, [MVArh]'
+        col_idx += 1
+        for year in results:
+            for day in results[year]:
+                sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['flex_used']['q']
                 sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
                 col_idx += 1
 
@@ -2610,6 +2624,7 @@ def _write_operational_planning_main_info_to_excel_detailed(planning_problem, wo
     sheet.cell(row=line_idx, column=9).value = 'Load, [MWh]'
     sheet.cell(row=line_idx, column=10).value = 'Load, [MVArh]'
     sheet.cell(row=line_idx, column=11).value = 'Flexibility used, [MWh]'
+    sheet.cell(row=line_idx, column=11).value = 'Flexibility used, [MVArh]'
     sheet.cell(row=line_idx, column=12).value = 'Flexibility Cost, [€]'
     sheet.cell(row=line_idx, column=13).value = 'Generation, [MWh]'
     sheet.cell(row=line_idx, column=14).value = 'Generation, [MVArh]'
@@ -2666,42 +2681,44 @@ def _write_operational_planning_main_info_per_operator_detailed(network, sheet, 
                     sheet.cell(row=line_idx, column=10).number_format = decimal_style
 
                     # Flexibility, [MWh]
-                    sheet.cell(row=line_idx, column=11).value = results[year][day]['scenarios'][s_m][s_o]['flexibility']
+                    sheet.cell(row=line_idx, column=11).value = results[year][day]['scenarios'][s_m][s_o]['flexibility']['p']
                     sheet.cell(row=line_idx, column=11).number_format = decimal_style
-
-                    # Flexibility Cost, [€]
-                    sheet.cell(row=line_idx, column=12).value = results[year][day]['scenarios'][s_m][s_o]['cost_flexibility']
+                    sheet.cell(row=line_idx, column=12).value = results[year][day]['scenarios'][s_m][s_o]['flexibility']['q']
                     sheet.cell(row=line_idx, column=12).number_format = decimal_style
 
-                    # Generation
-                    sheet.cell(row=line_idx, column=13).value = results[year][day]['scenarios'][s_m][s_o]['generation']['p']
+                    # Flexibility Cost, [€]
+                    sheet.cell(row=line_idx, column=13).value = results[year][day]['scenarios'][s_m][s_o]['cost_flexibility']
                     sheet.cell(row=line_idx, column=13).number_format = decimal_style
-                    sheet.cell(row=line_idx, column=14).value = results[year][day]['scenarios'][s_m][s_o]['generation']['q']
+
+                    # Generation
+                    sheet.cell(row=line_idx, column=14).value = results[year][day]['scenarios'][s_m][s_o]['generation']['p']
                     sheet.cell(row=line_idx, column=14).number_format = decimal_style
+                    sheet.cell(row=line_idx, column=15).value = results[year][day]['scenarios'][s_m][s_o]['generation']['q']
+                    sheet.cell(row=line_idx, column=15).number_format = decimal_style
 
                     # Conventional Generation
-                    sheet.cell(row=line_idx, column=15).value = results[year][day]['scenarios'][s_m][s_o]['generation_conventional']['p']
-                    sheet.cell(row=line_idx, column=15).number_format = decimal_style
-                    sheet.cell(row=line_idx, column=16).value = results[year][day]['scenarios'][s_m][s_o]['generation_conventional']['q']
+                    sheet.cell(row=line_idx, column=16).value = results[year][day]['scenarios'][s_m][s_o]['generation_conventional']['p']
                     sheet.cell(row=line_idx, column=16).number_format = decimal_style
-
-                    # Conventional Generation Cost
-                    sheet.cell(row=line_idx, column=17).value = results[year][day]['scenarios'][s_m][s_o]['generation_conventional_cost']
+                    sheet.cell(row=line_idx, column=17).value = results[year][day]['scenarios'][s_m][s_o]['generation_conventional']['q']
                     sheet.cell(row=line_idx, column=17).number_format = decimal_style
 
-                    # Renewable Generation
-                    sheet.cell(row=line_idx, column=18).value = results[year][day]['scenarios'][s_m][s_o]['generation_renewable']['p']
+                    # Conventional Generation Cost
+                    sheet.cell(row=line_idx, column=18).value = results[year][day]['scenarios'][s_m][s_o]['generation_conventional_cost']
                     sheet.cell(row=line_idx, column=18).number_format = decimal_style
-                    sheet.cell(row=line_idx, column=19).value = results[year][day]['scenarios'][s_m][s_o]['generation_renewable']['q']
+
+                    # Renewable Generation
+                    sheet.cell(row=line_idx, column=19).value = results[year][day]['scenarios'][s_m][s_o]['generation_renewable']['p']
                     sheet.cell(row=line_idx, column=19).number_format = decimal_style
-                    sheet.cell(row=line_idx, column=20).value = results[year][day]['scenarios'][s_m][s_o]['generation_renewable']['s']
+                    sheet.cell(row=line_idx, column=20).value = results[year][day]['scenarios'][s_m][s_o]['generation_renewable']['q']
                     sheet.cell(row=line_idx, column=20).number_format = decimal_style
-                    sheet.cell(row=line_idx, column=21).value = results[year][day]['scenarios'][s_m][s_o]['generation_renewable_curtailed']['s']
+                    sheet.cell(row=line_idx, column=21).value = results[year][day]['scenarios'][s_m][s_o]['generation_renewable']['s']
                     sheet.cell(row=line_idx, column=21).number_format = decimal_style
+                    sheet.cell(row=line_idx, column=22).value = results[year][day]['scenarios'][s_m][s_o]['generation_renewable_curtailed']['s']
+                    sheet.cell(row=line_idx, column=22).number_format = decimal_style
 
                     # Losses
-                    sheet.cell(row=line_idx, column=22).value = results[year][day]['scenarios'][s_m][s_o]['losses']
-                    sheet.cell(row=line_idx, column=22).number_format = decimal_style
+                    sheet.cell(row=line_idx, column=23).value = results[year][day]['scenarios'][s_m][s_o]['losses']
+                    sheet.cell(row=line_idx, column=23).number_format = decimal_style
 
                     line_idx += 1
 
