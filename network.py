@@ -193,8 +193,7 @@ class Network:
 
     def read_network_operational_data_from_file(self):
         filename = os.path.join(self.data_dir, self.name, self.operational_data_file)
-        data = _read_network_operational_data_from_file(self, filename)
-        _update_network_with_excel_data(self, data)
+        _read_network_operational_data_from_file(self, filename)
 
     def process_results(self, model, params, results=dict()):
         return _process_results(self, model, params, results=results)
@@ -1372,74 +1371,41 @@ def _get_generation_from_data(data, gen_id, idx_scenario, type):
 # ======================================================================================================================
 def _read_network_operational_data_from_file(network, filename):
 
-    data = {
-        'consumption': {
-            'pc': dict(), 'qc': dict()
-        },
-        'flexibility': {
-            'upward': dict(),
-            'downward': dict()
-        },
-        'generation': {
-            'pg': dict(), 'qg': dict(), 'status': list()
-        }
-    }
-
     # Scenario information
     num_gen_cons_scenarios, prob_gen_cons_scenarios = _get_operational_scenario_info_from_excel_file(filename, 'Main')
     network.prob_operation_scenarios = prob_gen_cons_scenarios
+    df_load = pd.read_excel(filename, sheet_name='Load')
+    df_flex = pd.read_excel(filename, 'Flexibility')
+    df_generation = pd.read_excel(filename, sheet_name='Generation')
 
-    # Consumption and Generation data -- by scenario
-    for i in range(len(network.prob_operation_scenarios)):
+    for load in network.loads:
+        load.pd = dict()  # Note: Changes Pd and Qd fields to dicts (per scenario)
+        load.qd = dict()
+        for i in range(len(network.prob_operation_scenarios)):
+            pc = df_load.loc[(df_load['Quantity'] == 'Pc') & (df_load['Season'] == network.day) & (df_load['LoadID'] == load.load_id) & (df_load['Scenario'] == i+1), 0:23].to_numpy()[0]
+            qc = df_load.loc[(df_load['Quantity'] == 'Qc') & (df_load['Season'] == network.day) & (df_load['LoadID'] == load.load_id) & (df_load['Scenario'] == i + 1), 0:23].to_numpy()[0]
+            load.pd[i] = [p / network.baseMVA for p in pc]
+            load.qd[i] = [q / network.baseMVA for q in qc]
+        pc_flex_up = df_flex.loc[(df_flex['Quantity'] == 'Pc') & (df_flex['Type'] == 'Up') & (df_flex['LoadID'] == load.load_id),0:23].to_numpy()[0]
+        pc_flex_down = df_flex.loc[(df_flex['Quantity'] == 'Pc') & (df_flex['Type'] == 'Down') & (df_flex['LoadID'] == load.load_id), 0:23].to_numpy()[0]
+        qc_flex_up = df_flex.loc[(df_flex['Quantity'] == 'Qc') & (df_flex['Type'] == 'Up') & (df_flex['LoadID'] == load.load_id), 0:23].to_numpy()[0]
+        qc_flex_down = df_flex.loc[(df_flex['Quantity'] == 'Qc') & (df_flex['Type'] == 'Down') & (df_flex['LoadID'] == load.load_id), 0:23].to_numpy()[0]
+        load.flexibility.upward = [p / network.baseMVA for p in pc_flex_up]
+        load.flexibility.downward = [q / network.baseMVA for q in pc_flex_down]
 
-        sheet_name_pc = f'Pc, {network.day}, S{i + 1}'
-        sheet_name_qc = f'Qc, {network.day}, S{i + 1}'
-        sheet_name_pg = f'Pg, {network.day}, S{i + 1}'
-        sheet_name_qg = f'Qg, {network.day}, S{i + 1}'
-
-        # Consumption per scenario (active, reactive power)
-        pc_scenario = _get_consumption_flexibility_data_from_excel_file(filename, sheet_name_pc)
-        qc_scenario = _get_consumption_flexibility_data_from_excel_file(filename, sheet_name_qc)
-        if not pc_scenario:
-            print(f'[ERROR] Network {network.name}, {network.year}, {network.day}. No active power consumption data provided for scenario {i + 1}. Exiting...')
-            exit(ERROR_OPERATIONAL_DATA_FILE)
-        if not qc_scenario:
-            print(f'[ERROR] Network {network.name}, {network.year}, {network.day}. No reactive power consumption data provided for scenario {i + 1}. Exiting...')
-            exit(ERROR_OPERATIONAL_DATA_FILE)
-        data['consumption']['pc'][i] = pc_scenario
-        data['consumption']['qc'][i] = qc_scenario
-
-        # Generation per scenario (active, reactive power)
-        num_renewable_gens = network.get_num_renewable_gens()
-        if num_renewable_gens > 0:
-            pg_scenario = _get_generation_data_from_excel_file(filename, sheet_name_pg)
-            qg_scenario = _get_generation_data_from_excel_file(filename, sheet_name_qg)
-            if not pg_scenario:
-                print(f'[ERROR] Network {network.name}, {network.year}, {network.day}. No active power generation data provided for scenario {i + 1}. Exiting...')
-                exit(ERROR_OPERATIONAL_DATA_FILE)
-            if not qg_scenario:
-                print(f'[ERROR] Network {network.name}, {network.year}, {network.day}. No reactive power generation data provided for scenario {i + 1}. Exiting...')
-                exit(ERROR_OPERATIONAL_DATA_FILE)
-            data['generation']['pg'][i] = pg_scenario
-            data['generation']['qg'][i] = qg_scenario
-
-    # Generators status. Note: common to all scenarios
-    data['generation']['status'] = _get_generator_status_from_excel_file(filename, f'GenStatus, {network.day}')
-
-    # Flexibility data
-    flex_up_p = _get_consumption_flexibility_data_from_excel_file(filename, f'UpFlex, {network.day}')
-    if not flex_up_p:
-        for load in network.loads:
-            flex_up_p[load.load_id] = [0.0 for _ in range(network.num_instants)]
-    data['flexibility']['upward'] = flex_up_p
-
-    flex_down_p = _get_consumption_flexibility_data_from_excel_file(filename, f'DownFlex, {network.day}')
-    if not flex_down_p:
-        for load in network.loads:
-            flex_down_p[load.load_id] = [0.0 for _ in range(network.num_instants)]
-    data['flexibility']['downward'] = flex_down_p
-
-    return data
+    # Generation per scenario (active, reactive power)
+    num_renewable_gens = network.get_num_renewable_gens()
+    if num_renewable_gens > 0:
+        for generator in network.generators:
+            generator.pg = dict()  # Note: Changes Pg and Qg fields to dicts (per scenario)
+            generator.qg = dict()
+            for i in range(len(network.prob_operation_scenarios)):
+                pg = df_generation.loc[(df_generation['Quantity'] == 'Pg') & (df_generation['Season'] == network.day) & (df_generation['GeneratorID'] == generator.gen_id) & (df_generation['Scenario'] == i+1), 0:23].to_numpy()[0]
+                qg = df_generation.loc[(df_generation['Quantity'] == 'Qg') & (df_generation['Season'] == network.day) & (df_generation['GeneratorID'] == generator.gen_id) & (df_generation['Scenario'] == i+1), 0:23].to_numpy()[0]
+                generator.pg[i] = [p / network.baseMVA for p in pg]
+                generator.qg[i] = [q / network.baseMVA for q in qg]
+            status = df_generation.loc[(df_generation['Quantity'] == 'Status') & (df_generation['Season'] == network.day) & (df_generation['GeneratorID'] == generator.gen_id), 0:23].to_numpy()[0].astype(int)
+            generator.status = [s for s in status]
 
 
 def _get_operational_scenario_info_from_excel_file(filename, sheet_name):
