@@ -376,8 +376,8 @@ def _build_model(network, params):
                             flex_down = load.flexibility.pc.downward[p]
                             model.flex_p_up[c, s_m, s_o, p].setub(abs(flex_up))
                             model.flex_p_down[c, s_m, s_o, p].setub(abs(flex_down))
-                            model.flex_q_up[c, s_m, s_o, p].setub(abs(flex_up))
-                            model.flex_q_down[c, s_m, s_o, p].setub(abs(flex_down))
+                            model.flex_q_up[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                            model.flex_q_down[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                         else:
                             model.flex_p_up[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                             model.flex_p_down[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
