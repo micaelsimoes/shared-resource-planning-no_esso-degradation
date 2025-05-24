@@ -1991,9 +1991,16 @@ def _read_market_data_from_file(planning_problem):
             planning_problem.prob_market_scenarios[year] = prob_scenarios
             planning_problem.cost_energy_p[year] = dict()
             planning_problem.cost_flex[year] = dict()
+            df_energy = pd.read_excel(filename, sheet_name='Energy')
+            df_flexibility = pd.read_excel(filename, sheet_name='Flexibility')
             for day in planning_problem.days:
-                planning_problem.cost_energy_p[year][day] = _get_market_costs_from_excel_file(filename, f'Cp, {day}', num_scenarios)
-                planning_problem.cost_flex[year][day] = _get_market_costs_from_excel_file(filename, f'Flex, {day}', num_scenarios)
+                planning_problem.cost_energy_p[year][day] = dict()
+                planning_problem.cost_flex[year][day] = dict()
+                for i in range(num_scenarios):
+                    c_energy = df_energy.loc[(df_energy['Season'] == day) & (df_energy['Scenario'] == i+1), 0:23].to_numpy()[0]
+                    c_flexibility = df_flexibility.loc[(df_flexibility['Season'] == day) & (df_flexibility['Scenario'] == i+1), 0:23].to_numpy()[0]
+                    planning_problem.cost_energy_p[year][day][i] = c_energy
+                    planning_problem.cost_flex[year][day][i] = c_flexibility
     except:
         print(f'[ERROR] Reading market data from file(s). Exiting...')
         exit(ERROR_SPECIFICATION_FILE)
