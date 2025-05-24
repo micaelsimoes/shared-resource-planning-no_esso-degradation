@@ -1371,6 +1371,8 @@ def _get_generation_from_data(data, gen_id, idx_scenario, type):
 # ======================================================================================================================
 def _read_network_operational_data_from_file(network, filename):
 
+    print(f'{network.name} {network.day}')
+
     # Scenario information
     num_gen_cons_scenarios, prob_gen_cons_scenarios = _get_operational_scenario_info_from_excel_file(filename, 'Main')
     network.prob_operation_scenarios = prob_gen_cons_scenarios
@@ -1390,8 +1392,10 @@ def _read_network_operational_data_from_file(network, filename):
         pc_flex_down = df_flex.loc[(df_flex['Quantity'] == 'Pc') & (df_flex['Type'] == 'Down') & (df_flex['LoadID'] == load.load_id), 0:23].to_numpy()[0]
         qc_flex_up = df_flex.loc[(df_flex['Quantity'] == 'Qc') & (df_flex['Type'] == 'Up') & (df_flex['LoadID'] == load.load_id), 0:23].to_numpy()[0]
         qc_flex_down = df_flex.loc[(df_flex['Quantity'] == 'Qc') & (df_flex['Type'] == 'Down') & (df_flex['LoadID'] == load.load_id), 0:23].to_numpy()[0]
-        load.flexibility.upward = [p / network.baseMVA for p in pc_flex_up]
-        load.flexibility.downward = [q / network.baseMVA for q in pc_flex_down]
+        load.flexibility.pc.upward = [p / network.baseMVA for p in pc_flex_up]
+        load.flexibility.pc.downward = [p / network.baseMVA for p in pc_flex_down]
+        load.flexibility.qc.upward = [q / network.baseMVA for q in qc_flex_up]
+        load.flexibility.qc.downward = [q / network.baseMVA for q in qc_flex_down]
 
     # Generation per scenario (active, reactive power)
     num_renewable_gens = network.get_num_renewable_gens()
