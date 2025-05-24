@@ -21,5 +21,12 @@ class Load:
 class LoadFlexibility:
 
     def __init__(self):
+        self.pc = LoadFlexibilityType()
+        self.qc = list()
+
+
+class LoadFlexibilityType:
+
+    def __init__(self):
         self.upward = list()                # Note: FL - increase consumption
         self.downward = list()
