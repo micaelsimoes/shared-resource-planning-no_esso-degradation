@@ -372,18 +372,20 @@ def _build_model(network, params):
                 for s_o in model.scenarios_operation:
                     for p in model.periods:
                         if load.fl_reg:
-                            flex_up = load.flexibility.upward[p]
-                            flex_down = load.flexibility.downward[p]
+                            flex_up = load.flexibility.pc.upward[p]
+                            flex_down = load.flexibility.pc.downward[p]
                             model.flex_p_up[c, s_m, s_o, p].setub(abs(flex_up))
                             model.flex_p_down[c, s_m, s_o, p].setub(abs(flex_down))
+                            model.flex_q_up[c, s_m, s_o, p].setub(abs(flex_up))
+                            model.flex_q_down[c, s_m, s_o, p].setub(abs(flex_down))
                         else:
                             model.flex_p_up[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                             model.flex_p_down[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                            model.flex_q_up[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                            model.flex_q_down[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                             if params.slacks.flexibility.day_balance:
                                 model.slack_flex_p_balance[c, s_m, s_o].setub(EQUALITY_TOLERANCE)
                                 model.slack_flex_p_balance[c, s_m, s_o].setlb(-EQUALITY_TOLERANCE)
-                        model.flex_q_up[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                        model.flex_q_down[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
     if params.l_curt:
         model.pc_curt_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.pc_curt_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -1370,8 +1372,6 @@ def _get_generation_from_data(data, gen_id, idx_scenario, type):
 #   NETWORK OPERATIONAL DATA read functions
 # ======================================================================================================================
 def _read_network_operational_data_from_file(network, filename):
-
-    print(f'{network.name} {network.day}')
 
     # Scenario information
     num_gen_cons_scenarios, prob_gen_cons_scenarios = _get_operational_scenario_info_from_excel_file(filename, 'Main')
