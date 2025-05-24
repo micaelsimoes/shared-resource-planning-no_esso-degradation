@@ -22,7 +22,7 @@ class LoadFlexibility:
 
     def __init__(self):
         self.pc = LoadFlexibilityType()
-        self.qc = list()
+        self.qc = LoadFlexibilityType()
 
 
 class LoadFlexibilityType:
