@@ -1343,10 +1343,6 @@ def update_shared_energy_storages_coordination_model_and_solve(planning_problem,
                 dual_node = dual_ess['current'][node_id][year][day]
                 req_node = ess_req['current'][node_id][year][day]
                 for p in model.periods:
-                    model.p_req[y, d, p].set_value(req_ess['p'][p])
-                    model.q_req[y, d, p].set_value(req_ess['q'][p])
-                    model.dual_p_req[y, d, p].set_value(dual_ess['p'][p])
-                    model.dual_q_req[y, d, p].set_value(dual_ess['q'][p])
                     fix_or_set(model.p_req[y, d, p], req_node['p'][p])
                     fix_or_set(model.q_req[y, d, p], req_node['q'][p])
                     fix_or_set(model.dual_p_req[y, d, p], dual_node['p'][p])
