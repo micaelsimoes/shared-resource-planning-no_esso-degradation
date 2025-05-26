@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import psutil
+import pyomo.environ as pe
 from definitions import *
 
 
@@ -50,6 +51,12 @@ def print_memory_usage(label=""):
     rss = process.memory_info().rss / (1024 ** 2)  # MB
     vms = process.memory_info().vms / (1024 ** 2)  # MB
     print(f"[MEMORY] {label} - RSS: {rss:.2f} MB | VMS: {vms:.2f} MB")
+
+
+def init_and_fix_var(name, value):
+    v = pe.Var(domain=pe.NonNegativeReals)
+    v.fix(value)
+    return v
 
 
 def fix_or_set(var, val):
