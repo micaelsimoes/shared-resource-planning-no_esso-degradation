@@ -164,6 +164,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
             upper_bound = planning_problem.get_upper_bound(lower_level_models['tso'])
         upper_bound = min(min(upper_bound_evolution), upper_bound)
         upper_bound_evolution.append(upper_bound)
+        gc.collect()
         print_memory_usage(f"After subproblem (iter {iter})")
 
         #  - Convergence check
@@ -181,6 +182,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         shared_ess_data.optimize_master_problem(master_problem_model, from_warm_start=from_warm_start)
         lower_bound = max(max(lower_bound_evolution), pe.value(master_problem_model.alpha))
         lower_bound_evolution.append(lower_bound)
+        gc.collect()
         print_memory_usage(f"After master problem solve (iter {iter})")
 
         # Get new candidate solution
