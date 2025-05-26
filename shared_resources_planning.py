@@ -413,7 +413,7 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
     for year in transmission_network.years:
         for day in transmission_network.days:
 
-            network = transmission_network.network[year][day].baseMVA
+            network = transmission_network.network[year][day]
             s_base = network.baseMVA
             model_year_day = tso_model[year][day]
             model_year_day.active_distribution_networks = range(len(network.active_distribution_network_nodes))
