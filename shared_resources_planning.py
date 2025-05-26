@@ -1334,17 +1334,23 @@ def update_shared_energy_storages_coordination_model_and_solve(planning_problem,
         rho_esso = params.rho['ess']['esso']
         if params.adaptive_penalty:
             rho_esso = pe.value(model.rho) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-        model.rho.set_value(rho_esso)
+        fix_or_set(model.rho, rho_esso)
 
-        for y, year in enumerate(years):
-            for d, day in enumerate(days):
-                dual_ess = dual_ess['current'][node_id][year][day]
-                req_ess = ess_req['current'][node_id][year][day]
+        for y in models[node_id].years:
+            year = years[y]
+            for d in models[node_id].days:
+                day = days[d]
+                dual_node = dual_ess['current'][node_id][year][day]
+                req_node = ess_req['current'][node_id][year][day]
                 for p in model.periods:
                     model.p_req[y, d, p].set_value(req_ess['p'][p])
                     model.q_req[y, d, p].set_value(req_ess['q'][p])
                     model.dual_p_req[y, d, p].set_value(dual_ess['p'][p])
                     model.dual_q_req[y, d, p].set_value(dual_ess['q'][p])
+                    fix_or_set(model.p_req[y, d, p], req_node['p'][p])
+                    fix_or_set(model.q_req[y, d, p], req_node['q'][p])
+                    fix_or_set(model.dual_p_req[y, d, p], dual_node['p'][p])
+                    fix_or_set(model.dual_q_req[y, d, p], dual_node['q'][p])
 
     # Solve!
     res = shared_ess_data.optimize(models, from_warm_start=from_warm_start)
