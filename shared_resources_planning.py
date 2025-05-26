@@ -648,8 +648,8 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
 
 def create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidate_solution):
 
-    years = [year for year in shared_ess_data.years]
-    days = [day for day in shared_ess_data.days]
+    years = list(shared_ess_data.years)
+    days = list(shared_ess_data.days)
 
     # Build model, fix candidate solution
     shared_ess_data.update_data_with_candidate_solution(candidate_solution)
@@ -658,28 +658,26 @@ def create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidat
 
     # Fix TSO's request
     for node_id in shared_ess_data.active_distribution_network_nodes:
-        for y in esso_model[node_id].years:
-            year = years[y]
-            for d in esso_model[node_id].days:
-                day = days[d]
-                for p in esso_model[node_id].periods:
-                    p_req = consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p]
-                    q_req = consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p]
-                    esso_model[node_id].es_pnet[y, d, p].fix(p_req)
-                    esso_model[node_id].es_qnet[y, d, p].fix(q_req)
+        model_node = esso_model[node_id]
+        for y, year in enumerate(years):
+            for d, day in enumerate(days):
+                p_req = consensus_vars['ess']['tso']['current'][node_id][year][day]['p']
+                q_req = consensus_vars['ess']['tso']['current'][node_id][year][day]['q']
+                for p in model_node.periods:
+                    model_node.es_pnet[y, d, p].fix(p_req[p])
+                    model_node.es_qnet[y, d, p].fix(q_req[p])
 
     # Run optimization
     results = shared_ess_data.optimize(esso_model)
 
     # Get initial shared ESS values
     for node_id in shared_ess_data.active_distribution_network_nodes:
-        for y in esso_model[node_id].years:
-            year = years[y]
-            for d in esso_model[node_id].days:
-                day = days[d]
-                for p in esso_model[node_id].periods:
-                    shared_ess_p = pe.value(esso_model[node_id].es_pnet[y, d, p])
-                    shared_ess_q = pe.value(esso_model[node_id].es_qnet[y, d, p])
+        model_node = esso_model[node_id]
+        for y, year in enumerate(years):
+            for d, day in enumerate(days):
+                for p in model_node.periods:
+                    shared_ess_p = pe.value(model_node.es_pnet[y, d, p])
+                    shared_ess_q = pe.value(model_node.es_qnet[y, d, p])
                     consensus_vars['ess']['esso']['current'][node_id][year][day]['p'][p] = shared_ess_p
                     consensus_vars['ess']['esso']['current'][node_id][year][day]['q'][p] = shared_ess_q
                     consensus_vars['ess']['esso']['prev'][node_id][year][day]['p'][p] = shared_ess_p
