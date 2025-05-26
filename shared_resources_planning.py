@@ -1179,14 +1179,14 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
                 rho_v = pe.value(model_year_day.rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
                 rho_pf = pe.value(model_year_day.rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
                 rho_ess = pe.value(model_year_day.rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-            model_year_day.rho_v.fix(rho_v)
-            model_year_day.rho_pf.fix(rho_pf)
-            model_year_day.rho_ess.fix(rho_ess)
+            model_year_day.rho_v.set_value(rho_v)
+            model_year_day.rho_pf.set_value(rho_pf)
+            model_year_day.rho_ess.set_value(rho_ess)
             if params.previous_iter['ess']['tso']:
                 rho_ess_prev = params.rho_previous_iter['ess'][transmission_network.name]
                 if params.adaptive_penalty:
                     rho_ess_prev = pe.value(model_year_day.rho_ess_prev) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-                model_year_day.rho_ess_prev.fix(rho_ess_prev)
+                model_year_day.rho_ess_prev.set_value(rho_ess_prev)
 
             for dn in model_year_day.active_distribution_networks:
 
@@ -1265,14 +1265,14 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
                     rho_v = pe.value(model_year_day.rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
                     rho_pf = pe.value(model_year_day.rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
                     rho_ess = pe.value(model_year_day.rho_ess) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-                model_year_day.rho_v.fix(rho_v)
-                model_year_day.rho_pf.fix(rho_pf)
-                model_year_day.rho_ess.fix(rho_ess)
+                model_year_day.rho_v.set_value(rho_v)
+                model_year_day.rho_pf.set_value(rho_pf)
+                model_year_day.rho_ess.set_value(rho_ess)
                 if params.previous_iter['ess']['dso']:
                     rho_ess_prev = params.rho_previous_iter['ess'][distribution_network.name]
                     if params.adaptive_penalty:
                         rho_ess_prev = pe.value(model_year_day.rho_ess_prev) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-                    model_year_day.rho_ess_prev.fix(rho_ess_prev)
+                    model_year_day.rho_ess_prev.set_value(rho_ess_prev)
 
                 dual_vs_node = dual_vsqr['current'][node_id][year][day]
                 vsqr_node = vsqr_req['tso']['current'][node_id][year][day]
@@ -1325,26 +1325,22 @@ def update_shared_energy_storages_coordination_model_and_solve(planning_problem,
 
     for node_id in planning_problem.active_distribution_network_nodes:
 
+        model = models[node_id]
+
         rho_esso = params.rho['ess']['esso']
         if params.adaptive_penalty:
-            rho_esso = pe.value(models[node_id].rho) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-        models[node_id].rho.fix(rho_esso)
+            rho_esso = pe.value(model.rho) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+        model.rho.set_value(rho_esso)
 
-        for y in models[node_id].years:
-            year = years[y]
-            for d in models[node_id].days:
-                day = days[d]
-                for p in models[node_id].periods:
-
-                    p_req = ess_req['current'][node_id][year][day]['p'][p]
-                    q_req = ess_req['current'][node_id][year][day]['q'][p]
-                    dual_p_req = dual_ess['current'][node_id][year][day]['p'][p]
-                    dual_q_req = dual_ess['current'][node_id][year][day]['q'][p]
-
-                    models[node_id].p_req[y, d, p].fix(p_req)
-                    models[node_id].q_req[y, d, p].fix(q_req)
-                    models[node_id].dual_p_req[y, d, p].fix(dual_p_req)
-                    models[node_id].dual_q_req[y, d, p].fix(dual_q_req)
+        for y, year in enumerate(years):
+            for d, day in enumerate(days):
+                dual_ess = dual_ess['current'][node_id][year][day]
+                req_ess = ess_req['current'][node_id][year][day]
+                for p in model.periods:
+                    model.p_req[y, d, p].set_value(req_ess['p'][p])
+                    model.q_req[y, d, p].set_value(req_ess['q'][p])
+                    model.dual_p_req[y, d, p].set_value(dual_ess['p'][p])
+                    model.dual_q_req[y, d, p].set_value(dual_ess['q'][p])
 
     # Solve!
     res = shared_ess_data.optimize(models, from_warm_start=from_warm_start)
