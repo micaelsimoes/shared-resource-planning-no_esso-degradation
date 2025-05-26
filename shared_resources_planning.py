@@ -1213,7 +1213,7 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
             for day in distribution_network.days:
 
                 model_year_day = model[year][day]
-                network_year_day = network
+                network_year_day = distribution_network.network[year][day]
 
                 ref_node_id = network_year_day.get_reference_node_id()
                 v_base = network_year_day.get_node_base_kv(ref_node_id)
