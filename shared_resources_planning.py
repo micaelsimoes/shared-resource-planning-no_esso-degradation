@@ -473,9 +473,8 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
 
             # Regularization -- Added to OF to minimize deviations from scenarios to expected values
             reg_terms = []
-            penalty_var = pe.Var(domain=pe.NonNegativeReals)
-            penalty_var.fix(PENALTY_REGULARIZATION)
-            model_year_day.penalty_regularization = penalty_var
+            model_year_day.penalty_regularization = pe.Var(domain=pe.NonNegativeReals)
+            model_year_day.penalty_regularization.fix(PENALTY_REGULARIZATION)
             for dn in model_year_day.active_distribution_networks:
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
                 adn_node_idx = network.get_node_idx(adn_node_id)
@@ -497,7 +496,7 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                         reg_terms.append(s_base * (qnet - model_year_day.expected_shared_ess_q[e, p]) ** 2)
 
             # Apply regularization to objective
-            model_year_day.objective.expr = model_year_day.objective.expr + penalty_var * pe.quicksum(reg_terms)
+            model_year_day.objective.expr += model_year_day.penalty_regularization * pe.quicksum(reg_terms)
 
     # Fix initial values, run OPF
     for year in transmission_network.years:
