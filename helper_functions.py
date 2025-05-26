@@ -53,12 +53,6 @@ def print_memory_usage(label=""):
     print(f"[MEMORY] {label} - RSS: {rss:.2f} MB | VMS: {vms:.2f} MB")
 
 
-def init_and_fix_var(name, value):
-    v = pe.Var(domain=pe.NonNegativeReals)
-    v.fix(value)
-    return v
-
-
 def fix_or_set(var, val):
     if var.fixed:
         var.set_value(val)
