@@ -1169,59 +1169,68 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
         for day in transmission_network.days:
 
             s_base = transmission_network.network[year][day].baseMVA
+            model_year_day = model[year][day]
 
+            # Update Rho parameters
             rho_v = params.rho['v'][transmission_network.name]
             rho_pf = params.rho['pf'][transmission_network.name]
             rho_ess = params.rho['ess'][transmission_network.name]
             if params.adaptive_penalty:
-                rho_v = pe.value(model[year][day].rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-                rho_pf = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-                rho_ess = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+                rho_v = pe.value(model_year_day.rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+                rho_pf = pe.value(model_year_day.rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+                rho_ess = pe.value(model_year_day.rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+            model_year_day.rho_v.fix(rho_v)
+            model_year_day.rho_pf.fix(rho_pf)
+            model_year_day.rho_ess.fix(rho_ess)
             if params.previous_iter['ess']['tso']:
                 rho_ess_prev = params.rho_previous_iter['ess'][transmission_network.name]
                 if params.adaptive_penalty:
-                    rho_ess_prev = pe.value(model[year][day].rho_ess_prev) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+                    rho_ess_prev = pe.value(model_year_day.rho_ess_prev) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+                model_year_day.rho_ess_prev.fix(rho_ess_prev)
 
-            # Update Rho parameter
-            model[year][day].rho_v.fix(rho_v)
-            model[year][day].rho_pf.fix(rho_pf)
-            model[year][day].rho_ess.fix(rho_ess)
-            if params.previous_iter['ess']['tso']:
-                model[year][day].rho_ess_prev.fix(rho_ess_prev)
-
-            for dn in model[year][day].active_distribution_networks:
+            for dn in model_year_day.active_distribution_networks:
 
                 node_id = transmission_network.active_distribution_network_nodes[dn]
                 v_base = transmission_network.network[year][day].get_node_base_kv(node_id)
-
-                # Update VOLTAGE and POWER FLOW variables at connection point
-                for p in model[year][day].periods:
-                    model[year][day].dual_v_sqr_req[dn, p].fix(dual_vsqr['current'][node_id][year][day][p] / (v_base ** 2))
-                    model[year][day].v_sqr_req[dn, p].fix(vsqr_req['dso']['current'][node_id][year][day][p] / (v_base ** 2))
-                    model[year][day].dual_pf_p_req[dn, p].fix(dual_pf['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].dual_pf_q_req[dn, p].fix(dual_pf['current'][node_id][year][day]['q'][p] / s_base)
-                    model[year][day].p_pf_req[dn, p].fix(pf_req['dso']['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].q_pf_req[dn, p].fix(pf_req['dso']['current'][node_id][year][day]['q'][p] / s_base)
-
-                # Update shared ESS capacity and power requests
                 shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(node_id)
-                for p in model[year][day].periods:
-                    model[year][day].dual_ess_p_req[shared_ess_idx, p].fix(dual_ess['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].dual_ess_q_req[shared_ess_idx, p].fix(dual_ess['current'][node_id][year][day]['q'][p] / s_base)
-                    model[year][day].p_ess_req[shared_ess_idx, p].fix(ess_req['dso']['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].q_ess_req[shared_ess_idx, p].fix(ess_req['dso']['current'][node_id][year][day]['q'][p] / s_base)
+
+                dual_vs_node = dual_vsqr['current'][node_id][year][day]
+                dual_pf_node = dual_pf['current'][node_id][year][day]
+                pf_node = pf_req['dso']['current'][node_id][year][day]
+                vsqr_node = vsqr_req['dso']['current'][node_id][year][day]
+                dual_ess_node = dual_ess['current'][node_id][year][day]
+                ess_node = ess_req['dso']['current'][node_id][year][day]
+                if params.previous_iter['ess']['tso']:
+                    dual_ess_prev_node = dual_ess['prev'][node_id][year][day]
+                    ess_prev_node = ess_req['tso']['prev'][node_id][year][day]
+
+                for p in model_year_day.periods:
+
+                    # Update VOLTAGE and POWER FLOW variables at connection point
+                    model_year_day.dual_v_sqr_req[dn, p].set_value(dual_vs_node[p] / (v_base ** 2))
+                    model_year_day.v_sqr_req[dn, p].set_value(vsqr_node[p] / (v_base ** 2))
+                    model_year_day.dual_pf_p_req[dn, p].set_value(dual_pf_node['p'][p] / s_base)
+                    model_year_day.dual_pf_q_req[dn, p].set_value(dual_pf_node['q'][p] / s_base)
+                    model_year_day.p_pf_req[dn, p].set_value(pf_node['p'][p] / s_base)
+                    model_year_day.q_pf_req[dn, p].set_value(pf_node['q'][p] / s_base)
+
+                    # Update shared ESS capacity and power requests
+                    model_year_day.dual_ess_p_req[shared_ess_idx, p].set_value(dual_ess_node['p'][p] / s_base)
+                    model_year_day.dual_ess_q_req[shared_ess_idx, p].set_value(dual_ess_node['q'][p] / s_base)
+                    model_year_day.p_ess_req[shared_ess_idx, p].set_value(ess_node['p'][p] / s_base)
+                    model_year_day.q_ess_req[shared_ess_idx, p].set_value(ess_node['q'][p] / s_base)
                     if params.previous_iter['ess']['tso']:
-                        model[year][day].dual_ess_p_prev[shared_ess_idx, p].fix(dual_ess['prev'][node_id][year][day]['p'][p] / s_base)
-                        model[year][day].dual_ess_q_prev[shared_ess_idx, p].fix(dual_ess['prev'][node_id][year][day]['q'][p] / s_base)
-                        model[year][day].p_ess_prev[shared_ess_idx, p].fix(ess_req['tso']['prev'][node_id][year][day]['p'][p] / s_base)
-                        model[year][day].q_ess_prev[shared_ess_idx, p].fix(ess_req['tso']['prev'][node_id][year][day]['q'][p] / s_base)
+                        model_year_day.dual_ess_p_prev[shared_ess_idx, p].set_value(dual_ess_prev_node['p'][p] / s_base)
+                        model_year_day.dual_ess_q_prev[shared_ess_idx, p].set_value(dual_ess_prev_node['q'][p] / s_base)
+                        model_year_day.p_ess_prev[shared_ess_idx, p].set_value(ess_prev_node['p'][p] / s_base)
+                        model_year_day.q_ess_prev[shared_ess_idx, p].set_value(ess_prev_node['q'][p] / s_base)
 
     # Solve!
     res = transmission_network.optimize(model, from_warm_start=from_warm_start)
     for year in transmission_network.years:
         for day in transmission_network.days:
             if res[year][day].solver.status == po.SolverStatus.error:
-                print(f'[ERROR] Network {model[year][day].name} did not converge!')
+                print(f'[ERROR] Network {model_year_day.name} did not converge!')
                 # exit(ERROR_NETWORK_OPTIMIZATION)
     return res
 
@@ -1241,49 +1250,61 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
         for year in distribution_network.years:
             for day in distribution_network.days:
 
-                ref_node_id = distribution_network.network[year][day].get_reference_node_id()
-                v_base = distribution_network.network[year][day].get_node_base_kv(ref_node_id)
-                s_base = distribution_network.network[year][day].baseMVA
+                model_year_day = model[year][day]
+                network_year_day = distribution_network.network[year][day]
 
+                ref_node_id = network_year_day.get_reference_node_id()
+                v_base = network_year_day.get_node_base_kv(ref_node_id)
+                s_base = network_year_day.baseMVA
+
+                # Update Rho parameters
                 rho_v = params.rho['v'][distribution_network.name]
                 rho_pf = params.rho['pf'][distribution_network.name]
                 rho_ess = params.rho['ess'][distribution_network.name]
                 if params.adaptive_penalty:
-                    rho_v = pe.value(model[year][day].rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-                    rho_pf = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-                    rho_ess = pe.value(model[year][day].rho_ess) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+                    rho_v = pe.value(model_year_day.rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+                    rho_pf = pe.value(model_year_day.rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+                    rho_ess = pe.value(model_year_day.rho_ess) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+                model_year_day.rho_v.fix(rho_v)
+                model_year_day.rho_pf.fix(rho_pf)
+                model_year_day.rho_ess.fix(rho_ess)
                 if params.previous_iter['ess']['dso']:
                     rho_ess_prev = params.rho_previous_iter['ess'][distribution_network.name]
                     if params.adaptive_penalty:
-                        rho_ess_prev = pe.value(model[year][day].rho_ess_prev) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+                        rho_ess_prev = pe.value(model_year_day.rho_ess_prev) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+                    model_year_day.rho_ess_prev.fix(rho_ess_prev)
 
-                # Update Rho parameter
-                model[year][day].rho_v.fix(rho_v)
-                model[year][day].rho_pf.fix(rho_pf)
-                model[year][day].rho_ess.fix(rho_ess)
+                dual_vs_node = dual_vsqr['current'][node_id][year][day]
+                vsqr_node = vsqr_req['tso']['current'][node_id][year][day]
+                dual_pf_node = dual_pf['current'][node_id][year][day]
+                pf_node = pf_req['tso']['current'][node_id][year][day]
+                dual_ess_node = dual_ess['current'][node_id][year][day]
+                ess_node = ess_req['esso']['current'][node_id][year][day]
                 if params.previous_iter['ess']['dso']:
-                    model[year][day].rho_ess_prev.fix(rho_ess_prev)
+                    dual_ess_prev_node = dual_ess['prev'][node_id][year][day]
+                    ess_prev_node = ess_req['dso']['prev'][node_id][year][day]
 
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
-                    model[year][day].dual_v_sqr_req[p].fix(dual_vsqr['current'][node_id][year][day][p] / (v_base ** 2))
-                    model[year][day].v_sqr_req[p].fix(vsqr_req['tso']['current'][node_id][year][day][p] / (v_base ** 2))
-                    model[year][day].dual_pf_p_req[p].fix(dual_pf['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].dual_pf_q_req[p].fix(dual_pf['current'][node_id][year][day]['q'][p] / s_base)
-                    model[year][day].p_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].q_pf_req[p].fix(pf_req['tso']['current'][node_id][year][day]['q'][p] / s_base)
 
-                # Update SHARED ENERGY STORAGE variables (if existent)
-                for p in model[year][day].periods:
-                    model[year][day].dual_ess_p_req[p].fix(dual_ess['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].dual_ess_q_req[p].fix(dual_ess['current'][node_id][year][day]['q'][p] / s_base)
-                    model[year][day].p_ess_req[p].fix(ess_req['esso']['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].q_ess_req[p].fix(ess_req['esso']['current'][node_id][year][day]['q'][p] / s_base)
+                    # Update VOLTAGE and POWER FLOW variables at connection point
+                    model_year_day.dual_v_sqr_req[p].set_value(dual_vs_node[p] / (v_base ** 2))
+                    model_year_day.v_sqr_req[p].set_value(vsqr_node[p] / (v_base ** 2))
+                    model_year_day.dual_pf_p_req[p].set_value(dual_pf_node['p'][p] / s_base)
+                    model_year_day.dual_pf_q_req[p].set_value(dual_pf_node['q'][p] / s_base)
+                    model_year_day.p_pf_req[p].set_value(pf_node['p'][p] / s_base)
+                    model_year_day.q_pf_req[p].set_value(pf_node['q'][p] / s_base)
+
+                    # Shared ESS consensus
+                    model_year_day.dual_ess_p_req[p].set_value(dual_ess_node['p'][p] / s_base)
+                    model_year_day.dual_ess_q_req[p].set_value(dual_ess_node['q'][p] / s_base)
+                    model_year_day.p_ess_req[p].set_value(ess_node['p'][p] / s_base)
+                    model_year_day.q_ess_req[p].set_value(ess_node['q'][p] / s_base)
                     if params.previous_iter['ess']['dso']:
-                        model[year][day].dual_ess_p_prev[p].fix(dual_ess['prev'][node_id][year][day]['p'][p] / s_base)
-                        model[year][day].dual_ess_q_prev[p].fix(dual_ess['prev'][node_id][year][day]['q'][p] / s_base)
-                        model[year][day].p_ess_prev[p].fix(ess_req['dso']['prev'][node_id][year][day]['p'][p] / s_base)
-                        model[year][day].q_ess_prev[p].fix(ess_req['dso']['prev'][node_id][year][day]['q'][p] / s_base)
+                        model_year_day.dual_ess_p_prev[p].set_value(dual_ess_prev_node['p'][p] / s_base)
+                        model_year_day.dual_ess_q_prev[p].set_value(dual_ess_prev_node['q'][p] / s_base)
+                        model_year_day.p_ess_prev[p].set_value(ess_prev_node['p'][p] / s_base)
+                        model_year_day.q_ess_prev[p].set_value(ess_prev_node['q'][p] / s_base)
 
         # Solve!
         res[node_id] = distribution_network.optimize(model, from_warm_start=from_warm_start)
