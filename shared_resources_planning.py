@@ -1,4 +1,4 @@
-import os
+import gc
 import time
 from copy import copy
 import pandas as pd
@@ -364,6 +364,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         print('[INFO] \t - Iter {}: {:.2f} s'.format(iter, iter_end - iter_start))
 
         from_warm_start = True
+        gc.collect()
         print_memory_usage(f"ADMM Iteration {iter} Start")
 
     if not convergence:

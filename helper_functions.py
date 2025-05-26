@@ -47,5 +47,6 @@ def is_number(s):
 
 def print_memory_usage(label=""):
     process = psutil.Process(os.getpid())
-    mem_mb = process.memory_info().rss / (1024 ** 2)  # in MB
-    print(f"[MEMORY] {label} RSS Memory Usage: {mem_mb:.2f} MB")
+    rss = process.memory_info().rss / (1024 ** 2)  # MB
+    vms = process.memory_info().vms / (1024 ** 2)  # MB
+    print(f"[MEMORY] {label} - RSS: {rss:.2f} MB | VMS: {vms:.2f} MB")
