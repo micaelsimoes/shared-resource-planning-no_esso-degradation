@@ -189,7 +189,9 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         # Clean up memory
         del lower_level_models
         del operational_results
-        gc.collect()
+        start_gc = time.time()
+        collected = gc.collect()
+        print(f"[GC] Collected {collected} objects in {time.time() - start_gc:.2f} s")
         print_memory_usage(f"After GC (iter {iter})")
 
         iter += 1
