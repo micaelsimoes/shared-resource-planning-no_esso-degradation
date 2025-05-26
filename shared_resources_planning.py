@@ -869,7 +869,7 @@ def update_transmission_model_to_admm(planning_problem, model, params):
 
             # Add ADMM variables
             model_year_day.rho_v = pe.Var(domain=pe.NonNegativeReals)
-            model_year_day.rho.fix(params.rho['v'][transmission_network.name])
+            model_year_day.rho_v.fix(params.rho['v'][transmission_network.name])
             model_year_day.v_sqr_req = pe.Var(model_year_day.active_distribution_networks, model_year_day.periods, domain=pe.NonNegativeReals)
             model_year_day.dual_v_sqr_req = pe.Var(model_year_day.active_distribution_networks, model_year_day.periods, domain=pe.Reals)
 
