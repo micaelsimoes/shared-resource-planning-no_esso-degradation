@@ -561,67 +561,67 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
         for year in distribution_network.years:
             for day in distribution_network.days:
 
-                ref_node_id = distribution_network.network[year][day].get_reference_node_id()
-                ref_node_idx = distribution_network.network[year][day].get_node_idx(ref_node_id)
-                ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
-                shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
+                network = distribution_network.network[year][day]
+                model_year_day = dso_model[year][day]
+
+                ref_node_id = network.get_reference_node_id()
+                ref_node_idx = network.get_node_idx(ref_node_id)
+                ref_gen_idx = network.get_reference_gen_idx()
+                shared_ess_idx = network.get_shared_energy_storage_idx(ref_node_id)
+
+                # Scenario weights
+                omega = {
+                    (s_m, s_o): network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
+                    for s_m in model_year_day.scenarios_market
+                    for s_o in model_year_day.scenarios_operation
+                }
 
                 # Add interface expected variables
-                dso_model[year][day].expected_interface_vmag_sqr = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00)
-                dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
-                dso_model[year][day].expected_interface_pf_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
-                dso_model[year][day].expected_shared_ess_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
-                dso_model[year][day].expected_shared_ess_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
-
-                dso_model[year][day].interface_expected_values = pe.ConstraintList()
+                model_year_day.expected_interface_vmag_sqr = pe.Var(model_year_day.periods, domain=pe.NonNegativeReals, initialize=1.00)
+                model_year_day.expected_interface_pf_p = pe.Var(model_year_day.periods, domain=pe.Reals, initialize=0.00)
+                model_year_day.expected_interface_pf_q = pe.Var(model_year_day.periods, domain=pe.Reals, initialize=0.00)
+                model_year_day.expected_shared_ess_p = pe.Var(model_year_day.periods, domain=pe.Reals, initialize=0.00)
+                model_year_day.expected_shared_ess_q = pe.Var(model_year_day.periods, domain=pe.Reals, initialize=0.00)
+                model_year_day.interface_expected_values = pe.ConstraintList()
                 for p in dso_model[year][day].periods:
-                    expected_vmag_sqr = 0.00
-                    expected_pf_p = 0.00
-                    expected_pf_q = 0.00
-                    expected_ess_p = 0.00
-                    expected_ess_q = 0.00
-                    for s_m in dso_model[year][day].scenarios_market:
-                        omega_market = distribution_network.network[year][day].prob_market_scenarios[s_m]
-                        for s_o in dso_model[year][day].scenarios_operation:
-                            omega_oper = distribution_network.network[year][day].prob_operation_scenarios[s_o]
-                            expected_vmag_sqr += omega_market * omega_oper * dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2
-                            expected_pf_p += omega_market * omega_oper * dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p]
-                            expected_pf_q += omega_market * omega_oper * dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p]
-                            expected_ess_p += omega_market * omega_oper * dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p]
-                            expected_ess_q += omega_market * omega_oper * dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p]
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_vmag_sqr[p] <= expected_vmag_sqr + SMALL_TOLERANCE)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_vmag_sqr[p] >= expected_vmag_sqr - SMALL_TOLERANCE)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_pf_p[p] <= expected_pf_p + SMALL_TOLERANCE)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_pf_p[p] >= expected_pf_p - SMALL_TOLERANCE)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_pf_q[p] <= expected_pf_q + SMALL_TOLERANCE)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_pf_q[p] >= expected_pf_q - SMALL_TOLERANCE)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_shared_ess_p[p] <= expected_ess_p + SMALL_TOLERANCE)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_shared_ess_p[p] >= expected_ess_p - SMALL_TOLERANCE)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_shared_ess_q[p] <= expected_ess_q + SMALL_TOLERANCE)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_shared_ess_q[p] >= expected_ess_q - SMALL_TOLERANCE)
+                    model_year_day.interface_expected_values.add(model_year_day.expected_interface_vmag_sqr[p] == pe.quicksum(omega[s_m, s_o] * model_year_day.e[ref_node_idx, s_m, s_o, p] ** 2 for s_m, s_o in omega))
+                    model_year_day.interface_expected_values.add(model_year_day.expected_interface_pf_p[p] == pe.quicksum(omega[s_m, s_o] * model_year_day.pg[ref_gen_idx, s_m, s_o, p] for s_m, s_o in omega))
+                    model_year_day.interface_expected_values.add(model_year_day.expected_interface_pf_q[p] == pe.quicksum(omega[s_m, s_o] * model_year_day.qg[ref_gen_idx, s_m, s_o, p] for s_m, s_o in omega))
+                    model_year_day.interface_expected_values.add(model_year_day.expected_shared_ess_p[p] == pe.quicksum(omega[s_m, s_o] * model_year_day.shared_es_pnet[shared_ess_idx, s_m, s_o, p] for s_m, s_o in omega))
+                    model_year_day.interface_expected_values.add(model_year_day.expected_shared_ess_q[p] == pe.quicksum(omega[s_m, s_o] * model_year_day.shared_es_qnet[shared_ess_idx, s_m, s_o, p] for s_m, s_o in omega))
 
         # Regularization -- Added to OF to minimize deviations from scenarios to expected values
         for year in distribution_network.years:
             for day in distribution_network.days:
 
-                s_base = distribution_network.network[year][day].baseMVA
-                ref_node_id = distribution_network.network[year][day].get_reference_node_id()
-                ref_node_idx = distribution_network.network[year][day].get_node_idx(ref_node_id)
-                ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
-                shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
+                network = distribution_network.network[year][day]
+                model_year_day = dso_model[year][day]
+                s_base = network.baseMVA
 
-                obj = copy(dso_model[year][day].objective.expr)
-                dso_model[year][day].penalty_regularization = pe.Var(domain=pe.NonNegativeReals)
-                dso_model[year][day].penalty_regularization.fix(PENALTY_REGULARIZATION)
-                for s_m in dso_model[year][day].scenarios_market:
-                    for s_o in dso_model[year][day].scenarios_operation:
-                        for p in dso_model[year][day].periods:
-                            obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].e[ref_node_idx, s_m, s_o, p] ** 2 - dso_model[year][day].expected_interface_vmag_sqr[p]) ** 2
-                            obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].pg[ref_gen_idx, s_m, s_o, p] - dso_model[year][day].expected_interface_pf_p[p]) ** 2
-                            obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].qg[ref_gen_idx, s_m, s_o, p] - dso_model[year][day].expected_interface_pf_q[p]) ** 2
-                            obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_p[p]) ** 2
-                            obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_q[p]) ** 2
-                dso_model[year][day].objective.expr = obj
+                ref_node_id = network.get_reference_node_id()
+                ref_node_idx = network.get_node_idx(ref_node_id)
+                ref_gen_idx = network.get_reference_gen_idx()
+                shared_ess_idx = network.get_shared_energy_storage_idx(ref_node_id)
+
+                omega = {
+                    (s_m, s_o): network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
+                    for s_m in model_year_day.scenarios_market
+                    for s_o in model_year_day.scenarios_operation
+                }
+
+                reg_terms = []
+                model_year_day.penalty_regularization = pe.Var(domain=pe.NonNegativeReals)
+                model_year_day.penalty_regularization.fix(PENALTY_REGULARIZATION)
+                for s_m, s_o in omega:
+                    for p in model_year_day.periods:
+                        reg_terms.append((model_year_day.e[ref_node_idx, s_m, s_o, p] ** 2 - model_year_day.expected_interface_vmag_sqr[p]) ** 2)
+                        reg_terms.append(s_base * (model_year_day.pg[ref_gen_idx, s_m, s_o, p] - model_year_day.expected_interface_pf_p[p]) ** 2)
+                        reg_terms.append(s_base * (model_year_day.qg[ref_gen_idx, s_m, s_o, p] - model_year_day.expected_interface_pf_q[p]) ** 2)
+                        reg_terms.append(s_base * (model_year_day.shared_es_pnet[shared_ess_idx, s_m, s_o, p] - model_year_day.expected_shared_ess_p[p]) ** 2)
+                        reg_terms.append(s_base * (model_year_day.shared_es_qnet[shared_ess_idx, s_m, s_o, p] - model_year_day.expected_shared_ess_q[p]) ** 2)
+
+                # Apply regularization to objective
+                model_year_day.objective.expr += model_year_day.penalty_regularization * pe.quicksum(reg_terms)
 
         # Run SMOPF
         results[node_id] = distribution_network.optimize(dso_model)
@@ -629,22 +629,17 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
         # Get initial interface and shared ESS values
         for year in distribution_network.years:
             for day in distribution_network.days:
-                ref_node_id = distribution_network.network[year][day].get_reference_node_id()
+                model_year_day = dso_model[year][day]
+                network = distribution_network.network[year][day]
+                ref_node_id = network.get_reference_node_id()
                 s_base = distribution_network.network[year][day].baseMVA
                 v_base = distribution_network.network[year][day].get_node_base_kv(ref_node_id)
-                for p in dso_model[year][day].periods:
-
-                    interface_v_sqr = pe.value(dso_model[year][day].expected_interface_vmag_sqr[p]) * (v_base ** 2)
-                    interface_pf_p = pe.value(dso_model[year][day].expected_interface_pf_p[p]) * s_base
-                    interface_pf_q = pe.value(dso_model[year][day].expected_interface_pf_q[p]) * s_base
-                    p_ess = pe.value(dso_model[year][day].expected_shared_ess_p[p]) * s_base
-                    q_ess = pe.value(dso_model[year][day].expected_shared_ess_q[p]) * s_base
-
-                    consensus_vars['v_sqr']['dso']['current'][node_id][year][day][p] = interface_v_sqr
-                    consensus_vars['pf']['dso']['current'][node_id][year][day]['p'][p] = interface_pf_p
-                    consensus_vars['pf']['dso']['current'][node_id][year][day]['q'][p] = interface_pf_q
-                    consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] = p_ess
-                    consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] = q_ess
+                for p in model_year_day.periods:
+                    consensus_vars['v_sqr']['dso']['current'][node_id][year][day][p] = pe.value(model_year_day.expected_interface_vmag_sqr[p]) * v_base**2
+                    consensus_vars['pf']['dso']['current'][node_id][year][day]['p'][p] = pe.value(model_year_day.expected_interface_pf_p[p]) * s_base
+                    consensus_vars['pf']['dso']['current'][node_id][year][day]['q'][p] = pe.value(model_year_day.expected_interface_pf_q[p]) * s_base
+                    consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] = pe.value(model_year_day.expected_shared_ess_p[p]) * s_base
+                    consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] = pe.value(model_year_day.expected_shared_ess_q[p]) * s_base
 
         dso_models[node_id] = dso_model
 
