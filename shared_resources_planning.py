@@ -141,6 +141,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
     candidate_solution = planning_problem.get_initial_candidate_solution()
 
     start = time.time()
+    print_memory_usage("Start of planning problem")
     master_problem_model = planning_problem.shared_ess_data.build_master_problem()
     shared_ess_data.optimize_master_problem(master_problem_model)
 
@@ -150,6 +151,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         print(f'=============================================== ITERATION #{iter} ==============================================')
         print(f'[INFO] Iter {iter}. LB = {lower_bound}, UB = {upper_bound}')
 
+        print_memory_usage(f"Before subproblem (iter {iter})")
         _print_candidate_solution(candidate_solution)
 
         # 1. Subproblem
@@ -162,6 +164,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
             upper_bound = planning_problem.get_upper_bound(lower_level_models['tso'])
         upper_bound = min(min(upper_bound_evolution), upper_bound)
         upper_bound_evolution.append(upper_bound)
+        print_memory_usage(f"After subproblem (iter {iter})")
 
         #  - Convergence check
         if isclose(abs(upper_bound - lower_bound)/abs(upper_bound), 0.00, abs_tol=benders_parameters.tol_rel, rel_tol=benders_parameters.tol_rel):
@@ -173,10 +176,12 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         # 2.1. Add Benders' cut, based on the sensitivities obtained from the subproblem
         # 2.2. Run master problem optimization
         # 2.3. Get new capacity values, and the value of alpha (lower bound)
+        print_memory_usage(f"Before master problem solve (iter {iter})")
         planning_problem.add_benders_cut(master_problem_model, upper_bound, operational_convergence, sensitivities, candidate_solution)
         shared_ess_data.optimize_master_problem(master_problem_model, from_warm_start=from_warm_start)
         lower_bound = max(max(lower_bound_evolution), pe.value(master_problem_model.alpha))
         lower_bound_evolution.append(lower_bound)
+        print_memory_usage(f"After master problem solve (iter {iter})")
 
         # Get new candidate solution
         candidate_solution = shared_ess_data.get_candidate_solution(master_problem_model)
