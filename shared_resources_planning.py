@@ -287,6 +287,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     for iter in range(iter, admm_parameters.num_max_iters + 1):
 
         print(f'[INFO]\t - ADMM. Iter {iter}...')
+        print_memory_usage(f"ADMM Iteration {iter} Start")
 
         iter_start = time.time()
 
@@ -363,6 +364,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         print('[INFO] \t - Iter {}: {:.2f} s'.format(iter, iter_end - iter_start))
 
         from_warm_start = True
+        print_memory_usage(f"ADMM Iteration {iter} Start")
 
     if not convergence:
         print(f'[WARNING] ADMM did NOT converge in {admm_parameters.num_max_iters} iterations!')

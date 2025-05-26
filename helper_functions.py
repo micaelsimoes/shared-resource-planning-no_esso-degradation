@@ -1,5 +1,7 @@
+import os
 import sys
 import json
+import psutil
 from definitions import *
 
 
@@ -41,3 +43,9 @@ def is_number(s):
         return True
     except ValueError:
         return False
+
+
+def print_memory_usage(label=""):
+    process = psutil.Process(os.getpid())
+    mem_mb = process.memory_info().rss / (1024 ** 2)  # in MB
+    print(f"[MEMORY] {label} RSS Memory Usage: {mem_mb:.2f} MB")
