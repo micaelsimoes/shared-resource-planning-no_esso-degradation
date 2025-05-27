@@ -1091,8 +1091,8 @@ def _run_smopf(network, model, params, from_warm_start=False):
         solver.options['warm_start_mult_bound_push'] = 1e-9
 
     if params.solver_params.verbose:
-        solver.options['print_level'] = 5
-        solver.options['output_file'] = 'optim_log.txt'
+        solver.options["print_level"] = 5
+        solver.options["output_file"] = "ipopt.log"
 
     if params.solver_params.solver == 'ipopt':
         solver.options['tol'] = params.solver_params.solver_tol
