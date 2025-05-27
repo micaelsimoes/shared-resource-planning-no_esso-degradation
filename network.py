@@ -1170,7 +1170,7 @@ def _run_smopf(network, model, params, from_warm_start=False):
         solver.options['linear_solver'] = params.solver_params.linear_solver
 
     try:
-        result = solver.solve(model, tee=params.verbose)
+        result = solver.solve(model, tee=params.solver_params.verbose)
         model.solutions.load_from(result)
     except ValueError as e:
         print(f"[WARNING] Solver failed for network {network.name}: {e}")
