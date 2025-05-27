@@ -536,8 +536,7 @@ def _build_model(network, params):
                             else:
                                 # No power factor control, maintain given phi
                                 phi = atan2(generator.qg[s_o][p], generator.pg[s_o][p])
-                                model.generation_power_factor.add(model.qg[g, s_m, s_o, p] <= tan(phi) * model.pg[g, s_m, s_o, p])
-                                model.generation_power_factor.add(model.qg[g, s_m, s_o, p] >= tan(phi) * model.pg[g, s_m, s_o, p])
+                                model.generation_power_factor.add(model.qg[g, s_m, s_o, p] == tan(phi) * model.pg[g, s_m, s_o, p])
 
     # - Flexible Loads -- Daily energy balance
     if params.fl_reg:
