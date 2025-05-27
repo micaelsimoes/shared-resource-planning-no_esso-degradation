@@ -1092,6 +1092,7 @@ def _run_smopf(network, model, params, from_warm_start=False):
 
     if params.solver_params.verbose:
         solver.options["print_level"] = 5
+        solver.options["file_print_level"] = 5
         solver.options["output_file"] = os.path.join(network.results_dir, "ipopt.log")
 
     if params.solver_params.solver == 'ipopt':
@@ -1099,14 +1100,18 @@ def _run_smopf(network, model, params, from_warm_start=False):
         solver.options['constr_viol_tol'] = 1e-6
         solver.options['dual_inf_tol'] = 1e-6
         solver.options['mu_strategy'] = 'adaptive'
+        solver.options['mu_init'] =  1e-1
+        solver.options['mu_max_fact'] =  1e3
+        solver.options['mu_min'] =  1e-11
         solver.options['bound_push'] = 1e-4
         solver.options['bound_relax_factor'] = 1e-4
-        solver.options['nlp_scaling_method'] = 'gradient-based'
+        solver.options['nlp_scaling_method'] = 'none'
         solver.options["hessian_approximation"] = "limited-memory"
         solver.options['max_iter'] = 5000
-        solver.options['acceptable_tol'] = 1e-4
+        solver.options['acceptable_tol'] = 1e-2
         solver.options['acceptable_iter'] = 1000
-        solver.options['acceptable_iter'] = 1000
+        solver.options['alpha_for_y'] = "safer"
+        solver.options['max_soc'] = 4
         solver.options['linear_solver'] = params.solver_params.linear_solver
 
     try:
