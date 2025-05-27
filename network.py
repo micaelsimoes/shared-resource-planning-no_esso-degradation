@@ -350,8 +350,10 @@ def _build_model(network, params):
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
                 for p in model.periods:
-                    model.pc[c, s_m, s_o, p].fix(load.pd[s_o][p])
-                    model.qc[c, s_m, s_o, p].fix(load.qd[s_o][p])
+                    model.pc[c, s_m, s_o, p].setub(load.pd[s_o][p] + EQUALITY_TOLERANCE)
+                    model.pc[c, s_m, s_o, p].setlb(load.pd[s_o][p] - EQUALITY_TOLERANCE)
+                    model.qc[c, s_m, s_o, p].setub(load.qd[s_o][p] + EQUALITY_TOLERANCE)
+                    model.qc[c, s_m, s_o, p].setlb(load.qd[s_o][p] - EQUALITY_TOLERANCE)
     if params.fl_reg:
         model.flex_p_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.flex_p_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -370,13 +372,13 @@ def _build_model(network, params):
                             model.flex_p_up[c, s_m, s_o, p].setub(abs(flex_up))
                             model.flex_p_down[c, s_m, s_o, p].setub(abs(flex_down))
                         else:
-                            model.flex_p_up[c, s_m, s_o, p].fix(0.00)
-                            model.flex_p_down[c, s_m, s_o, p].fix(0.00)
+                            model.flex_p_up[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                            model.flex_p_down[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                             if params.slacks.flexibility.day_balance:
-                                model.slack_flex_p_balance[c, s_m, s_o].fix(0.00)
-                                model.slack_flex_p_balance[c, s_m, s_o].fix(0.00)
-                        model.flex_q_up[c, s_m, s_o, p].fix(0.00)
-                        model.flex_q_down[c, s_m, s_o, p].fix(0.00)
+                                model.slack_flex_p_balance[c, s_m, s_o].setub(EQUALITY_TOLERANCE)
+                                model.slack_flex_p_balance[c, s_m, s_o].setub(EQUALITY_TOLERANCE)
+                        model.flex_q_up[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                        model.flex_q_down[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
     if params.l_curt:
         model.pc_curt_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.pc_curt_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
