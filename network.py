@@ -304,7 +304,6 @@ def _build_model(network, params):
                         model.pg[g, s_m, s_o, p].fix(0.00)
                         model.qg[g, s_m, s_o, p].fix(0.00)
     if params.rg_curt:
-        model.sg_abs = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.sg_sqr = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.sg_curt = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         for g in model.generators:
@@ -317,11 +316,9 @@ def _build_model(network, params):
                             init_sg = 0.0
                             if generator.status[p]:
                                 init_sg = sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
-                            model.sg_abs[g, s_m, s_o, p].setub(init_sg)
                             model.sg_sqr[g, s_m, s_o, p].setub(init_sg ** 2)
                             model.sg_curt[g, s_m, s_o, p].setub(init_sg)
                         else:
-                            model.sg_abs[g, s_m, s_o, p].fix(0.00)
                             model.sg_sqr[g, s_m, s_o, p].fix(0.00)
                             model.sg_curt[g, s_m, s_o, p].fix(0.00)
 
@@ -350,10 +347,8 @@ def _build_model(network, params):
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
                 for p in model.periods:
-                    model.pc[c, s_m, s_o, p].setub(load.pd[s_o][p] + EQUALITY_TOLERANCE)
-                    model.pc[c, s_m, s_o, p].setlb(load.pd[s_o][p] - EQUALITY_TOLERANCE)
-                    model.qc[c, s_m, s_o, p].setub(load.qd[s_o][p] + EQUALITY_TOLERANCE)
-                    model.qc[c, s_m, s_o, p].setlb(load.qd[s_o][p] - EQUALITY_TOLERANCE)
+                    model.pc[c, s_m, s_o, p].fix(load.pd[s_o][p])
+                    model.qc[c, s_m, s_o, p].fix(load.qd[s_o][p])
     if params.fl_reg:
         model.flex_p_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.flex_p_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -531,8 +526,7 @@ def _build_model(network, params):
                             if generator.status[p]:
                                 init_sg = sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
                             model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] == model.pg[g, s_m, s_o, p] ** 2 + model.qg[g, s_m, s_o, p] ** 2)
-                            model.generation_apparent_power.add(model.sg_abs[g, s_m, s_o, p] ** 2 == model.sg_sqr[g, s_m, s_o, p])
-                            model.generation_apparent_power.add(model.sg_abs[g, s_m, s_o, p] == init_sg - model.sg_curt[g, s_m, s_o, p])
+                            model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] == (init_sg - model.sg_curt[g, s_m, s_o, p]) ** 2)
                             if generator.power_factor_control:
                                 # Power factor control, variable phi
                                 max_phi = acos(generator.max_pf)
@@ -1697,7 +1691,7 @@ def _process_results(network, model, params, results=dict()):
                         sg = sqrt(pg ** 2 + qg ** 2)
                         pg_net = pe.value(model.pg[g, s_m, s_o, p]) * network.baseMVA
                         qg_net = pe.value(model.qg[g, s_m, s_o, p]) * network.baseMVA
-                        sg_net = pe.value(model.sg_abs[g, s_m, s_o, p]) * network.baseMVA
+                        sg_net = sqrt(pe.value(model.sg_sqr[g, s_m, s_o, p])) * network.baseMVA
                         sg_curt = pe.value(model.sg_curt[g, s_m, s_o, p]) * network.baseMVA
                         processed_results['scenarios'][s_m][s_o]['generation']['pg_net'][gen_id].append(pg_net)
                         processed_results['scenarios'][s_m][s_o]['generation']['qg_net'][gen_id].append(qg_net)
@@ -2273,7 +2267,7 @@ def _compute_renewable_generation(network, model, params):
                         total_renewable_gen_scenario['p'] += network.baseMVA * pe.value(model.pg[g, s_m, s_o, p])
                         total_renewable_gen_scenario['q'] += network.baseMVA * pe.value(model.qg[g, s_m, s_o, p])
                         if params.rg_curt:
-                            total_renewable_gen_scenario['s'] += network.baseMVA * pe.value(model.sg_abs[g, s_m, s_o, p])
+                            total_renewable_gen_scenario['s'] += network.baseMVA * sqrt(pe.value(model.sg_sqr[g, s_m, s_o, p]))
             total_renewable_gen['p'] += total_renewable_gen_scenario['p'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
             total_renewable_gen['q'] += total_renewable_gen_scenario['q'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
             total_renewable_gen['s'] += total_renewable_gen_scenario['s'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
@@ -2289,7 +2283,7 @@ def _compute_renewable_generation_per_scenario(network, model, params, s_m, s_o)
                 total_renewable_gen['p'] += network.baseMVA * pe.value(model.pg[g, s_m, s_o, p])
                 total_renewable_gen['q'] += network.baseMVA * pe.value(model.qg[g, s_m, s_o, p])
                 if params.rg_curt:
-                    total_renewable_gen['s'] += network.baseMVA * pe.value(model.sg_abs[g, s_m, s_o, p])
+                    total_renewable_gen['s'] += network.baseMVA * sqrt(pe.value(model.sg_sqr[g, s_m, s_o, p]))
     return total_renewable_gen
 
 
