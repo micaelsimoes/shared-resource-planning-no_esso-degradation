@@ -1092,8 +1092,8 @@ def _run_smopf(network, model, params, from_warm_start=False):
 
     if params.solver_params.solver == 'ipopt':
         solver.options['tol'] = params.solver_params.solver_tol
-        solver.options['constr_viol_tol'] = 1e-6
-        solver.options['dual_inf_tol'] = 1e-6
+        solver.options['constr_viol_tol'] = params.solver_params.solver_tol * 1e1
+        solver.options['dual_inf_tol'] = params.solver_params.solver_tol * 1e1
         solver.options['mu_strategy'] = 'adaptive'
         solver.options['mu_init'] =  1e-1
         solver.options['mu_max_fact'] =  1e3
