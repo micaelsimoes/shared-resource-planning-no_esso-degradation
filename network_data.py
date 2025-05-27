@@ -210,13 +210,13 @@ def _write_main_info_to_excel(network_planning, workbook, results):
     col_idx = 2
     for year in network_planning.years:
         for _ in network_planning.days:
-            sheet.cell(row=line_idx, column=col_idx).value = year
+            write_value(sheet, line_idx, col_idx, year)
             col_idx += 1
     col_idx = 2
     line_idx += 1
     for _ in network_planning.years:
         for day in network_planning.days:
-            sheet.cell(row=line_idx, column=col_idx).value = day
+            write_value(sheet, line_idx, col_idx, day)
             col_idx += 1
 
     # Objective function value
@@ -230,8 +230,11 @@ def _write_main_info_to_excel(network_planning, workbook, results):
     sheet.cell(row=line_idx, column=1).value = obj_string
     for year in network_planning.years:
         for day in network_planning.days:
-            sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['obj']
-            sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+            if results['results'][year][day]:
+                value = results['results'][year][day]['obj']
+                write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
+            else:
+                sheet.cell(row=line_idx, column=col_idx).value = 'N/A'
             col_idx += 1
 
     # Total Load
@@ -240,8 +243,8 @@ def _write_main_info_to_excel(network_planning, workbook, results):
     sheet.cell(row=line_idx, column=1).value = 'Load, [MWh]'
     for year in network_planning.years:
         for day in network_planning.days:
-            sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['total_load']['p']
-            sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+            value = results['results'][year][day]['total_load']['p']
+            write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
             col_idx += 1
 
     col_idx = 2
@@ -249,8 +252,8 @@ def _write_main_info_to_excel(network_planning, workbook, results):
     sheet.cell(row=line_idx, column=1).value = 'Load, [MVArh]'
     for year in network_planning.years:
         for day in network_planning.days:
-            sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['total_load']['q']
-            sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+            value = results['results'][year][day]['total_load']['q']
+            write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
             col_idx += 1
 
     # Flexibility used
@@ -260,20 +263,18 @@ def _write_main_info_to_excel(network_planning, workbook, results):
         sheet.cell(row=line_idx, column=1).value = 'Flexibility used, [MWh]'
         for year in network_planning.years:
             for day in network_planning.days:
-                sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['flex_used']['p']
-                sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+                value = results['results'][year][day]['flex_used']['p']
+                write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
                 col_idx += 1
-        sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
 
         col_idx = 2
         line_idx += 1
         sheet.cell(row=line_idx, column=1).value = 'Flexibility used, [MVArh]'
         for year in network_planning.years:
             for day in network_planning.days:
-                sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['flex_used']['q']
-                sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+                value = results['results'][year][day]['flex_used']['q']
+                write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
                 col_idx += 1
-        sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
 
     # Total Load curtailed
     if network_planning.params.l_curt:
@@ -283,8 +284,8 @@ def _write_main_info_to_excel(network_planning, workbook, results):
         sheet.cell(row=line_idx, column=1).value = 'Load curtailed, [MWh]'
         for year in network_planning.years:
             for day in network_planning.days:
-                sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['load_curt']['p']
-                sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+                value = results['results'][year][day]['load_curt']['p']
+                write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
                 col_idx += 1
 
         col_idx = 2
@@ -292,8 +293,8 @@ def _write_main_info_to_excel(network_planning, workbook, results):
         sheet.cell(row=line_idx, column=1).value = 'Load curtailed, [MVArh]'
         for year in network_planning.years:
             for day in network_planning.days:
-                sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['load_curt']['q']
-                sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+                value = results['results'][year][day]['load_curt']['q']
+                write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
                 col_idx += 1
 
     # Total Generation
@@ -302,8 +303,8 @@ def _write_main_info_to_excel(network_planning, workbook, results):
     sheet.cell(row=line_idx, column=1).value = 'Generation, [MWh]'
     for year in network_planning.years:
         for day in network_planning.days:
-            sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['total_gen']['p']
-            sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+            value = results['results'][year][day]['total_gen']['p']
+            write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
             col_idx += 1
 
     col_idx = 2
@@ -311,8 +312,8 @@ def _write_main_info_to_excel(network_planning, workbook, results):
     sheet.cell(row=line_idx, column=1).value = 'Generation, [MVArh]'
     for year in network_planning.years:
         for day in network_planning.days:
-            sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['total_gen']['q']
-            sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+            value = results['results'][year][day]['total_gen']['q']
+            write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
             col_idx += 1
 
     # Total Renewable Generation
@@ -321,8 +322,8 @@ def _write_main_info_to_excel(network_planning, workbook, results):
     sheet.cell(row=line_idx, column=1).value = 'Renewable generation, [MWh]'
     for year in network_planning.years:
         for day in network_planning.days:
-            sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['total_renewable_gen']['p']
-            sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+            value = results['results'][year][day]['total_renewable_gen']['p']
+            write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
             col_idx += 1
 
     col_idx = 2
@@ -330,8 +331,8 @@ def _write_main_info_to_excel(network_planning, workbook, results):
     sheet.cell(row=line_idx, column=1).value = 'Renewable generation, [MVArh]'
     for year in network_planning.years:
         for day in network_planning.days:
-            sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['total_renewable_gen']['q']
-            sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+            value = results['results'][year][day]['total_renewable_gen']['q']
+            write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
             col_idx += 1
 
     # Renewable Generation Curtailed
@@ -342,8 +343,8 @@ def _write_main_info_to_excel(network_planning, workbook, results):
         sheet.cell(row=line_idx, column=1).value = 'Renewable generation curtailed, [MWh]'
         for year in network_planning.years:
             for day in network_planning.days:
-                sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['gen_curt']['p']
-                sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+                value = results['results'][year][day]['gen_curt']['p']
+                write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
                 col_idx += 1
 
         col_idx = 2
@@ -351,8 +352,8 @@ def _write_main_info_to_excel(network_planning, workbook, results):
         sheet.cell(row=line_idx, column=1).value = 'Renewable generation curtailed, [MVArh]'
         for year in network_planning.years:
             for day in network_planning.days:
-                sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['gen_curt']['q']
-                sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+                value = results['results'][year][day]['gen_curt']['q']
+                write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
                 col_idx += 1
 
     # Losses
@@ -361,8 +362,8 @@ def _write_main_info_to_excel(network_planning, workbook, results):
     sheet.cell(row=line_idx, column=1).value = 'Losses, [MWh]'
     for year in network_planning.years:
         for day in network_planning.days:
-            sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['losses']
-            sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+            value = results['results'][year][day]['losses']
+            write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
             col_idx += 1
 
     # Execution time
@@ -371,8 +372,8 @@ def _write_main_info_to_excel(network_planning, workbook, results):
     sheet.cell(row=line_idx, column=1).value = 'Execution time, [s]'
     for year in network_planning.years:
         for day in network_planning.days:
-            sheet.cell(row=line_idx, column=col_idx).value = results['results'][year][day]['runtime'][0]
-            sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+            value = results['results'][year][day]['runtime'][0]
+            write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
             col_idx += 1
 
     # Number of price (market) scenarios
@@ -381,7 +382,8 @@ def _write_main_info_to_excel(network_planning, workbook, results):
     sheet.cell(row=line_idx, column=1).value = 'Number of market scenarios'
     for year in network_planning.years:
         for day in network_planning.days:
-            sheet.cell(row=line_idx, column=col_idx).value = len(network_planning.network[year][day].prob_market_scenarios)
+            value = len(network_planning.network[year][day].prob_market_scenarios)
+            write_value(sheet, line_idx, col_idx, value)
             col_idx += 1
 
     # Number of operation (generation and consumption) scenarios
@@ -390,7 +392,8 @@ def _write_main_info_to_excel(network_planning, workbook, results):
     sheet.cell(row=line_idx, column=1).value = 'Number of operation scenarios'
     for year in network_planning.years:
         for day in network_planning.days:
-            sheet.cell(row=line_idx, column=col_idx).value = len(network_planning.network[year][day].prob_operation_scenarios)
+            value = len(network_planning.network[year][day].prob_operation_scenarios)
+            write_value(sheet, line_idx, col_idx, value)
             col_idx += 1
 
 
