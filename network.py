@@ -299,8 +299,10 @@ def _build_model(network, params):
                         model.qg[g, s_m, s_o, p].setub(qg_ub)
                         model.qg[g, s_m, s_o, p].setlb(qg_lb)
                     else:
-                        model.pg[g, s_m, s_o, p].fix(0.00)
-                        model.qg[g, s_m, s_o, p].fix(0.00)
+                        model.pg[g, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                        model.pg[g, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
+                        model.qg[g, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                        model.qg[g, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
     if params.rg_curt:
         model.sg_sqr = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.sg_curt = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
