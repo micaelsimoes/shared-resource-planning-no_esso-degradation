@@ -1152,13 +1152,22 @@ def _run_smopf(network, model, params, from_warm_start=False):
         solver.options['warm_start_mult_bound_push'] = 1e-9
 
     if params.solver_params.verbose:
-        solver.options['print_level'] = 6
+        solver.options['print_level'] = 5
         solver.options['output_file'] = 'optim_log.txt'
 
     if params.solver_params.solver == 'ipopt':
         solver.options['tol'] = params.solver_params.solver_tol
-        solver.options['linear_solver'] = params.solver_params.linear_solver
+        solver.options['constr_viol_tol'] = 1e-6
+        solver.options['dual_inf_tol'] = 1e-6
         solver.options['mu_strategy'] = 'adaptive'
+        solver.options['bound_push'] = 1e-4
+        solver.options['bound_relax_factor'] = 1e-4
+        solver.options['nlp_scaling_method'] = 'gradient-based'
+        solver.options['max_iter'] = 5000
+        solver.options['acceptable_tol'] = 1e-4
+        solver.options['acceptable_iter'] = 1000
+        solver.options['acceptable_iter'] = 1000
+        solver.options['linear_solver'] = params.solver_params.linear_solver
 
     try:
         result = solver.solve(model, tee=params.verbose)
