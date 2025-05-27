@@ -524,7 +524,7 @@ def _build_model(network, params):
                         if generator.is_curtaillable():
                             init_sg = 0.0
                             if generator.status[p]:
-                                init_sg = sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
+                                init_sg = sqrt(abs(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2))
                             model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] == model.pg[g, s_m, s_o, p] ** 2 + model.qg[g, s_m, s_o, p] ** 2)
                             model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] == (init_sg - model.sg_curt[g, s_m, s_o, p]) ** 2)
                             if generator.power_factor_control:
