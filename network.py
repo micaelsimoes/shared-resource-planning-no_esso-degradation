@@ -1092,7 +1092,7 @@ def _run_smopf(network, model, params, from_warm_start=False):
 
     if params.solver_params.verbose:
         solver.options["print_level"] = 5
-        solver.options["output_file"] = "ipopt.log"
+        solver.options["output_file"] = os.path.join(network.results_dir, "ipopt.log")
 
     if params.solver_params.solver == 'ipopt':
         solver.options['tol'] = params.solver_params.solver_tol
