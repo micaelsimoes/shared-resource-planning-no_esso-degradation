@@ -60,9 +60,6 @@ def fix_or_set(var, val):
         var.fix(val)
 
 def write_value(sheet, line_idx, col_idx, value, number_format=None):
-    if value:
-        sheet.cell(row=line_idx, column=col_idx).value = value
-        if number_format:
-            sheet.cell(row=line_idx, column=col_idx).number_format = number_format
-    else:
-        sheet.cell(row=line_idx, column=col_idx).value = 'N/A'
+    sheet.cell(row=line_idx, column=col_idx).value = value
+    if number_format:
+        sheet.cell(row=line_idx, column=col_idx).number_format = number_format

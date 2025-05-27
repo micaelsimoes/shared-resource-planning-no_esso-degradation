@@ -1102,6 +1102,7 @@ def _run_smopf(network, model, params, from_warm_start=False):
         solver.options['bound_push'] = 1e-4
         solver.options['bound_relax_factor'] = 1e-4
         solver.options['nlp_scaling_method'] = 'gradient-based'
+        solver.options["hessian_approximation"] = "limited-memory"
         solver.options['max_iter'] = 5000
         solver.options['acceptable_tol'] = 1e-4
         solver.options['acceptable_iter'] = 1000
@@ -1549,7 +1550,9 @@ def _process_results(network, model, params, results=dict()):
     processed_results['load_curt'] = _compute_load_curtailment(network, model, params)
     processed_results['flex_used'] = _compute_flexibility_used(network, model, params)
     if results:
-        processed_results['runtime'] = float(_get_info_from_results(results, 'Time:').strip()),
+        processed_results['runtime'] = float(_get_info_from_results(results, 'Time:').strip()[0]),
+    else:
+        processed_results['runtime'] = 0.00
 
     processed_results['scenarios'] = dict()
     for s_m in model.scenarios_market:
