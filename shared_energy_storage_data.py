@@ -49,7 +49,7 @@ class SharedEnergyStorageData:
         results = dict()
         for node_id in self.active_distribution_network_nodes:
             print(f'[INFO] \t\t\t - Node {node_id}...')
-            results[node_id] = _optimize(models[node_id], self.params.solver_params, from_warm_start=from_warm_start)
+            results[node_id] = _optimize(models[node_id], self.params.solver_params, from_warm_start=from_warm_start, node_id=node_id)
         return results
 
     def get_primal_value(self, models):
@@ -542,7 +542,7 @@ def _build_subproblem(shared_ess_data, node_id):
     return model
 
 
-def _optimize(model, params, from_warm_start=False):
+def _optimize(model, params, from_warm_start=False, node_id=None):
 
     solver = po.SolverFactory(params.solver, executable=params.solver_path)
 
@@ -569,7 +569,15 @@ def _optimize(model, params, from_warm_start=False):
         solver.options['linear_solver'] = params.linear_solver
         #solver.options['mu_strategy'] = 'adaptive'
 
-    result = solver.solve(model, tee=params.verbose)
+    try:
+        result = solver.solve(model, tee=params.verbose)
+        model.solutions.load_from(result)
+    except ValueError as e:
+        if node_id:
+            print(f"[WARNING] Shared ESS optimization. Solver failed for ESS in node {node_id}: {e}")
+        else:
+            print(f"[WARNING] Shared ESS optimization. Master problem. Error: {e}")
+        result = None  # Or store partial result
 
     return result
 
