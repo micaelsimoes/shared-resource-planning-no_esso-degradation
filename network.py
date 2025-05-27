@@ -298,8 +298,8 @@ def _build_model(network, params):
             for s_o in model.scenarios_operation:
                 for p in model.periods:
                     if generator.status[p]:
-                        model.pg[g, s_m, s_o, p] = (pg_lb + pg_ub) * 0.50
-                        model.qg[g, s_m, s_o, p] = (qg_lb + qg_ub) * 0.50
+                        model.pg[g, s_m, s_o, p] = max(pg_lb, 0.00)
+                        model.qg[g, s_m, s_o, p] = max(qg_lb, 0.00)
                         model.pg[g, s_m, s_o, p].setub(pg_ub)
                         model.pg[g, s_m, s_o, p].setlb(pg_lb)
                         model.qg[g, s_m, s_o, p].setub(qg_ub)
