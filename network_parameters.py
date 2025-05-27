@@ -75,7 +75,6 @@ class SlacksEnergyStorage:
 
     def __init__(self):
         self.complementarity = False
-        self.charging = False
         self.day_balance = False
 
     def read_slacks_parameters(self, slacks_data):
