@@ -1110,7 +1110,7 @@ def _run_smopf(network, model, params, from_warm_start=False):
         solver.options['max_iter'] = 5000
         solver.options['acceptable_tol'] = 1e-2
         solver.options['acceptable_iter'] = 1000
-        solver.options['alpha_for_y'] = "safer"
+        solver.options['alpha_for_y'] = "safer-min-dual-infeas"
         solver.options['max_soc'] = 4
         solver.options['linear_solver'] = params.solver_params.linear_solver
 
