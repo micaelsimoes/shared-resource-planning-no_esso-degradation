@@ -372,8 +372,7 @@ def _write_main_info_to_excel(network_planning, workbook, results):
     sheet.cell(row=line_idx, column=1).value = 'Execution time, [s]'
     for year in network_planning.years:
         for day in network_planning.days:
-            value = results['results'][year][day]['runtime'][0]
-            write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
+            write_value(sheet, line_idx, col_idx, results['results'][year][day]['runtime'][0], number_format=decimal_style)
             col_idx += 1
 
     # Number of price (market) scenarios
