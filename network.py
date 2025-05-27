@@ -313,11 +313,11 @@ def _build_model(network, params):
                     for p in model.periods:
                         if generator.is_curtaillable():
                             # - Renewable Generation
-                            init_sg = 0.0
+                            init_sg_sqr = 0.0
                             if generator.status[p]:
-                                init_sg = sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
-                            model.sg_sqr[g, s_m, s_o, p].setub(init_sg ** 2)
-                            model.sg_curt[g, s_m, s_o, p].setub(init_sg)
+                                init_sg_sqr = generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2
+                            model.sg_sqr[g, s_m, s_o, p].setub(init_sg_sqr)
+                            model.sg_curt[g, s_m, s_o, p].setub(sqrt(abs(init_sg_sqr)))
                         else:
                             model.sg_sqr[g, s_m, s_o, p].fix(0.00)
                             model.sg_curt[g, s_m, s_o, p].fix(0.00)
@@ -962,11 +962,11 @@ def _build_model(network, params):
                 obj_scenario = 0.0
 
                 # Generation curtailment
-                # if params.rg_curt:
-                #     for g in model.generators:
-                #         for p in model.periods:
-                #             sg_curt = model.sg_curt[g, s_m, s_o, p]
-                #             obj_scenario += model.penalty_gen_curtailment * network.baseMVA * sg_curt
+                if params.rg_curt:
+                    for g in model.generators:
+                        for p in model.periods:
+                            sg_curt = model.sg_curt[g, s_m, s_o, p]
+                            obj_scenario += model.penalty_gen_curtailment * network.baseMVA * sg_curt
 
                 # Load curtailment
                 if params.l_curt:
