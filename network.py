@@ -723,7 +723,7 @@ def _build_model(network, params):
                             Qd += model.qc[c, s_m, s_o, p]
                             if params.fl_reg and network.loads[c].fl_reg:
                                 Pd += (model.flex_p_up[c, s_m, s_o, p] - model.flex_p_down[c, s_m, s_o, p])
-                                Pd += (model.flex_q_up[c, s_m, s_o, p] - model.flex_q_down[c, s_m, s_o, p])
+                                Qd += (model.flex_q_up[c, s_m, s_o, p] - model.flex_q_down[c, s_m, s_o, p])
                             if params.l_curt:
                                 Pd -= (model.pc_curt_down[c, s_m, s_o, p] - model.pc_curt_up[c, s_m, s_o, p])
                                 Qd -= (model.qc_curt_down[c, s_m, s_o, p] - model.qc_curt_up[c, s_m, s_o, p])
@@ -790,7 +790,7 @@ def _build_model(network, params):
                         model.node_balance_cons_q.add(Qg == Qd + Qi + model.slack_node_balance_q[i, s_m, s_o, p])
                     else:
                         model.node_balance_cons_p.add(Pg == Pd + Pi)
-                        model.node_balance_cons_q.add(Qg <= Qd + Qi)
+                        model.node_balance_cons_q.add(Qg == Qd + Qi)
 
     # - Branch Power Flow constraints (current)
     model.branch_power_flow_cons = pe.ConstraintList()
