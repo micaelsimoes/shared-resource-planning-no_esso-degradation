@@ -45,7 +45,7 @@ class Network:
 
     def build_model(self, params):
         _pre_process_network(self)
-        return _build_model(self, params)
+        return _build_model_v2(self, params)
 
     def run_smopf(self, model, params, from_warm_start=False):
         return _run_smopf(self, model, params, from_warm_start=from_warm_start)
@@ -1384,9 +1384,9 @@ def _build_model_v2(network, params):
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
     # - Voltage
-    model.voltage_cons_e = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=lambda m, i, s_m, s_o, p: voltage_rule_e(m, i, s_m, s_o, p, params))
-    model.voltage_cons_f = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=lambda m, i, s_m, s_o, p: voltage_rule_e(m, i, s_m, s_o, p, params))
-    model.voltage_magnitude  = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=lambda m, i, s_m, s_o, p: voltage_rule_e(m, i, s_m, s_o, p, network, params))
+    model.voltage_cons_e = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=lambda m, i, s_m, s_o, p: voltage_rule_e(m, i, s_m, s_o, p, network, params))
+    model.voltage_cons_f = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=lambda m, i, s_m, s_o, p: voltage_rule_f(m, i, s_m, s_o, p, network, params))
+    model.voltage_magnitude  = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=lambda m, i, s_m, s_o, p: voltage_magnitude_rule(m, i, s_m, s_o, p, network, params))
 
     model.generation_apparent_power = pe.ConstraintList()
     model.generation_power_factor = pe.ConstraintList()
