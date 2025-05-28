@@ -4,7 +4,7 @@ from definitions import *
 
 
 # Voltage variables, e
-def e_bounds(model, i, s_m, s_o, p, network, params):
+def e_bounds(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
     if node.type == "BUS_REF" and not network.is_transmission:
         vg = network.generators[network.get_gen_idx(node.bus_i)].vg
@@ -13,7 +13,7 @@ def e_bounds(model, i, s_m, s_o, p, network, params):
 
 
 # Voltage variables, f
-def f_bounds(model, i, s_m, s_o, p, network, params):
+def f_bounds(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
     if node.type == "BUS_REF":
         return (-params.EQUALITY_TOLERANCE, params.EQUALITY_TOLERANCE)
@@ -21,7 +21,7 @@ def f_bounds(model, i, s_m, s_o, p, network, params):
 
 
 # Voltage variables, slack bounds
-def slack_bounds(model, i, s_m, s_o, p, network, params):
+def slack_bounds(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
     if node.type == "BUS_REF":
         return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
@@ -29,7 +29,7 @@ def slack_bounds(model, i, s_m, s_o, p, network, params):
 
 
 # Generation, Pg
-def pg_bounds(model, g, s_m, s_o, p, network, params):
+def pg_bounds(m, g, s_m, s_o, p, network, params):
     gen = network.generators[g]
     if gen.status[p]:
         return (max(gen.pmin, 0.0), gen.pmax)
@@ -38,7 +38,7 @@ def pg_bounds(model, g, s_m, s_o, p, network, params):
 
 
 # Generation, Qg
-def qg_bounds(model, g, s_m, s_o, p, network, params):
+def qg_bounds(m, g, s_m, s_o, p, network, params):
     gen = network.generators[g]
     if gen.status[p]:
         return (max(gen.qmin, 0.0), gen.qmax)
@@ -47,7 +47,7 @@ def qg_bounds(model, g, s_m, s_o, p, network, params):
 
 
 # Generation, Sg
-def sg_bounds(model, g, s_m, s_o, p, network, params):
+def sg_bounds(m, g, s_m, s_o, p, network, params):
 
     gen = network.generators[g]
     if not gen.is_curtaillable():
@@ -64,7 +64,7 @@ def sg_bounds(model, g, s_m, s_o, p, network, params):
 
 
 # Generation, Sg^2
-def sg_sqr_bounds(model, g, s_m, s_o, p, network, params):
+def sg_sqr_bounds(m, g, s_m, s_o, p, network, params):
 
     gen = network.generators[g]
     if not gen.is_curtaillable() or not gen.status[p]:
@@ -78,14 +78,14 @@ def sg_sqr_bounds(model, g, s_m, s_o, p, network, params):
 
 
 # Branch power flow, Fij
-def flow_ij_sqr_bounds(model, b, s_m, s_o, p, network, params):
+def flow_ij_sqr_bounds(m, b, s_m, s_o, p, network, params):
     branch = network.branches[b]
     if not branch.status:
         return (0.0, EQUALITY_TOLERANCE)
     return (0.0, None)  # No upper bound unless explicitly constrained elsewhere
 
 
-def init_flow_ij_sqr(model, b, s_m, s_o, p, network, params):
+def init_flow_ij_sqr(m, b, s_m, s_o, p, network, params):
     branch = network.branches[b]
     if not branch.status:
         return 0.0
@@ -94,7 +94,7 @@ def init_flow_ij_sqr(model, b, s_m, s_o, p, network, params):
 
 
 # Branch power flow, Fij slacks
-def slack_flow_bounds(model, b, s_m, s_o, p, network, params):
+def slack_flow_bounds(m, b, s_m, s_o, p, network, params):
     branch = network.branches[b]
     if not branch.status:
         return (0.0, EQUALITY_TOLERANCE)
@@ -103,21 +103,21 @@ def slack_flow_bounds(model, b, s_m, s_o, p, network, params):
 
 
 # Consumption, Pc
-def pc_bounds(model, c, s_m, s_o, p, network, params):
+def pc_bounds(m, c, s_m, s_o, p, network, params):
     load = network.loads[c]
     pd = load.pd[s_o][p]
     return (pd - EQUALITY_TOLERANCE, pd + EQUALITY_TOLERANCE)
 
 
 # Consumption, Qc
-def qc_bounds(model, c, s_m, s_o, p, network, params):
+def qc_bounds(m, c, s_m, s_o, p, network, params):
     load = network.loads[c]
     qd = load.qd[s_o][p]
     return (qd - EQUALITY_TOLERANCE, qd + EQUALITY_TOLERANCE)
 
 
 # Consumption, flexibility
-def pc_flex_up_bounds(model, c, s_m, s_o, p, network, params):
+def pc_flex_up_bounds(m, c, s_m, s_o, p, network, params):
     load = network.loads[c]
     if not load.fl_reg:
         return (0.0, EQUALITY_TOLERANCE)
@@ -125,7 +125,7 @@ def pc_flex_up_bounds(model, c, s_m, s_o, p, network, params):
     return (0.0, value)
 
 
-def pc_flex_down_bounds(model, c, s_m, s_o, p, network, params):
+def pc_flex_down_bounds(m, c, s_m, s_o, p, network, params):
     load = network.loads[c]
     if not load.fl_reg:
         return (0.0, EQUALITY_TOLERANCE)
@@ -133,16 +133,16 @@ def pc_flex_down_bounds(model, c, s_m, s_o, p, network, params):
     return (0.0, value)
 
 
-def qc_flex_up_bounds(model, c, s_m, s_o, p, network, params):
+def qc_flex_up_bounds(m, c, s_m, s_o, p, network, params):
     return (0.0, EQUALITY_TOLERANCE)
 
 
-def qc_flex_down_bounds(model, c, s_m, s_o, p, network, params):
+def qc_flex_down_bounds(m, c, s_m, s_o, p, network, params):
     return (0.0, EQUALITY_TOLERANCE)
 
 
 # Consumption, curtailment
-def pc_curt_down_bounds(model, c, s_m, s_o, p, network, params):
+def pc_curt_down_bounds(m, c, s_m, s_o, p, network, params):
     load = network.loads[c]
     pd = load.pd[s_o][p]
     if pd >= 0.00:
@@ -151,7 +151,7 @@ def pc_curt_down_bounds(model, c, s_m, s_o, p, network, params):
         return (0.0, EQUALITY_TOLERANCE)
 
 
-def pc_curt_up_bounds(model, c, s_m, s_o, p, network, params):
+def pc_curt_up_bounds(m, c, s_m, s_o, p, network, params):
     load = network.loads[c]
     pd = load.pd[s_o][p]
     if pd >= 0.00:
@@ -160,7 +160,7 @@ def pc_curt_up_bounds(model, c, s_m, s_o, p, network, params):
         return (0.0, abs(pd))
 
 
-def qc_curt_down_bounds(model, c, s_m, s_o, p, network, params):
+def qc_curt_down_bounds(m, c, s_m, s_o, p, network, params):
     load = network.loads[c]
     qd = load.qd[s_o][p]
     if qd >= 0.00:
@@ -169,7 +169,7 @@ def qc_curt_down_bounds(model, c, s_m, s_o, p, network, params):
         return (0.0, EQUALITY_TOLERANCE)
 
 
-def qc_curt_up_bounds(model, c, s_m, s_o, p, network, params):
+def qc_curt_up_bounds(m, c, s_m, s_o, p, network, params):
     load = network.loads[c]
     qd = load.pd[s_o][p]
     if qd >= 0.00:
@@ -178,7 +178,7 @@ def qc_curt_up_bounds(model, c, s_m, s_o, p, network, params):
         return (0.0, abs(qd))
 
 # Transformers
-def transformer_ratio_bounds(model, i, s_m, s_o, p, network, params):
+def transformer_ratio_bounds(m, i, s_m, s_o, p, network, params):
     branch = network.branches[i]
     if branch.is_transformer:
         if params.transf_reg and branch.vmag_reg:
@@ -204,50 +204,50 @@ def s_bounds(e, network):
     return (0.0, network.energy_storages[e].s)
 
 
-def soc_initialize(model, e, network):
+def soc_initialize(m, e, network):
     return network.energy_storages[e].e_init
 
 
 # Shared Energy Storage
-def shared_soc_bounds(model, e, s_m, s_o, p, network):
+def shared_soc_bounds(m, e, s_m, s_o, p, network):
     ses = network.shared_energy_storages[e]
     return (0.0, ses.e)
 
 
-def shared_q_bounds(model, e, s_m, s_o, p, network):
+def shared_q_bounds(m, e, s_m, s_o, p, network):
     s = network.shared_energy_storages[e].s
     return (-s, s)
 
 
-def shared_s_bounds(model, e, s_m, s_o, p, network):
+def shared_s_bounds(m, e, s_m, s_o, p, network):
     return (0.0, network.shared_energy_storages[e].s)
 
 
-def shared_soc_init(model, e, s_m, s_o, p, network):
+def shared_soc_init(m, e, s_m, s_o, p, network):
     return network.shared_energy_storages[e].e * ENERGY_STORAGE_RELATIVE_INIT_SOC
 
 
 # Voltage constraints, e
-def voltage_rule_e(model, i, s_m, s_o, p, network, params):
-    e_val = model.e[i, s_m, s_o, p]
+def voltage_rule_e(m, i, s_m, s_o, p, params):
+    e_val = m.e[i, s_m, s_o, p]
     if params.slacks.grid_operation.voltage:
-        e_val += model.slack_e[i, s_m, s_o, p]
-    return model.e_actual[i, s_m, s_o, p] == e_val
+        e_val += m.slack_e[i, s_m, s_o, p]
+    return m.e_actual[i, s_m, s_o, p] == e_val
 
 
 # Voltage constraints, f
-def voltage_rule_f(model, i, s_m, s_o, p, network, params):
-    f_val = model.f[i, s_m, s_o, p]
+def voltage_rule_f(m, i, s_m, s_o, p, params):
+    f_val = m.f[i, s_m, s_o, p]
     if params.slacks.grid_operation.voltage:
-        f_val += model.slack_f[i, s_m, s_o, p]
-    return model.f_actual[i, s_m, s_o, p] == f_val
+        f_val += m.slack_f[i, s_m, s_o, p]
+    return m.f_actual[i, s_m, s_o, p] == f_val
 
 
 # Voltage constraints, magnitude
-def voltage_magnitude_rule(model, i, s_m, s_o, p, network, params):
+def voltage_magnitude_rule(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
-    e = model.e[i, s_m, s_o, p]
-    f = model.f[i, s_m, s_o, p]
+    e = m.e[i, s_m, s_o, p]
+    f = m.f[i, s_m, s_o, p]
     vmag_sq = e ** 2 + f ** 2
     if node.type == BUS_PV and params.enforce_vg:
         vg = network.generators[network.get_gen_idx(node.bus_i)].vg[p]
@@ -320,11 +320,11 @@ def power_factor_rule_lower(m, g, s_m, s_o, p, network):
 
 
 # Flexible loads
-def flex_energy_balance_rule(model, c, s_m, s_o, p, params):
-    p_up = sum(model.flex_p_up[c, s_m, s_o, p] for p in model.periods)
-    p_down = sum(model.flex_p_down[c, s_m, s_o, p] for p in model.periods)
+def flex_energy_balance_rule(m, c, s_m, s_o, params):
+    p_up = sum(m.flex_p_up[c, s_m, s_o, p] for p in m.periods)
+    p_down = sum(m.flex_p_down[c, s_m, s_o, p] for p in m.periods)
     if params.slacks.flexibility.day_balance:
-        return p_up == p_down + model.slack_flex_p_balance[c, s_m, s_o]
+        return p_up == p_down + m.slack_flex_p_balance[c, s_m, s_o]
     else:
         # Soft equality with tolerance
         return pe.inequality(p_down - EQUALITY_TOLERANCE, p_up, p_down + EQUALITY_TOLERANCE)
@@ -374,16 +374,168 @@ def ess_balance_rule(m, e, s_m, s_o, p, network):
     return ineq
 
 
-def ess_soc_final_rule(model, e, s_m, s_o, network, params):
+def ess_soc_final_rule(m, e, s_m, s_o, network, params):
     final_soc = network.energy_storages[e].e_init
-    final_p = model.periods.last()
+    final_p = m.periods.last()
     if params.slacks.ess.day_balance:
-        return model.es_soc[e, s_m, s_o, final_p] == final_soc + model.slack_es_soc_final[e, s_m, s_o]
+        return m.es_soc[e, s_m, s_o, final_p] == final_soc + m.slack_es_soc_final[e, s_m, s_o]
     else:
         ineq = pe.inequality(
             final_soc - EQUALITY_TOLERANCE,
-            model.es_soc[e, s_m, s_o, final_p],
+            m.es_soc[e, s_m, s_o, final_p],
             final_soc + EQUALITY_TOLERANCE
         )
         return ineq
+
+
+# Shared Energy Storage
+def sess_phi_ch_limits(m, e, s_m, s_o, p, network):
+    ess = network.shared_energy_storages[e]
+    max_phi = acos(ess.max_pf)
+    min_phi = acos(ess.min_pf)
+    ineq = pe.inequality(
+        tan(min_phi) * m.shared_es_pch[e, s_m, s_o, p],
+        m.shared_es_qch[e, s_m, s_o, p],
+        tan(max_phi) * m.shared_es_pch[e, s_m, s_o, p]
+    )
+    return ineq
+
+
+def sess_phi_dch_limits(m, e, s_m, s_o, p, network):
+    ess = network.shared_energy_storages[e]
+    max_phi = acos(ess.max_pf)
+    min_phi = acos(ess.min_pf)
+    ineq = pe.inequality(
+        tan(min_phi) * m.shared_es_pdch[e, s_m, s_o, p],
+        m.shared_es_qdch[e, s_m, s_o, p],
+        tan(max_phi) * m.shared_es_pdch[e, s_m, s_o, p]
+    )
+    return ineq
+
+
+def sess_sch_limit(m, e, s_m, s_o, p):
+    s_max = m.shared_es_s_rated[e]
+    sch = m.shared_es_sch[e, s_m, s_o, p]
+    return sch <= s_max
+
+
+def sess_sdch_limit(m, e, s_m, s_o, p):
+    s_max = m.shared_es_s_rated[e]
+    sdch = m.shared_es_sdch[e, s_m, s_o, p]
+    return sdch <= s_max
+
+
+def sess_pch_limit(m, e, s_m, s_o, p):
+    s_max = m.shared_es_s_rated[e]
+    pch = m.shared_es_pch[e, s_m, s_o, p]
+    return pch <= s_max
+
+
+def sess_pdch_limit(m, e, s_m, s_o, p):
+    s_max = m.shared_es_s_rated[e]
+    pdch = m.shared_es_pdch[e, s_m, s_o, p]
+    return pdch <= s_max
+
+
+def sess_soc_limits(m, e, s_m, s_o, p):
+    soc_max = m.shared_es_e_rated[e] * ENERGY_STORAGE_MAX_ENERGY_STORED
+    soc_min = m.shared_es_e_rated[e] * ENERGY_STORAGE_MIN_ENERGY_STORED
+    ineq = pe.inequality(
+        soc_min,
+        m.shared_es_soc[e, s_m, s_o, p],
+        soc_max
+    )
+    return ineq
+
+
+def sess_pnet(m, e, s_m, s_o, p):
+    pch = m.shared_es_pch[e, s_m, s_o, p]
+    pdch = m.shared_es_pdch[e, s_m, s_o, p]
+    ineq = pe.inequality(
+        pch - pdch - EQUALITY_TOLERANCE,
+        m.shared_es_pnet[e, s_m, s_o, p],
+        pch - pdch + EQUALITY_TOLERANCE
+    )
+    return ineq
+
+
+def sess_qnet(m, e, s_m, s_o, p):
+    qch = m.shared_es_qch[e, s_m, s_o, p]
+    qdch = m.shared_es_qdch[e, s_m, s_o, p]
+    ineq = pe.inequality(
+        qch - qdch - EQUALITY_TOLERANCE,
+        m.shared_es_qnet[e, s_m, s_o, p],
+        qch - qdch + EQUALITY_TOLERANCE
+    )
+    return ineq
+
+
+# Node balance
+def compute_branch_power(branch, ei, fi, ej, fj, rij):
+    vi_sq = ei ** 2 + fi ** 2
+    Pi = branch.g * vi_sq * rij ** 2
+    Pi -= rij * (branch.g * (ei * ej + fi * fj) + branch.b * (fi * ej - ei * fj))
+    Qi = -(branch.b + branch.b_sh * 0.5) * vi_sq * rij ** 2
+    Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
+    return Pi, Qi
+
+
+# Branch limits
+def compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, limit_type):
+
+    if limit_type == BRANCH_LIMIT_CURRENT:
+        bij_sh = branch.b_sh * 0.50
+        iij_sqr = (branch.g ** 2 + branch.b ** 2) * (((rij ** 2) * ei - rij * ej) ** 2 + ((rij ** 2) * fi - rij * fj) ** 2)
+        iij_sqr += bij_sh ** 2 * (ei ** 2 + fi ** 2)
+        iij_sqr += 2 * branch.g * bij_sh * (((rij ** 2) * fi - rij * fj) * ei - ((rij ** 2) * ei - rij * ej) * fi)
+        iij_sqr += 2 * branch.b * bij_sh * (((rij ** 2) * ei - rij * ej) * ei + ((rij ** 2) * fi - rij * fj) * fi)
+        return iij_sqr
+
+    elif limit_type == BRANCH_LIMIT_APPARENT_POWER or (limit_type == BRANCH_LIMIT_MIXED and branch.is_transformer):
+        pij = branch.g * (ei ** 2 + fi ** 2) * rij ** 2
+        pij -= branch.g * (ei * ej + fi * fj) * rij
+        pij -= branch.b * (fi * ej - ei * fj) * rij
+        qij = - (branch.b + branch.b_sh * 0.50) * (ei ** 2 + fi ** 2) * rij ** 2
+        qij += branch.b * (ei * ej + fi * fj) * rij
+        qij -= branch.g * (fi * ej - ei * fj) * rij
+        return pij ** 2 + qij ** 2
+
+    elif limit_type == BRANCH_LIMIT_MIXED and not branch.is_transformer:
+        bij_sh = branch.b_sh * 0.50
+        iij_sqr = (branch.g ** 2 + branch.b ** 2) * (((rij ** 2) * ei - rij * ej) ** 2 + ((rij ** 2) * fi - rij * fj) ** 2)
+        iij_sqr += bij_sh ** 2 * (ei ** 2 + fi ** 2)
+        iij_sqr += 2 * branch.g * bij_sh * (((rij ** 2) * fi - rij * fj) * ei - ((rij ** 2) * ei - rij * ej) * fi)
+        iij_sqr += 2 * branch.b * bij_sh * (((rij ** 2) * ei - rij * ej) * ei + ((rij ** 2) * fi - rij * fj) * fi)
+        return iij_sqr
+
+    raise ValueError("Unknown branch limit type")
+
+
+# Objective function
+def compute_weight(network, omega_market, omega_oper):
+    return network.baseMVA * omega_market * omega_oper
+
+
+def add_flex_cost(model, s_m, s_o, p, c, unit_cost, baseMVA):
+    flex_pc = model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p]
+    flex_qc = model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]
+    return unit_cost * baseMVA * (flex_pc + flex_qc)
+
+
+def add_load_curtailment(model, s_m, s_o, p, c, cost, baseMVA):
+    pc = model.pc_curt_down[c, s_m, s_o, p] + model.pc_curt_up[c, s_m, s_o, p]
+    qc = model.qc_curt_down[c, s_m, s_o, p] + model.qc_curt_up[c, s_m, s_o, p]
+    return cost * baseMVA * (pc + qc)
+
+
+def add_gen_curtailment(model, s_m, s_o, p, g, cost, baseMVA):
+    return cost * baseMVA * model.sg_curt[g, s_m, s_o, p]
+
+
+def add_ess_usage(model, s_m, s_o, p, e, sch_var, sdch_var, penalty, baseMVA):
+    return penalty * baseMVA * (sch_var[e, s_m, s_o, p] + sdch_var[e, s_m, s_o, p])
+
+
+def add_slack_squared(var):
+    return var**2
 
