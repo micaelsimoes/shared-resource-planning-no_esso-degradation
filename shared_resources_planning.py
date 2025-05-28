@@ -5309,65 +5309,6 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
                                 sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
                             row_idx = row_idx + 1
 
-                        # - Charging
-                        if params.slacks.shared_ess.charging:
-
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Shared Energy Storage, sch_up'
-                            sheet.cell(row=row_idx, column=7).value = s_m
-                            sheet.cell(row=row_idx, column=8).value = s_o
-                            for p in range(network[year][day].num_instants):
-                                sch_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sch_up'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = sch_up
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
-
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Shared Energy Storage, sch_down'
-                            sheet.cell(row=row_idx, column=7).value = s_m
-                            sheet.cell(row=row_idx, column=8).value = s_o
-                            for p in range(network[year][day].num_instants):
-                                sch_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sch_down'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = sch_down
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
-
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Shared Energy Storage, sdch_up'
-                            sheet.cell(row=row_idx, column=7).value = s_m
-                            sheet.cell(row=row_idx, column=8).value = s_o
-                            for p in range(network[year][day].num_instants):
-                                sdch_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sdch_up'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = sdch_up
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
-
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Shared Energy Storage, sdch_down'
-                            sheet.cell(row=row_idx, column=7).value = s_m
-                            sheet.cell(row=row_idx, column=8).value = s_o
-                            for p in range(network[year][day].num_instants):
-                                sdch_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['sdch_down'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = sdch_down
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
-
                         # - Day balance
                         if params.slacks.shared_ess.day_balance:
 
@@ -5427,64 +5368,6 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
                                 for p in range(network[year][day].num_instants):
                                     comp = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'][es_id][p]
                                     sheet.cell(row=row_idx, column=p + 9).value = comp
-                                    sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                                row_idx = row_idx + 1
-
-                            # - Charging
-                            if params.slacks.ess.charging:
-                                sheet.cell(row=row_idx, column=1).value = operator_type
-                                sheet.cell(row=row_idx, column=2).value = tn_node_id
-                                sheet.cell(row=row_idx, column=3).value = es_id
-                                sheet.cell(row=row_idx, column=4).value = int(year)
-                                sheet.cell(row=row_idx, column=5).value = day
-                                sheet.cell(row=row_idx, column=6).value = 'Energy Storage, sch_up'
-                                sheet.cell(row=row_idx, column=7).value = s_m
-                                sheet.cell(row=row_idx, column=8).value = s_o
-                                for p in range(network[year][day].num_instants):
-                                    sch_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_up'][es_id][p]
-                                    sheet.cell(row=row_idx, column=p + 9).value = sch_up
-                                    sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                                row_idx = row_idx + 1
-
-                                sheet.cell(row=row_idx, column=1).value = operator_type
-                                sheet.cell(row=row_idx, column=2).value = tn_node_id
-                                sheet.cell(row=row_idx, column=3).value = es_id
-                                sheet.cell(row=row_idx, column=4).value = int(year)
-                                sheet.cell(row=row_idx, column=5).value = day
-                                sheet.cell(row=row_idx, column=6).value = 'Energy Storage, sch_down'
-                                sheet.cell(row=row_idx, column=7).value = s_m
-                                sheet.cell(row=row_idx, column=8).value = s_o
-                                for p in range(network[year][day].num_instants):
-                                    sch_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_down'][es_id][p]
-                                    sheet.cell(row=row_idx, column=p + 9).value = sch_down
-                                    sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                                row_idx = row_idx + 1
-
-                                sheet.cell(row=row_idx, column=1).value = operator_type
-                                sheet.cell(row=row_idx, column=2).value = tn_node_id
-                                sheet.cell(row=row_idx, column=3).value = es_id
-                                sheet.cell(row=row_idx, column=4).value = int(year)
-                                sheet.cell(row=row_idx, column=5).value = day
-                                sheet.cell(row=row_idx, column=6).value = 'Energy Storage, sdch_up'
-                                sheet.cell(row=row_idx, column=7).value = s_m
-                                sheet.cell(row=row_idx, column=8).value = s_o
-                                for p in range(network[year][day].num_instants):
-                                    sdch_up = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sch_up'][es_id][p]
-                                    sheet.cell(row=row_idx, column=p + 9).value = sdch_up
-                                    sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                                row_idx = row_idx + 1
-
-                                sheet.cell(row=row_idx, column=1).value = operator_type
-                                sheet.cell(row=row_idx, column=2).value = tn_node_id
-                                sheet.cell(row=row_idx, column=3).value = es_id
-                                sheet.cell(row=row_idx, column=4).value = int(year)
-                                sheet.cell(row=row_idx, column=5).value = day
-                                sheet.cell(row=row_idx, column=6).value = 'Energy Storage, sdch_down'
-                                sheet.cell(row=row_idx, column=7).value = s_m
-                                sheet.cell(row=row_idx, column=8).value = s_o
-                                for p in range(network[year][day].num_instants):
-                                    sdch_down = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['sdch_down'][es_id][p]
-                                    sheet.cell(row=row_idx, column=p + 9).value = sdch_down
                                     sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
                                 row_idx = row_idx + 1
 

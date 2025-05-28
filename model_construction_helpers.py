@@ -1,6 +1,29 @@
 import pyomo.environ as pe
 from definitions import *
 
+# Voltage variables, e
+def e_bounds(model, i, s_m, s_o, p, network, params):
+    node = network.nodes[i]
+    if node.type == "BUS_REF" and not network.is_transmission:
+        vg = network.generators[network.get_gen_idx(node.bus_i)].vg
+        return (vg - params.EQUALITY_TOLERANCE, vg + params.EQUALITY_TOLERANCE)
+    return (-node.v_max, node.v_max)
+
+
+# Voltage variables, f
+def f_bounds(model, i, s_m, s_o, p, network, params):
+    node = network.nodes[i]
+    if node.type == "BUS_REF":
+        return (-params.EQUALITY_TOLERANCE, params.EQUALITY_TOLERANCE)
+    return (-node.v_max, node.v_max)
+
+
+def slack_bounds(model, i, s_m, s_o, p, network, params):
+    node = network.nodes[i]
+    if node.type == "BUS_REF":
+        return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
+    return (-VMAG_VIOLATION_ALLOWED, VMAG_VIOLATION_ALLOWED)
+
 
 # Voltage constraints, e
 def voltage_rule_e(model, i, s_m, s_o, p, network, params):

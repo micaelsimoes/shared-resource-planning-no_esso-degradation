@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import pyomo.opt as po
 import pyomo.environ as pe
+from functools import partial
 from math import acos, pi, tan, sqrt, atan2, isclose
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -45,7 +46,7 @@ class Network:
 
     def build_model(self, params):
         _pre_process_network(self)
-        return _build_model_v2(self, params)
+        return _build_model(self, params)
 
     def run_smopf(self, model, params, from_warm_start=False):
         return _run_smopf(self, model, params, from_warm_start=from_warm_start)
@@ -1138,50 +1139,16 @@ def _build_model_v2(network, params):
     # ------------------------------------------------------------------------------------------------------------------
     # Decision variables
     # - Voltage
-    model.e = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.0)
-    model.f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+    model.e = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.0, bounds=partial(e_bounds, network=network, params=params))
+    model.f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(f_bounds, network=network, params=params))
     model.e_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.0)
     model.f_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     if params.slacks.grid_operation.voltage:
-        model.slack_e = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
-        model.slack_f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
-    for i in model.nodes:
-        node = network.nodes[i]
-        e_lb, e_ub = -node.v_max, node.v_max
-        f_lb, f_ub = -node.v_max, node.v_max
-        for s_m in model.scenarios_market:
-            for s_o in model.scenarios_operation:
-                for p in model.periods:
-                    if params.slacks.grid_operation.voltage:
-                        model.slack_e[i, s_m, s_o, p].setub(VMAG_VIOLATION_ALLOWED)
-                        model.slack_e[i, s_m, s_o, p].setlb(-VMAG_VIOLATION_ALLOWED)
-                        model.slack_f[i, s_m, s_o, p].setub(VMAG_VIOLATION_ALLOWED)
-                        model.slack_f[i, s_m, s_o, p].setlb(-VMAG_VIOLATION_ALLOWED)
-                    if node.type == BUS_REF:
-                        if network.is_transmission:
-                            model.e[i, s_m, s_o, p].setub(e_ub)
-                            model.e[i, s_m, s_o, p].setlb(e_lb)
-                        else:
-                            ref_gen_idx = network.get_gen_idx(node.bus_i)
-                            vg = network.generators[ref_gen_idx].vg
-                            model.e[i, s_m, s_o, p].setub(vg + EQUALITY_TOLERANCE)
-                            model.e[i, s_m, s_o, p].setlb(vg - EQUALITY_TOLERANCE)
-                            if params.slacks.grid_operation.voltage:
-                                model.slack_e[i, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                                model.slack_e[i, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
-                        model.f[i, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                        model.f[i, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
-                        if params.slacks.grid_operation.voltage:
-                            model.slack_f[i, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                            model.slack_f[i, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
-                    else:
-                        model.e[i, s_m, s_o, p].setub(e_ub)
-                        model.e[i, s_m, s_o, p].setlb(e_lb)
-                        model.f[i, s_m, s_o, p].setub(f_ub)
-                        model.f[i, s_m, s_o, p].setlb(f_lb)
+        model.slack_e = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(slack_bounds, network=network, params=params))
+        model.slack_f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(slack_bounds, network=network, params=params))
     if params.slacks.node_balance:
-        model.slack_node_balance_p = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
-        model.slack_node_balance_q = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
+        model.slack_node_balance_p = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00, bounds=(-SMALL_TOLERANCE, SMALL_TOLERANCE))
+        model.slack_node_balance_q = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00, bounds=(-SMALL_TOLERANCE, SMALL_TOLERANCE))
 
     # - Generation
     model.pg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
