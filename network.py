@@ -1537,24 +1537,24 @@ def _run_smopf(network, model, params, from_warm_start=False):
         print(f"[WARNING] Solver failed for network {network.name}: {e}")
         result = None  # Or store partial result
 
-    # if params.solver_params.verbose:
-    #     import logging
-    #     from pyomo.util.infeasible import log_infeasible_constraints
-    #
-    #     # Create a logger object with DEBUG level
-    #     logging_logger = logging.getLogger()
-    #     logging_logger.setLevel(logging.DEBUG)
-    #
-    #     # Create a console handler
-    #     ch = logging.StreamHandler()
-    #     ch.setLevel(logging.DEBUG)
-    #
-    #     # add the handler to the logger
-    #     logging_logger.addHandler(ch)
-    #
-    #     # Log the infeasible constraints of pyomo object
-    #     print("Displaying Infeasible Constraints")
-    #     log_infeasible_constraints(model, log_expression=True, log_variables=True, logger=logging_logger)
+    if params.solver_params.verbose:
+        import logging
+        from pyomo.util.infeasible import log_infeasible_constraints
+
+        # Create a logger object with DEBUG level
+        logging_logger = logging.getLogger()
+        logging_logger.setLevel(logging.DEBUG)
+
+        # Create a console handler
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.DEBUG)
+
+        # add the handler to the logger
+        logging_logger.addHandler(ch)
+
+        # Log the infeasible constraints of pyomo object
+        print("Displaying Infeasible Constraints")
+        log_infeasible_constraints(model, log_expression=True, log_variables=True, logger=logging_logger)
 
     return result
 
