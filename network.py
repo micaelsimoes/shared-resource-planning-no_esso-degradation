@@ -50,6 +50,10 @@ class Network:
         _pre_process_network(self)
         return _build_model_v2(self, params)
 
+    def build_model_v2(self, params):
+        _pre_process_network(self)
+        return _build_model_v2(self, params)
+
     def run_smopf(self, model, params, from_warm_start=False):
         return _run_smopf(self, model, params, from_warm_start=from_warm_start)
 
@@ -1518,13 +1522,14 @@ def _run_smopf(network, model, params, from_warm_start=False):
         solver.options['warm_start_mult_bound_push'] = 1e-9
 
     if params.solver_params.verbose:
-        solver.options['print_level'] = 6
+        solver.options['print_level'] = 5
         solver.options['output_file'] = 'optim_log.txt'
 
     if params.solver_params.solver == 'ipopt':
         solver.options['tol'] = params.solver_params.solver_tol
         solver.options['linear_solver'] = params.solver_params.linear_solver
         solver.options['mu_strategy'] = 'adaptive'
+        solver.options['nlp_scaling_method '] = 'gradient-based'
 
     try:
         result = solver.solve(model, tee=params.solver_params.verbose)
@@ -1533,24 +1538,24 @@ def _run_smopf(network, model, params, from_warm_start=False):
         print(f"[WARNING] Solver failed for network {network.name}: {e}")
         result = None  # Or store partial result
 
-    if params.solver_params.verbose:
-        import logging
-        from pyomo.util.infeasible import log_infeasible_constraints
-
-        # Create a logger object with DEBUG level
-        logging_logger = logging.getLogger()
-        logging_logger.setLevel(logging.DEBUG)
-
-        # Create a console handler
-        ch = logging.StreamHandler()
-        ch.setLevel(logging.DEBUG)
-
-        # add the handler to the logger
-        logging_logger.addHandler(ch)
-
-        # Log the infeasible constraints of pyomo object
-        print("Displaying Infeasible Constraints")
-        log_infeasible_constraints(model, log_expression=True, log_variables=True, logger=logging_logger)
+    # if params.solver_params.verbose:
+    #     import logging
+    #     from pyomo.util.infeasible import log_infeasible_constraints
+    #
+    #     # Create a logger object with DEBUG level
+    #     logging_logger = logging.getLogger()
+    #     logging_logger.setLevel(logging.DEBUG)
+    #
+    #     # Create a console handler
+    #     ch = logging.StreamHandler()
+    #     ch.setLevel(logging.DEBUG)
+    #
+    #     # add the handler to the logger
+    #     logging_logger.addHandler(ch)
+    #
+    #     # Log the infeasible constraints of pyomo object
+    #     print("Displaying Infeasible Constraints")
+    #     log_infeasible_constraints(model, log_expression=True, log_variables=True, logger=logging_logger)
 
     return result
 

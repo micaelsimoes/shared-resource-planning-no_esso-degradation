@@ -34,7 +34,10 @@ class NetworkData:
         for year in self.years:
             network_models[year] = dict()
             for day in self.days:
-                network_models[year][day] = self.network[year][day].build_model(self.params)
+                if self.network[year][day].is_transmission:
+                    network_models[year][day] = self.network[year][day].build_model(self.params)
+                else:
+                    network_models[year][day] = self.network[year][day].build_model_v2(self.params)
         return network_models
 
     def optimize(self, model, from_warm_start=False):
