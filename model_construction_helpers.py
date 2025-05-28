@@ -29,21 +29,38 @@ def slack_bounds(m, i, s_m, s_o, p, network, params):
 
 
 # Generation, Pg
-def pg_bounds(m, g, s_m, s_o, p, network, params):
+def pg_bounds(m, g, s_m, s_o, p, network):
     gen = network.generators[g]
     if gen.status[p]:
-        return (max(gen.pmin, 0.0), gen.pmax)
+        return (gen.pmin, gen.pmax)
     else:
         return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
 
 
 # Generation, Qg
-def qg_bounds(m, g, s_m, s_o, p, network, params):
+def qg_bounds(m, g, s_m, s_o, p, network):
     gen = network.generators[g]
     if gen.status[p]:
-        return (max(gen.qmin, 0.0), gen.qmax)
+        return (gen.qmin, gen.qmax)
     else:
         return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
+
+
+def pg_init(m, g, s_m, s_o, p, network):
+    lb, ub = pg_bounds(m, g, s_m, s_o, p, network=network)
+    # Initialize at lower bound if positive, else zero (or lb if lb <= 0)
+    if lb > 0:
+        return lb
+    else:
+        return max(0.0, lb)  # Just in case lb < 0
+
+
+def qg_init(m, g, s_m, s_o, p, network):
+    lb, ub = qg_bounds(m, g, s_m, s_o, p, network=network)
+    if lb > 0:
+        return lb
+    else:
+        return max(0.0, lb)
 
 
 # Generation, Sg
@@ -320,14 +337,16 @@ def power_factor_rule_lower(m, g, s_m, s_o, p, network):
 
 
 # Flexible loads
-def flex_energy_balance_rule(m, c, s_m, s_o, params):
+def flex_energy_balance_rule_lower(m, c, s_m, s_o):
     p_up = sum(m.flex_p_up[c, s_m, s_o, p] for p in m.periods)
     p_down = sum(m.flex_p_down[c, s_m, s_o, p] for p in m.periods)
-    if params.slacks.flexibility.day_balance:
-        return p_up == p_down + m.slack_flex_p_balance[c, s_m, s_o]
-    else:
-        # Soft equality with tolerance
-        return pe.inequality(p_down - EQUALITY_TOLERANCE, p_up, p_down + EQUALITY_TOLERANCE)
+    return p_up >= p_down - EQUALITY_TOLERANCE
+
+
+def flex_energy_balance_rule_upper(m, c, s_m, s_o):
+    p_up = sum(m.flex_p_up[c, s_m, s_o, p] for p in m.periods)
+    p_down = sum(m.flex_p_down[c, s_m, s_o, p] for p in m.periods)
+    return p_up <= p_down + EQUALITY_TOLERANCE
 
 
 # Energy Storage
@@ -389,28 +408,28 @@ def ess_soc_final_rule(m, e, s_m, s_o, network, params):
 
 
 # Shared Energy Storage
-def sess_phi_ch_limits(m, e, s_m, s_o, p, network):
+def sess_phi_ch_limits_lower(m, e, s_m, s_o, p, network):
     ess = network.shared_energy_storages[e]
-    max_phi = acos(ess.max_pf)
     min_phi = acos(ess.min_pf)
-    ineq = pe.inequality(
-        tan(min_phi) * m.shared_es_pch[e, s_m, s_o, p],
-        m.shared_es_qch[e, s_m, s_o, p],
-        tan(max_phi) * m.shared_es_pch[e, s_m, s_o, p]
-    )
-    return ineq
+    return m.shared_es_qch[e, s_m, s_o, p] >= tan(min_phi) * m.shared_es_pch[e, s_m, s_o, p]
 
 
-def sess_phi_dch_limits(m, e, s_m, s_o, p, network):
+def sess_phi_ch_limits_upper(m, e, s_m, s_o, p, network):
     ess = network.shared_energy_storages[e]
     max_phi = acos(ess.max_pf)
+    return m.shared_es_qch[e, s_m, s_o, p] <= tan(max_phi) * m.shared_es_pch[e, s_m, s_o, p]
+
+
+def sess_phi_dch_limits_lower(m, e, s_m, s_o, p, network):
+    ess = network.shared_energy_storages[e]
     min_phi = acos(ess.min_pf)
-    ineq = pe.inequality(
-        tan(min_phi) * m.shared_es_pdch[e, s_m, s_o, p],
-        m.shared_es_qdch[e, s_m, s_o, p],
-        tan(max_phi) * m.shared_es_pdch[e, s_m, s_o, p]
-    )
-    return ineq
+    return m.shared_es_qdch[e, s_m, s_o, p] >= tan(min_phi) * m.shared_es_pdch[e, s_m, s_o, p]
+
+
+def sess_phi_dch_limits_upper(m, e, s_m, s_o, p, network):
+    ess = network.shared_energy_storages[e]
+    max_phi = acos(ess.max_pf)
+    return m.shared_es_qdch[e, s_m, s_o, p] <= tan(max_phi) * m.shared_es_pdch[e, s_m, s_o, p]
 
 
 def sess_sch_limit(m, e, s_m, s_o, p):
@@ -437,37 +456,31 @@ def sess_pdch_limit(m, e, s_m, s_o, p):
     return pdch <= s_max
 
 
-def sess_soc_limits(m, e, s_m, s_o, p):
-    soc_max = m.shared_es_e_rated[e] * ENERGY_STORAGE_MAX_ENERGY_STORED
+def sess_soc_lower_limit(m, e, s_m, s_o, p):
     soc_min = m.shared_es_e_rated[e] * ENERGY_STORAGE_MIN_ENERGY_STORED
-    ineq = pe.inequality(
-        soc_min,
-        m.shared_es_soc[e, s_m, s_o, p],
-        soc_max
-    )
-    return ineq
+    return m.shared_es_soc[e, s_m, s_o, p] >= soc_min
 
 
-def sess_pnet(m, e, s_m, s_o, p):
-    pch = m.shared_es_pch[e, s_m, s_o, p]
-    pdch = m.shared_es_pdch[e, s_m, s_o, p]
-    ineq = pe.inequality(
-        pch - pdch - EQUALITY_TOLERANCE,
-        m.shared_es_pnet[e, s_m, s_o, p],
-        pch - pdch + EQUALITY_TOLERANCE
-    )
-    return ineq
+def sess_soc_upper_limit(m, e, s_m, s_o, p):
+    soc_max = m.shared_es_e_rated[e] * ENERGY_STORAGE_MAX_ENERGY_STORED
+    return m.shared_es_soc[e, s_m, s_o, p] <= soc_max
 
 
-def sess_qnet(m, e, s_m, s_o, p):
-    qch = m.shared_es_qch[e, s_m, s_o, p]
-    qdch = m.shared_es_qdch[e, s_m, s_o, p]
-    ineq = pe.inequality(
-        qch - qdch - EQUALITY_TOLERANCE,
-        m.shared_es_qnet[e, s_m, s_o, p],
-        qch - qdch + EQUALITY_TOLERANCE
-    )
-    return ineq
+def sess_pnet_lower(m, e, s_m, s_o, p):
+    return m.shared_es_pnet[e, s_m, s_o, p] >= m.shared_es_pch[e, s_m, s_o, p] - m.shared_es_pdch[e, s_m, s_o, p] - EQUALITY_TOLERANCE
+
+
+def sess_pnet_upper(m, e, s_m, s_o, p):
+    return m.shared_es_pnet[e, s_m, s_o, p] <= m.shared_es_pch[e, s_m, s_o, p] - m.shared_es_pdch[e, s_m, s_o, p] + EQUALITY_TOLERANCE
+
+
+def sess_qnet_lower(m, e, s_m, s_o, p):
+    return m.shared_es_qnet[e, s_m, s_o, p] >= m.shared_es_qch[e, s_m, s_o, p] - m.shared_es_qdch[e, s_m, s_o, p] - EQUALITY_TOLERANCE
+
+
+def sess_qnet_upper(m, e, s_m, s_o, p):
+    return m.shared_es_qnet[e, s_m, s_o, p] <= m.shared_es_qch[e, s_m, s_o, p] - m.shared_es_qdch[e, s_m, s_o, p] + EQUALITY_TOLERANCE
+
 
 
 # Node balance
