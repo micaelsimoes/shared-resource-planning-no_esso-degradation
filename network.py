@@ -1233,6 +1233,19 @@ def _build_model_v2(network, params):
     # - Flexible Loads -- Daily energy balance
     model.fl_p_balance = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(flex_energy_balance_rule, params=params))
 
+    # - Energy Storage constraints
+    model.energy_storage_power_factor_charg = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_ch_limits, network=network))
+    model.energy_storage_power_factor_discharg = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_dch_limits, network=network))
+    model.energy_storage_ch_dch_exclusion = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_comp_rule, params=params))
+    model.energy_storage_balance = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_balance_rule, network=network))
+    model.energy_storage_day_balance = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, rule=partial(ess_soc_final_rule, network=network, params=params))
+
+
+
+
+
+
+
 
 
     # Model suffixes (used for warm start)

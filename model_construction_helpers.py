@@ -227,7 +227,6 @@ def shared_soc_init(model, e, s_m, s_o, p, network):
     return network.shared_energy_storages[e].e * ENERGY_STORAGE_RELATIVE_INIT_SOC
 
 
-
 # Voltage constraints, e
 def voltage_rule_e(model, i, s_m, s_o, p, network, params):
     e_val = model.e[i, s_m, s_o, p]
@@ -329,3 +328,62 @@ def flex_energy_balance_rule(model, c, s_m, s_o, p, params):
     else:
         # Soft equality with tolerance
         return pe.inequality(p_down - EQUALITY_TOLERANCE, p_up, p_down + EQUALITY_TOLERANCE)
+
+
+# Energy Storage
+def ess_phi_ch_limits(m, e, s_m, s_o, p, network):
+    es = network.energy_storages[e]
+    max_phi = acos(es.max_pf)
+    min_phi = acos(es.min_pf)
+    ineq = pe.inequality(
+        tan(min_phi) * m.es_pch[e, s_m, s_o, p],
+        m.es_qch[e, s_m, s_o, p],
+        tan(max_phi) * m.es_pch[e, s_m, s_o, p]
+    )
+    return ineq
+
+
+def ess_phi_dch_limits(m, e, s_m, s_o, p, network):
+    es = network.energy_storages[e]
+    max_phi = acos(es.max_pf)
+    min_phi = acos(es.min_pf)
+    ineq = pe.inequality(
+        tan(min_phi) * m.es_pdch[e, s_m, s_o, p],
+        m.es_qdch[e, s_m, s_o, p],
+        tan(max_phi) * m.es_pdch[e, s_m, s_o, p]
+    )
+    return ineq
+
+
+def ess_comp_rule(m, e, s_m, s_o, p, params):
+    if params.slacks.ess.complementarity:
+        return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] == m.slack_es_comp[e, s_m, s_o, p]
+    else:
+        return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
+
+
+def ess_balance_rule(m, e, s_m, s_o, p, network):
+    es = network.energy_storages[e]
+    eff_ch, eff_dch = es.eff_ch, es.eff_dch
+    soc_prev = es.e_init if p == 0 else m.es_soc[e, s_m, s_o, p - 1]
+    ineq = pe.inequality(
+        soc_prev + (m.es_sch[e, s_m, s_o, p] * eff_ch - m.es_sdch[e, s_m, s_o, p] / eff_dch) - EQUALITY_TOLERANCE,
+        m.es_soc[e, s_m, s_o, p],
+        soc_prev + (m.es_sch[e, s_m, s_o, p] * eff_ch - m.es_sdch[e, s_m, s_o, p] / eff_dch) + EQUALITY_TOLERANCE
+    )
+    return ineq
+
+
+def ess_soc_final_rule(model, e, s_m, s_o, network, params):
+    final_soc = network.energy_storages[e].e_init
+    final_p = model.periods.last()
+    if params.slacks.ess.day_balance:
+        return model.es_soc[e, s_m, s_o, final_p] == final_soc + model.slack_es_soc_final[e, s_m, s_o]
+    else:
+        ineq = pe.inequality(
+            final_soc - EQUALITY_TOLERANCE,
+            model.es_soc[e, s_m, s_o, final_p],
+            final_soc + EQUALITY_TOLERANCE
+        )
+        return ineq
+
