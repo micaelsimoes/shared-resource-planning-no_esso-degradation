@@ -173,6 +173,17 @@ def qc_curt_up_bounds(model, c, s_m, s_o, p, network, params):
     else:
         return (0.0, abs(qd))
 
+# Transformers
+def transformer_ratio_bounds(model, i, s_m, s_o, p, network, params):
+    branch = network.branches[i]
+    if branch.is_transformer:
+        if params.transf_reg and branch.vmag_reg:
+            return (TRANSFORMER_MINIMUM_RATIO, TRANSFORMER_MAXIMUM_RATIO)
+        else:
+            return (branch.ratio - EQUALITY_TOLERANCE, branch.ratio + EQUALITY_TOLERANCE)
+    else:
+        return (1.00 - EQUALITY_TOLERANCE, 1.00 + EQUALITY_TOLERANCE)
+
 
 # Voltage constraints, e
 def voltage_rule_e(model, i, s_m, s_o, p, network, params):

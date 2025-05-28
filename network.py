@@ -1187,6 +1187,8 @@ def _build_model_v2(network, params):
         model.qc_curt_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(qc_curt_down_bounds, network=network, params=params))
         model.qc_curt_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(qc_curt_up_bounds, network=network, params=params))
 
+    # - Transformers
+    model.r = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0, bounds=partial(transformer_ratio_bounds, network=network, params=params))
 
 
     # Model suffixes (used for warm start)
