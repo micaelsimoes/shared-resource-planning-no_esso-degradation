@@ -3,7 +3,7 @@ from definitions import *
 
 
 # Voltage constraints, e
-def voltage_rule_e(model, i, s_m, s_o, p, params):
+def voltage_rule_e(model, i, s_m, s_o, p, networkparams):
     e_val = model.e[i, s_m, s_o, p]
     if params.slacks.grid_operation.voltage:
         e_val += model.slack_e[i, s_m, s_o, p]
