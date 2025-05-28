@@ -17,12 +17,161 @@ def f_bounds(model, i, s_m, s_o, p, network, params):
         return (-params.EQUALITY_TOLERANCE, params.EQUALITY_TOLERANCE)
     return (-node.v_max, node.v_max)
 
-
+# Voltage variables, slack bounds
 def slack_bounds(model, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
     if node.type == "BUS_REF":
         return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
     return (-VMAG_VIOLATION_ALLOWED, VMAG_VIOLATION_ALLOWED)
+
+
+# Generation, Pg
+def pg_bounds(model, g, s_m, s_o, p, network, params):
+    gen = network.generators[g]
+    if gen.status[p]:
+        return (max(gen.pmin, 0.0), gen.pmax)
+    else:
+        return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
+
+# Generation, Qg
+def qg_bounds(model, g, s_m, s_o, p, network, params):
+    gen = network.generators[g]
+    if gen.status[p]:
+        return (max(gen.qmin, 0.0), gen.qmax)
+    else:
+        return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
+
+
+# Generation, Sg
+def sg_bounds(model, g, s_m, s_o, p, network, params):
+
+    gen = network.generators[g]
+    if not gen.is_curtaillable():
+        return (0.0, EQUALITY_TOLERANCE)
+    if not gen.status[p]:
+        return (0.0, EQUALITY_TOLERANCE)
+
+    # Estimated max apparent power for initialization and bound
+    pg = gen.pg[s_o][p]
+    qg = gen.qg[s_o][p]
+    sg = (pg ** 2 + qg ** 2) ** 0.5
+
+    return (0.0, sg)
+
+
+# Generation, Sg^2
+def sg_sqr_bounds(model, g, s_m, s_o, p, network, params):
+
+    gen = network.generators[g]
+    if not gen.is_curtaillable() or not gen.status[p]:
+        return (0.0, EQUALITY_TOLERANCE)
+
+    pg = gen.pg[s_o][p]
+    qg = gen.qg[s_o][p]
+    sg_sqr = pg**2 + qg**2
+
+    return (0.0, sg_sqr)
+
+
+# Branch power flow, Fij
+def flow_ij_sqr_bounds(model, b, s_m, s_o, p, network, params):
+    branch = network.branches[b]
+    if not branch.status:
+        return (0.0, EQUALITY_TOLERANCE)
+    return (0.0, None)  # No upper bound unless explicitly constrained elsewhere
+
+
+def init_flow_ij_sqr(model, b, s_m, s_o, p, network, params):
+    branch = network.branches[b]
+    if not branch.status:
+        return 0.0
+    # use some nominal flow or historical data if available
+    return 0.01  # placeholder
+
+
+# Branch power flow, Fij slacks
+def slack_flow_bounds(model, b, s_m, s_o, p, network, params):
+    branch = network.branches[b]
+    if not branch.status:
+        return (0.0, EQUALITY_TOLERANCE)
+    rating = branch.rate / network.baseMVA
+    return (0.0, SIJ_VIOLATION_ALLOWED * rating)
+
+
+# Consumption, Pc
+def pc_bounds(model, c, s_m, s_o, p, network, params):
+    load = network.loads[c]
+    pd = load.pd[s_o][p]
+    return (pd - EQUALITY_TOLERANCE, pd + EQUALITY_TOLERANCE)
+
+
+# Consumption, Qc
+def qc_bounds(model, c, s_m, s_o, p, network, params):
+    load = network.loads[c]
+    qd = load.qd[s_o][p]
+    return (qd - EQUALITY_TOLERANCE, qd + EQUALITY_TOLERANCE)
+
+
+# Consumption, flexibility
+def pc_flex_up_bounds(model, c, s_m, s_o, p, network, params):
+    load = network.loads[c]
+    if not load.fl_reg:
+        return (0.0, EQUALITY_TOLERANCE)
+    value = abs(load.flexibility.upward[p])
+    return (0.0, value)
+
+
+def pc_flex_down_bounds(model, c, s_m, s_o, p, network, params):
+    load = network.loads[c]
+    if not load.fl_reg:
+        return (0.0, EQUALITY_TOLERANCE)
+    value = abs(load.flexibility.downward[p])
+    return (0.0, value)
+
+
+def qc_flex_up_bounds(model, c, s_m, s_o, p, network, params):
+    return (0.0, EQUALITY_TOLERANCE)
+
+
+def qc_flex_down_bounds(model, c, s_m, s_o, p, network, params):
+    return (0.0, EQUALITY_TOLERANCE)
+
+
+# Consumption, curtailment
+def pc_curt_down_bounds(model, c, s_m, s_o, p, network, params):
+    load = network.loads[c]
+    pd = load.pd[s_o][p]
+    if pd >= 0.00:
+        return (0.0, abs(pd))
+    else:
+        return (0.0, EQUALITY_TOLERANCE)
+
+
+def pc_curt_up_bounds(model, c, s_m, s_o, p, network, params):
+    load = network.loads[c]
+    pd = load.pd[s_o][p]
+    if pd >= 0.00:
+        return (0.0, EQUALITY_TOLERANCE)
+    else:
+        return (0.0, abs(pd))
+
+
+def qc_curt_down_bounds(model, c, s_m, s_o, p, network, params):
+    load = network.loads[c]
+    qd = load.qd[s_o][p]
+    if qd >= 0.00:
+        return (0.0, abs(qd))
+    else:
+        return (0.0, EQUALITY_TOLERANCE)
+
+
+def qc_curt_up_bounds(model, c, s_m, s_o, p, network, params):
+    load = network.loads[c]
+    qd = load.pd[s_o][p]
+    if qd >= 0.00:
+        return (0.0, EQUALITY_TOLERANCE)
+    else:
+        return (0.0, abs(qd))
 
 
 # Voltage constraints, e
