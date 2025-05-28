@@ -21,7 +21,7 @@ def f_bounds(m, i, s_m, s_o, p, network, params):
 
 
 # Voltage variables, slack bounds
-def slack_bounds(m, i, s_m, s_o, p, network, params):
+def voltage_slack_bounds(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
     if node.type == "BUS_REF":
         return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
