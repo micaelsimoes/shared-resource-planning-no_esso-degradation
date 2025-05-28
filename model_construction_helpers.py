@@ -185,6 +185,45 @@ def transformer_ratio_bounds(model, i, s_m, s_o, p, network, params):
         return (1.00 - EQUALITY_TOLERANCE, 1.00 + EQUALITY_TOLERANCE)
 
 
+# Energy Storage
+def soc_bounds(e, network):
+    es = network.energy_storages[e]
+    return (es.e_min, es.e_max)
+
+
+def q_bounds(e, network):
+    es = network.energy_storages[e]
+    return (-es.s, es.s)
+
+
+def s_bounds(e, network):
+    return (0.0, network.energy_storages[e].s)
+
+
+def soc_initialize(model, e, network):
+    return network.energy_storages[e].e_init
+
+
+# Shared Energy Storage
+def shared_soc_bounds(model, e, s_m, s_o, p, network):
+    ses = network.shared_energy_storages[e]
+    return (0.0, ses.e)
+
+
+def shared_q_bounds(model, e, s_m, s_o, p, network):
+    s = network.shared_energy_storages[e].s
+    return (-s, s)
+
+
+def shared_s_bounds(model, e, s_m, s_o, p, network):
+    return (0.0, network.shared_energy_storages[e].s)
+
+
+def shared_soc_init(model, e, s_m, s_o, p, network):
+    return network.shared_energy_storages[e].e * ENERGY_STORAGE_RELATIVE_INIT_SOC
+
+
+
 # Voltage constraints, e
 def voltage_rule_e(model, i, s_m, s_o, p, network, params):
     e_val = model.e[i, s_m, s_o, p]

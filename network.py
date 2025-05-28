@@ -1167,9 +1167,9 @@ def _build_model_v2(network, params):
         model.sg_curt = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(sg_bounds, network=network, params=params), initialize=0.0)
 
     # - Branch power flows (squared) -- used in branch limits
-    model.flow_ij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods,domain=pe.NonNegativeReals, initialize=partial(init_flow_ij_sqr, network=network, params=params), bounds=partial(flow_ij_sqr_bounds, network, params))
+    model.flow_ij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods,domain=pe.NonNegativeReals, initialize=partial(init_flow_ij_sqr, network=network, params=params), bounds=partial(flow_ij_sqr_bounds, network=network, params=params))
     if params.slacks.grid_operation.branch_flow:
-        model.slack_flow_ij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(slack_flow_bounds, network, params))
+        model.slack_flow_ij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(slack_flow_bounds, network=network, params=params))
 
     # - Loads
     model.pc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(pc_bounds, network=network, params=params))
@@ -1189,6 +1189,37 @@ def _build_model_v2(network, params):
 
     # - Transformers
     model.r = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0, bounds=partial(transformer_ratio_bounds, network=network, params=params))
+
+    # - Energy Storage devices
+    if params.es_reg:
+        model.es_soc = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=partial(soc_initialize, network=network), bounds=partial(soc_bounds, network=network))
+        model.es_sch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(s_bounds, network=network))
+        model.es_pch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(s_bounds, network=network))
+        model.es_qch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(q_bounds, network=network))
+        model.es_sdch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(s_bounds, network=network))
+        model.es_pdch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(s_bounds, network=network))
+        model.es_qdch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(q_bounds, network=network))
+
+    # - Shared Energy Storage devices
+    model.shared_es_s_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.0)
+    model.shared_es_e_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.0)
+    model.shared_es_s_rated_fixed = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.0)
+    model.shared_es_e_rated_fixed = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.0)
+    model.shared_es_soc = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=partial(shared_soc_init, network=network), bounds=partial(shared_soc_bounds, network=network))
+    model.shared_es_sch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation,model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(shared_s_bounds, network=network))
+    model.shared_es_pch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(shared_s_bounds, network=network))
+    model.shared_es_qch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(shared_q_bounds, network=network))
+    model.shared_es_sdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(shared_s_bounds, network=network))
+    model.shared_es_pdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(shared_s_bounds, network=network))
+    model.shared_es_qdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(shared_q_bounds, network=network))
+    model.shared_es_pnet = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+    model.shared_es_qnet = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+    if params.slacks.shared_ess.complementarity:
+        model.slack_shared_es_comp = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    if params.slacks.shared_ess.day_balance:
+        model.slack_shared_es_soc_final = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.Reals, initialize=0.0)
+
+
 
 
     # Model suffixes (used for warm start)
