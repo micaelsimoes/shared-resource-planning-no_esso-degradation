@@ -1151,13 +1151,6 @@ def _build_model_v2(network, params):
         model.slack_node_balance_p = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00, bounds=(-0.01))
         model.slack_node_balance_q = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
 
-    # ------------------------------------------------------------------------------------------------------------------
-    # Constraints
-    # - Voltage
-    model.voltage_cons_e = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_rule_e, network=network, params=params))
-    model.voltage_cons_f = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_rule_f, network=network, params=params))
-    model.voltage_magnitude  = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_magnitude_rule, network=network, params=params))
-
     # - Generation
     model.pg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(pg_bounds, network=network, params=params), initialize=0.0)
     model.qg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(qg_bounds, network=network, params=params), initialize=0.0)
@@ -1219,6 +1212,26 @@ def _build_model_v2(network, params):
     if params.slacks.shared_ess.day_balance:
         model.slack_shared_es_soc_final = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.Reals, initialize=0.0)
 
+    # ------------------------------------------------------------------------------------------------------------------
+    # Constraints
+    # - Voltage
+    model.voltage_cons_e = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_rule_e, network=network, params=params))
+    model.voltage_cons_f = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_rule_f, network=network, params=params))
+    model.voltage_magnitude = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_magnitude_rule, network=network, params=params))
+
+    # - Generation
+    if params.rg_curt:
+        model.sg_sqr_upper = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=sg_sqr_upper_bound_rule)
+        model.sg_sqr_lower = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=sg_sqr_lower_bound_rule)
+        model.sg_abs_upper = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=sg_abs_upper_bound_rule)
+        model.sg_abs_lower = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=sg_abs_lower_bound_rule)
+        model.sg_curt_upper = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_curtailment_upper_rule, network=network))
+        model.sg_curt_lower = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_curtailment_lower_rule, network=network))
+        model.gen_pf_upper = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(power_factor_rule_upper, network=network))
+        model.gen_pf_lower = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(power_factor_rule_lower, network=network))
+
+    # - Flexible Loads -- Daily energy balance
+    model.fl_p_balance = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(flex_energy_balance_rule, params=params))
 
 
 

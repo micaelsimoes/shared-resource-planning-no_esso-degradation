@@ -1,5 +1,7 @@
 import pyomo.environ as pe
+from math import sqrt, tan, atan2, acos
 from definitions import *
+
 
 # Voltage variables, e
 def e_bounds(model, i, s_m, s_o, p, network, params):
@@ -17,6 +19,7 @@ def f_bounds(model, i, s_m, s_o, p, network, params):
         return (-params.EQUALITY_TOLERANCE, params.EQUALITY_TOLERANCE)
     return (-node.v_max, node.v_max)
 
+
 # Voltage variables, slack bounds
 def slack_bounds(model, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
@@ -32,6 +35,7 @@ def pg_bounds(model, g, s_m, s_o, p, network, params):
         return (max(gen.pmin, 0.0), gen.pmax)
     else:
         return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
+
 
 # Generation, Qg
 def qg_bounds(model, g, s_m, s_o, p, network, params):
@@ -252,5 +256,76 @@ def voltage_magnitude_rule(model, i, s_m, s_o, p, network, params):
     else:
         return pe.inequality(node.v_min ** 2, vmag_sq, node.v_max ** 2)
 
+# Generation, Sg^2
+# Apparent power ≈ pg² + qg²
+def sg_sqr_upper_bound_rule(m, g, s_m, s_o, p):
+    return m.sg_sqr[g, s_m, s_o, p] <= m.pg[g, s_m, s_o, p]**2 + m.qg[g, s_m, s_o, p]**2 + EQUALITY_TOLERANCE
 
 
+def sg_sqr_lower_bound_rule(m, g, s_m, s_o, p):
+    return m.sg_sqr[g, s_m, s_o, p] >= m.pg[g, s_m, s_o, p]**2 + m.qg[g, s_m, s_o, p]**2 - EQUALITY_TOLERANCE
+
+
+# sg_abs² ≈ sg_sqr
+def sg_abs_upper_bound_rule(m, g, s_m, s_o, p):
+    return m.sg_abs[g, s_m, s_o, p]**2 <= m.sg_sqr[g, s_m, s_o, p] + EQUALITY_TOLERANCE
+
+
+def sg_abs_lower_bound_rule(m, g, s_m, s_o, p):
+    return m.sg_abs[g, s_m, s_o, p]**2 >= m.sg_sqr[g, s_m, s_o, p] - EQUALITY_TOLERANCE
+
+
+# Curtailment: sg_abs = init_sg - sg_curt
+def sg_curtailment_upper_rule(m, g, s_m, s_o, p, network):
+    gen = network.generators[g]
+    if gen.status[p]:
+        init_sg = sqrt(gen.pg[s_o][p]**2 + gen.qg[s_o][p]**2)
+    else:
+        init_sg = 0.0
+    return m.sg_abs[g, s_m, s_o, p] <= init_sg - m.sg_curt[g, s_m, s_o, p] + EQUALITY_TOLERANCE
+
+
+def sg_curtailment_lower_rule(m, g, s_m, s_o, p, network):
+    gen = network.generators[g]
+    if gen.status[p]:
+        init_sg = sqrt(gen.pg[s_o][p]**2 + gen.qg[s_o][p]**2)
+    else:
+        init_sg = 0.0
+    return m.sg_abs[g, s_m, s_o, p] >= init_sg - m.sg_curt[g, s_m, s_o, p] - EQUALITY_TOLERANCE
+
+
+def power_factor_rule_upper(m, g, s_m, s_o, p, network):
+    gen = network.generators[g]
+    pg = m.pg[g, s_m, s_o, p]
+    qg = m.qg[g, s_m, s_o, p]
+
+    if gen.power_factor_control:
+        phi = acos(gen.max_pf)
+    else:
+        phi = atan2(gen.qg[s_o][p], gen.pg[s_o][p])
+
+    return qg <= tan(phi) * pg
+
+
+def power_factor_rule_lower(m, g, s_m, s_o, p, network):
+    gen = network.generators[g]
+    pg = m.pg[g, s_m, s_o, p]
+    qg = m.qg[g, s_m, s_o, p]
+
+    if gen.power_factor_control:
+        phi = acos(gen.min_pf)
+    else:
+        phi = atan2(gen.qg[s_o][p], gen.pg[s_o][p])
+
+    return qg >= tan(phi) * pg
+
+
+# Flexible loads
+def flex_energy_balance_rule(model, c, s_m, s_o, p, params):
+    p_up = sum(model.flex_p_up[c, s_m, s_o, p] for p in model.periods)
+    p_down = sum(model.flex_p_down[c, s_m, s_o, p] for p in model.periods)
+    if params.slacks.flexibility.day_balance:
+        return p_up == p_down + model.slack_flex_p_balance[c, s_m, s_o]
+    else:
+        # Soft equality with tolerance
+        return pe.inequality(p_down - EQUALITY_TOLERANCE, p_up, p_down + EQUALITY_TOLERANCE)
