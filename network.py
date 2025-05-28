@@ -48,7 +48,7 @@ class Network:
 
     def build_model(self, params):
         _pre_process_network(self)
-        return _build_model_v2(self, params)
+        return _build_model(self, params)
 
     def build_model_v2(self, params):
         _pre_process_network(self)
