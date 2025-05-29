@@ -1169,14 +1169,14 @@ def _build_model_v2(network, params):
     if params.slacks.grid_operation.branch_flow:
         model.slack_flow_ij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(slack_flow_bounds, network=network, params=params))
 
-
-
-
-
-
     # - Loads
-    model.pc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
-    model.qc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
+    model.pc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(pc_bounds, network=network, params=params))
+    model.qc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(qc_bounds, network=network, params=params))
+
+
+
+
+
     for c in model.loads:
         load = network.loads[c]
         for s_m in model.scenarios_market:
