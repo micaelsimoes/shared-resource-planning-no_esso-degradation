@@ -495,33 +495,61 @@ def compute_branch_power(branch, ei, fi, ej, fj, rij):
 
 # Branch limits
 def compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, limit_type):
+    """
+    Computes the squared branch flow expression depending on the limit type:
+    - current (I²)
+    - apparent power (S² = P² + Q²)
+    - mixed (based on whether branch is a transformer)
+    All inputs should be Pyomo expressions or variables.
 
-    if limit_type == BRANCH_LIMIT_CURRENT:
-        bij_sh = branch.b_sh * 0.50
-        iij_sqr = (branch.g ** 2 + branch.b ** 2) * (((rij ** 2) * ei - rij * ej) ** 2 + ((rij ** 2) * fi - rij * fj) ** 2)
-        iij_sqr += bij_sh ** 2 * (ei ** 2 + fi ** 2)
-        iij_sqr += 2 * branch.g * bij_sh * (((rij ** 2) * fi - rij * fj) * ei - ((rij ** 2) * ei - rij * ej) * fi)
-        iij_sqr += 2 * branch.b * bij_sh * (((rij ** 2) * ei - rij * ej) * ei + ((rij ** 2) * fi - rij * fj) * fi)
-        return iij_sqr
+    Parameters:
+    - branch: an object with electrical parameters (g, b, b_sh, is_transformer, etc.)
+    - ei, fi: real and imaginary voltage components at sending node
+    - ej, fj: real and imaginary voltage components at receiving node
+    - rij: tap ratio (symbolic for transformer, 1.0 otherwise)
+    - limit_type: one of 'current', 'apparent', or 'mixed'
 
-    elif limit_type == BRANCH_LIMIT_APPARENT_POWER or (limit_type == BRANCH_LIMIT_MIXED and branch.is_transformer):
-        pij = branch.g * (ei ** 2 + fi ** 2) * rij ** 2
-        pij -= branch.g * (ei * ej + fi * fj) * rij
-        pij -= branch.b * (fi * ej - ei * fj) * rij
-        qij = - (branch.b + branch.b_sh * 0.50) * (ei ** 2 + fi ** 2) * rij ** 2
-        qij += branch.b * (ei * ej + fi * fj) * rij
-        qij -= branch.g * (fi * ej - ei * fj) * rij
-        return pij ** 2 + qij ** 2
+    Returns:
+    - A Pyomo expression representing the squared flow
+    """
+    g = branch.g
+    b = branch.b
+    bsh = 0.5 * branch.b_sh  # Half-line shunt susceptance for π-model
 
-    elif limit_type == BRANCH_LIMIT_MIXED and not branch.is_transformer:
-        bij_sh = branch.b_sh * 0.50
-        iij_sqr = (branch.g ** 2 + branch.b ** 2) * (((rij ** 2) * ei - rij * ej) ** 2 + ((rij ** 2) * fi - rij * fj) ** 2)
-        iij_sqr += bij_sh ** 2 * (ei ** 2 + fi ** 2)
-        iij_sqr += 2 * branch.g * bij_sh * (((rij ** 2) * fi - rij * fj) * ei - ((rij ** 2) * ei - rij * ej) * fi)
-        iij_sqr += 2 * branch.b * bij_sh * (((rij ** 2) * ei - rij * ej) * ei + ((rij ** 2) * fi - rij * fj) * fi)
-        return iij_sqr
+    if limit_type == 'current':
+        delta_e = (rij**2) * ei - rij * ej
+        delta_f = (rij**2) * fi - rij * fj
 
-    raise ValueError("Unknown branch limit type")
+        current_squared = (g**2 + b**2) * (delta_e**2 + delta_f**2)
+        current_squared += bsh**2 * (ei**2 + fi**2)
+        current_squared += 2 * g * bsh * (delta_f * ei - delta_e * fi)
+        current_squared += 2 * b * bsh * (delta_e * ei + delta_f * fi)
+        return current_squared
+
+    elif limit_type == 'apparent' or (limit_type == 'mixed' and branch.is_transformer):
+        # Real power flow from i to j
+        pij = g * (ei**2 + fi**2) * rij**2
+        pij -= g * (ei * ej + fi * fj) * rij
+        pij -= b * (fi * ej - ei * fj) * rij
+
+        # Reactive power flow from i to j
+        qij = -(b + bsh) * (ei**2 + fi**2) * rij**2
+        qij += b * (ei * ej + fi * fj) * rij
+        qij -= g * (fi * ej - ei * fj) * rij
+
+        return pij**2 + qij**2
+
+    elif limit_type == 'mixed' and not branch.is_transformer:
+        delta_e = (rij**2) * ei - rij * ej
+        delta_f = (rij**2) * fi - rij * fj
+
+        current_squared = (g**2 + b**2) * (delta_e**2 + delta_f**2)
+        current_squared += bsh**2 * (ei**2 + fi**2)
+        current_squared += 2 * g * bsh * (delta_f * ei - delta_e * fi)
+        current_squared += 2 * b * bsh * (delta_e * ei + delta_f * fi)
+        return current_squared
+
+    raise ValueError(f"Unknown branch limit type: {limit_type}")
 
 
 # Objective function
@@ -674,3 +702,39 @@ def node_balance_q_rule(model, i, s_m, s_o, p, network, params):
         return Qg == Qd + Qi + model.slack_node_balance_q[i, s_m, s_o, p]
     else:
         return pe.inequality(-EQUALITY_TOLERANCE, Qg - Qd - Qi, EQUALITY_TOLERANCE)
+
+
+def branch_flow_equation_rule(model, b, s_m, s_o, p, network, params):
+
+    branch = network.branches[b]
+    rij = model.r[b, s_m, s_o, p] if branch.is_transformer else 1.0
+
+    fnode_idx = network.get_node_idx(branch.fbus)
+    tnode_idx = network.get_node_idx(branch.tbus)
+
+    ei = model.e_actual[fnode_idx, s_m, s_o, p]
+    fi = model.f_actual[fnode_idx, s_m, s_o, p]
+    ej = model.e_actual[tnode_idx, s_m, s_o, p]
+    fj = model.f_actual[tnode_idx, s_m, s_o, p]
+
+    flow_expr = compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, params.branch_limit_type)
+    flow_var = model.flow_ij_sqr[b, s_m, s_o, p]
+
+    return pe.inequality(-EQUALITY_TOLERANCE, flow_var - flow_expr, EQUALITY_TOLERANCE)
+
+
+def branch_flow_limit_rule(model, b, s_m, s_o, p, network, params):
+
+    branch = network.branches[b]
+    if not branch.status:
+        return pe.Constraint.Skip
+
+    rating = branch.rate / network.baseMVA or BRANCH_UNKNOWN_RATING
+    flow_var = model.flow_ij_sqr[b, s_m, s_o, p]
+
+    if params.slacks.grid_operation.branch_flow:
+        slack = model.slack_flow_ij_sqr[b, s_m, s_o, p]
+        return flow_var <= rating ** 2 + slack
+    else:
+        return flow_var <= rating ** 2
+

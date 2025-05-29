@@ -1269,32 +1269,8 @@ def _build_model_v2(network, params):
     # - Branch Power Flow constraints
     model.branch_power_flow_cons = pe.ConstraintList()
     model.branch_power_flow_lims = pe.ConstraintList()
-    for s_m in model.scenarios_market:
-        for s_o in model.scenarios_operation:
-            for p in model.periods:
-                for b in model.branches:
-
-                    branch = network.branches[b]
-                    rating = branch.rate / network.baseMVA or BRANCH_UNKNOWN_RATING
-                    fnode_idx = network.get_node_idx(branch.fbus)
-                    tnode_idx = network.get_node_idx(branch.tbus)
-
-                    rij = model.r[b, s_m, s_o, p] if branch.is_transformer else 1.0
-                    ei = model.e_actual[fnode_idx, s_m, s_o, p]
-                    fi = model.f_actual[fnode_idx, s_m, s_o, p]
-                    ej = model.e_actual[tnode_idx, s_m, s_o, p]
-                    fj = model.f_actual[tnode_idx, s_m, s_o, p]
-
-                    flow_ij_sqr = compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, params.branch_limit_type)
-
-                    model.branch_power_flow_cons.add(model.flow_ij_sqr[b, s_m, s_o, p] <= flow_ij_sqr + EQUALITY_TOLERANCE)
-                    model.branch_power_flow_cons.add(model.flow_ij_sqr[b, s_m, s_o, p] >= flow_ij_sqr - EQUALITY_TOLERANCE)
-
-                    if branch.status:
-                        if params.slacks.grid_operation.branch_flow:
-                            model.branch_power_flow_lims.add(model.flow_ij_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_flow_ij_sqr[b, s_m, s_o, p])
-                        else:
-                            model.branch_power_flow_lims.add(model.flow_ij_sqr[b, s_m, s_o, p] <= rating ** 2)
+    model.branch_flow_equation = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_flow_equation_rule, network=network, params=params))
+    model.branch_flow_limit = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_flow_limit_rule, network=network, params=params))
 
     # ------------------------------------------------------------------------------------------------------------------
     # Costs (penalties)
