@@ -1157,48 +1157,12 @@ def _build_model_v2(network, params):
         model.slack_node_balance_q = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00, bounds=(-0.01, 0.01))
 
     # - Generation
-    model.pg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
-    model.qg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
-    for g in model.generators:
-        generator = network.generators[g]
-        pg_ub, pg_lb = generator.pmax, generator.pmin
-        qg_ub, qg_lb = generator.qmax, generator.qmin
-        for s_m in model.scenarios_market:
-            for s_o in model.scenarios_operation:
-                for p in model.periods:
-                    if generator.status[p]:
-                        model.pg[g, s_m, s_o, p] = max(pg_lb, 0.00)
-                        model.qg[g, s_m, s_o, p] = max(qg_lb, 0.00)
-                        model.pg[g, s_m, s_o, p].setub(pg_ub)
-                        model.pg[g, s_m, s_o, p].setlb(pg_lb)
-                        model.qg[g, s_m, s_o, p].setub(qg_ub)
-                        model.qg[g, s_m, s_o, p].setlb(qg_lb)
-                    else:
-                        model.pg[g, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                        model.pg[g, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
-                        model.qg[g, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                        model.qg[g, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
+    model.pg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(pg_bounds, network=network), initialize=partial(pg_init, network=network))
+    model.qg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(qg_bounds, network=network), initialize=partial(qg_init, network=network))
     if params.rg_curt:
-        model.sg_abs = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.sg_sqr = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.sg_curt = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        for g in model.generators:
-            generator = network.generators[g]
-            for s_m in model.scenarios_market:
-                for s_o in model.scenarios_operation:
-                    for p in model.periods:
-                        if generator.is_curtaillable():
-                            # - Renewable Generation
-                            init_sg = 0.0
-                            if generator.status[p]:
-                                init_sg = sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
-                            model.sg_abs[g, s_m, s_o, p].setub(init_sg)
-                            model.sg_sqr[g, s_m, s_o, p].setub(init_sg ** 2)
-                            model.sg_curt[g, s_m, s_o, p].setub(init_sg)
-                        else:
-                            model.sg_abs[g, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                            model.sg_sqr[g, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                            model.sg_curt[g, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+        model.sg_abs = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(sg_bounds, network=network, params=params), initialize=0.0)
+        model.sg_sqr = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(sg_sqr_bounds, network=network, params=params), initialize=0.0)
+        model.sg_curt = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(sg_bounds, network=network, params=params), initialize=0.0)
 
     # - Branch power flows (squared) -- used in branch limits
     model.flow_ij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
