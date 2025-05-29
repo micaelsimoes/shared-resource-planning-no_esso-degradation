@@ -369,7 +369,7 @@ def flex_energy_balance_rule(m, c, s_m, s_o, network, params):
 
 
 # Energy Storage
-def ess_sch_limits(m, e, s_m, s_o, p):
+def ess_sch_def(m, e, s_m, s_o, p):
     ineq = pe.inequality(
         - EQUALITY_TOLERANCE,
         m.es_sch[e, s_m, s_o, p]**2 - (m.es_pch[e, s_m, s_o, p]**2 + m.es_qch[e, s_m, s_o, p]**2),
@@ -378,7 +378,7 @@ def ess_sch_limits(m, e, s_m, s_o, p):
     return ineq
 
 
-def ess_sdch_limits(m, e, s_m, s_o, p):
+def ess_sdch_def(m, e, s_m, s_o, p):
     ineq = pe.inequality(
         - EQUALITY_TOLERANCE,
         m.es_sdch[e, s_m, s_o, p]**2 - (m.es_pdch[e, s_m, s_o, p]**2 + m.es_qdch[e, s_m, s_o, p]**2),
@@ -481,6 +481,24 @@ def sess_sdch_limit(m, e, s_m, s_o, p):
     return sdch <= s_max
 
 
+def sess_sch_def(m, e, s_m, s_o, p):
+    ineq = pe.inequality(
+        - EQUALITY_TOLERANCE,
+        m.shared_es_sch[e, s_m, s_o, p]**2 - (m.shared_es_pch[e, s_m, s_o, p]**2 + m.shared_es_qch[e, s_m, s_o, p]**2),
+        EQUALITY_TOLERANCE
+    )
+    return ineq
+
+
+def sess_sdch_def(m, e, s_m, s_o, p):
+    ineq = pe.inequality(
+        - EQUALITY_TOLERANCE,
+        m.shared_es_sdch[e, s_m, s_o, p]**2 - (m.shared_es_pdch[e, s_m, s_o, p]**2 + m.shared_es_qdch[e, s_m, s_o, p]**2),
+        EQUALITY_TOLERANCE
+    )
+    return ineq
+
+
 def sess_pch_limit(m, e, s_m, s_o, p):
     s_max = m.shared_es_s_rated[e]
     pch = m.shared_es_pch[e, s_m, s_o, p]
@@ -501,6 +519,26 @@ def sess_soc_lower_limit(m, e, s_m, s_o, p):
 def sess_soc_upper_limit(m, e, s_m, s_o, p):
     soc_max = m.shared_es_e_rated[e] * ENERGY_STORAGE_MAX_ENERGY_STORED
     return m.shared_es_soc[e, s_m, s_o, p] <= soc_max
+
+
+def sess_comp_rule(m, e, s_m, s_o, p, params):
+    if params.slacks.shared_ess.complementarity:
+        return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] == m.slack_shared_es_comp[e, s_m, s_o, p]
+    else:
+        return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
+
+
+def sess_balance_rule(m, e, s_m, s_o, p, network):
+    ses = network.shared_energy_storages[e]
+    eff_ch, eff_dch = ses.eff_ch, ses.eff_dch
+    soc_prev = m.shared_es_e_rated[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC if p == 0 else m.shared_es_soc[e, s_m, s_o, p - 1]
+    ineq = pe.inequality(
+        - EQUALITY_TOLERANCE,
+        m.shared_es_soc[e, s_m, s_o, p] - soc_prev - (m.shared_es_sch[e, s_m, s_o, p] * eff_ch - m.shared_es_sdch[e, s_m, s_o, p] / eff_dch),
+        EQUALITY_TOLERANCE
+    )
+    return ineq
+
 
 
 def sess_pnet_rule(m, e, s_m, s_o, p):
