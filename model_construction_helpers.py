@@ -217,7 +217,7 @@ def q_bounds(e, network):
     return (-es.s, es.s)
 
 
-def s_bounds(e, network):
+def s_bounds(m, e, s_m, s_o, p, network):
     return (0.0, network.energy_storages[e].s)
 
 
