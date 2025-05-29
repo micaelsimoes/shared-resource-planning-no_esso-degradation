@@ -516,7 +516,7 @@ def compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, limit_type):
     b = branch.b
     bsh = 0.5 * branch.b_sh  # Half-line shunt susceptance for π-model
 
-    if limit_type == 'current':
+    if limit_type == BRANCH_LIMIT_CURRENT:
         delta_e = (rij**2) * ei - rij * ej
         delta_f = (rij**2) * fi - rij * fj
 
@@ -526,7 +526,7 @@ def compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, limit_type):
         current_squared += 2 * b * bsh * (delta_e * ei + delta_f * fi)
         return current_squared
 
-    elif limit_type == 'apparent' or (limit_type == 'mixed' and branch.is_transformer):
+    elif limit_type == BRANCH_LIMIT_APPARENT_POWER or (limit_type == BRANCH_LIMIT_MIXED and branch.is_transformer):
         # Real power flow from i to j
         pij = g * (ei**2 + fi**2) * rij**2
         pij -= g * (ei * ej + fi * fj) * rij
@@ -539,7 +539,7 @@ def compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, limit_type):
 
         return pij**2 + qij**2
 
-    elif limit_type == 'mixed' and not branch.is_transformer:
+    elif limit_type == BRANCH_LIMIT_MIXED and not branch.is_transformer:
         delta_e = (rij**2) * ei - rij * ej
         delta_f = (rij**2) * fi - rij * fj
 
