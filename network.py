@@ -1224,40 +1224,21 @@ def _build_model_v2(network, params):
     model.voltage_cons_f = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_rule_f, params=params))
     model.voltage_magnitude = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_magnitude_rule, network=network, params=params))
 
-
-
-
-
-
-    model.generation_apparent_power = pe.ConstraintList()
-    model.generation_power_factor = pe.ConstraintList()
+    # - Generation
     if params.rg_curt:
-        for g in model.generators:
-            generator = network.generators[g]
-            for s_m in model.scenarios_market:
-                for s_o in model.scenarios_operation:
-                    for p in model.periods:
-                        if generator.is_curtaillable():
-                            init_sg = 0.0
-                            if generator.status[p]:
-                                init_sg = sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
-                            model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] <= model.pg[g, s_m, s_o, p] ** 2 + model.qg[g, s_m, s_o, p] ** 2 + EQUALITY_TOLERANCE)
-                            model.generation_apparent_power.add(model.sg_sqr[g, s_m, s_o, p] >= model.pg[g, s_m, s_o, p] ** 2 + model.qg[g, s_m, s_o, p] ** 2 - EQUALITY_TOLERANCE)
-                            model.generation_apparent_power.add(model.sg_abs[g, s_m, s_o, p] ** 2 <= model.sg_sqr[g, s_m, s_o, p] + EQUALITY_TOLERANCE)
-                            model.generation_apparent_power.add(model.sg_abs[g, s_m, s_o, p] ** 2 >= model.sg_sqr[g, s_m, s_o, p] - EQUALITY_TOLERANCE)
-                            model.generation_apparent_power.add(model.sg_abs[g, s_m, s_o, p] <= init_sg - model.sg_curt[g, s_m, s_o, p] + EQUALITY_TOLERANCE)
-                            model.generation_apparent_power.add(model.sg_abs[g, s_m, s_o, p] >= init_sg - model.sg_curt[g, s_m, s_o, p] - EQUALITY_TOLERANCE)
-                            if generator.power_factor_control:
-                                # Power factor control, variable phi
-                                max_phi = acos(generator.max_pf)
-                                min_phi = acos(generator.min_pf)
-                                model.generation_power_factor.add(model.qg[g, s_m, s_o, p] <= tan(max_phi) * model.pg[g, s_m, s_o, p])
-                                model.generation_power_factor.add(model.qg[g, s_m, s_o, p] >= tan(min_phi) * model.pg[g, s_m, s_o, p])
-                            else:
-                                # No power factor control, maintain given phi
-                                phi = atan2(generator.qg[s_o][p], generator.pg[s_o][p])
-                                model.generation_power_factor.add(model.qg[g, s_m, s_o, p] <= tan(phi) * model.pg[g, s_m, s_o, p])
-                                model.generation_power_factor.add(model.qg[g, s_m, s_o, p] >= tan(phi) * model.pg[g, s_m, s_o, p])
+        model.sg_sqr_upper = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=sg_sqr_upper_bound_rule)
+        model.sg_sqr_lower = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=sg_sqr_lower_bound_rule)
+        model.sg_abs_upper = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=sg_abs_upper_bound_rule)
+        model.sg_abs_lower = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=sg_abs_lower_bound_rule)
+        model.sg_curt_upper = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_curtailment_upper_rule, network=network))
+        model.sg_curt_lower = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_curtailment_lower_rule, network=network))
+        model.gen_pf_upper = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(power_factor_rule_upper, network=network))
+        model.gen_pf_lower = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(power_factor_rule_lower, network=network))
+
+
+
+
+
 
     # - Flexible Loads -- Daily energy balance
     if params.fl_reg:
