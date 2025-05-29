@@ -4,7 +4,7 @@ from definitions import *
 
 
 # Voltage variables, e
-def e_bounds(m, i, s_m, s_o, p, network, params):
+def e_bounds(m, i, s_m, s_o, p, network):
     node = network.nodes[i]
     if node.type == BUS_REF and not network.is_transmission:
         vg = network.generators[network.get_gen_idx(node.bus_i)].vg
@@ -13,7 +13,7 @@ def e_bounds(m, i, s_m, s_o, p, network, params):
 
 
 # Voltage variables, f
-def f_bounds(m, i, s_m, s_o, p, network, params):
+def f_bounds(m, i, s_m, s_o, p, network):
     node = network.nodes[i]
     if node.type == BUS_REF:
         return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
@@ -21,7 +21,7 @@ def f_bounds(m, i, s_m, s_o, p, network, params):
 
 
 # Voltage variables, slack bounds
-def voltage_slack_bounds(m, i, s_m, s_o, p, network, params):
+def voltage_slack_bounds(m, i, s_m, s_o, p, network):
     node = network.nodes[i]
     if node.type == BUS_REF:
         return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
