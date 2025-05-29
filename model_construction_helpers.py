@@ -8,7 +8,7 @@ def e_bounds(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
     if node.type == BUS_REF and not network.is_transmission:
         vg = network.generators[network.get_gen_idx(node.bus_i)].vg
-        return (vg - params.EQUALITY_TOLERANCE, vg + params.EQUALITY_TOLERANCE)
+        return (vg - EQUALITY_TOLERANCE, vg + EQUALITY_TOLERANCE)
     return (-node.v_max, node.v_max)
 
 
@@ -16,7 +16,7 @@ def e_bounds(m, i, s_m, s_o, p, network, params):
 def f_bounds(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
     if node.type == BUS_REF:
-        return (-params.EQUALITY_TOLERANCE, params.EQUALITY_TOLERANCE)
+        return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
     return (-node.v_max, node.v_max)
 
 
