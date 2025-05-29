@@ -369,16 +369,28 @@ def flex_energy_balance_rule(m, c, s_m, s_o, network, params):
 
 
 # Energy Storage
-def ess_phi_ch_limits(m, e, s_m, s_o, p, network):
-    es = network.energy_storages[e]
-    max_phi = acos(es.max_pf)
-    min_phi = acos(es.min_pf)
-    ineq = pe.inequality(
-        tan(min_phi) * m.es_pch[e, s_m, s_o, p],
-        m.es_qch[e, s_m, s_o, p],
-        tan(max_phi) * m.es_pch[e, s_m, s_o, p]
-    )
-    return ineq
+def ess_phi_ch_limits_lower(m, e, s_m, s_o, p, network):
+    ess = network.energy_storages[e]
+    min_phi = acos(ess.min_pf)
+    return m.shared_es_qch[e, s_m, s_o, p] >= tan(min_phi) * m.shared_es_pch[e, s_m, s_o, p]
+
+
+def ess_phi_ch_limits_upper(m, e, s_m, s_o, p, network):
+    ess = network.energy_storages[e]
+    max_phi = acos(ess.max_pf)
+    return m.shared_es_qch[e, s_m, s_o, p] <= tan(max_phi) * m.shared_es_pch[e, s_m, s_o, p]
+
+
+def ess_phi_dch_limits_lower(m, e, s_m, s_o, p, network):
+    ess = network.energy_storages[e]
+    min_phi = acos(ess.min_pf)
+    return m.shared_es_qdch[e, s_m, s_o, p] >= tan(min_phi) * m.shared_es_pdch[e, s_m, s_o, p]
+
+
+def ess_phi_dch_limits_upper(m, e, s_m, s_o, p, network):
+    ess = network.energy_storages[e]
+    max_phi = acos(ess.max_pf)
+    return m.shared_es_qdch[e, s_m, s_o, p] <= tan(max_phi) * m.shared_es_pdch[e, s_m, s_o, p]
 
 
 def ess_phi_dch_limits(m, e, s_m, s_o, p, network):
