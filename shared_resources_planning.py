@@ -6,7 +6,6 @@ from math import isclose, sqrt
 import networkx as nx
 import matplotlib.pyplot as plt
 import pyomo.opt as po
-import pyomo.environ as pe
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill
 from network_data import NetworkData
