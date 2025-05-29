@@ -414,7 +414,7 @@ def ess_balance_rule(m, e, s_m, s_o, p, network):
 
 def ess_soc_final_rule(m, e, s_m, s_o, network, params):
     final_soc = network.energy_storages[e].e_init
-    final_p = m.periods.last()
+    final_p = m.periods[-1]
     if params.slacks.ess.day_balance:
         return m.es_soc[e, s_m, s_o, final_p] == final_soc + m.slack_es_soc_final[e, s_m, s_o]
     else:
