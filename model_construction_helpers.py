@@ -351,16 +351,17 @@ def power_factor_rule_lower(m, g, s_m, s_o, p, network):
 
 
 # Flexible loads
-def flex_energy_balance_rule_lower(m, c, s_m, s_o):
-    p_up = sum(m.flex_p_up[c, s_m, s_o, p] for p in m.periods)
-    p_down = sum(m.flex_p_down[c, s_m, s_o, p] for p in m.periods)
-    return p_up >= p_down - EQUALITY_TOLERANCE
-
-
-def flex_energy_balance_rule_upper(m, c, s_m, s_o):
-    p_up = sum(m.flex_p_up[c, s_m, s_o, p] for p in m.periods)
-    p_down = sum(m.flex_p_down[c, s_m, s_o, p] for p in m.periods)
-    return p_up <= p_down + EQUALITY_TOLERANCE
+def flex_energy_balance_rule(m, c, s_m, s_o, network, params):
+    load = network.loads[c]
+    if load.fl_reg:
+        p_up = sum(m.flex_p_up[c, s_m, s_o, p] for p in m.periods)
+        p_down = sum(m.flex_p_down[c, s_m, s_o, p] for p in m.periods)
+        if params.slacks.flexibility.day_balance:
+            return p_up == p_down + m.slack_flex_p_balance[c, s_m, s_o]
+        else:
+            return pe.inequality(-EQUALITY_TOLERANCE, p_up - p_down, EQUALITY_TOLERANCE)
+    else:
+        return pe.Constraint.Skip
 
 
 # Energy Storage
