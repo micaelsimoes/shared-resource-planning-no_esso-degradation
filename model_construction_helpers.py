@@ -212,7 +212,11 @@ def soc_bounds(m, e, s_m, s_o, p, network):
     return (es.e_min, es.e_max)
 
 
-def q_bounds(e, network):
+def p_bounds(m, e, s_m, s_o, p, network):
+    return (0.0, network.energy_storages[e].s)
+
+
+def q_bounds(m, e, s_m, s_o, p, network):
     es = network.energy_storages[e]
     return (-es.s, es.s)
 
