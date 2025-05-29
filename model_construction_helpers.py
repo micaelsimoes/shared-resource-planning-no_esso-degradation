@@ -549,6 +549,15 @@ def sess_qnet_rule(m, e, s_m, s_o, p):
     return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_qnet[e, s_m, s_o, p] - (m.shared_es_qch[e, s_m, s_o, p] - m.shared_es_qdch[e, s_m, s_o, p]), EQUALITY_TOLERANCE)
 
 
+def sess_s_sensitivities(m, e):
+    return m.shared_es_s_rated[e] <= m.shared_es_s_rated_fixed[e]
+
+
+def sess_e_sensitivities(m, e):
+    return m.shared_es_e_rated[e] <= m.shared_es_e_rated_fixed[e]
+
+
+
 # Node balance
 def compute_branch_power(branch, ei, fi, ej, fj, rij):
     vi_sq = ei ** 2 + fi ** 2
