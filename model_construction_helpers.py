@@ -779,3 +779,140 @@ def setup_cost_parameters(model, params):
     else:
         raise ValueError(f"[ERROR] Unrecognized or invalid objective type: {params.obj_type}.")
 
+
+def build_objective(model, network, params):
+
+    model.total_cost = pe.Expression(expr=0)
+
+    for s_m in model.scenarios_market:
+        omega_m = network.prob_market_scenarios[s_m]
+        for s_o in model.scenarios_operation:
+            omega_o = network.prob_operation_scenarios[s_o]
+            weight = omega_m * omega_o
+
+            scenario_cost = (
+                generation_cost(model, network, s_m, s_o, params) +
+                flexibility_cost(model, network, s_m, s_o, params) +
+                load_curtailment_cost(model, network, s_m, s_o, params) +
+                gen_curtailment_cost(model, network, s_m, s_o, params) +
+                ess_utilization_cost(model, network, s_m, s_o, params) +
+                slack_penalties(model, network, s_m, s_o, params)
+            )
+
+            model.total_cost.expr += weight * scenario_cost
+
+    model.objective = pe.Objective(sense=pe.minimize, expr=model.total_cost)
+
+
+def generation_cost(model, network, s_m, s_o, params):
+    if params.obj_type != OBJ_MIN_COST:
+        return 0
+    c_p = network.cost_energy_p
+    return sum(
+        c_p[s_m][p] * network.baseMVA * model.pg[g, s_m, s_o, p]
+        for g in model.generators
+        if network.generators[g].is_controllable()
+        and not (not network.is_transmission and network.generators[g].gen_type == GEN_REFERENCE)
+        for p in model.periods
+    )
+
+
+def flexibility_cost(model, network, s_m, s_o, params):
+    if not params.fl_reg:
+        return 0
+    c_flex = network.cost_flex
+    return sum(
+        c_flex[s_m][p] * network.baseMVA * (
+            model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p] +
+            model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]
+        )
+        for c in model.loads
+        for p in model.periods
+    )
+
+
+def load_curtailment_cost(model, network, s_m, s_o, params):
+    if not params.l_curt:
+        return 0
+    cost = model.cost_load_curtailment if params.obj_type == OBJ_MIN_COST else model.penalty_load_curtailment
+    return sum(
+        cost * network.baseMVA * (
+            model.pc_curt_down[c, s_m, s_o, p] + model.pc_curt_up[c, s_m, s_o, p] +
+            model.qc_curt_down[c, s_m, s_o, p] + model.qc_curt_up[c, s_m, s_o, p]
+        )
+        for c in model.loads
+        for p in model.periods
+    )
+
+
+def gen_curtailment_cost(model, network, s_m, s_o, params):
+    if not params.rg_curt:
+        return 0
+    cost = model.cost_res_curtailment if params.obj_type == OBJ_MIN_COST else model.penalty_gen_curtailment
+    return sum(
+        cost * network.baseMVA * model.sg_curt[g, s_m, s_o, p]
+        for g in model.generators if network.generators[g].is_curtaillable()
+        for p in model.periods
+    )
+
+
+def ess_utilization_cost(model, network, s_m, s_o, params):
+    cost = model.penalty_ess_usage
+    return sum(
+        cost * network.baseMVA * (
+            model.es_sch[e, s_m, s_o, p] + model.es_sdch[e, s_m, s_o, p]
+        )
+        for e in model.energy_storages
+        for p in model.periods
+    ) + sum(
+        cost * network.baseMVA * (
+            model.shared_es_sch[e, s_m, s_o, p] + model.shared_es_sdch[e, s_m, s_o, p]
+        )
+        for e in model.shared_energy_storages
+        for p in model.periods
+    )
+
+
+def slack_penalties(model, network, s_m, s_o, params):
+
+    total = 0
+    base = network.baseMVA
+
+    for i in model.nodes:
+        for p in model.periods:
+            if params.slacks.grid_operation.voltage:
+                total += base * PENALTY_VOLTAGE * (
+                    model.slack_e[i, s_m, s_o, p]**2 + model.slack_f[i, s_m, s_o, p]**2
+                )
+            if params.slacks.node_balance:
+                total += base * PENALTY_NODE_BALANCE * (
+                    model.slack_node_balance_p[i, s_m, s_o, p]**2 + model.slack_node_balance_q[i, s_m, s_o, p]**2
+                )
+
+    if params.fl_reg and params.slacks.flexibility.day_balance:
+        total += base * PENALTY_FLEXIBILITY * sum(
+            model.slack_flex_p_balance[c, s_m, s_o]**2 for c in model.loads
+        )
+
+    if params.es_reg:
+        for e in model.energy_storages:
+            for p in model.periods:
+                if params.slacks.ess.complementarity:
+                    total += base * PENALTY_ESS * model.slack_es_comp[e, s_m, s_o, p]
+            if params.slacks.ess.day_balance:
+                total += base * PENALTY_ESS * model.slack_es_soc_final[e, s_m, s_o]**2
+
+    for e in model.shared_energy_storages:
+        for p in model.periods:
+            if params.slacks.shared_ess.complementarity:
+                total += base * PENALTY_SHARED_ESS * model.slack_shared_es_comp[e, s_m, s_o, p]
+        if params.slacks.shared_ess.day_balance:
+            total += base * PENALTY_SHARED_ESS * model.slack_shared_es_soc_final[e, s_m, s_o]**2
+
+    for b in model.branches:
+        for p in model.periods:
+            if params.slacks.grid_operation.branch_flow:
+                total += base * PENALTY_CURRENT * model.slack_flow_ij_sqr[b, s_m, s_o, p]
+
+    return total
+
