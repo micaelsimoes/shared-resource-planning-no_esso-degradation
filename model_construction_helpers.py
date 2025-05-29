@@ -207,7 +207,7 @@ def transformer_ratio_bounds(m, i, s_m, s_o, p, network, params):
 
 
 # Energy Storage
-def soc_bounds(e, network):
+def soc_bounds(m, e, s_m, s_o, p, network):
     es = network.energy_storages[e]
     return (es.e_min, es.e_max)
 
