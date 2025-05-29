@@ -1236,72 +1236,21 @@ def _build_model_v2(network, params):
         model.gen_pf_lower = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(power_factor_rule_lower, network=network))
 
     # - Flexible Loads -- Daily energy balance
-    model.flex_energy_balance = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_rule, network=network, params=params))
-
-
-
-
-
+    if params.fl_reg:
+        model.flex_energy_balance = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_rule, network=network, params=params))
 
     # - Energy Storage constraints
     if params.es_reg:
+        model.energy_storage_power_factor_charg = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_ch_limits, network=network))
+        model.energy_storage_power_factor_discharg = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_dch_limits, network=network))
+        model.energy_storage_ch_dch_exclusion = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_comp_rule, params=params))
+        model.energy_storage_balance = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_balance_rule, network=network))
+        model.energy_storage_day_balance = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, rule=partial(ess_soc_final_rule, network=network, params=params))
 
-        model.energy_storage_balance = pe.ConstraintList()
-        model.energy_storage_operation = pe.ConstraintList()
-        model.energy_storage_day_balance = pe.ConstraintList()
-        model.energy_storage_ch_dch_exclusion = pe.ConstraintList()
 
-        for e in model.energy_storages:
 
-            energy_storage = network.energy_storages[e]
-            soc_init = energy_storage.e_init
-            soc_final = energy_storage.e_init
-            eff_charge = energy_storage.eff_ch
-            eff_discharge = energy_storage.eff_dch
-            max_phi = acos(energy_storage.max_pf)
-            min_phi = acos(energy_storage.min_pf)
 
-            for s_m in model.scenarios_market:
-                for s_o in model.scenarios_operation:
-                    for p in model.periods:
 
-                        sch = model.es_sch[e, s_m, s_o, p]
-                        pch = model.es_pch[e, s_m, s_o, p]
-                        qch = model.es_qch[e, s_m, s_o, p]
-                        sdch = model.es_sdch[e, s_m, s_o, p]
-                        pdch = model.es_pdch[e, s_m, s_o, p]
-                        qdch = model.es_qdch[e, s_m, s_o, p]
-
-                        # ESS operation
-                        model.energy_storage_operation.add(qch <= tan(max_phi) * pch)
-                        model.energy_storage_operation.add(qch >= tan(min_phi) * pch)
-                        model.energy_storage_operation.add(qdch <= tan(max_phi) * pdch)
-                        model.energy_storage_operation.add(qdch >= tan(min_phi) * pdch)
-
-                        model.energy_storage_operation.add(sch ** 2 <= pch ** 2 + qch ** 2 + EQUALITY_TOLERANCE)
-                        model.energy_storage_operation.add(sch ** 2 >= pch ** 2 + qch ** 2 - EQUALITY_TOLERANCE)
-                        model.energy_storage_operation.add(sdch ** 2 <= pdch ** 2 + qdch ** 2 + EQUALITY_TOLERANCE)
-                        model.energy_storage_operation.add(sdch ** 2 >= pdch ** 2 + qdch ** 2 - EQUALITY_TOLERANCE)
-
-                        # Charging/discharging complementarity constraints
-                        if params.slacks.ess.complementarity:
-                            model.energy_storage_ch_dch_exclusion.add(sch * sdch == model.slack_es_comp[e, s_m, s_o, p])
-                        else:
-                            model.energy_storage_ch_dch_exclusion.add(sch * sdch <= EQUALITY_TOLERANCE)
-
-                        # State-of-Charge
-                        soc_prev = soc_init
-                        if p > 0:
-                            soc_prev = model.es_soc[e, s_m, s_o, p - 1]
-
-                        model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] <= soc_prev + (sch * eff_charge - sdch / eff_discharge) + EQUALITY_TOLERANCE)
-                        model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] >= soc_prev + (sch * eff_charge - sdch / eff_discharge) - EQUALITY_TOLERANCE)
-
-                    if params.slacks.ess.day_balance:
-                        model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final + model.slack_es_soc_final[e, s_m, s_o])
-                    else:
-                        model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] <= soc_final + EQUALITY_TOLERANCE)
-                        model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] >= soc_final - EQUALITY_TOLERANCE)
 
     # - Shared Energy Storage constraints
     model.shared_energy_storage_balance = pe.ConstraintList()
