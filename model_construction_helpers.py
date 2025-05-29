@@ -99,7 +99,7 @@ def flow_ij_sqr_bounds(m, b, s_m, s_o, p, network, params):
     branch = network.branches[b]
     if not branch.status:
         return (0.0, EQUALITY_TOLERANCE)
-    rating_sqr = (branch / network.baseMVA)**2
+    rating_sqr = (branch.rate / network.baseMVA)**2
     return (0.0, rating_sqr)
 
 
@@ -115,8 +115,8 @@ def slack_flow_bounds(m, b, s_m, s_o, p, network, params):
     branch = network.branches[b]
     if not branch.status:
         return (0.0, EQUALITY_TOLERANCE)
-    rating_Sqr = (branch.rate / network.baseMVA) ** 2
-    return (0.0, SIJ_VIOLATION_ALLOWED * rating_Sqr)
+    rating_sqr = (branch.rate / network.baseMVA) ** 2
+    return (0.0, SIJ_VIOLATION_ALLOWED * rating_sqr)
 
 
 # Consumption, Pc
