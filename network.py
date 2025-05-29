@@ -1261,99 +1261,10 @@ def _build_model_v2(network, params):
     model.shared_energy_storage_pnet_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pnet_rule)
     model.shared_energy_storage_qnet_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_qnet_rule)
 
-
-
-
-
-
     # - Node Balance constraints
-    model.node_balance_cons_p = pe.ConstraintList()
-    model.node_balance_cons_q = pe.ConstraintList()
-    for s_m in model.scenarios_market:
-        for s_o in model.scenarios_operation:
-            for p in model.periods:
-                for i in range(len(network.nodes)):
+    model.node_balance_p = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(node_balance_p_rule, network=network, params=params))
+    model.node_balance_q = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(node_balance_q_rule, network=network, params=params))
 
-                    node = network.nodes[i]
-
-                    Pd = 0.00
-                    Qd = 0.00
-                    for c in model.loads:
-                        if network.loads[c].bus == node.bus_i:
-                            Pd += model.pc[c, s_m, s_o, p]
-                            Qd += model.qc[c, s_m, s_o, p]
-                            if params.fl_reg and network.loads[c].fl_reg:
-                                Pd += (model.flex_p_up[c, s_m, s_o, p] - model.flex_p_down[c, s_m, s_o, p])
-                                Qd += (model.flex_q_up[c, s_m, s_o, p] - model.flex_q_down[c, s_m, s_o, p])
-                            if params.l_curt:
-                                Pd -= (model.pc_curt_down[c, s_m, s_o, p] - model.pc_curt_up[c, s_m, s_o, p])
-                                Qd -= (model.qc_curt_down[c, s_m, s_o, p] - model.qc_curt_up[c, s_m, s_o, p])
-                    if params.es_reg:
-                        for e in model.energy_storages:
-                            if network.energy_storages[e].bus == node.bus_i:
-                                Pd += (model.es_pch[e, s_m, s_o, p] - model.es_pdch[e, s_m, s_o, p])
-                                Qd += (model.es_qch[e, s_m, s_o, p] - model.es_qdch[e, s_m, s_o, p])
-                    for e in model.shared_energy_storages:
-                        if network.shared_energy_storages[e].bus == node.bus_i:
-                            Pd += (model.shared_es_pch[e, s_m, s_o, p] - model.shared_es_pdch[e, s_m, s_o, p])
-                            Qd += (model.shared_es_qch[e, s_m, s_o, p] - model.shared_es_qdch[e, s_m, s_o, p])
-
-                    Pg = 0.0
-                    Qg = 0.0
-                    for g in model.generators:
-                        generator = network.generators[g]
-                        if generator.bus == node.bus_i:
-                            Pg += model.pg[g, s_m, s_o, p]
-                            Qg += model.qg[g, s_m, s_o, p]
-
-                    ei = model.e_actual[i, s_m, s_o, p]
-                    fi = model.f_actual[i, s_m, s_o, p]
-
-                    Pi = node.gs * (ei ** 2 + fi ** 2)
-                    Qi = -node.bs * (ei ** 2 + fi ** 2)
-                    for b in range(len(network.branches)):
-                        branch = network.branches[b]
-                        if branch.fbus == node.bus_i or branch.tbus == node.bus_i:
-
-                            rij = model.r[b, s_m, s_o, p]
-                            if not branch.is_transformer:
-                                rij = 1.00
-
-                            if branch.fbus == node.bus_i:
-                                fnode_idx = network.get_node_idx(branch.fbus)
-                                tnode_idx = network.get_node_idx(branch.tbus)
-
-                                ei = model.e_actual[fnode_idx, s_m, s_o, p]
-                                fi = model.f_actual[fnode_idx, s_m, s_o, p]
-                                ej = model.e_actual[tnode_idx, s_m, s_o, p]
-                                fj = model.f_actual[tnode_idx, s_m, s_o, p]
-
-                                Pi += branch.g * (ei ** 2 + fi ** 2) * rij ** 2
-                                Pi -= rij * (branch.g * (ei * ej + fi * fj) + branch.b * (fi * ej - ei * fj))
-                                Qi -= (branch.b + branch.b_sh * 0.5) * (ei ** 2 + fi ** 2) * rij ** 2
-                                Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
-                            else:
-                                fnode_idx = network.get_node_idx(branch.tbus)
-                                tnode_idx = network.get_node_idx(branch.fbus)
-
-                                ei = model.e_actual[fnode_idx, s_m, s_o, p]
-                                fi = model.f_actual[fnode_idx, s_m, s_o, p]
-                                ej = model.e_actual[tnode_idx, s_m, s_o, p]
-                                fj = model.f_actual[tnode_idx, s_m, s_o, p]
-
-                                Pi += branch.g * (ei ** 2 + fi ** 2)
-                                Pi -= rij * (branch.g * (ei * ej + fi * fj) + branch.b * (fi * ej - ei * fj))
-                                Qi -= (branch.b + branch.b_sh * 0.5) * (ei ** 2 + fi ** 2)
-                                Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
-
-                    if params.slacks.node_balance:
-                        model.node_balance_cons_p.add(Pg == Pd + Pi + model.slack_node_balance_p[i, s_m, s_o, p])
-                        model.node_balance_cons_q.add(Qg == Qd + Qi + model.slack_node_balance_q[i, s_m, s_o, p])
-                    else:
-                        model.node_balance_cons_p.add(Pg <= Pd + Pi + EQUALITY_TOLERANCE)
-                        model.node_balance_cons_p.add(Pg >= Pd + Pi - EQUALITY_TOLERANCE)
-                        model.node_balance_cons_q.add(Qg <= Qd + Qi + EQUALITY_TOLERANCE)
-                        model.node_balance_cons_q.add(Qg >= Qd + Qi - EQUALITY_TOLERANCE)
 
     # - Branch Power Flow constraints
     model.branch_power_flow_cons = pe.ConstraintList()
