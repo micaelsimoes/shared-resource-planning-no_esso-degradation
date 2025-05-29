@@ -1265,11 +1265,9 @@ def _build_model_v2(network, params):
     model.node_balance_cons_p = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(node_balance_p_rule, network=network, params=params))
     model.node_balance_cons_q = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(node_balance_q_rule, network=network, params=params))
 
-
-
-
-
-
+    # - Branch Power Flow constraints
+    model.branch_flow_equation = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_flow_equation_rule, network=network, params=params))
+    model.branch_flow_limit = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_flow_limit_rule, network=network, params=params))
 
 
 

@@ -729,6 +729,9 @@ def node_balance_q_rule(model, i, s_m, s_o, p, network, params):
 def branch_flow_equation_rule(model, b, s_m, s_o, p, network, params):
 
     branch = network.branches[b]
+    if not branch.status:
+        return pe.Constraint.Skip
+
     rij = model.r[b, s_m, s_o, p] if branch.is_transformer else 1.0
 
     fnode_idx = network.get_node_idx(branch.fbus)
@@ -739,10 +742,9 @@ def branch_flow_equation_rule(model, b, s_m, s_o, p, network, params):
     ej = model.e_actual[tnode_idx, s_m, s_o, p]
     fj = model.f_actual[tnode_idx, s_m, s_o, p]
 
-    flow_expr = compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, params.branch_limit_type)
-    flow_var = model.flow_ij_sqr[b, s_m, s_o, p]
+    flow_ij_sqr_expr = compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, params.branch_limit_type)
 
-    return pe.inequality(-EQUALITY_TOLERANCE, flow_var - flow_expr, EQUALITY_TOLERANCE)
+    return pe.inequality(-EQUALITY_TOLERANCE, model.flow_ij_sqr[b, s_m, s_o, p] - flow_ij_sqr_expr, EQUALITY_TOLERANCE)
 
 
 def branch_flow_limit_rule(model, b, s_m, s_o, p, network, params):
