@@ -289,56 +289,64 @@ def sg_sqr_lower_bound_rule(m, g, s_m, s_o, p, network):
 
 
 # sg_abs² ≈ sg_sqr
-def sg_abs_upper_bound_rule(m, g, s_m, s_o, p):
+def sg_abs_upper_bound_rule(m, g, s_m, s_o, p, network):
+    generator = network.generators[g]
+    if not generator.is_curtaillable():
+        return pe.Constraint.Skip
     return m.sg_abs[g, s_m, s_o, p]**2 <= m.sg_sqr[g, s_m, s_o, p] + EQUALITY_TOLERANCE
 
 
-def sg_abs_lower_bound_rule(m, g, s_m, s_o, p):
+def sg_abs_lower_bound_rule(m, g, s_m, s_o, p, network):
+    generator = network.generators[g]
+    if not generator.is_curtaillable():
+        return pe.Constraint.Skip
     return m.sg_abs[g, s_m, s_o, p]**2 >= m.sg_sqr[g, s_m, s_o, p] - EQUALITY_TOLERANCE
 
 
 # Curtailment: sg_abs = init_sg - sg_curt
 def sg_curtailment_upper_rule(m, g, s_m, s_o, p, network):
-    gen = network.generators[g]
-    if gen.status[p]:
-        init_sg = sqrt(gen.pg[s_o][p]**2 + gen.qg[s_o][p]**2)
-    else:
-        init_sg = 0.0
+    generator = network.generators[g]
+    if not generator.is_curtaillable():
+        return pe.Constraint.Skip
+    init_sg = 0.0
+    if generator.status[p]:
+        init_sg = sqrt(generator.pg[s_o][p]**2 + generator.qg[s_o][p]**2)
     return m.sg_abs[g, s_m, s_o, p] <= init_sg - m.sg_curt[g, s_m, s_o, p] + EQUALITY_TOLERANCE
 
 
 def sg_curtailment_lower_rule(m, g, s_m, s_o, p, network):
-    gen = network.generators[g]
-    if gen.status[p]:
-        init_sg = sqrt(gen.pg[s_o][p]**2 + gen.qg[s_o][p]**2)
-    else:
-        init_sg = 0.0
+    generator = network.generators[g]
+    if not generator.is_curtaillable():
+        return pe.Constraint.Skip
+    init_sg = 0.0
+    if generator.status[p]:
+        init_sg = sqrt(generator.pg[s_o][p]**2 + generator.qg[s_o][p]**2)
     return m.sg_abs[g, s_m, s_o, p] >= init_sg - m.sg_curt[g, s_m, s_o, p] - EQUALITY_TOLERANCE
 
 
 def power_factor_rule_upper(m, g, s_m, s_o, p, network):
-    gen = network.generators[g]
+    generator = network.generators[g]
+    if not generator.is_curtaillable():
+        return pe.Constraint.Skip
     pg = m.pg[g, s_m, s_o, p]
     qg = m.qg[g, s_m, s_o, p]
-
-    if gen.power_factor_control:
-        phi = acos(gen.max_pf)
+    if generator.power_factor_control:
+        phi = acos(generator.max_pf)
     else:
-        phi = atan2(gen.qg[s_o][p], gen.pg[s_o][p])
-
+        phi = atan2(generator.qg[s_o][p], generator.pg[s_o][p])
     return qg <= tan(phi) * pg
 
 
 def power_factor_rule_lower(m, g, s_m, s_o, p, network):
-    gen = network.generators[g]
+    generator = network.generators[g]
+    if not generator.is_curtaillable():
+        return pe.Constraint.Skip
     pg = m.pg[g, s_m, s_o, p]
     qg = m.qg[g, s_m, s_o, p]
-
-    if gen.power_factor_control:
-        phi = acos(gen.min_pf)
+    if generator.power_factor_control:
+        phi = acos(generator.min_pf)
     else:
-        phi = atan2(gen.qg[s_o][p], gen.pg[s_o][p])
-
+        phi = atan2(generator.qg[s_o][p], generator.pg[s_o][p])
     return qg >= tan(phi) * pg
 
 
