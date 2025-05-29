@@ -471,14 +471,18 @@ def sess_pdch_limit(m, e, s_m, s_o, p):
     return pdch <= s_max
 
 
-def sess_soc_limits(m, e, s_m, s_o, p):
+def sess_soc_lower_limit(m, e, s_m, s_o, p):
     soc_min = m.shared_es_e_rated[e] * ENERGY_STORAGE_MIN_ENERGY_STORED
+    return m.shared_es_soc[e, s_m, s_o, p] >= soc_min
+
+
+def sess_soc_upper_limit(m, e, s_m, s_o, p):
     soc_max = m.shared_es_e_rated[e] * ENERGY_STORAGE_MAX_ENERGY_STORED
-    return pe.inequality(soc_min, m.shared_es_soc[e, s_m, s_o, p], soc_max)
+    return m.shared_es_soc[e, s_m, s_o, p] <= soc_max
 
 
 def sess_pnet_rule(m, e, s_m, s_o, p):
-    return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_pnet[e, s_m, s_o, p] - (m.shared_es_pch[e, s_m, s_o, p] - m.shared_es_pdch[e, s_m, s_o, p]), EQUALITY_TOLERANCE)
+    return pe.inequality(EQUALITY_TOLERANCE, m.shared_es_pnet[e, s_m, s_o, p] - (m.shared_es_pch[e, s_m, s_o, p] - m.shared_es_pdch[e, s_m, s_o, p]), EQUALITY_TOLERANCE)
 
 
 def sess_qnet_rule(m, e, s_m, s_o, p):
