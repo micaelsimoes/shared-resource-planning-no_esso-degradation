@@ -1175,17 +1175,6 @@ def _build_model_v2(network, params):
 
 
 
-
-
-    for c in model.loads:
-        load = network.loads[c]
-        for s_m in model.scenarios_market:
-            for s_o in model.scenarios_operation:
-                for p in model.periods:
-                    model.pc[c, s_m, s_o, p].setub(load.pd[s_o][p] + EQUALITY_TOLERANCE)
-                    model.pc[c, s_m, s_o, p].setlb(load.pd[s_o][p] - EQUALITY_TOLERANCE)
-                    model.qc[c, s_m, s_o, p].setub(load.qd[s_o][p] + EQUALITY_TOLERANCE)
-                    model.qc[c, s_m, s_o, p].setlb(load.qd[s_o][p] - EQUALITY_TOLERANCE)
     if params.fl_reg:
         model.flex_p_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.flex_p_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
