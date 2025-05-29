@@ -107,7 +107,7 @@ def init_flow_ij_sqr(m, b, s_m, s_o, p, network, params):
     branch = network.branches[b]
     if not branch.status:
         return 0.0
-    return 0.01
+    return SMALL_TOLERANCE**2
 
 
 # Branch power flow, Fij slacks
