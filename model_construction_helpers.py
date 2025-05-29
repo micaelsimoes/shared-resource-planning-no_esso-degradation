@@ -406,7 +406,7 @@ def ess_balance_rule(m, e, s_m, s_o, p, network):
     soc_prev = es.e_init if p == 0 else m.es_soc[e, s_m, s_o, p - 1]
     ineq = pe.inequality(
         - EQUALITY_TOLERANCE,
-        m.es_soc[e, s_m, s_o, p] - (soc_prev + (m.es_sch[e, s_m, s_o, p] * eff_ch - m.es_sdch[e, s_m, s_o, p] / eff_dch)),
+        m.es_soc[e, s_m, s_o, p] - soc_prev - (m.es_sch[e, s_m, s_o, p] * eff_ch - m.es_sdch[e, s_m, s_o, p] / eff_dch),
         EQUALITY_TOLERANCE
     )
     return ineq
