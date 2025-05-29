@@ -274,11 +274,17 @@ def voltage_magnitude_rule(m, i, s_m, s_o, p, network, params):
 
 # Generation, Sg^2
 # Apparent power ≈ pg² + qg²
-def sg_sqr_upper_bound_rule(m, g, s_m, s_o, p):
+def sg_sqr_upper_bound_rule(m, g, s_m, s_o, p, network):
+    generator = network.generators[g]
+    if not generator.is_curtaillable():
+        return pe.Constraint.Skip
     return m.sg_sqr[g, s_m, s_o, p] <= m.pg[g, s_m, s_o, p]**2 + m.qg[g, s_m, s_o, p]**2 + EQUALITY_TOLERANCE
 
 
-def sg_sqr_lower_bound_rule(m, g, s_m, s_o, p):
+def sg_sqr_lower_bound_rule(m, g, s_m, s_o, p, network):
+    generator = network.generators[g]
+    if not generator.is_curtaillable():
+        return pe.Constraint.Skip
     return m.sg_sqr[g, s_m, s_o, p] >= m.pg[g, s_m, s_o, p]**2 + m.qg[g, s_m, s_o, p]**2 - EQUALITY_TOLERANCE
 
 

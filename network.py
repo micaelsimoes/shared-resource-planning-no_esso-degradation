@@ -1226,8 +1226,8 @@ def _build_model_v2(network, params):
 
     # - Generation
     if params.rg_curt:
-        model.sg_sqr_upper = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=sg_sqr_upper_bound_rule)
-        model.sg_sqr_lower = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=sg_sqr_lower_bound_rule)
+        model.sg_sqr_upper = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_sqr_upper_bound_rule, network=network))
+        model.sg_sqr_lower = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_sqr_lower_bound_rule, network=network))
         model.sg_abs_upper = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=sg_abs_upper_bound_rule)
         model.sg_abs_lower = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=sg_abs_lower_bound_rule)
         model.sg_curt_upper = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_curtailment_upper_rule, network=network))
