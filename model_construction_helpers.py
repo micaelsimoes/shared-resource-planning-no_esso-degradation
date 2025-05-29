@@ -99,15 +99,15 @@ def flow_ij_sqr_bounds(m, b, s_m, s_o, p, network, params):
     branch = network.branches[b]
     if not branch.status:
         return (0.0, EQUALITY_TOLERANCE)
-    return (0.0, None)  # No upper bound unless explicitly constrained elsewhere
+    rating_sqr = (branch / network.baseMVA)**2
+    return (0.0, rating_sqr)
 
 
 def init_flow_ij_sqr(m, b, s_m, s_o, p, network, params):
     branch = network.branches[b]
     if not branch.status:
         return 0.0
-    # use some nominal flow or historical data if available
-    return 0.01  # placeholder
+    return 0.01
 
 
 # Branch power flow, Fij slacks
@@ -115,8 +115,8 @@ def slack_flow_bounds(m, b, s_m, s_o, p, network, params):
     branch = network.branches[b]
     if not branch.status:
         return (0.0, EQUALITY_TOLERANCE)
-    rating = branch.rate / network.baseMVA
-    return (0.0, SIJ_VIOLATION_ALLOWED * rating)
+    rating_Sqr = (branch.rate / network.baseMVA) ** 2
+    return (0.0, SIJ_VIOLATION_ALLOWED * rating_Sqr)
 
 
 # Consumption, Pc

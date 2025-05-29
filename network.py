@@ -1165,21 +1165,14 @@ def _build_model_v2(network, params):
         model.sg_curt = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(sg_bounds, network=network, params=params), initialize=0.0)
 
     # - Branch power flows (squared) -- used in branch limits
-    model.flow_ij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    model.flow_ij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=partial(init_flow_ij_sqr, network=network, params=params), bounds=partial(flow_ij_sqr_bounds, network=network, params=params))
     if params.slacks.grid_operation.branch_flow:
-        model.slack_flow_ij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    for b in model.branches:
-        for s_m in model.scenarios_market:
-            for s_o in model.scenarios_operation:
-                for p in model.periods:
-                    if network.branches[b].status:
-                        if params.slacks.grid_operation.branch_flow:
-                            rating = network.branches[b].rate / network.baseMVA
-                            model.slack_flow_ij_sqr[b, s_m, s_o, p].setub(SIJ_VIOLATION_ALLOWED * rating)
-                    else:
-                        model.flow_ij_sqr[b, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                        if params.slacks.grid_operation.branch_flow:
-                            model.slack_flow_ij_sqr[b, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+        model.slack_flow_ij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(slack_flow_bounds, network=network, params=params))
+
+
+
+
+
 
     # - Loads
     model.pc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
