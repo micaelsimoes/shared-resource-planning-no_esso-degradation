@@ -552,3 +552,125 @@ def add_ess_usage(model, s_m, s_o, p, e, sch_var, sdch_var, penalty, baseMVA):
 def add_slack_squared(var):
     return var**2
 
+
+def compute_node_load(model, i, s_m, s_o, p, network, params):
+    Pd, Qd = 0.0, 0.0
+    node = network.nodes[i]
+
+    for c in model.loads:
+        load = network.loads[c]
+        if load.bus == node.bus_i:
+            Pd += model.pc[c, s_m, s_o, p]
+            Qd += model.qc[c, s_m, s_o, p]
+            if params.fl_reg and load.fl_reg:
+                Pd += model.flex_p_up[c, s_m, s_o, p] - model.flex_p_down[c, s_m, s_o, p]
+                Qd += model.flex_q_up[c, s_m, s_o, p] - model.flex_q_down[c, s_m, s_o, p]
+            if params.l_curt:
+                Pd -= model.pc_curt_down[c, s_m, s_o, p] - model.pc_curt_up[c, s_m, s_o, p]
+                Qd -= model.qc_curt_down[c, s_m, s_o, p] - model.qc_curt_up[c, s_m, s_o, p]
+
+    if params.es_reg:
+        for e in model.energy_storages:
+            es = network.energy_storages[e]
+            if es.bus == node.bus_i:
+                Pd += model.es_pch[e, s_m, s_o, p] - model.es_pdch[e, s_m, s_o, p]
+                Qd += model.es_qch[e, s_m, s_o, p] - model.es_qdch[e, s_m, s_o, p]
+
+    for e in model.shared_energy_storages:
+        es = network.shared_energy_storages[e]
+        if es.bus == node.bus_i:
+            Pd += model.shared_es_pch[e, s_m, s_o, p] - model.shared_es_pdch[e, s_m, s_o, p]
+            Qd += model.shared_es_qch[e, s_m, s_o, p] - model.shared_es_qdch[e, s_m, s_o, p]
+
+    return Pd, Qd
+
+
+def compute_node_gen(model, i, s_m, s_o, p, network):
+    Pg, Qg = 0.0, 0.0
+    node = network.nodes[i]
+    for g in model.generators:
+        gen = network.generators[g]
+        if gen.bus == node.bus_i:
+            Pg += model.pg[g, s_m, s_o, p]
+            Qg += model.qg[g, s_m, s_o, p]
+    return Pg, Qg
+
+
+def node_balance_p_rule(model, i, s_m, s_o, p, network, params):
+
+    Pd, _ = compute_node_load(model, i, s_m, s_o, p, network, params)
+    Pg, _ = compute_node_gen(model, i, s_m, s_o, p, network)
+
+    node = network.nodes[i]
+    ei = model.e_actual[i, s_m, s_o, p]
+    fi = model.f_actual[i, s_m, s_o, p]
+
+    Pi = node.gs * (ei**2 + fi**2)
+
+    for b in range(len(network.branches)):
+
+        branch = network.branches[b]
+        if branch.fbus != node.bus_i and branch.tbus != node.bus_i:
+            continue
+
+        rij = model.r[b, s_m, s_o, p] if branch.is_transformer else 1.0
+
+        # define from and to node indices
+        fnode_idx = network.get_node_idx(branch.fbus)
+        tnode_idx = network.get_node_idx(branch.tbus)
+        if branch.fbus == node.bus_i:
+            ei, fi = model.e_actual[fnode_idx, s_m, s_o, p], model.f_actual[fnode_idx, s_m, s_o, p]
+            ej, fj = model.e_actual[tnode_idx, s_m, s_o, p], model.f_actual[tnode_idx, s_m, s_o, p]
+        else:
+            ei, fi = model.e_actual[tnode_idx, s_m, s_o, p], model.f_actual[tnode_idx, s_m, s_o, p]
+            ej, fj = model.e_actual[fnode_idx, s_m, s_o, p], model.f_actual[fnode_idx, s_m, s_o, p]
+
+        Pi += branch.g * (ei**2 + fi**2) * rij**2
+        Pi -= rij * (branch.g * (ei * ej + fi * fj) + branch.b * (fi * ej - ei * fj))
+
+    if params.slacks.node_balance:
+        return Pg == Pd + Pi + model.slack_node_balance_p[i, s_m, s_o, p]
+    else:
+        return pe.inequality(Pg - EQUALITY_TOLERANCE, Pd + Pi, Pg + EQUALITY_TOLERANCE)
+
+
+def node_balance_q_rule(model, i, s_m, s_o, p, network, params):
+
+    _, Qd = compute_node_load(model, i, s_m, s_o, p, network, params)
+    _, Qg = compute_node_gen(model, i, s_m, s_o, p, network)
+
+    node = network.nodes[i]
+    ei = model.e_actual[i, s_m, s_o, p]
+    fi = model.f_actual[i, s_m, s_o, p]
+
+    # Shunt reactive power at bus
+    Qi = -node.bs * (ei**2 + fi**2)
+
+    for b in range(len(network.branches)):
+        branch = network.branches[b]
+        if branch.fbus != node.bus_i and branch.tbus != node.bus_i:
+            continue
+
+        rij = model.r[b, s_m, s_o, p] if branch.is_transformer else 1.0
+
+        fnode_idx = network.get_node_idx(branch.fbus)
+        tnode_idx = network.get_node_idx(branch.tbus)
+
+        if branch.fbus == node.bus_i:
+            ei, fi = model.e_actual[fnode_idx, s_m, s_o, p], model.f_actual[fnode_idx, s_m, s_o, p]
+            ej, fj = model.e_actual[tnode_idx, s_m, s_o, p], model.f_actual[tnode_idx, s_m, s_o, p]
+            shunt_term = (branch.b + branch.b_sh * 0.5) * (ei**2 + fi**2) * rij**2
+            flow_term = rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
+        else:
+            ei, fi = model.e_actual[tnode_idx, s_m, s_o, p], model.f_actual[tnode_idx, s_m, s_o, p]
+            ej, fj = model.e_actual[fnode_idx, s_m, s_o, p], model.f_actual[fnode_idx, s_m, s_o, p]
+            shunt_term = (branch.b + branch.b_sh * 0.5) * (ei**2 + fi**2)
+            flow_term = rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
+
+        Qi -= shunt_term
+        Qi += flow_term
+
+    if params.slacks.node_balance:
+        return Qg == Qd + Qi + model.slack_node_balance_q[i, s_m, s_o, p]
+    else:
+        return pe.inequality(Qg - EQUALITY_TOLERANCE, Qd + Qi, Qg + EQUALITY_TOLERANCE)
