@@ -1262,12 +1262,193 @@ def _build_model_v2(network, params):
     model.shared_energy_storage_qnet_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_qnet_rule)
 
     # - Node Balance constraints
-    model.node_balance_cons_p = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(node_balance_p_rule, network=network, params=params))
-    model.node_balance_cons_q = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(node_balance_q_rule, network=network, params=params))
+    model.node_balance_cons_p = pe.ConstraintList()
+    model.node_balance_cons_q = pe.ConstraintList()
+    for s_m in model.scenarios_market:
+        for s_o in model.scenarios_operation:
+            for p in model.periods:
+                for i in range(len(network.nodes)):
+
+                    node = network.nodes[i]
+
+                    Pd = 0.00
+                    Qd = 0.00
+                    for c in model.loads:
+                        if network.loads[c].bus == node.bus_i:
+                            Pd += model.pc[c, s_m, s_o, p]
+                            Qd += model.qc[c, s_m, s_o, p]
+                            if params.fl_reg and network.loads[c].fl_reg:
+                                Pd += (model.flex_p_up[c, s_m, s_o, p] - model.flex_p_down[c, s_m, s_o, p])
+                                Qd += (model.flex_q_up[c, s_m, s_o, p] - model.flex_q_down[c, s_m, s_o, p])
+                            if params.l_curt:
+                                Pd -= (model.pc_curt_down[c, s_m, s_o, p] - model.pc_curt_up[c, s_m, s_o, p])
+                                Qd -= (model.qc_curt_down[c, s_m, s_o, p] - model.qc_curt_up[c, s_m, s_o, p])
+                    if params.es_reg:
+                        for e in model.energy_storages:
+                            if network.energy_storages[e].bus == node.bus_i:
+                                Pd += (model.es_pch[e, s_m, s_o, p] - model.es_pdch[e, s_m, s_o, p])
+                                Qd += (model.es_qch[e, s_m, s_o, p] - model.es_qdch[e, s_m, s_o, p])
+                    for e in model.shared_energy_storages:
+                        if network.shared_energy_storages[e].bus == node.bus_i:
+                            Pd += (model.shared_es_pch[e, s_m, s_o, p] - model.shared_es_pdch[e, s_m, s_o, p])
+                            Qd += (model.shared_es_qch[e, s_m, s_o, p] - model.shared_es_qdch[e, s_m, s_o, p])
+
+                    Pg = 0.0
+                    Qg = 0.0
+                    for g in model.generators:
+                        generator = network.generators[g]
+                        if generator.bus == node.bus_i:
+                            Pg += model.pg[g, s_m, s_o, p]
+                            Qg += model.qg[g, s_m, s_o, p]
+
+                    ei = model.e_actual[i, s_m, s_o, p]
+                    fi = model.f_actual[i, s_m, s_o, p]
+
+                    Pi = node.gs * (ei ** 2 + fi ** 2)
+                    Qi = -node.bs * (ei ** 2 + fi ** 2)
+                    for b in range(len(network.branches)):
+                        branch = network.branches[b]
+                        if branch.fbus == node.bus_i or branch.tbus == node.bus_i:
+
+                            rij = model.r[b, s_m, s_o, p]
+                            if not branch.is_transformer:
+                                rij = 1.00
+
+                            if branch.fbus == node.bus_i:
+                                fnode_idx = network.get_node_idx(branch.fbus)
+                                tnode_idx = network.get_node_idx(branch.tbus)
+
+                                ei = model.e_actual[fnode_idx, s_m, s_o, p]
+                                fi = model.f_actual[fnode_idx, s_m, s_o, p]
+                                ej = model.e_actual[tnode_idx, s_m, s_o, p]
+                                fj = model.f_actual[tnode_idx, s_m, s_o, p]
+
+                                Pi += branch.g * (ei ** 2 + fi ** 2) * rij ** 2
+                                Pi -= rij * (branch.g * (ei * ej + fi * fj) + branch.b * (fi * ej - ei * fj))
+                                Qi -= (branch.b + branch.b_sh * 0.5) * (ei ** 2 + fi ** 2) * rij ** 2
+                                Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
+                            else:
+                                fnode_idx = network.get_node_idx(branch.tbus)
+                                tnode_idx = network.get_node_idx(branch.fbus)
+
+                                ei = model.e_actual[fnode_idx, s_m, s_o, p]
+                                fi = model.f_actual[fnode_idx, s_m, s_o, p]
+                                ej = model.e_actual[tnode_idx, s_m, s_o, p]
+                                fj = model.f_actual[tnode_idx, s_m, s_o, p]
+
+                                Pi += branch.g * (ei ** 2 + fi ** 2)
+                                Pi -= rij * (branch.g * (ei * ej + fi * fj) + branch.b * (fi * ej - ei * fj))
+                                Qi -= (branch.b + branch.b_sh * 0.5) * (ei ** 2 + fi ** 2)
+                                Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
+
+                    if params.slacks.node_balance:
+                        model.node_balance_cons_p.add(Pg == Pd + Pi + model.slack_node_balance_p[i, s_m, s_o, p])
+                        model.node_balance_cons_q.add(Qg == Qd + Qi + model.slack_node_balance_q[i, s_m, s_o, p])
+                    else:
+                        model.node_balance_cons_p.add(Pg <= Pd + Pi + EQUALITY_TOLERANCE)
+                        model.node_balance_cons_p.add(Pg >= Pd + Pi - EQUALITY_TOLERANCE)
+                        model.node_balance_cons_q.add(Qg <= Qd + Qi + EQUALITY_TOLERANCE)
+                        model.node_balance_cons_q.add(Qg >= Qd + Qi - EQUALITY_TOLERANCE)
 
     # - Branch Power Flow constraints
-    model.branch_flow_equation = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_flow_equation_rule, network=network, params=params))
-    model.branch_flow_limit = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_flow_limit_rule, network=network, params=params))
+    model.branch_power_flow_cons = pe.ConstraintList()
+    model.branch_power_flow_lims = pe.ConstraintList()
+    for s_m in model.scenarios_market:
+        for s_o in model.scenarios_operation:
+            for p in model.periods:
+                for b in model.branches:
+
+                    branch = network.branches[b]
+                    rating = branch.rate / network.baseMVA
+                    if rating == 0.0:
+                        rating = BRANCH_UNKNOWN_RATING
+                    fnode_idx = network.get_node_idx(branch.fbus)
+                    tnode_idx = network.get_node_idx(branch.tbus)
+
+                    rij = model.r[b, s_m, s_o, p]
+                    if not branch.is_transformer:
+                        rij = 1.00
+                    ei = model.e_actual[fnode_idx, s_m, s_o, p]
+                    fi = model.f_actual[fnode_idx, s_m, s_o, p]
+                    ej = model.e_actual[tnode_idx, s_m, s_o, p]
+                    fj = model.f_actual[tnode_idx, s_m, s_o, p]
+
+                    flow_ij_sqr = 0.00
+
+                    if params.branch_limit_type == BRANCH_LIMIT_CURRENT:
+
+                        bij_sh = branch.b_sh * 0.50
+
+                        iij_sqr = (branch.g ** 2 + branch.b ** 2) * (((rij ** 2) * ei - rij * ej) ** 2 + ((rij ** 2) * fi - rij * fj) ** 2)
+                        iij_sqr += bij_sh ** 2 * (ei ** 2 + fi ** 2)
+                        iij_sqr += 2 * branch.g * bij_sh * (((rij ** 2) * fi - rij * fj) * ei - ((rij ** 2) * ei - rij * ej) * fi)
+                        iij_sqr += 2 * branch.b * bij_sh * (((rij ** 2) * ei - rij * ej) * ei + ((rij ** 2) * fi - rij * fj) * fi)
+                        flow_ij_sqr = iij_sqr
+
+                        # Previous (approximation?)
+                        # iji_sqr = (branch.g ** 2 + branch.b ** 2) * ((ej - rij * ei) ** 2 + (fj - rij * fi) ** 2)
+                        # iji_sqr += bij_sh ** 2 * (ej ** 2 + fj ** 2)
+                        # iji_sqr += 2 * branch.g * bij_sh * ((fj - rij * fi) * ej - (ej - rij * ei) * fj)
+                        # iji_sqr += 2 * branch.b * bij_sh * ((ej - rij * ei) * ej + (fj - rij * fi) * fj)
+
+                    elif params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER:
+
+                        pij = branch.g * (ei ** 2 + fi ** 2) * rij ** 2
+                        pij -= branch.g * (ei * ej + fi * fj) * rij
+                        pij -= branch.b * (fi * ej - ei * fj) * rij
+                        qij = - (branch.b + branch.b_sh * 0.50) * (ei ** 2 + fi ** 2) * rij ** 2
+                        qij += branch.b * (ei * ej + fi * fj) * rij
+                        qij -= branch.g * (fi * ej - ei * fj) * rij
+                        sij_sqr = pij ** 2 + qij ** 2
+                        flow_ij_sqr = sij_sqr
+
+                        # Without rij
+                        # pji = branch.g * (ej ** 2 + fj ** 2)
+                        # pji -= branch.g * (ej * ei + fj * fi) * rij
+                        # pji -= branch.b * (fj * ei - ej * fi) * rij
+                        # qji = - (branch.b + branch.b_sh * 0.50) * (ej ** 2 + fj ** 2)
+                        # qji += branch.b * (ej * ei + fj * fi) * rij
+                        # qji -= branch.g * (fj * ei - ej * fi) * rij
+                        # sji_sqr = pji ** 2 + qji ** 2
+
+                    elif params.branch_limit_type == BRANCH_LIMIT_MIXED:
+
+                        if branch.is_transformer:
+                            pij = branch.g * (ei ** 2 + fi ** 2) * rij ** 2
+                            pij -= branch.g * (ei * ej + fi * fj) * rij
+                            pij -= branch.b * (fi * ej - ei * fj) * rij
+                            qij = - (branch.b + branch.b_sh * 0.50) * (ei ** 2 + fi ** 2) * rij ** 2
+                            qij += branch.b * (ei * ej + fi * fj) * rij
+                            qij -= branch.g * (fi * ej - ei * fj) * rij
+                            sij_sqr = pij ** 2 + qij ** 2
+                            flow_ij_sqr = sij_sqr
+                        else:
+                            bij_sh = branch.b_sh * 0.50
+                            iij_sqr = (branch.g ** 2 + branch.b ** 2) * (((rij ** 2) * ei - rij * ej) ** 2 + ((rij ** 2) * fi - rij * fj) ** 2)
+                            iij_sqr += bij_sh ** 2 * (ei ** 2 + fi ** 2)
+                            iij_sqr += 2 * branch.g * bij_sh * (((rij ** 2) * fi - rij * fj) * ei - ((rij ** 2) * ei - rij * ej) * fi)
+                            iij_sqr += 2 * branch.b * bij_sh * (((rij ** 2) * ei - rij * ej) * ei + ((rij ** 2) * fi - rij * fj) * fi)
+                            flow_ij_sqr = iij_sqr
+
+                    # Flow_ij, definition
+                    model.branch_power_flow_cons.add(model.flow_ij_sqr[b, s_m, s_o, p] <= flow_ij_sqr + EQUALITY_TOLERANCE)
+                    model.branch_power_flow_cons.add(model.flow_ij_sqr[b, s_m, s_o, p] >= flow_ij_sqr - EQUALITY_TOLERANCE)
+
+                    # Branch flow limits
+                    if branch.status:
+                        if params.slacks.grid_operation.branch_flow:
+                            model.branch_power_flow_lims.add(model.flow_ij_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_flow_ij_sqr[b, s_m, s_o, p])
+                        else:
+                            model.branch_power_flow_lims.add(model.flow_ij_sqr[b, s_m, s_o, p] <= rating ** 2)
+
+
+
+
+
+
+
+
+
 
     # ------------------------------------------------------------------------------------------------------------------
     # Costs (penalties)
