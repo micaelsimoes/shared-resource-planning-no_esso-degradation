@@ -2145,6 +2145,8 @@ def _run_smopf(network, model, params, from_warm_start=False):
         print("Displaying Infeasible Constraints")
         log_infeasible_constraints(model, log_expression=True, log_variables=True, logger=logging_logger)
 
+        exit(1)
+
     return result
 
 
