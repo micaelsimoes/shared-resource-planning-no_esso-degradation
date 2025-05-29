@@ -1264,10 +1264,6 @@ def _build_model_v2(network, params):
 
     # - Node Balance constraints
     # - Precompute load, generator, and storage mappings per node
-    loads_at_node = defaultdict(list)
-    gens_at_node = defaultdict(list)
-    ind_storages = defaultdict(list)
-    shared_storages = defaultdict(list)
     model.node_balance_cons_p = pe.ConstraintList()
     model.node_balance_cons_q = pe.ConstraintList()
     for s_m in model.scenarios_market:
@@ -1280,7 +1276,7 @@ def _build_model_v2(network, params):
                     fi = model.f_actual[i, s_m, s_o, p]
                     vi_sq = ei ** 2 + fi ** 2
 
-                    for c in loads_at_node[node.bus_i]:
+                    for c in network.loads:
                         Pd += model.pc[c, s_m, s_o, p]
                         Qd += model.qc[c, s_m, s_o, p]
 
@@ -1292,15 +1288,15 @@ def _build_model_v2(network, params):
                             Pd -= model.pc_curt_down[c, s_m, s_o, p] - model.pc_curt_up[c, s_m, s_o, p]
                             Qd -= model.qc_curt_down[c, s_m, s_o, p] - model.qc_curt_up[c, s_m, s_o, p]
 
-                    for e in ind_storages[node.bus_i]:
+                    for e in network.energy_storages:
                         Pd += model.es_pch[e, s_m, s_o, p] - model.es_pdch[e, s_m, s_o, p]
                         Qd += model.es_qch[e, s_m, s_o, p] - model.es_qdch[e, s_m, s_o, p]
 
-                    for e in shared_storages[node.bus_i]:
+                    for e in network.shared_energy_storages:
                         Pd += model.shared_es_pch[e, s_m, s_o, p] - model.shared_es_pdch[e, s_m, s_o, p]
                         Qd += model.shared_es_qch[e, s_m, s_o, p] - model.shared_es_qdch[e, s_m, s_o, p]
 
-                    for g in gens_at_node[node.bus_i]:
+                    for g in network.generators:
                         Pg += model.pg[g, s_m, s_o, p]
                         Qg += model.qg[g, s_m, s_o, p]
 
