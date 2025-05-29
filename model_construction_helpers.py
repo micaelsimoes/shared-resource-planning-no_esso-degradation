@@ -588,8 +588,10 @@ def add_slack_squared(var):
 
 
 def compute_node_load(model, i, s_m, s_o, p, network, params):
-    Pd, Qd = 0.0, 0.0
+
     node = network.nodes[i]
+
+    Pd, Qd = 0.0, 0.0
 
     for c in model.loads:
         load = network.loads[c]
