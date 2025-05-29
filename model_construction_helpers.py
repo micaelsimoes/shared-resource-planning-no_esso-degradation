@@ -631,7 +631,7 @@ def node_balance_p_rule(model, i, s_m, s_o, p, network, params):
     if params.slacks.node_balance:
         return Pg == Pd + Pi + model.slack_node_balance_p[i, s_m, s_o, p]
     else:
-        return pe.inequality(Pg - EQUALITY_TOLERANCE, Pd + Pi, Pg + EQUALITY_TOLERANCE)
+        return pe.inequality(EQUALITY_TOLERANCE, Pg - Pd - Pi, EQUALITY_TOLERANCE)
 
 
 def node_balance_q_rule(model, i, s_m, s_o, p, network, params):
@@ -673,4 +673,4 @@ def node_balance_q_rule(model, i, s_m, s_o, p, network, params):
     if params.slacks.node_balance:
         return Qg == Qd + Qi + model.slack_node_balance_q[i, s_m, s_o, p]
     else:
-        return pe.inequality(Qg - EQUALITY_TOLERANCE, Qd + Qi, Qg + EQUALITY_TOLERANCE)
+        return pe.inequality(EQUALITY_TOLERANCE, Qg - Qd - Qi, EQUALITY_TOLERANCE)
