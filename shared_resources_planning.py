@@ -1014,14 +1014,14 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                     model_year_day.expected_shared_ess_q[p].setlb(None)
 
                 # Update costs (penalties) for the coordination procedure
-                model_year_day.penalty_ess_usage.fix(0.00)
+                model_year_day.penalty_ess_usage.set_value(0.00)
                 if distribution_network.params.obj_type == OBJ_MIN_COST:
-                    model_year_day.cost_res_curtailment.fix(0.00)
-                    model_year_day.cost_load_curtailment.fix(COST_CONSUMPTION_CURTAILMENT)
+                    model_year_day.cost_res_curtailment.set_value(0.00)
+                    model_year_day.cost_load_curtailment.set_value(COST_CONSUMPTION_CURTAILMENT)
                 elif distribution_network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
-                    model_year_day.penalty_gen_curtailment.fix(0.00)
-                    model_year_day.penalty_load_curtailment.fix(PENALTY_LOAD_CURTAILMENT)
-                    model_year_day.penalty_flex_usage.fix(0.00)
+                    model_year_day.penalty_gen_curtailment.set_value(0.00)
+                    model_year_day.penalty_load_curtailment.set_value(PENALTY_LOAD_CURTAILMENT)
+                    model_year_day.penalty_flex_usage.set_value(0.00)
 
                 # Add ADMM variables
                 model_year_day.rho_v = pe.Var(domain=pe.NonNegativeReals)
