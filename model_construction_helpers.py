@@ -221,7 +221,7 @@ def s_bounds(e, network):
     return (0.0, network.energy_storages[e].s)
 
 
-def soc_initialize(m, e, network):
+def soc_initialize(m, e, s_m, s_o, p, network):
     return network.energy_storages[e].e_init
 
 
