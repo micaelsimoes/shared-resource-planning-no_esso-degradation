@@ -760,3 +760,20 @@ def branch_flow_limit_rule(model, b, s_m, s_o, p, network, params):
     else:
         return flow_var <= rating ** 2
 
+
+def setup_cost_parameters(model, params):
+
+    model.penalty_ess_usage = pe.Param(initialize=PENALTY_ESS_USAGE, mutable=True)
+
+    if params.obj_type == OBJ_MIN_COST:
+        model.cost_res_curtailment = pe.Param(initialize=COST_GENERATION_CURTAILMENT, mutable=True)
+        model.cost_load_curtailment = pe.Param(initialize=COST_CONSUMPTION_CURTAILMENT, mutable=True)
+
+    elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
+        model.penalty_gen_curtailment = pe.Param(initialize=PENALTY_GENERATION_CURTAILMENT, mutable=True)
+        model.penalty_load_curtailment = pe.Param(initialize=PENALTY_LOAD_CURTAILMENT, mutable=True)
+        model.penalty_flex_usage = pe.Param(initialize=PENALTY_FLEXIBILITY_USAGE, mutable=True)
+
+    else:
+        raise ValueError(f"[ERROR] Unrecognized or invalid objective type: {params.obj_type}.")
+

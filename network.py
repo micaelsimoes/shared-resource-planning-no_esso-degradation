@@ -1275,24 +1275,7 @@ def _build_model_v2(network, params):
 
     # ------------------------------------------------------------------------------------------------------------------
     # Costs (penalties)
-    # Note: defined as variables (bus fixed) so that they can be changed later, if needed
-    model.penalty_ess_usage = pe.Var(domain=pe.NonNegativeReals)
-    model.penalty_ess_usage.fix(PENALTY_ESS_USAGE)
-    if params.obj_type == OBJ_MIN_COST:
-        model.cost_res_curtailment = pe.Var(domain=pe.NonNegativeReals)
-        model.cost_load_curtailment = pe.Var(domain=pe.NonNegativeReals)
-        model.cost_res_curtailment.fix(COST_GENERATION_CURTAILMENT)
-        model.cost_load_curtailment.fix(COST_CONSUMPTION_CURTAILMENT)
-    elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
-        model.penalty_gen_curtailment = pe.Var(domain=pe.NonNegativeReals)
-        model.penalty_load_curtailment = pe.Var(domain=pe.NonNegativeReals)
-        model.penalty_flex_usage = pe.Var(domain=pe.NonNegativeReals)
-        model.penalty_gen_curtailment.fix(PENALTY_GENERATION_CURTAILMENT)
-        model.penalty_load_curtailment.fix(PENALTY_LOAD_CURTAILMENT)
-        model.penalty_flex_usage.fix(PENALTY_FLEXIBILITY_USAGE)
-    else:
-        print(f'[ERROR] Unrecognized or invalid objective. Objective = {params.obj_type}. Exiting...')
-        exit(ERROR_NETWORK_MODEL)
+    setup_cost_parameters(model, params)
 
     # Objective Function
     obj = 0.0
