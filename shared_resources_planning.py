@@ -1297,7 +1297,7 @@ def update_shared_energy_storages_coordination_model_and_solve(planning_problem,
         rho_esso = params.rho['ess']['esso']
         if params.adaptive_penalty:
             rho_esso = pe.value(model.rho) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-        fix_or_set(model.rho, rho_esso)
+        model.rho.set_value(rho_esso)
 
         for y in models[node_id].years:
             year = years[y]
