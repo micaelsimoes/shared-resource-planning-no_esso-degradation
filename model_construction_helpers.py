@@ -298,8 +298,6 @@ def sg_sqr_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable():
         return pe.Constraint.Skip
-    if params.slacks.generation.sg_sqr:
-        return m.sg_sqr[g, s_m, s_o, p] == m.pg[g, s_m, s_o, p] ** 2 + m.qg[g, s_m, s_o, p] ** 2 + m.slack_sg_sqr_up[g, s_m, s_o, p] - m.slack_sg_sqr_down[g, s_m, s_o, p]
     return pe.inequality(-EQUALITY_TOLERANCE, m.sg_sqr[g, s_m, s_o, p] - (m.pg[g, s_m, s_o, p]**2 + m.qg[g, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
 
 
@@ -308,8 +306,6 @@ def sg_abs_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable():
         return pe.Constraint.Skip
-    if params.slacks.generation.sg_abs:
-        return m.sg_abs[g, s_m, s_o, p]**2 == m.sg_sqr[g, s_m, s_o, p] + m.slack_sg_abs_up[g, s_m, s_o, p] - m.slack_sg_abs_down[g, s_m, s_o, p]
     return  pe.inequality(-EQUALITY_TOLERANCE, m.sg_abs[g, s_m, s_o, p]**2 - m.sg_sqr[g, s_m, s_o, p], EQUALITY_TOLERANCE)
 
 
@@ -321,8 +317,6 @@ def sg_curtailment_rule(m, g, s_m, s_o, p, network, params):
     init_sg = 0.0
     if generator.status[p]:
         init_sg = sqrt(generator.pg[s_o][p]**2 + generator.qg[s_o][p]**2)
-    if params.slacks.generation.sg_curt:
-        return m.sg_abs[g, s_m, s_o, p] == init_sg - m.sg_curt[g, s_m, s_o, p] + m.slack_sg_curt_up[g, s_m, s_o, p] - m.slack_sg_curt_down[g, s_m, s_o, p]
     return pe.inequality(-EQUALITY_TOLERANCE, m.sg_abs[g, s_m, s_o, p] - (init_sg - m.sg_curt[g, s_m, s_o, p]), EQUALITY_TOLERANCE)
 
 
@@ -999,16 +993,6 @@ def slack_penalties(model, network, s_m, s_o, params):
                 total += base * PENALTY_NODE_BALANCE * (
                     model.slack_node_balance_p[i, s_m, s_o, p]**2 + model.slack_node_balance_q[i, s_m, s_o, p]**2
                 )
-
-    if params.rg_curt:
-        for g in model.generators:
-            if network.generators[g].is_curtaillable():
-                if params.slacks.generation.sg_sqr:
-                    total += base * PENALTY_GENERATION * (model.slack_sg_sqr_up[g, s_m, s_o, p] + model.slack_sg_sqr_down[g, s_m, s_o, p])
-                if params.slacks.generation.sg_abs:
-                    total += base * PENALTY_GENERATION * (model.slack_sg_abs_up[g, s_m, s_o, p] + model.slack_sg_abs_down[g, s_m, s_o, p])
-                if params.slacks.generation.sg_abs:
-                    total += base * PENALTY_GENERATION * (model.slack_sg_curt_up[g, s_m, s_o, p] + model.slack_sg_curt_down[g, s_m, s_o, p])
 
     if params.fl_reg and params.slacks.flexibility.day_balance:
         total += base * PENALTY_FLEXIBILITY * sum(

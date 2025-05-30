@@ -72,14 +72,6 @@ class SlacksFlexibility:
                 self.day_balance = slacks_data['flexibility']['day_balance']
 
 
-class SlacksGeneration:
-
-    def __init__(self):
-        self.sg_sqr = True
-        self.sg_abs = True
-        self.sg_curt = True
-
-
 class SlacksEnergyStorage:
 
     def __init__(self):
