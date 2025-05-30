@@ -1025,38 +1025,38 @@ def slack_penalties(model, network, s_m, s_o, params):
 def process_single_dso(node_id, distribution_network, candidate_solution, consensus_vars):
 
     distribution_network.update_data_with_candidate_solution(candidate_solution)
-    model = distribution_network.build_model()
-    distribution_network.update_model_with_candidate_solution(model, candidate_solution)
+    models = distribution_network.build_model()
+    distribution_network.update_model_with_candidate_solution(models, candidate_solution)
 
     # Add expected interface variables and regularization
     for year in distribution_network.years:
         for day in distribution_network.days:
             network = distribution_network.network[year][day]
-            model = model[year][day]
-            omega = compute_omega(network, model)
+            model_yd = models[year][day]
+            omega = compute_omega(network, model_yd)
 
-            add_expected_interface_vars(model, network, omega)
-            add_regularization_to_objective(model, network, omega)
+            add_expected_interface_vars(model_yd, network, omega)
+            add_regularization_to_objective(model_yd, network, omega)
 
     # Solve model
-    result = distribution_network.optimize(model)
+    result = distribution_network.optimize(models)
 
-    # Extract expected values into consensus variables
+    #  Extract expected values into consensus variables
     for year in distribution_network.years:
         for day in distribution_network.days:
-            model = model[year][day]
+            model_yd = models[year][day]
             network = distribution_network.network[year][day]
             ref_node_id = network.get_reference_node_id()
             s_base = network.baseMVA
             v_base = network.get_node_base_kv(ref_node_id)
-            for p in model.periods:
-                consensus_vars['v_sqr']['dso']['current'][node_id][year][day][p] = pe.value(model.expected_interface_vmag_sqr[p]) * v_base ** 2
-                consensus_vars['pf']['dso']['current'][node_id][year][day]['p'][p] = pe.value(model.expected_interface_pf_p[p]) * s_base
-                consensus_vars['pf']['dso']['current'][node_id][year][day]['q'][p] = pe.value(model.expected_interface_pf_q[p]) * s_base
-                consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] = pe.value(model.expected_shared_ess_p[p]) * s_base
-                consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] = pe.value(model.expected_shared_ess_q[p]) * s_base
+            for p in model_yd.periods:
+                consensus_vars['v_sqr']['dso']['current'][node_id][year][day][p] = pe.value(model_yd.expected_interface_vmag_sqr[p]) * v_base ** 2
+                consensus_vars['pf']['dso']['current'][node_id][year][day]['p'][p] = pe.value(model_yd.expected_interface_pf_p[p]) * s_base
+                consensus_vars['pf']['dso']['current'][node_id][year][day]['q'][p] = pe.value(model_yd.expected_interface_pf_q[p]) * s_base
+                consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] = pe.value(model_yd.expected_shared_ess_p[p]) * s_base
+                consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] = pe.value(model_yd.expected_shared_ess_q[p]) * s_base
 
-    return node_id, model, result
+    return node_id, models, result
 
 
 def compute_omega(network, model_yd):
