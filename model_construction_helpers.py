@@ -322,7 +322,7 @@ def sg_curtailment_rule(m, g, s_m, s_o, p, network, params):
     if generator.status[p]:
         init_sg = sqrt(generator.pg[s_o][p]**2 + generator.qg[s_o][p]**2)
     if params.slacks.generation.sg_curt:
-        return m.sg_abs[g, s_m, s_o, p] == init_sg - m.sg_curt[g, s_m, s_o, p] + m.slack_sg_curt[g, s_m, s_o, p]
+        return m.sg_abs[g, s_m, s_o, p] == init_sg - m.sg_curt[g, s_m, s_o, p] + m.slack_sg_curt_up[g, s_m, s_o, p] - m.slack_sg_curt_down[g, s_m, s_o, p]
     return pe.inequality(-EQUALITY_TOLERANCE, m.sg_abs[g, s_m, s_o, p] - (init_sg - m.sg_curt[g, s_m, s_o, p]), EQUALITY_TOLERANCE)
 
 
