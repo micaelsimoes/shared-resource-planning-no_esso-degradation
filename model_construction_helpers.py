@@ -309,7 +309,7 @@ def sg_abs_rule(m, g, s_m, s_o, p, network, params):
     if not generator.is_curtaillable():
         return pe.Constraint.Skip
     if params.slacks.generation.sg_abs:
-        return m.sg_abs[g, s_m, s_o, p]**2 == m.sg_sqr[g, s_m, s_o, p] + m.slack_sg_abs[g, s_m, s_o, p]
+        return m.sg_abs[g, s_m, s_o, p]**2 == m.sg_sqr[g, s_m, s_o, p] + m.slack_sg_abs_up[g, s_m, s_o, p] - m.slack_sg_abs_down[g, s_m, s_o, p]
     return  pe.inequality(-EQUALITY_TOLERANCE, m.sg_abs[g, s_m, s_o, p]**2 - m.sg_sqr[g, s_m, s_o, p], EQUALITY_TOLERANCE)
 
 
