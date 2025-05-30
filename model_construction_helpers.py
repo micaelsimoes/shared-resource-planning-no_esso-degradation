@@ -299,7 +299,7 @@ def sg_sqr_rule(m, g, s_m, s_o, p, network, params):
     if not generator.is_curtaillable():
         return pe.Constraint.Skip
     if params.slacks.generation.sg_sqr:
-        return m.sg_sqr[g, s_m, s_o, p] == m.pg[g, s_m, s_o, p] ** 2 + m.qg[g, s_m, s_o, p] ** 2 + m.slack_sg_sqr[g, s_m, s_o, p]
+        return m.sg_sqr[g, s_m, s_o, p] == m.pg[g, s_m, s_o, p] ** 2 + m.qg[g, s_m, s_o, p] ** 2 + m.slack_sg_sqr_up[g, s_m, s_o, p] - m.slack_sg_sqr_down[g, s_m, s_o, p]
     return pe.inequality(-EQUALITY_TOLERANCE, m.sg_sqr[g, s_m, s_o, p] - (m.pg[g, s_m, s_o, p]**2 + m.qg[g, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
 
 
