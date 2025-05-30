@@ -85,7 +85,7 @@ def sg_slack_bounds(m, g, s_m, s_o, p, network):
     if gen.is_curtaillable() and gen.status[p]:
         sg = (gen.qmin ** 2 + gen.qmax ** 2) ** 0.5
         return (0.00, sg * 0.05)
-    return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
+    return (0.00, EQUALITY_TOLERANCE)
 
 
 def sg_sqr_slack_bounds(m, g, s_m, s_o, p, network):
@@ -93,7 +93,7 @@ def sg_sqr_slack_bounds(m, g, s_m, s_o, p, network):
     if gen.is_curtaillable() and gen.status[p]:
         sg_sqr = (gen.qmin ** 2 + gen.qmax ** 2)
         return (0.00, sg_sqr * 0.05)
-    return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
+    return (0.00, EQUALITY_TOLERANCE)
 
 
 # Generation, Sg^2
