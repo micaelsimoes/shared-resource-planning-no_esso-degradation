@@ -1157,12 +1157,12 @@ def _build_model(network, params):
     model.qg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(qg_bounds, network=network), initialize=partial(qg_init, network=network))
     if params.rg_curt:
         model.sg_abs = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(sg_bounds, network=network, params=params), initialize=0.0)
+        model.sg_sqr = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(sg_sqr_bounds, network=network, params=params), initialize=0.0)
+        model.sg_curt = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(sg_bounds, network=network, params=params), initialize=0.0)
         if params.slacks.generation.sg_abs:
             model.slack_sg_abs = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(sg_slack_bounds, network=network), initialize=0.0)
-        model.sg_sqr = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(sg_sqr_bounds, network=network, params=params), initialize=0.0)
         if params.slacks.generation.sg_sqr:
             model.slack_sg_sqr = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(sg_sqr_slack_bounds, network=network), initialize=0.0)
-        model.sg_curt = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(sg_bounds, network=network, params=params), initialize=0.0)
         if params.slacks.generation.sg_curt:
             model.slack_sg_curt = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(sg_slack_bounds, network=network), initialize=0.0)
 
@@ -1229,7 +1229,7 @@ def _build_model(network, params):
     # - Generation
     if params.rg_curt:
         model.sg_sqr_def = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_sqr_rule, network=network, params=params))
-        model.sg_abs_def = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_abs_rule, network=network))
+        model.sg_abs_def = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_abs_rule, network=network, params=params))
         model.sg_curt_def = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_curtailment_rule, network=network))
         model.gen_pf_upper = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(power_factor_rule_upper, network=network))
         model.gen_pf_lower = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(power_factor_rule_lower, network=network))
