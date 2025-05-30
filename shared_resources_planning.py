@@ -1194,7 +1194,7 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
     res = transmission_network.optimize(model, from_warm_start=from_warm_start)
     for year in transmission_network.years:
         for day in transmission_network.days:
-            if res[year][day].solver.status == po.SolverStatus.error:
+            if res and res[year][day].solver.status == po.SolverStatus.error:
                 print(f'[ERROR] Network {model_year_day.name} did not converge!')
                 # exit(ERROR_NETWORK_OPTIMIZATION)
     return res
