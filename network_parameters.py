@@ -34,7 +34,6 @@ class Slacks:
     def __init__(self):
         self.grid_operation = SlacksOperation()
         self.flexibility = SlacksFlexibility()
-        self.generation = SlacksGeneration()
         self.ess = SlacksEnergyStorage()
         self.shared_ess = SlacksEnergyStorage()
         self.node_balance = False
