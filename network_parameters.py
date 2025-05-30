@@ -34,6 +34,7 @@ class Slacks:
     def __init__(self):
         self.grid_operation = SlacksOperation()
         self.flexibility = SlacksFlexibility()
+        self.generation = SlacksGeneration()
         self.ess = SlacksEnergyStorage()
         self.shared_ess = SlacksEnergyStorage()
         self.node_balance = False
@@ -69,6 +70,14 @@ class SlacksFlexibility:
         if 'flexibility' in slacks_data:
             if 'day_balance' in slacks_data['flexibility']:
                 self.day_balance = slacks_data['flexibility']['day_balance']
+
+
+class SlacksGeneration:
+
+    def __init__(self):
+        self.sg_sqr = False
+        self.sg_abs = False
+        self.sg_curt = False
 
 
 class SlacksEnergyStorage:

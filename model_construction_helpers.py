@@ -80,6 +80,22 @@ def sg_bounds(m, g, s_m, s_o, p, network, params):
     return (0.0, sg)
 
 
+def sg_slack_bounds(m, g, s_m, s_o, p, network):
+    gen = network.generators[g]
+    if gen.is_curtaillable() and gen.status[p]:
+        sg = (gen.qmin ** 2 + gen.qmax ** 2) ** 0.5
+        return (-sg * 0.05, sg * 0.05)
+    return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
+
+
+def sg_sqr_slack_bounds(m, g, s_m, s_o, p, network):
+    gen = network.generators[g]
+    if gen.is_curtaillable() and gen.status[p]:
+        sg_sqr = (gen.qmin ** 2 + gen.qmax ** 2)
+        return (-sg_sqr * 0.05, sg_sqr * 0.05)
+    return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
+
+
 # Generation, Sg^2
 def sg_sqr_bounds(m, g, s_m, s_o, p, network, params):
 
@@ -282,25 +298,31 @@ def sg_sqr_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable():
         return pe.Constraint.Skip
+    if params.slacks.generation.sg_sqr:
+        return m.sg_sqr[g, s_m, s_o, p] == m.pg[g, s_m, s_o, p] ** 2 + m.qg[g, s_m, s_o, p] ** 2 + m.slack_sg_sqr[g, s_m, s_o, p]
     return pe.inequality(-EQUALITY_TOLERANCE, m.sg_sqr[g, s_m, s_o, p] - (m.pg[g, s_m, s_o, p]**2 + m.qg[g, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
 
 
 # sg_abs² ≈ sg_sqr
-def sg_abs_rule(m, g, s_m, s_o, p, network):
+def sg_abs_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable():
         return pe.Constraint.Skip
+    if params.slacks.generation.sg_abs:
+        return m.sg_abs[g, s_m, s_o, p]**2 == m.sg_sqr[g, s_m, s_o, p] + m.slack_sg_abs[g, s_m, s_o, p]
     return  pe.inequality(-EQUALITY_TOLERANCE, m.sg_abs[g, s_m, s_o, p]**2 - m.sg_sqr[g, s_m, s_o, p], EQUALITY_TOLERANCE)
 
 
 # Curtailment: sg_abs = init_sg - sg_curt
-def sg_curtailment_rule(m, g, s_m, s_o, p, network):
+def sg_curtailment_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable():
         return pe.Constraint.Skip
     init_sg = 0.0
     if generator.status[p]:
         init_sg = sqrt(generator.pg[s_o][p]**2 + generator.qg[s_o][p]**2)
+    if params.slacks.generation.sg_curt:
+        return m.sg_abs[g, s_m, s_o, p] == init_sg - m.sg_curt[g, s_m, s_o, p] + m.slack_sg_curt[g, s_m, s_o, p]
     return pe.inequality(-EQUALITY_TOLERANCE, m.sg_abs[g, s_m, s_o, p] - (init_sg - m.sg_curt[g, s_m, s_o, p]), EQUALITY_TOLERANCE)
 
 
