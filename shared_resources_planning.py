@@ -164,7 +164,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         if operational_convergence:
             upper_bound = planning_problem.get_upper_bound(lower_level_models['tso'])
         upper_bound = min(min(upper_bound_evolution), upper_bound)
-        upper_bound_evolution.append(upper_bound
+        upper_bound_evolution.append(upper_bound)
         if debug_flag:
             print_memory_usage(f"After subproblem (iter {iter})")
 
