@@ -1021,3 +1021,92 @@ def slack_penalties(model, network, s_m, s_o, params):
 
     return total
 
+
+def process_single_dso(node_id, distribution_network, candidate_solution, consensus_vars):
+
+    distribution_network.update_data_with_candidate_solution(candidate_solution)
+    model = distribution_network.build_model()
+    distribution_network.update_model_with_candidate_solution(model, candidate_solution)
+
+    # Add expected interface variables and regularization
+    for year in distribution_network.years:
+        for day in distribution_network.days:
+            network = distribution_network.network[year][day]
+            model = model[year][day]
+            omega = compute_omega(network, model)
+
+            add_expected_interface_vars(model, network, omega)
+            add_regularization_to_objective(model, network, omega)
+
+    # Solve model
+    result = distribution_network.optimize(model)
+
+    # Extract expected values into consensus variables
+    for year in distribution_network.years:
+        for day in distribution_network.days:
+            model = model[year][day]
+            network = distribution_network.network[year][day]
+            ref_node_id = network.get_reference_node_id()
+            s_base = network.baseMVA
+            v_base = network.get_node_base_kv(ref_node_id)
+            for p in model.periods:
+                consensus_vars['v_sqr']['dso']['current'][node_id][year][day][p] = pe.value(model.expected_interface_vmag_sqr[p]) * v_base ** 2
+                consensus_vars['pf']['dso']['current'][node_id][year][day]['p'][p] = pe.value(model.expected_interface_pf_p[p]) * s_base
+                consensus_vars['pf']['dso']['current'][node_id][year][day]['q'][p] = pe.value(model.expected_interface_pf_q[p]) * s_base
+                consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] = pe.value(model.expected_shared_ess_p[p]) * s_base
+                consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] = pe.value(model.expected_shared_ess_q[p]) * s_base
+
+    return node_id, model, result
+
+
+def compute_omega(network, model_yd):
+    return {
+        (s_m, s_o): network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
+        for s_m in model_yd.scenarios_market
+        for s_o in model_yd.scenarios_operation
+    }
+
+
+def add_expected_interface_vars(model, network, omega):
+
+    ref_node_id = network.get_reference_node_id()
+    ref_node_idx = network.get_node_idx(ref_node_id)
+    ref_gen_idx = network.get_reference_gen_idx()
+    shared_ess_idx = network.get_shared_energy_storage_idx(ref_node_id)
+
+    model.expected_interface_vmag_sqr = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=1.00)
+    model.expected_interface_pf_p = pe.Var(model.periods, domain=pe.Reals, initialize=0.00)
+    model.expected_interface_pf_q = pe.Var(model.periods, domain=pe.Reals, initialize=0.00)
+    model.expected_shared_ess_p = pe.Var(model.periods, domain=pe.Reals, initialize=0.00)
+    model.expected_shared_ess_q = pe.Var(model.periods, domain=pe.Reals, initialize=0.00)
+
+    model.interface_expected_values = pe.ConstraintList()
+    for p in model.periods:
+        model.interface_expected_values.add(model.expected_interface_vmag_sqr[p] == pe.quicksum(omega[s_m, s_o] * model.e[ref_node_idx, s_m, s_o, p] ** 2 for s_m, s_o in omega))
+        model.interface_expected_values.add(model.expected_interface_pf_p[p] == pe.quicksum(omega[s_m, s_o] * model.pg[ref_gen_idx, s_m, s_o, p] for s_m, s_o in omega))
+        model.interface_expected_values.add(model.expected_interface_pf_q[p] == pe.quicksum(omega[s_m, s_o] * model.qg[ref_gen_idx, s_m, s_o, p] for s_m, s_o in omega))
+        model.interface_expected_values.add(model.expected_shared_ess_p[p] == pe.quicksum(omega[s_m, s_o] * model.shared_es_pnet[shared_ess_idx, s_m, s_o, p] for s_m, s_o in omega))
+        model.interface_expected_values.add(model.expected_shared_ess_q[p] == pe.quicksum(omega[s_m, s_o] * model.shared_es_qnet[shared_ess_idx, s_m, s_o, p] for s_m, s_o in omega))
+
+
+def add_regularization_to_objective(model, network, omega):
+
+    s_base = network.baseMVA
+    ref_node_id = network.get_reference_node_id()
+    ref_node_idx = network.get_node_idx(ref_node_id)
+    ref_gen_idx = network.get_reference_gen_idx()
+    shared_ess_idx = network.get_shared_energy_storage_idx(ref_node_id)
+
+    reg_terms = []
+    for s_m, s_o in omega:
+        for p in model.periods:
+            reg_terms.append((model.e[ref_node_idx, s_m, s_o, p] ** 2 - model.expected_interface_vmag_sqr[p]) ** 2)
+            reg_terms.append(s_base * (model.pg[ref_gen_idx, s_m, s_o, p] - model.expected_interface_pf_p[p]) ** 2)
+            reg_terms.append(s_base * (model.qg[ref_gen_idx, s_m, s_o, p] - model.expected_interface_pf_q[p]) ** 2)
+            reg_terms.append(s_base * (model.shared_es_pnet[shared_ess_idx, s_m, s_o, p] - model.expected_shared_ess_p[p]) ** 2)
+            reg_terms.append(s_base * (model.shared_es_qnet[shared_ess_idx, s_m, s_o, p] - model.expected_shared_ess_q[p]) ** 2)
+
+    model.penalty_regularization = pe.Var(domain=pe.NonNegativeReals)
+    model.penalty_regularization.fix(PENALTY_REGULARIZATION)
+
+    model.objective.expr += model.penalty_regularization * pe.quicksum(reg_terms)

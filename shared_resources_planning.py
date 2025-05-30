@@ -8,11 +8,13 @@ import matplotlib.pyplot as plt
 import pyomo.opt as po
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill
+from concurrent.futures import ThreadPoolExecutor
 from network_data import NetworkData
 from load import Load
 from shared_energy_storage import SharedEnergyStorage
 from planning_parameters import PlanningParameters
 from shared_energy_storage_data import SharedEnergyStorageData
+from model_construction_helpers import *
 from helper_functions import *
 
 
@@ -295,8 +297,8 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     # ------------------------------------------------------------------------------------------------------------------
     # ADMM -- Main cycle
     # ------------------------------------------------------------------------------------------------------------------
-    convergence, iter = False, 1
-    for iter in range(iter, admm_parameters.num_max_iters + 1):
+    convergence = False
+    for iter in range(1, admm_parameters.num_max_iters + 1):
 
         print(f'[INFO]\t - ADMM. Iter {iter}...')
         print_memory_usage(f"ADMM Iteration {iter} Start")
@@ -560,100 +562,13 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
     dso_models = dict()
     results = dict()
 
-    for node_id in distribution_networks:
-
-        distribution_network = distribution_networks[node_id]
-
-        # Build model, fix candidate solution
-        distribution_network.update_data_with_candidate_solution(candidate_solution)
-        dso_model = distribution_network.build_model()
-        distribution_network.update_model_with_candidate_solution(dso_model, candidate_solution)
-
-        # Update model with expected interface values
-        for year in distribution_network.years:
-            for day in distribution_network.days:
-
-                network = distribution_network.network[year][day]
-                model_year_day = dso_model[year][day]
-
-                ref_node_id = network.get_reference_node_id()
-                ref_node_idx = network.get_node_idx(ref_node_id)
-                ref_gen_idx = network.get_reference_gen_idx()
-                shared_ess_idx = network.get_shared_energy_storage_idx(ref_node_id)
-
-                # Scenario weights
-                omega = {
-                    (s_m, s_o): network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
-                    for s_m in model_year_day.scenarios_market
-                    for s_o in model_year_day.scenarios_operation
-                }
-
-                # Add interface expected variables
-                model_year_day.expected_interface_vmag_sqr = pe.Var(model_year_day.periods, domain=pe.NonNegativeReals, initialize=1.00)
-                model_year_day.expected_interface_pf_p = pe.Var(model_year_day.periods, domain=pe.Reals, initialize=0.00)
-                model_year_day.expected_interface_pf_q = pe.Var(model_year_day.periods, domain=pe.Reals, initialize=0.00)
-                model_year_day.expected_shared_ess_p = pe.Var(model_year_day.periods, domain=pe.Reals, initialize=0.00)
-                model_year_day.expected_shared_ess_q = pe.Var(model_year_day.periods, domain=pe.Reals, initialize=0.00)
-                model_year_day.interface_expected_values = pe.ConstraintList()
-                for p in dso_model[year][day].periods:
-                    model_year_day.interface_expected_values.add(model_year_day.expected_interface_vmag_sqr[p] == pe.quicksum(omega[s_m, s_o] * model_year_day.e[ref_node_idx, s_m, s_o, p] ** 2 for s_m, s_o in omega))
-                    model_year_day.interface_expected_values.add(model_year_day.expected_interface_pf_p[p] == pe.quicksum(omega[s_m, s_o] * model_year_day.pg[ref_gen_idx, s_m, s_o, p] for s_m, s_o in omega))
-                    model_year_day.interface_expected_values.add(model_year_day.expected_interface_pf_q[p] == pe.quicksum(omega[s_m, s_o] * model_year_day.qg[ref_gen_idx, s_m, s_o, p] for s_m, s_o in omega))
-                    model_year_day.interface_expected_values.add(model_year_day.expected_shared_ess_p[p] == pe.quicksum(omega[s_m, s_o] * model_year_day.shared_es_pnet[shared_ess_idx, s_m, s_o, p] for s_m, s_o in omega))
-                    model_year_day.interface_expected_values.add(model_year_day.expected_shared_ess_q[p] == pe.quicksum(omega[s_m, s_o] * model_year_day.shared_es_qnet[shared_ess_idx, s_m, s_o, p] for s_m, s_o in omega))
-
-        # Regularization -- Added to OF to minimize deviations from scenarios to expected values
-        for year in distribution_network.years:
-            for day in distribution_network.days:
-
-                network = distribution_network.network[year][day]
-                model_year_day = dso_model[year][day]
-                s_base = network.baseMVA
-
-                ref_node_id = network.get_reference_node_id()
-                ref_node_idx = network.get_node_idx(ref_node_id)
-                ref_gen_idx = network.get_reference_gen_idx()
-                shared_ess_idx = network.get_shared_energy_storage_idx(ref_node_id)
-
-                omega = {
-                    (s_m, s_o): network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
-                    for s_m in model_year_day.scenarios_market
-                    for s_o in model_year_day.scenarios_operation
-                }
-
-                reg_terms = []
-                model_year_day.penalty_regularization = pe.Var(domain=pe.NonNegativeReals)
-                model_year_day.penalty_regularization.fix(PENALTY_REGULARIZATION)
-                for s_m, s_o in omega:
-                    for p in model_year_day.periods:
-                        reg_terms.append((model_year_day.e[ref_node_idx, s_m, s_o, p] ** 2 - model_year_day.expected_interface_vmag_sqr[p]) ** 2)
-                        reg_terms.append(s_base * (model_year_day.pg[ref_gen_idx, s_m, s_o, p] - model_year_day.expected_interface_pf_p[p]) ** 2)
-                        reg_terms.append(s_base * (model_year_day.qg[ref_gen_idx, s_m, s_o, p] - model_year_day.expected_interface_pf_q[p]) ** 2)
-                        reg_terms.append(s_base * (model_year_day.shared_es_pnet[shared_ess_idx, s_m, s_o, p] - model_year_day.expected_shared_ess_p[p]) ** 2)
-                        reg_terms.append(s_base * (model_year_day.shared_es_qnet[shared_ess_idx, s_m, s_o, p] - model_year_day.expected_shared_ess_q[p]) ** 2)
-
-                # Apply regularization to objective
-                model_year_day.objective.expr += model_year_day.penalty_regularization * pe.quicksum(reg_terms)
-
-        # Run SMOPF
-        results[node_id] = distribution_network.optimize(dso_model)
-
-        # Get initial interface and shared ESS values
-        for year in distribution_network.years:
-            for day in distribution_network.days:
-                model_year_day = dso_model[year][day]
-                network = distribution_network.network[year][day]
-                ref_node_id = network.get_reference_node_id()
-                s_base = distribution_network.network[year][day].baseMVA
-                v_base = distribution_network.network[year][day].get_node_base_kv(ref_node_id)
-                for p in model_year_day.periods:
-                    consensus_vars['v_sqr']['dso']['current'][node_id][year][day][p] = pe.value(model_year_day.expected_interface_vmag_sqr[p]) * v_base**2
-                    consensus_vars['pf']['dso']['current'][node_id][year][day]['p'][p] = pe.value(model_year_day.expected_interface_pf_p[p]) * s_base
-                    consensus_vars['pf']['dso']['current'][node_id][year][day]['q'][p] = pe.value(model_year_day.expected_interface_pf_q[p]) * s_base
-                    consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] = pe.value(model_year_day.expected_shared_ess_p[p]) * s_base
-                    consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] = pe.value(model_year_day.expected_shared_ess_q[p]) * s_base
-
-        dso_models[node_id] = dso_model
+    # Parallel execution
+    with ThreadPoolExecutor() as executor:
+        futures = [executor.submit(process_single_dso, node_id, net, candidate_solution, consensus_vars) for node_id, net in distribution_networks.items()]
+        for future in futures:
+            node_id, model, result = future.result()
+            dso_models[node_id] = model
+            results[node_id] = result
 
     return dso_models, results
 
