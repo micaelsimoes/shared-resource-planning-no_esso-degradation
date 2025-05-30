@@ -296,7 +296,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     # ADMM -- Main cycle
     # ------------------------------------------------------------------------------------------------------------------
     convergence = False
-    for iter in range(iter, admm_parameters.num_max_iters + 1):
+    for iter in range(1, admm_parameters.num_max_iters + 1):
 
         print(f'[INFO]\t - ADMM. Iter {iter}...')
         print_memory_usage(f"ADMM Iteration {iter} Start")
