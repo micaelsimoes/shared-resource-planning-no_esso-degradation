@@ -75,9 +75,9 @@ class SlacksFlexibility:
 class SlacksGeneration:
 
     def __init__(self):
-        self.sg_sqr = False
-        self.sg_abs = False
-        self.sg_curt = False
+        self.sg_sqr = True
+        self.sg_abs = True
+        self.sg_curt = True
 
 
 class SlacksEnergyStorage:
