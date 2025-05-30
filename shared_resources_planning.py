@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import pyomo.opt as po
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor
 from network_data import NetworkData
 from load import Load
 from shared_energy_storage import SharedEnergyStorage
@@ -563,10 +563,10 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
     results = dict()
 
     # Parallel execution
-    with ThreadPoolExecutor() as executor:
-        futures = [executor.submit(process_single_dso, node_id, net, candidate_solution, consensus_vars) for node_id, net in distribution_networks.items()]
-        for future in futures:
-            node_id, model, result = future.result()
+    with ProcessPoolExecutor() as executor:
+        futures = [executor.submit(process_single_dso, node_id, distribution_network, candidate_solution, consensus_vars) for node_id, distribution_network in distribution_networks.items()]
+        for f in futures:
+            node_id, model, result = f.result()
             dso_models[node_id] = model
             results[node_id] = result
 
