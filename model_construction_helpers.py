@@ -282,8 +282,9 @@ def sg_sqr_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable():
         return pe.Constraint.Skip
-    return pe.inequality(-EQUALITY_TOLERANCE, m.sg_sqr[g, s_m, s_o, p] - (m.pg[g, s_m, s_o, p]**2 + m.qg[g, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
-    #return m.sg_sqr[g, s_m, s_o, p] == m.pg[g, s_m, s_o, p] ** 2 + m.qg[g, s_m, s_o, p] ** 2
+    # return pe.inequality(-EQUALITY_TOLERANCE, m.sg_sqr[g, s_m, s_o, p] - (m.pg[g, s_m, s_o, p]**2 + m.qg[g, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
+    return m.sg_sqr[g, s_m, s_o, p] == m.pg[g, s_m, s_o, p] ** 2 + m.qg[g, s_m, s_o, p] ** 2
+
 
 # sg_abs² ≈ sg_sqr
 def sg_abs_rule(m, g, s_m, s_o, p, network):
