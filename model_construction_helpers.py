@@ -1004,11 +1004,11 @@ def slack_penalties(model, network, s_m, s_o, params):
         for g in model.generators:
             if network.generators[g].is_curtaillable():
                 if params.slacks.generation.sg_sqr:
-                    total += base * PENALTY_GENERATION * model.slack_sg_sqr[i, s_m, s_o, p] ** 2
+                    total += base * PENALTY_GENERATION * model.slack_sg_sqr[g, s_m, s_o, p] ** 2
                 if params.slacks.generation.sg_abs:
-                    total += base * PENALTY_GENERATION * model.slack_sg_abs[i, s_m, s_o, p] ** 2
+                    total += base * PENALTY_GENERATION * model.slack_sg_abs[g, s_m, s_o, p] ** 2
                 if params.slacks.generation.sg_abs:
-                    total += base * PENALTY_GENERATION * model.slack_sg_curt[i, s_m, s_o, p] ** 2
+                    total += base * PENALTY_GENERATION * model.slack_sg_curt[g, s_m, s_o, p] ** 2
 
     if params.fl_reg and params.slacks.flexibility.day_balance:
         total += base * PENALTY_FLEXIBILITY * sum(
