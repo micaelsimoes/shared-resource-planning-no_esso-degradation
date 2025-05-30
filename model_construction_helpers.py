@@ -272,10 +272,7 @@ def voltage_magnitude_rule(m, i, s_m, s_o, p, network, params):
     vmag_sq = e ** 2 + f ** 2
     if node.type == BUS_PV and params.enforce_vg:
         vg = network.generators[network.get_gen_idx(node.bus_i)].vg[p]
-        if params.use_soft_constraints:
-            return pe.inequality(vg ** 2 - EQUALITY_TOLERANCE, vmag_sq, vg ** 2 + EQUALITY_TOLERANCE)
-        else:
-            return vmag_sq == vg ** 2
+        return vmag_sq == vg ** 2
     else:
         return pe.inequality(node.v_min ** 2, vmag_sq, node.v_max ** 2)
 
