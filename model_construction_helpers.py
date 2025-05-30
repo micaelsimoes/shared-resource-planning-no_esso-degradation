@@ -272,7 +272,10 @@ def voltage_magnitude_rule(m, i, s_m, s_o, p, network, params):
     vmag_sq = e ** 2 + f ** 2
     if node.type == BUS_PV and params.enforce_vg:
         vg = network.generators[network.get_gen_idx(node.bus_i)].vg[p]
-        return pe.inequality(vg ** 2 - EQUALITY_TOLERANCE, vmag_sq, vg ** 2 + EQUALITY_TOLERANCE)
+        if params.use_soft_constraints:
+            return pe.inequality(vg ** 2 - EQUALITY_TOLERANCE, vmag_sq, vg ** 2 + EQUALITY_TOLERANCE)
+        else:
+            return vmag_sq == vg ** 2
     else:
         return pe.inequality(node.v_min ** 2, vmag_sq, node.v_max ** 2)
 
@@ -339,7 +342,7 @@ def flex_energy_balance_rule(m, c, s_m, s_o, network, params):
         if params.slacks.flexibility.day_balance:
             return p_up == p_down + m.slack_flex_p_balance[c, s_m, s_o]
         else:
-            return pe.inequality(-EQUALITY_TOLERANCE, p_up - p_down, EQUALITY_TOLERANCE)
+            return p_up == p_down
     else:
         return pe.Constraint.Skip
 
