@@ -46,10 +46,6 @@ class Network:
         _pre_process_network(self)
         return _build_model(self, params)
 
-    def build_model_v2(self, params):
-        _pre_process_network(self)
-        return _build_model(self, params)
-
     def run_smopf(self, model, params, from_warm_start=False):
         return _run_smopf(self, model, params, from_warm_start=from_warm_start)
 
