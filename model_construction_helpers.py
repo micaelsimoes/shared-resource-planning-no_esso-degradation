@@ -701,13 +701,13 @@ def net_load_q_per_node_rule(model, i, s_m, s_o, p, network, params):
     return model.qc_node[i, s_m, s_o, p] == Qd
 
 
-def net_gen_p_per_node_rule(model, i, s_m, s_o, p, network, params):
-    Pg, _ = compute_node_gen(model, i, s_m, s_o, p, network, params)
+def net_gen_p_per_node_rule(model, i, s_m, s_o, p, network):
+    Pg, _ = compute_node_gen(model, i, s_m, s_o, p, network)
     return model.pg_node[i, s_m, s_o, p] == Pg
 
 
-def net_gen_q_per_node_rule(model, i, s_m, s_o, p, network, params):
-    _, Qg = compute_node_gen(model, i, s_m, s_o, p, network, params)
+def net_gen_q_per_node_rule(model, i, s_m, s_o, p, network):
+    _, Qg = compute_node_gen(model, i, s_m, s_o, p, network)
     return model.qg_node[i, s_m, s_o, p] == Qg
 
 
