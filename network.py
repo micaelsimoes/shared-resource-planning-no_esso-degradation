@@ -1900,7 +1900,7 @@ def _process_results(network, model, params, results=dict()):
                         sg = sqrt(pg ** 2 + qg ** 2)
                         pg_net = pe.value(model.pg[g, s_m, s_o, p]) * network.baseMVA
                         qg_net = pe.value(model.qg[g, s_m, s_o, p]) * network.baseMVA
-                        sg_net = sqrt(pe.value(model.sg_sqr[g, s_m, s_o, p])) * network.baseMVA
+                        sg_net = sqrt(abs(pe.value(model.sg_sqr[g, s_m, s_o, p]))) * network.baseMVA
                         sg_curt = pe.value(model.sg_curt[g, s_m, s_o, p]) * network.baseMVA
                         processed_results['scenarios'][s_m][s_o]['generation']['pg_net'][gen_id].append(pg_net)
                         processed_results['scenarios'][s_m][s_o]['generation']['qg_net'][gen_id].append(qg_net)
@@ -2492,7 +2492,7 @@ def _compute_renewable_generation_per_scenario(network, model, params, s_m, s_o)
                 total_renewable_gen['p'] += network.baseMVA * pe.value(model.pg[g, s_m, s_o, p])
                 total_renewable_gen['q'] += network.baseMVA * pe.value(model.qg[g, s_m, s_o, p])
                 if params.rg_curt:
-                    total_renewable_gen['s'] += network.baseMVA * sqrt(pe.value(model.sg_sqr[g, s_m, s_o, p]))
+                    total_renewable_gen['s'] += network.baseMVA * sqrt(abs(pe.value(model.sg_sqr[g, s_m, s_o, p])))
     return total_renewable_gen
 
 
