@@ -136,17 +136,17 @@ def slack_flow_bounds(m, b, s_m, s_o, p, network, params):
 
 
 # Consumption, Pc
-def pc_bounds(m, c, s_m, s_o, p, network, params):
+def pc_init(m, c, s_m, s_o, p, network):
     load = network.loads[c]
     pd = load.pd[s_o][p]
-    return (pd - EQUALITY_TOLERANCE, pd + EQUALITY_TOLERANCE)
+    return pd
 
 
 # Consumption, Qc
-def qc_bounds(m, c, s_m, s_o, p, network, params):
+def qc_init(m, c, s_m, s_o, p, network):
     load = network.loads[c]
     qd = load.qd[s_o][p]
-    return (qd - EQUALITY_TOLERANCE, qd + EQUALITY_TOLERANCE)
+    return qd
 
 
 # Consumption, flexibility
