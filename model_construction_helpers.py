@@ -693,22 +693,22 @@ def compute_node_gen(model, i, s_m, s_o, p, network):
 
 def net_load_p_per_node_rule(model, i, s_m, s_o, p, network, params):
     Pd, _ = compute_node_load(model, i, s_m, s_o, p, network, params)
-    return model.pc_node[i, s_m, s_o, p] == Pd
+    return pe.inequality(-EQUALITY_TOLERANCE, model.pc_node[i, s_m, s_o, p] == Pd, EQUALITY_TOLERANCE)
 
 
 def net_load_q_per_node_rule(model, i, s_m, s_o, p, network, params):
     _, Qd = compute_node_load(model, i, s_m, s_o, p, network, params)
-    return model.qc_node[i, s_m, s_o, p] == Qd
+    return pe.inequality(-EQUALITY_TOLERANCE, model.qc_node[i, s_m, s_o, p] == Qd, EQUALITY_TOLERANCE)
 
 
 def net_gen_p_per_node_rule(model, i, s_m, s_o, p, network):
     Pg, _ = compute_node_gen(model, i, s_m, s_o, p, network)
-    return model.pg_node[i, s_m, s_o, p] == Pg
+    return pe.inequality(-EQUALITY_TOLERANCE, model.pg_node[i, s_m, s_o, p] == Pg, EQUALITY_TOLERANCE)
 
 
 def net_gen_q_per_node_rule(model, i, s_m, s_o, p, network):
     _, Qg = compute_node_gen(model, i, s_m, s_o, p, network)
-    return model.qg_node[i, s_m, s_o, p] == Qg
+    return pe.inequality(-EQUALITY_TOLERANCE, model.qg_node[i, s_m, s_o, p] == Qg, EQUALITY_TOLERANCE)
 
 
 def node_balance_p_rule(model, i, s_m, s_o, p, network, params):
