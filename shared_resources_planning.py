@@ -437,10 +437,13 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
 
             # Free Vmag, Pc, Qc at the interface nodes
             for dn in tso_model[year][day].active_distribution_networks:
+
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
                 adn_node_idx = transmission_network.network[year][day].get_node_idx(adn_node_id)
                 adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(adn_node_id)
                 _, v_max = transmission_network.network[year][day].get_node_voltage_limits(adn_node_id)
+                init_solution = consensus_vars['pf']['dso']['current'][adn_node_id][year][day]
+
                 for s_m in tso_model[year][day].scenarios_market:
                     for s_o in tso_model[year][day].scenarios_operation:
                         for p in tso_model[year][day].periods:
@@ -457,7 +460,8 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                                 tso_model[year][day].slack_f[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                                 tso_model[year][day].slack_f[adn_node_idx, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
 
-                            init_solution = consensus_vars['pf']['dso']['current'][adn_node_id][year][day]
+                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].fixed = False
                             fix_or_set(tso_model[year][day].pc[adn_load_idx, s_m, s_o, p], init_solution['p'][p] / s_base)
                             fix_or_set(tso_model[year][day].qc[adn_load_idx, s_m, s_o, p], init_solution['q'][p] / s_base)
                             if transmission_network.params.fl_reg:
