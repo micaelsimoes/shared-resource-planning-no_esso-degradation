@@ -489,7 +489,7 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                         omega_market = transmission_network.network[year][day].prob_market_scenarios[s_m]
                         for s_o in tso_model[year][day].scenarios_operation:
                             omega_oper = transmission_network.network[year][day].prob_operation_scenarios[s_o]
-                            vmag_sqr = transmission_network.network[year][day].vmag_sqr[adn_node_idx, s_m, s_o, p]
+                            vmag_sqr = tso_model[year][day].vmag_sqr[adn_node_idx, s_m, s_o, p]
                             pc_node = tso_model[year][day].pc_node[adn_node_idx, s_m, s_o, p]
                             qc_node = tso_model[year][day].qc_node[adn_node_idx, s_m, s_o, p]
                             expected_vmag_sqr += omega_market * omega_oper * vmag_sqr
