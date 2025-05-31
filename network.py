@@ -1159,8 +1159,8 @@ def _build_model(network, params):
         model.slack_flow_ij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(slack_flow_bounds, network=network, params=params))
 
     # - Loads
-    model.pc = pe.Param(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, mutable=True, domain=pe.Reals, initialize=partial(pc_init, network=network, params=params))
-    model.qc = pe.Param(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, mutable=True, domain=pe.Reals, initialize=partial(qc_init, network=network, params=params))
+    model.pc = pe.Param(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, mutable=True, domain=pe.Reals, initialize=partial(pc_init, network=network))
+    model.qc = pe.Param(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, mutable=True, domain=pe.Reals, initialize=partial(qc_init, network=network))
     model.pc_node = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)      # Net load at node i
     model.qc_node = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
     if params.fl_reg:
