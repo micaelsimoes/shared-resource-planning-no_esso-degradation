@@ -713,12 +713,12 @@ def net_gen_q_per_node_rule(model, i, s_m, s_o, p, network, params):
 
 def node_balance_p_rule(model, i, s_m, s_o, p, network, params):
 
-    Pd, _ = compute_node_load(model, i, s_m, s_o, p, network, params)
-    Pg, _ = compute_node_gen(model, i, s_m, s_o, p, network)
-
     node = network.nodes[i]
+
     ei = model.e_actual[i, s_m, s_o, p]
     fi = model.f_actual[i, s_m, s_o, p]
+    Pd = model.pc_node[i, s_m, s_o, p]
+    Pg = model.pg_node[i, s_m, s_o, p]
 
     Pi = node.gs * (ei**2 +  fi**2)
 
@@ -759,14 +759,12 @@ def node_balance_p_rule(model, i, s_m, s_o, p, network, params):
 
 def node_balance_q_rule(model, i, s_m, s_o, p, network, params):
 
-    _, Qd = compute_node_load(model, i, s_m, s_o, p, network, params)
-    _, Qg = compute_node_gen(model, i, s_m, s_o, p, network)
-
     node = network.nodes[i]
     ei = model.e_actual[i, s_m, s_o, p]
     fi = model.f_actual[i, s_m, s_o, p]
+    Qd = model.qc_node[i, s_m, s_o, p]
+    Qg = model.qg_node[i, s_m, s_o, p]
 
-    # Shunt reactive power at bus
     Qi = -node.bs * (ei**2 + fi**2)
 
     for b in range(len(network.branches)):
