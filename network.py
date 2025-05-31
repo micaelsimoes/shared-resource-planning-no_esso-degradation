@@ -1231,8 +1231,10 @@ def _build_model(network, params):
         model.flex_energy_balance = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_rule, network=network, params=params))
 
     # Generation and Load per node
-    model.net_load_per_node = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_per_node_rule, network=network, params=params))
-    model.net_gen_per_node = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_per_node_rule, network=network, params=params))
+    model.net_load_p_per_node = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_p_per_node_rule, network=network, params=params))
+    model.net_load_q_per_node = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_q_per_node_rule, network=network, params=params))
+    model.net_gen_p_per_node = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_p_per_node_rule, network=network, params=params))
+    model.net_gen_q_per_node = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_q_per_node_rule, network=network, params=params))
 
     # - Energy Storage constraints
     if params.es_reg:
