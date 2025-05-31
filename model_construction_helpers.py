@@ -699,11 +699,15 @@ def compute_node_gen(model, i, s_m, s_o, p, network):
 
 def net_load_p_per_node_rule(model, i, s_m, s_o, p, network, params):
     Pd, _ = compute_node_load(model, i, s_m, s_o, p, network, params)
+    if isinstance(Pd, float):
+        return pe.Constraint.Skip
     return model.pc_node[i, s_m, s_o, p] == Pd
 
 
 def net_load_q_per_node_rule(model, i, s_m, s_o, p, network, params):
     _, Qd = compute_node_load(model, i, s_m, s_o, p, network, params)
+    if isinstance(Qd, float):
+        return pe.Constraint.Skip
     return model.qc_node[i, s_m, s_o, p] == Qd
 
 
