@@ -2476,7 +2476,7 @@ def _compute_renewable_generation(network, model, params):
                         total_renewable_gen_scenario['p'] += network.baseMVA * pe.value(model.pg[g, s_m, s_o, p])
                         total_renewable_gen_scenario['q'] += network.baseMVA * pe.value(model.qg[g, s_m, s_o, p])
                         if params.rg_curt:
-                            total_renewable_gen_scenario['s'] += network.baseMVA * sqrt(pe.value(model.sg_sqr[g, s_m, s_o, p]))
+                            total_renewable_gen_scenario['s'] += network.baseMVA * sqrt(abs(pe.value(model.sg_sqr[g, s_m, s_o, p])))
             total_renewable_gen['p'] += total_renewable_gen_scenario['p'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
             total_renewable_gen['q'] += total_renewable_gen_scenario['q'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
             total_renewable_gen['s'] += total_renewable_gen_scenario['s'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
