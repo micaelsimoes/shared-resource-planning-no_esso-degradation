@@ -924,7 +924,7 @@ def update_transmission_model_to_admm(planning_problem, model, params):
             model[year][day].dual_ess_p_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)                # Dual variable - Shared ESS active power
             model[year][day].dual_ess_q_req = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)                # Dual variable - Shared ESS reactive power
             if params.previous_iter['ess']['tso']:
-                model[year][day].rho_ess_prev = pe.Param(mutable=True, domain=pe.NonNegativeReals, intialize=params.rho_previous_iter['ess'][transmission_network.name])
+                model[year][day].rho_ess_prev = pe.Param(mutable=True, domain=pe.NonNegativeReals, initialize=params.rho_previous_iter['ess'][transmission_network.name])
                 model[year][day].p_ess_prev = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)                # Shared ESS - previous iteration active power
                 model[year][day].q_ess_prev = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)                # Shared ESS - previous iteration reactive power
                 model[year][day].dual_ess_p_prev = pe.Var(model[year][day].shared_energy_storages, model[year][day].periods, domain=pe.Reals)           # Dual variable - previous iteration shared ESS active power
@@ -1714,7 +1714,7 @@ def _run_operational_planning_without_coordination(planning_problem):
                     dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_pf_q[p] == expected_pf_q)
 
                 obj = copy(dso_model[year][day].objective.expr)
-                dso_model[year][day].penalty_regularization = pe.Param(intialize=PENALTY_REGULARIZATION)
+                dso_model[year][day].penalty_regularization = pe.Param(initialize=PENALTY_REGULARIZATION)
                 for s_m in dso_model[year][day].scenarios_market:
                     for s_o in dso_model[year][day].scenarios_operation:
                         for p in dso_model[year][day].periods:
