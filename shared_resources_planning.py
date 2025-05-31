@@ -461,7 +461,11 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                                 tso_model[year][day].slack_f[adn_node_idx, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
 
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setub(None)
+                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setlb(None)
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setub(None)
+                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setlb(None)
                             fix_or_set(tso_model[year][day].pc[adn_load_idx, s_m, s_o, p], init_solution['p'][p] / s_base)
                             fix_or_set(tso_model[year][day].qc[adn_load_idx, s_m, s_o, p], init_solution['q'][p] / s_base)
                             if transmission_network.params.fl_reg:
