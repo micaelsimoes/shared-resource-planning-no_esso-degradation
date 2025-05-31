@@ -457,9 +457,9 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                                 tso_model[year][day].slack_f[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                                 tso_model[year][day].slack_f[adn_node_idx, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
 
-                            init_solution = consensus_vars['pf']['dso']['current'][adn_node_id]
-                            fix_or_set(tso_model[year][day].pc[adn_load_idx, s_m, s_o, p], init_solution['p'] / s_base)
-                            fix_or_set(tso_model[year][day].qc[adn_load_idx, s_m, s_o, p], init_solution['q'] / s_base)
+                            init_solution = consensus_vars['pf']['dso']['current'][adn_node_id][year][day]
+                            fix_or_set(tso_model[year][day].pc[adn_load_idx, s_m, s_o, p], init_solution['p'][p] / s_base)
+                            fix_or_set(tso_model[year][day].qc[adn_load_idx, s_m, s_o, p], init_solution['q'][p] / s_base)
                             if transmission_network.params.fl_reg:
                                 tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].setub(None)
                                 tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].setub(None)
