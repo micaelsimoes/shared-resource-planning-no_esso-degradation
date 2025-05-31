@@ -1821,7 +1821,6 @@ def _run_operational_planning_without_coordination(planning_problem):
             s_base = transmission_network.network[year][day].baseMVA
             for dn in tso_model[year][day].active_distribution_networks:
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
-                adn_node_idx = transmission_network.network[year][day].get_node_idx(adn_node_id)
                 for p in tso_model[year][day].periods:
                     v_sqr_req = interface_v_sqr[adn_node_id][year][day][p]
                     p_req = interface_pf[adn_node_id][year][day]['p'][p] / s_base
