@@ -250,6 +250,9 @@ def p_bounds(m, e, s_m, s_o, p, network):
 def snet_bounds(m, e, s_m, s_o, p, network):
     return (-network.energy_storages[e].s, network.energy_storages[e].s)
 
+def snet_sqr_bounds(m, e, s_m, s_o, p, network):
+    return (0.0, network.energy_storages[e].s ** 2)
+
 
 def q_bounds(m, e, s_m, s_o, p, network):
     es = network.energy_storages[e]
@@ -397,6 +400,31 @@ def energy_storage_pnet_rule(m, e, s_m, s_o, p):
 
 def energy_storage_qnet_rule(m, e, s_m, s_o, p):
     return m.es_qnet[e, s_m, s_o, p] == m.es_qch[e, s_m, s_o, p] - m.es_qdch[e, s_m, s_o, p]
+
+
+def energy_storage_sch_sqr_rule(m, e, s_m, s_o, p):
+    return m.es_sch_sqr[e, s_m, s_o, p] == m.es_sch[e, s_m, s_o, p] ** 2
+
+
+def energy_storage_pch_sqr_rule(m, e, s_m, s_o, p):
+    return m.es_pch_sqr[e, s_m, s_o, p] == m.es_pch[e, s_m, s_o, p] ** 2
+
+
+def energy_storage_qch_sqr_rule(m, e, s_m, s_o, p):
+    return m.es_qch_sqr[e, s_m, s_o, p] == m.es_qch[e, s_m, s_o, p] ** 2
+
+
+def energy_storage_sdch_sqr_rule(m, e, s_m, s_o, p):
+    return m.es_sdch_sqr[e, s_m, s_o, p] == m.es_sch[e, s_m, s_o, p] ** 2
+
+
+def energy_storage_pdch_sqr_rule(m, e, s_m, s_o, p):
+    return m.es_pdch_sqr[e, s_m, s_o, p] == m.es_pdch[e, s_m, s_o, p] ** 2
+
+
+def energy_storage_qdch_sqr_rule(m, e, s_m, s_o, p):
+    return m.es_qdch_sqr[e, s_m, s_o, p] == m.es_qdch[e, s_m, s_o, p] ** 2
+
 
 
 def ess_phi_ch_limits_lower(m, e, s_m, s_o, p, network):
