@@ -1270,20 +1270,7 @@ def _build_model(network, params):
 
     # - Flexible Loads -- Daily energy balance
     if params.fl_reg:
-        model.fl_p_balance = pe.ConstraintList()
-        for c in model.loads:
-            if network.loads[c].fl_reg:
-                for s_m in model.scenarios_market:
-                    for s_o in model.scenarios_operation:
-                        p_up, p_down = 0.0, 0.0
-                        for p in model.periods:
-                            p_up += model.flex_p_up[c, s_m, s_o, p]
-                            p_down += model.flex_p_down[c, s_m, s_o, p]
-                        if params.slacks.flexibility.day_balance:
-                            model.fl_p_balance.add(p_up == p_down + model.slack_flex_p_balance[c, s_m, s_o])
-                        else:
-                            model.fl_p_balance.add(p_up <= p_down + EQUALITY_TOLERANCE)
-                            model.fl_p_balance.add(p_up >= p_down - EQUALITY_TOLERANCE)
+        model.flex_energy_balance = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_rule, network=network, params=params))
 
     # - Energy Storage constraints
     if params.es_reg:
