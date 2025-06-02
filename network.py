@@ -1213,6 +1213,10 @@ def _build_model(network, params):
         model.es_pdch_sqr = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
         model.es_qdch_sqr = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
         model.es_sdch_sqr = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+        if params.slacks.ess.complementarity:
+            model.slack_es_comp = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=slack_es_comp_bounds)
+        if params.slacks.ess.day_balance:
+            model.slack_es_soc_final = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.Reals, initialize=0.0, bounds=slack_es_balance_bounds)
 
     # - Shared Energy Storage devices
     model.shared_es_s_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)
