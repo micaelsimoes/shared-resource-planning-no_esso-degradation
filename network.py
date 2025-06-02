@@ -2654,7 +2654,6 @@ def _process_results(network, model, params, results=dict()):
         processed_results['runtime'] = float(_get_info_from_results(results, 'Time:').strip())
     else:
         processed_results['runtime'] = [0.00]
-    print(f'[INFO]\t\t - Execution time: {processed_results['runtime']:.2f}')
 
     processed_results['scenarios'] = dict()
     for s_m in model.scenarios_market:
