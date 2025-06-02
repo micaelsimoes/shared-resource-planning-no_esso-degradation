@@ -1429,8 +1429,8 @@ def _build_model(network, params):
         model.shared_energy_storage_e_sensitivities.add(model.shared_es_e_rated[e] <= model.shared_es_e_rated_fixed[e])
 
     # - Node Balance constraints
-    model.node_net_gen = pe.ConstraintList()
-    model.node_net_load = pe.ConstraintList()
+    model.net_load_p_per_node = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_p_per_node_rule, network=network, params=params))
+    model.net_load_q_per_node = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_q_per_node_rule, network=network, params=params))
     model.node_balance_cons_p = pe.ConstraintList()
     model.node_balance_cons_q = pe.ConstraintList()
     for s_m in model.scenarios_market:
@@ -1462,9 +1462,6 @@ def _build_model(network, params):
                             Pd += (model.shared_es_pch[e, s_m, s_o, p] - model.shared_es_pdch[e, s_m, s_o, p])
                             Qd += (model.shared_es_qch[e, s_m, s_o, p] - model.shared_es_qdch[e, s_m, s_o, p])
 
-                    model.node_net_load.add(model.pc_node[i, s_m, s_o, p] == Pd)
-                    model.node_net_load.add(model.qc_node[i, s_m, s_o, p] == Qd)
-
                     Pg = 0.0
                     Qg = 0.0
                     for g in model.generators:
@@ -1472,9 +1469,6 @@ def _build_model(network, params):
                         if generator.bus == node.bus_i:
                             Pg += model.pg[g, s_m, s_o, p]
                             Qg += model.qg[g, s_m, s_o, p]
-
-                    model.node_net_gen.add(model.pg_node[i, s_m, s_o, p] == Pg)
-                    model.node_net_gen.add(model.qg_node[i, s_m, s_o, p] == Qg)
 
                     ei = model.e_actual[i, s_m, s_o, p]
                     fi = model.f_actual[i, s_m, s_o, p]
