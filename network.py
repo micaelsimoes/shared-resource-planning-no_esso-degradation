@@ -1135,6 +1135,7 @@ def _build_model(network, params):
     model.f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.e_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.0)
     model.f_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+    model.vmag_sqr = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0)
     if params.slacks.grid_operation.voltage:
         model.slack_e = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
         model.slack_f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
@@ -1395,26 +1396,16 @@ def _build_model(network, params):
                     model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] == f_actual)
 
                     # voltage magnitude constraints
-                    if node.type == BUS_PV:
-                        if params.enforce_vg:
-                            # - Enforce voltage controlled bus
-                            gen_idx = network.get_gen_idx(node.bus_i)
-                            vg = network.generators[gen_idx].vg
-                            e = model.e[i, s_m, s_o, p]
-                            f = model.f[i, s_m, s_o, p]
-                            model.voltage_cons.add(e ** 2 + f ** 2 <= vg[p] ** 2 + EQUALITY_TOLERANCE)
-                            model.voltage_cons.add(e ** 2 + f ** 2 >= vg[p] ** 2 - EQUALITY_TOLERANCE)
-                        else:
-                            # - Voltage at the bus is not controlled
-                            e = model.e[i, s_m, s_o, p]
-                            f = model.f[i, s_m, s_o, p]
-                            model.voltage_cons.add(e ** 2 + f ** 2 >= node.v_min**2)
-                            model.voltage_cons.add(e ** 2 + f ** 2 <= node.v_max**2)
+                    model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] == model.e[i, s_m, s_o, p] ** 2 + model.f[i, s_m, s_o, p] ** 2)
+
+                    if node.type == BUS_PV and  params.enforce_vg:
+                        gen_idx = network.get_gen_idx(node.bus_i)
+                        vg = network.generators[gen_idx].vg
+                        model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] <= vg[p] ** 2 + EQUALITY_TOLERANCE)
+                        model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] >= vg[p] ** 2 - EQUALITY_TOLERANCE)
                     else:
-                        e = model.e[i, s_m, s_o, p]
-                        f = model.f[i, s_m, s_o, p]
-                        model.voltage_cons.add(e ** 2 + f ** 2 >= node.v_min**2)
-                        model.voltage_cons.add(e ** 2 + f ** 2 <= node.v_max**2)
+                        model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] >= node.v_min**2)
+                        model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] <= node.v_max**2)
 
     model.generation_apparent_power = pe.ConstraintList()
     model.generation_power_factor = pe.ConstraintList()
@@ -2024,7 +2015,7 @@ def _build_model_new_version_bck(network, params):
     model.f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(f_bounds, network=network))
     model.e_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.0)
     model.f_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
-    model.vmag_sqr = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    model.vmag_sqr = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0)
     if params.slacks.grid_operation.voltage:
         model.slack_e = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
         model.slack_f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
