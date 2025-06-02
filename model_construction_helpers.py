@@ -247,6 +247,10 @@ def p_bounds(m, e, s_m, s_o, p, network):
     return (0.0, network.energy_storages[e].s)
 
 
+def snet_bounds(m, e, s_m, s_o, p, network):
+    return (-network.energy_storages[e].s, network.energy_storages[e].s)
+
+
 def q_bounds(m, e, s_m, s_o, p, network):
     es = network.energy_storages[e]
     return (-es.s, es.s)
@@ -385,6 +389,14 @@ def ess_sch_def(m, e, s_m, s_o, p):
 
 def ess_sdch_def(m, e, s_m, s_o, p):
     return m.es_sdch[e, s_m, s_o, p]**2 == m.es_pdch[e, s_m, s_o, p]**2 + m.es_qdch[e, s_m, s_o, p]**2
+
+
+def energy_storage_pnet_rule(m, e, s_m, s_o, p, network):
+    return m.es_pnet[e, s_m, s_o, p] == m.es_pch[e, s_m, s_o, p] - m.es_pdch[e, s_m, s_o, p]
+
+
+def energy_storage_qnet_rule(m, e, s_m, s_o, p, network):
+    return m.es_qnet[e, s_m, s_o, p] == m.es_qch[e, s_m, s_o, p] - m.es_qdch[e, s_m, s_o, p]
 
 
 def ess_phi_ch_limits_lower(m, e, s_m, s_o, p, network):
@@ -676,8 +688,9 @@ def compute_node_load(model, i, s_m, s_o, p, network, params):
         for e in model.energy_storages:
             es = network.energy_storages[e]
             if es.bus == node.bus_i:
-                Pd += model.es_pch[e, s_m, s_o, p] - model.es_pdch[e, s_m, s_o, p]
-                Qd += model.es_qch[e, s_m, s_o, p] - model.es_qdch[e, s_m, s_o, p]
+                Pd += model.es_pnet[e, s_m, s_o, p]
+                Qd += model.es_qnet[e, s_m, s_o, p]
+                Qd += model.es_qnet[e, s_m, s_o, p]
 
     for e in model.shared_energy_storages:
         es = network.shared_energy_storages[e]
