@@ -1270,14 +1270,18 @@ def _build_model(network, params):
         model.energy_storage_operation = pe.ConstraintList()
         model.energy_storage_day_balance = pe.ConstraintList()
         model.energy_storage_ch_dch_exclusion = pe.ConstraintList()
-        model.ess_pnet_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=energy_storage_pnet_rule)
-        model.ess_qnet_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=energy_storage_qnet_rule)
-        model.ess_sch_sqr_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=energy_storage_sch_sqr_rule)
-        model.ess_pch_sqr_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=energy_storage_pch_sqr_rule)
-        model.ess_qch_sqr_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=energy_storage_qch_sqr_rule)
-        model.ess_sdch_sqr_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=energy_storage_sdch_sqr_rule)
-        model.ess_pdch_sqr_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=energy_storage_pdch_sqr_rule)
-        model.ess_qdch_sqr_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=energy_storage_qdch_sqr_rule)
+        model.energy_storage_pnet_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=energy_storage_pnet_rule)
+        model.energy_storage_qnet_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=energy_storage_qnet_rule)
+        model.energy_storage_sch_sqr_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=energy_storage_sch_sqr_rule)
+        model.energy_storage_pch_sqr_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=energy_storage_pch_sqr_rule)
+        model.energy_storage_qch_sqr_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=energy_storage_qch_sqr_rule)
+        model.energy_storage_sdch_sqr_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=energy_storage_sdch_sqr_rule)
+        model.energy_storage_pdch_sqr_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=energy_storage_pdch_sqr_rule)
+        model.energy_storage_qdch_sqr_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=energy_storage_qdch_sqr_rule)
+        model.energy_storage_phi_ch_limit_lower = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_ch_limits_lower, network=network))
+        model.energy_storage_phi_ch_limit_upper = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_ch_limits_upper, network=network))
+        model.energy_storage_phi_dch_limit_lower = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_dch_limits_lower, network=network))
+        model.energy_storage_phi_dch_limit_upper = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_dch_limits_upper, network=network))
 
         for e in model.energy_storages:
 
@@ -1286,36 +1290,13 @@ def _build_model(network, params):
             soc_final = energy_storage.e_init
             eff_charge = energy_storage.eff_ch
             eff_discharge = energy_storage.eff_dch
-            max_phi = acos(energy_storage.max_pf)
-            min_phi = acos(energy_storage.min_pf)
 
             for s_m in model.scenarios_market:
                 for s_o in model.scenarios_operation:
                     for p in model.periods:
 
                         sch = model.es_sch[e, s_m, s_o, p]
-                        pch = model.es_pch[e, s_m, s_o, p]
-                        qch = model.es_qch[e, s_m, s_o, p]
                         sdch = model.es_sdch[e, s_m, s_o, p]
-                        pdch = model.es_pdch[e, s_m, s_o, p]
-                        qdch = model.es_qdch[e, s_m, s_o, p]
-
-                        sch_sqr = model.es_sch_sqr[e, s_m, s_o, p]
-                        pch_sqr = model.es_pch_sqr[e, s_m, s_o, p]
-                        qch_sqr = model.es_qch_sqr[e, s_m, s_o, p]
-                        sdch_sqr = model.es_sdch_sqr[e, s_m, s_o, p]
-                        pdch_sqr = model.es_pdch_sqr[e, s_m, s_o, p]
-                        qdch_sqr = model.es_qdch_sqr[e, s_m, s_o, p]
-
-
-                        # ESS operation
-                        model.energy_storage_operation.add(qch <= tan(max_phi) * pch)
-                        model.energy_storage_operation.add(qch >= tan(min_phi) * pch)
-                        model.energy_storage_operation.add(qdch <= tan(max_phi) * pdch)
-                        model.energy_storage_operation.add(qdch >= tan(min_phi) * pdch)
-
-                        model.energy_storage_operation.add(sch_sqr == pch_sqr + qch_sqr)
-                        model.energy_storage_operation.add(sdch_sqr == pdch_sqr + qdch_sqr)
 
                         # Charging/discharging complementarity constraints
                         if params.slacks.ess.complementarity:
