@@ -77,7 +77,7 @@ def sg_init(m, g, s_m, s_o, p, network, params):
     qg = gen.qg[s_o][p]
     sg = (pg ** 2 + qg ** 2) ** 0.5
 
-    return (0.0, sg)
+    return sg
 
 def sg_bounds(m, g, s_m, s_o, p, network, params):
 
