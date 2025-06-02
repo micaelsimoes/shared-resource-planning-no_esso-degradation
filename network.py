@@ -1180,6 +1180,8 @@ def _build_model(network, params):
     # - Generation
     model.pg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.qg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+    model.pg_node = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+    model.qg_node = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     for g in model.generators:
         generator = network.generators[g]
         pg_ub, pg_lb = generator.pmax, generator.pmin
@@ -1241,6 +1243,8 @@ def _build_model(network, params):
     # - Loads
     model.pc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
     model.qc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
+    model.pc_node = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+    model.qc_node = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     for c in model.loads:
         load = network.loads[c]
         for s_m in model.scenarios_market:
@@ -1598,6 +1602,8 @@ def _build_model(network, params):
         model.shared_energy_storage_e_sensitivities.add(model.shared_es_e_rated[e] <= model.shared_es_e_rated_fixed[e])
 
     # - Node Balance constraints
+    model.node_net_gen = pe.ConstraintList()
+    model.node_net_load = pe.ConstraintList()
     model.node_balance_cons_p = pe.ConstraintList()
     model.node_balance_cons_q = pe.ConstraintList()
     for s_m in model.scenarios_market:
@@ -1629,6 +1635,9 @@ def _build_model(network, params):
                             Pd += (model.shared_es_pch[e, s_m, s_o, p] - model.shared_es_pdch[e, s_m, s_o, p])
                             Qd += (model.shared_es_qch[e, s_m, s_o, p] - model.shared_es_qdch[e, s_m, s_o, p])
 
+                    model.node_net_load.add(model.pc_node[i, s_m, s_o, p] == Pd)
+                    model.node_net_load.add(model.qc_node[i, s_m, s_o, p] == Qd)
+
                     Pg = 0.0
                     Qg = 0.0
                     for g in model.generators:
@@ -1636,6 +1645,9 @@ def _build_model(network, params):
                         if generator.bus == node.bus_i:
                             Pg += model.pg[g, s_m, s_o, p]
                             Qg += model.qg[g, s_m, s_o, p]
+
+                    model.node_net_gen.add(model.pg_node[i, s_m, s_o, p] == Pg)
+                    model.node_net_gen.add(model.qg_node[i, s_m, s_o, p] == Qg)
 
                     ei = model.e_actual[i, s_m, s_o, p]
                     fi = model.f_actual[i, s_m, s_o, p]
