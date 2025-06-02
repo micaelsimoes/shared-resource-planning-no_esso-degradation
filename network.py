@@ -1310,10 +1310,8 @@ def _build_model(network, params):
                         model.energy_storage_operation.add(qdch <= tan(max_phi) * pdch)
                         model.energy_storage_operation.add(qdch >= tan(min_phi) * pdch)
 
-                        model.energy_storage_operation.add(sch_sqr <= pch_sqr + qch_sqr + EQUALITY_TOLERANCE)
-                        model.energy_storage_operation.add(sch_sqr >= pch_sqr + qch_sqr - EQUALITY_TOLERANCE)
-                        model.energy_storage_operation.add(sdch_sqr <= pdch_sqr + qdch_sqr + EQUALITY_TOLERANCE)
-                        model.energy_storage_operation.add(sdch_sqr >= pdch_sqr + qdch_sqr - EQUALITY_TOLERANCE)
+                        model.energy_storage_operation.add(sch_sqr == pch_sqr + qch_sqr)
+                        model.energy_storage_operation.add(sdch_sqr == pdch_sqr + qdch_sqr)
 
                         # Charging/discharging complementarity constraints
                         if params.slacks.ess.complementarity:

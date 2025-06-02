@@ -415,7 +415,7 @@ def energy_storage_qch_sqr_rule(m, e, s_m, s_o, p):
 
 
 def energy_storage_sdch_sqr_rule(m, e, s_m, s_o, p):
-    return m.es_sdch_sqr[e, s_m, s_o, p] == m.es_sch[e, s_m, s_o, p] ** 2
+    return m.es_sdch_sqr[e, s_m, s_o, p] == m.es_sdch[e, s_m, s_o, p] ** 2
 
 
 def energy_storage_pdch_sqr_rule(m, e, s_m, s_o, p):
