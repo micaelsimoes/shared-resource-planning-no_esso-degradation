@@ -1160,68 +1160,22 @@ def _build_model(network, params):
         model.slack_flow_ij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(slack_flow_bounds, network=network, params=params))
 
     # - Loads
-    model.pc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
-    model.qc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
-    model.pc_node = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
-    model.qc_node = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
-    for c in model.loads:
-        load = network.loads[c]
-        for s_m in model.scenarios_market:
-            for s_o in model.scenarios_operation:
-                for p in model.periods:
-                    model.pc[c, s_m, s_o, p].setub(load.pd[s_o][p] + EQUALITY_TOLERANCE)
-                    model.pc[c, s_m, s_o, p].setlb(load.pd[s_o][p] - EQUALITY_TOLERANCE)
-                    model.qc[c, s_m, s_o, p].setub(load.qd[s_o][p] + EQUALITY_TOLERANCE)
-                    model.qc[c, s_m, s_o, p].setlb(load.qd[s_o][p] - EQUALITY_TOLERANCE)
+    model.pc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(pc_bounds, network=network))
+    model.qc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(qc_bounds, network=network))
+    model.pc_node = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)      # Net load at node i
+    model.qc_node = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
     if params.fl_reg:
-        model.flex_p_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.flex_p_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.flex_q_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.flex_q_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.flex_p_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(pc_flex_up_bounds, network=network, params=params))
+        model.flex_p_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(pc_flex_down_bounds, network=network, params=params))
+        model.flex_q_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(qc_flex_up_bounds, network=network, params=params))
+        model.flex_q_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(qc_flex_up_bounds, network=network, params=params))
         if params.slacks.flexibility.day_balance:
-            model.slack_flex_p_balance = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.Reals, initialize=0.0)
-        for c in model.loads:
-            load = network.loads[c]
-            for s_m in model.scenarios_market:
-                for s_o in model.scenarios_operation:
-                    for p in model.periods:
-                        if load.fl_reg:
-                            flex_up = load.flexibility.upward[p]
-                            flex_down = load.flexibility.downward[p]
-                            model.flex_p_up[c, s_m, s_o, p].setub(abs(flex_up))
-                            model.flex_p_down[c, s_m, s_o, p].setub(abs(flex_down))
-                        else:
-                            model.flex_p_up[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                            model.flex_p_down[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                            if params.slacks.flexibility.day_balance:
-                                model.slack_flex_p_balance[c, s_m, s_o].setub(EQUALITY_TOLERANCE)
-                                model.slack_flex_p_balance[c, s_m, s_o].setub(EQUALITY_TOLERANCE)
-                        model.flex_q_up[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                        model.flex_q_down[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+            model.slack_flex_p_balance = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.Reals, initialize=0.0, bounds=(-0.0005, 0.0005))
     if params.l_curt:
-        model.pc_curt_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.pc_curt_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.qc_curt_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.qc_curt_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        for c in model.loads:
-            load = network.loads[c]
-            for s_m in model.scenarios_market:
-                for s_o in model.scenarios_operation:
-                    for p in model.periods:
-
-                        if load.pd[s_o][p] >= 0.00:
-                            model.pc_curt_down[c, s_m, s_o, p].setub(abs(load.pd[s_o][p]))
-                            model.pc_curt_up[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                        else:
-                            model.pc_curt_up[c, s_m, s_o, p].setub(abs(load.pd[s_o][p]))
-                            model.pc_curt_down[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-
-                        if load.qd[s_o][p] >= 0.00:
-                            model.qc_curt_down[c, s_m, s_o, p].setub(abs(load.qd[s_o][p]))
-                            model.qc_curt_up[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                        else:
-                            model.qc_curt_up[c, s_m, s_o, p].setub(abs(load.qd[s_o][p]))
-                            model.qc_curt_down[c, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+        model.pc_curt_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(pc_curt_down_bounds, network=network, params=params))
+        model.pc_curt_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(pc_curt_up_bounds, network=network, params=params))
+        model.qc_curt_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(qc_curt_down_bounds, network=network, params=params))
+        model.qc_curt_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(qc_curt_up_bounds, network=network, params=params))
 
     # - Transformers
     model.r = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0)
@@ -1306,7 +1260,6 @@ def _build_model(network, params):
     model.voltage_mag_def = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=voltage_magnitude_def_rule)
     model.voltage_magnitude_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_magnitude_cons_rule, network=network, params=params))
 
-    # - Generation
     # - Generation
     if params.rg_curt:
         model.sg_sqr_def = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_sqr_rule, network=network, params=params))
