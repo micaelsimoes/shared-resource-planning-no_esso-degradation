@@ -1143,7 +1143,6 @@ def _build_model(network, params):
         model.slack_node_balance_p = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00, bounds=(-0.01, 0.01))
         model.slack_node_balance_q = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00, bounds=(-0.01, 0.01))
 
-
     # - Generation
     model.pg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.qg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
@@ -1349,35 +1348,12 @@ def _build_model(network, params):
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
     # - Voltage
-    model.voltage_cons = pe.ConstraintList()
-    for i in model.nodes:
-        node = network.nodes[i]
-        for s_m in model.scenarios_market:
-            for s_o in model.scenarios_operation:
-                for p in model.periods:
+    model.voltage_cons_e = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_rule_e, params=params))
+    model.voltage_cons_f = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_rule_f, params=params))
+    model.voltage_mag_def = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=voltage_magnitude_def_rule)
+    model.voltage_magnitude_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_magnitude_cons_rule, network=network, params=params))
 
-                    # e_actual and f_actual definition
-                    e_actual = model.e[i, s_m, s_o, p]
-                    f_actual = model.f[i, s_m, s_o, p]
-                    if params.slacks.grid_operation.voltage:
-                        e_actual += model.slack_e[i, s_m, s_o, p]
-                        f_actual += model.slack_f[i, s_m, s_o, p]
-
-                    model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] == e_actual)
-                    model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] == f_actual)
-
-                    # voltage magnitude constraints
-                    model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] == model.e[i, s_m, s_o, p] ** 2 + model.f[i, s_m, s_o, p] ** 2)
-
-                    if node.type == BUS_PV and  params.enforce_vg:
-                        gen_idx = network.get_gen_idx(node.bus_i)
-                        vg = network.generators[gen_idx].vg
-                        model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] <= vg[p] ** 2 + EQUALITY_TOLERANCE)
-                        model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] >= vg[p] ** 2 - EQUALITY_TOLERANCE)
-                    else:
-                        model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] >= node.v_min**2)
-                        model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] <= node.v_max**2)
-
+    # - Generation
     model.generation_apparent_power = pe.ConstraintList()
     model.generation_power_factor = pe.ConstraintList()
     if params.rg_curt:
