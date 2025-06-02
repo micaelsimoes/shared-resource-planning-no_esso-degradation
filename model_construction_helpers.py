@@ -251,10 +251,6 @@ def snet_bounds(m, e, s_m, s_o, p, network):
     return (-network.energy_storages[e].s, network.energy_storages[e].s)
 
 
-def snet_sqr_bounds(m, e, s_m, s_o, p, network):
-    return (0.0, network.energy_storages[e].s ** 2)
-
-
 def q_bounds(m, e, s_m, s_o, p, network):
     es = network.energy_storages[e]
     return (-es.s, es.s)
