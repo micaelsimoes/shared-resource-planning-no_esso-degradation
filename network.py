@@ -1260,8 +1260,8 @@ def _build_model(network, params):
         model.energy_storage_operation = pe.ConstraintList()
         model.energy_storage_day_balance = pe.ConstraintList()
         model.energy_storage_ch_dch_exclusion = pe.ConstraintList()
-        model.ess_pnet_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(energy_storage_pnet_rule, network=network, params=params))
-        model.ess_qnet_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(energy_storage_qnet_rule, network=network, params=params))
+        model.ess_pnet_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=energy_storage_pnet_rule)
+        model.ess_qnet_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=energy_storage_qnet_rule)
 
         for e in model.energy_storages:
 

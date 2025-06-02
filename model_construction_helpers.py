@@ -391,11 +391,11 @@ def ess_sdch_def(m, e, s_m, s_o, p):
     return m.es_sdch[e, s_m, s_o, p]**2 == m.es_pdch[e, s_m, s_o, p]**2 + m.es_qdch[e, s_m, s_o, p]**2
 
 
-def energy_storage_pnet_rule(m, e, s_m, s_o, p, network):
+def energy_storage_pnet_rule(m, e, s_m, s_o, p):
     return m.es_pnet[e, s_m, s_o, p] == m.es_pch[e, s_m, s_o, p] - m.es_pdch[e, s_m, s_o, p]
 
 
-def energy_storage_qnet_rule(m, e, s_m, s_o, p, network):
+def energy_storage_qnet_rule(m, e, s_m, s_o, p):
     return m.es_qnet[e, s_m, s_o, p] == m.es_qch[e, s_m, s_o, p] - m.es_qdch[e, s_m, s_o, p]
 
 
