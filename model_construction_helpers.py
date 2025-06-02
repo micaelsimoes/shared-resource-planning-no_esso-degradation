@@ -64,6 +64,21 @@ def qg_init(m, g, s_m, s_o, p, network):
 
 
 # Generation, Sg
+def sg_init(m, g, s_m, s_o, p, network, params):
+
+    gen = network.generators[g]
+    if not gen.is_curtaillable():
+        return 0.00
+    if not gen.status[p]:
+        return 0.00
+
+    # Apparent power for initialization and bound
+    pg = gen.pg[s_o][p]
+    qg = gen.qg[s_o][p]
+    sg = (pg ** 2 + qg ** 2) ** 0.5
+
+    return (0.0, sg)
+
 def sg_bounds(m, g, s_m, s_o, p, network, params):
 
     gen = network.generators[g]
@@ -72,7 +87,7 @@ def sg_bounds(m, g, s_m, s_o, p, network, params):
     if not gen.status[p]:
         return (0.0, EQUALITY_TOLERANCE)
 
-    # Estimated max apparent power for initialization and bound
+    # Estimated apparent power for bounds
     pg = gen.pg[s_o][p]
     qg = gen.qg[s_o][p]
     sg = (pg ** 2 + qg ** 2) ** 0.5
