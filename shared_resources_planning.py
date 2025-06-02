@@ -1658,6 +1658,8 @@ def _run_operational_planning_without_coordination(planning_problem):
             candidate_solution[node_id][year]['s'] = 0.00
             candidate_solution[node_id][year]['e'] = 0.00
 
+    start = time.time()
+
     # Create interface PF variables
     interface_v_sqr, interface_pf = create_interface_power_flow_variables(planning_problem)
 
@@ -1830,6 +1832,10 @@ def _run_operational_planning_without_coordination(planning_problem):
                     fix_or_set(tso_model[year][day].expected_interface_pf_q[dn, p], q_req)
 
     results['tso'] = transmission_network.optimize(tso_model)
+
+    end = time.time()
+    total_execution_time = end - start
+    print('[INFO] \t - Execution time: {:.2f} s'.format(total_execution_time))
 
     models = {'tso': tso_model, 'dso': dso_models}
 
