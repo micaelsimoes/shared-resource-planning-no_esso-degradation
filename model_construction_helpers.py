@@ -456,23 +456,19 @@ def ess_phi_dch_limits_upper(m, e, s_m, s_o, p, network):
     return m.es_qdch[e, s_m, s_o, p] <= tan(max_phi) * m.es_pdch[e, s_m, s_o, p]
 
 
-def ess_comp_rule(m, e, s_m, s_o, p, params):
+def ess_comp_rule(m, e, s_m, s_o, p, network, params):
+    es = network.energy_storages[e]
     if params.slacks.ess.complementarity:
         return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] == m.slack_es_comp[e, s_m, s_o, p]
     else:
-        return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] == 0.00
+        return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] <= es.s * 0.01
 
 
 def ess_balance_rule(m, e, s_m, s_o, p, network):
     es = network.energy_storages[e]
     eff_ch, eff_dch = es.eff_ch, es.eff_dch
     soc_prev = es.e_init if p == 0 else m.es_soc[e, s_m, s_o, p - 1]
-    ineq = pe.inequality(
-        - EQUALITY_TOLERANCE,
-        m.es_soc[e, s_m, s_o, p] - soc_prev - (m.es_sch[e, s_m, s_o, p] * eff_ch - m.es_sdch[e, s_m, s_o, p] / eff_dch),
-        EQUALITY_TOLERANCE
-    )
-    return ineq
+    return m.es_soc[e, s_m, s_o, p] == soc_prev + (m.es_sch[e, s_m, s_o, p] * eff_ch - m.es_sdch[e, s_m, s_o, p] / eff_dch)
 
 
 def ess_soc_final_rule(m, e, s_m, s_o, network, params):
