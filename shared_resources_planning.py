@@ -1563,7 +1563,7 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
         if update_sess:
             for y in sess_model[node_id].years:
                 year = repr_years[y]
-                if results['esso'][node_id].solver.status == po.SolverStatus.ok:
+                if results['esso'][node_id] and results['esso'][node_id].solver.status == po.SolverStatus.ok:
                     for d in sess_model[node_id].days:
                         day = repr_days[d]
                         for p in sess_model[node_id].periods:
@@ -1574,6 +1574,12 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                             q_req = pe.value(sess_model[node_id].es_qnet[y, d, p])
                             shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] = p_req
                             shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] = q_req
+                else:
+                    for d in sess_model[node_id].days:
+                        day = repr_days[d]
+                        for p in sess_model[node_id].periods:
+                            shared_ess_vars['esso']['prev'][node_id][year][day]['p'][p] = copy(shared_ess_vars['esso']['current'][node_id][year][day]['p'][p])
+                            shared_ess_vars['esso']['prev'][node_id][year][day]['q'][p] = copy(shared_ess_vars['esso']['current'][node_id][year][day]['q'][p])
 
         # Power requested by TSO
         if update_tn:
@@ -1581,7 +1587,7 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                 year = repr_years[y]
                 for d in range(len(repr_days)):
                     day = repr_days[d]
-                    if results['tso'][year][day].solver.status == po.SolverStatus.ok:
+                    if results['tso'][year][day] and results['tso'][year][day].solver.status == po.SolverStatus.ok:
                         s_base = transmission_network.network[year][day].baseMVA
                         shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(node_id)
                         for p in tso_model[year][day].periods:
@@ -1592,6 +1598,11 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                             q_req = pe.value(tso_model[year][day].expected_shared_ess_q[shared_ess_idx, p]) * s_base
                             shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] = p_req
                             shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] = q_req
+                    else:
+                        for p in tso_model[year][day].periods:
+                            shared_ess_vars['tso']['prev'][node_id][year][day]['p'][p] = copy(shared_ess_vars['tso']['current'][node_id][year][day]['p'][p])
+                            shared_ess_vars['tso']['prev'][node_id][year][day]['q'][p] = copy(shared_ess_vars['tso']['current'][node_id][year][day]['q'][p])
+
 
         # Power requested by DSO
         if update_dns:
@@ -1599,7 +1610,7 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                 year = repr_years[y]
                 for d in range(len(repr_days)):
                     day = repr_days[d]
-                    if results['dso'][node_id][year][day].solver.status == po.SolverStatus.ok:
+                    if results['dso'][node_id][year][day] and results['dso'][node_id][year][day].solver.status == po.SolverStatus.ok:
                         s_base = distribution_network.network[year][day].baseMVA
                         for p in dso_model[year][day].periods:
                             shared_ess_vars['dso']['prev'][node_id][year][day]['p'][p] = copy(shared_ess_vars['dso']['current'][node_id][year][day]['p'][p])
@@ -1609,6 +1620,10 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                             q_req = pe.value(dso_model[year][day].expected_shared_ess_q[p]) * s_base
                             shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] = p_req
                             shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] = q_req
+                    else:
+                        for p in dso_model[year][day].periods:
+                            shared_ess_vars['dso']['prev'][node_id][year][day]['p'][p] = copy(shared_ess_vars['dso']['current'][node_id][year][day]['p'][p])
+                            shared_ess_vars['dso']['prev'][node_id][year][day]['q'][p] = copy(shared_ess_vars['dso']['current'][node_id][year][day]['q'][p])
 
         # Update dual variables Shared ESS
         for year in planning_problem.years:
