@@ -457,11 +457,10 @@ def ess_phi_dch_limits_upper(m, e, s_m, s_o, p, network):
 
 
 def ess_comp_rule(m, e, s_m, s_o, p, network, params):
-    es = network.energy_storages[e]
     if params.slacks.ess.complementarity:
         return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] == m.slack_es_comp[e, s_m, s_o, p]
     else:
-        return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] <= es.s * 0.05
+        return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
 
 
 def ess_balance_rule(m, e, s_m, s_o, p, network):
