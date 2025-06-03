@@ -538,9 +538,9 @@ def sess_soc_final_rule(m, e, s_m, s_o, network, params):
         return m.shared_es_soc[e, s_m, s_o, final_p] == final_soc + m.slack_shared_es_soc_final[e, s_m, s_o]
     else:
         ineq = pe.inequality(
-            final_soc - EQUALITY_TOLERANCE,
-            m.shared_es_soc[e, s_m, s_o, final_p],
-            final_soc + EQUALITY_TOLERANCE
+            - EQUALITY_TOLERANCE,
+            m.shared_es_soc[e, s_m, s_o, final_p] - final_soc,
+            EQUALITY_TOLERANCE
         )
         return ineq
 
