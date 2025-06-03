@@ -48,11 +48,10 @@ def qg_bounds(m, g, s_m, s_o, p, network):
 
 def pg_init(m, g, s_m, s_o, p, network):
     lb, ub = pg_bounds(m, g, s_m, s_o, p, network=network)
-    # Initialize at lower bound if positive, else zero (or lb if lb <= 0)
     if lb > 0:
         return lb
     else:
-        return max(0.0, lb)  # Just in case lb < 0
+        return max(0.0, lb)
 
 
 def qg_init(m, g, s_m, s_o, p, network):
@@ -78,6 +77,7 @@ def sg_init(m, g, s_m, s_o, p, network, params):
     sg = (pg ** 2 + qg ** 2) ** 0.5
 
     return abs(sg)
+
 
 def sg_bounds(m, g, s_m, s_o, p, network, params):
 
