@@ -1219,7 +1219,7 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
     res = transmission_network.optimize(model, from_warm_start=from_warm_start)
     for year in transmission_network.years:
         for day in transmission_network.days:
-            if res[year][day].solver.status == po.SolverStatus.error:
+            if not res[year][day]:
                 print(f'[ERROR] Network {model[year][day].name} did not converge!')
                 # exit(ERROR_NETWORK_OPTIMIZATION)
     return res
@@ -1288,7 +1288,7 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
         res[node_id] = distribution_network.optimize(model, from_warm_start=from_warm_start)
         for year in distribution_network.years:
             for day in distribution_network.days:
-                if res[node_id][year][day].solver.status != po.SolverStatus.ok:
+                if not res[node_id][year][day] != po.SolverStatus.ok:
                     print(f'[WARNING] Network {model[year][day].name} did not converge!')
                     #exit(ERROR_NETWORK_OPTIMIZATION)
     return res
@@ -1327,7 +1327,7 @@ def update_shared_energy_storages_coordination_model_and_solve(planning_problem,
     # Solve!
     res = shared_ess_data.optimize(models, from_warm_start=from_warm_start)
     for node_id in planning_problem.active_distribution_network_nodes:
-        if res[node_id].solver.status != po.SolverStatus.ok:
+        if not res[node_id]:
             print(f'[WARNING] Shared ESS operational planning node {node_id} did not converge!')
 
     return res
