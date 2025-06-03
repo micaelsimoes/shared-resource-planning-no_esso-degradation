@@ -16,6 +16,7 @@ class NetworkParameters:
         self.l_curt = False
         self.enforce_vg = False
         self.branch_limit_type = BRANCH_LIMIT_CURRENT
+        self.ess_model = ESS_MODEL_EXACT
         self.slacks = Slacks()
         self.print_to_screen = False
         self.plot_diagram = False
@@ -112,12 +113,14 @@ def _read_network_parameters_from_file(parameters, filename):
     else:
         print('[ERROR] Invalid objective type. Exiting...')
         exit(ERROR_PARAMS_FILE)
+
     parameters.transf_reg = bool(params_data['transf_reg'])
     parameters.es_reg = bool(params_data['es_reg'])
     parameters.fl_reg = bool(params_data['fl_reg'])
     parameters.rg_curt = bool(params_data['rg_curt'])
     parameters.l_curt = bool(params_data['l_curt'])
     parameters.enforce_vg = bool(params_data['enforce_vg'])
+
     if 'branch_limit_type' in params_data:
         if params_data['branch_limit_type'] == 'CURRENT':
             parameters.branch_limit_type = BRANCH_LIMIT_CURRENT
@@ -128,6 +131,16 @@ def _read_network_parameters_from_file(parameters, filename):
         else:
             print('[ERROR] Invalid objective type. Exiting...')
             exit(ERROR_PARAMS_FILE)
+
+    if 'ess_model' in params_data:
+        if params_data['ess_model'] == 'EXACT':
+            parameters.ess_model = ESS_MODEL_EXACT
+        elif params_data['ess_model'] == 'SIMPLIFIED':
+            parameters.ess_model = ESS_MODEL_SIMPLIFIED
+        else:
+            print('[ERROR] Invalid objective type. Exiting...')
+            exit(ERROR_PARAMS_FILE)
+
     if 'slacks' in params_data:
         parameters.slacks.read_slacks_parameters(params_data['slacks'])
     parameters.solver_params.read_solver_parameters(params_data['solver'])
