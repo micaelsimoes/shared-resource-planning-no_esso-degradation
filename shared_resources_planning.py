@@ -1473,7 +1473,7 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                 for day in planning_problem.days:
                     v_base = transmission_network.network[year][day].get_node_base_kv(node_id)
                     s_base = transmission_network.network[year][day].baseMVA
-                    if results['tso'][year][day].solver.status == po.SolverStatus.ok:
+                    if results['tso'][year][day] and results['tso'][year][day].solver.status == po.SolverStatus.ok:
                         for p in tso_model[year][day].periods:
                             interface_vars['v_sqr']['tso']['prev'][node_id][year][day][p] = copy(interface_vars['v_sqr']['tso']['current'][node_id][year][day][p])
                             interface_vars['pf']['tso']['prev'][node_id][year][day]['p'][p] = copy(interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p])
@@ -1485,6 +1485,11 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                             interface_vars['v_sqr']['tso']['current'][node_id][year][day][p] = vsqr_req
                             interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p] = p_req
                             interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p] = q_req
+                    else:
+                        for p in tso_model[year][day].periods:
+                            interface_vars['v_sqr']['tso']['prev'][node_id][year][day][p] = copy(interface_vars['v_sqr']['tso']['current'][node_id][year][day][p])
+                            interface_vars['pf']['tso']['prev'][node_id][year][day]['p'][p] = copy(interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p])
+                            interface_vars['pf']['tso']['prev'][node_id][year][day]['q'][p] = copy(interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p])
 
     # Distribution Network - Update PF at the TN-DN interface
     if update_dns:
@@ -1496,9 +1501,8 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                     ref_node_id = distribution_network.network[year][day].get_reference_node_id()
                     v_base = distribution_network.network[year][day].get_node_base_kv(ref_node_id)
                     s_base = distribution_network.network[year][day].baseMVA
-                    if results['dso'][node_id][year][day].solver.status == po.SolverStatus.ok:
+                    if results['dso'][node_id][year][day] and results['dso'][node_id][year][day].solver.status == po.SolverStatus.ok:
                         for p in dso_model[year][day].periods:
-
                             interface_vars['v_sqr']['dso']['prev'][node_id][year][day][p] = copy(interface_vars['v_sqr']['dso']['current'][node_id][year][day][p])
                             interface_vars['pf']['dso']['prev'][node_id][year][day]['p'][p] = copy(interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p])
                             interface_vars['pf']['dso']['prev'][node_id][year][day]['q'][p] = copy(interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p])
@@ -1509,6 +1513,11 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                             interface_vars['v_sqr']['dso']['current'][node_id][year][day][p] = vsqr_req
                             interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p] = p_req
                             interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p] = q_req
+                    else:
+                        for p in dso_model[year][day].periods:
+                            interface_vars['v_sqr']['dso']['prev'][node_id][year][day][p] = copy(interface_vars['v_sqr']['dso']['current'][node_id][year][day][p])
+                            interface_vars['pf']['dso']['prev'][node_id][year][day]['p'][p] = copy(interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p])
+                            interface_vars['pf']['dso']['prev'][node_id][year][day]['q'][p] = copy(interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p])
 
     # Update Lambdas
     for node_id in distribution_networks:
