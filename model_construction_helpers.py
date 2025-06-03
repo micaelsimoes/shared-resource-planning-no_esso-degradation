@@ -601,16 +601,6 @@ def sess_e_sensitivities(m, e):
     return m.shared_es_e_rated[e] <= m.shared_es_e_rated_fixed[e]
 
 
-# Node balance
-def compute_branch_power(branch, ei, fi, ej, fj, rij):
-    vi_sq = ei ** 2 + fi ** 2
-    Pi = branch.g * vi_sq * rij ** 2
-    Pi -= rij * (branch.g * (ei * ej + fi * fj) + branch.b * (fi * ej - ei * fj))
-    Qi = -(branch.b + branch.b_sh * 0.5) * vi_sq * rij ** 2
-    Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
-    return Pi, Qi
-
-
 # Branch limits
 def compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, limit_type):
     """
