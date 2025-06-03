@@ -2383,8 +2383,8 @@ def _update_model_with_candidate_solution(network, model, candidate_solution):
                 s_base = network.network[year][day].baseMVA
                 for node_id in network.active_distribution_network_nodes:
                     shared_ess_idx = network.network[year][day].get_shared_energy_storage_idx(node_id)
-                    fix_or_set(model[year][day].shared_es_s_rated_fixed[shared_ess_idx], abs(candidate_solution[node_id][year]['s']) / s_base)
-                    fix_or_set(model[year][day].shared_es_e_rated_fixed[shared_ess_idx], abs(candidate_solution[node_id][year]['e']) / s_base)
+                    model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(abs(candidate_solution[node_id][year]['s']) / s_base)
+                    model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(abs(candidate_solution[node_id][year]['e']) / s_base)
     else:
         tn_node_id = network.tn_connection_nodeid
         for year in network.years:
@@ -2392,5 +2392,5 @@ def _update_model_with_candidate_solution(network, model, candidate_solution):
                 s_base = network.network[year][day].baseMVA
                 ref_node_id = network.network[year][day].get_reference_node_id()
                 shared_ess_idx = network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
-                fix_or_set(model[year][day].shared_es_s_rated_fixed[shared_ess_idx], abs(candidate_solution[tn_node_id][year]['s']) / s_base)
-                fix_or_set(model[year][day].shared_es_e_rated_fixed[shared_ess_idx], abs(candidate_solution[tn_node_id][year]['e']) / s_base)
+                model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(abs(candidate_solution[tn_node_id][year]['s']) / s_base)
+                model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(abs(candidate_solution[tn_node_id][year]['e']) / s_base)
