@@ -461,7 +461,7 @@ def ess_comp_rule(m, e, s_m, s_o, p, network, params):
     if params.slacks.ess.complementarity:
         return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] == m.slack_es_comp[e, s_m, s_o, p]
     else:
-        return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] <= es.s * 0.01
+        return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] <= es.s * 0.1
 
 
 def ess_balance_rule(m, e, s_m, s_o, p, network):
