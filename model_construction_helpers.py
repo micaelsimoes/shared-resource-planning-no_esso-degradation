@@ -380,12 +380,14 @@ def power_factor_rule_lower(m, g, s_m, s_o, p, network):
 def flex_energy_balance_rule(m, c, s_m, s_o, network, params):
     load = network.loads[c]
     if load.fl_reg:
+        if network.is_transmission and load.bus in network.active_distribution_network_nodes:
+            return pe.Constraint.Skip
         p_up = sum(m.flex_p_up[c, s_m, s_o, p] for p in m.periods)
         p_down = sum(m.flex_p_down[c, s_m, s_o, p] for p in m.periods)
         if params.slacks.flexibility.day_balance:
             return p_up == p_down + m.slack_flex_p_balance[c, s_m, s_o]
         else:
-            return p_up == p_down
+            return pe.inequality(-EQUALITY_TOLERANCE, p_up == p_down, EQUALITY_TOLERANCE)
     else:
         return pe.Constraint.Skip
 
@@ -397,6 +399,7 @@ def ess_sch_def(m, e, s_m, s_o, p):
 
 def ess_sdch_def(m, e, s_m, s_o, p):
     return m.es_sdch[e, s_m, s_o, p]**2 == m.es_pdch[e, s_m, s_o, p]**2 + m.es_qdch[e, s_m, s_o, p]**2
+
 
 def ess_phi_ch_limits_lower(m, e, s_m, s_o, p, network):
     ess = network.energy_storages[e]
@@ -835,7 +838,7 @@ def branch_flow_equation_rule(model, b, s_m, s_o, p, network, params):
 
     flow_ij_sqr_expr = compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, params.branch_limit_type)
 
-    return pe.inequality(-EQUALITY_TOLERANCE, model.flow_ij_sqr[b, s_m, s_o, p] - flow_ij_sqr_expr, EQUALITY_TOLERANCE)
+    return model.flow_ij_sqr[b, s_m, s_o, p] == flow_ij_sqr_expr
 
 
 def branch_flow_limit_rule(model, b, s_m, s_o, p, network, params):
