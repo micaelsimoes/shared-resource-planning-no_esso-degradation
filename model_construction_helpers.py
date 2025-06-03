@@ -312,7 +312,7 @@ def voltage_magnitude_def_rule(m, i, s_m, s_o, p):
     e = m.e[i, s_m, s_o, p]
     f = m.f[i, s_m, s_o, p]
     vmag_sq = e ** 2 + f ** 2
-    return m.vmag_sqr[i, s_m, s_o, p] == vmag_sq
+    return pe.inequality(-EQUALITY_TOLERANCE, m.vmag_sqr[i, s_m, s_o, p] - vmag_sq, EQUALITY_TOLERANCE)
 
 
 # Voltage constraints, magnitude
