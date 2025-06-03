@@ -148,7 +148,7 @@ def _read_network_parameters_from_file(parameters, filename):
         elif params_data['shared_ess_model'] == 'SIMPLIFIED':
             parameters.shared_ess_model = ESS_MODEL_SIMPLIFIED
         else:
-            print('[ERROR] Invalid Shaed ESS model. Exiting...')
+            print('[ERROR] Invalid Shared ESS model. Exiting...')
             exit(ERROR_PARAMS_FILE)
 
     if 'slacks' in params_data:
