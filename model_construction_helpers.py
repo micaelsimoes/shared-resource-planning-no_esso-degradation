@@ -423,7 +423,6 @@ def ess_phi_dch_limits_upper(m, e, s_m, s_o, p, network):
 
 
 def ess_comp_rule(m, e, s_m, s_o, p, network, params):
-    ess = network.energy_storages[e]
     if params.slacks.ess.complementarity:
         return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] == m.slack_es_comp[e, s_m, s_o, p]
     else:
@@ -809,41 +808,28 @@ def node_balance_q_rule(model, i, s_m, s_o, p, network, params):
         return Qg == Qd + Qi
 
 
-def branch_flow_equation_rule(model, b, s_m, s_o, p, network, params):
-
-    branch = network.branches[b]
-    if not branch.status:
-        return pe.Constraint.Skip
-
-    rij = model.r[b, s_m, s_o, p] if branch.is_transformer else 1.0
-
-    fnode_idx = network.get_node_idx(branch.fbus)
-    tnode_idx = network.get_node_idx(branch.tbus)
-
-    ei = model.e_actual[fnode_idx, s_m, s_o, p]
-    fi = model.f_actual[fnode_idx, s_m, s_o, p]
-    ej = model.e_actual[tnode_idx, s_m, s_o, p]
-    fj = model.f_actual[tnode_idx, s_m, s_o, p]
-
-    flow_ij_sqr_expr = compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, params.branch_limit_type)
-
-    return pe.inequality(-EQUALITY_TOLERANCE, model.flow_ij_sqr[b, s_m, s_o, p] - flow_ij_sqr_expr, EQUALITY_TOLERANCE)
-
-
 def branch_flow_limit_rule(model, b, s_m, s_o, p, network, params):
 
     branch = network.branches[b]
     if not branch.status:
         return pe.Constraint.Skip
 
+    fnode_idx = network.get_node_idx(branch.fbus)
+    tnode_idx = network.get_node_idx(branch.tbus)
     rating = branch.rate / network.baseMVA or BRANCH_UNKNOWN_RATING
-    flow_var = model.flow_ij_sqr[b, s_m, s_o, p]
+
+    rij = model.r[b, s_m, s_o, p] if branch.is_transformer else 1.0
+    ei = model.e_actual[fnode_idx, s_m, s_o, p]
+    fi = model.f_actual[fnode_idx, s_m, s_o, p]
+    ej = model.e_actual[tnode_idx, s_m, s_o, p]
+    fj = model.f_actual[tnode_idx, s_m, s_o, p]
+    flow_ij_sqr_expr = compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, params.branch_limit_type)
 
     if params.slacks.grid_operation.branch_flow:
         slack = model.slack_flow_ij_sqr[b, s_m, s_o, p]
-        return flow_var <= rating ** 2 + slack
+        return flow_ij_sqr_expr - slack <= rating ** 2
     else:
-        return flow_var <= rating ** 2
+        return flow_ij_sqr_expr <= rating ** 2
 
 
 def setup_cost_parameters(model, params):
