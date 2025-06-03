@@ -824,7 +824,7 @@ def branch_flow_limit_rule(model, b, s_m, s_o, p, network, params):
 
     if params.slacks.grid_operation.branch_flow:
         slack = model.slack_flow_ij_sqr[b, s_m, s_o, p]
-        return flow_var <= rating ** 2 + slack
+        return flow_var - slack <= rating ** 2
     else:
         return flow_var <= rating ** 2
 
