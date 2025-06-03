@@ -934,18 +934,19 @@ def build_objective(model, network, params):
                     generation_cost(model, network, s_m, s_o, params) +
                     flexibility_cost(model, network, s_m, s_o, params) +
                     load_curtailment_cost(model, network, s_m, s_o, params) +
-                    gen_curtailment_cost(model, network, s_m, s_o, params)
+                    gen_curtailment_cost(model, network, s_m, s_o, params) +
+                    ess_utilization_cost_penalty(model, network, s_m, s_o, params)
                 )
             elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
                 scenario_of = (
                     gen_curtailment_penalty(model, network, s_m, s_o, params) +
                     load_curtailment_penalty(model, network, s_m, s_o, params) +
-                    flexibility_penalty(model, network, s_m, s_o, params)
+                    flexibility_penalty(model, network, s_m, s_o, params) +
+                    ess_utilization_cost_penalty(model, network, s_m, s_o, params)
                 )
             else:
                 raise ValueError(f"Unknown objective function type: {params.obj_type}")
 
-            scenario_of += ess_utilization_cost_penalty(model, network, s_m, s_o, params)
             scenario_of += slack_penalties(model, network, s_m, s_o, params)
             model.total_cost.expr += weight * scenario_of
 
@@ -977,39 +978,11 @@ def flexibility_cost(model, network, s_m, s_o, params):
     return 0.00
 
 
-def flexibility_penalty(model, network, s_m, s_o, params):
-    if params.fl_reg:
-        penalty = model.penalty_flex_usage
-        return sum(
-            penalty * network.baseMVA * (
-                model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p] +
-                model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]
-            )
-            for c in model.loads
-            for p in model.periods
-        )
-    return 0.00
-
-
 def load_curtailment_cost(model, network, s_m, s_o, params):
     if params.l_curt:
         cost = model.cost_load_curtailment
         return sum(
             cost * network.baseMVA * (
-                model.pc_curt_down[c, s_m, s_o, p] + model.pc_curt_up[c, s_m, s_o, p] +
-                model.qc_curt_down[c, s_m, s_o, p] + model.qc_curt_up[c, s_m, s_o, p]
-            )
-            for c in model.loads
-            for p in model.periods
-        )
-    return 0.00
-
-
-def load_curtailment_penalty(model, network, s_m, s_o, params):
-    if params.l_curt:
-        penalty = model.penalty_load_curtailment
-        return sum(
-            penalty * network.baseMVA * (
                 model.pc_curt_down[c, s_m, s_o, p] + model.pc_curt_up[c, s_m, s_o, p] +
                 model.qc_curt_down[c, s_m, s_o, p] + model.qc_curt_up[c, s_m, s_o, p]
             )
@@ -1035,7 +1008,35 @@ def gen_curtailment_penalty(model, network, s_m, s_o, params):
         penalty = model.penalty_gen_curtailment
         return sum(
             penalty * network.baseMVA * model.sg_curt[g, s_m, s_o, p]
-            for g in model.generators if network.generators[g].is_curtaillable()
+            for g in model.generators
+            for p in model.periods
+        )
+    return 0.00
+
+
+def load_curtailment_penalty(model, network, s_m, s_o, params):
+    if params.l_curt:
+        penalty = model.penalty_load_curtailment
+        return sum(
+            penalty * network.baseMVA * (
+                model.pc_curt_down[c, s_m, s_o, p] + model.pc_curt_up[c, s_m, s_o, p] +
+                model.qc_curt_down[c, s_m, s_o, p] + model.qc_curt_up[c, s_m, s_o, p]
+            )
+            for c in model.loads
+            for p in model.periods
+        )
+    return 0.00
+
+
+def flexibility_penalty(model, network, s_m, s_o, params):
+    if params.fl_reg:
+        penalty = model.penalty_flex_usage
+        return sum(
+            penalty * network.baseMVA * (
+                model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p] +
+                model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]
+            )
+            for c in model.loads
             for p in model.periods
         )
     return 0.00
@@ -1066,13 +1067,9 @@ def slack_penalties(model, network, s_m, s_o, params):
     for i in model.nodes:
         for p in model.periods:
             if params.slacks.grid_operation.voltage:
-                total += base * PENALTY_VOLTAGE * (
-                    model.slack_e[i, s_m, s_o, p]**2 + model.slack_f[i, s_m, s_o, p]**2
-                )
+                total += base * PENALTY_VOLTAGE * (model.slack_e[i, s_m, s_o, p]**2 + model.slack_f[i, s_m, s_o, p]**2)
             if params.slacks.node_balance:
-                total += base * PENALTY_NODE_BALANCE * (
-                    model.slack_node_balance_p[i, s_m, s_o, p]**2 + model.slack_node_balance_q[i, s_m, s_o, p]**2
-                )
+                total += base * PENALTY_NODE_BALANCE * (model.slack_node_balance_p[i, s_m, s_o, p]**2 + model.slack_node_balance_q[i, s_m, s_o, p]**2)
 
     if params.fl_reg and params.slacks.flexibility.day_balance:
         total += base * PENALTY_FLEXIBILITY * sum(
