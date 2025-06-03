@@ -17,6 +17,7 @@ class NetworkParameters:
         self.enforce_vg = False
         self.branch_limit_type = BRANCH_LIMIT_CURRENT
         self.ess_model = ESS_MODEL_EXACT
+        self.shared_ess_model = ESS_MODEL_EXACT
         self.slacks = Slacks()
         self.print_to_screen = False
         self.plot_diagram = False
@@ -138,7 +139,16 @@ def _read_network_parameters_from_file(parameters, filename):
         elif params_data['ess_model'] == 'SIMPLIFIED':
             parameters.ess_model = ESS_MODEL_SIMPLIFIED
         else:
-            print('[ERROR] Invalid objective type. Exiting...')
+            print('[ERROR] Invalid ESS model. Exiting...')
+            exit(ERROR_PARAMS_FILE)
+
+    if 'shared_ess_model' in params_data:
+        if params_data['shared_ess_model'] == 'EXACT':
+            parameters.shared_ess_model = ESS_MODEL_EXACT
+        elif params_data['shared_ess_model'] == 'SIMPLIFIED':
+            parameters.shared_ess_model = ESS_MODEL_SIMPLIFIED
+        else:
+            print('[ERROR] Invalid Shaed ESS model. Exiting...')
             exit(ERROR_PARAMS_FILE)
 
     if 'slacks' in params_data:

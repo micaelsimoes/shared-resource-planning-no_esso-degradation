@@ -519,7 +519,10 @@ def sess_comp_rule(m, e, s_m, s_o, p, params):
     if params.slacks.shared_ess.complementarity:
         return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] == m.slack_shared_es_comp[e, s_m, s_o, p]
     else:
-        return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
+        if params.ess_model == ESS_MODEL_EXACT:
+            return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
+        elif params.ess_model == ESS_MODEL_SIMPLIFIED:
+            return pe.Constraint.Skip
 
 
 def sess_balance_rule(m, e, s_m, s_o, p, network):
