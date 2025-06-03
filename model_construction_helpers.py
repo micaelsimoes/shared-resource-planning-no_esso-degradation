@@ -806,7 +806,7 @@ def node_balance_p_rule(model, i, s_m, s_o, p, network, params):
     if params.slacks.node_balance:
         return Pg == Pd + Pi + model.slack_node_balance_p[i, s_m, s_o, p]
     else:
-        return pe.inequality(-EQUALITY_TOLERANCE, Pg - Pd - Pi, EQUALITY_TOLERANCE)
+        return Pg == Pd + Pi
 
 
 def node_balance_q_rule(model, i, s_m, s_o, p, network, params):
@@ -852,7 +852,7 @@ def node_balance_q_rule(model, i, s_m, s_o, p, network, params):
     if params.slacks.node_balance:
         return Qg == Qd + Qi + model.slack_node_balance_q[i, s_m, s_o, p]
     else:
-        return pe.inequality(-EQUALITY_TOLERANCE, Qg - Qd - Qi, EQUALITY_TOLERANCE)
+        return Qg == Qd + Qi
 
 
 def branch_flow_equation_rule(model, b, s_m, s_o, p, network, params):
