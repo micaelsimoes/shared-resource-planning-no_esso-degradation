@@ -559,11 +559,11 @@ def sess_qnet_rule(m, e, s_m, s_o, p):
 
 
 def sess_s_sensitivities(m, e):
-    return m.shared_es_s_rated[e] <= m.shared_es_s_rated_fixed[e]
+    return m.shared_es_s_rated[e] == m.shared_es_s_rated_fixed[e]
 
 
 def sess_e_sensitivities(m, e):
-    return m.shared_es_e_rated[e] <= m.shared_es_e_rated_fixed[e]
+    return m.shared_es_e_rated[e] == m.shared_es_e_rated_fixed[e]
 
 
 # Branch limits
@@ -626,34 +626,6 @@ def compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, limit_type):
 
 
 # Objective function
-def compute_weight(network, omega_market, omega_oper):
-    return network.baseMVA * omega_market * omega_oper
-
-
-def add_flex_cost(model, s_m, s_o, p, c, unit_cost, baseMVA):
-    flex_pc = model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p]
-    flex_qc = model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]
-    return unit_cost * baseMVA * (flex_pc + flex_qc)
-
-
-def add_load_curtailment(model, s_m, s_o, p, c, cost, baseMVA):
-    pc = model.pc_curt_down[c, s_m, s_o, p] + model.pc_curt_up[c, s_m, s_o, p]
-    qc = model.qc_curt_down[c, s_m, s_o, p] + model.qc_curt_up[c, s_m, s_o, p]
-    return cost * baseMVA * (pc + qc)
-
-
-def add_gen_curtailment(model, s_m, s_o, p, g, cost, baseMVA):
-    return cost * baseMVA * model.sg_curt[g, s_m, s_o, p]
-
-
-def add_ess_usage(model, s_m, s_o, p, e, sch_var, sdch_var, penalty, baseMVA):
-    return penalty * baseMVA * (sch_var[e, s_m, s_o, p] + sdch_var[e, s_m, s_o, p])
-
-
-def add_slack_squared(var):
-    return var**2
-
-
 def compute_node_load(model, i, s_m, s_o, p, network, params):
 
     node = network.nodes[i]
