@@ -153,6 +153,8 @@ def _read_network_parameters_from_file(parameters, filename):
             parameters.shared_ess_model = ESS_MODEL_LP_SIMPLIFIED
         elif params_data['shared_ess_model'] == 'RELAXED':
             parameters.shared_ess_model = ESS_MODEL_LP_RELAXED
+        elif params_data['shared_ess_model'] == 'SIMPLIFIED_EXTENDED':
+            parameters.ess_model = ESS_MODEL_LP_SIMPLIFIED_EXTENDED
         else:
             print('[ERROR] Invalid Shared ESS model. Exiting...')
             exit(ERROR_PARAMS_FILE)
