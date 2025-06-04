@@ -631,9 +631,7 @@ def sess_simplified_model_dch_rule(m, e, s_m, s_o, p, network):
 
 
 def sess_simplified_model_comp_rule(m, e, s_m, s_o, p, network):
-    return m.es_sdch[e, s_m, s_o, p] <= m.shared_es_s_rated[e] - m.shared_es_sch[e, s_m, s_o, p]
-
-
+    return m.shared_es_sdch[e, s_m, s_o, p] <= m.shared_es_s_rated[e] - m.shared_es_sch[e, s_m, s_o, p]
 
 
 # Branch limits
