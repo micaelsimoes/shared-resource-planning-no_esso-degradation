@@ -608,7 +608,7 @@ def sess_relaxed_model_ch_rule(m, e, s_m, s_o, p):
 
 def sess_relaxed_model_dch_rule(m, e, s_m, s_o, p):
     s_max = m.shared_es_s_rated[e]
-    return m.es_sdch[e, s_m, s_o, p] <= s_max * m.es_sdch_comp[e, s_m, s_o, p]
+    return m.shared_es_sdch[e, s_m, s_o, p] <= s_max * m.shared_es_sdch_comp[e, s_m, s_o, p]
 
 
 def sess_relaxed_model_comp_rule(m, e, s_m, s_o, p):
