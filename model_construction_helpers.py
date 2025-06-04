@@ -542,9 +542,9 @@ def sess_comp_rule(m, e, s_m, s_o, p, params):
     if params.slacks.shared_ess.complementarity:
         return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] == m.slack_shared_es_comp[e, s_m, s_o, p]
     else:
-        if params.ess_model == ESS_MODEL_EXACT:
+        if params.shared_ess_model == ESS_MODEL_EXACT:
             return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
-        elif params.ess_model == ESS_MODEL_SIMPLIFIED:
+        elif params.shared_ess_model == ESS_MODEL_SIMPLIFIED:
             return pe.Constraint.Skip
         else:
             print('[ERROR] Invalid ESS model. Exiting...')
