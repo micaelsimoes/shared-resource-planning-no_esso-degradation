@@ -630,7 +630,7 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
             add_regularization_to_tso_objective(model_year_day, net_year_day)
 
     # Run SMOPF
-    results = _solve_tso_model(model, consensus_vars)
+    results = _solve_tso_model(model, transmission_network, consensus_vars)
 
     return model, results
 
