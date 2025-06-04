@@ -719,11 +719,11 @@ def _create_distribution_network_model(node_id, distribution_network, candidate_
             s_base = net.baseMVA
 
             ref_node_idx = net.get_node_idx(net.get_reference_node_id())
-            ess_idx = net.get_shared_energy_storage_idx(net.get_reference_node_id())
+            shared_ess_idx = net.get_shared_energy_storage_idx(net.get_reference_node_id())
 
-            define_interface_variables(model, year, day)
-            define_expected_value_constraints(model, net, year, day, ref_node_idx, ess_idx)
-            add_regularization_to_objective(model, net, year, day, ref_node_idx, ess_idx, s_base)
+            define_dso_interface_variables(model, year, day)
+            define_dso_expected_value_constraints(model, net, year, day, ref_node_idx, shared_ess_idx)
+            add_regularization_to_dso_objective(model, net, year, day, ref_node_idx, shared_ess_idx, s_base)
 
     return node_id, model, distribution_network
 
