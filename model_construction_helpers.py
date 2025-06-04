@@ -456,6 +456,21 @@ def ess_soc_final_rule(m, e, s_m, s_o, network, params):
         return pe.inequality(-SMALL_TOLERANCE, m.es_soc[e, s_m, s_o, final_p] - final_soc, SMALL_TOLERANCE)
 
 
+# Linear ESS models -- Relaxed LP formulation
+def ess_relax_ch_rule(m, e, s_m, s_o, p, network):
+    ess = network.energy_storages[e]
+    return m.es_sch[e, s_m, s_o, p] <= ess.s * m.es_sch_comp[e, s_m, s_o, p]
+
+
+def ess_relax_dch_rule(m, e, s_m, s_o, p, network):
+    ess = network.energy_storages[e]
+    return m.es_sdch[e, s_m, s_o, p] <= ess.s * m.es_sdch_comp[e, s_m, s_o, p]
+
+
+def ess_relax_comp_rule(m, e, s_m, s_o, p):
+    return m.es_sch_comp[e, s_m, s_o, p] + m.es_sdch_comp[e, s_m, s_o, p] <= 1.00
+
+
 # Shared Energy Storage
 def sess_phi_ch_limits_lower(m, e, s_m, s_o, p, network):
     ess = network.shared_energy_storages[e]
