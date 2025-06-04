@@ -562,7 +562,7 @@ def sess_comp_rule(m, e, s_m, s_o, p, params):
     else:
         if params.shared_ess_model == ESS_MODEL_EXACT:
             return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
-        elif params.shared_ess_model in [ESS_MODEL_LP_SIMPLIFIED, ESS_MODEL_LP_RELAXED]:
+        elif params.shared_ess_model in [ESS_MODEL_LP_SIMPLIFIED, ESS_MODEL_LP_RELAXED, ESS_MODEL_LP_SIMPLIFIED_EXTENDED]:
             return pe.Constraint.Skip
         else:
             print('[ERROR] Invalid ESS model. Exiting...')
@@ -613,25 +613,6 @@ def sess_relaxed_model_dch_rule(m, e, s_m, s_o, p):
 
 def sess_relaxed_model_comp_rule(m, e, s_m, s_o, p):
     return m.shared_es_sch_comp[e, s_m, s_o, p] + m.shared_es_sdch_comp[e, s_m, s_o, p] <= 1.00
-
-
-# - Linear Shared ESS models -- Extended simplified formulation
-def ess_simplified_model_ch_rule(m, e, s_m, s_o, p, network):
-    ess = network.energy_storages[e]
-    soc_prev = ess.e_init if p == 0 else m.es_soc[e, s_m, s_o, p - 1]
-    return m.es_sch[e, s_m, s_o, p] <= (ess.e_max - soc_prev) / ess.eff_ch
-
-
-def ess_simplified_model_dch_rule(m, e, s_m, s_o, p, network):
-    ess = network.energy_storages[e]
-    soc_prev = ess.e_init if p == 0 else m.es_soc[e, s_m, s_o, p - 1]
-    return m.es_sdch[e, s_m, s_o, p] <= (soc_prev - ess.e_min) / ess.eff_dch
-
-
-def ess_simplified_model_comp_rule(m, e, s_m, s_o, p, network):
-    ess = network.energy_storages[e]
-    return m.es_sdch[e, s_m, s_o, p] <= ess.s - m.es_sch[e, s_m, s_o, p]
-
 
 
 # Branch limits
