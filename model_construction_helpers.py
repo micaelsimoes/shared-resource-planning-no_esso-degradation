@@ -1090,3 +1090,59 @@ def slack_penalties(model, network, s_m, s_o, params):
                 total += base * PENALTY_CURRENT * model.slack_flow_ij_sqr[b, s_m, s_o, p]
 
     return total
+
+
+# ADMM Models
+def define_interface_variables(model, year, day):
+    model[year][day].expected_interface_vmag_sqr = pe.Var(model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.0)
+    model[year][day].expected_interface_pf_p = pe.Var(model[year][day].periods, domain=pe.Reals, initialize=0.0)
+    model[year][day].expected_interface_pf_q = pe.Var(model[year][day].periods, domain=pe.Reals, initialize=0.0)
+    model[year][day].expected_shared_ess_p = pe.Var(model[year][day].periods, domain=pe.Reals, initialize=0.0)
+    model[year][day].expected_shared_ess_q = pe.Var(model[year][day].periods, domain=pe.Reals, initialize=0.0)
+
+
+def define_expected_value_constraints(model, net, year, day, ref_node_idx, ess_idx):
+
+    def expected_value_rule(m, p):
+        evs = ep_p = ep_q = ess_p = ess_q = 0.0
+        for s_m in m.scenarios_market:
+            for s_o in m.scenarios_operation:
+                weight = net.prob_market_scenarios[s_m] * net.prob_operation_scenarios[s_o]
+                evs += weight * m.vmag_sqr[ref_node_idx, s_m, s_o, p]
+                ep_p += weight * m.pg_node[ref_node_idx, s_m, s_o, p]
+                ep_q += weight * m.qg_node[ref_node_idx, s_m, s_o, p]
+                ess_p += weight * m.shared_es_pnet[ess_idx, s_m, s_o, p]
+                ess_q += weight * m.shared_es_qnet[ess_idx, s_m, s_o, p]
+        return (
+            m.expected_interface_vmag_sqr[p] == evs,
+            m.expected_interface_pf_p[p] == ep_p,
+            m.expected_interface_pf_q[p] == ep_q,
+            m.expected_shared_ess_p[p] == ess_p,
+            m.expected_shared_ess_q[p] == ess_q,
+        )
+
+    model[year][day].interface_expected_values = pe.ConstraintList()
+    for p in model[year][day].periods:
+        rules = expected_value_rule(model[year][day], p)
+        for rule in rules:
+            model[year][day].interface_expected_values.add(rule)
+
+
+def add_regularization_to_objective(model, net, year, day, ref_node_idx, ess_idx, s_base):
+    penalty = pe.Param(initialize=PENALTY_REGULARIZATION, mutable=True)
+    model[year][day].penalty_regularization = penalty
+    expr = sum(
+        penalty * (
+            (model[year][day].vmag_sqr[ref_node_idx, s_m, s_o, p] - model[year][day].expected_interface_vmag_sqr[p]) ** 2 +
+            s_base * (model[year][day].pg_node[ref_node_idx, s_m, s_o, p] - model[year][day].expected_interface_pf_p[p]) ** 2 +
+            s_base * (model[year][day].qg_node[ref_node_idx, s_m, s_o, p] - model[year][day].expected_interface_pf_q[p]) ** 2 +
+            s_base * (model[year][day].shared_es_pnet[ess_idx, s_m, s_o, p] - model[year][day].expected_shared_ess_p[p]) ** 2 +
+            s_base * (model[year][day].shared_es_qnet[ess_idx, s_m, s_o, p] - model[year][day].expected_shared_ess_q[p]) ** 2
+        )
+        for s_m in model[year][day].scenarios_market
+        for s_o in model[year][day].scenarios_operation
+        for p in model[year][day].periods
+    )
+    model[year][day].regularization = pe.Expression(expr=expr)
+    model[year][day].objective.expr += model[year][day].regularization
+
