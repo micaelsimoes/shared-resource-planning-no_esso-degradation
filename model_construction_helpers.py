@@ -1160,6 +1160,11 @@ def add_regularization_to_tso_objective(model, network):
     model.regularization = pe.Expression(expr=expr)
     model.objective.expr += model.regularization
 
+
+
+
+
+
 # - DSO
 def define_dso_interface_variables(model):
     model.expected_interface_vmag_sqr = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=1.0)

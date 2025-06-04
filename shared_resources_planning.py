@@ -629,7 +629,16 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
             define_tso_expected_value_constraints(model_year_day, net_year_day)
             add_regularization_to_tso_objective(model_year_day, net_year_day)
 
-    return model
+    # Run SMOPF
+    results = _solve_tso_model(model, consensus_vars)
+
+    return model, results
+
+
+def _solve_tso_model(model, transmission_network, consensus_vars):
+    results = transmission_network.optimize(model)
+    _update_consensus_vars(model, transmission_network, None, consensus_vars)
+    return model, results
 
 
 def create_distribution_networks_models_bck(distribution_networks, consensus_vars, candidate_solution):
@@ -749,7 +758,7 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
 
     # 2. Sequential model solving
     for node_id, model, dist_net in constructed_models:
-        node_id, model, res = _solve_dso_model(node_id, model, dist_net, consensus_vars)
+        model, res = _solve_dso_model(model, dist_net, consensus_vars)
         dso_models[node_id] = model
         results[node_id] = res
 
@@ -777,28 +786,44 @@ def _create_distribution_network_model(node_id, distribution_network, candidate_
     return node_id, model, distribution_network
 
 
-def _solve_dso_model(node_id, model, distribution_network, consensus_vars):
+def _solve_dso_model(model, distribution_network, consensus_vars):
     results = distribution_network.optimize(model)
-    _update_consensus_vars(model, distribution_network, node_id, consensus_vars)
-    return node_id, model, results
+    _update_consensus_vars(model, distribution_network, consensus_vars)
+    return model, results
 
 
-def _update_consensus_vars(model, distribution_network, node_id, consensus_vars):
-    for year in distribution_network.years:
-        for day in distribution_network.days:
-            net = distribution_network.network[year][day]
-            ref_node = net.get_reference_node_id()
-            s_base = net.baseMVA
-            v_base = net.get_node_base_kv(ref_node)
-            for p in model[year][day].periods:
-                consensus_vars['v_sqr']['dso']['current'][node_id][year][day][p] = pe.value(model[year][day].expected_interface_vmag_sqr[p]) * (v_base ** 2)
-                consensus_vars['pf']['dso']['current'][node_id][year][day]['p'][p] = pe.value(model[year][day].expected_interface_pf_p[p]) * s_base
-                consensus_vars['pf']['dso']['current'][node_id][year][day]['q'][p] = pe.value(model[year][day].expected_interface_pf_q[p]) * s_base
-                consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] = pe.value(model[year][day].expected_shared_ess_p[p]) * s_base
-                consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] = pe.value(model[year][day].expected_shared_ess_q[p]) * s_base
-
-
-
+def _update_consensus_vars(model, network, consensus_vars):
+    if network.is_transmission:
+        for year in network.years:
+            for day in network.days:
+                net_year_day = network.network[year][day]
+                s_base = net_year_day.baseMVA
+                model_year_day = model[year][day]
+                for dn in model_year_day.active_distribution_networks:
+                    adn_node_id = network.active_distribution_network_nodes[dn]
+                    v_base = network.get_node_base_kv(adn_node_id)
+                    shared_ess_idx = network.get_shared_energy_storage_idx(adn_node_id)
+                    for p in model_year_day.periods:
+                        consensus_vars['v_sqr']['tso']['current'][adn_node_id][year][day][p] = pe.value(model_year_day.expected_interface_vmag_sqr[dn, p]) * (v_base ** 2)
+                        consensus_vars['pf']['tso']['current'][adn_node_id][year][day]['p'][p] = pe.value(model_year_day.expected_interface_pf_p[dn, p]) * s_base
+                        consensus_vars['pf']['tso']['current'][adn_node_id][year][day]['q'][p] = pe.value(model_year_day.expected_interface_pf_q[dn, p]) * s_base
+                        consensus_vars['ess']['tso']['current'][adn_node_id][year][day]['p'][p] = pe.value(model_year_day.expected_shared_ess_p[shared_ess_idx, p]) * s_base
+                        consensus_vars['ess']['tso']['current'][adn_node_id][year][day]['q'][p] = pe.value(model_year_day.expected_shared_ess_q[shared_ess_idx, p]) * s_base
+    else:
+        node_id = network.tn_connection_nodeid
+        for year in network.years:
+            for day in network.days:
+                net_year_day = network.network[year][day]
+                ref_node = net_year_day.get_reference_node_id()
+                s_base = net_year_day.baseMVA
+                v_base = net_year_day.get_node_base_kv(ref_node)
+                model_year_day = model[year][day]
+                for p in model[year][day].periods:
+                    consensus_vars['v_sqr']['dso']['current'][node_id][year][day][p] = pe.value(model_year_day.expected_interface_vmag_sqr[p]) * (v_base ** 2)
+                    consensus_vars['pf']['dso']['current'][node_id][year][day]['p'][p] = pe.value(model_year_day.expected_interface_pf_p[p]) * s_base
+                    consensus_vars['pf']['dso']['current'][node_id][year][day]['q'][p] = pe.value(model_year_day.expected_interface_pf_q[p]) * s_base
+                    consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] = pe.value(model_year_day.expected_shared_ess_p[p]) * s_base
+                    consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] = pe.value(model_year_day.expected_shared_ess_q[p]) * s_base
 
 
 def create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidate_solution):
