@@ -433,7 +433,7 @@ def ess_comp_rule(m, e, s_m, s_o, p, network, params):
     else:
         if params.ess_model == ESS_MODEL_EXACT:
             return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
-        elif params.ess_model in [ESS_MODEL_SIMPLIFIED, ESS_MODEL_RELAXED_LP]:
+        elif params.ess_model in [ESS_MODEL_SIMPLIFIED, ESS_MODEL_RELAXED_LP, ESS_MODEL_SIMPLIFIED_EXTENDED]:
             return pe.Constraint.Skip
         else:
             print('[ERROR] Invalid ESS model. Exiting...')
@@ -456,19 +456,37 @@ def ess_soc_final_rule(m, e, s_m, s_o, network, params):
         return pe.inequality(-SMALL_TOLERANCE, m.es_soc[e, s_m, s_o, final_p] - final_soc, SMALL_TOLERANCE)
 
 
-# Linear ESS models -- Relaxed LP formulation
-def ess_relax_ch_rule(m, e, s_m, s_o, p, network):
+# - Linear ESS models -- Relaxed LP formulation
+def ess_relaxed_model_ch_rule(m, e, s_m, s_o, p, network):
     ess = network.energy_storages[e]
     return m.es_sch[e, s_m, s_o, p] <= ess.s * m.es_sch_comp[e, s_m, s_o, p]
 
 
-def ess_relax_dch_rule(m, e, s_m, s_o, p, network):
+def ess_relaxed_model_dch_rule(m, e, s_m, s_o, p, network):
     ess = network.energy_storages[e]
     return m.es_sdch[e, s_m, s_o, p] <= ess.s * m.es_sdch_comp[e, s_m, s_o, p]
 
 
-def ess_relax_comp_rule(m, e, s_m, s_o, p):
+def ess_relaxed_model_comp_rule(m, e, s_m, s_o, p):
     return m.es_sch_comp[e, s_m, s_o, p] + m.es_sdch_comp[e, s_m, s_o, p] <= 1.00
+
+
+# - Linear ESS models -- Extended simplified formulation
+def ess_simplified_model_ch_rule(m, e, s_m, s_o, p, network):
+    ess = network.energy_storages[e]
+    soc_prev = ess.e_init if p == 0 else m.es_soc[e, s_m, s_o, p - 1]
+    return m.es_sch[e, s_m, s_o, p] <= (ess.e_max - soc_prev) / ess.eff_ch
+
+
+def ess_simplified_model_dch_rule(m, e, s_m, s_o, p, network):
+    ess = network.energy_storages[e]
+    soc_prev = ess.e_init if p == 0 else m.es_soc[e, s_m, s_o, p - 1]
+    return m.es_sdch[e, s_m, s_o, p] <= (soc_prev - ess.e_min) / ess.eff_dch
+
+
+def ess_simplified_model_comp_rule(m, e, s_m, s_o, p, network):
+    ess = network.energy_storages[e]
+    return m.es_sdch[e, s_m, s_o, p] <= ess.s - m.es_sch[e, s_m, s_o, p]
 
 
 # Shared Energy Storage
