@@ -1,7 +1,5 @@
-from token import EQUAL
-
 import pyomo.environ as pe
-from math import sqrt, tan, atan2, acos
+from math import tan, atan2, acos
 from definitions import *
 
 
