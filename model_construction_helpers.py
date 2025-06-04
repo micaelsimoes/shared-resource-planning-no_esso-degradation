@@ -600,6 +600,20 @@ def sess_s_sensitivities(m, e):
 def sess_e_sensitivities(m, e):
     return m.shared_es_e_rated[e] <= m.shared_es_e_rated_fixed[e]
 
+# - Linear Shared ESS models -- Relaxed LP formulation
+def sess_relaxed_model_ch_rule(m, e, s_m, s_o, p):
+    s_max = m.shared_es_s_rated[e]
+    return m.shared_es_sch[e, s_m, s_o, p] <= s_max * m.shared_es_sch_comp[e, s_m, s_o, p]
+
+
+def sess_relaxed_model_dch_rule(m, e, s_m, s_o, p, network):
+    s_max = m.shared_es_s_rated[e]
+    return m.es_sdch[e, s_m, s_o, p] <= s_max * m.es_sdch_comp[e, s_m, s_o, p]
+
+
+def sess_relaxed_model_comp_rule(m, e, s_m, s_o, p):
+    return m.shared_es_sch_comp[e, s_m, s_o, p] + m.shared_es_sdch_comp[e, s_m, s_o, p] <= 1.00
+
 
 # Branch limits
 def compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, limit_type):

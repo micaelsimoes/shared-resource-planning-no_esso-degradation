@@ -1217,6 +1217,9 @@ def _build_model(network, params):
         model.slack_shared_es_comp = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     if params.slacks.shared_ess.day_balance:
         model.slack_shared_es_soc_final = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.Reals, initialize=0.0)
+    if params.ess_model == ESS_MODEL_LP_RELAXED:
+        model.shared_es_sch_comp = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 1.00))
+        model.shared_es_sdch_comp = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 1.00))
 
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
@@ -1278,6 +1281,14 @@ def _build_model(network, params):
     model.shared_energy_storage_qnet_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_qnet_rule)
     model.shared_energy_storage_s_sensitivities = pe.Constraint(model.shared_energy_storages, rule=sess_s_sensitivities)
     model.shared_energy_storage_e_sensitivities = pe.Constraint(model.shared_energy_storages, rule=sess_e_sensitivities)
+    if params.shared_ess_model == ESS_MODEL_LP_RELAXED:
+        model.shared_energy_storage_relax_ch = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_relaxed_model_ch_rule, network=network))
+        model.shared_energy_storage_relax_dch = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_relaxed_model_dch_rule, network=network))
+        model.shared_energy_storage_relax_comp = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods,rule=sess_relaxed_model_comp_rule)
+    if params.shared_ess_model == ESS_MODEL_LP_SIMPLIFIED_EXTENDED:
+        model.energy_storage_relax_ch = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_simplified_model_ch_rule, network=network))
+        model.energy_storage_relax_dch = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_simplified_model_dch_rule, network=network))
+        model.energy_storage_relax_comp = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_simplified_model_comp_rule, network=network))
 
     # - Generation and Load per node
     model.net_load_p_per_node = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_p_per_node_rule, network=network, params=params))
@@ -1303,9 +1314,9 @@ def _build_model(network, params):
     # Model suffixes (used for warm start)
     model.ipopt_zL_out = pe.Suffix(direction=pe.Suffix.IMPORT)  # Ipopt bound multipliers (obtained from solution)
     model.ipopt_zU_out = pe.Suffix(direction=pe.Suffix.IMPORT)
-    model.ipopt_zL_in = pe.Suffix(direction=pe.Suffix.EXPORT)  # Ipopt bound multipliers (sent to solver)
+    model.ipopt_zL_in = pe.Suffix(direction=pe.Suffix.EXPORT)   # Ipopt bound multipliers (sent to solver)
     model.ipopt_zU_in = pe.Suffix(direction=pe.Suffix.EXPORT)
-    model.dual = pe.Suffix(direction=pe.Suffix.IMPORT_EXPORT)  # Obtain dual solutions from previous solve and send to warm start
+    model.dual = pe.Suffix(direction=pe.Suffix.IMPORT_EXPORT)   # Obtain dual solutions from previous solve and send to warm start
 
     return model
 
