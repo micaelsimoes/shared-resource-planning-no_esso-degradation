@@ -433,7 +433,7 @@ def ess_comp_rule(m, e, s_m, s_o, p, network, params):
     else:
         if params.ess_model == ESS_MODEL_EXACT:
             return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
-        elif params.ess_model == ESS_MODEL_SIMPLIFIED:
+        elif params.ess_model in [ESS_MODEL_SIMPLIFIED, ESS_MODEL_RELAXED_LP]:
             return pe.Constraint.Skip
         else:
             print('[ERROR] Invalid ESS model. Exiting...')
