@@ -615,6 +615,27 @@ def sess_relaxed_model_comp_rule(m, e, s_m, s_o, p):
     return m.shared_es_sch_comp[e, s_m, s_o, p] + m.shared_es_sdch_comp[e, s_m, s_o, p] <= 1.00
 
 
+# - Linear Shared ESS models -- Extended simplified formulation
+def sess_simplified_model_ch_rule(m, e, s_m, s_o, p, network):
+    sess = network.shared_energy_storages[e]
+    e_max = m.shared_es_e_rated[e] * ENERGY_STORAGE_MAX_ENERGY_STORED
+    soc_prev = m.shared_es_e_rated[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC if p == 0 else m.shared_es_soc[e, s_m, s_o, p - 1]
+    return m.shared_es_sch[e, s_m, s_o, p] <= (e_max - soc_prev) / sess.eff_ch
+
+
+def sess_simplified_model_dch_rule(m, e, s_m, s_o, p, network):
+    sess = network.shared_energy_storages[e]
+    e_min = m.shared_es_e_rated[e] * ENERGY_STORAGE_MIN_ENERGY_STORED
+    soc_prev = m.shared_es_e_rated[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC if p == 0 else m.shared_es_soc[e, s_m, s_o, p - 1]
+    return m.shared_es_sdch[e, s_m, s_o, p] <= (soc_prev - e_min) / sess.eff_dch
+
+
+def sess_simplified_model_comp_rule(m, e, s_m, s_o, p, network):
+    return m.es_sdch[e, s_m, s_o, p] <= m.shared_es_s_rated[e] - m.shared_es_sch[e, s_m, s_o, p]
+
+
+
+
 # Branch limits
 def compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, limit_type):
     """
