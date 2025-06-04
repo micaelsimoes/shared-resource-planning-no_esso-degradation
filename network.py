@@ -1286,9 +1286,9 @@ def _build_model(network, params):
         model.shared_energy_storage_relax_dch = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_relaxed_model_dch_rule)
         model.shared_energy_storage_relax_comp = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods,rule=sess_relaxed_model_comp_rule)
     if params.shared_ess_model == ESS_MODEL_LP_SIMPLIFIED_EXTENDED:
-        model.energy_storage_relax_ch = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_simplified_model_ch_rule, network=network))
-        model.energy_storage_relax_dch = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_simplified_model_dch_rule, network=network))
-        model.energy_storage_relax_comp = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_simplified_model_comp_rule, network=network))
+        model.shared_energy_storage_relax_ch = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_simplified_model_ch_rule, network=network))
+        model.shared_energy_storage_relax_dch = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_simplified_model_dch_rule, network=network))
+        model.shared_energy_storage_relax_comp = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_simplified_model_comp_rule, network=network))
 
     # - Generation and Load per node
     model.net_load_p_per_node = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_p_per_node_rule, network=network, params=params))
