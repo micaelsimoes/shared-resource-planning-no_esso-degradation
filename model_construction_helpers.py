@@ -562,7 +562,7 @@ def sess_comp_rule(m, e, s_m, s_o, p, params):
     else:
         if params.shared_ess_model == ESS_MODEL_EXACT:
             return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
-        elif params.shared_ess_model == ESS_MODEL_LP_SIMPLIFIED:
+        elif params.shared_ess_model == [ESS_MODEL_LP_SIMPLIFIED, ESS_MODEL_LP_RELAXED]:
             return pe.Constraint.Skip
         else:
             print('[ERROR] Invalid ESS model. Exiting...')
