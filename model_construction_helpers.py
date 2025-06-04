@@ -433,7 +433,7 @@ def ess_comp_rule(m, e, s_m, s_o, p, network, params):
     else:
         if params.ess_model == ESS_MODEL_EXACT:
             return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
-        elif params.ess_model in [ESS_MODEL_SIMPLIFIED, ESS_MODEL_RELAXED_LP, ESS_MODEL_SIMPLIFIED_EXTENDED]:
+        elif params.ess_model in [ESS_MODEL_LP_SIMPLIFIED, ESS_MODEL_LP_RELAXED, ESS_MODEL_LP_SIMPLIFIED_EXTENDED]:
             return pe.Constraint.Skip
         else:
             print('[ERROR] Invalid ESS model. Exiting...')
@@ -562,7 +562,7 @@ def sess_comp_rule(m, e, s_m, s_o, p, params):
     else:
         if params.shared_ess_model == ESS_MODEL_EXACT:
             return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
-        elif params.shared_ess_model == ESS_MODEL_SIMPLIFIED:
+        elif params.shared_ess_model == ESS_MODEL_LP_SIMPLIFIED:
             return pe.Constraint.Skip
         else:
             print('[ERROR] Invalid ESS model. Exiting...')
