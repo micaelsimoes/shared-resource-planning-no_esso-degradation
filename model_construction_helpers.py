@@ -1,6 +1,7 @@
-import pyomo.environ as pe
+from copy import copy
 from functools import partial
 from math import tan, atan2, acos
+from helper_functions import *
 from definitions import *
 
 
@@ -1094,6 +1095,70 @@ def slack_penalties(model, network, s_m, s_o, params):
 
 
 # ADMM Models
+
+# - TSO
+def define_tso_interface_variables(model):
+    model.expected_interface_vmag_sqr = pe.Var(model.active_distribution_networks, model.periods, domain=pe.NonNegativeReals, initialize=1.0)
+    model.expected_interface_pf_p = pe.Var(model.active_distribution_networks, model.periods, domain=pe.Reals, initialize=0.0)
+    model.expected_interface_pf_q = pe.Var(model.active_distribution_networks, model.periods, domain=pe.Reals, initialize=0.0)
+    model.expected_shared_ess_p = pe.Var(model.shared_energy_storages, model.periods, domain=pe.Reals, initialize=0.0)
+    model.expected_shared_ess_q = pe.Var(model.shared_energy_storages, model.periods, domain=pe.Reals, initialize=0.0)
+
+
+def define_tso_expected_value_constraints(model, network):
+    model.interface_expected_values = pe.ConstraintList()
+    for dn in model.active_distribution_networks:
+        adn_id = network.active_distribution_network_nodes[dn]
+        adn_idx = network.get_node_idx(adn_id)
+        for p in model.periods:
+            evs = ep_p = ep_q = 0.0
+            for s_m in model.scenarios_market:
+                for s_o in model.scenarios_operation:
+                    weight = network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
+                    evs += weight * model.vmag_sqr[adn_idx, s_m, s_o, p]
+                    ep_p += weight * model.pc_node[adn_idx, s_m, s_o, p]
+                    ep_q += weight * model.qc_node[adn_idx, s_m, s_o, p]
+            model.interface_expected_values.add(model.expected_interface_vmag_sqr[dn, p] == evs)
+            model.interface_expected_values.add(model.expected_interface_pf_p[dn, p] == ep_p)
+            model.interface_expected_values.add(model.expected_interface_pf_q[dn, p] == ep_q)
+    for e in model.shared_energy_storages:
+        for p in model.periods:
+            ess_p = ess_q = 0.0
+            for s_m in model.scenarios_market:
+                for s_o in model.scenarios_operation:
+                    weight = network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
+                    ess_p += weight * model.shared_es_pnet[e, s_m, s_o, p]
+                    ess_q += weight * model.shared_es_qnet[e, s_m, s_o, p]
+            model.interface_expected_values.add(model.expected_shared_ess_p[e, p] == ess_p)
+            model.interface_expected_values.add(model.expected_shared_ess_q[e, p] == ess_q)
+
+
+def add_regularization_to_tso_objective(model, network):
+    s_base = network.baseMVA
+    penalty = pe.Param(initialize=PENALTY_REGULARIZATION, mutable=True)
+    model.penalty_regularization = penalty
+    expr = copy(model.objective.expr)
+    for dn in model.active_distribution_networks:
+        adn_id = network.active_distribution_network_nodes[dn]
+        adn_idx = network.get_node_idx(adn_id)
+        for s_m in model.scenarios_market:
+            for s_o in model.scenarios_operation:
+                for p in model.periods:
+                    expr += penalty * (
+                            (model.vmag_sqr[adn_idx, s_m, s_o, p] - model.expected_interface_vmag_sqr[dn, p]) ** 2 +
+                            s_base * (model.pc_node[adn_idx, s_m, s_o, p] - model.expected_interface_pf_p[dn, p]) ** 2 +
+                            s_base * (model.qc_node[adn_idx, s_m, s_o, p] - model.expected_interface_pf_q[dn, p]) ** 2
+                    )
+    for e in model.shared_energy_storages:
+        for s_m in model.scenarios_market:
+            for s_o in model.scenarios_operation:
+                for p in model.periods:
+                    expr += penalty * s_base * (
+                            (model.shared_es_pnet[e, s_m, s_o, p] - model.expected_shared_ess_p[e, p]) ** 2 +
+                            (model.shared_es_qnet[e, s_m, s_o, p] - model.expected_shared_ess_q[e, p]) ** 2
+                    )
+    model.regularization = pe.Expression(expr=expr)
+    model.objective.expr += model.regularization
 
 # - DSO
 def define_dso_interface_variables(model):
