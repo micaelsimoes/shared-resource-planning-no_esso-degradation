@@ -685,7 +685,7 @@ def create_distribution_networks_models_bck(distribution_networks, consensus_var
 def create_distribution_networks_models(distribution_networks, consensus_vars, candidate_solution):
     dso_models, results = {}, {}
     with ThreadPoolExecutor() as executor: # Parallelized DSOs' models creation
-        futures = [executor.submit(build_single_dso_model, node_id, dn) for node_id, dn in distribution_networks.items()]
+        futures = [executor.submit(build_single_dso_model, node_id, consensus_vars, candidate_solution) for node_id, dn in distribution_networks.items()]
         for future in futures:
             node_id, model, res = future.result()
             dso_models[node_id] = model
