@@ -722,8 +722,8 @@ def _create_distribution_network_model(node_id, distribution_network, candidate_
             shared_ess_idx = net_year_day.get_shared_energy_storage_idx(net_year_day.get_reference_node_id())
 
             define_dso_interface_variables(model_year_day)
-            define_dso_expected_value_constraints(model, net_year_day, ref_node_idx, shared_ess_idx)
-            add_regularization_to_dso_objective(model, net_year_day, ref_node_idx, shared_ess_idx)
+            define_dso_expected_value_constraints(model_year_day, net_year_day, ref_node_idx, shared_ess_idx)
+            add_regularization_to_dso_objective(model_year_day, net_year_day, ref_node_idx, shared_ess_idx)
 
     return node_id, model, distribution_network
 

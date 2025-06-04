@@ -1094,6 +1094,8 @@ def slack_penalties(model, network, s_m, s_o, params):
 
 
 # ADMM Models
+
+# - DSO
 def define_dso_interface_variables(model):
     model.expected_interface_vmag_sqr = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=1.0)
     model.expected_interface_pf_p = pe.Var(model.periods, domain=pe.Reals, initialize=0.0)
