@@ -1094,39 +1094,40 @@ def slack_penalties(model, network, s_m, s_o, params):
 
 
 # ADMM Models
-def define_dso_interface_variables(model, year, day):
-    model[year][day].expected_interface_vmag_sqr = pe.Var(model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.0)
-    model[year][day].expected_interface_pf_p = pe.Var(model[year][day].periods, domain=pe.Reals, initialize=0.0)
-    model[year][day].expected_interface_pf_q = pe.Var(model[year][day].periods, domain=pe.Reals, initialize=0.0)
-    model[year][day].expected_shared_ess_p = pe.Var(model[year][day].periods, domain=pe.Reals, initialize=0.0)
-    model[year][day].expected_shared_ess_q = pe.Var(model[year][day].periods, domain=pe.Reals, initialize=0.0)
+def define_dso_interface_variables(model):
+    model.expected_interface_vmag_sqr = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=1.0)
+    model.expected_interface_pf_p = pe.Var(model.periods, domain=pe.Reals, initialize=0.0)
+    model.expected_interface_pf_q = pe.Var(model.periods, domain=pe.Reals, initialize=0.0)
+    model.expected_shared_ess_p = pe.Var(model.periods, domain=pe.Reals, initialize=0.0)
+    model.expected_shared_ess_q = pe.Var(model.periods, domain=pe.Reals, initialize=0.0)
 
 
-def define_dso_expected_value_constraints(model, network, year, day, ref_node_idx, shared_ess_idx):
-    model[year][day].interface_expected_vmag_values = pe.Constraint(model.periods, rule=partial(dso_interface_expected_vmag_rule, net=network, ref_node_idx=ref_node_idx))
-    model[year][day].interface_expected_p_values = pe.Constraint(model.periods, rule=partial(dso_interface_expected_p_rule, net=network, ref_node_idx=ref_node_idx))
-    model[year][day].interface_expected_q_values = pe.Constraint(model.periods, rule=partial(dso_interface_expected_q_rule, net=network, ref_node_idx=ref_node_idx))
-    model[year][day].shared_ess_expected_p_values = pe.Constraint(model.periods, rule=partial(dso_shared_expected_p_rule, net=network, shared_ess_idx=shared_ess_idx))
-    model[year][day].shared_ess_expected_q_values = pe.Constraint(model.periods, rule=partial(dso_shared_expected_q_rule, net=network, shared_ess_idx=shared_ess_idx))
+def define_dso_expected_value_constraints(model, network, ref_node_idx, shared_ess_idx):
+    model.interface_expected_vmag_values = pe.Constraint(model.periods, rule=partial(dso_interface_expected_vmag_rule, net=network, ref_node_idx=ref_node_idx))
+    model.interface_expected_p_values = pe.Constraint(model.periods, rule=partial(dso_interface_expected_p_rule, net=network, ref_node_idx=ref_node_idx))
+    model.interface_expected_q_values = pe.Constraint(model.periods, rule=partial(dso_interface_expected_q_rule, net=network, ref_node_idx=ref_node_idx))
+    model.shared_ess_expected_p_values = pe.Constraint(model.periods, rule=partial(dso_shared_expected_p_rule, net=network, shared_ess_idx=shared_ess_idx))
+    model.shared_ess_expected_q_values = pe.Constraint(model.periods, rule=partial(dso_shared_expected_q_rule, net=network, shared_ess_idx=shared_ess_idx))
 
 
-def add_regularization_to_dso_objective(model, net, year, day, ref_node_idx, ess_idx, s_base):
+def add_regularization_to_dso_objective(model, network, ref_node_idx, ess_idx):
+    s_base = network.baseMVA
     penalty = pe.Param(initialize=PENALTY_REGULARIZATION, mutable=True)
-    model[year][day].penalty_regularization = penalty
+    model.penalty_regularization = penalty
     expr = sum(
         penalty * (
-            (model[year][day].vmag_sqr[ref_node_idx, s_m, s_o, p] - model[year][day].expected_interface_vmag_sqr[p]) ** 2 +
-            s_base * (model[year][day].pg_node[ref_node_idx, s_m, s_o, p] - model[year][day].expected_interface_pf_p[p]) ** 2 +
-            s_base * (model[year][day].qg_node[ref_node_idx, s_m, s_o, p] - model[year][day].expected_interface_pf_q[p]) ** 2 +
-            s_base * (model[year][day].shared_es_pnet[ess_idx, s_m, s_o, p] - model[year][day].expected_shared_ess_p[p]) ** 2 +
-            s_base * (model[year][day].shared_es_qnet[ess_idx, s_m, s_o, p] - model[year][day].expected_shared_ess_q[p]) ** 2
+            (model.vmag_sqr[ref_node_idx, s_m, s_o, p] - model.expected_interface_vmag_sqr[p]) ** 2 +
+            s_base * (model.pg_node[ref_node_idx, s_m, s_o, p] - model.expected_interface_pf_p[p]) ** 2 +
+            s_base * (model.qg_node[ref_node_idx, s_m, s_o, p] - model.expected_interface_pf_q[p]) ** 2 +
+            s_base * (model.shared_es_pnet[ess_idx, s_m, s_o, p] - model.expected_shared_ess_p[p]) ** 2 +
+            s_base * (model.shared_es_qnet[ess_idx, s_m, s_o, p] - model.expected_shared_ess_q[p]) ** 2
         )
-        for s_m in model[year][day].scenarios_market
-        for s_o in model[year][day].scenarios_operation
-        for p in model[year][day].periods
+        for s_m in model.scenarios_market
+        for s_o in model.scenarios_operation
+        for p in model.periods
     )
-    model[year][day].regularization = pe.Expression(expr=expr)
-    model[year][day].objective.expr += model[year][day].regularization
+    model.regularization = pe.Expression(expr=expr)
+    model.objective.expr += model.regularization
 
 
 def dso_interface_expected_rule(m, p, net, ref_node_idx, ess_idx):

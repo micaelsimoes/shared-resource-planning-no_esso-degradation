@@ -715,15 +715,15 @@ def _create_distribution_network_model(node_id, distribution_network, candidate_
 
     for year in distribution_network.years:
         for day in distribution_network.days:
-            net = distribution_network.network[year][day]
-            s_base = net.baseMVA
 
-            ref_node_idx = net.get_node_idx(net.get_reference_node_id())
-            shared_ess_idx = net.get_shared_energy_storage_idx(net.get_reference_node_id())
+            model_year_day = model[year][day]
+            net_year_day = distribution_network.network[year][day]
+            ref_node_idx = net_year_day.get_node_idx(net_year_day.get_reference_node_id())
+            shared_ess_idx = net_year_day.get_shared_energy_storage_idx(net_year_day.get_reference_node_id())
 
-            define_dso_interface_variables(model, year, day)
-            define_dso_expected_value_constraints(model, net, year, day, ref_node_idx, shared_ess_idx)
-            add_regularization_to_dso_objective(model, net, year, day, ref_node_idx, shared_ess_idx, s_base)
+            define_dso_interface_variables(model_year_day)
+            define_dso_expected_value_constraints(model, net_year_day, ref_node_idx, shared_ess_idx)
+            add_regularization_to_dso_objective(model, net_year_day, ref_node_idx, shared_ess_idx)
 
     return node_id, model, distribution_network
 
