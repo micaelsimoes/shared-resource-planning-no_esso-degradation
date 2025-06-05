@@ -1396,15 +1396,15 @@ def check_consensus_convergence(planning_problem, consensus_vars, params, debug_
             else:
                 print('[INFO]\t\t - Convergence shared ESS consensus constraints failed. {:.3f} > {:.3f}'.format(sum_rel_abs_error_ess, params.tol['consensus']['ess'] * num_elems_ess))
                 convergence = False
-                print_debug_info(planning_problem, consensus_vars, print_ess=debug_flag)
         else:
             convergence = False
             print('[INFO]\t\t - Convergence interface PF consensus constraints failed. {:.3f} > {:.3f}'.format(sum_rel_abs_error_pf, params.tol['consensus']['pf'] * num_elems_pf))
-            print_debug_info(planning_problem, consensus_vars, print_pf=debug_flag)
     else:
         convergence = False
         print('[INFO]\t\t - Convergence interface Vmag consensus constraints failed. {:.3f} > {:.3f}'.format(sum_rel_abs_error_vmag, params.tol['consensus']['v'] * num_elems_vmag))
-        print_debug_info(planning_problem, consensus_vars, print_vmag=debug_flag)
+
+    if not convergence:
+        print_debug_info(planning_problem, consensus_vars, print_vmag=debug_flag, print_pf=debug_flag, print_ess=debug_flag)
 
     return convergence
 
