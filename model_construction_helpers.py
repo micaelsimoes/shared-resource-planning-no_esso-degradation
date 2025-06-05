@@ -10,7 +10,7 @@ def e_bounds(m, i, s_m, s_o, p, network):
     node = network.nodes[i]
     if node.type == BUS_REF and not network.is_transmission:
         vg = network.generators[network.get_gen_idx(node.bus_i)].vg
-        return (vg - EQUALITY_TOLERANCE, vg + EQUALITY_TOLERANCE)
+        return (vg -EQUALITY_TOLERANCE, vg + EQUALITY_TOLERANCE)
     return (-node.v_max, node.v_max)
 
 
@@ -314,7 +314,7 @@ def voltage_magnitude_def_rule(m, i, s_m, s_o, p):
     e = m.e[i, s_m, s_o, p]
     f = m.f[i, s_m, s_o, p]
     vmag_sq = e ** 2 + f ** 2
-    return pe.inequality(-EQUALITY_TOLERANCE, m.vmag_sqr[i, s_m, s_o, p] - vmag_sq, EQUALITY_TOLERANCE)
+    return m.vmag_sqr[i, s_m, s_o, p] == vmag_sq
 
 
 # Voltage constraints, magnitude
@@ -1092,107 +1092,3 @@ def slack_penalties(model, network, s_m, s_o, params):
                 total += base * PENALTY_CURRENT * model.slack_flow_ij_sqr[b, s_m, s_o, p]
 
     return total
-
-
-# ADMM Models
-
-# - DSO
-def define_dso_interface_variables(model):
-    model.expected_interface_vmag_sqr = pe.Var(model.periods, domain=pe.NonNegativeReals, initialize=1.0)
-    model.expected_interface_pf_p = pe.Var(model.periods, domain=pe.Reals, initialize=0.0)
-    model.expected_interface_pf_q = pe.Var(model.periods, domain=pe.Reals, initialize=0.0)
-    model.expected_shared_ess_p = pe.Var(model.periods, domain=pe.Reals, initialize=0.0)
-    model.expected_shared_ess_q = pe.Var(model.periods, domain=pe.Reals, initialize=0.0)
-
-
-def define_dso_expected_value_constraints(model, network, ref_node_idx, shared_ess_idx):
-    model.interface_expected_vmag_values = pe.Constraint(model.periods, rule=partial(dso_interface_expected_vmag_rule, net=network, ref_node_idx=ref_node_idx))
-    model.interface_expected_p_values = pe.Constraint(model.periods, rule=partial(dso_interface_expected_p_rule, net=network, ref_node_idx=ref_node_idx))
-    model.interface_expected_q_values = pe.Constraint(model.periods, rule=partial(dso_interface_expected_q_rule, net=network, ref_node_idx=ref_node_idx))
-    model.shared_ess_expected_p_values = pe.Constraint(model.periods, rule=partial(dso_shared_expected_p_rule, net=network, shared_ess_idx=shared_ess_idx))
-    model.shared_ess_expected_q_values = pe.Constraint(model.periods, rule=partial(dso_shared_expected_q_rule, net=network, shared_ess_idx=shared_ess_idx))
-
-
-def add_regularization_to_dso_objective(model, network, ref_node_idx, ess_idx):
-    s_base = network.baseMVA
-    penalty = pe.Param(initialize=PENALTY_REGULARIZATION, mutable=True)
-    model.penalty_regularization = penalty
-    expr = sum(
-        penalty * (
-            (model.vmag_sqr[ref_node_idx, s_m, s_o, p] - model.expected_interface_vmag_sqr[p]) ** 2 +
-            s_base * (model.pg_node[ref_node_idx, s_m, s_o, p] - model.expected_interface_pf_p[p]) ** 2 +
-            s_base * (model.qg_node[ref_node_idx, s_m, s_o, p] - model.expected_interface_pf_q[p]) ** 2 +
-            s_base * (model.shared_es_pnet[ess_idx, s_m, s_o, p] - model.expected_shared_ess_p[p]) ** 2 +
-            s_base * (model.shared_es_qnet[ess_idx, s_m, s_o, p] - model.expected_shared_ess_q[p]) ** 2
-        )
-        for s_m in model.scenarios_market
-        for s_o in model.scenarios_operation
-        for p in model.periods
-    )
-    model.regularization = pe.Expression(expr=expr)
-    model.objective.expr += model.regularization
-
-
-def dso_interface_expected_rule(m, p, net, ref_node_idx, ess_idx):
-    evs = ep_p = ep_q = ess_p = ess_q = 0.0
-    for s_m in m.scenarios_market:
-        for s_o in m.scenarios_operation:
-            weight = net.prob_market_scenarios[s_m] * net.prob_operation_scenarios[s_o]
-            evs += weight * m.vmag_sqr[ref_node_idx, s_m, s_o, p]
-            ep_p += weight * m.pg_node[ref_node_idx, s_m, s_o, p]
-            ep_q += weight * m.qg_node[ref_node_idx, s_m, s_o, p]
-            ess_p += weight * m.shared_es_pnet[ess_idx, s_m, s_o, p]
-            ess_q += weight * m.shared_es_qnet[ess_idx, s_m, s_o, p]
-    return (
-        m.expected_interface_vmag_sqr[p] == evs,
-        m.expected_interface_pf_p[p] == ep_p,
-        m.expected_interface_pf_q[p] == ep_q,
-        m.expected_shared_ess_p[p] == ess_p,
-        m.expected_shared_ess_q[p] == ess_q,
-    )
-
-
-def dso_interface_expected_vmag_rule(m, p, net, ref_node_idx):
-    vmag_sqr = 0.00
-    for s_m in m.scenarios_market:
-        for s_o in m.scenarios_operation:
-            weight = net.prob_market_scenarios[s_m] * net.prob_operation_scenarios[s_o]
-            vmag_sqr += weight * m.vmag_sqr[ref_node_idx, s_m, s_o, p]
-    return m.expected_interface_vmag_sqr[p] == vmag_sqr
-
-
-def dso_interface_expected_p_rule(m, p, net, ref_node_idx):
-    interface_p = 0.00
-    for s_m in m.scenarios_market:
-        for s_o in m.scenarios_operation:
-            weight = net.prob_market_scenarios[s_m] * net.prob_operation_scenarios[s_o]
-            interface_p += weight * m.pg_node[ref_node_idx, s_m, s_o, p]
-    return m.expected_interface_pf_p[p] == interface_p
-
-
-def dso_interface_expected_q_rule(m, p, net, ref_node_idx):
-    interface_q = 0.00
-    for s_m in m.scenarios_market:
-        for s_o in m.scenarios_operation:
-            weight = net.prob_market_scenarios[s_m] * net.prob_operation_scenarios[s_o]
-            interface_q += weight * m.qg_node[ref_node_idx, s_m, s_o, p]
-    return m.expected_interface_pf_q[p] == interface_q
-
-
-def dso_shared_expected_p_rule(m, p, net, shared_ess_idx):
-    shared_ess_p = 0.0
-    for s_m in m.scenarios_market:
-        for s_o in m.scenarios_operation:
-            weight = net.prob_market_scenarios[s_m] * net.prob_operation_scenarios[s_o]
-            shared_ess_p += weight * m.shared_es_pnet[shared_ess_idx, s_m, s_o, p]
-    return m.expected_shared_ess_p[p] == shared_ess_p
-
-
-def dso_shared_expected_q_rule(m, p, net, shared_ess_idx):
-    shared_ess_q = 0.0
-    for s_m in m.scenarios_market:
-        for s_o in m.scenarios_operation:
-            weight = net.prob_market_scenarios[s_m] * net.prob_operation_scenarios[s_o]
-            shared_ess_q += weight * m.shared_es_pnet[shared_ess_idx, s_m, s_o, p]
-    return m.expected_shared_ess_q[p] == shared_ess_q
-

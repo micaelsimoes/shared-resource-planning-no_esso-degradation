@@ -514,12 +514,9 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                         omega_market = transmission_network.network[year][day].prob_market_scenarios[s_m]
                         for s_o in tso_model[year][day].scenarios_operation:
                             omega_oper = transmission_network.network[year][day].prob_operation_scenarios[s_o]
-                            vmag_sqr = tso_model[year][day].vmag_sqr[adn_node_idx, s_m, s_o, p]
-                            pc_node = tso_model[year][day].pc_node[adn_node_idx, s_m, s_o, p]
-                            qc_node = tso_model[year][day].qc_node[adn_node_idx, s_m, s_o, p]
-                            expected_vmag_sqr += omega_market * omega_oper * vmag_sqr
-                            expected_pf_p += omega_market * omega_oper * pc_node
-                            expected_pf_q += omega_market * omega_oper * qc_node
+                            expected_vmag_sqr += omega_market * omega_oper * tso_model[year][day].vmag_sqr[adn_node_idx, s_m, s_o, p]
+                            expected_pf_p += omega_market * omega_oper * tso_model[year][day].pc_node[adn_node_idx, s_m, s_o, p]
+                            expected_pf_q += omega_market * omega_oper * tso_model[year][day].qc_node[adn_node_idx, s_m, s_o, p]
                     tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] == expected_vmag_sqr)
                     tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_p[dn, p] == expected_pf_p)
                     tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_q[dn, p] == expected_pf_q)
@@ -673,6 +670,8 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
 
         # Run SMOPF
         results[node_id] = distribution_network.optimize(dso_model)
+        processed_results = distribution_network.process_results(dso_model, results[node_id])
+        distribution_network.write_optimization_results_to_excel(processed_results)
 
         # Get initial interface and shared ESS values
         for year in distribution_network.years:
@@ -5529,7 +5528,7 @@ def _add_adn_node_to_transmission_network(planning_problem):
                     for s_o in range(len(planning_problem.transmission_network.network[year][day].prob_operation_scenarios)):
                         adn_load.pd[s_o] = [0.00 for _ in range(planning_problem.num_instants)]
                         adn_load.qd[s_o] = [0.00 for _ in range(planning_problem.num_instants)]
-                    adn_load.fl_reg = False
+                    adn_load.fl_reg = True
                     adn_load.status = 1
                 else:
                     adn_load = Load()
@@ -5540,7 +5539,7 @@ def _add_adn_node_to_transmission_network(planning_problem):
                     for s_o in range(len(planning_problem.transmission_network.network[year][day].prob_operation_scenarios)):
                         adn_load.pd[s_o] = [0.00 for _ in range(planning_problem.num_instants)]
                         adn_load.qd[s_o] = [0.00 for _ in range(planning_problem.num_instants)]
-                    adn_load.fl_reg = False
+                    adn_load.fl_reg = True
                     adn_load.status = 1
                     planning_problem.transmission_network.network[year][day].loads.append(adn_load)
 

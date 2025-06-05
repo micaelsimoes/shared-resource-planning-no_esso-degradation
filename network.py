@@ -44,7 +44,7 @@ class Network:
 
     def build_model(self, params):
         _pre_process_network(self)
-        return _build_model(self, params)
+        return _build_model_original(self, params)
 
     def run_smopf(self, model, params, from_warm_start=False):
         return _run_smopf(self, model, params, from_warm_start=from_warm_start)
@@ -246,6 +246,7 @@ def _build_model_original(network, params):
     model.f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.e_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.0)
     model.f_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+    model.vmag_sqr = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0)
     if params.slacks.grid_operation.voltage:
         model.slack_e = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
         model.slack_f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
@@ -290,6 +291,8 @@ def _build_model_original(network, params):
     # - Generation
     model.pg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.qg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+    model.pg_node = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)  # Net geneation at node i
+    model.qg_node = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
     for g in model.generators:
         generator = network.generators[g]
         pg_ub, pg_lb = generator.pmax, generator.pmin
@@ -501,9 +504,11 @@ def _build_model_original(network, params):
                     if params.slacks.grid_operation.voltage:
                         e_actual += model.slack_e[i, s_m, s_o, p]
                         f_actual += model.slack_f[i, s_m, s_o, p]
-
                     model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] == e_actual)
                     model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] == f_actual)
+
+                    # vmag_sqr definition
+                    model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] == model.e[i, s_m, s_o, p] ** 2 + model.f[i, s_m, s_o, p] ** 2)
 
                     # voltage magnitude constraints
                     if node.type == BUS_PV:
@@ -511,21 +516,15 @@ def _build_model_original(network, params):
                             # - Enforce voltage controlled bus
                             gen_idx = network.get_gen_idx(node.bus_i)
                             vg = network.generators[gen_idx].vg
-                            e = model.e[i, s_m, s_o, p]
-                            f = model.f[i, s_m, s_o, p]
-                            model.voltage_cons.add(e ** 2 + f ** 2 <= vg[p] ** 2 + EQUALITY_TOLERANCE)
-                            model.voltage_cons.add(e ** 2 + f ** 2 >= vg[p] ** 2 - EQUALITY_TOLERANCE)
+                            model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] <= vg[p] ** 2 + EQUALITY_TOLERANCE)
+                            model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] >= vg[p] ** 2 - EQUALITY_TOLERANCE)
                         else:
                             # - Voltage at the bus is not controlled
-                            e = model.e[i, s_m, s_o, p]
-                            f = model.f[i, s_m, s_o, p]
-                            model.voltage_cons.add(e ** 2 + f ** 2 >= node.v_min**2)
-                            model.voltage_cons.add(e ** 2 + f ** 2 <= node.v_max**2)
+                            model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] >= node.v_min**2)
+                            model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] <= node.v_max**2)
                     else:
-                        e = model.e[i, s_m, s_o, p]
-                        f = model.f[i, s_m, s_o, p]
-                        model.voltage_cons.add(e ** 2 + f ** 2 >= node.v_min**2)
-                        model.voltage_cons.add(e ** 2 + f ** 2 <= node.v_max**2)
+                        model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] >= node.v_min**2)
+                        model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] <= node.v_max**2)
 
     model.generation_apparent_power = pe.ConstraintList()
     model.generation_power_factor = pe.ConstraintList()
@@ -756,6 +755,10 @@ def _build_model_original(network, params):
                         if generator.bus == node.bus_i:
                             Pg += model.pg[g, s_m, s_o, p]
                             Qg += model.qg[g, s_m, s_o, p]
+
+                    # Node Pc, Qc, Pg and Qg definition
+                    model.node_balance_cons_p.add(model.pg_node[i, s_m, s_o, p] == Pg)
+                    model.node_balance_cons_p.add(model.qg_node[i, s_m, s_o, p] == Qg)
 
                     ei = model.e_actual[i, s_m, s_o, p]
                     fi = model.f_actual[i, s_m, s_o, p]
