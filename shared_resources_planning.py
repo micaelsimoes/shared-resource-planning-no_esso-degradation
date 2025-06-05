@@ -329,7 +329,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
             debug_flag=debug_flag
         )
 
-        if convergence:
+        if convergence and iter > 1:
             print(f"[INFO] ADMM converged at iteration {iter}.")
             break
 
@@ -352,7 +352,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
             debug_flag=debug_flag
         )
 
-        if convergence:
+        if convergence and iter > 1:
             print(f"[INFO] ADMM converged at iteration {iter}.")
             break
 
