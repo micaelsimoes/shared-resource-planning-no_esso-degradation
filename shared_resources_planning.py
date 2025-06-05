@@ -320,6 +320,19 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
             admm_parameters, from_warm_start=from_warm_start
         )
 
+        # Update ADMM CONSENSUS variables, primal, and check convergence
+        convergence = update_and_check_convergence(
+            planning_problem, tso_model, dso_models, esso_model,
+            consensus_vars, dual_vars, results, admm_parameters,
+            primal_evolution,
+            update_flags={"update_tn": False, "update_dns": True, "update_sess": False},
+            debug_flag=debug_flag
+        )
+
+        if convergence:
+            print(f"[INFO] ADMM converged at iteration {iter}.")
+            break
+
         # --------------------------------------------------------------------------------------------------------------
         # 2. Solve TSO problem
         results['tso'] = update_transmission_coordination_model_and_solve(
@@ -330,6 +343,19 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
             admm_parameters, from_warm_start=from_warm_start
         )
 
+        # Update ADMM CONSENSUS variables, primal, and check convergence
+        convergence = update_and_check_convergence(
+            planning_problem, tso_model, dso_models, esso_model,
+            consensus_vars, dual_vars, results, admm_parameters,
+            primal_evolution,
+            update_flags={"update_tn": True, "update_dns": False, "update_sess": False},
+            debug_flag=debug_flag
+        )
+
+        if convergence:
+            print(f"[INFO] ADMM converged at iteration {iter}.")
+            break
+
         # --------------------------------------------------------------------------------------------------------------
         # 3. Solve ESSO problem
         results['esso'] = update_shared_energy_storages_coordination_model_and_solve(
@@ -338,21 +364,23 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
             admm_parameters, from_warm_start=from_warm_start
         )
 
-        # --------------------------------------------------------------------------------------------------------------
-        # 4. Update ADMM CONSENSUS variables, primal, and check convergence
+        # - Update ADMM CONSENSUS variables, primal, and check convergence
         convergence = update_and_check_convergence(
             planning_problem, tso_model, dso_models, esso_model,
             consensus_vars, dual_vars, results, admm_parameters,
             primal_evolution,
-            update_flags={"update_tn": True, "update_dns": True, "update_sess": True},
+            update_flags={"update_tn": False, "update_dns": False, "update_sess": True},
             debug_flag=debug_flag
         )
 
-        iter_end = time.time()
-        print(f"[INFO] \t - Iteration {iter}: {iter_end - iter_start:.2f} s")
+        # --------------------------------------------------------------------------------------------------------------
+
         if convergence:
             print(f"[INFO] ADMM converged at iteration {iter}.")
             break
+
+        iter_end = time.time()
+        print(f"[INFO] \t - Iteration {iter}: {iter_end - iter_start:.2f} s")
 
         from_warm_start = True
         gc.collect()
