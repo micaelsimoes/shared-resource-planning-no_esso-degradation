@@ -304,7 +304,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     convergence = False
     for iter in range(1, admm_parameters.num_max_iters + 1):
 
-        print(f'\n[INFO] ADMM Iteration {iter}')
+        print(f'[INFO] ADMM Iteration {iter}')
         log_debug(f"Memory before iteration {iter}", debug_flag)
         print_memory_usage(f"ADMM Iteration {iter} Start")
 
@@ -380,12 +380,12 @@ def log_debug(message, debug=False):
 def update_and_check_convergence(planning_problem, tso_model, dso_models, esso_model,
                                  consensus_vars, dual_vars, results, admm_parameters,
                                  primal_evolution, update_flags, debug_flag=False):
+
     planning_problem.update_admm_consensus_variables(
         tso_model, dso_models, esso_model,
         consensus_vars, dual_vars, results, admm_parameters,
         **update_flags
     )
-
     primal_value = planning_problem.get_primal_value(tso_model, dso_models, esso_model)
     primal_evolution.append(primal_value)
 
