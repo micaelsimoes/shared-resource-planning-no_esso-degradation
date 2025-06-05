@@ -3,7 +3,6 @@ import time
 from copy import copy
 import pandas as pd
 from math import isclose, sqrt
-from concurrent.futures import ThreadPoolExecutor
 import networkx as nx
 import matplotlib.pyplot as plt
 import pyomo.opt as po
@@ -14,7 +13,6 @@ from load import Load
 from shared_energy_storage import SharedEnergyStorage
 from planning_parameters import PlanningParameters
 from shared_energy_storage_data import SharedEnergyStorageData
-from model_construction_helpers import *
 from helper_functions import *
 
 
@@ -296,7 +294,9 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     update_shared_energy_storage_model_to_admm(planning_problem, esso_model, admm_parameters)
 
     # Update consensus variables
-    planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model, consensus_vars, dual_vars, results, admm_parameters, update_tn=True, update_dns=True, update_sess=True)
+    planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
+                                                     consensus_vars, dual_vars, results, admm_parameters,
+                                                     update_tn=True, update_dns=True, update_sess=True)
 
     # ------------------------------------------------------------------------------------------------------------------
     # ADMM -- Main cycle
@@ -599,7 +599,7 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
     return tso_model, results
 
 
-def create_distribution_networks_models_bck(distribution_networks, consensus_vars, candidate_solution):
+def create_distribution_networks_models(distribution_networks, consensus_vars, candidate_solution):
 
     dso_models = dict()
     results = dict()
@@ -697,74 +697,6 @@ def create_distribution_networks_models_bck(distribution_networks, consensus_var
         dso_models[node_id] = dso_model
 
     return dso_models, results
-
-
-def create_distribution_networks_models(distribution_networks, consensus_vars, candidate_solution):
-
-    dso_models = {}
-    results = {}
-
-    # 1. Parallel model construction
-    constructed_models = []
-    with ThreadPoolExecutor() as executor:
-        futures = [
-            executor.submit(_create_distribution_network_model, node_id, net, candidate_solution)
-            for node_id, net in distribution_networks.items()
-        ]
-        for future in futures:
-            constructed_models.append(future.result())
-
-    # 2. Sequential model solving
-    for node_id, model, dist_net in constructed_models:
-        model, res = _solve_dso_model(model, dist_net, consensus_vars)
-        dso_models[node_id] = model
-        results[node_id] = res
-
-    return dso_models, results
-
-
-def _create_distribution_network_model(node_id, distribution_network, candidate_solution):
-
-    distribution_network.update_data_with_candidate_solution(candidate_solution)
-    model = distribution_network.build_model()
-    distribution_network.update_model_with_candidate_solution(model, candidate_solution)
-
-    for year in distribution_network.years:
-        for day in distribution_network.days:
-
-            model_year_day = model[year][day]
-            net_year_day = distribution_network.network[year][day]
-            ref_node_idx = net_year_day.get_node_idx(net_year_day.get_reference_node_id())
-            shared_ess_idx = net_year_day.get_shared_energy_storage_idx(net_year_day.get_reference_node_id())
-
-            define_dso_interface_variables(model_year_day)
-            define_dso_expected_value_constraints(model_year_day, net_year_day, ref_node_idx, shared_ess_idx)
-            add_regularization_to_dso_objective(model_year_day, net_year_day, ref_node_idx, shared_ess_idx)
-
-    return node_id, model, distribution_network
-
-
-def _solve_dso_model(model, distribution_network, consensus_vars):
-    results = distribution_network.optimize(model)
-    _update_consensus_vars(model, distribution_network, consensus_vars)
-    return model, results
-
-
-def _update_consensus_vars(model, network, consensus_vars):
-    node_id = network.tn_connection_nodeid
-    for year in network.years:
-        for day in network.days:
-            net_year_day = network.network[year][day]
-            ref_node = net_year_day.get_reference_node_id()
-            s_base = net_year_day.baseMVA
-            v_base = net_year_day.get_node_base_kv(ref_node)
-            model_year_day = model[year][day]
-            for p in model[year][day].periods:
-                consensus_vars['v_sqr']['dso']['current'][node_id][year][day][p] = pe.value(model_year_day.expected_interface_vmag_sqr[p]) * (v_base ** 2)
-                consensus_vars['pf']['dso']['current'][node_id][year][day]['p'][p] = pe.value(model_year_day.expected_interface_pf_p[p]) * s_base
-                consensus_vars['pf']['dso']['current'][node_id][year][day]['q'][p] = pe.value(model_year_day.expected_interface_pf_q[p]) * s_base
-                consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] = pe.value(model_year_day.expected_shared_ess_p[p]) * s_base
-                consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] = pe.value(model_year_day.expected_shared_ess_q[p]) * s_base
 
 
 def create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidate_solution):
@@ -1462,20 +1394,17 @@ def check_consensus_convergence(planning_problem, consensus_vars, params, debug_
             if error_within_limits(sum_rel_abs_error_ess, num_elems_ess, params.tol['consensus']['ess']):
                 print('[INFO]\t\t - Consensus constraints ok!')
             else:
-                convergence = False
                 print('[INFO]\t\t - Convergence shared ESS consensus constraints failed. {:.3f} > {:.3f}'.format(sum_rel_abs_error_ess, params.tol['consensus']['ess'] * num_elems_ess))
-                if debug_flag:
-                    print_debug_info(planning_problem, consensus_vars, print_ess=True)
+                convergence = False
+                print_debug_info(planning_problem, consensus_vars, print_ess=debug_flag)
         else:
             convergence = False
             print('[INFO]\t\t - Convergence interface PF consensus constraints failed. {:.3f} > {:.3f}'.format(sum_rel_abs_error_pf, params.tol['consensus']['pf'] * num_elems_pf))
-            if debug_flag:
-                print_debug_info(planning_problem, consensus_vars, print_pf=False)
+            print_debug_info(planning_problem, consensus_vars, print_pf=debug_flag)
     else:
         convergence = False
         print('[INFO]\t\t - Convergence interface Vmag consensus constraints failed. {:.3f} > {:.3f}'.format(sum_rel_abs_error_vmag, params.tol['consensus']['v'] * num_elems_vmag))
-        if debug_flag:
-            print_debug_info(planning_problem, consensus_vars, print_vmag=False)
+        print_debug_info(planning_problem, consensus_vars, print_vmag=debug_flag)
 
     return convergence
 
