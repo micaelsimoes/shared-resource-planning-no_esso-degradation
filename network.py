@@ -238,6 +238,8 @@ def _build_model_original(network, params):
     model.branches = range(len(network.branches))
     model.energy_storages = range(len(network.energy_storages))
     model.shared_energy_storages = range(len(network.shared_energy_storages))
+    if network.is_transmission:
+        model.adn_nodes = range(len(network.active_distribution_network_nodes))
 
     # ------------------------------------------------------------------------------------------------------------------
     # Decision variables
@@ -247,6 +249,10 @@ def _build_model_original(network, params):
     model.e_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.0)
     model.f_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.vmag_sqr = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0)
+    if network.is_transmission:
+        model.vmag_sqr_adn = pe.Var(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0)
+    else:
+        model.vmag_sqr_adn = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0)
     if params.slacks.grid_operation.voltage:
         model.slack_e = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
         model.slack_f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
@@ -333,6 +339,9 @@ def _build_model_original(network, params):
                             model.sg_abs[g, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                             model.sg_sqr[g, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                             model.sg_curt[g, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+    if not network.is_transmission:
+        model.pg_adn = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
+        model.qg_adn = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
 
     # - Branch power flows (squared) -- used in branch limits
     model.flow_ij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -354,6 +363,11 @@ def _build_model_original(network, params):
     # - Loads
     model.pc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
     model.qc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
+    model.pc_node = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)  # Net load at node i
+    model.qc_node = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
+    if network.is_transmission:
+        model.pc_adn = pe.Var(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
+        model.qc_adn = pe.Var(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
     for c in model.loads:
         load = network.loads[c]
         for s_m in model.scenarios_market:
@@ -561,17 +575,18 @@ def _build_model_original(network, params):
         model.fl_p_balance = pe.ConstraintList()
         for c in model.loads:
             if network.loads[c].fl_reg:
-                for s_m in model.scenarios_market:
-                    for s_o in model.scenarios_operation:
-                        p_up, p_down = 0.0, 0.0
-                        for p in model.periods:
-                            p_up += model.flex_p_up[c, s_m, s_o, p]
-                            p_down += model.flex_p_down[c, s_m, s_o, p]
-                        if params.slacks.flexibility.day_balance:
-                            model.fl_p_balance.add(p_up == p_down + model.slack_flex_p_balance[c, s_m, s_o])
-                        else:
-                            model.fl_p_balance.add(p_up <= p_down + EQUALITY_TOLERANCE)
-                            model.fl_p_balance.add(p_up >= p_down - EQUALITY_TOLERANCE)
+                if not (network.is_transmission and network.loads[c].bus in network.active_distribution_network_nodes):
+                    for s_m in model.scenarios_market:
+                        for s_o in model.scenarios_operation:
+                            p_up, p_down = 0.0, 0.0
+                            for p in model.periods:
+                                p_up += model.flex_p_up[c, s_m, s_o, p]
+                                p_down += model.flex_p_down[c, s_m, s_o, p]
+                            if params.slacks.flexibility.day_balance:
+                                model.fl_p_balance.add(p_up == p_down + model.slack_flex_p_balance[c, s_m, s_o])
+                            else:
+                                model.fl_p_balance.add(p_up <= p_down + EQUALITY_TOLERANCE)
+                                model.fl_p_balance.add(p_up >= p_down - EQUALITY_TOLERANCE)
 
     # - Energy Storage constraints
     if params.es_reg:
@@ -632,6 +647,36 @@ def _build_model_original(network, params):
                     else:
                         model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] <= soc_final + EQUALITY_TOLERANCE)
                         model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] >= soc_final - EQUALITY_TOLERANCE)
+
+    # - ADN nodes vmag_sqr, pnet and qnet
+    model.active_distribution_networks_voltage_magnitude = pe.ConstraintList()
+    model.active_distribution_networks_net_cons_gen = pe.ConstraintList()
+    if network.is_transmission:
+        for dn in model.adn_nodes:
+            adn_node_id = network.active_distribution_network_nodes[dn]
+            adn_node_idx = network.get_node_idx(adn_node_id)
+            adn_load_idx = network.get_adn_load_idx(adn_node_id)
+            for s_m in model.scenarios_market:
+                for s_o in model.scenarios_operation:
+                    for p in model.periods:
+                        model.active_distribution_networks_voltage_magnitude.add(model.vmag_sqr_adn[dn, s_m, s_o, p] == model.vmag_sqr[adn_node_idx, s_m, s_o, p])
+                        model.active_distribution_networks_net_cons_gen.add(model.pc_adn[dn, s_m, s_o, p] == model.pc[adn_load_idx, s_m, s_o, p] + model.flex_p_up[adn_load_idx, s_m, s_o, p] - model.flex_p_down[adn_load_idx, s_m, s_o, p])
+                        model.active_distribution_networks_net_cons_gen.add(model.qc_adn[dn, s_m, s_o, p] == model.qc[adn_load_idx, s_m, s_o, p] + model.flex_q_up[adn_load_idx, s_m, s_o, p] - model.flex_q_down[adn_load_idx, s_m, s_o, p])
+                        if params.l_curt:
+                            model.pc_curt_down[c, s_m, s_o, p].fix(0.00)
+                            model.pc_curt_up[c, s_m, s_o, p].fix(0.00)
+                            model.qc_curt_down[c, s_m, s_o, p].fix(0.00)
+                            model.qc_curt_up[c, s_m, s_o, p].fix(0.00)
+    else:
+        ref_node_id = network.get_reference_node_id()
+        ref_node_idx = network.get_node_idx(ref_node_id)
+        ref_gen_idx = network.get_reference_gen_idx()
+        for s_m in model.scenarios_market:
+            for s_o in model.scenarios_operation:
+                for p in model.periods:
+                    model.active_distribution_networks_voltage_magnitude.add(model.vmag_sqr_adn[s_m, s_o, p] == model.vmag_sqr[ref_node_idx, s_m, s_o, p])
+                    model.active_distribution_networks_net_cons_gen.add(model.pg_adn[s_m, s_o, p] == model.pg[ref_gen_idx, s_m, s_o, p])
+                    model.active_distribution_networks_net_cons_gen.add(model.qg_adn[s_m, s_o, p] == model.qg[ref_gen_idx, s_m, s_o, p])
 
     # - Shared Energy Storage constraints
     model.shared_energy_storage_balance = pe.ConstraintList()
@@ -757,6 +802,8 @@ def _build_model_original(network, params):
                             Qg += model.qg[g, s_m, s_o, p]
 
                     # Node Pc, Qc, Pg and Qg definition
+                    model.node_balance_cons_p.add(model.pc_node[i, s_m, s_o, p] == Pd)
+                    model.node_balance_cons_p.add(model.qc_node[i, s_m, s_o, p] == Qd)
                     model.node_balance_cons_p.add(model.pg_node[i, s_m, s_o, p] == Pg)
                     model.node_balance_cons_p.add(model.qg_node[i, s_m, s_o, p] == Qg)
 
