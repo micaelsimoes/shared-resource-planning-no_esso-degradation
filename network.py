@@ -347,21 +347,14 @@ def _build_model_new_version(network, params):
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
     # - Voltage
+    model.voltage_cons_e = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_rule_e, params=params))
+    model.voltage_cons_f = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_rule_f, params=params))
     model.voltage_cons = pe.ConstraintList()
     for i in model.nodes:
         node = network.nodes[i]
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
                 for p in model.periods:
-
-                    # e_actual and f_actual definition
-                    e_actual = model.e[i, s_m, s_o, p]
-                    f_actual = model.f[i, s_m, s_o, p]
-                    if params.slacks.grid_operation.voltage:
-                        e_actual += model.slack_e[i, s_m, s_o, p]
-                        f_actual += model.slack_f[i, s_m, s_o, p]
-                    model.voltage_cons.add(model.e_actual[i, s_m, s_o, p] == e_actual)
-                    model.voltage_cons.add(model.f_actual[i, s_m, s_o, p] == f_actual)
 
                     # vmag_sqr definition
                     model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] == model.e[i, s_m, s_o, p] ** 2 + model.f[i, s_m, s_o, p] ** 2)
