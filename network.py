@@ -349,15 +349,13 @@ def _build_model_new_version(network, params):
     # - Voltage
     model.voltage_cons_e = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_rule_e, params=params))
     model.voltage_cons_f = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_rule_f, params=params))
+    model.voltage_mag_def = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=voltage_magnitude_def_rule)
     model.voltage_cons = pe.ConstraintList()
     for i in model.nodes:
         node = network.nodes[i]
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
                 for p in model.periods:
-
-                    # vmag_sqr definition
-                    model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] == model.e[i, s_m, s_o, p] ** 2 + model.f[i, s_m, s_o, p] ** 2)
 
                     # voltage magnitude constraints
                     if node.type == BUS_PV:
