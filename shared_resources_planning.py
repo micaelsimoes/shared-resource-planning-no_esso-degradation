@@ -422,10 +422,10 @@ def update_and_check_convergence(planning_problem, tso_model, dso_models, esso_m
 def print_debug_info(planning_problem, consensus_vars, print_vmag=False, print_pf=False, print_ess=False):
     for node_id in planning_problem.active_distribution_network_nodes:
         for year in planning_problem.years:
-            if any(print_vmag, print_pf, print_ess):
+            if any(list(print_vmag, print_pf, print_ess)):
                 print(f"\tYear {year}")
             for day in planning_problem.days:
-                if any(print_vmag, print_pf, print_ess):
+                if any(list(print_vmag, print_pf, print_ess)):
                     print(f"\t\tDay {day}")
                 if print_vmag:
                     print(f"\t\tNode {node_id}, {year}, {day}, PF, TSO,  V  {[sqrt(vmag) for vmag in consensus_vars['v_sqr']['tso']['current'][node_id][year][day]]}")
