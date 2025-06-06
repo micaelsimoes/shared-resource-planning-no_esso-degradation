@@ -301,23 +301,7 @@ def _build_model_new_version(network, params):
         model.qc_adn = pe.Var(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals)
 
     # - Transformers
-    model.r = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0)
-    for i in model.branches:
-        branch = network.branches[i]
-        for s_m in model.scenarios_market:
-            for s_o in model.scenarios_operation:
-                for p in model.periods:
-                    if branch.is_transformer:
-                        # - Transformer
-                        if params.transf_reg and branch.vmag_reg:
-                            model.r[i, s_m, s_o, p].setub(TRANSFORMER_MAXIMUM_RATIO)
-                            model.r[i, s_m, s_o, p].setlb(TRANSFORMER_MINIMUM_RATIO)
-                        else:
-                            model.r[i, s_m, s_o, p].setub(branch.ratio + EQUALITY_TOLERANCE)
-                            model.r[i, s_m, s_o, p].setlb(branch.ratio - EQUALITY_TOLERANCE)
-                    else:
-                        model.r[i, s_m, s_o, p].setub(1.00 + EQUALITY_TOLERANCE)
-                        model.r[i, s_m, s_o, p].setlb(1.00 - EQUALITY_TOLERANCE)
+    model.r = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0, bounds=partial(transformer_ratio_bounds, network=network, params=params))
 
     # - Energy Storage devices
     if params.es_reg:
