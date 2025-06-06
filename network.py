@@ -350,28 +350,7 @@ def _build_model_new_version(network, params):
     model.voltage_cons_e = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_rule_e, params=params))
     model.voltage_cons_f = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_rule_f, params=params))
     model.voltage_mag_def = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=voltage_magnitude_def_rule)
-    model.voltage_cons = pe.ConstraintList()
-    for i in model.nodes:
-        node = network.nodes[i]
-        for s_m in model.scenarios_market:
-            for s_o in model.scenarios_operation:
-                for p in model.periods:
-
-                    # voltage magnitude constraints
-                    if node.type == BUS_PV:
-                        if params.enforce_vg:
-                            # - Enforce voltage controlled bus
-                            gen_idx = network.get_gen_idx(node.bus_i)
-                            vg = network.generators[gen_idx].vg
-                            model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] <= vg[p] ** 2 + EQUALITY_TOLERANCE)
-                            model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] >= vg[p] ** 2 - EQUALITY_TOLERANCE)
-                        else:
-                            # - Voltage at the bus is not controlled
-                            model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] >= node.v_min**2)
-                            model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] <= node.v_max**2)
-                    else:
-                        model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] >= node.v_min**2)
-                        model.voltage_cons.add(model.vmag_sqr[i, s_m, s_o, p] <= node.v_max**2)
+    model.voltage_magnitude_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_magnitude_cons_rule, network=network, params=params))
 
     model.generation_apparent_power = pe.ConstraintList()
     model.generation_power_factor = pe.ConstraintList()
