@@ -587,8 +587,8 @@ def _update_model_with_candidate_solution(shared_ess_data, models, candidate_sol
     for node_id in models:
         for y in models[node_id].years:
             year = repr_years[y]
-            models[node_id].es_s_investment_fixed[y].fix(candidate_solution[node_id][year]['s'])
-            models[node_id].es_e_investment_fixed[y].fix(candidate_solution[node_id][year]['e'])
+            models[node_id].es_s_investment_fixed[y].set_value(candidate_solution[node_id][year]['s'])
+            models[node_id].es_e_investment_fixed[y].set_value(candidate_solution[node_id][year]['e'])
 
 
 def _get_candidate_solution(self, model):
