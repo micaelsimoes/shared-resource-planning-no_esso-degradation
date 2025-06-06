@@ -422,21 +422,24 @@ def update_and_check_convergence(planning_problem, tso_model, dso_models, esso_m
 def print_debug_info(planning_problem, consensus_vars, print_vmag=False, print_pf=False, print_ess=False):
     for node_id in planning_problem.active_distribution_network_nodes:
         for year in planning_problem.years:
-            print(f"\tYear {year}")
+            if any(print_vmag, print_pf, print_ess):
+                print(f"\tYear {year}")
             for day in planning_problem.days:
+                if any(print_vmag, print_pf, print_ess):
+                    print(f"\t\tDay {day}")
                 if print_vmag:
-                    print(f"\tNode {node_id}, {year}, {day}, PF, TSO,  V  {[sqrt(vmag) for vmag in consensus_vars['v_sqr']['tso']['current'][node_id][year][day]]}")
-                    print(f"\tNode {node_id}, {year}, {day}, PF, DSO,  V  {[sqrt(vmag) for vmag in consensus_vars['v_sqr']['dso']['current'][node_id][year][day]]}")
+                    print(f"\t\tNode {node_id}, {year}, {day}, PF, TSO,  V  {[sqrt(vmag) for vmag in consensus_vars['v_sqr']['tso']['current'][node_id][year][day]]}")
+                    print(f"\t\tNode {node_id}, {year}, {day}, PF, DSO,  V  {[sqrt(vmag) for vmag in consensus_vars['v_sqr']['dso']['current'][node_id][year][day]]}")
                 if print_pf:
-                    print(f"\tNode {node_id}, {year}, {day}, PF, TSO,  P {consensus_vars['pf']['tso']['current'][node_id][year][day]['p']}")
-                    print(f"\tNode {node_id}, {year}, {day}, PF, DSO,  P {consensus_vars['pf']['dso']['current'][node_id][year][day]['p']}")
-                    print(f"\tNode {node_id}, {year}, {day}, PF, TSO,  Q {consensus_vars['pf']['tso']['current'][node_id][year][day]['q']}")
-                    print(f"\tNode {node_id}, {year}, {day}, PF, DSO,  Q {consensus_vars['pf']['dso']['current'][node_id][year][day]['q']}")
+                    print(f"\t\tNode {node_id}, {year}, {day}, PF, TSO,  P {consensus_vars['pf']['tso']['current'][node_id][year][day]['p']}")
+                    print(f"\t\tNode {node_id}, {year}, {day}, PF, DSO,  P {consensus_vars['pf']['dso']['current'][node_id][year][day]['p']}")
+                    print(f"\t\tNode {node_id}, {year}, {day}, PF, TSO,  Q {consensus_vars['pf']['tso']['current'][node_id][year][day]['q']}")
+                    print(f"\t\tNode {node_id}, {year}, {day}, PF, DSO,  Q {consensus_vars['pf']['dso']['current'][node_id][year][day]['q']}")
                 if print_ess:
-                    print(f"\tNode {node_id}, {year}, {day}, ESS, TSO,  P {consensus_vars['ess']['tso']['current'][node_id][year][day]['p']}")
-                    print(f"\tNode {node_id}, {year}, {day}, ESS, DSO,  P {consensus_vars['ess']['dso']['current'][node_id][year][day]['p']}")
-                    print(f"\tNode {node_id}, {year}, {day}, ESS, TSO,  Q {consensus_vars['ess']['tso']['current'][node_id][year][day]['q']}")
-                    print(f"\tNode {node_id}, {year}, {day}, ESS, DSO,  Q {consensus_vars['ess']['dso']['current'][node_id][year][day]['q']}")
+                    print(f"\t\tNode {node_id}, {year}, {day}, ESS, TSO,  P {consensus_vars['ess']['tso']['current'][node_id][year][day]['p']}")
+                    print(f"\t\tNode {node_id}, {year}, {day}, ESS, DSO,  P {consensus_vars['ess']['dso']['current'][node_id][year][day]['p']}")
+                    print(f"\t\tNode {node_id}, {year}, {day}, ESS, TSO,  Q {consensus_vars['ess']['tso']['current'][node_id][year][day]['q']}")
+                    print(f"\t\tNode {node_id}, {year}, {day}, ESS, DSO,  Q {consensus_vars['ess']['dso']['current'][node_id][year][day]['q']}")
 
 
 def create_transmission_network_model(transmission_network, consensus_vars, candidate_solution):
