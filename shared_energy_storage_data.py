@@ -331,10 +331,10 @@ def _build_subproblem(shared_ess_data, node_id):
 
     # ------------------------------------------------------------------------------------------------------------------
     # Variables
+    model.es_s_investment_fixed = pe.Param(model.years, mutable=True, initialize=0.00)
+    model.es_e_investment_fixed = pe.Param(model.years, mutable=True, initialize=0.00)
     model.es_s_investment = pe.Var(model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_investment = pe.Var(model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.es_s_investment_fixed = pe.Var(model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.es_e_investment_fixed = pe.Var(model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.slack_es_s_investment_up = pe.Var(model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.slack_es_s_investment_down = pe.Var(model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.slack_es_e_investment_up = pe.Var(model.years, domain=pe.NonNegativeReals, initialize=0.0)
