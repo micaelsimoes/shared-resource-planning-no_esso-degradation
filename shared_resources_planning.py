@@ -914,14 +914,14 @@ def update_transmission_model_to_admm(planning_problem, model, params):
                     model[year][day].expected_shared_ess_q[shared_ess_idx, p].setlb(None)
 
             # Update costs (penalties) for the coordination procedure
-            model[year][day].penalty_ess_usage.set_value(1e-6)
+            model[year][day].penalty_ess_usage.set_value(0.00)
             if transmission_network.params.obj_type == OBJ_MIN_COST:
-                model[year][day].cost_res_curtailment.set_value(COST_GENERATION_CURTAILMENT)
+                model[year][day].cost_res_curtailment.set_value(0.00)
                 model[year][day].cost_load_curtailment.set_value(COST_CONSUMPTION_CURTAILMENT)
             elif transmission_network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
-                model[year][day].penalty_gen_curtailment.set_value(1e-2)
+                model[year][day].penalty_gen_curtailment.set_value(0.00)
                 model[year][day].penalty_load_curtailment.set_value(PENALTY_LOAD_CURTAILMENT)
-                model[year][day].penalty_flex_usage.set_value(1e-3)
+                model[year][day].penalty_flex_usage.set_value(0.00)
 
             # Add ADMM variables
             model[year][day].rho_v = pe.Param(mutable=True, domain=pe.NonNegativeReals, initialize=params.rho['v'][transmission_network.name])
@@ -1013,7 +1013,6 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                 s_base = distribution_network.network[year][day].baseMVA
                 ref_node_id = distribution_network.network[year][day].get_reference_node_id()
                 ref_node_idx = distribution_network.network[year][day].get_node_idx(ref_node_id)
-                ref_gen_idx = distribution_network.network[year][day].get_reference_gen_idx()
                 _, v_max = distribution_network.network[year][day].get_node_voltage_limits(ref_node_id)
 
                 # Update Vmag, Pg, Qg limits at the interface node
