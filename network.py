@@ -356,6 +356,7 @@ def _build_model_new_version(network, params):
     model.generation_power_factor = pe.ConstraintList()
     if params.rg_curt:
         model.sg_sqr_def = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_sqr_rule, network=network, params=params))
+        model.sg_abs_def = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_abs_rule, network=network, params=params))
         for g in model.generators:
             generator = network.generators[g]
             for s_m in model.scenarios_market:
@@ -365,8 +366,6 @@ def _build_model_new_version(network, params):
                             init_sg = 0.0
                             if generator.status[p]:
                                 init_sg = sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
-                            model.generation_apparent_power.add(model.sg_abs[g, s_m, s_o, p] ** 2 <= model.sg_sqr[g, s_m, s_o, p] + EQUALITY_TOLERANCE)
-                            model.generation_apparent_power.add(model.sg_abs[g, s_m, s_o, p] ** 2 >= model.sg_sqr[g, s_m, s_o, p] - EQUALITY_TOLERANCE)
                             model.generation_apparent_power.add(model.sg_abs[g, s_m, s_o, p] <= init_sg - model.sg_curt[g, s_m, s_o, p] + EQUALITY_TOLERANCE)
                             model.generation_apparent_power.add(model.sg_abs[g, s_m, s_o, p] >= init_sg - model.sg_curt[g, s_m, s_o, p] - EQUALITY_TOLERANCE)
                             if generator.power_factor_control:
