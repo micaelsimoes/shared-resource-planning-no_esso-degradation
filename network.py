@@ -478,10 +478,10 @@ def _build_model_original(network, params):
             model.slack_es_soc_final = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.Reals, initialize=0.0)
 
     # - Shared Energy Storage devices
+    model.shared_es_s_rated_fixed = pe.Param(model.shared_energy_storages, mutable=True, initialize=0.00)          # Benders' -- used to get the dual variables (sensitivities)
+    model.shared_es_e_rated_fixed = pe.Param(model.shared_energy_storages, mutable=True, initialize=0.00)          # (...)
     model.shared_es_s_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)
     model.shared_es_e_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)
-    model.shared_es_s_rated_fixed = pe.Param(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)          # Benders' -- used to get the dual variables (sensitivities)
-    model.shared_es_e_rated_fixed = pe.Param(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.00)          # (...)
     model.shared_es_soc = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     model.shared_es_sch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.shared_es_pch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
