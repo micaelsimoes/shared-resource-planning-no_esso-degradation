@@ -434,26 +434,12 @@ def _build_model_new_version(network, params):
     model.shared_energy_storage_day_balance = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, rule=partial(sess_soc_final_rule, network=network, params=params))
     model.shared_energy_storage_soc_limit_lower = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_soc_lower_limit)
     model.shared_energy_storage_soc_limit_upper = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_soc_upper_limit)
+    model.shared_energy_storage_pnet_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pnet_rule)
+    model.shared_energy_storage_qnet_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_qnet_rule)
 
-    model.shared_energy_storage_operation = pe.ConstraintList()
     model.shared_energy_storage_s_sensitivities = pe.ConstraintList()
     model.shared_energy_storage_e_sensitivities = pe.ConstraintList()
     for e in model.shared_energy_storages:
-        for s_m in model.scenarios_market:
-            for s_o in model.scenarios_operation:
-                for p in model.periods:
-
-                    pch = model.shared_es_pch[e, s_m, s_o, p]
-                    qch = model.shared_es_qch[e, s_m, s_o, p]
-                    pdch = model.shared_es_pdch[e, s_m, s_o, p]
-                    qdch = model.shared_es_qdch[e, s_m, s_o, p]
-
-                    # Pnet and Qnet definition
-                    model.shared_energy_storage_operation.add(model.shared_es_pnet[e, s_m, s_o, p] <= pch - pdch + EQUALITY_TOLERANCE)
-                    model.shared_energy_storage_operation.add(model.shared_es_pnet[e, s_m, s_o, p] >= pch - pdch - EQUALITY_TOLERANCE)
-                    model.shared_energy_storage_operation.add(model.shared_es_qnet[e, s_m, s_o, p] <= qch - qdch + EQUALITY_TOLERANCE)
-                    model.shared_energy_storage_operation.add(model.shared_es_qnet[e, s_m, s_o, p] >= qch - qdch - EQUALITY_TOLERANCE)
-
         model.shared_energy_storage_s_sensitivities.add(model.shared_es_s_rated[e] <= model.shared_es_s_rated_fixed[e])
         model.shared_energy_storage_e_sensitivities.add(model.shared_es_e_rated[e] <= model.shared_es_e_rated_fixed[e])
 
