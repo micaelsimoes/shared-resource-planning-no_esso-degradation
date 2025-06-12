@@ -183,7 +183,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
             print_memory_usage(f"Before master problem solve (iter {iter})")
         planning_problem.add_benders_cut(master_problem_model, upper_bound, operational_convergence, sensitivities, candidate_solution)
         shared_ess_data.optimize_master_problem(master_problem_model, from_warm_start=from_warm_start)
-        lower_bound = max(max(lower_bound_evolution), pe.value(master_problem_model.alpha))
+        lower_bound = pe.value(master_problem_model.alpha)
         lower_bound_evolution.append(lower_bound)
         if debug_flag:
             print_memory_usage(f"After master problem solve (iter {iter})")
