@@ -394,24 +394,6 @@ def flex_energy_balance_rule(m, c, s_m, s_o, network, params):
         return pe.Constraint.Skip
 
 
-def flex_energy_balance_upper_lower_rule(m, c, s_m, s_o, network, type):
-    load = network.loads[c]
-    if load.fl_reg:
-        if network.is_transmission and load.bus in network.active_distribution_network_nodes:
-            return pe.Constraint.Skip
-        p_up = sum(m.flex_p_up[c, s_m, s_o, p] for p in m.periods)
-        p_down = sum(m.flex_p_down[c, s_m, s_o, p] for p in m.periods)
-        if type == 'upper':
-            return p_up - p_down <= EQUALITY_TOLERANCE
-        elif type == 'lower':
-            return p_up - p_down >= -EQUALITY_TOLERANCE
-        else:
-            print(f'[ERROR] Function flex_energy_balance_upper_lower_rule. Unrecognized type {type}!')
-            exit(ERROR_NETWORK_MODEL)
-    else:
-        return pe.Constraint.Skip
-
-
 # Energy Storage
 def ess_sch_def(m, e, s_m, s_o, p):
     return pe.inequality(-EQUALITY_TOLERANCE, m.es_sch[e, s_m, s_o, p]**2 - (m.es_pch[e, s_m, s_o, p]**2 + m.es_qch[e, s_m, s_o, p]**2), EQUALITY_TOLERANCE)

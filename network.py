@@ -352,19 +352,18 @@ def _build_model_new_version(network, params):
     model.voltage_mag_def = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=voltage_magnitude_def_rule)
     model.voltage_magnitude_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_magnitude_cons_rule, network=network, params=params))
 
-    model.generation_apparent_power = pe.ConstraintList()
+    # - Generation
     model.generation_power_factor = pe.ConstraintList()
     if params.rg_curt:
         model.sg_sqr_def = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_sqr_rule, network=network, params=params))
         model.sg_curt_def = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_curtailment_rule, network=network, params=params))
+        model.sg_abs_def = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_abs_rule, network=network, params=params))
         for g in model.generators:
             generator = network.generators[g]
             for s_m in model.scenarios_market:
                 for s_o in model.scenarios_operation:
                     for p in model.periods:
                         if generator.is_curtaillable():
-                            model.generation_apparent_power.add(model.sg_abs[g, s_m, s_o, p] ** 2 <= model.sg_sqr[g, s_m, s_o, p] + EQUALITY_TOLERANCE)
-                            model.generation_apparent_power.add(model.sg_abs[g, s_m, s_o, p] ** 2 >= model.sg_sqr[g, s_m, s_o, p] - EQUALITY_TOLERANCE)
                             if generator.power_factor_control:
                                 # Power factor control, variable phi
                                 max_phi = acos(generator.max_pf)
@@ -380,11 +379,6 @@ def _build_model_new_version(network, params):
     # - Flexible Loads -- Daily energy balance
     if params.fl_reg:
         model.flex_energy_balance = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_rule, network=network, params=params))
-        # if params.slacks.flexibility.day_balance:
-        #     model.flex_energy_balance = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_rule, network=network, params=params))
-        # else:
-        #     model.flex_energy_balance_upper = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_upper_lower_rule, network=network, type='upper'))
-        #     model.flex_energy_balance_lower = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_upper_lower_rule, network=network, type='lower'))
 
     # - Energy Storage constraints
     if params.es_reg:
