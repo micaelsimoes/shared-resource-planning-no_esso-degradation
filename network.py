@@ -407,8 +407,11 @@ def _build_model_new_version(network, params):
             model.energy_storage_relax_comp = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_simplified_model_comp_rule, network=network))
 
     # - ADN nodes vmag_sqr, pnet and qnet
-    model.active_distribution_networks_voltage_magnitude = pe.Constraint(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_vmag_sqr_rule, network=network))
-    model.active_distribution_networks_net_cons = pe.ConstraintList()
+    if network.is_transmission:
+        model.active_distribution_networks_voltage_magnitude = pe.Constraint(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_vmag_sqr_transmission_rule, network=network))
+    else:
+        model.active_distribution_networks_voltage_magnitude = pe.Constraint(model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_vmag_sqr_distribution_rule, network=network))
+    model.active_distribution_networks_net_cons_gen = pe.ConstraintList()
     if network.is_transmission:
         for dn in model.adn_nodes:
             adn_node_id = network.active_distribution_network_nodes[dn]
@@ -419,11 +422,13 @@ def _build_model_new_version(network, params):
                         model.active_distribution_networks_net_cons_gen.add(model.pc_adn[dn, s_m, s_o, p] == model.pc[adn_load_idx, s_m, s_o, p] + model.flex_p_up[adn_load_idx, s_m, s_o, p] - model.flex_p_down[adn_load_idx, s_m, s_o, p])
                         model.active_distribution_networks_net_cons_gen.add(model.qc_adn[dn, s_m, s_o, p] == model.qc[adn_load_idx, s_m, s_o, p] + model.flex_q_up[adn_load_idx, s_m, s_o, p] - model.flex_q_down[adn_load_idx, s_m, s_o, p])
                         if params.l_curt:
-                            model.pc_curt_down[adn_load_idx, s_m, s_o, p].fix(0.00)
-                            model.pc_curt_up[adn_load_idx, s_m, s_o, p].fix(0.00)
-                            model.qc_curt_down[adn_load_idx, s_m, s_o, p].fix(0.00)
-                            model.qc_curt_up[adn_load_idx, s_m, s_o, p].fix(0.00)
+                            model.pc_curt_down[c, s_m, s_o, p].fix(0.00)
+                            model.pc_curt_up[c, s_m, s_o, p].fix(0.00)
+                            model.qc_curt_down[c, s_m, s_o, p].fix(0.00)
+                            model.qc_curt_up[c, s_m, s_o, p].fix(0.00)
     else:
+        ref_node_id = network.get_reference_node_id()
+        ref_node_idx = network.get_node_idx(ref_node_id)
         ref_gen_idx = network.get_reference_gen_idx()
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:

@@ -653,16 +653,16 @@ def sess_simplified_model_comp_rule(m, e, s_m, s_o, p, network):
 
 
 # Interface power flows and voltage magnitude definition
-def interface_vmag_sqr_rule(m, dn, s_m, s_o, p, network):
-    if network.is_transmission:
-        adn_node_id = network.active_distribution_network_nodes[dn]
-        adn_node_idx = network.get_node_idx(adn_node_id)
-        return m.vmag_sqr_adn[dn, s_m, s_o, p] == m.vmag_sqr[adn_node_idx, s_m, s_o, p]
-    else:
-        ref_node_id = network.get_reference_node_id()
-        ref_node_idx = network.get_node_idx(ref_node_id)
-        return m.vmag_sqr_adn[s_m, s_o, p] == m.vmag_sqr[ref_node_idx, s_m, s_o, p]
+def interface_vmag_sqr_transmission_rule(m, dn, s_m, s_o, p, network):
+    adn_node_id = network.active_distribution_network_nodes[dn]
+    adn_node_idx = network.get_node_idx(adn_node_id)
+    return m.vmag_sqr_adn[dn, s_m, s_o, p] == m.vmag_sqr[adn_node_idx, s_m, s_o, p]
 
+
+def interface_vmag_sqr_distribution_rule(m, s_m, s_o, p, network):
+    ref_node_id = network.get_reference_node_id()
+    ref_node_idx = network.get_node_idx(ref_node_id)
+    return m.vmag_sqr_adn[s_m, s_o, p] == m.vmag_sqr[ref_node_idx, s_m, s_o, p]
 
 
 # Branch limits
