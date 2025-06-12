@@ -558,10 +558,22 @@ def sess_pch_limit(m, e, s_m, s_o, p):
     return pch <= s_max
 
 
+def sess_qch_limit(m, e, s_m, s_o, p):
+    s_max = m.shared_es_s_rated[e]
+    qch = m.shared_es_qch[e, s_m, s_o, p]
+    return qch <= s_max
+
+
 def sess_pdch_limit(m, e, s_m, s_o, p):
     s_max = m.shared_es_s_rated[e]
     pdch = m.shared_es_pdch[e, s_m, s_o, p]
     return pdch <= s_max
+
+
+def sess_qdch_limit(m, e, s_m, s_o, p):
+    s_max = m.shared_es_s_rated[e]
+    qdch = m.shared_es_qdch[e, s_m, s_o, p]
+    return qdch <= s_max
 
 
 def sess_soc_lower_limit(m, e, s_m, s_o, p):
