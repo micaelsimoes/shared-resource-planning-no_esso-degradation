@@ -379,9 +379,7 @@ def _build_model_new_version(network, params):
 
     # - Flexible Loads -- Daily energy balance
     if params.fl_reg:
-        model.flex_energy_balance = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation,
-                                                  rule=partial(flex_energy_balance_rule, network=network,
-                                                               params=params))
+        model.flex_energy_balance = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_rule, network=network, params=params))
         # if params.slacks.flexibility.day_balance:
         #     model.flex_energy_balance = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_rule, network=network, params=params))
         # else:
@@ -390,6 +388,9 @@ def _build_model_new_version(network, params):
 
     # - Energy Storage constraints
     if params.es_reg:
+
+        model.energy_storage_sch_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=ess_sch_def)
+        model.energy_storage_sdch_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=ess_sdch_def)
 
         model.energy_storage_balance = pe.ConstraintList()
         model.energy_storage_operation = pe.ConstraintList()
@@ -422,11 +423,6 @@ def _build_model_new_version(network, params):
                         model.energy_storage_operation.add(qch >= tan(min_phi) * pch)
                         model.energy_storage_operation.add(qdch <= tan(max_phi) * pdch)
                         model.energy_storage_operation.add(qdch >= tan(min_phi) * pdch)
-
-                        model.energy_storage_operation.add(sch ** 2 <= pch ** 2 + qch ** 2 + EQUALITY_TOLERANCE)
-                        model.energy_storage_operation.add(sch ** 2 >= pch ** 2 + qch ** 2 - EQUALITY_TOLERANCE)
-                        model.energy_storage_operation.add(sdch ** 2 <= pdch ** 2 + qdch ** 2 + EQUALITY_TOLERANCE)
-                        model.energy_storage_operation.add(sdch ** 2 >= pdch ** 2 + qdch ** 2 - EQUALITY_TOLERANCE)
 
                         # Charging/discharging complementarity constraints
                         if params.slacks.ess.complementarity:
