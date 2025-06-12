@@ -391,6 +391,10 @@ def _build_model_new_version(network, params):
 
         model.energy_storage_sch_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=ess_sch_def)
         model.energy_storage_sdch_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=ess_sdch_def)
+        model.energy_storage_phi_ch_limit_lower = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_ch_limits_lower, network=network))
+        model.energy_storage_phi_ch_limit_upper = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_ch_limits_upper, network=network))
+        model.energy_storage_phi_dch_limit_lower = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_dch_limits_lower, network=network))
+        model.energy_storage_phi_dch_limit_upper = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_dch_limits_upper, network=network))
 
         model.energy_storage_balance = pe.ConstraintList()
         model.energy_storage_operation = pe.ConstraintList()
@@ -417,12 +421,6 @@ def _build_model_new_version(network, params):
                         sdch = model.es_sdch[e, s_m, s_o, p]
                         pdch = model.es_pdch[e, s_m, s_o, p]
                         qdch = model.es_qdch[e, s_m, s_o, p]
-
-                        # ESS operation
-                        model.energy_storage_operation.add(qch <= tan(max_phi) * pch)
-                        model.energy_storage_operation.add(qch >= tan(min_phi) * pch)
-                        model.energy_storage_operation.add(qdch <= tan(max_phi) * pdch)
-                        model.energy_storage_operation.add(qdch >= tan(min_phi) * pdch)
 
                         # Charging/discharging complementarity constraints
                         if params.slacks.ess.complementarity:
