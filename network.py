@@ -431,9 +431,9 @@ def _build_model_new_version(network, params):
     model.shared_energy_storage_sdch_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_sdch_def)
     model.shared_energy_storage_ch_dch_exclusion = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_comp_rule, params=params))
     model.shared_energy_storage_balance = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_balance_rule, network=network))
+    model.shared_energy_storage_day_balance = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, rule=partial(sess_soc_final_rule, network=network, params=params))
 
     model.shared_energy_storage_operation = pe.ConstraintList()
-    model.shared_energy_storage_day_balance = pe.ConstraintList()
     model.shared_energy_storage_s_sensitivities = pe.ConstraintList()
     model.shared_energy_storage_e_sensitivities = pe.ConstraintList()
     for e in model.shared_energy_storages:
@@ -469,14 +469,6 @@ def _build_model_new_version(network, params):
 
                     model.shared_energy_storage_operation.add(model.shared_es_soc[e, s_m, s_o, p] <= soc_max)
                     model.shared_energy_storage_operation.add(model.shared_es_soc[e, s_m, s_o, p] >= soc_min)
-
-                # Day balance
-                if params.slacks.shared_ess.day_balance:
-                    model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] <= soc_final + model.slack_shared_es_soc_final[e, s_m, s_o])
-                    model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] >= soc_final + model.slack_shared_es_soc_final[e, s_m, s_o])
-                else:
-                    model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] <= soc_final + EQUALITY_TOLERANCE)
-                    model.shared_energy_storage_day_balance.add(model.shared_es_soc[e, s_m, s_o, len(model.periods) - 1] >= soc_final - EQUALITY_TOLERANCE)
 
         model.shared_energy_storage_s_sensitivities.add(model.shared_es_s_rated[e] <= model.shared_es_s_rated_fixed[e])
         model.shared_energy_storage_e_sensitivities.add(model.shared_es_e_rated[e] <= model.shared_es_e_rated_fixed[e])
