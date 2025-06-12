@@ -379,11 +379,14 @@ def _build_model_new_version(network, params):
 
     # - Flexible Loads -- Daily energy balance
     if params.fl_reg:
-        if params.slacks.flexibility.day_balance:
-            model.flex_energy_balance = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_rule, network=network, params=params))
-        else:
-            model.flex_energy_balance_upper = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_upper_lower_rule, network=network, type='upper'))
-            model.flex_energy_balance_lower = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_upper_lower_rule, network=network, type='lower'))
+        model.flex_energy_balance = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation,
+                                                  rule=partial(flex_energy_balance_rule, network=network,
+                                                               params=params))
+        # if params.slacks.flexibility.day_balance:
+        #     model.flex_energy_balance = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_rule, network=network, params=params))
+        # else:
+        #     model.flex_energy_balance_upper = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_upper_lower_rule, network=network, type='upper'))
+        #     model.flex_energy_balance_lower = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_upper_lower_rule, network=network, type='lower'))
 
     # - Energy Storage constraints
     if params.es_reg:
