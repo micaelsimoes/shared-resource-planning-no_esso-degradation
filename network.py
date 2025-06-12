@@ -434,7 +434,6 @@ def _build_model_new_version(network, params):
     model.shared_energy_storage_balance = pe.ConstraintList()
     model.shared_energy_storage_operation = pe.ConstraintList()
     model.shared_energy_storage_day_balance = pe.ConstraintList()
-    model.shared_energy_storage_ch_dch_exclusion = pe.ConstraintList()
     model.shared_energy_storage_s_sensitivities = pe.ConstraintList()
     model.shared_energy_storage_e_sensitivities = pe.ConstraintList()
     for e in model.shared_energy_storages:
