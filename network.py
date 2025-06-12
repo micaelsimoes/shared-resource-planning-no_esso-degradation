@@ -427,6 +427,8 @@ def _build_model_new_version(network, params):
     model.shared_energy_storage_phi_ch_limit_upper = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_phi_ch_limits_upper, network=network))
     model.shared_energy_storage_phi_dch_limit_lower = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_phi_dch_limits_lower, network=network))
     model.shared_energy_storage_phi_dch_limit_upper = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_phi_dch_limits_upper, network=network))
+    model.shared_energy_storage_sch_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_sch_def)
+    model.shared_energy_storage_sdch_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_sdch_def)
 
     model.shared_energy_storage_balance = pe.ConstraintList()
     model.shared_energy_storage_operation = pe.ConstraintList()
@@ -468,11 +470,6 @@ def _build_model_new_version(network, params):
 
                     model.shared_energy_storage_operation.add(model.shared_es_soc[e, s_m, s_o, p] <= soc_max)
                     model.shared_energy_storage_operation.add(model.shared_es_soc[e, s_m, s_o, p] >= soc_min)
-
-                    model.shared_energy_storage_operation.add(sch ** 2 <= pch ** 2 + qch ** 2 + EQUALITY_TOLERANCE)
-                    model.shared_energy_storage_operation.add(sch ** 2 >= pch ** 2 + qch ** 2 - EQUALITY_TOLERANCE)
-                    model.shared_energy_storage_operation.add(sdch ** 2 <= pdch ** 2 + qdch ** 2 + EQUALITY_TOLERANCE)
-                    model.shared_energy_storage_operation.add(sdch ** 2 >= pdch ** 2 + qdch ** 2 - EQUALITY_TOLERANCE)
 
                     # Charging/discharging complementarity constraints
                     if params.slacks.shared_ess.complementarity:
