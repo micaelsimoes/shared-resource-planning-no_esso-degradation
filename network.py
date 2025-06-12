@@ -429,6 +429,7 @@ def _build_model_new_version(network, params):
     model.shared_energy_storage_phi_dch_limit_upper = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_phi_dch_limits_upper, network=network))
     model.shared_energy_storage_sch_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_sch_def)
     model.shared_energy_storage_sdch_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_sdch_def)
+    model.shared_energy_storage_ch_dch_exclusion = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_comp_rule, params=params))
 
     model.shared_energy_storage_balance = pe.ConstraintList()
     model.shared_energy_storage_operation = pe.ConstraintList()
@@ -470,12 +471,6 @@ def _build_model_new_version(network, params):
 
                     model.shared_energy_storage_operation.add(model.shared_es_soc[e, s_m, s_o, p] <= soc_max)
                     model.shared_energy_storage_operation.add(model.shared_es_soc[e, s_m, s_o, p] >= soc_min)
-
-                    # Charging/discharging complementarity constraints
-                    if params.slacks.shared_ess.complementarity:
-                        model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch == model.slack_shared_es_comp[e, s_m, s_o, p])
-                    else:
-                        model.shared_energy_storage_ch_dch_exclusion.add(sch * sdch <= EQUALITY_TOLERANCE)
 
                     # State-of-Charge
                     soc_prev = soc_init
