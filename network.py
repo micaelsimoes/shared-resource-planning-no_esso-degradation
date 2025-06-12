@@ -417,6 +417,11 @@ def _build_model_new_version(network, params):
         model.active_distribution_networks_interface_reactive_power = pe.Constraint(model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_q_distribution_rule, network=network))
 
     # - Shared Energy Storage constraints
+    model.shared_energy_storage_sch_limit = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_sch_limit)
+    model.shared_energy_storage_sdch_limit = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_sdch_limit)
+    model.shared_energy_storage_pch_limit = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pch_limit)
+    model.shared_energy_storage_pdch_limit = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pdch_limit)
+
     model.shared_energy_storage_balance = pe.ConstraintList()
     model.shared_energy_storage_operation = pe.ConstraintList()
     model.shared_energy_storage_day_balance = pe.ConstraintList()
@@ -449,14 +454,10 @@ def _build_model_new_version(network, params):
                     qdch = model.shared_es_qdch[e, s_m, s_o, p]
 
                     # ESS operation
-                    model.shared_energy_storage_operation.add(sch <= s_max)
-                    model.shared_energy_storage_operation.add(pch <= s_max)
                     model.shared_energy_storage_operation.add(qch <= s_max)
                     model.shared_energy_storage_operation.add(qch <= tan(max_phi) * pch)
                     model.shared_energy_storage_operation.add(qch >= tan(min_phi) * pch)
 
-                    model.shared_energy_storage_operation.add(sdch <= s_max)
-                    model.shared_energy_storage_operation.add(pdch <= s_max)
                     model.shared_energy_storage_operation.add(qdch <= s_max)
                     model.shared_energy_storage_operation.add(qdch <= tan(max_phi) * pdch)
                     model.shared_energy_storage_operation.add(qdch >= tan(min_phi) * pdch)

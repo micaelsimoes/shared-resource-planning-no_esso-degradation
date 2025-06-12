@@ -663,8 +663,8 @@ def interface_pf_p_transmission_rule(m, dn, s_m, s_o, p, network, params):
     adn_node_id = network.active_distribution_network_nodes[dn]
     adn_load_idx = network.get_adn_load_idx(adn_node_id)
     if params.l_curt:
-        m.pc_curt_down[adn_load_idx, s_m, s_o, p].fix(0.00)
-        m.pc_curt_up[adn_load_idx, s_m, s_o, p].fix(0.00)
+        fix_or_set(m.pc_curt_down[adn_load_idx, s_m, s_o, p], 0.00)
+        fix_or_set(m.pc_curt_up[adn_load_idx, s_m, s_o, p], 0.00)
     return m.pc_adn[dn, s_m, s_o, p] == m.pc[adn_load_idx, s_m, s_o, p] + m.flex_p_up[adn_load_idx, s_m, s_o, p] - m.flex_p_down[adn_load_idx, s_m, s_o, p]
 
 
@@ -672,8 +672,8 @@ def interface_pf_q_transmission_rule(m, dn, s_m, s_o, p, network, params):
     adn_node_id = network.active_distribution_network_nodes[dn]
     adn_load_idx = network.get_adn_load_idx(adn_node_id)
     if params.l_curt:
-        m.qc_curt_down[adn_load_idx, s_m, s_o, p].fix(0.00)
-        m.qc_curt_up[adn_load_idx, s_m, s_o, p].fix(0.00)
+        fix_or_set(m.qc_curt_down[adn_load_idx, s_m, s_o, p], 0.00)
+        fix_or_set(m.qc_curt_up[adn_load_idx, s_m, s_o, p], 0.00)
     return m.qc_adn[dn, s_m, s_o, p] == m.qc[adn_load_idx, s_m, s_o, p] + m.flex_q_up[adn_load_idx, s_m, s_o, p] - m.flex_q_down[adn_load_idx, s_m, s_o, p]
 
 
