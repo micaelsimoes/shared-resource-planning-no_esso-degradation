@@ -421,6 +421,10 @@ def _build_model_new_version(network, params):
     model.shared_energy_storage_sdch_limit = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_sdch_limit)
     model.shared_energy_storage_pch_limit = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pch_limit)
     model.shared_energy_storage_pdch_limit = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pdch_limit)
+    model.shared_energy_storage_phi_ch_limit_lower = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_phi_ch_limits_lower, network=network))
+    model.shared_energy_storage_phi_ch_limit_upper = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_phi_ch_limits_upper, network=network))
+    model.shared_energy_storage_phi_dch_limit_lower = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_phi_dch_limits_lower, network=network))
+    model.shared_energy_storage_phi_dch_limit_upper = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_phi_dch_limits_upper, network=network))
 
     model.shared_energy_storage_balance = pe.ConstraintList()
     model.shared_energy_storage_operation = pe.ConstraintList()
@@ -455,12 +459,8 @@ def _build_model_new_version(network, params):
 
                     # ESS operation
                     model.shared_energy_storage_operation.add(qch <= s_max)
-                    model.shared_energy_storage_operation.add(qch <= tan(max_phi) * pch)
-                    model.shared_energy_storage_operation.add(qch >= tan(min_phi) * pch)
 
                     model.shared_energy_storage_operation.add(qdch <= s_max)
-                    model.shared_energy_storage_operation.add(qdch <= tan(max_phi) * pdch)
-                    model.shared_energy_storage_operation.add(qdch >= tan(min_phi) * pdch)
 
                     # Pnet and Qnet definition
                     model.shared_energy_storage_operation.add(model.shared_es_pnet[e, s_m, s_o, p] <= pch - pdch + EQUALITY_TOLERANCE)
