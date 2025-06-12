@@ -398,10 +398,7 @@ def _build_model_new_version(network, params):
         model.energy_storage_ch_dch_exclusion = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_comp_rule, network=network, params=params))
         model.energy_storage_balance = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_balance_rule, network=network))
 
-        model.energy_storage_balance = pe.ConstraintList()
-        model.energy_storage_operation = pe.ConstraintList()
         model.energy_storage_day_balance = pe.ConstraintList()
-        model.energy_storage_ch_dch_exclusion = pe.ConstraintList()
 
         for e in model.energy_storages:
 
