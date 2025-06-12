@@ -439,6 +439,12 @@ def _build_model_new_version(network, params):
     model.shared_energy_storage_s_sensitivities = pe.Constraint(model.shared_energy_storages, rule=sess_s_sensitivities)
     model.shared_energy_storage_e_sensitivities = pe.Constraint(model.shared_energy_storages, rule=sess_e_sensitivities)
 
+    # - Generation and Load per node
+    model.net_load_p_per_node = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_p_per_node_rule, network=network, params=params))
+    model.net_load_q_per_node = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_q_per_node_rule, network=network, params=params))
+    model.net_gen_p_per_node = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_p_per_node_rule, network=network))
+    model.net_gen_q_per_node = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_q_per_node_rule, network=network))
+
     # - Node Balance constraints
     model.node_balance_cons_p = pe.ConstraintList()
     model.node_balance_cons_q = pe.ConstraintList()
@@ -448,45 +454,12 @@ def _build_model_new_version(network, params):
                 for i in range(len(network.nodes)):
 
                     node = network.nodes[i]
-
-                    Pd = 0.00
-                    Qd = 0.00
-                    for c in model.loads:
-                        if network.loads[c].bus == node.bus_i:
-                            Pd += model.pc[c, s_m, s_o, p]
-                            Qd += model.qc[c, s_m, s_o, p]
-                            if params.fl_reg and network.loads[c].fl_reg:
-                                Pd += (model.flex_p_up[c, s_m, s_o, p] - model.flex_p_down[c, s_m, s_o, p])
-                                Qd += (model.flex_q_up[c, s_m, s_o, p] - model.flex_q_down[c, s_m, s_o, p])
-                            if params.l_curt:
-                                Pd -= (model.pc_curt_down[c, s_m, s_o, p] - model.pc_curt_up[c, s_m, s_o, p])
-                                Qd -= (model.qc_curt_down[c, s_m, s_o, p] - model.qc_curt_up[c, s_m, s_o, p])
-                    if params.es_reg:
-                        for e in model.energy_storages:
-                            if network.energy_storages[e].bus == node.bus_i:
-                                Pd += (model.es_pch[e, s_m, s_o, p] - model.es_pdch[e, s_m, s_o, p])
-                                Qd += (model.es_qch[e, s_m, s_o, p] - model.es_qdch[e, s_m, s_o, p])
-                    for e in model.shared_energy_storages:
-                        if network.shared_energy_storages[e].bus == node.bus_i:
-                            Pd += (model.shared_es_pch[e, s_m, s_o, p] - model.shared_es_pdch[e, s_m, s_o, p])
-                            Qd += (model.shared_es_qch[e, s_m, s_o, p] - model.shared_es_qdch[e, s_m, s_o, p])
-
-                    Pg = 0.0
-                    Qg = 0.0
-                    for g in model.generators:
-                        generator = network.generators[g]
-                        if generator.bus == node.bus_i:
-                            Pg += model.pg[g, s_m, s_o, p]
-                            Qg += model.qg[g, s_m, s_o, p]
-
-                    # Node Pc, Qc, Pg and Qg definition
-                    model.node_balance_cons_p.add(model.pc_node[i, s_m, s_o, p] == Pd)
-                    model.node_balance_cons_p.add(model.qc_node[i, s_m, s_o, p] == Qd)
-                    model.node_balance_cons_p.add(model.pg_node[i, s_m, s_o, p] == Pg)
-                    model.node_balance_cons_p.add(model.qg_node[i, s_m, s_o, p] == Qg)
-
                     ei = model.e_actual[i, s_m, s_o, p]
                     fi = model.f_actual[i, s_m, s_o, p]
+                    Pd = model.pc_node[i, s_m, s_o, p]
+                    Qd = model.pc_node[i, s_m, s_o, p]
+                    Pg = model.pg_node[i, s_m, s_o, p]
+                    Qg = model.pg_node[i, s_m, s_o, p]
 
                     Pi = node.gs * (ei ** 2 + fi ** 2)
                     Qi = -node.bs * (ei ** 2 + fi ** 2)
