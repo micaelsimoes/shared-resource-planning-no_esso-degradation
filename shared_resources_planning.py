@@ -151,6 +151,8 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         print(f'=============================================== ITERATION #{iter} ==============================================')
         print(f'[INFO] Iter {iter}. LB = {lower_bound}, UB = {upper_bound}')
 
+        _print_candidate_solution(candidate_solution)
+
         if debug_flag:
             print_memory_usage(f"Before subproblem (iter {iter})")
 
