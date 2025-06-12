@@ -388,7 +388,6 @@ def _build_model_new_version(network, params):
 
     # - Energy Storage constraints
     if params.es_reg:
-
         model.energy_storage_sch_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=ess_sch_def)
         model.energy_storage_sdch_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=ess_sdch_def)
         model.energy_storage_phi_ch_limit_lower = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_ch_limits_lower, network=network))
@@ -397,21 +396,15 @@ def _build_model_new_version(network, params):
         model.energy_storage_phi_dch_limit_upper = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_dch_limits_upper, network=network))
         model.energy_storage_ch_dch_exclusion = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_comp_rule, network=network, params=params))
         model.energy_storage_balance = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_balance_rule, network=network))
-
-        model.energy_storage_day_balance = pe.ConstraintList()
-
-        for e in model.energy_storages:
-
-            energy_storage = network.energy_storages[e]
-            soc_final = energy_storage.e_init
-
-            for s_m in model.scenarios_market:
-                for s_o in model.scenarios_operation:
-                    if params.slacks.ess.day_balance:
-                        model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final + model.slack_es_soc_final[e, s_m, s_o])
-                    else:
-                        model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] <= soc_final + EQUALITY_TOLERANCE)
-                        model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] >= soc_final - EQUALITY_TOLERANCE)
+        model.energy_storage_day_balance = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, rule=partial(ess_soc_final_rule, network=network, params=params))
+        if params.ess_model == ESS_MODEL_LP_RELAXED:
+            model.energy_storage_relax_ch = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_relaxed_model_ch_rule, network=network))
+            model.energy_storage_relax_dch = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_relaxed_model_dch_rule, network=network))
+            model.energy_storage_relax_comp = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=ess_relaxed_model_comp_rule)
+        if params.ess_model == ESS_MODEL_LP_SIMPLIFIED_EXTENDED:
+            model.energy_storage_relax_ch = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_simplified_model_ch_rule, network=network))
+            model.energy_storage_relax_dch = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_simplified_model_dch_rule, network=network))
+            model.energy_storage_relax_comp = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_simplified_model_comp_rule, network=network))
 
     # - ADN nodes vmag_sqr, pnet and qnet
     model.active_distribution_networks_voltage_magnitude = pe.ConstraintList()
