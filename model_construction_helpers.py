@@ -659,10 +659,39 @@ def interface_vmag_sqr_transmission_rule(m, dn, s_m, s_o, p, network):
     return m.vmag_sqr_adn[dn, s_m, s_o, p] == m.vmag_sqr[adn_node_idx, s_m, s_o, p]
 
 
+def interface_pf_p_transmission_rule(m, dn, s_m, s_o, p, network, params):
+    adn_node_id = network.active_distribution_network_nodes[dn]
+    adn_load_idx = network.get_adn_load_idx(adn_node_id)
+    if params.l_curt:
+        m.pc_curt_down[adn_load_idx, s_m, s_o, p].fix(0.00)
+        m.pc_curt_up[adn_load_idx, s_m, s_o, p].fix(0.00)
+    return m.pc_adn[dn, s_m, s_o, p] == m.pc[adn_load_idx, s_m, s_o, p] + m.flex_p_up[adn_load_idx, s_m, s_o, p] - m.flex_p_down[adn_load_idx, s_m, s_o, p]
+
+
+def interface_pf_q_transmission_rule(m, dn, s_m, s_o, p, network, params):
+    adn_node_id = network.active_distribution_network_nodes[dn]
+    adn_load_idx = network.get_adn_load_idx(adn_node_id)
+    if params.l_curt:
+        m.qc_curt_down[adn_load_idx, s_m, s_o, p].fix(0.00)
+        m.qc_curt_up[adn_load_idx, s_m, s_o, p].fix(0.00)
+    return m.qc_adn[dn, s_m, s_o, p] == m.qc[adn_load_idx, s_m, s_o, p] + m.flex_q_up[adn_load_idx, s_m, s_o, p] - m.flex_q_down[adn_load_idx, s_m, s_o, p]
+
+
 def interface_vmag_sqr_distribution_rule(m, s_m, s_o, p, network):
     ref_node_id = network.get_reference_node_id()
     ref_node_idx = network.get_node_idx(ref_node_id)
     return m.vmag_sqr_adn[s_m, s_o, p] == m.vmag_sqr[ref_node_idx, s_m, s_o, p]
+
+
+def interface_pf_p_distribution_rule(m, s_m, s_o, p, network):
+    ref_gen_idx = network.get_reference_gen_idx()
+    return m.pg_adn[s_m, s_o, p] == m.pg[ref_gen_idx, s_m, s_o, p]
+
+
+def interface_pf_q_distribution_rule(m, s_m, s_o, p, network):
+    ref_gen_idx = network.get_reference_gen_idx()
+    return m.qg_adn[s_m, s_o, p] == m.qg[ref_gen_idx, s_m, s_o, p]
+
 
 
 # Branch limits

@@ -409,32 +409,12 @@ def _build_model_new_version(network, params):
     # - ADN nodes vmag_sqr, pnet and qnet
     if network.is_transmission:
         model.active_distribution_networks_voltage_magnitude = pe.Constraint(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_vmag_sqr_transmission_rule, network=network))
+        model.active_distribution_networks_interface_active_power = pe.Constraint(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_p_transmission_rule, network=network))
+        model.active_distribution_networks_interface_reactive_power = pe.Constraint(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_q_transmission_rule, network=network))
     else:
         model.active_distribution_networks_voltage_magnitude = pe.Constraint(model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_vmag_sqr_distribution_rule, network=network))
-    model.active_distribution_networks_net_cons_gen = pe.ConstraintList()
-    if network.is_transmission:
-        for dn in model.adn_nodes:
-            adn_node_id = network.active_distribution_network_nodes[dn]
-            adn_load_idx = network.get_adn_load_idx(adn_node_id)
-            for s_m in model.scenarios_market:
-                for s_o in model.scenarios_operation:
-                    for p in model.periods:
-                        model.active_distribution_networks_net_cons_gen.add(model.pc_adn[dn, s_m, s_o, p] == model.pc[adn_load_idx, s_m, s_o, p] + model.flex_p_up[adn_load_idx, s_m, s_o, p] - model.flex_p_down[adn_load_idx, s_m, s_o, p])
-                        model.active_distribution_networks_net_cons_gen.add(model.qc_adn[dn, s_m, s_o, p] == model.qc[adn_load_idx, s_m, s_o, p] + model.flex_q_up[adn_load_idx, s_m, s_o, p] - model.flex_q_down[adn_load_idx, s_m, s_o, p])
-                        if params.l_curt:
-                            model.pc_curt_down[c, s_m, s_o, p].fix(0.00)
-                            model.pc_curt_up[c, s_m, s_o, p].fix(0.00)
-                            model.qc_curt_down[c, s_m, s_o, p].fix(0.00)
-                            model.qc_curt_up[c, s_m, s_o, p].fix(0.00)
-    else:
-        ref_node_id = network.get_reference_node_id()
-        ref_node_idx = network.get_node_idx(ref_node_id)
-        ref_gen_idx = network.get_reference_gen_idx()
-        for s_m in model.scenarios_market:
-            for s_o in model.scenarios_operation:
-                for p in model.periods:
-                    model.active_distribution_networks_net_cons_gen.add(model.pg_adn[s_m, s_o, p] == model.pg[ref_gen_idx, s_m, s_o, p])
-                    model.active_distribution_networks_net_cons_gen.add(model.qg_adn[s_m, s_o, p] == model.qg[ref_gen_idx, s_m, s_o, p])
+        model.active_distribution_networks_interface_active_power = pe.Constraint(model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_p_distribution_rule, network=network))
+        model.active_distribution_networks_interface_reactive_power = pe.Constraint(model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_q_distribution_rule, network=network))
 
     # - Shared Energy Storage constraints
     model.shared_energy_storage_balance = pe.ConstraintList()
