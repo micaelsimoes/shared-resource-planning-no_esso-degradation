@@ -457,10 +457,6 @@ def _build_model_new_version(network, params):
                     pdch = model.shared_es_pdch[e, s_m, s_o, p]
                     qdch = model.shared_es_qdch[e, s_m, s_o, p]
 
-                    # ESS operation
-                    model.shared_energy_storage_operation.add(qch <= s_max)
-
-                    model.shared_energy_storage_operation.add(qdch <= s_max)
 
                     # Pnet and Qnet definition
                     model.shared_energy_storage_operation.add(model.shared_es_pnet[e, s_m, s_o, p] <= pch - pdch + EQUALITY_TOLERANCE)
