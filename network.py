@@ -454,6 +454,7 @@ def _build_model_new_version(network, params):
                 for i in range(len(network.nodes)):
 
                     node = network.nodes[i]
+
                     ei = model.e_actual[i, s_m, s_o, p]
                     fi = model.f_actual[i, s_m, s_o, p]
                     Pd = model.pc_node[i, s_m, s_o, p]
