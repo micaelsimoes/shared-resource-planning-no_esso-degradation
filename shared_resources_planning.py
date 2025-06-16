@@ -133,7 +133,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
     iter = 1
     convergence = False
     from_warm_start = False
-    lower_bound = 1e-12
+    lower_bound = -1e12
     upper_bound = 1e12
     lower_bound_evolution = [lower_bound]
     upper_bound_evolution = [upper_bound]
@@ -202,7 +202,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
     if not convergence:
         print('[WARNING] Convergence not obtained!')
 
-    print('[INFO] Final. LB = {}, UB = {}'.format(lower_bound, upper_bound))
+    print('[INFO] Final. LB = {:.2f}, UB = {:.2f}'.format(lower_bound, upper_bound))
 
     # Write results
     end = time.time()
