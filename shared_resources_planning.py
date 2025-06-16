@@ -171,13 +171,13 @@ def _run_planning_problem(planning_problem, debug_flag=False):
             print_memory_usage(f"After subproblem (iter {iter})")
 
         #  - Convergence check
-        denominator = max(abs(upper_bound), 1e-6)  # Avoid divide-by-zero
-        gap = abs(upper_bound - lower_bound) / denominator
-        if gap < benders_parameters.tol_rel or abs(upper_bound - lower_bound) <= benders_parameters.tol_abs or lower_bound > upper_bound:
+        gap_abs = abs(upper_bound - lower_bound)
+        gap_rel = gap_abs / max(abs(upper_bound), 1e-6)  # Avoid division by zero
+        if gap_rel < benders_parameters.tol_rel or gap_abs <= benders_parameters.tol_abs or lower_bound > upper_bound:
             lower_bound_evolution.append(lower_bound)
             convergence = True
             break
-        print(f"[INFO] Iteration #{iter} | Gap = {gap*100:.2f}% | LB = {lower_bound:.2f} | UB = {upper_bound:.2f}")
+        print(f"[INFO] Iteration #{iter} | Gap = {gap_rel*100:.2f}% | LB = {lower_bound:.2f} | UB = {upper_bound:.2f}")
 
         # 2. Solve Master problem
         # 2.1. Add Benders' cut, based on the sensitivities obtained from the subproblem
