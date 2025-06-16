@@ -576,8 +576,6 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
 
     # Run SMOPF
     results = transmission_network.optimize(tso_model)
-    processed_results = transmission_network.process_results(tso_model, results)
-    transmission_network.write_optimization_results_to_excel(processed_results)
 
     # Get initial interface and shared ESS values
     for year in transmission_network.years:
@@ -674,8 +672,6 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
 
         # Run SMOPF
         results[node_id] = distribution_network.optimize(dso_model)
-        processed_results = distribution_network.process_results(dso_model, results[node_id])
-        distribution_network.write_optimization_results_to_excel(processed_results)
 
         # Get initial interface and shared ESS values
         for year in distribution_network.years:
