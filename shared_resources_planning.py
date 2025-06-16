@@ -170,7 +170,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
             print_memory_usage(f"After subproblem (iter {iter})")
 
         #  - Convergence check
-        if isclose(abs(upper_bound - lower_bound)/abs(upper_bound), 0.00, abs_tol=benders_parameters.tol_rel, rel_tol=benders_parameters.tol_rel):
+        if isclose(abs(upper_bound - lower_bound)/abs(upper_bound), 0.00, abs_tol=benders_parameters.tol_rel, rel_tol=benders_parameters.tol_rel) or lower_bound > upper_bound:
             lower_bound_evolution.append(lower_bound)
             convergence = True
             break
