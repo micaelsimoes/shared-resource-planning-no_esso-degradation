@@ -192,12 +192,8 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         candidate_solution = shared_ess_data.get_candidate_solution(master_problem_model)
 
         # Clean up memory
-        del lower_level_models
-        del operational_results
-        start_gc = time.time()
-        collected = gc.collect()
+        gc.collect()
         if debug_flag:
-            print(f"[GC] Collected {collected} objects in {time.time() - start_gc:.2f} s")
             print_memory_usage(f"After GC (iter {iter})")
 
         iter += 1
