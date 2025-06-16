@@ -206,7 +206,9 @@ def _run_planning_problem(planning_problem, debug_flag=False):
     if not convergence:
         print('[WARNING] Convergence not obtained!')
 
-    print('[INFO] Final. LB = {:.2f}, UB = {:.2f}'.format(lower_bound, upper_bound))
+    gap_abs = abs(upper_bound - lower_bound)
+    gap_rel = gap_abs / max(abs(upper_bound), 1e-6)  # Avoid division by zero
+    print(f"[INFO] Final | Gap = {gap_rel * 100:.2f}% | LB = {lower_bound:.2f} | UB = {upper_bound:.2f}")
 
     # Write results
     end = time.time()
