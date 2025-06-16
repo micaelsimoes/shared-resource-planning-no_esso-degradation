@@ -161,11 +161,12 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         # 1.2. Get coupling constraints' sensitivities (subproblem)
         # 1.3. Get OF value (upper bound) from the subproblem
         operational_convergence, operational_results, lower_level_models, sensitivities, _ = planning_problem.run_operational_planning(candidate_solution, print_results=debug_flag, filename=f'{planning_problem.name}_iter{iter}')
-        upper_bound = upper_bound_evolution[-1]
         if operational_convergence:
             upper_bound = planning_problem.get_upper_bound(lower_level_models['tso'])
-        upper_bound = min(min(upper_bound_evolution), upper_bound)
+        else:
+            upper_bound = upper_bound_evolution[-1]
         upper_bound_evolution.append(upper_bound)
+
         if debug_flag:
             print_memory_usage(f"After subproblem (iter {iter})")
 
@@ -250,11 +251,9 @@ def _add_benders_cut(planning_problem, model, upper_bound, convergence, sensitiv
             node_id = planning_problem.active_distribution_network_nodes[e]
             for y in model.years:
                 year = years[y]
-                if sensitivities['s'][year][node_id] != 'N/A':
-                    benders_cut += sensitivities['s'][year][node_id] * (model.expected_es_s_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['s'])
-                if sensitivities['e'][year][node_id] != 'N/A':
-                    benders_cut += sensitivities['e'][year][node_id] * (model.expected_es_e_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['e'])
-        model.benders_cuts.add(0.00 >= benders_cut)
+                benders_cut += model.expected_es_s_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['s']
+                benders_cut += model.expected_es_e_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['e']
+        model.benders_cuts.add(benders_cut <= BENDERS_FEASIBILITY_TOLERANCE)
 
 
 # ======================================================================================================================
