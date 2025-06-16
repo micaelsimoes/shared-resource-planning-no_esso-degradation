@@ -202,10 +202,10 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         iter += 1
         from_warm_start = True
 
-    if not convergence:
+    if convergence:
+        print(f"[INFO] Benders' decomposition converged at iteration {iter}.")
+    else:
         print('[WARNING] Convergence not obtained!')
-
-    print(f'[INFO] Final. LB = {lower_bound:.2f}, UB = {upper_bound:.2f}')
 
     # Write results
     end = time.time()
