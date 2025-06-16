@@ -149,7 +149,10 @@ def _run_planning_problem(planning_problem, debug_flag=False):
     while iter < benders_parameters.num_max_iters and not convergence:
 
         print(f'=============================================== ITERATION #{iter} ==============================================')
-        print(f'[INFO] Iter {iter}. LB = {lower_bound}, UB = {upper_bound}')
+        if iter > 1:
+            gap_abs = abs(upper_bound - lower_bound)
+            gap_rel = gap_abs / max(abs(upper_bound), 1e-6)  # Avoid division by zero
+            print(f"[INFO] Iteration #{iter} | Gap = {gap_rel * 100:.2f}% | LB = {lower_bound:.2f} | UB = {upper_bound:.2f}")
 
         _print_candidate_solution(candidate_solution)
 
