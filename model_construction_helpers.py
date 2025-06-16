@@ -606,11 +606,11 @@ def sess_qnet_rule(m, e, s_m, s_o, p):
 
 
 def sess_s_sensitivities(m, e):
-    return m.shared_es_s_rated[e] <= m.shared_es_s_rated_fixed[e]
+    return m.shared_es_s_rated[e] == m.shared_es_s_rated_fixed[e]
 
 
 def sess_e_sensitivities(m, e):
-    return m.shared_es_e_rated[e] <= m.shared_es_e_rated_fixed[e]
+    return m.shared_es_e_rated[e] == m.shared_es_e_rated_fixed[e]
 
 # - Linear Shared ESS models -- Relaxed LP formulation
 def sess_relaxed_model_ch_rule(m, e, s_m, s_o, p):
