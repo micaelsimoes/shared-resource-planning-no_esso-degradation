@@ -172,7 +172,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         #  - Convergence check
         gap_abs = abs(upper_bound - lower_bound)
         gap_rel = gap_abs / max(abs(upper_bound), 1e-6)  # Avoid division by zero
-        if gap_rel < benders_parameters.tol_rel or gap_abs <= benders_parameters.tol_abs or lower_bound > upper_bound:
+        if gap_rel < benders_parameters.tol_rel or gap_abs <= benders_parameters.tol_abs:
             lower_bound_evolution.append(lower_bound)
             convergence = True
             break
