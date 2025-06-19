@@ -1,9 +1,14 @@
 import gc
 import time
 from copy import copy
+import numpy as np
 import pandas as pd
 from math import isclose, sqrt
+from sklearn.preprocessing import StandardScaler
+from copulas.multivariate import GaussianMultivariate
+from copulas.univariate import GaussianKDE
 import networkx as nx
+import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import pyomo.opt as po
 from openpyxl import Workbook
@@ -26,6 +31,8 @@ class SharedResourcesPlanning:
         self.data_dir = data_dir
         self.filename = filename
         self.market_data_file = str()
+        self.num_market_scenarios = int()
+        self.plot_market_data = bool()
         self.results_dir = os.path.join(data_dir, 'Results')
         self.diagrams_dir = os.path.join(data_dir, 'Diagrams')
         self.params_file = str()
@@ -1914,6 +1921,8 @@ def _read_planning_problem(planning_problem):
     print('[INFO] Reading MARKET DATA from file(s)...')
     planning_problem.discount_factor = planning_data['DiscountFactor']
     planning_problem.market_data_file = planning_data['MarketData']
+    planning_problem.num_market_scenarios = planning_data['NumMarketScenarios']
+    planning_problem.plot_market_data = planning_data['PlotMarketData']
     planning_problem.read_market_data_from_file()
 
     # Distribution Networks
@@ -2024,19 +2033,157 @@ def _read_planning_problem(planning_problem):
 # ======================================================================================================================
 def _read_market_data_from_file(planning_problem):
 
+    filename = os.path.join(planning_problem.data_dir, 'Market Data', planning_problem.market_data_file)
+
     try:
-        for year in planning_problem.years:
-            filename = os.path.join(planning_problem.data_dir, 'Market Data', f'{planning_problem.market_data_file}_{year}.xlsx')
-            num_scenarios, prob_scenarios = _get_market_scenarios_info_from_excel_file(filename, 'Scenarios')
-            planning_problem.prob_market_scenarios[year] = prob_scenarios
-            planning_problem.cost_energy_p[year] = dict()
-            planning_problem.cost_flex[year] = dict()
-            for day in planning_problem.days:
-                planning_problem.cost_energy_p[year][day] = _get_market_costs_from_excel_file(filename, f'Cp, {day}', num_scenarios)
-                planning_problem.cost_flex[year][day] = _get_market_costs_from_excel_file(filename, f'Flex, {day}', num_scenarios)
+        base_profiles = _read_base_profiles(filename)
     except:
         print(f'[ERROR] Reading market data from file(s). Exiting...')
         exit(ERROR_SPECIFICATION_FILE)
+
+    synthetic_profiles = _generate_market_price_scenarios(base_profiles)
+    if planning_problem.plot_market_data:
+        plot_market_price_scenarios(base_profiles, synthetic_profiles, save_dir=planning_problem.diagrams_dir)
+
+    # Update subsequent years
+    initial_year = list(planning_problem.years)[0]
+    growth_factors = base_profiles['growth_factors']
+    energy_growth_factor = float(growth_factors[growth_factors['Growth factors'] == 'Energy']['Value, [%]'])
+    flexibility_growth_factor = float(growth_factors[growth_factors['Growth factors'] == 'Flexibility']['Value, [%]'])
+
+    for year in planning_problem.years:
+
+        planning_problem.cost_energy_p[year] = dict()
+        planning_problem.cost_flex[year] = dict()
+
+        for day in planning_problem.days:
+
+            energy_growth_mul = (1 + energy_growth_factor)**(year - initial_year)
+            flexibility_growth_mul = (1 + flexibility_growth_factor)**(year - initial_year)
+
+            energy_selected_profiles = synthetic_profiles['energy'][day].sample(n=planning_problem.num_market_scenarios)
+            flexibility_selected_profiles = synthetic_profiles['flexibility'][day].sample(n=planning_problem.num_market_scenarios)
+
+            planning_problem.cost_energy_p[year][day] = energy_selected_profiles * energy_growth_mul
+            planning_problem.cost_flex[year][day] = flexibility_selected_profiles * flexibility_growth_mul
+
+
+def _read_base_profiles(filename):
+
+    base_cost_data = {
+        'growth_factors': pd.read_excel(filename, sheet_name='Growth Factors'),
+        'energy': pd.read_excel(filename, sheet_name='Energy'),
+        'flexibility': pd.read_excel(filename, sheet_name='Flexibility')
+    }
+
+    return base_cost_data
+
+
+def _generate_market_price_scenarios(base_profiles, n_samples=100):
+
+    energy_df = base_profiles['energy']
+    flex_df = base_profiles['flexibility']
+
+    synthetic_profiles = {
+        'energy': _generate_market_price_scenarios_per_type(energy_df),
+        'flexibility': _generate_market_price_scenarios_per_type(flex_df)
+    }
+
+    return synthetic_profiles
+
+
+def _generate_market_price_scenarios_per_type(base_profiles, n_samples=100, bandwidth=0.5):
+
+    seasons = base_profiles['Season'].unique()
+    synthetic_profiles = {}
+
+    for season in seasons:
+
+        # Filter
+        price_subset = base_profiles[(base_profiles['Season'] == season)]
+        if price_subset.empty:
+            print(f'[ERROR] No market data provided for season {season}')
+            exit(ERROR_MARKET_DATA_FILE)
+
+        # Prepare data
+        price_hours = price_subset.iloc[:, 2:].copy()
+
+        # Normalize and fit copula
+        scaler = StandardScaler()
+        price_scaled = scaler.fit_transform(price_hours)
+
+        model = GaussianMultivariate(distribution=GaussianKDE)
+        model.fit(pd.DataFrame(price_scaled))
+
+        # Sample
+        samples = model.sample(n_samples)
+        samples = scaler.inverse_transform(samples)
+
+        synthetic_profiles[season] = pd.DataFrame(samples)
+
+    return synthetic_profiles
+
+
+def plot_market_price_scenarios(base_profiles, synthetic_profiles, save_dir, save_format='pdf'):
+
+    os.makedirs(save_dir, exist_ok=True)
+
+    energy_base_df = base_profiles['energy']
+    energy_synthetic_df = synthetic_profiles['energy']
+    flexibility_base_df = base_profiles['flexibility']
+    flexibility_synthetic_df = synthetic_profiles['flexibility']
+
+    plot_market_price_scenarios_per_type(energy_base_df, energy_synthetic_df, type='Energy', save_dir=save_dir, save_format=save_format)
+    plot_market_price_scenarios_per_type(flexibility_base_df, flexibility_synthetic_df, type='Flexibility', save_dir=save_dir, save_format=save_format)
+
+
+def plot_market_price_scenarios_per_type(base_profiles, synthetic_profiles, type, save_dir, save_format):
+
+    seasons = base_profiles['Season'].unique()
+    hours = np.arange(24)
+    xticks = np.arange(0, 24, 4)
+    xtick_labels = [f"{h:02d}:00" for h in xticks]
+
+    for season in seasons:
+
+        fig, ax = plt.subplots(1, 1, figsize=(8, 6), sharex=True)
+
+        base_profiles_season = base_profiles[(base_profiles['Season'] == season)].iloc[:, 2:].copy()
+        if base_profiles_season.empty or season not in synthetic_profiles:
+            continue
+        synthetic_profiles_season = synthetic_profiles[season]
+
+        # Calculate statistics
+        mean_base = base_profiles_season.mean(axis=0)
+        std_base = base_profiles_season.std(axis=0)
+        mean_synthetic = np.mean(synthetic_profiles_season, axis=0)
+        std_synthetic = np.std(synthetic_profiles_season, axis=0)
+
+        # Plot
+        color = cm.tab10(0)
+        ax.plot(hours, mean_base, label='Mean, original profiles', color=color)
+        ax.fill_between(hours, mean_base - std_base, mean_base + std_base, alpha=0.2, color=color)
+        ax.plot(hours, mean_synthetic, linestyle='--', label='Mean, generated profiles', color=color, alpha=0.6)
+        ax.fill_between(hours, mean_synthetic - std_synthetic, mean_synthetic + std_synthetic, alpha=0.15, color=color)
+
+        ax.set_xticks(xticks)
+        ax.set_xticklabels(xtick_labels)
+        ax.set_xlim(0, 23)
+        ax.set_xlabel("Hour", loc='center', fontsize=12)
+        ax.set_ylabel(f"{type} Market Price, [€/MW]", fontsize=12)
+        ax.grid(True)
+        ax.legend(fontsize='small')
+        plt.tight_layout()
+
+        filename = os.path.join(save_dir, f"{type}_{season}_price_profiles.{save_format}")
+        plt.savefig(filename)
+        plt.close(fig)
+        print(f"[INFO]✅ Figure saved: {filename}")
+
+    print()
+
+
+
 
 
 def _get_market_scenarios_info_from_excel_file(filename, sheet_name):

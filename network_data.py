@@ -1,3 +1,4 @@
+import pandas as pd
 from math import isclose
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill
@@ -127,6 +128,21 @@ def _read_network_data(network_planning):
                 network_planning.network[year][day].print_network_to_screen()
             if network_planning.params.plot_diagram:
                 network_planning.network[year][day].plot_diagram()
+
+
+def _read_base_profiles(filename):
+
+    base_operational_data = {
+        'characterization': pd.read_excel(filename, sheet_name='Characterization'),
+        'growth_factors': pd.read_excel(filename, sheet_name='Growth Factors'),
+        'pc': pd.read_excel(filename, sheet_name='Pc'),
+        'qc': pd.read_excel(filename, sheet_name='Qc'),
+        'pg': pd.read_excel(filename, sheet_name='Pg'),
+        'qg': pd.read_excel(filename, sheet_name='Qg'),
+        'flex': pd.read_excel(filename, sheet_name='Flex')
+    }
+
+    return base_operational_data
 
 
 # ======================================================================================================================
