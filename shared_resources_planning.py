@@ -2323,6 +2323,7 @@ def _write_planning_results_to_excel(planning_problem, results, bound_evolution=
     _write_operational_planning_main_info_to_excel(planning_problem, wb, results)
     _write_operational_planning_main_info_to_excel_detailed(planning_problem, wb, results['summary_detail'])
     _write_shared_ess_specifications(wb, planning_problem.shared_ess_data)
+    _write_operational_planning_market_data_to_excel(planning_problem, wb)
 
     if bound_evolution:
         _write_bound_evolution_to_excel(wb, bound_evolution)
@@ -2415,6 +2416,7 @@ def _write_operational_planning_results_to_excel(planning_problem, results, prim
     _write_shared_ess_specifications(wb, planning_problem.shared_ess_data)
     if shared_ess_capacity:
         planning_problem.shared_ess_data.write_ess_capacity_results_to_excel(wb, shared_ess_capacity)
+    _write_operational_planning_market_data_to_excel(planning_problem, wb)
 
     if primal_evolution:
         _write_objective_function_evolution_to_excel(wb, primal_evolution)
@@ -2457,6 +2459,7 @@ def _write_operational_planning_results_no_coordination_to_excel(planning_proble
 
     _write_operational_planning_main_info_to_excel(planning_problem, wb, results)
     _write_operational_planning_main_info_to_excel_detailed(planning_problem, wb, results['summary_detail'])
+    _write_operational_planning_market_data_to_excel(planning_problem, wb)
 
     #  TSO and DSOs' results
     _write_network_voltage_results_to_excel(planning_problem, wb, results)
@@ -2938,6 +2941,52 @@ def _write_shared_ess_specifications(workbook, shared_ess_info):
             sheet.cell(row=row_idx, column=3).number_format = decimal_style
             sheet.cell(row=row_idx, column=4).value = shared_ess.e
             sheet.cell(row=row_idx, column=4).number_format = decimal_style
+
+
+def _write_operational_planning_market_data_to_excel(planning_problem, workbook):
+
+    sheet = workbook.create_sheet('Market Data')
+
+    row_idx = 1
+    decimal_style = '0.00'
+
+    # Write Header
+    sheet.cell(row=row_idx, column=1).value = 'Year'
+    sheet.cell(row=row_idx, column=2).value = 'Day'
+    sheet.cell(row=row_idx, column=3).value = 'Quantity'
+    sheet.cell(row=row_idx, column=4).value = 'Market Scenario'
+    for p in range(planning_problem.num_instants):
+        sheet.cell(row=row_idx, column=p + 5).value = p
+    row_idx = row_idx + 1
+
+
+    for year in planning_problem.years:
+        for day in planning_problem.days:
+
+            cost_energy = planning_problem.cost_energy_p[year][day]
+            cost_flexibility = planning_problem.cost_flex[year][day]
+
+            # - Energy
+            for s_m in range(planning_problem.num_market_scenarios):
+                sheet.cell(row=row_idx, column=1).value = int(year)
+                sheet.cell(row=row_idx, column=2).value = day
+                sheet.cell(row=row_idx, column=3).value = 'Energy'
+                sheet.cell(row=row_idx, column=4).value = s_m
+                for p in range(planning_problem.num_instants):
+                    sheet.cell(row=row_idx, column=p + 5).value = cost_energy[s_m][p]
+                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
+                row_idx += 1
+
+            # - Flexibility
+            for s_m in range(planning_problem.num_market_scenarios):
+                sheet.cell(row=row_idx, column=1).value = int(year)
+                sheet.cell(row=row_idx, column=2).value = day
+                sheet.cell(row=row_idx, column=3).value = 'Flexibility'
+                sheet.cell(row=row_idx, column=4).value = s_m
+                for p in range(planning_problem.num_instants):
+                    sheet.cell(row=row_idx, column=p + 5).value = cost_flexibility[s_m][p]
+                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
+                row_idx += 1
 
 
 def _write_objective_function_evolution_to_excel(workbook, primal_evolution):
