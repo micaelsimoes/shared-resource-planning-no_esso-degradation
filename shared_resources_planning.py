@@ -2036,7 +2036,7 @@ def _read_market_data_from_file(planning_problem):
     filename = os.path.join(planning_problem.data_dir, 'Market Data', planning_problem.market_data_file)
 
     try:
-        base_profiles = _read_base_profiles(filename)
+        base_profiles = _read_market_base_profiles(filename)
     except:
         print(f'[ERROR] Reading market data from file(s). Exiting...')
         exit(ERROR_SPECIFICATION_FILE)
@@ -2048,11 +2048,12 @@ def _read_market_data_from_file(planning_problem):
     # Update subsequent years
     initial_year = list(planning_problem.years)[0]
     growth_factors = base_profiles['growth_factors']
-    energy_growth_factor = float(growth_factors[growth_factors['Growth factors'] == 'Energy']['Value, [%]'])
-    flexibility_growth_factor = float(growth_factors[growth_factors['Growth factors'] == 'Flexibility']['Value, [%]'])
+    energy_growth_factor = float(growth_factors[growth_factors['Growth factors'] == 'Energy']['Value, [%]'].iloc[0])
+    flexibility_growth_factor = float(growth_factors[growth_factors['Growth factors'] == 'Flexibility']['Value, [%]'].iloc[0])
 
     for year in planning_problem.years:
 
+        planning_problem.prob_market_scenarios[year] = [(1 / planning_problem.num_market_scenarios)] * planning_problem.num_market_scenarios
         planning_problem.cost_energy_p[year] = dict()
         planning_problem.cost_flex[year] = dict()
 
@@ -2064,11 +2065,11 @@ def _read_market_data_from_file(planning_problem):
             energy_selected_profiles = synthetic_profiles['energy'][day].sample(n=planning_problem.num_market_scenarios)
             flexibility_selected_profiles = synthetic_profiles['flexibility'][day].sample(n=planning_problem.num_market_scenarios)
 
-            planning_problem.cost_energy_p[year][day] = energy_selected_profiles * energy_growth_mul
-            planning_problem.cost_flex[year][day] = flexibility_selected_profiles * flexibility_growth_mul
+            planning_problem.cost_energy_p[year][day] = np.array(energy_selected_profiles * energy_growth_mul)      # n_scenarios x n_instants
+            planning_problem.cost_flex[year][day] = np.array(flexibility_selected_profiles * flexibility_growth_mul)
 
 
-def _read_base_profiles(filename):
+def _read_market_base_profiles(filename):
 
     base_cost_data = {
         'growth_factors': pd.read_excel(filename, sheet_name='Growth Factors'),
