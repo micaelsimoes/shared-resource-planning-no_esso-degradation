@@ -2062,8 +2062,17 @@ def _read_market_data_from_file(planning_problem):
             energy_growth_mul = (1 + energy_growth_factor)**(year - initial_year)
             flexibility_growth_mul = (1 + flexibility_growth_factor)**(year - initial_year)
 
-            energy_selected_profiles = synthetic_profiles['energy'][day].sample(n=planning_problem.num_market_scenarios)
-            flexibility_selected_profiles = synthetic_profiles['flexibility'][day].sample(n=planning_problem.num_market_scenarios)
+            # energy_selected_profiles = synthetic_profiles['energy'][day].sample(n=planning_problem.num_market_scenarios)
+            # flexibility_selected_profiles = synthetic_profiles['flexibility'][day].sample(n=planning_problem.num_market_scenarios)
+            # energy_selected_profiles = base_profiles['energy'][day].sample(n=planning_problem.num_market_scenarios)
+            # flexibility_selected_profiles = base_profiles['flexibility'][day].sample(n=planning_problem.num_market_scenarios)
+
+            energy_base_df = base_profiles['energy']
+            flexibility_base_df = base_profiles['flexibility']
+            energy_base_season_df = energy_base_df[(energy_base_df['Season'] == day)].iloc[:, 2:].copy()
+            flexibility_base_season_df = flexibility_base_df[(flexibility_base_df['Season'] == day)].iloc[:, 2:].copy()
+            energy_selected_profiles = energy_base_season_df.sample(n=planning_problem.num_market_scenarios)
+            flexibility_selected_profiles = flexibility_base_season_df.sample(n=planning_problem.num_market_scenarios)
 
             planning_problem.cost_energy_p[year][day] = np.array(energy_selected_profiles * energy_growth_mul)      # n_scenarios x n_instants
             planning_problem.cost_flex[year][day] = np.array(flexibility_selected_profiles * flexibility_growth_mul)
@@ -2179,12 +2188,7 @@ def plot_market_price_scenarios_per_type(base_profiles, synthetic_profiles, type
         filename = os.path.join(save_dir, f"{type}_{season}_price_profiles.{save_format}")
         plt.savefig(filename)
         plt.close(fig)
-        print(f"[INFO]✅ Figure saved: {filename}")
-
-    print()
-
-
-
+        print(f"[INFO] Market cost figure saved: {filename}")
 
 
 def _get_market_scenarios_info_from_excel_file(filename, sheet_name):
