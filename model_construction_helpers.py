@@ -179,7 +179,7 @@ def pc_flex_down_bounds(m, c, s_m, s_o, p, network, params):
     load = network.loads[c]
     if not load.fl_reg:
         return (0.0, EQUALITY_TOLERANCE)
-    value = abs(load.flexibility.downward[s_m][p])
+    value = abs(load.flexibility.downward[s_o][p])
     return (0.0, value)
 
 

@@ -137,7 +137,6 @@ def _read_network_data(network_planning):
             network_planning.network[year][day].num_oper_scenarios = network_planning.num_oper_scenarios
             network_planning.network[year][day].prob_operation_scenarios = [(1 / network_planning.num_oper_scenarios)] * network_planning.num_oper_scenarios
             network_planning.network[year][day].is_transmission = network_planning.is_transmission
-            network_planning.network[year][day].operational_data_file = f'{network_planning.name}_{year}.xlsx'
 
             # Read info from file(s)
             network_planning.network[year][day].read_network_from_json_file()
@@ -176,6 +175,8 @@ def _generate_operational_scenarios(base_profiles):
 
 
 def generate_consumption_profiles(base_operational_data, n_samples=100):
+
+    print('[INFO]\t - Generating load stochastic scenarios...')
 
     pc_df = base_operational_data['pc']
     qc_df = base_operational_data['qc']
@@ -231,6 +232,8 @@ def generate_consumption_profiles(base_operational_data, n_samples=100):
 
 def generate_res_generation_profiles(base_operational_data, n_samples=100):
 
+    print('[INFO]\t - Generating RES generation stochastic scenarios...')
+
     pg_df = base_operational_data['pg']
     seasons = pg_df['Season'].unique()
     synthetic_profiles = {}
@@ -273,6 +276,8 @@ def generate_res_generation_profiles(base_operational_data, n_samples=100):
 
 
 def generate_flexibility_profiles(base_operational_data, n_samples=100):
+
+    print('[INFO]\t - Generating flexibility stochastic scenarios...')
 
     flex_df = base_operational_data['flex']
     seasons = flex_df['Season'].unique()
