@@ -248,7 +248,7 @@ def _build_model_new_version(network, params):
     model.f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(f_bounds, network=network))
     model.e_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.0)
     model.f_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
-    model.vmag_sqr = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0)
+    model.vmag_sqr = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0, bounds=partial(vmag_sqr_bounds, network=network))
     if params.slacks.grid_operation.voltage:
         model.slack_e = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
         model.slack_f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))

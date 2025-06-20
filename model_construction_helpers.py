@@ -22,6 +22,11 @@ def f_bounds(m, i, s_m, s_o, p, network):
     return (-node.v_max, node.v_max)
 
 
+def vmag_sqr_bounds(m, i, s_m, s_o, p, network, params):
+    node = network.nodes[i]
+    return (node.vmin ** 2, node.v_max ** 2)
+
+
 # Voltage variables, slack bounds
 def voltage_slack_bounds(m, i, s_m, s_o, p, network):
     node = network.nodes[i]
@@ -656,6 +661,13 @@ def interface_vmag_sqr_transmission_rule(m, dn, s_m, s_o, p, network):
 def interface_pf_p_transmission_rule(m, dn, s_m, s_o, p, network, params):
     adn_node_id = network.active_distribution_network_nodes[dn]
     adn_load_idx = network.get_adn_load_idx(adn_node_id)
+    if params.fl_reg and network.loads[adn_load_idx].fl_reg:
+        m.flex_p_up[adn_load_idx, s_m, s_o, p].fixed = False
+        m.flex_p_up[adn_load_idx, s_m, s_o, p].setub(None)
+        m.flex_p_up[adn_load_idx, s_m, s_o, p].setlb(0.00)
+        m.flex_p_down[adn_load_idx, s_m, s_o, p].fixed = False
+        m.flex_p_down[adn_load_idx, s_m, s_o, p].setub(None)
+        m.flex_p_down[adn_load_idx, s_m, s_o, p].setlb(None)
     if params.l_curt:
         fix_or_set(m.pc_curt_down[adn_load_idx, s_m, s_o, p], 0.00)
         fix_or_set(m.pc_curt_up[adn_load_idx, s_m, s_o, p], 0.00)
@@ -665,6 +677,13 @@ def interface_pf_p_transmission_rule(m, dn, s_m, s_o, p, network, params):
 def interface_pf_q_transmission_rule(m, dn, s_m, s_o, p, network, params):
     adn_node_id = network.active_distribution_network_nodes[dn]
     adn_load_idx = network.get_adn_load_idx(adn_node_id)
+    if params.fl_reg and network.loads[adn_load_idx].fl_reg:
+        m.flex_q_up[adn_load_idx, s_m, s_o, p].fixed = False
+        m.flex_q_up[adn_load_idx, s_m, s_o, p].setub(None)
+        m.flex_q_up[adn_load_idx, s_m, s_o, p].setlb(None)
+        m.flex_q_down[adn_load_idx, s_m, s_o, p].fixed = False
+        m.flex_q_down[adn_load_idx, s_m, s_o, p].setub(None)
+        m.flex_q_down[adn_load_idx, s_m, s_o, p].setlb(None)
     if params.l_curt:
         fix_or_set(m.qc_curt_down[adn_load_idx, s_m, s_o, p], 0.00)
         fix_or_set(m.qc_curt_up[adn_load_idx, s_m, s_o, p], 0.00)
