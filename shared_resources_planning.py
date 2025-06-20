@@ -468,11 +468,21 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
                 adn_node_idx = transmission_network.network[year][day].get_node_idx(adn_node_id)
                 adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(adn_node_id)
-                _, v_max = transmission_network.network[year][day].get_node_voltage_limits(adn_node_id)
+                v_min, v_max = transmission_network.network[year][day].get_node_voltage_limits(adn_node_id)
 
                 for s_m in tso_model[year][day].scenarios_market:
                     for s_o in tso_model[year][day].scenarios_operation:
                         for p in tso_model[year][day].periods:
+
+                            tso_model[year][day].vmag_sqr_adn[dn, s_m, s_o, p].fixed = False
+                            tso_model[year][day].vmag_sqr_adn[dn, s_m, s_o, p].setub(v_max ** 2)
+                            tso_model[year][day].vmag_sqr_adn[dn, s_m, s_o, p].setlb(v_min ** 2)
+                            tso_model[year][day].pc_adn[dn, s_m, s_o, p].fixed = False
+                            tso_model[year][day].pc_adn[dn, s_m, s_o, p].setub(None)
+                            tso_model[year][day].pc_adn[dn, s_m, s_o, p].setlb(None)
+                            tso_model[year][day].qc_adn[dn, s_m, s_o, p].fixed = False
+                            tso_model[year][day].qc_adn[dn, s_m, s_o, p].setub(None)
+                            tso_model[year][day].qc_adn[dn, s_m, s_o, p].setlb(None)
 
                             tso_model[year][day].e[adn_node_idx, s_m, s_o, p].fixed = False
                             tso_model[year][day].e[adn_node_idx, s_m, s_o, p].setub(v_max)
