@@ -500,27 +500,6 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].fixed = False
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setub(None)
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setlb(None)
-                            if transmission_network.params.fl_reg:
-                                tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].setub(None)
-                                tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].setub(None)
-                                tso_model[year][day].flex_q_up[adn_load_idx, s_m, s_o, p].setub(None)
-                                tso_model[year][day].flex_q_down[adn_load_idx, s_m, s_o, p].setub(None)
-                            if transmission_network.params.l_curt:
-                                tso_model[year][day].pc_curt_down[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                                tso_model[year][day].pc_curt_up[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                                tso_model[year][day].qc_curt_down[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                                tso_model[year][day].qc_curt_up[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-
-            # Fix initial Pc, Qc at the interface nodes
-            for dn in tso_model[year][day].active_distribution_networks:
-                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
-                adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(adn_node_id)
-                init_solution = consensus_vars['pf']['dso']['current'][adn_node_id][year][day]
-                for s_m in tso_model[year][day].scenarios_market:
-                    for s_o in tso_model[year][day].scenarios_operation:
-                        for p in tso_model[year][day].periods:
-                            fix_or_set(tso_model[year][day].pc[adn_load_idx, s_m, s_o, p], init_solution['p'][p] / s_base)
-                            fix_or_set(tso_model[year][day].qc[adn_load_idx, s_m, s_o, p], init_solution['q'][p] / s_base)
 
             # Add expected interface and shared ESS values
             tso_model[year][day].expected_interface_vmag_sqr = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00)
@@ -578,9 +557,7 @@ def create_transmission_network_model(transmission_network, consensus_vars, cand
     # Fix initial values, run OPF
     for year in transmission_network.years:
         for day in transmission_network.days:
-
             s_base = transmission_network.network[year][day].baseMVA
-
             for dn in tso_model[year][day].active_distribution_networks:
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
                 v_base = transmission_network.network[year][day].get_node_base_kv(adn_node_id)
@@ -638,9 +615,10 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
 
                 ref_node_id = distribution_network.network[year][day].get_reference_node_id()
                 shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
+                v_min, v_max = distribution_network.network[year][day].get_node_voltage_limits(ref_node_id)
 
                 # Add interface expected variables
-                dso_model[year][day].expected_interface_vmag_sqr = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00)
+                dso_model[year][day].expected_interface_vmag_sqr = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00, bounds=(v_min**2, v_max**2))
                 dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
                 dso_model[year][day].expected_interface_pf_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
                 dso_model[year][day].expected_shared_ess_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
@@ -914,8 +892,8 @@ def update_transmission_model_to_admm(planning_problem, model, params):
                 shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(adn_node_id)
                 for p in model[year][day].periods:
                     model[year][day].expected_interface_vmag_sqr[dn, p].fixed = False
-                    model[year][day].expected_interface_vmag_sqr[dn, p].setub(v_max ** 2 + SMALL_TOLERANCE)
-                    model[year][day].expected_interface_vmag_sqr[dn, p].setlb(v_min ** 2 - SMALL_TOLERANCE)
+                    model[year][day].expected_interface_vmag_sqr[dn, p].setub(v_max ** 2)
+                    model[year][day].expected_interface_vmag_sqr[dn, p].setlb(v_min ** 2)
                     model[year][day].expected_interface_pf_p[dn, p].fixed = False
                     model[year][day].expected_interface_pf_p[dn, p].setub(None)
                     model[year][day].expected_interface_pf_p[dn, p].setlb(None)
@@ -1034,15 +1012,15 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                     for s_o in dso_model[year][day].scenarios_operation:
                         for p in dso_model[year][day].periods:
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].fixed = False
-                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setub(v_max + SMALL_TOLERANCE)
-                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setlb(-v_max - SMALL_TOLERANCE)
-                            dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                            dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
+                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setub(v_max)
+                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setlb(-v_max)
+                            dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                            dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
                             if distribution_network.params.slacks.grid_operation.voltage:
-                                dso_model[year][day].slack_e[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                dso_model[year][day].slack_e[ref_node_idx, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
-                                dso_model[year][day].slack_f[ref_node_idx, s_m, s_o, p].setub(SMALL_TOLERANCE)
-                                dso_model[year][day].slack_f[ref_node_idx, s_m, s_o, p].setlb(-SMALL_TOLERANCE)
+                                dso_model[year][day].slack_e[ref_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                dso_model[year][day].slack_e[ref_node_idx, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
+                                dso_model[year][day].slack_f[ref_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                dso_model[year][day].slack_f[ref_node_idx, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
 
                 # Update expected interface values limits
                 for p in dso_model[year][day].periods:
