@@ -264,8 +264,10 @@ def generate_res_generation_profiles(base_operational_data, n_samples=100):
             samples = model.sample(n_samples)
             samples = scaler.inverse_transform(samples)
 
-            synthetic_profiles[season]['pg'] = pd.DataFrame(samples)
-            synthetic_profiles[season]['qg'] = pd.DataFrame(np.zeros(samples.shape))
+            synthetic_profiles[season][gen_type] = {
+                'pg': pd.DataFrame(samples),
+                'qg': pd.DataFrame(np.zeros(samples.shape))
+            }
 
     return synthetic_profiles
 

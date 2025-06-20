@@ -2229,9 +2229,19 @@ def _update_network_with_operational_data(network, base_data, synthetic_profiles
     for generator in network.generators:
 
         if generator.gen_type in GEN_CURTAILLABLE_TYPES:
+
             gen_capacity = generator.pmax
-            pg = np.array(synthetic_profiles['generation'][network.day]['pg'].sample(n=network.num_oper_scenarios)) * gen_capacity
-            qg = np.array(synthetic_profiles['generation'][network.day]['qg'].sample(n=network.num_oper_scenarios)) * gen_capacity
+
+            if generator.gen_type == GEN_RES_SOLAR:
+                gen_type = 'PV'
+            elif generator.gen_type == GEN_RES_WIND:
+                gen_type = 'Wind'
+            else:
+                print(f'[ERROR] Error! Gen type {generator.gen_type} not yet being processed! Network {network.name}, generator {generator.gen_id}')
+                exit(ERROR_NETWORK_FILE)
+
+            pg = np.array(synthetic_profiles['generation'][network.day][gen_type]['pg'].sample(n=network.num_oper_scenarios)) * gen_capacity
+            qg = np.array(synthetic_profiles['generation'][network.day][gen_type]['qg'].sample(n=network.num_oper_scenarios)) * gen_capacity
             generator.pg = pg / network.baseMVA
             generator.qg = qg / network.baseMVA
         else:
