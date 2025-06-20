@@ -24,7 +24,12 @@ def f_bounds(m, i, s_m, s_o, p, network):
 
 def vmag_sqr_bounds(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
-    return (node.vmin ** 2, node.v_max ** 2)
+    v_min = node.v_min
+    v_max = node.v_max
+    if params.slacks.grid_operation.voltage:
+        v_min -= VMAG_VIOLATION_ALLOWED
+        v_max += VMAG_VIOLATION_ALLOWED
+    return (v_min ** 2, v_max ** 2)
 
 
 # Voltage variables, slack bounds
@@ -667,7 +672,7 @@ def interface_pf_p_transmission_rule(m, dn, s_m, s_o, p, network, params):
         m.flex_p_up[adn_load_idx, s_m, s_o, p].setlb(0.00)
         m.flex_p_down[adn_load_idx, s_m, s_o, p].fixed = False
         m.flex_p_down[adn_load_idx, s_m, s_o, p].setub(None)
-        m.flex_p_down[adn_load_idx, s_m, s_o, p].setlb(None)
+        m.flex_p_down[adn_load_idx, s_m, s_o, p].setlb(0.00)
     if params.l_curt:
         fix_or_set(m.pc_curt_down[adn_load_idx, s_m, s_o, p], 0.00)
         fix_or_set(m.pc_curt_up[adn_load_idx, s_m, s_o, p], 0.00)
@@ -680,10 +685,10 @@ def interface_pf_q_transmission_rule(m, dn, s_m, s_o, p, network, params):
     if params.fl_reg and network.loads[adn_load_idx].fl_reg:
         m.flex_q_up[adn_load_idx, s_m, s_o, p].fixed = False
         m.flex_q_up[adn_load_idx, s_m, s_o, p].setub(None)
-        m.flex_q_up[adn_load_idx, s_m, s_o, p].setlb(None)
+        m.flex_q_up[adn_load_idx, s_m, s_o, p].setlb(0.00)
         m.flex_q_down[adn_load_idx, s_m, s_o, p].fixed = False
         m.flex_q_down[adn_load_idx, s_m, s_o, p].setub(None)
-        m.flex_q_down[adn_load_idx, s_m, s_o, p].setlb(None)
+        m.flex_q_down[adn_load_idx, s_m, s_o, p].setlb(0.00)
     if params.l_curt:
         fix_or_set(m.qc_curt_down[adn_load_idx, s_m, s_o, p], 0.00)
         fix_or_set(m.qc_curt_up[adn_load_idx, s_m, s_o, p], 0.00)
