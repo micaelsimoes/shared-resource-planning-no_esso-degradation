@@ -1,4 +1,8 @@
+import numpy as np
 import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
+from copulas.multivariate import GaussianMultivariate
+from copulas.univariate import GaussianKDE
 from math import isclose
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill
@@ -20,8 +24,10 @@ class NetworkData:
         self.years = dict()
         self.days = dict()
         self.num_instants = int()
+        self.num_oper_scenarios = int()
         self.discount_factor = float()
         self.network = dict()
+        self.operational_data_file = str()
         self.params_file = str()
         self.params = NetworkParameters()
         self.cost_energy_p = dict()
@@ -102,6 +108,17 @@ class NetworkData:
 # ======================================================================================================================
 def _read_network_data(network_planning):
 
+    filename = os.path.join(network_planning.data_dir, network_planning.name, network_planning.operational_data_file)
+
+    try:
+        base_data = _read_network_base_profiles(filename)
+        base_data['initial_year'] = list(network_planning.years)[0]
+    except:
+        print(f'[ERROR] Reading operational data, network {network_planning.name} from file. Exiting...')
+        exit(ERROR_SPECIFICATION_FILE)
+
+    synthetic_profiles = _generate_operational_scenarios(base_data)
+
     for year in network_planning.years:
 
         network_planning.network[year] = dict()
@@ -117,12 +134,14 @@ def _read_network_data(network_planning):
             network_planning.network[year][day].year = int(year)
             network_planning.network[year][day].day = day
             network_planning.network[year][day].num_instants = network_planning.num_instants
+            network_planning.network[year][day].num_oper_scenarios = network_planning.num_oper_scenarios
+            network_planning.network[year][day].prob_operation_scenarios = [(1 / network_planning.num_oper_scenarios)] * network_planning.num_oper_scenarios
             network_planning.network[year][day].is_transmission = network_planning.is_transmission
             network_planning.network[year][day].operational_data_file = f'{network_planning.name}_{year}.xlsx'
 
             # Read info from file(s)
             network_planning.network[year][day].read_network_from_json_file()
-            network_planning.network[year][day].read_network_operational_data_from_file()
+            network_planning.network[year][day].update_network_operational_data(base_data, synthetic_profiles)
 
             if network_planning.params.print_to_screen:
                 network_planning.network[year][day].print_network_to_screen()
@@ -130,7 +149,7 @@ def _read_network_data(network_planning):
                 network_planning.network[year][day].plot_diagram()
 
 
-def _read_base_profiles(filename):
+def _read_network_base_profiles(filename):
 
     base_operational_data = {
         'characterization': pd.read_excel(filename, sheet_name='Characterization'),
@@ -143,6 +162,158 @@ def _read_base_profiles(filename):
     }
 
     return base_operational_data
+
+
+def _generate_operational_scenarios(base_profiles):
+
+    synthetic_profiles = {
+        'consumption': generate_consumption_profiles(base_profiles),
+        'generation': generate_res_generation_profiles(base_profiles),
+        'flexibility': generate_flexibility_profiles(base_profiles)
+    }
+
+    return synthetic_profiles
+
+
+def generate_consumption_profiles(base_operational_data, n_samples=100):
+
+    pc_df = base_operational_data['pc']
+    qc_df = base_operational_data['qc']
+    load_ids = pc_df['LoadID'].unique()
+    seasons = pc_df['Season'].unique()
+    synthetic_profiles = {}
+
+    for season in seasons:
+
+        synthetic_profiles[season] = {}
+
+        for load_id in load_ids:
+
+            # Filter
+            pc_subset = pc_df[(pc_df['Season'] == season) & (pc_df['LoadID'] == load_id)]
+            qc_subset = qc_df[(qc_df['Season'] == season) & (qc_df['LoadID'] == load_id)]
+            if pc_subset.empty or qc_subset.empty:
+                print(f'[ERROR] No data provided for load {load_id}, season {season}')
+                exit(ERROR_NETWORK_FILE)
+
+            # Prepare data
+            pc_hours = pc_subset.iloc[:, 3:].copy()
+            qc_hours = qc_subset.iloc[:, 3:].copy()
+            if pc_hours.shape != qc_hours.shape:
+                print(f"[ERROR] Shape mismatch between Pc and Qc, load {load_id}")
+                exit(ERROR_NETWORK_FILE)
+
+            # - Rename columns to distinguish them
+            pc_hours.columns = [f'Pc_{i}' for i in range(24)]
+            qc_hours.columns = [f'Qc_{i}' for i in range(24)]
+            combined = pd.concat([pc_hours, qc_hours], axis=1)
+
+            # Normalize
+            scaler = MinMaxScaler()
+            combined_scaled = scaler.fit_transform(combined)
+
+            # Fit model
+            model = GaussianMultivariate(distribution=GaussianKDE)
+            model.fit(pd.DataFrame(combined_scaled, columns=combined.columns))
+
+            # Sample
+            samples = model.sample(n_samples)
+            samples = scaler.inverse_transform(samples)
+
+            # Save
+            synthetic_profiles[season][load_id] = {
+                'pc': pd.DataFrame(samples[:,:24]),
+                'qc': pd.DataFrame(samples[:,24:])
+            }
+
+    return synthetic_profiles
+
+
+def generate_res_generation_profiles(base_operational_data, n_samples=100):
+
+    pg_df = base_operational_data['pg']
+    seasons = pg_df['Season'].unique()
+    synthetic_profiles = {}
+
+    for season in seasons:
+
+        synthetic_profiles[season] = {}
+        season_data = pg_df[pg_df['Season'] == season]
+
+        for gen_type in ['PV', 'Wind']:
+
+            subset = season_data[season_data['GenType'] == gen_type]
+            if subset.empty:
+                print(f"[WARNING] No {gen_type} data for season {season}")
+                continue
+
+            gen_hours = subset.iloc[:, 3:].copy().dropna()
+
+            if gen_hours.empty:
+                print(f"[WARNING] No valid {gen_type} hourly data in season {season}")
+                continue
+
+            # Normalize and fit copula
+            scaler = MinMaxScaler()
+            scaled = scaler.fit_transform(gen_hours)
+
+            model = GaussianMultivariate(distribution=GaussianKDE)
+            model.fit(pd.DataFrame(scaled))
+
+            # Sample
+            samples = model.sample(n_samples)
+            samples = scaler.inverse_transform(samples)
+
+            synthetic_profiles[season]['pg'] = pd.DataFrame(samples)
+            synthetic_profiles[season]['qg'] = pd.DataFrame(np.zeros(samples.shape))
+
+    return synthetic_profiles
+
+
+def generate_flexibility_profiles(base_operational_data, n_samples=100):
+
+    flex_df = base_operational_data['flex']
+    seasons = flex_df['Season'].unique()
+    synthetic_profiles = {}
+
+    for season in seasons:
+
+        synthetic_profiles[season] = {}
+
+        # Prepare data
+        pc_df = flex_df[flex_df['Type']=='Flexible Load, [MW]'].iloc[:, 3:].copy()
+        flex_up_df = flex_df[flex_df['Type']=='Maximum Flexible Load, [MW]'].iloc[:, 3:].copy()
+        flex_down_df = flex_df[flex_df['Type']=='Minimum Flexible Load, [MW]'].iloc[:, 3:].copy()
+        if pc_df.shape != flex_up_df.shape or pc_df.shape != flex_down_df.shape:
+            print(" [ERROR] Shape mismatch, flexibility data")
+            exit(ERROR_NETWORK_FILE)
+
+        # - Rename columns to distinguish them
+        pc_df.columns = [f'FL_{i}' for i in range(24)]
+        flex_up_df.columns = [f'FL_up_{i}' for i in range(24)]
+        flex_down_df.columns = [f'FL_down_{i}' for i in range(24)]
+        combined = pd.concat([pc_df, flex_up_df, flex_down_df], axis=1).ffill().bfill()
+
+        # Normalize
+        scaler = MinMaxScaler()
+        combined_scaled = scaler.fit_transform(combined)
+
+        # Fit model
+        model = GaussianMultivariate(distribution=GaussianKDE)
+        model.fit(pd.DataFrame(combined_scaled, columns=combined.columns))
+
+        # Sample
+        samples = model.sample(n_samples)
+        samples = scaler.inverse_transform(samples)
+
+        # Save
+        synthetic_profiles[season] = {
+            'pc': pd.DataFrame(samples[:,:24]),
+            'flex_up': pd.DataFrame(samples[:,24:48]),
+            'flex_down': pd.DataFrame(samples[:,48:])
+        }
+
+    return synthetic_profiles
 
 
 # ======================================================================================================================

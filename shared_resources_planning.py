@@ -1930,9 +1930,11 @@ def _read_planning_problem(planning_problem):
 
         print('[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...')
 
-        network_name = distribution_network['name']                         # Network filename
-        params_file = distribution_network['params_file']                   # Params filename
-        connection_nodeid = distribution_network['connection_node_id']      # Connection node ID
+        network_name = distribution_network['name']                             # Network filename
+        operational_data_file = distribution_network['operational_data_file']   # Operational data filename
+        num_oper_scenarios = distribution_network['num_operation_scenarios']    # Number of operational scenarios
+        params_file = distribution_network['params_file']                       # Params filename
+        connection_nodeid = distribution_network['connection_node_id']          # Connection node ID
 
         distribution_network = NetworkData()
         distribution_network.name = network_name
@@ -1942,12 +1944,14 @@ def _read_planning_problem(planning_problem):
         distribution_network.diagrams_dir = planning_problem.diagrams_dir
         distribution_network.years = planning_problem.years
         distribution_network.days = planning_problem.days
+        distribution_network.num_oper_scenarios = num_oper_scenarios
         distribution_network.num_instants = planning_problem.num_instants
         distribution_network.discount_factor = planning_problem.discount_factor
         distribution_network.cost_energy_p = planning_problem.cost_energy_p
         distribution_network.cost_flex = planning_problem.cost_flex
         distribution_network.params_file = params_file
         distribution_network.read_network_parameters()
+        distribution_network.operational_data_file = operational_data_file
         distribution_network.read_network_data()
         for year in distribution_network.years:
             for day in distribution_network.days:
@@ -1973,12 +1977,14 @@ def _read_planning_problem(planning_problem):
     transmission_network.diagrams_dir = planning_problem.diagrams_dir
     transmission_network.years = planning_problem.years
     transmission_network.days = planning_problem.days
+    transmission_network.num_oper_scenarios = planning_data['TransmissionNetwork']['num_operation_scenarios']
     transmission_network.num_instants = planning_problem.num_instants
     transmission_network.discount_factor = planning_problem.discount_factor
     transmission_network.cost_energy_p = planning_problem.cost_energy_p
     transmission_network.cost_flex = planning_problem.cost_flex
     transmission_network.params_file = planning_data['TransmissionNetwork']['params_file']
     transmission_network.read_network_parameters()
+    transmission_network.operational_data_file = planning_data['TransmissionNetwork']['operational_data_file']
     transmission_network.read_network_data()
     for year in transmission_network.years:
         for day in transmission_network.days:
@@ -2059,21 +2065,14 @@ def _read_market_data_from_file(planning_problem):
 
         for day in planning_problem.days:
 
-            energy_growth_mul = (1 + energy_growth_factor)**(year - initial_year)
-            flexibility_growth_mul = (1 + flexibility_growth_factor)**(year - initial_year)
+            energy_growth_cumul = (1 + energy_growth_factor) ** (year - initial_year)
+            flexibility_growth_cumul = (1 + flexibility_growth_factor) ** (year - initial_year)
 
             energy_selected_profiles = synthetic_profiles['energy'][day].sample(n=planning_problem.num_market_scenarios)
             flexibility_selected_profiles = synthetic_profiles['flexibility'][day].sample(n=planning_problem.num_market_scenarios)
 
-            # energy_base_df = base_profiles['energy']
-            # flexibility_base_df = base_profiles['flexibility']
-            # energy_base_season_df = energy_base_df[(energy_base_df['Season'] == day)].iloc[:, 2:].copy()
-            # flexibility_base_season_df = flexibility_base_df[(flexibility_base_df['Season'] == day)].iloc[:, 2:].copy()
-            # energy_selected_profiles = energy_base_season_df.sample(n=planning_problem.num_market_scenarios)
-            # flexibility_selected_profiles = flexibility_base_season_df.sample(n=planning_problem.num_market_scenarios)
-
-            planning_problem.cost_energy_p[year][day] = np.array(energy_selected_profiles * energy_growth_mul)      # n_scenarios x n_instants
-            planning_problem.cost_flex[year][day] = np.array(flexibility_selected_profiles * flexibility_growth_mul)
+            planning_problem.cost_energy_p[year][day] = np.array(energy_selected_profiles * energy_growth_cumul)      # n_scenarios x n_instants
+            planning_problem.cost_flex[year][day] = np.array(flexibility_selected_profiles * flexibility_growth_cumul)
 
 
 def _read_market_base_profiles(filename):
@@ -2093,14 +2092,14 @@ def _generate_market_price_scenarios(base_profiles, n_samples=100):
     flex_df = base_profiles['flexibility']
 
     synthetic_profiles = {
-        'energy': _generate_market_price_scenarios_per_type(energy_df),
-        'flexibility': _generate_market_price_scenarios_per_type(flex_df)
+        'energy': _generate_market_price_scenarios_per_type(energy_df, n_samples=n_samples),
+        'flexibility': _generate_market_price_scenarios_per_type(flex_df, n_samples=n_samples)
     }
 
     return synthetic_profiles
 
 
-def _generate_market_price_scenarios_per_type(base_profiles, n_samples=100, bandwidth=0.5):
+def _generate_market_price_scenarios_per_type(base_profiles, n_samples=100):
 
     seasons = base_profiles['Season'].unique()
     synthetic_profiles = {}
@@ -2187,46 +2186,6 @@ def plot_market_price_scenarios_per_type(base_profiles, synthetic_profiles, type
         plt.savefig(filename)
         plt.close(fig)
         print(f"[INFO] Market cost figure saved: {filename}")
-
-
-def _get_market_scenarios_info_from_excel_file(filename, sheet_name):
-
-    num_scenarios = 0
-    prob_scenarios = list()
-
-    try:
-        df = pd.read_excel(filename, sheet_name=sheet_name, header=None)
-        if is_int(df.iloc[0, 1]):
-            num_scenarios = int(df.iloc[0, 1])
-        for i in range(num_scenarios):
-            if is_number(df.iloc[0, i + 2]):
-                prob_scenarios.append(float(df.iloc[0, i + 2]))
-    except:
-        print('[ERROR] Workbook {}. Sheet {} does not exist.'.format(filename, sheet_name))
-        exit(1)
-
-    if num_scenarios != len(prob_scenarios):
-        print('[WARNING] EnergyStorage file. Number of scenarios different from the probability vector!')
-
-    if round(sum(prob_scenarios), 2) != 1.00:
-        print('[ERROR] Probability of scenarios does not add up to 100%. Check file {}. Exiting.'.format(filename))
-        exit(ERROR_MARKET_DATA_FILE)
-
-    return num_scenarios, prob_scenarios
-
-
-def _get_market_costs_from_excel_file(filename, sheet_name, num_scenarios):
-    data = pd.read_excel(filename, sheet_name=sheet_name)
-    _, num_cols = data.shape
-    cost_values = dict()
-    scn_idx = 0
-    for i in range(num_scenarios):
-        cost_values_scenario = list()
-        for j in range(num_cols - 1):
-            cost_values_scenario.append(float(data.iloc[i, j + 1]))
-        cost_values[scn_idx] = cost_values_scenario
-        scn_idx = scn_idx + 1
-    return cost_values
 
 
 # ======================================================================================================================

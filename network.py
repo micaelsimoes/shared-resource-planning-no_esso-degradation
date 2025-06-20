@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import pyomo.opt as po
 from functools import partial
@@ -26,6 +27,7 @@ class Network:
         self.year = int()
         self.day = str()
         self.num_instants = 0
+        self.num_oper_scenarios = int()
         self.operational_data_file = str()
         self.data_loaded = False
         self.is_transmission = False
@@ -191,10 +193,8 @@ class Network:
         _read_network_from_json_file(self, filename)
         self.perform_network_check()
 
-    def read_network_operational_data_from_file(self):
-        filename = os.path.join(self.data_dir, self.name, self.operational_data_file)
-        data = _read_network_operational_data_from_file(self, filename)
-        _update_network_with_excel_data(self, data)
+    def update_network_operational_data(self, base_data, synthetic_profiles):
+        _update_network_with_operational_data(self, base_data, synthetic_profiles)
 
     def process_results(self, model, params, results=dict()):
         return _process_results(self, model, params, results=results)
@@ -2197,45 +2197,48 @@ def _get_generator_status_from_excel_file(filename, sheet_name):
     return status_values
 
 
-def _update_network_with_excel_data(network, data):
+def _update_network_with_operational_data(network, base_data, synthetic_profiles):
 
     for load in network.loads:
 
         load_id = load.load_id
-        load.pd = dict()         # Note: Changes Pd and Qd fields to dicts (per scenario)
-        load.qd = dict()
 
-        for s in range(len(network.prob_operation_scenarios)):
-            pc = _get_consumption_from_data(data, load_id, network.num_instants, s, DATA_ACTIVE_POWER)
-            qc = _get_consumption_from_data(data, load_id, network.num_instants, s, DATA_REACTIVE_POWER)
-            load.pd[s] = [instant / network.baseMVA for instant in pc]
-            load.qd[s] = [instant / network.baseMVA for instant in qc]
-        flex_up_p = _get_flexibility_from_data(data, load_id, network.num_instants, DATA_UPWARD_FLEXIBILITY)
-        flex_down_p = _get_flexibility_from_data(data, load_id, network.num_instants, DATA_DOWNWARD_FLEXIBILITY)
-        load.flexibility.upward = [p / network.baseMVA for p in flex_up_p]
-        load.flexibility.downward = [q / network.baseMVA for q in flex_down_p]
+        base_consumption = base_data['characterization']
+        pc_base = float(base_consumption[(base_consumption['LoadID'] == load_id)]['Pc'].iloc[0])
+        qc_base = float(base_consumption[(base_consumption['LoadID'] == load_id)]['Qc'].iloc[0])
+        pc_flex_base = float(base_consumption[(base_consumption['LoadID'] == load_id)]['FL Ratio'].iloc[0])
+
+        initial_year = base_data['initial_year']
+        growth_factors = base_data['growth_factors']
+        load_growth_factor = float(growth_factors[growth_factors['Growth Factor'] == 'Load']['Value, [%]'].iloc[0])
+        flexibility_growth_factor = float(growth_factors[growth_factors['Growth Factor'] == 'Flexible Load']['Value, [%]'].iloc[0])
+        load_growth_cumul = (1 + load_growth_factor) ** (network.year - initial_year)
+        flexibility_growth_cumul = (1 + flexibility_growth_factor) ** (network.year - initial_year)
+
+        pc = np.array(synthetic_profiles['consumption'][network.day][load_id]['pc'].sample(n=network.num_oper_scenarios)) * pc_base * load_growth_cumul
+        qc = np.array(synthetic_profiles['consumption'][network.day][load_id]['qc'].sample(n=network.num_oper_scenarios)) * qc_base * load_growth_cumul
+        pc_flex = np.array(synthetic_profiles['flexibility'][network.day]['pc'].sample(n=network.num_oper_scenarios)) * pc_flex_base * flexibility_growth_cumul
+        flex_up = np.array(synthetic_profiles['flexibility'][network.day]['flex_up'].sample(n=network.num_oper_scenarios)) * pc_flex_base * flexibility_growth_cumul
+        flex_down = np.array(synthetic_profiles['flexibility'][network.day]['flex_down'].sample(n=network.num_oper_scenarios)) * pc_flex_base * flexibility_growth_cumul
+
+        load.pd = (pc + pc_flex) / network.baseMVA
+        load.qd = qc / network.baseMVA
+        load.flexibility.upward = flex_up / network.baseMVA
+        load.flexibility.downward = flex_down / network.baseMVA
 
     for generator in network.generators:
 
-        generator.pg = dict()  # Note: Changes Pg and Qg fields to dicts (per scenario)
-        generator.qg = dict()
-
-        # Active and Reactive power
-        for s in range(len(network.prob_operation_scenarios)):
-            if generator.gen_type in GEN_CURTAILLABLE_TYPES:
-                pg = _get_generation_from_data(data, generator.gen_id, s, DATA_ACTIVE_POWER)
-                qg = _get_generation_from_data(data, generator.gen_id, s, DATA_REACTIVE_POWER)
-                generator.pg[s] = [instant / network.baseMVA for instant in pg]
-                generator.qg[s] = [instant / network.baseMVA for instant in qg]
-            else:
-                generator.pg[s] = [0.00 for _ in range(network.num_instants)]
-                generator.qg[s] = [0.00 for _ in range(network.num_instants)]
-
-        # Status
-        if generator.gen_id in data['generation']['status']:
-            generator.status = data['generation']['status'][generator.gen_id]
+        if generator.gen_type in GEN_CURTAILLABLE_TYPES:
+            gen_capacity = generator.pmax
+            pg = np.array(synthetic_profiles['generation'][network.day]['pg'].sample(n=network.num_oper_scenarios)) * gen_capacity
+            qg = np.array(synthetic_profiles['generation'][network.day]['qg'].sample(n=network.num_oper_scenarios)) * gen_capacity
+            generator.pg = pg / network.baseMVA
+            generator.qg = qg / network.baseMVA
         else:
-            generator.status = [generator.status for _ in range(network.num_instants)]
+            generator.pg = np.zeros(shape=(network.num_oper_scenarios, network.num_instants))
+            generator.qg = np.zeros(shape=(network.num_oper_scenarios, network.num_instants))
+
+        generator.status = np.array([generator.status for _ in range(network.num_instants)])
 
     network.data_loaded = True
 
