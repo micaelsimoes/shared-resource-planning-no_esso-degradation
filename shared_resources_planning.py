@@ -1,12 +1,12 @@
 import gc
 import time
 from copy import copy
+from functools import partial
 import numpy as np
 import pandas as pd
 from math import isclose, sqrt
 from sklearn.preprocessing import StandardScaler
 from copulas.multivariate import GaussianMultivariate
-from copulas.univariate import GaussianKDE
 import networkx as nx
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
@@ -18,6 +18,7 @@ from load import Load
 from shared_energy_storage import SharedEnergyStorage
 from planning_parameters import PlanningParameters
 from shared_energy_storage_data import SharedEnergyStorageData
+from model_construction_helpers import *
 from helper_functions import *
 
 
@@ -486,60 +487,38 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
                                 fix_or_set(tso_model[year][day].slack_e[adn_node_idx, s_m, s_o, p], 0.00)
                                 fix_or_set(tso_model[year][day].slack_f[adn_node_idx, s_m, s_o, p], 0.00)
 
-                            # Fix Pc and Qc, free pc_adn and qc_adn
+                            # Fix Pc and Qc (base profiles), free pc_adn and qc_adn
                             interface_pf_p = consensus_vars['pf']['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
                             interface_pf_q = consensus_vars['pf']['dso']['current'][adn_node_id][year][day]['q'][p] / s_base
 
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setub(None)
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setlb(None)
-                            fix_or_set(tso_model[year][day].pc[adn_load_idx, s_m, s_o, p], interface_pf_p)
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setub(None)
                             tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setlb(None)
+                            fix_or_set(tso_model[year][day].pc[adn_load_idx, s_m, s_o, p], interface_pf_p)
                             fix_or_set(tso_model[year][day].qc[adn_load_idx, s_m, s_o, p], interface_pf_q)
 
                             tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].fixed = False
-                            tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].setub(interface_transf_rating)
                             tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].fixed = False
-                            tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].setub(interface_transf_rating)
                             tso_model[year][day].flex_q_up[adn_load_idx, s_m, s_o, p].fixed = False
-                            tso_model[year][day].flex_q_up[adn_load_idx, s_m, s_o, p].setub(interface_transf_rating)
                             tso_model[year][day].flex_q_down[adn_load_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].setub(interface_transf_rating)
+                            tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].setub(interface_transf_rating)
+                            tso_model[year][day].flex_q_up[adn_load_idx, s_m, s_o, p].setub(interface_transf_rating)
                             tso_model[year][day].flex_q_down[adn_load_idx, s_m, s_o, p].setub(interface_transf_rating)
 
-            # Add expected interface and shared ESS values
+            # Add expected interface and shared ESS values, and their definition
             tso_model[year][day].expected_interface_vmag_sqr = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00)
             tso_model[year][day].expected_interface_pf_p = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
             tso_model[year][day].expected_interface_pf_q = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
             tso_model[year][day].expected_shared_ess_p = pe.Var(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
             tso_model[year][day].expected_shared_ess_q = pe.Var(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
-            tso_model[year][day].interface_expected_values = pe.ConstraintList()
-            for dn in tso_model[year][day].active_distribution_networks:
-                for p in tso_model[year][day].periods:
-                    expected_vmag_sqr = 0.00
-                    expected_pf_p = 0.00
-                    expected_pf_q = 0.00
-                    for s_m in tso_model[year][day].scenarios_market:
-                        omega_market = transmission_network.network[year][day].prob_market_scenarios[s_m]
-                        for s_o in tso_model[year][day].scenarios_operation:
-                            omega_oper = transmission_network.network[year][day].prob_operation_scenarios[s_o]
-                            expected_vmag_sqr += omega_market * omega_oper * tso_model[year][day].vmag_sqr_adn[dn, s_m, s_o, p]
-                            expected_pf_p += omega_market * omega_oper * tso_model[year][day].pc_adn[dn, s_m, s_o, p]
-                            expected_pf_q += omega_market * omega_oper * tso_model[year][day].qc_adn[dn, s_m, s_o, p]
-                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] == expected_vmag_sqr)
-                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_p[dn, p] == expected_pf_p)
-                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_q[dn, p] == expected_pf_q)
-            for e in tso_model[year][day].shared_energy_storages:
-                for p in tso_model[year][day].periods:
-                    expected_ess_p = 0.00
-                    expected_ess_q = 0.00
-                    for s_m in tso_model[year][day].scenarios_market:
-                        omega_market = transmission_network.network[year][day].prob_market_scenarios[s_m]
-                        for s_o in tso_model[year][day].scenarios_operation:
-                            omega_oper = transmission_network.network[year][day].prob_operation_scenarios[s_o]
-                            expected_ess_p += omega_market * omega_oper * tso_model[year][day].shared_es_pnet[e, s_m, s_o, p]
-                            expected_ess_q += omega_market * omega_oper * tso_model[year][day].shared_es_qnet[e, s_m, s_o, p]
-                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_shared_ess_p[e, p] == expected_ess_p)
-                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_shared_ess_q[e, p] == expected_ess_q)
+
+            tso_model[year][day].interface_expected_values_vmag_sqr = pe.Constraint(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_vmag_sqr_rule, network=transmission_network.network[year][day]))
+            tso_model[year][day].interface_expected_values_pf_p = pe.Constraint(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_pf_p_rule, network=transmission_network.network[year][day]))
+            tso_model[year][day].interface_expected_values_pf_q = pe.Constraint(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_pf_q_rule, network=transmission_network.network[year][day]))
+            tso_model[year][day].interface_expected_values_sess_p = pe.Constraint(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, rule=partial(tn_interface_expected_sess_p_rule, network=transmission_network.network[year][day]))
+            tso_model[year][day].interface_expected_values_sess_q = pe.Constraint(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, rule=partial(tn_interface_expected_sess_q_rule, network=transmission_network.network[year][day]))
 
             # Regularization -- Added to OF to minimize deviations from scenarios to expected values
             obj = copy(tso_model[year][day].objective.expr)
@@ -607,34 +586,18 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                 shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
                 v_min, v_max = distribution_network.network[year][day].get_node_voltage_limits(ref_node_id)
 
-                # Add interface expected variables
+                # Add interface expected variables, and definition
                 dso_model[year][day].expected_interface_vmag_sqr = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00, bounds=(v_min**2, v_max**2))
                 dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
                 dso_model[year][day].expected_interface_pf_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
                 dso_model[year][day].expected_shared_ess_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
                 dso_model[year][day].expected_shared_ess_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
 
-                dso_model[year][day].interface_expected_values = pe.ConstraintList()
-                for p in dso_model[year][day].periods:
-                    expected_vmag_sqr = 0.00
-                    expected_pf_p = 0.00
-                    expected_pf_q = 0.00
-                    expected_ess_p = 0.00
-                    expected_ess_q = 0.00
-                    for s_m in dso_model[year][day].scenarios_market:
-                        omega_market = distribution_network.network[year][day].prob_market_scenarios[s_m]
-                        for s_o in dso_model[year][day].scenarios_operation:
-                            omega_oper = distribution_network.network[year][day].prob_operation_scenarios[s_o]
-                            expected_vmag_sqr += omega_market * omega_oper * dso_model[year][day].vmag_sqr_adn[s_m, s_o, p]
-                            expected_pf_p += omega_market * omega_oper * dso_model[year][day].pg_adn[s_m, s_o, p]
-                            expected_pf_q += omega_market * omega_oper * dso_model[year][day].qg_adn[s_m, s_o, p]
-                            expected_ess_p += omega_market * omega_oper * dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p]
-                            expected_ess_q += omega_market * omega_oper * dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p]
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_vmag_sqr[p] == expected_vmag_sqr)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_pf_p[p] == expected_pf_p)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_pf_q[p] == expected_pf_q)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_shared_ess_p[p] == expected_ess_p)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_shared_ess_q[p] == expected_ess_q)
+                dso_model[year][day].interface_expected_values_vmag_sqr = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_vmag_sqr_rule, network=distribution_network.network[year][day]))
+                dso_model[year][day].interface_expected_values_pf_p = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_p_rule, network=distribution_network.network[year][day]))
+                dso_model[year][day].interface_expected_values_pf_q = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_q_rule, network=distribution_network.network[year][day]))
+                dso_model[year][day].interface_expected_values_sess_p = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_p_rule, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx))
+                dso_model[year][day].interface_expected_values_sess_q = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_q_rule, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx))
 
         # Regularization -- Added to OF to minimize deviations from scenarios to expected values
         for year in distribution_network.years:
@@ -919,7 +882,6 @@ def update_transmission_model_to_admm(planning_problem, model, params):
             for dn in model[year][day].active_distribution_networks:
 
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
-
                 distribution_network = distribution_networks[adn_node_id]
                 interface_transf_rating = distribution_network.network[year][day].get_interface_branch_rating() / s_base
 
@@ -2044,20 +2006,20 @@ def _read_market_base_profiles(filename):
     return base_cost_data
 
 
-def _generate_market_price_scenarios(base_profiles, n_samples=100):
+def _generate_market_price_scenarios(base_profiles, n_samples=100, bandwidth=0.25):
 
     energy_df = base_profiles['energy']
     flex_df = base_profiles['flexibility']
 
     synthetic_profiles = {
-        'energy': _generate_market_price_scenarios_per_type(energy_df, n_samples=n_samples),
-        'flexibility': _generate_market_price_scenarios_per_type(flex_df, n_samples=n_samples)
+        'energy': _generate_market_price_scenarios_per_type(energy_df, n_samples=n_samples, bandwidth=bandwidth),
+        'flexibility': _generate_market_price_scenarios_per_type(flex_df, n_samples=n_samples, bandwidth=bandwidth)
     }
 
     return synthetic_profiles
 
 
-def _generate_market_price_scenarios_per_type(base_profiles, n_samples=100):
+def _generate_market_price_scenarios_per_type(base_profiles, n_samples=100, bandwidth=0.05):
 
     seasons = base_profiles['Season'].unique()
     synthetic_profiles = {}
@@ -2077,7 +2039,7 @@ def _generate_market_price_scenarios_per_type(base_profiles, n_samples=100):
         scaler = StandardScaler()
         price_scaled = scaler.fit_transform(price_hours)
 
-        model = GaussianMultivariate(distribution=GaussianKDE)
+        model = GaussianMultivariate(distribution=CustomGaussianKDE(bandwidth=bandwidth))
         model.fit(pd.DataFrame(price_scaled))
 
         # Sample

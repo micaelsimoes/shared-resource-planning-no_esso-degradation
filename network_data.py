@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from copulas.multivariate import GaussianMultivariate
-from copulas.univariate import GaussianKDE
 from math import isclose
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill
@@ -163,18 +162,18 @@ def _read_network_base_profiles(filename):
     return base_operational_data
 
 
-def _generate_operational_scenarios(base_profiles):
+def _generate_operational_scenarios(base_profiles, n_samples=100, bandwidth=0.25):
 
     synthetic_profiles = {
-        'consumption': generate_consumption_profiles(base_profiles),
-        'generation': generate_res_generation_profiles(base_profiles),
-        'flexibility': generate_flexibility_profiles(base_profiles)
+        'consumption': generate_consumption_profiles(base_profiles, n_samples=n_samples, bandwidth=bandwidth),
+        'generation': generate_res_generation_profiles(base_profiles, n_samples=n_samples, bandwidth=bandwidth),
+        'flexibility': generate_flexibility_profiles(base_profiles, n_samples=n_samples, bandwidth=bandwidth)
     }
 
     return synthetic_profiles
 
 
-def generate_consumption_profiles(base_operational_data, n_samples=100):
+def generate_consumption_profiles(base_operational_data, n_samples=100, bandwidth=0.15):
 
     print('[INFO]\t - Generating load stochastic scenarios...')
 
@@ -214,7 +213,7 @@ def generate_consumption_profiles(base_operational_data, n_samples=100):
             combined_scaled = scaler.fit_transform(combined)
 
             # Fit model
-            model = GaussianMultivariate(distribution=GaussianKDE)
+            model = GaussianMultivariate(distribution=CustomGaussianKDE(bandwidth=bandwidth))
             model.fit(pd.DataFrame(combined_scaled, columns=combined.columns))
 
             # Sample
@@ -230,7 +229,7 @@ def generate_consumption_profiles(base_operational_data, n_samples=100):
     return synthetic_profiles
 
 
-def generate_res_generation_profiles(base_operational_data, n_samples=100):
+def generate_res_generation_profiles(base_operational_data, n_samples=100, bandwidth=0.15):
 
     print('[INFO]\t - Generating RES generation stochastic scenarios...')
 
@@ -260,7 +259,7 @@ def generate_res_generation_profiles(base_operational_data, n_samples=100):
             scaler = MinMaxScaler()
             scaled = scaler.fit_transform(gen_hours)
 
-            model = GaussianMultivariate(distribution=GaussianKDE)
+            model = GaussianMultivariate(distribution=CustomGaussianKDE(bandwidth=bandwidth))
             model.fit(pd.DataFrame(scaled))
 
             # Sample
@@ -275,7 +274,7 @@ def generate_res_generation_profiles(base_operational_data, n_samples=100):
     return synthetic_profiles
 
 
-def generate_flexibility_profiles(base_operational_data, n_samples=100):
+def generate_flexibility_profiles(base_operational_data, n_samples=100, bandwidth=0.15):
 
     print('[INFO]\t - Generating flexibility stochastic scenarios...')
 
@@ -306,7 +305,7 @@ def generate_flexibility_profiles(base_operational_data, n_samples=100):
         combined_scaled = scaler.fit_transform(combined)
 
         # Fit model
-        model = GaussianMultivariate(distribution=GaussianKDE)
+        model = GaussianMultivariate(distribution=CustomGaussianKDE(bandwidth=bandwidth))
         model.fit(pd.DataFrame(combined_scaled, columns=combined.columns))
 
         # Sample

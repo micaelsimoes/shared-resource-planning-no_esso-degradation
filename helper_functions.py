@@ -2,7 +2,7 @@ import os
 import sys
 import json
 import psutil
-import pyomo.environ as pe
+from copulas.univariate import GaussianKDE
 from definitions import *
 
 
@@ -63,3 +63,15 @@ def write_value(sheet, line_idx, col_idx, value, number_format=None):
     sheet.cell(row=line_idx, column=col_idx).value = value
     if number_format:
         sheet.cell(row=line_idx, column=col_idx).number_format = number_format
+
+
+class CustomGaussianKDE(GaussianKDE):
+
+    def __init__(self, bandwidth=0.2):
+        super().__init__()
+        self.custom_bandwidth = bandwidth
+
+    def _fit(self, X):
+        super()._fit(X)
+        self.kde.set_bandwidth(bw_method=self.custom_bandwidth)
+

@@ -1,5 +1,4 @@
-from copy import copy
-from functools import partial
+import pyomo.environ as pe
 from math import tan, atan2, acos
 from helper_functions import *
 from definitions import *
@@ -1149,3 +1148,113 @@ def slack_penalties(model, network, s_m, s_o, params):
                 total += base * PENALTY_CURRENT * model.slack_flow_ij_sqr[b, s_m, s_o, p]
 
     return total
+
+
+def dn_interface_expected_vmag_sqr_rule(m, p, network):
+    expected_vmag_sqr = sum(
+        network.prob_market_scenarios[s_m] *
+        network.prob_operation_scenarios[s_o] *
+        m.vmag_sqr_adn[s_m, s_o, p]
+        for s_m in m.scenarios_market
+        for s_o in m.scenarios_operation
+    )
+    return m.expected_interface_vmag_sqr[p] == expected_vmag_sqr
+
+
+def dn_interface_expected_pf_p_rule(m, p, network):
+    expected_pf_p = sum(
+        network.prob_market_scenarios[s_m] *
+        network.prob_operation_scenarios[s_o] *
+        m.pg_adn[s_m, s_o, p]
+        for s_m in m.scenarios_market
+        for s_o in m.scenarios_operation
+    )
+    return m.expected_interface_pf_p[p] == expected_pf_p
+
+
+def dn_interface_expected_pf_q_rule(m, p, network):
+    expected_pf_q = sum(
+        network.prob_market_scenarios[s_m] *
+        network.prob_operation_scenarios[s_o] *
+        m.qg_adn[s_m, s_o, p]
+        for s_m in m.scenarios_market
+        for s_o in m.scenarios_operation
+    )
+    return m.expected_interface_pf_q[p] == expected_pf_q
+
+
+def dn_interface_expected_sess_p_rule(m, p, network, shared_ess_idx):
+    expected_ess_p = sum(
+        network.prob_market_scenarios[s_m] *
+        network.prob_operation_scenarios[s_o] *
+        m.shared_es_pnet[shared_ess_idx, s_m, s_o, p]
+        for s_m in m.scenarios_market
+        for s_o in m.scenarios_operation
+    )
+    return m.expected_shared_ess_p[p] == expected_ess_p
+
+
+def dn_interface_expected_sess_q_rule(m, p, network, shared_ess_idx):
+    expected_ess_q = sum(
+        network.prob_market_scenarios[s_m] *
+        network.prob_operation_scenarios[s_o] *
+        m.shared_es_qnet[shared_ess_idx, s_m, s_o, p]
+        for s_m in m.scenarios_market
+        for s_o in m.scenarios_operation
+    )
+    return m.expected_shared_ess_q[p] == expected_ess_q
+
+
+def tn_interface_expected_vmag_sqr_rule(m, dn, p, network):
+    expected_vmag_sqr = sum(
+        network.prob_market_scenarios[s_m] *
+        network.prob_operation_scenarios[s_o] *
+        m.vmag_sqr_adn[dn, s_m, s_o, p]
+        for s_m in m.scenarios_market
+        for s_o in m.scenarios_operation
+    )
+    return m.expected_interface_vmag_sqr[dn, p] == expected_vmag_sqr
+
+
+def tn_interface_expected_pf_p_rule(m, dn, p, network):
+    expected_pf_p = sum(
+        network.prob_market_scenarios[s_m] *
+        network.prob_operation_scenarios[s_o] *
+        m.pc_adn[dn, s_m, s_o, p]
+        for s_m in m.scenarios_market
+        for s_o in m.scenarios_operation
+    )
+    return m.expected_interface_pf_p[dn, p] == expected_pf_p
+
+
+def tn_interface_expected_pf_q_rule(m, dn, p, network):
+    expected_pf_q = sum(
+        network.prob_market_scenarios[s_m] *
+        network.prob_operation_scenarios[s_o] *
+        m.qc_adn[dn, s_m, s_o, p]
+        for s_m in m.scenarios_market
+        for s_o in m.scenarios_operation
+    )
+    return m.expected_interface_pf_q[dn, p] == expected_pf_q
+
+
+def tn_interface_expected_sess_p_rule(m, e, p, network):
+    expected_ess_p = sum(
+        network.prob_market_scenarios[s_m] *
+        network.prob_operation_scenarios[s_o] *
+        m.shared_es_pnet[e, s_m, s_o, p]
+        for s_m in m.scenarios_market
+        for s_o in m.scenarios_operation
+    )
+    return m.expected_shared_ess_p[e, p] == expected_ess_p
+
+
+def tn_interface_expected_sess_q_rule(m, e, p, network):
+    expected_ess_q = sum(
+        network.prob_market_scenarios[s_m] *
+        network.prob_operation_scenarios[s_o] *
+        m.shared_es_qnet[e, s_m, s_o, p]
+        for s_m in m.scenarios_market
+        for s_o in m.scenarios_operation
+    )
+    return m.expected_shared_ess_q[e, p] == expected_ess_q

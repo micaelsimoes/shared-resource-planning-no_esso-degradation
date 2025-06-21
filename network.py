@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
-import pyomo.opt as po
 from functools import partial
+import pyomo.opt as po
 from math import pi, isclose, sqrt
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -10,7 +10,6 @@ from load import Load
 from branch import Branch
 from generator import Generator
 from energy_storage import EnergyStorage
-from helper_functions import *
 from model_construction_helpers import *
 
 
@@ -2230,7 +2229,7 @@ def _update_network_with_operational_data(network, base_data, synthetic_profiles
 
         if generator.gen_type in GEN_CURTAILLABLE_TYPES:
 
-            gen_capacity = generator.pmax
+            gen_capacity = generator.pmax * network.baseMVA
 
             if generator.gen_type == GEN_RES_SOLAR:
                 gen_type = 'PV'
