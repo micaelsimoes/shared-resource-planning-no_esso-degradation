@@ -582,11 +582,6 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
                     consensus_vars['ess']['tso']['current'][adn_node_id][year][day]['p'][p] = p_ess
                     consensus_vars['ess']['tso']['current'][adn_node_id][year][day]['q'][p] = q_ess
 
-                print(f'TSO, P = {consensus_vars['pf']['tso']['current'][adn_node_id][year][day]['p']}')
-                print(f'DSO, P = {consensus_vars['pf']['dso']['current'][adn_node_id][year][day]['p']}')
-                print(f'TSO, Q = {consensus_vars['pf']['tso']['current'][adn_node_id][year][day]['q']}')
-                print(f'DSO, Q = {consensus_vars['pf']['dso']['current'][adn_node_id][year][day]['q']}')
-
     return tso_model, results
 
 
