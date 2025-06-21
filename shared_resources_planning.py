@@ -2006,7 +2006,7 @@ def _read_market_base_profiles(filename):
     return base_cost_data
 
 
-def _generate_market_price_scenarios(base_profiles, n_samples=100, bandwidth=0.25):
+def _generate_market_price_scenarios(base_profiles, n_samples=100, bandwidth=0.10):
 
     energy_df = base_profiles['energy']
     flex_df = base_profiles['flexibility']
