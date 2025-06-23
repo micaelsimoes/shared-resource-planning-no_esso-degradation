@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
 from sklearn.preprocessing import MinMaxScaler
 from copulas.multivariate import GaussianMultivariate
 from math import isclose
@@ -24,6 +26,7 @@ class NetworkData:
         self.days = dict()
         self.num_instants = int()
         self.num_oper_scenarios = int()
+        self.plot_operational_data = bool()
         self.discount_factor = float()
         self.network = dict()
         self.operational_data_file = str()
@@ -102,6 +105,12 @@ class NetworkData:
         _write_optimization_results_to_excel(self, self.results_dir, results, filename=filename)
 
 
+    def plot_operational_data_scenarios(self):
+        years_to_plot = list(self.years)[0]
+        _plot_load_data_scenarios(self, years_to_plot=[years_to_plot], save_dir=self.diagrams_dir)
+        _plot_res_data_scenarios(self, years_to_plot=[years_to_plot], save_dir=self.diagrams_dir)
+
+
 # ======================================================================================================================
 #  NETWORK DATA read function
 # ======================================================================================================================
@@ -162,7 +171,7 @@ def _read_network_base_profiles(filename):
     return base_operational_data
 
 
-def _generate_operational_scenarios(base_profiles, n_samples=100, bandwidth=0.10):
+def _generate_operational_scenarios(base_profiles, n_samples=100, bandwidth=0.25):
 
     synthetic_profiles = {
         'consumption': generate_consumption_profiles(base_profiles, n_samples=n_samples, bandwidth=bandwidth),
@@ -2503,6 +2512,111 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
                                     sheet.cell(row=row_idx, column=p + 7).value = soc_final
                                     sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                                 row_idx = row_idx + 1
+
+
+# ======================================================================================================================
+#  Plot functions
+# ======================================================================================================================
+def _plot_load_data_scenarios(network_planning, years_to_plot, save_dir, save_format='pdf'):
+
+    print('[INFO]\t - Plotting load scenarios...')
+
+    hours = np.arange(network_planning.num_instants)
+    xticks = np.arange(0, network_planning.num_instants, 4)
+    xtick_labels = [f"{h:02d}:00" for h in xticks]
+
+    for year in years_to_plot:
+        for season in network_planning.days:
+
+            network = network_planning.network[year][season]
+            fig, axs = plt.subplots(2, 1, figsize=(12, 10), sharex=True)
+
+            num_colors = len(network.loads)
+            color_map = plt.cm.get_cmap('plasma', num_colors)
+            colors = [color_map(i / num_colors) for i in range(num_colors)]
+
+            for l in range(len(network.loads)):
+
+                load = network.loads[l]
+                pc = load.pd * network.baseMVA
+                qc = load.qd * network.baseMVA
+
+                pc_mean = pc.mean(axis=0)
+                pc_std = pc.std(axis=0)
+                qc_mean = qc.mean(axis=0)
+                qc_std = qc.std(axis=0)
+
+                # Plot
+                color = colors[l]
+                axs[0].plot(hours, pc_mean, label=f'Load {load.load_id}', color=color)
+                axs[0].fill_between(hours, pc_mean - pc_std, pc_mean + pc_std, alpha=0.2, color=color)
+                axs[0].set_ylabel("Active Power, [MW]", fontsize=14)
+
+                axs[1].plot(hours, qc_mean, label=f'Load {load.load_id}', color=color)
+                axs[1].fill_between(hours, qc_mean - qc_std, qc_mean + qc_std, alpha=0.2, color=color)
+                axs[1].set_ylabel("Reactive Power, [MVAr]", fontsize=14)
+
+            for ax in axs:
+                ax.set_xticks(xticks)
+                ax.set_xticklabels(xtick_labels)
+                ax.set_xlim(0, 23)
+                ax.set_xlabel("Hour", loc='center', fontsize=12)
+                ax.grid(True, axis='x', which='both')
+                ax.tick_params(axis='both', labelsize=12)
+                ax.yaxis.set_major_formatter(mticker.FormatStrFormatter('%.2f'))
+
+            handles, labels = axs[0].get_legend_handles_labels()
+            fig.legend(handles, labels, loc='right', fontsize='small', frameon=False)
+
+            filename = os.path.join(save_dir, f"{network.name}_load_scenarios_{year}_{season}.{save_format}")
+            plt.savefig(filename)
+            plt.close(fig)
+
+
+def _plot_res_data_scenarios(network_planning, years_to_plot, save_dir, save_format='pdf'):
+
+    print('[INFO]\t - Plotting RES generation scenarios...')
+
+    hours = np.arange(network_planning.num_instants)
+    xticks = np.arange(0, network_planning.num_instants, 4)
+    xtick_labels = [f"{h:02d}:00" for h in xticks]
+    for year in years_to_plot:
+        for season in network_planning.days:
+
+            network = network_planning.network[year][season]
+            fig, axs = plt.subplots(1, 1, figsize=(8, 6), sharex=True)
+
+            num_colors = len(network.generators)
+            color_map = plt.cm.get_cmap('viridis', num_colors)
+            colors = [color_map(i / num_colors) for i in range(num_colors)]
+
+            for g in range(len(network.generators)):
+
+                generator = network.generators[g]
+
+                if generator.is_curtaillable():
+                    pg = generator.pg * network.baseMVA
+                    pg_mean = pg.mean(axis=0)
+                    pg_std = pg.std(axis=0)
+
+                    # Plot
+                    color = colors[g]
+                    axs.plot(hours, pg_mean, label=f'Generator {generator.gen_id}', color=color)
+                    axs.fill_between(hours, pg_mean - pg_std, pg_mean + pg_std, alpha=0.2, color=color)
+                    axs.set_ylabel("Active Power, [MW]", fontsize=14)
+                    axs.set_xticks(xticks)
+                    axs.set_xticklabels(xtick_labels)
+                    axs.set_xlim(0, 23)
+                    axs.set_xlabel("Hour", loc='center', fontsize=12)
+                    axs.grid(True, axis='x', which='both')
+                    axs.tick_params(axis='both', labelsize=12)
+                    axs.yaxis.set_major_formatter(mticker.FormatStrFormatter('%.2f'))
+                    axs.legend(loc='best', fontsize='small', frameon=False)
+
+            plt.tight_layout()
+            filename = os.path.join(save_dir, f"{network.name}_RES_generation_scenarios_{year}_{season}.{save_format}")
+            plt.savefig(filename)
+            plt.close(fig)
 
 
 # ======================================================================================================================

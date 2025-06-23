@@ -10,6 +10,7 @@ from copulas.multivariate import GaussianMultivariate
 import networkx as nx
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
 import pyomo.opt as po
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill
@@ -118,6 +119,10 @@ class SharedResourcesPlanning:
         filename = os.path.join(self.results_dir, self.name + '_operational_planning_results_no_coordination.xlsx')
         processed_results = _process_operational_planning_results_no_coordination(self, optimization_models['tso'], optimization_models['dso'], results)
         _write_operational_planning_results_no_coordination_to_excel(self, processed_results, filename)
+
+    def plot_market_price_scenarios(self):
+        years_to_plot = list(self.years)[0]
+        _plot_market_price_scenarios(self, years_to_plot=[years_to_plot], save_dir=self.diagrams_dir)
 
     def get_initial_candidate_solution(self):
         return _get_initial_candidate_solution(self)
@@ -1819,13 +1824,9 @@ def create_interface_power_flow_variables(planning_problem):
 # ======================================================================================================================
 def _read_planning_problem(planning_problem):
 
-    # Create results folder
-    if not os.path.exists(planning_problem.results_dir):
-        os.makedirs(planning_problem.results_dir)
-
-    # Create diagrams folder
-    if not os.path.exists(planning_problem.diagrams_dir):
-        os.makedirs(planning_problem.diagrams_dir)
+    # Create results and diagrams folder
+    os.makedirs(planning_problem.results_dir, exist_ok=True)
+    os.makedirs(planning_problem.diagrams_dir, exist_ok=True)
 
     # Read specification file
     filename = os.path.join(planning_problem.data_dir, planning_problem.filename)
@@ -1844,6 +1845,8 @@ def _read_planning_problem(planning_problem):
     planning_problem.num_market_scenarios = planning_data['NumMarketScenarios']
     planning_problem.plot_market_data = planning_data['PlotMarketData']
     planning_problem.read_market_data_from_file()
+    if planning_problem.plot_market_data:
+        planning_problem.plot_market_price_scenarios()
 
     # Distribution Networks
     for distribution_network in planning_data['DistributionNetworks']:
@@ -1853,6 +1856,7 @@ def _read_planning_problem(planning_problem):
         network_name = distribution_network['name']                             # Network filename
         operational_data_file = distribution_network['operational_data_file']   # Operational data filename
         num_oper_scenarios = distribution_network['num_operation_scenarios']    # Number of operational scenarios
+        plot_oper_data = distribution_network['plot_operational_data']          # Plot operational data
         params_file = distribution_network['params_file']                       # Params filename
         connection_nodeid = distribution_network['connection_node_id']          # Connection node ID
 
@@ -1865,6 +1869,7 @@ def _read_planning_problem(planning_problem):
         distribution_network.years = planning_problem.years
         distribution_network.days = planning_problem.days
         distribution_network.num_oper_scenarios = num_oper_scenarios
+        distribution_network.plot_operational_data = plot_oper_data
         distribution_network.num_instants = planning_problem.num_instants
         distribution_network.discount_factor = planning_problem.discount_factor
         distribution_network.cost_energy_p = planning_problem.cost_energy_p
@@ -1873,6 +1878,8 @@ def _read_planning_problem(planning_problem):
         distribution_network.read_network_parameters()
         distribution_network.operational_data_file = operational_data_file
         distribution_network.read_network_data()
+        if distribution_network.plot_operational_data:
+            distribution_network.plot_operational_data_scenarios()
         for year in distribution_network.years:
             for day in distribution_network.days:
                 distribution_network.network[year][day].is_transmission = False
@@ -1898,6 +1905,7 @@ def _read_planning_problem(planning_problem):
     transmission_network.years = planning_problem.years
     transmission_network.days = planning_problem.days
     transmission_network.num_oper_scenarios = planning_data['TransmissionNetwork']['num_operation_scenarios']
+    transmission_network.plot_operational_data = planning_data['TransmissionNetwork']['plot_operational_data']
     transmission_network.num_instants = planning_problem.num_instants
     transmission_network.discount_factor = planning_problem.discount_factor
     transmission_network.cost_energy_p = planning_problem.cost_energy_p
@@ -1906,6 +1914,8 @@ def _read_planning_problem(planning_problem):
     transmission_network.read_network_parameters()
     transmission_network.operational_data_file = planning_data['TransmissionNetwork']['operational_data_file']
     transmission_network.read_network_data()
+    if transmission_network.plot_operational_data:
+        transmission_network.plot_operational_data_scenarios()
     for year in transmission_network.years:
         for day in transmission_network.days:
             transmission_network.network[year][day].is_transmission = True
@@ -1968,8 +1978,6 @@ def _read_market_data_from_file(planning_problem):
         exit(ERROR_SPECIFICATION_FILE)
 
     synthetic_profiles = _generate_market_price_scenarios(base_profiles)
-    if planning_problem.plot_market_data:
-        plot_market_price_scenarios(base_profiles, synthetic_profiles, save_dir=planning_problem.diagrams_dir)
 
     # Update subsequent years
     initial_year = list(planning_problem.years)[0]
@@ -2007,6 +2015,8 @@ def _read_market_base_profiles(filename):
 
 
 def _generate_market_price_scenarios(base_profiles, n_samples=100, bandwidth=0.10):
+
+    print('[INFO] \t - Generating market scenarios...')
 
     energy_df = base_profiles['energy']
     flex_df = base_profiles['flexibility']
@@ -2051,61 +2061,49 @@ def _generate_market_price_scenarios_per_type(base_profiles, n_samples=100, band
     return synthetic_profiles
 
 
-def plot_market_price_scenarios(base_profiles, synthetic_profiles, save_dir, save_format='pdf'):
+def _plot_market_price_scenarios(planning_problem, years_to_plot, save_dir, save_format='pdf'):
 
-    os.makedirs(save_dir, exist_ok=True)
+    print('[INFO] \t - Plotting market scenarios...')
 
-    energy_base_df = base_profiles['energy']
-    energy_synthetic_df = synthetic_profiles['energy']
-    flexibility_base_df = base_profiles['flexibility']
-    flexibility_synthetic_df = synthetic_profiles['flexibility']
-
-    plot_market_price_scenarios_per_type(energy_base_df, energy_synthetic_df, type='Energy', save_dir=save_dir, save_format=save_format)
-    plot_market_price_scenarios_per_type(flexibility_base_df, flexibility_synthetic_df, type='Flexibility', save_dir=save_dir, save_format=save_format)
-
-
-def plot_market_price_scenarios_per_type(base_profiles, synthetic_profiles, type, save_dir, save_format):
-
-    seasons = base_profiles['Season'].unique()
-    hours = np.arange(24)
-    xticks = np.arange(0, 24, 4)
+    hours = np.arange(planning_problem.num_instants)
+    xticks = np.arange(0, planning_problem.num_instants, 4)
     xtick_labels = [f"{h:02d}:00" for h in xticks]
 
-    for season in seasons:
+    for year in years_to_plot:
+        for season in planning_problem.days:
 
-        fig, ax = plt.subplots(1, 1, figsize=(8, 6), sharex=True)
+            cost_energy_p = planning_problem.cost_energy_p[year][season]
+            cost_flex = planning_problem.cost_flex[year][season]
 
-        base_profiles_season = base_profiles[(base_profiles['Season'] == season)].iloc[:, 2:].copy()
-        if base_profiles_season.empty or season not in synthetic_profiles:
-            continue
-        synthetic_profiles_season = synthetic_profiles[season]
+            # Calculate statistics
+            mean_energy_p = cost_energy_p.mean(axis=0)
+            std_energy_p = cost_energy_p.std(axis=0)
+            mean_flex = cost_flex.mean(axis=0)
+            std_flex = cost_flex.std(axis=0)
 
-        # Calculate statistics
-        mean_base = base_profiles_season.mean(axis=0)
-        std_base = base_profiles_season.std(axis=0)
-        mean_synthetic = np.mean(synthetic_profiles_season, axis=0)
-        std_synthetic = np.std(synthetic_profiles_season, axis=0)
+            # Plot
+            fig, ax = plt.subplots(1, 1, figsize=(8, 6), sharex=True)
 
-        # Plot
-        color = cm.tab10(0)
-        ax.plot(hours, mean_base, label='Mean, original profiles', color=color)
-        ax.fill_between(hours, mean_base - std_base, mean_base + std_base, alpha=0.2, color=color)
-        ax.plot(hours, mean_synthetic, linestyle='--', label='Mean, generated profiles', color=color, alpha=0.6)
-        ax.fill_between(hours, mean_synthetic - std_synthetic, mean_synthetic + std_synthetic, alpha=0.15, color=color)
+            color_energy_p = cm.tab10(0)
+            color_flex = cm.tab10(1)
+            ax.plot(hours, mean_energy_p, label='Energy', color=color_energy_p)
+            ax.fill_between(hours, mean_energy_p - std_energy_p, mean_energy_p + std_energy_p, alpha=0.2, color=color_energy_p)
+            ax.plot(hours, mean_flex, label='Flexibility', color=color_flex)
+            ax.fill_between(hours, mean_flex - std_flex, mean_flex + std_flex, alpha=0.2, color=color_flex)
 
-        ax.set_xticks(xticks)
-        ax.set_xticklabels(xtick_labels)
-        ax.set_xlim(0, 23)
-        ax.set_xlabel("Hour", loc='center', fontsize=12)
-        ax.set_ylabel(f"{type} Market Price, [€/MW]", fontsize=12)
-        ax.grid(True)
-        ax.legend(fontsize='small')
-        plt.tight_layout()
+            ax.set_xticks(xticks)
+            ax.set_xticklabels(xtick_labels)
+            ax.set_xlim(0, 23)
+            ax.set_xlabel("Hour", loc='center', fontsize=12)
+            ax.set_ylabel("Market Price, [€/MW]", fontsize=12)
+            ax.yaxis.set_major_formatter(mticker.FormatStrFormatter('%.2f'))
+            ax.grid(True)
+            ax.legend(fontsize='small')
+            plt.tight_layout()
 
-        filename = os.path.join(save_dir, f"{type}_{season}_price_profiles.{save_format}")
-        plt.savefig(filename)
-        plt.close(fig)
-        print(f"[INFO] Market cost figure saved: {filename}")
+            filename = os.path.join(save_dir, f"{planning_problem.name}_market_prices_{year}_{season}.{save_format}")
+            plt.savefig(filename)
+            plt.close(fig)
 
 
 # ======================================================================================================================
