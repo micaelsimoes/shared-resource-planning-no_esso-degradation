@@ -1309,7 +1309,7 @@ def update_distribution_coordination_model_and_solve(node_id, distribution_netwo
                 print(f'[WARNING] Network {model[year][day].name} did not converge!')
 
     gc.collect()
-    return res
+    return (node_id, res)
 
 
 def update_distribution_coordination_models_and_solve_parallel(distribution_networks, models, vsqr_req, dual_vsqr, pf_req, dual_pf, ess_req, dual_ess, params, from_warm_start=False):
