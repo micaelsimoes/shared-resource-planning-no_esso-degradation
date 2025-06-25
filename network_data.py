@@ -52,7 +52,7 @@ class NetworkData:
             results[year] = dict()
             for day in self.days:
                 print(f'[INFO] \t\t\t\t - Year {year}, Day {day}...')
-                results[year][day] = self.network[year][day].run_smopf(model[year][day], self.params, from_warm_start=from_warm_start, parallel_execution=parallel_execution)
+                results[year][day] = self.network[year][day].run_smopf(model[year][day], self.params, from_warm_start=from_warm_start)
         return results
 
     def get_primal_value(self, model):
