@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from concurrent.futures import ProcessPoolExecutor, as_completed
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 from sklearn.preprocessing import MinMaxScaler
@@ -39,10 +40,16 @@ class NetworkData:
 
     def build_model(self):
         network_models = dict()
-        for year in self.years:
-            network_models[year] = dict()
-            for day in self.days:
-                network_models[year][day] = self.network[year][day].build_model(self.params)
+        tasks = []
+        max_workers = os.cpu_count() // 2
+        with ProcessPoolExecutor(max_workers=max_workers) as executor:
+            for year in self.years:
+                network_models[year] = dict()
+                for day in self.days:
+                    tasks.append(executor.submit(self.network[year][day].build_model, self.params))
+        for future in as_completed(tasks):
+            year, day, model = future.result()
+            network_models[year][day] = model
         return network_models
 
     def optimize(self, model, from_warm_start=False):

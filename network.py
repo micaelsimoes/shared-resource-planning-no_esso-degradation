@@ -45,7 +45,7 @@ class Network:
 
     def build_model(self, params):
         _pre_process_network(self)
-        return _build_model_new_version(self, params)
+        return self.year, self.day, _build_model_new_version(self, params)
 
     def run_smopf(self, model, params, from_warm_start=False):
         return _run_smopf(self, model, params, from_warm_start=from_warm_start)
