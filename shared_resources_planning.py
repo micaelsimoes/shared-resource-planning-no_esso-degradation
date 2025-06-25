@@ -464,7 +464,7 @@ def print_debug_info(planning_problem, consensus_vars, print_vmag=False, print_p
 
 def create_transmission_network_model(planning_problem, consensus_vars, candidate_solution):
 
-    print(f'[INFO] \t\t - Transmission Network...')
+    print(f'[INFO] \t\t\t - Transmission Network...')
 
     # Build model, fix candidate solution
     transmission_network = planning_problem.transmission_network
@@ -586,7 +586,7 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
 
     for node_id in distribution_networks:
 
-        print(f'[INFO] \t\t - Distribution Network node {node_id}...')
+        print(f'[INFO] \t\t\t - Distribution Network node {node_id}...')
 
         distribution_network = distribution_networks[node_id]
 
