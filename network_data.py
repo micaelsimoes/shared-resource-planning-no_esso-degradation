@@ -46,7 +46,6 @@ class NetworkData:
         return network_models
 
     def optimize(self, model, from_warm_start=False):
-        print(f'[INFO] \t\t\t - Running SMOPF, Network {self.name}...')
         results = dict()
         for year in self.years:
             results[year] = dict()
