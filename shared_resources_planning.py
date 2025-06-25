@@ -287,7 +287,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     # ------------------------------------------------------------------------------------------------------------------
     # 0. Initialization
 
-    print('[INFO]\t\t - Initializing...')
+    print('[INFO]\t - Initializing...')
 
     start = time.time()
     from_warm_start = False
@@ -317,9 +317,9 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     convergence = False
     for iter in range(1, admm_parameters.num_max_iters + 1):
 
-        print(f'[INFO] ADMM Iteration {iter}')
-        log_debug(f"Memory before iteration {iter}", debug_flag)
-        print_memory_usage(f"ADMM Iteration {iter} Start")
+        print(f'[INFO] \t - ADMM Iteration {iter}')
+        log_debug(f"\t\t - Memory before iteration {iter}", debug_flag)
+        print_memory_usage(f"\t\t - ADMM Iteration {iter} Start")
 
         iter_start = time.time()
 
@@ -389,7 +389,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         # --------------------------------------------------------------------------------------------------------------
 
         if convergence:
-            print(f"[INFO] ADMM converged in {iter} iteration(s).")
+            print(f"[INFO] \t - ADMM converged in {iter} iteration(s).")
             break
 
         iter_end = time.time()
@@ -397,11 +397,11 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
 
         from_warm_start = True
         gc.collect()
-        log_debug(f"Memory after iteration {iter}", debug_flag)
-        print_memory_usage(f"ADMM Iteration {iter} End")
+        log_debug(f"\t\t - Memory after iteration {iter}", debug_flag)
+        print_memory_usage(f"\t\t - ADMM Iteration {iter} End")
 
     if not convergence:
-        print(f'[WARNING] ADMM did NOT converge in {admm_parameters.num_max_iters} iterations!')
+        print(f'[WARNING] \t - ADMM did NOT converge in {admm_parameters.num_max_iters} iterations!')
 
     end = time.time()
     total_execution_time = end - start
@@ -580,7 +580,7 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
 
     for node_id in distribution_networks:
 
-        print(f'[INFO] \t\t\t - Distribution Network node {node_id}...')
+        print(f'[INFO] \t\t - Distribution Network node {node_id}...')
 
         distribution_network = distribution_networks[node_id]
 
@@ -1178,6 +1178,7 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
             if not res[year][day]:
                 print(f'[ERROR] Network {model[year][day].name} did not converge!')
                 # exit(ERROR_NETWORK_OPTIMIZATION)
+    return res
     return res
 
 
