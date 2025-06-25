@@ -629,7 +629,7 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                 dso_model[year][day].objective.expr = obj
 
         # Run SMOPF
-        results[node_id] = distribution_network.optimize(dso_model)
+        results[node_id] = distribution_network.optimize(dso_model, parallel_execution=True)
 
         # Get initial interface and shared ESS values
         for year in distribution_network.years:
