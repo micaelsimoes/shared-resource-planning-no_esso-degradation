@@ -331,7 +331,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         #     consensus_vars['ess'], dual_vars['ess']['dso'],
         #     admm_parameters, from_warm_start=from_warm_start
         # )
-        results['dso'] = update_distribution_coordination_models_and_solve_parallel(
+        results['dso'] = update_distribution_coordination_models_and_solve(
             distribution_networks, dso_models,
             consensus_vars['v_sqr'], dual_vars['v_sqr']['dso'],
             consensus_vars['pf'], dual_vars['pf']['dso'],

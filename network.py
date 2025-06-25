@@ -48,7 +48,7 @@ class Network:
         return self.year, self.day, _build_model_new_version(self, params)
 
     def run_smopf(self, model, params, from_warm_start=False):
-        return _run_smopf(self, model, params, from_warm_start=from_warm_start)
+        return self.year, self.day, _run_smopf(self, model, params, from_warm_start=from_warm_start)
 
     def get_primal_value(self, model):
         return pe.value(model.objective)
