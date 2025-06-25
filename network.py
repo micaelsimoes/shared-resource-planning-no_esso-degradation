@@ -47,10 +47,7 @@ class Network:
         _pre_process_network(self)
         return _build_model_new_version(self, params)
 
-    def run_smopf(self, model, params, from_warm_start=False, parallel_execution=False):
-        print(f'[INFO] \t\t\t\t - Network {self.name}, {self.year}, {self.day}...')
-        if parallel_execution:
-            return self.year, self.day, _run_smopf(self, model, params, from_warm_start=from_warm_start)
+    def run_smopf(self, model, params, from_warm_start=False):
         return _run_smopf(self, model, params, from_warm_start=from_warm_start)
 
     def get_primal_value(self, model):

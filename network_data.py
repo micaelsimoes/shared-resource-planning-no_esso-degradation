@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-from concurrent.futures import ProcessPoolExecutor, as_completed
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 from sklearn.preprocessing import MinMaxScaler
@@ -46,26 +45,14 @@ class NetworkData:
                 network_models[year][day] = self.network[year][day].build_model(self.params)
         return network_models
 
-    def optimize(self, model, from_warm_start=False, parallel_execution=False):
+    def optimize(self, model, from_warm_start=False):
         print(f'[INFO] \t\t\t - Running SMOPF, Network {self.name}...')
         results = dict()
-        if parallel_execution:
-            max_workers = os.cpu_count() // 2
-            tasks = []
-            for year in self.years:
-                results[year] = dict()
-                for day in self.days:
-                    with ProcessPoolExecutor(max_workers=max_workers) as executor:
-                        tasks.append(executor.submit(self.network[year][day].run_smopf, model[year][day], self.params, from_warm_start=from_warm_start, parallel_execution=parallel_execution))
-            for future in as_completed(tasks):
-                year, day, result = future.result()
-                results[year][day] = result
-        else:
-            for year in self.years:
-                results[year] = dict()
-                for day in self.days:
-                    print(f'[INFO] \t\t\t\t - Year {year}, Day {day}...')
-                    results[year][day] = self.network[year][day].run_smopf(model[year][day], self.params, from_warm_start=from_warm_start, parallel_execution=parallel_execution)
+        for year in self.years:
+            results[year] = dict()
+            for day in self.days:
+                print(f'[INFO] \t\t\t\t - Year {year}, Day {day}...')
+                results[year][day] = self.network[year][day].run_smopf(model[year][day], self.params, from_warm_start=from_warm_start, parallel_execution=parallel_execution)
         return results
 
     def get_primal_value(self, model):
