@@ -697,36 +697,42 @@ def create_distribution_network_model(node_id, distribution_network, candidate_s
     dso_model = distribution_network.build_model()
     distribution_network.update_model_with_candidate_solution(dso_model, candidate_solution)
 
-    s_base = distribution_network.baseMVA
-    ref_node_id = distribution_network.get_reference_node_id()
-    shared_ess_idx = distribution_network.get_shared_energy_storage_idx(ref_node_id)
-    v_min, v_max = distribution_network.get_node_voltage_limits(ref_node_id)
+    for year in distribution_network.years:
+        for day in distribution_network.days:
 
-    # Add interface expected variables, and definition
-    dso_model.expected_interface_vmag_sqr = pe.Var(dso_model.periods, domain=pe.NonNegativeReals, initialize=1.00, bounds=(v_min ** 2, v_max ** 2))
-    dso_model.expected_interface_pf_p = pe.Var(dso_model.periods, domain=pe.Reals, initialize=0.00)
-    dso_model.expected_interface_pf_q = pe.Var(dso_model.periods, domain=pe.Reals, initialize=0.00)
-    dso_model.expected_shared_ess_p = pe.Var(dso_model.periods, domain=pe.Reals, initialize=0.00)
-    dso_model.expected_shared_ess_q = pe.Var(dso_model.periods, domain=pe.Reals, initialize=0.00)
+            dist_network_year_day = distribution_network.network[year][day]
+            dso_model_year_day = dso_model[year][day]
 
-    dso_model.interface_expected_values_vmag_sqr = pe.Constraint(dso_model.periods, rule=partial(dn_interface_expected_vmag_sqr_rule, network=distribution_network))
-    dso_model.interface_expected_values_pf_p = pe.Constraint(dso_model.periods, rule=partial(dn_interface_expected_pf_p_rule, network=distribution_network))
-    dso_model.interface_expected_values_pf_q = pe.Constraint(dso_model.periods, rule=partial(dn_interface_expected_pf_q_rule, network=distribution_network))
-    dso_model.interface_expected_values_sess_p = pe.Constraint(dso_model.periods, rule=partial(dn_interface_expected_sess_p_rule, network=distribution_network, shared_ess_idx=shared_ess_idx))
-    dso_model.interface_expected_values_sess_q = pe.Constraint(dso_model.periods, rule=partial(dn_interface_expected_sess_q_rule, network=distribution_network, shared_ess_idx=shared_ess_idx))
+            s_base = dist_network_year_day.baseMVA
+            ref_node_id = dist_network_year_day.get_reference_node_id()
+            shared_ess_idx = dist_network_year_day.get_shared_energy_storage_idx(ref_node_id)
+            v_min, v_max = dist_network_year_day.get_node_voltage_limits(ref_node_id)
 
-    # Regularization -- Added to OF to minimize deviations from scenarios to expected values
-    obj = copy(dso_model.objective.expr)
-    dso_model.penalty_regularization = pe.Param(initialize=PENALTY_REGULARIZATION)
-    for s_m in dso_model.scenarios_market:
-        for s_o in dso_model.scenarios_operation:
-            for p in dso_model.periods:
-                obj += dso_model.penalty_regularization * (dso_model.vmag_sqr_adn[s_m, s_o, p] - dso_model.expected_interface_vmag_sqr[p]) ** 2
-                obj += dso_model.penalty_regularization * s_base * (dso_model.pg_adn[s_m, s_o, p] - dso_model.expected_interface_pf_p[ p]) ** 2
-                obj += dso_model.penalty_regularization * s_base * (dso_model.qg_adn[s_m, s_o, p] - dso_model.expected_interface_pf_q[p]) ** 2
-                obj += dso_model.penalty_regularization * s_base * (dso_model.shared_es_pnet[shared_ess_idx, s_m, s_o, p] - dso_model.expected_shared_ess_p[p]) ** 2
-                obj += dso_model.penalty_regularization * s_base * (dso_model.shared_es_qnet[shared_ess_idx, s_m, s_o, p] - dso_model.expected_shared_ess_q[p]) ** 2
-    dso_model.objective.expr = obj
+            # Add interface expected variables, and definition
+            dso_model_year_day.expected_interface_vmag_sqr = pe.Var(dso_model_year_day.periods, domain=pe.NonNegativeReals, initialize=1.00, bounds=(v_min ** 2, v_max ** 2))
+            dso_model_year_day.expected_interface_pf_p = pe.Var(dso_model_year_day.periods, domain=pe.Reals, initialize=0.00)
+            dso_model_year_day.expected_interface_pf_q = pe.Var(dso_model_year_day.periods, domain=pe.Reals, initialize=0.00)
+            dso_model_year_day.expected_shared_ess_p = pe.Var(dso_model_year_day.periods, domain=pe.Reals, initialize=0.00)
+            dso_model_year_day.expected_shared_ess_q = pe.Var(dso_model_year_day.periods, domain=pe.Reals, initialize=0.00)
+
+            dso_model_year_day.interface_expected_values_vmag_sqr = pe.Constraint(dso_model_year_day.periods, rule=partial(dn_interface_expected_vmag_sqr_rule, network=dist_network_year_day))
+            dso_model_year_day.interface_expected_values_pf_p = pe.Constraint(dso_model_year_day.periods, rule=partial(dn_interface_expected_pf_p_rule, network=dist_network_year_day))
+            dso_model_year_day.interface_expected_values_pf_q = pe.Constraint(dso_model_year_day.periods, rule=partial(dn_interface_expected_pf_q_rule, network=dist_network_year_day))
+            dso_model_year_day.interface_expected_values_sess_p = pe.Constraint(dso_model_year_day.periods, rule=partial(dn_interface_expected_sess_p_rule, network=dist_network_year_day, shared_ess_idx=shared_ess_idx))
+            dso_model_year_day.interface_expected_values_sess_q = pe.Constraint(dso_model_year_day.periods, rule=partial(dn_interface_expected_sess_q_rule, network=dist_network_year_day, shared_ess_idx=shared_ess_idx))
+
+            # Regularization -- Added to OF to minimize deviations from scenarios to expected values
+            obj = copy(dso_model_year_day.objective.expr)
+            dso_model_year_day.penalty_regularization = pe.Param(initialize=PENALTY_REGULARIZATION)
+            for s_m in dso_model_year_day.scenarios_market:
+                for s_o in dso_model_year_day.scenarios_operation:
+                    for p in dso_model_year_day.periods:
+                        obj += dso_model_year_day.penalty_regularization * (dso_model_year_day.vmag_sqr_adn[s_m, s_o, p] - dso_model_year_day.expected_interface_vmag_sqr[p]) ** 2
+                        obj += dso_model_year_day.penalty_regularization * s_base * (dso_model_year_day.pg_adn[s_m, s_o, p] - dso_model_year_day.expected_interface_pf_p[ p]) ** 2
+                        obj += dso_model_year_day.penalty_regularization * s_base * (dso_model_year_day.qg_adn[s_m, s_o, p] - dso_model_year_day.expected_interface_pf_q[p]) ** 2
+                        obj += dso_model_year_day.penalty_regularization * s_base * (dso_model_year_day.shared_es_pnet[shared_ess_idx, s_m, s_o, p] - dso_model_year_day.expected_shared_ess_p[p]) ** 2
+                        obj += dso_model_year_day.penalty_regularization * s_base * (dso_model_year_day.shared_es_qnet[shared_ess_idx, s_m, s_o, p] - dso_model_year_day.expected_shared_ess_q[p]) ** 2
+            dso_model_year_day.objective.expr = obj
 
     # Solve
     result = distribution_network.optimize(dso_model)
