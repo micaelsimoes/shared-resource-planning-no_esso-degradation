@@ -2274,7 +2274,11 @@ def _process_results(network, model, params, results=dict()):
     processed_results['load_curt'] = _compute_load_curtailment(network, model, params)
     processed_results['flex_used'] = _compute_flexibility_used(network, model, params)
     if results:
-        processed_results['runtime'] = float(_get_info_from_results(results, 'Time:').strip())
+        runtime_str = _get_info_from_results(results, 'Time:').strip()
+        if is_number(runtime_str):
+            processed_results['runtime'] = float(runtime_str)
+        else:
+            processed_results['runtime'] = [0.00]
     else:
         processed_results['runtime'] = [0.00]
 

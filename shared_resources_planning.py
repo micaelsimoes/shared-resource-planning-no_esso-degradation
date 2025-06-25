@@ -1319,7 +1319,7 @@ def update_distribution_coordination_models_and_solve_parallel(distribution_netw
     res = dict()
 
     tasks = []
-    max_workers = min(2, os.cpu_count() // 2)
+    max_workers = min(os.cpu_count() // 3, len(distribution_networks))
     with ProcessPoolExecutor(max_workers=max_workers) as executor:
         for node_id in distribution_networks:
             tasks.append(executor.submit(update_distribution_coordination_model_and_solve, node_id, distribution_networks[node_id], models[node_id],
