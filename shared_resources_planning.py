@@ -1262,7 +1262,8 @@ def update_distribution_coordination_models_and_solve_parallel(distribution_netw
     res = dict()
 
     tasks = []
-    with ProcessPoolExecutor() as executor:
+    max_workers = os.cpu_count() // 2
+    with ProcessPoolExecutor(max_workers=max_workers) as executor:
         for node_id in distribution_networks:
             tasks.append(executor.submit(update_and_solve_dso, node_id, distribution_networks[node_id], models[node_id],
                                          vsqr_req, dual_vsqr, pf_req, dual_pf, ess_req, dual_ess,
