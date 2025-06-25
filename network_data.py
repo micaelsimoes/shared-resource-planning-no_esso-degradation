@@ -56,7 +56,7 @@ class NetworkData:
                 results[year] = dict()
                 for day in self.days:
                     with ProcessPoolExecutor(max_workers=max_workers) as executor:
-                        tasks.append(executor.submit(self.network[year][day].run_smopf, self.params, from_warm_start=from_warm_start, parallel_execution=parallel_execution))
+                        tasks.append(executor.submit(self.network[year][day].run_smopf, model[year][day], self.params, from_warm_start=from_warm_start, parallel_execution=parallel_execution))
             for future in as_completed(tasks):
                 year, day, result = future.result()
                 results[year][day] = result
