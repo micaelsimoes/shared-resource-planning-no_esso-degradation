@@ -1239,7 +1239,7 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
                         fix_or_set(model[year][day].q_ess_prev[p], ess_req['dso']['prev'][node_id][year][day]['q'][p] / s_base)
 
         # Solve!
-        res[node_id] = distribution_network.optimize(model, from_warm_start=from_warm_start)
+        res[node_id] = distribution_network.optimize(model, from_warm_start=from_warm_start, parallel_execution=True)
         for year in distribution_network.years:
             for day in distribution_network.days:
                 if not res[node_id][year][day] != po.SolverStatus.ok:
