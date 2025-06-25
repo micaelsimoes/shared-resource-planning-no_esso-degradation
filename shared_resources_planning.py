@@ -1198,8 +1198,6 @@ def update_distribution_coordination_models_and_solve_sequential(distribution_ne
         model = models[node_id]
         distribution_network = distribution_networks[node_id]
 
-        print(f'[INFO] \t\t\t - Updating active distribution network connected to node {node_id}...')
-
         for year in distribution_network.years:
             for day in distribution_network.days:
 
