@@ -1799,11 +1799,11 @@ def _run_smopf(network, model, params, from_warm_start=False):
         model.ipopt_zU_in.update(model.ipopt_zU_out)
         model.ipopt_x_init.update(model.ipopt_x_soln)
         solver.options['warm_start_init_point'] = 'yes'
-        solver.options['warm_start_bound_push'] = 1e-9
-        solver.options['warm_start_bound_frac'] = 1e-9
-        solver.options['warm_start_slack_bound_frac'] = 1e-9
-        solver.options['warm_start_slack_bound_push'] = 1e-9
-        solver.options['warm_start_mult_bound_push'] = 1e-9
+        solver.options['warm_start_bound_push'] = 1e-6
+        solver.options['warm_start_bound_frac'] = 1e-6
+        solver.options['warm_start_slack_bound_frac'] = 1e-6
+        solver.options['warm_start_slack_bound_push'] = 1e-6
+        solver.options['warm_start_mult_bound_push'] = 1e-6
 
     if params.solver_params.verbose:
         solver.options['print_level'] = 5
