@@ -1308,6 +1308,7 @@ def update_distribution_coordination_model_and_solve(node_id, distribution_netwo
             if not res[year][day] != po.SolverStatus.ok:
                 print(f'[WARNING] Network {model[year][day].name} did not converge!')
 
+    gc.collect()
     return res
 
 
@@ -1317,7 +1318,8 @@ def update_distribution_coordination_models_and_solve_parallel(distribution_netw
     res = dict()
 
     tasks = []
-    with ProcessPoolExecutor() as executor:
+    max_workers = min(4, os.cpu_count() // 2)  # or tune empirically
+    with ProcessPoolExecutor(max_workers=max_workers) as executor:
         for node_id in distribution_networks:
             tasks.append(executor.submit(update_distribution_coordination_model_and_solve, node_id, distribution_networks[node_id], models[node_id],
                                          vsqr_req, dual_vsqr, pf_req, dual_pf, ess_req, dual_ess, params, from_warm_start=from_warm_start))
