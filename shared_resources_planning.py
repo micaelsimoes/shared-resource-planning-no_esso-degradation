@@ -2,6 +2,7 @@ import gc
 import time
 from copy import copy
 from functools import partial
+from concurrent.futures import ProcessPoolExecutor, as_completed
 import numpy as np
 import pandas as pd
 from math import isclose, sqrt
@@ -45,6 +46,7 @@ class SharedResourcesPlanning:
         self.cost_energy_p = dict()
         self.cost_flex = dict()
         self.prob_market_scenarios = dict()
+        self.parallel_execution = bool()
         self.distribution_networks = dict()
         self.transmission_network = NetworkData()
         self.shared_ess_data = SharedEnergyStorageData()
@@ -328,7 +330,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
             consensus_vars['v_sqr'], dual_vars['v_sqr']['dso'],
             consensus_vars['pf'], dual_vars['pf']['dso'],
             consensus_vars['ess'], dual_vars['ess']['dso'],
-            admm_parameters, from_warm_start=from_warm_start
+            admm_parameters, from_warm_start=from_warm_start, parallel_execution=planning_problem.parallel_execution
         )
 
         # Update ADMM CONSENSUS variables, primal, and check convergence
@@ -1179,7 +1181,14 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
     return res
 
 
-def update_distribution_coordination_models_and_solve(distribution_networks, models, vsqr_req, dual_vsqr, pf_req, dual_pf, ess_req, dual_ess, params, from_warm_start=False):
+def update_distribution_coordination_models_and_solve(distribution_networks, models, vsqr_req, dual_vsqr, pf_req, dual_pf, ess_req, dual_ess, params, from_warm_start=False, parallel_execution=False):
+    if parallel_execution:
+        return update_distribution_coordination_models_and_solve_parallel(distribution_networks, models, vsqr_req, dual_vsqr, pf_req, dual_pf, ess_req, dual_ess, params, from_warm_start=from_warm_start)
+    else:
+        return update_distribution_coordination_models_and_solve_sequential(distribution_networks, models, vsqr_req, dual_vsqr, pf_req, dual_pf, ess_req, dual_ess, params, from_warm_start=from_warm_start)
+
+
+def update_distribution_coordination_models_and_solve_sequential(distribution_networks, models, vsqr_req, dual_vsqr, pf_req, dual_pf, ess_req, dual_ess, params, from_warm_start=False):
 
     print('[INFO] \t\t - Updating distribution networks:')
     res = dict()
@@ -1246,6 +1255,86 @@ def update_distribution_coordination_models_and_solve(distribution_networks, mod
                     print(f'[WARNING] Network {model[year][day].name} did not converge!')
                     #exit(ERROR_NETWORK_OPTIMIZATION)
     return res
+
+
+def update_distribution_coordination_models_and_solve_parallel(distribution_networks, models, vsqr_req, dual_vsqr, pf_req, dual_pf, ess_req, dual_ess, params, from_warm_start=False):
+
+    print('[INFO] \t\t - Updating distribution networks in parallel:')
+    res = dict()
+
+    tasks = []
+    with ProcessPoolExecutor() as executor:
+        for node_id in distribution_networks:
+            tasks.append(executor.submit(update_and_solve_dso, node_id, distribution_networks[node_id], models[node_id],
+                                         vsqr_req, dual_vsqr, pf_req, dual_pf, ess_req, dual_ess,
+                                         params, from_warm_start=from_warm_start))
+
+        for future in as_completed(tasks):
+            node_id, result = future.result()
+            res[node_id] = result
+
+    return res
+
+
+def update_and_solve_dso(node_id, distribution_network, model, vsqr_req, dual_vsqr, pf_req, dual_pf, ess_req, dual_ess, params, from_warm_start=False):
+
+    print(f'[INFO] \t\t\t - Updating active distribution network connected to node {node_id}...')
+
+    for year in distribution_network.years:
+        for day in distribution_network.days:
+
+            ref_node_id = distribution_network.network[year][day].get_reference_node_id()
+            v_base = distribution_network.network[year][day].get_node_base_kv(ref_node_id)
+            s_base = distribution_network.network[year][day].baseMVA
+
+            rho_v = params.rho['v'][distribution_network.name]
+            rho_pf = params.rho['pf'][distribution_network.name]
+            rho_ess = params.rho['ess'][distribution_network.name]
+            if params.adaptive_penalty:
+                rho_v = pe.value(model[year][day].rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+                rho_pf = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+                rho_ess = pe.value(model[year][day].rho_ess) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+            if params.previous_iter['ess']['dso']:
+                rho_ess_prev = params.rho_previous_iter['ess'][distribution_network.name]
+                if params.adaptive_penalty:
+                    rho_ess_prev = pe.value(model[year][day].rho_ess_prev) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
+
+            # Update Rho parameter
+            model[year][day].rho_v.set_value(rho_v)
+            model[year][day].rho_pf.set_value(rho_pf)
+            model[year][day].rho_ess.set_value(rho_ess)
+            if params.previous_iter['ess']['dso']:
+                model[year][day].rho_ess_prev.set_value(rho_ess_prev)
+
+            # Update VOLTAGE and POWER FLOW variables at connection point
+            for p in model[year][day].periods:
+                fix_or_set(model[year][day].dual_v_sqr_req[p], dual_vsqr['current'][node_id][year][day][p] / (v_base ** 2))
+                fix_or_set(model[year][day].v_sqr_req[p], vsqr_req['tso']['current'][node_id][year][day][p] / (v_base ** 2))
+                fix_or_set(model[year][day].dual_pf_p_req[p], dual_pf['current'][node_id][year][day]['p'][p] / s_base)
+                fix_or_set(model[year][day].dual_pf_q_req[p], dual_pf['current'][node_id][year][day]['q'][p] / s_base)
+                fix_or_set(model[year][day].p_pf_req[p], pf_req['tso']['current'][node_id][year][day]['p'][p] / s_base)
+                fix_or_set(model[year][day].q_pf_req[p], pf_req['tso']['current'][node_id][year][day]['q'][p] / s_base)
+
+            # Update SHARED ENERGY STORAGE variables (if existent)
+            for p in model[year][day].periods:
+                fix_or_set(model[year][day].dual_ess_p_req[p], dual_ess['current'][node_id][year][day]['p'][p] / s_base)
+                fix_or_set(model[year][day].dual_ess_q_req[p], dual_ess['current'][node_id][year][day]['q'][p] / s_base)
+                fix_or_set(model[year][day].p_ess_req[p], ess_req['esso']['current'][node_id][year][day]['p'][p] / s_base)
+                fix_or_set(model[year][day].q_ess_req[p], ess_req['esso']['current'][node_id][year][day]['q'][p] / s_base)
+                if params.previous_iter['ess']['dso']:
+                    fix_or_set(model[year][day].dual_ess_p_prev[p], dual_ess['prev'][node_id][year][day]['p'][p] / s_base)
+                    fix_or_set(model[year][day].dual_ess_q_prev[p], dual_ess['prev'][node_id][year][day]['q'][p] / s_base)
+                    fix_or_set(model[year][day].p_ess_prev[p], ess_req['dso']['prev'][node_id][year][day]['p'][p] / s_base)
+                    fix_or_set(model[year][day].q_ess_prev[p], ess_req['dso']['prev'][node_id][year][day]['q'][p] / s_base)
+
+    # Solve
+    res = distribution_network.optimize(model, from_warm_start=from_warm_start)
+    for year in distribution_network.years:
+        for day in distribution_network.days:
+            if not res[year][day] != po.SolverStatus.ok:
+                print(f'[WARNING] Network {model[year][day].name} did not converge!')
+
+    return (node_id, res)
 
 
 def update_shared_energy_storages_coordination_model_and_solve(planning_problem, models, ess_req, dual_ess, params, from_warm_start=False):
@@ -1853,6 +1942,7 @@ def _read_planning_problem(planning_problem):
         planning_problem.plot_market_price_scenarios()
 
     # Distribution Networks
+    planning_problem.parallel_execution = planning_data['ParallelExecution']
     for distribution_network in planning_data['DistributionNetworks']:
 
         print('[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...')
