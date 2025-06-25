@@ -318,8 +318,8 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     for iter in range(1, admm_parameters.num_max_iters + 1):
 
         print(f'[INFO] \t - ADMM Iteration {iter}')
-        log_debug(f"\t\t - Memory before iteration {iter}", debug_flag)
-        print_memory_usage(f"\t\t - ADMM Iteration {iter} Start")
+        log_debug(f"\t - Memory before iteration {iter}", debug_flag)
+        print_memory_usage(f"\t - ADMM Iteration {iter} Start")
 
         iter_start = time.time()
 
@@ -397,8 +397,8 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
 
         from_warm_start = True
         gc.collect()
-        log_debug(f"\t\t - Memory after iteration {iter}", debug_flag)
-        print_memory_usage(f"\t\t - ADMM Iteration {iter} End")
+        log_debug(f"\t - Memory after iteration {iter}", debug_flag)
+        print_memory_usage(f"\t - ADMM Iteration {iter} End")
 
     if not convergence:
         print(f'[WARNING] \t - ADMM did NOT converge in {admm_parameters.num_max_iters} iterations!')
