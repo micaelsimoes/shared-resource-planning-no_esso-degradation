@@ -1273,6 +1273,8 @@ def update_distribution_coordination_models_and_solve_parallel(distribution_netw
             node_id, result = future.result()
             res[node_id] = result
 
+    gc.collect()
+
     return res
 
 
