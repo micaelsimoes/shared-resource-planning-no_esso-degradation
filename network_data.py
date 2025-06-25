@@ -40,30 +40,20 @@ class NetworkData:
 
     def build_model(self):
         network_models = dict()
-        tasks = []
-        max_workers = os.cpu_count() // 2
-        with ProcessPoolExecutor(max_workers=max_workers) as executor:
-            for year in self.years:
-                network_models[year] = dict()
-                for day in self.days:
-                    tasks.append(executor.submit(self.network[year][day].build_model, self.params))
-        for future in as_completed(tasks):
-            year, day, model = future.result()
-            network_models[year][day] = model
+        for year in self.years:
+            network_models[year] = dict()
+            for day in self.days:
+                network_models[year][day] = self.network[year][day].build_model(self.params)
         return network_models
 
     def optimize(self, model, from_warm_start=False):
+        print(f'[INFO] \t\t\t - Running SMOPF, Network {self.name}...')
         results = dict()
-        tasks = []
-        max_workers = os.cpu_count() // 2
-        with ProcessPoolExecutor(max_workers=max_workers) as executor:
-            for year in self.years:
-                results[year] = dict()
-                for day in self.days:
-                    tasks.append(executor.submit(self.network[year][day].run_smopf, model[year][day], self.params, from_warm_start=from_warm_start))
-        for future in as_completed(tasks):
-            year, day, res = future.result()
-            results[year][day] = res
+        for year in self.years:
+            results[year] = dict()
+            for day in self.days:
+                print(f'[INFO] \t\t\t\t - Year {year}, Day {day}...')
+                results[year][day] = self.network[year][day].run_smopf(model[year][day], self.params, from_warm_start=from_warm_start)
         return results
 
     def get_primal_value(self, model):
