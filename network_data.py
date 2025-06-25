@@ -2566,7 +2566,7 @@ def _plot_load_data_scenarios(network_planning, years_to_plot, save_dir, save_fo
                 ax.yaxis.set_major_formatter(mticker.FormatStrFormatter('%.2f'))
 
             handles, labels = axs[0].get_legend_handles_labels()
-            fig.legend(handles, labels, loc='right', fontsize='small', frameon=False)
+            fig.legend(handles, labels, loc='right', fontsize='small', frameon=True)
 
             filename = os.path.join(save_dir, f"{network.name}_load_scenarios_{year}_{season}.{save_format}")
             plt.savefig(filename)
@@ -2608,10 +2608,10 @@ def _plot_res_data_scenarios(network_planning, years_to_plot, save_dir, save_for
                     axs.set_xticklabels(xtick_labels)
                     axs.set_xlim(0, 23)
                     axs.set_xlabel("Hour", loc='center', fontsize=12)
-                    axs.grid(True, axis='x', which='both')
+                    axs.grid(True, which='both')
                     axs.tick_params(axis='both', labelsize=12)
                     axs.yaxis.set_major_formatter(mticker.FormatStrFormatter('%.2f'))
-                    axs.legend(loc='best', fontsize='small', frameon=False)
+                    axs.legend(loc='best', fontsize='small', frameon=True)
 
             plt.tight_layout()
             filename = os.path.join(save_dir, f"{network.name}_RES_generation_scenarios_{year}_{season}.{save_format}")
