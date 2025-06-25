@@ -458,7 +458,7 @@ def print_debug_info(planning_problem, consensus_vars, print_vmag=False, print_p
 
 def create_transmission_network_model(planning_problem, consensus_vars, candidate_solution):
 
-    print(f'[INFO] \t\t\t - Transmission Network...')
+    print(f'[INFO] \t\t - Transmission Network...')
 
     # Build model, fix candidate solution
     transmission_network = planning_problem.transmission_network
@@ -1276,8 +1276,6 @@ def update_distribution_coordination_models_and_solve_parallel(distribution_netw
 
 
 def update_and_solve_dso(node_id, distribution_network, model, vsqr_req, dual_vsqr, pf_req, dual_pf, ess_req, dual_ess, params, from_warm_start=False):
-
-    print(f'[INFO] \t\t\t - Updating active distribution network connected to node {node_id}...')
 
     for year in distribution_network.years:
         for day in distribution_network.days:

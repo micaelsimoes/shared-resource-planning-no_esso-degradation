@@ -48,7 +48,7 @@ class Network:
         return _build_model_new_version(self, params)
 
     def run_smopf(self, model, params, from_warm_start=False):
-        print(f'[INFO] \t\t - Running SMOPF, Network {self.name}, {self.year}, {self.day}...')
+        print(f'[INFO] \t\t\t - Running SMOPF, Network {self.name}, {self.year}, {self.day}...')
         return _run_smopf(self, model, params, from_warm_start=from_warm_start)
 
     def get_primal_value(self, model):
