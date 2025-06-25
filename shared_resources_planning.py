@@ -1170,7 +1170,7 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
                         fix_or_set(model[year][day].q_ess_prev[shared_ess_idx, p], ess_req['tso']['prev'][node_id][year][day]['q'][p] / s_base)
 
     # Solve!
-    res = transmission_network.optimize(model, from_warm_start=from_warm_start)
+    res = transmission_network.optimize(model, from_warm_start=from_warm_start, parallel_execution=True)
     for year in transmission_network.years:
         for day in transmission_network.days:
             if not res[year][day]:
