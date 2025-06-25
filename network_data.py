@@ -171,7 +171,7 @@ def _read_network_base_profiles(filename):
     return base_operational_data
 
 
-def _generate_operational_scenarios(base_profiles, n_samples=100, bandwidth=0.25):
+def _generate_operational_scenarios(base_profiles, n_samples=100, bandwidth=0.10):
 
     synthetic_profiles = {
         'consumption': generate_consumption_profiles(base_profiles, n_samples=n_samples, bandwidth=bandwidth),
