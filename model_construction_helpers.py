@@ -398,7 +398,7 @@ def flex_energy_balance_rule(m, c, s_m, s_o, network, params):
         if params.slacks.flexibility.day_balance:
             return p_up == p_down + m.slack_flex_p_balance[c, s_m, s_o]
         else:
-            return pe.inequality(-EQUALITY_TOLERANCE, p_up == p_down, EQUALITY_TOLERANCE)
+            return p_up == p_down
     else:
         return pe.Constraint.Skip
 
