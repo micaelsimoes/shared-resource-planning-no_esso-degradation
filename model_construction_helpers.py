@@ -175,6 +175,18 @@ def qc_bounds(m, c, s_m, s_o, p, network):
     return (qd - EQUALITY_TOLERANCE, qd + EQUALITY_TOLERANCE)
 
 
+def pc_initialize(m, c, s_m, s_o, p, network):
+    load = network.loads[c]
+    pd = load.pd[s_o][p]
+    return pd
+
+
+def qc_initialize(m, c, s_m, s_o, p, network):
+    load = network.loads[c]
+    qd = load.qd[s_o][p]
+    return qd
+
+
 # Consumption, flexibility
 def pc_flex_up_bounds(m, c, s_m, s_o, p, network, params):
     load = network.loads[c]
