@@ -1807,6 +1807,8 @@ def _run_smopf(network, model, params, from_warm_start=False):
     if params.solver_params.solver == 'ipopt':
         solver.options['tol'] = params.solver_params.solver_tol
         solver.options['linear_solver'] = params.solver_params.linear_solver
+        solver.options['nlp_scaling_method'] = 'gradient-based'
+        solver.options['constr_viol_tol'] = 1e-4            # tolerable constraint violation
         # if from_warm_start:
         #     solver.options['nlp_scaling_method'] = 'none'
         # else:
@@ -1815,7 +1817,6 @@ def _run_smopf(network, model, params, from_warm_start=False):
         # solver.options['acceptable_iter'] = 15              # min iterations to try before declaring acceptable
         # solver.options['acceptable_tol'] = 1e-3
         # solver.options['acceptable_constr_viol_tol'] = 1e-3 # relaxation for constraint violations
-        solver.options['constr_viol_tol'] = 1e-3            # tolerable constraint violation
         # solver.options['mu_strategy'] = 'adaptive'
         # solver.options['max_iter'] = 5000
         # solver.options['bound_relax_factor'] = 1e-5
