@@ -129,9 +129,7 @@ def sg_sqr_bounds(m, g, s_m, s_o, p, network, params):
     if not gen.is_curtaillable() or not gen.status[p]:
         return (0.0, EQUALITY_TOLERANCE)
 
-    pg = gen.pg[s_o][p]
-    qg = gen.qg[s_o][p]
-    sg_sqr = pg**2 + qg**2
+    sg_sqr = gen.pmax**2 + gen.qmax**2
 
     return (0.0, sg_sqr)
 
