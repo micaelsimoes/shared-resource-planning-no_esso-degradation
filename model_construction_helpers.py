@@ -347,7 +347,7 @@ def sg_abs_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable():
         return pe.Constraint.Skip
-    return  m.sg_abs[g, s_m, s_o, p]**2 == m.sg_sqr[g, s_m, s_o, p]
+    return  pe.inequality(-EQUALITY_TOLERANCE, m.sg_abs[g, s_m, s_o, p]**2 - m.sg_sqr[g, s_m, s_o, p], EQUALITY_TOLERANCE)
 
 
 # Curtailment: sg = init_sg - sg_curt
@@ -355,7 +355,7 @@ def sg_curtailment_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable():
         return pe.Constraint.Skip
-    return m.sg_sqr[g, s_m, s_o, p] == (m.sg_init[g, s_m, s_o, p] - m.sg_curt[g, s_m, s_o, p]) ** 2
+    return pe.inequality(-EQUALITY_TOLERANCE, m.sg_sqr[g, s_m, s_o, p] - (m.sg_init[g, s_m, s_o, p] - m.sg_curt[g, s_m, s_o, p]) ** 2, EQUALITY_TOLERANCE)
 
 
 def power_factor_rule_upper(m, g, s_m, s_o, p, network):
@@ -395,7 +395,7 @@ def flex_energy_balance_rule(m, c, s_m, s_o, network, params):
         if params.slacks.flexibility.day_balance:
             return p_up == p_down + m.slack_flex_p_balance[c, s_m, s_o]
         else:
-            return p_up == p_down
+            return pe.inequality(-SMALL_TOLERANCE, p_up - p_down, SMALL_TOLERANCE)
     else:
         return pe.Constraint.Skip
 
