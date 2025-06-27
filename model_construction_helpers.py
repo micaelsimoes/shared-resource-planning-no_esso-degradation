@@ -675,7 +675,6 @@ def interface_vmag_sqr_transmission_rule(m, dn, s_m, s_o, p, network):
 def interface_pf_p_transmission_rule(m, dn, s_m, s_o, p, network, params):
     adn_node_id = network.active_distribution_network_nodes[dn]
     adn_load_idx = network.get_adn_load_idx(adn_node_id)
-
     if params.l_curt:
         fix_or_set(m.pc_curt_down[adn_load_idx, s_m, s_o, p], EQUALITY_TOLERANCE)
         fix_or_set(m.pc_curt_up[adn_load_idx, s_m, s_o, p], EQUALITY_TOLERANCE)
@@ -877,7 +876,7 @@ def node_balance_p_rule(model, i, s_m, s_o, p, network, params):
     if params.slacks.node_balance:
         return Pg == Pd + Pi + model.slack_node_balance_p[i, s_m, s_o, p]
     else:
-        return Pg == (Pd + Pi)
+        return pe.inequality(-EQUALITY_TOLERANCE, Pg - (Pd + Pi), EQUALITY_TOLERANCE)
 
 
 def node_balance_q_rule(model, i, s_m, s_o, p, network, params):
@@ -923,7 +922,7 @@ def node_balance_q_rule(model, i, s_m, s_o, p, network, params):
     if params.slacks.node_balance:
         return Qg == Qd + Qi + model.slack_node_balance_q[i, s_m, s_o, p]
     else:
-        return Qg == (Qd + Qi)
+        return pe.inequality(-EQUALITY_TOLERANCE, Qg - (Qd + Qi), EQUALITY_TOLERANCE)
 
 
 def branch_flow_equation_rule(model, b, s_m, s_o, p, network, params):
