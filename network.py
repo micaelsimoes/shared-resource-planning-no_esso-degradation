@@ -1807,7 +1807,10 @@ def _run_smopf(network, model, params, from_warm_start=False):
     if params.solver_params.solver == 'ipopt':
         solver.options['tol'] = params.solver_params.solver_tol
         solver.options['linear_solver'] = params.solver_params.linear_solver
-        solver.options['nlp_scaling_method '] = 'gradient-based'
+        if from_warm_start:
+            solver.options['nlp_scaling_method '] = 'none'
+        else:
+            solver.options['nlp_scaling_method '] = 'gradient-based'
         solver.options['mu_strategy'] = 'adaptive'
         solver.options['max_iter'] = 5000
         solver.options['bound_relax_factor'] = 1e-8

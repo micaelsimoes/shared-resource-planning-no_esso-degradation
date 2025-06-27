@@ -7,6 +7,7 @@ from copulas.multivariate import GaussianMultivariate
 from math import isclose
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill
+from model_construction_helpers import *
 from network import Network
 from network_parameters import NetworkParameters
 from helper_functions import *
@@ -45,12 +46,24 @@ class NetworkData:
                 network_models[year][day] = self.network[year][day].build_model(self.params)
         return network_models
 
-    def optimize(self, model, from_warm_start=False):
+    def optimize(self, model, from_warm_start=True):
         results = dict()
+        previous_solution = None  # Store previous solution if needed
         for year in self.years:
             results[year] = dict()
             for day in self.days:
+
+                # Apply warm start if flag is enabled and previous solution exists
+                if from_warm_start and previous_solution:
+                    apply_warm_start(model[year][day], *previous_solution)
+
+                # Solve the model
                 results[year][day] = self.network[year][day].run_smopf(model[year][day], self.params, from_warm_start=from_warm_start)
+
+                # Extract solution to reuse
+                if from_warm_start:
+                    previous_solution = extract_solution(model[year][day])
+
         return results
 
     def get_primal_value(self, model):

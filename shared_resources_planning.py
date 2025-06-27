@@ -548,7 +548,7 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
             tso_model[year][day].objective.expr = obj
 
     # Run SMOPF
-    results = transmission_network.optimize(tso_model)
+    results = transmission_network.optimize(tso_model, from_warm_start=True)
 
     # Get initial interface and shared ESS values
     for year in transmission_network.years:
@@ -631,7 +631,7 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                 dso_model[year][day].objective.expr = obj
 
         # Run SMOPF
-        results[node_id] = distribution_network.optimize(dso_model)
+        results[node_id] = distribution_network.optimize(dso_model, from_warm_start=True)
 
         # Get initial interface and shared ESS values
         for year in distribution_network.years:
@@ -1172,13 +1172,12 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
                         fix_or_set(model[year][day].q_ess_prev[shared_ess_idx, p], ess_req['tso']['prev'][node_id][year][day]['q'][p] / s_base)
 
     # Solve!
-    res = transmission_network.optimize(model, from_warm_start=from_warm_start)
+    res = transmission_network.optimize(model, from_warm_start=True)
     for year in transmission_network.years:
         for day in transmission_network.days:
             if not res[year][day]:
                 print(f'[ERROR] Network {model[year][day].name} did not converge!')
                 # exit(ERROR_NETWORK_OPTIMIZATION)
-    return res
     return res
 
 
@@ -1247,7 +1246,7 @@ def update_distribution_coordination_models_and_solve_sequential(distribution_ne
                         fix_or_set(model[year][day].q_ess_prev[p], ess_req['dso']['prev'][node_id][year][day]['q'][p] / s_base)
 
         # Solve!
-        res[node_id] = distribution_network.optimize(model, from_warm_start=from_warm_start)
+        res[node_id] = distribution_network.optimize(model, from_warm_start=True)
         for year in distribution_network.years:
             for day in distribution_network.days:
                 if not res[node_id][year][day] != po.SolverStatus.ok:
@@ -1328,7 +1327,7 @@ def update_and_solve_dso(node_id, distribution_network, model, vsqr_req, dual_vs
                     fix_or_set(model[year][day].q_ess_prev[p], ess_req['dso']['prev'][node_id][year][day]['q'][p] / s_base)
 
     # Solve
-    res = distribution_network.optimize(model, from_warm_start=from_warm_start)
+    res = distribution_network.optimize(model, from_warm_start=True)
     for year in distribution_network.years:
         for day in distribution_network.days:
             if not res[year][day] != po.SolverStatus.ok:
@@ -1778,7 +1777,7 @@ def _run_operational_planning_without_coordination(planning_problem):
                             obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].qg_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_pf_q[p]) ** 2
                 dso_model[year][day].objective.expr = obj
 
-        results['dso'][node_id] = distribution_network.optimize(dso_model)
+        results['dso'][node_id] = distribution_network.optimize(dso_model, from_warm_start=True)
 
         # Get initial interface PF values
         for year in distribution_network.years:
@@ -1896,7 +1895,7 @@ def _run_operational_planning_without_coordination(planning_problem):
                     fix_or_set(tso_model[year][day].expected_interface_pf_p[dn, p], p_req)
                     fix_or_set(tso_model[year][day].expected_interface_pf_q[dn, p], q_req)
 
-    results['tso'] = transmission_network.optimize(tso_model)
+    results['tso'] = transmission_network.optimize(tso_model, from_warm_start=True)
 
     end = time.time()
     total_execution_time = end - start
