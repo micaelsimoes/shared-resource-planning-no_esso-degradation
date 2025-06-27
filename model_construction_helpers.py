@@ -342,7 +342,7 @@ def voltage_magnitude_cons_rule(m, i, s_m, s_o, p, network, params):
     vmag_sq = m.vmag_sqr[i, s_m, s_o, p]
     if node.type == BUS_PV and params.enforce_vg:
         vg = network.generators[network.get_gen_idx(node.bus_i)].vg[p]
-        return pe.inequality(-EQUALITY_TOLERANCE, vmag_sq - vg ** 2, EQUALITY_TOLERANCE)
+        return vmag_sq == vg ** 2
     else:
         return pe.inequality(node.v_min ** 2, vmag_sq, node.v_max ** 2)
 
@@ -408,7 +408,7 @@ def flex_energy_balance_rule(m, c, s_m, s_o, network, params):
         if params.slacks.flexibility.day_balance:
             return p_up == p_down + m.slack_flex_p_balance[c, s_m, s_o]
         else:
-            return pe.inequality(-SMALL_TOLERANCE, p_up - p_down, SMALL_TOLERANCE)
+            return p_up == p_down
     else:
         return pe.Constraint.Skip
 
@@ -472,7 +472,7 @@ def ess_soc_final_rule(m, e, s_m, s_o, network, params):
     if params.slacks.ess.day_balance:
         return m.es_soc[e, s_m, s_o, final_p] == final_soc + m.slack_es_soc_final[e, s_m, s_o]
     else:
-        return pe.inequality(-SMALL_TOLERANCE, m.es_soc[e, s_m, s_o, final_p] - final_soc, SMALL_TOLERANCE)
+        return m.es_soc[e, s_m, s_o, final_p] == final_soc
 
 
 # - Linear ESS models -- Relaxed LP formulation
@@ -613,7 +613,7 @@ def sess_soc_final_rule(m, e, s_m, s_o, network, params):
     if params.slacks.ess.day_balance:
         return m.shared_es_soc[e, s_m, s_o, final_p] == final_soc + m.slack_shared_es_soc_final[e, s_m, s_o]
     else:
-        return pe.inequality(-SMALL_TOLERANCE, m.shared_es_soc[e, s_m, s_o, final_p] - final_soc, SMALL_TOLERANCE)
+        return m.shared_es_soc[e, s_m, s_o, final_p] == final_soc
 
 
 def sess_pnet_rule(m, e, s_m, s_o, p):
