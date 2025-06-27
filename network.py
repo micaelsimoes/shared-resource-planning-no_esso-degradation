@@ -1825,7 +1825,7 @@ def _run_smopf(network, model, params, from_warm_start=False):
         solver.options['max_iter'] = 5000
         solver.options['bound_relax_factor'] = 1e-6
         solver.options['honor_original_bounds'] = 'no'
-        solver.options['restoration_phase'] = 'yes'
+        # solver.options['restoration_phase'] = 'yes'
 
     try:
         result = solver.solve(model, tee=params.solver_params.verbose)
