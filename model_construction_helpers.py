@@ -345,20 +345,12 @@ def sg_sqr_rule(m, g, s_m, s_o, p, network, params):
     return m.sg_sqr[g, s_m, s_o, p] == (m.pg[g, s_m, s_o, p]**2 + m.qg[g, s_m, s_o, p]**2)
 
 
-# sg_abs² ≈ sg_sqr
-def sg_abs_rule(m, g, s_m, s_o, p, network, params):
-    generator = network.generators[g]
-    if not generator.is_curtaillable():
-        return pe.Constraint.Skip
-    return  m.sg_abs[g, s_m, s_o, p]**2 == m.sg_sqr[g, s_m, s_o, p]
-
-
-# Curtailment: sg_abs = init_sg - sg_curt
+# Curtailment: sg = init_sg - sg_curt
 def sg_curtailment_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable():
         return pe.Constraint.Skip
-    return m.sg_abs[g, s_m, s_o, p] == (m.sg_init[g, s_m, s_o, p] - m.sg_curt[g, s_m, s_o, p])
+    return m.sg_sqr[g, s_m, s_o, p] == (m.sg_init[g, s_m, s_o, p] - m.sg_curt[g, s_m, s_o, p]) ** 2
 
 
 def power_factor_rule_upper(m, g, s_m, s_o, p, network):
@@ -943,14 +935,22 @@ def branch_flow_limit_rule(model, b, s_m, s_o, p, network, params):
     if not branch.status:
         return pe.Constraint.Skip
 
+    fnode_idx = network.get_node_idx(branch.fbus)
+    tnode_idx = network.get_node_idx(branch.tbus)
     rating = branch.rate / network.baseMVA or BRANCH_UNKNOWN_RATING
-    flow_var = model.flow_ij_sqr[b, s_m, s_o, p]
+
+    rij = model.r[b, s_m, s_o, p] if branch.is_transformer else 1.0
+    ei = model.e_actual[fnode_idx, s_m, s_o, p]
+    fi = model.f_actual[fnode_idx, s_m, s_o, p]
+    ej = model.e_actual[tnode_idx, s_m, s_o, p]
+    fj = model.f_actual[tnode_idx, s_m, s_o, p]
+
+    flow_ij_sqr = compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, params.branch_limit_type)
 
     if params.slacks.grid_operation.branch_flow:
-        slack = model.slack_flow_ij_sqr[b, s_m, s_o, p]
-        return flow_var - slack <= rating ** 2
+        return flow_ij_sqr <= rating ** 2 + model.slack_flow_ij_sqr[b, s_m, s_o, p]
     else:
-        return flow_var <= rating ** 2
+        return flow_ij_sqr <= rating ** 2
 
 
 def setup_cost_parameters(model, params):
