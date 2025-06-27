@@ -2277,9 +2277,9 @@ def _process_results(network, model, params, results=dict()):
         if is_number(runtime_str):
             processed_results['runtime'] = float(runtime_str)
         else:
-            processed_results['runtime'] = [0.00]
+            processed_results['runtime'] = 0.00
     else:
-        processed_results['runtime'] = [0.00]
+        processed_results['runtime'] = 0.00
 
     processed_results['scenarios'] = dict()
     for s_m in model.scenarios_market:
