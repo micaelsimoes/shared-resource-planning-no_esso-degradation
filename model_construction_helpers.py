@@ -305,7 +305,7 @@ def voltage_rule_e(m, i, s_m, s_o, p, params):
     e_val = m.e[i, s_m, s_o, p]
     if params.slacks.grid_operation.voltage:
         e_val += m.slack_e[i, s_m, s_o, p]
-    return m.e_actual[i, s_m, s_o, p] == e_val
+    return pe.inequality(-EQUALITY_TOLERANCE, m.e_actual[i, s_m, s_o, p] - e_val, EQUALITY_TOLERANCE)
 
 
 # Voltage constraints, f
@@ -313,7 +313,7 @@ def voltage_rule_f(m, i, s_m, s_o, p, params):
     f_val = m.f[i, s_m, s_o, p]
     if params.slacks.grid_operation.voltage:
         f_val += m.slack_f[i, s_m, s_o, p]
-    return m.f_actual[i, s_m, s_o, p] == f_val
+    return pe.inequality(-EQUALITY_TOLERANCE, m.f_actual[i, s_m, s_o, p] - f_val, EQUALITY_TOLERANCE)
 
 
 # Voltage constraints, magnitude
@@ -321,7 +321,7 @@ def voltage_magnitude_def_rule(m, i, s_m, s_o, p):
     e = m.e[i, s_m, s_o, p]
     f = m.f[i, s_m, s_o, p]
     vmag_sq = e ** 2 + f ** 2
-    return m.vmag_sqr[i, s_m, s_o, p] == vmag_sq
+    return pe.inequality(-EQUALITY_TOLERANCE, m.vmag_sqr[i, s_m, s_o, p] - vmag_sq, EQUALITY_TOLERANCE)
 
 
 # Voltage constraints, magnitude
@@ -330,12 +330,12 @@ def voltage_magnitude_cons_rule(m, i, s_m, s_o, p, network, params):
     vmag_sq = m.vmag_sqr[i, s_m, s_o, p]
     if node.type == BUS_PV and params.enforce_vg:
         vg = network.generators[network.get_gen_idx(node.bus_i)].vg[p]
-        return vmag_sq == vg ** 2
+        return pe.inequality(-SMALL_TOLERANCE, vmag_sq - vg ** 2, SMALL_TOLERANCE)
     else:
         return pe.inequality(node.v_min ** 2, vmag_sq, node.v_max ** 2)
 
+
 # Generation, Sg^2
-# Apparent power ≈ pg² + qg²
 def sg_sqr_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable():
@@ -343,7 +343,6 @@ def sg_sqr_rule(m, g, s_m, s_o, p, network, params):
     return m.sg_sqr[g, s_m, s_o, p] == (m.pg[g, s_m, s_o, p]**2 + m.qg[g, s_m, s_o, p]**2)
 
 
-# sg_abs² ≈ sg_sqr
 def sg_abs_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable():
