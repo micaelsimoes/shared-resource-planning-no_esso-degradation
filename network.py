@@ -1816,8 +1816,8 @@ def _run_smopf(network, model, params, from_warm_start=False):
             solver.options['acceptable_tol'] = 1e-4             # or even 1e-3 or 1e-2 depending on your accuracy needs
             solver.options['acceptable_iter'] = 15              # min iterations to try before declaring acceptable
             solver.options['acceptable_constr_viol_tol'] = 1e-4 # relaxation for constraint violations
-            solver.options['constr_viol_tol'] = 1e-4            # tolerable constraint violation
 
+        solver.options['constr_viol_tol'] = 1e-4            # tolerable constraint violation
         solver.options['mu_strategy'] = 'adaptive'
         solver.options['mu_init'] = 1e-2  # initial barrier term
         solver.options['mu_oracle'] = 'quality-function'
