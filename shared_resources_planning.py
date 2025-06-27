@@ -1744,7 +1744,6 @@ def _run_operational_planning_without_coordination(planning_problem):
             for day in distribution_network.days:
 
                 s_base = distribution_network.network[year][day].baseMVA
-                ref_node_id = distribution_network.network[year][day].get_reference_node_id()
 
                 # Add interface expected variables
                 dso_model[year][day].expected_interface_vmag_sqr = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00)
