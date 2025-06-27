@@ -285,7 +285,7 @@ def slack_es_comp_bounds(m, e, s_m, s_o, p, network):
     return (0.0, network.energy_storages[e].s * 0.05)
 
 
-def slack_es_balance_bounds(m, e, s_m, s_o, p, network):
+def slack_es_balance_bounds(m, e, s_m, s_o, network):
     return (-network.energy_storages[e].e * 0.01, network.energy_storages[e].e * 0.01)
 
 
