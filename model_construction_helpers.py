@@ -943,7 +943,7 @@ def branch_flow_equation_rule(model, b, s_m, s_o, p, network, params):
 
     flow_ij_sqr_expr = compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, params.branch_limit_type)
 
-    return model.flow_ij_sqr[b, s_m, s_o, p] == flow_ij_sqr_expr
+    return pe.inequality(-EQUALITY_TOLERANCE, model.flow_ij_sqr[b, s_m, s_o, p] == flow_ij_sqr_expr, EQUALITY_TOLERANCE)
 
 
 def branch_flow_limit_rule(model, b, s_m, s_o, p, network, params):
