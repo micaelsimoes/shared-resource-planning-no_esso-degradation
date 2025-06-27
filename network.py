@@ -1810,7 +1810,6 @@ def _run_smopf(network, model, params, from_warm_start=False):
         solver.options['nlp_scaling_method'] = 'gradient-based'
         solver.options['constr_viol_tol'] = params.solver_params.solver_tol * 1e2
         solver.options['mu_strategy'] = 'adaptive'
-
         solver.options['acceptable_iter'] = 15
         solver.options['acceptable_tol'] = params.solver_params.solver_tol * 1e2
         solver.options['acceptable_constr_viol_tol'] = params.solver_params.solver_tol * 1e2
