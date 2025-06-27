@@ -1812,20 +1812,13 @@ def _run_smopf(network, model, params, from_warm_start=False):
         else:
             solver.options['nlp_scaling_method'] = 'gradient-based'
 
-        if params.obj_type == OBJ_CONGESTION_MANAGEMENT:
-            solver.options['acceptable_tol'] = 1e-3             # or even 1e-3 or 1e-2 depending on your accuracy needs
-            solver.options['acceptable_iter'] = 15              # min iterations to try before declaring acceptable
-            solver.options['acceptable_constr_viol_tol'] = 1e-3 # relaxation for constraint violations
-            solver.options['max_soc'] = 10                      # prevents slow/stuck restoration
-
+        solver.options['acceptable_iter'] = 15              # min iterations to try before declaring acceptable
+        solver.options['acceptable_tol'] = 1e-3             # or even 1e-3 or 1e-2 depending on your accuracy needs
+        solver.options['acceptable_constr_viol_tol'] = 1e-3 # relaxation for constraint violations
         solver.options['constr_viol_tol'] = 1e-4            # tolerable constraint violation
         solver.options['mu_strategy'] = 'adaptive'
-        solver.options['mu_init'] = 1e-2  # initial barrier term
-        solver.options['mu_oracle'] = 'quality-function'
         solver.options['max_iter'] = 5000
-        solver.options['bound_relax_factor'] = 1e-5
-        solver.options['honor_original_bounds'] = 'no'
-        # solver.options['restoration_phase'] = 'yes'
+        solver.options['bound_relax_factor'] = 1e-4
 
     try:
         result = solver.solve(model, tee=params.solver_params.verbose)
