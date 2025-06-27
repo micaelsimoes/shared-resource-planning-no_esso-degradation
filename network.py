@@ -1823,7 +1823,7 @@ def _run_smopf(network, model, params, from_warm_start=False):
         solver.options['mu_init'] = 1e-2  # initial barrier term
         solver.options['mu_oracle'] = 'quality-function'
         solver.options['max_iter'] = 5000
-        solver.options['bound_relax_factor'] = 1e-6
+        solver.options['bound_relax_factor'] = 1e-5
         solver.options['honor_original_bounds'] = 'no'
         # solver.options['restoration_phase'] = 'yes'
 
