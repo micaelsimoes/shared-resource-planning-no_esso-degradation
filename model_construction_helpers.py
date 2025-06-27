@@ -1096,17 +1096,17 @@ def flexibility_penalty(model, network, s_m, s_o, params):
 def ess_utilization_cost_penalty(model, network, s_m, s_o, params):
     cost = sum(
         model.penalty_ess_usage * network.baseMVA * (
-            model.es_sch[e, s_m, s_o, p] + model.es_sdch[e, s_m, s_o, p]
+                model.shared_es_sch[e, s_m, s_o, p] + model.shared_es_sdch[e, s_m, s_o, p]
         )
-        for e in model.energy_storages
+        for e in model.shared_energy_storages
         for p in model.periods
     )
     if params.es_reg:
         cost += sum(
             model.penalty_ess_usage * network.baseMVA * (
-                model.shared_es_sch[e, s_m, s_o, p] + model.shared_es_sdch[e, s_m, s_o, p]
+                    model.es_sch[e, s_m, s_o, p] + model.es_sdch[e, s_m, s_o, p]
             )
-            for e in model.shared_energy_storages
+            for e in model.energy_storages
             for p in model.periods
         )
     return cost
