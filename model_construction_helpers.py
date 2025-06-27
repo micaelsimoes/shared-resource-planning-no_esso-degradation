@@ -173,18 +173,6 @@ def qc_bounds(m, c, s_m, s_o, p, network):
     return (qd - EQUALITY_TOLERANCE, qd + EQUALITY_TOLERANCE)
 
 
-def pc_initialize(m, c, s_m, s_o, p, network):
-    load = network.loads[c]
-    pd = load.pd[s_o][p]
-    return pd
-
-
-def qc_initialize(m, c, s_m, s_o, p, network):
-    load = network.loads[c]
-    qd = load.qd[s_o][p]
-    return qd
-
-
 # Consumption, flexibility
 def pc_flex_up_bounds(m, c, s_m, s_o, p, network, params):
     load = network.loads[c]
@@ -1278,46 +1266,3 @@ def tn_interface_expected_sess_q_rule(m, e, p, network):
         for s_o in m.scenarios_operation
     )
     return m.expected_shared_ess_q[e, p] == expected_ess_q
-
-
-def extract_solution(model):
-    primal_values = {}
-    duals = {}
-    zL = {}
-    zU = {}
-
-    for var in model.component_objects(pe.Var, active=True):
-        for idx in var:
-            primal_values[str(var[idx].name)] = pe.value(var[idx])
-            if var[idx] in model.ipopt_zL_out:
-                zL[str(var[idx].name)] = model.ipopt_zL_out[var[idx]]
-            if var[idx] in model.ipopt_zU_out:
-                zU[str(var[idx].name)] = model.ipopt_zU_out[var[idx]]
-
-    for con in model.component_objects(pe.Constraint, active=True):
-            for idx in con:
-                if idx in model.dual:
-                    duals[str(con[idx].name)] = model.dual[con[idx]]
-
-    return primal_values, duals, zL, zU
-
-
-def apply_warm_start(model, primal_values, duals=None, zL=None, zU=None):
-
-    for var in model.component_objects(pe.Var, active=True):
-        for idx in var:
-            key = str(var[idx].name)
-            if key in primal_values:
-                var[idx].set_value(primal_values[key])
-            if zL and key in zL:
-                model.ipopt_zL_in[var[idx]] = zL[key]
-            if zU and key in zU:
-                model.ipopt_zU_in[var[idx]] = zU[key]
-
-    if duals and hasattr(model, 'dual'):
-        for con in model.component_objects(pe.Constraint, active=True):
-            for idx in con:
-                key = str(con[idx].name)
-                if key in duals:
-                    model.dual[con[idx]] = duals[key]
-
