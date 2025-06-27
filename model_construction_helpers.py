@@ -305,7 +305,7 @@ def voltage_rule_e(m, i, s_m, s_o, p, params):
     e_val = m.e[i, s_m, s_o, p]
     if params.slacks.grid_operation.voltage:
         e_val += m.slack_e[i, s_m, s_o, p]
-    return pe.inequality(-EQUALITY_TOLERANCE, m.e_actual[i, s_m, s_o, p] - e_val, EQUALITY_TOLERANCE)
+    return m.e_actual[i, s_m, s_o, p] == e_val
 
 
 # Voltage constraints, f
@@ -313,7 +313,7 @@ def voltage_rule_f(m, i, s_m, s_o, p, params):
     f_val = m.f[i, s_m, s_o, p]
     if params.slacks.grid_operation.voltage:
         f_val += m.slack_f[i, s_m, s_o, p]
-    return pe.inequality(-EQUALITY_TOLERANCE, m.f_actual[i, s_m, s_o, p] - f_val, EQUALITY_TOLERANCE)
+    return m.f_actual[i, s_m, s_o, p] == f_val
 
 
 # Voltage constraints, magnitude
@@ -321,7 +321,7 @@ def voltage_magnitude_def_rule(m, i, s_m, s_o, p):
     e = m.e[i, s_m, s_o, p]
     f = m.f[i, s_m, s_o, p]
     vmag_sq = e ** 2 + f ** 2
-    return pe.inequality(-EQUALITY_TOLERANCE, m.vmag_sqr[i, s_m, s_o, p] - vmag_sq, EQUALITY_TOLERANCE)
+    return m.vmag_sqr[i, s_m, s_o, p] == vmag_sq
 
 
 # Voltage constraints, magnitude
