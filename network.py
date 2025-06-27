@@ -2433,6 +2433,8 @@ def _process_results(network, model, params, results=dict()):
 
                 branch = network.branches[k]
                 branch_id = branch.branch_id
+                fnode_idx = network.get_node_idx(branch.fbus)
+                tnode_idx = network.get_node_idx(branch.tbus)
                 rating = branch.rate / network.baseMVA
                 if rating == 0.0:
                     rating = BRANCH_UNKNOWN_RATING
@@ -2471,7 +2473,13 @@ def _process_results(network, model, params, results=dict()):
                         processed_results['scenarios'][s_m][s_o]['branches']['ratio'][branch_id].append(r_ij)
 
                     # Branch flow (limits)
-                    flow_ij_perc = sqrt(abs(pe.value(model.flow_ij_sqr[k, s_m, s_o, p]))) / rating
+                    rij = model.r[k, s_m, s_o, p] if branch.is_transformer else 1.0
+                    ei = model.e_actual[fnode_idx, s_m, s_o, p]
+                    fi = model.f_actual[fnode_idx, s_m, s_o, p]
+                    ej = model.e_actual[tnode_idx, s_m, s_o, p]
+                    fj = model.f_actual[tnode_idx, s_m, s_o, p]
+                    flow_ij = pe.value(compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, params.branch_limit_type))
+                    flow_ij_perc = flow_ij / rating
                     processed_results['scenarios'][s_m][s_o]['branches']['branch_flow']['flow_ij_perc'][branch_id].append(flow_ij_perc)
 
             # Energy Storage devices
