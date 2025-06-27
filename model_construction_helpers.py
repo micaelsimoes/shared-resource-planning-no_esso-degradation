@@ -995,6 +995,7 @@ def build_objective(model, network, params):
     for s_m in model.scenarios_market:
         omega_m = network.prob_market_scenarios[s_m]
         for s_o in model.scenarios_operation:
+
             omega_o = network.prob_operation_scenarios[s_o]
             weight = omega_m * omega_o
 
@@ -1151,16 +1152,16 @@ def slack_penalties(model, network, s_m, s_o, params):
         for e in model.energy_storages:
             for p in model.periods:
                 if params.slacks.ess.complementarity:
-                    total += base * PENALTY_ESS * model.slack_es_comp[e, s_m, s_o, p]
+                    total += base * PENALTY_ESS_COMP * model.slack_es_comp[e, s_m, s_o, p]
             if params.slacks.ess.day_balance:
-                total += base * PENALTY_ESS * model.slack_es_soc_final[e, s_m, s_o]**2
+                total += base * PENALTY_ESS_BALANCE * model.slack_es_soc_final[e, s_m, s_o]**2
 
     for e in model.shared_energy_storages:
         for p in model.periods:
             if params.slacks.shared_ess.complementarity:
-                total += base * PENALTY_SHARED_ESS * model.slack_shared_es_comp[e, s_m, s_o, p]
+                total += base * PENALTY_SHARED_ESS_COMP * model.slack_shared_es_comp[e, s_m, s_o, p]
         if params.slacks.shared_ess.day_balance:
-            total += base * PENALTY_SHARED_ESS * model.slack_shared_es_soc_final[e, s_m, s_o]**2
+            total += base * PENALTY_SHARED_ESS_BALANCE * model.slack_shared_es_soc_final[e, s_m, s_o]**2
 
     for b in model.branches:
         for p in model.periods:
