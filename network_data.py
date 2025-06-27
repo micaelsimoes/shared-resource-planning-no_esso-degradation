@@ -271,7 +271,7 @@ def generate_res_generation_profiles(base_operational_data, n_samples=100, bandw
 
             # Sample
             samples = model.sample(n_samples)
-            samples = scaler.inverse_transform(samples)
+            samples = np.abs(scaler.inverse_transform(samples))
 
             synthetic_profiles[season][gen_type] = {
                 'pg': pd.DataFrame(samples),
