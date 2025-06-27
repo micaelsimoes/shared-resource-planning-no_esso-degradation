@@ -77,9 +77,7 @@ def qg_init(m, g, s_m, s_o, p, network):
 def sg_init(m, g, s_m, s_o, p, network, params):
 
     gen = network.generators[g]
-    if not gen.is_curtaillable():
-        return 0.00
-    if not gen.status[p]:
+    if not gen.is_curtaillable() or not gen.status[p]:
         return 0.00
 
     # Apparent power for initialization and bound
@@ -102,22 +100,6 @@ def sg_bounds(m, g, s_m, s_o, p, network, params):
     sg = (pg ** 2 + qg ** 2) ** 0.5
 
     return (0.0, sg)
-
-
-def sg_slack_bounds(m, g, s_m, s_o, p, network):
-    gen = network.generators[g]
-    if gen.is_curtaillable() and gen.status[p]:
-        sg = (gen.qmin ** 2 + gen.qmax ** 2) ** 0.5
-        return (0.00, sg * 0.05)
-    return (0.00, SMALL_TOLERANCE)
-
-
-def sg_sqr_slack_bounds(m, g, s_m, s_o, p, network):
-    gen = network.generators[g]
-    if gen.is_curtaillable() and gen.status[p]:
-        sg_sqr = (gen.qmin ** 2 + gen.qmax ** 2)
-        return (0.00, sg_sqr * 0.05)
-    return (0.00, SMALL_TOLERANCE)
 
 
 # Generation, Sg^2
@@ -145,7 +127,7 @@ def init_flow_ij_sqr(m, b, s_m, s_o, p, network, params):
     branch = network.branches[b]
     if not branch.status:
         return 0.0
-    return SMALL_TOLERANCE
+    return SMALL_TOLERANCE ** 2
 
 
 # Branch power flow, Fij slacks
@@ -251,63 +233,71 @@ def transformer_ratio_bounds(m, i, s_m, s_o, p, network, params):
         if params.transf_reg and branch.vmag_reg:
             return (TRANSFORMER_MINIMUM_RATIO, TRANSFORMER_MAXIMUM_RATIO)
         else:
-            return (branch.ratio - SMALL_TOLERANCE, branch.ratio + SMALL_TOLERANCE)
+            return (branch.ratio - EQUALITY_TOLERANCE, branch.ratio + EQUALITY_TOLERANCE)
     else:
-        return (1.00 - SMALL_TOLERANCE, 1.00 + SMALL_TOLERANCE)
+        return (1.00 - EQUALITY_TOLERANCE, 1.00 + EQUALITY_TOLERANCE)
 
 
 # Energy Storage
 def soc_bounds(m, e, s_m, s_o, p, network):
-    es = network.energy_storages[e]
-    return (es.e_min, es.e_max)
+    ess = network.energy_storages[e]
+    return (ess.e_min, ess.e_max)
 
 
 def p_bounds(m, e, s_m, s_o, p, network):
-    return (0.0, network.energy_storages[e].s)
+    ess = network.energy_storages[e]
+    return (0.0, ess.s)
 
 
 def snet_bounds(m, e, s_m, s_o, p, network):
-    return (-network.energy_storages[e].s, network.energy_storages[e].s)
+    ess = network.energy_storages[e]
+    return (-ess.s, ess.s)
 
 
 def q_bounds(m, e, s_m, s_o, p, network):
-    es = network.energy_storages[e]
-    return (-es.s, es.s)
+    ess = network.energy_storages[e]
+    return (-ess.s, ess.s)
 
 
 def s_bounds(m, e, s_m, s_o, p, network):
-    return (0.0, network.energy_storages[e].s)
+    ess = network.energy_storages[e]
+    return (0.0, ess.s)
 
 
 def slack_es_comp_bounds(m, e, s_m, s_o, p, network):
-    return (0.0, network.energy_storages[e].s * 0.05)
+    ess = network.energy_storages[e]
+    return (0.0, ess.s * 0.05)
 
 
 def slack_es_balance_bounds(m, e, s_m, s_o, network):
-    return (-network.energy_storages[e].e * 0.01, network.energy_storages[e].e * 0.01)
+    ess = network.energy_storages[e]
+    return (-ess.e * 0.05, ess.e * 0.05)
 
 
 def soc_initialize(m, e, s_m, s_o, p, network):
-    return network.energy_storages[e].e_init
+    ess = network.energy_storages[e]
+    return ess.e_init
 
 
 # Shared Energy Storage
 def shared_soc_bounds(m, e, s_m, s_o, p, network):
-    ses = network.shared_energy_storages[e]
-    return (0.0, ses.e)
+    sess = network.shared_energy_storages[e]
+    return (0.0, sess.e)
 
 
 def shared_q_bounds(m, e, s_m, s_o, p, network):
-    s = network.shared_energy_storages[e].s
-    return (-s, s)
+    sess = network.shared_energy_storages[e]
+    return (-sess.s, sess.s)
 
 
 def shared_s_bounds(m, e, s_m, s_o, p, network):
-    return (0.0, network.shared_energy_storages[e].s)
+    sess = network.shared_energy_storages[e]
+    return (0.0, sess.s)
 
 
 def shared_soc_init(m, e, s_m, s_o, p, network):
-    return network.shared_energy_storages[e].e * ENERGY_STORAGE_RELATIVE_INIT_SOC
+    sess = network.shared_energy_storages[e]
+    return sess.e * ENERGY_STORAGE_RELATIVE_INIT_SOC
 
 
 # Voltage constraints, e
