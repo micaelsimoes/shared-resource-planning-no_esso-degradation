@@ -1701,7 +1701,6 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                         dual_vars['esso']['current'][node_id][year][day]['q'][p] += rho_ess_sess * error_q_esso_tso
 
 
-
 # ======================================================================================================================
 #  OPERATIONAL PLANNING WITHOUT COORDINATION functions
 # ======================================================================================================================
