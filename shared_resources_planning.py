@@ -611,24 +611,24 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                 dso_model[year][day].interface_expected_values_sess_q = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_q_rule, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx))
 
         # Regularization -- Added to OF to minimize deviations from scenarios to expected values
-        for year in distribution_network.years:
-            for day in distribution_network.days:
-
-                s_base = distribution_network.network[year][day].baseMVA
-                ref_node_id = distribution_network.network[year][day].get_reference_node_id()
-                shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
-
-                obj = copy(dso_model[year][day].objective.expr)
-                dso_model[year][day].penalty_regularization = pe.Param(initialize=PENALTY_REGULARIZATION)
-                for s_m in dso_model[year][day].scenarios_market:
-                    for s_o in dso_model[year][day].scenarios_operation:
-                        for p in dso_model[year][day].periods:
-                            obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].vmag_sqr_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_vmag_sqr[p]) ** 2
-                            obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].pg_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_pf_p[p]) ** 2
-                            obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].qg_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_pf_q[p]) ** 2
-                            obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_p[p]) ** 2
-                            obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_q[p]) ** 2
-                dso_model[year][day].objective.expr = obj
+        # for year in distribution_network.years:
+        #     for day in distribution_network.days:
+        #
+        #         s_base = distribution_network.network[year][day].baseMVA
+        #         ref_node_id = distribution_network.network[year][day].get_reference_node_id()
+        #         shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
+        #
+        #         obj = copy(dso_model[year][day].objective.expr)
+        #         dso_model[year][day].penalty_regularization = pe.Param(initialize=PENALTY_REGULARIZATION)
+        #         for s_m in dso_model[year][day].scenarios_market:
+        #             for s_o in dso_model[year][day].scenarios_operation:
+        #                 for p in dso_model[year][day].periods:
+        #                     obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].vmag_sqr_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_vmag_sqr[p]) ** 2
+        #                     obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].pg_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_pf_p[p]) ** 2
+        #                     obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].qg_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_pf_q[p]) ** 2
+        #                     obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_p[p]) ** 2
+        #                     obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_q[p]) ** 2
+        #         dso_model[year][day].objective.expr = obj
 
         # Run SMOPF
         results[node_id] = distribution_network.optimize(dso_model)
