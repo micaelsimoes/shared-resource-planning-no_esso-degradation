@@ -1816,7 +1816,9 @@ def _run_smopf(network, model, params, from_warm_start=False):
             solver.options['mu_strategy'] = 'adaptive'
         else:
             solver.options['nlp_scaling_method'] = 'gradient-based'
-            solver.options['mu_strategy'] = 'adaptive'
+            solver.options['bound_relax_factor'] = 1e-6
+            solver.options['honor_original_bounds'] = 'no'
+            # solver.options['mu_strategy'] = 'adaptive'
 
         # solver.options['bound_relax_factor'] = 1e-6
         # solver.options['honor_original_bounds'] = 'no'
