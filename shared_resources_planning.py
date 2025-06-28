@@ -1766,15 +1766,15 @@ def _run_operational_planning_without_coordination(planning_problem):
                     dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_pf_p[p] == expected_pf_p)
                     dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_pf_q[p] == expected_pf_q)
 
-                # obj = copy(dso_model[year][day].objective.expr)
-                # dso_model[year][day].penalty_regularization = pe.Param(initialize=PENALTY_REGULARIZATION)
-                # for s_m in dso_model[year][day].scenarios_market:
-                #     for s_o in dso_model[year][day].scenarios_operation:
-                #         for p in dso_model[year][day].periods:
-                #             obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].vmag_sqr_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_vmag_sqr[p]) ** 2
-                #             obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].pg_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_pf_p[p]) ** 2
-                #             obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].qg_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_pf_q[p]) ** 2
-                # dso_model[year][day].objective.expr = obj
+                obj = copy(dso_model[year][day].objective.expr)
+                dso_model[year][day].penalty_regularization = pe.Param(initialize=PENALTY_REGULARIZATION)
+                for s_m in dso_model[year][day].scenarios_market:
+                    for s_o in dso_model[year][day].scenarios_operation:
+                        for p in dso_model[year][day].periods:
+                            obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].vmag_sqr_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_vmag_sqr[p]) ** 2
+                            obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].pg_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_pf_p[p]) ** 2
+                            obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].qg_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_pf_q[p]) ** 2
+                dso_model[year][day].objective.expr = obj
 
         results['dso'][node_id] = distribution_network.optimize(dso_model)
 
@@ -1783,6 +1783,18 @@ def _run_operational_planning_without_coordination(planning_problem):
             for day in distribution_network.days:
                 s_base = distribution_network.network[year][day].baseMVA
                 for p in dso_model[year][day].periods:
+                    for p in dso_model[year][day].periods:
+                        expected_vmag_sqr = 0.00
+                        expected_pf_p = 0.00
+                        expected_pf_q = 0.00
+                        for s_m in dso_model[year][day].scenarios_market:
+                            omega_market = distribution_network.network[year][day].prob_market_scenarios[s_m]
+                            for s_o in dso_model[year][day].scenarios_operation:
+                                omega_oper = distribution_network.network[year][day].prob_operation_scenarios[s_o]
+                                expected_vmag_sqr += omega_market * omega_oper * dso_model[year][day].vmag_sqr_adn[
+                                    s_m, s_o, p]
+                                expected_pf_p += omega_market * omega_oper * dso_model[year][day].pg_adn[s_m, s_o, p]
+                                expected_pf_q += omega_market * omega_oper * dso_model[year][day].qg_adn[s_m, s_o, p]
                     interface_v_sqr[node_id][year][day][p] = pe.value(dso_model[year][day].expected_interface_vmag_sqr[p])
                     interface_pf[node_id][year][day]['p'][p] = pe.value(dso_model[year][day].expected_interface_pf_p[p]) * s_base
                     interface_pf[node_id][year][day]['q'][p] = pe.value(dso_model[year][day].expected_interface_pf_q[p]) * s_base
@@ -1816,7 +1828,6 @@ def _run_operational_planning_without_coordination(planning_problem):
                             p_req = interface_pf[adn_node_id][year][day]['p'][p] / s_base
                             q_req = interface_pf[adn_node_id][year][day]['q'][p] / s_base
 
-                            tso_model[year][day].vmag_sqr_adn[dn, s_m, s_o, p].set_value(v_sqr_req)
                             tso_model[year][day].e[adn_node_idx, s_m, s_o, p].fixed = False
                             tso_model[year][day].e[adn_node_idx, s_m, s_o, p].setub(v_max + SMALL_TOLERANCE)
                             tso_model[year][day].e[adn_node_idx, s_m, s_o, p].setlb(-v_max - SMALL_TOLERANCE)
@@ -1829,8 +1840,12 @@ def _run_operational_planning_without_coordination(planning_problem):
                                 tso_model[year][day].slack_f[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                                 tso_model[year][day].slack_f[adn_node_idx, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
 
-                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].set_value(p_req)
-                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].set_value(q_req)
+                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setub(None)
+                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setlb(None)
+                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].fixed = False
+                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setub(None)
+                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setlb(None)
                             if transmission_network.params.fl_reg:
                                 tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                                 tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
@@ -1841,6 +1856,11 @@ def _run_operational_planning_without_coordination(planning_problem):
                                 tso_model[year][day].pc_curt_up[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                                 tso_model[year][day].qc_curt_down[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                                 tso_model[year][day].qc_curt_up[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+
+                            fix_or_set(tso_model[year][day].vmag_sqr_adn[dn, s_m, s_o, p], v_sqr_req)
+                            fix_or_set(tso_model[year][day].pc[adn_load_idx, s_m, s_o, p], p_req)
+                            fix_or_set(tso_model[year][day].qc[adn_load_idx, s_m, s_o, p], q_req)
+
 
     results['tso'] = transmission_network.optimize(tso_model)
 
