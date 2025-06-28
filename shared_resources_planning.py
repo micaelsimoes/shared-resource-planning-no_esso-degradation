@@ -1782,17 +1782,16 @@ def _run_operational_planning_without_coordination(planning_problem):
             for day in distribution_network.days:
                 s_base = distribution_network.network[year][day].baseMVA
                 for p in dso_model[year][day].periods:
-                    for p in dso_model[year][day].periods:
-                        expected_vmag_sqr = 0.00
-                        expected_pf_p = 0.00
-                        expected_pf_q = 0.00
-                        for s_m in dso_model[year][day].scenarios_market:
-                            omega_market = distribution_network.network[year][day].prob_market_scenarios[s_m]
-                            for s_o in dso_model[year][day].scenarios_operation:
-                                omega_oper = distribution_network.network[year][day].prob_operation_scenarios[s_o]
-                                expected_vmag_sqr += omega_market * omega_oper * dso_model[year][day].vmag_sqr_adn[s_m, s_o, p]
-                                expected_pf_p += omega_market * omega_oper * dso_model[year][day].pg_adn[s_m, s_o, p]
-                                expected_pf_q += omega_market * omega_oper * dso_model[year][day].qg_adn[s_m, s_o, p]
+                    expected_vmag_sqr = 0.00
+                    expected_pf_p = 0.00
+                    expected_pf_q = 0.00
+                    for s_m in dso_model[year][day].scenarios_market:
+                        omega_market = distribution_network.network[year][day].prob_market_scenarios[s_m]
+                        for s_o in dso_model[year][day].scenarios_operation:
+                            omega_oper = distribution_network.network[year][day].prob_operation_scenarios[s_o]
+                            expected_vmag_sqr += omega_market * omega_oper * dso_model[year][day].vmag_sqr_adn[s_m, s_o, p]
+                            expected_pf_p += omega_market * omega_oper * dso_model[year][day].pg_adn[s_m, s_o, p]
+                            expected_pf_q += omega_market * omega_oper * dso_model[year][day].qg_adn[s_m, s_o, p]
                     interface_v_sqr[node_id][year][day][p] = pe.value(dso_model[year][day].expected_interface_vmag_sqr[p])
                     interface_pf[node_id][year][day]['p'][p] = pe.value(dso_model[year][day].expected_interface_pf_p[p]) * s_base
                     interface_pf[node_id][year][day]['q'][p] = pe.value(dso_model[year][day].expected_interface_pf_q[p]) * s_base
