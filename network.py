@@ -1813,10 +1813,10 @@ def _run_smopf(network, model, params, from_warm_start=False):
         solver.options['linear_solver'] = params.solver_params.linear_solver
         solver.options['nlp_scaling_method'] = 'gradient-based'
         solver.options['mu_strategy'] = 'adaptive'
+        solver.options['bound_relax_factor'] = 1e-6
+        solver.options['honor_original_bounds'] = 'no'
         # solver.options['acceptable_iter'] = 10
         # solver.options['acceptable_tol'] = 1e-3
-        # bound_relax_factor = 1e-6
-        # honor_original_bounds = no
 
     try:
         result = solver.solve(model, tee=params.solver_params.verbose)
