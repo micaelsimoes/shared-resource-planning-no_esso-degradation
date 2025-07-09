@@ -46,14 +46,12 @@ class NetworkData:
                 network_models[year][day] = self.network[year][day].build_model(self.params)
         return network_models
 
-    def optimize(self, model, from_warm_start=False, garbage_collection=False):
+    def optimize(self, model, from_warm_start=False):
         results = dict()
         for year in self.years:
             results[year] = dict()
             for day in self.days:
                 results[year][day] = self.network[year][day].run_smopf(model[year][day], self.params, from_warm_start=from_warm_start)
-                if garbage_collection:
-                    gc.collect()
         return results
 
     def get_primal_value(self, model):

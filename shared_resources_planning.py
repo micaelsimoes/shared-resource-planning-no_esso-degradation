@@ -53,15 +53,15 @@ class SharedResourcesPlanning:
         self.active_distribution_network_nodes = list()
         self.params = PlanningParameters()
 
-    def run_planning_problem(self, garbage_collection=False, debug_flag=False):
+    def run_planning_problem(self, debug_flag=False):
         print('[INFO] Running PLANNING PROBLEM...')
-        _run_planning_problem(self, garbage_collection=garbage_collection, debug_flag=debug_flag)
+        _run_planning_problem(self, debug_flag=debug_flag)
 
-    def run_operational_planning(self, candidate_solution=dict(), print_results=False, filename=str(), garbage_collection=False, debug_flag=False):
+    def run_operational_planning(self, candidate_solution=dict(), print_results=False, filename=str(), debug_flag=False):
         print('[INFO] Running OPERATIONAL PLANNING...')
         if not candidate_solution:
             candidate_solution = self.get_initial_candidate_solution()
-        convergence, results, models, sensitivities, primal_evolution = _run_operational_planning(self, candidate_solution, garbage_collection=garbage_collection, debug_flag=debug_flag)
+        convergence, results, models, sensitivities, primal_evolution = _run_operational_planning(self, candidate_solution, debug_flag=debug_flag)
         if print_results:
             if not filename:
                 filename = self.name
@@ -136,7 +136,7 @@ class SharedResourcesPlanning:
 # ======================================================================================================================
 #  PLANNING functions
 # ======================================================================================================================
-def _run_planning_problem(planning_problem, garbage_collection=False, debug_flag=False):
+def _run_planning_problem(planning_problem, debug_flag=False):
 
     shared_ess_data = planning_problem.shared_ess_data
     benders_parameters = planning_problem.params.benders
@@ -159,8 +159,6 @@ def _run_planning_problem(planning_problem, garbage_collection=False, debug_flag
     start = time.time()
     master_problem_model = planning_problem.shared_ess_data.build_master_problem()
     shared_ess_data.optimize_master_problem(master_problem_model)
-    if garbage_collection:
-        gc.collect()
 
     # Benders' main cycle
     while iter < benders_parameters.num_max_iters and not convergence:
@@ -176,14 +174,12 @@ def _run_planning_problem(planning_problem, garbage_collection=False, debug_flag
         # 1.1. Solve operational planning, with fixed investment variables,
         # 1.2. Get coupling constraints' sensitivities (subproblem)
         # 1.3. Get OF value (upper bound) from the subproblem
-        operational_convergence, operational_results, lower_level_models, sensitivities, _ = planning_problem.run_operational_planning(candidate_solution, garbage_collection=garbage_collection, print_results=debug_flag, filename=f'{planning_problem.name}_iter{iter}')
+        operational_convergence, operational_results, lower_level_models, sensitivities, _ = planning_problem.run_operational_planning(candidate_solution, print_results=debug_flag, filename=f'{planning_problem.name}_iter{iter}')
         if operational_convergence:
             upper_bound = planning_problem.get_upper_bound(lower_level_models['tso'])
         else:
             upper_bound = upper_bound_evolution[-1]
         upper_bound_evolution.append(upper_bound)
-        if garbage_collection:
-            gc.collect()
 
         if debug_flag:
             print_memory_usage(f"After subproblem (iter {iter})")
@@ -207,8 +203,8 @@ def _run_planning_problem(planning_problem, garbage_collection=False, debug_flag
         shared_ess_data.optimize_master_problem(master_problem_model, from_warm_start=from_warm_start)
         lower_bound = pe.value(master_problem_model.alpha)
         lower_bound_evolution.append(lower_bound)
-        if garbage_collection:
-            gc.collect()
+
+        gc.collect()
         if debug_flag:
             print_memory_usage(f"After master problem solve (iter {iter})")
 
@@ -280,7 +276,7 @@ def _add_benders_cut(planning_problem, model, upper_bound, convergence, sensitiv
 # ======================================================================================================================
 #  OPERATIONAL PLANNING functions
 # ======================================================================================================================
-def _run_operational_planning(planning_problem, candidate_solution, garbage_collection=False, debug_flag=False):
+def _run_operational_planning(planning_problem, candidate_solution, debug_flag=False):
 
     transmission_network = planning_problem.transmission_network
     distribution_networks = planning_problem.distribution_networks
@@ -345,8 +341,6 @@ def _run_operational_planning(planning_problem, candidate_solution, garbage_coll
             update_flags={"update_tn": False, "update_dns": True, "update_sess": False},
             debug_flag=debug_flag
         )
-        if garbage_collection:
-            gc.collect()
 
         if convergence and iter > 1:
             print(f"[INFO] ADMM converged at iteration {iter}.")
@@ -370,8 +364,6 @@ def _run_operational_planning(planning_problem, candidate_solution, garbage_coll
             update_flags={"update_tn": True, "update_dns": False, "update_sess": False},
             debug_flag=debug_flag
         )
-        if garbage_collection:
-            gc.collect()
 
         if convergence and iter > 1:
             print(f"[INFO] ADMM converged at iteration {iter}.")
@@ -393,8 +385,6 @@ def _run_operational_planning(planning_problem, candidate_solution, garbage_coll
             update_flags={"update_tn": False, "update_dns": False, "update_sess": True},
             debug_flag=debug_flag
         )
-        if garbage_collection:
-            gc.collect()
 
         # --------------------------------------------------------------------------------------------------------------
 
@@ -405,6 +395,7 @@ def _run_operational_planning(planning_problem, candidate_solution, garbage_coll
         iter_end = time.time()
         print(f"[INFO] \t - Iteration {iter}: {iter_end - iter_start:.2f} s")
 
+        gc.collect()
         from_warm_start = True
         log_debug(f"\t - Memory after iteration {iter}", debug_flag)
         print_memory_usage(f"\t - ADMM Iteration {iter} End")
