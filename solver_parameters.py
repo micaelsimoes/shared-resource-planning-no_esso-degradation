@@ -1,8 +1,7 @@
 import os
 from dotenv import load_dotenv
-
 from definitions import ERROR_PARAMS_FILE
-
+load_dotenv('.env')
 
 # ============================================================================================
 #   Class SolverParameters
