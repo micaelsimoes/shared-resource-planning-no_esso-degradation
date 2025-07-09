@@ -1,6 +1,9 @@
 import os
 from dotenv import load_dotenv
 
+from definitions import ERROR_PARAMS_FILE
+
+
 # ============================================================================================
 #   Class SolverParameters
 # ============================================================================================
@@ -13,6 +16,9 @@ class SolverParameters:
         self.solver_path = os.getenv('IPOPT_PATH')
         self.solver_tol = 1e-6
         self.verbose = False
+        if not self.solver_path:
+            print('[ERROR] Solver path not found! Exiting')
+            exit(ERROR_PARAMS_FILE)
 
     def read_solver_parameters(self, solver_data):
         _read_solver_parameters(self, solver_data)
