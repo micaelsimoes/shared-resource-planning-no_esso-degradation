@@ -15,6 +15,7 @@ class SolverParameters:
         self.solver_path = os.getenv('IPOPT_PATH')
         self.solver_tol = 1e-6
         self.verbose = False
+        self.limited_memory = False
         if not self.solver_path:
             print('[ERROR] Solver path not found! Exiting')
             exit(ERROR_PARAMS_FILE)
@@ -28,3 +29,5 @@ def _read_solver_parameters(parameters, solver_data):
     parameters.linear_solver = solver_data['linear_solver']
     parameters.solver_tol = solver_data['solver_tol']
     parameters.verbose = solver_data['verbose']
+    if 'limited_memory' in solver_data:
+        parameters.limited_memory = solver_data['limited_memory']
