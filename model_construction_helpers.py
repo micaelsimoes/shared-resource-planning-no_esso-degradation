@@ -797,6 +797,7 @@ def compute_node_gen(model, i, s_m, s_o, p, network, params):
     Pg, Qg = 0.0, 0.0
     if params.slacks.node_balance.active_power:
         Pg += model.slack_node_balance_p_up[i, s_m, s_o, p] - model.slack_node_balance_p_down[i, s_m, s_o, p]
+    if params.slacks.node_balance.reactive_power:
         Qg += model.slack_node_balance_q_up[i, s_m, s_o, p] - model.slack_node_balance_q_down[i, s_m, s_o, p]
     node = network.nodes[i]
     for g in model.generators:
