@@ -602,7 +602,7 @@ def sess_soc_final_rule(m, e, s_m, s_o, network, params):
     final_soc = m.shared_es_e_rated[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC
     final_p = m.periods[-1]
     if params.slacks.ess.day_balance:
-        return m.shared_es_soc[e, s_m, s_o, final_p] == final_soc + m.slack_shared_es_soc_final[e, s_m, s_o]
+        return m.shared_es_soc[e, s_m, s_o, final_p] == final_soc + m.slack_shared_es_soc_final_up[e, s_m, s_o] - m.slack_shared_es_soc_final_down[e, s_m, s_o]
     else:
         return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_soc[e, s_m, s_o, final_p] - final_soc, EQUALITY_TOLERANCE)
 
@@ -1158,7 +1158,7 @@ def slack_penalties(model, network, s_m, s_o, params):
             if params.slacks.shared_ess.complementarity:
                 total += base * PENALTY_SHARED_ESS_COMP * model.slack_shared_es_comp[e, s_m, s_o, p]
         if params.slacks.shared_ess.day_balance:
-            total += base * PENALTY_SHARED_ESS_BALANCE * model.slack_shared_es_soc_final[e, s_m, s_o]**2
+            total += base * PENALTY_SHARED_ESS_BALANCE * (model.slack_shared_es_soc_final_up[e, s_m, s_o] + model.slack_shared_es_soc_final_down[e, s_m, s_o])
 
     for b in model.branches:
         for p in model.periods:
