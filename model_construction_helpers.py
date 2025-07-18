@@ -39,6 +39,10 @@ def voltage_slack_bounds(m, i, s_m, s_o, p, network):
     return (-VMAG_VIOLATION_ALLOWED, VMAG_VIOLATION_ALLOWED)
 
 
+def node_balance_slack_bounds(m, i, s_m, s_o, p, network):
+    return (0.00, NODE_BALANCE_SLACK_LIMIT / network.baseMVA)
+
+
 # Generation, Pg
 def pg_bounds(m, g, s_m, s_o, p, network):
     gen = network.generators[g]
@@ -789,8 +793,11 @@ def compute_node_load(model, i, s_m, s_o, p, network, params):
     return Pd, Qd
 
 
-def compute_node_gen(model, i, s_m, s_o, p, network):
+def compute_node_gen(model, i, s_m, s_o, p, network, params):
     Pg, Qg = 0.0, 0.0
+    if params.slacks.node_balance.active_power:
+        Pg += model.slack_node_balance_p_up[i, s_m, s_o, p] - model.slack_node_balance_p_down[i, s_m, s_o, p]
+        Qg += model.slack_node_balance_q_up[i, s_m, s_o, p] - model.slack_node_balance_q_down[i, s_m, s_o, p]
     node = network.nodes[i]
     for g in model.generators:
         gen = network.generators[g]
@@ -810,13 +817,13 @@ def net_load_q_per_node_rule(model, i, s_m, s_o, p, network, params):
     return pe.inequality(-EQUALITY_TOLERANCE, model.qc_node[i, s_m, s_o, p] - Qd, EQUALITY_TOLERANCE)
 
 
-def net_gen_p_per_node_rule(model, i, s_m, s_o, p, network):
-    Pg, _ = compute_node_gen(model, i, s_m, s_o, p, network)
+def net_gen_p_per_node_rule(model, i, s_m, s_o, p, network, params):
+    Pg, _ = compute_node_gen(model, i, s_m, s_o, p, network, params)
     return pe.inequality(-EQUALITY_TOLERANCE, model.pg_node[i, s_m, s_o, p] - Pg, EQUALITY_TOLERANCE)
 
 
-def net_gen_q_per_node_rule(model, i, s_m, s_o, p, network):
-    _, Qg = compute_node_gen(model, i, s_m, s_o, p, network)
+def net_gen_q_per_node_rule(model, i, s_m, s_o, p, network, params):
+    _, Qg = compute_node_gen(model, i, s_m, s_o, p, network, params)
     return pe.inequality(-EQUALITY_TOLERANCE, model.qg_node[i, s_m, s_o, p] - Qg, EQUALITY_TOLERANCE)
 
 
@@ -861,7 +868,7 @@ def node_balance_p_rule(model, i, s_m, s_o, p, network, params):
                     Pi -= rij * (branch.g * (ei * ej + fi * fj) + branch.b * (fi * ej - ei * fj))
 
     if params.slacks.node_balance:
-        return Pg == Pd + Pi + model.slack_node_balance_p[i, s_m, s_o, p]
+        return Pg == Pd + Pi
     else:
         return pe.inequality(-EQUALITY_TOLERANCE, Pg - (Pd + Pi), EQUALITY_TOLERANCE)
 
@@ -907,7 +914,7 @@ def node_balance_q_rule(model, i, s_m, s_o, p, network, params):
                     Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
 
     if params.slacks.node_balance:
-        return Qg == Qd + Qi + model.slack_node_balance_q[i, s_m, s_o, p]
+        return Qg == Qd + Qi
     else:
         return pe.inequality(-EQUALITY_TOLERANCE, Qg - (Qd + Qi), EQUALITY_TOLERANCE)
 
@@ -1126,8 +1133,10 @@ def slack_penalties(model, network, s_m, s_o, params):
         for p in model.periods:
             if params.slacks.grid_operation.voltage:
                 total += base * PENALTY_VOLTAGE * (model.slack_e[i, s_m, s_o, p]**2 + model.slack_f[i, s_m, s_o, p]**2)
-            if params.slacks.node_balance:
-                total += base * PENALTY_NODE_BALANCE * (model.slack_node_balance_p[i, s_m, s_o, p]**2 + model.slack_node_balance_q[i, s_m, s_o, p]**2)
+            if params.slacks.node_balance.active_power:
+                total += base * PENALTY_NODE_BALANCE * (model.slack_node_balance_p_up[i, s_m, s_o, p]**2 + model.slack_node_balance_p_down[i, s_m, s_o, p]**2)
+            if params.slacks.node_balance.active_power:
+                total += base * PENALTY_NODE_BALANCE * (model.slack_node_balance_q_up[i, s_m, s_o, p]**2 + model.slack_node_balance_q_down[i, s_m, s_o, p]**2)
 
     if params.fl_reg and params.slacks.flexibility.day_balance:
         total += base * PENALTY_FLEXIBILITY * sum(

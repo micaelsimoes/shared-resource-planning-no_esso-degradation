@@ -63,6 +63,7 @@ PENALTY_REGULARIZATION = 1e3
 
 VMAG_VIOLATION_ALLOWED = 0.15   # Over/undervoltage allowed, ratio (±15%)
 SIJ_VIOLATION_ALLOWED = 0.50    # Branch power flow violation allowed, ratio (+50%)
+NODE_BALANCE_SLACK_LIMIT = 1.00 # Node balance slacks' limit
 
 DATA_ACTIVE_POWER = 1
 DATA_REACTIVE_POWER = 2
