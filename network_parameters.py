@@ -45,7 +45,7 @@ class Slacks:
         self.flexibility.read_slacks_parameters(slacks_data)
         self.ess.read_slacks_parameters(slacks_data)
         self.shared_ess.read_slacks_parameters(slacks_data)
-        self.node_balance.read_slacks_parameters(slacks_data["node_balance"])
+        self.node_balance.read_slacks_parameters(slacks_data)
 
 
 class SlacksOperation:
