@@ -5510,6 +5510,7 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
 
                     # ESS
                     if params.es_reg:
+
                         for energy_storage in network[year][day].energy_storages:
 
                             es_id = energy_storage.es_id
@@ -5542,7 +5543,7 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
                                 sheet.cell(row=row_idx, column=7).value = s_m
                                 sheet.cell(row=row_idx, column=8).value = s_o
                                 for p in range(network[year][day].num_instants):
-                                    soc_final = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final_up'][es_id]
+                                    soc_final = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final'][es_id]
                                     sheet.cell(row=row_idx, column=p + 9).value = soc_final
                                     sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
                                 row_idx = row_idx + 1
