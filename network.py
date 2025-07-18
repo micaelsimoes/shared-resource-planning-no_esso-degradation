@@ -250,8 +250,10 @@ def _build_model_new_version(network, params):
     model.f_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.vmag_sqr = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0, bounds=partial(vmag_sqr_bounds, network=network, params=params))
     if params.slacks.grid_operation.voltage:
-        model.slack_e = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
-        model.slack_f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
+        model.slack_e_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
+        model.slack_e_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
+        model.slack_f_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
+        model.slack_f_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
     if params.slacks.node_balance.active_power:
         model.slack_node_balance_p_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00, bounds=partial(node_balance_slack_bounds, network=network))
         model.slack_node_balance_p_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00, bounds=partial(node_balance_slack_bounds, network=network))
@@ -2563,8 +2565,8 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e'][node_id] = []
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f'][node_id] = []
                     for p in model.periods:
-                        slack_e = pe.value(model.slack_e[i, s_m, s_o, p])
-                        slack_f = pe.value(model.slack_f[i, s_m, s_o, p])
+                        slack_e = pe.value(model.slack_e_up[i, s_m, s_o, p] - model.slack_e_down[i, s_m, s_o, p])
+                        slack_f = pe.value(model.slack_f_up[i, s_m, s_o, p] - model.slack_f_down[i, s_m, s_o, p])
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e'][node_id].append(slack_e)
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f'][node_id].append(slack_f)
 

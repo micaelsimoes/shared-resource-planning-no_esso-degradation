@@ -493,8 +493,10 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
                             tso_model[year][day].vmag_sqr_adn[dn, s_m, s_o, p].setub(v_max ** 2)
                             tso_model[year][day].vmag_sqr_adn[dn, s_m, s_o, p].setlb(v_min ** 2)
                             if transmission_network.params.slacks.grid_operation.voltage:
-                                fix_or_set(tso_model[year][day].slack_e[adn_node_idx, s_m, s_o, p], 0.00)
-                                fix_or_set(tso_model[year][day].slack_f[adn_node_idx, s_m, s_o, p], 0.00)
+                                fix_or_set(tso_model[year][day].slack_e_up[adn_node_idx, s_m, s_o, p], 0.00)
+                                fix_or_set(tso_model[year][day].slack_e_down[adn_node_idx, s_m, s_o, p], 0.00)
+                                fix_or_set(tso_model[year][day].slack_f_up[adn_node_idx, s_m, s_o, p], 0.00)
+                                fix_or_set(tso_model[year][day].slack_f_down[adn_node_idx, s_m, s_o, p], 0.00)
 
                             # Fix Pc and Qc (base profiles), free pc_adn and qc_adn
                             interface_pf_p = consensus_vars['pf']['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
@@ -963,10 +965,10 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                             dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                             dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
                             if distribution_network.params.slacks.grid_operation.voltage:
-                                dso_model[year][day].slack_e[ref_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                                dso_model[year][day].slack_e[ref_node_idx, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
-                                dso_model[year][day].slack_f[ref_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                                dso_model[year][day].slack_f[ref_node_idx, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
+                                dso_model[year][day].slack_e_up[ref_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                dso_model[year][day].slack_e_down[ref_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                dso_model[year][day].slack_f_up[ref_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                dso_model[year][day].slack_f_down[ref_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
 
                 # Update expected interface values limits
                 for p in dso_model[year][day].periods:
@@ -1836,10 +1838,10 @@ def _run_operational_planning_without_coordination(planning_problem):
                             tso_model[year][day].f[adn_node_idx, s_m, s_o, p].setub(v_max + SMALL_TOLERANCE)
                             tso_model[year][day].f[adn_node_idx, s_m, s_o, p].setlb(-v_max - SMALL_TOLERANCE)
                             if transmission_network.params.slacks.grid_operation.voltage:
-                                tso_model[year][day].slack_e[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                                tso_model[year][day].slack_e[adn_node_idx, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
-                                tso_model[year][day].slack_f[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                                tso_model[year][day].slack_f[adn_node_idx, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
+                                tso_model[year][day].slack_e_up[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                tso_model[year][day].slack_e_down[adn_node_idx, s_m, s_o, p].setub(-EQUALITY_TOLERANCE)
+                                tso_model[year][day].slack_f_up[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                tso_model[year][day].slack_f_down[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
 
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fixed = False
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setub(None)

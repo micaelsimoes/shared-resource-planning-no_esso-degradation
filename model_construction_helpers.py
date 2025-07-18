@@ -35,8 +35,8 @@ def vmag_sqr_bounds(m, i, s_m, s_o, p, network, params):
 def voltage_slack_bounds(m, i, s_m, s_o, p, network):
     node = network.nodes[i]
     if node.type == BUS_REF:
-        return (-SMALL_TOLERANCE, SMALL_TOLERANCE)
-    return (-VMAG_VIOLATION_ALLOWED, VMAG_VIOLATION_ALLOWED)
+        return (0.00, SMALL_TOLERANCE)
+    return (0.00, VMAG_VIOLATION_ALLOWED)
 
 
 def node_balance_slack_bounds(m, i, s_m, s_o, p, network):
@@ -308,7 +308,7 @@ def shared_soc_init(m, e, s_m, s_o, p, network):
 def voltage_rule_e(m, i, s_m, s_o, p, params):
     e_val = m.e[i, s_m, s_o, p]
     if params.slacks.grid_operation.voltage:
-        e_val += m.slack_e[i, s_m, s_o, p]
+        e_val += m.slack_e_up[i, s_m, s_o, p] - m.slack_e_down[i, s_m, s_o, p]
     return m.e_actual[i, s_m, s_o, p] == e_val
 
 
@@ -316,7 +316,7 @@ def voltage_rule_e(m, i, s_m, s_o, p, params):
 def voltage_rule_f(m, i, s_m, s_o, p, params):
     f_val = m.f[i, s_m, s_o, p]
     if params.slacks.grid_operation.voltage:
-        f_val += m.slack_f[i, s_m, s_o, p]
+        f_val += m.slack_f_up[i, s_m, s_o, p] - m.slack_f_down[i, s_m, s_o, p]
     return m.f_actual[i, s_m, s_o, p] == f_val
 
 
@@ -1133,11 +1133,12 @@ def slack_penalties(model, network, s_m, s_o, params):
     for i in model.nodes:
         for p in model.periods:
             if params.slacks.grid_operation.voltage:
-                total += base * PENALTY_VOLTAGE * (model.slack_e[i, s_m, s_o, p]**2 + model.slack_f[i, s_m, s_o, p]**2)
+                total += base * PENALTY_VOLTAGE * (model.slack_e_up[i, s_m, s_o, p] + model.slack_e_down[i, s_m, s_o, p])
+                total += base * PENALTY_VOLTAGE * (model.slack_f_up[i, s_m, s_o, p] + model.slack_f_down[i, s_m, s_o, p])
             if params.slacks.node_balance.active_power:
-                total += base * PENALTY_NODE_BALANCE * (model.slack_node_balance_p_up[i, s_m, s_o, p]**2 + model.slack_node_balance_p_down[i, s_m, s_o, p]**2)
+                total += base * PENALTY_NODE_BALANCE * (model.slack_node_balance_p_up[i, s_m, s_o, p] + model.slack_node_balance_p_down[i, s_m, s_o, p])
             if params.slacks.node_balance.reactive_power:
-                total += base * PENALTY_NODE_BALANCE * (model.slack_node_balance_q_up[i, s_m, s_o, p]**2 + model.slack_node_balance_q_down[i, s_m, s_o, p]**2)
+                total += base * PENALTY_NODE_BALANCE * (model.slack_node_balance_q_up[i, s_m, s_o, p] + model.slack_node_balance_q_down[i, s_m, s_o, p])
 
     if params.fl_reg and params.slacks.flexibility.day_balance:
         total += base * PENALTY_FLEXIBILITY * sum(
