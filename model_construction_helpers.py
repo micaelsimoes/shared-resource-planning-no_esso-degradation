@@ -1151,7 +1151,7 @@ def slack_penalties(model, network, s_m, s_o, params):
                 if params.slacks.ess.complementarity:
                     total += base * PENALTY_ESS_COMP * model.slack_es_comp[e, s_m, s_o, p]
             if params.slacks.ess.day_balance:
-                total += base * PENALTY_ESS_BALANCE * model.slack_es_soc_final[e, s_m, s_o]**2
+                total += base * PENALTY_ESS_BALANCE * (model.slack_es_soc_final_up[e, s_m, s_o] + model.slack_es_soc_final_down[e, s_m, s_o])
 
     for e in model.shared_energy_storages:
         for p in model.periods:
