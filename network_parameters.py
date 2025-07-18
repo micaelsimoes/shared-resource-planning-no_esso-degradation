@@ -96,7 +96,7 @@ class SlacksNodeBalance:
             if 'active_power' in slacks_data['node_balance']:
                 self.active_power = slacks_data['node_balance']['active_power']
             if 'reactive_power' in slacks_data['node_balance']:
-                self.active_power = slacks_data['node_balance']['reactive_power']
+                self.reactive_power = slacks_data['node_balance']['reactive_power']
 
 
 class SlacksExpectedValues:

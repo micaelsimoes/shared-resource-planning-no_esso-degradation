@@ -1136,7 +1136,7 @@ def slack_penalties(model, network, s_m, s_o, params):
                 total += base * PENALTY_VOLTAGE * (model.slack_e[i, s_m, s_o, p]**2 + model.slack_f[i, s_m, s_o, p]**2)
             if params.slacks.node_balance.active_power:
                 total += base * PENALTY_NODE_BALANCE * (model.slack_node_balance_p_up[i, s_m, s_o, p]**2 + model.slack_node_balance_p_down[i, s_m, s_o, p]**2)
-            if params.slacks.node_balance.active_power:
+            if params.slacks.node_balance.reactive_power:
                 total += base * PENALTY_NODE_BALANCE * (model.slack_node_balance_q_up[i, s_m, s_o, p]**2 + model.slack_node_balance_q_down[i, s_m, s_o, p]**2)
 
     if params.fl_reg and params.slacks.flexibility.day_balance:
