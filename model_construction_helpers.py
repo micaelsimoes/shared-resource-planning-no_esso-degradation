@@ -275,7 +275,7 @@ def slack_es_comp_bounds(m, e, s_m, s_o, p, network):
 
 def slack_es_balance_bounds(m, e, s_m, s_o, network):
     ess = network.energy_storages[e]
-    return (-ess.e * 0.05, ess.e * 0.05)
+    return (0.00, ess.e * 0.05)
 
 
 def soc_initialize(m, e, s_m, s_o, p, network):
@@ -461,7 +461,7 @@ def ess_soc_final_rule(m, e, s_m, s_o, network, params):
     final_soc = network.energy_storages[e].e_init
     final_p = m.periods[-1]
     if params.slacks.ess.day_balance:
-        return m.es_soc[e, s_m, s_o, final_p] == final_soc + m.slack_es_soc_final[e, s_m, s_o]
+        return m.es_soc[e, s_m, s_o, final_p] == final_soc + m.slack_es_soc_final_up[e, s_m, s_o] - m.slack_shared_es_soc_final_down[e, s_m, s_o]
     else:
         return pe.inequality(-EQUALITY_TOLERANCE, m.es_soc[e, s_m, s_o, final_p] - final_soc, EQUALITY_TOLERANCE)
 

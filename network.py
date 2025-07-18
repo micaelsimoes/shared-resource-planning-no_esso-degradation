@@ -325,7 +325,8 @@ def _build_model_new_version(network, params):
         if params.slacks.ess.complementarity:
             model.slack_es_comp = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(slack_es_comp_bounds, network=network))
         if params.slacks.ess.day_balance:
-            model.slack_es_soc_final = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.Reals, initialize=0.0, bounds=partial(slack_es_balance_bounds, network=network))
+            model.slack_es_soc_final_up = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(slack_es_balance_bounds, network=network))
+            model.slack_es_soc_final_down = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(slack_es_balance_bounds, network=network))
         if params.ess_model == ESS_MODEL_LP_RELAXED:
             model.es_sch_comp = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 1.00))
             model.es_sdch_comp = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 1.00))
@@ -886,7 +887,7 @@ def _build_model_original(network, params):
                         model.energy_storage_balance.add(model.es_soc[e, s_m, s_o, p] >= soc_prev + (sch * eff_charge - sdch / eff_discharge) - EQUALITY_TOLERANCE)
 
                     if params.slacks.ess.day_balance:
-                        model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final + model.slack_es_soc_final[e, s_m, s_o])
+                        model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] == soc_final + model.slack_es_soc_final_up[e, s_m, s_o] - model.slack_es_soc_final_down[e, s_m, s_o])
                     else:
                         model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] <= soc_final + EQUALITY_TOLERANCE)
                         model.energy_storage_day_balance.add(model.es_soc[e, s_m, s_o, len(model.periods) - 1] >= soc_final - EQUALITY_TOLERANCE)
@@ -2631,7 +2632,7 @@ def _process_results(network, model, params, results=dict()):
                             slack_comp = pe.value(model.slack_es_comp[e, s_m, s_o, p]) * (s_base ** 2)
                             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'][es_id].append(slack_comp)
                     if params.slacks.ess.day_balance:
-                        slack_soc_final = pe.value(model.slack_es_soc_final[e, s_m, s_o]) * s_base
+                        slack_soc_final = pe.value(model.slack_es_soc_final_up[e, s_m, s_o] - model.slack_es_soc_final_down[e, s_m, s_o]) * s_base
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final'][es_id] = slack_soc_final
 
     return processed_results
