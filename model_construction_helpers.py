@@ -397,7 +397,7 @@ def flex_energy_balance_rule(m, c, s_m, s_o, network, params):
         p_up = sum(m.flex_p_up[c, s_m, s_o, p] for p in m.periods)
         p_down = sum(m.flex_p_down[c, s_m, s_o, p] for p in m.periods)
         if params.slacks.flexibility.day_balance:
-            return p_up == p_down + m.slack_flex_p_balance[c, s_m, s_o]
+            return p_up == p_down + m.slack_flex_p_balance_up[c, s_m, s_o] - m.slack_flex_p_balance_down[c, s_m, s_o]
         else:
             return pe.inequality(-SMALL_TOLERANCE, p_up - p_down, SMALL_TOLERANCE)
     else:
@@ -1142,7 +1142,7 @@ def slack_penalties(model, network, s_m, s_o, params):
 
     if params.fl_reg and params.slacks.flexibility.day_balance:
         total += base * PENALTY_FLEXIBILITY * sum(
-            model.slack_flex_p_balance[c, s_m, s_o]**2 for c in model.loads
+            model.slack_flex_p_balance_up[c, s_m, s_o] + model.slack_flex_p_balance_down[c, s_m, s_o] for c in model.loads
         )
 
     if params.es_reg:
