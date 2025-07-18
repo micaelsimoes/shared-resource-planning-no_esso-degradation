@@ -5499,7 +5499,7 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
                                 sheet.cell(row=row_idx, column=3).value = load_id
                                 sheet.cell(row=row_idx, column=4).value = int(year)
                                 sheet.cell(row=row_idx, column=5).value = day
-                                sheet.cell(row=row_idx, column=6).value = 'Flex. balance, up'
+                                sheet.cell(row=row_idx, column=6).value = 'Flex. balance'
                                 sheet.cell(row=row_idx, column=7).value = s_m
                                 sheet.cell(row=row_idx, column=8).value = s_o
                                 for p in range(network[year][day].num_instants):
