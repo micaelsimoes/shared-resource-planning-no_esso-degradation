@@ -5409,12 +5409,12 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
                             row_idx = row_idx + 1
 
                     # Node balance
-                    if params.slacks.node_balance:
-                        for node in network[year][day].nodes:
+                    for node in network[year][day].nodes:
 
-                            node_id = node.bus_i
+                        node_id = node.bus_i
 
-                            # - p
+                        # - p
+                        if params.slacks.node_balance.active_power:
                             sheet.cell(row=row_idx, column=1).value = operator_type
                             sheet.cell(row=row_idx, column=2).value = tn_node_id
                             sheet.cell(row=row_idx, column=3).value = node_id
@@ -5429,7 +5429,8 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
                                 sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
                             row_idx = row_idx + 1
 
-                            # - q
+                        # - q
+                        if params.slacks.node_balance.reactive_power:
                             sheet.cell(row=row_idx, column=1).value = operator_type
                             sheet.cell(row=row_idx, column=2).value = tn_node_id
                             sheet.cell(row=row_idx, column=3).value = node_id
