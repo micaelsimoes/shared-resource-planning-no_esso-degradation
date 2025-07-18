@@ -1238,7 +1238,7 @@ def _process_results(network, model, params, results=dict()):
                     branch_id = network.branches[b].branch_id
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ij_sqr'][branch_id] = []
                     for p in model.periods:
-                        slack_flow_ij_sqr = pe.value(model.slack_flow_ij_sqr[b, s_m, s_o, p])
+                        slack_flow_ij_sqr = pe.value(model.slack_flow_ij_sqr[b, s_m, s_o, p]) * (s_base ** 2)
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ij_sqr'][branch_id].append(slack_flow_ij_sqr)
 
             # Slacks
