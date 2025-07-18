@@ -2344,8 +2344,9 @@ def _process_results(network, model, params, results=dict()):
             if params.slacks.grid_operation.branch_flow:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ij_sqr'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance'] = dict()
-            if params.slacks.node_balance:
+            if params.slacks.node_balance.active_power:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p'] = dict()
+            if params.slacks.node_balance.reactive_power:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages'] = dict()
             if params.slacks.shared_ess.complementarity:
@@ -2593,15 +2594,17 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final'][node_id] = slack_soc_final
 
             # - Node balance
-            if params.slacks.node_balance:
-                for i in model.nodes:
-                    node_id = network.nodes[i].bus_i
+            for i in model.nodes:
+                node_id = network.nodes[i].bus_i
+                if params.slacks.node_balance.active_power:
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p'][node_id] = []
+                    for p in model.periods:
+                        slack_p = pe.value(model.slack_node_balance_p_up[i, s_m, s_o, p] - model.slack_node_balance_p_down[i, s_m, s_o, p]) * s_base
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p'][node_id].append(slack_p)
+                if params.slacks.node_balance.reactive_power:
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q'][node_id] = []
                     for p in model.periods:
-                        slack_p = pe.value(model.slack_node_balance_p[i, s_m, s_o, p]) * s_base
-                        slack_q = pe.value(model.slack_node_balance_q[i, s_m, s_o, p]) * s_base
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p'][node_id].append(slack_p)
+                        slack_q = pe.value(model.slack_node_balance_q_up[i, s_m, s_o, p] - model.slack_node_balance_q_down[i, s_m, s_o, p]) * s_base
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q'][node_id].append(slack_q)
 
             # - Flexibility
