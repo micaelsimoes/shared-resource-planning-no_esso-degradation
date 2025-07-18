@@ -43,8 +43,8 @@ class Slacks:
     def read_slacks_parameters(self, slacks_data):
         self.grid_operation.read_slacks_parameters(slacks_data)
         self.flexibility.read_slacks_parameters(slacks_data)
-        self.ess.read_slacks_parameters(slacks_data)
-        self.shared_ess.read_slacks_parameters(slacks_data)
+        self.ess.read_slacks_parameters(slacks_data, ess_type='ess')
+        self.shared_ess.read_slacks_parameters(slacks_data, ess_type='shared_ess')
         self.node_balance.read_slacks_parameters(slacks_data)
 
 
@@ -79,11 +79,9 @@ class SlacksEnergyStorage:
         self.complementarity = False
         self.day_balance = False
 
-    def read_slacks_parameters(self, slacks_data):
-        if 'ess' in slacks_data:
-            _read_ess_slacks_parameters(self, slacks_data['ess'])
-        elif 'shared_ess' in slacks_data:
-            _read_ess_slacks_parameters(self, slacks_data['shared_ess'])
+    def read_slacks_parameters(self, slacks_data, ess_type):
+        if ess_type in slacks_data:
+            _read_ess_slacks_parameters(self, slacks_data[ess_type])
 
 class SlacksNodeBalance:
 
