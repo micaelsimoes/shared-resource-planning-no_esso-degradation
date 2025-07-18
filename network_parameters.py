@@ -38,14 +38,14 @@ class Slacks:
         self.flexibility = SlacksFlexibility()
         self.ess = SlacksEnergyStorage()
         self.shared_ess = SlacksEnergyStorage()
-        self.node_balance = False
+        self.node_balance = SlacksNodeBalance()
 
     def read_slacks_parameters(self, slacks_data):
         self.grid_operation.read_slacks_parameters(slacks_data)
         self.flexibility.read_slacks_parameters(slacks_data)
         self.ess.read_slacks_parameters(slacks_data)
         self.shared_ess.read_slacks_parameters(slacks_data)
-        self.node_balance = bool(slacks_data["node_balance"])
+        self.node_balance.read_slacks_parameters(slacks_data["node_balance"])
 
 
 class SlacksOperation:
@@ -84,6 +84,19 @@ class SlacksEnergyStorage:
             _read_ess_slacks_parameters(self, slacks_data['ess'])
         elif 'shared_ess' in slacks_data:
             _read_ess_slacks_parameters(self, slacks_data['shared_ess'])
+
+class SlacksNodeBalance:
+
+    def __init__(self):
+        self.active_power = False
+        self.reactive_power = False
+
+    def read_slacks_parameters(self, slacks_data):
+        if 'node_balance' in slacks_data:
+            if 'active_power' in slacks_data['node_balance']:
+                self.active_power = slacks_data['node_balance']['active_power']
+            if 'reactive_power' in slacks_data['node_balance']:
+                self.active_power = slacks_data['node_balance']['reactive_power']
 
 
 class SlacksExpectedValues:
