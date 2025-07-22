@@ -1281,8 +1281,10 @@ def _process_results(network, model, params, results=dict()):
                 for c in model.loads:
                     load_id = network.loads[c].load_id
                     if params.slacks.flexibility.day_balance:
-                        slack_flex = pe.value(model.slack_flex_s_balance_up[c, s_m, s_o] - model.slack_flex_s_balance_down[c, s_m, s_o]) * s_base
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance'][load_id] = slack_flex
+                        slack_flex_p = pe.value(model.slack_flex_p_balance_up[c, s_m, s_o] - model.slack_flex_p_balance_down[c, s_m, s_o]) * s_base
+                        slack_flex_q = pe.value(model.slack_flex_q_balance_up[c, s_m, s_o] - model.slack_flex_q_balance_down[c, s_m, s_o]) * s_base
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance'][load_id]['p'] = slack_flex_p
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance'][load_id]['q'] = slack_flex_q
 
             # - ESS slacks
             if params.es_reg:
