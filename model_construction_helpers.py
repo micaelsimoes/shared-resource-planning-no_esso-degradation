@@ -9,7 +9,7 @@ def e_bounds(m, i, s_m, s_o, p, network):
     node = network.nodes[i]
     if node.type == BUS_REF and not network.is_transmission:
         vg = network.generators[network.get_gen_idx(node.bus_i)].vg
-        return (vg - SMALL_TOLERANCE, vg + SMALL_TOLERANCE)
+        return (vg - EQUALITY_TOLERANCE, vg + EQUALITY_TOLERANCE)
     return (-node.v_max, node.v_max)
 
 
@@ -35,7 +35,7 @@ def vmag_sqr_bounds(m, i, s_m, s_o, p, network, params):
 def voltage_slack_bounds(m, i, s_m, s_o, p, network):
     node = network.nodes[i]
     if node.type == BUS_REF:
-        return (0.00, SMALL_TOLERANCE)
+        return (0.00, EQUALITY_TOLERANCE)
     return (0.00, VMAG_VIOLATION_ALLOWED)
 
 
@@ -447,7 +447,7 @@ def ess_balance_rule(m, e, s_m, s_o, p, network):
     es = network.energy_storages[e]
     eff_ch, eff_dch = es.eff_ch, es.eff_dch
     soc_prev = es.e_init if p == 0 else m.es_soc[e, s_m, s_o, p - 1]
-    return pe.inequality(-EQUALITY_TOLERANCE, m.es_soc[e, s_m, s_o, p] == (soc_prev + m.es_sch[e, s_m, s_o, p] * eff_ch - m.es_sdch[e, s_m, s_o, p] / eff_dch), EQUALITY_TOLERANCE)
+    return pe.inequality(-EQUALITY_TOLERANCE, m.es_soc[e, s_m, s_o, p] - (soc_prev + m.es_sch[e, s_m, s_o, p] * eff_ch - m.es_sdch[e, s_m, s_o, p] / eff_dch), EQUALITY_TOLERANCE)
 
 
 def ess_soc_final_rule(m, e, s_m, s_o, network, params):
@@ -588,7 +588,7 @@ def sess_balance_rule(m, e, s_m, s_o, p, network):
     ses = network.shared_energy_storages[e]
     eff_ch, eff_dch = ses.eff_ch, ses.eff_dch
     soc_prev = m.shared_es_e_rated[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC if p == 0 else m.shared_es_soc[e, s_m, s_o, p - 1]
-    return pe.inequality(m.shared_es_soc[e, s_m, s_o, p] == (soc_prev + m.shared_es_sch[e, s_m, s_o, p] * eff_ch - m.shared_es_sdch[e, s_m, s_o, p] / eff_dch), EQUALITY_TOLERANCE)
+    return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_soc[e, s_m, s_o, p] - (soc_prev + m.shared_es_sch[e, s_m, s_o, p] * eff_ch - m.shared_es_sdch[e, s_m, s_o, p] / eff_dch), EQUALITY_TOLERANCE)
 
 
 def sess_soc_final_rule(m, e, s_m, s_o, network, params):
@@ -931,7 +931,7 @@ def branch_flow_equation_rule(model, b, s_m, s_o, p, network, params):
 
     flow_ij_sqr_expr = compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, params.branch_limit_type)
 
-    return model.flow_ij_sqr[b, s_m, s_o, p] == flow_ij_sqr_expr
+    return pe.inequality(-EQUALITY_TOLERANCE, model.flow_ij_sqr[b, s_m, s_o, p] == flow_ij_sqr_expr, EQUALITY_TOLERANCE)
 
 
 def branch_flow_limit_rule(model, b, s_m, s_o, p, network, params):
