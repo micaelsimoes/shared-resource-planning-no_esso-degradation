@@ -9,7 +9,7 @@ def e_bounds(m, i, s_m, s_o, p, network):
     node = network.nodes[i]
     if node.type == BUS_REF and not network.is_transmission:
         vg = network.generators[network.get_gen_idx(node.bus_i)].vg
-        return (vg - EQUALITY_TOLERANCE, vg + EQUALITY_TOLERANCE)
+        return (vg - SMALL_TOLERANCE, vg + SMALL_TOLERANCE)
     return (-node.v_max, node.v_max)
 
 
@@ -35,7 +35,7 @@ def vmag_sqr_bounds(m, i, s_m, s_o, p, network, params):
 def voltage_slack_bounds(m, i, s_m, s_o, p, network):
     node = network.nodes[i]
     if node.type == BUS_REF:
-        return (0.00, EQUALITY_TOLERANCE)
+        return (0.00, SMALL_TOLERANCE)
     return (0.00, VMAG_VIOLATION_ALLOWED)
 
 
@@ -317,7 +317,7 @@ def voltage_rule_e(m, i, s_m, s_o, p, params):
     e_val = m.e[i, s_m, s_o, p]
     if params.slacks.grid_operation.voltage:
         e_val += m.slack_e_up[i, s_m, s_o, p] - m.slack_e_down[i, s_m, s_o, p]
-    return pe.inequality(-EQUALITY_TOLERANCE, m.e_actual[i, s_m, s_o, p] - e_val, EQUALITY_TOLERANCE)
+    return m.e_actual[i, s_m, s_o, p] == e_val
 
 
 # Voltage constraints, f
@@ -325,7 +325,7 @@ def voltage_rule_f(m, i, s_m, s_o, p, params):
     f_val = m.f[i, s_m, s_o, p]
     if params.slacks.grid_operation.voltage:
         f_val += m.slack_f_up[i, s_m, s_o, p] - m.slack_f_down[i, s_m, s_o, p]
-    return pe.inequality(-EQUALITY_TOLERANCE, m.f_actual[i, s_m, s_o, p] - f_val, EQUALITY_TOLERANCE)
+    return m.f_actual[i, s_m, s_o, p] == f_val
 
 
 # Voltage constraints, magnitude
@@ -333,7 +333,7 @@ def voltage_magnitude_def_rule(m, i, s_m, s_o, p):
     e = m.e[i, s_m, s_o, p]
     f = m.f[i, s_m, s_o, p]
     vmag_sq = e ** 2 + f ** 2
-    return pe.inequality(-EQUALITY_TOLERANCE, m.vmag_sqr[i, s_m, s_o, p] - vmag_sq, EQUALITY_TOLERANCE)
+    return m.vmag_sqr[i, s_m, s_o, p] == vmag_sq
 
 
 # Voltage constraints, magnitude
@@ -407,11 +407,11 @@ def flex_energy_balance_rule(m, c, s_m, s_o, network, params):
 
 # Energy Storage
 def ess_sch_def(m, e, s_m, s_o, p):
-    return m.es_sch[e, s_m, s_o, p]**2 == (m.es_pch[e, s_m, s_o, p]**2 + m.es_qch[e, s_m, s_o, p]**2)
+    return pe.inequality(-EQUALITY_TOLERANCE, m.es_sch[e, s_m, s_o, p]**2 - (m.es_pch[e, s_m, s_o, p]**2 + m.es_qch[e, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
 
 
 def ess_sdch_def(m, e, s_m, s_o, p):
-    return m.es_sdch[e, s_m, s_o, p]**2 == (m.es_pdch[e, s_m, s_o, p]**2 + m.es_qdch[e, s_m, s_o, p]**2)
+    return pe.inequality(-EQUALITY_TOLERANCE, m.es_sdch[e, s_m, s_o, p]**2 - (m.es_pdch[e, s_m, s_o, p]**2 + m.es_qdch[e, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
 
 
 def ess_phi_ch_limits_lower(m, e, s_m, s_o, p, network):
@@ -443,7 +443,7 @@ def ess_comp_rule(m, e, s_m, s_o, p, network, params):
         return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] <= m.slack_es_comp[e, s_m, s_o, p]
     else:
         if params.ess_model == ESS_MODEL_EXACT:
-            return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
+            return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] <= SMALL_TOLERANCE
         elif params.ess_model in [ESS_MODEL_LP_SIMPLIFIED, ESS_MODEL_LP_RELAXED, ESS_MODEL_LP_SIMPLIFIED_EXTENDED]:
             return pe.Constraint.Skip
         else:
@@ -455,7 +455,7 @@ def ess_balance_rule(m, e, s_m, s_o, p, network):
     es = network.energy_storages[e]
     eff_ch, eff_dch = es.eff_ch, es.eff_dch
     soc_prev = es.e_init if p == 0 else m.es_soc[e, s_m, s_o, p - 1]
-    return m.es_soc[e, s_m, s_o, p] == (soc_prev + m.es_sch[e, s_m, s_o, p] * eff_ch - m.es_sdch[e, s_m, s_o, p] / eff_dch)
+    return pe.inequality(-EQUALITY_TOLERANCE, m.es_soc[e, s_m, s_o, p] - (soc_prev + m.es_sch[e, s_m, s_o, p] * eff_ch - m.es_sdch[e, s_m, s_o, p] / eff_dch), EQUALITY_TOLERANCE)
 
 
 def ess_soc_final_rule(m, e, s_m, s_o, network, params):
@@ -464,7 +464,7 @@ def ess_soc_final_rule(m, e, s_m, s_o, network, params):
     if params.slacks.ess.day_balance:
         return m.es_soc[e, s_m, s_o, final_p] == final_soc + m.slack_es_soc_final_up[e, s_m, s_o] - m.slack_es_soc_final_up[e, s_m, s_o]
     else:
-        return pe.inequality(-SMALL_TOLERANCE, m.es_soc[e, s_m, s_o, final_p] - final_soc, SMALL_TOLERANCE)
+        return pe.inequality(-EQUALITY_TOLERANCE, m.es_soc[e, s_m, s_o, final_p] - final_soc, EQUALITY_TOLERANCE)
 
 
 # - Linear ESS models -- Relaxed LP formulation
@@ -538,11 +538,11 @@ def sess_sdch_limit(m, e, s_m, s_o, p):
 
 
 def sess_sch_def(m, e, s_m, s_o, p):
-    return m.shared_es_sch[e, s_m, s_o, p]**2 == (m.shared_es_pch[e, s_m, s_o, p]**2 + m.shared_es_qch[e, s_m, s_o, p]**2)
+    return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_sch[e, s_m, s_o, p]**2 - (m.shared_es_pch[e, s_m, s_o, p]**2 + m.shared_es_qch[e, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
 
 
 def sess_sdch_def(m, e, s_m, s_o, p):
-    return m.shared_es_sdch[e, s_m, s_o, p]**2 == (m.shared_es_pdch[e, s_m, s_o, p]**2 + m.shared_es_qdch[e, s_m, s_o, p]**2)
+    return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_sdch[e, s_m, s_o, p]**2 - (m.shared_es_pdch[e, s_m, s_o, p]**2 + m.shared_es_qdch[e, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
 
 
 def sess_pch_limit(m, e, s_m, s_o, p):
@@ -584,7 +584,7 @@ def sess_comp_rule(m, e, s_m, s_o, p, params):
         return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= m.slack_shared_es_comp[e, s_m, s_o, p]
     else:
         if params.shared_ess_model == ESS_MODEL_EXACT:
-            return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
+            return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= SMALL_TOLERANCE
         elif params.shared_ess_model in [ESS_MODEL_LP_SIMPLIFIED, ESS_MODEL_LP_RELAXED, ESS_MODEL_LP_SIMPLIFIED_EXTENDED]:
             return pe.Constraint.Skip
         else:
@@ -596,7 +596,7 @@ def sess_balance_rule(m, e, s_m, s_o, p, network):
     ses = network.shared_energy_storages[e]
     eff_ch, eff_dch = ses.eff_ch, ses.eff_dch
     soc_prev = m.shared_es_e_rated[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC if p == 0 else m.shared_es_soc[e, s_m, s_o, p - 1]
-    return m.shared_es_soc[e, s_m, s_o, p] == (soc_prev + m.shared_es_sch[e, s_m, s_o, p] * eff_ch - m.shared_es_sdch[e, s_m, s_o, p] / eff_dch)
+    return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_soc[e, s_m, s_o, p] - (soc_prev + m.shared_es_sch[e, s_m, s_o, p] * eff_ch - m.shared_es_sdch[e, s_m, s_o, p] / eff_dch), EQUALITY_TOLERANCE)
 
 
 def sess_soc_final_rule(m, e, s_m, s_o, network, params):
@@ -605,7 +605,7 @@ def sess_soc_final_rule(m, e, s_m, s_o, network, params):
     if params.slacks.shared_ess.day_balance:
         return m.shared_es_soc[e, s_m, s_o, final_p] == final_soc + m.slack_shared_es_soc_final_up[e, s_m, s_o] - m.slack_shared_es_soc_final_down[e, s_m, s_o]
     else:
-        return pe.inequality(-SMALL_TOLERANCE, m.shared_es_soc[e, s_m, s_o, final_p] - final_soc, SMALL_TOLERANCE)
+        return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_soc[e, s_m, s_o, final_p] - final_soc, EQUALITY_TOLERANCE)
 
 
 def sess_pnet_rule(m, e, s_m, s_o, p):
@@ -939,7 +939,7 @@ def branch_flow_equation_rule(model, b, s_m, s_o, p, network, params):
 
     flow_ij_sqr_expr = compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, params.branch_limit_type)
 
-    return pe.inequality(-EQUALITY_TOLERANCE, model.flow_ij_sqr[b, s_m, s_o, p] == flow_ij_sqr_expr, EQUALITY_TOLERANCE)
+    return model.flow_ij_sqr[b, s_m, s_o, p] == flow_ij_sqr_expr
 
 
 def branch_flow_limit_rule(model, b, s_m, s_o, p, network, params):
