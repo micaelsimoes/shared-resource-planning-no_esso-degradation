@@ -297,8 +297,10 @@ def _build_model(network, params):
         model.flex_q_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(qc_flex_up_bounds, network=network, params=params))
         model.flex_q_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(qc_flex_up_bounds, network=network, params=params))
         if params.slacks.flexibility.day_balance:
-            model.slack_flex_s_balance_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 0.01))
-            model.slack_flex_s_balance_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 0.01))
+            model.slack_flex_p_balance_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 0.01))
+            model.slack_flex_p_balance_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 0.01))
+            model.slack_flex_q_balance_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 0.01))
+            model.slack_flex_q_balance_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 0.01))
     if params.l_curt:
         model.pc_curt_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(pc_curt_down_bounds, network=network, params=params))
         model.pc_curt_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(pc_curt_up_bounds, network=network, params=params))
@@ -372,7 +374,8 @@ def _build_model(network, params):
 
     # - Flexible Loads -- Daily energy balance
     if params.fl_reg:
-        model.flex_energy_balance = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_rule, network=network, params=params))
+        model.flex_energy_balance_p = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_p_rule, network=network, params=params))
+        model.flex_energy_balance_q = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_q_rule, network=network, params=params))
 
     # - Energy Storage constraints
     if params.es_reg:

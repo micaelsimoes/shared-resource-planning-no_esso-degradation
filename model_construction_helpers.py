@@ -390,19 +390,47 @@ def power_factor_rule_lower(m, g, s_m, s_o, p, network):
 
 
 # Flexible loads
-def flex_energy_balance_rule(m, c, s_m, s_o, network, params):
+def flex_energy_balance_p_rule(m, c, s_m, s_o, network, params):
+
     load = network.loads[c]
+
+    if network.is_transmission:
+        if load.bus in network.active_distribution_network_nodes:
+            return pe.Constraint.Skip
+
     if load.fl_reg:
         if network.is_transmission and load.bus in network.active_distribution_network_nodes:
             return pe.Constraint.Skip
-        sup_sqr = sum(m.flex_p_up[c, s_m, s_o, p]**2 + m.flex_q_up[c, s_m, s_o, p]**2 for p in m.periods)
-        sdown_sqr = sum(m.flex_p_down[c, s_m, s_o, p]**2 + m.flex_q_down[c, s_m, s_o, p]**2 for p in m.periods)
+        p_up = sum(m.flex_p_up[c, s_m, s_o, p] for p in m.periods)
+        p_down = sum(m.flex_p_down[c, s_m, s_o, p] for p in m.periods)
         if params.slacks.flexibility.day_balance:
-            return sup_sqr == sdown_sqr + m.slack_flex_s_balance_up[c, s_m, s_o] - m.slack_flex_s_balance_down[c, s_m, s_o]
+            return p_up == p_down + m.slack_flex_p_balance_up[c, s_m, s_o] - m.slack_flex_p_balance_down[c, s_m, s_o]
         else:
-            return pe.inequality(-SMALL_TOLERANCE, sup_sqr - sdown_sqr, SMALL_TOLERANCE)
+            return pe.inequality(-SMALL_TOLERANCE, p_up - p_down, SMALL_TOLERANCE)
     else:
         return pe.Constraint.Skip
+
+
+def flex_energy_balance_q_rule(m, c, s_m, s_o, network, params):
+
+    load = network.loads[c]
+
+    if network.is_transmission:
+        if load.bus in network.active_distribution_network_nodes:
+            return pe.Constraint.Skip
+
+    if load.fl_reg:
+        if network.is_transmission and load.bus in network.active_distribution_network_nodes:
+            return pe.Constraint.Skip
+        q_up = sum(m.flex_q_up[c, s_m, s_o, p] for p in m.periods)
+        q_down = sum(m.flex_q_down[c, s_m, s_o, p] for p in m.periods)
+        if params.slacks.flexibility.day_balance:
+            return q_up == q_down + m.slack_flex_p_balance_up[c, s_m, s_o] - m.slack_flex_p_balance_down[c, s_m, s_o]
+        else:
+            return pe.inequality(-SMALL_TOLERANCE, q_up - q_down, SMALL_TOLERANCE)
+    else:
+        return pe.Constraint.Skip
+
 
 
 # Energy Storage
