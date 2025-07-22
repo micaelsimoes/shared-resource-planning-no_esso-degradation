@@ -317,19 +317,14 @@ def generate_flexibility_profiles(base_operational_data, n_samples=100, bandwidt
         model.fit(pd.DataFrame(combined_scaled, columns=combined.columns))
 
         # Sample
-        pc_samples = model.sample(n_samples)
-        pc_samples = scaler.inverse_transform(pc_samples)
-        qc_samples = model.sample(n_samples)
-        qc_samples = scaler.inverse_transform(qc_samples)
+        samples = model.sample(n_samples)
+        samples = scaler.inverse_transform(samples)
 
         # Save
         synthetic_profiles[season] = {
-            'pc': pd.DataFrame(pc_samples[:,:24]),
-            'pc_flex_up': pd.DataFrame(pc_samples[:,24:48]),
-            'pc_flex_down': pd.DataFrame(pc_samples[:,48:]),
-            #'qc': pd.DataFrame(qc_samples[:,:24]),
-            'qc_flex_up': pd.DataFrame(qc_samples[:,24:48]),
-            'qc_flex_down': pd.DataFrame(qc_samples[:,48:])
+            'pc': pd.DataFrame(samples[:,:24]),
+            'pc_flex_up': pd.DataFrame(samples[:,24:48]),
+            'pc_flex_down': pd.DataFrame(samples[:,48:])
         }
 
     return synthetic_profiles
