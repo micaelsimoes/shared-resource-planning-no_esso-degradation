@@ -297,8 +297,8 @@ def _build_model(network, params):
         model.flex_q_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(qc_flex_up_bounds, network=network, params=params))
         model.flex_q_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(qc_flex_up_bounds, network=network, params=params))
         if params.slacks.flexibility.day_balance:
-            model.slack_flex_p_balance_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 0.01))
-            model.slack_flex_p_balance_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 0.01))
+            model.slack_flex_s_balance_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 0.01))
+            model.slack_flex_s_balance_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 0.01))
     if params.l_curt:
         model.pc_curt_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(pc_curt_down_bounds, network=network, params=params))
         model.pc_curt_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(pc_curt_up_bounds, network=network, params=params))
@@ -1281,7 +1281,7 @@ def _process_results(network, model, params, results=dict()):
                 for c in model.loads:
                     load_id = network.loads[c].load_id
                     if params.slacks.flexibility.day_balance:
-                        slack_flex = pe.value(model.slack_flex_p_balance_up[c, s_m, s_o] - model.slack_flex_p_balance_down[c, s_m, s_o]) * s_base
+                        slack_flex = pe.value(model.slack_flex_s_balance_up[c, s_m, s_o] - model.slack_flex_s_balance_down[c, s_m, s_o]) * s_base
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance'][load_id] = slack_flex
 
             # - ESS slacks

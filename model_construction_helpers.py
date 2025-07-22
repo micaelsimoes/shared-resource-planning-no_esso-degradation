@@ -174,7 +174,7 @@ def pc_flex_up_bounds(m, c, s_m, s_o, p, network, params):
     load = network.loads[c]
     if not load.fl_reg:
         return (0.0, SMALL_TOLERANCE)
-    value = abs(load.flexibility.upward[s_o][p])
+    value = abs(load.flexibility.active_power.upward[s_o][p])
     return (0.0, value)
 
 
@@ -182,16 +182,24 @@ def pc_flex_down_bounds(m, c, s_m, s_o, p, network, params):
     load = network.loads[c]
     if not load.fl_reg:
         return (0.0, SMALL_TOLERANCE)
-    value = abs(load.flexibility.downward[s_o][p])
+    value = abs(load.flexibility.active_power.downward[s_o][p])
     return (0.0, value)
 
 
 def qc_flex_up_bounds(m, c, s_m, s_o, p, network, params):
-    return (0.0, SMALL_TOLERANCE)
+    load = network.loads[c]
+    if not load.fl_reg:
+        return (0.0, SMALL_TOLERANCE)
+    value = abs(load.flexibility.reactive_power.upward[s_o][p])
+    return (0.0, value)
 
 
 def qc_flex_down_bounds(m, c, s_m, s_o, p, network, params):
-    return (0.0, SMALL_TOLERANCE)
+    load = network.loads[c]
+    if not load.fl_reg:
+        return (0.0, SMALL_TOLERANCE)
+    value = abs(load.flexibility.reactive_power.downward[s_o][p])
+    return (0.0, value)
 
 
 # Consumption, curtailment
@@ -387,12 +395,12 @@ def flex_energy_balance_rule(m, c, s_m, s_o, network, params):
     if load.fl_reg:
         if network.is_transmission and load.bus in network.active_distribution_network_nodes:
             return pe.Constraint.Skip
-        p_up = sum(m.flex_p_up[c, s_m, s_o, p] for p in m.periods)
-        p_down = sum(m.flex_p_down[c, s_m, s_o, p] for p in m.periods)
+        sup_sqr = sum(m.flex_p_up[c, s_m, s_o, p]**2 + m.flex_q_up[c, s_m, s_o, p]**2 for p in m.periods)
+        sdown_sqr = sum(m.flex_p_down[c, s_m, s_o, p]**2 + m.flex_q_down[c, s_m, s_o, p]**2 for p in m.periods)
         if params.slacks.flexibility.day_balance:
-            return p_up == p_down + m.slack_flex_p_balance_up[c, s_m, s_o] - m.slack_flex_p_balance_down[c, s_m, s_o]
+            return sup_sqr == sdown_sqr + m.slack_flex_s_balance_up[c, s_m, s_o] - m.slack_flex_s_balance_down[c, s_m, s_o]
         else:
-            return pe.inequality(-SMALL_TOLERANCE, p_up - p_down, SMALL_TOLERANCE)
+            return pe.inequality(-SMALL_TOLERANCE, sup_sqr - sdown_sqr, SMALL_TOLERANCE)
     else:
         return pe.Constraint.Skip
 
@@ -1135,7 +1143,7 @@ def slack_penalties(model, network, s_m, s_o, params):
 
     if params.fl_reg and params.slacks.flexibility.day_balance:
         total += base * PENALTY_FLEXIBILITY * sum(
-            model.slack_flex_p_balance_up[c, s_m, s_o] + model.slack_flex_p_balance_down[c, s_m, s_o] for c in model.loads
+            model.slack_flex_s_balance_up[c, s_m, s_o] + model.slack_flex_s_balance_down[c, s_m, s_o] for c in model.loads
         )
 
     if params.es_reg:
