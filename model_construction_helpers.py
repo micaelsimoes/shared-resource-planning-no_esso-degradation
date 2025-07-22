@@ -1170,9 +1170,8 @@ def slack_penalties(model, network, s_m, s_o, params):
                 total += base * PENALTY_NODE_BALANCE * (model.slack_node_balance_q_up[i, s_m, s_o, p] + model.slack_node_balance_q_down[i, s_m, s_o, p])
 
     if params.fl_reg and params.slacks.flexibility.day_balance:
-        total += base * PENALTY_FLEXIBILITY * sum(
-            model.slack_flex_s_balance_up[c, s_m, s_o] + model.slack_flex_s_balance_down[c, s_m, s_o] for c in model.loads
-        )
+        total += base * PENALTY_FLEXIBILITY * sum(model.slack_flex_p_balance_up[c, s_m, s_o] + model.slack_flex_p_balance_down[c, s_m, s_o] for c in model.loads)
+        total += base * PENALTY_FLEXIBILITY * sum(model.slack_flex_q_balance_up[c, s_m, s_o] + model.slack_flex_q_balance_down[c, s_m, s_o] for c in model.loads)
 
     if params.es_reg:
         for e in model.energy_storages:
