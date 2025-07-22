@@ -344,7 +344,7 @@ def sg_sqr_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable():
         return pe.Constraint.Skip
-    return m.sg_sqr[g, s_m, s_o, p] == (m.pg[g, s_m, s_o, p]**2 + m.qg[g, s_m, s_o, p]**2)
+    return pe.inequality(-EQUALITY_TOLERANCE, m.sg_sqr[g, s_m, s_o, p] - (m.pg[g, s_m, s_o, p]**2 + m.qg[g, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
 
 
 # Curtailment: sg = init_sg - sg_curt
@@ -352,7 +352,7 @@ def sg_curtailment_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable():
         return pe.Constraint.Skip
-    return m.sg_sqr[g, s_m, s_o, p] == (m.sg_init[g, s_m, s_o, p] - m.sg_curt[g, s_m, s_o, p]) ** 2
+    return pe.inequality(-EQUALITY_TOLERANCE, m.sg_sqr[g, s_m, s_o, p] - (m.sg_init[g, s_m, s_o, p] - m.sg_curt[g, s_m, s_o, p]) ** 2, EQUALITY_TOLERANCE)
 
 
 def power_factor_rule_upper(m, g, s_m, s_o, p, network):
@@ -399,11 +399,11 @@ def flex_energy_balance_rule(m, c, s_m, s_o, network, params):
 
 # Energy Storage
 def ess_sch_def(m, e, s_m, s_o, p):
-    return pe.inequality(-EQUALITY_TOLERANCE, m.es_sch[e, s_m, s_o, p]**2 - (m.es_pch[e, s_m, s_o, p]**2 + m.es_qch[e, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
+    return m.es_sch[e, s_m, s_o, p]**2 == (m.es_pch[e, s_m, s_o, p]**2 + m.es_qch[e, s_m, s_o, p]**2)
 
 
 def ess_sdch_def(m, e, s_m, s_o, p):
-    return pe.inequality(-EQUALITY_TOLERANCE, m.es_sdch[e, s_m, s_o, p]**2 - (m.es_pdch[e, s_m, s_o, p]**2 + m.es_qdch[e, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
+    return m.es_sdch[e, s_m, s_o, p]**2 == (m.es_pdch[e, s_m, s_o, p]**2 + m.es_qdch[e, s_m, s_o, p]**2)
 
 
 def ess_phi_ch_limits_lower(m, e, s_m, s_o, p, network):
