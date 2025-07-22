@@ -327,7 +327,7 @@ def generate_flexibility_profiles(base_operational_data, n_samples=100, bandwidt
             'pc': pd.DataFrame(pc_samples[:,:24]),
             'pc_flex_up': pd.DataFrame(pc_samples[:,24:48]),
             'pc_flex_down': pd.DataFrame(pc_samples[:,48:]),
-            'qc': pd.DataFrame(qc_samples[:,:24]),
+            #'qc': pd.DataFrame(qc_samples[:,:24]),
             'qc_flex_up': pd.DataFrame(qc_samples[:,24:48]),
             'qc_flex_down': pd.DataFrame(qc_samples[:,48:])
         }
