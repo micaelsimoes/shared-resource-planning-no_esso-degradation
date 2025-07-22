@@ -309,7 +309,7 @@ def voltage_rule_e(m, i, s_m, s_o, p, params):
     e_val = m.e[i, s_m, s_o, p]
     if params.slacks.grid_operation.voltage:
         e_val += m.slack_e_up[i, s_m, s_o, p] - m.slack_e_down[i, s_m, s_o, p]
-    return m.e_actual[i, s_m, s_o, p] == e_val
+    return pe.inequality(-EQUALITY_TOLERANCE, m.e_actual[i, s_m, s_o, p] - e_val, EQUALITY_TOLERANCE)
 
 
 # Voltage constraints, f
@@ -317,7 +317,7 @@ def voltage_rule_f(m, i, s_m, s_o, p, params):
     f_val = m.f[i, s_m, s_o, p]
     if params.slacks.grid_operation.voltage:
         f_val += m.slack_f_up[i, s_m, s_o, p] - m.slack_f_down[i, s_m, s_o, p]
-    return m.f_actual[i, s_m, s_o, p] == f_val
+    return pe.inequality(-EQUALITY_TOLERANCE, m.f_actual[i, s_m, s_o, p] - f_val, EQUALITY_TOLERANCE)
 
 
 # Voltage constraints, magnitude
@@ -325,7 +325,7 @@ def voltage_magnitude_def_rule(m, i, s_m, s_o, p):
     e = m.e[i, s_m, s_o, p]
     f = m.f[i, s_m, s_o, p]
     vmag_sq = e ** 2 + f ** 2
-    return m.vmag_sqr[i, s_m, s_o, p] == vmag_sq
+    return pe.inequality(-EQUALITY_TOLERANCE, m.vmag_sqr[i, s_m, s_o, p] - vmag_sq, EQUALITY_TOLERANCE)
 
 
 # Voltage constraints, magnitude
@@ -399,11 +399,11 @@ def flex_energy_balance_rule(m, c, s_m, s_o, network, params):
 
 # Energy Storage
 def ess_sch_def(m, e, s_m, s_o, p):
-    return m.es_sch[e, s_m, s_o, p]**2 == (m.es_pch[e, s_m, s_o, p]**2 + m.es_qch[e, s_m, s_o, p]**2)
+    return pe.inequality(-EQUALITY_TOLERANCE, m.es_sch[e, s_m, s_o, p]**2 - (m.es_pch[e, s_m, s_o, p]**2 + m.es_qch[e, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
 
 
 def ess_sdch_def(m, e, s_m, s_o, p):
-    return m.es_sdch[e, s_m, s_o, p]**2 == (m.es_pdch[e, s_m, s_o, p]**2 + m.es_qdch[e, s_m, s_o, p]**2)
+    return pe.inequality(-EQUALITY_TOLERANCE, m.es_sdch[e, s_m, s_o, p]**2 - (m.es_pdch[e, s_m, s_o, p]**2 + m.es_qdch[e, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
 
 
 def ess_phi_ch_limits_lower(m, e, s_m, s_o, p, network):
@@ -447,7 +447,7 @@ def ess_balance_rule(m, e, s_m, s_o, p, network):
     es = network.energy_storages[e]
     eff_ch, eff_dch = es.eff_ch, es.eff_dch
     soc_prev = es.e_init if p == 0 else m.es_soc[e, s_m, s_o, p - 1]
-    return m.es_soc[e, s_m, s_o, p] == (soc_prev + m.es_sch[e, s_m, s_o, p] * eff_ch - m.es_sdch[e, s_m, s_o, p] / eff_dch)
+    return pe.inequality(-EQUALITY_TOLERANCE, m.es_soc[e, s_m, s_o, p] - (soc_prev + m.es_sch[e, s_m, s_o, p] * eff_ch - m.es_sdch[e, s_m, s_o, p] / eff_dch), EQUALITY_TOLERANCE)
 
 
 def ess_soc_final_rule(m, e, s_m, s_o, network, params):
@@ -530,11 +530,11 @@ def sess_sdch_limit(m, e, s_m, s_o, p):
 
 
 def sess_sch_def(m, e, s_m, s_o, p):
-    return m.shared_es_sch[e, s_m, s_o, p]**2 == (m.shared_es_pch[e, s_m, s_o, p]**2 + m.shared_es_qch[e, s_m, s_o, p]**2)
+    return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_sch[e, s_m, s_o, p]**2 - (m.shared_es_pch[e, s_m, s_o, p]**2 + m.shared_es_qch[e, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
 
 
 def sess_sdch_def(m, e, s_m, s_o, p):
-    return m.shared_es_sdch[e, s_m, s_o, p]**2 == (m.shared_es_pdch[e, s_m, s_o, p]**2 + m.shared_es_qdch[e, s_m, s_o, p]**2)
+    return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_sdch[e, s_m, s_o, p]**2 - (m.shared_es_pdch[e, s_m, s_o, p]**2 + m.shared_es_qdch[e, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
 
 
 def sess_pch_limit(m, e, s_m, s_o, p):
@@ -588,7 +588,7 @@ def sess_balance_rule(m, e, s_m, s_o, p, network):
     ses = network.shared_energy_storages[e]
     eff_ch, eff_dch = ses.eff_ch, ses.eff_dch
     soc_prev = m.shared_es_e_rated[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC if p == 0 else m.shared_es_soc[e, s_m, s_o, p - 1]
-    return m.shared_es_soc[e, s_m, s_o, p] == (soc_prev + m.shared_es_sch[e, s_m, s_o, p] * eff_ch - m.shared_es_sdch[e, s_m, s_o, p] / eff_dch)
+    return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_soc[e, s_m, s_o, p] - (soc_prev + m.shared_es_sch[e, s_m, s_o, p] * eff_ch - m.shared_es_sdch[e, s_m, s_o, p] / eff_dch), EQUALITY_TOLERANCE)
 
 
 def sess_soc_final_rule(m, e, s_m, s_o, network, params):
