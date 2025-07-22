@@ -896,13 +896,18 @@ def _update_network_with_operational_data(network, base_data, synthetic_profiles
         pc = np.array(synthetic_profiles['consumption'][network.day][load_id]['pc'].sample(n=network.num_oper_scenarios)) * pc_base * load_growth_cumul
         qc = np.array(synthetic_profiles['consumption'][network.day][load_id]['qc'].sample(n=network.num_oper_scenarios)) * qc_base * load_growth_cumul
         pc_flex = np.array(synthetic_profiles['flexibility'][network.day]['pc'].sample(n=network.num_oper_scenarios)) * pc_flex_base * flexibility_growth_cumul
-        flex_up = np.array(synthetic_profiles['flexibility'][network.day]['flex_up'].sample(n=network.num_oper_scenarios)) * pc_flex_base * flexibility_growth_cumul
-        flex_down = np.array(synthetic_profiles['flexibility'][network.day]['flex_down'].sample(n=network.num_oper_scenarios)) * pc_flex_base * flexibility_growth_cumul
+        pc_flex_up = np.array(synthetic_profiles['flexibility'][network.day]['pc_flex_up'].sample(n=network.num_oper_scenarios)) * pc_flex_base * flexibility_growth_cumul
+        pc_flex_down = np.array(synthetic_profiles['flexibility'][network.day]['pc_flex_down'].sample(n=network.num_oper_scenarios)) * pc_flex_base * flexibility_growth_cumul
+        qc_flex_up = np.array(synthetic_profiles['flexibility'][network.day]['qc_flex_up'].sample(n=network.num_oper_scenarios)) * pc_flex_base * flexibility_growth_cumul
+        qc_flex_down = np.array(synthetic_profiles['flexibility'][network.day]['qc_flex_down'].sample(n=network.num_oper_scenarios)) * pc_flex_base * flexibility_growth_cumul
 
         load.pd = (pc + pc_flex) / network.baseMVA
+        load.flexibility.active_power.upward = pc_flex_up / network.baseMVA
+        load.flexibility.active_power.downward = pc_flex_down / network.baseMVA
+
         load.qd = qc / network.baseMVA
-        load.flexibility.upward = flex_up / network.baseMVA
-        load.flexibility.downward = flex_down / network.baseMVA
+        load.flexibility.reactive_power.upward = qc_flex_up / network.baseMVA
+        load.flexibility.reactive_power.downward = qc_flex_down / network.baseMVA
 
     for generator in network.generators:
 
