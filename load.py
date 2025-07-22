@@ -19,7 +19,12 @@ class Load:
 #   Class LOAD FLEXIBILITY
 # ======================================================================================================================
 class LoadFlexibility:
+    def __init__(self):
+        self.active_power = LoadFlexibilityDirection()
+        self.reactive_power = LoadFlexibilityDirection()
 
+
+class LoadFlexibilityDirection:
     def __init__(self):
         self.upward = list()                # Note: FL - increase consumption
         self.downward = list()
