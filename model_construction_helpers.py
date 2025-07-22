@@ -594,7 +594,7 @@ def sess_balance_rule(m, e, s_m, s_o, p, network):
 def sess_soc_final_rule(m, e, s_m, s_o, network, params):
     final_soc = m.shared_es_e_rated[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC
     final_p = m.periods[-1]
-    if params.slacks.ess.day_balance:
+    if params.slacks.shared_ess.day_balance:
         return m.shared_es_soc[e, s_m, s_o, final_p] == final_soc + m.slack_shared_es_soc_final_up[e, s_m, s_o] - m.slack_shared_es_soc_final_down[e, s_m, s_o]
     else:
         return pe.inequality(-SMALL_TOLERANCE, m.shared_es_soc[e, s_m, s_o, final_p] - final_soc, SMALL_TOLERANCE)
