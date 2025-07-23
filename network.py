@@ -906,8 +906,8 @@ def _update_network_with_operational_data(network, base_data, synthetic_profiles
         load.qd = qc / network.baseMVA
         load.flexibility.active_power.upward = pc_flex_up / network.baseMVA
         load.flexibility.active_power.downward = pc_flex_down / network.baseMVA
-        load.flexibility.reactive_power.upward = np.zeros(shape=pc_flex_up.shape)
-        load.flexibility.reactive_power.downward = np.zeros(shape=pc_flex_down.shape)
+        load.flexibility.reactive_power.upward = pc_flex_up * 0.50 / network.baseMVA
+        load.flexibility.reactive_power.downward = pc_flex_down * 0.50 / network.baseMVA
 
     for generator in network.generators:
 
