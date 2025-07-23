@@ -374,8 +374,9 @@ def _build_model(network, params):
 
     # - Flexible Loads -- Daily energy balance
     if params.fl_reg:
-        model.flex_energy_balance_p = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_p_rule, network=network, params=params))
-        model.flex_energy_balance_q = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_q_rule, network=network, params=params))
+        # model.flex_energy_balance_p = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_p_rule, network=network, params=params))
+        # model.flex_energy_balance_q = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_q_rule, network=network, params=params))
+        model.flex_energy_balance_s = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_s_rule, network=network, params=params))
 
     # - Energy Storage constraints
     if params.es_reg:

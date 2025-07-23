@@ -432,6 +432,27 @@ def flex_energy_balance_q_rule(m, c, s_m, s_o, network, params):
         return pe.Constraint.Skip
 
 
+def flex_energy_balance_s_rule(m, c, s_m, s_o, network, params):
+
+    load = network.loads[c]
+
+    if network.is_transmission:
+        if load.bus in network.active_distribution_network_nodes:
+            return pe.Constraint.Skip
+
+    if load.fl_reg:
+        if network.is_transmission and load.bus in network.active_distribution_network_nodes:
+            return pe.Constraint.Skip
+        s_up_sqr = sum(m.flex_p_up[c, s_m, s_o, p] ** 2 + m.flex_q_up[c, s_m, s_o, p] ** 2 for p in m.periods)
+        s_down_sqr = sum(m.flex_p_down[c, s_m, s_o, p] ** 2 + m.flex_q_down[c, s_m, s_o, p] ** 2 for p in m.periods)
+        if params.slacks.flexibility.day_balance:
+            return s_up_sqr == s_down_sqr + m.slack_flex_p_balance_up[c, s_m, s_o] - m.slack_flex_p_balance_down[c, s_m, s_o]
+        else:
+            return pe.inequality(-SMALL_TOLERANCE, s_up_sqr - s_down_sqr, SMALL_TOLERANCE)
+    else:
+        return pe.Constraint.Skip
+
+
 
 # Energy Storage
 def ess_sch_def(m, e, s_m, s_o, p):
