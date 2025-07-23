@@ -492,7 +492,7 @@ def ess_comp_rule(m, e, s_m, s_o, p, network, params):
         return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] <= m.slack_es_comp[e, s_m, s_o, p]
     else:
         if params.ess_model == ESS_MODEL_EXACT:
-            return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
+            return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] <= SMALL_TOLERANCE
         elif params.ess_model in [ESS_MODEL_LP_SIMPLIFIED, ESS_MODEL_LP_RELAXED, ESS_MODEL_LP_SIMPLIFIED_EXTENDED]:
             return pe.Constraint.Skip
         else:
@@ -633,7 +633,7 @@ def sess_comp_rule(m, e, s_m, s_o, p, params):
         return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= m.slack_shared_es_comp[e, s_m, s_o, p]
     else:
         if params.shared_ess_model == ESS_MODEL_EXACT:
-            return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
+            return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= SMALL_TOLERANCE
         elif params.shared_ess_model in [ESS_MODEL_LP_SIMPLIFIED, ESS_MODEL_LP_RELAXED, ESS_MODEL_LP_SIMPLIFIED_EXTENDED]:
             return pe.Constraint.Skip
         else:
@@ -654,15 +654,15 @@ def sess_soc_final_rule(m, e, s_m, s_o, network, params):
     if params.slacks.shared_ess.day_balance:
         return m.shared_es_soc[e, s_m, s_o, final_p] == final_soc + m.slack_shared_es_soc_final_up[e, s_m, s_o] - m.slack_shared_es_soc_final_down[e, s_m, s_o]
     else:
-        return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_soc[e, s_m, s_o, final_p] - final_soc, EQUALITY_TOLERANCE)
+        return pe.inequality(-SMALL_TOLERANCE, m.shared_es_soc[e, s_m, s_o, final_p] - final_soc, SMALL_TOLERANCE)
 
 
 def sess_pnet_rule(m, e, s_m, s_o, p):
-    return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_pnet[e, s_m, s_o, p] - (m.shared_es_pch[e, s_m, s_o, p] - m.shared_es_pdch[e, s_m, s_o, p]), EQUALITY_TOLERANCE)
+    return m.shared_es_pnet[e, s_m, s_o, p] == (m.shared_es_pch[e, s_m, s_o, p] - m.shared_es_pdch[e, s_m, s_o, p])
 
 
 def sess_qnet_rule(m, e, s_m, s_o, p):
-    return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_qnet[e, s_m, s_o, p] - (m.shared_es_qch[e, s_m, s_o, p] - m.shared_es_qdch[e, s_m, s_o, p]), EQUALITY_TOLERANCE)
+    return m.shared_es_qnet[e, s_m, s_o, p] == (m.shared_es_qch[e, s_m, s_o, p] - m.shared_es_qdch[e, s_m, s_o, p])
 
 
 def sess_s_sensitivities(m, e):
