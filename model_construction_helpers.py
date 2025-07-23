@@ -806,7 +806,6 @@ def compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, limit_type):
     raise ValueError(f"Unknown branch limit type: {limit_type}")
 
 
-# Objective function
 def compute_node_load(model, i, s_m, s_o, p, network, params):
 
     node = network.nodes[i]
@@ -1109,7 +1108,7 @@ def gen_curtailment_cost(model, network, s_m, s_o, params):
     if params.rg_curt:
         cost = model.cost_res_curtailment
         return sum(
-            cost * network.baseMVA * (model.sg_curt_up[g, s_m, s_o, p] + model.sg_curt_down[g, s_m, s_o, p])
+            cost * network.baseMVA * (model.sg_init[g, s_m, s_o, p] - model.sg_abs[g, s_m, s_o, p])
             for g in model.generators if network.generators[g].is_curtaillable()
             for p in model.periods
         )
@@ -1120,7 +1119,7 @@ def gen_curtailment_penalty(model, network, s_m, s_o, params):
     if params.rg_curt:
         penalty = model.penalty_gen_curtailment
         return sum(
-            penalty * network.baseMVA * (model.sg_curt_up[g, s_m, s_o, p] + model.sg_curt_down[g, s_m, s_o, p])
+            penalty * network.baseMVA * (model.sg_init[g, s_m, s_o, p] - model.sg_abs[g, s_m, s_o, p])
             for g in model.generators
             for p in model.periods
         )
