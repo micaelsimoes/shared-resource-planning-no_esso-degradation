@@ -360,7 +360,8 @@ def sg_curtailment_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable() or not generator.status[p]:
         return pe.Constraint.Skip
-    return pe.inequality(-EQUALITY_TOLERANCE, m.sg_sqr[g, s_m, s_o, p] - (m.sg_init[g, s_m, s_o, p] - m.sg_curt[g, s_m, s_o, p]) ** 2, EQUALITY_TOLERANCE)
+    sg_curt = m.sg_curt_down[g, s_m, s_o, p] - m.sg_curt_up[g, s_m, s_o, p]
+    return pe.inequality(-EQUALITY_TOLERANCE, m.sg_sqr[g, s_m, s_o, p] - (m.sg_init[g, s_m, s_o, p] - sg_curt) ** 2, EQUALITY_TOLERANCE)
 
 
 def power_factor_rule_upper(m, g, s_m, s_o, p, network):
@@ -1110,7 +1111,7 @@ def gen_curtailment_cost(model, network, s_m, s_o, params):
     if params.rg_curt:
         cost = model.cost_res_curtailment
         return sum(
-            cost * network.baseMVA * model.sg_curt[g, s_m, s_o, p]
+            cost * network.baseMVA * (model.sg_curt_up[g, s_m, s_o, p] + model.sg_curt_down[g, s_m, s_o, p])
             for g in model.generators if network.generators[g].is_curtaillable()
             for p in model.periods
         )
@@ -1121,7 +1122,7 @@ def gen_curtailment_penalty(model, network, s_m, s_o, params):
     if params.rg_curt:
         penalty = model.penalty_gen_curtailment
         return sum(
-            penalty * network.baseMVA * model.sg_curt[g, s_m, s_o, p]
+            penalty * network.baseMVA * (model.sg_curt_up[g, s_m, s_o, p] + model.sg_curt_down[g, s_m, s_o, p])
             for g in model.generators
             for p in model.periods
         )
