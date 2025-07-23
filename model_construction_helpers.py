@@ -350,23 +350,21 @@ def voltage_magnitude_cons_rule(m, i, s_m, s_o, p, network, params):
 # Generation, Sg^2
 def sg_sqr_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
-    if not generator.is_curtaillable():
+    if not generator.is_curtaillable() or not generator.status[p]:
         return pe.Constraint.Skip
     return m.sg_sqr[g, s_m, s_o, p] == (m.pg[g, s_m, s_o, p]**2 + m.qg[g, s_m, s_o, p]**2)
 
 
-# Curtailment: sg = init_sg - sg_curt
-def sg_curtailment_rule(m, g, s_m, s_o, p, network, params):
+def sg_abs_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable() or not generator.status[p]:
         return pe.Constraint.Skip
-    sg_curt = m.sg_curt_down[g, s_m, s_o, p] - m.sg_curt_up[g, s_m, s_o, p]
-    return m.sg_sqr[g, s_m, s_o, p] == (m.sg_init[g, s_m, s_o, p] - sg_curt) ** 2
+    return m.sg_abs[g, s_m, s_o, p] == m.sg_sqr[g, s_m, s_o, p]
 
 
 def power_factor_rule_upper(m, g, s_m, s_o, p, network):
     generator = network.generators[g]
-    if not generator.is_curtaillable():
+    if not generator.is_curtaillable() or not generator.status[p]:
         return pe.Constraint.Skip
     pg = m.pg[g, s_m, s_o, p]
     qg = m.qg[g, s_m, s_o, p]
@@ -379,7 +377,7 @@ def power_factor_rule_upper(m, g, s_m, s_o, p, network):
 
 def power_factor_rule_lower(m, g, s_m, s_o, p, network):
     generator = network.generators[g]
-    if not generator.is_curtaillable():
+    if not generator.is_curtaillable() or not generator.status[p]:
         return pe.Constraint.Skip
     pg = m.pg[g, s_m, s_o, p]
     qg = m.qg[g, s_m, s_o, p]
