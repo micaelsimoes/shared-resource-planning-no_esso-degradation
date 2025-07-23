@@ -358,7 +358,7 @@ def sg_sqr_rule(m, g, s_m, s_o, p, network, params):
 # Curtailment: sg = init_sg - sg_curt
 def sg_curtailment_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
-    if not generator.is_curtaillable():
+    if not generator.is_curtaillable() or not generator.status[p]:
         return pe.Constraint.Skip
     return pe.inequality(-EQUALITY_TOLERANCE, m.sg_sqr[g, s_m, s_o, p] - (m.sg_init[g, s_m, s_o, p] - m.sg_curt[g, s_m, s_o, p]) ** 2, EQUALITY_TOLERANCE)
 
