@@ -361,7 +361,7 @@ def sg_curtailment_rule(m, g, s_m, s_o, p, network, params):
     if not generator.is_curtaillable() or not generator.status[p]:
         return pe.Constraint.Skip
     sg_curt = m.sg_curt_down[g, s_m, s_o, p] - m.sg_curt_up[g, s_m, s_o, p]
-    return pe.inequality(-EQUALITY_TOLERANCE, m.sg_sqr[g, s_m, s_o, p] - (m.sg_init[g, s_m, s_o, p] - sg_curt) ** 2, EQUALITY_TOLERANCE)
+    return m.sg_sqr[g, s_m, s_o, p] == (m.sg_init[g, s_m, s_o, p] - sg_curt) ** 2
 
 
 def power_factor_rule_upper(m, g, s_m, s_o, p, network):
