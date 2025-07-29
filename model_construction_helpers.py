@@ -79,30 +79,18 @@ def qg_init(m, g, s_m, s_o, p, network):
 
 # Generation, Sg
 def sg_init(m, g, s_m, s_o, p, network, params):
-
     gen = network.generators[g]
-    if not gen.is_curtaillable() or not gen.status[p]:
-        return 0.00
-
-    # Apparent power for initialization and bound
     pg = gen.pg[s_o][p]
     qg = gen.qg[s_o][p]
     sg = (pg ** 2 + qg ** 2) ** 0.5
-
     return abs(sg)
 
 
 def sg_bounds(m, g, s_m, s_o, p, network, params):
-
     gen = network.generators[g]
-    if not gen.is_curtaillable() or not gen.status[p]:
-        return (0.0, SMALL_TOLERANCE)
-
-    # Estimated apparent power for bounds
     pg = gen.pg[s_o][p]
     qg = gen.qg[s_o][p]
     sg = (pg ** 2 + qg ** 2) ** 0.5
-
     return (0.0, sg)
 
 
@@ -336,16 +324,10 @@ def voltage_magnitude_cons_rule(m, i, s_m, s_o, p, network, params):
 
 
 def sg_abs_rule(m, g, s_m, s_o, p, network, params):
-    generator = network.generators[g]
-    if not generator.is_curtaillable() or not generator.status[p]:
-        return pe.Constraint.Skip
     return m.sg_abs[g, s_m, s_o, p] ** 2 == (m.pg[g, s_m, s_o, p]**2 + m.qg[g, s_m, s_o, p]**2)
 
 
 def sg_curt_rule(m, g, s_m, s_o, p, network, params):
-    generator = network.generators[g]
-    if not generator.is_curtaillable() or not generator.status[p]:
-        return pe.Constraint.Skip
     return m.sg_curt[g, s_m, s_o, p] == m.sg_init[g, s_m, s_o, p] - m.sg_abs[g, s_m, s_o, p] ** 2
 
 
