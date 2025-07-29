@@ -1,3 +1,5 @@
+from token import EQUAL
+
 import pyomo.environ as pe
 from math import tan, atan2, acos
 from helper_functions import *
@@ -335,16 +337,10 @@ def voltage_magnitude_cons_rule(m, i, s_m, s_o, p, network, params):
 
 # Generation, Sg^2
 def sg_sqr_rule(m, g, s_m, s_o, p, network, params):
-    generator = network.generators[g]
-    if not generator.is_curtaillable() or not generator.status[p]:
-        return pe.Constraint.Skip
     return pe.inequality(-EQUALITY_TOLERANCE, m.sg_sqr[g, s_m, s_o, p] - (m.pg[g, s_m, s_o, p]**2 + m.qg[g, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
 
 
 def sg_abs_rule(m, g, s_m, s_o, p, network, params):
-    generator = network.generators[g]
-    if not generator.is_curtaillable() or not generator.status[p]:
-        return pe.Constraint.Skip
     return pe.inequality(-EQUALITY_TOLERANCE, m.sg_abs[g, s_m, s_o, p] ** 2 - m.sg_sqr[g, s_m, s_o, p], EQUALITY_TOLERANCE)
 
 
@@ -352,7 +348,7 @@ def sg_curt_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable() or not generator.status[p]:
         return pe.Constraint.Skip
-    return pe.inequality(-EQUALITY_TOLERANCE, m.sg_curt[g, s_m, s_o, p] - m.sg_init[g, s_m, s_o, p] - m.sg_curt[g, s_m, s_o, p], EQUALITY_TOLERANCE)
+    return pe.inequality(-EQUALITY_TOLERANCE, m.sg_curt[g, s_m, s_o, p] - (m.sg_init[g, s_m, s_o, p] - m.sg_curt[g, s_m, s_o, p]), EQUALITY_TOLERANCE)
 
 
 def power_factor_rule_upper(m, g, s_m, s_o, p, network):
