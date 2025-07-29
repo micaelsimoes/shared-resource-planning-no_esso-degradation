@@ -368,7 +368,7 @@ def _build_model(network, params):
     model.generation_power_factor = pe.ConstraintList()
     if params.rg_curt:
         model.sg_abs_def = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_abs_rule, network=network, params=params))
-        model.sg_curt_def = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_abs_rule, network=network, params=params))
+        model.sg_curt_def = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_curt_rule, network=network, params=params))
         model.gen_pf_upper = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(power_factor_rule_upper, network=network))
         model.gen_pf_lower = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(power_factor_rule_lower, network=network))
 
