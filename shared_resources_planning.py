@@ -900,7 +900,7 @@ def update_transmission_model_to_admm(planning_problem, model, params):
 
                 for p in model[year][day].periods:
 
-                    constraint_v_req = (model[year][day].expected_interface_vmagr[dn, p] - model[year][day].vmag_req[dn, p])
+                    constraint_v_req = (model[year][day].expected_interface_vmag[dn, p] - model[year][day].vmag_req[dn, p])
                     obj += model[year][day].dual_vmag_req[dn, p] * constraint_v_req
                     obj += (model[year][day].rho_v / 2) * (constraint_v_req ** 2)
 
