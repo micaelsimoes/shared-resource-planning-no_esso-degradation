@@ -572,7 +572,6 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
                     consensus_vars['ess']['tso']['current'][adn_node_id][year][day]['p'][p] = p_ess
                     consensus_vars['ess']['tso']['current'][adn_node_id][year][day]['q'][p] = q_ess
 
-    gc.collect()
     return tso_model, results
 
 
@@ -657,7 +656,6 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
                     consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] = q_ess
 
         dso_models[node_id] = dso_model
-        gc.collect()
 
     return dso_models, results
 
@@ -701,7 +699,6 @@ def create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidat
                     consensus_vars['ess']['esso']['prev'][node_id][year][day]['p'][p] = shared_ess_p
                     consensus_vars['ess']['esso']['prev'][node_id][year][day]['q'][p] = shared_ess_q
 
-    gc.collect()
     return esso_model, results
 
 
@@ -1276,8 +1273,6 @@ def update_distribution_coordination_models_and_solve_parallel(distribution_netw
         for future in as_completed(tasks):
             node_id, result = future.result()
             res[node_id] = result
-
-    gc.collect()
 
     return res
 
