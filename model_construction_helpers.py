@@ -21,14 +21,14 @@ def f_bounds(m, i, s_m, s_o, p, network):
     return (-node.v_max, node.v_max)
 
 
-def vmag_sqr_bounds(m, i, s_m, s_o, p, network, params):
+def vmag_bounds(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
     v_min = node.v_min
     v_max = node.v_max
     if params.slacks.grid_operation.voltage:
         v_min -= VMAG_VIOLATION_ALLOWED
         v_max += VMAG_VIOLATION_ALLOWED
-    return (v_min ** 2, v_max ** 2)
+    return (v_min, v_max)
 
 
 # Voltage variables, slack bounds
@@ -333,18 +333,18 @@ def voltage_magnitude_def_rule(m, i, s_m, s_o, p):
     e = m.e[i, s_m, s_o, p]
     f = m.f[i, s_m, s_o, p]
     vmag_sq = e ** 2 + f ** 2
-    return m.vmag_sqr[i, s_m, s_o, p] == vmag_sq
+    return m.vmag[i, s_m, s_o, p] ** 2 == vmag_sq
 
 
 # Voltage constraints, magnitude
 def voltage_magnitude_cons_rule(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
-    vmag_sq = m.vmag_sqr[i, s_m, s_o, p]
+    vmag = m.vmag[i, s_m, s_o, p]
     if node.type == BUS_PV and params.enforce_vg:
         vg = network.generators[network.get_gen_idx(node.bus_i)].vg[p]
-        return pe.inequality(-SMALL_TOLERANCE, vmag_sq - vg ** 2, SMALL_TOLERANCE)
+        return pe.inequality(-SMALL_TOLERANCE, vmag - vg, SMALL_TOLERANCE)
     else:
-        return pe.inequality(node.v_min ** 2, vmag_sq, node.v_max ** 2)
+        return pe.inequality(node.v_min, vmag, node.v_max)
 
 
 # Generation, Sg^2
@@ -733,7 +733,7 @@ def interface_pf_q_transmission_rule(m, dn, s_m, s_o, p, network, params):
 def interface_vmag_sqr_distribution_rule(m, s_m, s_o, p, network):
     ref_node_id = network.get_reference_node_id()
     ref_node_idx = network.get_node_idx(ref_node_id)
-    return pe.inequality(-EQUALITY_TOLERANCE, m.vmag_sqr_adn[s_m, s_o, p] - m.vmag_sqr[ref_node_idx, s_m, s_o, p], EQUALITY_TOLERANCE)
+    return pe.inequality(-EQUALITY_TOLERANCE, m.vmag_sqr_adn[s_m, s_o, p] - m.vmag[ref_node_idx, s_m, s_o, p] ** 2, EQUALITY_TOLERANCE)
 
 
 def interface_pf_p_distribution_rule(m, s_m, s_o, p, network):
