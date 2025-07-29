@@ -709,7 +709,7 @@ def sess_simplified_model_comp_rule(m, e, s_m, s_o, p, network):
 def interface_vmag_sqr_transmission_rule(m, dn, s_m, s_o, p, network):
     adn_node_id = network.active_distribution_network_nodes[dn]
     adn_node_idx = network.get_node_idx(adn_node_id)
-    return pe.inequality(-EQUALITY_TOLERANCE, m.vmag_sqr_adn[dn, s_m, s_o, p] - m.vmag_sqr[adn_node_idx, s_m, s_o, p], EQUALITY_TOLERANCE)
+    return pe.inequality(-EQUALITY_TOLERANCE, m.vmag_sqr_adn[dn, s_m, s_o, p] - m.vmag[adn_node_idx, s_m, s_o, p] ** 2, EQUALITY_TOLERANCE)
 
 
 def interface_pf_p_transmission_rule(m, dn, s_m, s_o, p, network, params):
