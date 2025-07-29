@@ -54,19 +54,13 @@ def node_balance_slack_bounds(m, i, s_m, s_o, p, network):
 # Generation, Pg
 def pg_bounds(m, g, s_m, s_o, p, network):
     gen = network.generators[g]
-    if gen.status[p]:
-        return (gen.pmin, gen.pmax)
-    else:
-        return (-SMALL_TOLERANCE, SMALL_TOLERANCE)
+    return (gen.pmin, gen.pmax)
 
 
 # Generation, Qg
 def qg_bounds(m, g, s_m, s_o, p, network):
     gen = network.generators[g]
-    if gen.status[p]:
-        return (gen.qmin, gen.qmax)
-    else:
-        return (-SMALL_TOLERANCE, SMALL_TOLERANCE)
+    return (gen.qmin, gen.qmax)
 
 
 def pg_init(m, g, s_m, s_o, p, network):
