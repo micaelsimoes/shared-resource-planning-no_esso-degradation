@@ -106,18 +106,6 @@ def sg_bounds(m, g, s_m, s_o, p, network, params):
     return (0.0, sg)
 
 
-# Generation, Sg^2
-def sg_sqr_bounds(m, g, s_m, s_o, p, network, params):
-
-    gen = network.generators[g]
-    if not gen.is_curtaillable() or not gen.status[p]:
-        return (0.0, SMALL_TOLERANCE)
-
-    sg_sqr = gen.pmax**2 + gen.qmax**2
-
-    return (0.0, sg_sqr)
-
-
 # Branch power flow, Fij
 def flow_ij_sqr_bounds(m, b, s_m, s_o, p, network, params):
     branch = network.branches[b]
@@ -347,19 +335,11 @@ def voltage_magnitude_cons_rule(m, i, s_m, s_o, p, network, params):
         return pe.inequality(node.v_min, vmag, node.v_max)
 
 
-# Generation, Sg^2
-def sg_sqr_rule(m, g, s_m, s_o, p, network, params):
-    generator = network.generators[g]
-    if not generator.is_curtaillable() or not generator.status[p]:
-        return pe.Constraint.Skip
-    return m.sg_sqr[g, s_m, s_o, p] == (m.pg[g, s_m, s_o, p]**2 + m.qg[g, s_m, s_o, p]**2)
-
-
 def sg_abs_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable() or not generator.status[p]:
         return pe.Constraint.Skip
-    return m.sg_abs[g, s_m, s_o, p] ** 2 == m.sg_sqr[g, s_m, s_o, p]
+    return m.sg_abs[g, s_m, s_o, p] ** 2 == (m.pg[g, s_m, s_o, p]**2 + m.qg[g, s_m, s_o, p]**2)
 
 
 def sg_curt_rule(m, g, s_m, s_o, p, network, params):
