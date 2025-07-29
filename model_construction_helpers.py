@@ -343,7 +343,7 @@ def voltage_rule_f(m, i, s_m, s_o, p, params):
 def voltage_magnitude_def_rule(m, i, s_m, s_o, p):
     e = m.e_actual[i, s_m, s_o, p]
     f = m.f_actual[i, s_m, s_o, p]
-    return m.vmag[i, s_m, s_o, p] == e ** 2 + f ** 2
+    return m.vmag[i, s_m, s_o, p] ** 2 == e ** 2 + f ** 2
 
 
 # Voltage constraints, magnitude
