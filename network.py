@@ -404,7 +404,7 @@ def _build_model(network, params):
         model.active_distribution_networks_interface_active_power = pe.Constraint(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_p_transmission_rule, network=network, params=params))
         model.active_distribution_networks_interface_reactive_power = pe.Constraint(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_q_transmission_rule, network=network, params=params))
     else:
-        model.active_distribution_networks_voltage_magnitude = pe.Constraint(model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_vmag_sqr_distribution_rule, network=network))
+        model.active_distribution_networks_voltage_magnitude = pe.Constraint(model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_vmag_distribution_rule, network=network))
         model.active_distribution_networks_interface_active_power = pe.Constraint(model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_p_distribution_rule, network=network))
         model.active_distribution_networks_interface_reactive_power = pe.Constraint(model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_q_distribution_rule, network=network))
 
