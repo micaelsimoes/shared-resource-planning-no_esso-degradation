@@ -330,21 +330,20 @@ def voltage_rule_f(m, i, s_m, s_o, p, params):
 
 # Voltage constraints, magnitude
 def voltage_magnitude_def_rule(m, i, s_m, s_o, p):
-    e = m.e[i, s_m, s_o, p]
-    f = m.f[i, s_m, s_o, p]
-    vmag_sq = e ** 2 + f ** 2
-    return m.vmag_sqr[i, s_m, s_o, p] == vmag_sq
+    e = m.e_actual[i, s_m, s_o, p]
+    f = m.f_actual[i, s_m, s_o, p]
+    return m.vmag[i, s_m, s_o, p] == e ** 2 + f ** 2
 
 
 # Voltage constraints, magnitude
 def voltage_magnitude_cons_rule(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
-    vmag_sq = m.vmag_sqr[i, s_m, s_o, p]
+    vmag = m.vmag[i, s_m, s_o, p]
     if node.type == BUS_PV and params.enforce_vg:
         vg = network.generators[network.get_gen_idx(node.bus_i)].vg[p]
-        return pe.inequality(-SMALL_TOLERANCE, vmag_sq - vg ** 2, SMALL_TOLERANCE)
+        return pe.inequality(-SMALL_TOLERANCE, vmag - vg, SMALL_TOLERANCE)
     else:
-        return pe.inequality(node.v_min ** 2, vmag_sq, node.v_max ** 2)
+        return pe.inequality(node.v_min, vmag, node.v_max)
 
 
 # Generation, Sg^2
