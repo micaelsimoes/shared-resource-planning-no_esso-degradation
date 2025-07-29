@@ -400,7 +400,7 @@ def _build_model(network, params):
 
     # - ADN nodes vmag_sqr, pnet and qnet
     if network.is_transmission:
-        model.active_distribution_networks_voltage_magnitude = pe.Constraint(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_vmag_sqr_transmission_rule, network=network))
+        model.active_distribution_networks_voltage_magnitude = pe.Constraint(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_vmag_transmission_rule, network=network))
         model.active_distribution_networks_interface_active_power = pe.Constraint(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_p_transmission_rule, network=network, params=params))
         model.active_distribution_networks_interface_reactive_power = pe.Constraint(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_q_transmission_rule, network=network, params=params))
     else:
