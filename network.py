@@ -261,9 +261,9 @@ def _build_model(network, params):
         model.slack_node_balance_q_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00, bounds=partial(node_balance_slack_bounds, network=network))
         model.slack_node_balance_q_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00, bounds=partial(node_balance_slack_bounds, network=network))
     if network.is_transmission: # Note: used coordinated operation
-        model.vmag_adn = pe.Var(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0)
+        model.vmag_adn = pe.Var(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0, bounds=partial(vmag_bounds, network=network, params=params))
     else:
-        model.vmag_adn = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0)
+        model.vmag_adn = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0, bounds=partial(vmag_bounds, network=network, params=params))
 
     # - Generation
     model.pg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(pg_bounds, network=network), initialize=partial(pg_init, network=network))

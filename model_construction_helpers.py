@@ -732,7 +732,7 @@ def interface_pf_q_transmission_rule(m, dn, s_m, s_o, p, network, params):
 def interface_vmag_sqr_distribution_rule(m, s_m, s_o, p, network):
     ref_node_id = network.get_reference_node_id()
     ref_node_idx = network.get_node_idx(ref_node_id)
-    return pe.inequality(-EQUALITY_TOLERANCE, m.vmag_sqr_adn[s_m, s_o, p] - m.vmag_sqr[ref_node_idx, s_m, s_o, p], EQUALITY_TOLERANCE)
+    return pe.inequality(-EQUALITY_TOLERANCE, m.vmag_adn[s_m, s_o, p] - m.vmag[ref_node_idx, s_m, s_o, p], EQUALITY_TOLERANCE)
 
 
 def interface_pf_p_distribution_rule(m, s_m, s_o, p, network):
