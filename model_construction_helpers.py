@@ -21,14 +21,14 @@ def f_bounds(m, i, s_m, s_o, p, network):
     return (-node.v_max, node.v_max)
 
 
-def vmag_sqr_bounds(m, i, s_m, s_o, p, network, params):
+def vmag_bounds(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
     v_min = node.v_min
     v_max = node.v_max
     if params.slacks.grid_operation.voltage:
         v_min -= VMAG_VIOLATION_ALLOWED
         v_max += VMAG_VIOLATION_ALLOWED
-    return (v_min ** 2, v_max ** 2)
+    return (v_min, v_max)
 
 
 # Voltage variables, slack bounds
