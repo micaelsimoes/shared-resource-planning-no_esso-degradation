@@ -1575,7 +1575,7 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                         error_v_req_tso = interface_vars['vmag']['tso']['current'][node_id][year][day][p] - interface_vars['vmag']['dso']['current'][node_id][year][day][p]
                         error_p_pf_req_tso = interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p] - interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p]
                         error_q_pf_req_tso = interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p] - interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p]
-                        dual_vars['v_vmag']['tso']['current'][node_id][year][day][p] += rho_v_tso * error_v_req_tso
+                        dual_vars['vmag']['tso']['current'][node_id][year][day][p] += rho_v_tso * error_v_req_tso
                         dual_vars['pf']['tso']['current'][node_id][year][day]['p'][p] += rho_pf_tso * error_p_pf_req_tso
                         dual_vars['pf']['tso']['current'][node_id][year][day]['q'][p] += rho_pf_tso * error_q_pf_req_tso
 
