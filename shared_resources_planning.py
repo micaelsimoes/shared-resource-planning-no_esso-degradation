@@ -1761,9 +1761,9 @@ def _run_operational_planning_without_coordination(planning_problem):
                             expected_vmag += omega_market * omega_oper * dso_model[year][day].vmag_adn[s_m, s_o, p]
                             expected_pf_p += omega_market * omega_oper * dso_model[year][day].pg_adn[s_m, s_o, p]
                             expected_pf_q += omega_market * omega_oper * dso_model[year][day].qg_adn[s_m, s_o, p]
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_vmag[p] == expected_vmag)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_pf_p[p] == expected_pf_p)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_pf_q[p] == expected_pf_q)
+                    dso_model[year][day].interface_expected_values.add(pe.inequality(-EQUALITY_TOLERANCE, dso_model[year][day].expected_interface_vmag[p] - expected_vmag, EQUALITY_TOLERANCE))
+                    dso_model[year][day].interface_expected_values.add(pe.inequality(-EQUALITY_TOLERANCE, dso_model[year][day].expected_interface_pf_p[p] - expected_pf_p, EQUALITY_TOLERANCE))
+                    dso_model[year][day].interface_expected_values.add(pe.inequality(-EQUALITY_TOLERANCE, dso_model[year][day].expected_interface_pf_q[p] - expected_pf_q, EQUALITY_TOLERANCE))
 
                 obj = copy(dso_model[year][day].objective.expr)
                 dso_model[year][day].penalty_regularization = pe.Param(initialize=PENALTY_REGULARIZATION)
