@@ -274,6 +274,7 @@ def _build_model(network, params):
         model.sg_init = pe.Param(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=partial(sg_init, network=network, params=params))
         model.sg_sqr = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(sg_sqr_bounds, network=network, params=params), initialize=0.0)
         model.sg_abs = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(sg_bounds, network=network, params=params), initialize=0.0)
+        model.sg_curt = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(sg_bounds, network=network, params=params), initialize=0.0)
     if not network.is_transmission:
         model.pg_adn = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
         model.qg_adn = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
@@ -369,6 +370,7 @@ def _build_model(network, params):
     if params.rg_curt:
         model.sg_sqr_def = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_sqr_rule, network=network, params=params))
         model.sg_abs_def = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_abs_rule, network=network, params=params))
+        model.sg_curt_def = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_curt_rule, network=network, params=params))
         model.gen_pf_upper = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(power_factor_rule_upper, network=network))
         model.gen_pf_lower = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(power_factor_rule_lower, network=network))
 
@@ -1433,7 +1435,7 @@ def _compute_objective_function_value(network, model, params):
                 if params.rg_curt:
                     for g in model.generators:
                         for p in model.periods:
-                            sg_curt = pe.value(model.sg_init[g, s_m, s_o, p] - model.sg_abs[g, s_m, s_o, p])
+                            sg_curt = pe.value(model.sg_curt[g, s_m, s_o, p])
                             obj_scenario += cost_res_curt * network.baseMVA * (sg_curt)
 
                 obj += obj_scenario * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
@@ -1453,7 +1455,7 @@ def _compute_objective_function_value(network, model, params):
                 if params.rg_curt:
                     for g in model.generators:
                         for p in model.periods:
-                            sg_curt = pe.value(model.sg_init[g, s_m, s_o, p] - model.sg_abs[g, s_m, s_o, p])
+                            sg_curt = pe.value(model.sg_curt[g, s_m, s_o, p])
                             obj_scenario += pen_gen_curtailment * network.baseMVA * sg_curt
 
                 # Consumption curtailment
@@ -1517,7 +1519,7 @@ def _compute_objective_function_value_per_scenario(network, model, params, s_m, 
         if params.rg_curt:
             for g in model.generators:
                 for p in model.periods:
-                    sg_curt = pe.value(model.sg_init[g, s_m, s_o, p] - model.sg_abs[g, s_m, s_o, p])
+                    sg_curt = pe.value(model.sg_curt[g, s_m, s_o, p])
                     obj += cost_res_curt * network.baseMVA * (sg_curt)
 
     elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
@@ -1530,7 +1532,7 @@ def _compute_objective_function_value_per_scenario(network, model, params, s_m, 
         if params.rg_curt:
             for g in model.generators:
                 for p in model.periods:
-                    sg_curt = pe.value(model.sg_init[g, s_m, s_o, p] - model.sg_abs[g, s_m, s_o, p])
+                    sg_curt = pe.value(model.sg_curt[g, s_m, s_o, p])
                     obj += pen_gen_curtailment * network.baseMVA * sg_curt
 
         # Consumption curtailment
@@ -1739,7 +1741,7 @@ def _compute_generation_curtailment(network, model, params):
                 for g in model.generators:
                     if network.generators[g].is_curtaillable():
                         for p in model.periods:
-                            gen_curtailment_scenario['s'] += pe.value(model.sg_init[g, s_m, s_o, p] - model.sg_abs[g, s_m, s_o, p]) * network.baseMVA
+                            gen_curtailment_scenario['s'] += pe.value(model.sg_curt[g, s_m, s_o, p]) * network.baseMVA
                 gen_curtailment['p'] += gen_curtailment_scenario['p'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
                 gen_curtailment['q'] += gen_curtailment_scenario['q'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
                 gen_curtailment['s'] += gen_curtailment_scenario['s'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
@@ -1753,7 +1755,7 @@ def _compute_renewable_generation_curtailed_per_scenario(network, model, params,
         for g in model.generators:
             if network.generators[g].is_curtaillable():
                 for p in model.periods:
-                    gen_curtailment['s'] += pe.value(model.sg_init[g, s_m, s_o, p] - model.sg_abs[g, s_m, s_o, p]) * network.baseMVA
+                    gen_curtailment['s'] += pe.value(model.sg_curt[g, s_m, s_o, p]) * network.baseMVA
     return gen_curtailment
 
 
