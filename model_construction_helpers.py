@@ -31,6 +31,17 @@ def vmag_bounds(m, i, s_m, s_o, p, network, params):
     return (v_min, v_max)
 
 
+def vmag_bounds_adn(m, s_m, s_o, p, network, params):
+    ref_node_id = network.get_reference_node_id()
+    ref_node_idx = network.get_node_idx(ref_node_id)
+    v_min = network.nodes[ref_node_idx].v_min
+    v_max = network.nodes[ref_node_idx].v_max
+    if params.slacks.grid_operation.voltage:
+        v_min -= SMALL_TOLERANCE
+        v_max += SMALL_TOLERANCE
+    return (v_min, v_max)
+
+
 # Voltage variables, slack bounds
 def voltage_slack_bounds(m, i, s_m, s_o, p, network):
     node = network.nodes[i]
@@ -1214,15 +1225,15 @@ def slack_penalties(model, network, s_m, s_o, params):
     return total
 
 
-def dn_interface_expected_vmag_sqr_rule(m, p, network):
-    expected_vmag_sqr = sum(
+def dn_interface_expected_vmag_rule(m, p, network):
+    expected_vmag = sum(
         network.prob_market_scenarios[s_m] *
         network.prob_operation_scenarios[s_o] *
-        m.vmag_sqr_adn[s_m, s_o, p]
+        m.vmag_adn[s_m, s_o, p]
         for s_m in m.scenarios_market
         for s_o in m.scenarios_operation
     )
-    return pe.inequality(-EQUALITY_TOLERANCE, m.expected_interface_vmag_sqr[p] - expected_vmag_sqr, EQUALITY_TOLERANCE)
+    return pe.inequality(-EQUALITY_TOLERANCE, m.expected_interface_vmag[p] - expected_vmag, EQUALITY_TOLERANCE)
 
 
 def dn_interface_expected_pf_p_rule(m, p, network):
