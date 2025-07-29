@@ -499,7 +499,7 @@ def ess_soc_final_rule(m, e, s_m, s_o, network, params):
     if params.slacks.ess.day_balance:
         return m.es_soc[e, s_m, s_o, final_p] == final_soc + m.slack_es_soc_final_up[e, s_m, s_o] - m.slack_es_soc_final_up[e, s_m, s_o]
     else:
-        return pe.inequality(-EQUALITY_TOLERANCE, m.es_soc[e, s_m, s_o, final_p] - final_soc, EQUALITY_TOLERANCE)
+        return pe.inequality(-SMALL_TOLERANCE, m.es_soc[e, s_m, s_o, final_p] - final_soc, SMALL_TOLERANCE)
 
 
 # - Linear ESS models -- Relaxed LP formulation
@@ -830,10 +830,6 @@ def compute_node_load(model, i, s_m, s_o, p, network, params):
 
 def compute_node_gen(model, i, s_m, s_o, p, network, params):
     Pg, Qg = 0.0, 0.0
-    if params.slacks.node_balance.active_power:
-        Pg += model.slack_node_balance_p_up[i, s_m, s_o, p] - model.slack_node_balance_p_down[i, s_m, s_o, p]
-    if params.slacks.node_balance.reactive_power:
-        Qg += model.slack_node_balance_q_up[i, s_m, s_o, p] - model.slack_node_balance_q_down[i, s_m, s_o, p]
     node = network.nodes[i]
     for g in model.generators:
         gen = network.generators[g]
@@ -903,8 +899,8 @@ def node_balance_p_rule(model, i, s_m, s_o, p, network, params):
                     Pi += branch.g * (ei ** 2 + fi ** 2)
                     Pi -= rij * (branch.g * (ei * ej + fi * fj) + branch.b * (fi * ej - ei * fj))
 
-    if params.slacks.node_balance:
-        return Pg == Pd + Pi
+    if params.slacks.node_balance.active_power:
+        return Pg == Pd + Pi + (model.slack_node_balance_p_up[i, s_m, s_o, p] - model.slack_node_balance_p_down[i, s_m, s_o, p])
     else:
         return pe.inequality(-EQUALITY_TOLERANCE, Pg - (Pd + Pi), EQUALITY_TOLERANCE)
 
@@ -949,8 +945,8 @@ def node_balance_q_rule(model, i, s_m, s_o, p, network, params):
                     Qi -= (branch.b + branch.b_sh * 0.5) * (ei ** 2 + fi ** 2)
                     Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
 
-    if params.slacks.node_balance:
-        return Qg == Qd + Qi
+    if params.slacks.node_balance.reactive_power:
+        return Qg == Qd + Qi + (model.slack_node_balance_q_up[i, s_m, s_o, p] - model.slack_node_balance_q_down[i, s_m, s_o, p])
     else:
         return pe.inequality(-EQUALITY_TOLERANCE, Qg - (Qd + Qi), EQUALITY_TOLERANCE)
 
