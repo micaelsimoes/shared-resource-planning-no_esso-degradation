@@ -811,7 +811,7 @@ def compute_node_load(model, i, s_m, s_o, p, network, params):
     return Pd, Qd
 
 
-def compute_node_gen(model, i, s_m, s_o, p, network, params):
+def compute_node_gen(model, i, s_m, s_o, p, network):
     Pg, Qg = 0.0, 0.0
     node = network.nodes[i]
     for g in model.generators:
