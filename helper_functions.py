@@ -46,11 +46,12 @@ def is_number(s):
         return False
 
 
-def print_memory_usage(label=""):
-    process = psutil.Process(os.getpid())
-    rss = process.memory_info().rss / (1024 ** 2)  # MB
-    vms = process.memory_info().vms / (1024 ** 2)  # MB
-    print(f"[MEMORY] {label} - RSS: {rss:.2f} MB | VMS: {vms:.2f} MB")
+def print_memory_usage(label="", debug=False):
+    if debug:
+        process = psutil.Process(os.getpid())
+        rss = process.memory_info().rss / (1024 ** 2)  # MB
+        vms = process.memory_info().vms / (1024 ** 2)  # MB
+        print(f"[MEMORY] {label} - RSS: {rss:.2f} MB | VMS: {vms:.2f} MB")
 
 
 def fix_or_set(var, val):

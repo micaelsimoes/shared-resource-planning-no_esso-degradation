@@ -153,8 +153,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
     lower_bound_evolution = [lower_bound]
     upper_bound_evolution = [upper_bound]
     candidate_solution = planning_problem.get_initial_candidate_solution()
-    if debug_flag:
-        print_memory_usage("Start of planning problem")
+    print_memory_usage("Start of planning problem", debug_flag)
 
     start = time.time()
     master_problem_model = planning_problem.shared_ess_data.build_master_problem()
@@ -166,9 +165,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         print(f'=============================================== ITERATION #{iter} ==============================================')
 
         _print_candidate_solution(candidate_solution)
-
-        if debug_flag:
-            print_memory_usage(f"Before subproblem (iter {iter})")
+        print_memory_usage(f"Before subproblem (iter {iter})", debug_flag)
 
         # 1. Subproblem
         # 1.1. Solve operational planning, with fixed investment variables,
@@ -180,9 +177,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         else:
             upper_bound = upper_bound_evolution[-1]
         upper_bound_evolution.append(upper_bound)
-
-        if debug_flag:
-            print_memory_usage(f"After subproblem (iter {iter})")
+        print_memory_usage(f"After subproblem (iter {iter})", debug_flag)
 
         #  - Convergence check
         gap_abs = abs(upper_bound - lower_bound)
@@ -192,27 +187,23 @@ def _run_planning_problem(planning_problem, debug_flag=False):
             convergence = True
             break
         print(f"[INFO] Iteration #{iter} | Gap = {gap_rel*100:.2f}% | LB = {lower_bound:.2f} | UB = {upper_bound:.2f}")
+        print_memory_usage(f"Before master problem solve (iter {iter})", debug_flag)
 
         # 2. Solve Master problem
         # 2.1. Add Benders' cut, based on the sensitivities obtained from the subproblem
         # 2.2. Run master problem optimization
         # 2.3. Get new capacity values, and the value of alpha (lower bound)
-        if debug_flag:
-            print_memory_usage(f"Before master problem solve (iter {iter})")
         planning_problem.add_benders_cut(master_problem_model, upper_bound, operational_convergence, sensitivities, candidate_solution)
         shared_ess_data.optimize_master_problem(master_problem_model, from_warm_start=from_warm_start)
         lower_bound = pe.value(master_problem_model.alpha)
         lower_bound_evolution.append(lower_bound)
 
         gc.collect()
-        if debug_flag:
-            print_memory_usage(f"After master problem solve (iter {iter})")
+        print_memory_usage(f"After master problem solve (iter {iter})", debug_flag)
 
         # Get new candidate solution
         candidate_solution = shared_ess_data.get_candidate_solution(master_problem_model)
-
-        if debug_flag:
-            print_memory_usage(f"After GC (iter {iter})")
+        print_memory_usage(f"After GC (iter {iter})", debug_flag)
 
         iter += 1
         from_warm_start = True
@@ -319,7 +310,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
 
         print(f'[INFO] \t - ADMM Iteration {iter}')
         log_debug(f"\t - Memory before iteration {iter}", debug_flag)
-        print_memory_usage(f"\t - ADMM Iteration {iter} Start")
+        print_memory_usage(f"\t - ADMM Iteration {iter} Start", debug_flag)
 
         iter_start = time.time()
 
@@ -398,7 +389,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         gc.collect()
         from_warm_start = True
         log_debug(f"\t - Memory after iteration {iter}", debug_flag)
-        print_memory_usage(f"\t - ADMM Iteration {iter} End")
+        print_memory_usage(f"\t - ADMM Iteration {iter} End", debug_flag)
 
     if not convergence:
         print(f'[WARNING] \t - ADMM did NOT converge in {admm_parameters.num_max_iters} iterations!')
