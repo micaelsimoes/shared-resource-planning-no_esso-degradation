@@ -1307,23 +1307,12 @@ def update_and_solve_dso(node_id, distribution_network, model, vmag_req, dual_vm
 
             # Update VOLTAGE and POWER FLOW variables at connection point
             for p in model[year][day].periods:
-
-                if p == 0:
-                    print(f"\nREQ vmag[{p}] = {vmag_req['tso']['current'][node_id][year][day][p]}")
-                    print(f"REQ pf_p[{p}] = {pf_req['tso']['current'][node_id][year][day]['p'][p]}")
-                    print(f"REQ pf_q[{p}] = {pf_req['tso']['current'][node_id][year][day]['q'][p]}")
-
                 fix_or_set(model[year][day].dual_vmag_req[p], dual_vmag['current'][node_id][year][day][p] / v_base)
                 fix_or_set(model[year][day].vmag_req[p], vmag_req['tso']['current'][node_id][year][day][p] / v_base)
                 fix_or_set(model[year][day].dual_pf_p_req[p], dual_pf['current'][node_id][year][day]['p'][p] / s_base)
                 fix_or_set(model[year][day].dual_pf_q_req[p], dual_pf['current'][node_id][year][day]['q'][p] / s_base)
                 fix_or_set(model[year][day].p_pf_req[p], pf_req['tso']['current'][node_id][year][day]['p'][p] / s_base)
                 fix_or_set(model[year][day].q_pf_req[p], pf_req['tso']['current'][node_id][year][day]['q'][p] / s_base)
-
-                if p == 0:
-                    print(f"\nSET vmag[{p}] = {pe.value(model[year][day].vmag_req[p]) * v_base}")
-                    print(f"SET pf_p[{p}] = {pe.value(model[year][day].p_pf_req[p]) * s_base}")
-                    print(f"SET pf_q[{p}] = {pe.value(model[year][day].q_pf_req[p]) * s_base}")
 
             # Update SHARED ENERGY STORAGE variables (if existent)
             for p in model[year][day].periods:
@@ -1532,9 +1521,9 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                             vmag_req = pe.value(tso_model[year][day].expected_interface_vmag[dn, p]) * v_base
                             p_req = pe.value(tso_model[year][day].expected_interface_pf_p[dn, p]) * s_base
                             q_req = pe.value(tso_model[year][day].expected_interface_pf_q[dn, p]) * s_base
-                            interface_vars['vmag']['tso']['current'][node_id][year][day][p] = vmag_req
-                            interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p] = p_req
-                            interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p] = q_req
+                            interface_vars['vmag']['tso']['current'][node_id][year][day][p] = copy(vmag_req)
+                            interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p] = copy(p_req)
+                            interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p] = copy(q_req)
                     else:
                         for p in tso_model[year][day].periods:
                             interface_vars['vmag']['tso']['prev'][node_id][year][day][p] = copy(interface_vars['vmag']['tso']['current'][node_id][year][day][p])
@@ -1560,9 +1549,9 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                             vmag_req = pe.value(dso_model[year][day].expected_interface_vmag[p]) * v_base
                             p_req = pe.value(dso_model[year][day].expected_interface_pf_p[p]) * s_base
                             q_req = pe.value(dso_model[year][day].expected_interface_pf_q[p]) * s_base
-                            interface_vars['vmag']['dso']['current'][node_id][year][day][p] = vmag_req
-                            interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p] = p_req
-                            interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p] = q_req
+                            interface_vars['vmag']['dso']['current'][node_id][year][day][p] = copy(vmag_req)
+                            interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p] = copy(p_req)
+                            interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p] = copy(q_req)
                     else:
                         for p in dso_model[year][day].periods:
                             interface_vars['vmag']['dso']['prev'][node_id][year][day][p] = copy(interface_vars['vmag']['dso']['current'][node_id][year][day][p])
@@ -1581,9 +1570,9 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                         error_v_req_tso = interface_vars['vmag']['tso']['current'][node_id][year][day][p] - interface_vars['vmag']['dso']['current'][node_id][year][day][p]
                         error_p_pf_req_tso = interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p] - interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p]
                         error_q_pf_req_tso = interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p] - interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p]
-                        dual_vars['vmag']['tso']['current'][node_id][year][day][p] += rho_v_tso * error_v_req_tso
-                        dual_vars['pf']['tso']['current'][node_id][year][day]['p'][p] += rho_pf_tso * error_p_pf_req_tso
-                        dual_vars['pf']['tso']['current'][node_id][year][day]['q'][p] += rho_pf_tso * error_q_pf_req_tso
+                        dual_vars['vmag']['tso']['current'][node_id][year][day][p] += copy(rho_v_tso * error_v_req_tso)
+                        dual_vars['pf']['tso']['current'][node_id][year][day]['p'][p] += copy(rho_pf_tso * error_p_pf_req_tso)
+                        dual_vars['pf']['tso']['current'][node_id][year][day]['q'][p] += copy(rho_pf_tso * error_q_pf_req_tso)
 
                     if update_dns:
                         rho_v_dso = pe.value(dso_models[node_id][year][day].rho_v)
@@ -1591,9 +1580,9 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                         error_v_req_dso = interface_vars['vmag']['dso']['current'][node_id][year][day][p] - interface_vars['vmag']['tso']['current'][node_id][year][day][p]
                         error_p_pf_req_dso = interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p] - interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p]
                         error_q_pf_req_dso = interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p] - interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p]
-                        dual_vars['vmag']['dso']['current'][node_id][year][day][p] += rho_v_dso * error_v_req_dso
-                        dual_vars['pf']['dso']['current'][node_id][year][day]['p'][p] += rho_pf_dso * error_p_pf_req_dso
-                        dual_vars['pf']['dso']['current'][node_id][year][day]['q'][p] += rho_pf_dso * error_q_pf_req_dso
+                        dual_vars['vmag']['dso']['current'][node_id][year][day][p] += copy(rho_v_dso * error_v_req_dso)
+                        dual_vars['pf']['dso']['current'][node_id][year][day]['p'][p] += copy(rho_pf_dso * error_p_pf_req_dso)
+                        dual_vars['pf']['dso']['current'][node_id][year][day]['q'][p] += copy(rho_pf_dso * error_q_pf_req_dso)
 
 
 def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_models, sess_model, shared_ess_vars, dual_vars, results, params, update_tn=True, update_dns=True, update_sess=True):
@@ -1622,8 +1611,8 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
 
                             p_req = pe.value(sess_model[node_id].es_pnet[y, d, p])
                             q_req = pe.value(sess_model[node_id].es_qnet[y, d, p])
-                            shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] = p_req
-                            shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] = q_req
+                            shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] = copy(p_req)
+                            shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] = copy(q_req)
                 else:
                     for d in sess_model[node_id].days:
                         day = repr_days[d]
@@ -1646,8 +1635,8 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
 
                             p_req = pe.value(tso_model[year][day].expected_shared_ess_p[shared_ess_idx, p]) * s_base
                             q_req = pe.value(tso_model[year][day].expected_shared_ess_q[shared_ess_idx, p]) * s_base
-                            shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] = p_req
-                            shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] = q_req
+                            shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] = copy(p_req)
+                            shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] = copy(q_req)
                     else:
                         for p in tso_model[year][day].periods:
                             shared_ess_vars['tso']['prev'][node_id][year][day]['p'][p] = copy(shared_ess_vars['tso']['current'][node_id][year][day]['p'][p])
@@ -1668,8 +1657,8 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
 
                             p_req = pe.value(dso_model[year][day].expected_shared_ess_p[p]) * s_base
                             q_req = pe.value(dso_model[year][day].expected_shared_ess_q[p]) * s_base
-                            shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] = p_req
-                            shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] = q_req
+                            shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] = copy(p_req)
+                            shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] = copy(q_req)
                     else:
                         for p in dso_model[year][day].periods:
                             shared_ess_vars['dso']['prev'][node_id][year][day]['p'][p] = copy(shared_ess_vars['dso']['current'][node_id][year][day]['p'][p])
@@ -1684,32 +1673,32 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                         rho_ess_tso = pe.value(tso_model[year][day].rho_ess)
                         error_p_tso_dso = shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['p'][p]
                         error_q_tso_dso = shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['q'][p]
-                        dual_vars['tso']['current'][node_id][year][day]['p'][p] += rho_ess_tso * error_p_tso_dso
-                        dual_vars['tso']['current'][node_id][year][day]['q'][p] += rho_ess_tso * error_q_tso_dso
+                        dual_vars['tso']['current'][node_id][year][day]['p'][p] += copy(rho_ess_tso * error_p_tso_dso)
+                        dual_vars['tso']['current'][node_id][year][day]['q'][p] += copy(rho_ess_tso * error_q_tso_dso)
                         if params.previous_iter['ess']['tso']:
                             error_p_tso_prev = shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['tso']['prev'][node_id][year][day]['p'][p]
                             error_q_tso_prev = shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['tso']['prev'][node_id][year][day]['q'][p]
-                            dual_vars['tso']['prev'][node_id][year][day]['p'][p] += rho_ess_tso * error_p_tso_prev
-                            dual_vars['tso']['prev'][node_id][year][day]['q'][p] += rho_ess_tso * error_q_tso_prev
+                            dual_vars['tso']['prev'][node_id][year][day]['p'][p] += copy(rho_ess_tso * error_p_tso_prev)
+                            dual_vars['tso']['prev'][node_id][year][day]['q'][p] += copy(rho_ess_tso * error_q_tso_prev)
 
                     if update_dns:
                         rho_ess_dso = pe.value(dso_models[node_id][year][day].rho_ess)
                         error_p_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['p'][p]
                         error_q_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['q'][p]
-                        dual_vars['dso']['current'][node_id][year][day]['p'][p] += rho_ess_dso * error_p_dso_esso
-                        dual_vars['dso']['current'][node_id][year][day]['q'][p] += rho_ess_dso * error_q_dso_esso
+                        dual_vars['dso']['current'][node_id][year][day]['p'][p] += copy(rho_ess_dso * error_p_dso_esso)
+                        dual_vars['dso']['current'][node_id][year][day]['q'][p] += copy(rho_ess_dso * error_q_dso_esso)
                         if params.previous_iter['ess']['dso']:
                             error_p_dso_prev = shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['dso']['prev'][node_id][year][day]['p'][p]
                             error_q_dso_prev = shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['dso']['prev'][node_id][year][day]['q'][p]
-                            dual_vars['dso']['prev'][node_id][year][day]['p'][p] += rho_ess_dso * error_p_dso_prev
-                            dual_vars['dso']['prev'][node_id][year][day]['q'][p] += rho_ess_dso * error_q_dso_prev
+                            dual_vars['dso']['prev'][node_id][year][day]['p'][p] += copy(rho_ess_dso * error_p_dso_prev)
+                            dual_vars['dso']['prev'][node_id][year][day]['q'][p] += copy(rho_ess_dso * error_q_dso_prev)
 
                     if update_sess:
                         rho_ess_sess = pe.value(sess_model[node_id].rho)
                         error_p_esso_tso = shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['p'][p]
                         error_q_esso_tso = shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['q'][p]
-                        dual_vars['esso']['current'][node_id][year][day]['p'][p] += rho_ess_sess * error_p_esso_tso
-                        dual_vars['esso']['current'][node_id][year][day]['q'][p] += rho_ess_sess * error_q_esso_tso
+                        dual_vars['esso']['current'][node_id][year][day]['p'][p] += copy(rho_ess_sess * error_p_esso_tso)
+                        dual_vars['esso']['current'][node_id][year][day]['q'][p] += copy(rho_ess_sess * error_q_esso_tso)
 
 
 # ======================================================================================================================
