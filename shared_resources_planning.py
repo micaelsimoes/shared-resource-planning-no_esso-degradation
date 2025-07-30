@@ -297,7 +297,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     consensus_vars, dual_vars = create_admm_variables(planning_problem)
 
     # Create ADN models, get initial power flows
-    dso_models, results['dso'] = create_distribution_networks_models(distribution_networks, consensus_vars, candidate_solution['total_capacity'])
+    dso_models, results['dso'] = create_distribution_networks_models(distribution_networks, consensus_vars, candidate_solution['total_capacity'], parallel_execution=planning_problem.parallel_execution)
     tso_model, results['tso'] = create_transmission_network_model(planning_problem, consensus_vars, candidate_solution['total_capacity'])
     esso_model, results['esso'] = create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidate_solution['investment'])
 
@@ -575,7 +575,15 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
     return tso_model, results
 
 
-def create_distribution_networks_models(distribution_networks, consensus_vars, candidate_solution):
+def create_distribution_networks_models(distribution_networks, consensus_vars, candidate_solution, parallel_execution=False):
+
+    if parallel_execution:
+        return create_distribution_networks_models_parallel(distribution_networks, consensus_vars, candidate_solution)
+    else:
+        return create_distribution_networks_models_sequential(distribution_networks, consensus_vars, candidate_solution)
+
+
+def create_distribution_networks_models_sequential(distribution_networks, consensus_vars, candidate_solution):
 
     dso_models = dict()
     results = dict()
@@ -658,6 +666,103 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
         dso_models[node_id] = dso_model
 
     return dso_models, results
+
+
+def create_distribution_networks_models_parallel(distribution_networks, consensus_vars, candidate_solution):
+
+    results = dict()
+    dso_models = dict()
+    for node_id in distribution_networks:
+        results[node_id] = dict()
+        dso_models[node_id] = dict()
+
+    tasks = []
+    max_workers = os.cpu_count() // 2
+    with ProcessPoolExecutor(max_workers=max_workers) as executor:
+
+        for node_id in distribution_networks:
+            tasks.append(executor.submit(create_distribution_network_model, node_id, distribution_networks[node_id], candidate_solution))
+
+        for future in as_completed(tasks):
+
+            node_id, result, model = future.result()
+            results[node_id] = result
+            dso_models[node_id] = model
+
+            # Get initial interface and shared ESS values
+            for year in distribution_networks[node_id].years:
+                for day in distribution_networks[node_id].days:
+                    ref_node_id = distribution_networks[node_id].network[year][day].get_reference_node_id()
+                    s_base = distribution_networks[node_id].network[year][day].baseMVA
+                    v_base = distribution_networks[node_id].network[year][day].get_node_base_kv(ref_node_id)
+                    for p in dso_models[year][day].periods:
+                        interface_vmag = pe.value(dso_models[year][day].expected_interface_vmag[p]) * v_base
+                        interface_pf_p = pe.value(dso_models[year][day].expected_interface_pf_p[p]) * s_base
+                        interface_pf_q = pe.value(dso_models[year][day].expected_interface_pf_q[p]) * s_base
+                        p_ess = pe.value(dso_models[year][day].expected_shared_ess_p[p]) * s_base
+                        q_ess = pe.value(dso_models[year][day].expected_shared_ess_q[p]) * s_base
+
+                        consensus_vars['vmag']['dso']['current'][node_id][year][day][p] = interface_vmag
+                        consensus_vars['pf']['dso']['current'][node_id][year][day]['p'][p] = interface_pf_p
+                        consensus_vars['pf']['dso']['current'][node_id][year][day]['q'][p] = interface_pf_q
+                        consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] = p_ess
+                        consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] = q_ess
+
+    return dso_models, results
+
+
+def create_distribution_network_model(node_id, distribution_network, candidate_solution):
+
+    # Build model, fix candidate solution
+    distribution_network.update_data_with_candidate_solution(candidate_solution)
+    dso_model = distribution_network.build_model()
+    distribution_network.update_model_with_candidate_solution(dso_model, candidate_solution)
+
+    # Update model with expected interface values
+    for year in distribution_network.years:
+        for day in distribution_network.days:
+
+            ref_node_id = distribution_network.network[year][day].get_reference_node_id()
+            shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
+            v_min, v_max = distribution_network.network[year][day].get_node_voltage_limits(ref_node_id)
+
+            # Add interface expected variables, and definition
+            dso_model[year][day].expected_interface_vmag = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00, bounds=(v_min, v_max))
+            dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
+            dso_model[year][day].expected_interface_pf_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
+            dso_model[year][day].expected_shared_ess_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
+            dso_model[year][day].expected_shared_ess_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
+
+            dso_model[year][day].interface_expected_values_vmag = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_vmag_rule, network=distribution_network.network[year][day]))
+            dso_model[year][day].interface_expected_values_pf_p = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_p_rule, network=distribution_network.network[year][day]))
+            dso_model[year][day].interface_expected_values_pf_q = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_q_rule, network=distribution_network.network[year][day]))
+            dso_model[year][day].interface_expected_values_sess_p = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_p_rule, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx))
+            dso_model[year][day].interface_expected_values_sess_q = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_q_rule, network= distribution_network.network[year][day], shared_ess_idx=shared_ess_idx))
+
+    # Regularization -- Added to OF to minimize deviations from scenarios to expected values
+    for year in distribution_network.years:
+        for day in distribution_network.days:
+
+            s_base = distribution_network.network[year][day].baseMVA
+            ref_node_id = distribution_network.network[year][day].get_reference_node_id()
+            shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
+
+            obj = copy(dso_model[year][day].objective.expr)
+            dso_model[year][day].penalty_regularization = pe.Param(initialize=PENALTY_REGULARIZATION)
+            for s_m in dso_model[year][day].scenarios_market:
+                for s_o in dso_model[year][day].scenarios_operation:
+                    for p in dso_model[year][day].periods:
+                        obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].vmag_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_vmag[p]) ** 2
+                        obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].pg_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_pf_p[p]) ** 2
+                        obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].qg_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_pf_q[p]) ** 2
+                        obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_p[p]) ** 2
+                        obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_q[p]) ** 2
+            dso_model[year][day].objective.expr = obj
+
+    # Run SMOPF
+    res = distribution_network.optimize(dso_model)
+
+    return node_id, res, dso_model
 
 
 def create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidate_solution):
