@@ -1271,8 +1271,9 @@ def update_distribution_coordination_models_and_solve_parallel(distribution_netw
                                          params, from_warm_start=from_warm_start))
 
         for future in as_completed(tasks):
-            node_id, result = future.result()
+            node_id, result, updated_model = future.result()
             res[node_id] = result
+            models[node_id] = updated_model
 
     return res
 
@@ -1333,7 +1334,7 @@ def update_and_solve_dso(node_id, distribution_network, model, vmag_req, dual_vm
             if not res[year][day] != po.SolverStatus.ok:
                 print(f'[WARNING] Network {model[year][day].name} did not converge!')
 
-    return (node_id, res)
+    return (node_id, res, model)
 
 
 def update_shared_energy_storages_coordination_model_and_solve(planning_problem, models, ess_req, dual_ess, params, from_warm_start=False):
