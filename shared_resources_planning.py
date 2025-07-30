@@ -1307,12 +1307,20 @@ def update_and_solve_dso(node_id, distribution_network, model, vmag_req, dual_vm
 
             # Update VOLTAGE and POWER FLOW variables at connection point
             for p in model[year][day].periods:
+                print(f"\nREQ vmag[{p}] = {vmag_req['tso']['current'][node_id][year][day][p]}")
+                print(f"REQ pf_p[{p}] = {pf_req['tso']['current'][node_id][year][day]['p'][p]}")
+                print(f"REQ pf_q[{p}] = {pf_req['tso']['current'][node_id][year][day]['q'][p]}")
+
                 fix_or_set(model[year][day].dual_vmag_req[p], dual_vmag['current'][node_id][year][day][p] / v_base)
                 fix_or_set(model[year][day].vmag_req[p], vmag_req['tso']['current'][node_id][year][day][p] / v_base)
                 fix_or_set(model[year][day].dual_pf_p_req[p], dual_pf['current'][node_id][year][day]['p'][p] / s_base)
                 fix_or_set(model[year][day].dual_pf_q_req[p], dual_pf['current'][node_id][year][day]['q'][p] / s_base)
                 fix_or_set(model[year][day].p_pf_req[p], pf_req['tso']['current'][node_id][year][day]['p'][p] / s_base)
                 fix_or_set(model[year][day].q_pf_req[p], pf_req['tso']['current'][node_id][year][day]['q'][p] / s_base)
+
+                print(f"\nSET vmag[{p}] = {model[year][day].dual_vmag_req[p] * v_base}")
+                print(f"SET pf_p[{p}] = {model[year][day].p_pf_req[p] * s_base}")
+                print(f"SET pf_q[{p}] = {model[year][day].q_pf_req[p] * s_base}")
 
             # Update SHARED ENERGY STORAGE variables (if existent)
             for p in model[year][day].periods:
