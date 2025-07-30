@@ -9,6 +9,8 @@ class Branch:
         self.tbus = 0                # t, to bus number
         self.r = 0.0                 # r, resistance (p.u.)
         self.x = 0.0                 # x, reactance (p.u.)
+        self.g = 0.0                 # g, conductance (p.u.)
+        self.b = 0.0                 # b, susceptance (p.u.)
         self.g_sh = 0.0              # g, total line charging conductance (p.u.)
         self.b_sh = 0.0              # b, total line charging susceptance (p.u.)
         self.rate = 0.0              # rateA, MVA rating A (long term rating)

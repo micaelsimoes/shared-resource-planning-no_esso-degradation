@@ -297,7 +297,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     consensus_vars, dual_vars = create_admm_variables(planning_problem)
 
     # Create ADN models, get initial power flows
-    dso_models, results['dso'] = create_distribution_networks_models(distribution_networks, consensus_vars, candidate_solution['total_capacity'], parallel_execution=planning_problem.parallel_execution)
+    distribution_networks, dso_models, results['dso'] = create_distribution_networks_models(distribution_networks, consensus_vars, candidate_solution['total_capacity'], parallel_execution=planning_problem.parallel_execution)
     tso_model, results['tso'] = create_transmission_network_model(planning_problem, consensus_vars, candidate_solution['total_capacity'])
     esso_model, results['esso'] = create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidate_solution['investment'])
 

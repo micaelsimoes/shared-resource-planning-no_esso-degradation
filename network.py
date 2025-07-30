@@ -44,7 +44,6 @@ class Network:
         self.active_distribution_network_nodes = list()
 
     def build_model(self, params):
-        _pre_process_network(self)
         return _build_model(self, params)
 
     def run_smopf(self, model, params, from_warm_start=False):
@@ -191,6 +190,7 @@ class Network:
     def read_network_from_json_file(self):
         filename = os.path.join(self.data_dir, self.name, f'{self.name}_{self.year}.json')
         _read_network_from_json_file(self, filename)
+        _pre_process_network(self)
         self.compute_series_admittance()
         self.perform_network_check()
 
