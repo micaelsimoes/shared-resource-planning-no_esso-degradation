@@ -1311,7 +1311,7 @@ def update_and_solve_dso(node_id, distribution_network, model, vmag_req, dual_vm
 
                 print(f"\n\nREQ vmag_req[{p}] = {vmag_req['tso']['current'][node_id][year][day][p] / v_base}")
                 fix_or_set(model[year][day].vmag_req[p], vmag_req['tso']['current'][node_id][year][day][p] / v_base)
-                print(f"\n\nSET vmag_req[{p}] = {pe.value(model[year][day].vmag_req[p])}")
+                print(f"SET vmag_req[{p}] = {pe.value(model[year][day].vmag_req[p])}\n\n")
 
 
                 fix_or_set(model[year][day].dual_pf_p_req[p], dual_pf['current'][node_id][year][day]['p'][p] / s_base)
