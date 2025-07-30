@@ -190,9 +190,12 @@ class Network:
     def read_network_from_json_file(self):
         filename = os.path.join(self.data_dir, self.name, f'{self.name}_{self.year}.json')
         _read_network_from_json_file(self, filename)
-        _pre_process_network(self)
+        self.pre_process_network()
         self.compute_series_admittance()
         self.perform_network_check()
+
+    def pre_process_network(self):
+        _pre_process_network(self)
 
     def update_network_operational_data(self, base_data, synthetic_profiles):
         _update_network_with_operational_data(self, base_data, synthetic_profiles)
