@@ -1318,9 +1318,9 @@ def update_and_solve_dso(node_id, distribution_network, model, vmag_req, dual_vm
                 fix_or_set(model[year][day].p_pf_req[p], pf_req['tso']['current'][node_id][year][day]['p'][p] / s_base)
                 fix_or_set(model[year][day].q_pf_req[p], pf_req['tso']['current'][node_id][year][day]['q'][p] / s_base)
 
-                print(f"\nSET vmag[{p}] = {model[year][day].dual_vmag_req[p] * v_base}")
-                print(f"SET pf_p[{p}] = {model[year][day].p_pf_req[p] * s_base}")
-                print(f"SET pf_q[{p}] = {model[year][day].q_pf_req[p] * s_base}")
+                print(f"\nSET vmag[{p}] = {pe.value(model[year][day].dual_vmag_req[p]) * v_base}")
+                print(f"SET pf_p[{p}] = {pe.value(model[year][day].p_pf_req[p]) * s_base}")
+                print(f"SET pf_q[{p}] = {pe.value(model[year][day].q_pf_req[p]) * s_base}")
 
             # Update SHARED ENERGY STORAGE variables (if existent)
             for p in model[year][day].periods:
