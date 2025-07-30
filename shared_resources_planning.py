@@ -695,12 +695,12 @@ def create_distribution_networks_models_parallel(distribution_networks, consensu
                     ref_node_id = distribution_networks[node_id].network[year][day].get_reference_node_id()
                     s_base = distribution_networks[node_id].network[year][day].baseMVA
                     v_base = distribution_networks[node_id].network[year][day].get_node_base_kv(ref_node_id)
-                    for p in dso_models[year][day].periods:
-                        interface_vmag = pe.value(dso_models[year][day].expected_interface_vmag[p]) * v_base
-                        interface_pf_p = pe.value(dso_models[year][day].expected_interface_pf_p[p]) * s_base
-                        interface_pf_q = pe.value(dso_models[year][day].expected_interface_pf_q[p]) * s_base
-                        p_ess = pe.value(dso_models[year][day].expected_shared_ess_p[p]) * s_base
-                        q_ess = pe.value(dso_models[year][day].expected_shared_ess_q[p]) * s_base
+                    for p in dso_models[node_id][year][day].periods:
+                        interface_vmag = pe.value(dso_models[node_id][year][day].expected_interface_vmag[p]) * v_base
+                        interface_pf_p = pe.value(dso_models[node_id][year][day].expected_interface_pf_p[p]) * s_base
+                        interface_pf_q = pe.value(dso_models[node_id][year][day].expected_interface_pf_q[p]) * s_base
+                        p_ess = pe.value(dso_models[node_id][year][day].expected_shared_ess_p[p]) * s_base
+                        q_ess = pe.value(dso_models[node_id][year][day].expected_shared_ess_q[p]) * s_base
 
                         consensus_vars['vmag']['dso']['current'][node_id][year][day][p] = interface_vmag
                         consensus_vars['pf']['dso']['current'][node_id][year][day]['p'][p] = interface_pf_p
