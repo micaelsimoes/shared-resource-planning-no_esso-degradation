@@ -1139,8 +1139,8 @@ def _process_results(network, model, params, results=dict()):
                 for p in model.periods:
 
                     # Power flows
-                    pij, qij = _get_branch_power_flow(network, params, branch, branch.fbus, branch.tbus, model, s_m, s_o, p)
-                    pji, qji = _get_branch_power_flow(network, params, branch, branch.tbus, branch.fbus, model, s_m, s_o, p)
+                    pij, qij = _get_branch_power_flow(network, branch, branch.fbus, branch.tbus, model, s_m, s_o, p)
+                    pji, qji = _get_branch_power_flow(network, branch, branch.tbus, branch.fbus, model, s_m, s_o, p)
                     sij_sqr = pij**2 + qij**2
                     sji_sqr = pji**2 + qji**2
                     processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['pij'][branch_id].append(pij)
@@ -1989,13 +1989,13 @@ def _get_branch_power_losses(network, params, model, branch_idx, s_m, s_o, p):
 
     # Active power flow, from i to j and from j to i
     branch = network.branches[branch_idx]
-    pij, _ = _get_branch_power_flow(network, params, branch, branch.fbus, branch.tbus, model, s_m, s_o, p)
-    pji, _ = _get_branch_power_flow(network, params, branch, branch.tbus, branch.fbus, model, s_m, s_o, p)
+    pij, _ = _get_branch_power_flow(network, branch, branch.fbus, branch.tbus, model, s_m, s_o, p)
+    pji, _ = _get_branch_power_flow(network, branch, branch.tbus, branch.fbus, model, s_m, s_o, p)
 
     return abs(pij + pji)
 
 
-def _get_branch_power_flow(network, params, branch, fbus, tbus, model, s_m, s_o, p):
+def _get_branch_power_flow(network, branch, fbus, tbus, model, s_m, s_o, p):
 
     fbus_idx = network.get_node_idx(fbus)
     tbus_idx = network.get_node_idx(tbus)
