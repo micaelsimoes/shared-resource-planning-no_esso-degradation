@@ -1,15 +1,15 @@
 {
 	"benders": {
 		"tol_abs": 1e3,
-		"tol_rel": 0.1e-2,
+		"tol_rel": 5e-2,
 		"num_max_iters": 100
 	},
 	"admm": {
 		"tol": {
-			"consensus": {"v": 5e-3, "pf": 5e-3, "ess": 10e-3},
-			"stationarity": {"v": 10e-3, "pf": 10e-3, "ess": 20e-3}
+			"consensus": {"v": 1e-3, "pf": 1e-3, "ess": 5e-3},
+			"stationarity": {"v": 1e-3, "pf": 1e-3, "ess": 5e-3}
 		},
-		"num_max_iters": 100,
+		"num_max_iters": 10,
 		"adaptive_penalty": true,
 		"rho": {
 			"v": {
