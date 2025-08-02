@@ -668,7 +668,7 @@ def create_distribution_networks_models_parallel(distribution_networks, consensu
         dso_models[node_id] = dict()
 
     tasks = []
-    max_workers = os.cpu_count() // 2
+    max_workers = min(os.cpu_count() // 2, len(distribution_networks))  # Note: to limit memory usage
     with ProcessPoolExecutor(max_workers=max_workers) as executor:
 
         for node_id in distribution_networks:
