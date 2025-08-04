@@ -800,7 +800,6 @@ def compute_node_load(model, i, s_m, s_o, p, network, params):
             if es.bus == node.bus_i:
                 Pd += model.es_pnet[e, s_m, s_o, p]
                 Qd += model.es_qnet[e, s_m, s_o, p]
-                Qd += model.es_qnet[e, s_m, s_o, p]
 
     for e in model.shared_energy_storages:
         es = network.shared_energy_storages[e]
