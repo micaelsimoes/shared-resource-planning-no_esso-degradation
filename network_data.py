@@ -1212,19 +1212,21 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                                 expected_sg[gen_id][p] += sg * omega_m * omega_s
                             row_idx = row_idx + 1
 
-                            # Apparent Power net
+                            # Apparent Power curtailed
                             sheet.cell(row=row_idx, column=1).value = gen_id
                             sheet.cell(row=row_idx, column=2).value = node_id
                             sheet.cell(row=row_idx, column=3).value = gen_type
                             sheet.cell(row=row_idx, column=4).value = int(year)
                             sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Qg_net, [MVAr]'
+                            sheet.cell(row=row_idx, column=6).value = 'Sg_curt, [MVA]'
                             sheet.cell(row=row_idx, column=7).value = s_m
                             sheet.cell(row=row_idx, column=8).value = s_o
                             for p in range(network.num_instants):
                                 sg_curt = results[year][day]['scenarios'][s_m][s_o]['generation']['sg_curt'][gen_id][p]
                                 sheet.cell(row=row_idx, column=p + 9).value = sg_curt
                                 sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                                if not isclose(sg_curt, 0.00, abs_tol= VIOLATION_TOLERANCE):
+                                    sheet.cell(row=row_idx, column=p + 9).fill = violation_fill
                                 expected_sg_curt[gen_id][p] += sg_curt * omega_m * omega_s
                             row_idx = row_idx + 1
 
@@ -1234,7 +1236,7 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                             sheet.cell(row=row_idx, column=3).value = gen_type
                             sheet.cell(row=row_idx, column=4).value = int(year)
                             sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Qg_net, [MVAr]'
+                            sheet.cell(row=row_idx, column=6).value = 'Sg_net, [MVA]'
                             sheet.cell(row=row_idx, column=7).value = s_m
                             sheet.cell(row=row_idx, column=8).value = s_o
                             for p in range(network.num_instants):
@@ -1336,6 +1338,8 @@ def _write_network_generation_results_to_excel(network_planning, workbook, resul
                     for p in range(network.num_instants):
                         sheet.cell(row=row_idx, column=p + 9).value = expected_sg_curt[gen_id][p]
                         sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
+                        if not isclose(expected_sg_curt[gen_id][p], 0.00, abs_tol=VIOLATION_TOLERANCE):
+                            sheet.cell(row=row_idx, column=p + 9).fill = violation_fill
                     row_idx = row_idx + 1
 
                     sheet.cell(row=row_idx, column=1).value = gen_id
