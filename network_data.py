@@ -52,6 +52,7 @@ class NetworkData:
             results[year] = dict()
             for day in self.days:
                 results[year][day] = self.network[year][day].run_smopf(model[year][day], self.params, from_warm_start=from_warm_start)
+                gc.collect()
         return results
 
     def get_primal_value(self, model):

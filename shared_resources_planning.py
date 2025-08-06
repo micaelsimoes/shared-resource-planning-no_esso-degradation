@@ -177,6 +177,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         else:
             upper_bound = upper_bound_evolution[-1]
         upper_bound_evolution.append(upper_bound)
+        gc.collect()
         print_memory_usage(f"After subproblem (iter {iter})", debug_flag)
 
         #  - Convergence check
@@ -323,6 +324,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
             consensus_vars['ess'], dual_vars['ess']['dso'],
             admm_parameters, from_warm_start=from_warm_start, parallel_execution=planning_problem.parallel_execution
         )
+        gc.collect()
 
         # Update ADMM CONSENSUS variables, primal, and check convergence
         convergence = update_and_check_convergence(
@@ -346,6 +348,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
             consensus_vars['ess'], dual_vars['ess']['tso'],
             admm_parameters, from_warm_start=from_warm_start
         )
+        gc.collect()
 
         # Update ADMM CONSENSUS variables, primal, and check convergence
         convergence = update_and_check_convergence(
@@ -367,6 +370,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
             consensus_vars['ess']['tso'], dual_vars['ess']['esso'],
             admm_parameters, from_warm_start=from_warm_start
         )
+        gc.collect()
 
         # - Update ADMM CONSENSUS variables, primal, and check convergence
         convergence = update_and_check_convergence(
