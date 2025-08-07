@@ -1569,7 +1569,7 @@ def check_stationary_convergence(planning_problem, consensus_vars, params):
                     sum_rel_abs_error_pf += rho_tso_ess * abs(consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['q'][p]) / interface_transf_rating
                     sum_rel_abs_error_pf += rho_dso_ess * abs(consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p]) / interface_transf_rating
                     sum_rel_abs_error_pf += rho_dso_ess * abs(consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p]) / interface_transf_rating
-                    num_elems_pf += 4
+                    num_elems_pf += 8
 
                     # sum_rel_abs_error_pf += rho_tso_pf * abs(consensus_vars['pf']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['pf']['tso']['prev'][node_id][year][day]['p'][p]) / interface_transf_rating
                     # sum_rel_abs_error_pf += rho_tso_pf * abs(consensus_vars['pf']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['pf']['tso']['prev'][node_id][year][day]['q'][p]) / interface_transf_rating
