@@ -1566,11 +1566,11 @@ def check_stationary_convergence(planning_problem, consensus_vars, params):
                     sum_rel_abs_error_pf += rho_dso_pf * abs(consensus_vars['pf']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['pf']['dso']['prev'][node_id][year][day]['q'][p]) / interface_transf_rating
                     num_elems_pf += 4
 
-                    sum_rel_abs_error_ess += rho_tso_ess * abs(consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['p'][p]) / shared_ess_rating
-                    sum_rel_abs_error_ess += rho_tso_ess * abs(consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['q'][p]) / shared_ess_rating
-                    sum_rel_abs_error_ess += rho_dso_ess * abs(consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p]) / shared_ess_rating
-                    sum_rel_abs_error_ess += rho_dso_ess * abs(consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p]) / shared_ess_rating
-                    num_elems_ess += 4
+                    # sum_rel_abs_error_ess += rho_tso_ess * abs(consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['p'][p]) / shared_ess_rating
+                    # sum_rel_abs_error_ess += rho_tso_ess * abs(consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['q'][p]) / shared_ess_rating
+                    # sum_rel_abs_error_ess += rho_dso_ess * abs(consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p]) / shared_ess_rating
+                    # sum_rel_abs_error_ess += rho_dso_ess * abs(consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p]) / shared_ess_rating
+                    # num_elems_ess += 4
 
     convergence = True
     if error_within_limits(sum_rel_abs_error_vmag, num_elems_vmag, params.tol['stationarity']['v']):
