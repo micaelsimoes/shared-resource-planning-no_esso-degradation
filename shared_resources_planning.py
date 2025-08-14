@@ -1576,7 +1576,6 @@ def check_stationary_convergence(planning_problem, consensus_vars, params):
     convergence = True
     if error_within_limits(sum_rel_abs_error_vmag, num_elems_vmag, params.tol['stationarity']['v']):
         if error_within_limits(sum_rel_abs_error_pf, num_elems_pf, params.tol['stationarity']['pf']):
-            print('[INFO]\t\t - Stationary constraints ok!')
             if error_within_limits(sum_rel_abs_error_ess, num_elems_ess, params.tol['stationarity']['ess']):
                 print('[INFO]\t\t - Stationary constraints ok!')
             else:
