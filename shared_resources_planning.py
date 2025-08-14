@@ -1551,9 +1551,9 @@ def check_stationary_convergence(planning_problem, consensus_vars, params):
 
                 interface_v_base = planning_problem.transmission_network.network[year][day].get_node_base_kv(node_id)
                 interface_transf_rating = planning_problem.distribution_networks[node_id].network[year][day].get_interface_branch_rating()
-                # shared_ess_rating = abs(planning_problem.transmission_network.network[year][day].shared_energy_storages[shared_ess_idx].s) * s_base
-                # if isclose(shared_ess_rating, 0.00, abs_tol=SMALL_TOLERANCE):
-                #     shared_ess_rating = 1.00
+                shared_ess_rating = abs(planning_problem.transmission_network.network[year][day].shared_energy_storages[shared_ess_idx].s) * s_base
+                if isclose(shared_ess_rating, 0.00, abs_tol=SMALL_TOLERANCE):
+                    shared_ess_rating = 1.00
 
                 for p in range(planning_problem.num_instants):
 
@@ -1567,21 +1567,21 @@ def check_stationary_convergence(planning_problem, consensus_vars, params):
                     sum_rel_abs_error_pf += rho_dso_pf * abs(consensus_vars['pf']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['pf']['dso']['prev'][node_id][year][day]['p'][p]) / interface_transf_rating
                     num_elems_pf += 4
 
-                    # sum_rel_abs_error_ess += rho_tso_ess * abs(consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['p'][p]) / shared_ess_rating
-                    # sum_rel_abs_error_ess += rho_tso_ess * abs(consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['q'][p]) / shared_ess_rating
-                    # sum_rel_abs_error_ess += rho_dso_ess * abs(consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p]) / shared_ess_rating
-                    # sum_rel_abs_error_ess += rho_dso_ess * abs(consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p]) / shared_ess_rating
-                    # num_elems_ess += 4
+                    sum_rel_abs_error_ess += rho_tso_ess * abs(consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['p'][p]) / shared_ess_rating
+                    sum_rel_abs_error_ess += rho_tso_ess * abs(consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['q'][p]) / shared_ess_rating
+                    sum_rel_abs_error_ess += rho_dso_ess * abs(consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p]) / shared_ess_rating
+                    sum_rel_abs_error_ess += rho_dso_ess * abs(consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p]) / shared_ess_rating
+                    num_elems_ess += 4
 
     convergence = True
     if error_within_limits(sum_rel_abs_error_vmag, num_elems_vmag, params.tol['stationarity']['v']):
         if error_within_limits(sum_rel_abs_error_pf, num_elems_pf, params.tol['stationarity']['pf']):
             print('[INFO]\t\t - Stationary constraints ok!')
-            # if error_within_limits(sum_rel_abs_error_ess, num_elems_ess, params.tol['stationarity']['ess']):
-            #     print('[INFO]\t\t - Stationary constraints ok!')
-            # else:
-            #     convergence = False
-            #     print('[INFO]\t\t - Convergence shared ESS stationary constraints failed. {:.3f} > {:.3f}'.format(sum_rel_abs_error_ess, params.tol['stationarity']['ess'] * num_elems_ess))
+            if error_within_limits(sum_rel_abs_error_ess, num_elems_ess, params.tol['stationarity']['ess']):
+                print('[INFO]\t\t - Stationary constraints ok!')
+            else:
+                convergence = False
+                print('[INFO]\t\t - Convergence shared ESS stationary constraints failed. {:.3f} > {:.3f}'.format(sum_rel_abs_error_ess, params.tol['stationarity']['ess'] * num_elems_ess))
         else:
             convergence = False
             print('[INFO]\t\t - Convergence interface PF stationary constraints failed. {:.3f} > {:.3f}'.format(sum_rel_abs_error_pf, params.tol['stationarity']['pf'] * num_elems_pf))
