@@ -177,7 +177,8 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         else:
             upper_bound = upper_bound_evolution[-1]
         upper_bound_evolution.append(upper_bound)
-        gc.collect()
+        if planning_problem.params.gc:
+            gc.collect()
         print_memory_usage(f"After subproblem (iter {iter})", debug_flag)
 
         #  - Convergence check
@@ -199,7 +200,8 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         lower_bound = pe.value(master_problem_model.alpha)
         lower_bound_evolution.append(lower_bound)
 
-        gc.collect()
+        if planning_problem.params.gc:
+            gc.collect()
         print_memory_usage(f"After master problem solve (iter {iter})", debug_flag)
 
         # Get new candidate solution
@@ -387,7 +389,8 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
         iter_end = time.time()
         print(f"[INFO] \t - Iteration {iter}: {iter_end - iter_start:.2f} s")
 
-        gc.collect()
+        if planning_problem.params.gc:
+            gc.collect()
         from_warm_start = True
         log_debug(f"\t - Memory after iteration {iter}", debug_flag)
         print_memory_usage(f"\t - ADMM Iteration {iter} End", debug_flag)
