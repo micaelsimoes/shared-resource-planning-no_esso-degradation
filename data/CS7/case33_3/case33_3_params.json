@@ -7,23 +7,23 @@
 	"l_curt": false,
 	"enforce_vg": false,
 	"branch_limit_type": "MIXED",
-	"ess_model": "SIMPLIFIED_EXTENDED",
-	"shared_ess_model": "SIMPLIFIED_EXTENDED",
+	"ess_model": "EXACT",
+	"shared_ess_model": "EXACT",
 	"slacks": {
 		"grid_operation": {
 			"voltage": true,
 			"branch_flow": false
 		},
 		"flexibility": {
-			"day_balance": false
+			"day_balance": true
 		},
 		"ess": {
 			"complementarity": false,
-			"day_balance": false
+			"day_balance": true
 		},
 		"shared_ess": {
 			"complementarity": false,
-			"day_balance": false
+			"day_balance": true
 		},
 		"node_balance": {
 			"active_power": false,
