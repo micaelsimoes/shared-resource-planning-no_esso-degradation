@@ -352,7 +352,7 @@ def _build_model(network, params):
     model.shared_es_pnet = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.shared_es_qnet = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     if params.shared_ess_model == ESS_MODEL_FIRST_ORDER:
-        model.shared_es_qnet = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+        model.shared_es_snet = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     if params.slacks.shared_ess.complementarity:
         model.slack_shared_es_comp = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     if params.slacks.shared_ess.day_balance:
@@ -395,7 +395,7 @@ def _build_model(network, params):
         model.energy_storage_phi_dch_limit_lower = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_dch_limits_lower, network=network))
         model.energy_storage_phi_dch_limit_upper = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_dch_limits_upper, network=network))
         model.energy_storage_ch_dch_exclusion = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_comp_rule, network=network, params=params))
-        model.energy_storage_balance = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_balance_rule, network=network))
+        model.energy_storage_balance = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_balance_rule, network=network, params=params))
         model.energy_storage_day_balance = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, rule=partial(ess_soc_final_rule, network=network, params=params))
         if params.ess_model == ESS_MODEL_LP_RELAXED:
             model.energy_storage_relax_ch = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_relaxed_model_ch_rule, network=network))
@@ -432,14 +432,14 @@ def _build_model(network, params):
     model.shared_energy_storage_sch_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_sch_def, params=params))
     model.shared_energy_storage_sdch_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_sdch_def, params=params))
     model.shared_energy_storage_ch_dch_exclusion = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_comp_rule, params=params))
-    model.shared_energy_storage_balance = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_balance_rule, network=network))
+    model.shared_energy_storage_balance = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_balance_rule, network=network, params=params))
     model.shared_energy_storage_day_balance = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, rule=partial(sess_soc_final_rule, network=network, params=params))
     model.shared_energy_storage_soc_limit_lower = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_soc_lower_limit)
     model.shared_energy_storage_soc_limit_upper = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_soc_upper_limit)
     model.shared_energy_storage_pnet_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pnet_rule)
     model.shared_energy_storage_qnet_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_qnet_rule)
     if params.ess_model == ESS_MODEL_LP_SIMPLIFIED_EXTENDED:
-        model.energy_storage_snet_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_snet_def, params=params))
+        model.energy_storage_snet_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_snet_rule, params=params))
 
     # - Generation and Load per node
     model.net_load_p_per_node = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_p_per_node_rule, network=network, params=params))
