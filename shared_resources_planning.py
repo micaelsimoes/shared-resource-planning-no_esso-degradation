@@ -295,6 +295,13 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     tso_model, results['tso'] = create_transmission_network_model(planning_problem, consensus_vars, candidate_solution['total_capacity'])
     esso_model, results['esso'] = create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidate_solution['investment'])
 
+    sess_available_capacities = shared_ess_data.get_updated_capacities(esso_model)
+    print("[DEBUG] available_capacities:")
+    for node_id in sess_available_capacities:
+        print(f"\t{node_id}:")
+        for year in sess_available_capacities[node_id]:
+            print(f"\t{year}: {sess_available_capacities[node_id][year]}")
+
     # Update models to ADMM
     update_distribution_models_to_admm(planning_problem, dso_models, admm_parameters)
     update_transmission_model_to_admm(planning_problem, tso_model, admm_parameters)
@@ -324,7 +331,9 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
             consensus_vars['vmag'], dual_vars['vmag']['dso'],
             consensus_vars['pf'], dual_vars['pf']['dso'],
             consensus_vars['ess'], dual_vars['ess']['dso'],
-            admm_parameters, from_warm_start=from_warm_start, parallel_execution=planning_problem.parallel_execution
+            admm_parameters,
+            sess_available_capacities,
+            from_warm_start=from_warm_start, parallel_execution=planning_problem.parallel_execution
         )
 
         # Update ADMM CONSENSUS variables, primal, and check convergence
@@ -347,7 +356,9 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
             consensus_vars['vmag'], dual_vars['vmag']['tso'],
             consensus_vars['pf'], dual_vars['pf']['tso'],
             consensus_vars['ess'], dual_vars['ess']['tso'],
-            admm_parameters, from_warm_start=from_warm_start
+            admm_parameters,
+            sess_available_capacities,
+            from_warm_start=from_warm_start
         )
 
         # Update ADMM CONSENSUS variables, primal, and check convergence
@@ -370,6 +381,13 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
             consensus_vars['ess']['tso'], dual_vars['ess']['esso'],
             admm_parameters, from_warm_start=from_warm_start
         )
+
+        available_capacities = shared_ess_data.get_updated_capacities(esso_model)
+        print("[DEBUG] available_capacities:")
+        for node_id in available_capacities:
+            print(f"\t{node_id}:")
+            for year in available_capacities[node_id]:
+                print(f"\t{year}: {available_capacities[node_id][year]}")
 
         # - Update ADMM CONSENSUS variables, primal, and check convergence
         convergence = update_and_check_convergence(
@@ -1218,7 +1236,7 @@ def update_shared_energy_storage_model_to_admm(planning_problem, models, params)
     return models
 
 
-def update_transmission_coordination_model_and_solve(transmission_network, model, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, from_warm_start=False):
+def update_transmission_coordination_model_and_solve(transmission_network, model, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=False):
 
     print('[INFO] \t\t - Updating transmission network...')
 
@@ -1250,6 +1268,12 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
 
                 node_id = transmission_network.active_distribution_network_nodes[dn]
                 v_base = transmission_network.network[year][day].get_node_base_kv(node_id)
+                shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(node_id)
+                sess_estimated_capacity = sess_estimated_capacities[node_id]
+
+                # Update estimated rated power and energy capacity
+                model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(abs(sess_estimated_capacity[year]['s_available']) / s_base)
+                model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(abs(sess_estimated_capacity[year]['e_available']) / s_base)
 
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
@@ -1283,14 +1307,14 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
     return res
 
 
-def update_distribution_coordination_models_and_solve(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, from_warm_start=False, parallel_execution=False):
+def update_distribution_coordination_models_and_solve(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=False, parallel_execution=False):
     if parallel_execution:
-        return update_distribution_coordination_models_and_solve_parallel(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, from_warm_start=from_warm_start)
+        return update_distribution_coordination_models_and_solve_parallel(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=from_warm_start)
     else:
-        return update_distribution_coordination_models_and_solve_sequential(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, from_warm_start=from_warm_start)
+        return update_distribution_coordination_models_and_solve_sequential(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=from_warm_start)
 
 
-def update_distribution_coordination_models_and_solve_sequential(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, from_warm_start=False):
+def update_distribution_coordination_models_and_solve_sequential(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=False):
 
     print('[INFO] \t\t - Updating distribution networks:')
     res = dict()
@@ -1299,6 +1323,7 @@ def update_distribution_coordination_models_and_solve_sequential(distribution_ne
 
         model = models[node_id]
         distribution_network = distribution_networks[node_id]
+        sess_estimated_capacity = sess_estimated_capacities[node_id]
 
         for year in distribution_network.years:
             for day in distribution_network.days:
@@ -1306,6 +1331,11 @@ def update_distribution_coordination_models_and_solve_sequential(distribution_ne
                 ref_node_id = distribution_network.network[year][day].get_reference_node_id()
                 v_base = distribution_network.network[year][day].get_node_base_kv(ref_node_id)
                 s_base = distribution_network.network[year][day].baseMVA
+                shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
+
+                # Update estimated rated power and energy capacity
+                model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(abs(sess_estimated_capacity[year]['s_available']) / s_base)
+                model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(abs(sess_estimated_capacity[year]['e_available']) / s_base)
 
                 rho_v = params.rho['v'][distribution_network.name]
                 rho_pf = params.rho['pf'][distribution_network.name]
@@ -1357,7 +1387,7 @@ def update_distribution_coordination_models_and_solve_sequential(distribution_ne
     return res
 
 
-def update_distribution_coordination_models_and_solve_parallel(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, from_warm_start=False):
+def update_distribution_coordination_models_and_solve_parallel(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=False):
 
     print('[INFO] \t\t - Updating distribution networks in parallel:')
     res = dict()
@@ -1366,9 +1396,11 @@ def update_distribution_coordination_models_and_solve_parallel(distribution_netw
     max_workers = os.cpu_count() // 2
     with ProcessPoolExecutor(max_workers=max_workers) as executor:
         for node_id in distribution_networks:
+            sess_estimated_capacity = sess_estimated_capacities[node_id]
             tasks.append(executor.submit(update_and_solve_dso, node_id, distribution_networks[node_id], models[node_id],
                                          vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess,
-                                         params, from_warm_start=from_warm_start))
+                                         params, sess_estimated_capacity,
+                                         from_warm_start=from_warm_start))
 
         for future in as_completed(tasks):
             node_id, result, updated_model = future.result()
@@ -1378,7 +1410,7 @@ def update_distribution_coordination_models_and_solve_parallel(distribution_netw
     return res
 
 
-def update_and_solve_dso(node_id, distribution_network, model, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, from_warm_start=False):
+def update_and_solve_dso(node_id, distribution_network, model, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacity, from_warm_start=False):
 
     for year in distribution_network.years:
         for day in distribution_network.days:
@@ -1386,6 +1418,10 @@ def update_and_solve_dso(node_id, distribution_network, model, vmag_req, dual_vm
             ref_node_id = distribution_network.network[year][day].get_reference_node_id()
             v_base = distribution_network.network[year][day].get_node_base_kv(ref_node_id)
             s_base = distribution_network.network[year][day].baseMVA
+
+            # Update estimated rated power and energy capacity
+            model[year][day].shared_es_s_rated_fixed.set_value(abs(sess_estimated_capacity[year]['s_available']) / s_base)
+            model[year][day].shared_es_e_rated_fixed.set_value(abs(sess_estimated_capacity[year]['e_available']) / s_base)
 
             rho_v = params.rho['v'][distribution_network.name]
             rho_pf = params.rho['pf'][distribution_network.name]
@@ -5759,8 +5795,12 @@ def _get_initial_candidate_solution(planning_problem):
         candidate_solution['total_capacity'][node_id] = dict()
         for year in planning_problem.years:
             candidate_solution['investment'][node_id][year] = dict()
-            candidate_solution['investment'][node_id][year]['s'] = 2.50
-            candidate_solution['investment'][node_id][year]['e'] = 5.00
+            if year == list(planning_problem.years)[0]:
+                candidate_solution['investment'][node_id][year]['s'] = 2.50
+                candidate_solution['investment'][node_id][year]['e'] = 5.00
+            else:
+                candidate_solution['investment'][node_id][year]['s'] = 0.00
+                candidate_solution['investment'][node_id][year]['e'] = 0.00
             candidate_solution['total_capacity'][node_id][year] = dict()
             candidate_solution['total_capacity'][node_id][year]['s'] = 2.50
             candidate_solution['total_capacity'][node_id][year]['e'] = 5.00

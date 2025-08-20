@@ -150,6 +150,16 @@ class SharedEnergyStorageData:
                 shared_ess.e_min = candidate_solution[shared_ess.bus][year]['e'] * ENERGY_STORAGE_MIN_ENERGY_STORED
                 shared_ess.e_max = candidate_solution[shared_ess.bus][year]['e'] * ENERGY_STORAGE_MAX_ENERGY_STORED
 
+    def get_updated_capacities(self, model):
+        available_capacities = dict()
+        for node_id in self.active_distribution_network_nodes:
+            available_capacities[node_id] = dict()
+            years = list(self.years)
+            for y in range(len(years)):
+                s_available, e_available = self.get_available_capacities(model[node_id], y)
+                available_capacities[node_id][years[y]] = {'s_available': s_available, 'e_available': e_available}
+        return available_capacities
+
     def get_available_capacities(self, model, year_idx):
         s_available = 0.00
         e_available = 0.00
