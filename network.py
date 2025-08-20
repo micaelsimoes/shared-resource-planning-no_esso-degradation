@@ -388,7 +388,7 @@ def _build_model(network, params):
     if params.es_reg:
         model.energy_storage_sch_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_sch_def, params=params))
         model.energy_storage_sdch_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_sdch_def, params=params))
-        if params.ess_model == ESS_MODEL_LP_SIMPLIFIED_EXTENDED:
+        if params.ess_model == ESS_MODEL_FIRST_ORDER:
             model.energy_storage_snet_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_snet_def, params=params))
         model.energy_storage_phi_ch_limit_lower = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_ch_limits_lower, network=network))
         model.energy_storage_phi_ch_limit_upper = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_ch_limits_upper, network=network))
