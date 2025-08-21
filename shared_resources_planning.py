@@ -1536,7 +1536,7 @@ def check_consensus_convergence(planning_problem, consensus_vars, params, debug_
                 interface_v_base = planning_problem.transmission_network.network[year][day].get_node_base_kv(node_id)
                 interface_transf_rating = planning_problem.distribution_networks[node_id].network[year][day].get_interface_branch_rating()
                 shared_ess_rating = abs(planning_problem.transmission_network.network[year][day].shared_energy_storages[shared_ess_idx].s) * s_base
-                if isclose(shared_ess_rating, 0.00, abs_tol=SMALL_TOLERANCE):
+                if isclose(shared_ess_rating, 0.00, abs_tol=0.50):
                     shared_ess_rating = 1.00
 
                 for p in range(planning_problem.num_instants):
@@ -1593,7 +1593,7 @@ def check_stationary_convergence(planning_problem, consensus_vars, params):
                 interface_v_base = planning_problem.transmission_network.network[year][day].get_node_base_kv(node_id)
                 interface_transf_rating = planning_problem.distribution_networks[node_id].network[year][day].get_interface_branch_rating()
                 shared_ess_rating = abs(planning_problem.transmission_network.network[year][day].shared_energy_storages[shared_ess_idx].s) * s_base
-                if isclose(shared_ess_rating, 0.00, abs_tol=SMALL_TOLERANCE):
+                if isclose(shared_ess_rating, 0.00, abs_tol=0.50):
                     shared_ess_rating = 1.00
 
                 for p in range(planning_problem.num_instants):
