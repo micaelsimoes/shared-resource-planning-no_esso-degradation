@@ -296,11 +296,12 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     esso_model, results['esso'] = create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidate_solution['investment'])
 
     sess_available_capacities = shared_ess_data.get_updated_capacities(esso_model)
-    print("[DEBUG] available_capacities:")
-    for node_id in sess_available_capacities:
-        print(f"\t{node_id}:")
-        for year in sess_available_capacities[node_id]:
-            print(f"\t{year}: {sess_available_capacities[node_id][year]}")
+    if debug_flag:
+        print("[DEBUG] available_capacities:")
+        for node_id in sess_available_capacities:
+            print(f"\t{node_id}:")
+            for year in sess_available_capacities[node_id]:
+                print(f"\t{year}: {sess_available_capacities[node_id][year]}")
 
     # Update models to ADMM
     update_distribution_models_to_admm(planning_problem, dso_models, admm_parameters)
@@ -382,13 +383,6 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
             admm_parameters, from_warm_start=from_warm_start
         )
 
-        available_capacities = shared_ess_data.get_updated_capacities(esso_model)
-        print("[DEBUG] available_capacities:")
-        for node_id in available_capacities:
-            print(f"\t{node_id}:")
-            for year in available_capacities[node_id]:
-                print(f"\t{year}: {available_capacities[node_id][year]}")
-
         # - Update ADMM CONSENSUS variables, primal, and check convergence
         convergence = update_and_check_convergence(
             planning_problem, tso_model, dso_models, esso_model,
@@ -397,6 +391,14 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
             update_flags={"update_tn": False, "update_dns": False, "update_sess": True},
             debug_flag=debug_flag
         )
+
+        sess_available_capacities = shared_ess_data.get_updated_capacities(esso_model)
+        if debug_flag:
+            print("[DEBUG] available_capacities:")
+            for node_id in sess_available_capacities:
+                print(f"\t{node_id}:")
+                for year in sess_available_capacities[node_id]:
+                    print(f"\t{year}: {sess_available_capacities[node_id][year]}")
 
         # --------------------------------------------------------------------------------------------------------------
 
@@ -5795,15 +5797,11 @@ def _get_initial_candidate_solution(planning_problem):
         candidate_solution['total_capacity'][node_id] = dict()
         for year in planning_problem.years:
             candidate_solution['investment'][node_id][year] = dict()
-            if year == list(planning_problem.years)[0]:
-                candidate_solution['investment'][node_id][year]['s'] = 2.50
-                candidate_solution['investment'][node_id][year]['e'] = 5.00
-            else:
-                candidate_solution['investment'][node_id][year]['s'] = 0.00
-                candidate_solution['investment'][node_id][year]['e'] = 0.00
+            candidate_solution['investment'][node_id][year]['s'] = 0.00
+            candidate_solution['investment'][node_id][year]['e'] = 0.00
             candidate_solution['total_capacity'][node_id][year] = dict()
-            candidate_solution['total_capacity'][node_id][year]['s'] = 2.50
-            candidate_solution['total_capacity'][node_id][year]['e'] = 5.00
+            candidate_solution['total_capacity'][node_id][year]['s'] = 0.00
+            candidate_solution['total_capacity'][node_id][year]['e'] = 0.00
     return candidate_solution
 
 
