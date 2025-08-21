@@ -1535,7 +1535,6 @@ def check_consensus_convergence(planning_problem, consensus_vars, params, debug_
 
                 interface_v_base = planning_problem.transmission_network.network[year][day].get_node_base_kv(node_id)
                 interface_transf_rating = planning_problem.distribution_networks[node_id].network[year][day].get_interface_branch_rating()
-                shared_ess_rating = abs(planning_problem.transmission_network.network[year][day].shared_energy_storages[shared_ess_idx].s) * s_base
                 shared_ess_rating = max(abs(planning_problem.transmission_network.network[year][day].shared_energy_storages[shared_ess_idx].s) * s_base, 0.10)
 
                 for p in range(planning_problem.num_instants):
