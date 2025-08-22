@@ -439,7 +439,7 @@ def _build_model(network, params):
     model.shared_energy_storage_pnet_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pnet_rule)
     model.shared_energy_storage_qnet_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_qnet_rule)
     if params.ess_model == ESS_MODEL_LP_SIMPLIFIED_EXTENDED:
-        model.energy_storage_snet_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_snet_rule, params=params))
+        model.energy_storage_snet_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_snet_rule))
 
     # - Generation and Load per node
     model.net_load_p_per_node = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_p_per_node_rule, network=network, params=params))
