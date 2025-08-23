@@ -2394,12 +2394,12 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
                             row_idx = row_idx + 1
 
                     # Node balance
-                    if network_planning.params.slacks.node_balance:
-                        for node in network.nodes:
+                    for node in network.nodes:
 
-                            node_id = node.bus_i
+                        node_id = node.bus_i
 
-                            # - slack_p
+                        # - slack_p
+                        if network_planning.params.slacks.node_balance.active_power:
                             sheet.cell(row=row_idx, column=1).value = node_id
                             sheet.cell(row=row_idx, column=2).value = int(year)
                             sheet.cell(row=row_idx, column=3).value = day
@@ -2412,7 +2412,8 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
                                 sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                             row_idx = row_idx + 1
 
-                            # - slack_q
+                        # - slack_q
+                        if network_planning.params.slacks.node_balance.reactive_power:
                             sheet.cell(row=row_idx, column=1).value = node_id
                             sheet.cell(row=row_idx, column=2).value = int(year)
                             sheet.cell(row=row_idx, column=3).value = day
