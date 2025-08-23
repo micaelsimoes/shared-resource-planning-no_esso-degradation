@@ -1,34 +1,38 @@
 {
-	"obj_type": "COST",
+	"obj_type": "CONGESTION_MANAGEMENT",
 	"transf_reg": true,
-	"es_reg": true,
+	"es_reg": false,
 	"fl_reg": true,
 	"rg_curt": true,
 	"l_curt": false,
 	"enforce_vg": false,
+	"relax_equalities": true,
 	"branch_limit_type": "MIXED",
-	"ess_model": "EXACT",
-	"shared_ess_model": "EXACT",
 	"slacks": {
 		"grid_operation": {
 			"voltage": true,
-			"branch_flow": false
+			"branch_flow": true
 		},
 		"flexibility": {
 			"day_balance": false
 		},
 		"ess": {
-			"complementarity": false,
-			"day_balance": false
+				"complementarity": false,
+				"charging": false,
+				"soc": false,
+				"day_balance": false
 		},
 		"shared_ess": {
-			"complementarity": false,
-			"day_balance": false
+				"complementarity": false,
+				"charging": false,
+				"soc": false,
+				"day_balance": false
 		},
-		"node_balance": {
-			"active_power": false,
-			"reactive_power": false
-		}
+		"expected_values": {
+			"interface" : false,
+			"shared_ess": false
+		},
+		"node_balance": false
 	},
 	"solver": {
 		"name": "ipopt",

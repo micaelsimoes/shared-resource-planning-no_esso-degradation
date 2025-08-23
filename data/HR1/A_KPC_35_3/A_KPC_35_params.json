@@ -1,43 +1,39 @@
 {
 	"obj_type": "CONGESTION_MANAGEMENT",
 	"transf_reg": true,
-	"es_reg": false,
+	"es_reg": true,
 	"fl_reg": true,
 	"rg_curt": true,
 	"l_curt": false,
 	"enforce_vg": false,
-	"relax_equalities": true,
 	"branch_limit_type": "MIXED",
+	"ess_model": "SIMPLIFIED_EXTENDED",
+	"shared_ess_model": "SIMPLIFIED_EXTENDED",
 	"slacks": {
 		"grid_operation": {
 			"voltage": true,
-			"branch_flow": true
+			"branch_flow": false
 		},
 		"flexibility": {
 			"day_balance": false
 		},
 		"ess": {
-				"complementarity": false,
-				"charging": false,
-				"soc": false,
-				"day_balance": false
+			"complementarity": false,
+			"day_balance": false
 		},
 		"shared_ess": {
-				"complementarity": false,
-				"charging": false,
-				"soc": false,
-				"day_balance": false
+			"complementarity": false,
+			"day_balance": false
 		},
-		"expected_values": {
-			"interface" : false,
-			"shared_ess": false
-		},
-		"node_balance": false
+		"node_balance": {
+			"active_power": false,
+			"reactive_power": false
+		}
 	},
 	"solver": {
 		"name": "ipopt",
 		"linear_solver": "ma97",
-		"solver_tol": 1e-6,
+		"solver_tol": 1e-5,
 		"verbose": false
 	},
 	"print_to_screen": false,
