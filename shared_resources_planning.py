@@ -503,7 +503,7 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
                     for s_o in tso_model[year][day].scenarios_operation:
                         for p in tso_model[year][day].periods:
 
-                            # Interface voltage, free vmag_sqr_adn, remove slacks
+                            # Interface voltage, free vmag_adn, remove slacks
                             tso_model[year][day].vmag_adn[dn, s_m, s_o, p].fixed = False
                             tso_model[year][day].vmag_adn[dn, s_m, s_o, p].setub(v_max)
                             tso_model[year][day].vmag_adn[dn, s_m, s_o, p].setlb(v_min)
@@ -1962,7 +1962,7 @@ def _run_operational_planning_without_coordination(planning_problem):
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
                 adn_node_idx = transmission_network.network[year][day].get_node_idx(adn_node_id)
                 adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(adn_node_id)
-                _, v_max = transmission_network.network[year][day].get_node_voltage_limits(adn_node_id)
+                v_min, v_max = transmission_network.network[year][day].get_node_voltage_limits(adn_node_id)
 
                 for s_m in tso_model[year][day].scenarios_market:
                     for s_o in tso_model[year][day].scenarios_operation:
@@ -1972,18 +1972,17 @@ def _run_operational_planning_without_coordination(planning_problem):
                             p_req = interface_pf[adn_node_id][year][day]['p'][p] / s_base
                             q_req = interface_pf[adn_node_id][year][day]['q'][p] / s_base
 
-                            tso_model[year][day].e[adn_node_idx, s_m, s_o, p].fixed = False
-                            tso_model[year][day].e[adn_node_idx, s_m, s_o, p].setub(v_max + SMALL_TOLERANCE)
-                            tso_model[year][day].e[adn_node_idx, s_m, s_o, p].setlb(-v_max - SMALL_TOLERANCE)
-                            tso_model[year][day].f[adn_node_idx, s_m, s_o, p].fixed = False
-                            tso_model[year][day].f[adn_node_idx, s_m, s_o, p].setub(v_max + SMALL_TOLERANCE)
-                            tso_model[year][day].f[adn_node_idx, s_m, s_o, p].setlb(-v_max - SMALL_TOLERANCE)
+                            # Interface voltage, free vmag_adn, remove slacks
+                            tso_model[year][day].vmag_adn[dn, s_m, s_o, p].fixed = False
+                            tso_model[year][day].vmag_adn[dn, s_m, s_o, p].setub(v_max)
+                            tso_model[year][day].vmag_adn[dn, s_m, s_o, p].setlb(v_min)
                             if transmission_network.params.slacks.grid_operation.voltage:
-                                tso_model[year][day].slack_e_up[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                                tso_model[year][day].slack_e_down[adn_node_idx, s_m, s_o, p].setub(-EQUALITY_TOLERANCE)
-                                tso_model[year][day].slack_f_up[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                                tso_model[year][day].slack_f_down[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                fix_or_set(tso_model[year][day].slack_e_up[adn_node_idx, s_m, s_o, p], 0.00)
+                                fix_or_set(tso_model[year][day].slack_e_down[adn_node_idx, s_m, s_o, p], 0.00)
+                                fix_or_set(tso_model[year][day].slack_f_up[adn_node_idx, s_m, s_o, p], 0.00)
+                                fix_or_set(tso_model[year][day].slack_f_down[adn_node_idx, s_m, s_o, p], 0.00)
 
+                            # Fix Pc and Qc (base profiles), free pc_adn and qc_adn
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fixed = False
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setub(None)
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setlb(None)
