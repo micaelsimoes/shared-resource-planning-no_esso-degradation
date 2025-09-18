@@ -2583,6 +2583,7 @@ def _plot_load_data_scenarios(network_planning, years_to_plot, save_dir, save_fo
             handles, labels = axs[0].get_legend_handles_labels()
             fig.legend(handles, labels, loc='right', fontsize='small', frameon=True)
 
+            # plt.tight_layout()
             filename = os.path.join(save_dir, f"{network.name}_load_scenarios_{year}_{season}.{save_format}")
             plt.savefig(filename)
             plt.close(fig)
