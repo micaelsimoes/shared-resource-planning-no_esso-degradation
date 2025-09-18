@@ -1,0 +1,54 @@
+{
+	"Years": {
+		"2025": 1
+	},
+	"Days": {
+		"Summer": 1
+	},
+	"NumInstants": 24,
+	"DiscountFactor": 0.02,
+	"MarketData": "OP1_market_data.xlsx",
+	"NumMarketScenarios": 5,
+	"PlotMarketData": true,
+	"ParallelExecution": false,
+	"DistributionNetworks": [
+		{
+			"name": "case33_1",
+			"operational_data_file": "case33_1_operational_data.xlsx",
+			"num_operation_scenarios": 10,
+			"plot_operational_data": true,
+			"params_file": "case33_1_params.json",
+			"connection_node_id": 5
+		},
+		{
+			"name": "case33_2",
+			"operational_data_file": "case33_2_operational_data.xlsx",
+			"num_operation_scenarios": 10,
+			"plot_operational_data": true,
+			"params_file": "case33_2_params.json",
+			"connection_node_id": 7
+		},
+		{
+			"name": "case33_3",
+			"operational_data_file": "case33_3_operational_data.xlsx",
+			"num_operation_scenarios": 10,
+			"plot_operational_data": true,
+			"params_file": "case33_3_params.json",
+			"connection_node_id": 9
+		}
+	],
+	"TransmissionNetwork": {
+		"name": "case9",
+		"operational_data_file": "case9_operational_data.xlsx",
+		"num_operation_scenarios": 5,
+		"plot_operational_data": true,
+		"params_file": "case9_params.json"
+	},
+	"SharedEnergyStorage":{
+		"params_file": "OP1_ESS_Params.json",
+		"data_file": "OP1_ESS.xlsx"
+	},
+	"PlanningParameters": {
+		"params_file": "OP1_params.json"
+	}
+}
