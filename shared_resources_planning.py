@@ -2306,6 +2306,7 @@ def _plot_market_price_scenarios(planning_problem, years_to_plot, save_dir, save
             plt.tight_layout()
 
             filename = os.path.join(save_dir, f"{planning_problem.name}_market_prices_{year}_{season}.{save_format}")
+            plt.tight_layout()
             plt.savefig(filename)
             plt.close(fig)
 
@@ -5793,11 +5794,11 @@ def _get_initial_candidate_solution(planning_problem):
         candidate_solution['total_capacity'][node_id] = dict()
         for year in planning_problem.years:
             candidate_solution['investment'][node_id][year] = dict()
-            candidate_solution['investment'][node_id][year]['s'] = 0.00
-            candidate_solution['investment'][node_id][year]['e'] = 0.00
+            candidate_solution['investment'][node_id][year]['s'] = 1.00
+            candidate_solution['investment'][node_id][year]['e'] = 2.00
             candidate_solution['total_capacity'][node_id][year] = dict()
-            candidate_solution['total_capacity'][node_id][year]['s'] = 0.00
-            candidate_solution['total_capacity'][node_id][year]['e'] = 0.00
+            candidate_solution['total_capacity'][node_id][year]['s'] = 1.00
+            candidate_solution['total_capacity'][node_id][year]['e'] = 2.00
     return candidate_solution
 
 
