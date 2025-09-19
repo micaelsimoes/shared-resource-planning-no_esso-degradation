@@ -54,6 +54,11 @@ def print_memory_usage(label="", debug=False):
         print(f"[MEMORY] {label} - RSS: {rss:.2f} MB | VMS: {vms:.2f} MB")
 
 
+def log_debug(message, debug=False):
+    if debug:
+        print(f"[DEBUG]\t{message}")
+
+
 def fix_or_set(var, val):
     if var.fixed:
         var.set_value(val)
