@@ -57,16 +57,24 @@ class SharedResourcesPlanning:
         print('[INFO] Running PLANNING PROBLEM...')
         _run_planning_problem(self, debug_flag=debug_flag)
 
-    def run_operational_planning(self, candidate_solution=dict(), print_results=False, filename=str(), debug_flag=False):
-        print('[INFO] Running OPERATIONAL PLANNING...')
-        if not candidate_solution:
-            candidate_solution = self.get_initial_candidate_solution()
-        convergence, results, models, sensitivities, primal_evolution = _run_operational_planning(self, candidate_solution, debug_flag=debug_flag)
-        if print_results:
-            if not filename:
-                filename = self.name
-            self.write_operational_planning_results_to_excel(models, results, filename=filename, primal_evolution=primal_evolution)
-        return convergence, results, models, sensitivities, primal_evolution
+    def run_operational_planning(self, type='distributed', candidate_solution=dict(), print_results=False, filename=str(), debug_flag=False):
+        if type == 'distributed':
+            print('[INFO] Running OPERATIONAL PLANNING (DISTRIBUTED)...')
+            if not candidate_solution:
+                candidate_solution = self.get_initial_candidate_solution()
+            convergence, results, models, sensitivities, primal_evolution = _run_operational_planning(self, candidate_solution, debug_flag=debug_flag)
+            if print_results:
+                if not filename:
+                    filename = self.name
+                self.write_operational_planning_results_to_excel(models, results, filename=filename, primal_evolution=primal_evolution)
+                return convergence, results, models, sensitivities, primal_evolution
+        elif type == 'hierarchical':
+            print('[INFO] Running OPERATIONAL PLANNING (HIERARCHICAL)...')
+            _run_operational_planning_hierarchical(self, debug_flag=debug_flag)
+        elif type == 'global':
+            print('[INFO] Running OPERATIONAL PLANNING (GLOBAL)...')
+
+
 
     def run_without_coordination(self, print_results=False):
         print('[INFO] Running PLANNING PROBLEM WITHOUT COORDINATION...')
@@ -268,7 +276,7 @@ def _add_benders_cut(planning_problem, model, upper_bound, convergence, sensitiv
 
 
 # ======================================================================================================================
-#  OPERATIONAL PLANNING functions
+#  OPERATIONAL PLANNING (DISTRIBUTED)
 # ======================================================================================================================
 def _run_operational_planning(planning_problem, candidate_solution, debug_flag=False):
 
@@ -426,11 +434,6 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     sensitivities = transmission_network.get_sensitivities(tso_model)
 
     return convergence, results, optim_models, sensitivities, primal_evolution
-
-
-def log_debug(message, debug=False):
-    if debug:
-        print(f"[DEBUG]\t{message}")
 
 
 def update_and_check_convergence(planning_problem, tso_model, dso_models, esso_model,
@@ -835,6 +838,82 @@ def _get_primal_value(planning_problem, tso_model, dso_models, esso_model):
     primal_value += shared_ess_data.get_primal_value(esso_model)
 
     return primal_value
+
+
+
+# ======================================================================================================================
+#  OPERATIONAL PLANNING (HIERARCHICAL)
+# ======================================================================================================================
+def _run_operational_planning_hierarchical(planning_problem, t=None, num_steps=8, print_pq_map=False, debug_flag=False):
+
+    transmission_network = planning_problem.transmission_network
+    distribution_networks = planning_problem.distribution_networks
+    results = {'tso': dict(), 'dso': dict()}
+
+    start = time.time()
+
+    # Get initial DN solutions
+    dso_models = dict()
+    for node_id in distribution_networks:
+        distribution_network = distribution_networks[node_id]
+        dso_models[node_id] = distribution_network.get_pq_map(t=t, num_steps=num_steps, print_pq_map=print_pq_map)
+
+    tso_model = transmission_network.build_model()
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+
+            tso_model[year][day].active_distribution_networks = range(len(transmission_network.active_distribution_network_nodes))
+
+            # TN, Fix Pc, Qc at the interface nodes, free flexibility
+            for dn in tso_model[year][day].active_distribution_networks:
+                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
+                adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(adn_node_id)
+                init_solution = dso_models[adn_node_id]['initial_solution']
+                for s_m in tso_model[year][day].scenarios_market:
+                    for s_o in tso_model[year][day].scenarios_operation:
+                        for p in tso_model[year][day].periods:
+                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setub(init_solution['Pg'] / transmission_network.baseMVA + EQUALITY_TOLERANCE)
+                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setlb(init_solution['Pg'] / transmission_network.baseMVA - EQUALITY_TOLERANCE)
+                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setub(init_solution['Qg'] / transmission_network.baseMVA + EQUALITY_TOLERANCE)
+                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setlb(init_solution['Qg'] / transmission_network.baseMVA - EQUALITY_TOLERANCE)
+                            tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].setub(None)
+                            tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].setub(None)
+                            tso_model[year][day].flex_q_up[adn_load_idx, s_m, s_o, p].setub(None)
+                            tso_model[year][day].flex_q_down[adn_load_idx, s_m, s_o].setub(None)
+                            if transmission_network.params.l_curt:
+                                tso_model[year][day].pc_curt_down[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                tso_model[year][day].pc_curt_up[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                tso_model[year][day].qc_curt_down[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                tso_model[year][day].qc_curt_up[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+
+            # TN, Add expected interface values
+            tso_model[year][day].expected_interface_vmag_sqr = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00)
+            tso_model[year][day].expected_interface_pf_p = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
+            tso_model[year][day].expected_interface_pf_q = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
+            tso_model[year][day].interface_expected_values = pe.ConstraintList()
+            for dn in tso_model[year][day].active_distribution_networks:
+                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
+                adn_node_idx = transmission_network.network[year][day].get_node_idx(adn_node_id)
+                adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(adn_node_id)
+                expected_vmag_sqr = 0.00
+                expected_pf_p = 0.00
+                expected_pf_q = 0.00
+                for s_o in tso_model[year][day].scenarios_operation:
+                    omega_oper = transmission_network.prob_operation_scenarios[s_o]
+                    adn_vmag_sqr = (tso_model[year][day].e[adn_node_idx, s_o] ** 2 + tso_model[year][day].f[adn_node_idx, s_o] ** 2)
+                    adn_pc = tso_model[year][day].pc[adn_load_idx, s_o] + tso_model[year][day].flex_p_up[adn_load_idx, s_o] - tso_model[year][day].flex_p_down[adn_load_idx, s_o]
+                    adn_qc = tso_model[year][day].qc[adn_load_idx, s_o] + tso_model[year][day].flex_q_up[adn_load_idx, s_o] - tso_model[year][day].flex_q_down[adn_load_idx, s_o]
+                    expected_vmag_sqr += omega_oper * adn_vmag_sqr
+                    expected_pf_p += omega_oper * adn_pc
+                    expected_pf_q += omega_oper * adn_qc
+                # tn_model.interface_expected_values.add(tn_model.expected_interface_vmag_sqr[dn] <= expected_vmag_sqr + SMALL_TOLERANCE)
+                # tn_model.interface_expected_values.add(tn_model.expected_interface_vmag_sqr[dn] >= expected_vmag_sqr - SMALL_TOLERANCE)
+                tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_p[dn] <= expected_pf_p + SMALL_TOLERANCE)
+                tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_p[dn] >= expected_pf_p - SMALL_TOLERANCE)
+                tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_q[dn] <= expected_pf_q + SMALL_TOLERANCE)
+                tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_q[dn] >= expected_pf_q - SMALL_TOLERANCE)
+
+    return results
 
 
 # ======================================================================================================================
