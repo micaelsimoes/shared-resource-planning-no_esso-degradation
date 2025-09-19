@@ -1,8 +1,7 @@
-import numpy as np
 import pandas as pd
 from functools import partial
 import pyomo.opt as po
-from math import pi, isclose, sqrt
+from math import pi, isclose
 import networkx as nx
 import matplotlib.pyplot as plt
 from node import Node
@@ -11,6 +10,7 @@ from branch import Branch
 from generator import Generator
 from energy_storage import EnergyStorage
 from model_construction_helpers import *
+from hierarchical_coordination import *
 
 
 # ======================================================================================================================
@@ -46,8 +46,16 @@ class Network:
     def build_model(self, params):
         return _build_model(self, params)
 
-    def run_smopf(self, model, params, from_warm_start=False):
-        print(f'[INFO] \t\t\t - Running SMOPF, Network {self.name}, {self.year}, {self.day}...')
+    def build_model_single_period(self, t, params):
+        _pre_process_network(self)
+        return build_model_single_period(self, t, params)
+
+    def get_pq_map(self, params, t=None, num_steps=None, print_pq_map=None):
+        return get_pq_map(self, params, t, num_steps, print_pq_map)
+
+    def run_smopf(self, model, params, from_warm_start=False, print_header=True):
+        if print_header:
+            print(f'[INFO] \t\t\t - Running SMOPF, Network {self.name}, {self.year}, {self.day}...')
         return _run_smopf(self, model, params, from_warm_start=from_warm_start)
 
     def get_primal_value(self, model):
