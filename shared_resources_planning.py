@@ -164,6 +164,9 @@ class SharedResourcesPlanning:
     def get_initial_candidate_solution(self):
         return _get_initial_candidate_solution(self)
 
+    def get_test_candidate_solution(self):
+        return _get_test_candidate_solution(self)
+
     def plot_diagram(self):
         _plot_networkx_diagram(self)
 
@@ -6007,6 +6010,22 @@ def _plot_networkx_diagram(planning_problem):
 #   Aux functions
 # ======================================================================================================================
 def _get_initial_candidate_solution(planning_problem):
+    candidate_solution = {'investment': {}, 'total_capacity': {}}
+    for e in range(len(planning_problem.active_distribution_network_nodes)):
+        node_id = planning_problem.active_distribution_network_nodes[e]
+        candidate_solution['investment'][node_id] = dict()
+        candidate_solution['total_capacity'][node_id] = dict()
+        for year in planning_problem.years:
+            candidate_solution['investment'][node_id][year] = dict()
+            candidate_solution['investment'][node_id][year]['s'] = 0.00
+            candidate_solution['investment'][node_id][year]['e'] = 0.00
+            candidate_solution['total_capacity'][node_id][year] = dict()
+            candidate_solution['total_capacity'][node_id][year]['s'] = 0.00
+            candidate_solution['total_capacity'][node_id][year]['e'] = 0.00
+    return candidate_solution
+
+
+def _get_test_candidate_solution(planning_problem):
     candidate_solution = {'investment': {}, 'total_capacity': {}}
     for e in range(len(planning_problem.active_distribution_network_nodes)):
         node_id = planning_problem.active_distribution_network_nodes[e]
