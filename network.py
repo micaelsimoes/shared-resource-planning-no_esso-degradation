@@ -53,8 +53,8 @@ class Network:
     def get_pq_map(self, params, t=None, num_steps=None, print_pq_map=None):
         return get_pq_map(self, params, t, num_steps, print_pq_map)
 
-    def update_of_to_settlement(self, model):
-        update_of_to_settlement(self, model)
+    def update_of_to_settlement(self, model, params):
+        update_of_to_settlement(self, model, params)
 
     def run_smopf(self, model, params, from_warm_start=False, print_header=True):
         if print_header:

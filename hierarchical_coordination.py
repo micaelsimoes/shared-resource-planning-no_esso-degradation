@@ -1,19 +1,23 @@
-from copy import copy
+from copy import copy, deepcopy
 import numpy as np
 from scipy.spatial import ConvexHull
 import pyomo.environ as pe
 from math import sqrt, acos, tan, atan2
 from helper_functions import *
+from model_construction_helpers import *
 
 
-def build_model_single_period(network, t, params):
+def build_model_single_period(network, t, original_params):
 
     network.compute_series_admittance()
 
+    # Note: update params to not consider ESSs and FLs
+    params = deepcopy(original_params)
+    params.fl_reg = False
+    params.es_reg = False
+
     model = pe.ConcreteModel()
     model.name = f'{network.name}_{network.year}_{network.day}_t={t}'
-    # params.es_reg = False
-    # params.fl_reg = False
 
     # ------------------------------------------------------------------------------------------------------------------
     # Sets
@@ -645,7 +649,7 @@ def build_model_single_period(network, t, params):
                 for i in model.nodes:
                     slack_e_sqr = model.slack_e[i, s_m, s_o] ** 2
                     slack_f_sqr = model.slack_f[i, s_m, s_o] ** 2
-                    obj += PENALTY_VOLTAGE * network.baseMVA * omega_oper * (slack_e_sqr + slack_f_sqr)
+                    obj += PENALTY_VOLTAGE * 1e3 * network.baseMVA * omega_oper * (slack_e_sqr + slack_f_sqr)
 
             # Branch power flow slacks
             if params.slacks.grid_operation.branch_flow:
@@ -862,7 +866,7 @@ def _get_pq_initial_solution(network, t, params):
     return solution
 
 
-def update_of_to_settlement(network, model):
+def update_of_to_settlement(network, model, params):
 
     s_base = network.baseMVA
     ref_node_id = network.get_reference_node_id()
@@ -914,6 +918,3 @@ def update_of_to_settlement(network, model):
         obj += model.penalty_regularization * s_base * (model.expected_interface_pf_p[p] - model.interface_pf_p_req[p]) ** 2
         obj += model.penalty_regularization * s_base * (model.expected_interface_pf_q[p] - model.interface_pf_q_req[p]) ** 2
     model.objective.expr = obj
-
-
-

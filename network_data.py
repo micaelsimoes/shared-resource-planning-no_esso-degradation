@@ -77,7 +77,7 @@ class NetworkData:
     def update_of_to_settlement(self, model):
         for year in self.years:
             for day in self.days:
-                self.network[year][day].update_of_to_settlement(model[year][day])
+                self.network[year][day].update_of_to_settlement(model[year][day], self.params)
 
     def get_primal_value(self, model):
         obj = 0.0

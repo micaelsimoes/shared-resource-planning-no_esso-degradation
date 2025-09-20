@@ -129,8 +129,8 @@ def combine_networks(transmission_network, distribution_networks):
 
                 for energy_storage in distribution_network.energy_storages:
                     new_energy_storage = copy(energy_storage)
-                    new_energy_storage.old_storage_id = energy_storage.storage_id
-                    new_energy_storage.storage_id = f'ADN_{adn_node_id}_{new_energy_storage.old_storage_id}'
+                    new_energy_storage.old_es_id = energy_storage.es_id
+                    new_energy_storage.es_id = f'ADN_{adn_node_id}_{new_energy_storage.old_es_id}'
                     new_energy_storage.bus = local_node_mapping[energy_storage.bus]
                     combined_network.network[year][day].energy_storages.append(new_energy_storage)
 

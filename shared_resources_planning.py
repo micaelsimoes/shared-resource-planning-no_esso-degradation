@@ -58,7 +58,7 @@ class SharedResourcesPlanning:
         print('[INFO] Running PLANNING PROBLEM...')
         _run_planning_problem(self, debug_flag=debug_flag)
 
-    def run_operational_planning(self, type='distributed', candidate_solution=dict(), print_results=False, filename=str(), debug_flag=False):
+    def run_operational_planning(self, type='distributed', candidate_solution=dict(), t=None, num_steps=8, print_results=False, filename=str(), debug_flag=False):
 
         if type == 'distributed':
             print('[INFO] Running OPERATIONAL PLANNING (DISTRIBUTED)...')
@@ -73,7 +73,7 @@ class SharedResourcesPlanning:
 
         elif type == 'hierarchical':
             print('[INFO] Running OPERATIONAL PLANNING (HIERARCHICAL)...')
-            results, models, execution_time = _run_operational_planning_hierarchical(self, debug_flag=debug_flag)
+            results, models, execution_time = _run_operational_planning_hierarchical(self, t=t, num_steps=num_steps, debug_flag=debug_flag)
             if print_results:
                 if not filename:
                     filename = f'{self.name}_hierarchical'
