@@ -15,6 +15,7 @@ import matplotlib.ticker as mticker
 import pyomo.opt as po
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill
+from centralized_coordination import combine_networks
 from network_data import NetworkData
 from load import Load
 from shared_energy_storage import SharedEnergyStorage
@@ -66,7 +67,7 @@ class SharedResourcesPlanning:
             convergence, results, models, sensitivities, primal_evolution = _run_operational_planning(self, candidate_solution, debug_flag=debug_flag)
             if print_results:
                 if not filename:
-                    filename = self.name
+                    filename = f'{self.name}_distributed'
                 self.write_operational_planning_results_to_excel(models, results, filename=filename, primal_evolution=primal_evolution)
         elif type == 'hierarchical':
             print('[INFO] Running OPERATIONAL PLANNING (HIERARCHICAL)...')
@@ -76,21 +77,24 @@ class SharedResourcesPlanning:
             results, models = _run_operational_planning_hierarchical(self, debug_flag=debug_flag)
             if print_results:
                 if not filename:
-                    filename = self.name
-                self.write_operational_planning_results_hierarchical_to_excel(models, results)
+                    filename = f'{self.name}_hierarchical'
+                self.write_operational_planning_results_hierarchical_to_excel(models, results, filename=filename)
         elif type == 'centralized':
             print('[INFO] Running OPERATIONAL PLANNING (CENTRALIZED)...')
+            _run_operational_planning_centralized(self, debug_flag=debug_flag)
 
         return convergence, results, models, sensitivities, primal_evolution
-
-
-
 
     def run_without_coordination(self, print_results=False):
         print('[INFO] Running PLANNING PROBLEM WITHOUT COORDINATION...')
         results, models = _run_operational_planning_without_coordination(self)
         if print_results:
             self.write_operational_planning_results_without_coordination_to_excel(models, results)
+
+    def combine_networks(self):
+        transmission_network = self.transmission_network
+        distribution_networks = self.distribution_networks
+        return combine_networks(transmission_network, distribution_networks)
 
     def get_upper_bound(self, model):
         return _get_upper_bound(self, model)
@@ -1015,6 +1019,18 @@ def _run_operational_planning_hierarchical(planning_problem, t=None, num_steps=8
     optim_models = {'tso': tso_model, 'dso': dso_models}
 
     return results, optim_models
+
+
+
+# ======================================================================================================================
+#  OPERATIONAL PLANNING (CENTRALIZED)
+# ======================================================================================================================
+def _run_operational_planning_centralized(planning_problem, debug_flag=False):
+
+    centralized_network = planning_problem.combine_networks()
+
+
+    print()
 
 
 # ======================================================================================================================
