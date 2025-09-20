@@ -944,7 +944,7 @@ def _run_operational_planning_hierarchical(planning_problem, t=None, num_steps=8
                     expected_pf_p = 0.00
                     expected_pf_q = 0.00
                     for s_m in tso_model[year][day].scenarios_market:
-                        omega_market = transmission_network.network[year][day].prob_market_scenarios[s_o]
+                        omega_market = transmission_network.network[year][day].prob_market_scenarios[s_m]
                         for s_o in tso_model[year][day].scenarios_operation:
                             omega_oper = transmission_network.network[year][day].prob_operation_scenarios[s_o]
                             adn_vmag_sqr = (tso_model[year][day].e[adn_node_idx, s_m, s_o, p] ** 2 + tso_model[year][day].f[adn_node_idx, s_m, s_o, p] ** 2)
