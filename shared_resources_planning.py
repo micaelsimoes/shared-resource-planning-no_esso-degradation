@@ -69,21 +69,29 @@ class SharedResourcesPlanning:
                 if not filename:
                     filename = f'{self.name}_distributed'
                 self.write_operational_planning_results_to_excel(models, results, filename=filename, primal_evolution=primal_evolution)
+            return convergence, results, models, sensitivities, primal_evolution
+
         elif type == 'hierarchical':
             print('[INFO] Running OPERATIONAL PLANNING (HIERARCHICAL)...')
-            convergence = None
-            sensitivities = None
-            primal_evolution = None
             results, models = _run_operational_planning_hierarchical(self, debug_flag=debug_flag)
             if print_results:
                 if not filename:
                     filename = f'{self.name}_hierarchical'
                 self.write_operational_planning_results_hierarchical_to_excel(models, results, filename=filename)
+            return results, models
+
         elif type == 'centralized':
             print('[INFO] Running OPERATIONAL PLANNING (CENTRALIZED)...')
-            _run_operational_planning_centralized(self, debug_flag=debug_flag)
+            centralized_network, results, model = _run_operational_planning_centralized(self, debug_flag=debug_flag)
+            if print_results:
+                processed_results = centralized_network.process_results(model, results)
+                filename = f'{self.name}_operational_planning_results_centralized'
+                centralized_network.write_optimization_results_to_excel(processed_results, filename=filename)
+            return results, model
 
-        return convergence, results, models, sensitivities, primal_evolution
+        else:
+            print('[ERROR] Unrecognized COORDINATED OPERATIONAL PLANNING TYPE!...')
+            exit(ERROR_SPECIFICATION_FILE)
 
     def run_without_coordination(self, print_results=False):
         print('[INFO] Running PLANNING PROBLEM WITHOUT COORDINATION...')
@@ -1021,16 +1029,25 @@ def _run_operational_planning_hierarchical(planning_problem, t=None, num_steps=8
     return results, optim_models
 
 
-
 # ======================================================================================================================
 #  OPERATIONAL PLANNING (CENTRALIZED)
 # ======================================================================================================================
 def _run_operational_planning_centralized(planning_problem, debug_flag=False):
 
+    # Combined networks
     centralized_network = planning_problem.combine_networks()
+    for year in centralized_network.years:
+        for day in centralized_network.days:
+            if centralized_network.params.print_to_screen:
+                centralized_network.network[year][day].print_network_to_screen()
+            if centralized_network.params.plot_diagram:
+                centralized_network.network[year][day].plot_diagram()
 
+    # Run SMOPF
+    centralized_model = centralized_network.build_model()
+    results = centralized_network.optimize(centralized_model)
 
-    print()
+    return centralized_network, results, centralized_model
 
 
 # ======================================================================================================================

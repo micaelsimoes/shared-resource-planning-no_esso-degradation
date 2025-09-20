@@ -19,6 +19,8 @@ def combine_networks(transmission_network, distribution_networks):
     for year in combined_network.years:
         for day in combined_network.days:
 
+
+
             # Nodes
             new_nodes = list()
             for node in combined_network.network[year][day].nodes:
@@ -73,6 +75,9 @@ def combine_networks(transmission_network, distribution_networks):
 
             # Shared Energy Storages (empty)
             combined_network.network[year][day].shared_energy_storages = list()
+
+            # ADN nodes (empty)
+            combined_network.network[year][day].active_distribution_network_nodes = list()
 
     # Add ADNs to combined network
     for adn_node_id in distribution_networks:

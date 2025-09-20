@@ -410,7 +410,7 @@ def _write_optimization_results_to_excel(network_planning, data_dir, processed_r
         _write_network_energy_storage_results_to_excel(network_planning, wb, processed_results['results'])
     _write_relaxation_slacks_scenarios_results_to_excel(network_planning, wb, processed_results['results'])
 
-    results_filename = os.path.join(data_dir, f'{filename}_results.xlsx')
+    results_filename = os.path.join(data_dir, f'{filename}.xlsx')
     try:
         wb.save(results_filename)
         print('[INFO] S-MPOPF Results written to {}.'.format(results_filename))
