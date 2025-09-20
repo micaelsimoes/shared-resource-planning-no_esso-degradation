@@ -953,9 +953,6 @@ def _run_operational_planning_hierarchical(planning_problem, t=None, num_steps=8
                             expected_vmag_sqr += omega_market * omega_oper * adn_vmag_sqr
                             expected_pf_p += omega_market * omega_oper * adn_pc
                             expected_pf_q += omega_market * omega_oper * adn_qc
-
-                    # tn_model.interface_expected_values.add(tn_model.expected_interface_vmag_sqr[dn] <= expected_vmag_sqr + SMALL_TOLERANCE)
-                    # tn_model.interface_expected_values.add(tn_model.expected_interface_vmag_sqr[dn] >= expected_vmag_sqr - SMALL_TOLERANCE)
                     tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_p[dn, p] <= expected_pf_p + SMALL_TOLERANCE)
                     tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_p[dn, p] >= expected_pf_p - SMALL_TOLERANCE)
                     tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_q[dn, p] <= expected_pf_q + SMALL_TOLERANCE)
@@ -1056,7 +1053,9 @@ def _run_operational_planning_centralized(planning_problem, debug_flag=False):
 
     # Run SMOPF
     centralized_model = centralized_network.build_model()
-    results = centralized_network.optimize(centralized_model)
+
+    print(f'[INFO] - Running SMOPF, Network {centralized_network.name}...')
+    results = centralized_network.optimize(centralized_model, print_header=False)
 
     return centralized_network, results, centralized_model
 

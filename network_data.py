@@ -45,12 +45,12 @@ class NetworkData:
                 network_models[year][day] = self.network[year][day].build_model(self.params)
         return network_models
 
-    def optimize(self, model, from_warm_start=False):
+    def optimize(self, model, from_warm_start=False, print_header=True):
         results = dict()
         for year in self.years:
             results[year] = dict()
             for day in self.days:
-                results[year][day] = self.network[year][day].run_smopf(model[year][day], self.params, from_warm_start=from_warm_start)
+                results[year][day] = self.network[year][day].run_smopf(model[year][day], self.params, from_warm_start=from_warm_start, print_header=print_header)
         return results
 
     def get_pq_map(self, t=None, num_steps=8, print_pq_map=False):
