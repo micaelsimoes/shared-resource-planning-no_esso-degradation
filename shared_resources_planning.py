@@ -64,20 +64,20 @@ class SharedResourcesPlanning:
             print('[INFO] Running OPERATIONAL PLANNING (DISTRIBUTED)...')
             if not candidate_solution:
                 candidate_solution = self.get_initial_candidate_solution()
-            convergence, results, models, sensitivities, primal_evolution = _run_operational_planning(self, candidate_solution, debug_flag=debug_flag)
+            convergence, results, models, sensitivities, primal_evolution, execution_time = _run_operational_planning(self, candidate_solution, debug_flag=debug_flag)
             if print_results:
                 if not filename:
                     filename = f'{self.name}_distributed'
-                self.write_operational_planning_results_to_excel(models, results, filename=filename, primal_evolution=primal_evolution)
+                self.write_operational_planning_results_to_excel(models, results, filename=filename, primal_evolution=primal_evolution, execution_time=execution_time)
             return convergence, results, models, sensitivities, primal_evolution
 
         elif type == 'hierarchical':
             print('[INFO] Running OPERATIONAL PLANNING (HIERARCHICAL)...')
-            results, models = _run_operational_planning_hierarchical(self, debug_flag=debug_flag)
+            results, models, execution_time = _run_operational_planning_hierarchical(self, debug_flag=debug_flag)
             if print_results:
                 if not filename:
                     filename = f'{self.name}_hierarchical'
-                self.write_operational_planning_results_hierarchical_to_excel(models, results, filename=filename)
+                self.write_operational_planning_results_hierarchical_to_excel(models, results, filename=filename, execution_time=execution_time)
             return results, models
 
         elif type == 'centralized':
@@ -89,15 +89,19 @@ class SharedResourcesPlanning:
                 centralized_network.write_optimization_results_to_excel(processed_results, filename=filename)
             return results, model
 
+        elif type == 'uncoordinated':
+            results, models = self.run_without_coordination(print_results=print_results)
+            return results, models
         else:
             print('[ERROR] Unrecognized COORDINATED OPERATIONAL PLANNING TYPE!...')
             exit(ERROR_SPECIFICATION_FILE)
 
     def run_without_coordination(self, print_results=False):
         print('[INFO] Running PLANNING PROBLEM WITHOUT COORDINATION...')
-        results, models = _run_operational_planning_without_coordination(self)
+        results, models, execution_time = _run_operational_planning_without_coordination(self)
         if print_results:
-            self.write_operational_planning_results_without_coordination_to_excel(models, results)
+            self.write_operational_planning_results_without_coordination_to_excel(models, results, execution_time=execution_time)
+        return results, models
 
     def combine_networks(self):
         transmission_network = self.transmission_network
@@ -140,26 +144,26 @@ class SharedResourcesPlanning:
         shared_ess_capacity = self.shared_ess_data.get_available_capacity(operational_planning_models['esso'])
         _write_planning_results_to_excel(self, processed_results, bound_evolution=bound_evolution, shared_ess_cost=shared_ess_cost, shared_ess_capacity=shared_ess_capacity, filename=filename)
 
-    def write_operational_planning_results_to_excel(self, optimization_models, results, filename=str(), primal_evolution=list()):
+    def write_operational_planning_results_to_excel(self, optimization_models, results, filename=str(), primal_evolution=list(), execution_time=float()):
         if not filename:
             filename = 'operational_planning_results'
         processed_results = _process_operational_planning_results(self, optimization_models['tso'], optimization_models['dso'], optimization_models['esso'], results)
         shared_ess_capacity = self.shared_ess_data.get_available_capacity(optimization_models['esso'])
-        _write_operational_planning_results_to_excel(self, processed_results, primal_evolution=primal_evolution, shared_ess_capacity=shared_ess_capacity, filename=filename)
+        _write_operational_planning_results_to_excel(self, processed_results, primal_evolution=primal_evolution, shared_ess_capacity=shared_ess_capacity, filename=filename, execution_time=execution_time)
 
-    def write_operational_planning_results_hierarchical_to_excel(self, optimization_models, results, filename=str()):
+    def write_operational_planning_results_hierarchical_to_excel(self, optimization_models, results, filename=str(), execution_time=float()):
         if not filename:
             filename = 'operational_planning_results_hierarchical'
         filename = os.path.join(self.results_dir, self.name + '_operational_planning_results_hierarchical.xlsx')
         processed_results = _process_operational_planning_results_hierarchical(self, optimization_models['tso'], optimization_models['dso'], results)
-        _write_operational_planning_results_hierarchical_to_excel(self, processed_results, filename)
+        _write_operational_planning_results_hierarchical_to_excel(self, processed_results, filename, execution_time=execution_time)
 
-    def write_operational_planning_results_without_coordination_to_excel(self, optimization_models, results, filename=str()):
+    def write_operational_planning_results_without_coordination_to_excel(self, optimization_models, results, filename=str(), execution_time=float()):
         if not filename:
             filename = 'operational_planning_results_hierarchical_no_coordination'
         filename = os.path.join(self.results_dir, self.name + '_operational_planning_results_no_coordination.xlsx')
         processed_results = _process_operational_planning_results_no_coordination(self, optimization_models['tso'], optimization_models['dso'], results)
-        _write_operational_planning_results_no_coordination_to_excel(self, processed_results, filename)
+        _write_operational_planning_results_no_coordination_to_excel(self, processed_results, filename, execution_time=execution_time)
 
     def plot_market_price_scenarios(self):
         years_to_plot = list(self.years)[0]
@@ -467,7 +471,7 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     optim_models = {'tso': tso_model, 'dso': dso_models, 'esso': esso_model}
     sensitivities = transmission_network.get_sensitivities(tso_model)
 
-    return convergence, results, optim_models, sensitivities, primal_evolution
+    return convergence, results, optim_models, sensitivities, primal_evolution, total_execution_time
 
 
 def update_and_check_convergence(planning_problem, tso_model, dso_models, esso_model,
@@ -1033,7 +1037,7 @@ def _run_operational_planning_hierarchical(planning_problem, t=None, num_steps=8
 
     optim_models = {'tso': tso_model, 'dso': dso_models}
 
-    return results, optim_models
+    return results, optim_models, total_execution_time
 
 
 # ======================================================================================================================
@@ -2233,7 +2237,7 @@ def _run_operational_planning_without_coordination(planning_problem):
 
     models = {'tso': tso_model, 'dso': dso_models}
 
-    return results, models
+    return results, models, total_execution_time
 
 
 def create_interface_power_flow_variables(planning_problem):
@@ -2562,7 +2566,7 @@ def _process_operational_planning_results_hierarchical(planning_problem, tso_mod
     return _process_operational_planning_results_no_coordination(planning_problem, tso_model, dso_models, optimization_results)
 
 
-def _process_operational_planning_results_no_coordination(planning_problem, tso_model, dso_models, optimization_results):
+def _process_operational_planning_results_no_coordination(planning_problem, tso_model, dso_models, optimization_results, execution_time=float()):
 
     transmission_network = planning_problem.transmission_network
     distribution_networks = planning_problem.distribution_networks
@@ -2621,11 +2625,11 @@ def _process_results_summary_detail(planning_problem, tso_model, dso_models):
 # ======================================================================================================================
 #  RESULTS PLANNING - write functions
 # ======================================================================================================================
-def _write_planning_results_to_excel(planning_problem, results, bound_evolution=dict(), shared_ess_cost=dict(), shared_ess_capacity=dict(), filename='planing_results'):
+def _write_planning_results_to_excel(planning_problem, results, bound_evolution=dict(), shared_ess_cost=dict(), shared_ess_capacity=dict(), filename='planing_results', execution_time=float()):
 
     wb = Workbook()
 
-    _write_operational_planning_main_info_to_excel(planning_problem, wb, results)
+    _write_operational_planning_main_info_to_excel(planning_problem, wb, results, execution_time=execution_time)
     _write_operational_planning_main_info_to_excel_detailed(planning_problem, wb, results['summary_detail'])
     _write_shared_ess_specifications(wb, planning_problem.shared_ess_data)
     _write_operational_planning_market_data_to_excel(planning_problem, wb)
@@ -2712,11 +2716,11 @@ def _write_bound_evolution_to_excel(workbook, bound_evolution):
 # ======================================================================================================================
 #  RESULTS OPERATIONAL PLANNING - write functions
 # ======================================================================================================================
-def _write_operational_planning_results_to_excel(planning_problem, results, primal_evolution=list(), shared_ess_capacity=dict(), filename='operation_planning'):
+def _write_operational_planning_results_to_excel(planning_problem, results, primal_evolution=list(), shared_ess_capacity=dict(), filename='operation_planning', execution_time=float()):
 
     wb = Workbook()
 
-    _write_operational_planning_main_info_to_excel(planning_problem, wb, results)
+    _write_operational_planning_main_info_to_excel(planning_problem, wb, results, execution_time=execution_time)
     _write_operational_planning_main_info_to_excel_detailed(planning_problem, wb, results['summary_detail'])
     _write_shared_ess_specifications(wb, planning_problem.shared_ess_data)
     if shared_ess_capacity:
@@ -2758,15 +2762,15 @@ def _write_operational_planning_results_to_excel(planning_problem, results, prim
         wb.save(backup_filename)
 
 
-def _write_operational_planning_results_hierarchical_to_excel(planning_problem, results, filename='operation_planning_results_hierarchical'):
-    _write_operational_planning_results_no_coordination_to_excel(planning_problem, results, filename=filename)
+def _write_operational_planning_results_hierarchical_to_excel(planning_problem, results, filename='operation_planning_results_hierarchical', execution_time=float()):
+    _write_operational_planning_results_no_coordination_to_excel(planning_problem, results, filename=filename, execution_time=execution_time)
 
 
-def _write_operational_planning_results_no_coordination_to_excel(planning_problem, results, filename='operation_planning_results_no_coordination'):
+def _write_operational_planning_results_no_coordination_to_excel(planning_problem, results, filename='operation_planning_results_no_coordination', execution_time=float()):
 
     wb = Workbook()
 
-    _write_operational_planning_main_info_to_excel(planning_problem, wb, results)
+    _write_operational_planning_main_info_to_excel(planning_problem, wb, results, execution_time=execution_time)
     _write_operational_planning_main_info_to_excel_detailed(planning_problem, wb, results['summary_detail'])
     _write_operational_planning_market_data_to_excel(planning_problem, wb)
 
@@ -2793,7 +2797,7 @@ def _write_operational_planning_results_no_coordination_to_excel(planning_proble
         wb.save(backup_filename)
 
 
-def _write_operational_planning_main_info_to_excel(planning_problem, workbook, results):
+def _write_operational_planning_main_info_to_excel(planning_problem, workbook, results, execution_time=float()):
 
     sheet = workbook.worksheets[0]
     sheet.title = 'Main Info'
@@ -2828,6 +2832,13 @@ def _write_operational_planning_main_info_to_excel(planning_problem, workbook, r
         dso_results = results['dso'][tn_node_id]['results']
         distribution_network = planning_problem.distribution_networks[tn_node_id]
         line_idx = _write_operational_planning_main_info_per_operator(distribution_network, sheet, 'DSO', line_idx, dso_results, tn_node_id=tn_node_id)
+
+    if execution_time:
+        sheet.cell(row=line_idx, column=1).value = '-'
+        sheet.cell(row=line_idx, column=2).value = '-'
+        sheet.cell(row=line_idx, column=3).value = 'Execution time, [s]'
+        sheet.cell(row=line_idx, column=4).value = execution_time
+        sheet.cell(row=line_idx, column=4).number_format = '0.00'
 
 
 def _write_operational_planning_main_info_per_operator(network, sheet, operator_type, line_idx, results, tn_node_id='-'):
