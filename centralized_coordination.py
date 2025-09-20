@@ -1,4 +1,4 @@
-from copy import copy
+from copy import copy, deepcopy
 from definitions import *
 
 
@@ -6,7 +6,7 @@ def combine_networks(transmission_network, distribution_networks):
 
     print('[INFO] - Combining networks...')
 
-    combined_network = copy(transmission_network)
+    combined_network = deepcopy(transmission_network)
     combined_network.name += '_combined'
 
     tn_node_mapping = dict()
@@ -18,8 +18,6 @@ def combine_networks(transmission_network, distribution_networks):
     # Reassign IDs
     for year in combined_network.years:
         for day in combined_network.days:
-
-
 
             # Nodes
             new_nodes = list()

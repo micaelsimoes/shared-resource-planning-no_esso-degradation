@@ -147,12 +147,16 @@ class SharedResourcesPlanning:
         shared_ess_capacity = self.shared_ess_data.get_available_capacity(optimization_models['esso'])
         _write_operational_planning_results_to_excel(self, processed_results, primal_evolution=primal_evolution, shared_ess_capacity=shared_ess_capacity, filename=filename)
 
-    def write_operational_planning_results_hierarchical_to_excel(self, optimization_models, results):
+    def write_operational_planning_results_hierarchical_to_excel(self, optimization_models, results, filename=str()):
+        if not filename:
+            filename = 'operational_planning_results_hierarchical'
         filename = os.path.join(self.results_dir, self.name + '_operational_planning_results_hierarchical.xlsx')
         processed_results = _process_operational_planning_results_hierarchical(self, optimization_models['tso'], optimization_models['dso'], results)
         _write_operational_planning_results_hierarchical_to_excel(self, processed_results, filename)
 
-    def write_operational_planning_results_without_coordination_to_excel(self, optimization_models, results):
+    def write_operational_planning_results_without_coordination_to_excel(self, optimization_models, results, filename=str()):
+        if not filename:
+            filename = 'operational_planning_results_hierarchical_no_coordination'
         filename = os.path.join(self.results_dir, self.name + '_operational_planning_results_no_coordination.xlsx')
         processed_results = _process_operational_planning_results_no_coordination(self, optimization_models['tso'], optimization_models['dso'], results)
         _write_operational_planning_results_no_coordination_to_excel(self, processed_results, filename)
@@ -2741,7 +2745,7 @@ def _write_operational_planning_results_to_excel(planning_problem, results, prim
     planning_problem.shared_ess_data.write_relaxation_slacks_results_to_excel(wb, results['esso'])
 
     # Save results
-    results_filename = os.path.join(planning_problem.results_dir, f'{filename}_operational_planning_results.xlsx')
+    results_filename = os.path.join(planning_problem.results_dir, f'{filename}.xlsx')
     try:
         wb.save(results_filename)
         print('[INFO] Operational Planning Results written to {}.'.format(results_filename))

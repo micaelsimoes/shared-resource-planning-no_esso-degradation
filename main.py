@@ -61,9 +61,13 @@ def shared_resources_planning(working_directory, specification_filename):
     planning_problem.read_planning_problem()
     # planning_problem.plot_diagram()
 
-    candidate_solution = planning_problem.get_initial_candidate_solution()
-    # planning_problem.run_without_coordination(print_results=True)
-    planning_problem.run_operational_planning(candidate_solution=candidate_solution, print_results=True, debug_flag=False)
+    candidate_solution = planning_problem.get_test_candidate_solution()
+    planning_problem.run_without_coordination(print_results=True)
+    planning_problem.run_operational_planning(type='centralized', print_results=True, debug_flag=False)
+    planning_problem.run_operational_planning(type='hierarchical', print_results=True, debug_flag=False)
+    planning_problem.run_operational_planning(type='distributed', print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_distributed_without ESS')
+    planning_problem.run_operational_planning(type='distributed', candidate_solution=candidate_solution, print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_distributed_with ESS')
+    # planning_problem.run_operational_planning(candidate_solution=candidate_solution, print_results=True, debug_flag=False)
     # planning_problem.run_planning_problem()
 
     # transmission_network = planning_problem.transmission_network
