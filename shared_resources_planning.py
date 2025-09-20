@@ -5,7 +5,7 @@ from functools import partial
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import numpy as np
 import pandas as pd
-from math import isclose
+from math import isclose, sqrt
 from sklearn.preprocessing import StandardScaler
 from copulas.multivariate import GaussianMultivariate
 import networkx as nx
@@ -58,6 +58,7 @@ class SharedResourcesPlanning:
         _run_planning_problem(self, debug_flag=debug_flag)
 
     def run_operational_planning(self, type='distributed', candidate_solution=dict(), print_results=False, filename=str(), debug_flag=False):
+
         if type == 'distributed':
             print('[INFO] Running OPERATIONAL PLANNING (DISTRIBUTED)...')
             if not candidate_solution:
@@ -67,12 +68,21 @@ class SharedResourcesPlanning:
                 if not filename:
                     filename = self.name
                 self.write_operational_planning_results_to_excel(models, results, filename=filename, primal_evolution=primal_evolution)
-                return convergence, results, models, sensitivities, primal_evolution
         elif type == 'hierarchical':
             print('[INFO] Running OPERATIONAL PLANNING (HIERARCHICAL)...')
-            _run_operational_planning_hierarchical(self, debug_flag=debug_flag)
-        elif type == 'global':
-            print('[INFO] Running OPERATIONAL PLANNING (GLOBAL)...')
+            convergence = None
+            sensitivities = None
+            primal_evolution = None
+            results, models = _run_operational_planning_hierarchical(self, debug_flag=debug_flag)
+            if print_results:
+                if not filename:
+                    filename = self.name
+                self.write_operational_planning_results_hierarchical_to_excel(models, results)
+        elif type == 'centralized':
+            print('[INFO] Running OPERATIONAL PLANNING (CENTRALIZED)...')
+
+        return convergence, results, models, sensitivities, primal_evolution
+
 
 
 
@@ -124,6 +134,11 @@ class SharedResourcesPlanning:
         processed_results = _process_operational_planning_results(self, optimization_models['tso'], optimization_models['dso'], optimization_models['esso'], results)
         shared_ess_capacity = self.shared_ess_data.get_available_capacity(optimization_models['esso'])
         _write_operational_planning_results_to_excel(self, processed_results, primal_evolution=primal_evolution, shared_ess_capacity=shared_ess_capacity, filename=filename)
+
+    def write_operational_planning_results_hierarchical_to_excel(self, optimization_models, results):
+        filename = os.path.join(self.results_dir, self.name + '_operational_planning_results_hierarchical.xlsx')
+        processed_results = _process_operational_planning_results_hierarchical(self, optimization_models['tso'], optimization_models['dso'], results)
+        _write_operational_planning_results_hierarchical_to_excel(self, processed_results, filename)
 
     def write_operational_planning_results_without_coordination_to_excel(self, optimization_models, results):
         filename = os.path.join(self.results_dir, self.name + '_operational_planning_results_no_coordination.xlsx')
@@ -858,28 +873,33 @@ def _run_operational_planning_hierarchical(planning_problem, t=None, num_steps=8
         distribution_network = distribution_networks[node_id]
         dso_models[node_id] = distribution_network.get_pq_map(t=t, num_steps=num_steps, print_pq_map=print_pq_map)
 
+    pf_requested = dict()
     tso_model = transmission_network.build_model()
     for year in transmission_network.years:
+        pf_requested[year] = dict()
         for day in transmission_network.days:
 
+            pf_requested[year][day] = dict()
+
+            s_base = transmission_network.network[year][day].baseMVA
             tso_model[year][day].active_distribution_networks = range(len(transmission_network.active_distribution_network_nodes))
 
             # TN, Fix Pc, Qc at the interface nodes, free flexibility
             for dn in tso_model[year][day].active_distribution_networks:
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
                 adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(adn_node_id)
-                init_solution = dso_models[adn_node_id]['initial_solution']
                 for s_m in tso_model[year][day].scenarios_market:
                     for s_o in tso_model[year][day].scenarios_operation:
                         for p in tso_model[year][day].periods:
-                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setub(init_solution['Pg'] / transmission_network.baseMVA + EQUALITY_TOLERANCE)
-                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setlb(init_solution['Pg'] / transmission_network.baseMVA - EQUALITY_TOLERANCE)
-                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setub(init_solution['Qg'] / transmission_network.baseMVA + EQUALITY_TOLERANCE)
-                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setlb(init_solution['Qg'] / transmission_network.baseMVA - EQUALITY_TOLERANCE)
+                            init_solution = dso_models[adn_node_id][year][day][p]['initial_solution']
+                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setub(init_solution['Pg'] / s_base + EQUALITY_TOLERANCE)
+                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setlb(init_solution['Pg'] / s_base - EQUALITY_TOLERANCE)
+                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setub(init_solution['Qg'] / s_base + EQUALITY_TOLERANCE)
+                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setlb(init_solution['Qg'] / s_base - EQUALITY_TOLERANCE)
                             tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].setub(None)
                             tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].setub(None)
                             tso_model[year][day].flex_q_up[adn_load_idx, s_m, s_o, p].setub(None)
-                            tso_model[year][day].flex_q_down[adn_load_idx, s_m, s_o].setub(None)
+                            tso_model[year][day].flex_q_down[adn_load_idx, s_m, s_o, p].setub(None)
                             if transmission_network.params.l_curt:
                                 tso_model[year][day].pc_curt_down[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                                 tso_model[year][day].pc_curt_up[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
@@ -895,25 +915,106 @@ def _run_operational_planning_hierarchical(planning_problem, t=None, num_steps=8
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
                 adn_node_idx = transmission_network.network[year][day].get_node_idx(adn_node_id)
                 adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(adn_node_id)
-                expected_vmag_sqr = 0.00
-                expected_pf_p = 0.00
-                expected_pf_q = 0.00
-                for s_o in tso_model[year][day].scenarios_operation:
-                    omega_oper = transmission_network.prob_operation_scenarios[s_o]
-                    adn_vmag_sqr = (tso_model[year][day].e[adn_node_idx, s_o] ** 2 + tso_model[year][day].f[adn_node_idx, s_o] ** 2)
-                    adn_pc = tso_model[year][day].pc[adn_load_idx, s_o] + tso_model[year][day].flex_p_up[adn_load_idx, s_o] - tso_model[year][day].flex_p_down[adn_load_idx, s_o]
-                    adn_qc = tso_model[year][day].qc[adn_load_idx, s_o] + tso_model[year][day].flex_q_up[adn_load_idx, s_o] - tso_model[year][day].flex_q_down[adn_load_idx, s_o]
-                    expected_vmag_sqr += omega_oper * adn_vmag_sqr
-                    expected_pf_p += omega_oper * adn_pc
-                    expected_pf_q += omega_oper * adn_qc
-                # tn_model.interface_expected_values.add(tn_model.expected_interface_vmag_sqr[dn] <= expected_vmag_sqr + SMALL_TOLERANCE)
-                # tn_model.interface_expected_values.add(tn_model.expected_interface_vmag_sqr[dn] >= expected_vmag_sqr - SMALL_TOLERANCE)
-                tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_p[dn] <= expected_pf_p + SMALL_TOLERANCE)
-                tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_p[dn] >= expected_pf_p - SMALL_TOLERANCE)
-                tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_q[dn] <= expected_pf_q + SMALL_TOLERANCE)
-                tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_q[dn] >= expected_pf_q - SMALL_TOLERANCE)
+                for p in tso_model[year][day].periods:
 
-    return results
+                    expected_vmag_sqr = 0.00
+                    expected_pf_p = 0.00
+                    expected_pf_q = 0.00
+                    for s_m in tso_model[year][day].scenarios_market:
+                        omega_market = transmission_network.network[year][day].prob_market_scenarios[s_o]
+                        for s_o in tso_model[year][day].scenarios_operation:
+                            omega_oper = transmission_network.network[year][day].prob_operation_scenarios[s_o]
+                            adn_vmag_sqr = (tso_model[year][day].e[adn_node_idx, s_m, s_o, p] ** 2 + tso_model[year][day].f[adn_node_idx, s_m, s_o, p] ** 2)
+                            adn_pc = tso_model[year][day].pc[adn_load_idx, s_m, s_o, p] + tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p] - tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p]
+                            adn_qc = tso_model[year][day].qc[adn_load_idx, s_m, s_o, p] + tso_model[year][day].flex_q_up[adn_load_idx, s_m, s_o, p] - tso_model[year][day].flex_q_down[adn_load_idx, s_m, s_o, p]
+                            expected_vmag_sqr += omega_market * omega_oper * adn_vmag_sqr
+                            expected_pf_p += omega_market * omega_oper * adn_pc
+                            expected_pf_q += omega_market * omega_oper * adn_qc
+
+                    # tn_model.interface_expected_values.add(tn_model.expected_interface_vmag_sqr[dn] <= expected_vmag_sqr + SMALL_TOLERANCE)
+                    # tn_model.interface_expected_values.add(tn_model.expected_interface_vmag_sqr[dn] >= expected_vmag_sqr - SMALL_TOLERANCE)
+                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_p[dn, p] <= expected_pf_p + SMALL_TOLERANCE)
+                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_p[dn, p] >= expected_pf_p - SMALL_TOLERANCE)
+                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_q[dn, p] <= expected_pf_q + SMALL_TOLERANCE)
+                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_q[dn, p] >= expected_pf_q - SMALL_TOLERANCE)
+
+            # TN, Add ADNs' PQ maps constraints, Fix expected vmag
+            tso_model[year][day].pq_maps = pe.ConstraintList()
+            for dn in tso_model[year][day].active_distribution_networks:
+                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
+                for p in tso_model[year][day].periods:
+                    adn_pq_map = dso_models[adn_node_id][year][day][p]
+                    initial_solution = adn_pq_map['initial_solution']
+                    tso_model[year][day].pq_maps.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] <= initial_solution['Vg'] ** 2 + EQUALITY_TOLERANCE)
+                    tso_model[year][day].pq_maps.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] >= initial_solution['Vg'] ** 2 - EQUALITY_TOLERANCE)
+                    for ineq in adn_pq_map['inequalities']:
+                        a = ineq['Pg']
+                        b = ineq['Qg']
+                        c = ineq['c'] / s_base
+                        tso_model[year][day].pq_maps.add(a * tso_model[year][day].expected_interface_pf_p[dn, p] + b * tso_model[year][day].expected_interface_pf_q[dn, p] <= c)
+
+            # Regularization -- Added to OF to minimize deviations from scenarios to expected values
+            obj = copy(tso_model[year][day].objective.expr)
+            tso_model[year][day].penalty_regularization = pe.Var(domain=pe.NonNegativeReals)
+            tso_model[year][day].penalty_regularization.fix(PENALTY_REGULARIZATION * 1e6)
+            for dn in tso_model[year][day].active_distribution_networks:
+                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
+                adn_node_idx = transmission_network.network[year][day].get_node_idx(adn_node_id)
+                adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(adn_node_id)
+                for s_m in tso_model[year][day].scenarios_market:
+                    for s_o in tso_model[year][day].scenarios_operation:
+                        for p in tso_model[year][day].periods:
+                            vmag_sqr = tso_model[year][day].e[adn_node_idx, s_m, s_o, p] ** 2 + tso_model[year][day].f[adn_node_idx, s_m, s_o, p] ** 2
+                            pc = tso_model[year][day].pc[adn_load_idx, s_m, s_o, p] + tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p] - tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p]
+                            qc = tso_model[year][day].qc[adn_load_idx, s_m, s_o, p] + tso_model[year][day].flex_q_up[adn_load_idx, s_m, s_o, p] - tso_model[year][day].flex_q_down[adn_load_idx, s_m, s_o, p]
+                            obj += tso_model[year][day].penalty_regularization * (vmag_sqr - tso_model[year][day].expected_interface_vmag_sqr[dn, p]) ** 2
+                            obj += tso_model[year][day].penalty_regularization * s_base * (pc - tso_model[year][day].expected_interface_pf_p[dn, p]) ** 2
+                            obj += tso_model[year][day].penalty_regularization * s_base * (qc - tso_model[year][day].expected_interface_pf_q[dn, p]) ** 2
+            tso_model[year][day].objective.expr = obj
+
+            # Optimize TN, Get resulting interface PFs
+            print(f'[INFO] - Running OPF on {transmission_network.name} with hierarchical constraints...')
+            results['tso'] = transmission_network.optimize(tso_model)
+            for dn in tso_model[year][day].active_distribution_networks:
+                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
+                for p in tso_model[year][day].active_distribution_networks:
+                    vmag = sqrt(pe.value(tso_model[year][day].expected_interface_pf_p[dn, p]))
+                    pc = pe.value(tso_model[year][day].expected_interface_pf_p[dn, p]) * s_base
+                    qc = pe.value(tso_model[year][day].expected_interface_pf_q[dn, p]) * s_base
+                    pf_requested[year][day][adn_node_id] = {'Pg': pc, 'Qg': qc, 'Vg': vmag}
+                    if print_pq_map:
+                        init_oper_point = dso_models[adn_node_id][year][day][p]
+                        final_oper_point = pf_requested[year][day][adn_node_id]
+                        # distribution_network = operational_planning.distribution_networks[adn_node_id]
+                        # distribution_network.pq_map_comparison(t=t, num_steps_max=num_steps, initial_solution=init_oper_point, final_solution=final_oper_point)
+
+    # Run OPF on DNs, considering established power flow (settlement)
+    dso_models = dict()
+    print('[INFO] - Running settlement on Distribution Networks...')
+    for node_id in distribution_networks:
+
+        distribution_network = distribution_networks[node_id]
+        print(f'[INFO]\t - Network {distribution_network.name}...')
+
+        dso_model = distribution_network.build_model()
+        distribution_network.update_of_to_settlement(dso_model)
+
+        for year in planning_problem.years:
+            for day in planning_problem.days:
+                dso_model[year][day].interface_vmag_req.fix(pf_requested[year][day][node_id]['Vg'] ** 2.00)
+                dso_model[year][day].interface_pf_p_req.fix(pf_requested[year][day][node_id]['Pg'] / distribution_network.network[year][day].baseMVA)
+                dso_model[year][day].interface_pf_q_req.fix(pf_requested[year][day][node_id]['Qg'] / distribution_network.network[year][day].baseMVA)
+
+        results['dso'][node_id] = distribution_network.optimize(dso_model)
+        dso_models[node_id] = dso_model
+
+    end = time.time()
+    total_execution_time = end - start
+    print('[INFO] \t - Execution time: {:.2f} s'.format(total_execution_time))
+
+    optim_models = {'tso': tso_model, 'dso': dso_models}
+
+    return results, optim_models
 
 
 # ======================================================================================================================
@@ -2417,6 +2518,10 @@ def _process_operational_planning_results(operational_planning_problem, tso_mode
     return processed_results
 
 
+def _process_operational_planning_results_hierarchical(planning_problem, tso_model, dso_models, optimization_results):
+    return _process_operational_planning_results_no_coordination(planning_problem, tso_model, dso_models, optimization_results)
+
+
 def _process_operational_planning_results_no_coordination(planning_problem, tso_model, dso_models, optimization_results):
 
     transmission_network = planning_problem.transmission_network
@@ -2611,6 +2716,10 @@ def _write_operational_planning_results_to_excel(planning_problem, results, prim
         backup_filename = os.path.join(planning_problem.results_dir, f"{filename.replace('.xlsx', '')}_{current_time}.xlsx")
         print(f"[WARNING] Results saved to file {backup_filename}.xlsx")
         wb.save(backup_filename)
+
+
+def _write_operational_planning_results_hierarchical_to_excel(planning_problem, results, filename='operation_planning_results_hierarchical'):
+    _write_operational_planning_results_no_coordination_to_excel(planning_problem, results, filename=filename)
 
 
 def _write_operational_planning_results_no_coordination_to_excel(planning_problem, results, filename='operation_planning_results_no_coordination'):

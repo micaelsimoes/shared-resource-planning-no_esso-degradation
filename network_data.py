@@ -74,6 +74,11 @@ class NetworkData:
                         network_models[year][day][t] = self.network[year][day].network.build_pq_map_model(t, self.params)
         return network_models
 
+    def update_of_to_settlement(self, model):
+        for year in self.years:
+            for day in self.days:
+                self.network[year][day].update_of_to_settlement(model[year][day])
+
     def get_primal_value(self, model):
         obj = 0.0
         years = [year for year in self.years]

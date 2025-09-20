@@ -61,6 +61,7 @@ PENALTY_FLEXIBILITY_USAGE = 1e-2
 PENALTY_ESS_USAGE = 1e-2
 PENALTY_ESSO_SLACK = 1e3
 PENALTY_REGULARIZATION = 1e3
+PENALTY_SETTLEMENT = 1e6
 
 VMAG_VIOLATION_ALLOWED = 0.15   # Over/undervoltage allowed, ratio (±15%)
 SIJ_VIOLATION_ALLOWED = 0.50    # Branch power flow violation allowed, ratio (+50%)
