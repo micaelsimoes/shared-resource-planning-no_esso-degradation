@@ -92,6 +92,7 @@ class SharedResourcesPlanning:
         elif type == 'uncoordinated':
             results, models = self.run_without_coordination(print_results=print_results)
             return results, models
+
         else:
             print('[ERROR] Unrecognized COORDINATED OPERATIONAL PLANNING TYPE!...')
             exit(ERROR_SPECIFICATION_FILE)
@@ -154,7 +155,7 @@ class SharedResourcesPlanning:
     def write_operational_planning_results_hierarchical_to_excel(self, optimization_models, results, filename=str(), execution_time=float()):
         if not filename:
             filename = 'operational_planning_results_hierarchical'
-        filename = os.path.join(self.results_dir, self.name + '_operational_planning_results_hierarchical.xlsx')
+        filename = os.path.join(self.results_dir, filename + '.xlsx')
         processed_results = _process_operational_planning_results_hierarchical(self, optimization_models['tso'], optimization_models['dso'], results)
         _write_operational_planning_results_hierarchical_to_excel(self, processed_results, filename, execution_time=execution_time)
 
