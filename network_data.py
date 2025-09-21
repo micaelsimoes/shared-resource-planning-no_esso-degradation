@@ -53,12 +53,12 @@ class NetworkData:
                 results[year][day] = self.network[year][day].run_smopf(model[year][day], self.params, from_warm_start=from_warm_start, print_header=print_header)
         return results
 
-    def get_pq_map(self, t=None, num_steps=8, print_pq_map=False):
+    def get_pq_map(self, num_steps=8, print_pq_map=False):
         pq_map = dict()
         for year in self.years:
             pq_map[year] = dict()
             for day in self.days:
-                pq_map[year][day] = self.network[year][day].get_pq_map(t=t, params=self.params, num_steps=num_steps, print_pq_map=print_pq_map)
+                pq_map[year][day] = self.network[year][day].get_pq_map(params=self.params, num_steps=num_steps, print_pq_map=print_pq_map)
         return pq_map
 
     def build_pq_map_model(self, t=None, num_steps=8):

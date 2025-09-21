@@ -46,12 +46,8 @@ class Network:
     def build_model(self, params):
         return _build_model(self, params)
 
-    def build_model_single_period(self, t, params):
-        _pre_process_network(self)
-        return build_model_single_period(self, t, params)
-
-    def get_pq_map(self, params, t=None, num_steps=None, print_pq_map=None):
-        return get_pq_map(self, params, t, num_steps, print_pq_map)
+    def get_pq_map(self, params, num_steps=None, print_pq_map=None):
+        return get_pq_map(self, params, num_steps, print_pq_map)
 
     def update_of_to_settlement(self, model, params):
         update_of_to_settlement(self, model, params)
