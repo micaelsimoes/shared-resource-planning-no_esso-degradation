@@ -1,7 +1,6 @@
-from copy import copy, deepcopy
+from copy import copy
 import numpy as np
 from scipy.spatial import ConvexHull
-from math import sqrt
 from model_construction_helpers import *
 
 
