@@ -1002,11 +1002,11 @@ def _run_operational_planning_hierarchical(planning_problem, num_steps=8, print_
                     pc = pe.value(tso_model[year][day].expected_interface_pf_p[dn, p]) * s_base
                     qc = pe.value(tso_model[year][day].expected_interface_pf_q[dn, p]) * s_base
                     pf_requested[year][day][adn_node_id] = {'Pg': pc, 'Qg': qc, 'Vg': vmag}
-                    if print_pq_map:
-                        init_oper_point = dso_models[adn_node_id][year][day][p]
-                        final_oper_point = pf_requested[year][day][adn_node_id]
-                        # distribution_network = operational_planning.distribution_networks[adn_node_id]
-                        # distribution_network.pq_map_comparison(t=t, num_steps_max=num_steps, initial_solution=init_oper_point, final_solution=final_oper_point)
+                    # if print_pq_map:
+                    #     init_oper_point = dso_models[adn_node_id][year][day][p]
+                    #     final_oper_point = pf_requested[year][day][adn_node_id]
+                    #     distribution_network = operational_planning.distribution_networks[adn_node_id]
+                    #     distribution_network.pq_map_comparison(t=t, num_steps_max=num_steps, initial_solution=init_oper_point, final_solution=final_oper_point)
 
     # Run OPF on DNs, considering established power flow (settlement)
     dso_models = dict()
@@ -1021,7 +1021,7 @@ def _run_operational_planning_hierarchical(planning_problem, num_steps=8, print_
 
         for year in planning_problem.years:
             for day in planning_problem.days:
-                dso_model[year][day].interface_vmag_req.fix(pf_requested[year][day][node_id]['Vg'] ** 2.00)
+                dso_model[year][day].interface_vmag_req.fix(pf_requested[year][day][node_id]['Vg'])
                 dso_model[year][day].interface_pf_p_req.fix(pf_requested[year][day][node_id]['Pg'] / distribution_network.network[year][day].baseMVA)
                 dso_model[year][day].interface_pf_q_req.fix(pf_requested[year][day][node_id]['Qg'] / distribution_network.network[year][day].baseMVA)
 

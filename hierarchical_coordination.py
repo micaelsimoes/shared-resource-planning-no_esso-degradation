@@ -34,7 +34,6 @@ def _get_pq_map_vertices(network, model, num_steps, params):
     obj = model.objective.expr
     model.alpha = pe.Var(domain=pe.Reals, initialize=0.00, bounds=(-1.00, 1.00))
     model.beta = pe.Var(domain=pe.Reals, initialize=0.00, bounds=(-1.00, 1.00))
-    model.penalty_gen_curtailment.set_value(0.00)
     for p in model.periods:
         for s_m in model.scenarios_market:
             omega_market = network.prob_market_scenarios[s_m]
@@ -151,9 +150,9 @@ def _get_pq_initial_solution(network, params):
     solution = dict()
     for p in model.periods:
         solution[p] = {
-            'Vg': pe.value(model.expected_interface_vmag[p]),
-            'Pg': pe.value(model.expected_interface_pf_p[p]),
-            'Qg': pe.value(model.expected_interface_pf_q[p])
+            'Vg': pe.value(model.expected_interface_vmag[p]) * s_base,
+            'Pg': pe.value(model.expected_interface_pf_p[p]) * s_base,
+            'Qg': pe.value(model.expected_interface_pf_q[p]) * s_base
         }
 
     return model, solution
