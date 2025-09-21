@@ -58,7 +58,7 @@ class SharedResourcesPlanning:
         print('[INFO] Running PLANNING PROBLEM...')
         _run_planning_problem(self, debug_flag=debug_flag)
 
-    def run_operational_planning(self, type='distributed', candidate_solution=dict(), t=None, num_steps=8, print_results=False, filename=str(), debug_flag=False):
+    def run_operational_planning(self, type='distributed', candidate_solution=dict(), num_steps=8, print_results=False, filename=str(), debug_flag=False):
 
         if type == 'distributed':
             print('[INFO] Running OPERATIONAL PLANNING (DISTRIBUTED)...')
@@ -73,7 +73,7 @@ class SharedResourcesPlanning:
 
         elif type == 'hierarchical':
             print('[INFO] Running OPERATIONAL PLANNING (HIERARCHICAL)...')
-            results, models, execution_time = _run_operational_planning_hierarchical(self, t=t, num_steps=num_steps, debug_flag=debug_flag)
+            results, models, execution_time = _run_operational_planning_hierarchical(self, num_steps=num_steps, debug_flag=debug_flag)
             if print_results:
                 if not filename:
                     filename = f'{self.name}_hierarchical'
@@ -882,7 +882,7 @@ def _get_primal_value(planning_problem, tso_model, dso_models, esso_model):
 # ======================================================================================================================
 #  OPERATIONAL PLANNING (HIERARCHICAL)
 # ======================================================================================================================
-def _run_operational_planning_hierarchical(planning_problem, t=None, num_steps=8, print_pq_map=False, debug_flag=False):
+def _run_operational_planning_hierarchical(planning_problem, num_steps=8, print_pq_map=False, debug_flag=False):
 
     transmission_network = planning_problem.transmission_network
     distribution_networks = planning_problem.distribution_networks
@@ -894,7 +894,7 @@ def _run_operational_planning_hierarchical(planning_problem, t=None, num_steps=8
     dso_models = dict()
     for node_id in distribution_networks:
         distribution_network = distribution_networks[node_id]
-        dso_models[node_id] = distribution_network.get_pq_map(t=t, num_steps=num_steps, print_pq_map=print_pq_map)
+        dso_models[node_id] = distribution_network.get_pq_map(num_steps=num_steps, print_pq_map=print_pq_map)
 
     pf_requested = dict()
     tso_model = transmission_network.build_model()
