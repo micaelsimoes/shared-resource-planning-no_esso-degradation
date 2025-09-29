@@ -6082,22 +6082,16 @@ def _add_adn_node_to_transmission_network(planning_problem):
                     adn_load_idx = planning_problem.transmission_network.network[year][day].get_adn_load_idx(node_id)
                     adn_load = planning_problem.transmission_network.network[year][day].loads[adn_load_idx]
                     adn_load.load_id = f'ADN_{node_id}'
-                    adn_load.pd = dict()
-                    adn_load.qd = dict()
-                    for s_o in range(len(planning_problem.transmission_network.network[year][day].prob_operation_scenarios)):
-                        adn_load.pd[s_o] = [0.00 for _ in range(planning_problem.num_instants)]
-                        adn_load.qd[s_o] = [0.00 for _ in range(planning_problem.num_instants)]
+                    adn_load.pd = np.zeros(adn_load.pd.shape)
+                    adn_load.qd = np.zeros(adn_load.qd.shape)
                     adn_load.fl_reg = True
                     adn_load.status = 1
                 else:
                     adn_load = Load()
                     adn_load.bus = node_id
                     adn_load.load_id = f'ADN_{node_id}'
-                    adn_load.pd = dict()
-                    adn_load.qd = dict()
-                    for s_o in range(len(planning_problem.transmission_network.network[year][day].prob_operation_scenarios)):
-                        adn_load.pd[s_o] = [0.00 for _ in range(planning_problem.num_instants)]
-                        adn_load.qd[s_o] = [0.00 for _ in range(planning_problem.num_instants)]
+                    adn_load.pd = np.zeros((planning_problem.transmission_network.num_oper_scenarios, planning_problem.num_instants))
+                    adn_load.qd = np.zeros((planning_problem.transmission_network.num_oper_scenarios, planning_problem.num_instants))
                     adn_load.fl_reg = True
                     adn_load.status = 1
                     planning_problem.transmission_network.network[year][day].loads.append(adn_load)
