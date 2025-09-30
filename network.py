@@ -1747,18 +1747,16 @@ def _compute_losses_per_scenario(network, model, params, s_m, s_o):
 
 def _compute_generation_curtailment(network, model, params):
 
-    gen_curtailment = {'p': 0.00, 'q': 0.00, 's': 0.00}
+    gen_curtailment = {'s': 0.00}
 
     if params.rg_curt:
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
-                gen_curtailment_scenario = {'p': 0.00, 'q': 0.00, 's': 0.00}
+                gen_curtailment_scenario = {'s': 0.00}
                 for g in model.generators:
                     if network.generators[g].is_curtaillable():
                         for p in model.periods:
                             gen_curtailment_scenario['s'] += pe.value(model.sg_curt[g, s_m, s_o, p]) * network.baseMVA
-                gen_curtailment['p'] += gen_curtailment_scenario['p'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
-                gen_curtailment['q'] += gen_curtailment_scenario['q'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
                 gen_curtailment['s'] += gen_curtailment_scenario['s'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
 
     return gen_curtailment

@@ -541,6 +541,25 @@ def _write_main_info_to_excel(network_planning, workbook, results):
             write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
             col_idx += 1
 
+    # Total Conventional Generation
+    col_idx = 2
+    line_idx += 1
+    sheet.cell(row=line_idx, column=1).value = 'Conventional Generation, [MWh]'
+    for year in network_planning.years:
+        for day in network_planning.days:
+            value = results['results'][year][day]['total_conventional_gen']['p']
+            write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
+            col_idx += 1
+
+    col_idx = 2
+    line_idx += 1
+    sheet.cell(row=line_idx, column=1).value = 'Conventional Generation, [MVArh]'
+    for year in network_planning.years:
+        for day in network_planning.days:
+            value = results['results'][year][day]['total_conventional_gen']['q']
+            write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
+            col_idx += 1
+
     # Total Renewable Generation
     col_idx = 2
     line_idx += 1
@@ -560,24 +579,24 @@ def _write_main_info_to_excel(network_planning, workbook, results):
             write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
             col_idx += 1
 
+    col_idx = 2
+    line_idx += 1
+    sheet.cell(row=line_idx, column=1).value = 'Renewable generation, [MVAh]'
+    for year in network_planning.years:
+        for day in network_planning.days:
+            value = results['results'][year][day]['total_renewable_gen']['s']
+            write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
+            col_idx += 1
+
     # Renewable Generation Curtailed
     if network_planning.params.rg_curt:
 
         col_idx = 2
         line_idx += 1
-        sheet.cell(row=line_idx, column=1).value = 'Renewable generation curtailed, [MWh]'
+        sheet.cell(row=line_idx, column=1).value = 'Renewable generation curtailed, [MVAh]'
         for year in network_planning.years:
             for day in network_planning.days:
-                value = results['results'][year][day]['gen_curt']['p']
-                write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
-                col_idx += 1
-
-        col_idx = 2
-        line_idx += 1
-        sheet.cell(row=line_idx, column=1).value = 'Renewable generation curtailed, [MVArh]'
-        for year in network_planning.years:
-            for day in network_planning.days:
-                value = results['results'][year][day]['gen_curt']['q']
+                value = results['results'][year][day]['gen_curt']['s']
                 write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
                 col_idx += 1
 
@@ -588,16 +607,6 @@ def _write_main_info_to_excel(network_planning, workbook, results):
     for year in network_planning.years:
         for day in network_planning.days:
             value = results['results'][year][day]['losses']
-            write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
-            col_idx += 1
-
-    # Execution time
-    col_idx = 2
-    line_idx += 1
-    sheet.cell(row=line_idx, column=1).value = 'Execution time, [s]'
-    for year in network_planning.years:
-        for day in network_planning.days:
-            value = results['results'][year][day]['runtime']
             write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
             col_idx += 1
 
@@ -619,6 +628,16 @@ def _write_main_info_to_excel(network_planning, workbook, results):
         for day in network_planning.days:
             value = len(network_planning.network[year][day].prob_operation_scenarios)
             write_value(sheet, line_idx, col_idx, value)
+            col_idx += 1
+
+    # Execution time
+    col_idx = 2
+    line_idx += 1
+    sheet.cell(row=line_idx, column=1).value = 'Execution time, [s]'
+    for year in network_planning.years:
+        for day in network_planning.days:
+            value = results['results'][year][day]['runtime']
+            write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
             col_idx += 1
 
 
