@@ -2840,6 +2840,7 @@ def _write_operational_planning_main_info_to_excel(planning_problem, workbook, r
         line_idx = _write_operational_planning_main_info_per_operator(distribution_network, sheet, 'DSO', line_idx, dso_results, tn_node_id=tn_node_id)
 
     if execution_time:
+        line_idx += 1
         sheet.cell(row=line_idx, column=1).value = '-'
         sheet.cell(row=line_idx, column=2).value = '-'
         sheet.cell(row=line_idx, column=3).value = 'Execution time, [s]'
