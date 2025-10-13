@@ -253,8 +253,8 @@ def _build_master_problem(shared_ess_data):
     for e in model.energy_storages:
         for y in model.years:
             for s_m in model.scenarios_market:
-                model.energy_storage_power_to_energy_factor.add(model.es_s_rated[e, y, s_m] >= model.es_e_rated[e, y, s_m] * shared_ess_data.params.min_pe_factor)
-                model.energy_storage_power_to_energy_factor.add(model.es_s_rated[e, y, s_m] <= model.es_e_rated[e, y, s_m] * shared_ess_data.params.max_pe_factor)
+                model.energy_storage_power_to_energy_factor.add(model.es_e_rated[e, y, s_m] >= model.es_s_rated[e, y, s_m] * shared_ess_data.params.min_energy_to_power_ratio)
+                model.energy_storage_power_to_energy_factor.add(model.es_e_rated[e, y, s_m] <= model.es_s_rated[e, y, s_m] * shared_ess_data.params.max_energy_to_power_ratio)
 
     # Expected values
     model.energy_storage_expected_values = pe.ConstraintList()
