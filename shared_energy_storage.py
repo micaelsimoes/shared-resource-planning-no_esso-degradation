@@ -15,7 +15,7 @@ class SharedEnergyStorage:
         self.eff_dch = 0.95                 # Discharging efficiency, [0-1]
         self.max_pf = 0.80                  # Maximum power factor
         self.min_pf = -0.80                 # Minimum power factor
-        self.t_cal = 20                     # Calendar life of the ESS, [years]
+        self.t_cal = 15                     # Calendar life of the ESS, [years]
         self.cl_nom = 10000                 # Cycle life, nominal, [number of cycles]
         self.dod_nom = 0.90                 # Depth-of-Discharge, nominal, [0-1]
         self.soh_min = 0.10                 # Minimum SoH, [0-1]
