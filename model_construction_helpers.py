@@ -197,14 +197,14 @@ def pc_curt_down_bounds(m, c, s_m, s_o, p, network, params):
     if pd >= 0.00:
         return (0.0, abs(pd))
     else:
-        return (0.0, SMALL_TOLERANCE)
+        return (0.0, EQUALITY_TOLERANCE)
 
 
 def pc_curt_up_bounds(m, c, s_m, s_o, p, network, params):
     load = network.loads[c]
     pd = load.pd[s_o][p]
     if pd >= 0.00:
-        return (0.0, SMALL_TOLERANCE)
+        return (0.0, EQUALITY_TOLERANCE)
     else:
         return (0.0, abs(pd))
 
@@ -215,14 +215,14 @@ def qc_curt_down_bounds(m, c, s_m, s_o, p, network, params):
     if qd >= 0.00:
         return (0.0, abs(qd))
     else:
-        return (0.0, SMALL_TOLERANCE)
+        return (0.0, EQUALITY_TOLERANCE)
 
 
 def qc_curt_up_bounds(m, c, s_m, s_o, p, network, params):
     load = network.loads[c]
     qd = load.qd[s_o][p]
     if qd >= 0.00:
-        return (0.0, SMALL_TOLERANCE)
+        return (0.0, EQUALITY_TOLERANCE)
     else:
         return (0.0, abs(qd))
 
@@ -346,7 +346,7 @@ def sg_curt_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable() or not generator.status[p]:
         return pe.Constraint.Skip
-    return pe.inequality(-EQUALITY_TOLERANCE, m.sg_curt[g, s_m, s_o, p] - (m.sg_init[g, s_m, s_o, p] - m.sg_abs[g, s_m, s_o, p]), EQUALITY_TOLERANCE)
+    return pe.inequality(-EQUALITY_TOLERANCE, m.sg_abs[g, s_m, s_o, p] - (m.sg_init[g, s_m, s_o, p] - m.sg_curt[g, s_m, s_o, p]), EQUALITY_TOLERANCE)
 
 
 def power_factor_rule_upper(m, g, s_m, s_o, p, network):
