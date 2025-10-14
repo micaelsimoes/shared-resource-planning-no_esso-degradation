@@ -709,7 +709,7 @@ def sess_simplified_model_comp_rule(m, e, s_m, s_o, p, network):
 def interface_vmag_transmission_rule(m, dn, s_m, s_o, p, network):
     adn_node_id = network.active_distribution_network_nodes[dn]
     adn_node_idx = network.get_node_idx(adn_node_id)
-    return pe.inequality(-EQUALITY_TOLERANCE, m.vmag_adn[dn, s_m, s_o, p] - m.vmag[adn_node_idx, s_m, s_o, p], EQUALITY_TOLERANCE)
+    return m.vmag_adn[dn, s_m, s_o, p] == m.vmag[adn_node_idx, s_m, s_o, p]
 
 
 def interface_pf_p_transmission_rule(m, dn, s_m, s_o, p, network, params):
@@ -718,7 +718,7 @@ def interface_pf_p_transmission_rule(m, dn, s_m, s_o, p, network, params):
     if params.l_curt:
         fix_or_set(m.pc_curt_down[adn_load_idx, s_m, s_o, p], SMALL_TOLERANCE)
         fix_or_set(m.pc_curt_up[adn_load_idx, s_m, s_o, p], SMALL_TOLERANCE)
-    return pe.inequality(-EQUALITY_TOLERANCE, m.pc_adn[dn, s_m, s_o, p] - (m.pc[adn_load_idx, s_m, s_o, p] + m.flex_p_up[adn_load_idx, s_m, s_o, p] - m.flex_p_down[adn_load_idx, s_m, s_o, p]), EQUALITY_TOLERANCE)
+    return m.pc_adn[dn, s_m, s_o, p] == m.pc[adn_load_idx, s_m, s_o, p] + m.flex_p_up[adn_load_idx, s_m, s_o, p] - m.flex_p_down[adn_load_idx, s_m, s_o, p]
 
 
 def interface_pf_q_transmission_rule(m, dn, s_m, s_o, p, network, params):
@@ -727,23 +727,23 @@ def interface_pf_q_transmission_rule(m, dn, s_m, s_o, p, network, params):
     if params.l_curt:
         fix_or_set(m.qc_curt_down[adn_load_idx, s_m, s_o, p], SMALL_TOLERANCE)
         fix_or_set(m.qc_curt_up[adn_load_idx, s_m, s_o, p], SMALL_TOLERANCE)
-    return pe.inequality(-EQUALITY_TOLERANCE, m.qc_adn[dn, s_m, s_o, p] - (m.qc[adn_load_idx, s_m, s_o, p] + m.flex_q_up[adn_load_idx, s_m, s_o, p] - m.flex_q_down[adn_load_idx, s_m, s_o, p]), EQUALITY_TOLERANCE)
+    return m.qc_adn[dn, s_m, s_o, p] == m.qc[adn_load_idx, s_m, s_o, p] + m.flex_q_up[adn_load_idx, s_m, s_o, p] - m.flex_q_down[adn_load_idx, s_m, s_o, p]
 
 
 def interface_vmag_distribution_rule(m, s_m, s_o, p, network):
     ref_node_id = network.get_reference_node_id()
     ref_node_idx = network.get_node_idx(ref_node_id)
-    return pe.inequality(-EQUALITY_TOLERANCE, m.vmag_adn[s_m, s_o, p] - m.vmag[ref_node_idx, s_m, s_o, p], EQUALITY_TOLERANCE)
+    return m.vmag_adn[s_m, s_o, p] == m.vmag[ref_node_idx, s_m, s_o, p]
 
 
 def interface_pf_p_distribution_rule(m, s_m, s_o, p, network):
     ref_gen_idx = network.get_reference_gen_idx()
-    return pe.inequality(-EQUALITY_TOLERANCE, m.pg_adn[s_m, s_o, p] - m.pg[ref_gen_idx, s_m, s_o, p], EQUALITY_TOLERANCE)
+    return m.pg_adn[s_m, s_o, p] == m.pg[ref_gen_idx, s_m, s_o, p]
 
 
 def interface_pf_q_distribution_rule(m, s_m, s_o, p, network):
     ref_gen_idx = network.get_reference_gen_idx()
-    return pe.inequality(-EQUALITY_TOLERANCE, m.qg_adn[s_m, s_o, p] - m.qg[ref_gen_idx, s_m, s_o, p], EQUALITY_TOLERANCE)
+    return m.qg_adn[s_m, s_o, p] == m.qg[ref_gen_idx, s_m, s_o, p]
 
 
 
