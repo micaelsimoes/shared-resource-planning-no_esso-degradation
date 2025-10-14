@@ -35,7 +35,7 @@ def vmag_bounds(m, i, s_m, s_o, p, network, params):
 def voltage_slack_bounds(m, i, s_m, s_o, p, network):
     node = network.nodes[i]
     if node.type == BUS_REF:
-        return (0.00, SMALL_TOLERANCE)
+        return (0.00, EQUALITY_TOLERANCE)
     return (0.00, VMAG_VIOLATION_ALLOWED)
 
 
@@ -49,7 +49,7 @@ def pg_bounds(m, g, s_m, s_o, p, network):
     if gen.status[p]:
         return (gen.pmin, gen.pmax)
     else:
-        return (-SMALL_TOLERANCE, SMALL_TOLERANCE)
+        return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
 
 
 # Generation, Qg
@@ -58,7 +58,7 @@ def qg_bounds(m, g, s_m, s_o, p, network):
     if gen.status[p]:
         return (gen.qmin, gen.qmax)
     else:
-        return (-SMALL_TOLERANCE, SMALL_TOLERANCE)
+        return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
 
 
 def pg_init(m, g, s_m, s_o, p, network):
@@ -220,7 +220,7 @@ def qc_curt_down_bounds(m, c, s_m, s_o, p, network, params):
 
 def qc_curt_up_bounds(m, c, s_m, s_o, p, network, params):
     load = network.loads[c]
-    qd = load.pd[s_o][p]
+    qd = load.qd[s_o][p]
     if qd >= 0.00:
         return (0.0, SMALL_TOLERANCE)
     else:
