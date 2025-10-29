@@ -320,7 +320,7 @@ def _build_model(network, params):
         model.qc_adn = pe.Var(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
 
     # - Transformers
-    model.r = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0, bounds=partial(transformer_ratio_bounds, network=network, params=params))
+    model.r = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=partial(transformer_ratio_initialize, network=network, params=params), bounds=partial(transformer_ratio_bounds, network=network, params=params))
 
     # - Energy Storage devices
     if params.es_reg:
@@ -1182,7 +1182,7 @@ def _process_results(network, model, params, results=dict()):
                     fi = model.f_actual[fnode_idx, s_m, s_o, p]
                     ej = model.e_actual[tnode_idx, s_m, s_o, p]
                     fj = model.f_actual[tnode_idx, s_m, s_o, p]
-                    flow_ij = pe.value(compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, params.branch_limit_type))
+                    flow_ij = pe.value(compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, params.branch_limit_type)) ** 0.50
                     flow_ij_perc = flow_ij / rating
                     processed_results['scenarios'][s_m][s_o]['branches']['branch_flow']['flow_ij_perc'][branch_id].append(flow_ij_perc)
 
