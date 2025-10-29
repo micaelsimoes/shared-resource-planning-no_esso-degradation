@@ -238,6 +238,17 @@ def transformer_ratio_bounds(m, i, s_m, s_o, p, network, params):
         return (1.00 - EQUALITY_TOLERANCE, 1.00 + EQUALITY_TOLERANCE)
 
 
+def transformer_ratio_initialize(m, i, s_m, s_o, p, network, params):
+    branch = network.branches[i]
+    if branch.is_transformer:
+        if params.transf_reg and branch.vmag_reg:
+            return 1.00
+        else:
+            return branch.ratio
+    else:
+        return 1.00
+
+
 # Energy Storage
 def soc_bounds(m, e, s_m, s_o, p, network):
     ess = network.energy_storages[e]
@@ -761,6 +772,9 @@ def compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, limit_type):
         current_squared += bsh**2 * (ei**2 + fi**2)
         current_squared += 2 * g * bsh * (delta_f * ei - delta_e * fi)
         current_squared += 2 * b * bsh * (delta_e * ei + delta_f * fi)
+
+        # current_squared = (branch.g ** 2 + branch.b ** 2) * ((ei - ej) ** 2 + (fi - fj) ** 2)
+
         return current_squared
 
     elif limit_type == BRANCH_LIMIT_APPARENT_POWER or (limit_type == BRANCH_LIMIT_MIXED and branch.is_transformer):
@@ -784,6 +798,9 @@ def compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, limit_type):
         current_squared += bsh**2 * (ei**2 + fi**2)
         current_squared += 2 * g * bsh * (delta_f * ei - delta_e * fi)
         current_squared += 2 * b * bsh * (delta_e * ei + delta_f * fi)
+
+        # current_squared = (branch.g ** 2 + branch.b ** 2) * ((ei - ej) ** 2 + (fi - fj) ** 2)
+
         return current_squared
 
     raise ValueError(f"Unknown branch limit type: {limit_type}")
