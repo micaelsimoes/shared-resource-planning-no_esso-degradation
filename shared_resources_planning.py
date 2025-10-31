@@ -173,8 +173,8 @@ class SharedResourcesPlanning:
     def get_initial_candidate_solution(self):
         return _get_initial_candidate_solution(self)
 
-    def get_test_candidate_solution(self):
-        return _get_test_candidate_solution(self)
+    def get_test_candidate_solution(self, s_inv=1.00, e_inv=2.00):
+        return _get_test_candidate_solution(self, s_inv=s_inv, e_inv=e_inv)
 
     def plot_diagram(self):
         _plot_networkx_diagram(self)
@@ -6047,7 +6047,7 @@ def _get_initial_candidate_solution(planning_problem):
     return candidate_solution
 
 
-def _get_test_candidate_solution(planning_problem):
+def _get_test_candidate_solution(planning_problem, s_inv=1.00, e_inv=2.00):
     candidate_solution = {'investment': {}, 'total_capacity': {}}
     for e in range(len(planning_problem.active_distribution_network_nodes)):
         node_id = planning_problem.active_distribution_network_nodes[e]
@@ -6055,11 +6055,11 @@ def _get_test_candidate_solution(planning_problem):
         candidate_solution['total_capacity'][node_id] = dict()
         for year in planning_problem.years:
             candidate_solution['investment'][node_id][year] = dict()
-            candidate_solution['investment'][node_id][year]['s'] = 1.00
-            candidate_solution['investment'][node_id][year]['e'] = 2.00
+            candidate_solution['investment'][node_id][year]['s'] = s_inv
+            candidate_solution['investment'][node_id][year]['e'] = e_inv
             candidate_solution['total_capacity'][node_id][year] = dict()
-            candidate_solution['total_capacity'][node_id][year]['s'] = 1.00
-            candidate_solution['total_capacity'][node_id][year]['e'] = 2.00
+            candidate_solution['total_capacity'][node_id][year]['s'] = s_inv
+            candidate_solution['total_capacity'][node_id][year]['e'] = e_inv
     return candidate_solution
 
 
