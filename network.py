@@ -253,8 +253,8 @@ def _build_model(network, params):
     # ------------------------------------------------------------------------------------------------------------------
     # Decision variables
     # - Voltage
-    model.e = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.0, bounds=partial(e_bounds, network=network))
-    model.f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(f_bounds, network=network))
+    model.e = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=partial(e_initialize, network=network), bounds=partial(e_bounds, network=network))
+    model.f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=partial(f_initialize, network=network), bounds=partial(f_bounds, network=network))
     model.e_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.0)
     model.f_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.vmag = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0, bounds=partial(vmag_bounds, network=network, params=params))

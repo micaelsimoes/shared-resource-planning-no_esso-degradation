@@ -5,6 +5,18 @@ from definitions import *
 
 
 # Voltage variables, e
+def e_initialize(m, i, s_m, s_o, p, network):
+    node = network.nodes[i]
+    if node.type == BUS_REF and not network.is_transmission:
+        vg = network.generators[network.get_gen_idx(node.bus_i)].vg
+        return vg
+    return 1.00
+
+
+def f_initialize(m, i, s_m, s_o, p, network):
+    return 0.00
+
+
 def e_bounds(m, i, s_m, s_o, p, network):
     node = network.nodes[i]
     if node.type == BUS_REF and not network.is_transmission:
