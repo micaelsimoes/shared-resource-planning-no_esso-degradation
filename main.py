@@ -63,11 +63,11 @@ def shared_resources_planning(working_directory, specification_filename):
 
     candidate_solution = planning_problem.get_test_candidate_solution(s_inv=1.00, e_inv=2.00)
     planning_problem.run_operational_planning(type='uncoordinated', print_results=True, debug_flag=False)
-    # planning_problem.run_operational_planning(type='centralized', print_results=True, debug_flag=False)
-    planning_problem.run_operational_planning(type='hierarchical', num_steps=1, print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_hierarchical_N={1}')
+    planning_problem.run_operational_planning(type='centralized', print_results=True, debug_flag=False)
+    # planning_problem.run_operational_planning(type='hierarchical', num_steps=1, print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_hierarchical_N={1}')
     # planning_problem.run_operational_planning(type='hierarchical', num_steps=2, print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_hierarchical_N={2}')
     # planning_problem.run_operational_planning(type='hierarchical', num_steps=4, print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_hierarchical_N={4}')
-    # planning_problem.run_operational_planning(type='hierarchical', num_steps=8, print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_hierarchical_N={8}')
+    planning_problem.run_operational_planning(type='hierarchical', num_steps=8, print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_hierarchical_N={8}')
     planning_problem.run_operational_planning(type='distributed', print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_distributed_without ESS')
     planning_problem.run_operational_planning(type='distributed', candidate_solution=candidate_solution, print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_distributed_with ESS')
 
@@ -95,7 +95,6 @@ def shared_resources_planning(working_directory, specification_filename):
     #     results = distribution_network.optimize(dn_model)
     #     processed_results = distribution_network.process_results(dn_model, results)
     #     distribution_network.write_optimization_results_to_excel(processed_results)
-    #     break
 
     # candidate_solution = planning_problem.get_initial_candidate_solution()
     # planning_problem.shared_ess_data.update_data_with_candidate_solution(candidate_solution['total_capacity'])

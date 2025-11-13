@@ -2230,7 +2230,7 @@ def _run_operational_planning_without_coordination(planning_problem):
                                 tso_model[year][day].qc_curt_down[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                                 tso_model[year][day].qc_curt_up[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
 
-                            fix_or_set(tso_model[year][day].vmag_adn[dn, s_m, s_o, p], vmag_req)
+                            #fix_or_set(tso_model[year][day].vmag_adn[dn, s_m, s_o, p], vmag_req)
                             fix_or_set(tso_model[year][day].pc[adn_load_idx, s_m, s_o, p], p_req)
                             fix_or_set(tso_model[year][day].qc[adn_load_idx, s_m, s_o, p], q_req)
 
