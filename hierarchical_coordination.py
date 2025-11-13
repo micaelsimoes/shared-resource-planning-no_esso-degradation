@@ -60,7 +60,7 @@ def _plot_pq_map(network, num_steps, vertices_dict, hull_dict):
     ax.xaxis.set_major_locator(MultipleLocator(4))
     plt.tight_layout()
 
-    filename = os.path.join(network.diagrams_dir, f'{network.name}_FOR_n={num_steps}.pdf')
+    filename = os.path.join(network.diagrams_dir, f'{network.name}_{network.year}_{network.day}_FOR_n={num_steps}.pdf')
     plt.savefig(filename, bbox_inches="tight", pad_inches=0.30)
 
 

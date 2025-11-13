@@ -26,8 +26,17 @@
         {"bus_i": 30, "type": 1, "Gs": 0, "Bs": 0, "baseKV": 1, "Vmax": 1.1, "Vmin": 0.9}
 	],
 	"generators": [
-        {"gen_id": 2, "bus": 9, "Qmax": 80, "Qmin": -80, "Vg": 1.00, "status": 1, "Pmax": 80, "Pmin": -80, "type": "REF"}
-	],
+        {"gen_id": 2, "bus": 9, "Qmax": 80, "Qmin": -80, "Vg": 1.00, "status": 1, "Pmax": 80, "Pmin": -80, "type": "REF"},
+        {"gen_id": 7, "bus": 8, "Pmax": 0.50, "Pmin": 0.00, "Qmax":0.50,"Qmin":-0.50,"Vg":1.00,"status":1, "type": "PV", "pf_control": 1, "pf_max": 0.90, "pf_min": -0.90},
+        {"gen_id": 8, "bus": 14, "Pmax": 0.50, "Pmin": 0.00, "Qmax":0.50,"Qmin":-0.50,"Vg":1.00,"status":1, "type": "PV", "pf_control": 1, "pf_max": 0.90, "pf_min": -0.90},
+        {"gen_id": 9, "bus": 30, "Pmax": 1.00, "Pmin": 0.00, "Qmax":0.50,"Qmin":-0.50,"Vg":1.00,"status":1, "type": "WIND", "pf_control": 1, "pf_max": 0.90, "pf_min": -0.90},
+        {"gen_id": 10, "bus": 22, "Pmax": 1.00, "Pmin": 0.00, "Qmax":0.50,"Qmin":-0.50,"Vg":1.00,"status":1, "type": "WIND", "pf_control": 1, "pf_max": 0.90, "pf_min": -0.90},
+        {"gen_id": 11, "bus": 28, "Pmax": 1.00, "Pmin": 0.00, "Qmax":0.50,"Qmin":-0.50,"Vg":1.00,"status":1, "type": "WIND", "pf_control": 1, "pf_max": 0.90, "pf_min": -0.90},
+        {"gen_id": 12, "bus": 17, "Pmax": 0.50, "Pmin": 0.00, "Qmax":0.50,"Qmin":-0.50,"Vg":1.00,"status":1, "type": "PV", "pf_control": 1, "pf_max": 0.90, "pf_min": -0.90},
+        {"gen_id": 13, "bus": 20, "Pmax": 0.50, "Pmin": 0.00, "Qmax":0.50,"Qmin":-0.50,"Vg":1.00,"status":1, "type": "PV", "pf_control": 1, "pf_max": 0.90, "pf_min": -0.90},
+        {"gen_id": 14, "bus": 22, "Pmax": 0.50, "Pmin": 0.00, "Qmax":0.50,"Qmin":-0.50,"Vg":1.00,"status":1, "type": "PV", "pf_control": 1, "pf_max": 0.90, "pf_min": -0.90},
+        {"gen_id": 15, "bus": 28, "Pmax": 0.50, "Pmin": 0.00, "Qmax":0.50,"Qmin":-0.50,"Vg":1.00,"status":1, "type": "PV", "pf_control": 1, "pf_max": 0.90, "pf_min": -0.90}
+    ],
 	"loads": [
         {"load_id": 3, "bus": 14, "status": 1, "fl_reg": 1},
         {"load_id": 4, "bus": 17, "status": 1, "fl_reg": 1},

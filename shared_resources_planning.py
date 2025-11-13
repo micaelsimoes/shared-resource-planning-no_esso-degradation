@@ -971,8 +971,8 @@ def _run_operational_planning_hierarchical(planning_problem, num_steps=8, print_
                 for p in tso_model[year][day].periods:
                     adn_pq_map = dso_models[adn_node_id][year][day][p]
                     initial_solution = adn_pq_map['initial_solution']
-                    # tso_model[year][day].pq_maps.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] <= initial_solution['Vg'] ** 2 + EQUALITY_TOLERANCE)
-                    # tso_model[year][day].pq_maps.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] >= initial_solution['Vg'] ** 2 - EQUALITY_TOLERANCE)
+                    tso_model[year][day].pq_maps.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] <= initial_solution['Vg'] ** 2 + EQUALITY_TOLERANCE)
+                    tso_model[year][day].pq_maps.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] >= initial_solution['Vg'] ** 2 - EQUALITY_TOLERANCE)
                     for ineq in adn_pq_map['inequalities']:
                         a = ineq['Pg']
                         b = ineq['Qg']
@@ -2206,11 +2206,11 @@ def _run_operational_planning_without_coordination(planning_problem):
                             tso_model[year][day].vmag_adn[dn, s_m, s_o, p].fixed = False
                             tso_model[year][day].vmag_adn[dn, s_m, s_o, p].setub(v_max)
                             tso_model[year][day].vmag_adn[dn, s_m, s_o, p].setlb(v_min)
-                            if transmission_network.params.slacks.grid_operation.voltage:
-                                fix_or_set(tso_model[year][day].slack_e_up[adn_node_idx, s_m, s_o, p], 0.00)
-                                fix_or_set(tso_model[year][day].slack_e_down[adn_node_idx, s_m, s_o, p], 0.00)
-                                fix_or_set(tso_model[year][day].slack_f_up[adn_node_idx, s_m, s_o, p], 0.00)
-                                fix_or_set(tso_model[year][day].slack_f_down[adn_node_idx, s_m, s_o, p], 0.00)
+                            # if transmission_network.params.slacks.grid_operation.voltage:
+                            #     fix_or_set(tso_model[year][day].slack_e_up[adn_node_idx, s_m, s_o, p], 0.00)
+                            #     fix_or_set(tso_model[year][day].slack_e_down[adn_node_idx, s_m, s_o, p], 0.00)
+                            #     fix_or_set(tso_model[year][day].slack_f_up[adn_node_idx, s_m, s_o, p], 0.00)
+                            #     fix_or_set(tso_model[year][day].slack_f_down[adn_node_idx, s_m, s_o, p], 0.00)
 
                             # Fix Pc and Qc (base profiles), free pc_adn and qc_adn
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fixed = False
@@ -2230,7 +2230,7 @@ def _run_operational_planning_without_coordination(planning_problem):
                                 tso_model[year][day].qc_curt_down[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                                 tso_model[year][day].qc_curt_up[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
 
-                            #fix_or_set(tso_model[year][day].vmag_adn[dn, s_m, s_o, p], vmag_req)
+                            fix_or_set(tso_model[year][day].vmag_adn[dn, s_m, s_o, p], vmag_req)
                             fix_or_set(tso_model[year][day].pc[adn_load_idx, s_m, s_o, p], p_req)
                             fix_or_set(tso_model[year][day].qc[adn_load_idx, s_m, s_o, p], q_req)
 
