@@ -22,7 +22,7 @@ def e_bounds(m, i, s_m, s_o, p, network):
     if node.type == BUS_REF and not network.is_transmission:
         vg = network.generators[network.get_gen_idx(node.bus_i)].vg
         return (vg - SMALL_TOLERANCE, vg + SMALL_TOLERANCE)
-    return (-node.v_max, node.v_max)
+    return (-node.v_max - EQUALITY_TOLERANCE, node.v_max + EQUALITY_TOLERANCE)
 
 
 # Voltage variables, f
@@ -30,7 +30,7 @@ def f_bounds(m, i, s_m, s_o, p, network):
     node = network.nodes[i]
     if node.type == BUS_REF:
         return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
-    return (-node.v_max, node.v_max)
+    return (-node.v_max - EQUALITY_TOLERANCE, node.v_max + EQUALITY_TOLERANCE)
 
 
 def vmag_bounds(m, i, s_m, s_o, p, network, params):
@@ -40,14 +40,14 @@ def vmag_bounds(m, i, s_m, s_o, p, network, params):
     if params.slacks.grid_operation.voltage:
         v_min -= VMAG_VIOLATION_ALLOWED
         v_max += VMAG_VIOLATION_ALLOWED
-    return (v_min, v_max)
+    return (v_min - EQUALITY_TOLERANCE, v_max + EQUALITY_TOLERANCE)
 
 
 # Voltage variables, slack bounds
 def voltage_slack_bounds(m, i, s_m, s_o, p, network):
     node = network.nodes[i]
     if node.type == BUS_REF:
-        return (0.00, SMALL_TOLERANCE)
+        return (0.00, EQUALITY_TOLERANCE)
     return (0.00, VMAG_VIOLATION_ALLOWED)
 
 
@@ -59,16 +59,16 @@ def node_balance_slack_bounds(m, i, s_m, s_o, p, network):
 def pg_bounds(m, g, s_m, s_o, p, network):
     gen = network.generators[g]
     if gen.status[p]:
-        return (gen.pmin, gen.pmax)
+        return (gen.pmin - EQUALITY_TOLERANCE, gen.pmax + EQUALITY_TOLERANCE)
     else:
-        return (-SMALL_TOLERANCE, SMALL_TOLERANCE)
+        return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
 
 
 # Generation, Qg
 def qg_bounds(m, g, s_m, s_o, p, network):
     gen = network.generators[g]
     if gen.status[p]:
-        return (gen.qmin, gen.qmax)
+        return (gen.qmin - EQUALITY_TOLERANCE, gen.qmax + EQUALITY_TOLERANCE)
     else:
         return (-SMALL_TOLERANCE, SMALL_TOLERANCE)
 
@@ -108,14 +108,14 @@ def sg_bounds(m, g, s_m, s_o, p, network, params):
 
     gen = network.generators[g]
     if not gen.is_curtaillable() or not gen.status[p]:
-        return (0.0, SMALL_TOLERANCE)
+        return (0.0, EQUALITY_TOLERANCE)
 
     # Estimated apparent power for bounds
     pg = gen.pg[s_o][p]
     qg = gen.qg[s_o][p]
     sg = max(0.00, (pg ** 2 + qg ** 2) ** 0.5)
 
-    return (0.0, sg)
+    return (0.0, sg + EQUALITY_TOLERANCE)
 
 
 # Branch power flow, Fij
@@ -124,14 +124,14 @@ def flow_ij_sqr_bounds(m, b, s_m, s_o, p, network, params):
     if not branch.status:
         return (0.0, SMALL_TOLERANCE)
     rating_sqr = (branch.rate / network.baseMVA)**2
-    return (0.0, rating_sqr)
+    return (0.0, rating_sqr + EQUALITY_TOLERANCE)
 
 
 def init_flow_ij_sqr(m, b, s_m, s_o, p, network, params):
     branch = network.branches[b]
     if not branch.status:
         return 0.0
-    return SMALL_TOLERANCE ** 2
+    return EQUALITY_TOLERANCE
 
 
 # Branch power flow, Fij slacks
@@ -879,22 +879,22 @@ def compute_node_gen(model, i, s_m, s_o, p, network):
 
 def net_load_p_per_node_rule(model, i, s_m, s_o, p, network, params):
     Pd, _ = compute_node_load(model, i, s_m, s_o, p, network, params)
-    return pe.inequality(-EQUALITY_TOLERANCE, model.pc_node[i, s_m, s_o, p] - Pd, EQUALITY_TOLERANCE)
+    return Pd
 
 
 def net_load_q_per_node_rule(model, i, s_m, s_o, p, network, params):
     _, Qd = compute_node_load(model, i, s_m, s_o, p, network, params)
-    return pe.inequality(-EQUALITY_TOLERANCE, model.qc_node[i, s_m, s_o, p] - Qd, EQUALITY_TOLERANCE)
+    return Qd
 
 
 def net_gen_p_per_node_rule(model, i, s_m, s_o, p, network):
     Pg, _ = compute_node_gen(model, i, s_m, s_o, p, network)
-    return pe.inequality(-EQUALITY_TOLERANCE, model.pg_node[i, s_m, s_o, p] - Pg, EQUALITY_TOLERANCE)
+    return Pg
 
 
 def net_gen_q_per_node_rule(model, i, s_m, s_o, p, network):
     _, Qg = compute_node_gen(model, i, s_m, s_o, p, network)
-    return pe.inequality(-EQUALITY_TOLERANCE, model.qg_node[i, s_m, s_o, p] - Qg, EQUALITY_TOLERANCE)
+    return Qg
 
 
 def node_balance_p_rule(model, i, s_m, s_o, p, network, params):
