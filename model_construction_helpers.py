@@ -348,7 +348,7 @@ def voltage_magnitude_cons_rule(m, i, s_m, s_o, p, network, params):
     vmag = m.vmag[i, s_m, s_o, p]
     if node.type == BUS_PV and params.enforce_vg:
         vg = network.generators[network.get_gen_idx(node.bus_i)].vg[p]
-        return pe.inequality(-SMALL_TOLERANCE, vmag - vg, SMALL_TOLERANCE)
+        return pe.inequality(-EQUALITY_TOLERANCE, vmag - vg, EQUALITY_TOLERANCE)
     else:
         return pe.inequality(node.v_min, vmag, node.v_max)
 
@@ -357,14 +357,14 @@ def sg_abs_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable() or not generator.status[p]:
         return pe.Constraint.Skip
-    return pe.inequality(-EQUALITY_TOLERANCE, m.sg_abs[g, s_m, s_o, p] ** 2 - (m.pg[g, s_m, s_o, p]**2 + m.qg[g, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
+    return m.sg_abs[g, s_m, s_o, p] ** 2 == m.pg[g, s_m, s_o, p]**2 + m.qg[g, s_m, s_o, p]**2
 
 
 def sg_curt_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable() or not generator.status[p]:
         return pe.Constraint.Skip
-    return pe.inequality(-EQUALITY_TOLERANCE, m.sg_curt[g, s_m, s_o, p] - (m.sg_init[g, s_m, s_o, p] - m.sg_abs[g, s_m, s_o, p]), EQUALITY_TOLERANCE)
+    return m.sg_curt[g, s_m, s_o, p] == m.sg_init[g, s_m, s_o, p] - m.sg_abs[g, s_m, s_o, p]
 
 
 def power_factor_rule_upper(m, g, s_m, s_o, p, network):
