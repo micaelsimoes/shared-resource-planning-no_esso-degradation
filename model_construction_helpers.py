@@ -735,7 +735,7 @@ def interface_vmag_transmission_def(m, dn, s_m, s_o, p, network):
     return m.vmag[adn_node_idx, s_m, s_o, p]
 
 
-def interface_pf_p_transmission_rule(m, dn, s_m, s_o, p, network, params):
+def interface_pf_p_transmission_def(m, dn, s_m, s_o, p, network, params):
     adn_node_id = network.active_distribution_network_nodes[dn]
     adn_load_idx = network.get_adn_load_idx(adn_node_id)
     if params.l_curt:
@@ -744,10 +744,10 @@ def interface_pf_p_transmission_rule(m, dn, s_m, s_o, p, network, params):
     pc_adn = m.pc[adn_load_idx, s_m, s_o, p]
     if params.fl_reg:
         pc_adn += m.flex_p_up[adn_load_idx, s_m, s_o, p] - m.flex_p_down[adn_load_idx, s_m, s_o, p]
-    return pe.inequality(-EQUALITY_TOLERANCE, m.pc_adn[dn, s_m, s_o, p] - pc_adn, EQUALITY_TOLERANCE)
+    return pc_adn
 
 
-def interface_pf_q_transmission_rule(m, dn, s_m, s_o, p, network, params):
+def interface_pf_q_transmission_def(m, dn, s_m, s_o, p, network, params):
     adn_node_id = network.active_distribution_network_nodes[dn]
     adn_load_idx = network.get_adn_load_idx(adn_node_id)
     if params.l_curt:
@@ -756,7 +756,7 @@ def interface_pf_q_transmission_rule(m, dn, s_m, s_o, p, network, params):
     qc_adn = m.qc[adn_load_idx, s_m, s_o, p]
     if params.fl_reg:
         qc_adn += m.flex_q_up[adn_load_idx, s_m, s_o, p] - m.flex_q_down[adn_load_idx, s_m, s_o, p]
-    return pe.inequality(-EQUALITY_TOLERANCE, m.qc_adn[dn, s_m, s_o, p] - qc_adn, EQUALITY_TOLERANCE)
+    return qc_adn
 
 
 def interface_vmag_distribution_def(m, s_m, s_o, p, network):
@@ -765,15 +765,14 @@ def interface_vmag_distribution_def(m, s_m, s_o, p, network):
     return m.vmag[ref_node_idx, s_m, s_o, p]
 
 
-def interface_pf_p_distribution_rule(m, s_m, s_o, p, network):
+def interface_pf_p_distribution_def(m, s_m, s_o, p, network):
     ref_gen_idx = network.get_reference_gen_idx()
-    return pe.inequality(-EQUALITY_TOLERANCE, m.pg_adn[s_m, s_o, p] - m.pg[ref_gen_idx, s_m, s_o, p], EQUALITY_TOLERANCE)
+    return m.pg[ref_gen_idx, s_m, s_o, p]
 
 
-def interface_pf_q_distribution_rule(m, s_m, s_o, p, network):
+def interface_pf_q_distribution_def(m, s_m, s_o, p, network):
     ref_gen_idx = network.get_reference_gen_idx()
-    return pe.inequality(-EQUALITY_TOLERANCE, m.qg_adn[s_m, s_o, p] - m.qg[ref_gen_idx, s_m, s_o, p], EQUALITY_TOLERANCE)
-
+    return m.qg[ref_gen_idx, s_m, s_o, p]
 
 
 # Branch limits
@@ -858,24 +857,24 @@ def compute_node_gen(model, i, s_m, s_o, p, network):
     return Pg, Qg
 
 
-def net_load_p_per_node_rule(model, i, s_m, s_o, p, network, params):
+def net_load_p_per_node_def(model, i, s_m, s_o, p, network, params):
     Pd, _ = compute_node_load(model, i, s_m, s_o, p, network, params)
-    return pe.inequality(-EQUALITY_TOLERANCE, model.pc_node[i, s_m, s_o, p] - Pd, EQUALITY_TOLERANCE)
+    return Pd
 
 
-def net_load_q_per_node_rule(model, i, s_m, s_o, p, network, params):
+def net_load_q_per_node_def(model, i, s_m, s_o, p, network, params):
     _, Qd = compute_node_load(model, i, s_m, s_o, p, network, params)
-    return pe.inequality(-EQUALITY_TOLERANCE, model.qc_node[i, s_m, s_o, p] - Qd, EQUALITY_TOLERANCE)
+    return Qd
 
 
-def net_gen_p_per_node_rule(model, i, s_m, s_o, p, network):
+def net_gen_p_per_node_def(model, i, s_m, s_o, p, network):
     Pg, _ = compute_node_gen(model, i, s_m, s_o, p, network)
-    return pe.inequality(-EQUALITY_TOLERANCE, model.pg_node[i, s_m, s_o, p] - Pg, EQUALITY_TOLERANCE)
+    return Pg
 
 
-def net_gen_q_per_node_rule(model, i, s_m, s_o, p, network):
+def net_gen_q_per_node_def(model, i, s_m, s_o, p, network):
     _, Qg = compute_node_gen(model, i, s_m, s_o, p, network)
-    return pe.inequality(-EQUALITY_TOLERANCE, model.qg_node[i, s_m, s_o, p] - Qg, EQUALITY_TOLERANCE)
+    return Qg
 
 
 def node_balance_p_rule(model, i, s_m, s_o, p, network, params):
