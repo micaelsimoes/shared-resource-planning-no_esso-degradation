@@ -270,11 +270,6 @@ def _build_model(network, params):
         model.slack_node_balance_q_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00, bounds=partial(node_balance_slack_bounds, network=network))
         model.slack_node_balance_q_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00, bounds=partial(node_balance_slack_bounds, network=network))
 
-    if network.is_transmission: # Note: used coordinated operation
-        model.vmag_adn = pe.Var(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0)
-    else:
-        model.vmag_adn = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0)
-
     # - Generation
     model.pg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(pg_bounds, network=network), initialize=partial(pg_init, network=network))
     model.qg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(qg_bounds, network=network), initialize=partial(qg_init, network=network))
@@ -370,6 +365,13 @@ def _build_model(network, params):
         model.shared_es_sch_comp = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 1.00))
         model.shared_es_sdch_comp = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 1.00))
 
+
+    if network.is_transmission: # Note: used coordinated operation
+        model.vmag_adn = pe.Expression(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_vmag_transmission_def, network=network))
+    else:
+        model.vmag_adn = pe.Expression(model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_vmag_distribution_def, network=network))
+
+
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
     # - Voltage
@@ -414,11 +416,9 @@ def _build_model(network, params):
 
     # - ADN nodes vmag, pnet and qnet
     if network.is_transmission:
-        model.active_distribution_networks_voltage_magnitude = pe.Constraint(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_vmag_transmission_rule, network=network))
         model.active_distribution_networks_interface_active_power = pe.Constraint(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_p_transmission_rule, network=network, params=params))
         model.active_distribution_networks_interface_reactive_power = pe.Constraint(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_q_transmission_rule, network=network, params=params))
     else:
-        model.active_distribution_networks_voltage_magnitude = pe.Constraint(model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_vmag_distribution_rule, network=network))
         model.active_distribution_networks_interface_active_power = pe.Constraint(model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_p_distribution_rule, network=network))
         model.active_distribution_networks_interface_reactive_power = pe.Constraint(model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_q_distribution_rule, network=network))
 
