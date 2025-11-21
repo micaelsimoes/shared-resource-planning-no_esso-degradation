@@ -464,8 +464,16 @@ def ess_sdch_def(m, e, s_m, s_o, p, params):
     return pe.inequality(-EQUALITY_TOLERANCE, m.es_sdch[e, s_m, s_o, p]**2 - (m.es_pdch[e, s_m, s_o, p]**2 + m.es_qdch[e, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
 
 
-def ess_snet_def(m, e, s_m, s_o, p, params):
-    return pe.inequality(-EQUALITY_TOLERANCE, m.es_snet[e, s_m, s_o, p] - (m.es_sch[e, s_m, s_o, p] - m.es_sdch[e, s_m, s_o, p]), EQUALITY_TOLERANCE)
+def ess_pnet_def(m, e, s_m, s_o, p):
+    return m.es_pch[e, s_m, s_o, p] - m.es_pdch[e, s_m, s_o, p]
+
+
+def ess_qnet_def(m, e, s_m, s_o, p):
+    return m.es_qch[e, s_m, s_o, p] - m.es_qdch[e, s_m, s_o, p]
+
+
+def ess_snet_def(m, e, s_m, s_o, p):
+    return m.es_sch[e, s_m, s_o, p] - m.es_sdch[e, s_m, s_o, p]
 
 
 def ess_phi_ch_limits_lower(m, e, s_m, s_o, p, network):
@@ -668,16 +676,16 @@ def sess_soc_final_rule(m, e, s_m, s_o, network, params):
         return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_soc[e, s_m, s_o, final_p] - final_soc, EQUALITY_TOLERANCE)
 
 
-def sess_pnet_rule(m, e, s_m, s_o, p):
-    return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_pnet[e, s_m, s_o, p] - (m.shared_es_pch[e, s_m, s_o, p] - m.shared_es_pdch[e, s_m, s_o, p]), EQUALITY_TOLERANCE)
+def sess_pnet_def(m, e, s_m, s_o, p):
+    return m.shared_es_pch[e, s_m, s_o, p] - m.shared_es_pdch[e, s_m, s_o, p]
 
 
-def sess_qnet_rule(m, e, s_m, s_o, p):
-    return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_qnet[e, s_m, s_o, p] - (m.shared_es_qch[e, s_m, s_o, p] - m.shared_es_qdch[e, s_m, s_o, p]), EQUALITY_TOLERANCE)
+def sess_qnet_def(m, e, s_m, s_o, p):
+    return m.shared_es_qch[e, s_m, s_o, p] - m.shared_es_qdch[e, s_m, s_o, p]
 
 
-def sess_snet_rule(m, e, s_m, s_o, p):
-    return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_snet[e, s_m, s_o, p] - (m.shared_es_sch[e, s_m, s_o, p] - m.shared_es_sdch[e, s_m, s_o, p]), EQUALITY_TOLERANCE)
+def sess_snet_def(m, e, s_m, s_o, p):
+    return m.shared_es_sch[e, s_m, s_o, p] - m.shared_es_sdch[e, s_m, s_o, p]
 
 
 def sess_s_sensitivities(m, e):
