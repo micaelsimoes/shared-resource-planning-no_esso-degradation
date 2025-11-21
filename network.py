@@ -275,8 +275,8 @@ def _build_model(network, params):
     model.qg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(qg_bounds, network=network), initialize=partial(qg_init, network=network))
     if params.rg_curt:
         model.sg_init = pe.Param(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=partial(sg_init, network=network, params=params))
-        model.sg_abs = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(sg_bounds, network=network, params=params), initialize=0.0)
         model.sg_curt = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(sg_bounds, network=network, params=params), initialize=0.0)
+        model.sg = pe.Expression(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_def_rule, network=network, params=params))
 
     # - Branch power flows slacks (squared) -- used in branch limits
     if params.slacks.grid_operation.branch_flow:
@@ -380,7 +380,6 @@ def _build_model(network, params):
     model.generation_power_factor = pe.ConstraintList()
     if params.rg_curt:
         model.sg_abs_def = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_abs_rule, network=network, params=params))
-        model.sg_curt_def = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_curt_rule, network=network, params=params))
         model.gen_pf_upper = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(power_factor_rule_upper, network=network))
         model.gen_pf_lower = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(power_factor_rule_lower, network=network))
 
@@ -1086,7 +1085,7 @@ def _process_results(network, model, params, results=dict()):
                         sg = pe.value(model.sg_init[g, s_m, s_o, p]) * network.baseMVA
                         pg_net = pe.value(model.pg[g, s_m, s_o, p]) * network.baseMVA
                         qg_net = pe.value(model.qg[g, s_m, s_o, p]) * network.baseMVA
-                        sg_net = pe.value(model.sg_abs[g, s_m, s_o, p]) * network.baseMVA
+                        sg_net = pe.value(model.sg[g, s_m, s_o, p]) * network.baseMVA
                         sg_curt = pe.value(model.sg_curt[g, s_m, s_o, p]) * network.baseMVA
                         processed_results['scenarios'][s_m][s_o]['generation']['pg_net'][gen_id].append(pg_net)
                         processed_results['scenarios'][s_m][s_o]['generation']['qg_net'][gen_id].append(qg_net)
@@ -1668,7 +1667,7 @@ def _compute_renewable_generation(network, model, params):
                         total_renewable_gen_scenario['p'] += network.baseMVA * pe.value(model.pg[g, s_m, s_o, p])
                         total_renewable_gen_scenario['q'] += network.baseMVA * pe.value(model.qg[g, s_m, s_o, p])
                         if params.rg_curt:
-                            total_renewable_gen_scenario['s'] += network.baseMVA * pe.value(model.sg_abs[g, s_m, s_o, p])
+                            total_renewable_gen_scenario['s'] += network.baseMVA * pe.value(model.sg[g, s_m, s_o, p])
             total_renewable_gen['p'] += total_renewable_gen_scenario['p'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
             total_renewable_gen['q'] += total_renewable_gen_scenario['q'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
             total_renewable_gen['s'] += total_renewable_gen_scenario['s'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
@@ -1684,7 +1683,7 @@ def _compute_renewable_generation_per_scenario(network, model, params, s_m, s_o)
                 total_renewable_gen['p'] += network.baseMVA * pe.value(model.pg[g, s_m, s_o, p])
                 total_renewable_gen['q'] += network.baseMVA * pe.value(model.qg[g, s_m, s_o, p])
                 if params.rg_curt:
-                    total_renewable_gen['s'] += network.baseMVA * pe.value(model.sg_abs[g, s_m, s_o, p])
+                    total_renewable_gen['s'] += network.baseMVA * pe.value(model.sg[g, s_m, s_o, p])
     return total_renewable_gen
 
 

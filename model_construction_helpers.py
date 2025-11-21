@@ -355,14 +355,14 @@ def sg_abs_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable() or not generator.status[p]:
         return pe.Constraint.Skip
-    return pe.inequality(-EQUALITY_TOLERANCE, m.sg_abs[g, s_m, s_o, p] ** 2 - (m.pg[g, s_m, s_o, p]**2 + m.qg[g, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
+    return pe.inequality(-EQUALITY_TOLERANCE, m.sg[g, s_m, s_o, p] ** 2 - (m.pg[g, s_m, s_o, p] ** 2 + m.qg[g, s_m, s_o, p] ** 2), EQUALITY_TOLERANCE)
 
 
-def sg_curt_rule(m, g, s_m, s_o, p, network, params):
+def sg_def_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable() or not generator.status[p]:
         return pe.Constraint.Skip
-    return pe.inequality(-EQUALITY_TOLERANCE, m.sg_curt[g, s_m, s_o, p] - (m.sg_init[g, s_m, s_o, p] - m.sg_abs[g, s_m, s_o, p]), EQUALITY_TOLERANCE)
+    return m.sg_init[g, s_m, s_o, p] - m.sg_curt[g, s_m, s_o, p]
 
 
 def power_factor_rule_upper(m, g, s_m, s_o, p, network):
