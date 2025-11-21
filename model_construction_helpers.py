@@ -446,11 +446,11 @@ def flex_energy_balance_s_rule(m, c, s_m, s_o, network, params):
 
 
 # Energy Storage
-def ess_sch_def(m, e, s_m, s_o, p, params):
+def ess_sch_def(m, e, s_m, s_o, p):
     return pe.inequality(-EQUALITY_TOLERANCE, m.es_sch[e, s_m, s_o, p]**2 - (m.es_pch[e, s_m, s_o, p]**2 + m.es_qch[e, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
 
 
-def ess_sdch_def(m, e, s_m, s_o, p, params):
+def ess_sdch_def(m, e, s_m, s_o, p):
     return pe.inequality(-EQUALITY_TOLERANCE, m.es_sdch[e, s_m, s_o, p]**2 - (m.es_pdch[e, s_m, s_o, p]**2 + m.es_qdch[e, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
 
 
@@ -588,55 +588,31 @@ def sess_phi_dch_limits_upper(m, e, s_m, s_o, p, network):
 def sess_sch_limit(m, e, s_m, s_o, p):
     s_max = m.shared_es_s_rated[e]
     sch = m.shared_es_sch[e, s_m, s_o, p]
-    return sch <= s_max
+    return sch <= s_max + EQUALITY_TOLERANCE
 
 
 def sess_sdch_limit(m, e, s_m, s_o, p):
     s_max = m.shared_es_s_rated[e]
     sdch = m.shared_es_sdch[e, s_m, s_o, p]
-    return sdch <= s_max
+    return sdch <= s_max + EQUALITY_TOLERANCE
 
 
-def sess_sch_def(m, e, s_m, s_o, p, params):
+def sess_sch_def(m, e, s_m, s_o, p):
     return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_sch[e, s_m, s_o, p]**2 - (m.shared_es_pch[e, s_m, s_o, p]**2 + m.shared_es_qch[e, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
 
 
-def sess_sdch_def(m, e, s_m, s_o, p, params):
+def sess_sdch_def(m, e, s_m, s_o, p):
     return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_sdch[e, s_m, s_o, p]**2 - (m.shared_es_pdch[e, s_m, s_o, p]**2 + m.shared_es_qdch[e, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
-
-
-def sess_pch_limit(m, e, s_m, s_o, p):
-    s_max = m.shared_es_s_rated[e]
-    pch = m.shared_es_pch[e, s_m, s_o, p]
-    return pch <= s_max
-
-
-def sess_qch_limit(m, e, s_m, s_o, p):
-    s_max = m.shared_es_s_rated[e]
-    qch = m.shared_es_qch[e, s_m, s_o, p]
-    return qch <= s_max
-
-
-def sess_pdch_limit(m, e, s_m, s_o, p):
-    s_max = m.shared_es_s_rated[e]
-    pdch = m.shared_es_pdch[e, s_m, s_o, p]
-    return pdch <= s_max
-
-
-def sess_qdch_limit(m, e, s_m, s_o, p):
-    s_max = m.shared_es_s_rated[e]
-    qdch = m.shared_es_qdch[e, s_m, s_o, p]
-    return qdch <= s_max
 
 
 def sess_soc_lower_limit(m, e, s_m, s_o, p):
     soc_min = m.shared_es_e_rated[e] * ENERGY_STORAGE_MIN_ENERGY_STORED
-    return m.shared_es_soc[e, s_m, s_o, p] >= soc_min
+    return m.shared_es_soc[e, s_m, s_o, p] >= soc_min - EQUALITY_TOLERANCE
 
 
 def sess_soc_upper_limit(m, e, s_m, s_o, p):
     soc_max = m.shared_es_e_rated[e] * ENERGY_STORAGE_MAX_ENERGY_STORED
-    return m.shared_es_soc[e, s_m, s_o, p] <= soc_max
+    return m.shared_es_soc[e, s_m, s_o, p] <= soc_max + EQUALITY_TOLERANCE
 
 
 def sess_comp_rule(m, e, s_m, s_o, p, params):
@@ -684,11 +660,11 @@ def sess_snet_def(m, e, s_m, s_o, p):
 
 
 def sess_s_sensitivities(m, e):
-    return m.shared_es_s_rated[e] <= m.shared_es_s_rated_fixed[e]
+    return m.shared_es_s_rated[e] <= m.shared_es_s_rated_fixed[e] + EQUALITY_TOLERANCE
 
 
 def sess_e_sensitivities(m, e):
-    return m.shared_es_e_rated[e] <= m.shared_es_e_rated_fixed[e]
+    return m.shared_es_e_rated[e] <= m.shared_es_e_rated_fixed[e] + EQUALITY_TOLERANCE
 
 # - Linear Shared ESS models -- Relaxed LP formulation
 def sess_relaxed_model_ch_rule(m, e, s_m, s_o, p):
