@@ -328,7 +328,7 @@ def voltage_rule_e(m, i, s_m, s_o, p, params):
     e_val = m.e[i, s_m, s_o, p]
     if params.slacks.grid_operation.voltage:
         e_val += m.slack_e_up[i, s_m, s_o, p] - m.slack_e_down[i, s_m, s_o, p]
-    return m.e_actual[i, s_m, s_o, p] == e_val
+    return e_val
 
 
 # Voltage constraints, f
@@ -336,7 +336,7 @@ def voltage_rule_f(m, i, s_m, s_o, p, params):
     f_val = m.f[i, s_m, s_o, p]
     if params.slacks.grid_operation.voltage:
         f_val += m.slack_f_up[i, s_m, s_o, p] - m.slack_f_down[i, s_m, s_o, p]
-    return m.f_actual[i, s_m, s_o, p] == f_val
+    return f_val
 
 
 # Voltage constraints, magnitude
