@@ -10,12 +10,9 @@ class SolverParameters:
 
     def __init__(self):
         self.solver = 'ipopt'
-        self.linear_solver = 'ma57'
-        self.nlp_solver = 'ipopt'
-        self.solver_path = os.getenv('IPOPT_PATH')
-        self.solver_tol = 1e-6
         self.verbose = False
-        self.limited_memory = False
+        self.options = None
+        self.solver_path = os.getenv('SOLVER_PATH')
         if not self.solver_path:
             print('[ERROR] Solver path not found! Exiting')
             exit(ERROR_PARAMS_FILE)
@@ -26,8 +23,5 @@ class SolverParameters:
 
 def _read_solver_parameters(parameters, solver_data):
     parameters.solver = solver_data['name']
-    parameters.linear_solver = solver_data['linear_solver']
-    parameters.solver_tol = solver_data['solver_tol']
     parameters.verbose = solver_data['verbose']
-    if 'limited_memory' in solver_data:
-        parameters.limited_memory = solver_data['limited_memory']
+    parameters.options = solver_data['options']

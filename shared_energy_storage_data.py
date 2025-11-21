@@ -555,6 +555,13 @@ def _build_subproblem(shared_ess_data, node_id):
 def _optimize(model, params, from_warm_start=False, node_id=None):
 
     solver = po.SolverFactory(params.solver, executable=params.solver_path)
+    if params.verbose:
+        solver.options['print_level'] = 6
+        solver.options['output_file'] = 'optim_log.txt'
+
+    if params.solver_params.options:
+        for key, value in params.solver_params.options.items():
+            solver.options[key] = value
 
     if from_warm_start:
         model.ipopt_zL_in.update(model.ipopt_zL_out)
@@ -565,19 +572,6 @@ def _optimize(model, params, from_warm_start=False, node_id=None):
         solver.options['warm_start_slack_bound_frac'] = 1e-9
         solver.options['warm_start_slack_bound_push'] = 1e-9
         solver.options['warm_start_mult_bound_push'] = 1e-9
-        '''
-        solver.options['mu_strategy'] = 'monotone'
-        solver.options['mu_init'] = 1e-9
-        '''
-
-    if params.verbose:
-        solver.options['print_level'] = 6
-        solver.options['output_file'] = 'optim_log.txt'
-
-    if params.solver == 'ipopt':
-        solver.options['tol'] = params.solver_tol
-        solver.options['linear_solver'] = params.linear_solver
-        #solver.options['mu_strategy'] = 'adaptive'
 
     try:
         result = solver.solve(model, tee=params.verbose)

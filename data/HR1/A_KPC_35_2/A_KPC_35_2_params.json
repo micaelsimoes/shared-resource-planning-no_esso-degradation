@@ -32,9 +32,19 @@
 	},
 	"solver": {
 		"name": "ipopt",
-		"linear_solver": "ma97",
-		"solver_tol": 1e-5,
-		"verbose": false
+		"verbose": false,
+		"options": {
+			"linear_solver": "ma97",
+			"tol": 1e-5,
+			"acceptable_tol": 1e-3,
+			"nlp_scaling_method": "gradient-based",
+			"nlp_scaling_max_gradient": 1.0,
+			"nlp_scaling_min_value": 1e-9,
+			"bound_relax_factor": "adaptive",
+			"honor_original_bounds": "no",
+			"print_info_string": "no",
+			"print_timing_statistics": "no"
+		}
 	},
 	"print_to_screen": false,
 	"plot_diagram": false,

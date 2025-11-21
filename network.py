@@ -481,6 +481,13 @@ def _build_model(network, params):
 def _run_smopf(network, model, params, from_warm_start=False):
 
     solver = po.SolverFactory(params.solver_params.solver, executable=params.solver_params.solver_path)
+    if params.solver_params.verbose:
+        solver.options['print_level'] = 6
+        solver.options['output_file'] = 'optim_log.txt'
+
+    if params.solver_params.options:
+        for key, value in params.solver_params.options.items():
+            solver.options[key] = value
 
     if from_warm_start:
         model.ipopt_zL_in.update(model.ipopt_zL_out)
@@ -491,28 +498,6 @@ def _run_smopf(network, model, params, from_warm_start=False):
         solver.options['warm_start_slack_bound_frac'] = 1e-9
         solver.options['warm_start_slack_bound_push'] = 1e-9
         solver.options['warm_start_mult_bound_push'] = 1e-9
-
-    if params.solver_params.verbose:
-        solver.options['print_level'] = 6
-        solver.options['output_file'] = 'optim_log.txt'
-
-    if params.solver_params.solver == 'ipopt':
-        solver.options['tol'] = params.solver_params.solver_tol
-        solver.options['linear_solver'] = params.solver_params.linear_solver
-        solver.options['nlp_scaling_method'] = 'gradient-based'
-        if params.solver_params.limited_memory:
-            solver.options['hessian_approximation'] = 'limited-memory'
-        if network.is_transmission:
-            solver.options['mu_strategy'] = 'adaptive'
-        else:
-            solver.options['bound_relax_factor'] = EQUALITY_TOLERANCE
-            solver.options['honor_original_bounds'] = 'no'
-            # solver.options['mu_strategy'] = 'adaptive'
-
-        # solver.options['bound_relax_factor'] = 1e-6
-        # solver.options['honor_original_bounds'] = 'no'
-        # solver.options['acceptable_iter'] = 10
-        # solver.options['acceptable_tol'] = 1e-3
 
     try:
         result = solver.solve(model, tee=params.solver_params.verbose)
@@ -541,7 +526,7 @@ def _run_smopf(network, model, params, from_warm_start=False):
         print("Displaying Infeasible Constraints")
         log_infeasible_constraints(model, log_expression=True, log_variables=True, logger=logging_logger)
 
-        exit(1)
+        exit(ERROR_NETWORK_OPTIMIZATION)
 
     return result
 
