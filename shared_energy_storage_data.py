@@ -559,8 +559,8 @@ def _optimize(model, params, from_warm_start=False, node_id=None):
         solver.options['print_level'] = 6
         solver.options['output_file'] = 'optim_log.txt'
 
-    if params.solver_params.options:
-        for key, value in params.solver_params.options.items():
+    if params.options:
+        for key, value in params.options.items():
             solver.options[key] = value
 
     if from_warm_start:
