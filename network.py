@@ -334,17 +334,16 @@ def _build_model(network, params):
     model.shared_es_e_rated_fixed = pe.Param(model.shared_energy_storages, mutable=True, initialize=0.00)          # (...)
     model.shared_es_s_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.0)
     model.shared_es_e_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.0)
-    model.shared_es_soc = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=partial(shared_soc_init, network=network), bounds=partial(shared_soc_bounds, network=network))
     model.shared_es_sch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation,model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(shared_s_bounds, network=network))
     model.shared_es_pch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(shared_s_bounds, network=network))
     model.shared_es_qch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(shared_q_bounds, network=network))
     model.shared_es_sdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(shared_s_bounds, network=network))
     model.shared_es_pdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(shared_s_bounds, network=network))
     model.shared_es_qdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(shared_q_bounds, network=network))
-    model.shared_es_pnet = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
-    model.shared_es_qnet = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
-    if params.shared_ess_model == ESS_MODEL_FIRST_ORDER:
-        model.shared_es_snet = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+    model.shared_es_pnet = pe.Expression(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pnet_def)
+    model.shared_es_qnet = pe.Expression(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_qnet_def)
+    model.shared_es_snet = pe.Expression(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_snet_def)
+    model.shared_es_soc = pe.Expression(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_balance_rule, network=network, params=params))
     if params.slacks.shared_ess.complementarity:
         model.slack_shared_es_comp = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     if params.slacks.shared_ess.day_balance:
@@ -427,14 +426,9 @@ def _build_model(network, params):
     model.shared_energy_storage_sch_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_sch_def, params=params))
     model.shared_energy_storage_sdch_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_sdch_def, params=params))
     model.shared_energy_storage_ch_dch_exclusion = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_comp_rule, params=params))
-    model.shared_energy_storage_balance = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_balance_rule, network=network, params=params))
     model.shared_energy_storage_day_balance = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, rule=partial(sess_soc_final_rule, network=network, params=params))
     model.shared_energy_storage_soc_limit_lower = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_soc_lower_limit)
     model.shared_energy_storage_soc_limit_upper = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_soc_upper_limit)
-    model.shared_energy_storage_pnet_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pnet_rule)
-    model.shared_energy_storage_qnet_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_qnet_rule)
-    if params.ess_model == ESS_MODEL_FIRST_ORDER:
-        model.energy_storage_snet_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_snet_rule))
 
     # - Node Balance constraints
     model.node_balance_p = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(node_balance_p_rule, network=network, params=params))

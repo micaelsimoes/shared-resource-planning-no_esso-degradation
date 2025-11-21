@@ -600,13 +600,13 @@ def sess_phi_dch_limits_upper(m, e, s_m, s_o, p, network):
 def sess_sch_limit(m, e, s_m, s_o, p):
     s_max = m.shared_es_s_rated[e]
     sch = m.shared_es_sch[e, s_m, s_o, p]
-    return sch <= s_max
+    return sch <= s_max + EQUALITY_TOLERANCE
 
 
 def sess_sdch_limit(m, e, s_m, s_o, p):
     s_max = m.shared_es_s_rated[e]
     sdch = m.shared_es_sdch[e, s_m, s_o, p]
-    return sdch <= s_max
+    return sdch <= s_max + EQUALITY_TOLERANCE
 
 
 def sess_sch_def(m, e, s_m, s_o, p, params):
@@ -620,25 +620,25 @@ def sess_sdch_def(m, e, s_m, s_o, p, params):
 def sess_pch_limit(m, e, s_m, s_o, p):
     s_max = m.shared_es_s_rated[e]
     pch = m.shared_es_pch[e, s_m, s_o, p]
-    return pch <= s_max
+    return pch <= s_max + EQUALITY_TOLERANCE
 
 
 def sess_qch_limit(m, e, s_m, s_o, p):
     s_max = m.shared_es_s_rated[e]
     qch = m.shared_es_qch[e, s_m, s_o, p]
-    return qch <= s_max
+    return qch <= s_max + EQUALITY_TOLERANCE
 
 
 def sess_pdch_limit(m, e, s_m, s_o, p):
     s_max = m.shared_es_s_rated[e]
     pdch = m.shared_es_pdch[e, s_m, s_o, p]
-    return pdch <= s_max
+    return pdch <= s_max + EQUALITY_TOLERANCE
 
 
 def sess_qdch_limit(m, e, s_m, s_o, p):
     s_max = m.shared_es_s_rated[e]
     qdch = m.shared_es_qdch[e, s_m, s_o, p]
-    return qdch <= s_max
+    return qdch <= s_max + EQUALITY_TOLERANCE
 
 
 def sess_soc_lower_limit(m, e, s_m, s_o, p):
@@ -669,9 +669,9 @@ def sess_balance_rule(m, e, s_m, s_o, p, network, params):
     eff_ch, eff_dch = ses.eff_ch, ses.eff_dch
     soc_prev = m.shared_es_e_rated[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC if p == 0 else m.shared_es_soc[e, s_m, s_o, p - 1]
     if params.shared_ess_model == ESS_MODEL_FIRST_ORDER:
-        return m.shared_es_soc[e, s_m, s_o, p] == soc_prev + m.shared_es_snet[e, s_m, s_o, p]
+        return soc_prev + m.shared_es_snet[e, s_m, s_o, p]
     else:
-        return m.shared_es_soc[e, s_m, s_o, p] == (soc_prev + m.shared_es_sch[e, s_m, s_o, p] * eff_ch - m.shared_es_sdch[e, s_m, s_o, p] / eff_dch)
+        return soc_prev + m.shared_es_sch[e, s_m, s_o, p] * eff_ch - m.shared_es_sdch[e, s_m, s_o, p] * (1.00 / eff_dch)
 
 
 def sess_soc_final_rule(m, e, s_m, s_o, network, params):
@@ -680,19 +680,19 @@ def sess_soc_final_rule(m, e, s_m, s_o, network, params):
     if params.slacks.shared_ess.day_balance:
         return m.shared_es_soc[e, s_m, s_o, final_p] == final_soc + m.slack_shared_es_soc_final_up[e, s_m, s_o] - m.slack_shared_es_soc_final_down[e, s_m, s_o]
     else:
-        return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_soc[e, s_m, s_o, final_p] - final_soc, EQUALITY_TOLERANCE)
+        return pe.inequality(-SMALL_TOLERANCE, m.shared_es_soc[e, s_m, s_o, final_p] - final_soc, SMALL_TOLERANCE)
 
 
-def sess_pnet_rule(m, e, s_m, s_o, p):
-    return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_pnet[e, s_m, s_o, p] - (m.shared_es_pch[e, s_m, s_o, p] - m.shared_es_pdch[e, s_m, s_o, p]), EQUALITY_TOLERANCE)
+def sess_pnet_def(m, e, s_m, s_o, p):
+    return m.shared_es_pch[e, s_m, s_o, p] - m.shared_es_pdch[e, s_m, s_o, p]
 
 
-def sess_qnet_rule(m, e, s_m, s_o, p):
-    return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_qnet[e, s_m, s_o, p] - (m.shared_es_qch[e, s_m, s_o, p] - m.shared_es_qdch[e, s_m, s_o, p]), EQUALITY_TOLERANCE)
+def sess_qnet_def(m, e, s_m, s_o, p):
+    return m.shared_es_qch[e, s_m, s_o, p] - m.shared_es_qdch[e, s_m, s_o, p]
 
 
-def sess_snet_rule(m, e, s_m, s_o, p):
-    return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_snet[e, s_m, s_o, p] - (m.shared_es_sch[e, s_m, s_o, p] - m.shared_es_sdch[e, s_m, s_o, p]), EQUALITY_TOLERANCE)
+def sess_snet_def(m, e, s_m, s_o, p):
+    return m.shared_es_sch[e, s_m, s_o, p] - m.shared_es_sdch[e, s_m, s_o, p]
 
 
 def sess_s_sensitivities(m, e):
