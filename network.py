@@ -354,10 +354,12 @@ def _build_model(network, params):
         model.shared_es_sch_comp = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 1.00))
         model.shared_es_sdch_comp = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 1.00))
 
-    model.pg_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_p_per_node_rule, network=network))
-    model.qg_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_q_per_node_rule, network=network))
-    model.pc_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_p_per_node_rule, network=network, params=params))
-    model.qc_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_q_per_node_rule, network=network, params=params))
+    # - Expressions
+    model.pg_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_p_per_node_def, network=network))
+    model.qg_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_q_per_node_def, network=network))
+    model.pc_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_p_per_node_def, network=network, params=params))
+    model.qc_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_q_per_node_def, network=network, params=params))
+    model.flow_ij_sqr = pe.Expression(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_flow_def, network=network, params=params))
 
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
