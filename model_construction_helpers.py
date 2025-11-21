@@ -262,11 +262,6 @@ def transformer_ratio_initialize(m, i, s_m, s_o, p, network, params):
 
 
 # Energy Storage
-def soc_bounds(m, e, s_m, s_o, p, network):
-    ess = network.energy_storages[e]
-    return (ess.e_min, ess.e_max)
-
-
 def p_bounds(m, e, s_m, s_o, p, network):
     ess = network.energy_storages[e]
     return (0.0, ess.s)
@@ -463,16 +458,29 @@ def flex_energy_balance_s_rule(m, c, s_m, s_o, network, params):
 
 
 # Energy Storage
-def ess_sch_def(m, e, s_m, s_o, p, params):
+def ess_sch_def(m, e, s_m, s_o, p):
     return pe.inequality(-EQUALITY_TOLERANCE, m.es_sch[e, s_m, s_o, p]**2 - (m.es_pch[e, s_m, s_o, p]**2 + m.es_qch[e, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
 
 
-def ess_sdch_def(m, e, s_m, s_o, p, params):
+def ess_sdch_def(m, e, s_m, s_o, p):
     return pe.inequality(-EQUALITY_TOLERANCE, m.es_sdch[e, s_m, s_o, p]**2 - (m.es_pdch[e, s_m, s_o, p]**2 + m.es_qdch[e, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
 
 
-def ess_snet_def(m, e, s_m, s_o, p, params):
-    return pe.inequality(-EQUALITY_TOLERANCE, m.es_snet[e, s_m, s_o, p] - (m.es_sch[e, s_m, s_o, p] - m.es_sdch[e, s_m, s_o, p]), EQUALITY_TOLERANCE)
+def ess_soc_limits_def(m, e, s_m, s_o, p, network):
+    ess = network.energy_storages[e]
+    return pe.inequality(ess.e_min - EQUALITY_TOLERANCE, m.es_soc[e, s_m, s_o, p], ess.e_max + EQUALITY_TOLERANCE)
+
+
+def ess_pnet_def(m, e, s_m, s_o, p):
+    return m.es_pch[e, s_m, s_o, p] - m.es_pdch[e, s_m, s_o, p]
+
+
+def ess_qnet_def(m, e, s_m, s_o, p):
+    return m.es_qch[e, s_m, s_o, p] - m.es_qdch[e, s_m, s_o, p]
+
+
+def ess_snet_def(m, e, s_m, s_o, p):
+    return m.es_sch[e, s_m, s_o, p] - m.es_sdch[e, s_m, s_o, p]
 
 
 def ess_phi_ch_limits_lower(m, e, s_m, s_o, p, network):
@@ -517,9 +525,9 @@ def ess_balance_rule(m, e, s_m, s_o, p, network, params):
     eff_ch, eff_dch = es.eff_ch, es.eff_dch
     soc_prev = es.e_init if p == 0 else m.es_soc[e, s_m, s_o, p - 1]
     if params.ess_model == ESS_MODEL_FIRST_ORDER:
-        return m.es_soc[e, s_m, s_o, p] == (soc_prev + m.es_snet[e, s_m, s_o, p])
+        return soc_prev + m.es_snet[e, s_m, s_o, p]
     else:
-        return pe.inequality(-EQUALITY_TOLERANCE, m.es_soc[e, s_m, s_o, p] - (soc_prev + m.es_sch[e, s_m, s_o, p] * eff_ch - m.es_sdch[e, s_m, s_o, p] / eff_dch), EQUALITY_TOLERANCE)
+        return soc_prev + m.es_sch[e, s_m, s_o, p] * eff_ch - m.es_sdch[e, s_m, s_o, p] / eff_dch
 
 
 def ess_soc_final_rule(m, e, s_m, s_o, network, params):
