@@ -573,17 +573,11 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
                             tso_model[year][day].flex_q_down[adn_load_idx, s_m, s_o, p].setub(interface_transf_rating)
 
             # Add expected interface and shared ESS values, and their definition
-            tso_model[year][day].expected_interface_vmag = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00)
-            tso_model[year][day].expected_interface_pf_p = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
-            tso_model[year][day].expected_interface_pf_q = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
-            tso_model[year][day].expected_shared_ess_p = pe.Var(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
-            tso_model[year][day].expected_shared_ess_q = pe.Var(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
-
-            tso_model[year][day].interface_expected_values_vmag = pe.Constraint(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_vmag_rule, network=transmission_network.network[year][day]))
-            tso_model[year][day].interface_expected_values_pf_p = pe.Constraint(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_pf_p_rule, network=transmission_network.network[year][day]))
-            tso_model[year][day].interface_expected_values_pf_q = pe.Constraint(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_pf_q_rule, network=transmission_network.network[year][day]))
-            tso_model[year][day].interface_expected_values_sess_p = pe.Constraint(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, rule=partial(tn_interface_expected_sess_p_rule, network=transmission_network.network[year][day]))
-            tso_model[year][day].interface_expected_values_sess_q = pe.Constraint(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, rule=partial(tn_interface_expected_sess_q_rule, network=transmission_network.network[year][day]))
+            tso_model[year][day].expected_interface_vmag = pe.Expression(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_vmag_rule, network=transmission_network.network[year][day]))
+            tso_model[year][day].expected_interface_pf_p = pe.Expression(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_pf_p_rule, network=transmission_network.network[year][day]))
+            tso_model[year][day].expected_interface_pf_q = pe.Expression(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_pf_q_rule, network=transmission_network.network[year][day]))
+            tso_model[year][day].expected_shared_ess_p = pe.Expression(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, rule=partial(tn_interface_expected_sess_p_rule, network=transmission_network.network[year][day]))
+            tso_model[year][day].expected_shared_ess_q = pe.Expression(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, rule=partial(tn_interface_expected_sess_q_rule, network=transmission_network.network[year][day]))
 
             # Regularization -- Added to OF to minimize deviations from scenarios to expected values
             obj = copy(tso_model[year][day].objective.expr)
@@ -662,17 +656,11 @@ def create_distribution_networks_models_sequential(distribution_networks, consen
                 v_min, v_max = distribution_network.network[year][day].get_node_voltage_limits(ref_node_id)
 
                 # Add interface expected variables, and definition
-                dso_model[year][day].expected_interface_vmag = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00, bounds=(v_min, v_max))
-                dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
-                dso_model[year][day].expected_interface_pf_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
-                dso_model[year][day].expected_shared_ess_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
-                dso_model[year][day].expected_shared_ess_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
-
-                dso_model[year][day].interface_expected_values_vmag = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_vmag_rule, network=distribution_network.network[year][day]))
-                dso_model[year][day].interface_expected_values_pf_p = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_p_rule, network=distribution_network.network[year][day]))
-                dso_model[year][day].interface_expected_values_pf_q = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_q_rule, network=distribution_network.network[year][day]))
-                dso_model[year][day].interface_expected_values_sess_p = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_p_rule, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx))
-                dso_model[year][day].interface_expected_values_sess_q = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_q_rule, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx))
+                dso_model[year][day].expected_interface_vmag = pe.Expression(dso_model[year][day].periods, rule=partial(dn_interface_expected_vmag_rule, network=distribution_network.network[year][day]))
+                dso_model[year][day].expected_interface_pf_p = pe.Expression(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_p_rule, network=distribution_network.network[year][day]))
+                dso_model[year][day].expected_interface_pf_q = pe.Expression(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_q_rule, network=distribution_network.network[year][day]))
+                dso_model[year][day].expected_shared_ess_p = pe.Expression(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_p_rule, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx))
+                dso_model[year][day].expected_shared_ess_q = pe.Expression(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_q_rule, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx))
 
         # Regularization -- Added to OF to minimize deviations from scenarios to expected values
         for year in distribution_network.years:
@@ -1313,25 +1301,6 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                                 dso_model[year][day].slack_e_down[ref_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                                 dso_model[year][day].slack_f_up[ref_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                                 dso_model[year][day].slack_f_down[ref_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-
-                # Update expected interface values limits
-                for p in dso_model[year][day].periods:
-                    dso_model[year][day].expected_interface_vmag[p].fixed = False
-                    dso_model[year][day].expected_interface_vmag[p].setub(None)
-                    dso_model[year][day].expected_interface_vmag[p].setlb(None)
-                    dso_model[year][day].expected_interface_pf_p[p].fixed = False
-                    dso_model[year][day].expected_interface_pf_p[p].setub(None)
-                    dso_model[year][day].expected_interface_pf_p[p].setlb(None)
-                    dso_model[year][day].expected_interface_pf_q[p].fixed = False
-                    dso_model[year][day].expected_interface_pf_q[p].setub(None)
-                    dso_model[year][day].expected_interface_pf_q[p].setlb(None)
-                    dso_model[year][day].expected_shared_ess_p[p].fixed = False
-                    dso_model[year][day].expected_shared_ess_p[p].fixed = False
-                    dso_model[year][day].expected_shared_ess_p[p].setub(None)
-                    dso_model[year][day].expected_shared_ess_p[p].setlb(None)
-                    dso_model[year][day].expected_shared_ess_q[p].fixed = False
-                    dso_model[year][day].expected_shared_ess_q[p].setub(None)
-                    dso_model[year][day].expected_shared_ess_q[p].setlb(None)
 
                 # Update costs (penalties) for the coordination procedure
                 dso_model[year][day].penalty_ess_usage.set_value(0.00)

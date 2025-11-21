@@ -1186,7 +1186,7 @@ def dn_interface_expected_vmag_rule(m, p, network):
         for s_m in m.scenarios_market
         for s_o in m.scenarios_operation
     )
-    return pe.inequality(-EQUALITY_TOLERANCE, m.expected_interface_vmag[p] - expected_vmag, EQUALITY_TOLERANCE)
+    return expected_vmag
 
 
 def dn_interface_expected_pf_p_rule(m, p, network):
@@ -1197,7 +1197,7 @@ def dn_interface_expected_pf_p_rule(m, p, network):
         for s_m in m.scenarios_market
         for s_o in m.scenarios_operation
     )
-    return pe.inequality(-EQUALITY_TOLERANCE, m.expected_interface_pf_p[p] - expected_pf_p, EQUALITY_TOLERANCE)
+    return expected_pf_p
 
 
 def dn_interface_expected_pf_q_rule(m, p, network):
@@ -1208,7 +1208,7 @@ def dn_interface_expected_pf_q_rule(m, p, network):
         for s_m in m.scenarios_market
         for s_o in m.scenarios_operation
     )
-    return pe.inequality(-EQUALITY_TOLERANCE, m.expected_interface_pf_q[p] - expected_pf_q, EQUALITY_TOLERANCE)
+    return expected_pf_q
 
 
 def dn_interface_expected_sess_p_rule(m, p, network, shared_ess_idx):
@@ -1219,7 +1219,7 @@ def dn_interface_expected_sess_p_rule(m, p, network, shared_ess_idx):
         for s_m in m.scenarios_market
         for s_o in m.scenarios_operation
     )
-    return pe.inequality(-EQUALITY_TOLERANCE, m.expected_shared_ess_p[p] - expected_ess_p, EQUALITY_TOLERANCE)
+    return expected_ess_p
 
 
 def dn_interface_expected_sess_q_rule(m, p, network, shared_ess_idx):
@@ -1230,7 +1230,7 @@ def dn_interface_expected_sess_q_rule(m, p, network, shared_ess_idx):
         for s_m in m.scenarios_market
         for s_o in m.scenarios_operation
     )
-    return pe.inequality(-EQUALITY_TOLERANCE, m.expected_shared_ess_q[p] - expected_ess_q, EQUALITY_TOLERANCE)
+    return expected_ess_q
 
 
 def tn_interface_expected_vmag_rule(m, dn, p, network):
@@ -1241,7 +1241,7 @@ def tn_interface_expected_vmag_rule(m, dn, p, network):
         for s_m in m.scenarios_market
         for s_o in m.scenarios_operation
     )
-    return pe.inequality(-EQUALITY_TOLERANCE, m.expected_interface_vmag[dn, p] - expected_vmag, EQUALITY_TOLERANCE)
+    return expected_vmag
 
 
 def tn_interface_expected_pf_p_rule(m, dn, p, network):
@@ -1252,7 +1252,7 @@ def tn_interface_expected_pf_p_rule(m, dn, p, network):
         for s_m in m.scenarios_market
         for s_o in m.scenarios_operation
     )
-    return pe.inequality(-EQUALITY_TOLERANCE, m.expected_interface_pf_p[dn, p] - expected_pf_p, EQUALITY_TOLERANCE)
+    return expected_pf_p
 
 
 def tn_interface_expected_pf_q_rule(m, dn, p, network):
@@ -1263,7 +1263,7 @@ def tn_interface_expected_pf_q_rule(m, dn, p, network):
         for s_m in m.scenarios_market
         for s_o in m.scenarios_operation
     )
-    return pe.inequality(-EQUALITY_TOLERANCE, m.expected_interface_pf_q[dn, p] - expected_pf_q, EQUALITY_TOLERANCE)
+    return expected_pf_q
 
 
 def tn_interface_expected_sess_p_rule(m, e, p, network):
@@ -1274,7 +1274,7 @@ def tn_interface_expected_sess_p_rule(m, e, p, network):
         for s_m in m.scenarios_market
         for s_o in m.scenarios_operation
     )
-    return pe.inequality(-EQUALITY_TOLERANCE, m.expected_shared_ess_p[e, p] - expected_ess_p, EQUALITY_TOLERANCE)
+    return expected_ess_p
 
 
 def tn_interface_expected_sess_q_rule(m, e, p, network):
@@ -1285,4 +1285,4 @@ def tn_interface_expected_sess_q_rule(m, e, p, network):
         for s_m in m.scenarios_market
         for s_o in m.scenarios_operation
     )
-    return pe.inequality(-EQUALITY_TOLERANCE, m.expected_shared_ess_q[e, p] - expected_ess_q, EQUALITY_TOLERANCE)
+    return expected_ess_q
