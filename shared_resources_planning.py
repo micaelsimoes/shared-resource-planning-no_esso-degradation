@@ -546,9 +546,6 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
                         for p in tso_model[year][day].periods:
 
                             # Interface voltage, free vmag_adn, remove slacks
-                            tso_model[year][day].vmag_adn[dn, s_m, s_o, p].fixed = False
-                            tso_model[year][day].vmag_adn[dn, s_m, s_o, p].setub(v_max)
-                            tso_model[year][day].vmag_adn[dn, s_m, s_o, p].setlb(v_min)
                             if transmission_network.params.slacks.grid_operation.voltage:
                                 fix_or_set(tso_model[year][day].slack_e_up[adn_node_idx, s_m, s_o, p], 0.00)
                                 fix_or_set(tso_model[year][day].slack_e_down[adn_node_idx, s_m, s_o, p], 0.00)
