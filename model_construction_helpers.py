@@ -127,13 +127,6 @@ def flow_ij_sqr_bounds(m, b, s_m, s_o, p, network, params):
     return (0.0, rating_sqr)
 
 
-def init_flow_ij_sqr(m, b, s_m, s_o, p, network, params):
-    branch = network.branches[b]
-    if not branch.status:
-        return 0.0
-    return SMALL_TOLERANCE ** 2
-
-
 # Branch power flow, Fij slacks
 def slack_flow_bounds(m, b, s_m, s_o, p, network, params):
     branch = network.branches[b]
@@ -969,11 +962,11 @@ def node_balance_q_rule(model, i, s_m, s_o, p, network, params):
         return pe.inequality(-EQUALITY_TOLERANCE, Qg - (Qd + Qi), EQUALITY_TOLERANCE)
 
 
-def branch_flow_equation_rule(model, b, s_m, s_o, p, network, params):
+def branch_flow_def(model, b, s_m, s_o, p, network, params):
 
     branch = network.branches[b]
     if not branch.status:
-        return pe.Constraint.Skip
+        return pe.Expression.Skip
 
     rij = model.r[b, s_m, s_o, p] if branch.is_transformer else 1.0
 
@@ -985,9 +978,9 @@ def branch_flow_equation_rule(model, b, s_m, s_o, p, network, params):
     ej = model.e_actual[tnode_idx, s_m, s_o, p]
     fj = model.f_actual[tnode_idx, s_m, s_o, p]
 
-    flow_ij_sqr_expr = compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, params.branch_limit_type)
+    flow_ij_sqr = compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, params.branch_limit_type)
 
-    return model.flow_ij_sqr[b, s_m, s_o, p] == flow_ij_sqr_expr
+    return flow_ij_sqr
 
 
 def branch_flow_limit_rule(model, b, s_m, s_o, p, network, params):
@@ -996,22 +989,12 @@ def branch_flow_limit_rule(model, b, s_m, s_o, p, network, params):
     if not branch.status:
         return pe.Constraint.Skip
 
-    fnode_idx = network.get_node_idx(branch.fbus)
-    tnode_idx = network.get_node_idx(branch.tbus)
     rating = branch.rate / network.baseMVA or BRANCH_UNKNOWN_RATING
 
-    rij = model.r[b, s_m, s_o, p] if branch.is_transformer else 1.0
-    ei = model.e_actual[fnode_idx, s_m, s_o, p]
-    fi = model.f_actual[fnode_idx, s_m, s_o, p]
-    ej = model.e_actual[tnode_idx, s_m, s_o, p]
-    fj = model.f_actual[tnode_idx, s_m, s_o, p]
-
-    flow_ij_sqr = compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, params.branch_limit_type)
-
     if params.slacks.grid_operation.branch_flow:
-        return flow_ij_sqr <= rating ** 2 + model.slack_flow_ij_sqr[b, s_m, s_o, p]
+        return model.flow_ij_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_flow_ij_sqr[b, s_m, s_o, p]
     else:
-        return flow_ij_sqr <= rating ** 2
+        return model.flow_ij_sqr[b, s_m, s_o, p] <= rating ** 2
 
 
 def setup_cost_parameters(model, params):

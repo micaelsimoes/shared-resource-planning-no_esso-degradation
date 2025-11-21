@@ -277,8 +277,6 @@ def _build_model(network, params):
         model.sg_init = pe.Param(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=partial(sg_init, network=network, params=params))
         model.sg_abs = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(sg_bounds, network=network, params=params), initialize=0.0)
         model.sg_curt = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(sg_bounds, network=network, params=params), initialize=0.0)
-    model.pg_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_p_per_node_def, network=network))
-    model.qg_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_q_per_node_def, network=network))
 
     # - Branch power flows slacks (squared) -- used in branch limits
     if params.slacks.grid_operation.branch_flow:
@@ -306,8 +304,6 @@ def _build_model(network, params):
         model.pc_curt_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(pc_curt_up_bounds, network=network, params=params))
         model.qc_curt_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(qc_curt_down_bounds, network=network, params=params))
         model.qc_curt_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(qc_curt_up_bounds, network=network, params=params))
-    model.pc_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_p_per_node_def, network=network, params=params))      # Net load at node i
-    model.qc_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_q_per_node_def, network=network, params=params))
 
     # - Transformers
     model.r = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=partial(transformer_ratio_initialize, network=network, params=params), bounds=partial(transformer_ratio_bounds, network=network, params=params))
@@ -359,6 +355,11 @@ def _build_model(network, params):
         model.shared_es_sch_comp = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 1.00))
         model.shared_es_sdch_comp = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 1.00))
 
+    # Expressions
+    model.pg_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_p_per_node_def, network=network))
+    model.qg_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_q_per_node_def, network=network))
+    model.pc_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_p_per_node_def, network=network, params=params))      # Net load at node i
+    model.qc_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_q_per_node_def, network=network, params=params))
     if network.is_transmission: # Note: used coordinated operation
         model.vmag_adn = pe.Expression(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_vmag_transmission_def, network=network))
         model.pc_adn = pe.Expression(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_p_transmission_def, network=network, params=params))
@@ -367,6 +368,7 @@ def _build_model(network, params):
         model.vmag_adn = pe.Expression(model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_vmag_distribution_def, network=network))
         model.pg_adn = pe.Expression(model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_p_distribution_def, network=network))
         model.qg_adn = pe.Expression(model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_q_distribution_def, network=network))
+    model.flow_ij_sqr = pe.Expression(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_flow_def, network=network, params=params))
 
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
@@ -1143,12 +1145,7 @@ def _process_results(network, model, params, results=dict()):
                         processed_results['scenarios'][s_m][s_o]['branches']['ratio'][branch_id].append(r_ij)
 
                     # Branch flow (limits)
-                    rij = model.r[k, s_m, s_o, p] if branch.is_transformer else 1.0
-                    ei = model.e_actual[fnode_idx, s_m, s_o, p]
-                    fi = model.f_actual[fnode_idx, s_m, s_o, p]
-                    ej = model.e_actual[tnode_idx, s_m, s_o, p]
-                    fj = model.f_actual[tnode_idx, s_m, s_o, p]
-                    flow_ij = pe.value(compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, params.branch_limit_type)) ** 0.50
+                    flow_ij = pe.value(model.flow_ij_sqr[k, s_m, s_o, p]) ** 0.50
                     flow_ij_perc = flow_ij / rating
                     processed_results['scenarios'][s_m][s_o]['branches']['branch_flow']['flow_ij_perc'][branch_id].append(flow_ij_perc)
 
