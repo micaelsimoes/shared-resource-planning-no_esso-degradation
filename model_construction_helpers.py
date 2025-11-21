@@ -22,7 +22,7 @@ def e_bounds(m, i, s_m, s_o, p, network):
     if node.type == BUS_REF and not network.is_transmission:
         vg = network.generators[network.get_gen_idx(node.bus_i)].vg
         return (vg - SMALL_TOLERANCE, vg + SMALL_TOLERANCE)
-    return (-node.v_max, node.v_max)
+    return (-node.v_max - EQUALITY_TOLERANCE, node.v_max + EQUALITY_TOLERANCE)
 
 
 # Voltage variables, f
@@ -30,7 +30,7 @@ def f_bounds(m, i, s_m, s_o, p, network):
     node = network.nodes[i]
     if node.type == BUS_REF:
         return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
-    return (-node.v_max, node.v_max)
+    return (-node.v_max - EQUALITY_TOLERANCE, node.v_max + EQUALITY_TOLERANCE)
 
 
 def vmag_bounds(m, i, s_m, s_o, p, network, params):
@@ -40,14 +40,14 @@ def vmag_bounds(m, i, s_m, s_o, p, network, params):
     if params.slacks.grid_operation.voltage:
         v_min -= VMAG_VIOLATION_ALLOWED
         v_max += VMAG_VIOLATION_ALLOWED
-    return (v_min, v_max)
+    return (v_min - EQUALITY_TOLERANCE, v_max + EQUALITY_TOLERANCE)
 
 
 # Voltage variables, slack bounds
 def voltage_slack_bounds(m, i, s_m, s_o, p, network):
     node = network.nodes[i]
     if node.type == BUS_REF:
-        return (0.00, SMALL_TOLERANCE)
+        return (0.00, EQUALITY_TOLERANCE)
     return (0.00, VMAG_VIOLATION_ALLOWED)
 
 
@@ -59,34 +59,46 @@ def node_balance_slack_bounds(m, i, s_m, s_o, p, network):
 def pg_bounds(m, g, s_m, s_o, p, network):
     gen = network.generators[g]
     if gen.status[p]:
-        return (gen.pmin, gen.pmax)
+        return (gen.pmin - EQUALITY_TOLERANCE, gen.pmax + EQUALITY_TOLERANCE)
     else:
-        return (-SMALL_TOLERANCE, SMALL_TOLERANCE)
+        return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
 
 
 # Generation, Qg
 def qg_bounds(m, g, s_m, s_o, p, network):
     gen = network.generators[g]
     if gen.status[p]:
-        return (gen.qmin, gen.qmax)
+        return (gen.qmin - EQUALITY_TOLERANCE, gen.qmax + EQUALITY_TOLERANCE)
     else:
-        return (-SMALL_TOLERANCE, SMALL_TOLERANCE)
+        return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
 
 
 def pg_init(m, g, s_m, s_o, p, network):
-    lb, ub = pg_bounds(m, g, s_m, s_o, p, network=network)
-    if lb > 0:
-        return lb
+    if network.generators[g].status[p]:
+        if network.generators[g].is_curtaillable():
+            return network.generators[g].pg[s_o][p]
+        else:
+            lb, ub = pg_bounds(m, g, s_m, s_o, p, network=network)
+            if lb > 0:
+                return lb
+            else:
+                return max(0.0, lb)
     else:
-        return max(0.0, lb)
+        return 0.0
 
 
 def qg_init(m, g, s_m, s_o, p, network):
-    lb, ub = qg_bounds(m, g, s_m, s_o, p, network=network)
-    if lb > 0:
-        return lb
+    if network.generators[g].status[p]:
+        if network.generators[g].is_curtaillable():
+            return 0.00
+        else:
+            lb, ub = qg_bounds(m, g, s_m, s_o, p, network=network)
+            if lb > 0:
+                return lb
+            else:
+                return max(0.0, lb)
     else:
-        return max(0.0, lb)
+        return 0.0
 
 
 # Generation, Sg
@@ -101,21 +113,18 @@ def sg_init(m, g, s_m, s_o, p, network, params):
     qg = gen.qg[s_o][p]
     sg = max(0.00, (pg ** 2 + qg ** 2) ** 0.5)
 
-    return abs(sg)
+    return sg
 
 
 def sg_bounds(m, g, s_m, s_o, p, network, params):
-
     gen = network.generators[g]
     if not gen.is_curtaillable() or not gen.status[p]:
-        return (0.0, SMALL_TOLERANCE)
-
-    # Estimated apparent power for bounds
-    pg = gen.pg[s_o][p]
-    qg = gen.qg[s_o][p]
-    sg = max(0.00, (pg ** 2 + qg ** 2) ** 0.5)
-
-    return (0.0, sg)
+        return (0.0, EQUALITY_TOLERANCE)
+    if gen.is_curtaillable():
+        smax = (gen.pg[s_m][p] ** 2 + gen.qg[s_m][p] ** 2) ** 0.5
+    else:
+        smax = (gen.pmax ** 2 + gen.qmax ** 2) ** 0.5
+    return (0.0, smax + EQUALITY_TOLERANCE)
 
 
 # Branch power flow, Fij
@@ -124,16 +133,23 @@ def flow_ij_sqr_bounds(m, b, s_m, s_o, p, network, params):
     if not branch.status:
         return (0.0, SMALL_TOLERANCE)
     rating_sqr = (branch.rate / network.baseMVA)**2
-    return (0.0, rating_sqr)
+    return (0.0, rating_sqr + EQUALITY_TOLERANCE)
+
+
+def init_flow_ij_sqr(m, b, s_m, s_o, p, network, params):
+    branch = network.branches[b]
+    if not branch.status:
+        return 0.0
+    return EQUALITY_TOLERANCE ** 2
 
 
 # Branch power flow, Fij slacks
 def slack_flow_bounds(m, b, s_m, s_o, p, network, params):
     branch = network.branches[b]
     if not branch.status:
-        return (0.0, SMALL_TOLERANCE)
+        return (0.0, EQUALITY_TOLERANCE)
     rating = (branch.rate / network.baseMVA)
-    return (0.0, (SIJ_VIOLATION_ALLOWED * rating) ** 2)
+    return (0.0, (SIJ_VIOLATION_ALLOWED * rating) ** 2 + EQUALITY_TOLERANCE)
 
 
 # Consumption, Pc
@@ -166,33 +182,33 @@ def qc_initialize(m, c, s_m, s_o, p, network):
 def pc_flex_up_bounds(m, c, s_m, s_o, p, network, params):
     load = network.loads[c]
     if not load.fl_reg:
-        return (0.0, SMALL_TOLERANCE)
+        return (0.0, EQUALITY_TOLERANCE)
     value = abs(load.flexibility.active_power.upward[s_o][p])
-    return (0.0, value)
+    return (0.0, value + EQUALITY_TOLERANCE)
 
 
 def pc_flex_down_bounds(m, c, s_m, s_o, p, network, params):
     load = network.loads[c]
     if not load.fl_reg:
-        return (0.0, SMALL_TOLERANCE)
+        return (0.0, EQUALITY_TOLERANCE)
     value = abs(load.flexibility.active_power.downward[s_o][p])
-    return (0.0, value)
+    return (0.0, value + EQUALITY_TOLERANCE)
 
 
 def qc_flex_up_bounds(m, c, s_m, s_o, p, network, params):
     load = network.loads[c]
     if not load.fl_reg:
-        return (0.0, SMALL_TOLERANCE)
+        return (0.0, EQUALITY_TOLERANCE)
     value = abs(load.flexibility.reactive_power.upward[s_o][p])
-    return (0.0, value)
+    return (0.0, value + EQUALITY_TOLERANCE)
 
 
 def qc_flex_down_bounds(m, c, s_m, s_o, p, network, params):
     load = network.loads[c]
     if not load.fl_reg:
-        return (0.0, SMALL_TOLERANCE)
+        return (0.0, EQUALITY_TOLERANCE)
     value = abs(load.flexibility.reactive_power.downward[s_o][p])
-    return (0.0, value)
+    return (0.0, value + EQUALITY_TOLERANCE)
 
 
 # Consumption, curtailment
@@ -200,36 +216,36 @@ def pc_curt_down_bounds(m, c, s_m, s_o, p, network, params):
     load = network.loads[c]
     pd = load.pd[s_o][p]
     if pd >= 0.00:
-        return (0.0, abs(pd))
+        return (0.0, abs(pd) + EQUALITY_TOLERANCE)
     else:
-        return (0.0, SMALL_TOLERANCE)
+        return (0.0, EQUALITY_TOLERANCE)
 
 
 def pc_curt_up_bounds(m, c, s_m, s_o, p, network, params):
     load = network.loads[c]
     pd = load.pd[s_o][p]
     if pd >= 0.00:
-        return (0.0, SMALL_TOLERANCE)
+        return (0.0, EQUALITY_TOLERANCE)
     else:
-        return (0.0, abs(pd))
+        return (0.0, abs(pd) + EQUALITY_TOLERANCE)
 
 
 def qc_curt_down_bounds(m, c, s_m, s_o, p, network, params):
     load = network.loads[c]
     qd = load.qd[s_o][p]
     if qd >= 0.00:
-        return (0.0, abs(qd))
+        return (0.0, abs(qd) + EQUALITY_TOLERANCE)
     else:
-        return (0.0, SMALL_TOLERANCE)
+        return (0.0, EQUALITY_TOLERANCE)
 
 
 def qc_curt_up_bounds(m, c, s_m, s_o, p, network, params):
     load = network.loads[c]
     qd = load.qd[s_o][p]
     if qd >= 0.00:
-        return (0.0, SMALL_TOLERANCE)
+        return (0.0, EQUALITY_TOLERANCE)
     else:
-        return (0.0, abs(qd))
+        return (0.0, abs(qd) + EQUALITY_TOLERANCE)
 
 # Transformers
 def transformer_ratio_bounds(m, i, s_m, s_o, p, network, params):
@@ -257,58 +273,37 @@ def transformer_ratio_initialize(m, i, s_m, s_o, p, network, params):
 # Energy Storage
 def p_bounds(m, e, s_m, s_o, p, network):
     ess = network.energy_storages[e]
-    return (0.0, ess.s)
+    return (0.0, ess.s + EQUALITY_TOLERANCE)
 
 
 def snet_bounds(m, e, s_m, s_o, p, network):
     ess = network.energy_storages[e]
-    return (-ess.s, ess.s)
+    return (-ess.s - EQUALITY_TOLERANCE, ess.s + EQUALITY_TOLERANCE)
 
 
 def q_bounds(m, e, s_m, s_o, p, network):
     ess = network.energy_storages[e]
-    return (-ess.s, ess.s)
+    return (-ess.s - EQUALITY_TOLERANCE, ess.s + EQUALITY_TOLERANCE)
 
 
 def s_bounds(m, e, s_m, s_o, p, network):
     ess = network.energy_storages[e]
-    return (0.0, ess.s)
+    return (0.0, ess.s + EQUALITY_TOLERANCE)
 
 
 def slack_es_comp_bounds(m, e, s_m, s_o, p, network):
     ess = network.energy_storages[e]
-    return (0.0, ess.s * 0.05)
+    return (0.0, ess.s * 0.05 + EQUALITY_TOLERANCE)
 
 
 def slack_es_balance_bounds(m, e, s_m, s_o, network):
     ess = network.energy_storages[e]
-    return (0.00, ess.e * 0.05)
+    return (0.00, ess.e * 0.05 + EQUALITY_TOLERANCE)
 
 
 def soc_initialize(m, e, s_m, s_o, p, network):
     ess = network.energy_storages[e]
     return ess.e_init
-
-
-# Shared Energy Storage
-def shared_soc_bounds(m, e, s_m, s_o, p, network):
-    sess = network.shared_energy_storages[e]
-    return (0.0, sess.e)
-
-
-def shared_q_bounds(m, e, s_m, s_o, p, network):
-    sess = network.shared_energy_storages[e]
-    return (-sess.s, sess.s)
-
-
-def shared_s_bounds(m, e, s_m, s_o, p, network):
-    sess = network.shared_energy_storages[e]
-    return (0.0, sess.s)
-
-
-def shared_soc_init(m, e, s_m, s_o, p, network):
-    sess = network.shared_energy_storages[e]
-    return sess.e * ENERGY_STORAGE_RELATIVE_INIT_SOC
 
 
 # Voltage constraints, e
@@ -350,7 +345,7 @@ def sg_abs_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable() or not generator.status[p]:
         return pe.Constraint.Skip
-    return pe.inequality(-EQUALITY_TOLERANCE, m.sg[g, s_m, s_o, p] ** 2 - (m.pg[g, s_m, s_o, p] ** 2 + m.qg[g, s_m, s_o, p] ** 2), EQUALITY_TOLERANCE)
+    return pe.inequality(-EQUALITY_TOLERANCE, (m.pg[g, s_m, s_o, p] ** 2 + m.qg[g, s_m, s_o, p] ** 2) - m.sg[g, s_m, s_o, p] ** 2, EQUALITY_TOLERANCE)
 
 
 def sg_def_rule(m, g, s_m, s_o, p, network, params):
