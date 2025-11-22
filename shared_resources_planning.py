@@ -537,7 +537,6 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
                 adn_node_idx = transmission_network.network[year][day].get_node_idx(adn_node_id)
                 adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(adn_node_id)
-                v_min, v_max = transmission_network.network[year][day].get_node_voltage_limits(adn_node_id)
                 distribution_network = distribution_networks[adn_node_id]
                 interface_transf_rating = distribution_network.network[year][day].get_interface_branch_rating() / s_base
 
@@ -624,7 +623,6 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
 
 
 def create_distribution_networks_models(distribution_networks, consensus_vars, candidate_solution, parallel_execution=False):
-
     if parallel_execution:
         return create_distribution_networks_models_parallel(distribution_networks, consensus_vars, candidate_solution)
     else:
@@ -647,13 +645,12 @@ def create_distribution_networks_models_sequential(distribution_networks, consen
         dso_model = distribution_network.build_model()
         distribution_network.update_model_with_candidate_solution(dso_model, candidate_solution)
 
-        # Update model with expected interface values
         for year in distribution_network.years:
             for day in distribution_network.days:
 
+                s_base = distribution_network.network[year][day].baseMVA
                 ref_node_id = distribution_network.network[year][day].get_reference_node_id()
                 shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
-                v_min, v_max = distribution_network.network[year][day].get_node_voltage_limits(ref_node_id)
 
                 # Add interface expected variables, and definition
                 dso_model[year][day].expected_interface_vmag = pe.Expression(dso_model[year][day].periods, rule=partial(dn_interface_expected_vmag_rule, network=distribution_network.network[year][day]))
@@ -662,14 +659,7 @@ def create_distribution_networks_models_sequential(distribution_networks, consen
                 dso_model[year][day].expected_shared_ess_p = pe.Expression(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_p_rule, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx))
                 dso_model[year][day].expected_shared_ess_q = pe.Expression(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_q_rule, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx))
 
-        # Regularization -- Added to OF to minimize deviations from scenarios to expected values
-        for year in distribution_network.years:
-            for day in distribution_network.days:
-
-                s_base = distribution_network.network[year][day].baseMVA
-                ref_node_id = distribution_network.network[year][day].get_reference_node_id()
-                shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
-
+                # Regularization -- Added to OF to minimize deviations from scenarios to expected values
                 obj = copy(dso_model[year][day].objective.expr)
                 dso_model[year][day].penalty_regularization = pe.Param(initialize=PENALTY_REGULARIZATION)
                 for s_m in dso_model[year][day].scenarios_market:
@@ -1314,26 +1304,26 @@ def update_distribution_models_to_admm(planning_problem, models, params):
 
                 # Add ADMM variables
                 dso_model[year][day].rho_v = pe.Param(mutable=True, domain=pe.NonNegativeReals, initialize=params.rho['v'][distribution_network.network[year][day].name])
-                dso_model[year][day].vmag_req = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals)       # Voltage magnitude - requested by TSO
-                dso_model[year][day].dual_vmag_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - voltage magnitude
+                dso_model[year][day].vmag_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.NonNegativeReals)       # Voltage magnitude - requested by TSO
+                dso_model[year][day].dual_vmag_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)             # Dual variable - voltage magnitude
 
                 dso_model[year][day].rho_pf = pe.Param(mutable=True, domain=pe.NonNegativeReals, initialize=params.rho['pf'][distribution_network.network[year][day].name])
-                dso_model[year][day].p_pf_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)                   # Active power - requested by TSO
-                dso_model[year][day].q_pf_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)                   # Reactive power - requested by TSO
-                dso_model[year][day].dual_pf_p_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)              # Dual variable - active power
-                dso_model[year][day].dual_pf_q_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)              # Dual variable - reactive power
+                dso_model[year][day].p_pf_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)                   # Active power - requested by TSO
+                dso_model[year][day].q_pf_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)                   # Reactive power - requested by TSO
+                dso_model[year][day].dual_pf_p_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)              # Dual variable - active power
+                dso_model[year][day].dual_pf_q_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)              # Dual variable - reactive power
 
                 dso_model[year][day].rho_ess = pe.Param(mutable=True, domain=pe.NonNegativeReals, initialize=params.rho['ess'][distribution_network.network[year][day].name])
-                dso_model[year][day].p_ess_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)                  # Shared ESS - active power requested (TSO)
-                dso_model[year][day].q_ess_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)                  # Shared ESS - reactive power requested (TSO)
-                dso_model[year][day].dual_ess_p_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - Shared ESS active power
-                dso_model[year][day].dual_ess_q_req = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Dual variable - Shared ESS reactive power
+                dso_model[year][day].p_ess_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)                  # Shared ESS - active power requested (TSO)
+                dso_model[year][day].q_ess_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)                  # Shared ESS - reactive power requested (TSO)
+                dso_model[year][day].dual_ess_p_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)             # Dual variable - Shared ESS active power
+                dso_model[year][day].dual_ess_q_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)             # Dual variable - Shared ESS reactive power
                 if params.previous_iter['ess']['dso']:
                     dso_model[year][day].rho_ess_prev = pe.Param(mutable=True, domain=pe.NonNegativeReals, initialize=params.rho_previous_iter['ess'][distribution_network.network[year][day].name])
-                    dso_model[year][day].p_ess_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Shared ESS - previous iteration active power
-                    dso_model[year][day].q_ess_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)             # Shared ESS - previous iteration reactive power
-                    dso_model[year][day].dual_ess_p_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)        # Dual variable - Shared ESS previous iteration active power
-                    dso_model[year][day].dual_ess_q_prev = pe.Var(dso_model[year][day].periods, domain=pe.Reals)        # Dual variable - Shared ESS previous iteration reactive power
+                    dso_model[year][day].p_ess_prev = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)             # Shared ESS - previous iteration active power
+                    dso_model[year][day].q_ess_prev = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)             # Shared ESS - previous iteration reactive power
+                    dso_model[year][day].dual_ess_p_prev = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)        # Dual variable - Shared ESS previous iteration active power
+                    dso_model[year][day].dual_ess_q_prev = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)        # Dual variable - Shared ESS previous iteration reactive power
 
                 # Objective function - augmented Lagrangian
                 init_of_value = 1.00
@@ -1556,24 +1546,24 @@ def update_distribution_coordination_models_and_solve_sequential(distribution_ne
 
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
-                    fix_or_set(model[year][day].dual_vmag_req[p], dual_vmag['current'][node_id][year][day][p] / v_base)
-                    fix_or_set(model[year][day].vmag_req[p], vmag_req['tso']['current'][node_id][year][day][p] / v_base)
-                    fix_or_set(model[year][day].dual_pf_p_req[p], dual_pf['current'][node_id][year][day]['p'][p] / s_base)
-                    fix_or_set(model[year][day].dual_pf_q_req[p], dual_pf['current'][node_id][year][day]['q'][p] / s_base)
-                    fix_or_set(model[year][day].p_pf_req[p], pf_req['tso']['current'][node_id][year][day]['p'][p] / s_base)
-                    fix_or_set(model[year][day].q_pf_req[p], pf_req['tso']['current'][node_id][year][day]['q'][p] / s_base)
+                    model[year][day].dual_vmag_req[p].set_value(dual_vmag['current'][node_id][year][day][p] / v_base)
+                    model[year][day].vmag_req[p].set_value(vmag_req['tso']['current'][node_id][year][day][p] / v_base)
+                    model[year][day].dual_pf_p_req[p].set_value(dual_pf['current'][node_id][year][day]['p'][p] / s_base)
+                    model[year][day].dual_pf_q_req[p].set_value(dual_pf['current'][node_id][year][day]['q'][p] / s_base)
+                    model[year][day].p_pf_req[p].set_value(pf_req['tso']['current'][node_id][year][day]['p'][p] / s_base)
+                    model[year][day].q_pf_req[p].set_value(pf_req['tso']['current'][node_id][year][day]['q'][p] / s_base)
 
                 # Update SHARED ENERGY STORAGE variables (if existent)
                 for p in model[year][day].periods:
-                    fix_or_set(model[year][day].dual_ess_p_req[p], dual_ess['current'][node_id][year][day]['p'][p] / s_base)
-                    fix_or_set(model[year][day].dual_ess_q_req[p], dual_ess['current'][node_id][year][day]['q'][p] / s_base)
-                    fix_or_set(model[year][day].p_ess_req[p], ess_req['esso']['current'][node_id][year][day]['p'][p] / s_base)
-                    fix_or_set(model[year][day].q_ess_req[p], ess_req['esso']['current'][node_id][year][day]['q'][p] / s_base)
+                    model[year][day].dual_ess_p_req[p].set_value(dual_ess['current'][node_id][year][day]['p'][p] / s_base)
+                    model[year][day].dual_ess_q_req[p].set_value(dual_ess['current'][node_id][year][day]['q'][p] / s_base)
+                    model[year][day].p_ess_req[p].set_value(ess_req['esso']['current'][node_id][year][day]['p'][p] / s_base)
+                    model[year][day].q_ess_req[p].set_value(ess_req['esso']['current'][node_id][year][day]['q'][p] / s_base)
                     if params.previous_iter['ess']['dso']:
-                        fix_or_set(model[year][day].dual_ess_p_prev[p], dual_ess['prev'][node_id][year][day]['p'][p] / s_base)
-                        fix_or_set(model[year][day].dual_ess_q_prev[p], dual_ess['prev'][node_id][year][day]['q'][p] / s_base)
-                        fix_or_set(model[year][day].p_ess_prev[p], ess_req['dso']['prev'][node_id][year][day]['p'][p] / s_base)
-                        fix_or_set(model[year][day].q_ess_prev[p], ess_req['dso']['prev'][node_id][year][day]['q'][p] / s_base)
+                        model[year][day].dual_ess_p_prev[p].set_value(dual_ess['prev'][node_id][year][day]['p'][p] / s_base)
+                        model[year][day].dual_ess_q_prev[p].set_value(dual_ess['prev'][node_id][year][day]['q'][p] / s_base)
+                        model[year][day].p_ess_prev[p].set_value(ess_req['dso']['prev'][node_id][year][day]['p'][p] / s_base)
+                        model[year][day].q_ess_prev[p].set_value(ess_req['dso']['prev'][node_id][year][day]['q'][p] / s_base)
 
         # Solve!
         res[node_id] = distribution_network.optimize(model, from_warm_start=from_warm_start)
