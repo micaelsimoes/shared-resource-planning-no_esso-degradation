@@ -447,11 +447,11 @@ def flex_energy_balance_s_rule(m, c, s_m, s_o, network, params):
 
 # Energy Storage
 def ess_sch_def(m, e, s_m, s_o, p):
-    return pe.inequality(-EQUALITY_TOLERANCE, m.es_sch[e, s_m, s_o, p]**2 - (m.es_pch[e, s_m, s_o, p]**2 + m.es_qch[e, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
+    return m.es_sch[e, s_m, s_o, p]**2 == (m.es_pch[e, s_m, s_o, p]**2 + m.es_qch[e, s_m, s_o, p]**2)
 
 
 def ess_sdch_def(m, e, s_m, s_o, p):
-    return pe.inequality(-EQUALITY_TOLERANCE, m.es_sdch[e, s_m, s_o, p]**2 - (m.es_pdch[e, s_m, s_o, p]**2 + m.es_qdch[e, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
+    return m.es_sdch[e, s_m, s_o, p]**2 == (m.es_pdch[e, s_m, s_o, p]**2 + m.es_qdch[e, s_m, s_o, p]**2)
 
 
 def ess_pnet_def(m, e, s_m, s_o, p):
@@ -598,11 +598,11 @@ def sess_sdch_limit(m, e, s_m, s_o, p):
 
 
 def sess_sch_def(m, e, s_m, s_o, p):
-    return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_sch[e, s_m, s_o, p]**2 - (m.shared_es_pch[e, s_m, s_o, p]**2 + m.shared_es_qch[e, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
+    return m.shared_es_sch[e, s_m, s_o, p]**2 == (m.shared_es_pch[e, s_m, s_o, p]**2 + m.shared_es_qch[e, s_m, s_o, p]**2)
 
 
 def sess_sdch_def(m, e, s_m, s_o, p):
-    return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_sdch[e, s_m, s_o, p]**2 - (m.shared_es_pdch[e, s_m, s_o, p]**2 + m.shared_es_qdch[e, s_m, s_o, p]**2), EQUALITY_TOLERANCE)
+    return m.shared_es_sdch[e, s_m, s_o, p]**2 == (m.shared_es_pdch[e, s_m, s_o, p]**2 + m.shared_es_qdch[e, s_m, s_o, p]**2)
 
 
 def sess_soc_lower_limit(m, e, s_m, s_o, p):
