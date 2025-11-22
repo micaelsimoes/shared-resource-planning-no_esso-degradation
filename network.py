@@ -261,8 +261,6 @@ def _build_model(network, params):
         model.slack_e_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
         model.slack_f_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
         model.slack_f_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
-    model.e_actual = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(e_actual_def, params=params))
-    model.f_actual = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(f_actual_def, params=params))
     if params.slacks.node_balance.active_power:
         model.slack_node_balance_p_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00, bounds=partial(node_balance_slack_bounds, network=network))
         model.slack_node_balance_p_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00, bounds=partial(node_balance_slack_bounds, network=network))
@@ -284,8 +282,8 @@ def _build_model(network, params):
 
     # - Loads
     if network.is_transmission: # Note: PC and Qc considered vars for transmission, due to coordination procedure (i.e., this can change)
-        model.pc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(pc_bounds, network=network))
-        model.qc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(qc_bounds, network=network))
+        model.pc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=partial(pc_initialize, network=network), bounds=partial(pc_bounds, network=network))
+        model.qc = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=partial(qc_initialize, network=network), bounds=partial(qc_bounds, network=network))
     else:
         model.pc = pe.Param(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, mutable=True, initialize=partial(pc_initialize, network=network))
         model.qc = pe.Param(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, mutable=True, initialize=partial(qc_initialize, network=network))
@@ -354,10 +352,14 @@ def _build_model(network, params):
         model.shared_es_sdch_comp = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 1.00))
 
     # Expressions
+    model.e_actual = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(e_actual_def, params=params))
+    model.f_actual = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(f_actual_def, params=params))
+
     model.pg_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_p_per_node_def, network=network))
     model.qg_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_q_per_node_def, network=network))
     model.pc_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_p_per_node_def, network=network, params=params))      # Net load at node i
     model.qc_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_q_per_node_def, network=network, params=params))
+
     if network.is_transmission: # Note: used coordinated operation
         model.vmag_adn = pe.Expression(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_vmag_transmission_def, network=network))
         model.pc_adn = pe.Expression(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_p_transmission_def, network=network, params=params))
