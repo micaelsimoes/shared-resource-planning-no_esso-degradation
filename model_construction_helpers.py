@@ -500,8 +500,8 @@ def ess_comp_rule(m, e, s_m, s_o, p, network, params):
         return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] <= m.slack_es_comp[e, s_m, s_o, p]
     else:
         if params.ess_model == ESS_MODEL_EXACT:
-            return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] <= SMALL_TOLERANCE
-        elif params.ess_model in [ESS_MODEL_LP_SIMPLIFIED, ESS_MODEL_LP_RELAXED, ESS_MODEL_LP_SIMPLIFIED_EXTENDED, ESS_MODEL_FIRST_ORDER]:
+            return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
+        elif params.ess_model in [ESS_MODEL_LP_SIMPLIFIED, ESS_MODEL_LP_RELAXED, ESS_MODEL_LP_SIMPLIFIED_EXTENDED, ESS_MODEL_FIRST_ORDER, ESS_MODEL_PENALIZED]:
             return pe.Constraint.Skip
         else:
             print('[ERROR] Invalid ESS model. Exiting...')
@@ -522,7 +522,7 @@ def ess_soc_final_rule(m, e, s_m, s_o, network, params):
     final_soc = network.energy_storages[e].e_init
     final_p = m.periods[-1]
     if params.slacks.ess.day_balance:
-        return m.es_soc[e, s_m, s_o, final_p] == final_soc + m.slack_es_soc_final_up[e, s_m, s_o] - m.slack_es_soc_final_up[e, s_m, s_o]
+        return m.es_soc[e, s_m, s_o, final_p] == final_soc + m.slack_es_soc_final_up[e, s_m, s_o] - m.slack_es_soc_final_down[e, s_m, s_o]
     else:
         return pe.inequality(-EQUALITY_TOLERANCE, m.es_soc[e, s_m, s_o, final_p] - final_soc, EQUALITY_TOLERANCE)
 
@@ -620,8 +620,8 @@ def sess_comp_rule(m, e, s_m, s_o, p, params):
         return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= m.slack_shared_es_comp[e, s_m, s_o, p]
     else:
         if params.shared_ess_model == ESS_MODEL_EXACT:
-            return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= SMALL_TOLERANCE
-        elif params.shared_ess_model in [ESS_MODEL_LP_SIMPLIFIED, ESS_MODEL_LP_RELAXED, ESS_MODEL_LP_SIMPLIFIED_EXTENDED, ESS_MODEL_FIRST_ORDER]:
+            return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
+        elif params.shared_ess_model in [ESS_MODEL_LP_SIMPLIFIED, ESS_MODEL_LP_RELAXED, ESS_MODEL_LP_SIMPLIFIED_EXTENDED, ESS_MODEL_FIRST_ORDER, ESS_MODEL_PENALIZED]:
             return pe.Constraint.Skip
         else:
             print('[ERROR] Invalid ESS model. Exiting...')
@@ -632,8 +632,8 @@ def sess_balance_rule(m, e, s_m, s_o, p, network, params):
     ses = network.shared_energy_storages[e]
     eff_ch, eff_dch = ses.eff_ch, ses.eff_dch
     soc_prev = m.shared_es_e_rated[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC if p == 0 else m.shared_es_soc[e, s_m, s_o, p - 1]
-    if params.shared_ess_model == ESS_MODEL_EXACT:
-        return soc_prev + (m.shared_es_sch[e, s_m, s_o, p] - m.shared_es_sdch[e, s_m, s_o, p])
+    if params.shared_ess_model == ESS_MODEL_FIRST_ORDER:
+        return soc_prev + m.shared_es_snet[e, s_m, s_o, p]
     else:
         return soc_prev + m.shared_es_sch[e, s_m, s_o, p] * eff_ch - m.shared_es_sdch[e, s_m, s_o, p] * (1.00 / eff_dch)
 
@@ -711,8 +711,8 @@ def interface_pf_p_transmission_def(m, dn, s_m, s_o, p, network, params):
     adn_node_id = network.active_distribution_network_nodes[dn]
     adn_load_idx = network.get_adn_load_idx(adn_node_id)
     if params.l_curt:
-        fix_or_set(m.pc_curt_down[adn_load_idx, s_m, s_o, p], SMALL_TOLERANCE)
-        fix_or_set(m.pc_curt_up[adn_load_idx, s_m, s_o, p], SMALL_TOLERANCE)
+        m.pc_curt_down[adn_load_idx, s_m, s_o, p].fix(EQUALITY_TOLERANCE)
+        m.pc_curt_up[adn_load_idx, s_m, s_o, p].fix(EQUALITY_TOLERANCE)
     pc_adn = m.pc[adn_load_idx, s_m, s_o, p]
     if params.fl_reg:
         pc_adn += m.flex_p_up[adn_load_idx, s_m, s_o, p] - m.flex_p_down[adn_load_idx, s_m, s_o, p]
@@ -723,8 +723,8 @@ def interface_pf_q_transmission_def(m, dn, s_m, s_o, p, network, params):
     adn_node_id = network.active_distribution_network_nodes[dn]
     adn_load_idx = network.get_adn_load_idx(adn_node_id)
     if params.l_curt:
-        fix_or_set(m.qc_curt_down[adn_load_idx, s_m, s_o, p], SMALL_TOLERANCE)
-        fix_or_set(m.qc_curt_up[adn_load_idx, s_m, s_o, p], SMALL_TOLERANCE)
+        m.qc_curt_down[adn_load_idx, s_m, s_o, p].fix(EQUALITY_TOLERANCE)
+        m.qc_curt_up[adn_load_idx, s_m, s_o, p].fix(EQUALITY_TOLERANCE)
     qc_adn = m.qc[adn_load_idx, s_m, s_o, p]
     if params.fl_reg:
         qc_adn += m.flex_q_up[adn_load_idx, s_m, s_o, p] - m.flex_q_down[adn_load_idx, s_m, s_o, p]
@@ -892,7 +892,7 @@ def node_balance_p_rule(model, i, s_m, s_o, p, network, params):
     if params.slacks.node_balance.active_power:
         return Pg == Pd + Pi + (model.slack_node_balance_p_up[i, s_m, s_o, p] - model.slack_node_balance_p_down[i, s_m, s_o, p])
     else:
-        return pe.inequality(-EQUALITY_TOLERANCE, Pg - (Pd + Pi), EQUALITY_TOLERANCE)
+        return Pg == Pd + Pi
 
 
 def node_balance_q_rule(model, i, s_m, s_o, p, network, params):
@@ -938,7 +938,7 @@ def node_balance_q_rule(model, i, s_m, s_o, p, network, params):
     if params.slacks.node_balance.reactive_power:
         return Qg == Qd + Qi + (model.slack_node_balance_q_up[i, s_m, s_o, p] - model.slack_node_balance_q_down[i, s_m, s_o, p])
     else:
-        return pe.inequality(-EQUALITY_TOLERANCE, Qg - (Qd + Qi), EQUALITY_TOLERANCE)
+        return Qg == Qd + Qi
 
 
 def branch_flow_def(model, b, s_m, s_o, p, network, params):
@@ -973,7 +973,7 @@ def branch_flow_limit_rule(model, b, s_m, s_o, p, network, params):
     if params.slacks.grid_operation.branch_flow:
         return model.flow_ij_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_flow_ij_sqr[b, s_m, s_o, p]
     else:
-        return model.flow_ij_sqr[b, s_m, s_o, p] <= rating ** 2
+        return model.flow_ij_sqr[b, s_m, s_o, p] <= rating ** 2 + EQUALITY_TOLERANCE
 
 
 def setup_cost_parameters(model, params):
