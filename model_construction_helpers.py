@@ -468,7 +468,7 @@ def ess_snet_def(m, e, s_m, s_o, p):
 
 def ess_soc_limits_rule(m, e, s_m, s_o, p, network):
     ess = network.energy_storages[e]
-    return pe.inequality(ess.e_min, m.es_soc[e, s_m, s_o, p], ess.e_max)
+    return pe.inequality(ess.e_min - EQUALITY_TOLERANCE, m.es_soc[e, s_m, s_o, p], ess.e_max + EQUALITY_TOLERANCE)
 
 
 def ess_phi_ch_limits_lower(m, e, s_m, s_o, p, network):
