@@ -1160,6 +1160,8 @@ def slack_penalties(model, network, s_m, s_o, params):
             for p in model.periods:
                 if params.slacks.ess.complementarity:
                     total += base * PENALTY_ESS_COMP * model.slack_es_comp[e, s_m, s_o, p]
+                if params.ess_model == ESS_MODEL_PENALIZED:
+                    total += base * PENALTY_ESS_COMP_OBJECTIVE * (model.es_sch[e, s_m, s_o, p] * model.es_sdch[e, s_m, s_o, p])
             if params.slacks.ess.day_balance:
                 total += base * PENALTY_ESS_BALANCE * (model.slack_es_soc_final_up[e, s_m, s_o] + model.slack_es_soc_final_down[e, s_m, s_o])
 
@@ -1167,6 +1169,8 @@ def slack_penalties(model, network, s_m, s_o, params):
         for p in model.periods:
             if params.slacks.shared_ess.complementarity:
                 total += base * PENALTY_SHARED_ESS_COMP * model.slack_shared_es_comp[e, s_m, s_o, p]
+            if params.shared_ess_model == ESS_MODEL_PENALIZED:
+                total += base * PENALTY_ESS_COMP_OBJECTIVE * (model.shared_es_sch[e, s_m, s_o, p] * model.shared_es_sdch[e, s_m, s_o, p])
         if params.slacks.shared_ess.day_balance:
             total += base * PENALTY_SHARED_ESS_BALANCE * (model.slack_shared_es_soc_final_up[e, s_m, s_o] + model.slack_shared_es_soc_final_down[e, s_m, s_o])
 
