@@ -1396,10 +1396,10 @@ def update_shared_energy_storage_model_to_admm(planning_problem, models, params)
                     models[node_id].es_qnet[y, d, p].fixed = False
 
         # Active and Reactive power requested by TSO and DSOs
-        models[node_id].p_req = pe.Var(models[node_id].years, models[node_id].days, models[node_id].periods, domain=pe.Reals)
-        models[node_id].q_req = pe.Var(models[node_id].years, models[node_id].days, models[node_id].periods, domain=pe.Reals)
-        models[node_id].dual_p_req = pe.Var(models[node_id].years, models[node_id].days, models[node_id].periods, domain=pe.Reals)
-        models[node_id].dual_q_req = pe.Var(models[node_id].years, models[node_id].days, models[node_id].periods, domain=pe.Reals)
+        models[node_id].p_req = pe.Param(models[node_id].years, models[node_id].days, models[node_id].periods, mutable=True, domain=pe.Reals)
+        models[node_id].q_req = pe.Param(models[node_id].years, models[node_id].days, models[node_id].periods, mutable=True, domain=pe.Reals)
+        models[node_id].dual_p_req = pe.Param(models[node_id].years, models[node_id].days, models[node_id].periods, mutable=True, domain=pe.Reals)
+        models[node_id].dual_q_req = pe.Param(models[node_id].years, models[node_id].days, models[node_id].periods, mutable=True, domain=pe.Reals)
 
         # Objective function - augmented Lagrangian
         obj = copy(models[node_id].objective.expr)
@@ -1686,10 +1686,10 @@ def update_shared_energy_storages_coordination_model_and_solve(planning_problem,
                     dual_p_req = dual_ess['current'][node_id][year][day]['p'][p]
                     dual_q_req = dual_ess['current'][node_id][year][day]['q'][p]
 
-                    fix_or_set(models[node_id].p_req[y, d, p], p_req)
-                    fix_or_set(models[node_id].q_req[y, d, p], q_req)
-                    fix_or_set(models[node_id].dual_p_req[y, d, p], dual_p_req)
-                    fix_or_set(models[node_id].dual_q_req[y, d, p], dual_q_req)
+                    models[node_id].p_req[y, d, p].set_value(p_req)
+                    models[node_id].q_req[y, d, p].set_value(q_req)
+                    models[node_id].dual_p_req[y, d, p].set_value(dual_p_req)
+                    models[node_id].dual_q_req[y, d, p].set_value(dual_q_req)
 
     # Solve!
     res = shared_ess_data.optimize(models, from_warm_start=from_warm_start)
