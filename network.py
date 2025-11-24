@@ -255,12 +255,14 @@ def _build_model(network, params):
     # - Voltage
     model.e = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=partial(e_initialize, network=network), bounds=partial(e_bounds, network=network))
     model.f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=partial(f_initialize, network=network), bounds=partial(f_bounds, network=network))
-    model.vmag = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0, bounds=partial(vmag_bounds, network=network, params=params))
+    model.vmag = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=voltage_magnitude_def)
     if params.slacks.grid_operation.voltage:
         model.slack_e_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
         model.slack_e_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
         model.slack_f_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
         model.slack_f_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
+    model.e_actual = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(e_actual_def, params=params))
+    model.f_actual = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(f_actual_def, params=params))
     if params.slacks.node_balance.active_power:
         model.slack_node_balance_p_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00, bounds=partial(node_balance_slack_bounds, network=network))
         model.slack_node_balance_p_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00, bounds=partial(node_balance_slack_bounds, network=network))
@@ -352,9 +354,6 @@ def _build_model(network, params):
         model.shared_es_sdch_comp = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 1.00))
 
     # Expressions
-    model.e_actual = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(e_actual_def, params=params))
-    model.f_actual = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(f_actual_def, params=params))
-
     model.pg_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_p_per_node_def, network=network))
     model.qg_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_q_per_node_def, network=network))
     model.pc_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_p_per_node_def, network=network, params=params))      # Net load at node i
@@ -373,7 +372,7 @@ def _build_model(network, params):
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
     # - Voltage
-    model.voltage_mag_def = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=voltage_magnitude_def_rule)
+    # model.voltage_mag_def = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=voltage_magnitude_def_rule)
     model.voltage_magnitude_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_magnitude_cons_rule, network=network, params=params))
 
     # - Generation
@@ -386,7 +385,7 @@ def _build_model(network, params):
     # - Flexible Loads -- Daily energy balance
     if params.fl_reg:
         model.flex_energy_balance_p = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_p_rule, network=network, params=params))
-        model.flex_energy_balance_q = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_q_rule, network=network, params=params))
+        # model.flex_energy_balance_q = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_q_rule, network=network, params=params))
         # model.flex_energy_balance_s = pe.Constraint(model.loads, model.scenarios_market, model.scenarios_operation, rule=partial(flex_energy_balance_s_rule, network=network, params=params))
 
     # - Energy Storage constraints
@@ -452,9 +451,6 @@ def _build_model(network, params):
 def _run_smopf(network, model, params, from_warm_start=False):
 
     solver = po.SolverFactory(params.solver_params.solver, executable=params.solver_params.solver_path)
-    if params.solver_params.verbose:
-        solver.options['print_level'] = 6
-        solver.options['output_file'] = 'optim_log.txt'
 
     if params.solver_params.options:
         for key, value in params.solver_params.options.items():
@@ -478,7 +474,8 @@ def _run_smopf(network, model, params, from_warm_start=False):
         result = None  # Or store partial result
 
     #if params.solver_params.verbose:
-    if result and result.solver.termination_condition != po.TerminationCondition.optimal:
+    if not result or result.solver.termination_condition != po.TerminationCondition.optimal:
+
         import logging
         from pyomo.util.infeasible import log_infeasible_constraints
 
@@ -880,8 +877,8 @@ def _update_network_with_operational_data(network, base_data, synthetic_profiles
         load.qd = qc / network.baseMVA
         load.flexibility.active_power.upward = pc_flex_up / network.baseMVA
         load.flexibility.active_power.downward = pc_flex_down / network.baseMVA
-        load.flexibility.reactive_power.upward = pc_flex_up * 0.50 / network.baseMVA
-        load.flexibility.reactive_power.downward = pc_flex_down * 0.50 / network.baseMVA
+        load.flexibility.reactive_power.upward = np.ones(pc_flex_up.shape) * EQUALITY_TOLERANCE
+        load.flexibility.reactive_power.downward = np.zeros(pc_flex_down.shape) * EQUALITY_TOLERANCE
 
     for generator in network.generators:
 
@@ -1074,7 +1071,8 @@ def _process_results(network, model, params, results=dict()):
                         sg = pe.value(model.sg_init[g, s_m, s_o, p]) * network.baseMVA
                         pg_net = pe.value(model.pg[g, s_m, s_o, p]) * network.baseMVA
                         qg_net = pe.value(model.qg[g, s_m, s_o, p]) * network.baseMVA
-                        sg_net = pe.value(model.sg[g, s_m, s_o, p]) * network.baseMVA
+                        # sg_net = pe.value(model.sg[g, s_m, s_o, p]) * network.baseMVA
+                        sg_net = sqrt(pg ** 2 + qg ** 2)
                         sg_curt = pe.value(model.sg_curt[g, s_m, s_o, p]) * network.baseMVA
                         processed_results['scenarios'][s_m][s_o]['generation']['pg_net'][gen_id].append(pg_net)
                         processed_results['scenarios'][s_m][s_o]['generation']['qg_net'][gen_id].append(qg_net)
@@ -1656,7 +1654,8 @@ def _compute_renewable_generation(network, model, params):
                         total_renewable_gen_scenario['p'] += network.baseMVA * pe.value(model.pg[g, s_m, s_o, p])
                         total_renewable_gen_scenario['q'] += network.baseMVA * pe.value(model.qg[g, s_m, s_o, p])
                         if params.rg_curt:
-                            total_renewable_gen_scenario['s'] += network.baseMVA * pe.value(model.sg[g, s_m, s_o, p])
+                            # total_renewable_gen_scenario['s'] += network.baseMVA * pe.value(model.sg[g, s_m, s_o, p])
+                            total_renewable_gen_scenario['s'] += network.baseMVA * sqrt(pe.value(model.pg[g, s_m, s_o, p] ** 2 + model.qg[g, s_m, s_o, p] ** 2))
             total_renewable_gen['p'] += total_renewable_gen_scenario['p'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
             total_renewable_gen['q'] += total_renewable_gen_scenario['q'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
             total_renewable_gen['s'] += total_renewable_gen_scenario['s'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
@@ -1672,7 +1671,8 @@ def _compute_renewable_generation_per_scenario(network, model, params, s_m, s_o)
                 total_renewable_gen['p'] += network.baseMVA * pe.value(model.pg[g, s_m, s_o, p])
                 total_renewable_gen['q'] += network.baseMVA * pe.value(model.qg[g, s_m, s_o, p])
                 if params.rg_curt:
-                    total_renewable_gen['s'] += network.baseMVA * pe.value(model.sg[g, s_m, s_o, p])
+                    total_renewable_gen['s'] += network.baseMVA * sqrt(pe.value(model.pg[g, s_m, s_o, p] ** 2 + model.qg[g, s_m, s_o, p] ** 2))
+                    # total_renewable_gen['s'] += network.baseMVA * pe.value(model.sg[g, s_m, s_o, p])
     return total_renewable_gen
 
 

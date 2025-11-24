@@ -572,11 +572,11 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
                             tso_model[year][day].flex_q_down[adn_load_idx, s_m, s_o, p].setub(interface_transf_rating)
 
             # Add expected interface and shared ESS values, and their definition
-            tso_model[year][day].expected_interface_vmag = pe.Expression(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_vmag_rule, network=transmission_network.network[year][day]))
-            tso_model[year][day].expected_interface_pf_p = pe.Expression(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_pf_p_rule, network=transmission_network.network[year][day]))
-            tso_model[year][day].expected_interface_pf_q = pe.Expression(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_pf_q_rule, network=transmission_network.network[year][day]))
-            tso_model[year][day].expected_shared_ess_p = pe.Expression(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, rule=partial(tn_interface_expected_sess_p_rule, network=transmission_network.network[year][day]))
-            tso_model[year][day].expected_shared_ess_q = pe.Expression(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, rule=partial(tn_interface_expected_sess_q_rule, network=transmission_network.network[year][day]))
+            tso_model[year][day].expected_interface_vmag = pe.Expression(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_vmag_def, network=transmission_network.network[year][day]))
+            tso_model[year][day].expected_interface_pf_p = pe.Expression(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_pf_p_def, network=transmission_network.network[year][day]))
+            tso_model[year][day].expected_interface_pf_q = pe.Expression(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_pf_q_def, network=transmission_network.network[year][day]))
+            tso_model[year][day].expected_shared_ess_p = pe.Expression(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, rule=partial(tn_interface_expected_sess_p_def, network=transmission_network.network[year][day]))
+            tso_model[year][day].expected_shared_ess_q = pe.Expression(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, rule=partial(tn_interface_expected_sess_q_def, network=transmission_network.network[year][day]))
 
             # Regularization -- Added to OF to minimize deviations from scenarios to expected values
             obj = copy(tso_model[year][day].objective.expr)
@@ -653,11 +653,11 @@ def create_distribution_networks_models_sequential(distribution_networks, consen
                 shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
 
                 # Add interface expected variables, and definition
-                dso_model[year][day].expected_interface_vmag = pe.Expression(dso_model[year][day].periods, rule=partial(dn_interface_expected_vmag_rule, network=distribution_network.network[year][day]))
-                dso_model[year][day].expected_interface_pf_p = pe.Expression(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_p_rule, network=distribution_network.network[year][day]))
-                dso_model[year][day].expected_interface_pf_q = pe.Expression(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_q_rule, network=distribution_network.network[year][day]))
-                dso_model[year][day].expected_shared_ess_p = pe.Expression(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_p_rule, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx))
-                dso_model[year][day].expected_shared_ess_q = pe.Expression(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_q_rule, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx))
+                dso_model[year][day].expected_interface_vmag = pe.Expression(dso_model[year][day].periods, rule=partial(dn_interface_expected_vmag_def, network=distribution_network.network[year][day]))
+                dso_model[year][day].expected_interface_pf_p = pe.Expression(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_p_def, network=distribution_network.network[year][day]))
+                dso_model[year][day].expected_interface_pf_q = pe.Expression(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_q_def, network=distribution_network.network[year][day]))
+                dso_model[year][day].expected_shared_ess_p = pe.Expression(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_p_def, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx))
+                dso_model[year][day].expected_shared_ess_q = pe.Expression(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_q_def, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx))
 
                 # Regularization -- Added to OF to minimize deviations from scenarios to expected values
                 obj = copy(dso_model[year][day].objective.expr)
@@ -764,7 +764,6 @@ def create_distribution_network_model(node_id, distribution_network, candidate_s
             dso_model[year][day].expected_interface_pf_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
             dso_model[year][day].expected_shared_ess_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
             dso_model[year][day].expected_shared_ess_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
-
             dso_model[year][day].interface_expected_values_vmag = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_vmag_rule, network=distribution_network.network[year][day]))
             dso_model[year][day].interface_expected_values_pf_p = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_p_rule, network=distribution_network.network[year][day]))
             dso_model[year][day].interface_expected_values_pf_q = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_q_rule, network=distribution_network.network[year][day]))
@@ -1784,26 +1783,26 @@ def check_stationary_convergence(planning_problem, consensus_vars, params):
                     sum_rel_abs_error_vmag += rho_dso_v * abs(consensus_vars['vmag']['dso']['current'][node_id][year][day][p] - consensus_vars['vmag']['dso']['prev'][node_id][year][day][p]) / interface_v_base
                     num_elems_vmag += 2
 
-                    # sum_rel_abs_error_pf += rho_tso_pf * abs(consensus_vars['pf']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['pf']['tso']['prev'][node_id][year][day]['p'][p]) / interface_transf_rating
-                    # sum_rel_abs_error_pf += rho_tso_pf * abs(consensus_vars['pf']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['pf']['tso']['prev'][node_id][year][day]['q'][p]) / interface_transf_rating
-                    # sum_rel_abs_error_pf += rho_dso_pf * abs(consensus_vars['pf']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['pf']['dso']['prev'][node_id][year][day]['q'][p]) / interface_transf_rating
-                    # sum_rel_abs_error_pf += rho_dso_pf * abs(consensus_vars['pf']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['pf']['dso']['prev'][node_id][year][day]['p'][p]) / interface_transf_rating
-                    # num_elems_pf += 4
-                    #
-                    # sum_rel_abs_error_ess += rho_tso_ess * abs(consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['p'][p]) / shared_ess_rating
-                    # sum_rel_abs_error_ess += rho_tso_ess * abs(consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['q'][p]) / shared_ess_rating
-                    # sum_rel_abs_error_ess += rho_dso_ess * abs(consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p]) / shared_ess_rating
-                    # sum_rel_abs_error_ess += rho_dso_ess * abs(consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p]) / shared_ess_rating
-                    # num_elems_ess += 4
-
                     sum_rel_abs_error_pf += rho_tso_pf * abs(consensus_vars['pf']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['pf']['tso']['prev'][node_id][year][day]['p'][p]) / interface_transf_rating
                     sum_rel_abs_error_pf += rho_tso_pf * abs(consensus_vars['pf']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['pf']['tso']['prev'][node_id][year][day]['q'][p]) / interface_transf_rating
                     sum_rel_abs_error_pf += rho_dso_pf * abs(consensus_vars['pf']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['pf']['dso']['prev'][node_id][year][day]['q'][p]) / interface_transf_rating
                     sum_rel_abs_error_pf += rho_dso_pf * abs(consensus_vars['pf']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['pf']['dso']['prev'][node_id][year][day]['p'][p]) / interface_transf_rating
-                    sum_rel_abs_error_pf += rho_tso_ess * abs(consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['p'][p]) / interface_transf_rating
-                    sum_rel_abs_error_pf += rho_tso_ess * abs(consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['q'][p]) / interface_transf_rating
-                    sum_rel_abs_error_pf += rho_dso_ess * abs(consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p]) / interface_transf_rating
-                    sum_rel_abs_error_pf += rho_dso_ess * abs(consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p]) / interface_transf_rating
+                    num_elems_pf += 4
+
+                    sum_rel_abs_error_ess += rho_tso_ess * abs(consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['p'][p]) / shared_ess_rating
+                    sum_rel_abs_error_ess += rho_tso_ess * abs(consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['q'][p]) / shared_ess_rating
+                    sum_rel_abs_error_ess += rho_dso_ess * abs(consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p]) / shared_ess_rating
+                    sum_rel_abs_error_ess += rho_dso_ess * abs(consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p]) / shared_ess_rating
+                    num_elems_ess += 4
+
+                    # sum_rel_abs_error_pf += rho_tso_pf * abs(consensus_vars['pf']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['pf']['tso']['prev'][node_id][year][day]['p'][p]) / interface_transf_rating
+                    # sum_rel_abs_error_pf += rho_tso_pf * abs(consensus_vars['pf']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['pf']['tso']['prev'][node_id][year][day]['q'][p]) / interface_transf_rating
+                    # sum_rel_abs_error_pf += rho_dso_pf * abs(consensus_vars['pf']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['pf']['dso']['prev'][node_id][year][day]['q'][p]) / interface_transf_rating
+                    # sum_rel_abs_error_pf += rho_dso_pf * abs(consensus_vars['pf']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['pf']['dso']['prev'][node_id][year][day]['p'][p]) / interface_transf_rating
+                    # sum_rel_abs_error_pf += rho_tso_ess * abs(consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['p'][p]) / interface_transf_rating
+                    # sum_rel_abs_error_pf += rho_tso_ess * abs(consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['q'][p]) / interface_transf_rating
+                    # sum_rel_abs_error_pf += rho_dso_ess * abs(consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p]) / interface_transf_rating
+                    # sum_rel_abs_error_pf += rho_dso_ess * abs(consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p]) / interface_transf_rating
                     num_elems_pf += 8
 
     convergence = True
@@ -2076,27 +2075,15 @@ def _run_operational_planning_without_coordination(planning_problem):
 
                 s_base = distribution_network.network[year][day].baseMVA
 
-                # Add interface expected variables
-                dso_model[year][day].expected_interface_vmag = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00)
-                dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
-                dso_model[year][day].expected_interface_pf_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
+                # Add interface expected variables, and their definition
+                dso_model[year][day].expected_interface_vmag = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=0.00)
+                dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.0)
+                dso_model[year][day].expected_interface_pf_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.0)
+                dso_model[year][day].expected_interface_vmag_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_vmag_rule, network=distribution_network.network[year][day]))
+                dso_model[year][day].expected_interface_pf_p_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_p_rule, network=distribution_network.network[year][day]))
+                dso_model[year][day].expected_interface_pf_q_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_q_rule, network=distribution_network.network[year][day]))
 
-                dso_model[year][day].interface_expected_values = pe.ConstraintList()
-                for p in dso_model[year][day].periods:
-                    expected_vmag = 0.00
-                    expected_pf_p = 0.00
-                    expected_pf_q = 0.00
-                    for s_m in dso_model[year][day].scenarios_market:
-                        omega_market = distribution_network.network[year][day].prob_market_scenarios[s_m]
-                        for s_o in dso_model[year][day].scenarios_operation:
-                            omega_oper = distribution_network.network[year][day].prob_operation_scenarios[s_o]
-                            expected_vmag += omega_market * omega_oper * dso_model[year][day].vmag_adn[s_m, s_o, p]
-                            expected_pf_p += omega_market * omega_oper * dso_model[year][day].pg_adn[s_m, s_o, p]
-                            expected_pf_q += omega_market * omega_oper * dso_model[year][day].qg_adn[s_m, s_o, p]
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_vmag[p] == expected_vmag)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_pf_p[p] == expected_pf_p)
-                    dso_model[year][day].interface_expected_values.add(dso_model[year][day].expected_interface_pf_q[p] == expected_pf_q)
-
+                # Regularization -- decrease variance between scenarios
                 obj = copy(dso_model[year][day].objective.expr)
                 dso_model[year][day].penalty_regularization = pe.Param(initialize=PENALTY_REGULARIZATION)
                 for s_m in dso_model[year][day].scenarios_market:
@@ -2114,16 +2101,6 @@ def _run_operational_planning_without_coordination(planning_problem):
             for day in distribution_network.days:
                 s_base = distribution_network.network[year][day].baseMVA
                 for p in dso_model[year][day].periods:
-                    expected_vmag = 0.00
-                    expected_pf_p = 0.00
-                    expected_pf_q = 0.00
-                    for s_m in dso_model[year][day].scenarios_market:
-                        omega_market = distribution_network.network[year][day].prob_market_scenarios[s_m]
-                        for s_o in dso_model[year][day].scenarios_operation:
-                            omega_oper = distribution_network.network[year][day].prob_operation_scenarios[s_o]
-                            expected_vmag += omega_market * omega_oper * dso_model[year][day].vmag_adn[s_m, s_o, p]
-                            expected_pf_p += omega_market * omega_oper * dso_model[year][day].pg_adn[s_m, s_o, p]
-                            expected_pf_q += omega_market * omega_oper * dso_model[year][day].qg_adn[s_m, s_o, p]
                     interface_vmag[node_id][year][day][p] = pe.value(dso_model[year][day].expected_interface_vmag[p])
                     interface_pf[node_id][year][day]['p'][p] = pe.value(dso_model[year][day].expected_interface_pf_p[p]) * s_base
                     interface_pf[node_id][year][day]['q'][p] = pe.value(dso_model[year][day].expected_interface_pf_q[p]) * s_base
@@ -2142,33 +2119,13 @@ def _run_operational_planning_without_coordination(planning_problem):
             s_base = transmission_network.network[year][day].baseMVA
             tso_model[year][day].active_distribution_networks = range(len(transmission_network.active_distribution_network_nodes))
 
-            # Free Vmag, Pc, Qc at the interface nodes, fix solution
+            # Free Pc, Qc at the interface nodes
             for dn in tso_model[year][day].active_distribution_networks:
-
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
-                adn_node_idx = transmission_network.network[year][day].get_node_idx(adn_node_id)
                 adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(adn_node_id)
-                v_min, v_max = transmission_network.network[year][day].get_node_voltage_limits(adn_node_id)
-
                 for s_m in tso_model[year][day].scenarios_market:
                     for s_o in tso_model[year][day].scenarios_operation:
                         for p in tso_model[year][day].periods:
-
-                            vmag_req = interface_vmag[adn_node_id][year][day][p]
-                            p_req = interface_pf[adn_node_id][year][day]['p'][p] / s_base
-                            q_req = interface_pf[adn_node_id][year][day]['q'][p] / s_base
-
-                            # Interface voltage, free vmag_adn, remove slacks
-                            tso_model[year][day].vmag_adn[dn, s_m, s_o, p].fixed = False
-                            tso_model[year][day].vmag_adn[dn, s_m, s_o, p].setub(v_max)
-                            tso_model[year][day].vmag_adn[dn, s_m, s_o, p].setlb(v_min)
-                            # if transmission_network.params.slacks.grid_operation.voltage:
-                            #     fix_or_set(tso_model[year][day].slack_e_up[adn_node_idx, s_m, s_o, p], 0.00)
-                            #     fix_or_set(tso_model[year][day].slack_e_down[adn_node_idx, s_m, s_o, p], 0.00)
-                            #     fix_or_set(tso_model[year][day].slack_f_up[adn_node_idx, s_m, s_o, p], 0.00)
-                            #     fix_or_set(tso_model[year][day].slack_f_down[adn_node_idx, s_m, s_o, p], 0.00)
-
-                            # Fix Pc and Qc (base profiles), free pc_adn and qc_adn
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].fixed = False
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setub(None)
                             tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setlb(None)
@@ -2186,10 +2143,36 @@ def _run_operational_planning_without_coordination(planning_problem):
                                 tso_model[year][day].qc_curt_down[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                                 tso_model[year][day].qc_curt_up[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
 
-                            fix_or_set(tso_model[year][day].vmag_adn[dn, s_m, s_o, p], vmag_req)
-                            fix_or_set(tso_model[year][day].pc[adn_load_idx, s_m, s_o, p], p_req)
-                            fix_or_set(tso_model[year][day].qc[adn_load_idx, s_m, s_o, p], q_req)
+            # Add interface expected variables, and their definition
+            tso_model[year][day].expected_interface_vmag = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.0)
+            tso_model[year][day].expected_interface_pf_p = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.0)
+            tso_model[year][day].expected_interface_pf_q = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.0)
+            tso_model[year][day].expected_interface_vmag_def = pe.Constraint(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_vmag_rule, network=transmission_network.network[year][day]))
+            tso_model[year][day].expected_interface_pf_p_def = pe.Constraint(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_pf_p_rule, network=transmission_network.network[year][day]))
+            tso_model[year][day].expected_interface_pf_q_def = pe.Constraint(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_pf_q_rule, network=transmission_network.network[year][day]))
 
+            # Regularization -- decrease variance between scenarios
+            obj = copy(tso_model[year][day].objective.expr)
+            tso_model[year][day].penalty_regularization = pe.Param(initialize=PENALTY_REGULARIZATION)
+            for dn in tso_model[year][day].active_distribution_networks:
+                for s_m in tso_model[year][day].scenarios_market:
+                    for s_o in tso_model[year][day].scenarios_operation:
+                        for p in tso_model[year][day].periods:
+                            obj += tso_model[year][day].penalty_regularization * (tso_model[year][day].vmag_adn[dn, s_m, s_o, p] - tso_model[year][day].expected_interface_vmag[dn, p]) ** 2
+                            obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].pc_adn[dn, s_m, s_o, p] - tso_model[year][day].expected_interface_pf_p[dn, p]) ** 2
+                            obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].qc_adn[dn, s_m, s_o, p] - tso_model[year][day].expected_interface_pf_q[dn, p]) ** 2
+            tso_model[year][day].objective.expr = obj
+
+            # Fix Pc and Qc (DNs' solutions)
+            for dn in tso_model[year][day].active_distribution_networks:
+                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
+                for p in tso_model[year][day].periods:
+                    vmag_req = interface_vmag[adn_node_id][year][day][p]
+                    p_req = interface_pf[adn_node_id][year][day]['p'][p] / s_base
+                    q_req = interface_pf[adn_node_id][year][day]['q'][p] / s_base
+                    tso_model[year][day].expected_interface_vmag[dn, p].fix(vmag_req)
+                    tso_model[year][day].expected_interface_pf_p[dn, p].fix(p_req)
+                    tso_model[year][day].expected_interface_pf_q[dn, p].fix(q_req)
 
     results['tso'] = transmission_network.optimize(tso_model)
 

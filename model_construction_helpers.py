@@ -1,5 +1,5 @@
 import pyomo.environ as pe
-from math import tan, atan2, acos
+from math import tan, atan2, acos, sqrt
 from helper_functions import *
 from definitions import *
 
@@ -31,16 +31,6 @@ def f_bounds(m, i, s_m, s_o, p, network):
     if node.type == BUS_REF:
         return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
     return (-node.v_max - EQUALITY_TOLERANCE, node.v_max + EQUALITY_TOLERANCE)
-
-
-def vmag_bounds(m, i, s_m, s_o, p, network, params):
-    node = network.nodes[i]
-    v_min = node.v_min
-    v_max = node.v_max
-    if params.slacks.grid_operation.voltage:
-        v_min -= VMAG_VIOLATION_ALLOWED
-        v_max += VMAG_VIOLATION_ALLOWED
-    return (v_min - EQUALITY_TOLERANCE, v_max + EQUALITY_TOLERANCE)
 
 
 # Voltage variables, slack bounds
@@ -109,9 +99,9 @@ def sg_init(m, g, s_m, s_o, p, network, params):
         return 0.00
 
     # Apparent power for initialization and bound
-    pg = gen.pg[s_o][p]
-    qg = gen.qg[s_o][p]
-    sg = max(0.00, (pg ** 2 + qg ** 2) ** 0.5)
+    pg = max(gen.pmin, min(gen.pg[s_o][p], gen.pmax))
+    qg = max(gen.qmin, min(gen.qg[s_o][p], gen.qmax))
+    sg = sqrt(pg ** 2 + qg ** 2)
 
     return sg
 
@@ -323,11 +313,11 @@ def f_actual_def(m, i, s_m, s_o, p, params):
 
 
 # Voltage constraints, magnitude
-def voltage_magnitude_def_rule(m, i, s_m, s_o, p):
+def voltage_magnitude_def(m, i, s_m, s_o, p):
     e = m.e[i, s_m, s_o, p]
     f = m.f[i, s_m, s_o, p]
     vmag_sq = e ** 2 + f ** 2
-    return m.vmag[i, s_m, s_o, p] ** 2 == vmag_sq
+    return vmag_sq ** 0.50
 
 
 # Voltage constraints, magnitude
@@ -345,7 +335,7 @@ def sg_abs_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable() or not generator.status[p]:
         return pe.Constraint.Skip
-    return pe.inequality(-EQUALITY_TOLERANCE, (m.pg[g, s_m, s_o, p] ** 2 + m.qg[g, s_m, s_o, p] ** 2) - m.sg[g, s_m, s_o, p] ** 2, EQUALITY_TOLERANCE)
+    return m.pg[g, s_m, s_o, p] ** 2 + m.qg[g, s_m, s_o, p] ** 2 <= m.sg[g, s_m, s_o, p]** 2
 
 
 def sg_def_rule(m, g, s_m, s_o, p, network, params):
@@ -1182,7 +1172,7 @@ def slack_penalties(model, network, s_m, s_o, params):
     return total
 
 
-def dn_interface_expected_vmag_rule(m, p, network):
+def dn_interface_expected_vmag_def(m, p, network):
     expected_vmag = sum(
         network.prob_market_scenarios[s_m] *
         network.prob_operation_scenarios[s_o] *
@@ -1193,7 +1183,7 @@ def dn_interface_expected_vmag_rule(m, p, network):
     return expected_vmag
 
 
-def dn_interface_expected_pf_p_rule(m, p, network):
+def dn_interface_expected_pf_p_def(m, p, network):
     expected_pf_p = sum(
         network.prob_market_scenarios[s_m] *
         network.prob_operation_scenarios[s_o] *
@@ -1204,7 +1194,7 @@ def dn_interface_expected_pf_p_rule(m, p, network):
     return expected_pf_p
 
 
-def dn_interface_expected_pf_q_rule(m, p, network):
+def dn_interface_expected_pf_q_def(m, p, network):
     expected_pf_q = sum(
         network.prob_market_scenarios[s_m] *
         network.prob_operation_scenarios[s_o] *
@@ -1215,7 +1205,7 @@ def dn_interface_expected_pf_q_rule(m, p, network):
     return expected_pf_q
 
 
-def dn_interface_expected_sess_p_rule(m, p, network, shared_ess_idx):
+def dn_interface_expected_sess_p_def(m, p, network, shared_ess_idx):
     expected_ess_p = sum(
         network.prob_market_scenarios[s_m] *
         network.prob_operation_scenarios[s_o] *
@@ -1226,7 +1216,7 @@ def dn_interface_expected_sess_p_rule(m, p, network, shared_ess_idx):
     return expected_ess_p
 
 
-def dn_interface_expected_sess_q_rule(m, p, network, shared_ess_idx):
+def dn_interface_expected_sess_q_def(m, p, network, shared_ess_idx):
     expected_ess_q = sum(
         network.prob_market_scenarios[s_m] *
         network.prob_operation_scenarios[s_o] *
@@ -1237,7 +1227,27 @@ def dn_interface_expected_sess_q_rule(m, p, network, shared_ess_idx):
     return expected_ess_q
 
 
-def tn_interface_expected_vmag_rule(m, dn, p, network):
+def dn_interface_expected_vmag_rule(m, p, network):
+    return m.expected_interface_vmag[p] == dn_interface_expected_vmag_def(m, p, network)
+
+
+def dn_interface_expected_pf_p_rule(m, p, network):
+    return m.expected_interface_pf_p[p] == dn_interface_expected_pf_p_def(m, p, network)
+
+
+def dn_interface_expected_pf_q_rule(m, p, network):
+    return m.expected_interface_pf_q[p] == dn_interface_expected_pf_q_def(m, p, network)
+
+
+def dn_interface_expected_sess_p_rule(m, p, network, shared_ess_idx):
+    return m.expected_shared_ess_p[p] == dn_interface_expected_sess_p_def(m, p, network, shared_ess_idx)
+
+
+def dn_interface_expected_sess_q_rule(m, p, network, shared_ess_idx):
+    return m.expected_shared_ess_q[p] == dn_interface_expected_sess_q_def(m, p, network, shared_ess_idx)
+
+
+def tn_interface_expected_vmag_def(m, dn, p, network):
     expected_vmag = sum(
         network.prob_market_scenarios[s_m] *
         network.prob_operation_scenarios[s_o] *
@@ -1248,7 +1258,7 @@ def tn_interface_expected_vmag_rule(m, dn, p, network):
     return expected_vmag
 
 
-def tn_interface_expected_pf_p_rule(m, dn, p, network):
+def tn_interface_expected_pf_p_def(m, dn, p, network):
     expected_pf_p = sum(
         network.prob_market_scenarios[s_m] *
         network.prob_operation_scenarios[s_o] *
@@ -1259,7 +1269,7 @@ def tn_interface_expected_pf_p_rule(m, dn, p, network):
     return expected_pf_p
 
 
-def tn_interface_expected_pf_q_rule(m, dn, p, network):
+def tn_interface_expected_pf_q_def(m, dn, p, network):
     expected_pf_q = sum(
         network.prob_market_scenarios[s_m] *
         network.prob_operation_scenarios[s_o] *
@@ -1270,7 +1280,7 @@ def tn_interface_expected_pf_q_rule(m, dn, p, network):
     return expected_pf_q
 
 
-def tn_interface_expected_sess_p_rule(m, e, p, network):
+def tn_interface_expected_sess_p_def(m, e, p, network):
     expected_ess_p = sum(
         network.prob_market_scenarios[s_m] *
         network.prob_operation_scenarios[s_o] *
@@ -1281,7 +1291,7 @@ def tn_interface_expected_sess_p_rule(m, e, p, network):
     return expected_ess_p
 
 
-def tn_interface_expected_sess_q_rule(m, e, p, network):
+def tn_interface_expected_sess_q_def(m, e, p, network):
     expected_ess_q = sum(
         network.prob_market_scenarios[s_m] *
         network.prob_operation_scenarios[s_o] *
@@ -1290,3 +1300,23 @@ def tn_interface_expected_sess_q_rule(m, e, p, network):
         for s_o in m.scenarios_operation
     )
     return expected_ess_q
+
+
+def tn_interface_expected_vmag_rule(m, dn, p, network):
+    return m.expected_interface_vmag[dn, p] == tn_interface_expected_vmag_def(m, dn, p, network)
+
+
+def tn_interface_expected_pf_p_rule(m, dn, p, network):
+    return m.expected_interface_pf_p[dn, p] == tn_interface_expected_pf_p_def(m, dn, p, network)
+
+
+def tn_interface_expected_pf_q_rule(m, dn, p, network):
+    return m.expected_interface_pf_q[dn, p] == tn_interface_expected_pf_q_def(m, dn, p, network)
+
+
+def tn_interface_expected_sess_p_rule(m, e, p, network):
+    return m.expected_shared_ess_p[e, p] == tn_interface_expected_sess_p_def(m, e, p, network)
+
+
+def tn_interface_expected_sess_q_rule(m, e, p, network):
+    return m.expected_shared_ess_q[e, p] == tn_interface_expected_sess_q_def(m, e, p, network)
