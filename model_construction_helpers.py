@@ -314,22 +314,23 @@ def f_actual_def(m, i, s_m, s_o, p, params):
 
 
 # Voltage constraints, magnitude
-def voltage_magnitude_def(m, i, s_m, s_o, p):
-    e = m.e[i, s_m, s_o, p]
-    f = m.f[i, s_m, s_o, p]
-    vmag_sq = e ** 2 + f ** 2
-    return vmag_sq ** 0.50
+def vmag_sqr_def(m, i, s_m, s_o, p):
+    return m.e_actual[i, s_m, s_o, p] ** 2 + m.f_actual[i, s_m, s_o, p] ** 2
+
+
+def vmag_def(m, i, s_m, s_o, p):
+    return m.vmag[i, s_m, s_o, p] ** 2 == m.vmag_sqr[i, s_m, s_o, p]
 
 
 # Voltage constraints, magnitude
 def voltage_magnitude_cons_rule(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
-    vmag = m.vmag[i, s_m, s_o, p]
+    vmag_sqr = m.e[i, s_m, s_o, p] ** 2 + m.f[i, s_m, s_o, p] ** 2  # Note: only the non-slack portion is constrained!
     if node.type == BUS_PV and params.enforce_vg:
         vg = network.generators[network.get_gen_idx(node.bus_i)].vg[p]
-        return pe.inequality(-SMALL_TOLERANCE, vmag - vg, SMALL_TOLERANCE)
+        return pe.inequality(-SMALL_TOLERANCE, vmag_sqr - vg ** 2, SMALL_TOLERANCE)
     else:
-        return pe.inequality(node.v_min, vmag, node.v_max)
+        return pe.inequality(node.v_min ** 2, vmag_sqr, node.v_max ** 2)
 
 
 def sg_definition_rule(m, g, s_m, s_o, p, network, params):
