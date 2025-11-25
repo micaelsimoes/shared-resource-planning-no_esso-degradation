@@ -879,7 +879,7 @@ def _update_network_with_operational_data(network, base_data, synthetic_profiles
         load.flexibility.active_power.upward = pc_flex_up / network.baseMVA
         load.flexibility.active_power.downward = pc_flex_down / network.baseMVA
         load.flexibility.reactive_power.upward = np.ones(pc_flex_up.shape) * EQUALITY_TOLERANCE
-        load.flexibility.reactive_power.downward = np.zeros(pc_flex_down.shape) * EQUALITY_TOLERANCE
+        load.flexibility.reactive_power.downward = np.ones(pc_flex_down.shape) * EQUALITY_TOLERANCE
 
     for generator in network.generators:
 
@@ -1069,11 +1069,10 @@ def _process_results(network, model, params, results=dict()):
                     if generator.is_curtaillable() and params.rg_curt:
                         pg = generator.pg[s_o][p] * network.baseMVA
                         qg = generator.qg[s_o][p] * network.baseMVA
-                        sg = pe.value(model.sg_init[g, s_m, s_o, p]) * network.baseMVA
+                        sg = pe.value(model.sg_avail[g, s_m, s_o, p]) * network.baseMVA
                         pg_net = pe.value(model.pg[g, s_m, s_o, p]) * network.baseMVA
                         qg_net = pe.value(model.qg[g, s_m, s_o, p]) * network.baseMVA
-                        # sg_net = pe.value(model.sg[g, s_m, s_o, p]) * network.baseMVA
-                        sg_net = sqrt(pg ** 2 + qg ** 2)
+                        sg_net = sqrt(pe.value(model.sg_sqr[g, s_m, s_o, p])) * network.baseMVA
                         sg_curt = pe.value(model.sg_curt[g, s_m, s_o, p]) * network.baseMVA
                         processed_results['scenarios'][s_m][s_o]['generation']['pg_net'][gen_id].append(pg_net)
                         processed_results['scenarios'][s_m][s_o]['generation']['qg_net'][gen_id].append(qg_net)
@@ -1132,8 +1131,7 @@ def _process_results(network, model, params, results=dict()):
                         processed_results['scenarios'][s_m][s_o]['branches']['ratio'][branch_id].append(r_ij)
 
                     # Branch flow (limits)
-                    flow_ij = pe.value(model.flow_ij_sqr[k, s_m, s_o, p]) ** 0.50
-                    flow_ij_perc = flow_ij / rating
+                    flow_ij_perc = max(pe.value(model.flow_ij_sqr[k, s_m, s_o, p]), 0.00) ** 0.50 / rating
                     processed_results['scenarios'][s_m][s_o]['branches']['branch_flow']['flow_ij_perc'][branch_id].append(flow_ij_perc)
 
             # Energy Storage devices
