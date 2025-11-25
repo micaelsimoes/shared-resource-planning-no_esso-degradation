@@ -273,10 +273,11 @@ def _build_model(network, params):
     # - Generation
     model.pg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(pg_bounds, network=network), initialize=partial(pg_init, network=network))
     model.qg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(qg_bounds, network=network), initialize=partial(qg_init, network=network))
+    model.sg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(sg_bounds, network=network, params=params), initialize=partial(sg_init, network=network, params=params))
+    model.sg_sqr = pe.Expression(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_sqr_def_rule, network=network, params=params))
     if params.rg_curt:
-        model.sg_init = pe.Param(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=partial(sg_init, network=network, params=params))
         model.sg_curt = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(sg_bounds, network=network, params=params), initialize=0.0)
-        model.sg = pe.Expression(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_def_rule, network=network, params=params))
+        model.sg_init = pe.Param(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=partial(sg_init, network=network, params=params))
 
     # - Branch power flows slacks (squared) -- used in branch limits
     if params.slacks.grid_operation.branch_flow:
@@ -376,9 +377,9 @@ def _build_model(network, params):
     model.voltage_magnitude_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_magnitude_cons_rule, network=network, params=params))
 
     # - Generation
-    model.generation_power_factor = pe.ConstraintList()
     if params.rg_curt:
-        model.sg_abs_def = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_abs_rule, network=network, params=params))
+        model.sg_defintion = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_definition_rule, network=network, params=params))
+        model.sg_curtailment = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_curtailment_rule, network=network, params=params))
         model.gen_pf_upper = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(power_factor_rule_upper, network=network))
         model.gen_pf_lower = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(power_factor_rule_lower, network=network))
 
