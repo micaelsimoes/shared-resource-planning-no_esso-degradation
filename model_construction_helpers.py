@@ -25,7 +25,6 @@ def e_bounds(m, i, s_m, s_o, p, network):
     return (-node.v_max - EQUALITY_TOLERANCE, node.v_max + EQUALITY_TOLERANCE)
 
 
-# Voltage variables, f
 def f_bounds(m, i, s_m, s_o, p, network):
     node = network.nodes[i]
     if node.type == BUS_REF:
@@ -39,6 +38,16 @@ def voltage_slack_bounds(m, i, s_m, s_o, p, network):
     if node.type == BUS_REF:
         return (0.00, EQUALITY_TOLERANCE)
     return (0.00, VMAG_VIOLATION_ALLOWED)
+
+
+def vmag_bounds(m, i, s_m, s_o, p, network, params):
+    node = network.nodes[i]
+    if node.type == BUS_REF:
+        return (1.00 - EQUALITY_TOLERANCE, 1.00 + EQUALITY_TOLERANCE)
+    else:
+        if params.slacks.grid_operation.voltage:
+            return (node.v_min - VMAG_VIOLATION_ALLOWED, node.v_max + VMAG_VIOLATION_ALLOWED)
+        return (node.v_min - EQUALITY_TOLERANCE, node.v_max + EQUALITY_TOLERANCE)
 
 
 def node_balance_slack_bounds(m, i, s_m, s_o, p, network):
