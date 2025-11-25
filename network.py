@@ -277,7 +277,7 @@ def _build_model(network, params):
     model.sg_sqr = pe.Expression(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_sqr_def_rule, network=network, params=params))
     if params.rg_curt:
         model.sg_curt = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(sg_bounds, network=network, params=params), initialize=0.0)
-        model.sg_init = pe.Param(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=partial(sg_init, network=network, params=params))
+        model.sg_avail = pe.Param(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=partial(sg_init, network=network, params=params))
 
     # - Branch power flows slacks (squared) -- used in branch limits
     if params.slacks.grid_operation.branch_flow:

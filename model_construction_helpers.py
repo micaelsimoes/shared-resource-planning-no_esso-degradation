@@ -343,7 +343,7 @@ def sg_curtailment_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable() or not generator.status[p]:
         return pe.Constraint.Skip
-    return m.sg[g, s_m, s_o, p] + m.sg_curt[g, s_m, s_o, p] == m.sg_init[g, s_m, s_o, p]
+    return m.sg[g, s_m, s_o, p] + m.sg_curt[g, s_m, s_o, p] == m.sg_avail[g, s_m, s_o, p]
 
 
 def sg_sqr_def_rule(m, g, s_m, s_o, p, network, params):
