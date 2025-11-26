@@ -472,20 +472,20 @@ def flex_energy_balance_s_rule(m, c, s_m, s_o, network, params):
 
 
 # Energy Storage
-def ess_sch_def(m, e, s_m, s_o, p):
-    return m.es_sch[e, s_m, s_o, p]**2 == (m.es_pch[e, s_m, s_o, p]**2 + m.es_qch[e, s_m, s_o, p]**2)
+def ess_sch_def_rule(m, e, s_m, s_o, p):
+    return m.es_pch[e,s_m,s_o,p]**2 + m.es_qch[e,s_m,s_o,p]**2 == m.es_sch[e,s_m,s_o,p]**2
 
 
-def ess_sdch_def(m, e, s_m, s_o, p):
-    return m.es_sdch[e, s_m, s_o, p]**2 == (m.es_pdch[e, s_m, s_o, p]**2 + m.es_qdch[e, s_m, s_o, p]**2)
+def ess_sdch_def_rule(m, e, s_m, s_o, p):
+    return m.es_pdch[e,s_m,s_o,p]**2 + m.es_qdch[e,s_m,s_o,p]**2 == m.es_sdch[e,s_m,s_o,p]**2
 
 
-def ess_pnet_def(m, e, s_m, s_o, p):
-    return m.es_pch[e, s_m, s_o, p] - m.es_pdch[e, s_m, s_o, p]
+def ess_pnet_rule(m, e, s_m, s_o, p):
+    return m.es_pnet[e,s_m,s_o,p] == m.es_pdch[e,s_m,s_o,p] - m.es_pch[e,s_m,s_o,p]
 
 
-def ess_qnet_def(m, e, s_m, s_o, p):
-    return m.es_qch[e, s_m, s_o, p] - m.es_qdch[e, s_m, s_o, p]
+def ess_qnet_rule(m, e, s_m, s_o, p):
+    return m.es_qnet[e,s_m,s_o,p] == m.es_qdch[e,s_m,s_o,p] - m.es_qch[e,s_m,s_o,p]
 
 
 def ess_snet_def(m, e, s_m, s_o, p):
@@ -521,17 +521,47 @@ def ess_phi_dch_limits_upper(m, e, s_m, s_o, p, network):
     return m.es_qdch[e, s_m, s_o, p] <= tan(max_phi) * m.es_pdch[e, s_m, s_o, p]
 
 
-def ess_comp_rule(m, e, s_m, s_o, p, network, params):
-    if params.slacks.ess.complementarity:
-        return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] <= m.slack_es_comp[e, s_m, s_o, p]
+def ess_soc_rule(m, e, s_m, s_o, p, network, params):
+
+    ess = network.energy_storages[e]
+    eff_ch = ess.eff_ch
+    eff_dch = ess.eff_dch
+    if p == 0:
+        soc_prev = ess.e_init
     else:
-        if params.ess_model == ESS_MODEL_EXACT:
-            return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
-        elif params.ess_model in [ESS_MODEL_LP_SIMPLIFIED, ESS_MODEL_LP_RELAXED, ESS_MODEL_LP_SIMPLIFIED_EXTENDED, ESS_MODEL_FIRST_ORDER, ESS_MODEL_PENALIZED]:
-            return pe.Constraint.Skip
-        else:
-            print('[ERROR] Invalid ESS model. Exiting...')
-            exit(ERROR_PARAMS_FILE)
+        soc_prev = m.es_soc[e, s_m, s_o, p-1]
+
+    if params.ess_model == ESS_MODEL_FIRST_ORDER:
+        delta = m.es_sch[e, s_m, s_o, p] - m.es_sdch[e, s_m, s_o, p]
+    else:
+        delta = eff_ch * m.es_sch[e, s_m, s_o, p] - (m.es_sdch[e, s_m, s_o, p] / eff_dch)
+
+    return m.es_soc[e, s_m, s_o, p] == soc_prev + delta
+
+
+
+def ess_comp_exact_rule(m, e, s_m, s_o, p, network, params):
+    if params.slacks.ess.complementarity:
+        return m.es_sch[e,s_m,s_o,p] * m.es_sdch[e,s_m,s_o,p] <= m.slack_es_comp[e,s_m,s_o,p]
+    else:
+        return m.es_sch[e,s_m,s_o,p] * m.es_sdch[e,s_m,s_o,p] <= EQUALITY_TOLERANCE
+
+
+def ess_comp_bigm_rule(m, e, s_m, s_o, p, network, params):
+    if params.slacks.ess.complementarity:
+        return m.es_sch_comp[e,s_m,s_o,p] + m.es_sdch_comp[e,s_m,s_o,p] <= 1 + m.slack_es_comp[e,s_m,s_o,p]
+    else:
+        return m.es_sch_comp[e,s_m,s_o,p] + m.es_sdch_comp[e,s_m,s_o,p] <= 1
+
+
+def ess_bigm_ch_limit_rule(m, e, s_m, s_o, p, network):
+    smax = network.energy_storages[e].s
+    return m.es_sch[e,s_m,s_o,p] <= smax * m.es_sch_comp[e,s_m,s_o,p]
+
+
+def ess_bigm_dch_limit_rule(m, e, s_m, s_o, p, network):
+    smax = network.energy_storages[e].s
+    return m.es_sdch[e,s_m,s_o,p] <= smax * m.es_sdch_comp[e,s_m,s_o,p]
 
 
 def ess_balance_rule(m, e, s_m, s_o, p, network, params):
@@ -647,7 +677,7 @@ def sess_comp_rule(m, e, s_m, s_o, p, params):
     else:
         if params.shared_ess_model == ESS_MODEL_EXACT:
             return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
-        elif params.shared_ess_model in [ESS_MODEL_LP_SIMPLIFIED, ESS_MODEL_LP_RELAXED, ESS_MODEL_LP_SIMPLIFIED_EXTENDED, ESS_MODEL_FIRST_ORDER, ESS_MODEL_PENALIZED]:
+        elif params.shared_ess_model in [ESS_MODEL_LP_RELAXED, ESS_MODEL_LP_SIMPLIFIED_EXTENDED, ESS_MODEL_FIRST_ORDER]:
             return pe.Constraint.Skip
         else:
             print('[ERROR] Invalid ESS model. Exiting...')
@@ -1195,8 +1225,6 @@ def slack_penalties(model, network, s_m, s_o, params):
         for p in model.periods:
             if params.slacks.shared_ess.complementarity:
                 total += base * PENALTY_SHARED_ESS_COMP * model.slack_shared_es_comp[e, s_m, s_o, p]
-            if params.shared_ess_model == ESS_MODEL_PENALIZED:
-                total += base * PENALTY_ESS_COMP_OBJECTIVE * (model.shared_es_sch[e, s_m, s_o, p] * model.shared_es_sdch[e, s_m, s_o, p])
         if params.slacks.shared_ess.day_balance:
             total += base * PENALTY_SHARED_ESS_BALANCE * (model.slack_shared_es_soc_final_up[e, s_m, s_o] + model.slack_shared_es_soc_final_down[e, s_m, s_o])
 
