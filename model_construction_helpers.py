@@ -350,14 +350,14 @@ def sg_curt_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable() or not generator.status[p]:
         return pe.Constraint.Skip
-    return m.sg_avail[g, s_m, s_o, p] - m.sg_abs[g, s_m, s_o, p]
+    return m.sg_avail[g, s_m, s_o, p] - m.sg[g, s_m, s_o, p]
 
 
-def sg_abs_rule(m, g, s_m, s_o, p, network, params):
+def sg_definitition_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable() or not generator.status[p]:
         return pe.Constraint.Skip
-    return m.sg_sqr[g, s_m, s_o, p] == m.sg_abs[g, s_m, s_o, p] ** 2
+    return m.sg_sqr[g, s_m, s_o, p] == m.sg[g, s_m, s_o, p] ** 2
 
 
 def power_factor_rule_upper(m, g, s_m, s_o, p, network):
