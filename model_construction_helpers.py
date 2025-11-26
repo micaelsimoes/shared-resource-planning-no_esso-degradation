@@ -99,7 +99,7 @@ def qg_init(m, g, s_m, s_o, p, network):
         return 0.0
 
 
-def sg_avail(m, g, s_m, s_o, p, network, params):
+def sg_avail(m, g, s_o, p, network, params):
 
     gen = network.generators[g]
     if not gen.is_curtaillable() or not gen.status[p]:
@@ -108,7 +108,7 @@ def sg_avail(m, g, s_m, s_o, p, network, params):
     # Apparent power for initialization and bound
     pg = gen.pg[s_o][p]
     qg = gen.qg[s_o][p]
-    sg = max(0.00, (pg ** 2 + qg ** 2) ** 0.5)
+    sg = max(0.00, abs((pg ** 2 + qg ** 2) ** 0.5))
 
     return sg
 
@@ -118,7 +118,7 @@ def sg_bounds(m, g, s_m, s_o, p, network, params):
     if not gen.is_curtaillable() or not gen.status[p]:
         return (0.0, EQUALITY_TOLERANCE)
     if gen.is_curtaillable():
-        smax = (gen.pg[s_m][p] ** 2 + gen.qg[s_m][p] ** 2) ** 0.5
+        smax = sg_avail(m, g, s_o, p, network=network, params=params)
     else:
         smax = (gen.pmax ** 2 + gen.qmax ** 2) ** 0.5
     return (0.0, smax + EQUALITY_TOLERANCE)
@@ -350,7 +350,7 @@ def sg_curt_rule(m, g, s_m, s_o, p, network, params):
     generator = network.generators[g]
     if not generator.is_curtaillable() or not generator.status[p]:
         return pe.Constraint.Skip
-    return m.sg_avail[g, s_m, s_o, p] - m.sg[g, s_m, s_o, p]
+    return m.sg_avail[g, s_o, p] - m.sg[g, s_m, s_o, p]
 
 
 def sg_definitition_rule(m, g, s_m, s_o, p, network, params):

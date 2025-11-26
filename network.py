@@ -275,8 +275,8 @@ def _build_model(network, params):
     model.pg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(pg_bounds, network=network), initialize=partial(pg_init, network=network))
     model.qg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(qg_bounds, network=network), initialize=partial(qg_init, network=network))
     if params.rg_curt:
+        model.sg_avail = pe.Param(model.generators, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=partial(sg_avail, network=network, params=params))
         model.sg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(sg_bounds, network=network, params=params), initialize=0.0)
-        model.sg_avail = pe.Param(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=partial(sg_avail, network=network, params=params))
         model.sg_sqr = pe.Expression(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_sqr_rule, network=network))
         model.sg_curt = pe.Expression(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_curt_rule, network=network, params=params))
 
@@ -1066,13 +1066,13 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['generation']['sg_net'][gen_id] = []
                     processed_results['scenarios'][s_m][s_o]['generation']['sg_curt'][gen_id] = []
                 for p in model.periods:
-                    if generator.is_curtaillable() and params.rg_curt:
+                    if params.rg_curt and generator.is_curtaillable() and generator.status[p]:
                         pg = generator.pg[s_o][p] * network.baseMVA
                         qg = generator.qg[s_o][p] * network.baseMVA
-                        sg = pe.value(model.sg_avail[g, s_m, s_o, p]) * network.baseMVA
+                        sg = pe.value(model.sg_avail[g, s_o, p]) * network.baseMVA
                         pg_net = pe.value(model.pg[g, s_m, s_o, p]) * network.baseMVA
                         qg_net = pe.value(model.qg[g, s_m, s_o, p]) * network.baseMVA
-                        sg_net = sqrt(pe.value(model.sg_sqr[g, s_m, s_o, p])) * network.baseMVA
+                        sg_net = pe.value(model.sg[g, s_m, s_o, p]) * network.baseMVA
                         sg_curt = pe.value(model.sg_curt[g, s_m, s_o, p]) * network.baseMVA
                         processed_results['scenarios'][s_m][s_o]['generation']['pg_net'][gen_id].append(pg_net)
                         processed_results['scenarios'][s_m][s_o]['generation']['qg_net'][gen_id].append(qg_net)
