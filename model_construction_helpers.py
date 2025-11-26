@@ -63,40 +63,48 @@ def pg_bounds(m, g, s_m, s_o, p, network):
         return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
 
 
+
+def pg_bounds(m, g, s_m, s_o, p, network):
+    gen = network.generators[g]
+    if not gen.status[p]:
+        return (0.0 - EQUALITY_TOLERANCE, 0.0 + EQUALITY_TOLERANCE)
+
+    if gen.is_curtaillable():
+        return (0.0, gen.pg[s_o][p] + EQUALITY_TOLERANCE)
+    else:
+        return (gen.pmin - EQUALITY_TOLERANCE, gen.pmax + EQUALITY_TOLERANCE)
+
+
 def qg_bounds(m, g, s_m, s_o, p, network):
     gen = network.generators[g]
-    if gen.status[p]:
-        return (gen.qmin - EQUALITY_TOLERANCE, gen.qmax + EQUALITY_TOLERANCE)
-    else:
-        return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
+    if not gen.status[p]:
+        return (0.0 - EQUALITY_TOLERANCE, 0.0 + EQUALITY_TOLERANCE)
+    return (gen.qmin - EQUALITY_TOLERANCE, gen.qmax + EQUALITY_TOLERANCE)
 
 
 def pg_init(m, g, s_m, s_o, p, network):
-    if network.generators[g].status[p]:
-        if network.generators[g].is_curtaillable():
-            return network.generators[g].pg[s_o][p]
-        else:
-            lb, ub = pg_bounds(m, g, s_m, s_o, p, network=network)
-            if lb > 0:
-                return lb
-            else:
-                return max(0.0, lb)
-    else:
+    gen = network.generators[g]
+    if not gen.status[p]:
         return 0.0
+
+    if gen.is_curtaillable():
+        return max(0.0, gen.pg[s_o][p])
+    else:
+        lb, ub = pg_bounds(m, g, s_m, s_o, p, network)
+        return max(0.0, lb)
 
 
 def qg_init(m, g, s_m, s_o, p, network):
-    if network.generators[g].status[p]:
-        if network.generators[g].is_curtaillable():
-            return 0.00
-        else:
-            lb, ub = qg_bounds(m, g, s_m, s_o, p, network=network)
-            if lb > 0:
-                return lb
-            else:
-                return max(0.0, lb)
-    else:
+    gen = network.generators[g]
+    if not gen.status[p]:
         return 0.0
+
+    if gen.is_curtaillable():
+        # neutral starting point
+        return 0.0
+    else:
+        lb, ub = qg_bounds(m, g, s_m, s_o, p, network)
+        return max(0.0, lb)
 
 
 def sg_avail(m, g, s_o, p, network, params):
@@ -122,6 +130,19 @@ def sg_bounds(m, g, s_m, s_o, p, network, params):
     else:
         smax = (gen.pmax ** 2 + gen.qmax ** 2) ** 0.5
     return (0.0, smax + EQUALITY_TOLERANCE)
+
+
+def sg_avail_init(m, g, s_o, p, network, params):
+
+    gen = network.generators[g]
+    if not gen.status[p] or not gen.is_curtaillable():
+        return 0.0
+
+    # Use operational scenario for availability (you can choose s_m vs s_o as needed)
+    pg_av = gen.pg[s_o][p]
+    qg_av = gen.qg[s_o][p]
+    sg_av = abs((pg_av**2 + qg_av**2)**0.5)
+    return max(0.0, sg_av)
 
 
 # Branch power flow, Fij
@@ -340,24 +361,24 @@ def voltage_magnitude_cons_rule(m, i, s_m, s_o, p, network, params):
 
 
 def sg_sqr_rule(m, g, s_m, s_o, p, network):
-    generator = network.generators[g]
-    if not generator.is_curtaillable() or not generator.status[p]:
-        return pe.Expression.Skip
-    return m.pg[g, s_m, s_o, p] ** 2 + m.qg[g, s_m, s_o, p] ** 2
+    gen = network.generators[g]
+    if not gen.status[p] or not gen.is_curtaillable():
+        return 0.0  # just a scalar
+    return m.pg[g, s_m, s_o, p]**2 + m.qg[g, s_m, s_o, p]**2
+
+
+def sg_def_rule(m, g, s_m, s_o, p, network, params):
+    gen = network.generators[g]
+    if not gen.status[p] or not gen.is_curtaillable():
+        return pe.Constraint.Skip
+    return m.sg_sqr[g, s_m, s_o, p] <= m.sg[g, s_m, s_o, p] ** 2
 
 
 def sg_curt_rule(m, g, s_m, s_o, p, network, params):
-    generator = network.generators[g]
-    if not generator.is_curtaillable() or not generator.status[p]:
-        return pe.Constraint.Skip
-    return m.sg_avail[g, s_o, p] - m.sg[g, s_m, s_o, p]
-
-
-def sg_definitition_rule(m, g, s_m, s_o, p, network, params):
-    generator = network.generators[g]
-    if not generator.is_curtaillable() or not generator.status[p]:
-        return pe.Constraint.Skip
-    return m.sg_sqr[g, s_m, s_o, p] == m.sg[g, s_m, s_o, p] ** 2
+    gen = network.generators[g]
+    if not gen.status[p] or not gen.is_curtaillable():
+        return m.sg[g, s_m, s_o, p] == 0.0
+    return m.sg[g, s_m, s_o, p] + m.sg_curt[g, s_m, s_o, p] == m.sg_avail[g, s_o, p]
 
 
 def power_factor_rule_upper(m, g, s_m, s_o, p, network):

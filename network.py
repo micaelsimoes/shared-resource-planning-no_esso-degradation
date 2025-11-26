@@ -275,10 +275,10 @@ def _build_model(network, params):
     model.pg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(pg_bounds, network=network), initialize=partial(pg_init, network=network))
     model.qg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(qg_bounds, network=network), initialize=partial(qg_init, network=network))
     if params.rg_curt:
-        model.sg_avail = pe.Param(model.generators, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=partial(sg_avail, network=network, params=params))
-        model.sg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(sg_bounds, network=network, params=params), initialize=0.0)
+        model.sg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.sg_curt = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.sg_avail = pe.Param(model.generators, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=partial(sg_avail_init, network=network, params=params), mutable=False)
         model.sg_sqr = pe.Expression(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_sqr_rule, network=network))
-        model.sg_curt = pe.Expression(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_curt_rule, network=network, params=params))
 
     # - Branch power flow
     if params.slacks.grid_operation.branch_flow:
@@ -379,7 +379,8 @@ def _build_model(network, params):
 
     # - Generation
     if params.rg_curt:
-        model.sg_def = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_definitition_rule, network=network, params=params))
+        model.sg_def = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_def_rule, network=network, params=params))
+        model.sg_curt_def = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_curt_rule, network=network, params=params))
         model.gen_pf_upper = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(power_factor_rule_upper, network=network))
         model.gen_pf_lower = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(power_factor_rule_lower, network=network))
 
