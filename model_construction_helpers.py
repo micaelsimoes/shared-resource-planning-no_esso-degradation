@@ -909,41 +909,39 @@ def node_balance_p_rule(model, i, s_m, s_o, p, network, params):
 
     node = network.nodes[i]
 
-    ei = model.e_actual[i, s_m, s_o, p]
-    fi = model.f_actual[i, s_m, s_o, p]
     Pd = model.pc_node[i, s_m, s_o, p]
     Pg = model.pg_node[i, s_m, s_o, p]
 
-    Pi = node.gs * (ei**2 +  fi**2)
+    Pi = node.gs * model.vmag_sqr[i, s_m, s_o, p]
 
     for b in range(len(network.branches)):
 
         branch = network.branches[b]
 
-        if branch.status:
+        if not branch.status:
+            continue
 
-            if branch.fbus == node.bus_i or branch.tbus == node.bus_i:
+        if branch.fbus != node.bus_i and branch.tbus != node.bus_i:
+            continue
 
-                rij = model.r[b, s_m, s_o, p] if branch.is_transformer else 1.0
+        if branch.fbus == node.bus_i:
+            fnode_idx = network.get_node_idx(branch.fbus)
+            tnode_idx = network.get_node_idx(branch.tbus)
+        else:
+            fnode_idx = network.get_node_idx(branch.tbus)
+            tnode_idx = network.get_node_idx(branch.fbus)
 
-                if branch.fbus == node.bus_i:
-                    fnode_idx = network.get_node_idx(branch.fbus)
-                    tnode_idx = network.get_node_idx(branch.tbus)
+        e_f = model.e_actual[fnode_idx, s_m, s_o, p]
+        f_f = model.f_actual[fnode_idx, s_m, s_o, p]
+        e_t = model.e_actual[tnode_idx, s_m, s_o, p]
+        f_t = model.f_actual[tnode_idx, s_m, s_o, p]
+        rij = model.r[b, s_m, s_o, p] if branch.is_transformer else 1.0
 
-                    ei, fi = model.e_actual[fnode_idx, s_m, s_o, p], model.f_actual[fnode_idx, s_m, s_o, p]
-                    ej, fj = model.e_actual[tnode_idx, s_m, s_o, p], model.f_actual[tnode_idx, s_m, s_o, p]
-
-                    Pi += branch.g * (ei ** 2 + fi ** 2) * rij ** 2
-                    Pi -= rij * (branch.g * (ei * ej + fi * fj) + branch.b * (fi * ej - ei * fj))
-                else:
-                    fnode_idx = network.get_node_idx(branch.tbus)
-                    tnode_idx = network.get_node_idx(branch.fbus)
-
-                    ei, fi = model.e_actual[fnode_idx, s_m, s_o, p], model.f_actual[fnode_idx, s_m, s_o, p]
-                    ej, fj = model.e_actual[tnode_idx, s_m, s_o, p], model.f_actual[tnode_idx, s_m, s_o, p]
-
-                    Pi += branch.g * (ei ** 2 + fi ** 2)
-                    Pi -= rij * (branch.g * (ei * ej + fi * fj) + branch.b * (fi * ej - ei * fj))
+        if branch.fbus == node.bus_i:
+            Pi += branch.g * (e_f ** 2 + f_f ** 2) * rij ** 2
+        else:
+            Pi += branch.g * (e_f ** 2 + f_f ** 2)
+        Pi -= rij * (branch.g * (e_f * e_t + f_f * f_t) + branch.b * (f_f * e_t - e_f * f_t))
 
     if params.slacks.node_balance.active_power:
         return Pg == Pd + Pi + (model.slack_node_balance_p_up[i, s_m, s_o, p] - model.slack_node_balance_p_down[i, s_m, s_o, p])
@@ -954,42 +952,41 @@ def node_balance_p_rule(model, i, s_m, s_o, p, network, params):
 def node_balance_q_rule(model, i, s_m, s_o, p, network, params):
 
     node = network.nodes[i]
-    ei = model.e_actual[i, s_m, s_o, p]
-    fi = model.f_actual[i, s_m, s_o, p]
+
     Qd = model.qc_node[i, s_m, s_o, p]
     Qg = model.qg_node[i, s_m, s_o, p]
 
-    Qi = -node.bs * (ei**2 + fi**2)
+    Qi = -node.bs * model.vmag_sqr[i, s_m, s_o, p]
 
     for b in range(len(network.branches)):
 
         branch = network.branches[b]
 
-        if branch.status:
+        if not branch.status:
+            continue
 
-            if branch.fbus == node.bus_i or branch.tbus == node.bus_i:
+        if branch.fbus != node.bus_i and branch.tbus != node.bus_i:
+            continue
 
-                rij = model.r[b, s_m, s_o, p] if branch.is_transformer else 1.0
+        if branch.fbus == node.bus_i:
+            fnode_idx = network.get_node_idx(branch.fbus)
+            tnode_idx = network.get_node_idx(branch.tbus)
+        else:
+            fnode_idx = network.get_node_idx(branch.tbus)
+            tnode_idx = network.get_node_idx(branch.fbus)
 
-                if branch.fbus == node.bus_i:
-                    fnode_idx = network.get_node_idx(branch.fbus)
-                    tnode_idx = network.get_node_idx(branch.tbus)
+        e_f = model.e_actual[fnode_idx, s_m, s_o, p]
+        f_f = model.f_actual[fnode_idx, s_m, s_o, p]
+        e_t = model.e_actual[tnode_idx, s_m, s_o, p]
+        f_t = model.f_actual[tnode_idx, s_m, s_o, p]
+        rij = model.r[b, s_m, s_o, p] if branch.is_transformer else 1.0
 
-                    ei, fi = model.e_actual[fnode_idx, s_m, s_o, p], model.f_actual[fnode_idx, s_m, s_o, p]
-                    ej, fj = model.e_actual[tnode_idx, s_m, s_o, p], model.f_actual[tnode_idx, s_m, s_o, p]
-
-                    Qi -= (branch.b + branch.b_sh * 0.5) * (ei ** 2 + fi ** 2) * rij ** 2
-                    Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
-
-                else:
-                    fnode_idx = network.get_node_idx(branch.tbus)
-                    tnode_idx = network.get_node_idx(branch.fbus)
-
-                    ei, fi = model.e_actual[fnode_idx, s_m, s_o, p], model.f_actual[fnode_idx, s_m, s_o, p]
-                    ej, fj = model.e_actual[tnode_idx, s_m, s_o, p], model.f_actual[tnode_idx, s_m, s_o, p]
-
-                    Qi -= (branch.b + branch.b_sh * 0.5) * (ei ** 2 + fi ** 2)
-                    Qi += rij * (branch.b * (ei * ej + fi * fj) - branch.g * (fi * ej - ei * fj))
+        if branch.fbus == node.bus_i:
+            Qi -= (branch.b + 0.5 * branch.b_sh) * (e_f**2 + f_f**2) * rij**2
+            Qi += rij * (branch.b * (e_f * e_t + f_f * f_t) - branch.g * (f_f * e_t - e_f * f_t))
+        else:
+            Qi -= (branch.b + 0.5 * branch.b_sh) * (e_f**2 + f_f**2)
+            Qi += rij * (branch.b * (e_f * e_t + f_f * f_t) - branch.g * (f_f * e_t - e_f * f_t))
 
     if params.slacks.node_balance.reactive_power:
         return Qg == Qd + Qi + (model.slack_node_balance_q_up[i, s_m, s_o, p] - model.slack_node_balance_q_down[i, s_m, s_o, p])
