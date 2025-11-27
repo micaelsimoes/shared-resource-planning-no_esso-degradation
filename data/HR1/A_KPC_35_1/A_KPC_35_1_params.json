@@ -7,8 +7,8 @@
 	"l_curt": false,
 	"enforce_vg": false,
 	"branch_limit_type": "MIXED",
-	"ess_model": "EXACT",
-	"shared_ess_model": "EXACT",
+	"ess_model": "BIGM",
+	"shared_ess_model": "BIGM",
 	"slacks": {
 		"grid_operation": {
 			"voltage": true,
@@ -34,19 +34,16 @@
 		"name": "ipopt",
 		"verbose": false,
 		"options": {
-			"tol": 1e-6,
-			"acceptable_tol": 1e-4,
-			"acceptable_iter": 5,
+	  		"tol": 1e-5,
+	  		"acceptable_tol": 1e-4,
+	  		"acceptable_iter": 5,
 			"linear_solver": "ma97",
-			"hessian_approximation": "limited-memory",
 			"mu_strategy": "adaptive",
+			"hessian_approximation": "limited-memory",
+  			"limited_memory_max_history": 20,
 			"nlp_scaling_method": "gradient-based",
-			"nlp_scaling_max_gradient": 1.0,
-			"nlp_scaling_min_value": 1e-8,
-			"print_info_string": "no",
-			"print_timing_statistics": "no",
-			"print_level": 6,
-			"output_file": "optim_log_A_KPC_35_1.txt"
+			"nlp_scaling_max_gradient": 1e0,
+			"nlp_scaling_min_value": 1e-8
 		}
 	},
 	"print_to_screen": false,
