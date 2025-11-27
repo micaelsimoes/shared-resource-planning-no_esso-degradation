@@ -324,12 +324,6 @@ def soc_initialize(m, e, s_m, s_o, p, network):
     return ess.e_init
 
 
-def shared_soc_initialize(m, e, s_m, s_o, p, network):
-    e_init = m.shared_es_e_rated_fixed[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC
-    return e_init
-
-
-
 # Voltage constraints, e
 def e_actual_def(m, i, s_m, s_o, p, params):
     e_val = m.e[i, s_m, s_o, p]
