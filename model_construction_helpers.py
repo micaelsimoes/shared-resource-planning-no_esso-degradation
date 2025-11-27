@@ -805,37 +805,74 @@ def interface_pf_q_distribution_def(m, s_m, s_o, p, network):
 
 # Branch limits
 def compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, limit_type):
+
     g = branch.g
     b = branch.b
-    bsh = 0.5 * branch.b_sh  # Half-line shunt susceptance for π-model
+    bsh = 0.5 * branch.b_sh
 
     if limit_type == BRANCH_LIMIT_CURRENT or (limit_type == BRANCH_LIMIT_MIXED and not branch.is_transformer):
 
-        delta_e = (rij**2) * ei - rij * ej
-        delta_f = (rij**2) * fi - rij * fj
+        delta_e = (rij ** 2) * ei - rij * ej
+        delta_f = (rij ** 2) * fi - rij * fj
 
-        current_squared = (g**2 + b**2) * (delta_e**2 + delta_f**2)
-        current_squared += bsh**2 * (ei**2 + fi**2)
-        current_squared += 2 * g * bsh * (delta_f * ei - delta_e * fi)
-        current_squared += 2 * b * bsh * (delta_e * ei + delta_f * fi)
+        # Series current contribution: |Y_series * (V_i' - V_j')|^2
+        term_series = (g ** 2 + b ** 2) * (delta_e ** 2 + delta_f ** 2)
 
+        # Shunt current at from-end: bsh * V_i
+        v_i_sq = ei ** 2 + fi ** 2
+        term_shunt = bsh ** 2 * v_i_sq
+
+        # Cross terms between series and shunt current
+        term_cross_1 = 2.0 * g * bsh * (delta_f * ei - delta_e * fi)
+        term_cross_2 = 2.0 * b * bsh * (delta_e * ei + delta_f * fi)
+
+        current_squared = term_series + term_shunt + term_cross_1 + term_cross_2
+
+        # delta_e = (rij**2) * ei - rij * ej
+        # delta_f = (rij**2) * fi - rij * fj
+        #
+        # current_squared = (g**2 + b**2) * (delta_e**2 + delta_f**2)
+        # current_squared += bsh**2 * (ei**2 + fi**2)
+        # current_squared += 2 * g * bsh * (delta_f * ei - delta_e * fi)
+        # current_squared += 2 * b * bsh * (delta_e * ei + delta_f * fi)
+
+        # Longitudinal current
         # current_squared = (branch.g ** 2 + branch.b ** 2) * ((ei - ej) ** 2 + (fi - fj) ** 2)
 
         return current_squared
 
     if limit_type == BRANCH_LIMIT_APPARENT_POWER or (limit_type == BRANCH_LIMIT_MIXED and branch.is_transformer):
 
-        # Real power flow from i to j
-        pij = g * (ei**2 + fi**2) * rij**2
-        pij -= g * (ei * ej + fi * fj) * rij
-        pij -= b * (fi * ej - ei * fj) * rij
+        # |V_i|^2
+        v_i_sq = ei**2 + fi**2
 
-        # Reactive power flow from i to j
-        qij = -(b + bsh) * (ei**2 + fi**2) * rij**2
-        qij += b * (ei * ej + fi * fj) * rij
-        qij -= g * (fi * ej - ei * fj) * rij
+        # Active power from i -> j (your original expressions, cleaned)
+        pij = (
+            g * v_i_sq * (rij**2)
+            - g * (ei * ej + fi * fj) * rij
+            - b * (fi * ej - ei * fj) * rij
+        )
+
+        # Reactive power from i -> j
+        qij = (
+            -(b + bsh) * v_i_sq * (rij**2)
+            + b * (ei * ej + fi * fj) * rij
+            - g * (fi * ej - ei * fj) * rij
+        )
 
         return pij**2 + qij**2
+
+        # # Real power flow from i to j
+        # pij = g * (ei**2 + fi**2) * rij**2
+        # pij -= g * (ei * ej + fi * fj) * rij
+        # pij -= b * (fi * ej - ei * fj) * rij
+        #
+        # # Reactive power flow from i to j
+        # qij = -(b + bsh) * (ei**2 + fi**2) * rij**2
+        # qij += b * (ei * ej + fi * fj) * rij
+        # qij -= g * (fi * ej - ei * fj) * rij
+        #
+        # return pij**2 + qij**2
 
     raise ValueError(f"Unknown branch limit type: {limit_type}")
 
@@ -1010,9 +1047,7 @@ def branch_flow_def(model, b, s_m, s_o, p, network, params):
     ej = model.e_actual[tnode_idx, s_m, s_o, p]
     fj = model.f_actual[tnode_idx, s_m, s_o, p]
 
-    flow_ij_sqr = compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, params.branch_limit_type)
-
-    return flow_ij_sqr
+    return compute_branch_flow_squared(branch, ei, fi, ej, fj, rij, params.branch_limit_type)
 
 
 def branch_flow_limit_rule(model, b, s_m, s_o, p, network, params):
