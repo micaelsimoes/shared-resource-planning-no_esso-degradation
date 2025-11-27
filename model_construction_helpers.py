@@ -324,6 +324,12 @@ def soc_initialize(m, e, s_m, s_o, p, network):
     return ess.e_init
 
 
+def shared_soc_initialize(m, e, s_m, s_o, p, network):
+    e_init = m.shared_es_e_rated_fixed[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC
+    return e_init
+
+
+
 # Voltage constraints, e
 def e_actual_def(m, i, s_m, s_o, p, params):
     e_val = m.e[i, s_m, s_o, p]
@@ -564,16 +570,6 @@ def ess_bigm_dch_limit_rule(m, e, s_m, s_o, p, network):
     return m.es_sdch[e,s_m,s_o,p] <= smax * m.es_sdch_comp[e,s_m,s_o,p]
 
 
-def ess_balance_rule(m, e, s_m, s_o, p, network, params):
-    es = network.energy_storages[e]
-    eff_ch, eff_dch = es.eff_ch, es.eff_dch
-    soc_prev = es.e_init if p == 0 else m.es_soc[e, s_m, s_o, p - 1]
-    if params.ess_model == ESS_MODEL_FIRST_ORDER:
-        return soc_prev + m.es_snet[e, s_m, s_o, p]
-    else:
-        return soc_prev + m.es_sch[e, s_m, s_o, p] * eff_ch - m.es_sdch[e, s_m, s_o, p] * (1.00 / eff_dch)
-
-
 def ess_soc_final_rule(m, e, s_m, s_o, network, params):
     final_soc = network.energy_storages[e].e_init
     final_p = m.periods[-1]
@@ -641,13 +637,13 @@ def sess_phi_dch_limits_upper(m, e, s_m, s_o, p, network):
     return m.shared_es_qdch[e, s_m, s_o, p] <= tan(max_phi) * m.shared_es_pdch[e, s_m, s_o, p]
 
 
-def sess_sch_limit(m, e, s_m, s_o, p):
+def sess_sch_def_rule(m, e, s_m, s_o, p):
     s_max = m.shared_es_s_rated[e]
     sch = m.shared_es_sch[e, s_m, s_o, p]
     return sch <= s_max + EQUALITY_TOLERANCE
 
 
-def sess_sdch_limit(m, e, s_m, s_o, p):
+def sess_sdch_def_rule(m, e, s_m, s_o, p):
     s_max = m.shared_es_s_rated[e]
     sdch = m.shared_es_sdch[e, s_m, s_o, p]
     return sdch <= s_max + EQUALITY_TOLERANCE
@@ -671,27 +667,61 @@ def sess_soc_upper_limit(m, e, s_m, s_o, p):
     return m.shared_es_soc[e, s_m, s_o, p] <= soc_max + EQUALITY_TOLERANCE
 
 
-def sess_comp_rule(m, e, s_m, s_o, p, params):
-    if params.slacks.shared_ess.complementarity:
+def sess_comp_exact_rule(m, e, s_m, s_o, p, params):
+    if params.slacks.ess.complementarity:
         return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= m.slack_shared_es_comp[e, s_m, s_o, p]
     else:
-        if params.shared_ess_model == ESS_MODEL_EXACT:
-            return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
-        elif params.shared_ess_model in [ESS_MODEL_LP_RELAXED, ESS_MODEL_LP_SIMPLIFIED_EXTENDED, ESS_MODEL_FIRST_ORDER]:
-            return pe.Constraint.Skip
-        else:
-            print('[ERROR] Invalid ESS model. Exiting...')
-            exit(ERROR_PARAMS_FILE)
+        return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
 
 
-def sess_balance_rule(m, e, s_m, s_o, p, network, params):
-    ses = network.shared_energy_storages[e]
-    eff_ch, eff_dch = ses.eff_ch, ses.eff_dch
-    soc_prev = m.shared_es_e_rated[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC if p == 0 else m.shared_es_soc[e, s_m, s_o, p - 1]
-    if params.shared_ess_model == ESS_MODEL_FIRST_ORDER:
-        return soc_prev + m.shared_es_snet[e, s_m, s_o, p]
+def sess_comp_bigm_rule(m, e, s_m, s_o, p, network, params):
+    if params.slacks.ess.complementarity:
+        return m.shared_es_sch_comp[e,s_m,s_o,p] + m.shared_es_sdch_comp[e,s_m,s_o,p] <= 1 + m.slack_shared_es_comp[e,s_m,s_o,p]
     else:
-        return soc_prev + m.shared_es_sch[e, s_m, s_o, p] * eff_ch - m.shared_es_sdch[e, s_m, s_o, p] * (1.00 / eff_dch)
+        return m.shared_es_sch_comp[e,s_m,s_o,p] + m.shared_es_sdch_comp[e,s_m,s_o,p] <= 1
+
+
+def sess_bigm_ch_limit_rule(m, e, s_m, s_o, p, network):
+    smax = m.shared_es_s_rated[e]
+    return m.shared_es_sch[e,s_m,s_o,p] <= smax * m.shared_es_sch_comp[e,s_m,s_o,p]
+
+
+def sess_bigm_dch_limit_rule(m, e, s_m, s_o, p, network):
+    smax = m.shared_es_s_rated[e]
+    return m.shared_es_sdch[e,s_m,s_o,p] <= smax * m.shared_es_sdch_comp[e,s_m,s_o,p]
+
+
+# - Linear ESS models -- Relaxed LP formulation
+def sess_relaxed_model_ch_rule(m, e, s_m, s_o, p, network):
+    smax = m.shared_es_s_rated[e]
+    return m.shared_es_sch[e, s_m, s_o, p] <= smax * m.shared_es_sch_comp[e, s_m, s_o, p]
+
+
+def sess_relaxed_model_dch_rule(m, e, s_m, s_o, p, network):
+    smax = m.shared_es_s_rated[e]
+    return m.shared_es_sdch[e, s_m, s_o, p] <= smax * m.shared_es_sdch_comp[e, s_m, s_o, p]
+
+
+def sess_relaxed_model_comp_rule(m, e, s_m, s_o, p):
+    return m.shared_es_sch_comp[e, s_m, s_o, p] + m.shared_es_sdch_comp[e, s_m, s_o, p] <= 1.00
+
+
+def sess_soc_rule(m, e, s_m, s_o, p, network, params):
+
+    sess = network.shared_energy_storages[e]
+    eff_ch = sess.eff_ch
+    eff_dch = sess.eff_dch
+    if p == 0:
+        soc_prev = m.shared_es_e_rated[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC
+    else:
+        soc_prev = m.shared_es_soc[e, s_m, s_o, p - 1]
+
+    if params.shared_ess_model == ESS_MODEL_FIRST_ORDER:
+        delta = m.shared_es_sch[e, s_m, s_o, p] - m.shared_es_sdch[e, s_m, s_o, p]
+    else:
+        delta = eff_ch * m.shared_es_sch[e, s_m, s_o, p] - (m.shared_es_sdch[e, s_m, s_o, p] / eff_dch)
+
+    return m.shared_es_soc[e, s_m, s_o, p] == soc_prev + delta
 
 
 def sess_soc_final_rule(m, e, s_m, s_o, network, params):
@@ -703,16 +733,12 @@ def sess_soc_final_rule(m, e, s_m, s_o, network, params):
         return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_soc[e, s_m, s_o, final_p] - final_soc, EQUALITY_TOLERANCE)
 
 
-def sess_pnet_def(m, e, s_m, s_o, p):
-    return m.shared_es_pch[e, s_m, s_o, p] - m.shared_es_pdch[e, s_m, s_o, p]
+def sess_pnet_rule(m, e, s_m, s_o, p):
+    return m.shared_es_pnet[e, s_m, s_o, p] == m.shared_es_pch[e, s_m, s_o, p] - m.shared_es_pdch[e, s_m, s_o, p]
 
 
-def sess_qnet_def(m, e, s_m, s_o, p):
-    return m.shared_es_qch[e, s_m, s_o, p] - m.shared_es_qdch[e, s_m, s_o, p]
-
-
-def sess_snet_def(m, e, s_m, s_o, p):
-    return m.shared_es_sch[e, s_m, s_o, p] - m.shared_es_sdch[e, s_m, s_o, p]
+def sess_qnet_rule(m, e, s_m, s_o, p):
+    return m.shared_es_qnet[e, s_m, s_o, p] == m.shared_es_qch[e, s_m, s_o, p] - m.shared_es_qdch[e, s_m, s_o, p]
 
 
 def sess_s_sensitivities(m, e):
