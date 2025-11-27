@@ -7,8 +7,8 @@
 	"l_curt": false,
 	"enforce_vg": false,
 	"branch_limit_type": "MIXED",
-	"ess_model": "EXACT",
-	"shared_ess_model": "EXACT",
+	"ess_model": "BIGM",
+	"shared_ess_model": "BIGM",
 	"slacks": {
 		"grid_operation": {
 			"voltage": true,
@@ -34,8 +34,9 @@
 		"name": "ipopt",
 		"verbose": false,
 		"options": {
-	  		"tol": 1e-5,
-	  		"acceptable_tol": 1e-3,
+	  		"tol": 1e-6,
+	  		"acceptable_tol": 1e-4,
+	  		"acceptable_iter": 5,
 	  		"linear_solver": "ma97",
 			"mu_strategy": "adaptive",
 	  		"nlp_scaling_method": "gradient-based",
