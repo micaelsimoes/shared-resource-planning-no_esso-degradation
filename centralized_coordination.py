@@ -65,8 +65,8 @@ def combine_networks(transmission_network, distribution_networks):
             new_energy_storages = list()
             for energy_storage in combined_network.network[year][day].energy_storages:
                 new_energy_storage = copy(energy_storage)
-                new_energy_storage.old_storage_id = energy_storage.storage_id
-                new_energy_storage.storage_id = f'TN_{new_energy_storage.old_storage_id}'
+                new_energy_storage.old_es_id = energy_storage.es_id
+                new_energy_storage.es_id = f'TN_{new_energy_storage.old_es_id}'
                 new_energy_storage.bus = tn_node_mapping[year][day][energy_storage.bus]
                 new_energy_storages.append(new_energy_storage)
             combined_network.network[year][day].energy_storages = new_energy_storages
