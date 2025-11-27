@@ -326,7 +326,7 @@ def _build_model(network, params):
         if params.slacks.ess.day_balance:
             model.slack_es_soc_final_up = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(slack_es_balance_bounds, network=network))
             model.slack_es_soc_final_down = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(slack_es_balance_bounds, network=network))
-        if params.ess_model == ESS_MODEL_LP_RELAXED:
+        if params.ess_model in [ESS_MODEL_BIGM, ESS_MODEL_LP_RELAXED]:
             model.es_sch_comp = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.0, 1.0))
             model.es_sdch_comp = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.0, 1.0))
 
