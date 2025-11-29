@@ -1394,9 +1394,8 @@ def _compute_objective_function_value_per_scenario(network, model, params, s_m, 
         obj += pe.value(model.gen_curt_penalty_scenario[s_m, s_o])
         obj += pe.value(model.load_curt_penalty_scenario[s_m, s_o])
         obj += pe.value(model.flex_penalty_scenario[s_m, s_o])
-        obj += pe.value(model.total_gen_curt_penalty[s_m, s_o])
-    obj += model.ess_utilization_cost_penalty_scenario[s_m, s_o]
-    obj += model.slack_penalties_scenario[s_m, s_o]
+    obj += pe.value(model.ess_utilization_cost_penalty_scenario[s_m, s_o])
+    obj += pe.value(model.slack_penalties_scenario[s_m, s_o])
     return obj
 
 
