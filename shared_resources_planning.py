@@ -2799,12 +2799,7 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
     col_idx += 1
 
     # - Objective
-    obj_string = 'Objective'
-    if network.params.obj_type == OBJ_MIN_COST:
-        obj_string += ' (cost), [€]'
-    elif network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
-        obj_string += ' (congestion management)'
-    sheet.cell(row=line_idx, column=col_idx).value = obj_string
+    sheet.cell(row=line_idx, column=col_idx).value = 'Objective function value, [N/A]'
     col_idx += 1
     for year in results:
         for day in results[year]:
@@ -2871,6 +2866,21 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
                 sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
                 col_idx += 1
 
+        if network.params.obj_type == OBJ_MIN_COST:
+            line_idx += 1
+            col_idx = 1
+            sheet.cell(row=line_idx, column=col_idx).value = operator_type
+            col_idx += 1
+            sheet.cell(row=line_idx, column=col_idx).value = tn_node_id
+            col_idx += 1
+            sheet.cell(row=line_idx, column=col_idx).value = 'Flexibility cost, [€]'
+            col_idx += 1
+            for year in results:
+                for day in results[year]:
+                    sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['flex_cost']
+                    sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+                    col_idx += 1
+
     # Total Load curtailed
     if network.params.l_curt:
 
@@ -2901,6 +2911,21 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
                 sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['load_curt']['q']
                 sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
                 col_idx += 1
+
+        if network.params.obj_type == OBJ_MIN_COST:
+            line_idx += 1
+            col_idx = 1
+            sheet.cell(row=line_idx, column=col_idx).value = operator_type
+            col_idx += 1
+            sheet.cell(row=line_idx, column=col_idx).value = tn_node_id
+            col_idx += 1
+            sheet.cell(row=line_idx, column=col_idx).value = 'Load curtailment cost, [€]'
+            col_idx += 1
+            for year in results:
+                for day in results[year]:
+                    sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['load_curt_cost']
+                    sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+                    col_idx += 1
 
     # Total Generation
     line_idx += 1
@@ -2959,6 +2984,21 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
             sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['total_conventional_gen']['q']
             sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
             col_idx += 1
+
+    if network.params.obj_type == OBJ_MIN_COST:
+        line_idx += 1
+        col_idx = 1
+        sheet.cell(row=line_idx, column=col_idx).value = operator_type
+        col_idx += 1
+        sheet.cell(row=line_idx, column=col_idx).value = tn_node_id
+        col_idx += 1
+        sheet.cell(row=line_idx, column=col_idx).value = 'Conventional generation cost, [€]'
+        col_idx += 1
+        for year in results:
+            for day in results[year]:
+                sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['gen_cost']
+                sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+                col_idx += 1
 
     # Total Renewable Generation
     line_idx += 1
@@ -3019,6 +3059,21 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
                 sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['gen_curt']['s']
                 sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
                 col_idx += 1
+
+        if network.params.obj_type == OBJ_MIN_COST:
+            line_idx += 1
+            col_idx = 1
+            sheet.cell(row=line_idx, column=col_idx).value = operator_type
+            col_idx += 1
+            sheet.cell(row=line_idx, column=col_idx).value = tn_node_id
+            col_idx += 1
+            sheet.cell(row=line_idx, column=col_idx).value = 'Renewable generation curtailment cost, [€]'
+            col_idx += 1
+            for year in results:
+                for day in results[year]:
+                    sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['gen_curt_cost']
+                    sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+                    col_idx += 1
 
     # Losses
     line_idx += 1
