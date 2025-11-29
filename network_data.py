@@ -444,10 +444,10 @@ def _write_main_info_to_excel(network_planning, workbook, results):
             write_value(sheet, line_idx, col_idx, day)
             col_idx += 1
 
-    # Objective function value
+    # Objective function value and its components (penalties)
     col_idx = 2
     line_idx += 1
-    sheet.cell(row=line_idx, column=1).value = 'Objective function value'
+    sheet.cell(row=line_idx, column=1).value = 'Objective function value, [N/A]'
     for year in network_planning.years:
         for day in network_planning.days:
             if results['results'][year][day]:
@@ -647,25 +647,23 @@ def _write_main_info_to_excel(network_planning, workbook, results):
             write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
             col_idx += 1
 
-    # ESS penalty
-    col_idx = 2
-    line_idx += 1
-    sheet.cell(row=line_idx, column=1).value = 'Penalty ESS, [N/A]'
-    for year in network_planning.years:
-        for day in network_planning.days:
-            value = results['results'][year][day]['ess_penalty']
-            write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
-            col_idx += 1
-
-    # Slack penalty
-    col_idx = 2
-    line_idx += 1
-    sheet.cell(row=line_idx, column=1).value = 'Penalty Slacks, [N/A]'
-    for year in network_planning.years:
-        for day in network_planning.days:
-            value = results['results'][year][day]['slack_penalty']
-            write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
-            col_idx += 1
+    # col_idx = 2
+    # line_idx += 1
+    # sheet.cell(row=line_idx, column=1).value = 'Penalty ESS, [N/A]'
+    # for year in network_planning.years:
+    #     for day in network_planning.days:
+    #         value = results['results'][year][day]['ess_penalty']
+    #         write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
+    #         col_idx += 1
+    #
+    # col_idx = 2
+    # line_idx += 1
+    # sheet.cell(row=line_idx, column=1).value = 'Penalty Slacks, [N/A]'
+    # for year in network_planning.years:
+    #     for day in network_planning.days:
+    #         value = results['results'][year][day]['slack_penalty']
+    #         write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
+    #         col_idx += 1
 
     # Number of price (market) scenarios
     col_idx = 2
