@@ -447,12 +447,7 @@ def _write_main_info_to_excel(network_planning, workbook, results):
     # Objective function value
     col_idx = 2
     line_idx += 1
-    obj_string = 'Objective'
-    if network_planning.params.obj_type == OBJ_MIN_COST:
-        obj_string += ' (cost), [€]'
-    elif network_planning.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
-        obj_string += ' (congestion management)'
-    sheet.cell(row=line_idx, column=1).value = obj_string
+    sheet.cell(row=line_idx, column=1).value = 'Objective function value'
     for year in network_planning.years:
         for day in network_planning.days:
             if results['results'][year][day]:
@@ -483,6 +478,7 @@ def _write_main_info_to_excel(network_planning, workbook, results):
 
     # Flexibility used
     if network_planning.params.fl_reg:
+
         col_idx = 2
         line_idx += 1
         sheet.cell(row=line_idx, column=1).value = 'Flexibility used, [MWh]'
@@ -500,6 +496,19 @@ def _write_main_info_to_excel(network_planning, workbook, results):
                 value = results['results'][year][day]['flex_used']['q']
                 write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
                 col_idx += 1
+
+        if network_planning.params.obj_type == OBJ_MIN_COST:
+            col_idx = 2
+            line_idx += 1
+            sheet.cell(row=line_idx, column=1).value = 'Flexibility cost, [€]'
+            for year in network_planning.years:
+                for day in network_planning.days:
+                    if results['results'][year][day]:
+                        value = results['results'][year][day]['flex_cost']
+                        write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
+                    else:
+                        sheet.cell(row=line_idx, column=col_idx).value = 'N/A'
+                    col_idx += 1
 
     # Total Load curtailed
     if network_planning.params.l_curt:
@@ -521,6 +530,19 @@ def _write_main_info_to_excel(network_planning, workbook, results):
                 value = results['results'][year][day]['load_curt']['q']
                 write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
                 col_idx += 1
+
+        if network_planning.params.obj_type == OBJ_MIN_COST:
+            col_idx = 2
+            line_idx += 1
+            sheet.cell(row=line_idx, column=1).value = 'Load curtailment cost, [€]'
+            for year in network_planning.years:
+                for day in network_planning.days:
+                    if results['results'][year][day]:
+                        value = results['results'][year][day]['load_curt_cost']
+                        write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
+                    else:
+                        sheet.cell(row=line_idx, column=col_idx).value = 'N/A'
+                    col_idx += 1
 
     # Total Generation
     col_idx = 2
@@ -544,7 +566,7 @@ def _write_main_info_to_excel(network_planning, workbook, results):
     # Total Conventional Generation
     col_idx = 2
     line_idx += 1
-    sheet.cell(row=line_idx, column=1).value = 'Conventional Generation, [MWh]'
+    sheet.cell(row=line_idx, column=1).value = 'Conventional generation, [MWh]'
     for year in network_planning.years:
         for day in network_planning.days:
             value = results['results'][year][day]['total_conventional_gen']['p']
@@ -553,12 +575,25 @@ def _write_main_info_to_excel(network_planning, workbook, results):
 
     col_idx = 2
     line_idx += 1
-    sheet.cell(row=line_idx, column=1).value = 'Conventional Generation, [MVArh]'
+    sheet.cell(row=line_idx, column=1).value = 'Conventional generation, [MVArh]'
     for year in network_planning.years:
         for day in network_planning.days:
             value = results['results'][year][day]['total_conventional_gen']['q']
             write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
             col_idx += 1
+
+    if network_planning.params.obj_type == OBJ_MIN_COST:
+        col_idx = 2
+        line_idx += 1
+        sheet.cell(row=line_idx, column=1).value = 'Conventional generation cost, [€]'
+        for year in network_planning.years:
+            for day in network_planning.days:
+                if results['results'][year][day]:
+                    value = results['results'][year][day]['gen_cost']
+                    write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
+                else:
+                    sheet.cell(row=line_idx, column=col_idx).value = 'N/A'
+                col_idx += 1
 
     # Total Renewable Generation
     col_idx = 2
@@ -599,6 +634,19 @@ def _write_main_info_to_excel(network_planning, workbook, results):
                 value = results['results'][year][day]['gen_curt']['s']
                 write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
                 col_idx += 1
+
+        if network_planning.params.obj_type == OBJ_MIN_COST:
+            col_idx = 2
+            line_idx += 1
+            sheet.cell(row=line_idx, column=1).value = 'Renewable generation curtailment cost, [€]'
+            for year in network_planning.years:
+                for day in network_planning.days:
+                    if results['results'][year][day]:
+                        value = results['results'][year][day]['gen_curt_cost']
+                        write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
+                    else:
+                        sheet.cell(row=line_idx, column=col_idx).value = 'N/A'
+                    col_idx += 1
 
     # Losses
     col_idx = 2

@@ -1,4 +1,4 @@
-import pyomo.environ as pe
+from functools import partial
 from math import tan, atan2, acos, sqrt
 from helper_functions import *
 from definitions import *
@@ -42,7 +42,7 @@ def voltage_slack_bounds(m, i, s_m, s_o, p, network):
 
 def vmag_bounds(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
-    if node.type == BUS_REF:
+    if node.type == BUS_REF and not network.is_transmission:
         return (1.00 - EQUALITY_TOLERANCE, 1.00 + EQUALITY_TOLERANCE)
     else:
         if params.slacks.grid_operation.voltage:
@@ -1103,148 +1103,218 @@ def setup_cost_parameters(model, params):
 
 def build_objective(model, network, params):
 
-    model.total_cost = pe.Expression(expr=0)
+    # Standard Objective
+    if params.obj_type == OBJ_MIN_COST:
+        model.generation_cost_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(generation_cost_scenario_rule, network=network))
+        model.flexibility_cost_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(flexibility_cost_scenario_rule, network=network, params=params))
+        model.load_curtailment_cost_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(load_curtailment_cost_scenario_rule, network=network, params=params))
+        model.gen_curtailment_cost_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(gen_curtailment_cost_scenario_rule, network=network, params=params))
+        model.generation_cost = pe.Expression(rule=partial(generation_cost_rule, network=network))
+        model.flexibility_cost = pe.Expression(rule=partial(flexibility_cost_rule, network=network))
+        model.load_curtailment_cost = pe.Expression(rule=partial(load_curtailment_cost_rule, network=network))
+        model.gen_curtailment_cost = pe.Expression(rule=partial(gen_curtailment_cost_rule, network=network))
+        standard_obj = model.generation_cost + model.flexibility_cost + model.load_curtailment_cost + model.gen_curtailment_cost
+    elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
+        model.generation_curtailment_penalty_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(gen_curtailment_penalty_scenario_rule, network=network, params=params))
+        model.load_curtailment_penalty_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(load_curtailment_penalty_scenario_rule, network=network, params=params))
+        model.flexibility_penalty_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(flexibility_penalty_scenario_rule, network=network, params=params))
+        model.generation_curtailment_penalty = pe.Expression(rule=partial(gen_curtailment_penalty_rule, network=network))
+        model.load_curtailment_penalty = pe.Expression(rule=partial(load_curtailment_penalty_rule, network=network))
+        model.flexibility_penalty = pe.Expression(rule=partial(flexibility_penalty_rule, network=network))
+        standard_obj = model.generation_curtailment_penalty + model.load_curtailment_penalty + model.flexibility_penalty
+    else:
+        raise ValueError(f"Unknown objective function type: {params.obj_type}")
 
+    # Penalties Objective
+    model.ess_utilization_cost_penalty_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(ess_utilization_cost_penalty_scenario_rule, network=network, params=params))
+    model.slacks_penalties_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(slacks_penalties_scenario_rule, network=network, params=params))
+    model.ess_utilization_cost_penalty = pe.Expression(rule=partial(ess_utilization_cost_penalty_rule, network=network))
+    model.slacks_penalties = pe.Expression(rule=partial(slacks_penalties_rule, network=network))
+    penalties_obj = model.ess_utilization_cost_penalty + model.slacks_penalties
+
+    # Assign
+    model.standard_obj = pe.Expression(expr=standard_obj)
+    model.penalties_obj = pe.Expression(expr=penalties_obj)
+    model.objective = pe.Objective(sense=pe.minimize, expr=model.standard_obj + penalties_obj)
+
+
+def generation_cost_scenario_rule(model, s_m, s_o, network):
+    c_p = network.cost_energy_p
+    generation_cost_scenario = 0.0
+    for g in model.generators:
+        if network.generators[g].is_controllable() and not (not network.is_transmission and network.generators[g].gen_type == GEN_REFERENCE):
+            for p in model.periods:
+                generation_cost_scenario += c_p[s_m][p] * network.baseMVA * model.pg[g, s_m, s_o, p]
+    return generation_cost_scenario
+
+
+def generation_cost_rule(model, network):
+    generation_cost = 0.0
     for s_m in model.scenarios_market:
         omega_m = network.prob_market_scenarios[s_m]
         for s_o in model.scenarios_operation:
-
             omega_o = network.prob_operation_scenarios[s_o]
-            weight = omega_m * omega_o
-
-            if params.obj_type == OBJ_MIN_COST:
-                scenario_of = (
-                    generation_cost(model, network, s_m, s_o, params) +
-                    flexibility_cost(model, network, s_m, s_o, params) +
-                    load_curtailment_cost(model, network, s_m, s_o, params) +
-                    gen_curtailment_cost(model, network, s_m, s_o, params) +
-                    ess_utilization_cost_penalty(model, network, s_m, s_o, params)
-                )
-            elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
-                scenario_of = (
-                    gen_curtailment_penalty(model, network, s_m, s_o, params) +
-                    load_curtailment_penalty(model, network, s_m, s_o, params) +
-                    flexibility_penalty(model, network, s_m, s_o, params) +
-                    ess_utilization_cost_penalty(model, network, s_m, s_o, params)
-                )
-            else:
-                raise ValueError(f"Unknown objective function type: {params.obj_type}")
-
-            scenario_of += slack_penalties(model, network, s_m, s_o, params)
-            model.total_cost.expr += weight * scenario_of
-
-    model.objective = pe.Objective(sense=pe.minimize, expr=model.total_cost)
+            generation_cost += omega_m * omega_o * model.generation_cost_scenario[s_m, s_o]
+    return generation_cost
 
 
-def generation_cost(model, network, s_m, s_o, params):
-    c_p = network.cost_energy_p
-    return sum(
-        c_p[s_m][p] * network.baseMVA * model.pg[g, s_m, s_o, p]
-        for g in model.generators
-        if network.generators[g].is_controllable()
-        and not (not network.is_transmission and network.generators[g].gen_type == GEN_REFERENCE)
-        for p in model.periods
-    )
-
-
-def flexibility_cost(model, network, s_m, s_o, params):
+def flexibility_cost_scenario_rule(model, s_m, s_o, network, params):
+    flexibility_cost_scenario = 0.0
     if params.fl_reg:
         c_flex = network.cost_flex
-        return sum(
-            c_flex[s_m][p] * network.baseMVA * (
-                model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p] +
-                model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]
-            )
-            for c in model.loads
-            for p in model.periods
-        )
-    return 0.00
+        for c in model.loads:
+            if network.loads[c].fl_reg:
+                for p in model.periods:
+                    flexibility_cost_scenario += c_flex[s_m][p] * network.baseMVA * (
+                            model.flex_p_down[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]
+                    )
+    return flexibility_cost_scenario
 
 
-def load_curtailment_cost(model, network, s_m, s_o, params):
+def flexibility_cost_rule(model, network):
+    flexibility_cost = 0.0
+    for s_m in model.scenarios_market:
+        omega_m = network.prob_market_scenarios[s_m]
+        for s_o in model.scenarios_operation:
+            omega_o = network.prob_operation_scenarios[s_o]
+            flexibility_cost += omega_m * omega_o * model.flexibility_cost_scenario[s_m, s_o]
+    return flexibility_cost
+
+
+def load_curtailment_cost_scenario_rule(model, s_m, s_o, network, params):
+    load_curtailment_cost_scenario = 0.0
     if params.l_curt:
         cost = model.cost_load_curtailment
-        return sum(
-            cost * network.baseMVA * (
-                model.pc_curt_down[c, s_m, s_o, p] + model.pc_curt_up[c, s_m, s_o, p] +
-                model.qc_curt_down[c, s_m, s_o, p] + model.qc_curt_up[c, s_m, s_o, p]
-            )
-            for c in model.loads
-            for p in model.periods
-        )
-    return 0.00
+        for c in model.loads:
+            for p in model.periods:
+                load_curtailment_cost_scenario += cost * network.baseMVA * (
+                        model.pc_curt_down[c, s_m, s_o, p] + model.pc_curt_up[c, s_m, s_o, p]
+                        + model.qc_curt_down[c, s_m, s_o, p] + model.qc_curt_up[c, s_m, s_o, p]
+                )
+    return load_curtailment_cost_scenario
 
 
-def gen_curtailment_cost(model, network, s_m, s_o, params):
+def load_curtailment_cost_rule(model, network):
+    load_curtailment_cost = 0.0
+    for s_m in model.scenarios_market:
+        omega_m = network.prob_market_scenarios[s_m]
+        for s_o in model.scenarios_operation:
+            omega_o = network.prob_operation_scenarios[s_o]
+            load_curtailment_cost += omega_m * omega_o * model.load_curtailment_cost_scenario[s_m, s_o]
+    return load_curtailment_cost
+
+
+def gen_curtailment_cost_scenario_rule(model, s_m, s_o, network, params):
+    gen_curtailment_cost_scenario = 0.0
     if params.rg_curt:
         cost = model.cost_res_curtailment
-        return sum(
-            cost * network.baseMVA * (model.sg_curt[g, s_m, s_o, p])
-            for g in model.generators if network.generators[g].is_curtaillable()
-            for p in model.periods
-        )
-    return 0.00
+        for g in model.generators:
+            if network.generators[g].is_curtaillable():
+                for p in model.periods:
+                    gen_curtailment_cost_scenario += cost * network.baseMVA * (model.sg_curt[g, s_m, s_o, p])
+    return gen_curtailment_cost_scenario
 
 
-def gen_curtailment_penalty(model, network, s_m, s_o, params):
+def gen_curtailment_cost_rule(model, network):
+    gen_curtailment_cost = 0.0
+    for s_m in model.scenarios_market:
+        omega_m = network.prob_market_scenarios[s_m]
+        for s_o in model.scenarios_operation:
+            omega_o = network.prob_operation_scenarios[s_o]
+            gen_curtailment_cost += omega_m * omega_o * model.gen_curtailment_cost_scenario[s_m, s_o]
+    return gen_curtailment_cost
+
+
+def gen_curtailment_penalty_scenario_rule(model, s_m, s_o, network, params):
+    gen_curtailment_penalty_scenario = 0.0
     if params.rg_curt:
         penalty = model.penalty_gen_curtailment
-        return sum(
-            penalty * network.baseMVA * (model.sg_curt[g, s_m, s_o, p])
-            for g in model.generators if network.generators[g].is_curtaillable()
-            for p in model.periods
-        )
-    return 0.00
+        for g in model.generators:
+            if network.generators[g].is_curtaillable():
+                for p in model.periods:
+                    gen_curtailment_penalty_scenario += penalty * network.baseMVA * (model.sg_curt[g, s_m, s_o, p])
+    return gen_curtailment_penalty_scenario
 
 
-def load_curtailment_penalty(model, network, s_m, s_o, params):
+def gen_curtailment_penalty_rule(model, network):
+    gen_curtailment_penalty = 0.0
+    for s_m in model.scenarios_market:
+        omega_m = network.prob_market_scenarios[s_m]
+        for s_o in model.scenarios_operation:
+            omega_o = network.prob_operation_scenarios[s_o]
+            gen_curtailment_penalty += omega_m * omega_o * model.generation_curtailment_penalty_scenario[s_m, s_o]
+    return gen_curtailment_penalty
+
+
+def load_curtailment_penalty_scenario_rule(model, s_m, s_o, network, params):
+    load_curtailment_penalty_scenario = 0.0
     if params.l_curt:
         penalty = model.penalty_load_curtailment
-        return sum(
-            penalty * network.baseMVA * (
-                model.pc_curt_down[c, s_m, s_o, p] + model.pc_curt_up[c, s_m, s_o, p] +
-                model.qc_curt_down[c, s_m, s_o, p] + model.qc_curt_up[c, s_m, s_o, p]
-            )
-            for c in model.loads
-            for p in model.periods
-        )
-    return 0.00
+        for c in model.loads:
+            for p in model.periods:
+                load_curtailment_penalty_scenario += penalty * network.baseMVA * (
+                        model.pc_curt_down[c, s_m, s_o, p] + model.pc_curt_up[c, s_m, s_o, p] +
+                        model.qc_curt_down[c, s_m, s_o, p] + model.qc_curt_up[c, s_m, s_o, p]
+                )
+    return load_curtailment_penalty_scenario
 
 
-def flexibility_penalty(model, network, s_m, s_o, params):
+def load_curtailment_penalty_rule(model, network):
+    load_curtailment_penalty = 0.0
+    for s_m in model.scenarios_market:
+        omega_m = network.prob_market_scenarios[s_m]
+        for s_o in model.scenarios_operation:
+            omega_o = network.prob_operation_scenarios[s_o]
+            load_curtailment_penalty += omega_m * omega_o * model.load_curtailment_penalty_scenario[s_m, s_o]
+    return load_curtailment_penalty
+
+
+def flexibility_penalty_scenario_rule(model, network, s_m, s_o, params):
+    flexibility_penalty_scenario = 0.0
     if params.fl_reg:
         penalty = model.penalty_flex_usage
-        return sum(
-            penalty * network.baseMVA * (
-                model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p] +
-                model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]
-            )
-            for c in model.loads
-            for p in model.periods
-        )
-    return 0.00
+        for c in model.loads:
+            if network.loads[c].fl_reg:
+                for p in model.periods:
+                    flexibility_penalty_scenario += penalty * network.baseMVA * (
+                        model.flex_p_down[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]
+                    )
+    return flexibility_penalty_scenario
 
 
-def ess_utilization_cost_penalty(model, network, s_m, s_o, params):
-    cost = sum(
-        model.penalty_ess_usage * network.baseMVA * (
-                model.shared_es_sch[e, s_m, s_o, p] + model.shared_es_sdch[e, s_m, s_o, p]
-        )
-        for e in model.shared_energy_storages
-        for p in model.periods
-    )
+def flexibility_penalty_rule(model, network):
+    flexibility_penalty = 0.0
+    for s_m in model.scenarios_market:
+        omega_m = network.prob_market_scenarios[s_m]
+        for s_o in model.scenarios_operation:
+            omega_o = network.prob_operation_scenarios[s_o]
+            flexibility_penalty += omega_m * omega_o * model.flexibility_penalty_scenario[s_m, s_o]
+    return flexibility_penalty
+
+
+def ess_utilization_cost_penalty_scenario_rule(model, s_m, s_o, network, params):
+    ess_cost_penalty = 0.0
+    for e in model.shared_energy_storages:
+        for p in model.periods:
+            ess_cost_penalty += model.penalty_ess_usage * network.baseMVA * (model.shared_es_sch[e, s_m, s_o, p] + model.shared_es_sdch[e, s_m, s_o, p])
     if params.es_reg:
-        cost += sum(
-            model.penalty_ess_usage * network.baseMVA * (
-                    model.es_sch[e, s_m, s_o, p] + model.es_sdch[e, s_m, s_o, p]
-            )
-            for e in model.energy_storages
-            for p in model.periods
-        )
-    return cost
+        for e in model.energy_storages:
+            for p in model.periods:
+                ess_cost_penalty += model.penalty_ess_usage * network.baseMVA * (model.es_sch[e, s_m, s_o, p] + model.es_sdch[e, s_m, s_o, p])
+    return ess_cost_penalty
 
 
-def slack_penalties(model, network, s_m, s_o, params):
+def ess_utilization_cost_penalty_rule(model, network):
+    ess_cost_penalty = 0.0
+    for s_m in model.scenarios_market:
+        omega_m = network.prob_market_scenarios[s_m]
+        for s_o in model.scenarios_operation:
+            omega_o = network.prob_operation_scenarios[s_o]
+            ess_cost_penalty += omega_m * omega_o * model.ess_utilization_cost_penalty_scenario[s_m, s_o]
+    return ess_cost_penalty
+
+
+def slacks_penalties_scenario_rule(model, s_m, s_o, network, params):
 
     total = 0
     base = network.baseMVA
@@ -1286,6 +1356,16 @@ def slack_penalties(model, network, s_m, s_o, params):
                 total += base * PENALTY_CURRENT * model.slack_flow_ij_sqr[b, s_m, s_o, p]
 
     return total
+
+
+def slacks_penalties_rule(model, network):
+    slacks_penalty = 0.0
+    for s_m in model.scenarios_market:
+        omega_m = network.prob_market_scenarios[s_m]
+        for s_o in model.scenarios_operation:
+            omega_o = network.prob_operation_scenarios[s_o]
+            slacks_penalty += omega_m * omega_o * model.slacks_penalties_scenario[s_m, s_o]
+    return slacks_penalty
 
 
 def dn_interface_expected_vmag_def(m, p, network):
