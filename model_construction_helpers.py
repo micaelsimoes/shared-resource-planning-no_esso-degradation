@@ -1,5 +1,5 @@
 from functools import partial
-from math import tan, atan2, acos, sqrt
+from math import tan, atan2, acos
 from helper_functions import *
 from definitions import *
 
@@ -55,15 +55,6 @@ def node_balance_slack_bounds(m, i, s_m, s_o, p, network):
 
 
 # Generation, Pg
-def pg_bounds(m, g, s_m, s_o, p, network):
-    gen = network.generators[g]
-    if gen.status[p]:
-        return (gen.pmin - EQUALITY_TOLERANCE, gen.pmax + EQUALITY_TOLERANCE)
-    else:
-        return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
-
-
-
 def pg_bounds(m, g, s_m, s_o, p, network):
     gen = network.generators[g]
     if not gen.status[p]:
@@ -742,20 +733,6 @@ def sess_s_sensitivities(m, e):
 def sess_e_sensitivities(m, e):
     return m.shared_es_e_rated[e] <= m.shared_es_e_rated_fixed[e] + EQUALITY_TOLERANCE
 
-# - Linear Shared ESS models -- Relaxed LP formulation
-def sess_relaxed_model_ch_rule(m, e, s_m, s_o, p):
-    s_max = m.shared_es_s_rated[e]
-    return m.shared_es_sch[e, s_m, s_o, p] <= s_max * m.shared_es_sch_comp[e, s_m, s_o, p]
-
-
-def sess_relaxed_model_dch_rule(m, e, s_m, s_o, p):
-    s_max = m.shared_es_s_rated[e]
-    return m.shared_es_sdch[e, s_m, s_o, p] <= s_max * m.shared_es_sdch_comp[e, s_m, s_o, p]
-
-
-def sess_relaxed_model_comp_rule(m, e, s_m, s_o, p):
-    return m.shared_es_sch_comp[e, s_m, s_o, p] + m.shared_es_sdch_comp[e, s_m, s_o, p] <= 1.00
-
 
 # - Linear Shared ESS models -- Extended simplified formulation
 def sess_simplified_model_ch_rule(m, e, s_m, s_o, p, network):
@@ -1130,12 +1107,12 @@ def build_objective(model, network, params):
     model.slacks_penalties_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(slacks_penalties_scenario_rule, network=network, params=params))
     model.ess_utilization_cost_penalty = pe.Expression(rule=partial(ess_utilization_cost_penalty_rule, network=network))
     model.slacks_penalties = pe.Expression(rule=partial(slacks_penalties_rule, network=network))
-    penalties_obj = model.ess_utilization_cost_penalty + model.slacks_penalties
+    penalties_obj = pe.summation(model.ess_utilization_cost_penalty, model.slacks_penalties)
 
     # Assign
     model.standard_obj = pe.Expression(expr=standard_obj)
     model.penalties_obj = pe.Expression(expr=penalties_obj)
-    model.objective = pe.Objective(sense=pe.minimize, expr=model.standard_obj + penalties_obj)
+    model.objective = pe.Objective(sense=pe.minimize, expr=pe.summation(model.standard_obj, model.penalties_obj))
 
 
 def generation_cost_scenario_rule(model, s_m, s_o, network):
@@ -1269,7 +1246,7 @@ def load_curtailment_penalty_rule(model, network):
     return load_curtailment_penalty
 
 
-def flexibility_penalty_scenario_rule(model, network, s_m, s_o, params):
+def flexibility_penalty_scenario_rule(model, s_m, s_o, network, params):
     flexibility_penalty_scenario = 0.0
     if params.fl_reg:
         penalty = model.penalty_flex_usage
@@ -1330,8 +1307,9 @@ def slacks_penalties_scenario_rule(model, s_m, s_o, network, params):
                 total += base * PENALTY_NODE_BALANCE * (model.slack_node_balance_q_up[i, s_m, s_o, p] + model.slack_node_balance_q_down[i, s_m, s_o, p])
 
     if params.fl_reg and params.slacks.flexibility.day_balance:
-        total += base * PENALTY_FLEXIBILITY * sum(model.slack_flex_p_balance_up[c, s_m, s_o] + model.slack_flex_p_balance_down[c, s_m, s_o] for c in model.loads)
-        total += base * PENALTY_FLEXIBILITY * sum(model.slack_flex_q_balance_up[c, s_m, s_o] + model.slack_flex_q_balance_down[c, s_m, s_o] for c in model.loads)
+        for c in model.loads:
+            total += base * PENALTY_FLEXIBILITY * (model.slack_flex_p_balance_up[c, s_m, s_o] + model.slack_flex_p_balance_down[c, s_m, s_o])
+            total += base * PENALTY_FLEXIBILITY * (model.slack_flex_q_balance_up[c, s_m, s_o] + model.slack_flex_q_balance_down[c, s_m, s_o])
 
     if params.es_reg:
         for e in model.energy_storages:
@@ -1347,6 +1325,8 @@ def slacks_penalties_scenario_rule(model, s_m, s_o, network, params):
         for p in model.periods:
             if params.slacks.shared_ess.complementarity:
                 total += base * PENALTY_SHARED_ESS_COMP * model.slack_shared_es_comp[e, s_m, s_o, p]
+            if params.ess_model == ESS_MODEL_PENALIZED:
+                total += base * PENALTY_ESS_COMP_OBJECTIVE * (model.shared_es_sch[e, s_m, s_o, p] * model.shared_es_sdch[e, s_m, s_o, p])
         if params.slacks.shared_ess.day_balance:
             total += base * PENALTY_SHARED_ESS_BALANCE * (model.slack_shared_es_soc_final_up[e, s_m, s_o] + model.slack_shared_es_soc_final_down[e, s_m, s_o])
 
