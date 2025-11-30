@@ -1,14 +1,14 @@
 {
 	"garbage_collection": false,
 	"benders": {
-		"tol_abs": 1e3,
+		"tol_abs": 10e3,
 		"tol_rel": 5e-2,
 		"num_max_iters": 100
 	},
 	"admm": {
 		"tol": {
-			"consensus": {"v": 5e-3, "pf": 5e-3, "ess": 5e-3},
-			"stationarity": {"v": 5e-3, "pf": 5e-3, "ess": 5e-3}
+			"consensus": {"v": 0.5e-2, "pf": 1e-2, "ess": 5e-2},
+			"stationarity": {"v": 5e-2, "pf": 5e-2, "ess": 5e-2}
 		},
 		"num_max_iters": 50,
 		"adaptive_penalty": true,
@@ -33,7 +33,7 @@
 				"esso": 1.00
 			}
 		},
-		"previous_iteration": {"ess": {"tso": false, "dso": false}},
+		"previous_iteration": {"ess": {"tso": true, "dso": true}},
 		"rho_previous_iter": {
 			"ess": {
 				"case9": 0.10,

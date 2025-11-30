@@ -7,8 +7,8 @@
 	"l_curt": false,
 	"enforce_vg": false,
 	"branch_limit_type": "MIXED",
-	"ess_model": "SIMPLIFIED_EXTENDED",
-	"shared_ess_model": "SIMPLIFIED_EXTENDED",
+	"ess_model": "EXACT",
+	"shared_ess_model": "EXACT",
 	"slacks": {
 		"grid_operation": {
 			"voltage": true,
@@ -32,9 +32,13 @@
 	},
 	"solver": {
 		"name": "ipopt",
-		"linear_solver": "ma97",
-		"solver_tol": 1e-5,
-		"verbose": false
+		"verbose": false,
+		"options": {
+	  		"tol": 1e-5,
+	  		"acceptable_tol": 1e-4,
+	  		"acceptable_iter": 5,
+			"linear_solver": "ma97"
+		}
 	},
 	"print_to_screen": false,
 	"plot_diagram": false,
