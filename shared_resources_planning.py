@@ -546,10 +546,10 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
 
                             # Interface voltage, free vmag_adn, remove slacks
                             if transmission_network.params.slacks.grid_operation.voltage:
-                                fix_or_set(tso_model[year][day].slack_e_up[adn_node_idx, s_m, s_o, p], 0.00)
-                                fix_or_set(tso_model[year][day].slack_e_down[adn_node_idx, s_m, s_o, p], 0.00)
-                                fix_or_set(tso_model[year][day].slack_f_up[adn_node_idx, s_m, s_o, p], 0.00)
-                                fix_or_set(tso_model[year][day].slack_f_down[adn_node_idx, s_m, s_o, p], 0.00)
+                                tso_model[year][day].slack_e_up[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                tso_model[year][day].slack_e_down[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                tso_model[year][day].slack_f_up[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                tso_model[year][day].slack_f_down[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
 
                             # Fix Pc and Qc (base profiles), free pc_adn and qc_adn
                             interface_pf_p = consensus_vars['pf']['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
@@ -972,9 +972,11 @@ def _run_operational_planning_hierarchical(planning_problem, num_steps=8, print_
                             obj += tso_model[year][day].penalty_regularization * s_base * (qc - tso_model[year][day].expected_interface_pf_q[dn, p]) ** 2
             tso_model[year][day].objective.expr = obj
 
-            # Optimize TN, Get resulting interface PFs
-            print(f'[INFO] - Running OPF on {transmission_network.name} with hierarchical constraints...')
-            results['tso'] = transmission_network.optimize(tso_model)
+    # Optimize TN, Get resulting interface PFs
+    print(f'[INFO] - Running OPF on {transmission_network.name} with hierarchical constraints...')
+    results['tso'] = transmission_network.optimize(tso_model)
+    for year in transmission_network.years:
+        for day in transmission_network.days:
             for dn in tso_model[year][day].active_distribution_networks:
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
                 for p in tso_model[year][day].periods:
