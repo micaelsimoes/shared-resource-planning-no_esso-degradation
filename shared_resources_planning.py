@@ -2117,36 +2117,23 @@ def _run_operational_planning_without_coordination(planning_problem):
                                 tso_model[year][day].qc_curt_down[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                                 tso_model[year][day].qc_curt_up[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
 
-            # Add interface expected variables, and their definition
-            tso_model[year][day].expected_interface_vmag = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.0)
-            tso_model[year][day].expected_interface_pf_p = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.0)
-            tso_model[year][day].expected_interface_pf_q = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.0)
-            tso_model[year][day].expected_interface_vmag_def = pe.Constraint(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_vmag_rule, network=transmission_network.network[year][day]))
-            tso_model[year][day].expected_interface_pf_p_def = pe.Constraint(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_pf_p_rule, network=transmission_network.network[year][day]))
-            tso_model[year][day].expected_interface_pf_q_def = pe.Constraint(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_pf_q_rule, network=transmission_network.network[year][day]))
-
+            # "Fix" Pc and Qc (DNs' solutions)
             # Regularization -- decrease variance between scenarios
             obj = copy(tso_model[year][day].objective.expr)
-            tso_model[year][day].penalty_regularization = pe.Param(initialize=PENALTY_REGULARIZATION)
+            tso_model[year][day].penalty_regularization = pe.Param(initialize=PENALTY_REGULARIZATION * 1e6)
             for dn in tso_model[year][day].active_distribution_networks:
+                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
                 for s_m in tso_model[year][day].scenarios_market:
                     for s_o in tso_model[year][day].scenarios_operation:
                         for p in tso_model[year][day].periods:
-                            obj += tso_model[year][day].penalty_regularization * (tso_model[year][day].vmag_adn[dn, s_m, s_o, p] - tso_model[year][day].expected_interface_vmag[dn, p]) ** 2
-                            obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].pc_adn[dn, s_m, s_o, p] - tso_model[year][day].expected_interface_pf_p[dn, p]) ** 2
-                            obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].qc_adn[dn, s_m, s_o, p] - tso_model[year][day].expected_interface_pf_q[dn, p]) ** 2
-            tso_model[year][day].objective.expr = obj
+                            vmag_req = interface_vmag[adn_node_id][year][day][p]
+                            p_req = interface_pf[adn_node_id][year][day]['p'][p] / s_base
+                            q_req = interface_pf[adn_node_id][year][day]['q'][p] / s_base
+                            obj += tso_model[year][day].penalty_regularization * (tso_model[year][day].vmag_adn[dn, s_m, s_o, p] - vmag_req) ** 2
+                            obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].pc_adn[dn, s_m, s_o, p] - p_req) ** 2
+                            obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].qc_adn[dn, s_m, s_o, p] - q_req) ** 2
 
-            # Fix Pc and Qc (DNs' solutions)
-            for dn in tso_model[year][day].active_distribution_networks:
-                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
-                for p in tso_model[year][day].periods:
-                    vmag_req = interface_vmag[adn_node_id][year][day][p]
-                    p_req = interface_pf[adn_node_id][year][day]['p'][p] / s_base
-                    q_req = interface_pf[adn_node_id][year][day]['q'][p] / s_base
-                    tso_model[year][day].expected_interface_vmag[dn, p].fix(vmag_req)
-                    tso_model[year][day].expected_interface_pf_p[dn, p].fix(p_req)
-                    tso_model[year][day].expected_interface_pf_q[dn, p].fix(q_req)
+            tso_model[year][day].objective.expr = obj
 
     results['tso'] = transmission_network.optimize(tso_model)
 
