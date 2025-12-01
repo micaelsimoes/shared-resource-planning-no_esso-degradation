@@ -6039,7 +6039,7 @@ def _check_interface_nodes_base_voltage_consistency(planning_problem):
                 dn_ref_node_id = planning_problem.distribution_networks[node_id].network[year][day].get_reference_node_id()
                 dn_node_base_kv = planning_problem.distribution_networks[node_id].network[year][day].get_node_base_kv(dn_ref_node_id)
                 if not isclose(tn_node_base_kv, dn_node_base_kv, rel_tol=5e-2):
-                    print(f'[ERROR] Inconsistent TN-DN base voltage at node {node_id}, year {year}, day {day}! Check network(s). Exiting')
+                    print(f'[ERROR] Distribution Network {planning_problem.distribution_networks[node_id].name}, TN node {node_id}. Inconsistent TN-DN base voltage, year {year}, day {day}! Check network(s). Exiting')
                     exit(ERROR_SPECIFICATION_FILE)
 
 
