@@ -909,34 +909,12 @@ def _run_operational_planning_hierarchical(planning_problem, num_steps=8, print_
                                 tso_model[year][day].qc_curt_up[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
 
             # TN, Add expected interface values
-            tso_model[year][day].expected_interface_vmag_sqr = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00)
-            tso_model[year][day].expected_interface_pf_p = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
-            tso_model[year][day].expected_interface_pf_q = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
-            tso_model[year][day].interface_expected_values = pe.ConstraintList()
-            for dn in tso_model[year][day].active_distribution_networks:
-                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
-                adn_node_idx = transmission_network.network[year][day].get_node_idx(adn_node_id)
-                adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(adn_node_id)
-                for p in tso_model[year][day].periods:
-                    expected_vmag_sqr = 0.00
-                    expected_pf_p = 0.00
-                    expected_pf_q = 0.00
-                    for s_m in tso_model[year][day].scenarios_market:
-                        omega_market = transmission_network.network[year][day].prob_market_scenarios[s_m]
-                        for s_o in tso_model[year][day].scenarios_operation:
-                            omega_oper = transmission_network.network[year][day].prob_operation_scenarios[s_o]
-                            adn_vmag_sqr = (tso_model[year][day].e_actual[adn_node_idx, s_m, s_o, p] ** 2 + tso_model[year][day].f_actual[adn_node_idx, s_m, s_o, p] ** 2)
-                            adn_pc = tso_model[year][day].pc[adn_load_idx, s_m, s_o, p] + tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p] - tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p]
-                            adn_qc = tso_model[year][day].qc[adn_load_idx, s_m, s_o, p] + tso_model[year][day].flex_q_up[adn_load_idx, s_m, s_o, p] - tso_model[year][day].flex_q_down[adn_load_idx, s_m, s_o, p]
-                            expected_vmag_sqr += omega_market * omega_oper * adn_vmag_sqr
-                            expected_pf_p += omega_market * omega_oper * adn_pc
-                            expected_pf_q += omega_market * omega_oper * adn_qc
-                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] <= adn_vmag_sqr + SMALL_TOLERANCE)
-                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] >= adn_vmag_sqr - SMALL_TOLERANCE)
-                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_p[dn, p] <= expected_pf_p + SMALL_TOLERANCE)
-                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_p[dn, p] >= expected_pf_p - SMALL_TOLERANCE)
-                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_q[dn, p] <= expected_pf_q + SMALL_TOLERANCE)
-                    tso_model[year][day].interface_expected_values.add(tso_model[year][day].expected_interface_pf_q[dn, p] >= expected_pf_q - SMALL_TOLERANCE)
+            tso_model[year][day].expected_interface_vmag = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.0)
+            tso_model[year][day].expected_interface_pf_p = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.0)
+            tso_model[year][day].expected_interface_pf_q = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.0)
+            tso_model[year][day].expected_interface_vmag_def = pe.Constraint( tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_vmag_rule, network=transmission_network.network[year][day]))
+            tso_model[year][day].expected_interface_pf_p_def = pe.Constraint(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_pf_p_rule, network=transmission_network.network[year][day]))
+            tso_model[year][day].expected_interface_pf_q_def = pe.Constraint(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_pf_q_rule, network=transmission_network.network[year][day]))
 
             # TN, Add ADNs' PQ maps constraints, Fix expected vmag
             tso_model[year][day].pq_maps = pe.ConstraintList()
@@ -945,8 +923,8 @@ def _run_operational_planning_hierarchical(planning_problem, num_steps=8, print_
                 for p in tso_model[year][day].periods:
                     adn_pq_map = dso_models[adn_node_id][year][day][p]
                     initial_solution = adn_pq_map['initial_solution']
-                    tso_model[year][day].pq_maps.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] <= initial_solution['Vg'] ** 2 + EQUALITY_TOLERANCE)
-                    tso_model[year][day].pq_maps.add(tso_model[year][day].expected_interface_vmag_sqr[dn, p] >= initial_solution['Vg'] ** 2 - EQUALITY_TOLERANCE)
+                    tso_model[year][day].pq_maps.add(tso_model[year][day].expected_interface_vmag[dn, p] <= initial_solution['Vg'] + EQUALITY_TOLERANCE)
+                    tso_model[year][day].pq_maps.add(tso_model[year][day].expected_interface_vmag[dn, p] >= initial_solution['Vg'] - EQUALITY_TOLERANCE)
                     for ineq in adn_pq_map['inequalities']:
                         a = ineq['Pg']
                         b = ineq['Qg']
@@ -955,21 +933,14 @@ def _run_operational_planning_hierarchical(planning_problem, num_steps=8, print_
 
             # Regularization -- Added to OF to minimize deviations from scenarios to expected values
             obj = copy(tso_model[year][day].objective.expr)
-            tso_model[year][day].penalty_regularization = pe.Var(domain=pe.NonNegativeReals)
-            tso_model[year][day].penalty_regularization.fix(PENALTY_REGULARIZATION * 1e6)
+            tso_model[year][day].penalty_regularization = pe.Param(initialize=PENALTY_REGULARIZATION)
             for dn in tso_model[year][day].active_distribution_networks:
-                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
-                adn_node_idx = transmission_network.network[year][day].get_node_idx(adn_node_id)
-                adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(adn_node_id)
                 for s_m in tso_model[year][day].scenarios_market:
                     for s_o in tso_model[year][day].scenarios_operation:
                         for p in tso_model[year][day].periods:
-                            vmag_sqr = tso_model[year][day].e_actual[adn_node_idx, s_m, s_o, p] ** 2 + tso_model[year][day].f_actual[adn_node_idx, s_m, s_o, p] ** 2
-                            pc = tso_model[year][day].pc[adn_load_idx, s_m, s_o, p] + tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p] - tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p]
-                            qc = tso_model[year][day].qc[adn_load_idx, s_m, s_o, p] + tso_model[year][day].flex_q_up[adn_load_idx, s_m, s_o, p] - tso_model[year][day].flex_q_down[adn_load_idx, s_m, s_o, p]
-                            obj += tso_model[year][day].penalty_regularization * (vmag_sqr - tso_model[year][day].expected_interface_vmag_sqr[dn, p]) ** 2
-                            obj += tso_model[year][day].penalty_regularization * s_base * (pc - tso_model[year][day].expected_interface_pf_p[dn, p]) ** 2
-                            obj += tso_model[year][day].penalty_regularization * s_base * (qc - tso_model[year][day].expected_interface_pf_q[dn, p]) ** 2
+                            obj += tso_model[year][day].penalty_regularization * (tso_model[year][day].vmag_adn[dn, s_m, s_o, p] - tso_model[year][day].expected_interface_vmag[dn, p]) ** 2
+                            obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].pc_adn[dn, s_m, s_o, p] - tso_model[year][day].expected_interface_pf_p[dn, p]) ** 2
+                            obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].qc_adn[dn, s_m, s_o, p] - tso_model[year][day].expected_interface_pf_q[dn, p]) ** 2
             tso_model[year][day].objective.expr = obj
 
     # Optimize TN, Get resulting interface PFs
@@ -977,10 +948,11 @@ def _run_operational_planning_hierarchical(planning_problem, num_steps=8, print_
     results['tso'] = transmission_network.optimize(tso_model)
     for year in transmission_network.years:
         for day in transmission_network.days:
+            s_base = transmission_network.network[year][day].baseMVA
             for dn in tso_model[year][day].active_distribution_networks:
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
                 for p in tso_model[year][day].periods:
-                    vmag = sqrt(pe.value(tso_model[year][day].expected_interface_vmag_sqr[dn, p]))
+                    vmag = pe.value(tso_model[year][day].expected_interface_vmag[dn, p])
                     pc = pe.value(tso_model[year][day].expected_interface_pf_p[dn, p]) * s_base
                     qc = pe.value(tso_model[year][day].expected_interface_pf_q[dn, p]) * s_base
                     pf_requested[year][day][adn_node_id][p] = {'Pg': pc, 'Qg': qc, 'Vg': vmag}
