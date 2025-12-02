@@ -98,10 +98,30 @@ class SharedResourcesPlanning:
             exit(ERROR_SPECIFICATION_FILE)
 
     def run_without_coordination(self, print_results=False):
+
         print('[INFO] Running PLANNING PROBLEM WITHOUT COORDINATION...')
+        print('[INFO] \t - Transmission Network. Power factor control switched off!')
+        print('[INFO] \t - Transmission Network. Flexible load control switched off!')
+        self.transmission_network.params.fl_reg = False
+        for year in self.transmission_network.years:
+            for day in self.transmission_network.days:
+                for generator in self.transmission_network.network[year][day].generators:
+                    if generator.is_curtaillable():
+                        generator.power_factor_control = False
+
         results, models, execution_time = _run_operational_planning_without_coordination(self)
         if print_results:
             self.write_operational_planning_results_without_coordination_to_excel(models, results, execution_time=execution_time)
+
+        print('[INFO] \t - Transmission Network. Power factor control switched back on!')
+        print('[INFO] \t - Transmission Network. Flexible load control switched back on!')
+        self.transmission_network.params.fl_reg = True
+        for year in self.transmission_network.years:
+            for day in self.transmission_network.days:
+                for generator in self.transmission_network.network[year][day].generators:
+                    if generator.is_curtaillable():
+                        generator.power_factor_control = True
+
         return results, models
 
     def combine_networks(self):
@@ -3020,21 +3040,6 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
                 sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['gen_curt']['s']
                 sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
                 col_idx += 1
-
-        if network.params.obj_type == OBJ_MIN_COST:
-            line_idx += 1
-            col_idx = 1
-            sheet.cell(row=line_idx, column=col_idx).value = operator_type
-            col_idx += 1
-            sheet.cell(row=line_idx, column=col_idx).value = tn_node_id
-            col_idx += 1
-            sheet.cell(row=line_idx, column=col_idx).value = 'Renewable generation curtailment cost, [€]'
-            col_idx += 1
-            for year in results:
-                for day in results[year]:
-                    sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['gen_curt_cost']
-                    sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
-                    col_idx += 1
 
     # Losses
     line_idx += 1

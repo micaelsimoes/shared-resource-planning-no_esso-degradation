@@ -1386,7 +1386,6 @@ def _compute_objective_function_value_per_scenario(network, model, params, s_m, 
         obj += pe.value(model.gen_cost_scenario[s_m, s_o])
         obj += pe.value(model.flex_cost_scenario[s_m, s_o])
         obj += pe.value(model.load_curt_cost_scenario[s_m, s_o])
-        obj += pe.value(model.gen_curt_cost_scenario[s_m, s_o])
     elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
         obj += pe.value(model.gen_curt_penalty_scenario[s_m, s_o])
         obj += pe.value(model.load_curt_penalty_scenario[s_m, s_o])
