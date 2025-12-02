@@ -1155,7 +1155,7 @@ def update_transmission_model_to_admm(planning_problem, model, params):
                 model[year][day].cost_res_curtailment.set_value(COST_GENERATION_CURTAILMENT)
                 model[year][day].cost_load_curtailment.set_value(COST_CONSUMPTION_CURTAILMENT)
             elif transmission_network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
-                model[year][day].penalty_gen_curtailment.set_value(PENALTY_GENERATION_CURTAILMENT)
+                model[year][day].penalty_gen_curtailment.set_value(0.00)
                 model[year][day].penalty_load_curtailment.set_value(PENALTY_LOAD_CURTAILMENT)
                 model[year][day].penalty_flex_usage.set_value(0.00)
 
@@ -1271,7 +1271,7 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                     dso_model[year][day].cost_res_curtailment.set_value(COST_GENERATION_CURTAILMENT)
                     dso_model[year][day].cost_load_curtailment.set_value(COST_CONSUMPTION_CURTAILMENT)
                 elif distribution_network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
-                    dso_model[year][day].penalty_gen_curtailment.set_value(PENALTY_GENERATION_CURTAILMENT)
+                    dso_model[year][day].penalty_gen_curtailment.set_value(0.00)
                     dso_model[year][day].penalty_load_curtailment.set_value(PENALTY_LOAD_CURTAILMENT)
                     dso_model[year][day].penalty_flex_usage.set_value(0.00)
 

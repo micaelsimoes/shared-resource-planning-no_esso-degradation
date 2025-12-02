@@ -1193,13 +1193,16 @@ def total_load_curtailment_cost_rule(model, network):
 
 
 def gen_curtailment_penalty(model, network, s_m, s_o, params):
+    '''
+    Note: sg_curt was removed as a variable. To disincentive curtailment, we maximize pg instead
+    '''
     gen_curt_penalty = 0.0
     if params.rg_curt:
         penalty = model.penalty_gen_curtailment
         for g in model.generators:
             if network.generators[g].is_curtaillable():
                 for p in model.periods:
-                    gen_curt_penalty += penalty * network.baseMVA * (model.sg_curt[g, s_m, s_o, p])
+                    gen_curt_penalty -= penalty * network.baseMVA * (model.pg[g, s_m, s_o, p])
     return gen_curt_penalty
 
 
