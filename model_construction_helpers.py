@@ -358,6 +358,13 @@ def sg_sqr_rule(m, g, s_m, s_o, p, network):
     return m.pg[g, s_m, s_o, p]**2 + m.qg[g, s_m, s_o, p]**2
 
 
+def sg_curt_rule(m, g, s_m, s_o, p, network):
+    gen = network.generators[g]
+    if not gen.status[p] or not gen.is_curtaillable():
+        return 0.0  # just a scalar
+    return m.sg_avail[g, s_o, p] - m.sg_sqr[g, s_m, s_o, p]**0.50
+
+
 def sg_def_rule(m, g, s_m, s_o, p, network, params):
     gen = network.generators[g]
     if not gen.status[p] or not gen.is_curtaillable():
@@ -365,11 +372,11 @@ def sg_def_rule(m, g, s_m, s_o, p, network, params):
     return m.sg[g, s_m, s_o, p] ** 2 == m.sg_sqr[g, s_m, s_o, p]
 
 
-def sg_curt_rule(m, g, s_m, s_o, p, network, params):
+def sg_avail_rule(m, g, s_m, s_o, p, network, params):
     gen = network.generators[g]
     if not gen.status[p] or not gen.is_curtaillable():
-        return m.sg[g, s_m, s_o, p] == 0.0
-    return m.sg[g, s_m, s_o, p] + m.sg_curt[g, s_m, s_o, p] <= m.sg_avail[g, s_o, p]
+        return pe.Constraint.Skip
+    return m.sg_sqr[g, s_m, s_o, p] <= m.sg_avail[g, s_o, p] ** 2
 
 
 def power_factor_rule_upper(m, g, s_m, s_o, p, network):
@@ -1084,11 +1091,9 @@ def build_objective(model, network, params):
         model.gen_cost_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(generation_cost_rule, network=network, params=params))
         model.flex_cost_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(flex_cost_rule, network=network, params=params))
         model.load_curt_cost_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(load_curtailment_cost_rule, network=network, params=params))
-        model.gen_curt_cost_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(gen_curtailment_cost_rule, network=network, params=params))
         model.total_gen_cost = pe.Expression(rule=partial(total_generation_cost_rule, network=network))
         model.total_flex_cost = pe.Expression(rule=partial(total_flex_cost_rule, network=network))
         model.total_load_curt_cost = pe.Expression(rule=partial(total_load_curtailment_cost_rule, network=network))
-        model.total_gen_curt_cost = pe.Expression(rule=partial(total_gen_curtailment_cost_rule, network=network))
     else:
         model.gen_curt_penalty_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(gen_curtailment_penalty_rule, network=network, params=params))
         model.load_curt_penalty_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(load_curtailment_penalty_rule, network=network, params=params))
@@ -1107,7 +1112,7 @@ def build_objective(model, network, params):
 
 def objective_function_rule(model, params):
     if params.obj_type == OBJ_MIN_COST:
-        obj = model.total_gen_cost + model.total_flex_cost + model.total_load_curt_cost + model.total_gen_curt_cost
+        obj = model.total_gen_cost + model.total_flex_cost + model.total_load_curt_cost
     else:
         obj = model.total_gen_curt_penalty + model.total_load_curt_penalty + model.total_flex_penalty
     obj += model.total_ess_utilization_cost_penalty
@@ -1185,29 +1190,6 @@ def total_load_curtailment_cost_rule(model, network):
         for s_o in model.scenarios_operation:
             total_load_curtailment_cost += network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * model.load_curt_cost_scenario[s_m, s_o]
     return total_load_curtailment_cost
-
-
-def gen_curtailment_cost(model, network, s_m, s_o, params):
-    gen_curt_cost = 0.0
-    if params.rg_curt:
-        cost = model.cost_res_curtailment
-        for g in model.generators:
-            if network.generators[g].is_curtaillable():
-                for p in model.periods:
-                    gen_curt_cost += cost * network.baseMVA * (model.sg_curt[g, s_m, s_o, p])
-    return gen_curt_cost
-
-
-def gen_curtailment_cost_rule(model, s_m, s_o, network, params):
-    return gen_curtailment_cost(model, network, s_m, s_o, params)
-
-
-def total_gen_curtailment_cost_rule(model, network):
-    total_gen_curtailment_cost = 0.0
-    for s_m in model.scenarios_market:
-        for s_o in model.scenarios_operation:
-            total_gen_curtailment_cost += network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * model.gen_curt_cost_scenario[s_m, s_o]
-    return total_gen_curtailment_cost
 
 
 def gen_curtailment_penalty(model, network, s_m, s_o, params):
