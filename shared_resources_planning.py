@@ -958,7 +958,7 @@ def _run_operational_planning_hierarchical(planning_problem, num_steps=8, print_
                 for s_m in tso_model[year][day].scenarios_market:
                     for s_o in tso_model[year][day].scenarios_operation:
                         for p in tso_model[year][day].periods:
-                            obj += tso_model[year][day].penalty_regularization * (tso_model[year][day].vmag_adn[dn, s_m, s_o, p] - tso_model[year][day].expected_interface_vmag[dn, p]) ** 2
+                            # obj += tso_model[year][day].penalty_regularization * (tso_model[year][day].vmag_adn[dn, s_m, s_o, p] - tso_model[year][day].expected_interface_vmag[dn, p]) ** 2
                             obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].pc_adn[dn, s_m, s_o, p] - tso_model[year][day].expected_interface_pf_p[dn, p]) ** 2
                             obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].qc_adn[dn, s_m, s_o, p] - tso_model[year][day].expected_interface_pf_q[dn, p]) ** 2
             tso_model[year][day].objective.expr = obj
@@ -2149,7 +2149,7 @@ def _run_operational_planning_without_coordination(planning_problem):
                             vmag_req = interface_vmag[adn_node_id][year][day][p]
                             p_req = interface_pf[adn_node_id][year][day]['p'][p] / s_base
                             q_req = interface_pf[adn_node_id][year][day]['q'][p] / s_base
-                            obj += tso_model[year][day].penalty_regularization * (tso_model[year][day].vmag_adn[dn, s_m, s_o, p] - vmag_req) ** 2
+                            # obj += tso_model[year][day].penalty_regularization * (tso_model[year][day].vmag_adn[dn, s_m, s_o, p] - vmag_req) ** 2
                             obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].pc_adn[dn, s_m, s_o, p] - p_req) ** 2
                             obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].qc_adn[dn, s_m, s_o, p] - q_req) ** 2
 
