@@ -1289,17 +1289,19 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                 s_base = distribution_network.network[year][day].baseMVA
                 ref_node_id = distribution_network.network[year][day].get_reference_node_id()
                 ref_node_idx = distribution_network.network[year][day].get_node_idx(ref_node_id)
-                _, v_max = distribution_network.network[year][day].get_node_voltage_limits(ref_node_id)
+                v_min, v_max = distribution_network.network[year][day].get_node_voltage_limits(ref_node_id)
 
                 # Update Vmag, Pg, Qg limits at the interface node
                 for s_m in dso_model[year][day].scenarios_market:
                     for s_o in dso_model[year][day].scenarios_operation:
                         for p in dso_model[year][day].periods:
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].fixed = False
-                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setub(v_max)
-                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setlb(-v_max)
+                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setub(v_max + EQUALITY_TOLERANCE)
+                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setlb(-v_max - EQUALITY_TOLERANCE)
                             dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                             dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
+                            dso_model[year][day].vmag[ref_node_idx, s_m, s_o, p].setub(v_max + EQUALITY_TOLERANCE)
+                            dso_model[year][day].vmag[ref_node_idx, s_m, s_o, p].setlb(v_min - EQUALITY_TOLERANCE)
                             if distribution_network.params.slacks.grid_operation.voltage:
                                 dso_model[year][day].slack_e_up[ref_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                                 dso_model[year][day].slack_e_down[ref_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
@@ -2091,7 +2093,7 @@ def _run_operational_planning_without_coordination(planning_problem):
                 s_base = distribution_network.network[year][day].baseMVA
 
                 # Add interface expected variables, and their definition
-                dso_model[year][day].expected_interface_vmag = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=0.00)
+                dso_model[year][day].expected_interface_vmag = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00)
                 dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.0)
                 dso_model[year][day].expected_interface_pf_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.0)
                 dso_model[year][day].expected_interface_vmag_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_vmag_rule, network=distribution_network.network[year][day]))

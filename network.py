@@ -75,8 +75,9 @@ class Network:
             ref_node_id = self.get_reference_node_id()
             interface_branch_rating = 0.00
             for branch in self.branches:
-                if branch.fbus == ref_node_id or branch.tbus == ref_node_id:
-                    interface_branch_rating += branch.rate
+                if branch.status:
+                    if branch.fbus == ref_node_id or branch.tbus == ref_node_id:
+                        interface_branch_rating += branch.rate
             return interface_branch_rating
         else:
             print(f'[ERROR] Network {self.name}. Function get_interface_branch_rating() NOT APPLICABLE to TRANSMISSION NETWORK.')
