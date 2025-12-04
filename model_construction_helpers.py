@@ -1307,6 +1307,11 @@ def slack_penalties(model, network, s_m, s_o, params):
             if params.slacks.node_balance.reactive_power:
                 total += base * PENALTY_NODE_BALANCE * (model.slack_node_balance_q_up[i, s_m, s_o, p] + model.slack_node_balance_q_down[i, s_m, s_o, p])
 
+    for b in model.branches:
+        for p in model.periods:
+            if params.slacks.grid_operation.branch_flow:
+                total += base * PENALTY_CURRENT * (model.slack_flow_ij_sqr[b, s_m, s_o, p])
+
     if params.fl_reg and params.slacks.flexibility.day_balance:
         for c in model.loads:
             if network.loads[c].fl_reg:
@@ -1331,11 +1336,6 @@ def slack_penalties(model, network, s_m, s_o, params):
                 total += base * PENALTY_ESS_COMP_OBJECTIVE * (model.shared_es_sch[e, s_m, s_o, p] * model.shared_es_sdch[e, s_m, s_o, p])
         if params.slacks.shared_ess.day_balance:
             total += base * PENALTY_SHARED_ESS_BALANCE * (model.slack_shared_es_soc_final_up[e, s_m, s_o] + model.slack_shared_es_soc_final_down[e, s_m, s_o])
-
-    for b in model.branches:
-        for p in model.periods:
-            if params.slacks.grid_operation.branch_flow:
-                total += base * PENALTY_CURRENT * (model.slack_flow_ij_sqr[b, s_m, s_o, p])
 
     return total
 
