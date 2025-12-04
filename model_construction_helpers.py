@@ -410,15 +410,15 @@ def flex_energy_balance_p_rule(m, c, s_m, s_o, network, params):
 
     load = network.loads[c]
 
-    if network.is_transmission:
-        if load.bus in network.active_distribution_network_nodes:
-            return pe.Constraint.Skip
-
     if load.fl_reg:
-        if network.is_transmission and load.bus in network.active_distribution_network_nodes:
-            return pe.Constraint.Skip
+
+        if network.is_transmission:
+            if load.bus in network.active_distribution_network_nodes:
+                return pe.Constraint.Skip
+
         p_up = sum(m.flex_p_up[c, s_m, s_o, p] for p in m.periods)
         p_down = sum(m.flex_p_down[c, s_m, s_o, p] for p in m.periods)
+
         if params.slacks.flexibility.day_balance:
             return p_up == p_down + m.slack_flex_p_balance_up[c, s_m, s_o] - m.slack_flex_p_balance_down[c, s_m, s_o]
         else:
