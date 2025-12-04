@@ -963,9 +963,9 @@ def _run_operational_planning_hierarchical(planning_problem, num_steps=8, print_
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
                 for p in tso_model[year][day].periods:
                     adn_pq_map = dso_models[adn_node_id][year][day][p]
-                    initial_solution = adn_pq_map['initial_solution']
-                    tso_model[year][day].pq_maps.add(tso_model[year][day].expected_interface_vmag[dn, p] <= initial_solution['Vg'] + EQUALITY_TOLERANCE)
-                    tso_model[year][day].pq_maps.add(tso_model[year][day].expected_interface_vmag[dn, p] >= initial_solution['Vg'] - EQUALITY_TOLERANCE)
+                    # initial_solution = adn_pq_map['initial_solution']
+                    # tso_model[year][day].pq_maps.add(tso_model[year][day].expected_interface_vmag[dn, p] <= initial_solution['Vg'] + EQUALITY_TOLERANCE)
+                    # tso_model[year][day].pq_maps.add(tso_model[year][day].expected_interface_vmag[dn, p] >= initial_solution['Vg'] - EQUALITY_TOLERANCE)
                     for ineq in adn_pq_map['inequalities']:
                         a = ineq['Pg']
                         b = ineq['Qg']

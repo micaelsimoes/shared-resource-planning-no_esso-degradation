@@ -67,7 +67,7 @@ def shared_resources_planning(working_directory, specification_filename):
 
     planning_problem.run_operational_planning(type='uncoordinated', print_results=True, debug_flag=False)
     # planning_problem.run_operational_planning(type='centralized', print_results=True, debug_flag=False)
-    # planning_problem.run_operational_planning(type='hierarchical', num_steps=1, print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_hierarchical_N={1}')
+    planning_problem.run_operational_planning(type='hierarchical', num_steps=1, print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_hierarchical_N={1}')
     # planning_problem.run_operational_planning(type='hierarchical', num_steps=2, print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_hierarchical_N={2}')
     # planning_problem.run_operational_planning(type='hierarchical', num_steps=4, print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_hierarchical_N={4}')
     # planning_problem.run_operational_planning(type='hierarchical', num_steps=8, print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_hierarchical_N={8}')
