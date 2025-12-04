@@ -100,6 +100,7 @@ class SharedResourcesPlanning:
     def run_without_coordination(self, print_results=False):
 
         print('[INFO] Running PLANNING PROBLEM WITHOUT COORDINATION...')
+
         print('[INFO] \t - Transmission Network. Power factor control switched off!')
         print('[INFO] \t - Transmission Network. Flexible load control switched off!')
         self.transmission_network.params.fl_reg = False
@@ -107,6 +108,16 @@ class SharedResourcesPlanning:
             for day in self.transmission_network.days:
                 for generator in self.transmission_network.network[year][day].generators:
                     if generator.is_curtaillable():
+                        generator.power_factor_control = False
+
+        print('[INFO] \t - Distribution Networks. Power factor control switched off!')
+        print('[INFO] \t - Distribution Networks. Flexible load control switched off!')
+        for node_id in self.distribution_networks:
+            distribution_network = self.distribution_networks[node_id]
+            distribution_network.params.fl_reg = False
+            for year in distribution_network.years:
+                for day in distribution_network.days:
+                    for generator in distribution_network.network[year][day].generators:
                         generator.power_factor_control = False
 
         results, models, execution_time = _run_operational_planning_without_coordination(self)
@@ -120,6 +131,16 @@ class SharedResourcesPlanning:
             for day in self.transmission_network.days:
                 for generator in self.transmission_network.network[year][day].generators:
                     if generator.is_curtaillable():
+                        generator.power_factor_control = True
+
+        print('[INFO] \t - Distribution Networks. Power factor control switched back on!')
+        print('[INFO] \t - Distribution Networks. Flexible load control switched back on!')
+        for node_id in self.distribution_networks:
+            distribution_network = self.distribution_networks[node_id]
+            distribution_network.params.fl_reg = True
+            for year in distribution_network.years:
+                for day in distribution_network.days:
+                    for generator in distribution_network.network[year][day].generators:
                         generator.power_factor_control = True
 
         return results, models
