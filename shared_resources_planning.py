@@ -384,12 +384,12 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     esso_model, results['esso'] = create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidate_solution['investment'])
 
     sess_available_capacities = shared_ess_data.get_updated_capacities(esso_model)
-    if debug_flag:
-        print("[DEBUG] available_capacities:")
-        for node_id in sess_available_capacities:
-            print(f"\t{node_id}:")
-            for year in sess_available_capacities[node_id]:
-                print(f"\t{year}: {sess_available_capacities[node_id][year]}")
+    # if debug_flag:
+    #     print("[DEBUG] available_capacities:")
+    #     for node_id in sess_available_capacities:
+    #         print(f"\t{node_id}:")
+    #         for year in sess_available_capacities[node_id]:
+    #             print(f"\t{year}: {sess_available_capacities[node_id][year]}")
 
     # Update models to ADMM
     update_distribution_models_to_admm(planning_problem, dso_models, admm_parameters)
@@ -539,19 +539,19 @@ def print_debug_info(planning_problem, consensus_vars, print_vmag=False, print_p
             for day in planning_problem.days:
                 if any([print_vmag, print_pf, print_ess]):
                     print(f"\t\tDay {day}")
-                if print_vmag:
-                    print(f"\t\tNode {node_id}, {year}, {day}, PF, TSO,  V  {[vmag for vmag in consensus_vars['vmag']['tso']['current'][node_id][year][day]]}")
-                    print(f"\t\tNode {node_id}, {year}, {day}, PF, DSO,  V  {[vmag for vmag in consensus_vars['vmag']['dso']['current'][node_id][year][day]]}")
+                # if print_vmag:
+                #     print(f"\t\tNode {node_id}, {year}, {day}, PF, TSO,  V  {[vmag for vmag in consensus_vars['vmag']['tso']['current'][node_id][year][day]]}")
+                #     print(f"\t\tNode {node_id}, {year}, {day}, PF, DSO,  V  {[vmag for vmag in consensus_vars['vmag']['dso']['current'][node_id][year][day]]}")
                 # if print_pf:
                 #     print(f"\t\tNode {node_id}, {year}, {day}, PF, TSO,  P {consensus_vars['pf']['tso']['current'][node_id][year][day]['p']}")
                 #     print(f"\t\tNode {node_id}, {year}, {day}, PF, DSO,  P {consensus_vars['pf']['dso']['current'][node_id][year][day]['p']}")
                 #     print(f"\t\tNode {node_id}, {year}, {day}, PF, TSO,  Q {consensus_vars['pf']['tso']['current'][node_id][year][day]['q']}")
                 #     print(f"\t\tNode {node_id}, {year}, {day}, PF, DSO,  Q {consensus_vars['pf']['dso']['current'][node_id][year][day]['q']}")
-                # if print_ess:
-                #     print(f"\t\tNode {node_id}, {year}, {day}, ESS, TSO,  P {consensus_vars['ess']['tso']['current'][node_id][year][day]['p']}")
-                #     print(f"\t\tNode {node_id}, {year}, {day}, ESS, DSO,  P {consensus_vars['ess']['dso']['current'][node_id][year][day]['p']}")
-                #     print(f"\t\tNode {node_id}, {year}, {day}, ESS, TSO,  Q {consensus_vars['ess']['tso']['current'][node_id][year][day]['q']}")
-                #     print(f"\t\tNode {node_id}, {year}, {day}, ESS, DSO,  Q {consensus_vars['ess']['dso']['current'][node_id][year][day]['q']}")
+                if print_ess:
+                    print(f"\t\tNode {node_id}, {year}, {day}, ESS, TSO,  P {consensus_vars['ess']['tso']['current'][node_id][year][day]['p']}")
+                    print(f"\t\tNode {node_id}, {year}, {day}, ESS, DSO,  P {consensus_vars['ess']['dso']['current'][node_id][year][day]['p']}")
+                    print(f"\t\tNode {node_id}, {year}, {day}, ESS, TSO,  Q {consensus_vars['ess']['tso']['current'][node_id][year][day]['q']}")
+                    print(f"\t\tNode {node_id}, {year}, {day}, ESS, DSO,  Q {consensus_vars['ess']['dso']['current'][node_id][year][day]['q']}")
 
 
 def create_transmission_network_model(planning_problem, consensus_vars, candidate_solution):
