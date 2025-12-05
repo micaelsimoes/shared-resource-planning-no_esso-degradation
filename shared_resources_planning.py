@@ -5822,22 +5822,6 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
 
                         node_id = shared_energy_storage.bus
 
-                        # - Complementarity
-                        if params.shared_ess_model == ESS_MODEL_SLACKED:
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Shared Energy Storage, comp'
-                            sheet.cell(row=row_idx, column=7).value = s_m
-                            sheet.cell(row=row_idx, column=8).value = s_o
-                            for p in range(network[year][day].num_instants):
-                                comp = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = comp
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
-
                         # - Day balance
                         if params.slacks.shared_ess.day_balance:
 
@@ -5898,22 +5882,6 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
                         for energy_storage in network[year][day].energy_storages:
 
                             es_id = energy_storage.es_id
-
-                            # - Complementarity
-                            if params.ess_model == ESS_MODEL_SLACKED:
-                                sheet.cell(row=row_idx, column=1).value = operator_type
-                                sheet.cell(row=row_idx, column=2).value = tn_node_id
-                                sheet.cell(row=row_idx, column=3).value = es_id
-                                sheet.cell(row=row_idx, column=4).value = int(year)
-                                sheet.cell(row=row_idx, column=5).value = day
-                                sheet.cell(row=row_idx, column=6).value = 'Energy Storage, comp'
-                                sheet.cell(row=row_idx, column=7).value = s_m
-                                sheet.cell(row=row_idx, column=8).value = s_o
-                                for p in range(network[year][day].num_instants):
-                                    comp = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'][es_id][p]
-                                    sheet.cell(row=row_idx, column=p + 9).value = comp
-                                    sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                                row_idx = row_idx + 1
 
                             # - Day balance
                             if params.slacks.ess.day_balance:

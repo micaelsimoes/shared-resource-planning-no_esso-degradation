@@ -322,14 +322,9 @@ def _build_model(network, params):
         model.es_pnet = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(snet_bounds, network=network))
         model.es_qnet = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(q_bounds, network=network))
         model.es_soc = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=partial(soc_initialize, network=network)) # [e_min, e_max] enforced with ess_soc_limits_rule
-        if params.ess_model == ESS_MODEL_SLACKED:
-            model.slack_es_comp = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(slack_es_comp_bounds, network=network))
         if params.slacks.ess.day_balance:
             model.slack_es_soc_final_up = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(slack_es_balance_bounds, network=network))
             model.slack_es_soc_final_down = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(slack_es_balance_bounds, network=network))
-        if params.ess_model in [ESS_MODEL_BIGM, ESS_MODEL_LP_RELAXED]:
-            model.es_sch_comp = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.0, 1.0))
-            model.es_sdch_comp = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.0, 1.0))
 
     # - Shared Energy Storage devices
     model.shared_es_s_rated_fixed = pe.Param(model.shared_energy_storages, mutable=True, initialize=0.00)          # Benders' -- used to get the dual variables (sensitivities)
@@ -345,14 +340,9 @@ def _build_model(network, params):
     model.shared_es_pnet = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.shared_es_qnet = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.shared_es_soc = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    if params.shared_ess_model == ESS_MODEL_SLACKED:
-        model.slack_shared_es_comp = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(slack_shared_es_comp_bounds, network=network))
     if params.slacks.shared_ess.day_balance:
         model.slack_shared_es_soc_final_up = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
         model.slack_shared_es_soc_final_down = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
-    if params.shared_ess_model in [ESS_MODEL_BIGM, ESS_MODEL_LP_RELAXED]:
-        model.shared_es_sch_comp = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 1.00))
-        model.shared_es_sdch_comp = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 1.00))
 
     # Expressions
     model.pg_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_p_per_node_def, network=network))
@@ -402,20 +392,7 @@ def _build_model(network, params):
         model.ess_soc_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_soc_rule, network=network, params=params))
         model.ess_soc_limits = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_soc_limits_rule, network=network))
         model.ess_soc_final = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, rule=partial(ess_soc_final_rule, network=network, params=params))
-        if params.ess_model == ESS_MODEL_EXACT:
-            model.ess_comp = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_comp_exact_rule, network=network, params=params))
-        if params.ess_model == ESS_MODEL_BIGM:
-            model.ess_comp_mode = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_comp_bigm_rule, network=network, params=params))
-            model.ess_comp_ch = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_bigm_ch_limit_rule, network=network))
-            model.ess_comp_dch = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_bigm_dch_limit_rule, network=network))
-        if params.ess_model == ESS_MODEL_LP_RELAXED:
-            model.ess_relax_ch = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_relaxed_model_ch_rule, network=network))
-            model.ess_relax_dch = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_relaxed_model_dch_rule, network=network))
-            model.ess_relax_comp = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=ess_relaxed_model_comp_rule)
-        if params.ess_model == ESS_MODEL_LP_SIMPLIFIED_EXTENDED:
-            model.ess_relax_ch = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_simplified_model_ch_rule, network=network))
-            model.ess_relax_dch = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_simplified_model_dch_rule, network=network))
-            model.ess_relax_comp = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_simplified_model_comp_rule, network=network))
+        model.ess_comp = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_comp_exact_rule, network=network, params=params))
 
     # - Shared Energy Storage constraints
     model.sess_pnet_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pnet_rule)
@@ -432,20 +409,7 @@ def _build_model(network, params):
     model.sess_soc_limit_upper = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_soc_upper_limit)
     model.sess_soc_limit_lower = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_soc_lower_limit)
     model.sess_soc_final = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, rule=partial(sess_soc_final_rule, network=network, params=params))
-    if params.shared_ess_model == ESS_MODEL_EXACT:
-        model.sess_comp = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_comp_exact_rule, params=params))
-    if params.shared_ess_model == ESS_MODEL_BIGM:
-        model.sess_comp_mode = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_comp_bigm_rule, network=network, params=params))
-        model.sess_comp_ch = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_bigm_ch_limit_rule, network=network))
-        model.sess_comp_dch = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_bigm_dch_limit_rule, network=network))
-    if params.shared_ess_model == ESS_MODEL_LP_RELAXED:
-        model.sess_relax_ch = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_relaxed_model_ch_rule, network=network))
-        model.sess_relax_dch = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_relaxed_model_dch_rule, network=network))
-        model.sess_relax_comp = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_relaxed_model_comp_rule)
-    if params.shared_ess_model == ESS_MODEL_LP_SIMPLIFIED_EXTENDED:
-        model.sess_relax_ch = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_simplified_model_ch_rule, network=network))
-        model.sess_relax_dch = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_simplified_model_dch_rule, network=network))
-        model.sess_relax_comp = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_simplified_model_comp_rule, network=network))
+    model.sess_comp = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_comp_exact_rule, params=params))
     model.shared_energy_storage_s_sensitivities = pe.Constraint(model.shared_energy_storages, rule=sess_s_sensitivities)
     model.shared_energy_storage_e_sensitivities = pe.Constraint(model.shared_energy_storages, rule=sess_e_sensitivities)
 
@@ -1020,8 +984,6 @@ def _process_results(network, model, params, results=dict()):
             if params.slacks.node_balance.reactive_power:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages'] = dict()
-            if params.shared_ess_model == ESS_MODEL_SLACKED:
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'] = dict()
             if params.slacks.shared_ess.day_balance:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final'] = dict()
             if params.fl_reg:
@@ -1030,8 +992,6 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance'] = dict()
             if params.es_reg:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages'] = dict()
-                if params.ess_model == ESS_MODEL_SLACKED:
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'] = dict()
                 if params.slacks.ess.day_balance:
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final'] = dict()
 
@@ -1244,14 +1204,6 @@ def _process_results(network, model, params, results=dict()):
             # - Shared ESS
             for e in model.shared_energy_storages:
                 node_id = network.shared_energy_storages[e].bus
-                if params.shared_ess_model == ESS_MODEL_SLACKED:
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'][node_id] = []
-                if params.slacks.shared_ess.day_balance:
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final'][node_id] = 0.00
-                for p in model.periods:
-                    if params.shared_ess_model == ESS_MODEL_SLACKED:
-                        slack_comp = pe.value(model.slack_shared_es_comp[e, s_m, s_o, p]) * (s_base ** 2)
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'][node_id].append(slack_comp)
                 if params.slacks.shared_ess.day_balance:
                     slack_soc_final = pe.value(model.slack_shared_es_soc_final_up[e, s_m, s_o] - model.slack_shared_es_soc_final_down[e, s_m, s_o]) * s_base
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final'][node_id] = slack_soc_final
@@ -1283,14 +1235,6 @@ def _process_results(network, model, params, results=dict()):
             if params.es_reg:
                 for e in model.energy_storages:
                     es_id = network.energy_storages[e].es_id
-                    if params.ess_model == ESS_MODEL_SLACKED:
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'][es_id] = []
-                    if params.slacks.ess.day_balance:
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final'][es_id] = 0.00
-                    for p in model.periods:
-                        if params.ess_model == ESS_MODEL_SLACKED:
-                            slack_comp = pe.value(model.slack_es_comp[e, s_m, s_o, p]) * (s_base ** 2)
-                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'][es_id].append(slack_comp)
                     if params.slacks.ess.day_balance:
                         slack_soc_final = pe.value(model.slack_es_soc_final_up[e, s_m, s_o] - model.slack_es_soc_final_down[e, s_m, s_o]) * s_base
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final'][es_id] = slack_soc_final
