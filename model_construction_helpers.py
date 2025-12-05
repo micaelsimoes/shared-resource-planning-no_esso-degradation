@@ -1005,8 +1005,10 @@ def build_objective(model, network, params):
 
     model.ess_utilization_cost_penalty_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(ess_utilization_cost_penalty_rule, network=network, params=params))
     model.slack_penalties_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(slack_penalties_rule, network=network, params=params))
+    model.ess_complementarity_penalty_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(ess_complementarity_penalties_rule, network=network, params=params))
     model.total_ess_utilization_cost_penalty = pe.Expression(rule=partial(total_ess_utilization_cost_penalty_rule, network=network))
     model.total_slack_penalties = pe.Expression(rule=partial(total_slack_penalties_rule, network=network))
+    model.total_ess_complementarity_penalties = pe.Expression(rule=partial(total_ess_complementarity_penalties_rule, network=network))
 
     model.objective = pe.Objective(sense=pe.minimize, rule=partial(objective_function_rule, params=params))
 
@@ -1018,6 +1020,7 @@ def objective_function_rule(model, params):
         obj = model.total_gen_curt_penalty + model.total_load_curt_penalty + model.total_flex_penalty
     obj += model.total_ess_utilization_cost_penalty
     obj += model.total_slack_penalties
+    obj += model.total_ess_complementarity_penalties
     return obj
 
 
@@ -1223,7 +1226,11 @@ def slack_penalties(model, network, s_m, s_o, params):
 
 
 
-def ess_penalties(model, network, s_m, s_o, p, params):
+def slack_penalties_rule(model, s_m, s_o, network, params):
+    return slack_penalties(model, network, s_m, s_o, params)
+
+
+def ess_complementarity_penalties(model, network, s_m, s_o, p, params):
 
     total = 0
     base = network.baseMVA
@@ -1231,14 +1238,14 @@ def ess_penalties(model, network, s_m, s_o, p, params):
     if params.es_reg:
         for e in model.energy_storages:
             for p in model.periods:
-                if params.ess_model == ESS_MODEL_BILENAR_RELAXATION:
+                if params.ess_model == ESS_MODEL_BILINEAR_RELAXATION:
                     total += base * PENALTY_ESS_COMP_OBJECTIVE * (model.es_sch[e, s_m, s_o, p] * model.es_sdch[e, s_m, s_o, p])
             if params.slacks.ess.day_balance:
                 total += base * PENALTY_ESS_BALANCE * (model.slack_es_soc_final_up[e, s_m, s_o] + model.slack_es_soc_final_down[e, s_m, s_o])
 
     for e in model.shared_energy_storages:
         for p in model.periods:
-            if params.ess_model == ESS_MODEL_BILENAR_RELAXATION:
+            if params.ess_model == ESS_MODEL_BILINEAR_RELAXATION:
                 total += base * PENALTY_ESS_COMP_OBJECTIVE * (model.shared_es_sch[e, s_m, s_o, p] * model.shared_es_sdch[e, s_m, s_o, p])
         if params.slacks.shared_ess.day_balance:
             total += base * PENALTY_SHARED_ESS_BALANCE * (model.slack_shared_es_soc_final_up[e, s_m, s_o] + model.slack_shared_es_soc_final_down[e, s_m, s_o])
@@ -1246,8 +1253,8 @@ def ess_penalties(model, network, s_m, s_o, p, params):
     return total
 
 
-def slack_penalties_rule(model, s_m, s_o, network, params):
-    return slack_penalties(model, network, s_m, s_o, params)
+def ess_complementarity_penalties_rule(model, s_m, s_o, network, params):
+    return ess_complementarity_penalties(model, network, s_m, s_o, params, params)
 
 
 def total_slack_penalties_rule(model, network):
@@ -1255,6 +1262,14 @@ def total_slack_penalties_rule(model, network):
     for s_m in model.scenarios_market:
         for s_o in model.scenarios_operation:
             total_slack_penalties += network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * model.slack_penalties_scenario[s_m, s_o]
+    return total_slack_penalties
+
+
+def total_ess_complementarity_penalties_rule(model, network):
+    total_slack_penalties = 0.0
+    for s_m in model.scenarios_market:
+        for s_o in model.scenarios_operation:
+            total_slack_penalties += network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * model.ess_complementarity_penalty_scenario[s_m, s_o]
     return total_slack_penalties
 
 

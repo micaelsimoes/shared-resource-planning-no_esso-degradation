@@ -148,7 +148,9 @@ def _read_network_parameters_from_file(parameters, filename):
         if params_data['ess_model'] == 'EXACT':
             parameters.ess_model = ESS_MODEL_EXACT
         elif params_data['ess_model'] == 'BILINEAR_RELAXATION':
-            parameters.ess_model = ESS_MODEL_BILENAR_RELAXATION
+            parameters.ess_model = ESS_MODEL_BILINEAR_RELAXATION
+        elif params_data['ess_model'] == 'POLYNOMIAL_COMPLEMENTARITY':
+            parameters.ess_model = ESS_MODEL_POLYNOMIAL_COMPLEMENTARITY
         else:
             print('[ERROR] Invalid ESS model. Exiting...')
             exit(ERROR_PARAMS_FILE)
@@ -157,7 +159,9 @@ def _read_network_parameters_from_file(parameters, filename):
         if params_data['shared_ess_model'] == 'EXACT':
             parameters.shared_ess_model = ESS_MODEL_EXACT
         elif params_data['shared_ess_model'] == 'BILINEAR_RELAXATION':
-            parameters.ess_model = ESS_MODEL_BILENAR_RELAXATION
+            parameters.shared_ess_model = ESS_MODEL_BILINEAR_RELAXATION
+        elif params_data['shared_ess_model'] == 'POLYNOMIAL_COMPLEMENTARITY':
+            parameters.shared_ess_model = ESS_MODEL_POLYNOMIAL_COMPLEMENTARITY
         else:
             print('[ERROR] Invalid Shared ESS model. Exiting...')
             exit(ERROR_PARAMS_FILE)
