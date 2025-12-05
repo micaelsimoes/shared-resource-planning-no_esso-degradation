@@ -148,7 +148,7 @@ def _read_network_parameters_from_file(parameters, filename):
         if params_data['ess_model'] == 'EXACT':
             parameters.ess_model = ESS_MODEL_EXACT
         elif params_data['ess_model'] == 'SLACKED':
-            parameters.ess_model = ESS_MODEL_EXACT_SLACKED
+            parameters.ess_model = ESS_MODEL_SLACKED
         elif params_data['ess_model'] == 'BIGM':
             parameters.ess_model = ESS_MODEL_BIGM
         elif params_data['ess_model'] == 'SIMPLIFIED_EXTENDED':
@@ -157,8 +157,6 @@ def _read_network_parameters_from_file(parameters, filename):
             parameters.ess_model = ESS_MODEL_LP_RELAXED
         elif params_data['ess_model'] == 'FIRST_ORDER':
             parameters.ess_model = ESS_MODEL_FIRST_ORDER
-        elif params_data['ess_model'] == 'PENALIZED':
-            parameters.ess_model = ESS_MODEL_PENALIZED
         else:
             print('[ERROR] Invalid ESS model. Exiting...')
             exit(ERROR_PARAMS_FILE)
@@ -167,7 +165,7 @@ def _read_network_parameters_from_file(parameters, filename):
         if params_data['shared_ess_model'] == 'EXACT':
             parameters.shared_ess_model = ESS_MODEL_EXACT
         elif params_data['shared_ess_model'] == 'SLACKED':
-            parameters.shared_ess_model = ESS_MODEL_EXACT_SLACKED
+            parameters.shared_ess_model = ESS_MODEL_SLACKED
         elif params_data['shared_ess_model'] == 'BIGM':
             parameters.shared_ess_model = ESS_MODEL_BIGM
         elif params_data['shared_ess_model'] == 'SIMPLIFIED_EXTENDED':
@@ -176,8 +174,6 @@ def _read_network_parameters_from_file(parameters, filename):
             parameters.shared_ess_model = ESS_MODEL_LP_RELAXED
         elif params_data['ess_model'] == 'FIRST_ORDER':
             parameters.shared_ess_model = ESS_MODEL_FIRST_ORDER
-        elif params_data['ess_model'] == 'PENALIZED':
-            parameters.shared_ess_model = ESS_MODEL_PENALIZED
         else:
             print('[ERROR] Invalid Shared ESS model. Exiting...')
             exit(ERROR_PARAMS_FILE)

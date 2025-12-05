@@ -5823,7 +5823,7 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
                         node_id = shared_energy_storage.bus
 
                         # - Complementarity
-                        if params.slacks.shared_ess.complementarity:
+                        if params.shared_ess_model == ESS_MODEL_SLACKED:
                             sheet.cell(row=row_idx, column=1).value = operator_type
                             sheet.cell(row=row_idx, column=2).value = tn_node_id
                             sheet.cell(row=row_idx, column=3).value = node_id
@@ -5900,7 +5900,7 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
                             es_id = energy_storage.es_id
 
                             # - Complementarity
-                            if params.slacks.ess.complementarity:
+                            if params.ess_model == ESS_MODEL_SLACKED:
                                 sheet.cell(row=row_idx, column=1).value = operator_type
                                 sheet.cell(row=row_idx, column=2).value = tn_node_id
                                 sheet.cell(row=row_idx, column=3).value = es_id

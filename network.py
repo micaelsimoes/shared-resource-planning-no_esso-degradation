@@ -322,7 +322,7 @@ def _build_model(network, params):
         model.es_pnet = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(snet_bounds, network=network))
         model.es_qnet = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(q_bounds, network=network))
         model.es_soc = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=partial(soc_initialize, network=network)) # [e_min, e_max] enforced with ess_soc_limits_rule
-        if params.slacks.ess.complementarity:
+        if params.ess_model == ESS_MODEL_SLACKED:
             model.slack_es_comp = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(slack_es_comp_bounds, network=network))
         if params.slacks.ess.day_balance:
             model.slack_es_soc_final_up = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(slack_es_balance_bounds, network=network))
@@ -345,8 +345,8 @@ def _build_model(network, params):
     model.shared_es_pnet = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.shared_es_qnet = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.shared_es_soc = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    if params.slacks.shared_ess.complementarity:
-        model.slack_shared_es_comp = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    if params.shared_ess_model == ESS_MODEL_SLACKED:
+        model.slack_shared_es_comp = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(slack_shared_es_comp_bounds, network=network))
     if params.slacks.shared_ess.day_balance:
         model.slack_shared_es_soc_final_up = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
         model.slack_shared_es_soc_final_down = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
@@ -1020,7 +1020,7 @@ def _process_results(network, model, params, results=dict()):
             if params.slacks.node_balance.reactive_power:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['q'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages'] = dict()
-            if params.slacks.shared_ess.complementarity:
+            if params.shared_ess_model == ESS_MODEL_SLACKED:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'] = dict()
             if params.slacks.shared_ess.day_balance:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final'] = dict()
@@ -1030,7 +1030,7 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['flexibility']['day_balance'] = dict()
             if params.es_reg:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages'] = dict()
-                if params.slacks.ess.complementarity:
+                if params.ess_model == ESS_MODEL_SLACKED:
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'] = dict()
                 if params.slacks.ess.day_balance:
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final'] = dict()
@@ -1244,12 +1244,12 @@ def _process_results(network, model, params, results=dict()):
             # - Shared ESS
             for e in model.shared_energy_storages:
                 node_id = network.shared_energy_storages[e].bus
-                if params.slacks.shared_ess.complementarity:
+                if params.shared_ess_model == ESS_MODEL_SLACKED:
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'][node_id] = []
                 if params.slacks.shared_ess.day_balance:
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final'][node_id] = 0.00
                 for p in model.periods:
-                    if params.slacks.shared_ess.complementarity:
+                    if params.shared_ess_model == ESS_MODEL_SLACKED:
                         slack_comp = pe.value(model.slack_shared_es_comp[e, s_m, s_o, p]) * (s_base ** 2)
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'][node_id].append(slack_comp)
                 if params.slacks.shared_ess.day_balance:
@@ -1283,12 +1283,12 @@ def _process_results(network, model, params, results=dict()):
             if params.es_reg:
                 for e in model.energy_storages:
                     es_id = network.energy_storages[e].es_id
-                    if params.slacks.ess.complementarity:
+                    if params.ess_model == ESS_MODEL_SLACKED:
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'][es_id] = []
                     if params.slacks.ess.day_balance:
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['soc_final'][es_id] = 0.00
                     for p in model.periods:
-                        if params.slacks.ess.complementarity:
+                        if params.ess_model == ESS_MODEL_SLACKED:
                             slack_comp = pe.value(model.slack_es_comp[e, s_m, s_o, p]) * (s_base ** 2)
                             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'][es_id].append(slack_comp)
                     if params.slacks.ess.day_balance:
