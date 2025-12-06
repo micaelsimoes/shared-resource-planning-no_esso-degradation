@@ -624,7 +624,7 @@ def sess_comp_rule(m, e, s_m, s_o, p, network, params):
     if params.shared_ess_model == ESS_MODEL_EXACT:
         return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
     elif params.shared_ess_model == ESS_MODEL_POLYNOMIAL_COMPLEMENTARITY:
-        return m.shared_es_sch[e, s_m, s_o, p] ** 2 + m.shared_es_sdch[e, s_m, s_o, p] ** 2 == (m.shared_es_sch[e, s_m, s_o, p] + m.shared_es_sdch[e, s_m, s_o, p]) ** 2 + EQUALITY_TOLERANCE
+        return m.shared_es_sch[e, s_m, s_o, p] ** 2 + m.shared_es_sdch[e, s_m, s_o, p] ** 2 <= (m.shared_es_sch[e, s_m, s_o, p] + m.shared_es_sdch[e, s_m, s_o, p]) ** 2 + EQUALITY_TOLERANCE
     else:
         return pe.Constraint.Skip
 
