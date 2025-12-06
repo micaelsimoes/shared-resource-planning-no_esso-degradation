@@ -576,6 +576,7 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
             for dn in tso_model[year][day].active_distribution_networks:
 
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
+                v_min, v_max = transmission_network.network[year][day].get_node_voltage_limits(adn_node_id)
                 adn_node_idx = transmission_network.network[year][day].get_node_idx(adn_node_id)
                 adn_load_idx = transmission_network.network[year][day].get_adn_load_idx(adn_node_id)
                 distribution_network = distribution_networks[adn_node_id]
@@ -586,6 +587,8 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
                         for p in tso_model[year][day].periods:
 
                             # Interface voltage, free vmag_adn, remove slacks
+                            tso_model[year][day].vmag[adn_node_idx, s_m, s_o, p].setub(v_max + EQUALITY_TOLERANCE)
+                            tso_model[year][day].vmag[adn_node_idx, s_m, s_o, p].setlb(v_min - EQUALITY_TOLERANCE)
                             if transmission_network.params.slacks.grid_operation.voltage:
                                 tso_model[year][day].slack_e_up[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                                 tso_model[year][day].slack_e_down[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
@@ -613,11 +616,16 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
                             tso_model[year][day].flex_q_down[adn_load_idx, s_m, s_o, p].setub(interface_transf_rating)
 
             # Add expected interface and shared ESS values, and their definition
-            tso_model[year][day].expected_interface_vmag = pe.Expression(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_vmag_def, network=transmission_network.network[year][day]))
-            tso_model[year][day].expected_interface_pf_p = pe.Expression(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_pf_p_def, network=transmission_network.network[year][day]))
-            tso_model[year][day].expected_interface_pf_q = pe.Expression(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_pf_q_def, network=transmission_network.network[year][day]))
-            tso_model[year][day].expected_shared_ess_p = pe.Expression(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, rule=partial(tn_interface_expected_sess_p_def, network=transmission_network.network[year][day]))
-            tso_model[year][day].expected_shared_ess_q = pe.Expression(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, rule=partial(tn_interface_expected_sess_q_def, network=transmission_network.network[year][day]))
+            tso_model[year][day].expected_interface_vmag = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.NonNegativeReals, bounds=partial(expected_interface_vmag_bounds, network=transmission_network.network[year][day]), initialize=1.0)
+            tso_model[year][day].expected_interface_pf_p = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.0)
+            tso_model[year][day].expected_interface_pf_q = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.0)
+            tso_model[year][day].expected_shared_ess_p = pe.Var(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, domain=pe.Reals, initialize=0.0)
+            tso_model[year][day].expected_shared_ess_q = pe.Var(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, domain=pe.Reals, initialize=0.0)
+            tso_model[year][day].expected_interface_vmag_def = pe.Constraint( tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_vmag_rule, network=transmission_network.network[year][day]))
+            tso_model[year][day].expected_interface_pf_p_def = pe.Constraint(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_pf_p_rule, network=transmission_network.network[year][day]))
+            tso_model[year][day].expected_interface_pf_q_def = pe.Constraint(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_pf_q_rule, network=transmission_network.network[year][day]))
+            tso_model[year][day].expected_shared_ess_p_def = pe.Constraint(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_sess_p_rule, network=transmission_network.network[year][day]))
+            tso_model[year][day].expected_shared_ess_q_def = pe.Constraint(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_sess_q_rule, network=transmission_network.network[year][day]))
 
             # Regularization -- Added to OF to minimize deviations from scenarios to expected values
             obj = copy(tso_model[year][day].objective.expr)
@@ -691,14 +699,20 @@ def create_distribution_networks_models_sequential(distribution_networks, consen
 
                 s_base = distribution_network.network[year][day].baseMVA
                 ref_node_id = distribution_network.network[year][day].get_reference_node_id()
+                v_min, v_max = distribution_network.network[year][day].get_node_voltage_limits(ref_node_id)
                 shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
 
                 # Add interface expected variables, and definition
-                dso_model[year][day].expected_interface_vmag = pe.Expression(dso_model[year][day].periods, rule=partial(dn_interface_expected_vmag_def, network=distribution_network.network[year][day]))
-                dso_model[year][day].expected_interface_pf_p = pe.Expression(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_p_def, network=distribution_network.network[year][day]))
-                dso_model[year][day].expected_interface_pf_q = pe.Expression(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_q_def, network=distribution_network.network[year][day]))
-                dso_model[year][day].expected_shared_ess_p = pe.Expression(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_p_def, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx))
-                dso_model[year][day].expected_shared_ess_q = pe.Expression(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_q_def, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx))
+                dso_model[year][day].expected_interface_vmag = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00, bounds=(v_min - EQUALITY_TOLERANCE, v_max + EQUALITY_TOLERANCE))
+                dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.0)
+                dso_model[year][day].expected_interface_pf_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.0)
+                dso_model[year][day].expected_shared_ess_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.0)
+                dso_model[year][day].expected_shared_ess_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.0)
+                dso_model[year][day].expected_interface_vmag_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_vmag_rule, network=distribution_network.network[year][day]))
+                dso_model[year][day].expected_interface_pf_p_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_p_rule, network=distribution_network.network[year][day]))
+                dso_model[year][day].expected_interface_pf_q_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_q_rule, network=distribution_network.network[year][day]))
+                dso_model[year][day].expected_shared_ess_p_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_p_rule, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx))
+                dso_model[year][day].expected_shared_ess_q_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_q_rule, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx))
 
                 # Regularization -- Added to OF to minimize deviations from scenarios to expected values
                 obj = copy(dso_model[year][day].objective.expr)
@@ -800,7 +814,7 @@ def create_distribution_network_model(node_id, distribution_network, candidate_s
             v_min, v_max = distribution_network.network[year][day].get_node_voltage_limits(ref_node_id)
 
             # Add interface expected variables, and definition
-            dso_model[year][day].expected_interface_vmag = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00, bounds=(v_min, v_max))
+            dso_model[year][day].expected_interface_vmag = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00, bounds=(v_min - EQUALITY_TOLERANCE, v_max + EQUALITY_TOLERANCE))
             dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
             dso_model[year][day].expected_interface_pf_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
             dso_model[year][day].expected_shared_ess_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
@@ -1476,8 +1490,8 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
                 sess_estimated_capacity = sess_estimated_capacities[node_id]
 
                 # Update estimated rated power and energy capacity
-                model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(abs(sess_estimated_capacity[year]['s_available']) / s_base)
-                model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(abs(sess_estimated_capacity[year]['e_available']) / s_base)
+                model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(max(sess_estimated_capacity[year]['s_available'], EQUALITY_TOLERANCE) / s_base)
+                model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(max(sess_estimated_capacity[year]['e_available'], EQUALITY_TOLERANCE) / s_base)
 
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
@@ -1538,8 +1552,8 @@ def update_distribution_coordination_models_and_solve_sequential(distribution_ne
                 shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
 
                 # Update estimated rated power and energy capacity
-                model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(abs(sess_estimated_capacity[year]['s_available']) / s_base)
-                model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(abs(sess_estimated_capacity[year]['e_available']) / s_base)
+                model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(max(sess_estimated_capacity[year]['s_available'], EQUALITY_TOLERANCE) / s_base)
+                model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(max(sess_estimated_capacity[year]['e_available'], EQUALITY_TOLERANCE) / s_base)
 
                 rho_v = params.rho['v'][distribution_network.name]
                 rho_pf = params.rho['pf'][distribution_network.name]
@@ -1624,8 +1638,8 @@ def update_and_solve_dso(node_id, distribution_network, model, vmag_req, dual_vm
             s_base = distribution_network.network[year][day].baseMVA
 
             # Update estimated rated power and energy capacity
-            model[year][day].shared_es_s_rated_fixed.set_value(abs(sess_estimated_capacity[year]['s_available']) / s_base)
-            model[year][day].shared_es_e_rated_fixed.set_value(abs(sess_estimated_capacity[year]['e_available']) / s_base)
+            model[year][day].shared_es_s_rated_fixed.set_value(max(sess_estimated_capacity[year]['s_available'], EQUALITY_TOLERANCE) / s_base)
+            model[year][day].shared_es_e_rated_fixed.set_value(max(sess_estimated_capacity[year]['e_available'], EQUALITY_TOLERANCE) / s_base)
 
             rho_v = params.rho['v'][distribution_network.name]
             rho_pf = params.rho['pf'][distribution_network.name]

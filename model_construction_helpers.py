@@ -599,15 +599,15 @@ def sess_sch_limit_rule(m, e, s_m, s_o, p):
 def sess_sdch_limit_rule(m, e, s_m, s_o, p):
     s_max = m.shared_es_s_rated[e]
     sdch = m.shared_es_sdch[e, s_m, s_o, p]
-    return sdch <= s_max + EQUALITY_TOLERANCE
+    return sdch <= s_max
 
 
-def sess_sch_def_rule(m, e, s_m, s_o, p):
-    return m.shared_es_sch[e, s_m, s_o, p]**2 == m.shared_es_sch_sqr[e, s_m, s_o, p]**2
+def sess_sch_def(m, e, s_m, s_o, p):
+    return m.shared_es_pch[e, s_m, s_o, p]**2 + m.shared_es_qch[e, s_m, s_o, p]**2 == m.shared_es_sch[e, s_m, s_o, p]**2
 
 
-def sess_sdch_def_rule(m, e, s_m, s_o, p):
-    return m.shared_es_sdch[e, s_m, s_o, p]**2 == m.shared_es_sdch[e, s_m, s_o, p]**2
+def sess_sdch_def(m, e, s_m, s_o, p):
+    return m.shared_es_pdch[e, s_m, s_o, p]**2 + m.shared_es_qdch[e, s_m, s_o, p]**2 == m.shared_es_sdch[e, s_m, s_o, p]**2
 
 
 def sess_soc_lower_limit(m, e, s_m, s_o, p):
@@ -622,9 +622,9 @@ def sess_soc_upper_limit(m, e, s_m, s_o, p):
 
 def sess_comp_rule(m, e, s_m, s_o, p, network, params):
     if params.shared_ess_model == ESS_MODEL_EXACT:
-        return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE / network.baseMVA
+        return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
     elif params.shared_ess_model == ESS_MODEL_POLYNOMIAL_COMPLEMENTARITY:
-        return m.shared_es_sch_sqr[e, s_m, s_o, p] + m.shared_es_sdch_sqr[e, s_m, s_o, p] ** 2 <= (m.shared_es_sch[e, s_m, s_o, p] + m.shared_es_sdch[e, s_m, s_o, p]) ** 2 + EQUALITY_TOLERANCE / network.baseMVA
+        return m.shared_es_sch[e, s_m, s_o, p] ** 2 + m.shared_es_sdch[e, s_m, s_o, p] ** 2 == (m.shared_es_sch[e, s_m, s_o, p] + m.shared_es_sdch[e, s_m, s_o, p]) ** 2 + EQUALITY_TOLERANCE
     else:
         return pe.Constraint.Skip
 
@@ -1429,3 +1429,9 @@ def tn_interface_expected_sess_p_rule(m, e, p, network):
 
 def tn_interface_expected_sess_q_rule(m, e, p, network):
     return m.expected_shared_ess_q[e, p] == tn_interface_expected_sess_q_def(m, e, p, network)
+
+
+def expected_interface_vmag_bounds(m, dn, p, network):
+    adn_node_id = network.active_distribution_network_nodes[dn]
+    v_min, v_max = network.get_node_voltage_limits(adn_node_id)
+    return (v_min - EQUALITY_TOLERANCE, v_max + EQUALITY_TOLERANCE)
