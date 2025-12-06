@@ -547,7 +547,7 @@ def ess_comp_rule(m, e, s_m, s_o, p, network, params):
     elif params.ess_model == ESS_MODEL_POLYNOMIAL_COMPLEMENTARITY:
         return m.es_sch[e, s_m, s_o, p] ** 2 + m.es_sdch[e, s_m, s_o, p] ** 2 <= (m.es_sch[e, s_m, s_o, p] + m.es_sdch[e, s_m, s_o, p]) ** 2 + EQUALITY_TOLERANCE
     else:
-        return pe.Constraint.Skip
+        raise ValueError(f'Unknown ess_model {params.ess_model}')
 
 
 def ess_soc_final_rule(m, e, s_m, s_o, network, params):
@@ -629,9 +629,10 @@ def sess_comp_rule(m, e, s_m, s_o, p, network, params):
         return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE * 1e2
     elif params.shared_ess_model == ESS_MODEL_POLYNOMIAL_COMPLEMENTARITY:
         return m.shared_es_sch[e, s_m, s_o, p] ** 2 + m.shared_es_sdch[e, s_m, s_o, p] ** 2 <= (m.shared_es_sch[e, s_m, s_o, p] + m.shared_es_sdch[e, s_m, s_o, p]) ** 2 + EQUALITY_TOLERANCE
-    else:
+    elif params.shared_ess_model == ESS_MODEL_SIMPLIFIED_LINEAR:
         return pe.Constraint.Skip
-
+    else:
+        raise ValueError(f'Unknown ess_model {params.ess_model}')
 
 def sess_soc_rule(m, e, s_m, s_o, p, network, params):
 
