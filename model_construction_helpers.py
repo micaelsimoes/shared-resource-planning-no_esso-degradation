@@ -543,7 +543,7 @@ def ess_comp_exact_rule(m, e, s_m, s_o, p, network, params):
     if params.ess_model == ESS_MODEL_EXACT:
         return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
     elif params.ess_model == ESS_MODEL_POLYNOMIAL_COMPLEMENTARITY:
-        return m.es_sch[e, s_m, s_o, p] ** 2 + m.es_sdch[e, s_m, s_o, p] ** 2 == (m.es_sch[e, s_m, s_o, p] + m.es_sdch[e, s_m, s_o, p]) ** 2 + EQUALITY_TOLERANCE
+        return m.es_sch[e, s_m, s_o, p] ** 2 + m.es_sdch[e, s_m, s_o, p] ** 2 == (m.es_sch[e, s_m, s_o, p] + m.es_sdch[e, s_m, s_o, p]) ** 2
     else:
         return pe.Constraint.Skip
 
@@ -558,6 +558,14 @@ def ess_soc_final_rule(m, e, s_m, s_o, network, params):
 
 
 # Shared Energy Storage
+def sess_sch_sqr_def(m, e, s_m, s_o, p):
+    return m.shared_es_pch[e, s_m, s_o, p] ** 2 +  m.shared_es_qch[e, s_m, s_o, p] ** 2
+
+
+def sess_sdch_sqr_def(m, e, s_m, s_o, p):
+    return m.shared_es_pdch[e, s_m, s_o, p] ** 2 +  m.shared_es_qdch[e, s_m, s_o, p] ** 2
+
+
 def sess_phi_ch_limits_lower(m, e, s_m, s_o, p, network):
     ess = network.shared_energy_storages[e]
     min_phi = acos(ess.min_pf)
@@ -582,24 +590,24 @@ def sess_phi_dch_limits_upper(m, e, s_m, s_o, p, network):
     return m.shared_es_qdch[e, s_m, s_o, p] <= tan(max_phi) * m.shared_es_pdch[e, s_m, s_o, p]
 
 
-def sess_sch_def_rule(m, e, s_m, s_o, p):
+def sess_sch_limit_rule(m, e, s_m, s_o, p):
     s_max = m.shared_es_s_rated[e]
     sch = m.shared_es_sch[e, s_m, s_o, p]
-    return sch <= s_max + EQUALITY_TOLERANCE
+    return sch <= s_max
 
 
-def sess_sdch_def_rule(m, e, s_m, s_o, p):
+def sess_sdch_limit_rule(m, e, s_m, s_o, p):
     s_max = m.shared_es_s_rated[e]
     sdch = m.shared_es_sdch[e, s_m, s_o, p]
     return sdch <= s_max + EQUALITY_TOLERANCE
 
 
-def sess_sch_def(m, e, s_m, s_o, p):
-    return m.shared_es_sch[e, s_m, s_o, p]**2 == (m.shared_es_pch[e, s_m, s_o, p]**2 + m.shared_es_qch[e, s_m, s_o, p]**2)
+def sess_sch_def_rule(m, e, s_m, s_o, p):
+    return m.shared_es_sch[e, s_m, s_o, p]**2 == m.shared_es_sch_sqr[e, s_m, s_o, p]**2
 
 
-def sess_sdch_def(m, e, s_m, s_o, p):
-    return m.shared_es_sdch[e, s_m, s_o, p]**2 == (m.shared_es_pdch[e, s_m, s_o, p]**2 + m.shared_es_qdch[e, s_m, s_o, p]**2)
+def sess_sdch_def_rule(m, e, s_m, s_o, p):
+    return m.shared_es_sdch[e, s_m, s_o, p]**2 == m.shared_es_sdch[e, s_m, s_o, p]**2
 
 
 def sess_soc_lower_limit(m, e, s_m, s_o, p):
@@ -612,11 +620,11 @@ def sess_soc_upper_limit(m, e, s_m, s_o, p):
     return m.shared_es_soc[e, s_m, s_o, p] <= soc_max + EQUALITY_TOLERANCE
 
 
-def sess_comp_exact_rule(m, e, s_m, s_o, p, params):
+def sess_comp_rule(m, e, s_m, s_o, p, network, params):
     if params.shared_ess_model == ESS_MODEL_EXACT:
         return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
     elif params.shared_ess_model == ESS_MODEL_POLYNOMIAL_COMPLEMENTARITY:
-        return m.shared_es_sch[e, s_m, s_o, p] ** 2 + m.shared_es_sdch[e, s_m, s_o, p] ** 2 == (m.shared_es_sch[e, s_m, s_o, p] + m.shared_es_sdch[e, s_m, s_o, p]) ** 2 + EQUALITY_TOLERANCE
+        return m.shared_es_sch_sqr[e, s_m, s_o, p] + m.shared_es_sdch_sqr[e, s_m, s_o, p] ** 2 <= (m.shared_es_sch[e, s_m, s_o, p] + m.shared_es_sdch[e, s_m, s_o, p]) ** 2 + EQUALITY_TOLERANCE / network.baseMVA
     else:
         return pe.Constraint.Skip
 
@@ -1239,14 +1247,14 @@ def ess_complementarity_penalties(model, network, s_m, s_o, p, params):
         for e in model.energy_storages:
             for p in model.periods:
                 if params.ess_model == ESS_MODEL_BILINEAR_RELAXATION:
-                    total += base * PENALTY_ESS_COMP_OBJECTIVE * (model.es_sch[e, s_m, s_o, p] * model.es_sdch[e, s_m, s_o, p])
+                    total += base * PENALTY_ESS_COMPLEMENTARITY * (model.es_sch[e, s_m, s_o, p] * model.es_sdch[e, s_m, s_o, p])
             if params.slacks.ess.day_balance:
                 total += base * PENALTY_ESS_BALANCE * (model.slack_es_soc_final_up[e, s_m, s_o] + model.slack_es_soc_final_down[e, s_m, s_o])
 
     for e in model.shared_energy_storages:
         for p in model.periods:
             if params.ess_model == ESS_MODEL_BILINEAR_RELAXATION:
-                total += base * PENALTY_ESS_COMP_OBJECTIVE * (model.shared_es_sch[e, s_m, s_o, p] * model.shared_es_sdch[e, s_m, s_o, p])
+                total += base * PENALTY_ESS_COMPLEMENTARITY * (model.shared_es_sch[e, s_m, s_o, p] * model.shared_es_sdch[e, s_m, s_o, p])
         if params.slacks.shared_ess.day_balance:
             total += base * PENALTY_SHARED_ESS_BALANCE * (model.slack_shared_es_soc_final_up[e, s_m, s_o] + model.slack_shared_es_soc_final_down[e, s_m, s_o])
 
