@@ -23,6 +23,7 @@ class Network:
         self.data_dir = str()
         self.results_dir = str()
         self.diagrams_dir = str()
+        self.logs_dir = str()
         self.year = int()
         self.day = str()
         self.num_instants = 0
@@ -442,8 +443,8 @@ def _run_smopf(network, model, params, from_warm_start=False):
 
     if params.solver_params.options:
         for key, value in params.solver_params.options.items():
-            if key == 'output_file':        # Put logs in the case study's dir
-                solver.options[key] = os.path.join(network.results_dir, value)
+            if key == 'output_file':
+                solver.options[key] = os.path.join(network.logs_dir, value)
             else:
                 solver.options[key] = value
 
@@ -485,7 +486,7 @@ def _run_smopf(network, model, params, from_warm_start=False):
         print("Displaying Infeasible Constraints")
         log_infeasible_constraints(model, log_expression=True, log_variables=True, logger=logging_logger)
 
-        exit(ERROR_NETWORK_OPTIMIZATION)
+        # exit(ERROR_NETWORK_OPTIMIZATION)
 
     return result
 

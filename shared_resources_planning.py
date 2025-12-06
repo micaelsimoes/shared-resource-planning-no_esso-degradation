@@ -39,6 +39,7 @@ class SharedResourcesPlanning:
         self.plot_market_data = bool()
         self.results_dir = os.path.join(data_dir, 'Results')
         self.diagrams_dir = os.path.join(data_dir, 'Diagrams')
+        self.logs_dir = os.path.join(self.results_dir, 'Logs')
         self.params_file = str()
         self.years = dict()
         self.days = dict()
@@ -2213,6 +2214,7 @@ def _read_planning_problem(planning_problem):
     # Create results and diagrams folder
     os.makedirs(planning_problem.results_dir, exist_ok=True)
     os.makedirs(planning_problem.diagrams_dir, exist_ok=True)
+    os.makedirs(planning_problem.logs_dir, exist_ok=True)
 
     # Read specification file
     filename = os.path.join(planning_problem.data_dir, planning_problem.filename)
@@ -2253,6 +2255,7 @@ def _read_planning_problem(planning_problem):
         distribution_network.data_dir = planning_problem.data_dir
         distribution_network.results_dir = planning_problem.results_dir
         distribution_network.diagrams_dir = planning_problem.diagrams_dir
+        distribution_network.logs_dir = planning_problem.logs_dir
         distribution_network.years = planning_problem.years
         distribution_network.days = planning_problem.days
         distribution_network.num_oper_scenarios = num_oper_scenarios
@@ -2289,6 +2292,7 @@ def _read_planning_problem(planning_problem):
     transmission_network.data_dir = planning_problem.data_dir
     transmission_network.results_dir = planning_problem.results_dir
     transmission_network.diagrams_dir = planning_problem.diagrams_dir
+    transmission_network.logs_dir = planning_problem.logs_dir
     transmission_network.years = planning_problem.years
     transmission_network.days = planning_problem.days
     transmission_network.num_oper_scenarios = planning_data['TransmissionNetwork']['num_operation_scenarios']

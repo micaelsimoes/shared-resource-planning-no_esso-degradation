@@ -300,16 +300,6 @@ def s_bounds(m, e, s_m, s_o, p, network):
     return (0.0, ess.s + EQUALITY_TOLERANCE)
 
 
-def slack_es_comp_bounds(m, e, s_m, s_o, p, network):
-    ess = network.energy_storages[e]
-    return (0.0, ess.s * 0.05 + EQUALITY_TOLERANCE)
-
-
-def slack_shared_es_comp_bounds(m, e, s_m, s_o, p, network):
-    ess = network.shared_energy_storages[e]
-    return (0.0, ess.s * 0.05 + EQUALITY_TOLERANCE)
-
-
 def slack_es_balance_bounds(m, e, s_m, s_o, network):
     ess = network.energy_storages[e]
     return (0.00, ess.e * 0.05 + EQUALITY_TOLERANCE)
@@ -560,14 +550,6 @@ def ess_soc_final_rule(m, e, s_m, s_o, network, params):
 
 
 # Shared Energy Storage
-def sess_sch_sqr_def(m, e, s_m, s_o, p):
-    return m.shared_es_pch[e, s_m, s_o, p] ** 2 +  m.shared_es_qch[e, s_m, s_o, p] ** 2
-
-
-def sess_sdch_sqr_def(m, e, s_m, s_o, p):
-    return m.shared_es_pdch[e, s_m, s_o, p] ** 2 +  m.shared_es_qdch[e, s_m, s_o, p] ** 2
-
-
 def sess_phi_ch_limits_lower(m, e, s_m, s_o, p, network):
     ess = network.shared_energy_storages[e]
     min_phi = acos(ess.min_pf)
@@ -595,13 +577,13 @@ def sess_phi_dch_limits_upper(m, e, s_m, s_o, p, network):
 def sess_sch_limit_rule(m, e, s_m, s_o, p):
     s_max = m.shared_es_s_rated[e]
     sch = m.shared_es_sch[e, s_m, s_o, p]
-    return sch <= s_max
+    return sch <= s_max + EQUALITY_TOLERANCE
 
 
 def sess_sdch_limit_rule(m, e, s_m, s_o, p):
     s_max = m.shared_es_s_rated[e]
     sdch = m.shared_es_sdch[e, s_m, s_o, p]
-    return sdch <= s_max
+    return sdch <= s_max + EQUALITY_TOLERANCE
 
 
 def sess_sch_def(m, e, s_m, s_o, p):
@@ -666,11 +648,11 @@ def sess_qnet_rule(m, e, s_m, s_o, p):
 
 
 def sess_s_sensitivities(m, e):
-    return m.shared_es_s_rated[e] == m.shared_es_s_rated_fixed[e]
+    return m.shared_es_s_rated[e] <= m.shared_es_s_rated_fixed[e]
 
 
 def sess_e_sensitivities(m, e):
-    return m.shared_es_e_rated[e] == m.shared_es_e_rated_fixed[e]
+    return m.shared_es_e_rated[e] <= m.shared_es_e_rated_fixed[e]
 
 
 # Interface power flows and voltage magnitude definition

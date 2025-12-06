@@ -22,6 +22,7 @@ class NetworkData:
         self.data_dir = str()
         self.results_dir = str()
         self.diagrams_dir = str()
+        self.logs_dir = str()
         self.years = dict()
         self.days = dict()
         self.num_instants = int()
@@ -163,6 +164,7 @@ def _read_network_data(network_planning):
             network_planning.network[year][day].data_dir = network_planning.data_dir
             network_planning.network[year][day].results_dir = network_planning.results_dir
             network_planning.network[year][day].diagrams_dir = network_planning.diagrams_dir
+            network_planning.network[year][day].logs_dir = network_planning.logs_dir
             network_planning.network[year][day].year = int(year)
             network_planning.network[year][day].day = day
             network_planning.network[year][day].num_instants = network_planning.num_instants
