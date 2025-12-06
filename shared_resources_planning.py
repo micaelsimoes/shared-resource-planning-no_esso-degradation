@@ -539,19 +539,19 @@ def print_debug_info(planning_problem, consensus_vars, print_vmag=False, print_p
             for day in planning_problem.days:
                 if any([print_vmag, print_pf, print_ess]):
                     print(f"\t\tDay {day}")
-                # if print_vmag:
-                #     print(f"\t\tNode {node_id}, {year}, {day}, PF, TSO,  V  {[vmag for vmag in consensus_vars['vmag']['tso']['current'][node_id][year][day]]}")
-                #     print(f"\t\tNode {node_id}, {year}, {day}, PF, DSO,  V  {[vmag for vmag in consensus_vars['vmag']['dso']['current'][node_id][year][day]]}")
+                if print_vmag:
+                    print(f"\t\tNode {node_id}, {year}, {day}, PF, TSO,  V  {[vmag for vmag in consensus_vars['vmag']['tso']['current'][node_id][year][day]]}")
+                    print(f"\t\tNode {node_id}, {year}, {day}, PF, DSO,  V  {[vmag for vmag in consensus_vars['vmag']['dso']['current'][node_id][year][day]]}")
                 # if print_pf:
                 #     print(f"\t\tNode {node_id}, {year}, {day}, PF, TSO,  P {consensus_vars['pf']['tso']['current'][node_id][year][day]['p']}")
                 #     print(f"\t\tNode {node_id}, {year}, {day}, PF, DSO,  P {consensus_vars['pf']['dso']['current'][node_id][year][day]['p']}")
                 #     print(f"\t\tNode {node_id}, {year}, {day}, PF, TSO,  Q {consensus_vars['pf']['tso']['current'][node_id][year][day]['q']}")
                 #     print(f"\t\tNode {node_id}, {year}, {day}, PF, DSO,  Q {consensus_vars['pf']['dso']['current'][node_id][year][day]['q']}")
-                if print_ess:
-                    print(f"\t\tNode {node_id}, {year}, {day}, ESS, TSO,  P {consensus_vars['ess']['tso']['current'][node_id][year][day]['p']}")
-                    print(f"\t\tNode {node_id}, {year}, {day}, ESS, DSO,  P {consensus_vars['ess']['dso']['current'][node_id][year][day]['p']}")
-                    print(f"\t\tNode {node_id}, {year}, {day}, ESS, TSO,  Q {consensus_vars['ess']['tso']['current'][node_id][year][day]['q']}")
-                    print(f"\t\tNode {node_id}, {year}, {day}, ESS, DSO,  Q {consensus_vars['ess']['dso']['current'][node_id][year][day]['q']}")
+                # if print_ess:
+                #     print(f"\t\tNode {node_id}, {year}, {day}, ESS, TSO,  P {consensus_vars['ess']['tso']['current'][node_id][year][day]['p']}")
+                #     print(f"\t\tNode {node_id}, {year}, {day}, ESS, DSO,  P {consensus_vars['ess']['dso']['current'][node_id][year][day]['p']}")
+                #     print(f"\t\tNode {node_id}, {year}, {day}, ESS, TSO,  Q {consensus_vars['ess']['tso']['current'][node_id][year][day]['q']}")
+                #     print(f"\t\tNode {node_id}, {year}, {day}, ESS, DSO,  Q {consensus_vars['ess']['dso']['current'][node_id][year][day]['q']}")
 
 
 def create_transmission_network_model(planning_problem, consensus_vars, candidate_solution):
@@ -630,17 +630,14 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
             # Regularization -- Added to OF to minimize deviations from scenarios to expected values
             obj = copy(tso_model[year][day].objective.expr)
             tso_model[year][day].penalty_regularization = pe.Param(initialize=PENALTY_REGULARIZATION)
-            for dn in tso_model[year][day].active_distribution_networks:
-                for s_m in tso_model[year][day].scenarios_market:
-                    for s_o in tso_model[year][day].scenarios_operation:
-                        for p in tso_model[year][day].periods:
+            for s_m in tso_model[year][day].scenarios_market:
+                for s_o in tso_model[year][day].scenarios_operation:
+                    for p in tso_model[year][day].periods:
+                        for dn in tso_model[year][day].active_distribution_networks:
                             obj += tso_model[year][day].penalty_regularization * (tso_model[year][day].vmag_adn[dn, s_m, s_o, p] - tso_model[year][day].expected_interface_vmag[dn, p]) ** 2
                             obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].pc_adn[dn, s_m, s_o, p] - tso_model[year][day].expected_interface_pf_p[dn, p]) ** 2
                             obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].qc_adn[dn, s_m, s_o, p] - tso_model[year][day].expected_interface_pf_q[dn, p]) ** 2
-            for e in tso_model[year][day].shared_energy_storages:
-                for s_m in tso_model[year][day].scenarios_market:
-                    for s_o in tso_model[year][day].scenarios_operation:
-                        for p in tso_model[year][day].periods:
+                        for e in tso_model[year][day].shared_energy_storages:
                             obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].shared_es_pnet[e, s_m, s_o, p] - tso_model[year][day].expected_shared_ess_p[e, p]) ** 2
                             obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].shared_es_qnet[e, s_m, s_o, p] - tso_model[year][day].expected_shared_ess_q[e, p]) ** 2
             tso_model[year][day].objective.expr = obj
