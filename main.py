@@ -63,30 +63,30 @@ def shared_resources_planning(working_directory, specification_filename):
     planning_problem.read_planning_problem()
     # planning_problem.plot_diagram()
 
-    candidate_solution = planning_problem.get_test_candidate_solution(s_inv=2.50, e_inv=5.00)
+    candidate_solution = planning_problem.get_test_candidate_solution(s_inv=1.00, e_inv=2.00)
 
-    planning_problem.run_operational_planning(type='uncoordinated', print_results=True, debug_flag=False)
+    # planning_problem.run_operational_planning(type='uncoordinated', print_results=True, debug_flag=False)
     # planning_problem.run_operational_planning(type='centralized', print_results=True, debug_flag=False)
     # planning_problem.run_operational_planning(type='hierarchical', num_steps=1, print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_hierarchical_N={1}')
     # planning_problem.run_operational_planning(type='hierarchical', num_steps=2, print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_hierarchical_N={2}')
     # planning_problem.run_operational_planning(type='hierarchical', num_steps=4, print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_hierarchical_N={4}')
     # planning_problem.run_operational_planning(type='hierarchical', num_steps=8, print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_hierarchical_N={8}')
-    planning_problem.run_operational_planning(type='distributed', print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_distributed_without ESS')
-    planning_problem.run_operational_planning(type='distributed', candidate_solution=candidate_solution, print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_distributed_with ESS')
+    # planning_problem.run_operational_planning(type='distributed', print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_distributed_without ESS')
+    # planning_problem.run_operational_planning(type='distributed', candidate_solution=candidate_solution, print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_distributed_with ESS')
 
     # planning_problem.run_operational_planning(candidate_solution=candidate_solution, print_results=True, debug_flag=False)
     # planning_problem.run_planning_problem()
 
-    # transmission_network_copy = deepcopy(planning_problem.transmission_network)
-    # for year in transmission_network_copy.years:
-    #     for day in transmission_network_copy.days:
-    #         transmission_network_copy.network[year][day].shared_energy_storages = list()
-    #         for generator in transmission_network_copy.network[year][day].generators:
-    #             generator.power_factor_control = False
-    # tn_model = transmission_network_copy.build_model()
-    # results = transmission_network_copy.optimize(tn_model)
-    # processed_results = transmission_network_copy.process_results(tn_model, results)
-    # transmission_network_copy.write_optimization_results_to_excel(processed_results)
+    transmission_network_copy = deepcopy(planning_problem.transmission_network)
+    for year in transmission_network_copy.years:
+        for day in transmission_network_copy.days:
+            transmission_network_copy.network[year][day].shared_energy_storages = list()
+            for generator in transmission_network_copy.network[year][day].generators:
+                generator.power_factor_control = False
+    tn_model = transmission_network_copy.build_model()
+    results = transmission_network_copy.optimize(tn_model)
+    processed_results = transmission_network_copy.process_results(tn_model, results)
+    transmission_network_copy.write_optimization_results_to_excel(processed_results)
 
     # distribution_networks = planning_problem.distribution_networks
     # for node_id in distribution_networks:
