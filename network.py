@@ -391,7 +391,7 @@ def _build_model(network, params):
         model.ess_soc_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_soc_rule, network=network, params=params))
         model.ess_soc_limits = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_soc_limits_rule, network=network))
         model.ess_soc_final = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, rule=partial(ess_soc_final_rule, network=network, params=params))
-        model.ess_comp = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_comp_exact_rule, network=network, params=params))
+        model.ess_comp = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_comp_rule, network=network, params=params))
 
     # - Shared Energy Storage constraints
     model.sess_pnet_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pnet_rule)
