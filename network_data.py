@@ -2523,20 +2523,6 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
 
                         node_id = shared_energy_storage.bus
 
-                        # - Complementarity
-                        if network_planning.params.slacks.shared_ess.complementarity:
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'Shared Energy Storage, comp'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
-                            for p in range(network_planning.num_instants):
-                                comp = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['comp'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 7).value = comp
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                            row_idx = row_idx + 1
-
                         # - Day balance
                         if network_planning.params.slacks.shared_ess.day_balance:
 
@@ -2590,20 +2576,6 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
                         for energy_storage in network.energy_storages:
 
                             es_id = energy_storage.es_id
-
-                            # - Complementarity
-                            if network_planning.params.slacks.ess.complementarity:
-                                sheet.cell(row=row_idx, column=1).value = es_id
-                                sheet.cell(row=row_idx, column=2).value = int(year)
-                                sheet.cell(row=row_idx, column=3).value = day
-                                sheet.cell(row=row_idx, column=4).value = 'Energy Storage, comp'
-                                sheet.cell(row=row_idx, column=5).value = s_m
-                                sheet.cell(row=row_idx, column=6).value = s_o
-                                for p in range(network_planning.num_instants):
-                                    comp = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['energy_storages']['comp'][es_id][p]
-                                    sheet.cell(row=row_idx, column=p + 7).value = comp
-                                    sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                                row_idx = row_idx + 1
 
                             # - Day balance
                             if network_planning.params.slacks.ess.day_balance:
