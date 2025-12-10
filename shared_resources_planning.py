@@ -2473,7 +2473,7 @@ def _plot_market_price_scenarios(planning_problem, years_to_plot, save_dir, save
             std_flex = cost_flex.std(axis=0)
 
             # Plot
-            fig, ax = plt.subplots(1, 1, figsize=(8, 6), sharex=True)
+            fig, ax = plt.subplots(1, 1, figsize=(11, 6), sharex=True)
 
             color_energy_p = cm.tab10(0)
             color_flex = cm.tab10(1)
@@ -2485,11 +2485,12 @@ def _plot_market_price_scenarios(planning_problem, years_to_plot, save_dir, save
             ax.set_xticks(xticks)
             ax.set_xticklabels(xtick_labels)
             ax.set_xlim(0, 23)
-            ax.set_xlabel("Hour", loc='center', fontsize=12)
-            ax.set_ylabel("Market Price, [€/MW]", fontsize=12)
+            ax.set_xticklabels(xtick_labels, fontsize=12)
+            ax.set_xlabel("Hour", loc='center', fontsize=14)
+            ax.set_ylabel("Market Price, [€/MW]", fontsize=16)
             ax.yaxis.set_major_formatter(mticker.FormatStrFormatter('%.2f'))
             ax.grid(True)
-            ax.legend(fontsize='small')
+            ax.legend(loc='lower right', fontsize=11)
             plt.tight_layout()
 
             filename = os.path.join(save_dir, f"{planning_problem.name}_market_prices_{year}_{season}.{save_format}")
