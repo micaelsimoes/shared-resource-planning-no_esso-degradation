@@ -1,0 +1,18 @@
+{
+	"budget": 3e6,
+	"max_capacity": 10.00,
+	"min_energy_to_power_factor": 2.00,
+	"max_energy_to_power_factor": 10.00,
+	"slacks": true,
+	"print_results_to_file": true,
+	"solver": {
+		"name": "ipopt",
+		"verbose": false,
+		"options": {
+	  		"tol": 1e-6,
+	  		"acceptable_tol": 1e-5,
+	  		"acceptable_iter": 5,
+			"linear_solver": "ma97"
+		}
+	}
+}
