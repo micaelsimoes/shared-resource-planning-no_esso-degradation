@@ -966,16 +966,13 @@ def branch_flow_limit_rule(model, b, s_m, s_o, p, network, params):
 def setup_cost_parameters(model, params):
 
     model.penalty_ess_usage = pe.Param(initialize=PENALTY_ESS_USAGE, mutable=True)
-
     if params.obj_type == OBJ_MIN_COST:
-        model.cost_res_curtailment = pe.Param(initialize=COST_GENERATION_CURTAILMENT, mutable=True)
         model.cost_load_curtailment = pe.Param(initialize=COST_CONSUMPTION_CURTAILMENT, mutable=True)
-
+        model.penalty_gen_curtailment = pe.Param(initialize=0.00, mutable=True)
     elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
-        model.penalty_gen_curtailment = pe.Param(initialize=PENALTY_GENERATION_CURTAILMENT, mutable=True)
         model.penalty_load_curtailment = pe.Param(initialize=PENALTY_LOAD_CURTAILMENT, mutable=True)
         model.penalty_flex_usage = pe.Param(initialize=PENALTY_FLEXIBILITY_USAGE, mutable=True)
-
+        model.penalty_gen_curtailment = pe.Param(initialize=PENALTY_GENERATION_CURTAILMENT, mutable=True)
     else:
         raise ValueError(f"[ERROR] Unrecognized or invalid objective type: {params.obj_type}.")
 
@@ -990,16 +987,16 @@ def build_objective(model, network, params):
         model.total_flex_cost = pe.Expression(rule=partial(total_flex_cost_rule, network=network))
         model.total_load_curt_cost = pe.Expression(rule=partial(total_load_curtailment_cost_rule, network=network))
     else:
-        model.gen_curt_penalty_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(gen_curtailment_penalty_rule, network=network, params=params))
         model.load_curt_penalty_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(load_curtailment_penalty_rule, network=network, params=params))
         model.flex_penalty_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(flexibility_penalty_rule, network=network, params=params))
-        model.total_gen_curt_penalty = pe.Expression(rule=partial(total_gen_curtailment_penalty_rule, network=network))
         model.total_load_curt_penalty = pe.Expression(rule=partial(total_load_curtailment_penalty_rule, network=network))
         model.total_flex_penalty = pe.Expression(rule=partial(total_flex_penalty_rule, network=network))
 
+    model.gen_curt_penalty_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(gen_curtailment_penalty_rule, network=network, params=params))
     model.ess_utilization_cost_penalty_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(ess_utilization_cost_penalty_rule, network=network, params=params))
     model.slack_penalties_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(slack_penalties_rule, network=network, params=params))
     model.ess_complementarity_penalty_scenario = pe.Expression(model.scenarios_market, model.scenarios_operation, rule=partial(ess_complementarity_penalties_rule, network=network, params=params))
+    model.total_gen_curt_penalty = pe.Expression(rule=partial(total_gen_curtailment_penalty_rule, network=network))
     model.total_ess_utilization_cost_penalty = pe.Expression(rule=partial(total_ess_utilization_cost_penalty_rule, network=network))
     model.total_slack_penalties = pe.Expression(rule=partial(total_slack_penalties_rule, network=network))
     model.total_ess_complementarity_penalties = pe.Expression(rule=partial(total_ess_complementarity_penalties_rule, network=network))
@@ -1009,7 +1006,7 @@ def build_objective(model, network, params):
 
 def objective_function_rule(model, params):
     if params.obj_type == OBJ_MIN_COST:
-        obj = model.total_gen_cost + model.total_flex_cost + model.total_load_curt_cost
+        obj = model.total_gen_cost + model.total_flex_cost + model.total_load_curt_cost + model.total_gen_curt_penalty
     else:
         obj = model.total_gen_curt_penalty + model.total_load_curt_penalty + model.total_flex_penalty
     obj += model.total_ess_utilization_cost_penalty
@@ -1092,7 +1089,7 @@ def total_load_curtailment_cost_rule(model, network):
 
 def gen_curtailment_penalty(model, network, s_m, s_o, params):
     '''
-    Note: sg_curt was removed as a variable. To disincentive curtailment, we maximize pg instead
+    Note: sg_curt was removed as a variable. To disincentive curtailment, we maximize sg_sqr instead
     '''
     gen_curt_penalty = 0.0
     if params.rg_curt:
@@ -1100,7 +1097,7 @@ def gen_curtailment_penalty(model, network, s_m, s_o, params):
         for g in model.generators:
             if network.generators[g].is_curtaillable():
                 for p in model.periods:
-                    gen_curt_penalty -= penalty * network.baseMVA * (model.pg[g, s_m, s_o, p])
+                    gen_curt_penalty -= penalty * network.baseMVA * (model.sg_sqr[g, s_m, s_o, p])
     return gen_curt_penalty
 
 

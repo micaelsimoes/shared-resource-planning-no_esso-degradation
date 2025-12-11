@@ -1204,11 +1204,10 @@ def update_transmission_model_to_admm(planning_problem, model, params):
 
             # Update costs (penalties) for the coordination procedure
             model[year][day].penalty_ess_usage.set_value(0.00)
+            model[year][day].penalty_gen_curtailment.set_value(0.00)
             if transmission_network.params.obj_type == OBJ_MIN_COST:
-                model[year][day].cost_res_curtailment.set_value(COST_GENERATION_CURTAILMENT)
                 model[year][day].cost_load_curtailment.set_value(COST_CONSUMPTION_CURTAILMENT)
             elif transmission_network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
-                model[year][day].penalty_gen_curtailment.set_value(0.00)
                 model[year][day].penalty_load_curtailment.set_value(PENALTY_LOAD_CURTAILMENT)
                 model[year][day].penalty_flex_usage.set_value(0.00)
 
