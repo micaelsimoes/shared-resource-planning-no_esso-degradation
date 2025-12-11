@@ -102,47 +102,47 @@ class SharedResourcesPlanning:
 
         print('[INFO] Running PLANNING PROBLEM WITHOUT COORDINATION...')
 
-        print('[INFO] \t - Transmission Network. Power factor control switched off!')
-        print('[INFO] \t - Transmission Network. Flexible load control switched off!')
-        self.transmission_network.params.fl_reg = False
-        for year in self.transmission_network.years:
-            for day in self.transmission_network.days:
-                for generator in self.transmission_network.network[year][day].generators:
-                    if generator.is_curtaillable():
-                        generator.power_factor_control = False
+        # print('[INFO] \t - Transmission Network. Power factor control switched off!')
+        # print('[INFO] \t - Transmission Network. Flexible load control switched off!')
+        # self.transmission_network.params.fl_reg = False
+        # for year in self.transmission_network.years:
+        #     for day in self.transmission_network.days:
+        #         for generator in self.transmission_network.network[year][day].generators:
+        #             if generator.is_curtaillable():
+        #                 generator.power_factor_control = False
 
-        print('[INFO] \t - Distribution Networks. Power factor control switched off!')
-        print('[INFO] \t - Distribution Networks. Flexible load control switched off!')
-        for node_id in self.distribution_networks:
-            distribution_network = self.distribution_networks[node_id]
-            distribution_network.params.fl_reg = False
-            for year in distribution_network.years:
-                for day in distribution_network.days:
-                    for generator in distribution_network.network[year][day].generators:
-                        generator.power_factor_control = False
+        # print('[INFO] \t - Distribution Networks. Power factor control switched off!')
+        # print('[INFO] \t - Distribution Networks. Flexible load control switched off!')
+        # for node_id in self.distribution_networks:
+        #     distribution_network = self.distribution_networks[node_id]
+        #     distribution_network.params.fl_reg = False
+        #     for year in distribution_network.years:
+        #         for day in distribution_network.days:
+        #             for generator in distribution_network.network[year][day].generators:
+        #                 generator.power_factor_control = False
 
         results, models, execution_time = _run_operational_planning_without_coordination(self)
         if print_results:
             self.write_operational_planning_results_without_coordination_to_excel(models, results, execution_time=execution_time)
 
-        print('[INFO] \t - Transmission Network. Power factor control switched back on!')
-        print('[INFO] \t - Transmission Network. Flexible load control switched back on!')
-        self.transmission_network.params.fl_reg = True
-        for year in self.transmission_network.years:
-            for day in self.transmission_network.days:
-                for generator in self.transmission_network.network[year][day].generators:
-                    if generator.is_curtaillable():
-                        generator.power_factor_control = True
+        # print('[INFO] \t - Transmission Network. Power factor control switched back on!')
+        # print('[INFO] \t - Transmission Network. Flexible load control switched back on!')
+        # self.transmission_network.params.fl_reg = True
+        # for year in self.transmission_network.years:
+        #     for day in self.transmission_network.days:
+        #         for generator in self.transmission_network.network[year][day].generators:
+        #             if generator.is_curtaillable():
+        #                 generator.power_factor_control = True
 
-        print('[INFO] \t - Distribution Networks. Power factor control switched back on!')
-        print('[INFO] \t - Distribution Networks. Flexible load control switched back on!')
-        for node_id in self.distribution_networks:
-            distribution_network = self.distribution_networks[node_id]
-            distribution_network.params.fl_reg = True
-            for year in distribution_network.years:
-                for day in distribution_network.days:
-                    for generator in distribution_network.network[year][day].generators:
-                        generator.power_factor_control = True
+        # print('[INFO] \t - Distribution Networks. Power factor control switched back on!')
+        # print('[INFO] \t - Distribution Networks. Flexible load control switched back on!')
+        # for node_id in self.distribution_networks:
+        #     distribution_network = self.distribution_networks[node_id]
+        #     distribution_network.params.fl_reg = True
+        #     for year in distribution_network.years:
+        #         for day in distribution_network.days:
+        #             for generator in distribution_network.network[year][day].generators:
+        #                 generator.power_factor_control = True
 
         return results, models
 
@@ -1204,7 +1204,7 @@ def update_transmission_model_to_admm(planning_problem, model, params):
 
             # Update costs (penalties) for the coordination procedure
             model[year][day].penalty_ess_usage.set_value(0.00)
-            # model[year][day].penalty_gen_curtailment.set_value(0.00)
+            model[year][day].penalty_gen_curtailment.set_value(0.00)
             if transmission_network.params.obj_type == OBJ_MIN_COST:
                 model[year][day].cost_load_curtailment.set_value(COST_CONSUMPTION_CURTAILMENT)
             elif transmission_network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
@@ -2182,7 +2182,7 @@ def _run_operational_planning_without_coordination(planning_problem):
                             vmag_req = interface_vmag[adn_node_id][year][day][p]
                             p_req = interface_pf[adn_node_id][year][day]['p'][p] / s_base
                             q_req = interface_pf[adn_node_id][year][day]['q'][p] / s_base
-                            # obj += tso_model[year][day].penalty_regularization * (tso_model[year][day].vmag_adn[dn, s_m, s_o, p] - vmag_req) ** 2
+                            obj += tso_model[year][day].penalty_regularization * (tso_model[year][day].vmag_adn[dn, s_m, s_o, p] - vmag_req) ** 2
                             obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].pc_adn[dn, s_m, s_o, p] - p_req) ** 2
                             obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].qc_adn[dn, s_m, s_o, p] - q_req) ** 2
 

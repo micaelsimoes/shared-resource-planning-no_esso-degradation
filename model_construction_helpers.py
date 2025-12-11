@@ -968,7 +968,7 @@ def setup_cost_parameters(model, params):
     model.penalty_ess_usage = pe.Param(initialize=PENALTY_ESS_USAGE, mutable=True)
     if params.obj_type == OBJ_MIN_COST:
         model.cost_load_curtailment = pe.Param(initialize=COST_CONSUMPTION_CURTAILMENT, mutable=True)
-        model.penalty_gen_curtailment = pe.Param(initialize=0.00, mutable=True)
+        model.penalty_gen_curtailment = pe.Param(initialize=PENALTY_GENERATION_CURTAILMENT, mutable=True)
     elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
         model.penalty_load_curtailment = pe.Param(initialize=PENALTY_LOAD_CURTAILMENT, mutable=True)
         model.penalty_flex_usage = pe.Param(initialize=PENALTY_FLEXIBILITY_USAGE, mutable=True)
