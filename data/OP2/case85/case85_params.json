@@ -11,18 +11,16 @@
 	"shared_ess_model": "EXACT",
 	"slacks": {
 		"grid_operation": {
-			"voltage": true,
-			"branch_flow": true
+			"voltage": false,
+			"branch_flow": false
 		},
 		"flexibility": {
 			"day_balance": false
 		},
 		"ess": {
-			"complementarity": false,
 			"day_balance": false
 		},
 		"shared_ess": {
-			"complementarity": false,
 			"day_balance": false
 		},
 		"node_balance": {
@@ -34,10 +32,12 @@
 		"name": "ipopt",
 		"verbose": false,
 		"options": {
-	  		"tol": 1e-5,
-	  		"acceptable_tol": 1e-4,
+	  		"tol": 1e-6,
+	  		"acceptable_tol": 1e-5,
 	  		"acceptable_iter": 5,
-			"linear_solver": "ma97"
+			"linear_solver": "ma97",
+			"output_file": "optim_log_case69.log",
+			"file_print_level": 6
 		}
 	},
 	"print_to_screen": false,

@@ -102,14 +102,14 @@ class SharedResourcesPlanning:
 
         print('[INFO] Running PLANNING PROBLEM WITHOUT COORDINATION...')
 
-        print('[INFO] \t - Transmission Network. Power factor control switched off!')
-        print('[INFO] \t - Transmission Network. Flexible load control switched off!')
-        self.transmission_network.params.fl_reg = False
-        for year in self.transmission_network.years:
-            for day in self.transmission_network.days:
-                for generator in self.transmission_network.network[year][day].generators:
-                    if generator.is_curtaillable():
-                        generator.power_factor_control = False
+        # print('[INFO] \t - Transmission Network. Power factor control switched off!')
+        # print('[INFO] \t - Transmission Network. Flexible load control switched off!')
+        # self.transmission_network.params.fl_reg = False
+        # for year in self.transmission_network.years:
+        #     for day in self.transmission_network.days:
+        #         for generator in self.transmission_network.network[year][day].generators:
+        #             if generator.is_curtaillable():
+        #                 generator.power_factor_control = False
 
         print('[INFO] \t - Distribution Networks. Power factor control switched off!')
         print('[INFO] \t - Distribution Networks. Flexible load control switched off!')
@@ -125,14 +125,14 @@ class SharedResourcesPlanning:
         if print_results:
             self.write_operational_planning_results_without_coordination_to_excel(models, results, execution_time=execution_time)
 
-        print('[INFO] \t - Transmission Network. Power factor control switched back on!')
-        print('[INFO] \t - Transmission Network. Flexible load control switched back on!')
-        self.transmission_network.params.fl_reg = True
-        for year in self.transmission_network.years:
-            for day in self.transmission_network.days:
-                for generator in self.transmission_network.network[year][day].generators:
-                    if generator.is_curtaillable():
-                        generator.power_factor_control = True
+        # print('[INFO] \t - Transmission Network. Power factor control switched back on!')
+        # print('[INFO] \t - Transmission Network. Flexible load control switched back on!')
+        # self.transmission_network.params.fl_reg = True
+        # for year in self.transmission_network.years:
+        #     for day in self.transmission_network.days:
+        #         for generator in self.transmission_network.network[year][day].generators:
+        #             if generator.is_curtaillable():
+        #                 generator.power_factor_control = True
 
         print('[INFO] \t - Distribution Networks. Power factor control switched back on!')
         print('[INFO] \t - Distribution Networks. Flexible load control switched back on!')
@@ -1204,7 +1204,7 @@ def update_transmission_model_to_admm(planning_problem, model, params):
 
             # Update costs (penalties) for the coordination procedure
             model[year][day].penalty_ess_usage.set_value(0.00)
-            model[year][day].penalty_gen_curtailment.set_value(0.00)
+            # model[year][day].penalty_gen_curtailment.set_value(0.00)
             if transmission_network.params.obj_type == OBJ_MIN_COST:
                 model[year][day].cost_load_curtailment.set_value(COST_CONSUMPTION_CURTAILMENT)
             elif transmission_network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
@@ -1321,11 +1321,10 @@ def update_distribution_models_to_admm(planning_problem, models, params):
 
                 # Update costs (penalties) for the coordination procedure
                 dso_model[year][day].penalty_ess_usage.set_value(0.00)
+                # dso_model[year][day].penalty_gen_curtailment.set_value(0.00)
                 if distribution_network.params.obj_type == OBJ_MIN_COST:
-                    dso_model[year][day].cost_res_curtailment.set_value(COST_GENERATION_CURTAILMENT)
                     dso_model[year][day].cost_load_curtailment.set_value(COST_CONSUMPTION_CURTAILMENT)
                 elif distribution_network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
-                    dso_model[year][day].penalty_gen_curtailment.set_value(0.00)
                     dso_model[year][day].penalty_load_curtailment.set_value(PENALTY_LOAD_CURTAILMENT)
                     dso_model[year][day].penalty_flex_usage.set_value(0.00)
 

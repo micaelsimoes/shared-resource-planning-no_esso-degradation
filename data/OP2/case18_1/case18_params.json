@@ -11,8 +11,8 @@
 	"shared_ess_model": "EXACT",
 	"slacks": {
 		"grid_operation": {
-			"voltage": false,
-			"branch_flow": false
+			"voltage": true,
+			"branch_flow": true
 		},
 		"flexibility": {
 			"day_balance": false
@@ -24,8 +24,8 @@
 			"day_balance": false
 		},
 		"node_balance": {
-			"active_power": false,
-			"reactive_power": false
+			"active_power": true,
+			"reactive_power": true
 		}
 	},
 	"solver": {
@@ -36,7 +36,7 @@
 	  		"acceptable_tol": 1e-5,
 	  		"acceptable_iter": 5,
 			"linear_solver": "ma97",
-			"output_file": "optim_log_case18_2_1.log",
+			"output_file": "optim_log_case18.log",
 			"file_print_level": 6
 		}
 	},
