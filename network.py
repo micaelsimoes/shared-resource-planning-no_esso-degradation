@@ -1147,18 +1147,6 @@ def _process_results(network, model, params, results=dict()):
                         processed_results['scenarios'][s_m][s_o]['energy_storages']['soc'][es_id].append(soc_ess)
                         processed_results['scenarios'][s_m][s_o]['energy_storages']['soc_percent'][es_id].append(soc_ess / capacity)
 
-            # Flexible loads
-            if params.fl_reg:
-                for i in model.loads:
-                    load_id = network.loads[i].load_id
-                    processed_results['scenarios'][s_m][s_o]['consumption']['pc_flex'][load_id] = []
-                    processed_results['scenarios'][s_m][s_o]['consumption']['qc_flex'][load_id] = []
-                    for p in model.periods:
-                        pc_flex = pe.value(model.flex_p_up[i, s_m, s_o, p] + model.flex_p_down[i, s_m, s_o, p]) * network.baseMVA
-                        qc_flex = pe.value(model.flex_p_up[i, s_m, s_o, p] + model.flex_p_down[i, s_m, s_o, p]) * network.baseMVA
-                        processed_results['scenarios'][s_m][s_o]['consumption']['pc_flex'][load_id].append(pc_flex)
-                        processed_results['scenarios'][s_m][s_o]['consumption']['qc_flex'][load_id].append(qc_flex)
-
             # Shared Energy Storages
             for e in model.shared_energy_storages:
                 node_id = network.shared_energy_storages[e].bus
