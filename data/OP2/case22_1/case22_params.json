@@ -7,8 +7,8 @@
 	"l_curt": false,
 	"enforce_vg": false,
 	"branch_limit_type": "MIXED",
-	"ess_model": "EXACT",
-	"shared_ess_model": "EXACT",
+	"ess_model": "BILINEAR_RELAXATION",
+	"shared_ess_model": "BILINEAR_RELAXATION",
 	"slacks": {
 		"grid_operation": {
 			"voltage": false,
@@ -24,8 +24,8 @@
 			"day_balance": false
 		},
 		"node_balance": {
-			"active_power": false,
-			"reactive_power": false
+			"active_power": true,
+			"reactive_power": true
 		}
 	},
 	"solver": {
@@ -36,7 +36,7 @@
 	  		"acceptable_tol": 1e-5,
 	  		"acceptable_iter": 5,
 			"linear_solver": "ma97",
-			"output_file": "optim_log_case22.log",
+			"output_file": "optim_log_case22_1.log",
 			"file_print_level": 6
 		}
 	},
