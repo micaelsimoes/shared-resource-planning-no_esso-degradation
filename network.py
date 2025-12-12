@@ -468,25 +468,27 @@ def _run_smopf(network, model, params, from_warm_start=False):
     #if params.solver_params.verbose:
     if not result or result.solver.termination_condition != po.TerminationCondition.optimal:
 
-        import logging
-        from pyomo.util.infeasible import log_infeasible_constraints
+        if params.solver_params.verbose:
 
-        # Create a logger object with DEBUG level
-        logging_logger = logging.getLogger()
-        logging_logger.setLevel(logging.DEBUG)
+            import logging
+            from pyomo.util.infeasible import log_infeasible_constraints
 
-        # Create a console handler
-        ch = logging.StreamHandler()
-        ch.setLevel(logging.DEBUG)
+            # Create a logger object with DEBUG level
+            logging_logger = logging.getLogger()
+            logging_logger.setLevel(logging.DEBUG)
 
-        # add the handler to the logger
-        logging_logger.addHandler(ch)
+            # Create a console handler
+            ch = logging.StreamHandler()
+            ch.setLevel(logging.DEBUG)
 
-        # Log the infeasible constraints of pyomo object
-        print("Displaying Infeasible Constraints")
-        log_infeasible_constraints(model, log_expression=True, log_variables=True, logger=logging_logger)
+            # add the handler to the logger
+            logging_logger.addHandler(ch)
 
-        exit(ERROR_NETWORK_OPTIMIZATION)
+            # Log the infeasible constraints of pyomo object
+            print("[INFO] Infeasible Constraints:")
+            log_infeasible_constraints(model, log_expression=True, log_variables=True, logger=logging_logger)
+
+            exit(ERROR_NETWORK_OPTIMIZATION)
 
     return result
 
