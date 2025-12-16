@@ -635,12 +635,12 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
                 for s_o in tso_model[year][day].scenarios_operation:
                     for p in tso_model[year][day].periods:
                         for dn in tso_model[year][day].active_distribution_networks:
-                            obj += tso_model[year][day].penalty_regularization * (tso_model[year][day].vmag_adn[dn, s_m, s_o, p] - tso_model[year][day].vmag_adn[dn, 0, 0, p]) ** 2
-                            obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].pc_adn[dn, s_m, s_o, p] - tso_model[year][day].pc_adn[dn, 0, 0, p]) ** 2
-                            obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].qc_adn[dn, s_m, s_o, p] - tso_model[year][day].qc_adn[dn, 0, 0, p]) ** 2
+                            obj += tso_model[year][day].penalty_regularization * (tso_model[year][day].vmag_adn[dn, s_m, s_o, p] - tso_model[year][day].expected_interface_vmag[dn, p]) ** 2
+                            obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].pc_adn[dn, s_m, s_o, p] - tso_model[year][day].expected_interface_pf_p[dn, p]) ** 2
+                            obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].qc_adn[dn, s_m, s_o, p] - tso_model[year][day].expected_interface_pf_q[dn, p]) ** 2
                         for e in tso_model[year][day].shared_energy_storages:
-                            obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].shared_es_pnet[e, s_m, s_o, p] - tso_model[year][day].shared_es_pnet[e, 0, 0, p]) ** 2
-                            obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].shared_es_qnet[e, s_m, s_o, p] - tso_model[year][day].shared_es_qnet[e, 0, 0, p]) ** 2
+                            obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].shared_es_pnet[e, s_m, s_o, p] - tso_model[year][day].expected_shared_ess_p[e, p]) ** 2
+                            obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].shared_es_qnet[e, s_m, s_o, p] - tso_model[year][day].expected_shared_ess_q[e, p]) ** 2
             tso_model[year][day].objective.expr = obj
 
     # Run SMOPF
@@ -718,11 +718,11 @@ def create_distribution_networks_models_sequential(distribution_networks, consen
                 for s_m in dso_model[year][day].scenarios_market:
                     for s_o in dso_model[year][day].scenarios_operation:
                         for p in dso_model[year][day].periods:
-                            obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].vmag_adn[s_m, s_o, p] - dso_model[year][day].vmag_adn[0, 0, p]) ** 2
-                            obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].pg_adn[s_m, s_o, p] - dso_model[year][day].pg_adn[0, 0, p]) ** 2
-                            obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].qg_adn[s_m, s_o, p] - dso_model[year][day].qg_adn[0, 0, p]) ** 2
-                            obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].shared_es_pnet[shared_ess_idx, 0, 0, p]) ** 2
-                            obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].shared_es_qnet[shared_ess_idx, 0, 0, p]) ** 2
+                            obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].vmag_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_vmag[p]) ** 2
+                            obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].pg_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_pf_p[p]) ** 2
+                            obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].qg_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_pf_q[p]) ** 2
+                            obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_p[p]) ** 2
+                            obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_q[p]) ** 2
                 dso_model[year][day].objective.expr = obj
 
         # Run SMOPF
