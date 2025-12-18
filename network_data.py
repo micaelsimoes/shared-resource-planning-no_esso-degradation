@@ -2657,8 +2657,6 @@ def _plot_load_data_scenarios(network_planning, years_to_plot, save_dir, save_fo
 
 def _plot_flexibility_data_scenarios(network_planning, df_flexibility, years_to_plot, save_dir, save_format='pdf'):
 
-    from matplotlib.ticker import FuncFormatter
-
     print('[INFO]\t - Plotting flexibility profiles...')
 
     hours = np.arange(network_planning.num_instants)
@@ -2676,12 +2674,13 @@ def _plot_flexibility_data_scenarios(network_planning, df_flexibility, years_to_
             colors = [color_map(i / num_colors) for i in range(num_colors)]
 
             base_load_mean = df_flexibility[season]['pc'].mean(axis=0)
-            flex_up_mean = df_flexibility[season]['pc_flex_up'].mean(axis=0)
-            flex_down_mean = df_flexibility[season]['pc_flex_down'].mean(axis=0)
-
             base_load_std = df_flexibility[season]['pc'].std(axis=0)
-            flex_up_std = df_flexibility[season]['pc_flex_up'].mean(axis=0)
-            flex_down_std = df_flexibility[season]['pc_flex_down'].mean(axis=0)
+
+            flex_up_mean = df_flexibility[season]['pc_flex_up'].mean(axis=0)
+            flex_up_std = df_flexibility[season]['pc_flex_up'].std(axis=0)
+
+            flex_down_mean = df_flexibility[season]['pc_flex_down'].mean(axis=0)
+            flex_down_std = df_flexibility[season]['pc_flex_down'].std(axis=0)
 
             # Plot
             # - Base load
