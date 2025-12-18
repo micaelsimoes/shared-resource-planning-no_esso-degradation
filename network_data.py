@@ -135,7 +135,6 @@ class NetworkData:
         _plot_load_data_scenarios(self, years_to_plot=[years_to_plot], save_dir=self.diagrams_dir)
         _plot_res_data_scenarios(self, years_to_plot=[years_to_plot], save_dir=self.diagrams_dir)
 
-
 # ======================================================================================================================
 #  NETWORK DATA read function
 # ======================================================================================================================
@@ -151,6 +150,9 @@ def _read_network_data(network_planning):
         exit(ERROR_SPECIFICATION_FILE)
 
     synthetic_profiles = _generate_operational_scenarios(base_data)
+    if network_planning.plot_operational_data:
+        years_to_plot = list(network_planning.years)[0]
+        _plot_flexibility_data_scenarios(network_planning, synthetic_profiles['flexibility'], years_to_plot=[years_to_plot], save_dir=network_planning.diagrams_dir)
 
     for year in network_planning.years:
 
@@ -2651,6 +2653,65 @@ def _plot_load_data_scenarios(network_planning, years_to_plot, save_dir, save_fo
             filename = os.path.join(save_dir, f"{network.name}_load_scenarios_{year}_{season}.{save_format}")
             plt.savefig(filename)
             plt.close(fig)
+
+
+def _plot_flexibility_data_scenarios(network_planning, df_flexibility, years_to_plot, save_dir, save_format='pdf'):
+
+    from matplotlib.ticker import FuncFormatter
+
+    print('[INFO]\t - Plotting flexibility profiles...')
+
+    hours = np.arange(network_planning.num_instants)
+    xticks = np.arange(0, network_planning.num_instants, 4)
+    xtick_labels = [f"{h:02d}:00" for h in xticks]
+
+    for year in years_to_plot:
+        for season in network_planning.days:
+
+            plt.figure(figsize=(10, 6))
+            ax = plt.gca()
+
+            num_colors = 3
+            color_map = plt.cm.get_cmap('viridis', num_colors)
+            colors = [color_map(i / num_colors) for i in range(num_colors)]
+
+            base_load_mean = df_flexibility[season]['pc'].mean(axis=0)
+            flex_up_mean = df_flexibility[season]['pc_flex_up'].mean(axis=0)
+            flex_down_mean = df_flexibility[season]['pc_flex_down'].mean(axis=0)
+
+            base_load_std = df_flexibility[season]['pc'].std(axis=0)
+            flex_up_std = df_flexibility[season]['pc_flex_up'].mean(axis=0)
+            flex_down_std = df_flexibility[season]['pc_flex_down'].mean(axis=0)
+
+            # Plot
+            # - Base load
+            plt.plot(hours, base_load_mean, label=f'Base load', color=colors[0])
+            plt.fill_between(hours, base_load_mean - base_load_std, base_load_mean + base_load_std, alpha=0.2, color=colors[0])
+
+            # - Flex up
+            plt.plot(hours, flex_up_mean, label=f'Flexibility', color=colors[1])
+            plt.fill_between(hours, flex_up_mean - flex_up_std, flex_up_mean + flex_up_std, alpha=0.2, color=colors[1])
+
+            # - Flex down
+            plt.plot(hours, flex_down_mean, color=colors[1])
+            plt.fill_between(hours, flex_down_mean - flex_down_std, flex_down_mean + flex_down_std, alpha=0.2, color=colors[1])
+
+            ax.set_ylabel("Active Power, [MW]", fontsize=14)
+            ax.set_xticks(xticks)
+            ax.set_xticklabels(xtick_labels)
+            ax.set_xlim(0, 23)
+            ax.set_xlabel("Hour", loc='center', fontsize=12)
+            ax.grid(True, axis='x', which='both')
+            ax.tick_params(axis='both', labelsize=12)
+            ax.yaxis.set_major_formatter(mticker.FormatStrFormatter('%.2f'))
+
+            plt.legend(loc="lower right", fontsize=8)
+            plt.grid(axis="y", linestyle="--", alpha=0.6)
+            plt.tight_layout()
+
+            filename = os.path.join(save_dir, f"{network_planning.name}_flexibility_scenarios_{year}_{season}.{save_format}")
+            plt.savefig(filename)
+            plt.close()
 
 
 def _plot_res_data_scenarios(network_planning, years_to_plot, save_dir, save_format='pdf'):
