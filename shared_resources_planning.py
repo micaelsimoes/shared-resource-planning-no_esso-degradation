@@ -255,12 +255,16 @@ def _run_planning_problem(planning_problem, debug_flag=False):
 
         _print_candidate_solution(candidate_solution)
         print_memory_usage(f"Before subproblem (iter {iter})", debug_flag)
+        print_results = False
+        if iter == 1 or debug_flag:
+            print_results = True
 
         # 1. Subproblem
         # 1.1. Solve operational planning, with fixed investment variables,
         # 1.2. Get coupling constraints' sensitivities (subproblem)
         # 1.3. Get OF value (upper bound) from the subproblem
-        operational_convergence, operational_results, lower_level_models, sensitivities, _ = planning_problem.run_operational_planning(candidate_solution=candidate_solution, print_results=debug_flag, filename=f'{planning_problem.name}_iter{iter}')
+        operational_convergence, operational_results, lower_level_models, sensitivities, _ = planning_problem.run_operational_planning(candidate_solution=candidate_solution, print_results=print_results, filename=f'{planning_problem.name}_iter{iter}')
+
         if operational_convergence:
             upper_bound = planning_problem.get_upper_bound(lower_level_models['tso'])
         else:
