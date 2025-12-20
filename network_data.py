@@ -86,7 +86,7 @@ class NetworkData:
         for year in self.years:
             annualization = 1 / ((1 + self.discount_factor) ** (int(year) - int(years[0])))
             for day in self.days:
-                obj += self.network[year][day].get_primal_value(model[year][day]) * self.years[year] * self.days[day] * annualization
+                obj += self.network[year][day].get_primal_value(model[year][day], self.params) * self.years[year] * self.days[day] * annualization
         return obj
 
     def get_sensitivities(self, model):

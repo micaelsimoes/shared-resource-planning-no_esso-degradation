@@ -58,8 +58,9 @@ class Network:
             print(f'[INFO] \t\t\t - Running SMOPF, Network {self.name}, {self.year}, {self.day}...')
         return _run_smopf(self, model, params, from_warm_start=from_warm_start)
 
-    def get_primal_value(self, model):
-        return pe.value(model.objective)
+    def get_primal_value(self, model, params):
+        primal_value = pe.value(objective_function_rule(model, params))
+        return pe.value(primal_value)
 
     def compute_objective_function_value(self, model):
         return pe.value(model.objective)
