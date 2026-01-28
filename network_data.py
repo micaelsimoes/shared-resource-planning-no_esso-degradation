@@ -2751,7 +2751,7 @@ def _plot_res_data_scenarios(network_planning, years_to_plot, save_dir, save_for
                     axs.grid(True, which='both')
                     axs.tick_params(axis='both', labelsize=12)
                     axs.yaxis.set_major_formatter(mticker.FormatStrFormatter('%.2f'))
-                    axs.legend(loc='best', fontsize='small', frameon=True)
+                    axs.legend(loc='upper right', fontsize='small', frameon=True)
 
             plt.tight_layout()
             filename = os.path.join(save_dir, f"{network.name}_RES_generation_scenarios_{year}_{season}.{save_format}")

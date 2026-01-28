@@ -297,7 +297,7 @@ def _build_model(network, params):
         model.flex_p_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(pc_flex_up_bounds, network=network, params=params))
         model.flex_p_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(pc_flex_down_bounds, network=network, params=params))
         model.flex_q_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(qc_flex_up_bounds, network=network, params=params))
-        model.flex_q_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(qc_flex_up_bounds, network=network, params=params))
+        model.flex_q_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(qc_flex_down_bounds, network=network, params=params))
         if params.slacks.flexibility.day_balance:
             model.slack_flex_p_balance_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 0.01))
             model.slack_flex_p_balance_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 0.01))
