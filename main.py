@@ -74,7 +74,7 @@ def shared_resources_planning(working_directory, specification_filename):
     # planning_problem.run_operational_planning(type='distributed', print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_distributed_without ESS')
     # planning_problem.run_operational_planning(type='distributed', candidate_solution=candidate_solution, print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_distributed_with ESS')
 
-    # planning_problem.run_planning_problem()
+    planning_problem.run_planning_problem()
 
     # transmission_network_copy = deepcopy(planning_problem.transmission_network)
     # for year in transmission_network_copy.years:
