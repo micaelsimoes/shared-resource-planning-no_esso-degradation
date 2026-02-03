@@ -2520,7 +2520,7 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
                                 sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
                             row_idx = row_idx + 1
 
-                    # Shared ESS
+                    # SharedESS
                     for shared_energy_storage in network.shared_energy_storages:
 
                         node_id = shared_energy_storage.bus

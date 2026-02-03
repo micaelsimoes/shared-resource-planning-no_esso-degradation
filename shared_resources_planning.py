@@ -1227,14 +1227,14 @@ def update_transmission_model_to_admm(planning_problem, model, params):
             model[year][day].dual_pf_q_req = pe.Param(model[year][day].active_distribution_networks, model[year][day].periods, mutable=True, domain=pe.Reals)           # Dual variable - reactive power requested
 
             model[year][day].rho_ess = pe.Param(mutable=True, domain=pe.NonNegativeReals, initialize=params.rho['ess'][transmission_network.name])
-            model[year][day].p_ess_req = pe.Param(model[year][day].shared_energy_storages, model[year][day].periods, mutable=True, domain=pe.Reals)                     # Shared ESS - Active power requested (DSO)
-            model[year][day].q_ess_req = pe.Param(model[year][day].shared_energy_storages, model[year][day].periods, mutable=True, domain=pe.Reals)                     # Shared ESS - Reactive power requested (DSO)
-            model[year][day].dual_ess_p_req = pe.Param(model[year][day].shared_energy_storages, model[year][day].periods, mutable=True, domain=pe.Reals)                # Dual variable - Shared ESS active power
-            model[year][day].dual_ess_q_req = pe.Param(model[year][day].shared_energy_storages, model[year][day].periods, mutable=True, domain=pe.Reals)                # Dual variable - Shared ESS reactive power
+            model[year][day].p_ess_req = pe.Param(model[year][day].shared_energy_storages, model[year][day].periods, mutable=True, domain=pe.Reals)                     # SharedESS - Active power requested (DSO)
+            model[year][day].q_ess_req = pe.Param(model[year][day].shared_energy_storages, model[year][day].periods, mutable=True, domain=pe.Reals)                     # SharedESS - Reactive power requested (DSO)
+            model[year][day].dual_ess_p_req = pe.Param(model[year][day].shared_energy_storages, model[year][day].periods, mutable=True, domain=pe.Reals)                # Dual variable - SharedESS active power
+            model[year][day].dual_ess_q_req = pe.Param(model[year][day].shared_energy_storages, model[year][day].periods, mutable=True, domain=pe.Reals)                # Dual variable - SharedESS reactive power
             if params.previous_iter['ess']['tso']:
                 model[year][day].rho_ess_prev = pe.Param(mutable=True, domain=pe.NonNegativeReals, initialize=params.rho_previous_iter['ess'][transmission_network.name])
-                model[year][day].p_ess_prev = pe.Param(model[year][day].shared_energy_storages, model[year][day].periods, mutable=True, domain=pe.Reals)                # Shared ESS - previous iteration active power
-                model[year][day].q_ess_prev = pe.Param(model[year][day].shared_energy_storages, model[year][day].periods, mutable=True, domain=pe.Reals)                # Shared ESS - previous iteration reactive power
+                model[year][day].p_ess_prev = pe.Param(model[year][day].shared_energy_storages, model[year][day].periods, mutable=True, domain=pe.Reals)                # SharedESS - previous iteration active power
+                model[year][day].q_ess_prev = pe.Param(model[year][day].shared_energy_storages, model[year][day].periods, mutable=True, domain=pe.Reals)                # SharedESS - previous iteration reactive power
                 model[year][day].dual_ess_p_prev = pe.Param(model[year][day].shared_energy_storages, model[year][day].periods, mutable=True, domain=pe.Reals)           # Dual variable - previous iteration shared ESS active power
                 model[year][day].dual_ess_q_prev = pe.Param(model[year][day].shared_energy_storages, model[year][day].periods, mutable=True, domain=pe.Reals)           # Dual variable - previous iteration shared ESS reactive power
 
@@ -1344,16 +1344,16 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                 dso_model[year][day].dual_pf_q_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)              # Dual variable - reactive power
 
                 dso_model[year][day].rho_ess = pe.Param(mutable=True, domain=pe.NonNegativeReals, initialize=params.rho['ess'][distribution_network.network[year][day].name])
-                dso_model[year][day].p_ess_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)                  # Shared ESS - active power requested (TSO)
-                dso_model[year][day].q_ess_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)                  # Shared ESS - reactive power requested (TSO)
-                dso_model[year][day].dual_ess_p_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)             # Dual variable - Shared ESS active power
-                dso_model[year][day].dual_ess_q_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)             # Dual variable - Shared ESS reactive power
+                dso_model[year][day].p_ess_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)                  # SharedESS - active power requested (TSO)
+                dso_model[year][day].q_ess_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)                  # SharedESS - reactive power requested (TSO)
+                dso_model[year][day].dual_ess_p_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)             # Dual variable - SharedESS active power
+                dso_model[year][day].dual_ess_q_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)             # Dual variable - SharedESS reactive power
                 if params.previous_iter['ess']['dso']:
                     dso_model[year][day].rho_ess_prev = pe.Param(mutable=True, domain=pe.NonNegativeReals, initialize=params.rho_previous_iter['ess'][distribution_network.network[year][day].name])
-                    dso_model[year][day].p_ess_prev = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)             # Shared ESS - previous iteration active power
-                    dso_model[year][day].q_ess_prev = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)             # Shared ESS - previous iteration reactive power
-                    dso_model[year][day].dual_ess_p_prev = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)        # Dual variable - Shared ESS previous iteration active power
-                    dso_model[year][day].dual_ess_q_prev = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)        # Dual variable - Shared ESS previous iteration reactive power
+                    dso_model[year][day].p_ess_prev = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)             # SharedESS - previous iteration active power
+                    dso_model[year][day].q_ess_prev = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)             # SharedESS - previous iteration reactive power
+                    dso_model[year][day].dual_ess_p_prev = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)        # Dual variable - SharedESS previous iteration active power
+                    dso_model[year][day].dual_ess_q_prev = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)        # Dual variable - SharedESS previous iteration reactive power
 
                 # Objective function - augmented Lagrangian
                 init_of_value = 1.00
@@ -1386,7 +1386,7 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                     obj += (dso_model[year][day].rho_pf / 2) * (constraint_p_req ** 2)
                     obj += (dso_model[year][day].rho_pf / 2) * (constraint_q_req ** 2)
 
-                    # Shared ESS
+                    # SharedESS
                     constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - dso_model[year][day].p_ess_req[p]) / (2 * shared_ess_rating)
                     constraint_ess_q_req = (dso_model[year][day].expected_shared_ess_q[p] - dso_model[year][day].q_ess_req[p]) / (2 * shared_ess_rating)
                     obj += (dso_model[year][day].dual_ess_p_req[p]) * constraint_ess_p_req
@@ -1693,7 +1693,7 @@ def update_and_solve_dso(node_id, distribution_network, model, vmag_req, dual_vm
 
 def update_shared_energy_storages_coordination_model_and_solve(planning_problem, models, ess_req, dual_ess, params, from_warm_start=False):
 
-    print('[INFO] \t\t - Updating Shared ESS...')
+    print('[INFO] \t\t - Updating SharedESS...')
     shared_ess_data = planning_problem.shared_ess_data
     days = [day for day in planning_problem.days]
     years = [year for year in planning_problem.years]
@@ -1725,7 +1725,7 @@ def update_shared_energy_storages_coordination_model_and_solve(planning_problem,
     res = shared_ess_data.optimize(models, from_warm_start=from_warm_start)
     for node_id in planning_problem.active_distribution_network_nodes:
         if not res[node_id]:
-            print(f'[WARNING] Shared ESS operational planning node {node_id} did not converge!')
+            print(f'[WARNING] SharedESS operational planning node {node_id} did not converge!')
 
     return res
 
@@ -2026,7 +2026,7 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                             shared_ess_vars['dso']['prev'][node_id][year][day]['p'][p] = copy(shared_ess_vars['dso']['current'][node_id][year][day]['p'][p])
                             shared_ess_vars['dso']['prev'][node_id][year][day]['q'][p] = copy(shared_ess_vars['dso']['current'][node_id][year][day]['q'][p])
 
-        # Update dual variables Shared ESS
+        # Update dual variables SharedESS
         for year in planning_problem.years:
             for day in planning_problem.days:
                 for p in range(planning_problem.num_instants):
@@ -2072,7 +2072,7 @@ def _run_operational_planning_without_coordination(planning_problem):
     distribution_networks = planning_problem.distribution_networks
     results = {'tso': dict(), 'dso': dict(), 'esso': dict()}
 
-    # Shared ESS candidate solution (no shared ESS)
+    # SharedESS candidate solution (no shared ESS)
     candidate_solution = dict()
     for e in range(len(planning_problem.active_distribution_network_nodes)):
         node_id = planning_problem.active_distribution_network_nodes[e]
@@ -2228,7 +2228,7 @@ def _read_planning_problem(planning_problem):
     planning_problem.days = planning_data['Days']
     planning_problem.num_instants = planning_data['NumInstants']
 
-    # Market Data
+    # MarketData
     print('[INFO] Reading MARKET DATA from file(s)...')
     planning_problem.discount_factor = planning_data['DiscountFactor']
     planning_problem.market_data_file = planning_data['MarketData']
@@ -2322,7 +2322,7 @@ def _read_planning_problem(planning_problem):
     transmission_network.active_distribution_network_nodes = [node_id for node_id in planning_problem.distribution_networks]
     planning_problem.transmission_network = transmission_network
 
-    # Shared ESS
+    # SharedESS
     print('[INFO] Reading SHARED ESS DATA from file(s)...')
     shared_ess_data = SharedEnergyStorageData()
     shared_ess_data.name = planning_problem.name
@@ -2362,7 +2362,7 @@ def _read_planning_problem(planning_problem):
 # ======================================================================================================================
 def _read_market_data_from_file(planning_problem):
 
-    filename = os.path.join(planning_problem.data_dir, 'Market Data', planning_problem.market_data_file)
+    filename = os.path.join(planning_problem.data_dir, 'MarketData', planning_problem.market_data_file)
 
     try:
         base_profiles = _read_market_base_profiles(filename)
@@ -3248,7 +3248,7 @@ def _write_operational_planning_main_info_per_operator_detailed(network, sheet, 
 
 def _write_shared_ess_specifications(workbook, shared_ess_info):
 
-    sheet = workbook.create_sheet('Shared ESS Specifications')
+    sheet = workbook.create_sheet('SharedESS Specifications')
 
     decimal_style = '0.000'
 
@@ -3259,7 +3259,7 @@ def _write_shared_ess_specifications(workbook, shared_ess_info):
     sheet.cell(row=row_idx, column=3).value = 'Sinst, [MVA]'
     sheet.cell(row=row_idx, column=4).value = 'Einst, [MVAh]'
 
-    # Write Shared ESS specifications
+    # Write SharedESS specifications
     for year in shared_ess_info.years:
         for shared_ess in shared_ess_info.shared_energy_storages[year]:
             row_idx = row_idx + 1
@@ -3273,7 +3273,7 @@ def _write_shared_ess_specifications(workbook, shared_ess_info):
 
 def _write_operational_planning_market_data_to_excel(planning_problem, workbook):
 
-    sheet = workbook.create_sheet('Market Data')
+    sheet = workbook.create_sheet('MarketData')
 
     row_idx = 1
     decimal_style = '0.00'
@@ -3551,7 +3551,7 @@ def _write_interface_results_to_excel(planning_problem, workbook, results):
 
 def _write_shared_energy_storages_results_to_excel(planning_problem, workbook, results):
 
-    sheet = workbook.create_sheet('Shared ESS')
+    sheet = workbook.create_sheet('SharedESS')
 
     row_idx = 1
     decimal_style = '0.00'
@@ -5835,7 +5835,7 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
                                 sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
                             row_idx = row_idx + 1
 
-                    # Shared ESS
+                    # SharedESS
                     for shared_energy_storage in network[year][day].shared_energy_storages:
 
                         node_id = shared_energy_storage.bus

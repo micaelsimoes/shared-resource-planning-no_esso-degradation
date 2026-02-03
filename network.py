@@ -1194,7 +1194,7 @@ def _process_results(network, model, params, results=dict()):
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ij_sqr'][branch_id].append(slack_flow_ij_sqr)
 
             # Slacks
-            # - Shared ESS
+            # - SharedESS
             for e in model.shared_energy_storages:
                 node_id = network.shared_energy_storages[e].bus
                 if params.slacks.shared_ess.day_balance:

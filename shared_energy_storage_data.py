@@ -65,11 +65,11 @@ class SharedEnergyStorageData:
         return _get_candidate_solution(self, model)
 
     def read_shared_energy_storage_data_from_file(self):
-        filename = os.path.join(self.data_dir, 'Shared ESS', self.data_file)
+        filename = os.path.join(self.data_dir, 'SharedESS', self.data_file)
         _read_shared_energy_storage_data_from_file(self, filename)
 
     def read_parameters_from_file(self):
-        filename = os.path.join(self.data_dir, 'Shared ESS', self.params_file)
+        filename = os.path.join(self.data_dir, 'SharedESS', self.params_file)
         self.params.read_parameters_from_file(filename)
 
     def create_shared_energy_storages(self, planning_problem):
