@@ -119,6 +119,12 @@ class Network:
                 return True
         return False
 
+    def branch_exists(self, fnode_id, tnode_id):
+        for branch in self.branches:
+            if (branch.fbus == fnode_id and branch.tbus == tnode_id) or (branch.fbus == tnode_id and branch.tbus == fnode_id):
+                return True
+        return False
+
     def adn_load_exists(self, node_id):
         for load in self.loads:
             if load.bus == node_id:
@@ -263,10 +269,13 @@ def _build_model(network, params):
         model.slack_e_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
         model.slack_f_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
         model.slack_f_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
-    model.e_actual = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(e_actual_def, params=params))
-    model.f_actual = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(f_actual_def, params=params))
-    model.vmag = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.0, bounds=partial(vmag_bounds, network=network, params=params))
-    model.vmag_sqr = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=vmag_sqr_def)
+    model.e_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, initialize=1.00)
+    model.f_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, initialize=0.00)
+    model.vmag = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, initialize=1.00)
+    model.vmag_sqr = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, initialize=1.00)
+    model.e_e = pe.Var(model.nodes, model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, initialize=1.00)
+    model.e_f = pe.Var(model.nodes, model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, initialize=0.00)
+    model.f_f = pe.Var(model.nodes, model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, initialize=0.00)
     if params.slacks.node_balance.active_power:
         model.slack_node_balance_p_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00, bounds=partial(node_balance_slack_bounds, network=network))
         model.slack_node_balance_p_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00, bounds=partial(node_balance_slack_bounds, network=network))
@@ -311,6 +320,11 @@ def _build_model(network, params):
 
     # - Transformers
     model.r = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=partial(transformer_ratio_initialize, network=network, params=params), bounds=partial(transformer_ratio_bounds, network=network, params=params))
+    model.r_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals)
+
+    # Branch power flows (aux)
+    model.pij = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, initialize=0.00)
+    model.qij = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, initialize=0.00)
 
     # - Energy Storage devices
     if params.es_reg:
@@ -350,7 +364,7 @@ def _build_model(network, params):
     model.qg_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_q_per_node_def, network=network))
     model.pc_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_p_per_node_def, network=network, params=params))      # Net load at node i
     model.qc_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_q_per_node_def, network=network, params=params))
-
+    model.flow_ij_sqr = pe.Expression(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_flow_def, network=network, params=params))
     if network.is_transmission: # Note: used coordinated operation
         model.vmag_adn = pe.Expression(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_vmag_transmission_def, network=network))
         model.pc_adn = pe.Expression(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_p_transmission_def, network=network, params=params))
@@ -359,13 +373,26 @@ def _build_model(network, params):
         model.vmag_adn = pe.Expression(model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_vmag_distribution_def, network=network))
         model.pg_adn = pe.Expression(model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_p_distribution_def, network=network))
         model.qg_adn = pe.Expression(model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_q_distribution_def, network=network))
-    model.flow_ij_sqr = pe.Expression(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_flow_def, network=network, params=params))
 
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
     # - Voltage
     model.voltage_mag_def = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=vmag_def)
+    model.voltage_mag_sqr_def = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=vmag_sqr_def)
+    model.e_actual_def = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(e_actual_def, params=params))
+    model.f_actual_def = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(f_actual_def, params=params))
     model.voltage_magnitude_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_magnitude_cons_rule, network=network, params=params))
+    model.e_e_def = pe.Constraint(model.nodes, model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(e_e_rule, network=network))
+    model.e_f_def = pe.Constraint(model.nodes, model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(e_f_rule, network=network))
+    model.f_f_def = pe.Constraint(model.nodes, model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(f_f_rule, network=network))
+
+    # - Transformers
+    model.r_sqr_def = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(r_sqr_rule, network=network))
+
+    # - Branch power flows
+    if params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER or params.branch_limit_type == BRANCH_LIMIT_MIXED:
+        model.pij_def = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(pij_rule, network=network, params=params))
+        model.qij_def = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(qij_rule, network=network, params=params))
 
     # - Generation
     if params.rg_curt:

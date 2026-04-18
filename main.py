@@ -3,7 +3,7 @@ import sys
 import getopt
 from copy import deepcopy
 from shared_resources_planning import SharedResourcesPlanning
-from helper_functions import report_out_of_bound_initial_values
+from loguru import logger
 
 
 # ======================================================================================================================
@@ -63,7 +63,7 @@ def shared_resources_planning(working_directory, specification_filename):
     planning_problem.read_planning_problem()
     # planning_problem.plot_diagram()
 
-    candidate_solution = planning_problem.get_test_candidate_solution(s_inv=1.00, e_inv=2.00)
+    # candidate_solution = planning_problem.get_test_candidate_solution(s_inv=1.00, e_inv=2.00)
 
     # planning_problem.run_operational_planning(type='uncoordinated', print_results=True, debug_flag=False)
     # planning_problem.run_operational_planning(type='centralized', print_results=True, debug_flag=False)
