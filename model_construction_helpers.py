@@ -123,13 +123,20 @@ def sg_bounds(m, g, s_m, s_o, p, network, params):
     return (0.0, smax + EQUALITY_TOLERANCE)
 
 
+def pg_avail_init(m, g, s_o, p, network, params):
+    gen = network.generators[g]
+    if not gen.status[p] or not gen.is_curtaillable():
+        return 0.0
+    pg_av = gen.pg[s_o][p]
+    return max(0.0, pg_av)
+
+
 def sg_avail_init(m, g, s_o, p, network, params):
 
     gen = network.generators[g]
     if not gen.status[p] or not gen.is_curtaillable():
         return 0.0
 
-    # Use operational scenario for availability (you can choose s_m vs s_o as needed)
     pg_av = gen.pg[s_o][p]
     qg_av = gen.qg[s_o][p]
     sg_av = abs((pg_av**2 + qg_av**2)**0.5)
@@ -386,7 +393,7 @@ def sg_sqr_rule(m, g, s_m, s_o, p, network):
 def sg_curt_rule(m, g, s_m, s_o, p, network):
     gen = network.generators[g]
     if not gen.status[p] or not gen.is_curtaillable():
-        return 0.0  # just a scalar
+        return 0.0
     return m.sg_avail[g, s_o, p] - m.sg_sqr[g, s_m, s_o, p]**0.50
 
 
@@ -1131,16 +1138,13 @@ def total_load_curtailment_cost_rule(model, network):
 
 
 def gen_curtailment_penalty(model, network, s_m, s_o, params):
-    '''
-    Note: sg_curt was removed as a variable. To disincentive curtailment, we maximize sg_sqr instead
-    '''
     gen_curt_penalty = 0.0
     if params.rg_curt:
         penalty = model.penalty_gen_curtailment
         for g in model.generators:
             if network.generators[g].is_curtaillable():
                 for p in model.periods:
-                    gen_curt_penalty -= penalty * network.baseMVA * (model.sg_sqr[g, s_m, s_o, p])
+                    gen_curt_penalty += penalty * network.baseMVA * (model.pg_avail[g, s_o, p] - model.pg[g, s_m, s_o, p])
     return gen_curt_penalty
 
 

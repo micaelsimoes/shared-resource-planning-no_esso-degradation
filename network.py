@@ -287,6 +287,7 @@ def _build_model(network, params):
     model.pg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(pg_bounds, network=network), initialize=partial(pg_init, network=network))
     model.qg = pe.Var(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, bounds=partial(qg_bounds, network=network), initialize=partial(qg_init, network=network))
     if params.rg_curt:
+        model.pg_avail = pe.Param(model.generators, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=partial(pg_avail_init, network=network, params=params), mutable=False)
         model.sg_avail = pe.Param(model.generators, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=partial(sg_avail_init, network=network, params=params), mutable=False)
         model.sg_sqr = pe.Expression(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_sqr_rule, network=network))
         model.sg_curt = pe.Expression(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_curt_rule, network=network))
