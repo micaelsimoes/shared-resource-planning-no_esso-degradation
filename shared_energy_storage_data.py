@@ -251,17 +251,17 @@ def _build_master_problem(shared_ess_data):
 
     # - Investment Budget
     model.energy_storage_investment = pe.ConstraintList()
+    investment_cost_weighted = 0.0
     for s_m in model.scenarios_market:
-        investment_cost_scenario = 0.0
         for e in model.energy_storages:
             for y in model.years:
                 year = years[y]
                 c_inv_s = shared_ess_data.cost_investment['power'][s_m][year]
                 c_inv_e = shared_ess_data.cost_investment['energy'][s_m][year]
                 annualization = 1 / ((1 + shared_ess_data.discount_factor) ** (int(year) - int(years[0])))
-                investment_cost_scenario += annualization * c_inv_s * model.s_investment[e, y]
-                investment_cost_scenario += annualization * c_inv_e * model.e_investment[e, y]
-        model.energy_storage_investment.add(investment_cost_scenario <= shared_ess_data.params.budget)
+                investment_cost_weighted += annualization * c_inv_s * model.s_investment[e, y]
+                investment_cost_weighted += annualization * c_inv_e * model.e_investment[e, y]
+    model.energy_storage_investment.add(investment_cost_weighted <= shared_ess_data.params.budget)
 
     # Benders' cuts
     model.benders_cuts = pe.ConstraintList()
