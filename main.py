@@ -74,18 +74,18 @@ def shared_resources_planning(working_directory, specification_filename):
     # planning_problem.run_operational_planning(type='distributed', print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_distributed_without ESS')
     # planning_problem.run_operational_planning(type='distributed', candidate_solution=candidate_solution, print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_distributed_with ESS')
 
-    # planning_problem.run_planning_problem()
+    planning_problem.run_planning_problem()
 
-    transmission_network_copy = deepcopy(planning_problem.transmission_network)
-    for year in transmission_network_copy.years:
-        for day in transmission_network_copy.days:
-            transmission_network_copy.network[year][day].shared_energy_storages = list()
-            for generator in transmission_network_copy.network[year][day].generators:
-                generator.power_factor_control = False
-    tn_model = transmission_network_copy.build_model()
-    results = transmission_network_copy.optimize(tn_model)
-    processed_results = transmission_network_copy.process_results(tn_model, results)
-    transmission_network_copy.write_optimization_results_to_excel(processed_results)
+    # transmission_network_copy = deepcopy(planning_problem.transmission_network)
+    # for year in transmission_network_copy.years:
+    #     for day in transmission_network_copy.days:
+    #         transmission_network_copy.network[year][day].shared_energy_storages = list()
+    #         for generator in transmission_network_copy.network[year][day].generators:
+    #             generator.power_factor_control = False
+    # tn_model = transmission_network_copy.build_model()
+    # results = transmission_network_copy.optimize(tn_model)
+    # processed_results = transmission_network_copy.process_results(tn_model, results)
+    # transmission_network_copy.write_optimization_results_to_excel(processed_results)
 
     # distribution_networks = planning_problem.distribution_networks
     # for node_id in distribution_networks:
