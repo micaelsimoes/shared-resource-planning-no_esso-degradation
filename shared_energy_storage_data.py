@@ -252,15 +252,17 @@ def _build_master_problem(shared_ess_data):
     # - Investment Budget
     model.energy_storage_investment = pe.ConstraintList()
     investment_cost_weighted = 0.0
-    for s_m in model.scenarios_market:
-        for e in model.energy_storages:
-            for y in model.years:
-                year = years[y]
+    model.energy_storage_investment = pe.ConstraintList()
+    for e in model.energy_storages:
+        for y in model.years:
+            year = years[y]
+            for s_m in model.scenarios_market:
+                omega_m = shared_ess_data.prob_market_scenarios[s_m]
                 c_inv_s = shared_ess_data.cost_investment['power'][s_m][year]
                 c_inv_e = shared_ess_data.cost_investment['energy'][s_m][year]
-                annualization = 1 / ((1 + shared_ess_data.discount_factor) ** (int(year) - int(years[0])))
-                investment_cost_weighted += annualization * c_inv_s * model.s_investment[e, y]
-                investment_cost_weighted += annualization * c_inv_e * model.e_investment[e, y]
+                discount_factor = 1 / ((1 + shared_ess_data.discount_factor) ** (int(year) - int(years[0])))
+                investment_cost_weighted += discount_factor * omega_m * c_inv_s * model.s_investment[e, y]
+                investment_cost_weighted += discount_factor * omega_m * c_inv_e * model.e_investment[e, y]
     model.energy_storage_investment.add(investment_cost_weighted <= shared_ess_data.params.budget)
 
     # Benders' cuts
@@ -276,11 +278,11 @@ def _build_master_problem(shared_ess_data):
                 omega_m = shared_ess_data.prob_market_scenarios[s_m]
                 c_inv_s = shared_ess_data.cost_investment['power'][s_m][year]
                 c_inv_e = shared_ess_data.cost_investment['energy'][s_m][year]
-                annualization = 1 / ((1 + shared_ess_data.discount_factor) ** (int(year) - int(years[0])))
+                discount_factor = 1 / ((1 + shared_ess_data.discount_factor) ** (int(year) - int(years[0])))
 
                 # Investment Cost
-                investment_cost += annualization * omega_m * c_inv_s * model.s_investment[e, y]
-                investment_cost += annualization * omega_m * c_inv_e * model.e_investment[e, y]
+                investment_cost += discount_factor * omega_m * c_inv_s * model.s_investment[e, y]
+                investment_cost += discount_factor * omega_m * c_inv_e * model.e_investment[e, y]
 
     obj = investment_cost + model.alpha
     model.objective = pe.Objective(sense=pe.minimize, expr=obj)
