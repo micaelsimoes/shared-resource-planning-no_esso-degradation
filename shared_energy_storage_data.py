@@ -252,7 +252,6 @@ def _build_master_problem(shared_ess_data):
     # - Investment Budget
     model.energy_storage_investment = pe.ConstraintList()
     investment_cost_weighted = 0.0
-    model.energy_storage_investment = pe.ConstraintList()
     for e in model.energy_storages:
         for y in model.years:
             year = years[y]
