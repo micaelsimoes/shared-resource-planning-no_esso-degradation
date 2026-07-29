@@ -9,19 +9,31 @@ load_dotenv('.env')
 class SolverParameters:
 
     def __init__(self):
-        self.solver = 'ipopt'
+
+        # LP solver
+        self.lp_solver = "clp"
+        self.lp_solver_path = os.getenv('LP_SOLVER_PATH')
+        self.lp_options = {}
+
+        # NLP solver
+        self.nlp_solver = "ipopt"
+        self.nlp_solver_path = os.getenv('NLP_SOLVER_PATH')
+        self.nlp_options = {}
+
         self.verbose = False
-        self.options = None
-        self.solver_path = os.getenv('SOLVER_PATH')
-        if not self.solver_path:
-            print('[ERROR] Solver path not found! Exiting')
-            exit(ERROR_PARAMS_FILE)
 
     def read_solver_parameters(self, solver_data):
-        _read_solver_parameters(self, solver_data)
 
+        lp_data = solver_data.get("lp_solver", {})
+        self.lp_solver = lp_data.get("name", self.lp_solver)
+        self.lp_options = lp_data.get("options", {})
+        if not isinstance(self.lp_options, dict):
+            raise ValueError("'lp_solver.options' must be a dictionary.")
 
-def _read_solver_parameters(parameters, solver_data):
-    parameters.solver = solver_data['name']
-    parameters.verbose = solver_data['verbose']
-    parameters.options = solver_data['options']
+        nlp_data = solver_data.get("nlp_solver", {})
+        self.nlp_solver = nlp_data.get("name", self.nlp_solver)
+        self.nlp_options = nlp_data.get("options", {})
+        if not isinstance(self.nlp_options, dict):
+            raise ValueError("'nlp_solver.options' must be a dictionary.")
+
+        self.verbose = bool(solver_data.get("verbose", False))

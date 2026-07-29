@@ -7,13 +7,23 @@
 	"slacks": true,
 	"print_results_to_file": true,
 	"solver": {
-		"name": "ipopt",
 		"verbose": false,
-		"options": {
-	  		"tol": 1e-6,
-	  		"acceptable_tol": 1e-5,
-	  		"acceptable_iter": 5,
-			"linear_solver": "ma97"
+		"lp_solver": {
+			"name": "cbc",
+			"options": {
+				"presolve": "on",
+				"primalTolerance": 1e-9,
+				"dualTolerance": 1e-9
+			}
+		},
+		"nlp_solver": {
+			"name": "ipopt",
+			"options": {
+				"tol": 1e-6,
+				"acceptable_tol": 1e-5,
+				"acceptable_iter": 5,
+				"linear_solver": "ma97"
+			}
 		}
 	}
 }
