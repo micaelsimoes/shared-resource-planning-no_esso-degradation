@@ -2764,37 +2764,38 @@ def _plot_res_data_scenarios(network_planning, years_to_plot, save_dir, save_for
 # ======================================================================================================================
 def _get_sensitivities(network_planning, model):
 
-    sensitivities = {'s': dict(), 'e': dict()}
-    for year in network_planning.years:
-        sensitivities['s'][year] = dict()
-        sensitivities['e'][year] = dict()
+    years = list(network_planning.years)
+    base_year = int(years[0])
+
+    sensitivities = {"s": {}, "e": {}}
+    for year in years:
+        sensitivities["s"][year] = {}
+        sensitivities["e"][year] = {}
         for node_id in network_planning.active_distribution_network_nodes:
-            sensitivities['s'][year][node_id] = 0.00
-            sensitivities['e'][year][node_id] = 0.00
+            sensitivities["s"][year][node_id] = 0.0
+            sensitivities["e"][year][node_id] = 0.0
 
-    for year in network_planning.years:
+    for year in years:
 
-        num_years = network_planning.years[year]
+        present_worth_factor = get_present_worth_factor(representative_year=year, base_year=base_year, num_years=network_planning.years[year], discount_rate=network_planning.discount_factor)
 
         for day in network_planning.days:
 
-            num_days = network_planning.days[day]
+            num_days = float(network_planning.days[day])
             model_repr_day = model[year][day]
+            aggregation_weight = (num_days * present_worth_factor)
 
             for c in model_repr_day.shared_energy_storage_s_sensitivities:
-                node_id = network_planning.active_distribution_network_nodes[c - 1]  # Note: the sensitivity constraints start at "1"
-                sensitivity_s = model_repr_day.dual[model_repr_day.shared_energy_storage_s_sensitivities[c]] * network_planning.network[year][day].baseMVA
-                sensitivities['s'][year][node_id] += (num_days / 365.00) * sensitivity_s
+                node_id = (network_planning.active_distribution_network_nodes[c - 1])
+                raw_dual = model_repr_day.dual[model_repr_day.shared_energy_storage_s_sensitivities[c]]
+                sensitivity_s = (raw_dual / network_planning.network[year][day].baseMVA)
+                sensitivities["s"][year][node_id] += (aggregation_weight * sensitivity_s)
 
             for c in model_repr_day.shared_energy_storage_e_sensitivities:
-                node_id = network_planning.active_distribution_network_nodes[c - 1]
-                sensitivity_e = model_repr_day.dual[model_repr_day.shared_energy_storage_e_sensitivities[c]] * network_planning.network[year][day].baseMVA
-                sensitivities['e'][year][node_id] += (num_days / 365.00) * sensitivity_e
-
-        # Note: annualization is already considered in the master problem's OF
-        for node_id in network_planning.active_distribution_network_nodes:
-            sensitivities['s'][year][node_id] *= 365.00 * num_years
-            sensitivities['e'][year][node_id] *= 365.00 * num_years
+                node_id = (network_planning.active_distribution_network_nodes[c - 1])
+                raw_dual = model_repr_day.dual[model_repr_day.shared_energy_storage_e_sensitivities[c]]
+                sensitivity_e = (raw_dual / network_planning.network[year][day].baseMVA)
+                sensitivities["e"][year][node_id] += (aggregation_weight * sensitivity_e)
 
     return sensitivities
 
@@ -2829,15 +2830,35 @@ def _update_model_with_candidate_solution(network, model, candidate_solution):
             for day in network.days:
                 s_base = network.network[year][day].baseMVA
                 for node_id in network.active_distribution_network_nodes:
+
                     shared_ess_idx = network.network[year][day].get_shared_energy_storage_idx(node_id)
-                    model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(abs(candidate_solution[node_id][year]['s']) / s_base)
-                    model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(abs(candidate_solution[node_id][year]['e']) / s_base)
+                    s_candidate = candidate_solution[node_id][year]["s"]
+                    e_candidate = candidate_solution[node_id][year]["e"]
+                    if s_candidate < -1e-8 or e_candidate < -1e-8:
+                        raise ValueError(f"[ERROR] Negative ESS capacity at node {node_id}, year {year}: " f"S={s_candidate}, E={e_candidate}")
+                    s_candidate = max(0.0, s_candidate)
+                    e_candidate = max(0.0, e_candidate)
+
+                    model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(s_candidate / s_base)
+                    model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(e_candidate / s_base)
     else:
         tn_node_id = network.tn_connection_nodeid
         for year in network.years:
             for day in network.days:
+
                 s_base = network.network[year][day].baseMVA
                 ref_node_id = network.network[year][day].get_reference_node_id()
                 shared_ess_idx = network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
-                model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(abs(candidate_solution[tn_node_id][year]['s']) / s_base)
-                model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(abs(candidate_solution[tn_node_id][year]['e']) / s_base)
+                s_candidate = candidate_solution[tn_node_id][year]["s"]
+                e_candidate = candidate_solution[tn_node_id][year]["e"]
+                if s_candidate < -1e-8 or e_candidate < -1e-8:
+                    raise ValueError(f"[ERROR] Negative ESS capacity, year {year}: " f"S={s_candidate}, E={e_candidate}")
+                s_candidate = max(0.0, s_candidate)
+                e_candidate = max(0.0, e_candidate)
+
+                model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(s_candidate / s_base)
+                model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(e_candidate / s_base)
+
+
+
+
