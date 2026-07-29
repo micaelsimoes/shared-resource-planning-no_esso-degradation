@@ -1,7 +1,6 @@
 import gc
 import time
 from copy import copy
-from functools import partial
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import numpy as np
 import pandas as pd
@@ -151,8 +150,8 @@ class SharedResourcesPlanning:
         distribution_networks = self.distribution_networks
         return combine_networks(transmission_network, distribution_networks)
 
-    def get_upper_bound(self, model):
-        return _get_upper_bound(self, model)
+    def get_operational_recourse_value(self, model):
+        return _get_operational_recourse_value(self, model)
 
     def get_primal_value(self, tso_model, dso_models, esso_model):
         return _get_primal_value(self, tso_model, dso_models, esso_model)
@@ -181,11 +180,18 @@ class SharedResourcesPlanning:
         self.params.read_parameters_from_file(filename)
 
     def write_planning_results_to_excel(self, master_problem_model, operational_planning_models, operational_results=dict(), bound_evolution=dict(), execution_time=float()):
+
+        if operational_results is None:
+            operational_results = {}
+
+        if bound_evolution is None:
+            bound_evolution = {}
+
         filename = os.path.join(self.results_dir, self.name + '_planning_results.xlsx')
         processed_results = _process_operational_planning_results(self, operational_planning_models['tso'], operational_planning_models['dso'], operational_planning_models['esso'], operational_results)
         shared_ess_cost = self.shared_ess_data.get_investment_cost_and_rated_capacity(master_problem_model)
         shared_ess_capacity = self.shared_ess_data.get_available_capacity(operational_planning_models['esso'])
-        _write_planning_results_to_excel(self, processed_results, bound_evolution=bound_evolution, shared_ess_cost=shared_ess_cost, shared_ess_capacity=shared_ess_capacity, filename=filename)
+        _write_planning_results_to_excel(self, processed_results, bound_evolution=bound_evolution, shared_ess_cost=shared_ess_cost, shared_ess_capacity=shared_ess_capacity, filename=filename, execution_time=execution_time)
 
     def write_operational_planning_results_to_excel(self, optimization_models, results, filename=str(), primal_evolution=list(), execution_time=float()):
         if not filename:
@@ -225,119 +231,221 @@ class SharedResourcesPlanning:
 # ======================================================================================================================
 #  PLANNING functions
 # ======================================================================================================================
-def _run_planning_problem(planning_problem, debug_flag=False):
+def _run_planning_problem(planning_problem, debug_flag=False, run_fd_test=False):
 
     shared_ess_data = planning_problem.shared_ess_data
     benders_parameters = planning_problem.params.benders
-    lower_level_models = dict()
-    operational_results = dict()
+
+    lower_level_models = {}
+    operational_results = {}
+
+    iteration = 1
+    convergence = False
+    from_warm_start = False
+
+    incumbent_upper_bound = float("inf")
+    lower_bound = float("-inf")
+
+    lower_bound_evolution = []
+    upper_bound_evolution = []
+
+    best_candidate_solution = None
+    best_recourse_value = None
+    best_candidate_objective = None
 
     # ------------------------------------------------------------------------------------------------------------------
     # 0. Initialization
-    iter = 1
-    convergence = False
-    from_warm_start = False
-    lower_bound = -1e12
-    upper_bound = 1e12
-    lower_bound_evolution = [lower_bound]
-    upper_bound_evolution = [upper_bound]
-    candidate_solution = planning_problem.get_initial_candidate_solution()
+    start = time.time()
+
+    master_problem_model = (shared_ess_data.build_master_problem())
+    shared_ess_data.optimize_master_problem(master_problem_model)
+    candidate_solution = shared_ess_data.get_candidate_solution(master_problem_model)
+
     print_memory_usage("Start of planning problem", debug_flag)
 
-    start = time.time()
-    master_problem_model = planning_problem.shared_ess_data.build_master_problem()
-    shared_ess_data.optimize_master_problem(master_problem_model)
-
     # Benders' main cycle
-    while iter < benders_parameters.num_max_iters and not convergence:
+    while (iteration <= benders_parameters.num_max_iters and not convergence):
 
-        print(f'=============================================== ITERATION #{iter} ==============================================')
+        print(f'=============================================== ITERATION #{iteration} ==============================================')
 
         _print_candidate_solution(candidate_solution)
-        print_memory_usage(f"Before subproblem (iter {iter})", debug_flag)
-        print_results = False
-        if iter == 1 or debug_flag:
-            print_results = True
 
-        # 1. Subproblem
-        # 1.1. Solve operational planning, with fixed investment variables,
-        # 1.2. Get coupling constraints' sensitivities (subproblem)
-        # 1.3. Get OF value (upper bound) from the subproblem
-        operational_convergence, operational_results, lower_level_models, sensitivities, _ = planning_problem.run_operational_planning(candidate_solution=candidate_solution, print_results=print_results, filename=f'{planning_problem.name}_operational_planning_results_distributed_without ESS')
+        print_memory_usage(f"Before subproblem (iter {iteration})", debug_flag)
 
-        if operational_convergence:
-            upper_bound = planning_problem.get_upper_bound(lower_level_models['tso'])
-        else:
-            upper_bound = upper_bound_evolution[-1]
-        upper_bound_evolution.append(upper_bound)
+        print_results = (iteration == 1 or debug_flag)
+
+        # --------------------------------------------------------------
+        # 1. Evaluate the operational recourse
+        operational_convergence, operational_results, lower_level_models, sensitivities, _, = planning_problem.run_operational_planning(candidate_solution=candidate_solution, print_results=print_results, filename=(f"{planning_problem.name}_operational_planning_iter_{iteration}"))
+        if not operational_convergence:
+            raise RuntimeError("[ERROR] The operational recourse problem did not converge. No Benders cut should be added from this evaluation.")
+
+        recourse_value = (planning_problem.get_operational_recourse_value(lower_level_models["tso"]))
+        investment_cost = pe.value(master_problem_model.expected_investment_cost)
+        salvage_value = pe.value(master_problem_model.expected_salvage_value)
+
+        candidate_objective = (investment_cost - salvage_value + recourse_value)
+
+        if candidate_objective < incumbent_upper_bound:
+            incumbent_upper_bound = candidate_objective
+            best_candidate_solution = deepcopy(candidate_solution)
+            best_recourse_value = recourse_value
+            best_candidate_objective = candidate_objective
+
+        upper_bound_evolution.append(incumbent_upper_bound)
+
+        # Finite-difference test: run only as a diagnostic
+        if run_fd_test and iteration == 1:
+
+            test_node = planning_problem.active_distribution_network_nodes[0]
+            test_year = list(planning_problem.years)[0]
+            fd_candidate = deepcopy(candidate_solution)
+
+            # Positive and usable ESS capacity at the test node
+            for year in planning_problem.years:
+                fd_candidate["total_capacity"][test_node][year]["s"] = 2.0
+                fd_candidate["total_capacity"][test_node][year]["e"] = 4.0
+
+            fd_convergence, _, fd_models, fd_sensitivities, _ = planning_problem.run_operational_planning(candidate_solution=fd_candidate, print_results=False, filename=( f"{planning_problem.name}_finite_difference_baseline"))
+
+            if not fd_convergence:
+                raise RuntimeError("[ERROR] Finite-difference baseline operational problem did not converge.")
+
+            fd_recourse_value = planning_problem.get_operational_recourse_value(fd_models["tso"])
+
+            finite_difference_sensitivity_test(
+                planning_problem=planning_problem,
+                candidate_solution=fd_candidate,
+                base_recourse_value=fd_recourse_value,
+                dual_sensitivities=fd_sensitivities,
+                node_id=test_node,
+                year=test_year,
+                capacity_type="s",
+                epsilon_values=(0.1, 0.5, 1.0),
+            )
+
+            finite_difference_sensitivity_test(
+                planning_problem=planning_problem,
+                candidate_solution=fd_candidate,
+                base_recourse_value=fd_recourse_value,
+                dual_sensitivities=fd_sensitivities,
+                node_id=test_node,
+                year=test_year,
+                capacity_type="e",
+                epsilon_values=(0.1, 0.5, 1.0),
+            )
+
         if planning_problem.params.gc:
             gc.collect()
-        print_memory_usage(f"After subproblem (iter {iter})", debug_flag)
+        print_memory_usage(f"After subproblem (iter {iteration})", debug_flag)
 
-        #  - Convergence check
-        gap_abs = abs(upper_bound - lower_bound)
-        gap_rel = gap_abs / max(abs(upper_bound), 1e-6)  # Avoid division by zero
-        if gap_rel < benders_parameters.tol_rel or gap_abs <= benders_parameters.tol_abs or lower_bound > upper_bound:
-            lower_bound_evolution.append(lower_bound)
-            convergence = True
-            break
-        print(f"[INFO] Iteration #{iter} | Gap = {gap_rel*100:.2f}% | LB = {lower_bound:.2f} | UB = {upper_bound:.2f}")
-        print_memory_usage(f"Before master problem solve (iter {iter})", debug_flag)
+        # --------------------------------------------------------------
+        # 2. Add optimality cut
+        planning_problem.add_benders_cut(master_problem_model, recourse_value, True, sensitivities, candidate_solution)
 
-        # 2. Solve Master problem
-        # 2.1. Add Benders' cut, based on the sensitivities obtained from the subproblem
-        # 2.2. Run master problem optimization
-        # 2.3. Get new capacity values, and the value of alpha (lower bound)
-        planning_problem.add_benders_cut(master_problem_model, upper_bound, operational_convergence, sensitivities, candidate_solution)
-        shared_ess_data.optimize_master_problem(master_problem_model, from_warm_start=from_warm_start)
-        lower_bound = pe.value(master_problem_model.alpha)
+        # --------------------------------------------------------------
+        # 3. Solve master problem
+        shared_ess_data.optimize_master_problem(master_problem_model)
+        lower_bound = pe.value(master_problem_model.objective)
         lower_bound_evolution.append(lower_bound)
 
+        if debug_flag:
+            print(f"[DEBUG] Expected investment cost: {pe.value(master_problem_model.expected_investment_cost):.2f} EUR")
+            print(f"[DEBUG] Expected salvage value: {pe.value(master_problem_model.expected_salvage_value):.2f} EUR")
+            print(f"[DEBUG] Net investment cost: {pe.value(master_problem_model.expected_investment_cost - master_problem_model.expected_salvage_value):.2f} EUR")
+
+        # --------------------------------------------------------------
+        # 4. Calculate the bound gap
+        gap_abs = incumbent_upper_bound - lower_bound
+        if gap_abs < -benders_parameters.tol_abs:
+            raise RuntimeError(f"[ERROR] Master estimate exceeds the incumbent candidate objective. This indicates that the cuts are not valid lower approximations, or that the objective terms are not being aggregated consistently. LB={lower_bound:.6f}, UB={incumbent_upper_bound:.6f}.")
+
+        gap_rel = gap_abs / max(abs(incumbent_upper_bound), 1.0)
+        print(f"[INFO] Iteration #{iteration} | Gap={100.0 * gap_rel:.4f}% | LB={lower_bound:.2f} | UB={incumbent_upper_bound:.2f} | Q={recourse_value:.2f} | Investment={investment_cost:.2f} | Salvage={salvage_value:.2f}")
+        if (gap_rel <= benders_parameters.tol_rel or gap_abs <= benders_parameters.tol_abs):
+            convergence = True
+            break
+
+        # --------------------------------------------------------------
+        # 5. Extract the next candidate solution
+        candidate_solution = shared_ess_data.get_candidate_solution(master_problem_model)
+
         if planning_problem.params.gc:
             gc.collect()
-        print_memory_usage(f"After master problem solve (iter {iter})", debug_flag)
 
-        # Get new candidate solution
-        candidate_solution = shared_ess_data.get_candidate_solution(master_problem_model)
-        print_memory_usage(f"After GC (iter {iter})", debug_flag)
+        print_memory_usage(f"After master problem solve (iter {iteration})", debug_flag)
 
-        iter += 1
+        iteration += 1
         from_warm_start = True
 
     if convergence:
-        print(f"[INFO] Benders' decomposition converged at iteration {iter}.")
+        print(f"[INFO] Benders' decomposition converged at iteration {iteration}.")
     else:
-        print('[WARNING] Convergence not obtained!')
+        print("[WARNING] Maximum number of Benders iterations reached.")
 
-    # Write results
+    if best_candidate_solution is None:
+        raise RuntimeError("[ERROR] No feasible planning candidate was evaluated.")
+
+    # - Rerun the incumbent operational solution
+    final_convergence, operational_results, lower_level_models, _, _, = planning_problem.run_operational_planning(candidate_solution=best_candidate_solution, print_results=True, filename=(f"{planning_problem.name}_operational_planning_final"))
+    if not final_convergence:
+        raise RuntimeError("[ERROR] Final incumbent operational evaluation did not converge.")
+
+    final_recourse_value = planning_problem.get_operational_recourse_value(lower_level_models["tso"])
+    print(f"[INFO] Incumbent recourse value from Benders iteration: {best_recourse_value:.6f} EUR")
+    print(f"[INFO] Incumbent recourse value from final rerun: {final_recourse_value:.6f} EUR")
+
+    recourse_difference = final_recourse_value - best_recourse_value
+    print(f"[INFO] Recourse-value reproduction difference: {recourse_difference:.6f} EUR")
+
+    _update_master_with_candidate_solution(shared_ess_data, master_problem_model, best_candidate_solution)
+
+    final_investment_cost = pe.value(master_problem_model.expected_investment_cost)
+    final_salvage_value = pe.value(master_problem_model.expected_salvage_value)
+    final_candidate_objective = (final_investment_cost - final_salvage_value + final_recourse_value)
+    print(f"[INFO] Final incumbent investment cost: {final_investment_cost:.6f} EUR")
+    print(f"[INFO] Final incumbent salvage value: {final_salvage_value:.6f} EUR")
+    print(f"[INFO] Final incumbent objective: {final_candidate_objective:.6f} EUR")
+    print(f"[INFO] Original incumbent objective: {best_candidate_objective:.6f} EUR")
+
     end = time.time()
     total_execution_time = end - start
-    print('[INFO] Execution time: {:.2f} s'.format(total_execution_time))
-    bound_evolution = {'lower_bound': lower_bound_evolution, 'upper_bound': upper_bound_evolution}
-    planning_problem.write_planning_results_to_excel(master_problem_model, lower_level_models, operational_results, bound_evolution, execution_time=total_execution_time)
+
+    bound_evolution = {
+        "lower_bound": lower_bound_evolution,
+        "upper_bound": upper_bound_evolution,
+    }
+
+    planning_problem.write_planning_results_to_excel(
+        master_problem_model,
+        lower_level_models,
+        operational_results=operational_results,
+        bound_evolution=bound_evolution,
+        execution_time=total_execution_time,
+    )
 
 
-def _get_upper_bound(planning_problem, model):
-    upper_bound = 0.00
-    years = [year for year in planning_problem.years]
+def _get_operational_recourse_value(planning_problem, model):
+    recourse_value = 0.0
+    years = list(planning_problem.years)
+    base_year = int(years[0])
     for year in planning_problem.years:
-        num_years = planning_problem.years[year]
-        annualization = 1 / ((1 + planning_problem.discount_factor) ** (int(year) - int(years[0])))
+        present_worth_factor = get_present_worth_factor(representative_year=year, base_year=base_year, num_years=planning_problem.years[year], discount_rate=planning_problem.discount_factor)
         for day in planning_problem.days:
             num_days = planning_problem.days[day]
             network = planning_problem.transmission_network.network[year][day]
             params = planning_problem.transmission_network.params
-            obj_repr_day = network.get_primal_value(model[year][day], params)
-            upper_bound += num_days * num_years * annualization * obj_repr_day
-    return upper_bound
+            representative_day_cost = network.get_primal_value(model[year][day], params)
+            recourse_value += num_days * present_worth_factor * representative_day_cost
+    return recourse_value
 
 
-def _add_benders_cut(planning_problem, model, upper_bound, convergence, sensitivities, candidate_solution):
+def _add_benders_cut(planning_problem, model, recourse_value, convergence, sensitivities, candidate_solution):
     years = [year for year in planning_problem.years]
     if convergence:
         # If subproblem converged, add optimality cut
         print("[INFO] Benders' decomposition. Adding optimality cut...")
-        benders_cut = upper_bound
+        benders_cut = recourse_value
         for e in model.energy_storages:
             node_id = planning_problem.active_distribution_network_nodes[e]
             for y in model.years:
@@ -349,15 +457,28 @@ def _add_benders_cut(planning_problem, model, upper_bound, convergence, sensitiv
         model.benders_cuts.add(model.alpha >= benders_cut)
     else:
         # If subproblem did not converge, add feasibility cut
-        print("[INFO] Benders' decomposition. Adding feasibility cut...")
-        benders_cut = upper_bound
-        for e in model.energy_storages:
-            node_id = planning_problem.active_distribution_network_nodes[e]
-            for y in model.years:
-                year = years[y]
-                benders_cut += model.s_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['s']
-                benders_cut += model.e_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['e']
-        model.benders_cuts.add(benders_cut <= BENDERS_FEASIBILITY_TOLERANCE)
+        raise RuntimeError("[ERROR] enders' decomposition. Feasibility cut. Check.")
+        # raise("[INFO] Benders' decomposition. Adding feasibility cut...")
+        # benders_cut = recourse_value
+        # for e in model.energy_storages:
+        #     node_id = planning_problem.active_distribution_network_nodes[e]
+        #     for y in model.years:
+        #         year = years[y]
+        #         benders_cut += model.s_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['s']
+        #         benders_cut += model.e_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['e']
+        # model.benders_cuts.add(benders_cut <= BENDERS_FEASIBILITY_TOLERANCE)
+
+
+def _update_master_with_candidate_solution(shared_ess_data, master_model, candidate_solution):
+    years = list(shared_ess_data.years)
+    for e, node_id in enumerate(shared_ess_data.active_distribution_network_nodes):
+        for y, year in enumerate(years):
+            investment = candidate_solution["investment"][node_id][year]
+            total_capacity = candidate_solution["total_capacity"][node_id][year]
+            master_model.s_investment[e, y].set_value(max(0.0, investment["s"]))
+            master_model.e_investment[e, y].set_value(max(0.0, investment["e"]))
+            master_model.s_rated[e, y].set_value(max(0.0, total_capacity["s"]))
+            master_model.e_rated[e, y].set_value(max(0.0, total_capacity["e"]))
 
 
 # ======================================================================================================================
@@ -2592,7 +2713,16 @@ def _process_results_summary_detail(planning_problem, tso_model, dso_models):
 # ======================================================================================================================
 #  RESULTS PLANNING - write functions
 # ======================================================================================================================
-def _write_planning_results_to_excel(planning_problem, results, bound_evolution=dict(), shared_ess_cost=dict(), shared_ess_capacity=dict(), filename='planing_results', execution_time=float()):
+def _write_planning_results_to_excel(planning_problem, results, bound_evolution=dict(), shared_ess_cost=dict(), shared_ess_capacity=dict(), filename='planing_results', execution_time=0.0):
+
+    if bound_evolution is None:
+        bound_evolution = {}
+
+    if shared_ess_cost is None:
+        shared_ess_cost = {}
+
+    if shared_ess_capacity is None:
+        shared_ess_capacity = {}
 
     wb = Workbook()
 
@@ -2634,12 +2764,12 @@ def _write_planning_results_to_excel(planning_problem, results, bound_evolution=
     # Save results
     try:
         wb.save(filename)
-    except:
+    except OSError as exc:
         from datetime import datetime
-        now = datetime.now()
-        current_time = now.strftime("%Y-%m-%d_%H-%M-%S")
-        backup_filename = f"{filename.replace('.xlsx', '')}_{current_time}.xlsx"
-        print(f"[WARNING] Results saved to file {backup_filename}.xlsx")
+        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        backup_filename = f"{filename.removesuffix('.xlsx')}_{current_time}.xlsx"
+        print(f"[WARNING] Could not save results to {filename}: {exc}")
+        print(f"[WARNING] Results saved to {backup_filename}")
         wb.save(backup_filename)
 
 
