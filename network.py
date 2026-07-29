@@ -468,10 +468,10 @@ def _build_model(network, params):
 
 def _run_smopf(network, model, params, from_warm_start=False):
 
-    solver = po.SolverFactory(params.solver_params.solver, executable=params.solver_params.solver_path)
+    solver = po.SolverFactory(params.solver_params.nlp_solver, executable=params.solver_params.nlp_solver_path)
 
-    if params.solver_params.options:
-        for key, value in params.solver_params.options.items():
+    if params.solver_params.nlp_options:
+        for key, value in params.solver_params.nlp_options.items():
             if key == 'output_file':
                 solver.options[key] = os.path.join(network.logs_dir, value)
             else:
@@ -494,7 +494,6 @@ def _run_smopf(network, model, params, from_warm_start=False):
         print(f"[WARNING] Solver failed for network {network.name}: {e}")
         result = None  # Or store partial result
 
-    #if params.solver_params.verbose:
     if not result or result.solver.termination_condition != po.TerminationCondition.optimal:
 
         if params.solver_params.verbose:
