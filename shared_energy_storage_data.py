@@ -40,16 +40,21 @@ class SharedEnergyStorageData:
             subproblem[node_id] = _build_subproblem(self, node_id)
         return subproblem
 
-    def optimize_master_problem(self, model, from_warm_start=False):
-        print('[INFO] \t\t - Running Shared ESS optimization (master problem)...')
-        return _optimize(model, self.params.solver_params, from_warm_start=from_warm_start)
+    def optimize_master_problem(self, model):
+        print("[INFO] \t\t - Running Shared ESS optimization (master problem)...")
+        return _optimize_lp(model, self.params.solver_params)
 
     def optimize(self, models, from_warm_start=False):
-        print('[INFO] \t\t - Running Shared ESS optimization (subproblem)...')
-        results = dict()
+        print("[INFO] \t\t - Running Shared ESS optimization (subproblem)...")
+        results = {}
         for node_id in self.active_distribution_network_nodes:
-            print(f'[INFO] \t\t\t - Node {node_id}...')
-            results[node_id] = _optimize(models[node_id], self.params.solver_params, from_warm_start=from_warm_start, node_id=node_id)
+            print(f"[INFO] \t\t\t - Node {node_id}...")
+            results[node_id] = _optimize_nlp(
+                models[node_id],
+                self.params.solver_params,
+                from_warm_start=from_warm_start,
+                node_id=node_id,
+            )
         return results
 
     def get_primal_value(self, models):
@@ -196,6 +201,7 @@ class SharedEnergyStorageData:
 def _build_master_problem(shared_ess_data):
 
     years = [year for year in shared_ess_data.years]
+    initial_year = int(years[0])
 
     model = pe.ConcreteModel()
     model.name = "ESS Optimization -- Benders' Master Problem"
@@ -212,8 +218,7 @@ def _build_master_problem(shared_ess_data):
     model.e_investment = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)  # Investment in energy capacity in year y
     model.s_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)       # Rated power capacity per investment scenario (considering calendar life)
     model.e_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)       # Rated energy capacity per investment scenario (considering calendar life, not considering degradation)
-    model.alpha = pe.Var(domain=pe.Reals)                                                                    # alpha (associated with cuts) will try to rebuild y in the original problem
-    model.alpha.setlb(-shared_ess_data.params.budget * 1e3)
+    model.alpha = pe.Var(domain=pe.NonNegativeReals, initialize=0.0)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
@@ -259,39 +264,48 @@ def _build_master_problem(shared_ess_data):
                 omega_m = shared_ess_data.prob_market_scenarios[s_m]
                 c_inv_s = shared_ess_data.cost_investment['power'][s_m][year]
                 c_inv_e = shared_ess_data.cost_investment['energy'][s_m][year]
-                discount_factor = 1 / ((1 + shared_ess_data.discount_factor) ** (int(year) - int(years[0])))
+                discount_factor = 1 / ((1 + shared_ess_data.discount_factor) ** (int(year) - initial_year))
                 investment_cost_weighted += discount_factor * omega_m * c_inv_s * model.s_investment[e, y]
                 investment_cost_weighted += discount_factor * omega_m * c_inv_e * model.e_investment[e, y]
-    model.energy_storage_investment.add(investment_cost_weighted <= shared_ess_data.params.budget)
+    model.expected_investment_cost = pe.Expression(expr=investment_cost_weighted)
+    model.energy_storage_investment.add(model.expected_investment_cost <= shared_ess_data.params.budget)
+
+    # - Terminal salvage value
+    end_year = max(int(year) + int(shared_ess_data.years[year]) for year in years)
+    terminal_discount_factor = 1.0 / ((1.0 + shared_ess_data.discount_factor) ** (end_year - initial_year))
+    expected_salvage_value = 0.0
+
+    for e in model.energy_storages:
+        for y in model.years:
+
+            year = years[y]
+            investment_year = int(year)
+
+            shared_energy_storage = shared_ess_data.shared_energy_storages[year][e]
+            calendar_life = float(shared_energy_storage.t_cal)
+            if calendar_life <= 0.0:
+                raise ValueError(f"Invalid ESS calendar life for storage {e}, year {year}: {calendar_life}")
+
+            age_at_horizon = max(0.0, end_year - investment_year)
+            remaining_life = max(0.0, calendar_life - age_at_horizon)
+            salvage_fraction = min(1.0, remaining_life / calendar_life)
+
+            for s_m in model.scenarios_market:
+
+                omega_m = shared_ess_data.prob_market_scenarios[s_m]
+                c_inv_s = shared_ess_data.cost_investment["power"][s_m][year]
+                c_inv_e = shared_ess_data.cost_investment["energy"][s_m][year]
+
+                expected_salvage_value += terminal_discount_factor * omega_m * salvage_fraction * (c_inv_s * model.s_investment[e, y] + c_inv_e * model.e_investment[e, y])
+
+    model.expected_salvage_value = pe.Expression(expr=expected_salvage_value)
 
     # Benders' cuts
     model.benders_cuts = pe.ConstraintList()
 
     # Objective function
-    investment_cost = 0.0
-    for e in model.energy_storages:
-        for y in model.years:
-            year = years[y]
-            for s_m in model.scenarios_market:
-
-                omega_m = shared_ess_data.prob_market_scenarios[s_m]
-                c_inv_s = shared_ess_data.cost_investment['power'][s_m][year]
-                c_inv_e = shared_ess_data.cost_investment['energy'][s_m][year]
-                discount_factor = 1 / ((1 + shared_ess_data.discount_factor) ** (int(year) - int(years[0])))
-
-                # Investment Cost
-                investment_cost += discount_factor * omega_m * c_inv_s * model.s_investment[e, y]
-                investment_cost += discount_factor * omega_m * c_inv_e * model.e_investment[e, y]
-
-    obj = investment_cost + model.alpha
+    obj = model.expected_investment_cost - model.expected_salvage_value + model.alpha
     model.objective = pe.Objective(sense=pe.minimize, expr=obj)
-
-    # Define that we want the duals
-    model.ipopt_zL_out = pe.Suffix(direction=pe.Suffix.IMPORT)  # Ipopt bound multipliers (obtained from solution)
-    model.ipopt_zU_out = pe.Suffix(direction=pe.Suffix.IMPORT)
-    model.ipopt_zL_in = pe.Suffix(direction=pe.Suffix.EXPORT)  # Ipopt bound multipliers (sent to solver)
-    model.ipopt_zU_in = pe.Suffix(direction=pe.Suffix.EXPORT)
-    model.dual = pe.Suffix(direction=pe.Suffix.IMPORT_EXPORT)
 
     return model
 
@@ -543,36 +557,96 @@ def _build_subproblem(shared_ess_data, node_id):
     return model
 
 
-def _optimize(model, params, from_warm_start=False, node_id=None):
+def _optimize_lp(model, params):
 
-    solver = po.SolverFactory(params.solver, executable=params.solver_path)
+    solver = po.SolverFactory(params.lp_solver, executable=params.lp_solver_path)
+    if not solver.available(exception_flag=False):
+        raise RuntimeError(f"Solver '{params.lp_solver}' is not available.")
+
+    if params.lp_options:
+        for key, value in params.lp_options.items():
+            solver.options[key] = value
+
+    try:
+        result = solver.solve(model, tee=params.verbose, load_solutions=False)
+
+    except Exception as exc:
+        raise RuntimeError(f"[ERROR] LP solver '{params.lp_solver}' failed while solving the master problem.") from exc
+
+    termination = result.solver.termination_condition
+    status = result.solver.status
+
+    acceptable_termination = {
+        po.TerminationCondition.optimal,
+        po.TerminationCondition.globallyOptimal,
+    }
+
+    if status != po.SolverStatus.ok or termination not in acceptable_termination:
+        raise RuntimeError(f"[ERROR] The master problem was not solved to optimality. Solver={params.lp_solver}, status={status}, termination={termination}.")
+
+    model.solutions.load_from(result)
+
+    return result
+
+
+
+def _optimize_nlp(model, params, from_warm_start=False, node_id=None):
+
+    solver = po.SolverFactory(params.nlp_solver, executable=params.nlp_solver_path)
+    if not solver.available(exception_flag=False):
+        raise RuntimeError(f"Solver '{params.nlp_solver}' is not available.")
+
     if params.verbose:
-        solver.options['print_level'] = 6
-        solver.options['output_file'] = 'optim_log.txt'
+        solver.options["print_level"] = 6
+        solver.options["output_file"] = ("optim_log.txt" if node_id is None else f"optim_log_node_{node_id}.txt")
 
-    if params.options:
-        for key, value in params.options.items():
+    if params.nlp_options:
+        for key, value in params.nlp_options.items():
             solver.options[key] = value
 
     if from_warm_start:
+
+        required_suffixes = (
+            "ipopt_zL_in",
+            "ipopt_zL_out",
+            "ipopt_zU_in",
+            "ipopt_zU_out",
+        )
+
+        for suffix_name in required_suffixes:
+            if not hasattr(model, suffix_name):
+                raise RuntimeError(f"Missing Ipopt warm-start suffix '{suffix_name}'.")
+
         model.ipopt_zL_in.update(model.ipopt_zL_out)
         model.ipopt_zU_in.update(model.ipopt_zU_out)
-        solver.options['warm_start_init_point'] = 'yes'
-        solver.options['warm_start_bound_push'] = 1e-9
-        solver.options['warm_start_bound_frac'] = 1e-9
-        solver.options['warm_start_slack_bound_frac'] = 1e-9
-        solver.options['warm_start_slack_bound_push'] = 1e-9
-        solver.options['warm_start_mult_bound_push'] = 1e-9
+
+        solver.options["warm_start_init_point"] = "yes"
+        solver.options["warm_start_bound_push"] = 1e-9
+        solver.options["warm_start_bound_frac"] = 1e-9
+        solver.options["warm_start_slack_bound_frac"] = 1e-9
+        solver.options["warm_start_slack_bound_push"] = 1e-9
+        solver.options["warm_start_mult_bound_push"] = 1e-9
 
     try:
-        result = solver.solve(model, tee=params.verbose)
-        model.solutions.load_from(result)
-    except ValueError as e:
-        if node_id:
-            print(f"[WARNING] Shared ESS optimization. Solver failed for ESS in node {node_id}: {e}")
-        else:
-            print(f"[WARNING] Shared ESS optimization. Master problem. Error: {e}")
-        result = None  # Or store partial result
+        result = solver.solve(model, tee=params.verbose, load_solutions=False)
+
+    except Exception as exc:
+        location = (f"ESS at node {node_id}" if node_id is not None else "shared ESS optimization")
+        raise RuntimeError(f"[ERROR] Ipopt failed for {location}.") from exc
+
+    termination = result.solver.termination_condition
+    status = result.solver.status
+
+    acceptable_termination = {
+        po.TerminationCondition.optimal,
+        po.TerminationCondition.locallyOptimal,
+    }
+
+    if status != po.SolverStatus.ok or termination not in acceptable_termination:
+        location = (f"ESS at node {node_id}" if node_id is not None else "shared ESS optimization")
+        raise RuntimeError(f"[ERROR] Ipopt did not converge for {location}. Status={status}, termination={termination}.")
+
+    model.solutions.load_from(result)
 
     return result
 
