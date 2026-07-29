@@ -63,8 +63,8 @@ def shared_resources_planning(working_directory, specification_filename):
     planning_problem.read_planning_problem()
     # planning_problem.plot_diagram()
 
-    planning_problem.run_operational_planning(type='uncoordinated', print_results=True, debug_flag=False)
-    planning_problem.run_operational_planning(type='distributed', print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_distributed_without ESS')
+    # planning_problem.run_operational_planning(type='uncoordinated', print_results=True, debug_flag=False)
+    # planning_problem.run_operational_planning(type='distributed', print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_distributed_without ESS')
     planning_problem.run_planning_problem()
 
 
