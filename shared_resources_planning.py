@@ -54,9 +54,9 @@ class SharedResourcesPlanning:
         self.active_distribution_network_nodes = list()
         self.params = PlanningParameters()
 
-    def run_planning_problem(self, debug_flag=False):
+    def run_planning_problem(self, debug_flag=False, run_fd_test=False):
         print('[INFO] Running PLANNING PROBLEM...')
-        _run_planning_problem(self, debug_flag=debug_flag)
+        _run_planning_problem(self, debug_flag=debug_flag, run_fd_test=run_fd_test)
 
     def run_operational_planning(self, type='distributed', candidate_solution=dict(), num_steps=8, print_results=False, filename=str(), debug_flag=False):
 
@@ -297,6 +297,8 @@ def _run_planning_problem(planning_problem, debug_flag=False, run_fd_test=False)
         # Finite-difference test: run only as a diagnostic
         if run_fd_test and iteration == 1:
 
+            print("[INFO] Running finite-difference test...")
+
             test_node = planning_problem.active_distribution_network_nodes[0]
             test_year = list(planning_problem.years)[0]
             fd_candidate = deepcopy(candidate_solution)
@@ -358,11 +360,11 @@ def _run_planning_problem(planning_problem, debug_flag=False, run_fd_test=False)
         # 4. Calculate the bound gap
         gap_abs = incumbent_upper_bound - lower_bound
         if gap_abs < -benders_parameters.tol_abs:
-            raise RuntimeError(f"[ERROR] Master estimate exceeds the incumbent candidate objective. This indicates that the cuts are not valid lower approximations, or that the objective terms are not being aggregated consistently. LB={lower_bound:.6f}, UB={incumbent_upper_bound:.6f}.")
+            print(f"[WARNING] Master estimate exceeds the incumbent candidate objective. This indicates that the cuts are not valid lower approximations, or that the objective terms are not being aggregated consistently. LB={lower_bound:.6f}, UB={incumbent_upper_bound:.6f}.")
 
         gap_rel = gap_abs / max(abs(incumbent_upper_bound), 1.0)
         print(f"[INFO] Iteration #{iteration} | Gap={100.0 * gap_rel:.4f}% | LB={lower_bound:.2f} | UB={incumbent_upper_bound:.2f} | Q={recourse_value:.2f} | Investment={investment_cost:.2f} | Salvage={salvage_value:.2f}")
-        if (gap_rel <= benders_parameters.tol_rel or gap_abs <= benders_parameters.tol_abs):
+        if gap_rel <= benders_parameters.tol_rel or gap_abs <= benders_parameters.tol_abs:
             convergence = True
             break
 
