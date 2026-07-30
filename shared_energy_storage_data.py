@@ -963,25 +963,20 @@ def _get_investment_cost_and_rated_capacity(shared_ess_data, model):
 
             year = years[y]
 
-            ess_investment['capacity'][node_id][year] = {'power': dict(), 'energy': dict()}
-            ess_investment['cost'][node_id][year] = {'power': dict(), 'energy': dict()}
+            ess_investment['capacity'][node_id][year] = {
+                'power': pe.value(model.es_s_investment[e, y]),
+                'energy': pe.value(model.es_e_investment[e, y])
+            }
 
-            expected_rated_power = 0.00
-            expected_rated_energy = 0.00
+            ess_investment['cost'][node_id][year] = {'power': {}, 'energy': {}}
             expected_cost_power = 0.00
             expected_cost_energy = 0.00
             for s_m in model.scenarios_market:
                 omega_market = shared_ess_data.prob_market_scenarios[s_m]
-                ess_investment['capacity'][node_id][year]['power'][s_m] = pe.value(model.es_s_investment[e, y])
-                ess_investment['capacity'][node_id][year]['energy'][s_m] = pe.value(model.es_e_investment[e, y])
                 ess_investment['cost'][node_id][year]['power'][s_m] = shared_ess_data.cost_investment['power'][s_m][year] * pe.value(model.es_s_investment[e, y])
                 ess_investment['cost'][node_id][year]['energy'][s_m] = shared_ess_data.cost_investment['energy'][s_m][year] * pe.value(model.es_e_investment[e, y])
-                expected_rated_power += omega_market * ess_investment['capacity'][node_id][year]['power'][s_m]
-                expected_rated_energy += omega_market * ess_investment['capacity'][node_id][year]['energy'][s_m]
                 expected_cost_power += omega_market * ess_investment['cost'][node_id][year]['power'][s_m]
                 expected_cost_energy += omega_market * ess_investment['cost'][node_id][year]['energy'][s_m]
-            ess_investment['capacity'][node_id][year]['power']['expected'] = expected_rated_power
-            ess_investment['capacity'][node_id][year]['energy']['expected'] = expected_rated_energy
             ess_investment['cost'][node_id][year]['power']['expected'] = expected_cost_power
             ess_investment['cost'][node_id][year]['energy']['expected'] = expected_cost_energy
 
@@ -1037,29 +1032,32 @@ def _write_ess_costs_to_excel(shared_ess_data, workbook, results):
         year = years[y]
         sheet.cell(row=line_idx, column=y + 4).value = int(year)
 
-    # Write investment costs, power and energy
+    # Write power and energy capacity investment
+    for node_id in shared_ess_data.active_distribution_network_nodes:
+
+        # Power
+        line_idx = line_idx + 1
+        sheet.cell(row=line_idx, column=1).value = node_id
+        sheet.cell(row=line_idx, column=2).value = 'S, [MVA]'
+        sheet.cell(row=line_idx, column=3).value = 'N/A'
+        for y in range(len(years)):
+            year = years[y]
+            sheet.cell(row=line_idx, column=y + 4).value = results['capacity'][node_id][year]['power']
+            sheet.cell(row=line_idx, column=y + 4).number_format = num_style
+
+        # Energy
+        line_idx = line_idx + 1
+        sheet.cell(row=line_idx, column=1).value = node_id
+        sheet.cell(row=line_idx, column=2).value = 'E, [MVAh]'
+        sheet.cell(row=line_idx, column=3).value = 'N/A'
+        for y in range(len(years)):
+            year = years[y]
+            sheet.cell(row=line_idx, column=y + 4).value = results['capacity'][node_id][year]['energy']
+            sheet.cell(row=line_idx, column=y + 4).number_format = num_style
+
+    # Write investment costs
     for node_id in shared_ess_data.active_distribution_network_nodes:
         for s_m in range(len(shared_ess_data.prob_market_scenarios)):
-
-            # Power
-            line_idx = line_idx + 1
-            sheet.cell(row=line_idx, column=1).value = node_id
-            sheet.cell(row=line_idx, column=2).value = 'S, [MVA]'
-            sheet.cell(row=line_idx, column=3).value = s_m
-            for y in range(len(years)):
-                year = years[y]
-                sheet.cell(row=line_idx, column=y + 4).value = results['capacity'][node_id][year]['power'][s_m]
-                sheet.cell(row=line_idx, column=y + 4).number_format = num_style
-
-            # Energy
-            line_idx = line_idx + 1
-            sheet.cell(row=line_idx, column=1).value = node_id
-            sheet.cell(row=line_idx, column=2).value = 'E, [MVAh]'
-            sheet.cell(row=line_idx, column=3).value = s_m
-            for y in range(len(years)):
-                year = years[y]
-                sheet.cell(row=line_idx, column=y + 4).value = results['capacity'][node_id][year]['energy'][s_m]
-                sheet.cell(row=line_idx, column=y + 4).number_format = num_style
 
             # Cost Power
             line_idx = line_idx + 1
@@ -1080,26 +1078,6 @@ def _write_ess_costs_to_excel(shared_ess_data, workbook, results):
                 year = years[y]
                 sheet.cell(row=line_idx, column=y + 4).value = results['cost'][node_id][year]['energy'][s_m]
                 sheet.cell(row=line_idx, column=y + 4).number_format = num_style
-
-        # Expected Power
-        line_idx = line_idx + 1
-        sheet.cell(row=line_idx, column=1).value = node_id
-        sheet.cell(row=line_idx, column=2).value = 'S, [MVA]'
-        sheet.cell(row=line_idx, column=3).value = 'Expected'
-        for y in range(len(years)):
-            year = years[y]
-            sheet.cell(row=line_idx, column=y + 4).value = results['capacity'][node_id][year]['power']['expected']
-            sheet.cell(row=line_idx, column=y + 4).number_format = num_style
-
-        # Expected Energy
-        line_idx = line_idx + 1
-        sheet.cell(row=line_idx, column=1).value = node_id
-        sheet.cell(row=line_idx, column=2).value = 'E, [MVAh]'
-        sheet.cell(row=line_idx, column=3).value = 'Expected'
-        for y in range(len(years)):
-            year = years[y]
-            sheet.cell(row=line_idx, column=y + 4).value = results['capacity'][node_id][year]['energy']['expected']
-            sheet.cell(row=line_idx, column=y + 4).number_format = num_style
 
         # Expected Cost Power
         line_idx = line_idx + 1
