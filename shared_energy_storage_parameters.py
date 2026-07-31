@@ -16,7 +16,16 @@ class SharedEnergyStorageParameters:
         self.plot_results = False                       # Plot results
         self.print_results_to_file = False              # Write results to file
         self.verbose = False                            # Verbose -- Bool
-        self.solver_params = SolverParameters()         # Solver Parameters
+        self.solver_params = SolverParameters(
+            default_solver='ipopt',
+            path_env_vars=('NLP_SOLVER_PATH', 'SOLVER_PATH'),
+            label='NLP solver'
+        )
+        self.lp_solver_params = SolverParameters(
+            default_solver='clp',
+            path_env_vars=('LP_SOLVER_PATH',),
+            label='LP solver'
+        )
 
     def read_parameters_from_file(self, filename):
         _read_parameters_from_file(self, filename)
@@ -32,4 +41,6 @@ def _read_parameters_from_file(planning_parameters, filename):
     planning_parameters.max_energy_to_power_ratio = float(params_data['max_energy_to_power_factor'])
     planning_parameters.slacks = bool(params_data['slacks'])
     planning_parameters.print_results_to_file = bool(params_data['print_results_to_file'])
-    planning_parameters.solver_params.read_solver_parameters(params_data['solver'])
+    planning_parameters.solver_params.read_solver_parameters(params_data.get('nlp_solver', params_data['solver']))
+    if 'lp_solver' in params_data:
+        planning_parameters.lp_solver_params.read_solver_parameters(params_data['lp_solver'])

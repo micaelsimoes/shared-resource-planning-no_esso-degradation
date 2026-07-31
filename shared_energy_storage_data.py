@@ -42,7 +42,7 @@ class SharedEnergyStorageData:
 
     def optimize_master_problem(self, model, from_warm_start=False):
         print('[INFO] \t\t - Running Shared ESS optimization (master problem)...')
-        return _optimize(model, self.params.solver_params, from_warm_start=from_warm_start)
+        return _optimize(model, self.params.lp_solver_params, from_warm_start=from_warm_start)
 
     def optimize(self, models, from_warm_start=False):
         print('[INFO] \t\t - Running Shared ESS optimization (subproblem)...')
@@ -530,14 +530,15 @@ def _optimize(model, params, from_warm_start=False, node_id=None):
 
     solver = po.SolverFactory(params.solver, executable=params.solver_path)
     if params.verbose:
-        solver.options['print_level'] = 6
+        if params.solver.lower() == 'ipopt':
+            solver.options['print_level'] = 6
         solver.options['output_file'] = 'optim_log.txt'
 
     if params.options:
         for key, value in params.options.items():
             solver.options[key] = value
 
-    if from_warm_start:
+    if from_warm_start and params.solver.lower() == 'ipopt':
         model.ipopt_zL_in.update(model.ipopt_zL_out)
         model.ipopt_zU_in.update(model.ipopt_zU_out)
         solver.options['warm_start_init_point'] = 'yes'
