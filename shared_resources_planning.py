@@ -5,7 +5,7 @@ from functools import partial
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import numpy as np
 import pandas as pd
-from math import isclose, sqrt
+from math import isclose, isfinite, sqrt
 from sklearn.preprocessing import StandardScaler
 from copulas.multivariate import GaussianMultivariate
 import networkx as nx
@@ -151,14 +151,14 @@ class SharedResourcesPlanning:
         distribution_networks = self.distribution_networks
         return combine_networks(transmission_network, distribution_networks)
 
-    def get_upper_bound(self, model):
-        return _get_upper_bound(self, model)
+    def get_operational_recourse_value(self, models):
+        return _get_operational_recourse_value(self, models)
 
     def get_primal_value(self, tso_model, dso_models, esso_model):
         return _get_primal_value(self, tso_model, dso_models, esso_model)
 
-    def add_benders_cut(self, model, upper_bound, convergence, sensitivities, candidate_solution):
-        _add_benders_cut(self, model, upper_bound, convergence, sensitivities, candidate_solution)
+    def add_benders_cut(self, model, recourse_value, sensitivities, candidate_solution):
+        return _add_benders_cut(self, model, recourse_value, sensitivities, candidate_solution)
 
     def update_admm_consensus_variables(self, tso_model, dso_models, esso_model, consensus_vars, dual_vars, results, params, update_tn=False, update_dns=False, update_sess=False):
         self.update_interface_power_flow_variables(tso_model, dso_models, consensus_vars, dual_vars, results, params, update_tn=update_tn, update_dns=update_dns)
@@ -234,78 +234,143 @@ def _run_planning_problem(planning_problem, debug_flag=False):
 
     # ------------------------------------------------------------------------------------------------------------------
     # 0. Initialization
-    iter = 1
+    iteration = 1
     convergence = False
     from_warm_start = False
-    lower_bound = -1e12
-    upper_bound = 1e12
-    lower_bound_evolution = [lower_bound]
-    upper_bound_evolution = [upper_bound]
-    candidate_solution = planning_problem.get_initial_candidate_solution()
+    upper_bound = float('inf')
+    master_estimate_evolution = list()
+    upper_bound_evolution = list()
+    investment_cost_evolution = list()
+    alpha_evolution = list()
+    operational_recourse_evolution = list()
+    candidate_total_evolution = list()
+    esso_violation_evolution = list()
+    gap_signed_evolution = list()
+    gap_abs_evolution = list()
+    gap_rel_evolution = list()
     print_memory_usage("Start of planning problem", debug_flag)
 
     start = time.time()
     master_problem_model = planning_problem.shared_ess_data.build_master_problem()
-    shared_ess_data.optimize_master_problem(master_problem_model)
+    master_result = shared_ess_data.optimize_master_problem(master_problem_model)
+    if not master_result or master_result.solver.termination_condition != po.TerminationCondition.optimal:
+        print("[ERROR] Benders-type master problem did not solve to optimality. Exiting planning loop.")
+        return
+    candidate_solution = shared_ess_data.get_candidate_solution(master_problem_model)
 
-    # Benders' main cycle
-    while iter < benders_parameters.num_max_iters and not convergence:
+    # Benders-type main cycle
+    while iteration <= benders_parameters.num_max_iters and not convergence:
 
-        print(f'=============================================== ITERATION #{iter} ==============================================')
+        print(f'=============================================== ITERATION #{iteration} ==============================================')
 
         _print_candidate_solution(candidate_solution)
-        print_memory_usage(f"Before subproblem (iter {iter})", debug_flag)
+        print_memory_usage(f"Before subproblem (iter {iteration})", debug_flag)
         print_results = False
-        if iter == 1 or debug_flag:
+        if iteration == 1 or debug_flag:
             print_results = True
 
         # 1. Subproblem
         # 1.1. Solve operational planning, with fixed investment variables,
         # 1.2. Get coupling constraints' sensitivities (subproblem)
-        # 1.3. Get OF value (upper bound) from the subproblem
+        # 1.3. Get the economic recourse value and local sensitivities
         operational_convergence, operational_results, lower_level_models, sensitivities, _ = planning_problem.run_operational_planning(candidate_solution=candidate_solution, print_results=print_results, filename=f'{planning_problem.name}_operational_planning_results_distributed_without ESS')
 
-        if operational_convergence:
-            upper_bound = planning_problem.get_upper_bound(lower_level_models['tso'])
-        else:
-            upper_bound = upper_bound_evolution[-1]
-        upper_bound_evolution.append(upper_bound)
+        investment_cost = pe.value(master_problem_model.investment_cost)
+        alpha = pe.value(master_problem_model.alpha)
+        master_estimate = pe.value(master_problem_model.objective)
+        esso_violation = shared_ess_data.get_feasibility_violation(lower_level_models['esso'])
+        candidate_is_feasible = operational_convergence and esso_violation <= BENDERS_FEASIBILITY_TOLERANCE
+
+        operational_recourse = None
+        candidate_total = None
+        if candidate_is_feasible:
+            operational_recourse = planning_problem.get_operational_recourse_value(lower_level_models)
+            candidate_total = investment_cost + operational_recourse
+            upper_bound = min(upper_bound, candidate_total)
+
+        gap_signed = None
+        gap_abs = None
+        gap_rel = None
+        if isfinite(upper_bound):
+            gap_signed = upper_bound - master_estimate
+            gap_abs = abs(gap_signed)
+            gap_rel = gap_abs / max(abs(upper_bound), 1e-6)
+
+        master_estimate_evolution.append(master_estimate)
+        upper_bound_evolution.append(upper_bound if isfinite(upper_bound) else None)
+        investment_cost_evolution.append(investment_cost)
+        alpha_evolution.append(alpha)
+        operational_recourse_evolution.append(operational_recourse)
+        candidate_total_evolution.append(candidate_total)
+        esso_violation_evolution.append(esso_violation)
+        gap_signed_evolution.append(gap_signed)
+        gap_abs_evolution.append(gap_abs)
+        gap_rel_evolution.append(gap_rel)
+
+        recourse_text = f'{operational_recourse:.2f}' if operational_recourse is not None else 'N/A'
+        candidate_total_text = f'{candidate_total:.2f}' if candidate_total is not None else 'N/A'
+        upper_bound_text = f'{upper_bound:.2f}' if isfinite(upper_bound) else 'N/A'
+        gap_text = f'{gap_signed / max(abs(upper_bound), 1e-6) * 100:.2f}%' if gap_signed is not None else 'N/A'
+        print(
+            f"[INFO] Iteration #{iteration} | Master = {master_estimate:.2f} | Alpha = {alpha:.2f} | "
+            f"Investment = {investment_cost:.2f} | Recourse = {recourse_text} | "
+            f"Candidate = {candidate_total_text} | UB = {upper_bound_text} | Gap = {gap_text} | "
+            f"ESSO violation = {esso_violation:.6f}"
+        )
+
         if planning_problem.params.gc:
             gc.collect()
-        print_memory_usage(f"After subproblem (iter {iter})", debug_flag)
+        print_memory_usage(f"After subproblem (iter {iteration})", debug_flag)
 
-        #  - Convergence check
-        gap_abs = abs(upper_bound - lower_bound)
-        gap_rel = gap_abs / max(abs(upper_bound), 1e-6)  # Avoid division by zero
-        if gap_rel < benders_parameters.tol_rel or gap_abs <= benders_parameters.tol_abs or lower_bound > upper_bound:
-            lower_bound_evolution.append(lower_bound)
+        if not operational_convergence:
+            print("[WARNING] ADMM did not converge. No formal Benders feasibility cut is available; stopping the outer loop.")
+            break
+        if esso_violation > BENDERS_FEASIBILITY_TOLERANCE:
+            print(
+                f"[WARNING] Shared ESS feasibility violation {esso_violation:.6f} exceeds "
+                f"{BENDERS_FEASIBILITY_TOLERANCE:.6f}. No formal feasibility cut is available; stopping the outer loop."
+            )
+            break
+        if master_estimate > upper_bound + benders_parameters.tol_abs:
+            print(
+                "[WARNING] The Benders-type master estimate exceeds the incumbent feasible objective. "
+                "The local cuts are not global lower bounds; stopping without claiming optimality."
+            )
+            break
+        if gap_rel < benders_parameters.tol_rel or gap_abs <= benders_parameters.tol_abs:
             convergence = True
             break
-        print(f"[INFO] Iteration #{iter} | Gap = {gap_rel*100:.2f}% | LB = {lower_bound:.2f} | UB = {upper_bound:.2f}")
-        print_memory_usage(f"Before master problem solve (iter {iter})", debug_flag)
+        if iteration == benders_parameters.num_max_iters:
+            break
+
+        print_memory_usage(f"Before master problem solve (iter {iteration})", debug_flag)
 
         # 2. Solve Master problem
-        # 2.1. Add Benders' cut, based on the sensitivities obtained from the subproblem
+        # 2.1. Add a local sensitivity cut based on the evaluated recourse value
         # 2.2. Run master problem optimization
-        # 2.3. Get new capacity values, and the value of alpha (lower bound)
-        planning_problem.add_benders_cut(master_problem_model, upper_bound, operational_convergence, sensitivities, candidate_solution)
-        shared_ess_data.optimize_master_problem(master_problem_model, from_warm_start=from_warm_start)
-        lower_bound = pe.value(master_problem_model.alpha)
-        lower_bound_evolution.append(lower_bound)
+        # 2.3. Get the next common investment plan
+        cut_added = planning_problem.add_benders_cut(master_problem_model, operational_recourse, sensitivities, candidate_solution)
+        if not cut_added:
+            print("[WARNING] Sensitivity information is incomplete. Stopping the outer loop without adding a cut.")
+            break
+        master_result = shared_ess_data.optimize_master_problem(master_problem_model, from_warm_start=from_warm_start)
+        if not master_result or master_result.solver.termination_condition != po.TerminationCondition.optimal:
+            print("[WARNING] Benders-type master problem did not solve to optimality. Stopping the outer loop.")
+            break
 
         if planning_problem.params.gc:
             gc.collect()
-        print_memory_usage(f"After master problem solve (iter {iter})", debug_flag)
+        print_memory_usage(f"After master problem solve (iter {iteration})", debug_flag)
 
         # Get new candidate solution
         candidate_solution = shared_ess_data.get_candidate_solution(master_problem_model)
-        print_memory_usage(f"After GC (iter {iter})", debug_flag)
+        print_memory_usage(f"After GC (iter {iteration})", debug_flag)
 
-        iter += 1
+        iteration += 1
         from_warm_start = True
 
     if convergence:
-        print(f"[INFO] Benders' decomposition converged at iteration {iter}.")
+        print(f"[INFO] Benders-type procedure converged at iteration {iteration}.")
     else:
         print('[WARNING] Convergence not obtained!')
 
@@ -313,51 +378,79 @@ def _run_planning_problem(planning_problem, debug_flag=False):
     end = time.time()
     total_execution_time = end - start
     print('[INFO] Execution time: {:.2f} s'.format(total_execution_time))
-    bound_evolution = {'lower_bound': lower_bound_evolution, 'upper_bound': upper_bound_evolution}
+    bound_evolution = {
+        'master_estimate': master_estimate_evolution,
+        'lower_bound': master_estimate_evolution,
+        'upper_bound': upper_bound_evolution,
+        'investment_cost': investment_cost_evolution,
+        'alpha': alpha_evolution,
+        'operational_recourse': operational_recourse_evolution,
+        'candidate_total': candidate_total_evolution,
+        'esso_violation': esso_violation_evolution,
+        'gap_signed': gap_signed_evolution,
+        'gap_abs': gap_abs_evolution,
+        'gap_rel': gap_rel_evolution,
+    }
     planning_problem.write_planning_results_to_excel(master_problem_model, lower_level_models, operational_results, bound_evolution, execution_time=total_execution_time)
 
 
-def _get_upper_bound(planning_problem, model):
-    upper_bound = 0.00
-    years = [year for year in planning_problem.years]
+def _get_operational_recourse_value(planning_problem, models):
+    recourse_value = planning_problem.transmission_network.get_primal_value(models['tso'])
+    for node_id, distribution_network in planning_problem.distribution_networks.items():
+        recourse_value += distribution_network.get_primal_value(models['dso'][node_id])
+    return recourse_value
+
+
+def _get_operational_sensitivities(planning_problem, models):
+    available_sensitivities = {'s': dict(), 'e': dict()}
     for year in planning_problem.years:
-        num_years = planning_problem.years[year]
-        annualization = 1 / ((1 + planning_problem.discount_factor) ** (int(year) - int(years[0])))
-        for day in planning_problem.days:
-            num_days = planning_problem.days[day]
-            network = planning_problem.transmission_network.network[year][day]
-            params = planning_problem.transmission_network.params
-            obj_repr_day = network.get_primal_value(model[year][day], params)
-            upper_bound += num_days * num_years * annualization * obj_repr_day
-    return upper_bound
+        available_sensitivities['s'][year] = {
+            node_id: 0.00 for node_id in planning_problem.active_distribution_network_nodes
+        }
+        available_sensitivities['e'][year] = {
+            node_id: 0.00 for node_id in planning_problem.active_distribution_network_nodes
+        }
+
+    local_sensitivities = [
+        planning_problem.transmission_network.get_sensitivities(models['tso'])
+    ]
+    for node_id, distribution_network in planning_problem.distribution_networks.items():
+        local_sensitivities.append(distribution_network.get_sensitivities(models['dso'][node_id]))
+
+    for local_values in local_sensitivities:
+        for capacity_type in ('s', 'e'):
+            for year, node_values in local_values[capacity_type].items():
+                for node_id, value in node_values.items():
+                    if value is None or available_sensitivities[capacity_type][year][node_id] is None:
+                        available_sensitivities[capacity_type][year][node_id] = None
+                    else:
+                        available_sensitivities[capacity_type][year][node_id] += value
+
+    return planning_problem.shared_ess_data.map_available_capacity_sensitivities_to_investments(
+        models['esso'], available_sensitivities
+    )
 
 
-def _add_benders_cut(planning_problem, model, upper_bound, convergence, sensitivities, candidate_solution):
+def _add_benders_cut(planning_problem, model, recourse_value, sensitivities, candidate_solution):
     years = [year for year in planning_problem.years]
-    if convergence:
-        # If subproblem converged, add optimality cut
-        print("[INFO] Benders' decomposition. Adding optimality cut...")
-        benders_cut = upper_bound
-        for e in model.energy_storages:
-            node_id = planning_problem.active_distribution_network_nodes[e]
-            for y in model.years:
-                year = years[y]
-                if sensitivities['s'][year][node_id] != 'N/A':
-                    benders_cut += sensitivities['s'][year][node_id] * (model.es_s_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['s'])
-                if sensitivities['e'][year][node_id] != 'N/A':
-                    benders_cut += sensitivities['e'][year][node_id] * (model.es_e_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['e'])
-        model.benders_cuts.add(model.alpha >= benders_cut)
-    else:
-        # If subproblem did not converge, add feasibility cut
-        print("[INFO] Benders' decomposition. Adding feasibility cut...")
-        benders_cut = upper_bound
-        for e in model.energy_storages:
-            node_id = planning_problem.active_distribution_network_nodes[e]
-            for y in model.years:
-                year = years[y]
-                benders_cut += model.es_s_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['s']
-                benders_cut += model.es_e_rated[e, y] - candidate_solution['total_capacity'][node_id][year]['e']
-        model.benders_cuts.add(benders_cut <= BENDERS_FEASIBILITY_TOLERANCE)
+    print("[INFO] Benders-type procedure. Adding local sensitivity cut...")
+    benders_cut = recourse_value
+    for e in model.energy_storages:
+        node_id = planning_problem.active_distribution_network_nodes[e]
+        for y in model.years:
+            year = years[y]
+            sensitivity_s = sensitivities['s'][year][node_id]
+            sensitivity_e = sensitivities['e'][year][node_id]
+            if sensitivity_s is None or sensitivity_e is None:
+                return False
+            benders_cut += sensitivity_s * (
+                model.es_s_investment[e, y] - candidate_solution['investment'][node_id][year]['s']
+            )
+            benders_cut += sensitivity_e * (
+                model.es_e_investment[e, y] - candidate_solution['investment'][node_id][year]['e']
+            )
+    model.benders_cuts.add(model.alpha >= benders_cut)
+    return True
 
 
 # ======================================================================================================================
@@ -516,7 +609,9 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     print('[INFO] \t - Execution time: {:.2f} s'.format(total_execution_time))
 
     optim_models = {'tso': tso_model, 'dso': dso_models, 'esso': esso_model}
-    sensitivities = transmission_network.get_sensitivities(tso_model)
+    sensitivities = None
+    if convergence:
+        sensitivities = _get_operational_sensitivities(planning_problem, optim_models)
 
     return convergence, results, optim_models, sensitivities, primal_evolution, total_execution_time
 
@@ -1244,6 +1339,7 @@ def update_transmission_model_to_admm(planning_problem, model, params):
                 init_of_value = abs(pe.value(model[year][day].objective))
             if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
                 init_of_value = 0.01
+            model[year][day].admm_objective_scale = pe.Param(initialize=init_of_value)
             obj = copy(model[year][day].objective.expr) / init_of_value
 
             for dn in model[year][day].active_distribution_networks:
@@ -1361,6 +1457,7 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                     init_of_value = abs(pe.value(dso_model[year][day].objective))
                 if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
                     init_of_value = 0.01
+                dso_model[year][day].admm_objective_scale = pe.Param(initialize=init_of_value)
                 obj = copy(dso_model[year][day].objective.expr) / init_of_value
 
                 shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
@@ -2647,37 +2744,33 @@ def _write_bound_evolution_to_excel(workbook, bound_evolution):
 
     sheet = workbook.create_sheet('Convergence Characteristic')
 
-    lower_bound = bound_evolution['lower_bound']
-    upper_bound = bound_evolution['upper_bound']
-    num_lines = max(len(upper_bound), len(lower_bound))
+    master_estimate = bound_evolution.get('master_estimate', bound_evolution.get('lower_bound', []))
+    columns = [
+        ('master_estimate', 'Master Estimate (nominal LB), [NPV Mm.u.]', master_estimate, 1e6, '0.00'),
+        ('alpha', 'Alpha, [NPV Mm.u.]', bound_evolution.get('alpha', []), 1e6, '0.00'),
+        ('investment_cost', 'Investment Cost, [NPV Mm.u.]', bound_evolution.get('investment_cost', []), 1e6, '0.00'),
+        ('operational_recourse', 'Operational Recourse, [NPV Mm.u.]', bound_evolution.get('operational_recourse', []), 1e6, '0.00'),
+        ('candidate_total', 'Candidate Total Objective, [NPV Mm.u.]', bound_evolution.get('candidate_total', []), 1e6, '0.00'),
+        ('upper_bound', 'Incumbent Upper Bound, [NPV Mm.u.]', bound_evolution.get('upper_bound', []), 1e6, '0.00'),
+        ('gap_signed', 'Signed Nominal Gap (UB - Master), [NPV Mm.u.]', bound_evolution.get('gap_signed', []), 1e6, '0.00'),
+        ('gap_abs', 'Absolute Nominal Gap, [NPV Mm.u.]', bound_evolution.get('gap_abs', []), 1e6, '0.00'),
+        ('gap_rel', 'Relative Nominal Gap, [%]', bound_evolution.get('gap_rel', []), 0.01, '0.00'),
+        ('esso_violation', 'ESSO Aggregate Feasibility Slack, [N/A]', bound_evolution.get('esso_violation', []), 1.00, '0.000000'),
+    ]
+    num_lines = max((len(values) for _, _, values, _, _ in columns), default=0)
 
-    num_style = '0.00'
+    sheet.cell(row=1, column=1).value = 'Iteration'
+    for column_idx, (_, label, _, _, _) in enumerate(columns, start=2):
+        sheet.cell(row=1, column=column_idx).value = label
 
-    # Write header
-    line_idx = 1
-    sheet.cell(row=line_idx, column=1).value = 'Iteration'
-    sheet.cell(row=line_idx, column=2).value = 'Lower Bound, [NPV Mm.u.]'
-    sheet.cell(row=line_idx, column=3).value = 'Upper Bound, [NPV Mm.u.]'
-
-    # Iterations
-    line_idx = 2
-    for i in range(num_lines):
-        sheet.cell(row=line_idx, column=1).value = i
-        line_idx += 1
-
-    # Lower bound
-    line_idx = 2
-    for value in lower_bound:
-        sheet.cell(row=line_idx, column=2).value = value / 1e6
-        sheet.cell(row=line_idx, column=2).number_format = num_style
-        line_idx += 1
-
-    # Upper bound
-    line_idx = 2
-    for value in upper_bound:
-        sheet.cell(row=line_idx, column=3).value = value / 1e6
-        sheet.cell(row=line_idx, column=3).number_format = num_style
-        line_idx += 1
+    for iteration in range(num_lines):
+        row_idx = iteration + 2
+        sheet.cell(row=row_idx, column=1).value = iteration + 1
+        for column_idx, (_, _, values, divisor, number_format) in enumerate(columns, start=2):
+            if iteration >= len(values) or values[iteration] is None:
+                continue
+            sheet.cell(row=row_idx, column=column_idx).value = values[iteration] / divisor
+            sheet.cell(row=row_idx, column=column_idx).number_format = number_format
 
 
 # ======================================================================================================================

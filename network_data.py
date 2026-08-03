@@ -2765,36 +2765,68 @@ def _plot_res_data_scenarios(network_planning, years_to_plot, save_dir, save_for
 def _get_sensitivities(network_planning, model):
 
     sensitivities = {'s': dict(), 'e': dict()}
+    sensitivity_available = {'s': dict(), 'e': dict()}
+    if network_planning.is_transmission:
+        node_ids = network_planning.active_distribution_network_nodes
+    else:
+        node_ids = [network_planning.tn_connection_nodeid]
+
     for year in network_planning.years:
         sensitivities['s'][year] = dict()
         sensitivities['e'][year] = dict()
-        for node_id in network_planning.active_distribution_network_nodes:
+        sensitivity_available['s'][year] = dict()
+        sensitivity_available['e'][year] = dict()
+        for node_id in node_ids:
             sensitivities['s'][year][node_id] = 0.00
             sensitivities['e'][year][node_id] = 0.00
+            sensitivity_available['s'][year][node_id] = True
+            sensitivity_available['e'][year][node_id] = True
 
     for year in network_planning.years:
-
         num_years = network_planning.years[year]
+        years = list(network_planning.years)
+        annualization = 1 / ((1 + network_planning.discount_factor) ** (int(year) - int(years[0])))
 
         for day in network_planning.days:
-
             num_days = network_planning.days[day]
             model_repr_day = model[year][day]
+            network_repr_day = network_planning.network[year][day]
+            objective_scale = 1.00
+            if hasattr(model_repr_day, 'admm_objective_scale'):
+                objective_scale = pe.value(model_repr_day.admm_objective_scale)
 
-            for c in model_repr_day.shared_energy_storage_s_sensitivities:
-                node_id = network_planning.active_distribution_network_nodes[c - 1]  # Note: the sensitivity constraints start at "1"
-                sensitivity_s = model_repr_day.dual[model_repr_day.shared_energy_storage_s_sensitivities[c]] * network_planning.network[year][day].baseMVA
-                sensitivities['s'][year][node_id] += (num_days / 365.00) * sensitivity_s
+            for e in model_repr_day.shared_energy_storage_s_sensitivities:
+                if network_planning.is_transmission:
+                    node_id = network_repr_day.shared_energy_storages[e].bus
+                else:
+                    node_id = network_planning.tn_connection_nodeid
+                constraint = model_repr_day.shared_energy_storage_s_sensitivities[e]
+                dual = model_repr_day.dual.get(constraint)
+                if dual is None:
+                    sensitivity_available['s'][year][node_id] = False
+                else:
+                    # Restore cost units from the normalized ADMM objective, then convert the per-unit RHS to MVA.
+                    sensitivity_s = objective_scale * dual / network_repr_day.baseMVA
+                    sensitivities['s'][year][node_id] += annualization * num_years * num_days * sensitivity_s
 
-            for c in model_repr_day.shared_energy_storage_e_sensitivities:
-                node_id = network_planning.active_distribution_network_nodes[c - 1]
-                sensitivity_e = model_repr_day.dual[model_repr_day.shared_energy_storage_e_sensitivities[c]] * network_planning.network[year][day].baseMVA
-                sensitivities['e'][year][node_id] += (num_days / 365.00) * sensitivity_e
+            for e in model_repr_day.shared_energy_storage_e_sensitivities:
+                if network_planning.is_transmission:
+                    node_id = network_repr_day.shared_energy_storages[e].bus
+                else:
+                    node_id = network_planning.tn_connection_nodeid
+                constraint = model_repr_day.shared_energy_storage_e_sensitivities[e]
+                dual = model_repr_day.dual.get(constraint)
+                if dual is None:
+                    sensitivity_available['e'][year][node_id] = False
+                else:
+                    sensitivity_e = objective_scale * dual / network_repr_day.baseMVA
+                    sensitivities['e'][year][node_id] += annualization * num_years * num_days * sensitivity_e
 
-        # Note: annualization is already considered in the master problem's OF
-        for node_id in network_planning.active_distribution_network_nodes:
-            sensitivities['s'][year][node_id] *= 365.00 * num_years
-            sensitivities['e'][year][node_id] *= 365.00 * num_years
+        for node_id in node_ids:
+            if not sensitivity_available['s'][year][node_id]:
+                sensitivities['s'][year][node_id] = None
+            if not sensitivity_available['e'][year][node_id]:
+                sensitivities['e'][year][node_id] = None
 
     return sensitivities
 

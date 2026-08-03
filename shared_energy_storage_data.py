@@ -58,11 +58,17 @@ class SharedEnergyStorageData:
             objective += pe.value(models[node_id].objective)
         return objective
 
+    def get_feasibility_violation(self, models):
+        return self.get_primal_value(models) / PENALTY_ESSO_SLACK
+
     def update_model_with_candidate_solution(self, models, candidate_solution):
         _update_model_with_candidate_solution(self, models, candidate_solution)
 
     def get_candidate_solution(self, model):
         return _get_candidate_solution(self, model)
+
+    def map_available_capacity_sensitivities_to_investments(self, models, sensitivities):
+        return _map_available_capacity_sensitivities_to_investments(self, models, sensitivities)
 
     def read_shared_energy_storage_data_from_file(self):
         filename = os.path.join(self.data_dir, 'SharedESS', self.data_file)
@@ -210,9 +216,9 @@ def _build_master_problem(shared_ess_data):
     # Decision variables
     model.es_s_investment = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)  # Investment in power capacity in year y
     model.es_e_investment = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)  # Investment in energy capacity in year y
-    model.es_s_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)       # Rated power capacity per investment scenario (considering calendar life)
-    model.es_e_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)       # Rated energy capacity per investment scenario (considering calendar life, not considering degradation)
-    model.alpha = pe.Var(domain=pe.Reals)                                                                   # alpha (associated with cuts) will try to rebuild y in the original problem
+    model.es_s_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)       # Rated power capacity (considering calendar life)
+    model.es_e_rated = pe.Var(model.energy_storages, model.years, domain=pe.NonNegativeReals)       # Rated energy capacity (considering calendar life, not degradation)
+    model.alpha = pe.Var(domain=pe.Reals)                                                          # Local approximation of operational recourse
     model.alpha.setlb(-shared_ess_data.params.budget * 1e3)
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -264,7 +270,7 @@ def _build_master_problem(shared_ess_data):
                 investment_cost_total += annualization * omega_m * model.es_e_investment[e, y] * c_inv_e
     model.energy_storage_investment.add(investment_cost_total <= shared_ess_data.params.budget)
 
-    # Benders' cuts
+    # Benders-type local sensitivity cuts
     model.benders_cuts = pe.ConstraintList()
 
     # Objective function
@@ -283,8 +289,8 @@ def _build_master_problem(shared_ess_data):
                 investment_cost += annualization * omega_m * model.es_s_investment[e, y] * c_inv_s
                 investment_cost += annualization * omega_m * model.es_e_investment[e, y] * c_inv_e
 
-    obj = investment_cost + model.alpha
-    model.objective = pe.Objective(sense=pe.minimize, expr=obj)
+    model.investment_cost = pe.Expression(expr=investment_cost)
+    model.objective = pe.Objective(sense=pe.minimize, expr=model.investment_cost + model.alpha)
 
     # Define that we want the duals
     model.ipopt_zL_out = pe.Suffix(direction=pe.Suffix.IMPORT)  # Ipopt bound multipliers (obtained from solution)
@@ -585,6 +591,45 @@ def _get_candidate_solution(self, model):
             candidate_solution['total_capacity'][node_id][year]['s'] = abs(pe.value(model.es_s_rated[e, y]))
             candidate_solution['total_capacity'][node_id][year]['e'] = abs(pe.value(model.es_e_rated[e, y]))
     return candidate_solution
+
+
+def _map_available_capacity_sensitivities_to_investments(shared_ess_data, models, sensitivities):
+    years = list(shared_ess_data.years)
+    investment_sensitivities = {'s': dict(), 'e': dict()}
+
+    for year_inv in years:
+        investment_sensitivities['s'][year_inv] = dict()
+        investment_sensitivities['e'][year_inv] = dict()
+
+    for node_id in shared_ess_data.active_distribution_network_nodes:
+        model = models[node_id]
+        for y_inv, year_inv in enumerate(years):
+            sensitivity_s = 0.00
+            sensitivity_e = 0.00
+            sensitivity_s_available = True
+            sensitivity_e_available = True
+
+            for y, year in enumerate(years):
+                if not model.es_s_rated_per_unit[y_inv, y].fixed:
+                    value_s = sensitivities['s'][year][node_id]
+                    if value_s is None:
+                        sensitivity_s_available = False
+                    else:
+                        sensitivity_s += value_s
+
+                if not model.es_e_rated_per_unit[y_inv, y].fixed:
+                    value_e = sensitivities['e'][year][node_id]
+                    if value_e is None:
+                        sensitivity_e_available = False
+                    else:
+                        # Local chain rule: hold the converged SoH trajectory fixed.
+                        soh = pe.value(model.es_soh_per_unit_cumul[y_inv, y])
+                        sensitivity_e += value_e * soh
+
+            investment_sensitivities['s'][year_inv][node_id] = sensitivity_s if sensitivity_s_available else None
+            investment_sensitivities['e'][year_inv][node_id] = sensitivity_e if sensitivity_e_available else None
+
+    return investment_sensitivities
 
 
 # ======================================================================================================================
