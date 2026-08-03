@@ -41,6 +41,9 @@ def _read_parameters_from_file(planning_parameters, filename):
     planning_parameters.max_energy_to_power_ratio = float(params_data['max_energy_to_power_factor'])
     planning_parameters.slacks = bool(params_data['slacks'])
     planning_parameters.print_results_to_file = bool(params_data['print_results_to_file'])
-    planning_parameters.solver_params.read_solver_parameters(params_data.get('nlp_solver', params_data['solver']))
+    nlp_solver_data = params_data.get('nlp_solver')
+    if nlp_solver_data is None:
+        nlp_solver_data = params_data['solver']
+    planning_parameters.solver_params.read_solver_parameters(nlp_solver_data)
     if 'lp_solver' in params_data:
         planning_parameters.lp_solver_params.read_solver_parameters(params_data['lp_solver'])

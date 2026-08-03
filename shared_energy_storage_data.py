@@ -529,9 +529,8 @@ def _build_subproblem(shared_ess_data, node_id):
 def _optimize(model, params, from_warm_start=False, node_id=None):
 
     solver = po.SolverFactory(params.solver, executable=params.solver_path)
-    if params.verbose:
-        if params.solver.lower() == 'ipopt':
-            solver.options['print_level'] = 6
+    if params.verbose and params.solver.lower() == 'ipopt':
+        solver.options['print_level'] = 6
         solver.options['output_file'] = 'optim_log.txt'
 
     if params.options:
