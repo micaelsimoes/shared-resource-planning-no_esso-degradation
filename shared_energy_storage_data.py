@@ -448,7 +448,8 @@ def _build_subproblem(shared_ess_data, node_id):
             else:
                 model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[y_inv, y] == prev_soh * ((model.es_soh_per_unit[y_inv, y]) ** (365.00 * num_years)))
 
-            model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[y_inv, y] >= shared_energy_storage.soh_min)
+            # model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[y_inv, y] >= shared_energy_storage.soh_min)
+            model.energy_storage_capacity_degradation.add(model.es_e_available_per_unit[y_inv, y] >= shared_energy_storage.soh_min * model.es_e_rated_per_unit[y_inv, y])
             model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_cumul[y_inv, y] == 1.00 - model.es_soh_per_unit_cumul[y_inv, y])
             # model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit[y_inv, y] <= model.es_s_investment[y_inv])
 
@@ -571,8 +572,12 @@ def _update_model_with_candidate_solution(shared_ess_data, models, candidate_sol
     for node_id in models:
         for y in models[node_id].years:
             year = repr_years[y]
-            models[node_id].es_s_investment_fixed[y].set_value(candidate_solution[node_id][year]['s'])
-            models[node_id].es_e_investment_fixed[y].set_value(candidate_solution[node_id][year]['e'])
+            s_candidate = candidate_solution[node_id][year]['s']
+            e_candidate = candidate_solution[node_id][year]['e']
+            models[node_id].es_s_investment_fixed[y].set_value(s_candidate)
+            models[node_id].es_e_investment_fixed[y].set_value(e_candidate)
+            models[node_id].es_s_investment[y].fix(s_candidate)
+            models[node_id].es_e_investment[y].fix(e_candidate)
 
 
 def _get_candidate_solution(self, model):
@@ -910,7 +915,7 @@ def _process_relaxation_variables_operation_aggregated(shared_ess_data, models):
                 day = repr_days[d]
                 for p in models[node_id].periods:
                     slack_es_snet_up = pe.value(models[node_id].slack_es_snet_up[y, d, p])
-                    slack_es_snet_down = pe.value(models[node_id].slack_es_snet_up[y, d, p])
+                    slack_es_snet_down = pe.value(models[node_id].slack_es_snet_down[y, d, p])
                     slack_es_snet_def_up = pe.value(models[node_id].slack_es_snet_def_up[y, d, p])
                     slack_es_snet_def_down = pe.value(models[node_id].slack_es_snet_def_down[y, d, p])
                     processed_results[year][day][node_id]['snet_up'].append(slack_es_snet_up)
