@@ -3,7 +3,19 @@
 	"benders": {
 		"tol_abs": 10e3,
 		"tol_rel": 10e-2,
-		"num_max_iters": 100
+		"num_max_iters": 100,
+		"finite_difference": {
+			"enabled": true,
+			"relative_step_sizes": [1e-2, 5e-3],
+			"node_id": null,
+			"year": null,
+			"relative_error_tolerance": 1e-1,
+			"replay_relative_tolerance": 1e-6,
+			"replay_absolute_tolerance": 1.0,
+			"minimum_signal_to_noise_ratio": 10.0,
+			"slope_consistency_tolerance": 1e-1,
+			"soh_active_tolerance": 1e-4
+		}
 	},
 	"admm": {
 		"tol": {

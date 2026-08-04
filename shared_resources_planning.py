@@ -1,6 +1,6 @@
 import gc
 import time
-from copy import copy
+from copy import copy, deepcopy
 from functools import partial
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import numpy as np
@@ -59,18 +59,28 @@ class SharedResourcesPlanning:
         print('[INFO] Running PLANNING PROBLEM...')
         _run_planning_problem(self, debug_flag=debug_flag)
 
-    def run_operational_planning(self, type='distributed', candidate_solution=dict(), num_steps=8, print_results=False, filename=str(), debug_flag=False):
+    def run_operational_planning(self, type='distributed', candidate_solution=dict(), num_steps=8,
+                                 print_results=False, filename=str(), debug_flag=False,
+                                 initial_state=None, return_state=False):
 
         if type == 'distributed':
             print('[INFO] Running OPERATIONAL PLANNING (DISTRIBUTED)...')
             if not candidate_solution:
                 candidate_solution = self.get_initial_candidate_solution()
-            convergence, results, models, sensitivities, primal_evolution, execution_time = _run_operational_planning(self, candidate_solution, debug_flag=debug_flag)
+            convergence, results, models, sensitivities, primal_evolution, execution_time, state = _run_operational_planning(
+                self,
+                candidate_solution,
+                initial_state=initial_state,
+                debug_flag=debug_flag,
+            )
             if print_results:
                 if not filename:
                     filename = f'{self.name}_distributed'
                 self.write_operational_planning_results_to_excel(models, results, filename=filename, primal_evolution=primal_evolution, execution_time=execution_time)
-            return convergence, results, models, sensitivities, primal_evolution
+            output = convergence, results, models, sensitivities, primal_evolution
+            if return_state:
+                return (*output, state)
+            return output
 
         elif type == 'hierarchical':
             print('[INFO] Running OPERATIONAL PLANNING (HIERARCHICAL)...')
@@ -248,6 +258,8 @@ def _run_planning_problem(planning_problem, debug_flag=False):
     gap_signed_evolution = list()
     gap_abs_evolution = list()
     gap_rel_evolution = list()
+    finite_difference_results = list()
+    operational_state = None
     print_memory_usage("Start of planning problem", debug_flag)
 
     start = time.time()
@@ -273,7 +285,12 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         # 1.1. Solve operational planning, with fixed investment variables,
         # 1.2. Get coupling constraints' sensitivities (subproblem)
         # 1.3. Get the economic recourse value and local sensitivities
-        operational_convergence, operational_results, lower_level_models, sensitivities, _ = planning_problem.run_operational_planning(candidate_solution=candidate_solution, print_results=print_results, filename=f'{planning_problem.name}_operational_planning_results_distributed_without ESS')
+        operational_convergence, operational_results, lower_level_models, sensitivities, _, operational_state = planning_problem.run_operational_planning(
+            candidate_solution=candidate_solution,
+            print_results=print_results,
+            filename=f'{planning_problem.name}_operational_planning_results_distributed_without ESS',
+            return_state=True,
+        )
 
         investment_cost = pe.value(master_problem_model.investment_cost)
         alpha = pe.value(master_problem_model.alpha)
@@ -374,6 +391,18 @@ def _run_planning_problem(planning_problem, debug_flag=False):
     else:
         print('[WARNING] Convergence not obtained!')
 
+    finite_difference_params = benders_parameters.finite_difference
+    if convergence and finite_difference_params.enabled:
+        finite_difference_results = _validate_local_sensitivities_with_finite_differences(
+            planning_problem,
+            candidate_solution,
+            operational_recourse,
+            sensitivities,
+            lower_level_models,
+            operational_state,
+            finite_difference_params,
+        )
+
     # Write results
     end = time.time()
     total_execution_time = end - start
@@ -390,6 +419,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         'gap_signed': gap_signed_evolution,
         'gap_abs': gap_abs_evolution,
         'gap_rel': gap_rel_evolution,
+        'finite_difference': finite_difference_results,
     }
     planning_problem.write_planning_results_to_excel(master_problem_model, lower_level_models, operational_results, bound_evolution, execution_time=total_execution_time)
 
@@ -431,6 +461,366 @@ def _get_operational_sensitivities(planning_problem, models):
     )
 
 
+def _validate_local_sensitivities_with_finite_differences(planning_problem, candidate_solution,
+                                                          baseline_recourse, sensitivities, baseline_models,
+                                                          baseline_state, params):
+    selected = _select_finite_difference_investment(candidate_solution, params)
+    if selected is None:
+        print('[WARNING] Finite-difference validation skipped: no matching positive investment was found.')
+        return []
+    if baseline_state is None:
+        print('[WARNING] Finite-difference validation skipped: the converged operational state is unavailable.')
+        return []
+
+    node_id, year = selected
+    sensitivity_s = sensitivities['s'][year][node_id]
+    sensitivity_e = sensitivities['e'][year][node_id]
+    if sensitivity_s is None or sensitivity_e is None:
+        print('[WARNING] Finite-difference validation skipped: the selected sensitivity is unavailable.')
+        return []
+
+    base_s = candidate_solution['investment'][node_id][year]['s']
+    base_e = candidate_solution['investment'][node_id][year]['e']
+    if isclose(base_s, 0.00, abs_tol=SMALL_TOLERANCE):
+        ratio = planning_problem.shared_ess_data.params.min_energy_to_power_ratio
+    else:
+        ratio = base_e / base_s
+
+    baseline_soh_margin = _get_investment_soh_margin(
+        planning_problem, baseline_models['esso'], node_id, year
+    )
+    analytic_slope = sensitivity_s + ratio * sensitivity_e
+    validation_results = []
+
+    print('[INFO] Running finite-difference validation of the final local sensitivity...')
+    print(
+        f'[INFO] Selected investment: node {node_id}, year {year}, '
+        f'S = {base_s:.6f} MVA, E = {base_e:.6f} MVAh, E/S = {ratio:.6f}.'
+    )
+
+    try:
+        replay_convergence, _, replay_models, replay_sensitivities, _, _ = planning_problem.run_operational_planning(
+            candidate_solution=candidate_solution,
+            print_results=False,
+            initial_state=baseline_state,
+            return_state=True,
+        )
+        replay_esso_violation = planning_problem.shared_ess_data.get_feasibility_violation(
+            replay_models['esso']
+        )
+        replay_recourse = None
+        replay_drift = None
+        replay_soh_margin = None
+        replay_analytic_slope = None
+        sensitivity_relative_drift = None
+        replay_active_set_changed = None
+        replay_tolerance = max(
+            params.replay_absolute_tolerance,
+            params.replay_relative_tolerance * max(abs(baseline_recourse), 1.00),
+        )
+        replay_reasons = []
+
+        if not replay_convergence:
+            replay_reasons.append('ADMM replay did not converge')
+        else:
+            replay_recourse = planning_problem.get_operational_recourse_value(replay_models)
+            replay_drift = replay_recourse - baseline_recourse
+            replay_soh_margin = _get_investment_soh_margin(
+                planning_problem, replay_models['esso'], node_id, year
+            )
+            replay_sensitivity_s = replay_sensitivities['s'][year][node_id]
+            replay_sensitivity_e = replay_sensitivities['e'][year][node_id]
+            if replay_sensitivity_s is None or replay_sensitivity_e is None:
+                replay_reasons.append('replay sensitivity is unavailable')
+            else:
+                replay_analytic_slope = replay_sensitivity_s + ratio * replay_sensitivity_e
+                sensitivity_relative_drift = abs(replay_analytic_slope - analytic_slope) / max(
+                    abs(replay_analytic_slope), abs(analytic_slope), 1.00
+                )
+                if sensitivity_relative_drift > params.slope_consistency_tolerance:
+                    replay_reasons.append('directional sensitivity is not reproducible')
+
+            replay_active_set_changed = _soh_active_state_changed(
+                baseline_soh_margin, replay_soh_margin, params.soh_active_tolerance
+            )
+            if replay_active_set_changed:
+                replay_reasons.append('minimum-SoH activity changed during replay')
+            if abs(replay_drift) > replay_tolerance:
+                replay_reasons.append('recourse replay drift exceeds tolerance')
+
+        if replay_esso_violation > BENDERS_FEASIBILITY_TOLERANCE:
+            replay_reasons.append('ESSO replay violation exceeds tolerance')
+
+        replay_status = 'passed' if not replay_reasons else 'inconclusive'
+        validation_results.append({
+            'run_type': 'replay',
+            'status': replay_status,
+            'reason': '; '.join(replay_reasons),
+            'node_id': node_id,
+            'year': year,
+            'base_s': base_s,
+            'base_e': base_e,
+            'energy_to_power_ratio': ratio,
+            'step_fraction': 0.00,
+            'step_size': 0.00,
+            'delta_s': 0.00,
+            'delta_e': 0.00,
+            'sensitivity_s': sensitivity_s,
+            'sensitivity_e': sensitivity_e,
+            'analytic_slope': analytic_slope,
+            'replay_analytic_slope': replay_analytic_slope,
+            'baseline_recourse': baseline_recourse,
+            'reference_recourse': replay_recourse,
+            'replay_drift': replay_drift,
+            'replay_tolerance': replay_tolerance,
+            'sensitivity_relative_drift': sensitivity_relative_drift,
+            'operational_convergence': replay_convergence,
+            'esso_violation': replay_esso_violation,
+            'baseline_soh_margin': baseline_soh_margin,
+            'reference_soh_margin': replay_soh_margin,
+            'active_set_changed': replay_active_set_changed,
+            'passed': replay_status == 'passed',
+        })
+
+        drift_text = f'{replay_drift:.6f}' if replay_drift is not None else 'N/A'
+        print(
+            f'[INFO] Finite-difference replay | Recourse drift = {drift_text} | '
+            f'Tolerance = {replay_tolerance:.6f} | ESSO violation = {replay_esso_violation:.6f} | '
+            f'Status = {replay_status}'
+        )
+        if replay_status != 'passed':
+            print('[WARNING] Finite-difference perturbations skipped: the baseline replay is not reproducible.')
+            return validation_results
+
+        noise_floor = max(abs(replay_drift), params.replay_absolute_tolerance)
+        previous_observed_slope = None
+        step_scale = max(abs(base_s), 1.00)
+
+        for step_fraction in params.relative_step_sizes:
+            if step_fraction <= 0.00:
+                print(f'[WARNING] Ignoring non-positive relative finite-difference step {step_fraction}.')
+                continue
+
+            step_size = step_fraction * step_scale
+            delta_s = step_size
+            delta_e = ratio * step_size
+            perturbed_candidate = deepcopy(candidate_solution)
+            perturbed_candidate['investment'][node_id][year]['s'] += delta_s
+            perturbed_candidate['investment'][node_id][year]['e'] += delta_e
+            _rebuild_candidate_total_capacities(planning_problem, perturbed_candidate)
+
+            predicted_change = analytic_slope * step_size
+            operational_convergence, _, perturbed_models, _, _, _ = planning_problem.run_operational_planning(
+                candidate_solution=perturbed_candidate,
+                print_results=False,
+                initial_state=baseline_state,
+                return_state=True,
+            )
+            esso_violation = planning_problem.shared_ess_data.get_feasibility_violation(
+                perturbed_models['esso']
+            )
+
+            perturbed_recourse = None
+            observed_change = None
+            absolute_error = None
+            observed_slope = None
+            absolute_slope_error = None
+            relative_error = None
+            same_sign = None
+            signal_to_noise_ratio = None
+            slope_consistency_error = None
+            perturbed_soh_margin = None
+            active_set_changed = None
+            status = 'inconclusive'
+            reasons = []
+
+            if not operational_convergence:
+                reasons.append('ADMM did not converge')
+            else:
+                perturbed_recourse = planning_problem.get_operational_recourse_value(perturbed_models)
+                observed_change = perturbed_recourse - replay_recourse
+                absolute_error = abs(observed_change - predicted_change)
+                observed_slope = observed_change / step_size
+                absolute_slope_error = abs(observed_slope - analytic_slope)
+                relative_error = absolute_slope_error / max(
+                    abs(observed_slope), abs(analytic_slope), 1.00
+                )
+                same_sign = (
+                    analytic_slope * observed_slope >= 0.00
+                    or (
+                        isclose(analytic_slope, 0.00, abs_tol=1.00)
+                        and isclose(observed_slope, 0.00, abs_tol=1.00)
+                    )
+                )
+                signal_to_noise_ratio = abs(observed_change) / noise_floor
+                perturbed_soh_margin = _get_investment_soh_margin(
+                    planning_problem, perturbed_models['esso'], node_id, year
+                )
+                active_set_changed = _soh_active_state_changed(
+                    replay_soh_margin, perturbed_soh_margin, params.soh_active_tolerance
+                )
+                if previous_observed_slope is not None:
+                    slope_consistency_error = abs(observed_slope - previous_observed_slope) / max(
+                        abs(observed_slope), abs(previous_observed_slope), 1.00
+                    )
+
+                if esso_violation > BENDERS_FEASIBILITY_TOLERANCE:
+                    reasons.append('ESSO violation exceeds tolerance')
+                if active_set_changed:
+                    reasons.append('minimum-SoH activity changed')
+                if signal_to_noise_ratio < params.minimum_signal_to_noise_ratio:
+                    reasons.append('finite-difference signal is below the noise threshold')
+
+                if reasons:
+                    status = 'inconclusive'
+                elif not same_sign:
+                    status = 'failed'
+                    reasons.append('analytic and observed slopes have different signs')
+                elif relative_error > params.relative_error_tolerance:
+                    status = 'failed'
+                    reasons.append('relative slope error exceeds tolerance')
+                elif (
+                        slope_consistency_error is not None
+                        and slope_consistency_error > params.slope_consistency_tolerance):
+                    status = 'failed'
+                    reasons.append('finite-difference slopes are not consistent across step sizes')
+                else:
+                    status = 'passed'
+
+                previous_observed_slope = observed_slope
+
+            result = {
+                'run_type': 'perturbation',
+                'status': status,
+                'reason': '; '.join(reasons),
+                'node_id': node_id,
+                'year': year,
+                'base_s': base_s,
+                'base_e': base_e,
+                'energy_to_power_ratio': ratio,
+                'step_fraction': step_fraction,
+                'step_size': step_size,
+                'delta_s': delta_s,
+                'delta_e': delta_e,
+                'sensitivity_s': sensitivity_s,
+                'sensitivity_e': sensitivity_e,
+                'analytic_slope': analytic_slope,
+                'replay_analytic_slope': replay_analytic_slope,
+                'predicted_change': predicted_change,
+                'baseline_recourse': baseline_recourse,
+                'reference_recourse': replay_recourse,
+                'perturbed_recourse': perturbed_recourse,
+                'observed_change': observed_change,
+                'absolute_error': absolute_error,
+                'observed_slope': observed_slope,
+                'absolute_slope_error': absolute_slope_error,
+                'relative_error': relative_error,
+                'signal_to_noise_ratio': signal_to_noise_ratio,
+                'slope_consistency_error': slope_consistency_error,
+                'same_sign': same_sign,
+                'operational_convergence': operational_convergence,
+                'esso_violation': esso_violation,
+                'baseline_soh_margin': baseline_soh_margin,
+                'reference_soh_margin': replay_soh_margin,
+                'perturbed_soh_margin': perturbed_soh_margin,
+                'active_set_changed': active_set_changed,
+                'replay_drift': replay_drift,
+                'replay_tolerance': replay_tolerance,
+                'sensitivity_relative_drift': sensitivity_relative_drift,
+                'passed': status == 'passed',
+            }
+            validation_results.append(result)
+
+            observed_text = f'{observed_change:.6f}' if observed_change is not None else 'N/A'
+            error_text = f'{relative_error * 100:.2f}%' if relative_error is not None else 'N/A'
+            print(
+                f'[INFO] Finite difference h = {step_size:.6f} ({step_fraction:.2%}) | '
+                f'Predicted change = {predicted_change:.6f} | '
+                f'Observed change = {observed_text} | Relative error = {error_text} | '
+                f'ESSO violation = {esso_violation:.6f} | Status = {status}'
+            )
+    finally:
+        _restore_candidate_data(planning_problem, candidate_solution)
+
+    return validation_results
+
+
+def _soh_active_state_changed(baseline_margin, candidate_margin, tolerance):
+    if baseline_margin is None or candidate_margin is None:
+        return None
+    return (baseline_margin <= tolerance) != (candidate_margin <= tolerance)
+
+
+def _select_finite_difference_investment(candidate_solution, params):
+    investments = candidate_solution['investment']
+
+    if params.node_id is not None and params.year is not None:
+        node_id = next((value for value in investments if str(value) == str(params.node_id)), None)
+        if node_id is None:
+            return None
+        year = next((value for value in investments[node_id] if str(value) == str(params.year)), None)
+        if year is None:
+            return None
+        return node_id, year
+
+    selected = None
+    selected_power = -float('inf')
+    for node_id, yearly_investments in investments.items():
+        for year, investment in yearly_investments.items():
+            if investment['s'] > selected_power and (
+                    investment['s'] > SMALL_TOLERANCE or investment['e'] > SMALL_TOLERANCE):
+                selected = node_id, year
+                selected_power = investment['s']
+    return selected
+
+
+def _rebuild_candidate_total_capacities(planning_problem, candidate_solution):
+    shared_ess_data = planning_problem.shared_ess_data
+    years = list(shared_ess_data.years)
+
+    for node_id in candidate_solution['investment']:
+        candidate_solution['total_capacity'][node_id] = {
+            year: {'s': 0.00, 'e': 0.00} for year in years
+        }
+        shared_ess_idx = shared_ess_data.get_shared_energy_storage_idx(node_id)
+        for y_inv, year_inv in enumerate(years):
+            shared_energy_storage = shared_ess_data.shared_energy_storages[year_inv][shared_ess_idx]
+            num_years = shared_ess_data.years[year_inv]
+            tcal_norm = round(shared_energy_storage.t_cal / num_years)
+            max_tcal_norm = min(y_inv + tcal_norm, len(years))
+            investment = candidate_solution['investment'][node_id][year_inv]
+            for y in range(y_inv, max_tcal_norm):
+                year = years[y]
+                candidate_solution['total_capacity'][node_id][year]['s'] += investment['s']
+                candidate_solution['total_capacity'][node_id][year]['e'] += investment['e']
+
+
+def _get_investment_soh_margin(planning_problem, esso_models, node_id, year_inv):
+    years = list(planning_problem.shared_ess_data.years)
+    y_inv = years.index(year_inv)
+    model = esso_models[node_id]
+    shared_ess_idx = planning_problem.shared_ess_data.get_shared_energy_storage_idx(node_id)
+    shared_energy_storage = planning_problem.shared_ess_data.shared_energy_storages[year_inv][shared_ess_idx]
+    margins = []
+
+    for y in model.years:
+        if not model.es_soh_per_unit_cumul[y_inv, y].fixed:
+            margins.append(
+                pe.value(model.es_soh_per_unit_cumul[y_inv, y]) - shared_energy_storage.soh_min
+            )
+    return min(margins) if margins else None
+
+
+def _restore_candidate_data(planning_problem, candidate_solution):
+    total_capacity = candidate_solution['total_capacity']
+    planning_problem.transmission_network.update_data_with_candidate_solution(total_capacity)
+    for distribution_network in planning_problem.distribution_networks.values():
+        distribution_network.update_data_with_candidate_solution(total_capacity)
+    planning_problem.shared_ess_data.update_data_with_candidate_solution(
+        candidate_solution['investment']
+    )
+
+
 def _add_benders_cut(planning_problem, model, recourse_value, sensitivities, candidate_solution):
     years = [year for year in planning_problem.years]
     print("[INFO] Benders-type procedure. Adding local sensitivity cut...")
@@ -456,7 +846,7 @@ def _add_benders_cut(planning_problem, model, recourse_value, sensitivities, can
 # ======================================================================================================================
 #  OPERATIONAL PLANNING (DISTRIBUTED)
 # ======================================================================================================================
-def _run_operational_planning(planning_problem, candidate_solution, debug_flag=False):
+def _run_operational_planning(planning_problem, candidate_solution, initial_state=None, debug_flag=False):
 
     transmission_network = planning_problem.transmission_network
     distribution_networks = planning_problem.distribution_networks
@@ -470,16 +860,42 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     print('[INFO]\t - Initializing...')
 
     start = time.time()
-    from_warm_start = False
+    from_warm_start = initial_state is not None
     primal_evolution = list()
 
-    # Create ADMM variables
-    consensus_vars, dual_vars = create_admm_variables(planning_problem)
+    if initial_state is None:
+        # Create ADMM variables and obtain the initial local solutions.
+        consensus_vars, dual_vars = create_admm_variables(planning_problem)
+        dso_models, results['dso'] = create_distribution_networks_models(
+            distribution_networks,
+            consensus_vars,
+            candidate_solution['total_capacity'],
+            parallel_execution=planning_problem.parallel_execution,
+        )
+        tso_model, results['tso'] = create_transmission_network_model(
+            planning_problem, consensus_vars, candidate_solution['total_capacity']
+        )
+        esso_model, results['esso'] = create_shared_energy_storage_model(
+            shared_ess_data, consensus_vars, candidate_solution['investment']
+        )
 
-    # Create ADN models, get initial power flows
-    dso_models, results['dso'] = create_distribution_networks_models(distribution_networks, consensus_vars, candidate_solution['total_capacity'], parallel_execution=planning_problem.parallel_execution)
-    tso_model, results['tso'] = create_transmission_network_model(planning_problem, consensus_vars, candidate_solution['total_capacity'])
-    esso_model, results['esso'] = create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidate_solution['investment'])
+        update_distribution_models_to_admm(planning_problem, dso_models, admm_parameters)
+        update_transmission_model_to_admm(planning_problem, tso_model, admm_parameters)
+        update_shared_energy_storage_model_to_admm(planning_problem, esso_model, admm_parameters)
+
+        planning_problem.update_admm_consensus_variables(
+            tso_model, dso_models, esso_model,
+            consensus_vars, dual_vars, results, admm_parameters,
+            update_tn=True, update_dns=True, update_sess=True,
+        )
+    else:
+        models = _clone_operational_models(initial_state['models'])
+        tso_model = models['tso']
+        dso_models = models['dso']
+        esso_model = models['esso']
+        consensus_vars = deepcopy(initial_state['consensus_vars'])
+        dual_vars = deepcopy(initial_state['dual_vars'])
+        _update_operational_models_with_candidate(planning_problem, models, candidate_solution)
 
     sess_available_capacities = shared_ess_data.get_updated_capacities(esso_model)
     # if debug_flag:
@@ -488,16 +904,6 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     #         print(f"\t{node_id}:")
     #         for year in sess_available_capacities[node_id]:
     #             print(f"\t{year}: {sess_available_capacities[node_id][year]}")
-
-    # Update models to ADMM
-    update_distribution_models_to_admm(planning_problem, dso_models, admm_parameters)
-    update_transmission_model_to_admm(planning_problem, tso_model, admm_parameters)
-    update_shared_energy_storage_model_to_admm(planning_problem, esso_model, admm_parameters)
-
-    # Update consensus variables
-    planning_problem.update_admm_consensus_variables(tso_model, dso_models, esso_model,
-                                                     consensus_vars, dual_vars, results, admm_parameters,
-                                                     update_tn=True, update_dns=True, update_sess=True)
 
     # ------------------------------------------------------------------------------------------------------------------
     # ADMM -- Main cycle
@@ -523,18 +929,15 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
             from_warm_start=from_warm_start, parallel_execution=planning_problem.parallel_execution
         )
 
-        # Update ADMM CONSENSUS variables, primal, and check convergence
-        convergence = update_and_check_convergence(
+        # Update ADMM consensus variables and primal diagnostics.
+        update_and_check_convergence(
             planning_problem, tso_model, dso_models, esso_model,
             consensus_vars, dual_vars, results, admm_parameters,
             primal_evolution,
             update_flags={"update_tn": False, "update_dns": True, "update_sess": False},
-            debug_flag=debug_flag
+            debug_flag=debug_flag,
+            check_convergence=False,
         )
-
-        if convergence and iter > 1:
-            print(f"[INFO] ADMM converged at iteration {iter}.")
-            break
 
         # --------------------------------------------------------------------------------------------------------------
         # 2. Solve TSO problem
@@ -548,18 +951,15 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
             from_warm_start=from_warm_start
         )
 
-        # Update ADMM CONSENSUS variables, primal, and check convergence
-        convergence = update_and_check_convergence(
+        # Update ADMM consensus variables and primal diagnostics.
+        update_and_check_convergence(
             planning_problem, tso_model, dso_models, esso_model,
             consensus_vars, dual_vars, results, admm_parameters,
             primal_evolution,
             update_flags={"update_tn": True, "update_dns": False, "update_sess": False},
-            debug_flag=debug_flag
+            debug_flag=debug_flag,
+            check_convergence=False,
         )
-
-        if convergence and iter > 1:
-            print(f"[INFO] ADMM converged at iteration {iter}.")
-            break
 
         # --------------------------------------------------------------------------------------------------------------
         # 3. Solve ESSO problem
@@ -613,12 +1013,40 @@ def _run_operational_planning(planning_problem, candidate_solution, debug_flag=F
     if convergence:
         sensitivities = _get_operational_sensitivities(planning_problem, optim_models)
 
-    return convergence, results, optim_models, sensitivities, primal_evolution, total_execution_time
+    state = {
+        'models': optim_models,
+        'consensus_vars': deepcopy(consensus_vars),
+        'dual_vars': deepcopy(dual_vars),
+    }
+    return convergence, results, optim_models, sensitivities, primal_evolution, total_execution_time, state
+
+
+def _clone_operational_models(models):
+    if isinstance(models, dict):
+        return {key: _clone_operational_models(value) for key, value in models.items()}
+    return models.clone()
+
+
+def _update_operational_models_with_candidate(planning_problem, models, candidate_solution):
+    total_capacity = candidate_solution['total_capacity']
+    investment = candidate_solution['investment']
+
+    transmission_network = planning_problem.transmission_network
+    transmission_network.update_data_with_candidate_solution(total_capacity)
+    transmission_network.update_model_with_candidate_solution(models['tso'], total_capacity)
+
+    for node_id, distribution_network in planning_problem.distribution_networks.items():
+        distribution_network.update_data_with_candidate_solution(total_capacity)
+        distribution_network.update_model_with_candidate_solution(models['dso'][node_id], total_capacity)
+
+    planning_problem.shared_ess_data.update_data_with_candidate_solution(investment)
+    planning_problem.shared_ess_data.update_model_with_candidate_solution(models['esso'], investment)
 
 
 def update_and_check_convergence(planning_problem, tso_model, dso_models, esso_model,
                                  consensus_vars, dual_vars, results, admm_parameters,
-                                 primal_evolution, update_flags, debug_flag=False):
+                                 primal_evolution, update_flags, debug_flag=False,
+                                 check_convergence=True):
 
     planning_problem.update_admm_consensus_variables(
         tso_model, dso_models, esso_model,
@@ -628,6 +1056,8 @@ def update_and_check_convergence(planning_problem, tso_model, dso_models, esso_m
     primal_value = planning_problem.get_primal_value(tso_model, dso_models, esso_model)
     primal_evolution.append(primal_value)
 
+    if not check_convergence:
+        return False
     return check_admm_convergence(planning_problem, consensus_vars, admm_parameters, debug_flag=debug_flag)
 
 
@@ -2700,6 +3130,9 @@ def _write_planning_results_to_excel(planning_problem, results, bound_evolution=
 
     if bound_evolution:
         _write_bound_evolution_to_excel(wb, bound_evolution)
+        finite_difference_results = bound_evolution.get('finite_difference', [])
+        if finite_difference_results:
+            _write_finite_difference_validation_to_excel(wb, finite_difference_results)
 
     if shared_ess_capacity:
         write_investment = True
@@ -2770,6 +3203,61 @@ def _write_bound_evolution_to_excel(workbook, bound_evolution):
             if iteration >= len(values) or values[iteration] is None:
                 continue
             sheet.cell(row=row_idx, column=column_idx).value = values[iteration] / divisor
+            sheet.cell(row=row_idx, column=column_idx).number_format = number_format
+
+
+def _write_finite_difference_validation_to_excel(workbook, validation_results):
+    sheet = workbook.create_sheet('Sensitivity Validation')
+    columns = [
+        ('run_type', 'Run Type', 'General'),
+        ('status', 'Status', 'General'),
+        ('reason', 'Reason', 'General'),
+        ('node_id', 'Node ID', '0'),
+        ('year', 'Investment Year', '0'),
+        ('base_s', 'Base S Investment, [MVA]', '0.000000'),
+        ('base_e', 'Base E Investment, [MVAh]', '0.000000'),
+        ('energy_to_power_ratio', 'E/S Ratio, [h]', '0.000000'),
+        ('step_fraction', 'Relative Power Step, [%]', '0.00%'),
+        ('step_size', 'Power Step h, [MVA]', '0.000000'),
+        ('delta_s', 'Delta S, [MVA]', '0.000000'),
+        ('delta_e', 'Delta E, [MVAh]', '0.000000'),
+        ('sensitivity_s', 'Sensitivity S, [NPV m.u./MVA]', '0.000000'),
+        ('sensitivity_e', 'Sensitivity E, [NPV m.u./MVAh]', '0.000000'),
+        ('analytic_slope', 'Analytic Directional Slope, [NPV m.u./MVA]', '0.000000'),
+        ('replay_analytic_slope', 'Replay Directional Slope, [NPV m.u./MVA]', '0.000000'),
+        ('predicted_change', 'Predicted Recourse Change, [NPV m.u.]', '0.000000'),
+        ('baseline_recourse', 'Baseline Recourse, [NPV m.u.]', '0.000000'),
+        ('reference_recourse', 'Replay Reference Recourse, [NPV m.u.]', '0.000000'),
+        ('perturbed_recourse', 'Perturbed Recourse, [NPV m.u.]', '0.000000'),
+        ('observed_change', 'Observed Recourse Change, [NPV m.u.]', '0.000000'),
+        ('absolute_error', 'Absolute Recourse-Change Error, [NPV m.u.]', '0.000000'),
+        ('observed_slope', 'Observed Directional Slope, [NPV m.u./MVA]', '0.000000'),
+        ('absolute_slope_error', 'Absolute Slope Error, [NPV m.u./MVA]', '0.000000'),
+        ('relative_error', 'Relative Slope Error, [%]', '0.00%'),
+        ('signal_to_noise_ratio', 'Signal-to-Noise Ratio', '0.00'),
+        ('slope_consistency_error', 'Step-to-Step Slope Difference, [%]', '0.00%'),
+        ('replay_drift', 'Replay Recourse Drift, [NPV m.u.]', '0.000000'),
+        ('replay_tolerance', 'Replay Drift Tolerance, [NPV m.u.]', '0.000000'),
+        ('sensitivity_relative_drift', 'Replay Sensitivity Drift, [%]', '0.00%'),
+        ('same_sign', 'Same Sign', 'General'),
+        ('operational_convergence', 'ADMM Converged', 'General'),
+        ('esso_violation', 'ESSO Feasibility Slack, [N/A]', '0.000000'),
+        ('baseline_soh_margin', 'Baseline Minimum SoH Margin, [p.u.]', '0.000000'),
+        ('reference_soh_margin', 'Replay Minimum SoH Margin, [p.u.]', '0.000000'),
+        ('perturbed_soh_margin', 'Perturbed Minimum SoH Margin, [p.u.]', '0.000000'),
+        ('active_set_changed', 'Minimum SoH Activity Changed', 'General'),
+        ('passed', 'Passed', 'General'),
+    ]
+
+    for column_idx, (_, label, _) in enumerate(columns, start=1):
+        sheet.cell(row=1, column=column_idx).value = label
+
+    for row_idx, result in enumerate(validation_results, start=2):
+        for column_idx, (key, _, number_format) in enumerate(columns, start=1):
+            value = result.get(key)
+            if value is None:
+                continue
+            sheet.cell(row=row_idx, column=column_idx).value = value
             sheet.cell(row=row_idx, column=column_idx).number_format = number_format
 
 
