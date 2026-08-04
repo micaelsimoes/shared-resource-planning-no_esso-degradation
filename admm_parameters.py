@@ -11,7 +11,7 @@ class ADMMParameters:
         self.minimum_consecutive_converged_cycles = 2
         self.adaptive_penalty = False
         self.penalty_update = {
-            'residual_balance_ratio': 10.0,
+            'residual_balance_ratio': 5.0,
             'increase_factor': 2.0,
             'decrease_factor': 2.0,
             'min': 1e-4,

@@ -1099,6 +1099,12 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             'dual_v_tolerance': admm_parameters.tol['stationarity']['v'],
             'dual_pf_tolerance': admm_parameters.tol['stationarity']['pf'],
             'dual_ess_tolerance': admm_parameters.tol['stationarity']['ess'],
+            'primal_v_ratio': residual_metrics['primal']['v'] / admm_parameters.tol['consensus']['v'],
+            'primal_pf_ratio': residual_metrics['primal']['pf'] / admm_parameters.tol['consensus']['pf'],
+            'primal_ess_ratio': residual_metrics['primal']['ess'] / admm_parameters.tol['consensus']['ess'],
+            'dual_v_ratio': residual_metrics['dual']['v'] / admm_parameters.tol['stationarity']['v'],
+            'dual_pf_ratio': residual_metrics['dual']['pf'] / admm_parameters.tol['stationarity']['pf'],
+            'dual_ess_ratio': residual_metrics['dual']['ess'] / admm_parameters.tol['stationarity']['ess'],
             'recourse': recourse,
             'objective_change_abs': objective_change_abs,
             'objective_change_rel': objective_change_rel,
@@ -2579,6 +2585,8 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
     for group in ('v', 'pf', 'ess'):
         primal = residual_metrics['primal'][group]
         dual = residual_metrics['dual'][group]
+        normalized_primal = primal / params.tol['consensus'][group]
+        normalized_dual = dual / params.tol['stationarity'][group]
         group_converged = (
             _admm_metric_within_tolerance(primal, params.tol['consensus'][group])
             and _admm_metric_within_tolerance(dual, params.tol['stationarity'][group])
@@ -2590,10 +2598,10 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
         elif not allow_update:
             action = 'held after solver failure'
         elif not group_converged:
-            if primal > update_params['residual_balance_ratio'] * dual:
+            if normalized_primal > update_params['residual_balance_ratio'] * normalized_dual:
                 factor = update_params['increase_factor']
                 action = 'increased'
-            elif dual > update_params['residual_balance_ratio'] * primal:
+            elif normalized_dual > update_params['residual_balance_ratio'] * normalized_primal:
                 factor = 1.0 / update_params['decrease_factor']
                 action = 'decreased'
         actions[group] = action
@@ -3517,12 +3525,18 @@ def _write_admm_diagnostics_to_excel(workbook, diagnostics):
         ('primal_pf_tolerance', 'Primal PF Tolerance', '0.000000'),
         ('primal_ess', 'Primal ESS Residual', '0.000000'),
         ('primal_ess_tolerance', 'Primal ESS Tolerance', '0.000000'),
+        ('primal_v_ratio', 'Primal V / Tolerance', '0.000'),
+        ('primal_pf_ratio', 'Primal PF / Tolerance', '0.000'),
+        ('primal_ess_ratio', 'Primal ESS / Tolerance', '0.000'),
         ('dual_v', 'Dual V Residual', '0.000000'),
         ('dual_v_tolerance', 'Dual V Tolerance', '0.000000'),
         ('dual_pf', 'Dual PF Residual', '0.000000'),
         ('dual_pf_tolerance', 'Dual PF Tolerance', '0.000000'),
         ('dual_ess', 'Dual ESS Residual', '0.000000'),
         ('dual_ess_tolerance', 'Dual ESS Tolerance', '0.000000'),
+        ('dual_v_ratio', 'Dual V / Tolerance', '0.000'),
+        ('dual_pf_ratio', 'Dual PF / Tolerance', '0.000'),
+        ('dual_ess_ratio', 'Dual ESS / Tolerance', '0.000'),
         ('recourse', 'Economic Recourse, [NPV m.u.]', '0.000000'),
         ('objective_change_abs', 'Absolute Recourse Change, [NPV m.u.]', '0.000000'),
         ('objective_change_rel', 'Relative Recourse Change, [%]', '0.00%'),
