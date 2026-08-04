@@ -5,9 +5,18 @@ class ADMMParameters:
 
     def __init__(self):
         self.tol = {'consensus': {'v': 0.1e-2, 'pf': 0.1e-2, 'ess': 1e-2},
-                    'stationarity': {'v': 0.5e-2, 'pf': 0.5e-2, 'ess': 5e-2}}
+                    'stationarity': {'v': 0.5e-2, 'pf': 0.5e-2, 'ess': 5e-2},
+                    'objective': {'abs': 1e4, 'rel': 5e-4}}
         self.num_max_iters = 1000
+        self.minimum_consecutive_converged_cycles = 2
         self.adaptive_penalty = False
+        self.penalty_update = {
+            'residual_balance_ratio': 10.0,
+            'increase_factor': 2.0,
+            'decrease_factor': 2.0,
+            'min': 1e-4,
+            'max': 1e4,
+        }
         self.rho = {'v': dict(), 'pf': dict(), 'ess': dict()}
         self.previous_iter = {'v': dict(), 'pf': dict(), 'ess': dict()}
         self.rho_previous_iter = {'v': dict(), 'pf': dict(), 'ess': dict()}
@@ -23,8 +32,38 @@ def _read_parameters_from_file(admm_params, params_data):
     admm_params.tol['stationarity']['v'] = float(params_data['tol']['stationarity']['v'])
     admm_params.tol['stationarity']['pf'] = float(params_data['tol']['stationarity']['pf'])
     admm_params.tol['stationarity']['ess'] = float(params_data['tol']['stationarity']['ess'])
+    objective_tolerances = params_data['tol'].get('objective', {})
+    admm_params.tol['objective']['abs'] = float(
+        objective_tolerances.get('abs', admm_params.tol['objective']['abs'])
+    )
+    admm_params.tol['objective']['rel'] = float(
+        objective_tolerances.get('rel', admm_params.tol['objective']['rel'])
+    )
     admm_params.num_max_iters = int(params_data['num_max_iters'])
+    admm_params.minimum_consecutive_converged_cycles = int(
+        params_data.get(
+            'minimum_consecutive_converged_cycles',
+            admm_params.minimum_consecutive_converged_cycles,
+        )
+    )
     admm_params.adaptive_penalty = bool(params_data['adaptive_penalty'])
+    penalty_update = params_data.get('penalty_update', {})
+    for key in admm_params.penalty_update:
+        if key in penalty_update:
+            admm_params.penalty_update[key] = float(penalty_update[key])
+
+    if admm_params.minimum_consecutive_converged_cycles < 1:
+        raise ValueError('ADMM minimum_consecutive_converged_cycles must be at least 1.')
+    if admm_params.penalty_update['residual_balance_ratio'] <= 1.0:
+        raise ValueError('ADMM residual_balance_ratio must be greater than 1.')
+    if admm_params.penalty_update['increase_factor'] <= 1.0:
+        raise ValueError('ADMM increase_factor must be greater than 1.')
+    if admm_params.penalty_update['decrease_factor'] <= 1.0:
+        raise ValueError('ADMM decrease_factor must be greater than 1.')
+    if admm_params.penalty_update['min'] <= 0.0:
+        raise ValueError('ADMM minimum penalty must be positive.')
+    if admm_params.penalty_update['max'] < admm_params.penalty_update['min']:
+        raise ValueError('ADMM maximum penalty must not be smaller than the minimum penalty.')
     admm_params.rho['v'] = params_data['rho']['v']
     admm_params.rho['pf'] = params_data['rho']['pf']
     admm_params.rho['ess'] = params_data['rho']['ess']

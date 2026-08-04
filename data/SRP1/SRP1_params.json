@@ -20,10 +20,19 @@
 	"admm": {
 		"tol": {
 			"consensus": {"v": 0.5e-2, "pf": 0.5e-2, "ess": 5e-2},
-			"stationarity": {"v": 5e-2, "pf": 5e-2, "ess": 50e-2}
+			"stationarity": {"v": 5e-2, "pf": 5e-2, "ess": 50e-2},
+			"objective": {"abs": 1e4, "rel": 5e-4}
 		},
 		"num_max_iters": 50,
+		"minimum_consecutive_converged_cycles": 1,
 		"adaptive_penalty": true,
+		"penalty_update": {
+			"residual_balance_ratio": 10.0,
+			"increase_factor": 2.0,
+			"decrease_factor": 2.0,
+			"min": 1e-4,
+			"max": 1e4
+		},
 		"rho": {
 			"v": {
 				"case9": 1.00,

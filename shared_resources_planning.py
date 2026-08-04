@@ -76,7 +76,14 @@ class SharedResourcesPlanning:
             if print_results:
                 if not filename:
                     filename = f'{self.name}_distributed'
-                self.write_operational_planning_results_to_excel(models, results, filename=filename, primal_evolution=primal_evolution, execution_time=execution_time)
+                self.write_operational_planning_results_to_excel(
+                    models,
+                    results,
+                    filename=filename,
+                    primal_evolution=primal_evolution,
+                    admm_diagnostics=state.get('admm_diagnostics', []),
+                    execution_time=execution_time,
+                )
             output = convergence, results, models, sensitivities, primal_evolution
             if return_state:
                 return (*output, state)
@@ -197,12 +204,22 @@ class SharedResourcesPlanning:
         shared_ess_capacity = self.shared_ess_data.get_available_capacity(operational_planning_models['esso'])
         _write_planning_results_to_excel(self, processed_results, bound_evolution=bound_evolution, shared_ess_cost=shared_ess_cost, shared_ess_capacity=shared_ess_capacity, filename=filename, execution_time=execution_time)
 
-    def write_operational_planning_results_to_excel(self, optimization_models, results, filename=str(), primal_evolution=list(), execution_time=float()):
+    def write_operational_planning_results_to_excel(self, optimization_models, results, filename=str(),
+                                                     primal_evolution=list(), admm_diagnostics=list(),
+                                                     execution_time=float()):
         if not filename:
             filename = 'operational_planning_results'
         processed_results = _process_operational_planning_results(self, optimization_models['tso'], optimization_models['dso'], optimization_models['esso'], results)
         shared_ess_capacity = self.shared_ess_data.get_available_capacity(optimization_models['esso'])
-        _write_operational_planning_results_to_excel(self, processed_results, primal_evolution=primal_evolution, shared_ess_capacity=shared_ess_capacity, filename=filename, execution_time=execution_time)
+        _write_operational_planning_results_to_excel(
+            self,
+            processed_results,
+            primal_evolution=primal_evolution,
+            admm_diagnostics=admm_diagnostics,
+            shared_ess_capacity=shared_ess_capacity,
+            filename=filename,
+            execution_time=execution_time,
+        )
 
     def write_operational_planning_results_hierarchical_to_excel(self, optimization_models, results, filename=str(), execution_time=float()):
         if not filename:
@@ -259,6 +276,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
     gap_abs_evolution = list()
     gap_rel_evolution = list()
     finite_difference_results = list()
+    admm_diagnostics = list()
     operational_state = None
     print_memory_usage("Start of planning problem", debug_flag)
 
@@ -291,6 +309,10 @@ def _run_planning_problem(planning_problem, debug_flag=False):
             filename=f'{planning_problem.name}_operational_planning_results_distributed_without ESS',
             return_state=True,
         )
+        for diagnostic in operational_state.get('admm_diagnostics', []):
+            diagnostic_with_outer_iteration = dict(diagnostic)
+            diagnostic_with_outer_iteration['outer_iteration'] = iteration
+            admm_diagnostics.append(diagnostic_with_outer_iteration)
 
         investment_cost = pe.value(master_problem_model.investment_cost)
         alpha = pe.value(master_problem_model.alpha)
@@ -420,6 +442,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         'gap_abs': gap_abs_evolution,
         'gap_rel': gap_rel_evolution,
         'finite_difference': finite_difference_results,
+        'admm_diagnostics': admm_diagnostics,
     }
     planning_problem.write_planning_results_to_excel(master_problem_model, lower_level_models, operational_results, bound_evolution, execution_time=total_execution_time)
 
@@ -862,6 +885,19 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
     start = time.time()
     from_warm_start = initial_state is not None
     primal_evolution = list()
+    admm_diagnostics = list()
+    continuing_same_candidate = (
+        initial_state is not None
+        and initial_state.get('candidate_solution') == candidate_solution
+    )
+    previous_recourse = (
+        initial_state.get('last_recourse')
+        if continuing_same_candidate else None
+    )
+    consecutive_converged_cycles = (
+        initial_state.get('consecutive_converged_cycles', 0)
+        if continuing_same_candidate else 0
+    )
 
     if initial_state is None:
         # Create ADMM variables and obtain the initial local solutions.
@@ -969,14 +1005,149 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             admm_parameters, from_warm_start=from_warm_start
         )
 
-        # - Update ADMM CONSENSUS variables, primal, and check convergence
-        convergence = update_and_check_convergence(
+        # Update the final block and evaluate convergence only after a complete cycle.
+        update_and_check_convergence(
             planning_problem, tso_model, dso_models, esso_model,
             consensus_vars, dual_vars, results, admm_parameters,
             primal_evolution,
             update_flags={"update_tn": False, "update_dns": False, "update_sess": True},
-            debug_flag=debug_flag
+            debug_flag=debug_flag,
+            check_convergence=False,
         )
+
+        residual_metrics = get_admm_residual_metrics(
+            planning_problem,
+            tso_model,
+            dso_models,
+            esso_model,
+            consensus_vars,
+        )
+        local_solves_ok = _admm_local_solves_succeeded(planning_problem, results)
+        residual_convergence = check_admm_convergence(
+            planning_problem,
+            consensus_vars,
+            residual_metrics,
+            admm_parameters,
+            debug_flag=debug_flag,
+        )
+        if not local_solves_ok:
+            print('[WARNING]\t\t - At least one local ADMM problem did not solve successfully.')
+            residual_convergence = False
+
+        recourse = None
+        objective_change_abs = None
+        objective_change_rel = None
+        objective_tolerance = None
+        objective_convergence = False
+        if local_solves_ok:
+            recourse = _get_operational_recourse_value(
+                planning_problem,
+                {'tso': tso_model, 'dso': dso_models, 'esso': esso_model},
+            )
+            if previous_recourse is not None:
+                objective_change_abs = abs(recourse - previous_recourse)
+                objective_scale = max(abs(recourse), abs(previous_recourse), 1.0)
+                objective_change_rel = objective_change_abs / objective_scale
+                objective_tolerance = max(
+                    admm_parameters.tol['objective']['abs'],
+                    admm_parameters.tol['objective']['rel'] * objective_scale,
+                )
+                objective_convergence = objective_change_abs <= objective_tolerance
+
+        if recourse is None:
+            print('[INFO]\t\t - Recourse stationarity unavailable after a failed local solve.')
+        elif objective_change_abs is None:
+            print('[INFO]\t\t - Recourse stationarity requires one previous successful cycle.')
+        elif objective_convergence:
+            print('[INFO]\t\t - Recourse stationarity ok!')
+        else:
+            print(
+                f'[INFO]\t\t - Recourse stationarity failed. '
+                f'{objective_change_abs:.6f} > {objective_tolerance:.6f}'
+            )
+
+        cycle_convergence = residual_convergence and objective_convergence
+        if cycle_convergence:
+            consecutive_converged_cycles += 1
+        else:
+            consecutive_converged_cycles = 0
+        convergence = (
+            consecutive_converged_cycles
+            >= admm_parameters.minimum_consecutive_converged_cycles
+        )
+
+        penalty_actions, penalties_before, penalties_after = _update_admm_penalties(
+            tso_model,
+            dso_models,
+            esso_model,
+            residual_metrics,
+            admm_parameters,
+            allow_update=local_solves_ok,
+        )
+        admm_diagnostics.append({
+            'cycle': iter,
+            'local_solves_ok': local_solves_ok,
+            'primal_v': residual_metrics['primal']['v'],
+            'primal_pf': residual_metrics['primal']['pf'],
+            'primal_ess': residual_metrics['primal']['ess'],
+            'primal_v_tolerance': admm_parameters.tol['consensus']['v'],
+            'primal_pf_tolerance': admm_parameters.tol['consensus']['pf'],
+            'primal_ess_tolerance': admm_parameters.tol['consensus']['ess'],
+            'dual_v': residual_metrics['dual']['v'],
+            'dual_pf': residual_metrics['dual']['pf'],
+            'dual_ess': residual_metrics['dual']['ess'],
+            'dual_v_tolerance': admm_parameters.tol['stationarity']['v'],
+            'dual_pf_tolerance': admm_parameters.tol['stationarity']['pf'],
+            'dual_ess_tolerance': admm_parameters.tol['stationarity']['ess'],
+            'recourse': recourse,
+            'objective_change_abs': objective_change_abs,
+            'objective_change_rel': objective_change_rel,
+            'objective_tolerance': objective_tolerance,
+            'objective_absolute_tolerance': admm_parameters.tol['objective']['abs'],
+            'objective_relative_tolerance': admm_parameters.tol['objective']['rel'],
+            'residual_convergence': residual_convergence,
+            'objective_convergence': objective_convergence,
+            'cycle_convergence': cycle_convergence,
+            'consecutive_converged_cycles': consecutive_converged_cycles,
+            'required_consecutive_cycles': admm_parameters.minimum_consecutive_converged_cycles,
+            'rho_v_before': penalties_before['v'],
+            'rho_pf_before': penalties_before['pf'],
+            'rho_ess_before': penalties_before['ess'],
+            'rho_v_after': penalties_after['v'],
+            'rho_pf_after': penalties_after['pf'],
+            'rho_ess_after': penalties_after['ess'],
+            'rho_v_action': penalty_actions['v'],
+            'rho_pf_action': penalty_actions['pf'],
+            'rho_ess_action': penalty_actions['ess'],
+        })
+
+        objective_change_text = (
+            f'{objective_change_abs:.6f}'
+            if objective_change_abs is not None else 'N/A'
+        )
+        objective_tolerance_text = (
+            f'{objective_tolerance:.6f}'
+            if objective_tolerance is not None else 'N/A'
+        )
+        print(
+            f'[INFO]\t\t - ADMM cycle {iter} | '
+            f'Primal (V/PF/ESS) = '
+            f'{residual_metrics["primal"]["v"]:.6f}/'
+            f'{residual_metrics["primal"]["pf"]:.6f}/'
+            f'{residual_metrics["primal"]["ess"]:.6f} | '
+            f'Dual (V/PF/ESS) = '
+            f'{residual_metrics["dual"]["v"]:.6f}/'
+            f'{residual_metrics["dual"]["pf"]:.6f}/'
+            f'{residual_metrics["dual"]["ess"]:.6f} | '
+            f'Recourse change = {objective_change_text} '
+            f'(tol. {objective_tolerance_text}) | '
+            f'Stable cycles = {consecutive_converged_cycles}/'
+            f'{admm_parameters.minimum_consecutive_converged_cycles} | '
+            f'Penalty actions (V/PF/ESS) = '
+            f'{penalty_actions["v"]}/{penalty_actions["pf"]}/{penalty_actions["ess"]}'
+        )
+
+        previous_recourse = recourse
 
         sess_available_capacities = shared_ess_data.get_updated_capacities(esso_model)
         if debug_flag:
@@ -988,12 +1159,12 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
 
         # --------------------------------------------------------------------------------------------------------------
 
+        iter_end = time.time()
+        print(f"[INFO] \t - Iteration {iter}: {iter_end - iter_start:.2f} s")
+
         if convergence:
             print(f"[INFO] \t - ADMM converged in {iter} iteration(s).")
             break
-
-        iter_end = time.time()
-        print(f"[INFO] \t - Iteration {iter}: {iter_end - iter_start:.2f} s")
 
         if planning_problem.params.gc:
             gc.collect()
@@ -1017,6 +1188,10 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         'models': optim_models,
         'consensus_vars': deepcopy(consensus_vars),
         'dual_vars': deepcopy(dual_vars),
+        'candidate_solution': deepcopy(candidate_solution),
+        'last_recourse': previous_recourse,
+        'consecutive_converged_cycles': consecutive_converged_cycles,
+        'admm_diagnostics': admm_diagnostics,
     }
     return convergence, results, optim_models, sensitivities, primal_evolution, total_execution_time, state
 
@@ -1058,7 +1233,20 @@ def update_and_check_convergence(planning_problem, tso_model, dso_models, esso_m
 
     if not check_convergence:
         return False
-    return check_admm_convergence(planning_problem, consensus_vars, admm_parameters, debug_flag=debug_flag)
+    residual_metrics = get_admm_residual_metrics(
+        planning_problem,
+        tso_model,
+        dso_models,
+        esso_model,
+        consensus_vars,
+    )
+    return check_admm_convergence(
+        planning_problem,
+        consensus_vars,
+        residual_metrics,
+        admm_parameters,
+        debug_flag=debug_flag,
+    )
 
 
 def print_debug_info(planning_problem, consensus_vars, print_vmag=False, print_pf=False, print_ess=False):
@@ -1990,25 +2178,6 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
 
             s_base = transmission_network.network[year][day].baseMVA
 
-            rho_v = params.rho['v'][transmission_network.name]
-            rho_pf = params.rho['pf'][transmission_network.name]
-            rho_ess = params.rho['ess'][transmission_network.name]
-            if params.adaptive_penalty:
-                rho_v = pe.value(model[year][day].rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-                rho_pf = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-                rho_ess = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-            if params.previous_iter['ess']['tso']:
-                rho_ess_prev = params.rho_previous_iter['ess'][transmission_network.name]
-                if params.adaptive_penalty:
-                    rho_ess_prev = pe.value(model[year][day].rho_ess_prev) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-
-            # Update Rho parameter
-            model[year][day].rho_v.set_value(rho_v)
-            model[year][day].rho_pf.set_value(rho_pf)
-            model[year][day].rho_ess.set_value(rho_ess)
-            if params.previous_iter['ess']['tso']:
-                model[year][day].rho_ess_prev.set_value(rho_ess_prev)
-
             for dn in model[year][day].active_distribution_networks:
 
                 node_id = transmission_network.active_distribution_network_nodes[dn]
@@ -2046,7 +2215,7 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
     res = transmission_network.optimize(model, from_warm_start=from_warm_start)
     for year in transmission_network.years:
         for day in transmission_network.days:
-            if not res[year][day]:
+            if not _solver_result_succeeded(res[year][day]):
                 print(f'[ERROR] Network {model[year][day].name} did not converge!')
                 # exit(ERROR_NETWORK_OPTIMIZATION)
     return res
@@ -2082,25 +2251,6 @@ def update_distribution_coordination_models_and_solve_sequential(distribution_ne
                 model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(max(sess_estimated_capacity[year]['s_available'], EQUALITY_TOLERANCE) / s_base)
                 model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(max(sess_estimated_capacity[year]['e_available'], EQUALITY_TOLERANCE) / s_base)
 
-                rho_v = params.rho['v'][distribution_network.name]
-                rho_pf = params.rho['pf'][distribution_network.name]
-                rho_ess = params.rho['ess'][distribution_network.name]
-                if params.adaptive_penalty:
-                    rho_v = pe.value(model[year][day].rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-                    rho_pf = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-                    rho_ess = pe.value(model[year][day].rho_ess) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-                if params.previous_iter['ess']['dso']:
-                    rho_ess_prev = params.rho_previous_iter['ess'][distribution_network.name]
-                    if params.adaptive_penalty:
-                        rho_ess_prev = pe.value(model[year][day].rho_ess_prev) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-
-                # Update Rho parameter
-                model[year][day].rho_v.set_value(rho_v)
-                model[year][day].rho_pf.set_value(rho_pf)
-                model[year][day].rho_ess.set_value(rho_ess)
-                if params.previous_iter['ess']['dso']:
-                    model[year][day].rho_ess_prev.set_value(rho_ess_prev)
-
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
                     model[year][day].dual_vmag_req[p].set_value(dual_vmag['current'][node_id][year][day][p] / v_base)
@@ -2126,7 +2276,7 @@ def update_distribution_coordination_models_and_solve_sequential(distribution_ne
         res[node_id] = distribution_network.optimize(model, from_warm_start=from_warm_start)
         for year in distribution_network.years:
             for day in distribution_network.days:
-                if not res[node_id][year][day] != po.SolverStatus.ok:
+                if not _solver_result_succeeded(res[node_id][year][day]):
                     print(f'[WARNING] Network {model[year][day].name} did not converge!')
                     #exit(ERROR_NETWORK_OPTIMIZATION)
     return res
@@ -2168,25 +2318,6 @@ def update_and_solve_dso(node_id, distribution_network, model, vmag_req, dual_vm
             model[year][day].shared_es_s_rated_fixed.set_value(max(sess_estimated_capacity[year]['s_available'], EQUALITY_TOLERANCE) / s_base)
             model[year][day].shared_es_e_rated_fixed.set_value(max(sess_estimated_capacity[year]['e_available'], EQUALITY_TOLERANCE) / s_base)
 
-            rho_v = params.rho['v'][distribution_network.name]
-            rho_pf = params.rho['pf'][distribution_network.name]
-            rho_ess = params.rho['ess'][distribution_network.name]
-            if params.adaptive_penalty:
-                rho_v = pe.value(model[year][day].rho_v) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-                rho_pf = pe.value(model[year][day].rho_pf) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-                rho_ess = pe.value(model[year][day].rho_ess) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-            if params.previous_iter['ess']['dso']:
-                rho_ess_prev = params.rho_previous_iter['ess'][distribution_network.name]
-                if params.adaptive_penalty:
-                    rho_ess_prev = pe.value(model[year][day].rho_ess_prev) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-
-            # Update Rho parameter
-            model[year][day].rho_v.set_value(rho_v)
-            model[year][day].rho_pf.set_value(rho_pf)
-            model[year][day].rho_ess.set_value(rho_ess)
-            if params.previous_iter['ess']['dso']:
-                model[year][day].rho_ess_prev.set_value(rho_ess_prev)
-
             # Update VOLTAGE and POWER FLOW variables at connection point
             for p in model[year][day].periods:
                 fix_or_set(model[year][day].dual_vmag_req[p], dual_vmag['current'][node_id][year][day][p] / v_base)
@@ -2212,7 +2343,7 @@ def update_and_solve_dso(node_id, distribution_network, model, vmag_req, dual_vm
     res = distribution_network.optimize(model, from_warm_start=from_warm_start)
     for year in distribution_network.years:
         for day in distribution_network.days:
-            if not res[year][day] != po.SolverStatus.ok:
+            if not _solver_result_succeeded(res[year][day]):
                 print(f'[WARNING] Network {model[year][day].name} did not converge!')
 
     return (node_id, res, model)
@@ -2226,11 +2357,6 @@ def update_shared_energy_storages_coordination_model_and_solve(planning_problem,
     years = [year for year in planning_problem.years]
 
     for node_id in planning_problem.active_distribution_network_nodes:
-
-        rho_esso = params.rho['ess']['esso']
-        if params.adaptive_penalty:
-            rho_esso = pe.value(models[node_id].rho) * (1 + ADMM_ADAPTIVE_PENALTY_FACTOR)
-        models[node_id].rho.set_value(rho_esso)
 
         for y in models[node_id].years:
             year = years[y]
@@ -2251,141 +2377,254 @@ def update_shared_energy_storages_coordination_model_and_solve(planning_problem,
     # Solve!
     res = shared_ess_data.optimize(models, from_warm_start=from_warm_start)
     for node_id in planning_problem.active_distribution_network_nodes:
-        if not res[node_id]:
+        if not _solver_result_succeeded(res[node_id]):
             print(f'[WARNING] SharedESS operational planning node {node_id} did not converge!')
 
     return res
 
 
-def check_admm_convergence(planning_problem, consensus_vars, params, debug_flag=False):
-    if check_consensus_convergence(planning_problem, consensus_vars, params, debug_flag=debug_flag):
-        if check_stationary_convergence(planning_problem, consensus_vars, params):
-            print(f'[INFO]\t\t - Converged!')
-            return True
-    return False
+def get_admm_residual_metrics(planning_problem, tso_model, dso_models, esso_model, consensus_vars):
+    sums = {
+        'primal': {'v': 0.0, 'pf': 0.0, 'ess': 0.0},
+        'dual': {'v': 0.0, 'pf': 0.0, 'ess': 0.0},
+    }
+    counts = {
+        'primal': {'v': 0, 'pf': 0, 'ess': 0},
+        'dual': {'v': 0, 'pf': 0, 'ess': 0},
+    }
 
-
-def check_consensus_convergence(planning_problem, consensus_vars, params, debug_flag=False):
-
-    sum_rel_abs_error_vmag, sum_rel_abs_error_pf, sum_rel_abs_error_ess = 0.00, 0.00, 0.00
-    num_elems_vmag, num_elems_pf, num_elems_ess = 0, 0, 0
-    for year in planning_problem.years:
-        for day in planning_problem.days:
-            for node_id in planning_problem.active_distribution_network_nodes:
-
-                s_base = planning_problem.transmission_network.network[year][day].baseMVA
-                shared_ess_idx = planning_problem.transmission_network.network[year][day].get_shared_energy_storage_idx(node_id)
-
-                interface_v_base = planning_problem.transmission_network.network[year][day].get_node_base_kv(node_id)
-                interface_transf_rating = planning_problem.distribution_networks[node_id].network[year][day].get_interface_branch_rating()
-                shared_ess_rating = max(abs(planning_problem.transmission_network.network[year][day].shared_energy_storages[shared_ess_idx].s) * s_base, 0.10)
-
-                for p in range(planning_problem.num_instants):
-                    sum_rel_abs_error_vmag += abs(consensus_vars['vmag']['tso']['current'][node_id][year][day][p] - consensus_vars['vmag']['dso']['current'][node_id][year][day][p]) / interface_v_base
-                    num_elems_vmag += 2
-
-                    sum_rel_abs_error_pf += abs(consensus_vars['pf']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['pf']['dso']['current'][node_id][year][day]['p'][p]) / interface_transf_rating
-                    sum_rel_abs_error_pf += abs(consensus_vars['pf']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['pf']['dso']['current'][node_id][year][day]['q'][p]) / interface_transf_rating
-                    num_elems_pf += 4
-
-                    sum_rel_abs_error_ess += abs(consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p]) / shared_ess_rating
-                    sum_rel_abs_error_ess += abs(consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p]) / shared_ess_rating
-                    num_elems_ess += 4
-
-    convergence = True
-    if error_within_limits(sum_rel_abs_error_vmag, num_elems_vmag, params.tol['consensus']['v']):
-        if error_within_limits(sum_rel_abs_error_pf, num_elems_pf, params.tol['consensus']['pf']):
-            if error_within_limits(sum_rel_abs_error_ess, num_elems_ess, params.tol['consensus']['ess']):
-                print('[INFO]\t\t - Consensus constraints ok!')
-            else:
-                print('[INFO]\t\t - Convergence shared ESS consensus constraints failed. {:.3f} > {:.3f}'.format(sum_rel_abs_error_ess, params.tol['consensus']['ess'] * num_elems_ess))
-                convergence = False
-        else:
-            convergence = False
-            print('[INFO]\t\t - Convergence interface PF consensus constraints failed. {:.3f} > {:.3f}'.format(sum_rel_abs_error_pf, params.tol['consensus']['pf'] * num_elems_pf))
-    else:
-        convergence = False
-        print('[INFO]\t\t - Convergence interface Vmag consensus constraints failed. {:.3f} > {:.3f}'.format(sum_rel_abs_error_vmag, params.tol['consensus']['v'] * num_elems_vmag))
-
-    if not convergence:
-        print_debug_info(planning_problem, consensus_vars, print_vmag=debug_flag, print_pf=debug_flag, print_ess=debug_flag)
-
-    return convergence
-
-
-def check_stationary_convergence(planning_problem, consensus_vars, params):
-
-    rho_tso_v = params.rho['v'][planning_problem.transmission_network.name]
-    rho_tso_pf = params.rho['pf'][planning_problem.transmission_network.name]
-    rho_tso_ess = params.rho['ess'][planning_problem.transmission_network.name]
-
-    sum_rel_abs_error_vmag, sum_rel_abs_error_pf, sum_rel_abs_error_ess = 0.00, 0.00, 0.00
-    num_elems_vmag, num_elems_pf, num_elems_ess = 0, 0, 0
-    for node_id in planning_problem.distribution_networks:
-        rho_dso_v = params.rho['v'][planning_problem.distribution_networks[node_id].name]
-        rho_dso_pf = params.rho['pf'][planning_problem.distribution_networks[node_id].name]
-        rho_dso_ess = params.rho['ess'][planning_problem.distribution_networks[node_id].name]
+    for node_id in planning_problem.active_distribution_network_nodes:
+        dso_model = dso_models[node_id]
         for year in planning_problem.years:
             for day in planning_problem.days:
+                network = planning_problem.transmission_network.network[year][day]
+                s_base = network.baseMVA
+                shared_ess_idx = network.get_shared_energy_storage_idx(node_id)
+                interface_v_base = network.get_node_base_kv(node_id)
+                interface_rating = planning_problem.distribution_networks[node_id].network[year][day].get_interface_branch_rating()
+                shared_ess_rating = max(
+                    abs(network.shared_energy_storages[shared_ess_idx].s) * s_base,
+                    0.10,
+                )
 
-                s_base = planning_problem.transmission_network.network[year][day].baseMVA
-                shared_ess_idx = planning_problem.transmission_network.network[year][day].get_shared_energy_storage_idx(node_id)
-
-                interface_v_base = planning_problem.transmission_network.network[year][day].get_node_base_kv(node_id)
-                interface_transf_rating = planning_problem.distribution_networks[node_id].network[year][day].get_interface_branch_rating()
-                shared_ess_rating = max(abs(planning_problem.transmission_network.network[year][day].shared_energy_storages[shared_ess_idx].s) * s_base, 0.10)
+                rho_tso_v = pe.value(tso_model[year][day].rho_v)
+                rho_tso_pf = pe.value(tso_model[year][day].rho_pf)
+                rho_tso_ess = pe.value(tso_model[year][day].rho_ess)
+                rho_dso_v = pe.value(dso_model[year][day].rho_v)
+                rho_dso_pf = pe.value(dso_model[year][day].rho_pf)
+                rho_dso_ess = pe.value(dso_model[year][day].rho_ess)
+                rho_esso_ess = pe.value(esso_model[node_id].rho)
 
                 for p in range(planning_problem.num_instants):
+                    tso_v = consensus_vars['vmag']['tso']['current'][node_id][year][day][p]
+                    dso_v = consensus_vars['vmag']['dso']['current'][node_id][year][day][p]
+                    sums['primal']['v'] += abs(tso_v - dso_v) / interface_v_base
+                    counts['primal']['v'] += 1
 
-                    sum_rel_abs_error_vmag += rho_tso_v * abs(consensus_vars['vmag']['tso']['current'][node_id][year][day][p] - consensus_vars['vmag']['tso']['prev'][node_id][year][day][p]) / interface_v_base
-                    sum_rel_abs_error_vmag += rho_dso_v * abs(consensus_vars['vmag']['dso']['current'][node_id][year][day][p] - consensus_vars['vmag']['dso']['prev'][node_id][year][day][p]) / interface_v_base
-                    num_elems_vmag += 2
+                    for power_type in ('p', 'q'):
+                        tso_pf = consensus_vars['pf']['tso']['current'][node_id][year][day][power_type][p]
+                        dso_pf = consensus_vars['pf']['dso']['current'][node_id][year][day][power_type][p]
+                        sums['primal']['pf'] += abs(tso_pf - dso_pf) / interface_rating
+                        counts['primal']['pf'] += 1
 
-                    sum_rel_abs_error_pf += rho_tso_pf * abs(consensus_vars['pf']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['pf']['tso']['prev'][node_id][year][day]['p'][p]) / interface_transf_rating
-                    sum_rel_abs_error_pf += rho_tso_pf * abs(consensus_vars['pf']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['pf']['tso']['prev'][node_id][year][day]['q'][p]) / interface_transf_rating
-                    sum_rel_abs_error_pf += rho_dso_pf * abs(consensus_vars['pf']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['pf']['dso']['prev'][node_id][year][day]['q'][p]) / interface_transf_rating
-                    sum_rel_abs_error_pf += rho_dso_pf * abs(consensus_vars['pf']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['pf']['dso']['prev'][node_id][year][day]['p'][p]) / interface_transf_rating
-                    num_elems_pf += 4
+                        tso_ess = consensus_vars['ess']['tso']['current'][node_id][year][day][power_type][p]
+                        dso_ess = consensus_vars['ess']['dso']['current'][node_id][year][day][power_type][p]
+                        esso_ess = consensus_vars['ess']['esso']['current'][node_id][year][day][power_type][p]
+                        sums['primal']['ess'] += (
+                            abs(tso_ess - dso_ess)
+                            + abs(dso_ess - esso_ess)
+                            + abs(esso_ess - tso_ess)
+                        ) / shared_ess_rating
+                        counts['primal']['ess'] += 3
 
-                    sum_rel_abs_error_ess += rho_tso_ess * abs(consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['p'][p]) / shared_ess_rating
-                    sum_rel_abs_error_ess += rho_tso_ess * abs(consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['q'][p]) / shared_ess_rating
-                    sum_rel_abs_error_ess += rho_dso_ess * abs(consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p]) / shared_ess_rating
-                    sum_rel_abs_error_ess += rho_dso_ess * abs(consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p]) / shared_ess_rating
-                    num_elems_ess += 4
+                    for agent, rho in (('tso', rho_tso_v), ('dso', rho_dso_v)):
+                        current = consensus_vars['vmag'][agent]['current'][node_id][year][day][p]
+                        previous = consensus_vars['vmag'][agent]['prev'][node_id][year][day][p]
+                        sums['dual']['v'] += rho * abs(current - previous) / interface_v_base
+                        counts['dual']['v'] += 1
 
-                    # sum_rel_abs_error_pf += rho_tso_pf * abs(consensus_vars['pf']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['pf']['tso']['prev'][node_id][year][day]['p'][p]) / interface_transf_rating
-                    # sum_rel_abs_error_pf += rho_tso_pf * abs(consensus_vars['pf']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['pf']['tso']['prev'][node_id][year][day]['q'][p]) / interface_transf_rating
-                    # sum_rel_abs_error_pf += rho_dso_pf * abs(consensus_vars['pf']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['pf']['dso']['prev'][node_id][year][day]['q'][p]) / interface_transf_rating
-                    # sum_rel_abs_error_pf += rho_dso_pf * abs(consensus_vars['pf']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['pf']['dso']['prev'][node_id][year][day]['p'][p]) / interface_transf_rating
-                    # sum_rel_abs_error_pf += rho_tso_ess * abs(consensus_vars['ess']['tso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['p'][p]) / interface_transf_rating
-                    # sum_rel_abs_error_pf += rho_tso_ess * abs(consensus_vars['ess']['tso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['tso']['prev'][node_id][year][day]['q'][p]) / interface_transf_rating
-                    # sum_rel_abs_error_pf += rho_dso_ess * abs(consensus_vars['ess']['dso']['current'][node_id][year][day]['p'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['p'][p]) / interface_transf_rating
-                    # sum_rel_abs_error_pf += rho_dso_ess * abs(consensus_vars['ess']['dso']['current'][node_id][year][day]['q'][p] - consensus_vars['ess']['dso']['prev'][node_id][year][day]['q'][p]) / interface_transf_rating
-                    num_elems_pf += 8
+                    for power_type in ('p', 'q'):
+                        for agent, rho in (('tso', rho_tso_pf), ('dso', rho_dso_pf)):
+                            current = consensus_vars['pf'][agent]['current'][node_id][year][day][power_type][p]
+                            previous = consensus_vars['pf'][agent]['prev'][node_id][year][day][power_type][p]
+                            sums['dual']['pf'] += rho * abs(current - previous) / interface_rating
+                            counts['dual']['pf'] += 1
 
+                        for agent, rho in (
+                                ('tso', rho_tso_ess),
+                                ('dso', rho_dso_ess),
+                                ('esso', rho_esso_ess)):
+                            current = consensus_vars['ess'][agent]['current'][node_id][year][day][power_type][p]
+                            previous = consensus_vars['ess'][agent]['prev'][node_id][year][day][power_type][p]
+                            sums['dual']['ess'] += rho * abs(current - previous) / shared_ess_rating
+                            counts['dual']['ess'] += 1
+
+    return {
+        residual_type: {
+            group: sums[residual_type][group] / max(counts[residual_type][group], 1)
+            for group in ('v', 'pf', 'ess')
+        }
+        for residual_type in ('primal', 'dual')
+    }
+
+
+def check_admm_convergence(planning_problem, consensus_vars, residual_metrics, params, debug_flag=False):
+    consensus_convergence = check_consensus_convergence(residual_metrics, params)
+    stationary_convergence = check_stationary_convergence(residual_metrics, params)
+    if not consensus_convergence and debug_flag:
+        print_debug_info(
+            planning_problem,
+            consensus_vars,
+            print_vmag=True,
+            print_pf=True,
+            print_ess=True,
+        )
+    return consensus_convergence and stationary_convergence
+
+
+def _admm_local_solves_succeeded(planning_problem, results):
+    for year in planning_problem.years:
+        for day in planning_problem.days:
+            if not _solver_result_succeeded(results['tso'][year][day]):
+                return False
+            for node_id in planning_problem.active_distribution_network_nodes:
+                if not _solver_result_succeeded(results['dso'][node_id][year][day]):
+                    return False
+    for node_id in planning_problem.active_distribution_network_nodes:
+        if not _solver_result_succeeded(results['esso'][node_id]):
+            return False
+    return True
+
+
+def _solver_result_succeeded(result):
+    if result is None or result is False or not hasattr(result, 'solver'):
+        return False
+    accepted_termination_conditions = {
+        po.TerminationCondition.optimal,
+        po.TerminationCondition.locallyOptimal,
+        po.TerminationCondition.globallyOptimal,
+    }
+    return (
+        result.solver.status == po.SolverStatus.ok
+        and result.solver.termination_condition in accepted_termination_conditions
+    )
+
+
+def check_consensus_convergence(residual_metrics, params):
     convergence = True
-    if error_within_limits(sum_rel_abs_error_vmag, num_elems_vmag, params.tol['stationarity']['v']):
-        if error_within_limits(sum_rel_abs_error_pf, num_elems_pf, params.tol['stationarity']['pf']):
-            if error_within_limits(sum_rel_abs_error_ess, num_elems_ess, params.tol['stationarity']['ess']):
-                print('[INFO]\t\t - Stationary constraints ok!')
-            else:
-                convergence = False
-                print('[INFO]\t\t - Convergence shared ESS stationary constraints failed. {:.3f} > {:.3f}'.format(sum_rel_abs_error_ess, params.tol['stationarity']['ess'] * num_elems_ess))
-        else:
+    labels = {'v': 'interface Vmag', 'pf': 'interface PF', 'ess': 'shared ESS'}
+    for group in ('v', 'pf', 'ess'):
+        residual = residual_metrics['primal'][group]
+        tolerance = params.tol['consensus'][group]
+        if not _admm_metric_within_tolerance(residual, tolerance):
+            print(
+                f'[INFO]\t\t - {labels[group]} primal residual failed. '
+                f'{residual:.6f} > {tolerance:.6f}'
+            )
             convergence = False
-            print('[INFO]\t\t - Convergence interface PF stationary constraints failed. {:.3f} > {:.3f}'.format(sum_rel_abs_error_pf, params.tol['stationarity']['pf'] * num_elems_pf))
-    else:
-        convergence = False
-        print('[INFO]\t\t - Convergence interface Vmag stationary constraints failed. {:.3f} > {:.3f}'.format(sum_rel_abs_error_vmag, params.tol['stationarity']['v'] * num_elems_vmag))
-
+    if convergence:
+        print('[INFO]\t\t - Primal residuals ok!')
     return convergence
 
 
-def error_within_limits(sum_abs_error, num_elems, tol):
-    if sum_abs_error > tol * num_elems:
-        if not isclose(sum_abs_error, tol * num_elems, rel_tol=ADMM_CONVERGENCE_REL_TOL, abs_tol=ADMM_CONVERGENCE_ABS_TOL):
-            return False
-    return True
+def check_stationary_convergence(residual_metrics, params):
+    convergence = True
+    labels = {'v': 'interface Vmag', 'pf': 'interface PF', 'ess': 'shared ESS'}
+    for group in ('v', 'pf', 'ess'):
+        residual = residual_metrics['dual'][group]
+        tolerance = params.tol['stationarity'][group]
+        if not _admm_metric_within_tolerance(residual, tolerance):
+            print(
+                f'[INFO]\t\t - {labels[group]} dual residual failed. '
+                f'{residual:.6f} > {tolerance:.6f}'
+            )
+            convergence = False
+    if convergence:
+        print('[INFO]\t\t - Dual residuals ok!')
+    return convergence
+
+
+def _admm_metric_within_tolerance(value, tolerance):
+    return value <= tolerance
+
+
+def _get_admm_penalty_summary(tso_model, dso_models, esso_model):
+    penalties = {'v': [], 'pf': [], 'ess': []}
+    for year_models in tso_model.values():
+        for model in year_models.values():
+            penalties['v'].append(pe.value(model.rho_v))
+            penalties['pf'].append(pe.value(model.rho_pf))
+            penalties['ess'].append(pe.value(model.rho_ess))
+    for node_models in dso_models.values():
+        for year_models in node_models.values():
+            for model in year_models.values():
+                penalties['v'].append(pe.value(model.rho_v))
+                penalties['pf'].append(pe.value(model.rho_pf))
+                penalties['ess'].append(pe.value(model.rho_ess))
+    for model in esso_model.values():
+        penalties['ess'].append(pe.value(model.rho))
+    return {
+        group: sum(values) / max(len(values), 1)
+        for group, values in penalties.items()
+    }
+
+
+def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, params,
+                           allow_update=True):
+    before = _get_admm_penalty_summary(tso_model, dso_models, esso_model)
+    actions = dict()
+    factors = dict()
+    update_params = params.penalty_update
+
+    for group in ('v', 'pf', 'ess'):
+        primal = residual_metrics['primal'][group]
+        dual = residual_metrics['dual'][group]
+        group_converged = (
+            _admm_metric_within_tolerance(primal, params.tol['consensus'][group])
+            and _admm_metric_within_tolerance(dual, params.tol['stationarity'][group])
+        )
+        factor = 1.0
+        action = 'held'
+        if not params.adaptive_penalty:
+            action = 'fixed'
+        elif not allow_update:
+            action = 'held after solver failure'
+        elif not group_converged:
+            if primal > update_params['residual_balance_ratio'] * dual:
+                factor = update_params['increase_factor']
+                action = 'increased'
+            elif dual > update_params['residual_balance_ratio'] * primal:
+                factor = 1.0 / update_params['decrease_factor']
+                action = 'decreased'
+        actions[group] = action
+        factors[group] = factor
+
+    if params.adaptive_penalty and allow_update:
+        for year_models in tso_model.values():
+            for model in year_models.values():
+                _scale_admm_penalty(model.rho_v, factors['v'], update_params)
+                _scale_admm_penalty(model.rho_pf, factors['pf'], update_params)
+                _scale_admm_penalty(model.rho_ess, factors['ess'], update_params)
+                if hasattr(model, 'rho_ess_prev'):
+                    _scale_admm_penalty(model.rho_ess_prev, factors['ess'], update_params)
+        for node_models in dso_models.values():
+            for year_models in node_models.values():
+                for model in year_models.values():
+                    _scale_admm_penalty(model.rho_v, factors['v'], update_params)
+                    _scale_admm_penalty(model.rho_pf, factors['pf'], update_params)
+                    _scale_admm_penalty(model.rho_ess, factors['ess'], update_params)
+                    if hasattr(model, 'rho_ess_prev'):
+                        _scale_admm_penalty(model.rho_ess_prev, factors['ess'], update_params)
+        for model in esso_model.values():
+            _scale_admm_penalty(model.rho, factors['ess'], update_params)
+
+    after = _get_admm_penalty_summary(tso_model, dso_models, esso_model)
+    return actions, before, after
+
+
+def _scale_admm_penalty(penalty, factor, params):
+    value = pe.value(penalty) * factor
+    penalty.set_value(min(max(value, params['min']), params['max']))
 
 
 def _update_interface_power_flow_variables(planning_problem, tso_model, dso_models, interface_vars, dual_vars, results, params, update_tn=True, update_dns=True):
@@ -2565,10 +2804,11 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                         dual_vars['tso']['current'][node_id][year][day]['p'][p] += rho_ess_tso * error_p_tso_dso
                         dual_vars['tso']['current'][node_id][year][day]['q'][p] += rho_ess_tso * error_q_tso_dso
                         if params.previous_iter['ess']['tso']:
+                            rho_ess_tso_prev = pe.value(tso_model[year][day].rho_ess_prev)
                             error_p_tso_prev = shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['tso']['prev'][node_id][year][day]['p'][p]
                             error_q_tso_prev = shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['tso']['prev'][node_id][year][day]['q'][p]
-                            dual_vars['tso']['prev'][node_id][year][day]['p'][p] += rho_ess_tso * error_p_tso_prev
-                            dual_vars['tso']['prev'][node_id][year][day]['q'][p] += rho_ess_tso * error_q_tso_prev
+                            dual_vars['tso']['prev'][node_id][year][day]['p'][p] += rho_ess_tso_prev * error_p_tso_prev
+                            dual_vars['tso']['prev'][node_id][year][day]['q'][p] += rho_ess_tso_prev * error_q_tso_prev
 
                     if update_dns:
                         rho_ess_dso = pe.value(dso_models[node_id][year][day].rho_ess)
@@ -2577,10 +2817,11 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                         dual_vars['dso']['current'][node_id][year][day]['p'][p] += rho_ess_dso * error_p_dso_esso
                         dual_vars['dso']['current'][node_id][year][day]['q'][p] += rho_ess_dso * error_q_dso_esso
                         if params.previous_iter['ess']['dso']:
+                            rho_ess_dso_prev = pe.value(dso_models[node_id][year][day].rho_ess_prev)
                             error_p_dso_prev = shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['dso']['prev'][node_id][year][day]['p'][p]
                             error_q_dso_prev = shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['dso']['prev'][node_id][year][day]['q'][p]
-                            dual_vars['dso']['prev'][node_id][year][day]['p'][p] += rho_ess_dso * error_p_dso_prev
-                            dual_vars['dso']['prev'][node_id][year][day]['q'][p] += rho_ess_dso * error_q_dso_prev
+                            dual_vars['dso']['prev'][node_id][year][day]['p'][p] += rho_ess_dso_prev * error_p_dso_prev
+                            dual_vars['dso']['prev'][node_id][year][day]['q'][p] += rho_ess_dso_prev * error_q_dso_prev
 
                     if update_sess:
                         rho_ess_sess = pe.value(sess_model[node_id].rho)
@@ -3130,6 +3371,9 @@ def _write_planning_results_to_excel(planning_problem, results, bound_evolution=
 
     if bound_evolution:
         _write_bound_evolution_to_excel(wb, bound_evolution)
+        admm_diagnostics = bound_evolution.get('admm_diagnostics', [])
+        if admm_diagnostics:
+            _write_admm_diagnostics_to_excel(wb, admm_diagnostics)
         finite_difference_results = bound_evolution.get('finite_difference', [])
         if finite_difference_results:
             _write_finite_difference_validation_to_excel(wb, finite_difference_results)
@@ -3261,10 +3505,63 @@ def _write_finite_difference_validation_to_excel(workbook, validation_results):
             sheet.cell(row=row_idx, column=column_idx).number_format = number_format
 
 
+def _write_admm_diagnostics_to_excel(workbook, diagnostics):
+    sheet = workbook.create_sheet('ADMM Convergence')
+    columns = [
+        ('outer_iteration', 'Planning Iteration', '0'),
+        ('cycle', 'ADMM Cycle', '0'),
+        ('local_solves_ok', 'Local Solves Successful', 'General'),
+        ('primal_v', 'Primal V Residual', '0.000000'),
+        ('primal_v_tolerance', 'Primal V Tolerance', '0.000000'),
+        ('primal_pf', 'Primal PF Residual', '0.000000'),
+        ('primal_pf_tolerance', 'Primal PF Tolerance', '0.000000'),
+        ('primal_ess', 'Primal ESS Residual', '0.000000'),
+        ('primal_ess_tolerance', 'Primal ESS Tolerance', '0.000000'),
+        ('dual_v', 'Dual V Residual', '0.000000'),
+        ('dual_v_tolerance', 'Dual V Tolerance', '0.000000'),
+        ('dual_pf', 'Dual PF Residual', '0.000000'),
+        ('dual_pf_tolerance', 'Dual PF Tolerance', '0.000000'),
+        ('dual_ess', 'Dual ESS Residual', '0.000000'),
+        ('dual_ess_tolerance', 'Dual ESS Tolerance', '0.000000'),
+        ('recourse', 'Economic Recourse, [NPV m.u.]', '0.000000'),
+        ('objective_change_abs', 'Absolute Recourse Change, [NPV m.u.]', '0.000000'),
+        ('objective_change_rel', 'Relative Recourse Change, [%]', '0.00%'),
+        ('objective_tolerance', 'Applied Recourse Tolerance, [NPV m.u.]', '0.000000'),
+        ('objective_absolute_tolerance', 'Absolute Recourse Tolerance, [NPV m.u.]', '0.000000'),
+        ('objective_relative_tolerance', 'Relative Recourse Tolerance, [%]', '0.00%'),
+        ('residual_convergence', 'Residuals Converged', 'General'),
+        ('objective_convergence', 'Recourse Converged', 'General'),
+        ('cycle_convergence', 'Cycle Converged', 'General'),
+        ('consecutive_converged_cycles', 'Consecutive Converged Cycles', '0'),
+        ('required_consecutive_cycles', 'Required Consecutive Cycles', '0'),
+        ('rho_v_before', 'Mean Rho V Before', '0.000000'),
+        ('rho_v_after', 'Mean Rho V After', '0.000000'),
+        ('rho_v_action', 'Rho V Action', 'General'),
+        ('rho_pf_before', 'Mean Rho PF Before', '0.000000'),
+        ('rho_pf_after', 'Mean Rho PF After', '0.000000'),
+        ('rho_pf_action', 'Rho PF Action', 'General'),
+        ('rho_ess_before', 'Mean Rho ESS Before', '0.000000'),
+        ('rho_ess_after', 'Mean Rho ESS After', '0.000000'),
+        ('rho_ess_action', 'Rho ESS Action', 'General'),
+    ]
+
+    for column_idx, (_, label, _) in enumerate(columns, start=1):
+        sheet.cell(row=1, column=column_idx).value = label
+    for row_idx, diagnostic in enumerate(diagnostics, start=2):
+        for column_idx, (key, _, number_format) in enumerate(columns, start=1):
+            value = diagnostic.get(key)
+            if value is None:
+                continue
+            sheet.cell(row=row_idx, column=column_idx).value = value
+            sheet.cell(row=row_idx, column=column_idx).number_format = number_format
+
+
 # ======================================================================================================================
 #  RESULTS OPERATIONAL PLANNING - write functions
 # ======================================================================================================================
-def _write_operational_planning_results_to_excel(planning_problem, results, primal_evolution=list(), shared_ess_capacity=dict(), filename='operation_planning', execution_time=float()):
+def _write_operational_planning_results_to_excel(planning_problem, results, primal_evolution=list(),
+                                                 admm_diagnostics=list(), shared_ess_capacity=dict(),
+                                                 filename='operation_planning', execution_time=float()):
 
     wb = Workbook()
 
@@ -3277,6 +3574,8 @@ def _write_operational_planning_results_to_excel(planning_problem, results, prim
 
     if primal_evolution:
         _write_objective_function_evolution_to_excel(wb, primal_evolution)
+    if admm_diagnostics:
+        _write_admm_diagnostics_to_excel(wb, admm_diagnostics)
 
     # Interface Power Flow
     _write_interface_results_to_excel(planning_problem, wb, results['interface'])
