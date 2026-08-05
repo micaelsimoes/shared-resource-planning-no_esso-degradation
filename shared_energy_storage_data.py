@@ -30,6 +30,7 @@ class SharedEnergyStorageData:
         self.cost_investment = dict()
         self.params = SharedEnergyStorageParameters()
         self.active_distribution_network_nodes = list()
+        self.solver_recovery_diagnostics = list()
 
     def build_master_problem(self):
         return _build_master_problem(self)
@@ -49,7 +50,13 @@ class SharedEnergyStorageData:
         results = dict()
         for node_id in self.active_distribution_network_nodes:
             print(f'[INFO] \t\t\t - Node {node_id}...')
-            results[node_id] = _optimize(models[node_id], self.params.solver_params, from_warm_start=from_warm_start, node_id=node_id)
+            results[node_id] = _optimize(
+                models[node_id],
+                self.params.solver_params,
+                from_warm_start=from_warm_start,
+                node_id=node_id,
+                diagnostic_sink=self.solver_recovery_diagnostics,
+            )
         return results
 
     def get_primal_value(self, models):
@@ -533,24 +540,31 @@ def _build_subproblem(shared_ess_data, node_id):
     return model
 
 
-def _optimize(model, params, from_warm_start=False, node_id=None):
-
+def _create_solver(model, params, from_warm_start=False, node_id=None,
+                   option_overrides=None, log_suffix=None):
     solver = po.SolverFactory(params.solver, executable=params.solver_path)
-    solver_log_path = None
+    options = dict()
     if params.verbose and params.solver.lower() == 'ipopt':
-        solver.options['print_level'] = 6
-
+        options['print_level'] = 6
     if params.options:
-        for key, value in params.options.items():
-            solver.options[key] = value
+        options.update(params.options)
+    if option_overrides:
+        options.update(option_overrides)
 
+    solver_log_path = None
     if params.solver.lower() == 'ipopt':
-        if 'output_file' not in solver.options:
-            solver.options['output_file'] = (
+        if 'output_file' not in options:
+            options['output_file'] = (
                 f'optim_log_node_{node_id}.txt' if node_id is not None else 'optim_log.txt'
             )
-        solver.options['file_append'] = 'yes'
-        solver_log_path = os.path.abspath(solver.options['output_file'])
+        if log_suffix:
+            path_stem, path_extension = os.path.splitext(options['output_file'])
+            options['output_file'] = f'{path_stem}_{log_suffix}{path_extension}'
+        options['file_append'] = 'yes'
+        solver_log_path = os.path.abspath(options['output_file'])
+
+    for key, value in options.items():
+        solver.options[key] = value
 
     if from_warm_start and params.solver.lower() == 'ipopt':
         model.ipopt_zL_in.update(model.ipopt_zL_out)
@@ -562,12 +576,77 @@ def _optimize(model, params, from_warm_start=False, node_id=None):
         solver.options['warm_start_slack_bound_push'] = 1e-9
         solver.options['warm_start_mult_bound_push'] = 1e-9
 
-    solve_context = f'ESS node={node_id}' if node_id is not None else 'master problem'
+    return solver, solver_log_path
+
+
+def _run_solver_attempt(model, params, solve_context, from_warm_start=False,
+                        node_id=None, option_overrides=None, log_suffix=None):
+    solver, solver_log_path = _create_solver(
+        model,
+        params,
+        from_warm_start=from_warm_start,
+        node_id=node_id,
+        option_overrides=option_overrides,
+        log_suffix=log_suffix,
+    )
     result = None
     try:
         result = solver.solve(model, tee=params.verbose, load_solutions=False)
     except (ValueError, RuntimeError) as error:
         print(f'[WARNING] Shared ESS solver execution failed for {solve_context}: {error}')
+    return result, solver_log_path
+
+
+def _is_recoverable_shared_ess_failure(result, params, node_id):
+    if node_id is None or params.solver.lower() != 'ipopt' or result is None:
+        return False
+    recovery_options = getattr(params, 'recovery_options', None)
+    if not recovery_options or not hasattr(result, 'solver'):
+        return False
+    return result.solver.termination_condition == po.TerminationCondition.internalSolverError
+
+
+def _format_solver_options(options):
+    return ', '.join(f'{key}={value}' for key, value in sorted(options.items()))
+
+
+def _optimize(model, params, from_warm_start=False, node_id=None, diagnostic_sink=None):
+
+    solve_context = f'ESS node={node_id}' if node_id is not None else 'master problem'
+    primary_result, primary_log_path = _run_solver_attempt(
+        model,
+        params,
+        solve_context,
+        from_warm_start=from_warm_start,
+        node_id=node_id,
+    )
+    result = primary_result
+    recovery_result = None
+    recovery_log_path = None
+    recovery_attempted = _is_recoverable_shared_ess_failure(primary_result, params, node_id)
+
+    if recovery_attempted:
+        recovery_options = params.recovery_options
+        print(
+            f'[WARNING] Shared ESS primary solve did not converge for {solve_context}: '
+            f'{solver_result_summary(primary_result)} | warm_start={from_warm_start}'
+        )
+        if primary_log_path:
+            print(f'[WARNING] IPOPT primary log for {solve_context}: {primary_log_path}')
+        print(
+            f'[INFO] Retrying Shared ESS solve once for {solve_context} with '
+            f'{_format_solver_options(recovery_options)}.'
+        )
+        recovery_result, recovery_log_path = _run_solver_attempt(
+            model,
+            params,
+            solve_context,
+            from_warm_start=from_warm_start,
+            node_id=node_id,
+            option_overrides=recovery_options,
+            log_suffix='recovery',
+        )
+        result = recovery_result if recovery_result is not None else primary_result
 
     if solver_result_succeeded(result):
         try:
@@ -575,13 +654,31 @@ def _optimize(model, params, from_warm_start=False, node_id=None):
         except ValueError as error:
             print(f'[WARNING] Shared ESS solution could not be loaded for {solve_context}: {error}')
             result = None
+        if recovery_attempted and result is not None:
+            print(f'[INFO] Shared ESS recovery solve succeeded for {solve_context}.')
     else:
+        attempt_label = 'recovery' if recovery_attempted else 'solver'
+        failed_attempt_result = recovery_result if recovery_attempted else result
         print(
-            f'[WARNING] Shared ESS solver did not converge for {solve_context}: '
-            f'{solver_result_summary(result)} | warm_start={from_warm_start}'
+            f'[WARNING] Shared ESS {attempt_label} did not converge for {solve_context}: '
+            f'{solver_result_summary(failed_attempt_result)} | warm_start={from_warm_start}'
         )
-        if solver_log_path:
-            print(f'[WARNING] IPOPT log for {solve_context}: {solver_log_path}')
+        final_log_path = recovery_log_path if recovery_attempted else primary_log_path
+        if final_log_path:
+            print(f'[WARNING] IPOPT {attempt_label} log for {solve_context}: {final_log_path}')
+
+    if recovery_attempted and diagnostic_sink is not None:
+        diagnostic_sink.append({
+            'subsystem': 'esso',
+            'node_id': node_id,
+            'warm_start': from_warm_start,
+            'primary_result': solver_result_summary(primary_result),
+            'recovery_result': solver_result_summary(recovery_result),
+            'recovery_options': _format_solver_options(params.recovery_options),
+            'recovery_succeeded': solver_result_succeeded(result),
+            'primary_log': primary_log_path,
+            'recovery_log': recovery_log_path,
+        })
 
     return result
 

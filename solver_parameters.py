@@ -15,6 +15,7 @@ class SolverParameters:
         self.solver = default_solver
         self.verbose = False
         self.options = None
+        self.recovery_options = None
         self.solver_path = next((os.getenv(var) for var in path_env_vars if os.getenv(var)), None)
 
         if require_path and not self.solver_path:
@@ -30,3 +31,4 @@ def _read_solver_parameters(parameters, solver_data):
     parameters.solver = solver_data['name']
     parameters.verbose = solver_data['verbose']
     parameters.options = solver_data['options']
+    parameters.recovery_options = solver_data.get('recovery_options')

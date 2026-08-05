@@ -82,6 +82,7 @@ class SharedResourcesPlanning:
                     filename=filename,
                     primal_evolution=primal_evolution,
                     admm_diagnostics=state.get('admm_diagnostics', []),
+                    solver_recovery_diagnostics=state.get('solver_recovery_diagnostics', []),
                     execution_time=execution_time,
                 )
             elif print_results:
@@ -208,6 +209,7 @@ class SharedResourcesPlanning:
 
     def write_operational_planning_results_to_excel(self, optimization_models, results, filename=str(),
                                                      primal_evolution=list(), admm_diagnostics=list(),
+                                                     solver_recovery_diagnostics=list(),
                                                      execution_time=float()):
         if not filename:
             filename = 'operational_planning_results'
@@ -218,6 +220,7 @@ class SharedResourcesPlanning:
             processed_results,
             primal_evolution=primal_evolution,
             admm_diagnostics=admm_diagnostics,
+            solver_recovery_diagnostics=solver_recovery_diagnostics,
             shared_ess_capacity=shared_ess_capacity,
             filename=filename,
             execution_time=execution_time,
@@ -279,6 +282,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
     gap_rel_evolution = list()
     finite_difference_results = list()
     admm_diagnostics = list()
+    solver_recovery_diagnostics = list()
     operational_state = None
     print_memory_usage("Start of planning problem", debug_flag)
 
@@ -315,6 +319,10 @@ def _run_planning_problem(planning_problem, debug_flag=False):
             diagnostic_with_outer_iteration = dict(diagnostic)
             diagnostic_with_outer_iteration['outer_iteration'] = iteration
             admm_diagnostics.append(diagnostic_with_outer_iteration)
+        for diagnostic in operational_state.get('solver_recovery_diagnostics', []):
+            diagnostic_with_outer_iteration = dict(diagnostic)
+            diagnostic_with_outer_iteration['outer_iteration'] = iteration
+            solver_recovery_diagnostics.append(diagnostic_with_outer_iteration)
 
         initialization_failed = operational_state.get('initialization_failed', False)
         investment_cost = pe.value(master_problem_model.investment_cost)
@@ -459,6 +467,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         'gap_rel': gap_rel_evolution,
         'finite_difference': finite_difference_results,
         'admm_diagnostics': admm_diagnostics,
+        'solver_recovery_diagnostics': solver_recovery_diagnostics,
     }
     if operational_state and operational_state.get('initialization_failed', False):
         print('[WARNING] Planning results were not written because the final operational initialization failed.')
@@ -895,6 +904,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
     shared_ess_data = planning_problem.shared_ess_data
     admm_parameters = planning_problem.params.admm
     results = {'tso': dict(), 'dso': dict(), 'esso': dict()}
+    shared_ess_data.solver_recovery_diagnostics = list()
 
     # ------------------------------------------------------------------------------------------------------------------
     # 0. Initialization
@@ -954,6 +964,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
                 'last_recourse': None,
                 'consecutive_converged_cycles': 0,
                 'admm_diagnostics': admm_diagnostics,
+                'solver_recovery_diagnostics': deepcopy(shared_ess_data.solver_recovery_diagnostics),
                 'initialization_failed': True,
             }
             return (
@@ -1251,6 +1262,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         'last_recourse': previous_recourse,
         'consecutive_converged_cycles': consecutive_converged_cycles,
         'admm_diagnostics': admm_diagnostics,
+        'solver_recovery_diagnostics': deepcopy(shared_ess_data.solver_recovery_diagnostics),
         'initialization_failed': False,
     }
     return convergence, results, optim_models, sensitivities, primal_evolution, total_execution_time, state
@@ -3445,6 +3457,9 @@ def _write_planning_results_to_excel(planning_problem, results, bound_evolution=
         admm_diagnostics = bound_evolution.get('admm_diagnostics', [])
         if admm_diagnostics:
             _write_admm_diagnostics_to_excel(wb, admm_diagnostics)
+        solver_recovery_diagnostics = bound_evolution.get('solver_recovery_diagnostics', [])
+        if solver_recovery_diagnostics:
+            _write_solver_recovery_diagnostics_to_excel(wb, solver_recovery_diagnostics)
         finite_difference_results = bound_evolution.get('finite_difference', [])
         if finite_difference_results:
             _write_finite_difference_validation_to_excel(wb, finite_difference_results)
@@ -3633,11 +3648,38 @@ def _write_admm_diagnostics_to_excel(workbook, diagnostics):
             sheet.cell(row=row_idx, column=column_idx).number_format = number_format
 
 
+def _write_solver_recovery_diagnostics_to_excel(workbook, diagnostics):
+    sheet = workbook.create_sheet('Solver Recovery')
+    columns = [
+        ('outer_iteration', 'Planning Iteration', '0'),
+        ('subsystem', 'Subsystem', 'General'),
+        ('node_id', 'Node ID', '0'),
+        ('warm_start', 'Warm Start', 'General'),
+        ('primary_result', 'Primary Result', 'General'),
+        ('recovery_options', 'Recovery Options', 'General'),
+        ('recovery_result', 'Recovery Result', 'General'),
+        ('recovery_succeeded', 'Recovery Successful', 'General'),
+        ('primary_log', 'Primary Log', 'General'),
+        ('recovery_log', 'Recovery Log', 'General'),
+    ]
+
+    for column_idx, (_, label, _) in enumerate(columns, start=1):
+        sheet.cell(row=1, column=column_idx).value = label
+    for row_idx, diagnostic in enumerate(diagnostics, start=2):
+        for column_idx, (key, _, number_format) in enumerate(columns, start=1):
+            value = diagnostic.get(key)
+            if value is None:
+                continue
+            sheet.cell(row=row_idx, column=column_idx).value = value
+            sheet.cell(row=row_idx, column=column_idx).number_format = number_format
+
+
 # ======================================================================================================================
 #  RESULTS OPERATIONAL PLANNING - write functions
 # ======================================================================================================================
 def _write_operational_planning_results_to_excel(planning_problem, results, primal_evolution=list(),
                                                  admm_diagnostics=list(), shared_ess_capacity=dict(),
+                                                 solver_recovery_diagnostics=list(),
                                                  filename='operation_planning', execution_time=float()):
 
     wb = Workbook()
@@ -3653,6 +3695,8 @@ def _write_operational_planning_results_to_excel(planning_problem, results, prim
         _write_objective_function_evolution_to_excel(wb, primal_evolution)
     if admm_diagnostics:
         _write_admm_diagnostics_to_excel(wb, admm_diagnostics)
+    if solver_recovery_diagnostics:
+        _write_solver_recovery_diagnostics_to_excel(wb, solver_recovery_diagnostics)
 
     # Interface Power Flow
     _write_interface_results_to_excel(planning_problem, wb, results['interface'])
