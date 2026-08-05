@@ -5,8 +5,8 @@
 		"tol_rel": 10e-2,
 		"num_max_iters": 100,
 		"finite_difference": {
-			"enabled": true,
-			"validate_after_heuristic_stop": true,
+			"enabled": false,
+			"validate_after_heuristic_stop": false,
 			"directions": ["power_only", "energy_only", "fixed_ratio"],
 			"relative_step_sizes": [1e-2, 5e-3],
 			"node_id": null,
@@ -57,7 +57,7 @@
 				"esso": 1.00
 			}
 		},
-		"previous_iteration": {"ess": {"tso": true, "dso": true}},
+		"previous_iteration": {"ess": {"tso": false, "dso": false}},
 		"rho_previous_iter": {
 			"ess": {
 				"case9": 0.10,
