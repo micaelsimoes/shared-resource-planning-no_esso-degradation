@@ -73,7 +73,7 @@ class SharedResourcesPlanning:
                 initial_state=initial_state,
                 debug_flag=debug_flag,
             )
-            if print_results:
+            if print_results and not state.get('initialization_failed', False):
                 if not filename:
                     filename = f'{self.name}_distributed'
                 self.write_operational_planning_results_to_excel(
@@ -84,6 +84,8 @@ class SharedResourcesPlanning:
                     admm_diagnostics=state.get('admm_diagnostics', []),
                     execution_time=execution_time,
                 )
+            elif print_results:
+                print('[WARNING] Operational results were not written because initialization failed.')
             output = convergence, results, models, sensitivities, primal_evolution
             if return_state:
                 return (*output, state)
@@ -314,11 +316,18 @@ def _run_planning_problem(planning_problem, debug_flag=False):
             diagnostic_with_outer_iteration['outer_iteration'] = iteration
             admm_diagnostics.append(diagnostic_with_outer_iteration)
 
+        initialization_failed = operational_state.get('initialization_failed', False)
         investment_cost = pe.value(master_problem_model.investment_cost)
         alpha = pe.value(master_problem_model.alpha)
         master_estimate = pe.value(master_problem_model.objective)
-        esso_violation = shared_ess_data.get_feasibility_violation(lower_level_models['esso'])
-        candidate_is_feasible = operational_convergence and esso_violation <= BENDERS_FEASIBILITY_TOLERANCE
+        esso_violation = None
+        if not initialization_failed:
+            esso_violation = shared_ess_data.get_feasibility_violation(lower_level_models['esso'])
+        candidate_is_feasible = (
+            operational_convergence
+            and esso_violation is not None
+            and esso_violation <= BENDERS_FEASIBILITY_TOLERANCE
+        )
 
         operational_recourse = None
         candidate_total = None
@@ -350,11 +359,12 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         candidate_total_text = f'{candidate_total:.2f}' if candidate_total is not None else 'N/A'
         upper_bound_text = f'{upper_bound:.2f}' if isfinite(upper_bound) else 'N/A'
         gap_text = f'{gap_signed / max(abs(upper_bound), 1e-6) * 100:.2f}%' if gap_signed is not None else 'N/A'
+        esso_violation_text = f'{esso_violation:.6f}' if esso_violation is not None else 'N/A'
         print(
             f"[INFO] Iteration #{iteration} | Master = {master_estimate:.2f} | Alpha = {alpha:.2f} | "
             f"Investment = {investment_cost:.2f} | Recourse = {recourse_text} | "
             f"Candidate = {candidate_total_text} | UB = {upper_bound_text} | Gap = {gap_text} | "
-            f"ESSO violation = {esso_violation:.6f}"
+            f"ESSO violation = {esso_violation_text}"
         )
 
         if planning_problem.params.gc:
@@ -362,7 +372,13 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         print_memory_usage(f"After subproblem (iter {iteration})", debug_flag)
 
         if not operational_convergence:
-            print("[WARNING] ADMM did not converge. No formal Benders feasibility cut is available; stopping the outer loop.")
+            if initialization_failed:
+                print(
+                    '[WARNING] Operational initialization failed. No ADMM cycle or formal Benders '
+                    'feasibility cut is available; stopping the outer loop.'
+                )
+            else:
+                print("[WARNING] ADMM did not converge. No formal Benders feasibility cut is available; stopping the outer loop.")
             break
         if esso_violation > BENDERS_FEASIBILITY_TOLERANCE:
             print(
@@ -444,7 +460,10 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         'finite_difference': finite_difference_results,
         'admm_diagnostics': admm_diagnostics,
     }
-    planning_problem.write_planning_results_to_excel(master_problem_model, lower_level_models, operational_results, bound_evolution, execution_time=total_execution_time)
+    if operational_state and operational_state.get('initialization_failed', False):
+        print('[WARNING] Planning results were not written because the final operational initialization failed.')
+    else:
+        planning_problem.write_planning_results_to_excel(master_problem_model, lower_level_models, operational_results, bound_evolution, execution_time=total_execution_time)
 
 
 def _get_operational_recourse_value(planning_problem, models):
@@ -883,6 +902,9 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
     print('[INFO]\t - Initializing...')
 
     start = time.time()
+    if initial_state is not None and initial_state.get('initialization_failed', False):
+        print('[WARNING] Ignoring a previously failed operational state and rebuilding initialization.')
+        initial_state = None
     from_warm_start = initial_state is not None
     primal_evolution = list()
     admm_diagnostics = list()
@@ -914,6 +936,35 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         esso_model, results['esso'] = create_shared_energy_storage_model(
             shared_ess_data, consensus_vars, candidate_solution['investment']
         )
+
+        if not _admm_local_solves_succeeded(planning_problem, results):
+            print(
+                '[WARNING] Operational initialization failed because at least one local problem '
+                'did not solve successfully. ADMM will not be started.'
+            )
+            end = time.time()
+            total_execution_time = end - start
+            print('[INFO] \t - Execution time: {:.2f} s'.format(total_execution_time))
+            optim_models = {'tso': tso_model, 'dso': dso_models, 'esso': esso_model}
+            state = {
+                'models': optim_models,
+                'consensus_vars': deepcopy(consensus_vars),
+                'dual_vars': deepcopy(dual_vars),
+                'candidate_solution': deepcopy(candidate_solution),
+                'last_recourse': None,
+                'consecutive_converged_cycles': 0,
+                'admm_diagnostics': admm_diagnostics,
+                'initialization_failed': True,
+            }
+            return (
+                False,
+                results,
+                optim_models,
+                None,
+                primal_evolution,
+                total_execution_time,
+                state,
+            )
 
         update_distribution_models_to_admm(planning_problem, dso_models, admm_parameters)
         update_transmission_model_to_admm(planning_problem, tso_model, admm_parameters)
@@ -1198,6 +1249,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         'last_recourse': previous_recourse,
         'consecutive_converged_cycles': consecutive_converged_cycles,
         'admm_diagnostics': admm_diagnostics,
+        'initialization_failed': False,
     }
     return convergence, results, optim_models, sensitivities, primal_evolution, total_execution_time, state
 
@@ -1372,6 +1424,8 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
     # Get initial interface and shared ESS values
     for year in transmission_network.years:
         for day in transmission_network.days:
+            if not _solver_result_succeeded(results[year][day]):
+                continue
             s_base = transmission_network.network[year][day].baseMVA
             for dn in tso_model[year][day].active_distribution_networks:
                 adn_node_id = transmission_network.active_distribution_network_nodes[dn]
@@ -1454,6 +1508,8 @@ def create_distribution_networks_models_sequential(distribution_networks, consen
         # Get initial interface and shared ESS values
         for year in distribution_network.years:
             for day in distribution_network.days:
+                if not _solver_result_succeeded(results[node_id][year][day]):
+                    continue
                 ref_node_id = distribution_network.network[year][day].get_reference_node_id()
                 s_base = distribution_network.network[year][day].baseMVA
                 v_base = distribution_network.network[year][day].get_node_base_kv(ref_node_id)
@@ -1500,6 +1556,8 @@ def create_distribution_networks_models_parallel(distribution_networks, consensu
             # Get initial interface and shared ESS values
             for year in distribution_networks[node_id].years:
                 for day in distribution_networks[node_id].days:
+                    if not _solver_result_succeeded(results[node_id][year][day]):
+                        continue
                     ref_node_id = distribution_networks[node_id].network[year][day].get_reference_node_id()
                     s_base = distribution_networks[node_id].network[year][day].baseMVA
                     v_base = distribution_networks[node_id].network[year][day].get_node_base_kv(ref_node_id)
@@ -1599,6 +1657,8 @@ def create_shared_energy_storage_model(shared_ess_data, consensus_vars, candidat
 
     # Get initial shared ESS values
     for node_id in shared_ess_data.active_distribution_network_nodes:
+        if not _solver_result_succeeded(results[node_id]):
+            continue
         for y in esso_model[node_id].years:
             year = years[y]
             for d in esso_model[node_id].days:
@@ -2653,7 +2713,7 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                 for day in planning_problem.days:
                     v_base = transmission_network.network[year][day].get_node_base_kv(node_id)
                     s_base = transmission_network.network[year][day].baseMVA
-                    if results['tso'][year][day] and results['tso'][year][day].solver.status == po.SolverStatus.ok:
+                    if _solver_result_succeeded(results['tso'][year][day]):
                         for p in tso_model[year][day].periods:
                             interface_vars['vmag']['tso']['prev'][node_id][year][day][p] = copy(interface_vars['vmag']['tso']['current'][node_id][year][day][p])
                             interface_vars['pf']['tso']['prev'][node_id][year][day]['p'][p] = copy(interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p])
@@ -2665,11 +2725,6 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                             interface_vars['vmag']['tso']['current'][node_id][year][day][p] = vmag_req
                             interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p] = p_req
                             interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p] = q_req
-                    else:
-                        for p in tso_model[year][day].periods:
-                            interface_vars['vmag']['tso']['prev'][node_id][year][day][p] = copy(interface_vars['vmag']['tso']['current'][node_id][year][day][p])
-                            interface_vars['pf']['tso']['prev'][node_id][year][day]['p'][p] = copy(interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p])
-                            interface_vars['pf']['tso']['prev'][node_id][year][day]['q'][p] = copy(interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p])
 
     # Distribution Network - Update PF at the TN-DN interface
     if update_dns:
@@ -2681,7 +2736,7 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                     ref_node_id = distribution_network.network[year][day].get_reference_node_id()
                     v_base = distribution_network.network[year][day].get_node_base_kv(ref_node_id)
                     s_base = distribution_network.network[year][day].baseMVA
-                    if results['dso'][node_id][year][day] and results['dso'][node_id][year][day].solver.status == po.SolverStatus.ok:
+                    if _solver_result_succeeded(results['dso'][node_id][year][day]):
                         for p in dso_model[year][day].periods:
                             interface_vars['vmag']['dso']['prev'][node_id][year][day][p] = copy(interface_vars['vmag']['dso']['current'][node_id][year][day][p])
                             interface_vars['pf']['dso']['prev'][node_id][year][day]['p'][p] = copy(interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p])
@@ -2693,19 +2748,22 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                             interface_vars['vmag']['dso']['current'][node_id][year][day][p] = vmag_req
                             interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p] = p_req
                             interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p] = q_req
-                    else:
-                        for p in dso_model[year][day].periods:
-                            interface_vars['vmag']['dso']['prev'][node_id][year][day][p] = copy(interface_vars['vmag']['dso']['current'][node_id][year][day][p])
-                            interface_vars['pf']['dso']['prev'][node_id][year][day]['p'][p] = copy(interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p])
-                            interface_vars['pf']['dso']['prev'][node_id][year][day]['q'][p] = copy(interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p])
 
     # Update Lambdas
     for node_id in distribution_networks:
         for year in planning_problem.years:
             for day in planning_problem.days:
+                tso_succeeded = (
+                    _solver_result_succeeded(results['tso'][year][day])
+                    if update_tn else False
+                )
+                dso_succeeded = (
+                    _solver_result_succeeded(results['dso'][node_id][year][day])
+                    if update_tn or update_dns else False
+                )
                 for p in range(planning_problem.num_instants):
 
-                    if update_tn:
+                    if update_tn and tso_succeeded and dso_succeeded:
                         rho_v_tso = pe.value(tso_model[year][day].rho_v)
                         rho_pf_tso = pe.value(tso_model[year][day].rho_pf)
                         error_v_req_tso = interface_vars['vmag']['tso']['current'][node_id][year][day][p] - interface_vars['vmag']['dso']['current'][node_id][year][day][p]
@@ -2715,7 +2773,7 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                         dual_vars['pf']['tso']['current'][node_id][year][day]['p'][p] += rho_pf_tso * error_p_pf_req_tso
                         dual_vars['pf']['tso']['current'][node_id][year][day]['q'][p] += rho_pf_tso * error_q_pf_req_tso
 
-                    if update_dns:
+                    if update_dns and dso_succeeded:
                         rho_v_dso = pe.value(dso_models[node_id][year][day].rho_v)
                         rho_pf_dso = pe.value(dso_models[node_id][year][day].rho_pf)
                         error_v_req_dso = interface_vars['vmag']['dso']['current'][node_id][year][day][p] - interface_vars['vmag']['tso']['current'][node_id][year][day][p]
@@ -2743,7 +2801,7 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
         if update_sess:
             for y in sess_model[node_id].years:
                 year = repr_years[y]
-                if results['esso'][node_id] and results['esso'][node_id].solver.status == po.SolverStatus.ok:
+                if _solver_result_succeeded(results['esso'][node_id]):
                     for d in sess_model[node_id].days:
                         day = repr_days[d]
                         for p in sess_model[node_id].periods:
@@ -2754,12 +2812,6 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                             q_req = pe.value(sess_model[node_id].es_qnet[y, d, p])
                             shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] = p_req
                             shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] = q_req
-                else:
-                    for d in sess_model[node_id].days:
-                        day = repr_days[d]
-                        for p in sess_model[node_id].periods:
-                            shared_ess_vars['esso']['prev'][node_id][year][day]['p'][p] = copy(shared_ess_vars['esso']['current'][node_id][year][day]['p'][p])
-                            shared_ess_vars['esso']['prev'][node_id][year][day]['q'][p] = copy(shared_ess_vars['esso']['current'][node_id][year][day]['q'][p])
 
         # Power requested by TSO
         if update_tn:
@@ -2767,7 +2819,7 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                 year = repr_years[y]
                 for d in range(len(repr_days)):
                     day = repr_days[d]
-                    if results['tso'][year][day] and results['tso'][year][day].solver.status == po.SolverStatus.ok:
+                    if _solver_result_succeeded(results['tso'][year][day]):
                         s_base = transmission_network.network[year][day].baseMVA
                         shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(node_id)
                         for p in tso_model[year][day].periods:
@@ -2778,10 +2830,6 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                             q_req = pe.value(tso_model[year][day].expected_shared_ess_q[shared_ess_idx, p]) * s_base
                             shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] = p_req
                             shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] = q_req
-                    else:
-                        for p in tso_model[year][day].periods:
-                            shared_ess_vars['tso']['prev'][node_id][year][day]['p'][p] = copy(shared_ess_vars['tso']['current'][node_id][year][day]['p'][p])
-                            shared_ess_vars['tso']['prev'][node_id][year][day]['q'][p] = copy(shared_ess_vars['tso']['current'][node_id][year][day]['q'][p])
 
 
         # Power requested by DSO
@@ -2790,7 +2838,7 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                 year = repr_years[y]
                 for d in range(len(repr_days)):
                     day = repr_days[d]
-                    if results['dso'][node_id][year][day] and results['dso'][node_id][year][day].solver.status == po.SolverStatus.ok:
+                    if _solver_result_succeeded(results['dso'][node_id][year][day]):
                         s_base = distribution_network.network[year][day].baseMVA
                         for p in dso_model[year][day].periods:
                             shared_ess_vars['dso']['prev'][node_id][year][day]['p'][p] = copy(shared_ess_vars['dso']['current'][node_id][year][day]['p'][p])
@@ -2800,17 +2848,25 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                             q_req = pe.value(dso_model[year][day].expected_shared_ess_q[p]) * s_base
                             shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] = p_req
                             shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] = q_req
-                    else:
-                        for p in dso_model[year][day].periods:
-                            shared_ess_vars['dso']['prev'][node_id][year][day]['p'][p] = copy(shared_ess_vars['dso']['current'][node_id][year][day]['p'][p])
-                            shared_ess_vars['dso']['prev'][node_id][year][day]['q'][p] = copy(shared_ess_vars['dso']['current'][node_id][year][day]['q'][p])
 
         # Update dual variables SharedESS
         for year in planning_problem.years:
             for day in planning_problem.days:
+                tso_succeeded = (
+                    _solver_result_succeeded(results['tso'][year][day])
+                    if update_tn or update_sess else False
+                )
+                dso_succeeded = (
+                    _solver_result_succeeded(results['dso'][node_id][year][day])
+                    if update_tn or update_dns else False
+                )
+                esso_succeeded = (
+                    _solver_result_succeeded(results['esso'][node_id])
+                    if update_sess else False
+                )
                 for p in range(planning_problem.num_instants):
 
-                    if update_tn:
+                    if update_tn and tso_succeeded and dso_succeeded:
                         rho_ess_tso = pe.value(tso_model[year][day].rho_ess)
                         error_p_tso_dso = shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['p'][p]
                         error_q_tso_dso = shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['q'][p]
@@ -2823,7 +2879,7 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                             dual_vars['tso']['prev'][node_id][year][day]['p'][p] += rho_ess_tso_prev * error_p_tso_prev
                             dual_vars['tso']['prev'][node_id][year][day]['q'][p] += rho_ess_tso_prev * error_q_tso_prev
 
-                    if update_dns:
+                    if update_dns and dso_succeeded:
                         rho_ess_dso = pe.value(dso_models[node_id][year][day].rho_ess)
                         error_p_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['p'][p]
                         error_q_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['q'][p]
@@ -2836,7 +2892,7 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                             dual_vars['dso']['prev'][node_id][year][day]['p'][p] += rho_ess_dso_prev * error_p_dso_prev
                             dual_vars['dso']['prev'][node_id][year][day]['q'][p] += rho_ess_dso_prev * error_q_dso_prev
 
-                    if update_sess:
+                    if update_sess and esso_succeeded and tso_succeeded:
                         rho_ess_sess = pe.value(sess_model[node_id].rho)
                         error_p_esso_tso = shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['p'][p]
                         error_q_esso_tso = shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['q'][p]
