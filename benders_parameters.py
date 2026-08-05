@@ -5,6 +5,8 @@ class FiniteDifferenceParameters:
 
     def __init__(self):
         self.enabled = False
+        self.validate_after_heuristic_stop = False
+        self.directions = ['fixed_ratio']
         self.relative_step_sizes = [1e-2, 5e-3]
         self.node_id = None
         self.year = None
@@ -19,6 +21,23 @@ class FiniteDifferenceParameters:
         if not params_data:
             return
         self.enabled = bool(params_data.get('enabled', self.enabled))
+        self.validate_after_heuristic_stop = bool(
+            params_data.get(
+                'validate_after_heuristic_stop',
+                self.validate_after_heuristic_stop,
+            )
+        )
+        self.directions = [
+            str(direction).lower() for direction in params_data.get('directions', self.directions)
+        ]
+        if not self.directions:
+            raise ValueError('At least one finite-difference direction must be configured.')
+        supported_directions = {'power_only', 'energy_only', 'fixed_ratio'}
+        unsupported_directions = set(self.directions) - supported_directions
+        if unsupported_directions:
+            raise ValueError(
+                f'Unsupported finite-difference directions: {sorted(unsupported_directions)}.'
+            )
         step_sizes = params_data.get(
             'relative_step_sizes',
             params_data.get('step_sizes', self.relative_step_sizes),

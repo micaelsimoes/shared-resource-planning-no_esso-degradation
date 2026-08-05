@@ -92,6 +92,9 @@ class SharedEnergyStorageData:
     def get_candidate_solution(self, model):
         return _get_candidate_solution(self, model)
 
+    def load_candidate_solution_into_master_model(self, model, candidate_solution):
+        _load_candidate_solution_into_master_model(self, model, candidate_solution)
+
     def map_available_capacity_sensitivities_to_investments(self, models, sensitivities):
         return _map_available_capacity_sensitivities_to_investments(self, models, sensitivities)
 
@@ -934,6 +937,19 @@ def _get_candidate_solution(self, model):
             candidate_solution['total_capacity'][node_id][year]['s'] = abs(pe.value(model.es_s_rated[e, y]))
             candidate_solution['total_capacity'][node_id][year]['e'] = abs(pe.value(model.es_e_rated[e, y]))
     return candidate_solution
+
+
+def _load_candidate_solution_into_master_model(shared_ess_data, model, candidate_solution):
+    years = list(shared_ess_data.years)
+    for e in model.energy_storages:
+        node_id = shared_ess_data.shared_energy_storages[years[0]][e].bus
+        for y, year in enumerate(years):
+            investment = candidate_solution['investment'][node_id][year]
+            total_capacity = candidate_solution['total_capacity'][node_id][year]
+            model.es_s_investment[e, y].set_value(investment['s'])
+            model.es_e_investment[e, y].set_value(investment['e'])
+            model.es_s_rated[e, y].set_value(total_capacity['s'])
+            model.es_e_rated[e, y].set_value(total_capacity['e'])
 
 
 def _map_available_capacity_sensitivities_to_investments(shared_ess_data, models, sensitivities):
