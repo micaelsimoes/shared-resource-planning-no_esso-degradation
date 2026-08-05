@@ -467,14 +467,20 @@ def _build_model(network, params):
     return model
 
 
-def _run_smopf(network, model, params, from_warm_start=False):
-
-    solver = po.SolverFactory(params.solver_params.solver, executable=params.solver_params.solver_path)
+def _create_smopf_solver(network, model, params, from_warm_start=False,
+                         option_overrides=None, log_suffix=None):
+    solver_params = params.solver_params
+    solver = po.SolverFactory(solver_params.solver, executable=solver_params.solver_path)
     solve_context = f'{network.name}, year={network.year}, day={network.day}'
-    solver_log_path = None
+    options = dict()
+    if solver_params.options:
+        options.update(solver_params.options)
+    if option_overrides:
+        options.update(option_overrides)
 
-    if params.solver_params.options:
-        for key, value in params.solver_params.options.items():
+    solver_log_path = None
+    if options:
+        for key, value in options.items():
             if key == 'output_file':
                 configured_path = os.path.join(network.logs_dir, value)
                 path_stem, path_extension = os.path.splitext(configured_path)
@@ -482,14 +488,17 @@ def _run_smopf(network, model, params, from_warm_start=False):
                     character if character.isalnum() or character in ('-', '_') else '_'
                     for character in str(network.day)
                 )
-                solver_log_path = f'{path_stem}_{network.year}_{day_label}{path_extension}'
+                suffix = f'_{network.year}_{day_label}'
+                if log_suffix:
+                    suffix += f'_{log_suffix}'
+                solver_log_path = f'{path_stem}{suffix}{path_extension}'
                 solver.options[key] = solver_log_path
-                if params.solver_params.solver.lower() == 'ipopt':
+                if solver_params.solver.lower() == 'ipopt':
                     solver.options['file_append'] = 'yes'
             else:
                 solver.options[key] = value
 
-    if from_warm_start:
+    if from_warm_start and solver_params.solver.lower() == 'ipopt':
         model.ipopt_zL_in.update(model.ipopt_zL_out)
         model.ipopt_zU_in.update(model.ipopt_zU_out)
         solver.options['warm_start_init_point'] = 'yes'
@@ -499,6 +508,19 @@ def _run_smopf(network, model, params, from_warm_start=False):
         solver.options['warm_start_slack_bound_push'] = 1e-9
         solver.options['warm_start_mult_bound_push'] = 1e-9
 
+    return solver, solver_log_path, solve_context
+
+
+def _run_smopf_solver_attempt(network, model, params, from_warm_start=False,
+                              option_overrides=None, log_suffix=None):
+    solver, solver_log_path, solve_context = _create_smopf_solver(
+        network,
+        model,
+        params,
+        from_warm_start=from_warm_start,
+        option_overrides=option_overrides,
+        log_suffix=log_suffix,
+    )
     result = None
     try:
         result = solver.solve(
@@ -508,26 +530,125 @@ def _run_smopf(network, model, params, from_warm_start=False):
         )
     except (ValueError, RuntimeError) as error:
         print(f'[WARNING] Solver execution failed for network {solve_context}: {error}')
+    return result, solver_log_path
+
+
+def _is_recoverable_network_failure(result, params):
+    solver_params = params.solver_params
+    if solver_params.solver.lower() != 'ipopt' or result is None:
+        return False
+    if not solver_params.recovery_options or not hasattr(result, 'solver'):
+        return False
+    return result.solver.termination_condition == po.TerminationCondition.internalSolverError
+
+
+def _format_solver_options(options):
+    return ', '.join(f'{key}={value}' for key, value in sorted(options.items()))
+
+
+def _snapshot_multiplier_suffixes(model):
+    snapshot = dict()
+    for suffix_name in ('ipopt_zL_in', 'ipopt_zU_in', 'dual'):
+        if hasattr(model, suffix_name):
+            snapshot[suffix_name] = list(getattr(model, suffix_name).items())
+    return snapshot
+
+
+def _clear_multiplier_suffixes(model):
+    for suffix_name in ('ipopt_zL_in', 'ipopt_zU_in', 'dual'):
+        if hasattr(model, suffix_name):
+            getattr(model, suffix_name).clear()
+
+
+def _restore_multiplier_suffixes(model, snapshot):
+    _clear_multiplier_suffixes(model)
+    for suffix_name, values in snapshot.items():
+        suffix = getattr(model, suffix_name)
+        for component, value in values:
+            suffix[component] = value
+
+
+def _print_network_failure_context(network, model, result, from_warm_start, solver_log_path,
+                                   attempt_label='solver'):
+    solve_context = f'{network.name}, year={network.year}, day={network.day}'
+    print(
+        f'[WARNING] Network {attempt_label} did not converge for {solve_context}: '
+        f'{solver_result_summary(result)} | warm_start={from_warm_start}'
+    )
+    penalty_values = []
+    for penalty_name in ('rho_v', 'rho_pf', 'rho_ess', 'rho_ess_prev'):
+        if hasattr(model, penalty_name):
+            penalty_values.append(f'{penalty_name}={pe.value(getattr(model, penalty_name)):.6g}')
+    if penalty_values:
+        print(f'[WARNING] ADMM penalties for {solve_context}: {", ".join(penalty_values)}')
+    if solver_log_path:
+        print(f'[WARNING] IPOPT {attempt_label} log for {solve_context}: {solver_log_path}')
+
+
+def _run_smopf(network, model, params, from_warm_start=False):
+
+    solve_context = f'{network.name}, year={network.year}, day={network.day}'
+    primary_result, primary_log_path = _run_smopf_solver_attempt(
+        network,
+        model,
+        params,
+        from_warm_start=from_warm_start,
+    )
+    result = primary_result
+    recovery_result = None
+    recovery_log_path = None
+    multiplier_snapshot = None
+    recovery_attempted = _is_recoverable_network_failure(primary_result, params)
+
+    if recovery_attempted:
+        _print_network_failure_context(
+            network,
+            model,
+            primary_result,
+            from_warm_start,
+            primary_log_path,
+            attempt_label='primary solve',
+        )
+        recovery_options = params.solver_params.recovery_options
+        print(
+            f'[INFO] Retrying network solve once for {solve_context} from the retained primal point, '
+            f'without multiplier warm start, with {_format_solver_options(recovery_options)}.'
+        )
+        multiplier_snapshot = _snapshot_multiplier_suffixes(model)
+        _clear_multiplier_suffixes(model)
+        recovery_result, recovery_log_path = _run_smopf_solver_attempt(
+            network,
+            model,
+            params,
+            from_warm_start=False,
+            option_overrides=recovery_options,
+            log_suffix='recovery',
+        )
+        result = recovery_result
+        if not solver_result_succeeded(recovery_result):
+            _restore_multiplier_suffixes(model, multiplier_snapshot)
 
     if solver_result_succeeded(result):
         try:
             model.solutions.load_from(result)
         except ValueError as error:
             print(f'[WARNING] Could not load solution for network {solve_context}: {error}')
+            if recovery_attempted:
+                _restore_multiplier_suffixes(model, multiplier_snapshot)
             result = None
+        if recovery_attempted and result is not None:
+            print(f'[INFO] Network recovery solve succeeded for {solve_context}.')
     else:
-        print(
-            f'[WARNING] Solver did not converge for network {solve_context}: '
-            f'{solver_result_summary(result)} | warm_start={from_warm_start}'
+        attempt_label = 'recovery solve' if recovery_attempted else 'solver'
+        final_log_path = recovery_log_path if recovery_attempted else primary_log_path
+        _print_network_failure_context(
+            network,
+            model,
+            result,
+            False if recovery_attempted else from_warm_start,
+            final_log_path,
+            attempt_label=attempt_label,
         )
-        penalty_values = []
-        for penalty_name in ('rho_v', 'rho_pf', 'rho_ess', 'rho_ess_prev'):
-            if hasattr(model, penalty_name):
-                penalty_values.append(f'{penalty_name}={pe.value(getattr(model, penalty_name)):.6g}')
-        if penalty_values:
-            print(f'[WARNING] ADMM penalties for {solve_context}: {", ".join(penalty_values)}')
-        if solver_log_path:
-            print(f'[WARNING] IPOPT log for {solve_context}: {solver_log_path}')
 
     #if params.solver_params.verbose:
     if not solver_result_succeeded(result):
