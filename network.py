@@ -264,16 +264,12 @@ def _build_model(network, params):
     # ------------------------------------------------------------------------------------------------------------------
     # Decision variables
     # - Voltage
-    model.e = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=partial(e_initialize, network=network), bounds=partial(e_bounds, network=network))
-    model.f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=partial(f_initialize, network=network), bounds=partial(f_bounds, network=network))
+    model.e = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=partial(e_initialize, network=network), bounds=partial(e_bounds, network=network, params=params))
+    model.f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=partial(f_initialize, network=network), bounds=partial(f_bounds, network=network, params=params))
     if params.slacks.grid_operation.voltage:
-        model.slack_e_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
-        model.slack_e_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
-        model.slack_f_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
-        model.slack_f_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
-    model.e_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, initialize=1.00)
-    model.f_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, initialize=0.00)
-    model.vmag = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, initialize=1.00)
+        model.slack_v_sqr_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_down_bounds, network=network, params=params))
+        model.slack_v_sqr_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_up_bounds, network=network, params=params))
+    model.vmag = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.00, bounds=partial(vmag_bounds, network=network, params=params))
     model.vmag_sqr = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, initialize=1.00)
     model.e_e = pe.Var(model.nodes, model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, initialize=1.00)
     model.e_f = pe.Var(model.nodes, model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, initialize=0.00)
@@ -382,9 +378,9 @@ def _build_model(network, params):
     # - Voltage
     model.voltage_mag_def = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=vmag_def)
     model.voltage_mag_sqr_def = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=vmag_sqr_def)
-    model.e_actual_def = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(e_actual_def, params=params))
-    model.f_actual_def = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(f_actual_def, params=params))
-    model.voltage_magnitude_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_magnitude_cons_rule, network=network, params=params))
+    model.voltage_setpoint_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_setpoint_cons_rule, network=network, params=params))
+    model.voltage_magnitude_lower_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_magnitude_lower_cons_rule, network=network, params=params))
+    model.voltage_magnitude_upper_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_magnitude_upper_cons_rule, network=network, params=params))
     model.e_e_def = pe.Constraint(model.nodes, model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(e_e_rule, network=network))
     model.e_f_def = pe.Constraint(model.nodes, model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(e_f_rule, network=network))
     model.f_f_def = pe.Constraint(model.nodes, model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(f_f_rule, network=network))
@@ -1184,8 +1180,8 @@ def _process_results(network, model, params, results=dict()):
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage'] = dict()
             if params.slacks.grid_operation.voltage:
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f'] = dict()
+                for quantity in ('squared_down', 'squared_up', 'physical_down', 'physical_up', 'violation_down', 'violation_up'):
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage'][quantity] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow'] = dict()
             if params.slacks.grid_operation.branch_flow:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ij_sqr'] = dict()
@@ -1212,8 +1208,8 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['voltage']['vmag'][node_id] = []
                 processed_results['scenarios'][s_m][s_o]['voltage']['vang'][node_id] = []
                 for p in model.periods:
-                    e = pe.value(model.e_actual[i, s_m, s_o, p])
-                    f = pe.value(model.f_actual[i, s_m, s_o, p])
+                    e = pe.value(model.e[i, s_m, s_o, p])
+                    f = pe.value(model.f[i, s_m, s_o, p])
                     v_mag = sqrt(e**2 + f**2)
                     v_ang = atan2(f, e) * (180.0 / pi)
                     processed_results['scenarios'][s_m][s_o]['voltage']['vmag'][node_id].append(v_mag)
@@ -1381,14 +1377,21 @@ def _process_results(network, model, params, results=dict()):
             # Voltage slacks
             if params.slacks.grid_operation.voltage:
                 for i in model.nodes:
+                    node = network.nodes[i]
                     node_id = network.nodes[i].bus_i
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e'][node_id] = []
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f'][node_id] = []
+                    voltage_slacks = processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']
+                    for quantity in voltage_slacks:
+                        voltage_slacks[quantity][node_id] = []
                     for p in model.periods:
-                        slack_e = pe.value(model.slack_e_up[i, s_m, s_o, p] - model.slack_e_down[i, s_m, s_o, p])
-                        slack_f = pe.value(model.slack_f_up[i, s_m, s_o, p] - model.slack_f_down[i, s_m, s_o, p])
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e'][node_id].append(slack_e)
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f'][node_id].append(slack_f)
+                        diagnostics = voltage_slack_diagnostics(
+                            node.v_min,
+                            node.v_max,
+                            pe.value(model.vmag_sqr[i, s_m, s_o, p]),
+                            pe.value(model.slack_v_sqr_down[i, s_m, s_o, p]),
+                            pe.value(model.slack_v_sqr_up[i, s_m, s_o, p]),
+                        )
+                        for quantity, value in diagnostics.items():
+                            voltage_slacks[quantity][node_id].append(value)
 
             # Branch current slacks
             if params.slacks.grid_operation.branch_flow:
@@ -1494,7 +1497,7 @@ def _process_results_interface(network, model):
                     results[node_id][s_m][s_o]['p'] = [0.0 for _ in model.periods]
                     results[node_id][s_m][s_o]['q'] = [0.0 for _ in model.periods]
                     for p in model.periods:
-                        vmag = sqrt(pe.value(model.e_actual[node_idx, s_m, s_o, p]**2 + model.f_actual[node_idx, s_m, s_o, p]**2))
+                        vmag = sqrt(pe.value(model.e[node_idx, s_m, s_o, p]**2 + model.f[node_idx, s_m, s_o, p]**2))
                         pf_p = pe.value(model.pc[load_idx, s_m, s_o, p] + model.flex_p_up[load_idx, s_m, s_o, p] - model.flex_p_down[load_idx, s_m, s_o, p]) * network.baseMVA
                         pf_q = pe.value(model.qc[load_idx, s_m, s_o, p] + model.flex_q_up[load_idx, s_m, s_o, p] - model.flex_q_down[load_idx, s_m, s_o, p]) * network.baseMVA
                         results[node_id][s_m][s_o]['v'][p] = vmag
@@ -1514,7 +1517,7 @@ def _process_results_interface(network, model):
                 results[s_m][s_o]['p'] = [0.0 for _ in model.periods]
                 results[s_m][s_o]['q'] = [0.0 for _ in model.periods]
                 for p in model.periods:
-                    vmag = pe.value(model.e_actual[ref_node_idx, s_m, s_o, p])
+                    vmag = sqrt(pe.value(model.e[ref_node_idx, s_m, s_o, p]**2 + model.f[ref_node_idx, s_m, s_o, p]**2))
                     pf_p = pe.value(model.pg[ref_gen_idx, s_m, s_o, p]) * network.baseMVA
                     pf_q = pe.value(model.qg[ref_gen_idx, s_m, s_o, p]) * network.baseMVA
                     results[s_m][s_o]['v'][p] = vmag
@@ -1984,10 +1987,10 @@ def _get_branch_power_flow(network, params, branch, fbus, tbus, model, s_m, s_o,
     branch_idx = network.get_branch_idx(branch)
 
     rij = pe.value(model.r[branch_idx, s_m, s_o, p])
-    ei = pe.value(model.e_actual[fbus_idx, s_m, s_o, p])
-    fi = pe.value(model.f_actual[fbus_idx, s_m, s_o, p])
-    ej = pe.value(model.e_actual[tbus_idx, s_m, s_o, p])
-    fj = pe.value(model.f_actual[tbus_idx, s_m, s_o, p])
+    ei = pe.value(model.e[fbus_idx, s_m, s_o, p])
+    fi = pe.value(model.f[fbus_idx, s_m, s_o, p])
+    ej = pe.value(model.e[tbus_idx, s_m, s_o, p])
+    fj = pe.value(model.f[tbus_idx, s_m, s_o, p])
 
     if branch.fbus == fbus:
         pij = branch.g * (ei ** 2 + fi ** 2) * rij ** 2

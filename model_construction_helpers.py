@@ -17,37 +17,71 @@ def f_initialize(m, i, s_m, s_o, p, network):
     return 0.00
 
 
-def e_bounds(m, i, s_m, s_o, p, network):
+def _voltage_magnitude_slack_enabled(node, params):
+    return (
+        params.slacks.grid_operation.voltage
+        and node.type != BUS_REF
+        and not (node.type == BUS_PV and params.enforce_vg)
+    )
+
+
+def e_bounds(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
     if node.type == BUS_REF and not network.is_transmission:
         vg = network.generators[network.get_gen_idx(node.bus_i)].vg
         return (vg - SMALL_TOLERANCE, vg + SMALL_TOLERANCE)
-    return (-node.v_max - EQUALITY_TOLERANCE, node.v_max + EQUALITY_TOLERANCE)
+    component_max = node.v_max
+    if _voltage_magnitude_slack_enabled(node, params):
+        component_max += VMAG_VIOLATION_ALLOWED
+    return (-component_max - EQUALITY_TOLERANCE, component_max + EQUALITY_TOLERANCE)
 
 
-def f_bounds(m, i, s_m, s_o, p, network):
+def f_bounds(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
     if node.type == BUS_REF:
         return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
-    return (-node.v_max - EQUALITY_TOLERANCE, node.v_max + EQUALITY_TOLERANCE)
+    component_max = node.v_max
+    if _voltage_magnitude_slack_enabled(node, params):
+        component_max += VMAG_VIOLATION_ALLOWED
+    return (-component_max - EQUALITY_TOLERANCE, component_max + EQUALITY_TOLERANCE)
 
 
-# Voltage variables, slack bounds
-def voltage_slack_bounds(m, i, s_m, s_o, p, network):
+# Squared-voltage slack bounds corresponding to the permitted physical magnitude violation.
+def voltage_slack_down_bounds(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
-    if node.type == BUS_REF:
-        return (0.00, EQUALITY_TOLERANCE)
-    return (0.00, VMAG_VIOLATION_ALLOWED)
+    if not _voltage_magnitude_slack_enabled(node, params):
+        return (0.00, 0.00)
+    relaxed_v_min = max(node.v_min - VMAG_VIOLATION_ALLOWED, 0.00)
+    return (0.00, node.v_min ** 2 - relaxed_v_min ** 2)
+
+
+def voltage_slack_up_bounds(m, i, s_m, s_o, p, network, params):
+    node = network.nodes[i]
+    if not _voltage_magnitude_slack_enabled(node, params):
+        return (0.00, 0.00)
+    relaxed_v_max = node.v_max + VMAG_VIOLATION_ALLOWED
+    return (0.00, relaxed_v_max ** 2 - node.v_max ** 2)
+
+
+def voltage_slack_diagnostics(v_min, v_max, vmag_sqr, slack_down, slack_up):
+    effective_down = max(slack_down, 0.00)
+    effective_up = max(slack_up, 0.00)
+    vmag = sqrt(max(vmag_sqr, 0.00))
+    return {
+        'squared_down': slack_down,
+        'squared_up': slack_up,
+        'physical_down': v_min - sqrt(max(v_min ** 2 - effective_down, 0.00)),
+        'physical_up': sqrt(v_max ** 2 + effective_up) - v_max,
+        'violation_down': max(v_min - vmag, 0.00),
+        'violation_up': max(vmag - v_max, 0.00),
+    }
 
 
 def vmag_bounds(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
-    if node.type == BUS_REF and not network.is_transmission:
-        return (1.00 - EQUALITY_TOLERANCE, 1.00 + EQUALITY_TOLERANCE)
-    else:
-        if params.slacks.grid_operation.voltage:
-            return (node.v_min - VMAG_VIOLATION_ALLOWED, node.v_max + VMAG_VIOLATION_ALLOWED)
-        return (node.v_min - EQUALITY_TOLERANCE, node.v_max + EQUALITY_TOLERANCE)
+    if _voltage_magnitude_slack_enabled(node, params):
+        return (max(node.v_min - VMAG_VIOLATION_ALLOWED, 0.00), node.v_max + VMAG_VIOLATION_ALLOWED)
+    return (max(node.v_min - EQUALITY_TOLERANCE, 0.00), node.v_max + EQUALITY_TOLERANCE)
 
 
 def node_balance_slack_bounds(m, i, s_m, s_o, p, network):
@@ -317,40 +351,37 @@ def soc_initialize(m, e, s_m, s_o, p, network):
     return ess.e_init
 
 
-# Voltage constraints, e
-def e_actual_def(m, i, s_m, s_o, p, params):
-    e_val = m.e[i, s_m, s_o, p]
-    if params.slacks.grid_operation.voltage:
-        e_val += m.slack_e_up[i, s_m, s_o, p] - m.slack_e_down[i, s_m, s_o, p]
-    return m.e_actual[i, s_m, s_o, p] == e_val
-
-
-# Voltage constraints, f
-def f_actual_def(m, i, s_m, s_o, p, params):
-    f_val = m.f[i, s_m, s_o, p]
-    if params.slacks.grid_operation.voltage:
-        f_val += m.slack_f_up[i, s_m, s_o, p] - m.slack_f_down[i, s_m, s_o, p]
-    return m.f_actual[i, s_m, s_o, p] == f_val
-
-
 # Voltage constraints, magnitude
 def vmag_sqr_def(m, i, s_m, s_o, p):
-    return m.vmag_sqr[i, s_m, s_o, p] == m.e_actual[i, s_m, s_o, p] ** 2 + m.f_actual[i, s_m, s_o, p] ** 2
+    return m.vmag_sqr[i, s_m, s_o, p] == m.e[i, s_m, s_o, p] ** 2 + m.f[i, s_m, s_o, p] ** 2
 
 
 def vmag_def(m, i, s_m, s_o, p):
     return m.vmag_sqr[i, s_m, s_o, p] == m.vmag[i, s_m, s_o, p] ** 2
 
 
-# Voltage constraints, magnitude
-def voltage_magnitude_cons_rule(m, i, s_m, s_o, p, network, params):
+def voltage_setpoint_cons_rule(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
-    vmag_sqr = m.e[i, s_m, s_o, p] ** 2 + m.f[i, s_m, s_o, p] ** 2  # Note: only the non-slack portion is constrained!
     if node.type == BUS_PV and params.enforce_vg:
         vg = network.generators[network.get_gen_idx(node.bus_i)].vg[p]
-        return pe.inequality(-SMALL_TOLERANCE, vmag_sqr - vg ** 2, SMALL_TOLERANCE)
-    else:
-        return pe.inequality(node.v_min ** 2, vmag_sqr, node.v_max ** 2)
+        return pe.inequality(-SMALL_TOLERANCE, m.vmag_sqr[i, s_m, s_o, p] - vg ** 2, SMALL_TOLERANCE)
+    return pe.Constraint.Skip
+
+
+def voltage_magnitude_lower_cons_rule(m, i, s_m, s_o, p, network, params):
+    node = network.nodes[i]
+    if node.type == BUS_PV and params.enforce_vg:
+        return pe.Constraint.Skip
+    slack = m.slack_v_sqr_down[i, s_m, s_o, p] if params.slacks.grid_operation.voltage else 0.00
+    return m.vmag_sqr[i, s_m, s_o, p] + slack >= node.v_min ** 2
+
+
+def voltage_magnitude_upper_cons_rule(m, i, s_m, s_o, p, network, params):
+    node = network.nodes[i]
+    if node.type == BUS_PV and params.enforce_vg:
+        return pe.Constraint.Skip
+    slack = m.slack_v_sqr_up[i, s_m, s_o, p] if params.slacks.grid_operation.voltage else 0.00
+    return m.vmag_sqr[i, s_m, s_o, p] - slack <= node.v_max ** 2
 
 
 def e_e_rule(m, fnode_idx, tnode_idx, s_m, s_o, p, network):
@@ -359,7 +390,7 @@ def e_e_rule(m, fnode_idx, tnode_idx, s_m, s_o, p, network):
     fnode_id = network.nodes[fnode_idx].bus_i
     tnode_id = network.nodes[tnode_idx].bus_i
     if network.branch_exists(fnode_id, tnode_id):
-        return m.e_e[fnode_idx, tnode_idx, s_m, s_o, p] == m.e_actual[fnode_idx, s_m, s_o, p] * m.e_actual[tnode_idx, s_m, s_o, p]
+        return m.e_e[fnode_idx, tnode_idx, s_m, s_o, p] == m.e[fnode_idx, s_m, s_o, p] * m.e[tnode_idx, s_m, s_o, p]
     return pe.Constraint.Skip
 
 
@@ -369,7 +400,7 @@ def e_f_rule(m, fnode_idx, tnode_idx, s_m, s_o, p, network):
     fnode_id = network.nodes[fnode_idx].bus_i
     tnode_id = network.nodes[tnode_idx].bus_i
     if network.branch_exists(fnode_id, tnode_id):
-        return m.e_f[fnode_idx, tnode_idx, s_m, s_o, p] == m.e_actual[fnode_idx, s_m, s_o, p] * m.f_actual[tnode_idx, s_m, s_o, p]
+        return m.e_f[fnode_idx, tnode_idx, s_m, s_o, p] == m.e[fnode_idx, s_m, s_o, p] * m.f[tnode_idx, s_m, s_o, p]
     return pe.Constraint.Skip
 
 
@@ -379,7 +410,7 @@ def f_f_rule(m, fnode_idx, tnode_idx, s_m, s_o, p, network):
     fnode_id = network.nodes[fnode_idx].bus_i
     tnode_id = network.nodes[tnode_idx].bus_i
     if network.branch_exists(fnode_id, tnode_id):
-        return m.f_f[fnode_idx, tnode_idx, s_m, s_o, p] == m.f_actual[fnode_idx, s_m, s_o, p] * m.f_actual[tnode_idx, s_m, s_o, p]
+        return m.f_f[fnode_idx, tnode_idx, s_m, s_o, p] == m.f[fnode_idx, s_m, s_o, p] * m.f[tnode_idx, s_m, s_o, p]
     return pe.Constraint.Skip
 
 
@@ -1242,8 +1273,10 @@ def slack_penalties(model, network, s_m, s_o, params):
     for i in model.nodes:
         for p in model.periods:
             if params.slacks.grid_operation.voltage:
-                total += PENALTY_VOLTAGE * (model.slack_e_up[i, s_m, s_o, p] + model.slack_e_down[i, s_m, s_o, p])
-                total += PENALTY_VOLTAGE * (model.slack_f_up[i, s_m, s_o, p] + model.slack_f_down[i, s_m, s_o, p])
+                total += PENALTY_VOLTAGE_SQUARED * (
+                    model.slack_v_sqr_down[i, s_m, s_o, p]
+                    + model.slack_v_sqr_up[i, s_m, s_o, p]
+                )
             if params.slacks.node_balance.active_power:
                 total += base * PENALTY_NODE_BALANCE * (model.slack_node_balance_p_up[i, s_m, s_o, p] + model.slack_node_balance_p_down[i, s_m, s_o, p])
             if params.slacks.node_balance.reactive_power:

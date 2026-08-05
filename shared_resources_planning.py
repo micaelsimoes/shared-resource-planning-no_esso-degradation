@@ -1807,10 +1807,8 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
                             tso_model[year][day].vmag[adn_node_idx, s_m, s_o, p].setub(v_max + EQUALITY_TOLERANCE)
                             tso_model[year][day].vmag[adn_node_idx, s_m, s_o, p].setlb(v_min - EQUALITY_TOLERANCE)
                             if transmission_network.params.slacks.grid_operation.voltage:
-                                tso_model[year][day].slack_e_up[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                                tso_model[year][day].slack_e_down[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                                tso_model[year][day].slack_f_up[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                                tso_model[year][day].slack_f_down[adn_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                tso_model[year][day].slack_v_sqr_down[adn_node_idx, s_m, s_o, p].setub(0.00)
+                                tso_model[year][day].slack_v_sqr_up[adn_node_idx, s_m, s_o, p].setub(0.00)
 
                             # Fix Pc and Qc (base profiles), free pc_adn and qc_adn
                             interface_pf_p = consensus_vars['pf']['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
@@ -2539,10 +2537,8 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                             dso_model[year][day].vmag[ref_node_idx, s_m, s_o, p].setub(v_max + EQUALITY_TOLERANCE)
                             dso_model[year][day].vmag[ref_node_idx, s_m, s_o, p].setlb(v_min - EQUALITY_TOLERANCE)
                             if distribution_network.params.slacks.grid_operation.voltage:
-                                dso_model[year][day].slack_e_up[ref_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                                dso_model[year][day].slack_e_down[ref_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                                dso_model[year][day].slack_f_up[ref_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
-                                dso_model[year][day].slack_f_down[ref_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
+                                dso_model[year][day].slack_v_sqr_down[ref_node_idx, s_m, s_o, p].setub(0.00)
+                                dso_model[year][day].slack_v_sqr_up[ref_node_idx, s_m, s_o, p].setub(0.00)
 
                 # Update costs (penalties) for the coordination procedure
                 dso_model[year][day].penalty_ess_usage.set_value(0.00)
@@ -7379,6 +7375,15 @@ def _write_relaxation_slacks_results_network_operators_to_excel(planning_problem
 def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type, row_idx, results, params, tn_node_id='-'):
 
     decimal_style = '0.00'
+    voltage_decimal_style = '0.000000'
+    voltage_quantities = (
+        ('squared_down', 'Voltage squared slack, down [p.u.^2]'),
+        ('squared_up', 'Voltage squared slack, up [p.u.^2]'),
+        ('physical_down', 'Voltage permitted relaxation, down [p.u.]'),
+        ('physical_up', 'Voltage permitted relaxation, up [p.u.]'),
+        ('violation_down', 'Voltage realized violation, down [p.u.]'),
+        ('violation_up', 'Voltage realized violation, up [p.u.]'),
+    )
 
     for year in results:
         for day in results[year]:
@@ -7390,36 +7395,20 @@ def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type,
                         for node in network[year][day].nodes:
 
                             node_id = node.bus_i
-
-                            # - e
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Voltage, e'
-                            sheet.cell(row=row_idx, column=7).value = s_m
-                            sheet.cell(row=row_idx, column=8).value = s_o
-                            for p in range(network[year][day].num_instants):
-                                slack_e = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = slack_e
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
-
-                            # - f
-                            sheet.cell(row=row_idx, column=1).value = operator_type
-                            sheet.cell(row=row_idx, column=2).value = tn_node_id
-                            sheet.cell(row=row_idx, column=3).value = node_id
-                            sheet.cell(row=row_idx, column=4).value = int(year)
-                            sheet.cell(row=row_idx, column=5).value = day
-                            sheet.cell(row=row_idx, column=6).value = 'Voltage, f'
-                            sheet.cell(row=row_idx, column=7).value = s_m
-                            sheet.cell(row=row_idx, column=8).value = s_o
-                            for p in range(network[year][day].num_instants):
-                                slack_f = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 9).value = slack_f
-                                sheet.cell(row=row_idx, column=p + 9).number_format = decimal_style
-                            row_idx = row_idx + 1
+                            voltage_results = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']
+                            for quantity, label in voltage_quantities:
+                                sheet.cell(row=row_idx, column=1).value = operator_type
+                                sheet.cell(row=row_idx, column=2).value = tn_node_id
+                                sheet.cell(row=row_idx, column=3).value = node_id
+                                sheet.cell(row=row_idx, column=4).value = int(year)
+                                sheet.cell(row=row_idx, column=5).value = day
+                                sheet.cell(row=row_idx, column=6).value = label
+                                sheet.cell(row=row_idx, column=7).value = s_m
+                                sheet.cell(row=row_idx, column=8).value = s_o
+                                for p in range(network[year][day].num_instants):
+                                    sheet.cell(row=row_idx, column=p + 9).value = voltage_results[quantity][node_id][p]
+                                    sheet.cell(row=row_idx, column=p + 9).number_format = voltage_decimal_style
+                                row_idx = row_idx + 1
 
                     # Branch flow slacks
                     if params.slacks.grid_operation.branch_flow:

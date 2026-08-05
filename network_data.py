@@ -2454,6 +2454,15 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
 
     row_idx = 1
     decimal_style = '0.00'
+    voltage_decimal_style = '0.000000'
+    voltage_quantities = (
+        ('squared_down', 'Voltage squared slack, down [p.u.^2]'),
+        ('squared_up', 'Voltage squared slack, up [p.u.^2]'),
+        ('physical_down', 'Voltage permitted relaxation, down [p.u.]'),
+        ('physical_up', 'Voltage permitted relaxation, up [p.u.]'),
+        ('violation_down', 'Voltage realized violation, down [p.u.]'),
+        ('violation_up', 'Voltage realized violation, up [p.u.]'),
+    )
 
     # Write Header
     sheet.cell(row=row_idx, column=1).value = 'Resource ID'
@@ -2477,32 +2486,18 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
                         for node in network.nodes:
 
                             node_id = node.bus_i
-
-                            # - slack_e
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'Voltage, e'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
-                            for p in range(network_planning.num_instants):
-                                slack_e = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 7).value = slack_e
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                            row_idx = row_idx + 1
-
-                            # - slack_f
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'Voltage, f'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
-                            for p in range(network_planning.num_instants):
-                                slack_f = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 7).value = slack_f
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                            row_idx = row_idx + 1
+                            voltage_results = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']
+                            for quantity, label in voltage_quantities:
+                                sheet.cell(row=row_idx, column=1).value = node_id
+                                sheet.cell(row=row_idx, column=2).value = int(year)
+                                sheet.cell(row=row_idx, column=3).value = day
+                                sheet.cell(row=row_idx, column=4).value = label
+                                sheet.cell(row=row_idx, column=5).value = s_m
+                                sheet.cell(row=row_idx, column=6).value = s_o
+                                for p in range(network_planning.num_instants):
+                                    sheet.cell(row=row_idx, column=p + 7).value = voltage_results[quantity][node_id][p]
+                                    sheet.cell(row=row_idx, column=p + 7).number_format = voltage_decimal_style
+                                row_idx = row_idx + 1
 
                     # Branch flow slacks
                     if network_planning.params.slacks.grid_operation.branch_flow:

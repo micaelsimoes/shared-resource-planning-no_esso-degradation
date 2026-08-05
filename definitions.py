@@ -42,7 +42,9 @@ OBJ_CONGESTION_MANAGEMENT = 2
 
 COST_GENERATION_CURTAILMENT = 100.00
 COST_CONSUMPTION_CURTAILMENT = 300.00
-PENALTY_VOLTAGE = 1e5
+# Squared-voltage slack is approximately 2 * V * delta_V. At V ~= 1 p.u.,
+# half the former component-slack coefficient preserves the first-order cost per delta_V.
+PENALTY_VOLTAGE_SQUARED = 5e4
 PENALTY_CURRENT = 1e3
 PENALTY_NODE_BALANCE = 1e6
 PENALTY_FLEXIBILITY = 1e3
