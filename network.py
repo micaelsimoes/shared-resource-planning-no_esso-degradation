@@ -11,6 +11,7 @@ from generator import Generator
 from energy_storage import EnergyStorage
 from model_construction_helpers import *
 from hierarchical_coordination import *
+from helper_functions import solver_result_succeeded, solver_result_summary
 
 
 # ======================================================================================================================
@@ -469,11 +470,22 @@ def _build_model(network, params):
 def _run_smopf(network, model, params, from_warm_start=False):
 
     solver = po.SolverFactory(params.solver_params.solver, executable=params.solver_params.solver_path)
+    solve_context = f'{network.name}, year={network.year}, day={network.day}'
+    solver_log_path = None
 
     if params.solver_params.options:
         for key, value in params.solver_params.options.items():
             if key == 'output_file':
-                solver.options[key] = os.path.join(network.logs_dir, value)
+                configured_path = os.path.join(network.logs_dir, value)
+                path_stem, path_extension = os.path.splitext(configured_path)
+                day_label = ''.join(
+                    character if character.isalnum() or character in ('-', '_') else '_'
+                    for character in str(network.day)
+                )
+                solver_log_path = f'{path_stem}_{network.year}_{day_label}{path_extension}'
+                solver.options[key] = solver_log_path
+                if params.solver_params.solver.lower() == 'ipopt':
+                    solver.options['file_append'] = 'yes'
             else:
                 solver.options[key] = value
 
@@ -487,15 +499,38 @@ def _run_smopf(network, model, params, from_warm_start=False):
         solver.options['warm_start_slack_bound_push'] = 1e-9
         solver.options['warm_start_mult_bound_push'] = 1e-9
 
+    result = None
     try:
-        result = solver.solve(model, tee=params.solver_params.verbose)
-        model.solutions.load_from(result)
-    except ValueError as e:
-        print(f"[WARNING] Solver failed for network {network.name}: {e}")
-        result = None  # Or store partial result
+        result = solver.solve(
+            model,
+            tee=params.solver_params.verbose,
+            load_solutions=False,
+        )
+    except (ValueError, RuntimeError) as error:
+        print(f'[WARNING] Solver execution failed for network {solve_context}: {error}')
+
+    if solver_result_succeeded(result):
+        try:
+            model.solutions.load_from(result)
+        except ValueError as error:
+            print(f'[WARNING] Could not load solution for network {solve_context}: {error}')
+            result = None
+    else:
+        print(
+            f'[WARNING] Solver did not converge for network {solve_context}: '
+            f'{solver_result_summary(result)} | warm_start={from_warm_start}'
+        )
+        penalty_values = []
+        for penalty_name in ('rho_v', 'rho_pf', 'rho_ess', 'rho_ess_prev'):
+            if hasattr(model, penalty_name):
+                penalty_values.append(f'{penalty_name}={pe.value(getattr(model, penalty_name)):.6g}')
+        if penalty_values:
+            print(f'[WARNING] ADMM penalties for {solve_context}: {", ".join(penalty_values)}')
+        if solver_log_path:
+            print(f'[WARNING] IPOPT log for {solve_context}: {solver_log_path}')
 
     #if params.solver_params.verbose:
-    if not result or result.solver.termination_condition != po.TerminationCondition.optimal:
+    if not solver_result_succeeded(result):
 
         if params.solver_params.verbose:
 

@@ -536,13 +536,21 @@ def _build_subproblem(shared_ess_data, node_id):
 def _optimize(model, params, from_warm_start=False, node_id=None):
 
     solver = po.SolverFactory(params.solver, executable=params.solver_path)
+    solver_log_path = None
     if params.verbose and params.solver.lower() == 'ipopt':
         solver.options['print_level'] = 6
-        solver.options['output_file'] = 'optim_log.txt'
 
     if params.options:
         for key, value in params.options.items():
             solver.options[key] = value
+
+    if params.solver.lower() == 'ipopt':
+        if 'output_file' not in solver.options:
+            solver.options['output_file'] = (
+                f'optim_log_node_{node_id}.txt' if node_id is not None else 'optim_log.txt'
+            )
+        solver.options['file_append'] = 'yes'
+        solver_log_path = os.path.abspath(solver.options['output_file'])
 
     if from_warm_start and params.solver.lower() == 'ipopt':
         model.ipopt_zL_in.update(model.ipopt_zL_out)
@@ -554,15 +562,26 @@ def _optimize(model, params, from_warm_start=False, node_id=None):
         solver.options['warm_start_slack_bound_push'] = 1e-9
         solver.options['warm_start_mult_bound_push'] = 1e-9
 
+    solve_context = f'ESS node={node_id}' if node_id is not None else 'master problem'
+    result = None
     try:
-        result = solver.solve(model, tee=params.verbose)
-        model.solutions.load_from(result)
-    except ValueError as e:
-        if node_id:
-            print(f"[WARNING] Shared ESS optimization. Solver failed for ESS in node {node_id}: {e}")
-        else:
-            print(f"[WARNING] Shared ESS optimization. Master problem. Error: {e}")
-        result = None  # Or store partial result
+        result = solver.solve(model, tee=params.verbose, load_solutions=False)
+    except (ValueError, RuntimeError) as error:
+        print(f'[WARNING] Shared ESS solver execution failed for {solve_context}: {error}')
+
+    if solver_result_succeeded(result):
+        try:
+            model.solutions.load_from(result)
+        except ValueError as error:
+            print(f'[WARNING] Shared ESS solution could not be loaded for {solve_context}: {error}')
+            result = None
+    else:
+        print(
+            f'[WARNING] Shared ESS solver did not converge for {solve_context}: '
+            f'{solver_result_summary(result)} | warm_start={from_warm_start}'
+        )
+        if solver_log_path:
+            print(f'[WARNING] IPOPT log for {solve_context}: {solver_log_path}')
 
     return result
 

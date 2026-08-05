@@ -3,6 +3,7 @@ import sys
 import json
 import psutil
 import pyomo.environ as pe
+import pyomo.opt as po
 from copulas.univariate import GaussianKDE
 from definitions import *
 
@@ -60,6 +61,32 @@ def log_debug(message, debug=False):
         print(f"[DEBUG]\t{message}")
 
 
+def solver_result_succeeded(result):
+    if result is None or not hasattr(result, 'solver'):
+        return False
+    accepted_termination_conditions = {
+        po.TerminationCondition.optimal,
+        po.TerminationCondition.locallyOptimal,
+        po.TerminationCondition.globallyOptimal,
+    }
+    return (
+        result.solver.status == po.SolverStatus.ok
+        and result.solver.termination_condition in accepted_termination_conditions
+    )
+
+
+def solver_result_summary(result):
+    if result is None or not hasattr(result, 'solver'):
+        return 'no SolverResults returned'
+    status = getattr(result.solver, 'status', 'unknown')
+    termination = getattr(result.solver, 'termination_condition', 'unknown')
+    message = getattr(result.solver, 'message', None)
+    summary = f'status={status}, termination={termination}'
+    if message is not None and str(message) not in ('', '<undefined>'):
+        summary += f', message={message}'
+    return summary
+
+
 def report_out_of_bound_initial_values(model, tol=0.0):
     """
     Scan all active variables and report those whose .value is outside [lb, ub].
@@ -112,4 +139,3 @@ class CustomGaussianKDE(GaussianKDE):
     def _fit(self, X):
         super()._fit(X)
         self.kde.set_bandwidth(bw_method=self.custom_bandwidth)
-

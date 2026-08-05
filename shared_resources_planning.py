@@ -2222,7 +2222,11 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
     for year in transmission_network.years:
         for day in transmission_network.days:
             if not _solver_result_succeeded(res[year][day]):
-                print(f'[ERROR] Network {model[year][day].name} did not converge!')
+                print(
+                    f'[ERROR] Transmission network {model[year][day].name}, '
+                    f'year={year}, day={day} did not converge: '
+                    f'{solver_result_summary(res[year][day])}'
+                )
                 # exit(ERROR_NETWORK_OPTIMIZATION)
     return res
 
@@ -2283,7 +2287,11 @@ def update_distribution_coordination_models_and_solve_sequential(distribution_ne
         for year in distribution_network.years:
             for day in distribution_network.days:
                 if not _solver_result_succeeded(res[node_id][year][day]):
-                    print(f'[WARNING] Network {model[year][day].name} did not converge!')
+                    print(
+                        f'[WARNING] Distribution network node={node_id}, '
+                        f'network={model[year][day].name}, year={year}, day={day} '
+                        f'did not converge: {solver_result_summary(res[node_id][year][day])}'
+                    )
                     #exit(ERROR_NETWORK_OPTIMIZATION)
     return res
 
@@ -2350,7 +2358,11 @@ def update_and_solve_dso(node_id, distribution_network, model, vmag_req, dual_vm
     for year in distribution_network.years:
         for day in distribution_network.days:
             if not _solver_result_succeeded(res[year][day]):
-                print(f'[WARNING] Network {model[year][day].name} did not converge!')
+                print(
+                    f'[WARNING] Distribution network node={node_id}, '
+                    f'network={model[year][day].name}, year={year}, day={day} '
+                    f'did not converge: {solver_result_summary(res[year][day])}'
+                )
 
     return (node_id, res, model)
 
@@ -2384,7 +2396,10 @@ def update_shared_energy_storages_coordination_model_and_solve(planning_problem,
     res = shared_ess_data.optimize(models, from_warm_start=from_warm_start)
     for node_id in planning_problem.active_distribution_network_nodes:
         if not _solver_result_succeeded(res[node_id]):
-            print(f'[WARNING] SharedESS operational planning node {node_id} did not converge!')
+            print(
+                f'[WARNING] SharedESS operational planning node={node_id} did not converge: '
+                f'{solver_result_summary(res[node_id])}'
+            )
 
     return res
 
@@ -2503,17 +2518,7 @@ def _admm_local_solves_succeeded(planning_problem, results):
 
 
 def _solver_result_succeeded(result):
-    if result is None or result is False or not hasattr(result, 'solver'):
-        return False
-    accepted_termination_conditions = {
-        po.TerminationCondition.optimal,
-        po.TerminationCondition.locallyOptimal,
-        po.TerminationCondition.globallyOptimal,
-    }
-    return (
-        result.solver.status == po.SolverStatus.ok
-        and result.solver.termination_condition in accepted_termination_conditions
-    )
+    return solver_result_succeeded(result)
 
 
 def check_consensus_convergence(residual_metrics, params):
