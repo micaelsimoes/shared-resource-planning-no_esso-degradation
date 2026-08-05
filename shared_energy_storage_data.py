@@ -65,8 +65,26 @@ class SharedEnergyStorageData:
             objective += pe.value(models[node_id].objective)
         return objective
 
+    def get_feasibility_penalty(self, models):
+        penalty = 0.00
+        for node_id in self.active_distribution_network_nodes:
+            penalty += pe.value(models[node_id].feasibility_penalty)
+        return penalty
+
     def get_feasibility_violation(self, models):
-        return self.get_primal_value(models) / PENALTY_ESSO_SLACK
+        return self.get_feasibility_penalty(models) / PENALTY_ESSO_SLACK
+
+    def get_salvage_value(self, models):
+        salvage_value = 0.00
+        for node_id in self.active_distribution_network_nodes:
+            salvage_value += pe.value(models[node_id].salvage_value)
+        return salvage_value
+
+    def get_salvage_value_sensitivities(self, models):
+        return _get_salvage_value_sensitivities(self, models)
+
+    def get_salvage_value_results(self, models):
+        return _get_salvage_value_results(self, models)
 
     def update_model_with_candidate_solution(self, models, candidate_solution):
         _update_model_with_candidate_solution(self, models, candidate_solution)
@@ -112,6 +130,7 @@ class SharedEnergyStorageData:
         results['soh'] = dict()
         results['soh']['aggregated'] = self.process_soh_results_aggregated(models)
         results['soh']['detailed'] = self.process_soh_results_detailed(models)
+        results['salvage_value'] = self.get_salvage_value_results(models)
         results['relaxation_variables'] = dict()
         results['relaxation_variables']['investment'] = self.process_relaxation_variables_investment(models)
         if self.params.slacks:
@@ -194,6 +213,9 @@ class SharedEnergyStorageData:
         if write_investment:
             _write_ess_capacity_investment_to_excel(self, workbook, shared_ess_capacity['investment'], initial_sheet=False)
         _write_ess_capacity_rated_available_to_excel(self, workbook, shared_ess_capacity)
+
+    def write_salvage_value_results_to_excel(self, workbook, salvage_value_results):
+        _write_terminal_salvage_value_to_excel(workbook, salvage_value_results)
 
     def write_relaxation_slacks_results_to_excel(self, workbook, results):
         _write_investment_relaxation_slacks_results_to_excel(self, workbook, results['relaxation_variables']['investment'])
@@ -528,7 +550,18 @@ def _build_subproblem(shared_ess_data, node_id):
                     slack_penalty += PENALTY_ESSO_SLACK * (model.slack_es_snet_up[y_inv, d, p] + model.slack_es_snet_down[y_inv, d, p])
                     slack_penalty += PENALTY_ESSO_SLACK * (model.slack_es_snet_def_up[y_inv, d, p] + model.slack_es_snet_def_down[y_inv, d, p])
 
-    model.objective = pe.Objective(sense=pe.minimize, expr=slack_penalty)
+    salvage_value = _build_terminal_salvage_value_expression(
+        shared_ess_data,
+        model,
+        shared_ess_idx,
+    )
+    model.feasibility_penalty = pe.Expression(expr=slack_penalty)
+    model.salvage_value = pe.Expression(expr=salvage_value)
+    model.salvage_credit = pe.Expression(expr=-model.salvage_value)
+    model.objective = pe.Objective(
+        sense=pe.minimize,
+        expr=model.feasibility_penalty,
+    )
 
     # Define that we want the duals
     model.ipopt_zL_out = pe.Suffix(direction=pe.Suffix.IMPORT)  # Ipopt bound multipliers (obtained from solution)
@@ -538,6 +571,195 @@ def _build_subproblem(shared_ess_data, node_id):
     model.dual = pe.Suffix(direction=pe.Suffix.IMPORT_EXPORT)
 
     return model
+
+
+def _build_terminal_salvage_value_expression(shared_ess_data, model, shared_ess_idx):
+    params = shared_ess_data.params.salvage_value
+    if not params.enabled:
+        return 0.00
+
+    terminal_year_idx = len(shared_ess_data.years) - 1
+    terminal_discount = _get_terminal_discount_factor(shared_ess_data)
+    salvage_value = 0.00
+
+    for y_inv in model.years:
+        year_inv = list(shared_ess_data.years)[y_inv]
+        shared_energy_storage = shared_ess_data.shared_energy_storages[year_inv][shared_ess_idx]
+        min_soh = shared_energy_storage.soh_min
+        if not 0.00 <= min_soh < 1.00:
+            raise ValueError(f'Invalid minimum SoH {min_soh} for salvage valuation.')
+
+        e_rated = model.es_e_rated_per_unit[y_inv, terminal_year_idx]
+        e_available = model.es_e_available_per_unit[y_inv, terminal_year_idx]
+        usable_energy_above_eol = (e_available - min_soh * e_rated) / (1.00 - min_soh)
+        residual_energy = (
+            params.recycling_floor_fraction * e_rated
+            + (1.00 - params.recycling_floor_fraction) * usable_energy_above_eol
+        )
+        expected_unit_cost = _get_expected_energy_investment_cost(shared_ess_data, year_inv)
+        _, _, remaining_life_fraction = _get_remaining_calendar_life(
+            shared_ess_data, y_inv, shared_energy_storage
+        )
+        salvage_value += (
+            terminal_discount
+            * params.energy_recovery_fraction
+            * expected_unit_cost
+            * remaining_life_fraction
+            * residual_energy
+        )
+
+    return salvage_value
+
+
+def _get_terminal_discount_factor(shared_ess_data):
+    terminal_years = sum(float(num_years) for num_years in shared_ess_data.years.values())
+    return 1.00 / ((1.00 + shared_ess_data.discount_factor) ** terminal_years)
+
+
+def _get_remaining_calendar_life(shared_ess_data, investment_year_idx, shared_energy_storage):
+    if shared_energy_storage.t_cal <= 0.00:
+        raise ValueError('Shared ESS calendar life must be positive for salvage valuation.')
+    represented_years = list(shared_ess_data.years.values())
+    age_at_terminal = sum(float(value) for value in represented_years[investment_year_idx:])
+    remaining_life = max(float(shared_energy_storage.t_cal) - age_at_terminal, 0.00)
+    remaining_life_fraction = min(remaining_life / float(shared_energy_storage.t_cal), 1.00)
+    return age_at_terminal, remaining_life, remaining_life_fraction
+
+
+def _get_expected_energy_investment_cost(shared_ess_data, year):
+    expected_cost = 0.00
+    for scenario, probability in enumerate(shared_ess_data.prob_market_scenarios):
+        expected_cost += probability * shared_ess_data.cost_investment['energy'][scenario][year]
+    return expected_cost
+
+
+def _get_salvage_value_sensitivities(shared_ess_data, models):
+    years = list(shared_ess_data.years)
+    sensitivities = {
+        's': {year: {} for year in years},
+        'e': {year: {} for year in years},
+    }
+    params = shared_ess_data.params.salvage_value
+    terminal_year_idx = len(years) - 1
+    terminal_discount = _get_terminal_discount_factor(shared_ess_data)
+
+    for node_id in shared_ess_data.active_distribution_network_nodes:
+        model = models[node_id]
+        shared_ess_idx = shared_ess_data.get_shared_energy_storage_idx(node_id)
+        for y_inv, year_inv in enumerate(years):
+            sensitivities['s'][year_inv][node_id] = 0.00
+            sensitivities['e'][year_inv][node_id] = 0.00
+            if not params.enabled or model.es_e_rated_per_unit[y_inv, terminal_year_idx].fixed:
+                continue
+
+            shared_energy_storage = shared_ess_data.shared_energy_storages[year_inv][shared_ess_idx]
+            min_soh = shared_energy_storage.soh_min
+            terminal_soh = pe.value(model.es_soh_per_unit_cumul[y_inv, terminal_year_idx])
+            normalized_health = (terminal_soh - min_soh) / (1.00 - min_soh)
+            residual_fraction = (
+                params.recycling_floor_fraction
+                + (1.00 - params.recycling_floor_fraction) * normalized_health
+            )
+            _, _, remaining_life_fraction = _get_remaining_calendar_life(
+                shared_ess_data, y_inv, shared_energy_storage
+            )
+            expected_unit_cost = _get_expected_energy_investment_cost(shared_ess_data, year_inv)
+            sensitivities['e'][year_inv][node_id] = -(
+                terminal_discount
+                * params.energy_recovery_fraction
+                * expected_unit_cost
+                * remaining_life_fraction
+                * residual_fraction
+            )
+
+    return sensitivities
+
+
+def _get_salvage_value_results(shared_ess_data, models):
+    years = list(shared_ess_data.years)
+    terminal_year_idx = len(years) - 1
+    terminal_representative_year = years[terminal_year_idx]
+    terminal_horizon_years = sum(float(value) for value in shared_ess_data.years.values())
+    terminal_date = int(years[0]) + terminal_horizon_years
+    if terminal_date.is_integer():
+        terminal_date = int(terminal_date)
+    terminal_discount = _get_terminal_discount_factor(shared_ess_data)
+    params = shared_ess_data.params.salvage_value
+    cohorts = list()
+
+    for node_id in shared_ess_data.active_distribution_network_nodes:
+        model = models[node_id]
+        shared_ess_idx = shared_ess_data.get_shared_energy_storage_idx(node_id)
+        for y_inv, year_inv in enumerate(years):
+            shared_energy_storage = shared_ess_data.shared_energy_storages[year_inv][shared_ess_idx]
+            min_soh = shared_energy_storage.soh_min
+            age_at_terminal, remaining_life, remaining_life_fraction = _get_remaining_calendar_life(
+                shared_ess_data, y_inv, shared_energy_storage
+            )
+            active_in_terminal_block = not model.es_e_rated_per_unit[y_inv, terminal_year_idx].fixed
+            salvage_eligible_at_terminal = (
+                active_in_terminal_block and remaining_life > SMALL_TOLERANCE
+            )
+            e_rated = pe.value(model.es_e_rated_per_unit[y_inv, terminal_year_idx])
+            e_available = pe.value(model.es_e_available_per_unit[y_inv, terminal_year_idx])
+            terminal_soh = None
+            normalized_health = None
+            residual_fraction = None
+            salvage_value = 0.00
+
+            if active_in_terminal_block:
+                terminal_soh = pe.value(model.es_soh_per_unit_cumul[y_inv, terminal_year_idx])
+                normalized_health = (terminal_soh - min_soh) / (1.00 - min_soh)
+                residual_fraction = (
+                    params.recycling_floor_fraction
+                    + (1.00 - params.recycling_floor_fraction) * normalized_health
+                )
+                if params.enabled and salvage_eligible_at_terminal:
+                    salvage_value = (
+                        terminal_discount
+                        * params.energy_recovery_fraction
+                        * _get_expected_energy_investment_cost(shared_ess_data, year_inv)
+                        * remaining_life_fraction
+                        * e_rated
+                        * residual_fraction
+                    )
+
+            cohorts.append({
+                'node_id': node_id,
+                'investment_year': year_inv,
+                'terminal_representative_year': terminal_representative_year,
+                'terminal_date': terminal_date,
+                'active_in_terminal_block': active_in_terminal_block,
+                'salvage_eligible_at_terminal': salvage_eligible_at_terminal,
+                'calendar_life': shared_energy_storage.t_cal,
+                'age_at_terminal': age_at_terminal,
+                'remaining_calendar_life': remaining_life,
+                'remaining_calendar_life_fraction': remaining_life_fraction,
+                'terminal_rated_energy': e_rated,
+                'terminal_available_energy': e_available,
+                'minimum_soh': min_soh,
+                'terminal_soh': terminal_soh,
+                'normalized_health': normalized_health,
+                'residual_fraction': residual_fraction,
+                'expected_unit_energy_cost': _get_expected_energy_investment_cost(
+                    shared_ess_data, year_inv
+                ),
+                'terminal_discount_factor': terminal_discount,
+                'salvage_value': salvage_value,
+            })
+
+    return {
+        'enabled': params.enabled,
+        'energy_recovery_fraction': params.energy_recovery_fraction,
+        'recycling_floor_fraction': params.recycling_floor_fraction,
+        'cost_basis': params.cost_basis,
+        'health_basis': params.health_basis,
+        'calendar_life_basis': params.calendar_life_basis,
+        'terminal_horizon_years': terminal_horizon_years,
+        'terminal_discount_factor': terminal_discount,
+        'cohorts': cohorts,
+        'total_salvage_value': sum(cohort['salvage_value'] for cohort in cohorts),
+    }
 
 
 def _create_solver(model, params, from_warm_start=False, node_id=None,
@@ -1162,6 +1384,7 @@ def _write_optimization_results_to_excel(shared_ess_data, data_dir, results):
     _write_detailed_shared_energy_storage_operation_results_to_excel(shared_ess_data, wb, results['operation']['detailed'])
     _write_aggregated_shared_energy_storage_soh_results_to_excel(shared_ess_data, wb, results['soh']['aggregated'])
     _write_detailed_shared_energy_storage_soh_results_to_excel(shared_ess_data, wb, results['soh']['detailed'])
+    _write_terminal_salvage_value_to_excel(wb, results['salvage_value'])
     shared_ess_data.write_relaxation_slacks_results_to_excel(wb, results)
 
     results_filename = os.path.join(data_dir, f'{shared_ess_data.name}_shared_ess_results.xlsx')
@@ -1175,6 +1398,57 @@ def _write_optimization_results_to_excel(shared_ess_data, data_dir, results):
         backup_filename = os.path.join(data_dir, f'{shared_ess_data.name}_shared_ess_results_{current_time}.xlsx')
         print('[INFO] S-MPOPF Results written to {}.'.format(backup_filename))
         wb.save(backup_filename)
+
+
+def _write_terminal_salvage_value_to_excel(workbook, salvage_results):
+    sheet = workbook.create_sheet('Terminal Salvage')
+    columns = [
+        ('node_id', 'Node ID', '0'),
+        ('investment_year', 'Investment Year', '0'),
+        ('terminal_representative_year', 'Terminal Representative Year', '0'),
+        ('terminal_date', 'Terminal Valuation Date', '0'),
+        ('active_in_terminal_block', 'Active in Terminal Representative Block', 'General'),
+        ('salvage_eligible_at_terminal', 'Eligible at Terminal Date', 'General'),
+        ('calendar_life', 'Calendar Life, [years]', '0.000000'),
+        ('age_at_terminal', 'Age at Terminal Date, [years]', '0.000000'),
+        ('remaining_calendar_life', 'Remaining Calendar Life, [years]', '0.000000'),
+        ('remaining_calendar_life_fraction', 'Remaining Calendar Life Fraction', '0.000000'),
+        ('terminal_rated_energy', 'Terminal Rated Energy, [MVAh]', '0.000000'),
+        ('terminal_available_energy', 'Terminal Available Energy, [MVAh]', '0.000000'),
+        ('minimum_soh', 'Minimum SoH, [p.u.]', '0.000000'),
+        ('terminal_soh', 'Terminal SoH, [p.u.]', '0.000000'),
+        ('normalized_health', 'Normalized Health Above Minimum, [p.u.]', '0.000000'),
+        ('residual_fraction', 'Recoverable Residual Fraction, [p.u.]', '0.000000'),
+        ('expected_unit_energy_cost', 'Expected Installation Energy Cost, [m.u./MVAh]', '0.000000'),
+        ('terminal_discount_factor', 'Terminal Discount Factor', '0.000000'),
+        ('salvage_value', 'Terminal Salvage Value, [NPV m.u.]', '0.000000'),
+    ]
+
+    metadata = [
+        ('Enabled', salvage_results.get('enabled')),
+        ('Energy Recovery Fraction', salvage_results.get('energy_recovery_fraction')),
+        ('Recycling Floor Fraction', salvage_results.get('recycling_floor_fraction')),
+        ('Cost Basis', salvage_results.get('cost_basis')),
+        ('Health Basis', salvage_results.get('health_basis')),
+        ('Calendar-Life Basis', salvage_results.get('calendar_life_basis')),
+        ('Terminal Horizon, [years]', salvage_results.get('terminal_horizon_years')),
+        ('Terminal Discount Factor', salvage_results.get('terminal_discount_factor')),
+        ('Total Terminal Salvage Value, [NPV m.u.]', salvage_results.get('total_salvage_value')),
+    ]
+    for row_idx, (label, value) in enumerate(metadata, start=1):
+        sheet.cell(row=row_idx, column=1).value = label
+        sheet.cell(row=row_idx, column=2).value = value
+
+    header_row = len(metadata) + 2
+    for column_idx, (_, label, _) in enumerate(columns, start=1):
+        sheet.cell(row=header_row, column=column_idx).value = label
+    for row_idx, cohort in enumerate(salvage_results.get('cohorts', []), start=header_row + 1):
+        for column_idx, (key, _, number_format) in enumerate(columns, start=1):
+            value = cohort.get(key)
+            if value is None:
+                continue
+            sheet.cell(row=row_idx, column=column_idx).value = value
+            sheet.cell(row=row_idx, column=column_idx).number_format = number_format
 
 
 def _write_ess_costs_to_excel(shared_ess_data, workbook, results):

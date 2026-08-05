@@ -5,6 +5,14 @@
 	"max_energy_to_power_factor": 10.00,
 	"slacks": true,
 	"print_results_to_file": true,
+	"salvage_value": {
+		"enabled": true,
+		"energy_recovery_fraction": 1.0,
+		"recycling_floor_fraction": 0.0,
+		"cost_basis": "EXPECTED_INSTALLATION_ENERGY_COST",
+		"health_basis": "NORMALIZED_ABOVE_MINIMUM_SOH",
+		"calendar_life_basis": "REMAINING_FRACTION_AT_TERMINAL"
+	},
 	"solver": {
 		"name": "ipopt",
 		"verbose": false,

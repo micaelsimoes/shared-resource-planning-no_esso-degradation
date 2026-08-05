@@ -177,6 +177,9 @@ class SharedResourcesPlanning:
     def get_operational_recourse_value(self, models):
         return _get_operational_recourse_value(self, models)
 
+    def get_operational_recourse_components(self, models):
+        return _get_operational_recourse_components(self, models)
+
     def get_primal_value(self, tso_model, dso_models, esso_model):
         return _get_primal_value(self, tso_model, dso_models, esso_model)
 
@@ -208,7 +211,19 @@ class SharedResourcesPlanning:
         processed_results = _process_operational_planning_results(self, operational_planning_models['tso'], operational_planning_models['dso'], operational_planning_models['esso'], operational_results)
         shared_ess_cost = self.shared_ess_data.get_investment_cost_and_rated_capacity(master_problem_model)
         shared_ess_capacity = self.shared_ess_data.get_available_capacity(operational_planning_models['esso'])
-        _write_planning_results_to_excel(self, processed_results, bound_evolution=bound_evolution, shared_ess_cost=shared_ess_cost, shared_ess_capacity=shared_ess_capacity, filename=filename, execution_time=execution_time)
+        salvage_value_results = self.shared_ess_data.get_salvage_value_results(
+            operational_planning_models['esso']
+        )
+        _write_planning_results_to_excel(
+            self,
+            processed_results,
+            bound_evolution=bound_evolution,
+            shared_ess_cost=shared_ess_cost,
+            shared_ess_capacity=shared_ess_capacity,
+            salvage_value_results=salvage_value_results,
+            filename=filename,
+            execution_time=execution_time,
+        )
 
     def write_operational_planning_results_to_excel(self, optimization_models, results, filename=str(),
                                                      primal_evolution=list(), admm_diagnostics=list(),
@@ -218,6 +233,9 @@ class SharedResourcesPlanning:
             filename = 'operational_planning_results'
         processed_results = _process_operational_planning_results(self, optimization_models['tso'], optimization_models['dso'], optimization_models['esso'], results)
         shared_ess_capacity = self.shared_ess_data.get_available_capacity(optimization_models['esso'])
+        salvage_value_results = self.shared_ess_data.get_salvage_value_results(
+            optimization_models['esso']
+        )
         _write_operational_planning_results_to_excel(
             self,
             processed_results,
@@ -225,6 +243,7 @@ class SharedResourcesPlanning:
             admm_diagnostics=admm_diagnostics,
             solver_recovery_diagnostics=solver_recovery_diagnostics,
             shared_ess_capacity=shared_ess_capacity,
+            salvage_value_results=salvage_value_results,
             filename=filename,
             execution_time=execution_time,
         )
@@ -278,6 +297,8 @@ def _run_planning_problem(planning_problem, debug_flag=False):
     investment_cost_evolution = list()
     alpha_evolution = list()
     operational_recourse_evolution = list()
+    gross_operational_cost_evolution = list()
+    terminal_salvage_value_evolution = list()
     candidate_total_evolution = list()
     esso_violation_evolution = list()
     gap_signed_evolution = list()
@@ -341,9 +362,14 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         )
 
         operational_recourse = None
+        gross_operational_cost = None
+        terminal_salvage_value = None
         candidate_total = None
         if candidate_is_feasible:
-            operational_recourse = planning_problem.get_operational_recourse_value(lower_level_models)
+            recourse_components = planning_problem.get_operational_recourse_components(lower_level_models)
+            gross_operational_cost = recourse_components['gross_operational_cost']
+            terminal_salvage_value = recourse_components['terminal_salvage_value']
+            operational_recourse = recourse_components['net_operational_recourse']
             candidate_total = investment_cost + operational_recourse
             upper_bound = min(upper_bound, candidate_total)
 
@@ -360,6 +386,8 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         investment_cost_evolution.append(investment_cost)
         alpha_evolution.append(alpha)
         operational_recourse_evolution.append(operational_recourse)
+        gross_operational_cost_evolution.append(gross_operational_cost)
+        terminal_salvage_value_evolution.append(terminal_salvage_value)
         candidate_total_evolution.append(candidate_total)
         esso_violation_evolution.append(esso_violation)
         gap_signed_evolution.append(gap_signed)
@@ -367,13 +395,18 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         gap_rel_evolution.append(gap_rel)
 
         recourse_text = f'{operational_recourse:.2f}' if operational_recourse is not None else 'N/A'
+        gross_recourse_text = (
+            f'{gross_operational_cost:.2f}' if gross_operational_cost is not None else 'N/A'
+        )
+        salvage_text = f'{terminal_salvage_value:.2f}' if terminal_salvage_value is not None else 'N/A'
         candidate_total_text = f'{candidate_total:.2f}' if candidate_total is not None else 'N/A'
         upper_bound_text = f'{upper_bound:.2f}' if isfinite(upper_bound) else 'N/A'
         gap_text = f'{gap_signed / max(abs(upper_bound), 1e-6) * 100:.2f}%' if gap_signed is not None else 'N/A'
         esso_violation_text = f'{esso_violation:.6f}' if esso_violation is not None else 'N/A'
         print(
             f"[INFO] Iteration #{iteration} | Master = {master_estimate:.2f} | Alpha = {alpha:.2f} | "
-            f"Investment = {investment_cost:.2f} | Recourse = {recourse_text} | "
+            f"Investment = {investment_cost:.2f} | Gross recourse = {gross_recourse_text} | "
+            f"Salvage = {salvage_text} | Net recourse = {recourse_text} | "
             f"Candidate = {candidate_total_text} | UB = {upper_bound_text} | Gap = {gap_text} | "
             f"ESSO violation = {esso_violation_text}"
         )
@@ -462,6 +495,8 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         'upper_bound': upper_bound_evolution,
         'investment_cost': investment_cost_evolution,
         'alpha': alpha_evolution,
+        'gross_operational_cost': gross_operational_cost_evolution,
+        'terminal_salvage_value': terminal_salvage_value_evolution,
         'operational_recourse': operational_recourse_evolution,
         'candidate_total': candidate_total_evolution,
         'esso_violation': esso_violation_evolution,
@@ -479,10 +514,19 @@ def _run_planning_problem(planning_problem, debug_flag=False):
 
 
 def _get_operational_recourse_value(planning_problem, models):
-    recourse_value = planning_problem.transmission_network.get_primal_value(models['tso'])
+    return _get_operational_recourse_components(planning_problem, models)['net_operational_recourse']
+
+
+def _get_operational_recourse_components(planning_problem, models):
+    gross_operational_cost = planning_problem.transmission_network.get_primal_value(models['tso'])
     for node_id, distribution_network in planning_problem.distribution_networks.items():
-        recourse_value += distribution_network.get_primal_value(models['dso'][node_id])
-    return recourse_value
+        gross_operational_cost += distribution_network.get_primal_value(models['dso'][node_id])
+    terminal_salvage_value = planning_problem.shared_ess_data.get_salvage_value(models['esso'])
+    return {
+        'gross_operational_cost': gross_operational_cost,
+        'terminal_salvage_value': terminal_salvage_value,
+        'net_operational_recourse': gross_operational_cost - terminal_salvage_value,
+    }
 
 
 def _get_operational_sensitivities(planning_problem, models):
@@ -510,9 +554,20 @@ def _get_operational_sensitivities(planning_problem, models):
                     else:
                         available_sensitivities[capacity_type][year][node_id] += value
 
-    return planning_problem.shared_ess_data.map_available_capacity_sensitivities_to_investments(
+    investment_sensitivities = planning_problem.shared_ess_data.map_available_capacity_sensitivities_to_investments(
         models['esso'], available_sensitivities
     )
+    salvage_sensitivities = planning_problem.shared_ess_data.get_salvage_value_sensitivities(
+        models['esso']
+    )
+    for capacity_type in ('s', 'e'):
+        for year in planning_problem.years:
+            for node_id in planning_problem.active_distribution_network_nodes:
+                if investment_sensitivities[capacity_type][year][node_id] is not None:
+                    investment_sensitivities[capacity_type][year][node_id] += (
+                        salvage_sensitivities[capacity_type][year][node_id]
+                    )
+    return investment_sensitivities
 
 
 def _validate_local_sensitivities_with_finite_differences(planning_problem, candidate_solution,
@@ -1102,15 +1157,20 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             residual_convergence = False
 
         recourse = None
+        gross_operational_cost = None
+        terminal_salvage_value = None
         objective_change_abs = None
         objective_change_rel = None
         objective_tolerance = None
         objective_convergence = False
         if local_solves_ok:
-            recourse = _get_operational_recourse_value(
+            recourse_components = _get_operational_recourse_components(
                 planning_problem,
                 {'tso': tso_model, 'dso': dso_models, 'esso': esso_model},
             )
+            gross_operational_cost = recourse_components['gross_operational_cost']
+            terminal_salvage_value = recourse_components['terminal_salvage_value']
+            recourse = recourse_components['net_operational_recourse']
             if previous_recourse is not None:
                 objective_change_abs = abs(recourse - previous_recourse)
                 objective_scale = max(abs(recourse), abs(previous_recourse), 1.0)
@@ -1172,6 +1232,8 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             'dual_v_ratio': residual_metrics['dual']['v'] / admm_parameters.tol['stationarity']['v'],
             'dual_pf_ratio': residual_metrics['dual']['pf'] / admm_parameters.tol['stationarity']['pf'],
             'dual_ess_ratio': residual_metrics['dual']['ess'] / admm_parameters.tol['stationarity']['ess'],
+            'gross_operational_cost': gross_operational_cost,
+            'terminal_salvage_value': terminal_salvage_value,
             'recourse': recourse,
             'objective_change_abs': objective_change_abs,
             'objective_change_rel': objective_change_rel,
@@ -3574,7 +3636,7 @@ def _process_results_summary_detail(planning_problem, tso_model, dso_models):
 # ======================================================================================================================
 #  RESULTS PLANNING - write functions
 # ======================================================================================================================
-def _write_planning_results_to_excel(planning_problem, results, bound_evolution=dict(), shared_ess_cost=dict(), shared_ess_capacity=dict(), filename='planing_results', execution_time=float()):
+def _write_planning_results_to_excel(planning_problem, results, bound_evolution=dict(), shared_ess_cost=dict(), shared_ess_capacity=dict(), salvage_value_results=dict(), filename='planing_results', execution_time=float()):
 
     wb = Workbook()
 
@@ -3603,6 +3665,11 @@ def _write_planning_results_to_excel(planning_problem, results, bound_evolution=
 
     if shared_ess_cost:
         planning_problem.shared_ess_data.write_ess_costs_to_excel(wb, shared_ess_cost)
+
+    if salvage_value_results:
+        planning_problem.shared_ess_data.write_salvage_value_results_to_excel(
+            wb, salvage_value_results
+        )
 
     # Interface Power Flow
     _write_interface_results_to_excel(planning_problem, wb, results['interface'])
@@ -3643,7 +3710,9 @@ def _write_bound_evolution_to_excel(workbook, bound_evolution):
         ('master_estimate', 'Master Estimate (nominal LB), [NPV Mm.u.]', master_estimate, 1e6, '0.00'),
         ('alpha', 'Alpha, [NPV Mm.u.]', bound_evolution.get('alpha', []), 1e6, '0.00'),
         ('investment_cost', 'Investment Cost, [NPV Mm.u.]', bound_evolution.get('investment_cost', []), 1e6, '0.00'),
-        ('operational_recourse', 'Operational Recourse, [NPV Mm.u.]', bound_evolution.get('operational_recourse', []), 1e6, '0.00'),
+        ('gross_operational_cost', 'Gross Operational Cost, [NPV Mm.u.]', bound_evolution.get('gross_operational_cost', []), 1e6, '0.00'),
+        ('terminal_salvage_value', 'Terminal Salvage Value, [NPV Mm.u.]', bound_evolution.get('terminal_salvage_value', []), 1e6, '0.00'),
+        ('operational_recourse', 'Net Operational Recourse, [NPV Mm.u.]', bound_evolution.get('operational_recourse', []), 1e6, '0.00'),
         ('candidate_total', 'Candidate Total Objective, [NPV Mm.u.]', bound_evolution.get('candidate_total', []), 1e6, '0.00'),
         ('upper_bound', 'Incumbent Upper Bound, [NPV Mm.u.]', bound_evolution.get('upper_bound', []), 1e6, '0.00'),
         ('gap_signed', 'Signed Nominal Gap (UB - Master), [NPV Mm.u.]', bound_evolution.get('gap_signed', []), 1e6, '0.00'),
@@ -3746,7 +3815,9 @@ def _write_admm_diagnostics_to_excel(workbook, diagnostics):
         ('dual_v_ratio', 'Dual V / Tolerance', '0.000'),
         ('dual_pf_ratio', 'Dual PF / Tolerance', '0.000'),
         ('dual_ess_ratio', 'Dual ESS / Tolerance', '0.000'),
-        ('recourse', 'Economic Recourse, [NPV m.u.]', '0.000000'),
+        ('gross_operational_cost', 'Gross Operational Cost, [NPV m.u.]', '0.000000'),
+        ('terminal_salvage_value', 'Terminal Salvage Value, [NPV m.u.]', '0.000000'),
+        ('recourse', 'Net Economic Recourse, [NPV m.u.]', '0.000000'),
         ('objective_change_abs', 'Absolute Recourse Change, [NPV m.u.]', '0.000000'),
         ('objective_change_rel', 'Relative Recourse Change, [%]', '0.00%'),
         ('objective_tolerance', 'Applied Recourse Tolerance, [NPV m.u.]', '0.000000'),
@@ -3810,6 +3881,7 @@ def _write_solver_recovery_diagnostics_to_excel(workbook, diagnostics):
 # ======================================================================================================================
 def _write_operational_planning_results_to_excel(planning_problem, results, primal_evolution=list(),
                                                  admm_diagnostics=list(), shared_ess_capacity=dict(),
+                                                 salvage_value_results=dict(),
                                                  solver_recovery_diagnostics=list(),
                                                  filename='operation_planning', execution_time=float()):
 
@@ -3820,6 +3892,10 @@ def _write_operational_planning_results_to_excel(planning_problem, results, prim
     _write_shared_ess_specifications(wb, planning_problem.shared_ess_data)
     if shared_ess_capacity:
         planning_problem.shared_ess_data.write_ess_capacity_results_to_excel(wb, shared_ess_capacity)
+    if salvage_value_results:
+        planning_problem.shared_ess_data.write_salvage_value_results_to_excel(
+            wb, salvage_value_results
+        )
     _write_operational_planning_market_data_to_excel(planning_problem, wb)
 
     if primal_evolution:
