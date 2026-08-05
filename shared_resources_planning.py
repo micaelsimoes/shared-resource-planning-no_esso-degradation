@@ -647,33 +647,27 @@ def _validate_local_sensitivities_with_finite_differences(planning_problem, cand
         return []
 
     node_id, year = selected
-    sensitivity_s = sensitivities['s'][year][node_id]
-    sensitivity_e = sensitivities['e'][year][node_id]
-    if sensitivity_s is None or sensitivity_e is None:
+    original_sensitivity_s = sensitivities['s'][year][node_id]
+    original_sensitivity_e = sensitivities['e'][year][node_id]
+    if original_sensitivity_s is None or original_sensitivity_e is None:
         print('[WARNING] Finite-difference validation skipped: the selected sensitivity is unavailable.')
         return []
 
     base_s = candidate_solution['investment'][node_id][year]['s']
     base_e = candidate_solution['investment'][node_id][year]['e']
-    if isclose(base_s, 0.00, abs_tol=SMALL_TOLERANCE):
-        ratio = planning_problem.shared_ess_data.params.min_energy_to_power_ratio
-    else:
-        ratio = base_e / base_s
-
+    ratio = (
+        planning_problem.shared_ess_data.params.min_energy_to_power_ratio
+        if isclose(base_s, 0.00, abs_tol=SMALL_TOLERANCE)
+        else base_e / base_s
+    )
     baseline_soh_margin = _get_investment_soh_margin(
         planning_problem, baseline_models['esso'], node_id, year
     )
     direction_specs = _get_finite_difference_directions(params.directions, ratio, base_s, base_e)
-    reference_direction = next(
+    display_direction = next(
         (direction for direction in direction_specs if direction['name'] == 'fixed_ratio'),
         direction_specs[0] if direction_specs else None,
     )
-    reference_analytic_slope = None
-    if reference_direction is not None:
-        reference_analytic_slope = (
-            reference_direction['s'] * sensitivity_s
-            + reference_direction['e'] * sensitivity_e
-        )
     validation_results = []
 
     print('[INFO] Running finite-difference validation of the incumbent local sensitivity...')
@@ -683,131 +677,147 @@ def _validate_local_sensitivities_with_finite_differences(planning_problem, cand
     )
 
     try:
-        replay_convergence, _, replay_models, replay_sensitivities, _, _ = planning_problem.run_operational_planning(
-            candidate_solution=candidate_solution,
-            print_results=False,
-            initial_state=baseline_state,
-            return_state=True,
+        reference = _refine_finite_difference_operational_point(
+            planning_problem,
+            candidate_solution,
+            baseline_state,
+            params,
+            node_id,
+            year,
+            initial_sensitivities=sensitivities,
+            require_sensitivity_stability=True,
         )
-        replay_esso_violation = _get_esso_violation_if_available(planning_problem, replay_models)
-        replay_recourse = None
-        replay_drift = None
-        replay_soh_margin = None
-        replay_sensitivity_s = None
-        replay_sensitivity_e = None
-        replay_reference_slope = None
-        sensitivity_relative_drift_s = None
-        sensitivity_relative_drift_e = None
-        sensitivity_relative_drift = None
-        replay_active_set_changed = None
-        replay_tolerance = max(
-            params.replay_absolute_tolerance,
-            params.replay_relative_tolerance * max(abs(baseline_recourse), 1.00),
-        )
-        replay_reasons = []
 
-        if not replay_convergence:
-            replay_reasons.append('ADMM replay did not converge')
-        else:
-            replay_recourse = planning_problem.get_operational_recourse_value(replay_models)
-            replay_drift = replay_recourse - baseline_recourse
-            replay_soh_margin = _get_investment_soh_margin(
-                planning_problem, replay_models['esso'], node_id, year
+        for attempt in reference['attempts']:
+            current_sensitivity_s = attempt['sensitivity_s']
+            current_sensitivity_e = attempt['sensitivity_e']
+            cumulative_drift = (
+                attempt['recourse'] - baseline_recourse
+                if attempt['recourse'] is not None else None
             )
-            replay_sensitivity_s = replay_sensitivities['s'][year][node_id]
-            replay_sensitivity_e = replay_sensitivities['e'][year][node_id]
-            if replay_sensitivity_s is None or replay_sensitivity_e is None:
-                replay_reasons.append('replay sensitivity is unavailable')
-            else:
-                sensitivity_relative_drift_s = abs(replay_sensitivity_s - sensitivity_s) / max(
-                    abs(replay_sensitivity_s), abs(sensitivity_s), 1.00
-                )
-                sensitivity_relative_drift_e = abs(replay_sensitivity_e - sensitivity_e) / max(
-                    abs(replay_sensitivity_e), abs(sensitivity_e), 1.00
-                )
-                sensitivity_relative_drift = max(
-                    sensitivity_relative_drift_s,
-                    sensitivity_relative_drift_e,
-                )
-                if reference_direction is not None:
-                    replay_reference_slope = (
-                        reference_direction['s'] * replay_sensitivity_s
-                        + reference_direction['e'] * replay_sensitivity_e
-                    )
-                if sensitivity_relative_drift > params.slope_consistency_tolerance:
-                    replay_reasons.append('one or more partial sensitivities are not reproducible')
-
-            replay_active_set_changed = _soh_active_state_changed(
-                baseline_soh_margin, replay_soh_margin, params.soh_active_tolerance
+            original_drift_s = _relative_value_drift(
+                current_sensitivity_s, original_sensitivity_s
             )
-            if replay_active_set_changed:
-                replay_reasons.append('minimum-SoH activity changed during replay')
-            if abs(replay_drift) > replay_tolerance:
-                replay_reasons.append('recourse replay drift exceeds tolerance')
+            original_drift_e = _relative_value_drift(
+                current_sensitivity_e, original_sensitivity_e
+            )
+            original_drift = _maximum_available_value(original_drift_s, original_drift_e)
+            active_set_changed = _soh_active_state_changed(
+                baseline_soh_margin, attempt['soh_margin'], params.soh_active_tolerance
+            )
+            original_cut_reproducible = (
+                attempt['stabilized']
+                and cumulative_drift is not None
+                and abs(cumulative_drift) <= attempt['stationarity_tolerance']
+                and original_drift is not None
+                and original_drift <= params.slope_consistency_tolerance
+                and not active_set_changed
+            )
+            original_display_slope = _directional_slope(
+                display_direction, original_sensitivity_s, original_sensitivity_e
+            )
+            current_display_slope = _directional_slope(
+                display_direction, current_sensitivity_s, current_sensitivity_e
+            )
+            validation_results.append({
+                'run_type': 'reference_refinement',
+                'direction': 'replay',
+                'status': 'passed' if attempt['stabilized'] else 'inconclusive',
+                'reason': '; '.join(attempt['reasons']),
+                'refinement': attempt['refinement'],
+                'max_refinements': params.max_replay_refinements,
+                'reference_stabilized': attempt['stabilized'],
+                'original_cut_reproducible': original_cut_reproducible,
+                'baseline_outer_iteration': baseline_outer_iteration,
+                'termination_reason': termination_reason,
+                'node_id': node_id,
+                'year': year,
+                'base_s': base_s,
+                'base_e': base_e,
+                'energy_to_power_ratio': ratio,
+                'step_fraction': 0.00,
+                'step_size': 0.00,
+                'delta_s': 0.00,
+                'delta_e': 0.00,
+                'sensitivity_s': original_sensitivity_s,
+                'sensitivity_e': original_sensitivity_e,
+                'replay_sensitivity_s': current_sensitivity_s,
+                'replay_sensitivity_e': current_sensitivity_e,
+                'original_analytic_slope': original_display_slope,
+                'analytic_slope': current_display_slope,
+                'replay_analytic_slope': current_display_slope,
+                'baseline_recourse': baseline_recourse,
+                'reference_recourse': attempt['recourse'],
+                'replay_drift': cumulative_drift,
+                'stationarity_drift': attempt['stationarity_drift'],
+                'stationarity_tolerance': attempt['stationarity_tolerance'],
+                'replay_tolerance': attempt['stationarity_tolerance'],
+                'sensitivity_relative_drift': attempt['sensitivity_relative_drift'],
+                'sensitivity_relative_drift_s': attempt['sensitivity_relative_drift_s'],
+                'sensitivity_relative_drift_e': attempt['sensitivity_relative_drift_e'],
+                'original_sensitivity_relative_drift': original_drift,
+                'original_sensitivity_relative_drift_s': original_drift_s,
+                'original_sensitivity_relative_drift_e': original_drift_e,
+                'operational_convergence': attempt['operational_convergence'],
+                'esso_violation': attempt['esso_violation'],
+                'baseline_soh_margin': baseline_soh_margin,
+                'reference_soh_margin': attempt['soh_margin'],
+                'active_set_changed': active_set_changed,
+                'passed': attempt['stabilized'],
+            })
 
-        if replay_esso_violation is None:
-            replay_reasons.append('ESSO replay violation is unavailable')
-        elif replay_esso_violation > BENDERS_FEASIBILITY_TOLERANCE:
-            replay_reasons.append('ESSO replay violation exceeds tolerance')
+            cycle_drift_text = _format_optional_float(attempt['stationarity_drift'])
+            cumulative_drift_text = _format_optional_float(cumulative_drift)
+            sensitivity_drift_text = _format_optional_percent(
+                attempt['sensitivity_relative_drift']
+            )
+            print(
+                f'[INFO] Finite-difference reference refinement {attempt["refinement"]}/'
+                f'{params.max_replay_refinements} | Cycle recourse drift = {cycle_drift_text} | '
+                f'Cumulative incumbent drift = {cumulative_drift_text} | '
+                f'Partial sensitivity drift = {sensitivity_drift_text} | '
+                f'Status = {"passed" if attempt["stabilized"] else "inconclusive"}'
+            )
 
-        replay_status = 'passed' if not replay_reasons else 'inconclusive'
-        validation_results.append({
-            'run_type': 'replay',
-            'direction': 'replay',
-            'status': replay_status,
-            'reason': '; '.join(replay_reasons),
-            'baseline_outer_iteration': baseline_outer_iteration,
-            'termination_reason': termination_reason,
-            'node_id': node_id,
-            'year': year,
-            'base_s': base_s,
-            'base_e': base_e,
-            'energy_to_power_ratio': ratio,
-            'step_fraction': 0.00,
-            'step_size': 0.00,
-            'delta_s': 0.00,
-            'delta_e': 0.00,
-            'sensitivity_s': sensitivity_s,
-            'sensitivity_e': sensitivity_e,
-            'replay_sensitivity_s': replay_sensitivity_s,
-            'replay_sensitivity_e': replay_sensitivity_e,
-            'analytic_slope': reference_analytic_slope,
-            'replay_analytic_slope': replay_reference_slope,
-            'baseline_recourse': baseline_recourse,
-            'reference_recourse': replay_recourse,
-            'replay_drift': replay_drift,
-            'replay_tolerance': replay_tolerance,
-            'sensitivity_relative_drift': sensitivity_relative_drift,
-            'sensitivity_relative_drift_s': sensitivity_relative_drift_s,
-            'sensitivity_relative_drift_e': sensitivity_relative_drift_e,
-            'operational_convergence': replay_convergence,
-            'esso_violation': replay_esso_violation,
-            'baseline_soh_margin': baseline_soh_margin,
-            'reference_soh_margin': replay_soh_margin,
-            'active_set_changed': replay_active_set_changed,
-            'passed': replay_status == 'passed',
-        })
-
-        drift_text = f'{replay_drift:.6f}' if replay_drift is not None else 'N/A'
-        replay_violation_text = (
-            f'{replay_esso_violation:.6f}' if replay_esso_violation is not None else 'N/A'
-        )
-        print(
-            f'[INFO] Finite-difference replay | Recourse drift = {drift_text} | '
-            f'Tolerance = {replay_tolerance:.6f} | ESSO violation = {replay_violation_text} | '
-            f'Status = {replay_status}'
-        )
-        if replay_status != 'passed':
-            print('[WARNING] Finite-difference perturbations skipped: the baseline replay is not reproducible.')
+        if not reference['stabilized']:
+            print(
+                '[WARNING] Finite-difference perturbations skipped: the incumbent reference '
+                'did not stabilize within the configured refinement limit.'
+            )
             return validation_results
 
-        noise_floor = max(abs(replay_drift), params.replay_absolute_tolerance)
+        reference_sensitivity_s = reference['sensitivities']['s'][year][node_id]
+        reference_sensitivity_e = reference['sensitivities']['e'][year][node_id]
+        original_drift_s = _relative_value_drift(
+            reference_sensitivity_s, original_sensitivity_s
+        )
+        original_drift_e = _relative_value_drift(
+            reference_sensitivity_e, original_sensitivity_e
+        )
+        original_drift = _maximum_available_value(original_drift_s, original_drift_e)
+        original_active_set_changed = _soh_active_state_changed(
+            baseline_soh_margin, reference['soh_margin'], params.soh_active_tolerance
+        )
+        original_cut_reproducible = (
+            abs(reference['recourse'] - baseline_recourse) <= reference['stationarity_tolerance']
+            and original_drift is not None
+            and original_drift <= params.slope_consistency_tolerance
+            and not original_active_set_changed
+        )
+        if not original_cut_reproducible:
+            print(
+                '[WARNING] The polished reference differs materially from the original incumbent '
+                'recourse, sensitivities, or minimum-SoH active set. Perturbations will validate '
+                'the polished local derivative and report the original-cut drift separately.'
+            )
+
         for direction in direction_specs:
             previous_observed_slope = None
-            analytic_slope = direction['s'] * sensitivity_s + direction['e'] * sensitivity_e
-            replay_analytic_slope = (
-                direction['s'] * replay_sensitivity_s
-                + direction['e'] * replay_sensitivity_e
+            original_analytic_slope = _directional_slope(
+                direction, original_sensitivity_s, original_sensitivity_e
+            )
+            analytic_slope = _directional_slope(
+                direction, reference_sensitivity_s, reference_sensitivity_e
             )
 
             for step_fraction in params.relative_step_sizes:
@@ -826,18 +836,17 @@ def _validate_local_sensitivities_with_finite_differences(planning_problem, cand
                     planning_problem, perturbed_candidate
                 )
 
+                endpoint = _refine_finite_difference_operational_point(
+                    planning_problem,
+                    perturbed_candidate,
+                    reference['state'],
+                    params,
+                    node_id,
+                    year,
+                    require_sensitivity_stability=False,
+                )
                 predicted_change = analytic_slope * step_size
-                operational_convergence, _, perturbed_models, _, _, _ = planning_problem.run_operational_planning(
-                    candidate_solution=perturbed_candidate,
-                    print_results=False,
-                    initial_state=baseline_state,
-                    return_state=True,
-                )
-                esso_violation = _get_esso_violation_if_available(
-                    planning_problem, perturbed_models
-                )
-
-                perturbed_recourse = None
+                perturbed_recourse = endpoint['recourse']
                 observed_change = None
                 absolute_error = None
                 observed_slope = None
@@ -846,16 +855,14 @@ def _validate_local_sensitivities_with_finite_differences(planning_problem, cand
                 same_sign = None
                 signal_to_noise_ratio = None
                 slope_consistency_error = None
-                perturbed_soh_margin = None
-                active_set_changed = None
+                active_set_changed = _soh_active_state_changed(
+                    reference['soh_margin'], endpoint['soh_margin'], params.soh_active_tolerance
+                )
+                reasons = list(endpoint['reasons'])
                 status = 'inconclusive'
-                reasons = []
 
-                if not operational_convergence:
-                    reasons.append('ADMM did not converge')
-                else:
-                    perturbed_recourse = planning_problem.get_operational_recourse_value(perturbed_models)
-                    observed_change = perturbed_recourse - replay_recourse
+                if endpoint['stabilized'] and perturbed_recourse is not None:
+                    observed_change = perturbed_recourse - reference['recourse']
                     absolute_error = abs(observed_change - predicted_change)
                     observed_slope = observed_change / step_size
                     absolute_slope_error = abs(observed_slope - analytic_slope)
@@ -869,22 +876,17 @@ def _validate_local_sensitivities_with_finite_differences(planning_problem, cand
                             and isclose(observed_slope, 0.00, abs_tol=1.00)
                         )
                     )
+                    noise_floor = max(
+                        reference['stationarity_drift'] or 0.00,
+                        endpoint['stationarity_drift'] or 0.00,
+                        params.replay_absolute_tolerance,
+                    )
                     signal_to_noise_ratio = abs(observed_change) / noise_floor
-                    perturbed_soh_margin = _get_investment_soh_margin(
-                        planning_problem, perturbed_models['esso'], node_id, year
-                    )
-                    active_set_changed = _soh_active_state_changed(
-                        replay_soh_margin, perturbed_soh_margin, params.soh_active_tolerance
-                    )
                     if previous_observed_slope is not None:
                         slope_consistency_error = abs(observed_slope - previous_observed_slope) / max(
                             abs(observed_slope), abs(previous_observed_slope), 1.00
                         )
 
-                    if esso_violation is None:
-                        reasons.append('ESSO violation is unavailable')
-                    elif esso_violation > BENDERS_FEASIBILITY_TOLERANCE:
-                        reasons.append('ESSO violation exceeds tolerance')
                     if active_set_changed:
                         reasons.append('minimum-SoH activity changed')
                     if signal_to_noise_ratio < params.minimum_signal_to_noise_ratio:
@@ -908,13 +910,18 @@ def _validate_local_sensitivities_with_finite_differences(planning_problem, cand
 
                     previous_observed_slope = observed_slope
 
-                result = {
+                validation_results.append({
                     'run_type': 'perturbation',
                     'direction': direction['name'],
                     'direction_s': direction['s'],
                     'direction_e': direction['e'],
                     'status': status,
                     'reason': '; '.join(reasons),
+                    'refinement': endpoint['refinement_count'],
+                    'max_refinements': params.max_replay_refinements,
+                    'reference_stabilized': reference['stabilized'],
+                    'endpoint_stabilized': endpoint['stabilized'],
+                    'original_cut_reproducible': original_cut_reproducible,
                     'baseline_outer_iteration': baseline_outer_iteration,
                     'termination_reason': termination_reason,
                     'node_id': node_id,
@@ -928,15 +935,16 @@ def _validate_local_sensitivities_with_finite_differences(planning_problem, cand
                     'delta_e': delta_e,
                     'first_stage_feasible': first_stage_feasible,
                     'first_stage_reason': first_stage_reason,
-                    'sensitivity_s': sensitivity_s,
-                    'sensitivity_e': sensitivity_e,
-                    'replay_sensitivity_s': replay_sensitivity_s,
-                    'replay_sensitivity_e': replay_sensitivity_e,
+                    'sensitivity_s': original_sensitivity_s,
+                    'sensitivity_e': original_sensitivity_e,
+                    'replay_sensitivity_s': reference_sensitivity_s,
+                    'replay_sensitivity_e': reference_sensitivity_e,
+                    'original_analytic_slope': original_analytic_slope,
                     'analytic_slope': analytic_slope,
-                    'replay_analytic_slope': replay_analytic_slope,
+                    'replay_analytic_slope': analytic_slope,
                     'predicted_change': predicted_change,
                     'baseline_recourse': baseline_recourse,
-                    'reference_recourse': replay_recourse,
+                    'reference_recourse': reference['recourse'],
                     'perturbed_recourse': perturbed_recourse,
                     'observed_change': observed_change,
                     'absolute_error': absolute_error,
@@ -946,37 +954,210 @@ def _validate_local_sensitivities_with_finite_differences(planning_problem, cand
                     'signal_to_noise_ratio': signal_to_noise_ratio,
                     'slope_consistency_error': slope_consistency_error,
                     'same_sign': same_sign,
-                    'operational_convergence': operational_convergence,
-                    'esso_violation': esso_violation,
+                    'operational_convergence': endpoint['operational_convergence'],
+                    'esso_violation': endpoint['esso_violation'],
                     'baseline_soh_margin': baseline_soh_margin,
-                    'reference_soh_margin': replay_soh_margin,
-                    'perturbed_soh_margin': perturbed_soh_margin,
+                    'reference_soh_margin': reference['soh_margin'],
+                    'perturbed_soh_margin': endpoint['soh_margin'],
                     'active_set_changed': active_set_changed,
-                    'replay_drift': replay_drift,
-                    'replay_tolerance': replay_tolerance,
-                    'sensitivity_relative_drift': sensitivity_relative_drift,
-                    'sensitivity_relative_drift_s': sensitivity_relative_drift_s,
-                    'sensitivity_relative_drift_e': sensitivity_relative_drift_e,
+                    'replay_drift': reference['recourse'] - baseline_recourse,
+                    'stationarity_drift': endpoint['stationarity_drift'],
+                    'stationarity_tolerance': endpoint['stationarity_tolerance'],
+                    'replay_tolerance': reference['stationarity_tolerance'],
+                    'sensitivity_relative_drift': reference['sensitivity_relative_drift'],
+                    'sensitivity_relative_drift_s': reference['sensitivity_relative_drift_s'],
+                    'sensitivity_relative_drift_e': reference['sensitivity_relative_drift_e'],
+                    'original_sensitivity_relative_drift': original_drift,
+                    'original_sensitivity_relative_drift_s': original_drift_s,
+                    'original_sensitivity_relative_drift_e': original_drift_e,
                     'passed': status == 'passed',
-                }
-                validation_results.append(result)
+                })
 
-                observed_text = f'{observed_change:.6f}' if observed_change is not None else 'N/A'
-                error_text = f'{relative_error * 100:.2f}%' if relative_error is not None else 'N/A'
-                esso_violation_text = (
-                    f'{esso_violation:.6f}' if esso_violation is not None else 'N/A'
-                )
+                observed_text = _format_optional_float(observed_change)
+                error_text = _format_optional_percent(relative_error)
+                endpoint_drift_text = _format_optional_float(endpoint['stationarity_drift'])
                 print(
                     f'[INFO] Finite difference {direction["name"]} | '
                     f'h = {step_size:.6f} ({step_fraction:.2%}) | '
+                    f'Refinements = {endpoint["refinement_count"]} | '
+                    f'Endpoint drift = {endpoint_drift_text} | '
                     f'Predicted change = {predicted_change:.6f} | '
                     f'Observed change = {observed_text} | Relative error = {error_text} | '
-                    f'ESSO violation = {esso_violation_text} | Status = {status}'
+                    f'Status = {status}'
                 )
     finally:
         _restore_candidate_data(planning_problem, candidate_solution)
 
     return validation_results
+
+
+def _refine_finite_difference_operational_point(planning_problem, candidate_solution,
+                                                initial_state, params, node_id, year,
+                                                initial_sensitivities=None,
+                                                require_sensitivity_stability=False):
+    state = initial_state
+    previous_sensitivity_s = _get_selected_sensitivity(initial_sensitivities, 's', year, node_id)
+    previous_sensitivity_e = _get_selected_sensitivity(initial_sensitivities, 'e', year, node_id)
+    attempts = []
+    final = {
+        'stabilized': False,
+        'operational_convergence': False,
+        'models': None,
+        'sensitivities': None,
+        'state': state,
+        'recourse': None,
+        'esso_violation': None,
+        'soh_margin': None,
+        'stationarity_drift': None,
+        'stationarity_tolerance': None,
+        'sensitivity_relative_drift': None,
+        'sensitivity_relative_drift_s': None,
+        'sensitivity_relative_drift_e': None,
+        'reasons': [],
+        'refinement_count': 0,
+    }
+
+    for refinement in range(1, params.max_replay_refinements + 1):
+        state_for_run = dict(state)
+        state_for_run['consecutive_converged_cycles'] = 0
+        convergence, _, models, current_sensitivities, _, current_state = (
+            planning_problem.run_operational_planning(
+                candidate_solution=candidate_solution,
+                print_results=False,
+                initial_state=state_for_run,
+                return_state=True,
+            )
+        )
+        esso_violation = _get_esso_violation_if_available(planning_problem, models)
+        recourse = None
+        soh_margin = None
+        current_sensitivity_s = None
+        current_sensitivity_e = None
+        stationarity_drift = _get_last_admm_objective_change(current_state)
+        stationarity_tolerance = None
+        sensitivity_drift_s = None
+        sensitivity_drift_e = None
+        sensitivity_drift = None
+        reasons = []
+
+        if not convergence:
+            reasons.append('ADMM refinement did not converge')
+        else:
+            recourse = planning_problem.get_operational_recourse_value(models)
+            stationarity_tolerance = max(
+                params.replay_absolute_tolerance,
+                params.replay_relative_tolerance * max(abs(recourse), 1.00),
+            )
+            soh_margin = _get_investment_soh_margin(
+                planning_problem, models['esso'], node_id, year
+            )
+            current_sensitivity_s = _get_selected_sensitivity(
+                current_sensitivities, 's', year, node_id
+            )
+            current_sensitivity_e = _get_selected_sensitivity(
+                current_sensitivities, 'e', year, node_id
+            )
+            sensitivity_drift_s = _relative_value_drift(
+                current_sensitivity_s, previous_sensitivity_s
+            )
+            sensitivity_drift_e = _relative_value_drift(
+                current_sensitivity_e, previous_sensitivity_e
+            )
+            sensitivity_drift = _maximum_available_value(
+                sensitivity_drift_s, sensitivity_drift_e
+            )
+
+            if stationarity_drift is None:
+                reasons.append('validation recourse stationarity is unavailable')
+            elif stationarity_drift > stationarity_tolerance:
+                reasons.append('validation recourse stationarity exceeds tolerance')
+            if require_sensitivity_stability:
+                if sensitivity_drift is None:
+                    reasons.append('validation sensitivity stability is unavailable')
+                elif sensitivity_drift > params.slope_consistency_tolerance:
+                    reasons.append('partial sensitivities have not stabilized')
+
+        if esso_violation is None:
+            reasons.append('ESSO violation is unavailable')
+        elif esso_violation > BENDERS_FEASIBILITY_TOLERANCE:
+            reasons.append('ESSO violation exceeds tolerance')
+
+        stabilized = not reasons
+        attempt = {
+            'refinement': refinement,
+            'stabilized': stabilized,
+            'reasons': reasons,
+            'operational_convergence': convergence,
+            'models': models,
+            'sensitivities': current_sensitivities,
+            'state': current_state,
+            'recourse': recourse,
+            'esso_violation': esso_violation,
+            'soh_margin': soh_margin,
+            'stationarity_drift': stationarity_drift,
+            'stationarity_tolerance': stationarity_tolerance,
+            'sensitivity_s': current_sensitivity_s,
+            'sensitivity_e': current_sensitivity_e,
+            'sensitivity_relative_drift': sensitivity_drift,
+            'sensitivity_relative_drift_s': sensitivity_drift_s,
+            'sensitivity_relative_drift_e': sensitivity_drift_e,
+        }
+        attempts.append(attempt)
+        final.update(attempt)
+        final['attempts'] = attempts
+        final['refinement_count'] = refinement
+
+        if stabilized:
+            break
+        if not convergence or esso_violation is None or esso_violation > BENDERS_FEASIBILITY_TOLERANCE:
+            break
+
+        state = current_state
+        previous_sensitivity_s = current_sensitivity_s
+        previous_sensitivity_e = current_sensitivity_e
+
+    return final
+
+
+def _get_last_admm_objective_change(state):
+    if not isinstance(state, dict):
+        return None
+    for diagnostic in reversed(state.get('admm_diagnostics', [])):
+        objective_change = diagnostic.get('objective_change_abs')
+        if objective_change is not None:
+            return abs(objective_change)
+    return None
+
+
+def _get_selected_sensitivity(sensitivities, capacity_type, year, node_id):
+    if sensitivities is None:
+        return None
+    return sensitivities.get(capacity_type, {}).get(year, {}).get(node_id)
+
+
+def _relative_value_drift(current, previous):
+    if current is None or previous is None:
+        return None
+    return abs(current - previous) / max(abs(current), abs(previous), 1.00)
+
+
+def _maximum_available_value(*values):
+    available_values = [value for value in values if value is not None]
+    return max(available_values) if available_values else None
+
+
+def _directional_slope(direction, sensitivity_s, sensitivity_e):
+    if direction is None or sensitivity_s is None or sensitivity_e is None:
+        return None
+    return direction['s'] * sensitivity_s + direction['e'] * sensitivity_e
+
+
+def _format_optional_float(value):
+    return f'{value:.6f}' if value is not None else 'N/A'
+
+
+def _format_optional_percent(value):
+    return f'{value * 100:.2f}%' if value is not None else 'N/A'
 
 
 def _get_finite_difference_directions(direction_names, ratio, base_s, base_e):
@@ -3943,6 +4124,11 @@ def _write_finite_difference_validation_to_excel(workbook, validation_results):
         ('direction', 'Direction', 'General'),
         ('status', 'Status', 'General'),
         ('reason', 'Reason', 'General'),
+        ('refinement', 'Refinement Count', '0'),
+        ('max_refinements', 'Maximum Refinements', '0'),
+        ('reference_stabilized', 'Reference Stabilized', 'General'),
+        ('endpoint_stabilized', 'Perturbed Endpoint Stabilized', 'General'),
+        ('original_cut_reproducible', 'Original Cut Point Reproducible', 'General'),
         ('baseline_outer_iteration', 'Baseline Outer Iteration', '0'),
         ('termination_reason', 'Planning Termination Reason', 'General'),
         ('node_id', 'Node ID', '0'),
@@ -3962,6 +4148,7 @@ def _write_finite_difference_validation_to_excel(workbook, validation_results):
         ('sensitivity_e', 'Sensitivity E, [NPV m.u./MVAh]', '0.000000'),
         ('replay_sensitivity_s', 'Replay Sensitivity S, [NPV m.u./MVA]', '0.000000'),
         ('replay_sensitivity_e', 'Replay Sensitivity E, [NPV m.u./MVAh]', '0.000000'),
+        ('original_analytic_slope', 'Original-Cut Directional Slope, [NPV m.u./h]', '0.000000'),
         ('analytic_slope', 'Analytic Directional Slope, [NPV m.u./h]', '0.000000'),
         ('replay_analytic_slope', 'Replay Directional Slope, [NPV m.u./h]', '0.000000'),
         ('predicted_change', 'Predicted Recourse Change, [NPV m.u.]', '0.000000'),
@@ -3977,9 +4164,14 @@ def _write_finite_difference_validation_to_excel(workbook, validation_results):
         ('slope_consistency_error', 'Step-to-Step Slope Difference, [%]', '0.00%'),
         ('replay_drift', 'Replay Recourse Drift, [NPV m.u.]', '0.000000'),
         ('replay_tolerance', 'Replay Drift Tolerance, [NPV m.u.]', '0.000000'),
+        ('stationarity_drift', 'Endpoint Cycle Recourse Drift, [NPV m.u.]', '0.000000'),
+        ('stationarity_tolerance', 'Endpoint Recourse Tolerance, [NPV m.u.]', '0.000000'),
         ('sensitivity_relative_drift', 'Replay Sensitivity Drift, [%]', '0.00%'),
         ('sensitivity_relative_drift_s', 'Replay Sensitivity S Drift, [%]', '0.00%'),
         ('sensitivity_relative_drift_e', 'Replay Sensitivity E Drift, [%]', '0.00%'),
+        ('original_sensitivity_relative_drift', 'Original-Cut Sensitivity Drift, [%]', '0.00%'),
+        ('original_sensitivity_relative_drift_s', 'Original-Cut Sensitivity S Drift, [%]', '0.00%'),
+        ('original_sensitivity_relative_drift_e', 'Original-Cut Sensitivity E Drift, [%]', '0.00%'),
         ('same_sign', 'Same Sign', 'General'),
         ('operational_convergence', 'ADMM Converged', 'General'),
         ('esso_violation', 'ESSO Feasibility Slack, [N/A]', '0.000000'),

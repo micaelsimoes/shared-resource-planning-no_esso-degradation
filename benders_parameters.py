@@ -13,6 +13,7 @@ class FiniteDifferenceParameters:
         self.relative_error_tolerance = 1e-1
         self.replay_relative_tolerance = 1e-6
         self.replay_absolute_tolerance = 1.0
+        self.max_replay_refinements = 10
         self.minimum_signal_to_noise_ratio = 10.0
         self.slope_consistency_tolerance = 1e-1
         self.soh_active_tolerance = 1e-4
@@ -54,6 +55,11 @@ class FiniteDifferenceParameters:
         self.replay_absolute_tolerance = float(
             params_data.get('replay_absolute_tolerance', self.replay_absolute_tolerance)
         )
+        self.max_replay_refinements = int(
+            params_data.get('max_replay_refinements', self.max_replay_refinements)
+        )
+        if self.max_replay_refinements < 1:
+            raise ValueError('Finite-difference max_replay_refinements must be at least one.')
         self.minimum_signal_to_noise_ratio = float(
             params_data.get('minimum_signal_to_noise_ratio', self.minimum_signal_to_noise_ratio)
         )
