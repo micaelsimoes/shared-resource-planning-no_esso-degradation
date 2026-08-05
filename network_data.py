@@ -27,6 +27,7 @@ class NetworkData:
         self.days = dict()
         self.num_instants = int()
         self.num_oper_scenarios = int()
+        self.random_seed = None
         self.plot_operational_data = bool()
         self.discount_factor = float()
         self.network = dict()
@@ -149,7 +150,10 @@ def _read_network_data(network_planning):
         print(f'[ERROR] Reading operational data, network {network_planning.name} from file. Exiting...')
         exit(ERROR_SPECIFICATION_FILE)
 
-    synthetic_profiles = _generate_operational_scenarios(base_data)
+    synthetic_profiles = _generate_operational_scenarios(
+        base_data,
+        random_seed=derive_random_seed(network_planning.random_seed, 'synthetic_profiles'),
+    )
     if network_planning.plot_operational_data:
         years_to_plot = list(network_planning.years)[0]
         _plot_flexibility_data_scenarios(network_planning, synthetic_profiles['flexibility'], years_to_plot=[years_to_plot], save_dir=network_planning.diagrams_dir)
@@ -171,6 +175,9 @@ def _read_network_data(network_planning):
             network_planning.network[year][day].day = day
             network_planning.network[year][day].num_instants = network_planning.num_instants
             network_planning.network[year][day].num_oper_scenarios = network_planning.num_oper_scenarios
+            network_planning.network[year][day].random_seed = derive_random_seed(
+                network_planning.random_seed, 'realization', int(year), str(day)
+            )
             network_planning.network[year][day].prob_operation_scenarios = [(1 / network_planning.num_oper_scenarios)] * network_planning.num_oper_scenarios
             network_planning.network[year][day].is_transmission = network_planning.is_transmission
 
@@ -199,18 +206,35 @@ def _read_network_base_profiles(filename):
     return base_operational_data
 
 
-def _generate_operational_scenarios(base_profiles, n_samples=100, bandwidth=0.10):
+def _generate_operational_scenarios(base_profiles, n_samples=100, bandwidth=0.10,
+                                    random_seed=None):
 
     synthetic_profiles = {
-        'consumption': generate_consumption_profiles(base_profiles, n_samples=n_samples, bandwidth=bandwidth),
-        'generation': generate_res_generation_profiles(base_profiles, n_samples=n_samples, bandwidth=bandwidth),
-        'flexibility': generate_flexibility_profiles(base_profiles, n_samples=n_samples, bandwidth=bandwidth)
+        'consumption': generate_consumption_profiles(
+            base_profiles,
+            n_samples=n_samples,
+            bandwidth=bandwidth,
+            random_seed=derive_random_seed(random_seed, 'consumption'),
+        ),
+        'generation': generate_res_generation_profiles(
+            base_profiles,
+            n_samples=n_samples,
+            bandwidth=bandwidth,
+            random_seed=derive_random_seed(random_seed, 'generation'),
+        ),
+        'flexibility': generate_flexibility_profiles(
+            base_profiles,
+            n_samples=n_samples,
+            bandwidth=bandwidth,
+            random_seed=derive_random_seed(random_seed, 'flexibility'),
+        ),
     }
 
     return synthetic_profiles
 
 
-def generate_consumption_profiles(base_operational_data, n_samples=100, bandwidth=0.10):
+def generate_consumption_profiles(base_operational_data, n_samples=100, bandwidth=0.10,
+                                  random_seed=None):
 
     print('[INFO]\t - Generating load stochastic scenarios...')
 
@@ -250,7 +274,10 @@ def generate_consumption_profiles(base_operational_data, n_samples=100, bandwidt
             combined_scaled = scaler.fit_transform(combined)
 
             # Fit model
-            model = GaussianMultivariate(distribution=CustomGaussianKDE(bandwidth=bandwidth))
+            model = GaussianMultivariate(
+                distribution=CustomGaussianKDE(bandwidth=bandwidth),
+                random_state=derive_random_seed(random_seed, str(season), str(load_id)),
+            )
             model.fit(pd.DataFrame(combined_scaled, columns=combined.columns))
 
             # Sample
@@ -266,7 +293,8 @@ def generate_consumption_profiles(base_operational_data, n_samples=100, bandwidt
     return synthetic_profiles
 
 
-def generate_res_generation_profiles(base_operational_data, n_samples=100, bandwidth=0.10):
+def generate_res_generation_profiles(base_operational_data, n_samples=100, bandwidth=0.10,
+                                     random_seed=None):
 
     print('[INFO]\t - Generating RES generation stochastic scenarios...')
 
@@ -296,7 +324,10 @@ def generate_res_generation_profiles(base_operational_data, n_samples=100, bandw
             scaler = MinMaxScaler()
             scaled = scaler.fit_transform(gen_hours)
 
-            model = GaussianMultivariate(distribution=CustomGaussianKDE(bandwidth=bandwidth))
+            model = GaussianMultivariate(
+                distribution=CustomGaussianKDE(bandwidth=bandwidth),
+                random_state=derive_random_seed(random_seed, str(season), gen_type),
+            )
             model.fit(pd.DataFrame(scaled))
 
             # Sample
@@ -311,7 +342,8 @@ def generate_res_generation_profiles(base_operational_data, n_samples=100, bandw
     return synthetic_profiles
 
 
-def generate_flexibility_profiles(base_operational_data, n_samples=100, bandwidth=0.10):
+def generate_flexibility_profiles(base_operational_data, n_samples=100, bandwidth=0.10,
+                                  random_seed=None):
 
     print('[INFO]\t - Generating flexibility stochastic scenarios...')
 
@@ -342,7 +374,10 @@ def generate_flexibility_profiles(base_operational_data, n_samples=100, bandwidt
         combined_scaled = scaler.fit_transform(combined)
 
         # Fit model
-        model = GaussianMultivariate(distribution=CustomGaussianKDE(bandwidth=bandwidth))
+        model = GaussianMultivariate(
+            distribution=CustomGaussianKDE(bandwidth=bandwidth),
+            random_state=derive_random_seed(random_seed, str(season)),
+        )
         model.fit(pd.DataFrame(combined_scaled, columns=combined.columns))
 
         # Sample

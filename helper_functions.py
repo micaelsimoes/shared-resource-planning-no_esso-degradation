@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import hashlib
 import psutil
 import pyomo.environ as pe
 import pyomo.opt as po
@@ -30,6 +31,14 @@ def convert_json_to_dict(json_string):
     except TypeError as e:
         print(f'[ERROR] Could not convert JSON to dict. TypeError: {e}')
         exit(ERROR_SPECIFICATION_FILE)
+
+
+def derive_random_seed(base_seed, *labels):
+    if base_seed is None:
+        return None
+    payload = json.dumps([int(base_seed), *labels], separators=(',', ':'), ensure_ascii=True)
+    digest = hashlib.sha256(payload.encode('utf-8')).digest()
+    return int.from_bytes(digest[:4], byteorder='big', signed=False)
 
 
 def is_int(s):

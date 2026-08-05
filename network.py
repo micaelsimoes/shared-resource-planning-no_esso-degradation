@@ -11,7 +11,7 @@ from generator import Generator
 from energy_storage import EnergyStorage
 from model_construction_helpers import *
 from hierarchical_coordination import *
-from helper_functions import solver_result_succeeded, solver_result_summary
+from helper_functions import derive_random_seed, solver_result_succeeded, solver_result_summary
 
 
 # ======================================================================================================================
@@ -29,6 +29,7 @@ class Network:
         self.day = str()
         self.num_instants = 0
         self.num_oper_scenarios = int()
+        self.random_seed = None
         self.operational_data_file = str()
         self.data_loaded = False
         self.is_transmission = False
@@ -1046,11 +1047,26 @@ def _update_network_with_operational_data(network, base_data, synthetic_profiles
         load_growth_cumul = (1 + load_growth_factor) ** (network.year - initial_year)
         flexibility_growth_cumul = (1 + flexibility_growth_factor) ** (network.year - initial_year)
 
-        pc = np.array(synthetic_profiles['consumption'][network.day][load_id]['pc'].sample(n=network.num_oper_scenarios)) * pc_base * load_growth_cumul
-        qc = np.array(synthetic_profiles['consumption'][network.day][load_id]['qc'].sample(n=network.num_oper_scenarios)) * qc_base * load_growth_cumul
-        pc_flex = np.array(synthetic_profiles['flexibility'][network.day]['pc'].sample(n=network.num_oper_scenarios)) * pc_flex_base * flexibility_growth_cumul
-        pc_flex_up = np.array(synthetic_profiles['flexibility'][network.day]['pc_flex_up'].sample(n=network.num_oper_scenarios)) * pc_flex_base * flexibility_growth_cumul
-        pc_flex_down = np.array(synthetic_profiles['flexibility'][network.day]['pc_flex_down'].sample(n=network.num_oper_scenarios)) * pc_flex_base * flexibility_growth_cumul
+        pc = np.array(synthetic_profiles['consumption'][network.day][load_id]['pc'].sample(
+            n=network.num_oper_scenarios,
+            random_state=derive_random_seed(network.random_seed, 'load', str(load_id), 'pc'),
+        )) * pc_base * load_growth_cumul
+        qc = np.array(synthetic_profiles['consumption'][network.day][load_id]['qc'].sample(
+            n=network.num_oper_scenarios,
+            random_state=derive_random_seed(network.random_seed, 'load', str(load_id), 'qc'),
+        )) * qc_base * load_growth_cumul
+        pc_flex = np.array(synthetic_profiles['flexibility'][network.day]['pc'].sample(
+            n=network.num_oper_scenarios,
+            random_state=derive_random_seed(network.random_seed, 'load', str(load_id), 'pc_flex'),
+        )) * pc_flex_base * flexibility_growth_cumul
+        pc_flex_up = np.array(synthetic_profiles['flexibility'][network.day]['pc_flex_up'].sample(
+            n=network.num_oper_scenarios,
+            random_state=derive_random_seed(network.random_seed, 'load', str(load_id), 'pc_flex_up'),
+        )) * pc_flex_base * flexibility_growth_cumul
+        pc_flex_down = np.array(synthetic_profiles['flexibility'][network.day]['pc_flex_down'].sample(
+            n=network.num_oper_scenarios,
+            random_state=derive_random_seed(network.random_seed, 'load', str(load_id), 'pc_flex_down'),
+        )) * pc_flex_base * flexibility_growth_cumul
 
         load.pd = (pc + pc_flex) / network.baseMVA
         load.qd = qc / network.baseMVA
@@ -1073,8 +1089,14 @@ def _update_network_with_operational_data(network, base_data, synthetic_profiles
                 print(f'[ERROR] Error! Gen type {generator.gen_type} not yet being processed! Network {network.name}, generator {generator.gen_id}')
                 exit(ERROR_NETWORK_FILE)
 
-            pg = np.array(synthetic_profiles['generation'][network.day][gen_type]['pg'].sample(n=network.num_oper_scenarios)) * gen_capacity
-            qg = np.array(synthetic_profiles['generation'][network.day][gen_type]['qg'].sample(n=network.num_oper_scenarios)) * gen_capacity
+            pg = np.array(synthetic_profiles['generation'][network.day][gen_type]['pg'].sample(
+                n=network.num_oper_scenarios,
+                random_state=derive_random_seed(network.random_seed, 'generator', str(generator.gen_id), 'pg'),
+            )) * gen_capacity
+            qg = np.array(synthetic_profiles['generation'][network.day][gen_type]['qg'].sample(
+                n=network.num_oper_scenarios,
+                random_state=derive_random_seed(network.random_seed, 'generator', str(generator.gen_id), 'qg'),
+            )) * gen_capacity
             generator.pg = pg / network.baseMVA
             generator.qg = qg / network.baseMVA
         else:

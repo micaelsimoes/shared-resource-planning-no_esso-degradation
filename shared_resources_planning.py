@@ -1,4 +1,5 @@
 import gc
+import hashlib
 import time
 from copy import copy, deepcopy
 from functools import partial
@@ -44,6 +45,8 @@ class SharedResourcesPlanning:
         self.years = dict()
         self.days = dict()
         self.num_instants = int()
+        self.random_seed = None
+        self.scenario_metadata = dict()
         self.discount_factor = float()
         self.cost_energy_p = dict()
         self.cost_flex = dict()
@@ -3078,6 +3081,18 @@ def _read_planning_problem(planning_problem):
         planning_problem.years[int(year)] = planning_data['Years'][year]
     planning_problem.days = planning_data['Days']
     planning_problem.num_instants = planning_data['NumInstants']
+    random_seed = planning_data.get('RandomSeed')
+    if random_seed is not None:
+        try:
+            random_seed = int(random_seed)
+        except (TypeError, ValueError):
+            print('[ERROR] RandomSeed must be an integer. Exiting...')
+            exit(ERROR_SPECIFICATION_FILE)
+        if random_seed < 0 or random_seed > (2 ** 32 - 1):
+            print('[ERROR] RandomSeed must be between 0 and 2^32 - 1. Exiting...')
+            exit(ERROR_SPECIFICATION_FILE)
+    planning_problem.random_seed = random_seed
+    print(f'[INFO] Scenario random seed: {random_seed if random_seed is not None else "unseeded"}')
 
     # MarketData
     print('[INFO] Reading MARKET DATA from file(s)...')
@@ -3112,6 +3127,13 @@ def _read_planning_problem(planning_problem):
         distribution_network.years = planning_problem.years
         distribution_network.days = planning_problem.days
         distribution_network.num_oper_scenarios = num_oper_scenarios
+        distribution_network.random_seed = derive_random_seed(
+            planning_problem.random_seed,
+            'network',
+            'dso',
+            network_name,
+            connection_nodeid,
+        )
         distribution_network.plot_operational_data = plot_oper_data
         distribution_network.num_instants = planning_problem.num_instants
         distribution_network.discount_factor = planning_problem.discount_factor
@@ -3149,6 +3171,12 @@ def _read_planning_problem(planning_problem):
     transmission_network.years = planning_problem.years
     transmission_network.days = planning_problem.days
     transmission_network.num_oper_scenarios = planning_data['TransmissionNetwork']['num_operation_scenarios']
+    transmission_network.random_seed = derive_random_seed(
+        planning_problem.random_seed,
+        'network',
+        'tso',
+        transmission_network.name,
+    )
     transmission_network.plot_operational_data = planning_data['TransmissionNetwork']['plot_operational_data']
     transmission_network.num_instants = planning_problem.num_instants
     transmission_network.discount_factor = planning_problem.discount_factor
@@ -3172,6 +3200,11 @@ def _read_planning_problem(planning_problem):
                 transmission_network.network[year][day].cost_flex = planning_problem.cost_flex[year][day]
     transmission_network.active_distribution_network_nodes = [node_id for node_id in planning_problem.distribution_networks]
     planning_problem.transmission_network = transmission_network
+    planning_problem.scenario_metadata = _compute_scenario_metadata(planning_problem)
+    print(
+        f'[INFO] Scenario checksum: '
+        f'{planning_problem.scenario_metadata["combined_scenario_checksum"]}'
+    )
 
     # SharedESS
     print('[INFO] Reading SHARED ESS DATA from file(s)...')
@@ -3208,6 +3241,77 @@ def _read_planning_problem(planning_problem):
     _add_shared_energy_storage_to_distribution_network(planning_problem)
 
 
+def _update_scenario_digest(digest, label, values):
+    array = np.asarray(values, dtype=np.float64).astype('<f8', copy=False)
+    array = np.ascontiguousarray(array)
+    digest.update(repr(label).encode('utf-8'))
+    digest.update(repr(array.shape).encode('ascii'))
+    digest.update(array.tobytes(order='C'))
+
+
+def _compute_scenario_metadata(planning_problem):
+    market_digest = hashlib.sha256()
+    for year in sorted(planning_problem.years):
+        for day in sorted(planning_problem.days, key=str):
+            _update_scenario_digest(
+                market_digest,
+                ('market', 'energy', year, day),
+                planning_problem.cost_energy_p[year][day],
+            )
+            _update_scenario_digest(
+                market_digest,
+                ('market', 'flexibility', year, day),
+                planning_problem.cost_flex[year][day],
+            )
+
+    operational_digest = hashlib.sha256()
+    network_groups = [('tso', None, planning_problem.transmission_network)]
+    network_groups.extend(
+        ('dso', node_id, planning_problem.distribution_networks[node_id])
+        for node_id in sorted(planning_problem.distribution_networks, key=str)
+    )
+    for subsystem, node_id, network_data in network_groups:
+        for year in sorted(network_data.years):
+            for day in sorted(network_data.days, key=str):
+                network = network_data.network[year][day]
+                prefix = (subsystem, node_id, network.name, year, day)
+                for load in sorted(network.loads, key=lambda item: str(item.load_id)):
+                    load_prefix = (*prefix, 'load', load.load_id)
+                    _update_scenario_digest(operational_digest, (*load_prefix, 'pd'), load.pd)
+                    _update_scenario_digest(operational_digest, (*load_prefix, 'qd'), load.qd)
+                    _update_scenario_digest(
+                        operational_digest,
+                        (*load_prefix, 'flex_p_up'),
+                        load.flexibility.active_power.upward,
+                    )
+                    _update_scenario_digest(
+                        operational_digest,
+                        (*load_prefix, 'flex_p_down'),
+                        load.flexibility.active_power.downward,
+                    )
+                for generator in sorted(network.generators, key=lambda item: str(item.gen_id)):
+                    generator_prefix = (*prefix, 'generator', generator.gen_id)
+                    _update_scenario_digest(
+                        operational_digest, (*generator_prefix, 'pg'), generator.pg
+                    )
+                    _update_scenario_digest(
+                        operational_digest, (*generator_prefix, 'qg'), generator.qg
+                    )
+
+    market_checksum = market_digest.hexdigest()
+    operational_checksum = operational_digest.hexdigest()
+    combined_digest = hashlib.sha256()
+    combined_digest.update(market_checksum.encode('ascii'))
+    combined_digest.update(operational_checksum.encode('ascii'))
+    return {
+        'random_seed': planning_problem.random_seed,
+        'deterministic_scenarios': planning_problem.random_seed is not None,
+        'market_scenario_checksum': market_checksum,
+        'operational_scenario_checksum': operational_checksum,
+        'combined_scenario_checksum': combined_digest.hexdigest(),
+    }
+
+
 # ======================================================================================================================
 #  MARKET DATA read functions
 # ======================================================================================================================
@@ -3221,7 +3325,11 @@ def _read_market_data_from_file(planning_problem):
         print(f'[ERROR] Reading market data from file(s). Exiting...')
         exit(ERROR_SPECIFICATION_FILE)
 
-    synthetic_profiles = _generate_market_price_scenarios(base_profiles)
+    market_seed = derive_random_seed(planning_problem.random_seed, 'market')
+    synthetic_profiles = _generate_market_price_scenarios(
+        base_profiles,
+        random_seed=derive_random_seed(market_seed, 'synthetic_profiles'),
+    )
 
     # Update subsequent years
     initial_year = list(planning_problem.years)[0]
@@ -3240,8 +3348,16 @@ def _read_market_data_from_file(planning_problem):
             energy_growth_cumul = (1 + energy_growth_factor) ** (year - initial_year)
             flexibility_growth_cumul = (1 + flexibility_growth_factor) ** (year - initial_year)
 
-            energy_selected_profiles = synthetic_profiles['energy'][day].sample(n=planning_problem.num_market_scenarios)
-            flexibility_selected_profiles = synthetic_profiles['flexibility'][day].sample(n=planning_problem.num_market_scenarios)
+            energy_selected_profiles = synthetic_profiles['energy'][day].sample(
+                n=planning_problem.num_market_scenarios,
+                random_state=derive_random_seed(market_seed, 'selection', 'energy', year, str(day)),
+            )
+            flexibility_selected_profiles = synthetic_profiles['flexibility'][day].sample(
+                n=planning_problem.num_market_scenarios,
+                random_state=derive_random_seed(
+                    market_seed, 'selection', 'flexibility', year, str(day)
+                ),
+            )
 
             planning_problem.cost_energy_p[year][day] = np.array(energy_selected_profiles * energy_growth_cumul)      # n_scenarios x n_instants
             planning_problem.cost_flex[year][day] = np.array(flexibility_selected_profiles * flexibility_growth_cumul)
@@ -3258,7 +3374,8 @@ def _read_market_base_profiles(filename):
     return base_cost_data
 
 
-def _generate_market_price_scenarios(base_profiles, n_samples=100, bandwidth=0.10):
+def _generate_market_price_scenarios(base_profiles, n_samples=100, bandwidth=0.10,
+                                     random_seed=None):
 
     print('[INFO] \t - Generating market scenarios...')
 
@@ -3266,14 +3383,25 @@ def _generate_market_price_scenarios(base_profiles, n_samples=100, bandwidth=0.1
     flex_df = base_profiles['flexibility']
 
     synthetic_profiles = {
-        'energy': _generate_market_price_scenarios_per_type(energy_df, n_samples=n_samples, bandwidth=bandwidth),
-        'flexibility': _generate_market_price_scenarios_per_type(flex_df, n_samples=n_samples, bandwidth=bandwidth)
+        'energy': _generate_market_price_scenarios_per_type(
+            energy_df,
+            n_samples=n_samples,
+            bandwidth=bandwidth,
+            random_seed=derive_random_seed(random_seed, 'energy'),
+        ),
+        'flexibility': _generate_market_price_scenarios_per_type(
+            flex_df,
+            n_samples=n_samples,
+            bandwidth=bandwidth,
+            random_seed=derive_random_seed(random_seed, 'flexibility'),
+        ),
     }
 
     return synthetic_profiles
 
 
-def _generate_market_price_scenarios_per_type(base_profiles, n_samples=100, bandwidth=0.05):
+def _generate_market_price_scenarios_per_type(base_profiles, n_samples=100, bandwidth=0.05,
+                                              random_seed=None):
 
     seasons = base_profiles['Season'].unique()
     synthetic_profiles = {}
@@ -3293,7 +3421,10 @@ def _generate_market_price_scenarios_per_type(base_profiles, n_samples=100, band
         scaler = StandardScaler()
         price_scaled = scaler.fit_transform(price_hours)
 
-        model = GaussianMultivariate(distribution=CustomGaussianKDE(bandwidth=bandwidth))
+        model = GaussianMultivariate(
+            distribution=CustomGaussianKDE(bandwidth=bandwidth),
+            random_state=derive_random_seed(random_seed, str(season)),
+        )
         model.fit(pd.DataFrame(price_scaled))
 
         # Sample
@@ -3808,6 +3939,39 @@ def _write_operational_planning_main_info_to_excel(planning_problem, workbook, r
         sheet.cell(row=line_idx, column=3).value = 'Execution time, [s]'
         sheet.cell(row=line_idx, column=4).value = execution_time
         sheet.cell(row=line_idx, column=4).number_format = '0.00'
+
+    _write_run_metadata_to_excel(planning_problem, workbook)
+
+
+def _write_run_metadata_to_excel(planning_problem, workbook):
+    sheet = workbook.create_sheet('Run Metadata')
+    metadata = planning_problem.scenario_metadata
+    random_seed = metadata.get('random_seed')
+    rows = [
+        ('Random Seed', random_seed if random_seed is not None else 'Unseeded'),
+        ('Deterministic Scenario Generation', metadata.get('deterministic_scenarios', False)),
+        ('Market Scenario SHA-256', metadata.get('market_scenario_checksum')),
+        ('Operational Scenario SHA-256', metadata.get('operational_scenario_checksum')),
+        ('Combined Scenario SHA-256', metadata.get('combined_scenario_checksum')),
+        ('Number of Market Scenarios', planning_problem.num_market_scenarios),
+        (
+            'Transmission Operation Scenarios',
+            planning_problem.transmission_network.num_oper_scenarios,
+        ),
+    ]
+    rows.extend(
+        (
+            f'Distribution Node {node_id} Operation Scenarios',
+            planning_problem.distribution_networks[node_id].num_oper_scenarios,
+        )
+        for node_id in sorted(planning_problem.distribution_networks, key=str)
+    )
+
+    sheet.cell(row=1, column=1).value = 'Property'
+    sheet.cell(row=1, column=2).value = 'Value'
+    for row_idx, (label, value) in enumerate(rows, start=2):
+        sheet.cell(row=row_idx, column=1).value = label
+        sheet.cell(row=row_idx, column=2).value = value
 
 
 def _write_operational_planning_main_info_per_operator(network, sheet, operator_type, line_idx, results, tn_node_id='-'):
