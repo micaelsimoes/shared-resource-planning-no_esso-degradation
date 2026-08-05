@@ -975,6 +975,8 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             consensus_vars, dual_vars, results, admm_parameters,
             update_tn=True, update_dns=True, update_sess=True,
         )
+        # The successful initialization populated primal values and IPOPT multipliers.
+        from_warm_start = True
     else:
         models = _clone_operational_models(initial_state['models'])
         tso_model = models['tso']
