@@ -617,6 +617,7 @@ def _get_operational_recourse_value(planning_problem, models):
 
 
 def _get_operational_recourse_components(planning_problem, models):
+    # Economic recourse excludes scenario-deviation and ADMM augmentation terms.
     gross_operational_cost = planning_problem.transmission_network.get_primal_value(models['tso'])
     for node_id, distribution_network in planning_problem.distribution_networks.items():
         gross_operational_cost += distribution_network.get_primal_value(models['dso'][node_id])
@@ -1840,6 +1841,146 @@ def print_debug_info(planning_problem, consensus_vars, print_vmag=False, print_p
                 #     print(f"\t\tNode {node_id}, {year}, {day}, ESS, DSO,  Q {consensus_vars['ess']['dso']['current'][node_id][year][day]['q']}")
 
 
+def _scenario_probability(network, market_scenario, operation_scenario):
+    return (
+        network.prob_market_scenarios[market_scenario]
+        * network.prob_operation_scenarios[operation_scenario]
+    )
+
+
+def _add_tso_scenario_deviation_penalty(
+        model, network, include_voltage=True, include_shared_ess=True):
+    voltage_deviation = 0.0
+    interface_power_deviation = 0.0
+    shared_ess_deviation = 0.0
+    for s_m in model.scenarios_market:
+        for s_o in model.scenarios_operation:
+            probability = _scenario_probability(network, s_m, s_o)
+            for p in model.periods:
+                for dn in model.active_distribution_networks:
+                    if include_voltage:
+                        voltage_deviation += probability * (
+                            model.vmag_adn[dn, s_m, s_o, p]
+                            - model.expected_interface_vmag[dn, p]
+                        ) ** 2
+                    interface_power_deviation += probability * network.baseMVA * (
+                        (model.pc_adn[dn, s_m, s_o, p]
+                         - model.expected_interface_pf_p[dn, p]) ** 2
+                        + (model.qc_adn[dn, s_m, s_o, p]
+                           - model.expected_interface_pf_q[dn, p]) ** 2
+                    )
+                if include_shared_ess:
+                    for e in model.shared_energy_storages:
+                        shared_ess_deviation += probability * network.baseMVA * (
+                            (model.shared_es_pnet[e, s_m, s_o, p]
+                             - model.expected_shared_ess_p[e, p]) ** 2
+                            + (model.shared_es_qnet[e, s_m, s_o, p]
+                               - model.expected_shared_ess_q[e, p]) ** 2
+                        )
+
+    model.scenario_deviation_weight = pe.Param(
+        initialize=PENALTY_SCENARIO_DEVIATION
+    )
+    model.scenario_deviation_voltage = pe.Expression(expr=voltage_deviation)
+    model.scenario_deviation_interface_power = pe.Expression(
+        expr=interface_power_deviation
+    )
+    model.scenario_deviation_shared_ess = pe.Expression(expr=shared_ess_deviation)
+    model.scenario_deviation_penalty = pe.Expression(
+        expr=model.scenario_deviation_weight * (
+            model.scenario_deviation_voltage
+            + model.scenario_deviation_interface_power
+            + model.scenario_deviation_shared_ess
+        )
+    )
+    model.objective.expr = copy(model.objective.expr) + model.scenario_deviation_penalty
+
+
+def _add_dso_scenario_deviation_penalty(
+        model, network, shared_ess_idx=None, include_voltage=True,
+        include_shared_ess=True):
+    voltage_deviation = 0.0
+    interface_power_deviation = 0.0
+    shared_ess_deviation = 0.0
+    for s_m in model.scenarios_market:
+        for s_o in model.scenarios_operation:
+            probability = _scenario_probability(network, s_m, s_o)
+            for p in model.periods:
+                if include_voltage:
+                    voltage_deviation += probability * (
+                        model.vmag_adn[s_m, s_o, p]
+                        - model.expected_interface_vmag[p]
+                    ) ** 2
+                interface_power_deviation += probability * network.baseMVA * (
+                    (model.pg_adn[s_m, s_o, p]
+                     - model.expected_interface_pf_p[p]) ** 2
+                    + (model.qg_adn[s_m, s_o, p]
+                       - model.expected_interface_pf_q[p]) ** 2
+                )
+                if include_shared_ess:
+                    shared_ess_deviation += probability * network.baseMVA * (
+                        (model.shared_es_pnet[shared_ess_idx, s_m, s_o, p]
+                         - model.expected_shared_ess_p[p]) ** 2
+                        + (model.shared_es_qnet[shared_ess_idx, s_m, s_o, p]
+                           - model.expected_shared_ess_q[p]) ** 2
+                    )
+
+    model.scenario_deviation_weight = pe.Param(
+        initialize=PENALTY_SCENARIO_DEVIATION
+    )
+    model.scenario_deviation_voltage = pe.Expression(expr=voltage_deviation)
+    model.scenario_deviation_interface_power = pe.Expression(
+        expr=interface_power_deviation
+    )
+    model.scenario_deviation_shared_ess = pe.Expression(expr=shared_ess_deviation)
+    model.scenario_deviation_penalty = pe.Expression(
+        expr=model.scenario_deviation_weight * (
+            model.scenario_deviation_voltage
+            + model.scenario_deviation_interface_power
+            + model.scenario_deviation_shared_ess
+        )
+    )
+    model.objective.expr = copy(model.objective.expr) + model.scenario_deviation_penalty
+
+
+def _add_tso_scenario_tracking_penalty(
+        model, network, active_distribution_network_nodes,
+        interface_vmag, interface_pf):
+    voltage_tracking = 0.0
+    interface_power_tracking = 0.0
+    for dn in model.active_distribution_networks:
+        node_id = active_distribution_network_nodes[dn]
+        for s_m in model.scenarios_market:
+            for s_o in model.scenarios_operation:
+                probability = _scenario_probability(network, s_m, s_o)
+                for p in model.periods:
+                    vmag_req = interface_vmag[node_id][p]
+                    p_req = interface_pf[node_id]['p'][p] / network.baseMVA
+                    q_req = interface_pf[node_id]['q'][p] / network.baseMVA
+                    voltage_tracking += probability * (
+                        model.vmag_adn[dn, s_m, s_o, p] - vmag_req
+                    ) ** 2
+                    interface_power_tracking += probability * network.baseMVA * (
+                        (model.pc_adn[dn, s_m, s_o, p] - p_req) ** 2
+                        + (model.qc_adn[dn, s_m, s_o, p] - q_req) ** 2
+                    )
+
+    model.scenario_tracking_weight = pe.Param(
+        initialize=PENALTY_SCENARIO_DEVIATION * 1e6
+    )
+    model.scenario_tracking_voltage = pe.Expression(expr=voltage_tracking)
+    model.scenario_tracking_interface_power = pe.Expression(
+        expr=interface_power_tracking
+    )
+    model.scenario_tracking_penalty = pe.Expression(
+        expr=model.scenario_tracking_weight * (
+            model.scenario_tracking_voltage
+            + model.scenario_tracking_interface_power
+        )
+    )
+    model.objective.expr = copy(model.objective.expr) + model.scenario_tracking_penalty
+
+
 def create_transmission_network_model(planning_problem, consensus_vars, candidate_solution):
 
     print(f'[INFO] \t\t - Transmission Network...')
@@ -1911,20 +2052,10 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
             tso_model[year][day].expected_shared_ess_p_def = pe.Constraint(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_sess_p_rule, network=transmission_network.network[year][day]))
             tso_model[year][day].expected_shared_ess_q_def = pe.Constraint(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_sess_q_rule, network=transmission_network.network[year][day]))
 
-            # Regularization -- Added to OF to minimize deviations from scenarios to expected values
-            obj = copy(tso_model[year][day].objective.expr)
-            tso_model[year][day].penalty_regularization = pe.Param(initialize=PENALTY_REGULARIZATION)
-            for s_m in tso_model[year][day].scenarios_market:
-                for s_o in tso_model[year][day].scenarios_operation:
-                    for p in tso_model[year][day].periods:
-                        for dn in tso_model[year][day].active_distribution_networks:
-                            obj += tso_model[year][day].penalty_regularization * (tso_model[year][day].vmag_adn[dn, s_m, s_o, p] - tso_model[year][day].expected_interface_vmag[dn, p]) ** 2
-                            obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].pc_adn[dn, s_m, s_o, p] - tso_model[year][day].expected_interface_pf_p[dn, p]) ** 2
-                            obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].qc_adn[dn, s_m, s_o, p] - tso_model[year][day].expected_interface_pf_q[dn, p]) ** 2
-                        for e in tso_model[year][day].shared_energy_storages:
-                            obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].shared_es_pnet[e, s_m, s_o, p] - tso_model[year][day].expected_shared_ess_p[e, p]) ** 2
-                            obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].shared_es_qnet[e, s_m, s_o, p] - tso_model[year][day].expected_shared_ess_q[e, p]) ** 2
-            tso_model[year][day].objective.expr = obj
+            # A soft, probability-weighted penalty promotes one expected day-ahead schedule.
+            _add_tso_scenario_deviation_penalty(
+                tso_model[year][day], transmission_network.network[year][day]
+            )
 
     # Run SMOPF
     results = transmission_network.optimize(tso_model)
@@ -1997,18 +2128,12 @@ def create_distribution_networks_models_sequential(distribution_networks, consen
                 dso_model[year][day].expected_shared_ess_p_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_p_rule, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx))
                 dso_model[year][day].expected_shared_ess_q_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_q_rule, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx))
 
-                # Regularization -- Added to OF to minimize deviations from scenarios to expected values
-                obj = copy(dso_model[year][day].objective.expr)
-                dso_model[year][day].penalty_regularization = pe.Param(initialize=PENALTY_REGULARIZATION)
-                for s_m in dso_model[year][day].scenarios_market:
-                    for s_o in dso_model[year][day].scenarios_operation:
-                        for p in dso_model[year][day].periods:
-                            obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].vmag_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_vmag[p]) ** 2
-                            obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].pg_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_pf_p[p]) ** 2
-                            obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].qg_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_pf_q[p]) ** 2
-                            obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_p[p]) ** 2
-                            obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_q[p]) ** 2
-                dso_model[year][day].objective.expr = obj
+                # A soft, probability-weighted penalty promotes one expected day-ahead schedule.
+                _add_dso_scenario_deviation_penalty(
+                    dso_model[year][day],
+                    distribution_network.network[year][day],
+                    shared_ess_idx=shared_ess_idx,
+                )
 
         # Run SMOPF
         results[node_id] = distribution_network.optimize(dso_model)
@@ -2112,25 +2237,18 @@ def create_distribution_network_model(node_id, distribution_network, candidate_s
             dso_model[year][day].interface_expected_values_sess_p = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_p_rule, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx))
             dso_model[year][day].interface_expected_values_sess_q = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_q_rule, network= distribution_network.network[year][day], shared_ess_idx=shared_ess_idx))
 
-    # Regularization -- Added to OF to minimize deviations from scenarios to expected values
+    # Add probability-weighted deviations from the expected day-ahead schedule.
     for year in distribution_network.years:
         for day in distribution_network.days:
 
-            s_base = distribution_network.network[year][day].baseMVA
             ref_node_id = distribution_network.network[year][day].get_reference_node_id()
             shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
 
-            obj = copy(dso_model[year][day].objective.expr)
-            dso_model[year][day].penalty_regularization = pe.Param(initialize=PENALTY_REGULARIZATION)
-            for s_m in dso_model[year][day].scenarios_market:
-                for s_o in dso_model[year][day].scenarios_operation:
-                    for p in dso_model[year][day].periods:
-                        obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].vmag_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_vmag[p]) ** 2
-                        obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].pg_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_pf_p[p]) ** 2
-                        obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].qg_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_pf_q[p]) ** 2
-                        obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].shared_es_pnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_p[p]) ** 2
-                        obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].shared_es_qnet[shared_ess_idx, s_m, s_o, p] - dso_model[year][day].expected_shared_ess_q[p]) ** 2
-            dso_model[year][day].objective.expr = obj
+            _add_dso_scenario_deviation_penalty(
+                dso_model[year][day],
+                distribution_network.network[year][day],
+                shared_ess_idx=shared_ess_idx,
+            )
 
     # Run SMOPF
     res = distribution_network.optimize(dso_model)
@@ -2275,17 +2393,13 @@ def _run_operational_planning_hierarchical(planning_problem, num_steps=8, print_
                         c = ineq['c'] / s_base
                         tso_model[year][day].pq_maps.add(a * tso_model[year][day].expected_interface_pf_p[dn, p] + b * tso_model[year][day].expected_interface_pf_q[dn, p] <= c)
 
-            # Regularization -- Added to OF to minimize deviations from scenarios to expected values
-            obj = copy(tso_model[year][day].objective.expr)
-            tso_model[year][day].penalty_regularization = pe.Param(initialize=PENALTY_REGULARIZATION)
-            for dn in tso_model[year][day].active_distribution_networks:
-                for s_m in tso_model[year][day].scenarios_market:
-                    for s_o in tso_model[year][day].scenarios_operation:
-                        for p in tso_model[year][day].periods:
-                            # obj += tso_model[year][day].penalty_regularization * (tso_model[year][day].vmag_adn[dn, s_m, s_o, p] - tso_model[year][day].expected_interface_vmag[dn, p]) ** 2
-                            obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].pc_adn[dn, s_m, s_o, p] - tso_model[year][day].expected_interface_pf_p[dn, p]) ** 2
-                            obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].qc_adn[dn, s_m, s_o, p] - tso_model[year][day].expected_interface_pf_q[dn, p]) ** 2
-            tso_model[year][day].objective.expr = obj
+            # Promote the expected interface schedule represented by the PQ maps.
+            _add_tso_scenario_deviation_penalty(
+                tso_model[year][day],
+                transmission_network.network[year][day],
+                include_voltage=False,
+                include_shared_ess=False,
+            )
 
     # Optimize TN, Get resulting interface PFs
     print(f'[INFO] - Running OPF on {transmission_network.name} with hierarchical constraints...')
@@ -3442,12 +3556,9 @@ def _run_operational_planning_without_coordination(planning_problem):
         dso_model = distribution_network.build_model()
         distribution_network.update_model_with_candidate_solution(dso_model, candidate_solution)
 
-        # Update model with expected interface values
-        # Regularization -- Added to OF to minimize deviations from scenarios to expected values
+        # Update model with expected interface values.
         for year in distribution_network.years:
             for day in distribution_network.days:
-
-                s_base = distribution_network.network[year][day].baseMVA
 
                 # Add interface expected variables, and their definition
                 dso_model[year][day].expected_interface_vmag = pe.Var(dso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.00)
@@ -3457,16 +3568,11 @@ def _run_operational_planning_without_coordination(planning_problem):
                 dso_model[year][day].expected_interface_pf_p_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_p_rule, network=distribution_network.network[year][day]))
                 dso_model[year][day].expected_interface_pf_q_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_q_rule, network=distribution_network.network[year][day]))
 
-                # Regularization -- decrease variance between scenarios
-                obj = copy(dso_model[year][day].objective.expr)
-                dso_model[year][day].penalty_regularization = pe.Param(initialize=PENALTY_REGULARIZATION)
-                for s_m in dso_model[year][day].scenarios_market:
-                    for s_o in dso_model[year][day].scenarios_operation:
-                        for p in dso_model[year][day].periods:
-                            obj += dso_model[year][day].penalty_regularization * (dso_model[year][day].vmag_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_vmag[p]) ** 2
-                            obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].pg_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_pf_p[p]) ** 2
-                            obj += dso_model[year][day].penalty_regularization * s_base * (dso_model[year][day].qg_adn[s_m, s_o, p] - dso_model[year][day].expected_interface_pf_q[p]) ** 2
-                dso_model[year][day].objective.expr = obj
+                _add_dso_scenario_deviation_penalty(
+                    dso_model[year][day],
+                    distribution_network.network[year][day],
+                    include_shared_ess=False,
+                )
 
         results['dso'][node_id] = distribution_network.optimize(dso_model)
 
@@ -3490,7 +3596,6 @@ def _run_operational_planning_without_coordination(planning_problem):
     for year in transmission_network.years:
         for day in transmission_network.days:
 
-            s_base = transmission_network.network[year][day].baseMVA
             tso_model[year][day].active_distribution_networks = range(len(transmission_network.active_distribution_network_nodes))
 
             # Free Pc, Qc at the interface nodes
@@ -3517,23 +3622,22 @@ def _run_operational_planning_without_coordination(planning_problem):
                                 tso_model[year][day].qc_curt_down[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                                 tso_model[year][day].qc_curt_up[adn_load_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
 
-            # "Fix" Pc and Qc (DNs' solutions)
-            # Regularization -- decrease variance between scenarios
-            obj = copy(tso_model[year][day].objective.expr)
-            tso_model[year][day].penalty_regularization = pe.Param(initialize=PENALTY_REGULARIZATION * 1e6)
-            for dn in tso_model[year][day].active_distribution_networks:
-                adn_node_id = transmission_network.active_distribution_network_nodes[dn]
-                for s_m in tso_model[year][day].scenarios_market:
-                    for s_o in tso_model[year][day].scenarios_operation:
-                        for p in tso_model[year][day].periods:
-                            vmag_req = interface_vmag[adn_node_id][year][day][p]
-                            p_req = interface_pf[adn_node_id][year][day]['p'][p] / s_base
-                            q_req = interface_pf[adn_node_id][year][day]['q'][p] / s_base
-                            obj += tso_model[year][day].penalty_regularization * (tso_model[year][day].vmag_adn[dn, s_m, s_o, p] - vmag_req) ** 2
-                            obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].pc_adn[dn, s_m, s_o, p] - p_req) ** 2
-                            obj += tso_model[year][day].penalty_regularization * s_base * (tso_model[year][day].qc_adn[dn, s_m, s_o, p] - q_req) ** 2
-
-            tso_model[year][day].objective.expr = obj
+            # Track the DSO schedules with a scenario-weighted soft penalty.
+            year_day_vmag = {
+                node_id: interface_vmag[node_id][year][day]
+                for node_id in transmission_network.active_distribution_network_nodes
+            }
+            year_day_pf = {
+                node_id: interface_pf[node_id][year][day]
+                for node_id in transmission_network.active_distribution_network_nodes
+            }
+            _add_tso_scenario_tracking_penalty(
+                tso_model[year][day],
+                transmission_network.network[year][day],
+                transmission_network.active_distribution_network_nodes,
+                year_day_vmag,
+                year_day_pf,
+            )
 
     results['tso'] = transmission_network.optimize(tso_model)
 
@@ -3986,6 +4090,7 @@ def _process_operational_planning_results(operational_planning_problem, tso_mode
     processed_results['dso'] = dict()
     processed_results['esso'] = dict()
     processed_results['interface'] = dict()
+    processed_results['scenario_dispersion'] = list()
     processed_results['summary_detail'] = dict()
 
     processed_results['tso'] = transmission_network.process_results(tso_model, optimization_results['tso'])
@@ -3995,9 +4100,174 @@ def _process_operational_planning_results(operational_planning_problem, tso_mode
         processed_results['dso'][node_id] = distribution_network.process_results(dso_model, optimization_results['dso'][node_id])
     processed_results['esso'] = shared_ess_data.process_results(esso_model)
     processed_results['interface'] = _process_results_interface(operational_planning_problem, tso_model, dso_models)
+    processed_results['scenario_dispersion'] = _process_scenario_dispersion_results(
+        operational_planning_problem, tso_model, dso_models
+    )
     processed_results['summary_detail'] = _process_results_summary_detail(operational_planning_problem, tso_model, dso_models)
 
     return processed_results
+
+
+def _weighted_scenario_dispersion(model, network, expected_value, scenario_value, scale=1.0):
+    probabilities = {
+        (s_m, s_o): _scenario_probability(network, s_m, s_o)
+        for s_m in model.scenarios_market
+        for s_o in model.scenarios_operation
+    }
+    probability_sum = sum(probabilities.values())
+    scenario_count = len(probabilities)
+    weighted_standard_deviation = list()
+    maximum_absolute_deviation = list()
+
+    for p in model.periods:
+        expected = pe.value(expected_value(p)) * scale
+        weighted_square_deviation = 0.0
+        max_deviation = 0.0
+        for (s_m, s_o), probability in probabilities.items():
+            value = pe.value(scenario_value(s_m, s_o, p)) * scale
+            deviation = value - expected
+            weighted_square_deviation += probability * deviation ** 2
+            max_deviation = max(max_deviation, abs(deviation))
+
+        if probability_sum > 0.0:
+            weighted_square_deviation /= probability_sum
+        weighted_standard_deviation.append(
+            sqrt(max(weighted_square_deviation, 0.0))
+        )
+        maximum_absolute_deviation.append(max_deviation)
+
+    return {
+        'weighted_standard_deviation': weighted_standard_deviation,
+        'maximum_absolute_deviation': maximum_absolute_deviation,
+        'scenario_count': scenario_count,
+        'probability_sum': probability_sum,
+    }
+
+
+def _add_scenario_dispersion_records(
+        records, operator, node_id, year, day, quantity, dispersion):
+    metrics = (
+        ('Weighted Standard Deviation', dispersion['weighted_standard_deviation']),
+        ('Maximum Absolute Deviation', dispersion['maximum_absolute_deviation']),
+    )
+    for metric, values in metrics:
+        records.append({
+            'operator': operator,
+            'node_id': node_id,
+            'year': year,
+            'day': day,
+            'quantity': quantity,
+            'metric': metric,
+            'scenario_count': dispersion['scenario_count'],
+            'probability_sum': dispersion['probability_sum'],
+            'values': values,
+            'maximum': max(values, default=0.0),
+        })
+
+
+def _process_scenario_dispersion_results(planning_problem, tso_model, dso_models):
+    records = list()
+    transmission_network = planning_problem.transmission_network
+
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+            model = tso_model[year][day]
+            network = transmission_network.network[year][day]
+            for dn in model.active_distribution_networks:
+                node_id = transmission_network.active_distribution_network_nodes[dn]
+                shared_ess_idx = network.get_shared_energy_storage_idx(node_id)
+                quantities = (
+                    (
+                        'Interface Vmag, [p.u.]',
+                        lambda p, dn=dn: model.expected_interface_vmag[dn, p],
+                        lambda s_m, s_o, p, dn=dn: model.vmag_adn[dn, s_m, s_o, p],
+                        1.0,
+                    ),
+                    (
+                        'Interface P, [MW]',
+                        lambda p, dn=dn: model.expected_interface_pf_p[dn, p],
+                        lambda s_m, s_o, p, dn=dn: model.pc_adn[dn, s_m, s_o, p],
+                        network.baseMVA,
+                    ),
+                    (
+                        'Interface Q, [MVAr]',
+                        lambda p, dn=dn: model.expected_interface_pf_q[dn, p],
+                        lambda s_m, s_o, p, dn=dn: model.qc_adn[dn, s_m, s_o, p],
+                        network.baseMVA,
+                    ),
+                    (
+                        'Shared ESS P, [MW]',
+                        lambda p, e=shared_ess_idx: model.expected_shared_ess_p[e, p],
+                        lambda s_m, s_o, p, e=shared_ess_idx: model.shared_es_pnet[e, s_m, s_o, p],
+                        network.baseMVA,
+                    ),
+                    (
+                        'Shared ESS Q, [MVAr]',
+                        lambda p, e=shared_ess_idx: model.expected_shared_ess_q[e, p],
+                        lambda s_m, s_o, p, e=shared_ess_idx: model.shared_es_qnet[e, s_m, s_o, p],
+                        network.baseMVA,
+                    ),
+                )
+                for quantity, expected_value, scenario_value, scale in quantities:
+                    dispersion = _weighted_scenario_dispersion(
+                        model, network, expected_value, scenario_value, scale=scale
+                    )
+                    _add_scenario_dispersion_records(
+                        records, 'TSO', node_id, year, day, quantity, dispersion
+                    )
+
+    for node_id, distribution_network in planning_problem.distribution_networks.items():
+        for year in distribution_network.years:
+            for day in distribution_network.days:
+                model = dso_models[node_id][year][day]
+                network = distribution_network.network[year][day]
+                ref_node_id = network.get_reference_node_id()
+                shared_ess_idx = network.get_shared_energy_storage_idx(ref_node_id)
+                quantities = (
+                    (
+                        'Interface Vmag, [p.u.]',
+                        lambda p: model.expected_interface_vmag[p],
+                        lambda s_m, s_o, p: model.vmag_adn[s_m, s_o, p],
+                        1.0,
+                    ),
+                    (
+                        'Interface P, [MW]',
+                        lambda p: model.expected_interface_pf_p[p],
+                        lambda s_m, s_o, p: model.pg_adn[s_m, s_o, p],
+                        network.baseMVA,
+                    ),
+                    (
+                        'Interface Q, [MVAr]',
+                        lambda p: model.expected_interface_pf_q[p],
+                        lambda s_m, s_o, p: model.qg_adn[s_m, s_o, p],
+                        network.baseMVA,
+                    ),
+                    (
+                        'Shared ESS P, [MW]',
+                        lambda p: model.expected_shared_ess_p[p],
+                        lambda s_m, s_o, p: model.shared_es_pnet[
+                            shared_ess_idx, s_m, s_o, p
+                        ],
+                        network.baseMVA,
+                    ),
+                    (
+                        'Shared ESS Q, [MVAr]',
+                        lambda p: model.expected_shared_ess_q[p],
+                        lambda s_m, s_o, p: model.shared_es_qnet[
+                            shared_ess_idx, s_m, s_o, p
+                        ],
+                        network.baseMVA,
+                    ),
+                )
+                for quantity, expected_value, scenario_value, scale in quantities:
+                    dispersion = _weighted_scenario_dispersion(
+                        model, network, expected_value, scenario_value, scale=scale
+                    )
+                    _add_scenario_dispersion_records(
+                        records, 'DSO', node_id, year, day, quantity, dispersion
+                    )
+
+    return records
 
 
 def _process_operational_planning_results_hierarchical(planning_problem, tso_model, dso_models, optimization_results):
@@ -4101,6 +4371,10 @@ def _write_planning_results_to_excel(planning_problem, results, bound_evolution=
 
     # Interface Power Flow
     _write_interface_results_to_excel(planning_problem, wb, results['interface'])
+    if results.get('scenario_dispersion'):
+        _write_scenario_dispersion_to_excel(
+            planning_problem, wb, results['scenario_dispersion']
+        )
 
     # Shared Energy Storages results
     _write_shared_energy_storages_results_to_excel(planning_problem, wb, results)
@@ -4380,6 +4654,10 @@ def _write_operational_planning_results_to_excel(planning_problem, results, prim
 
     # Interface Power Flow
     _write_interface_results_to_excel(planning_problem, wb, results['interface'])
+    if results.get('scenario_dispersion'):
+        _write_scenario_dispersion_to_excel(
+            planning_problem, wb, results['scenario_dispersion']
+        )
 
     # Shared Energy Storages results
     _write_shared_energy_storages_results_to_excel(planning_problem, wb, results)
@@ -4489,10 +4767,15 @@ def _write_operational_planning_main_info_to_excel(planning_problem, workbook, r
         sheet.cell(row=line_idx, column=4).value = execution_time
         sheet.cell(row=line_idx, column=4).number_format = '0.00'
 
-    _write_run_metadata_to_excel(planning_problem, workbook)
+    _write_run_metadata_to_excel(
+        planning_problem,
+        workbook,
+        include_scenario_deviation=bool(results.get('scenario_dispersion')),
+    )
 
 
-def _write_run_metadata_to_excel(planning_problem, workbook):
+def _write_run_metadata_to_excel(
+        planning_problem, workbook, include_scenario_deviation=False):
     sheet = workbook.create_sheet('Run Metadata')
     metadata = planning_problem.scenario_metadata
     random_seed = metadata.get('random_seed')
@@ -4508,6 +4791,16 @@ def _write_run_metadata_to_excel(planning_problem, workbook):
             planning_problem.transmission_network.num_oper_scenarios,
         ),
     ]
+    if include_scenario_deviation:
+        rows.extend([
+            ('Distributed Coupling Basis', 'Probability-weighted expected schedule'),
+            (
+                'Distributed Scenario Dispersion Treatment',
+                'Probability-weighted quadratic deviation penalty',
+            ),
+            ('Scenario Deviation Penalty Coefficient', PENALTY_SCENARIO_DEVIATION),
+            ('Scenario Deviation Included in Economic Recourse', False),
+        ])
     rows.extend(
         (
             f'Distribution Node {node_id} Operation Scenarios',
@@ -5049,6 +5342,43 @@ def _write_objective_function_evolution_to_excel(workbook, primal_evolution):
         sheet.cell(row=row_idx, column=2).value = primal_evolution[i]
         sheet.cell(row=row_idx, column=2).number_format = decimal_style
         row_idx = row_idx + 1
+
+
+def _write_scenario_dispersion_to_excel(planning_problem, workbook, records):
+    sheet = workbook.create_sheet('Scenario Dispersion')
+    headers = [
+        'Operator',
+        'Node ID',
+        'Year',
+        'Day',
+        'Quantity',
+        'Metric',
+        'Scenario Count',
+        'Probability Sum',
+    ]
+    headers.extend(range(planning_problem.num_instants))
+    headers.append('Maximum')
+
+    for column_idx, header in enumerate(headers, start=1):
+        sheet.cell(row=1, column=column_idx).value = header
+
+    for row_idx, record in enumerate(records, start=2):
+        sheet.cell(row=row_idx, column=1).value = record['operator']
+        sheet.cell(row=row_idx, column=2).value = record['node_id']
+        sheet.cell(row=row_idx, column=3).value = record['year']
+        sheet.cell(row=row_idx, column=4).value = record['day']
+        sheet.cell(row=row_idx, column=5).value = record['quantity']
+        sheet.cell(row=row_idx, column=6).value = record['metric']
+        sheet.cell(row=row_idx, column=7).value = record['scenario_count']
+        sheet.cell(row=row_idx, column=8).value = record['probability_sum']
+        sheet.cell(row=row_idx, column=8).number_format = '0.000000'
+        for period_idx, value in enumerate(record['values']):
+            column_idx = period_idx + 9
+            sheet.cell(row=row_idx, column=column_idx).value = value
+            sheet.cell(row=row_idx, column=column_idx).number_format = '0.000000'
+        maximum_column = planning_problem.num_instants + 9
+        sheet.cell(row=row_idx, column=maximum_column).value = record['maximum']
+        sheet.cell(row=row_idx, column=maximum_column).number_format = '0.000000'
 
 
 def _write_interface_results_to_excel(planning_problem, workbook, results):
