@@ -256,6 +256,13 @@ def _build_model(network, params):
     model.loads = range(len(network.loads))
     model.generators = range(len(network.generators))
     model.branches = range(len(network.branches))
+    model.apparent_power_limited_branches = pe.Set(
+        initialize=[
+            b for b, branch in enumerate(network.branches)
+            if branch.status and branch_uses_apparent_power_limit(branch, params)
+        ],
+        ordered=True,
+    )
     model.energy_storages = range(len(network.energy_storages))
     model.shared_energy_storages = range(len(network.shared_energy_storages))
     if network.is_transmission:
@@ -293,6 +300,7 @@ def _build_model(network, params):
     # - Branch power flow
     if params.slacks.grid_operation.branch_flow:
         model.slack_flow_ij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(slack_flow_bounds, network=network, params=params))
+        model.slack_flow_ji_sqr = pe.Var(model.apparent_power_limited_branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(slack_flow_bounds, network=network, params=params))
 
     # - Loads
     if network.is_transmission: # Note: PC and Qc considered vars for transmission, due to coordination procedure (i.e., this can change)
@@ -322,8 +330,10 @@ def _build_model(network, params):
     model.r_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals)
 
     # Branch power flows (aux)
-    model.pij = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, initialize=0.00)
-    model.qij = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, initialize=0.00)
+    model.pij = pe.Var(model.apparent_power_limited_branches, model.scenarios_market, model.scenarios_operation, model.periods, initialize=0.00)
+    model.qij = pe.Var(model.apparent_power_limited_branches, model.scenarios_market, model.scenarios_operation, model.periods, initialize=0.00)
+    model.pji = pe.Var(model.apparent_power_limited_branches, model.scenarios_market, model.scenarios_operation, model.periods, initialize=0.00)
+    model.qji = pe.Var(model.apparent_power_limited_branches, model.scenarios_market, model.scenarios_operation, model.periods, initialize=0.00)
 
     # - Energy Storage devices
     if params.es_reg:
@@ -364,6 +374,7 @@ def _build_model(network, params):
     model.pc_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_p_per_node_def, network=network, params=params))      # Net load at node i
     model.qc_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_q_per_node_def, network=network, params=params))
     model.flow_ij_sqr = pe.Expression(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_flow_def, network=network, params=params))
+    model.flow_ji_sqr = pe.Expression(model.apparent_power_limited_branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_flow_ji_def, network=network, params=params))
     if network.is_transmission: # Note: used coordinated operation
         model.vmag_adn = pe.Expression(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_vmag_transmission_def, network=network))
         model.pc_adn = pe.Expression(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_p_transmission_def, network=network, params=params))
@@ -390,8 +401,10 @@ def _build_model(network, params):
 
     # - Branch power flows
     if params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER or params.branch_limit_type == BRANCH_LIMIT_MIXED:
-        model.pij_def = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(pij_rule, network=network, params=params))
-        model.qij_def = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(qij_rule, network=network, params=params))
+        model.pij_def = pe.Constraint(model.apparent_power_limited_branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(pij_rule, network=network, params=params))
+        model.qij_def = pe.Constraint(model.apparent_power_limited_branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(qij_rule, network=network, params=params))
+        model.pji_def = pe.Constraint(model.apparent_power_limited_branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(pji_rule, network=network, params=params))
+        model.qji_def = pe.Constraint(model.apparent_power_limited_branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(qji_rule, network=network, params=params))
 
     # - Generation
     if params.rg_curt:
@@ -446,6 +459,7 @@ def _build_model(network, params):
 
     # - Branch Power Flow constraints
     model.branch_flow_limit = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_flow_limit_rule, network=network, params=params))
+    model.branch_flow_limit_ji = pe.Constraint(model.apparent_power_limited_branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_flow_limit_ji_rule, network=network, params=params))
 
     # ------------------------------------------------------------------------------------------------------------------
     # Costs (penalties)
@@ -1149,7 +1163,8 @@ def _process_results(network, model, params, results=dict()):
                 'consumption': {'pc': {}, 'qc': {}, 'pc_net': {}, 'qc_net': {}},
                 'generation': {'pg': {}, 'qg': {}, 'sg': {}},
                 'branches': {'power_flow': {'pij': {}, 'pji': {}, 'qij': {}, 'qji': {}, 'sij': {}, 'sji': {}},
-                             'losses': {}, 'ratio': {}, 'branch_flow': {'flow_ij_perc': {}}},
+                             'losses': {}, 'ratio': {},
+                             'branch_flow': {'flow_ij_perc': {}, 'flow_ji_perc': {}}},
                 'energy_storages': {'p': {}, 'q': {}, 's': {}, 'soc': {}, 'soc_percent': {}},
                 'shared_energy_storages': {'p': {}, 'q': {}, 's': {}, 'soc': {}, 'soc_percent': {}}
             }
@@ -1186,6 +1201,7 @@ def _process_results(network, model, params, results=dict()):
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow'] = dict()
             if params.slacks.grid_operation.branch_flow:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ij_sqr'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ji_sqr'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance'] = dict()
             if params.slacks.node_balance.active_power:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p'] = dict()
@@ -1301,6 +1317,8 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][branch_id] = []
                 processed_results['scenarios'][s_m][s_o]['branches']['losses'][branch_id] = []
                 processed_results['scenarios'][s_m][s_o]['branches']['branch_flow']['flow_ij_perc'][branch_id] = []
+                if k in model.apparent_power_limited_branches:
+                    processed_results['scenarios'][s_m][s_o]['branches']['branch_flow']['flow_ji_perc'][branch_id] = []
                 if branch.is_transformer:
                     processed_results['scenarios'][s_m][s_o]['branches']['ratio'][branch_id] = []
                 for p in model.periods:
@@ -1329,6 +1347,9 @@ def _process_results(network, model, params, results=dict()):
                     # Branch flow (limits)
                     flow_ij_perc = max(pe.value(model.flow_ij_sqr[k, s_m, s_o, p]), 0.00) ** 0.50 / rating
                     processed_results['scenarios'][s_m][s_o]['branches']['branch_flow']['flow_ij_perc'][branch_id].append(flow_ij_perc)
+                    if k in model.apparent_power_limited_branches:
+                        flow_ji_perc = max(pe.value(model.flow_ji_sqr[k, s_m, s_o, p]), 0.00) ** 0.50 / rating
+                        processed_results['scenarios'][s_m][s_o]['branches']['branch_flow']['flow_ji_perc'][branch_id].append(flow_ji_perc)
 
             # Energy Storage devices
             if params.es_reg:
@@ -1399,9 +1420,14 @@ def _process_results(network, model, params, results=dict()):
                 for b in model.branches:
                     branch_id = network.branches[b].branch_id
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ij_sqr'][branch_id] = []
+                    if b in model.apparent_power_limited_branches:
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ji_sqr'][branch_id] = []
                     for p in model.periods:
                         slack_flow_ij_sqr = pe.value(model.slack_flow_ij_sqr[b, s_m, s_o, p]) * (s_base ** 2)
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ij_sqr'][branch_id].append(slack_flow_ij_sqr)
+                        if b in model.apparent_power_limited_branches:
+                            slack_flow_ji_sqr = pe.value(model.slack_flow_ji_sqr[b, s_m, s_o, p]) * (s_base ** 2)
+                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ji_sqr'][branch_id].append(slack_flow_ji_sqr)
 
             # Slacks
             # - SharedESS
@@ -1985,28 +2011,21 @@ def _get_branch_power_flow(network, params, branch, fbus, tbus, model, s_m, s_o,
     tbus_idx = network.get_node_idx(tbus)
     branch_idx = network.get_branch_idx(branch)
 
-    rij = pe.value(model.r[branch_idx, s_m, s_o, p])
+    rij = pe.value(model.r[branch_idx, s_m, s_o, p]) if branch.is_transformer else 1.0
     ei = pe.value(model.e[fbus_idx, s_m, s_o, p])
     fi = pe.value(model.f[fbus_idx, s_m, s_o, p])
     ej = pe.value(model.e[tbus_idx, s_m, s_o, p])
     fj = pe.value(model.f[tbus_idx, s_m, s_o, p])
 
-    if branch.fbus == fbus:
-        pij = branch.g * (ei ** 2 + fi ** 2) * rij ** 2
-        pij -= branch.g * (ei * ej + fi * fj) * rij
-        pij -= branch.b * (fi * ej - ei * fj) * rij
-
-        qij = - (branch.b + branch.b_sh * 0.50) * (ei ** 2 + fi ** 2) * rij ** 2
-        qij += branch.b * (ei * ej + fi * fj) * rij
-        qij -= branch.g * (fi * ej - ei * fj) * rij
-    else:
-        pij = branch.g * (ei ** 2 + fi ** 2)
-        pij -= branch.g * (ei * ej + fi * fj) * rij
-        pij -= branch.b * (fi * ej - ei * fj) * rij
-
-        qij = - (branch.b + branch.b_sh * 0.50) * (ei ** 2 + fi ** 2)
-        qij += branch.b * (ei * ej + fi * fj) * rij
-        qij -= branch.g * (fi * ej - ei * fj) * rij
+    terminal_ratio_sqr = rij ** 2 if branch.is_transformer and branch.fbus == fbus else 1.0
+    pij, qij = compute_branch_terminal_power(
+        branch,
+        ei ** 2 + fi ** 2,
+        ei * ej + fi * fj,
+        fi * ej - ei * fj,
+        coupling_ratio=rij,
+        terminal_ratio_sqr=terminal_ratio_sqr,
+    )
 
     return pij * network.baseMVA, qij * network.baseMVA
 

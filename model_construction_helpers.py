@@ -198,8 +198,9 @@ def slack_flow_bounds(m, b, s_m, s_o, p, network, params):
     branch = network.branches[b]
     if not branch.status:
         return (0.0, EQUALITY_TOLERANCE)
-    rating = (branch.rate / network.baseMVA)
-    return (0.0, (SIJ_VIOLATION_ALLOWED * rating) ** 2 + EQUALITY_TOLERANCE)
+    rating = branch.rate / network.baseMVA or BRANCH_UNKNOWN_RATING
+    relaxed_rating_sqr = ((1.0 + SIJ_VIOLATION_ALLOWED) * rating) ** 2
+    return (0.0, relaxed_rating_sqr - rating ** 2 + EQUALITY_TOLERANCE)
 
 
 # Consumption, Pc
@@ -783,7 +784,28 @@ def interface_pf_q_distribution_def(m, s_m, s_o, p, network):
 
 
 # Branch limits
-def compute_branch_flow_squared(network, model, branch_idx, fnode_idx, tnode_idx, s_m, s_o, p, limit_type):
+def branch_uses_apparent_power_limit(branch, params):
+    return (
+        params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER
+        or (params.branch_limit_type == BRANCH_LIMIT_MIXED and branch.is_transformer)
+    )
+
+
+def compute_branch_terminal_power(branch, terminal_v_sqr, cross_real, cross_imag,
+                                  coupling_ratio=1.0, terminal_ratio_sqr=1.0):
+    p_terminal = branch.g * terminal_v_sqr * terminal_ratio_sqr
+    p_terminal -= branch.g * cross_real * coupling_ratio
+    p_terminal -= branch.b * cross_imag * coupling_ratio
+
+    q_terminal = -(branch.b + 0.5 * branch.b_sh) * terminal_v_sqr * terminal_ratio_sqr
+    q_terminal += branch.b * cross_real * coupling_ratio
+    q_terminal -= branch.g * cross_imag * coupling_ratio
+
+    return p_terminal, q_terminal
+
+
+def compute_branch_flow_squared(network, model, branch_idx, fnode_idx, tnode_idx, s_m, s_o, p,
+                                limit_type, direction='ij'):
 
     branch = network.branches[branch_idx]
 
@@ -801,9 +823,15 @@ def compute_branch_flow_squared(network, model, branch_idx, fnode_idx, tnode_idx
         return current_squared
 
     if limit_type == BRANCH_LIMIT_APPARENT_POWER or (limit_type == BRANCH_LIMIT_MIXED and branch.is_transformer):
-
-        sij_sqr = model.pij[branch_idx, s_m, s_o, p] ** 2 + model.qij[branch_idx, s_m, s_o, p] ** 2
-        return sij_sqr
+        if direction == 'ij':
+            p_flow = model.pij[branch_idx, s_m, s_o, p]
+            q_flow = model.qij[branch_idx, s_m, s_o, p]
+        elif direction == 'ji':
+            p_flow = model.pji[branch_idx, s_m, s_o, p]
+            q_flow = model.qji[branch_idx, s_m, s_o, p]
+        else:
+            raise ValueError(f"Unknown branch flow direction: {direction}")
+        return p_flow ** 2 + q_flow ** 2
 
     raise ValueError(f"Unknown branch limit type: {limit_type}")
 
@@ -976,60 +1004,58 @@ def r_sqr_rule(m, b, s_m, s_o, p, network):
     return pe.Constraint.Skip
 
 
-def pij_rule(m, branch_idx, s_m, s_o, p, network, params):
-
+def _branch_terminal_power_expressions(m, branch_idx, s_m, s_o, p, network, direction):
     branch = network.branches[branch_idx]
+    if direction == 'ij':
+        terminal_node_idx = network.get_node_idx(branch.fbus)
+        opposite_node_idx = network.get_node_idx(branch.tbus)
+        terminal_ratio_sqr = m.r_sqr[branch_idx, s_m, s_o, p] if branch.is_transformer else 1.0
+    elif direction == 'ji':
+        terminal_node_idx = network.get_node_idx(branch.tbus)
+        opposite_node_idx = network.get_node_idx(branch.fbus)
+        terminal_ratio_sqr = 1.0
+    else:
+        raise ValueError(f"Unknown branch flow direction: {direction}")
 
-    if params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER or (params.branch_limit_type == BRANCH_LIMIT_MIXED and branch.is_transformer):
+    terminal_v_sqr = m.vmag_sqr[terminal_node_idx, s_m, s_o, p]
+    cross_real = (
+        m.e_e[terminal_node_idx, opposite_node_idx, s_m, s_o, p]
+        + m.f_f[terminal_node_idx, opposite_node_idx, s_m, s_o, p]
+    )
+    cross_imag = (
+        m.e_f[opposite_node_idx, terminal_node_idx, s_m, s_o, p]
+        - m.e_f[terminal_node_idx, opposite_node_idx, s_m, s_o, p]
+    )
+    coupling_ratio = m.r[branch_idx, s_m, s_o, p] if branch.is_transformer else 1.0
 
-        fnode_idx = network.get_node_idx(branch.fbus)
-        tnode_idx = network.get_node_idx(branch.tbus)
+    return compute_branch_terminal_power(
+        branch,
+        terminal_v_sqr,
+        cross_real,
+        cross_imag,
+        coupling_ratio=coupling_ratio,
+        terminal_ratio_sqr=terminal_ratio_sqr,
+    )
 
-        vi_sqr = m.vmag_sqr[fnode_idx, s_m, s_o, p]
-        ei_ej = m.e_e[fnode_idx, tnode_idx, s_m, s_o, p]
-        fi_fj = m.f_f[fnode_idx, tnode_idx, s_m, s_o, p]
-        ei_fj = m.e_f[fnode_idx, tnode_idx, s_m, s_o, p]
-        ej_fi = m.e_f[tnode_idx, fnode_idx, s_m, s_o, p]
 
-        rij = m.r[branch_idx, s_m, s_o, p] if branch.is_transformer else 1.0
-        rij_sqr = m.r_sqr[branch_idx, s_m, s_o, p] if branch.is_transformer else 1.0
-
-        # Real power flow from i to j
-        pij = branch.g * vi_sqr * rij_sqr
-        pij -= branch.g * (ei_ej + fi_fj) * rij
-        pij -= branch.b * (ej_fi - ei_fj) * rij
-
-        return m.pij[branch_idx, s_m, s_o, p] == pij
-
-    return pe.Constraint.Skip
+def pij_rule(m, branch_idx, s_m, s_o, p, network, params):
+    pij, _ = _branch_terminal_power_expressions(m, branch_idx, s_m, s_o, p, network, 'ij')
+    return m.pij[branch_idx, s_m, s_o, p] == pij
 
 
 def qij_rule(m, branch_idx, s_m, s_o, p, network, params):
+    _, qij = _branch_terminal_power_expressions(m, branch_idx, s_m, s_o, p, network, 'ij')
+    return m.qij[branch_idx, s_m, s_o, p] == qij
 
-    branch = network.branches[branch_idx]
 
-    if params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER or (params.branch_limit_type == BRANCH_LIMIT_MIXED and branch.is_transformer):
+def pji_rule(m, branch_idx, s_m, s_o, p, network, params):
+    pji, _ = _branch_terminal_power_expressions(m, branch_idx, s_m, s_o, p, network, 'ji')
+    return m.pji[branch_idx, s_m, s_o, p] == pji
 
-        fnode_idx = network.get_node_idx(branch.fbus)
-        tnode_idx = network.get_node_idx(branch.tbus)
 
-        vi_sqr = m.vmag_sqr[fnode_idx, s_m, s_o, p]
-        ei_ej = m.e_e[fnode_idx, tnode_idx, s_m, s_o, p]
-        fi_fj = m.f_f[fnode_idx, tnode_idx, s_m, s_o, p]
-        ei_fj = m.e_f[fnode_idx, tnode_idx, s_m, s_o, p]
-        ej_fi = m.e_f[tnode_idx, fnode_idx, s_m, s_o, p]
-
-        rij = m.r[branch_idx, s_m, s_o, p] if branch.is_transformer else 1.0
-        rij_sqr = m.r_sqr[branch_idx, s_m, s_o, p] if branch.is_transformer else 1.0
-
-        # Reactive power flow from i to j
-        qij = -(branch.b + branch.b_sh) * vi_sqr * rij_sqr
-        qij += branch.b * (ei_ej + fi_fj) * rij
-        qij -= branch.g * (ej_fi - ei_fj) * rij
-
-        return m.qij[branch_idx, s_m, s_o, p] == qij
-
-    return pe.Constraint.Skip
+def qji_rule(m, branch_idx, s_m, s_o, p, network, params):
+    _, qji = _branch_terminal_power_expressions(m, branch_idx, s_m, s_o, p, network, 'ji')
+    return m.qji[branch_idx, s_m, s_o, p] == qji
 
 
 def branch_flow_def(model, b, s_m, s_o, p, network, params):
@@ -1041,7 +1067,22 @@ def branch_flow_def(model, b, s_m, s_o, p, network, params):
     fnode_idx = network.get_node_idx(branch.fbus)
     tnode_idx = network.get_node_idx(branch.tbus)
 
-    return compute_branch_flow_squared(network, model, b, fnode_idx, tnode_idx, s_m, s_o, p, params.branch_limit_type)
+    return compute_branch_flow_squared(
+        network, model, b, fnode_idx, tnode_idx, s_m, s_o, p, params.branch_limit_type, direction='ij'
+    )
+
+
+def branch_flow_ji_def(model, b, s_m, s_o, p, network, params):
+    branch = network.branches[b]
+    if not branch.status:
+        return pe.Expression.Skip
+
+    fnode_idx = network.get_node_idx(branch.tbus)
+    tnode_idx = network.get_node_idx(branch.fbus)
+
+    return compute_branch_flow_squared(
+        network, model, b, fnode_idx, tnode_idx, s_m, s_o, p, params.branch_limit_type, direction='ji'
+    )
 
 
 def branch_flow_limit_rule(model, b, s_m, s_o, p, network, params):
@@ -1056,6 +1097,18 @@ def branch_flow_limit_rule(model, b, s_m, s_o, p, network, params):
         return model.flow_ij_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_flow_ij_sqr[b, s_m, s_o, p]
     else:
         return model.flow_ij_sqr[b, s_m, s_o, p] <= rating ** 2 + EQUALITY_TOLERANCE
+
+
+def branch_flow_limit_ji_rule(model, b, s_m, s_o, p, network, params):
+    branch = network.branches[b]
+    if not branch.status:
+        return pe.Constraint.Skip
+
+    rating = branch.rate / network.baseMVA or BRANCH_UNKNOWN_RATING
+
+    if params.slacks.grid_operation.branch_flow:
+        return model.flow_ji_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_flow_ji_sqr[b, s_m, s_o, p]
+    return model.flow_ji_sqr[b, s_m, s_o, p] <= rating ** 2 + EQUALITY_TOLERANCE
 
 
 def setup_cost_parameters(model, params):
@@ -1300,6 +1353,11 @@ def slack_penalties(model, network, s_m, s_o, params):
         for p in model.periods:
             if params.slacks.grid_operation.branch_flow:
                 total += base * PENALTY_CURRENT * (model.slack_flow_ij_sqr[b, s_m, s_o, p])
+
+    if params.slacks.grid_operation.branch_flow:
+        for b in model.apparent_power_limited_branches:
+            for p in model.periods:
+                total += base * PENALTY_CURRENT * model.slack_flow_ji_sqr[b, s_m, s_o, p]
 
     if params.fl_reg and params.slacks.flexibility.day_balance:
         for c in model.loads:
