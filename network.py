@@ -498,6 +498,7 @@ def _create_smopf_solver(network, model, params, from_warm_start=False,
     if from_warm_start and solver_params.solver.lower() == 'ipopt':
         model.ipopt_zL_in.update(model.ipopt_zL_out)
         model.ipopt_zU_in.update(model.ipopt_zU_out)
+        solver.options['acceptable_iter'] = 1
         solver.options['warm_start_init_point'] = 'yes'
         solver.options['warm_start_bound_push'] = 1e-9
         solver.options['warm_start_bound_frac'] = 1e-9
