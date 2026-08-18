@@ -1486,7 +1486,6 @@ def _process_results_interface(network, model):
 
             node_id = network.active_distribution_network_nodes[dn]
             node_idx = network.get_node_idx(node_id)
-            load_idx = network.get_adn_load_idx(node_id)
 
             # Power flow results per market and operation scenario
             results[node_id] = dict()
@@ -1499,8 +1498,8 @@ def _process_results_interface(network, model):
                     results[node_id][s_m][s_o]['q'] = [0.0 for _ in model.periods]
                     for p in model.periods:
                         vmag = sqrt(pe.value(model.e[node_idx, s_m, s_o, p]**2 + model.f[node_idx, s_m, s_o, p]**2))
-                        pf_p = pe.value(model.pc[load_idx, s_m, s_o, p] + model.flex_p_up[load_idx, s_m, s_o, p] - model.flex_p_down[load_idx, s_m, s_o, p]) * network.baseMVA
-                        pf_q = pe.value(model.qc[load_idx, s_m, s_o, p] + model.flex_q_up[load_idx, s_m, s_o, p] - model.flex_q_down[load_idx, s_m, s_o, p]) * network.baseMVA
+                        pf_p = pe.value(model.pc_adn[dn, s_m, s_o, p]) * network.baseMVA
+                        pf_q = pe.value(model.qc_adn[dn, s_m, s_o, p]) * network.baseMVA
                         results[node_id][s_m][s_o]['v'][p] = vmag
                         results[node_id][s_m][s_o]['p'][p] = pf_p
                         results[node_id][s_m][s_o]['q'][p] = pf_q
@@ -1509,7 +1508,6 @@ def _process_results_interface(network, model):
         # Power flow results per market and operation scenario
         ref_node_id = network.get_reference_node_id()
         ref_node_idx = network.get_node_idx(ref_node_id)
-        ref_gen_idx = network.get_reference_gen_idx()
         for s_m in model.scenarios_market:
             results[s_m] = dict()
             for s_o in model.scenarios_operation:
@@ -1519,8 +1517,8 @@ def _process_results_interface(network, model):
                 results[s_m][s_o]['q'] = [0.0 for _ in model.periods]
                 for p in model.periods:
                     vmag = sqrt(pe.value(model.e[ref_node_idx, s_m, s_o, p]**2 + model.f[ref_node_idx, s_m, s_o, p]**2))
-                    pf_p = pe.value(model.pg[ref_gen_idx, s_m, s_o, p]) * network.baseMVA
-                    pf_q = pe.value(model.qg[ref_gen_idx, s_m, s_o, p]) * network.baseMVA
+                    pf_p = pe.value(model.pg_adn[s_m, s_o, p]) * network.baseMVA
+                    pf_q = pe.value(model.qg_adn[s_m, s_o, p]) * network.baseMVA
                     results[s_m][s_o]['v'][p] = vmag
                     results[s_m][s_o]['p'][p] = pf_p
                     results[s_m][s_o]['q'][p] = pf_q

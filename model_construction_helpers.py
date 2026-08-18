@@ -762,12 +762,24 @@ def interface_vmag_distribution_def(m, s_m, s_o, p, network):
 
 def interface_pf_p_distribution_def(m, s_m, s_o, p, network):
     ref_gen_idx = network.get_reference_gen_idx()
-    return m.pg[ref_gen_idx, s_m, s_o, p]
+    ref_node_id = network.get_reference_node_id()
+    shared_ess_p = sum(
+        m.shared_es_pnet[e, s_m, s_o, p]
+        for e in m.shared_energy_storages
+        if network.shared_energy_storages[e].bus == ref_node_id
+    )
+    return m.pg[ref_gen_idx, s_m, s_o, p] - shared_ess_p
 
 
 def interface_pf_q_distribution_def(m, s_m, s_o, p, network):
     ref_gen_idx = network.get_reference_gen_idx()
-    return m.qg[ref_gen_idx, s_m, s_o, p]
+    ref_node_id = network.get_reference_node_id()
+    shared_ess_q = sum(
+        m.shared_es_qnet[e, s_m, s_o, p]
+        for e in m.shared_energy_storages
+        if network.shared_energy_storages[e].bus == ref_node_id
+    )
+    return m.qg[ref_gen_idx, s_m, s_o, p] - shared_ess_q
 
 
 # Branch limits
