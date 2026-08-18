@@ -283,6 +283,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
 
     shared_ess_data = planning_problem.shared_ess_data
     benders_parameters = planning_problem.params.benders
+    finite_difference_params = benders_parameters.finite_difference
     lower_level_models = dict()
     operational_results = dict()
 
@@ -310,6 +311,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
     operational_state = None
     sensitivities = None
     incumbent = None
+    positive_validation_reference = None
     incumbent_update_evolution = list()
     termination_reason = None
     print_memory_usage("Start of planning problem", debug_flag)
@@ -377,23 +379,34 @@ def _run_planning_problem(planning_problem, debug_flag=False):
             terminal_salvage_value = recourse_components['terminal_salvage_value']
             operational_recourse = recourse_components['net_operational_recourse']
             candidate_total = investment_cost + operational_recourse
+            evaluated_candidate = {
+                'iteration': iteration,
+                'candidate_solution': deepcopy(candidate_solution),
+                'investment_cost': investment_cost,
+                'gross_operational_cost': gross_operational_cost,
+                'terminal_salvage_value': terminal_salvage_value,
+                'operational_recourse': operational_recourse,
+                'candidate_total': candidate_total,
+                'esso_violation': esso_violation,
+                'models': lower_level_models,
+                'results': operational_results,
+                'sensitivities': deepcopy(sensitivities),
+                'state': operational_state,
+            }
             if candidate_total < upper_bound:
                 upper_bound = candidate_total
                 incumbent_updated = True
-                incumbent = {
-                    'iteration': iteration,
-                    'candidate_solution': deepcopy(candidate_solution),
-                    'investment_cost': investment_cost,
-                    'gross_operational_cost': gross_operational_cost,
-                    'terminal_salvage_value': terminal_salvage_value,
-                    'operational_recourse': operational_recourse,
-                    'candidate_total': candidate_total,
-                    'esso_violation': esso_violation,
-                    'models': lower_level_models,
-                    'results': operational_results,
-                    'sensitivities': deepcopy(sensitivities),
-                    'state': operational_state,
-                }
+                incumbent = evaluated_candidate
+            if (
+                    finite_difference_params.enabled
+                    and _select_finite_difference_investment(
+                        evaluated_candidate['candidate_solution'], finite_difference_params
+                    ) is not None
+                    and (
+                        positive_validation_reference is None
+                        or candidate_total < positive_validation_reference['candidate_total']
+                    )):
+                positive_validation_reference = evaluated_candidate
 
         gap_signed = None
         gap_abs = None
@@ -508,24 +521,45 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         print('[WARNING] Convergence not obtained!')
     print(f'[INFO] Planning termination reason: {termination_reason}.')
 
-    finite_difference_params = benders_parameters.finite_difference
     validation_after_stop = (
         finite_difference_params.validate_after_heuristic_stop
         and termination_reason in {'local_model_crossed_incumbent', 'maximum_iterations'}
     )
+    validation_reference = None
+    validation_source = None
+    validation_reference_is_incumbent = None
     if finite_difference_params.enabled and incumbent is not None and (
             convergence or validation_after_stop):
-        finite_difference_results = _validate_local_sensitivities_with_finite_differences(
-            planning_problem,
-            incumbent['candidate_solution'],
-            incumbent['operational_recourse'],
-            incumbent['sensitivities'],
-            incumbent['models'],
-            incumbent['state'],
-            finite_difference_params,
-            baseline_outer_iteration=incumbent['iteration'],
-            termination_reason=termination_reason,
+        validation_reference, validation_source, validation_reference_is_incumbent = (
+            _select_finite_difference_validation_reference(
+                incumbent, positive_validation_reference, finite_difference_params
+            )
         )
+        if validation_reference is None:
+            print(
+                '[WARNING] Finite-difference validation skipped: no matching positive '
+                'investment was found in any feasible evaluated candidate.'
+            )
+        else:
+            if not validation_reference_is_incumbent:
+                print(
+                    '[INFO] The incumbent has no matching positive investment. Finite-difference '
+                    f'validation will use the best positive feasible evaluation from outer iteration '
+                    f'{validation_reference["iteration"]}; the incumbent and upper bound are unchanged.'
+                )
+            finite_difference_results = _validate_local_sensitivities_with_finite_differences(
+                planning_problem,
+                validation_reference['candidate_solution'],
+                validation_reference['operational_recourse'],
+                validation_reference['sensitivities'],
+                validation_reference['models'],
+                validation_reference['state'],
+                finite_difference_params,
+                baseline_outer_iteration=validation_reference['iteration'],
+                termination_reason=termination_reason,
+                validation_source=validation_source,
+                validation_reference_is_incumbent=validation_reference_is_incumbent,
+            )
 
     # Write results
     end = time.time()
@@ -551,6 +585,11 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         'outer_iterations': iteration,
         'incumbent_iteration': incumbent['iteration'] if incumbent is not None else None,
         'incumbent_objective': incumbent['candidate_total'] if incumbent is not None else None,
+        'validation_reference_source': validation_source,
+        'validation_reference_iteration': (
+            validation_reference['iteration'] if validation_reference is not None else None
+        ),
+        'validation_reference_is_incumbent': validation_reference_is_incumbent,
         'finite_difference': finite_difference_results,
         'admm_diagnostics': admm_diagnostics,
         'solver_recovery_diagnostics': solver_recovery_diagnostics,
@@ -634,7 +673,9 @@ def _validate_local_sensitivities_with_finite_differences(planning_problem, cand
                                                           baseline_recourse, sensitivities, baseline_models,
                                                           baseline_state, params,
                                                           baseline_outer_iteration=None,
-                                                          termination_reason=None):
+                                                          termination_reason=None,
+                                                          validation_source='incumbent',
+                                                          validation_reference_is_incumbent=True):
     selected = _select_finite_difference_investment(candidate_solution, params)
     if selected is None:
         print('[WARNING] Finite-difference validation skipped: no matching positive investment was found.')
@@ -643,7 +684,7 @@ def _validate_local_sensitivities_with_finite_differences(planning_problem, cand
         print('[WARNING] Finite-difference validation skipped: the converged operational state is unavailable.')
         return []
     if sensitivities is None:
-        print('[WARNING] Finite-difference validation skipped: incumbent sensitivities are unavailable.')
+        print('[WARNING] Finite-difference validation skipped: reference sensitivities are unavailable.')
         return []
 
     node_id, year = selected
@@ -670,7 +711,10 @@ def _validate_local_sensitivities_with_finite_differences(planning_problem, cand
     )
     validation_results = []
 
-    print('[INFO] Running finite-difference validation of the incumbent local sensitivity...')
+    print(
+        '[INFO] Running finite-difference validation of the selected local sensitivity '
+        f'reference (source={validation_source}, outer iteration={baseline_outer_iteration})...'
+    )
     print(
         f'[INFO] Selected investment: node {node_id}, year {year}, '
         f'S = {base_s:.6f} MVA, E = {base_e:.6f} MVAh, E/S = {ratio:.6f}.'
@@ -728,6 +772,8 @@ def _validate_local_sensitivities_with_finite_differences(planning_problem, cand
                 'max_refinements': params.max_replay_refinements,
                 'reference_stabilized': attempt['stabilized'],
                 'original_cut_reproducible': original_cut_reproducible,
+                'validation_source': validation_source,
+                'validation_reference_is_incumbent': validation_reference_is_incumbent,
                 'baseline_outer_iteration': baseline_outer_iteration,
                 'termination_reason': termination_reason,
                 'node_id': node_id,
@@ -774,14 +820,14 @@ def _validate_local_sensitivities_with_finite_differences(planning_problem, cand
             print(
                 f'[INFO] Finite-difference reference refinement {attempt["refinement"]}/'
                 f'{params.max_replay_refinements} | Cycle recourse drift = {cycle_drift_text} | '
-                f'Cumulative incumbent drift = {cumulative_drift_text} | '
+                f'Cumulative baseline drift = {cumulative_drift_text} | '
                 f'Partial sensitivity drift = {sensitivity_drift_text} | '
                 f'Status = {"passed" if attempt["stabilized"] else "inconclusive"}'
             )
 
         if not reference['stabilized']:
             print(
-                '[WARNING] Finite-difference perturbations skipped: the incumbent reference '
+                '[WARNING] Finite-difference perturbations skipped: the selected reference '
                 'did not stabilize within the configured refinement limit.'
             )
             return validation_results
@@ -806,9 +852,9 @@ def _validate_local_sensitivities_with_finite_differences(planning_problem, cand
         )
         if not original_cut_reproducible:
             print(
-                '[WARNING] The polished reference differs materially from the original incumbent '
+                '[WARNING] The polished reference differs materially from the selected baseline '
                 'recourse, sensitivities, or minimum-SoH active set. Perturbations will validate '
-                'the polished local derivative and report the original-cut drift separately.'
+                'the polished local derivative and report the original sensitivity-point drift separately.'
             )
 
         for direction in direction_specs:
@@ -922,6 +968,8 @@ def _validate_local_sensitivities_with_finite_differences(planning_problem, cand
                     'reference_stabilized': reference['stabilized'],
                     'endpoint_stabilized': endpoint['stabilized'],
                     'original_cut_reproducible': original_cut_reproducible,
+                    'validation_source': validation_source,
+                    'validation_reference_is_incumbent': validation_reference_is_incumbent,
                     'baseline_outer_iteration': baseline_outer_iteration,
                     'termination_reason': termination_reason,
                     'node_id': node_id,
@@ -1222,6 +1270,22 @@ def _soh_active_state_changed(baseline_margin, candidate_margin, tolerance):
     return (baseline_margin <= tolerance) != (candidate_margin <= tolerance)
 
 
+def _select_finite_difference_validation_reference(incumbent, positive_reference, params):
+    if (
+            incumbent is not None
+            and _select_finite_difference_investment(
+                incumbent['candidate_solution'], params
+            ) is not None):
+        return incumbent, 'incumbent', True
+    if (
+            positive_reference is not None
+            and _select_finite_difference_investment(
+                positive_reference['candidate_solution'], params
+            ) is not None):
+        return positive_reference, 'best_positive_evaluated_candidate', False
+    return None, None, None
+
+
 def _select_finite_difference_investment(candidate_solution, params):
     investments = candidate_solution['investment']
 
@@ -1231,6 +1295,11 @@ def _select_finite_difference_investment(candidate_solution, params):
             return None
         year = next((value for value in investments[node_id] if str(value) == str(params.year)), None)
         if year is None:
+            return None
+        investment = investments[node_id][year]
+        if not (
+                investment['s'] > SMALL_TOLERANCE
+                or investment['e'] > SMALL_TOLERANCE):
             return None
         return node_id, year
 
@@ -4107,6 +4176,9 @@ def _write_planning_termination_to_excel(workbook, bound_evolution):
         ('Outer Iterations', bound_evolution.get('outer_iterations')),
         ('Incumbent Iteration', bound_evolution.get('incumbent_iteration')),
         ('Incumbent Objective, [NPV m.u.]', bound_evolution.get('incumbent_objective')),
+        ('Validation Reference Source', bound_evolution.get('validation_reference_source')),
+        ('Validation Reference Iteration', bound_evolution.get('validation_reference_iteration')),
+        ('Validation Reference Is Incumbent', bound_evolution.get('validation_reference_is_incumbent')),
     ]
     for row_idx, (label, value) in enumerate(values, start=1):
         sheet.cell(row=row_idx, column=1).value = label
@@ -4124,7 +4196,9 @@ def _write_finite_difference_validation_to_excel(workbook, validation_results):
         ('max_refinements', 'Maximum Refinements', '0'),
         ('reference_stabilized', 'Reference Stabilized', 'General'),
         ('endpoint_stabilized', 'Perturbed Endpoint Stabilized', 'General'),
-        ('original_cut_reproducible', 'Original Cut Point Reproducible', 'General'),
+        ('original_cut_reproducible', 'Original Sensitivity Point Reproducible', 'General'),
+        ('validation_source', 'Validation Reference Source', 'General'),
+        ('validation_reference_is_incumbent', 'Validation Reference Is Incumbent', 'General'),
         ('baseline_outer_iteration', 'Baseline Outer Iteration', '0'),
         ('termination_reason', 'Planning Termination Reason', 'General'),
         ('node_id', 'Node ID', '0'),
@@ -4144,7 +4218,7 @@ def _write_finite_difference_validation_to_excel(workbook, validation_results):
         ('sensitivity_e', 'Sensitivity E, [NPV m.u./MVAh]', '0.000000'),
         ('replay_sensitivity_s', 'Replay Sensitivity S, [NPV m.u./MVA]', '0.000000'),
         ('replay_sensitivity_e', 'Replay Sensitivity E, [NPV m.u./MVAh]', '0.000000'),
-        ('original_analytic_slope', 'Original-Cut Directional Slope, [NPV m.u./h]', '0.000000'),
+        ('original_analytic_slope', 'Baseline Directional Slope, [NPV m.u./h]', '0.000000'),
         ('analytic_slope', 'Analytic Directional Slope, [NPV m.u./h]', '0.000000'),
         ('replay_analytic_slope', 'Replay Directional Slope, [NPV m.u./h]', '0.000000'),
         ('predicted_change', 'Predicted Recourse Change, [NPV m.u.]', '0.000000'),
@@ -4165,9 +4239,9 @@ def _write_finite_difference_validation_to_excel(workbook, validation_results):
         ('sensitivity_relative_drift', 'Replay Sensitivity Drift, [%]', '0.00%'),
         ('sensitivity_relative_drift_s', 'Replay Sensitivity S Drift, [%]', '0.00%'),
         ('sensitivity_relative_drift_e', 'Replay Sensitivity E Drift, [%]', '0.00%'),
-        ('original_sensitivity_relative_drift', 'Original-Cut Sensitivity Drift, [%]', '0.00%'),
-        ('original_sensitivity_relative_drift_s', 'Original-Cut Sensitivity S Drift, [%]', '0.00%'),
-        ('original_sensitivity_relative_drift_e', 'Original-Cut Sensitivity E Drift, [%]', '0.00%'),
+        ('original_sensitivity_relative_drift', 'Baseline Sensitivity Drift, [%]', '0.00%'),
+        ('original_sensitivity_relative_drift_s', 'Baseline Sensitivity S Drift, [%]', '0.00%'),
+        ('original_sensitivity_relative_drift_e', 'Baseline Sensitivity E Drift, [%]', '0.00%'),
         ('same_sign', 'Same Sign', 'General'),
         ('operational_convergence', 'ADMM Converged', 'General'),
         ('esso_violation', 'ESSO Feasibility Slack, [N/A]', '0.000000'),
