@@ -818,8 +818,10 @@ def compute_node_load(model, i, s_m, s_o, p, network, params):
         for e in model.energy_storages:
             es = network.energy_storages[e]
             if es.bus == node.bus_i:
-                Pd += model.es_pnet[e, s_m, s_o, p]
-                Qd += model.es_qnet[e, s_m, s_o, p]
+                # Ordinary ESS net power follows the generator convention:
+                # positive values are injections and therefore reduce net demand.
+                Pd -= model.es_pnet[e, s_m, s_o, p]
+                Qd -= model.es_qnet[e, s_m, s_o, p]
 
     for e in model.shared_energy_storages:
         es = network.shared_energy_storages[e]
