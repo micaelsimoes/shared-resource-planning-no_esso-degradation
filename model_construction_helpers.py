@@ -25,27 +25,27 @@ def _voltage_magnitude_slack_enabled(node, params):
     )
 
 
+def voltage_numerical_upper_bound(node):
+    return node.v_max + VMAG_VIOLATION_ALLOWED + SMALL_TOLERANCE
+
+
 def e_bounds(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
     if node.type == BUS_REF and not network.is_transmission:
         vg = network.generators[network.get_gen_idx(node.bus_i)].vg
         return (vg - SMALL_TOLERANCE, vg + SMALL_TOLERANCE)
-    component_max = node.v_max
-    if _voltage_magnitude_slack_enabled(node, params):
-        component_max += VMAG_VIOLATION_ALLOWED
+    component_max = voltage_numerical_upper_bound(node)
     if node.type == BUS_REF:
-        return (0.00, component_max + EQUALITY_TOLERANCE)
-    return (-component_max - EQUALITY_TOLERANCE, component_max + EQUALITY_TOLERANCE)
+        return (0.00, component_max)
+    return (-component_max, component_max)
 
 
 def f_bounds(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
     if node.type == BUS_REF:
         return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
-    component_max = node.v_max
-    if _voltage_magnitude_slack_enabled(node, params):
-        component_max += VMAG_VIOLATION_ALLOWED
-    return (-component_max - EQUALITY_TOLERANCE, component_max + EQUALITY_TOLERANCE)
+    component_max = voltage_numerical_upper_bound(node)
+    return (-component_max, component_max)
 
 
 # Squared-voltage slack bounds corresponding to the permitted physical magnitude violation.
@@ -81,9 +81,7 @@ def voltage_slack_diagnostics(v_min, v_max, vmag_sqr, slack_down, slack_up):
 
 def vmag_bounds(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
-    if _voltage_magnitude_slack_enabled(node, params):
-        return (max(node.v_min - VMAG_VIOLATION_ALLOWED, 0.00), node.v_max + VMAG_VIOLATION_ALLOWED)
-    return (max(node.v_min - EQUALITY_TOLERANCE, 0.00), node.v_max + EQUALITY_TOLERANCE)
+    return (0.00, voltage_numerical_upper_bound(node))
 
 
 def node_balance_slack_bounds(m, i, s_m, s_o, p, network):
@@ -714,11 +712,11 @@ def sess_pnet_rule(m, e, s_m, s_o, p):
 
 
 def sess_s_sensitivities(m, e):
-    return m.shared_es_s_rated[e] <= m.shared_es_s_rated_fixed[e] + EQUALITY_TOLERANCE
+    return m.shared_es_s_rated_fixed[e] == m.shared_es_s_rated[e]
 
 
 def sess_e_sensitivities(m, e):
-    return m.shared_es_e_rated[e] <= m.shared_es_e_rated_fixed[e] + EQUALITY_TOLERANCE
+    return m.shared_es_e_rated_fixed[e] == m.shared_es_e_rated[e]
 
 
 # Interface power flows and voltage magnitude definition
@@ -1513,9 +1511,3 @@ def tn_shared_ess_p_nonanticipativity_rule(m, e, s_m, s_o, p):
 
 def tn_shared_ess_q_nonanticipativity_rule(m, e, s_m, s_o, p):
     return m.shared_es_qnet[e, s_m, s_o, p] == m.expected_shared_ess_q[e, p]
-
-
-def expected_interface_vmag_bounds(m, dn, p, network):
-    adn_node_id = network.active_distribution_network_nodes[dn]
-    v_min, v_max = network.get_node_voltage_limits(adn_node_id)
-    return (v_min - EQUALITY_TOLERANCE, v_max + EQUALITY_TOLERANCE)
