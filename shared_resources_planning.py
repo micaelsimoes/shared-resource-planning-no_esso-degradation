@@ -283,6 +283,8 @@ def _run_planning_problem(planning_problem, debug_flag=False):
 
     shared_ess_data = planning_problem.shared_ess_data
     benders_parameters = planning_problem.params.benders
+    positive_bootstrap_params = benders_parameters.positive_bootstrap
+    sensitivity_probe_params = benders_parameters.sensitivity_probe
     finite_difference_params = benders_parameters.finite_difference
     lower_level_models = dict()
     operational_results = dict()
@@ -306,6 +308,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
     gap_abs_evolution = list()
     gap_rel_evolution = list()
     finite_difference_results = list()
+    sensitivity_probe_diagnostics = list()
     admm_diagnostics = list()
     solver_recovery_diagnostics = list()
     operational_state = None
@@ -313,6 +316,12 @@ def _run_planning_problem(planning_problem, debug_flag=False):
     incumbent = None
     positive_validation_reference = None
     incumbent_update_evolution = list()
+    candidate_source_evolution = list()
+    operational_initialization_evolution = list()
+    candidate_source = 'master_solution'
+    positive_bootstrap_used = False
+    positive_bootstrap_iteration = None
+    operational_reference_state = None
     termination_reason = None
     print_memory_usage("Start of planning problem", debug_flag)
 
@@ -340,10 +349,25 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         # 1.1. Solve operational planning, with fixed investment variables,
         # 1.2. Get coupling constraints' sensitivities (subproblem)
         # 1.3. Get the economic recourse value and local sensitivities
+        candidate_initial_state = (
+            operational_reference_state
+            if (
+                sensitivity_probe_params.enabled
+                and candidate_source == 'master_solution'
+                and positive_bootstrap_used
+            )
+            else None
+        )
+        if candidate_initial_state is not None:
+            print('[INFO] Operational candidate initialization: positive reference state.')
+        candidate_initialization_source = (
+            'positive_reference_state' if candidate_initial_state is not None else 'cold'
+        )
         operational_convergence, operational_results, lower_level_models, sensitivities, _, operational_state = planning_problem.run_operational_planning(
             candidate_solution=candidate_solution,
             print_results=print_results,
             filename=f'{planning_problem.name}_operational_planning_results_distributed_without ESS',
+            initial_state=candidate_initial_state,
             return_state=True,
         )
         for diagnostic in operational_state.get('admm_diagnostics', []):
@@ -357,8 +381,11 @@ def _run_planning_problem(planning_problem, debug_flag=False):
 
         initialization_failed = operational_state.get('initialization_failed', False)
         investment_cost = pe.value(master_problem_model.investment_cost)
-        alpha = pe.value(master_problem_model.alpha)
-        master_estimate = pe.value(master_problem_model.objective)
+        alpha = None
+        master_estimate = None
+        if candidate_source == 'master_solution':
+            alpha = pe.value(master_problem_model.alpha)
+            master_estimate = pe.value(master_problem_model.objective)
         esso_violation = None
         if not initialization_failed:
             esso_violation = shared_ess_data.get_feasibility_violation(lower_level_models['esso'])
@@ -373,6 +400,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         terminal_salvage_value = None
         candidate_total = None
         incumbent_updated = False
+        evaluated_candidate = None
         if candidate_is_feasible:
             recourse_components = planning_problem.get_operational_recourse_components(lower_level_models)
             gross_operational_cost = recourse_components['gross_operational_cost']
@@ -381,6 +409,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
             candidate_total = investment_cost + operational_recourse
             evaluated_candidate = {
                 'iteration': iteration,
+                'candidate_source': candidate_source,
                 'candidate_solution': deepcopy(candidate_solution),
                 'investment_cost': investment_cost,
                 'gross_operational_cost': gross_operational_cost,
@@ -393,6 +422,8 @@ def _run_planning_problem(planning_problem, debug_flag=False):
                 'sensitivities': deepcopy(sensitivities),
                 'state': operational_state,
             }
+            if sensitivity_probe_params.enabled and candidate_source == 'positive_bootstrap':
+                operational_reference_state = operational_state
             if candidate_total < upper_bound:
                 upper_bound = candidate_total
                 incumbent_updated = True
@@ -411,7 +442,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         gap_signed = None
         gap_abs = None
         gap_rel = None
-        if isfinite(upper_bound):
+        if isfinite(upper_bound) and master_estimate is not None:
             gap_signed = upper_bound - master_estimate
             gap_abs = abs(gap_signed)
             gap_rel = gap_abs / max(abs(upper_bound), 1e-6)
@@ -429,7 +460,13 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         gap_abs_evolution.append(gap_abs)
         gap_rel_evolution.append(gap_rel)
         incumbent_update_evolution.append(incumbent_updated)
+        candidate_source_evolution.append(candidate_source)
+        operational_initialization_evolution.append(candidate_initialization_source)
 
+        master_estimate_text = (
+            f'{master_estimate:.2f}' if master_estimate is not None else 'N/A'
+        )
+        alpha_text = f'{alpha:.2f}' if alpha is not None else 'N/A'
         recourse_text = f'{operational_recourse:.2f}' if operational_recourse is not None else 'N/A'
         gross_recourse_text = (
             f'{gross_operational_cost:.2f}' if gross_operational_cost is not None else 'N/A'
@@ -440,7 +477,8 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         gap_text = f'{gap_signed / max(abs(upper_bound), 1e-6) * 100:.2f}%' if gap_signed is not None else 'N/A'
         esso_violation_text = f'{esso_violation:.6f}' if esso_violation is not None else 'N/A'
         print(
-            f"[INFO] Iteration #{iteration} | Master = {master_estimate:.2f} | Alpha = {alpha:.2f} | "
+            f"[INFO] Iteration #{iteration} | Source = {candidate_source} | "
+            f"Master = {master_estimate_text} | Alpha = {alpha_text} | "
             f"Investment = {investment_cost:.2f} | Gross recourse = {gross_recourse_text} | "
             f"Salvage = {salvage_text} | Net recourse = {recourse_text} | "
             f"Candidate = {candidate_total_text} | UB = {upper_bound_text} | Gap = {gap_text} | "
@@ -469,20 +507,61 @@ def _run_planning_problem(planning_problem, debug_flag=False):
                 f"{BENDERS_FEASIBILITY_TOLERANCE:.6f}. No formal feasibility cut is available; stopping the outer loop."
             )
             break
-        if master_estimate > upper_bound + benders_parameters.tol_abs:
+        if (
+                master_estimate is not None
+                and master_estimate > upper_bound + benders_parameters.tol_abs):
             termination_reason = 'local_model_crossed_incumbent'
             print(
                 "[WARNING] The Benders-type master estimate exceeds the incumbent feasible objective. "
                 "The local cuts are not global lower bounds; stopping without claiming optimality."
             )
             break
-        if gap_rel < benders_parameters.tol_rel or gap_abs <= benders_parameters.tol_abs:
+        if (
+                gap_rel is not None
+                and (gap_rel < benders_parameters.tol_rel
+                     or gap_abs <= benders_parameters.tol_abs)):
             convergence = True
             termination_reason = 'converged'
             break
         if iteration == benders_parameters.num_max_iters:
             termination_reason = 'maximum_iterations'
             break
+
+        if (
+                sensitivity_probe_params.enabled
+                and not (
+                    positive_bootstrap_params.enabled
+                    and not positive_bootstrap_used
+                    and _is_zero_investment_candidate(candidate_solution)
+                )
+                and _has_missing_investment_sensitivities(
+                    planning_problem, sensitivities
+                )):
+            sensitivities, probe_diagnostics, probe_state = (
+                _complete_missing_sensitivities_with_probe(
+                    planning_problem,
+                    candidate_solution,
+                    sensitivities,
+                    sensitivity_probe_params,
+                    iteration,
+                    initial_state=operational_reference_state,
+                    debug_flag=debug_flag,
+                )
+            )
+            sensitivity_probe_diagnostics.extend(probe_diagnostics)
+            if evaluated_candidate is not None:
+                evaluated_candidate['sensitivities'] = deepcopy(sensitivities)
+            if probe_state is not None:
+                for diagnostic in probe_state.get('admm_diagnostics', []):
+                    diagnostic_with_outer_iteration = dict(diagnostic)
+                    diagnostic_with_outer_iteration['outer_iteration'] = iteration
+                    diagnostic_with_outer_iteration['evaluation_type'] = 'sensitivity_probe'
+                    admm_diagnostics.append(diagnostic_with_outer_iteration)
+                for diagnostic in probe_state.get('solver_recovery_diagnostics', []):
+                    diagnostic_with_outer_iteration = dict(diagnostic)
+                    diagnostic_with_outer_iteration['outer_iteration'] = iteration
+                    diagnostic_with_outer_iteration['evaluation_type'] = 'sensitivity_probe'
+                    solver_recovery_diagnostics.append(diagnostic_with_outer_iteration)
 
         print_memory_usage(f"Before master problem solve (iter {iteration})", debug_flag)
 
@@ -492,6 +571,31 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         # 2.3. Get the next common investment plan
         cut_added = planning_problem.add_benders_cut(master_problem_model, operational_recourse, sensitivities, candidate_solution)
         if not cut_added:
+            if (
+                    positive_bootstrap_params.enabled
+                    and not positive_bootstrap_used
+                    and _is_zero_investment_candidate(candidate_solution)):
+                try:
+                    candidate_solution = _build_positive_bootstrap_candidate(
+                        planning_problem, positive_bootstrap_params
+                    )
+                except ValueError as exc:
+                    termination_reason = 'positive_bootstrap_failure'
+                    print(f'[WARNING] Positive bootstrap could not be constructed: {exc}')
+                    break
+                shared_ess_data.load_candidate_solution_into_master_model(
+                    master_problem_model, candidate_solution
+                )
+                positive_bootstrap_used = True
+                positive_bootstrap_iteration = iteration + 1
+                candidate_source = 'positive_bootstrap'
+                print(
+                    '[INFO] Sensitivities at the zero-capacity plan are incomplete. '
+                    f'Evaluating a positive bootstrap plan at iteration '
+                    f'{positive_bootstrap_iteration} before resolving the master problem.'
+                )
+                iteration += 1
+                continue
             termination_reason = 'sensitivity_unavailable'
             print("[WARNING] Sensitivity information is incomplete. Stopping the outer loop without adding a cut.")
             break
@@ -507,6 +611,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
 
         # Get new candidate solution
         candidate_solution = shared_ess_data.get_candidate_solution(master_problem_model)
+        candidate_source = 'master_solution'
         print_memory_usage(f"After GC (iter {iteration})", debug_flag)
 
         iteration += 1
@@ -580,17 +685,28 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         'gap_abs': gap_abs_evolution,
         'gap_rel': gap_rel_evolution,
         'incumbent_updated': incumbent_update_evolution,
+        'candidate_source': candidate_source_evolution,
+        'operational_initialization': operational_initialization_evolution,
         'termination_reason': termination_reason,
         'convergence': convergence,
         'outer_iterations': iteration,
         'incumbent_iteration': incumbent['iteration'] if incumbent is not None else None,
         'incumbent_objective': incumbent['candidate_total'] if incumbent is not None else None,
+        'positive_bootstrap_used': positive_bootstrap_used,
+        'positive_bootstrap_iteration': positive_bootstrap_iteration,
+        'positive_bootstrap_budget_fraction': (
+            positive_bootstrap_params.budget_fraction if positive_bootstrap_used else None
+        ),
+        'sensitivity_probe_enabled': sensitivity_probe_params.enabled,
+        'sensitivity_probe_budget_fraction': sensitivity_probe_params.budget_fraction,
+        'sensitivity_probe_energy_to_power_ratio': sensitivity_probe_params.energy_to_power_ratio,
         'validation_reference_source': validation_source,
         'validation_reference_iteration': (
             validation_reference['iteration'] if validation_reference is not None else None
         ),
         'validation_reference_is_incumbent': validation_reference_is_incumbent,
         'finite_difference': finite_difference_results,
+        'sensitivity_probe_diagnostics': sensitivity_probe_diagnostics,
         'admm_diagnostics': admm_diagnostics,
         'solver_recovery_diagnostics': solver_recovery_diagnostics,
     }
@@ -1265,6 +1381,298 @@ def _check_candidate_first_stage_feasibility(planning_problem, candidate_solutio
     return not reasons, '; '.join(reasons)
 
 
+def _build_positive_bootstrap_candidate(planning_problem, params):
+    shared_ess_data = planning_problem.shared_ess_data
+    shared_ess_params = shared_ess_data.params
+    ratio = params.energy_to_power_ratio
+    if ratio is None:
+        ratio = shared_ess_params.min_energy_to_power_ratio
+    if not (
+            shared_ess_params.min_energy_to_power_ratio
+            <= ratio
+            <= shared_ess_params.max_energy_to_power_ratio):
+        raise ValueError(
+            f'configured E/S ratio {ratio:.6f} is outside '
+            f'[{shared_ess_params.min_energy_to_power_ratio:.6f}, '
+            f'{shared_ess_params.max_energy_to_power_ratio:.6f}]'
+        )
+
+    candidate_solution = planning_problem.get_initial_candidate_solution()
+    years = list(shared_ess_data.years)
+    discounted_unit_cost_total = 0.00
+    for node_id in shared_ess_data.active_distribution_network_nodes:
+        for year in years:
+            annualization = 1.00 / (
+                (1.00 + shared_ess_data.discount_factor) ** (int(year) - int(years[0]))
+            )
+            expected_unit_cost = 0.00
+            for scenario, probability in enumerate(shared_ess_data.prob_market_scenarios):
+                expected_unit_cost += probability * (
+                    shared_ess_data.cost_investment['power'][scenario][year]
+                    + ratio * shared_ess_data.cost_investment['energy'][scenario][year]
+                )
+            discounted_unit_cost_total += annualization * expected_unit_cost
+
+    if discounted_unit_cost_total <= 0.00:
+        raise ValueError('expected discounted investment unit cost must be positive')
+
+    target_cost = params.budget_fraction * shared_ess_params.budget
+    power_investment = target_cost / discounted_unit_cost_total
+    for node_id in shared_ess_data.active_distribution_network_nodes:
+        for year in years:
+            candidate_solution['investment'][node_id][year]['s'] = power_investment
+            candidate_solution['investment'][node_id][year]['e'] = ratio * power_investment
+    _rebuild_candidate_total_capacities(planning_problem, candidate_solution)
+
+    maximum_energy_capacity = max(
+        total_capacity['e']
+        for node_capacities in candidate_solution['total_capacity'].values()
+        for total_capacity in node_capacities.values()
+    )
+    if maximum_energy_capacity > shared_ess_params.max_capacity:
+        scale = shared_ess_params.max_capacity / maximum_energy_capacity
+        for node_id in shared_ess_data.active_distribution_network_nodes:
+            for year in years:
+                candidate_solution['investment'][node_id][year]['s'] *= scale
+                candidate_solution['investment'][node_id][year]['e'] *= scale
+        _rebuild_candidate_total_capacities(planning_problem, candidate_solution)
+
+    minimum_power_investment = min(
+        investment['s']
+        for node_investments in candidate_solution['investment'].values()
+        for investment in node_investments.values()
+    )
+    if minimum_power_investment <= SMALL_TOLERANCE:
+        raise ValueError(
+            f'power investment {minimum_power_investment:.6g} is too small to provide '
+            f'regular positive-capacity sensitivities; increase budget_fraction'
+        )
+
+    feasible, reason = _check_candidate_first_stage_feasibility(
+        planning_problem, candidate_solution
+    )
+    if not feasible:
+        raise ValueError(f'constructed candidate is not master-feasible: {reason}')
+    return candidate_solution
+
+
+def _has_missing_investment_sensitivities(planning_problem, sensitivities):
+    if sensitivities is None:
+        return True
+    for capacity_type in ('s', 'e'):
+        for year in planning_problem.shared_ess_data.years:
+            for node_id in planning_problem.shared_ess_data.active_distribution_network_nodes:
+                if (
+                        year not in sensitivities.get(capacity_type, {})
+                        or node_id not in sensitivities[capacity_type][year]
+                        or sensitivities[capacity_type][year][node_id] is None):
+                    return True
+    return False
+
+
+def _get_missing_sensitivity_pairs(planning_problem, sensitivities):
+    missing_pairs = []
+    for node_id in planning_problem.shared_ess_data.active_distribution_network_nodes:
+        for year in planning_problem.shared_ess_data.years:
+            missing_types = []
+            for capacity_type in ('s', 'e'):
+                value = None
+                if sensitivities is not None:
+                    value = sensitivities.get(capacity_type, {}).get(year, {}).get(node_id)
+                if value is None:
+                    missing_types.append(capacity_type)
+            if missing_types:
+                missing_pairs.append((node_id, year, tuple(missing_types)))
+    return missing_pairs
+
+
+def _complete_missing_sensitivities_with_probe(
+        planning_problem, candidate_solution, sensitivities, params,
+        outer_iteration, initial_state=None, debug_flag=False):
+    missing_pairs = _get_missing_sensitivity_pairs(planning_problem, sensitivities)
+    completed_sensitivities = deepcopy(sensitivities)
+    if completed_sensitivities is None:
+        completed_sensitivities = {
+            capacity_type: {
+                year: {
+                    node_id: None
+                    for node_id in planning_problem.shared_ess_data.active_distribution_network_nodes
+                }
+                for year in planning_problem.shared_ess_data.years
+            }
+            for capacity_type in ('s', 'e')
+        }
+    diagnostics = []
+    if not missing_pairs:
+        return completed_sensitivities, diagnostics, None
+
+    unsupported_pairs = []
+    for node_id, year, _ in missing_pairs:
+        investment = candidate_solution['investment'][node_id][year]
+        if (
+                abs(investment['s']) > SHARED_ESS_ZERO_CAPACITY_TOLERANCE
+                or abs(investment['e']) > SHARED_ESS_ZERO_CAPACITY_TOLERANCE):
+            unsupported_pairs.append((node_id, year))
+
+    if unsupported_pairs:
+        pair_text = ', '.join(
+            f'node {node_id}, year {year}' for node_id, year in unsupported_pairs
+        )
+        print(
+            '[WARNING] Missing sensitivities were found at positive-capacity investments '
+            f'({pair_text}); the zero-capacity sensitivity probe is not applicable.'
+        )
+        for node_id, year, missing_types in missing_pairs:
+            diagnostics.append({
+                'outer_iteration': outer_iteration,
+                'node_id': node_id,
+                'year': year,
+                'missing_types': ','.join(missing_types),
+                'status': 'unsupported_positive_capacity',
+                'reason': 'At least one missing sensitivity belongs to a positive-capacity investment.',
+            })
+        return completed_sensitivities, diagnostics, None
+
+    try:
+        positive_reference = _build_positive_bootstrap_candidate(
+            planning_problem, params
+        )
+    except ValueError as error:
+        print(f'[WARNING] Sensitivity probe could not be constructed: {error}')
+        for node_id, year, missing_types in missing_pairs:
+            diagnostics.append({
+                'outer_iteration': outer_iteration,
+                'node_id': node_id,
+                'year': year,
+                'missing_types': ','.join(missing_types),
+                'status': 'construction_failed',
+                'reason': str(error),
+            })
+        return completed_sensitivities, diagnostics, None
+
+    probe_candidate = deepcopy(candidate_solution)
+    for node_id, year, _ in missing_pairs:
+        reference_investment = positive_reference['investment'][node_id][year]
+        probe_candidate['investment'][node_id][year]['s'] = reference_investment['s']
+        probe_candidate['investment'][node_id][year]['e'] = reference_investment['e']
+    _rebuild_candidate_total_capacities(planning_problem, probe_candidate)
+
+    probe_master_feasible, probe_master_reason = _check_candidate_first_stage_feasibility(
+        planning_problem, probe_candidate
+    )
+    pair_text = ', '.join(
+        f'node {node_id}, year {year}' for node_id, year, _ in missing_pairs
+    )
+    print(
+        '[INFO] Running one-sided interior sensitivity probe for zero-capacity '
+        f'investments at {pair_text}.'
+    )
+    initialization_source = 'positive_reference_state' if initial_state is not None else 'cold'
+    print(f'[INFO] Sensitivity probe initialization: {initialization_source}.')
+    if not probe_master_feasible:
+        print(
+            '[INFO] The auxiliary sensitivity probe is outside the master feasible set '
+            f'({probe_master_reason}); it will be used only to estimate local one-sided slopes.'
+        )
+
+    probe_state = None
+    probe_convergence = False
+    probe_models = None
+    probe_sensitivities = None
+    probe_esso_violation = None
+    probe_recourse = None
+    try:
+        (
+            probe_convergence,
+            _,
+            probe_models,
+            probe_sensitivities,
+            _,
+            probe_state,
+        ) = planning_problem.run_operational_planning(
+            candidate_solution=probe_candidate,
+            print_results=False,
+            debug_flag=debug_flag,
+            initial_state=initial_state,
+            return_state=True,
+        )
+        if not probe_state.get('initialization_failed', False):
+            probe_esso_violation = planning_problem.shared_ess_data.get_feasibility_violation(
+                probe_models['esso']
+            )
+        if (
+                probe_convergence
+                and probe_esso_violation is not None
+                and probe_esso_violation <= BENDERS_FEASIBILITY_TOLERANCE):
+            probe_recourse = planning_problem.get_operational_recourse_value(probe_models)
+    finally:
+        _restore_candidate_data(planning_problem, candidate_solution)
+
+    probe_feasible = (
+        probe_convergence
+        and probe_esso_violation is not None
+        and probe_esso_violation <= BENDERS_FEASIBILITY_TOLERANCE
+        and probe_sensitivities is not None
+    )
+    completed_count = 0
+    for node_id, year, missing_types in missing_pairs:
+        reference_investment = probe_candidate['investment'][node_id][year]
+        row = {
+            'outer_iteration': outer_iteration,
+            'node_id': node_id,
+            'year': year,
+            'missing_types': ','.join(missing_types),
+            'probe_power_mva': reference_investment['s'],
+            'probe_energy_mvah': reference_investment['e'],
+            'probe_master_feasible': probe_master_feasible,
+            'probe_master_feasibility_reason': probe_master_reason,
+            'initialization_source': initialization_source,
+            'operational_convergence': probe_convergence,
+            'esso_violation': probe_esso_violation,
+            'probe_recourse': probe_recourse,
+        }
+        pair_completed = probe_feasible
+        for capacity_type in missing_types:
+            probe_value = None
+            if probe_sensitivities is not None:
+                probe_value = (
+                    probe_sensitivities.get(capacity_type, {})
+                    .get(year, {})
+                    .get(node_id)
+                )
+            row[f'sensitivity_{capacity_type}'] = probe_value
+            if probe_value is None or not probe_feasible:
+                pair_completed = False
+            else:
+                completed_sensitivities[capacity_type][year][node_id] = probe_value
+                completed_count += 1
+        row['status'] = 'completed' if pair_completed else 'failed'
+        row['reason'] = '' if pair_completed else 'Probe did not return every required feasible sensitivity.'
+        diagnostics.append(row)
+
+    required_count = sum(len(missing_types) for _, _, missing_types in missing_pairs)
+    if completed_count == required_count:
+        print(
+            f'[INFO] Sensitivity probe completed all {completed_count} missing '
+            'one-sided investment sensitivities.'
+        )
+    else:
+        print(
+            f'[WARNING] Sensitivity probe completed {completed_count} of '
+            f'{required_count} missing investment sensitivities.'
+        )
+    return completed_sensitivities, diagnostics, probe_state
+
+
+def _is_zero_investment_candidate(candidate_solution):
+    return all(
+        abs(investment[capacity_type]) <= SHARED_ESS_ZERO_CAPACITY_TOLERANCE
+        for node_investments in candidate_solution['investment'].values()
+        for investment in node_investments.values()
+        for capacity_type in ('s', 'e')
+    )
+
+
 def _soh_active_state_changed(baseline_margin, candidate_margin, tolerance):
     if baseline_margin is None or candidate_margin is None:
         return None
@@ -1364,7 +1772,6 @@ def _restore_candidate_data(planning_problem, candidate_solution):
 
 def _add_benders_cut(planning_problem, model, recourse_value, sensitivities, candidate_solution):
     years = [year for year in planning_problem.years]
-    print("[INFO] Benders-type procedure. Adding local sensitivity cut...")
     benders_cut = recourse_value
     for e in model.energy_storages:
         node_id = planning_problem.active_distribution_network_nodes[e]
@@ -1380,6 +1787,7 @@ def _add_benders_cut(planning_problem, model, recourse_value, sensitivities, can
             benders_cut += sensitivity_e * (
                 model.es_e_investment[e, y] - candidate_solution['investment'][node_id][year]['e']
             )
+    print("[INFO] Benders-type procedure. Adding local sensitivity cut...")
     model.benders_cuts.add(model.alpha >= benders_cut)
     return True
 
@@ -1387,7 +1795,8 @@ def _add_benders_cut(planning_problem, model, recourse_value, sensitivities, can
 # ======================================================================================================================
 #  OPERATIONAL PLANNING (DISTRIBUTED)
 # ======================================================================================================================
-def _run_operational_planning(planning_problem, candidate_solution, initial_state=None, debug_flag=False):
+def _run_operational_planning(
+        planning_problem, candidate_solution, initial_state=None, debug_flag=False):
 
     transmission_network = planning_problem.transmission_network
     distribution_networks = planning_problem.distribution_networks
@@ -2622,6 +3031,17 @@ def create_admm_variables(planning_problem):
     return consensus_variables, dual_variables
 
 
+def _shared_ess_admm_normalization_mva(rating_mva, floor_mva):
+    return max(abs(rating_mva), floor_mva)
+
+
+def _shared_ess_admm_normalization_pu(rating_pu, s_base, floor_mva):
+    if s_base <= 0.00:
+        raise ValueError('Network base power must be positive for ADMM normalization.')
+    rating_mva = abs(rating_pu) * s_base
+    return _shared_ess_admm_normalization_mva(rating_mva, floor_mva) / s_base
+
+
 def update_transmission_model_to_admm(planning_problem, model, params):
 
     transmission_network = planning_problem.transmission_network
@@ -2694,9 +3114,11 @@ def update_transmission_model_to_admm(planning_problem, model, params):
 
             for e in model[year][day].shared_energy_storages:
 
-                shared_ess_rating = abs(transmission_network.network[year][day].shared_energy_storages[e].s)
-                if isclose(shared_ess_rating, 0.00, abs_tol=SMALL_TOLERANCE):
-                    shared_ess_rating = 0.01
+                shared_ess_rating = _shared_ess_admm_normalization_pu(
+                    transmission_network.network[year][day].shared_energy_storages[e].s,
+                    s_base,
+                    params.shared_ess_normalization_floor_mva,
+                )
 
                 for p in model[year][day].periods:
                     constraint_ess_p_req = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_req[e, p]) / (2 * shared_ess_rating)
@@ -2789,9 +3211,11 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                 obj = copy(dso_model[year][day].objective.expr) / init_of_value
 
                 shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
-                shared_ess_rating = abs(distribution_network.network[year][day].shared_energy_storages[shared_ess_idx].s)
-                if isclose(shared_ess_rating, 0.00, abs_tol=SMALL_TOLERANCE):
-                    shared_ess_rating = 0.01
+                shared_ess_rating = _shared_ess_admm_normalization_pu(
+                    distribution_network.network[year][day].shared_energy_storages[shared_ess_idx].s,
+                    s_base,
+                    params.shared_ess_normalization_floor_mva,
+                )
 
                 interface_transf_rating = distribution_network.network[year][day].get_interface_branch_rating() / s_base
 
@@ -2860,9 +3284,10 @@ def update_shared_energy_storage_model_to_admm(planning_problem, models, params)
         obj = copy(models[node_id].objective.expr)
         for y in models[node_id].years:
             year = years[y]
-            shared_ess_rating = shared_ess_data.shared_energy_storages[year][shared_ess_idx].s
-            if isclose(shared_ess_rating, 0.00, abs_tol=SMALL_TOLERANCE):
-                shared_ess_rating = 1.00
+            shared_ess_rating = _shared_ess_admm_normalization_mva(
+                shared_ess_data.shared_energy_storages[year][shared_ess_idx].s,
+                params.shared_ess_normalization_floor_mva,
+            )
             for d in models[node_id].days:
                 for p in models[node_id].periods:
                     constraint_p_req = (models[node_id].es_pnet[y, d, p] - models[node_id].p_req[y, d, p]) / (2 * shared_ess_rating)
@@ -3146,9 +3571,9 @@ def get_admm_residual_metrics(planning_problem, tso_model, dso_models, esso_mode
                 shared_ess_idx = network.get_shared_energy_storage_idx(node_id)
                 interface_v_base = network.get_node_base_kv(node_id)
                 interface_rating = planning_problem.distribution_networks[node_id].network[year][day].get_interface_branch_rating()
-                shared_ess_rating = max(
-                    abs(network.shared_energy_storages[shared_ess_idx].s) * s_base,
-                    0.10,
+                shared_ess_rating = _shared_ess_admm_normalization_mva(
+                    network.shared_energy_storages[shared_ess_idx].s * s_base,
+                    planning_problem.params.admm.shared_ess_normalization_floor_mva,
                 )
 
                 rho_tso_v = pe.value(tso_model[year][day].rho_v)
@@ -4396,6 +4821,13 @@ def _write_planning_results_to_excel(planning_problem, results, bound_evolution=
         finite_difference_results = bound_evolution.get('finite_difference', [])
         if finite_difference_results:
             _write_finite_difference_validation_to_excel(wb, finite_difference_results)
+        sensitivity_probe_diagnostics = bound_evolution.get(
+            'sensitivity_probe_diagnostics', []
+        )
+        if sensitivity_probe_diagnostics:
+            _write_sensitivity_probe_diagnostics_to_excel(
+                wb, sensitivity_probe_diagnostics
+            )
 
     if shared_ess_capacity:
         write_investment = True
@@ -4451,6 +4883,8 @@ def _write_bound_evolution_to_excel(workbook, bound_evolution):
 
     master_estimate = bound_evolution.get('master_estimate', bound_evolution.get('lower_bound', []))
     columns = [
+        ('candidate_source', 'Candidate Source', bound_evolution.get('candidate_source', []), None, 'General'),
+        ('operational_initialization', 'Operational Initialization', bound_evolution.get('operational_initialization', []), None, 'General'),
         ('master_estimate', 'Master Estimate (nominal LB), [NPV Mm.u.]', master_estimate, 1e6, '0.00'),
         ('alpha', 'Alpha, [NPV Mm.u.]', bound_evolution.get('alpha', []), 1e6, '0.00'),
         ('investment_cost', 'Investment Cost, [NPV Mm.u.]', bound_evolution.get('investment_cost', []), 1e6, '0.00'),
@@ -4486,12 +4920,27 @@ def _write_bound_evolution_to_excel(workbook, bound_evolution):
 
 def _write_planning_termination_to_excel(workbook, bound_evolution):
     sheet = workbook.create_sheet('Planning Termination')
+    sensitivity_probe_diagnostics = bound_evolution.get(
+        'sensitivity_probe_diagnostics', []
+    )
+    sensitivity_probe_evaluations = len({
+        diagnostic.get('outer_iteration')
+        for diagnostic in sensitivity_probe_diagnostics
+        if diagnostic.get('outer_iteration') is not None
+    })
     values = [
         ('Termination Reason', bound_evolution.get('termination_reason')),
         ('Converged', bound_evolution.get('convergence')),
         ('Outer Iterations', bound_evolution.get('outer_iterations')),
         ('Incumbent Iteration', bound_evolution.get('incumbent_iteration')),
         ('Incumbent Objective, [NPV m.u.]', bound_evolution.get('incumbent_objective')),
+        ('Positive Bootstrap Used', bound_evolution.get('positive_bootstrap_used')),
+        ('Positive Bootstrap Iteration', bound_evolution.get('positive_bootstrap_iteration')),
+        ('Positive Bootstrap Budget Fraction', bound_evolution.get('positive_bootstrap_budget_fraction')),
+        ('Sensitivity Probe Enabled', bound_evolution.get('sensitivity_probe_enabled')),
+        ('Sensitivity Probe Budget Fraction', bound_evolution.get('sensitivity_probe_budget_fraction')),
+        ('Sensitivity Probe E/S Ratio', bound_evolution.get('sensitivity_probe_energy_to_power_ratio')),
+        ('Sensitivity Probe Evaluations', sensitivity_probe_evaluations),
         ('Validation Reference Source', bound_evolution.get('validation_reference_source')),
         ('Validation Reference Iteration', bound_evolution.get('validation_reference_iteration')),
         ('Validation Reference Is Incumbent', bound_evolution.get('validation_reference_is_incumbent')),
@@ -4499,6 +4948,38 @@ def _write_planning_termination_to_excel(workbook, bound_evolution):
     for row_idx, (label, value) in enumerate(values, start=1):
         sheet.cell(row=row_idx, column=1).value = label
         sheet.cell(row=row_idx, column=2).value = value
+
+
+def _write_sensitivity_probe_diagnostics_to_excel(workbook, diagnostics):
+    sheet = workbook.create_sheet('Sensitivity Probes')
+    columns = [
+        ('outer_iteration', 'Outer Iteration', '0'),
+        ('node_id', 'ESS Node', 'General'),
+        ('year', 'Investment Year', 'General'),
+        ('missing_types', 'Missing Capacity Types', 'General'),
+        ('status', 'Status', 'General'),
+        ('reason', 'Reason', 'General'),
+        ('probe_power_mva', 'Probe Power, [MVA]', '0.000000'),
+        ('probe_energy_mvah', 'Probe Energy, [MVAh]', '0.000000'),
+        ('probe_master_feasible', 'Probe Master Feasible', 'General'),
+        ('probe_master_feasibility_reason', 'Master Feasibility Reason', 'General'),
+        ('initialization_source', 'Initialization Source', 'General'),
+        ('operational_convergence', 'Operational Convergence', 'General'),
+        ('esso_violation', 'ESSO Feasibility Violation', '0.000000'),
+        ('probe_recourse', 'Probe Net Recourse, [NPV m.u.]', '0.00'),
+        ('sensitivity_s', 'One-Sided Power Sensitivity', '0.000000'),
+        ('sensitivity_e', 'One-Sided Energy Sensitivity', '0.000000'),
+    ]
+    for column_idx, (_, label, _) in enumerate(columns, start=1):
+        sheet.cell(row=1, column=column_idx).value = label
+    for row_idx, diagnostic in enumerate(diagnostics, start=2):
+        for column_idx, (key, _, number_format) in enumerate(columns, start=1):
+            value = diagnostic.get(key)
+            if value is None:
+                continue
+            cell = sheet.cell(row=row_idx, column=column_idx)
+            cell.value = value
+            cell.number_format = number_format
 
 
 def _write_finite_difference_validation_to_excel(workbook, validation_results):

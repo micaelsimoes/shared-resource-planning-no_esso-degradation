@@ -9,6 +9,7 @@ class ADMMParameters:
                     'objective': {'abs': 1e4, 'rel': 5e-4}}
         self.num_max_iters = 1000
         self.minimum_consecutive_converged_cycles = 2
+        self.shared_ess_normalization_floor_mva = 0.10
         self.adaptive_penalty = False
         self.penalty_update = {
             'residual_balance_ratio': 5.0,
@@ -46,6 +47,12 @@ def _read_parameters_from_file(admm_params, params_data):
             admm_params.minimum_consecutive_converged_cycles,
         )
     )
+    admm_params.shared_ess_normalization_floor_mva = float(
+        params_data.get(
+            'shared_ess_normalization_floor_mva',
+            admm_params.shared_ess_normalization_floor_mva,
+        )
+    )
     admm_params.adaptive_penalty = bool(params_data['adaptive_penalty'])
     penalty_update = params_data.get('penalty_update', {})
     for key in admm_params.penalty_update:
@@ -54,6 +61,8 @@ def _read_parameters_from_file(admm_params, params_data):
 
     if admm_params.minimum_consecutive_converged_cycles < 1:
         raise ValueError('ADMM minimum_consecutive_converged_cycles must be at least 1.')
+    if admm_params.shared_ess_normalization_floor_mva <= 0.00:
+        raise ValueError('ADMM shared-ESS normalization floor must be positive.')
     if admm_params.penalty_update['residual_balance_ratio'] <= 1.0:
         raise ValueError('ADMM residual_balance_ratio must be greater than 1.')
     if admm_params.penalty_update['increase_factor'] <= 1.0:

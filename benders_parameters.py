@@ -71,12 +71,62 @@ class FiniteDifferenceParameters:
         )
 
 
+class PositiveBootstrapParameters:
+
+    def __init__(self):
+        self.enabled = False
+        self.budget_fraction = 5e-2
+        self.energy_to_power_ratio = None
+
+    def read_parameters(self, params_data):
+        if not params_data:
+            return
+
+        self.enabled = bool(params_data.get('enabled', self.enabled))
+        self.budget_fraction = float(
+            params_data.get('budget_fraction', self.budget_fraction)
+        )
+        ratio = params_data.get('energy_to_power_ratio', self.energy_to_power_ratio)
+        self.energy_to_power_ratio = None if ratio is None else float(ratio)
+
+        if not 0.00 < self.budget_fraction <= 1.00:
+            raise ValueError('Positive-bootstrap budget_fraction must be in (0, 1].')
+        if self.energy_to_power_ratio is not None and self.energy_to_power_ratio <= 0.00:
+            raise ValueError('Positive-bootstrap energy_to_power_ratio must be positive.')
+
+
+class SensitivityProbeParameters:
+
+    def __init__(self):
+        self.enabled = False
+        self.budget_fraction = 5e-2
+        self.energy_to_power_ratio = None
+
+    def read_parameters(self, params_data):
+        if not params_data:
+            return
+
+        self.enabled = bool(params_data.get('enabled', self.enabled))
+        self.budget_fraction = float(
+            params_data.get('budget_fraction', self.budget_fraction)
+        )
+        ratio = params_data.get('energy_to_power_ratio', self.energy_to_power_ratio)
+        self.energy_to_power_ratio = None if ratio is None else float(ratio)
+
+        if not 0.00 < self.budget_fraction <= 1.00:
+            raise ValueError('Sensitivity-probe budget_fraction must be in (0, 1].')
+        if self.energy_to_power_ratio is not None and self.energy_to_power_ratio <= 0.00:
+            raise ValueError('Sensitivity-probe energy_to_power_ratio must be positive.')
+
+
 class BendersParameters:
 
     def __init__(self):
         self.tol_abs = 1e3
         self.tol_rel = 1e-2
         self.num_max_iters = 1000
+        self.positive_bootstrap = PositiveBootstrapParameters()
+        self.sensitivity_probe = SensitivityProbeParameters()
         self.finite_difference = FiniteDifferenceParameters()
 
     def read_parameters_from_file(self, params_data):
@@ -87,4 +137,6 @@ def _read_parameters_from_file(benders_params, params_data):
     benders_params.tol_abs = float(params_data['tol_abs'])
     benders_params.tol_rel = float(params_data['tol_rel'])
     benders_params.num_max_iters = int(params_data['num_max_iters'])
+    benders_params.positive_bootstrap.read_parameters(params_data.get('positive_bootstrap'))
+    benders_params.sensitivity_probe.read_parameters(params_data.get('sensitivity_probe'))
     benders_params.finite_difference.read_parameters(params_data.get('finite_difference'))

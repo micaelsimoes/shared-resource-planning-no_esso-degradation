@@ -542,11 +542,21 @@ def _create_smopf_solver(network, model, params, from_warm_start=False,
         model.ipopt_zU_in.update(model.ipopt_zU_out)
         solver.options['acceptable_iter'] = 1
         solver.options['warm_start_init_point'] = 'yes'
-        solver.options['warm_start_bound_push'] = 1e-9
-        solver.options['warm_start_bound_frac'] = 1e-9
-        solver.options['warm_start_slack_bound_frac'] = 1e-9
-        solver.options['warm_start_slack_bound_push'] = 1e-9
-        solver.options['warm_start_mult_bound_push'] = 1e-9
+        solver.options['warm_start_bound_push'] = options.get(
+            'warm_start_bound_push', options.get('bound_push', 1e-6)
+        )
+        solver.options['warm_start_bound_frac'] = options.get(
+            'warm_start_bound_frac', options.get('bound_frac', 1e-6)
+        )
+        solver.options['warm_start_slack_bound_frac'] = options.get(
+            'warm_start_slack_bound_frac', options.get('slack_bound_frac', 1e-6)
+        )
+        solver.options['warm_start_slack_bound_push'] = options.get(
+            'warm_start_slack_bound_push', options.get('slack_bound_push', 1e-6)
+        )
+        solver.options['warm_start_mult_bound_push'] = options.get(
+            'warm_start_mult_bound_push', options.get('bound_push', 1e-6)
+        )
 
     return solver, solver_log_path, solve_context
 
