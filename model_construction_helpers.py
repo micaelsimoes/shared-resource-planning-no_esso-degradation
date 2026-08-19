@@ -387,34 +387,41 @@ def voltage_magnitude_upper_cons_rule(m, i, s_m, s_o, p, network, params):
     return m.vmag_sqr[i, s_m, s_o, p] - slack <= node.v_max ** 2
 
 
-def e_e_rule(m, fnode_idx, tnode_idx, s_m, s_o, p, network):
-    if fnode_idx == tnode_idx:
-        return pe.Constraint.Skip
-    fnode_id = network.nodes[fnode_idx].bus_i
-    tnode_id = network.nodes[tnode_idx].bus_i
-    if network.branch_exists(fnode_id, tnode_id):
-        return m.e_e[fnode_idx, tnode_idx, s_m, s_o, p] == m.e[fnode_idx, s_m, s_o, p] * m.e[tnode_idx, s_m, s_o, p]
-    return pe.Constraint.Skip
+def voltage_product_real_rule(m, branch_idx, s_m, s_o, p, network):
+    branch = network.branches[branch_idx]
+    fnode_idx = network.get_node_idx(branch.fbus)
+    tnode_idx = network.get_node_idx(branch.tbus)
+    return m.voltage_product_real[branch_idx, s_m, s_o, p] == (
+        m.e[fnode_idx, s_m, s_o, p] * m.e[tnode_idx, s_m, s_o, p]
+        + m.f[fnode_idx, s_m, s_o, p] * m.f[tnode_idx, s_m, s_o, p]
+    )
 
 
-def e_f_rule(m, fnode_idx, tnode_idx, s_m, s_o, p, network):
-    if fnode_idx == tnode_idx:
-        return pe.Constraint.Skip
-    fnode_id = network.nodes[fnode_idx].bus_i
-    tnode_id = network.nodes[tnode_idx].bus_i
-    if network.branch_exists(fnode_id, tnode_id):
-        return m.e_f[fnode_idx, tnode_idx, s_m, s_o, p] == m.e[fnode_idx, s_m, s_o, p] * m.f[tnode_idx, s_m, s_o, p]
-    return pe.Constraint.Skip
+def voltage_product_imag_rule(m, branch_idx, s_m, s_o, p, network):
+    branch = network.branches[branch_idx]
+    fnode_idx = network.get_node_idx(branch.fbus)
+    tnode_idx = network.get_node_idx(branch.tbus)
+    return m.voltage_product_imag[branch_idx, s_m, s_o, p] == (
+        m.f[fnode_idx, s_m, s_o, p] * m.e[tnode_idx, s_m, s_o, p]
+        - m.e[fnode_idx, s_m, s_o, p] * m.f[tnode_idx, s_m, s_o, p]
+    )
 
 
-def f_f_rule(m, fnode_idx, tnode_idx, s_m, s_o, p, network):
-    if fnode_idx == tnode_idx:
-        return pe.Constraint.Skip
-    fnode_id = network.nodes[fnode_idx].bus_i
-    tnode_id = network.nodes[tnode_idx].bus_i
-    if network.branch_exists(fnode_id, tnode_id):
-        return m.f_f[fnode_idx, tnode_idx, s_m, s_o, p] == m.f[fnode_idx, s_m, s_o, p] * m.f[tnode_idx, s_m, s_o, p]
-    return pe.Constraint.Skip
+def _branch_voltage_products(model, network, branch_idx, terminal_node_idx, s_m, s_o, p):
+    branch = network.branches[branch_idx]
+    fnode_idx = network.get_node_idx(branch.fbus)
+    tnode_idx = network.get_node_idx(branch.tbus)
+
+    cross_real = model.voltage_product_real[branch_idx, s_m, s_o, p]
+    cross_imag = model.voltage_product_imag[branch_idx, s_m, s_o, p]
+    if terminal_node_idx == tnode_idx:
+        cross_imag = -cross_imag
+    elif terminal_node_idx != fnode_idx:
+        raise ValueError(
+            f'Node index {terminal_node_idx} is not incident to branch {branch.branch_id}.'
+        )
+
+    return cross_real, cross_imag
 
 
 def sg_sqr_rule(m, g, s_m, s_o, p, network):
@@ -817,10 +824,13 @@ def compute_branch_flow_squared(network, model, branch_idx, fnode_idx, tnode_idx
         rij_sqr = model.r_sqr[branch_idx, s_m, s_o, p] if branch.is_transformer else 1.0
         vi_sqr = model.vmag_sqr[fnode_idx, s_m, s_o, p]
         vj_sqr = model.vmag_sqr[tnode_idx, s_m, s_o, p]
-        ei_ej = model.e_e[fnode_idx, tnode_idx, s_m, s_o, p]
-        fi_fj = model.f_f[fnode_idx, tnode_idx, s_m, s_o, p]
+        cross_real, _ = _branch_voltage_products(
+            model, network, branch_idx, fnode_idx, s_m, s_o, p
+        )
 
-        current_squared = (branch.g ** 2 + branch.b ** 2) * (vi_sqr + rij_sqr * vj_sqr - 2 * rij * (ei_ej + fi_fj))
+        current_squared = (branch.g ** 2 + branch.b ** 2) * (
+            vi_sqr + rij_sqr * vj_sqr - 2 * rij * cross_real
+        )
 
         return current_squared
 
@@ -935,16 +945,15 @@ def node_balance_p_rule(model, i, s_m, s_o, p, network, params):
         rij_sqr = model.r_sqr[b, s_m, s_o, p] if branch.is_transformer else 1.0
 
         vmag_sqr = model.vmag_sqr[fnode_idx, s_m, s_o, p]
-        ei_ej = model.e_e[fnode_idx, tnode_idx, s_m, s_o, p]
-        ei_fj = model.e_f[fnode_idx, tnode_idx, s_m, s_o, p]
-        ej_fi = model.e_f[tnode_idx, fnode_idx, s_m, s_o, p]
-        fi_fj = model.f_f[fnode_idx, tnode_idx, s_m, s_o, p]
+        cross_real, cross_imag = _branch_voltage_products(
+            model, network, b, fnode_idx, s_m, s_o, p
+        )
 
         if branch.fbus == node.bus_i:
             Pi += branch.g * vmag_sqr * rij_sqr
         else:
             Pi += branch.g * vmag_sqr
-        Pi -= rij * (branch.g * (ei_ej + fi_fj) + branch.b * (ej_fi - ei_fj))
+        Pi -= rij * (branch.g * cross_real + branch.b * cross_imag)
 
     if params.slacks.node_balance.active_power:
         return Pg == Pd + Pi + (model.slack_node_balance_p_up[i, s_m, s_o, p] - model.slack_node_balance_p_down[i, s_m, s_o, p])
@@ -982,17 +991,16 @@ def node_balance_q_rule(model, i, s_m, s_o, p, network, params):
         rij_sqr = model.r_sqr[b, s_m, s_o, p] if branch.is_transformer else 1.0
 
         vi_sqr = model.vmag_sqr[fnode_idx, s_m, s_o, p]
-        ei_ej = model.e_e[fnode_idx, tnode_idx, s_m, s_o, p]
-        ei_fj = model.e_f[fnode_idx, tnode_idx, s_m, s_o, p]
-        ej_fi = model.e_f[tnode_idx, fnode_idx, s_m, s_o, p]
-        fi_fj = model.f_f[fnode_idx, tnode_idx, s_m, s_o, p]
+        cross_real, cross_imag = _branch_voltage_products(
+            model, network, b, fnode_idx, s_m, s_o, p
+        )
 
         if branch.fbus == node.bus_i:
             Qi -= (branch.b + 0.5 * branch.b_sh) * vi_sqr * rij_sqr
-            Qi += rij * (branch.b * (ei_ej + fi_fj) - branch.g * (ej_fi - ei_fj))
+            Qi += rij * (branch.b * cross_real - branch.g * cross_imag)
         else:
             Qi -= (branch.b + 0.5 * branch.b_sh) * vi_sqr
-            Qi += rij * (branch.b * (ei_ej + fi_fj) - branch.g * (ej_fi - ei_fj))
+            Qi += rij * (branch.b * cross_real - branch.g * cross_imag)
 
     if params.slacks.node_balance.reactive_power:
         return Qg == Qd + Qi + (model.slack_node_balance_q_up[i, s_m, s_o, p] - model.slack_node_balance_q_down[i, s_m, s_o, p])
@@ -1010,23 +1018,16 @@ def _branch_terminal_power_expressions(m, branch_idx, s_m, s_o, p, network, dire
     branch = network.branches[branch_idx]
     if direction == 'ij':
         terminal_node_idx = network.get_node_idx(branch.fbus)
-        opposite_node_idx = network.get_node_idx(branch.tbus)
         terminal_ratio_sqr = m.r_sqr[branch_idx, s_m, s_o, p] if branch.is_transformer else 1.0
     elif direction == 'ji':
         terminal_node_idx = network.get_node_idx(branch.tbus)
-        opposite_node_idx = network.get_node_idx(branch.fbus)
         terminal_ratio_sqr = 1.0
     else:
         raise ValueError(f"Unknown branch flow direction: {direction}")
 
     terminal_v_sqr = m.vmag_sqr[terminal_node_idx, s_m, s_o, p]
-    cross_real = (
-        m.e_e[terminal_node_idx, opposite_node_idx, s_m, s_o, p]
-        + m.f_f[terminal_node_idx, opposite_node_idx, s_m, s_o, p]
-    )
-    cross_imag = (
-        m.e_f[opposite_node_idx, terminal_node_idx, s_m, s_o, p]
-        - m.e_f[terminal_node_idx, opposite_node_idx, s_m, s_o, p]
+    cross_real, cross_imag = _branch_voltage_products(
+        m, network, branch_idx, terminal_node_idx, s_m, s_o, p
     )
     coupling_ratio = m.r[branch_idx, s_m, s_o, p] if branch.is_transformer else 1.0
 
