@@ -561,24 +561,26 @@ def flex_energy_balance_s_rule(m, c, s_m, s_o, network, params):
 
 
 # Energy Storage
-def ess_sch_def_rule(m, e, s_m, s_o, p):
-    return m.es_pch[e,s_m,s_o,p]**2 + m.es_qch[e,s_m,s_o,p]**2 == m.es_sch[e,s_m,s_o,p]**2
-
-
-def ess_sdch_def_rule(m, e, s_m, s_o, p):
-    return m.es_pdch[e,s_m,s_o,p]**2 + m.es_qdch[e,s_m,s_o,p]**2 == m.es_sdch[e,s_m,s_o,p]**2
-
-
 def ess_pnet_rule(m, e, s_m, s_o, p):
     return m.es_pnet[e,s_m,s_o,p] == m.es_pdch[e,s_m,s_o,p] - m.es_pch[e,s_m,s_o,p]
 
 
-def ess_qnet_rule(m, e, s_m, s_o, p):
-    return m.es_qnet[e,s_m,s_o,p] == m.es_qdch[e,s_m,s_o,p] - m.es_qch[e,s_m,s_o,p]
+def ess_snet_def_rule(m, e, s_m, s_o, p):
+    snet = m.es_sch[e, s_m, s_o, p] - m.es_sdch[e, s_m, s_o, p]
+    return snet ** 2 == m.es_pnet[e, s_m, s_o, p] ** 2 + m.es_qnet[e, s_m, s_o, p] ** 2
 
 
-def ess_snet_def(m, e, s_m, s_o, p):
-    return m.es_sch[e, s_m, s_o, p] - m.es_sdch[e, s_m, s_o, p]
+def ess_pch_link_rule(m, e, s_m, s_o, p):
+    return m.es_pch[e, s_m, s_o, p] <= m.es_sch[e, s_m, s_o, p]
+
+
+def ess_pdch_link_rule(m, e, s_m, s_o, p):
+    return m.es_pdch[e, s_m, s_o, p] <= m.es_sdch[e, s_m, s_o, p]
+
+
+def ess_s_limit_rule(m, e, s_m, s_o, p, network):
+    ess = network.energy_storages[e]
+    return m.es_sch[e, s_m, s_o, p] + m.es_sdch[e, s_m, s_o, p] <= ess.s + EQUALITY_TOLERANCE
 
 
 def ess_soc_limits_rule(m, e, s_m, s_o, p, network):
@@ -586,28 +588,24 @@ def ess_soc_limits_rule(m, e, s_m, s_o, p, network):
     return pe.inequality(ess.e_min - EQUALITY_TOLERANCE, m.es_soc[e, s_m, s_o, p], ess.e_max + EQUALITY_TOLERANCE)
 
 
-def ess_phi_ch_limits_lower(m, e, s_m, s_o, p, network):
+def _storage_power_factor_tangents(storage):
+    return sorted((tan(acos(storage.min_pf)), tan(acos(storage.max_pf))))
+
+
+def ess_phi_limits_lower(m, e, s_m, s_o, p, network):
     ess = network.energy_storages[e]
-    min_phi = acos(ess.min_pf)
-    return m.es_qch[e, s_m, s_o, p] >= tan(min_phi) * m.es_pch[e, s_m, s_o, p]
+    tangent_lower, tangent_upper = _storage_power_factor_tangents(ess)
+    pch = m.es_pch[e, s_m, s_o, p]
+    pdch = m.es_pdch[e, s_m, s_o, p]
+    return m.es_qnet[e, s_m, s_o, p] >= tangent_lower * pdch - tangent_upper * pch
 
 
-def ess_phi_ch_limits_upper(m, e, s_m, s_o, p, network):
+def ess_phi_limits_upper(m, e, s_m, s_o, p, network):
     ess = network.energy_storages[e]
-    max_phi = acos(ess.max_pf)
-    return m.es_qch[e, s_m, s_o, p] <= tan(max_phi) * m.es_pch[e, s_m, s_o, p]
-
-
-def ess_phi_dch_limits_lower(m, e, s_m, s_o, p, network):
-    ess = network.energy_storages[e]
-    min_phi = acos(ess.min_pf)
-    return m.es_qdch[e, s_m, s_o, p] >= tan(min_phi) * m.es_pdch[e, s_m, s_o, p]
-
-
-def ess_phi_dch_limits_upper(m, e, s_m, s_o, p, network):
-    ess = network.energy_storages[e]
-    max_phi = acos(ess.max_pf)
-    return m.es_qdch[e, s_m, s_o, p] <= tan(max_phi) * m.es_pdch[e, s_m, s_o, p]
+    tangent_lower, tangent_upper = _storage_power_factor_tangents(ess)
+    pch = m.es_pch[e, s_m, s_o, p]
+    pdch = m.es_pdch[e, s_m, s_o, p]
+    return m.es_qnet[e, s_m, s_o, p] <= tangent_upper * pdch - tangent_lower * pch
 
 
 def ess_soc_rule(m, e, s_m, s_o, p, network, params):
@@ -646,48 +644,37 @@ def ess_soc_final_rule(m, e, s_m, s_o, network, params):
 
 
 # Shared Energy Storage
-def sess_phi_ch_limits_lower(m, e, s_m, s_o, p, network):
+def sess_phi_limits_lower(m, e, s_m, s_o, p, network):
     ess = network.shared_energy_storages[e]
-    min_phi = acos(ess.min_pf)
-    return m.shared_es_qch[e, s_m, s_o, p] >= tan(min_phi) * m.shared_es_pch[e, s_m, s_o, p]
+    tangent_lower, tangent_upper = _storage_power_factor_tangents(ess)
+    pch = m.shared_es_pch[e, s_m, s_o, p]
+    pdch = m.shared_es_pdch[e, s_m, s_o, p]
+    return m.shared_es_qnet[e, s_m, s_o, p] >= tangent_lower * pch - tangent_upper * pdch
 
 
-def sess_phi_ch_limits_upper(m, e, s_m, s_o, p, network):
+def sess_phi_limits_upper(m, e, s_m, s_o, p, network):
     ess = network.shared_energy_storages[e]
-    max_phi = acos(ess.max_pf)
-    return m.shared_es_qch[e, s_m, s_o, p] <= tan(max_phi) * m.shared_es_pch[e, s_m, s_o, p]
+    tangent_lower, tangent_upper = _storage_power_factor_tangents(ess)
+    pch = m.shared_es_pch[e, s_m, s_o, p]
+    pdch = m.shared_es_pdch[e, s_m, s_o, p]
+    return m.shared_es_qnet[e, s_m, s_o, p] <= tangent_upper * pch - tangent_lower * pdch
 
 
-def sess_phi_dch_limits_lower(m, e, s_m, s_o, p, network):
-    ess = network.shared_energy_storages[e]
-    min_phi = acos(ess.min_pf)
-    return m.shared_es_qdch[e, s_m, s_o, p] >= tan(min_phi) * m.shared_es_pdch[e, s_m, s_o, p]
+def sess_pch_link_rule(m, e, s_m, s_o, p):
+    return m.shared_es_pch[e, s_m, s_o, p] <= m.shared_es_sch[e, s_m, s_o, p]
 
 
-def sess_phi_dch_limits_upper(m, e, s_m, s_o, p, network):
-    ess = network.shared_energy_storages[e]
-    max_phi = acos(ess.max_pf)
-    return m.shared_es_qdch[e, s_m, s_o, p] <= tan(max_phi) * m.shared_es_pdch[e, s_m, s_o, p]
+def sess_pdch_link_rule(m, e, s_m, s_o, p):
+    return m.shared_es_pdch[e, s_m, s_o, p] <= m.shared_es_sdch[e, s_m, s_o, p]
 
 
-def sess_sch_limit_rule(m, e, s_m, s_o, p):
-    s_max = m.shared_es_s_rated[e]
-    sch = m.shared_es_sch[e, s_m, s_o, p]
-    return sch <= s_max
+def sess_s_limit_rule(m, e, s_m, s_o, p):
+    return m.shared_es_sch[e, s_m, s_o, p] + m.shared_es_sdch[e, s_m, s_o, p] <= m.shared_es_s_rated[e]
 
 
-def sess_sdch_limit_rule(m, e, s_m, s_o, p):
-    s_max = m.shared_es_s_rated[e]
-    sdch = m.shared_es_sdch[e, s_m, s_o, p]
-    return sdch <= s_max
-
-
-def sess_sch_def(m, e, s_m, s_o, p):
-    return m.shared_es_pch[e, s_m, s_o, p]**2 + m.shared_es_qch[e, s_m, s_o, p]**2 == m.shared_es_sch[e, s_m, s_o, p]**2
-
-
-def sess_sdch_def(m, e, s_m, s_o, p):
-    return m.shared_es_pdch[e, s_m, s_o, p]**2 + m.shared_es_qdch[e, s_m, s_o, p]**2 == m.shared_es_sdch[e, s_m, s_o, p]**2
+def sess_snet_def_rule(m, e, s_m, s_o, p):
+    snet = m.shared_es_sch[e, s_m, s_o, p] - m.shared_es_sdch[e, s_m, s_o, p]
+    return snet ** 2 == m.shared_es_pnet[e, s_m, s_o, p] ** 2 + m.shared_es_qnet[e, s_m, s_o, p] ** 2
 
 
 def sess_soc_lower_limit(m, e, s_m, s_o, p):
@@ -737,10 +724,6 @@ def sess_soc_final_rule(m, e, s_m, s_o, network, params):
 
 def sess_pnet_rule(m, e, s_m, s_o, p):
     return m.shared_es_pnet[e, s_m, s_o, p] == m.shared_es_pch[e, s_m, s_o, p] - m.shared_es_pdch[e, s_m, s_o, p]
-
-
-def sess_qnet_rule(m, e, s_m, s_o, p):
-    return m.shared_es_qnet[e, s_m, s_o, p] == m.shared_es_qch[e, s_m, s_o, p] - m.shared_es_qdch[e, s_m, s_o, p]
 
 
 def sess_s_sensitivities(m, e):
@@ -896,8 +879,10 @@ def compute_node_load(model, i, s_m, s_o, p, network, params):
     for e in model.shared_energy_storages:
         es = network.shared_energy_storages[e]
         if es.bus == node.bus_i:
-            Pd += model.shared_es_pch[e, s_m, s_o, p] - model.shared_es_pdch[e, s_m, s_o, p]
-            Qd += model.shared_es_qch[e, s_m, s_o, p] - model.shared_es_qdch[e, s_m, s_o, p]
+            # Shared ESS net power follows the load convention: positive values
+            # are charging demand and therefore increase net demand.
+            Pd += model.shared_es_pnet[e, s_m, s_o, p]
+            Qd += model.shared_es_qnet[e, s_m, s_o, p]
 
     return Pd, Qd
 
@@ -1409,7 +1394,7 @@ def ess_complementarity_penalties(model, network, s_m, s_o, p, params):
 
     for e in model.shared_energy_storages:
         for p in model.periods:
-            if params.ess_model == ESS_MODEL_BILINEAR_RELAXATION:
+            if params.shared_ess_model == ESS_MODEL_BILINEAR_RELAXATION:
                 total += base * PENALTY_ESS_COMPLEMENTARITY * (model.shared_es_sch[e, s_m, s_o, p] * model.shared_es_sdch[e, s_m, s_o, p])
         if params.slacks.shared_ess.day_balance:
             total += base * PENALTY_SHARED_ESS_BALANCE * (model.slack_shared_es_soc_final_up[e, s_m, s_o] + model.slack_shared_es_soc_final_down[e, s_m, s_o])
