@@ -711,6 +711,126 @@ def sess_pnet_rule(m, e, s_m, s_o, p):
     return m.shared_es_pnet[e, s_m, s_o, p] == m.shared_es_pch[e, s_m, s_o, p] - m.shared_es_pdch[e, s_m, s_o, p]
 
 
+_SHARED_ESS_OPERATIONAL_VARIABLES = (
+    'shared_es_pch',
+    'shared_es_pdch',
+    'shared_es_sch',
+    'shared_es_sdch',
+    'shared_es_pnet',
+    'shared_es_qnet',
+    'shared_es_soc',
+    'slack_shared_es_soc_final_up',
+    'slack_shared_es_soc_final_down',
+)
+
+_SHARED_ESS_OPERATIONAL_CONSTRAINTS = (
+    'sess_pnet_def',
+    'sess_snet_def',
+    'sess_pch_link',
+    'sess_pdch_link',
+    'sess_s_limit',
+    'sess_phi_limit_lower',
+    'sess_phi_limit_upper',
+    'sess_soc_def',
+    'sess_soc_limit_upper',
+    'sess_soc_limit_lower',
+    'sess_soc_final',
+    'sess_comp',
+)
+
+
+def shared_ess_capacity_is_inactive(s_capacity, e_capacity):
+    tolerance = SHARED_ESS_ZERO_CAPACITY_TOLERANCE
+    return abs(s_capacity) <= tolerance or abs(e_capacity) <= tolerance
+
+
+def normalize_shared_ess_capacity(capacity):
+    tolerance = SHARED_ESS_ZERO_CAPACITY_TOLERANCE
+    if capacity < -tolerance:
+        raise ValueError(
+            f'Shared ESS available capacity cannot be negative: {capacity}.'
+        )
+    return 0.0 if abs(capacity) <= tolerance else capacity
+
+
+def _component_entries_for_shared_ess(component, shared_ess_idx):
+    for index in component:
+        first_index = index[0] if isinstance(index, tuple) else index
+        if first_index == shared_ess_idx:
+            yield component[index]
+
+
+def _configure_shared_ess_expected_schedule(model, shared_ess_idx, inactive):
+    if not hasattr(model, 'expected_shared_ess_p'):
+        return
+
+    is_transmission_model = hasattr(model, 'active_distribution_networks')
+    for p in model.periods:
+        index = (shared_ess_idx, p) if is_transmission_model else p
+        for variable_name in ('expected_shared_ess_p', 'expected_shared_ess_q'):
+            variable = getattr(model, variable_name)[index]
+            if inactive:
+                variable.fix(0.0)
+            elif variable.fixed:
+                variable.unfix()
+
+    for constraint_name in (
+            'shared_ess_p_nonanticipativity',
+            'shared_ess_q_nonanticipativity'):
+        if not hasattr(model, constraint_name):
+            continue
+        constraint = getattr(model, constraint_name)
+        entries = (
+            _component_entries_for_shared_ess(constraint, shared_ess_idx)
+            if is_transmission_model else constraint.values()
+        )
+        for entry in entries:
+            if inactive:
+                entry.deactivate()
+            else:
+                entry.activate()
+
+
+def configure_shared_ess_operational_state(
+        model, shared_ess_idx, s_capacity, e_capacity):
+    s_capacity = normalize_shared_ess_capacity(s_capacity)
+    e_capacity = normalize_shared_ess_capacity(e_capacity)
+    inactive = shared_ess_capacity_is_inactive(s_capacity, e_capacity)
+    model.shared_es_s_rated_fixed[shared_ess_idx].set_value(s_capacity)
+    model.shared_es_e_rated_fixed[shared_ess_idx].set_value(e_capacity)
+    model.shared_es_s_rated[shared_ess_idx].set_value(s_capacity)
+    model.shared_es_e_rated[shared_ess_idx].set_value(e_capacity)
+
+    for variable_name in _SHARED_ESS_OPERATIONAL_VARIABLES:
+        if not hasattr(model, variable_name):
+            continue
+        variable = getattr(model, variable_name)
+        for entry in _component_entries_for_shared_ess(variable, shared_ess_idx):
+            if inactive:
+                entry.fix(0.0)
+            else:
+                if entry.fixed:
+                    entry.unfix()
+                if variable_name == 'shared_es_soc':
+                    entry.set_value(
+                        e_capacity * ENERGY_STORAGE_RELATIVE_INIT_SOC
+                    )
+
+    for constraint_name in _SHARED_ESS_OPERATIONAL_CONSTRAINTS:
+        constraint = getattr(model, constraint_name)
+        for entry in _component_entries_for_shared_ess(
+                constraint, shared_ess_idx):
+            if inactive:
+                entry.deactivate()
+            else:
+                entry.activate()
+
+    _configure_shared_ess_expected_schedule(
+        model, shared_ess_idx, inactive
+    )
+    return inactive
+
+
 def sess_s_sensitivities(m, e):
     return m.shared_es_s_rated_fixed[e] == m.shared_es_s_rated[e]
 

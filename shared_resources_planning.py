@@ -2035,6 +2035,13 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
                 tso_model[year][day].periods,
                 rule=tn_shared_ess_q_nonanticipativity_rule,
             )
+            for e in tso_model[year][day].shared_energy_storages:
+                configure_shared_ess_operational_state(
+                    tso_model[year][day],
+                    e,
+                    pe.value(tso_model[year][day].shared_es_s_rated_fixed[e]),
+                    pe.value(tso_model[year][day].shared_es_e_rated_fixed[e]),
+                )
 
             # A soft, probability-weighted penalty promotes one expected interface schedule.
             _add_tso_scenario_deviation_penalty(
@@ -2124,6 +2131,12 @@ def create_distribution_networks_models_sequential(distribution_networks, consen
                         dn_shared_ess_q_nonanticipativity_rule,
                         shared_ess_idx=shared_ess_idx,
                     ),
+                )
+                configure_shared_ess_operational_state(
+                    dso_model[year][day],
+                    shared_ess_idx,
+                    pe.value(dso_model[year][day].shared_es_s_rated_fixed[shared_ess_idx]),
+                    pe.value(dso_model[year][day].shared_es_e_rated_fixed[shared_ess_idx]),
                 )
 
                 # A soft, probability-weighted penalty promotes one expected interface schedule.
@@ -2247,6 +2260,12 @@ def create_distribution_network_model(node_id, distribution_network, candidate_s
                     dn_shared_ess_q_nonanticipativity_rule,
                     shared_ess_idx=shared_ess_idx,
                 ),
+            )
+            configure_shared_ess_operational_state(
+                dso_model[year][day],
+                shared_ess_idx,
+                pe.value(dso_model[year][day].shared_es_s_rated_fixed[shared_ess_idx]),
+                pe.value(dso_model[year][day].shared_es_e_rated_fixed[shared_ess_idx]),
             )
 
     # Add probability-weighted deviations from the expected interface schedule.
@@ -2879,6 +2898,12 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
                 # Update estimated rated power and energy capacity
                 model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(sess_estimated_capacity[year]['s_available'] / s_base)
                 model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(sess_estimated_capacity[year]['e_available'] / s_base)
+                configure_shared_ess_operational_state(
+                    model[year][day],
+                    shared_ess_idx,
+                    pe.value(model[year][day].shared_es_s_rated_fixed[shared_ess_idx]),
+                    pe.value(model[year][day].shared_es_e_rated_fixed[shared_ess_idx]),
+                )
 
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
@@ -2945,6 +2970,12 @@ def update_distribution_coordination_models_and_solve_sequential(distribution_ne
                 # Update estimated rated power and energy capacity
                 model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(sess_estimated_capacity[year]['s_available'] / s_base)
                 model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(sess_estimated_capacity[year]['e_available'] / s_base)
+                configure_shared_ess_operational_state(
+                    model[year][day],
+                    shared_ess_idx,
+                    pe.value(model[year][day].shared_es_s_rated_fixed[shared_ess_idx]),
+                    pe.value(model[year][day].shared_es_e_rated_fixed[shared_ess_idx]),
+                )
 
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
@@ -3017,6 +3048,12 @@ def update_and_solve_dso(node_id, distribution_network, model, vmag_req, dual_vm
             # Update estimated rated power and energy capacity
             model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(sess_estimated_capacity[year]['s_available'] / s_base)
             model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(sess_estimated_capacity[year]['e_available'] / s_base)
+            configure_shared_ess_operational_state(
+                model[year][day],
+                shared_ess_idx,
+                pe.value(model[year][day].shared_es_s_rated_fixed[shared_ess_idx]),
+                pe.value(model[year][day].shared_es_e_rated_fixed[shared_ess_idx]),
+            )
 
             # Update VOLTAGE and POWER FLOW variables at connection point
             for p in model[year][day].periods:
