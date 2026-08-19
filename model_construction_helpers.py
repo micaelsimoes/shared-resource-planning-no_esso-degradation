@@ -1,5 +1,5 @@
 from functools import partial
-from math import tan, atan2, acos, sqrt
+from math import tan, atan2, acos, sqrt, radians
 from helper_functions import *
 from definitions import *
 
@@ -404,6 +404,24 @@ def voltage_product_imag_rule(m, branch_idx, s_m, s_o, p, network):
     return m.voltage_product_imag[branch_idx, s_m, s_o, p] == (
         m.f[fnode_idx, s_m, s_o, p] * m.e[tnode_idx, s_m, s_o, p]
         - m.e[fnode_idx, s_m, s_o, p] * m.f[tnode_idx, s_m, s_o, p]
+    )
+
+
+def branch_angle_difference_lower_rule(m, branch_idx, s_m, s_o, p, network):
+    branch = network.branches[branch_idx]
+    angle_min_tangent = tan(radians(branch.angle_min))
+    return (
+        m.voltage_product_imag[branch_idx, s_m, s_o, p]
+        >= angle_min_tangent * m.voltage_product_real[branch_idx, s_m, s_o, p]
+    )
+
+
+def branch_angle_difference_upper_rule(m, branch_idx, s_m, s_o, p, network):
+    branch = network.branches[branch_idx]
+    angle_max_tangent = tan(radians(branch.angle_max))
+    return (
+        m.voltage_product_imag[branch_idx, s_m, s_o, p]
+        <= angle_max_tangent * m.voltage_product_real[branch_idx, s_m, s_o, p]
     )
 
 

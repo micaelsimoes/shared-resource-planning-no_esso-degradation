@@ -283,6 +283,7 @@ def _build_model(network, params):
         model.scenarios_market,
         model.scenarios_operation,
         model.periods,
+        domain=pe.NonNegativeReals,
         initialize=1.00,
     )
     model.voltage_product_imag = pe.Var(
@@ -416,6 +417,20 @@ def _build_model(network, params):
         model.scenarios_operation,
         model.periods,
         rule=partial(voltage_product_imag_rule, network=network),
+    )
+    model.branch_angle_difference_lower_cons = pe.Constraint(
+        model.branches,
+        model.scenarios_market,
+        model.scenarios_operation,
+        model.periods,
+        rule=partial(branch_angle_difference_lower_rule, network=network),
+    )
+    model.branch_angle_difference_upper_cons = pe.Constraint(
+        model.branches,
+        model.scenarios_market,
+        model.scenarios_operation,
+        model.periods,
+        rule=partial(branch_angle_difference_upper_rule, network=network),
     )
 
     # - Transformers
@@ -799,6 +814,8 @@ def _read_network_from_json_file(network, filename):
         branch.x = float(line_data['x'])
         branch.b_sh = float(line_data['b'])
         branch.rate = float(line_data['rating'])
+        branch.angle_min = float(line_data.get('angle_min', branch.angle_min))
+        branch.angle_max = float(line_data.get('angle_max', branch.angle_max))
         branch.status = bool(line_data['status'])
         network.branches.append(branch)
 
@@ -820,6 +837,8 @@ def _read_network_from_json_file(network, filename):
             branch.b_sh = float(transf_data['b'])
             branch.rate = float(transf_data['rating'])
             branch.ratio = float(transf_data['ratio'])
+            branch.angle_min = float(transf_data.get('angle_min', branch.angle_min))
+            branch.angle_max = float(transf_data.get('angle_max', branch.angle_max))
             branch.status = bool(transf_data['status'])
             branch.is_transformer = True
             branch.vmag_reg = bool(transf_data['vmag_reg'])
@@ -1951,8 +1970,23 @@ def _perform_network_check(network):
         print(f'[ERROR] Reading network {network.name}. No branches imported.')
         exit(ERROR_NETWORK_FILE)
 
+    _check_branch_angle_limits(network)
+
+
+def _check_branch_angle_limits(network):
+    for branch in network.branches:
+        if not (-90.0 < branch.angle_min <= branch.angle_max < 90.0):
+            print(
+                f'[ERROR] Reading network {network.name}. Branch {branch.branch_id} has invalid '
+                f'angle limits [{branch.angle_min}, {branch.angle_max}] degrees. Limits must satisfy '
+                f'-90 < angle_min <= angle_max < 90.'
+            )
+            exit(ERROR_NETWORK_FILE)
+
 
 def _pre_process_network(network):
+
+    _check_branch_angle_limits(network)
 
     processed_nodes = []
     for node in network.nodes:
@@ -1986,12 +2020,18 @@ def _pre_process_network(network):
         if len(connected_parallel_branches) > 1:
             processed_branch = connected_parallel_branches[0]
             r_eq, x_eq, g_eq, b_eq = _pre_process_parallel_branches(connected_parallel_branches)
+            angle_min, angle_max = _pre_process_parallel_branch_angle_limits(
+                connected_parallel_branches,
+                processed_branch,
+            )
             processed_branch.r = r_eq
             processed_branch.x = x_eq
             processed_branch.g_sh = g_eq
             processed_branch.b_sh = b_eq
             processed_branch.rate = sum([branch.rate for branch in connected_parallel_branches])
             processed_branch.ratio = branch.ratio
+            processed_branch.angle_min = angle_min
+            processed_branch.angle_max = angle_max
             processed_branch.pre_processed = True
             for branch_parallel in parallel_branches:
                 branch_parallel.pre_processed = True
@@ -2015,6 +2055,20 @@ def _pre_process_parallel_branches(branches):
     z_eq = 1/sum([(1/impedance) for impedance in branch_impedances])
     ysh_eq = sum([admittance for admittance in branch_shunt_admittance])
     return abs(z_eq.real), abs(z_eq.imag), ysh_eq.real, ysh_eq.imag
+
+
+def _pre_process_parallel_branch_angle_limits(branches, reference_branch):
+    oriented_limits = []
+    for branch in branches:
+        if branch.fbus == reference_branch.fbus and branch.tbus == reference_branch.tbus:
+            oriented_limits.append((branch.angle_min, branch.angle_max))
+        else:
+            oriented_limits.append((-branch.angle_max, -branch.angle_min))
+
+    return (
+        max(angle_min for angle_min, _ in oriented_limits),
+        min(angle_max for _, angle_max in oriented_limits),
+    )
 
 
 def _get_branch_power_losses(network, params, model, branch_idx, s_m, s_o, p):
