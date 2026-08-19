@@ -1,5 +1,5 @@
 from functools import partial
-from math import tan, atan2, acos, sqrt, radians
+from math import tan, acos, sqrt, radians
 from helper_functions import *
 from definitions import *
 
@@ -91,12 +91,28 @@ def node_balance_slack_bounds(m, i, s_m, s_o, p, network):
 
 
 # Generation, Pg
+def renewable_available_apparent_power(generator, s_o, p):
+    if not generator.status[p] or not generator.is_curtaillable():
+        return 0.0
+    return sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
+
+
+def renewable_generation_is_unavailable(generator, s_o, p):
+    return renewable_available_apparent_power(generator, s_o, p) <= EQUALITY_TOLERANCE
+
+
+def _power_factor_tangents(device):
+    return sorted((tan(acos(device.min_pf)), tan(acos(device.max_pf))))
+
+
 def pg_bounds(m, g, s_m, s_o, p, network):
     gen = network.generators[g]
     if not gen.status[p]:
-        return (0.0 - EQUALITY_TOLERANCE, 0.0 + EQUALITY_TOLERANCE)
+        return (0.0, 0.0)
 
     if gen.is_curtaillable():
+        if renewable_generation_is_unavailable(gen, s_o, p):
+            return (0.0, 0.0)
         return (0.0, gen.pg[s_o][p] + EQUALITY_TOLERANCE)
     else:
         return (gen.pmin - EQUALITY_TOLERANCE, gen.pmax + EQUALITY_TOLERANCE)
@@ -105,7 +121,9 @@ def pg_bounds(m, g, s_m, s_o, p, network):
 def qg_bounds(m, g, s_m, s_o, p, network):
     gen = network.generators[g]
     if not gen.status[p]:
-        return (0.0 - EQUALITY_TOLERANCE, 0.0 + EQUALITY_TOLERANCE)
+        return (0.0, 0.0)
+    if gen.is_curtaillable() and renewable_generation_is_unavailable(gen, s_o, p):
+        return (0.0, 0.0)
     return (gen.qmin - EQUALITY_TOLERANCE, gen.qmax + EQUALITY_TOLERANCE)
 
 
@@ -115,6 +133,8 @@ def pg_init(m, g, s_m, s_o, p, network):
         return 0.0
 
     if gen.is_curtaillable():
+        if renewable_generation_is_unavailable(gen, s_o, p):
+            return 0.0
         return max(0.0, gen.pg[s_o][p])
     else:
         lb, ub = pg_bounds(m, g, s_m, s_o, p, network)
@@ -134,49 +154,19 @@ def qg_init(m, g, s_m, s_o, p, network):
         return max(0.0, lb)
 
 
-def sg_avail(m, g, s_o, p, network, params):
-
-    gen = network.generators[g]
-    if not gen.is_curtaillable() or not gen.status[p]:
-        return 0.00
-
-    # Apparent power for initialization and bound
-    pg = gen.pg[s_o][p]
-    qg = gen.qg[s_o][p]
-    sg = max(0.00, abs((pg ** 2 + qg ** 2) ** 0.5))
-
-    return sg
-
-
-def sg_bounds(m, g, s_m, s_o, p, network, params):
-    gen = network.generators[g]
-    if not gen.is_curtaillable() or not gen.status[p]:
-        return (0.0, EQUALITY_TOLERANCE)
-    if gen.is_curtaillable():
-        smax = sg_avail(m, g, s_o, p, network=network, params=params)
-    else:
-        smax = (gen.pmax ** 2 + gen.qmax ** 2) ** 0.5
-    return (0.0, smax + EQUALITY_TOLERANCE)
-
-
 def pg_avail_init(m, g, s_o, p, network, params):
     gen = network.generators[g]
-    if not gen.status[p] or not gen.is_curtaillable():
+    if not gen.is_curtaillable() or renewable_generation_is_unavailable(gen, s_o, p):
         return 0.0
     pg_av = gen.pg[s_o][p]
     return max(0.0, pg_av)
 
 
 def sg_avail_init(m, g, s_o, p, network, params):
-
     gen = network.generators[g]
-    if not gen.status[p] or not gen.is_curtaillable():
+    if not gen.is_curtaillable() or renewable_generation_is_unavailable(gen, s_o, p):
         return 0.0
-
-    pg_av = gen.pg[s_o][p]
-    qg_av = gen.qg[s_o][p]
-    sg_av = abs((pg_av**2 + qg_av**2)**0.5)
-    return max(0.0, sg_av)
+    return renewable_available_apparent_power(gen, s_o, p)
 
 
 # Branch power flow, Fij
@@ -444,56 +434,57 @@ def _branch_voltage_products(model, network, branch_idx, terminal_node_idx, s_m,
 
 def sg_sqr_rule(m, g, s_m, s_o, p, network):
     gen = network.generators[g]
-    if not gen.status[p] or not gen.is_curtaillable():
+    if not gen.is_curtaillable() or renewable_generation_is_unavailable(gen, s_o, p):
         return 0.0  # just a scalar
     return m.pg[g, s_m, s_o, p]**2 + m.qg[g, s_m, s_o, p]**2
 
 
-def sg_curt_rule(m, g, s_m, s_o, p, network):
-    gen = network.generators[g]
-    if not gen.status[p] or not gen.is_curtaillable():
-        return 0.0
-    return m.sg_avail[g, s_o, p] - m.sg_sqr[g, s_m, s_o, p]**0.50
-
-
-def sg_def_rule(m, g, s_m, s_o, p, network, params):
-    gen = network.generators[g]
-    if not gen.status[p] or not gen.is_curtaillable():
-        return pe.Constraint.Skip
-    return m.sg[g, s_m, s_o, p] ** 2 == m.sg_sqr[g, s_m, s_o, p]
-
-
 def sg_avail_rule(m, g, s_m, s_o, p, network, params):
     gen = network.generators[g]
-    if not gen.status[p] or not gen.is_curtaillable():
+    if not gen.is_curtaillable() or renewable_generation_is_unavailable(gen, s_o, p):
         return pe.Constraint.Skip
     return m.sg_sqr[g, s_m, s_o, p] <= m.sg_avail[g, s_o, p] ** 2
 
 
 def power_factor_rule_upper(m, g, s_m, s_o, p, network):
     generator = network.generators[g]
-    if not generator.is_curtaillable() or not generator.status[p]:
+    if (
+        not generator.is_curtaillable()
+        or not generator.power_factor_control
+        or renewable_generation_is_unavailable(generator, s_o, p)
+    ):
         return pe.Constraint.Skip
     pg = m.pg[g, s_m, s_o, p]
     qg = m.qg[g, s_m, s_o, p]
-    if generator.power_factor_control:
-        phi = acos(generator.max_pf)
-    else:
-        phi = atan2(generator.qg[s_o][p], generator.pg[s_o][p])
-    return qg <= tan(phi) * (pg + EQUALITY_TOLERANCE)
+    _, tangent_upper = _power_factor_tangents(generator)
+    return qg <= tangent_upper * pg
 
 
 def power_factor_rule_lower(m, g, s_m, s_o, p, network):
     generator = network.generators[g]
-    if not generator.is_curtaillable() or not generator.status[p]:
+    if (
+        not generator.is_curtaillable()
+        or not generator.power_factor_control
+        or renewable_generation_is_unavailable(generator, s_o, p)
+    ):
         return pe.Constraint.Skip
     pg = m.pg[g, s_m, s_o, p]
     qg = m.qg[g, s_m, s_o, p]
-    if generator.power_factor_control:
-        phi = acos(generator.min_pf)
-    else:
-        phi = atan2(generator.qg[s_o][p], generator.pg[s_o][p])
-    return qg >= tan(phi) * (pg - EQUALITY_TOLERANCE)
+    tangent_lower, _ = _power_factor_tangents(generator)
+    return qg >= tangent_lower * pg
+
+
+def power_factor_profile_rule(m, g, s_m, s_o, p, network):
+    generator = network.generators[g]
+    if (
+        not generator.is_curtaillable()
+        or generator.power_factor_control
+        or renewable_generation_is_unavailable(generator, s_o, p)
+    ):
+        return pe.Constraint.Skip
+    pg_available = generator.pg[s_o][p]
+    qg_available = generator.qg[s_o][p]
+    return qg_available * m.pg[g, s_m, s_o, p] == pg_available * m.qg[g, s_m, s_o, p]
 
 
 # Flexible loads
@@ -588,13 +579,9 @@ def ess_soc_limits_rule(m, e, s_m, s_o, p, network):
     return pe.inequality(ess.e_min - EQUALITY_TOLERANCE, m.es_soc[e, s_m, s_o, p], ess.e_max + EQUALITY_TOLERANCE)
 
 
-def _storage_power_factor_tangents(storage):
-    return sorted((tan(acos(storage.min_pf)), tan(acos(storage.max_pf))))
-
-
 def ess_phi_limits_lower(m, e, s_m, s_o, p, network):
     ess = network.energy_storages[e]
-    tangent_lower, tangent_upper = _storage_power_factor_tangents(ess)
+    tangent_lower, tangent_upper = _power_factor_tangents(ess)
     pch = m.es_pch[e, s_m, s_o, p]
     pdch = m.es_pdch[e, s_m, s_o, p]
     return m.es_qnet[e, s_m, s_o, p] >= tangent_lower * pdch - tangent_upper * pch
@@ -602,7 +589,7 @@ def ess_phi_limits_lower(m, e, s_m, s_o, p, network):
 
 def ess_phi_limits_upper(m, e, s_m, s_o, p, network):
     ess = network.energy_storages[e]
-    tangent_lower, tangent_upper = _storage_power_factor_tangents(ess)
+    tangent_lower, tangent_upper = _power_factor_tangents(ess)
     pch = m.es_pch[e, s_m, s_o, p]
     pdch = m.es_pdch[e, s_m, s_o, p]
     return m.es_qnet[e, s_m, s_o, p] <= tangent_upper * pdch - tangent_lower * pch
@@ -646,7 +633,7 @@ def ess_soc_final_rule(m, e, s_m, s_o, network, params):
 # Shared Energy Storage
 def sess_phi_limits_lower(m, e, s_m, s_o, p, network):
     ess = network.shared_energy_storages[e]
-    tangent_lower, tangent_upper = _storage_power_factor_tangents(ess)
+    tangent_lower, tangent_upper = _power_factor_tangents(ess)
     pch = m.shared_es_pch[e, s_m, s_o, p]
     pdch = m.shared_es_pdch[e, s_m, s_o, p]
     return m.shared_es_qnet[e, s_m, s_o, p] >= tangent_lower * pch - tangent_upper * pdch
@@ -654,7 +641,7 @@ def sess_phi_limits_lower(m, e, s_m, s_o, p, network):
 
 def sess_phi_limits_upper(m, e, s_m, s_o, p, network):
     ess = network.shared_energy_storages[e]
-    tangent_lower, tangent_upper = _storage_power_factor_tangents(ess)
+    tangent_lower, tangent_upper = _power_factor_tangents(ess)
     pch = m.shared_es_pch[e, s_m, s_o, p]
     pdch = m.shared_es_pdch[e, s_m, s_o, p]
     return m.shared_es_qnet[e, s_m, s_o, p] <= tangent_upper * pch - tangent_lower * pdch

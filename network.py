@@ -1,7 +1,7 @@
 import pandas as pd
 from functools import partial
 import pyomo.opt as po
-from math import pi, isclose, sqrt
+from math import pi, isclose, sqrt, atan2
 import networkx as nx
 import matplotlib.pyplot as plt
 from node import Node
@@ -307,7 +307,6 @@ def _build_model(network, params):
         model.pg_avail = pe.Param(model.generators, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=partial(pg_avail_init, network=network, params=params), mutable=False)
         model.sg_avail = pe.Param(model.generators, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=partial(sg_avail_init, network=network, params=params), mutable=False)
         model.sg_sqr = pe.Expression(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_sqr_rule, network=network))
-        model.sg_curt = pe.Expression(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_curt_rule, network=network))
 
     # - Branch power flow
     if params.slacks.grid_operation.branch_flow:
@@ -441,10 +440,10 @@ def _build_model(network, params):
 
     # - Generation
     if params.rg_curt:
-        # model.sg_def = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_def_rule, network=network, params=params))
         model.sg_capability = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_avail_rule, network=network, params=params))
         model.gen_pf_upper = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(power_factor_rule_upper, network=network))
         model.gen_pf_lower = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(power_factor_rule_lower, network=network))
+        model.gen_pf_profile = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(power_factor_profile_rule, network=network))
 
     # - Flexible Loads -- Daily energy balance
     if params.fl_reg:
@@ -1314,13 +1313,20 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['generation']['sg_curt'][gen_id] = []
                 for p in model.periods:
                     if params.rg_curt and generator.is_curtaillable():
-                        pg = generator.pg[s_o][p] * network.baseMVA
-                        qg = generator.qg[s_o][p] * network.baseMVA
-                        sg = pe.value(model.sg_avail[g, s_o, p]) * network.baseMVA
+                        sg_available = pe.value(model.sg_avail[g, s_o, p])
+                        pg = pe.value(model.pg_avail[g, s_o, p]) * network.baseMVA
+                        qg = (
+                            generator.qg[s_o][p] * network.baseMVA
+                            if sg_available > 0.0
+                            else 0.0
+                        )
+                        sg = sg_available * network.baseMVA
                         pg_net = pe.value(model.pg[g, s_m, s_o, p]) * network.baseMVA
                         qg_net = pe.value(model.qg[g, s_m, s_o, p]) * network.baseMVA
-                        sg_net = sqrt(pe.value(model.sg_sqr[g, s_m, s_o, p])) * network.baseMVA
-                        sg_curt = pe.value(model.sg_curt[g, s_m, s_o, p]) * network.baseMVA
+                        sg_net = sqrt(max(pe.value(model.sg_sqr[g, s_m, s_o, p]), 0.0)) * network.baseMVA
+                        sg_curt = _compute_renewable_apparent_power_curtailment(
+                            model, g, s_m, s_o, p
+                        ) * network.baseMVA
                         processed_results['scenarios'][s_m][s_o]['generation']['pg_net'][gen_id].append(pg_net)
                         processed_results['scenarios'][s_m][s_o]['generation']['qg_net'][gen_id].append(qg_net)
                         processed_results['scenarios'][s_m][s_o]['generation']['sg_net'][gen_id].append(sg_net)
@@ -1771,6 +1777,12 @@ def _compute_losses_per_scenario(network, model, params, s_m, s_o):
     return power_losses
 
 
+def _compute_renewable_apparent_power_curtailment(model, g, s_m, s_o, p):
+    available = pe.value(model.sg_avail[g, s_o, p])
+    dispatched = sqrt(max(pe.value(model.sg_sqr[g, s_m, s_o, p]), 0.0))
+    return max(available - dispatched, 0.0)
+
+
 def _compute_generation_curtailment(network, model, params):
 
     gen_curtailment = {'s': 0.00}
@@ -1783,7 +1795,9 @@ def _compute_generation_curtailment(network, model, params):
                     if network.generators[g].is_curtaillable():
                         for p in model.periods:
                             if network.generators[g].status[p]:
-                                gen_curtailment_scenario['s'] += pe.value(model.sg_curt[g, s_m, s_o, p]) * network.baseMVA
+                                gen_curtailment_scenario['s'] += _compute_renewable_apparent_power_curtailment(
+                                    model, g, s_m, s_o, p
+                                ) * network.baseMVA
                 gen_curtailment['s'] += gen_curtailment_scenario['s'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
 
     return gen_curtailment
@@ -1796,7 +1810,9 @@ def _compute_renewable_generation_curtailed_per_scenario(network, model, params,
             if network.generators[g].is_curtaillable():
                 for p in model.periods:
                     if network.generators[g].status[p]:
-                        gen_curtailment['s'] += pe.value(model.sg_curt[g, s_m, s_o, p]) * network.baseMVA
+                        gen_curtailment['s'] += _compute_renewable_apparent_power_curtailment(
+                            model, g, s_m, s_o, p
+                        ) * network.baseMVA
     return gen_curtailment
 
 
