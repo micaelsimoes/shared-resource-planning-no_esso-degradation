@@ -33,6 +33,8 @@ def e_bounds(m, i, s_m, s_o, p, network, params):
     component_max = node.v_max
     if _voltage_magnitude_slack_enabled(node, params):
         component_max += VMAG_VIOLATION_ALLOWED
+    if node.type == BUS_REF:
+        return (0.00, component_max + EQUALITY_TOLERANCE)
     return (-component_max - EQUALITY_TOLERANCE, component_max + EQUALITY_TOLERANCE)
 
 

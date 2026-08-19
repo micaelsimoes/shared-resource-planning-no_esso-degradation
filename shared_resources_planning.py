@@ -2724,7 +2724,7 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                         for p in dso_model[year][day].periods:
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].fixed = False
                             dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setub(v_max + EQUALITY_TOLERANCE)
-                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setlb(-v_max - EQUALITY_TOLERANCE)
+                            dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setlb(0.00)
                             dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setub(EQUALITY_TOLERANCE)
                             dso_model[year][day].f[ref_node_idx, s_m, s_o, p].setlb(-EQUALITY_TOLERANCE)
                             dso_model[year][day].vmag[ref_node_idx, s_m, s_o, p].setub(v_max + EQUALITY_TOLERANCE)
