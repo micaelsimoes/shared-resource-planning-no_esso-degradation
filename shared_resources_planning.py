@@ -2279,7 +2279,7 @@ def _add_tso_scenario_deviation_penalty(model, network, include_voltage=True):
     model.scenario_deviation_interface_power = pe.Expression(expr=interface_power_deviation)
     model.scenario_deviation_shared_ess = pe.Expression(expr=shared_ess_deviation)
 
-    model.scenario_deviation_penalty = pe.Expression(expr=model.scenario_deviation_weight * (model.scenario_deviation_voltage + model.scenario_deviation_interface_power + model.scenario_deviation_shared_ess))
+    model.scenario_deviation_penalty = pe.Expression(expr=model.scenario_deviation_weight * (model.scenario_deviation_voltage + model.scenario_deviation_interface_power) + PENALTY_SHARED_ESS_SCENARIO_DEVIATION * model.scenario_deviation_shared_ess)
     model.objective.expr = copy(model.objective.expr) + model.scenario_deviation_penalty
 
 
@@ -2305,7 +2305,7 @@ def _add_dso_scenario_deviation_penalty(model, network, include_voltage=True):
     model.scenario_deviation_interface_power = pe.Expression(expr=interface_power_deviation)
     model.scenario_deviation_shared_ess = pe.Expression(expr=shared_ess_deviation)
 
-    model.scenario_deviation_penalty = pe.Expression(expr=model.scenario_deviation_weight * (model.scenario_deviation_voltage + model.scenario_deviation_interface_power + model.scenario_deviation_shared_ess))
+    model.scenario_deviation_penalty = pe.Expression(expr=model.scenario_deviation_weight * (model.scenario_deviation_voltage + model.scenario_deviation_interface_power) + PENALTY_SHARED_ESS_SCENARIO_DEVIATION * model.scenario_deviation_shared_ess)
     model.objective.expr = copy(model.objective.expr) + model.scenario_deviation_penalty
 
 
