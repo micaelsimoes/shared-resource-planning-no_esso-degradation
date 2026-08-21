@@ -774,16 +774,13 @@ def _configure_shared_ess_expected_schedule(model, shared_ess_idx, inactive):
             elif variable.fixed:
                 variable.unfix()
 
-    for constraint_name in (
-            'shared_ess_p_nonanticipativity',
-            'shared_ess_q_nonanticipativity'):
+    for constraint_name in ('expected_shared_ess_p_def', 'expected_shared_ess_q_def'):
+
         if not hasattr(model, constraint_name):
             continue
+
         constraint = getattr(model, constraint_name)
-        entries = (
-            _component_entries_for_shared_ess(constraint, shared_ess_idx)
-            if is_transmission_model else constraint.values()
-        )
+        entries = (_component_entries_for_shared_ess(constraint, shared_ess_idx) if is_transmission_model else constraint.values())
         for entry in entries:
             if inactive:
                 entry.deactivate()
@@ -1572,12 +1569,20 @@ def dn_interface_expected_pf_q_rule(m, p, network):
     return m.expected_interface_pf_q[p] == dn_interface_expected_pf_q_def(m, p, network)
 
 
-def dn_shared_ess_p_nonanticipativity_rule(m, s_m, s_o, p, shared_ess_idx):
-    return m.shared_es_pnet[shared_ess_idx, s_m, s_o, p] == m.expected_shared_ess_p[p]
+def dn_interface_expected_sess_p_def(m, p, network, shared_ess_idx):
+    return sum(network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * m.shared_es_pnet[shared_ess_idx, s_m, s_o, p] for s_m in m.scenarios_market for s_o in m.scenarios_operation)
 
 
-def dn_shared_ess_q_nonanticipativity_rule(m, s_m, s_o, p, shared_ess_idx):
-    return m.shared_es_qnet[shared_ess_idx, s_m, s_o, p] == m.expected_shared_ess_q[p]
+def dn_interface_expected_sess_q_def(m, p, network, shared_ess_idx):
+    return sum(network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * m.shared_es_qnet[shared_ess_idx, s_m, s_o, p] for s_m in m.scenarios_market for s_o in m.scenarios_operation)
+
+
+def dn_interface_expected_sess_p_rule(m, p, network, shared_ess_idx):
+    return m.expected_shared_ess_p[p] == dn_interface_expected_sess_p_def(m, p, network, shared_ess_idx)
+
+
+def dn_interface_expected_sess_q_rule(m, p, network, shared_ess_idx):
+    return m.expected_shared_ess_q[p] == dn_interface_expected_sess_q_def(m, p, network, shared_ess_idx)
 
 
 def tn_interface_expected_vmag_def(m, dn, p, network):
@@ -1625,9 +1630,17 @@ def tn_interface_expected_pf_q_rule(m, dn, p, network):
     return m.expected_interface_pf_q[dn, p] == tn_interface_expected_pf_q_def(m, dn, p, network)
 
 
-def tn_shared_ess_p_nonanticipativity_rule(m, e, s_m, s_o, p):
-    return m.shared_es_pnet[e, s_m, s_o, p] == m.expected_shared_ess_p[e, p]
+def tn_interface_expected_sess_p_def(m, e, p, network):
+    return sum(network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * m.shared_es_pnet[e, s_m, s_o, p] for s_m in m.scenarios_market for s_o in m.scenarios_operation)
 
 
-def tn_shared_ess_q_nonanticipativity_rule(m, e, s_m, s_o, p):
-    return m.shared_es_qnet[e, s_m, s_o, p] == m.expected_shared_ess_q[e, p]
+def tn_interface_expected_sess_q_def(m, e, p, network):
+    return sum(network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * m.shared_es_qnet[e, s_m, s_o, p] for s_m in m.scenarios_market for s_o in m.scenarios_operation)
+
+
+def tn_interface_expected_sess_p_rule(m, e, p, network):
+    return m.expected_shared_ess_p[e, p] == tn_interface_expected_sess_p_def(m, e, p, network)
+
+
+def tn_interface_expected_sess_q_rule(m, e, p, network):
+    return m.expected_shared_ess_q[e, p] == tn_interface_expected_sess_q_def(m, e, p, network)

@@ -179,9 +179,7 @@ def _read_network_data(network_planning):
             network_planning.network[year][day].day = day
             network_planning.network[year][day].num_instants = network_planning.num_instants
             network_planning.network[year][day].num_oper_scenarios = network_planning.num_oper_scenarios
-            network_planning.network[year][day].random_seed = derive_random_seed(
-                network_planning.random_seed, 'realization', int(year), str(day)
-            )
+            network_planning.network[year][day].random_seed = derive_random_seed(network_planning.random_seed, 'realization', int(year), str(day))
             network_planning.network[year][day].prob_operation_scenarios = [(1 / network_planning.num_oper_scenarios)] * network_planning.num_oper_scenarios
             network_planning.network[year][day].is_transmission = network_planning.is_transmission
 
