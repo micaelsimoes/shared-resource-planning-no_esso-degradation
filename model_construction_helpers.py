@@ -379,20 +379,19 @@ def voltage_product_real_rule(m, branch_idx, s_m, s_o, p, network):
     branch = network.branches[branch_idx]
     fnode_idx = network.get_node_idx(branch.fbus)
     tnode_idx = network.get_node_idx(branch.tbus)
-    return m.voltage_product_real[branch_idx, s_m, s_o, p] == (
-        m.e[fnode_idx, s_m, s_o, p] * m.e[tnode_idx, s_m, s_o, p]
-        + m.f[fnode_idx, s_m, s_o, p] * m.f[tnode_idx, s_m, s_o, p]
-    )
-
+    #return m.voltage_product_real[branch_idx, s_m, s_o, p] == (m.e[fnode_idx, s_m, s_o, p] * m.e[tnode_idx, s_m, s_o, p] + m.f[fnode_idx, s_m, s_o, p] * m.f[tnode_idx, s_m, s_o, p])
+    return m.e[fnode_idx, s_m, s_o, p] * m.e[tnode_idx, s_m, s_o, p] + m.f[fnode_idx, s_m, s_o, p] * m.f[tnode_idx, s_m, s_o, p]
 
 def voltage_product_imag_rule(m, branch_idx, s_m, s_o, p, network):
     branch = network.branches[branch_idx]
     fnode_idx = network.get_node_idx(branch.fbus)
     tnode_idx = network.get_node_idx(branch.tbus)
-    return m.voltage_product_imag[branch_idx, s_m, s_o, p] == (
-        m.f[fnode_idx, s_m, s_o, p] * m.e[tnode_idx, s_m, s_o, p]
-        - m.e[fnode_idx, s_m, s_o, p] * m.f[tnode_idx, s_m, s_o, p]
-    )
+    #return m.voltage_product_imag[branch_idx, s_m, s_o, p] == (m.f[fnode_idx, s_m, s_o, p] * m.e[tnode_idx, s_m, s_o, p] - m.e[fnode_idx, s_m, s_o, p] * m.f[tnode_idx, s_m, s_o, p])
+    return m.f[fnode_idx, s_m, s_o, p] * m.e[tnode_idx, s_m, s_o, p] - m.e[fnode_idx, s_m, s_o, p] * m.f[tnode_idx, s_m, s_o, p]
+
+
+def voltage_product_real_nonnegative_rule(m, branch_idx, s_m, s_o, p):
+    return (m.voltage_product_real[branch_idx, s_m, s_o, p] >= 0.0)
 
 
 def branch_angle_difference_lower_rule(m, branch_idx, s_m, s_o, p, network):
@@ -417,9 +416,7 @@ def _branch_voltage_products(model, network, branch_idx, terminal_node_idx, s_m,
     if terminal_node_idx == tnode_idx:
         cross_imag = -cross_imag
     elif terminal_node_idx != fnode_idx:
-        raise ValueError(
-            f'Node index {terminal_node_idx} is not incident to branch {branch.branch_id}.'
-        )
+        raise ValueError(f'Node index {terminal_node_idx} is not incident to branch {branch.branch_id}.')
 
     return cross_real, cross_imag
 
@@ -1170,12 +1167,11 @@ def branch_flow_def(model, b, s_m, s_o, p, network, params):
     fnode_idx = network.get_node_idx(branch.fbus)
     tnode_idx = network.get_node_idx(branch.tbus)
 
-    return compute_branch_flow_squared(
-        network, model, b, fnode_idx, tnode_idx, s_m, s_o, p, params.branch_limit_type, direction='ij'
-    )
+    return compute_branch_flow_squared(network, model, b, fnode_idx, tnode_idx, s_m, s_o, p, params.branch_limit_type, direction='ij')
 
 
 def branch_flow_ji_def(model, b, s_m, s_o, p, network, params):
+
     branch = network.branches[b]
     if not branch.status:
         return pe.Expression.Skip
@@ -1183,9 +1179,7 @@ def branch_flow_ji_def(model, b, s_m, s_o, p, network, params):
     fnode_idx = network.get_node_idx(branch.tbus)
     tnode_idx = network.get_node_idx(branch.fbus)
 
-    return compute_branch_flow_squared(
-        network, model, b, fnode_idx, tnode_idx, s_m, s_o, p, params.branch_limit_type, direction='ji'
-    )
+    return compute_branch_flow_squared(network, model, b, fnode_idx, tnode_idx, s_m, s_o, p, params.branch_limit_type, direction='ji')
 
 
 def branch_flow_limit_rule(model, b, s_m, s_o, p, network, params):

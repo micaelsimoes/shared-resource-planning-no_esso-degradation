@@ -278,21 +278,8 @@ def _build_model(network, params):
         model.slack_v_sqr_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_up_bounds, network=network, params=params))
     model.vmag = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.00, bounds=partial(vmag_bounds, network=network, params=params))
     model.vmag_sqr = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, initialize=1.00)
-    model.voltage_product_real = pe.Var(
-        model.branches,
-        model.scenarios_market,
-        model.scenarios_operation,
-        model.periods,
-        domain=pe.NonNegativeReals,
-        initialize=1.00,
-    )
-    model.voltage_product_imag = pe.Var(
-        model.branches,
-        model.scenarios_market,
-        model.scenarios_operation,
-        model.periods,
-        initialize=0.00,
-    )
+    # model.voltage_product_real = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.00)
+    # model.voltage_product_imag = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, initialize=0.00)
     if params.slacks.node_balance.active_power:
         model.slack_node_balance_p_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00, bounds=partial(node_balance_slack_bounds, network=network))
         model.slack_node_balance_p_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00, bounds=partial(node_balance_slack_bounds, network=network))
@@ -376,6 +363,8 @@ def _build_model(network, params):
         model.slack_shared_es_soc_final_down = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
 
     # Expressions
+    model.voltage_product_real = pe.Expression(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_product_real_rule, network=network))
+    model.voltage_product_imag = pe.Expression(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_product_imag_rule, network=network))
     model.pg_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_p_per_node_def, network=network))
     model.qg_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_q_per_node_def, network=network))
     model.pc_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_p_per_node_def, network=network, params=params))      # Net load at node i
@@ -399,8 +388,9 @@ def _build_model(network, params):
     model.voltage_setpoint_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_setpoint_cons_rule, network=network, params=params))
     model.voltage_magnitude_lower_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_magnitude_lower_cons_rule, network=network, params=params))
     model.voltage_magnitude_upper_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_magnitude_upper_cons_rule, network=network, params=params))
-    model.voltage_product_real_def = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_product_real_rule, network=network),)
-    model.voltage_product_imag_def = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_product_imag_rule, network=network),)
+    # model.voltage_product_real_def = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_product_real_rule, network=network),)
+    # model.voltage_product_imag_def = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_product_imag_rule, network=network),)
+    model.voltage_product_real_nonnegative = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=voltage_product_real_nonnegative_rule)
     # model.branch_angle_difference_lower_cons = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_angle_difference_lower_rule, network=network),)
     # model.branch_angle_difference_upper_cons = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_angle_difference_upper_rule, network=network),)
 
