@@ -399,34 +399,10 @@ def _build_model(network, params):
     model.voltage_setpoint_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_setpoint_cons_rule, network=network, params=params))
     model.voltage_magnitude_lower_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_magnitude_lower_cons_rule, network=network, params=params))
     model.voltage_magnitude_upper_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_magnitude_upper_cons_rule, network=network, params=params))
-    model.voltage_product_real_def = pe.Constraint(
-        model.branches,
-        model.scenarios_market,
-        model.scenarios_operation,
-        model.periods,
-        rule=partial(voltage_product_real_rule, network=network),
-    )
-    model.voltage_product_imag_def = pe.Constraint(
-        model.branches,
-        model.scenarios_market,
-        model.scenarios_operation,
-        model.periods,
-        rule=partial(voltage_product_imag_rule, network=network),
-    )
-    model.branch_angle_difference_lower_cons = pe.Constraint(
-        model.branches,
-        model.scenarios_market,
-        model.scenarios_operation,
-        model.periods,
-        rule=partial(branch_angle_difference_lower_rule, network=network),
-    )
-    model.branch_angle_difference_upper_cons = pe.Constraint(
-        model.branches,
-        model.scenarios_market,
-        model.scenarios_operation,
-        model.periods,
-        rule=partial(branch_angle_difference_upper_rule, network=network),
-    )
+    model.voltage_product_real_def = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_product_real_rule, network=network),)
+    model.voltage_product_imag_def = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_product_imag_rule, network=network),)
+    # model.branch_angle_difference_lower_cons = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_angle_difference_lower_rule, network=network),)
+    # model.branch_angle_difference_upper_cons = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_angle_difference_upper_rule, network=network),)
 
     # - Transformers
     model.r_sqr_def = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(r_sqr_rule, network=network))

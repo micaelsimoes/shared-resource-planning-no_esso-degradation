@@ -398,19 +398,13 @@ def voltage_product_imag_rule(m, branch_idx, s_m, s_o, p, network):
 def branch_angle_difference_lower_rule(m, branch_idx, s_m, s_o, p, network):
     branch = network.branches[branch_idx]
     angle_min_tangent = tan(radians(branch.angle_min))
-    return (
-        m.voltage_product_imag[branch_idx, s_m, s_o, p]
-        >= angle_min_tangent * m.voltage_product_real[branch_idx, s_m, s_o, p]
-    )
+    return (m.voltage_product_imag[branch_idx, s_m, s_o, p] >= angle_min_tangent * m.voltage_product_real[branch_idx, s_m, s_o, p])
 
 
 def branch_angle_difference_upper_rule(m, branch_idx, s_m, s_o, p, network):
     branch = network.branches[branch_idx]
     angle_max_tangent = tan(radians(branch.angle_max))
-    return (
-        m.voltage_product_imag[branch_idx, s_m, s_o, p]
-        <= angle_max_tangent * m.voltage_product_real[branch_idx, s_m, s_o, p]
-    )
+    return (m.voltage_product_imag[branch_idx, s_m, s_o, p] <= angle_max_tangent * m.voltage_product_real[branch_idx, s_m, s_o, p])
 
 
 def _branch_voltage_products(model, network, branch_idx, terminal_node_idx, s_m, s_o, p):
