@@ -1879,12 +1879,21 @@ def _run_operational_planning(
         update_distribution_models_to_admm(planning_problem, dso_models, admm_parameters)
         update_transmission_model_to_admm(planning_problem, tso_model, admm_parameters)
         update_shared_energy_storage_model_to_admm(planning_problem, esso_model, admm_parameters)
+        _initialize_shared_ess_consensus(planning_problem, consensus_vars)
 
-        planning_problem.update_admm_consensus_variables(
-            tso_model, dso_models, esso_model,
-            consensus_vars, dual_vars, results, admm_parameters,
-            update_tn=True, update_dns=True, update_sess=True,
+        # Initialize only the TSO-DSO interface coordination here.
+        # Shared-ESS dual variables must remain zero before the first consensus-ADMM cycle.
+        planning_problem.update_interface_power_flow_variables(
+            tso_model,
+            dso_models,
+            consensus_vars,
+            dual_vars,
+            results,
+            admm_parameters,
+            update_tn=True,
+            update_dns=True,
         )
+
         # The successful initialization populated primal values and IPOPT multipliers.
         from_warm_start = True
     else:
@@ -1964,7 +1973,7 @@ def _run_operational_planning(
         # 3. Solve ESSO problem
         results['esso'] = update_shared_energy_storages_coordination_model_and_solve(
             planning_problem, esso_model,
-            consensus_vars['ess']['tso'], dual_vars['ess']['esso'],
+            consensus_vars['ess']['z'], dual_vars['ess']['esso'],
             admm_parameters, from_warm_start=from_warm_start
         )
 
@@ -1983,27 +1992,12 @@ def _run_operational_planning(
         )
 
         # Diagnostic: compare the three shared-ESS schedules after completing the DSO -> TSO -> ESSO ADMM cycle.
-        _print_shared_ess_consensus_diagnostics(
-            planning_problem,
-            consensus_vars,
-        )
+        _print_shared_ess_consensus_diagnostics(planning_problem, consensus_vars)
 
-        residual_metrics = get_admm_residual_metrics(
-            planning_problem,
-            tso_model,
-            dso_models,
-            esso_model,
-            consensus_vars,
-        )
+        residual_metrics = get_admm_residual_metrics(planning_problem, tso_model, dso_models, esso_model, consensus_vars)
 
         local_solves_ok = _admm_local_solves_succeeded(planning_problem, results)
-        residual_convergence = check_admm_convergence(
-            planning_problem,
-            consensus_vars,
-            residual_metrics,
-            admm_parameters,
-            debug_flag=debug_flag,
-        )
+        residual_convergence = check_admm_convergence(planning_problem, consensus_vars, residual_metrics, admm_parameters, debug_flag=debug_flag)
         if not local_solves_ok:
             print('[WARNING]\t\t - At least one local ADMM problem did not solve successfully.')
             residual_convergence = False
@@ -2016,10 +2010,7 @@ def _run_operational_planning(
         objective_tolerance = None
         objective_convergence = False
         if local_solves_ok:
-            recourse_components = _get_operational_recourse_components(
-                planning_problem,
-                {'tso': tso_model, 'dso': dso_models, 'esso': esso_model},
-            )
+            recourse_components = _get_operational_recourse_components(planning_problem, {'tso': tso_model, 'dso': dso_models, 'esso': esso_model},)
             gross_operational_cost = recourse_components['gross_operational_cost']
             terminal_salvage_value = recourse_components['terminal_salvage_value']
             recourse = recourse_components['net_operational_recourse']
@@ -2027,10 +2018,7 @@ def _run_operational_planning(
                 objective_change_abs = abs(recourse - previous_recourse)
                 objective_scale = max(abs(recourse), abs(previous_recourse), 1.0)
                 objective_change_rel = objective_change_abs / objective_scale
-                objective_tolerance = max(
-                    admm_parameters.tol['objective']['abs'],
-                    admm_parameters.tol['objective']['rel'] * objective_scale,
-                )
+                objective_tolerance = max(admm_parameters.tol['objective']['abs'], admm_parameters.tol['objective']['rel'] * objective_scale)
                 objective_convergence = objective_change_abs <= objective_tolerance
 
         if recourse is None:
@@ -2040,29 +2028,16 @@ def _run_operational_planning(
         elif objective_convergence:
             print('[INFO]\t\t - Recourse stationarity ok!')
         else:
-            print(
-                f'[INFO]\t\t - Recourse stationarity failed. '
-                f'{objective_change_abs:.6f} > {objective_tolerance:.6f}'
-            )
+            print(f'[INFO]\t\t - Recourse stationarity failed. {objective_change_abs:.6f} > {objective_tolerance:.6f}')
 
         cycle_convergence = residual_convergence and objective_convergence
         if cycle_convergence:
             consecutive_converged_cycles += 1
         else:
             consecutive_converged_cycles = 0
-        convergence = (
-            consecutive_converged_cycles
-            >= admm_parameters.minimum_consecutive_converged_cycles
-        )
+        convergence = (consecutive_converged_cycles >= admm_parameters.minimum_consecutive_converged_cycles)
 
-        penalty_actions, penalties_before, penalties_after = _update_admm_penalties(
-            tso_model,
-            dso_models,
-            esso_model,
-            residual_metrics,
-            admm_parameters,
-            allow_update=local_solves_ok,
-        )
+        penalty_actions, penalties_before, penalties_after = _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, admm_parameters, allow_update=local_solves_ok)
         admm_diagnostics.append({
             'cycle': iter,
             'local_solves_ok': local_solves_ok,
@@ -2108,14 +2083,8 @@ def _run_operational_planning(
             'rho_ess_action': penalty_actions['ess'],
         })
 
-        objective_change_text = (
-            f'{objective_change_abs:.6f}'
-            if objective_change_abs is not None else 'N/A'
-        )
-        objective_tolerance_text = (
-            f'{objective_tolerance:.6f}'
-            if objective_tolerance is not None else 'N/A'
-        )
+        objective_change_text = (f'{objective_change_abs:.6f}' if objective_change_abs is not None else 'N/A')
+        objective_tolerance_text = (f'{objective_tolerance:.6f}' if objective_tolerance is not None else 'N/A')
         print(
             f'[INFO]\t\t - ADMM cycle {iter} | '
             f'Primal (V/PF/ESS) = '
@@ -2182,6 +2151,7 @@ def _run_operational_planning(
         'solver_recovery_diagnostics': deepcopy(shared_ess_data.solver_recovery_diagnostics),
         'initialization_failed': False,
     }
+
     return convergence, results, optim_models, sensitivities, primal_evolution, total_execution_time, state
 
 
@@ -2835,15 +2805,23 @@ def _run_operational_planning_centralized(planning_problem, debug_flag=False):
 def create_admm_variables(planning_problem):
 
     num_instants = planning_problem.num_instants
+    use_ess_previous_iter = any(planning_problem.params.admm.previous_iter['ess'].values())
 
     consensus_variables = {
-        'vmag': {'tso': {'current': dict(), 'prev': dict()},
-                  'dso': {'current': dict(), 'prev': dict()}},
-        'pf': {'tso': {'current': dict(), 'prev': dict()},
-               'dso': {'current': dict(), 'prev': dict()}},
-        'ess': {'tso': {'current': dict(), 'prev': dict()},
-                'dso': {'current': dict(), 'prev': dict()},
-                'esso': {'current': dict(), 'prev': dict()}}
+        'vmag': {
+            'tso': {'current': dict(), 'prev': dict()},
+            'dso': {'current': dict(), 'prev': dict()}
+        },
+        'pf': {
+            'tso': {'current': dict(), 'prev': dict()},
+            'dso': {'current': dict(), 'prev': dict()}
+        },
+        'ess': {
+            'tso': {'current': dict(), 'prev': dict()},
+            'dso': {'current': dict(), 'prev': dict()},
+            'esso': {'current': dict(), 'prev': dict()},
+            'z': {'current': dict(), 'prev': dict()}
+        }
     }
 
     dual_variables = {
@@ -2852,7 +2830,7 @@ def create_admm_variables(planning_problem):
         'ess': {'tso': {'current': dict()}, 'dso': {'current': dict()}, 'esso': {'current': dict()}}
     }
 
-    if planning_problem.params.admm.previous_iter['ess']:
+    if use_ess_previous_iter:
         dual_variables['ess']['tso']['prev'] = dict()
         dual_variables['ess']['dso']['prev'] = dict()
 
@@ -2867,6 +2845,7 @@ def create_admm_variables(planning_problem):
         consensus_variables['ess']['tso']['current'][node_id] = dict()
         consensus_variables['ess']['dso']['current'][node_id] = dict()
         consensus_variables['ess']['esso']['current'][node_id] = dict()
+        consensus_variables['ess']['z']['current'][node_id] = dict()
 
         consensus_variables['vmag']['tso']['prev'][node_id] = dict()
         consensus_variables['vmag']['dso']['prev'][node_id] = dict()
@@ -2875,6 +2854,7 @@ def create_admm_variables(planning_problem):
         consensus_variables['ess']['tso']['prev'][node_id] = dict()
         consensus_variables['ess']['dso']['prev'][node_id] = dict()
         consensus_variables['ess']['esso']['prev'][node_id] = dict()
+        consensus_variables['ess']['z']['prev'][node_id] = dict()
 
         dual_variables['vmag']['tso']['current'][node_id] = dict()
         dual_variables['vmag']['dso']['current'][node_id] = dict()
@@ -2884,7 +2864,7 @@ def create_admm_variables(planning_problem):
         dual_variables['ess']['dso']['current'][node_id] = dict()
         dual_variables['ess']['esso']['current'][node_id] = dict()
 
-        if planning_problem.params.admm.previous_iter['ess']:
+        if use_ess_previous_iter:
             dual_variables['ess']['tso']['prev'][node_id] = dict()
             dual_variables['ess']['dso']['prev'][node_id] = dict()
 
@@ -2897,6 +2877,7 @@ def create_admm_variables(planning_problem):
             consensus_variables['ess']['tso']['current'][node_id][year] = dict()
             consensus_variables['ess']['dso']['current'][node_id][year] = dict()
             consensus_variables['ess']['esso']['current'][node_id][year] = dict()
+            consensus_variables['ess']['z']['current'][node_id][year] = dict()
 
             consensus_variables['vmag']['tso']['prev'][node_id][year] = dict()
             consensus_variables['vmag']['dso']['prev'][node_id][year] = dict()
@@ -2905,6 +2886,7 @@ def create_admm_variables(planning_problem):
             consensus_variables['ess']['tso']['prev'][node_id][year] = dict()
             consensus_variables['ess']['dso']['prev'][node_id][year] = dict()
             consensus_variables['ess']['esso']['prev'][node_id][year] = dict()
+            consensus_variables['ess']['z']['prev'][node_id][year] = dict()
 
             dual_variables['vmag']['tso']['current'][node_id][year] = dict()
             dual_variables['vmag']['dso']['current'][node_id][year] = dict()
@@ -2914,7 +2896,7 @@ def create_admm_variables(planning_problem):
             dual_variables['ess']['dso']['current'][node_id][year] = dict()
             dual_variables['ess']['esso']['current'][node_id][year] = dict()
 
-            if planning_problem.params.admm.previous_iter['ess']:
+            if use_ess_previous_iter:
                 dual_variables['ess']['tso']['prev'][node_id][year] = dict()
                 dual_variables['ess']['dso']['prev'][node_id][year] = dict()
 
@@ -2929,6 +2911,7 @@ def create_admm_variables(planning_problem):
                 consensus_variables['ess']['tso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
                 consensus_variables['ess']['dso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
                 consensus_variables['ess']['esso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
+                consensus_variables['ess']['z']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
 
                 consensus_variables['vmag']['tso']['prev'][node_id][year][day] = [node_base_kv] * num_instants
                 consensus_variables['vmag']['dso']['prev'][node_id][year][day] = [node_base_kv] * num_instants
@@ -2937,6 +2920,7 @@ def create_admm_variables(planning_problem):
                 consensus_variables['ess']['tso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
                 consensus_variables['ess']['dso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
                 consensus_variables['ess']['esso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
+                consensus_variables['ess']['z']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
 
                 dual_variables['vmag']['tso']['current'][node_id][year][day] = [0.0] * planning_problem.num_instants
                 dual_variables['vmag']['dso']['current'][node_id][year][day] = [0.0] * planning_problem.num_instants
@@ -2946,11 +2930,28 @@ def create_admm_variables(planning_problem):
                 dual_variables['ess']['dso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
                 dual_variables['ess']['esso']['current'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
 
-                if planning_problem.params.admm.previous_iter['ess']:
+                if use_ess_previous_iter:
                     dual_variables['ess']['tso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
                     dual_variables['ess']['dso']['prev'][node_id][year][day] = {'p': [0.0] * num_instants, 'q': [0.0] * num_instants}
 
     return consensus_variables, dual_variables
+
+
+def _initialize_shared_ess_consensus(planning_problem, consensus_vars):
+
+    for node_id in planning_problem.active_distribution_network_nodes:
+        for year in planning_problem.years:
+            for day in planning_problem.days:
+                for power_type in ('p', 'q'):
+                    for p in range(planning_problem.num_instants):
+
+                        tso_value = consensus_vars['ess']['tso']['current'][node_id][year][day][power_type][p]
+                        dso_value = consensus_vars['ess']['dso']['current'][node_id][year][day][power_type][p]
+                        esso_value = consensus_vars['ess']['esso']['current'][node_id][year][day][power_type][p]
+                        z_value = (tso_value + dso_value + esso_value) / 3.0
+
+                        consensus_vars['ess']['z']['current'][node_id][year][day][power_type][p] = z_value
+                        consensus_vars['ess']['z']['prev'][node_id][year][day][power_type][p] = z_value
 
 
 def _shared_ess_admm_normalization_mva(rating_mva, floor_mva):
@@ -3264,10 +3265,10 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
                 # Update shared ESS capacity and power requests
                 shared_ess_idx = transmission_network.network[year][day].get_shared_energy_storage_idx(node_id)
                 for p in model[year][day].periods:
-                    model[year][day].dual_ess_p_req[shared_ess_idx, p].set_value(dual_ess['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].dual_ess_q_req[shared_ess_idx, p].set_value(dual_ess['current'][node_id][year][day]['q'][p] / s_base)
-                    model[year][day].p_ess_req[shared_ess_idx, p].set_value(ess_req['dso']['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].q_ess_req[shared_ess_idx, p].set_value(ess_req['dso']['current'][node_id][year][day]['q'][p] / s_base)
+                    model[year][day].dual_ess_p_req[shared_ess_idx, p].set_value(dual_ess['current'][node_id][year][day]['p'][p])
+                    model[year][day].dual_ess_q_req[shared_ess_idx, p].set_value(dual_ess['current'][node_id][year][day]['q'][p])
+                    model[year][day].p_ess_req[shared_ess_idx, p].set_value(ess_req['z']['current'][node_id][year][day]['p'][p] / s_base)
+                    model[year][day].q_ess_req[shared_ess_idx, p].set_value(ess_req['z']['current'][node_id][year][day]['q'][p] / s_base)
                     if params.previous_iter['ess']['tso']:
                         model[year][day].dual_ess_p_prev[shared_ess_idx, p].set_value(dual_ess['prev'][node_id][year][day]['p'][p] / s_base)
                         model[year][day].dual_ess_q_prev[shared_ess_idx, p].set_value(dual_ess['prev'][node_id][year][day]['q'][p] / s_base)
@@ -3317,12 +3318,7 @@ def update_distribution_coordination_models_and_solve_sequential(distribution_ne
                 # Update estimated rated power and energy capacity
                 model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(sess_estimated_capacity[year]['s_available'] / s_base)
                 model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(sess_estimated_capacity[year]['e_available'] / s_base)
-                configure_shared_ess_operational_state(
-                    model[year][day],
-                    shared_ess_idx,
-                    pe.value(model[year][day].shared_es_s_rated_fixed[shared_ess_idx]),
-                    pe.value(model[year][day].shared_es_e_rated_fixed[shared_ess_idx]),
-                )
+                configure_shared_ess_operational_state(model[year][day], shared_ess_idx, pe.value(model[year][day].shared_es_s_rated_fixed[shared_ess_idx]), pe.value(model[year][day].shared_es_e_rated_fixed[shared_ess_idx]))
 
                 # Update VOLTAGE and POWER FLOW variables at connection point
                 for p in model[year][day].periods:
@@ -3335,10 +3331,10 @@ def update_distribution_coordination_models_and_solve_sequential(distribution_ne
 
                 # Update SHARED ENERGY STORAGE variables (if existent)
                 for p in model[year][day].periods:
-                    model[year][day].dual_ess_p_req[p].set_value(dual_ess['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].dual_ess_q_req[p].set_value(dual_ess['current'][node_id][year][day]['q'][p] / s_base)
-                    model[year][day].p_ess_req[p].set_value(ess_req['esso']['current'][node_id][year][day]['p'][p] / s_base)
-                    model[year][day].q_ess_req[p].set_value(ess_req['esso']['current'][node_id][year][day]['q'][p] / s_base)
+                    model[year][day].dual_ess_p_req[p].set_value(dual_ess['current'][node_id][year][day]['p'][p])
+                    model[year][day].dual_ess_q_req[p].set_value(dual_ess['current'][node_id][year][day]['q'][p])
+                    model[year][day].p_ess_req[p].set_value(ess_req['z']['current'][node_id][year][day]['p'][p] / s_base)
+                    model[year][day].q_ess_req[p].set_value(ess_req['z']['current'][node_id][year][day]['q'][p] / s_base)
                     if params.previous_iter['ess']['dso']:
                         model[year][day].dual_ess_p_prev[p].set_value(dual_ess['prev'][node_id][year][day]['p'][p] / s_base)
                         model[year][day].dual_ess_q_prev[p].set_value(dual_ess['prev'][node_id][year][day]['q'][p] / s_base)
@@ -3395,12 +3391,7 @@ def update_and_solve_dso(node_id, distribution_network, model, vmag_req, dual_vm
             # Update estimated rated power and energy capacity
             model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(sess_estimated_capacity[year]['s_available'] / s_base)
             model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(sess_estimated_capacity[year]['e_available'] / s_base)
-            configure_shared_ess_operational_state(
-                model[year][day],
-                shared_ess_idx,
-                pe.value(model[year][day].shared_es_s_rated_fixed[shared_ess_idx]),
-                pe.value(model[year][day].shared_es_e_rated_fixed[shared_ess_idx]),
-            )
+            configure_shared_ess_operational_state(model[year][day], shared_ess_idx, pe.value(model[year][day].shared_es_s_rated_fixed[shared_ess_idx]), pe.value(model[year][day].shared_es_e_rated_fixed[shared_ess_idx]))
 
             # Update VOLTAGE and POWER FLOW variables at connection point
             for p in model[year][day].periods:
@@ -3413,10 +3404,10 @@ def update_and_solve_dso(node_id, distribution_network, model, vmag_req, dual_vm
 
             # Update SHARED ENERGY STORAGE variables (if existent)
             for p in model[year][day].periods:
-                fix_or_set(model[year][day].dual_ess_p_req[p], dual_ess['current'][node_id][year][day]['p'][p] / s_base)
-                fix_or_set(model[year][day].dual_ess_q_req[p], dual_ess['current'][node_id][year][day]['q'][p] / s_base)
-                fix_or_set(model[year][day].p_ess_req[p], ess_req['esso']['current'][node_id][year][day]['p'][p] / s_base)
-                fix_or_set(model[year][day].q_ess_req[p], ess_req['esso']['current'][node_id][year][day]['q'][p] / s_base)
+                fix_or_set(model[year][day].dual_ess_p_req[p], dual_ess['current'][node_id][year][day]['p'][p])
+                fix_or_set(model[year][day].dual_ess_q_req[p], dual_ess['current'][node_id][year][day]['q'][p])
+                fix_or_set(model[year][day].p_ess_req[p], ess_req['z']['current'][node_id][year][day]['p'][p] / s_base)
+                fix_or_set(model[year][day].q_ess_req[p], ess_req['z']['current'][node_id][year][day]['q'][p] / s_base)
                 if params.previous_iter['ess']['dso']:
                     fix_or_set(model[year][day].dual_ess_p_prev[p], dual_ess['prev'][node_id][year][day]['p'][p] / s_base)
                     fix_or_set(model[year][day].dual_ess_q_prev[p], dual_ess['prev'][node_id][year][day]['q'][p] / s_base)
@@ -3474,30 +3465,63 @@ def update_shared_energy_storages_coordination_model_and_solve(planning_problem,
     return res
 
 
-def get_admm_residual_metrics(planning_problem, tso_model, dso_models, esso_model, consensus_vars):
+def get_admm_residual_metrics(
+        planning_problem,
+        tso_model,
+        dso_models,
+        esso_model,
+        consensus_vars,
+):
+
     sums = {
         'primal': {'v': 0.0, 'pf': 0.0, 'ess': 0.0},
         'dual': {'v': 0.0, 'pf': 0.0, 'ess': 0.0},
     }
+
     counts = {
         'primal': {'v': 0, 'pf': 0, 'ess': 0},
         'dual': {'v': 0, 'pf': 0, 'ess': 0},
     }
 
     for node_id in planning_problem.active_distribution_network_nodes:
+
         dso_model = dso_models[node_id]
+
         for year in planning_problem.years:
             for day in planning_problem.days:
+
+                # ------------------------------------------------------------------
+                # Network data and normalization factors
+                # ------------------------------------------------------------------
+
                 network = planning_problem.transmission_network.network[year][day]
                 s_base = network.baseMVA
                 shared_ess_idx = network.get_shared_energy_storage_idx(node_id)
                 interface_v_base = network.get_node_base_kv(node_id)
-                interface_rating = planning_problem.distribution_networks[node_id].network[year][day].get_interface_branch_rating()
-                shared_ess_rating = _shared_ess_admm_normalization_mva(
-                    network.shared_energy_storages[shared_ess_idx].s * s_base,
-                    planning_problem.params.admm.shared_ess_normalization_floor_mva,
-                )
+                interface_rating = (planning_problem.distribution_networks[node_id].network[year][day].get_interface_branch_rating())
+                normalization_floor = (planning_problem.params.admm.shared_ess_normalization_floor_mva)
 
+                # TSO shared-ESS normalization, in MVA
+                tso_rating = _shared_ess_admm_normalization_mva(network.shared_energy_storages[shared_ess_idx].s * s_base, normalization_floor)
+
+                # DSO shared-ESS normalization, in MVA
+                dso_network = (planning_problem.distribution_networks[node_id].network[year][day])
+                dso_ref_node_id = dso_network.get_reference_node_id()
+                dso_shared_ess_idx = dso_network.get_shared_energy_storage_idx(dso_ref_node_id)
+                dso_rating = _shared_ess_admm_normalization_mva(dso_network.shared_energy_storages[dso_shared_ess_idx].s * dso_network.baseMVA, normalization_floor)
+
+                # ESSO shared-ESS normalization, in MVA
+                esso_shared_ess_idx = planning_problem.shared_ess_data.get_shared_energy_storage_idx(node_id)
+                esso_rating = _shared_ess_admm_normalization_mva(planning_problem.shared_ess_data.shared_energy_storages[year][esso_shared_ess_idx].s, normalization_floor)
+                ess_ratings = {
+                    'tso': tso_rating,
+                    'dso': dso_rating,
+                    'esso': esso_rating,
+                }
+
+                # ------------------------------------------------------------------
+                # ADMM penalties
+                # ------------------------------------------------------------------
                 rho_tso_v = pe.value(tso_model[year][day].rho_v)
                 rho_tso_pf = pe.value(tso_model[year][day].rho_pf)
                 rho_tso_ess = pe.value(tso_model[year][day].rho_ess)
@@ -3505,54 +3529,91 @@ def get_admm_residual_metrics(planning_problem, tso_model, dso_models, esso_mode
                 rho_dso_pf = pe.value(dso_model[year][day].rho_pf)
                 rho_dso_ess = pe.value(dso_model[year][day].rho_ess)
                 rho_esso_ess = pe.value(esso_model[node_id].rho)
+                ess_rhos = {
+                    'tso': rho_tso_ess,
+                    'dso': rho_dso_ess,
+                    'esso': rho_esso_ess,
+                }
+
+                # ------------------------------------------------------------------
+                # Residuals
+                # ------------------------------------------------------------------
 
                 for p in range(planning_problem.num_instants):
+
+                    # ==============================================================
+                    # Interface voltage
+                    # ==============================================================
                     tso_v = consensus_vars['vmag']['tso']['current'][node_id][year][day][p]
                     dso_v = consensus_vars['vmag']['dso']['current'][node_id][year][day][p]
+
+                    # Primal voltage residual
                     sums['primal']['v'] += abs(tso_v - dso_v) / interface_v_base
                     counts['primal']['v'] += 1
 
-                    for power_type in ('p', 'q'):
-                        tso_pf = consensus_vars['pf']['tso']['current'][node_id][year][day][power_type][p]
-                        dso_pf = consensus_vars['pf']['dso']['current'][node_id][year][day][power_type][p]
-                        sums['primal']['pf'] += abs(tso_pf - dso_pf) / interface_rating
-                        counts['primal']['pf'] += 1
-
-                        tso_ess = consensus_vars['ess']['tso']['current'][node_id][year][day][power_type][p]
-                        dso_ess = consensus_vars['ess']['dso']['current'][node_id][year][day][power_type][p]
-                        esso_ess = consensus_vars['ess']['esso']['current'][node_id][year][day][power_type][p]
-                        sums['primal']['ess'] += (
-                            abs(tso_ess - dso_ess)
-                            + abs(dso_ess - esso_ess)
-                            + abs(esso_ess - tso_ess)
-                        ) / shared_ess_rating
-                        counts['primal']['ess'] += 3
-
+                    # Dual voltage residual
                     for agent, rho in (('tso', rho_tso_v), ('dso', rho_dso_v)):
                         current = consensus_vars['vmag'][agent]['current'][node_id][year][day][p]
                         previous = consensus_vars['vmag'][agent]['prev'][node_id][year][day][p]
                         sums['dual']['v'] += rho * abs(current - previous) / interface_v_base
                         counts['dual']['v'] += 1
 
+                    # ==============================================================
+                    # Active and reactive power
+                    # ==============================================================
                     for power_type in ('p', 'q'):
+
+                        # ----------------------------------------------------------
+                        # TSO-DSO interface power flow
+                        # ----------------------------------------------------------
+                        tso_pf = consensus_vars['pf']['tso']['current'][node_id][year][day][power_type][p]
+                        dso_pf = consensus_vars['pf']['dso']['current'][node_id][year][day][power_type][p]
+
+                        # Primal PF residual
+                        sums['primal']['pf'] += abs(tso_pf - dso_pf) / interface_rating
+                        counts['primal']['pf'] += 1
+
+                        # Dual PF residual
                         for agent, rho in (('tso', rho_tso_pf), ('dso', rho_dso_pf)):
                             current = consensus_vars['pf'][agent]['current'][node_id][year][day][power_type][p]
                             previous = consensus_vars['pf'][agent]['prev'][node_id][year][day][power_type][p]
                             sums['dual']['pf'] += rho * abs(current - previous) / interface_rating
                             counts['dual']['pf'] += 1
 
-                        for agent, rho in (
-                                ('tso', rho_tso_ess),
-                                ('dso', rho_dso_ess),
-                                ('esso', rho_esso_ess)):
-                            current = consensus_vars['ess'][agent]['current'][node_id][year][day][power_type][p]
-                            previous = consensus_vars['ess'][agent]['prev'][node_id][year][day][power_type][p]
-                            sums['dual']['ess'] += rho * abs(current - previous) / shared_ess_rating
+                        # ----------------------------------------------------------
+                        # Shared ESS consensus
+                        # ----------------------------------------------------------
+                        z_current = consensus_vars['ess']['z']['current'][node_id][year][day][power_type][p]
+                        z_previous = consensus_vars['ess']['z']['prev'][node_id][year][day][power_type][p]
+                        z_change = abs(z_current - z_previous)
+
+                        for agent in ('tso', 'dso', 'esso'):
+
+                            x_current = consensus_vars['ess'][agent]['current'][node_id][year][day][power_type][p]
+
+                            # Primal consensus residual:
+                            #
+                            #       |x_i - z|
+                            # r_i = ----------
+                            #         2 S_i
+                            #
+                            normalized_primal_residual = abs(x_current - z_current) / (2.0 * ess_ratings[agent])
+                            sums['primal']['ess'] += normalized_primal_residual
+                            counts['primal']['ess'] += 1
+
+                            # Dual consensus residual:
+                            #
+                            #             |z^k - z^(k-1)|
+                            # s_i = rho_i ----------------
+                            #                  2 S_i
+                            #
+                            normalized_dual_residual = ess_rhos[agent] * z_change / (2.0 * ess_ratings[agent])
+                            sums['dual']['ess'] += normalized_dual_residual
                             counts['dual']['ess'] += 1
 
     return {
         residual_type: {
-            group: sums[residual_type][group] / max(counts[residual_type][group], 1)
+            group: (sums[residual_type][group] / max(counts[residual_type][group], 1))
             for group in ('v', 'pf', 'ess')
         }
         for residual_type in ('primal', 'dual')
@@ -3653,62 +3714,31 @@ def _print_shared_ess_consensus_diagnostics(planning_problem, consensus_vars):
         for year in planning_problem.years:
             for day in planning_problem.days:
 
-                print(
-                    f'[DEBUG][ESS CONSENSUS] '
-                    f'node={node_id}, year={year}, day={day}'
-                )
+                print(f'[DEBUG][ESS CONSENSUS] node={node_id}, year={year}, day={day}')
 
                 for power_type in ('p', 'q'):
 
-                    tso_values = (
-                        consensus_vars['ess']['tso']['current']
-                        [node_id][year][day][power_type]
-                    )
-                    dso_values = (
-                        consensus_vars['ess']['dso']['current']
-                        [node_id][year][day][power_type]
-                    )
-                    esso_values = (
-                        consensus_vars['ess']['esso']['current']
-                        [node_id][year][day][power_type]
-                    )
+                    tso_values = (consensus_vars['ess']['tso']['current'][node_id][year][day][power_type])
+                    dso_values = (consensus_vars['ess']['dso']['current'][node_id][year][day][power_type])
+                    esso_values = (consensus_vars['ess']['esso']['current'][node_id][year][day][power_type])
+                    z_values = (consensus_vars['ess']['z']['current'][node_id][year][day][power_type])
 
-                    tso_dso = _max_difference_with_index(
-                        tso_values,
-                        dso_values,
-                    )
-                    tso_esso = _max_difference_with_index(
-                        tso_values,
-                        esso_values,
-                    )
-                    dso_esso = _max_difference_with_index(
-                        dso_values,
-                        esso_values,
-                    )
-
-                    comparisons = {
-                        'TSO-DSO': tso_dso,
-                        'TSO-ESSO': tso_esso,
-                        'DSO-ESSO': dso_esso,
-                    }
-
-                    worst_pair, worst_data = max(
-                        comparisons.items(),
-                        key=lambda item: item[1][0],
-                    )
-
-                    max_diff, period, value_a, value_b = worst_data
+                    tso_dso = _max_difference_with_index(tso_values, dso_values)
+                    tso_esso = _max_difference_with_index(tso_values, esso_values)
+                    dso_esso = _max_difference_with_index(dso_values, esso_values)
+                    tso_z = _max_difference_with_index(tso_values, z_values)
+                    dso_z = _max_difference_with_index(dso_values, z_values)
+                    esso_z = _max_difference_with_index(esso_values, z_values)
 
                     unit = 'MW' if power_type == 'p' else 'MVAr'
-
                     print(
                         f'\t{power_type.upper()} | '
                         f'TSO-DSO={tso_dso[0]:.6f}, '
                         f'TSO-ESSO={tso_esso[0]:.6f}, '
                         f'DSO-ESSO={dso_esso[0]:.6f} {unit} | '
-                        f'worst={worst_pair}, '
-                        f'period={period}, '
-                        f'values={value_a:.6f}/{value_b:.6f} {unit}'
+                        f'TSO-z={tso_z[0]:.6f}, '
+                        f'DSO-z={dso_z[0]:.6f}, '
+                        f'ESSO-z={esso_z[0]:.6f} {unit}'
                     )
 
 
@@ -3924,7 +3954,6 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                             shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] = p_req
                             shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] = q_req
 
-
         # Power requested by DSO
         if update_dns:
             for y in range(len(repr_years)):
@@ -3942,55 +3971,131 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                             shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] = p_req
                             shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] = q_req
 
-        # Update dual variables SharedESS
-        for year in planning_problem.years:
-            for day in planning_problem.days:
-                tso_succeeded = (
-                    _solver_result_succeeded(results['tso'][year][day])
-                    if update_tn or update_sess else False
-                )
-                dso_succeeded = (
-                    _solver_result_succeeded(results['dso'][node_id][year][day])
-                    if update_tn or update_dns else False
-                )
-                esso_succeeded = (
-                    _solver_result_succeeded(results['esso'][node_id])
-                    if update_sess else False
-                )
-                for p in range(planning_problem.num_instants):
+        # --------------------------------------------------------------------------------------------------------------
+        # Shared-ESS consensus ADMM
+        #
+        # All three local blocks are solved against the same z during the
+        # complete DSO -> TSO -> ESSO cycle. Only after the ESSO solution
+        # is available do we:
+        #
+        #   1. update z,
+        #   2. update the three dual variables.
+        #
+        # No shared-ESS dual update is performed after the intermediate
+        # DSO or TSO solves.
+        # --------------------------------------------------------------------------------------------------------------
+        if update_sess:
 
-                    if update_tn and tso_succeeded and dso_succeeded:
-                        rho_ess_tso = pe.value(tso_model[year][day].rho_ess)
-                        error_p_tso_dso = shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['p'][p]
-                        error_q_tso_dso = shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['dso']['current'][node_id][year][day]['q'][p]
-                        dual_vars['tso']['current'][node_id][year][day]['p'][p] += rho_ess_tso * error_p_tso_dso
-                        dual_vars['tso']['current'][node_id][year][day]['q'][p] += rho_ess_tso * error_q_tso_dso
-                        if params.previous_iter['ess']['tso']:
-                            rho_ess_tso_prev = pe.value(tso_model[year][day].rho_ess_prev)
-                            error_p_tso_prev = shared_ess_vars['tso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['tso']['prev'][node_id][year][day]['p'][p]
-                            error_q_tso_prev = shared_ess_vars['tso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['tso']['prev'][node_id][year][day]['q'][p]
-                            dual_vars['tso']['prev'][node_id][year][day]['p'][p] += rho_ess_tso_prev * error_p_tso_prev
-                            dual_vars['tso']['prev'][node_id][year][day]['q'][p] += rho_ess_tso_prev * error_q_tso_prev
+            for year in planning_problem.years:
+                for day in planning_problem.days:
 
-                    if update_dns and dso_succeeded:
-                        rho_ess_dso = pe.value(dso_models[node_id][year][day].rho_ess)
-                        error_p_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['p'][p]
-                        error_q_dso_esso = shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['esso']['current'][node_id][year][day]['q'][p]
-                        dual_vars['dso']['current'][node_id][year][day]['p'][p] += rho_ess_dso * error_p_dso_esso
-                        dual_vars['dso']['current'][node_id][year][day]['q'][p] += rho_ess_dso * error_q_dso_esso
-                        if params.previous_iter['ess']['dso']:
-                            rho_ess_dso_prev = pe.value(dso_models[node_id][year][day].rho_ess_prev)
-                            error_p_dso_prev = shared_ess_vars['dso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['dso']['prev'][node_id][year][day]['p'][p]
-                            error_q_dso_prev = shared_ess_vars['dso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['dso']['prev'][node_id][year][day]['q'][p]
-                            dual_vars['dso']['prev'][node_id][year][day]['p'][p] += rho_ess_dso_prev * error_p_dso_prev
-                            dual_vars['dso']['prev'][node_id][year][day]['q'][p] += rho_ess_dso_prev * error_q_dso_prev
+                    tso_succeeded = _solver_result_succeeded(
+                        results['tso'][year][day]
+                    )
+                    dso_succeeded = _solver_result_succeeded(
+                        results['dso'][node_id][year][day]
+                    )
+                    esso_succeeded = _solver_result_succeeded(
+                        results['esso'][node_id]
+                    )
 
-                    if update_sess and esso_succeeded and tso_succeeded:
-                        rho_ess_sess = pe.value(sess_model[node_id].rho)
-                        error_p_esso_tso = shared_ess_vars['esso']['current'][node_id][year][day]['p'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['p'][p]
-                        error_q_esso_tso = shared_ess_vars['esso']['current'][node_id][year][day]['q'][p] - shared_ess_vars['tso']['current'][node_id][year][day]['q'][p]
-                        dual_vars['esso']['current'][node_id][year][day]['p'][p] += rho_ess_sess * error_p_esso_tso
-                        dual_vars['esso']['current'][node_id][year][day]['q'][p] += rho_ess_sess * error_q_esso_tso
+                    # Do not update the consensus or multipliers from a
+                    # partially failed ADMM cycle.
+                    if not (
+                        tso_succeeded
+                        and dso_succeeded
+                        and esso_succeeded
+                    ):
+                        continue
+
+                    # Physical MVA normalization used by each local problem.
+                    normalization_floor = params.shared_ess_normalization_floor_mva
+
+                    # - TSO
+                    tso_network = transmission_network.network[year][day]
+                    tso_s_base = tso_network.baseMVA
+                    tso_shared_ess_idx = tso_network.get_shared_energy_storage_idx(node_id)
+                    tso_rating = _shared_ess_admm_normalization_mva(tso_network.shared_energy_storages[tso_shared_ess_idx].s * tso_s_base, normalization_floor)
+
+                    # - DSO
+                    dso_network = distribution_network.network[year][day]
+                    dso_s_base = dso_network.baseMVA
+                    dso_ref_node_id = dso_network.get_reference_node_id()
+                    dso_shared_ess_idx = dso_network.get_shared_energy_storage_idx(dso_ref_node_id)
+                    dso_rating = _shared_ess_admm_normalization_mva(dso_network.shared_energy_storages[dso_shared_ess_idx].s * dso_s_base, normalization_floor)
+
+                    # - ESSO
+                    esso_shared_ess_idx = shared_ess_data.get_shared_energy_storage_idx(node_id)
+                    esso_rating = _shared_ess_admm_normalization_mva(shared_ess_data.shared_energy_storages[year][esso_shared_ess_idx].s, normalization_floor)
+
+                    ratings = {
+                        'tso': tso_rating,
+                        'dso': dso_rating,
+                        'esso': esso_rating
+                    }
+
+                    rhos = {
+                        'tso': pe.value(tso_model[year][day].rho_ess),
+                        'dso': pe.value(dso_models[node_id][year][day].rho_ess),
+                        'esso': pe.value(sess_model[node_id].rho)
+                    }
+
+                    # a_i = 1 / (2 S_i)
+                    normalization = {
+                        agent: 1.0 / (2.0 * ratings[agent])
+                        for agent in ('tso', 'dso', 'esso')
+                    }
+
+                    for p in range(planning_problem.num_instants):
+
+                        for power_type in ('p', 'q'):
+
+                            x = {
+                                agent:
+                                    shared_ess_vars[agent]['current']
+                                    [node_id][year][day][power_type][p]
+                                for agent in ('tso', 'dso', 'esso')
+                            }
+
+                            lambdas = {
+                                agent:
+                                    dual_vars[agent]['current']
+                                    [node_id][year][day][power_type][p]
+                                for agent in ('tso', 'dso', 'esso')
+                            }
+
+                            denominator = sum(
+                                rhos[agent]
+                                * normalization[agent] ** 2
+                                for agent in ('tso', 'dso', 'esso')
+                            )
+
+                            if denominator <= SMALL_TOLERANCE:
+                                raise ValueError('Shared-ESS consensus ADMM has a non-positive consensus denominator.')
+
+                            numerator = sum(
+                                (
+                                    rhos[agent]
+                                    * normalization[agent] ** 2
+                                    * x[agent]
+                                    + lambdas[agent]
+                                    * normalization[agent]
+                                )
+                                for agent in ('tso', 'dso', 'esso')
+                            )
+
+                            z_new = numerator / denominator
+
+                            # Save z^k before replacing it with z^(k+1).
+                            shared_ess_vars['z']['prev'][node_id][year][day][power_type][p] = copy(shared_ess_vars['z']['current'][node_id][year][day][power_type][p])
+                            shared_ess_vars['z']['current'][node_id][year][day][power_type][p] = z_new
+
+                            # ----------------------------------------------------------
+                            # lambda_i^(k+1) = lambda_i^k  + rho_i * (x_i^(k+1) - z^(k+1)) / (2 S_i)
+                            # ----------------------------------------------------------
+                            for agent in ('tso', 'dso', 'esso'):
+                                normalized_residual = normalization[agent] * (x[agent] - z_new)
+                                dual_vars[agent]['current'][node_id][year][day][power_type][p] += rhos[agent] * normalized_residual
 
 
 # ======================================================================================================================
