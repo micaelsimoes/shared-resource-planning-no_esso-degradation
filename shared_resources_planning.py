@@ -1973,9 +1973,19 @@ def _run_operational_planning(
             planning_problem, tso_model, dso_models, esso_model,
             consensus_vars, dual_vars, results, admm_parameters,
             primal_evolution,
-            update_flags={"update_tn": False, "update_dns": False, "update_sess": True},
+            update_flags={
+                "update_tn": False,
+                "update_dns": False,
+                "update_sess": True
+            },
             debug_flag=debug_flag,
             check_convergence=False,
+        )
+
+        # Diagnostic: compare the three shared-ESS schedules after completing the DSO -> TSO -> ESSO ADMM cycle.
+        _print_shared_ess_consensus_diagnostics(
+            planning_problem,
+            consensus_vars,
         )
 
         residual_metrics = get_admm_residual_metrics(
@@ -1985,6 +1995,7 @@ def _run_operational_planning(
             esso_model,
             consensus_vars,
         )
+
         local_solves_ok = _admm_local_solves_succeeded(planning_problem, results)
         residual_convergence = check_admm_convergence(
             planning_problem,
@@ -3616,6 +3627,89 @@ def check_stationary_convergence(residual_metrics, params):
 
 def _admm_metric_within_tolerance(value, tolerance):
     return value <= tolerance
+
+
+def _max_difference_with_index(values_a, values_b):
+    max_diff = -1.0
+    max_idx = None
+    value_a = None
+    value_b = None
+
+    for idx, (a, b) in enumerate(zip(values_a, values_b)):
+        diff = abs(a - b)
+
+        if diff > max_diff:
+            max_diff = diff
+            max_idx = idx
+            value_a = a
+            value_b = b
+
+    return max_diff, max_idx, value_a, value_b
+
+
+def _print_shared_ess_consensus_diagnostics(planning_problem, consensus_vars):
+
+    for node_id in planning_problem.active_distribution_network_nodes:
+        for year in planning_problem.years:
+            for day in planning_problem.days:
+
+                print(
+                    f'[DEBUG][ESS CONSENSUS] '
+                    f'node={node_id}, year={year}, day={day}'
+                )
+
+                for power_type in ('p', 'q'):
+
+                    tso_values = (
+                        consensus_vars['ess']['tso']['current']
+                        [node_id][year][day][power_type]
+                    )
+                    dso_values = (
+                        consensus_vars['ess']['dso']['current']
+                        [node_id][year][day][power_type]
+                    )
+                    esso_values = (
+                        consensus_vars['ess']['esso']['current']
+                        [node_id][year][day][power_type]
+                    )
+
+                    tso_dso = _max_difference_with_index(
+                        tso_values,
+                        dso_values,
+                    )
+                    tso_esso = _max_difference_with_index(
+                        tso_values,
+                        esso_values,
+                    )
+                    dso_esso = _max_difference_with_index(
+                        dso_values,
+                        esso_values,
+                    )
+
+                    comparisons = {
+                        'TSO-DSO': tso_dso,
+                        'TSO-ESSO': tso_esso,
+                        'DSO-ESSO': dso_esso,
+                    }
+
+                    worst_pair, worst_data = max(
+                        comparisons.items(),
+                        key=lambda item: item[1][0],
+                    )
+
+                    max_diff, period, value_a, value_b = worst_data
+
+                    unit = 'MW' if power_type == 'p' else 'MVAr'
+
+                    print(
+                        f'\t{power_type.upper()} | '
+                        f'TSO-DSO={tso_dso[0]:.6f}, '
+                        f'TSO-ESSO={tso_esso[0]:.6f}, '
+                        f'DSO-ESSO={dso_esso[0]:.6f} {unit} | '
+                        f'worst={worst_pair}, '
+                        f'period={period}, '
+                        f'values={value_a:.6f}/{value_b:.6f} {unit}'
+                    )
 
 
 def _get_admm_penalty_summary(tso_model, dso_models, esso_model):

@@ -755,6 +755,7 @@ def _component_entries_for_shared_ess(component, shared_ess_idx):
 
 
 def _configure_shared_ess_expected_schedule(model, shared_ess_idx, inactive):
+
     if not hasattr(model, 'expected_shared_ess_p'):
         return
 
@@ -1580,35 +1581,17 @@ def dn_interface_expected_sess_q_rule(m, p, network, shared_ess_idx):
 
 
 def tn_interface_expected_vmag_def(m, dn, p, network):
-    expected_vmag = sum(
-        network.prob_market_scenarios[s_m] *
-        network.prob_operation_scenarios[s_o] *
-        m.vmag_adn[dn, s_m, s_o, p]
-        for s_m in m.scenarios_market
-        for s_o in m.scenarios_operation
-    )
+    expected_vmag = sum(network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * m.vmag_adn[dn, s_m, s_o, p] for s_m in m.scenarios_market for s_o in m.scenarios_operation)
     return expected_vmag
 
 
 def tn_interface_expected_pf_p_def(m, dn, p, network):
-    expected_pf_p = sum(
-        network.prob_market_scenarios[s_m] *
-        network.prob_operation_scenarios[s_o] *
-        m.pc_adn[dn, s_m, s_o, p]
-        for s_m in m.scenarios_market
-        for s_o in m.scenarios_operation
-    )
+    expected_pf_p = sum(network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * m.pc_adn[dn, s_m, s_o, p] for s_m in m.scenarios_market for s_o in m.scenarios_operation)
     return expected_pf_p
 
 
 def tn_interface_expected_pf_q_def(m, dn, p, network):
-    expected_pf_q = sum(
-        network.prob_market_scenarios[s_m] *
-        network.prob_operation_scenarios[s_o] *
-        m.qc_adn[dn, s_m, s_o, p]
-        for s_m in m.scenarios_market
-        for s_o in m.scenarios_operation
-    )
+    expected_pf_q = sum(network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * m.qc_adn[dn, s_m, s_o, p] for s_m in m.scenarios_market for s_o in m.scenarios_operation)
     return expected_pf_q
 
 
