@@ -1996,6 +1996,42 @@ def _run_operational_planning(
 
         residual_metrics = get_admm_residual_metrics(planning_problem, tso_model, dso_models, esso_model, consensus_vars)
 
+        worst_pf_primal = residual_metrics.get('worst_pf_primal')
+        if worst_pf_primal is not None:
+            unit = 'MW' if worst_pf_primal['power_type'] == 'p' else 'MVAr'
+            print(
+                '[DEBUG][PF MAX PRIMAL] '
+                f'node={worst_pf_primal["node_id"]}, '
+                f'year={worst_pf_primal["year"]}, '
+                f'day={worst_pf_primal["day"]}, '
+                f'period={worst_pf_primal["period"]}, '
+                f'type={worst_pf_primal["power_type"].upper()} | '
+                f'TSO={worst_pf_primal["tso_value"]:.6f}, '
+                f'DSO={worst_pf_primal["dso_value"]:.6f}, '
+                f'diff={worst_pf_primal["absolute_difference"]:.6f} {unit}, '
+                f'rating={worst_pf_primal["interface_rating"]:.6f} MVA, '
+                f'normalized={worst_pf_primal["normalized_residual"]:.6f}'
+            )
+
+        worst_pf_dual = residual_metrics.get('worst_pf_dual')
+        if worst_pf_dual is not None:
+            unit = 'MW' if worst_pf_dual['power_type'] == 'p' else 'MVAr'
+            print(
+                '[DEBUG][PF MAX DUAL] '
+                f'agent={worst_pf_dual["agent"].upper()}, '
+                f'node={worst_pf_dual["node_id"]}, '
+                f'year={worst_pf_dual["year"]}, '
+                f'day={worst_pf_dual["day"]}, '
+                f'period={worst_pf_dual["period"]}, '
+                f'type={worst_pf_dual["power_type"].upper()} | '
+                f'current={worst_pf_dual["current_value"]:.6f}, '
+                f'previous={worst_pf_dual["previous_value"]:.6f}, '
+                f'change={worst_pf_dual["absolute_change"]:.6f} {unit}, '
+                f'rho={worst_pf_dual["rho"]:.6f}, '
+                f'rating={worst_pf_dual["interface_rating"]:.6f} MVA, '
+                f'normalized={worst_pf_dual["normalized_residual"]:.6f}'
+            )
+
         local_solves_ok = _admm_local_solves_succeeded(planning_problem, results)
         residual_convergence = check_admm_convergence(planning_problem, consensus_vars, residual_metrics, admm_parameters, debug_flag=debug_flag)
         if not local_solves_ok:
@@ -2042,25 +2078,54 @@ def _run_operational_planning(
             'cycle': iter,
             'local_solves_ok': local_solves_ok,
             'primal_v': residual_metrics['primal']['v'],
+            'primal_v_mean': residual_metrics['primal']['v_mean'],
             'primal_pf': residual_metrics['primal']['pf'],
+            'primal_pf_mean': residual_metrics['primal']['pf_mean'],
             'primal_ess': residual_metrics['primal']['ess'],
             'primal_ess_mean': residual_metrics['primal']['ess_mean'],
             'primal_v_tolerance': admm_parameters.tol['consensus']['v'],
+            'primal_v_mean_tolerance': admm_parameters.tol['consensus']['v_mean'],
             'primal_pf_tolerance': admm_parameters.tol['consensus']['pf'],
+            'primal_pf_mean_tolerance': admm_parameters.tol['consensus']['pf_mean'],
             'primal_ess_tolerance': admm_parameters.tol['consensus']['ess'],
+            'primal_ess_mean_tolerance': admm_parameters.tol['consensus']['ess_mean'],
             'dual_v': residual_metrics['dual']['v'],
+            'dual_v_mean': residual_metrics['dual']['v_mean'],
             'dual_pf': residual_metrics['dual']['pf'],
+            'dual_pf_mean': residual_metrics['dual']['pf_mean'],
             'dual_ess': residual_metrics['dual']['ess'],
             'dual_ess_mean': residual_metrics['dual']['ess_mean'],
             'dual_v_tolerance': admm_parameters.tol['stationarity']['v'],
             'dual_pf_tolerance': admm_parameters.tol['stationarity']['pf'],
             'dual_ess_tolerance': admm_parameters.tol['stationarity']['ess'],
             'primal_v_ratio': residual_metrics['primal']['v'] / admm_parameters.tol['consensus']['v'],
+            'primal_v_mean_ratio': residual_metrics['primal']['v_mean'] / admm_parameters.tol['consensus']['v_mean'],
             'primal_pf_ratio': residual_metrics['primal']['pf'] / admm_parameters.tol['consensus']['pf'],
+            'primal_pf_mean_ratio': residual_metrics['primal']['pf_mean'] / admm_parameters.tol['consensus']['pf_mean'],
             'primal_ess_ratio': residual_metrics['primal']['ess'] / admm_parameters.tol['consensus']['ess'],
+            'primal_ess_mean_ratio': residual_metrics['primal']['ess_mean'] / admm_parameters.tol['consensus']['ess_mean'],
             'dual_v_ratio': residual_metrics['dual']['v'] / admm_parameters.tol['stationarity']['v'],
+            'dual_v_mean_ratio': residual_metrics['dual']['v_mean'] / admm_parameters.tol['stationarity']['v'],
             'dual_pf_ratio': residual_metrics['dual']['pf'] / admm_parameters.tol['stationarity']['pf'],
+            'dual_pf_mean_ratio': residual_metrics['dual']['pf_mean'] / admm_parameters.tol['stationarity']['pf'],
             'dual_ess_ratio': residual_metrics['dual']['ess'] / admm_parameters.tol['stationarity']['ess'],
+            'dual_ess_mean_ratio': residual_metrics['dual']['ess_mean'] / admm_parameters.tol['stationarity']['ess'],
+            'worst_pf_primal_node': worst_pf_primal['node_id'] if worst_pf_primal is not None else None,
+            'worst_pf_primal_year': worst_pf_primal['year'] if worst_pf_primal is not None else None,
+            'worst_pf_primal_day': worst_pf_primal['day'] if worst_pf_primal is not None else None,
+            'worst_pf_primal_period': worst_pf_primal['period'] if worst_pf_primal is not None else None,
+            'worst_pf_primal_type': worst_pf_primal['power_type'] if worst_pf_primal is not None else None,
+            'worst_pf_primal_tso': worst_pf_primal['tso_value'] if worst_pf_primal is not None else None,
+            'worst_pf_primal_dso': worst_pf_primal['dso_value'] if worst_pf_primal is not None else None,
+            'worst_pf_primal_difference': worst_pf_primal['absolute_difference'] if worst_pf_primal is not None else None,
+            'worst_pf_primal_rating': worst_pf_primal['interface_rating'] if worst_pf_primal is not None else None,
+            'worst_pf_dual_agent': worst_pf_dual['agent'] if worst_pf_dual is not None else None,
+            'worst_pf_dual_node': worst_pf_dual['node_id'] if worst_pf_dual is not None else None,
+            'worst_pf_dual_year': worst_pf_dual['year'] if worst_pf_dual is not None else None,
+            'worst_pf_dual_day': worst_pf_dual['day'] if worst_pf_dual is not None else None,
+            'worst_pf_dual_period': worst_pf_dual['period'] if worst_pf_dual is not None else None,
+            'worst_pf_dual_type': worst_pf_dual['power_type'] if worst_pf_dual is not None else None,
+            'worst_pf_dual_change': worst_pf_dual['absolute_change'] if worst_pf_dual is not None else None,
             'gross_operational_cost': gross_operational_cost,
             'terminal_salvage_value': terminal_salvage_value,
             'recourse': recourse,
@@ -2089,14 +2154,22 @@ def _run_operational_planning(
         objective_tolerance_text = (f'{objective_tolerance:.6f}' if objective_tolerance is not None else 'N/A')
         print(
             f'[INFO]\t\t - ADMM cycle {iter} | '
-            f'Primal (V/PF/ESS) = '
+            f'Primal '
+            f'(V max/mean | PF max/mean | ESS max/mean) = '
             f'{residual_metrics["primal"]["v"]:.6f}/'
+            f'{residual_metrics["primal"]["v_mean"]:.6f} | '
             f'{residual_metrics["primal"]["pf"]:.6f}/'
-            f'{residual_metrics["primal"]["ess"]:.6f} | '
-            f'Dual (V/PF/ESS) = '
+            f'{residual_metrics["primal"]["pf_mean"]:.6f} | '
+            f'{residual_metrics["primal"]["ess"]:.6f}/'
+            f'{residual_metrics["primal"]["ess_mean"]:.6f} | '
+            f'Dual '
+            f'(V max/mean | PF max/mean | ESS max/mean) = '
             f'{residual_metrics["dual"]["v"]:.6f}/'
+            f'{residual_metrics["dual"]["v_mean"]:.6f} | '
             f'{residual_metrics["dual"]["pf"]:.6f}/'
-            f'{residual_metrics["dual"]["ess"]:.6f} | '
+            f'{residual_metrics["dual"]["pf_mean"]:.6f} | '
+            f'{residual_metrics["dual"]["ess"]:.6f}/'
+            f'{residual_metrics["dual"]["ess_mean"]:.6f} | '
             f'Recourse change = {objective_change_text} '
             f'(tol. {objective_tolerance_text}) | '
             f'Stable cycles = {consecutive_converged_cycles}/'
@@ -3467,13 +3540,7 @@ def update_shared_energy_storages_coordination_model_and_solve(planning_problem,
     return res
 
 
-def get_admm_residual_metrics(
-        planning_problem,
-        tso_model,
-        dso_models,
-        esso_model,
-        consensus_vars,
-):
+def get_admm_residual_metrics(planning_problem, tso_model, dso_models, esso_model, consensus_vars):
 
     sums = {
         'primal': {'v': 0.0, 'pf': 0.0, 'ess': 0.0},
@@ -3485,8 +3552,20 @@ def get_admm_residual_metrics(
         'dual': {'v': 0, 'pf': 0, 'ess': 0},
     }
 
-    ess_primal_max = 0.0
-    ess_dual_max = 0.0
+    primal_max = {
+        'v': 0.0,
+        'pf': 0.0,
+        'ess': 0.0,
+    }
+
+    dual_max = {
+        'v': 0.0,
+        'pf': 0.0,
+        'ess': 0.0,
+    }
+
+    worst_pf_primal = None
+    worst_pf_dual = None
 
     for node_id in planning_problem.active_distribution_network_nodes:
 
@@ -3553,15 +3632,19 @@ def get_admm_residual_metrics(
                     dso_v = consensus_vars['vmag']['dso']['current'][node_id][year][day][p]
 
                     # Primal voltage residual
-                    sums['primal']['v'] += abs(tso_v - dso_v) / interface_v_base
+                    normalized_primal_residual = abs(tso_v - dso_v) / interface_v_base
+                    sums['primal']['v'] += normalized_primal_residual
                     counts['primal']['v'] += 1
+                    primal_max['v'] = max(primal_max['v'], normalized_primal_residual)
 
                     # Dual voltage residual
                     for agent, rho in (('tso', rho_tso_v), ('dso', rho_dso_v)):
                         current = consensus_vars['vmag'][agent]['current'][node_id][year][day][p]
                         previous = consensus_vars['vmag'][agent]['prev'][node_id][year][day][p]
-                        sums['dual']['v'] += rho * abs(current - previous) / interface_v_base
+                        normalized_dual_residual = rho * abs(current - previous) / interface_v_base
+                        sums['dual']['v'] += normalized_dual_residual
                         counts['dual']['v'] += 1
+                        dual_max['v'] = max(dual_max['v'], normalized_dual_residual)
 
                     # ==============================================================
                     # Active and reactive power
@@ -3575,15 +3658,47 @@ def get_admm_residual_metrics(
                         dso_pf = consensus_vars['pf']['dso']['current'][node_id][year][day][power_type][p]
 
                         # Primal PF residual
-                        sums['primal']['pf'] += abs(tso_pf - dso_pf) / interface_rating
+                        normalized_primal_residual = abs(tso_pf - dso_pf) / interface_rating
+                        sums['primal']['pf'] += normalized_primal_residual
                         counts['primal']['pf'] += 1
+                        if normalized_primal_residual > primal_max['pf']:
+                            primal_max['pf'] = normalized_primal_residual
+                            worst_pf_primal = {
+                                'node_id': node_id,
+                                'year': year,
+                                'day': day,
+                                'period': p,
+                                'power_type': power_type,
+                                'tso_value': tso_pf,
+                                'dso_value': dso_pf,
+                                'absolute_difference': abs(tso_pf - dso_pf),
+                                'interface_rating': interface_rating,
+                                'normalized_residual': normalized_primal_residual,
+                            }
 
                         # Dual PF residual
                         for agent, rho in (('tso', rho_tso_pf), ('dso', rho_dso_pf)):
                             current = consensus_vars['pf'][agent]['current'][node_id][year][day][power_type][p]
                             previous = consensus_vars['pf'][agent]['prev'][node_id][year][day][power_type][p]
-                            sums['dual']['pf'] += rho * abs(current - previous) / interface_rating
+                            normalized_dual_residual = rho * abs(current - previous) / interface_rating
+                            sums['dual']['pf'] += normalized_dual_residual
                             counts['dual']['pf'] += 1
+                            if normalized_dual_residual > dual_max['pf']:
+                                dual_max['pf'] = normalized_dual_residual
+                                worst_pf_dual = {
+                                    'agent': agent,
+                                    'node_id': node_id,
+                                    'year': year,
+                                    'day': day,
+                                    'period': p,
+                                    'power_type': power_type,
+                                    'current_value': current,
+                                    'previous_value': previous,
+                                    'absolute_change': abs(current - previous),
+                                    'rho': rho,
+                                    'interface_rating': interface_rating,
+                                    'normalized_residual': normalized_dual_residual,
+                                }
 
                         # ----------------------------------------------------------
                         # Shared ESS consensus
@@ -3605,8 +3720,7 @@ def get_admm_residual_metrics(
                             normalized_primal_residual = abs(x_current - z_current) / (2.0 * ess_ratings[agent])
                             sums['primal']['ess'] += normalized_primal_residual
                             counts['primal']['ess'] += 1
-
-                            ess_primal_max = max(ess_primal_max, normalized_primal_residual)
+                            primal_max['ess'] = max(primal_max['ess'], normalized_primal_residual)
 
                             # Dual consensus residual:
                             #
@@ -3617,9 +3731,9 @@ def get_admm_residual_metrics(
                             normalized_dual_residual = ess_rhos[agent] * z_change / (2.0 * ess_ratings[agent])
                             sums['dual']['ess'] += normalized_dual_residual
                             counts['dual']['ess'] += 1
+                            dual_max['ess'] = max(dual_max['ess'], normalized_dual_residual)
 
-                            ess_dual_max = max(ess_dual_max, normalized_dual_residual)
-
+    # Mean residuals over all corresponding coordinates.
     residual_metrics = {
         residual_type: {
             group: (sums[residual_type][group] / max(counts[residual_type][group], 1))
@@ -3628,13 +3742,22 @@ def get_admm_residual_metrics(
         for residual_type in ('primal', 'dual')
     }
 
-    # Preserve aggregate residuals for adaptive penalty balancing.
-    residual_metrics['primal']['ess_mean'] = residual_metrics['primal']['ess']
-    residual_metrics['dual']['ess_mean'] = residual_metrics['dual']['ess']
+    # Preserve mean residuals for:
+    #   1. aggregate convergence criteria on the primal side;
+    #   2. adaptive ADMM penalty balancing.
+    for group in ('v', 'pf', 'ess'):
+        residual_metrics['primal'][f'{group}_mean'] = residual_metrics['primal'][group]
+        residual_metrics['dual'][f'{group}_mean'] = residual_metrics['dual'][group]
 
-    # Strict worst-case metrics used for convergence.
-    residual_metrics['primal']['ess'] = ess_primal_max
-    residual_metrics['dual']['ess'] = ess_dual_max
+    # The base group keys represent strict worst-case residuals.
+    # Primal maxima are used for pointwise convergence checks.
+    # Dual maxima are retained for diagnostics only.
+    for group in ('v', 'pf', 'ess'):
+        residual_metrics['primal'][group] = primal_max[group]
+        residual_metrics['dual'][group] = dual_max[group]
+
+    residual_metrics['worst_pf_primal'] = worst_pf_primal
+    residual_metrics['worst_pf_dual'] = worst_pf_dual
 
     return residual_metrics
 
@@ -3672,16 +3795,38 @@ def _solver_result_succeeded(result):
 
 
 def check_consensus_convergence(residual_metrics, params):
+
     convergence = True
-    labels = {'v': 'interface Vmag', 'pf': 'interface PF', 'ess': 'shared ESS'}
+
+    labels = {
+        'v': 'interface Vmag',
+        'pf': 'interface PF',
+        'ess': 'shared ESS',
+    }
+
     for group in ('v', 'pf', 'ess'):
-        residual = residual_metrics['primal'][group]
-        tolerance = params.tol['consensus'][group]
-        if not _admm_metric_within_tolerance(residual, tolerance):
-            print(f'[INFO]\t\t - {labels[group]} primal residual failed. {residual:.6f} > {tolerance:.6f}')
+
+        # --------------------------------------------------------------
+        # Worst-case pointwise residual
+        # --------------------------------------------------------------
+        max_residual = residual_metrics['primal'][group]
+        max_tolerance = params.tol['consensus'][group]
+        if not _admm_metric_within_tolerance(max_residual, max_tolerance):
+            print(f'[INFO]\t\t - {labels[group]} max primal residual failed. {max_residual:.6f} > {max_tolerance:.6f}')
             convergence = False
+
+        # --------------------------------------------------------------
+        # Aggregate mean residual
+        # --------------------------------------------------------------
+        mean_residual = residual_metrics['primal'][f'{group}_mean']
+        mean_tolerance = params.tol['consensus'][f'{group}_mean']
+        if not _admm_metric_within_tolerance(mean_residual, mean_tolerance):
+            print(f'[INFO]\t\t - {labels[group]} mean primal residual failed. {mean_residual:.6f} > {mean_tolerance:.6f}')
+            convergence = False
+
     if convergence:
         print('[INFO]\t\t - Primal residuals ok!')
+
     return convergence
 
 
@@ -3689,10 +3834,10 @@ def check_stationary_convergence(residual_metrics, params):
     convergence = True
     labels = {'v': 'interface Vmag', 'pf': 'interface PF', 'ess': 'shared ESS'}
     for group in ('v', 'pf', 'ess'):
-        residual = residual_metrics['dual'][group]
+        residual = residual_metrics['dual'][f'{group}_mean']
         tolerance = params.tol['stationarity'][group]
         if not _admm_metric_within_tolerance(residual, tolerance):
-            print(f'[INFO]\t\t - {labels[group]} dual residual failed. {residual:.6f} > {tolerance:.6f}')
+            print(f'[INFO]\t\t - {labels[group]} mean dual residual failed. {residual:.6f} > {tolerance:.6f}')
             convergence = False
     if convergence:
         print('[INFO]\t\t - Dual residuals ok!')
@@ -3779,44 +3924,52 @@ def _get_admm_penalty_summary(tso_model, dso_models, esso_model):
 def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, params, allow_update=True):
 
     before = _get_admm_penalty_summary(tso_model, dso_models, esso_model)
+
     actions = dict()
     factors = dict()
     update_params = params.penalty_update
 
     for group in ('v', 'pf', 'ess'):
 
-        if group == 'ess':
-            # Use aggregate ESS behavior to tune the common group penalty.
-            # Worst-case residuals remain the convergence criteria.
-            primal = residual_metrics['primal']['ess_mean']
-            dual = residual_metrics['dual']['ess_mean']
-        else:
-            primal = residual_metrics['primal'][group]
-            dual = residual_metrics['dual'][group]
+        # --------------------------------------------------------------
+        # Adaptive penalty balancing uses aggregate behavior.
+        # Worst-case residuals are deliberately reserved for stopping.
+        # --------------------------------------------------------------
+        primal = residual_metrics['primal'][f'{group}_mean']
+        dual = residual_metrics['dual'][f'{group}_mean']
 
-        normalized_primal = primal / params.tol['consensus'][group]
-        normalized_dual = dual / params.tol['stationarity'][group]
-        group_converged = (
-            _admm_metric_within_tolerance(primal, params.tol['consensus'][group])
-            and _admm_metric_within_tolerance(dual, params.tol['stationarity'][group])
-        )
+        primal_tolerance = params.tol['consensus'][f'{group}_mean']
+        dual_tolerance = params.tol['stationarity'][group]
+
+        normalized_primal = primal / primal_tolerance
+        normalized_dual = dual / dual_tolerance
+
+        adaptation_converged = (_admm_metric_within_tolerance(primal, primal_tolerance) and _admm_metric_within_tolerance(dual, dual_tolerance))
+
         factor = 1.0
         action = 'held'
+
         if not params.adaptive_penalty:
             action = 'fixed'
         elif not allow_update:
             action = 'held after solver failure'
-        elif not group_converged:
-            if normalized_primal > update_params['residual_balance_ratio'] * normalized_dual:
+        elif not adaptation_converged:
+            if (normalized_primal > update_params['residual_balance_ratio'] * normalized_dual):
                 factor = update_params['increase_factor']
                 action = 'increased'
-            elif normalized_dual > update_params['residual_balance_ratio'] * normalized_primal:
+            elif (normalized_dual > update_params['residual_balance_ratio'] * normalized_primal):
                 factor = 1.0 / update_params['decrease_factor']
                 action = 'decreased'
+
         actions[group] = action
         factors[group] = factor
 
+    # ------------------------------------------------------------------
+    # Apply common group-wise scaling factors
+    # ------------------------------------------------------------------
     if params.adaptive_penalty and allow_update:
+
+        # TSO
         for year_models in tso_model.values():
             for model in year_models.values():
                 _scale_admm_penalty(model.rho_v, factors['v'], update_params)
@@ -3824,6 +3977,8 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
                 _scale_admm_penalty(model.rho_ess, factors['ess'], update_params)
                 if hasattr(model, 'rho_ess_prev'):
                     _scale_admm_penalty(model.rho_ess_prev, factors['ess'], update_params)
+
+        # DSOs
         for node_models in dso_models.values():
             for year_models in node_models.values():
                 for model in year_models.values():
@@ -3832,10 +3987,13 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
                     _scale_admm_penalty(model.rho_ess, factors['ess'], update_params)
                     if hasattr(model, 'rho_ess_prev'):
                         _scale_admm_penalty(model.rho_ess_prev, factors['ess'], update_params)
+
+        # ESSO
         for model in esso_model.values():
             _scale_admm_penalty(model.rho, factors['ess'], update_params)
 
     after = _get_admm_penalty_summary(tso_model, dso_models, esso_model)
+
     return actions, before, after
 
 
@@ -3895,18 +4053,20 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
 
     # Update Lambdas
     for node_id in distribution_networks:
+
+        distribution_network = distribution_networks[node_id]
+
         for year in planning_problem.years:
             for day in planning_problem.days:
-                tso_succeeded = (
-                    _solver_result_succeeded(results['tso'][year][day])
-                    if update_tn else False
-                )
-                dso_succeeded = (
-                    _solver_result_succeeded(results['dso'][node_id][year][day])
-                    if update_tn or update_dns else False
-                )
-                for p in range(planning_problem.num_instants):
 
+                tso_s_base = transmission_network.network[year][day].baseMVA
+                dso_s_base = distribution_network.network[year][day].baseMVA
+                interface_rating = (distribution_network.network[year][day].get_interface_branch_rating())
+
+                tso_succeeded = (_solver_result_succeeded(results['tso'][year][day]) if update_tn else False)
+                dso_succeeded = (_solver_result_succeeded(results['dso'][node_id][year][day]) if update_tn or update_dns else False)
+
+                for p in range(planning_problem.num_instants):
                     if update_tn and tso_succeeded and dso_succeeded:
                         rho_v_tso = pe.value(tso_model[year][day].rho_v)
                         rho_pf_tso = pe.value(tso_model[year][day].rho_pf)
@@ -3914,18 +4074,18 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                         error_p_pf_req_tso = interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p] - interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p]
                         error_q_pf_req_tso = interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p] - interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p]
                         dual_vars['vmag']['tso']['current'][node_id][year][day][p] += rho_v_tso * error_v_req_tso
-                        dual_vars['pf']['tso']['current'][node_id][year][day]['p'][p] += rho_pf_tso * error_p_pf_req_tso
-                        dual_vars['pf']['tso']['current'][node_id][year][day]['q'][p] += rho_pf_tso * error_q_pf_req_tso
+                        dual_vars['pf']['tso']['current'][node_id][year][day]['p'][p] += rho_pf_tso * error_p_pf_req_tso / interface_rating * tso_s_base
+                        dual_vars['pf']['tso']['current'][node_id][year][day]['q'][p] += rho_pf_tso * error_q_pf_req_tso / interface_rating * tso_s_base
 
-                    if update_dns and dso_succeeded:
+                    if update_tn and tso_succeeded and dso_succeeded:
                         rho_v_dso = pe.value(dso_models[node_id][year][day].rho_v)
                         rho_pf_dso = pe.value(dso_models[node_id][year][day].rho_pf)
                         error_v_req_dso = interface_vars['vmag']['dso']['current'][node_id][year][day][p] - interface_vars['vmag']['tso']['current'][node_id][year][day][p]
                         error_p_pf_req_dso = interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p] - interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p]
                         error_q_pf_req_dso = interface_vars['pf']['dso']['current'][node_id][year][day]['q'][p] - interface_vars['pf']['tso']['current'][node_id][year][day]['q'][p]
                         dual_vars['vmag']['dso']['current'][node_id][year][day][p] += rho_v_dso * error_v_req_dso
-                        dual_vars['pf']['dso']['current'][node_id][year][day]['p'][p] += rho_pf_dso * error_p_pf_req_dso
-                        dual_vars['pf']['dso']['current'][node_id][year][day]['q'][p] += rho_pf_dso * error_q_pf_req_dso
+                        dual_vars['pf']['dso']['current'][node_id][year][day]['p'][p] += rho_pf_dso * error_p_pf_req_dso / interface_rating * dso_s_base
+                        dual_vars['pf']['dso']['current'][node_id][year][day]['q'][p] += rho_pf_dso * error_q_pf_req_dso / interface_rating * dso_s_base
 
 
 def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_models, sess_model, shared_ess_vars, dual_vars, results, params, update_tn=True, update_dns=True, update_sess=True):
@@ -5198,26 +5358,39 @@ def _write_admm_diagnostics_to_excel(workbook, diagnostics):
         ('outer_iteration', 'Planning Iteration', '0'),
         ('cycle', 'ADMM Cycle', '0'),
         ('local_solves_ok', 'Local Solves Successful', 'General'),
-        ('primal_v', 'Primal V Residual', '0.000000'),
-        ('primal_v_tolerance', 'Primal V Tolerance', '0.000000'),
-        ('primal_pf', 'Primal PF Residual', '0.000000'),
-        ('primal_pf_tolerance', 'Primal PF Tolerance', '0.000000'),
+        ('primal_v', 'Primal V Max Residual', '0.000000'),
+        ('primal_v_tolerance', 'Primal V Max Tolerance', '0.000000'),
+        ('primal_v_mean', 'Primal V Mean Residual', '0.000000'),
+        ('primal_v_mean_tolerance', 'Primal V Mean Tolerance', '0.000000'),
+        ('primal_pf', 'Primal PF Max Residual', '0.000000'),
+        ('primal_pf_tolerance', 'Primal PF Max Tolerance', '0.000000'),
+        ('primal_pf_mean', 'Primal PF Mean Residual', '0.000000'),
+        ('primal_pf_mean_tolerance', 'Primal PF Mean Tolerance', '0.000000'),
         ('primal_ess', 'Primal ESS Max Residual', '0.000000'),
+        ('primal_ess_tolerance', 'Primal ESS Max Tolerance', '0.000000'),
         ('primal_ess_mean', 'Primal ESS Mean Residual', '0.000000'),
-        ('primal_ess_tolerance', 'Primal ESS Tolerance', '0.000000'),
+        ('primal_ess_mean_tolerance', 'Primal ESS Mean Tolerance', '0.000000'),
         ('primal_v_ratio', 'Primal V / Tolerance', '0.000'),
+        ('primal_v_mean_ratio', 'Primal V Mean / Tolerance', '0.000'),
         ('primal_pf_ratio', 'Primal PF / Tolerance', '0.000'),
-        ('primal_ess_ratio', 'Primal ESS / Tolerance', '0.000'),
-        ('dual_v', 'Dual V Residual', '0.000000'),
+        ('primal_pf_mean_ratio', 'Primal PF Mean / Tolerance', '0.000'),
+        ('primal_ess_ratio', 'Primal ESS Max / Tolerance', '0.000'),
+        ('primal_ess_mean_ratio', 'Primal ESS Mean / Tolerance', '0.000'),
+        ('dual_v', 'Dual V Max Residual', '0.000000'),
+        ('dual_v_mean', 'Dual V Mean Residual', '0.000000'),
         ('dual_v_tolerance', 'Dual V Tolerance', '0.000000'),
-        ('dual_pf', 'Dual PF Residual', '0.000000'),
+        ('dual_pf', 'Dual PF Max Residual', '0.000000'),
+        ('dual_pf_mean', 'Dual PF Mean Residual', '0.000000'),
         ('dual_pf_tolerance', 'Dual PF Tolerance', '0.000000'),
         ('dual_ess', 'Dual ESS Max Residual', '0.000000'),
         ('dual_ess_mean', 'Dual ESS Mean Residual', '0.000000'),
         ('dual_ess_tolerance', 'Dual ESS Tolerance', '0.000000'),
-        ('dual_v_ratio', 'Dual V / Tolerance', '0.000'),
-        ('dual_pf_ratio', 'Dual PF / Tolerance', '0.000'),
-        ('dual_ess_ratio', 'Dual ESS / Tolerance', '0.000'),
+        ('dual_v_ratio', 'Dual V Max / Tolerance', '0.000'),
+        ('dual_v_mean_ratio', 'Dual V Mean / Tolerance', '0.000'),
+        ('dual_pf_ratio', 'Dual PF Max / Tolerance', '0.000'),
+        ('dual_pf_mean_ratio', 'Dual PF Mean / Tolerance', '0.000'),
+        ('dual_ess_ratio', 'Dual ESS Max / Tolerance', '0.000'),
+        ('dual_ess_mean_ratio', 'Dual ESS Mean / Tolerance', '0.000'),
         ('gross_operational_cost', 'Gross Operational Cost, [NPV m.u.]', '0.000000'),
         ('terminal_salvage_value', 'Terminal Salvage Value, [NPV m.u.]', '0.000000'),
         ('recourse', 'Net Economic Recourse, [NPV m.u.]', '0.000000'),
