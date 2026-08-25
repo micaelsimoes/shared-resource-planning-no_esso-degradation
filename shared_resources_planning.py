@@ -2044,12 +2044,14 @@ def _run_operational_planning(
             'primal_v': residual_metrics['primal']['v'],
             'primal_pf': residual_metrics['primal']['pf'],
             'primal_ess': residual_metrics['primal']['ess'],
+            'primal_ess_mean': residual_metrics['primal']['ess_mean'],
             'primal_v_tolerance': admm_parameters.tol['consensus']['v'],
             'primal_pf_tolerance': admm_parameters.tol['consensus']['pf'],
             'primal_ess_tolerance': admm_parameters.tol['consensus']['ess'],
             'dual_v': residual_metrics['dual']['v'],
             'dual_pf': residual_metrics['dual']['pf'],
             'dual_ess': residual_metrics['dual']['ess'],
+            'dual_ess_mean': residual_metrics['dual']['ess_mean'],
             'dual_v_tolerance': admm_parameters.tol['stationarity']['v'],
             'dual_pf_tolerance': admm_parameters.tol['stationarity']['pf'],
             'dual_ess_tolerance': admm_parameters.tol['stationarity']['ess'],
@@ -3483,6 +3485,9 @@ def get_admm_residual_metrics(
         'dual': {'v': 0, 'pf': 0, 'ess': 0},
     }
 
+    ess_primal_max = 0.0
+    ess_dual_max = 0.0
+
     for node_id in planning_problem.active_distribution_network_nodes:
 
         dso_model = dso_models[node_id]
@@ -3601,6 +3606,8 @@ def get_admm_residual_metrics(
                             sums['primal']['ess'] += normalized_primal_residual
                             counts['primal']['ess'] += 1
 
+                            ess_primal_max = max(ess_primal_max, normalized_primal_residual)
+
                             # Dual consensus residual:
                             #
                             #             |z^k - z^(k-1)|
@@ -3611,13 +3618,25 @@ def get_admm_residual_metrics(
                             sums['dual']['ess'] += normalized_dual_residual
                             counts['dual']['ess'] += 1
 
-    return {
+                            ess_dual_max = max(ess_dual_max, normalized_dual_residual)
+
+    residual_metrics = {
         residual_type: {
             group: (sums[residual_type][group] / max(counts[residual_type][group], 1))
             for group in ('v', 'pf', 'ess')
         }
         for residual_type in ('primal', 'dual')
     }
+
+    # Preserve aggregate residuals for adaptive penalty balancing.
+    residual_metrics['primal']['ess_mean'] = residual_metrics['primal']['ess']
+    residual_metrics['dual']['ess_mean'] = residual_metrics['dual']['ess']
+
+    # Strict worst-case metrics used for convergence.
+    residual_metrics['primal']['ess'] = ess_primal_max
+    residual_metrics['dual']['ess'] = ess_dual_max
+
+    return residual_metrics
 
 
 def check_admm_convergence(planning_problem, consensus_vars, residual_metrics, params, debug_flag=False):
@@ -3659,10 +3678,7 @@ def check_consensus_convergence(residual_metrics, params):
         residual = residual_metrics['primal'][group]
         tolerance = params.tol['consensus'][group]
         if not _admm_metric_within_tolerance(residual, tolerance):
-            print(
-                f'[INFO]\t\t - {labels[group]} primal residual failed. '
-                f'{residual:.6f} > {tolerance:.6f}'
-            )
+            print(f'[INFO]\t\t - {labels[group]} primal residual failed. {residual:.6f} > {tolerance:.6f}')
             convergence = False
     if convergence:
         print('[INFO]\t\t - Primal residuals ok!')
@@ -3676,10 +3692,7 @@ def check_stationary_convergence(residual_metrics, params):
         residual = residual_metrics['dual'][group]
         tolerance = params.tol['stationarity'][group]
         if not _admm_metric_within_tolerance(residual, tolerance):
-            print(
-                f'[INFO]\t\t - {labels[group]} dual residual failed. '
-                f'{residual:.6f} > {tolerance:.6f}'
-            )
+            print(f'[INFO]\t\t - {labels[group]} dual residual failed. {residual:.6f} > {tolerance:.6f}')
             convergence = False
     if convergence:
         print('[INFO]\t\t - Dual residuals ok!')
@@ -3763,16 +3776,24 @@ def _get_admm_penalty_summary(tso_model, dso_models, esso_model):
     }
 
 
-def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, params,
-                           allow_update=True):
+def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, params, allow_update=True):
+
     before = _get_admm_penalty_summary(tso_model, dso_models, esso_model)
     actions = dict()
     factors = dict()
     update_params = params.penalty_update
 
     for group in ('v', 'pf', 'ess'):
-        primal = residual_metrics['primal'][group]
-        dual = residual_metrics['dual'][group]
+
+        if group == 'ess':
+            # Use aggregate ESS behavior to tune the common group penalty.
+            # Worst-case residuals remain the convergence criteria.
+            primal = residual_metrics['primal']['ess_mean']
+            dual = residual_metrics['dual']['ess_mean']
+        else:
+            primal = residual_metrics['primal'][group]
+            dual = residual_metrics['dual'][group]
+
         normalized_primal = primal / params.tol['consensus'][group]
         normalized_dual = dual / params.tol['stationarity'][group]
         group_converged = (
@@ -5181,7 +5202,8 @@ def _write_admm_diagnostics_to_excel(workbook, diagnostics):
         ('primal_v_tolerance', 'Primal V Tolerance', '0.000000'),
         ('primal_pf', 'Primal PF Residual', '0.000000'),
         ('primal_pf_tolerance', 'Primal PF Tolerance', '0.000000'),
-        ('primal_ess', 'Primal ESS Residual', '0.000000'),
+        ('primal_ess', 'Primal ESS Max Residual', '0.000000'),
+        ('primal_ess_mean', 'Primal ESS Mean Residual', '0.000000'),
         ('primal_ess_tolerance', 'Primal ESS Tolerance', '0.000000'),
         ('primal_v_ratio', 'Primal V / Tolerance', '0.000'),
         ('primal_pf_ratio', 'Primal PF / Tolerance', '0.000'),
@@ -5190,7 +5212,8 @@ def _write_admm_diagnostics_to_excel(workbook, diagnostics):
         ('dual_v_tolerance', 'Dual V Tolerance', '0.000000'),
         ('dual_pf', 'Dual PF Residual', '0.000000'),
         ('dual_pf_tolerance', 'Dual PF Tolerance', '0.000000'),
-        ('dual_ess', 'Dual ESS Residual', '0.000000'),
+        ('dual_ess', 'Dual ESS Max Residual', '0.000000'),
+        ('dual_ess_mean', 'Dual ESS Mean Residual', '0.000000'),
         ('dual_ess_tolerance', 'Dual ESS Tolerance', '0.000000'),
         ('dual_v_ratio', 'Dual V / Tolerance', '0.000'),
         ('dual_pf_ratio', 'Dual PF / Tolerance', '0.000'),
