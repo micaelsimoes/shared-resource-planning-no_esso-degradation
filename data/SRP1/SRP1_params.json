@@ -32,18 +32,22 @@
 	},
 	"admm": {
 		"tol": {
-			"consensus": {"v": 0.5e-2, "pf": 0.5e-2, "ess": 5e-2},
-			"stationarity": {"v": 5e-2, "pf": 5e-2, "ess": 50e-2},
-			"objective": {"abs": 1e4, "rel": 5e-3}
+			"consensus": {
+				"v_mean": 0.5e-2, "v": 0.5e-2,
+				"pf_mean": 0.5e-2, "pf": 2.0e-2,
+				"ess_mean": 0.5e-2, "ess": 2.0e-2
+			},
+			"stationarity": {"v": 5e-2, "pf": 5e-2, "ess": 5e-2},
+			"objective": {"abs": 1e4, "rel": 1e-2}
 		},
 		"num_max_iters": 50,
-		"minimum_consecutive_converged_cycles": 1,
+		"minimum_consecutive_converged_cycles": 2,
 		"shared_ess_normalization_floor_mva": 0.10,
 		"adaptive_penalty": true,
 		"penalty_update": {
 			"residual_balance_ratio": 5.0,
-			"increase_factor": 2.0,
-			"decrease_factor": 2.0,
+			"increase_factor": 1.5,
+			"decrease_factor": 1.5,
 			"min": 1e-4,
 			"max": 1e4
 		},
