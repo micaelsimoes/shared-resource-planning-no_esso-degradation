@@ -2478,6 +2478,16 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
 
     # Run SMOPF
     results = transmission_network.optimize(tso_model)
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+            if _solver_result_succeeded(results[year][day]):
+                raw_objective_value = pe.value(tso_model[year][day].objective)
+                print(
+                    f'[DEBUG][INITIAL OBJECTIVE] '
+                    f'network={tso_model[year][day].name}, '
+                    f'year={year}, day={day}, '
+                    f'raw_objective={raw_objective_value:.6e}'
+                )
 
     # Get initial interface and shared ESS values
     for year in transmission_network.years:
@@ -2551,6 +2561,16 @@ def create_distribution_networks_models_sequential(distribution_networks, consen
 
         # Run SMOPF
         results[node_id] = distribution_network.optimize(dso_model)
+        for year in distribution_network.years:
+            for day in distribution_network.days:
+                if _solver_result_succeeded(results[node_id][year][day]):
+                    raw_objective_value = pe.value(dso_model[year][day].objective)
+                    print(
+                        f'[DEBUG][INITIAL OBJECTIVE] '
+                        f'network={dso_model[year][day].name}, '
+                        f'year={year}, day={day}, '
+                        f'raw_objective={raw_objective_value:.6e}'
+                    )
 
         # Get initial interface and shared ESS values
         for year in distribution_network.years:
@@ -3083,11 +3103,20 @@ def update_transmission_model_to_admm(planning_problem, model, params):
                 model[year][day].dual_ess_q_prev = pe.Param(model[year][day].shared_energy_storages, model[year][day].periods, mutable=True, domain=pe.Reals)           # Dual variable - previous iteration shared ESS reactive power
 
             # Objective function - augmented Lagrangian
+            # Objective function - augmented Lagrangian
+            raw_objective_value = pe.value(model[year][day].objective)
             init_of_value = 1.00
             if transmission_network.params.obj_type == OBJ_MIN_COST:
-                init_of_value = abs(pe.value(model[year][day].objective))
+                init_of_value = abs(raw_objective_value)
             if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
                 init_of_value = 0.01
+            print(
+                f'[DEBUG][OBJECTIVE SCALE] '
+                f'network={model[year][day].name}, '
+                f'year={year}, day={day}, '
+                f'raw_objective={raw_objective_value:.6e}, '
+                f'scale={init_of_value:.6e}'
+            )
             model[year][day].admm_objective_scale = pe.Param(initialize=init_of_value)
             obj = copy(model[year][day].objective.expr) / init_of_value
 
@@ -3176,6 +3205,7 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                     dso_model[year][day].penalty_load_curtailment.set_value(PENALTY_LOAD_CURTAILMENT)
                     dso_model[year][day].penalty_flex_usage.set_value(0.00)
 
+
                 # Add ADMM variables
                 dso_model[year][day].rho_v = pe.Param(mutable=True, domain=pe.NonNegativeReals, initialize=params.rho['v'][distribution_network.network[year][day].name])
                 dso_model[year][day].vmag_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.NonNegativeReals)       # Voltage magnitude - requested by TSO
@@ -3200,11 +3230,19 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                     dso_model[year][day].dual_ess_q_prev = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)        # Dual variable - SharedESS previous iteration reactive power
 
                 # Objective function - augmented Lagrangian
+                raw_objective_value = pe.value(dso_model[year][day].objective)
                 init_of_value = 1.00
                 if distribution_network.params.obj_type == OBJ_MIN_COST:
-                    init_of_value = abs(pe.value(dso_model[year][day].objective))
+                    init_of_value = abs(raw_objective_value)
                 if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
                     init_of_value = 0.01
+                print(
+                    f'[DEBUG][OBJECTIVE SCALE] '
+                    f'network={dso_model[year][day].name}, '
+                    f'year={year}, day={day}, '
+                    f'raw_objective={raw_objective_value:.6e}, '
+                    f'scale={init_of_value:.6e}'
+                )
                 dso_model[year][day].admm_objective_scale = pe.Param(initialize=init_of_value)
                 obj = copy(dso_model[year][day].objective.expr) / init_of_value
 

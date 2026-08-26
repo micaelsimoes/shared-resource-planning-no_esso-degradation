@@ -49,6 +49,7 @@ class NetworkData:
             network_models[year] = dict()
             for day in self.days:
                 network_models[year][day] = self.network[year][day].build_model(self.params)
+                print_model_polynomial_degrees(network_models[year][day], network_models[year][day].name)
         return network_models
 
     def optimize(self, model, from_warm_start=False, print_header=True):

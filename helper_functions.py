@@ -6,6 +6,7 @@ import psutil
 import pyomo.environ as pe
 import pyomo.opt as po
 from copulas.univariate import GaussianKDE
+from pyomo.core.expr.visitor import polynomial_degree
 from definitions import *
 
 
@@ -124,6 +125,33 @@ def report_out_of_bound_initial_values(model, tol=0.0):
         print("All initialized variable values are within their bounds.")
     else:
         print(f"Total variables with out-of-bound initial values: {count}")
+
+
+def print_model_polynomial_degrees(model, model_name):
+
+    degree_counts = {}
+    offenders = []
+
+    for obj in model.component_data_objects(pe.Objective, active=True, descend_into=True):
+        degree = polynomial_degree(obj.expr)
+        degree_counts[degree] = degree_counts.get(degree, 0) + 1
+        if degree is None or degree > 2:
+            offenders.append(('Objective', obj.name, degree))
+
+    for con in model.component_data_objects(pe.Constraint, active=True, descend_into=True):
+        degree = polynomial_degree(con.body)
+        degree_counts[degree] = degree_counts.get(degree, 0) + 1
+        if degree is None or degree > 2:
+            offenders.append(('Constraint', con.name, degree))
+
+    print(f'[DEBUG][POLYNOMIAL DEGREE] model={model_name}, counts={degree_counts}')
+
+    if offenders:
+        print('[WARNING] Non-QCQP expressions detected:')
+        for component_type, name, degree in offenders[:50]:
+            print(f'  {component_type}: {name}, degree={degree}')
+    else:
+        print(f'[DEBUG][POLYNOMIAL DEGREE] model={model_name}: all active expressions have degree <= 2.')
 
 
 def fix_or_set(var, val):
