@@ -278,8 +278,8 @@ def _build_model(network, params):
         model.slack_v_sqr_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_up_bounds, network=network, params=params))
     model.vmag = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.00, bounds=partial(vmag_bounds, network=network, params=params))
     model.vmag_sqr = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, initialize=1.00)
-    # model.voltage_product_real = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.00)
-    # model.voltage_product_imag = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, initialize=0.00)
+    model.voltage_product_real = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.00)
+    model.voltage_product_imag = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
     if params.slacks.node_balance.active_power:
         model.slack_node_balance_p_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00, bounds=partial(node_balance_slack_bounds, network=network))
         model.slack_node_balance_p_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00, bounds=partial(node_balance_slack_bounds, network=network))
@@ -363,8 +363,6 @@ def _build_model(network, params):
         model.slack_shared_es_soc_final_down = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
 
     # Expressions
-    model.voltage_product_real = pe.Expression(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_product_real_rule, network=network))
-    model.voltage_product_imag = pe.Expression(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_product_imag_rule, network=network))
     model.pg_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_p_per_node_def, network=network))
     model.qg_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_q_per_node_def, network=network))
     model.pc_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_p_per_node_def, network=network, params=params))      # Net load at node i
@@ -388,8 +386,8 @@ def _build_model(network, params):
     model.voltage_setpoint_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_setpoint_cons_rule, network=network, params=params))
     model.voltage_magnitude_lower_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_magnitude_lower_cons_rule, network=network, params=params))
     model.voltage_magnitude_upper_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_magnitude_upper_cons_rule, network=network, params=params))
-    # model.voltage_product_real_def = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_product_real_rule, network=network),)
-    # model.voltage_product_imag_def = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_product_imag_rule, network=network),)
+    model.voltage_product_real_def = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_product_real_rule, network=network))
+    model.voltage_product_imag_def = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_product_imag_rule, network=network))
     model.voltage_product_real_nonnegative = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=voltage_product_real_nonnegative_rule)
     # model.branch_angle_difference_lower_cons = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_angle_difference_lower_rule, network=network),)
     # model.branch_angle_difference_upper_cons = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_angle_difference_upper_rule, network=network),)
@@ -1513,6 +1511,7 @@ def _process_results_summary_detail(network, model, params):
             results['scenarios'][s_m][s_o]['generation_conventional_cost'] = _compute_cost_conventional_generation_per_scenario(network, model, params, s_m, s_o)
             results['scenarios'][s_m][s_o]['generation_renewable'] = _compute_renewable_generation_per_scenario(network, model, params, s_m, s_o)
             results['scenarios'][s_m][s_o]['generation_renewable_curtailed'] = _compute_renewable_generation_curtailed_per_scenario(network, model, params, s_m, s_o)
+            results['scenarios'][s_m][s_o]['generation_renewable_curtailment_cost'] = pe.value(model.gen_curt_penalty_scenario[s_m, s_o])
             results['scenarios'][s_m][s_o]['losses'] = _compute_losses_per_scenario(network, model, params, s_m, s_o)
 
     return results
@@ -1568,17 +1567,22 @@ def _process_results_interface(network, model):
 
 
 def _compute_objective_function_value_per_scenario(network, model, params, s_m, s_o):
-    obj = 0.00
+
+    obj = 0.0
+
     if params.obj_type == OBJ_MIN_COST:
         obj += pe.value(model.gen_cost_scenario[s_m, s_o])
         obj += pe.value(model.flex_cost_scenario[s_m, s_o])
         obj += pe.value(model.load_curt_cost_scenario[s_m, s_o])
+        obj += pe.value(model.gen_curt_penalty_scenario[s_m, s_o])
     elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
         obj += pe.value(model.gen_curt_penalty_scenario[s_m, s_o])
         obj += pe.value(model.load_curt_penalty_scenario[s_m, s_o])
         obj += pe.value(model.flex_penalty_scenario[s_m, s_o])
     obj += pe.value(model.ess_utilization_cost_penalty_scenario[s_m, s_o])
     obj += pe.value(model.slack_penalties_scenario[s_m, s_o])
+    obj += pe.value(model.ess_complementarity_penalty_scenario[s_m, s_o])
+
     return obj
 
 
@@ -1831,9 +1835,10 @@ def _compute_flexibility_used(network, model, params):
             for s_o in model.scenarios_operation:
                 flexibility_used_scenario = {'p': 0.0, 'q': 0.0}
                 for c in model.loads:
-                    for p in model.periods:
-                        flexibility_used_scenario['p'] += pe.value(model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p]) * network.baseMVA
-                        flexibility_used_scenario['q'] += pe.value(model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]) * network.baseMVA
+                    if network.loads[c].fl_reg:
+                        for p in model.periods:
+                            flexibility_used_scenario['p'] += pe.value(model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p]) * network.baseMVA
+                            flexibility_used_scenario['q'] += pe.value(model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]) * network.baseMVA
                 flexibility_used['p'] += flexibility_used_scenario['p'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
                 flexibility_used['q'] += flexibility_used_scenario['q'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
 
@@ -1844,21 +1849,21 @@ def _compute_flexibility_per_scenario(network, model, params, s_m, s_o):
     flexibility_used = {'p': 0.0, 'q': 0.0}
     if params.fl_reg:
         for c in model.loads:
-            for p in model.periods:
-                flexibility_used['p'] += pe.value(model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p]) * network.baseMVA
-                flexibility_used['q'] += pe.value(model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]) * network.baseMVA
+            if network.loads[c].fl_reg:
+                for p in model.periods:
+                    flexibility_used['p'] += pe.value(model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p]) * network.baseMVA
+                    flexibility_used['q'] += pe.value(model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]) * network.baseMVA
     return flexibility_used
 
 
 def _compute_cost_flexibility_per_scenario(network, model, params, s_m, s_o):
     cost = 0.0
-    if params.obj_type == OBJ_MIN_COST:
+    if params.obj_type == OBJ_MIN_COST and params.fl_reg:
         c_flex = network.cost_flex[s_m]
-        if params.fl_reg:
-            for c in model.loads:
+        for c in model.loads:
+            if network.loads[c].fl_reg:
                 for p in model.periods:
-                    cost += c_flex[p] * pe.value(model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p]) * network.baseMVA
-                    cost += c_flex[p] * pe.value(model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]) * network.baseMVA
+                    cost += c_flex[p] * network.baseMVA * pe.value(model.flex_p_down[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p])
     return cost
 
 

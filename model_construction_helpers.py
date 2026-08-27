@@ -379,15 +379,14 @@ def voltage_product_real_rule(m, branch_idx, s_m, s_o, p, network):
     branch = network.branches[branch_idx]
     fnode_idx = network.get_node_idx(branch.fbus)
     tnode_idx = network.get_node_idx(branch.tbus)
-    #return m.voltage_product_real[branch_idx, s_m, s_o, p] == (m.e[fnode_idx, s_m, s_o, p] * m.e[tnode_idx, s_m, s_o, p] + m.f[fnode_idx, s_m, s_o, p] * m.f[tnode_idx, s_m, s_o, p])
-    return m.e[fnode_idx, s_m, s_o, p] * m.e[tnode_idx, s_m, s_o, p] + m.f[fnode_idx, s_m, s_o, p] * m.f[tnode_idx, s_m, s_o, p]
+    return m.voltage_product_real[branch_idx, s_m, s_o, p] == m.e[fnode_idx, s_m, s_o, p] * m.e[tnode_idx, s_m, s_o, p] + m.f[fnode_idx, s_m, s_o, p] * m.f[tnode_idx, s_m, s_o, p]
+
 
 def voltage_product_imag_rule(m, branch_idx, s_m, s_o, p, network):
     branch = network.branches[branch_idx]
     fnode_idx = network.get_node_idx(branch.fbus)
     tnode_idx = network.get_node_idx(branch.tbus)
-    #return m.voltage_product_imag[branch_idx, s_m, s_o, p] == (m.f[fnode_idx, s_m, s_o, p] * m.e[tnode_idx, s_m, s_o, p] - m.e[fnode_idx, s_m, s_o, p] * m.f[tnode_idx, s_m, s_o, p])
-    return m.f[fnode_idx, s_m, s_o, p] * m.e[tnode_idx, s_m, s_o, p] - m.e[fnode_idx, s_m, s_o, p] * m.f[tnode_idx, s_m, s_o, p]
+    return m.voltage_product_imag[branch_idx, s_m, s_o, p] == m.f[fnode_idx, s_m, s_o, p] * m.e[tnode_idx, s_m, s_o, p] - m.e[fnode_idx, s_m, s_o, p] * m.f[tnode_idx, s_m, s_o, p]
 
 
 def voltage_product_real_nonnegative_rule(m, branch_idx, s_m, s_o, p):
