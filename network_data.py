@@ -49,7 +49,6 @@ class NetworkData:
             network_models[year] = dict()
             for day in self.days:
                 network_models[year][day] = self.network[year][day].build_model(self.params)
-                print_model_polynomial_degrees(network_models[year][day], network_models[year][day].name)
         return network_models
 
     def optimize(self, model, from_warm_start=False, print_header=True):
@@ -542,7 +541,7 @@ def _write_main_info_to_excel(network_planning, workbook, results):
         if network_planning.params.obj_type == OBJ_MIN_COST:
             col_idx = 2
             line_idx += 1
-            sheet.cell(row=line_idx, column=1).value = 'Flexibility cost, [€]'
+            sheet.cell(row=line_idx, column=1).value = 'Flexibility Procurement Cost, [€]'
             for year in network_planning.years:
                 for day in network_planning.days:
                     value = results['results'][year][day]['flex_cost']
