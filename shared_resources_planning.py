@@ -348,21 +348,13 @@ def _run_planning_problem(planning_problem, debug_flag=False):
         # 1. Subproblem
         # 1.1. Solve operational planning, with fixed investment variables,
         # 1.2. Get coupling constraints' sensitivities (subproblem)
-        # 1.3. Get the economic recourse value and local sensitivities
-        candidate_initial_state = (
-            operational_reference_state
-            if (
-                sensitivity_probe_params.enabled
-                and candidate_source == 'master_solution'
-                and positive_bootstrap_used
-            )
-            else None
-        )
+        # 1.3. Get the operational recourse value and local sensitivities
+        candidate_initial_state = (operational_reference_state if (sensitivity_probe_params.enabled and candidate_source == 'master_solution' and positive_bootstrap_used) else None)
         if candidate_initial_state is not None:
             print('[INFO] Operational candidate initialization: positive reference state.')
-        candidate_initialization_source = (
-            'positive_reference_state' if candidate_initial_state is not None else 'cold'
-        )
+
+        candidate_initialization_source = ('positive_reference_state' if candidate_initial_state is not None else 'cold')
+
         operational_convergence, operational_results, lower_level_models, sensitivities, _, operational_state = planning_problem.run_operational_planning(
             candidate_solution=candidate_solution,
             print_results=print_results,
@@ -370,6 +362,7 @@ def _run_planning_problem(planning_problem, debug_flag=False):
             initial_state=candidate_initial_state,
             return_state=True,
         )
+
         for diagnostic in operational_state.get('admm_diagnostics', []):
             diagnostic_with_outer_iteration = dict(diagnostic)
             diagnostic_with_outer_iteration['outer_iteration'] = iteration
@@ -733,7 +726,8 @@ def _get_operational_recourse_value(planning_problem, models):
 
 
 def _get_operational_recourse_components(planning_problem, models):
-    # Economic recourse excludes scenario-deviation and ADMM augmentation terms.
+    # Operational recourse is based on the local base SMOPF objectives.
+    # It excludes scenario-deviation regularization and ADMM augmentation terms, but may include artificial penalty terms and is therefore not necessarily a pure economic operating cost.
     gross_operational_cost = planning_problem.transmission_network.get_primal_value(models['tso'])
     for node_id, distribution_network in planning_problem.distribution_networks.items():
         gross_operational_cost += distribution_network.get_primal_value(models['dso'][node_id])
@@ -1751,12 +1745,9 @@ def _get_investment_soh_margin(planning_problem, esso_models, node_id, year_inv)
     shared_ess_idx = planning_problem.shared_ess_data.get_shared_energy_storage_idx(node_id)
     shared_energy_storage = planning_problem.shared_ess_data.shared_energy_storages[year_inv][shared_ess_idx]
     margins = []
-
     for y in model.years:
         if not model.es_soh_per_unit_cumul[y_inv, y].fixed:
-            margins.append(
-                pe.value(model.es_soh_per_unit_cumul[y_inv, y]) - shared_energy_storage.soh_min
-            )
+            margins.append(pe.value(model.es_soh_per_unit_cumul[y_inv, y]) - shared_energy_storage.soh_min)
     return min(margins) if margins else None
 
 
@@ -1781,12 +1772,8 @@ def _add_benders_cut(planning_problem, model, recourse_value, sensitivities, can
             sensitivity_e = sensitivities['e'][year][node_id]
             if sensitivity_s is None or sensitivity_e is None:
                 return False
-            benders_cut += sensitivity_s * (
-                model.es_s_investment[e, y] - candidate_solution['investment'][node_id][year]['s']
-            )
-            benders_cut += sensitivity_e * (
-                model.es_e_investment[e, y] - candidate_solution['investment'][node_id][year]['e']
-            )
+            benders_cut += sensitivity_s * (model.es_s_investment[e, y] - candidate_solution['investment'][node_id][year]['s'])
+            benders_cut += sensitivity_e * (model.es_e_investment[e, y] - candidate_solution['investment'][node_id][year]['e'])
     print("[INFO] Benders-type procedure. Adding local sensitivity cut...")
     model.benders_cuts.add(model.alpha >= benders_cut)
     return True
@@ -5183,7 +5170,7 @@ def _write_bound_evolution_to_excel(workbook, bound_evolution):
         ('master_estimate', 'Master Estimate (nominal LB), [NPV Mm.u.]', master_estimate, 1e6, '0.00'),
         ('alpha', 'Alpha, [NPV Mm.u.]', bound_evolution.get('alpha', []), 1e6, '0.00'),
         ('investment_cost', 'Investment Cost, [NPV Mm.u.]', bound_evolution.get('investment_cost', []), 1e6, '0.00'),
-        ('gross_operational_cost', 'Gross Operational Cost, [NPV Mm.u.]', bound_evolution.get('gross_operational_cost', []), 1e6, '0.00'),
+        ('gross_operational_cost', 'Gross Operational Objective, [NPV Mm.u.]', bound_evolution.get('gross_operational_cost', []), 1e6, '0.00'),
         ('terminal_salvage_value', 'Terminal Salvage Value, [NPV Mm.u.]', bound_evolution.get('terminal_salvage_value', []), 1e6, '0.00'),
         ('operational_recourse', 'Net Operational Recourse, [NPV Mm.u.]', bound_evolution.get('operational_recourse', []), 1e6, '0.00'),
         ('candidate_total', 'Candidate Total Objective, [NPV Mm.u.]', bound_evolution.get('candidate_total', []), 1e6, '0.00'),
@@ -5395,9 +5382,9 @@ def _write_admm_diagnostics_to_excel(workbook, diagnostics):
         ('dual_pf_mean_ratio', 'Dual PF Mean / Tolerance', '0.000'),
         ('dual_ess_ratio', 'Dual ESS Max / Tolerance', '0.000'),
         ('dual_ess_mean_ratio', 'Dual ESS Mean / Tolerance', '0.000'),
-        ('gross_operational_cost', 'Gross Operational Cost, [NPV m.u.]', '0.000000'),
+        ('gross_operational_cost', 'Gross Operational Objective, [NPV m.u.]', '0.000000'),
         ('terminal_salvage_value', 'Terminal Salvage Value, [NPV m.u.]', '0.000000'),
-        ('recourse', 'Net Economic Recourse, [NPV m.u.]', '0.000000'),
+        ('recourse', 'Net Operational Recourse, [NPV m.u.]', '0.000000'),
         ('objective_change_abs', 'Absolute Recourse Change, [NPV m.u.]', '0.000000'),
         ('objective_change_rel', 'Relative Recourse Change, [%]', '0.00%'),
         ('objective_tolerance', 'Applied Recourse Tolerance, [NPV m.u.]', '0.000000'),
@@ -5627,7 +5614,7 @@ def _write_run_metadata_to_excel(planning_problem, workbook, include_scenario_de
             ('Distributed Scenario Dispersion Treatment', 'Interface/voltage: probability-weighted quadratic deviation penalty',),
             ('Shared ESS Scenario Treatment', 'Probability-weighted expected P/Q with quadratic scenario-deviation penalty'),
             ('Scenario Deviation Penalty Coefficient', PENALTY_SCENARIO_DEVIATION),
-            ('Scenario Deviation Included in Economic Recourse', False),
+            ('Scenario Deviation Included in Operational Recourse', False),
         ])
     rows.extend(
         (f'Distribution Node {node_id} Operation Scenarios', planning_problem.distribution_networks[node_id].num_oper_scenarios,) for node_id in sorted(planning_problem.distribution_networks, key=str)
@@ -5652,7 +5639,7 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
     col_idx += 1
 
     # - Objective
-    sheet.cell(row=line_idx, column=col_idx).value = 'Objective function value, [N/A]'
+    sheet.cell(row=line_idx, column=col_idx).value = 'Base SMOPF objective value, [N/A]'
     col_idx += 1
     for year in results:
         for day in results[year]:
@@ -5697,7 +5684,7 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
         col_idx += 1
         sheet.cell(row=line_idx, column=col_idx).value = tn_node_id
         col_idx += 1
-        sheet.cell(row=line_idx, column=col_idx).value = 'Flexibility used, [MWh]'
+        sheet.cell(row=line_idx, column=col_idx).value = 'Flexibility procurement, [MWh]'
         col_idx += 1
         for year in results:
             for day in results[year]:
@@ -5711,7 +5698,7 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
         col_idx += 1
         sheet.cell(row=line_idx, column=col_idx).value = tn_node_id
         col_idx += 1
-        sheet.cell(row=line_idx, column=col_idx).value = 'Flexibility used, [MVArh]'
+        sheet.cell(row=line_idx, column=col_idx).value = 'Flexibility procurement, [MVArh]'
         col_idx += 1
         for year in results:
             for day in results[year]:
@@ -5726,7 +5713,7 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
             col_idx += 1
             sheet.cell(row=line_idx, column=col_idx).value = tn_node_id
             col_idx += 1
-            sheet.cell(row=line_idx, column=col_idx).value = 'Flexibility cost, [€]'
+            sheet.cell(row=line_idx, column=col_idx).value = 'Flexibility remuneration, [€]'
             col_idx += 1
             for year in results:
                 for day in results[year]:
@@ -5913,6 +5900,20 @@ def _write_operational_planning_main_info_per_operator(network, sheet, operator_
                 sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
                 col_idx += 1
 
+        line_idx += 1
+        col_idx = 1
+        sheet.cell(row=line_idx, column=col_idx).value = operator_type
+        col_idx += 1
+        sheet.cell(row=line_idx, column=col_idx).value = tn_node_id
+        col_idx += 1
+        sheet.cell(row=line_idx, column=col_idx).value = 'Renewable generation curtailment penalty, [N/A]'
+        col_idx += 1
+        for year in results:
+            for day in results[year]:
+                sheet.cell(row=line_idx, column=col_idx).value = results[year][day]['gen_curt_penalty']
+                sheet.cell(row=line_idx, column=col_idx).number_format = decimal_style
+                col_idx += 1
+
     # Losses
     line_idx += 1
     col_idx = 1
@@ -5972,12 +5973,12 @@ def _write_operational_planning_main_info_to_excel_detailed(planning_problem, wo
     sheet.cell(row=line_idx, column=5).value = 'Market Scenario'
     sheet.cell(row=line_idx, column=6).value = 'Operation Scenario'
     sheet.cell(row=line_idx, column=7).value = 'Probability, [%]'
-    sheet.cell(row=line_idx, column=8).value = 'OF Value'
+    sheet.cell(row=line_idx, column=8).value = 'Base SMOPF Objective Value, [N/A]'
     sheet.cell(row=line_idx, column=9).value = 'Load, [MWh]'
     sheet.cell(row=line_idx, column=10).value = 'Load, [MVArh]'
-    sheet.cell(row=line_idx, column=11).value = 'Flexibility used, [MWh]'
-    sheet.cell(row=line_idx, column=12).value = 'Flexibility used, [MVArh]'
-    sheet.cell(row=line_idx, column=13).value = 'Flexibility Cost, [€]'
+    sheet.cell(row=line_idx, column=11).value = 'Flexibility procurement, [MWh]'
+    sheet.cell(row=line_idx, column=12).value = 'Flexibility procurement, [MVArh]'
+    sheet.cell(row=line_idx, column=13).value = 'Flexibility remuneration, [€]'
     sheet.cell(row=line_idx, column=14).value = 'Generation, [MWh]'
     sheet.cell(row=line_idx, column=15).value = 'Generation, [MVArh]'
     sheet.cell(row=line_idx, column=16).value = 'Conventional Generation, [MWh]'
@@ -5987,7 +5988,8 @@ def _write_operational_planning_main_info_to_excel_detailed(planning_problem, wo
     sheet.cell(row=line_idx, column=20).value = 'Renewable Generation, [MVArh]'
     sheet.cell(row=line_idx, column=21).value = 'Renewable Generation, [MVAh]'
     sheet.cell(row=line_idx, column=22).value = 'Renewable Generation Curtailed, [MVAh]'
-    sheet.cell(row=line_idx, column=23).value = 'Losses, [MWh]'
+    sheet.cell(row=line_idx, column=23).value = 'Renewable Generation Curtailment Penalty, [N/A]'
+    sheet.cell(row=line_idx, column=24).value = 'Losses, [MWh]'
 
     # TSO
     line_idx += 1
@@ -6067,10 +6069,12 @@ def _write_operational_planning_main_info_per_operator_detailed(network, sheet, 
                     sheet.cell(row=line_idx, column=21).number_format = decimal_style
                     sheet.cell(row=line_idx, column=22).value = results[year][day]['scenarios'][s_m][s_o]['generation_renewable_curtailed']['s']
                     sheet.cell(row=line_idx, column=22).number_format = decimal_style
+                    sheet.cell(row=line_idx, column=23).value = results[year][day]['scenarios'][s_m][s_o]['generation_renewable_curtailment_penalty']
+                    sheet.cell(row=line_idx, column=23).number_format = decimal_style
 
                     # Losses
-                    sheet.cell(row=line_idx, column=23).value = results[year][day]['scenarios'][s_m][s_o]['losses']
-                    sheet.cell(row=line_idx, column=23).number_format = decimal_style
+                    sheet.cell(row=line_idx, column=24).value = results[year][day]['scenarios'][s_m][s_o]['losses']
+                    sheet.cell(row=line_idx, column=24).number_format = decimal_style
 
                     line_idx += 1
 
@@ -7226,7 +7230,7 @@ def _write_network_consumption_results_per_operator(network, params, sheet, oper
                         sheet.cell(row=row_idx, column=p + 10).value = expected_pc_curt[load.load_id][p]
                         sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
                         if expected_pc_curt[load.load_id][p] >= SMALL_TOLERANCE:
-                            sheet.cell(row=row_idx, column=p + 9).fill = violation_fill
+                            sheet.cell(row=row_idx, column=p + 10).fill = violation_fill
                     row_idx = row_idx + 1
 
                 if params.fl_reg or params.l_curt:
@@ -7270,7 +7274,7 @@ def _write_network_consumption_results_per_operator(network, params, sheet, oper
                     sheet.cell(row=row_idx, column=4).value = load.bus
                     sheet.cell(row=row_idx, column=5).value = int(year)
                     sheet.cell(row=row_idx, column=6).value = day
-                    sheet.cell(row=row_idx, column=7).value = 'Qc_flex, [MW]'
+                    sheet.cell(row=row_idx, column=7).value = 'Qc_flex, [MVAr]'
                     sheet.cell(row=row_idx, column=8).value = 'Expected'
                     sheet.cell(row=row_idx, column=9).value = '-'
                     for p in range(network[year][day].num_instants):
@@ -7287,14 +7291,14 @@ def _write_network_consumption_results_per_operator(network, params, sheet, oper
                     sheet.cell(row=row_idx, column=4).value = load.bus
                     sheet.cell(row=row_idx, column=5).value = int(year)
                     sheet.cell(row=row_idx, column=6).value = day
-                    sheet.cell(row=row_idx, column=7).value = 'Qc_curt, [MW]'
+                    sheet.cell(row=row_idx, column=7).value = 'Qc_curt, [MVAr]'
                     sheet.cell(row=row_idx, column=8).value = 'Expected'
                     sheet.cell(row=row_idx, column=9).value = '-'
                     for p in range(network[year][day].num_instants):
                         sheet.cell(row=row_idx, column=p + 10).value = expected_qc_curt[load.load_id][p]
                         sheet.cell(row=row_idx, column=p + 10).number_format = decimal_style
-                        if expected_pc_curt[load.load_id][p] >= SMALL_TOLERANCE:
-                            sheet.cell(row=row_idx, column=p + 9).fill = violation_fill
+                        if expected_qc_curt[load.load_id][p] >= SMALL_TOLERANCE:
+                            sheet.cell(row=row_idx, column=p + 10).fill = violation_fill
                     row_idx = row_idx + 1
 
                 if params.fl_reg or params.l_curt:

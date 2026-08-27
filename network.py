@@ -624,10 +624,7 @@ def _run_smopf(network, model, params, from_warm_start=False):
             attempt_label='primary solve',
         )
         recovery_options = params.solver_params.recovery_options
-        print(
-            f'[INFO] Retrying network solve once for {solve_context} from the retained primal point, '
-            f'without multiplier warm start, with {_format_solver_options(recovery_options)}.'
-        )
+        print(f'[INFO] Retrying network solve once for {solve_context}, without multiplier warm start, with {_format_solver_options(recovery_options)}.')
         multiplier_snapshot = _snapshot_multiplier_suffixes(model)
         _clear_multiplier_suffixes(model)
         recovery_result, recovery_log_path = _run_smopf_solver_attempt(
@@ -1133,13 +1130,14 @@ def _process_results(network, model, params, results=dict()):
     s_base = network.baseMVA
 
     processed_results = dict()
-    processed_results['obj'] = network.compute_objective_function_value(model)
+    processed_results['obj'] = network.get_primal_value(model, params)                  # Base SMOPF objective: excludes scenario-deviation regularization and ADMM augmentation terms.
     processed_results['total_load'] = _compute_total_load(network, model, params)
     processed_results['total_gen'] = _compute_total_generation(network, model, params)
     processed_results['total_conventional_gen'] = _compute_conventional_generation(network, model)
     processed_results['total_renewable_gen'] = _compute_renewable_generation(network, model, params)
     processed_results['losses'] = _compute_losses(network, model, params)
     processed_results['gen_curt'] = _compute_generation_curtailment(network, model, params)
+    processed_results['gen_curt_penalty'] = pe.value(model.total_gen_curt_penalty)
     processed_results['load_curt'] = _compute_load_curtailment(network, model, params)
     processed_results['flex_used'] = _compute_flexibility_used(network, model, params)
     processed_results['ess_penalty'] = pe.value(model.total_ess_utilization_cost_penalty)
@@ -1511,7 +1509,7 @@ def _process_results_summary_detail(network, model, params):
             results['scenarios'][s_m][s_o]['generation_conventional_cost'] = _compute_cost_conventional_generation_per_scenario(network, model, params, s_m, s_o)
             results['scenarios'][s_m][s_o]['generation_renewable'] = _compute_renewable_generation_per_scenario(network, model, params, s_m, s_o)
             results['scenarios'][s_m][s_o]['generation_renewable_curtailed'] = _compute_renewable_generation_curtailed_per_scenario(network, model, params, s_m, s_o)
-            results['scenarios'][s_m][s_o]['generation_renewable_curtailment_cost'] = pe.value(model.gen_curt_penalty_scenario[s_m, s_o])
+            results['scenarios'][s_m][s_o]['generation_renewable_curtailment_penalty'] = pe.value(model.gen_curt_penalty_scenario[s_m, s_o])
             results['scenarios'][s_m][s_o]['losses'] = _compute_losses_per_scenario(network, model, params, s_m, s_o)
 
     return results
@@ -1642,6 +1640,9 @@ def _compute_load_per_scenario(network, model, params, s_m, s_o):
         for p in model.periods:
             total_load['p'] += network.baseMVA * pe.value(model.pc[c, s_m, s_o, p])
             total_load['q'] += network.baseMVA * pe.value(model.qc[c, s_m, s_o, p])
+            if params.fl_reg:
+                total_load['p'] += network.baseMVA * pe.value(model.flex_p_up[c, s_m, s_o, p] - model.flex_p_down[c, s_m, s_o, p])
+                total_load['q'] += network.baseMVA * pe.value(model.flex_q_up[c, s_m, s_o, p] - model.flex_q_down[c, s_m, s_o, p])
             if params.l_curt:
                 total_load['p'] -= network.baseMVA * pe.value(model.pc_curt_down[c, s_m, s_o, p] - model.pc_curt_up[c, s_m, s_o, p])
                 total_load['q'] -= network.baseMVA * pe.value(model.qc_curt_down[c, s_m, s_o, p] - model.qc_curt_up[c, s_m, s_o, p])
@@ -1649,9 +1650,7 @@ def _compute_load_per_scenario(network, model, params, s_m, s_o):
 
 
 def _compute_total_generation(network, model, params):
-
     total_gen = {'p': 0.00, 'q': 0.00}
-
     for s_m in model.scenarios_market:
         for s_o in model.scenarios_operation:
             total_gen_scenario = {'p': 0.00, 'q': 0.00}
@@ -1661,7 +1660,6 @@ def _compute_total_generation(network, model, params):
                     total_gen_scenario['q'] += network.baseMVA * pe.value(model.qg[g, s_m, s_o, p])
             total_gen['p'] += total_gen_scenario['p'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
             total_gen['q'] += total_gen_scenario['q'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
-
     return total_gen
 
 
@@ -1775,31 +1773,25 @@ def _compute_generation_curtailment(network, model, params):
                     if network.generators[g].is_curtaillable():
                         for p in model.periods:
                             if network.generators[g].status[p]:
-                                gen_curtailment_scenario['s'] += _compute_renewable_apparent_power_curtailment(
-                                    model, g, s_m, s_o, p
-                                ) * network.baseMVA
+                                gen_curtailment_scenario['s'] += _compute_renewable_apparent_power_curtailment(model, g, s_m, s_o, p) * network.baseMVA
                 gen_curtailment['s'] += gen_curtailment_scenario['s'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
 
     return gen_curtailment
 
 
 def _compute_renewable_generation_curtailed_per_scenario(network, model, params, s_m, s_o):
-    gen_curtailment = {'p': 0.00, 'q': 0.00, 's': 0.00}
+    gen_curtailment = {'s': 0.00}
     if params.rg_curt:
         for g in model.generators:
             if network.generators[g].is_curtaillable():
                 for p in model.periods:
                     if network.generators[g].status[p]:
-                        gen_curtailment['s'] += _compute_renewable_apparent_power_curtailment(
-                            model, g, s_m, s_o, p
-                        ) * network.baseMVA
+                        gen_curtailment['s'] += _compute_renewable_apparent_power_curtailment(model, g, s_m, s_o, p) * network.baseMVA
     return gen_curtailment
 
 
 def _compute_load_curtailment(network, model, params):
-
     load_curtailment = {'p': 0.00, 'q': 0.00}
-
     if params.l_curt:
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
@@ -1808,28 +1800,23 @@ def _compute_load_curtailment(network, model, params):
                     for p in model.periods:
                         load_curtailment_scenario['p'] += pe.value(model.pc_curt_down[c, s_m, s_o, p] - model.pc_curt_up[c, s_m, s_o, p]) * network.baseMVA
                         load_curtailment_scenario['q'] += pe.value(model.qc_curt_down[c, s_m, s_o, p] - model.qc_curt_up[c, s_m, s_o, p]) * network.baseMVA
-
                 load_curtailment['p'] += load_curtailment_scenario['p'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
                 load_curtailment['q'] += load_curtailment_scenario['q'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
-
     return load_curtailment
 
 
 def _compute_load_curtailment_per_scenario(network, model, params, s_m, s_o):
     load_curtailment = {'p': 0.00, 'q': 0.00}
     if params.l_curt:
-        load_curtailment_scenario = {'p': 0.00, 'q': 0.00}
         for c in model.loads:
             for p in model.periods:
-                load_curtailment_scenario['p'] += pe.value(model.pc_curt_down[c, s_m, s_o, p] - model.pc_curt_up[c, s_m, s_o, p]) * network.baseMVA
-                load_curtailment_scenario['q'] += pe.value(model.qc_curt_down[c, s_m, s_o, p] - model.qc_curt_up[c, s_m, s_o, p]) * network.baseMVA
+                load_curtailment['p'] += pe.value(model.pc_curt_down[c, s_m, s_o, p] - model.pc_curt_up[c, s_m, s_o, p]) * network.baseMVA
+                load_curtailment['q'] += pe.value(model.qc_curt_down[c, s_m, s_o, p] - model.qc_curt_up[c, s_m, s_o, p]) * network.baseMVA
     return load_curtailment
 
 
 def _compute_flexibility_used(network, model, params):
-
     flexibility_used = {'p': 0.0, 'q': 0.0}
-
     if params.fl_reg:
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
@@ -1841,7 +1828,6 @@ def _compute_flexibility_used(network, model, params):
                             flexibility_used_scenario['q'] += pe.value(model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]) * network.baseMVA
                 flexibility_used['p'] += flexibility_used_scenario['p'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
                 flexibility_used['q'] += flexibility_used_scenario['q'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
-
     return flexibility_used
 
 

@@ -428,7 +428,7 @@ def _get_objective_function_value(network_planning, models):
                 num_days = network_planning.days[day]
                 network = network_planning.network[year][day]
                 model = models[year][day]
-                of_value += annualization * num_days * num_years * network.compute_objective_function_value(model)
+                of_value += annualization * num_days * num_years * network.get_primal_value(model, network_planning.params)     # Base SMOPF objective: excludes scenario-deviation regularization and ADMM augmentation terms.
     return of_value
 
 
@@ -488,7 +488,7 @@ def _write_main_info_to_excel(network_planning, workbook, results):
     # Objective function value and its components (penalties)
     col_idx = 2
     line_idx += 1
-    sheet.cell(row=line_idx, column=1).value = 'Objective function value, [N/A]'
+    sheet.cell(row=line_idx, column=1).value = 'Base SMOPF objective value, [N/A]'
     for year in network_planning.years:
         for day in network_planning.days:
             if results['results'][year][day]:
@@ -522,7 +522,7 @@ def _write_main_info_to_excel(network_planning, workbook, results):
 
         col_idx = 2
         line_idx += 1
-        sheet.cell(row=line_idx, column=1).value = 'Flexibility used, [MWh]'
+        sheet.cell(row=line_idx, column=1).value = 'Flexibility procurement, [MWh]'
         for year in network_planning.years:
             for day in network_planning.days:
                 value = results['results'][year][day]['flex_used']['p']
@@ -531,7 +531,7 @@ def _write_main_info_to_excel(network_planning, workbook, results):
 
         col_idx = 2
         line_idx += 1
-        sheet.cell(row=line_idx, column=1).value = 'Flexibility used, [MVArh]'
+        sheet.cell(row=line_idx, column=1).value = 'Flexibility procurement, [MVArh]'
         for year in network_planning.years:
             for day in network_planning.days:
                 value = results['results'][year][day]['flex_used']['q']
@@ -541,7 +541,7 @@ def _write_main_info_to_excel(network_planning, workbook, results):
         if network_planning.params.obj_type == OBJ_MIN_COST:
             col_idx = 2
             line_idx += 1
-            sheet.cell(row=line_idx, column=1).value = 'Flexibility Procurement Cost, [€]'
+            sheet.cell(row=line_idx, column=1).value = 'Flexibility remuneration, [€]'
             for year in network_planning.years:
                 for day in network_planning.days:
                     value = results['results'][year][day]['flex_cost']
@@ -665,6 +665,15 @@ def _write_main_info_to_excel(network_planning, workbook, results):
         for year in network_planning.years:
             for day in network_planning.days:
                 value = results['results'][year][day]['gen_curt']['s']
+                write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
+                col_idx += 1
+
+        col_idx = 2
+        line_idx += 1
+        sheet.cell(row=line_idx, column=1).value = 'Renewable generation curtailment penalty, [N/A]'
+        for year in network_planning.years:
+            for day in network_planning.days:
+                value = results['results'][year][day]['gen_curt_penalty']
                 write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
                 col_idx += 1
 
@@ -1021,7 +1030,7 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
                             sheet.cell(row=row_idx, column=2).value = node_id
                             sheet.cell(row=row_idx, column=3).value = int(year)
                             sheet.cell(row=row_idx, column=4).value = day
-                            sheet.cell(row=row_idx, column=5).value = 'Qc_curt, [MW]'
+                            sheet.cell(row=row_idx, column=5).value = 'Qc_curt, [MVAr]'
                             sheet.cell(row=row_idx, column=6).value = s_m
                             sheet.cell(row=row_idx, column=7).value = s_o
                             for p in range(network.num_instants):
@@ -1031,21 +1040,6 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
                                 if not isclose(qc_curt, 0.00, abs_tol=VIOLATION_TOLERANCE):
                                     sheet.cell(row=row_idx, column=p + 8).fill = violation_fill
                                 expected_qc_curt[load_id][p] += qc_curt * omega_m * omega_s
-                            row_idx = row_idx + 1
-
-                            # - Reactive power net consumption
-                            sheet.cell(row=row_idx, column=1).value = load_id
-                            sheet.cell(row=row_idx, column=2).value = node_id
-                            sheet.cell(row=row_idx, column=3).value = int(year)
-                            sheet.cell(row=row_idx, column=4).value = day
-                            sheet.cell(row=row_idx, column=5).value = 'Qc_net, [MW]'
-                            sheet.cell(row=row_idx, column=6).value = s_m
-                            sheet.cell(row=row_idx, column=7).value = s_o
-                            for p in range(network.num_instants):
-                                q_net = results[year][day]['scenarios'][s_m][s_o]['consumption']['qc_net'][load_id][p]
-                                sheet.cell(row=row_idx, column=p + 8).value = q_net
-                                sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
-                                expected_qnet[load_id][p] += q_net * omega_m * omega_s
                             row_idx = row_idx + 1
 
                         if network_planning.params.fl_reg or network_planning.params.l_curt:
@@ -1165,7 +1159,7 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
                     sheet.cell(row=row_idx, column=2).value = node_id
                     sheet.cell(row=row_idx, column=3).value = int(year)
                     sheet.cell(row=row_idx, column=4).value = day
-                    sheet.cell(row=row_idx, column=5).value = 'Qc_curt, [MW]'
+                    sheet.cell(row=row_idx, column=5).value = 'Qc_curt, [MVAr]'
                     sheet.cell(row=row_idx, column=6).value = 'Expected'
                     sheet.cell(row=row_idx, column=7).value = '-'
                     for p in range(network.num_instants):
@@ -1173,19 +1167,6 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
                         sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                         if not isclose(expected_qc_curt[load_id][p], 0.00, abs_tol=VIOLATION_TOLERANCE):
                             sheet.cell(row=row_idx, column=p + 8).fill = violation_fill
-                    row_idx = row_idx + 1
-
-                    # - Reactive power net consumption
-                    sheet.cell(row=row_idx, column=1).value = load_id
-                    sheet.cell(row=row_idx, column=2).value = node_id
-                    sheet.cell(row=row_idx, column=3).value = int(year)
-                    sheet.cell(row=row_idx, column=4).value = day
-                    sheet.cell(row=row_idx, column=5).value = 'Qc_net, [MW]'
-                    sheet.cell(row=row_idx, column=6).value = 'Expected'
-                    sheet.cell(row=row_idx, column=7).value = '-'
-                    for p in range(network.num_instants):
-                        sheet.cell(row=row_idx, column=p + 8).value = expected_qnet[load_id][p]
-                        sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                     row_idx = row_idx + 1
 
                 if network_planning.params.fl_reg or network_planning.params.l_curt:
