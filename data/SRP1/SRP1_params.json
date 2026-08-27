@@ -33,15 +33,15 @@
 	"admm": {
 		"tol": {
 			"consensus": {
-				"v_mean": 0.5e-2, "v": 0.5e-2,
-				"pf_mean": 0.5e-2, "pf": 2.0e-2,
-				"ess_mean": 0.5e-2, "ess": 2.0e-2
+				"v_mean": 0.1e-2, "v": 1.0e-2,
+				"pf_mean": 0.1e-2, "pf": 1.0e-2,
+				"ess_mean": 1.0e-2, "ess": 10.0e-2
 			},
-			"stationarity": {"v": 5e-2, "pf": 5e-2, "ess": 5e-2},
-			"objective": {"abs": 1e4, "rel": 1e-2}
+			"stationarity": {"v": 1e-2, "pf": 1e-2, "ess": 1e-2},
+			"objective": {"abs": 1e3, "rel": 0.1e-2}
 		},
 		"num_max_iters": 50,
-		"minimum_consecutive_converged_cycles": 2,
+		"minimum_consecutive_converged_cycles": 1,
 		"shared_ess_normalization_floor_mva": 0.10,
 		"adaptive_penalty": true,
 		"penalty_update": {
