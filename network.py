@@ -506,42 +506,20 @@ def _create_smopf_solver(network, model, params, from_warm_start=False,
         model.ipopt_zU_in.update(model.ipopt_zU_out)
         solver.options['acceptable_iter'] = 1
         solver.options['warm_start_init_point'] = 'yes'
-        solver.options['warm_start_bound_push'] = options.get(
-            'warm_start_bound_push', options.get('bound_push', 1e-6)
-        )
-        solver.options['warm_start_bound_frac'] = options.get(
-            'warm_start_bound_frac', options.get('bound_frac', 1e-6)
-        )
-        solver.options['warm_start_slack_bound_frac'] = options.get(
-            'warm_start_slack_bound_frac', options.get('slack_bound_frac', 1e-6)
-        )
-        solver.options['warm_start_slack_bound_push'] = options.get(
-            'warm_start_slack_bound_push', options.get('slack_bound_push', 1e-6)
-        )
-        solver.options['warm_start_mult_bound_push'] = options.get(
-            'warm_start_mult_bound_push', options.get('bound_push', 1e-6)
-        )
+        solver.options['warm_start_bound_push'] = options.get('warm_start_bound_push', options.get('bound_push', 1e-6))
+        solver.options['warm_start_bound_frac'] = options.get('warm_start_bound_frac', options.get('bound_frac', 1e-6))
+        solver.options['warm_start_slack_bound_frac'] = options.get('warm_start_slack_bound_frac', options.get('slack_bound_frac', 1e-6))
+        solver.options['warm_start_slack_bound_push'] = options.get('warm_start_slack_bound_push', options.get('slack_bound_push', 1e-6))
+        solver.options['warm_start_mult_bound_push'] = options.get('warm_start_mult_bound_push', options.get('bound_push', 1e-6))
 
     return solver, solver_log_path, solve_context
 
 
-def _run_smopf_solver_attempt(network, model, params, from_warm_start=False,
-                              option_overrides=None, log_suffix=None):
-    solver, solver_log_path, solve_context = _create_smopf_solver(
-        network,
-        model,
-        params,
-        from_warm_start=from_warm_start,
-        option_overrides=option_overrides,
-        log_suffix=log_suffix,
-    )
+def _run_smopf_solver_attempt(network, model, params, from_warm_start=False, option_overrides=None, log_suffix=None):
+    solver, solver_log_path, solve_context = _create_smopf_solver(network, model, params, from_warm_start=from_warm_start, option_overrides=option_overrides, log_suffix=log_suffix)
     result = None
     try:
-        result = solver.solve(
-            model,
-            tee=params.solver_params.verbose,
-            load_solutions=False,
-        )
+        result = solver.solve(model, tee=params.solver_params.verbose, load_solutions=False)
     except (ValueError, RuntimeError) as error:
         print(f'[WARNING] Solver execution failed for network {solve_context}: {error}')
     return result, solver_log_path
