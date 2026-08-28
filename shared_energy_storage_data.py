@@ -351,6 +351,16 @@ def _build_subproblem(shared_ess_data, node_id):
     model.days = range(len(shared_ess_data.days))
     model.periods = range(shared_ess_data.num_instants)
 
+    # Track ESSO constraints that belong to each investment cohort.
+    # These constraints can be deactivated when the corresponding investment capacity is zero.
+    model._esso_cohort_constraints = {
+        y_inv: [] for y_inv in model.years
+    }
+
+    model._esso_cohort_inactive = {
+        y_inv: False for y_inv in model.years
+    }
+
     # ------------------------------------------------------------------------------------------------------------------
     # Variables
     model.es_s_investment_fixed = pe.Param(model.years, mutable=True, initialize=0.00)
@@ -449,7 +459,7 @@ def _build_subproblem(shared_ess_data, node_id):
                     sch = model.es_sch_per_unit[y_inv, y, d, p]
                     sdch = model.es_sdch_per_unit[y_inv, y, d, p]
                     avg_ch_dch += (num_days / 365.00) * (sch + sdch)
-            model.energy_storage_charging_discharging.add(model.es_avg_ch_dch_per_unit[y_inv, y] == avg_ch_dch)
+            _add_esso_cohort_constraint(model, 'energy_storage_charging_discharging', y_inv, y, model.es_avg_ch_dch_per_unit[y_inv, y] == avg_ch_dch)
 
     # - Capacity degradation
     model.energy_storage_capacity_degradation = pe.ConstraintList()
@@ -465,25 +475,31 @@ def _build_subproblem(shared_ess_data, node_id):
             model.es_soh_per_unit[y_inv, y].fixed = False
             model.es_soh_per_unit_cumul[y_inv, y].fixed = False
 
-            model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit[y_inv, y] * (2 * shared_energy_storage.cl_nom * model.es_e_rated_per_unit[y_inv, y]) == model.es_avg_ch_dch_per_unit[y_inv, y])
-            if shared_ess_data.params.slacks:
-                model.energy_storage_capacity_degradation.add(model.es_soh_per_unit[y_inv, y] == 1.00 - model.es_degradation_per_unit[y_inv, y] + model.slack_es_soh_per_unit_up[y_inv, y] - model.slack_es_soh_per_unit_down[y_inv, y])
-            else:
-                model.energy_storage_capacity_degradation.add(model.es_soh_per_unit[y_inv, y] == 1.00 - model.es_degradation_per_unit[y_inv, y])
+            # Daily degradation
+            _add_esso_cohort_constraint(model, 'energy_storage_capacity_degradation', y_inv, y, model.es_degradation_per_unit[y_inv, y] * (2 * shared_energy_storage.cl_nom * model.es_e_rated_per_unit[y_inv, y]) == model.es_avg_ch_dch_per_unit[y_inv, y])
 
+            # Annual SoH
+            if shared_ess_data.params.slacks:
+                _add_esso_cohort_constraint(model, 'energy_storage_capacity_degradation', y_inv, y, model.es_soh_per_unit[y_inv, y] == 1.00 - model.es_degradation_per_unit[y_inv, y] + model.slack_es_soh_per_unit_up[y_inv, y] - model.slack_es_soh_per_unit_down[y_inv, y])
+            else:
+                _add_esso_cohort_constraint(model, 'energy_storage_capacity_degradation', y_inv, y, model.es_soh_per_unit[y_inv, y] == 1.00 - model.es_degradation_per_unit[y_inv, y])
+
+            # Previous cumulative SoH
             prev_soh = 1.00
-            if y > 0:
+            if y > y_inv:
                 prev_soh = model.es_soh_per_unit_cumul[y_inv, y - 1]
 
+            # Cumulative SoH
             if shared_ess_data.params.slacks:
-                model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[y_inv, y] == prev_soh * ((model.es_soh_per_unit[y_inv, y]) ** (365.00 * num_years)) + model.slack_es_soh_per_unit_cumul_up[y_inv, y] - model.slack_es_soh_per_unit_cumul_down[y_inv, y])
+                _add_esso_cohort_constraint(model, 'energy_storage_capacity_degradation', y_inv, y, model.es_soh_per_unit_cumul[y_inv, y] == prev_soh * (model.es_soh_per_unit[y_inv, y] ** (365.00 * num_years)) + model.slack_es_soh_per_unit_cumul_up[y_inv, y] - model.slack_es_soh_per_unit_cumul_down[y_inv, y])
             else:
-                model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[y_inv, y] == prev_soh * ((model.es_soh_per_unit[y_inv, y]) ** (365.00 * num_years)))
+                _add_esso_cohort_constraint(model, 'energy_storage_capacity_degradation', y_inv, y, model.es_soh_per_unit_cumul[y_inv, y] == prev_soh * (model.es_soh_per_unit[y_inv, y] ** (365.00 * num_years)))
 
-            # model.energy_storage_capacity_degradation.add(model.es_soh_per_unit_cumul[y_inv, y] >= shared_energy_storage.soh_min)
-            model.energy_storage_capacity_degradation.add(model.es_e_available_per_unit[y_inv, y] >= shared_energy_storage.soh_min * model.es_e_rated_per_unit[y_inv, y])
-            model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit_cumul[y_inv, y] == 1.00 - model.es_soh_per_unit_cumul[y_inv, y])
-            # model.energy_storage_capacity_degradation.add(model.es_degradation_per_unit[y_inv, y] <= model.es_s_investment[y_inv])
+            # Minimum admissible capacity / SoH
+            _add_esso_cohort_constraint(model, 'energy_storage_capacity_degradation', y_inv, y, model.es_e_available_per_unit[y_inv, y] >= shared_energy_storage.soh_min * model.es_e_rated_per_unit[y_inv, y])
+
+            # Cumulative degradation
+            _add_esso_cohort_constraint(model, 'energy_storage_capacity_degradation', y_inv, y, model.es_degradation_per_unit_cumul[y_inv, y] == 1.00 - model.es_soh_per_unit_cumul[y_inv, y])
 
     # - P, Q, S, SoC, per unit as a function of available capacities
     model.energy_storage_limits = pe.ConstraintList()
@@ -497,13 +513,18 @@ def _build_subproblem(shared_ess_data, node_id):
                     sch = model.es_sch_per_unit[y_inv, y, d, p]
                     sdch = model.es_sdch_per_unit[y_inv, y, d, p]
 
-                    model.energy_storage_limits.add(sch <= s_max)
-                    model.energy_storage_limits.add(sdch <= s_max)
+                    _add_esso_cohort_constraint(model, 'energy_storage_limits', y_inv, y, sch <= s_max)
+                    _add_esso_cohort_constraint(model, 'energy_storage_limits', y_inv, y, sdch <= s_max)
 
                     if shared_ess_data.params.slacks:
-                        model.energy_storage_complementarity.add(sch * sdch <= model.slack_es_ch_comp_per_unit[y_inv, y, d, p])
+                        _add_esso_cohort_constraint(model, 'energy_storage_complementarity', y_inv, y, sch * sdch <= model.slack_es_ch_comp_per_unit[y_inv, y, d, p])
                     else:
-                        model.energy_storage_complementarity.add(sch * sdch == 0.00)
+                        _add_esso_cohort_constraint(model, 'energy_storage_complementarity', y_inv, y, sch * sdch == 0.00)
+
+                    if shared_ess_data.params.slacks:
+                        model.energy_storage_complementarity.add(sch * sdch <= model.slack_es_ch_comp_per_unit[y_inv, y, d, p] + ESS_COMPLEMENTARITY_TOLERANCE)
+                    else:
+                        model.energy_storage_complementarity.add(sch * sdch <= ESS_COMPLEMENTARITY_TOLERANCE)
 
     # - Shared ESS operation, aggregated
     model.energy_storage_operation_agg = pe.ConstraintList()
@@ -553,11 +574,8 @@ def _build_subproblem(shared_ess_data, node_id):
                     slack_penalty += PENALTY_ESSO_SLACK * (model.slack_es_snet_up[y_inv, d, p] + model.slack_es_snet_down[y_inv, d, p])
                     slack_penalty += PENALTY_ESSO_SLACK * (model.slack_es_snet_def_up[y_inv, d, p] + model.slack_es_snet_def_down[y_inv, d, p])
 
-    salvage_value = _build_terminal_salvage_value_expression(
-        shared_ess_data,
-        model,
-        shared_ess_idx,
-    )
+    salvage_value = _build_terminal_salvage_value_expression(shared_ess_data, model, shared_ess_idx)
+
     model.feasibility_penalty = pe.Expression(expr=slack_penalty)
     model.salvage_value = pe.Expression(expr=salvage_value)
     model.salvage_credit = pe.Expression(expr=-model.salvage_value)
@@ -765,8 +783,8 @@ def _get_salvage_value_results(shared_ess_data, models):
     }
 
 
-def _create_solver(model, params, from_warm_start=False, node_id=None,
-                   option_overrides=None, log_suffix=None):
+def _create_solver(model, params, from_warm_start=False, node_id=None, option_overrides=None, log_suffix=None):
+
     solver = po.SolverFactory(params.solver, executable=params.solver_path)
     options = dict()
     if params.verbose and params.solver.lower() == 'ipopt':
@@ -804,8 +822,8 @@ def _create_solver(model, params, from_warm_start=False, node_id=None,
     return solver, solver_log_path
 
 
-def _run_solver_attempt(model, params, solve_context, from_warm_start=False,
-                        node_id=None, option_overrides=None, log_suffix=None):
+def _run_solver_attempt(model, params, solve_context, from_warm_start=False, node_id=None, option_overrides=None, log_suffix=None):
+
     solver, solver_log_path = _create_solver(
         model,
         params,
@@ -911,14 +929,16 @@ def _optimize(model, params, from_warm_start=False, node_id=None, diagnostic_sin
 def _update_model_with_candidate_solution(shared_ess_data, models, candidate_solution):
     repr_years = [year for year in shared_ess_data.years]
     for node_id in models:
-        for y in models[node_id].years:
-            year = repr_years[y]
+        model = models[node_id]
+        for y_inv in model.years:
+            year = repr_years[y_inv]
             s_candidate = candidate_solution[node_id][year]['s']
             e_candidate = candidate_solution[node_id][year]['e']
-            models[node_id].es_s_investment_fixed[y].set_value(s_candidate)
-            models[node_id].es_e_investment_fixed[y].set_value(e_candidate)
-            models[node_id].es_s_investment[y].fix(s_candidate)
-            models[node_id].es_e_investment[y].fix(e_candidate)
+            model.es_s_investment_fixed[y_inv].set_value(s_candidate)
+            model.es_e_investment_fixed[y_inv].set_value(e_candidate)
+            model.es_s_investment[y_inv].fix(s_candidate)
+            model.es_e_investment[y_inv].fix(e_candidate)
+            _configure_esso_cohort_state(model, y_inv, s_candidate, e_candidate, shared_ess_data.params.slacks)
 
 
 def _get_candidate_solution(self, model):
@@ -953,22 +973,31 @@ def _load_candidate_solution_into_master_model(shared_ess_data, model, candidate
 
 
 def _map_available_capacity_sensitivities_to_investments(shared_ess_data, models, sensitivities):
+
     years = list(shared_ess_data.years)
     investment_sensitivities = {'s': dict(), 'e': dict()}
-
     for year_inv in years:
         investment_sensitivities['s'][year_inv] = dict()
         investment_sensitivities['e'][year_inv] = dict()
 
     for node_id in shared_ess_data.active_distribution_network_nodes:
+
         model = models[node_id]
+
         for y_inv, year_inv in enumerate(years):
+
+            if model._esso_cohort_inactive.get(y_inv, False):
+                investment_sensitivities['s'][year_inv][node_id] = None
+                investment_sensitivities['e'][year_inv][node_id] = None
+                continue
+
             sensitivity_s = 0.00
             sensitivity_e = 0.00
             sensitivity_s_available = True
             sensitivity_e_available = True
 
             for y, year in enumerate(years):
+
                 if not model.es_s_rated_per_unit[y_inv, y].fixed:
                     value_s = sensitivities['s'][year][node_id]
                     if value_s is None:
@@ -989,6 +1018,77 @@ def _map_available_capacity_sensitivities_to_investments(shared_ess_data, models
             investment_sensitivities['e'][year_inv][node_id] = sensitivity_e if sensitivity_e_available else None
 
     return investment_sensitivities
+
+
+def _add_esso_cohort_constraint(model, constraint_name, y_inv, y, expr):
+    constraint_list = getattr(model, constraint_name)
+    constraint_list.add(expr)
+    constraint_idx = len(constraint_list)
+    model._esso_cohort_constraints[y_inv].append((constraint_name, constraint_idx, y))
+
+
+def _set_esso_variable_state(variable, active, inactive_value):
+    if active:
+        if variable.fixed:
+            variable.unfix()
+    else:
+        variable.fix(inactive_value)
+
+
+def _esso_cohort_pair_is_within_lifetime(model, y_inv, y):
+    # These variables are already fixed to zero outside the calendar lifetime when the model is constructed.
+    return (not model.es_s_rated_per_unit[y_inv, y].fixed and not model.es_e_rated_per_unit[y_inv, y].fixed)
+
+
+def _configure_esso_cohort_state(model, y_inv, s_capacity, e_capacity, slacks_enabled):
+
+    tolerance = SHARED_ESS_ZERO_CAPACITY_TOLERANCE
+    inactive = (abs(s_capacity) <= tolerance or abs(e_capacity) <= tolerance)
+    model._esso_cohort_inactive[y_inv] = inactive
+
+    # ------------------------------------------------------------------
+    # Variables
+    # ------------------------------------------------------------------
+    for y in model.years:
+
+        within_lifetime = _esso_cohort_pair_is_within_lifetime(model, y_inv, y)
+        active_pair = (not inactive and within_lifetime)
+
+        # Annual degradation quantities
+        _set_esso_variable_state(model.es_avg_ch_dch_per_unit[y_inv, y], active_pair, 0.0)
+        _set_esso_variable_state(model.es_degradation_per_unit[y_inv, y], active_pair, 0.0)
+        _set_esso_variable_state(model.es_degradation_per_unit_cumul[y_inv, y], active_pair, 0.0)
+        _set_esso_variable_state(model.es_soh_per_unit[y_inv, y], active_pair, 1.0)
+        _set_esso_variable_state(model.es_soh_per_unit_cumul[y_inv, y], active_pair, 1.0)
+        if slacks_enabled:
+            _set_esso_variable_state(model.slack_es_soh_per_unit_up[y_inv, y], active_pair, 0.0)
+            _set_esso_variable_state(model.slack_es_soh_per_unit_down[y_inv, y], active_pair, 0.0)
+            _set_esso_variable_state(model.slack_es_soh_per_unit_cumul_up[y_inv, y], active_pair, 0.0)
+            _set_esso_variable_state(model.slack_es_soh_per_unit_cumul_down[y_inv, y], active_pair, 0.0)
+
+        # --------------------------------------------------------------
+        # Time-dependent operation
+        # --------------------------------------------------------------
+        for d in model.days:
+            for p in model.periods:
+                _set_esso_variable_state(model.es_sch_per_unit[y_inv, y, d, p], active_pair, 0.0)
+                _set_esso_variable_state(model.es_sdch_per_unit[y_inv, y, d, p], active_pair, 0.0)
+                if slacks_enabled:
+                    _set_esso_variable_state(model.slack_es_ch_comp_per_unit[y_inv, y, d, p], active_pair, 0.0)
+
+    # ------------------------------------------------------------------
+    # Constraints
+    # ------------------------------------------------------------------
+    for constraint_name, constraint_idx, y in (model._esso_cohort_constraints[y_inv]):
+        constraint = getattr(model, constraint_name)[constraint_idx]
+        active_constraint = (not inactive and _esso_cohort_pair_is_within_lifetime(model, y_inv, y))
+        if active_constraint:
+            constraint.activate()
+        else:
+            constraint.deactivate()
+
+    return inactive
+
 
 
 # ======================================================================================================================
