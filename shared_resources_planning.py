@@ -1782,8 +1782,7 @@ def _add_benders_cut(planning_problem, model, recourse_value, sensitivities, can
 # ======================================================================================================================
 #  OPERATIONAL PLANNING (DISTRIBUTED)
 # ======================================================================================================================
-def _run_operational_planning(
-        planning_problem, candidate_solution, initial_state=None, debug_flag=False):
+def _run_operational_planning(planning_problem, candidate_solution, initial_state=None, debug_flag=False):
 
     transmission_network = planning_problem.transmission_network
     distribution_networks = planning_problem.distribution_networks
@@ -1983,8 +1982,12 @@ def _run_operational_planning(
             _print_shared_ess_consensus_diagnostics(planning_problem, consensus_vars)
 
         residual_metrics = get_admm_residual_metrics(planning_problem, tso_model, dso_models, esso_model, consensus_vars)
-
+        _print_worst_primal_residual_diagnostics(residual_metrics, admm_parameters)
+        worst_v_primal = residual_metrics.get('worst_v_primal')
         worst_pf_primal = residual_metrics.get('worst_pf_primal')
+        worst_pf_dual = residual_metrics.get('worst_pf_dual')
+        worst_ess_primal = residual_metrics.get('worst_ess_primal')
+
         if worst_pf_primal is not None and debug_flag:
             unit = 'MW' if worst_pf_primal['power_type'] == 'p' else 'MVAr'
             print(
@@ -2001,7 +2004,6 @@ def _run_operational_planning(
                 f'normalized={worst_pf_primal["normalized_residual"]:.6f}'
             )
 
-        worst_pf_dual = residual_metrics.get('worst_pf_dual')
         if worst_pf_dual is not None and debug_flag:
             unit = 'MW' if worst_pf_dual['power_type'] == 'p' else 'MVAr'
             print(
@@ -2098,6 +2100,16 @@ def _run_operational_planning(
             'dual_pf_mean_ratio': residual_metrics['dual']['pf_mean'] / admm_parameters.tol['stationarity']['pf'],
             'dual_ess_ratio': residual_metrics['dual']['ess'] / admm_parameters.tol['stationarity']['ess'],
             'dual_ess_mean_ratio': residual_metrics['dual']['ess_mean'] / admm_parameters.tol['stationarity']['ess'],
+            'worst_v_primal_node': worst_v_primal['node_id'] if worst_v_primal is not None else None,
+            'worst_v_primal_year': worst_v_primal['year'] if worst_v_primal is not None else None,
+            'worst_v_primal_day': worst_v_primal['day'] if worst_v_primal is not None else None,
+            'worst_v_primal_period': worst_v_primal['period'] if worst_v_primal is not None else None,
+            'worst_v_primal_tso': worst_v_primal['tso_value'] if worst_v_primal is not None else None,
+            'worst_v_primal_dso': worst_v_primal['dso_value'] if worst_v_primal is not None else None,
+            'worst_v_primal_difference': worst_v_primal['absolute_difference'] if worst_v_primal is not None else None,
+            'worst_v_primal_base': worst_v_primal['interface_v_base'] if worst_v_primal is not None else None,
+            'worst_v_primal_rho_tso': worst_v_primal['rho_tso'] if worst_v_primal is not None else None,
+            'worst_v_primal_rho_dso': worst_v_primal['rho_dso'] if worst_v_primal is not None else None,
             'worst_pf_primal_node': worst_pf_primal['node_id'] if worst_pf_primal is not None else None,
             'worst_pf_primal_year': worst_pf_primal['year'] if worst_pf_primal is not None else None,
             'worst_pf_primal_day': worst_pf_primal['day'] if worst_pf_primal is not None else None,
@@ -2107,6 +2119,17 @@ def _run_operational_planning(
             'worst_pf_primal_dso': worst_pf_primal['dso_value'] if worst_pf_primal is not None else None,
             'worst_pf_primal_difference': worst_pf_primal['absolute_difference'] if worst_pf_primal is not None else None,
             'worst_pf_primal_rating': worst_pf_primal['interface_rating'] if worst_pf_primal is not None else None,
+            'worst_ess_primal_node': worst_ess_primal['node_id'] if worst_ess_primal is not None else None,
+            'worst_ess_primal_year': worst_ess_primal['year'] if worst_ess_primal is not None else None,
+            'worst_ess_primal_day': worst_ess_primal['day'] if worst_ess_primal is not None else None,
+            'worst_ess_primal_period': worst_ess_primal['period'] if worst_ess_primal is not None else None,
+            'worst_ess_primal_type': worst_ess_primal['power_type'] if worst_ess_primal is not None else None,
+            'worst_ess_primal_agent': worst_ess_primal['agent'] if worst_ess_primal is not None else None,
+            'worst_ess_primal_agent_value': worst_ess_primal['agent_value'] if worst_ess_primal is not None else None,
+            'worst_ess_primal_z': worst_ess_primal['z_value'] if worst_ess_primal is not None else None,
+            'worst_ess_primal_difference': worst_ess_primal['absolute_difference'] if worst_ess_primal is not None else None,
+            'worst_ess_primal_rating': worst_ess_primal['normalization_rating'] if worst_ess_primal is not None else None,
+            'worst_ess_primal_rho': worst_ess_primal['rho'] if worst_ess_primal is not None else None,
             'worst_pf_dual_agent': worst_pf_dual['agent'] if worst_pf_dual is not None else None,
             'worst_pf_dual_node': worst_pf_dual['node_id'] if worst_pf_dual is not None else None,
             'worst_pf_dual_year': worst_pf_dual['year'] if worst_pf_dual is not None else None,
@@ -2255,6 +2278,7 @@ def update_and_check_convergence(planning_problem, tso_model, dso_models, esso_m
 
     if not check_convergence:
         return False
+
     residual_metrics = get_admm_residual_metrics(
         planning_problem,
         tso_model,
@@ -2262,6 +2286,7 @@ def update_and_check_convergence(planning_problem, tso_model, dso_models, esso_m
         esso_model,
         consensus_vars,
     )
+
     return check_admm_convergence(
         planning_problem,
         consensus_vars,
@@ -3555,8 +3580,10 @@ def get_admm_residual_metrics(planning_problem, tso_model, dso_models, esso_mode
         'ess': 0.0,
     }
 
+    worst_v_primal = None
     worst_pf_primal = None
     worst_pf_dual = None
+    worst_ess_primal = None
 
     for node_id in planning_problem.active_distribution_network_nodes:
 
@@ -3613,7 +3640,6 @@ def get_admm_residual_metrics(planning_problem, tso_model, dso_models, esso_mode
                 # ------------------------------------------------------------------
                 # Residuals
                 # ------------------------------------------------------------------
-
                 for p in range(planning_problem.num_instants):
 
                     # ==============================================================
@@ -3623,10 +3649,26 @@ def get_admm_residual_metrics(planning_problem, tso_model, dso_models, esso_mode
                     dso_v = consensus_vars['vmag']['dso']['current'][node_id][year][day][p]
 
                     # Primal voltage residual
-                    normalized_primal_residual = abs(tso_v - dso_v) / interface_v_base
+                    absolute_difference = abs(tso_v - dso_v)
+                    normalized_primal_residual = absolute_difference / interface_v_base
                     sums['primal']['v'] += normalized_primal_residual
                     counts['primal']['v'] += 1
-                    primal_max['v'] = max(primal_max['v'], normalized_primal_residual)
+                    if worst_v_primal is None or normalized_primal_residual > primal_max['v']:
+                        primal_max['v'] = normalized_primal_residual
+                        worst_v_primal = {
+                            'node_id': node_id,
+                            'year': year,
+                            'day': day,
+                            'period': p,
+                            'tso_value': tso_v,
+                            'dso_value': dso_v,
+                            'absolute_difference': absolute_difference,
+                            'interface_v_base': interface_v_base,
+                            'rho_tso': rho_tso_v,
+                            'rho_dso': rho_dso_v,
+                            'normalized_residual': normalized_primal_residual,
+                        }
+
 
                     # Dual voltage residual
                     for agent, rho in (('tso', rho_tso_v), ('dso', rho_dso_v)):
@@ -3664,6 +3706,8 @@ def get_admm_residual_metrics(planning_problem, tso_model, dso_models, esso_mode
                                 'dso_value': dso_pf,
                                 'absolute_difference': abs(tso_pf - dso_pf),
                                 'interface_rating': interface_rating,
+                                'rho_tso': rho_tso_pf,
+                                'rho_dso': rho_dso_pf,
                                 'normalized_residual': normalized_primal_residual,
                             }
 
@@ -3708,10 +3752,29 @@ def get_admm_residual_metrics(planning_problem, tso_model, dso_models, esso_mode
                             # r_i = ----------
                             #         2 S_i
                             #
-                            normalized_primal_residual = abs(x_current - z_current) / (2.0 * ess_ratings[agent])
+                            absolute_difference = abs(x_current - z_current)
+                            normalized_primal_residual = absolute_difference / (2.0 * ess_ratings[agent])
                             sums['primal']['ess'] += normalized_primal_residual
                             counts['primal']['ess'] += 1
-                            primal_max['ess'] = max(primal_max['ess'], normalized_primal_residual)
+                            if (worst_ess_primal is None or normalized_primal_residual > primal_max['ess']):
+                                primal_max['ess'] = normalized_primal_residual
+                                worst_ess_primal = {
+                                    'node_id': node_id,
+                                    'year': year,
+                                    'day': day,
+                                    'period': p,
+                                    'power_type': power_type,
+                                    'agent': agent,
+                                    'agent_value': x_current,
+                                    'z_value': z_current,
+                                    'absolute_difference': absolute_difference,
+                                    'normalization_rating': ess_ratings[agent],
+                                    'rho': ess_rhos[agent],
+                                    'rho_tso': rho_tso_ess,
+                                    'rho_dso': rho_dso_ess,
+                                    'rho_esso': rho_esso_ess,
+                                    'normalized_residual': normalized_primal_residual,
+                                }
 
                             # Dual consensus residual:
                             #
@@ -3747,8 +3810,10 @@ def get_admm_residual_metrics(planning_problem, tso_model, dso_models, esso_mode
         residual_metrics['primal'][group] = primal_max[group]
         residual_metrics['dual'][group] = dual_max[group]
 
+    residual_metrics['worst_v_primal'] = worst_v_primal
     residual_metrics['worst_pf_primal'] = worst_pf_primal
     residual_metrics['worst_pf_dual'] = worst_pf_dual
+    residual_metrics['worst_ess_primal'] = worst_ess_primal
 
     return residual_metrics
 
@@ -3765,6 +3830,81 @@ def check_admm_convergence(planning_problem, consensus_vars, residual_metrics, p
             print_ess=True,
         )
     return consensus_convergence and stationary_convergence
+
+
+def _print_worst_primal_residual_diagnostics(residual_metrics, params):
+
+    # ------------------------------------------------------------------
+    # Voltage
+    # ------------------------------------------------------------------
+    worst_v = residual_metrics.get('worst_v_primal')
+    if (worst_v is not None and residual_metrics['primal']['v'] > params.tol['consensus']['v']):
+        print(
+            '[DIAG][V MAX] '
+            f'node={worst_v["node_id"]}, '
+            f'year={worst_v["year"]}, '
+            f'day={worst_v["day"]}, '
+            f'period={worst_v["period"]} | '
+            f'TSO={worst_v["tso_value"]:.6f} kV, '
+            f'DSO={worst_v["dso_value"]:.6f} kV, '
+            f'diff={worst_v["absolute_difference"]:.6f} kV, '
+            f'base={worst_v["interface_v_base"]:.6f} kV, '
+            f'normalized={worst_v["normalized_residual"]:.6f}, '
+            f'rho(TSO/DSO)='
+            f'{worst_v["rho_tso"]:.6f}/'
+            f'{worst_v["rho_dso"]:.6f}'
+        )
+
+    # ------------------------------------------------------------------
+    # Interface power flow
+    # ------------------------------------------------------------------
+    worst_pf = residual_metrics.get('worst_pf_primal')
+    if (worst_pf is not None and residual_metrics['primal']['pf'] > params.tol['consensus']['pf']):
+        unit = ('MW' if worst_pf['power_type'] == 'p' else 'MVAr')
+        print(
+            '[DIAG][PF MAX] '
+            f'node={worst_pf["node_id"]}, '
+            f'year={worst_pf["year"]}, '
+            f'day={worst_pf["day"]}, '
+            f'period={worst_pf["period"]}, '
+            f'type={worst_pf["power_type"].upper()} | '
+            f'TSO={worst_pf["tso_value"]:.6f} {unit}, '
+            f'DSO={worst_pf["dso_value"]:.6f} {unit}, '
+            f'diff={worst_pf["absolute_difference"]:.6f} {unit}, '
+            f'rating={worst_pf["interface_rating"]:.6f} MVA, '
+            f'normalized={worst_pf["normalized_residual"]:.6f}, '
+            f'rho(TSO/DSO)='
+            f'{worst_pf["rho_tso"]:.6f}/'
+            f'{worst_pf["rho_dso"]:.6f}'
+        )
+
+    # ------------------------------------------------------------------
+    # Shared ESS
+    # ------------------------------------------------------------------
+    worst_ess = residual_metrics.get('worst_ess_primal')
+    if (worst_ess is not None and residual_metrics['primal']['ess'] > params.tol['consensus']['ess']):
+        unit = ('MW' if worst_ess['power_type'] == 'p' else 'MVAr')
+        print(
+            '[DIAG][ESS MAX] '
+            f'agent={worst_ess["agent"].upper()}, '
+            f'node={worst_ess["node_id"]}, '
+            f'year={worst_ess["year"]}, '
+            f'day={worst_ess["day"]}, '
+            f'period={worst_ess["period"]}, '
+            f'type={worst_ess["power_type"].upper()} | '
+            f'x={worst_ess["agent_value"]:.6f} {unit}, '
+            f'z={worst_ess["z_value"]:.6f} {unit}, '
+            f'diff={worst_ess["absolute_difference"]:.6f} {unit}, '
+            f'norm_rating='
+            f'{worst_ess["normalization_rating"]:.6f} MVA, '
+            f'normalized='
+            f'{worst_ess["normalized_residual"]:.6f}, '
+            f'rho={worst_ess["rho"]:.6f}, '
+            f'rho(TSO/DSO/ESSO)='
+            f'{worst_ess["rho_tso"]:.6f}/'
+            f'{worst_ess["rho_dso"]:.6f}/'
+            f'{worst_ess["rho_esso"]:.6f}'
+        )
 
 
 def _admm_local_solves_succeeded(planning_problem, results):
@@ -5345,6 +5485,7 @@ def _write_finite_difference_validation_to_excel(workbook, validation_results):
 
 def _write_admm_diagnostics_to_excel(workbook, diagnostics):
     sheet = workbook.create_sheet('ADMM Convergence')
+
     columns = [
         ('outer_iteration', 'Planning Iteration', '0'),
         ('cycle', 'ADMM Cycle', '0'),
@@ -5404,8 +5545,30 @@ def _write_admm_diagnostics_to_excel(workbook, diagnostics):
         ('rho_ess_before', 'Mean Rho ESS Before', '0.000000'),
         ('rho_ess_after', 'Mean Rho ESS After', '0.000000'),
         ('rho_ess_action', 'Rho ESS Action', 'General'),
+        ('worst_v_primal_node', 'Worst V Node', '0'),
+        ('worst_v_primal_year', 'Worst V Year', '0'),
+        ('worst_v_primal_day', 'Worst V Day', 'General'),
+        ('worst_v_primal_period', 'Worst V Period', '0'),
+        ('worst_v_primal_difference', 'Worst V Difference, [kV]', '0.000000'),
+        ('worst_pf_primal_node', 'Worst PF Node', '0'),
+        ('worst_pf_primal_year', 'Worst PF Year', '0'),
+        ('worst_pf_primal_day', 'Worst PF Day', 'General'),
+        ('worst_pf_primal_period', 'Worst PF Period', '0'),
+        ('worst_pf_primal_type', 'Worst PF Type', 'General'),
+        ('worst_pf_primal_difference', 'Worst PF Difference, [MW/MVAr]', '0.000000'),
+        ('worst_pf_primal_rating', 'Worst PF Interface Rating, [MVA]','0.000000'),
+        ('worst_pf_primal_rho_tso', 'Worst PF Rho TSO', '0.000000'),
+        ('worst_pf_primal_rho_dso', 'Worst PF Rho DSO', '0.000000'),
+        ('worst_ess_primal_node', 'Worst ESS Node', '0'),
+        ('worst_ess_primal_year', 'Worst ESS Year', '0'),
+        ('worst_ess_primal_day', 'Worst ESS Day', 'General'),
+        ('worst_ess_primal_period', 'Worst ESS Period', '0'),
+        ('worst_ess_primal_type', 'Worst ESS Type', 'General'),
+        ('worst_ess_primal_agent', 'Worst ESS Agent', 'General'),
+        ('worst_ess_primal_difference', 'Worst ESS Difference, [MW/MVAr]', '0.000000'),
+        ('worst_ess_primal_rating', 'Worst ESS Normalization Rating, [MVA]', '0.000000'),
+        ('worst_ess_primal_rho', 'Worst ESS Rho', '0.000000')
     ]
-
     for column_idx, (_, label, _) in enumerate(columns, start=1):
         sheet.cell(row=1, column=column_idx).value = label
     for row_idx, diagnostic in enumerate(diagnostics, start=2):
