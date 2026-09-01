@@ -269,8 +269,8 @@ class SharedResourcesPlanning:
     def get_initial_candidate_solution(self):
         return _get_initial_candidate_solution(self)
 
-    def get_test_candidate_solution(self, s_inv=1.00, e_inv=2.00):
-        return _get_test_candidate_solution(self, s_inv=s_inv, e_inv=e_inv)
+    def get_test_candidate_solution(self, s_inv, e_inv, node_id, investment_year):
+        return _get_test_candidate_solution(self, node_id, investment_year, s_inv=s_inv, e_inv=e_inv)
 
     def plot_diagram(self):
         _plot_networkx_diagram(self)
@@ -9064,19 +9064,21 @@ def _get_initial_candidate_solution(planning_problem):
     return candidate_solution
 
 
-def _get_test_candidate_solution(planning_problem, s_inv=1.00, e_inv=2.00):
-    candidate_solution = {'investment': {}, 'total_capacity': {}}
-    for e in range(len(planning_problem.active_distribution_network_nodes)):
-        node_id = planning_problem.active_distribution_network_nodes[e]
-        candidate_solution['investment'][node_id] = dict()
-        candidate_solution['total_capacity'][node_id] = dict()
-        for year in planning_problem.years:
-            candidate_solution['investment'][node_id][year] = dict()
-            candidate_solution['investment'][node_id][year]['s'] = s_inv
-            candidate_solution['investment'][node_id][year]['e'] = e_inv
-            candidate_solution['total_capacity'][node_id][year] = dict()
-            candidate_solution['total_capacity'][node_id][year]['s'] = s_inv
-            candidate_solution['total_capacity'][node_id][year]['e'] = e_inv
+def _get_test_candidate_solution(planning_problem, node_id, investment_year, s_inv=1.00, e_inv=2.00):
+
+    candidate_solution = _get_initial_candidate_solution(planning_problem)
+
+    if node_id not in candidate_solution['investment']:
+        raise ValueError(f'Unknown shared ESS node {node_id}.')
+
+    if investment_year not in planning_problem.years:
+        raise ValueError(f'Unknown investment year {investment_year}.')
+
+    candidate_solution['investment'][node_id][investment_year]['s'] = s_inv
+    candidate_solution['investment'][node_id][investment_year]['e'] = e_inv
+
+    _rebuild_candidate_total_capacities(planning_problem, candidate_solution)
+
     return candidate_solution
 
 
