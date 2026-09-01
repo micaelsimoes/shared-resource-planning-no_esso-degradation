@@ -517,14 +517,9 @@ def _build_subproblem(shared_ess_data, node_id):
                     _add_esso_cohort_constraint(model, 'energy_storage_limits', y_inv, y, sdch <= s_max)
 
                     if shared_ess_data.params.slacks:
-                        _add_esso_cohort_constraint(model, 'energy_storage_complementarity', y_inv, y, sch * sdch <= model.slack_es_ch_comp_per_unit[y_inv, y, d, p])
+                        _add_esso_cohort_constraint(model, 'energy_storage_complementarity', y_inv, y, sch * sdch <= model.slack_es_ch_comp_per_unit[y_inv, y, d, p] + ESS_COMPLEMENTARITY_TOLERANCE)
                     else:
-                        _add_esso_cohort_constraint(model, 'energy_storage_complementarity', y_inv, y, sch * sdch == 0.00)
-
-                    if shared_ess_data.params.slacks:
-                        model.energy_storage_complementarity.add(sch * sdch <= model.slack_es_ch_comp_per_unit[y_inv, y, d, p] + ESS_COMPLEMENTARITY_TOLERANCE)
-                    else:
-                        model.energy_storage_complementarity.add(sch * sdch <= ESS_COMPLEMENTARITY_TOLERANCE)
+                        _add_esso_cohort_constraint(model, 'energy_storage_complementarity', y_inv, y, sch * sdch <= ESS_COMPLEMENTARITY_TOLERANCE)
 
     # - Shared ESS operation, aggregated
     model.energy_storage_operation_agg = pe.ConstraintList()
@@ -1043,7 +1038,12 @@ def _esso_cohort_pair_is_within_lifetime(model, y_inv, y):
 def _configure_esso_cohort_state(model, y_inv, s_capacity, e_capacity, slacks_enabled):
 
     tolerance = SHARED_ESS_ZERO_CAPACITY_TOLERANCE
-    inactive = (abs(s_capacity) <= tolerance or abs(e_capacity) <= tolerance)
+    s_is_zero = abs(s_capacity) <= tolerance
+    e_is_zero = abs(e_capacity) <= tolerance
+    if s_is_zero != e_is_zero:
+        raise ValueError(f'Inconsistent shared ESS cohort capacity: S={s_capacity}, E={e_capacity}.')
+    inactive = s_is_zero and e_is_zero
+
     model._esso_cohort_inactive[y_inv] = inactive
 
     # ------------------------------------------------------------------
