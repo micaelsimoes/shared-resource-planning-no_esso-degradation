@@ -1862,8 +1862,12 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
                 state,
             )
 
+        _updated_distribution_costs_and_penalties(distribution_networks, dso_models)
         update_distribution_models_to_admm(planning_problem, dso_models, admm_parameters)
+
+        _update_tso_costs_and_penalties(transmission_network, tso_model)
         update_transmission_model_to_admm(planning_problem, tso_model, admm_parameters)
+
         update_shared_energy_storage_model_to_admm(planning_problem, esso_model, admm_parameters)
         _initialize_shared_ess_consensus(planning_problem, consensus_vars)
 
@@ -3053,6 +3057,18 @@ def _shared_ess_admm_normalization_pu(rating_pu, s_base, floor_mva):
     return _shared_ess_admm_normalization_mva(rating_mva, floor_mva) / s_base
 
 
+def _update_tso_costs_and_penalties(transmission_network, model):
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+            model[year][day].penalty_ess_usage.set_value(0.00)
+            model[year][day].penalty_gen_curtailment.set_value(0.00)
+            if transmission_network.params.obj_type == OBJ_MIN_COST:
+                model[year][day].cost_load_curtailment.set_value(COST_CONSUMPTION_CURTAILMENT)
+            elif transmission_network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
+                model[year][day].penalty_load_curtailment.set_value(PENALTY_LOAD_CURTAILMENT)
+                model[year][day].penalty_flex_usage.set_value(0.00)
+
+
 def update_transmission_model_to_admm(planning_problem, model, params):
 
     transmission_network = planning_problem.transmission_network
@@ -3062,15 +3078,6 @@ def update_transmission_model_to_admm(planning_problem, model, params):
         for day in transmission_network.days:
 
             s_base = transmission_network.network[year][day].baseMVA
-
-            # Update costs (penalties) for the coordination procedure
-            model[year][day].penalty_ess_usage.set_value(0.00)
-            model[year][day].penalty_gen_curtailment.set_value(0.00)
-            if transmission_network.params.obj_type == OBJ_MIN_COST:
-                model[year][day].cost_load_curtailment.set_value(COST_CONSUMPTION_CURTAILMENT)
-            elif transmission_network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
-                model[year][day].penalty_load_curtailment.set_value(PENALTY_LOAD_CURTAILMENT)
-                model[year][day].penalty_flex_usage.set_value(0.00)
 
             # Add ADMM variables
             model[year][day].rho_v = pe.Param(mutable=True, domain=pe.NonNegativeReals, initialize=params.rho['v'][transmission_network.name])
@@ -3148,6 +3155,21 @@ def update_transmission_model_to_admm(planning_problem, model, params):
             # Add ADMM OF, deactivate original OF
             model[year][day].objective.deactivate()
             model[year][day].admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
+
+
+def _updated_distribution_costs_and_penalties(distribution_networks, models):
+    for node_id in distribution_networks:
+        dso_model = models[node_id]
+        distribution_network = distribution_networks[node_id]
+        for year in distribution_network.years:
+            for day in distribution_network.days:
+                dso_model[year][day].penalty_ess_usage.set_value(0.00)
+                # dso_model[year][day].penalty_gen_curtailment.set_value(0.00)
+                if distribution_network.params.obj_type == OBJ_MIN_COST:
+                    dso_model[year][day].cost_load_curtailment.set_value(COST_CONSUMPTION_CURTAILMENT)
+                elif distribution_network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
+                    dso_model[year][day].penalty_load_curtailment.set_value(PENALTY_LOAD_CURTAILMENT)
+                    dso_model[year][day].penalty_flex_usage.set_value(0.00)
 
 
 def update_distribution_models_to_admm(planning_problem, models, params):
@@ -3556,7 +3578,38 @@ def update_shared_energy_storages_coordination_model_and_solve(planning_problem,
     return res
 
 
+def _get_expected_network_shared_ess_charge_discharge_mva(model, network, shared_ess_idx, p):
+    """
+    Return probability-weighted expected shared-ESS charging and discharging apparent power in physical MVA.
+    Network-model shared_es_sch/shared_es_sdch variables are in p.u., so the expected values are converted using network.baseMVA.
+    """
+    sch = 0.0
+    sdch = 0.0
+    for s_m in model.scenarios_market:
+        for s_o in model.scenarios_operation:
+            probability = (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
+            sch += probability * pe.value(model.shared_es_sch[shared_ess_idx, s_m, s_o, p])
+            sdch += probability * pe.value(model.shared_es_sdch[shared_ess_idx, s_m, s_o, p])
+    return sch * network.baseMVA, sdch * network.baseMVA
+
+
+def _get_esso_shared_ess_charge_discharge_mva(model, y, d, p):
+    """
+    Return aggregate ESSO charging and discharging apparent power in physical MVA.
+    ESSO variables are defined separately for each investment cohort, so aggregate them over all cohorts.
+    """
+    sch = sum(pe.value(model.es_sch_per_unit[y_inv, y, d, p]) for y_inv in model.years)
+    sdch = sum(pe.value(model.es_sdch_per_unit[y_inv, y, d, p]) for y_inv in model.years)
+    return sch, sdch
+
+
 def get_admm_residual_metrics(planning_problem, tso_model, dso_models, esso_model, consensus_vars):
+
+    repr_years = list(planning_problem.years)
+    repr_days = list(planning_problem.days)
+
+    year_idx = {year: idx for idx, year in enumerate(repr_years)}
+    day_idx = {day: idx for idx, day in enumerate(repr_days)}
 
     sums = {
         'primal': {'v': 0.0, 'pf': 0.0, 'ess': 0.0},
@@ -3757,7 +3810,17 @@ def get_admm_residual_metrics(planning_problem, tso_model, dso_models, esso_mode
                             sums['primal']['ess'] += normalized_primal_residual
                             counts['primal']['ess'] += 1
                             if (worst_ess_primal is None or normalized_primal_residual > primal_max['ess']):
+
                                 primal_max['ess'] = normalized_primal_residual
+
+                                # --------------------------------------------------------------
+                                # Charging/discharging diagnostics at the same point
+                                # --------------------------------------------------------------
+                                y = year_idx[year]
+                                d = day_idx[day]
+                                tso_sch, tso_sdch = _get_expected_network_shared_ess_charge_discharge_mva(tso_model[year][day], network, shared_ess_idx, p)
+                                dso_sch, dso_sdch = _get_expected_network_shared_ess_charge_discharge_mva(dso_model[year][day], dso_network, dso_shared_ess_idx, p)
+                                esso_sch, esso_sdch = _get_esso_shared_ess_charge_discharge_mva(esso_model[node_id], y, d, p)
                                 worst_ess_primal = {
                                     'node_id': node_id,
                                     'year': year,
@@ -3774,6 +3837,39 @@ def get_admm_residual_metrics(planning_problem, tso_model, dso_models, esso_mode
                                     'rho_dso': rho_dso_ess,
                                     'rho_esso': rho_esso_ess,
                                     'normalized_residual': normalized_primal_residual,
+
+                                    # ----------------------------------------------------------
+                                    # Complementarity diagnostics
+                                    # ----------------------------------------------------------
+                                    'charge_discharge': {
+
+                                        'tso': {
+                                            'sch': tso_sch,
+                                            'sdch': tso_sdch,
+                                            'product': tso_sch * tso_sdch,
+                                            'simultaneous': min(tso_sch, tso_sdch),
+                                            'net': tso_sch - tso_sdch,
+                                            'base_mva': network.baseMVA,
+                                        },
+
+                                        'dso': {
+                                            'sch': dso_sch,
+                                            'sdch': dso_sdch,
+                                            'product': dso_sch * dso_sdch,
+                                            'simultaneous': min(dso_sch, dso_sdch),
+                                            'net': dso_sch - dso_sdch,
+                                            'base_mva': dso_network.baseMVA,
+                                        },
+
+                                        'esso': {
+                                            'sch': esso_sch,
+                                            'sdch': esso_sdch,
+                                            'product': esso_sch * esso_sdch,
+                                            'simultaneous': min(esso_sch, esso_sdch),
+                                            'net': esso_sch - esso_sdch,
+                                            'base_mva': None,
+                                        },
+                                    },
                                 }
 
                             # Dual consensus residual:
@@ -3883,6 +3979,7 @@ def _print_worst_primal_residual_diagnostics(residual_metrics, params):
     # ------------------------------------------------------------------
     worst_ess = residual_metrics.get('worst_ess_primal')
     if (worst_ess is not None and residual_metrics['primal']['ess'] > params.tol['consensus']['ess']):
+
         unit = ('MW' if worst_ess['power_type'] == 'p' else 'MVAr')
         print(
             '[DIAG][ESS MAX] '
@@ -3905,6 +4002,23 @@ def _print_worst_primal_residual_diagnostics(residual_metrics, params):
             f'{worst_ess["rho_dso"]:.6f}/'
             f'{worst_ess["rho_esso"]:.6f}'
         )
+
+        charge_discharge = worst_ess.get('charge_discharge')
+        if charge_discharge is not None:
+            for agent in ('tso', 'dso', 'esso'):
+                values = charge_discharge[agent]
+                base_text = ''
+                if values['base_mva'] is not None:
+                    base_text = f', base={values["base_mva"]:.6f} MVA'
+                print(
+                    f'[DIAG][ESS COMP] {agent.upper()} | '
+                    f'Sch={values["sch"]:.6f} MVA, '
+                    f'Sdch={values["sdch"]:.6f} MVA, '
+                    f'net={values["net"]:.6f} MVA, '
+                    f'product={values["product"]:.6e} MVA^2, '
+                    f'simultaneous={values["simultaneous"]:.6f} MVA'
+                    f'{base_text}'
+                )
 
 
 def _admm_local_solves_succeeded(planning_problem, results):
@@ -4063,34 +4177,61 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
     for group in ('v', 'pf', 'ess'):
 
         # --------------------------------------------------------------
-        # Adaptive penalty balancing uses aggregate behavior.
-        # Worst-case residuals are deliberately reserved for stopping.
+        # Adaptive penalty balancing uses normalized residual severity.
+        # For the primal residual, consider both the worst-case and mean
+        # convergence criteria; retain the mean dual residual.
         # --------------------------------------------------------------
-        primal = residual_metrics['primal'][f'{group}_mean']
-        dual = residual_metrics['dual'][f'{group}_mean']
+        primal_max = residual_metrics['primal'][group]
+        primal_mean = residual_metrics['primal'][f'{group}_mean']
+        dual_mean = residual_metrics['dual'][f'{group}_mean']
 
-        primal_tolerance = params.tol['consensus'][f'{group}_mean']
-        dual_tolerance = params.tol['stationarity'][group]
+        primal_max_tol = params.tol['consensus'][group]
+        primal_mean_tol = params.tol['consensus'][f'{group}_mean']
+        dual_tol = params.tol['stationarity'][group]
 
-        normalized_primal = primal / primal_tolerance
-        normalized_dual = dual / dual_tolerance
+        # Normalized residual severities
+        primal_max_ratio = primal_max / primal_max_tol
+        primal_mean_ratio = primal_mean / primal_mean_tol
 
-        adaptation_converged = (_admm_metric_within_tolerance(primal, primal_tolerance) and _admm_metric_within_tolerance(dual, dual_tolerance))
+        primal_ratio = max(primal_max_ratio, primal_mean_ratio)
+        dual_ratio = dual_mean / dual_tol
+
+        adaptation_converged = (primal_ratio <= 1.0 and dual_ratio <= 1.0)
+
+        # --------------------------------------------------------------
+        # Residual-balance thresholds
+        # --------------------------------------------------------------
+        increase_balance_ratio = update_params['residual_balance_ratio']
+        decrease_balance_ratio = (update_params.get('residual_balance_ratio_pf_decrease', update_params['residual_balance_ratio']) if group == 'pf' else update_params['residual_balance_ratio'])
 
         factor = 1.0
         action = 'held'
 
+        # --------------------------------------------------------------
+        # Determine penalty update
+        # --------------------------------------------------------------
         if not params.adaptive_penalty:
             action = 'fixed'
         elif not allow_update:
             action = 'held after solver failure'
         elif not adaptation_converged:
-            if (normalized_primal > update_params['residual_balance_ratio'] * normalized_dual):
+            if (primal_ratio > increase_balance_ratio * dual_ratio):
                 factor = update_params['increase_factor']
                 action = 'increased'
-            elif (normalized_dual > update_params['residual_balance_ratio'] * normalized_primal):
+            elif (dual_ratio > decrease_balance_ratio * primal_ratio):
                 factor = 1.0 / update_params['decrease_factor']
                 action = 'decreased'
+
+        print(
+            f'[ADMM RHO] {group.upper()} | '
+            f'primal max ratio={primal_max_ratio:.3f} | '
+            f'primal mean ratio={primal_mean_ratio:.3f} | '
+            f'primal selected={primal_ratio:.3f} | '
+            f'dual mean ratio={dual_ratio:.3f} | '
+            f'increase threshold={increase_balance_ratio:.1f} | '
+            f'decrease threshold={decrease_balance_ratio:.1f} | '
+            f'action={action}'
+        )
 
         actions[group] = action
         factors[group] = factor
@@ -8784,7 +8925,7 @@ def _write_relaxation_slacks_results_network_operators_to_excel(planning_problem
 
 def _write_relaxation_slacks_results_per_operator(network, sheet, operator_type, row_idx, results, params, tn_node_id='-'):
 
-    decimal_style = '0.00'
+    decimal_style = '0.000000'
     voltage_decimal_style = '0.000000'
     voltage_quantities = (
         ('squared_down', 'Voltage squared slack, down [p.u.^2]'),
