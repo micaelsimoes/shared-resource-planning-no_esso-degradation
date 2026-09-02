@@ -3356,10 +3356,41 @@ def update_transmission_model_to_admm(planning_problem, model, params, objective
     transmission_network = planning_problem.transmission_network
     distribution_networks = planning_problem.distribution_networks
 
+    proximal_cfg = params.proximal_regularization
+    use_tso_proximal = (proximal_cfg['enabled'] and proximal_cfg['tso']['enabled'])
+    tso_proximal_cfg = proximal_cfg['tso']
+
     for year in transmission_network.years:
         for day in transmission_network.days:
 
             s_base = transmission_network.network[year][day].baseMVA
+
+            if use_tso_proximal:
+                model[year][day].prox_gamma_v = pe.Param(initialize=tso_proximal_cfg['gamma']['v'])
+                model[year][day].prox_gamma_pf = pe.Param(initialize=tso_proximal_cfg['gamma']['pf'])
+                model[year][day].prox_gamma_ess = pe.Param(initialize=tso_proximal_cfg['gamma']['ess'])
+
+                # Previous successful TSO iterate: interface voltage
+                model[year][day].prox_v_prev = pe.Param(model[year][day].active_distribution_networks, model[year][day].periods, mutable=True, domain=pe.Reals, initialize=1.0)
+
+                # Previous successful TSO iterate: interface P/Q
+                model[year][day].prox_pf_p_prev = pe.Param(model[year][day].active_distribution_networks, model[year][day].periods, mutable=True, domain=pe.Reals, initialize=0.0)
+                model[year][day].prox_pf_q_prev = pe.Param(model[year][day].active_distribution_networks, model[year][day].periods, mutable=True, domain=pe.Reals, initialize=0.0)
+
+                # Previous successful TSO iterate: shared-ESS P/Q
+                model[year][day].prox_ess_p_prev = pe.Param(model[year][day].shared_energy_storages, model[year][day].periods, mutable=True, domain=pe.Reals, initialize=0.0)
+                model[year][day].prox_ess_q_prev = pe.Param(model[year][day].shared_energy_storages, model[year][day].periods, mutable=True, domain=pe.Reals, initialize=0.0)
+
+                for dn in model[year][day].active_distribution_networks:
+                    for p in model[year][day].periods:
+                        model[year][day].prox_v_prev[dn, p].set_value(pe.value(model[year][day].expected_interface_vmag[dn, p]))
+                        model[year][day].prox_pf_p_prev[dn, p].set_value(pe.value(model[year][day].expected_interface_pf_p[dn, p]))
+                        model[year][day].prox_pf_q_prev[dn, p].set_value(pe.value(model[year][day].expected_interface_pf_q[dn, p]))
+
+                for e in model[year][day].shared_energy_storages:
+                    for p in model[year][day].periods:
+                        model[year][day].prox_ess_p_prev[e, p].set_value(pe.value(model[year][day].expected_shared_ess_p[e, p]))
+                        model[year][day].prox_ess_q_prev[e, p].set_value(pe.value(model[year][day].expected_shared_ess_q[e, p]))
 
             # Add ADMM variables
             model[year][day].rho_v = pe.Param(mutable=True, domain=pe.NonNegativeReals, initialize=params.rho['v'][transmission_network.name])
@@ -3413,26 +3444,44 @@ def update_transmission_model_to_admm(planning_problem, model, params, objective
                     obj += (model[year][day].rho_pf / 2) * (constraint_p_req ** 2)
                     obj += (model[year][day].rho_pf / 2) * (constraint_q_req ** 2)
 
+                    if use_tso_proximal:
+
+                        # ----------------------------------------------------------------------
+                        # Pure proximal regularization: interface voltage
+                        proximal_v = model[year][day].expected_interface_vmag[dn, p] - model[year][day].prox_v_prev[dn, p]
+                        obj += (model[year][day].prox_gamma_v / 2) * proximal_v ** 2
+
+                        # ----------------------------------------------------------------------
+                        # Pure proximal regularization: interface active/reactive power
+                        proximal_pf_p = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].prox_pf_p_prev[dn, p]) / interface_transf_rating
+                        proximal_pf_q = (model[year][day].expected_interface_pf_q[dn, p] - model[year][day].prox_pf_q_prev[dn, p]) / interface_transf_rating
+                        obj += (model[year][day].prox_gamma_pf / 2) * proximal_pf_p ** 2
+                        obj += (model[year][day].prox_gamma_pf / 2) * proximal_pf_q ** 2
+
             for e in model[year][day].shared_energy_storages:
 
-                shared_ess_rating = _shared_ess_admm_normalization_pu(
-                    transmission_network.network[year][day].shared_energy_storages[e].s,
-                    s_base,
-                    params.shared_ess_normalization_floor_mva,
-                )
+                shared_ess_rating = _shared_ess_admm_normalization_pu(transmission_network.network[year][day].shared_energy_storages[e].s, s_base, params.shared_ess_normalization_floor_mva)
 
                 for p in model[year][day].periods:
+
                     constraint_ess_p_req = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_req[e, p]) / (2 * shared_ess_rating)
                     constraint_ess_q_req = (model[year][day].expected_shared_ess_q[e, p] - model[year][day].q_ess_req[e, p]) / (2 * shared_ess_rating)
                     obj += (model[year][day].dual_ess_p_req[e, p]) * constraint_ess_p_req
                     obj += (model[year][day].dual_ess_q_req[e, p]) * constraint_ess_q_req
                     obj += (model[year][day].rho_ess / 2) * constraint_ess_p_req ** 2
                     obj += (model[year][day].rho_ess / 2) * constraint_ess_q_req ** 2
+
                     if params.previous_iter['ess']['tso']:
                         constraint_ess_p_prev = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].p_ess_prev[e, p]) / (2 * shared_ess_rating)
                         constraint_ess_q_prev = (model[year][day].expected_shared_ess_q[e, p] - model[year][day].q_ess_prev[e, p]) / (2 * shared_ess_rating)
                         obj += (model[year][day].rho_ess_prev / 2) * constraint_ess_p_prev ** 2
                         obj += (model[year][day].rho_ess_prev / 2) * constraint_ess_q_prev ** 2
+
+                    if use_tso_proximal:
+                        proximal_ess_p = (model[year][day].expected_shared_ess_p[e, p] - model[year][day].prox_ess_p_prev[e, p]) / (2 * shared_ess_rating)
+                        proximal_ess_q = (model[year][day].expected_shared_ess_q[e, p] - model[year][day].prox_ess_q_prev[e, p]) / (2 * shared_ess_rating)
+                        obj += (model[year][day].prox_gamma_ess / 2) * proximal_ess_p ** 2
+                        obj += (model[year][day].prox_gamma_ess / 2) * proximal_ess_q ** 2
 
             # Add ADMM OF, deactivate original OF
             model[year][day].objective.deactivate()
