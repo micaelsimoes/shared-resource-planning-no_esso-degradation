@@ -27,6 +27,25 @@ class ADMMParameters:
         self.rho = {'v': dict(), 'pf': dict(), 'ess': dict()}
         self.previous_iter = {'v': dict(), 'pf': dict(), 'ess': dict()}
         self.rho_previous_iter = {'v': dict(), 'pf': dict(), 'ess': dict()}
+        self.proximal_regularization = {
+            'enabled': False,
+            'tso': {
+                'enabled': False,
+                'gamma': {
+                    'v': 1.0,
+                    'pf': 1.0,
+                    'ess': 1.0,
+                },
+            },
+            'dso': {
+                'enabled': False,
+                'gamma': {
+                    'v': 1.0,
+                    'pf': 1.0,
+                    'ess': 1.0,
+                },
+            },
+        }
 
     def read_parameters_from_file(self, params_data):
         _read_parameters_from_file(self, params_data)
@@ -57,8 +76,6 @@ def _read_parameters_from_file(admm_params, params_data):
     penalty_update = params_data.get('penalty_update', {})
     for key in admm_params.penalty_update:
         if key in penalty_update:
-            if admm_params.penalty_update['residual_balance_ratio_pf_decrease'] <= 1.0:
-                raise ValueError('ADMM residual_balance_ratio_pf_decrease must be greater than 1.')
             admm_params.penalty_update[key] = float(penalty_update[key])
 
     if admm_params.minimum_consecutive_converged_cycles < 1:
@@ -67,6 +84,8 @@ def _read_parameters_from_file(admm_params, params_data):
         raise ValueError('ADMM shared-ESS normalization floor must be positive.')
     if admm_params.penalty_update['residual_balance_ratio'] <= 1.0:
         raise ValueError('ADMM residual_balance_ratio must be greater than 1.')
+    if admm_params.penalty_update['residual_balance_ratio_pf_decrease'] <= 1.0:
+        raise ValueError('ADMM residual_balance_ratio_pf_decrease must be greater than 1.')
     if admm_params.penalty_update['increase_factor'] <= 1.0:
         raise ValueError('ADMM increase_factor must be greater than 1.')
     if admm_params.penalty_update['decrease_factor'] <= 1.0:
@@ -88,3 +107,17 @@ def _read_parameters_from_file(admm_params, params_data):
     admm_params.previous_iter['ess']['dso'] = bool(params_data['previous_iteration']['ess']['dso'])
     if admm_params.previous_iter['ess']['tso'] or admm_params.previous_iter['ess']['dso']:
         admm_params.rho_previous_iter['ess'] = params_data['rho_previous_iter']['ess']
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # Proximal regularization
+    proximal_data = params_data.get('proximal_regularization', {})
+    admm_params.proximal_regularization['enabled'] = bool(proximal_data.get('enabled', admm_params.proximal_regularization['enabled']))
+    for agent in ('tso', 'dso'):
+        agent_data = proximal_data.get(agent, {})
+        admm_params.proximal_regularization[agent]['enabled'] = bool(agent_data.get('enabled', admm_params.proximal_regularization[agent]['enabled']))
+        gamma_data = agent_data.get('gamma', {})
+        for group in ('v', 'pf', 'ess'):
+            gamma = float(gamma_data.get(group, admm_params.proximal_regularization[agent]['gamma'][group]))
+            if gamma < 0.0:
+                raise ValueError(f'ADMM proximal gamma for {agent.upper()} {group.upper()} must be non-negative.')
+            admm_params.proximal_regularization[agent]['gamma'][group] = gamma
