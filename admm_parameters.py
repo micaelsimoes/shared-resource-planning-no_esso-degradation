@@ -18,6 +18,7 @@ class ADMMParameters:
         self.adaptive_penalty = False
         self.penalty_update = {
             'residual_balance_ratio': 5.0,
+            'residual_balance_ratio_pf_decrease': 5.0,
             'increase_factor': 2.0,
             'decrease_factor': 2.0,
             'min': 1e-4,
@@ -56,6 +57,8 @@ def _read_parameters_from_file(admm_params, params_data):
     penalty_update = params_data.get('penalty_update', {})
     for key in admm_params.penalty_update:
         if key in penalty_update:
+            if admm_params.penalty_update['residual_balance_ratio_pf_decrease'] <= 1.0:
+                raise ValueError('ADMM residual_balance_ratio_pf_decrease must be greater than 1.')
             admm_params.penalty_update[key] = float(penalty_update[key])
 
     if admm_params.minimum_consecutive_converged_cycles < 1:
