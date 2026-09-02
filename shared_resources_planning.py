@@ -739,6 +739,155 @@ def _get_operational_recourse_components(planning_problem, models):
     }
 
 
+def _get_operational_recourse_block_components(planning_problem, models):
+    """
+    Decompose net operational recourse into the exact weighted TSO/DSO year-day contributions used by NetworkData.get_primal_value().
+    Keys:
+        ('TSO', None, year, day)
+        ('DSO', node_id, year, day)
+        ('SALVAGE', None, None, None)
+    The salvage contribution is stored with a negative sign so that:
+        sum(blocks.values()) == net_operational_recourse
+    """
+
+    blocks = dict()
+
+    # --------------------------------------------------------------------------------------------------------------
+    # TSO blocks
+    transmission_network = planning_problem.transmission_network
+
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+            local_value = transmission_network.network[year][day].get_primal_value(models['tso'][year][day], transmission_network.params)
+            weight = _get_admm_block_weight(transmission_network, year, day)
+            blocks[('TSO', None, year, day)] = float(weight * local_value)
+
+    # --------------------------------------------------------------------------------------------------------------
+    # DSO blocks
+    for node_id, distribution_network in planning_problem.distribution_networks.items():
+        for year in distribution_network.years:
+            for day in distribution_network.days:
+                local_value = distribution_network.network[year][day].get_primal_value(models['dso'][node_id][year][day], distribution_network.params)
+                weight = _get_admm_block_weight(distribution_network, year, day)
+                blocks[('DSO', node_id, year, day)] = float(weight * local_value)
+
+    # --------------------------------------------------------------------------------------------------------------
+    # Terminal salvage
+    # Net recourse = gross operating cost - terminal salvage.
+    terminal_salvage_value = planning_problem.shared_ess_data.get_salvage_value(models['esso'])
+    blocks[('SALVAGE', None, None, None)] = -float(terminal_salvage_value)
+
+    return blocks
+
+
+def _print_recourse_jump_diagnostics(current_blocks, previous_blocks, cycle, current_recourse, previous_recourse, objective_tolerance, top_n=10):
+    """
+    Print the blocks responsible for a failure of the recourse-stationarity criterion.
+    Block changes are ranked by absolute magnitude, while the signed change is retained so that increases and decreases can be distinguished.
+    """
+
+    if current_blocks is None or previous_blocks is None:
+        return
+
+    if current_recourse is None or previous_recourse is None:
+        return
+
+    if objective_tolerance is None:
+        return
+
+    signed_recourse_delta = current_recourse - previous_recourse
+    objective_change_abs = abs(signed_recourse_delta)
+
+    # Only print the detailed decomposition when recourse stationarity fails.
+    if objective_change_abs <= objective_tolerance:
+        return
+
+    changes = list()
+
+    all_keys = set(current_blocks) | set(previous_blocks)
+
+    for key in all_keys:
+
+        previous_value = previous_blocks.get(key, 0.0)
+        current_value = current_blocks.get(key, 0.0)
+
+        delta = current_value - previous_value
+
+        agent, node_id, year, day = key
+
+        changes.append({
+            'agent': agent,
+            'node_id': node_id,
+            'year': year,
+            'day': day,
+            'previous': previous_value,
+            'current': current_value,
+            'delta': delta,
+            'abs_delta': abs(delta),
+        })
+
+    changes.sort(key=lambda entry: entry['abs_delta'], reverse=True)
+
+    # --------------------------------------------------------------------------------------------------------------
+    # Reconciliation
+    previous_block_total = sum(previous_blocks.values())
+    current_block_total = sum(current_blocks.values())
+
+    signed_block_delta = current_block_total - previous_block_total
+    delta_mismatch = signed_block_delta - signed_recourse_delta
+
+    print(
+        f'[RECOURSE JUMP] cycle={cycle} | '
+        f'abs_change={objective_change_abs:.6e} | '
+        f'tol={objective_tolerance:.6e} | '
+        f'signed_change={signed_recourse_delta:+.6e}'
+    )
+
+    print(
+        f'[RECOURSE JUMP] Reconciliation | '
+        f'previous={previous_block_total:.6e} | '
+        f'current={current_block_total:.6e} | '
+        f'block_delta={signed_block_delta:+.6e} | '
+        f'mismatch={delta_mismatch:+.6e}'
+    )
+
+    # --------------------------------------------------------------------------------------------------------------
+    # Aggregate changes by agent
+    aggregate_changes = dict()
+
+    for entry in changes:
+
+        if entry['agent'] == 'DSO':
+            aggregate_key = f'DSO node={entry["node_id"]}'
+        else:
+            aggregate_key = entry['agent']
+
+        if aggregate_key not in aggregate_changes:
+            aggregate_changes[aggregate_key] = 0.0
+
+        aggregate_changes[aggregate_key] += entry['delta']
+
+    print('[RECOURSE JUMP] Aggregate signed changes:')
+
+    for aggregate_key, delta in sorted(aggregate_changes.items(), key=lambda item: abs(item[1]), reverse=True):
+        print(f'  {aggregate_key} | delta={delta:+.6e}')
+
+    # --------------------------------------------------------------------------------------------------------------
+    # Largest individual year-day changes
+    print(f'[RECOURSE JUMP] Largest {min(top_n, len(changes))} block changes:')
+    for entry in changes[:top_n]:
+        print(
+            f'  {entry["agent"]} '
+            f'node={entry["node_id"]} '
+            f'year={entry["year"]} '
+            f'day={entry["day"]} | '
+            f'previous={entry["previous"]:.6e} | '
+            f'current={entry["current"]:.6e} | '
+            f'delta={entry["delta"]:+.6e} | '
+            f'abs_delta={entry["abs_delta"]:.6e}'
+        )
+
+
 def _get_operational_sensitivities(planning_problem, models):
     available_sensitivities = {'s': dict(), 'e': dict()}
     for year in planning_problem.years:
@@ -1811,6 +1960,10 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         initial_state.get('last_recourse')
         if continuing_same_candidate else None
     )
+    previous_recourse_blocks = (
+        deepcopy(initial_state.get('last_recourse_blocks'))
+        if continuing_same_candidate else None
+    )
     consecutive_converged_cycles = (
         initial_state.get('consecutive_converged_cycles', 0)
         if continuing_same_candidate else 0
@@ -1847,6 +2000,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
                 'dual_vars': deepcopy(dual_vars),
                 'candidate_solution': deepcopy(candidate_solution),
                 'last_recourse': None,
+                'last_recourse_blocks': None,
                 'consecutive_converged_cycles': 0,
                 'admm_diagnostics': admm_diagnostics,
                 'solver_recovery_diagnostics': deepcopy(shared_ess_data.solver_recovery_diagnostics),
@@ -1896,12 +2050,6 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         _update_operational_models_with_candidate(planning_problem, models, candidate_solution)
 
     sess_available_capacities = shared_ess_data.get_updated_capacities(esso_model)
-    # if debug_flag:
-    #     print("[DEBUG] available_capacities:")
-    #     for node_id in sess_available_capacities:
-    #         print(f"\t{node_id}:")
-    #         for year in sess_available_capacities[node_id]:
-    #             print(f"\t{year}: {sess_available_capacities[node_id][year]}")
 
     # ------------------------------------------------------------------------------------------------------------------
     # ADMM -- Main cycle
@@ -2034,22 +2182,60 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
 
         recourse = None
         gross_operational_cost = None
+        recourse_blocks = None
         terminal_salvage_value = None
         objective_change_abs = None
         objective_change_rel = None
         objective_tolerance = None
         objective_convergence = False
         if local_solves_ok:
-            recourse_components = _get_operational_recourse_components(planning_problem, {'tso': tso_model, 'dso': dso_models, 'esso': esso_model},)
+
+            operational_models = {
+                'tso': tso_model,
+                'dso': dso_models,
+                'esso': esso_model,
+            }
+
+            recourse_components = _get_operational_recourse_components(planning_problem, operational_models)
             gross_operational_cost = recourse_components['gross_operational_cost']
             terminal_salvage_value = recourse_components['terminal_salvage_value']
             recourse = recourse_components['net_operational_recourse']
+
+            # Per-agent / per-year / per-day recourse decomposition.
+            recourse_blocks = _get_operational_recourse_block_components(planning_problem, operational_models)
+
+            # ----------------------------------------------------------------------------------------------------------
+            # Check that the decomposition exactly reproduces the net recourse.
+            block_recourse = sum(recourse_blocks.values())
+            reconciliation_tolerance = max(1e-4, 1e-10 * max(abs(recourse), 1.0))
+            if abs(block_recourse - recourse) > reconciliation_tolerance:
+                print(
+                    '[WARNING][RECOURSE JUMP] '
+                    'Block decomposition does not reconcile with net recourse | '
+                    f'blocks={block_recourse:.6f} | '
+                    f'recourse={recourse:.6f} | '
+                    f'difference={block_recourse - recourse:+.6e}'
+                )
+
+            # ----------------------------------------------------------------------------------------------------------
+            # Existing recourse-stationarity calculation.
             if previous_recourse is not None:
                 objective_change_abs = abs(recourse - previous_recourse)
                 recourse_scale = max(abs(recourse), abs(previous_recourse), 1.0)
                 objective_change_rel = objective_change_abs / recourse_scale
                 objective_tolerance = max(admm_parameters.tol['objective']['abs'], admm_parameters.tol['objective']['rel'] * recourse_scale)
-                objective_convergence = objective_change_abs <= objective_tolerance
+                objective_convergence = (objective_change_abs <= objective_tolerance)
+
+            if (recourse_blocks is not None and previous_recourse_blocks is not None and objective_change_abs is not None and objective_tolerance is not None):
+                _print_recourse_jump_diagnostics(
+                    current_blocks=recourse_blocks,
+                    previous_blocks=previous_recourse_blocks,
+                    cycle=iter,
+                    current_recourse=recourse,
+                    previous_recourse=previous_recourse,
+                    objective_tolerance=objective_tolerance,
+                    top_n=10,
+                )
 
         if recourse is None:
             print('[INFO]\t\t - Recourse stationarity unavailable after a failed local solve.')
@@ -2194,6 +2380,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         )
 
         previous_recourse = recourse
+        previous_recourse_blocks = recourse_blocks
 
         sess_available_capacities = shared_ess_data.get_updated_capacities(esso_model)
         if debug_flag:
@@ -2236,6 +2423,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         'dual_vars': deepcopy(dual_vars),
         'candidate_solution': deepcopy(candidate_solution),
         'last_recourse': previous_recourse,
+        'last_recourse_blocks': deepcopy(previous_recourse_blocks),
         'consecutive_converged_cycles': consecutive_converged_cycles,
         'admm_diagnostics': admm_diagnostics,
         'solver_recovery_diagnostics': deepcopy(shared_ess_data.solver_recovery_diagnostics),
