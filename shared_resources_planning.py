@@ -1862,12 +1862,12 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
                 state,
             )
 
-        _updated_distribution_costs_and_penalties(distribution_networks, dso_models)
-        update_distribution_models_to_admm(planning_problem, dso_models, admm_parameters)
+        _prepare_distribution_objectives_for_admm(distribution_networks, dso_models)
+        _prepare_transmission_objectives_for_admm(transmission_network, tso_model)
+        objective_scale = _compute_common_admm_objective_scale(planning_problem, tso_model, dso_models)
 
-        _update_tso_costs_and_penalties(transmission_network, tso_model)
-        update_transmission_model_to_admm(planning_problem, tso_model, admm_parameters)
-
+        update_distribution_models_to_admm(planning_problem, dso_models, admm_parameters, objective_scale)
+        update_transmission_model_to_admm(planning_problem, tso_model, admm_parameters, objective_scale)
         update_shared_energy_storage_model_to_admm(planning_problem, esso_model, admm_parameters)
         _initialize_shared_ess_consensus(planning_problem, consensus_vars)
 
@@ -2046,9 +2046,9 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             recourse = recourse_components['net_operational_recourse']
             if previous_recourse is not None:
                 objective_change_abs = abs(recourse - previous_recourse)
-                objective_scale = max(abs(recourse), abs(previous_recourse), 1.0)
-                objective_change_rel = objective_change_abs / objective_scale
-                objective_tolerance = max(admm_parameters.tol['objective']['abs'], admm_parameters.tol['objective']['rel'] * objective_scale)
+                recourse_scale = max(abs(recourse), abs(previous_recourse), 1.0)
+                objective_change_rel = objective_change_abs / recourse_scale
+                objective_tolerance = max(admm_parameters.tol['objective']['abs'], admm_parameters.tol['objective']['rel'] * recourse_scale)
                 objective_convergence = objective_change_abs <= objective_tolerance
 
         if recourse is None:
@@ -2324,10 +2324,104 @@ def print_debug_info(planning_problem, consensus_vars, print_vmag=False, print_p
 
 
 def _scenario_probability(network, market_scenario, operation_scenario):
-    return (
-        network.prob_market_scenarios[market_scenario]
-        * network.prob_operation_scenarios[operation_scenario]
+    return network.prob_market_scenarios[market_scenario] * network.prob_operation_scenarios[operation_scenario]
+
+
+def _get_admm_block_weight(network_data, year, day):
+    years = list(network_data.years)
+    annualization = 1.0 / ((1.0 + network_data.discount_factor) ** (int(year) - int(years[0])))
+    return float(network_data.years[year]) * float(network_data.days[day]) * annualization
+
+
+def _compute_common_admm_objective_scale(planning_problem, tso_model, dso_models):
+
+    values = []
+    entries = []
+
+    # TSO
+    transmission_network = planning_problem.transmission_network
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+
+            weight = _get_admm_block_weight(transmission_network, year, day)
+            raw_value = pe.value(tso_model[year][day].objective.expr)
+            weighted_value = abs(weight * raw_value)
+            scenario_penalty = pe.value(tso_model[year][day].scenario_deviation_penalty) if hasattr(tso_model[year][day], 'scenario_deviation_penalty') else 0.0
+            raw_base = raw_value - scenario_penalty
+            if isfinite(weighted_value) and weighted_value > SMALL_TOLERANCE:
+                values.append(weighted_value)
+
+            entries.append({
+                'agent': 'TSO',
+                'node': None,
+                'year': year,
+                'day': day,
+                'weight': weight,
+                'raw_base': raw_base,
+                'scenario_penalty': scenario_penalty,
+                'raw_total': raw_value,
+                'weighted_base': weight * raw_base,
+                'weighted_scenario_penalty': weight * scenario_penalty,
+                'weighted_total': weight * raw_value,
+            })
+
+    # DSOs
+    for node_id, distribution_network in planning_problem.distribution_networks.items():
+        for year in distribution_network.years:
+            for day in distribution_network.days:
+
+                weight = _get_admm_block_weight(distribution_network, year, day)
+                raw_value = pe.value(dso_models[node_id][year][day].objective.expr)
+                weighted_value = abs(weight * raw_value)
+                scenario_penalty = pe.value(dso_models[node_id][year][day].scenario_deviation_penalty) if hasattr(dso_models[node_id][year][day], 'scenario_deviation_penalty') else 0.0
+                raw_base = raw_value - scenario_penalty
+                if isfinite(weighted_value) and weighted_value > SMALL_TOLERANCE:
+                    values.append(weighted_value)
+
+                entries.append({
+                    'agent': 'DSO',
+                    'node': node_id,
+                    'year': year,
+                    'day': day,
+                    'weight': weight,
+                    'raw_base': raw_base,
+                    'scenario_penalty': scenario_penalty,
+                    'raw_total': raw_value,
+                    'weighted_base': weight * raw_base,
+                    'weighted_scenario_penalty': weight * scenario_penalty,
+                    'weighted_total': weight * raw_value,
+                })
+
+    if not values:
+        raise ValueError('Cannot compute common ADMM objective scale: no valid weighted TSO/DSO objective values were found.')
+
+    objective_scale = float(max(values))
+    if (not isfinite(objective_scale) or objective_scale <= SMALL_TOLERANCE):
+        raise ValueError(f'Invalid common ADMM objective scale: {objective_scale}')
+
+    print(
+        '[ADMM OF SCALE] '
+        f'n={len(values)} | '
+        f'min={min(values):.6e} | '
+        f'median={np.median(values):.6e} | '
+        f'max={max(values):.6e} | '
+        f'selected={objective_scale:.6e}'
     )
+
+    entries_sorted = sorted(entries, key=lambda x: abs(x['weighted_total']), reverse=True)
+    print('[ADMM OF SCALE] Largest weighted objectives:')
+    for entry in entries_sorted[:10]:
+        print(
+            f'  {entry["agent"]} '
+            f'node={entry["node"]} '
+            f'year={entry["year"]} '
+            f'day={entry["day"]} | '
+            f'base={entry["weighted_base"]:.6e} | '
+            f'scenario={entry["weighted_scenario_penalty"]:.6e} | '
+            f'total={entry["weighted_total"]:.6e}'
+        )
+
+    return objective_scale
 
 
 def _add_tso_scenario_deviation_penalty(model, network, include_voltage=True):
@@ -3057,7 +3151,7 @@ def _shared_ess_admm_normalization_pu(rating_pu, s_base, floor_mva):
     return _shared_ess_admm_normalization_mva(rating_mva, floor_mva) / s_base
 
 
-def _update_tso_costs_and_penalties(transmission_network, model):
+def _prepare_transmission_objectives_for_admm(transmission_network, model):
     for year in transmission_network.years:
         for day in transmission_network.days:
             model[year][day].penalty_ess_usage.set_value(0.00)
@@ -3069,7 +3163,7 @@ def _update_tso_costs_and_penalties(transmission_network, model):
                 model[year][day].penalty_flex_usage.set_value(0.00)
 
 
-def update_transmission_model_to_admm(planning_problem, model, params):
+def update_transmission_model_to_admm(planning_problem, model, params, objective_scale):
 
     transmission_network = planning_problem.transmission_network
     distribution_networks = planning_problem.distribution_networks
@@ -3102,15 +3196,15 @@ def update_transmission_model_to_admm(planning_problem, model, params):
                 model[year][day].dual_ess_p_prev = pe.Param(model[year][day].shared_energy_storages, model[year][day].periods, mutable=True, domain=pe.Reals)           # Dual variable - previous iteration shared ESS active power
                 model[year][day].dual_ess_q_prev = pe.Param(model[year][day].shared_energy_storages, model[year][day].periods, mutable=True, domain=pe.Reals)           # Dual variable - previous iteration shared ESS reactive power
 
+
             # Objective function - augmented Lagrangian
-            raw_objective_value = pe.value(model[year][day].objective)
-            init_of_value = 1.00
-            if transmission_network.params.obj_type == OBJ_MIN_COST:
-                init_of_value = abs(raw_objective_value)
-            if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
-                init_of_value = 0.01
-            model[year][day].admm_objective_scale = pe.Param(initialize=init_of_value)
-            obj = copy(model[year][day].objective.expr) / init_of_value
+            block_weight = _get_admm_block_weight(transmission_network, year, day)
+            effective_scale = objective_scale / block_weight
+
+            model[year][day].admm_common_objective_scale = pe.Param(initialize=objective_scale)
+            model[year][day].admm_block_weight = pe.Param(initialize=block_weight)
+            model[year][day].admm_objective_scale = pe.Param(initialize=effective_scale)
+            obj = copy(model[year][day].objective.expr) / effective_scale
 
             for dn in model[year][day].active_distribution_networks:
 
@@ -3157,7 +3251,7 @@ def update_transmission_model_to_admm(planning_problem, model, params):
             model[year][day].admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
 
 
-def _updated_distribution_costs_and_penalties(distribution_networks, models):
+def _prepare_distribution_objectives_for_admm(distribution_networks, models):
     for node_id in distribution_networks:
         dso_model = models[node_id]
         distribution_network = distribution_networks[node_id]
@@ -3172,7 +3266,7 @@ def _updated_distribution_costs_and_penalties(distribution_networks, models):
                     dso_model[year][day].penalty_flex_usage.set_value(0.00)
 
 
-def update_distribution_models_to_admm(planning_problem, models, params):
+def update_distribution_models_to_admm(planning_problem, models, params, objective_scale):
 
     distribution_networks = planning_problem.distribution_networks
 
@@ -3203,16 +3297,6 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                                 dso_model[year][day].slack_v_sqr_down[ref_node_idx, s_m, s_o, p].setub(0.00)
                                 dso_model[year][day].slack_v_sqr_up[ref_node_idx, s_m, s_o, p].setub(0.00)
 
-                # Update costs (penalties) for the coordination procedure
-                dso_model[year][day].penalty_ess_usage.set_value(0.00)
-                # dso_model[year][day].penalty_gen_curtailment.set_value(0.00)
-                if distribution_network.params.obj_type == OBJ_MIN_COST:
-                    dso_model[year][day].cost_load_curtailment.set_value(COST_CONSUMPTION_CURTAILMENT)
-                elif distribution_network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
-                    dso_model[year][day].penalty_load_curtailment.set_value(PENALTY_LOAD_CURTAILMENT)
-                    dso_model[year][day].penalty_flex_usage.set_value(0.00)
-
-
                 # Add ADMM variables
                 dso_model[year][day].rho_v = pe.Param(mutable=True, domain=pe.NonNegativeReals, initialize=params.rho['v'][distribution_network.network[year][day].name])
                 dso_model[year][day].vmag_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.NonNegativeReals)       # Voltage magnitude - requested by TSO
@@ -3237,14 +3321,13 @@ def update_distribution_models_to_admm(planning_problem, models, params):
                     dso_model[year][day].dual_ess_q_prev = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)        # Dual variable - SharedESS previous iteration reactive power
 
                 # Objective function - augmented Lagrangian
-                raw_objective_value = pe.value(dso_model[year][day].objective)
-                init_of_value = 1.00
-                if distribution_network.params.obj_type == OBJ_MIN_COST:
-                    init_of_value = abs(raw_objective_value)
-                if isclose(init_of_value, 0.00, abs_tol=SMALL_TOLERANCE):
-                    init_of_value = 0.01
-                dso_model[year][day].admm_objective_scale = pe.Param(initialize=init_of_value)
-                obj = copy(dso_model[year][day].objective.expr) / init_of_value
+                block_weight = _get_admm_block_weight(distribution_network, year, day)
+                effective_scale = objective_scale / block_weight
+
+                dso_model[year][day].admm_common_objective_scale = pe.Param(initialize=objective_scale)
+                dso_model[year][day].admm_block_weight = pe.Param(initialize=block_weight)
+                dso_model[year][day].admm_objective_scale = pe.Param(initialize=effective_scale)
+                obj = copy(dso_model[year][day].objective.expr) / effective_scale
 
                 shared_ess_idx = distribution_network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
                 shared_ess_rating = _shared_ess_admm_normalization_pu(
