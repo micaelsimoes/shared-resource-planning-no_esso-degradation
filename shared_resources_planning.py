@@ -70,12 +70,7 @@ class SharedResourcesPlanning:
             print('[INFO] Running OPERATIONAL PLANNING (DISTRIBUTED)...')
             if not candidate_solution:
                 candidate_solution = self.get_initial_candidate_solution()
-            convergence, results, models, sensitivities, primal_evolution, execution_time, state = _run_operational_planning(
-                self,
-                candidate_solution,
-                initial_state=initial_state,
-                debug_flag=debug_flag,
-            )
+            convergence, results, models, sensitivities, primal_evolution, execution_time, state = _run_operational_planning(self, candidate_solution, initial_state=initial_state, debug_flag=debug_flag)
             if print_results and not state.get('initialization_failed', False):
                 if not filename:
                     filename = f'{self.name}_distributed'
@@ -780,7 +775,7 @@ def _get_operational_recourse_block_components(planning_problem, models):
     return blocks
 
 
-def _print_recourse_jump_diagnostics(current_blocks, previous_blocks, cycle, current_recourse, previous_recourse, objective_tolerance, top_n=10):
+def _print_recourse_jump_diagnostics(current_blocks, previous_blocks, cycle, current_recourse, previous_recourse, objective_tolerance, top_n=10, tso_proximal_movements=None):
     """
     Print the blocks responsible for a failure of the recourse-stationarity criterion.
     Block changes are ranked by absolute magnitude, while the signed change is retained so that increases and decreases can be distinguished.
@@ -886,6 +881,24 @@ def _print_recourse_jump_diagnostics(current_blocks, previous_blocks, cycle, cur
             f'delta={entry["delta"]:+.6e} | '
             f'abs_delta={entry["abs_delta"]:.6e}'
         )
+        if (entry['agent'] == 'TSO' and tso_proximal_movements is not None):
+            block_key = (entry['year'], entry['day'])
+            proximal_block = tso_proximal_movements.get(block_key)
+            if (proximal_block is not None and proximal_block.get('successful', False)):
+                v_data = proximal_block['v']
+                pf_data = proximal_block['pf']
+                ess_data = proximal_block['ess']
+                v_move = (v_data['normalized_movement'] if v_data is not None else 0.0)
+                pf_move = (pf_data['normalized_movement'] if pf_data is not None else 0.0)
+                ess_move = (ess_data['normalized_movement'] if ess_data is not None else 0.0)
+                print(
+                    '    [RECOURSE JUMP][TSO PROX] '
+                    f'year={entry["year"]} '
+                    f'day={entry["day"]} | '
+                    f'V max={v_move:.6f} | '
+                    f'PF max={pf_move:.6f} | '
+                    f'ESS max={ess_move:.6f}'
+                )
 
 
 def _get_operational_sensitivities(planning_problem, models):
@@ -2097,6 +2110,9 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             from_warm_start=from_warm_start
         )
 
+        # Update the proximal centre only with successful TSO solutions.
+        tso_proximal_movements = _update_tso_proximal_centres_after_solve(planning_problem, tso_model, results['tso'], cycle=iter)
+
         # Update ADMM consensus variables and primal diagnostics.
         update_and_check_convergence(
             planning_problem, tso_model, dso_models, esso_model,
@@ -2235,6 +2251,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
                     previous_recourse=previous_recourse,
                     objective_tolerance=objective_tolerance,
                     top_n=10,
+                    tso_proximal_movements=tso_proximal_movements,
                 )
 
         if recourse is None:
@@ -3658,6 +3675,252 @@ def update_shared_energy_storage_model_to_admm(planning_problem, models, params)
         models[node_id].objective.deactivate()
 
     return models
+
+
+def _update_tso_proximal_centres_after_solve(planning_problem, model, results, cycle=None):
+
+    params = planning_problem.params.admm
+    proximal_cfg = params.proximal_regularization
+    block_movements = dict()
+
+    use_tso_proximal = (proximal_cfg['enabled'] and proximal_cfg['tso']['enabled'])
+
+    if not use_tso_proximal:
+        return {}
+
+    transmission_network = planning_problem.transmission_network
+    distribution_networks = planning_problem.distribution_networks
+
+    successful_blocks = 0
+    failed_blocks = 0
+
+    worst_v = None
+    worst_pf = None
+    worst_ess = None
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # Update each year-day independently.
+    # A failed TSO block keeps its previous proximal centre.
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+
+            block_key = (year, day)
+
+            block_movements[block_key] = {
+                'successful': False,
+                'v': None,
+                'pf': None,
+                'ess': None,
+            }
+
+            if not _solver_result_succeeded(results[year][day]):
+                failed_blocks += 1
+                continue
+
+            block_movements[block_key]['successful'] = True
+            successful_blocks += 1
+
+            local_model = model[year][day]
+            network = transmission_network.network[year][day]
+            s_base = network.baseMVA
+
+            # ----------------------------------------------------------------------------------------------------------
+            # Interface voltage and interface active/reactive power
+            for dn in local_model.active_distribution_networks:
+
+                node_id = transmission_network.active_distribution_network_nodes[dn]
+                distribution_network = distribution_networks[node_id]
+                interface_transf_rating = (distribution_network.network[year][day].get_interface_branch_rating() / s_base)
+                v_base = network.get_node_base_kv(node_id)
+
+                for p in local_model.periods:
+
+                    # --------------------------------------------------------------------------------------------------
+                    # Voltage
+                    current_v = pe.value(local_model.expected_interface_vmag[dn, p])
+                    previous_v = pe.value(local_model.prox_v_prev[dn, p])
+                    movement_v = abs(current_v - previous_v)
+                    movement_entry = {
+                        'normalized_movement': movement_v,
+                        'physical_movement': movement_v * v_base,
+                        'node_id': node_id,
+                        'year': year,
+                        'day': day,
+                        'period': p,
+                    }
+
+                    block_v = block_movements[block_key]['v']
+                    if (block_v is None or movement_v > block_v['normalized_movement']):
+                        block_movements[block_key]['v'] = movement_entry
+                    if (worst_v is None or movement_v > worst_v['normalized_movement']):
+                        worst_v = movement_entry
+
+                    # --------------------------------------------------------------------------------------------------
+                    # Interface P
+                    current_pf_p = pe.value(local_model.expected_interface_pf_p[dn, p])
+                    previous_pf_p = pe.value(local_model.prox_pf_p_prev[dn, p])
+                    movement_pf_p = (abs(current_pf_p - previous_pf_p) / interface_transf_rating)
+                    movement_entry = {
+                        'normalized_movement': movement_pf_p,
+                        'physical_movement': abs(current_pf_p - previous_pf_p) * s_base,
+                        'power_type': 'P',
+                        'node_id': node_id,
+                        'year': year,
+                        'day': day,
+                        'period': p,
+                    }
+
+                    block_pf = block_movements[block_key]['pf']
+                    if (block_pf is None or movement_pf_p > block_pf['normalized_movement']):
+                        block_movements[block_key]['pf'] = movement_entry
+                    if (worst_pf is None or movement_pf_p > worst_pf['normalized_movement']):
+                        worst_pf = movement_entry
+
+                    # --------------------------------------------------------------------------------------------------
+                    # Interface Q
+                    current_pf_q = pe.value(local_model.expected_interface_pf_q[dn, p])
+                    previous_pf_q = pe.value(local_model.prox_pf_q_prev[dn, p])
+                    movement_pf_q = (abs(current_pf_q - previous_pf_q) / interface_transf_rating)
+                    movement_entry = {
+                        'normalized_movement': movement_pf_q,
+                        'physical_movement': abs(current_pf_q - previous_pf_q) * s_base,
+                        'power_type': 'Q',
+                        'node_id': node_id,
+                        'year': year,
+                        'day': day,
+                        'period': p,
+                    }
+
+                    block_pf = block_movements[block_key]['pf']
+                    if (block_pf is None or movement_pf_q > block_pf['normalized_movement']):
+                        block_movements[block_key]['pf'] = movement_entry
+                    if (worst_pf is None or movement_pf_q > worst_pf['normalized_movement']):
+                        worst_pf = movement_entry
+
+                    # --------------------------------------------------------------------------------------------------
+                    # The current successful solution becomes the centre for the next TSO solve.
+                    local_model.prox_v_prev[dn, p].set_value(current_v)
+                    local_model.prox_pf_p_prev[dn, p].set_value(current_pf_p)
+                    local_model.prox_pf_q_prev[dn, p].set_value(current_pf_q)
+
+            # ----------------------------------------------------------------------------------------------------------
+            # Shared ESS P/Q
+            ess_node_by_idx = dict()
+
+            for dn in local_model.active_distribution_networks:
+                node_id = transmission_network.active_distribution_network_nodes[dn]
+                shared_ess_idx = network.get_shared_energy_storage_idx(node_id)
+                ess_node_by_idx[shared_ess_idx] = node_id
+
+            for e in local_model.shared_energy_storages:
+
+                shared_ess_rating = _shared_ess_admm_normalization_pu(network.shared_energy_storages[e].s, s_base, params.shared_ess_normalization_floor_mva)
+                normalization = 2 * shared_ess_rating
+                node_id = ess_node_by_idx.get(e)
+
+                for p in local_model.periods:
+
+                    # --------------------------------------------------------------------------------------------------
+                    # Shared ESS P
+                    current_ess_p = pe.value(local_model.expected_shared_ess_p[e, p])
+                    previous_ess_p = pe.value(local_model.prox_ess_p_prev[e, p])
+                    movement_ess_p = (abs(current_ess_p - previous_ess_p) / normalization)
+                    movement_entry = {
+                        'normalized_movement': movement_ess_p,
+                        'physical_movement': abs(current_ess_p - previous_ess_p) * s_base,
+                        'power_type': 'P',
+                        'node_id': node_id,
+                        'year': year,
+                        'day': day,
+                        'period': p,
+                    }
+
+                    block_ess = block_movements[block_key]['ess']
+                    if (block_ess is None or movement_ess_p > block_ess['normalized_movement']):
+                        block_movements[block_key]['ess'] = movement_entry
+                    if (worst_ess is None or movement_ess_p > worst_ess['normalized_movement']):
+                        worst_ess = movement_entry
+
+                    # --------------------------------------------------------------------------------------------------
+                    # Shared ESS Q
+                    current_ess_q = pe.value(local_model.expected_shared_ess_q[e, p])
+                    previous_ess_q = pe.value(local_model.prox_ess_q_prev[e, p])
+                    movement_ess_q = (abs(current_ess_q - previous_ess_q) / normalization)
+                    movement_entry = {
+                        'normalized_movement': movement_ess_q,
+                        'physical_movement': abs(current_ess_q - previous_ess_q) * s_base,
+                        'power_type': 'Q',
+                        'node_id': node_id,
+                        'year': year,
+                        'day': day,
+                        'period': p,
+                    }
+
+                    block_ess = block_movements[block_key]['ess']
+                    if (block_ess is None or movement_ess_q > block_ess['normalized_movement']):
+                        block_movements[block_key]['ess'] = movement_entry
+                    if (worst_ess is None or movement_ess_q > worst_ess['normalized_movement']):
+                        worst_ess = movement_entry
+
+                    # --------------------------------------------------------------------------------------------------
+                    # Successful solution becomes next proximal centre.
+                    local_model.prox_ess_p_prev[e, p].set_value(current_ess_p)
+                    local_model.prox_ess_q_prev[e, p].set_value(current_ess_q)
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # Diagnostics
+    cycle_text = cycle if cycle is not None else 'N/A'
+    v_max = (worst_v['normalized_movement'] if worst_v is not None else 0.0)
+    pf_max = (worst_pf['normalized_movement'] if worst_pf is not None else 0.0)
+    ess_max = (worst_ess['normalized_movement'] if worst_ess is not None else 0.0)
+
+    print(
+        f'[TSO PROX] cycle={cycle_text} | '
+        f'updated_blocks={successful_blocks} | '
+        f'held_failed_blocks={failed_blocks} | '
+        f'V max={v_max:.6f} | '
+        f'PF max={pf_max:.6f} | '
+        f'ESS max={ess_max:.6f}'
+    )
+
+    if worst_v is not None:
+        print(
+            '[TSO PROX][V MAX] '
+            f'node={worst_v["node_id"]}, '
+            f'year={worst_v["year"]}, '
+            f'day={worst_v["day"]}, '
+            f'period={worst_v["period"]} | '
+            f'dV={worst_v["physical_movement"]:.6f} kV | '
+            f'normalized={worst_v["normalized_movement"]:.6f}'
+        )
+
+    if worst_pf is not None:
+        unit = 'MW' if worst_pf['power_type'] == 'P' else 'MVAr'
+        print(
+            '[TSO PROX][PF MAX] '
+            f'node={worst_pf["node_id"]}, '
+            f'year={worst_pf["year"]}, '
+            f'day={worst_pf["day"]}, '
+            f'period={worst_pf["period"]}, '
+            f'type={worst_pf["power_type"]} | '
+            f'delta={worst_pf["physical_movement"]:.6f} {unit} | '
+            f'normalized={worst_pf["normalized_movement"]:.6f}'
+        )
+
+    if worst_ess is not None:
+        unit = 'MW' if worst_ess['power_type'] == 'P' else 'MVAr'
+        print(
+            '[TSO PROX][ESS MAX] '
+            f'node={worst_ess["node_id"]}, '
+            f'year={worst_ess["year"]}, '
+            f'day={worst_ess["day"]}, '
+            f'period={worst_ess["period"]}, '
+            f'type={worst_ess["power_type"]} | '
+            f'delta={worst_ess["physical_movement"]:.6f} {unit} | '
+            f'normalized={worst_ess["normalized_movement"]:.6f}'
+        )
+
+    return block_movements
 
 
 def update_transmission_coordination_model_and_solve(transmission_network, model, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=False):
