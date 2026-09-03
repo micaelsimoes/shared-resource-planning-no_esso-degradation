@@ -1467,7 +1467,6 @@ def slack_penalties(model, network, s_m, s_o, params):
     return total
 
 
-
 def slack_penalties_rule(model, s_m, s_o, network, params):
     return slack_penalties(model, network, s_m, s_o, params)
 

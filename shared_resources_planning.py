@@ -785,7 +785,12 @@ def _print_recourse_jump_diagnostics(
         top_n=10,
         tso_proximal_movements=None,
         current_objective_component_blocks=None,
-        previous_objective_component_blocks=None):
+        previous_objective_component_blocks=None,
+        current_slack_component_blocks = None,
+        previous_slack_component_blocks = None,
+        current_tso_voltage_slack_state=None,
+        previous_tso_voltage_slack_state=None
+):
     """
     Print the blocks responsible for a failure of the recourse-stationarity criterion.
     Block changes are ranked by absolute magnitude, while the signed change is retained so that increases and decreases can be distinguished.
@@ -940,6 +945,55 @@ def _print_recourse_jump_diagnostics(
                     f'slacks={component_deltas["slack_penalties"]:+.6e} | '
                     f'ess_comp={component_deltas["ess_complementarity_penalties"]:+.6e}'
                 )
+                if (current_slack_component_blocks is not None and previous_slack_component_blocks is not None and entry['agent'] in ('TSO', 'DSO')):
+                    slack_key = (entry['agent'], entry['node_id'], entry['year'], entry['day'])
+                    current_slacks = current_slack_component_blocks.get(slack_key)
+                    previous_slacks = previous_slack_component_blocks.get(slack_key)
+                    if current_slacks is not None and previous_slacks is not None:
+
+                        slack_names = (
+                            'voltage',
+                            'node_balance_p',
+                            'node_balance_q',
+                            'branch_flow_ij',
+                            'branch_flow_ji',
+                            'flex_day_balance_p',
+                            'flex_day_balance_q',
+                        )
+
+                        slack_deltas = {name: current_slacks[name] - previous_slacks[name] for name in slack_names}
+                        classified_slack_delta = sum(slack_deltas.values())
+                        objective_slack_delta = (current_components['slack_penalties'] - previous_components['slack_penalties'])
+                        slack_mismatch = (classified_slack_delta - objective_slack_delta)
+
+                        print(
+                            '    [SLACK COMPONENTS] '
+                            f'voltage={slack_deltas["voltage"]:+.6e} | '
+                            f'node_P={slack_deltas["node_balance_p"]:+.6e} | '
+                            f'node_Q={slack_deltas["node_balance_q"]:+.6e} | '
+                            f'branch_ij={slack_deltas["branch_flow_ij"]:+.6e} | '
+                            f'branch_ji={slack_deltas["branch_flow_ji"]:+.6e} | '
+                            f'flex_P={slack_deltas["flex_day_balance_p"]:+.6e} | '
+                            f'flex_Q={slack_deltas["flex_day_balance_q"]:+.6e}'
+                        )
+
+                        voltage_delta = slack_deltas['voltage']
+                        if (entry['agent'] == 'TSO' and current_tso_voltage_slack_state is not None and previous_tso_voltage_slack_state is not None and abs(voltage_delta) > 0.1 * objective_tolerance):
+                            _print_tso_voltage_slack_transitions(
+                                year=entry['year'],
+                                day=entry['day'],
+                                current_state=current_tso_voltage_slack_state,
+                                previous_state=previous_tso_voltage_slack_state,
+                                expected_voltage_penalty_delta=voltage_delta,
+                                top_n=5,
+                            )
+
+                        print(
+                            '    [SLACK COMPONENT CHECK] '
+                            f'classified_delta={classified_slack_delta:+.6e} | '
+                            f'objective_slack_delta={objective_slack_delta:+.6e} | '
+                            f'mismatch={slack_mismatch:+.6e}'
+                        )
                 print(
                     '    [RECOURSE COMPONENT CHECK] '
                     f'classified_delta={classified_delta:+.6e} | '
@@ -2028,6 +2082,15 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         deepcopy(initial_state.get('last_objective_component_blocks'))
         if continuing_same_candidate else None
     )
+    previous_slack_component_blocks = (
+        deepcopy(initial_state.get('last_slack_component_blocks'))
+        if continuing_same_candidate else None
+    )
+    previous_tso_voltage_slack_state = (
+        deepcopy(initial_state.get('last_tso_voltage_slack_state'))
+        if continuing_same_candidate
+        else None
+    )
     consecutive_converged_cycles = (
         initial_state.get('consecutive_converged_cycles', 0)
         if continuing_same_candidate else 0
@@ -2066,6 +2129,8 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
                 'last_recourse': None,
                 'last_recourse_blocks': None,
                 'last_objective_component_blocks': None,
+                'last_slack_component_blocks': None,
+                'last_tso_voltage_slack_state': None,
                 'consecutive_converged_cycles': 0,
                 'admm_diagnostics': admm_diagnostics,
                 'solver_recovery_diagnostics': deepcopy(shared_ess_data.solver_recovery_diagnostics),
@@ -2252,6 +2317,8 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         gross_operational_cost = None
         recourse_blocks = None
         objective_component_blocks = None
+        slack_component_blocks = None
+        tso_voltage_slack_state = None
         terminal_salvage_value = None
         objective_change_abs = None
         objective_change_rel = None
@@ -2273,6 +2340,20 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             # Per-agent / per-year / per-day recourse decomposition.
             recourse_blocks = _get_operational_recourse_block_components(planning_problem, operational_models)
             objective_component_blocks = _get_operational_objective_component_blocks(planning_problem, operational_models)
+            slack_component_blocks = _get_operational_slack_component_blocks(planning_problem, operational_models)
+            for block_key, slack_components in slack_component_blocks.items():
+                slack_total = slack_components['total_slack_penalties']
+                unclassified = slack_components['unclassified']
+                slack_reconciliation_tolerance = max(1e-4, 1e-10 * max(abs(slack_total), 1.0))
+                if abs(unclassified) > slack_reconciliation_tolerance:
+                    print(
+                        '[WARNING][SLACK COMPONENTS] '
+                        f'Block {block_key} does not reconcile | '
+                        f'classified={slack_components["classified_total"]:.6e} | '
+                        f'exact={slack_total:.6e} | '
+                        f'unclassified={unclassified:+.6e}'
+                    )
+            tso_voltage_slack_state = _get_tso_voltage_slack_state(planning_problem, tso_model)
 
             # ----------------------------------------------------------------------------------------------------------
             # Check that the decomposition exactly reproduces the net recourse.
@@ -2312,6 +2393,10 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
                     tso_proximal_movements=tso_proximal_movements,
                     current_objective_component_blocks=objective_component_blocks,
                     previous_objective_component_blocks=previous_objective_component_blocks,
+                    current_slack_component_blocks=slack_component_blocks,
+                    previous_slack_component_blocks=previous_slack_component_blocks,
+                    current_tso_voltage_slack_state=tso_voltage_slack_state,
+                    previous_tso_voltage_slack_state=previous_tso_voltage_slack_state
                 )
 
         if recourse is None:
@@ -2459,6 +2544,8 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         previous_recourse = recourse
         previous_recourse_blocks = recourse_blocks
         previous_objective_component_blocks = objective_component_blocks
+        previous_slack_component_blocks = slack_component_blocks
+        previous_tso_voltage_slack_state = tso_voltage_slack_state
 
         sess_available_capacities = shared_ess_data.get_updated_capacities(esso_model)
         if debug_flag:
@@ -2503,6 +2590,8 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         'last_recourse': previous_recourse,
         'last_recourse_blocks': deepcopy(previous_recourse_blocks),
         'last_objective_component_blocks': deepcopy(previous_objective_component_blocks),
+        'last_slack_component_blocks': deepcopy(previous_slack_component_blocks),
+        'last_tso_voltage_slack_state': deepcopy(previous_tso_voltage_slack_state),
         'consecutive_converged_cycles': consecutive_converged_cycles,
         'admm_diagnostics': admm_diagnostics,
         'solver_recovery_diagnostics': deepcopy(shared_ess_data.solver_recovery_diagnostics),
@@ -2811,8 +2900,7 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
                     for s_o in tso_model[year][day].scenarios_operation:
                         for p in tso_model[year][day].periods:
 
-                            # Interface voltage remains governed by the explicit
-                            # squared-voltage constraints; remove its slacks.
+                            # Interface voltage remains governed by the explicit squared-voltage constraints; remove its slacks.
                             if transmission_network.params.slacks.grid_operation.voltage:
                                 tso_model[year][day].slack_v_sqr_down[adn_node_idx, s_m, s_o, p].setub(0.00)
                                 tso_model[year][day].slack_v_sqr_up[adn_node_idx, s_m, s_o, p].setub(0.00)
@@ -3985,6 +4073,82 @@ def _update_tso_proximal_centres_after_solve(planning_problem, model, results, c
     return block_movements
 
 
+def _get_local_slack_penalty_components(model, network, params):
+
+    base = network.baseMVA
+
+    components = {
+        'voltage': 0.0,
+        'node_balance_p': 0.0,
+        'node_balance_q': 0.0,
+        'branch_flow_ij': 0.0,
+        'branch_flow_ji': 0.0,
+        'flex_day_balance_p': 0.0,
+        'flex_day_balance_q': 0.0,
+    }
+
+    for s_m in model.scenarios_market:
+        for s_o in model.scenarios_operation:
+
+            probability = (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
+
+            # ----------------------------------------------------------------------------------------------------------
+            # Voltage and node-balance slacks
+            for i in model.nodes:
+                for p in model.periods:
+                    if params.slacks.grid_operation.voltage:
+                        components['voltage'] += (probability * PENALTY_VOLTAGE_SQUARED * (pe.value(model.slack_v_sqr_down[i, s_m, s_o, p]) + pe.value(model.slack_v_sqr_up[i, s_m, s_o, p])))
+                    if params.slacks.node_balance.active_power:
+                        components['node_balance_p'] += (probability * base * PENALTY_NODE_BALANCE * (pe.value(model.slack_node_balance_p_up[i, s_m, s_o, p])+ pe.value(model.slack_node_balance_p_down[i, s_m, s_o, p])))
+                    if params.slacks.node_balance.reactive_power:
+                        components['node_balance_q'] += (probability * base * PENALTY_NODE_BALANCE * (pe.value(model.slack_node_balance_q_up[i, s_m, s_o, p]) + pe.value(model.slack_node_balance_q_down[i, s_m, s_o, p])))
+
+            # ----------------------------------------------------------------------------------------------------------
+            # Branch-flow slacks: i -> j
+            if params.slacks.grid_operation.branch_flow:
+                for b in model.branches:
+                    for p in model.periods:
+                        components['branch_flow_ij'] += (probability * base * PENALTY_CURRENT * pe.value(model.slack_flow_ij_sqr[b, s_m, s_o, p]))
+
+                # ------------------------------------------------------------------------------------------------------
+                # Branch-flow slacks: j -> i
+                for b in model.apparent_power_limited_branches:
+                    for p in model.periods:
+                        components['branch_flow_ji'] += (probability * base * PENALTY_CURRENT * pe.value(model.slack_flow_ji_sqr[b, s_m, s_o, p]))
+
+            # ----------------------------------------------------------------------------------------------------------
+            # Flexibility day-balance slacks
+            if params.fl_reg and params.slacks.flexibility.day_balance:
+                for c in model.loads:
+
+                    if not network.loads[c].fl_reg:
+                        continue
+
+                    components['flex_day_balance_p'] += (probability * base * PENALTY_FLEXIBILITY * (pe.value(model.slack_flex_p_balance_up[c, s_m, s_o]) + pe.value(model.slack_flex_p_balance_down[c, s_m, s_o])))
+                    components['flex_day_balance_q'] += (probability * base * PENALTY_FLEXIBILITY * (pe.value(model.slack_flex_q_balance_up[c, s_m, s_o]) + pe.value(model.slack_flex_q_balance_down[c, s_m, s_o])))
+
+    components['classified_total'] = sum(
+        components[name]
+        for name in (
+            'voltage',
+            'node_balance_p',
+            'node_balance_q',
+            'branch_flow_ij',
+            'branch_flow_ji',
+            'flex_day_balance_p',
+            'flex_day_balance_q',
+        )
+    )
+
+    exact_total = float(pe.value(model.total_slack_penalties))
+
+    components['total_slack_penalties'] = exact_total
+    components['unclassified'] = (exact_total - components['classified_total'])
+
+    return components
+
+
+
 def _get_local_objective_components(model, params):
 
     if params.obj_type != OBJ_MIN_COST:
@@ -4060,6 +4224,133 @@ def _get_operational_objective_component_blocks(planning_problem, models):
 
     return blocks
 
+
+def _get_operational_slack_component_blocks(planning_problem, models):
+
+    blocks = {}
+
+    # --------------------------------------------------------------------------------------------------------------
+    # TSO
+    transmission_network = planning_problem.transmission_network
+
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+            network = transmission_network.network[year][day]
+            local_model = models['tso'][year][day]
+            components = _get_local_slack_penalty_components(local_model, network, transmission_network.params)
+            weight = _get_admm_block_weight(transmission_network, year, day)
+            blocks[('TSO', None, year, day)] = {
+                name: weight * value
+                for name, value in components.items()
+            }
+
+    # --------------------------------------------------------------------------------------------------------------
+    # DSOs
+    for node_id, distribution_network in (planning_problem.distribution_networks.items()):
+        for year in distribution_network.years:
+            for day in distribution_network.days:
+                network = distribution_network.network[year][day]
+                local_model = models['dso'][node_id][year][day]
+                components = _get_local_slack_penalty_components(local_model, network, distribution_network.params)
+                weight = _get_admm_block_weight(distribution_network, year, day)
+                blocks[('DSO', node_id, year, day)] = {
+                    name: weight * value
+                    for name, value in components.items()
+                }
+
+    return blocks
+
+
+def _get_tso_voltage_slack_state(planning_problem, tso_models):
+
+    transmission_network = planning_problem.transmission_network
+    blocks = {}
+
+    if not transmission_network.params.slacks.grid_operation.voltage:
+        return blocks
+
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+
+            model = tso_models[year][day]
+            network = transmission_network.network[year][day]
+            weight = _get_admm_block_weight(transmission_network, year, day)
+
+            block = {}
+
+            for s_m in model.scenarios_market:
+                for s_o in model.scenarios_operation:
+
+                    probability = (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
+
+                    for i in model.nodes:
+
+                        node = network.nodes[i]
+                        node_id = node.bus_i
+                        v_base_kv = network.get_node_base_kv(node_id)
+
+                        for p in model.periods:
+
+                            slack_down_var = model.slack_v_sqr_down[i, s_m, s_o, p]
+                            slack_up_var = model.slack_v_sqr_up[i, s_m, s_o, p]
+                            slack_down = float(pe.value(slack_down_var))
+                            slack_up = float(pe.value(slack_up_var))
+                            e = float(pe.value(model.e[i, s_m, s_o, p]))
+                            f = float(pe.value(model.f[i, s_m, s_o, p]))
+                            vmag_sqr = e ** 2 + f ** 2
+                            vmag = sqrt(max(vmag_sqr, 0.0))
+                            diagnostics = voltage_slack_diagnostics(node.v_min, node.v_max, vmag_sqr, slack_down, slack_up)
+
+                            common = {
+                                'node_idx': i,
+                                'node_id': node_id,
+                                'market_scenario': s_m,
+                                'operation_scenario': s_o,
+                                'period': p,
+                                'vmag': vmag,
+                                'vmag_kv': vmag * v_base_kv,
+                                'v_min': node.v_min,
+                                'v_max': node.v_max,
+                                'v_base_kv': v_base_kv,
+                                'probability': probability,
+                                'weight': weight,
+                            }
+
+                            # ------------------------------------------------------------------
+                            # Lower-voltage relaxation
+                            ub_down = slack_down_var.ub
+                            ub_down = (float(ub_down) if ub_down is not None else None)
+                            block[(i, s_m, s_o, p, 'down')] = {
+                                **common,
+                                'direction': 'down',
+                                'slack_sqr': slack_down,
+                                'slack_ub': ub_down,
+                                'ub_fraction': (slack_down / ub_down if (ub_down is not None and ub_down > SMALL_TOLERANCE) else 0.0),
+                                'physical_relaxation': diagnostics['physical_down'],
+                                'realized_violation': diagnostics['violation_down'],
+                                'realized_violation_kv': diagnostics['violation_down'] * v_base_kv,
+                                'weighted_penalty': weight * probability * PENALTY_VOLTAGE_SQUARED * slack_down,
+                            }
+
+                            # ------------------------------------------------------------------
+                            # Upper-voltage relaxation
+                            ub_up = slack_up_var.ub
+                            ub_up = (float(ub_up) if ub_up is not None else None)
+                            block[(i, s_m, s_o, p, 'up')] = {
+                                **common,
+                                'direction': 'up',
+                                'slack_sqr': slack_up,
+                                'slack_ub': ub_up,
+                                'ub_fraction': (slack_up / ub_up if (ub_up is not None and ub_up > SMALL_TOLERANCE) else 0.0),
+                                'physical_relaxation': diagnostics['physical_up'],
+                                'realized_violation': diagnostics['violation_up'],
+                                'realized_violation_kv': diagnostics['violation_up'] * v_base_kv,
+                                'weighted_penalty': weight * probability * PENALTY_VOLTAGE_SQUARED * slack_up,
+                            }
+
+            blocks[(year, day)] = block
+
+    return blocks
 
 
 def update_transmission_coordination_model_and_solve(transmission_network, model, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=False):
@@ -4741,6 +5032,94 @@ def _print_worst_primal_residual_diagnostics(residual_metrics, params):
                     f'simultaneous={values["simultaneous"]:.6f} MVA'
                     f'{base_text}'
                 )
+
+
+def _print_tso_voltage_slack_transitions(year, day, current_state, previous_state, expected_voltage_penalty_delta, top_n=5):
+
+    current_block = current_state.get((year, day))
+    previous_block = previous_state.get((year, day))
+
+    if current_block is None or previous_block is None:
+        return
+
+    transitions = []
+
+    all_keys = set(current_block) | set(previous_block)
+
+    for key in all_keys:
+
+        current = current_block.get(key)
+        previous = previous_block.get(key)
+
+        if current is None or previous is None:
+            continue
+
+        penalty_delta = (current['weighted_penalty'] - previous['weighted_penalty'])
+        transitions.append({
+            'key': key,
+            'previous': previous,
+            'current': current,
+            'penalty_delta': penalty_delta,
+            'abs_penalty_delta': abs(penalty_delta),
+        })
+
+    transitions.sort(key=lambda x: x['abs_penalty_delta'], reverse=True)
+    individual_delta = sum(transition['penalty_delta'] for transition in transitions)
+
+    print(
+        '    [VOLTAGE SLACK CHECK] '
+        f'individual_delta={individual_delta:+.6e} | '
+        f'component_delta={expected_voltage_penalty_delta:+.6e} | '
+        f'mismatch='
+        f'{individual_delta - expected_voltage_penalty_delta:+.6e}'
+    )
+
+    for transition in transitions[:top_n]:
+
+        previous = transition['previous']
+        current = transition['current']
+
+        print(
+            '    [VOLTAGE SLACK JUMP] '
+            f'node={current["node_id"]} | '
+            f's_m={current["market_scenario"]} | '
+            f's_o={current["operation_scenario"]} | '
+            f'period={current["period"]} | '
+            f'direction={current["direction"]} | '
+            f'penalty_delta={transition["penalty_delta"]:+.6e}'
+        )
+
+        print(
+            '        '
+            f'slack_sqr: '
+            f'{previous["slack_sqr"]:.6e} -> '
+            f'{current["slack_sqr"]:.6e} | '
+            f'ub_fraction: '
+            f'{previous["ub_fraction"]:.4f} -> '
+            f'{current["ub_fraction"]:.4f}'
+        )
+
+        print(
+            '        '
+            f'V: '
+            f'{previous["vmag"]:.6f} -> '
+            f'{current["vmag"]:.6f} p.u. | '
+            f'limits=[{current["v_min"]:.6f}, '
+            f'{current["v_max"]:.6f}]'
+        )
+
+        print(
+            '        '
+            f'realized_violation: '
+            f'{previous["realized_violation"]:.6e} -> '
+            f'{current["realized_violation"]:.6e} p.u. | '
+            f'violation_kV: '
+            f'{previous["realized_violation_kv"]:.6f} -> '
+            f'{current["realized_violation_kv"]:.6f} kV | '
+            f'physical_relaxation: '
+            f'{previous["physical_relaxation"]:.6e} -> '
+            f'{current["physical_relaxation"]:.6e} p.u.'
+        )
 
 
 def _admm_local_solves_succeeded(planning_problem, results):
