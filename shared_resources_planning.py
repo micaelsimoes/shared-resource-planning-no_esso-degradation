@@ -775,7 +775,17 @@ def _get_operational_recourse_block_components(planning_problem, models):
     return blocks
 
 
-def _print_recourse_jump_diagnostics(current_blocks, previous_blocks, cycle, current_recourse, previous_recourse, objective_tolerance, top_n=10, tso_proximal_movements=None):
+def _print_recourse_jump_diagnostics(
+        current_blocks,
+        previous_blocks,
+        cycle,
+        current_recourse,
+        previous_recourse,
+        objective_tolerance,
+        top_n=10,
+        tso_proximal_movements=None,
+        current_objective_component_blocks=None,
+        previous_objective_component_blocks=None):
     """
     Print the blocks responsible for a failure of the recourse-stationarity criterion.
     Block changes are ranked by absolute magnitude, while the signed change is retained so that increases and decreases can be distinguished.
@@ -881,6 +891,7 @@ def _print_recourse_jump_diagnostics(current_blocks, previous_blocks, cycle, cur
             f'delta={entry["delta"]:+.6e} | '
             f'abs_delta={entry["abs_delta"]:.6e}'
         )
+
         if (entry['agent'] == 'TSO' and tso_proximal_movements is not None):
             block_key = (entry['year'], entry['day'])
             proximal_block = tso_proximal_movements.get(block_key)
@@ -898,6 +909,42 @@ def _print_recourse_jump_diagnostics(current_blocks, previous_blocks, cycle, cur
                     f'V max={v_move:.6f} | '
                     f'PF max={pf_move:.6f} | '
                     f'ESS max={ess_move:.6f}'
+                )
+
+        # ----------------------------------------------------------------------------------------------------------
+        # Objective-component decomposition for this exact recourse block.
+        if (current_objective_component_blocks is not None and previous_objective_component_blocks is not None and entry['agent'] in ('TSO', 'DSO')):
+            component_key = (entry['agent'], entry['node_id'], entry['year'], entry['day'])
+            current_components = current_objective_component_blocks.get(component_key)
+            previous_components = previous_objective_component_blocks.get(component_key)
+            if (current_components is not None and previous_components is not None):
+                component_names = (
+                    'generation_cost',
+                    'flexibility_cost',
+                    'load_curtailment_cost',
+                    'res_curtailment_penalty',
+                    'ess_usage_penalty',
+                    'slack_penalties',
+                    'ess_complementarity_penalties',
+                )
+                component_deltas = {name: current_components[name] - previous_components[name] for name in component_names}
+                classified_delta = sum(component_deltas.values())
+                component_mismatch = classified_delta - entry['delta']
+                print(
+                    '    [RECOURSE COMPONENTS] '
+                    f'gen={component_deltas["generation_cost"]:+.6e} | '
+                    f'flex={component_deltas["flexibility_cost"]:+.6e} | '
+                    f'load_curt={component_deltas["load_curtailment_cost"]:+.6e} | '
+                    f'res_curt={component_deltas["res_curtailment_penalty"]:+.6e} | '
+                    f'ess_usage={component_deltas["ess_usage_penalty"]:+.6e} | '
+                    f'slacks={component_deltas["slack_penalties"]:+.6e} | '
+                    f'ess_comp={component_deltas["ess_complementarity_penalties"]:+.6e}'
+                )
+                print(
+                    '    [RECOURSE COMPONENT CHECK] '
+                    f'classified_delta={classified_delta:+.6e} | '
+                    f'block_delta={entry["delta"]:+.6e} | '
+                    f'mismatch={component_mismatch:+.6e}'
                 )
 
 
@@ -1977,6 +2024,10 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         deepcopy(initial_state.get('last_recourse_blocks'))
         if continuing_same_candidate else None
     )
+    previous_objective_component_blocks = (
+        deepcopy(initial_state.get('last_objective_component_blocks'))
+        if continuing_same_candidate else None
+    )
     consecutive_converged_cycles = (
         initial_state.get('consecutive_converged_cycles', 0)
         if continuing_same_candidate else 0
@@ -2014,6 +2065,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
                 'candidate_solution': deepcopy(candidate_solution),
                 'last_recourse': None,
                 'last_recourse_blocks': None,
+                'last_objective_component_blocks': None,
                 'consecutive_converged_cycles': 0,
                 'admm_diagnostics': admm_diagnostics,
                 'solver_recovery_diagnostics': deepcopy(shared_ess_data.solver_recovery_diagnostics),
@@ -2199,6 +2251,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         recourse = None
         gross_operational_cost = None
         recourse_blocks = None
+        objective_component_blocks = None
         terminal_salvage_value = None
         objective_change_abs = None
         objective_change_rel = None
@@ -2219,6 +2272,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
 
             # Per-agent / per-year / per-day recourse decomposition.
             recourse_blocks = _get_operational_recourse_block_components(planning_problem, operational_models)
+            objective_component_blocks = _get_operational_objective_component_blocks(planning_problem, operational_models)
 
             # ----------------------------------------------------------------------------------------------------------
             # Check that the decomposition exactly reproduces the net recourse.
@@ -2242,7 +2296,11 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
                 objective_tolerance = max(admm_parameters.tol['objective']['abs'], admm_parameters.tol['objective']['rel'] * recourse_scale)
                 objective_convergence = (objective_change_abs <= objective_tolerance)
 
-            if (recourse_blocks is not None and previous_recourse_blocks is not None and objective_change_abs is not None and objective_tolerance is not None):
+            if (
+                    recourse_blocks is not None and previous_recourse_blocks is not None and
+                    objective_component_blocks is not None and previous_objective_component_blocks is not None and
+                    objective_change_abs is not None and objective_tolerance is not None
+            ):
                 _print_recourse_jump_diagnostics(
                     current_blocks=recourse_blocks,
                     previous_blocks=previous_recourse_blocks,
@@ -2252,6 +2310,8 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
                     objective_tolerance=objective_tolerance,
                     top_n=10,
                     tso_proximal_movements=tso_proximal_movements,
+                    current_objective_component_blocks=objective_component_blocks,
+                    previous_objective_component_blocks=previous_objective_component_blocks,
                 )
 
         if recourse is None:
@@ -2398,6 +2458,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
 
         previous_recourse = recourse
         previous_recourse_blocks = recourse_blocks
+        previous_objective_component_blocks = objective_component_blocks
 
         sess_available_capacities = shared_ess_data.get_updated_capacities(esso_model)
         if debug_flag:
@@ -2441,6 +2502,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         'candidate_solution': deepcopy(candidate_solution),
         'last_recourse': previous_recourse,
         'last_recourse_blocks': deepcopy(previous_recourse_blocks),
+        'last_objective_component_blocks': deepcopy(previous_objective_component_blocks),
         'consecutive_converged_cycles': consecutive_converged_cycles,
         'admm_diagnostics': admm_diagnostics,
         'solver_recovery_diagnostics': deepcopy(shared_ess_data.solver_recovery_diagnostics),
@@ -3921,6 +3983,83 @@ def _update_tso_proximal_centres_after_solve(planning_problem, model, results, c
         )
 
     return block_movements
+
+
+def _get_local_objective_components(model, params):
+
+    if params.obj_type != OBJ_MIN_COST:
+        raise ValueError('Objective-component diagnostic currently implemented for OBJ_MIN_COST only.')
+
+    components = {
+        'generation_cost': float(pe.value(model.total_gen_cost)),
+        'flexibility_cost': float(pe.value(model.total_flex_cost)),
+        'load_curtailment_cost': float(pe.value(model.total_load_curt_cost)),
+        'res_curtailment_penalty': float(pe.value(model.total_gen_curt_penalty)),
+        'ess_usage_penalty': float(pe.value(model.total_ess_utilization_cost_penalty)),
+        'slack_penalties': float(pe.value(model.total_slack_penalties)),
+        'ess_complementarity_penalties': float(pe.value(model.total_ess_complementarity_penalties))
+    }
+
+    components['economic_market_cost'] = (
+        components['generation_cost']
+        + components['flexibility_cost']
+    )
+
+    components['classified_total'] = (
+        components['generation_cost']
+        + components['flexibility_cost']
+        + components['load_curtailment_cost']
+        + components['res_curtailment_penalty']
+        + components['ess_usage_penalty']
+        + components['slack_penalties']
+        + components['ess_complementarity_penalties']
+    )
+
+    # Useful consistency check because the original objective may also
+    # contain scenario-deviation regularization.
+    objective_value = float(pe.value(model.objective.expr))
+
+    scenario_deviation = (
+        float(pe.value(model.scenario_deviation_penalty))
+        if hasattr(model, 'scenario_deviation_penalty')
+        else 0.0
+    )
+
+    components['scenario_deviation_penalty'] = scenario_deviation
+    components['objective_value'] = objective_value
+
+    components['unclassified'] = (
+        objective_value
+        - components['classified_total']
+        - scenario_deviation
+    )
+
+    return components
+
+
+def _get_operational_objective_component_blocks(planning_problem, models):
+
+    blocks = {}
+
+    transmission_network = planning_problem.transmission_network
+
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+            local_model = models['tso'][year][day]
+            components = _get_local_objective_components(local_model, transmission_network.params)
+            weight = _get_admm_block_weight(transmission_network, year, day)
+            blocks[('TSO', None, year, day)] = {name: weight * value for name, value in components.items()}
+
+    for node_id, distribution_network in planning_problem.distribution_networks.items():
+        for year in distribution_network.years:
+            for day in distribution_network.days:
+                local_model = models['dso'][node_id][year][day]
+                components = _get_local_objective_components(local_model, distribution_network.params)
+                weight = _get_admm_block_weight(distribution_network, year, day)
+                blocks[('DSO', node_id, year, day)] = {name: weight * value for name, value in components.items()}
+
+    return blocks
+
 
 
 def update_transmission_coordination_model_and_solve(transmission_network, model, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=False):
