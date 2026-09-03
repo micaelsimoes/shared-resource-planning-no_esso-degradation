@@ -511,7 +511,7 @@ def flex_energy_balance_q_rule(m, c, s_m, s_o, network, params):
         q_up = sum(m.flex_q_up[c, s_m, s_o, p] for p in m.periods)
         q_down = sum(m.flex_q_down[c, s_m, s_o, p] for p in m.periods)
         if params.slacks.flexibility.day_balance:
-            return q_up == q_down + m.slack_flex_p_balance_up[c, s_m, s_o] - m.slack_flex_p_balance_down[c, s_m, s_o]
+            return q_up == q_down + m.slack_flex_q_balance_up[c, s_m, s_o] - m.slack_flex_q_balance_down[c, s_m, s_o]
         else:
             return pe.inequality(-SMALL_TOLERANCE, q_up - q_down, SMALL_TOLERANCE)
     else:
