@@ -2902,8 +2902,8 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
 
                             # Interface voltage remains governed by the explicit squared-voltage constraints; remove its slacks.
                             if transmission_network.params.slacks.grid_operation.voltage:
-                                tso_model[year][day].slack_v_sqr_down[adn_node_idx, s_m, s_o, p].setub(0.00)
-                                tso_model[year][day].slack_v_sqr_up[adn_node_idx, s_m, s_o, p].setub(0.00)
+                                tso_model[year][day].slack_v_sqr_down[adn_node_idx, s_m, s_o, p].fix(0.00)
+                                tso_model[year][day].slack_v_sqr_up[adn_node_idx, s_m, s_o, p].fix(0.00)
 
                             # Fix Pc and Qc (base profiles), free pc_adn and qc_adn
                             interface_pf_p = consensus_vars['pf']['dso']['current'][adn_node_id][year][day]['p'][p] / s_base
