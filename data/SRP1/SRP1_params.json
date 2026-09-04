@@ -40,7 +40,7 @@
 			"stationarity": {"v": 1e-2, "pf": 1e-2, "ess": 1e-2},
 			"objective": {"abs": 1e3, "rel": 0.1e-2}
 		},
-		"num_max_iters": 50,
+		"num_max_iters": 25,
 		"minimum_consecutive_converged_cycles": 1,
 		"shared_ess_normalization_floor_mva": 0.10,
 		"adaptive_penalty": true,
@@ -73,7 +73,31 @@
 				"esso": 1.00
 			}
 		},
-		"previous_iteration": {"ess": {"tso": false, "dso": false}},
+		"proximal_regularization": {
+			"enabled": true,
+			"tso": {
+				"enabled": true,
+				"gamma": {
+					"v": 1.0,
+					"pf": 1.0,
+					"ess": 1.0
+				}
+			},
+			"dso": {
+				"enabled": false,
+				"gamma": {
+					"v": 1.0,
+					"pf": 1.0,
+					"ess": 1.0
+				}
+			}
+		},
+		"previous_iteration": {
+			"ess": {
+				"tso": false,
+				"dso": false
+			}
+		},
 		"rho_previous_iter": {
 			"ess": {
 				"case9": 0.10,
