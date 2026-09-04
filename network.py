@@ -506,6 +506,7 @@ def _create_smopf_solver(network, model, params, from_warm_start=False, option_o
         model.ipopt_zU_in.update(model.ipopt_zU_out)
         if network.is_transmission:
             solver.options['acceptable_iter'] = 0
+            solver.options['acceptable_tol'] = options.get('tol', 1e-5)
         solver.options['warm_start_init_point'] = 'yes'
         solver.options['warm_start_bound_push'] = options.get('warm_start_bound_push', options.get('bound_push', 1e-6))
         solver.options['warm_start_bound_frac'] = options.get('warm_start_bound_frac', options.get('bound_frac', 1e-6))
