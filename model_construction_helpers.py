@@ -80,8 +80,43 @@ def voltage_slack_diagnostics(v_min, v_max, vmag_sqr, slack_down, slack_up):
 
 
 def vmag_bounds(m, i, s_m, s_o, p, network, params):
+
     node = network.nodes[i]
-    return (0.00, voltage_numerical_upper_bound(node))
+
+    # PV bus with enforced generator-voltage setpoint
+    if node.type == BUS_PV and params.enforce_vg:
+        vg = network.generators[network.get_gen_idx(node.bus_i)].vg[p]
+        v_min = sqrt(max(vg ** 2 - SMALL_TOLERANCE, 0.0))
+        v_max = sqrt(vg ** 2 + SMALL_TOLERANCE)
+        return (v_min, v_max)
+
+    # Bus where voltage-limit relaxation is allowed
+    if _voltage_magnitude_slack_enabled(node, params):
+        v_min = max(node.v_min - VMAG_VIOLATION_ALLOWED, 0.0)
+        v_max = node.v_max + VMAG_VIOLATION_ALLOWED
+        return (v_min, v_max)
+
+    # Hard voltage limits: REF buses, or when voltage slacks are disabled
+    return (node.v_min, node.v_max)
+
+
+def vmag_sqr_bounds(m, i, s_m, s_o, p, network, params):
+
+    node = network.nodes[i]
+
+    # PV bus with enforced generator-voltage setpoint
+    if node.type == BUS_PV and params.enforce_vg:
+        vg = network.generators[network.get_gen_idx(node.bus_i)].vg[p]
+        return max(vg ** 2 - SMALL_TOLERANCE, 0.0), vg ** 2 + SMALL_TOLERANCE
+
+    # Bus where voltage-limit relaxation is allowed
+    if _voltage_magnitude_slack_enabled(node, params):
+        v_min = max(node.v_min - VMAG_VIOLATION_ALLOWED, 0.0)
+        v_max = node.v_max + VMAG_VIOLATION_ALLOWED
+        return (v_min ** 2, v_max ** 2)
+
+    # Hard voltage limits
+    return (node.v_min ** 2, node.v_max ** 2)
 
 
 def node_balance_slack_bounds(m, i, s_m, s_o, p, network):

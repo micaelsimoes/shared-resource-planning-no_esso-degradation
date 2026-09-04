@@ -277,7 +277,7 @@ def _build_model(network, params):
         model.slack_v_sqr_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_down_bounds, network=network, params=params))
         model.slack_v_sqr_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_up_bounds, network=network, params=params))
     model.vmag = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.00, bounds=partial(vmag_bounds, network=network, params=params))
-    model.vmag_sqr = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, initialize=1.00)
+    model.vmag_sqr = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.00, bounds=partial(vmag_sqr_bounds, network=network, params=params))
     model.voltage_product_real = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.00)
     model.voltage_product_imag = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
     if params.slacks.node_balance.active_power:
@@ -470,8 +470,8 @@ def _build_model(network, params):
     return model
 
 
-def _create_smopf_solver(network, model, params, from_warm_start=False,
-                         option_overrides=None, log_suffix=None):
+def _create_smopf_solver(network, model, params, from_warm_start=False, option_overrides=None, log_suffix=None):
+
     solver_params = params.solver_params
     solver = po.SolverFactory(solver_params.solver, executable=solver_params.solver_path)
     solve_context = f'{network.name}, year={network.year}, day={network.day}'
@@ -504,7 +504,8 @@ def _create_smopf_solver(network, model, params, from_warm_start=False,
     if from_warm_start and solver_params.solver.lower() == 'ipopt':
         model.ipopt_zL_in.update(model.ipopt_zL_out)
         model.ipopt_zU_in.update(model.ipopt_zU_out)
-        solver.options['acceptable_iter'] = 1
+        if network.is_transmission:
+            solver.options['acceptable_iter'] = 0
         solver.options['warm_start_init_point'] = 'yes'
         solver.options['warm_start_bound_push'] = options.get('warm_start_bound_push', options.get('bound_push', 1e-6))
         solver.options['warm_start_bound_frac'] = options.get('warm_start_bound_frac', options.get('bound_frac', 1e-6))
@@ -560,13 +561,9 @@ def _restore_multiplier_suffixes(model, snapshot):
             suffix[component] = value
 
 
-def _print_network_failure_context(network, model, result, from_warm_start, solver_log_path,
-                                   attempt_label='solver'):
+def _print_network_failure_context(network, model, result, from_warm_start, solver_log_path, attempt_label='solver'):
     solve_context = f'{network.name}, year={network.year}, day={network.day}'
-    print(
-        f'[WARNING] Network {attempt_label} did not converge for {solve_context}: '
-        f'{solver_result_summary(result)} | warm_start={from_warm_start}'
-    )
+    print(f'[WARNING] Network {attempt_label} did not converge for {solve_context}: {solver_result_summary(result)} | warm_start={from_warm_start}')
     penalty_values = []
     for penalty_name in ('rho_v', 'rho_pf', 'rho_ess', 'rho_ess_prev'):
         if hasattr(model, penalty_name):
@@ -580,12 +577,7 @@ def _print_network_failure_context(network, model, result, from_warm_start, solv
 def _run_smopf(network, model, params, from_warm_start=False):
 
     solve_context = f'{network.name}, year={network.year}, day={network.day}'
-    primary_result, primary_log_path = _run_smopf_solver_attempt(
-        network,
-        model,
-        params,
-        from_warm_start=from_warm_start,
-    )
+    primary_result, primary_log_path = _run_smopf_solver_attempt(network, model, params, from_warm_start=from_warm_start)
     result = primary_result
     recovery_result = None
     recovery_log_path = None
@@ -593,26 +585,12 @@ def _run_smopf(network, model, params, from_warm_start=False):
     recovery_attempted = _is_recoverable_network_failure(primary_result, params)
 
     if recovery_attempted:
-        _print_network_failure_context(
-            network,
-            model,
-            primary_result,
-            from_warm_start,
-            primary_log_path,
-            attempt_label='primary solve',
-        )
+        _print_network_failure_context(network, model, primary_result, from_warm_start, primary_log_path, attempt_label='primary solve')
         recovery_options = params.solver_params.recovery_options
         print(f'[INFO] Retrying network solve once for {solve_context}, without multiplier warm start, with {_format_solver_options(recovery_options)}.')
         multiplier_snapshot = _snapshot_multiplier_suffixes(model)
         _clear_multiplier_suffixes(model)
-        recovery_result, recovery_log_path = _run_smopf_solver_attempt(
-            network,
-            model,
-            params,
-            from_warm_start=False,
-            option_overrides=recovery_options,
-            log_suffix='recovery',
-        )
+        recovery_result, recovery_log_path = _run_smopf_solver_attempt(network, model, params, from_warm_start=False, option_overrides=recovery_options, log_suffix='recovery')
         result = recovery_result
         if not solver_result_succeeded(recovery_result):
             _restore_multiplier_suffixes(model, multiplier_snapshot)
@@ -630,14 +608,7 @@ def _run_smopf(network, model, params, from_warm_start=False):
     else:
         attempt_label = 'recovery solve' if recovery_attempted else 'solver'
         final_log_path = recovery_log_path if recovery_attempted else primary_log_path
-        _print_network_failure_context(
-            network,
-            model,
-            result,
-            False if recovery_attempted else from_warm_start,
-            final_log_path,
-            attempt_label=attempt_label,
-        )
+        _print_network_failure_context(network, model, result, False if recovery_attempted else from_warm_start, final_log_path, attempt_label=attempt_label)
 
     #if params.solver_params.verbose:
     if not solver_result_succeeded(result):
