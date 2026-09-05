@@ -253,6 +253,10 @@ def _build_model(network, params):
     model.scenarios_market = range(len(network.prob_market_scenarios))
     model.scenarios_operation = range(len(network.prob_operation_scenarios))
     model.nodes = range(len(network.nodes))
+    model.vmag_nodes = pe.Set(
+        initialize=get_vmag_node_indices(network),
+        ordered=True,
+    )
     model.loads = range(len(network.loads))
     model.generators = range(len(network.generators))
     model.branches = range(len(network.branches))
@@ -276,7 +280,7 @@ def _build_model(network, params):
     if params.slacks.grid_operation.voltage:
         model.slack_v_sqr_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_down_bounds, network=network, params=params))
         model.slack_v_sqr_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_up_bounds, network=network, params=params))
-    model.vmag = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.00, bounds=partial(vmag_bounds, network=network, params=params))
+    model.vmag = pe.Var(model.vmag_nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.00, bounds=partial(vmag_bounds, network=network, params=params))
     model.vmag_sqr = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.00, bounds=partial(vmag_sqr_bounds, network=network, params=params))
     model.voltage_product_real = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.00)
     model.voltage_product_imag = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
@@ -381,7 +385,7 @@ def _build_model(network, params):
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
     # - Voltage
-    model.voltage_mag_def = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=vmag_def)
+    model.voltage_mag_def = pe.Constraint(model.vmag_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=vmag_def)
     model.voltage_mag_sqr_def = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=vmag_sqr_def)
     model.voltage_setpoint_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_setpoint_cons_rule, network=network, params=params))
     model.voltage_magnitude_lower_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_magnitude_lower_cons_rule, network=network, params=params))

@@ -4,6 +4,46 @@ from helper_functions import *
 from definitions import *
 
 
+def get_vmag_node_indices(network):
+    """Return validated physical-node indices that need explicit ``vmag``."""
+
+    if network.is_transmission:
+        bus_ids = list(network.active_distribution_network_nodes)
+        source = 'active distribution-network interface'
+    else:
+        reference_nodes = [
+            node.bus_i for node in network.nodes if node.type == BUS_REF
+        ]
+        if len(reference_nodes) != 1:
+            raise ValueError(
+                f'Network {network.name} must have exactly one reference node; '
+                f'found {len(reference_nodes)}.'
+            )
+        bus_ids = reference_nodes
+        source = 'reference'
+
+    if len(bus_ids) != len(set(bus_ids)):
+        raise ValueError(
+            f'Network {network.name} has duplicate {source} bus IDs: {bus_ids}.'
+        )
+
+    node_indices = []
+    for bus_id in bus_ids:
+        matches = [
+            node_idx
+            for node_idx, node in enumerate(network.nodes)
+            if node.bus_i == bus_id
+        ]
+        if len(matches) != 1:
+            raise ValueError(
+                f'Network {network.name} {source} bus ID {bus_id!r} maps to '
+                f'{len(matches)} physical nodes; expected exactly one.'
+            )
+        node_indices.append(matches[0])
+
+    return node_indices
+
+
 # Voltage variables, e
 def e_initialize(m, i, s_m, s_o, p, network):
     node = network.nodes[i]
