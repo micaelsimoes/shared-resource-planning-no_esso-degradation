@@ -1,8 +1,8 @@
+import os
+import pickle
 import gc
-import hashlib
 import time
 from copy import copy, deepcopy
-from functools import partial
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import numpy as np
 import pandas as pd
@@ -13,7 +13,6 @@ import networkx as nx
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
-import pyomo.opt as po
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill
 from centralized_coordination import combine_networks
@@ -2202,7 +2201,9 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             consensus_vars['ess'], dual_vars['ess']['dso'],
             admm_parameters,
             sess_available_capacities,
-            from_warm_start=from_warm_start, parallel_execution=planning_problem.parallel_execution
+            from_warm_start=from_warm_start,
+            parallel_execution=planning_problem.parallel_execution,
+            cycle=iter,
         )
 
         # Update ADMM consensus variables and primal diagnostics.
@@ -4415,14 +4416,40 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
     return res
 
 
-def update_distribution_coordination_models_and_solve(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=False, parallel_execution=False):
+def _save_frozen_smopf_block(model, save_dir, node_id, network_name, year, day, cycle, from_warm_start):
+
+    os.makedirs(save_dir, exist_ok=True)
+    filename = f'frozen_DSO_node{node_id}_{network_name}_{year}_{day}_cycle{cycle}.pkl'
+    filepath = os.path.join(save_dir, filename)
+    payload = {
+        'metadata': {
+            'agent': 'DSO',
+            'node_id': node_id,
+            'network_name': network_name,
+            'year': year,
+            'day': day,
+            'cycle': cycle,
+            'from_warm_start': from_warm_start,
+        },
+        'model': model, # this is the PRE-SOLVE model, not the failed post-solve model.
+    }
+
+    with open(filepath, 'wb') as file:
+        pickle.dump(payload, file, protocol=pickle.HIGHEST_PROTOCOL)
+
+    print(f'[DEBUG][FROZEN SMOPF] Saved failing pre-solve block to {filepath}')
+
+    return filepath
+
+
+def update_distribution_coordination_models_and_solve(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=False, parallel_execution=False, cycle=None):
     if parallel_execution:
         return update_distribution_coordination_models_and_solve_parallel(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=from_warm_start)
     else:
-        return update_distribution_coordination_models_and_solve_sequential(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=from_warm_start)
+        return update_distribution_coordination_models_and_solve_sequential(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=from_warm_start, cycle=cycle)
 
 
-def update_distribution_coordination_models_and_solve_sequential(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=False):
+def update_distribution_coordination_models_and_solve_sequential(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=False, cycle=None):
 
     print('[INFO] \t\t - Updating distribution networks:')
     res = dict()
@@ -4467,17 +4494,46 @@ def update_distribution_coordination_models_and_solve_sequential(distribution_ne
                         model[year][day].p_ess_prev[p].set_value(ess_req['dso']['prev'][node_id][year][day]['p'][p] / s_base)
                         model[year][day].q_ess_prev[p].set_value(ess_req['dso']['prev'][node_id][year][day]['q'][p] / s_base)
 
-        # Solve!
-        res[node_id] = distribution_network.optimize(model, from_warm_start=from_warm_start)
+        # --------------------------------------------------------------------------------------------------------------
+        # Debug: save the exact PRE-SOLVE local SMOPF block if a node-7 solve fails.
+        def save_failed_dso_block(pre_solve_model, year, day, result):
+            print(
+                f'[DEBUG][FROZEN SMOPF] Capturing failure | '
+                f'node={node_id} | '
+                f'network={distribution_network.name} | '
+                f'year={year} | '
+                f'day={day} | '
+                f'cycle={cycle} | '
+                f'{solver_result_summary(result)}'
+            )
+            frozen_dir = os.path.join(distribution_network.results_dir, 'FrozenSMOPF')
+            _save_frozen_smopf_block(
+                pre_solve_model,
+                frozen_dir,
+                node_id=node_id,
+                network_name=distribution_network.name,
+                year=year,
+                day=day,
+                cycle=cycle,
+                from_warm_start=from_warm_start,
+            )
+
+        snapshot_callback = (save_failed_dso_block if node_id == 7 else None)
+
+        # --------------------------------------------------------------------------------------------------------------
+        # Solve
+        res[node_id] = distribution_network.optimize(model, from_warm_start=from_warm_start, failure_snapshot_callback=snapshot_callback)
         for year in distribution_network.years:
             for day in distribution_network.days:
                 if not _solver_result_succeeded(res[node_id][year][day]):
                     print(
                         f'[WARNING] Distribution network node={node_id}, '
-                        f'network={model[year][day].name}, year={year}, day={day} '
-                        f'did not converge: {solver_result_summary(res[node_id][year][day])}'
+                        f'network={model[year][day].name}, '
+                        f'year={year}, day={day} '
+                        f'did not converge: '
+                        f'{solver_result_summary(res[node_id][year][day])}'
                     )
-                    #exit(ERROR_NETWORK_OPTIMIZATION)
+
     return res
 
 
