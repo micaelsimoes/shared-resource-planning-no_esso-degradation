@@ -51,17 +51,19 @@ class NetworkData:
                 network_models[year][day] = self.network[year][day].build_model(self.params)
         return network_models
 
-    def optimize(self, model, from_warm_start=False, print_header=True, failure_snapshot_callback=None):
+    def optimize(self, model, from_warm_start=False, print_header=True, failure_snapshot_callback=None, pre_solve_snapshot_callback=None):
         results = dict()
         for year in self.years:
             results[year] = dict()
             for day in self.days:
                 pre_solve_model = None
-                if failure_snapshot_callback is not None:
+                if failure_snapshot_callback is not None or pre_solve_snapshot_callback is not None:
                     pre_solve_model = model[year][day].clone()
                 results[year][day] = self.network[year][day].run_smopf(model[year][day], self.params, from_warm_start=from_warm_start, print_header=print_header)
                 if failure_snapshot_callback is not None and not solver_result_succeeded(results[year][day]):
                     failure_snapshot_callback(pre_solve_model, year, day, results[year][day])
+                if pre_solve_snapshot_callback is not None:
+                    pre_solve_snapshot_callback(pre_solve_model, year, day, results[year][day])
 
         return results
 

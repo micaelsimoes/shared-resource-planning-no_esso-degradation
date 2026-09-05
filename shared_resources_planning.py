@@ -2225,7 +2225,8 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             consensus_vars['ess'], dual_vars['ess']['tso'],
             admm_parameters,
             sess_available_capacities,
-            from_warm_start=from_warm_start
+            from_warm_start=from_warm_start,
+            cycle=iter,
         )
 
         # Update the proximal centre only with successful TSO solutions.
@@ -4354,7 +4355,7 @@ def _get_tso_voltage_slack_state(planning_problem, tso_models):
     return blocks
 
 
-def update_transmission_coordination_model_and_solve(transmission_network, model, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=False):
+def update_transmission_coordination_model_and_solve(transmission_network, model, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=False, cycle=None):
 
     print('[INFO] \t\t - Updating transmission network...')
 
@@ -4402,8 +4403,46 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
                         model[year][day].p_ess_prev[shared_ess_idx, p].set_value(ess_req['tso']['prev'][node_id][year][day]['p'][p] / s_base)
                         model[year][day].q_ess_prev[shared_ess_idx, p].set_value(ess_req['tso']['prev'][node_id][year][day]['q'][p] / s_base)
 
+    # Diagnostic-only P3 capture: preserve exact TSO pre-solve blocks on failure and
+    # one nearby successful comparator for the 2025 Summer block.
+    def save_failed_tso_block(pre_solve_model, year, day, result):
+        _save_frozen_network_block(
+            pre_solve_model,
+            os.path.join(transmission_network.results_dir, 'FrozenSMOPF'),
+            agent='TSO',
+            network_name=transmission_network.name,
+            year=year,
+            day=day,
+            cycle=cycle,
+            from_warm_start=from_warm_start,
+            result=result,
+            label='failure',
+        )
+
+    def save_selected_tso_comparator(pre_solve_model, year, day, result):
+        if str(year) == '2025' and str(day) == 'Summer' and _solver_result_succeeded(result):
+            _save_frozen_network_block(
+                pre_solve_model,
+                os.path.join(transmission_network.results_dir, 'FrozenSMOPF'),
+                agent='TSO',
+                network_name=transmission_network.name,
+                year=year,
+                day=day,
+                cycle=cycle,
+                from_warm_start=from_warm_start,
+                result=result,
+                label='matched_success',
+            )
+
+    success_snapshot_callback = save_selected_tso_comparator if cycle == 7 else None
+
     # Solve!
-    res = transmission_network.optimize(model, from_warm_start=from_warm_start)
+    res = transmission_network.optimize(
+        model,
+        from_warm_start=from_warm_start,
+        failure_snapshot_callback=save_failed_tso_block,
+        pre_solve_snapshot_callback=success_snapshot_callback,
+    )
     for year in transmission_network.years:
         for day in transmission_network.days:
             if not _solver_result_succeeded(res[year][day]):
@@ -4438,6 +4477,35 @@ def _save_frozen_smopf_block(model, save_dir, node_id, network_name, year, day, 
         pickle.dump(payload, file, protocol=pickle.HIGHEST_PROTOCOL)
 
     print(f'[DEBUG][FROZEN SMOPF] Saved failing pre-solve block to {filepath}')
+
+    return filepath
+
+
+def _save_frozen_network_block(model, save_dir, agent, network_name, year, day, cycle, from_warm_start, result, label, node_id=None):
+
+    os.makedirs(save_dir, exist_ok=True)
+    node_token = f'_node{node_id}' if node_id is not None else ''
+    filename = f'{label}_{agent}{node_token}_{network_name}_{year}_{day}_cycle{cycle}.pkl'
+    filepath = os.path.join(save_dir, filename)
+    payload = {
+        'metadata': {
+            'agent': agent,
+            'node_id': node_id,
+            'network_name': network_name,
+            'year': year,
+            'day': day,
+            'cycle': cycle,
+            'from_warm_start': from_warm_start,
+            'captured_outcome': solver_result_summary(result),
+            'label': label,
+        },
+        'model': model,  # This is the exact PRE-SOLVE model.
+    }
+
+    with open(filepath, 'wb') as file:
+        pickle.dump(payload, file, protocol=pickle.HIGHEST_PROTOCOL)
+
+    print(f'[DEBUG][FROZEN SMOPF] Saved {label} pre-solve block to {filepath}')
 
     return filepath
 
@@ -4520,9 +4588,32 @@ def update_distribution_coordination_models_and_solve_sequential(distribution_ne
 
         snapshot_callback = (save_failed_dso_block if node_id == 7 else None)
 
+        def save_selected_dso_comparator(pre_solve_model, year, day, result):
+            if str(year) == '2025' and str(day) == 'Autumn' and _solver_result_succeeded(result):
+                _save_frozen_network_block(
+                    pre_solve_model,
+                    os.path.join(distribution_network.results_dir, 'FrozenSMOPF'),
+                    agent='DSO',
+                    node_id=node_id,
+                    network_name=distribution_network.name,
+                    year=year,
+                    day=day,
+                    cycle=cycle,
+                    from_warm_start=from_warm_start,
+                    result=result,
+                    label='matched_success',
+                )
+
+        success_snapshot_callback = save_selected_dso_comparator if node_id == 7 and cycle == 7 else None
+
         # --------------------------------------------------------------------------------------------------------------
         # Solve
-        res[node_id] = distribution_network.optimize(model, from_warm_start=from_warm_start, failure_snapshot_callback=snapshot_callback)
+        res[node_id] = distribution_network.optimize(
+            model,
+            from_warm_start=from_warm_start,
+            failure_snapshot_callback=snapshot_callback,
+            pre_solve_snapshot_callback=success_snapshot_callback,
+        )
         for year in distribution_network.years:
             for day in distribution_network.days:
                 if not _solver_result_succeeded(res[node_id][year][day]):
