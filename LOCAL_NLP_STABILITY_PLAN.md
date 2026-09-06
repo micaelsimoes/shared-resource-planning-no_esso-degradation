@@ -65,7 +65,45 @@ The active-power ESS network prototype described below is explicitly authorized 
 
 ---
 
-# P5.3-A — Quantitative structural conditioning audit
+# P5.3 checkpoint after A/A2 — AUTHORITATIVE
+
+P5.3-A and P5.3-A2 are complete. The detailed A/A-RES instructions retained below are historical execution records and **must not be rerun wholesale** unless a later B experiment explicitly requests a targeted derivative control.
+
+Authoritative findings:
+
+- full equality Jacobians are exactly row-rank deficient at the positive-bootstrap cold start because of `sess_snet_def` only;
+- zero equality rows: 24 per DSO model, 72 per TSO model;
+- full `sigma_min = 0` and full condition number is formally infinite;
+- after removing only the exactly-zero rows, the tested reduced equality Jacobians have full row rank and no additional nullity;
+- corrected reduced condition numbers are approximately `8.98e4` for DSOs and `1.42e3` for the TSO;
+- the previous claim that TSO equality conditioning is worse is withdrawn;
+- the previous near-zero `pij/qij` DSO column result is withdrawn as a derivative-audit artifact caused by uninitialized `r_sqr` rows being skipped;
+- `sess_snet_def` remains HIGH risk: exact zero gradient, always-active equality, sole source of exact equality-rank deficiency, curvature up to about `18806`;
+- `sess_comp` remains HIGH risk: tiny Jacobian and tiny `S_rated^2`-scaled margin;
+- `sg_capability` remains HIGH risk: 3732 active rows, zero cold-start margin, gradients down to about `5.44e-5`;
+- all 144 current SRP1 curtailable RES instances have `power_factor_control=True`; therefore `gen_pf_profile` is never instantiated and the old exact RES B2 cleanup is cancelled for SRP1;
+- current RES synthetic `q_available` is zero, so `sg_available = P_available` and the capability circle collapses with stochastic active availability;
+- RES `abs()` reflection is negligible; upper-support overshoot is material, reaching about `33.5%` above historical maxima in some season/type calls;
+- the realized reduced SRP1 population has no values in `(0,1e-5]`, but 17 live values in `(1e-5,1e-4]`;
+- cross-generator spatial correlation is not preserved by the current same-type pooled sampling assignment;
+- DSO interface magnitude is intentionally freed in ADMM; the earlier claim of persistent DSO magnitude pinning is withdrawn;
+- IPOPT internally scales the objective gradient but does not supply comparable constraint-row scaling.
+
+## Authorized B-series execution order
+
+The user deliberately selected the following order because the RES capability experiment is easier and quicker to debug and validate than the active-power ESS refactor:
+
+1. **P5.3-B1 — exact reference-angle gauge**;
+2. **P5.3-B2-R — RES capability semantics and conditioning**;
+3. **P5.3-B3 — active-power ESS structural prototype**.
+
+B3 remains the highest expected structural-payoff experiment, but it is executed third for practical validation reasons.
+
+Do not test more shared-ESS epsilon values or scalar `kappa` caps. Do not retune solver options.
+
+---
+
+# P5.3-A — Quantitative structural conditioning audit (COMPLETE — historical execution instructions)
 
 ## A1. Reproduce the real positive-bootstrap population
 
@@ -251,7 +289,7 @@ Do not change objective scaling.
 
 ---
 
-# P5.3-A-RES — Stochastic RES and low-output audit
+# P5.3-A-RES — Stochastic RES and low-output audit (COMPLETE — historical execution instructions)
 
 The current load and RES realizations come from historical-data-based copula/KDE models. Do not replace the copula model in this stage.
 
@@ -404,7 +442,7 @@ For every HIGH-risk item state:
 - expected numerical benefit;
 - risk of changing the feasible set.
 
-Do not start B1/B2/B3 until Phase A evidence is complete enough to verify the stated preconditions.
+P5.3-A/A2 are complete. Do not rerun the full audit before B1/B2-R/B3; use only targeted derivative controls required by the specific experiment.
 
 ---
 
@@ -450,74 +488,154 @@ Diagnostic only. Do not productionize automatically.
 
 ---
 
-# P5.3-B2 — Exact RES low-output/profile cleanup A/B
+# P5.3-B2-R — RES capability semantics and conditioning
 
-Use a **fresh production baseline**, not B1.
+Run this **second**, after B1 and before B3.
 
-Proceed only after the RES audit identifies the applicable generator classes.
+Use a fresh accepted production baseline. Do not stack B1.
 
-Do not change stochastic samples.
+The old B2 exact fixed-PF/profile cleanup is cancelled for SRP1 because all 144 curtailable SRP1 RES instances have `power_factor_control=True`, so `gen_pf_profile` is never instantiated.
 
-Do not change the RES-off threshold in this exact A/B.
+B2-R is a semantics-first diagnostic. It must not invent a converter rating.
 
-For curtailable RES without PF control:
+## B2-R.1 Rating semantics first
 
-If `q_available == 0` and `p_available > 0`, replace the cross-multiplied profile equality:
+For every curtailable SRP1 RES generator inspect:
 
-`q_available * pg == p_available * qg`
+- `pmax`;
+- `pmin`;
+- `qmax`;
+- `qmin`;
+- `min_pf`, `max_pf`;
+- generator type;
+- any explicit `S_rated`, inverter rating, converter rating, nameplate MVA field, or equivalent metadata;
+- network JSON comments/metadata;
+- historical operational-data units/meaning.
 
-with exact unit-coefficient:
+Determine whether the repository contains an **explicit defensible converter apparent-power rating**.
 
-`qg == 0`.
+Do not infer `S_converter` merely because `pmax` and `qmax/qmin` exist unless their documented semantics make that inference unambiguous.
 
-If both `p_available` and `q_available` are nonzero, use an algebraically normalized relation with a unit coefficient, e.g.:
+If no defensible converter MVA rating exists, STOP B2-R before formulation implementation and recommend the minimum data-model extension required.
 
-`qg == (q_available / p_available) * pg`
+Do not synthesize a rating from an arbitrary heuristic.
 
-only where Phase A confirms the instantiated division is safe.
+## B2-R.2 Explain the current RES feasible set
 
-Where `qg` is exactly fixed to zero and `pg >= 0`, test replacing the corresponding redundant nonlinear capability:
+Current production effectively has:
+
+`0 <= pg <= P_available`
+
+plus:
 
 `pg^2 + qg^2 <= S_available^2`
 
-with exact linear:
+where:
 
-`pg <= S_available`.
+`S_available = sqrt(P_available^2 + Q_available^2)`.
 
-Apply this exact simplification only when it preserves the current feasible set. Do not apply it to RES with free reactive-power control.
+For the current synthetic SRP1 RES data:
 
-Run:
+`Q_available = 0`,
 
-- every previously sensitive bootstrap state;
-- at least one low-output RES case from each DSO;
-- one relevant TSO case where applicable;
-- full 51-solve positive-bootstrap initialization.
+so:
+
+`S_available = P_available`.
+
+Explain mathematically, together with the active PF cone, what reactive-power capability remains at:
+
+- `pg = P_available`;
+- partial active dispatch;
+- very low `P_available`;
+- `P_available = 0`.
+
+State whether the current behavior appears physically intentional or is likely a conflation of stochastic resource availability with converter/inverter MVA capability.
+
+## B2-R.3 Conditional physical prototype
+
+Proceed only if B2-R.1 finds an explicit defensible `S_converter`.
+
+Create an isolated diagnostic formulation:
+
+stochastic resource availability:
+
+`0 <= pg <= P_available`
+
+converter capability:
+
+`pg^2 + qg^2 <= S_converter^2`
+
+while retaining the existing PF-control inequalities and all stochastic scenario values unchanged.
+
+This is a deliberate feasible-set change, not an exact algebraic rewrite.
+
+Do not change:
+
+- PF limits;
+- RES-off threshold;
+- stochastic samples;
+- objective penalties;
+- IPOPT settings;
+- ADMM/planning settings.
+
+## B2-R.4 Numerical and physical comparison
+
+If the conditional prototype is implemented, compare production vs B2-R for:
+
+- all 17 realized low-output rows in `(1e-5,1e-4] p.u.`;
+- representative normal-output rows;
+- all 48 network positive-bootstrap initialization solves;
+- final 51 local outcomes where the unchanged ESSO initialization is relevant.
 
 Report:
 
-- rows removed/replaced;
-- Jacobian norm/coefficient improvement;
-- NLP dimensions;
-- primary/recovery outcomes;
-- iterations;
-- objectives;
-- RES P/Q schedules;
-- interface quantities;
-- exact feasible-set equivalence checks.
+- `sg_capability` cold-start margin;
+- row-gradient norm;
+- whether the capability row is active at the cold start;
+- primary/recovery/persistent failure counts;
+- IPOPT iteration distribution and runtime;
+- P/Q capability and dispatch;
+- RES curtailment;
+- local objective;
+- interface V/P/Q;
+- any new physical degrees of freedom introduced by separating availability from converter rating.
 
-Also provide, but do not implement:
+Determine whether the tiny active capability circle at low stochastic generation disappears when the converter radius is based on a fixed physical rating.
 
-- a proposed dedicated RES-off threshold based on physical/data scale rather than IPOPT tolerance;
-- a recommendation on replacing `abs(negative_sample)` with physically clipped generation;
-- any separate recommendation about converter MVA rating vs stochastic active availability.
+## B2-R.5 Stochastic-support recommendation — diagnostic only
+
+Do not change the copula/KDE generator in B2-R.
+
+Based on P5.3-A2, provide a separate recommendation on:
+
+- handling of synthetic samples above physical/historical support;
+- whether post-generation clipping to an explicit physical/nameplate maximum is justified;
+- whether the marginal model itself should be bounded;
+- how generator-site/spatial dependence should be represented in a later scenario-model revision;
+- whether the current negligible `abs()` reflection still merits cleanup for physical clarity even though it is not a material numerical driver.
+
+Keep stochastic-model recommendations separate from the NLP capability result.
+
+## B2-R acceptance
+
+Classify B2-R as one of:
+
+- `PRODUCTIONIZE CANDIDATE` — explicit converter rating exists and the separated formulation improves physical semantics/conditioning without unacceptable regressions;
+- `CONTINUE TESTING` — data/formulation is promising but evidence is incomplete;
+- `DEFER — DATA MODEL REQUIRED` — no defensible converter rating exists;
+- `REJECT` — reformulation is unsupported or creates unacceptable behavior.
+
+Do not productionize automatically.
 
 ---
 
 # P5.3-B3 — Active-power ESS structural prototype
 
+Run this **third**, after B1 and B2-R. It remains the highest expected structural-payoff experiment, but is intentionally sequenced last because it is the largest refactor to debug and validate.
+
 Use another **fresh accepted production baseline**.
 
-Do not stack B1 or B2.
+Do not stack B1 or B2-R.
 
 This is an authorized diagnostic physical reformulation, not an exact algebraic rewrite.
 
@@ -629,11 +747,11 @@ Calendar degradation remains out of scope.
 
 # Isolation and commit discipline
 
-B1, B2, and B3 are independent A/B experiments.
+B1, B2-R, and B3 are independent A/B experiments.
 
 Each begins from the same accepted current production baseline.
 
-Do not accumulate B1 into B2 or B2 into B3.
+Do not accumulate B1 into B2-R, B2-R into B3, or otherwise stack favorable diagnostic changes during P5.3-B.
 
 Diagnostic scripts/tests may be added, but production source files must be restored to the accepted baseline at the end of each diagnostic branch unless a later planner instruction explicitly authorizes a production commit.
 
@@ -641,41 +759,51 @@ Do not combine production edits from this stage into existing accepted commits.
 
 ---
 
-# P5.3 final report
+# P5.3-B required report
 
 Produce:
 
-`P5_3_SMOPF_STRUCTURAL_REVIEW.md`
+`P5_3_B_REFORMULATION_REPORT.md`
 
-It must contain:
+with separate sections for:
 
-1. full conditioning ranking;
-2. stochastic RES audit;
-3. reference-angle A/B result;
-4. RES exact-cleanup A/B result;
-5. active-power ESS network-prototype result;
-6. before/after NLP dimensions;
-7. primary/recovery/failure counts;
-8. Jacobian/rank/curvature evidence;
-9. physical-equivalence or deliberate-model-change statement for every experiment;
-10. recommended production changes in priority order.
+1. B1 — exact reference-angle gauge;
+2. B2-R — RES capability semantics/conditioning, or the documented data-model stop if no defensible converter rating exists;
+3. B3 — active-power ESS structural prototype.
+
+For each candidate give one of:
+
+`PRODUCTIONIZE / CONTINUE TESTING / REJECT / DEFER`.
+
+The report must include, where applicable:
+
+- before/after NLP dimensions;
+- primary/recovery/persistent failure counts;
+- IPOPT iteration/runtime comparisons;
+- Jacobian rank/singular-value/curvature evidence;
+- physical-equivalence statement for exact changes;
+- deliberate-feasible-set-change statement for physical reformulations;
+- interface V/P/Q effects;
+- objective/dispatch effects;
+- stochastic-data implications kept separate from NLP formulation implications.
 
 Answer explicitly:
 
-- Should `f_ref = 0` be productionized?
-- Which RES equations should be reformulated exactly?
-- Is a dedicated RES-off threshold justified, and what should determine it?
-- Should negative copula RES samples be clipped rather than reflected with `abs`?
-- Is spatial RES correlation currently preserved adequately?
-- Is stochastic RES availability being conflated with converter MVA capability?
-- Does the active-power ESS prototype materially improve conditioning?
+- Should `f_ref = 0` be adopted?
+- Does B2-R confirm that current RES capability conflates stochastic availability with converter MVA rating?
+- Is there sufficient data to reformulate RES converter capability safely?
+- If B2-R is blocked by missing rating data, what exact data-model extension is required?
+- What should be done about copula upper-support overshoot and missing spatial correlation?
+- Does the active-power ESS formulation remove the exact equality-rank deficiency?
+- Does it materially improve bootstrap NLP robustness?
+- Does `pch * pdch` complementarity remain numerically problematic?
 - Can `sch/sdch` be removed safely from the network SMOPF?
-- Which remaining constraint family is the highest numerical risk?
-- Is the P5.2 narrow-band workaround still needed after cleaner reformulations?
+- Is the P5.2 narrow-band workaround still necessary after B3?
+- Which nonlinear family is the highest remaining numerical risk after the successful reformulations?
 
-Finish with exactly:
+Finish exactly:
 
-`P5.3 COMPLETE — structural conditioning review ready for planner decision`
+`P5.3-B COMPLETE — reformulation experiments ready for planner decision`
 
 Then stop.
 

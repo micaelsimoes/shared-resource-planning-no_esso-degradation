@@ -257,29 +257,214 @@ Interpretation:
 
 ---
 
-# P5.3 — newly authorized structural SMOPF review
+# P5.3 — current structural SMOPF review
 
-P5.3 is the immediate priority.
+P5.3 is the immediate priority. The quantitative audit and its correction/RES follow-up are now complete; the next work is the isolated B-series reformulation testing.
 
-Its purpose is to identify hard, degenerate, redundant, poorly scaled, or near-dependent SMOPF rows before selecting further production changes.
+`LOCAL_NLP_STABILITY_PLAN.md` contains the detailed execution protocol and takes precedence for the B experiments.
 
-`LOCAL_NLP_STABILITY_PLAN.md` contains the detailed execution protocol.
+## P5.3-A / A2 — authoritative completed findings
 
-## Priority formulation families
+The original P5.3-A row-wise audit correctly identified the shared-ESS nonlinear geometry as the dominant structural risk, but two global Jacobian conclusions were later corrected in P5.3-A2. The following statements are now authoritative.
 
-### 1. Shared and ordinary ESS geometry
+### 1. `sess_snet_def` is the sole source of exact equality-row rank deficiency at the bootstrap cold start
 
-Current shared and ordinary network ESS use auxiliary apparent charging/discharging variables `sch/sdch`, a squared-magnitude equality, link inequalities, an apparent-power sum limit, SOC driven by `sch/sdch`, and bilinear charge/discharge complementarity.
+Current production shared-ESS row:
 
-The shared row is known to have zero gradient at the natural zero-dispatch cold start, while its accepted normalization makes its raw curvature scale as `O(1/S_rated)` for very small installed power.
+`kappa * ((sch - sdch)^2 - pnet^2 - qnet^2) = 0`
 
-The bilinear complementarity relaxation is also numerically suspicious at tiny capacity because its right-hand side scales with `S_rated^2` and can be many orders below IPOPT's feasibility tolerance.
+with:
 
-### 2. Active-power ESS structural prototype
+`kappa = 1 / S_rated`.
 
-A diagnostic physical reformulation is explicitly authorized for P5.3 after the quantitative audit.
+At the natural zero-dispatch cold start:
 
-Target network formulation:
+- every active `sess_snet_def` row has exactly zero first derivative;
+- DSO models contain 24 exactly-zero equality rows;
+- TSO models contain 72 exactly-zero equality rows;
+- therefore the full equality Jacobian has `sigma_min = 0` and is exactly row-rank deficient;
+- after removing only those exactly-zero rows, the tested reduced equality Jacobians have full row rank with no additional nullity.
+
+Corrected reduced-spectrum conditioning on representative models:
+
+- DSO reduced equality Jacobian condition number: approximately `8.98e4`;
+- TSO reduced equality Jacobian condition number: approximately `1.42e3`.
+
+The earlier claim that the TSO equality Jacobian was materially worse conditioned than the DSO Jacobian is **withdrawn**. The corrected result is the opposite on the nonzero subspace.
+
+The accepted P4 normalization also gives the shared row curvature:
+
+`2 * kappa = 2 / S_rated`,
+
+reaching approximately `18806` at the smallest positive-bootstrap rating. Thus `sess_snet_def` combines:
+
+- exact zero first derivative;
+- an always-active equality;
+- exact rank deficiency;
+- curvature growing as `O(1/S_rated)`.
+
+This remains the highest-priority structural defect.
+
+### 2. `sess_comp` remains HIGH risk
+
+The bilinear shared-ESS complementarity relaxation:
+
+`sch * sdch <= ESS_COMPLEMENTARITY_TOLERANCE * S_rated^2`
+
+has, at the positive-bootstrap scale:
+
+- cold-start Jacobian norms around `2e-8` to `6e-8`;
+- an RHS/margin scaling with `S_rated^2`, reaching roughly `1e-12` at the smallest bootstrap capacity;
+- a physical inequality margin many orders below the network IPOPT feasibility tolerance.
+
+Do not hide this with another arbitrary scalar normalization. The active-power ESS prototype must re-audit complementarity after moving it to `pch * pdch`.
+
+### 3. Corrected column diagnostics
+
+The previous report of approximately 48 near-zero DSO Jacobian columns (`pij/qij`) was a diagnostic artifact.
+
+Root cause:
+
+- `r_sqr` has no Pyomo initial value;
+- reverse-mode numeric differentiation failed on rows referencing it;
+- the original audit swallowed the exceptions and skipped 120 DSO equality rows;
+- this made `pij/qij` appear disconnected even though their defining equations contain unit coefficients.
+
+After supplying a nominal diagnostic value, the derivative failures disappear and the `pij/qij/pji/qji` own-variable coefficients are exactly 1 as expected.
+
+The near-zero DSO-column conclusion and the earlier `f_ref`-column red flag are therefore **withdrawn**. The remaining production observation is only that `r_sqr` lacks an explicit cold-start initialization.
+
+### 4. RES `sg_capability` remains HIGH risk
+
+For curtailable RES:
+
+`pg^2 + qg^2 <= sg_available^2`.
+
+The current reduced SRP1 population has:
+
+- 3732 active `sg_capability` rows;
+- zero cold-start margin for these rows because the initial `pg` is placed at availability;
+- gradient norms down to approximately `5.44e-5` for the lowest live availability values;
+- curvature 2.
+
+There are 17 realized RES availability values in `(1e-5, 1e-4] p.u.`. These are the main low-output nonlinear RES rows to inspect in B2-R.
+
+### 5. Old exact RES B2 is cancelled for SRP1
+
+All 144 curtailable SRP1 generator instances have:
+
+`power_factor_control = True`.
+
+Their stochastic reactive availability is identically zero, but `qg` remains a controlled variable inside the PF cone. Therefore:
+
+- `gen_pf_profile` is never instantiated in SRP1;
+- there is no cross-multiplied fixed-profile equality to clean up;
+- replacing `pg^2 + qg^2 <= S_available^2` by `pg <= S_available` would change the feasible set because reactive power is not fixed to zero.
+
+The old P5.3-B2 exact PF-profile cleanup is therefore a no-op for SRP1 and is superseded by **B2-R — RES capability semantics and conditioning**.
+
+### 6. Current RES availability/converter semantics need review
+
+Synthetic RES currently has `q_available = 0`, so:
+
+`sg_available = sqrt(pg_available^2 + qg_available^2) = pg_available`.
+
+The same stochastic active-power availability is therefore used as the radius of the P/Q capability circle. Reactive capability collapses as stochastic active availability falls.
+
+This may conflate:
+
+- stochastic primary-resource availability; and
+- inverter/converter nameplate MVA capability.
+
+B2-R may test a separated formulation only if the repository contains an explicit, defensible converter apparent-power rating. Do not invent one from a heuristic.
+
+### 7. RES stochastic-support findings
+
+The historical-data copula/KDE scenario process itself remains the baseline, but P5.3-A2 established:
+
+- negative inverse-transformed RES samples before `abs()` are very rare (`0` to `0.17%` per 2400 values in the recorded calls);
+- positive mass created solely by reflecting negatives through `abs()` is negligible (`<= 0.01%` of post-`abs` mass);
+- the important support issue is **upper overshoot**: some season/type calls have up to approximately `33.5%` of synthetic values above the historical maximum;
+- in the realized reduced SRP1 population, 30.6% of RES values are exact zero;
+- there are no realized values in `(0, 1e-5]`;
+- therefore the current `EQUALITY_TOLERANCE = 1e-5` availability switch is not being exercised marginally in this reduced run;
+- 17 live values lie in `(1e-5, 1e-4]` and instantiate small active capability circles.
+
+The `abs()` hypothesis is downgraded. Future stochastic-model work should prioritize physical upper support and spatial dependence.
+
+### 8. Spatial RES correlation is not preserved
+
+The copula is fitted per `(season, RES type)` with 24 hourly dimensions, so it preserves temporal dependence within a daily profile.
+
+Physical generator identity is pooled out at fit time. Each same-type physical generator then samples independently from the common synthetic pool using a generator-specific seed.
+
+Therefore the current workflow preserves temporal dependence but **does not preserve cross-generator spatial correlation**.
+
+Do not redesign the copula during P5.3-B; keep this as a later scenario-model revision.
+
+### 9. DSO interface-voltage semantics are intentional
+
+At initial model construction, a DSO reference voltage is tightly initialized/bounded around the local generator setpoint. However, the production ADMM setup explicitly frees the interface magnitude while retaining the reference angle.
+
+Therefore the earlier concern that the DSO interface magnitude remained effectively pinned throughout ADMM is **withdrawn**. The cold-start pinning is an initialization boundary condition; the ADMM magnitude is deliberately released.
+
+This strengthens the exact reference-angle B1 test: the code already intends to retain the angle reference, so `f_ref = 0` is the cleaner gauge formulation to validate.
+
+### 10. IPOPT scales the objective but not the constraint rows
+
+Current network solves rely on IPOPT's default gradient-based NLP scaling. Production logs show the large raw objective gradient is scaled internally to approximately the configured maximum-gradient scale.
+
+However, constraint scaling is not supplied. Thus the raw disparity among:
+
+- zero-gradient rows;
+- `~1e-8` complementarity rows;
+- `~1e5` branch-related rows;
+
+remains exposed to the KKT system. MA97 has also reported scaling activation due to excess delays.
+
+Do not respond by retuning IPOPT during P5.3. Prefer formulation improvements.
+
+## Current P5.3 execution order
+
+For practical debugging and validation, proceed in this order:
+
+### B1 — exact reference-angle gauge
+
+Test:
+
+`f_ref = 0`
+
+against the current narrow `+/- EQUALITY_TOLERANCE` reference-angle band.
+
+This is the lowest-risk, mathematically exact cleanup and should be validated first.
+
+### B2-R — RES capability semantics and conditioning
+
+Run this **second**, before the larger ESS refactor, because it is easier and quicker to debug and validate.
+
+First inspect every curtailable RES generator for an explicit, defensible converter/inverter apparent-power rating.
+
+If such a rating exists, the diagnostic candidate is conceptually:
+
+`0 <= pg <= P_available`
+
+for stochastic resource availability, together with:
+
+`pg^2 + qg^2 <= S_converter^2`
+
+for converter capability, retaining the existing PF-control constraints.
+
+This is a deliberate feasible-set change, not an exact algebraic rewrite.
+
+If no defensible `S_converter` exists, stop B2-R before implementation and recommend the minimum data-model extension instead. Do not infer a rating from an arbitrary heuristic.
+
+Keep the stochastic-support recommendations separate from the NLP formulation experiment.
+
+### B3 — active-power ESS structural prototype
+
+Run this **third**. It remains the highest-payoff structural reformulation, but it is deliberately postponed until after B2-R because B2-R is faster to isolate and validate.
+
+Diagnostic target:
 
 `pnet = pch - pdch`
 
@@ -287,84 +472,21 @@ Target network formulation:
 
 `pnet^2 + qnet^2 <= S_rated^2`
 
-with charging/discharging complementarity acting on active `pch/pdch`.
+with complementarity on `pch * pdch`.
 
-The prototype should investigate whether `sch/sdch`, `ess_snet_def`, `sess_snet_def`, and their link equations can be removed from the network SMOPF.
+The prototype should determine whether `sch/sdch`, `ess_snet_def`, `sess_snet_def`, and the associated link equations can be removed safely from the network SMOPF.
 
-This is not yet a production authorization. The network prototype must first trace every consumer of the removed variables and show pure-Q operation leaves SOC unchanged.
+This is a deliberate physical reformulation and is not authorized for production until the consumer trace, physics checks, rank/conditioning tests, and bootstrap solver comparison pass.
 
-End-to-end ESSO throughput/degradation conversion remains a follow-on stage if the network prototype is favorable.
+End-to-end ESSO throughput/degradation conversion remains a follow-on stage if B3 is favorable.
 
-### 3. RES low-output constraints
+## Current decision discipline
 
-Curtailable RES currently has:
-
-- stochastic available active/reactive generation;
-- nonlinear apparent-power capability `pg^2 + qg^2 <= sg_avail^2`;
-- PF cone inequalities for controllable PF;
-- a cross-multiplied profile equality for fixed PF:
-  `q_available * pg == p_available * qg`;
-- a structural unavailable/available switch based on `EQUALITY_TOLERANCE`.
-
-Very small positive stochastic availability can therefore activate nonlinear rows with very small derivatives.
-
-Where stochastic `q_available` is exactly zero, the profile equality reduces to:
-
-`p_available * qg = 0`,
-
-which is algebraically equivalent to `qg = 0` for positive `p_available` but can have an arbitrarily small Jacobian coefficient.
-
-P5.3 may test mathematically equivalent unit-scaled/linear RES forms while holding the stochastic scenario values fixed.
-
-### 4. RES stochastic-generation preprocessing
-
-The RES synthetic scenario generator fits the existing Gaussian-multivariate/copula/KDE model to historical data and currently applies:
-
-`np.abs(inverse_transformed_samples)`
-
-after sampling.
-
-P5.3 must measure, without changing the stochastic model:
-
-- negative raw inverse-transformed samples before `abs`;
-- positive generation created solely by reflecting a negative sample;
-- samples outside historical support;
-- tiny positive values around the RES availability threshold;
-- the relationship between these values and local NLP difficulty.
-
-Do not replace the copula model during P5.3.
-
-The audit must also determine whether same-type generator assignments preserve spatial correlation adequately or effectively draw independently from a common pool.
-
-### 5. Reference-angle/gauge treatment
-
-The DSO/T SO rectangular formulation currently allows a reference-bus imaginary voltage within a narrow band rather than fixing the gauge exactly.
-
-P5.3 is authorized to test the exact reformulation:
-
-`f_ref = 0`
-
-provided the audit confirms this does not conflict with an intentional coordinated-interface convention.
-
-Also inspect DSO reference-bus `e` bounds: determine whether they nearly pin the coordinated DSO interface voltage even when `enforce_vg = false`.
-
-### 6. Branch-current conditioning
-
-For current-limited branches, quantify cancellation and derivative scales in expressions based on:
-
-`V_i^2 + V_j^2 - 2 W_ij_real`
-
-multiplied by series-admittance magnitude squared.
-
-Low-impedance distribution branches may generate large coefficients and cancellation-sensitive rows. Do not reformulate unless the quantitative audit ranks them materially high.
-
-### 7. Transformer auxiliaries
-
-The model currently constructs transformer-ratio variables across the branch index set even though non-transformer equations use constant ratio 1 and `r_sqr_def` skips non-transformers.
-
-P5.3 must determine whether unused non-transformer variables are eliminated by the generated NL problem or reach IPOPT. Classify this as code cleanup only if they are eliminated.
-
----
+- Do not test further shared-ESS epsilon values.
+- Do not test further scalar `kappa` caps.
+- Do not use solver-option tuning as a substitute for formulation work.
+- B1, B2-R, and B3 are isolated experiments and each starts from the same accepted production baseline.
+- A favorable B result is reported for planner review before any productionization or stacking.
 
 # P5.3 invariants and prohibitions
 
@@ -386,7 +508,7 @@ During P5.3:
 - do not change terminal salvage;
 - do not silently change complementarity tolerances.
 
-P5.3 diagnostic A/B branches must be isolated. Reference-angle, RES cleanup, and active-power ESS prototypes each start from the same accepted production baseline rather than stacking changes.
+P5.3 diagnostic A/B branches must be isolated. Reference-angle (B1), RES capability semantics (B2-R), and active-power ESS (B3) prototypes each start from the same accepted production baseline rather than stacking changes.
 
 ---
 
@@ -521,13 +643,17 @@ Never describe the local-cut master estimate as a rigorous global lower bound or
 
 # Immediate instruction
 
-The immediate task is P5.3 as defined in `LOCAL_NLP_STABILITY_PLAN.md`:
+The immediate task is the P5.3-B sequence defined in `LOCAL_NLP_STABILITY_PLAN.md`.
 
-1. quantitative conditioning map over the exact current positive-bootstrap network population;
-2. RES stochastic-data/low-output audit;
-3. isolated exact reference-angle A/B;
-4. isolated exact RES algebra cleanup A/B;
-5. isolated active-power ESS network prototype;
-6. evidence-based ranked production proposal.
+P5.3-A and P5.3-A2 are complete and should not be rerun unless a later experiment specifically requires a targeted derivative control.
+
+Execute isolated experiments in this order:
+
+1. **B1 — exact reference-angle gauge:** test `f_ref = 0` from a fresh production baseline.
+2. **B2-R — RES capability semantics and conditioning:** inspect rating semantics first; only implement a separated `P_available` / `S_converter` diagnostic if an explicit defensible converter MVA rating exists.
+3. **B3 — active-power ESS structural prototype:** trace all consumers, remove the `sch/sdch` geometry in the diagnostic network formulation, and re-audit equality rank, complementarity, physics, and bootstrap robustness.
+4. Produce an evidence-based ranked production proposal.
+
+The user deliberately chose B2-R before B3 because it is easier and quicker to debug and validate. This execution order does not change the conclusion that B3 has the largest expected structural payoff.
 
 Do not start production edits automatically after a favorable diagnostic result. Report and wait for planner approval.
