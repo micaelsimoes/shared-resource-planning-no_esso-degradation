@@ -622,9 +622,43 @@ def ess_pnet_rule(m, e, s_m, s_o, p):
     return m.es_pnet[e,s_m,s_o,p] == m.es_pch[e,s_m,s_o,p] - m.es_pdch[e,s_m,s_o,p]
 
 
+def ordinary_ess_snet_def_scale(s_rated, es_id=None):
+    """Fixed numerical scale kappa_es = 1/S_rated[e] for `ess_snet_def` (P4.6-B2),
+    based on the installed ordinary-ESS rated apparent power in p.u.
+
+    Unlike shared ESS, ordinary ESS has no zero-capacity gating: its rows are
+    never deactivated, so a (near-)zero rating cannot be given a finite
+    placeholder scale and quietly solved -- it would leave a degenerate
+    nonlinear row in the model. An instantiated ordinary ESS must therefore
+    have strictly positive rated apparent power, and anything else is rejected
+    here at construction time."""
+    if s_rated is None or s_rated <= ORDINARY_ESS_MIN_RATED_POWER:
+        raise ValueError(
+            f'Energy Storage {es_id}: invalid ordinary ESS rated apparent power '
+            f's_rated={s_rated} p.u. An instantiated ordinary energy storage must have '
+            f'strictly positive rated apparent power greater than '
+            f'{ORDINARY_ESS_MIN_RATED_POWER} p.u. A network with no ordinary energy '
+            f'storage is fine; a zero-rated one is not.'
+        )
+    return 1.0 / s_rated
+
+
+def ess_snet_def_scale_init(m, e, network):
+    ess = network.energy_storages[e]
+    return ordinary_ess_snet_def_scale(ess.s, ess.es_id)
+
+
 def ess_snet_def_rule(m, e, s_m, s_o, p):
+    # Production-safe numerical normalization (P4.6-B2): kappa_es * g_es == 0,
+    # where kappa_es = 1/S_rated[e] is a FIXED (immutable) build-time Param --
+    # never a symbolic division by a decision variable -- so this is a
+    # constant-multiple reformulation with the identical feasible set as the
+    # original g_es == 0 for any finite positive kappa_es. The B1 load-positive
+    # sign convention is untouched: pnet and qnet enter squared.
     snet = m.es_sch[e, s_m, s_o, p] - m.es_sdch[e, s_m, s_o, p]
-    return snet ** 2 == m.es_pnet[e, s_m, s_o, p] ** 2 + m.es_qnet[e, s_m, s_o, p] ** 2
+    kappa = m.ess_snet_def_scale[e]
+    g = snet ** 2 - m.es_pnet[e, s_m, s_o, p] ** 2 - m.es_qnet[e, s_m, s_o, p] ** 2
+    return kappa * g == 0
 
 
 def ess_pch_link_rule(m, e, s_m, s_o, p):

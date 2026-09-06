@@ -339,6 +339,7 @@ def _build_model(network, params):
 
     # - Energy Storage devices
     if params.es_reg:
+        model.ess_snet_def_scale = pe.Param(model.energy_storages, initialize=partial(ess_snet_def_scale_init, network=network), within=pe.PositiveReals)   # fixed numerical scale for ess_snet_def (kappa_es = 1/S_rated[e]); immutable build-time data -- ordinary ESS rated power never changes on a live model
         model.es_pch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(p_bounds, network=network))
         model.es_pdch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(p_bounds, network=network))
         model.es_sch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(s_bounds, network=network))

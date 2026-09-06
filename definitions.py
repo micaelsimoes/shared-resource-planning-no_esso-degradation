@@ -80,6 +80,7 @@ EQUALITY_TOLERANCE = 1e-5
 SMALL_TOLERANCE = 1e-4
 ESS_COMPLEMENTARITY_TOLERANCE = SMALL_TOLERANCE
 SHARED_ESS_ZERO_CAPACITY_TOLERANCE = 1e-10
+ORDINARY_ESS_MIN_RATED_POWER = 1e-10       # an instantiated ordinary ESS must have s_rated strictly above this; unlike shared ESS there is no zero-capacity gating, so a degenerate ess_snet_def row is rejected at construction instead of being given a placeholder scale
 SHARED_ESS_SNET_DEF_SAFE_KAPPA = 1.0       # finite kappa placeholder for sess_snet_def when shared-ESS capacity is (near-)zero; the row is deactivated in that regime, so this value never affects the solved feasible set
 VIOLATION_TOLERANCE = 1e-3
 EXPECTED_VALUE_PENALTY = 1e3
