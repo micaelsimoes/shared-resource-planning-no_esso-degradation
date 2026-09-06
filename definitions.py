@@ -80,6 +80,7 @@ EQUALITY_TOLERANCE = 1e-5
 SMALL_TOLERANCE = 1e-4
 ESS_COMPLEMENTARITY_TOLERANCE = SMALL_TOLERANCE
 SHARED_ESS_ZERO_CAPACITY_TOLERANCE = 1e-10
+SHARED_ESS_SNET_DEF_SAFE_KAPPA = 1.0       # finite kappa placeholder for sess_snet_def when shared-ESS capacity is (near-)zero; the row is deactivated in that regime, so this value never affects the solved feasible set
 VIOLATION_TOLERANCE = 1e-3
 EXPECTED_VALUE_PENALTY = 1e3
 BENDERS_FEASIBILITY_TOLERANCE = 1e-3

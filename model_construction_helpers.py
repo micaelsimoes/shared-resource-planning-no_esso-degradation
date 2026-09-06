@@ -726,8 +726,16 @@ def sess_s_limit_rule(m, e, s_m, s_o, p):
 
 
 def sess_snet_def_rule(m, e, s_m, s_o, p):
+    # Production-safe numerical normalization (P4): kappa_e * g == 0, where
+    # kappa_e = 1/S_scale_e is a fixed numerical scale kept in sync with the
+    # installed shared-ESS power rating by configure_shared_ess_operational_state.
+    # kappa_e is a mutable Param -- never a symbolic division by a variable --
+    # so this is a constant-multiple reformulation with the identical feasible
+    # set as the original g == 0 for any finite positive kappa_e.
     snet = m.shared_es_sch[e, s_m, s_o, p] - m.shared_es_sdch[e, s_m, s_o, p]
-    return snet ** 2 == m.shared_es_pnet[e, s_m, s_o, p] ** 2 + m.shared_es_qnet[e, s_m, s_o, p] ** 2
+    kappa = m.sess_snet_def_kappa[e]
+    g = snet ** 2 - m.shared_es_pnet[e, s_m, s_o, p] ** 2 - m.shared_es_qnet[e, s_m, s_o, p] ** 2
+    return kappa * g == 0
 
 
 def sess_soc_lower_limit(m, e, s_m, s_o, p):
@@ -815,6 +823,17 @@ def shared_ess_capacity_is_inactive(s_capacity, e_capacity):
     return abs(s_capacity) <= tolerance or abs(e_capacity) <= tolerance
 
 
+def shared_ess_snet_def_scale(s_capacity):
+    """Fixed numerical scale kappa_e = 1/S_scale_e for `sess_snet_def`, based on
+    installed shared-ESS POWER rating (P4.2). Zero/near-zero capacity uses a
+    finite safe placeholder and never divides by zero; that row is deactivated
+    by the existing zero-capacity gating in configure_shared_ess_operational_state,
+    so the placeholder value never affects the solved feasible set."""
+    if abs(s_capacity) <= SHARED_ESS_ZERO_CAPACITY_TOLERANCE:
+        return SHARED_ESS_SNET_DEF_SAFE_KAPPA
+    return 1.0 / s_capacity
+
+
 def normalize_shared_ess_capacity(capacity):
     tolerance = SHARED_ESS_ZERO_CAPACITY_TOLERANCE
     if capacity < -tolerance:
@@ -865,6 +884,20 @@ def configure_shared_ess_operational_state(
     s_capacity = normalize_shared_ess_capacity(s_capacity)
     e_capacity = normalize_shared_ess_capacity(e_capacity)
     inactive = shared_ess_capacity_is_inactive(s_capacity, e_capacity)
+
+    # P4.1 lifecycle audit: this model is reused (not rebuilt) across ADMM
+    # cycles and planning candidates; this function is the single place capacity
+    # changes are applied to a live model; `sess_snet_def` ConstraintData objects
+    # are never deactivated+recreated, only (de)activated; and `model.dual`
+    # entries persist across these updates. So kappa_e CAN change on a live row
+    # while an imported warm-start multiplier survives -- capture the
+    # before-state here so _sync_sess_snet_def_scale can apply the
+    # KKT-consistent transfer after the (de)activation loop below runs.
+    sess_snet_def_rows = list(_component_entries_for_shared_ess(model.sess_snet_def, shared_ess_idx))
+    was_active = sess_snet_def_rows[0].active if sess_snet_def_rows else False
+    kappa_old = pe.value(model.sess_snet_def_kappa[shared_ess_idx])
+    kappa_new = shared_ess_snet_def_scale(s_capacity)
+
     model.shared_es_s_rated_fixed[shared_ess_idx].set_value(s_capacity)
     model.shared_es_e_rated_fixed[shared_ess_idx].set_value(e_capacity)
     model.shared_es_s_rated[shared_ess_idx].set_value(s_capacity)
@@ -897,7 +930,44 @@ def configure_shared_ess_operational_state(
     _configure_shared_ess_expected_schedule(
         model, shared_ess_idx, inactive
     )
+
+    _sync_sess_snet_def_scale(
+        model, sess_snet_def_rows, shared_ess_idx, kappa_old, kappa_new,
+        was_active=was_active, will_be_active=(not inactive),
+    )
+
     return inactive
+
+
+def _sync_sess_snet_def_scale(model, rows, shared_ess_idx, kappa_old, kappa_new, was_active, will_be_active):
+    """Keep `sess_snet_def_kappa[shared_ess_idx]` in sync with installed capacity,
+    and preserve the imported constraint multiplier's Lagrangian contribution
+    across a live kappa change (P4.1: this model is reused across ADMM
+    cycles/planning candidates, `sess_snet_def` rows are never recreated, and
+    `model.dual` entries persist across capacity updates on this same model).
+
+    - row stays active before and after: KKT-consistent transfer on the SAME
+      live ConstraintData objects, `lambda_new = lambda_old * (kappa_old/kappa_new)`
+      -- kappa*g=0 has an identical feasible set and Lagrangian to g=0 for any
+      finite positive kappa, so this preserves the Lagrangian contribution
+      exactly (a no-op when kappa is unchanged).
+    - row is being (re)activated from inactive: any lingering `model.dual` entry
+      was not produced while this row was active/live under any kappa, so it is
+      not a valid warm-start multiplier -- clear it rather than transfer it.
+    - row stays inactive, or is being deactivated: excluded from the solve
+      either way, nothing to do with its dual entry.
+    """
+    has_dual = hasattr(model, 'dual')
+    if was_active and will_be_active and has_dual:
+        for row in rows:
+            dual_old = model.dual.get(row, None)
+            if dual_old is not None:
+                model.dual[row] = dual_old * (kappa_old / kappa_new)
+    elif (not was_active) and will_be_active and has_dual:
+        for row in rows:
+            if model.dual.get(row, None) is not None:
+                del model.dual[row]
+    model.sess_snet_def_kappa[shared_ess_idx].set_value(kappa_new)
 
 
 def sess_s_sensitivities(m, e):

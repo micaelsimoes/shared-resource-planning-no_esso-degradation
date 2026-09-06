@@ -353,6 +353,7 @@ def _build_model(network, params):
     # - Shared Energy Storage devices
     model.shared_es_s_rated_fixed = pe.Param(model.shared_energy_storages, mutable=True, initialize=0.00)          # Benders' -- used to get the dual variables (sensitivities)
     model.shared_es_e_rated_fixed = pe.Param(model.shared_energy_storages, mutable=True, initialize=0.00)          # (...)
+    model.sess_snet_def_kappa = pe.Param(model.shared_energy_storages, mutable=True, initialize=SHARED_ESS_SNET_DEF_SAFE_KAPPA)   # numerical scale for sess_snet_def (kappa_e = 1/S_scale_e); kept in sync with installed capacity by configure_shared_ess_operational_state
     model.shared_es_s_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.0)
     model.shared_es_e_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.0)
     model.shared_es_pch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
