@@ -616,7 +616,10 @@ def flex_energy_balance_s_rule(m, c, s_m, s_o, network, params):
 
 # Energy Storage
 def ess_pnet_rule(m, e, s_m, s_o, p):
-    return m.es_pnet[e,s_m,s_o,p] == m.es_pdch[e,s_m,s_o,p] - m.es_pch[e,s_m,s_o,p]
+    # Canonical ordinary-ESS convention (P4.6-B1): the ordinary ESS is
+    # represented as a LOAD, so positive net power is consumption from the
+    # network (charging) and negative net power is injection (discharging).
+    return m.es_pnet[e,s_m,s_o,p] == m.es_pch[e,s_m,s_o,p] - m.es_pdch[e,s_m,s_o,p]
 
 
 def ess_snet_def_rule(m, e, s_m, s_o, p):
@@ -643,11 +646,16 @@ def ess_soc_limits_rule(m, e, s_m, s_o, p, network):
 
 
 def ess_phi_limits_lower(m, e, s_m, s_o, p, network):
+    # Re-derived for the load-positive ordinary-ESS convention (P4.6-B1): with
+    # es_pnet = pch - pdch, the converter capability region is expressed about
+    # the charging (consumption) direction, so pch carries tangent_lower and
+    # pdch carries tangent_upper -- the mirror of the previous
+    # generation-positive form, under which qnet had the opposite sign.
     ess = network.energy_storages[e]
     tangent_lower, tangent_upper = _power_factor_tangents(ess)
     pch = m.es_pch[e, s_m, s_o, p]
     pdch = m.es_pdch[e, s_m, s_o, p]
-    return m.es_qnet[e, s_m, s_o, p] >= tangent_lower * pdch - tangent_upper * pch
+    return m.es_qnet[e, s_m, s_o, p] >= tangent_lower * pch - tangent_upper * pdch
 
 
 def ess_phi_limits_upper(m, e, s_m, s_o, p, network):
@@ -655,7 +663,7 @@ def ess_phi_limits_upper(m, e, s_m, s_o, p, network):
     tangent_lower, tangent_upper = _power_factor_tangents(ess)
     pch = m.es_pch[e, s_m, s_o, p]
     pdch = m.es_pdch[e, s_m, s_o, p]
-    return m.es_qnet[e, s_m, s_o, p] <= tangent_upper * pdch - tangent_lower * pch
+    return m.es_qnet[e, s_m, s_o, p] <= tangent_upper * pch - tangent_lower * pdch
 
 
 def ess_soc_rule(m, e, s_m, s_o, p, network, params):
@@ -1115,10 +1123,11 @@ def compute_node_load(model, i, s_m, s_o, p, network, params):
         for e in model.energy_storages:
             es = network.energy_storages[e]
             if es.bus == node.bus_i:
-                # Ordinary ESS net power follows the generator convention:
-                # positive values are injections and therefore reduce net demand.
-                Pd -= model.es_pnet[e, s_m, s_o, p]
-                Qd -= model.es_qnet[e, s_m, s_o, p]
+                # Ordinary ESS net power follows the load convention: positive
+                # values are charging/absorption demand and therefore increase
+                # net demand; negative values are injections.
+                Pd += model.es_pnet[e, s_m, s_o, p]
+                Qd += model.es_qnet[e, s_m, s_o, p]
 
     for e in model.shared_energy_storages:
         es = network.shared_energy_storages[e]

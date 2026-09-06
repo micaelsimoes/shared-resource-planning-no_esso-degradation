@@ -1331,8 +1331,11 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['energy_storages']['soc_percent'][es_id] = []
                     for p in model.periods:
                         s_ess = pe.value(model.es_sch[e, s_m, s_o, p] - model.es_sdch[e, s_m, s_o, p]) * network.baseMVA
-                        p_ess = pe.value(model.es_pch[e, s_m, s_o, p] - model.es_pdch[e, s_m, s_o, p]) * network.baseMVA
-                        q_ess = -pe.value(model.es_qnet[e, s_m, s_o, p]) * network.baseMVA
+                        # P4.6-B1: the model itself is now load-positive, so the
+                        # reported values are the model values -- no compensating
+                        # sign flip and no re-derivation from pch/pdch.
+                        p_ess = pe.value(model.es_pnet[e, s_m, s_o, p]) * network.baseMVA
+                        q_ess = pe.value(model.es_qnet[e, s_m, s_o, p]) * network.baseMVA
                         soc_ess = pe.value(model.es_soc[e, s_m, s_o, p]) * network.baseMVA
                         processed_results['scenarios'][s_m][s_o]['energy_storages']['p'][es_id].append(p_ess)
                         processed_results['scenarios'][s_m][s_o]['energy_storages']['q'][es_id].append(q_ess)

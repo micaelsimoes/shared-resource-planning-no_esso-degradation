@@ -1,0 +1,145 @@
+{
+ "stage": "P4.6-B1",
+ "case": {
+  "spec_dir": "data/OP1",
+  "spec_file": "OP1.json",
+  "dso_connection_node": 9,
+  "network": "case33_3",
+  "year": 2025,
+  "day": "Summer"
+ },
+ "A_provenance": {
+  "phase": "post",
+  "git_head": "441244e39dd22926ed66cebc13225088b4254803",
+  "timestamp_utc": "2026-09-06T14:17:40.469086+00:00",
+  "ess_pnet_rule_source": "def ess_pnet_rule(m, e, s_m, s_o, p):\n    # Canonical ordinary-ESS convention (P4.6-B1): the ordinary ESS is\n    # represented as a LOAD, so positive net power is consumption from the\n    # network (charging) and negative net power is injection (discharging).\n    return m.es_pnet[e,s_m,s_o,p] == m.es_pch[e,s_m,s_o,p] - m.es_pdch[e,s_m,s_o,p]\n",
+  "ess_snet_def_rule_source": "def ess_snet_def_rule(m, e, s_m, s_o, p):\n    snet = m.es_sch[e, s_m, s_o, p] - m.es_sdch[e, s_m, s_o, p]\n    return snet ** 2 == m.es_pnet[e, s_m, s_o, p] ** 2 + m.es_qnet[e, s_m, s_o, p] ** 2\n",
+  "ess_phi_limits_lower_source": "def ess_phi_limits_lower(m, e, s_m, s_o, p, network):\n    # Re-derived for the load-positive ordinary-ESS convention (P4.6-B1): with\n    # es_pnet = pch - pdch, the converter capability region is expressed about\n    # the charging (consumption) direction, so pch carries tangent_lower and\n    # pdch carries tangent_upper -- the mirror of the previous\n    # generation-positive form, under which qnet had the opposite sign.\n    ess = network.energy_storages[e]\n    tangent_lower, tangent_upper = _power_factor_tangents(ess)\n    pch = m.es_pch[e, s_m, s_o, p]\n    pdch = m.es_pdch[e, s_m, s_o, p]\n    return m.es_qnet[e, s_m, s_o, p] >= tangent_lower * pch - tangent_upper * pdch\n",
+  "ess_phi_limits_upper_source": "def ess_phi_limits_upper(m, e, s_m, s_o, p, network):\n    ess = network.energy_storages[e]\n    tangent_lower, tangent_upper = _power_factor_tangents(ess)\n    pch = m.es_pch[e, s_m, s_o, p]\n    pdch = m.es_pdch[e, s_m, s_o, p]\n    return m.es_qnet[e, s_m, s_o, p] <= tangent_upper * pch - tangent_lower * pdch\n",
+  "ess_comp_rule_source": "def ess_comp_rule(m, e, s_m, s_o, p, network, params):\n    sch = m.es_sch[e, s_m, s_o, p]\n    sdch = m.es_sdch[e, s_m, s_o, p]\n    s_rated = network.energy_storages[e].s\n    if params.ess_model == ESS_MODEL_EXACT:\n        return sch * sdch <= EQUALITY_TOLERANCE\n    elif params.ess_model == ESS_MODEL_BILINEAR_RELAXATION:\n        return sch * sdch <= ESS_COMPLEMENTARITY_TOLERANCE * s_rated ** 2\n    elif params.ess_model == ESS_MODEL_POLYNOMIAL_COMPLEMENTARITY:\n        return sch ** 2 + sdch ** 2 <= (sch + sdch) ** 2 + EQUALITY_TOLERANCE\n    else:\n        return pe.Constraint.Skip\n",
+  "ess_soc_rule_source": "def ess_soc_rule(m, e, s_m, s_o, p, network, params):\n\n    ess = network.energy_storages[e]\n    eff_ch = ess.eff_ch\n    eff_dch = ess.eff_dch\n    if p == 0:\n        soc_prev = ess.e_init\n    else:\n        soc_prev = m.es_soc[e, s_m, s_o, p-1]\n\n    delta = eff_ch * m.es_sch[e, s_m, s_o, p] - (m.es_sdch[e, s_m, s_o, p] / eff_dch)\n\n    return m.es_soc[e, s_m, s_o, p] == soc_prev + delta\n",
+  "compute_node_load_ess_lines": [
+   "                Pd += model.es_pnet[e, s_m, s_o, p]",
+   "                Qd += model.es_qnet[e, s_m, s_o, p]",
+   "            Pd += model.shared_es_pnet[e, s_m, s_o, p]",
+   "            Qd += model.shared_es_qnet[e, s_m, s_o, p]"
+  ],
+  "process_results_ess_pq_lines": [
+   "p_ess = pe.value(model.es_pnet[e, s_m, s_o, p]) * network.baseMVA",
+   "q_ess = pe.value(model.es_qnet[e, s_m, s_o, p]) * network.baseMVA",
+   "processed_results['scenarios'][s_m][s_o]['energy_storages']['p'][es_id].append(p_ess)",
+   "processed_results['scenarios'][s_m][s_o]['energy_storages']['q'][es_id].append(q_ess)"
+  ]
+ },
+ "B_algebra_tests": {
+  "ess_index": 0,
+  "bus": 23,
+  "node_idx": 22,
+  "charging_only_4_1": {
+   "inputs": {
+    "pch": 0.002,
+    "pdch": 0.0,
+    "qnet": 0.0
+   },
+   "residual_if_pnet_equals_plus_pch": 0.0,
+   "residual_if_pnet_equals_minus_pch": -0.004,
+   "pnet_equals_plus_pch": true,
+   "nodal_p_delta_for_pnet_plus_x": 0.002,
+   "enters_balance_as_additional_load": true
+  },
+  "discharging_only_4_2": {
+   "inputs": {
+    "pch": 0.0,
+    "pdch": 0.002,
+    "qnet": 0.0
+   },
+   "residual_if_pnet_equals_minus_pdch": 0.0,
+   "residual_if_pnet_equals_plus_pdch": 0.004,
+   "pnet_equals_minus_pdch": true,
+   "nodal_p_delta_for_pnet_minus_x": -0.002,
+   "reduces_net_demand": true
+  },
+  "reactive_4_3_4_4": {
+   "nodal_q_delta_for_qnet_plus_x": 0.002,
+   "qnet_positive_increases_reactive_demand": true,
+   "nodal_q_delta_for_qnet_minus_x": -0.002,
+   "qnet_negative_reduces_reactive_demand": true
+  },
+  "power_factor_limits": {
+   "max_pf": 0.8,
+   "min_pf": -0.8,
+   "tangent_lower": -0.7499999999999999,
+   "tangent_upper": 0.7499999999999998,
+   "tangents_symmetric": true,
+   "samples": [
+    {
+     "pch": 0.002,
+     "pdch": 0.0,
+     "mode": "charging",
+     "qnet_lower_bound": -0.0014999999999999998,
+     "qnet_upper_bound": 0.0014999999999999996
+    },
+    {
+     "pch": 0.0,
+     "pdch": 0.002,
+     "mode": "discharging",
+     "qnet_lower_bound": -0.0014999999999999996,
+     "qnet_upper_bound": 0.0014999999999999998
+    }
+   ]
+  },
+  "ess_snet_def_sign_invariance": {
+   "body_with_pnet_qnet_positive": -1.5624999999999999e-06,
+   "body_with_pnet_qnet_negated": -1.5624999999999999e-06,
+   "invariant_under_sign_flip": true
+  }
+ },
+ "F_reporting_injection": {
+  "1": {
+   "charging": {
+    "model_pnet_MW": 0.2,
+    "processed_P_MW": 0.2,
+    "diff_P": 0.0,
+    "model_qnet_MVAr": 0.125,
+    "processed_Q_MVAr": 0.125,
+    "diff_Q": 0.0,
+    "reported_P_positive": true,
+    "reported_Q_positive": true
+   },
+   "discharging": {
+    "model_pnet_MW": -0.2,
+    "processed_P_MW": -0.2,
+    "diff_P": 0.0,
+    "model_qnet_MVAr": -0.125,
+    "processed_Q_MVAr": -0.125,
+    "diff_Q": 0.0,
+    "reported_P_negative": true,
+    "reported_Q_negative": true
+   },
+   "all_match_model_exactly": true
+  },
+  "2": {
+   "charging": {
+    "model_pnet_MW": 0.2,
+    "processed_P_MW": 0.2,
+    "diff_P": 0.0,
+    "model_qnet_MVAr": 0.125,
+    "processed_Q_MVAr": 0.125,
+    "diff_Q": 0.0,
+    "reported_P_positive": true,
+    "reported_Q_positive": true
+   },
+   "discharging": {
+    "model_pnet_MW": -0.2,
+    "processed_P_MW": -0.2,
+    "diff_P": 0.0,
+    "model_qnet_MVAr": -0.125,
+    "processed_Q_MVAr": -0.125,
+    "diff_Q": 0.0,
+    "reported_P_negative": true,
+    "reported_Q_negative": true
+   },
+   "all_match_model_exactly": true
+  }
+ }
+}
