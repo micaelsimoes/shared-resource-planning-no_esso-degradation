@@ -9,7 +9,7 @@ Act as a technical planner and mathematical-programming reviewer for the shared 
 
 Read this file first. When checking the mathematical formulation, also consult `simoes_2026_revisions.pdf` where relevant and inspect the current implementation before proposing changes. Prefer reviewer-driven implementation and validation plans before production edits.
 
-This file is the repository-wide source of context. `LOCAL_NLP_STABILITY_PLAN.md` contains the currently authorized local-NLP diagnostic scope and takes precedence for P5.3 experiments.
+This file is the repository-wide source of context. `LOCAL_NLP_STABILITY_PLAN.md` contains the currently authorized local-NLP/ESS implementation scope and takes precedence for the active P5.4 work.
 
 ---
 
@@ -77,7 +77,239 @@ Network recovery:
 - `case33_1` currently defines no `recovery_options`, an acknowledged configuration asymmetry;
 - `maxIterations` does not currently trigger immediate recovery.
 
-Do not retune these settings during P5.3.
+Do not retune these settings during P5.4 unless a later planner instruction explicitly authorizes it.
+
+---
+
+# CURRENT DECISION — P5.3-B complete; P5.4 is the next authorized stage
+
+P5.3-B is complete. The B-series results are now authoritative and supersede the older “current P5.3 execution order” later in this file. Those older sections remain historical evidence only.
+
+The accepted production checkpoint is still:
+
+`f77d829359ffd873367f556882546bc2dcc8ec99`
+
+The successful B3 formulation is **not yet a production commit**. It is the approved production direction to be implemented and validated end to end in P5.4.
+
+## P5.3-B1 — exact reference-angle gauge
+
+Diagnostic change:
+
+`f_ref = 0`
+
+instead of the current narrow reference-angle band.
+
+Result:
+
+- gauge freedom was removed cleanly;
+- the `f_ref` variable disappeared from the NLP;
+- equality-rank deficiency was unchanged because `sess_snet_def` remained present;
+- the three original positive-bootstrap failures were repaired, but three different failures appeared;
+- the failure count therefore remained 3 and two harsher modes (`Error in step computation`, `Restoration Failed`) appeared.
+
+Decision:
+
+**B1 = CONTINUE TESTING — do not productionize yet.**
+
+Retest `f_ref = 0` only after the active-power ESS formulation is stable in production. It is not part of the initial P5.4 production baseline.
+
+## P5.3-B2-R — RES capability semantics
+
+The current curtailable-RES formulation uses:
+
+`0 <= pg <= P_available`
+
+and:
+
+`pg^2 + qg^2 <= S_available^2`,
+
+with current synthetic:
+
+`Q_available = 0`
+
+so:
+
+`S_available = P_available`.
+
+Therefore stochastic irradiance/wind availability directly sets the P/Q capability-circle radius. In reduced SRP1:
+
+- every live RES cold start lies exactly on `sg_capability`;
+- `sg_capability` is the binding reactive restriction in 100% of live cold-start points;
+- 17 realized low-output points in `(1e-5, 1e-4] p.u.` create very small active capability circles;
+- static `qmin/qmax` are effectively unreachable over much of the operating range.
+
+However, the repository contains **no explicit, defensible inverter/converter apparent-power rating**. `Pmax`, `Qmax`, PF limits, historical maxima, and arbitrary oversizing factors must not be reinterpreted as `S_converter` without documented physical semantics.
+
+Decision:
+
+**B2-R = DEFER — insufficient physical rating data for safe reformulation.**
+
+Future data-model direction:
+
+- add an explicit optional generator field such as `Smax` [MVA];
+- store it as a dedicated apparent-power rating, e.g. `Generator.s_rated` in p.u.;
+- require at minimum `Smax > 0` and `Smax >= Pmax` when provided;
+- keep legacy cases on the current formulation when no rating is supplied;
+- do not adopt arbitrary plausibility thresholds such as `Smax > 2*Pmax` without equipment evidence.
+
+Important separate semantic point:
+
+An explicit `Smax` alone would **not** enable reactive-only/STATCOM operation at `pg = 0`, because the current PF cone also forces `qg = 0` at `pg = 0`. Converter rating and reactive-only operating policy are separate future modelling decisions.
+
+Stochastic-model findings retained for later work:
+
+- `abs()` reflection of negative RES samples is quantitatively negligible but should eventually be replaced by physical lower clipping (`max(sample, 0)`) for correctness;
+- the material support issue is upper overshoot;
+- historical-max exceedance is not automatically a physical violation — future auditing should quantify exceedance of installed `Pmax` / capacity factor > 1;
+- cross-generator spatial correlation is currently not preserved.
+
+Do not modify the RES formulation or copula during P5.4.
+
+## P5.3-B3 — active-power shared-ESS prototype — ACCEPTED PRODUCTION DIRECTION
+
+The diagnostic network formulation replaced the apparent-power charge/discharge geometry with active-power battery dynamics.
+
+Core accepted physical direction:
+
+`pnet = pch - pdch`
+
+`SOC_t = SOC_(t-1) + eta_ch * pch * dt - pdch * dt / eta_dch`
+
+with the current representative-day time basis verified as `dt = 1 h`.
+
+Converter capability:
+
+`pnet^2 + qnet^2 <= S_rated^2`.
+
+Active charging/discharging envelope derived from the old feasible set:
+
+`pch + pdch <= S_rated`.
+
+Complementarity moves from:
+
+`sch * sdch`
+
+to:
+
+`pch * pdch`
+
+with the existing `ESS_COMPLEMENTARITY_TOLERANCE` unchanged.
+
+The diagnostic prototype removed/deactivated the shared-network internal rows/variables that depended on `sch/sdch`, including:
+
+- `shared_es_sch`;
+- `shared_es_sdch`;
+- `sess_snet_def`;
+- `sess_pch_link`;
+- `sess_pdch_link`;
+- old `sess_s_limit`;
+- old apparent-power `sess_soc_def`;
+- old `sess_comp`.
+
+### Structural result
+
+B3 removed the dominant structural defect completely:
+
+- DSO zero-gradient equality rows: `24 -> 0`;
+- TSO zero-gradient equality rows: `72 -> 0`;
+- full equality Jacobian changed from exact rank deficiency to full row rank;
+- DSO `sigma_min(full)` became approximately `5.925e-3`;
+- TSO `sigma_min(full)` became approximately `3.287e-2`;
+- the previous `sess_snet_def` curvature peak of about `18806` disappeared;
+- largest remaining reported structural curvature was about `138`, a reduction of roughly 136x.
+
+### Bootstrap robustness result
+
+Exact positive-bootstrap A/B:
+
+Production A:
+
+- DSO success: `33/36`;
+- persistent failures: `3`;
+- total network IPOPT iterations: `33073`;
+- mean iterations: `689`;
+- median iterations: `468`;
+- max: `3000`;
+- runtime: about `274 s`.
+
+Active-power B:
+
+- DSO success: `36/36`;
+- TSO success: `12/12`;
+- ESSO unchanged success: `3/3`;
+- primary failures: `0`;
+- recoveries: `0`;
+- persistent failures: `0`;
+- total network IPOPT iterations: `1545`;
+- mean iterations: `32.2`;
+- median iterations: `27.5`;
+- max iterations: `109`;
+- runtime: about `37 s`.
+
+The three original P5 failures were eliminated **without relocation**.
+
+### Physics result
+
+Required unit tests passed:
+
+- pure Q with `pch = pdch = pnet = 0` produces exactly `Delta_SOC = 0`;
+- pure charging changes SOC by `eta_ch * pch * dt`;
+- pure discharging changes SOC by `-pdch * dt / eta_dch`;
+- converter P/Q capability behaves correctly;
+- zero-capacity gating remains safe.
+
+This corrects the previous physical inconsistency where reactive apparent power affected stored battery energy.
+
+### Remaining numerical issues after B3
+
+These do **not** block the production direction, but must remain explicit.
+
+Active-power complementarity:
+
+`pch * pdch <= ESS_COMPLEMENTARITY_TOLERANCE * S_rated^2`
+
+remains under-resolved at tiny bootstrap capacity. Its RHS is roughly `1.1e-12` to `1.0e-11`, far below the network IPOPT absolute tolerance, and a tiny accepted physical violation was measured.
+
+Converter capability:
+
+`pnet^2 + qnet^2 <= S_rated^2`
+
+is also below the absolute solver feasibility scale for the smallest bootstrap devices.
+
+These are now **inequality-resolution problems**, not equality-rank deficiencies.
+
+Do not immediately respond with another arbitrary row multiplier. If later live ADMM/planning residual audits show material physical violations, prefer a true dimensionless ESS internal-variable formulation.
+
+### Network/coordination compatibility
+
+The B3 consumer trace established that load-bearing coordination components use `pnet/qnet`:
+
+- nodal balance;
+- ADMM consensus;
+- expected shared-ESS P/Q schedules;
+- scenario-deviation terms;
+- Benders sensitivity extraction.
+
+Two non-load-bearing consumers must be corrected during productionization:
+
+1. the exported shared-ESS apparent-power/result field that currently derives from `sch - sdch`;
+2. the ADMM residual diagnostic that reports charge/discharge using `sch/sdch`.
+
+Do not silently change output semantics. If an existing `s_ess` field means apparent-power magnitude, use `sqrt(pnet^2 + qnet^2)` and document/rename as needed. If any consumer expects a signed quantity, preserve compatibility explicitly. Active charging/discharging quantities must be labelled in MW, not MVA.
+
+## Current production decision
+
+**B3 = PRODUCTIONIZE CANDIDATE / approved production direction.**
+
+This does **not** mean the diagnostic wrapper is accepted production code. P5.4 must implement the active-energy semantics consistently across the production network model, ordinary ESS where relevant, ESSO, degradation/throughput, diagnostics, result exports, sensitivities, lifecycle handling, and live distributed execution.
+
+The P5.2 narrow-band workaround is now abandoned. Do not productionize it. Do not continue tuning `sess_snet_def` or its `kappa` scale.
+
+## Next authorized stage
+
+**P5.4 — End-to-end active-energy ESS productionization.**
+
+`LOCAL_NLP_STABILITY_PLAN.md` contains the detailed P5.4 execution protocol and takes precedence for implementation and validation.
 
 ---
 
@@ -257,9 +489,9 @@ Interpretation:
 
 ---
 
-# P5.3 — current structural SMOPF review
+# P5.3 — completed structural SMOPF review (historical execution record)
 
-P5.3 is the immediate priority. The quantitative audit and its correction/RES follow-up are now complete; the next work is the isolated B-series reformulation testing.
+P5.3 is complete. The quantitative audit, corrected RES/Jacobian follow-up, and isolated B-series reformulation tests are retained below as historical execution evidence. The authoritative P5.3-B decisions and P5.4 next stage are stated near the top of this file.
 
 `LOCAL_NLP_STABILITY_PLAN.md` contains the detailed execution protocol and takes precedence for the B experiments.
 
@@ -424,77 +656,7 @@ remains exposed to the KKT system. MA97 has also reported scaling activation due
 
 Do not respond by retuning IPOPT during P5.3. Prefer formulation improvements.
 
-## P5.3-B1 — accepted result
-
-Verdict: **CONTINUE TESTING — do not productionize.** Do not repeat B1 and do
-not stack `f_ref = 0` into any later experiment. B1 may be reconsidered only
-after B3, once the dominant `sess_snet_def` rank deficiency has been removed.
-
-Established:
-
-- exact `f_ref = 0` cleanly removes the reference imaginary-voltage variable
-  from the NLP (no column, versus a healthy column norm of 1.0 in production);
-- it removes **no** `sess_snet_def` zero-gradient equality rows;
-- the full equality Jacobian remains exactly rank deficient (24 DSO / 72 TSO
-  zero rows, `sigma_min = 0`);
-- reduced-Jacobian conditioning is essentially unchanged (DSO `8.983e4` ->
-  `8.985e4`);
-- the three original P5 bootstrap failures are fixed, but three *different*
-  node-5 failures appear, including `Error in step computation!` and
-  `Restoration Failed!`, modes production did not exhibit;
-- therefore B1 **relocates** solver failures rather than robustly eliminating
-  them.
-
-## P5.3-B2-R — accepted result
-
-Verdict: **DEFER — insufficient physical rating data for safe reformulation.**
-The mathematical A/B was correctly stopped before implementation; no rating was
-invented. Do not repeat B2-R now.
-
-Authoritative findings:
-
-- **No explicit RES converter/inverter apparent-power rating exists anywhere in
-  the repository.** The `Generator` class carries only
-  `pmax/pmin/qmax/qmin/vg/pf` limits, and across all 6223 generator entries in
-  every network JSON the complete field set is `gen_id, bus, Pmax, Pmin, Qmax,
-  Qmin, Vg, status, type, pf_control, pf_max, pf_min`. `Qmax` is set exactly
-  equal to `Pmax` for every curtailable RES unit, which is a permissive
-  modelling convention and **not** a documented converter rating.
-- **The current `sg_capability` row conflates stochastic active availability
-  with apparent-power capability.** With `Q_available` identically zero,
-  `sg_avail = P_available`, so the capability circle radius *is* the stochastic
-  availability. It is the binding reactive restriction in 2400 of 2400 live
-  cold-start points, and the static `qmin/qmax` are effectively unreachable
-  (radius / `qmax`: median `0.326`, minimum `1.21e-4`).
-- **Every live RES cold start lies exactly on the nonlinear capability
-  boundary.** `pg_init = P_available` and `qg_init = 0` give
-  `pg^2 + qg^2 = sg_avail^2`, i.e. margin identically `0.0`. This fully explains
-  the P5.3-A zero-margin `sg_capability` finding across 3732 rows.
-- **A safe availability/converter separation requires an explicit future
-  `Smax` / `Generator.s_rated` field**, read at parse time and defaulting to
-  absent so every existing case study keeps today's behaviour bit-for-bit.
-- **`Smax` alone would not enable reactive-only operation at `pg = 0`**, because
-  the current PF cone `tangent_lower*pg <= qg <= tangent_upper*pg` already
-  forces `qg = 0` whenever `pg = 0`, independently of the capability circle.
-- **Nighttime / STATCOM behaviour is therefore a separate future modelling
-  decision**, requiring a change to the PF-cone treatment as well as a converter
-  rating. It is not obtained by adding `Smax`.
-- **Historical-support overshoot must not automatically be treated as a
-  physical-limit violation.** Future stochastic work should specifically
-  quantify generation above the installed `Pmax` and any implied capacity factor
-  above 1, and distinguish that from merely exceeding the largest value in a
-  finite historical record.
-- **Do not adopt an arbitrary `Smax > 2*Pmax` validation warning.** That
-  threshold was proposed without physical justification and is withdrawn; any
-  such rule must be justified from equipment data.
-
-Retained recommendations, unchanged: replace `abs(sample)` with
-`max(sample, 0)` on physical grounds despite a negligible quantitative effect
-(<= 0.01% of mass); prefer bounding the marginal model over post-hoc clipping;
-and add a site-correlation layer in a future scenario model, which requires a
-per-site identifier the current operational-data workbook lacks.
-
-## Current P5.3 execution order
+## Historical P5.3 execution order (completed)
 
 For practical debugging and validation, proceed in this order:
 
@@ -558,7 +720,7 @@ End-to-end ESSO throughput/degradation conversion remains a follow-on stage if B
 - B1, B2-R, and B3 are isolated experiments and each starts from the same accepted production baseline.
 - A favorable B result is reported for planner review before any productionization or stacking.
 
-# P5.3 invariants and prohibitions
+# P5.3 invariants and prohibitions (historical)
 
 During P5.3:
 
@@ -673,9 +835,7 @@ and representative-year cell-side throughput:
 
 Reactive power remains constrained by converter apparent-power capability but should not directly change battery SOC or battery-cell cycling SoH.
 
-P5.3-B3 is allowed to prototype this correction in the network SMOPF because it may simultaneously remove numerically difficult `sch/sdch` geometry. Do not implement the full ESSO degradation rewrite in the same diagnostic branch.
-
-If the prototype is accepted, the subsequent end-to-end correction must cover ordinary ESS, shared network ESS, ESSO per-cohort active-power allocation, aggregate P/Q coordination, throughput, cycling degradation, SoH, sensitivities, state mapping, and exports consistently.
+P5.3-B3 has now validated this correction in the network SMOPF and is the accepted production direction. P5.4 must now implement it end to end across ordinary ESS, shared network ESS, ESSO per-cohort active-power allocation, aggregate P/Q coordination, throughput, cycling degradation, SoH, sensitivities, state mapping, diagnostics, and exports consistently before a new production checkpoint is accepted.
 
 ---
 
@@ -691,7 +851,7 @@ with `0 < phi_cal <= 1` and disabled compatibility case `phi_cal = 1`.
 
 Keep `phi_cal` conceptually separate from the existing calendar-life/retirement parameter used for cohort retirement and salvage.
 
-Do not begin calendar-degradation implementation during P5.3.
+Do not begin calendar-degradation implementation during P5.4.
 
 ---
 
@@ -713,17 +873,21 @@ Never describe the local-cut master estimate as a rigorous global lower bound or
 
 # Immediate instruction
 
-The immediate task is the P5.3-B sequence defined in `LOCAL_NLP_STABILITY_PLAN.md`.
+The immediate task is P5.4 end-to-end active-energy ESS productionization as defined in `LOCAL_NLP_STABILITY_PLAN.md`.
 
-P5.3-A and P5.3-A2 are complete and should not be rerun unless a later experiment specifically requires a targeted derivative control.
+P5.3-A, P5.3-A2, B1, B2-R, and B3 are complete and should not be rerun except for narrowly targeted controls explicitly required by P5.4.
 
-Execute isolated experiments in this order:
+Execute P5.4 in controlled checkpoints:
 
-1. **B1 — exact reference-angle gauge:** test `f_ref = 0` from a fresh production baseline.
-2. **B2-R — RES capability semantics and conditioning:** inspect rating semantics first; only implement a separated `P_available` / `S_converter` diagnostic if an explicit defensible converter MVA rating exists.
-3. **B3 — active-power ESS structural prototype:** trace all consumers, remove the `sch/sdch` geometry in the diagnostic network formulation, and re-audit equality rank, complementarity, physics, and bootstrap robustness.
-4. Produce an evidence-based ranked production proposal.
+1. **P5.4-A — shared network ESS productionization:** promote the accepted active-power formulation and retire `sess_snet_def`/`sch`/`sdch` scaling machinery.
+2. **P5.4-B — ordinary ESS parity:** apply the same active-energy semantics and remove the ordinary `ess_snet_def` geometry where applicable.
+3. **P5.4-C — ESSO active-energy conversion:** align per-cohort charge/discharge, SOC, throughput, cycling degradation, and aggregate P/Q semantics.
+4. **P5.4-D — sensitivity/lifecycle audit:** verify candidate updates, Benders sensitivities, zero/positive capacity transitions, and warm-start suffix behavior.
+5. **P5.4-E — production bootstrap validation:** require the real production implementation to reproduce the B3 robustness and full-rank structural result, and audit normalized physical inequality residuals.
+6. **P5.4-F — live positive-bootstrap ADMM:** only after E passes.
+7. **P5.4-G — reduced planning gate:** only after the live ADMM run is sufficiently clean.
+8. **P5.4-H — remaining inequality-conditioning decision:** consider true dimensionless ESS variables only if normalized physical residuals show the tiny inequalities remain materially under-resolved.
 
-The user deliberately chose B2-R before B3 because it is easier and quicker to debug and validate. This execution order does not change the conclusion that B3 has the largest expected structural payoff.
+Do not include B1 `f_ref = 0` in the initial P5.4 production baseline. Do not modify RES capability/copula behavior in P5.4.
 
-Do not start production edits automatically after a favorable diagnostic result. Report and wait for planner approval.
+Production edits are now authorized only inside the controlled P5.4 scope above; each checkpoint must be validated before proceeding to the next one.
