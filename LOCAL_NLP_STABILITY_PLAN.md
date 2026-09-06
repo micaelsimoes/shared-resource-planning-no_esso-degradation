@@ -99,6 +99,27 @@ The user deliberately selected the following order because the RES capability ex
 
 B3 remains the highest expected structural-payoff experiment, but it is executed third for practical validation reasons.
 
+## B-series status
+
+- **B1 — accepted as `CONTINUE TESTING — do not productionize`.** Complete; do
+  not repeat and do not stack `f_ref = 0` into a later branch. It removes the
+  gauge variable cleanly but removes no `sess_snet_def` zero row, leaves the
+  full equality Jacobian exactly rank deficient and the reduced conditioning
+  essentially unchanged, and relocates the failure set rather than eliminating
+  it. Reconsider only after B3.
+- **B2-R — accepted as `DEFER — insufficient physical rating data for safe
+  reformulation`.** Complete; the mathematical A/B was correctly stopped at the
+  rating-semantics gate. No explicit converter/inverter apparent-power rating
+  exists anywhere in the repository, so no formulation change was implemented
+  and no rating was invented. See `REVISION_CONTEXT.md` for the authoritative
+  findings, including that an `Smax` field alone would **not** enable
+  reactive-only operation at `pg = 0` (the PF cone already forces `qg = 0`
+  there), that STATCOM behaviour is a separate future modelling decision, that
+  historical-support overshoot must not be conflated with a physical-limit
+  violation, and that the previously proposed `Smax > 2*Pmax` warning is
+  withdrawn as unjustified.
+- **B3 — current active experiment.** Highest priority.
+
 Do not test more shared-ESS epsilon values or scalar `kappa` caps. Do not retune solver options.
 
 ---

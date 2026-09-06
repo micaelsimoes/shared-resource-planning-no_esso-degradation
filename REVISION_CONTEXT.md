@@ -424,6 +424,76 @@ remains exposed to the KKT system. MA97 has also reported scaling activation due
 
 Do not respond by retuning IPOPT during P5.3. Prefer formulation improvements.
 
+## P5.3-B1 — accepted result
+
+Verdict: **CONTINUE TESTING — do not productionize.** Do not repeat B1 and do
+not stack `f_ref = 0` into any later experiment. B1 may be reconsidered only
+after B3, once the dominant `sess_snet_def` rank deficiency has been removed.
+
+Established:
+
+- exact `f_ref = 0` cleanly removes the reference imaginary-voltage variable
+  from the NLP (no column, versus a healthy column norm of 1.0 in production);
+- it removes **no** `sess_snet_def` zero-gradient equality rows;
+- the full equality Jacobian remains exactly rank deficient (24 DSO / 72 TSO
+  zero rows, `sigma_min = 0`);
+- reduced-Jacobian conditioning is essentially unchanged (DSO `8.983e4` ->
+  `8.985e4`);
+- the three original P5 bootstrap failures are fixed, but three *different*
+  node-5 failures appear, including `Error in step computation!` and
+  `Restoration Failed!`, modes production did not exhibit;
+- therefore B1 **relocates** solver failures rather than robustly eliminating
+  them.
+
+## P5.3-B2-R — accepted result
+
+Verdict: **DEFER — insufficient physical rating data for safe reformulation.**
+The mathematical A/B was correctly stopped before implementation; no rating was
+invented. Do not repeat B2-R now.
+
+Authoritative findings:
+
+- **No explicit RES converter/inverter apparent-power rating exists anywhere in
+  the repository.** The `Generator` class carries only
+  `pmax/pmin/qmax/qmin/vg/pf` limits, and across all 6223 generator entries in
+  every network JSON the complete field set is `gen_id, bus, Pmax, Pmin, Qmax,
+  Qmin, Vg, status, type, pf_control, pf_max, pf_min`. `Qmax` is set exactly
+  equal to `Pmax` for every curtailable RES unit, which is a permissive
+  modelling convention and **not** a documented converter rating.
+- **The current `sg_capability` row conflates stochastic active availability
+  with apparent-power capability.** With `Q_available` identically zero,
+  `sg_avail = P_available`, so the capability circle radius *is* the stochastic
+  availability. It is the binding reactive restriction in 2400 of 2400 live
+  cold-start points, and the static `qmin/qmax` are effectively unreachable
+  (radius / `qmax`: median `0.326`, minimum `1.21e-4`).
+- **Every live RES cold start lies exactly on the nonlinear capability
+  boundary.** `pg_init = P_available` and `qg_init = 0` give
+  `pg^2 + qg^2 = sg_avail^2`, i.e. margin identically `0.0`. This fully explains
+  the P5.3-A zero-margin `sg_capability` finding across 3732 rows.
+- **A safe availability/converter separation requires an explicit future
+  `Smax` / `Generator.s_rated` field**, read at parse time and defaulting to
+  absent so every existing case study keeps today's behaviour bit-for-bit.
+- **`Smax` alone would not enable reactive-only operation at `pg = 0`**, because
+  the current PF cone `tangent_lower*pg <= qg <= tangent_upper*pg` already
+  forces `qg = 0` whenever `pg = 0`, independently of the capability circle.
+- **Nighttime / STATCOM behaviour is therefore a separate future modelling
+  decision**, requiring a change to the PF-cone treatment as well as a converter
+  rating. It is not obtained by adding `Smax`.
+- **Historical-support overshoot must not automatically be treated as a
+  physical-limit violation.** Future stochastic work should specifically
+  quantify generation above the installed `Pmax` and any implied capacity factor
+  above 1, and distinguish that from merely exceeding the largest value in a
+  finite historical record.
+- **Do not adopt an arbitrary `Smax > 2*Pmax` validation warning.** That
+  threshold was proposed without physical justification and is withdrawn; any
+  such rule must be justified from equipment data.
+
+Retained recommendations, unchanged: replace `abs(sample)` with
+`max(sample, 0)` on physical grounds despite a negligible quantitative effect
+(<= 0.01% of mass); prefer bounding the marginal model over post-hoc clipping;
+and add a site-correlation layer in a future scenario model, which requires a
+per-site identifier the current operational-data workbook lacks.
+
 ## Current P5.3 execution order
 
 For practical debugging and validation, proceed in this order:
