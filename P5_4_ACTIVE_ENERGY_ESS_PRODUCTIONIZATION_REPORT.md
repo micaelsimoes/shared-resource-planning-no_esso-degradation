@@ -10,6 +10,7 @@ done, so no final verdict is issued in this revision.**
 | C — ESSO active-energy conversion | Not started |
 | D — sensitivity / lifecycle / warm-start audit | Partially covered by A's smoke tests |
 | **E — production validation before ADMM** | **Complete (shared-ESS scope)** |
+| **E2 — complementarity significance** | **Complete** |
 | F — live distributed ADMM | Blocked on C |
 | G — reduced planning gate | Blocked on F |
 | H — remaining inequality-conditioning decision | Evidence gathered, decision pending |
@@ -136,10 +137,122 @@ feasibility metric.
 >
 > **The active complementarity is materially violated on 288 of 864 rows
 > (33 %)**, worst case `1.847e-04` normalized at `dso/9/2025/Winter` period 20.
-> In physical terms `pch·pdch ≈ 2.85·eps·S²`, i.e. roughly 1.7 % of rating
-> flowing simultaneously in both directions. Moving complementarity from
-> `sch·sdch` to `pch·pdch` did **not** repair this, exactly as B3 predicted, and
-> no scaling was introduced to mask it.
+> Moving complementarity from `sch·sdch` to `pch·pdch` did **not** repair this,
+> exactly as B3 predicted, and no scaling was introduced to mask it.
+
+> **Correction (planner, accepted).** An earlier revision of this section read
+> the worst product as "roughly 1.7 % of rating flowing simultaneously in both
+> directions". **That interpretation was too strong and is withdrawn.** From
+> `pch·pdch/S² ≈ 2.847e-04` only the *geometric mean*
+> `sqrt(pch·pdch)/S ≈ 1.69 %` is established; a given product is equally
+> consistent with one large and one small directional power. The physically
+> relevant simultaneous-circulation quantity is `p_circ = min(pch, pdch)`, and
+> it is measured — not inferred — in **P5.4-E2** below.
+
+> **Scope correction.** The 864 rows audited above are the **DSO rows only**.
+> The TSO models also carry active shared-ESS rows and were not included. P5.4-E2
+> audits both, and the TSO rows turn out to be substantially worse.
+
+---
+
+# E2 — Physical significance of the complementarity residual
+
+Script: `p54e2_complementarity_significance.py`. Evidence:
+`data/SRP1/Results/P54E2/p54e2_report.json` (all 1 728 rows are persisted).
+**No formulation change was made in E2** — this is measurement only, on the
+production positive-bootstrap solutions (36/36 DSO, 12/12 TSO, 3/3 ESSO,
+0 persistent failures).
+
+All physical parameters (`eta_ch`, `eta_dch`, `dt`, `baseMVA`, `E_rated`) are read
+from the live production model and network objects; none is defaulted.
+
+## Scope
+
+`1 728` active shared-ESS rows = **864 DSO + 864 TSO**. The E-stage audit covered
+only the DSO half. The DSO half reproduces the E numbers to three significant
+figures (`max r_violation` 1.8466e-04 here vs. 1.847e-04 there; residual
+differences are IPOPT run-to-run variation, not a formulation difference).
+
+## Circulating power `p_circ = min(pch, pdch)`
+
+| Population | max | mean | median | p95 | p99 |
+|---|---|---|---|---|---|
+| **All 1 728 rows**, `p_circ/S` | **1.1562e-01** | 1.4283e-02 | 7.9608e-03 | 5.2317e-02 | 9.1039e-02 |
+| **All**, `p_circ` [MW] | 2.9219e-03 | 2.8719e-04 | 1.6228e-04 | 1.2828e-03 | 2.4655e-03 |
+| **DSO** (864), `p_circ/S` | 1.6690e-02 | 8.9112e-03 | 7.7017e-03 | 1.5696e-02 | 1.6329e-02 |
+| **TSO** (864), `p_circ/S` | **1.1562e-01** | 1.9654e-02 | 9.2336e-03 | 7.6454e-02 | 1.0398e-01 |
+
+**Nonzero on 1 728 / 1 728 rows.** Counts above threshold, all rows:
+
+| `p_circ >` | rows |
+|---|---|
+| `1e-4·S` | **1 728 (100 %)** |
+| `1e-3·S` | **1 713 (99.1 %)** |
+| `1e-2·S` | **694 (40.2 %)** |
+
+## Product residual, for comparison
+
+| Population | `pch·pdch/S²` max | `r_violation` max | rows with `r_violation > 0` |
+|---|---|---|---|
+| All | 2.8123e-02 | 2.8023e-02 | **1 062 / 1 728 (61 %)** |
+| DSO | 2.8466e-04 | 1.8466e-04 | 288 / 864 (33 %) |
+| **TSO** | **2.8123e-02** | **2.8023e-02** | **774 / 864 (90 %)** |
+
+The TSO worst violation is `2.80e-02`, i.e. **≈ 280 × `eps`**, two orders of
+magnitude beyond the DSO worst case.
+
+## Worst rows (all TSO; top 6 of the persisted 20)
+
+| Model | p | `pch/S` | `pdch/S` | `p_circ/S` | `p_circ` [MW] | `p_net/S` | `r_prod` | `r_violation` | SOC | `E_circ_loss` [MWh] |
+|---|---|---|---|---|---|---|---|---|---|---|
+| tso/1/2030/Summer | 13 | 2.3781e-01 | 1.1562e-01 | **1.1562e-01** | 2.459e-03 | 1.2219e-01 | 2.7496e-02 | 2.7396e-02 | 2.6845e-04 | 1.762e-04 |
+| tso/2/2030/Summer | 13 | 2.3781e-01 | 1.1562e-01 | 1.1562e-01 | 2.459e-03 | 1.2219e-01 | 2.7496e-02 | 2.7396e-02 | 2.6845e-04 | 1.762e-04 |
+| tso/0/2030/Summer | 13 | 2.3781e-01 | 1.1562e-01 | 1.1562e-01 | 2.459e-03 | 1.2219e-01 | 2.7496e-02 | 2.7396e-02 | 2.6845e-04 | 1.762e-04 |
+| tso/2/2030/Summer | 14 | 2.4190e-01 | 1.1344e-01 | 1.1344e-01 | 2.413e-03 | 1.2847e-01 | 2.7441e-02 | 2.7341e-02 | 2.9322e-04 | 1.729e-04 |
+| tso/1/2030/Summer | 12 | 2.5015e-01 | 1.0925e-01 | 1.0925e-01 | 2.324e-03 | 1.4090e-01 | 2.7329e-02 | 2.7229e-02 | 2.4500e-04 | 1.665e-04 |
+| tso/1/2035/Summer | 13 | 1.9726e-01 | 9.1581e-02 | **9.1581e-02** | **2.922e-03** | 1.0568e-01 | 1.8066e-02 | 1.7966e-02 | 4.1444e-04 | **2.094e-04** |
+
+The worst row charges at **23.8 % of rating while simultaneously discharging at
+11.6 % of rating**, for a net of only 12.2 %. Note that here the geometric mean
+`sqrt(r_prod) = 16.6 %` **overstates** `p_circ/S = 11.6 %` — confirming the
+planner's point that the product alone does not pin down simultaneity in either
+direction.
+
+## Artificial cycling loss
+
+`E_circ_loss = min(pch, pdch) · dt · (1/eta_dch − eta_ch)` — the stored energy
+destroyed by the circulating component, which produces no net injection.
+
+| Quantity | Value |
+|---|---|
+| Max per period | 2.0940e-06 p.u. = **2.0940e-04 MWh** |
+| Worst representative day, total | 1.2655e-03 MWh (`tso/1/2030/Summer`) |
+| Worst day, normalized by `E_rated` | **2.9749e-02 (3.0 %)** |
+| Worst day, share of legitimate throughput | **3.4210e-02 (3.4 %)**, at `dso/9/2030/Spring` |
+| Worst DSO day, normalized by `E_rated` | 1.3051e-02 (1.3 %) |
+
+Legitimate throughput is `eta_ch·pch·dt + pdch·dt/eta_dch`, i.e. the same
+active-energy quantity the SOC recursion uses.
+
+## Associated objective penalty
+
+`PENALTY_ESS_COMPLEMENTARITY = 1e2`. The worst row's penalty contribution is
+`1e2 · pch · pdch = 1.8389e-07` in per-unit-base objective terms. **At these
+capacities the penalty exerts essentially no pressure**, which is a consistent
+explanation for why the residual persists: nothing in the objective meaningfully
+opposes it, and the inequality itself is scaled by `S²`, which is `O(1e-8)`.
+
+## What E2 establishes
+
+1. The circulating power is **real and not negligible** — 40 % of rows exceed
+   1 % of rating, and the worst exceeds 11 %.
+2. It is **concentrated in the TSO models**, which the E audit did not cover.
+3. Its **energy consequence is small but not zero**: up to 3.4 % of a day's
+   legitimate throughput is destroyed as artificial cycling loss.
+4. The **objective penalty is numerically irrelevant** at these capacities.
+
+E2 makes no recommendation and changes no formulation; per the plan, the
+H decision remains deferred to post-ADMM evidence.
 
 ---
 

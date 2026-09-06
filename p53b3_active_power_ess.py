@@ -60,6 +60,7 @@ import network as network_module  # noqa: E402
 import shared_resources_planning as srp  # noqa: E402
 from definitions import (ESS_COMPLEMENTARITY_TOLERANCE, ESS_MODEL_BILINEAR_RELAXATION,  # noqa: E402
                          PENALTY_ESS_COMPLEMENTARITY, SHARED_ESS_ZERO_CAPACITY_TOLERANCE)
+from model_construction_helpers import period_duration_hours  # noqa: E402
 from shared_resources_planning import SharedResourcesPlanning  # noqa: E402
 
 from p52a2_epsilon_sensitivity import parse_ipopt_blocks  # noqa: E402  (reuse)
@@ -357,8 +358,15 @@ def run_branch(prototype, capture_tags):
                 s_rated = float(pe.value(model.shared_es_s_rated_fixed[e_idx]))
                 if s_rated <= SHARED_ESS_ZERO_CAPACITY_TOLERANCE:
                     continue
+                # real production parameters, read from the live model/network --
+                # never defaulted, since P5.4-E2 converts these into MW/MWh
+                sess = net.shared_energy_storages[e_idx]
                 rec = {'s_rated': s_rated, 'pch': [], 'pdch': [], 'pnet': [],
-                       'qnet': [], 'soc': [], 'cap_margin': [], 'comp_margin': []}
+                       'qnet': [], 'soc': [], 'cap_margin': [], 'comp_margin': [],
+                       'e_rated': float(pe.value(model.shared_es_e_rated_fixed[e_idx])),
+                       'eff_ch': float(sess.eff_ch), 'eff_dch': float(sess.eff_dch),
+                       'dt': float(period_duration_hours(model)),
+                       'base_mva': float(net.baseMVA)}
                 for p in model.periods:
                     pch = float(pe.value(model.shared_es_pch[e_idx, 0, 0, p]))
                     pdch = float(pe.value(model.shared_es_pdch[e_idx, 0, 0, p]))
@@ -378,6 +386,36 @@ def run_branch(prototype, capture_tags):
                 except Exception:
                     pass
                 physics[f'dso/{node_id}/{year}/{day}'] = rec
+
+    # the TSO model carries one shared ESS per active distribution network node,
+    # so its rows must be audited too rather than assumed identical to the DSOs'
+    for year, per_day in tso_models.items():
+        for day, model in per_day.items():
+            if not srp._solver_result_succeeded(res['tso'][year][day]):
+                continue
+            net = planning.transmission_network.network[year][day]
+            for e_idx, sess in enumerate(net.shared_energy_storages):
+                s_rated = float(pe.value(model.shared_es_s_rated_fixed[e_idx]))
+                if s_rated <= SHARED_ESS_ZERO_CAPACITY_TOLERANCE:
+                    continue
+                rec = {'s_rated': s_rated, 'pch': [], 'pdch': [], 'pnet': [],
+                       'qnet': [], 'soc': [], 'cap_margin': [], 'comp_margin': [],
+                       'e_rated': float(pe.value(model.shared_es_e_rated_fixed[e_idx])),
+                       'eff_ch': float(sess.eff_ch), 'eff_dch': float(sess.eff_dch),
+                       'dt': float(period_duration_hours(model)),
+                       'base_mva': float(net.baseMVA)}
+                for p in model.periods:
+                    pch = float(pe.value(model.shared_es_pch[e_idx, 0, 0, p]))
+                    pdch = float(pe.value(model.shared_es_pdch[e_idx, 0, 0, p]))
+                    pnet = float(pe.value(model.shared_es_pnet[e_idx, 0, 0, p]))
+                    qnet = float(pe.value(model.shared_es_qnet[e_idx, 0, 0, p]))
+                    rec['pch'].append(pch); rec['pdch'].append(pdch)
+                    rec['pnet'].append(pnet); rec['qnet'].append(qnet)
+                    rec['soc'].append(float(pe.value(model.shared_es_soc[e_idx, 0, 0, p])))
+                    rec['cap_margin'].append(s_rated ** 2 - (pnet ** 2 + qnet ** 2))
+                    rec['comp_margin'].append(
+                        ESS_COMPLEMENTARITY_TOLERANCE * s_rated ** 2 - pch * pdch)
+                physics[f'tso/{e_idx}/{year}/{day}'] = rec
 
     return {'aggregates': agg, 'per_solve': per_solve, 'finals': finals,
             'physics': physics, 'conversion': dict(list(conv_info.items())[:2]),
