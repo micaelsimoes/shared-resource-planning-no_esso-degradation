@@ -755,29 +755,41 @@ def sess_phi_limits_upper(m, e, s_m, s_o, p, network):
     return m.shared_es_qnet[e, s_m, s_o, p] <= tangent_upper * pch - tangent_lower * pdch
 
 
-def sess_pch_link_rule(m, e, s_m, s_o, p):
-    return m.shared_es_pch[e, s_m, s_o, p] <= m.shared_es_sch[e, s_m, s_o, p]
+def period_duration_hours(m):
+    """Duration of one optimization period, in hours.
+
+    Representative days span HOURS_PER_REPRESENTATIVE_DAY hours and are split
+    into `len(m.periods)` equal instants, so for the standard 24-instant day
+    this is exactly 1 h. Used by the active-energy SOC recursions (P5.4) so the
+    time step is explicit rather than an implicit assumption.
+    """
+    n_periods = len(m.periods)
+    if n_periods <= 0:
+        raise ValueError('Model has no periods; cannot derive the period duration.')
+    return HOURS_PER_REPRESENTATIVE_DAY / n_periods
 
 
-def sess_pdch_link_rule(m, e, s_m, s_o, p):
-    return m.shared_es_pdch[e, s_m, s_o, p] <= m.shared_es_sdch[e, s_m, s_o, p]
+def sess_converter_capability_rule(m, e, s_m, s_o, p):
+    """Shared-ESS converter apparent-power capability (P5.4-A).
+
+    Replaces the former apparent-charge/discharge geometry. Reactive power is
+    limited by the converter rating but no longer participates in the stored
+    battery energy.
+    """
+    return (m.shared_es_pnet[e, s_m, s_o, p] ** 2
+            + m.shared_es_qnet[e, s_m, s_o, p] ** 2) <= m.shared_es_s_rated[e] ** 2
 
 
-def sess_s_limit_rule(m, e, s_m, s_o, p):
-    return m.shared_es_sch[e, s_m, s_o, p] + m.shared_es_sdch[e, s_m, s_o, p] <= m.shared_es_s_rated[e]
+def sess_active_sum_limit_rule(m, e, s_m, s_o, p):
+    """Active charging/discharging envelope (P5.4-A).
 
-
-def sess_snet_def_rule(m, e, s_m, s_o, p):
-    # Production-safe numerical normalization (P4): kappa_e * g == 0, where
-    # kappa_e = 1/S_scale_e is a fixed numerical scale kept in sync with the
-    # installed shared-ESS power rating by configure_shared_ess_operational_state.
-    # kappa_e is a mutable Param -- never a symbolic division by a variable --
-    # so this is a constant-multiple reformulation with the identical feasible
-    # set as the original g == 0 for any finite positive kappa_e.
-    snet = m.shared_es_sch[e, s_m, s_o, p] - m.shared_es_sdch[e, s_m, s_o, p]
-    kappa = m.sess_snet_def_kappa[e]
-    g = snet ** 2 - m.shared_es_pnet[e, s_m, s_o, p] ** 2 - m.shared_es_qnet[e, s_m, s_o, p] ** 2
-    return kappa * g == 0
+    Derived from the retired production feasible set, which enforced
+    `pch <= sch`, `pdch <= sdch` and `sch + sdch <= S_rated`; those together
+    imply `pch + pdch <= S_rated`, so this preserves the original active-power
+    envelope exactly.
+    """
+    return (m.shared_es_pch[e, s_m, s_o, p]
+            + m.shared_es_pdch[e, s_m, s_o, p]) <= m.shared_es_s_rated[e]
 
 
 def sess_soc_lower_limit(m, e, s_m, s_o, p):
@@ -791,30 +803,39 @@ def sess_soc_upper_limit(m, e, s_m, s_o, p):
 
 
 def sess_comp_rule(m, e, s_m, s_o, p, network, params):
-    sch = m.shared_es_sch[e, s_m, s_o, p]
-    sdch = m.shared_es_sdch[e, s_m, s_o, p]
+    # P5.4-A: complementarity now acts on ACTIVE charging/discharging power.
+    # ESS_COMPLEMENTARITY_TOLERANCE is preserved exactly; no rescaling.
+    pch = m.shared_es_pch[e, s_m, s_o, p]
+    pdch = m.shared_es_pdch[e, s_m, s_o, p]
     s_rated = m.shared_es_s_rated[e]
     if params.shared_ess_model == ESS_MODEL_EXACT:
-        return sch * sdch <= EQUALITY_TOLERANCE
+        return pch * pdch <= EQUALITY_TOLERANCE
     elif params.shared_ess_model == ESS_MODEL_BILINEAR_RELAXATION:
-        return sch * sdch <= ESS_COMPLEMENTARITY_TOLERANCE * s_rated ** 2
+        return pch * pdch <= ESS_COMPLEMENTARITY_TOLERANCE * s_rated ** 2
     elif params.shared_ess_model == ESS_MODEL_POLYNOMIAL_COMPLEMENTARITY:
-        return sch ** 2 + sdch ** 2 <= (sch + sdch) ** 2 + EQUALITY_TOLERANCE
+        return pch ** 2 + pdch ** 2 <= (pch + pdch) ** 2 + EQUALITY_TOLERANCE
     else:
         return pe.Constraint.Skip
 
 
 def sess_soc_rule(m, e, s_m, s_o, p, network, params):
 
+    # P5.4-A: stored battery energy is driven by ACTIVE power only, so pure
+    # reactive operation leaves the state of charge unchanged. The time step is
+    # explicit (period_duration_hours) rather than an implicit assumption; for
+    # the standard 24-instant representative day it is exactly 1 h, which
+    # reproduces the previous numerical coefficient.
     sess = network.shared_energy_storages[e]
     eff_ch = sess.eff_ch
     eff_dch = sess.eff_dch
+    dt = period_duration_hours(m)
     if p == 0:
         soc_prev = m.shared_es_e_rated[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC
     else:
         soc_prev = m.shared_es_soc[e, s_m, s_o, p - 1]
 
-    delta = eff_ch * m.shared_es_sch[e, s_m, s_o, p] - (m.shared_es_sdch[e, s_m, s_o, p] / eff_dch)
+    delta = (eff_ch * m.shared_es_pch[e, s_m, s_o, p] * dt
+             - m.shared_es_pdch[e, s_m, s_o, p] * dt / eff_dch)
 
     return m.shared_es_soc[e, s_m, s_o, p] == soc_prev + delta
 
@@ -835,8 +856,6 @@ def sess_pnet_rule(m, e, s_m, s_o, p):
 _SHARED_ESS_OPERATIONAL_VARIABLES = (
     'shared_es_pch',
     'shared_es_pdch',
-    'shared_es_sch',
-    'shared_es_sdch',
     'shared_es_pnet',
     'shared_es_qnet',
     'shared_es_soc',
@@ -844,12 +863,20 @@ _SHARED_ESS_OPERATIONAL_VARIABLES = (
     'slack_shared_es_soc_final_down',
 )
 
+# Variables whose bounds follow the installed converter rating (P5.4-A). These
+# bounds are implied by the operational constraints; they are made explicit so
+# the physical box holds independently of the nonlinear capability circle.
+_SHARED_ESS_RATED_BOUNDED_VARIABLES = (
+    ('shared_es_pch', 0.0, 1.0),
+    ('shared_es_pdch', 0.0, 1.0),
+    ('shared_es_pnet', -1.0, 1.0),
+    ('shared_es_qnet', -1.0, 1.0),
+)
+
 _SHARED_ESS_OPERATIONAL_CONSTRAINTS = (
     'sess_pnet_def',
-    'sess_snet_def',
-    'sess_pch_link',
-    'sess_pdch_link',
-    'sess_s_limit',
+    'sess_converter_capability',
+    'sess_active_sum_limit',
     'sess_phi_limit_lower',
     'sess_phi_limit_upper',
     'sess_soc_def',
@@ -863,17 +890,6 @@ _SHARED_ESS_OPERATIONAL_CONSTRAINTS = (
 def shared_ess_capacity_is_inactive(s_capacity, e_capacity):
     tolerance = SHARED_ESS_ZERO_CAPACITY_TOLERANCE
     return abs(s_capacity) <= tolerance or abs(e_capacity) <= tolerance
-
-
-def shared_ess_snet_def_scale(s_capacity):
-    """Fixed numerical scale kappa_e = 1/S_scale_e for `sess_snet_def`, based on
-    installed shared-ESS POWER rating (P4.2). Zero/near-zero capacity uses a
-    finite safe placeholder and never divides by zero; that row is deactivated
-    by the existing zero-capacity gating in configure_shared_ess_operational_state,
-    so the placeholder value never affects the solved feasible set."""
-    if abs(s_capacity) <= SHARED_ESS_ZERO_CAPACITY_TOLERANCE:
-        return SHARED_ESS_SNET_DEF_SAFE_KAPPA
-    return 1.0 / s_capacity
 
 
 def normalize_shared_ess_capacity(capacity):
@@ -927,19 +943,11 @@ def configure_shared_ess_operational_state(
     e_capacity = normalize_shared_ess_capacity(e_capacity)
     inactive = shared_ess_capacity_is_inactive(s_capacity, e_capacity)
 
-    # P4.1 lifecycle audit: this model is reused (not rebuilt) across ADMM
-    # cycles and planning candidates; this function is the single place capacity
-    # changes are applied to a live model; `sess_snet_def` ConstraintData objects
-    # are never deactivated+recreated, only (de)activated; and `model.dual`
-    # entries persist across these updates. So kappa_e CAN change on a live row
-    # while an imported warm-start multiplier survives -- capture the
-    # before-state here so _sync_sess_snet_def_scale can apply the
-    # KKT-consistent transfer after the (de)activation loop below runs.
-    sess_snet_def_rows = list(_component_entries_for_shared_ess(model.sess_snet_def, shared_ess_idx))
-    was_active = sess_snet_def_rows[0].active if sess_snet_def_rows else False
-    kappa_old = pe.value(model.sess_snet_def_kappa[shared_ess_idx])
-    kappa_new = shared_ess_snet_def_scale(s_capacity)
-
+    # P5.4-A: the shared-ESS rows now depend directly on the rated-capacity
+    # variable (`shared_es_s_rated`), so a capacity change is carried by the
+    # model itself. The former `sess_snet_def` kappa scale and its
+    # KKT-consistent multiplier transfer are gone with that row, and no
+    # replacement multiplier transformation is required.
     model.shared_es_s_rated_fixed[shared_ess_idx].set_value(s_capacity)
     model.shared_es_e_rated_fixed[shared_ess_idx].set_value(e_capacity)
     model.shared_es_s_rated[shared_ess_idx].set_value(s_capacity)
@@ -969,47 +977,24 @@ def configure_shared_ess_operational_state(
             else:
                 entry.activate()
 
+    # P5.4-A: keep the explicit physical box in sync with the installed rating.
+    for variable_name, lower_factor, upper_factor in _SHARED_ESS_RATED_BOUNDED_VARIABLES:
+        if not hasattr(model, variable_name):
+            continue
+        variable = getattr(model, variable_name)
+        for entry in _component_entries_for_shared_ess(variable, shared_ess_idx):
+            if inactive:
+                entry.setlb(0.0)
+                entry.setub(0.0)
+            else:
+                entry.setlb(lower_factor * s_capacity)
+                entry.setub(upper_factor * s_capacity)
+
     _configure_shared_ess_expected_schedule(
         model, shared_ess_idx, inactive
     )
 
-    _sync_sess_snet_def_scale(
-        model, sess_snet_def_rows, shared_ess_idx, kappa_old, kappa_new,
-        was_active=was_active, will_be_active=(not inactive),
-    )
-
     return inactive
-
-
-def _sync_sess_snet_def_scale(model, rows, shared_ess_idx, kappa_old, kappa_new, was_active, will_be_active):
-    """Keep `sess_snet_def_kappa[shared_ess_idx]` in sync with installed capacity,
-    and preserve the imported constraint multiplier's Lagrangian contribution
-    across a live kappa change (P4.1: this model is reused across ADMM
-    cycles/planning candidates, `sess_snet_def` rows are never recreated, and
-    `model.dual` entries persist across capacity updates on this same model).
-
-    - row stays active before and after: KKT-consistent transfer on the SAME
-      live ConstraintData objects, `lambda_new = lambda_old * (kappa_old/kappa_new)`
-      -- kappa*g=0 has an identical feasible set and Lagrangian to g=0 for any
-      finite positive kappa, so this preserves the Lagrangian contribution
-      exactly (a no-op when kappa is unchanged).
-    - row is being (re)activated from inactive: any lingering `model.dual` entry
-      was not produced while this row was active/live under any kappa, so it is
-      not a valid warm-start multiplier -- clear it rather than transfer it.
-    - row stays inactive, or is being deactivated: excluded from the solve
-      either way, nothing to do with its dual entry.
-    """
-    has_dual = hasattr(model, 'dual')
-    if was_active and will_be_active and has_dual:
-        for row in rows:
-            dual_old = model.dual.get(row, None)
-            if dual_old is not None:
-                model.dual[row] = dual_old * (kappa_old / kappa_new)
-    elif (not was_active) and will_be_active and has_dual:
-        for row in rows:
-            if model.dual.get(row, None) is not None:
-                del model.dual[row]
-    model.sess_snet_def_kappa[shared_ess_idx].set_value(kappa_new)
 
 
 def sess_s_sensitivities(m, e):
@@ -1602,7 +1587,10 @@ def ess_utilization_cost_penalty(model, network, s_m, s_o, params):
     cost = 0.0
     for e in model.shared_energy_storages:
         for p in model.periods:
-            cost += model.penalty_ess_usage * network.baseMVA * (model.shared_es_sch[e, s_m, s_o, p] + model.shared_es_sdch[e, s_m, s_o, p])
+            # P5.4-A: usage penalty follows ACTIVE charge/discharge power.
+            # Coefficients are unchanged; this is part of the active-energy
+            # physical correction, not an objective-tuning change.
+            cost += model.penalty_ess_usage * network.baseMVA * (model.shared_es_pch[e, s_m, s_o, p] + model.shared_es_pdch[e, s_m, s_o, p])
     if params.es_reg:
         for e in model.energy_storages:
             for p in model.periods:
@@ -1675,7 +1663,8 @@ def ess_complementarity_penalties(model, network, s_m, s_o, p, params):
     for e in model.shared_energy_storages:
         for p in model.periods:
             if params.shared_ess_model == ESS_MODEL_BILINEAR_RELAXATION:
-                total += base * PENALTY_ESS_COMPLEMENTARITY * (model.shared_es_sch[e, s_m, s_o, p] * model.shared_es_sdch[e, s_m, s_o, p])
+                # P5.4-A: complementarity penalty follows ACTIVE power; coefficient unchanged.
+                total += base * PENALTY_ESS_COMPLEMENTARITY * (model.shared_es_pch[e, s_m, s_o, p] * model.shared_es_pdch[e, s_m, s_o, p])
         if params.slacks.shared_ess.day_balance:
             total += base * PENALTY_SHARED_ESS_BALANCE * (model.slack_shared_es_soc_final_up[e, s_m, s_o] + model.slack_shared_es_soc_final_down[e, s_m, s_o])
 

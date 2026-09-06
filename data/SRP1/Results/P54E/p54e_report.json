@@ -1,0 +1,1259 @@
+{
+ "stage": "P5.4-E",
+ "git_head": "0bf50339b10078c66bafb94cc0d14a62cf5ab2e4",
+ "timestamp_utc": "2026-09-06T21:48:41.023652+00:00",
+ "note": "production implementation, no diagnostic wrapper",
+ "aggregates": {
+  "total_local_solves": 51,
+  "per_agent": {
+   "dso": {
+    "total": 36,
+    "succeeded": 36
+   },
+   "tso": {
+    "total": 12,
+    "succeeded": 12
+   },
+   "esso": {
+    "total": 3,
+    "succeeded": 3
+   }
+  },
+  "primary_failures": 0,
+  "recovery_attempts": 0,
+  "recovery_successes": 0,
+  "persistent_failures": 0,
+  "persistent_failure_ids": [],
+  "runtime_s": 35.26280379295349,
+  "iterations": {
+   "n": 48,
+   "mean": 32.208333333333336,
+   "median": 28.0,
+   "max": 120,
+   "total": 1546
+  }
+ },
+ "per_solve": {
+  "case33_1/2025/Spring": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 23,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.0370442598179978e-04",
+    "primal_infeasibility": "6.7505300934814516e-06",
+    "dual_infeasibility": "7.2467094920736170e-06",
+    "complementarity": "1.0301400040669342e-08",
+    "overall_nlp_error": "7.2467094920736170e-06"
+   },
+   "recovery_block": null
+  },
+  "case33_1/2025/Summer": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 24,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.1831120336690703e-04",
+    "primal_infeasibility": "4.7875337199411529e-14",
+    "dual_infeasibility": "9.1194396411135858e-06",
+    "complementarity": "1.3828943343107362e-08",
+    "overall_nlp_error": "9.1194396411135858e-06"
+   },
+   "recovery_block": null
+  },
+  "case33_1/2025/Autumn": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 24,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.2957350164669847e-04",
+    "primal_infeasibility": "1.0170491801690113e-13",
+    "dual_infeasibility": "3.3171959552130703e-06",
+    "complementarity": "1.0266624756151875e-08",
+    "overall_nlp_error": "3.3171959552130703e-06"
+   },
+   "recovery_block": null
+  },
+  "case33_1/2025/Winter": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 23,
+    "exit": "Optimal Solution Found.",
+    "objective": "-7.9733334055262582e-04",
+    "primal_infeasibility": "1.6462678976469914e-13",
+    "dual_infeasibility": "9.1956028163890733e-06",
+    "complementarity": "1.0664179564963574e-08",
+    "overall_nlp_error": "9.1956028163890733e-06"
+   },
+   "recovery_block": null
+  },
+  "case33_1/2030/Spring": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 25,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.0897449548813821e-04",
+    "primal_infeasibility": "4.9323666728133220e-14",
+    "dual_infeasibility": "1.3965790557505451e-06",
+    "complementarity": "1.0520101414710540e-08",
+    "overall_nlp_error": "1.3965790557505451e-06"
+   },
+   "recovery_block": null
+  },
+  "case33_1/2030/Summer": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 26,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.2445789191243639e-04",
+    "primal_infeasibility": "4.4905135187009716e-11",
+    "dual_infeasibility": "5.0347715621762434e-06",
+    "complementarity": "1.1156046725533160e-08",
+    "overall_nlp_error": "5.0347715621762434e-06"
+   },
+   "recovery_block": null
+  },
+  "case33_1/2030/Autumn": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 24,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.3809900658130400e-04",
+    "primal_infeasibility": "5.5559529976796068e-14",
+    "dual_infeasibility": "6.1380892241439977e-07",
+    "complementarity": "1.0512713813340490e-08",
+    "overall_nlp_error": "6.1380892241439977e-07"
+   },
+   "recovery_block": null
+  },
+  "case33_1/2030/Winter": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 23,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.0223881546564199e-04",
+    "primal_infeasibility": "6.1810938629067193e-10",
+    "dual_infeasibility": "4.8084177237469556e-06",
+    "complementarity": "1.1135083483545042e-08",
+    "overall_nlp_error": "4.8084177237469556e-06"
+   },
+   "recovery_block": null
+  },
+  "case33_1/2035/Spring": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 29,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.1549470510615320e-04",
+    "primal_infeasibility": "5.5619877040492802e-14",
+    "dual_infeasibility": "6.8631648934141748e-07",
+    "complementarity": "1.0758319686754079e-08",
+    "overall_nlp_error": "6.8631648934141748e-07"
+   },
+   "recovery_block": null
+  },
+  "case33_1/2035/Summer": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 31,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.3296907264901042e-04",
+    "primal_infeasibility": "5.6002075110572140e-14",
+    "dual_infeasibility": "2.0498966986533251e-08",
+    "complementarity": "1.0287491659694107e-08",
+    "overall_nlp_error": "2.0498966986533251e-08"
+   },
+   "recovery_block": null
+  },
+  "case33_1/2035/Autumn": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 29,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.4597866517487031e-04",
+    "primal_infeasibility": "5.0490376626270137e-14",
+    "dual_infeasibility": "8.2337219477757184e-06",
+    "complementarity": "1.2545643554864442e-08",
+    "overall_nlp_error": "8.2337219477757184e-06"
+   },
+   "recovery_block": null
+  },
+  "case33_1/2035/Winter": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 39,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.0950584576961208e-04",
+    "primal_infeasibility": "6.7461902043830948e-11",
+    "dual_infeasibility": "5.3885016180162765e-06",
+    "complementarity": "2.6935135487700884e-08",
+    "overall_nlp_error": "5.3885016180162765e-06"
+   },
+   "recovery_block": null
+  },
+  "case33_2/2025/Spring": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 24,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.0326349446790284e-04",
+    "primal_infeasibility": "5.0651302129461443e-14",
+    "dual_infeasibility": "4.5816231088483889e-06",
+    "complementarity": "1.0205843207668505e-08",
+    "overall_nlp_error": "4.5816231088483889e-06"
+   },
+   "recovery_block": null
+  },
+  "case33_2/2025/Summer": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 25,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.1688784163779697e-04",
+    "primal_infeasibility": "5.1576623772811412e-14",
+    "dual_infeasibility": "6.2576985909151416e-06",
+    "complementarity": "1.0790356629200871e-08",
+    "overall_nlp_error": "6.2576985909151416e-06"
+   },
+   "recovery_block": null
+  },
+  "case33_2/2025/Autumn": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 27,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.2757846828130852e-04",
+    "primal_infeasibility": "4.1679705326546506e-14",
+    "dual_infeasibility": "6.6931987928176007e-06",
+    "complementarity": "1.1518738400347336e-08",
+    "overall_nlp_error": "6.6931987928176007e-06"
+   },
+   "recovery_block": null
+  },
+  "case33_2/2025/Winter": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 27,
+    "exit": "Optimal Solution Found.",
+    "objective": "-7.9588938207489173e-04",
+    "primal_infeasibility": "1.9190366255562435e-13",
+    "dual_infeasibility": "6.9975184552868545e-06",
+    "complementarity": "1.2256817620224493e-08",
+    "overall_nlp_error": "6.9975184552868545e-06"
+   },
+   "recovery_block": null
+  },
+  "case33_2/2030/Spring": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 24,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.0910988594608854e-04",
+    "primal_infeasibility": "1.4837331394237791e-13",
+    "dual_infeasibility": "2.2097126890362369e-06",
+    "complementarity": "1.0698716015398815e-08",
+    "overall_nlp_error": "2.2097126890362369e-06"
+   },
+   "recovery_block": null
+  },
+  "case33_2/2030/Summer": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 25,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.2350898843044354e-04",
+    "primal_infeasibility": "5.9180353798600295e-14",
+    "dual_infeasibility": "8.0225353489005169e-06",
+    "complementarity": "1.2371267222673960e-08",
+    "overall_nlp_error": "8.0225353489005169e-06"
+   },
+   "recovery_block": null
+  },
+  "case33_2/2030/Autumn": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 27,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.3631015006555400e-04",
+    "primal_infeasibility": "4.3593934039069187e-14",
+    "dual_infeasibility": "7.6930887578077059e-06",
+    "complementarity": "9.0972963004623862e-09",
+    "overall_nlp_error": "7.6930887578077059e-06"
+   },
+   "recovery_block": null
+  },
+  "case33_2/2030/Winter": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 27,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.0100200503026482e-04",
+    "primal_infeasibility": "1.0484296532913146e-13",
+    "dual_infeasibility": "5.8738984079130622e-06",
+    "complementarity": "1.0790931798541181e-08",
+    "overall_nlp_error": "5.8738984079130622e-06"
+   },
+   "recovery_block": null
+  },
+  "case33_2/2035/Spring": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 29,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.1527862246346392e-04",
+    "primal_infeasibility": "5.1516276709114672e-14",
+    "dual_infeasibility": "6.8648381108171575e-07",
+    "complementarity": "1.0758342135427902e-08",
+    "overall_nlp_error": "6.8648381108171575e-07"
+   },
+   "recovery_block": null
+  },
+  "case33_2/2035/Summer": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 31,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.3206086421260287e-04",
+    "primal_infeasibility": "5.3442292621969790e-14",
+    "dual_infeasibility": "1.7419345774169704e-08",
+    "complementarity": "1.0200984809247085e-08",
+    "overall_nlp_error": "1.7419345774169704e-08"
+   },
+   "recovery_block": null
+  },
+  "case33_2/2035/Autumn": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 29,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.4574404539843181e-04",
+    "primal_infeasibility": "1.3521765405648919e-13",
+    "dual_infeasibility": "1.7489632941345746e-08",
+    "complementarity": "1.0201365122861618e-08",
+    "overall_nlp_error": "1.7489632941345746e-08"
+   },
+   "recovery_block": null
+  },
+  "case33_2/2035/Winter": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 31,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.0846002683421822e-04",
+    "primal_infeasibility": "6.3485111008967549e-14",
+    "dual_infeasibility": "3.0969727551830029e-06",
+    "complementarity": "1.1761149769974494e-08",
+    "overall_nlp_error": "3.0969727551830029e-06"
+   },
+   "recovery_block": null
+  },
+  "case33_3/2025/Spring": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 25,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.0219983731458396e-04",
+    "primal_infeasibility": "7.8853496563736640e-14",
+    "dual_infeasibility": "4.7056921262779786e-07",
+    "complementarity": "9.9765723505765076e-09",
+    "overall_nlp_error": "4.7056921262779786e-07"
+   },
+   "recovery_block": null
+  },
+  "case33_3/2025/Summer": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 26,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.1610335733018702e-04",
+    "primal_infeasibility": "3.8581889390113994e-14",
+    "dual_infeasibility": "4.5331930035238943e-06",
+    "complementarity": "1.0895606797768433e-08",
+    "overall_nlp_error": "4.5331930035238943e-06"
+   },
+   "recovery_block": null
+  },
+  "case33_3/2025/Autumn": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 26,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.2693041011296738e-04",
+    "primal_infeasibility": "5.3346804307915701e-14",
+    "dual_infeasibility": "4.6941118257890456e-06",
+    "complementarity": "1.0940600708465334e-08",
+    "overall_nlp_error": "4.6941118257890456e-06"
+   },
+   "recovery_block": null
+  },
+  "case33_3/2025/Winter": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 24,
+    "exit": "Optimal Solution Found.",
+    "objective": "-7.9579121408469432e-04",
+    "primal_infeasibility": "5.4231894575467845e-14",
+    "dual_infeasibility": "9.1752036967355784e-07",
+    "complementarity": "1.0047428137702222e-08",
+    "overall_nlp_error": "9.1752036967355784e-07"
+   },
+   "recovery_block": null
+  },
+  "case33_3/2030/Spring": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 26,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.0836160375063473e-04",
+    "primal_infeasibility": "2.5162311678991552e-12",
+    "dual_infeasibility": "1.4004169917432524e-06",
+    "complementarity": "1.0519648034679485e-08",
+    "overall_nlp_error": "1.4004169917432524e-06"
+   },
+   "recovery_block": null
+  },
+  "case33_3/2030/Summer": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 27,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.2370237208097003e-04",
+    "primal_infeasibility": "5.9783824435567673e-14",
+    "dual_infeasibility": "5.4004685495073756e-06",
+    "complementarity": "1.1169337409292008e-08",
+    "overall_nlp_error": "5.4004685495073756e-06"
+   },
+   "recovery_block": null
+  },
+  "case33_3/2030/Autumn": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 26,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.3537077104740864e-04",
+    "primal_infeasibility": "5.8569658740010632e-14",
+    "dual_infeasibility": "5.8762144377787955e-07",
+    "complementarity": "1.0516567901024510e-08",
+    "overall_nlp_error": "5.8762144377787955e-07"
+   },
+   "recovery_block": null
+  },
+  "case33_3/2030/Winter": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 25,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.0167562914596152e-04",
+    "primal_infeasibility": "9.6018066273419782e-14",
+    "dual_infeasibility": "4.9086291298138860e-06",
+    "complementarity": "1.1169382678004803e-08",
+    "overall_nlp_error": "4.9086291298138860e-06"
+   },
+   "recovery_block": null
+  },
+  "case33_3/2035/Spring": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 29,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.1511047807832180e-04",
+    "primal_infeasibility": "6.6864546575984840e-14",
+    "dual_infeasibility": "6.8592904140013356e-07",
+    "complementarity": "1.0758307304956168e-08",
+    "overall_nlp_error": "6.8592904140013356e-07"
+   },
+   "recovery_block": null
+  },
+  "case33_3/2035/Summer": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 37,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.3192224897885990e-04",
+    "primal_infeasibility": "1.2812511596100020e-09",
+    "dual_infeasibility": "9.8748473792502109e-06",
+    "complementarity": "1.1566255633780385e-08",
+    "overall_nlp_error": "9.8748473792502109e-06"
+   },
+   "recovery_block": null
+  },
+  "case33_3/2035/Autumn": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 29,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.4522765463863458e-04",
+    "primal_infeasibility": "5.0369682498876663e-14",
+    "dual_infeasibility": "1.0713437029334275e-06",
+    "complementarity": "1.0805169091040505e-08",
+    "overall_nlp_error": "1.0713437029334275e-06"
+   },
+   "recovery_block": null
+  },
+  "case33_3/2035/Winter": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 31,
+    "exit": "Optimal Solution Found.",
+    "objective": "-8.0927268114293176e-04",
+    "primal_infeasibility": "4.9303551040234311e-14",
+    "dual_infeasibility": "5.7576032477696482e-07",
+    "complementarity": "1.0766523690501874e-08",
+    "overall_nlp_error": "5.7576032477696482e-07"
+   },
+   "recovery_block": null
+  },
+  "case9/2025/Spring": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 31,
+    "exit": "Optimal Solution Found.",
+    "objective": "7.9704018894535522e-01",
+    "primal_infeasibility": "9.3842776216490620e-08",
+    "dual_infeasibility": "5.2385485784168162e-10",
+    "complementarity": "2.9205788362858685e-09",
+    "overall_nlp_error": "9.3842776216490620e-08"
+   },
+   "recovery_block": null
+  },
+  "case9/2025/Summer": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 32,
+    "exit": "Optimal Solution Found.",
+    "objective": "7.9285662844129501e-01",
+    "primal_infeasibility": "7.5710714890764308e-06",
+    "dual_infeasibility": "3.9399784685900065e-07",
+    "complementarity": "3.7810600293240740e-09",
+    "overall_nlp_error": "7.5710714890764308e-06"
+   },
+   "recovery_block": null
+  },
+  "case9/2025/Autumn": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 30,
+    "exit": "Optimal Solution Found.",
+    "objective": "7.9482329152822684e-01",
+    "primal_infeasibility": "6.0064581086649582e-08",
+    "dual_infeasibility": "7.1947838194308552e-07",
+    "complementarity": "3.9926491423983537e-09",
+    "overall_nlp_error": "7.1947838194308552e-07"
+   },
+   "recovery_block": null
+  },
+  "case9/2025/Winter": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 30,
+    "exit": "Optimal Solution Found.",
+    "objective": "4.8026531536566930e-01",
+    "primal_infeasibility": "1.2943080451854883e-07",
+    "dual_infeasibility": "1.9020949096890723e-07",
+    "complementarity": "3.9860347369477926e-09",
+    "overall_nlp_error": "1.9020949096890723e-07"
+   },
+   "recovery_block": null
+  },
+  "case9/2030/Spring": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 35,
+    "exit": "Optimal Solution Found.",
+    "objective": "7.5364513613037809e-01",
+    "primal_infeasibility": "5.9872205859790029e-08",
+    "dual_infeasibility": "6.7597730559838480e-10",
+    "complementarity": "3.2047858255466303e-09",
+    "overall_nlp_error": "5.9872205859790029e-08"
+   },
+   "recovery_block": null
+  },
+  "case9/2030/Summer": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 36,
+    "exit": "Optimal Solution Found.",
+    "objective": "7.9304362974279619e-01",
+    "primal_infeasibility": "5.5433021728390486e-08",
+    "dual_infeasibility": "1.7277722027061455e-07",
+    "complementarity": "3.8605741992888544e-09",
+    "overall_nlp_error": "1.7277722027061455e-07"
+   },
+   "recovery_block": null
+  },
+  "case9/2030/Autumn": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 42,
+    "exit": "Optimal Solution Found.",
+    "objective": "3.6151603975442065e-01",
+    "primal_infeasibility": "1.6066548091941968e-08",
+    "dual_infeasibility": "4.8319078017975553e-07",
+    "complementarity": "2.7544372577020497e-09",
+    "overall_nlp_error": "4.8319078017975553e-07"
+   },
+   "recovery_block": null
+  },
+  "case9/2030/Winter": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 33,
+    "exit": "Optimal Solution Found.",
+    "objective": "2.8784939062074871e-01",
+    "primal_infeasibility": "4.5636540055848940e-06",
+    "dual_infeasibility": "1.0384907724779166e-07",
+    "complementarity": "2.9508192626845381e-09",
+    "overall_nlp_error": "4.5636540055848940e-06"
+   },
+   "recovery_block": null
+  },
+  "case9/2035/Spring": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 56,
+    "exit": "Optimal Solution Found.",
+    "objective": "7.8365609606708420e-01",
+    "primal_infeasibility": "1.9821921881657545e-12",
+    "dual_infeasibility": "2.2239017036424617e-06",
+    "complementarity": "2.5059035723088383e-09",
+    "overall_nlp_error": "2.2239017036424617e-06"
+   },
+   "recovery_block": null
+  },
+  "case9/2035/Summer": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 120,
+    "exit": "Optimal Solution Found.",
+    "objective": "8.6043868995484107e-01",
+    "primal_infeasibility": "1.3899082107471372e-08",
+    "dual_infeasibility": "2.1621593550478334e-10",
+    "complementarity": "2.7552613347390073e-09",
+    "overall_nlp_error": "1.3899082107471372e-08"
+   },
+   "recovery_block": null
+  },
+  "case9/2035/Autumn": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 56,
+    "exit": "Optimal Solution Found.",
+    "objective": "5.7678133066831716e-01",
+    "primal_infeasibility": "4.8487998061119697e-09",
+    "dual_infeasibility": "1.7329082179712508e-07",
+    "complementarity": "2.5330287513376535e-09",
+    "overall_nlp_error": "1.7329082179712508e-07"
+   },
+   "recovery_block": null
+  },
+  "case9/2035/Winter": {
+   "primary_failed": false,
+   "recovery_attempted": false,
+   "recovery_succeeded": false,
+   "primary_block": {
+    "iterations": 68,
+    "exit": "Optimal Solution Found.",
+    "objective": "2.7930683890363978e-01",
+    "primal_infeasibility": "5.0833510734094034e-09",
+    "dual_infeasibility": "1.6074433692372141e-10",
+    "complementarity": "2.6913445931324105e-09",
+    "overall_nlp_error": "5.0833510734094034e-09"
+   },
+   "recovery_block": null
+  }
+ },
+ "jacobian": {
+  "case33_1/2030/Winter": {
+   "full": {
+    "n_rows": 4227,
+    "n_columns": 7636,
+    "nnz": 18414,
+    "n_exactly_zero_rows": 0,
+    "structural_minimum_nullity_from_zero_rows": 0,
+    "sigma_max": 532.2352007493097,
+    "sigma_min": 0.005924607550710704,
+    "sigma_min_is_exactly_zero": false,
+    "numerical_rank": 4227,
+    "nullity_row_space": 0,
+    "condition_number": 89834.67616947283,
+    "condition_note": "formally infinite: exact zero rows make the full equality Jacobian exactly row-rank deficient",
+    "smallest_5": [
+     0.005924614510057867,
+     0.005924614349921812,
+     0.005924614148487546,
+     0.0059246121181706635,
+     0.005924607550710704
+    ]
+   },
+   "reduced": {
+    "n_rows": 4227,
+    "n_columns": 7636,
+    "rows_removed": 0,
+    "sigma_max": 532.2352007493097,
+    "sigma_min_nonzero_subspace": 0.005924607550710704,
+    "condition_number": 89834.67616947283,
+    "numerical_rank": 4227,
+    "rank_deficient_beyond_zero_rows": false,
+    "extra_nullity_beyond_zero_rows": 0,
+    "smallest_5": [
+     0.005924614510057867,
+     0.005924614349921812,
+     0.005924614148487546,
+     0.0059246121181706635,
+     0.005924607550710704
+    ]
+   },
+   "zero_row_components": {},
+   "n_derivative_failures": 0,
+   "sess_snet_def_component_exists": false,
+   "new_ess_rows_introduce_zero_gradient_equalities": false
+  },
+  "case9/2025/Winter": {
+   "full": {
+    "n_rows": 1665,
+    "n_columns": 2604,
+    "nnz": 5922,
+    "n_exactly_zero_rows": 0,
+    "structural_minimum_nullity_from_zero_rows": 0,
+    "sigma_max": 46.76521788398386,
+    "sigma_min": 0.032870928386954816,
+    "sigma_min_is_exactly_zero": false,
+    "numerical_rank": 1665,
+    "nullity_row_space": 0,
+    "condition_number": 1422.6923357158096,
+    "condition_note": "formally infinite: exact zero rows make the full equality Jacobian exactly row-rank deficient",
+    "smallest_5": [
+     0.032875169437761274,
+     0.03287405902340715,
+     0.032872820404857,
+     0.03287166071332369,
+     0.032870928386954816
+    ]
+   },
+   "reduced": {
+    "n_rows": 1665,
+    "n_columns": 2604,
+    "rows_removed": 0,
+    "sigma_max": 46.76521788398386,
+    "sigma_min_nonzero_subspace": 0.032870928386954816,
+    "condition_number": 1422.6923357158096,
+    "numerical_rank": 1665,
+    "rank_deficient_beyond_zero_rows": false,
+    "extra_nullity_beyond_zero_rows": 0,
+    "smallest_5": [
+     0.032875169437761274,
+     0.03287405902340715,
+     0.032872820404857,
+     0.03287166071332369,
+     0.032870928386954816
+    ]
+   },
+   "zero_row_components": {},
+   "n_derivative_failures": 0,
+   "sess_snet_def_component_exists": false,
+   "new_ess_rows_introduce_zero_gradient_equalities": false
+  }
+ },
+ "physical_residuals": {
+  "converter_capability_normalized": {
+   "n_rows": 864,
+   "max": 0.0,
+   "mean": 0.0,
+   "p95": 0.0,
+   "n_above_1e-6": 0,
+   "n_above_1e-4": 0,
+   "frac_above_1e-6": 0.0,
+   "worst_row": {
+    "value": 0.0,
+    "model": "dso/5/2025/Spring",
+    "period": 0
+   }
+  },
+  "complementarity_normalized": {
+   "n_rows": 864,
+   "max": 0.00018466008686484137,
+   "mean": 5.415380096353391e-05,
+   "p95": 0.00017175711345784322,
+   "n_above_1e-6": 288,
+   "n_above_1e-4": 288,
+   "frac_above_1e-6": 0.3333333333333333,
+   "worst_row": {
+    "value": 0.00018466008686484137,
+    "model": "dso/9/2025/Winter",
+    "period": 20
+   }
+  },
+  "definitions": {
+   "capability": "max((pnet^2+qnet^2 - S^2)/S^2, 0)",
+   "complementarity": "max((pch*pdch - eps*S^2)/S^2, 0)",
+   "eps": 0.0001
+  }
+ },
+ "physics_sample": {
+  "dso/5/2025/Spring": {
+   "s_rated": 0.00010634892806127161,
+   "pch": [
+    1.6253987524779234e-06,
+    1.6944041918292079e-06,
+    1.8069921488137985e-06,
+    1.9038890794441718e-06,
+    1.9718749314475844e-06,
+    2.0082835099621965e-06,
+    2.015824096786407e-06,
+    2.0001527275142346e-06,
+    1.967475950870836e-06,
+    1.9232437648817046e-06,
+    1.8718586065189942e-06,
+    1.8168895494932908e-06,
+    1.7614375531461254e-06,
+    1.708494312825257e-06,
+    1.6612238230444053e-06,
+    1.6230941045165588e-06,
+    1.5977151471110972e-06,
+    1.5881508325170584e-06,
+    1.595480198388494e-06,
+    1.6169046561734161e-06,
+    1.6453407404261354e-06,
+    1.6744417655894803e-06,
+    1.708962518352261e-06,
+    1.761784831888326e-06
+   ],
+   "pdch": [
+    1.6342547323986244e-06,
+    1.5848665076556554e-06,
+    1.5545114513707112e-06,
+    1.530225160822905e-06,
+    1.5053548766688562e-06,
+    1.4851388599823444e-06,
+    1.4769624339053452e-06,
+    1.4844506411989853e-06,
+    1.5072270776800243e-06,
+    1.5426536003322244e-06,
+    1.5873394767078435e-06,
+    1.6379326751269868e-06,
+    1.691356001588366e-06,
+    1.7447189257310783e-06,
+    1.7950549230974444e-06,
+    1.8389578296591974e-06,
+    1.8721759645420292e-06,
+    1.889298619551543e-06,
+    1.883880167864805e-06,
+    1.8495907364609684e-06,
+    1.7827260373989485e-06,
+    1.685136268634442e-06,
+    1.5689792292343034e-06,
+    1.4891325324056107e-06
+   ],
+   "pnet": [
+    -8.855979920700792e-09,
+    1.0953768417355226e-07,
+    2.5248069744308747e-07,
+    3.736639186212666e-07,
+    4.6652005477872843e-07,
+    5.231446499798521e-07,
+    5.388616628810617e-07,
+    5.157020863152495e-07,
+    4.6024887319081174e-07,
+    3.8059016454947997e-07,
+    2.8451912981115065e-07,
+    1.7895687436630374e-07,
+    7.008155155775943e-08,
+    -3.622461290582142e-08,
+    -1.3383110005303903e-07,
+    -2.1586372514263854e-07,
+    -2.7446081743093207e-07,
+    -3.011477870344843e-07,
+    -2.8839996947631125e-07,
+    -2.3268608028755267e-07,
+    -1.373852969728133e-07,
+    -1.0694503044962019e-08,
+    1.39983289117958e-07,
+    2.7265229948271584e-07
+   ],
+   "qnet": [
+    -2.774391487265809e-13,
+    -2.2293839970667253e-13,
+    -1.3638918378769007e-13,
+    -1.0277889239759207e-13,
+    -6.095536470859356e-14,
+    -3.0708788362569326e-14,
+    -7.029712051501033e-14,
+    -1.5266029530678566e-13,
+    -2.2668319657449668e-13,
+    -2.572058322550229e-13,
+    -2.597686435761653e-13,
+    -3.0438476060899957e-13,
+    -3.29863146177334e-13,
+    -3.292415600868153e-13,
+    -2.987611428060123e-13,
+    -2.683975557863935e-13,
+    -2.5336429384485465e-13,
+    -2.3221405726903925e-13,
+    -1.6023778864039092e-13,
+    -1.4374014863327754e-13,
+    -2.027245756044719e-13,
+    -2.5865159620409364e-13,
+    -2.7993977127077696e-13,
+    -3.265522606458118e-13
+   ],
+   "soc": [
+    0.0001062232161715933,
+    0.00010621588562552631,
+    0.00010634938524803121,
+    0.00010660217311256819,
+    0.0001069468137995423,
+    0.0001073478291583907,
+    0.00010776467599695545,
+    0.00010815852139139531,
+    0.00010849694485782334,
+    0.0001087555604760792,
+    0.00010891778470283194,
+    0.00010897398769591648,
+    0.00010892075295414702,
+    0.00010876057688995097,
+    0.00010850211512007755,
+    0.00010816093532889696,
+    0.00010776053572519677,
+    0.00010733302263737213,
+    0.00010691826325494979,
+    0.00010656000375429116,
+    0.00010629897798354729,
+    0.00010616783621634153,
+    0.00010619117649535749,
+    0.00010634892806103332
+   ],
+   "cap_margin": [
+    1.1310094421353143e-08,
+    1.131008250127727e-08,
+    1.1310030753278943e-08,
+    1.1309954875057445e-08,
+    1.1309876858820013e-08,
+    1.1309820819456721e-08,
+    1.1309804127889801e-08,
+    1.1309828551139694e-08,
+    1.1309882670756251e-08,
+    1.1309949650908171e-08,
+    1.1310013548646296e-08,
+    1.131006247421864e-08,
+    1.1310089588357655e-08,
+    1.1310093187558944e-08,
+    1.1310076589018183e-08,
+    1.131004790263369e-08,
+    1.1310019171041219e-08,
+    1.1310003809791887e-08,
+    1.131001132523913e-08,
+    1.1310040356969565e-08,
+    1.1310075625061699e-08,
+    1.1310094385409128e-08,
+    1.1310074904460291e-08,
+    1.131002016050511e-08
+   ],
+   "comp_margin": [
+    -1.5253061532937141e-12,
+    -1.5543950040833077e-12,
+    -1.6779805378898656e-12,
+    -1.7823695228032778e-12,
+    -1.8373620942575354e-12,
+    -1.851570432528445e-12,
+    -1.8462870143365434e-12,
+    -1.8381185488762523e-12,
+    -1.834423577858625e-12,
+    -1.8358894682331115e-12,
+    -1.8402656109647807e-12,
+    -1.8449333102336594e-12,
+    -1.8482085269586734e-12,
+    -1.8498329121119865e-12,
+    -1.8509785519444648e-12,
+    -1.8537921617962567e-12,
+    -1.860194446627976e-12,
+    -1.86948172553596e-12,
+    -1.8746840539869364e-12,
+    -1.8596024238208052e-12,
+    -1.802182328372784e-12,
+    -1.6906530989329716e-12,
+    -1.550317244856492e-12,
+    -1.4925216582855036e-12
+   ],
+   "objective": -0.8037044259818374
+  },
+  "dso/5/2025/Summer": {
+   "s_rated": 0.00010634892806127161,
+   "pch": [
+    1.5570367958867031e-06,
+    1.8494810057001111e-06,
+    2.0862828416415484e-06,
+    2.24140375344477e-06,
+    2.319136929442085e-06,
+    2.333313011753751e-06,
+    2.301198417263698e-06,
+    2.238229944712078e-06,
+    2.1559168319905277e-06,
+    2.0620705659990364e-06,
+    1.961817234769587e-06,
+    1.8586221490182892e-06,
+    1.7551514602587536e-06,
+    1.6540129769979e-06,
+    1.5584475317712116e-06,
+    1.473002772293112e-06,
+    1.4040938470084162e-06,
+    1.360115022942051e-06,
+    1.3503345209378945e-06,
+    1.3814482486736137e-06,
+    1.451531374293674e-06,
+    1.5459370818653763e-06,
+    1.647435337489261e-06,
+    1.7611262745341311e-06
+   ],
+   "pdch": [
+    1.632307712364981e-06,
+    1.528963563068481e-06,
+    1.437698257164367e-06,
+    1.3501545174997777e-06,
+    1.281446147304471e-06,
+    1.247566216354142e-06,
+    1.2526647142801388e-06,
+    1.2915247987008094e-06,
+    1.355511017647021e-06,
+    1.436384592283244e-06,
+    1.5277004932474528e-06,
+    1.6248542049975098e-06,
+    1.7245903659478503e-06,
+    1.8243631168139193e-06,
+    1.9216707412895703e-06,
+    2.0133408432901883e-06,
+    2.094682995602237e-06,
+    2.1584218557701204e-06,
+    2.1935060961612864e-06,
+    2.1844481529758277e-06,
+    2.1128866839909335e-06,
+    1.963092933834106e-06,
+    1.7299511050272435e-06,
+    1.4398831643075245e-06
+   ],
+   "pnet": [
+    -7.52709164782779e-08,
+    3.2051744263163003e-07,
+    6.485845844771819e-07,
+    8.912492359449928e-07,
+    1.037690782137614e-06,
+    1.0857467953996088e-06,
+    1.048533702983559e-06,
+    9.467051460112683e-07,
+    8.004058143435062e-07,
+    6.25685973715792e-07,
+    4.341167415221341e-07,
+    2.3376794402077948e-07,
+    3.05610943109031e-08,
+    -1.7035013981601964e-07,
+    -3.6322320951835927e-07,
+    -5.403380709970768e-07,
+    -6.905891485938214e-07,
+    -7.983068328280696e-07,
+    -8.431715752233916e-07,
+    -8.02999904302214e-07,
+    -6.613553096972594e-07,
+    -4.171558519687296e-07,
+    -8.251576753798257e-08,
+    3.212431102266062e-07
+   ],
+   "qnet": [
+    -9.133700538065174e-14,
+    -4.731664962629322e-14,
+    -4.145360222993519e-14,
+    -2.2519845273847735e-14,
+    -2.219137077925389e-14,
+    -2.5293657209804238e-14,
+    2.477037342763499e-14,
+    1.2119639590328812e-13,
+    1.5607818876273325e-13,
+    1.520400537755034e-13,
+    1.306973913885853e-13,
+    1.4815529430032386e-13,
+    1.5134813829387437e-13,
+    1.3769331509453266e-13,
+    1.063681997809335e-13,
+    9.248476348923768e-14,
+    1.0474963821894408e-13,
+    1.1044636329810542e-13,
+    8.470199083646548e-14,
+    9.488264331761497e-14,
+    1.2852982370342666e-13,
+    7.139053104696337e-14,
+    -1.8231897790026142e-14,
+    -7.729392445245188e-14
+   ],
+   "soc": [
+    0.0001061589332195682,
+    0.00010636025941690097,
+    0.00010688635142208038,
+    0.00010765410210719288,
+    0.00010856882519197621,
+    0.00010953259067134179,
+    0.00011045989405871243,
+    0.00011128563877310314,
+    0.00011196488745675163,
+    0.00011246886195547564,
+    0.00011278046999273607,
+    0.00011289077701374473,
+    0.00011279682563233336,
+    0.00011250083997334017,
+    0.00011201079372364828,
+    0.00011134237636767867,
+    0.00011052238594552449,
+    0.00010959334141801775,
+    0.00010861826371982616,
+    0.0001076828016950231,
+    0.00010688986349893075,
+    0.0001063445339955963,
+    0.00010614051387189082,
+    0.00010634892806203527
+   ],
+   "cap_margin": [
+    1.1310088834070656e-08,
+    1.1309991768350492e-08,
+    1.1309673837818302e-08,
+    1.1309300174580952e-08,
+    1.1309017697622191e-08,
+    1.1308915653677803e-08,
+    1.130899507685523e-08,
+    1.1309198249148039e-08,
+    1.1309453850313889e-08,
+    1.1309703016843819e-08,
+    1.1309906042436255e-08,
+    1.1310039852329872e-08,
+    1.1310093565801038e-08,
+    1.1310065480611389e-08,
+    1.1309962568681592e-08,
+    1.1309802534550555e-08,
+    1.1309617586409368e-08,
+    1.1309457205982184e-08,
+    1.1309383561476259e-08,
+    1.1309449690935214e-08,
+    1.1309657108935858e-08,
+    1.1309920480776693e-08,
+    1.1310087690929632e-08,
+    1.1309991302645655e-08
+   ],
+   "comp_margin": [
+    -1.4105537203837718e-12,
+    -1.6967796183245672e-12,
+    -1.8684357554018247e-12,
+    -1.895231953276262e-12,
+    -1.8408396333269286e-12,
+    -1.7799530356653621e-12,
+    -1.7516206078853855e-12,
+    -1.7597200288122379e-12,
+    -1.7913595689156695e-12,
+    -1.8309169392236512e-12,
+    -1.8660597072406997e-12,
+    -1.8889805643557234e-12,
+    -1.895907849163395e-12,
+    -1.8865108199884058e-12,
+    -1.863813573661533e-12,
+    -1.834647193759247e-12,
+    -1.8101220555801056e-12,
+    -1.8046925419012492e-12,
+    -1.830957553556149e-12,
+    -1.8866926252686146e-12,
+    -1.9359118621620113e-12,
+    -1.903808711583886e-12,
+    -1.7189731325723242e-12,
+    -1.4048066229431744e-12
+   ],
+   "objective": -0.8183112033669968
+  }
+ }
+}

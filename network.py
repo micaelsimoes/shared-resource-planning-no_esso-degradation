@@ -354,13 +354,10 @@ def _build_model(network, params):
     # - Shared Energy Storage devices
     model.shared_es_s_rated_fixed = pe.Param(model.shared_energy_storages, mutable=True, initialize=0.00)          # Benders' -- used to get the dual variables (sensitivities)
     model.shared_es_e_rated_fixed = pe.Param(model.shared_energy_storages, mutable=True, initialize=0.00)          # (...)
-    model.sess_snet_def_kappa = pe.Param(model.shared_energy_storages, mutable=True, initialize=SHARED_ESS_SNET_DEF_SAFE_KAPPA)   # numerical scale for sess_snet_def (kappa_e = 1/S_scale_e); kept in sync with installed capacity by configure_shared_ess_operational_state
     model.shared_es_s_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.0)
     model.shared_es_e_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.0)
     model.shared_es_pch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.shared_es_pdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.shared_es_sch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation,model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.shared_es_sdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.shared_es_pnet = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.shared_es_qnet = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.shared_es_soc = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -437,10 +434,8 @@ def _build_model(network, params):
 
     # - Shared Energy Storage constraints
     model.sess_pnet_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pnet_rule)
-    model.sess_snet_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_snet_def_rule)
-    model.sess_pch_link = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pch_link_rule)
-    model.sess_pdch_link = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pdch_link_rule)
-    model.sess_s_limit = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_s_limit_rule)
+    model.sess_converter_capability = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_converter_capability_rule)
+    model.sess_active_sum_limit = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_active_sum_limit_rule)
     model.sess_phi_limit_lower = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_phi_limits_lower, network=network))
     model.sess_phi_limit_upper = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_phi_limits_upper, network=network))
     model.sess_soc_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_soc_rule, network=network, params=params))
@@ -1356,7 +1351,11 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['shared_energy_storages']['soc'][node_id] = []
                 processed_results['scenarios'][s_m][s_o]['shared_energy_storages']['soc_percent'][node_id] = []
                 for p in model.periods:
-                    s_ess = pe.value(model.shared_es_sch[e, s_m, s_o, p] - model.shared_es_sdch[e, s_m, s_o, p]) * network.baseMVA
+                    # P5.4-A: the shared-ESS apparent power is now the converter
+                    # loading magnitude sqrt(pnet^2 + qnet^2) in MVA. The retired
+                    # sch/sdch difference was a signed apparent charge/discharge
+                    # quantity; direction remains available from 'p' (load-positive).
+                    s_ess = sqrt(max(pe.value(model.shared_es_pnet[e, s_m, s_o, p]) ** 2 + pe.value(model.shared_es_qnet[e, s_m, s_o, p]) ** 2, 0.0)) * network.baseMVA
                     p_ess = pe.value(model.shared_es_pch[e, s_m, s_o, p] - model.shared_es_pdch[e, s_m, s_o, p]) * network.baseMVA
                     q_ess = pe.value(model.shared_es_qnet[e, s_m, s_o, p]) * network.baseMVA
                     soc_ess = pe.value(model.shared_es_soc[e, s_m, s_o, p]) * network.baseMVA

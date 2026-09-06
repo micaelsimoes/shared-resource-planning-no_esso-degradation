@@ -4738,19 +4738,22 @@ def update_shared_energy_storages_coordination_model_and_solve(planning_problem,
     return res
 
 
-def _get_expected_network_shared_ess_charge_discharge_mva(model, network, shared_ess_idx, p):
+def _get_expected_network_shared_ess_charge_discharge_mw(model, network, shared_ess_idx, p):
     """
-    Return probability-weighted expected shared-ESS charging and discharging apparent power in physical MVA.
-    Network-model shared_es_sch/shared_es_sdch variables are in p.u., so the expected values are converted using network.baseMVA.
+    Return probability-weighted expected shared-ESS charging and discharging ACTIVE power in physical MW.
+
+    P5.4-A: the network shared-ESS model no longer carries apparent charge/discharge
+    variables; charging and discharging are active power (shared_es_pch/shared_es_pdch,
+    p.u.), so these expected values are MW after conversion by network.baseMVA.
     """
-    sch = 0.0
-    sdch = 0.0
+    pch = 0.0
+    pdch = 0.0
     for s_m in model.scenarios_market:
         for s_o in model.scenarios_operation:
             probability = (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
-            sch += probability * pe.value(model.shared_es_sch[shared_ess_idx, s_m, s_o, p])
-            sdch += probability * pe.value(model.shared_es_sdch[shared_ess_idx, s_m, s_o, p])
-    return sch * network.baseMVA, sdch * network.baseMVA
+            pch += probability * pe.value(model.shared_es_pch[shared_ess_idx, s_m, s_o, p])
+            pdch += probability * pe.value(model.shared_es_pdch[shared_ess_idx, s_m, s_o, p])
+    return pch * network.baseMVA, pdch * network.baseMVA
 
 
 def _get_esso_shared_ess_charge_discharge_mva(model, y, d, p):
@@ -4978,8 +4981,8 @@ def get_admm_residual_metrics(planning_problem, tso_model, dso_models, esso_mode
                                 # --------------------------------------------------------------
                                 y = year_idx[year]
                                 d = day_idx[day]
-                                tso_sch, tso_sdch = _get_expected_network_shared_ess_charge_discharge_mva(tso_model[year][day], network, shared_ess_idx, p)
-                                dso_sch, dso_sdch = _get_expected_network_shared_ess_charge_discharge_mva(dso_model[year][day], dso_network, dso_shared_ess_idx, p)
+                                tso_sch, tso_sdch = _get_expected_network_shared_ess_charge_discharge_mw(tso_model[year][day], network, shared_ess_idx, p)
+                                dso_sch, dso_sdch = _get_expected_network_shared_ess_charge_discharge_mw(dso_model[year][day], dso_network, dso_shared_ess_idx, p)
                                 esso_sch, esso_sdch = _get_esso_shared_ess_charge_discharge_mva(esso_model[node_id], y, d, p)
                                 worst_ess_primal = {
                                     'node_id': node_id,
