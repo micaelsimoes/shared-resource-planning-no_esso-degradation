@@ -1,0 +1,170 @@
+{
+ "stage": "P5.3-B3.8/B3.9",
+ "timestamp_utc": "2026-09-06T21:30:18.202717+00:00",
+ "case": "case33_1 node 5 2030 Winter",
+ "conversion": {
+  "skipped_zero_capacity": [],
+  "dt_hours": 1.0,
+  "n_periods": 24,
+  "deactivated_rows": {
+   "sess_snet_def": 24,
+   "sess_pch_link": 24,
+   "sess_pdch_link": 24,
+   "sess_s_limit": 24,
+   "sess_soc_def": 24,
+   "sess_comp": 24
+  },
+  "n_sch_sdch_fixed": 48,
+  "objective_replaced": true,
+  "n_new_rows": 96
+ },
+ "device": {
+  "shared_ess_index": 0,
+  "s_rated_pu": 0.00021269785612254322,
+  "eff_ch": 0.97,
+  "eff_dch": 0.96,
+  "dt_hours": 1.0,
+  "e_rated_pu": 0.00042539571224508644
+ },
+ "physics_tests": {
+  "1_pure_reactive": {
+   "inputs": {
+    "pch": 0.0,
+    "pdch": 0.0,
+    "pnet": 0.0,
+    "qnet": 0.00010634892806127161
+   },
+   "soc_prev": 0.00021269785612254322,
+   "soc_t": 0.00021269785612254322,
+   "delta_soc": 0.0,
+   "PASS_soc_unchanged": true
+  },
+  "2_pure_charging": {
+   "inputs": {
+    "pch": 8.507914244901729e-05,
+    "pdch": 0.0
+   },
+   "soc_t": 0.00029522462429808997,
+   "expected": 0.00029522462429808997,
+   "delta_soc": 8.252676817554675e-05,
+   "expected_delta": 8.252676817554678e-05,
+   "PASS_exact": true
+  },
+  "3_pure_discharging": {
+   "inputs": {
+    "pch": 0.0,
+    "pdch": 8.507914244901729e-05
+   },
+   "soc_t": 0.00012407374940481686,
+   "expected": 0.00012407374940481686,
+   "delta_soc": -8.862410671772635e-05,
+   "expected_delta": -8.862410671772635e-05,
+   "PASS_exact": true
+  },
+  "4_converter_capability": {
+   "row": "pnet^2 + qnet^2 <= S_rated^2",
+   "samples": [
+    {
+     "label": "origin",
+     "pnet": 0.0,
+     "qnet": 0.0,
+     "body": 0.0,
+     "upper": 4.5240377999126095e-08,
+     "satisfied": true
+    },
+    {
+     "label": "pure P at rating",
+     "pnet": 0.00021269785612254322,
+     "qnet": 0.0,
+     "body": 4.5240377999126095e-08,
+     "upper": 4.5240377999126095e-08,
+     "satisfied": true
+    },
+    {
+     "label": "pure Q at rating",
+     "pnet": 0.0,
+     "qnet": 0.00021269785612254322,
+     "body": 4.5240377999126095e-08,
+     "upper": 4.5240377999126095e-08,
+     "satisfied": true
+    },
+    {
+     "label": "on circle (0.8,0.6)",
+     "pnet": 0.00017015828489803459,
+     "qnet": 0.00012761871367352593,
+     "body": 4.5240377999126095e-08,
+     "upper": 4.5240377999126095e-08,
+     "satisfied": true
+    },
+    {
+     "label": "outside circle",
+     "pnet": 0.0001914280705102889,
+     "qnet": 0.0001914280705102889,
+     "body": 7.328941235858428e-08,
+     "upper": 4.5240377999126095e-08,
+     "satisfied": false
+    }
+   ],
+   "PASS_circle_semantics": true
+  },
+  "5_complementarity": {
+   "row": "pch*pdch <= ESS_COMPLEMENTARITY_TOLERANCE * S_rated^2",
+   "variables_in_row": [
+    "shared_es_pch[0,0,0,5]",
+    "shared_es_pdch[0,0,0,5]"
+   ],
+   "acts_on_active_power": true,
+   "tolerance_used": 0.0001,
+   "rhs": 4.524037799912609e-12,
+   "rhs_over_ipopt_tol": 4.524037799912609e-07,
+   "body_at_pch=pdch=0.4S": 7.238460479860177e-09,
+   "PASS_tolerance_preserved": true
+  },
+  "6_zero_capacity": {
+   "conversion_skipped_zero_capacity": true,
+   "no_new_rows_added": true,
+   "pch_fixed_zero": true,
+   "pnet_fixed_zero": true,
+   "sess_rows_inactive": true,
+   "no_division_by_zero": true
+  }
+ },
+ "B3_9_post_reformulation_families": {
+  "smallest_gradient_norm_by_family": {
+   "branch_flow_limit_ji": 0.0,
+   "b3_sess_converter_capability": 0.0,
+   "b3_sess_comp_active": 0.0,
+   "sg_capability": 0.2974762043075094,
+   "voltage_product_real_nonnegative": 1.0,
+   "shared_energy_storage_s_sensitivities": 1.0,
+   "shared_energy_storage_e_sensitivities": 1.0,
+   "sess_soc_limit_lower": 1.004987562112089,
+   "gen_pf_upper": 1.1111111111111112,
+   "gen_pf_lower": 1.1111111111111112
+  },
+  "largest_curvature_by_family": {
+   "pji_def": 137.9797487170676,
+   "qji_def": 137.9797487170676,
+   "voltage_mag_def": 2.0,
+   "voltage_mag_sqr_def": 2.0,
+   "sg_capability": 2.0,
+   "branch_flow_limit_ji": 2.0,
+   "b3_sess_converter_capability": 2.0,
+   "voltage_product_real_def": 1.0,
+   "voltage_product_imag_def": 1.0,
+   "b3_sess_comp_active": 1.0
+  },
+  "tightest_margin_by_family": {
+   "sess_soc_limit_lower": -4.2539571224508647e-05,
+   "b3_sess_comp_active": -7.233936442060264e-09,
+   "sg_capability": 0.0,
+   "sess_phi_limit_lower": 0.0,
+   "sess_phi_limit_upper": 0.0,
+   "b3_sess_converter_capability": 4.5240377999126095e-08,
+   "b3_sess_active_sum_limit": 4.253957122450863e-05,
+   "flex_energy_balance_p": 0.0001,
+   "sess_soc_limit_upper": 0.00017015828489803459,
+   "gen_pf_upper": 0.07203715070469399
+  }
+ }
+}

@@ -373,6 +373,355 @@ generator starts exactly on that boundary. But the repository contains no
 defensible converter rating, and the plan rightly forbids inventing one — so the
 reformulation cannot be tested safely until the data model is extended.
 
-# B3 — Active-power ESS structural prototype
+# B3 — Active-power shared-ESS structural prototype
 
-*Pending planner review of B2-R.*
+Started from a fresh accepted production baseline. **B1 `f_ref = 0` not
+included; no B2-R change; no P5.2 narrow band; no IPOPT/MA97 tuning.** The only
+change is the shared-ESS network formulation.
+
+## Provenance
+
+- Scripts: `p53b3_active_power_ess.py` (A/B + rank audit),
+  `p53b3_physics_tests.py` (B3.8/B3.9). Raw output:
+  `data/SRP1/Results/P53B3/p53b3_report.json`, `p53b3_physics.json`.
+- Branch A reproduces the accepted production baseline exactly — the same three
+  persistent failures — validating the harness.
+- Production source is never modified; the conversion is applied in memory to
+  already-built, already-configured production models.
+
+## B3.1 — Dependency / consumer trace (completed before any change)
+
+| Consumer | Location | Classification |
+|---|---|---|
+| `sess_pch_link`, `sess_pdch_link` | mch:759, 763 | **requires `sch/sdch`** — internal, removed |
+| `sess_s_limit` | mch:767 | **requires `sch/sdch`** — internal, replaced |
+| `sess_snet_def` | mch:777-779 | **requires `sch/sdch`** — internal, removed |
+| `sess_comp` | mch:794-795 | **requires `sch/sdch`** — moved to `pch·pdch` |
+| `sess_soc_rule` | mch:815-819 | **requires `sch/sdch`** — moved to `pch/pdch` |
+| `ess_utilization_cost_penalty` | mch:1605 | **requires `sch/sdch`** — objective term, mapped to `pch+pdch` |
+| `ess_complementarity_penalties` | mch:1678 | **requires `sch/sdch`** — objective term, mapped to `pch·pdch` |
+| `_SHARED_ESS_OPERATIONAL_VARIABLES` | mch:836-842 | zero-capacity gating list |
+| result `s_ess = sch − sdch` | network.py:1359 | **export only** |
+| ADMM residual diagnostic | srp:4741-4752 | **diagnostic only** |
+| `sess_phi_limits_lower/upper` | mch:745-755 | **active `pch/pdch`** ✓ survives |
+| `sess_pnet_def` | mch:832 | **active `pch/pdch`** ✓ retained unchanged |
+| result `p_ess = pch − pdch` | network.py:1360 | **active `pch/pdch`** ✓ |
+| `compute_node_load` | mch:1171-1172 | **net `pnet/qnet` only** ✓ |
+| expected shared-ESS P/Q rules | mch:1064, 1075, 1751, 1755, 1794, 1798 | **net only** ✓ |
+| DSO/TSO scenario-deviation penalties | srp:2800, 2826 | **net only** ✓ |
+| Benders sensitivity extraction | srp:6479, 6485, 6526, 6534 | **net only** ✓ |
+| ESSO `es_sch_per_unit` / `es_sdch_per_unit` | shared_energy_storage_data.py | **unrelated** — separate model |
+
+**Decisive result of the trace:** nodal balance, ADMM consensus, expected
+schedules and Benders sensitivities depend on **`pnet`/`qnet` only**. The only
+cross-boundary `sch/sdch` uses are (i) a result *export* field and (ii) an ADMM
+*diagnostic* report — `_get_expected_network_shared_ess_charge_discharge_mva`,
+called solely from `get_admm_residual_metrics` to populate a `worst_ess_primal`
+dictionary. Neither feeds a constraint, objective, consensus update or cut.
+
+## B3.2 — Energy/time convention
+
+- No explicit time step, period duration or `Delta_t` exists **anywhere** in
+  production.
+- `num_instants = 24` over one representative day, so `dt = 24 h / 24 = 1 h`,
+  **derived in the harness from `len(model.periods)`, not hardcoded**.
+- Power variables are p.u. on `baseMVA`; `shared_es_soc` and
+  `shared_es_e_rated` are p.u. energy on the same base (results scale SOC by
+  `baseMVA` to MWh at `network.py:1362`).
+- The production recursion `soc_t = soc_prev + eta_ch·sch − sdch/eta_dch`
+  carries **no** time factor, so it implicitly assumes `dt = 1 h`; with MVA × 1 h
+  = MVAh on a common base the numeric factor is exactly 1, i.e. the production
+  equation is dimensionally consistent.
+
+**Prototype SOC (dimensional derivation stated explicitly):**
+`SOC_t [p.u.·MVAh] = SOC_{t-1} + eta_ch·pch [p.u.·MVA]·dt [h] − pdch·dt/eta_dch`,
+with `dt = 1 h`, so the numeric coefficient is 1 — no factor silently inserted
+or omitted.
+
+## B3.3 / B3.4 — The prototype and the derived envelope
+
+**Derivation of the active envelope from the production feasible set:**
+
+```
+pch <= sch,   pdch <= sdch,   sch + sdch <= S_rated
+=>  pch + pdch <= sch + sdch <= S_rated
+```
+
+So **`pch + pdch <= S_rated` is implied by production** and is used as the
+baseline active envelope. The box bounds `0 <= pch, pdch <= S_rated` and
+`|pnet|, |qnet| <= S_rated` are likewise implied (via `pch ≤ sch ≤ S_rated`, and
+via `sess_snet_def` + `sess_s_limit` for `qnet`), so they are **redundant but
+explicit**, not new restrictions.
+
+Applied per live shared-ESS index (verified on every model): deactivated
+`sess_snet_def` (24), `sess_pch_link` (24), `sess_pdch_link` (24),
+`sess_s_limit` (24), `sess_soc_def` (24), `sess_comp` (24); fixed 48
+`sch`/`sdch` variables out of the problem; added 96 new rows (SOC, capability,
+active envelope, complementarity); retained `sess_pnet_def` unchanged.
+
+**Objective handling, disclosed as part of the reformulation:** production's ESS
+utilization penalty (`penalty_ess_usage·baseMVA·(sch+sdch)`) and complementarity
+penalty (`PENALTY_ESS_COMPLEMENTARITY·baseMVA·sch·sdch`) are written on
+`sch/sdch`. Fixing those to zero would silently delete both terms, so the
+prototype adds their exact active-power analogues (`pch+pdch`, `pch·pdch`) back
+and replaces the objective. Without this the comparison would be confounded.
+
+## B3.8 — Physics unit tests (all exact, no solve required)
+
+Device: `S_rated = 2.1270e-04 p.u.`, `eta_ch = 0.97`, `eta_dch = 0.96`,
+`dt = 1.0 h`, `E_rated = 4.2540e-04 p.u.`
+
+| Test | Result |
+|---|---|
+| **1 Pure reactive** — `pch = pdch = pnet = 0`, `qnet = 0.5·S_rated` | **ΔSOC = 0.000000e+00 exactly** ✓ |
+| **2 Pure charging** — `pch = 0.4·S_rated` | ΔSOC = **+8.252677e-05** = `eta_ch·pch·dt` exactly ✓ |
+| **3 Pure discharging** — `pdch = 0.4·S_rated` | ΔSOC = **−8.862411e-05** = `−pdch·dt/eta_dch` exactly ✓ |
+| **4 Converter capability** | origin, pure-P-at-rating, pure-Q-at-rating and the on-circle point `(0.8, 0.6)·S_rated` all satisfied; the outside point `(0.9, 0.9)·S_rated` correctly rejected ✓ |
+| **5 Complementarity** | row variables are exactly `{shared_es_pch, shared_es_pdch}`; RHS = `1e-4·S_rated²`, tolerance preserved exactly ✓ |
+| **6 Zero capacity** | conversion skipped, no new rows, `pch`/`pnet` fixed at 0, `sess_*` rows inactive, no division by zero ✓ |
+
+> **Test 1 is the physical correction this whole stage exists for: reactive
+> power no longer changes stored battery energy.**
+
+## B3.9 — Derivative / rank audit
+
+| Model | Branch | Zero equality rows | Owner | Eq. rows | **σ_min(full)** | Reduced σ_min | Reduced cond |
+|---|---|---|---|---|---|---|---|
+| case33_1/2030/Winter | **A** | **24** | `sess_snet_def` | 4251 | **0.000e+00** | 5.9246e-03 | 8.9835e+04 |
+| case33_1/2030/Winter | **B** | **0** | — | 4227 | **5.925e-03** | 5.9246e-03 | 8.9835e+04 |
+| case9/2025/Winter | **A** | **72** | `sess_snet_def` | 1737 | **0.000e+00** | 3.2880e-02 | 1.4223e+03 |
+| case9/2025/Winter | **B** | **0** | — | 1665 | **3.287e-02** | 3.2871e-02 | 1.4227e+03 |
+
+Answering the plan's headline questions directly:
+
+- **Are all former `sess_snet_def` zero equality rows gone?** **Yes** — 24 (DSO)
+  and 72 (TSO) → **0**.
+- **Is the full equality Jacobian now full row rank?** **Yes**, empirically:
+  σ_min(full) is now strictly positive and equals the reduced σ_min, and the
+  full row count drops by exactly the removed rows (4251→4227, 1737→1665).
+- **New σ_min / condition:** `5.925e-03` / `8.98e+04` (DSO) and `3.287e-02` /
+  `1.42e+03` (TSO) — i.e. **the full Jacobian now attains the conditioning that
+  was previously only available on the reduced subspace.**
+
+**New worst families after the reformulation** (gradient/curvature are
+structural and reliable):
+
+| Category | Family | Value |
+|---|---|---|
+| Smallest gradient norm | `branch_flow_limit_ji`, `b3_sess_converter_capability`, `b3_sess_comp_active` | **0.0 — but all three are INEQUALITIES at the zero-dispatch point, not equalities, so they create no rank deficiency** |
+| Largest curvature | `pji_def`, `qji_def` | **1.380e+02** (was `sess_snet_def` at **18806** — a 136× reduction) |
+| Worst equality family | none degenerate | no zero-gradient equality remains |
+
+*Limitation:* the "tightest margin by family" column of that audit was computed
+after the physics tests had mutated variable values, so it is contaminated and
+is not quoted; the margins below come from the clean solved A/B run instead.
+
+## B3.5 / B3.6 — Remaining numerical weaknesses, stated plainly
+
+**Complementarity (`pch·pdch ≤ 1e-4·S_rated²`)** — tolerance preserved exactly,
+not rescaled:
+
+| `S_rated` | RHS | **RHS ÷ IPOPT `tol`** |
+|---|---|---|
+| 1.0635e-04 | 1.131e-12 | **1.13e-07** |
+| 2.1270e-04 | 4.524e-12 | **4.52e-07** |
+| 3.1905e-04 | 1.018e-11 | **1.02e-06** |
+
+Minimum margin over the solved run: **−2.0885e-12** (i.e. *violated*) at
+`dso/9/2025/Winter` period 20. The violation is ~7 orders below IPOPT's `tol`,
+so the solver accepts it. **The active-power complementarity row remains
+numerically weak — moving it from `sch·sdch` to `pch·pdch` did not fix that**,
+and no scaling factor was introduced to hide it.
+
+**Converter capability (`pnet² + qnet² ≤ S_rated²`)** — physically cleaner, but:
+
+| `S_rated` | `S_rated²` | **`S_rated²` ÷ IPOPT `tol`** |
+|---|---|---|
+| 1.0635e-04 | 1.131e-08 | **1.13e-03** |
+| 2.1270e-04 | 4.524e-08 | **4.52e-03** |
+| 3.1905e-04 | 1.018e-07 | **1.02e-02** |
+
+Minimum margin over the solved run **1.1308e-08**, i.e. `margin/tol = 1.13e-03`.
+
+> **The converter circle is itself physically under-resolved by IPOPT at
+> bootstrap capacities**: the entire constraint RHS is 100–1000× below the
+> solver's absolute feasibility tolerance. Removing the degenerate equality did
+> **not** automatically make the capability circle numerically well-resolved.
+> This is recorded as a remaining issue for the next planner decision, exactly
+> as B3.6 requires.
+
+## B3.7 — Zero-capacity lifecycle
+
+Preserved. For zero/near-zero capacity the conversion is skipped entirely
+(`skipped_zero_capacity`, 0 new rows), the operational variables remain fixed at
+zero, the `sess_*` rows remain inactive, and no division by zero occurs. The
+obsolete `sess_snet_def_kappa` machinery remains untouched in production and has
+no influence on the B branch. **No production code was deleted.**
+
+## B3.10 — Isolated A/B bootstrap solves
+
+Identical candidate, scenario realization, solver, MA97, exact Hessian, IPOPT
+options, cold start and non-ESS equations.
+
+| | **A (production)** | **B (active-power prototype)** |
+|---|---|---|
+| DSO succeeded | 33 / 36 | **36 / 36** |
+| TSO succeeded | 12 / 12 | 12 / 12 |
+| ESSO succeeded | 3 / 3 | 3 / 3 |
+| Primary failures | 3 | **0** |
+| Recovery attempts / successes | 0 / 0 | **0 / 0** |
+| **Persistent failures** | **3** | **0** |
+| Failure identities | `dso/5/2030/Winter`, `dso/5/2035/Winter`, `dso/9/2025/Summer` | **none** |
+| Iterations — total | 33 073 | **1 545 (−95.3 %)** |
+| Iterations — mean | 689.0 | **32.2** |
+| Iterations — median | 468.0 | **27.5** |
+| Iterations — max | 3000 | **109** |
+| Runtime | 274 s | **37 s (−86 %)** |
+
+> **B eliminates the failure set — it does not relocate it.** All three original
+> bootstrap failures are gone and no new failure appears anywhere, in contrast to
+> B1 and to every `kappa`-cap experiment in P5.1/P5.1-B. Iteration effort falls
+> by a factor of 21 and the worst-case model needs 109 iterations instead of
+> hitting the 3000 limit.
+
+## B3.11 — Solution / physics comparison
+
+33 models succeeded in both branches.
+
+| Quantity | A | B |
+|---|---|---|
+| max ｜`pnet`｜ | 5.554e-05 | 2.100e-06 |
+| max ｜`qnet`｜ | 5.367e-09 | **9.776e-08** |
+| SOC range | [1.064e-04, 3.946e-04] | [1.061e-04, 3.220e-04] |
+| Objective difference — median ｜rel｜ | — | **1.12e-03** |
+| Objective difference — max ｜rel｜ | — | 1.157 (two models) |
+
+Categorization of the differences:
+
+- **Expected, from the SOC physics correction.** B uses ~18× more reactive power
+  and far less active power. Under A, `qnet` was tied to the apparent
+  charge/discharge geometry through `sess_snet_def` and thereby coupled to
+  stored energy; under B, reactive power is limited only by the converter circle
+  and no longer consumes battery energy. Reactive use rising and active use
+  falling is precisely the intended consequence.
+- **Expected, from the different feasible geometry.** The median objective
+  difference is 0.11 %.
+- **Explained outliers, not suspicious.** The two large relative differences
+  (`dso/7/2025/Summer`, `dso/7/2035/Winter`) are cases where A converged to
+  objective **+5.21 / +5.23** while every other model lands near **−0.8**; B
+  reaches **−0.817 / −0.808**. On a minimisation these are A converging to a
+  markedly worse point, consistent with A's much larger iteration counts — B
+  improves them rather than distorting them.
+- **Nothing unexplained was found.**
+
+## B3.12 — ADMM readiness (not run, per the plan)
+
+ADMM was **not** entered. From B3.1, the ADMM consensus variables, expected
+shared-ESS P/Q schedules, ESSO aggregate coupling and Benders sensitivities all
+use `pnet`/`qnet` only and would remain semantically consistent. **Two consumers
+must be updated before ADMM is attempted:**
+
+1. `network.py:1359` — the exported `s_ess = sch − sdch` would report 0. Should
+   become the physically meaningful apparent power `sqrt(pnet² + qnet²)`.
+2. `shared_resources_planning.py:4741-4752` — the ADMM residual *diagnostic*
+   would report zero charge/discharge. Should read `pch`/`pdch`.
+
+Neither is load-bearing, but both must be corrected so diagnostics and exports
+do not silently mislead.
+
+## B3.13 — Follow-on end-to-end plan (if approved)
+
+1. **Network shared ESS** — promote the prototype rows into production behind
+   the existing zero-capacity gating; retire `sess_snet_def`, `sess_pch_link`,
+   `sess_pdch_link`, `sess_s_limit` and the `sch/sdch` variables; keep
+   `sess_pnet_def`.
+2. **Ordinary network ESS** — apply the identical treatment (it shares the same
+   `ess_snet_def` geometry and the P4.6-B2 `kappa_es` normalization would then
+   also become unnecessary).
+3. **ESSO per-cohort** — convert `es_sch_per_unit`/`es_sdch_per_unit` to active
+   `pch/pdch` per cohort, preserving the aggregate P/Q coupling.
+4. **Aggregate P/Q coordination** — unchanged in form; verify the ESSO-side
+   `es_snet` aggregation still matches the network-side `pnet`.
+5. **Cell-side throughput** — redefine as
+   `E_throughput = Σ_d Σ_t (D_d/365)·dt·(eta_ch·P_ch + P_dch/eta_dch)`.
+6. **Cycling degradation and SoH** — drive from the corrected active throughput.
+7. **Benders sensitivities** — already `pnet/qnet`-based; re-validate.
+8. **Result processing/export** — fix the two consumers in B3.12.
+
+Calendar degradation remains deferred.
+
+## Decision criteria
+
+| # | Criterion | Verdict |
+|---|---|---|
+| 1 | `sess_snet_def` zero-gradient equality family eliminated | **Yes** — 24/72 → 0 |
+| 2 | Equality-Jacobian rank materially improves | **Yes** — full row rank; σ_min 0 → 5.93e-03 / 3.29e-02 |
+| 3 | Three original failures eliminated without relocation | **Yes** — 36/36, zero new failures |
+| 4 | Physical SOC behaviour correct | **Yes** — exact charge/discharge increments |
+| 5 | Pure reactive no longer changes stored energy | **Yes** — ΔSOC = 0 exactly |
+| 6 | No material implementation inconsistency | **None found**; the objective re-creation is disclosed and necessary |
+| 7 | Remaining weaknesses explicitly bounded | **Yes** — complementarity RHS 1.1e-07–1.0e-06 × `tol` with a −2.09e-12 violation; capability RHS 1.1e-03–1.0e-02 × `tol` |
+
+Per the plan, B3 is **not** rejected for the residual `sess_comp` weakness —
+that is a separately identified inequality-conditioning problem, now measured
+rather than hidden.
+
+```
+B3 PRODUCTIONIZE CANDIDATE — active-power ESS formulation removes the dominant structural defect
+```
+
+---
+
+# Final ranked recommendation
+
+| Rank | Candidate | Recommendation | Rationale |
+|---|---|---|---|
+| **1** | **B3 — active-power shared ESS** | **PRODUCTIONIZE CANDIDATE** | Removes the sole source of exact equality-rank deficiency, restores full row rank, eliminates all three bootstrap failures with no relocation, cuts iterations 95 %, and corrects the SOC physics |
+| **2** | B1 — exact `f_ref = 0` | **CONTINUE TESTING** | Mathematically clean and free, but relocates failures while the dominant defect remains; re-test on top of B3 |
+| **3** | B2-R — RES capability separation | **DEFER** | Physically justified, but the repository has no defensible converter rating; needs the `Smax` data-model extension first |
+
+## Required answers
+
+- **Should `f_ref = 0` be adopted?** Not yet. It removes the gauge cleanly at no
+  conditioning cost, but on the current formulation it relocates failures. Re-test
+  it on top of B3, where its effect can be isolated.
+- **Does the active-power ESS formulation remove the exact equality-rank
+  deficiency?** **Yes** — 24 (DSO) and 72 (TSO) zero rows → 0, and σ_min(full)
+  becomes strictly positive.
+- **Does it materially improve bootstrap NLP robustness?** **Yes** — 3 persistent
+  failures → 0, 33 073 → 1 545 iterations, 274 s → 37 s, worst model 3000 → 109
+  iterations.
+- **Does the new active-power complementarity remain numerically problematic?**
+  **Yes.** RHS is 1.1e-07–1.0e-06 × IPOPT `tol` and the solved run shows a
+  −2.09e-12 violation. Moving to `pch·pdch` did not fix it; no scaling was
+  applied to hide it.
+- **Can `sch/sdch` be removed from the network SMOPF?** **Yes**, subject to
+  updating one export field and one ADMM diagnostic. Every load-bearing
+  consumer — nodal balance, consensus, expected schedules, sensitivities — uses
+  `pnet/qnet` only.
+- **Is the P5.2 narrow-band workaround still necessary after B3?** **No.** It
+  existed to make the zero-gradient `sess_snet_def` point interior; B3 deletes
+  that row entirely and achieves a strictly better result (0 failures with 1 545
+  iterations, versus the narrow band's 0 failures whose declared band was below
+  solver resolution). The narrow band should be dropped rather than
+  productionized.
+- **Is the current RES capability formulation conflating stochastic availability
+  with inverter rating?** **Yes** — `sg_avail = P_available`, so the capability
+  circle radius *is* the stochastic availability.
+- **Is there sufficient data to reformulate the RES converter capability
+  safely?** **No** — no rating field exists anywhere in the repository.
+- **What should be done about the copula upper-support overshoot?** Bound the
+  marginal model (preferred) or clip to the installed `Pmax`; do **not** clip to
+  the historical maximum where the installed rating is known, and quantify
+  generation above `Pmax` / capacity factor above 1 rather than treating
+  historical exceedance as a physical violation.
+- **Which nonlinear family is the highest remaining conditioning risk after the
+  successful reformulations?** **`sess_comp` / `b3_sess_comp_active`** — a
+  bilinear inequality whose RHS scales as `S_rated²` and sits ~7 orders below
+  IPOPT's tolerance, with a measured small violation. Second is the converter
+  capability circle, under-resolved by 2–3 orders at bootstrap capacities. Both
+  are inequality-conditioning problems, not rank deficiencies.
+
+```
+P5.3-B COMPLETE — reformulation experiments ready for planner decision
+```
