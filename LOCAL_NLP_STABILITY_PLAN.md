@@ -1,357 +1,744 @@
-# LOCAL_NLP_STABILITY_PLAN.md
+# Local NLP Stability Investigation Plan
 
 Repository:
 `/Users/micaelsimoes/PycharmProjects/shared-resources-planning`
 
-Read `REVISION_CONTEXT.md` first.
+## Role and scope
 
-For the current task, this file is authoritative.
+Act as an implementation and diagnostic agent.
 
-# Stage P4 — Production-safe shared-ESS normalization
+Read `REVISION_CONTEXT.md` first, then read this file. For the current P5.3 work, this file takes precedence regarding what may and may not be changed.
 
-## 1. Status
+Work in small isolated experiments. After each stage report:
 
-P3 diagnostics are COMPLETE.
+- files changed;
+- exact diagnostic or code changes;
+- commands executed;
+- solver outcome;
+- relevant numerical diagnostics;
+- interpretation;
+- whether the acceptance criterion was met.
 
-P3.5-D decisively showed that in-place constant scaling of the original
-`sess_snet_def` rows, with KKT-consistent same-object dual transformation,
-turns both decisive frozen DSO/TSO failures into primary exact-Hessian
-successes without changing the physical feasible set.
-
-The current task is production design and validation, not further diagnosis.
-
----
-
-## 2. P4 objective
-
-Normalize the production network-side shared-ESS equality:
-
-`(sch - sdch)^2 = pnet^2 + qnet^2`
-
-as:
-
-`kappa_e * ((sch - sdch)^2 - pnet^2 - qnet^2) = 0`
-
-where `kappa_e` is a fixed numerical scale for shared ESS `e`.
-
-Target:
-
-`kappa_e = 1 / S_scale_e`
-
-For the diagnosed active shared ESS:
-
-`S_scale = 0.01`
-`kappa = 100`.
-
-Do not use symbolic division by an optimization variable.
-
-Do not create a parallel replacement constraint component.
-
-The production component must remain `sess_snet_def`.
+Do not automatically proceed from a diagnostic result to a production formulation change.
 
 ---
 
-## 3. P4.1 — Capacity/model/dual lifecycle audit
+# CURRENT AUTHORIZED STAGE — P5.3
 
-Before editing production code, determine:
+This section supersedes the older frozen-cycle-only instructions and older prohibition on active-energy SOC work **for P5.3 only**.
 
-1. where installed shared-ESS `s_capacity` enters each TSO/DSO SMOPF;
-2. the component type and lifecycle of `shared_es_s_rated`;
-3. whether local models are rebuilt or reused when planning capacity changes;
-4. whether `sess_snet_def` objects survive such updates;
-5. whether `model.dual` entries survive;
-6. whether warm-start multiplier suffixes survive;
-7. whether zero->positive or positive->zero capacity transitions occur on a
-   reused model;
-8. whether `kappa` can change while the same constraint object persists;
-9. whether a fixed/mutable numerical scale parameter already exists.
+The historical frozen-model work remains valid evidence and is summarized later in this file, but the primary P5.3 population is now the real current SRP1 positive-bootstrap cold initialization produced through the production candidate/model-construction path.
 
-Report the recommended source for `S_scale_e`.
+Current accepted production checkpoint:
 
-If scale can change on a live row while its imported dual survives, specify
-whether this rule is required:
+`f77d829359ffd873367f556882546bc2dcc8ec99`
 
-`lambda_new = lambda_old * (kappa_old / kappa_new)`.
+Current reduced-scenario identity:
 
-Do not add dual remapping unless the audit proves it is needed.
+- seed `2026`;
+- combined scenario checksum:
+  `5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358`.
 
-If lifecycle is ambiguous, STOP.
+P5.3 is a diagnostic/reformulation review. No P5.3 mathematical change becomes production code without planner approval.
 
----
+## Current P5.3 invariants
 
-## 4. P4.2 — Shared-ESS production implementation
+Do not:
 
-Proceed only after P4.1 is clear.
+- tune IPOPT `tol`, `acceptable_tol`, `acceptable_iter`, `max_iter`, or pushes;
+- switch production MA97/MA57 policy;
+- change recovery classification;
+- change ADMM rho rules or tolerances;
+- change recourse-stationarity criteria;
+- change ADMM objective scaling;
+- change TSO proximal regularization;
+- change Benders/local-cut logic;
+- add generic feasibility slacks;
+- productionize the P5.2 shared-ESS narrow band;
+- cap shared-ESS `kappa`;
+- change the stochastic scenario values during exact RES algebra A/B tests;
+- add calendar degradation;
+- modify terminal salvage;
+- silently change ESS complementarity tolerance.
 
-Introduce/reuse a repository-consistent fixed or mutable parameter containing
-the numerical shared-ESS power scale.
-
-For positive capacity:
-
-`kappa_e = 1 / S_scale_e`.
-
-For zero capacity:
-- use a finite safe value such as `1.0`;
-- never divide by zero;
-- preserve existing zero-capacity operational gating.
-
-Modify the existing `sess_snet_def` rule/component directly so it is constructed
-in scaled form from the beginning.
-
-Do NOT:
-- add `sess_snet_def_scaled`;
-- deactivate `sess_snet_def`;
-- change its index set;
-- change its component name;
-- change `sess_comp`;
-- change any ESS variable/bound;
-- change SOC;
-- change objective or ADMM terms.
-
-If P4.1 requires dual remapping when scale changes on a live reused model,
-implement the smallest targeted remapping mechanism and document it.
+The active-power ESS network prototype described below is explicitly authorized as a diagnostic physical reformulation. Full ESSO cycling-degradation conversion is not part of P5.3-B3.
 
 ---
 
-## 5. P4.3 — Construction/equivalence validation
+# P5.3-A — Quantitative structural conditioning audit
 
-Validate:
+## A1. Reproduce the real positive-bootstrap population
 
-### Positive capacity
-- `s_rated=0.01 -> kappa=100`;
-- `s_rated=0.02 -> kappa=50`;
-- scale is numerical/fixed within a solve;
-- no symbolic division by a decision variable.
+Generate the exact P5 iteration-2 positive-bootstrap candidate using production:
 
-### Zero capacity
-- no divide-by-zero path;
-- finite scale;
-- same operational rows deactivated as before;
-- zero operational variables fixed as before.
+`_build_positive_bootstrap_candidate(...)`
 
-### Structure
-- same `sess_snet_def` component name;
-- same index tuples;
-- same row count;
-- no extra constraint component;
-- no `sess_comp` change;
-- no SOC/objective change.
+and replay the real pre-solve initialization path.
 
-### Equivalence
-Verify numerically/source-wise that for finite positive `kappa`:
+Audit every network SMOPF immediately before IPOPT:
 
-`g = 0 <=> kappa*g = 0`.
+- 36 DSO models;
+- 12 TSO models.
 
-If any structural invariant fails, STOP.
+Retain ESSO models for structural context, but the primary derivative audit is the 48 network SMOPFs.
 
----
+Do not reconstruct the bootstrap candidate manually.
 
-## 6. P4.4 — Frozen regression
+The old frozen cycle-10 pickle may be used only as historical/control evidence.
 
-Replay through the normal production solver path.
+## A2. Inspect the installed derivative environment first
 
-### Decisive DSO
-`data/SRP1/Results/FrozenSMOPF/P3Preserved/frozen_DSO_node7_case33_2_2025_Autumn_cycle8.pkl`
+Determine the safest available mechanism for evaluating the NLP Jacobian and related derivatives.
 
-### Decisive TSO
-`data/SRP1/Results/FrozenSMOPF/failure_TSO_case9_2025_Summer_cycle6.pkl`
+Prefer analytic Pyomo/PyNumero/NLP interfaces already available in the environment.
 
-Report per case:
-- status/termination;
-- primary iterations;
-- objective;
-- scaled/unscaled primal infeasibility;
-- dual infeasibility;
-- complementarity;
-- runtime;
-- recovery yes/no;
-- original unscaled `sess_snet_def` residual.
+Do not introduce a large external dependency merely for this audit.
 
-Required first gate:
-- both decisive cases primary success;
-- no recovery;
-- original physical relation within normal feasibility tolerance.
+If an exact sparse Jacobian interface is unavailable, report that limitation before implementing a materially different numerical approach.
 
-If either fails, STOP.
+## A3. Constraint-family inventory
 
-If both pass, replay every other preserved residual P3 DSO/TSO failure snapshot
-available and report each separately.
+Enumerate every active network constraint component and classify it as:
 
----
+- linear equality;
+- linear inequality;
+- nonlinear equality;
+- nonlinear inequality;
+- ranged nonlinear inequality.
 
-## 7. P4.5 — Seed-2026 distributed operational smoke
+For every family report:
 
-Only after P4.4 is satisfactory.
+- row count;
+- polynomial degree where available;
+- variables participating;
+- typical variable magnitude;
+- whether variables/row residuals can naturally be near zero;
+- whether a row can be active at a zero-gradient point;
+- whether stochastic data can switch the row on/off structurally.
 
-Run the same reduced distributed operational configuration used in the
-post-`vmag_nodes` P2.10 smoke.
+Explicitly include at least:
 
-Keep unchanged:
-- seed 2026;
-- scenario checksum identity;
-- candidate shared ESS;
-- IPOPT options;
-- MA97;
-- exact-Hessian primary path;
-- recovery;
-- ADMM tolerances/rho policy;
-- TSO proximal regularization;
-- common objective scaling;
-- ESSO formulation.
+- `voltage_mag_def`;
+- `voltage_mag_sqr_def`;
+- `voltage_setpoint_cons`;
+- `voltage_product_real_def`;
+- `voltage_product_imag_def`;
+- `r_sqr_def`;
+- `sg_capability`;
+- `gen_pf_upper`;
+- `gen_pf_lower`;
+- `gen_pf_profile`;
+- `flex_energy_balance_p`;
+- `ess_pnet_def`;
+- `ess_snet_def`;
+- `ess_comp`;
+- `ess_soc_def`;
+- `sess_pnet_def`;
+- `sess_snet_def`;
+- `sess_comp`;
+- `sess_soc_def`;
+- `node_balance_p`;
+- `node_balance_q`;
+- `branch_flow_limit`;
+- `branch_flow_limit_ji`;
+- all distributed coordination/interface constraints added after base model construction.
+
+## A4. Jacobian diagnostics at the cold start
+
+For every active row, where technically available, compute:
+
+- absolute constraint residual / violation;
+- `||grad g||_2`;
+- `||grad g||_inf`;
+- smallest nonzero absolute Jacobian coefficient;
+- largest absolute Jacobian coefficient;
+- intra-row coefficient ratio;
+- distance to the nearest inequality bound;
+- `distance_to_bound / IPOPT_tol` using that model's actual configured `tol`.
+
+Do not hide zero-gradient rows.
+
+Report counts of rows with gradient norm below:
+
+- `1e-12`;
+- `1e-10`;
+- `1e-8`;
+- `1e-6`;
+- `1e-4`.
+
+These are diagnostic bins only.
+
+Group by component, agent/network, year, and representative day.
+
+Produce ranked top-N summaries for:
+
+- smallest row norms;
+- largest row norms;
+- smallest inequality margins relative to IPOPT tolerance;
+- largest intra-row derivative-scale ratios.
+
+## A5. Jacobian column and near-dependence diagnostics
 
 Report:
-- initialization;
-- ADMM cycles;
-- every local primary failure;
-- every recovery;
-- every persistent-for-cycle failure;
-- final convergence status;
-- final residuals;
-- recourse stationarity;
-- rho evolution;
-- voltage-slack diagnostics;
-- runtime.
 
-Compare against the previous P2.10 smoke:
+- zero/near-zero derivative columns;
+- smallest/largest column norms;
+- suspicious variable families.
 
-- 14 primary local failures;
-- 7 persistent-for-cycle failures;
-- convergence in 15 ADMM cycles.
+Where practical, estimate:
 
-Stop after P4.5 for planner review before any full planning run.
+- equality-Jacobian numerical rank;
+- smallest singular values;
+- largest singular value;
+- a condition estimate.
 
----
+At minimum do this for:
 
-## 8. P4.6 — Standard ESS audit/extension gate
+- one representative TSO model;
+- one representative model from each DSO;
+- every previously sensitive/failing positive-bootstrap state.
 
-Run only if P4.1-P4.5 are satisfactory.
+If full SVD is impractical, use a sparse extremal-singular-value or rank-revealing alternative and state the limitation.
 
-The standard/ordinary ESS has an analogous nonlinear apparent-power/net-power
-structure and may benefit from the same normalization.
+Also identify pairs/groups of equality rows with nearly collinear normalized gradients.
 
-Do NOT assume equivalence.
+## A6. Constraint-curvature audit
 
-Audit:
-- exact standard-ESS relation;
-- rated-power variable/parameter semantics;
-- zero-capacity behavior;
-- model rebuild/reuse lifecycle;
-- imported constraint-dual lifecycle;
-- warm-start behavior;
-- indexing;
-- existing active standard-ESS cases/tests.
+For nonlinear quadratic/bilinear rows report raw second-derivative/Hessian coefficient scales where practical.
 
-If the relation and lifecycle are equivalent, recommend:
+Pay particular attention to:
 
-`kappa_es * g_es = 0`
-
-with:
-
-`kappa_es = 1 / S_scale_es`.
-
-Validation requirement:
-- identify at least one active standard-ESS case if available;
-- verify positive-capacity scaling;
-- verify zero-capacity safety;
-- verify physical equivalence;
-- replay a representative local solve.
-
-If no active standard-ESS test exists, do not silently generalize the production
-edit. Return a design recommendation and wait for planner approval.
-
----
-
-## 9. Strict prohibitions
-
-During P4.1-P4.5 do NOT modify:
-- standard ESS equations;
+- `sess_snet_def`;
+- `ess_snet_def`;
 - `sess_comp`;
-- shared-ESS SOC;
-- standard ESS SOC;
-- ESSO degradation/SoH;
-- active/apparent throughput definitions;
-- solver settings;
-- ADMM settings;
-- voltage/generator/branch formulations;
-- Benders/local-cut logic.
+- `ess_comp`;
+- `sg_capability`;
+- branch-current/apparent-power limits;
+- squared-voltage/product definitions.
 
-Do not run the full planning problem.
+For shared ESS explicitly evaluate the bootstrap power ratings:
+
+- `1.0635e-4 p.u.`;
+- `2.1270e-4 p.u.`;
+- `3.1905e-4 p.u.`;
+
+with current:
+
+`kappa = 1/S_rated`.
+
+Distinguish clearly among:
+
+- small Jacobian;
+- large curvature;
+- tiny inequality margin;
+- exact rank degeneracy;
+- near-linear dependence.
+
+Do not collapse them into one generic "bad conditioning" label.
+
+## A7. Objective-gradient scale
+
+At the cold start report objective-gradient norms/coefficient ranges for major components that are present:
+
+- physical/economic SMOPF objective;
+- scenario-deviation regularization;
+- proximal terms;
+- ADMM augmentation.
+
+Compare objective-gradient scale with suspicious constraint-Jacobian scales.
+
+Do not change objective scaling.
 
 ---
 
-## 10. Required worker report
+# P5.3-A-RES — Stochastic RES and low-output audit
 
-Return:
+The current load and RES realizations come from historical-data-based copula/KDE models. Do not replace the copula model in this stage.
 
-### A. P4.1 lifecycle audit
-- scale source;
-- model rebuild/reuse;
-- constraint dual lifecycle;
-- zero-capacity transitions;
-- dual-remapping decision.
+## RES1. Raw support and `abs()` post-processing
 
-### B. P4.2 implementation
-- exact diff;
-- files/functions;
-- scale parameter design;
-- zero-capacity behavior;
-- dual handling if required.
+Instrument RES generation so the inverse-transformed samples are inspected **before**:
 
-### C. P4.3 validation
-- positive/zero-capacity checks;
-- row/index/component invariants;
-- feasible-set equivalence.
+`np.abs(...)`.
 
-### D. P4.4 frozen regression
-- decisive DSO/TSO;
-- all other preserved failures.
+For each network / season / RES type (PV, Wind) report:
 
-### E. P4.5 operational smoke
-- local failures/recoveries;
-- ADMM convergence/residuals/stationarity;
-- runtime;
-- comparison with P2.10.
+- number of sampled hourly values;
+- number/percentage negative before `abs`;
+- minimum negative value;
+- total/magnitude of positive generation created solely by reflection of negative samples;
+- values above historical maximum;
+- values below historical minimum;
+- relevant quantiles before and after post-processing.
 
-### F. P4.6 standard ESS recommendation
-- mathematical equivalence;
-- lifecycle equivalence;
-- active test availability;
-- implement now vs defer.
+Do not alter `np.abs` during this audit.
 
-End with exactly one of:
+## RES2. Tiny-generation population in the realized SMOPFs
 
-`P4 PASS — recommend planner approval for reduced planning baseline`
+After conversion to p.u. and after the actual one-scenario realization is selected, count available RES values in:
 
-`P4 PARTIAL — planner review required before further execution`
+- exactly zero;
+- `(0, 1e-6]`;
+- `(1e-6, 1e-5]`;
+- `(1e-5, 1e-4]`;
+- `(1e-4, 1e-3]`;
+- `>1e-3`.
 
-`P4 FAIL — do not proceed`
+For tiny values report exact:
+
+- network;
+- generator id/type;
+- year;
+- day;
+- hour.
+
+Cross-reference them with:
+
+- `renewable_generation_is_unavailable`;
+- `sg_capability`;
+- `gen_pf_profile`;
+- PF-control rows;
+- local solve failures;
+- unusually high IPOPT iteration counts where available.
+
+Quantify how often the current structural switch at `EQUALITY_TOLERANCE` is exercised or nearly exercised.
+
+Do not select a replacement threshold yet.
+
+## RES3. Reactive-power/profile assumptions
+
+For every curtailable RES generator report:
+
+- `power_factor_control`;
+- `min_pf`, `max_pf`;
+- physical `pmax`, `qmin`, `qmax`;
+- stochastic `pg_available`;
+- stochastic `qg_available`;
+- whether `qg_available` is identically zero;
+- whether `gen_pf_profile` is instantiated;
+- whether `sg_capability` is instantiated.
+
+Explicitly identify rows where:
+
+`q_available * pg == p_available * qg`
+
+reduces to:
+
+`p_available * qg == 0`
+
+with very small positive `p_available`.
+
+## RES4. Apparent-power capability interpretation
+
+Determine whether current stochastic `sg_available = sqrt(pg_available^2 + qg_available^2)` is intentionally representing converter MVA rating or only stochastic renewable availability.
+
+If `qg_available = 0`, the current capability radius collapses to `pg_available`.
+
+Report whether the data/model contains a separate physical inverter MVA rating that could support a cleaner separation:
+
+- stochastic active availability: `0 <= pg <= P_available`;
+- converter capability: `pg^2 + qg^2 <= S_converter^2`.
+
+Do not implement this physical change in the exact RES B2 experiment unless separately approved; it may change the feasible set.
+
+## RES5. Spatial/scenario correlation observation
+
+Audit how generated PV/wind profiles are assigned to individual generators.
+
+Determine whether generator-to-generator spatial correlation is preserved or whether same-type generators effectively draw independently from a common synthetic pool.
+
+Report this as a scenario-realism finding, separate from local NLP conditioning.
+
+Do not change the sampling architecture in P5.3.
+
+---
+
+# P5.3-A-extra — Other structural checks
+
+## Reference-angle/gauge audit
+
+Confirm current reference-bus treatment of `f` and quantify any residual rotational/gauge degree of freedom.
+
+Also audit DSO reference-bus `e` bounds and determine whether they effectively pin the coordinated interface voltage despite `enforce_vg = false`.
+
+Do not change them in Phase A.
+
+## Transformer auxiliary audit
+
+Determine whether `r` and `r_sqr` variables constructed for non-transformer branches enter the generated NL problem.
+
+If the writer eliminates them, classify as code cleanliness only.
+
+If they reach IPOPT as unused/weakly-connected variables, classify as a conditioning issue.
+
+## Branch-current audit
+
+Quantify cancellation and derivative scales in current-limited branch rows based on:
+
+`V_i^2 + V_j^2 - 2*W_ij_real`
+
+multiplied by branch series-admittance magnitude squared.
+
+Report whether low-impedance DSO branches create extreme coefficients or cancellation-sensitive constraints.
+
+Do not reformulate branch currents unless this family ranks materially high.
+
+---
+
+# P5.3-A required output
+
+Produce:
+
+`P5_3_A_SMOPF_CONDITIONING_AUDIT.md`
+
+Include a ranked `HIGH / MEDIUM / LOW` table for suspicious formulation families.
+
+For every HIGH-risk item state:
+
+- mathematical form;
+- observed numerical evidence;
+- physical role;
+- exact failure mode: zero gradient, poor scale, near dependence, tiny margin, large curvature, etc.;
+- possible exact reformulation;
+- possible deliberate physical reformulation;
+- expected numerical benefit;
+- risk of changing the feasible set.
+
+Do not start B1/B2/B3 until Phase A evidence is complete enough to verify the stated preconditions.
+
+---
+
+# P5.3-B1 — Exact reference-angle A/B
+
+Proceed only if Phase A confirms that fixing the reference imaginary voltage does not violate an intentional interface convention.
+
+Start from fresh accepted production models.
+
+Do not carry any P5.2 narrow-band ESS change into this branch.
+
+A — current production reference treatment.
+
+B — exact gauge:
+
+`f_ref = 0`.
+
+Change only this fixing/bound condition.
+
+Keep every other production equation and solver option unchanged.
+
+Run the complete positive-bootstrap initialization.
+
+Report:
+
+- 51 final local outcomes;
+- 48 network primary/recovery outcomes;
+- IPOPT iterations;
+- KKT metrics;
+- objective values;
+- failures by identity;
+- equality-Jacobian rank/smallest-singular-value change on representative models;
+- interface V/P/Q differences.
+
+Acceptance:
+
+- no material physical/economic change;
+- no new failure family;
+- gauge ambiguity removed;
+- conditioning not worse.
+
+Diagnostic only. Do not productionize automatically.
+
+---
+
+# P5.3-B2 — Exact RES low-output/profile cleanup A/B
+
+Use a **fresh production baseline**, not B1.
+
+Proceed only after the RES audit identifies the applicable generator classes.
+
+Do not change stochastic samples.
+
+Do not change the RES-off threshold in this exact A/B.
+
+For curtailable RES without PF control:
+
+If `q_available == 0` and `p_available > 0`, replace the cross-multiplied profile equality:
+
+`q_available * pg == p_available * qg`
+
+with exact unit-coefficient:
+
+`qg == 0`.
+
+If both `p_available` and `q_available` are nonzero, use an algebraically normalized relation with a unit coefficient, e.g.:
+
+`qg == (q_available / p_available) * pg`
+
+only where Phase A confirms the instantiated division is safe.
+
+Where `qg` is exactly fixed to zero and `pg >= 0`, test replacing the corresponding redundant nonlinear capability:
+
+`pg^2 + qg^2 <= S_available^2`
+
+with exact linear:
+
+`pg <= S_available`.
+
+Apply this exact simplification only when it preserves the current feasible set. Do not apply it to RES with free reactive-power control.
+
+Run:
+
+- every previously sensitive bootstrap state;
+- at least one low-output RES case from each DSO;
+- one relevant TSO case where applicable;
+- full 51-solve positive-bootstrap initialization.
+
+Report:
+
+- rows removed/replaced;
+- Jacobian norm/coefficient improvement;
+- NLP dimensions;
+- primary/recovery outcomes;
+- iterations;
+- objectives;
+- RES P/Q schedules;
+- interface quantities;
+- exact feasible-set equivalence checks.
+
+Also provide, but do not implement:
+
+- a proposed dedicated RES-off threshold based on physical/data scale rather than IPOPT tolerance;
+- a recommendation on replacing `abs(negative_sample)` with physically clipped generation;
+- any separate recommendation about converter MVA rating vs stochastic active availability.
+
+---
+
+# P5.3-B3 — Active-power ESS structural prototype
+
+Use another **fresh accepted production baseline**.
+
+Do not stack B1 or B2.
+
+This is an authorized diagnostic physical reformulation, not an exact algebraic rewrite.
+
+## B3.1 Trace all affected consumers first
+
+Before changing a diagnostic branch, trace every network/coordination/ESSO consumer of:
+
+- `sch`;
+- `sdch`;
+- `pch`;
+- `pdch`;
+- `pnet`;
+- `qnet`;
+- SOC;
+- complementarity;
+- converter limits;
+- result processing;
+- ADMM shared-ESS P/Q coupling;
+- degradation/throughput.
+
+Confirm that network-agent coordination is based on aggregate P/Q schedules and identify every place that would break if `sch/sdch` were removed.
+
+## B3.2 Network SMOPF prototype
+
+For ordinary and shared network ESS prototype:
+
+`pnet = pch - pdch`
+
+SOC from active power:
+
+`SOC_t = SOC_{t-1} + eta_ch*pch*Delta_t - pdch*Delta_t/eta_dch`
+
+Use the actual model time basis for `Delta_t`; do not assume it silently.
+
+Converter capability:
+
+`pnet^2 + qnet^2 <= S_rated^2`.
+
+Reactive power remains converter loading but does not directly change stored battery energy.
+
+Remove from the network diagnostic prototype:
+
+- `sch`;
+- `sdch`;
+- `ess_snet_def`;
+- `sess_snet_def`;
+- `ess_pch_link`;
+- `ess_pdch_link`;
+- `sess_pch_link`;
+- `sess_pdch_link`.
+
+Replace the old apparent-power sum limit with explicit active-power bounds/sum constraints justified from the original device rating and intended physical behavior.
+
+Complementarity acts on:
+
+`pch * pdch`.
+
+Do not silently change the configured complementarity tolerance.
+
+Audit the new complementarity row's scale explicitly. If it remains a high-risk tiny bilinear inequality, report that rather than hiding it with arbitrary scaling.
+
+Shared-ESS zero-capacity gating must remain safe.
+
+## B3.3 Required physics tests
+
+Demonstrate:
+
+- pure Q: `pch = pdch = pnet = 0`, `qnet != 0` leaves SOC unchanged;
+- pure charging changes SOC according to efficiency and time step;
+- pure discharging changes SOC according to efficiency and time step;
+- reactive power remains feasible up to converter capability;
+- simultaneous active charging/discharging respects the intended complementarity semantics;
+- zero-capacity shared ESS remains completely inactive;
+- ordinary/shared P/Q sign conventions remain consistent with nodal balance and exported results.
+
+## B3.4 Numerical tests
+
+Run the complete positive-bootstrap **network initialization** and compare against current production:
+
+- primary failures;
+- recovery attempts;
+- persistent failures;
+- iterations;
+- zero/near-zero Jacobian-row counts;
+- smallest singular values / rank estimates where available;
+- suspicious curvature coefficients;
+- objective;
+- P/Q schedules;
+- SOC trajectories.
+
+Do not enter ADMM with a partially converted ESS formulation unless all required ESSO/state-mapping dependencies are implemented consistently.
+
+Do not rewrite ESSO cycling degradation in B3.
+
+If the network prototype is favorable, produce a precise follow-on end-to-end plan covering:
+
+- ESSO per-cohort `pch/pdch`;
+- aggregate P/Q coordination;
+- active/cell-side throughput;
+- cycling degradation;
+- SoH;
+- sensitivities;
+- state mapping;
+- result exports.
+
+Calendar degradation remains out of scope.
+
+---
+
+# Isolation and commit discipline
+
+B1, B2, and B3 are independent A/B experiments.
+
+Each begins from the same accepted current production baseline.
+
+Do not accumulate B1 into B2 or B2 into B3.
+
+Diagnostic scripts/tests may be added, but production source files must be restored to the accepted baseline at the end of each diagnostic branch unless a later planner instruction explicitly authorizes a production commit.
+
+Do not combine production edits from this stage into existing accepted commits.
+
+---
+
+# P5.3 final report
+
+Produce:
+
+`P5_3_SMOPF_STRUCTURAL_REVIEW.md`
+
+It must contain:
+
+1. full conditioning ranking;
+2. stochastic RES audit;
+3. reference-angle A/B result;
+4. RES exact-cleanup A/B result;
+5. active-power ESS network-prototype result;
+6. before/after NLP dimensions;
+7. primary/recovery/failure counts;
+8. Jacobian/rank/curvature evidence;
+9. physical-equivalence or deliberate-model-change statement for every experiment;
+10. recommended production changes in priority order.
+
+Answer explicitly:
+
+- Should `f_ref = 0` be productionized?
+- Which RES equations should be reformulated exactly?
+- Is a dedicated RES-off threshold justified, and what should determine it?
+- Should negative copula RES samples be clipped rather than reflected with `abs`?
+- Is spatial RES correlation currently preserved adequately?
+- Is stochastic RES availability being conflated with converter MVA capability?
+- Does the active-power ESS prototype materially improve conditioning?
+- Can `sch/sdch` be removed safely from the network SMOPF?
+- Which remaining constraint family is the highest numerical risk?
+- Is the P5.2 narrow-band workaround still needed after cleaner reformulations?
+
+Finish with exactly:
+
+`P5.3 COMPLETE — structural conditioning review ready for planner decision`
 
 Then stop.
 
 ---
 
-## 11. Worker prompt
+# Historical evidence retained for reference
 
-> Read `REVISION_CONTEXT.md` first and then `LOCAL_NLP_STABILITY_PLAN.md`.
->
-> P3 diagnostics are complete. P3.5-D decisively confirmed poor numerical
-> scaling of the original network-side `sess_snet_def` equality without
-> changing its physical feasible set or constraint identity/order.
->
-> Execute P4.1-P4.5 exactly as specified. First audit the production
-> capacity/model/dual lifecycle. If clear, implement the shared-ESS
-> normalization directly in the existing `sess_snet_def` component, validate
-> construction/equivalence, replay all relevant frozen failures, and run the
-> seed-2026 distributed operational smoke with solver/ADMM settings unchanged.
->
-> Do not change ordinary/standard ESS equations during P4.1-P4.5.
->
-> If P4.1-P4.5 are satisfactory, perform P4.6 as a separate audit/extension
-> gate for standard ESS. Generalize the normalization only if its
-> equation/capacity/zero-capacity/dual lifecycle is confirmed equivalent and
-> an appropriate validation case exists.
->
-> Do not change `sess_comp`, SOC, degradation, calendar ageing, solver
-> settings, ADMM settings, Benders logic, or unrelated OPF equations.
->
-> Do not run the full planning problem.
+The following summarizes earlier local-NLP work. It remains valid evidence but does not constrain P5.3 where the current-stage instructions above explicitly supersede it.
+
+## Original frozen reference failure
+
+Historical frozen model:
+
+`data/SRP1/Results/FrozenSMOPF/frozen_DSO_node7_case33_2_2025_Winter_cycle10.pkl`
+
+Metadata:
+
+- DSO node 7;
+- `case33_2`;
+- 2025 Winter;
+- ADMM cycle 10;
+- warm start;
+- `rho_v = 1.5`;
+- `rho_pf = 2.25`;
+- `rho_ess = 3.375`.
+
+Repeated baseline:
+
+- primary exact-Hessian MA97: `internalSolverError / Error in step computation`;
+- limited-memory recovery: `maxIterations`.
+
+Tightening only explicit `vmag` or `vmag_sqr` bounds did not help.
+
+Removing non-reference explicit `vmag` variables/equalities from the active DSO NLP converted the decisive frozen failure into a clean primary exact-Hessian success. This led to the accepted production `vmag_nodes` refactor.
+
+## P2/P3 progression
+
+The production `vmag_nodes` refactor passed multiple preserved local failures and live seed-2026 operational smoke tests.
+
+Residual failures then localized around network-side shared-ESS operation. Audits identified the shared-ESS squared-magnitude equality as a major candidate because all derivatives vanish near zero dispatch.
+
+Removing the row entirely fixed failures but materially violated the relation and was rejected.
+
+Equivalent in-place scaling experiments proved that row normalization itself could clear decisive DSO and TSO exact-Hessian failures while preserving the physical equality.
+
+## P4 accepted scaling
+
+Shared ESS:
+
+`kappa * ((sch-sdch)^2 - pnet^2 - qnet^2) = 0`, `kappa = 1/S_rated`.
+
+Ordinary ESS uses the analogous immutable build-time scale.
+
+The shared scale is mutable on reused models and preserves KKT multiplier consistency when capacity changes.
+
+## P5 planning integration
+
+Zero-investment operational evaluation converged cleanly, but the tiny positive-bootstrap candidate exposed new cold-start failures before ADMM.
+
+Scalar caps on shared-ESS `kappa` produced strongly non-monotone convergence and relocated failures.
+
+## P5.2 narrow-band evidence
+
+Replacing the hard shared-ESS zero-gradient equality by a tiny two-sided ranged row gave the first full positive-bootstrap initialization with zero persistent failures. At `epsilon_rel = 1e-4`, all 48 network solves succeeded on the primary exact-Hessian path with zero recovery.
+
+However, the nominal physical band was below the solver's effective feasibility resolution at tiny capacity, especially in TSO models. This is why P5.3 now prioritizes a broader structural formulation audit rather than productionizing the narrow-band workaround.
