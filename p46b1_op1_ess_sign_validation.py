@@ -298,10 +298,34 @@ def section_cde(dso):
     # object and from the model itself.
     models = dso.build_model()
 
+    # IPOPT appends to its configured output_file across runs (file_append=yes),
+    # so clear the log dir first and parse only what THIS run produced.
+    logs_dir = dso.network[CASE_YEAR][CASE_DAY].logs_dir
+    if os.path.isdir(logs_dir):
+        for name in os.listdir(logs_dir):
+            if name.startswith('optim_log_case33_3'):
+                try:
+                    os.remove(os.path.join(logs_dir, name))
+                except OSError:
+                    pass
+
     console = io.StringIO()
     with redirect_stdout(console):
         results = dso.optimize(models)
     console_text = console.getvalue()
+
+    log_text = ''
+    log_paths = []
+    if os.path.isdir(logs_dir):
+        for name in sorted(os.listdir(logs_dir)):
+            if name.startswith('optim_log_case33_3'):
+                path = os.path.join(logs_dir, name)
+                log_paths.append(path)
+                with open(path, 'rb') as handle:
+                    handle.seek(0, os.SEEK_END)
+                    size = handle.tell()
+                    handle.seek(max(0, size - 400_000))
+                    log_text += handle.read().decode('utf-8', errors='replace')
 
     model = models[CASE_YEAR][CASE_DAY]
     result = results[CASE_YEAR][CASE_DAY]
@@ -312,7 +336,8 @@ def section_cde(dso):
         'termination_condition': str(getattr(result.solver, 'termination_condition', None)),
         'message': str(getattr(result.solver, 'message', None)),
         'time': getattr(result.solver, 'time', None),
-        'ipopt_summary': parse_ipopt_console(console_text),
+        'ipopt_summary': parse_ipopt_console(log_text or console_text),
+        'ipopt_log_paths': log_paths,
         'recovery_used': ('[WARNING] Network primary solve did not converge'
                           in console_text),
         'objective': float(pe.value(model.objective)),
