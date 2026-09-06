@@ -81,7 +81,6 @@ SMALL_TOLERANCE = 1e-4
 ESS_COMPLEMENTARITY_TOLERANCE = SMALL_TOLERANCE
 SHARED_ESS_ZERO_CAPACITY_TOLERANCE = 1e-10
 HOURS_PER_REPRESENTATIVE_DAY = 24.0         # representative days span 24 h; period_duration_hours() derives the SOC time step from this and len(model.periods)
-ORDINARY_ESS_MIN_RATED_POWER = 1e-10       # an instantiated ordinary ESS must have s_rated strictly above this; unlike shared ESS there is no zero-capacity gating, so a degenerate ess_snet_def row is rejected at construction instead of being given a placeholder scale
 VIOLATION_TOLERANCE = 1e-3
 EXPECTED_VALUE_PENALTY = 1e3
 BENDERS_FEASIBILITY_TOLERANCE = 1e-3

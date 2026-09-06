@@ -339,11 +339,10 @@ def _build_model(network, params):
 
     # - Energy Storage devices
     if params.es_reg:
-        model.ess_snet_def_scale = pe.Param(model.energy_storages, initialize=partial(ess_snet_def_scale_init, network=network), within=pe.PositiveReals)   # fixed numerical scale for ess_snet_def (kappa_es = 1/S_rated[e]); immutable build-time data -- ordinary ESS rated power never changes on a live model
+        # P5.4-B: es_sch / es_sdch and the ess_snet_def kappa_es scale are retired --
+        # the ordinary ESS now uses the same active-energy formulation as the shared ESS.
         model.es_pch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(p_bounds, network=network))
         model.es_pdch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(p_bounds, network=network))
-        model.es_sch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(s_bounds, network=network))
-        model.es_sdch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(s_bounds, network=network))
         model.es_pnet = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(snet_bounds, network=network))
         model.es_qnet = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(q_bounds, network=network))
         model.es_soc = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=partial(soc_initialize, network=network)) # [e_min, e_max] enforced with ess_soc_limits_rule
@@ -421,10 +420,8 @@ def _build_model(network, params):
     # - Energy Storage constraints
     if params.es_reg:
         model.ess_pnet_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=ess_pnet_rule)
-        model.ess_snet_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=ess_snet_def_rule)
-        model.ess_pch_link = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=ess_pch_link_rule)
-        model.ess_pdch_link = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=ess_pdch_link_rule)
-        model.ess_s_limit = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_s_limit_rule, network=network))
+        model.ess_converter_capability = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_converter_capability_rule, network=network))
+        model.ess_active_sum_limit = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_active_sum_limit_rule, network=network))
         model.ess_phi_lower = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_limits_lower, network=network))
         model.ess_phi_upper = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_limits_upper, network=network))
         model.ess_soc_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_soc_rule, network=network, params=params))
@@ -1326,7 +1323,12 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['energy_storages']['soc'][es_id] = []
                     processed_results['scenarios'][s_m][s_o]['energy_storages']['soc_percent'][es_id] = []
                     for p in model.periods:
-                        s_ess = pe.value(model.es_sch[e, s_m, s_o, p] - model.es_sdch[e, s_m, s_o, p]) * network.baseMVA
+                        # P5.4-B: es_sch/es_sdch are retired, so `s` is now the converter
+                        # LOADING MAGNITUDE sqrt(pnet^2 + qnet^2) in MVA, not the former
+                        # signed apparent charge/discharge difference. Direction is not
+                        # lost -- `p` below remains the signed load-positive active power.
+                        s_ess = sqrt(max(pe.value(model.es_pnet[e, s_m, s_o, p]) ** 2
+                                         + pe.value(model.es_qnet[e, s_m, s_o, p]) ** 2, 0.0)) * network.baseMVA
                         # P4.6-B1: the model itself is now load-positive, so the
                         # reported values are the model values -- no compensating
                         # sign flip and no re-derivation from pch/pdch.

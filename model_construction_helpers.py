@@ -402,11 +402,6 @@ def q_bounds(m, e, s_m, s_o, p, network):
     return (-ess.s - EQUALITY_TOLERANCE, ess.s + EQUALITY_TOLERANCE)
 
 
-def s_bounds(m, e, s_m, s_o, p, network):
-    ess = network.energy_storages[e]
-    return (0.0, ess.s + EQUALITY_TOLERANCE)
-
-
 def slack_es_balance_bounds(m, e, s_m, s_o, network):
     ess = network.energy_storages[e]
     return (0.00, ess.e * 0.05 + EQUALITY_TOLERANCE)
@@ -622,56 +617,35 @@ def ess_pnet_rule(m, e, s_m, s_o, p):
     return m.es_pnet[e,s_m,s_o,p] == m.es_pch[e,s_m,s_o,p] - m.es_pdch[e,s_m,s_o,p]
 
 
-def ordinary_ess_snet_def_scale(s_rated, es_id=None):
-    """Fixed numerical scale kappa_es = 1/S_rated[e] for `ess_snet_def` (P4.6-B2),
-    based on the installed ordinary-ESS rated apparent power in p.u.
+def ess_converter_capability_rule(m, e, s_m, s_o, p, network):
+    """Ordinary-ESS converter apparent-power capability (P5.4-B).
 
-    Unlike shared ESS, ordinary ESS has no zero-capacity gating: its rows are
-    never deactivated, so a (near-)zero rating cannot be given a finite
-    placeholder scale and quietly solved -- it would leave a degenerate
-    nonlinear row in the model. An instantiated ordinary ESS must therefore
-    have strictly positive rated apparent power, and anything else is rejected
-    here at construction time."""
-    if s_rated is None or s_rated <= ORDINARY_ESS_MIN_RATED_POWER:
-        raise ValueError(
-            f'Energy Storage {es_id}: invalid ordinary ESS rated apparent power '
-            f's_rated={s_rated} p.u. An instantiated ordinary energy storage must have '
-            f'strictly positive rated apparent power greater than '
-            f'{ORDINARY_ESS_MIN_RATED_POWER} p.u. A network with no ordinary energy '
-            f'storage is fine; a zero-rated one is not.'
-        )
-    return 1.0 / s_rated
+    Parity with the shared-ESS `sess_converter_capability` introduced in
+    P5.4-A. Replaces the former apparent-charge/discharge geometry
+    (`ess_snet_def` and its kappa_es normalization, `ess_pch_link`,
+    `ess_pdch_link`). Reactive power is limited by the converter rating but no
+    longer participates in the stored battery energy.
 
-
-def ess_snet_def_scale_init(m, e, network):
+    Unlike shared ESS, the ordinary-ESS rating is fixed network data, not a
+    decision variable, so `ess.s` enters as a constant.
+    """
     ess = network.energy_storages[e]
-    return ordinary_ess_snet_def_scale(ess.s, ess.es_id)
+    return (m.es_pnet[e, s_m, s_o, p] ** 2
+            + m.es_qnet[e, s_m, s_o, p] ** 2) <= ess.s ** 2
 
 
-def ess_snet_def_rule(m, e, s_m, s_o, p):
-    # Production-safe numerical normalization (P4.6-B2): kappa_es * g_es == 0,
-    # where kappa_es = 1/S_rated[e] is a FIXED (immutable) build-time Param --
-    # never a symbolic division by a decision variable -- so this is a
-    # constant-multiple reformulation with the identical feasible set as the
-    # original g_es == 0 for any finite positive kappa_es. The B1 load-positive
-    # sign convention is untouched: pnet and qnet enter squared.
-    snet = m.es_sch[e, s_m, s_o, p] - m.es_sdch[e, s_m, s_o, p]
-    kappa = m.ess_snet_def_scale[e]
-    g = snet ** 2 - m.es_pnet[e, s_m, s_o, p] ** 2 - m.es_qnet[e, s_m, s_o, p] ** 2
-    return kappa * g == 0
+def ess_active_sum_limit_rule(m, e, s_m, s_o, p, network):
+    """Active charge/discharge envelope (P5.4-B).
 
-
-def ess_pch_link_rule(m, e, s_m, s_o, p):
-    return m.es_pch[e, s_m, s_o, p] <= m.es_sch[e, s_m, s_o, p]
-
-
-def ess_pdch_link_rule(m, e, s_m, s_o, p):
-    return m.es_pdch[e, s_m, s_o, p] <= m.es_sdch[e, s_m, s_o, p]
-
-
-def ess_s_limit_rule(m, e, s_m, s_o, p, network):
+    Derived from the retired apparent set exactly as its shared-ESS counterpart
+    was: `pch <= sch`, `pdch <= sdch` and `sch + sdch <= S + EQUALITY_TOLERANCE`
+    together imply `pch + pdch <= S + EQUALITY_TOLERANCE`. The pre-existing
+    tolerance is preserved rather than tightened, so the feasible set is not
+    narrowed by this stage.
+    """
     ess = network.energy_storages[e]
-    return m.es_sch[e, s_m, s_o, p] + m.es_sdch[e, s_m, s_o, p] <= ess.s + EQUALITY_TOLERANCE
+    return (m.es_pch[e, s_m, s_o, p]
+            + m.es_pdch[e, s_m, s_o, p]) <= ess.s + EQUALITY_TOLERANCE
 
 
 def ess_soc_limits_rule(m, e, s_m, s_o, p, network):
@@ -702,29 +676,39 @@ def ess_phi_limits_upper(m, e, s_m, s_o, p, network):
 
 def ess_soc_rule(m, e, s_m, s_o, p, network, params):
 
+    # P5.4-B: parity with sess_soc_rule. Stored battery energy is driven by
+    # ACTIVE power only, so pure reactive operation leaves the state of charge
+    # unchanged. The time step is explicit (period_duration_hours) rather than
+    # an implicit assumption; for the standard 24-instant representative day it
+    # is exactly 1 h, which reproduces the previous numerical coefficient.
     ess = network.energy_storages[e]
     eff_ch = ess.eff_ch
     eff_dch = ess.eff_dch
+    dt = period_duration_hours(m)
     if p == 0:
         soc_prev = ess.e_init
     else:
         soc_prev = m.es_soc[e, s_m, s_o, p-1]
 
-    delta = eff_ch * m.es_sch[e, s_m, s_o, p] - (m.es_sdch[e, s_m, s_o, p] / eff_dch)
+    delta = (eff_ch * m.es_pch[e, s_m, s_o, p] * dt
+             - m.es_pdch[e, s_m, s_o, p] * dt / eff_dch)
 
     return m.es_soc[e, s_m, s_o, p] == soc_prev + delta
 
 
 def ess_comp_rule(m, e, s_m, s_o, p, network, params):
-    sch = m.es_sch[e, s_m, s_o, p]
-    sdch = m.es_sdch[e, s_m, s_o, p]
+    # P5.4-B: complementarity now acts on the ACTIVE directional powers, in
+    # parity with sess_comp_rule. All three model branches and their tolerances
+    # are preserved exactly; only the variables they act on change.
+    pch = m.es_pch[e, s_m, s_o, p]
+    pdch = m.es_pdch[e, s_m, s_o, p]
     s_rated = network.energy_storages[e].s
     if params.ess_model == ESS_MODEL_EXACT:
-        return sch * sdch <= EQUALITY_TOLERANCE
+        return pch * pdch <= EQUALITY_TOLERANCE
     elif params.ess_model == ESS_MODEL_BILINEAR_RELAXATION:
-        return sch * sdch <= ESS_COMPLEMENTARITY_TOLERANCE * s_rated ** 2
+        return pch * pdch <= ESS_COMPLEMENTARITY_TOLERANCE * s_rated ** 2
     elif params.ess_model == ESS_MODEL_POLYNOMIAL_COMPLEMENTARITY:
-        return sch ** 2 + sdch ** 2 <= (sch + sdch) ** 2 + EQUALITY_TOLERANCE
+        return pch ** 2 + pdch ** 2 <= (pch + pdch) ** 2 + EQUALITY_TOLERANCE
     else:
         return pe.Constraint.Skip
 
@@ -1594,7 +1578,7 @@ def ess_utilization_cost_penalty(model, network, s_m, s_o, params):
     if params.es_reg:
         for e in model.energy_storages:
             for p in model.periods:
-                cost += model.penalty_ess_usage * network.baseMVA * (model.es_sch[e, s_m, s_o, p] + model.es_sdch[e, s_m, s_o, p])
+                cost += model.penalty_ess_usage * network.baseMVA * (model.es_pch[e, s_m, s_o, p] + model.es_pdch[e, s_m, s_o, p])
     return cost
 
 
@@ -1656,7 +1640,7 @@ def ess_complementarity_penalties(model, network, s_m, s_o, p, params):
         for e in model.energy_storages:
             for p in model.periods:
                 if params.ess_model == ESS_MODEL_BILINEAR_RELAXATION:
-                    total += base * PENALTY_ESS_COMPLEMENTARITY * (model.es_sch[e, s_m, s_o, p] * model.es_sdch[e, s_m, s_o, p])
+                    total += base * PENALTY_ESS_COMPLEMENTARITY * (model.es_pch[e, s_m, s_o, p] * model.es_pdch[e, s_m, s_o, p])
             if params.slacks.ess.day_balance:
                 total += base * PENALTY_ESS_BALANCE * (model.slack_es_soc_final_up[e, s_m, s_o] + model.slack_es_soc_final_down[e, s_m, s_o])
 
