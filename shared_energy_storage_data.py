@@ -6,6 +6,7 @@ import pyomo.environ as pe
 from openpyxl import Workbook
 from shared_energy_storage import SharedEnergyStorage
 from shared_energy_storage_parameters import SharedEnergyStorageParameters
+from model_construction_helpers import period_duration_hours
 from helper_functions import *
 
 
@@ -373,14 +374,15 @@ def _build_subproblem(shared_ess_data, node_id):
     model.slack_es_e_investment_down = pe.Var(model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_s_rated = pe.Var(model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_rated = pe.Var(model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.es_snet = pe.Var(model.years, model.days, model.periods, domain=pe.Reals, initialize=0.0)
+    # P5.4-C: es_snet and the slack pair that existed only for the retired
+    # `es_snet^2 == es_pnet^2 + es_qnet^2` equality are gone. The remaining
+    # slack pair now slacks the ACTIVE aggregate, so it is named accordingly --
+    # no MVA label is left on an active-power quantity.
     model.es_pnet = pe.Var(model.years, model.days, model.periods, domain=pe.Reals, initialize=0.0)
     model.es_qnet = pe.Var(model.years, model.days, model.periods, domain=pe.Reals, initialize=0.0)
     if shared_ess_data.params.slacks:
-        model.slack_es_snet_up = pe.Var(model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_es_snet_down = pe.Var(model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_es_snet_def_up = pe.Var(model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.slack_es_snet_def_down = pe.Var(model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_es_pnet_up = pe.Var(model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.slack_es_pnet_down = pe.Var(model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
 
     model.es_s_rated_per_unit = pe.Var(model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_rated_per_unit = pe.Var(model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)
@@ -389,8 +391,8 @@ def _build_subproblem(shared_ess_data, node_id):
     model.es_s_rated_per_unit.fix(0.00)
     model.es_e_rated_per_unit.fix(0.00)
 
-    model.es_sch_per_unit = pe.Var(model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-    model.es_sdch_per_unit = pe.Var(model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+    model.es_pch_per_unit = pe.Var(model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+    model.es_pdch_per_unit = pe.Var(model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     if shared_ess_data.params.slacks:
         model.slack_es_ch_comp_per_unit = pe.Var(model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_avg_ch_dch_per_unit = pe.Var(model.years, model.years, domain=pe.Reals, initialize=0.00)
@@ -449,16 +451,36 @@ def _build_subproblem(shared_ess_data, node_id):
 
     # - Sum of charging and discharging power for the yearly average day (aux, used to estimate degradation of ESSs)
     model.energy_storage_charging_discharging = pe.ConstraintList()
+    # P5.4-C: the throughput that drives degradation is now ACTIVE ENERGY,
+    # eta_ch*pch*dt + pdch*dt/eta_dch -- the same quantity the network SOC
+    # recursion moves -- instead of the former apparent-power sum (sch + sdch).
+    #
+    # Units: the degradation law below divides this by (2 * cl_nom * E_rated),
+    # with E_rated in p.u. energy, so the numerator must be energy, not power.
+    # The former expression summed powers over the periods of a day and was
+    # therefore only dimensionally correct under an implicit dt = 1 h. That
+    # assumption is now explicit via period_duration_hours(), and at the
+    # standard 24-instant representative day dt is exactly 1 h, so the change
+    # is unit-correcting rather than numerically arbitrary.
+    #
+    # Everything else in the law is preserved verbatim: the (num_days / 365)
+    # representative-day weighting, the per-cohort [y_inv, y] indexing, the
+    # equivalent-cycle normalization by 2 * cl_nom * E_rated, the SoH semantics
+    # and the 365 * num_years cumulative exponent.
+    dt = period_duration_hours(model)
     for y_inv in model.years:
+        shared_energy_storage = shared_ess_data.shared_energy_storages[repr_years[y_inv]][shared_ess_idx]
+        eff_ch = shared_energy_storage.eff_ch
+        eff_dch = shared_energy_storage.eff_dch
         for y in model.years:
             avg_ch_dch = 0.0
             for d in model.days:
                 day = repr_days[d]
                 num_days = shared_ess_data.days[day]
                 for p in model.periods:
-                    sch = model.es_sch_per_unit[y_inv, y, d, p]
-                    sdch = model.es_sdch_per_unit[y_inv, y, d, p]
-                    avg_ch_dch += (num_days / 365.00) * (sch + sdch)
+                    pch = model.es_pch_per_unit[y_inv, y, d, p]
+                    pdch = model.es_pdch_per_unit[y_inv, y, d, p]
+                    avg_ch_dch += (num_days / 365.00) * (eff_ch * pch * dt + pdch * dt / eff_dch)
             _add_esso_cohort_constraint(model, 'energy_storage_charging_discharging', y_inv, y, model.es_avg_ch_dch_per_unit[y_inv, y] == avg_ch_dch)
 
     # - Capacity degradation
@@ -510,16 +532,23 @@ def _build_subproblem(shared_ess_data, node_id):
             for d in model.days:
                 for p in model.periods:
 
-                    sch = model.es_sch_per_unit[y_inv, y, d, p]
-                    sdch = model.es_sdch_per_unit[y_inv, y, d, p]
+                    # P5.4-C: the per-cohort directional powers are now ACTIVE.
+                    # The row forms and tolerances are preserved exactly -- only
+                    # the variables they act on change. In particular the ESSO
+                    # complementarity bound remains the absolute
+                    # ESS_COMPLEMENTARITY_TOLERANCE rather than the network's
+                    # eps * S_rated^2; that asymmetry is pre-existing and is NOT
+                    # altered here.
+                    pch = model.es_pch_per_unit[y_inv, y, d, p]
+                    pdch = model.es_pdch_per_unit[y_inv, y, d, p]
 
-                    _add_esso_cohort_constraint(model, 'energy_storage_limits', y_inv, y, sch <= s_max)
-                    _add_esso_cohort_constraint(model, 'energy_storage_limits', y_inv, y, sdch <= s_max)
+                    _add_esso_cohort_constraint(model, 'energy_storage_limits', y_inv, y, pch <= s_max)
+                    _add_esso_cohort_constraint(model, 'energy_storage_limits', y_inv, y, pdch <= s_max)
 
                     if shared_ess_data.params.slacks:
-                        _add_esso_cohort_constraint(model, 'energy_storage_complementarity', y_inv, y, sch * sdch <= model.slack_es_ch_comp_per_unit[y_inv, y, d, p] + ESS_COMPLEMENTARITY_TOLERANCE)
+                        _add_esso_cohort_constraint(model, 'energy_storage_complementarity', y_inv, y, pch * pdch <= model.slack_es_ch_comp_per_unit[y_inv, y, d, p] + ESS_COMPLEMENTARITY_TOLERANCE)
                     else:
-                        _add_esso_cohort_constraint(model, 'energy_storage_complementarity', y_inv, y, sch * sdch <= ESS_COMPLEMENTARITY_TOLERANCE)
+                        _add_esso_cohort_constraint(model, 'energy_storage_complementarity', y_inv, y, pch * pdch <= ESS_COMPLEMENTARITY_TOLERANCE)
 
     # - Shared ESS operation, aggregated
     model.energy_storage_operation_agg = pe.ConstraintList()
@@ -527,19 +556,25 @@ def _build_subproblem(shared_ess_data, node_id):
         for d in model.days:
             for p in model.periods:
 
-                agg_snet = 0.00
+                # P5.4-C: with active per-cohort powers, the cohort sum IS the
+                # aggregate active power, so es_pnet is defined directly. This
+                # retires es_snet and the `es_snet^2 == es_pnet^2 + es_qnet^2`
+                # equality -- the ESSO instance of the same exact-zero-gradient
+                # row that P5.4-A retired in the network models -- and replaces
+                # it with the converter capability INEQUALITY, in parity with
+                # sess_converter_capability. Aggregate P and Q are both still
+                # represented: P by the cohort sum, Q by the capability circle.
+                agg_pnet = 0.00
                 for y_inv in model.years:
-                    agg_snet += (model.es_sch_per_unit[y_inv, y, d, p] - model.es_sdch_per_unit[y_inv, y, d, p])
+                    agg_pnet += (model.es_pch_per_unit[y_inv, y, d, p] - model.es_pdch_per_unit[y_inv, y, d, p])
 
                 if shared_ess_data.params.slacks:
-                    model.energy_storage_operation_agg.add(model.es_snet[y, d, p] == agg_snet + model.slack_es_snet_up[y, d, p] - model.slack_es_snet_down[y, d, p])
+                    model.energy_storage_operation_agg.add(model.es_pnet[y, d, p] == agg_pnet + model.slack_es_pnet_up[y, d, p] - model.slack_es_pnet_down[y, d, p])
                 else:
-                    model.energy_storage_operation_agg.add(model.es_snet[y, d, p] == agg_snet)
+                    model.energy_storage_operation_agg.add(model.es_pnet[y, d, p] == agg_pnet)
 
-                if shared_ess_data.params.slacks:
-                    model.energy_storage_operation_agg.add(model.es_snet[y, d, p] ** 2 == model.es_pnet[y, d, p] ** 2 + model.es_qnet[y, d, p] ** 2 + model.slack_es_snet_def_up[y, d, p] - model.slack_es_snet_def_down[y, d, p])
-                else:
-                    model.energy_storage_operation_agg.add(model.es_snet[y, d, p] ** 2 == model.es_pnet[y, d, p] ** 2 + model.es_qnet[y, d, p] ** 2)
+                model.energy_storage_operation_agg.add(
+                    model.es_pnet[y, d, p] ** 2 + model.es_qnet[y, d, p] ** 2 <= model.es_s_rated[y] ** 2)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective function
@@ -566,8 +601,7 @@ def _build_subproblem(shared_ess_data, node_id):
             # Expected power slacks
             for d in model.days:
                 for p in model.periods:
-                    slack_penalty += PENALTY_ESSO_SLACK * (model.slack_es_snet_up[y_inv, d, p] + model.slack_es_snet_down[y_inv, d, p])
-                    slack_penalty += PENALTY_ESSO_SLACK * (model.slack_es_snet_def_up[y_inv, d, p] + model.slack_es_snet_def_down[y_inv, d, p])
+                    slack_penalty += PENALTY_ESSO_SLACK * (model.slack_es_pnet_up[y_inv, d, p] + model.slack_es_pnet_down[y_inv, d, p])
 
     salvage_value = _build_terminal_salvage_value_expression(shared_ess_data, model, shared_ess_idx)
 
@@ -1071,8 +1105,8 @@ def _configure_esso_cohort_state(model, y_inv, s_capacity, e_capacity, slacks_en
         # --------------------------------------------------------------
         for d in model.days:
             for p in model.periods:
-                _set_esso_variable_state(model.es_sch_per_unit[y_inv, y, d, p], active_pair, 0.0)
-                _set_esso_variable_state(model.es_sdch_per_unit[y_inv, y, d, p], active_pair, 0.0)
+                _set_esso_variable_state(model.es_pch_per_unit[y_inv, y, d, p], active_pair, 0.0)
+                _set_esso_variable_state(model.es_pdch_per_unit[y_inv, y, d, p], active_pair, 0.0)
                 if slacks_enabled:
                     _set_esso_variable_state(model.slack_es_ch_comp_per_unit[y_inv, y, d, p], active_pair, 0.0)
 
@@ -1213,7 +1247,7 @@ def _process_results_detailed(shared_ess_data, models):
                 for d in models[node_id].days:
                     day = repr_days[d]
                     for p in models[node_id].periods:
-                        s_net = pe.value(models[node_id].es_sch_per_unit[y_inv, y_curr, d, p] - models[node_id].es_sdch_per_unit[y_inv, y_curr, d, p])
+                        s_net = pe.value(models[node_id].es_pch_per_unit[y_inv, y_curr, d, p] - models[node_id].es_pdch_per_unit[y_inv, y_curr, d, p])
                         processed_results[year_inv][year_curr][day][node_id]['s'].append(s_net)
 
     return processed_results
@@ -1357,10 +1391,8 @@ def _process_relaxation_variables_operation_aggregated(shared_ess_data, models):
             for node_id in shared_ess_data.active_distribution_network_nodes:
                 processed_results[year][day][node_id] = dict()
                 if shared_ess_data.params.slacks:
-                    processed_results[year][day][node_id]['snet_up'] = list()
-                    processed_results[year][day][node_id]['snet_down'] = list()
-                    processed_results[year][day][node_id]['snet_def_up'] = list()
-                    processed_results[year][day][node_id]['snet_def_down'] = list()
+                    processed_results[year][day][node_id]['pnet_up'] = list()
+                    processed_results[year][day][node_id]['pnet_down'] = list()
 
     for node_id in shared_ess_data.active_distribution_network_nodes:
         for y in models[node_id].years:
@@ -1368,14 +1400,10 @@ def _process_relaxation_variables_operation_aggregated(shared_ess_data, models):
             for d in models[node_id].days:
                 day = repr_days[d]
                 for p in models[node_id].periods:
-                    slack_es_snet_up = pe.value(models[node_id].slack_es_snet_up[y, d, p])
-                    slack_es_snet_down = pe.value(models[node_id].slack_es_snet_down[y, d, p])
-                    slack_es_snet_def_up = pe.value(models[node_id].slack_es_snet_def_up[y, d, p])
-                    slack_es_snet_def_down = pe.value(models[node_id].slack_es_snet_def_down[y, d, p])
-                    processed_results[year][day][node_id]['snet_up'].append(slack_es_snet_up)
-                    processed_results[year][day][node_id]['snet_down'].append(slack_es_snet_down)
-                    processed_results[year][day][node_id]['snet_def_up'].append(slack_es_snet_def_up)
-                    processed_results[year][day][node_id]['snet_def_down'].append(slack_es_snet_def_down)
+                    processed_results[year][day][node_id]['pnet_up'].append(
+                        pe.value(models[node_id].slack_es_pnet_up[y, d, p]))
+                    processed_results[year][day][node_id]['pnet_down'].append(
+                        pe.value(models[node_id].slack_es_pnet_down[y, d, p]))
 
     return processed_results
 
@@ -2184,47 +2212,27 @@ def _write_aggregated_operation_relaxation_slacks_results_to_excel(shared_ess_da
         for year in results:
             for day in results[year]:
 
-                # - Snet, up
+                # - Pnet, up  (P5.4-C: the aggregate slacked by these is ACTIVE power;
+                #   the former 'Snet definition' slack pair no longer exists, because
+                #   the equality it slacked was retired with es_snet.)
                 sheet.cell(row=row_idx, column=1).value = node_id
                 sheet.cell(row=row_idx, column=2).value = int(year)
                 sheet.cell(row=row_idx, column=3).value = day
-                sheet.cell(row=row_idx, column=4).value = 'Snet, up'
+                sheet.cell(row=row_idx, column=4).value = 'Pnet, up'
                 for p in range(shared_ess_data.num_instants):
-                    snet_up = results[year][day][node_id]['snet_up'][p]
-                    sheet.cell(row=row_idx, column=p + 5).value = snet_up
+                    pnet_up = results[year][day][node_id]['pnet_up'][p]
+                    sheet.cell(row=row_idx, column=p + 5).value = pnet_up
                     sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
                 row_idx = row_idx + 1
 
-                # - Snet, down
+                # - Pnet, down
                 sheet.cell(row=row_idx, column=1).value = node_id
                 sheet.cell(row=row_idx, column=2).value = int(year)
                 sheet.cell(row=row_idx, column=3).value = day
-                sheet.cell(row=row_idx, column=4).value = 'Snet, down'
+                sheet.cell(row=row_idx, column=4).value = 'Pnet, down'
                 for p in range(shared_ess_data.num_instants):
-                    snet_down = results[year][day][node_id]['snet_down'][p]
-                    sheet.cell(row=row_idx, column=p + 5).value = snet_down
-                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
-                row_idx = row_idx + 1
-
-                # - Snet definition, up
-                sheet.cell(row=row_idx, column=1).value = node_id
-                sheet.cell(row=row_idx, column=2).value = int(year)
-                sheet.cell(row=row_idx, column=3).value = day
-                sheet.cell(row=row_idx, column=4).value = 'Snet definition, up'
-                for p in range(shared_ess_data.num_instants):
-                    snet_def_up = results[year][day][node_id]['snet_def_up'][p]
-                    sheet.cell(row=row_idx, column=p + 5).value = snet_def_up
-                    sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
-                row_idx = row_idx + 1
-
-                # - Snet definition, down
-                sheet.cell(row=row_idx, column=1).value = node_id
-                sheet.cell(row=row_idx, column=2).value = int(year)
-                sheet.cell(row=row_idx, column=3).value = day
-                sheet.cell(row=row_idx, column=4).value = 'Snet definition, down'
-                for p in range(shared_ess_data.num_instants):
-                    snet_def_down = results[year][day][node_id]['snet_def_down'][p]
-                    sheet.cell(row=row_idx, column=p + 5).value = snet_def_down
+                    pnet_down = results[year][day][node_id]['pnet_down'][p]
+                    sheet.cell(row=row_idx, column=p + 5).value = pnet_down
                     sheet.cell(row=row_idx, column=p + 5).number_format = decimal_style
                 row_idx = row_idx + 1
 

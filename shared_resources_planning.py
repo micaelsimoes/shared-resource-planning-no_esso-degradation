@@ -4756,14 +4756,18 @@ def _get_expected_network_shared_ess_charge_discharge_mw(model, network, shared_
     return pch * network.baseMVA, pdch * network.baseMVA
 
 
-def _get_esso_shared_ess_charge_discharge_mva(model, y, d, p):
+def _get_esso_shared_ess_charge_discharge_pu(model, y, d, p):
     """
-    Return aggregate ESSO charging and discharging apparent power in physical MVA.
+    Return aggregate ESSO charging and discharging ACTIVE power, in p.u.
     ESSO variables are defined separately for each investment cohort, so aggregate them over all cohorts.
+
+    P5.4-C: the per-cohort variables are now active powers (es_pch/es_pdch), so
+    this returns active power. The former name claimed MVA while returning p.u.;
+    the units in the name now match what is returned.
     """
-    sch = sum(pe.value(model.es_sch_per_unit[y_inv, y, d, p]) for y_inv in model.years)
-    sdch = sum(pe.value(model.es_sdch_per_unit[y_inv, y, d, p]) for y_inv in model.years)
-    return sch, sdch
+    pch = sum(pe.value(model.es_pch_per_unit[y_inv, y, d, p]) for y_inv in model.years)
+    pdch = sum(pe.value(model.es_pdch_per_unit[y_inv, y, d, p]) for y_inv in model.years)
+    return pch, pdch
 
 
 def get_admm_residual_metrics(planning_problem, tso_model, dso_models, esso_model, consensus_vars):
@@ -4981,9 +4985,9 @@ def get_admm_residual_metrics(planning_problem, tso_model, dso_models, esso_mode
                                 # --------------------------------------------------------------
                                 y = year_idx[year]
                                 d = day_idx[day]
-                                tso_sch, tso_sdch = _get_expected_network_shared_ess_charge_discharge_mw(tso_model[year][day], network, shared_ess_idx, p)
-                                dso_sch, dso_sdch = _get_expected_network_shared_ess_charge_discharge_mw(dso_model[year][day], dso_network, dso_shared_ess_idx, p)
-                                esso_sch, esso_sdch = _get_esso_shared_ess_charge_discharge_mva(esso_model[node_id], y, d, p)
+                                tso_pch, tso_pdch = _get_expected_network_shared_ess_charge_discharge_mw(tso_model[year][day], network, shared_ess_idx, p)
+                                dso_pch, dso_pdch = _get_expected_network_shared_ess_charge_discharge_mw(dso_model[year][day], dso_network, dso_shared_ess_idx, p)
+                                esso_pch, esso_pdch = _get_esso_shared_ess_charge_discharge_pu(esso_model[node_id], y, d, p)
                                 worst_ess_primal = {
                                     'node_id': node_id,
                                     'year': year,
@@ -5007,30 +5011,34 @@ def get_admm_residual_metrics(planning_problem, tso_model, dso_models, esso_mode
                                     'charge_discharge': {
 
                                         'tso': {
-                                            'sch': tso_sch,
-                                            'sdch': tso_sdch,
-                                            'product': tso_sch * tso_sdch,
-                                            'simultaneous': min(tso_sch, tso_sdch),
-                                            'net': tso_sch - tso_sdch,
+                                            'pch': tso_pch,
+                                            'pdch': tso_pdch,
+                                            'product': tso_pch * tso_pdch,
+                                            'simultaneous': min(tso_pch, tso_pdch),
+                                            'net': tso_pch - tso_pdch,
                                             'base_mva': network.baseMVA,
                                         },
 
                                         'dso': {
-                                            'sch': dso_sch,
-                                            'sdch': dso_sdch,
-                                            'product': dso_sch * dso_sdch,
-                                            'simultaneous': min(dso_sch, dso_sdch),
-                                            'net': dso_sch - dso_sdch,
+                                            'pch': dso_pch,
+                                            'pdch': dso_pdch,
+                                            'product': dso_pch * dso_pdch,
+                                            'simultaneous': min(dso_pch, dso_pdch),
+                                            'net': dso_pch - dso_pdch,
                                             'base_mva': dso_network.baseMVA,
                                         },
 
+                                        # P5.4-C: ESSO cohort powers are now ACTIVE, and the
+                                        # ESSO model carries no MVA base, so these stay in p.u.
+                                        # (base_mva is None) while the TSO/DSO entries are in MW.
                                         'esso': {
-                                            'sch': esso_sch,
-                                            'sdch': esso_sdch,
-                                            'product': esso_sch * esso_sdch,
-                                            'simultaneous': min(esso_sch, esso_sdch),
-                                            'net': esso_sch - esso_sdch,
+                                            'pch': esso_pch,
+                                            'pdch': esso_pdch,
+                                            'product': esso_pch * esso_pdch,
+                                            'simultaneous': min(esso_pch, esso_pdch),
+                                            'net': esso_pch - esso_pdch,
                                             'base_mva': None,
+                                            'units': 'p.u.',
                                         },
                                     },
                                 }
