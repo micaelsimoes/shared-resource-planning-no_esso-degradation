@@ -1,7 +1,7 @@
 # P5.4 — End-to-end active-energy ESS productionization
 
-**Status: checkpoint after A, B, C, D, E and E2. F and G are not started, so
-no final verdict is issued in this revision.**
+**Status: checkpoint after A, B, C, D, E, E2, H1 and F. G remains blocked, so
+no final P5.4 verdict is issued in this revision.**
 
 | Section | Status | Commit |
 |---|---|---|
@@ -9,15 +9,20 @@ no final verdict is issued in this revision.**
 | **B — ordinary network ESS parity** | **Complete** | `1e86d40e` |
 | **C — ESSO active-energy conversion** | **Complete** | `58f4911b` |
 | **D — sensitivity / lifecycle / warm-start audit** | **Complete, with one negative result** | `c3526ec8` |
-| **E — production validation before ADMM** | **Complete, revalidated after B/C** | `c3526ec8` |
+| **E — production validation before ADMM** | **Complete, revalidated after B/C and again after H1** | `c3526ec8`, `93974d83` |
 | **E2 — complementarity significance** | **Complete** | `b0e53bc4` |
-| F — live distributed ADMM | Not started — stopped here per planner instruction | — |
-| G — reduced planning gate | Blocked on F | — |
-| H — remaining inequality-conditioning decision | Evidence gathered, decision pending | — |
+| **H1 — dimensionless complementarity** | **Complete — gate PASSED** | `93974d83` |
+| **F — live distributed ADMM (net P/Q only)** | **Complete — converged** | `2917b9c9` |
+| G — reduced planning gate | **Blocked** — P5.4-D2 shared-S sensitivity unresolved | — |
+| H — physical-tolerance decision | Deferred to a separate isolated A/B (H1.10) | — |
 
-Every agent in the coordination is now active-power based. Nothing in P5.4
-introduced dimensionless ESS variables, row scaling, a new complementarity
-tolerance, binary charge/discharge variables, or additional penalties.
+Every agent in the coordination is active-power based, and all three now share
+one relative complementarity semantics. Nothing in P5.4 changed
+`ESS_COMPLEMENTARITY_TOLERANCE`, IPOPT tolerances, MA97/exact-Hessian policy,
+ADMM rho or tolerances, proximal regularization, objective scaling, Benders
+logic, or any objective coefficient. No binary charge/discharge variables and
+no additional penalties were introduced. The dimensionless variables added in
+H1 are confined to the complementarity rows.
 
 ---
 
@@ -580,45 +585,396 @@ i.e. the finite difference is ≈ 0 while the dual is `−0.0275`.
 
 ---
 
-# H — Evidence gathered, decision pending
+# H1 — Dimensionless charge/discharge complementarity
 
-The E, E2 and B evidence together sharpen what P5.4-H is actually deciding
-about:
+Commit `93974d83`. Scripts: `p54h1_normalized_complementarity_audit.py`
+(H1.2/H1.3), `p54h1_gate.py` (H1.8/H1.9), `p54b_ordinary_ess_validation.py`
+(H1.4). Evidence: `data/SRP1/Results/P54H1/`, `data/OP1/Results/P54B/`,
+`data/SRP1/Results/P54E/p54e_report.json`.
 
-- **converter capability: not a problem.** Zero violation on all 1 728
-  shared-ESS rows and all 48 ordinary-ESS rows, and zero in the ESSO.
-- **complementarity: materially violated on the shared ESS**, up to
-  `min(pch, pdch) = 11.6 %` of rating, concentrated in the TSO models.
-- **but the same formulation is clean on the ordinary ESS** (0 / 48 violations,
-  peak circulating power below `1e-3·S`), where the rating is ~24× larger.
+H1 answers **one** question: can IPOPT enforce the *existing* `1e-4` relative
+complementarity when the row is written at O(1) scale? It does **not** tighten
+the physical tolerance — `ESS_COMPLEMENTARITY_TOLERANCE` remains `1e-4`.
 
-That last point is new and it matters: the residual is **a property of the
-bootstrap operating regime, not of the active-energy formulation**. A
-dimensionless-variable proposal may still be warranted for the complementarity
-row, but the evidence no longer points at the formulation itself. **The decision
-remains deferred** to post-ADMM evidence as the plan requires, and no row
-multiplier or normalization has been introduced.
+## What changed
+
+Only the complementarity inequality, in all three ESS agents:
+
+```
+pch * pdch <= eps * S_rated^2        ->        pch_hat * pdch_hat <= eps
+```
+
+linked by
+
+```
+pch  - S_rated * pch_hat  == 0
+pdch - S_rated * pdch_hat == 0
+```
+
+The link is written as a product, never as `pch_hat = pch/S`, so **no
+expression anywhere divides by the rated capacity** — verified on the built
+rows. It keeps a unit coefficient on the physical variable, which is precisely
+what prevents the zero-gradient equality defect that `sess_snet_def` had.
+
+Unchanged: `pnet = pch − pdch`, SOC, `pch + pdch <= S`, physical variable
+bounds, converter capability (not normalized — its audited violation is zero),
+PF/reactive rows, and every objective term and coefficient. The dimensionless
+variables are internal: SOC, `pnet`, objectives, results, ADMM diagnostics and
+the sensitivity rows all still use the physical `pch/pdch`. Their `[0, 1]`
+bounds are implied by the existing envelopes, so they add no restriction.
+
+## H1.1 — exact reformulation, verified
+
+Probed at five states straddling the old boundary `pch·pdch = eps·S²`:
+
+| Probe | old margin `eps·S² − pch·pdch` | new margin `eps − hat product` | signs agree |
+|---|---|---|---|
+| strictly interior | +3.3930e-12 | +7.5000e-05 | ✓ |
+| **on the old boundary** | **+0.0000e+00** | **+0.0000e+00** | ✓ |
+| strictly violating | −1.3572e-11 | −3.0000e-04 | ✓ |
+| asymmetric interior | +4.1169e-12 | +9.1000e-05 | ✓ |
+| asymmetric violating | −4.0264e-10 | −8.9000e-03 | ✓ |
+
+The two margins differ by exactly the factor `S_rated²`, so the feasible set is
+identical and only its numerical representation changes. Link residuals were
+`0` at every probe.
+
+## H1.2 — zero-capacity and reused-model lifecycle
+
+| Transition | S (p.u.) | `pch_hat` / `pdch_hat` fixed | value | bounds | link / comp rows active | link residual |
+|---|---|---|---|---|---|---|
+| zero | 0.0 | yes / yes | 0, 0 | [0, 1] | no / no | 0 |
+| → positive | 2.1270e-04 | no / no | 0, 0 | [0, 1] | yes / yes | 0 |
+| → different positive | 5.3174e-04 | no / no | 0, 0 | [0, 1] | yes / yes | 0 |
+| → back to zero | 0.0 | yes / yes | 0, 0 | [0, 1] | no / no | 0 |
+| → positive again | 2.1270e-04 | no / no | 0, 0 | [0, 1] | yes / yes | 0 |
+
+The `id()` of every tracked component — both link rows, both hat variables,
+`sess_comp`, `sess_pnet_def`, capability, active-sum, SOC, both physical
+powers, and both rated quantities — is **constant across all six snapshots**.
+The dimensionless pair is gated by exactly the same production lifecycle as the
+physical pair.
+
+## H1.3 — derivative and rank audit
+
+| Quantity | DSO `case33_1/2030/Winter` | TSO `case9/2025/Winter` |
+|---|---|---|
+| Link-row gradient ‖·‖₂ (charge / discharge) | 1.0000e+00 / 1.0000e+00 | 1.0000e+00 / 1.0000e+00 |
+| **Unit coefficient on the physical variable** | ✓ / ✓ | ✓ / ✓ |
+| Complementarity RHS | **1.0000e-04** | **1.0000e-04** |
+| …what the old row's RHS would have been | 4.5240e-12 | 1.1310e-12 |
+| **RHS amplification** | **× 2.2104e+07** | **× 8.8417e+07** |
+| Comp-row gradient ‖·‖₂ at cold start | 0.0000e+00 | 0.0000e+00 |
+| Comp-row gradient ‖·‖₂ at half rating | **7.0711e-01** | **7.0711e-01** |
+| Equality rows | 4 155 | 1 449 |
+| **Zero-gradient equality rows** | **0** | **0** |
+| Link rows among zero-gradient rows | **no** | **no** |
+| `σ_min(full)` | 5.9246e-03 | 3.5951e-02 |
+| Full row rank | ✓ | ✓ |
+
+All four required structural properties hold. The comp-row gradient is zero at
+`pch_hat = pdch_hat = 0`, which the plan anticipates and accepts: this is an
+**inequality** that is strictly interior by `1e-4` there, categorically
+different from the old zero-gradient *equality* defect. Away from the origin
+its gradient is `O(1)` (`0.707` at half rating), i.e. curvature is `O(1)`
+rather than scaling as `1/S²`.
+
+*(The TSO `σ_min` here is `3.5951e-02` against `3.2871e-02` in section E; the E
+figure is measured on a model captured mid-run with interface values applied,
+this one on a freshly built model. Both are full rank.)*
+
+## H1.4 — ordinary network ESS parity (OP1)
+
+| Metric | P4.6-B2 phase A | P4.6-B2 phase B | P5.4-B (active) | **P5.4-H1** |
+|---|---|---|---|---|
+| Status | ok / optimal | ok / optimal | ok / optimal | **ok / optimal** |
+| Iterations | 707 | 331 | 144 | **89** |
+| Recovery used | no | no | no | **no** |
+
+**Iterations improved, not regressed.** Complementarity RHS is `1.0000e-04` and
+acts on the dimensionless pair; link rows carry the unit coefficient; hat
+bounds are `[0, 1]`. Capability violations **0 / 48**; complementarity
+violations **0 / 48**. Physical `min(pch,pdch)/S`: max `1.3522e-03`, mean
+`2.1803e-04`, `>1e-3` on 2 rows, **`>1e-2` on 0 rows**. SOC physics unchanged
+(pure reactive ΔSOC exactly zero; discharge exact; charge to one ulp).
+
+## H1.5 / H1.6 — ESSO
+
+**Trace first.** `S_cohort` is `es_s_rated_per_unit[y_inv, y]` — the same
+`s_max` the existing per-cohort limit rows already use, defined by
+`rated_s_capacity_unit` as `es_s_investment[y_inv]` within the cohort's
+lifetime. `S_total` is `es_s_rated[y]`, which `rated_s_capacity` already
+defines as `Σ_{y_inv} es_s_rated_per_unit[y_inv, y]`. Both are p.u. on the same
+base as the cohort powers. **No rating was invented or oversized.**
+
+The previous **absolute** `pch·pdch <= 1e-4` is superseded by the relative
+condition. At bootstrap capacity (`S ≈ 2.13e-04 p.u.`) the absolute bound
+permitted directional powers roughly 47× the rating and never bound — which is
+exactly why section C measured zero per-cohort violation alongside 19 %
+aggregate circulation.
+
+**H1.6 aggregate row added.** Per-cohort complementarity alone permits one
+cohort to charge while another discharges at the same node and time, leaving
+the ESSO feasible set incompatible with the single aggregate device the network
+agents represent. The aggregate link uses unit coefficients on the physical
+cohort sum. **Cohort-level complementarity is preserved** — the aggregate row
+does not imply it.
+
+## H1.7 — objective policy
+
+No objective term or coefficient was changed. The usage and complementarity
+penalties remain expressed with the physical `pch`/`pdch`, and enforcement is
+done by the normalized **hard constraint**.
+
+## H1.8 — production positive-bootstrap gate
+
+| Metric | Pre-H1 baseline (`c3526ec8`) | **Post-H1** |
+|---|---|---|
+| DSO | 36 / 36 | **36 / 36** |
+| TSO | 12 / 12 | **12 / 12** |
+| ESSO | 3 / 3 | **3 / 3** |
+| Primary failures | 0 | **0** |
+| Recovery attempts | 0 | **0** |
+| **Persistent failures** | 0 | **0** |
+| Iterations — total | 1 556 | **3 499** (+1 943, ×2.25) |
+| Iterations — mean / median / max | 32.4 / 28.5 / 119 | **72.9 / 64.0 / 185** |
+| Runtime | ~32 s | **44 s** (×1.4) |
+| `σ_min(full)` DSO / TSO | 5.9246e-03 / 3.2871e-02 | **5.9246e-03 / 3.2871e-02** |
+| Zero-gradient equality rows | 0 | **0** |
+| Converter-capability violations | 0 / 1 728 | **0 / 1 728** |
+
+> **The numerical cost is real and should be seen plainly: iterations roughly
+> double and runtime rises ~40 %.** No new failure family appeared, no solve
+> needed recovery, and the rank diagnostics are bit-identical. The cost buys an
+> actually-enforced constraint — this is the solver now doing work it
+> previously skipped because the row was below its resolution.
+
+**The decisive comparison** is the *physical* residual, measured in the
+original units `max((pch·pdch − eps·S²)/S², 0)` — the same quantity section E
+reported:
+
+| | Pre-H1 | **Post-H1** |
+|---|---|---|
+| max | 2.802e-02 | **0.000e+00** |
+| mean | 2.449e-03 | **0.000e+00** |
+| rows `>1e-6` | 1 062 / 1 728 | **0 / 1 728** |
+
+The condition that was violated on 1 062 of 1 728 rows is now satisfied on all
+of them. The physical requirement did not change; only its numerical
+representation did.
+
+## H1.9 — complementarity acceptance metrics
+
+`eps = 1e-4`, so exact enforcement bounds equal-direction simultaneous
+charge/discharge at `sqrt(eps) = 1e-2` of rating. Verified empirically rather
+than assumed:
+
+| Population | rows | violating | max violation | max link residual |
+|---|---|---|---|---|
+| Shared network ESS (DSO+TSO) | 1 728 | **0** | **0.0000e+00** | 5.42e-20 |
+| Shared network ESS (DSO) | 864 | **0** | 0.0000e+00 | 1.36e-20 |
+| Shared network ESS (TSO) | 864 | **0** | 0.0000e+00 | 5.42e-20 |
+| ESSO per cohort | 1 728 | **0** | 0.0000e+00 | 1.74e-18 |
+| ESSO aggregate | 864 | **0** | 0.0000e+00 | 6.94e-18 |
+
+Physical circulation `min(pch, pdch)/S`:
+
+| Population | max | mean | median | p95 | p99 | `>1e-3` | `>1e-2` | max / `sqrt(eps)` |
+|---|---|---|---|---|---|---|---|---|
+| Network (all) | **8.3408e-03** | 3.1066e-03 | 1.7909e-03 | 7.2638e-03 | 7.8078e-03 | 1 000 | **0** | **0.834** |
+| Network (DSO) | 8.0223e-03 | 4.0397e-03 | 5.2702e-03 | 7.2436e-03 | 7.3987e-03 | 606 | **0** | 0.802 |
+| Network (TSO) | 8.3408e-03 | 2.1736e-03 | 8.0705e-04 | 7.3323e-03 | 7.9831e-03 | 394 | **0** | 0.834 |
+| ESSO per cohort | 7.9367e-03 | 2.1359e-03 | 5.9152e-04 | 7.5764e-03 | 7.9006e-03 | 746 | **0** | 0.794 |
+| **ESSO aggregate** | **7.9349e-03** | 2.1516e-03 | 8.1174e-04 | 7.4427e-03 | 7.8864e-03 | 391 | **0** | 0.794 |
+
+**Every population sits below the `sqrt(eps)` allowance**, and no row anywhere
+exceeds `1e-2·S`. Against the E2 baseline:
+
+| | E2 (pre-H1) | **Post-H1** | reduction |
+|---|---|---|---|
+| Network max `p_circ/S` | 0.11562 | **0.0083408** | **13.9×** |
+| ESSO aggregate max `p_circ/S` | ~0.1912 | **0.0079349** | **24.1×** |
+
+Artificial circulating loss:
+
+| Quantity | E2 (pre-H1) | **Post-H1** |
+|---|---|---|
+| Max per period | 2.0940e-04 MWh | **1.7680e-05 MWh** |
+| Worst representative day | 1.2655e-03 MWh | **3.4069e-04 MWh** |
+| Worst day / `E_rated` | 2.9749e-02 | **6.0305e-03** |
+| Worst day / legitimate throughput | 3.4210e-02 | **3.4303e-02** |
+
+> The absolute loss falls ~5× and the loss-to-`E_rated` ratio ~4.9×, but the
+> worst-day **share of throughput is essentially unchanged** (3.42 % → 3.43 %).
+> These are different model-days: the ratio is dominated by a day whose
+> legitimate throughput is itself small, so it is not a good measure of the
+> improvement. The `E_rated`-normalized figure is the meaningful one.
+
+## H1.10 — physical-tolerance decision
+
+**Not acted on, as instructed.** `eps` was not reduced. The normalized row is
+now enforced with exactly zero violation, so question 1 is answered
+affirmatively; question 2 — whether `1e-4`, permitting up to 1 % circulation,
+is *physically* tight enough — is separable and remains open. Observed
+circulation reaches 0.83 of that allowance, so the allowance is close to
+binding and a later isolated A/B at `1e-5` / `1e-6` is worth running. **That
+A/B was not performed here**, to keep formulation scaling isolated from
+tolerance tightening.
+
+## H1 pass gate
+
+| # | Criterion | Result |
+|---|---|---|
+| 1 | All positive-bootstrap local solves succeed | ✓ 36/36, 12/12, 3/3, 0 persistent |
+| 2 | No equality-rank defect introduced | ✓ 0 zero-gradient rows, full row rank, `σ_min` unchanged |
+| 3 | Network normalized complementarity solver-resolved | ✓ 0 / 1 728 violations |
+| 4 | ESSO per-cohort relative semantics, solver-resolved | ✓ 0 / 1 728 violations |
+| 5 | ESSO aggregate complementarity solver-resolved | ✓ 0 / 864 violations |
+| 6 | `min(pch,pdch)/S` within the `sqrt(eps)` allowance | ✓ max 0.834 of allowance; 0 rows `>1e-2` |
+| 7 | Converter capability clean | ✓ 0 / 1 728 |
+| 8 | No end-to-end active-energy semantic inconsistency | ✓ |
+
+**All eight criteria pass.**
 
 ---
 
-# Open items carried into F
+# F — Live distributed ADMM, net-P/Q coordination only
 
-1. **ESSO complementarity is vacuous at bootstrap capacities** (section C). The
-   ESSO uses an absolute `pch·pdch ≤ 1e-4` where the network models use
-   `eps·S²`; at `S ≈ 2.13e-04 p.u.` the ESSO bound never binds, and its
-   aggregate circulating power reaches 19 % of rating. This is directly
-   relevant to ADMM ESS consensus. Not changed — a new complementarity
-   tolerance was explicitly out of scope.
-2. **The analytic capacity sensitivity is unconfirmed by finite differences**
-   (section D) — pre-existing, improved but not resolved by P5.4, and a risk to
-   Benders cut quality.
-3. **The complementarity residual itself** (sections E, E2), pending the H
-   decision.
+Commit `2917b9c9`. Script: `p54f_admm_net_pq.py`. Evidence:
+`data/SRP1/Results/P54F/`.
 
-Neither 1 nor 2 was introduced by P5.4, and no end-to-end semantic
-inconsistency was found. Every agent is now active-power based, which was the
-hard prerequisite for P5.4-F.
+The exact positive-bootstrap candidate — built by the production
+`_build_positive_bootstrap_candidate` — run through the real
+`run_operational_planning(type='distributed', ...)`. Rho values and adaptation,
+tolerances, proximal regularization, objective scaling, IPOPT options,
+MA97/exact-Hessian policy, the recovery policy, seed and scenarios are all
+unchanged. **The outer planning loop was not run.** Coordination remains net
+`P`/`Q` plus the existing interface-voltage quantities — no `pch`, `pdch`,
+circulation or SOC consensus was added.
 
-**Execution stopped before P5.4-F as instructed. No final P5.4 verdict is
-issued in this revision** — issuing one would require asserting results for F
-and G, which have not been executed.
+## Convergence
+
+**Converged in 9 cycles**, 312 s, every cycle with all local solves
+successful and **zero recovery diagnostics recorded**.
+
+| Cycle | solves ok | primal V | primal PF | primal ESS | dual V | dual PF | dual ESS | recourse | Δobj rel | converged |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | ✓ | 5.570e-02 | 3.919e-01 | 1.928e-02 | 9.997e-02 | 7.274e-01 | 1.471e-02 | 8.204e+08 | — | no |
+| 2 | ✓ | 3.393e-02 | 1.823e-01 | 1.060e-02 | 5.011e-02 | 5.321e-01 | 6.565e-03 | 9.605e+08 | 1.459e-01 | no |
+| 3 | ✓ | 1.405e-03 | 5.891e-02 | 1.047e-02 | 7.627e-02 | 3.738e-01 | 1.253e-03 | 9.647e+08 | 4.378e-03 | no |
+| 4 | ✓ | 1.287e-03 | 3.163e-02 | 4.665e-03 | 2.591e-03 | 1.128e-01 | 1.919e-03 | 9.085e+08 | 5.827e-02 | no |
+| 5 | ✓ | 7.181e-04 | 2.489e-02 | 2.063e-03 | 2.664e-03 | 8.687e-02 | 1.821e-03 | 8.737e+08 | 3.828e-02 | no |
+| 6 | ✓ | 4.389e-04 | 2.605e-02 | 1.884e-03 | 9.902e-04 | 8.391e-02 | 1.135e-03 | 8.562e+08 | 2.005e-02 | no |
+| 7 | ✓ | 2.337e-04 | 1.406e-02 | 1.072e-03 | 7.037e-04 | 5.936e-02 | 9.152e-04 | 8.503e+08 | 6.944e-03 | no |
+| 8 | ✓ | 1.686e-04 | 1.102e-02 | 2.395e-03 | 6.816e-04 | 4.881e-02 | 9.902e-04 | 8.486e+08 | 1.917e-03 | no |
+| **9** | ✓ | **1.365e-04** | **9.776e-03** | **1.269e-03** | **7.187e-04** | **4.834e-02** | **1.053e-03** | **8.479e+08** | **8.132e-04** | **yes** |
+
+Tolerances (unchanged): primal V `1e-2`, primal PF `1e-2`, primal ESS `1e-1`;
+dual V / PF / ESS `1e-2`; objective relative `1e-3`. At cycle 9
+`residual_convergence`, `objective_convergence` and `cycle_convergence` are all
+true, with `consecutive_converged_cycles = 1` meeting the required 1.
+
+Final `gross_operational_cost = 8.4794e+08`, `terminal_salvage_value =
+3.5415e+03`, `recourse = 8.4794e+08`.
+
+Rho evolution (standard adaptation, no intervention): V `1 → 1.5 → 2.25 → 1.5`
+then held; PF `1 → 1.5 → 2.25` then held; ESS held at `1` throughout.
+
+## Complementarity sanity diagnostics — not consensus variables
+
+Read off the converged models; never fed into a consensus update.
+
+| Population | rows | violating | max violation | max `p_circ/S` | mean | median | p95 | p99 | `>1e-3` | `>1e-2` | max / `sqrt(eps)` |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| Network (all) | 1 728 | **0** | 0.0000e+00 | **8.4125e-03** | 1.0126e-03 | 6.8286e-04 | 3.3631e-03 | 5.2060e-03 | 526 | **0** | **0.841** |
+| Network (DSO) | 864 | **0** | 0.0000e+00 | 8.4091e-03 | 1.0068e-03 | 6.8180e-04 | 3.2897e-03 | 5.1662e-03 | 263 | **0** | 0.841 |
+| Network (TSO) | 864 | **0** | 0.0000e+00 | 8.4125e-03 | 1.0184e-03 | 6.8325e-04 | 3.4264e-03 | 5.1847e-03 | 263 | **0** | 0.841 |
+| **ESSO aggregate** | 864 | **0** | 0.0000e+00 | **7.6320e-03** | 9.2889e-04 | 6.1588e-04 | 3.0431e-03 | 4.5683e-03 | 239 | **0** | 0.763 |
+
+Complementarity survives coordination intact: still **zero violations**, still
+**no row above `1e-2·S`**, and the mean circulation is in fact ~3× lower than
+in the uncoordinated bootstrap.
+
+## Energy-consistency sanity diagnostic
+
+At final electrical consensus, `p_cell = eta_ch·pch − pdch/eta_dch` compared
+between DSO and TSO for the same shared ESS, over 288 matched
+year/day/period points:
+
+| Quantity | Value |
+|---|---|
+| max abs `p_cell` difference | **3.0293e-06 p.u.** |
+| mean abs `p_cell` difference | 5.6992e-07 p.u. |
+| max abs `pnet` difference | 2.9567e-06 p.u. |
+
+The `p_cell` disagreement tracks the `pnet` disagreement almost exactly and
+both are at solver-tolerance scale. **This is the direct confirmation of the
+coordination decision**: with complementarity locally enforced, agreeing on net
+active power is sufficient to make the agents agree on charge/discharge
+direction and on cell-side energy rate. No `pch`/`pdch` consensus is needed,
+and none was added.
+
+---
+
+# H — Status after H1
+
+The H question has now split cleanly in two, and H1 answered the first half.
+
+- **Converter capability: not a problem, confirmed again.** Zero violation on
+  all 1 728 shared-ESS rows, all 48 ordinary-ESS rows and the ESSO, before and
+  after H1. It was correctly left un-normalized.
+- **Complementarity, numerical enforceability: RESOLVED.** The `eps·S²` row was
+  below IPOPT's resolution at bootstrap capacity; written at O(1) it is
+  enforced with exactly zero violation across every population, and the
+  *physical* residual in the original units went from violated on 1 062 / 1 728
+  rows to **0 / 1 728**.
+- **Complementarity, physical sufficiency: still open (H1.10).** With
+  `eps = 1e-4` the formulation permits up to `sqrt(eps) = 1 %` of rating
+  circulating, and observed circulation reaches **0.83 of that allowance**. So
+  the tolerance is close to binding, and whether 1 % is physically acceptable
+  is a separate judgement. **No epsilon change was made**, deliberately, to
+  keep formulation scaling isolated from tolerance tightening.
+
+The recommendation is a later isolated A/B at `eps = 1e-5` and `1e-6`, run on
+its own, with the H1 formulation held fixed. That was not performed here.
+
+---
+
+# Open items carried forward
+
+1. **The analytic shared-S capacity sensitivity is unconfirmed by finite
+   differences** (section D). Pre-existing — the pre-P5.4-A tree fails the same
+   test with relative errors of 10²–10³ against ~1 here — but unresolved, and a
+   risk to Benders cut quality. **This is what blocks P5.4-G**, and the plan
+   assigns it to P5.4-D2.
+2. **Physical sufficiency of `eps = 1e-4`** (H1.10 above): enforceable now, but
+   permitting circulation at 0.83 of the `sqrt(eps)` allowance.
+3. **The H1 numerical cost**: total network iterations 1 556 → 3 499 (×2.25),
+   runtime ~32 s → 44 s. No new failure family, no recoveries, rank diagnostics
+   identical. Reported plainly for the planner's judgement rather than
+   characterised as negligible.
+
+Resolved and no longer open: the ESSO's absolute complementarity semantics
+(H1.5), the ESSO aggregate feasible-set incompatibility (H1.6), and the
+under-resolved network complementarity (H1.1–H1.3).
+
+---
+
+# Not run
+
+**P5.4-G was not run**, as instructed — the outer planning loop remains blocked
+on the P5.4-D2 shared-S sensitivity root cause. No final P5.4 verdict is issued
+in this revision; issuing one would require asserting a G result that does not
+exist.
+
+---
+
+# Verdicts
+
+```
+P5.4-H1 PASS — complementarity is numerically resolved consistently across agents
+```
+
+```
+P5.4-F ADMM PASS — net-P/Q coordination converged with locally consistent charge/discharge
+```
