@@ -1,7 +1,7 @@
 # P5.4 — End-to-end active-energy ESS productionization
 
-**Status: checkpoint after A, B, C, D, D2, D2-P, D3, E, E2, H1 and F. G remains
-blocked, so no final P5.4 verdict is issued in this revision.**
+**Status: checkpoint after A, B, C, D, D2, D2-P, D3, D4, E, E2, H1 and F. G
+remains blocked, so no final P5.4 verdict is issued in this revision.**
 
 | Section | Status | Commit |
 |---|---|---|
@@ -16,7 +16,8 @@ blocked, so no final P5.4 verdict is issued in this revision.**
 | **D2 — S/E sensitivity root-cause audit** | **Complete — PARTIAL** | `65b261ba` |
 | **D2-P — sensitivity-clean productionization** | **Complete — PASS** | `06e921e5` |
 | **D3 — distributed cut-consistency audit** | **Complete — FAIL** | `e1afa8e9` |
-| G — reduced planning gate | **Still blocked** — D3 found the current cuts demonstrably unsafe | — |
+| **D4 — branch recovery and oracle hardening** | **Complete — class C** | `1a68f409` |
+| G — reduced planning gate | **Still blocked** — D4 shows hardened cuts remain unsafe | — |
 | H — physical-tolerance decision | Deferred to a separate isolated A/B (H1.10) | — |
 
 Every agent in the coordination is active-power based, and all three now share
@@ -1547,6 +1548,218 @@ P5.4-D3 FAIL — current cuts are demonstrably unsafe under observed recourse br
 
 ---
 
+# D4 — Recourse branch recovery and oracle hardening
+
+Commits `5da92e6b`, `8de5dd32`, `1a68f409`. Scripts:
+`p54d4_branch_recovery.py`, `p54d4_hardened_cut.py`. Evidence:
+`data/SRP1/Results/P54D4/`.
+
+Diagnostic only. No cut was added to a master and `run_planning_problem()` was
+never invoked. Nothing in D2-P, H1, epsilon, ADMM, IPOPT, the local objective,
+Benders or the master was modified.
+
+## D4.1 / D4.2 — reproducing and lifting the lower-capacity states
+
+The lift uses the **production** warm-start path:
+`run_operational_planning` clones `initial_state['models']`, restores the ADMM
+consensus and dual variables, and calls
+`_update_operational_models_with_candidate` to move the capacities to the target
+candidate. Every physical primal value is preserved.
+
+**One gap had to be repaired.** Production does *not* recompute the P5.4-H1
+dimensionless variables after a capacity change, so a transferred `pch_hat`
+still corresponds to the **source** rating and violates `pch − S·pch_hat = 0`.
+The transfer therefore recomputes
+
+```
+pch_hat = pch / S_base      pdch_hat = pdch / S_base      (clipped to [0, 1])
+```
+
+**in the initialization-transfer code only** — no division by S was introduced
+into the optimization model. Because the source rating is smaller than the base
+rating, `pch ≤ S_source < S_base`, so the repaired hats land inside `[0, 1]`
+automatically: 3 456 entries repaired, `max_hat = 0.7409`, **0 clipped**.
+
+### Transferred-point feasibility, before any solve
+
+| Residual | Value |
+|---|---|
+| Active sum | **0.00e+00** |
+| Converter capability | **0.00e+00** |
+| Complementarity | **0.00e+00** |
+| SOC upper / lower | **0.00e+00** |
+| H1 link | 8.50e-17 |
+| **Maximum** | **8.4956e-17** |
+
+The lifted point is feasible for the base candidate to machine precision, and
+the only nonzero residual is the link row the repair targets.
+
+## D4.3 — multiplier policy
+
+| Source | Policy A (multipliers cleared) | Policy B (warm start kept) |
+|---|---|---|
+| `s\|node5 −5 %` | 835 825 559.78 | 835 954 209.25 |
+| `s\|node9 −5 %` | 838 310 808.94 | 838 314 402.22 |
+
+**The two policies agree to within 1.3e5 and 3.6e3.** Branch recovery is carried
+by the **primal state**, not by multiplier transfer — so the primary
+(primal-only) test is the meaningful one and no multiplier from a
+different-capacity NLP needs to be reused.
+
+## D4.4 / D4.5 — the decisive question
+
+> **Can the original base candidate itself attain a recourse materially below
+> the production cold value `848 258 809.814117`?**
+>
+> **Yes.**
+
+| Source lifted onto the base candidate | cycles | `Q_base` | `delta_Q` vs cold |
+|---|---|---|---|
+| `s\|node9 −10 %` | 3 | **835 315 903.22** | **+12 942 906.59** |
+| `s\|node9 −10 %` (repeat, different call order) | 3 | 835 466 476.46 | +12 792 333.35 |
+| `s\|node5 −5 %` | 2 | 835 825 559.78 | +12 433 250.04 |
+| `s\|node9 −5 %` | 5 | 838 310 808.94 | +9 948 000.87 |
+
+```
+Q_base_best_observed = 835 315 903.22      delta_Q = 12 942 906.59   (1.526 %)
+```
+
+**Not the global optimum** — only the best observed. Every lift converged with
+all local solves successful and zero recoveries, in **2–5 cycles** against 9 for
+the cold start.
+
+Reproducibility: the same nominal source and policy gave 835 315 903.22 and
+835 466 476.46 in two different call sequences — a spread of 1.5e5, which is
+**below `tol_cut` = 3.046e5** but shows the recovered value is sensitive to the
+order of preceding production calls (these mutate shared network data).
+
+## D4.6 — branch fingerprint
+
+`gross_operational_cost` delta **−12 792 002.68**; salvage delta **+330.67**.
+Largest component deltas between the cold and recovered base branches:
+
+| Block | cold | recovered | delta |
+|---|---|---|---|
+| **TSO 2035 Spring / generation_cost** | 3.9925e+07 | 3.2509e+07 | **−7.4162e+06** |
+| **TSO 2030 Spring / generation_cost** | 4.8043e+07 | 4.2419e+07 | **−5.6244e+06** |
+| **TSO 2025 Spring / generation_cost** | 6.8242e+07 | 6.3404e+07 | **−4.8384e+06** |
+| **TSO 2025 Summer / generation_cost** | 8.4136e+07 | 8.8901e+07 | **+4.7651e+06** |
+| TSO 2035 Spring / economic_market_cost | 6.4248e+07 | 5.9557e+07 | −4.6906e+06 |
+| TSO 2030 Spring / economic_market_cost | 6.2738e+07 | 5.9076e+07 | −3.6622e+06 |
+
+> **The ~10⁷ gap is TSO generation cost, concentrated on Spring representative
+> days**, partly offset by a Summer increase. It is a **transmission dispatch
+> branch, not an ESS phenomenon** — no ESS usage, complementarity or salvage
+> term appears anywhere near the top of the list, and salvage moves by only
+> 331. That matters: the branch multiplicity blocking planning is not caused by
+> the ESS formulation this whole stage has been repairing.
+
+## D4.7 / D4.8 — deterministic oracle and its cost
+
+Start set, fully deterministic and reproducible — **no random starts**:
+
+1. production cold initialization;
+2. an archived branch template (a converged state) lifted onto the candidate.
+
+| Measure | Cold start | Lifted archived template |
+|---|---|---|
+| ADMM cycles | 9 (base) / 19 (source) | **2** on all 11 candidates |
+| Mean runtime | ~300–430 s | **74 s** |
+| Local failures / recoveries | 0 | **0** |
+
+> **The second start is cheaper than the first.** Once a template exists,
+> lifting it costs ~2 cycles — roughly a quarter of a cold solve — so a
+> two-start oracle costs about 1.25× a single cold evaluation, not 2×. The
+> expensive part is *discovering* a template (the 19-cycle source solve), which
+> is a one-off.
+>
+> On benefit: the second start is worth **+12.9e6** on the base candidate. The
+> marginal value of a third and fourth start was not separately measured,
+> because the classification below makes that measurement moot.
+
+## D4.9 / D4.10 — hardened empirical cut test
+
+`L_best(x) = Q_base_best + g_bestᵀ(x − x0)`, with `Q_base_best = 835 466 476.46`
+and `g_best` extracted from that same converged branch. Each candidate is
+evaluated by lifting the recovered base branch onto it (transfer residuals
+≤ 8.8e-17 throughout).
+
+| Candidate | `Q_hardened` | `L_best` | predicted | **`cut_gap_best`** |
+|---|---|---|---|---|
+| s\|node5 −10 % | 834 315 991.94 | 835 479 612.17 | +13 136 | **−1 163 620** |
+| s\|node9 −10 % | 834 344 986.58 | 835 479 315.93 | +12 839 | **−1 134 329** |
+| e\|node9 −10 % | 834 454 468.44 | 835 477 857.78 | +11 381 | **−1 023 389** |
+| s\|node5 +5 % | 834 438 092.68 | 835 459 908.61 | −6 568 | **−1 021 816** |
+| s\|node9 −5 % | 834 454 106.26 | 835 472 896.20 | +6 420 | **−1 018 790** |
+| s\|node7 +5 % | 834 446 638.76 | 835 459 918.18 | −6 558 | **−1 013 279** |
+| e\|node9 −1 % | 834 454 092.42 | 835 467 614.59 | +1 138 | **−1 013 522** |
+| e\|node9 +5 % | 834 469 426.22 | 835 460 785.80 | −5 691 | **−991 360** |
+| s\|node9 +5 % | 834 548 805.38 | 835 460 056.73 | −6 420 | **−911 251** |
+| s\|node5 −5 % | 834 580 170.17 | 835 473 044.32 | +6 568 | **−892 874** |
+| s\|node9 +10 % | 834 576 211.79 | 835 453 636.99 | −12 839 | **−877 425** |
+
+**11 / 11 negative. All 11 exceed `tol_cut` = 3.046e5** by 2.9×–3.8×. The D4.10
+expansion was run and the positive-perturbation side violates just as clearly,
+so the violation is not an artefact of shrinking capacity.
+
+> ### Why hardening does not fix it
+>
+> Every hardened candidate settles between **834 315 992** and **834 580 170** —
+> **all below the hardened base value 835 466 476**. Several of them have
+> *smaller* capacity and therefore a subset feasible set, so the base candidate
+> must be able to reach those values too.
+>
+> One round of hardening moved the anchor 12.79e6 down; the candidates
+> immediately reveal another ~1.1e6 below that. **The branch descent has not
+> converged — hardening chases a moving target.** There is no reason to expect a
+> second round to terminate, and each round costs a full candidate sweep.
+>
+> The coefficient is not the issue either: `max |g_bestᵀΔx| = 13 136`, roughly
+> **80× smaller** than the violations it is being asked to explain. `g_best`
+> stays sign-consistent and close to `g_cold` (e.g. `s|node9|2025`:
+> −1.3234e+07 cold → −1.2073e+07 recovered).
+
+## D4.11 — classification
+
+**D4-C — hardened-anchor cuts still unsafe.** Even with the best reproducible
+base branch, cuts decisively overestimate observed recourse at every probed
+neighbouring candidate.
+
+**Recommendation: the current derivative-cut (Benders-style) machinery should be
+retired for this problem.** Nothing was implemented.
+
+The evidence is specific about *why*, and it is not what earlier stages
+suspected:
+
+- it is **not** sensitivity bookkeeping — D2-P made the coefficient structurally
+  complete and sign-consistent, and it barely moves the numbers here;
+- it is **not** the ESS formulation — D4.6 localizes the gap to TSO generation
+  cost on Spring days;
+- it **is** local-solution multiplicity in the transmission dispatch, which no
+  amount of anchor hardening has been shown to resolve.
+
+### Candidate future methods — discussion only, none implemented
+
+| Direction | Assessment on this evidence |
+|---|---|
+| **Convex operational relaxation giving valid lower bounds** | The only listed option that restores a *guarantee* rather than a heuristic. A relaxation of the TSO dispatch would bound the recourse from below regardless of which branch the NLP finds. Strongest candidate; cost is relaxation tightness. |
+| **Derivative-free coordinate/pattern search over investments** | Sidesteps the derivative and the branch problem entirely, and D4.8 shows candidate evaluation is cheap from a template (~74 s). Viable given the small investment dimension (18 variables). |
+| **Surrogate-assisted planning** | Plausible, but a surrogate fitted to a multi-valued oracle inherits the multiplicity unless the oracle is stabilized first. |
+| **Trust-region sequential linearization / local cuts** | Would not have prevented these violations: they occur within ±5–10 % and on both sides. |
+| **Spatial branch-and-bound / global NLP on a small benchmark** | Not viable at this model size, but valuable to calibrate how far the observed branches sit from a true global optimum on a reduced case. |
+| **Nonconvex generalized-Benders variants requiring global subproblem solution** | Correct in principle, but presupposes solving the local NLP globally, which is exactly what fails here. |
+
+**Classical convex Benders guarantees do not apply to this recourse**, and D4
+shows that empirically hardening the anchor does not substitute for them.
+
+## D4 verdict
+
+```
+P5.4-D4 C — hardened recourse still produces demonstrably unsafe cuts
+```
+
+---
+
 # H — Status after H1
 
 The H question has now split cleanly in two, and H1 answered the first half.
@@ -1573,45 +1786,42 @@ its own, with the H1 formulation held fixed. That was not performed here.
 
 # Open items carried forward
 
-1. **The current Benders cuts are demonstrably unsafe** (D3). Six of eight
-   probed candidates produce a cut lying above an observed feasible recourse,
-   the worst by 1.35 % of `Q0`. The cause is the anchor `Q0`, not the
-   coefficient: the base candidate's own solve misses a recourse ~11.5 million
-   lower that neighbouring candidates find. **This blocks P5.4-G**, and the
-   smallest candidate remedies are listed in D3.9 for planner decision.
-2. **The cut coefficient is below the method's own resolution** (D3.7): the
-   largest predicted effect over the probed range is 0.05 x `tol_cut`, so the
-   coefficient cannot be validated against observed recourse at these
-   perturbation sizes even where no violation occurs.
-3. **D3's candidate population is partial** — positive perturbations, node 7,
-   the finer S steps and the multi-variable set were not run, since the
-   violation was already decisive. Stated so the coverage is not overread.
+1. **The derivative-cut planning architecture does not work for this recourse**
+   (D3, D4). Cuts are unsafe with the cold anchor (11.5e6 violations) and remain
+   unsafe with a hardened anchor (1.16e6 violations, 11/11 candidates). D4.11
+   recommends retiring the current cut machinery; the alternatives are compared
+   in D4 for planner decision. **This blocks P5.4-G.**
+2. **The blocking multiplicity is in TSO dispatch, not in the ESS** (D4.6). The
+   ~1.3e7 branch gap is TSO generation cost on Spring representative days. Every
+   ESS-side repair in P5.4 was still necessary and correct, but none of it
+   addresses this.
+3. **Branch recovery is order-sensitive** (D4.4): the same nominal source and
+   policy gave values 1.5e5 apart across call sequences -- inside `tol_cut`, but
+   evidence that production calls mutate shared network state in ways that
+   affect which branch is found.
 4. **No E-binding operating point exists** in the scanned configuration
    (D2.10), so the E-side structural conclusion rests on an argument plus 40/40
    sign-consistent duals rather than on a binding test.
 5. **Physical sufficiency of `eps = 1e-4`** (H1.10): enforceable now, but
    permitting circulation at 0.83 of the `sqrt(eps)` allowance. A later isolated
    `1e-5` / `1e-6` A/B is recommended.
-6. **The H1 numerical cost**: total network iterations 1 556 -> 3 499 at H1, now
-   3 442 after D2-P. No new failure family, no recoveries, rank diagnostics
-   identical.
+6. **The H1 numerical cost**: bootstrap network iterations 1 556 -> 3 442 after
+   D2-P. No new failure family, no recoveries, rank diagnostics identical.
 
 Resolved and no longer open: the ESSO's absolute complementarity semantics
 (H1.5), the ESSO aggregate feasible-set incompatibility (H1.6), the
 under-resolved network complementarity (H1.1-H1.3), the unexplained P5.4-D
-sensitivity mismatch (attributed by D2 to two named causes), and the
-structural incompleteness of the shared-S coefficient (fixed by D2-P, now
-exactly zero bound contribution and sign-consistent across all 18 aggregated
-coefficients).
+sensitivity mismatch (D2), the structural incompleteness of the shared-S
+coefficient (D2-P), and the question of whether the base candidate can attain
+the lower branch at all (D4.5 -- yes, by 1.53 %).
 
 ---
 
 # Not run
 
-**P5.4-G was not run.** `run_planning_problem()` was not invoked during D2-P or
-D3. No cut was ever added to a master problem. No final P5.4 verdict is issued
-in this revision; issuing one would require asserting a G result that does not
-exist -- and D3 indicates G should not run on the current cut machinery.
+**P5.4-G was not run.** `run_planning_problem()` was not invoked during D2-P,
+D3 or D4. No cut was ever added to a master problem. No final P5.4 verdict is
+issued; D4 indicates G should not run on the current cut machinery at all.
 
 ---
 
@@ -1635,4 +1845,8 @@ P5.4-D2-P PASS — structurally complete S sensitivity productionized
 
 ```
 P5.4-D3 FAIL — current cuts are demonstrably unsafe under observed recourse branches
+```
+
+```
+P5.4-D4 C — hardened recourse still produces demonstrably unsafe cuts
 ```
