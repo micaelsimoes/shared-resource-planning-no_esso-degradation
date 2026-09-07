@@ -79,16 +79,27 @@ def make_candidate(base, kind, node, year, rel, planning):
     return cand
 
 
+def stringify_keys(obj):
+    """Recourse/objective blocks are keyed by tuples; JSON needs string keys."""
+    if isinstance(obj, dict):
+        return {(str(k) if not isinstance(k, (str, int, float, bool, type(None))) else k):
+                stringify_keys(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [stringify_keys(v) for v in obj]
+    return obj
+
+
 def fingerprint(state, run):
     """D4.6: objective decomposition of a converged branch."""
     return {
         'recourse': run.get('recourse'),
         'gross_operational_cost': run.get('gross_operational_cost'),
         'terminal_salvage_value': run.get('terminal_salvage_value'),
-        'recourse_blocks': state.get('last_recourse_blocks'),
-        'objective_component_blocks': state.get('last_objective_component_blocks'),
-        'slack_component_blocks': state.get('last_slack_component_blocks'),
-        'tso_voltage_slack_state': state.get('last_tso_voltage_slack_state'),
+        'recourse_blocks': stringify_keys(state.get('last_recourse_blocks')),
+        'objective_component_blocks': stringify_keys(
+            state.get('last_objective_component_blocks')),
+        'slack_component_blocks': stringify_keys(state.get('last_slack_component_blocks')),
+        'tso_voltage_slack_state': stringify_keys(state.get('last_tso_voltage_slack_state')),
     }
 
 
@@ -161,9 +172,11 @@ def main():
     # ---- D4.6 fingerprints ----
     fp_cold = fingerprint(cold['_state'], cold)
     fp_best = fingerprint(best['_state'], best)
-    deltas = diff_blocks(fp_cold.get('recourse_blocks'), fp_best.get('recourse_blocks'))
-    deltas += diff_blocks(fp_cold.get('objective_component_blocks'),
-                          fp_best.get('objective_component_blocks'))
+    deltas = diff_blocks(stringify_keys(cold['_state'].get('last_recourse_blocks')),
+                         stringify_keys(best['_state'].get('last_recourse_blocks')))
+    deltas += diff_blocks(
+        stringify_keys(cold['_state'].get('last_objective_component_blocks')),
+        stringify_keys(best['_state'].get('last_objective_component_blocks')))
     deltas.sort(key=lambda d: -abs(d['delta']))
     report['D4_6_fingerprint'] = {
         'cold': fp_cold, 'recovered': fp_best,
