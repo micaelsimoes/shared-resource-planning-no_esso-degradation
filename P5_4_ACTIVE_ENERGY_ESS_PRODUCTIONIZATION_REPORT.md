@@ -1,7 +1,7 @@
 # P5.4 — End-to-end active-energy ESS productionization
 
-**Status: checkpoint after A, B, C, D, E, E2, H1 and F. G remains blocked, so
-no final P5.4 verdict is issued in this revision.**
+**Status: checkpoint after A, B, C, D, D2, E, E2, H1 and F. G remains blocked,
+so no final P5.4 verdict is issued in this revision.**
 
 | Section | Status | Commit |
 |---|---|---|
@@ -13,7 +13,8 @@ no final P5.4 verdict is issued in this revision.**
 | **E2 — complementarity significance** | **Complete** | `b0e53bc4` |
 | **H1 — dimensionless complementarity** | **Complete — gate PASSED** | `93974d83` |
 | **F — live distributed ADMM (net P/Q only)** | **Complete — converged** | `2917b9c9` |
-| G — reduced planning gate | **Blocked** — P5.4-D2 shared-S sensitivity unresolved | — |
+| **D2 — S/E sensitivity root-cause audit** | **Complete — PARTIAL** | `65b261ba` |
+| G — reduced planning gate | **Still blocked** — awaiting planner decision on the D2 production correction | — |
 | H — physical-tolerance decision | Deferred to a separate isolated A/B (H1.10) | — |
 
 Every agent in the coordination is active-power based, and all three now share
@@ -916,6 +917,315 @@ and none was added.
 
 ---
 
+# D2 — Shared-S/E sensitivity root-cause audit
+
+Commit `65b261ba`. Scripts: `p54d2_sign_calibration.py`,
+`p54d2_sensitivity_root_cause.py`, `p54d2_branch_controlled_fd.py`,
+`p54d2_continuation_sweep.py`, `p54d2_sensitivity_clean_ab.py`,
+`p54d2_binding_regime_scan.py`. Evidence: `data/SRP1/Results/P54D2/`.
+
+**Diagnostic only.** No production formulation, Benders equation, solver option
+or tolerance was changed. The outer planning loop was not run.
+
+**Two independent root causes were found.** One has a concrete, provable
+production fix; the other does not, and it is what makes the original
+finite-difference test unable to settle the question either way.
+
+## D2.1 — the sensitivity contract, traced end to end
+
+| Step | Code | Quantity |
+|---|---|---|
+| 1 | `sess_s_sensitivities` / `sess_e_sensitivities` (`model_construction_helpers.py`) | rows `shared_es_s_rated_fixed[e] == shared_es_s_rated[e]`, likewise for E |
+| 2 | `network.py` | `model.dual` is an `IMPORT_EXPORT` Suffix, so IPOPT returns the row multiplier |
+| 3 | `_get_sensitivities` (`network_data.py:2806`) | `sensitivity = objective_scale * dual / baseMVA`, then `+= annualization * num_years * num_days * sensitivity`, accumulated over days and years |
+| 4 | `_get_operational_sensitivities` (`shared_resources_planning.py:1004`) | TSO and every DSO summed per node/year into one **available-capacity** sensitivity |
+| 5 | `map_available_capacity_sensitivities_to_investments` (ESSO) | available-capacity → **investment-variable** sensitivity |
+| 6 | `get_salvage_value_sensitivities` | salvage term added |
+| 7 | `_add_benders_cut` (`shared_resources_planning.py:2026`) | `alpha >= Q + Σ sens_s·(S_inv − S_inv0) + Σ sens_e·(E_inv − E_inv0)` |
+
+**What the outer algorithm assumes each returned dual is:** the complete
+first-order derivative `∂Q/∂S` (resp. `∂Q/∂E`) of the local recourse value with
+respect to installed capacity — used as the linear coefficient of a local cut.
+The cut is only valid to the extent that coefficient is the true derivative.
+
+### Intended signs, derived rather than observed
+
+Every shared-ESS constraint that involves `S` is a relaxation as `S` grows:
+`pch + pdch ≤ S`; `pnet² + qnet² ≤ S²`; the box `pch, pdch ∈ [0, S]`,
+`pnet, qnet ∈ [−S, S]`; and complementarity, since `pch_hat·pdch_hat ≤ eps` is
+`pch·pdch ≤ eps·S²`. The SOC recursion and limits do not involve `S` at all.
+**The feasible set is therefore monotonically non-decreasing in `S`, so the
+minimum is non-increasing:**
+
+```
+∂Q/∂S ≤ 0     (required, by set monotonicity — not inferred from data)
+```
+
+For `E` no such theorem holds: the SOC band `[0.1·E, 0.9·E]` widens with `E`,
+but the initial and target SOC anchor `0.5·E` **moves** with it, so an increase
+in `E` is not a pure relaxation. `∂Q/∂E ≤ 0` is expected but not guaranteed.
+
+## D2.4a — multiplier sign convention, measured
+
+Asserted nowhere in the repo, so it was measured on three trivial parametric
+NLPs with known analytic derivatives, solved with the **production IPOPT**
+(`/usr/local/bin/ipopt`, resolved from the production params object):
+
+| Problem | Analytic | Suffix | Ratio |
+|---|---|---|---|
+| `min (x−5)²  s.t. x == c`, orientation `param == var` | `2(c−5)` | `dual` | **+1.000000** (4/4 points) |
+| `min (x−5)²  s.t. 0 ≤ x ≤ u` | `2(u−5)` | `ipopt_zU_out` | **+1.000000** (3/3) |
+| `min (x+5)²  s.t. l ≤ x ≤ 10` | `2(l+5)` | `ipopt_zL_out` | **+1.000000** (3/3) |
+
+```
+dual[param == var] = +dQ/dparam ,    dQ/du = +zU ,    dQ/dl = +zL
+```
+
+so the complete parametric derivative is
+
+```
+dQ/dθ = dual[fixing row]  +  Σ_bounds ( zU·du/dθ + zL·dl/dθ )  +  direct-expression terms
+```
+
+while the Benders extraction reads **only the first term**.
+
+## D2.2 / D2.3 — dependence inventory and bound audit
+
+### S
+
+| Dependence | Class | Detail |
+|---|---|---|
+| `sess_converter_capability`: `pnet² + qnet² ≤ shared_es_s_rated²` | **A** symbolic | via the rated **Var** |
+| `sess_active_sum_limit`: `pch + pdch ≤ shared_es_s_rated` | **A** symbolic | via the rated Var |
+| `sess_pch_hat_link` / `sess_pdch_hat_link`: `pch − S_rated·pch_hat == 0` | **A** symbolic | H1 links, via the rated Var |
+| `sess_comp`: `pch_hat·pdch_hat ≤ eps` | **A** symbolic | S enters only through the links |
+| `shared_es_pch`, `shared_es_pdch` bounds `[0·S, 1·S]` | **C** numeric bound | `_SHARED_ESS_RATED_BOUNDED_VARIABLES` |
+| `shared_es_pnet`, `shared_es_qnet` bounds `[−1·S, 1·S]` | **C** numeric bound | same |
+| fix/unfix + row (de)activation at the zero-capacity threshold | **D** gating | `configure_shared_ess_operational_state` |
+| any other active row referencing `shared_es_s_rated_fixed` | **B** — **none** | verified numerically: **0 active rows** outside the fixing row |
+
+### E
+
+| Dependence | Class | Detail |
+|---|---|---|
+| `sess_soc_limit_lower`: `soc ≥ shared_es_e_rated · 0.1` | **A** symbolic | |
+| `sess_soc_limit_upper`: `soc ≤ shared_es_e_rated · 0.9` | **A** symbolic | verified body: `shared_es_soc[0,0,0,0] <= 0.9*shared_es_e_rated[0]` |
+| `sess_soc_def` at `p = 0`, `sess_soc_final` | **A** symbolic | anchored at `shared_es_e_rated · 0.5` |
+| SOC initial **value** `0.5·E` | **D** start point | affects which local optimum is reached, not the feasible set |
+| any E-scaled variable bound | **C — none** | `shared_es_soc` bounds are `[0, None]`; both SOC slacks `[0, None]` |
+| any active row referencing `shared_es_e_rated_fixed` | **B** — **none** | verified numerically |
+
+> **The E path is already sensitivity-clean; the S path is not.** That asymmetry
+> is the audit's central structural finding, and it predicts exactly what is
+> observed below.
+
+### Measured bound multipliers
+
+`shared_es_pch`, `shared_es_pdch`, `shared_es_pnet` and `shared_es_qnet` all
+carry live `zL`/`zU` at the solved point. The resulting bound contribution to
+`dQ/dS` is **negative in 40 / 40** scanned points and **8 / 8** audited cases —
+i.e. always the sign set monotonicity requires — and it obeys a clean structural
+law:
+
+| Case | S ×1 | ×5 | ×20 | ×100 |
+|---|---|---|---|---|
+| `dso/9/2030/Winter`, `bound × S` | −1.3123e-03 | −1.3102e-03 | −1.3094e-03 | −1.3091e-03 |
+| `tso/0/2025/Winter`, `bound × S` | −1.4739e-02 | −6.6690e-03 | −6.5726e-03 | −6.5506e-03 |
+
+`bound_contribution · S` is invariant to four significant figures across a 100×
+capacity range (the TSO's first point differs because S is *binding* there).
+This is a systematic term, not an artefact.
+
+## D2.4b — envelope decomposition (root cause 1)
+
+Per case, at the bootstrap capacity:
+
+| Case | fixing-row dual | bound contribution | corrected total | fixing share of total |
+|---|---|---|---|---|
+| dso/5/2025/Winter | **+1.5009e+01** | −1.2607e+01 | +2.4016e+00 | **6.250** |
+| dso/5/2030/Summer | **+1.0559e+01** | −6.2427e+00 | +4.3160e+00 | **2.446** |
+| dso/7/2025/Spring | **+1.5833e+01** | −1.2625e+01 | +3.2083e+00 | **4.935** |
+| dso/7/2030/Winter | −3.2408e+00 | −6.1698e+00 | −9.4106e+00 | 0.344 |
+| dso/9/2030/Winter | −3.2400e+00 | −6.1698e+00 | −9.4098e+00 | 0.344 |
+| dso/9/2035/Summer | −1.5701e+00 | −4.1119e+00 | −5.6820e+00 | 0.276 |
+| tso/0/2025/Winter | −1.1871e+02 | −1.3859e+02 | −2.5730e+02 | 0.461 |
+| tso/1/2030/Summer | −5.3083e+01 | −3.1660e+01 | −8.4742e+01 | 0.626 |
+
+> **Root cause 1 — the Benders coefficient is structurally incomplete for S.**
+> The quantity Benders extracts is between **28 % and 625 %** of the corrected
+> envelope derivative. In three of eight cases it is **positive**, which by the
+> D2.1 monotonicity argument is provably not `∂Q/∂S`.
+
+For **E**, the bound contribution is **exactly 0.0 in every one of the 40
+scanned points**, and the fixing-row dual is **negative in 40 / 40** — the
+structurally complete, sign-consistent behaviour the inventory predicts.
+
+## D2.5 / D2.9 — finite differences, and why they cannot settle this (root cause 2)
+
+### Cold-start FD reproduces the D finding and explains it
+
+Objectives from the cold-start FD cluster into a few discrete values whose
+separation is **independent of the step size**. At `rel = 0.001`
+(`h = 2.1e-07`) `ΔQ` is still `5.3e-03`, while the corrected derivative predicts
+a capacity effect of `~2e-06` — three orders of magnitude smaller.
+
+### It is not solver noise
+
+Solving the **identical unperturbed problem** five times from the production
+cold start gives **spread = 0.0000e+00** — bit-identical objectives and one
+active set. The solver is deterministic; the variation is a genuine,
+reproducible dependence of *which local optimum is selected* on the capacity
+value.
+
+### Continuation sweep — the decisive evidence
+
+A ±5 % sweep in 0.5 % steps, each solve seeded from the previous one:
+
+| `S/S₀` | `Q` | fixing-row dual |
+|---|---|---|
+| 0.950 | −8.017376754515e-01 | −3.5536e+00 |
+| 0.955 | −7.991076137578e-01 | **+1.1040e+01** |
+| 0.960 | −8.017253267607e-01 | −3.4621e+00 |
+| 0.965 | −8.017234421550e-01 | −3.4385e+00 |
+| 0.970 | −7.979574629569e-01 | **+1.6369e+01** |
+| 0.975 | −7.990532618936e-01 | +1.0579e+01 |
+| 0.980 | −7.990470262602e-01 | +1.0551e+01 |
+| 0.985 | −7.990408541574e-01 | +1.0522e+01 |
+| … | … | … |
+| 1.050 | −7.991486325795e-01 | +9.4612e+00 |
+
+Across the sweep `Q` takes **~16 distinct values on at least three discrete
+branches**, spanning **4.0e-03**, while the entire capacity effect across the
+whole ±5 % window is `≈ |dQ/dS|·0.1·S ≈ 2e-04` — the branch gap is **~20×
+larger than the effect being measured**.
+
+> **Root cause 2 — the realized local value function is multi-valued in S and E
+> at bootstrap capacities.** The fixing-row dual behaves as a **branch label**:
+> it is tightly correlated with which Q level the solve landed on
+> (`Q ≈ −0.80172 → dual ≈ −3.4`; `Q ≈ −0.79905 → dual ≈ +10.5`;
+> `Q ≈ −0.79786 → dual ≈ +16.1`) and varies smoothly *within* a branch
+> (`+10.579 → +10.551 → +10.522` at 0.975/0.980/0.985).
+
+Consequences, stated plainly:
+
+- **Finite differences cannot validate either prediction in this regime.** No
+  perturbation window with a stable branch and a resolvable capacity effect was
+  found. This is why the P5.4-D result could neither confirm nor refute the
+  dual.
+- Seeding perturbed solves from the base solution does **not** rescue it: the
+  seeded solves converge to a *different* branch (`Q ≈ −0.799075`) than the
+  cold-started base (`Q ≈ −0.801702`), so the reference dual and the differences
+  then belong to different branches.
+- The non-monotone `Q(S)` in the table above does **not** contradict D2.1: set
+  monotonicity constrains the global minimum, and the solver returns a local
+  one.
+
+## D2.6 / D2.8 — sensitivity-clean reformulation A/B
+
+### Redundancy proof
+
+| Capacity-dependent bound | Implied by |
+|---|---|
+| `pch ≤ S` | `pch + pdch ≤ S` with `pdch ≥ 0`; independently by `pch = S·pch_hat`, `pch_hat ≤ 1` |
+| `pdch ≤ S` | `pch + pdch ≤ S` with `pch ≥ 0`; independently by the H1 link |
+| `−S ≤ pnet ≤ S` | `pnet² + qnet² ≤ S²` |
+| `−S ≤ qnet ≤ S` | `pnet² + qnet² ≤ S²` |
+
+All four are redundant, so removing them **does not change the feasible set**.
+
+- **A** — production: bounds retained.
+- **B** — sensitivity-clean: only those four relaxed. Retained unchanged:
+  `pch, pdch ≥ 0`; the H1 hat bounds `[0, 1]`; `sess_active_sum_limit`;
+  `sess_converter_capability`; every SOC/energy row; the zero-capacity gating.
+  No capacity-independent safety bound was needed — the symbolic rows and the
+  H1 links keep every variable bounded.
+
+### Result
+
+| | A | B |
+|---|---|---|
+| Bound contribution eliminated | — | **8 / 8 cases, exactly 0.0** |
+| Objective relative difference | — | up to 6.8e-03 |
+| Same ESS active set as A | — | **0 / 8** |
+| max \|Δpch\| | — | up to 4.6e-05 (≈ 21 % of rating) |
+
+> **B does exactly what it was designed to do — it makes the fixing-row dual the
+> structurally complete envelope derivative.** But **D2.8's equivalence
+> requirement is not met numerically in 6 of 8 cases**: A and B land on
+> different local optima. Two cases (`dso/9/2035/Summer`, `tso/0/2025/Winter`)
+> do agree closely (relative difference 4.5e-06 and 2.9e-05, `max|Δpch|` ~1e-08
+> and ~1e-06). The equivalence is provable analytically — identical feasible
+> sets — but relaxing the bounds changes the interior-point path, so root cause
+> 2 reappears. **This is not evidence against B**; it is the same multiplicity
+> defeating the comparison.
+
+## D2.7 — E analogue
+
+No change is proposed or needed. Verified on the built model: `shared_es_soc`
+bounds are `[0, None]`, both SOC slacks are `[0, None]`, the SOC limits are
+symbolic rows against `shared_es_e_rated`, and the E bound contribution is
+exactly `0.0` at every one of the 40 scanned points. SOC fractions, day balance,
+efficiencies and energy semantics were not touched.
+
+## D2.10 — broader population, and what could not be covered
+
+Covered: DSO nodes **5, 7 and 9**, a **TSO** case, years **2025 / 2030 / 2035**
+and days **Winter / Spring / Summer** — 8 cases, plus a 40-point capacity scan
+across two cases at `S ×{1, 5, 20, 100}` and `E ×{1, 0.5, 0.2, 0.05, 0.02}`.
+
+| Requirement | Status |
+|---|---|
+| DSO node 5 / 7 / 9, TSO, multiple years and days | **met** |
+| ≥ 1 case where **S** is operationally binding | **met** — `tso/0/2025/Winter` (active-sum slack 2.2e-06) |
+| ≥ 1 case where **E** is operationally binding | **NOT met** |
+
+**No E-binding case exists anywhere in the scan.** The SOC upper slack shrinks
+with `E` but never reaches zero, down to `E ×0.02`: in this reduced
+operational-only configuration the shared ESS is barely cycled, so the energy
+limit is never reached. Rather than manufacture one, this is reported as a gap.
+The E-side sensitivity conclusion therefore rests on the structural argument
+(no E-dependent bound exists, so the fixing-row dual is complete by
+construction) plus 40/40 sign-consistent duals — **not** on an E-binding test.
+
+## D2 production decision
+
+**No Benders equation was modified**, as instructed.
+
+**Recommended, for planner approval — productionize the D2.6 variant B local
+formulation correction.** Remove the four redundant capacity-dependent
+numerical bounds on `shared_es_pch`, `shared_es_pdch`, `shared_es_pnet` and
+`shared_es_qnet` from `_SHARED_ESS_RATED_BOUNDED_VARIABLES`, keeping
+nonnegativity, the H1 hat bounds and every symbolic row. This is an exact
+reformulation and it makes the quantity Benders already reads the structurally
+complete derivative, with no change to Benders itself.
+
+**If instead the bounds are kept**, Benders would need the additional term
+
+```
+Σ over pch, pdch entries:  zU
+Σ over pnet, qnet entries: (zU − zL)
+```
+
+scaled by the same `objective_scale / baseMVA · annualization · num_years ·
+num_days` weighting as the fixing-row dual. Variant B is preferable: it removes
+the term rather than requiring every consumer to remember it.
+
+**Neither fix resolves root cause 2.** Remaining cause, per the plan's list:
+**local-optimum switching**, and specifically local-solution multiplicity — not
+insufficient solve accuracy (repeated identical solves agree bit-for-bit), not
+complementarity nonsmoothness (H1 leaves zero violation and the branch gap
+appears in the objective, not the ESS active set), and not another hidden
+parameter dependence (category B is empty for both S and E). **No IPOPT option
+was tuned to force agreement.**
+
+## D2 verdict
+
+```
+P5.4-D2 PARTIAL — sensitivity root cause identified but production correction still required
+```
+
+---
+
 # H — Status after H1
 
 The H question has now split cleanly in two, and H1 answered the first half.
@@ -942,30 +1252,39 @@ its own, with the H1 formulation held fixed. That was not performed here.
 
 # Open items carried forward
 
-1. **The analytic shared-S capacity sensitivity is unconfirmed by finite
-   differences** (section D). Pre-existing — the pre-P5.4-A tree fails the same
-   test with relative errors of 10²–10³ against ~1 here — but unresolved, and a
-   risk to Benders cut quality. **This is what blocks P5.4-G**, and the plan
-   assigns it to P5.4-D2.
-2. **Physical sufficiency of `eps = 1e-4`** (H1.10 above): enforceable now, but
-   permitting circulation at 0.83 of the `sqrt(eps)` allowance.
-3. **The H1 numerical cost**: total network iterations 1 556 → 3 499 (×2.25),
-   runtime ~32 s → 44 s. No new failure family, no recoveries, rank diagnostics
-   identical. Reported plainly for the planner's judgement rather than
-   characterised as negligible.
+1. **Shared-S Benders coefficient is structurally incomplete** (D2). A concrete,
+   exact production correction is recommended and awaiting planner approval:
+   remove the four redundant capacity-dependent numerical bounds so that all
+   S-dependence flows through symbolic rows and the rated-capacity variable.
+   **This still blocks P5.4-G.**
+2. **Local-solution multiplicity at bootstrap capacities** (D2). The realized
+   value function is multi-valued in S and E; the branch gap is ~20x the entire
+   capacity effect across a +/-5 % sweep. No formulation change addresses this,
+   and it prevents finite-difference validation of any sensitivity in this
+   regime.
+3. **No E-binding operating point exists** in the scanned configuration (D2.10),
+   so the E-side conclusion rests on a structural argument plus 40/40
+   sign-consistent duals rather than on a binding test.
+4. **Physical sufficiency of `eps = 1e-4`** (H1.10): enforceable now, but
+   permitting circulation at 0.83 of the `sqrt(eps)` allowance. A later isolated
+   `1e-5` / `1e-6` A/B is recommended.
+5. **The H1 numerical cost**: total network iterations 1 556 -> 3 499 (x2.25),
+   runtime ~32 s -> 44 s. No new failure family, no recoveries, rank diagnostics
+   identical.
 
 Resolved and no longer open: the ESSO's absolute complementarity semantics
-(H1.5), the ESSO aggregate feasible-set incompatibility (H1.6), and the
-under-resolved network complementarity (H1.1–H1.3).
+(H1.5), the ESSO aggregate feasible-set incompatibility (H1.6), the
+under-resolved network complementarity (H1.1-H1.3), and the previously
+unexplained P5.4-D sensitivity mismatch, which D2 now attributes to two named
+causes.
 
 ---
 
 # Not run
 
-**P5.4-G was not run**, as instructed — the outer planning loop remains blocked
-on the P5.4-D2 shared-S sensitivity root cause. No final P5.4 verdict is issued
-in this revision; issuing one would require asserting a G result that does not
-exist.
+**P5.4-G was not run**, as instructed. `run_planning_problem()` was not invoked.
+No final P5.4 verdict is issued in this revision; issuing one would require
+asserting a G result that does not exist.
 
 ---
 
@@ -977,4 +1296,8 @@ P5.4-H1 PASS — complementarity is numerically resolved consistently across age
 
 ```
 P5.4-F ADMM PASS — net-P/Q coordination converged with locally consistent charge/discharge
+```
+
+```
+P5.4-D2 PARTIAL — sensitivity root cause identified but production correction still required
 ```
