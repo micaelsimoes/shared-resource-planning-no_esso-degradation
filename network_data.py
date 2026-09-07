@@ -9,6 +9,10 @@ from openpyxl import Workbook
 from openpyxl.styles import PatternFill
 from network import Network
 from network_parameters import NetworkParameters
+from model_construction_helpers import (
+    configure_shared_ess_operational_state,
+    shared_ess_capacity_is_inactive,
+)
 from helper_functions import *
 
 
@@ -27,6 +31,7 @@ class NetworkData:
         self.days = dict()
         self.num_instants = int()
         self.num_oper_scenarios = int()
+        self.random_seed = None
         self.plot_operational_data = bool()
         self.discount_factor = float()
         self.network = dict()
@@ -46,12 +51,20 @@ class NetworkData:
                 network_models[year][day] = self.network[year][day].build_model(self.params)
         return network_models
 
-    def optimize(self, model, from_warm_start=False, print_header=True):
+    def optimize(self, model, from_warm_start=False, print_header=True, failure_snapshot_callback=None, pre_solve_snapshot_callback=None):
         results = dict()
         for year in self.years:
             results[year] = dict()
             for day in self.days:
+                pre_solve_model = None
+                if failure_snapshot_callback is not None or pre_solve_snapshot_callback is not None:
+                    pre_solve_model = model[year][day].clone()
                 results[year][day] = self.network[year][day].run_smopf(model[year][day], self.params, from_warm_start=from_warm_start, print_header=print_header)
+                if failure_snapshot_callback is not None and not solver_result_succeeded(results[year][day]):
+                    failure_snapshot_callback(pre_solve_model, year, day, results[year][day])
+                if pre_solve_snapshot_callback is not None:
+                    pre_solve_snapshot_callback(pre_solve_model, year, day, results[year][day])
+
         return results
 
     def get_pq_map(self, num_steps=8, print_pq_map=False):
@@ -149,7 +162,10 @@ def _read_network_data(network_planning):
         print(f'[ERROR] Reading operational data, network {network_planning.name} from file. Exiting...')
         exit(ERROR_SPECIFICATION_FILE)
 
-    synthetic_profiles = _generate_operational_scenarios(base_data)
+    synthetic_profiles = _generate_operational_scenarios(
+        base_data,
+        random_seed=derive_random_seed(network_planning.random_seed, 'synthetic_profiles'),
+    )
     if network_planning.plot_operational_data:
         years_to_plot = list(network_planning.years)[0]
         _plot_flexibility_data_scenarios(network_planning, synthetic_profiles['flexibility'], years_to_plot=[years_to_plot], save_dir=network_planning.diagrams_dir)
@@ -171,6 +187,7 @@ def _read_network_data(network_planning):
             network_planning.network[year][day].day = day
             network_planning.network[year][day].num_instants = network_planning.num_instants
             network_planning.network[year][day].num_oper_scenarios = network_planning.num_oper_scenarios
+            network_planning.network[year][day].random_seed = derive_random_seed(network_planning.random_seed, 'realization', int(year), str(day))
             network_planning.network[year][day].prob_operation_scenarios = [(1 / network_planning.num_oper_scenarios)] * network_planning.num_oper_scenarios
             network_planning.network[year][day].is_transmission = network_planning.is_transmission
 
@@ -199,18 +216,35 @@ def _read_network_base_profiles(filename):
     return base_operational_data
 
 
-def _generate_operational_scenarios(base_profiles, n_samples=100, bandwidth=0.10):
+def _generate_operational_scenarios(base_profiles, n_samples=100, bandwidth=0.10,
+                                    random_seed=None):
 
     synthetic_profiles = {
-        'consumption': generate_consumption_profiles(base_profiles, n_samples=n_samples, bandwidth=bandwidth),
-        'generation': generate_res_generation_profiles(base_profiles, n_samples=n_samples, bandwidth=bandwidth),
-        'flexibility': generate_flexibility_profiles(base_profiles, n_samples=n_samples, bandwidth=bandwidth)
+        'consumption': generate_consumption_profiles(
+            base_profiles,
+            n_samples=n_samples,
+            bandwidth=bandwidth,
+            random_seed=derive_random_seed(random_seed, 'consumption'),
+        ),
+        'generation': generate_res_generation_profiles(
+            base_profiles,
+            n_samples=n_samples,
+            bandwidth=bandwidth,
+            random_seed=derive_random_seed(random_seed, 'generation'),
+        ),
+        'flexibility': generate_flexibility_profiles(
+            base_profiles,
+            n_samples=n_samples,
+            bandwidth=bandwidth,
+            random_seed=derive_random_seed(random_seed, 'flexibility'),
+        ),
     }
 
     return synthetic_profiles
 
 
-def generate_consumption_profiles(base_operational_data, n_samples=100, bandwidth=0.10):
+def generate_consumption_profiles(base_operational_data, n_samples=100, bandwidth=0.10,
+                                  random_seed=None):
 
     print('[INFO]\t - Generating load stochastic scenarios...')
 
@@ -250,7 +284,10 @@ def generate_consumption_profiles(base_operational_data, n_samples=100, bandwidt
             combined_scaled = scaler.fit_transform(combined)
 
             # Fit model
-            model = GaussianMultivariate(distribution=CustomGaussianKDE(bandwidth=bandwidth))
+            model = GaussianMultivariate(
+                distribution=CustomGaussianKDE(bandwidth=bandwidth),
+                random_state=derive_random_seed(random_seed, str(season), str(load_id)),
+            )
             model.fit(pd.DataFrame(combined_scaled, columns=combined.columns))
 
             # Sample
@@ -266,7 +303,8 @@ def generate_consumption_profiles(base_operational_data, n_samples=100, bandwidt
     return synthetic_profiles
 
 
-def generate_res_generation_profiles(base_operational_data, n_samples=100, bandwidth=0.10):
+def generate_res_generation_profiles(base_operational_data, n_samples=100, bandwidth=0.10,
+                                     random_seed=None):
 
     print('[INFO]\t - Generating RES generation stochastic scenarios...')
 
@@ -296,7 +334,10 @@ def generate_res_generation_profiles(base_operational_data, n_samples=100, bandw
             scaler = MinMaxScaler()
             scaled = scaler.fit_transform(gen_hours)
 
-            model = GaussianMultivariate(distribution=CustomGaussianKDE(bandwidth=bandwidth))
+            model = GaussianMultivariate(
+                distribution=CustomGaussianKDE(bandwidth=bandwidth),
+                random_state=derive_random_seed(random_seed, str(season), gen_type),
+            )
             model.fit(pd.DataFrame(scaled))
 
             # Sample
@@ -311,7 +352,8 @@ def generate_res_generation_profiles(base_operational_data, n_samples=100, bandw
     return synthetic_profiles
 
 
-def generate_flexibility_profiles(base_operational_data, n_samples=100, bandwidth=0.10):
+def generate_flexibility_profiles(base_operational_data, n_samples=100, bandwidth=0.10,
+                                  random_seed=None):
 
     print('[INFO]\t - Generating flexibility stochastic scenarios...')
 
@@ -342,7 +384,10 @@ def generate_flexibility_profiles(base_operational_data, n_samples=100, bandwidt
         combined_scaled = scaler.fit_transform(combined)
 
         # Fit model
-        model = GaussianMultivariate(distribution=CustomGaussianKDE(bandwidth=bandwidth))
+        model = GaussianMultivariate(
+            distribution=CustomGaussianKDE(bandwidth=bandwidth),
+            random_state=derive_random_seed(random_seed, str(season)),
+        )
         model.fit(pd.DataFrame(combined_scaled, columns=combined.columns))
 
         # Sample
@@ -391,7 +436,7 @@ def _get_objective_function_value(network_planning, models):
                 num_days = network_planning.days[day]
                 network = network_planning.network[year][day]
                 model = models[year][day]
-                of_value += annualization * num_days * num_years * network.compute_objective_function_value(model)
+                of_value += annualization * num_days * num_years * network.get_primal_value(model, network_planning.params)     # Base SMOPF objective: excludes scenario-deviation regularization and ADMM augmentation terms.
     return of_value
 
 
@@ -451,7 +496,7 @@ def _write_main_info_to_excel(network_planning, workbook, results):
     # Objective function value and its components (penalties)
     col_idx = 2
     line_idx += 1
-    sheet.cell(row=line_idx, column=1).value = 'Objective function value, [N/A]'
+    sheet.cell(row=line_idx, column=1).value = 'Base SMOPF objective value, [N/A]'
     for year in network_planning.years:
         for day in network_planning.days:
             if results['results'][year][day]:
@@ -485,7 +530,7 @@ def _write_main_info_to_excel(network_planning, workbook, results):
 
         col_idx = 2
         line_idx += 1
-        sheet.cell(row=line_idx, column=1).value = 'Flexibility used, [MWh]'
+        sheet.cell(row=line_idx, column=1).value = 'Flexibility procurement, [MWh]'
         for year in network_planning.years:
             for day in network_planning.days:
                 value = results['results'][year][day]['flex_used']['p']
@@ -494,7 +539,7 @@ def _write_main_info_to_excel(network_planning, workbook, results):
 
         col_idx = 2
         line_idx += 1
-        sheet.cell(row=line_idx, column=1).value = 'Flexibility used, [MVArh]'
+        sheet.cell(row=line_idx, column=1).value = 'Flexibility procurement, [MVArh]'
         for year in network_planning.years:
             for day in network_planning.days:
                 value = results['results'][year][day]['flex_used']['q']
@@ -504,7 +549,7 @@ def _write_main_info_to_excel(network_planning, workbook, results):
         if network_planning.params.obj_type == OBJ_MIN_COST:
             col_idx = 2
             line_idx += 1
-            sheet.cell(row=line_idx, column=1).value = 'Flexibility cost, [€]'
+            sheet.cell(row=line_idx, column=1).value = 'Flexibility remuneration, [€]'
             for year in network_planning.years:
                 for day in network_planning.days:
                     value = results['results'][year][day]['flex_cost']
@@ -628,6 +673,15 @@ def _write_main_info_to_excel(network_planning, workbook, results):
         for year in network_planning.years:
             for day in network_planning.days:
                 value = results['results'][year][day]['gen_curt']['s']
+                write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
+                col_idx += 1
+
+        col_idx = 2
+        line_idx += 1
+        sheet.cell(row=line_idx, column=1).value = 'Renewable generation curtailment penalty, [N/A]'
+        for year in network_planning.years:
+            for day in network_planning.days:
+                value = results['results'][year][day]['gen_curt_penalty']
                 write_value(sheet, line_idx, col_idx, value, number_format=decimal_style)
                 col_idx += 1
 
@@ -984,7 +1038,7 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
                             sheet.cell(row=row_idx, column=2).value = node_id
                             sheet.cell(row=row_idx, column=3).value = int(year)
                             sheet.cell(row=row_idx, column=4).value = day
-                            sheet.cell(row=row_idx, column=5).value = 'Qc_curt, [MW]'
+                            sheet.cell(row=row_idx, column=5).value = 'Qc_curt, [MVAr]'
                             sheet.cell(row=row_idx, column=6).value = s_m
                             sheet.cell(row=row_idx, column=7).value = s_o
                             for p in range(network.num_instants):
@@ -994,21 +1048,6 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
                                 if not isclose(qc_curt, 0.00, abs_tol=VIOLATION_TOLERANCE):
                                     sheet.cell(row=row_idx, column=p + 8).fill = violation_fill
                                 expected_qc_curt[load_id][p] += qc_curt * omega_m * omega_s
-                            row_idx = row_idx + 1
-
-                            # - Reactive power net consumption
-                            sheet.cell(row=row_idx, column=1).value = load_id
-                            sheet.cell(row=row_idx, column=2).value = node_id
-                            sheet.cell(row=row_idx, column=3).value = int(year)
-                            sheet.cell(row=row_idx, column=4).value = day
-                            sheet.cell(row=row_idx, column=5).value = 'Qc_net, [MW]'
-                            sheet.cell(row=row_idx, column=6).value = s_m
-                            sheet.cell(row=row_idx, column=7).value = s_o
-                            for p in range(network.num_instants):
-                                q_net = results[year][day]['scenarios'][s_m][s_o]['consumption']['qc_net'][load_id][p]
-                                sheet.cell(row=row_idx, column=p + 8).value = q_net
-                                sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
-                                expected_qnet[load_id][p] += q_net * omega_m * omega_s
                             row_idx = row_idx + 1
 
                         if network_planning.params.fl_reg or network_planning.params.l_curt:
@@ -1128,7 +1167,7 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
                     sheet.cell(row=row_idx, column=2).value = node_id
                     sheet.cell(row=row_idx, column=3).value = int(year)
                     sheet.cell(row=row_idx, column=4).value = day
-                    sheet.cell(row=row_idx, column=5).value = 'Qc_curt, [MW]'
+                    sheet.cell(row=row_idx, column=5).value = 'Qc_curt, [MVAr]'
                     sheet.cell(row=row_idx, column=6).value = 'Expected'
                     sheet.cell(row=row_idx, column=7).value = '-'
                     for p in range(network.num_instants):
@@ -1136,19 +1175,6 @@ def _write_network_consumption_results_to_excel(network_planning, workbook, resu
                         sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                         if not isclose(expected_qc_curt[load_id][p], 0.00, abs_tol=VIOLATION_TOLERANCE):
                             sheet.cell(row=row_idx, column=p + 8).fill = violation_fill
-                    row_idx = row_idx + 1
-
-                    # - Reactive power net consumption
-                    sheet.cell(row=row_idx, column=1).value = load_id
-                    sheet.cell(row=row_idx, column=2).value = node_id
-                    sheet.cell(row=row_idx, column=3).value = int(year)
-                    sheet.cell(row=row_idx, column=4).value = day
-                    sheet.cell(row=row_idx, column=5).value = 'Qc_net, [MW]'
-                    sheet.cell(row=row_idx, column=6).value = 'Expected'
-                    sheet.cell(row=row_idx, column=7).value = '-'
-                    for p in range(network.num_instants):
-                        sheet.cell(row=row_idx, column=p + 8).value = expected_qnet[load_id][p]
-                        sheet.cell(row=row_idx, column=p + 8).number_format = decimal_style
                     row_idx = row_idx + 1
 
                 if network_planning.params.fl_reg or network_planning.params.l_curt:
@@ -1554,52 +1580,66 @@ def _write_network_branch_loading_results_to_excel(network_planning, workbook, r
 
             network = network_planning.network[year][day]
 
-            expected_values = {'flow_ij': {}}
+            expected_values = {'flow_ij_perc': {}, 'flow_ji_perc': {}}
             for branch in network.branches:
-                expected_values['flow_ij'][branch.branch_id] = [0.0 for _ in range(network.num_instants)]
+                expected_values['flow_ij_perc'][branch.branch_id] = [0.0 for _ in range(network.num_instants)]
 
             for s_m in results[year][day]['scenarios']:
                 omega_m = network.prob_market_scenarios[s_m]
                 for s_o in results[year][day]['scenarios'][s_m]:
                     omega_s = network.prob_operation_scenarios[s_o]
                     for branch in network.branches:
-
-                        # flow ij, [%]
-                        sheet.cell(row=row_idx, column=1).value = branch.branch_id
-                        sheet.cell(row=row_idx, column=2).value = branch.fbus
-                        sheet.cell(row=row_idx, column=3).value = branch.tbus
-                        sheet.cell(row=row_idx, column=4).value = int(year)
-                        sheet.cell(row=row_idx, column=5).value = day
-                        sheet.cell(row=row_idx, column=6).value = 'Flow_ij, [%]'
-                        sheet.cell(row=row_idx, column=7).value = s_m
-                        sheet.cell(row=row_idx, column=8).value = s_o
-                        for p in range(network.num_instants):
-                            value = results[year][day]['scenarios'][s_m][s_o]['branches']['branch_flow']['flow_ij_perc'][branch.branch_id][p]
-                            sheet.cell(row=row_idx, column=p + 9).value = value
-                            sheet.cell(row=row_idx, column=p + 9).number_format = perc_style
-                            if value > 1.00 + VIOLATION_TOLERANCE:
-                                sheet.cell(row=row_idx, column=p + 9).fill = violation_fill
-                            expected_values['flow_ij'][branch.branch_id][p] += value * omega_m * omega_s
-                        row_idx = row_idx + 1
+                        branch_loading = results[year][day]['scenarios'][s_m][s_o]['branches']['branch_flow']
+                        directions = (
+                            ('flow_ij_perc', 'Flow_ij, [%]', branch.fbus, branch.tbus),
+                            ('flow_ji_perc', 'Flow_ji, [%]', branch.tbus, branch.fbus),
+                        )
+                        for quantity, label, fbus, tbus in directions:
+                            if branch.branch_id not in branch_loading[quantity]:
+                                continue
+                            expected_values[quantity].setdefault(
+                                branch.branch_id, [0.0 for _ in range(network.num_instants)]
+                            )
+                            sheet.cell(row=row_idx, column=1).value = branch.branch_id
+                            sheet.cell(row=row_idx, column=2).value = fbus
+                            sheet.cell(row=row_idx, column=3).value = tbus
+                            sheet.cell(row=row_idx, column=4).value = int(year)
+                            sheet.cell(row=row_idx, column=5).value = day
+                            sheet.cell(row=row_idx, column=6).value = label
+                            sheet.cell(row=row_idx, column=7).value = s_m
+                            sheet.cell(row=row_idx, column=8).value = s_o
+                            for p in range(network.num_instants):
+                                value = branch_loading[quantity][branch.branch_id][p]
+                                sheet.cell(row=row_idx, column=p + 9).value = value
+                                sheet.cell(row=row_idx, column=p + 9).number_format = perc_style
+                                if value > 1.00 + VIOLATION_TOLERANCE:
+                                    sheet.cell(row=row_idx, column=p + 9).fill = violation_fill
+                                expected_values[quantity][branch.branch_id][p] += value * omega_m * omega_s
+                            row_idx = row_idx + 1
 
             for branch in network.branches:
-
-                # flow ij, [%]
-                sheet.cell(row=row_idx, column=1).value = branch.branch_id
-                sheet.cell(row=row_idx, column=2).value = branch.fbus
-                sheet.cell(row=row_idx, column=3).value = branch.tbus
-                sheet.cell(row=row_idx, column=4).value = int(year)
-                sheet.cell(row=row_idx, column=5).value = day
-                sheet.cell(row=row_idx, column=6).value = 'Flow_ij, [%]'
-                sheet.cell(row=row_idx, column=7).value = 'Expected'
-                sheet.cell(row=row_idx, column=8).value = '-'
-                for p in range(network.num_instants):
-                    value = expected_values['flow_ij'][branch.branch_id][p]
-                    sheet.cell(row=row_idx, column=p + 9).value = value
-                    sheet.cell(row=row_idx, column=p + 9).number_format = perc_style
-                    if value > 1.00 + VIOLATION_TOLERANCE:
-                        sheet.cell(row=row_idx, column=p + 9).fill = violation_fill
-                row_idx = row_idx + 1
+                directions = (
+                    ('flow_ij_perc', 'Flow_ij, [%]', branch.fbus, branch.tbus),
+                    ('flow_ji_perc', 'Flow_ji, [%]', branch.tbus, branch.fbus),
+                )
+                for quantity, label, fbus, tbus in directions:
+                    if branch.branch_id not in expected_values[quantity]:
+                        continue
+                    sheet.cell(row=row_idx, column=1).value = branch.branch_id
+                    sheet.cell(row=row_idx, column=2).value = fbus
+                    sheet.cell(row=row_idx, column=3).value = tbus
+                    sheet.cell(row=row_idx, column=4).value = int(year)
+                    sheet.cell(row=row_idx, column=5).value = day
+                    sheet.cell(row=row_idx, column=6).value = label
+                    sheet.cell(row=row_idx, column=7).value = 'Expected'
+                    sheet.cell(row=row_idx, column=8).value = '-'
+                    for p in range(network.num_instants):
+                        value = expected_values[quantity][branch.branch_id][p]
+                        sheet.cell(row=row_idx, column=p + 9).value = value
+                        sheet.cell(row=row_idx, column=p + 9).number_format = perc_style
+                        if value > 1.00 + VIOLATION_TOLERANCE:
+                            sheet.cell(row=row_idx, column=p + 9).fill = violation_fill
+                    row_idx = row_idx + 1
 
 
 def _write_network_branch_power_flow_results_to_excel(network_planning, workbook, results):
@@ -2419,6 +2459,15 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
 
     row_idx = 1
     decimal_style = '0.00'
+    voltage_decimal_style = '0.000000'
+    voltage_quantities = (
+        ('squared_down', 'Voltage squared slack, down [p.u.^2]'),
+        ('squared_up', 'Voltage squared slack, up [p.u.^2]'),
+        ('physical_down', 'Voltage permitted relaxation, down [p.u.]'),
+        ('physical_up', 'Voltage permitted relaxation, up [p.u.]'),
+        ('violation_down', 'Voltage realized violation, down [p.u.]'),
+        ('violation_up', 'Voltage realized violation, up [p.u.]'),
+    )
 
     # Write Header
     sheet.cell(row=row_idx, column=1).value = 'Resource ID'
@@ -2442,50 +2491,42 @@ def _write_relaxation_slacks_scenarios_results_to_excel(network_planning, workbo
                         for node in network.nodes:
 
                             node_id = node.bus_i
-
-                            # - slack_e
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'Voltage, e'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
-                            for p in range(network_planning.num_instants):
-                                slack_e = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 7).value = slack_e
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                            row_idx = row_idx + 1
-
-                            # - slack_f
-                            sheet.cell(row=row_idx, column=1).value = node_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'Voltage, f'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
-                            for p in range(network_planning.num_instants):
-                                slack_f = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f'][node_id][p]
-                                sheet.cell(row=row_idx, column=p + 7).value = slack_f
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                            row_idx = row_idx + 1
+                            voltage_results = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']
+                            for quantity, label in voltage_quantities:
+                                sheet.cell(row=row_idx, column=1).value = node_id
+                                sheet.cell(row=row_idx, column=2).value = int(year)
+                                sheet.cell(row=row_idx, column=3).value = day
+                                sheet.cell(row=row_idx, column=4).value = label
+                                sheet.cell(row=row_idx, column=5).value = s_m
+                                sheet.cell(row=row_idx, column=6).value = s_o
+                                for p in range(network_planning.num_instants):
+                                    sheet.cell(row=row_idx, column=p + 7).value = voltage_results[quantity][node_id][p]
+                                    sheet.cell(row=row_idx, column=p + 7).number_format = voltage_decimal_style
+                                row_idx = row_idx + 1
 
                     # Branch flow slacks
                     if network_planning.params.slacks.grid_operation.branch_flow:
                         for branch in network.branches:
 
                             branch_id = branch.branch_id
-
-                            sheet.cell(row=row_idx, column=1).value = branch_id
-                            sheet.cell(row=row_idx, column=2).value = int(year)
-                            sheet.cell(row=row_idx, column=3).value = day
-                            sheet.cell(row=row_idx, column=4).value = 'Flow_ij_sqr'
-                            sheet.cell(row=row_idx, column=5).value = s_m
-                            sheet.cell(row=row_idx, column=6).value = s_o
-                            for p in range(network_planning.num_instants):
-                                iij_sqr = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ij_sqr'][branch_id][p]
-                                sheet.cell(row=row_idx, column=p + 7).value = iij_sqr
-                                sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
-                            row_idx = row_idx + 1
+                            branch_slacks = results[year][day]['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']
+                            for quantity, label in (
+                                ('flow_ij_sqr', 'Flow_ij_sqr'),
+                                ('flow_ji_sqr', 'Flow_ji_sqr'),
+                            ):
+                                if branch_id not in branch_slacks[quantity]:
+                                    continue
+                                sheet.cell(row=row_idx, column=1).value = branch_id
+                                sheet.cell(row=row_idx, column=2).value = int(year)
+                                sheet.cell(row=row_idx, column=3).value = day
+                                sheet.cell(row=row_idx, column=4).value = label
+                                sheet.cell(row=row_idx, column=5).value = s_m
+                                sheet.cell(row=row_idx, column=6).value = s_o
+                                for p in range(network_planning.num_instants):
+                                    slack_sqr = branch_slacks[quantity][branch_id][p]
+                                    sheet.cell(row=row_idx, column=p + 7).value = slack_sqr
+                                    sheet.cell(row=row_idx, column=p + 7).number_format = decimal_style
+                                row_idx = row_idx + 1
 
                     # Node balance
                     for node in network.nodes:
@@ -2765,36 +2806,78 @@ def _plot_res_data_scenarios(network_planning, years_to_plot, save_dir, save_for
 def _get_sensitivities(network_planning, model):
 
     sensitivities = {'s': dict(), 'e': dict()}
+    sensitivity_available = {'s': dict(), 'e': dict()}
+    if network_planning.is_transmission:
+        node_ids = network_planning.active_distribution_network_nodes
+    else:
+        node_ids = [network_planning.tn_connection_nodeid]
+
     for year in network_planning.years:
         sensitivities['s'][year] = dict()
         sensitivities['e'][year] = dict()
-        for node_id in network_planning.active_distribution_network_nodes:
+        sensitivity_available['s'][year] = dict()
+        sensitivity_available['e'][year] = dict()
+        for node_id in node_ids:
             sensitivities['s'][year][node_id] = 0.00
             sensitivities['e'][year][node_id] = 0.00
+            sensitivity_available['s'][year][node_id] = True
+            sensitivity_available['e'][year][node_id] = True
 
     for year in network_planning.years:
-
         num_years = network_planning.years[year]
+        years = list(network_planning.years)
+        annualization = 1 / ((1 + network_planning.discount_factor) ** (int(year) - int(years[0])))
 
         for day in network_planning.days:
-
             num_days = network_planning.days[day]
             model_repr_day = model[year][day]
+            network_repr_day = network_planning.network[year][day]
+            objective_scale = 1.00
+            if hasattr(model_repr_day, 'admm_objective_scale'):
+                objective_scale = pe.value(model_repr_day.admm_objective_scale)
 
-            for c in model_repr_day.shared_energy_storage_s_sensitivities:
-                node_id = network_planning.active_distribution_network_nodes[c - 1]  # Note: the sensitivity constraints start at "1"
-                sensitivity_s = model_repr_day.dual[model_repr_day.shared_energy_storage_s_sensitivities[c]] * network_planning.network[year][day].baseMVA
-                sensitivities['s'][year][node_id] += (num_days / 365.00) * sensitivity_s
+            for e in model_repr_day.shared_energy_storage_s_sensitivities:
+                if network_planning.is_transmission:
+                    node_id = network_repr_day.shared_energy_storages[e].bus
+                else:
+                    node_id = network_planning.tn_connection_nodeid
+                if shared_ess_capacity_is_inactive(
+                        pe.value(model_repr_day.shared_es_s_rated_fixed[e]),
+                        pe.value(model_repr_day.shared_es_e_rated_fixed[e])):
+                    sensitivity_available['s'][year][node_id] = False
+                    continue
+                constraint = model_repr_day.shared_energy_storage_s_sensitivities[e]
+                dual = model_repr_day.dual.get(constraint)
+                if dual is None:
+                    sensitivity_available['s'][year][node_id] = False
+                else:
+                    # Restore cost units from the normalized ADMM objective, then convert the per-unit RHS to MVA.
+                    sensitivity_s = objective_scale * dual / network_repr_day.baseMVA
+                    sensitivities['s'][year][node_id] += annualization * num_years * num_days * sensitivity_s
 
-            for c in model_repr_day.shared_energy_storage_e_sensitivities:
-                node_id = network_planning.active_distribution_network_nodes[c - 1]
-                sensitivity_e = model_repr_day.dual[model_repr_day.shared_energy_storage_e_sensitivities[c]] * network_planning.network[year][day].baseMVA
-                sensitivities['e'][year][node_id] += (num_days / 365.00) * sensitivity_e
+            for e in model_repr_day.shared_energy_storage_e_sensitivities:
+                if network_planning.is_transmission:
+                    node_id = network_repr_day.shared_energy_storages[e].bus
+                else:
+                    node_id = network_planning.tn_connection_nodeid
+                if shared_ess_capacity_is_inactive(
+                        pe.value(model_repr_day.shared_es_s_rated_fixed[e]),
+                        pe.value(model_repr_day.shared_es_e_rated_fixed[e])):
+                    sensitivity_available['e'][year][node_id] = False
+                    continue
+                constraint = model_repr_day.shared_energy_storage_e_sensitivities[e]
+                dual = model_repr_day.dual.get(constraint)
+                if dual is None:
+                    sensitivity_available['e'][year][node_id] = False
+                else:
+                    sensitivity_e = objective_scale * dual / network_repr_day.baseMVA
+                    sensitivities['e'][year][node_id] += annualization * num_years * num_days * sensitivity_e
 
-        # Note: annualization is already considered in the master problem's OF
-        for node_id in network_planning.active_distribution_network_nodes:
-            sensitivities['s'][year][node_id] *= 365.00 * num_years
-            sensitivities['e'][year][node_id] *= 365.00 * num_years
+        for node_id in node_ids:
+            if not sensitivity_available['s'][year][node_id]:
+                sensitivities['s'][year][node_id] = None
+            if not sensitivity_available['e'][year][node_id]:
+                sensitivities['e'][year][node_id] = None
 
     return sensitivities
 
@@ -2830,8 +2913,13 @@ def _update_model_with_candidate_solution(network, model, candidate_solution):
                 s_base = network.network[year][day].baseMVA
                 for node_id in network.active_distribution_network_nodes:
                     shared_ess_idx = network.network[year][day].get_shared_energy_storage_idx(node_id)
-                    model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(abs(candidate_solution[node_id][year]['s']) / s_base)
-                    model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(abs(candidate_solution[node_id][year]['e']) / s_base)
+                    s_capacity = abs(candidate_solution[node_id][year]['s']) / s_base
+                    e_capacity = abs(candidate_solution[node_id][year]['e']) / s_base
+                    model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(s_capacity)
+                    model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(e_capacity)
+                    configure_shared_ess_operational_state(
+                        model[year][day], shared_ess_idx, s_capacity, e_capacity
+                    )
     else:
         tn_node_id = network.tn_connection_nodeid
         for year in network.years:
@@ -2839,5 +2927,10 @@ def _update_model_with_candidate_solution(network, model, candidate_solution):
                 s_base = network.network[year][day].baseMVA
                 ref_node_id = network.network[year][day].get_reference_node_id()
                 shared_ess_idx = network.network[year][day].get_shared_energy_storage_idx(ref_node_id)
-                model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(abs(candidate_solution[tn_node_id][year]['s']) / s_base)
-                model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(abs(candidate_solution[tn_node_id][year]['e']) / s_base)
+                s_capacity = abs(candidate_solution[tn_node_id][year]['s']) / s_base
+                e_capacity = abs(candidate_solution[tn_node_id][year]['e']) / s_base
+                model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(s_capacity)
+                model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(e_capacity)
+                configure_shared_ess_operational_state(
+                    model[year][day], shared_ess_idx, s_capacity, e_capacity
+                )

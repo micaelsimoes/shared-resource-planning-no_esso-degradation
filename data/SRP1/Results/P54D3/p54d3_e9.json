@@ -1,0 +1,277 @@
+{
+ "stage": "P5.4-D3",
+ "git_head": "06e921e544dcd7dfda9eb38184a9a685d74c4e87",
+ "timestamp_utc": "2026-09-07T13:32:15.910254+00:00",
+ "group": "e9",
+ "perturbed_year": 2025,
+ "nodes": [
+  5,
+  7,
+  9
+ ],
+ "years": [
+  2025,
+  2030,
+  2035
+ ],
+ "coefficient_path": "g0 = the `sensitivities` returned by run_operational_planning(type=\"distributed\"), i.e. the object _add_benders_cut consumes: local fixing-row duals scaled by objective_scale/baseMVA, weighted by annualization*num_years*num_days, summed over TSO+DSOs, mapped available->investment capacity, plus the salvage sensitivity",
+ "cut_form": "L(x) = Q0 + g0^T (x - x0); constructed, never added to a master",
+ "D3_1_base": {
+  "converged": true,
+  "initialization_failed": false,
+  "runtime_s": 429.9409658908844,
+  "n_cycles": 9,
+  "all_local_solves_ok": true,
+  "n_recovery_diagnostics": 0,
+  "recourse": 848258809.8141167,
+  "gross_operational_cost": 848262234.9888126,
+  "terminal_salvage_value": 3425.174695846342,
+  "final_primal": {
+   "primal_v": 0.00013357751338636934,
+   "primal_pf": 0.009585992195756248,
+   "primal_ess": 0.0009141607820146392
+  },
+  "final_dual": {
+   "dual_v": 0.0007170893871382898,
+   "dual_pf": 0.048338644359575425,
+   "dual_ess": 0.0010337634032947377
+  },
+  "Q0": 848258809.8141167
+ },
+ "D3_2_cut": {
+  "x0": {
+   "s|node5|2025": 0.010634892806127162,
+   "s|node5|2030": 0.010634892806127162,
+   "s|node5|2035": 0.010634892806127162,
+   "s|node7|2025": 0.010634892806127162,
+   "s|node7|2030": 0.010634892806127162,
+   "s|node7|2035": 0.010634892806127162,
+   "s|node9|2025": 0.010634892806127162,
+   "s|node9|2030": 0.010634892806127162,
+   "s|node9|2035": 0.010634892806127162,
+   "e|node5|2025": 0.021269785612254323,
+   "e|node5|2030": 0.021269785612254323,
+   "e|node5|2035": 0.021269785612254323,
+   "e|node7|2025": 0.021269785612254323,
+   "e|node7|2030": 0.021269785612254323,
+   "e|node7|2035": 0.021269785612254323,
+   "e|node9|2025": 0.021269785612254323,
+   "e|node9|2030": 0.021269785612254323,
+   "e|node9|2035": 0.021269785612254323
+  },
+  "g0": {
+   "s|node5|2025": -13034108.304311076,
+   "s|node5|2030": -6392141.193472305,
+   "s|node5|2035": -2556968.336451614,
+   "s|node7|2025": -13079562.26381763,
+   "s|node7|2030": -6421324.9242644105,
+   "s|node7|2035": -2579210.3710429347,
+   "s|node9|2025": -13233830.384189263,
+   "s|node9|2030": -6595909.042494956,
+   "s|node9|2035": -2761245.781154212,
+   "e|node5|2025": -6912148.757307179,
+   "e|node5|2030": -3963058.079231013,
+   "e|node5|2035": -2123891.2630211916,
+   "e|node7|2025": -6849553.928877831,
+   "e|node7|2030": -3884550.2162802164,
+   "e|node7|2035": -1995757.8676483657,
+   "e|node9|2025": -7119799.668503621,
+   "e|node9|2030": -4044567.3457726096,
+   "e|node9|2035": -2012757.612172349
+  },
+  "n_coefficients": 18,
+  "n_none_coefficients": 0,
+  "g0_sign_summary": {
+   "s_negative": 9,
+   "s_positive": 0,
+   "e_negative": 9,
+   "e_positive": 0
+  }
+ },
+ "D3_6_repeatability": {
+  "Q_repeat": 848258809.8141167,
+  "Q0": 848258809.8141167,
+  "absolute_spread": 0.0,
+  "relative_spread": 0.0,
+  "converged": true,
+  "n_cycles": 9
+ },
+ "D3_candidates": [
+  {
+   "label": "e|node9|2025|-10.000%",
+   "kind": "e",
+   "node": 9,
+   "year": 2025,
+   "rel": -0.1,
+   "delta_x_nonzero": {
+    "e|node9|2025": -0.0021269785612254323
+   },
+   "n_perturbed_entries_without_coefficient": 0,
+   "A": {
+    "converged": true,
+    "initialization_failed": false,
+    "runtime_s": 590.8057429790497,
+    "n_cycles": 9,
+    "all_local_solves_ok": true,
+    "n_recovery_diagnostics": 0,
+    "recourse": 847841612.4263612,
+    "gross_operational_cost": 847845145.3227062,
+    "terminal_salvage_value": 3532.8963449834896,
+    "final_primal": {
+     "primal_v": 0.00014730420261138124,
+     "primal_pf": 0.009634845633414386,
+     "primal_ess": 0.0003617277610001545
+    },
+    "final_dual": {
+     "dual_v": 0.0007161577942178571,
+     "dual_pf": 0.047996760816358355,
+     "dual_ess": 0.0010839838848965158
+    }
+   },
+   "B": null,
+   "Q_best_observed": 847841612.4263612,
+   "predicted_delta_g0T_dx": 15143.661255127141,
+   "L_x": 848273953.4753718,
+   "cut_gap": -432341.0490106344,
+   "observed_delta_Q": -417197.3877555132,
+   "branch_A": 847841612.426361,
+   "branch_B": null,
+   "branch_base": 848258809.814117,
+   "linearity_abs_error": 432341.04901064036,
+   "linearity_rel_error": 1.036298552434853,
+   "same_branch_as_base": false
+  },
+  {
+   "label": "e|node9|2025|-5.000%",
+   "kind": "e",
+   "node": 9,
+   "year": 2025,
+   "rel": -0.05,
+   "delta_x_nonzero": {
+    "e|node9|2025": -0.0010634892806127179
+   },
+   "n_perturbed_entries_without_coefficient": 0,
+   "A": {
+    "converged": true,
+    "initialization_failed": false,
+    "runtime_s": 595.1551008224487,
+    "n_cycles": 9,
+    "all_local_solves_ok": true,
+    "n_recovery_diagnostics": 0,
+    "recourse": 848069916.7563038,
+    "gross_operational_cost": 848073356.5962338,
+    "terminal_salvage_value": 3439.8399300812857,
+    "final_primal": {
+     "primal_v": 0.00013529915312775315,
+     "primal_pf": 0.009675597827527511,
+     "primal_ess": 0.0009716221899599536
+    },
+    "final_dual": {
+     "dual_v": 0.0007163746247161014,
+     "dual_pf": 0.04832577657906198,
+     "dual_ess": 0.0010943136053324762
+    }
+   },
+   "B": null,
+   "Q_best_observed": 848069916.7563038,
+   "predicted_delta_g0T_dx": 7571.830627563583,
+   "L_x": 848266381.6447443,
+   "cut_gap": -196464.88844048977,
+   "observed_delta_Q": -188893.05781292915,
+   "branch_A": 848069916.756304,
+   "branch_B": null,
+   "branch_base": 848258809.814117,
+   "linearity_abs_error": 196464.88844049274,
+   "linearity_rel_error": 1.0400852774328126,
+   "same_branch_as_base": false
+  },
+  {
+   "label": "e|node9|2025|-2.000%",
+   "kind": "e",
+   "node": 9,
+   "year": 2025,
+   "rel": -0.02,
+   "delta_x_nonzero": {
+    "e|node9|2025": -0.00042539571224508785
+   },
+   "n_perturbed_entries_without_coefficient": 0,
+   "A": {
+    "converged": true,
+    "initialization_failed": false,
+    "runtime_s": 614.5762002468109,
+    "n_cycles": 9,
+    "all_local_solves_ok": true,
+    "n_recovery_diagnostics": 0,
+    "recourse": 847842640.6460731,
+    "gross_operational_cost": 847846267.7420082,
+    "terminal_salvage_value": 3627.095935154641,
+    "final_primal": {
+     "primal_v": 0.00013592139859802178,
+     "primal_pf": 0.009732940876109151,
+     "primal_ess": 0.001818407629714412
+    },
+    "final_dual": {
+     "dual_v": 0.000727498651996405,
+     "dual_pf": 0.04831596227267911,
+     "dual_ess": 0.0010348695343453359
+    }
+   },
+   "B": null,
+   "Q_best_observed": 847842640.6460731,
+   "predicted_delta_g0T_dx": 3028.732251025438,
+   "L_x": 848261838.5463678,
+   "cut_gap": -419197.9002946615,
+   "observed_delta_Q": -416169.16804361343,
+   "branch_A": 847842640.646073,
+   "branch_B": null,
+   "branch_base": 848258809.814117,
+   "linearity_abs_error": 419197.9002946389,
+   "linearity_rel_error": 1.007277646888796,
+   "same_branch_as_base": false
+  },
+  {
+   "label": "e|node9|2025|-1.000%",
+   "kind": "e",
+   "node": 9,
+   "year": 2025,
+   "rel": -0.01,
+   "delta_x_nonzero": {
+    "e|node9|2025": -0.0002126978561225422
+   },
+   "n_perturbed_entries_without_coefficient": 0,
+   "A": {
+    "converged": true,
+    "initialization_failed": false,
+    "runtime_s": 1070.8655488491058,
+    "n_cycles": 16,
+    "all_local_solves_ok": true,
+    "n_recovery_diagnostics": 0,
+    "recourse": 839303246.2175448,
+    "gross_operational_cost": 839306767.3836641,
+    "terminal_salvage_value": 3521.1661193093723,
+    "final_primal": {
+     "primal_v": 3.9937349954240175e-05,
+     "primal_pf": 0.005144035213539713,
+     "primal_ess": 0.00028238932937655497
+    },
+    "final_dual": {
+     "dual_v": 0.0004496822799632869,
+     "dual_pf": 0.02853196349395656,
+     "dual_ess": 0.0007604470453098991
+    }
+   },
+   "B": null,
+   "Q_best_observed": 839303246.2175448,
+   "predicted_delta_g0T_dx": 1514.3661255127067,
+   "L_x": 848260324.1802422,
+   "cut_gap": -8957077.962697387,
+   "observed_delta_Q": -8955563.596571922,
+   "branch_A": 839303246.217545,
+   "branch_B": null,
+   "branch_base": 848258809.814117,
+   "linearity_abs_error": 8957077.962697435,
+   "linearity_rel_error": 1.000169097802632,
+   "same_branch_as_base": false
+  }
+ ]
+}

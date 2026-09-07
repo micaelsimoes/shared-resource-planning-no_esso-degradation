@@ -1,7 +1,47 @@
 from functools import partial
-from math import tan, atan2, acos, sqrt
+from math import tan, acos, sqrt, radians
 from helper_functions import *
 from definitions import *
+
+
+def get_vmag_node_indices(network):
+    """Return validated physical-node indices that need explicit ``vmag``."""
+
+    if network.is_transmission:
+        bus_ids = list(network.active_distribution_network_nodes)
+        source = 'active distribution-network interface'
+    else:
+        reference_nodes = [
+            node.bus_i for node in network.nodes if node.type == BUS_REF
+        ]
+        if len(reference_nodes) != 1:
+            raise ValueError(
+                f'Network {network.name} must have exactly one reference node; '
+                f'found {len(reference_nodes)}.'
+            )
+        bus_ids = reference_nodes
+        source = 'reference'
+
+    if len(bus_ids) != len(set(bus_ids)):
+        raise ValueError(
+            f'Network {network.name} has duplicate {source} bus IDs: {bus_ids}.'
+        )
+
+    node_indices = []
+    for bus_id in bus_ids:
+        matches = [
+            node_idx
+            for node_idx, node in enumerate(network.nodes)
+            if node.bus_i == bus_id
+        ]
+        if len(matches) != 1:
+            raise ValueError(
+                f'Network {network.name} {source} bus ID {bus_id!r} maps to '
+                f'{len(matches)} physical nodes; expected exactly one.'
+            )
+        node_indices.append(matches[0])
+
+    return node_indices
 
 
 # Voltage variables, e
@@ -17,37 +57,106 @@ def f_initialize(m, i, s_m, s_o, p, network):
     return 0.00
 
 
-def e_bounds(m, i, s_m, s_o, p, network):
+def _voltage_magnitude_slack_enabled(node, params):
+    return (
+        params.slacks.grid_operation.voltage
+        and node.type != BUS_REF
+        and not (node.type == BUS_PV and params.enforce_vg)
+    )
+
+
+def voltage_numerical_upper_bound(node):
+    return node.v_max + VMAG_VIOLATION_ALLOWED + SMALL_TOLERANCE
+
+
+def e_bounds(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
     if node.type == BUS_REF and not network.is_transmission:
         vg = network.generators[network.get_gen_idx(node.bus_i)].vg
         return (vg - SMALL_TOLERANCE, vg + SMALL_TOLERANCE)
-    return (-node.v_max - EQUALITY_TOLERANCE, node.v_max + EQUALITY_TOLERANCE)
+    component_max = voltage_numerical_upper_bound(node)
+    if node.type == BUS_REF:
+        return (0.00, component_max)
+    return (-component_max, component_max)
 
 
-def f_bounds(m, i, s_m, s_o, p, network):
+def f_bounds(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
     if node.type == BUS_REF:
         return (-EQUALITY_TOLERANCE, EQUALITY_TOLERANCE)
-    return (-node.v_max - EQUALITY_TOLERANCE, node.v_max + EQUALITY_TOLERANCE)
+    component_max = voltage_numerical_upper_bound(node)
+    return (-component_max, component_max)
 
 
-# Voltage variables, slack bounds
-def voltage_slack_bounds(m, i, s_m, s_o, p, network):
+# Squared-voltage slack bounds corresponding to the permitted physical magnitude violation.
+def voltage_slack_down_bounds(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
-    if node.type == BUS_REF:
-        return (0.00, EQUALITY_TOLERANCE)
-    return (0.00, VMAG_VIOLATION_ALLOWED)
+    if not _voltage_magnitude_slack_enabled(node, params):
+        return (0.00, 0.00)
+    relaxed_v_min = max(node.v_min - VMAG_VIOLATION_ALLOWED, 0.00)
+    return (0.00, node.v_min ** 2 - relaxed_v_min ** 2)
+
+
+def voltage_slack_up_bounds(m, i, s_m, s_o, p, network, params):
+    node = network.nodes[i]
+    if not _voltage_magnitude_slack_enabled(node, params):
+        return (0.00, 0.00)
+    relaxed_v_max = node.v_max + VMAG_VIOLATION_ALLOWED
+    return (0.00, relaxed_v_max ** 2 - node.v_max ** 2)
+
+
+def voltage_slack_diagnostics(v_min, v_max, vmag_sqr, slack_down, slack_up):
+    effective_down = max(slack_down, 0.00)
+    effective_up = max(slack_up, 0.00)
+    vmag = sqrt(max(vmag_sqr, 0.00))
+    return {
+        'squared_down': slack_down,
+        'squared_up': slack_up,
+        'physical_down': v_min - sqrt(max(v_min ** 2 - effective_down, 0.00)),
+        'physical_up': sqrt(v_max ** 2 + effective_up) - v_max,
+        'violation_down': max(v_min - vmag, 0.00),
+        'violation_up': max(vmag - v_max, 0.00),
+    }
 
 
 def vmag_bounds(m, i, s_m, s_o, p, network, params):
+
     node = network.nodes[i]
-    if node.type == BUS_REF and not network.is_transmission:
-        return (1.00 - EQUALITY_TOLERANCE, 1.00 + EQUALITY_TOLERANCE)
-    else:
-        if params.slacks.grid_operation.voltage:
-            return (node.v_min - VMAG_VIOLATION_ALLOWED, node.v_max + VMAG_VIOLATION_ALLOWED)
-        return (node.v_min - EQUALITY_TOLERANCE, node.v_max + EQUALITY_TOLERANCE)
+
+    # PV bus with enforced generator-voltage setpoint
+    if node.type == BUS_PV and params.enforce_vg:
+        vg = network.generators[network.get_gen_idx(node.bus_i)].vg[p]
+        v_min = sqrt(max(vg ** 2 - SMALL_TOLERANCE, 0.0))
+        v_max = sqrt(vg ** 2 + SMALL_TOLERANCE)
+        return (v_min, v_max)
+
+    # Bus where voltage-limit relaxation is allowed
+    if _voltage_magnitude_slack_enabled(node, params):
+        v_min = max(node.v_min - VMAG_VIOLATION_ALLOWED, 0.0)
+        v_max = node.v_max + VMAG_VIOLATION_ALLOWED
+        return (v_min, v_max)
+
+    # Hard voltage limits: REF buses, or when voltage slacks are disabled
+    return (node.v_min, node.v_max)
+
+
+def vmag_sqr_bounds(m, i, s_m, s_o, p, network, params):
+
+    node = network.nodes[i]
+
+    # PV bus with enforced generator-voltage setpoint
+    if node.type == BUS_PV and params.enforce_vg:
+        vg = network.generators[network.get_gen_idx(node.bus_i)].vg[p]
+        return max(vg ** 2 - SMALL_TOLERANCE, 0.0), vg ** 2 + SMALL_TOLERANCE
+
+    # Bus where voltage-limit relaxation is allowed
+    if _voltage_magnitude_slack_enabled(node, params):
+        v_min = max(node.v_min - VMAG_VIOLATION_ALLOWED, 0.0)
+        v_max = node.v_max + VMAG_VIOLATION_ALLOWED
+        return (v_min ** 2, v_max ** 2)
+
+    # Hard voltage limits
+    return (node.v_min ** 2, node.v_max ** 2)
 
 
 def node_balance_slack_bounds(m, i, s_m, s_o, p, network):
@@ -55,12 +164,28 @@ def node_balance_slack_bounds(m, i, s_m, s_o, p, network):
 
 
 # Generation, Pg
+def renewable_available_apparent_power(generator, s_o, p):
+    if not generator.status[p] or not generator.is_curtaillable():
+        return 0.0
+    return sqrt(generator.pg[s_o][p] ** 2 + generator.qg[s_o][p] ** 2)
+
+
+def renewable_generation_is_unavailable(generator, s_o, p):
+    return renewable_available_apparent_power(generator, s_o, p) <= EQUALITY_TOLERANCE
+
+
+def _power_factor_tangents(device):
+    return sorted((tan(acos(device.min_pf)), tan(acos(device.max_pf))))
+
+
 def pg_bounds(m, g, s_m, s_o, p, network):
     gen = network.generators[g]
     if not gen.status[p]:
-        return (0.0 - EQUALITY_TOLERANCE, 0.0 + EQUALITY_TOLERANCE)
+        return (0.0, 0.0)
 
     if gen.is_curtaillable():
+        if renewable_generation_is_unavailable(gen, s_o, p):
+            return (0.0, 0.0)
         return (0.0, gen.pg[s_o][p] + EQUALITY_TOLERANCE)
     else:
         return (gen.pmin - EQUALITY_TOLERANCE, gen.pmax + EQUALITY_TOLERANCE)
@@ -69,7 +194,9 @@ def pg_bounds(m, g, s_m, s_o, p, network):
 def qg_bounds(m, g, s_m, s_o, p, network):
     gen = network.generators[g]
     if not gen.status[p]:
-        return (0.0 - EQUALITY_TOLERANCE, 0.0 + EQUALITY_TOLERANCE)
+        return (0.0, 0.0)
+    if gen.is_curtaillable() and renewable_generation_is_unavailable(gen, s_o, p):
+        return (0.0, 0.0)
     return (gen.qmin - EQUALITY_TOLERANCE, gen.qmax + EQUALITY_TOLERANCE)
 
 
@@ -79,6 +206,8 @@ def pg_init(m, g, s_m, s_o, p, network):
         return 0.0
 
     if gen.is_curtaillable():
+        if renewable_generation_is_unavailable(gen, s_o, p):
+            return 0.0
         return max(0.0, gen.pg[s_o][p])
     else:
         lb, ub = pg_bounds(m, g, s_m, s_o, p, network)
@@ -98,49 +227,19 @@ def qg_init(m, g, s_m, s_o, p, network):
         return max(0.0, lb)
 
 
-def sg_avail(m, g, s_o, p, network, params):
-
-    gen = network.generators[g]
-    if not gen.is_curtaillable() or not gen.status[p]:
-        return 0.00
-
-    # Apparent power for initialization and bound
-    pg = gen.pg[s_o][p]
-    qg = gen.qg[s_o][p]
-    sg = max(0.00, abs((pg ** 2 + qg ** 2) ** 0.5))
-
-    return sg
-
-
-def sg_bounds(m, g, s_m, s_o, p, network, params):
-    gen = network.generators[g]
-    if not gen.is_curtaillable() or not gen.status[p]:
-        return (0.0, EQUALITY_TOLERANCE)
-    if gen.is_curtaillable():
-        smax = sg_avail(m, g, s_o, p, network=network, params=params)
-    else:
-        smax = (gen.pmax ** 2 + gen.qmax ** 2) ** 0.5
-    return (0.0, smax + EQUALITY_TOLERANCE)
-
-
 def pg_avail_init(m, g, s_o, p, network, params):
     gen = network.generators[g]
-    if not gen.status[p] or not gen.is_curtaillable():
+    if not gen.is_curtaillable() or renewable_generation_is_unavailable(gen, s_o, p):
         return 0.0
     pg_av = gen.pg[s_o][p]
     return max(0.0, pg_av)
 
 
 def sg_avail_init(m, g, s_o, p, network, params):
-
     gen = network.generators[g]
-    if not gen.status[p] or not gen.is_curtaillable():
+    if not gen.is_curtaillable() or renewable_generation_is_unavailable(gen, s_o, p):
         return 0.0
-
-    pg_av = gen.pg[s_o][p]
-    qg_av = gen.qg[s_o][p]
-    sg_av = abs((pg_av**2 + qg_av**2)**0.5)
-    return max(0.0, sg_av)
+    return renewable_available_apparent_power(gen, s_o, p)
 
 
 # Branch power flow, Fij
@@ -164,8 +263,9 @@ def slack_flow_bounds(m, b, s_m, s_o, p, network, params):
     branch = network.branches[b]
     if not branch.status:
         return (0.0, EQUALITY_TOLERANCE)
-    rating = (branch.rate / network.baseMVA)
-    return (0.0, (SIJ_VIOLATION_ALLOWED * rating) ** 2 + EQUALITY_TOLERANCE)
+    rating = branch.rate / network.baseMVA or BRANCH_UNKNOWN_RATING
+    relaxed_rating_sqr = ((1.0 + SIJ_VIOLATION_ALLOWED) * rating) ** 2
+    return (0.0, relaxed_rating_sqr - rating ** 2 + EQUALITY_TOLERANCE)
 
 
 # Consumption, Pc
@@ -302,11 +402,6 @@ def q_bounds(m, e, s_m, s_o, p, network):
     return (-ess.s - EQUALITY_TOLERANCE, ess.s + EQUALITY_TOLERANCE)
 
 
-def s_bounds(m, e, s_m, s_o, p, network):
-    ess = network.energy_storages[e]
-    return (0.0, ess.s + EQUALITY_TOLERANCE)
-
-
 def slack_es_balance_bounds(m, e, s_m, s_o, network):
     ess = network.energy_storages[e]
     return (0.00, ess.e * 0.05 + EQUALITY_TOLERANCE)
@@ -317,124 +412,137 @@ def soc_initialize(m, e, s_m, s_o, p, network):
     return ess.e_init
 
 
-# Voltage constraints, e
-def e_actual_def(m, i, s_m, s_o, p, params):
-    e_val = m.e[i, s_m, s_o, p]
-    if params.slacks.grid_operation.voltage:
-        e_val += m.slack_e_up[i, s_m, s_o, p] - m.slack_e_down[i, s_m, s_o, p]
-    return m.e_actual[i, s_m, s_o, p] == e_val
-
-
-# Voltage constraints, f
-def f_actual_def(m, i, s_m, s_o, p, params):
-    f_val = m.f[i, s_m, s_o, p]
-    if params.slacks.grid_operation.voltage:
-        f_val += m.slack_f_up[i, s_m, s_o, p] - m.slack_f_down[i, s_m, s_o, p]
-    return m.f_actual[i, s_m, s_o, p] == f_val
-
-
 # Voltage constraints, magnitude
 def vmag_sqr_def(m, i, s_m, s_o, p):
-    return m.vmag_sqr[i, s_m, s_o, p] == m.e_actual[i, s_m, s_o, p] ** 2 + m.f_actual[i, s_m, s_o, p] ** 2
+    return m.vmag_sqr[i, s_m, s_o, p] == m.e[i, s_m, s_o, p] ** 2 + m.f[i, s_m, s_o, p] ** 2
 
 
 def vmag_def(m, i, s_m, s_o, p):
     return m.vmag_sqr[i, s_m, s_o, p] == m.vmag[i, s_m, s_o, p] ** 2
 
 
-# Voltage constraints, magnitude
-def voltage_magnitude_cons_rule(m, i, s_m, s_o, p, network, params):
+def voltage_setpoint_cons_rule(m, i, s_m, s_o, p, network, params):
     node = network.nodes[i]
-    vmag_sqr = m.e[i, s_m, s_o, p] ** 2 + m.f[i, s_m, s_o, p] ** 2  # Note: only the non-slack portion is constrained!
     if node.type == BUS_PV and params.enforce_vg:
         vg = network.generators[network.get_gen_idx(node.bus_i)].vg[p]
-        return pe.inequality(-SMALL_TOLERANCE, vmag_sqr - vg ** 2, SMALL_TOLERANCE)
-    else:
-        return pe.inequality(node.v_min ** 2, vmag_sqr, node.v_max ** 2)
-
-
-def e_e_rule(m, fnode_idx, tnode_idx, s_m, s_o, p, network):
-    if fnode_idx == tnode_idx:
-        return pe.Constraint.Skip
-    fnode_id = network.nodes[fnode_idx].bus_i
-    tnode_id = network.nodes[tnode_idx].bus_i
-    if network.branch_exists(fnode_id, tnode_id):
-        return m.e_e[fnode_idx, tnode_idx, s_m, s_o, p] == m.e_actual[fnode_idx, s_m, s_o, p] * m.e_actual[tnode_idx, s_m, s_o, p]
+        return pe.inequality(-SMALL_TOLERANCE, m.vmag_sqr[i, s_m, s_o, p] - vg ** 2, SMALL_TOLERANCE)
     return pe.Constraint.Skip
 
 
-def e_f_rule(m, fnode_idx, tnode_idx, s_m, s_o, p, network):
-    if fnode_idx == tnode_idx:
+def voltage_magnitude_lower_cons_rule(m, i, s_m, s_o, p, network, params):
+    node = network.nodes[i]
+    if node.type == BUS_PV and params.enforce_vg:
         return pe.Constraint.Skip
-    fnode_id = network.nodes[fnode_idx].bus_i
-    tnode_id = network.nodes[tnode_idx].bus_i
-    if network.branch_exists(fnode_id, tnode_id):
-        return m.e_f[fnode_idx, tnode_idx, s_m, s_o, p] == m.e_actual[fnode_idx, s_m, s_o, p] * m.f_actual[tnode_idx, s_m, s_o, p]
-    return pe.Constraint.Skip
+    slack = m.slack_v_sqr_down[i, s_m, s_o, p] if params.slacks.grid_operation.voltage else 0.00
+    return m.vmag_sqr[i, s_m, s_o, p] + slack >= node.v_min ** 2
 
 
-def f_f_rule(m, fnode_idx, tnode_idx, s_m, s_o, p, network):
-    if fnode_idx == tnode_idx:
+def voltage_magnitude_upper_cons_rule(m, i, s_m, s_o, p, network, params):
+    node = network.nodes[i]
+    if node.type == BUS_PV and params.enforce_vg:
         return pe.Constraint.Skip
-    fnode_id = network.nodes[fnode_idx].bus_i
-    tnode_id = network.nodes[tnode_idx].bus_i
-    if network.branch_exists(fnode_id, tnode_id):
-        return m.f_f[fnode_idx, tnode_idx, s_m, s_o, p] == m.f_actual[fnode_idx, s_m, s_o, p] * m.f_actual[tnode_idx, s_m, s_o, p]
-    return pe.Constraint.Skip
+    slack = m.slack_v_sqr_up[i, s_m, s_o, p] if params.slacks.grid_operation.voltage else 0.00
+    return m.vmag_sqr[i, s_m, s_o, p] - slack <= node.v_max ** 2
+
+
+def voltage_product_real_rule(m, branch_idx, s_m, s_o, p, network):
+    branch = network.branches[branch_idx]
+    fnode_idx = network.get_node_idx(branch.fbus)
+    tnode_idx = network.get_node_idx(branch.tbus)
+    return m.voltage_product_real[branch_idx, s_m, s_o, p] == m.e[fnode_idx, s_m, s_o, p] * m.e[tnode_idx, s_m, s_o, p] + m.f[fnode_idx, s_m, s_o, p] * m.f[tnode_idx, s_m, s_o, p]
+
+
+def voltage_product_imag_rule(m, branch_idx, s_m, s_o, p, network):
+    branch = network.branches[branch_idx]
+    fnode_idx = network.get_node_idx(branch.fbus)
+    tnode_idx = network.get_node_idx(branch.tbus)
+    return m.voltage_product_imag[branch_idx, s_m, s_o, p] == m.f[fnode_idx, s_m, s_o, p] * m.e[tnode_idx, s_m, s_o, p] - m.e[fnode_idx, s_m, s_o, p] * m.f[tnode_idx, s_m, s_o, p]
+
+
+def voltage_product_real_nonnegative_rule(m, branch_idx, s_m, s_o, p):
+    return (m.voltage_product_real[branch_idx, s_m, s_o, p] >= 0.0)
+
+
+def branch_angle_difference_lower_rule(m, branch_idx, s_m, s_o, p, network):
+    branch = network.branches[branch_idx]
+    angle_min_tangent = tan(radians(branch.angle_min))
+    return (m.voltage_product_imag[branch_idx, s_m, s_o, p] >= angle_min_tangent * m.voltage_product_real[branch_idx, s_m, s_o, p])
+
+
+def branch_angle_difference_upper_rule(m, branch_idx, s_m, s_o, p, network):
+    branch = network.branches[branch_idx]
+    angle_max_tangent = tan(radians(branch.angle_max))
+    return (m.voltage_product_imag[branch_idx, s_m, s_o, p] <= angle_max_tangent * m.voltage_product_real[branch_idx, s_m, s_o, p])
+
+
+def _branch_voltage_products(model, network, branch_idx, terminal_node_idx, s_m, s_o, p):
+    branch = network.branches[branch_idx]
+    fnode_idx = network.get_node_idx(branch.fbus)
+    tnode_idx = network.get_node_idx(branch.tbus)
+
+    cross_real = model.voltage_product_real[branch_idx, s_m, s_o, p]
+    cross_imag = model.voltage_product_imag[branch_idx, s_m, s_o, p]
+    if terminal_node_idx == tnode_idx:
+        cross_imag = -cross_imag
+    elif terminal_node_idx != fnode_idx:
+        raise ValueError(f'Node index {terminal_node_idx} is not incident to branch {branch.branch_id}.')
+
+    return cross_real, cross_imag
 
 
 def sg_sqr_rule(m, g, s_m, s_o, p, network):
     gen = network.generators[g]
-    if not gen.status[p] or not gen.is_curtaillable():
+    if not gen.is_curtaillable() or renewable_generation_is_unavailable(gen, s_o, p):
         return 0.0  # just a scalar
     return m.pg[g, s_m, s_o, p]**2 + m.qg[g, s_m, s_o, p]**2
 
 
-def sg_curt_rule(m, g, s_m, s_o, p, network):
-    gen = network.generators[g]
-    if not gen.status[p] or not gen.is_curtaillable():
-        return 0.0
-    return m.sg_avail[g, s_o, p] - m.sg_sqr[g, s_m, s_o, p]**0.50
-
-
-def sg_def_rule(m, g, s_m, s_o, p, network, params):
-    gen = network.generators[g]
-    if not gen.status[p] or not gen.is_curtaillable():
-        return pe.Constraint.Skip
-    return m.sg[g, s_m, s_o, p] ** 2 == m.sg_sqr[g, s_m, s_o, p]
-
-
 def sg_avail_rule(m, g, s_m, s_o, p, network, params):
     gen = network.generators[g]
-    if not gen.status[p] or not gen.is_curtaillable():
+    if not gen.is_curtaillable() or renewable_generation_is_unavailable(gen, s_o, p):
         return pe.Constraint.Skip
     return m.sg_sqr[g, s_m, s_o, p] <= m.sg_avail[g, s_o, p] ** 2
 
 
 def power_factor_rule_upper(m, g, s_m, s_o, p, network):
     generator = network.generators[g]
-    if not generator.is_curtaillable() or not generator.status[p]:
+    if (
+        not generator.is_curtaillable()
+        or not generator.power_factor_control
+        or renewable_generation_is_unavailable(generator, s_o, p)
+    ):
         return pe.Constraint.Skip
     pg = m.pg[g, s_m, s_o, p]
     qg = m.qg[g, s_m, s_o, p]
-    if generator.power_factor_control:
-        phi = acos(generator.max_pf)
-    else:
-        phi = atan2(generator.qg[s_o][p], generator.pg[s_o][p])
-    return qg <= tan(phi) * (pg + EQUALITY_TOLERANCE)
+    _, tangent_upper = _power_factor_tangents(generator)
+    return qg <= tangent_upper * pg
 
 
 def power_factor_rule_lower(m, g, s_m, s_o, p, network):
     generator = network.generators[g]
-    if not generator.is_curtaillable() or not generator.status[p]:
+    if (
+        not generator.is_curtaillable()
+        or not generator.power_factor_control
+        or renewable_generation_is_unavailable(generator, s_o, p)
+    ):
         return pe.Constraint.Skip
     pg = m.pg[g, s_m, s_o, p]
     qg = m.qg[g, s_m, s_o, p]
-    if generator.power_factor_control:
-        phi = acos(generator.min_pf)
-    else:
-        phi = atan2(generator.qg[s_o][p], generator.pg[s_o][p])
-    return qg >= tan(phi) * (pg - EQUALITY_TOLERANCE)
+    tangent_lower, _ = _power_factor_tangents(generator)
+    return qg >= tangent_lower * pg
+
+
+def power_factor_profile_rule(m, g, s_m, s_o, p, network):
+    generator = network.generators[g]
+    if (
+        not generator.is_curtaillable()
+        or generator.power_factor_control
+        or renewable_generation_is_unavailable(generator, s_o, p)
+    ):
+        return pe.Constraint.Skip
+    pg_available = generator.pg[s_o][p]
+    qg_available = generator.qg[s_o][p]
+    return qg_available * m.pg[g, s_m, s_o, p] == pg_available * m.qg[g, s_m, s_o, p]
 
 
 # Flexible loads
@@ -473,7 +581,7 @@ def flex_energy_balance_q_rule(m, c, s_m, s_o, network, params):
         q_up = sum(m.flex_q_up[c, s_m, s_o, p] for p in m.periods)
         q_down = sum(m.flex_q_down[c, s_m, s_o, p] for p in m.periods)
         if params.slacks.flexibility.day_balance:
-            return q_up == q_down + m.slack_flex_p_balance_up[c, s_m, s_o] - m.slack_flex_p_balance_down[c, s_m, s_o]
+            return q_up == q_down + m.slack_flex_q_balance_up[c, s_m, s_o] - m.slack_flex_q_balance_down[c, s_m, s_o]
         else:
             return pe.inequality(-SMALL_TOLERANCE, q_up - q_down, SMALL_TOLERANCE)
     else:
@@ -502,24 +610,42 @@ def flex_energy_balance_s_rule(m, c, s_m, s_o, network, params):
 
 
 # Energy Storage
-def ess_sch_def_rule(m, e, s_m, s_o, p):
-    return m.es_pch[e,s_m,s_o,p]**2 + m.es_qch[e,s_m,s_o,p]**2 == m.es_sch[e,s_m,s_o,p]**2
-
-
-def ess_sdch_def_rule(m, e, s_m, s_o, p):
-    return m.es_pdch[e,s_m,s_o,p]**2 + m.es_qdch[e,s_m,s_o,p]**2 == m.es_sdch[e,s_m,s_o,p]**2
-
-
 def ess_pnet_rule(m, e, s_m, s_o, p):
-    return m.es_pnet[e,s_m,s_o,p] == m.es_pdch[e,s_m,s_o,p] - m.es_pch[e,s_m,s_o,p]
+    # Canonical ordinary-ESS convention (P4.6-B1): the ordinary ESS is
+    # represented as a LOAD, so positive net power is consumption from the
+    # network (charging) and negative net power is injection (discharging).
+    return m.es_pnet[e,s_m,s_o,p] == m.es_pch[e,s_m,s_o,p] - m.es_pdch[e,s_m,s_o,p]
 
 
-def ess_qnet_rule(m, e, s_m, s_o, p):
-    return m.es_qnet[e,s_m,s_o,p] == m.es_qdch[e,s_m,s_o,p] - m.es_qch[e,s_m,s_o,p]
+def ess_converter_capability_rule(m, e, s_m, s_o, p, network):
+    """Ordinary-ESS converter apparent-power capability (P5.4-B).
+
+    Parity with the shared-ESS `sess_converter_capability` introduced in
+    P5.4-A. Replaces the former apparent-charge/discharge geometry
+    (`ess_snet_def` and its kappa_es normalization, `ess_pch_link`,
+    `ess_pdch_link`). Reactive power is limited by the converter rating but no
+    longer participates in the stored battery energy.
+
+    Unlike shared ESS, the ordinary-ESS rating is fixed network data, not a
+    decision variable, so `ess.s` enters as a constant.
+    """
+    ess = network.energy_storages[e]
+    return (m.es_pnet[e, s_m, s_o, p] ** 2
+            + m.es_qnet[e, s_m, s_o, p] ** 2) <= ess.s ** 2
 
 
-def ess_snet_def(m, e, s_m, s_o, p):
-    return m.es_sch[e, s_m, s_o, p] - m.es_sdch[e, s_m, s_o, p]
+def ess_active_sum_limit_rule(m, e, s_m, s_o, p, network):
+    """Active charge/discharge envelope (P5.4-B).
+
+    Derived from the retired apparent set exactly as its shared-ESS counterpart
+    was: `pch <= sch`, `pdch <= sdch` and `sch + sdch <= S + EQUALITY_TOLERANCE`
+    together imply `pch + pdch <= S + EQUALITY_TOLERANCE`. The pre-existing
+    tolerance is preserved rather than tightened, so the feasible set is not
+    narrowed by this stage.
+    """
+    ess = network.energy_storages[e]
+    return (m.es_pch[e, s_m, s_o, p]
+            + m.es_pdch[e, s_m, s_o, p]) <= ess.s + EQUALITY_TOLERANCE
 
 
 def ess_soc_limits_rule(m, e, s_m, s_o, p, network):
@@ -527,54 +653,80 @@ def ess_soc_limits_rule(m, e, s_m, s_o, p, network):
     return pe.inequality(ess.e_min - EQUALITY_TOLERANCE, m.es_soc[e, s_m, s_o, p], ess.e_max + EQUALITY_TOLERANCE)
 
 
-def ess_phi_ch_limits_lower(m, e, s_m, s_o, p, network):
+def ess_phi_limits_lower(m, e, s_m, s_o, p, network):
+    # Re-derived for the load-positive ordinary-ESS convention (P4.6-B1): with
+    # es_pnet = pch - pdch, the converter capability region is expressed about
+    # the charging (consumption) direction, so pch carries tangent_lower and
+    # pdch carries tangent_upper -- the mirror of the previous
+    # generation-positive form, under which qnet had the opposite sign.
     ess = network.energy_storages[e]
-    min_phi = acos(ess.min_pf)
-    return m.es_qch[e, s_m, s_o, p] >= tan(min_phi) * m.es_pch[e, s_m, s_o, p]
+    tangent_lower, tangent_upper = _power_factor_tangents(ess)
+    pch = m.es_pch[e, s_m, s_o, p]
+    pdch = m.es_pdch[e, s_m, s_o, p]
+    return m.es_qnet[e, s_m, s_o, p] >= tangent_lower * pch - tangent_upper * pdch
 
 
-def ess_phi_ch_limits_upper(m, e, s_m, s_o, p, network):
+def ess_phi_limits_upper(m, e, s_m, s_o, p, network):
     ess = network.energy_storages[e]
-    max_phi = acos(ess.max_pf)
-    return m.es_qch[e, s_m, s_o, p] <= tan(max_phi) * m.es_pch[e, s_m, s_o, p]
-
-
-def ess_phi_dch_limits_lower(m, e, s_m, s_o, p, network):
-    ess = network.energy_storages[e]
-    min_phi = acos(ess.min_pf)
-    return m.es_qdch[e, s_m, s_o, p] >= tan(min_phi) * m.es_pdch[e, s_m, s_o, p]
-
-
-def ess_phi_dch_limits_upper(m, e, s_m, s_o, p, network):
-    ess = network.energy_storages[e]
-    max_phi = acos(ess.max_pf)
-    return m.es_qdch[e, s_m, s_o, p] <= tan(max_phi) * m.es_pdch[e, s_m, s_o, p]
+    tangent_lower, tangent_upper = _power_factor_tangents(ess)
+    pch = m.es_pch[e, s_m, s_o, p]
+    pdch = m.es_pdch[e, s_m, s_o, p]
+    return m.es_qnet[e, s_m, s_o, p] <= tangent_upper * pch - tangent_lower * pdch
 
 
 def ess_soc_rule(m, e, s_m, s_o, p, network, params):
 
+    # P5.4-B: parity with sess_soc_rule. Stored battery energy is driven by
+    # ACTIVE power only, so pure reactive operation leaves the state of charge
+    # unchanged. The time step is explicit (period_duration_hours) rather than
+    # an implicit assumption; for the standard 24-instant representative day it
+    # is exactly 1 h, which reproduces the previous numerical coefficient.
     ess = network.energy_storages[e]
     eff_ch = ess.eff_ch
     eff_dch = ess.eff_dch
+    dt = period_duration_hours(m)
     if p == 0:
         soc_prev = ess.e_init
     else:
         soc_prev = m.es_soc[e, s_m, s_o, p-1]
 
-    delta = eff_ch * m.es_sch[e, s_m, s_o, p] - (m.es_sdch[e, s_m, s_o, p] / eff_dch)
+    delta = (eff_ch * m.es_pch[e, s_m, s_o, p] * dt
+             - m.es_pdch[e, s_m, s_o, p] * dt / eff_dch)
 
     return m.es_soc[e, s_m, s_o, p] == soc_prev + delta
 
 
+def ess_pch_hat_link_rule(m, e, s_m, s_o, p, network):
+    """Ordinary-ESS dimensionless link (P5.4-H1), parity with the shared ESS.
+
+    Here `S_rated` is fixed network data rather than a decision variable, so the
+    row is linear; the unit coefficient on the physical variable is retained for
+    the same structural reason.
+    """
+    ess = network.energy_storages[e]
+    return m.es_pch[e, s_m, s_o, p] - ess.s * m.es_pch_hat[e, s_m, s_o, p] == 0
+
+
+def ess_pdch_hat_link_rule(m, e, s_m, s_o, p, network):
+    ess = network.energy_storages[e]
+    return m.es_pdch[e, s_m, s_o, p] - ess.s * m.es_pdch_hat[e, s_m, s_o, p] == 0
+
+
 def ess_comp_rule(m, e, s_m, s_o, p, network, params):
+    # P5.4-H1: the BILINEAR_RELAXATION branch uses the dimensionless pair, in
+    # parity with sess_comp_rule. Exact reformulation for positive rating; the
+    # tolerance value is unchanged.
+    pch = m.es_pch[e, s_m, s_o, p]
+    pdch = m.es_pdch[e, s_m, s_o, p]
     if params.ess_model == ESS_MODEL_EXACT:
-        return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
+        return pch * pdch <= EQUALITY_TOLERANCE
     elif params.ess_model == ESS_MODEL_BILINEAR_RELAXATION:
-        return m.es_sch[e, s_m, s_o, p] * m.es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE * 1e2
+        return (m.es_pch_hat[e, s_m, s_o, p]
+                * m.es_pdch_hat[e, s_m, s_o, p]) <= ESS_COMPLEMENTARITY_TOLERANCE
     elif params.ess_model == ESS_MODEL_POLYNOMIAL_COMPLEMENTARITY:
-        return m.es_sch[e, s_m, s_o, p] ** 2 + m.es_sdch[e, s_m, s_o, p] ** 2 <= (m.es_sch[e, s_m, s_o, p] + m.es_sdch[e, s_m, s_o, p]) ** 2 + EQUALITY_TOLERANCE
+        return pch ** 2 + pdch ** 2 <= (pch + pdch) ** 2 + EQUALITY_TOLERANCE
     else:
-        raise ValueError(f'Unknown ess_model {params.ess_model}')
+        return pe.Constraint.Skip
 
 
 def ess_soc_final_rule(m, e, s_m, s_o, network, params):
@@ -587,48 +739,57 @@ def ess_soc_final_rule(m, e, s_m, s_o, network, params):
 
 
 # Shared Energy Storage
-def sess_phi_ch_limits_lower(m, e, s_m, s_o, p, network):
+def sess_phi_limits_lower(m, e, s_m, s_o, p, network):
     ess = network.shared_energy_storages[e]
-    min_phi = acos(ess.min_pf)
-    return m.shared_es_qch[e, s_m, s_o, p] >= tan(min_phi) * m.shared_es_pch[e, s_m, s_o, p]
+    tangent_lower, tangent_upper = _power_factor_tangents(ess)
+    pch = m.shared_es_pch[e, s_m, s_o, p]
+    pdch = m.shared_es_pdch[e, s_m, s_o, p]
+    return m.shared_es_qnet[e, s_m, s_o, p] >= tangent_lower * pch - tangent_upper * pdch
 
 
-def sess_phi_ch_limits_upper(m, e, s_m, s_o, p, network):
+def sess_phi_limits_upper(m, e, s_m, s_o, p, network):
     ess = network.shared_energy_storages[e]
-    max_phi = acos(ess.max_pf)
-    return m.shared_es_qch[e, s_m, s_o, p] <= tan(max_phi) * m.shared_es_pch[e, s_m, s_o, p]
+    tangent_lower, tangent_upper = _power_factor_tangents(ess)
+    pch = m.shared_es_pch[e, s_m, s_o, p]
+    pdch = m.shared_es_pdch[e, s_m, s_o, p]
+    return m.shared_es_qnet[e, s_m, s_o, p] <= tangent_upper * pch - tangent_lower * pdch
 
 
-def sess_phi_dch_limits_lower(m, e, s_m, s_o, p, network):
-    ess = network.shared_energy_storages[e]
-    min_phi = acos(ess.min_pf)
-    return m.shared_es_qdch[e, s_m, s_o, p] >= tan(min_phi) * m.shared_es_pdch[e, s_m, s_o, p]
+def period_duration_hours(m):
+    """Duration of one optimization period, in hours.
+
+    Representative days span HOURS_PER_REPRESENTATIVE_DAY hours and are split
+    into `len(m.periods)` equal instants, so for the standard 24-instant day
+    this is exactly 1 h. Used by the active-energy SOC recursions (P5.4) so the
+    time step is explicit rather than an implicit assumption.
+    """
+    n_periods = len(m.periods)
+    if n_periods <= 0:
+        raise ValueError('Model has no periods; cannot derive the period duration.')
+    return HOURS_PER_REPRESENTATIVE_DAY / n_periods
 
 
-def sess_phi_dch_limits_upper(m, e, s_m, s_o, p, network):
-    ess = network.shared_energy_storages[e]
-    max_phi = acos(ess.max_pf)
-    return m.shared_es_qdch[e, s_m, s_o, p] <= tan(max_phi) * m.shared_es_pdch[e, s_m, s_o, p]
+def sess_converter_capability_rule(m, e, s_m, s_o, p):
+    """Shared-ESS converter apparent-power capability (P5.4-A).
+
+    Replaces the former apparent-charge/discharge geometry. Reactive power is
+    limited by the converter rating but no longer participates in the stored
+    battery energy.
+    """
+    return (m.shared_es_pnet[e, s_m, s_o, p] ** 2
+            + m.shared_es_qnet[e, s_m, s_o, p] ** 2) <= m.shared_es_s_rated[e] ** 2
 
 
-def sess_sch_limit_rule(m, e, s_m, s_o, p):
-    s_max = m.shared_es_s_rated[e]
-    sch = m.shared_es_sch[e, s_m, s_o, p]
-    return sch <= s_max
+def sess_active_sum_limit_rule(m, e, s_m, s_o, p):
+    """Active charging/discharging envelope (P5.4-A).
 
-
-def sess_sdch_limit_rule(m, e, s_m, s_o, p):
-    s_max = m.shared_es_s_rated[e]
-    sdch = m.shared_es_sdch[e, s_m, s_o, p]
-    return sdch <= s_max
-
-
-def sess_sch_def(m, e, s_m, s_o, p):
-    return m.shared_es_pch[e, s_m, s_o, p]**2 + m.shared_es_qch[e, s_m, s_o, p]**2 == m.shared_es_sch[e, s_m, s_o, p]**2
-
-
-def sess_sdch_def(m, e, s_m, s_o, p):
-    return m.shared_es_pdch[e, s_m, s_o, p]**2 + m.shared_es_qdch[e, s_m, s_o, p]**2 == m.shared_es_sdch[e, s_m, s_o, p]**2
+    Derived from the retired production feasible set, which enforced
+    `pch <= sch`, `pdch <= sdch` and `sch + sdch <= S_rated`; those together
+    imply `pch + pdch <= S_rated`, so this preserves the original active-power
+    envelope exactly.
+    """
+    return (m.shared_es_pch[e, s_m, s_o, p]
+            + m.shared_es_pdch[e, s_m, s_o, p]) <= m.shared_es_s_rated[e]
 
 
 def sess_soc_lower_limit(m, e, s_m, s_o, p):
@@ -641,28 +802,64 @@ def sess_soc_upper_limit(m, e, s_m, s_o, p):
     return m.shared_es_soc[e, s_m, s_o, p] <= soc_max
 
 
+def sess_pch_hat_link_rule(m, e, s_m, s_o, p):
+    """Link the dimensionless charging variable to physical power (P5.4-H1).
+
+    Written as `pch - S_rated * pch_hat == 0` rather than `pch_hat == pch/S` so
+    that no expression ever divides by the rated-capacity decision variable, and
+    so the row keeps a unit coefficient on the physical variable. That unit
+    coefficient is what keeps the row from being zero-gradient at zero dispatch
+    -- the defect that `sess_snet_def` had.
+    """
+    return (m.shared_es_pch[e, s_m, s_o, p]
+            - m.shared_es_s_rated[e] * m.shared_es_pch_hat[e, s_m, s_o, p]) == 0
+
+
+def sess_pdch_hat_link_rule(m, e, s_m, s_o, p):
+    return (m.shared_es_pdch[e, s_m, s_o, p]
+            - m.shared_es_s_rated[e] * m.shared_es_pdch_hat[e, s_m, s_o, p]) == 0
+
+
 def sess_comp_rule(m, e, s_m, s_o, p, network, params):
+    # P5.4-H1: the BILINEAR_RELAXATION branch is written on the dimensionless
+    # charge/discharge variables. For positive capacity this is an exact
+    # reformulation of the previous relative condition
+    # `pch * pdch <= eps * S_rated^2` -- substituting the link equalities
+    # reproduces it identically -- but the row now sits at O(1) with an RHS of
+    # 1e-4 instead of O(S^2) ~ 1e-12, which is what IPOPT can actually resolve.
+    # ESS_COMPLEMENTARITY_TOLERANCE is unchanged at 1e-4; this stage rescales
+    # the row, it does not tighten the physical tolerance.
+    pch = m.shared_es_pch[e, s_m, s_o, p]
+    pdch = m.shared_es_pdch[e, s_m, s_o, p]
     if params.shared_ess_model == ESS_MODEL_EXACT:
-        return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE
+        return pch * pdch <= EQUALITY_TOLERANCE
     elif params.shared_ess_model == ESS_MODEL_BILINEAR_RELAXATION:
-        return m.shared_es_sch[e, s_m, s_o, p] * m.shared_es_sdch[e, s_m, s_o, p] <= EQUALITY_TOLERANCE * 1e2
+        return (m.shared_es_pch_hat[e, s_m, s_o, p]
+                * m.shared_es_pdch_hat[e, s_m, s_o, p]) <= ESS_COMPLEMENTARITY_TOLERANCE
     elif params.shared_ess_model == ESS_MODEL_POLYNOMIAL_COMPLEMENTARITY:
-        return m.shared_es_sch[e, s_m, s_o, p] ** 2 + m.shared_es_sdch[e, s_m, s_o, p] ** 2 <= (m.shared_es_sch[e, s_m, s_o, p] + m.shared_es_sdch[e, s_m, s_o, p]) ** 2 + EQUALITY_TOLERANCE
+        return pch ** 2 + pdch ** 2 <= (pch + pdch) ** 2 + EQUALITY_TOLERANCE
     else:
         return pe.Constraint.Skip
 
 
 def sess_soc_rule(m, e, s_m, s_o, p, network, params):
 
+    # P5.4-A: stored battery energy is driven by ACTIVE power only, so pure
+    # reactive operation leaves the state of charge unchanged. The time step is
+    # explicit (period_duration_hours) rather than an implicit assumption; for
+    # the standard 24-instant representative day it is exactly 1 h, which
+    # reproduces the previous numerical coefficient.
     sess = network.shared_energy_storages[e]
     eff_ch = sess.eff_ch
     eff_dch = sess.eff_dch
+    dt = period_duration_hours(m)
     if p == 0:
         soc_prev = m.shared_es_e_rated[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC
     else:
         soc_prev = m.shared_es_soc[e, s_m, s_o, p - 1]
 
-    delta = eff_ch * m.shared_es_sch[e, s_m, s_o, p] - (m.shared_es_sdch[e, s_m, s_o, p] / eff_dch)
+    delta = (eff_ch * m.shared_es_pch[e, s_m, s_o, p] * dt
+             - m.shared_es_pdch[e, s_m, s_o, p] * dt / eff_dch)
 
     return m.shared_es_soc[e, s_m, s_o, p] == soc_prev + delta
 
@@ -680,16 +877,191 @@ def sess_pnet_rule(m, e, s_m, s_o, p):
     return m.shared_es_pnet[e, s_m, s_o, p] == m.shared_es_pch[e, s_m, s_o, p] - m.shared_es_pdch[e, s_m, s_o, p]
 
 
-def sess_qnet_rule(m, e, s_m, s_o, p):
-    return m.shared_es_qnet[e, s_m, s_o, p] == m.shared_es_qch[e, s_m, s_o, p] - m.shared_es_qdch[e, s_m, s_o, p]
+_SHARED_ESS_OPERATIONAL_VARIABLES = (
+    'shared_es_pch',
+    'shared_es_pdch',
+    # P5.4-H1: the dimensionless pair follows exactly the same zero-capacity
+    # gating as the physical pair -- fixed at 0 when inactive, unfixed otherwise.
+    'shared_es_pch_hat',
+    'shared_es_pdch_hat',
+    'shared_es_pnet',
+    'shared_es_qnet',
+    'shared_es_soc',
+    'slack_shared_es_soc_final_up',
+    'slack_shared_es_soc_final_down',
+)
+
+# P5.4-D2-P: these four variables previously carried numerical bounds rewritten
+# from the installed rating (pch, pdch in [0, S]; pnet, qnet in [-S, S]). Those
+# bounds are REDUNDANT -- every one of them is implied by a symbolic row that is
+# already in the model:
+#
+#   pch <= S    <-  pch + pdch <= S with pdch >= 0   (sess_active_sum_limit)
+#               <-  pch = S*pch_hat with pch_hat <= 1 (P5.4-H1 link)
+#   pdch <= S   <-  symmetrically
+#   |pnet| <= S <-  pnet^2 + qnet^2 <= S^2           (sess_converter_capability)
+#   |qnet| <= S <-  symmetrically
+#
+# but because they were written from the fixed capacity PARAMETER, they made
+# installed power enter the NLP through variable-bound multipliers as well as
+# through the rated-capacity variable. The Benders extraction reads only the
+# dual of the capacity-fixing row, so that second channel was silently dropped:
+# P5.4-D2 measured the omitted term at 28 %-625 % of the true local derivative,
+# with the wrong sign in 3 of 8 audited cases.
+#
+# Removing them is an exact reformulation for positive capacity and routes all
+# S-dependence through symbolic rows and `shared_es_s_rated`, which makes the
+# fixing-row dual the structurally complete local derivative. The bounds below
+# are therefore the CAPACITY-INDEPENDENT ones retained at positive capacity;
+# `None` means the symbolic rows carry the bound instead.
+#
+# The zero-capacity collapse to [0, 0] is a structural gate, not an
+# S-dependent bound, and is deliberately kept -- see
+# `configure_shared_ess_operational_state`.
+_SHARED_ESS_ZERO_GATED_BOUND_VARIABLES = (
+    ('shared_es_pch', 0.0, None),      # nonnegativity only; upper bound is symbolic
+    ('shared_es_pdch', 0.0, None),
+    ('shared_es_pnet', None, None),    # bounded by the capability circle
+    ('shared_es_qnet', None, None),
+)
+
+_SHARED_ESS_OPERATIONAL_CONSTRAINTS = (
+    'sess_pnet_def',
+    'sess_pch_hat_link',
+    'sess_pdch_hat_link',
+    'sess_converter_capability',
+    'sess_active_sum_limit',
+    'sess_phi_limit_lower',
+    'sess_phi_limit_upper',
+    'sess_soc_def',
+    'sess_soc_limit_upper',
+    'sess_soc_limit_lower',
+    'sess_soc_final',
+    'sess_comp',
+)
+
+
+def shared_ess_capacity_is_inactive(s_capacity, e_capacity):
+    tolerance = SHARED_ESS_ZERO_CAPACITY_TOLERANCE
+    return abs(s_capacity) <= tolerance or abs(e_capacity) <= tolerance
+
+
+def normalize_shared_ess_capacity(capacity):
+    tolerance = SHARED_ESS_ZERO_CAPACITY_TOLERANCE
+    if capacity < -tolerance:
+        raise ValueError(
+            f'Shared ESS available capacity cannot be negative: {capacity}.'
+        )
+    return 0.0 if abs(capacity) <= tolerance else capacity
+
+
+def _component_entries_for_shared_ess(component, shared_ess_idx):
+    for index in component:
+        first_index = index[0] if isinstance(index, tuple) else index
+        if first_index == shared_ess_idx:
+            yield component[index]
+
+
+def _configure_shared_ess_expected_schedule(model, shared_ess_idx, inactive):
+
+    if not hasattr(model, 'expected_shared_ess_p'):
+        return
+
+    is_transmission_model = hasattr(model, 'active_distribution_networks')
+    for p in model.periods:
+        index = (shared_ess_idx, p) if is_transmission_model else p
+        for variable_name in ('expected_shared_ess_p', 'expected_shared_ess_q'):
+            variable = getattr(model, variable_name)[index]
+            if inactive:
+                variable.fix(0.0)
+            elif variable.fixed:
+                variable.unfix()
+
+    for constraint_name in ('expected_shared_ess_p_def', 'expected_shared_ess_q_def'):
+
+        if not hasattr(model, constraint_name):
+            continue
+
+        constraint = getattr(model, constraint_name)
+        entries = (_component_entries_for_shared_ess(constraint, shared_ess_idx) if is_transmission_model else constraint.values())
+        for entry in entries:
+            if inactive:
+                entry.deactivate()
+            else:
+                entry.activate()
+
+
+def configure_shared_ess_operational_state(
+        model, shared_ess_idx, s_capacity, e_capacity):
+    s_capacity = normalize_shared_ess_capacity(s_capacity)
+    e_capacity = normalize_shared_ess_capacity(e_capacity)
+    inactive = shared_ess_capacity_is_inactive(s_capacity, e_capacity)
+
+    # P5.4-A: the shared-ESS rows now depend directly on the rated-capacity
+    # variable (`shared_es_s_rated`), so a capacity change is carried by the
+    # model itself. The former `sess_snet_def` kappa scale and its
+    # KKT-consistent multiplier transfer are gone with that row, and no
+    # replacement multiplier transformation is required.
+    model.shared_es_s_rated_fixed[shared_ess_idx].set_value(s_capacity)
+    model.shared_es_e_rated_fixed[shared_ess_idx].set_value(e_capacity)
+    model.shared_es_s_rated[shared_ess_idx].set_value(s_capacity)
+    model.shared_es_e_rated[shared_ess_idx].set_value(e_capacity)
+
+    for variable_name in _SHARED_ESS_OPERATIONAL_VARIABLES:
+        if not hasattr(model, variable_name):
+            continue
+        variable = getattr(model, variable_name)
+        for entry in _component_entries_for_shared_ess(variable, shared_ess_idx):
+            if inactive:
+                entry.fix(0.0)
+            else:
+                if entry.fixed:
+                    entry.unfix()
+                if variable_name == 'shared_es_soc':
+                    entry.set_value(
+                        e_capacity * ENERGY_STORAGE_RELATIVE_INIT_SOC
+                    )
+
+    for constraint_name in _SHARED_ESS_OPERATIONAL_CONSTRAINTS:
+        constraint = getattr(model, constraint_name)
+        for entry in _component_entries_for_shared_ess(
+                constraint, shared_ess_idx):
+            if inactive:
+                entry.deactivate()
+            else:
+                entry.activate()
+
+    # P5.4-D2-P: at zero capacity the box still collapses to [0, 0] -- that is a
+    # structural gate and the variables are additionally fixed at 0 above. At
+    # POSITIVE capacity the bounds are restored to their capacity-INDEPENDENT
+    # values, so installed power no longer enters through bound multipliers.
+    # The model stays bounded there via sess_active_sum_limit, the H1 links with
+    # pch_hat/pdch_hat in [0, 1], and sess_converter_capability.
+    for variable_name, positive_lb, positive_ub in _SHARED_ESS_ZERO_GATED_BOUND_VARIABLES:
+        if not hasattr(model, variable_name):
+            continue
+        variable = getattr(model, variable_name)
+        for entry in _component_entries_for_shared_ess(variable, shared_ess_idx):
+            if inactive:
+                entry.setlb(0.0)
+                entry.setub(0.0)
+            else:
+                entry.setlb(positive_lb)
+                entry.setub(positive_ub)
+
+    _configure_shared_ess_expected_schedule(
+        model, shared_ess_idx, inactive
+    )
+
+    return inactive
 
 
 def sess_s_sensitivities(m, e):
-    return m.shared_es_s_rated[e] <= m.shared_es_s_rated_fixed[e] + EQUALITY_TOLERANCE
+    return m.shared_es_s_rated_fixed[e] == m.shared_es_s_rated[e]
 
 
 def sess_e_sensitivities(m, e):
-    return m.shared_es_e_rated[e] <= m.shared_es_e_rated_fixed[e] + EQUALITY_TOLERANCE
+    return m.shared_es_e_rated_fixed[e] == m.shared_es_e_rated[e]
 
 
 # Interface power flows and voltage magnitude definition
@@ -731,16 +1103,49 @@ def interface_vmag_distribution_def(m, s_m, s_o, p, network):
 
 def interface_pf_p_distribution_def(m, s_m, s_o, p, network):
     ref_gen_idx = network.get_reference_gen_idx()
-    return m.pg[ref_gen_idx, s_m, s_o, p]
+    ref_node_id = network.get_reference_node_id()
+    shared_ess_p = sum(
+        m.shared_es_pnet[e, s_m, s_o, p]
+        for e in m.shared_energy_storages
+        if network.shared_energy_storages[e].bus == ref_node_id
+    )
+    return m.pg[ref_gen_idx, s_m, s_o, p] - shared_ess_p
 
 
 def interface_pf_q_distribution_def(m, s_m, s_o, p, network):
     ref_gen_idx = network.get_reference_gen_idx()
-    return m.qg[ref_gen_idx, s_m, s_o, p]
+    ref_node_id = network.get_reference_node_id()
+    shared_ess_q = sum(
+        m.shared_es_qnet[e, s_m, s_o, p]
+        for e in m.shared_energy_storages
+        if network.shared_energy_storages[e].bus == ref_node_id
+    )
+    return m.qg[ref_gen_idx, s_m, s_o, p] - shared_ess_q
 
 
 # Branch limits
-def compute_branch_flow_squared(network, model, branch_idx, fnode_idx, tnode_idx, s_m, s_o, p, limit_type):
+def branch_uses_apparent_power_limit(branch, params):
+    return (
+        params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER
+        or (params.branch_limit_type == BRANCH_LIMIT_MIXED and branch.is_transformer)
+    )
+
+
+def compute_branch_terminal_power(branch, terminal_v_sqr, cross_real, cross_imag,
+                                  coupling_ratio=1.0, terminal_ratio_sqr=1.0):
+    p_terminal = branch.g * terminal_v_sqr * terminal_ratio_sqr
+    p_terminal -= branch.g * cross_real * coupling_ratio
+    p_terminal -= branch.b * cross_imag * coupling_ratio
+
+    q_terminal = -(branch.b + 0.5 * branch.b_sh) * terminal_v_sqr * terminal_ratio_sqr
+    q_terminal += branch.b * cross_real * coupling_ratio
+    q_terminal -= branch.g * cross_imag * coupling_ratio
+
+    return p_terminal, q_terminal
+
+
+def compute_branch_flow_squared(network, model, branch_idx, fnode_idx, tnode_idx, s_m, s_o, p,
+                                limit_type, direction='ij'):
 
     branch = network.branches[branch_idx]
 
@@ -750,17 +1155,26 @@ def compute_branch_flow_squared(network, model, branch_idx, fnode_idx, tnode_idx
         rij_sqr = model.r_sqr[branch_idx, s_m, s_o, p] if branch.is_transformer else 1.0
         vi_sqr = model.vmag_sqr[fnode_idx, s_m, s_o, p]
         vj_sqr = model.vmag_sqr[tnode_idx, s_m, s_o, p]
-        ei_ej = model.e_e[fnode_idx, tnode_idx, s_m, s_o, p]
-        fi_fj = model.f_f[fnode_idx, tnode_idx, s_m, s_o, p]
+        cross_real, _ = _branch_voltage_products(
+            model, network, branch_idx, fnode_idx, s_m, s_o, p
+        )
 
-        current_squared = (branch.g ** 2 + branch.b ** 2) * (vi_sqr + rij_sqr * vj_sqr - 2 * rij * (ei_ej + fi_fj))
+        current_squared = (branch.g ** 2 + branch.b ** 2) * (
+            vi_sqr + rij_sqr * vj_sqr - 2 * rij * cross_real
+        )
 
         return current_squared
 
     if limit_type == BRANCH_LIMIT_APPARENT_POWER or (limit_type == BRANCH_LIMIT_MIXED and branch.is_transformer):
-
-        sij_sqr = model.pij[branch_idx, s_m, s_o, p] ** 2 + model.qij[branch_idx, s_m, s_o, p] ** 2
-        return sij_sqr
+        if direction == 'ij':
+            p_flow = model.pij[branch_idx, s_m, s_o, p]
+            q_flow = model.qij[branch_idx, s_m, s_o, p]
+        elif direction == 'ji':
+            p_flow = model.pji[branch_idx, s_m, s_o, p]
+            q_flow = model.qji[branch_idx, s_m, s_o, p]
+        else:
+            raise ValueError(f"Unknown branch flow direction: {direction}")
+        return p_flow ** 2 + q_flow ** 2
 
     raise ValueError(f"Unknown branch limit type: {limit_type}")
 
@@ -787,14 +1201,19 @@ def compute_node_load(model, i, s_m, s_o, p, network, params):
         for e in model.energy_storages:
             es = network.energy_storages[e]
             if es.bus == node.bus_i:
+                # Ordinary ESS net power follows the load convention: positive
+                # values are charging/absorption demand and therefore increase
+                # net demand; negative values are injections.
                 Pd += model.es_pnet[e, s_m, s_o, p]
                 Qd += model.es_qnet[e, s_m, s_o, p]
 
     for e in model.shared_energy_storages:
         es = network.shared_energy_storages[e]
         if es.bus == node.bus_i:
-            Pd += model.shared_es_pch[e, s_m, s_o, p] - model.shared_es_pdch[e, s_m, s_o, p]
-            Qd += model.shared_es_qch[e, s_m, s_o, p] - model.shared_es_qdch[e, s_m, s_o, p]
+            # Shared ESS net power follows the load convention: positive values
+            # are charging demand and therefore increase net demand.
+            Pd += model.shared_es_pnet[e, s_m, s_o, p]
+            Qd += model.shared_es_qnet[e, s_m, s_o, p]
 
     return Pd, Qd
 
@@ -860,16 +1279,15 @@ def node_balance_p_rule(model, i, s_m, s_o, p, network, params):
         rij_sqr = model.r_sqr[b, s_m, s_o, p] if branch.is_transformer else 1.0
 
         vmag_sqr = model.vmag_sqr[fnode_idx, s_m, s_o, p]
-        ei_ej = model.e_e[fnode_idx, tnode_idx, s_m, s_o, p]
-        ei_fj = model.e_f[fnode_idx, tnode_idx, s_m, s_o, p]
-        ej_fi = model.e_f[tnode_idx, fnode_idx, s_m, s_o, p]
-        fi_fj = model.f_f[fnode_idx, tnode_idx, s_m, s_o, p]
+        cross_real, cross_imag = _branch_voltage_products(
+            model, network, b, fnode_idx, s_m, s_o, p
+        )
 
         if branch.fbus == node.bus_i:
             Pi += branch.g * vmag_sqr * rij_sqr
         else:
             Pi += branch.g * vmag_sqr
-        Pi -= rij * (branch.g * (ei_ej + fi_fj) + branch.b * (ej_fi - ei_fj))
+        Pi -= rij * (branch.g * cross_real + branch.b * cross_imag)
 
     if params.slacks.node_balance.active_power:
         return Pg == Pd + Pi + (model.slack_node_balance_p_up[i, s_m, s_o, p] - model.slack_node_balance_p_down[i, s_m, s_o, p])
@@ -907,17 +1325,16 @@ def node_balance_q_rule(model, i, s_m, s_o, p, network, params):
         rij_sqr = model.r_sqr[b, s_m, s_o, p] if branch.is_transformer else 1.0
 
         vi_sqr = model.vmag_sqr[fnode_idx, s_m, s_o, p]
-        ei_ej = model.e_e[fnode_idx, tnode_idx, s_m, s_o, p]
-        ei_fj = model.e_f[fnode_idx, tnode_idx, s_m, s_o, p]
-        ej_fi = model.e_f[tnode_idx, fnode_idx, s_m, s_o, p]
-        fi_fj = model.f_f[fnode_idx, tnode_idx, s_m, s_o, p]
+        cross_real, cross_imag = _branch_voltage_products(
+            model, network, b, fnode_idx, s_m, s_o, p
+        )
 
         if branch.fbus == node.bus_i:
             Qi -= (branch.b + 0.5 * branch.b_sh) * vi_sqr * rij_sqr
-            Qi += rij * (branch.b * (ei_ej + fi_fj) - branch.g * (ej_fi - ei_fj))
+            Qi += rij * (branch.b * cross_real - branch.g * cross_imag)
         else:
             Qi -= (branch.b + 0.5 * branch.b_sh) * vi_sqr
-            Qi += rij * (branch.b * (ei_ej + fi_fj) - branch.g * (ej_fi - ei_fj))
+            Qi += rij * (branch.b * cross_real - branch.g * cross_imag)
 
     if params.slacks.node_balance.reactive_power:
         return Qg == Qd + Qi + (model.slack_node_balance_q_up[i, s_m, s_o, p] - model.slack_node_balance_q_down[i, s_m, s_o, p])
@@ -931,60 +1348,51 @@ def r_sqr_rule(m, b, s_m, s_o, p, network):
     return pe.Constraint.Skip
 
 
-def pij_rule(m, branch_idx, s_m, s_o, p, network, params):
-
+def _branch_terminal_power_expressions(m, branch_idx, s_m, s_o, p, network, direction):
     branch = network.branches[branch_idx]
+    if direction == 'ij':
+        terminal_node_idx = network.get_node_idx(branch.fbus)
+        terminal_ratio_sqr = m.r_sqr[branch_idx, s_m, s_o, p] if branch.is_transformer else 1.0
+    elif direction == 'ji':
+        terminal_node_idx = network.get_node_idx(branch.tbus)
+        terminal_ratio_sqr = 1.0
+    else:
+        raise ValueError(f"Unknown branch flow direction: {direction}")
 
-    if params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER or (params.branch_limit_type == BRANCH_LIMIT_MIXED and branch.is_transformer):
+    terminal_v_sqr = m.vmag_sqr[terminal_node_idx, s_m, s_o, p]
+    cross_real, cross_imag = _branch_voltage_products(
+        m, network, branch_idx, terminal_node_idx, s_m, s_o, p
+    )
+    coupling_ratio = m.r[branch_idx, s_m, s_o, p] if branch.is_transformer else 1.0
 
-        fnode_idx = network.get_node_idx(branch.fbus)
-        tnode_idx = network.get_node_idx(branch.tbus)
+    return compute_branch_terminal_power(
+        branch,
+        terminal_v_sqr,
+        cross_real,
+        cross_imag,
+        coupling_ratio=coupling_ratio,
+        terminal_ratio_sqr=terminal_ratio_sqr,
+    )
 
-        vi_sqr = m.vmag_sqr[fnode_idx, s_m, s_o, p]
-        ei_ej = m.e_e[fnode_idx, tnode_idx, s_m, s_o, p]
-        fi_fj = m.f_f[fnode_idx, tnode_idx, s_m, s_o, p]
-        ei_fj = m.e_f[fnode_idx, tnode_idx, s_m, s_o, p]
-        ej_fi = m.e_f[tnode_idx, fnode_idx, s_m, s_o, p]
 
-        rij = m.r[branch_idx, s_m, s_o, p] if branch.is_transformer else 1.0
-        rij_sqr = m.r_sqr[branch_idx, s_m, s_o, p] if branch.is_transformer else 1.0
-
-        # Real power flow from i to j
-        pij = branch.g * vi_sqr * rij_sqr
-        pij -= branch.g * (ei_ej + fi_fj) * rij
-        pij -= branch.b * (ej_fi - ei_fj) * rij
-
-        return m.pij[branch_idx, s_m, s_o, p] == pij
-
-    return pe.Constraint.Skip
+def pij_rule(m, branch_idx, s_m, s_o, p, network, params):
+    pij, _ = _branch_terminal_power_expressions(m, branch_idx, s_m, s_o, p, network, 'ij')
+    return m.pij[branch_idx, s_m, s_o, p] == pij
 
 
 def qij_rule(m, branch_idx, s_m, s_o, p, network, params):
+    _, qij = _branch_terminal_power_expressions(m, branch_idx, s_m, s_o, p, network, 'ij')
+    return m.qij[branch_idx, s_m, s_o, p] == qij
 
-    branch = network.branches[branch_idx]
 
-    if params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER or (params.branch_limit_type == BRANCH_LIMIT_MIXED and branch.is_transformer):
+def pji_rule(m, branch_idx, s_m, s_o, p, network, params):
+    pji, _ = _branch_terminal_power_expressions(m, branch_idx, s_m, s_o, p, network, 'ji')
+    return m.pji[branch_idx, s_m, s_o, p] == pji
 
-        fnode_idx = network.get_node_idx(branch.fbus)
-        tnode_idx = network.get_node_idx(branch.tbus)
 
-        vi_sqr = m.vmag_sqr[fnode_idx, s_m, s_o, p]
-        ei_ej = m.e_e[fnode_idx, tnode_idx, s_m, s_o, p]
-        fi_fj = m.f_f[fnode_idx, tnode_idx, s_m, s_o, p]
-        ei_fj = m.e_f[fnode_idx, tnode_idx, s_m, s_o, p]
-        ej_fi = m.e_f[tnode_idx, fnode_idx, s_m, s_o, p]
-
-        rij = m.r[branch_idx, s_m, s_o, p] if branch.is_transformer else 1.0
-        rij_sqr = m.r_sqr[branch_idx, s_m, s_o, p] if branch.is_transformer else 1.0
-
-        # Reactive power flow from i to j
-        qij = -(branch.b + branch.b_sh) * vi_sqr * rij_sqr
-        qij += branch.b * (ei_ej + fi_fj) * rij
-        qij -= branch.g * (ej_fi - ei_fj) * rij
-
-        return m.qij[branch_idx, s_m, s_o, p] == qij
-
-    return pe.Constraint.Skip
+def qji_rule(m, branch_idx, s_m, s_o, p, network, params):
+    _, qji = _branch_terminal_power_expressions(m, branch_idx, s_m, s_o, p, network, 'ji')
+    return m.qji[branch_idx, s_m, s_o, p] == qji
 
 
 def branch_flow_def(model, b, s_m, s_o, p, network, params):
@@ -996,7 +1404,19 @@ def branch_flow_def(model, b, s_m, s_o, p, network, params):
     fnode_idx = network.get_node_idx(branch.fbus)
     tnode_idx = network.get_node_idx(branch.tbus)
 
-    return compute_branch_flow_squared(network, model, b, fnode_idx, tnode_idx, s_m, s_o, p, params.branch_limit_type)
+    return compute_branch_flow_squared(network, model, b, fnode_idx, tnode_idx, s_m, s_o, p, params.branch_limit_type, direction='ij')
+
+
+def branch_flow_ji_def(model, b, s_m, s_o, p, network, params):
+
+    branch = network.branches[b]
+    if not branch.status:
+        return pe.Expression.Skip
+
+    fnode_idx = network.get_node_idx(branch.tbus)
+    tnode_idx = network.get_node_idx(branch.fbus)
+
+    return compute_branch_flow_squared(network, model, b, fnode_idx, tnode_idx, s_m, s_o, p, params.branch_limit_type, direction='ji')
 
 
 def branch_flow_limit_rule(model, b, s_m, s_o, p, network, params):
@@ -1011,6 +1431,18 @@ def branch_flow_limit_rule(model, b, s_m, s_o, p, network, params):
         return model.flow_ij_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_flow_ij_sqr[b, s_m, s_o, p]
     else:
         return model.flow_ij_sqr[b, s_m, s_o, p] <= rating ** 2 + EQUALITY_TOLERANCE
+
+
+def branch_flow_limit_ji_rule(model, b, s_m, s_o, p, network, params):
+    branch = network.branches[b]
+    if not branch.status:
+        return pe.Constraint.Skip
+
+    rating = branch.rate / network.baseMVA or BRANCH_UNKNOWN_RATING
+
+    if params.slacks.grid_operation.branch_flow:
+        return model.flow_ji_sqr[b, s_m, s_o, p] <= rating ** 2 + model.slack_flow_ji_sqr[b, s_m, s_o, p]
+    return model.flow_ji_sqr[b, s_m, s_o, p] <= rating ** 2 + EQUALITY_TOLERANCE
 
 
 def setup_cost_parameters(model, params):
@@ -1214,11 +1646,14 @@ def ess_utilization_cost_penalty(model, network, s_m, s_o, params):
     cost = 0.0
     for e in model.shared_energy_storages:
         for p in model.periods:
-            cost += model.penalty_ess_usage * network.baseMVA * (model.shared_es_sch[e, s_m, s_o, p] + model.shared_es_sdch[e, s_m, s_o, p])
+            # P5.4-A: usage penalty follows ACTIVE charge/discharge power.
+            # Coefficients are unchanged; this is part of the active-energy
+            # physical correction, not an objective-tuning change.
+            cost += model.penalty_ess_usage * network.baseMVA * (model.shared_es_pch[e, s_m, s_o, p] + model.shared_es_pdch[e, s_m, s_o, p])
     if params.es_reg:
         for e in model.energy_storages:
             for p in model.periods:
-                cost += model.penalty_ess_usage * network.baseMVA * (model.es_sch[e, s_m, s_o, p] + model.es_sdch[e, s_m, s_o, p])
+                cost += model.penalty_ess_usage * network.baseMVA * (model.es_pch[e, s_m, s_o, p] + model.es_pdch[e, s_m, s_o, p])
     return cost
 
 
@@ -1242,8 +1677,7 @@ def slack_penalties(model, network, s_m, s_o, params):
     for i in model.nodes:
         for p in model.periods:
             if params.slacks.grid_operation.voltage:
-                total += PENALTY_VOLTAGE * (model.slack_e_up[i, s_m, s_o, p] + model.slack_e_down[i, s_m, s_o, p])
-                total += PENALTY_VOLTAGE * (model.slack_f_up[i, s_m, s_o, p] + model.slack_f_down[i, s_m, s_o, p])
+                total += PENALTY_VOLTAGE_SQUARED * (model.slack_v_sqr_down[i, s_m, s_o, p] + model.slack_v_sqr_up[i, s_m, s_o, p])
             if params.slacks.node_balance.active_power:
                 total += base * PENALTY_NODE_BALANCE * (model.slack_node_balance_p_up[i, s_m, s_o, p] + model.slack_node_balance_p_down[i, s_m, s_o, p])
             if params.slacks.node_balance.reactive_power:
@@ -1254,6 +1688,11 @@ def slack_penalties(model, network, s_m, s_o, params):
             if params.slacks.grid_operation.branch_flow:
                 total += base * PENALTY_CURRENT * (model.slack_flow_ij_sqr[b, s_m, s_o, p])
 
+    if params.slacks.grid_operation.branch_flow:
+        for b in model.apparent_power_limited_branches:
+            for p in model.periods:
+                total += base * PENALTY_CURRENT * model.slack_flow_ji_sqr[b, s_m, s_o, p]
+
     if params.fl_reg and params.slacks.flexibility.day_balance:
         for c in model.loads:
             if network.loads[c].fl_reg:
@@ -1261,7 +1700,6 @@ def slack_penalties(model, network, s_m, s_o, params):
                 total += base * PENALTY_FLEXIBILITY * sum(model.slack_flex_q_balance_up[c, s_m, s_o] + model.slack_flex_q_balance_down[c, s_m, s_o] )
 
     return total
-
 
 
 def slack_penalties_rule(model, s_m, s_o, network, params):
@@ -1277,14 +1715,15 @@ def ess_complementarity_penalties(model, network, s_m, s_o, p, params):
         for e in model.energy_storages:
             for p in model.periods:
                 if params.ess_model == ESS_MODEL_BILINEAR_RELAXATION:
-                    total += base * PENALTY_ESS_COMPLEMENTARITY * (model.es_sch[e, s_m, s_o, p] * model.es_sdch[e, s_m, s_o, p])
+                    total += base * PENALTY_ESS_COMPLEMENTARITY * (model.es_pch[e, s_m, s_o, p] * model.es_pdch[e, s_m, s_o, p])
             if params.slacks.ess.day_balance:
                 total += base * PENALTY_ESS_BALANCE * (model.slack_es_soc_final_up[e, s_m, s_o] + model.slack_es_soc_final_down[e, s_m, s_o])
 
     for e in model.shared_energy_storages:
         for p in model.periods:
-            if params.ess_model == ESS_MODEL_BILINEAR_RELAXATION:
-                total += base * PENALTY_ESS_COMPLEMENTARITY * (model.shared_es_sch[e, s_m, s_o, p] * model.shared_es_sdch[e, s_m, s_o, p])
+            if params.shared_ess_model == ESS_MODEL_BILINEAR_RELAXATION:
+                # P5.4-A: complementarity penalty follows ACTIVE power; coefficient unchanged.
+                total += base * PENALTY_ESS_COMPLEMENTARITY * (model.shared_es_pch[e, s_m, s_o, p] * model.shared_es_pdch[e, s_m, s_o, p])
         if params.slacks.shared_ess.day_balance:
             total += base * PENALTY_SHARED_ESS_BALANCE * (model.slack_shared_es_soc_final_up[e, s_m, s_o] + model.slack_shared_es_soc_final_down[e, s_m, s_o])
 
@@ -1344,28 +1783,6 @@ def dn_interface_expected_pf_q_def(m, p, network):
     return expected_pf_q
 
 
-def dn_interface_expected_sess_p_def(m, p, network, shared_ess_idx):
-    expected_ess_p = sum(
-        network.prob_market_scenarios[s_m] *
-        network.prob_operation_scenarios[s_o] *
-        m.shared_es_pnet[shared_ess_idx, s_m, s_o, p]
-        for s_m in m.scenarios_market
-        for s_o in m.scenarios_operation
-    )
-    return expected_ess_p
-
-
-def dn_interface_expected_sess_q_def(m, p, network, shared_ess_idx):
-    expected_ess_q = sum(
-        network.prob_market_scenarios[s_m] *
-        network.prob_operation_scenarios[s_o] *
-        m.shared_es_qnet[shared_ess_idx, s_m, s_o, p]
-        for s_m in m.scenarios_market
-        for s_o in m.scenarios_operation
-    )
-    return expected_ess_q
-
-
 def dn_interface_expected_vmag_rule(m, p, network):
     return m.expected_interface_vmag[p] == dn_interface_expected_vmag_def(m, p, network)
 
@@ -1378,6 +1795,14 @@ def dn_interface_expected_pf_q_rule(m, p, network):
     return m.expected_interface_pf_q[p] == dn_interface_expected_pf_q_def(m, p, network)
 
 
+def dn_interface_expected_sess_p_def(m, p, network, shared_ess_idx):
+    return sum(network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * m.shared_es_pnet[shared_ess_idx, s_m, s_o, p] for s_m in m.scenarios_market for s_o in m.scenarios_operation)
+
+
+def dn_interface_expected_sess_q_def(m, p, network, shared_ess_idx):
+    return sum(network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * m.shared_es_qnet[shared_ess_idx, s_m, s_o, p] for s_m in m.scenarios_market for s_o in m.scenarios_operation)
+
+
 def dn_interface_expected_sess_p_rule(m, p, network, shared_ess_idx):
     return m.expected_shared_ess_p[p] == dn_interface_expected_sess_p_def(m, p, network, shared_ess_idx)
 
@@ -1387,58 +1812,18 @@ def dn_interface_expected_sess_q_rule(m, p, network, shared_ess_idx):
 
 
 def tn_interface_expected_vmag_def(m, dn, p, network):
-    expected_vmag = sum(
-        network.prob_market_scenarios[s_m] *
-        network.prob_operation_scenarios[s_o] *
-        m.vmag_adn[dn, s_m, s_o, p]
-        for s_m in m.scenarios_market
-        for s_o in m.scenarios_operation
-    )
+    expected_vmag = sum(network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * m.vmag_adn[dn, s_m, s_o, p] for s_m in m.scenarios_market for s_o in m.scenarios_operation)
     return expected_vmag
 
 
 def tn_interface_expected_pf_p_def(m, dn, p, network):
-    expected_pf_p = sum(
-        network.prob_market_scenarios[s_m] *
-        network.prob_operation_scenarios[s_o] *
-        m.pc_adn[dn, s_m, s_o, p]
-        for s_m in m.scenarios_market
-        for s_o in m.scenarios_operation
-    )
+    expected_pf_p = sum(network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * m.pc_adn[dn, s_m, s_o, p] for s_m in m.scenarios_market for s_o in m.scenarios_operation)
     return expected_pf_p
 
 
 def tn_interface_expected_pf_q_def(m, dn, p, network):
-    expected_pf_q = sum(
-        network.prob_market_scenarios[s_m] *
-        network.prob_operation_scenarios[s_o] *
-        m.qc_adn[dn, s_m, s_o, p]
-        for s_m in m.scenarios_market
-        for s_o in m.scenarios_operation
-    )
+    expected_pf_q = sum(network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * m.qc_adn[dn, s_m, s_o, p] for s_m in m.scenarios_market for s_o in m.scenarios_operation)
     return expected_pf_q
-
-
-def tn_interface_expected_sess_p_def(m, e, p, network):
-    expected_ess_p = sum(
-        network.prob_market_scenarios[s_m] *
-        network.prob_operation_scenarios[s_o] *
-        m.shared_es_pnet[e, s_m, s_o, p]
-        for s_m in m.scenarios_market
-        for s_o in m.scenarios_operation
-    )
-    return expected_ess_p
-
-
-def tn_interface_expected_sess_q_def(m, e, p, network):
-    expected_ess_q = sum(
-        network.prob_market_scenarios[s_m] *
-        network.prob_operation_scenarios[s_o] *
-        m.shared_es_qnet[e, s_m, s_o, p]
-        for s_m in m.scenarios_market
-        for s_o in m.scenarios_operation
-    )
-    return expected_ess_q
 
 
 def tn_interface_expected_vmag_rule(m, dn, p, network):
@@ -1453,15 +1838,17 @@ def tn_interface_expected_pf_q_rule(m, dn, p, network):
     return m.expected_interface_pf_q[dn, p] == tn_interface_expected_pf_q_def(m, dn, p, network)
 
 
+def tn_interface_expected_sess_p_def(m, e, p, network):
+    return sum(network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * m.shared_es_pnet[e, s_m, s_o, p] for s_m in m.scenarios_market for s_o in m.scenarios_operation)
+
+
+def tn_interface_expected_sess_q_def(m, e, p, network):
+    return sum(network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * m.shared_es_qnet[e, s_m, s_o, p] for s_m in m.scenarios_market for s_o in m.scenarios_operation)
+
+
 def tn_interface_expected_sess_p_rule(m, e, p, network):
     return m.expected_shared_ess_p[e, p] == tn_interface_expected_sess_p_def(m, e, p, network)
 
 
 def tn_interface_expected_sess_q_rule(m, e, p, network):
     return m.expected_shared_ess_q[e, p] == tn_interface_expected_sess_q_def(m, e, p, network)
-
-
-def expected_interface_vmag_bounds(m, dn, p, network):
-    adn_node_id = network.active_distribution_network_nodes[dn]
-    v_min, v_max = network.get_node_voltage_limits(adn_node_id)
-    return (v_min - EQUALITY_TOLERANCE, v_max + EQUALITY_TOLERANCE)

@@ -1,0 +1,1004 @@
+{
+  "DSO": {
+    "case": "DSO",
+    "shared_ess_index": 0,
+    "post_build": {
+      "all_shared_energy_storage_indices": [
+        0
+      ],
+      "sess_snet_def_row_count_for_idx": 24,
+      "sess_snet_def_index_tuples_for_idx": [
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          2
+        ],
+        [
+          0,
+          0,
+          0,
+          3
+        ],
+        [
+          0,
+          0,
+          0,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          5
+        ],
+        [
+          0,
+          0,
+          0,
+          6
+        ],
+        [
+          0,
+          0,
+          0,
+          7
+        ],
+        [
+          0,
+          0,
+          0,
+          8
+        ],
+        [
+          0,
+          0,
+          0,
+          9
+        ],
+        [
+          0,
+          0,
+          0,
+          10
+        ],
+        [
+          0,
+          0,
+          0,
+          11
+        ],
+        [
+          0,
+          0,
+          0,
+          12
+        ],
+        [
+          0,
+          0,
+          0,
+          13
+        ],
+        [
+          0,
+          0,
+          0,
+          14
+        ],
+        [
+          0,
+          0,
+          0,
+          15
+        ],
+        [
+          0,
+          0,
+          0,
+          16
+        ],
+        [
+          0,
+          0,
+          0,
+          17
+        ],
+        [
+          0,
+          0,
+          0,
+          18
+        ],
+        [
+          0,
+          0,
+          0,
+          19
+        ],
+        [
+          0,
+          0,
+          0,
+          20
+        ],
+        [
+          0,
+          0,
+          0,
+          21
+        ],
+        [
+          0,
+          0,
+          0,
+          22
+        ],
+        [
+          0,
+          0,
+          0,
+          23
+        ]
+      ],
+      "sess_comp_row_count_for_idx": 24,
+      "kappa_initial_value": 1.0,
+      "kappa_initial_equals_safe_placeholder": true,
+      "all_rows_active_pre_configure": true,
+      "shared_es_s_rated_fixed_initial": 0.0,
+      "shared_es_e_rated_fixed_initial": 0.0
+    },
+    "step_A_zero_capacity_baseline": {
+      "kappa": 1.0,
+      "kappa_equals_safe_placeholder": true,
+      "all_rows_deactivated": true,
+      "all_sess_comp_rows_deactivated": true,
+      "operational_vars_fixed_at_zero": {
+        "shared_es_pch": true,
+        "shared_es_pdch": true,
+        "shared_es_sch": true,
+        "shared_es_sdch": true,
+        "shared_es_pnet": true,
+        "shared_es_qnet": true,
+        "shared_es_soc": true,
+        "slack_shared_es_soc_final_up": true,
+        "slack_shared_es_soc_final_down": true
+      },
+      "structural": {
+        "label": "after_zero_capacity_baseline",
+        "component_names_unchanged": true,
+        "no_new_constraint_component": true,
+        "total_constraint_data_count": 7733,
+        "total_constraint_data_count_unchanged": true,
+        "sess_snet_def_component_object_unchanged": true,
+        "sess_snet_def_local_name": "sess_snet_def",
+        "sess_snet_def_index_tuples_unchanged": true,
+        "sess_snet_def_row_count_unchanged": true,
+        "sess_comp_component_object_unchanged": true,
+        "sess_comp_index_tuples_unchanged": true,
+        "per_row_object_identity_unchanged": true
+      }
+    },
+    "step_B_near_zero_capacity": {
+      "input_s_capacity": 5e-11,
+      "exception_raised": null,
+      "kappa": 1.0,
+      "kappa_equals_safe_placeholder": true,
+      "all_rows_still_deactivated": true,
+      "structural": {
+        "label": "after_near_zero_capacity",
+        "component_names_unchanged": true,
+        "no_new_constraint_component": true,
+        "total_constraint_data_count": 7733,
+        "total_constraint_data_count_unchanged": true,
+        "sess_snet_def_component_object_unchanged": true,
+        "sess_snet_def_local_name": "sess_snet_def",
+        "sess_snet_def_index_tuples_unchanged": true,
+        "sess_snet_def_row_count_unchanged": true,
+        "sess_comp_component_object_unchanged": true,
+        "sess_comp_index_tuples_unchanged": true,
+        "per_row_object_identity_unchanged": true
+      }
+    },
+    "step_C_stale_dual_injected_while_inactive": {
+      "value_injected": -777.0,
+      "n_rows": 24
+    },
+    "step_D_reactivate_s_0_01": {
+      "s_capacity": 0.01,
+      "e_capacity": 0.04,
+      "kappa": 100.0,
+      "kappa_equals_100": true,
+      "all_rows_active": true,
+      "stale_duals_cleared_on_reactivation": true,
+      "operational_vars_unfixed": {
+        "shared_es_pch": true,
+        "shared_es_pdch": true,
+        "shared_es_sch": true,
+        "shared_es_sdch": true,
+        "shared_es_pnet": true,
+        "shared_es_qnet": true,
+        "shared_es_soc": true,
+        "slack_shared_es_soc_final_up": true,
+        "slack_shared_es_soc_final_down": true
+      },
+      "structural": {
+        "label": "after_reactivate_s_0_01",
+        "component_names_unchanged": true,
+        "no_new_constraint_component": true,
+        "total_constraint_data_count": 7733,
+        "total_constraint_data_count_unchanged": true,
+        "sess_snet_def_component_object_unchanged": true,
+        "sess_snet_def_local_name": "sess_snet_def",
+        "sess_snet_def_index_tuples_unchanged": true,
+        "sess_snet_def_row_count_unchanged": true,
+        "sess_comp_component_object_unchanged": true,
+        "sess_comp_index_tuples_unchanged": true,
+        "per_row_object_identity_unchanged": true
+      }
+    },
+    "step_F_live_capacity_change_s_0_01_to_0_02": {
+      "s_capacity": 0.02,
+      "e_capacity": 0.08,
+      "kappa": 50.0,
+      "kappa_equals_50": true,
+      "kappa_old": 100.0,
+      "per_row_object_identity_unchanged_across_live_change": true,
+      "dual_before": {
+        "(0, 0, 0, 0)": -12.5,
+        "(0, 0, 0, 1)": -15.5,
+        "(0, 0, 0, 2)": -18.5,
+        "(0, 0, 0, 3)": -21.5,
+        "(0, 0, 0, 4)": -24.5,
+        "(0, 0, 0, 5)": -27.5,
+        "(0, 0, 0, 6)": -30.5,
+        "(0, 0, 0, 7)": -33.5,
+        "(0, 0, 0, 8)": -36.5,
+        "(0, 0, 0, 9)": -39.5,
+        "(0, 0, 0, 10)": -42.5,
+        "(0, 0, 0, 11)": -45.5,
+        "(0, 0, 0, 12)": -48.5,
+        "(0, 0, 0, 13)": -51.5,
+        "(0, 0, 0, 14)": -54.5,
+        "(0, 0, 0, 15)": -57.5,
+        "(0, 0, 0, 16)": -60.5,
+        "(0, 0, 0, 17)": -63.5,
+        "(0, 0, 0, 18)": -66.5,
+        "(0, 0, 0, 19)": -69.5,
+        "(0, 0, 0, 20)": -72.5,
+        "(0, 0, 0, 21)": -75.5,
+        "(0, 0, 0, 22)": -78.5,
+        "(0, 0, 0, 23)": -81.5
+      },
+      "dual_after": {
+        "(0, 0, 0, 0)": -25.0,
+        "(0, 0, 0, 1)": -31.0,
+        "(0, 0, 0, 2)": -37.0,
+        "(0, 0, 0, 3)": -43.0,
+        "(0, 0, 0, 4)": -49.0,
+        "(0, 0, 0, 5)": -55.0,
+        "(0, 0, 0, 6)": -61.0,
+        "(0, 0, 0, 7)": -67.0,
+        "(0, 0, 0, 8)": -73.0,
+        "(0, 0, 0, 9)": -79.0,
+        "(0, 0, 0, 10)": -85.0,
+        "(0, 0, 0, 11)": -91.0,
+        "(0, 0, 0, 12)": -97.0,
+        "(0, 0, 0, 13)": -103.0,
+        "(0, 0, 0, 14)": -109.0,
+        "(0, 0, 0, 15)": -115.0,
+        "(0, 0, 0, 16)": -121.0,
+        "(0, 0, 0, 17)": -127.0,
+        "(0, 0, 0, 18)": -133.0,
+        "(0, 0, 0, 19)": -139.0,
+        "(0, 0, 0, 20)": -145.0,
+        "(0, 0, 0, 21)": -151.0,
+        "(0, 0, 0, 22)": -157.0,
+        "(0, 0, 0, 23)": -163.0
+      },
+      "expected_dual_kkt_lambda_old_times_kappa_old_over_kappa_new": {
+        "(0, 0, 0, 0)": -25.0,
+        "(0, 0, 0, 1)": -31.0,
+        "(0, 0, 0, 2)": -37.0,
+        "(0, 0, 0, 3)": -43.0,
+        "(0, 0, 0, 4)": -49.0,
+        "(0, 0, 0, 5)": -55.0,
+        "(0, 0, 0, 6)": -61.0,
+        "(0, 0, 0, 7)": -67.0,
+        "(0, 0, 0, 8)": -73.0,
+        "(0, 0, 0, 9)": -79.0,
+        "(0, 0, 0, 10)": -85.0,
+        "(0, 0, 0, 11)": -91.0,
+        "(0, 0, 0, 12)": -97.0,
+        "(0, 0, 0, 13)": -103.0,
+        "(0, 0, 0, 14)": -109.0,
+        "(0, 0, 0, 15)": -115.0,
+        "(0, 0, 0, 16)": -121.0,
+        "(0, 0, 0, 17)": -127.0,
+        "(0, 0, 0, 18)": -133.0,
+        "(0, 0, 0, 19)": -139.0,
+        "(0, 0, 0, 20)": -145.0,
+        "(0, 0, 0, 21)": -151.0,
+        "(0, 0, 0, 22)": -157.0,
+        "(0, 0, 0, 23)": -163.0
+      },
+      "all_duals_match_kkt_transfer_exactly": true,
+      "per_row_kkt_match": {
+        "(0, 0, 0, 0)": true,
+        "(0, 0, 0, 1)": true,
+        "(0, 0, 0, 2)": true,
+        "(0, 0, 0, 3)": true,
+        "(0, 0, 0, 4)": true,
+        "(0, 0, 0, 5)": true,
+        "(0, 0, 0, 6)": true,
+        "(0, 0, 0, 7)": true,
+        "(0, 0, 0, 8)": true,
+        "(0, 0, 0, 9)": true,
+        "(0, 0, 0, 10)": true,
+        "(0, 0, 0, 11)": true,
+        "(0, 0, 0, 12)": true,
+        "(0, 0, 0, 13)": true,
+        "(0, 0, 0, 14)": true,
+        "(0, 0, 0, 15)": true,
+        "(0, 0, 0, 16)": true,
+        "(0, 0, 0, 17)": true,
+        "(0, 0, 0, 18)": true,
+        "(0, 0, 0, 19)": true,
+        "(0, 0, 0, 20)": true,
+        "(0, 0, 0, 21)": true,
+        "(0, 0, 0, 22)": true,
+        "(0, 0, 0, 23)": true
+      },
+      "structural": {
+        "label": "after_live_capacity_change",
+        "component_names_unchanged": true,
+        "no_new_constraint_component": true,
+        "total_constraint_data_count": 7733,
+        "total_constraint_data_count_unchanged": true,
+        "sess_snet_def_component_object_unchanged": true,
+        "sess_snet_def_local_name": "sess_snet_def",
+        "sess_snet_def_index_tuples_unchanged": true,
+        "sess_snet_def_row_count_unchanged": true,
+        "sess_comp_component_object_unchanged": true,
+        "sess_comp_index_tuples_unchanged": true,
+        "per_row_object_identity_unchanged": true
+      }
+    },
+    "step_G_deactivate_again": {
+      "kappa": 1.0,
+      "kappa_equals_safe_placeholder": true,
+      "all_rows_deactivated": true,
+      "stale_dual_from_last_active_state_left_untouched": true,
+      "per_row_left_alone_check": {
+        "(0, 0, 0, 0)": true,
+        "(0, 0, 0, 1)": true,
+        "(0, 0, 0, 2)": true,
+        "(0, 0, 0, 3)": true,
+        "(0, 0, 0, 4)": true,
+        "(0, 0, 0, 5)": true,
+        "(0, 0, 0, 6)": true,
+        "(0, 0, 0, 7)": true,
+        "(0, 0, 0, 8)": true,
+        "(0, 0, 0, 9)": true,
+        "(0, 0, 0, 10)": true,
+        "(0, 0, 0, 11)": true,
+        "(0, 0, 0, 12)": true,
+        "(0, 0, 0, 13)": true,
+        "(0, 0, 0, 14)": true,
+        "(0, 0, 0, 15)": true,
+        "(0, 0, 0, 16)": true,
+        "(0, 0, 0, 17)": true,
+        "(0, 0, 0, 18)": true,
+        "(0, 0, 0, 19)": true,
+        "(0, 0, 0, 20)": true,
+        "(0, 0, 0, 21)": true,
+        "(0, 0, 0, 22)": true,
+        "(0, 0, 0, 23)": true
+      },
+      "note": "Design behavior, not a defect: a dual computed while a row was last active is left on the ConstraintData when that row is deactivated (nothing to warm-start while inactive). It is only ever cleared at the point of a later REACTIVATION (step H), using the freshly-read was_active/will_be_active state at that call -- never at deactivation time itself.",
+      "structural": {
+        "label": "after_second_deactivation",
+        "component_names_unchanged": true,
+        "no_new_constraint_component": true,
+        "total_constraint_data_count": 7733,
+        "total_constraint_data_count_unchanged": true,
+        "sess_snet_def_component_object_unchanged": true,
+        "sess_snet_def_local_name": "sess_snet_def",
+        "sess_snet_def_index_tuples_unchanged": true,
+        "sess_snet_def_row_count_unchanged": true,
+        "sess_comp_component_object_unchanged": true,
+        "sess_comp_index_tuples_unchanged": true,
+        "per_row_object_identity_unchanged": true
+      }
+    },
+    "step_H_reactivate_again_s_0_01": {
+      "kappa": 100.0,
+      "kappa_equals_100": true,
+      "leftover_stale_dual_from_step_G_cleared": true,
+      "structural": {
+        "label": "after_second_reactivation",
+        "component_names_unchanged": true,
+        "no_new_constraint_component": true,
+        "total_constraint_data_count": 7733,
+        "total_constraint_data_count_unchanged": true,
+        "sess_snet_def_component_object_unchanged": true,
+        "sess_snet_def_local_name": "sess_snet_def",
+        "sess_snet_def_index_tuples_unchanged": true,
+        "sess_snet_def_row_count_unchanged": true,
+        "sess_comp_component_object_unchanged": true,
+        "sess_comp_index_tuples_unchanged": true,
+        "per_row_object_identity_unchanged": true
+      }
+    },
+    "step_I_feasible_set_equivalence": {
+      "kappa_used": 100.0,
+      "sample_row": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "checks": [
+        {
+          "point": {
+            "sch": 0.005,
+            "sdch": 0.0,
+            "pnet": 0.005,
+            "qnet": 0.0
+          },
+          "g": 0.0,
+          "kappa_times_g": 0.0,
+          "g_is_zero": true,
+          "kappa_g_is_zero": true,
+          "zero_crossing_matches": true,
+          "sign_matches": true
+        },
+        {
+          "point": {
+            "sch": 0.005,
+            "sdch": 0.0,
+            "pnet": 0.0051,
+            "qnet": 0.0
+          },
+          "g": -1.0100000000000022e-06,
+          "kappa_times_g": -0.00010100000000000022,
+          "g_is_zero": false,
+          "kappa_g_is_zero": false,
+          "zero_crossing_matches": true,
+          "sign_matches": true
+        },
+        {
+          "point": {
+            "sch": 0.006,
+            "sdch": 0.0,
+            "pnet": 0.005,
+            "qnet": 0.0
+          },
+          "g": 1.1e-05,
+          "kappa_times_g": 0.0011,
+          "g_is_zero": false,
+          "kappa_g_is_zero": false,
+          "zero_crossing_matches": true,
+          "sign_matches": true
+        }
+      ],
+      "all_zero_crossings_match": true,
+      "all_signs_match": true
+    },
+    "all_invariants_hold": true
+  },
+  "TSO": {
+    "case": "TSO",
+    "shared_ess_index": 1,
+    "post_build": {
+      "all_shared_energy_storage_indices": [
+        0,
+        1,
+        2
+      ],
+      "sess_snet_def_row_count_for_idx": 24,
+      "sess_snet_def_index_tuples_for_idx": [
+        [
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          1
+        ],
+        [
+          1,
+          0,
+          0,
+          2
+        ],
+        [
+          1,
+          0,
+          0,
+          3
+        ],
+        [
+          1,
+          0,
+          0,
+          4
+        ],
+        [
+          1,
+          0,
+          0,
+          5
+        ],
+        [
+          1,
+          0,
+          0,
+          6
+        ],
+        [
+          1,
+          0,
+          0,
+          7
+        ],
+        [
+          1,
+          0,
+          0,
+          8
+        ],
+        [
+          1,
+          0,
+          0,
+          9
+        ],
+        [
+          1,
+          0,
+          0,
+          10
+        ],
+        [
+          1,
+          0,
+          0,
+          11
+        ],
+        [
+          1,
+          0,
+          0,
+          12
+        ],
+        [
+          1,
+          0,
+          0,
+          13
+        ],
+        [
+          1,
+          0,
+          0,
+          14
+        ],
+        [
+          1,
+          0,
+          0,
+          15
+        ],
+        [
+          1,
+          0,
+          0,
+          16
+        ],
+        [
+          1,
+          0,
+          0,
+          17
+        ],
+        [
+          1,
+          0,
+          0,
+          18
+        ],
+        [
+          1,
+          0,
+          0,
+          19
+        ],
+        [
+          1,
+          0,
+          0,
+          20
+        ],
+        [
+          1,
+          0,
+          0,
+          21
+        ],
+        [
+          1,
+          0,
+          0,
+          22
+        ],
+        [
+          1,
+          0,
+          0,
+          23
+        ]
+      ],
+      "sess_comp_row_count_for_idx": 24,
+      "kappa_initial_value": 1.0,
+      "kappa_initial_equals_safe_placeholder": true,
+      "all_rows_active_pre_configure": true,
+      "shared_es_s_rated_fixed_initial": 0.0,
+      "shared_es_e_rated_fixed_initial": 0.0
+    },
+    "step_A_zero_capacity_baseline": {
+      "kappa": 1.0,
+      "kappa_equals_safe_placeholder": true,
+      "all_rows_deactivated": true,
+      "all_sess_comp_rows_deactivated": true,
+      "operational_vars_fixed_at_zero": {
+        "shared_es_pch": true,
+        "shared_es_pdch": true,
+        "shared_es_sch": true,
+        "shared_es_sdch": true,
+        "shared_es_pnet": true,
+        "shared_es_qnet": true,
+        "shared_es_soc": true,
+        "slack_shared_es_soc_final_up": true,
+        "slack_shared_es_soc_final_down": true
+      },
+      "structural": {
+        "label": "after_zero_capacity_baseline",
+        "component_names_unchanged": true,
+        "no_new_constraint_component": true,
+        "total_constraint_data_count": 3168,
+        "total_constraint_data_count_unchanged": true,
+        "sess_snet_def_component_object_unchanged": true,
+        "sess_snet_def_local_name": "sess_snet_def",
+        "sess_snet_def_index_tuples_unchanged": true,
+        "sess_snet_def_row_count_unchanged": true,
+        "sess_comp_component_object_unchanged": true,
+        "sess_comp_index_tuples_unchanged": true,
+        "per_row_object_identity_unchanged": true
+      }
+    },
+    "step_B_near_zero_capacity": {
+      "input_s_capacity": 5e-11,
+      "exception_raised": null,
+      "kappa": 1.0,
+      "kappa_equals_safe_placeholder": true,
+      "all_rows_still_deactivated": true,
+      "structural": {
+        "label": "after_near_zero_capacity",
+        "component_names_unchanged": true,
+        "no_new_constraint_component": true,
+        "total_constraint_data_count": 3168,
+        "total_constraint_data_count_unchanged": true,
+        "sess_snet_def_component_object_unchanged": true,
+        "sess_snet_def_local_name": "sess_snet_def",
+        "sess_snet_def_index_tuples_unchanged": true,
+        "sess_snet_def_row_count_unchanged": true,
+        "sess_comp_component_object_unchanged": true,
+        "sess_comp_index_tuples_unchanged": true,
+        "per_row_object_identity_unchanged": true
+      }
+    },
+    "step_C_stale_dual_injected_while_inactive": {
+      "value_injected": -777.0,
+      "n_rows": 24
+    },
+    "step_D_reactivate_s_0_01": {
+      "s_capacity": 0.01,
+      "e_capacity": 0.04,
+      "kappa": 100.0,
+      "kappa_equals_100": true,
+      "all_rows_active": true,
+      "stale_duals_cleared_on_reactivation": true,
+      "operational_vars_unfixed": {
+        "shared_es_pch": true,
+        "shared_es_pdch": true,
+        "shared_es_sch": true,
+        "shared_es_sdch": true,
+        "shared_es_pnet": true,
+        "shared_es_qnet": true,
+        "shared_es_soc": true,
+        "slack_shared_es_soc_final_up": true,
+        "slack_shared_es_soc_final_down": true
+      },
+      "structural": {
+        "label": "after_reactivate_s_0_01",
+        "component_names_unchanged": true,
+        "no_new_constraint_component": true,
+        "total_constraint_data_count": 3168,
+        "total_constraint_data_count_unchanged": true,
+        "sess_snet_def_component_object_unchanged": true,
+        "sess_snet_def_local_name": "sess_snet_def",
+        "sess_snet_def_index_tuples_unchanged": true,
+        "sess_snet_def_row_count_unchanged": true,
+        "sess_comp_component_object_unchanged": true,
+        "sess_comp_index_tuples_unchanged": true,
+        "per_row_object_identity_unchanged": true
+      }
+    },
+    "step_F_live_capacity_change_s_0_01_to_0_02": {
+      "s_capacity": 0.02,
+      "e_capacity": 0.08,
+      "kappa": 50.0,
+      "kappa_equals_50": true,
+      "kappa_old": 100.0,
+      "per_row_object_identity_unchanged_across_live_change": true,
+      "dual_before": {
+        "(1, 0, 0, 0)": -12.5,
+        "(1, 0, 0, 1)": -15.5,
+        "(1, 0, 0, 2)": -18.5,
+        "(1, 0, 0, 3)": -21.5,
+        "(1, 0, 0, 4)": -24.5,
+        "(1, 0, 0, 5)": -27.5,
+        "(1, 0, 0, 6)": -30.5,
+        "(1, 0, 0, 7)": -33.5,
+        "(1, 0, 0, 8)": -36.5,
+        "(1, 0, 0, 9)": -39.5,
+        "(1, 0, 0, 10)": -42.5,
+        "(1, 0, 0, 11)": -45.5,
+        "(1, 0, 0, 12)": -48.5,
+        "(1, 0, 0, 13)": -51.5,
+        "(1, 0, 0, 14)": -54.5,
+        "(1, 0, 0, 15)": -57.5,
+        "(1, 0, 0, 16)": -60.5,
+        "(1, 0, 0, 17)": -63.5,
+        "(1, 0, 0, 18)": -66.5,
+        "(1, 0, 0, 19)": -69.5,
+        "(1, 0, 0, 20)": -72.5,
+        "(1, 0, 0, 21)": -75.5,
+        "(1, 0, 0, 22)": -78.5,
+        "(1, 0, 0, 23)": -81.5
+      },
+      "dual_after": {
+        "(1, 0, 0, 0)": -25.0,
+        "(1, 0, 0, 1)": -31.0,
+        "(1, 0, 0, 2)": -37.0,
+        "(1, 0, 0, 3)": -43.0,
+        "(1, 0, 0, 4)": -49.0,
+        "(1, 0, 0, 5)": -55.0,
+        "(1, 0, 0, 6)": -61.0,
+        "(1, 0, 0, 7)": -67.0,
+        "(1, 0, 0, 8)": -73.0,
+        "(1, 0, 0, 9)": -79.0,
+        "(1, 0, 0, 10)": -85.0,
+        "(1, 0, 0, 11)": -91.0,
+        "(1, 0, 0, 12)": -97.0,
+        "(1, 0, 0, 13)": -103.0,
+        "(1, 0, 0, 14)": -109.0,
+        "(1, 0, 0, 15)": -115.0,
+        "(1, 0, 0, 16)": -121.0,
+        "(1, 0, 0, 17)": -127.0,
+        "(1, 0, 0, 18)": -133.0,
+        "(1, 0, 0, 19)": -139.0,
+        "(1, 0, 0, 20)": -145.0,
+        "(1, 0, 0, 21)": -151.0,
+        "(1, 0, 0, 22)": -157.0,
+        "(1, 0, 0, 23)": -163.0
+      },
+      "expected_dual_kkt_lambda_old_times_kappa_old_over_kappa_new": {
+        "(1, 0, 0, 0)": -25.0,
+        "(1, 0, 0, 1)": -31.0,
+        "(1, 0, 0, 2)": -37.0,
+        "(1, 0, 0, 3)": -43.0,
+        "(1, 0, 0, 4)": -49.0,
+        "(1, 0, 0, 5)": -55.0,
+        "(1, 0, 0, 6)": -61.0,
+        "(1, 0, 0, 7)": -67.0,
+        "(1, 0, 0, 8)": -73.0,
+        "(1, 0, 0, 9)": -79.0,
+        "(1, 0, 0, 10)": -85.0,
+        "(1, 0, 0, 11)": -91.0,
+        "(1, 0, 0, 12)": -97.0,
+        "(1, 0, 0, 13)": -103.0,
+        "(1, 0, 0, 14)": -109.0,
+        "(1, 0, 0, 15)": -115.0,
+        "(1, 0, 0, 16)": -121.0,
+        "(1, 0, 0, 17)": -127.0,
+        "(1, 0, 0, 18)": -133.0,
+        "(1, 0, 0, 19)": -139.0,
+        "(1, 0, 0, 20)": -145.0,
+        "(1, 0, 0, 21)": -151.0,
+        "(1, 0, 0, 22)": -157.0,
+        "(1, 0, 0, 23)": -163.0
+      },
+      "all_duals_match_kkt_transfer_exactly": true,
+      "per_row_kkt_match": {
+        "(1, 0, 0, 0)": true,
+        "(1, 0, 0, 1)": true,
+        "(1, 0, 0, 2)": true,
+        "(1, 0, 0, 3)": true,
+        "(1, 0, 0, 4)": true,
+        "(1, 0, 0, 5)": true,
+        "(1, 0, 0, 6)": true,
+        "(1, 0, 0, 7)": true,
+        "(1, 0, 0, 8)": true,
+        "(1, 0, 0, 9)": true,
+        "(1, 0, 0, 10)": true,
+        "(1, 0, 0, 11)": true,
+        "(1, 0, 0, 12)": true,
+        "(1, 0, 0, 13)": true,
+        "(1, 0, 0, 14)": true,
+        "(1, 0, 0, 15)": true,
+        "(1, 0, 0, 16)": true,
+        "(1, 0, 0, 17)": true,
+        "(1, 0, 0, 18)": true,
+        "(1, 0, 0, 19)": true,
+        "(1, 0, 0, 20)": true,
+        "(1, 0, 0, 21)": true,
+        "(1, 0, 0, 22)": true,
+        "(1, 0, 0, 23)": true
+      },
+      "structural": {
+        "label": "after_live_capacity_change",
+        "component_names_unchanged": true,
+        "no_new_constraint_component": true,
+        "total_constraint_data_count": 3168,
+        "total_constraint_data_count_unchanged": true,
+        "sess_snet_def_component_object_unchanged": true,
+        "sess_snet_def_local_name": "sess_snet_def",
+        "sess_snet_def_index_tuples_unchanged": true,
+        "sess_snet_def_row_count_unchanged": true,
+        "sess_comp_component_object_unchanged": true,
+        "sess_comp_index_tuples_unchanged": true,
+        "per_row_object_identity_unchanged": true
+      }
+    },
+    "step_G_deactivate_again": {
+      "kappa": 1.0,
+      "kappa_equals_safe_placeholder": true,
+      "all_rows_deactivated": true,
+      "stale_dual_from_last_active_state_left_untouched": true,
+      "per_row_left_alone_check": {
+        "(1, 0, 0, 0)": true,
+        "(1, 0, 0, 1)": true,
+        "(1, 0, 0, 2)": true,
+        "(1, 0, 0, 3)": true,
+        "(1, 0, 0, 4)": true,
+        "(1, 0, 0, 5)": true,
+        "(1, 0, 0, 6)": true,
+        "(1, 0, 0, 7)": true,
+        "(1, 0, 0, 8)": true,
+        "(1, 0, 0, 9)": true,
+        "(1, 0, 0, 10)": true,
+        "(1, 0, 0, 11)": true,
+        "(1, 0, 0, 12)": true,
+        "(1, 0, 0, 13)": true,
+        "(1, 0, 0, 14)": true,
+        "(1, 0, 0, 15)": true,
+        "(1, 0, 0, 16)": true,
+        "(1, 0, 0, 17)": true,
+        "(1, 0, 0, 18)": true,
+        "(1, 0, 0, 19)": true,
+        "(1, 0, 0, 20)": true,
+        "(1, 0, 0, 21)": true,
+        "(1, 0, 0, 22)": true,
+        "(1, 0, 0, 23)": true
+      },
+      "note": "Design behavior, not a defect: a dual computed while a row was last active is left on the ConstraintData when that row is deactivated (nothing to warm-start while inactive). It is only ever cleared at the point of a later REACTIVATION (step H), using the freshly-read was_active/will_be_active state at that call -- never at deactivation time itself.",
+      "structural": {
+        "label": "after_second_deactivation",
+        "component_names_unchanged": true,
+        "no_new_constraint_component": true,
+        "total_constraint_data_count": 3168,
+        "total_constraint_data_count_unchanged": true,
+        "sess_snet_def_component_object_unchanged": true,
+        "sess_snet_def_local_name": "sess_snet_def",
+        "sess_snet_def_index_tuples_unchanged": true,
+        "sess_snet_def_row_count_unchanged": true,
+        "sess_comp_component_object_unchanged": true,
+        "sess_comp_index_tuples_unchanged": true,
+        "per_row_object_identity_unchanged": true
+      }
+    },
+    "step_H_reactivate_again_s_0_01": {
+      "kappa": 100.0,
+      "kappa_equals_100": true,
+      "leftover_stale_dual_from_step_G_cleared": true,
+      "structural": {
+        "label": "after_second_reactivation",
+        "component_names_unchanged": true,
+        "no_new_constraint_component": true,
+        "total_constraint_data_count": 3168,
+        "total_constraint_data_count_unchanged": true,
+        "sess_snet_def_component_object_unchanged": true,
+        "sess_snet_def_local_name": "sess_snet_def",
+        "sess_snet_def_index_tuples_unchanged": true,
+        "sess_snet_def_row_count_unchanged": true,
+        "sess_comp_component_object_unchanged": true,
+        "sess_comp_index_tuples_unchanged": true,
+        "per_row_object_identity_unchanged": true
+      }
+    },
+    "step_I_feasible_set_equivalence": {
+      "kappa_used": 100.0,
+      "sample_row": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "checks": [
+        {
+          "point": {
+            "sch": 0.005,
+            "sdch": 0.0,
+            "pnet": 0.005,
+            "qnet": 0.0
+          },
+          "g": 0.0,
+          "kappa_times_g": 0.0,
+          "g_is_zero": true,
+          "kappa_g_is_zero": true,
+          "zero_crossing_matches": true,
+          "sign_matches": true
+        },
+        {
+          "point": {
+            "sch": 0.005,
+            "sdch": 0.0,
+            "pnet": 0.0051,
+            "qnet": 0.0
+          },
+          "g": -1.0100000000000022e-06,
+          "kappa_times_g": -0.00010100000000000022,
+          "g_is_zero": false,
+          "kappa_g_is_zero": false,
+          "zero_crossing_matches": true,
+          "sign_matches": true
+        },
+        {
+          "point": {
+            "sch": 0.006,
+            "sdch": 0.0,
+            "pnet": 0.005,
+            "qnet": 0.0
+          },
+          "g": 1.1e-05,
+          "kappa_times_g": 0.0011,
+          "g_is_zero": false,
+          "kappa_g_is_zero": false,
+          "zero_crossing_matches": true,
+          "sign_matches": true
+        }
+      ],
+      "all_zero_crossings_match": true,
+      "all_signs_match": true
+    },
+    "all_invariants_hold": true
+  }
+}

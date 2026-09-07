@@ -1,0 +1,205 @@
+{
+ "stage": "P5.4-D4",
+ "git_head": "896989aed1742a71a24cf7326fd5362367fc8690",
+ "timestamp_utc": "2026-09-07T15:03:34.231963+00:00",
+ "source": {
+  "kind": "s",
+  "node": 9,
+  "rel": -0.05,
+  "year": 2025
+ },
+ "Q_base_cold_reference": 848258809.8141167,
+ "method": "production warm-start lift; H1 hats recomputed for the base rating in the transfer only; no model equation changed",
+ "D4_1_source": {
+  "converged": true,
+  "runtime_s": 615.0718050003052,
+  "initialization_failed": false,
+  "n_cycles": 12,
+  "all_local_solves_ok": true,
+  "n_recovery_diagnostics": 0,
+  "recourse": 844565756.4168891,
+  "gross_operational_cost": 844569376.4890823,
+  "terminal_salvage_value": 3620.0721932356732,
+  "final_primal": {
+   "primal_v": 9.320740375378723e-05,
+   "primal_pf": 0.0091138380304543,
+   "primal_ess": 0.0004679337690904938
+  },
+  "final_dual": {
+   "dual_v": 0.000667016104599181,
+   "dual_pf": 0.030308285567805557,
+   "dual_ess": 0.00093213361035893
+  }
+ },
+ "D4_lifts": {
+  "policy_A_rep1": {
+   "transfer": {
+    "hat_repair": {
+     "n_entries": 3456,
+     "max_hat": 0.7409470150787146,
+     "n_clipped": 0,
+     "n_zero_capacity": 0
+    },
+    "transferred_residuals": {
+     "active_sum": 0.0,
+     "capability": 0.0,
+     "complementarity": 0.0,
+     "soc_upper": 0.0,
+     "soc_lower": 0.0,
+     "link_ch": 8.495636268980969e-17,
+     "link_dch": 8.495636268980969e-17,
+     "n_rows_checked": 1728,
+     "max_violation": 8.495636268980969e-17
+    },
+    "multiplier_policy": "A",
+    "n_multipliers_cleared": 933368
+   },
+   "run": {
+    "converged": true,
+    "runtime_s": 338.20729207992554,
+    "initialization_failed": false,
+    "n_cycles": 5,
+    "all_local_solves_ok": true,
+    "n_recovery_diagnostics": 0,
+    "recourse": 838310808.943033,
+    "gross_operational_cost": 838314421.990774,
+    "terminal_salvage_value": 3613.0477410414346,
+    "final_primal": {
+     "primal_v": 4.13005826345213e-05,
+     "primal_pf": 0.006697066910785257,
+     "primal_ess": 0.0002370681529492171
+    },
+    "final_dual": {
+     "dual_v": 0.0004318585317563524,
+     "dual_pf": 0.02822296221270103,
+     "dual_ess": 0.0006956184383996415
+    }
+   },
+   "sensitivities": {
+    "s": {
+     "2025": {
+      "5": -12628557.940095995,
+      "7": -12473752.71768231,
+      "9": -11834681.517332539
+     },
+     "2030": {
+      "5": -6811842.492472559,
+      "7": -6650167.390343834,
+      "9": -6844351.855713243
+     },
+     "2035": {
+      "5": -2847975.7960432535,
+      "7": -2682041.7655192986,
+      "9": -2895178.0235484065
+     }
+    },
+    "e": {
+     "2025": {
+      "5": -6181117.534413049,
+      "7": -6151529.524919432,
+      "9": -5828084.8748041615
+     },
+     "2030": {
+      "5": -3848230.518170022,
+      "7": -3778358.6599657764,
+      "9": -3907353.771366098
+     },
+     "2035": {
+      "5": -1987920.568477214,
+      "7": -1851748.8565148988,
+      "9": -2025956.531715097
+     }
+    }
+   },
+   "delta_vs_cold": 9948000.871083736
+  },
+  "policy_B_rep1": {
+   "transfer": {
+    "hat_repair": {
+     "n_entries": 3456,
+     "max_hat": 0.7409470150787146,
+     "n_clipped": 0,
+     "n_zero_capacity": 0
+    },
+    "transferred_residuals": {
+     "active_sum": 0.0,
+     "capability": 0.0,
+     "complementarity": 0.0,
+     "soc_upper": 0.0,
+     "soc_lower": 0.0,
+     "link_ch": 8.495636268980969e-17,
+     "link_dch": 8.495636268980969e-17,
+     "n_rows_checked": 1728,
+     "max_violation": 8.495636268980969e-17
+    },
+    "multiplier_policy": "B",
+    "n_multipliers_cleared": 0
+   },
+   "run": {
+    "converged": true,
+    "runtime_s": 407.64339804649353,
+    "initialization_failed": false,
+    "n_cycles": 5,
+    "all_local_solves_ok": true,
+    "n_recovery_diagnostics": 0,
+    "recourse": 838314402.2173177,
+    "gross_operational_cost": 838318016.9660914,
+    "terminal_salvage_value": 3614.748773706131,
+    "final_primal": {
+     "primal_v": 4.129986373135435e-05,
+     "primal_pf": 0.00669707567811142,
+     "primal_ess": 0.0003157036635368434
+    },
+    "final_dual": {
+     "dual_v": 0.0004313728717326502,
+     "dual_pf": 0.028222962212710586,
+     "dual_ess": 0.000691745211103649
+    }
+   },
+   "sensitivities": {
+    "s": {
+     "2025": {
+      "5": -12629918.588386292,
+      "7": -12474993.760523058,
+      "9": -11836005.934259541
+     },
+     "2030": {
+      "5": -6813203.013099572,
+      "7": -6651408.339629799,
+      "9": -6845676.179294947
+     },
+     "2035": {
+      "5": -2849333.6396689103,
+      "7": -2683268.718851865,
+      "9": -2896500.674496944
+     }
+    },
+    "e": {
+     "2025": {
+      "5": -6184616.312848258,
+      "7": -6155217.853897322,
+      "9": -5833223.796335613
+     },
+     "2030": {
+      "5": -3852482.7635284094,
+      "7": -3782878.7640680065,
+      "9": -3913573.0899240696
+     },
+     "2035": {
+      "5": -1993786.0116413985,
+      "7": -1857215.953852473,
+      "9": -2033754.9680907773
+     }
+    }
+   },
+   "delta_vs_cold": 9944407.596799016
+  }
+ },
+ "D4_5_summary": {
+  "Q_base_cold": 848258809.8141167,
+  "Q_base_best_observed_from_this_source": 838310808.943033,
+  "delta_Q": 9948000.871083736,
+  "relative_improvement": 0.011727553850296812,
+  "source_recourse": 844565756.4168891
+ }
+}

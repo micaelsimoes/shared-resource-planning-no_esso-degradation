@@ -1,0 +1,912 @@
+{
+ "stage": "P5.2-A2",
+ "git_head": "6495f13e80e5a092ba00d2e8ca0e4c0a9e20d7e1",
+ "timestamp_utc": "2026-09-06T17:57:26.822552+00:00",
+ "epsilons_tested": [
+  1e-05,
+  3e-05,
+  0.0001
+ ],
+ "target": {
+  "network": "case33_2",
+  "node": 7,
+  "year": 2030,
+  "day": "Summer"
+ },
+ "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+ "target_results": {
+  "1e-05": {
+   "network": "case33_2",
+   "year": 2030,
+   "day": "Summer",
+   "epsilon_rel": 1e-05,
+   "s_rated_pu": 0.00021269785612254322,
+   "s_rated_MVA": 0.021269785612254323,
+   "kappa": 4701.504839916499,
+   "band": {
+    "kappa": 4701.504839916499,
+    "epsilon_rel": 1e-05,
+    "epsilon_abs_pu2": 4.52403779991261e-13,
+    "scaled_lower_bound": -2.1269785612254327e-09,
+    "scaled_upper_bound": 2.1269785612254327e-09,
+    "rows_converted": 24
+   },
+   "discipline_checks": {
+    "primal_start_identical": true,
+    "objective_at_start_identical": true,
+    "index_tuples_unchanged": true,
+    "total_constraint_data_unchanged": true,
+    "no_replacement_component": true,
+    "rows_all_ranged": true,
+    "kappa_is_production": true,
+    "sess_comp_rows_unchanged": true
+   },
+   "solve": {
+    "final_status": "ok",
+    "final_termination": "optimal",
+    "final_succeeded": true,
+    "primary_failed": true,
+    "recovery_attempted": true,
+    "recovery_succeeded": true,
+    "clean_primary_success": false,
+    "runtime_s": 6.931228160858154,
+    "n_ipopt_attempts": 2,
+    "primary_block": {
+     "iterations": "664",
+     "objective": [
+      "1.8517354228484621e+02",
+      "1.8517354228484619e+05"
+     ],
+     "primal_infeasibility": [
+      "2.7862716375647262e-04",
+      "2.7862716375647262e-04"
+     ],
+     "dual_infeasibility": [
+      "1.0000000000000000e+03",
+      "1.0000000000000000e+06"
+     ],
+     "complementarity": [
+      "1.2620653470444088e+00",
+      "1.2620653470444088e+03"
+     ],
+     "overall_nlp_error": [
+      "6.8136375455478765e+02",
+      "1.0000000000000000e+06"
+     ],
+     "exit_status": "Restoration Failed!"
+    },
+    "recovery_block": {
+     "iterations": "116",
+     "objective": [
+      "-8.5219536893153466e-04",
+      "-8.5219536893153469e-01"
+     ],
+     "primal_infeasibility": [
+      "1.1139977829088821e-12",
+      "1.1139977829088821e-12"
+     ],
+     "dual_infeasibility": [
+      "9.1744589806691457e-06",
+      "9.1744589806691465e-03"
+     ],
+     "complementarity": [
+      "2.7131567370988100e-10",
+      "2.7131567370988100e-07"
+     ],
+     "overall_nlp_error": [
+      "9.1744589806691457e-06",
+      "9.1744589806691465e-03"
+     ],
+     "exit_status": "Optimal Solution Found."
+    },
+    "console_tail": "[WARNING] Network primary solve did not converge for case33_2, year=2030, day=Summer: status=error, termination=internalSolverError, message=Ipopt 3.14.18\\x3a Restoration Phase Failed. | warm_start=False\n[WARNING] IPOPT primary solve log for case33_2, year=2030, day=Summer: data/SRP1/Results/Logs/optim_log_case33_2_2030_Summer.log\n[INFO] Retrying network solve once for case33_2, year=2030, day=Summer, without multiplier warm start, with hessian_approximation=limited-memory.\n[INFO] Network recovery solve succeeded for case33_2, year=2030, day=Summer.\n"
+   },
+   "physical": {
+    "available": true,
+    "n_periods": 24,
+    "sch_range": [
+     8.05517884435872e-08,
+     8.090052419631185e-08
+    ],
+    "sdch_range": [
+     7.499984497159429e-08,
+     7.533683224749423e-08
+    ],
+    "pnet_range": [
+     4.162404152185332e-09,
+     4.710532036301565e-09
+    ],
+    "qnet_range": [
+     -2.772068044812609e-11,
+     1.574184305597638e-11
+    ],
+    "max_abs_g": 1.2628881554631381e-17,
+    "max_abs_g_normalized_by_s_rated_sq": 2.7915066392405767e-10,
+    "max_delta_S_pu": 1.1901448857723438e-09,
+    "max_delta_S_MVA": 1.1901448857723438e-07,
+    "max_delta_S_over_s_rated": 5.595471940660543e-06,
+    "max_band_ratio": 2.7915066392405763e-05,
+    "n_periods_well_inside_band": 24,
+    "n_periods_within_10pct_of_boundary": 0,
+    "n_periods_active_at_boundary": 0,
+    "band_classification": "well inside the band",
+    "band_utilization": 2.7915066392405763e-05
+   }
+  },
+  "3e-05": {
+   "network": "case33_2",
+   "year": 2030,
+   "day": "Summer",
+   "epsilon_rel": 3e-05,
+   "s_rated_pu": 0.00021269785612254322,
+   "s_rated_MVA": 0.021269785612254323,
+   "kappa": 4701.504839916499,
+   "band": {
+    "kappa": 4701.504839916499,
+    "epsilon_rel": 3e-05,
+    "epsilon_abs_pu2": 1.357211339973783e-12,
+    "scaled_lower_bound": -6.380935683676297e-09,
+    "scaled_upper_bound": 6.380935683676297e-09,
+    "rows_converted": 24
+   },
+   "discipline_checks": {
+    "primal_start_identical": true,
+    "objective_at_start_identical": true,
+    "index_tuples_unchanged": true,
+    "total_constraint_data_unchanged": true,
+    "no_replacement_component": true,
+    "rows_all_ranged": true,
+    "kappa_is_production": true,
+    "sess_comp_rows_unchanged": true
+   },
+   "solve": {
+    "final_status": "ok",
+    "final_termination": "optimal",
+    "final_succeeded": true,
+    "primary_failed": false,
+    "recovery_attempted": false,
+    "recovery_succeeded": false,
+    "clean_primary_success": true,
+    "runtime_s": 11.754849195480347,
+    "n_ipopt_attempts": 1,
+    "primary_block": {
+     "iterations": "1175",
+     "objective": [
+      "-8.2259355555237758e-04",
+      "-8.2259355555237756e-01"
+     ],
+     "primal_infeasibility": [
+      "4.6105156664307234e-14",
+      "7.9419110177170182e-14"
+     ],
+     "dual_infeasibility": [
+      "7.5407346871933512e-08",
+      "7.5407346871933512e-05"
+     ],
+     "complementarity": [
+      "9.0909091020479512e-09",
+      "9.0909091020479504e-06"
+     ],
+     "overall_nlp_error": [
+      "7.5407346871933512e-08",
+      "7.5407346871933512e-05"
+     ],
+     "exit_status": "Optimal Solution Found."
+    },
+    "recovery_block": null,
+    "console_tail": ""
+   },
+   "physical": {
+    "available": true,
+    "n_periods": 24,
+    "sch_range": [
+     3.488396111741099e-06,
+     3.947894550944788e-06
+    ],
+    "sdch_range": [
+     3.2577467471764556e-06,
+     3.6984993254329328e-06
+    ],
+    "pnet_range": [
+     -1.700487866436303e-07,
+     6.034826830700985e-07
+    ],
+    "qnet_range": [
+     -7.382070772129929e-13,
+     3.842931726369736e-13
+    ],
+    "max_abs_g": 1.1211264228075458e-13,
+    "max_abs_g_normalized_by_s_rated_sq": 2.4781544107107206e-06,
+    "max_delta_S_pu": 8.666512069822308e-08,
+    "max_delta_S_MVA": 8.666512069822307e-06,
+    "max_delta_S_over_s_rated": 0.0004074564844146433,
+    "max_band_ratio": 0.08260514702369068,
+    "n_periods_well_inside_band": 24,
+    "n_periods_within_10pct_of_boundary": 0,
+    "n_periods_active_at_boundary": 0,
+    "band_classification": "well inside the band",
+    "band_utilization": 0.08260514702369069
+   }
+  },
+  "0.0001": {
+   "network": "case33_2",
+   "year": 2030,
+   "day": "Summer",
+   "epsilon_rel": 0.0001,
+   "s_rated_pu": 0.00021269785612254322,
+   "s_rated_MVA": 0.021269785612254323,
+   "kappa": 4701.504839916499,
+   "band": {
+    "kappa": 4701.504839916499,
+    "epsilon_rel": 0.0001,
+    "epsilon_abs_pu2": 4.524037799912609e-12,
+    "scaled_lower_bound": -2.1269785612254322e-08,
+    "scaled_upper_bound": 2.1269785612254322e-08,
+    "rows_converted": 24
+   },
+   "discipline_checks": {
+    "primal_start_identical": true,
+    "objective_at_start_identical": true,
+    "index_tuples_unchanged": true,
+    "total_constraint_data_unchanged": true,
+    "no_replacement_component": true,
+    "rows_all_ranged": true,
+    "kappa_is_production": true,
+    "sess_comp_rows_unchanged": true
+   },
+   "solve": {
+    "final_status": "ok",
+    "final_termination": "optimal",
+    "final_succeeded": true,
+    "primary_failed": false,
+    "recovery_attempted": false,
+    "recovery_succeeded": false,
+    "clean_primary_success": true,
+    "runtime_s": 9.547022104263306,
+    "n_ipopt_attempts": 1,
+    "primary_block": {
+     "iterations": "883",
+     "objective": [
+      "-8.2259338217008805e-04",
+      "-8.2259338217008804e-01"
+     ],
+     "primal_infeasibility": [
+      "4.3449885861650801e-14",
+      "7.5855988157513821e-14"
+     ],
+     "dual_infeasibility": [
+      "3.6861072703098545e-06",
+      "3.6861072703098545e-03"
+     ],
+     "complementarity": [
+      "9.0918237108503246e-09",
+      "9.0918237108503251e-06"
+     ],
+     "overall_nlp_error": [
+      "3.6861072703098545e-06",
+      "3.6861072703098545e-03"
+     ],
+     "exit_status": "Optimal Solution Found."
+    },
+    "recovery_block": null,
+    "console_tail": ""
+   },
+   "physical": {
+    "available": true,
+    "n_periods": 24,
+    "sch_range": [
+     3.4820221101692785e-06,
+     3.9630324195084976e-06
+    ],
+    "sdch_range": [
+     3.245711482184138e-06,
+     3.70541532771629e-06
+    ],
+    "pnet_range": [
+     -1.7971083209348463e-07,
+     5.946152801696047e-07
+    ],
+    "qnet_range": [
+     -7.219622177301773e-13,
+     1.9262783098436048e-12
+    ],
+    "max_abs_g": 1.6098199570901e-13,
+    "max_abs_g_normalized_by_s_rated_sq": 3.5583698198127273e-06,
+    "max_delta_S_pu": 1.2270565715163487e-07,
+    "max_delta_S_MVA": 1.2270565715163487e-05,
+    "max_delta_S_over_s_rated": 0.0005769012409835458,
+    "max_band_ratio": 0.035583698198127275,
+    "n_periods_well_inside_band": 24,
+    "n_periods_within_10pct_of_boundary": 0,
+    "n_periods_active_at_boundary": 0,
+    "band_classification": "well inside the band",
+    "band_utilization": 0.03558369819812727
+   }
+  }
+ },
+ "epsilons_with_clean_primary_success": [
+  "3e-05",
+  "0.0001"
+ ],
+ "recommended_epsilon": "3e-05",
+ "control_results": {
+  "3e-05": {
+   "n5_2025_Winter": {
+    "network": "case33_1",
+    "year": 2025,
+    "day": "Winter",
+    "epsilon_rel": 3e-05,
+    "s_rated_pu": 0.00010634892806127161,
+    "s_rated_MVA": 0.010634892806127162,
+    "kappa": 9403.009679832998,
+    "band": {
+     "kappa": 9403.009679832998,
+     "epsilon_rel": 3e-05,
+     "epsilon_abs_pu2": 3.3930283499344574e-13,
+     "scaled_lower_bound": -3.1904678418381487e-09,
+     "scaled_upper_bound": 3.1904678418381487e-09,
+     "rows_converted": 24
+    },
+    "discipline_checks": {
+     "primal_start_identical": true,
+     "objective_at_start_identical": true,
+     "index_tuples_unchanged": true,
+     "total_constraint_data_unchanged": true,
+     "no_replacement_component": true,
+     "rows_all_ranged": true,
+     "kappa_is_production": true,
+     "sess_comp_rows_unchanged": true
+    },
+    "solve": {
+     "final_status": "error",
+     "final_termination": "internalSolverError",
+     "final_succeeded": false,
+     "primary_failed": false,
+     "recovery_attempted": false,
+     "recovery_succeeded": false,
+     "clean_primary_success": false,
+     "runtime_s": 1.3476600646972656,
+     "n_ipopt_attempts": 1,
+     "primary_block": {
+      "iterations": "137",
+      "objective": [
+       "1.7047336126220267e+02",
+       "1.7047336126220267e+05"
+      ],
+      "primal_infeasibility": [
+       "2.1472771781606137e-01",
+       "2.9628076546849547e-01"
+      ],
+      "dual_infeasibility": [
+       "1.0000000000000000e+03",
+       "1.0000000000000000e+06"
+      ],
+      "complementarity": [
+       "1.3669143502336907e+00",
+       "1.3669143502336906e+03"
+      ],
+      "overall_nlp_error": [
+       "6.9544191254761427e+02",
+       "1.0000000000000000e+06"
+      ],
+      "exit_status": "Restoration Failed!"
+     },
+     "recovery_block": null,
+     "console_tail": "[WARNING] Network solver did not converge for case33_1, year=2025, day=Winter: status=error, termination=internalSolverError, message=Ipopt 3.14.18\\x3a Restoration Phase Failed. | warm_start=False\n[WARNING] IPOPT solver log for case33_1, year=2025, day=Winter: data/SRP1/Results/Logs/optim_log_case33_1_2025_Winter.log\n"
+    },
+    "physical": {
+     "available": true,
+     "n_periods": 24,
+     "sch_range": [
+      0.0,
+      0.0
+     ],
+     "sdch_range": [
+      0.0,
+      0.0
+     ],
+     "pnet_range": [
+      0.0,
+      0.0
+     ],
+     "qnet_range": [
+      0.0,
+      0.0
+     ],
+     "max_abs_g": 0.0,
+     "max_abs_g_normalized_by_s_rated_sq": 0.0,
+     "max_delta_S_pu": 0.0,
+     "max_delta_S_MVA": 0.0,
+     "max_delta_S_over_s_rated": 0.0,
+     "max_band_ratio": 0.0,
+     "n_periods_well_inside_band": 24,
+     "n_periods_within_10pct_of_boundary": 0,
+     "n_periods_active_at_boundary": 0,
+     "band_classification": "well inside the band",
+     "band_utilization": 0.0
+    }
+   },
+   "n7_2025_Winter": {
+    "network": "case33_2",
+    "year": 2025,
+    "day": "Winter",
+    "epsilon_rel": 3e-05,
+    "s_rated_pu": 0.00010634892806127161,
+    "s_rated_MVA": 0.010634892806127162,
+    "kappa": 9403.009679832998,
+    "band": {
+     "kappa": 9403.009679832998,
+     "epsilon_rel": 3e-05,
+     "epsilon_abs_pu2": 3.3930283499344574e-13,
+     "scaled_lower_bound": -3.1904678418381487e-09,
+     "scaled_upper_bound": 3.1904678418381487e-09,
+     "rows_converted": 24
+    },
+    "discipline_checks": {
+     "primal_start_identical": true,
+     "objective_at_start_identical": true,
+     "index_tuples_unchanged": true,
+     "total_constraint_data_unchanged": true,
+     "no_replacement_component": true,
+     "rows_all_ranged": true,
+     "kappa_is_production": true,
+     "sess_comp_rows_unchanged": true
+    },
+    "solve": {
+     "final_status": "ok",
+     "final_termination": "optimal",
+     "final_succeeded": true,
+     "primary_failed": false,
+     "recovery_attempted": false,
+     "recovery_succeeded": false,
+     "clean_primary_success": true,
+     "runtime_s": 2.205958843231201,
+     "n_ipopt_attempts": 1,
+     "primary_block": {
+      "iterations": "249",
+      "objective": [
+       "-7.9499622247580814e-04",
+       "-7.9499622247580815e-01"
+      ],
+      "primal_infeasibility": [
+       "5.4694555397142833e-14",
+       "7.5467410098895016e-14"
+      ],
+      "dual_infeasibility": [
+       "4.2298525183619108e-06",
+       "4.2298525183619108e-03"
+      ],
+      "complementarity": [
+       "9.0910764085930960e-09",
+       "9.0910764085930959e-06"
+      ],
+      "overall_nlp_error": [
+       "4.2298525183619108e-06",
+       "4.2298525183619108e-03"
+      ],
+      "exit_status": "Optimal Solution Found."
+     },
+     "recovery_block": null,
+     "console_tail": ""
+    },
+    "physical": {
+     "available": true,
+     "n_periods": 24,
+     "sch_range": [
+      3.3370449610457757e-06,
+      4.11993737910161e-06
+     ],
+     "sdch_range": [
+      3.1073035718866904e-06,
+      3.848271763569587e-06
+     ],
+     "pnet_range": [
+      -4.803927112711943e-07,
+      9.931139175385576e-07
+     ],
+     "qnet_range": [
+      -5.248744612513912e-12,
+      1.1618771550895456e-12
+     ],
+     "max_abs_g": 3.915197430445267e-14,
+     "max_abs_g_normalized_by_s_rated_sq": 3.461684100447522e-06,
+     "max_delta_S_pu": 3.543013954844115e-08,
+     "max_delta_S_MVA": 3.543013954844115e-06,
+     "max_delta_S_over_s_rated": 0.000333149945131826,
+     "max_band_ratio": 0.11538947001491738,
+     "n_periods_well_inside_band": 24,
+     "n_periods_within_10pct_of_boundary": 0,
+     "n_periods_active_at_boundary": 0,
+     "band_classification": "well inside the band",
+     "band_utilization": 0.1153894700149174
+    }
+   },
+   "n9_2030_Summer": {
+    "network": "case33_3",
+    "year": 2030,
+    "day": "Summer",
+    "epsilon_rel": 3e-05,
+    "s_rated_pu": 0.00021269785612254322,
+    "s_rated_MVA": 0.021269785612254323,
+    "kappa": 4701.504839916499,
+    "band": {
+     "kappa": 4701.504839916499,
+     "epsilon_rel": 3e-05,
+     "epsilon_abs_pu2": 1.357211339973783e-12,
+     "scaled_lower_bound": -6.380935683676297e-09,
+     "scaled_upper_bound": 6.380935683676297e-09,
+     "rows_converted": 24
+    },
+    "discipline_checks": {
+     "primal_start_identical": true,
+     "objective_at_start_identical": true,
+     "index_tuples_unchanged": true,
+     "total_constraint_data_unchanged": true,
+     "no_replacement_component": true,
+     "rows_all_ranged": true,
+     "kappa_is_production": true,
+     "sess_comp_rows_unchanged": true
+    },
+    "solve": {
+     "final_status": "ok",
+     "final_termination": "optimal",
+     "final_succeeded": true,
+     "primary_failed": false,
+     "recovery_attempted": false,
+     "recovery_succeeded": false,
+     "clean_primary_success": true,
+     "runtime_s": 9.6162748336792,
+     "n_ipopt_attempts": 1,
+     "primary_block": {
+      "iterations": "940",
+      "objective": [
+       "-8.2277943423710942e-04",
+       "-8.2277943423710942e-01"
+      ],
+      "primal_infeasibility": [
+       "4.3892430995426873e-14",
+       "6.0562665993302289e-14"
+      ],
+      "dual_infeasibility": [
+       "1.3025349962178003e-07",
+       "1.3025349962178003e-04"
+      ],
+      "complementarity": [
+       "9.0909167668695322e-09",
+       "9.0909167668695324e-06"
+      ],
+      "overall_nlp_error": [
+       "1.3025349962178003e-07",
+       "1.3025349962178003e-04"
+      ],
+      "exit_status": "Optimal Solution Found."
+     },
+     "recovery_block": null,
+     "console_tail": ""
+    },
+    "physical": {
+     "available": true,
+     "n_periods": 24,
+     "sch_range": [
+      3.488399160363573e-06,
+      3.9478563706346605e-06
+     ],
+     "sdch_range": [
+      3.2577398209692147e-06,
+      3.698496072487333e-06
+     ],
+     "pnet_range": [
+      -1.7003305698529945e-07,
+      6.035593105216667e-07
+     ],
+     "qnet_range": [
+      -1.8799371677351888e-14,
+      1.0571062733056921e-13
+     ],
+     "max_abs_g": 1.1197701080474965e-13,
+     "max_abs_g_normalized_by_s_rated_sq": 2.4751563925242336e-06,
+     "max_delta_S_pu": 8.65572391437788e-08,
+     "max_delta_S_MVA": 8.655723914377881e-06,
+     "max_delta_S_over_s_rated": 0.00040694927876428583,
+     "max_band_ratio": 0.08250521308414112,
+     "n_periods_well_inside_band": 24,
+     "n_periods_within_10pct_of_boundary": 0,
+     "n_periods_active_at_boundary": 0,
+     "band_classification": "well inside the band",
+     "band_utilization": 0.08250521308414112
+    }
+   }
+  },
+  "0.0001": {
+   "n5_2025_Winter": {
+    "network": "case33_1",
+    "year": 2025,
+    "day": "Winter",
+    "epsilon_rel": 0.0001,
+    "s_rated_pu": 0.00010634892806127161,
+    "s_rated_MVA": 0.010634892806127162,
+    "kappa": 9403.009679832998,
+    "band": {
+     "kappa": 9403.009679832998,
+     "epsilon_rel": 0.0001,
+     "epsilon_abs_pu2": 1.1310094499781523e-12,
+     "scaled_lower_bound": -1.0634892806127161e-08,
+     "scaled_upper_bound": 1.0634892806127161e-08,
+     "rows_converted": 24
+    },
+    "discipline_checks": {
+     "primal_start_identical": true,
+     "objective_at_start_identical": true,
+     "index_tuples_unchanged": true,
+     "total_constraint_data_unchanged": true,
+     "no_replacement_component": true,
+     "rows_all_ranged": true,
+     "kappa_is_production": true,
+     "sess_comp_rows_unchanged": true
+    },
+    "solve": {
+     "final_status": "ok",
+     "final_termination": "optimal",
+     "final_succeeded": true,
+     "primary_failed": false,
+     "recovery_attempted": false,
+     "recovery_succeeded": false,
+     "clean_primary_success": true,
+     "runtime_s": 2.126479148864746,
+     "n_ipopt_attempts": 1,
+     "primary_block": {
+      "iterations": "139",
+      "objective": [
+       "-7.9644347437096089e-04",
+       "-7.9644347437096086e-01"
+      ],
+      "primal_infeasibility": [
+       "6.1663152207664604e-14",
+       "8.5082662467158546e-14"
+      ],
+      "dual_infeasibility": [
+       "3.3449582800788380e-08",
+       "3.3449582800788380e-05"
+      ],
+      "complementarity": [
+       "9.0909092730520746e-09",
+       "9.0909092730520745e-06"
+      ],
+      "overall_nlp_error": [
+       "3.3449582800788380e-08",
+       "3.3449582800788380e-05"
+      ],
+      "exit_status": "Optimal Solution Found."
+     },
+     "recovery_block": null,
+     "console_tail": ""
+    },
+    "physical": {
+     "available": true,
+     "n_periods": 24,
+     "sch_range": [
+      3.3311879908089192e-06,
+      4.117971149515946e-06
+     ],
+     "sdch_range": [
+      3.1060625572400113e-06,
+      3.854441234468766e-06
+     ],
+     "pnet_range": [
+      -4.6781406094669676e-07,
+      9.68299504993337e-07
+     ],
+     "qnet_range": [
+      -9.566911214944019e-14,
+      2.2389498617676638e-13
+     ],
+     "max_abs_g": 8.63550677514789e-14,
+     "max_abs_g_normalized_by_s_rated_sq": 7.635220709530502e-06,
+     "max_delta_S_pu": 5.5583147047054645e-08,
+     "max_delta_S_MVA": 5.558314704705465e-06,
+     "max_delta_S_over_s_rated": 0.0005226488697190357,
+     "max_band_ratio": 0.07635220709530502,
+     "n_periods_well_inside_band": 24,
+     "n_periods_within_10pct_of_boundary": 0,
+     "n_periods_active_at_boundary": 0,
+     "band_classification": "well inside the band",
+     "band_utilization": 0.07635220709530502
+    }
+   },
+   "n7_2025_Winter": {
+    "network": "case33_2",
+    "year": 2025,
+    "day": "Winter",
+    "epsilon_rel": 0.0001,
+    "s_rated_pu": 0.00010634892806127161,
+    "s_rated_MVA": 0.010634892806127162,
+    "kappa": 9403.009679832998,
+    "band": {
+     "kappa": 9403.009679832998,
+     "epsilon_rel": 0.0001,
+     "epsilon_abs_pu2": 1.1310094499781523e-12,
+     "scaled_lower_bound": -1.0634892806127161e-08,
+     "scaled_upper_bound": 1.0634892806127161e-08,
+     "rows_converted": 24
+    },
+    "discipline_checks": {
+     "primal_start_identical": true,
+     "objective_at_start_identical": true,
+     "index_tuples_unchanged": true,
+     "total_constraint_data_unchanged": true,
+     "no_replacement_component": true,
+     "rows_all_ranged": true,
+     "kappa_is_production": true,
+     "sess_comp_rows_unchanged": true
+    },
+    "solve": {
+     "final_status": "ok",
+     "final_termination": "optimal",
+     "final_succeeded": true,
+     "primary_failed": false,
+     "recovery_attempted": false,
+     "recovery_succeeded": false,
+     "clean_primary_success": true,
+     "runtime_s": 12.598310947418213,
+     "n_ipopt_attempts": 1,
+     "primary_block": {
+      "iterations": "952",
+      "objective": [
+       "-7.9499630448336806e-04",
+       "-7.9499630448336800e-01"
+      ],
+      "primal_infeasibility": [
+       "5.0877622999242339e-14",
+       "8.3617140989034056e-14"
+      ],
+      "dual_infeasibility": [
+       "1.9071381155370132e-06",
+       "1.9071381155370132e-03"
+      ],
+      "complementarity": [
+       "9.0921549466395492e-09",
+       "9.0921549466395495e-06"
+      ],
+      "overall_nlp_error": [
+       "1.9071381155370132e-06",
+       "1.9071381155370132e-03"
+      ],
+      "exit_status": "Optimal Solution Found."
+     },
+     "recovery_block": null,
+     "console_tail": ""
+    },
+    "physical": {
+     "available": true,
+     "n_periods": 24,
+     "sch_range": [
+      3.3322284393707747e-06,
+      4.1179455642346685e-06
+     ],
+     "sdch_range": [
+      3.106026722782917e-06,
+      3.852959183371584e-06
+     ],
+     "pnet_range": [
+      -4.650562495620834e-07,
+      9.682706540706287e-07
+     ],
+     "qnet_range": [
+      -1.4224694379352305e-12,
+      1.4872470916426486e-12
+     ],
+     "max_abs_g": 8.643168214847977e-14,
+     "max_abs_g_normalized_by_s_rated_sq": 7.641994693337829e-06,
+     "max_delta_S_pu": 5.567449443655058e-08,
+     "max_delta_S_MVA": 5.567449443655058e-06,
+     "max_delta_S_over_s_rated": 0.0005235078101066934,
+     "max_band_ratio": 0.0764199469333783,
+     "n_periods_well_inside_band": 24,
+     "n_periods_within_10pct_of_boundary": 0,
+     "n_periods_active_at_boundary": 0,
+     "band_classification": "well inside the band",
+     "band_utilization": 0.07641994693337828
+    }
+   },
+   "n9_2030_Summer": {
+    "network": "case33_3",
+    "year": 2030,
+    "day": "Summer",
+    "epsilon_rel": 0.0001,
+    "s_rated_pu": 0.00021269785612254322,
+    "s_rated_MVA": 0.021269785612254323,
+    "kappa": 4701.504839916499,
+    "band": {
+     "kappa": 4701.504839916499,
+     "epsilon_rel": 0.0001,
+     "epsilon_abs_pu2": 4.524037799912609e-12,
+     "scaled_lower_bound": -2.1269785612254322e-08,
+     "scaled_upper_bound": 2.1269785612254322e-08,
+     "rows_converted": 24
+    },
+    "discipline_checks": {
+     "primal_start_identical": true,
+     "objective_at_start_identical": true,
+     "index_tuples_unchanged": true,
+     "total_constraint_data_unchanged": true,
+     "no_replacement_component": true,
+     "rows_all_ranged": true,
+     "kappa_is_production": true,
+     "sess_comp_rows_unchanged": true
+    },
+    "solve": {
+     "final_status": "ok",
+     "final_termination": "optimal",
+     "final_succeeded": true,
+     "primary_failed": false,
+     "recovery_attempted": false,
+     "recovery_succeeded": false,
+     "clean_primary_success": true,
+     "runtime_s": 11.012962102890015,
+     "n_ipopt_attempts": 1,
+     "primary_block": {
+      "iterations": "1125",
+      "objective": [
+       "-8.2277925156964591e-04",
+       "-8.2277925156964593e-01"
+      ],
+      "primal_infeasibility": [
+       "4.8358113708985426e-14",
+       "7.1310145288716598e-14"
+      ],
+      "dual_infeasibility": [
+       "2.9789376791521495e-08",
+       "2.9789376791521495e-05"
+      ],
+      "complementarity": [
+       "9.0909118852452371e-09",
+       "9.0909118852452375e-06"
+      ],
+      "overall_nlp_error": [
+       "2.9789376791521495e-08",
+       "2.9789376791521495e-05"
+      ],
+      "exit_status": "Optimal Solution Found."
+     },
+     "recovery_block": null,
+     "console_tail": ""
+    },
+    "physical": {
+     "available": true,
+     "n_periods": 24,
+     "sch_range": [
+      3.4824466431683688e-06,
+      3.962724269832937e-06
+     ],
+     "sdch_range": [
+      3.245938474458083e-06,
+      3.705234861849395e-06
+     ],
+     "pnet_range": [
+      -1.788750234263172e-07,
+      5.93212888775365e-07
+     ],
+     "qnet_range": [
+      -1.8627994104121587e-14,
+      1.0241677947307559e-13
+     ],
+     "max_abs_g": 1.618803450419474e-13,
+     "max_abs_g_normalized_by_s_rated_sq": 3.578227066207856e-06,
+     "max_delta_S_pu": 1.2357290659948825e-07,
+     "max_delta_S_MVA": 1.2357290659948825e-05,
+     "max_delta_S_over_s_rated": 0.0005809786184600434,
+     "max_band_ratio": 0.035782270662078564,
+     "n_periods_well_inside_band": 24,
+     "n_periods_within_10pct_of_boundary": 0,
+     "n_periods_active_at_boundary": 0,
+     "band_classification": "well inside the band",
+     "band_utilization": 0.03578227066207856
+    }
+   }
+  }
+ },
+ "controls_all_clean_primary": {
+  "3e-05": false,
+  "0.0001": true
+ }
+}
