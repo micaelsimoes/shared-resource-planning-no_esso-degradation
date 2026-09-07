@@ -393,6 +393,14 @@ def _build_subproblem(shared_ess_data, node_id):
 
     model.es_pch_per_unit = pe.Var(model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_pdch_per_unit = pe.Var(model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+    # P5.4-H1: dimensionless charge/discharge, per cohort and aggregated. Used ONLY
+    # by the complementarity rows. Bounds [0, 1] are implied by the existing
+    # `pch <= s_max` / `pdch <= s_max` cohort limits (and, for the aggregate, by
+    # es_s_rated == sum of the cohort ratings), so they add no restriction.
+    model.es_pch_hat_per_unit = pe.Var(model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, bounds=(0.00, 1.00), initialize=0.00)
+    model.es_pdch_hat_per_unit = pe.Var(model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, bounds=(0.00, 1.00), initialize=0.00)
+    model.es_pch_hat_agg = pe.Var(model.years, model.days, model.periods, domain=pe.NonNegativeReals, bounds=(0.00, 1.00), initialize=0.00)
+    model.es_pdch_hat_agg = pe.Var(model.years, model.days, model.periods, domain=pe.NonNegativeReals, bounds=(0.00, 1.00), initialize=0.00)
     if shared_ess_data.params.slacks:
         model.slack_es_ch_comp_per_unit = pe.Var(model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_avg_ch_dch_per_unit = pe.Var(model.years, model.years, domain=pe.Reals, initialize=0.00)
@@ -526,29 +534,41 @@ def _build_subproblem(shared_ess_data, node_id):
     # - P, Q, S, SoC, per unit as a function of available capacities
     model.energy_storage_limits = pe.ConstraintList()
     model.energy_storage_complementarity = pe.ConstraintList()
+    model.energy_storage_normalization = pe.ConstraintList()
     for y_inv in model.years:
         for y in model.years:
             s_max = model.es_s_rated_per_unit[y_inv, y]
             for d in model.days:
                 for p in model.periods:
 
-                    # P5.4-C: the per-cohort directional powers are now ACTIVE.
-                    # The row forms and tolerances are preserved exactly -- only
-                    # the variables they act on change. In particular the ESSO
-                    # complementarity bound remains the absolute
-                    # ESS_COMPLEMENTARITY_TOLERANCE rather than the network's
-                    # eps * S_rated^2; that asymmetry is pre-existing and is NOT
-                    # altered here.
+                    # P5.4-C: the per-cohort directional powers are ACTIVE.
+                    # P5.4-H1: the per-cohort complementarity is now RELATIVE to
+                    # the cohort's installed power, matching the network agents.
+                    # The previous absolute `pch*pdch <= 1e-4` is superseded: at
+                    # bootstrap capacities (S ~ 2e-4 p.u.) it permitted
+                    # directional powers ~47x the rating and never bound. The
+                    # tolerance VALUE 1e-4 is unchanged; only its meaning is made
+                    # consistent across agents.
+                    #
+                    # S_cohort is the production-defined per-cohort installed
+                    # power `es_s_rated_per_unit[y_inv, y]` -- the same s_max the
+                    # limit rows below already use -- not a new quantity. The
+                    # link rows keep a unit coefficient on the physical power and
+                    # never divide by the rating.
                     pch = model.es_pch_per_unit[y_inv, y, d, p]
                     pdch = model.es_pdch_per_unit[y_inv, y, d, p]
+                    pch_hat = model.es_pch_hat_per_unit[y_inv, y, d, p]
+                    pdch_hat = model.es_pdch_hat_per_unit[y_inv, y, d, p]
 
                     _add_esso_cohort_constraint(model, 'energy_storage_limits', y_inv, y, pch <= s_max)
                     _add_esso_cohort_constraint(model, 'energy_storage_limits', y_inv, y, pdch <= s_max)
+                    _add_esso_cohort_constraint(model, 'energy_storage_normalization', y_inv, y, pch - s_max * pch_hat == 0)
+                    _add_esso_cohort_constraint(model, 'energy_storage_normalization', y_inv, y, pdch - s_max * pdch_hat == 0)
 
                     if shared_ess_data.params.slacks:
-                        _add_esso_cohort_constraint(model, 'energy_storage_complementarity', y_inv, y, pch * pdch <= model.slack_es_ch_comp_per_unit[y_inv, y, d, p] + ESS_COMPLEMENTARITY_TOLERANCE)
+                        _add_esso_cohort_constraint(model, 'energy_storage_complementarity', y_inv, y, pch_hat * pdch_hat <= model.slack_es_ch_comp_per_unit[y_inv, y, d, p] + ESS_COMPLEMENTARITY_TOLERANCE)
                     else:
-                        _add_esso_cohort_constraint(model, 'energy_storage_complementarity', y_inv, y, pch * pdch <= ESS_COMPLEMENTARITY_TOLERANCE)
+                        _add_esso_cohort_constraint(model, 'energy_storage_complementarity', y_inv, y, pch_hat * pdch_hat <= ESS_COMPLEMENTARITY_TOLERANCE)
 
     # - Shared ESS operation, aggregated
     model.energy_storage_operation_agg = pe.ConstraintList()
@@ -575,6 +595,28 @@ def _build_subproblem(shared_ess_data, node_id):
 
                 model.energy_storage_operation_agg.add(
                     model.es_pnet[y, d, p] ** 2 + model.es_qnet[y, d, p] ** 2 <= model.es_s_rated[y] ** 2)
+
+                # P5.4-H1.6: per-cohort complementarity alone permits one cohort
+                # to charge while another discharges at the same node/time. The
+                # network agent represents ONE aggregate shared ESS and imposes
+                # complementarity on its aggregate charge/discharge, so the ESSO
+                # aggregate feasible set must be compatible or ADMM would be
+                # reconciling two different feasible sets.
+                #
+                # S_total is the production-defined aggregate installed power
+                # `es_s_rated[y]`, which `rated_s_capacity` already defines as the
+                # sum of the cohort ratings. No new or oversized rating is
+                # introduced. Cohort-level complementarity is PRESERVED: the
+                # aggregate row does not imply it.
+                agg_pch = sum(model.es_pch_per_unit[y_inv, y, d, p] for y_inv in model.years)
+                agg_pdch = sum(model.es_pdch_per_unit[y_inv, y, d, p] for y_inv in model.years)
+                model.energy_storage_operation_agg.add(
+                    agg_pch - model.es_s_rated[y] * model.es_pch_hat_agg[y, d, p] == 0)
+                model.energy_storage_operation_agg.add(
+                    agg_pdch - model.es_s_rated[y] * model.es_pdch_hat_agg[y, d, p] == 0)
+                model.energy_storage_operation_agg.add(
+                    model.es_pch_hat_agg[y, d, p] * model.es_pdch_hat_agg[y, d, p]
+                    <= ESS_COMPLEMENTARITY_TOLERANCE)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective function
@@ -1107,6 +1149,10 @@ def _configure_esso_cohort_state(model, y_inv, s_capacity, e_capacity, slacks_en
             for p in model.periods:
                 _set_esso_variable_state(model.es_pch_per_unit[y_inv, y, d, p], active_pair, 0.0)
                 _set_esso_variable_state(model.es_pdch_per_unit[y_inv, y, d, p], active_pair, 0.0)
+                # P5.4-H1: the dimensionless pair follows exactly the same cohort
+                # gating as the physical pair.
+                _set_esso_variable_state(model.es_pch_hat_per_unit[y_inv, y, d, p], active_pair, 0.0)
+                _set_esso_variable_state(model.es_pdch_hat_per_unit[y_inv, y, d, p], active_pair, 0.0)
                 if slacks_enabled:
                     _set_esso_variable_state(model.slack_es_ch_comp_per_unit[y_inv, y, d, p], active_pair, 0.0)
 

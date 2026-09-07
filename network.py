@@ -343,6 +343,9 @@ def _build_model(network, params):
         # the ordinary ESS now uses the same active-energy formulation as the shared ESS.
         model.es_pch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(p_bounds, network=network))
         model.es_pdch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(p_bounds, network=network))
+        # P5.4-H1: dimensionless charge/discharge, used ONLY by the complementarity row.
+        model.es_pch_hat = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=(0.0, 1.0), initialize=0.0)
+        model.es_pdch_hat = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=(0.0, 1.0), initialize=0.0)
         model.es_pnet = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(snet_bounds, network=network))
         model.es_qnet = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(q_bounds, network=network))
         model.es_soc = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=partial(soc_initialize, network=network)) # [e_min, e_max] enforced with ess_soc_limits_rule
@@ -357,6 +360,12 @@ def _build_model(network, params):
     model.shared_es_e_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.0)
     model.shared_es_pch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.shared_es_pdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    # P5.4-H1: dimensionless charge/discharge, used ONLY by the complementarity row.
+    # Bounds [0, 1] are implied by the existing `pch + pdch <= S_rated` envelope, so
+    # they add no restriction. These are internal: nothing outside the local ESS
+    # formulation reads them.
+    model.shared_es_pch_hat = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=(0.0, 1.0), initialize=0.0)
+    model.shared_es_pdch_hat = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=(0.0, 1.0), initialize=0.0)
     model.shared_es_pnet = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.shared_es_qnet = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.shared_es_soc = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -420,6 +429,8 @@ def _build_model(network, params):
     # - Energy Storage constraints
     if params.es_reg:
         model.ess_pnet_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=ess_pnet_rule)
+        model.ess_pch_hat_link = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_pch_hat_link_rule, network=network))
+        model.ess_pdch_hat_link = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_pdch_hat_link_rule, network=network))
         model.ess_converter_capability = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_converter_capability_rule, network=network))
         model.ess_active_sum_limit = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_active_sum_limit_rule, network=network))
         model.ess_phi_lower = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_limits_lower, network=network))
@@ -431,6 +442,8 @@ def _build_model(network, params):
 
     # - Shared Energy Storage constraints
     model.sess_pnet_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pnet_rule)
+    model.sess_pch_hat_link = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pch_hat_link_rule)
+    model.sess_pdch_hat_link = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pdch_hat_link_rule)
     model.sess_converter_capability = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_converter_capability_rule)
     model.sess_active_sum_limit = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_active_sum_limit_rule)
     model.sess_phi_limit_lower = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_phi_limits_lower, network=network))

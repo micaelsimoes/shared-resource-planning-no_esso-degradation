@@ -696,17 +696,33 @@ def ess_soc_rule(m, e, s_m, s_o, p, network, params):
     return m.es_soc[e, s_m, s_o, p] == soc_prev + delta
 
 
+def ess_pch_hat_link_rule(m, e, s_m, s_o, p, network):
+    """Ordinary-ESS dimensionless link (P5.4-H1), parity with the shared ESS.
+
+    Here `S_rated` is fixed network data rather than a decision variable, so the
+    row is linear; the unit coefficient on the physical variable is retained for
+    the same structural reason.
+    """
+    ess = network.energy_storages[e]
+    return m.es_pch[e, s_m, s_o, p] - ess.s * m.es_pch_hat[e, s_m, s_o, p] == 0
+
+
+def ess_pdch_hat_link_rule(m, e, s_m, s_o, p, network):
+    ess = network.energy_storages[e]
+    return m.es_pdch[e, s_m, s_o, p] - ess.s * m.es_pdch_hat[e, s_m, s_o, p] == 0
+
+
 def ess_comp_rule(m, e, s_m, s_o, p, network, params):
-    # P5.4-B: complementarity now acts on the ACTIVE directional powers, in
-    # parity with sess_comp_rule. All three model branches and their tolerances
-    # are preserved exactly; only the variables they act on change.
+    # P5.4-H1: the BILINEAR_RELAXATION branch uses the dimensionless pair, in
+    # parity with sess_comp_rule. Exact reformulation for positive rating; the
+    # tolerance value is unchanged.
     pch = m.es_pch[e, s_m, s_o, p]
     pdch = m.es_pdch[e, s_m, s_o, p]
-    s_rated = network.energy_storages[e].s
     if params.ess_model == ESS_MODEL_EXACT:
         return pch * pdch <= EQUALITY_TOLERANCE
     elif params.ess_model == ESS_MODEL_BILINEAR_RELAXATION:
-        return pch * pdch <= ESS_COMPLEMENTARITY_TOLERANCE * s_rated ** 2
+        return (m.es_pch_hat[e, s_m, s_o, p]
+                * m.es_pdch_hat[e, s_m, s_o, p]) <= ESS_COMPLEMENTARITY_TOLERANCE
     elif params.ess_model == ESS_MODEL_POLYNOMIAL_COMPLEMENTARITY:
         return pch ** 2 + pdch ** 2 <= (pch + pdch) ** 2 + EQUALITY_TOLERANCE
     else:
@@ -786,16 +802,40 @@ def sess_soc_upper_limit(m, e, s_m, s_o, p):
     return m.shared_es_soc[e, s_m, s_o, p] <= soc_max
 
 
+def sess_pch_hat_link_rule(m, e, s_m, s_o, p):
+    """Link the dimensionless charging variable to physical power (P5.4-H1).
+
+    Written as `pch - S_rated * pch_hat == 0` rather than `pch_hat == pch/S` so
+    that no expression ever divides by the rated-capacity decision variable, and
+    so the row keeps a unit coefficient on the physical variable. That unit
+    coefficient is what keeps the row from being zero-gradient at zero dispatch
+    -- the defect that `sess_snet_def` had.
+    """
+    return (m.shared_es_pch[e, s_m, s_o, p]
+            - m.shared_es_s_rated[e] * m.shared_es_pch_hat[e, s_m, s_o, p]) == 0
+
+
+def sess_pdch_hat_link_rule(m, e, s_m, s_o, p):
+    return (m.shared_es_pdch[e, s_m, s_o, p]
+            - m.shared_es_s_rated[e] * m.shared_es_pdch_hat[e, s_m, s_o, p]) == 0
+
+
 def sess_comp_rule(m, e, s_m, s_o, p, network, params):
-    # P5.4-A: complementarity now acts on ACTIVE charging/discharging power.
-    # ESS_COMPLEMENTARITY_TOLERANCE is preserved exactly; no rescaling.
+    # P5.4-H1: the BILINEAR_RELAXATION branch is written on the dimensionless
+    # charge/discharge variables. For positive capacity this is an exact
+    # reformulation of the previous relative condition
+    # `pch * pdch <= eps * S_rated^2` -- substituting the link equalities
+    # reproduces it identically -- but the row now sits at O(1) with an RHS of
+    # 1e-4 instead of O(S^2) ~ 1e-12, which is what IPOPT can actually resolve.
+    # ESS_COMPLEMENTARITY_TOLERANCE is unchanged at 1e-4; this stage rescales
+    # the row, it does not tighten the physical tolerance.
     pch = m.shared_es_pch[e, s_m, s_o, p]
     pdch = m.shared_es_pdch[e, s_m, s_o, p]
-    s_rated = m.shared_es_s_rated[e]
     if params.shared_ess_model == ESS_MODEL_EXACT:
         return pch * pdch <= EQUALITY_TOLERANCE
     elif params.shared_ess_model == ESS_MODEL_BILINEAR_RELAXATION:
-        return pch * pdch <= ESS_COMPLEMENTARITY_TOLERANCE * s_rated ** 2
+        return (m.shared_es_pch_hat[e, s_m, s_o, p]
+                * m.shared_es_pdch_hat[e, s_m, s_o, p]) <= ESS_COMPLEMENTARITY_TOLERANCE
     elif params.shared_ess_model == ESS_MODEL_POLYNOMIAL_COMPLEMENTARITY:
         return pch ** 2 + pdch ** 2 <= (pch + pdch) ** 2 + EQUALITY_TOLERANCE
     else:
@@ -840,6 +880,10 @@ def sess_pnet_rule(m, e, s_m, s_o, p):
 _SHARED_ESS_OPERATIONAL_VARIABLES = (
     'shared_es_pch',
     'shared_es_pdch',
+    # P5.4-H1: the dimensionless pair follows exactly the same zero-capacity
+    # gating as the physical pair -- fixed at 0 when inactive, unfixed otherwise.
+    'shared_es_pch_hat',
+    'shared_es_pdch_hat',
     'shared_es_pnet',
     'shared_es_qnet',
     'shared_es_soc',
@@ -859,6 +903,8 @@ _SHARED_ESS_RATED_BOUNDED_VARIABLES = (
 
 _SHARED_ESS_OPERATIONAL_CONSTRAINTS = (
     'sess_pnet_def',
+    'sess_pch_hat_link',
+    'sess_pdch_hat_link',
     'sess_converter_capability',
     'sess_active_sum_limit',
     'sess_phi_limit_lower',

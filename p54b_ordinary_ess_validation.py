@@ -60,7 +60,9 @@ OUT_DIR = os.path.join(REPO_ROOT, 'data', 'OP1', 'Results', 'P54B')
 RETIRED_VARS = ('es_sch', 'es_sdch')
 RETIRED_COMPONENTS = ('ess_snet_def', 'ess_snet_def_scale', 'ess_pch_link',
                       'ess_pdch_link', 'ess_s_limit')
-NEW_COMPONENTS = ('ess_converter_capability', 'ess_active_sum_limit')
+NEW_COMPONENTS = ('ess_converter_capability', 'ess_active_sum_limit',
+                  # P5.4-H1: dimensionless complementarity link rows
+                  'ess_pch_hat_link', 'ess_pdch_hat_link')
 
 IPOPT_SUMMARY_RE = {
     'iterations': re.compile(r'Number of Iterations\.*:\s*(\d+)'),
@@ -183,9 +185,23 @@ def section_b(dso):
         'active_sum_body_sample': sum_body[:300],
         'complementarity_body_sample': comp_body[:300],
         'soc_body_sample': soc_body[:300],
-        'complementarity_acts_on_active_powers': (
-            'es_pch' in comp_body and 'es_pdch' in comp_body
+        # P5.4-H1: the complementarity row now acts on the DIMENSIONLESS pair.
+        # Check for the hat variables specifically -- 'es_pch' is a substring of
+        # 'es_pch_hat', so a substring test on the physical name would pass for
+        # the wrong reason.
+        'complementarity_acts_on_normalized_powers': (
+            'es_pch_hat' in comp_body and 'es_pdch_hat' in comp_body
             and 'es_sch' not in comp_body and 'es_sdch' not in comp_body),
+        'complementarity_rhs': float(pe.value(model.ess_comp[e0, s_m, s_o, p].upper)),
+        'complementarity_rhs_is_eps': abs(
+            float(pe.value(model.ess_comp[e0, s_m, s_o, p].upper))
+            - ESS_COMPLEMENTARITY_TOLERANCE) < 1e-18,
+        'link_rows_have_unit_coefficient_on_physical': all(
+            str(getattr(model, n)[e0, s_m, s_o, p].body).startswith(v)
+            for n, v in (('ess_pch_hat_link', 'es_pch['),
+                         ('ess_pdch_hat_link', 'es_pdch['))),
+        'hat_bounds': [list(model.es_pch_hat[e0, s_m, s_o, p].bounds),
+                       list(model.es_pdch_hat[e0, s_m, s_o, p].bounds)],
         'soc_acts_on_active_powers': (
             'es_pch' in soc_body and 'es_pdch' in soc_body
             and 'es_sch' not in soc_body and 'es_sdch' not in soc_body),
@@ -454,8 +470,11 @@ def main():
     print(f"  retired components absent: {b['retired_components_absent']}")
     print(f"  new components present   : {b['new_components_present']} "
           f"rows={b['new_component_row_counts']}")
-    print(f"  complementarity on active: {b['complementarity_acts_on_active_powers']}; "
+    print(f"  complementarity on normalized: {b['complementarity_acts_on_normalized_powers']} "
+          f"(RHS={b['complementarity_rhs']:.4e}, is_eps={b['complementarity_rhs_is_eps']}); "
           f"SOC on active: {b['soc_acts_on_active_powers']}")
+    print(f"  link rows unit coeff on physical: {b['link_rows_have_unit_coefficient_on_physical']}; "
+          f"hat bounds {b['hat_bounds']}")
     for label in ('pure_reactive', 'pure_charging', 'pure_discharging'):
         t = c[label]
         print(f"  {label:18s} delta_soc={t['measured_delta_soc']:+.6e} "

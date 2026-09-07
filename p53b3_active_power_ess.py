@@ -367,6 +367,7 @@ def run_branch(prototype, capture_tags):
                        'eff_ch': float(sess.eff_ch), 'eff_dch': float(sess.eff_dch),
                        'dt': float(period_duration_hours(model)),
                        'base_mva': float(net.baseMVA)}
+                rec['pch_hat'] = []; rec['pdch_hat'] = []
                 for p in model.periods:
                     pch = float(pe.value(model.shared_es_pch[e_idx, 0, 0, p]))
                     pdch = float(pe.value(model.shared_es_pdch[e_idx, 0, 0, p]))
@@ -376,6 +377,9 @@ def run_branch(prototype, capture_tags):
                     rec['pch'].append(pch); rec['pdch'].append(pdch)
                     rec['pnet'].append(pnet); rec['qnet'].append(qnet)
                     rec['soc'].append(soc)
+                    # P5.4-H1: the dimensionless pair the complementarity row acts on
+                    rec['pch_hat'].append(float(pe.value(model.shared_es_pch_hat[e_idx, 0, 0, p])))
+                    rec['pdch_hat'].append(float(pe.value(model.shared_es_pdch_hat[e_idx, 0, 0, p])))
                     rec['cap_margin'].append(s_rated ** 2 - (pnet ** 2 + qnet ** 2))
                     rec['comp_margin'].append(
                         ESS_COMPLEMENTARITY_TOLERANCE * s_rated ** 2 - pch * pdch)
@@ -404,6 +408,7 @@ def run_branch(prototype, capture_tags):
                        'eff_ch': float(sess.eff_ch), 'eff_dch': float(sess.eff_dch),
                        'dt': float(period_duration_hours(model)),
                        'base_mva': float(net.baseMVA)}
+                rec['pch_hat'] = []; rec['pdch_hat'] = []
                 for p in model.periods:
                     pch = float(pe.value(model.shared_es_pch[e_idx, 0, 0, p]))
                     pdch = float(pe.value(model.shared_es_pdch[e_idx, 0, 0, p]))
@@ -412,13 +417,16 @@ def run_branch(prototype, capture_tags):
                     rec['pch'].append(pch); rec['pdch'].append(pdch)
                     rec['pnet'].append(pnet); rec['qnet'].append(qnet)
                     rec['soc'].append(float(pe.value(model.shared_es_soc[e_idx, 0, 0, p])))
+                    rec['pch_hat'].append(float(pe.value(model.shared_es_pch_hat[e_idx, 0, 0, p])))
+                    rec['pdch_hat'].append(float(pe.value(model.shared_es_pdch_hat[e_idx, 0, 0, p])))
                     rec['cap_margin'].append(s_rated ** 2 - (pnet ** 2 + qnet ** 2))
                     rec['comp_margin'].append(
                         ESS_COMPLEMENTARITY_TOLERANCE * s_rated ** 2 - pch * pdch)
                 physics[f'tso/{e_idx}/{year}/{day}'] = rec
 
     return {'aggregates': agg, 'per_solve': per_solve, 'finals': finals,
-            'physics': physics, 'conversion': dict(list(conv_info.items())[:2]),
+            'physics': physics, 'esso_models': _em, 'esso_results': res['esso'],
+            'shared_ess_data': planning.shared_ess_data, 'conversion': dict(list(conv_info.items())[:2]),
             'captured': captured}
 
 
