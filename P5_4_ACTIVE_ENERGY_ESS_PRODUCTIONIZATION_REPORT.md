@@ -1226,6 +1226,137 @@ P5.4-D2 PARTIAL — sensitivity root cause identified but production correction 
 
 ---
 
+# D2-P — Sensitivity-clean shared-S productionization
+
+Commit `06e921e5`. Script: `p54d2p_validation.py`. Evidence:
+`data/SRP1/Results/P54D2P/p54d2p_report.json`.
+
+Productionizes D2.6 variant B. `_SHARED_ESS_RATED_BOUNDED_VARIABLES` — which
+rewrote four variable bounds from the fixed capacity parameter — is replaced by
+`_SHARED_ESS_ZERO_GATED_BOUND_VARIABLES`, which holds the **capacity-independent**
+bounds retained at positive capacity:
+
+| Variable | Before (S-dependent) | After |
+|---|---|---|
+| `shared_es_pch` | `[0·S, 1·S]` | `[0, None]` — nonnegativity only |
+| `shared_es_pdch` | `[0·S, 1·S]` | `[0, None]` |
+| `shared_es_pnet` | `[−1·S, 1·S]` | `[None, None]` |
+| `shared_es_qnet` | `[−1·S, 1·S]` | `[None, None]` |
+
+The zero-capacity branch is unchanged: the box still collapses to `[0, 0]` and
+the variables are still explicitly fixed at `0`. **Benders equations were not
+touched and no bound-multiplier term was added to them.**
+
+Retained exactly: `pch, pdch ≥ 0`; `pch_hat, pdch_hat ∈ [0, 1]`;
+`pch = S·pch_hat`; `pdch = S·pdch_hat`; `pch + pdch ≤ S`; `pnet = pch − pdch`;
+`pnet² + qnet² ≤ S²`; the active-energy SOC rows; H1 normalized
+complementarity; PF/reactive rows; every objective term and coefficient; and
+the zero-capacity fixing/gating. Nothing divides by S.
+
+## D2-P.1 — exact redundancy
+
+Analytically:
+
+| Removed bound | Implied by |
+|---|---|
+| `pch ≤ S` | `pch, pdch ≥ 0` with `pch + pdch ≤ S`; independently `pch = S·pch_hat`, `pch_hat ≤ 1` |
+| `pdch ≤ S` | symmetric |
+| `\|pnet\| ≤ S` | `pnet² + qnet² ≤ S²` for `S > 0` |
+| `\|qnet\| ≤ S` | symmetric |
+
+Numerically, at the solved point of all eight cases — **every implied bound
+holds, 8/8**, with no negative `pch`/`pdch` anywhere. The worst observed ratios
+show the symbolic rows doing the work rather than being slack by accident:
+
+| Case | `max pch/S` | `max pdch/S` | `max \|pnet\|/S` | `max \|qnet\|/S` |
+|---|---|---|---|---|
+| dso/9/2030/Winter | 0.2199 | 0.2092 | 0.2197 | 0.0000 |
+| dso/9/2035/Summer | 0.0071 | 0.0065 | 0.0013 | 0.0000 |
+| **tso/0/2025/Winter** | **0.9895** | 0.4669 | **0.9894** | 0.2401 |
+| **tso/1/2030/Summer** | 0.2546 | **0.9950** | **0.9949** | 0.0209 |
+
+The two TSO cases run to within 0.5–1 % of the removed bound and still satisfy
+it — the capability circle and the active-sum row hold it, exactly as the
+redundancy argument requires.
+
+## D2-P.2 — lifecycle on one reused model
+
+| Transition | S | `pch` bounds | `pnet` bounds | fixed | unbounded & unfixed |
+|---|---|---|---|---|---|
+| zero | 0.0 | `[0.0, 0.0]` | `[0.0, 0.0]` | **yes** | 0 |
+| → positive | 2.1270e-04 | `[0.0, None]` | `[None, None]` | no | 48 |
+| → different positive | 5.3174e-04 | `[0.0, None]` | `[None, None]` | no | 48 |
+| → back to zero | 0.0 | `[0.0, 0.0]` | `[0.0, 0.0]` | **yes** | 0 |
+| → positive again | 2.1270e-04 | `[0.0, None]` | `[None, None]` | no | 48 |
+
+All checks pass: component ids constant, zero-capacity variables fixed at 0 with
+the box collapsed and rows deactivated, positive-capacity variables free with no
+S-dependent bound, hat bounds unchanged at `[0, 1]`, warm-start suffixes intact.
+
+The 48 unbounded-and-unfixed entries at positive capacity are `pnet` and `qnet`
+(24 each); they are bounded by `sess_converter_capability`, which D2-P.1 confirms
+holds at the solution.
+
+## D2-P.3 — sensitivity structure
+
+Across the eight original D2 cases, with bound S-dependence now **measured** from
+the model (configure at S and at `S·(1+1e-3)` and difference the bounds) rather
+than read from a factor table:
+
+| Check | Result |
+|---|---|
+| Any positive-capacity bound depends on S | **False, 8/8** |
+| Bound contribution to `dQ/dS` | **exactly 0.0, 8/8** |
+| Active rows referencing `shared_es_s_rated_fixed` outside the fixing row | **0, 8/8** |
+| Fixing-row dual is the complete local envelope derivative | **True, 8/8** |
+| E bound contribution | **exactly 0.0, 8/8** — unchanged, still clean |
+
+The pre-D2-P bound term, which ranged from 28 % to 625 % of the corrected
+derivative, is gone. **This is a statement about the local branch derivative
+only** — it does not by itself establish global Benders validity, which is what
+D3 examines.
+
+## D2-P.4 — operational regression
+
+| Metric | H1 baseline | **Post-D2-P** |
+|---|---|---|
+| DSO | 36 / 36 | **36 / 36** |
+| TSO | 12 / 12 | **12 / 12** |
+| ESSO | 3 / 3 | **3 / 3** |
+| Primary failures / recoveries / persistent | 0 / 0 / 0 | **0 / 0 / 0** |
+| Iterations — total | 3 499 | **3 442** |
+| Iterations — mean / median / max | 72.9 / 64.0 / 185 | **71.7 / 64.5 / 137** |
+| Runtime | 44 s | **43 s** |
+| σ_min(full) DSO / TSO | 5.9246e-03 / 3.2871e-02 | **5.9246e-03 / 3.2871e-02** |
+| Zero-gradient equality rows | 0 | **0** |
+| Converter-capability violations | 0 / 1 728 | **0 / 1 728** |
+| Complementarity violations (physical form) | 0 / 1 728 | **0 / 1 728** |
+| `max min(pch,pdch)/S` | 8.3408e-03 | **8.2482e-03** |
+
+Distributed ADMM, same fixed candidate as P5.4-F:
+
+| Metric | P5.4-F | **Post-D2-P** |
+|---|---|---|
+| Converged | yes | **yes** |
+| Cycles | 9 | **9** |
+| All local solves ok, every cycle | yes | **yes** |
+| Recovery diagnostics | 0 | **0** |
+| Final rho (V / PF / ESS) | 1.5 / 2.25 / 1.0 | **1.5 / 2.25 / 1.0** |
+| Complementarity violations | 0 | **0** |
+| Converter capability | clean | **clean** |
+| Energy consistency `max\|ΔP_cell\|` | 3.03e-06 | **2.51e-06** |
+| `pch/pdch` consensus added | no | **no** |
+
+**No regression anywhere; iterations are marginally better.**
+
+## D2-P verdict
+
+```
+P5.4-D2-P PASS — structurally complete S sensitivity productionized
+```
+
+---
+
 # H — Status after H1
 
 The H question has now split cleanly in two, and H1 answered the first half.
