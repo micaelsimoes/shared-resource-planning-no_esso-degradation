@@ -23,382 +23,381 @@ Do not automatically proceed from a diagnostic result to a production formulatio
 
 ---
 
-# CURRENT AUTHORIZED STAGE — P5.4-D2-P productionization, then P5.4-D3 cut-consistency audit
+# CURRENT AUTHORIZED STAGE - P5.4-D4 recourse branch recovery and oracle hardening
 
-P5.4-A/B/C/D/D2/E/E2/H1/F are complete. H1 and F are accepted. D2 ended:
+P5.4-A/B/C/D/D2/D2-P/D3/E/E2/H1/F are complete.
 
-`P5.4-D2 PARTIAL — sensitivity root cause identified but production correction still required`
+Accepted statuses:
+
+- `P5.4-H1 PASS - complementarity is numerically resolved consistently across agents`
+- `P5.4-F ADMM PASS - net-P/Q coordination converged with locally consistent charge/discharge`
+- `P5.4-D2-P PASS - structurally complete S sensitivity productionized`
+- `P5.4-D3 FAIL - current cuts are demonstrably unsafe under observed recourse branches`
 
 The current authorized sequence is:
 
-1. **P5.4-D2-P — productionize the exact sensitivity-clean shared-S formulation**;
-2. **P5.4-D3 — audit the actual distributed Benders/local-cut coefficient against nearby observed recourse branches**;
-3. stop for planner review;
-4. **do not run P5.4-G** unless explicitly authorized after D3.
+1. **P5.4-D4 - recover lower operational branches at the exact base candidate**;
+2. **if recoverable, test a deterministic multi-start recourse oracle and hardened empirical cut**;
+3. **planner review of planning architecture**;
+4. **do not run P5.4-G** unless explicitly re-authorized after D4.
 
-## Current production/evidence checkpoints
+Current accepted production baseline:
 
-Production active-energy stack:
+`06e921e5`
 
-- `a4a0bae8` — shared network active-energy ESS;
-- `1e86d40e` — ordinary network ESS parity;
-- `58f4911b` — ESSO active-energy conversion;
-- `c3526ec8` — lifecycle/sensitivity audit state;
-- `93974d83` — normalized dimensionless complementarity across network ESS, ordinary ESS and ESSO.
+Current accepted fixed-candidate ADMM behavior:
 
-Accepted live coordination evidence:
+- converged in `9` cycles;
+- zero local failures/recoveries;
+- net-P/Q coordination only;
+- H1 complementarity still enforced;
+- converter capability clean.
 
-- `2917b9c9` — fixed positive-bootstrap distributed ADMM; net-P/Q coordination only; converged in 9 cycles with no local failures/recoveries.
+Latest diagnostic evidence:
 
-Latest D2 diagnostic evidence:
+- `65b261ba` - D2 root-cause audit;
+- `e1afa8e9` - D3 distributed cut-consistency audit.
 
-- `65b261ba` — S/E sensitivity root-cause audit; diagnostic only, no production or Benders change.
+---
 
-Reduced-scenario identity remains:
+# Locked production decisions during D4
 
-- seed `2026`;
-- checksum `5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358`.
+Do not change:
 
-## Accepted operational invariants
-
-Keep unchanged unless a later planner instruction explicitly authorizes otherwise:
-
-- active-energy ESS SOC/throughput physics;
-- H1 normalized complementarity;
+- active-energy ESS formulation;
+- D2-P sensitivity-clean shared-S formulation;
+- H1 dimensionless complementarity;
 - `ESS_COMPLEMENTARITY_TOLERANCE = 1e-4`;
 - net-P/Q-only ADMM coordination;
-- current ADMM rho/tolerances, proximal regularization and recourse-stationarity logic;
-- IPOPT/MA97/exact-Hessian and current recovery policy;
-- converter-capability formulation;
-- objective scaling and all objective coefficients;
-- current RES formulation/data;
-- B1 `f_ref=0` remains deferred.
+- IPOPT tolerances/options;
+- MA97/exact-Hessian policy;
+- recovery policy;
+- adaptive-rho logic;
+- proximal regularization;
+- objective scaling;
+- objective coefficients;
+- master/Benders equations;
+- cut equations.
 
-Do not add `pch`, `pdch`, circulation, SOC, cell-energy rate or throughput as ADMM consensus variables.
+Do not add:
 
----
+- `pch/pdch` consensus;
+- binary charge/discharge variables;
+- random multi-starts;
+- new penalties;
+- trust regions or planning regularization during D4 itself.
 
-# Accepted P5.4-D2 findings
-
-D2 established two independent issues.
-
-## D2 root cause 1 — incomplete S derivative bookkeeping
-
-For positive shared-ESS capacity, production numerically rewrites bounds on:
-
-- `shared_es_pch`: `[0,S]`;
-- `shared_es_pdch`: `[0,S]`;
-- `shared_es_pnet`: `[-S,S]`;
-- `shared_es_qnet`: `[-S,S]`.
-
-The local NLP also contains symbolic S-dependence through the rated-S Var and its fixing row. Production Benders currently extracts only the fixing-row multiplier.
-
-The calibrated IPOPT/Pyomo sign convention is:
-
-`dual[param == var] = dQ/dparam`
-
-and for numerical bounds:
-
-`dQ/du = zU`
-
-`dQ/dl = zL`.
-
-Therefore the complete local derivative is:
-
-`dQ/dS = fixing-row contribution + bound contribution + direct-expression contribution`.
-
-D2 found no extra active fixed-parameter expressions outside the fixing row, but the bound contribution is substantial and systematic. The fixing-row-only quantity is not a complete S derivative and can even have the wrong sign relative to S-feasible-set monotonicity.
-
-For E, no E-scaled operational variable bound exists. E dependence is already symbolic through `shared_es_e_rated`; the E bound contribution was zero throughout the audit. Do not invent an E reformulation without new evidence.
-
-## D2 root cause 2 — reproducible local-solution multiplicity
-
-Nearby S/E candidates can converge to several deterministic local branches. The branch gap is larger than the first-order capacity effect being measured. Re-solving an identical problem is bit-identical, so this is not random solver noise.
-
-Consequences:
-
-- finite differences cannot presently certify the local dual against one unique nearby value function;
-- continuation/warm starts do not reliably keep the perturbed candidate on the same branch as the base cold solve;
-- after the S bookkeeping correction, the fixing-row dual should be treated as the complete derivative **of the returned local branch**, not automatically as a globally valid Benders subgradient.
+D4 is a diagnostic recourse-oracle stage.
 
 ---
 
-# P5.4-D2-P — sensitivity-clean shared-S productionization
+# Accepted D2-P result
 
-## D2-P objective
+D2-P removed the four redundant positive-capacity numerical S-dependent bounds on:
 
-Productionize D2.6 variant B, which is an exact feasible-set-preserving reformulation for positive S.
+- `shared_es_pch`;
+- `shared_es_pdch`;
+- `shared_es_pnet`;
+- `shared_es_qnet`.
 
-Remove only the positive-capacity numerical S-dependent bounds from the lifecycle for:
+Retained symbolic rows imply the removed bounds exactly, so the mathematical feasible set is unchanged.
 
-- `shared_es_pch` upper bound;
-- `shared_es_pdch` upper bound;
-- `shared_es_pnet` lower/upper bounds;
-- `shared_es_qnet` lower/upper bounds.
+After D2-P:
 
-Do not add bound-multiplier corrections to Benders.
+- positive-capacity numerical bounds no longer depend on S;
+- S-bound derivative contribution is exactly zero;
+- the rated-S fixing-row dual is the structurally complete derivative of the **local branch returned by the solver**;
+- E remains structurally sensitivity-clean;
+- bootstrap initialization remains 36/36 DSO, 12/12 TSO, 3/3 ESSO, zero persistent failures;
+- fixed-candidate ADMM still converges in 9 cycles.
 
-## D2-P retained formulation
-
-Keep:
-
-- `shared_es_pch >= 0`;
-- `shared_es_pdch >= 0`;
-- `shared_es_pch_hat, shared_es_pdch_hat in [0,1]`;
-- `pch = S_rated*pch_hat`;
-- `pdch = S_rated*pdch_hat`;
-- `pch + pdch <= S_rated`;
-- `pnet = pch - pdch`;
-- `pnet^2 + qnet^2 <= S_rated^2`;
-- active-energy SOC rows;
-- H1 normalized complementarity;
-- PF/reactive rows;
-- all objective terms and coefficients;
-- explicit zero-capacity fixing/gating.
-
-At zero capacity the physical variables must still be explicitly fixed to zero. Do not divide by S anywhere.
-
-## D2-P.1 — exact redundancy proof/tests
-
-Document and test:
-
-- `pch <= S` follows from `pch,pdch >= 0` plus `pch+pdch<=S`; it also follows from `pch=S*pch_hat`, `pch_hat<=1`;
-- `pdch <= S` analogously;
-- `|pnet|<=S` and `|qnet|<=S` follow from `pnet^2+qnet^2<=S^2` for positive S.
-
-The production correction must not change the mathematical feasible set.
-
-## D2-P.2 — lifecycle/reused-model validation
-
-Test in place:
-
-- zero -> positive;
-- positive -> different positive;
-- positive -> zero;
-- zero -> positive again.
-
-Verify:
-
-- explicit zero-capacity fixing remains safe;
-- positive-capacity variables are free with no hidden S-dependent numerical bounds;
-- symbolic constraints/H1 links keep the positive-capacity model bounded;
-- component identity is preserved across reuse;
-- warm-start suffix handling remains intact.
-
-## D2-P.3 — sensitivity-structure audit
-
-Across at least the original eight D2 cases confirm:
-
-- no positive-capacity numerical bound on `pch/pdch/pnet/qnet` depends on S;
-- no active expression uses `shared_es_s_rated_fixed` outside the fixing row;
-- S bound contribution is exactly zero;
-- the fixing-row dual is therefore the structurally complete **local branch** derivative with respect to S;
-- E remains structurally clean and needs no bound cleanup.
-
-Do not claim global Benders validity from this structural result alone.
-
-## D2-P.4 — operational regression gate
-
-Re-run the production positive-bootstrap initialization.
-
-Require:
-
-- DSO `36/36`;
-- TSO `12/12`;
-- ESSO `3/3`;
-- zero persistent failures;
-- no new recovery/failure family;
-- H1 complementarity still physically enforced;
-- converter-capability residuals remain clean;
-- equality-rank diagnostics remain acceptable.
-
-Then rerun the accepted fixed-candidate distributed ADMM through the real production path.
-
-Require robust convergence with:
-
-- net-P/Q coordination unchanged;
-- no new local failure family;
-- normalized complementarity satisfied;
-- converter capability satisfied;
-- no `pch/pdch` consensus added.
-
-Do **not** run the outer planning loop.
-
-D2-P verdict must be:
-
-`P5.4-D2-P PASS — structurally complete S sensitivity productionized`
-
-or an explicit failure/partial status with the blocking evidence.
+Do not reopen D2-P unless D4 exposes a direct production regression attributable to it.
 
 ---
 
-# P5.4-D3 — distributed cut-consistency / local-branch audit
+# Accepted D3 result - current planning cuts are unsafe
 
-Run D3 only if D2-P passes.
+D3 evaluated the exact aggregated coefficient returned by production distributed operational planning and the exact affine cut form that `_add_benders_cut` would use, without adding the cut to a master.
 
-## D3 objective
+Accepted D3 evidence:
 
-Test the quantity the planning algorithm actually uses: the fully aggregated distributed recourse value and production cut coefficient.
+- `Q0 = 848258809.814117` at the base positive-bootstrap candidate;
+- all 18 aggregated S/E coefficients finite and negative;
+- 8 nearby distributed candidate solves completed;
+- 8/8 cut gaps negative;
+- 6/8 cut gaps decisively below the derived tolerance;
+- worst violation about `-1.1476e7`, roughly `-1.35%` of `Q0`;
+- no tested candidate remained on the base branch;
+- largest linear predicted capacity effect was smaller than the recourse-resolution scale.
 
-The central question is:
+The most important D3 observation is:
 
-**Does the dual generated by the actual distributed recourse solve produce a safe and useful local cut at nearby candidates, despite the observed nonconvex branch multiplicity?**
+- at node 9, 2025, `S = 0.95*S0`, a converged distributed state achieved about `836789546.53`;
+- reducing S tightens the feasible set;
+- therefore the physical state found at `0.95*S0` is feasible at the larger base capacity;
+- the base cold solve at `S0` missed a lower feasible branch by at least about `11.47e6`.
 
-Do not alter the master/Benders equations during D3.
+Do not call the lower value the global optimum. It is a best observed feasible branch and a falsification witness.
 
-## D3.1 — base distributed recourse and exact production coefficient
+The current blocker is **recourse branch recovery**, not sensitivity bookkeeping.
 
-At the exact positive-bootstrap candidate:
+---
 
-1. run `run_operational_planning(type='distributed', ...)` to convergence;
-2. record total recourse `Q0`, gross operational cost and terminal salvage;
-3. extract the exact production S/E coefficients after:
-   - local objective rescaling;
-   - day/year weighting;
-   - TSO + DSO aggregation;
-   - available-capacity -> investment-capacity mapping;
-   - salvage-value sensitivity;
-4. persist every contribution by node, year, S/E and agent.
+# P5.4-D4 - recourse branch recovery and oracle hardening
 
-Call the resulting investment-space sensitivity vector `g0`.
+## D4 objective
 
-## D3.2 — construct, but do not add, the candidate cut
+Determine whether lower recourse branches exposed by D3 can be recovered reproducibly at the **exact original base candidate**, and whether a small deterministic multi-start operational oracle can make branch selection sufficiently reliable for a later planning-architecture decision.
 
-Construct:
+Do not run the outer planning loop.
 
-`L(x) = Q0 + g0^T (x - x0)`.
+## D4.1 - recover/persist D3 branch states
 
-Verify units/signs independently. Do not add the cut to the master problem.
+Recover or reproduce converged distributed states for at least:
 
-## D3.3 — nearby candidate population
+- base positive-bootstrap candidate;
+- `s|node9|2025 -5%` best observed state;
+- `s|node9|2025 -10%` best observed state;
+- `s|node5|2025 -5%` best observed state;
+- `e|node9|2025 -1%` best observed state.
 
-Generate controlled feasible perturbations around the positive-bootstrap investment candidate.
+Persist/record enough state to reconstruct deterministic starts:
 
-One variable at a time first:
+- candidate S/E capacities;
+- ADMM consensus quantities;
+- local primal variables;
+- ESS SOC;
+- H1 hat variables;
+- relevant warm-start suffixes/multipliers;
+- converged recourse and local objective decomposition.
 
-- S at nodes 5, 7, 9;
-- E at nodes 5, 7, 9.
+If complete serialized states do not exist, rerun only what is necessary.
 
-Use relative perturbations such as:
+## D4.2 - lift the lower-S state to the exact base candidate
 
-- `+/-0.5%`;
-- `+/-1%`;
-- `+/-2%`;
-- `+/-5%`;
-- `+/-10%`.
+Start with `s|node9|2025 -5%`.
 
-Respect cumulative investment/available-capacity mapping and do not cross the zero-capacity structural boundary. Then test a small controlled set of multi-variable perturbations.
+Restore the exact base capacities and transfer physical operational variables, including:
 
-## D3.4 — solve every perturbed candidate through the real distributed path
+- `pch`;
+- `pdch`;
+- `pnet`;
+- `qnet`;
+- SOC;
+- unrelated network variables;
+- interface states/consensus initialization where compatible.
 
-For every candidate run production distributed operational planning with unchanged settings.
+Recompute initialization-only normalized H1 values consistently with the restored base S:
 
-Record:
+`pch_hat = pch / S_base`
 
-- ADMM convergence and cycles;
-- every local primary/recovery outcome;
-- recourse;
-- gross operational objective;
+`pdch_hat = pdch / S_base`
+
+Do **not** introduce division-by-S expressions into the optimization model.
+
+Before solving, audit the transferred point against the base candidate and report maximum residuals for:
+
+- active-sum;
+- converter capability;
+- complementarity;
+- H1 links;
+- SOC bounds/recursion where directly checkable;
+- interface consistency quantities.
+
+The smaller-S physical point should remain feasible when S is increased. Any violation must be explained before solving.
+
+## D4.3 - multiplier-transfer policy
+
+Separate primal branch transfer from multiplier transfer.
+
+Required variants:
+
+**A - primal-only branch recovery**
+
+- transfer primal/consensus state;
+- clear local IPOPT bound and constraint multipliers before the first local solve.
+
+**B - compatible full warm start**
+
+- transfer primal plus only multiplier information that remains semantically compatible with the restored-capacity NLP.
+
+Do not silently reuse multipliers from the smaller-capacity NLP when row/bound meaning changed.
+
+The primal-only result is the primary branch-recovery test.
+
+## D4.4 - exact-base recovery population
+
+Solve the **exact original positive-bootstrap candidate** using production distributed ADMM from at least:
+
+1. production cold initialization;
+2. lifted node9 `S -5%` state;
+3. lifted node9 `S -10%` state;
+4. lifted node5 `S -5%` state;
+5. lifted node9 `E -1%` state where semantically meaningful.
+
+For every start record:
+
+- converged yes/no;
+- ADMM cycles;
+- local primary/recovery outcomes;
+- final recourse;
+- gross operational cost;
 - terminal salvage;
-- extracted S/E sensitivities;
-- local objective/branch signatures needed to diagnose branch switching.
+- final residuals;
+- complementarity and converter-capability residuals;
+- final S/E sensitivity vector;
+- branch fingerprint.
 
-Do not invoke the master/planning loop.
+Repeat each materially distinct low base branch at least twice from the same deterministic initialization to establish reproducibility.
 
-## D3.5 — controlled multiple-start lower-recourse probe
+## D4.5 - decisive base-branch answer
 
-Because D2 proved local-solution multiplicity, evaluate each candidate from at least:
+Answer explicitly:
 
-- **A — production initialization**;
-- **B — continuation/warm start from a converged neighboring candidate**, where technically safe.
+**Can the exact original base candidate attain a recourse materially below `848258809.814117`?**
 
-If inexpensive and deterministic, also use:
+If yes, report:
 
-- **C — one additional feasible deterministic initialization** derived from a known feasible solution, not random noise.
+`Q_base_best_observed`
 
-For each candidate retain:
+and:
 
-`Q_best_observed = min(Q_A, Q_B, Q_C)`
+`Delta_Q_base = Q_base_cold - Q_base_best_observed`.
 
-among converged feasible runs.
+Never call `Q_base_best_observed` the global optimum.
 
-This is a falsification benchmark only. Never call it the global optimum.
+## D4.6 - branch fingerprint / objective-gap localization
 
-## D3.6 — cut-safety falsification test
+Compare the cold base branch and each lower recovered base branch using at least:
 
-Evaluate:
+- TSO objective;
+- each DSO objective;
+- ESSO objective;
+- generation cost;
+- flexibility cost;
+- voltage-slack cost;
+- network/operational slack penalties;
+- ESS usage/complementarity penalties;
+- terminal salvage;
+- shared-ESS P/Q schedules;
+- SOC trajectories;
+- interface P/Q;
+- voltage profiles.
 
-`cut_gap = Q_best_observed - L(x)`.
+Identify the agent/year/day/model responsible for most of the objective gap and then identify the physical/optimization variables that differ there.
 
-For the current minimization lower-cut convention:
+Do not use total recourse alone as a branch label.
 
-- `cut_gap < -tol_cut` proves that the generated affine cut lies above an observed feasible recourse value and is therefore demonstrably unsafe;
-- `cut_gap >= -tol_cut` does **not** prove global validity because `Q_best_observed` is still local.
+## D4.7 - deterministic diagnostic multi-start oracle
 
-Derive `tol_cut` from observed identical-candidate objective repeatability, operational solve accuracy and recourse scaling. Do not choose it arbitrarily.
+If multiple base branches are reproducibly recoverable, define a **diagnostic** deterministic oracle:
 
-## D3.7 — local linearity / branch classification
+`Q_best_observed(x) = min(Q_start1, Q_start2, ..., Q_startK)`
 
-For every perturbation report:
+over converged feasible deterministic starts.
 
-- `Q_observed - Q0`;
-- `g0^T(x-x0)`;
-- absolute error;
-- relative error where meaningful;
-- apparent branch identity.
+Initial start families should include:
 
-Separate:
+- production cold initialization;
+- previous/incumbent converged candidate where available;
+- one or more archived branch templates lifted/mapped to the candidate.
 
-- same-branch evaluations;
-- branch-switching evaluations.
+No random starts.
 
-This distinguishes derivative quality from branch-selection effects.
+Do not productionize the oracle during D4.
 
-## D3.8 — S monotonicity sanity check
+## D4.8 - multi-start cost/benefit
 
-For each S sweep, tabulate all observed recourse branches and their lower observed envelope.
+On the base candidate and existing D3 candidate set, measure:
 
-Increasing S enlarges the physical feasible set, so the **best observed lower envelope** should not systematically increase when the lower branch is successfully recovered.
+- number of starts;
+- total ADMM solves;
+- runtime;
+- best recourse recovered;
+- branch frequency;
+- marginal improvement from the second, third, fourth start.
 
-If it does, state that the global/lower branch has not been reliably recovered. Do not reinterpret an individual local branch's positive slope as physical non-monotonicity.
+Identify the smallest deterministic start set that consistently recovers the best known branch.
 
-## D3.9 — required classification
+The goal is to avoid a large multiplicative runtime increase if two starts recover nearly all of the benefit.
 
-End D3 with exactly one:
+## D4.9 - hardened empirical cut test
 
-`P5.4-D3 PASS — current distributed sensitivities are suitable for the reduced planning gate`
+Run this only if D4.7 yields a reproducible best-observed base branch.
 
-`P5.4-D3 HEURISTIC — sensitivities are locally useful but global cut validity is not established`
+At the exact base candidate:
 
-`P5.4-D3 FAIL — current cuts are demonstrably unsafe under observed recourse branches`
+1. take `Q_base_best_observed`;
+2. extract the fully aggregated S/E sensitivity from that **same converged branch**;
+3. construct, but do not add to a master:
 
-If D3 is HEURISTIC or FAIL, do not modify Benders automatically. Propose the smallest next planning-level remedy for planner review. Possible directions include:
+`L_best(x) = Q_base_best_observed + g_best^T (x - x0)`.
 
-- trust-region/local cuts;
-- cut activation only near the generating candidate;
-- deterministic branch-continuation policy;
-- multi-start recourse selection;
-- planning-capacity movement regularization;
-- another decomposition framework appropriate for nonconvex recourse.
+Re-evaluate against the already completed D3 candidates using each candidate's own deterministic best-observed recourse.
 
-Do not assume classical convex Benders guarantees apply to the current nonlinear recourse.
+Report:
+
+`cut_gap_best = Q_best_observed(x) - L_best(x)`.
+
+Negative gap beyond the derived tolerance remains a decisive unsafe-cut witness.
+
+No observed violation does **not** establish global Benders validity.
+
+## D4.10 - minimal expansion only if needed
+
+If the hardened base cut survives all existing D3 falsification points, add only a small targeted set:
+
+- node9 S `+5%`;
+- node9 S `+10%`;
+- node5 S `+5%`;
+- node9 E `+5%`;
+- one node7 perturbation.
+
+Stop immediately if another decisive cut violation appears.
+
+Do not launch a full matrix unless planner review later requests it.
+
+## D4.11 - required classification
+
+End D4 with exactly one:
+
+`P5.4-D4 A - lower recourse branch is reproducibly recoverable with a practical deterministic oracle`
+
+`P5.4-D4 B - lower branch exists but recourse recovery is not practically reliable`
+
+`P5.4-D4 C - hardened recourse still produces demonstrably unsafe cuts`
+
+Interpretation:
+
+- **D4-A:** discuss a deterministic multi-start recourse oracle plus local/trust-region planning heuristic; do not call it globally valid classical Benders.
+- **D4-B:** branch recovery is too expensive/unstable; prepare alternatives to derivative-cut planning.
+- **D4-C:** even a hardened anchor produces unsafe cuts; current classical/local cut machinery must not be used as-is.
+
+Do not implement a new planning architecture without planner approval.
 
 ---
 
-# P5.4-G — blocked pending D3 planner review
+# P5.4-G - blocked pending D4 planner review
 
-Do not invoke `run_planning_problem()` during D2-P or D3.
+Do not invoke `run_planning_problem()` during D4.
 
-G may run only after explicit planner authorization based on D3. A structurally complete S dual by itself is **not** sufficient; the distributed cut behavior in the observed nonconvex branch landscape must also be reviewed.
+G may be reconsidered only after explicit planner review of D4 and a planning-architecture decision.
+
+A structurally complete local derivative is not enough. The recourse oracle must first be made reliable enough for the intended planning method, or the planning method must change.
 
 ---
 
 # Deferred items
 
-- Physical complementarity tolerance `1e-5` / `1e-6`: defer; keep H1 `1e-4` baseline fixed during D2-P/D3.
-- B1 exact `f_ref=0`: deferred.
-- RES B2-R: deferred until a defensible converter `Smax` exists.
-- Calendar degradation: deferred.
+Keep deferred during D4:
+
+- physical complementarity tolerance `1e-5` / `1e-6` A/B;
+- B1 exact `f_ref=0`;
+- RES B2-R until defensible converter `Smax` data exists;
+- calendar degradation;
+- solver/ADMM retuning;
+- Benders/master modification;
+- trust-region/planning-regularization implementation.
 
 ---
 
@@ -410,14 +409,13 @@ Continue:
 
 Add:
 
-- `D2-P — sensitivity-clean productionization`;
-- `D3 — distributed cut-consistency audit`.
+`D4 - recourse branch recovery and oracle hardening`.
 
 Do not issue the final P5.4 verdict and do not run G.
 
-Finish with:
+Finish with the exact D4 A/B/C classification and then:
 
-`P5.4-D2-P/D3 COMPLETE — ready for planner decision on P5.4-G`
+`P5.4-D4 COMPLETE - ready for planner decision on planning architecture`
 
 and stop.
 
