@@ -1329,6 +1329,14 @@ D3 examines.
 
 ## D2-P.4 — operational regression
 
+> **NONCANONICAL — superseded by P5.4-R1/R2 for numerical validation.**
+> The figures in this subsection were produced under `srp_env`. The
+> **structural D2-P result and the production PASS remain accepted** — the
+> redundancy proof, the zero bound contribution and the lifecycle checks are
+> algebraic and environment-independent, and P5.4-R1 confirms the gate on
+> canonical scenarios (3 424 iterations, 36/36 · 12/12 · 3/3, 0/1728 violations
+> of either kind).
+
 | Metric | H1 baseline | **Post-D2-P** |
 |---|---|---|
 | DSO | 36 / 36 | **36 / 36** |
@@ -2005,7 +2013,7 @@ read from **`ObjBound`**, not `ObjVal`.
 |---|---|
 | **Unchanged** | Both verdicts (D3 unsafe, D4 class C), the D4.6 TSO/Spring attribution, the primal-branch mechanism, and the observation that the cut coefficient is below the method's resolution |
 | **Changed** | Every magnitude. `Q0`, `tol_cut`, all cut gaps, the branch improvement (1.91e6 not 1.28e7), and the D3 violation count (2/8 not 6/8) |
-| **New** | The environment itself selects the branch — a 1e-05 relative change in input data moved `Q0` by 1.15 %. This is direct evidence for the A12 purity requirement, at paper scale |
+| **New** | The environment itself selects the branch — a 1e-05 relative change in input data moved `Q0` by 1.15 %. This is **scenario/environment sensitivity of branch selection**, which is a *separate* mechanism from the A12 call-history impurity and is not evidence for it |
 | **Withdrawn** | The "no conic solver" blocker |
 
 ```
@@ -2038,36 +2046,68 @@ its own, with the H1 formulation held fixed. That was not performed here.
 
 ---
 
-# Open items carried forward
+# Open items carried forward  ·  **canonical values (B0.2)**
 
-1. **The derivative-cut planning architecture does not work for this recourse**
-   (D3, D4). Cuts are unsafe with the cold anchor (11.5e6 violations) and remain
-   unsafe with a hardened anchor (1.16e6 violations, 11/11 candidates). D4.11
-   recommends retiring the current cut machinery; the alternatives are compared
-   in D4 for planner decision. **This blocks P5.4-G.**
-2. **The blocking multiplicity is in TSO dispatch, not in the ESS** (D4.6). The
-   ~1.3e7 branch gap is TSO generation cost on Spring representative days. Every
-   ESS-side repair in P5.4 was still necessary and correct, but none of it
-   addresses this.
-3. **Branch recovery is order-sensitive** (D4.4): the same nominal source and
-   policy gave values 1.5e5 apart across call sequences -- inside `tol_cut`, but
-   evidence that production calls mutate shared network state in ways that
-   affect which branch is found.
+All figures below are canonical (`opf_env_py311`, checksum `5a02b77c…`).
+Noncanonical `srp_env` values are retained in the marked sections above and are
+**not** carried forward as current facts.
+
+1. **The derivative-cut planning architecture does not work for this recourse.**
+   Canonical evidence: `Q_base_cold = 838 496 830.813414`; canonical D3 worst cut
+   gap **−2.680808e+06** with **2 / 8** decisive violations against
+   `tol_cut = 7.164e+05`; canonical recovered-base improvement **1.910367e+06**;
+   canonical hardened test **8 / 8** decisive. **This blocks P5.4-G.** The old
+   nonlinear-recourse Benders path is retired; P5.5 supersedes it.
+2. **The blocking multiplicity is in TSO dispatch, not in the ESS.** Canonical
+   D4.6 attributes the gap to TSO generation cost on Spring representative days
+   (2035 −1.16e6, 2030 −1.05e6, 2025 −7.6e5, offset by 2025 Summer +8.4e5),
+   with salvage moving only +121.
+3. **A12 — call-history impurity remains open.** Persistent network data
+   structures are mutated in place by `update_data_with_candidate_solution`, and
+   earlier call-order tests exposed that mechanism directly. **This is distinct
+   from the scenario/environment branch sensitivity found in P5.4-R**, which is
+   separate evidence and does not itself demonstrate call-history impurity. The
+   specific noncanonical 1.5e5 call-order spread is **withdrawn** as a current
+   figure; the mechanism, not that number, is what remains open.
 4. **No E-binding operating point exists** in the scanned configuration
-   (D2.10), so the E-side structural conclusion rests on an argument plus 40/40
-   sign-consistent duals rather than on a binding test.
-5. **Physical sufficiency of `eps = 1e-4`** (H1.10): enforceable now, but
-   permitting circulation at 0.83 of the `sqrt(eps)` allowance. A later isolated
-   `1e-5` / `1e-6` A/B is recommended.
-6. **The H1 numerical cost**: bootstrap network iterations 1 556 -> 3 442 after
-   D2-P. No new failure family, no recoveries, rank diagnostics identical.
+   (D2.10). The E-side structural conclusion rests on an argument plus
+   sign-consistent duals rather than on a binding test. *(Scan was noncanonical;
+   the structural argument is environment-independent.)*
+5. **Physical sufficiency of `eps = 1e-4`** (H1.10): enforceable, with canonical
+   circulation reaching `8.606e-03` = 0.861 × `sqrt(eps)` and **0** rows above
+   `1e-2·S` (P5.4-R1). A later isolated `1e-5` / `1e-6` A/B is recommended.
+6. **H1 numerical cost:** canonical bootstrap total is **3 424** iterations in
+   42 s (P5.4-R1). The previously quoted 3 442 was noncanonical.
 
 Resolved and no longer open: the ESSO's absolute complementarity semantics
 (H1.5), the ESSO aggregate feasible-set incompatibility (H1.6), the
-under-resolved network complementarity (H1.1-H1.3), the unexplained P5.4-D
-sensitivity mismatch (D2), the structural incompleteness of the shared-S
-coefficient (D2-P), and the question of whether the base candidate can attain
-the lower branch at all (D4.5 -- yes, by 1.53 %).
+under-resolved network complementarity (H1.1-H1.3), the P5.4-D sensitivity
+mismatch (D2), the structural incompleteness of the shared-S coefficient
+(D2-P, confirmed canonically by R1), and the "no conic solver" blocker
+(withdrawn in P5.4-R4).
+
+## B0.4 — provenance audit of pre-R evidence
+
+**No pre-R evidence file records a scenario checksum**, so provenance is
+inferred from the run signature rather than asserted. Nothing is labelled
+canonical without a basis.
+
+| Evidence file | Records checksum | Signature | Provenance |
+|---|---|---|---|
+| `P54R*/provenance.json` | **yes** | — | **canonical**, gate-verified |
+| `P54R_D2P/p54r_d2p_report.json` | **yes** (embedded) | 3 424 iters | **canonical** |
+| `P54R_D3/*`, `P54R_D4/*` | **yes** (embedded) | Q0 838 496 830.81 | **canonical** |
+| `P54H1/p54h1_gate_report.json` | no | 3 424 iters | canonical *(inferred — matches R1 exactly)* |
+| `P54F/p54f_report.json` | no | 17 cycles, Q0 838 496 830.81 | canonical *(inferred — matches R2 exactly)* |
+| `P54E/p54e_report.json` | no | 3 442 iters | **noncanonical** *(inferred)* |
+| `P54E2/p54e2_report.json` | no | 1 556 iters | **undetermined** — predates both signatures |
+| `P54D3/*`, `P54D4/*` | no | Q0 848 258 809.81 | **noncanonical** *(inferred)* |
+
+The E2 complementarity-significance evidence cannot be attributed either way
+from the file alone. It is **not** relabelled canonical. It is also not
+re-run: E2's role was to establish that circulation is physically meaningful,
+which H1 superseded, and R1 provides the canonical operational gate P5.5
+requires.
 
 ---
 
