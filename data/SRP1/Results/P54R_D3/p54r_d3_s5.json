@@ -1,0 +1,217 @@
+{
+ "stage": "P5.4-R2",
+ "group": "s5",
+ "provenance": {
+  "timestamp_utc": "2026-09-07T19:46:18.477661+00:00",
+  "git_head": "af8435fec3444535555aa1ed6a6843935dd8458d",
+  "sys_executable": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "version": "3.14.18",
+   "exists": true,
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)"
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-10",
+   "available": true,
+   "licence_id": "2805683",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "stage": "P5.4-R2 canonical D3 [s5]"
+ },
+ "timestamp_utc": "2026-09-07T19:46:18.564696+00:00",
+ "nodes": [
+  5,
+  7,
+  9
+ ],
+ "years": [
+  2025,
+  2030,
+  2035
+ ],
+ "perturbed_year": 2025,
+ "freshness": "all models, consensus/dual states, warm starts and sensitivities are constructed in-process during this run; no srp_env artefact is read from disk",
+ "D3_1_base": {
+  "converged": true,
+  "initialization_failed": false,
+  "runtime_s": 601.5877029895782,
+  "n_cycles": 17,
+  "all_local_solves_ok": true,
+  "n_recovery_diagnostics": 0,
+  "recourse": 838496830.8134136,
+  "gross_operational_cost": 838500270.3685532,
+  "terminal_salvage_value": 3439.5551395370985,
+  "final_primal": {
+   "primal_v": 5.651117556793168e-05,
+   "primal_pf": 0.006706077640595485,
+   "primal_ess": 0.0003325797342392347
+  },
+  "final_dual": {
+   "dual_v": 0.0004316704502719443,
+   "dual_pf": 0.028017421045832852,
+   "dual_ess": 0.0007487251899163973
+  },
+  "Q0": 838496830.8134136
+ },
+ "D3_2_cut": {
+  "x0": {
+   "s|node5|2025": 0.010634892806127162,
+   "s|node5|2030": 0.010634892806127162,
+   "s|node5|2035": 0.010634892806127162,
+   "s|node7|2025": 0.010634892806127162,
+   "s|node7|2030": 0.010634892806127162,
+   "s|node7|2035": 0.010634892806127162,
+   "s|node9|2025": 0.010634892806127162,
+   "s|node9|2030": 0.010634892806127162,
+   "s|node9|2035": 0.010634892806127162,
+   "e|node5|2025": 0.021269785612254323,
+   "e|node5|2030": 0.021269785612254323,
+   "e|node5|2035": 0.021269785612254323,
+   "e|node7|2025": 0.021269785612254323,
+   "e|node7|2030": 0.021269785612254323,
+   "e|node7|2035": 0.021269785612254323,
+   "e|node9|2025": 0.021269785612254323,
+   "e|node9|2030": 0.021269785612254323,
+   "e|node9|2035": 0.021269785612254323
+  },
+  "g0": {
+   "s|node5|2025": -13170814.200281845,
+   "s|node5|2030": -6749769.247032853,
+   "s|node5|2035": -2855686.538889921,
+   "s|node7|2025": -13203465.049606428,
+   "s|node7|2030": -6754619.50863668,
+   "s|node7|2035": -2863828.446320462,
+   "s|node9|2025": -12684376.7082536,
+   "s|node9|2030": -6265077.781225469,
+   "s|node9|2035": -2889514.632737438,
+   "e|node5|2025": -6531231.46609873,
+   "e|node5|2030": -3766179.1755016316,
+   "e|node5|2035": -2055574.3904782867,
+   "e|node7|2025": -6517615.44364978,
+   "e|node7|2030": -3834903.4856990557,
+   "e|node7|2035": -2033008.3465503638,
+   "e|node9|2025": -6332417.509331325,
+   "e|node9|2030": -3535198.8854713417,
+   "e|node9|2035": -2016721.0423092935
+  },
+  "n_coefficients": 18,
+  "n_none_coefficients": 0,
+  "g0_sign_summary": {
+   "s_negative": 9,
+   "s_positive": 0,
+   "e_negative": 9,
+   "e_positive": 0
+  }
+ },
+ "D3_6_repeatability": {
+  "Q_repeat": 838496830.8134136,
+  "Q0": 838496830.8134136,
+  "absolute_spread": 0.0,
+  "relative_spread": 0.0,
+  "converged": true,
+  "n_cycles": 17
+ },
+ "D3_candidates": [
+  {
+   "label": "s|node5|2025|-10.000%",
+   "kind": "s",
+   "node": 5,
+   "year": 2025,
+   "rel": -0.1,
+   "delta_x_nonzero": {
+    "s|node5|2025": -0.0010634892806127162
+   },
+   "A": {
+    "converged": true,
+    "initialization_failed": false,
+    "runtime_s": 770.1070549488068,
+    "n_cycles": 17,
+    "all_local_solves_ok": true,
+    "n_recovery_diagnostics": 0,
+    "recourse": 838367054.4910614,
+    "gross_operational_cost": 838370817.8407389,
+    "terminal_salvage_value": 3763.3496774146824,
+    "final_primal": {
+     "primal_v": 5.83715752640458e-05,
+     "primal_pf": 0.006645255782173693,
+     "primal_ess": 0.0002700773636890157
+    },
+    "final_dual": {
+     "dual_v": 0.00043259358323923707,
+     "dual_pf": 0.028017779989931775,
+     "dual_ess": 0.0007793067048486408
+    }
+   },
+   "B": null,
+   "Q_best_observed": 838367054.4910614,
+   "predicted_delta_g0T_dx": 14007.019718941487,
+   "L_x": 838510837.8331325,
+   "cut_gap": -143783.34207105637,
+   "observed_delta_Q": -129776.32235217094,
+   "branch_A": 838367054.491061,
+   "branch_B": null,
+   "branch_base": 838496830.813414,
+   "linearity_abs_error": 143783.34207111242,
+   "linearity_rel_error": 1.1079320130596009,
+   "same_branch_as_base": false
+  },
+  {
+   "label": "s|node5|2025|-5.000%",
+   "kind": "s",
+   "node": 5,
+   "year": 2025,
+   "rel": -0.05,
+   "delta_x_nonzero": {
+    "s|node5|2025": -0.0005317446403063589
+   },
+   "A": {
+    "converged": true,
+    "initialization_failed": false,
+    "runtime_s": 454.37697291374207,
+    "n_cycles": 9,
+    "all_local_solves_ok": true,
+    "n_recovery_diagnostics": 0,
+    "recourse": 848216890.482349,
+    "gross_operational_cost": 848220224.139725,
+    "terminal_salvage_value": 3333.657375982826,
+    "final_primal": {
+     "primal_v": 0.00014646199333682213,
+     "primal_pf": 0.0093097418078942,
+     "primal_ess": 0.00046303766179220986
+    },
+    "final_dual": {
+     "dual_v": 0.0007144734044810202,
+     "dual_pf": 0.048326757673703424,
+     "dual_ess": 0.001057728299530776
+    }
+   },
+   "B": null,
+   "Q_best_observed": 848216890.482349,
+   "predicted_delta_g0T_dx": 7003.509859470754,
+   "L_x": 838503834.3232731,
+   "cut_gap": 9713056.159075975,
+   "observed_delta_Q": 9720059.668935418,
+   "branch_A": 848216890.482349,
+   "branch_B": null,
+   "branch_base": 838496830.813414,
+   "linearity_abs_error": 9713056.159075947,
+   "linearity_rel_error": 0.9992794787174143,
+   "same_branch_as_base": false
+  }
+ ]
+}
