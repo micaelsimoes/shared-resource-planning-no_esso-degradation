@@ -108,38 +108,88 @@ def objective_of(model):
     return float(pe.value(model.objective))
 
 
-def bound_multiplier_terms(model, e):
+def bound_sensitivity_map(network, params, e, s_pu, e_pu, rel=1e-3):
+    """Measure, empirically, how each shared-ESS variable bound moves with S.
+
+    Rather than trusting a factor table, the same model is configured at S and
+    at S*(1+rel) through the real production lifecycle and the bounds are
+    differenced. This gives dl/dS and du/dS directly, and is valid both before
+    and after the P5.4-D2-P bound cleanup.
+    """
+    def bounds_at(s_value):
+        console = io.StringIO()
+        with redirect_stdout(console):
+            m = network.build_model(params)
+            m.shared_es_s_rated_fixed[e].set_value(s_value)
+            m.shared_es_e_rated_fixed[e].set_value(e_pu)
+            mch.configure_shared_ess_operational_state(m, e, s_value, e_pu)
+        out = {}
+        for name in ESS_VARIABLES:
+            entries = ess_entries(m, name, e)
+            if entries:
+                out[name] = [(x.lb, x.ub) for x in entries]
+        return out
+
+    h = rel * s_pu
+    lo_b, hi_b = bounds_at(s_pu), bounds_at(s_pu * (1.0 + rel))
+    derivative = {}
+    for name, base in lo_b.items():
+        pert = hi_b.get(name, [])
+        dl = du = 0.0
+        varies = False
+        for (l0, u0), (l1, u1) in zip(base, pert):
+            if l0 is not None and l1 is not None and l1 != l0:
+                dl = (l1 - l0) / h
+                varies = True
+            if u0 is not None and u1 is not None and u1 != u0:
+                du = (u1 - u0) / h
+                varies = True
+            if (l0 is None) != (l1 is None) or (u0 is None) != (u1 is None):
+                varies = True
+        derivative[name] = {'dl_dS': dl, 'du_dS': du,
+                            'bound_depends_on_S': varies}
+    return derivative
+
+
+def bound_multiplier_terms(model, e, derivative_map=None):
     """D2.3 / D2.4: the variable-bound contribution to dQ/dS.
 
-    _SHARED_ESS_RATED_BOUNDED_VARIABLES gives, per variable, the lower and upper
-    bound as multiples of S: lb = lower_factor * S, ub = upper_factor * S, so
-    dl/dS = lower_factor and du/dS = upper_factor.
+    contribution = sum over entries of ( zU * du/dS + zL * dl/dS ), using the
+    measured dl/dS and du/dS. After P5.4-D2-P every capacity-dependent bound is
+    gone at positive capacity, so this is exactly zero.
     """
     zL = getattr(model, 'ipopt_zL_out', None)
     zU = getattr(model, 'ipopt_zU_out', None)
+    if derivative_map is None:
+        # fall back to the historical factor table if one is still present
+        derivative_map = {n: {'dl_dS': lo, 'du_dS': hi, 'bound_depends_on_S': True}
+                          for n, lo, hi in getattr(
+                              mch, '_SHARED_ESS_RATED_BOUNDED_VARIABLES', ())}
     per_variable, total = {}, 0.0
-    for name, lower_factor, upper_factor in mch._SHARED_ESS_RATED_BOUNDED_VARIABLES:
+    for name, spec in derivative_map.items():
         if not hasattr(model, name):
             continue
+        entries = ess_entries(model, name, e)
         sum_lo = sum_hi = 0.0
         n_active_lo = n_active_hi = 0
         worst = None
-        for entry in ess_entries(model, name, e):
+        for entry in entries:
             l_mult = float(zL.get(entry, 0.0)) if zL is not None else 0.0
             u_mult = float(zU.get(entry, 0.0)) if zU is not None else 0.0
-            sum_lo += l_mult * lower_factor
-            sum_hi += u_mult * upper_factor
+            sum_lo += l_mult * spec['dl_dS']
+            sum_hi += u_mult * spec['du_dS']
             if abs(l_mult) > 1e-12:
                 n_active_lo += 1
             if abs(u_mult) > 1e-12:
                 n_active_hi += 1
-            contribution = l_mult * lower_factor + u_mult * upper_factor
+            contribution = l_mult * spec['dl_dS'] + u_mult * spec['du_dS']
             if worst is None or abs(contribution) > abs(worst[0]):
                 worst = (contribution, str(entry), float(pe.value(entry)),
                          list(entry.bounds), l_mult, u_mult)
         per_variable[name] = {
-            'lower_factor': lower_factor, 'upper_factor': upper_factor,
-            'n_entries': len(ess_entries(model, name, e)),
+            'dl_dS': spec['dl_dS'], 'du_dS': spec['du_dS'],
+            'bound_depends_on_S': spec['bound_depends_on_S'],
+            'n_entries': len(entries),
             'n_nonzero_zL': n_active_lo, 'n_nonzero_zU': n_active_hi,
             'sum_zL_times_dl_dS': sum_lo,
             'sum_zU_times_du_dS': sum_hi,
@@ -155,7 +205,9 @@ def bound_multiplier_terms(model, e):
 def unbounded_variable_audit(model, e):
     """D2.3: which shared-ESS variables carry bounds at all, and do those bounds
     depend on S or E?"""
-    rated = {n: (lo, hi) for n, lo, hi in mch._SHARED_ESS_RATED_BOUNDED_VARIABLES}
+    rated = {n: (lo, hi) for n, lo, hi in getattr(
+        mch, '_SHARED_ESS_RATED_BOUNDED_VARIABLES',
+        getattr(mch, '_SHARED_ESS_ZERO_GATED_BOUND_VARIABLES', ()))}
     s_pu = float(pe.value(model.shared_es_s_rated_fixed[e]))
     e_pu = float(pe.value(model.shared_es_e_rated_fixed[e]))
     zL = getattr(model, 'ipopt_zL_out', None)
@@ -241,14 +293,14 @@ def active_set_signature(model, e):
     return sig
 
 
-def sensitivity_decomposition(model, e, theta):
+def sensitivity_decomposition(model, e, theta, derivative_map=None):
     """D2.4: split dQ/dtheta into fixing-row, bound and direct terms."""
     row = (model.shared_energy_storage_s_sensitivities[e] if theta == 'S'
            else model.shared_energy_storage_e_sensitivities[e])
     fixing = model.dual.get(row)
     fixing = float(fixing) if fixing is not None else None
     if theta == 'S':
-        bounds = bound_multiplier_terms(model, e)
+        bounds = bound_multiplier_terms(model, e, derivative_map)
     else:
         # No shared-ESS variable bound is written from E: SOC limits are symbolic
         # rows against shared_es_e_rated. Verified numerically in D2.3.
@@ -363,8 +415,10 @@ def main():
                   'source': 'p54d2_sign_calibration.py (measured, not assumed)',
                   'dual_param_equals_var': '+dQ/dparam',
                   'dQ_du': '+zU', 'dQ_dl': '+zL'},
-              'rated_bounded_variables': [
-                  list(t) for t in mch._SHARED_ESS_RATED_BOUNDED_VARIABLES],
+              'lifecycle_bound_table': [
+                  list(t) for t in getattr(
+                      mch, '_SHARED_ESS_RATED_BOUNDED_VARIABLES',
+                      getattr(mch, '_SHARED_ESS_ZERO_GATED_BOUND_VARIABLES', ()))],
               'soc_limit_semantics': {
                   'lower': 'shared_es_soc >= shared_es_e_rated * '
                            f'{ENERGY_STORAGE_MIN_ENERGY_STORED} (symbolic row)',

@@ -891,14 +891,38 @@ _SHARED_ESS_OPERATIONAL_VARIABLES = (
     'slack_shared_es_soc_final_down',
 )
 
-# Variables whose bounds follow the installed converter rating (P5.4-A). These
-# bounds are implied by the operational constraints; they are made explicit so
-# the physical box holds independently of the nonlinear capability circle.
-_SHARED_ESS_RATED_BOUNDED_VARIABLES = (
-    ('shared_es_pch', 0.0, 1.0),
-    ('shared_es_pdch', 0.0, 1.0),
-    ('shared_es_pnet', -1.0, 1.0),
-    ('shared_es_qnet', -1.0, 1.0),
+# P5.4-D2-P: these four variables previously carried numerical bounds rewritten
+# from the installed rating (pch, pdch in [0, S]; pnet, qnet in [-S, S]). Those
+# bounds are REDUNDANT -- every one of them is implied by a symbolic row that is
+# already in the model:
+#
+#   pch <= S    <-  pch + pdch <= S with pdch >= 0   (sess_active_sum_limit)
+#               <-  pch = S*pch_hat with pch_hat <= 1 (P5.4-H1 link)
+#   pdch <= S   <-  symmetrically
+#   |pnet| <= S <-  pnet^2 + qnet^2 <= S^2           (sess_converter_capability)
+#   |qnet| <= S <-  symmetrically
+#
+# but because they were written from the fixed capacity PARAMETER, they made
+# installed power enter the NLP through variable-bound multipliers as well as
+# through the rated-capacity variable. The Benders extraction reads only the
+# dual of the capacity-fixing row, so that second channel was silently dropped:
+# P5.4-D2 measured the omitted term at 28 %-625 % of the true local derivative,
+# with the wrong sign in 3 of 8 audited cases.
+#
+# Removing them is an exact reformulation for positive capacity and routes all
+# S-dependence through symbolic rows and `shared_es_s_rated`, which makes the
+# fixing-row dual the structurally complete local derivative. The bounds below
+# are therefore the CAPACITY-INDEPENDENT ones retained at positive capacity;
+# `None` means the symbolic rows carry the bound instead.
+#
+# The zero-capacity collapse to [0, 0] is a structural gate, not an
+# S-dependent bound, and is deliberately kept -- see
+# `configure_shared_ess_operational_state`.
+_SHARED_ESS_ZERO_GATED_BOUND_VARIABLES = (
+    ('shared_es_pch', 0.0, None),      # nonnegativity only; upper bound is symbolic
+    ('shared_es_pdch', 0.0, None),
+    ('shared_es_pnet', None, None),    # bounded by the capability circle
+    ('shared_es_qnet', None, None),
 )
 
 _SHARED_ESS_OPERATIONAL_CONSTRAINTS = (
@@ -1007,8 +1031,13 @@ def configure_shared_ess_operational_state(
             else:
                 entry.activate()
 
-    # P5.4-A: keep the explicit physical box in sync with the installed rating.
-    for variable_name, lower_factor, upper_factor in _SHARED_ESS_RATED_BOUNDED_VARIABLES:
+    # P5.4-D2-P: at zero capacity the box still collapses to [0, 0] -- that is a
+    # structural gate and the variables are additionally fixed at 0 above. At
+    # POSITIVE capacity the bounds are restored to their capacity-INDEPENDENT
+    # values, so installed power no longer enters through bound multipliers.
+    # The model stays bounded there via sess_active_sum_limit, the H1 links with
+    # pch_hat/pdch_hat in [0, 1], and sess_converter_capability.
+    for variable_name, positive_lb, positive_ub in _SHARED_ESS_ZERO_GATED_BOUND_VARIABLES:
         if not hasattr(model, variable_name):
             continue
         variable = getattr(model, variable_name)
@@ -1017,8 +1046,8 @@ def configure_shared_ess_operational_state(
                 entry.setlb(0.0)
                 entry.setub(0.0)
             else:
-                entry.setlb(lower_factor * s_capacity)
-                entry.setub(upper_factor * s_capacity)
+                entry.setlb(positive_lb)
+                entry.setub(positive_ub)
 
     _configure_shared_ess_expected_schedule(
         model, shared_ess_idx, inactive
