@@ -1,7 +1,14 @@
 # P5.4 — End-to-end active-energy ESS productionization
 
-**Status: checkpoint after A, B, C, D, D2, D2-P, D3, D4, E, E2, H1 and F. G
-remains blocked, so no final P5.4 verdict is issued in this revision.**
+**Status: checkpoint after A, B, C, D, D2, D2-P, D3, D4, E, E2, H1, F and R.
+G remains blocked, so no final P5.4 verdict is issued in this revision.**
+
+> **Environment note.** Sections D2-P, D3 and D4 were originally executed in
+> `srp_env`, which is **not** the canonical paper environment and generates
+> different stochastic scenarios. Those figures are marked **NONCANONICAL** in
+> place and retained as diagnostic evidence. **The canonical results are in
+> P5.4-R**, produced under `opf_env_py311` with the verified checksum
+> `5a02b77ccbbbbbb8…`.
 
 | Section | Status | Commit |
 |---|---|---|
@@ -16,8 +23,9 @@ remains blocked, so no final P5.4 verdict is issued in this revision.**
 | **D2 — S/E sensitivity root-cause audit** | **Complete — PARTIAL** | `65b261ba` |
 | **D2-P — sensitivity-clean productionization** | **Complete — PASS** | `06e921e5` |
 | **D3 — distributed cut-consistency audit** | **Complete — FAIL** | `e1afa8e9` |
-| **D4 — branch recovery and oracle hardening** | **Complete — class C** | `1a68f409` |
-| G — reduced planning gate | **Still blocked** — D4 shows hardened cuts remain unsafe | — |
+| **D4 — branch recovery and oracle hardening** | **Complete — class C** *(noncanonical)* | `1a68f409` |
+| **R — canonical environment revalidation** | **Complete — D3 FAIL, D4 class C confirmed** | `51a3f4e4`, `5bd1f0ce`, `cbc043d4` |
+| G — reduced planning gate | **Still blocked** — canonical hardened cuts remain unsafe | — |
 | H — physical-tolerance decision | Deferred to a separate isolated A/B (H1.10) | — |
 
 Every agent in the coordination is active-power based, and all three now share
@@ -1362,6 +1370,20 @@ P5.4-D2-P PASS — structurally complete S sensitivity productionized
 
 # D3 — Distributed cut-consistency / local-branch audit
 
+> ## ⚠ NONCANONICAL — produced under `srp_env`
+>
+> **Every figure in this section was produced in the wrong conda environment.**
+> The session ran on `srp_env`, whose SRP1 scenario checksum is
+> `4d948b9b8d8d05f0…`; the canonical paper environment is
+> `opf_env_py311`, checksum `5a02b77ccbbbbbb8…`. The two generate different
+> stochastic scenarios (input profiles differ by up to `8.9e-05` relative), and
+> the base distributed recourse differs by **1.15 %**.
+>
+> These numbers are **retained as noncanonical diagnostic evidence** and must
+> **not** be used for paper-instance verdicts. The canonical replacements are in
+> **P5.4-R** below. Nothing here has been deleted.
+
+
 Commits `926bd5df`, `e1afa8e9`. Scripts: `p54d3_cut_consistency.py`,
 `p54d3_analysis.py`. Evidence: `data/SRP1/Results/P54D3/`.
 
@@ -1546,9 +1568,25 @@ sign-consistent and complete — but it is not sufficient.
 P5.4-D3 FAIL — current cuts are demonstrably unsafe under observed recourse branches
 ```
 
+*(NONCANONICAL — superseded by `P5.4-R-D3` below.)*
+
 ---
 
 # D4 — Recourse branch recovery and oracle hardening
+
+> ## ⚠ NONCANONICAL — produced under `srp_env`
+>
+> **Every figure in this section was produced in the wrong conda environment.**
+> The session ran on `srp_env`, whose SRP1 scenario checksum is
+> `4d948b9b8d8d05f0…`; the canonical paper environment is
+> `opf_env_py311`, checksum `5a02b77ccbbbbbb8…`. The two generate different
+> stochastic scenarios (input profiles differ by up to `8.9e-05` relative), and
+> the base distributed recourse differs by **1.15 %**.
+>
+> These numbers are **retained as noncanonical diagnostic evidence** and must
+> **not** be used for paper-instance verdicts. The canonical replacements are in
+> **P5.4-R** below. Nothing here has been deleted.
+
 
 Commits `5da92e6b`, `8de5dd32`, `1a68f409`. Scripts:
 `p54d4_branch_recovery.py`, `p54d4_hardened_cut.py`. Evidence:
@@ -1758,6 +1796,222 @@ shows that empirically hardening the anchor does not substitute for them.
 P5.4-D4 C — hardened recourse still produces demonstrably unsafe cuts
 ```
 
+*(NONCANONICAL — superseded by `P5.4-R-D4` below.)*
+
+---
+
+# P5.4-R — Canonical environment revalidation
+
+Commits `51a3f4e4`, `5bd1f0ce`, `cbc043d4`. Scripts: `p54r_provenance.py`,
+`p54r_d2p_regression.py`, `p54r_d3.py`, `p54r_d3_analysis.py`, `p54r_d4.py`,
+`p54r_gurobi_conic_check.py`. Evidence: `data/SRP1/Results/P54R*/`.
+
+**Why this stage exists.** The D2-P, D3 and D4 work above was executed in
+`srp_env`, chosen by name and never checked against the recorded scenario
+checksum. The canonical paper environment is
+`/opt/anaconda3/envs/opf_env_py311/bin/python`. The two environments generate
+different stochastic scenarios, so the noncanonical figures cannot support
+paper-instance verdicts. They are retained above, marked, and nothing was
+deleted.
+
+## R0 — fail-fast reproducibility gate
+
+Every R harness calls the gate before doing any work; it persists provenance and
+aborts on a checksum mismatch rather than continuing.
+
+| Field | Canonical value |
+|---|---|
+| `sys.executable` | `/opt/anaconda3/envs/opf_env_py311/bin/python` |
+| `CONDA_DEFAULT_ENV` | *(unset — env resolved from the path: `opf_env_py311`)* |
+| Python | 3.11.11 |
+| NumPy / pandas / SciPy | 2.4.2 / 3.0.0 / 1.17.0 |
+| Pyomo | 6.9.5 |
+| IPOPT | **3.14.18** @ `/usr/local/bin/ipopt` |
+| HSL linear solver | **ma97** |
+| Gurobi / `gurobipy` | 13.0.1, ACADEMIC licence 2805683, expires 2027-04-10 |
+| **SRP1 scenario checksum** | **`5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358`** ✓ |
+
+**The gate was verified to fire in both directions**, not merely to pass: exit 1
+under `srp_env` (checksum `4d948b9b…`), exit 0 under `opf_env_py311`. A rejected
+run writes `provenance_REJECTED.json`, so it can never clobber a canonical
+record.
+
+## R1 — canonical D2-P regression
+
+| Requirement | Result |
+|---|---|
+| DSO | **36 / 36** |
+| TSO | **12 / 12** |
+| ESSO | **3 / 3** |
+| Primary failures / recoveries / persistent | **0 / 0 / 0** |
+| H1 complementarity violations | **0 / 1 728** |
+| Converter-capability violations | **0 / 1 728** |
+| Iterations (total / mean / median / max) | **3 424 / 71.3 / 65.0 / 134** |
+| Runtime | **42 s** |
+| `σ_min(full)` DSO / TSO | 5.9246e-03 / 3.2871e-02, full row rank, 0 zero-gradient rows |
+| `max min(pch,pdch)/S` | 8.6060e-03 (0.861 × `sqrt(eps)`), 0 rows above `1e-2·S` |
+
+**The accepted production formulation holds unchanged on canonical scenarios.**
+No formulation change was made.
+
+## R2 — canonical D3
+
+Everything recomputed in-process: models, ADMM consensus and dual states, warm
+starts and sensitivities are all built by the production code during the run, so
+no `srp_env` artefact can leak in. Candidate set identical to the completed
+prior D3.
+
+### Determinism
+
+Three independent processes and a repeat probe all returned
+**`Q0 = 838 496 830.813414` in 17 cycles**, with cross-group spread and
+identical-candidate repeat spread both **exactly 0.0**.
+
+### Canonical coefficient and tolerance
+
+`g0` has **all 18 coefficients negative** (9/9 S, 9/9 E) — sign-consistent with
+the monotonicity requirement, as post-D2-P.
+
+`tol_cut = 7.164e+05` (8.544e-04 relative), from `tol_repeat = 0.0` and the ADMM
+stopping drift `8.544e-04 × |Q0|`.
+
+### Cut safety
+
+| Candidate | `Q_best_observed` | `L(x)` | predicted | `cut_gap` | decisive |
+|---|---|---|---|---|---|
+| **s\|node9 −10 %** | 835 829 512.29 | 838 510 320.51 | +13 490 | **−2 680 808** | **yes** |
+| **s\|node9 −5 %** | 837 188 544.81 | 838 503 575.66 | +6 745 | **−1 315 031** | **yes** |
+| s\|node5 −10 % | 838 367 054.49 | 838 510 837.83 | +14 007 | −143 783 | no |
+| e\|node9 −10 % | 847 808 228.98 | 838 510 299.73 | +13 469 | +9 297 929 | no |
+| e\|node9 −5 % | 848 097 615.38 | 838 503 565.27 | +6 734 | +9 594 050 | no |
+| e\|node9 −2 % | 848 174 092.74 | 838 499 524.60 | +2 694 | +9 674 568 | no |
+| s\|node5 −5 % | 848 216 890.48 | 838 503 834.32 | +7 004 | +9 713 056 | no |
+| e\|node9 −1 % | 848 220 611.61 | 838 498 177.71 | +1 347 | +9 722 434 | no |
+
+**3 negative, 2 decisive**, worst `−2 680 808` (−3.20e-03 relative, 3.7 ×
+`tol_cut`). Both decisive violations are `s|node9`, recovered by continuation.
+
+`max |g0ᵀΔx| = 1.4007e+04 = 0.0196 × tol_cut`, and **8 / 8 predictions sit below
+`tol_cut`** — the coefficient remains far below the resolution at which the
+recourse is determined. No candidate stayed on the base branch; 8 distinct
+branches across 8 candidates.
+
+### Side by side — canonical vs noncanonical
+
+| | **canonical `opf_env_py311`** | noncanonical `srp_env` |
+|---|---|---|
+| Checksum | `5a02b77ccbbbbbb8…` | `4d948b9b8d8d05f0…` |
+| `Q0` | **838 496 830.813414** | 848 258 809.814117 |
+| Cycles | **17** | 9 |
+| `tol_cut` | **7.164e+05** | 3.046e+05 |
+| Worst cut gap | **−2 680 808** | −11 476 300 |
+| Decisive violations | **2 / 8** | 6 / 8 |
+
+> **The conclusion survives; the magnitudes do not.** The canonical base lands
+> on a far better branch (838.50e6 vs 848.26e6), so five candidates now sit
+> ~9.3e6 *above* the base — the opposite sign to the noncanonical run — and only
+> the two `s|node9` continuation results fall decisively below the cut. That the
+> verdict is reached by a different route, with a quarter of the violation
+> count, is exactly why this re-run was necessary.
+
+```
+P5.4-R-D3 FAIL — canonical nonlinear-recourse cuts are demonstrably unsafe
+```
+
+## R3 — canonical D4
+
+Triggered: R2 produced two decisive violations **and** a branch 2.67e6 below the
+base. All branch states regenerated canonically; no `srp_env` archived state
+reused.
+
+### Branch recovery
+
+| Quantity | Canonical | Noncanonical |
+|---|---|---|
+| `Q_base_cold` | 838 496 830.81 (17 cycles) | 848 258 809.81 (9 cycles) |
+| Source `s\|node9 −10 %` cold | 837 349 408.57 (18 cycles) | 836 959 457.84 (19 cycles) |
+| **`Q_base_best_observed`** (policy A) | **836 586 463.43** (2 cycles) | 835 466 476.46 (3 cycles) |
+| **Improvement** | **1 910 367 (0.228 %)** | 12 792 333 (1.51 %) |
+| Policy A vs B spread | 4.075e+04 | ~1.3e+05 |
+
+Policy A and B again agree closely, so recovery is carried by the **primal
+branch**, not multiplier transfer. Transferred-point residuals remained at
+machine precision.
+
+### Fingerprint — reproduces canonically
+
+Gross cost delta **−1 910 246**; salvage delta **+121.35**.
+
+| Block | cold | recovered | delta |
+|---|---|---|---|
+| TSO 2035 Spring / generation_cost | 3.4242e+07 | 3.3080e+07 | **−1.1620e+06** |
+| TSO 2030 Spring / generation_cost | 4.4097e+07 | 4.3047e+07 | **−1.0498e+06** |
+| TSO 2025 Spring / generation_cost | 6.4599e+07 | 6.3843e+07 | **−7.5616e+05** |
+| TSO 2025 Summer / generation_cost | 8.7543e+07 | 8.8381e+07 | **+8.3804e+05** |
+
+**Same agent, same days, same sign pattern as the noncanonical run**, at roughly
+one-seventh the magnitude. The blocking multiplicity is confirmed to be **TSO
+dispatch on Spring representative days**, not an ESS phenomenon.
+
+### Hardened cut test
+
+| Candidate | `Q_hardened` | `L_best` | `cut_gap_best` | decisive |
+|---|---|---|---|---|
+| s\|node5 −5 % | 835 464 638.89 | 836 592 889.07 | **−1 128 250** | yes |
+| e\|node9 −10 % | 835 516 641.54 | 836 598 390.07 | −1 081 749 | yes |
+| e\|node9 −1 % | 835 531 688.24 | 836 587 656.10 | −1 055 968 | yes |
+| e\|node9 −5 % | 835 563 860.79 | 836 592 426.75 | −1 028 566 | yes |
+| e\|node9 −2 % | 835 574 405.79 | 836 588 848.76 | −1 014 443 | yes |
+| s\|node5 −10 % | 835 588 266.84 | 836 599 314.71 | −1 011 048 | yes |
+| s\|node9 −10 % | 835 623 662.84 | 836 599 403.69 | −975 741 | yes |
+| s\|node9 −5 % | 835 637 223.65 | 836 592 933.56 | −955 710 | yes |
+
+**8 / 8 decisive** against `tol_cut = 7.164e+05`. Every hardened candidate again
+lands **below** the hardened base (836 586 463), so one round of hardening does
+not terminate the descent — the same structural result as the noncanonical run,
+now on canonical scenarios. `max |g_bestᵀΔx| = 1.2940e+04`, still far below
+`tol_cut`.
+
+```
+P5.4-R-D4 C — canonical hardened cuts remain demonstrably unsafe
+```
+
+## R4 — corrected solver inventory
+
+`P5_5_CONVEX_PLANNING_ARCHITECTURE_REPORT.md` section A11 and the
+architecture-summary blocker list have been corrected. The original
+"no SOCP-capable solver is available" was measured in `srp_env` and is withdrawn.
+
+Verified in the canonical environment on `min t` s.t. `x+y ≥ 3`, `x²+y² ≤ t²`:
+
+| Check | Result |
+|---|---|
+| Status | OPTIMAL |
+| Objective vs analytic `3/√2` | 2.121320713794 vs 2.121320343560 (rel. 1.745e-07) |
+| `QCPDual = 1` accepted | yes |
+| Linear dual `Pi` | +0.7071058616 |
+| **Conic dual `QCPi`** | **−0.2357020492** |
+| `ObjBound` / optimality gap | 2.1213202924 / 4.214e-07 |
+| gurobipy · licence | **13.0.1** · ACADEMIC 2805683, expires **2027-04-10** |
+
+**Gurobi becomes the preferred prototype solver**, subject to successful dual
+mapping in the actual convex SMOPF prototype. One consequence recorded in A11:
+the barrier terminates at its tolerance, so a valid planning lower bound must be
+read from **`ObjBound`**, not `ObjVal`.
+
+## What P5.4-R changes, and what it does not
+
+| | |
+|---|---|
+| **Unchanged** | Both verdicts (D3 unsafe, D4 class C), the D4.6 TSO/Spring attribution, the primal-branch mechanism, and the observation that the cut coefficient is below the method's resolution |
+| **Changed** | Every magnitude. `Q0`, `tol_cut`, all cut gaps, the branch improvement (1.91e6 not 1.28e7), and the D3 violation count (2/8 not 6/8) |
+| **New** | The environment itself selects the branch — a 1e-05 relative change in input data moved `Q0` by 1.15 %. This is direct evidence for the A12 purity requirement, at paper scale |
+| **Withdrawn** | The "no conic solver" blocker |
+
+```
+P5.4-R COMPLETE — ready for planner review before resuming P5.5-B
+```
+
 ---
 
 # H — Status after H1
@@ -1849,4 +2103,18 @@ P5.4-D3 FAIL — current cuts are demonstrably unsafe under observed recourse br
 
 ```
 P5.4-D4 C — hardened recourse still produces demonstrably unsafe cuts
+```
+
+*(the two above are NONCANONICAL; the canonical verdicts follow)*
+
+```
+P5.4-R-D3 FAIL — canonical nonlinear-recourse cuts are demonstrably unsafe
+```
+
+```
+P5.4-R-D4 C — canonical hardened cuts remain demonstrably unsafe
+```
+
+```
+P5.4-R COMPLETE — ready for planner review before resuming P5.5-B
 ```

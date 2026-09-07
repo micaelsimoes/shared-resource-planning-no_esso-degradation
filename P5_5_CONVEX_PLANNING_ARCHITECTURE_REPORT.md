@@ -139,22 +139,33 @@ is globally solvable today.
 `R(x) ≤ Q*_AC(x) ≤ Q^feas_AC(x)`; master LB from the convex cuts, UB from the
 best validated nonlinear incumbent. Full specification in A9.
 
-### 9. Solver recommendation
+### 9. Solver recommendation  ·  **corrected**
 
-**Blocker: no SOCP-capable solver is currently available.** Available: IPOPT
-(local NLP), CBC (MILP/LP), CLP (LP). No Mosek/Gurobi/CPLEX/Xpress/SCIP/HiGHS,
-and no `cvxpy`/`ecos`/`scs`/`clarabel`/`osqp`. Pyomo 6.9.2 provides conic
-*modelling* (`pyomo.core.kernel.conic`) but nothing to consume it. See A11.
+**Gurobi is available and is the preferred prototype solver.** `gurobipy`
+13.0.1 is installed in the canonical environment `opf_env_py311` with a full
+**ACADEMIC** licence (id 2805683) valid to **2027-04-10**, and all three Pyomo
+Gurobi interfaces report available. Verified on a small SOCP: optimal status,
+`QCPDual=1` accepted, both the linear dual and the quadratic/conic dual
+returned, and an `ObjBound` dual bound. IPOPT remains a useful cross-check.
+See A11.
+
+*(The original text here read "no SOCP-capable solver is currently available".
+That was measured in `srp_env` and is withdrawn — see the correction in A11.)*
 
 ### 10. Blockers before implementation
 
-1. **No conic solver** for a certified global LB with reliable duals.
-2. **OLTC tap–voltage bilinearity** needs an explicit envelope design and
+1. **OLTC tap–voltage bilinearity** needs an explicit envelope design and
    numerical validation of relaxation tightness (DSO only).
-3. **ESSO degradation** relaxation changes what the model represents and needs
+2. **ESSO degradation** relaxation changes what the model represents and needs
    planner sign-off on bound direction.
-4. **Non-pure operational oracle** (A12) — shared network data is mutated in
-   place across calls.
+3. **Non-pure operational oracle** (A12) — shared network data is mutated in
+   place across calls. P5.4-R has since shown this matters at paper scale: the
+   environment itself changed the selected branch.
+4. **Dual mapping through Pyomo→Gurobi is unexercised** on this model — the cut
+   coefficient must still be recovered from the capacity-fixing rows under a
+   Gurobi interface.
+
+*(The former blocker #1, "no conic solver", is withdrawn.)*
 
 ---
 
@@ -765,42 +776,76 @@ before the centralized relaxation is validated against the nonlinear model.
 
 ---
 
-# A11 — Solver inventory
+# A11 — Solver inventory  ·  **CORRECTED (P5.4-R4)**
 
-Measured on this machine; nothing installed or changed.
+> ## ⚠ Correction
+>
+> The original A11 concluded **"no SOCP-capable solver is currently available"**
+> and listed that as blocker #1. **That was measured in `srp_env` and is wrong
+> about the canonical environment.** `gurobipy` is installed in
+> `opf_env_py311` — the environment the project actually runs on — with a full
+> academic licence. The original text is superseded; the blocker is withdrawn.
+>
+> Root cause of the error: the inventory was taken in the wrong conda
+> environment, and `pe.SolverFactory('gurobi').available()` returned `True` on
+> the Pyomo plugin alone, which was read as "executable not found" without
+> searching the filesystem.
 
-| Solver | Available | License | Pyomo interface | Duals | Conic (SOCP) |
+Measured in the **canonical environment** `opf_env_py311`; nothing installed or
+changed. Verification script: `p54r_gurobi_conic_check.py`; evidence:
+`data/SRP1/Results/P54R_GUROBI/p54r_gurobi_check.json`.
+
+| Solver | Available | Licence | Pyomo interface | Duals | Conic (SOCP) |
 |---|---|---|---|---|---|
-| **IPOPT** 3.14.18 (`/usr/local/bin/ipopt`) | **yes** | EPL, open | yes (ASL) | **yes** (`dual`, `ipopt_zL/zU_out`) | **no** — general NLP, local method |
-| **CBC** (`/opt/homebrew/opt/cbc/bin/cbc`) | **yes** | EPL, open | yes | LP duals only | **no** |
-| **CLP** (`~/dist/bin/clp`) | **yes** | EPL, open | yes | yes (LP) | **no** |
-| Gurobi | executable **not** found (Pyomo plugin present) | commercial | plugin only | — | would support SOCP |
-| Mosek | **no** | commercial | — | — | would support SOCP/SDP |
-| CPLEX / Xpress / SCIP / HiGHS / GLPK | **no** | — | — | — | — |
-| Bonmin / Couenne / Knitro / BARON | **no** | — | — | — | — |
-| CSDP / SDPA | **no** | — | — | — | reference only |
+| **Gurobi 13.0.1** (`gurobipy`) | **yes** | **ACADEMIC**, id 2805683, licence version 13, expires **2027-04-10** | **yes** — `gurobi`, `gurobi_direct`, `gurobi_persistent` all report available | **yes** — linear `Pi` and quadratic `QCPi` with `QCPDual=1` | **yes** |
+| Gurobi 12.0.3 (CLI) | yes — `/Library/gurobi1203/macos_universal2/`, symlinked to `/usr/local/bin/gurobi_cl` | same licence | via executable | — | yes |
+| **IPOPT** 3.14.18 (`/usr/local/bin/ipopt`) | yes | EPL, open | yes (ASL) | yes (`dual`, `ipopt_zL/zU_out`) | no — general NLP, local method |
+| **CBC** (`/opt/homebrew/opt/cbc/bin/cbc`) | yes | EPL, open | yes | LP duals only | no |
+| **CLP** (`~/dist/bin/clp`) | yes | EPL, open | yes | yes (LP) | no |
+| Mosek / CPLEX / Xpress / SCIP / HiGHS / GLPK | no | — | — | — | — |
+| `cvxpy`, `ecos`, `scs`, `clarabel`, `osqp` | no | — | — | — | — |
+| CSDP / SDPA | no | — | — | — | reference only |
 
-Python conic stack: `cvxpy`, `mosek`, `ecos`, `scs`, `clarabel`, `osqp`,
-`gurobipy`, `cplex`, `xpress`, `highspy`, `pyscipopt` — **all absent**.
-Pyomo 6.9.2 exposes `pyomo.core.kernel.conic` (`quadratic`,
-`rotated_quadratic`), i.e. conic **modelling** with no solver to consume it.
+Pyomo 6.9.5 in the canonical environment also exposes
+`pyomo.core.kernel.conic` (`quadratic`, `rotated_quadratic`) — and now has a
+solver that can consume it.
+
+## Verified conic behaviour, not assumed
+
+`min t` subject to `x + y ≥ 3`, `x² + y² ≤ t²`, `t ≥ 0`; analytic optimum
+`3/√2 = 2.121320343560`.
+
+| Check | Result |
+|---|---|
+| Status | **OPTIMAL** |
+| Objective | `2.121320713794` |
+| Relative error vs analytic | `1.745e-07` |
+| `QCPDual = 1` accepted | **yes** |
+| Linear-constraint dual `Pi` | `+0.7071058616` |
+| **Quadratic/conic dual `QCPi`** | **`−0.2357020492`** |
+| `ObjBound` (dual bound) | `2.1213202924` |
+| Reported optimality gap | `4.214e-07` |
+| Barrier iterations | 4 |
+
+> **Practical consequence for A9.** The barrier terminates at its convergence
+> tolerance, so `ObjVal` is only *near* the optimum (here `1.7e-07` relative).
+> A **valid** planning lower bound must therefore be taken from **`ObjBound`,
+> the dual bound**, not from `ObjVal` — otherwise the "lower" bound can sit
+> fractionally above the true convex optimum. This is a small point that
+> matters, because the entire architecture rests on `R(x)` being a genuine
+> under-estimator.
 
 ## Recommendation
 
-**No currently available solver provides a certified global conic solution.**
-Two options, for planner decision:
+**Gurobi becomes the preferred prototype solver**, subject to successful dual
+mapping in the actual convex SMOPF prototype — the cut coefficient must be
+recovered from the capacity-fixing rows through Pyomo's `dual` suffix under a
+Gurobi interface, which has not yet been exercised on this model. IPOPT remains
+available as a cross-check: on a genuinely convex program any KKT point is
+global, so agreement between the two is a useful validation signal.
 
-1. **Interim: IPOPT on the convex model.** For a genuinely convex program with a
-   constraint qualification, any KKT point is a global optimum, so IPOPT would
-   in practice return the global value and does provide the duals the cut needs.
-   This is usable for prototyping and is **not** "selecting IPOPT by default" —
-   it is selecting it knowing the convexity does the work, not the solver.
-   Caveats: no optimality certificate, and interior-point methods can struggle
-   at the SOC apex (`Wii = Wjj = 0`), which must be guarded by the existing
-   strictly positive voltage bounds.
-2. **Preferred: install a conic solver.** Mosek (academic licence) or
-   Gurobi ≥ 9 would give certified SOCP with duals. **Requires planner approval
-   — no installation was performed.**
+**Nothing was installed.** The `srp_env` environment still lacks `gurobipy`;
+that is now a non-issue, since the canonical environment is `opf_env_py311`.
 
 ---
 
@@ -843,27 +888,34 @@ irreproducible.
 
 ---
 
-# Verdict
+# Verdict  ·  **updated after P5.4-R4**
 
 The architecture is mathematically coherent and every relaxation has a proven
-bound direction. Three substantive items are unresolved, and one of them is a
-hard external dependency:
+bound direction. **The solver blocker is withdrawn** — Gurobi with a full
+academic licence is available in the canonical environment and was verified to
+return conic duals (A11). Two substantive items remain unresolved, both
+mathematical rather than external:
 
-1. **No SOCP solver is available.** The A9 oracle requires a globally solved
-   convex program with reliable duals. IPOPT can stand in on a convex model, but
-   without a certificate — and the choice needs planner approval either way.
-2. **The OLTC tap–voltage bilinearity is real and unavoidable.** The DSO tap is
+1. **The OLTC tap–voltage bilinearity is real and unavoidable.** The DSO tap is
    genuinely controllable, so it cannot be fixed to nominal (that would *shrink*
    the feasible set and destroy the lower-bound property). The proposed
    McCormick/secant envelopes are valid but their tightness on a radial feeder
    with a single regulating transformer is unverified.
-3. **Discarding the ESSO degradation chain is bound-safe but changes what the
+2. **Discarding the ESSO degradation chain is bound-safe but changes what the
    LB model represents** — it ignores an economic effect the UB still charges
    for, which will inflate the optimality gap and needs an explicit modelling
    decision.
 
-None of these is a dead end, and the master is already an LP, but "fully
-specified" would overstate what has been established.
+Two implementation prerequisites were added by P5.4-R rather than removed: the
+cut coefficient has never been recovered through a Pyomo→Gurobi dual mapping on
+this model, and the lower bound must be read from `ObjBound` rather than
+`ObjVal` so that barrier tolerance cannot push the "lower" bound above the true
+convex optimum.
+
+The verdict is unchanged in kind — the remaining items are the mathematical
+ones, and "fully specified" would still overstate what has been established —
+but the practical outlook is materially better than when this section was first
+written.
 
 ```
 P5.5-A PARTIAL — architecture is promising but unresolved convexity/bound-direction issues remain
