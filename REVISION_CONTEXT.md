@@ -30,7 +30,8 @@ The active-energy ESS production stack is implemented in production through:
 
 Diagnostic evidence retained in this lineage includes:
 
-- `b0e53bc4` — P5.4-E2 complementarity-significance instrumentation/reporting; no formulation change.
+- `b0e53bc4` — P5.4-E2 complementarity-significance instrumentation/reporting; no formulation change;
+- `65b261ba` — P5.4-D2 S/E sensitivity root-cause audit; diagnostic only, no production or Benders change.
 
 The earlier checkpoint `f77d829359ffd873367f556882546bc2dcc8ec99` remains the historical pre-P5.4 baseline used for controlled comparisons, not the current active-energy production state.
 
@@ -84,9 +85,11 @@ Do not retune these settings during P5.4 unless a later planner instruction expl
 
 ---
 
-# CURRENT P5.4 CHECKPOINT — H1/F accepted; D2 is the active gate before planning
+# CURRENT P5.4 CHECKPOINT — D2 complete; D2-P and D3 are the active gates before planning
 
-P5.4 sections A, B, C, D, E, E2, H1 and F are complete. The active-energy ESS formulation, normalized local complementarity, and net-P/Q ADMM coordination are accepted as the current production direction. The reduced outer planning loop P5.4-G has **not** been run on this final formulation because the shared-capacity sensitivity path used by Benders remains unresolved.
+P5.4 sections A, B, C, D, D2, E, E2, H1 and F are complete. H1 and F remain accepted. D2 is accepted as a **PARTIAL** result: it identified the S-sensitivity bookkeeping defect and the independent local-solution multiplicity problem, but a production correction and cut-level validation are still required before the reduced outer planning loop may run.
+
+P5.4-G has **not** been run on the final formulation.
 
 ## Accepted active-energy production state
 
@@ -96,10 +99,17 @@ Current production lineage:
 - `1e86d40e` — ordinary network ESS parity;
 - `58f4911b` — ESSO active-energy conversion;
 - `c3526ec8` — lifecycle/sensitivity audit and pre-H1 validation;
-- `93974d83` — dimensionless complementarity with consistent network/ESSO relative semantics;
-- `2917b9c9` — live fixed-candidate ADMM diagnostic on that baseline.
+- `93974d83` — dimensionless complementarity with consistent network/ESSO relative semantics.
 
-The final positive-bootstrap validation after H1 gives:
+Accepted live coordination evidence:
+
+- `2917b9c9` — fixed positive-bootstrap distributed ADMM diagnostic on the H1 baseline; net-P/Q coordination only.
+
+Latest sensitivity evidence:
+
+- `65b261ba` — P5.4-D2 S/E sensitivity root-cause audit; diagnostic only, no production formulation or Benders equation changed.
+
+The final positive-bootstrap validation after H1 remains authoritative:
 
 - DSO: `36/36` success;
 - TSO: `12/12` success;
@@ -108,19 +118,18 @@ The final positive-bootstrap validation after H1 gives:
 - recoveries: `0`;
 - persistent failures: `0`;
 - total network IPOPT iterations: `3499`;
-- mean/median/max network iterations: about `72.9 / 64 / 185`;
-- representative network equality Jacobians remain full row rank;
-- zero zero-gradient equality rows from the ESS formulation;
+- representative network equality Jacobians full row rank;
+- zero zero-gradient ESS equality rows;
 - shared-ESS converter-capability violations: `0/1728`;
 - normalized network complementarity violations: `0/1728`;
 - normalized ESSO per-cohort complementarity violations: `0/1728`;
 - normalized ESSO aggregate complementarity violations: `0/864`.
 
-The H1 numerical cost is accepted: iterations rose from `1556` to `3499` and bootstrap runtime from roughly `32 s` to `44 s`, but no new failure family or rank defect appeared. This cost corresponds to IPOPT actually enforcing a previously under-resolved physical condition.
+The fixed positive-bootstrap candidate converged through the real distributed operational planner in **9 ADMM cycles** with all local solves successful and no recovery diagnostics.
 
-## Complementarity decision — accepted numerical formulation
+## Complementarity and coordination decisions remain locked
 
-The current accepted local complementarity semantics are relative and dimensionless:
+The accepted local complementarity formulation remains:
 
 `pch = S_rated * pch_hat`
 
@@ -132,67 +141,127 @@ with:
 
 `ESS_COMPLEMENTARITY_TOLERANCE = 1e-4`.
 
-This was shown to be an exact reformulation of the previous positive-capacity feasible set, while amplifying the numerical scale of the hard complementarity row from O(`S^2`) to O(1). The link equalities retain a unit coefficient on the physical variables and do not reintroduce the old zero-gradient equality defect.
+Do not reduce epsilon during D2-P or D3. The later `1e-5` / `1e-6` A/B remains a separate physical-tolerance question.
 
-Apply these semantics consistently to:
+Coordination remains **net electrical P/Q only**. Do not add `pch`, `pdch`, circulation, SOC, cell-energy rate or throughput as ADMM consensus variables. The accepted F result showed that, with local complementarity enforced, DSO-vs-TSO cell-energy-rate disagreement tracks the remaining net-P disagreement at solver-tolerance scale.
 
-- shared network ESS;
-- ordinary network ESS;
-- ESSO per-cohort active charge/discharge;
-- ESSO aggregate active charge/discharge.
+## P5.4-D2 accepted findings
 
-The pre-H1 ESSO absolute complementarity convention is superseded.
+D2 found **two independent root causes**.
 
-Do **not** reduce `ESS_COMPLEMENTARITY_TOLERANCE` as part of D2. Whether `1e-4` is physically tighter than needed or still too loose is a later isolated physical-tolerance A/B. Current observed post-H1 circulation remains below the theoretical `sqrt(eps)=1%` allowance:
+### Root cause 1 — the current shared-S Benders coefficient is structurally incomplete
 
-- network max `min(pch,pdch)/S ≈ 0.00834`;
-- ESSO aggregate max `≈ 0.00793` in the bootstrap gate;
-- live ADMM network max `≈ 0.00841`;
-- live ADMM ESSO aggregate max `≈ 0.00763`.
+The local NLP contains both symbolic S-dependence and four positive-capacity numerical variable bounds that are rewritten directly from installed S:
 
-## Coordination decision — net P/Q is sufficient
+- `0 <= shared_es_pch <= S`;
+- `0 <= shared_es_pdch <= S`;
+- `-S <= shared_es_pnet <= S`;
+- `-S <= shared_es_qnet <= S`.
 
-The fixed positive-bootstrap candidate converged through the real distributed operational planner in **9 ADMM cycles** with all local solves successful and no recovery diagnostics. All current rho adaptation, tolerances, proximal regularization, objective scaling, IPOPT settings, MA97/exact-Hessian policy, seed and scenarios were unchanged.
+Production Benders extracts only the multiplier of the rated-S fixing row. The complete envelope derivative also contains the multipliers of these parameter-dependent bounds. D2 calibrated the IPOPT/Pyomo sign convention and established:
 
-At final consensus, DSO-vs-TSO cell-energy-rate disagreement tracked the remaining net-P disagreement at the same solver-tolerance scale. This confirms the coordination decision:
+`dQ/dS = fixing-row dual + bound contribution + direct-expression contribution`.
 
-- coordinate shared-ESS `pnet`;
-- coordinate shared-ESS `qnet`;
-- retain existing interface-voltage coordination;
-- do **not** add `pch`, `pdch`, circulation, SOC, cell-energy rate or throughput as ADMM consensus variables.
+For the audited formulation there is no additional direct fixed-parameter expression contribution outside the fixing row, but the bound contribution is substantial. Across the eight audited cases, the fixing-row-only quantity ranges from about `28%` to `625%` of the corrected envelope derivative and is positive in three cases even though increasing S can only enlarge the physical feasible set. Therefore the current fixing-row dual is **not structurally complete for S**.
 
-`pch/pdch` remain local physical variables and may be recorded as sanity diagnostics. With local complementarity enforced, net active-power agreement determines charge/discharge direction to numerical accuracy.
+For E, the path is already structurally sensitivity-clean:
 
-## Active blocker — P5.4-D2 shared-S/E sensitivity root-cause audit
+- SOC bounds are not rewritten numerically from E;
+- E enters through symbolic rows against `shared_es_e_rated`;
+- the measured E bound contribution is exactly zero in all audited points.
 
-P5.4-G is blocked by the local capacity-sensitivity path used for Benders cuts. The previous D audit found that the dual of the shared-S rated-capacity fixing row did not reproduce central finite differences and could even disagree in sign. This issue predates P5.4, is numerically improved by the active-energy formulation, but remains unresolved.
+No E-side production reformulation is currently required.
 
-D2 must now audit **both power capacity S and energy capacity E**, not only S.
+### Root cause 2 — local-solution multiplicity prevents finite-difference certification
 
-The leading concrete hypothesis to test is derivative bookkeeping around capacity-dependent mutable variable bounds and other direct parameter dependencies. The local NLP contains symbolic rated-capacity variables and fixing rows, but lifecycle code also rewrites some physical operational bounds numerically when S/E changes. If those bounds are active, the value-function derivative may contain bound-multiplier contributions that are not represented by the fixing-row dual alone.
+Even after deriving the complete local envelope derivative, finite differences around the bootstrap point do not converge to a unique derivative because nearby capacity values reproducibly select different local NLP branches.
 
-D2 must:
+D2 established that:
 
-1. trace the exact S/E sensitivity contract from local fixing rows and IPOPT duals through weighting/sign conversion and Benders cut construction;
-2. inventory every dependence of the local NLP on S and E, distinguishing symbolic rated-variable dependence, direct mutable-parameter dependence, numerically rewritten variable bounds, and structural/gating dependence;
-3. extract IPOPT `zL/zU` for every capacity-dependent operational bound and determine whether those bounds are active;
-4. derive the complete envelope-theorem derivative, including fixing-row, direct-expression and variable-bound contributions with the actual IPOPT sign convention;
-5. rerun controlled central finite differences for both S and E on the current H1 production HEAD;
-6. test whether mathematically redundant capacity-dependent numerical bounds can be removed in an exact sensitivity-clean local reformulation so that capacity dependence flows symbolically through the rated-capacity variables;
-7. perform the analogous SOC/E-bound audit without changing SOC semantics;
-8. validate any candidate sensitivity treatment across multiple DSOs, a TSO case, multiple years/days, and cases where S or E is operationally binding.
+- repeated solves at the identical candidate are deterministic and bit-identical;
+- a continuation sweep over approximately `+/-5%` in S visits several reproducible local objective branches;
+- branch-to-branch objective gaps are around `20x` larger than the first-order capacity effect over the same range;
+- the fixing-row dual varies smoothly **within** a branch and behaves as a branch label across branches;
+- warm/continuation initialization does not reliably force the perturbed problem onto the same branch as the cold base point.
 
-Do not modify Benders/local-cut equations during D2. First identify and validate the correct local derivative path.
+Therefore finite differences cannot presently prove that a local NLP dual is a subgradient of the globally relevant recourse value. After the S bookkeeping defect is removed, the fixing-row dual should be interpreted as the **complete derivative of the local branch returned by the solver**, not automatically as a globally valid Benders subgradient.
+
+## Planner decision — productionize D2.6 variant B
+
+The D2.6 sensitivity-clean S formulation is approved for production.
+
+The four S-dependent numerical bounds above are mathematically redundant:
+
+- `pch <= S` and `pdch <= S` follow from nonnegativity plus `pch + pdch <= S`, and independently from the H1 links with `pch_hat,pdch_hat <= 1`;
+- `|pnet| <= S` and `|qnet| <= S` follow from `pnet^2 + qnet^2 <= S^2`.
+
+Productionize the exact reformulation by removing those positive-capacity mutable bounds while retaining:
+
+- `pch >= 0`, `pdch >= 0`;
+- H1 hat bounds `[0,1]`;
+- `pch = S*pch_hat`, `pdch = S*pdch_hat`;
+- `pch + pdch <= S`;
+- `pnet = pch - pdch`;
+- `pnet^2 + qnet^2 <= S^2`;
+- SOC and all energy rows;
+- dimensionless complementarity;
+- explicit zero-capacity fixing/gating.
+
+Do **not** instead add `zL/zU` terms to Benders unless a later planner decision reverses this choice. The exact local reformulation is preferred because it makes the existing fixing-row dual structurally complete by construction.
+
+## Current active sequence — D2-P then D3
+
+### P5.4-D2-P — sensitivity-clean productionization
+
+Productionize the exact S-bound cleanup and validate:
+
+1. feasible-set redundancy analytically and with focused tests;
+2. zero/positive/zero lifecycle and reused-model identity;
+3. no remaining positive-capacity numerical bound dependence on S;
+4. zero S-bound contribution to the envelope derivative;
+5. E path still structurally clean;
+6. positive-bootstrap initialization remains `36/36` DSO, `12/12` TSO, `3/3` ESSO with zero persistent failures;
+7. the fixed-candidate distributed ADMM remains robust and preserves H1 complementarity/capability behavior.
+
+Do not run the outer planning loop during D2-P.
+
+### P5.4-D3 — distributed cut-consistency / local-branch audit
+
+After D2-P passes, test the **actual fully aggregated coefficient that production Benders would use**, not only isolated local duals.
+
+At the positive-bootstrap candidate:
+
+- run distributed recourse to convergence;
+- extract the production S/E sensitivity vector after objective scaling, year/day weighting, TSO+DSO aggregation, available-to-investment-capacity mapping and salvage correction;
+- construct the candidate affine cut without adding it to the master.
+
+Evaluate controlled nearby S/E candidate perturbations through the real distributed operational path. Use production initialization and continuation/warm alternatives where safe, retain the best observed converged recourse as a **falsification** benchmark, and test:
+
+`cut_gap = Q_best_observed - L(x)`.
+
+For the minimization lower-cut convention, a materially negative `cut_gap` proves the candidate cut unsafe. A nonnegative gap does **not** prove global validity because the recourse solves remain local.
+
+D3 must distinguish:
+
+- same-branch local linearity;
+- branch-switching errors;
+- demonstrably unsafe cuts.
+
+Classify the planning sensitivity approach as exactly one of:
+
+- **PASS** — suitable for the reduced planning gate;
+- **HEURISTIC** — locally useful but global support is not established;
+- **FAIL** — at least one cut is demonstrably above a lower observed recourse branch.
+
+If HEURISTIC or FAIL, do not modify Benders automatically. Propose the smallest planning-level remedy for planner review, such as local/trust-region cuts, branch-continuation policy, multi-start recourse selection, capacity-movement regularization, or a decomposition approach appropriate for nonconvex recourse.
 
 ## P5.4-G remains blocked
 
-Do not run `run_planning_problem()` until D2 establishes one of the following with evidence:
+Do not run `run_planning_problem()` during D2-P or D3.
 
-- the existing S/E sensitivity extraction is correct; or
-- a sensitivity-clean local formulation makes the fixing-row dual complete; or
-- the exact additional derivative terms required by Benders are identified and planner-approved.
+G may be authorized only after planner review of the D2-P/D3 evidence. The criterion is no longer merely “the local S dual is structurally complete”; D3 must also determine whether the **distributed cut actually used by the planner** is safe/useful in the observed nonconvex recourse landscape.
 
-If the remaining mismatch is instead caused by local-optimum switching or nonsmooth active-set transitions, report that explicitly rather than forcing agreement by solver tuning.
+Never describe the local-cut master estimate as a rigorous global lower bound or the procedure as globally convergent Benders decomposition unless a later proof/evidence justifies that statement.
 
 ## Deferred items
 
@@ -995,26 +1064,27 @@ Never describe the local-cut master estimate as a rigorous global lower bound or
 
 # Immediate instruction
 
-The immediate task is **P5.4-D2 — shared-S/E capacity-sensitivity root-cause audit**. H1 and F are complete and accepted; do not rerun them except for narrowly targeted controls required by D2.
+The immediate task is **P5.4-D2-P followed by P5.4-D3**. D2 is complete and accepted as PARTIAL; H1 and F remain accepted.
 
 Current controlled sequence:
 
-1. **P5.4-D2 — S/E sensitivity root-cause audit:** trace all parameter dependence, bound multipliers and the exact envelope derivative; validate against controlled finite differences on the current H1 production HEAD.
-2. **Sensitivity-clean local formulation A/B, only if exact:** if capacity-dependent numerical bounds are redundant and can be removed without changing the feasible set, test that reformulation and repeat S/E derivative validation.
-3. **Planner review of D2:** decide whether the existing fixing-row dual is sufficient, whether additional bound/direct terms are required, or whether local nonsmoothness prevents trustworthy cuts at the tested point.
-4. **P5.4-G — reduced planning gate:** only after a trustworthy S/E sensitivity path is established or a planner-approved alternative is identified.
-5. **Later physical complementarity-tolerance A/B:** keep H1's normalized formulation fixed and test `eps=1e-5` / `1e-6` only as a separate physical modelling question, not as a numerical fix.
+1. **P5.4-D2-P — productionize the exact sensitivity-clean S formulation:** remove only the four redundant positive-capacity S-dependent numerical bounds on `shared_es_pch`, `shared_es_pdch`, `shared_es_pnet` and `shared_es_qnet`; preserve symbolic S constraints, H1 links, complementarity, SOC and zero-capacity gating.
+2. **D2-P regression:** prove redundancy, verify lifecycle/reused-model behavior, confirm zero remaining S-bound derivative contribution, rerun the positive-bootstrap gate, and rerun the accepted fixed-candidate distributed ADMM.
+3. **P5.4-D3 — distributed cut-consistency/local-branch audit:** construct the actual fully aggregated production cut at the positive-bootstrap candidate and falsify/test it against nearby distributed recourse evaluations and controlled alternative initializations.
+4. **Planner review of D3:** classify current cuts as PASS, HEURISTIC or FAIL. Decide whether P5.4-G may run or whether a planning-level local/nonconvex remedy is required first.
+5. **P5.4-G — reduced planning gate:** only after explicit planner authorization following D3.
+6. **Later physical complementarity-tolerance A/B:** keep H1 fixed and test `eps=1e-5` / `1e-6` only as a separate physical modelling question.
 
 Do not:
 
 - add `pch/pdch` ADMM consensus;
-- change `ESS_COMPLEMENTARITY_TOLERANCE` during D2;
+- change `ESS_COMPLEMENTARITY_TOLERANCE` during D2-P/D3;
 - change H1 dimensionless complementarity semantics;
-- introduce arbitrary row multipliers or `kappa` scaling;
+- add `zL/zU` corrections to Benders instead of the approved exact S-bound cleanup;
 - retune IPOPT/ADMM/proximal settings;
-- modify Benders/local-cut logic before the derivative root cause is established;
+- modify Benders/local-cut equations during D2-P/D3;
 - modify RES capability/copula behavior;
 - include B1 `f_ref = 0` in the current baseline;
-- run the outer planning loop before D2 planner review.
+- run the outer planning loop before D3 planner review.
 
-`LOCAL_NLP_STABILITY_PLAN.md` contains the authoritative D2 implementation and validation protocol.
+`LOCAL_NLP_STABILITY_PLAN.md` contains the authoritative D2-P/D3 implementation and validation protocol.
