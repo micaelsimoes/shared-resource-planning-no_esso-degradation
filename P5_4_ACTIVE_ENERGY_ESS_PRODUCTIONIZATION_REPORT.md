@@ -1,7 +1,7 @@
 # P5.4 — End-to-end active-energy ESS productionization
 
-**Status: checkpoint after A, B, C, D, D2, E, E2, H1 and F. G remains blocked,
-so no final P5.4 verdict is issued in this revision.**
+**Status: checkpoint after A, B, C, D, D2, D2-P, D3, E, E2, H1 and F. G remains
+blocked, so no final P5.4 verdict is issued in this revision.**
 
 | Section | Status | Commit |
 |---|---|---|
@@ -14,7 +14,9 @@ so no final P5.4 verdict is issued in this revision.**
 | **H1 — dimensionless complementarity** | **Complete — gate PASSED** | `93974d83` |
 | **F — live distributed ADMM (net P/Q only)** | **Complete — converged** | `2917b9c9` |
 | **D2 — S/E sensitivity root-cause audit** | **Complete — PARTIAL** | `65b261ba` |
-| G — reduced planning gate | **Still blocked** — awaiting planner decision on the D2 production correction | — |
+| **D2-P — sensitivity-clean productionization** | **Complete — PASS** | `06e921e5` |
+| **D3 — distributed cut-consistency audit** | **Complete — FAIL** | `e1afa8e9` |
+| G — reduced planning gate | **Still blocked** — D3 found the current cuts demonstrably unsafe | — |
 | H — physical-tolerance decision | Deferred to a separate isolated A/B (H1.10) | — |
 
 Every agent in the coordination is active-power based, and all three now share
@@ -1357,6 +1359,194 @@ P5.4-D2-P PASS — structurally complete S sensitivity productionized
 
 ---
 
+# D3 — Distributed cut-consistency / local-branch audit
+
+Commits `926bd5df`, `e1afa8e9`. Scripts: `p54d3_cut_consistency.py`,
+`p54d3_analysis.py`. Evidence: `data/SRP1/Results/P54D3/`.
+
+The cut was **constructed but never added to a master problem**, and
+`run_planning_problem()` was never invoked.
+
+## D3.1 / D3.2 — base recourse and the production coefficient
+
+`Q0 = 848 258 809.814117` (gross operational cost `848 262 234.99`, terminal
+salvage `3 425.17`), reached in **9 cycles**, all local solves successful, zero
+recovery diagnostics.
+
+`g0` is the `sensitivities` object returned by
+`run_operational_planning(type='distributed', …)` — the exact vector
+`_add_benders_cut` consumes, after local rescaling by
+`objective_scale / baseMVA`, weighting by `annualization · num_years ·
+num_days`, TSO+DSO aggregation, available-capacity → investment-capacity
+mapping and the salvage correction. **Not** an isolated raw local dual.
+
+18 coefficients, none `None`. **All 18 are negative** — 9/9 for S and 9/9 for E:
+
+| | node 5 | node 7 | node 9 |
+|---|---|---|---|
+| **S** 2025 | −1.3034e+07 | −1.3080e+07 | −1.3234e+07 |
+| **S** 2030 | −6.3921e+06 | −6.4213e+06 | −6.5959e+06 |
+| **S** 2035 | −2.5570e+06 | −2.5792e+06 | −2.7612e+06 |
+| **E** 2025 | −6.9121e+06 | −6.8496e+06 | −7.1198e+06 |
+| **E** 2030 | −3.9631e+06 | −3.8846e+06 | −4.0446e+06 |
+| **E** 2035 | −2.1239e+06 | −1.9958e+06 | −2.0128e+06 |
+
+Sign-consistent with the D2.1 monotonicity requirement throughout — a visible
+improvement on the pre-D2-P local duals, which were positive in 3 of 8 cases.
+`L(x) = Q0 + g0ᵀ(x − x0)`.
+
+## `tol_cut`, derived rather than chosen
+
+| Component | Value |
+|---|---|
+| Identical-candidate repeatability of the distributed recourse | **0.0 exactly** — three independent processes reproduced `Q0` bit-for-bit |
+| Residual relative objective drift at the cycle where ADMM declares convergence | 3.591e-04 |
+| `tol_cut = drift × \|Q0\|` | **3.046e+05** (3.591e-04 relative) |
+
+The recourse is perfectly reproducible, so the binding term is not randomness
+but how precisely the converged recourse is *determined* — the ADMM stops while
+the objective is still moving by ~3.6e-04 relative.
+
+## D3.3 / D3.4 — candidate population actually covered
+
+**8 candidates completed**, each a full production distributed solve:
+
+| Group | Perturbations run |
+|---|---|
+| S at node 9, 2025 | −10 %, −5 % (both also from start B) |
+| S at node 5, 2025 | −10 %, −5 % |
+| E at node 9, 2025 | −10 %, −5 %, −2 %, −1 % |
+
+**Not covered:** positive perturbations, node 7, the ±0.5 %/±1 %/±2 % refinement
+for S, and the multi-variable set. The sweeps were stopped once the violation
+below had been established from two independent starts — each candidate costs
+10–20 minutes of ADMM — so this is a **partial population**, and it is reported
+as such. Every completed candidate converged with all local solves successful
+and **zero recovery diagnostics**.
+
+## D3.6 — cut safety: decisive violation
+
+| Candidate | `Q_best_observed` | `L(x)` | observed ΔQ | predicted `g0ᵀΔx` | **cut_gap** |
+|---|---|---|---|---|---|
+| **s\|node9\|2025 −5 %** | 836 789 546.53 | 848 265 846.83 | −11 469 263 | **+7 037** | **−1.1476e+07** |
+| **s\|node9\|2025 −10 %** | 836 959 457.84 | 848 272 883.85 | −11 299 352 | +14 074 | **−1.1313e+07** |
+| **s\|node5\|2025 −5 %** | 837 398 111.50 | 848 265 740.63 | −10 860 698 | +6 931 | **−1.0868e+07** |
+| **e\|node9\|2025 −1 %** | 839 303 246.22 | 848 260 324.18 | −8 955 564 | +1 514 | **−8.9571e+06** |
+| **e\|node9\|2025 −10 %** | 847 841 612.43 | 848 273 953.48 | −417 197 | +15 144 | **−4.3234e+05** |
+| **e\|node9\|2025 −2 %** | 847 842 640.65 | 848 261 838.55 | −416 169 | +3 029 | **−4.1920e+05** |
+| s\|node5\|2025 −10 % | 848 241 371.88 | 848 272 671.45 | −17 438 | +13 862 | −3.1300e+04 |
+| e\|node9\|2025 −5 % | 848 069 916.76 | 848 266 381.65 | −188 893 | +7 572 | −1.9646e+05 |
+
+**8 / 8 negative; 6 decisive** (`cut_gap < −tol_cut`). Worst: **−1.1476e+07**,
+i.e. **−1.35 % of `Q0`**, 38× `tol_cut`.
+
+> ### Why this is decisive rather than a numerical artefact
+>
+> Reducing shared-ESS capacity **shrinks** the operational feasible set — the
+> only rows that change are `pch + pdch ≤ S`, `pnet² + qnet² ≤ S²` and the H1
+> links, all of which tighten. So any operating point feasible at `S − 5 %` is
+> also feasible at `S₀`.
+>
+> At `s|node9 −5 %` the distributed solve reaches a recourse of
+> **836 789 546.53**, which is **11 469 263 below `Q0`**. That operating point
+> was therefore available at the base candidate and was not found.
+>
+> **`Q0` overstates the achievable recourse at its own candidate by at least
+> 1.35 %**, so any affine cut anchored at `Q0` lies above the true recourse
+> function and would cut off feasible master solutions.
+>
+> The violating runs are sound: converged, 19 and 12 cycles, **all local solves
+> ok, zero recoveries**, final residuals inside tolerance
+> (`primal_v` 3.1e-05, `primal_pf` 6.3e-03 < 1e-02, `primal_ess` 2.4e-04). The
+> `s|node9 −5 %` result is reproduced from **two independent starts** —
+> production cold start gives 844 565 756.42, continuation gives
+> 836 789 546.53 — both far below `Q0`.
+
+## D3.7 — local linearity and branch classification
+
+| Group | n | max abs error | median abs error | max rel error | median rel error |
+|---|---|---|---|---|---|
+| Same branch as base | **0** | — | — | — | — |
+| Different branch | **8** | 1.1476e+07 | 4.6947e+06 | 1.795 | 1.004 |
+
+**No candidate stayed on the base branch** — 8 distinct recourse levels across 8
+candidates. The median relative error of 1.004 means the linear model is, on
+average, wrong by about the entire observed change. This is branch selection
+dominating, not derivative quality: D2-P already established the coefficient is
+the structurally complete derivative *of its own branch*.
+
+### The coefficient is below the method's resolution
+
+| Quantity | Value |
+|---|---|
+| `max \|g0ᵀΔx\|` over the 8 candidates | 1.5144e+04 |
+| `tol_cut` | 3.046e+05 |
+| ratio | **0.0497** |
+| predictions below `tol_cut` | **8 / 8** |
+
+Even with no violations, the cut's predicted effect is **20× smaller than the
+precision to which the recourse is determined**. The coefficient could not be
+confirmed against observed recourse at these perturbation sizes.
+
+## D3.8 — S monotonicity of the observed lower envelope
+
+Observed best recourse at node 9 (including the base point):
+
+| `S/S₀` | `Q_best_observed` |
+|---|---|
+| 0.90 | 836 959 457.84 |
+| 0.95 | **836 789 546.53** |
+| 1.00 (base) | **848 258 809.81** |
+
+Increasing S from 0.95 to 1.00 **increases** the observed best recourse by
+11 469 263, though the feasible set grew. Node 5 shows the same pattern
+(observed range 1.0843e+07 across the sweep).
+
+Per the plan's instruction, this is **not** reinterpreted as physical
+non-monotonicity: it states that **the lower branch has not been reliably
+recovered at the base candidate**. Note also that the completed sweep is
+one-sided (negative perturbations only), so the two-sided envelope test is
+incomplete.
+
+## D3.9 — classification
+
+Classification **C — unsafe**. At least one generated cut lies above a lower
+observed recourse value by far more than numerical tolerance, reproduced from
+independent starts, at multiple nodes and for both S and E.
+
+**Benders was not modified**, as instructed. Smallest next planning-level
+remedies, offered for planner review and **not implemented**:
+
+1. **Multi-start recourse selection** — the most direct fix for the observed
+   defect. The cut's anchor `Q0` is the problem; evaluating each candidate from
+   several deterministic starts and cutting from the best observed recourse
+   would have removed every violation here. Cost: a multiple of the operational
+   solve time per candidate.
+2. **Deterministic branch-continuation policy** — always warm-start a candidate
+   from the incumbent's converged state, so consecutive candidates stay on one
+   branch. Cheaper than (1), and it makes the local derivative meaningful, but
+   it fixes the branch rather than finding the lower one.
+3. **Trust-region / locally-activated cuts** — keep cuts active only near their
+   generating candidate. This limits the damage but does not make the anchor
+   correct, and the violations here occur within ±10 %.
+4. **Planning-capacity movement regularization** — smaller master steps, same
+   caveat as (3).
+5. **A decomposition framework appropriate for nonconvex recourse** — the
+   honest structural answer if (1) proves too expensive.
+
+**Classical convex Benders guarantees do not hold here**, and nothing in D2-P
+changes that: a structurally complete derivative of a local branch is still a
+derivative of a local branch. D2-P was necessary — the coefficient is now
+sign-consistent and complete — but it is not sufficient.
+
+## D3 verdict
+
+```
+P5.4-D3 FAIL — current cuts are demonstrably unsafe under observed recourse branches
+```
+
+---
+
 # H — Status after H1
 
 The H question has now split cleanly in two, and H1 answered the first half.
@@ -1383,39 +1573,45 @@ its own, with the H1 formulation held fixed. That was not performed here.
 
 # Open items carried forward
 
-1. **Shared-S Benders coefficient is structurally incomplete** (D2). A concrete,
-   exact production correction is recommended and awaiting planner approval:
-   remove the four redundant capacity-dependent numerical bounds so that all
-   S-dependence flows through symbolic rows and the rated-capacity variable.
-   **This still blocks P5.4-G.**
-2. **Local-solution multiplicity at bootstrap capacities** (D2). The realized
-   value function is multi-valued in S and E; the branch gap is ~20x the entire
-   capacity effect across a +/-5 % sweep. No formulation change addresses this,
-   and it prevents finite-difference validation of any sensitivity in this
-   regime.
-3. **No E-binding operating point exists** in the scanned configuration (D2.10),
-   so the E-side conclusion rests on a structural argument plus 40/40
+1. **The current Benders cuts are demonstrably unsafe** (D3). Six of eight
+   probed candidates produce a cut lying above an observed feasible recourse,
+   the worst by 1.35 % of `Q0`. The cause is the anchor `Q0`, not the
+   coefficient: the base candidate's own solve misses a recourse ~11.5 million
+   lower that neighbouring candidates find. **This blocks P5.4-G**, and the
+   smallest candidate remedies are listed in D3.9 for planner decision.
+2. **The cut coefficient is below the method's own resolution** (D3.7): the
+   largest predicted effect over the probed range is 0.05 x `tol_cut`, so the
+   coefficient cannot be validated against observed recourse at these
+   perturbation sizes even where no violation occurs.
+3. **D3's candidate population is partial** — positive perturbations, node 7,
+   the finer S steps and the multi-variable set were not run, since the
+   violation was already decisive. Stated so the coverage is not overread.
+4. **No E-binding operating point exists** in the scanned configuration
+   (D2.10), so the E-side structural conclusion rests on an argument plus 40/40
    sign-consistent duals rather than on a binding test.
-4. **Physical sufficiency of `eps = 1e-4`** (H1.10): enforceable now, but
+5. **Physical sufficiency of `eps = 1e-4`** (H1.10): enforceable now, but
    permitting circulation at 0.83 of the `sqrt(eps)` allowance. A later isolated
    `1e-5` / `1e-6` A/B is recommended.
-5. **The H1 numerical cost**: total network iterations 1 556 -> 3 499 (x2.25),
-   runtime ~32 s -> 44 s. No new failure family, no recoveries, rank diagnostics
+6. **The H1 numerical cost**: total network iterations 1 556 -> 3 499 at H1, now
+   3 442 after D2-P. No new failure family, no recoveries, rank diagnostics
    identical.
 
 Resolved and no longer open: the ESSO's absolute complementarity semantics
 (H1.5), the ESSO aggregate feasible-set incompatibility (H1.6), the
-under-resolved network complementarity (H1.1-H1.3), and the previously
-unexplained P5.4-D sensitivity mismatch, which D2 now attributes to two named
-causes.
+under-resolved network complementarity (H1.1-H1.3), the unexplained P5.4-D
+sensitivity mismatch (attributed by D2 to two named causes), and the
+structural incompleteness of the shared-S coefficient (fixed by D2-P, now
+exactly zero bound contribution and sign-consistent across all 18 aggregated
+coefficients).
 
 ---
 
 # Not run
 
-**P5.4-G was not run**, as instructed. `run_planning_problem()` was not invoked.
-No final P5.4 verdict is issued in this revision; issuing one would require
-asserting a G result that does not exist.
+**P5.4-G was not run.** `run_planning_problem()` was not invoked during D2-P or
+D3. No cut was ever added to a master problem. No final P5.4 verdict is issued
+in this revision; issuing one would require asserting a G result that does not
+exist -- and D3 indicates G should not run on the current cut machinery.
 
 ---
 
@@ -1431,4 +1627,12 @@ P5.4-F ADMM PASS — net-P/Q coordination converged with locally consistent char
 
 ```
 P5.4-D2 PARTIAL — sensitivity root cause identified but production correction still required
+```
+
+```
+P5.4-D2-P PASS — structurally complete S sensitivity productionized
+```
+
+```
+P5.4-D3 FAIL — current cuts are demonstrably unsafe under observed recourse branches
 ```
