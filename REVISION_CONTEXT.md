@@ -9,55 +9,77 @@ Act as a technical planner and mathematical-programming reviewer for the shared 
 
 Read this file first. When checking the mathematical formulation, also consult `simoes_2026_revisions.pdf` where relevant and inspect the current implementation before proposing changes. Prefer reviewer-driven implementation and validation plans before production edits.
 
-This file is the repository-wide source of context. `LOCAL_NLP_STABILITY_PLAN.md` contains the currently authorized implementation/audit scope and takes precedence for the active P5.5 planning-architecture work. Despite its legacy filename, that plan now governs the convex-planning audit rather than another local-NLP repair stage.
+This file is the repository-wide source of context. `LOCAL_NLP_STABILITY_PLAN.md` contains the currently authorized implementation/audit scope and takes precedence for the active P5.5 planning-architecture work. Despite its legacy filename, that plan now governs the convex-planning architecture rather than another local-NLP repair stage.
 
 ---
 
 # CURRENT SOURCE OF TRUTH — 2026-09-07
 
-This section supersedes older solver-policy and local-NLP instructions recorded later in this file where they conflict with the live code.
+This section supersedes older solver-policy, P5.4 planning and P5.5-A instructions recorded later in this file where they conflict with the current state.
 
-## Current accepted production checkpoint
+## Current accepted nonlinear production checkpoint
 
-The active-energy ESS production stack is implemented in production through:
+The accepted active-energy ESS production lineage is:
 
 - `a4a0bae8` — shared-network active-energy ESS productionization;
 - `1e86d40e` — ordinary network ESS active-energy parity;
 - `58f4911b` — ESSO active-energy conversion and throughput correction;
-- `c3526ec8` — lifecycle/sensitivity audit state and post-B/C/D production validation;
+- `c3526ec8` — lifecycle/sensitivity audit state and post-B/C/D validation;
 - `93974d83` — dimensionless charge/discharge complementarity across network ESS, ordinary ESS and ESSO, including ESSO aggregate complementarity;
-- `2917b9c9` — fixed-candidate live distributed ADMM diagnostic on the H1 production baseline; no Benders/planning change;
-- `06e921e5` — P5.4-D2-P sensitivity-clean shared-S productionization; redundant S-dependent numerical bounds removed with no feasible-set change.
+- `06e921e5` — P5.4-D2-P sensitivity-clean shared-S productionization; redundant positive-capacity S-dependent numerical bounds removed with no feasible-set change.
 
-Diagnostic evidence retained in this lineage includes:
+Accepted nonlinear coordination evidence includes:
 
-- `b0e53bc4` — P5.4-E2 complementarity-significance instrumentation/reporting; no formulation change;
-- `65b261ba` — P5.4-D2 S/E sensitivity root-cause audit; diagnostic only, no production or Benders change;
-- `e1afa8e9` — P5.4-D3 distributed cut-consistency audit; diagnostic only, current Benders cuts classified unsafe.
-- `1a68f409` — P5.4-D4 recourse branch recovery / hardened-cut audit; diagnostic only, derivative-cut planning architecture classified unsafe even after anchor hardening.
+- `2917b9c9` — historical fixed-candidate live distributed ADMM diagnostic on the H1 production baseline; net-P/Q coordination only.
 
-The earlier checkpoint `f77d829359ffd873367f556882546bc2dcc8ec99` remains the historical pre-P5.4 baseline used for controlled comparisons, not the current active-energy production state.
+Diagnostic/planning evidence includes:
 
-The P5.2 narrow-band shared-ESS relaxation remains rejected. `sess_snet_def` / `ess_snet_def` and their `kappa` machinery have been removed from the production ESS formulations rather than relaxed.
+- `b0e53bc4` — P5.4-E2 complementarity-significance instrumentation;
+- `65b261ba` — P5.4-D2 S/E sensitivity root-cause audit;
+- `e1afa8e9` — original D3 cut-consistency audit, now retained as **NONCANONICAL historical evidence** because it was executed in `srp_env`;
+- `1a68f409` — original D4 branch-recovery/hardened-cut audit, also **NONCANONICAL historical evidence**;
+- `51a3f4e4`, `5bd1f0ce`, `cbc043d4` — P5.4-R canonical-environment revalidation, which supplies the authoritative D3/D4 paper-instance verdicts.
 
-## Current reduced SRP1 reproducibility identity
+The old pre-P5.4 checkpoint `f77d829359ffd873367f556882546bc2dcc8ec99` remains historical only.
 
-- Random seed: `2026`
-- Years: `2025`, `2030`, `2035`
-- Representative days: `Spring`, `Summer`, `Autumn`, `Winter`
-- Instants: `24`
-- Market scenarios: `1`
-- Operation scenarios per network: `1`
-- TSO: `case9`
-- DSOs: `case33_1` at node 5, `case33_2` at node 7, `case33_3` at node 9
-- Combined realized scenario checksum:
-  `5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358`
+## Canonical paper environment and reproducibility identity — HARD REQUIREMENT
 
-Use this checksum when comparing P5/P5.1/P5.2/P5.3/P5.4 reduced runs. Older checksum values appearing later in this historical file belong to earlier repository states and are not the current P5 baseline.
+All future paper-instance validation, benchmark and planning-oracle work must use:
 
-## Current live network solver policy
+`/opt/anaconda3/envs/opf_env_py311/bin/python`
 
-The live source and current JSON files supersede older notes that referred to a warm-only `acceptable_iter = 1` policy and `1e-9` warm-start pushes.
+Canonical environment/provenance from P5.4-R:
+
+- Python `3.11.11`;
+- NumPy `2.4.2`;
+- pandas `3.0.0`;
+- SciPy `1.17.0`;
+- Pyomo `6.9.5`;
+- IPOPT `3.14.18` at `/usr/local/bin/ipopt`;
+- HSL linear solver `ma97`;
+- Gurobi / `gurobipy` `13.0.1`, academic licence, expiry `2027-04-10`.
+
+Canonical SRP1 configuration:
+
+- random seed `2026`;
+- years `2025`, `2030`, `2035`;
+- representative days `Spring`, `Summer`, `Autumn`, `Winter`;
+- `24` instants;
+- `1` market scenario;
+- `1` operation scenario per network;
+- TSO `case9`;
+- DSOs `case33_1` at node 5, `case33_2` at node 7, `case33_3` at node 9;
+- combined realized scenario checksum:
+
+`5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358`.
+
+The fail-fast provenance gate introduced in P5.4-R is now a required infrastructure convention: paper-case harnesses must record interpreter/environment/package/solver provenance and abort if the checksum differs. A rejected environment must never silently produce evidence that is mixed with canonical results.
+
+`srp_env` is noncanonical for paper validation because it generates a different stochastic realization (`4d948b9b...`). Seed `2026` alone is therefore **not** a sufficient reproducibility specification.
+
+## Current live nonlinear network solver policy
+
+The live source and current JSON files supersede older notes referring to earlier warm-start policies.
 
 Current cold network configuration:
 
@@ -73,68 +95,40 @@ Current warm-start handling in `network._create_smopf_solver`:
 
 - bound and constraint multipliers are supplied when `from_warm_start=True`;
 - TSO warm starts override `acceptable_iter = 0` and `acceptable_tol = tol`, preventing acceptable-level early termination from reintroducing the previously diagnosed voltage-barrier artifact;
-- DSO warm starts retain their configured acceptable settings unless another explicit option override is supplied;
-- warm-start push/fraction settings inherit the configured network values unless explicitly provided.
+- DSO warm starts retain configured acceptable settings unless explicitly overridden;
+- warm-start push/fraction settings inherit configured network values unless explicitly provided.
 
-Network recovery:
-
-- production recovery is attempted only for IPOPT `internalSolverError`;
-- recovery clears multiplier suffixes and retries from the current primal point with configured recovery options;
-- `case33_2` and `case33_3` define limited-memory recovery profiles;
-- `case33_1` currently defines no `recovery_options`, an acknowledged configuration asymmetry;
-- `maxIterations` does not currently trigger immediate recovery.
-
-Do not retune these settings during P5.5-A unless a later planner instruction explicitly authorizes it.
+Recovery remains limited to IPOPT `internalSolverError`; configured limited-memory recovery exists for `case33_2` and `case33_3`, while `case33_1` still has no explicit `recovery_options` block. Do not retune the nonlinear solver during P5.5-B.
 
 ---
 
-# CURRENT PLANNING CHECKPOINT - P5.4 architecture closed; P5.5-A authorized
+# CURRENT PLANNING CHECKPOINT — P5.4-R closed; P5.5-B authorized
 
-P5.4 sections A, B, C, D, D2, D2-P, D3, D4, E, E2, H1 and F are complete. H1, F and D2-P remain accepted production/validation results. D3 and D4 are accepted as decisive evidence that the **current nonlinear-recourse derivative-cut/Benders planning architecture is unsafe**.
+P5.4-R has now revalidated the planning diagnosis under the canonical paper environment. The environment inconsistency changed the numerical magnitudes substantially, but **the planning verdict survived**.
 
-P5.4-G was **not** run and is now permanently blocked for the old nonlinear-recourse cuts. The next work is a new planning architecture, not another P5.4 cut repair.
+P5.4-G was never run and remains permanently blocked for the old nonlinear-recourse derivative cuts. The active workstream is the new branch `feature/convex-planning` and the next authorized stage is **P5.5-B — mathematical closure of the convex lower-bound architecture**.
 
-## Accepted nonlinear operational production state
+## Canonical operational regression after D2-P
 
-Current production lineage remains:
+P5.4-R1 is the authoritative paper-instance numerical gate for the current production formulation:
 
-- `a4a0bae8` - shared-network active-energy ESS;
-- `1e86d40e` - ordinary network ESS parity;
-- `58f4911b` - ESSO active-energy conversion;
-- `c3526ec8` - lifecycle/sensitivity audit and pre-H1 validation;
-- `93974d83` - dimensionless complementarity with consistent network/ESSO relative semantics;
-- `06e921e5` - sensitivity-clean shared-S productionization.
-
-Accepted live coordination evidence remains:
-
-- `2917b9c9` - fixed positive-bootstrap distributed ADMM diagnostic; net-P/Q coordination only, converged in 9 cycles.
-
-Accepted planning diagnostics:
-
-- `65b261ba` - D2 S/E sensitivity root-cause audit;
-- `e1afa8e9` - D3 distributed cut-consistency audit;
-- `1a68f409` - D4 branch-recovery / hardened-cut audit, classified D4-C.
-
-The current positive-bootstrap operational baseline after D2-P remains robust:
-
-- DSO `36/36` success;
-- TSO `12/12` success;
-- ESSO `3/3` success;
-- primary failures `0`;
-- recoveries `0`;
-- persistent failures `0`;
-- total network IPOPT iterations `3442` in the D2-P bootstrap regression;
-- representative equality Jacobians full row rank;
-- zero zero-gradient ESS equality rows;
+- DSO `36/36`;
+- TSO `12/12`;
+- ESSO `3/3`;
+- primary failures / recoveries / persistent failures `0/0/0`;
+- H1 complementarity violations `0/1728`;
 - converter-capability violations `0/1728`;
-- complementarity violations `0/1728`;
-- fixed-candidate distributed ADMM still converges in `9` cycles.
+- total network IPOPT iterations `3424`;
+- mean / median / max iterations `71.3 / 65.0 / 134`;
+- runtime about `42 s`;
+- representative equality Jacobians full row rank with zero zero-gradient ESS equality rows;
+- maximum `min(pch,pdch)/S = 8.6060e-03`, below the `sqrt(1e-4)=1e-2` allowance.
 
-The nonlinear operational SMOPF is therefore **not** being retired. It remains the physical truth/feasible-operation model and future upper-bound validation oracle.
+Earlier D2-P bootstrap figures such as `3442` iterations from `srp_env` are historical/noncanonical and must not be quoted as the paper-instance regression.
 
-## Complementarity and coordination decisions remain locked
+## Complementarity and nonlinear coordination remain locked
 
-The accepted nonlinear-model complementarity formulation remains:
+The accepted nonlinear complementarity formulation remains:
 
 `pch = S_rated * pch_hat`
 
@@ -146,11 +140,11 @@ with:
 
 `ESS_COMPLEMENTARITY_TOLERANCE = 1e-4`.
 
-The later `1e-5` / `1e-6` A/B remains a separate physical-tolerance question and is not part of P5.5-A.
+The future `1e-5` / `1e-6` A/B remains a separate physical-tolerance question and is not part of P5.5-B.
 
-Nonlinear distributed coordination remains **net electrical P/Q only**. Do not add `pch`, `pdch`, circulation, SOC, cell-energy rate or throughput as ADMM consensus variables.
+Nonlinear distributed coordination remains net electrical P/Q plus the existing interface-voltage quantity. Do not add `pch`, `pdch`, circulation, SOC, cell-energy rate or throughput as nonlinear ADMM consensus variables.
 
-## D2-P accepted conclusion - local-branch sensitivity bookkeeping is fixed
+## D2-P accepted conclusion — local-branch sensitivity bookkeeping is fixed
 
 D2-P removed only the four mathematically redundant positive-capacity numerical S-dependent bounds on:
 
@@ -159,120 +153,204 @@ D2-P removed only the four mathematically redundant positive-capacity numerical 
 - `shared_es_pnet`;
 - `shared_es_qnet`.
 
-The retained symbolic rows imply those bounds exactly. After D2-P:
+After D2-P:
 
 - no positive-capacity operational variable bound depends numerically on S;
-- the S-bound contribution to the envelope derivative is exactly zero;
-- no active expression references `shared_es_s_rated_fixed` outside the fixing row;
-- the fixing-row dual is the complete derivative of the **local nonlinear branch returned by the solver**;
+- the omitted bound-multiplier contribution to `dQ/dS` is zero;
+- the fixing-row dual is structurally complete for the **local nonlinear branch returned by the solver**;
 - E remains structurally sensitivity-clean.
 
-This result stays in production. It does **not** imply a globally valid Benders subgradient for nonconvex recourse.
+This stays in production. It does not make the nonlinear recourse value function convex and does not create a globally valid Benders subgradient.
 
-## D3/D4 accepted conclusion - old derivative-cut planning architecture is retired
+## Canonical D3 verdict — nonlinear-recourse cuts are unsafe
 
-D3 established that cuts built from the nonlinear distributed recourse are unsafe. The base distributed recourse was `Q0 = 848258809.814117`; nearby candidates exposed substantially lower feasible branches, including about `836789546.53` at `S(node9,2025) = 0.95*S0`. Because reducing S tightens the feasible set, that lower-capacity operating point is also feasible at the larger base capacity. The base cold solve therefore missed a lower feasible branch.
+P5.4-R2 recomputed D3 from scratch under `opf_env_py311`.
 
-D4 then closed the remaining loophole by lifting lower-capacity branches back to the **exact base candidate** and hardening the anchor:
+Canonical base result:
 
-- best observed base recourse reached about `835315903.22`, approximately `12.94e6` below the cold base value;
-- lifted lower branches converged in only 2-5 ADMM cycles with zero recoveries;
-- the objective-gap fingerprint is dominated by **TSO generation dispatch on Spring representative days**, not by ESS physics or complementarity;
-- a deterministic lifted-template start is useful operationally, but the hardened cut still failed;
-- the hardened-cut test produced negative cut gaps on `11/11` tested neighbouring candidates, all beyond the derived tolerance;
-- worst hardened violation was about `-1.16e6`, while the linear sensitivity contribution was only about `1.3e4`;
-- successive branch hardening therefore chases a moving recourse branch rather than producing a safe global support function.
+- `Q0 = 838496830.813414`;
+- `17` ADMM cycles;
+- deterministic repeat spread `0.0`;
+- all 18 aggregated S/E coefficients negative;
+- `tol_cut = 7.164e5` from the canonical stopping drift;
+- the tested linear sensitivity effect remained much smaller than this numerical resolution.
 
-Do **not** call any best observed branch a global optimum. The accepted conclusion is narrower and decisive: **the nonlinear-recourse derivative-cut/Benders machinery cannot be used as a safe global lower-bound method for this problem.**
+Canonical cut test:
 
-A separate software-hygiene issue also remains: D4 observed about `1.5e5` recourse variation for the same nominal transferred start depending on previous production call order, indicating mutable shared state that must be cleaned before any future planning oracle is treated as reproducible.
+- `2/8` candidates produced decisive violations;
+- worst violation approximately `-2.680808e6` at `S(node9,2025) = 0.90*S0`;
+- the `S(node9,2025) = 0.95*S0` point also violated decisively, around `-1.315031e6`;
+- no tested candidate remained on the base branch.
 
-## New planning architecture direction - two operational oracles
+Authoritative verdict:
 
-The authorized replacement architecture separates lower-bound and feasible-validation roles.
+`P5.4-R-D3 FAIL — canonical nonlinear-recourse cuts are demonstrably unsafe`.
+
+The earlier `srp_env` D3 magnitudes (for example `Q0 = 848258809.814117`, 6/8 decisive violations) remain historical only.
+
+## Canonical D4 verdict — anchor hardening does not repair the method
+
+P5.4-R3 regenerated branch states canonically and reran the branch-recovery/hardened-cut audit.
+
+Canonical branch-recovery result:
+
+- cold base `Q = 838496830.81`;
+- best observed recovered base branch `Q = 836586463.43`;
+- improvement about `1.910367e6` (`0.228%`), not the noncanonical ~`1.28e7` figure;
+- branch recovery remains carried by the primal state rather than multiplier transfer;
+- the objective-gap fingerprint again localizes primarily to **TSO generation dispatch on Spring representative days**, partly offset by Summer changes.
+
+Canonical hardened-cut result:
+
+- `8/8` tested neighbouring candidates decisively violated the hardened cut;
+- hardened cut gaps were roughly `-0.96e6` to `-1.13e6`, all beyond canonical `tol_cut = 7.164e5`;
+- the capacity-linear contribution remained only O(`1e4`), far below the branch-driven change.
+
+Authoritative verdict:
+
+`P5.4-R-D4 C — canonical hardened cuts remain demonstrably unsafe`.
+
+Therefore the old nonlinear-recourse derivative-cut/Benders architecture is retired as a global lower-bound method.
+
+## Important distinction — environment sensitivity vs mutable-state impurity
+
+Two separate issues must not be conflated:
+
+1. **Environment/scenario sensitivity.** `srp_env` and `opf_env_py311` generate different stochastic profiles and select different nonlinear branches. This is why only canonical evidence is admissible for the paper instance.
+2. **Mutable-state/call-history impurity.** Independent code inspection and earlier D4 call-order experiments showed persistent network/shared-ESS data are mutated in place across candidate evaluations. This remains a software-hygiene issue for any future nonlinear upper-bound oracle.
+
+The environment experiment does **not** prove the call-history bug; it separately demonstrates the branch sensitivity of the nonlinear problem.
+
+---
+
+# P5.5 ARCHITECTURE STATUS
+
+## P5.5-A accepted as PARTIAL
+
+P5.5-A completed the exact controllable-resource and convexity audit. Its structural findings are accepted, with several design statements explicitly reopened for B-stage correction.
+
+Accepted SRP1 resource/topology facts:
+
+- conventional generator P/Q are controllable;
+- RES P/Q, curtailment and PF control are retained;
+- active and reactive load flexibility are retained;
+- load curtailment is disabled;
+- ordinary ESS is absent from SRP1;
+- shared ESS P/Q/SOC are present;
+- each `case33_*` has **one controllable continuous OLTC** on branch 1, bus 1 -> bus 2, with `r in [0.83,1.17]`;
+- there is no discrete tap logic, no phase shift, and no controllable capacitor bank/switched shunt in SRP1;
+- `case33_1/2/3` are radial after preprocessing (33 buses, 32 branches, cyclomatic number 0);
+- `case9` is meshed with one independent cycle (9 buses, 9 branches, cyclomatic number 1);
+- the planning master is an LP with no integer/binary or bilinear master-side terms.
+
+The intended convex family remains a lifted **W-space AC SOC/QC relaxation**. Do not replace it with DC-OPF or LinDistFlow.
+
+## Two-oracle planning architecture remains the target
 
 For planning candidate `x = (S,E)` define:
 
-`R(x)` = globally solved **convex-relaxed AC SMOPF recourse**;
+`R(x)` = globally solved convex-relaxed AC SMOPF recourse;
 
-`Q_AC_feas(x)` = feasible **full nonlinear AC SMOPF recourse** obtained from the accepted nonlinear model, with final AC polishing/feasibility validation for candidates that will be labelled rigorous upper bounds.
+`Q_AC_feas(x)` = feasible full nonlinear AC SMOPF recourse, eventually AC-polished before being labelled a rigorous upper bound.
 
-The intended bound relation is:
+Required relation:
 
 `R(x) <= Q_AC*(x) <= Q_AC_feas(x)`.
 
-If the relaxed operational model is jointly convex in operational variables and planning capacities S/E, the relaxed value function can provide safe supporting cuts:
+The planning lower bound is generated only from the convex oracle. The nonlinear model remains the physical truth model and upper-bound/incumbent validator.
 
-`alpha >= R(x_k) + g_k^T (x - x_k)`.
+A future convex cut must be a globally valid affine under-estimator of the relaxed value function. It must not be obtained by mixing an unrelated scalar solver bound with a local sensitivity vector.
 
-The planning master lower bound comes from the convex-relaxation cuts. The planning upper bound comes from the best validated nonlinear feasible incumbent. The monitored planning gap is the difference between those two bounds.
+## Gurobi is the selected prototype solver
 
-This is a **relaxation-based two-oracle lower-bound/upper-bound architecture**, not a continuation of the old nonlinear Benders cuts.
+P5.4-R4 corrected P5.5-A's solver inventory.
 
-## Authorized convex formulation direction
+In `opf_env_py311`:
 
-The first candidate formulation is a **lifted AC W-space SOC/QC relaxation**, not DC-OPF and not LinDistFlow.
+- `gurobipy 13.0.1` is available;
+- academic licence is valid through `2027-04-10`;
+- `gurobi`, `gurobi_direct`, and `gurobi_persistent` Pyomo interfaces report available;
+- `QCPDual=1` is accepted;
+- both linear duals and quadratic/conic duals were returned on a verified SOCP/QCP test;
+- Gurobi reports both `ObjVal` and `ObjBound`.
 
-Core lifted variables are expected to include:
+For a rigorous scalar lower bound, use the solver's **dual bound (`ObjBound`)**, not merely the primal incumbent `ObjVal`.
 
-- `Wii = |Vi|^2`;
-- `WijR = Re(Vi Vj*)`;
-- `WijI = Im(Vi Vj*)`.
+However, for the **planning cut**, P5.5-B must establish a stronger contract: the intercept and S/E coefficient must be derived from the **same dual-feasible conic solution** so that the entire affine function is globally valid. Do not assume `ObjBound(x_k) + g_k^T(x-x_k)` is safe without that proof.
 
-The exact rank-one voltage-product relation:
+## P5.5-A statements explicitly reopened in P5.5-B
 
-`WijR^2 + WijI^2 = Wii * Wjj`
+The following A-stage statements are not accepted as final and must be corrected/closed before implementation:
 
-is to be outer-relaxed to a valid SOC/QC representation. Active/reactive nodal injections and branch flows should remain AC-aware and become affine in W for the actual production branch model, including fixed taps/phase shifts/line charging where present.
+1. **Dormant ±30-degree angle constraints are not automatically LB-safe.** They are commented out in production and cannot be enabled merely as tightening. Any QC/angle strengthening must either already be present in the nonlinear feasible set or be mathematically implied by it.
+2. **OLTC McCormick relaxation is not yet the preferred formulation.** A transformed continuous-tap formulation may eliminate explicit tap bilinearity without adding relaxation beyond the usual voltage-product SOC relaxation.
+3. **Centralized interface semantics need exact sign tracing.** The DSO REF generator and TSO ADN load/interface variables must be mapped exactly before replacing ADMM by affine equalities. Do not collapse duplicate TSO/DSO/ESSO variables in the first convex prototype.
+4. **ESSO degradation/SoH relaxation needs an objective-level bound proof**, including salvage placement; feasible-set enlargement alone is insufficient if objective terms are also changed.
+5. **The Gurobi dual-cut contract and modelling interface remain unvalidated on the intended capacity-fixing structure.**
+6. **The nonlinear upper-bound oracle is not yet pure with respect to call history.** This is not a blocker for mathematical B-stage design, but it must be fixed before future planning-UB certification.
 
-The design objective is to retain **all controllable resources actually instantiated in SRP1** wherever a lower-bound-safe convex representation exists. Charge/discharge complementarity may be dropped **only in the convex lower-bound model**, because dropping it enlarges the feasible set. H1 remains unchanged in the nonlinear validation model.
+---
 
-No assumption is yet authorized about OLTCs or controllable capacitor banks in SRP1. P5.5-A must resolve those directly from data and model construction.
+# CURRENT ACTIVE STAGE — P5.5-B mathematical closure
+
+P5.5-B is **audit/design only**. Do not implement the convex SMOPF or a new planning loop yet.
+
+The B-stage must close the following items before any implementation is authorized:
+
+- historical-report cleanup so canonical P5.4-R figures supersede noncanonical numerical claims;
+- admissibility classification of every proposed QC/angle strengthening;
+- exact transformed continuous-OLTC SOC derivation and proof, including whether `r` and `r_sqr` can be eliminated;
+- exact TSO ADN / DSO REF / shared-ESS / voltage consensus sign semantics for a centralized convex model;
+- complete ESSO objective-level lower-bound proof and salvage placement;
+- rigorous Gurobi dual-derived affine cut contract, including the cut intercept;
+- choice among `gurobi_direct`, `gurobi_persistent`, or native `gurobipy` for the first prototype;
+- exact centralized prototype specification, with no remaining architecture decisions.
+
+### Preferred OLTC hypothesis to test, not yet an accepted production formula
+
+For each DSO transformer, investigate transformed variables:
+
+`U_i = r^2 * W_ii`
+
+`C_ij = r * W_ij^R`
+
+`D_ij = r * W_ij^I`.
+
+The hypothesis is that the actual transformer P/Q equations become affine in `U_i`, `C_ij`, `D_ij`, `W_jj`, with physical rank relation:
+
+`C_ij^2 + D_ij^2 = U_i * W_jj`,
+
+relaxed by the standard rotated SOC inequality.
+
+If `r` appears nowhere else and voltage lower bounds guarantee `W_ii > 0`, test whether continuous tap existence is represented exactly by:
+
+`r_min^2 * W_ii <= U_i <= r_max^2 * W_ii`,
+
+since `r = sqrt(U_i/W_ii)` would then exist in `[r_min,r_max]`.
+
+Do not claim this is exact until every production occurrence of `r`/`r_sqr` has been audited.
+
+### Rigorous cut requirement
+
+The future convex planning cut must be constructed from a single dual-feasible convex solution:
+
+`L_k(x) = beta_k + g_k^T x`
+
+with:
+
+`L_k(x) <= R(x)` for all admissible planning capacities.
+
+P5.5-B must determine analytically and numerically how `beta_k` and `g_k` are derived from the Gurobi dual solution, including capacity-fixing rows and all constant/RHS terms. At the generating point compare `L_k(x_k)`, `ObjBound`, and `ObjVal`; do not assume equality except as justified by the solver tolerances/dual formulation.
 
 ## New development branch
 
-This planning redesign must be isolated on a new development branch:
+Active branch:
 
 `feature/convex-planning`
 
-The worker must create it from the repository's **current HEAD at execution time**, record the source branch and source commit, and leave the previous branch/history untouched. Do not rebase or rewrite history.
+It was created from the current P5.4/P5.5 lineage and must remain isolated from the previous nonlinear-planning branch. Do not rebase or rewrite the previous branch history.
 
-The accepted nonlinear operational baseline to preserve conceptually is commit `06e921e5` plus the already accepted H1/net-PQ behavior. Later D3/D4 commits remain diagnostic evidence and may be present in branch history depending on the source HEAD; they do not authorize changing the nonlinear production mathematics.
-
-## Current active stage - P5.5-A exact convexity and controllable-resource audit
-
-P5.5-A is **audit/design only**. Do not implement the convex OPF yet.
-
-Required scope:
-
-1. **A1 - exact SRP1 control inventory:** conventional P/Q, RES P/Q/curtailment/PF, flexibility, ordinary/shared ESS, SOC, shunts/cap banks, transformer taps/phase shifts, branch switching, slacks, and TSO-DSO P/Q/voltage coordination. Explicitly distinguish framework-supported from actually instantiated/controllable/fixed/absent. Resolve OLTC and controllable-shunt status unambiguously from code and data.
-2. **A2 - row-by-row convexity map:** classify every operational constraint/objective family as affine, convex quadratic, SOC-representable, nonconvex quadratic, bilinear, or other nonconvex; state whether it can remain exact or needs a lower-bound-safe relaxation.
-3. **A3 - W-space derivation:** derive the actual production nodal P/Q and both-end branch-flow equations as affine functions of W, including line charging, fixed taps and fixed phase shifts where present; prove the SOC voltage-product inequality is an outer relaxation.
-4. **A4 - topology/relaxation choice:** characterize case9 and all case33 networks as radial/meshed using actual graph data; recommend SOC or SOC+QC strengthening separately for TSO and DSO. Do not implement SDP at this stage.
-5. **A5 - joint convexity in S/E:** verify that planning-capacity dependence can be expressed through affine/SOC forms such as `pch+pdch <= S`, `||(pnet,qnet)||_2 <= S`, and affine SOC-vs-E limits; remove H1 hats/complementarity only from the convex LB model if required.
-6. **A6 - planning/master convexity map:** audit investment accumulation, cohort lifetime, salvage, degradation/SoH, integer/binary logic, and any other master-side nonconvexity. A convex fixed-capacity OPF alone is not enough.
-7. **A7 - ESSO lower-bound treatment:** trace exact throughput/degradation/SoH/lifetime equations and propose only exact convex reformulations or bound-direction-safe relaxations.
-8. **A8 - resource-retention matrix:** explicitly show every controllable resource in the nonlinear SMOPF and how it appears in the convex LB model, marking exact vs relaxed and lower-bound safety.
-9. **A9 - LB/UB architecture specification:** write the mathematical two-oracle planning algorithm, including relaxed supporting cuts, nonlinear feasible incumbents, AC polishing, and the planning optimality gap.
-10. **A10 - centralized first:** design the first convex prototype as one centralized TSO+DSO relaxation preserving interface P/Q and common interface voltage in W-space. Distributed convex ADMM is a later question.
-11. **A11 - solver inventory:** without installing software, determine which available solvers can globally solve the resulting LP/QP/SOCP/convex-QCQP class with reliable duals; do not default to IPOPT.
-12. **A12 - deterministic-state trace:** identify mutable objects responsible for the D4 call-order dependency. Do not fix them yet, but specify what must be reset/cloned for a reproducible future nonlinear UB oracle.
-
-Required report:
-
-`P5_5_CONVEX_PLANNING_ARCHITECTURE_REPORT.md`
-
-P5.5-A must end with exactly one of:
-
-- `P5.5-A PASS - a mathematically valid convex lower-bound SMOPF architecture is fully specified`
-- `P5.5-A PARTIAL - architecture is promising but unresolved convexity/bound-direction issues remain`
-- `P5.5-A FAIL - the current model cannot be converted into a practical valid convex lower-bound oracle without a larger redesign`
-
-Then stop with:
-
-`P5.5-A COMPLETE - ready for planner review before convex implementation`
-
-## Locked decisions during P5.5-A
+## Locked decisions during P5.5-B
 
 Do not change:
 
@@ -282,40 +360,46 @@ Do not change:
 - H1 dimensionless complementarity in the nonlinear model;
 - `ESS_COMPLEMENTARITY_TOLERANCE = 1e-4`;
 - net-P/Q-only nonlinear ADMM coordination;
-- IPOPT/MA97/recovery policy;
-- ADMM rho/proximal/objective scaling;
-- objective coefficients;
-- existing master/Benders equations;
+- IPOPT tolerances/options;
+- MA97/exact-Hessian policy;
+- recovery policy;
+- adaptive-rho logic;
+- proximal regularization;
+- nonlinear objective scaling or objective coefficients;
+- old master/Benders equations;
 - production data.
 
-Do not:
+Do not yet implement:
 
-- implement the convex OPF during A;
-- run the old `run_planning_problem()` path with nonlinear-recourse cuts;
-- assume OLTC/cap-bank status without auditing it;
-- replace AC physics with DC-OPF or LinDistFlow;
-- drop controllable resources merely to obtain convexity;
-- introduce an approximation whose lower-bound direction is not proved;
-- install commercial solvers or change licenses without planner approval.
+- the centralized convex SMOPF;
+- the new LB/UB planning loop;
+- distributed convex ADMM;
+- SDP;
+- trust-region/local-cut planning;
+- derivative-free pattern/coordinate search;
+- surrogate-assisted planning.
 
 ## Old P5.4-G status
 
-P5.4-G is **permanently blocked for the old nonlinear-recourse derivative cuts**. It should not be revived as validation of the previous Benders architecture.
+P5.4-G is permanently blocked for the old nonlinear-recourse derivative cuts. It must not be revived as validation of the previous Benders architecture.
 
-If P5.5-A later supports a convex-relaxation planning prototype, that future loop is a **new planning architecture** and must receive its own validation stages.
+A future relaxation-based planning loop is a **new planning architecture** and requires its own validation stages.
 
 ## Deferred items
 
-Remain deferred during P5.5-A:
+Remain deferred during P5.5-B:
 
 - physical complementarity tolerance `1e-5` / `1e-6` A/B;
 - B1 exact `f_ref=0`;
 - RES B2-R reformulation until defensible converter `Smax` data exists;
-- calendar-degradation experimentation beyond what is required to classify convexity/bound direction;
 - nonlinear solver/ADMM retuning;
-- implementation of trust-region, pattern-search, surrogate, or other replacement planners;
-- distributed implementation of the convex relaxation;
-- SDP implementation.
+- implementation of the convex model itself;
+- distributed convex ADMM;
+- SDP;
+- trust-region/local-cut planner;
+- derivative-free coordinate/pattern search;
+- surrogate-assisted planning;
+- final nonlinear upper-bound oracle purity fix, except for tracing/specification needed by B-stage design.
 
 ---
 

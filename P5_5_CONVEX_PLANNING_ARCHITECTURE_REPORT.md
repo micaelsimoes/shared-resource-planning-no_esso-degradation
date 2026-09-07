@@ -499,13 +499,15 @@ against the nonlinear solution before trusting it.
 ## TSO — **SOC + QC strengthening**
 
 `case9` has one independent cycle, so plain pairwise SOC loses the cycle
-(angle-consistency) condition and can be loose. Recommended strengthening, in
-increasing order of effort and all valid outer relaxations:
+(angle-consistency) condition and can be loose. Recommended strengthening — **only items provably implied by the production
+feasible set qualify** (see B1 for the A/B/C classification):
 
-1. **Angle-difference envelopes** — `WijI ⋛ tan(θ_min/max)·WijR`. These rules
-   **already exist** in the code (`branch_angle_difference_lower/upper_rule`)
-   and are merely commented out at `network.py:403-404`, with `±30°` defaults.
-   Essentially free.
+1. ~~**Angle-difference envelopes** — `WijI ⋛ tan(θ_min/max)·WijR`, "essentially
+   free" because the rules exist but are commented out.~~ **WITHDRAWN in
+   P5.5-B1.** Those rules are *not* part of the nonlinear production feasible
+   set, so imposing them would be an additional **restriction**, not a
+   strengthening of a relaxation — it could raise the relaxed optimum above the
+   true recourse and destroy the lower-bound property. See B1.
 2. **Bound tightening** on `Wii` from `v_min²/v_max²` (already present as
    bounds) and on `WijR`, `WijI` from those plus the angle envelopes.
 3. **QC envelopes** on the voltage-magnitude products.
@@ -641,11 +643,11 @@ Traced from `_build_subproblem` in `shared_energy_storage_data.py`.
 | Active load flexibility | box + day balance | identical | **exact** | ✓ |
 | Reactive load flexibility | box | identical | **exact** | ✓ |
 | Load curtailment | disabled | disabled | — | ✓ |
-| **OLTC tap** | `r ∈ [0.83, 1.17]`, bilinear in W | **retained** via McCormick envelopes on `r·WijR`, `r·WijI`, `r_sqr·Wii`, plus `r_sqr ≥ r²` and its secant | **relaxed** | ✓ (outer) |
+| **OLTC tap** | `r ∈ [0.83, 1.17]`, bilinear in W | **retained exactly** via the transformed variables `U_i = r²W_ii`, `C = r·WijR`, `D = r·WijI`; `r` and `r_sqr` are eliminated. Superseded the McCormick proposal — see **B2** | **exact**, apart from the same rank-one SOC relaxation used everywhere else | ✓ |
 | Voltage magnitudes | `Wii = e²+f²` + limits | `Wii` primitive + identical limits | **relaxed** (via rank-one SOC) | ✓ |
 | Voltage-product coupling | `WijR²+WijI² = Wii·Wjj` | `≤` (rotated SOC) | **relaxed** | ✓ |
 | `WijR ≥ 0` | present | retained | **exact** | ✓ |
-| Angle-difference limits | present but commented out | **enable** as free QC strengthening | tightening of the relaxation | ✓ |
+| Angle-difference limits | **commented out — not in the production feasible set** | **do NOT enable** (would be a restriction, class C) | — | **✗ not LB-safe** |
 | Branch current limits (lines) | affine in W | identical | **exact** | ✓ |
 | Branch apparent limits (transformer) | `pij²+qij² ≤ rate²` | identical | **exact** | ✓ |
 | Fixed shunts | `gs·Wii`, `−bs·Wii` | identical (zero in SRP1) | **exact** | ✓ |
@@ -888,7 +890,485 @@ irreproducible.
 
 ---
 
-# Verdict  ·  **updated after P5.4-R4**
+# P5.5-B — Mathematical closure
+
+Commits `438b5d8f`+. Scripts: `p55b_oltc_transform_check.py`,
+`p55b_cut_contract.py`. Evidence: `data/SRP1/Results/P55B/`.
+
+**Design and proof only. No convex model was implemented.** All numerical work
+ran under `opf_env_py311` with the canonical checksum.
+
+## B1 — Admissible relaxation strengthening
+
+**Correction to P5.5-A.** A4 called the commented-out `±30°` angle constraints
+"essentially free" strengthening. **That was wrong and is withdrawn.** They are
+not part of the nonlinear production feasible set, so adding them would be an
+additional *restriction*: it can only raise the relaxed optimum, which is
+exactly the direction that destroys a lower bound. The presence of dormant rules
+in the source is not a licence to impose them.
+
+### Classification
+
+| Prospective strengthening | Class | Admissible? |
+|---|---|---|
+| `WijR ≥ 0` | **A** — `voltage_product_real_nonnegative`, 768 active rows in production | **yes** |
+| `Wii ∈ [v_min², v_max²]` | **A** — `voltage_magnitude_lower/upper_cons` (with the production voltage slacks) | **yes** |
+| Branch current limit `(g²+b²)(Wii + r²Wjj − 2rWijR) ≤ rate²` | **A** — `branch_flow_limit` | **yes** |
+| Transformer apparent limit `pij²+qij² ≤ rate²` | **A** — `branch_flow_limit`/`_ji` | **yes** |
+| `\|WijR\| ≤ sqrt(Wii·Wjj)`, `\|WijI\| ≤ sqrt(Wii·Wjj)` | **B** — implied by the rank-one relation | **yes** (already implied by the SOC row) |
+| `WijR ≤ v_max,i · v_max,j`, and `WijR ≥ v_min,i·v_min,j·cos(θ̄)` only if `θ̄` is itself class A/B | **B** for the upper bound (from voltage bounds + rank-one); **C** for any lower bound requiring an angle limit | upper **yes**, lower **no** |
+| `WijI` bounded by `sqrt(Wii·Wjj) ≤ v_max,i·v_max,j` | **B** | **yes** |
+| **`±30°` angle-difference envelopes** | **C — additional restriction** | **NO** |
+| Cycle/loop constraints on the TSO's single cycle | **B** *if* derived from the rank-one relation alone; **C** if they encode an angle bound not in production | **only the B form** |
+
+### Consequence for the TSO
+
+The TSO recommendation in A4 stands as **SOC + QC strengthening**, but the
+admissible strengthening is narrower than A4 implied: bound tightening on
+`Wii`, `WijR`, `WijI` derived from the **production voltage bounds and the
+rank-one relation**, plus `WijR ≥ 0`, which production already imposes. The
+`±30°` envelopes are excluded. Whether the remaining class-A/B strengthening
+closes the single-cycle gap on `case9` is an empirical question for the
+prototype, not something that can be asserted here.
+
+## B2 — Transformed continuous-OLTC formulation
+
+For the transformer's from-bus `i` and to-bus `j`, define
+
+```
+U_i = r² · W_ii        C_ij = r · WijR        D_ij = r · WijI
+```
+
+### Every production transformer expression becomes affine in `(U_i, C_ij, D_ij, W_jj)`
+
+Derived from the production source (`compute_branch_terminal_power`,
+`node_balance_p/q_rule`, `_branch_voltage_products`) and **verified numerically
+against the built model**:
+
+| Production quantity | Transformed form |
+|---|---|
+| `P_ij` | `g·U_i − g·C − b·D` |
+| `Q_ij` | `−(b + b_sh/2)·U_i + b·C − g·D` |
+| `P_ji` | `g·W_jj − g·C + b·D` |
+| `Q_ji` | `−(b + b_sh/2)·W_jj + b·C + g·D` |
+| node `i` P contribution | `g·U_i − (g·C + b·D)` |
+| node `i` Q contribution | `−(b + b_sh/2)·U_i + (b·C − g·D)` |
+| node `j` P contribution | `g·W_jj − (g·C − b·D)` |
+| node `j` Q contribution | `−(b + b_sh/2)·W_jj + (b·C + g·D)` |
+| Thermal limit | `pij² + qij² ≤ rate²`, with `pij`, `qij` the affine forms above — convex |
+
+The sign flip on `D` between the two ends comes from
+`_branch_voltage_products`, which negates `WijI` when the terminal is the *to*
+bus — the `W_ji = conj(W_ij)` convention.
+
+**Verification.** `p55b_oltc_transform_check.py` places four probe points
+spanning `r ∈ {0.83, 0.95, 1.00, 1.17}` on the real `case33_1` model, evaluates
+the production expressions and the transformed ones, and differences them:
+
+| Expression | worst relative difference over 4 probes |
+|---|---|
+| `P_ij`, `Q_ij`, `P_ji`, `Q_ji` | ≤ 1.14e-15 |
+| node `i` P/Q, node `j` P/Q | ≤ 5.91e-15 |
+| rank relation `C²+D²` vs `U_i·W_jj` | ≤ 3.12e-16 |
+
+**Worst across all expressions and probes: 5.911e-15** — floating-point noise.
+The transformation is exact.
+
+### Rank relation and its relaxation
+
+```
+C² + D² = r²(WijR² + WijI²) = r²·W_ii·W_jj = U_i · W_jj
+```
+
+Relaxed to the rotated second-order cone
+
+```
+C² + D² ≤ U_i · W_jj
+```
+
+which is **the same rank-one → SOC relaxation applied to every other branch**.
+No additional relaxation is introduced for the transformer.
+
+### Elimination of `r` and `r_sqr`
+
+The tap bounds become **affine** in `(U_i, W_ii)`:
+
+```
+r_min² · W_ii ≤ U_i ≤ r_max² · W_ii          (r_min = 0.83, r_max = 1.17)
+```
+
+`W_ii ≥ v_min² = 0.81 > 0` at the transformer's from-bus (it is the DSO
+reference bus, which carries no voltage slack), so `r = sqrt(U_i / W_ii)` is
+always well defined, and the box is exactly the condition `r ∈ [r_min, r_max]`.
+
+**Round trip.** Given any `(U_i, C, D, W_ii, W_jj)` satisfying the box and
+`C² + D² ≤ U_i·W_jj`, set `r = sqrt(U_i/W_ii) ∈ [r_min, r_max]`,
+`WijR = C/r`, `WijI = D/r`. Then
+
+```
+WijR² + WijI² = (C² + D²)/r² ≤ (U_i·W_jj)·(W_ii/U_i) = W_ii·W_jj
+```
+
+— the relaxed rank condition in the original variables. So the transformed
+relaxed set and the untransformed relaxed set are in exact correspondence, and
+`r` carries no information that `U_i` does not.
+
+**Audit of every `r` / `r_sqr` occurrence.** They appear only in the Var
+declarations, two read-only result-processing lines, and seven constraint
+families (`node_balance_p/q`, `pij/qij/pji/qji_def`, `r_sqr_def`) — all covered
+above. `r_sqr_def` disappears with the variables it links. Confirmed by direct
+inspection of the built objective: it contains **no** `r[` or `r_sqr[` token.
+
+| Property | SRP1 |
+|---|---|
+| Tap cost | **none** |
+| Tap movement penalty | **none** |
+| Intertemporal tap coupling | **none** |
+| Discrete tap positions | **none** — continuous Var, no integer logic anywhere |
+| Phase shift | **none** — no such field exists in `Branch` or the reader |
+
+All five hold, so **`r` and `r_sqr` may be eliminated entirely from the convex
+LB model.** `WijR ≥ 0` carries over as `C ≥ 0`, since `r > 0`.
+
+### Verdict against the P5.5-A McCormick proposal
+
+```
+Continuous OLTC is retained without introducing any relaxation beyond the usual
+voltage-product/rank SOC relaxation.
+```
+
+**Proved**, not claimed: the algebra is verified to 5.9e-15 against production,
+and the round trip above establishes the correspondence. The A8 McCormick
+proposal is **superseded** — it would have introduced envelope looseness that
+the transformation avoids entirely. A8 has been corrected.
+
+## B3 — Exact centralized interface semantics
+
+### The DSO REF generator is not a physical generator
+
+`generation_cost` (`model_construction_helpers.py:1500`) reads:
+
+```python
+if gen.is_controllable() and not (not network.is_transmission
+                                  and gen.gen_type == GEN_REFERENCE):
+```
+
+so a `GEN_REFERENCE` generator in a **distribution** network is excluded from
+the cost. It is the mathematical representation of **import/export at the TSO
+interface**; the energy is priced on the TSO side through the TSO's own
+generators. It sits at bus 1, the transformer's HV terminal, at 345 kV, and
+carries `Pmin < 0` so it can export.
+
+### Sign table
+
+| Quantity | Where | Convention | Expression |
+|---|---|---|---|
+| TSO ADN active | TSO node `adn_node_id` | **load-positive** (power drawn by the DSO) | `pc[adn_load] + flex_p_up − flex_p_down` |
+| TSO ADN reactive | same | load-positive | `qc[adn_load] + flex_q_up − flex_q_down` |
+| DSO REF active | DSO ref bus | **generation-positive** (injection = import) | `pg[ref_gen] − Σ shared_es_pnet` |
+| DSO REF reactive | same | generation-positive | `qg[ref_gen] − Σ shared_es_qnet` |
+| Shared-ESS `pnet`/`qnet` | both | **load-positive** (P5.4-B1) | subtracted in the DSO interface expression |
+| Voltage | both | magnitude at the same physical bus | TSO `vmag[adn_node]`, DSO `vmag[ref_node]` |
+
+The shared ESS is subtracted on the DSO side because the **TSO models the same
+shared ESS separately at its own interface node**; the coordinated interface
+quantity is the distribution system's demand *excluding* the shared ESS.
+
+### Centralized coupling, first prototype
+
+Per instruction, TSO/DSO/ESSO copies are **not** collapsed. ADMM consensus is
+replaced by exact affine equalities:
+
+```
+pc[adn_load,TSO] + flex_p_up − flex_p_down  =  pg[ref_gen,DSO] − Σ shared_es_pnet[DSO]
+qc[adn_load,TSO] + flex_q_up − flex_q_down  =  qg[ref_gen,DSO] − Σ shared_es_qnet[DSO]
+W[adn_node,TSO]                              =  W[ref_node,DSO]
+E[expected shared-ESS P]  equal across TSO, DSO and ESSO copies
+E[expected shared-ESS Q]  equal across TSO, DSO and ESSO copies
+```
+
+**Equivalence proof.** ADMM enforces `x_i = z` for each copy `i` at zero primal
+residual; at convergence all copies equal the common `z`, which is exactly the
+transitive closure of the pairwise equalities above. Conversely any point
+satisfying the equalities has zero consensus residual. Therefore, **at zero
+consensus residual the centralized coupling feasible set is identical to the
+decomposed one.** The centralized form additionally removes rho, the dual
+variables, the proximal term and the objective scaling, all of which are ADMM
+artefacts with no counterpart in the coupled problem.
+
+Duplicate-variable elimination is deferred until this baseline is validated.
+
+> **Unit caveat for implementation.** The shared-ESS consensus currently
+> compares TSO and DSO values scaled by `baseMVA` (MW) against the ESSO's
+> `es_pnet` with **no** such scaling. That asymmetry must be resolved explicitly
+> when the equalities are written, or the centralized model will silently couple
+> MW to p.u.
+
+## B4 — ESSO objective-level bound proof
+
+A7 argued feasible-set enlargement. B4 extends it to the **objective**, which is
+what the bound direction actually depends on.
+
+| Objective term | Original expression | Sign / coefficient | Affected by the relaxation? | Proposed treatment | Cannot increase the relaxed optimum because… |
+|---|---|---|---|---|---|
+| Network generation cost | `c_p·baseMVA·pg` | `c_p > 0`, minimised | no | unchanged | untouched |
+| Flexibility cost | affine in `flex_*` | ≥ 0 | no | unchanged | untouched |
+| Load-curtailment cost | — | — | no (disabled) | unchanged | — |
+| Generation-curtailment penalty | affine in curtailed `pg` | ≥ 0 | no | unchanged | untouched |
+| **ESS usage penalty** | `penalty_ess_usage·baseMVA·(pch + pdch)` | **`+1e-1 > 0`** | indirectly | **kept exactly** | it is a *penalty* on the same physical variables; keeping it can only keep the objective higher, never lower — safe for a lower bound only because the feasible set is enlarged, and the term itself is unchanged |
+| **ESS complementarity penalty** | `PENALTY_ESS_COMPLEMENTARITY·pch·pdch` | **`+1e2 > 0`**, **nonconvex** | **yes** | **drop** | dropping a non-negative term can only *lower* the objective ⇒ safe |
+| ESSO investment-fixing slacks | `PENALTY_ESSO_SLACK·(up + down)` | ≥ 0 | no | unchanged | untouched |
+| ESSO SoH slacks | `PENALTY_ESSO_SLACK·(up + down)` | ≥ 0 | **yes** — the rows they slack are dropped | **drop the slacks with their rows** | dropping non-negative terms lowers the objective ⇒ safe |
+| ESSO complementarity slack | `PENALTY_ESSO_SLACK·slack` | ≥ 0 | **yes** | **drop with the row** | same |
+| ESSO `pnet` slacks | `PENALTY_ESSO_SLACK·(up + down)` | ≥ 0 | no | unchanged | untouched |
+| Throughput `avg_ch_dch` | affine in `pch`, `pdch` | — | appears only in the dropped degradation row | **drop the row, keep the variables free** | removing an equality enlarges the set ⇒ safe |
+| Degradation / SoH / cumulative SoH | bilinear and a variable power | — | **yes** | **drop**, keep `0 ≤ soh_cumul ≤ 1` | removing equalities enlarges the set ⇒ safe |
+| Available energy | `E_avail = E_rated·soh_cumul` | — | **yes** | **`0 ≤ E_avail ≤ E_rated`** | `soh_cumul ≤ 1` ⇒ the relaxed set contains the original ⇒ safe |
+| Minimum SoH | `E_avail ≥ soh_min·E_rated` | — | **yes** | **drop** (it is a restriction) | removing a restriction enlarges the set ⇒ safe |
+| **Salvage** | see B5 | **negative contribution** | **yes — the dangerous one** | see B5 | **not safe to leave inside the relaxed recourse** |
+
+> **The one term that does not follow the pattern is salvage.** Every other
+> affected term is either non-negative and dropped, or an equality that is
+> relaxed. Salvage *reduces* the objective, so enlarging the set over which it is
+> computed can make the recourse *more* negative than the true optimum — which
+> is still a valid lower bound — but making salvage depend on relaxed
+> degradation variables means the LB can claim salvage value the physical system
+> cannot deliver. B5 resolves this by moving it out of the relaxed recourse.
+
+### Minimal relaxation `0 ≤ E_available ≤ E_rated`
+
+| Question | Answer |
+|---|---|
+| Jointly convex in investment `E`? | **Yes** — both bounds are affine in `(E_avail, E_rated)`, and `E_rated` is affine in the investment variables |
+| Finite / bounded? | **Yes** — `E_rated ≤ max_capacity` from the master, so `E_avail` is bounded |
+| Does `E` become operationally too weak to give planning sensitivity? | **No.** `E_avail` still enters the SOC band `0.1·E ≤ SOC_t ≤ 0.9·E` and the day-balance anchor `0.5·E`, so the dual of the E-fixing row remains nonzero whenever the SOC band binds. What is lost is the *degradation* channel — investment no longer buys reduced ageing, so the E-sensitivity is weaker than the true one, in the direction that under-values E. That is bound-consistent. |
+
+A weak but safe LB is accepted at this stage; no tightening is proposed without
+proof.
+
+## B5 — Salvage placement
+
+`get_salvage_value_sensitivities` is evaluated on the **ESSO model** and added
+to the investment sensitivities in `_get_operational_sensitivities`, i.e.
+salvage currently enters the planning problem **through the cut coefficient**,
+not as a master constraint. Its value depends on the terminal-year
+`es_e_available_per_unit`, which under the current formulation depends on
+`E_rated` **and** on `soh_cumul` — that is, on the degradation chain B4 drops.
+
+| Dependence | Present? |
+|---|---|
+| Investment `S` | indirectly, via `S_rated` |
+| Investment `E` | **yes**, via `E_rated` |
+| Available `E` | **yes**, via `es_e_available_per_unit[terminal year]` |
+| Degradation / SoH | **yes** — this is the problem |
+| Operational variables | **no** — it is a terminal-capacity quantity, not a dispatch quantity |
+
+**Decision: option 3 — a separate affine planning term, evaluated in the
+master, not inside the relaxed recourse.**
+
+Reasoning: salvage has no operational dependence, so it does not belong in an
+operational recourse at all; and leaving it inside a recourse whose degradation
+chain has been relaxed would let the LB claim salvage the physical system cannot
+deliver. Moving it to the master, expressed affinely in the investment
+variables with `soh_cumul` fixed at its **most pessimistic admissible value**
+(`soh_min`, or 1 if a *lower* salvage is the conservative direction — the sign
+must be checked against the salvage coefficient at implementation), keeps the
+master an LP and keeps the bound direction explicit.
+
+### Final definition
+
+```
+R(x) = min   Σ_agents [ generation + flexibility + curtailment costs
+                        + ESS usage penalty
+                        + retained slack penalties ]
+
+       s.t.  W-space AC with the rank-one SOC relaxation (all agents)
+             transformed OLTC block: U, C, D with C²+D² ≤ U·W_jj,
+                                     r_min²W_ii ≤ U ≤ r_max²W_ii, C ≥ 0
+             class-A/B strengthening only
+             exact affine TSO/DSO/ESSO coupling (B3)
+             shared-ESS: pnet = pch − pdch, pch + pdch ≤ S,
+                         ‖(pnet,qnet)‖₂ ≤ S, PF cone,
+                         active-energy SOC recursion, 0.1E ≤ SOC ≤ 0.9E,
+                         day-balance anchor
+             ESSO: cohort powers, limits, aggregation,
+                   ‖(pnet,qnet)‖₂ ≤ S_total, 0 ≤ E_avail ≤ E_rated
+             capacity-fixing rows S_fixed = S_rated, E_fixed = E_rated
+```
+
+with complementarity, the H1 hat variables, the degradation chain and salvage
+**all excluded** from `R(x)`.
+
+### Proof that `R(x) ≤ Q*_AC(x)`
+
+Let `x` be any investment. Take any feasible point of the full nonlinear
+problem at `x` with objective `Q`.
+
+1. **Feasibility.** Map it into the relaxed model: `W` from `(e,f)`, and for the
+   transformer `U = r²W_ii`, `C = r·WijR`, `D = r·WijI`. Every retained row is
+   either identical (B2 verified the transformer rows to 5.9e-15; the remaining
+   AC, generation, RES, flexibility and ESS rows are unchanged) or a relaxation
+   of a row the point satisfies (rank-one `=` → `≤`). Every dropped row is one
+   the point also satisfied, so dropping it cannot exclude it. The coupling
+   equalities hold because the nonlinear point has zero consensus residual by
+   construction (B3). So the mapped point is feasible for `R`.
+2. **Objective.** The retained terms are evaluated by identical expressions on
+   identical variables, so they take the same value. The dropped terms —
+   complementarity penalty, ESSO SoH and complementarity slacks — are all
+   **non-negative**, so the relaxed objective at the mapped point is `≤ Q`.
+   Salvage is absent from both sides of this comparison, being moved to the
+   master.
+3. Therefore `R(x) ≤` (relaxed objective at the mapped point) `≤ Q`. Taking the
+   infimum over all feasible nonlinear points gives `R(x) ≤ Q*_AC(x)`. ∎
+
+The argument covers **all objective terms**, not only feasibility.
+
+## B6 — Rigorous Gurobi dual/cut contract
+
+Test problem with a closed-form value function, mirroring the production
+contract (affine capacity-fixing row plus a cone whose RHS is the capacity):
+
+```
+R(θ) = min −p   s.t.  ‖(p,q)‖₂ ≤ S,  q = q₀,  S = θ
+     = −sqrt(θ² − q₀²),      dR/dθ = −θ/sqrt(θ² − q₀²)
+```
+
+convex in `θ` for `θ > q₀`. At `θ_k = 1.0`, `q₀ = 0.6`.
+
+### The dual is the derivative
+
+| Quantity | Value |
+|---|---|
+| Fixing-row dual `λ` | `−1.249999981` |
+| Analytic `dR/dθ` | `−1.250000000` |
+| Match | **yes**, to 1.9e-08 |
+
+### Cut construction
+
+A valid cut must come from **one** dual-feasible solution:
+`L(θ) = β + λθ` with `β = d(λ,μ)`, the dual function value. Operationally
+`β = anchor − λ·θ_k`, and the question is which anchor.
+
+| Anchor | `β` | Ordering at `θ_k` |
+|---|---|---|
+| `ObjVal` | `+0.450000001280` | `ObjBound −0.800000175 ≤ R −0.800000000 ≤ ObjVal −0.799999980` |
+| `ObjBound` | `+0.449999806276` | — |
+
+### Sweep over 12 capacity values — the decisive test
+
+Positive "violation" means `L(θ) > R(θ)`, i.e. the cut cuts off feasible values.
+
+| Anchor | worst violation over the sweep | valid cut? |
+|---|---|---|
+| **`ObjVal`** | **+2.049e-08** | **NO** |
+| **`ObjBound`** | **−1.745e-07** | **YES** |
+
+> **This is the contract.** The `ObjVal`-anchored cut is invalid — by a tiny
+> margin, and **at its own generating point**, which is precisely where a
+> Benders cut is tight and where an invalid cut would cut off the incumbent.
+> Away from `θ_k` the curvature dominates and both anchors are safely below.
+> The `ObjBound` anchor is valid at all 12 points.
+
+**Required contract for the planning implementation:**
+
+```
+L_k(x) = [ ObjBound(x_k) − σ ] + g_kᵀ(x − x_k)
+```
+
+with `g_k` the capacity-fixing-row duals from the same solve, and `σ ≥ 0` a
+safety margin at least the reported primal-dual gap (`4.214e-07` here).
+
+**Honest limit of this result.** The sweep is strong empirical evidence that
+Gurobi's `ObjBound` and its reported duals come from the same dual-feasible
+iterate — which is what makes `ObjBound + λ(θ−θ_k)` equal `d(λ,μ) − λθ` and
+therefore globally valid. It is **not** a proof: nothing in the API guarantees
+that correspondence. The `σ` margin is the engineering answer, and the sweep
+should be repeated on the real model.
+
+## B7 — Pyomo/Gurobi interface decision
+
+All three interfaces were tested on the same model.
+
+| | `gurobi` (LP-file) | `gurobi_direct` | `gurobi_persistent` |
+|---|---|---|---|
+| Termination | optimal | optimal | optimal |
+| `ObjVal` | −0.799999980 | −0.799999980 | −0.799999980 |
+| **Fixing-row dual** | −1.249999981 | −1.249999981 | −1.249999981 |
+| **QCP dual** | −0.624999990 | −0.624999990 | −0.624999990 |
+| Matches analytic derivative | **yes** | **yes** | **yes** |
+| SOC representation | quadratic constraint | quadratic constraint | quadratic constraint |
+| `ObjBound` access | via results object | via results object | **direct on the solver model** |
+| Model-update cost across candidates | full rewrite each solve | full rebuild each solve | **incremental — capacity RHS only** |
+| Capacity-row identification | by name | by component | **by component, stable across updates** |
+
+**Choice: `gurobi_persistent`.** Capability is identical across the three, so
+the decision rests on the planning loop's access pattern: many solves that
+differ only in the capacity-fixing right-hand sides. `gurobi_persistent` updates
+those in place, keeps stable component→row handles for extracting `g_k`, and
+gives direct access to `ObjBound`, which B6 makes mandatory. `gurobi_direct` is
+the fallback if persistent updates prove awkward with the conic rows.
+
+No solver was installed.
+
+## B8 — Centralized prototype specification
+
+Specified, **not implemented**.
+
+| # | Requirement | Specification |
+|---|---|---|
+| 1 | Environment gate | Reuse `p54r_provenance.gate()`; abort unless checksum `5a02b77c…` under `opf_env_py311` |
+| 2 | Centralized | One model per `(year, day, scenario)` covering TSO + 3 DSOs + ESSO |
+| 3 | All controllable resources | Conventional P/Q, RES P/Q with availability and PF cones, active and reactive flexibility with day balance, shared-ESS P/Q/SOC, voltage slacks, interface P/Q — none dropped |
+| 4 | Continuous OLTC | Retained via B2, exactly |
+| 5 | OLTC formulation | Transformed `U, C, D`; `r`, `r_sqr` eliminated; `C ≥ 0`; `r_min²W_ii ≤ U ≤ r_max²W_ii` |
+| 6 | REF/ADN signs | Exactly the B3 table |
+| 7 | Separate copies | TSO/DSO/ESSO shared-ESS copies retained initially |
+| 8 | Coupling | Exact affine equalities replacing ADMM; no rho, no duals, no proximal term, no objective scaling |
+| 9 | AC relaxation | W-space with rotated-SOC rank relaxation on every branch pair |
+| 10 | Strengthening | Class A/B only; **no `±30°`** |
+| 11 | Complementarity | Dropped in the LB model **only** |
+| 12 | H1 | Unchanged in the nonlinear UB model |
+| 13 | ESSO | B4 relaxation; `0 ≤ E_avail ≤ E_rated`; degradation chain omitted |
+| 14 | Salvage | Master-side affine term (B5), not in `R(x)` |
+| 15 | Cut | `L_k(x) = [ObjBound − σ] + g_kᵀ(x − x_k)`, `g_k` from the capacity-fixing rows of the same solve |
+| 16 | Returns | `ObjVal`, `ObjBound`, primal feasibility, duals, primal-dual gap |
+
+## P5.5-B verdict
+
+Closed by this stage: the `±30°` error is corrected and a rigorous A/B/C
+admissibility test is in place (B1); the OLTC is retained **exactly**, with `r`
+eliminated and the transformation verified to 5.9e-15 (B2); the interface
+semantics and their equivalence are established (B3); the bound direction is
+proved at the **objective** level, term by term (B4); salvage is placed and
+`R(x) ≤ Q*_AC(x)` is proved including all objective terms (B5); the cut contract
+is pinned down, including the finding that the `ObjVal` anchor is invalid at the
+generating point (B6); and the interface is chosen (B7).
+
+Two items are specified but not yet demonstrated on the real model, and both are
+empirical rather than mathematical:
+
+1. **Relaxation tightness is unmeasured.** Whether the class-A/B strengthening
+   closes the TSO's single-cycle gap, and how loose the SOC relaxation is on the
+   radial DSOs, can only be answered by building the model. If the gap is large
+   the LB is valid but useless.
+2. **The `ObjBound` cut contract is empirically, not analytically, established**
+   — 12 sweep points on a small problem, with a required safety margin `σ`.
+
+Neither blocks implementation; both must be measured during it. Because they are
+unmeasured, "mathematically closed **and ready for implementation**" would
+overstate the first, and I decline to claim it on unmeasured tightness.
+
+```
+P5.5-B PARTIAL — one or more lower-bound/cut/interface issues remain unresolved
+```
+
+```
+P5.5-B COMPLETE — ready for planner review before implementation
+```
+
+---
+
+# P5.5-A verdict  ·  updated after P5.4-R4 and P5.5-B
 
 The architecture is mathematically coherent and every relaxation has a proven
 bound direction. **The solver blocker is withdrawn** — Gurobi with a full
@@ -896,15 +1376,18 @@ academic licence is available in the canonical environment and was verified to
 return conic duals (A11). Two substantive items remain unresolved, both
 mathematical rather than external:
 
-1. **The OLTC tap–voltage bilinearity is real and unavoidable.** The DSO tap is
-   genuinely controllable, so it cannot be fixed to nominal (that would *shrink*
-   the feasible set and destroy the lower-bound property). The proposed
-   McCormick/secant envelopes are valid but their tightness on a radial feeder
-   with a single regulating transformer is unverified.
+1. ~~**The OLTC tap–voltage bilinearity is real and unavoidable.**~~
+   **RESOLVED in P5.5-B2.** The transformed variables `U = r²W_ii`,
+   `C = r·WijR`, `D = r·WijI` make every transformer expression affine, verified
+   against production to 5.9e-15, and `r`/`r_sqr` are eliminated entirely. The
+   only relaxation is the same rank-one SOC used on every other branch. The
+   McCormick proposal is superseded.
 2. **Discarding the ESSO degradation chain is bound-safe but changes what the
    LB model represents** — it ignores an economic effect the UB still charges
    for, which will inflate the optimality gap and needs an explicit modelling
-   decision.
+   decision. **P5.5-B4/B5 close the mathematics** (term-by-term bound proof, and
+   salvage moved to the master) but the modelling decision remains the
+   planner's.
 
 Two implementation prerequisites were added by P5.4-R rather than removed: the
 cut coefficient has never been recovered through a Pyomo→Gurobi dual mapping on
