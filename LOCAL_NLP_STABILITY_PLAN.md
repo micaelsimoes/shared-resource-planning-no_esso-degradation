@@ -23,70 +23,102 @@ Do not automatically proceed from a diagnostic result to a production formulatio
 
 ---
 
-# CURRENT AUTHORIZED STAGE — P5.4
+# CURRENT AUTHORIZED STAGE — P5.4 H1/F
 
-P5.3-B is complete. P5.4 is now the only authorized active local-NLP/ESS implementation stage unless a later planner instruction says otherwise.
+P5.4-A/B/C/D/E/E2 are complete. The current authorized implementation stage is now **P5.4-H1 — dimensionless complementarity**, followed only if it passes by **P5.4-F — live net-P/Q ADMM**.
 
-The accepted production checkpoint at the start of P5.4 remains:
+The historical P5.3 material later in this file remains evidence only.
 
-`f77d829359ffd873367f556882546bc2dcc8ec99`
+## Current production/evidence checkpoints
 
-The P5.3-B3 active-power shared-ESS formulation is the **approved production direction**, but the diagnostic wrapper itself is not production code. P5.4 must implement and validate the semantics end to end before a new production checkpoint is accepted.
+Production active-energy stack:
 
-Current reduced-scenario identity:
+- `a4a0bae8` — shared network active-energy ESS;
+- `1e86d40e` — ordinary network ESS parity;
+- `58f4911b` — ESSO active-energy conversion;
+- `c3526ec8` — lifecycle/sensitivity audit state and final pre-ADMM production validation.
+
+Diagnostic evidence:
+
+- `b0e53bc4` — E2 complementarity-significance diagnostics; no formulation change.
+
+Reduced-scenario identity remains:
 
 - seed `2026`;
-- combined scenario checksum:
-  `5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358`.
+- combined checksum `5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358`.
 
-## Authoritative P5.3-B decisions
+## Completed P5.4 results — authoritative
 
-### B1 — exact reference angle
+The final post-B/C/D positive-bootstrap production validation gives:
 
-`f_ref = 0` removed the gauge cleanly but relocated the three bootstrap failures rather than reducing their count.
+- `36/36` DSO success;
+- `12/12` TSO success;
+- `3/3` ESSO success;
+- `0` primary failures;
+- `0` recoveries;
+- `0` persistent failures;
+- `1556` total network IPOPT iterations;
+- network mean/median/max about `32.4 / 28.5 / 119`;
+- representative network equality Jacobians full row rank;
+- `0` zero-gradient equality rows from the ESS formulation;
+- `0/1728` shared-network converter-capability violations.
 
-Decision:
+The active-energy physical correction is productionized:
 
-`CONTINUE TESTING — do not productionize yet`.
+- shared and ordinary network SOC use active `pch/pdch`;
+- pure reactive power does not change network ESS SOC;
+- `sess_snet_def`, `ess_snet_def`, their apparent `sch/sdch` variables, and their `kappa` machinery are retired;
+- ESSO has no SOC variable and none was invented;
+- ESSO degradation throughput now uses cell-side active-energy throughput while preserving the existing degradation law/weights;
+- every load-bearing coordination path remains based on net `pnet/qnet`.
 
-Do not include B1 in the initial P5.4 baseline. Retest it only after the active-energy ESS production baseline is stable.
+## E2 complementarity evidence — authoritative
 
-### B2-R — RES capability semantics
+The physical circulation metric is:
 
-The current RES `sg_capability` conflates stochastic active availability with apparent-power capability, but the repository has no defensible converter MVA rating.
+`p_circ = min(pch, pdch)`.
 
-Decision:
+Do not infer directional circulation from `sqrt(pch*pdch)`.
 
-`DEFER — insufficient physical rating data for safe reformulation`.
+Network shared-ESS E2 results:
 
-Do not alter RES capability or copula behavior during P5.4.
+- maximum `p_circ/S = 0.11562`;
+- DSO maximum about `0.01669`;
+- TSO maximum about `0.11562`;
+- `694/1728` rows exceed `1e-2*S` circulating power;
+- worst representative-day artificial circulation loss about `3.0%` of `E_rated`;
+- worst representative-day circulation loss about `3.4%` of legitimate throughput.
 
-Future RES work requires an explicit converter `Smax`/`s_rated` field. Reactive-only/STATCOM behavior is a separate modelling decision because the existing PF cone forces `qg = 0` when `pg = 0`.
+Network complementarity semantics are relative:
 
-### B3 — active-power ESS
+`pch*pdch <= ESS_COMPLEMENTARITY_TOLERANCE*S^2`.
 
-Decision:
+The current value remains:
 
-`PRODUCTIONIZE CANDIDATE — approved production direction`.
+`ESS_COMPLEMENTARITY_TOLERANCE = 1e-4`.
 
-B3 established:
+At bootstrap S this physical RHS is numerically tiny compared with IPOPT's absolute feasibility scale.
 
-- DSO zero-gradient equality rows `24 -> 0`;
-- TSO zero-gradient equality rows `72 -> 0`;
-- full equality Jacobian becomes full row rank;
-- positive-bootstrap network primary failures `3 -> 0`;
-- persistent failures `3 -> 0`;
-- total network IPOPT iterations `33073 -> 1545`;
-- worst iteration count `3000 -> 109`;
-- runtime about `274 s -> 37 s`;
-- pure Q gives exactly zero SOC change;
-- active charging/discharging SOC behavior is physically correct.
+ESSO has a pre-existing inconsistency: its per-cohort complementarity is currently absolute (`pch*pdch <= 1e-4`) rather than relative to installed power. It is effectively vacuous at bootstrap capacities; aggregate ESSO circulation reaches about `0.1912*S`.
 
-The P5.2 narrow-band workaround and further `sess_snet_def`/`kappa` tuning are abandoned.
+## Coordination decision
+
+ADMM continues to coordinate **net electrical P/Q only**.
+
+Do not add consensus variables for:
+
+- `pch`;
+- `pdch`;
+- circulation;
+- SOC;
+- cell-energy rate;
+- throughput.
+
+With tight local complementarity, `pnet = pch - pdch` determines charge/discharge direction to numerical accuracy. `pch/pdch` remain local physical variables and may be logged as diagnostics.
 
 ## P5.4 global invariants
 
-Do not during P5.4 unless explicitly authorized:
+Unless explicitly authorized by a later planner decision, do not:
 
 - tune IPOPT `tol`, `acceptable_tol`, `acceptable_iter`, `max_iter`, or bound/slack pushes;
 - change MA97/MA57 policy;
@@ -97,304 +129,416 @@ Do not during P5.4 unless explicitly authorized:
 - change TSO proximal regularization;
 - change Benders/local-cut logic;
 - add generic feasibility slacks;
-- productionize the P5.2 shared-ESS narrow band;
-- add a new arbitrary `kappa` or row multiplier to the new ESS inequalities;
-- change `ESS_COMPLEMENTARITY_TOLERANCE`;
+- reintroduce `sess_snet_def`/`ess_snet_def`;
+- reintroduce P5.2 narrow bands or `kappa` scaling;
 - modify RES capability or stochastic samples;
 - add calendar degradation;
-- modify terminal salvage unless required solely to preserve existing active-energy semantics and explicitly approved.
+- include B1 `f_ref=0` in the current baseline.
 
-Work in small checkpoints. Do not bundle unrelated changes.
+For H1 specifically:
+
+- **do not change the numerical value** `ESS_COMPLEMENTARITY_TOLERANCE = 1e-4`;
+- dimensionless variables are authorized **for charge/discharge complementarity only**;
+- do not normalize converter capability because its audited physical violation is zero;
+- do not add new complementarity objective penalties or retune existing coefficients.
 
 ---
 
-# P5.4-A — productionize shared network ESS
-
-Implement the accepted B3 shared-network formulation in production.
-
-## Remove/retire from the shared network NLP
-
-Retire the shared-network apparent charge/discharge representation:
-
-- `shared_es_sch`;
-- `shared_es_sdch`;
-- `sess_snet_def`;
-- `sess_pch_link`;
-- `sess_pdch_link`;
-- old `sess_s_limit`;
-- old apparent-power-based `sess_soc_def`;
-- old `sess_comp`.
-
-Also retire production machinery whose only purpose is `sess_snet_def` scaling:
-
-- `sess_snet_def_kappa`;
-- `shared_ess_snet_def_scale`;
-- `_sync_sess_snet_def_scale`;
-- any dual/multiplier transfer logic specific only to that row.
-
-Do not remove unrelated warm-start handling.
-
-Preserve zero-capacity gating and reused-model lifecycle behavior.
-
-## Keep and implement
-
-Keep the canonical load-positive convention:
-
-`pnet = pch - pdch`.
-
-SOC:
-
-`SOC_t = SOC_(t-1) + eta_ch * pch * dt - pdch * dt / eta_dch`.
-
-Use an explicit/reusable production time-step convention. For current 24-hour representative days verify `dt = 1 h` exactly.
-
-Converter capability:
-
-`pnet^2 + qnet^2 <= S_rated^2`.
-
-Active envelope derived from the production feasible set:
-
-`pch + pdch <= S_rated`.
-
-Use appropriate redundant explicit bounds where helpful and exact:
-
-- `0 <= pch <= S_rated`;
-- `0 <= pdch <= S_rated`;
-- `-S_rated <= pnet <= S_rated`;
-- `-S_rated <= qnet <= S_rated`.
-
-Complementarity:
-
-`pch * pdch <= ESS_COMPLEMENTARITY_TOLERANCE * S_rated^2`.
-
-Preserve `ESS_COMPLEMENTARITY_TOLERANCE` exactly.
-
-Preserve existing PF/reactive-power constraints unless their derivation explicitly depends on `sch/sdch`; if so, re-derive them from the active-power convention rather than copying them mechanically.
+# P5.4-H1 — dimensionless charge/discharge complementarity
 
 ## Objective
 
-Replace shared-ESS usage and complementarity objective terms consistently:
+Make the existing relative complementarity tolerance numerically resolvable without physically tightening it.
 
-- usage: old `sch + sdch` -> active `pch + pdch`;
-- complementarity penalty: old `sch * sdch` -> active `pch * pdch`.
+Separate two questions:
 
-Preserve all coefficients. Do not retune penalties.
+1. Can IPOPT enforce the current `1e-4` relative complementarity when it is written at O(1) scale?
+2. If it can, is that physical tolerance itself sufficiently tight?
 
-## Output and diagnostic compatibility
+H1 answers question 1 only.
 
-Audit every field previously derived from `sch/sdch`.
+## H1.1 — shared network ESS
 
-Do not silently change an output contract.
+For every positive-capacity active shared ESS introduce dimensionless nonnegative internal variables:
 
-For the shared-ESS result currently represented as `s_ess = sch - sdch`, determine whether consumers expect:
+`shared_es_pch_hat`
 
-- a signed charge/discharge quantity;
-- apparent-power magnitude;
-- display-only data.
+`shared_es_pdch_hat`
 
-If apparent magnitude is intended, use:
+with nominal bounds `[0,1]`.
 
-`sqrt(pnet^2 + qnet^2)`
+Link them to the existing physical active powers with equalities of the form:
 
-and rename/document as needed. If a signed legacy field is required, preserve it explicitly and add a separate magnitude.
+`shared_es_pch - shared_es_s_rated * shared_es_pch_hat = 0`
 
-Update ADMM charge/discharge diagnostics to use active `pch/pdch`.
+`shared_es_pdch - shared_es_s_rated * shared_es_pdch_hat = 0`.
 
-Units must be correct:
+Keep the physical variables `shared_es_pch/shared_es_pdch`; they remain the quantities used by SOC, `pnet`, objectives, results, diagnostics and sensitivity logic.
 
-- `pch/pdch`: MW;
-- apparent magnitude: MVA.
+Replace only the complementarity inequality:
 
----
+old:
 
-# P5.4-B — ordinary network ESS parity
+`shared_es_pch * shared_es_pdch <= eps * shared_es_s_rated^2`
 
-Audit ordinary ESS consumers and apply the same active-energy semantics where applicable.
+new:
 
-Current ordinary ESS has the same hard apparent-power geometry through `ess_snet_def` and its P4.6-B2 scale.
+`shared_es_pch_hat * shared_es_pdch_hat <= eps`
 
-Production direction:
+with:
 
-- preserve load-positive `es_pnet = es_pch - es_pdch`;
-- SOC from `es_pch/es_pdch` active power;
-- converter capability from `es_pnet/es_qnet`;
-- active envelope on `es_pch/es_pdch`;
-- complementarity on `es_pch * es_pdch`;
-- remove `es_sch/es_sdch` where no longer required;
-- remove `ess_snet_def` and `ess_snet_def_scale`/`kappa_es` machinery.
+`eps = ESS_COMPLEMENTARITY_TOLERANCE = 1e-4`.
 
-If SRP1 has no ordinary ESS, still run focused construction/physics tests using the previously validated ordinary-ESS case.
+For positive capacity this is an exact reformulation of the same relative feasible set.
 
-Do not alter unrelated network physics.
+Keep unchanged:
 
----
+- `pnet = pch - pdch`;
+- SOC;
+- `pch + pdch <= S`;
+- physical variable bounds;
+- converter capability;
+- PF/reactive rows;
+- physical objective terms.
 
-# P5.4-C — ESSO active-energy conversion
+Do not replace usage/complementarity objective terms with normalized quantities in H1.
 
-This phase is required before live ADMM.
+## H1.2 — zero-capacity and reused-model lifecycle
 
-Trace the complete ESSO formulation before editing it.
+Do not divide by `S` anywhere.
 
-Convert per-cohort apparent charge/discharge semantics to physically active `pch/pdch` while preserving aggregate network-facing P/Q and installed S/E semantics.
+At zero/inactive capacity:
 
-SOC must use active energy:
+- fix `pch_hat = 0`;
+- fix `pdch_hat = 0`;
+- retain existing physical-variable zero-capacity gating;
+- deactivate or safely configure the normalized complementarity row consistently with the existing lifecycle.
 
-`SOC_t = SOC_(t-1) + eta_ch * pch * dt - pdch * dt / eta_dch`.
+Test in place on one reused model:
 
-Converter capability remains an apparent-power equipment constraint on aggregate P/Q.
+- zero -> positive;
+- positive -> different positive;
+- positive -> zero;
+- zero -> positive again.
 
-Ensure ESSO and network agents describe the same feasible shared battery schedules.
+Track component identity and bounds/fixed status.
 
-## Throughput and cycling degradation
+## H1.3 — derivative/rank audit
 
-Do not invent a new degradation law.
+Before solving representative DSO and TSO models, report:
 
-Trace the existing degradation equation, weighting, and normalization first.
+- link-row Jacobian norms;
+- complementarity-row gradient norm/margin at the cold start;
+- relevant second derivatives;
+- zero-gradient equality-row count;
+- `sigma_min(full)` and row rank on representative equality Jacobians.
 
-Replace apparent-power throughput with **cell-side active-energy throughput** while preserving the existing degradation-law structure.
+Required structural properties:
 
-Candidate physical cell-energy contributions:
+- link equalities retain coefficient `+1` on physical `pch/pdch`, so they are not zero-gradient at zero dispatch;
+- no exact equality-rank defect is reintroduced;
+- normalized complementarity RHS is `1e-4`, rather than O(`S^2`);
+- normalized complementarity curvature is O(1).
 
-charging:
+A zero gradient on the normalized complementarity inequality at `pch_hat=pdch_hat=0` is acceptable because the row is strictly interior by `1e-4`; distinguish it from the old zero-gradient equality defect.
 
-`eta_ch * P_ch * dt`
+## H1.4 — ordinary network ESS parity
 
-discharging:
+Apply the same complementarity semantics to ordinary ESS:
 
-`P_dch * dt / eta_dch`.
+`es_pch - S_rated * es_pch_hat = 0`
 
-Apply these only after verifying:
+`es_pdch - S_rated * es_pdch_hat = 0`
 
-- representative-day weights;
-- year weights;
-- scenario weights;
-- capacity normalization;
-- equivalent-cycle definition;
-- SoH linkage.
+`es_pch_hat * es_pdch_hat <= eps`.
 
-Calendar degradation remains deferred.
+Here `S_rated` is fixed network data, but use the same relative semantics for consistency.
 
-## ESSO consistency tests
+Re-run the OP1 validation used in P5.4-B.
 
 Require:
 
-1. pure Q -> zero SOC change and zero cycling throughput;
-2. pure charging -> correct SOC and cell-energy throughput;
-3. pure discharging -> correct SOC and cell-energy throughput;
-4. aggregate P/Q convention matches the network agents;
-5. power/energy investment sensitivities remain available;
-6. zero capacity remains safe;
-7. cohort aggregation remains exact.
+- successful primary solve;
+- no converter-capability violation;
+- normalized complementarity enforced;
+- no material iteration regression relative to the accepted active-energy OP1 result (`144` iterations), allowing ordinary solver variation.
 
----
+## H1.5 — ESSO per-cohort complementarity
 
-# P5.4-D — sensitivity, lifecycle, and warm-start audit
+First trace the exact per-cohort installed-power quantity and its units. Do not guess the cohort rating.
 
-Verify that removing `sess_snet_def` scaling machinery does not break:
+Replace the current absolute per-cohort complementarity with the same **relative** semantics used by network agents.
 
-- shared-S sensitivity;
-- shared-E sensitivity;
-- Benders sensitivity extraction/cuts;
-- live candidate updates;
-- zero -> positive capacity transitions;
-- positive -> different-positive transitions;
-- positive -> zero transitions;
-- warm-start suffix behavior;
-- reused-model component identity where required.
+For every active cohort, introduce dimensionless internal variables linked to the cohort physical active powers using the actual cohort installed power:
 
-The old `kappa` multiplier-transfer logic should disappear if no remaining row needs it.
+`pch_cohort - S_cohort * pch_hat_cohort = 0`
 
-Do not introduce replacement multiplier transformations without a demonstrated need.
+`pdch_cohort - S_cohort * pdch_hat_cohort = 0`
 
----
+and enforce:
 
-# P5.4-E — production validation before ADMM
+`pch_hat_cohort * pdch_hat_cohort <= ESS_COMPLEMENTARITY_TOLERANCE`.
 
-Run focused unit/construction tests first.
+Preserve the numerical value `1e-4`.
 
-Then rerun the complete positive-bootstrap initialization using the **actual production implementation**, not the B3 diagnostic wrapper.
+This is an authorized semantic consistency correction: the previous absolute `1e-4` condition is superseded.
 
-Required population:
+Do not modify degradation coefficients or throughput weighting.
 
-- 36 DSO models;
-- 12 TSO models;
-- 3 ESSO models.
+## H1.6 — ESSO aggregate complementarity
 
-Target gate:
+Per-cohort complementarity alone permits one cohort to charge while another cohort discharges at the same node/time.
 
-- `36/36` DSO success;
-- `12/12` TSO success;
-- `3/3` ESSO success;
-- zero persistent failures;
-- record primary/recovery split;
-- compare iteration/runtime statistics with B3.
+The network agent represents one aggregate shared ESS and enforces complementarity on aggregate charge/discharge. The ESSO aggregate feasible set must therefore be compatible.
 
-Repeat targeted derivative/rank diagnostics and confirm:
+For each shared-ESS node/year/time define/identify:
 
-- `sess_snet_def` no longer exists;
-- no zero-gradient equality rows are introduced by the new ESS formulation;
-- representative full equality Jacobians remain full row rank.
+`pch_agg = sum_active_cohorts(pch_cohort)`
 
-## Physical residual audit
+`pdch_agg = sum_active_cohorts(pdch_cohort)`.
 
-Across every active shared-ESS row audit normalized physical violations.
+Use the actual aggregate installed power:
 
-Converter capability:
+`S_total = sum/production-defined aggregate installed power for the active cohorts`.
 
-`max((pnet^2 + qnet^2 - S^2) / S^2, 0)`.
+Introduce aggregate dimensionless variables through link equalities with a unit coefficient on the physical aggregate expression/variable, and enforce:
 
-Complementarity:
+`pch_hat_agg * pdch_hat_agg <= ESS_COMPLEMENTARITY_TOLERANCE`.
 
-`max((pch * pdch - eps * S^2) / S^2, 0)`.
+Use the correctly spelled production constant `ESS_COMPLEMENTARITY_TOLERANCE`; the line above states the mathematics only.
+
+Do not invent a new aggregate rating or oversizing factor.
+
+Preserve per-cohort complementarity as well unless a separate proof demonstrates it is redundant and planner review authorizes removal.
+
+## H1.7 — objective policy
+
+Do not tune objectives in H1.
+
+Keep physical usage/complementarity penalty terms expressed with physical active powers and existing coefficients.
+
+The normalized **hard constraint** is responsible for enforcing complementarity.
+
+Report the objective contribution of the existing complementarity penalty only as a diagnostic.
+
+## H1.8 — production positive-bootstrap gate
+
+After implementing H1 consistently across shared network ESS, ordinary ESS and ESSO, rerun the exact production positive-bootstrap population.
+
+Require:
+
+- `36/36` DSO;
+- `12/12` TSO;
+- `3/3` ESSO;
+- zero persistent failures.
 
 Report:
 
-- maximum;
-- mean;
-- p95;
-- number/fraction above meaningful physical thresholds;
-- worst row identities.
+- primary/recovery split;
+- total/mean/median/max iterations;
+- runtime;
+- objectives;
+- representative equality rank/singular values;
+- converter-capability residuals.
 
-Do not judge these only from IPOPT's unscaled reported feasibility metric.
+Compare to the accepted pre-H1 active-energy baseline:
+
+- `1556` total network iterations;
+- about `32 s` runtime;
+- zero failures.
+
+A modest numerical-cost increase is acceptable if complementarity becomes physically enforced. A large regression or new failure family fails the gate.
+
+## H1.9 — complementarity acceptance metrics
+
+For every network, ordinary-ESS and ESSO complementarity population report:
+
+- `pch_hat`;
+- `pdch_hat`;
+- `pch_hat*pdch_hat`;
+- `max(pch_hat*pdch_hat - eps, 0)`;
+- physical `min(pch,pdch)/S`.
+
+For shared network agents and ESSO aggregate report:
+
+- max;
+- mean;
+- median;
+- p95;
+- p99;
+- count `>1e-3`;
+- count `>1e-2`.
+
+With `eps=1e-4`, exact enforcement implies that equal-direction simultaneous charging/discharging cannot exceed:
+
+`sqrt(eps) = 1e-2` of rating.
+
+Verify the actual physical circulation empirically rather than assuming equality of directional powers.
+
+Recompute artificial circulation loss:
+
+`E_circ_loss = min(pch,pdch) * dt * (1/eta_dch - eta_ch)`
+
+and report:
+
+- MWh;
+- fraction of `E_rated`;
+- fraction of legitimate throughput.
+
+Compare with E2:
+
+- network max `p_circ/S = 0.11562`;
+- ESSO aggregate max about `0.1912`.
+
+## H1.10 — physical-tolerance decision is deferred
+
+Do not reduce epsilon in H1.
+
+If the normalized row is enforced with negligible violation but circulation approaches the permitted ~1% scale and that is still physically unacceptable, recommend a later isolated physical-tolerance A/B (`1e-5`, `1e-6`, etc.).
+
+Do not perform that A/B automatically.
+
+## H1 pass gate
+
+H1 passes only if:
+
+1. all production positive-bootstrap local solves succeed;
+2. no equality-rank defect is introduced;
+3. normalized network complementarity is solver-resolved;
+4. ESSO per-cohort complementarity uses the same relative semantics and is solver-resolved;
+5. ESSO aggregate complementarity is solver-resolved;
+6. physical `min(pch,pdch)/S` is consistent with the `sqrt(eps)=1%` allowance plus small numerical error;
+7. converter capability remains clean;
+8. no end-to-end active-energy semantic inconsistency is introduced.
+
+If H1 fails, stop before F and report.
 
 ---
 
-# P5.4-F — live distributed ADMM gate
+# P5.4-F — live distributed ADMM with net P/Q coordination only
 
-Only after P5.4-E passes, run reduced SRP1 operational planning for the exact positive-bootstrap candidate.
+Run F **only if H1 passes**.
+
+Run the exact positive-bootstrap candidate through live distributed ADMM.
+
+Do not run the outer planning loop.
 
 Keep unchanged:
 
 - seed/scenarios;
-- ADMM parameters;
 - IPOPT options;
-- proximal settings;
-- objective scaling;
-- Benders settings.
+- MA97/exact-Hessian policy;
+- recovery policy;
+- ADMM rho values/adaptation;
+- ADMM tolerances;
+- proximal regularization;
+- objective scaling.
 
-Record:
+## Standard instrumentation
 
-- ADMM convergence;
-- cycles;
-- every local primary/recovery failure;
-- residual evolution;
-- recourse evolution;
-- shared-ESS active P/Q schedules;
-- SOC;
-- converter-capability normalized residuals;
-- active complementarity normalized residuals.
+Record every cycle:
 
-Compare against P4.5/P5 history.
+- cycle number;
+- rho values;
+- V primal max/mean and dual mean;
+- P/Q-flow primal max/mean and dual mean;
+- shared-ESS net-P/Q primal max/mean and dual mean;
+- recourse-stationarity metrics;
+- local solver status, recovery use and iterations;
+- recourse/objective evolution.
 
-Do not run the full outer planning loop yet.
+## Complementarity sanity diagnostics — not consensus
+
+At each cycle and at convergence record for DSO, TSO and ESSO aggregate:
+
+- `pch`;
+- `pdch`;
+- `pnet`;
+- `min(pch,pdch)/S`;
+- normalized complementarity product/violation.
+
+For ESSO also retain per-cohort diagnostics.
+
+These are not ADMM residuals and must not be fed into consensus updates.
+
+## Energy-consistency sanity diagnostic
+
+At final electrical consensus compute locally:
+
+`p_cell = eta_ch*pch - pdch/eta_dch`.
+
+Compare DSO/TSO/ESSO for the same shared ESS only as a diagnostic.
+
+With tight complementarity and net-P agreement, charge/discharge direction should agree automatically. A large `p_cell` disagreement despite tight local complementarity indicates an implementation inconsistency.
+
+## F stopping rules
+
+- If a new reproducible persistent local-NLP failure appears, stop and report it.
+- If ADMM converges, complete the physical sanity diagnostics and stop for planner review.
+- If the configured maximum cycles are reached, report the last-cycle diagnostics.
+
+Do not add `pch/pdch` consensus in response to an F issue without planner review.
+
+F verdict:
+
+`P5.4-F ADMM PASS — net-P/Q coordination converged with locally consistent charge/discharge`
+
+or:
+
+`P5.4-F ADMM PARTIAL — electrical coordination converged but a local physical inconsistency remains`
+
+or:
+
+`P5.4-F ADMM FAIL — distributed coordination did not converge robustly`.
+
+---
+
+# P5.4-D2 — shared-S sensitivity root-cause audit before Benders
+
+Outer planning remains blocked even if F passes.
+
+P5.4-D found that the analytic shared-S capacity sensitivity does not converge to the finite-difference estimate and can change sign. The issue predates P5.4 but remains a risk to Benders cut quality.
+
+Before P5.4-G, perform a targeted audit of all dependence on shared power capacity `S`.
+
+Explicitly inventory whether S enters through:
+
+- the rated-capacity fixing equality;
+- converter-capability RHS;
+- active-sum limit RHS;
+- dimensionless H1 linking equalities;
+- physical variable upper/lower bounds updated by lifecycle code;
+- zero-capacity activation/deactivation logic;
+- objective terms;
+- any mutable Params or expressions;
+- ESSO/network coupling and sensitivities.
+
+Determine whether the current analytic sensitivity based on the rated-capacity fixing-row dual captures **all** local value-function dependence on S. In particular, mutable variable bounds whose numerical limits are directly changed with S may contribute sensitivity that is not represented by that single dual.
+
+Use targeted finite differences only for this sensitivity validation. Control for local-optimum switching by:
+
+- using symmetric perturbations where feasible;
+- reporting solve status/objective/KKT diagnostics;
+- comparing warm and cold perturbation probes only if necessary and without changing production policy;
+- checking multiple perturbation sizes.
+
+Do not change Benders/local-cut logic in D2. First establish the cause.
+
+D2 must end with one of:
+
+- `S sensitivity validated`;
+- `S sensitivity formula incomplete — concrete missing dependence identified`;
+- `S sensitivity indeterminate because local value function is not smooth/reproducible at this point`.
 
 ---
 
 # P5.4-G — reduced planning gate
 
-Only if P5.4-F is sufficiently clean, rerun reduced:
+Run reduced `run_planning_problem()` only if:
 
-`run_planning_problem()`.
+1. H1 passes;
+2. F is sufficiently clean;
+3. D2 establishes a trustworthy capacity-sensitivity path or a planner-approved alternative.
 
 Preserve current Benders/positive-bootstrap settings.
 
@@ -404,57 +548,42 @@ Record:
 - candidate sequence;
 - initialization failures;
 - ADMM failures;
-- local NLP failures/recoveries;
-- sensitivities;
+- local NLP primary/recovery outcomes;
+- capacity sensitivities and cuts;
 - incumbent evolution;
 - termination reason;
-- normalized converter/complementarity residuals.
+- complementarity/circulation diagnostics.
 
-Do not alter Benders logic in response to a failure during this stage. Stop and report a new failure family.
-
----
-
-# P5.4-H — remaining inequality-conditioning decision
-
-After live ADMM/planning evidence, decide whether the remaining tiny-scale inequalities need reformulation.
-
-Do not default to another arbitrary row multiplier.
-
-If normalized physical violations are materially non-negligible, prepare a proposal for **true dimensionless ESS internal variables**, e.g. fixed local numerical scaling such that:
-
-`p_hat`, `q_hat`, `pch_hat`, `pdch_hat`
-
-are `O(1)` and:
-
-`p_hat^2 + q_hat^2 <= 1`
-
-`pch_hat * pdch_hat <= ESS_COMPLEMENTARITY_TOLERANCE`.
-
-Any proposal must preserve physical P/Q at the network/ADMM boundary and safely handle changing planning capacities on reused models.
-
-Do not implement dimensionless-variable normalization unless the physical residual audit demonstrates a need.
+Do not tune Benders in response to a failure during this gate. Stop and report new behavior.
 
 ---
 
-# P5.4 required report
+# Later complementarity-tolerance decision
 
-Produce:
+H1 keeps `eps=1e-4` fixed. If H1/F demonstrate that this tolerance is numerically enforced but its physical allowance remains too loose, prepare a separate one-change A/B on epsilon.
 
-`P5_4_ACTIVE_ENERGY_ESS_PRODUCTIONIZATION_REPORT.md`
+Do not mix physical epsilon tightening with dimensionless scaling or ADMM tuning.
 
-with separate sections A-H.
+---
 
-Stop immediately if an end-to-end semantic inconsistency is found that cannot be resolved without changing the approved physical model.
+# Current required report
 
-Final verdict must be one of:
+Continue:
 
-`P5.4 PASS — active-energy ESS productionization validated end-to-end`
+`P5_4_ACTIVE_ENERGY_ESS_PRODUCTIONIZATION_REPORT.md`.
 
-`P5.4 PARTIAL — production formulation implemented but live coordination/planning questions remain`
+For the next checkpoint add:
 
-`P5.4 FAIL — active-energy ESS productionization introduces unresolved issues`
+- H1 implementation and validation;
+- F only if H1 passes.
 
-Then stop for planner review.
+Do not issue the final P5.4 verdict before the sensitivity/Benders gate is reviewed.
+
+For H1/F checkpoint finish with:
+
+`P5.4 H1/F CHECKPOINT COMPLETE — ready for planner review before Benders`
+
+and stop.
 
 ---
 
