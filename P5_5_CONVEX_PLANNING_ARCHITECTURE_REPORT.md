@@ -1612,6 +1612,21 @@ The interface rows are violated by the ADMM consensus gap of the mapped point
 interface active power), which is a property of an ADMM-converged point, not of
 the model — production's own consensus tolerances are `v: 0.01`, `pf: 0.01`.
 
+> **Correction of record (P5.5-D).** The two halves of C6 must be graded
+> separately, and the original text did not do so.
+>
+> - **C6 local mapped-point validation — PASS.** Each block's standalone audit
+>   is complete and unaffected: the mapped point's violation equals the
+>   nonlinear model's own residual to the digit in all four blocks.
+> - **C6 global exact-coupling validation — NOT established by this run.** The
+>   source point here is ADMM-converged, so it satisfies the consensus only to
+>   the ADMM tolerance. A mapping audit against such a point cannot show that an
+>   *exactly* feasible centralized nonlinear point maps into the parent, and it
+>   does not license calling the point a rigorous feasible upper-bound
+>   incumbent. That gap is closed in **P5.5-D1**, which polishes to exactly zero
+>   interface mismatch and re-runs the audit; the global grade is **PASS** as of
+>   D1, not as of C6.
+
 **This check earned its place: it found four real faults**, each then traced to
 production source rather than guessed.
 
@@ -1690,11 +1705,32 @@ Diagnostics on the solved (uncertified) primal point of the full model,
 
 Read together these rank the causes rather than merely measuring the symptom.
 
-- **The dominant term is the dropped complementarity.** The shared ESS charges
-  and discharges simultaneously at **49.9% of its rating**. That is a physically
-  impossible degree of freedom which lets the storage absorb whatever the network
-  needs by burning energy through the round-trip efficiency, at no cost the
-  objective can see.
+- **The largest *statistic* is the dropped complementarity.** The shared ESS
+  charges and discharges simultaneously at **49.9% of its rating** — a physically
+  impossible operating point, which the storage can use to absorb whatever the
+  network needs by burning energy through the round-trip efficiency, at no cost
+  the objective can see.
+
+  > **Correction of record (P5.5-D2/D4).** The original text went on to call
+  > this "the dominant term" of the objective gap. That inference was wrong on
+  > two counts and is withdrawn.
+  >
+  > First, on *what it is*: 0.499 S is not the trace of a missing convex
+  > constraint. `(S,0)` and `(0,S)` are both H1-feasible, so every convex set
+  > containing them contains `(S/2, S/2)`; D2 proves that the convex hull of the
+  > H1 set is exactly the triangle `{pch,pdch ≥ 0, pch+pdch ≤ S}` that production
+  > already imposes, and that the bilinear H1 row contributes nothing at all once
+  > convexified. The 0.499 S is the **hull midpoint** — a consequence of
+  > continuous convexification, not an omission, and not removable by any
+  > continuous convex inequality in `(pch, pdch, S)`.
+  >
+  > Second, on *what it costs*: a large ratio is not a large objective term. At
+  > the canonical candidate `S = 0.0106 MVA` per node-year, so 0.499 S is about
+  > **16 kW**. D4 measures the objective consequence directly by fixing every ESS
+  > mode: the full-model objective moves by **0.049 %** and only **0.42 %** of the
+  > gap to the polished nonlinear feasible point closes. The complementarity
+  > relaxation is therefore the largest *relative* distortion and a negligible
+  > *absolute* one.
 - **Second is the meshed AC rank gap**, 2.45e-02, confined entirely to the
   transmission network. The distribution networks are radial and their SOC
   relaxation is essentially exact — the classical result, confirmed here. The
@@ -1800,4 +1836,419 @@ P5.5-C PARTIAL
 
 ```
 P5.5-C COMPLETE — ready for planner review before any replacement planning loop
+```
+
+---
+
+# P5.5-D — lower-bound architecture decision gate
+
+Canonical environment throughout: `/opt/anaconda3/envs/opf_env_py311/bin/python`,
+checksum `5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358`,
+IPOPT 3.14.18 + MA97, Gurobi 13.0.1. Every script below is provenance-gated and
+aborts on a checksum mismatch. Evidence under `data/SRP1/Results/P55D/`;
+P5.5-C evidence untouched. Branch `feature/convex-planning`.
+
+Nothing in the nonlinear production path was modified: no change to the
+nonlinear SMOPF, ADMM, H1, IPOPT settings, `_add_benders_cut`, the Benders
+master, or any outer planning loop, and no planning loop was invoked. The models
+returned by `run_operational_planning` are post-processed as ordinary Pyomo
+objects in D1; production code is not touched.
+
+## D1 — exact-consensus nonlinear polish
+
+C6's global audit used an ADMM-converged source point, whose consensus residuals
+are nonzero by construction. D1 removes that caveat. One common value is formed
+for each coordinated quantity — interface P, interface Q, interface voltage,
+shared-ESS P, shared-ESS Q, and the shared available S/E — as the midpoint of the
+two sides; both sides are fixed to it; and every local nonlinear model is
+re-solved against its **base** objective, which is the one `get_primal_value`
+uses to measure the recourse.
+
+**All 48 local nonlinear solves succeeded.** No consistency iteration was needed.
+
+| interface mismatch (p.u.) | ADMM-converged | polished | target |
+|---|---|---|---|
+| active power | 1.341e-02 | **0.000000e+00** | 1e-7 |
+| reactive power | 4.653e-04 | **0.000000e+00** | 1e-7 |
+| voltage | 5.651e-05 | **0.000000e+00** | 1e-7 |
+| shared-ESS P | 1.072e-06 | **0.000000e+00** | 1e-7 |
+| shared-ESS Q | 8.477e-09 | **0.000000e+00** | 1e-7 |
+
+The shared available S/E were *not* already common: the networks were given their
+capacities earlier in the ADMM loop while the ESSO's final available capacity
+moved afterwards, a residual of **3.407e-05 MVAh**. Making them common removed
+the one coupling row that had exceeded tolerance in C6.
+
+Re-audit of the polished point in the centralized convex parent:
+
+```
+parent objective at the mapped point   729360756.700392
+accounting residual                         4.553e-06     (6.2e-15 relative)
+worst block violation                       1.140e-06
+worst block excess over the nonlinear's own 5.878e-08
+worst coupling violation                    5.466e-07
+```
+
+```
+C6 local mapped-point validation          : PASS
+C6 global exact-coupling validation       : PASS
+```
+
+**Rigorous feasible UB incumbent: `729361086.642965`.** Reproduced
+bit-identically across two independent runs.
+
+This is **13.0 % below the ADMM recourse `838496830.813414`**, and the reason is
+structural rather than numerical: the ADMM minimises its augmented objective
+(consensus penalties, duals, proximal terms, objective scaling), while the
+recourse is *measured* on the base objective. Fixing the interface and
+re-optimising each local model against the base objective therefore finds a
+much better feasible point. Every gap in the rest of this section is quoted
+against this incumbent, because it is the tightest rigorously feasible value
+available; gaps against the canonical `838496830.813414` are also given, and are
+correspondingly larger.
+
+## D2 — the continuous convex hull of the ESS operating set
+
+Production's set for one shared ESS and one period, with `eps = 1e-4` and
+`delta = sqrt(eps) = 0.01`:
+
+```
+pch >= 0,  pdch >= 0,  pch + pdch <= S,  pch * pdch <= eps * S^2
+```
+
+**D2.1.** `(S,0)` and `(0,S)` are both H1-feasible. By the definition of
+convexity, every convex set containing both contains `(S/2, S/2)`. That midpoint
+is **not** H1-feasible — its product is `S²/4`, exceeding `eps·S²` by a factor
+`1/(4·eps) = 2500`.
+
+**D2.2.** The exact charge/discharge disjunction is
+`D = {(a,0): 0≤a≤S} ∪ {(0,b): 0≤b≤S}`. Every point of `D` satisfies `pch,pdch ≥ 0`
+and `pch+pdch ≤ S`; conversely every triangle point equals
+`(pch/S)(S,0) + (pdch/S)(0,S) + (1−(pch+pdch)/S)(0,0)`, a convex combination of
+points of `D`. Hence **`conv(D)` is exactly the triangle**, and production's
+active-sum envelope `pch + pdch ≤ S` **is already that convex hull**. There is
+nothing left to tighten.
+
+**D2.3.** For the actual H1 tolerance: `D ⊆ F_H1 ⊆ triangle`, and
+`conv(D) = triangle`, so `triangle ⊆ conv(F_H1) ⊆ triangle`. **`conv(F_H1)` is the
+same triangle**, and the bilinear row `pch·pdch ≤ eps·S²` contributes **nothing**
+to the convex hull — it is entirely redundant once convexified.
+
+| set | max `min(pch,pdch)/S` |
+|---|---|
+| `F_H1` (production) | **0.01** = `delta` |
+| `conv(F_H1)` | **0.5** |
+| observed in the P5.5-C relaxation | 0.4989 |
+
+The relaxation sits at the hull midpoint, a factor of 50 above what the physics
+permits, because nothing in the relaxed objective opposes it.
+
+> **Required D2 statement.** *The observed approximately 0.5 S simultaneous
+> circulation cannot be removed by a purely continuous convex constraint on
+> pch/pdch/S without excluding convex combinations of valid physical operating
+> modes.*
+
+**D2.4 — multi-period.** Summing the SOC recursion over the day and imposing the
+day-balance anchor gives `sum(pdch) = eta_ch·eta_dch·sum(pch)`. This is **not** a
+new valid cut: it is a linear consequence of rows already in the model, it
+constrains only the daily *totals* rather than `min(pch,pdch)` in any period, and
+the day-balance anchor carries a slack, so even the totals relation is soft. **No
+inequality was added.**
+
+One objective-side observation explains the midpoint outcome completely: P5.5-C
+established that production **zeroes `penalty_ess_usage`** before the distributed
+solve, and `get_primal_value` — the definition of the recourse being bounded — is
+evaluated on the zeroed parameter. The relaxed objective therefore charges
+**nothing** for `pch + pdch`. Circulation is free, and the round-trip loss it
+causes is a *benefit* to the relaxation, since it lets the storage absorb energy
+the network would otherwise have to place elsewhere.
+
+## D3 — H1-safe disjunctive outer approximation
+
+For `pch, pdch ≥ 0`, `min(pch,pdch)² ≤ pch·pdch ≤ eps·S²`, hence
+
+```
+min(pch, pdch) <= sqrt(eps) * S = delta * S
+```
+
+so every H1-feasible point satisfies `pdch ≤ delta·S` or `pch ≤ delta·S`:
+
+```
+F_H1  subset  F_charge  union  F_discharge
+F_charge    : pdch <= delta*S,  with pch,pdch >= 0 and pch + pdch <= S
+F_discharge : pch  <= delta*S,  with pch,pdch >= 0 and pch + pdch <= S
+```
+
+`pch + pdch ≤ S` is retained in both branches. **Exact exclusivity
+(`pch == 0 OR pdch == 0`) is not used** — production H1 permits simultaneous
+operation up to `delta·S`, so exclusivity would cut off H1-feasible points and the
+result would not be a lower bound. The branch is imposed with a Gurobi indicator
+constraint; **no big-M enters the formulation**. Because `F_H1 ⊆
+F_disjunctive_outer`, a MISOCP optimum over the disjunctive set remains a valid
+lower bound to the nonlinear H1-constrained recourse, subject to the other
+already-accepted relaxations.
+
+## D4 — zero-binary fixed-mode screen  ·  **this is the decision gate**
+
+Fixing the mode selects one branch of the D3 union, so the fixed-mode set is a
+**subset** of the MISOCP set and, for a minimisation,
+
+```
+Q_MISOCP  <=  Q_fixed_mode  <=  V        for any primal-feasible V.
+```
+
+A low `V` therefore bounds the *unrestricted* MISOCP optimum from above using only
+a feasible point — no branch-and-bound, no dual certificate. That is the whole
+point of running this before any binaries exist.
+
+Modes come from the D1 polished nonlinear solution (charge-dominant if
+`pch ≥ pdch`), 453 charge / 411 discharge. Tie rule, recorded as required: if
+`max(pch,pdch) ≤ 1e-9` p.u. the period carries no meaningful dispatch and the mode
+is set to charge-dominant deterministically. Each case was solved twice — once
+without the mode rows and once with them — under an identical five-setting
+ladder, so the reported difference is attributable to the mode rows alone.
+
+| full four-network oracle | objective |
+|---|---|
+| continuous | `652393454.295765` |
+| fixed-mode | `652715986.030945` |
+| **change from mode control** | **+322531.74  (+0.049 %)** |
+
+| gap to | continuous | fixed-mode | closed |
+|---|---|---|---|
+| D1 polished UB `729361086.64` | 76 967 632.35 (10.55 %) | 76 645 100.61 (10.51 %) | **0.42 %** |
+| canonical cold `838496830.81` | 186 103 376.52 (22.19 %) | 185 780 844.78 (22.16 %) | 0.17 % |
+
+> **Which "polished" number.** Three reference values differ by at most
+> `3769.50`, which is `0.0049 %` of the gap and immaterial to every conclusion
+> here, but they are not interchangeable and each section uses the right one:
+> the polished **gross operational cost** `729364526.198104`; the **parent
+> objective at the polished mapped point** `729360756.700392`, which is the gross
+> less the dropped complementarity penalty `3769.50` and is the correct
+> apples-to-apples reference for D8's attribution; and the polished **net
+> recourse** `729361086.642965`, which is the gross less salvage `3439.56` and is
+> the correct reference for the D7 bound accounting and for this table.
+
+ESS circulation falls exactly as designed, from `0.4998 S` to `0.0100 S` — the
+disjunction works. It simply does not matter: **`0.4998 S` is 16 kW**, because the
+canonical candidate carries `S = 0.0106 MVA` per node-year.
+
+**Capacity ×100 sensitivity** (labelled diagnostic, not the canonical candidate),
+run precisely because the near-zero base capacity could have made the screen
+vacuous: at `S = 3.19 MVA` mode control moves the full-model objective by
+**−0.085 %** — negative, i.e. below solver reproducibility, since a restricted set
+cannot have a lower true optimum. The conclusion is not an artefact of the base
+candidate's storage size.
+
+> **Decision-gate outcome.** The full fixed-mode value remains 10.51 % — **107 ×
+> `tol_cut`** — below the rigorous feasible incumbent. Since
+> `Q_MISOCP ≤ Q_fixed_mode`, the unrestricted MISOCP optimum can only sit lower.
+> **Stop before introducing the binary population. Classify toward P5.5-D-C.**
+
+## D5 — exact binary population (analysis; MI stages not run)
+
+D5's *solving* is gated on D4 and did not run. Its *analysis* is not conditional
+and is reported.
+
+| factor | value |
+|---|---|
+| physical shared ESS | 3 (nodes 5, 7, 9) |
+| network copies per physical ESS | 2 (one TSO block, one DSO block) |
+| years | 3 |
+| representative days | 4 |
+| periods per day | 24 |
+| scenarios (market × operation) | 1 × 1 |
+
+```
+one binary per PHYSICAL ESS : 3 x 3 x 4 x 24 x 1 x 1 =  864
+one binary per NETWORK COPY :               864 x 2  = 1728
+```
+
+**Is one shared binary per physical ESS sufficient?** The `interface_ess_p` /
+`interface_ess_q` rows force `pnet_TSO == pnet_DSO` (both networks are on a 100 MVA
+base, so the conversion is the identity). They force the *net* power to agree —
+they do **not** force the `(pch, pdch)` split to agree. Writing `π` for the common
+net power: a charge-dominant copy has `pdch ≤ delta·S` so `pch ∈ [π, π+delta·S]`; a
+discharge-dominant copy has `pch ≤ delta·S`, and `pdch = pch − π ≥ 0` then requires
+`π ≤ delta·S`. So the two copies can legitimately sit in **opposite** modes exactly
+when `|π| ≤ delta·S`.
+
+Physically a common mode is correct — it is one device. Mathematically a shared
+binary is **not unconditionally valid** as an outer approximation of the two-copy
+H1 set: outside the band `|pnet| ≤ 0.01 S` the modes must agree and nothing is
+lost, but inside it a shared binary excludes combinations that are H1-feasible for
+each copy separately. A formally clean bound needs **1728** binaries; **864** is
+usable only with an explicit argument about that band, which has not been proved
+here. The reduction is therefore *preferred* but is not free, and should not be
+assumed.
+
+## D6 — computational budget
+
+No MI stage was run, so no MI-1…MI-4 budget was consumed and none was extended.
+The budgets remain unspent and available should the planner direct otherwise.
+
+## D7 — lower-bound accounting
+
+No MISOCP was solved, so there is no `ObjBound_MISOCP` and **`LB_MI_rec` cannot be
+formed**. What *can* be stated rigorously is an upper bound on it, which is what
+the D4 screen provides:
+
+```
+Q_MISOCP     <=  Q_fixed_mode  <=  652715986.030945
+V_salvage_max                   =       7505.080762
+LB_MI_rec    =  ObjBound_MISOCP - V_salvage_max
+             <=  652708480.950183
+```
+
+| against | gap (at least) | relative | in `tol_cut = 7.164e5` |
+|---|---|---|---|
+| D1 polished UB `729361086.642965` | **76 652 605.69** | **10.51 %** | **107.0 ×** |
+| canonical cold `838496830.813414` | 185 788 349.86 | 22.16 % | 259.3 × |
+| canonical best recovered `836586463.43` | 183 877 982.48 | 21.98 % | 256.7 × |
+
+Continuous relaxation reference: the planner's `653192095.073059` and this
+stage's best `652393454.295765` differ by `798640.78` (0.12 %), which is the
+run-to-run spread across barrier settings and is itself larger than the entire
+improvement the mode control buys.
+
+```
+improvement, continuous -> fixed-mode LB :   322531.74   (0.42 % of the gap)
+remaining gap, LB -> nonlinear feasible  : 76652605.69   (107.0 x tol_cut)
+```
+
+The comparison that decides the stage is the last line against the planning
+signal. The remaining gap is **107 times the canonical cut tolerance**, and the
+whole shared-ESS fleet at this candidate is 0.0319 MVA — the investment signal the
+bound would have to resolve is far smaller than the bound's own error. A lower
+bound of this quality cannot discriminate between investment candidates,
+irrespective of how the mixed-integer stage were implemented.
+
+## D8 — what remains after ESS mode control
+
+D8 requires the answer from objective values, not statistics. The parent
+objective is a weighted sum over blocks, so the gap to the polished feasible point
+decomposes **exactly**:
+
+| agent | gap contribution, continuous | gap contribution, fixed-mode |
+|---|---|---|
+| **TSO** | **+189 677 454.39** | **+189 394 394.09** |
+| DSO 5 | −31 701 140.99 | −31 711 932.78 |
+| DSO 7 | −43 250 971.37 | −43 266 141.33 |
+| DSO 9 | −37 758 039.63 | −37 771 549.31 |
+| **net** | **76 967 302.40** | **76 644 770.67** |
+
+The transmission block is the **only** agent whose relaxed objective sits *below*
+the polished feasible point; every distribution block sits *above* it, so the
+DSOs subtract from the gap rather than adding to it. Contributions therefore have
+opposite signs and the TSO's share exceeds 100 % — the absolute figures are the
+meaningful ones. A representative pair: TSO 2025 Spring is `33.42e6` relaxed
+against `64.59e6` polished, while DSO5 2025 Spring is `9.44e6` relaxed against
+`5.02e6` polished.
+
+Diagnostics, against P5.5-C:
+
+| quantity | P5.5-C continuous | D8 continuous | D8 fixed-mode |
+|---|---|---|---|
+| ESS `min(pch,pdch)/S` | 4.989e-01 | 4.998e-01 | **9.996e-03** |
+| ESS circulation, absolute | — | 1.590e-02 MW | 3.189e-04 MW |
+| AC rank gap `ρ_ij` | 2.450e-02 | 2.420e-02 | **2.460e-02** |
+| TSO cycle residual | 1.234e-02 rad | 1.229e-02 rad | **1.230e-02 rad** |
+| OLTC rank gap `ρ_tr` | 4.656e-06 | 3.450e-06 | 4.161e-06 |
+| ESSO `E_av/E_rated` | ≥ 0.99754 | ≥ 0.99912 | ≥ 0.99995 |
+
+The disjunction does exactly what it was built to do — circulation collapses by a
+factor of 50 — and the AC rank gap and cycle residual **do not move at all**. The
+quantitative answer to "how much of the relaxation gap was removed by the H1
+disjunction" is **0.42 %**, and it is confirmed by objective values, not inferred
+from circulation.
+
+## D9 — conditional TSO strengthening assessment
+
+**The precondition fails, so the inventory was not produced.** D9 is gated on
+"ESS mode treatment removes most of the gap"; it removes 0.42 %. The second
+clause of that gate — that the remaining gap is concentrated in the TSO — *is*
+satisfied, and decisively so (D8: the transmission block is the entire source),
+but the gate is a conjunction and the first clause governs.
+
+Recording the observation without acting on it: the gap is a transmission-side
+meshed-AC phenomenon. Whether the class-B/QC/SDP options listed in D9 could close
+it is a real question, but it is a different question from the one P5.5-D was
+authorized to answer, and it should be posed as its own stage rather than
+smuggled in here. No SDP was implemented, no solver was installed, and DSO SOC and
+the OLTC formulation were not touched — their diagnostics have not regressed.
+
+## D10 — computational viability
+
+Measured, not estimated from complexity claims. Full four-network oracle, 322 596
+variables, ~249 336 constraints, 35 549 cones, 1728 mode rows in the fixed-mode
+variant:
+
+| | continuous | fixed-mode |
+|---|---|---|
+| settings tried | 5 | 5 |
+| settings returning a usable primal point | 3 | 2 |
+| settings returning solver garbage (status 12) | 2 | 3 |
+| single-solve time | 9 – 64 s | 9 – 33 s |
+| full ladder, wall clock | 159 s | 82 s |
+| dual certificate | **none** | **none** |
+| spread across usable settings | 8.7e5 (0.13 %) | 7.3e5 (0.11 %) |
+
+Two facts matter more than the timings. First, **no setting produces a dual
+certificate at full model size** — the P5.5-C7 finding is unchanged, and adding
+1728 indicator rows made it worse, not better (three of five settings failed
+outright). Second, **the run-to-run spread across settings is larger than the
+entire effect being measured**: 0.11–0.13 % versus the 0.049 % that mode control
+moves. An oracle whose noise exceeds its signal cannot be used to compare
+candidates.
+
+Against D10's three categories:
+
+1. **Practical recurring planning oracle — no.** ~160 s of ladder per evaluation,
+   no certificate, and a reproducibility spread wider than the differences a
+   planner would need to resolve. A multi-iteration investment method would
+   accumulate noise, not information.
+2. **Occasional certification / benchmark oracle — no.** Certification is exactly
+   what it cannot do; there is no `ObjBound` at full size under any setting tried.
+3. **Computationally impractical even as a benchmark — yes, for the lower-bound
+   purpose.** It retains real value as a *diagnostic* — it is what produced the
+   attribution in D8 — but a diagnostic is not a bound.
+
+## D11 — architecture classification
+
+The evidence is convergent and each strand is independently sufficient under
+D11's criteria.
+
+- The zero-binary screen proves the MISOCP cannot close enough of the gap:
+  `Q_MISOCP ≤ Q_fixed_mode ≤ 652715986.03`, leaving **10.51 %**, or **107 ×
+  `tol_cut`**, against a rigorously feasible incumbent. No branch-and-bound was
+  needed to establish this, and a ×100 capacity sensitivity confirms it is not an
+  artefact of the base candidate.
+- The relaxation obtains **no useful finite dual bound** within the controlled
+  budgets, continuous or fixed-mode, under any setting tried — carried forward
+  unchanged from P5.5-C7 and re-confirmed here.
+- The gap is **not** where the mixed-integer treatment acts. D2 proves the ~0.5 S
+  circulation is the convex-hull midpoint rather than a missing constraint; D4
+  and D8 show that removing it entirely changes the objective by 0.049 % and the
+  gap by 0.42 %; D8 attributes the whole gap to the transmission block's meshed
+  AC relaxation, which binaries do not address.
+- Expected repeated-recourse cost is incompatible with an outer planning loop:
+  the oracle's reproducibility spread (0.11–0.13 %) exceeds the effect it would
+  have to resolve.
+
+**Recommendation.** Retire the rigorous lower-bound decomposition route as the
+planning architecture, and move to a deterministic derivative-free / heuristic
+investment planner that uses the full nonlinear AC model for validation. Retain
+the convex and disjunctive models as diagnostic and benchmark tools, where they
+have demonstrably earned their place: the centralized parent produced the exact
+per-block gap attribution in D8, and D1's exact-consensus polish is a genuinely
+useful construction in its own right — it produced a feasible incumbent **13.0 %
+better than the ADMM recourse**, which is a result the planner may wish to pursue
+independently of any lower-bound question.
+
+```
+P5.5-D-C — practical rigorous lower-bound architecture is unavailable
+```
+
+```
+P5.5-D COMPLETE — ready for planner decision on the final planning architecture
 ```
