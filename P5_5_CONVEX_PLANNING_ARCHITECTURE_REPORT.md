@@ -1894,18 +1894,35 @@ C6 local mapped-point validation          : PASS
 C6 global exact-coupling validation       : PASS
 ```
 
-**Rigorous feasible UB incumbent: `729361086.642965`.** Reproduced
+**Polished feasible-network candidate: `729361086.642965`.** Reproduced
 bit-identically across two independent runs.
 
-This is **13.0 % below the ADMM recourse `838496830.813414`**, and the reason is
-structural rather than numerical: the ADMM minimises its augmented objective
-(consensus penalties, duals, proximal terms, objective scaling), while the
-recourse is *measured* on the base objective. Fixing the interface and
-re-optimising each local model against the base objective therefore finds a
-much better feasible point. Every gap in the rest of this section is quoted
-against this incumbent, because it is the tightest rigorously feasible value
-available; gaps against the canonical `838496830.813414` are also given, and are
-correspondingly larger.
+> **Correction of record (P5.6-A0.3).** This value was originally called a
+> "rigorous feasible UB incumbent". That name is withdrawn until the point is
+> certified against the **full original nonlinear coupled problem including the
+> ESSO**. D1 established feasibility of the 48 *network* SMOPFs at fixed common
+> interface values; it did **not** audit the original nonlinear ESSO — cohort
+> rated S/E, throughput, degradation, annual and cumulative SoH,
+> `E_available = E_rated · soh_cumul`, minimum SoH, lifetime gating, cohort
+> complementarity, aggregate P/Q capability and consensus, or the ESSO slacks.
+> Until that audit passes the correct name is **"polished feasible-network
+> candidate, pending complete nonlinear ESSO/coupled feasibility
+> certification"**. The certification is P5.6-A1.
+
+This is **13.0 % below the ADMM recourse `838496830.813414`**.
+
+> **Correction of record (P5.6-A0.4).** The original text attributed that
+> difference to the ADMM minimising its augmented objective while the recourse is
+> measured on the base objective. **That attribution was not proved and is
+> withdrawn.** With every coordinated variable fixed, most augmented terms are
+> constant, so it does not follow that they can move the local optimiser at all;
+> the difference may instead be local-NLP branch selection. The mechanism is
+> recorded as a **large branch/improvement mechanism to be attributed in
+> P5.6-A2** and is not claimed here.
+
+Every gap in the rest of this section is quoted against this polished candidate,
+because it is the tightest feasible-network value available; gaps against the
+canonical `838496830.813414` are also given, and are correspondingly larger.
 
 ## D2 — the continuous convex hull of the ESS operating set
 
@@ -2112,9 +2129,24 @@ run-to-run spread across barrier settings and is itself larger than the entire
 improvement the mode control buys.
 
 ```
-improvement, continuous -> fixed-mode LB :   322531.74   (0.42 % of the gap)
-remaining gap, LB -> nonlinear feasible  : 76652605.69   (107.0 x tol_cut)
+improvement, continuous -> fixed-mode screen :   322531.74   (0.42 % of the gap)
+remaining gap, screen -> nonlinear feasible  : 76652605.69   (107.0 x tol_cut)
 ```
+
+> **Correction of record (P5.6-A0.2).** `Q_fixed_mode`, and
+> `Q_fixed_mode − V_salvage_max`, must **not** be called "the MISOCP lower
+> bound". They are neither. Fixing the mode *restricts* the feasible set, so the
+> fixed-mode value is an **upper** bound on the MISOCP optimum:
+>
+> ```
+> Q_MISOCP*  <=  Q_fixed_mode          hence          UB - Q_MISOCP*  >=  UB - Q_fixed_mode
+> ```
+>
+> What the screen delivers is therefore a **lower bound on the unavoidable
+> MISOCP-to-UB gap** — which is exactly what a rejection argument needs, and is
+> why it is decisive — but it is not itself a lower bound on the recourse. Every
+> figure in this section should be read that way: the gaps quoted are minima,
+> and the true MISOCP gap can only be larger.
 
 The comparison that decides the stage is the last line against the planning
 signal. The remaining gap is **107 times the canonical cut tolerance**, and the
@@ -2137,11 +2169,14 @@ decomposes **exactly**:
 | DSO 9 | −37 758 039.63 | −37 771 549.31 |
 | **net** | **76 967 302.40** | **76 644 770.67** |
 
-The transmission block is the **only** agent whose relaxed objective sits *below*
-the polished feasible point; every distribution block sits *above* it, so the
-DSOs subtract from the gap rather than adding to it. Contributions therefore have
-opposite signs and the TSO's share exceeds 100 % — the absolute figures are the
-meaningful ones. A representative pair: TSO 2025 Spring is `33.42e6` relaxed
+The transmission block is the **dominant remaining relaxation defect**: it is the
+only agent whose relaxed objective sits *below* the polished feasible point,
+while every distribution block sits *above* it, so the DSOs subtract from the gap
+rather than adding to it. Contributions therefore have opposite signs and the
+TSO's share exceeds 100 % — the absolute figures are the meaningful ones. This is
+a measured decomposition of *this* point, not a theorem that the whole relaxation
+gap is caused exclusively by the transmission network; the distribution
+contributions are large in magnitude and merely opposite in sign. A representative pair: TSO 2025 Spring is `33.42e6` relaxed
 against `64.59e6` polished, while DSO5 2025 Spring is `9.44e6` relaxed against
 `5.02e6` polished.
 
@@ -2167,8 +2202,9 @@ from circulation.
 **The precondition fails, so the inventory was not produced.** D9 is gated on
 "ESS mode treatment removes most of the gap"; it removes 0.42 %. The second
 clause of that gate — that the remaining gap is concentrated in the TSO — *is*
-satisfied, and decisively so (D8: the transmission block is the entire source),
-but the gate is a conjunction and the first clause governs.
+satisfied, and decisively so (D8: the transmission block is the dominant
+remaining relaxation defect), but the gate is a conjunction and the first clause
+governs.
 
 Recording the observation without acting on it: the gap is a transmission-side
 meshed-AC phenomenon. Whether the class-B/QC/SDP options listed in D9 could close
@@ -2241,9 +2277,10 @@ investment planner that uses the full nonlinear AC model for validation. Retain
 the convex and disjunctive models as diagnostic and benchmark tools, where they
 have demonstrably earned their place: the centralized parent produced the exact
 per-block gap attribution in D8, and D1's exact-consensus polish is a genuinely
-useful construction in its own right — it produced a feasible incumbent **13.0 %
+useful construction in its own right — it produced a feasible-network candidate **13.0 %
 better than the ADMM recourse**, which is a result the planner may wish to pursue
-independently of any lower-bound question.
+independently of any lower-bound question, once P5.6-A1 has certified it against
+the full original nonlinear coupled problem.
 
 ```
 P5.5-D-C — practical rigorous lower-bound architecture is unavailable
