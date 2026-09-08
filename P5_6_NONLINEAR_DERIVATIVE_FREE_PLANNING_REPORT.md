@@ -937,6 +937,28 @@ The policies are locked and the search is fully specified; the surface those
 policies define is stable to evaluate but not stable to refine, and a quarter of
 it cannot be evaluated at all. That is the middle verdict.
 
+> **Correction of record (P5.6-C1) — what "PARTIAL" actually refers to.** The
+> verdict line below is retained, but its wording is broader than the evidence.
+> P5.6-B *did* settle the anchor convention, a declared recurring direct start,
+> numerical repeatability, the search coordinates, the candidate-evaluation cost
+> and a candidate search method. **Anchor robustness in particular is NOT
+> unresolved: midpoint-only is locked**, on the measurement that both anchors
+> have identical success and the DSO fallback rescues nothing at T_STAR.
+>
+> The three things that genuinely remain open are narrower and are the subject of
+> P5.6-C:
+>
+> 1. **branch/template landscape representativeness** — whether different
+>    deterministic template generations produce the same *investment ordering*,
+>    which is a different question from whether the template converges to a fixed
+>    point, and the only one a search actually depends on;
+> 2. **operational domain coverage / false hidden infeasibility** — whether a
+>    solver failure at a master-feasible candidate means the candidate is
+>    physically infeasible or only that this start could not reach it;
+> 3. **deterministic parallel search semantics** — the B6 specification pairs
+>    parallel workers with opportunistic acceptance, which would make the search
+>    path depend on completion order (corrected in P5.6-C7).
+
 ```
 P5.6-B PARTIAL — oracle policy, anchor robustness, start policy or search resolution remains unresolved
 ```
