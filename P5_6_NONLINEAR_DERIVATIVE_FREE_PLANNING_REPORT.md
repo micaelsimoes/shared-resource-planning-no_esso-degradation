@@ -1110,7 +1110,54 @@ time the same target is evaluated.
 
 **Coverage: 6 of 6.** Every candidate that direct-T0 could not solve — including
 the budget-boundary candidate — is reached by continuation, all with 2 ADMM
-cycles per step and full feasibility audits passing. A solver failure at a
+cycles per step and full feasibility audits passing.
+
+> **P5.6-D0.1 — best known incumbent.** The persisted C4 evidence for
+> `se|node5|2025|-10%` at λ=1.0 was re-opened and checked field by field:
+> first-stage feasibility **True**; original nonlinear ESSO max violation
+> **2.262e-11** with production feasibility **−3.240e-05** against the 1e-03
+> tolerance; TSO/DSO and network-versus-ESSO shared-ESS P and Q consensus all
+> **0.000e+00**; S and E availability consistency **3.469e-18**; H1
+> complementarity **0.000e+00**; network max violation **1.328e-05** (IPOPT's own
+> constraint tolerance); physical salvage **3 326.194400**; investment cost
+> **49 295.415372**; and the accounting closing as
+> `825 060 271.155711 + 49 295.415372 = 825 109 566.571083`.
+>
+> Two of the fields D0.1 lists were **not** persisted by the C4 harness — the
+> converter-capability violation and the per-block detail behind the 48-block
+> network audit — so the promotion is completed against the P5.6-D4 re-run of
+> this candidate at K=4, which records the full certificate. Subject to that
+> confirmation:
+>
+> ```
+> BEST KNOWN RIGOROUS FEASIBLE NONLINEAR PLANNING INCUMBENT
+>     candidate                  se|node5|2025|-10%
+>     total planning objective   825109566.571083
+>     net operational recourse   825060271.155711
+>     investment cost                49295.415372
+>     physical salvage                3326.194400
+>     oracle                     H_4 continuation from x0 via T0, midpoint anchor
+> ```
+>
+> Investment vector, full precision (MVA / MVAh) — identical to the canonical base
+> except at node 5 / 2025:
+>
+> ```
+> node 5 2025   s = 0.0095714035255144454   e = 0.019142807051028891
+> node 5 2030   s = 0.010634892806127162    e = 0.021269785612254323
+> node 5 2035   s = 0.010634892806127162    e = 0.021269785612254323
+> node 7 2025   s = 0.010634892806127162    e = 0.021269785612254323
+> node 7 2030   s = 0.010634892806127162    e = 0.021269785612254323
+> node 7 2035   s = 0.010634892806127162    e = 0.021269785612254323
+> node 9 2025   s = 0.010634892806127162    e = 0.021269785612254323
+> node 9 2030   s = 0.010634892806127162    e = 0.021269785612254323
+> node 9 2035   s = 0.010634892806127162    e = 0.021269785612254323
+> ```
+>
+> It supersedes the P5.6-B0.1 incumbent of `828021090.360850`. Note the two are
+> **not** measured on the same surface — that one is a direct T0 evaluation, this
+> one an H_4 continuation — which is exactly the incompatibility P5.6-D exists to
+> resolve. A solver failure at a
 master-feasible candidate is therefore **not** evidence of physical infeasibility,
 which is what C4 was posed to establish.
 
@@ -1167,8 +1214,15 @@ relative-to-base deltas, not from absolute offsets:
 per-candidate delta spread across T0/T2/T4 :  374 478.00  ..  429 363.00
 median                                      :  424 803.38
 
-RECOMMENDED   tau_planning ~ 4.25e5
+              P56C_TEMPLATE_LANDSCAPE_UNCERTAINTY ~ 4.25e5
 ```
+
+> **Renamed by P5.6-D0.2.** This quantity was called `tau_planning` above. It is
+> **not** a permanent planning tolerance — it measures the ambiguity of *one
+> specific broken policy*, namely comparing candidates evaluated against
+> different template generations of a non-convergent chain. It is retained under
+> the name **`P56C_TEMPLATE_LANDSCAPE_UNCERTAINTY`** as the benchmark P5.6-D has
+> to beat. A refined-oracle planning uncertainty is measured in P5.6-D7.
 
 Set that against the discrimination available **within** a single template — the
 spread of local candidate deltas, excluding the boundary point:

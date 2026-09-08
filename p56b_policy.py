@@ -127,6 +127,8 @@ def polish_and_audit(planning, models, state, candidate, anchor):
                     'polish_runtime_s': time.time() - started})
         return out
     out['polish_all_solved'] = all_solved
+    out['polish_solve_count'] = len(blocks)
+    out['esso_solve_count'] = len(esso_solved)
     out['failed_blocks'] = [f"{b['agent']}|{b['year']}|{b['day']}"
                             for b in blocks if not b['solved']]
     if not all_solved:
