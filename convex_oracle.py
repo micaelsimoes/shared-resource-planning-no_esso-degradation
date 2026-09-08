@@ -39,25 +39,50 @@ if REPO_ROOT not in sys.path:
     sys.path.insert(0, REPO_ROOT)
 
 import model_construction_helpers as mch  # noqa: E402
-from definitions import (BUS_REF, ENERGY_STORAGE_MAX_ENERGY_STORED,  # noqa: E402
+from definitions import (BUS_REF, COST_CONSUMPTION_CURTAILMENT,  # noqa: E402
+                         ENERGY_STORAGE_MAX_ENERGY_STORED,
                          ENERGY_STORAGE_MIN_ENERGY_STORED,
                          ENERGY_STORAGE_RELATIVE_INIT_SOC, EQUALITY_TOLERANCE,
+                         OBJ_MIN_COST, PENALTY_LOAD_CURTAILMENT,
                          TRANSFORMER_MAXIMUM_RATIO, TRANSFORMER_MINIMUM_RATIO)
 
 
 # ---------------------------------------------------------------------------
 #  helpers
 # ---------------------------------------------------------------------------
-def _voltage_bounds(node):
-    lo = max(node.v_min ** 2 - 0.5, 0.0)
-    return lo, node.v_max ** 2 + 0.5
-
-
 # ---------------------------------------------------------------------------
 #  one AC block  (agent, year, day, scenario)
 # ---------------------------------------------------------------------------
-def build_ac_block(network, params, s_m=0, s_o=0):
-    """W-space convex relaxation of one production SMOPF."""
+def build_ac_block(network, params, s_m=0, s_o=0, coordination=None):
+    """W-space convex relaxation of one production SMOPF.
+
+    `coordination` selects the standalone or the coordinated feasible set.  It
+    matters: production reshapes both networks when it wires them together for
+    the distributed solve, and the centralized oracle must bound the coordinated
+    problem, not the standalone one.
+
+      None                       standalone SMOPF, exactly `network.build_model`.
+      {'role': 'tso',
+       'interface_ratings': {adn node id -> rating in p.u. on this base}}
+                                 for every ADN load: pc/qc bounds removed and
+                                 flex bounds set to the interface transformer
+                                 rating; the ADN node's voltage slacks fixed to
+                                 zero.  (shared_resources_planning.py:2905-2928)
+      {'role': 'dso'}            the interface magnitude is freed while the angle
+                                 reference is retained, and the reference bus's
+                                 voltage slacks are fixed to zero.
+                                 (shared_resources_planning.py:3692-3702)
+    """
+    coordination = coordination or {}
+    role = coordination.get('role')
+    adn_loads, adn_nodes = {}, set()
+    if role == 'tso':
+        for node_id, rating in coordination.get('interface_ratings', {}).items():
+            adn_loads[network.get_adn_load_idx(node_id)] = rating
+            adn_nodes.add(network.get_node_idx(node_id))
+    ref_free_idx = None
+    if role == 'dso':
+        ref_free_idx = network.get_node_idx(network.get_reference_node_id())
     blk = pe.Block(concrete=True)
     blk.network = network
     blk.params = params
@@ -80,7 +105,13 @@ def build_ac_block(network, params, s_m=0, s_o=0):
 
     # ---------------- W-space voltage variables ----------------
     def w_bounds(m, i, sm, so, p):
-        return _voltage_bounds(network.nodes[i])
+        # production's own bounds, verbatim: this retains the PV-bus setpoint
+        # pinning (BUS_PV + enforce_vg) and the slack-relaxed limits, both of
+        # which are class-A restrictions that must survive the relaxation.
+        if i == ref_free_idx:
+            # coordinated DSO: production frees the interface magnitude
+            return 0.0, mch.voltage_numerical_upper_bound(network.nodes[i]) ** 2
+        return mch.vmag_sqr_bounds(m, i, sm, so, p, network, params)
     blk.vmag_sqr = pe.Var(blk.nodes, blk.scenarios_market, blk.scenarios_operation,
                           blk.periods, domain=pe.NonNegativeReals,
                           bounds=w_bounds, initialize=1.0)
@@ -111,14 +142,16 @@ def build_ac_block(network, params, s_m=0, s_o=0):
                         blk.periods, domain=pe.Reals,
                         initialize=lambda m, c, sm, so, p: mch.pc_initialize(
                             m, c, sm, so, p, network),
-                        bounds=lambda m, c, sm, so, p: mch.pc_bounds(
-                            m, c, sm, so, p, network))
+                        bounds=lambda m, c, sm, so, p: (
+                            (None, None) if c in adn_loads
+                            else mch.pc_bounds(m, c, sm, so, p, network)))
         blk.qc = pe.Var(blk.loads, blk.scenarios_market, blk.scenarios_operation,
                         blk.periods, domain=pe.Reals,
                         initialize=lambda m, c, sm, so, p: mch.qc_initialize(
                             m, c, sm, so, p, network),
-                        bounds=lambda m, c, sm, so, p: mch.qc_bounds(
-                            m, c, sm, so, p, network))
+                        bounds=lambda m, c, sm, so, p: (
+                            (None, None) if c in adn_loads
+                            else mch.qc_bounds(m, c, sm, so, p, network)))
     else:
         blk.pc = pe.Param(blk.loads, blk.scenarios_market, blk.scenarios_operation,
                           blk.periods, mutable=True,
@@ -131,29 +164,47 @@ def build_ac_block(network, params, s_m=0, s_o=0):
     if params.fl_reg:
         blk.flex_p_up = pe.Var(blk.loads, blk.scenarios_market, blk.scenarios_operation,
                                blk.periods, domain=pe.NonNegativeReals,
-                               bounds=lambda m, c, sm, so, p: mch.pc_flex_up_bounds(
-                                   m, c, sm, so, p, network, params), initialize=0.0)
+                               bounds=lambda m, c, sm, so, p: (
+                                   (0.0, adn_loads[c]) if c in adn_loads
+                                   else mch.pc_flex_up_bounds(m, c, sm, so, p, network, params)),
+                               initialize=0.0)
         blk.flex_p_down = pe.Var(blk.loads, blk.scenarios_market, blk.scenarios_operation,
                                  blk.periods, domain=pe.NonNegativeReals,
-                                 bounds=lambda m, c, sm, so, p: mch.pc_flex_down_bounds(
-                                     m, c, sm, so, p, network, params), initialize=0.0)
+                                 bounds=lambda m, c, sm, so, p: (
+                                     (0.0, adn_loads[c]) if c in adn_loads
+                                     else mch.pc_flex_down_bounds(m, c, sm, so, p, network, params)),
+                                 initialize=0.0)
         blk.flex_q_up = pe.Var(blk.loads, blk.scenarios_market, blk.scenarios_operation,
                                blk.periods, domain=pe.NonNegativeReals,
-                               bounds=lambda m, c, sm, so, p: mch.qc_flex_up_bounds(
-                                   m, c, sm, so, p, network, params), initialize=0.0)
+                               bounds=lambda m, c, sm, so, p: (
+                                   (0.0, adn_loads[c]) if c in adn_loads
+                                   else mch.qc_flex_up_bounds(m, c, sm, so, p, network, params)),
+                               initialize=0.0)
         blk.flex_q_down = pe.Var(blk.loads, blk.scenarios_market, blk.scenarios_operation,
                                  blk.periods, domain=pe.NonNegativeReals,
-                                 bounds=lambda m, c, sm, so, p: mch.qc_flex_down_bounds(
-                                     m, c, sm, so, p, network, params), initialize=0.0)
+                                 bounds=lambda m, c, sm, so, p: (
+                                     (0.0, adn_loads[c]) if c in adn_loads
+                                     else mch.qc_flex_down_bounds(m, c, sm, so, p, network, params)),
+                                 initialize=0.0)
+    def _slack_zeroed(i):
+        """Production fixes the interface voltage slacks to zero in both roles."""
+        return i in adn_nodes or i == ref_free_idx
+
     if params.slacks.grid_operation.voltage:
         blk.slack_v_sqr_up = pe.Var(blk.nodes, blk.scenarios_market, blk.scenarios_operation,
                                     blk.periods, domain=pe.NonNegativeReals,
-                                    bounds=lambda m, i, sm, so, p: mch.voltage_slack_up_bounds(
-                                        m, i, sm, so, p, network, params), initialize=0.0)
+                                    bounds=lambda m, i, sm, so, p: (
+                                        (0.0, 0.0) if _slack_zeroed(i)
+                                        else mch.voltage_slack_up_bounds(
+                                            m, i, sm, so, p, network, params)),
+                                    initialize=0.0)
         blk.slack_v_sqr_down = pe.Var(blk.nodes, blk.scenarios_market, blk.scenarios_operation,
                                       blk.periods, domain=pe.NonNegativeReals,
-                                      bounds=lambda m, i, sm, so, p: mch.voltage_slack_down_bounds(
-                                          m, i, sm, so, p, network, params), initialize=0.0)
+                                      bounds=lambda m, i, sm, so, p: (
+                                          (0.0, 0.0) if _slack_zeroed(i)
+                                          else mch.voltage_slack_down_bounds(
+                                              m, i, sm, so, p, network, params)),
+                                      initialize=0.0)
 
     # shared ESS (capacity comes from the parent, so bounds stay generous here)
     big = 10.0
@@ -361,8 +412,10 @@ def build_ac_block(network, params, s_m=0, s_o=0):
     blk.v_lower = pe.Constraint(blk.nodes, blk.periods, rule=v_lower)
     blk.v_upper = pe.Constraint(blk.nodes, blk.periods, rule=v_upper)
 
-    # DSO reference bus: production pins e to vg and f to ~0, i.e. W_ref = vg^2
-    if not network.is_transmission:
+    # DSO reference bus.  Standalone, production pins e to vg and f to ~0, i.e.
+    # W_ref = vg^2.  Coordinated, production frees the magnitude (keeping only
+    # the angle reference, which W-space does not represent), so no gauge here.
+    if not network.is_transmission and ref_free_idx is None:
         ref_id = network.get_reference_node_id()
         ref_idx = network.get_node_idx(ref_id)
         vg = network.generators[network.get_gen_idx(ref_id)].vg
@@ -454,6 +507,23 @@ def build_ac_block(network, params, s_m=0, s_o=0):
 
     # production cost parameters, so the production objective rules apply verbatim
     mch.setup_cost_parameters(blk, params)
+
+    # Coordinated penalty settings.  Production zeroes these before the
+    # distributed solve, and `get_primal_value` -- the definition of the recourse
+    # this oracle must bound -- is evaluated on the zeroed parameters.  Charging
+    # production's standalone penalties here would make the block objective
+    # LARGER than the quantity being bounded and break the relaxation direction.
+    #   shared_resources_planning.py:_prepare_transmission_objectives_for_admm
+    #   shared_resources_planning.py:_prepare_distribution_objectives_for_admm
+    if role in ('tso', 'dso'):
+        blk.penalty_ess_usage.set_value(0.00)
+        if role == 'tso':
+            blk.penalty_gen_curtailment.set_value(0.00)
+        if params.obj_type == OBJ_MIN_COST:
+            blk.cost_load_curtailment.set_value(COST_CONSUMPTION_CURTAILMENT)
+        else:
+            blk.penalty_load_curtailment.set_value(PENALTY_LOAD_CURTAILMENT)
+            blk.penalty_flex_usage.set_value(0.00)
 
     blk.s_m, blk.s_o, blk.dt = s_m, s_o, dt
     return blk
