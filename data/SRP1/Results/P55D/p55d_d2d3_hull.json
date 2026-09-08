@@ -1,0 +1,99 @@
+{
+ "stage": "P5.5-D2/D3",
+ "provenance": {
+  "timestamp_utc": "2026-09-08T05:27:42.745520+00:00",
+  "git_head": "6028d7f69ff6bfd1fd2e51f2d032b9da474c2d18",
+  "sys_executable": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "version": "3.14.18",
+   "exists": true,
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)"
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-10",
+   "available": true,
+   "licence_id": "2805683",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "stage": "P5.5-D2/D3 hull"
+ },
+ "timestamp_utc": "2026-09-08T05:27:42.830345+00:00",
+ "eps": 0.0001,
+ "delta": 0.01,
+ "D2_1_midpoint": {
+  "charge_point_(S,0)_H1_feasible": true,
+  "discharge_point_(0,S)_H1_feasible": true,
+  "midpoint_(S/2,S/2)_H1_feasible": false,
+  "midpoint_product_over_eps_S2": 2500.0,
+  "statement": "(S,0) and (0,S) are both H1-feasible, so BY DEFINITION OF CONVEXITY every convex set containing both contains their midpoint (S/2, S/2).  That midpoint is NOT H1-feasible: its product is S^2/4, which exceeds eps*S^2 by a factor of 1/(4*eps) = 2500."
+ },
+ "D2_2_exact_disjunction_hull": {
+  "D_subset_of_triangle": true,
+  "D_subset_of_triangle_proof": "each leg point (a,0) or (0,b) with 0<=a,b<=S satisfies pch>=0, pdch>=0 and pch+pdch<=S",
+  "triangle_subset_of_conv_D": true,
+  "triangle_subset_of_conv_D_proof": "every (pch,pdch) with pch,pdch>=0 and pch+pdch<=S equals (pch/S)(S,0) + (pdch/S)(0,S) + (1-(pch+pdch)/S)(0,0), a convex combination of three points of D",
+  "conclusion": "conv(exact charge/discharge disjunction) is EXACTLY the triangle {pch>=0, pdch>=0, pch+pdch<=S}, i.e. the production active-sum envelope is already that convex hull -- there is nothing left to tighten.",
+  "sampled_triangle_points": 100289,
+  "max_sampled_pch_plus_pdch_over_S": 0.9999960458710331
+ },
+ "D2_3_H1_hull": {
+  "D_subset_F_H1": true,
+  "F_H1_subset_triangle": true,
+  "conclusion": "D subset F_H1 subset triangle, and conv(D) = triangle, so triangle = conv(D) subset conv(F_H1) subset triangle: conv(F_H1) is EXACTLY the same triangle.  The bilinear H1 row pch*pdch <= eps*S^2 contributes NOTHING to the convex hull -- it is entirely redundant once convexified.",
+  "sampled_H1_points": 197
+ },
+ "D2_4_maximum_circulation": {
+  "max_circulation_over_S_in_F_H1_analytic": 0.01,
+  "max_circulation_over_S_in_F_H1_sampled": 0.008431723339027308,
+  "max_circulation_over_S_in_conv_F_H1": 0.5,
+  "ratio_hull_over_H1": 50.0,
+  "observed_in_P55C_continuous_relaxation": 0.4989262,
+  "statement": "The exact H1 set permits at most delta*S = 0.01 S of simultaneous circulation.  Its convex hull permits 0.5 S, attained exactly at the midpoint of the two valid modes.  The 0.4989 S measured in P5.5-C is therefore not a symptom of a missing constraint: it is the convex-hull midpoint, reached because nothing in the relaxed objective opposes it."
+ },
+ "D2_required_statement": "The observed approximately 0.5 S simultaneous circulation cannot be removed by a purely continuous convex constraint on pch/pdch/S without excluding convex combinations of valid physical operating modes.",
+ "D2_required_statement_holds": true,
+ "D2_5_multiperiod": {
+  "soc_recursion": "soc[p] = soc[p-1] + eta_ch*pch[p]*dt - pdch[p]*dt/eta_dch",
+  "day_balance": "soc[last] = soc_init (soft: shared_ess.day_balance slack is enabled)",
+  "implied_equality": "summing the recursion over the day and imposing the day balance gives eta_ch*sum(pch) = sum(pdch)/eta_dch, i.e. sum(pdch) = eta_ch*eta_dch*sum(pch)",
+  "is_it_a_new_cut": false,
+  "why_not": "that equality is a linear consequence of rows already in the model (the SOC recursion and the day-balance anchor), so adding it changes no feasible set.  It also constrains only the daily TOTALS, not min(pch,pdch) in any single period, so it cannot bound circulation per period.",
+  "further_weakening": "the day-balance anchor carries a slack (params.slacks.shared_ess.day_balance is True), so even the totals equality is soft.",
+  "decisive_objective_observation": "P5.5-C established that production ZEROES penalty_ess_usage before the distributed solve, and get_primal_value -- the definition of the recourse being bounded -- is evaluated on the zeroed parameter.  The objective of the relaxed problem therefore charges NOTHING for pch + pdch.  Circulation is free, and the round-trip loss it causes is a benefit to the relaxation rather than a cost: it lets the storage absorb energy the network needs to shed.  This is why the relaxation sits at the hull midpoint rather than somewhere interior.",
+  "no_inequality_added": true
+ },
+ "D3_disjunction": {
+  "proof": "for pch,pdch >= 0, min(pch,pdch)^2 <= pch*pdch <= eps*S^2, hence min(pch,pdch) <= sqrt(eps)*S = delta*S",
+  "consequence": "every H1-feasible point has pdch <= delta*S (when pdch is the min) or pch <= delta*S (when pch is the min), so F_H1 is contained in the union F_charge OR F_discharge",
+  "F_charge": "pdch <= delta*S, together with pch,pdch >= 0 and pch+pdch <= S",
+  "F_discharge": "pch  <= delta*S, together with pch,pdch >= 0 and pch+pdch <= S",
+  "containment_F_H1_subset_union": true,
+  "sampled_points_checked": 197,
+  "worst_sampled_violation_of_min_le_delta_S": 0.0,
+  "exact_exclusivity_rejected": "pch == 0 OR pdch == 0 is NOT used: production H1 permits simultaneous operation up to delta*S, so exact exclusivity would CUT OFF H1-feasible points and the result would not be a lower bound.",
+  "active_sum_retained": "pch + pdch <= S is retained in both branches",
+  "big_M": "not used; the branch is imposed with a Gurobi indicator constraint, so no arbitrary constant enters the formulation",
+  "lower_bound_validity": "F_H1 subset F_disjunctive_outer, so minimising over the disjunctive set gives a value no larger than minimising over F_H1.  The MISOCP optimum therefore remains a valid lower bound to the nonlinear H1-constrained recourse, subject to the other already accepted relaxations (W-space rank, ESSO energy interval, dropped penalties)."
+ },
+ "D3_against_polished_nonlinear": {
+  "source": "p55d_d1_ess_schedule.json",
+  "max_min_pch_pdch_pu": 2.9070301412095676e-06,
+  "worst_index": "9|2035|Autumn|16",
+  "note": "absolute p.u. circulation of the polished nonlinear point; compare with delta*S for that ESS"
+ }
+}
