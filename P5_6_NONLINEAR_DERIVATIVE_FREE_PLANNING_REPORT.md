@@ -884,6 +884,15 @@ was observed.
 | 200 | 7.6 h | 2.0 h | 1.1 h |
 | 500 | 18.8 h | 4.8 h | 2.5 h |
 
+> **Correction of record (P5.6-C).** The ~115 s figure above is the sum of the
+> measured ADMM and polish stages only. The **end-to-end** wall clock of one
+> evaluation — including the per-evaluation baseline deep copy, candidate
+> construction, the physical ESSO solve and the full audits — was measured across
+> 36 evaluations in P5.6-C2 at a median of **135 s** for a VALID evaluation and
+> **186 s** for a failed one, with an overall success rate of 28/36 = 77.8 %.
+> Every wall-clock estimate in the table above is therefore optimistic by about
+> 17 %; the ordering of the conclusions is unaffected.
+
 **Resource contention is an observed risk, not a hypothetical one.** Each worker
 runs one evaluation, and each evaluation runs IPOPT sequentially over 48 network
 blocks per ADMM cycle, so `W` workers means `W` simultaneous IPOPT processes on
@@ -933,6 +942,11 @@ conditions under which that crash was seen.
   currently unreachable by the oracle — which is the region an investment search
   is most likely to want to explore.
 
+  > **Withdrawn by P5.6-C.** That crash was not reproducible. `se|ALL|x19` is
+  > VALID under T0, T2 and T4 in C2 and under continuation in C4. The budget-face
+  > region is reachable, and the P5.6-B2 SOLVER_CRASH is reclassified as a
+  > transient solver failure.
+
 The policies are locked and the search is fully specified; the surface those
 policies define is stable to evaluate but not stable to refine, and a quarter of
 it cannot be evaluated at all. That is the middle verdict.
@@ -965,4 +979,324 @@ P5.6-B PARTIAL — oracle policy, anchor robustness, start policy or search reso
 
 ```
 P5.6-B COMPLETE — ready for planner review before launching derivative-free optimization
+```
+
+---
+
+# P5.6-C — landscape robustness and oracle coverage gate
+
+Branch `feature/derivative-free-planning`. Canonical runtime and checksum gate as
+above, enforced by the oracle on load and by the R0 provenance gate in every
+harness. Evidence under `data/SRP1/Results/P56C/`; P5.6-A and P5.6-B evidence
+untouched. Nothing in the nonlinear production SMOPF, ADMM, H1, IPOPT settings,
+the convex/MISOCP models or the Benders/master-cut code was modified, and the
+full derivative-free optimization was not launched.
+
+The C1 correction is applied in place in the P5.6-B verdict above.
+
+## C2 — cross-template landscape test
+
+B1 established that the template chain does not converge. That is a statement
+about **levels**, and a search does not follow levels — it follows the ordering
+of candidates. So the chain was regenerated deterministically in a single process
+(`T0` = the cold base solution; `Tk+1` = the operational state of the base
+candidate evaluated from `Tk`) and the twelve-candidate population evaluated
+under **T0, T2 and T4** with the locked midpoint anchor, fresh candidate data and
+no call-history warm starts.
+
+The regenerated chain reproduced B1 **bit-identically** in a different process:
+`828021090.360850`, `827415318.563944`, `826824028.845478`, `826405022.193437`.
+
+Nine of the twelve candidates were jointly VALID under all three templates.
+Everything below is the delta relative to **each template's own base**.
+
+| candidate | Δ under T0 | Δ under T2 | Δ under T4 | spread | sign consistent |
+|---|---|---|---|---|---|
+| base | 0.00 | 0.00 | 0.00 | 0.00 | — |
+| `s\|node5\|2025\|-10%` | **+1 919.50** | −422 148.89 | −406 452.25 | 424 068.39 | **no** |
+| `se\|node7\|2030\|-10%` | **+2 389.18** | −416 605.10 | −426 973.82 | **429 363.00** | **no** |
+| `se\|node5\|2030\|+10%` | **+2 355.91** | −408 237.21 | −426 675.47 | 429 031.38 | **no** |
+| `se\|node7\|2035\|+10%` | **+128.66** | −418 790.62 | −425 409.70 | 425 538.37 | **no** |
+| `se\|node9\|2025\|+10%` | **+14 669.92** | −403 600.49 | −412 407.94 | 427 077.85 | **no** |
+| `e\|node5\|2025\|+25%` | −31 476.13 | −433 721.70 | −406 522.22 | 402 245.58 | yes |
+| `e\|node9\|2030\|+50%` | **+13 268.63** | −401 411.58 | −409 080.82 | 422 349.46 | **no** |
+| `se\|ALL\|x19` (boundary) | +748 643.03 | +385 555.80 | +374 165.04 | 374 478.00 | yes |
+
+```
+candidates whose improvement CHANGES SIGN : 6 of 9
+max delta spread across templates         : 429 363.00
+median delta spread                       : 424 803.38
+```
+
+| pair | Spearman (levels = deltas) | Kendall | reversals | max rank displacement | affine fit `Q_b = a + b·Q_a` |
+|---|---|---|---|---|---|
+| T0 vs T2 | 0.6000 | 0.5000 | 9 | 6 of 9 | `b = 0.999250`, R² 0.767, max\|resid\| 363 366 |
+| **T0 vs T4** | **−0.0333** | **−0.0556** | **19** | 6 of 9 | `b = 0.983320`, R² 0.758, max\|resid\| **364 302** |
+| T2 vs T4 | 0.3667 | 0.3333 | 12 | 5 of 9 | `b = 0.988805`, R² 0.997, max\|resid\| 27 744 |
+
+**The template effect is not a common offset.** The affine fit's residual against
+T0 is 364 302, while the entire spread of T0's local candidate deltas — excluding
+the boundary point — is only **46 146**. The part of the template effect that is
+*not* explained by a shift is eight times larger than the whole signal the search
+would be trying to read.
+
+**The ordering is not preserved.** T0 against T4 gives a Spearman rank
+correlation of **−0.033** — no relationship at all, marginally negative — with 19
+pairwise reversals and a maximum rank displacement of 6 out of 9 positions. The
+ranked orders share no common prefix: T0 leads with `e|node5|2025|+25%`, `base`,
+`se|node7|2035|+10%`; T4 leads with `se|node7|2030|-10%`, `se|node5|2030|+10%`,
+`se|node7|2035|+10%`.
+
+**And the direction of improvement reverses at the incumbent, which is the part
+that matters.** Under T0 every local move except one duration increase is
+*worse* than base, by +128.66 to +14 669.92 — so a search launched on T0 would
+poll its neighbourhood, find nothing better, contract the mesh and terminate at
+the base, reporting it as a local optimum. Under T2 and T4 those same moves are
+roughly **400 000 better** than base. The T0 landscape does not merely rank
+candidates differently; it inverts the conclusion the search exists to reach.
+
+## C3 — template-landscape decision
+
+Against C3's criteria: candidates that improve over base under T0 do **not**
+improve under T2 and T4 in the same direction; the incumbent-direction reversal
+is material and affects 6 of 9 candidates; rank correlation is 0.600, −0.033 and
+0.367, not high; and the template-to-template variation is demonstrably **not**
+predominantly a common offset.
+
+```
+LANDSCAPE-UNSTABLE
+```
+
+**Do not launch MADS.** Following C3, and explicitly *not* selecting whichever
+template gives the lowest base objective:
+
+- **Option A — adopt one better fixed template such as T4.** Not supported. T4
+  does not dominate landscape quality; it is simply further along the same
+  non-convergent chain, and T2-vs-T4 still shows 12 reversals and a Spearman of
+  0.367. Choosing T4 would be choosing the lowest base objective under another
+  name, which C3 forbids.
+- **Option B — a small fixed template ensemble evaluated at every candidate.**
+  Plausible and testable: if the *ensemble minimum* is more stable than any single
+  member, the ordering may be recoverable. Untested here; it multiplies the
+  evaluation cost by the ensemble size.
+- **Option C — a deterministic continuation oracle.** The most promising, because
+  C4 shows continuation both fixes coverage and behaves like a uniform refinement
+  applied identically to every candidate. Also untested for landscape stability.
+
+The evidence points at a single underlying mechanism rather than three separate
+problems: **every deterministic refinement improves every candidate by a large,
+nearly common amount, and what survives after that shift is not stable.** The
+right next step is to test one uniformly-refined oracle for landscape stability,
+not to keep choosing between template generations.
+
+## C4 — deterministic continuation fallback
+
+The straight segment `x(lambda) = (1-lambda)*x0 + lambda*x` is first-stage
+feasible for every `lambda`, because the first-stage set is a polyhedron. The
+fixed schedule `0.25, 0.50, 0.75, 1.00` was walked from the frozen T0 base state,
+each VALID intermediate initializing the next, with the original nonlinear ESSO,
+the production ADMM, the exact midpoint polish and the complete audit at every
+point. No anchor switching, no adaptive schedule; the path is identical every
+time the same target is evaluated.
+
+| target | origin | λ=0.25 | λ=0.50 | λ=0.75 | λ=1.00 | rescued | total |
+|---|---|---|---|---|---|---|---|
+| `se\|node5\|2025\|-10%` | B2 POLISH_FAILURE | VALID | VALID | VALID | **825 109 566.57** | **yes** | 486 s |
+| `se\|node9\|2025\|-10%` | B2 POLISH_FAILURE | VALID | VALID | VALID | **825 127 965.36** | **yes** | 499 s |
+| `se\|ALL\|-10%` | B2 POLISH_FAILURE | VALID | VALID | VALID | **825 162 191.47** | **yes** | 508 s |
+| `se\|ALL\|x19` (boundary) | B2 SOLVER_CRASH | VALID | VALID | VALID | **825 558 551.30** | **yes** | 542 s |
+| `e\|node5\|2025\|+25%` | control, direct VALID | VALID | VALID | VALID | 825 131 197.19 | yes | 508 s |
+| `se\|node9\|2025\|+10%` | control, direct VALID | VALID | VALID | VALID | 825 147 046.95 | yes | 498 s |
+
+**Coverage: 6 of 6.** Every candidate that direct-T0 could not solve — including
+the budget-boundary candidate — is reached by continuation, all with 2 ADMM
+cycles per step and full feasibility audits passing. A solver failure at a
+master-feasible candidate is therefore **not** evidence of physical infeasibility,
+which is what C4 was posed to establish.
+
+**But continuation is not a neutral fallback.** On the two controls that direct
+evaluation already solved:
+
+| control | direct T0 | continuation | difference |
+|---|---|---|---|
+| `e\|node5\|2025\|+25%` | 827 989 614.2338 | 825 131 197.1930 | **−2 858 417.04** |
+| `se\|node9\|2025\|+10%` | 828 035 760.2761 | 825 147 046.9545 | **−2 888 713.32** |
+
+Continuation returns objectives ~2.9e6 lower on candidates direct evaluation
+handles perfectly well — three orders above the T0 candidate deltas and larger
+even than the whole T0→T4 template drift of 2.06e6. The objective falls
+monotonically along every path (≈828.0e6 → 826.8e6 → 826.0e6 → 825.1e6), which is
+the same profile as the template chain. Continuation is selecting a materially
+better branch, not restoring feasibility on the same one.
+
+## C5 — coverage policy
+
+| policy | success | cost | verdict |
+|---|---|---|---|
+| **A** direct-T0 only; failure ⇒ hidden-infeasible | 28/36 = 77.8 % measured in C2 | 135 s median | **Rejected**: C4 proves the failures are not infeasibility, so A discards reachable parts of the polyhedron — including the budget boundary. |
+| **B** direct-T0, continuation only on failure | ~100 % | 135 s, plus ~507 s on failures | **Rejected by C5's own criterion**: the two surfaces differ by ~2.9e6 on controls, so a population evaluated under B would mix two incompatible objective surfaces, with the mixing determined by which candidates happened to fail. |
+| **C** continuation for every candidate | 6/6 on the tested set | **~507 s** (mean; 486–542 s) | The only self-consistent option, at ~3.8× the direct cost. Its landscape stability is **untested**. |
+
+Policy B is exactly the case C5 warns about and is excluded rather than adopted
+silently. Policy C gives one surface for every candidate and fixes coverage, but
+it is a uniform refinement of the same kind that C2 just showed to be
+landscape-unstable between generations, so adopting it without its own C2-style
+test would repeat the error one level up. Under Policy C the deltas relative to
+the equivalently-refined base (`826 405 022.19`) are −846 470.90 for the boundary
+and −1 242 830.73 … −1 295 455.62 for the five local targets, a spread of
+**52 624.89** — the same order as the within-template discrimination it would have
+to resolve.
+
+**Recommendation: Policy C is the candidate, conditional on a landscape test.**
+Recomputed expectations if it is adopted: success ~100 % on the tested set,
+ordinary evaluation ~507 s, failed-candidate cost bounded by the same ~507 s
+since every λ step is audited, blended ~507 s.
+
+## C6 — two thresholds
+
+**`tau_numerical` = 10.0**, renamed from B4's `tau_search` and unchanged. Nothing
+in C2–C5 requires a larger value: the C2 template chain reproduced B1
+bit-identically in a separate process, and repeat evaluations remain exactly
+`0.000000e+00` apart. This is only the deterministic numerical comparison
+threshold for the locked oracle — *did the black box improve?*
+
+**`tau_planning`**, measured from the cross-template landscape uncertainty in the
+relative-to-base deltas, not from absolute offsets:
+
+```
+per-candidate delta spread across T0/T2/T4 :  374 478.00  ..  429 363.00
+median                                      :  424 803.38
+
+RECOMMENDED   tau_planning ~ 4.25e5
+```
+
+Set that against the discrimination available **within** a single template — the
+spread of local candidate deltas, excluding the boundary point:
+
+| template | within-template local delta spread |
+|---|---|
+| T0 | 46 146 |
+| T2 | 32 310 |
+| T4 | 20 522 |
+
+`tau_planning` is **9 to 21 times larger** than the differences any single
+template can resolve between local candidates. The consequence is blunt and is
+the central finding of this stage: **no local investment improvement measured so
+far is robust to the known template ambiguity.** A search could report an
+improvement of 30 000 with perfect numerical determinism and it would still be
+inside the landscape's own uncertainty.
+
+`tau_numerical` may still be used internally by a future search to decide whether
+the black box improved. Candidate promotion and any final planning claim must
+respect `tau_planning` — and at its present value that means no local claim can
+be made at all until the landscape ambiguity is reduced.
+
+## C7 — deterministic parallel poll semantics
+
+The B6 specification paired parallel workers with opportunistic acceptance. That
+is withdrawn: accepting whichever improvement finishes first makes the search path
+depend on OS scheduling and solver completion order, and the whole oracle was
+built to be reproducible.
+
+**Required semantics — DETERMINISTIC BATCH POLL.** Each poll iteration:
+
+1. generate the ordered deterministic poll set;
+2. apply the exact first-stage feasibility screen, dropping infeasible points at
+   zero solver cost;
+3. remove cache hits and duplicate points;
+4. select the poll batch by deterministic candidate ordering;
+5. evaluate up to 4 points in parallel;
+6. **wait for the complete selected batch** — no early exit;
+7. among all VALID completed candidates choose the best objective;
+8. break ties within `tau_numerical` by deterministic poll index;
+9. only then update the incumbent and the mesh.
+
+The search path is then a function of the poll ordering alone, and is identical
+whatever order the workers finish in.
+
+> **Note on opportunistic polling.** Classical GPS and MADS permit an
+> opportunistic poll — stop at the first improvement — and it is often the faster
+> strategy. It is deliberately given up here. With a complete-poll strategy the
+> convergence theory is unaffected (a complete poll is the stronger of the two
+> standard variants), so nothing is lost except speed, and reproducibility is
+> worth more than the speed at 135 s per evaluation.
+
+## C8 — search implementation inventory
+
+Audited in the canonical environment without installing anything:
+
+| component | status |
+|---|---|
+| `PyNomad` / `pynomad` / `nomad` / `nomadlib` | **not present** |
+| `nomad` binary on `PATH` | **not present** |
+| `directsearch`, `SQSnobFit`, `dfols`, `pdfo`, `cma`, `skopt`, `GPyOpt`, `botorch`, `nevergrad` | **not present** |
+| SciPy 1.17.0 | present — `direct`, Nelder-Mead, Powell, COBYLA |
+| pattern-search or MADS utilities in this repository | **none** |
+
+No trustworthy MADS implementation is available. SciPy's offerings do not meet
+the requirements: none accepts a hidden-constraint evaluator that can return "no
+value", none takes an exact linear feasibility screen, none exposes a
+deterministic direction sequence that can be replayed, and none supports batch
+evaluation against an external cache.
+
+Comparing the two remaining routes:
+
+- **Implement deterministic OrthoMADS mechanics.** Correct implementation requires
+  the mesh and poll-size update rules, the Halton-based deterministic direction
+  generation with its scaling and rounding onto the mesh, and the orthogonality
+  construction. Getting any of these wrong produces something that is not MADS and
+  carries none of its convergence properties while claiming them. That burden is
+  disproportionate at this stage.
+- **Deterministic generalized pattern search first.** A positive spanning set in
+  the `(S, h)` coordinates — the `2n = 36` coordinate directions, or the `n+1 = 19`
+  minimal set — with the standard expansion/contraction rules, a complete
+  deterministic batch poll and the extreme-barrier treatment of failures. Simple
+  enough to implement correctly and audit.
+
+**Recommendation: deterministic GPS for the first campaign, with its limitation
+stated explicitly** — a fixed direction set gives directional stationarity with
+respect to those directions only, and does not carry MADS's Clarke-stationarity
+guarantee on a nonsmooth objective. That limitation is acceptable for a first
+campaign and is not the binding problem: the binding problem is the landscape.
+
+## C9 — pre-search decision
+
+Three of the four things this gate had to establish came out positively, and one
+did not.
+
+**Resolved.** The recurring oracle policy is deterministic and reproduces
+bit-identically across processes. False hidden infeasibility is real and
+fixable — continuation rescued 6 of 6, including every P5.6-B polish failure. The
+budget/remote-region issue is **withdrawn rather than bounded**: `se|ALL|x19` is
+VALID under all three templates and under continuation, so P5.6-B's SOLVER_CRASH
+was a non-reproducible transient and the boundary region is reachable. Parallel
+polling semantics are now deterministic (C7), and a practical implementation path
+exists (C8).
+
+**Not resolved, and decisive.** Deterministic template generations materially
+reorder candidate improvements: Spearman −0.033 between T0 and T4, 19 pairwise
+reversals, and 6 of 9 candidates flipping the sign of their improvement over
+base. `tau_planning ≈ 4.25e5` exceeds the within-template discrimination of
+20 522 … 46 146 by an order of magnitude. A search on T0 would terminate at the
+base and report it as a local optimum; the same search on T4 would not.
+
+That is C9's first C-C trigger, met directly. A campaign launched now would
+produce a reproducible, fully certified, and misleading answer — which is worse
+than no answer, because every downstream artefact would carry the oracle's
+authority.
+
+The obstruction is no longer physics, feasibility, purity or determinism; all of
+those are settled. It is that the oracle's *branch selection* is a free
+parameter with more influence on the ranking than the investment variables have.
+The natural next stage is to test whether one uniformly-refined oracle — Policy C
+continuation, or a fixed template ensemble — produces a landscape stable enough
+for `tau_planning` to fall below the within-template discrimination, using exactly
+the C2 protocol.
+
+```
+P5.6-C-C — derivative-free search is not ready
+```
+
+```
+P5.6-C COMPLETE — ready for planner review before any optimization campaign
 ```
