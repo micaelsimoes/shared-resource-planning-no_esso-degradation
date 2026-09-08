@@ -1,0 +1,820 @@
+{
+ "stage": "P5.5-C7 widen",
+ "provenance": {
+  "timestamp_utc": "2026-09-08T00:09:19.795242+00:00",
+  "git_head": "98641aaf9d206771fab22b5b9f411e0ce12e785a",
+  "sys_executable": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "version": "3.14.18",
+   "exists": true,
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)"
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-10",
+   "available": true,
+   "licence_id": "2805683",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "stage": "P5.5-C7 widen"
+ },
+ "timestamp_utc": "2026-09-08T00:09:19.908149+00:00",
+ "cases": [
+  {
+   "case": "tso+dso5 2025 Winter",
+   "widths": [
+    {
+     "width": null,
+     "model_size": {
+      "variables": 10684,
+      "constraints": 8486,
+      "ac_blocks": 2
+     },
+     "n_widened": 0,
+     "settings": [
+      {
+       "setting": "default",
+       "gurobi_status": 2,
+       "ObjVal": -3380.8009929916007,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 17,
+       "Runtime": 0.16257810592651367,
+       "qcp_dual_warning": false,
+       "duals_readable": true,
+       "dual_error": null,
+       "duals": {
+        "s|5|2025": -0.001937022985440167,
+        "s|5|2030": -0.0,
+        "s|5|2035": -0.0,
+        "s|7|2025": -0.0009639074413425631,
+        "s|7|2030": -0.0,
+        "s|7|2035": -0.0,
+        "s|9|2025": -0.0009639090546511644,
+        "s|9|2030": -0.0,
+        "s|9|2035": -0.0,
+        "e|5|2025": -5.7785614071916014e-05,
+        "e|5|2030": -0.0,
+        "e|5|2035": -0.0,
+        "e|7|2025": -0.0,
+        "e|7|2030": -0.0,
+        "e|7|2035": -0.0,
+        "e|9|2025": -0.0,
+        "e|9|2030": -0.0,
+        "e|9|2035": -0.0
+       }
+      },
+      {
+       "setting": "homogeneous",
+       "gurobi_status": 2,
+       "ObjVal": -3380.8078291106794,
+       "ObjBound": -3392.705084920919,
+       "certified": true,
+       "relative_gap": 0.0035190571045764394,
+       "BarIterCount": 16,
+       "Runtime": 0.17937207221984863,
+       "qcp_dual_warning": false,
+       "duals_readable": true,
+       "dual_error": null,
+       "duals": {
+        "s|5|2025": -0.00313792503105232,
+        "s|5|2030": -0.0,
+        "s|5|2035": -0.0,
+        "s|7|2025": -0.001329583634784498,
+        "s|7|2030": -0.0,
+        "s|7|2035": -0.0,
+        "s|9|2025": -0.0013306837263241597,
+        "s|9|2030": -0.0,
+        "s|9|2035": -0.0,
+        "e|5|2025": -0.0001544827152571704,
+        "e|5|2030": -0.0,
+        "e|5|2035": -0.0,
+        "e|7|2025": -0.00014627709049192666,
+        "e|7|2030": -0.0,
+        "e|7|2035": -0.0,
+        "e|9|2025": -0.00014630959859582987,
+        "e|9|2030": -0.0,
+        "e|9|2035": -0.0
+       }
+      }
+     ]
+    },
+    {
+     "width": 0.0001,
+     "model_size": {
+      "variables": 10684,
+      "constraints": 8486,
+      "ac_blocks": 2
+     },
+     "n_widened": 1541,
+     "settings": [
+      {
+       "setting": "default",
+       "gurobi_status": 2,
+       "ObjVal": -3383.5538584961614,
+       "ObjBound": -3384.0036487792677,
+       "certified": true,
+       "relative_gap": 0.0001329342761832611,
+       "BarIterCount": 16,
+       "Runtime": 0.14599204063415527,
+       "qcp_dual_warning": false,
+       "duals_readable": true,
+       "dual_error": null,
+       "duals": {
+        "s|5|2025": -0.0010563214378640426,
+        "s|5|2030": -0.0,
+        "s|5|2035": -0.0,
+        "s|7|2025": -0.0005227291462674664,
+        "s|7|2030": -0.0,
+        "s|7|2035": -0.0,
+        "s|9|2025": -0.0005227466334113695,
+        "s|9|2030": -0.0,
+        "s|9|2035": -0.0,
+        "e|5|2025": -0.00013635871038277653,
+        "e|5|2030": -0.0,
+        "e|5|2035": -0.0,
+        "e|7|2025": -2.9803482838396123e-05,
+        "e|7|2030": -0.0,
+        "e|7|2035": -0.0,
+        "e|9|2025": -2.9804761129764712e-05,
+        "e|9|2030": -0.0,
+        "e|9|2035": -0.0
+       }
+      }
+     ]
+    },
+    {
+     "width": 0.001,
+     "model_size": {
+      "variables": 10684,
+      "constraints": 8486,
+      "ac_blocks": 2
+     },
+     "n_widened": 1547,
+     "settings": [
+      {
+       "setting": "default",
+       "gurobi_status": 2,
+       "ObjVal": -3388.550641140697,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 18,
+       "Runtime": 0.16077780723571777,
+       "qcp_dual_warning": false,
+       "duals_readable": true,
+       "dual_error": null,
+       "duals": {
+        "s|5|2025": -0.0005016501784503614,
+        "s|5|2030": -0.0,
+        "s|5|2035": -0.0,
+        "s|7|2025": -0.0002479007895894586,
+        "s|7|2030": -0.0,
+        "s|7|2035": -0.0,
+        "s|9|2025": -0.0002479113945325108,
+        "s|9|2030": -0.0,
+        "s|9|2035": -0.0,
+        "e|5|2025": -0.0003278432969223144,
+        "e|5|2030": -0.0,
+        "e|5|2035": -0.0,
+        "e|7|2025": -2.9375263016689912e-05,
+        "e|7|2030": -0.0,
+        "e|7|2035": -0.0,
+        "e|9|2025": -2.937498903161223e-05,
+        "e|9|2030": -0.0,
+        "e|9|2035": -0.0
+       }
+      },
+      {
+       "setting": "homogeneous",
+       "gurobi_status": 2,
+       "ObjVal": -3388.5561016465945,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 16,
+       "Runtime": 0.17928004264831543,
+       "qcp_dual_warning": false,
+       "duals_readable": true,
+       "dual_error": null,
+       "duals": {
+        "s|5|2025": -0.0010787224217903152,
+        "s|5|2030": -0.0,
+        "s|5|2035": -0.0,
+        "s|7|2025": -0.0004794364639949672,
+        "s|7|2030": -0.0,
+        "s|7|2035": -0.0,
+        "s|9|2025": -0.00047950559049161207,
+        "s|9|2030": -0.0,
+        "s|9|2035": -0.0,
+        "e|5|2025": -9.903593460341975e-05,
+        "e|5|2030": -0.0,
+        "e|5|2035": -0.0,
+        "e|7|2025": -5.196323861580976e-05,
+        "e|7|2030": -0.0,
+        "e|7|2035": -0.0,
+        "e|9|2025": -5.19643195229999e-05,
+        "e|9|2030": -0.0,
+        "e|9|2035": -0.0
+       }
+      }
+     ]
+    },
+    {
+     "width": 0.01,
+     "model_size": {
+      "variables": 10684,
+      "constraints": 8486,
+      "ac_blocks": 2
+     },
+     "n_widened": 2371,
+     "settings": [
+      {
+       "setting": "default",
+       "gurobi_status": 12,
+       "ObjVal": 139658351518152.69,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 5,
+       "Runtime": 0.05153298377990723,
+       "qcp_dual_warning": false,
+       "duals_readable": false,
+       "dual_error": "AttributeError: Unable to retrieve attribute 'Pi'",
+       "duals": {}
+      },
+      {
+       "setting": "homogeneous",
+       "gurobi_status": 12,
+       "ObjVal": 139658351518152.69,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 5,
+       "Runtime": 0.06058001518249512,
+       "qcp_dual_warning": false,
+       "duals_readable": false,
+       "dual_error": "AttributeError: Unable to retrieve attribute 'Pi'",
+       "duals": {}
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "case": "all agents 2025 Winter",
+   "widths": [
+    {
+     "width": null,
+     "model_size": {
+      "variables": 26916,
+      "constraints": 20601,
+      "ac_blocks": 4
+     },
+     "n_widened": 0,
+     "settings": [
+      {
+       "setting": "default",
+       "gurobi_status": 13,
+       "ObjVal": 83068199.23930416,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 86,
+       "Runtime": 2.4446399211883545,
+       "qcp_dual_warning": true,
+       "duals_readable": false,
+       "dual_error": "AttributeError: Unable to retrieve attribute 'Pi'",
+       "duals": {}
+      },
+      {
+       "setting": "homogeneous",
+       "gurobi_status": 13,
+       "ObjVal": 83059690.42256692,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 129,
+       "Runtime": 4.546270132064819,
+       "qcp_dual_warning": false,
+       "duals_readable": true,
+       "dual_error": null,
+       "duals": {
+        "s|5|2025": -2924.5760967656,
+        "s|5|2030": -0.0,
+        "s|5|2035": -0.0,
+        "s|7|2025": -3089.182475855271,
+        "s|7|2030": -0.0,
+        "s|7|2035": -0.0,
+        "s|9|2025": -3044.671962536031,
+        "s|9|2030": -0.0,
+        "s|9|2035": -0.0,
+        "e|5|2025": -40141.33279951643,
+        "e|5|2030": -0.0,
+        "e|5|2035": -0.0,
+        "e|7|2025": -39431.8909246245,
+        "e|7|2030": -0.0,
+        "e|7|2035": -0.0,
+        "e|9|2025": -40065.170568803595,
+        "e|9|2030": -0.0,
+        "e|9|2035": -0.0
+       }
+      }
+     ]
+    },
+    {
+     "width": 0.0001,
+     "model_size": {
+      "variables": 26916,
+      "constraints": 20601,
+      "ac_blocks": 4
+     },
+     "n_widened": 4615,
+     "settings": [
+      {
+       "setting": "default",
+       "gurobi_status": 13,
+       "ObjVal": 83057060.01829126,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 73,
+       "Runtime": 2.0560810565948486,
+       "qcp_dual_warning": true,
+       "duals_readable": false,
+       "dual_error": "AttributeError: Unable to retrieve attribute 'Pi'",
+       "duals": {}
+      },
+      {
+       "setting": "homogeneous",
+       "gurobi_status": 13,
+       "ObjVal": 83052924.64417891,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 51,
+       "Runtime": 1.6666431427001953,
+       "qcp_dual_warning": false,
+       "duals_readable": true,
+       "dual_error": null,
+       "duals": {
+        "s|5|2025": -2922.2959927251823,
+        "s|5|2030": -0.0,
+        "s|5|2035": -0.0,
+        "s|7|2025": -3088.882887899008,
+        "s|7|2030": -0.0,
+        "s|7|2035": -0.0,
+        "s|9|2025": -3041.8103590150604,
+        "s|9|2030": -0.0,
+        "s|9|2035": -0.0,
+        "e|5|2025": -40138.04571604061,
+        "e|5|2030": -0.0,
+        "e|5|2035": -0.0,
+        "e|7|2025": -39430.02274861591,
+        "e|7|2030": -0.0,
+        "e|7|2035": -0.0,
+        "e|9|2025": -40063.170562039246,
+        "e|9|2030": -0.0,
+        "e|9|2035": -0.0
+       }
+      }
+     ]
+    },
+    {
+     "width": 0.001,
+     "model_size": {
+      "variables": 26916,
+      "constraints": 20601,
+      "ac_blocks": 4
+     },
+     "n_widened": 4626,
+     "settings": [
+      {
+       "setting": "default",
+       "gurobi_status": 13,
+       "ObjVal": 82996128.2715044,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 77,
+       "Runtime": 2.293045997619629,
+       "qcp_dual_warning": true,
+       "duals_readable": false,
+       "dual_error": "AttributeError: Unable to retrieve attribute 'Pi'",
+       "duals": {}
+      },
+      {
+       "setting": "homogeneous",
+       "gurobi_status": 2,
+       "ObjVal": 82994004.30796939,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 41,
+       "Runtime": 0.9878230094909668,
+       "qcp_dual_warning": true,
+       "duals_readable": false,
+       "dual_error": "AttributeError: Unable to retrieve attribute 'Pi'",
+       "duals": {}
+      }
+     ]
+    },
+    {
+     "width": 0.01,
+     "model_size": {
+      "variables": 26916,
+      "constraints": 20601,
+      "ac_blocks": 4
+     },
+     "n_widened": 6815,
+     "settings": [
+      {
+       "setting": "default",
+       "gurobi_status": 13,
+       "ObjVal": 82781887.21481992,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 65,
+       "Runtime": 1.7305150032043457,
+       "qcp_dual_warning": true,
+       "duals_readable": false,
+       "dual_error": "AttributeError: Unable to retrieve attribute 'Pi'",
+       "duals": {}
+      },
+      {
+       "setting": "homogeneous",
+       "gurobi_status": 13,
+       "ObjVal": 82781543.22044185,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 51,
+       "Runtime": 2.572021961212158,
+       "qcp_dual_warning": false,
+       "duals_readable": true,
+       "dual_error": null,
+       "duals": {
+        "s|5|2025": -3294.8464959429402,
+        "s|5|2030": -0.0,
+        "s|5|2035": -0.0,
+        "s|7|2025": -3328.4862485233148,
+        "s|7|2030": -0.0,
+        "s|7|2035": -0.0,
+        "s|9|2025": -3554.4466845276074,
+        "s|9|2030": -0.0,
+        "s|9|2035": -0.0,
+        "e|5|2025": -38838.615611005625,
+        "e|5|2030": -0.0,
+        "e|5|2035": -0.0,
+        "e|7|2025": -38421.03498633895,
+        "e|7|2030": -0.0,
+        "e|7|2035": -0.0,
+        "e|9|2025": -38791.63229089626,
+        "e|9|2030": -0.0,
+        "e|9|2035": -0.0
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "case": "all agents 2025 all days",
+   "widths": [
+    {
+     "width": null,
+     "model_size": {
+      "variables": 107556,
+      "constraints": 82560,
+      "ac_blocks": 16
+     },
+     "n_widened": 0,
+     "settings": [
+      {
+       "setting": "default",
+       "gurobi_status": 13,
+       "ObjVal": 308983695.9164784,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 150,
+       "Runtime": 14.009282112121582,
+       "qcp_dual_warning": true,
+       "duals_readable": false,
+       "dual_error": "AttributeError: Unable to retrieve attribute 'Pi'",
+       "duals": {}
+      },
+      {
+       "setting": "homogeneous",
+       "gurobi_status": 13,
+       "ObjVal": 305804619.9841991,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 51,
+       "Runtime": 5.261000871658325,
+       "qcp_dual_warning": true,
+       "duals_readable": false,
+       "dual_error": "AttributeError: Unable to retrieve attribute 'Pi'",
+       "duals": {}
+      }
+     ]
+    },
+    {
+     "width": 0.0001,
+     "model_size": {
+      "variables": 107556,
+      "constraints": 82560,
+      "ac_blocks": 16
+     },
+     "n_widened": 18440,
+     "settings": [
+      {
+       "setting": "default",
+       "gurobi_status": 13,
+       "ObjVal": 310437731.9896525,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 142,
+       "Runtime": 13.786195039749146,
+       "qcp_dual_warning": true,
+       "duals_readable": false,
+       "dual_error": "AttributeError: Unable to retrieve attribute 'Pi'",
+       "duals": {}
+      },
+      {
+       "setting": "homogeneous",
+       "gurobi_status": 13,
+       "ObjVal": 305837825.1110647,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 62,
+       "Runtime": 7.1448140144348145,
+       "qcp_dual_warning": true,
+       "duals_readable": false,
+       "dual_error": "AttributeError: Unable to retrieve attribute 'Pi'",
+       "duals": {}
+      }
+     ]
+    },
+    {
+     "width": 0.001,
+     "model_size": {
+      "variables": 107556,
+      "constraints": 82560,
+      "ac_blocks": 16
+     },
+     "n_widened": 18477,
+     "settings": [
+      {
+       "setting": "default",
+       "gurobi_status": 12,
+       "ObjVal": 2015775378252624.5,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 5,
+       "Runtime": 0.46292591094970703,
+       "qcp_dual_warning": false,
+       "duals_readable": false,
+       "dual_error": "AttributeError: Unable to retrieve attribute 'Pi'",
+       "duals": {}
+      },
+      {
+       "setting": "homogeneous",
+       "gurobi_status": 12,
+       "ObjVal": 2015775378252624.5,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 5,
+       "Runtime": 0.5018789768218994,
+       "qcp_dual_warning": false,
+       "duals_readable": false,
+       "dual_error": "AttributeError: Unable to retrieve attribute 'Pi'",
+       "duals": {}
+      }
+     ]
+    },
+    {
+     "width": 0.01,
+     "model_size": {
+      "variables": 107556,
+      "constraints": 82560,
+      "ac_blocks": 16
+     },
+     "n_widened": 27233,
+     "settings": [
+      {
+       "setting": "default",
+       "gurobi_status": 12,
+       "ObjVal": 2015776797014450.5,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 5,
+       "Runtime": 0.46279215812683105,
+       "qcp_dual_warning": false,
+       "duals_readable": false,
+       "dual_error": "AttributeError: Unable to retrieve attribute 'Pi'",
+       "duals": {}
+      },
+      {
+       "setting": "homogeneous",
+       "gurobi_status": 12,
+       "ObjVal": 2015776797014450.5,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 5,
+       "Runtime": 0.4982178211212158,
+       "qcp_dual_warning": false,
+       "duals_readable": false,
+       "dual_error": "AttributeError: Unable to retrieve attribute 'Pi'",
+       "duals": {}
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "case": "full model",
+   "widths": [
+    {
+     "width": null,
+     "model_size": {
+      "variables": 322596,
+      "constraints": 247608,
+      "ac_blocks": 48
+     },
+     "n_widened": 0,
+     "settings": [
+      {
+       "setting": "default",
+       "gurobi_status": 12,
+       "ObjVal": 702450446.0835422,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 111,
+       "Runtime": 25.33380699157715,
+       "qcp_dual_warning": false,
+       "duals_readable": false,
+       "dual_error": "AttributeError: Unable to retrieve attribute 'Pi'",
+       "duals": {}
+      },
+      {
+       "setting": "homogeneous",
+       "gurobi_status": 13,
+       "ObjVal": 653192095.0730587,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 70,
+       "Runtime": 25.48848605155945,
+       "qcp_dual_warning": true,
+       "duals_readable": false,
+       "dual_error": "AttributeError: Unable to retrieve attribute 'Pi'",
+       "duals": {}
+      }
+     ]
+    },
+    {
+     "width": 0.0001,
+     "model_size": {
+      "variables": 322596,
+      "constraints": 247608,
+      "ac_blocks": 48
+     },
+     "n_widened": 55315,
+     "settings": [
+      {
+       "setting": "default",
+       "gurobi_status": 13,
+       "ObjVal": 658851555.5780096,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 137,
+       "Runtime": 31.865701913833618,
+       "qcp_dual_warning": true,
+       "duals_readable": false,
+       "dual_error": "AttributeError: Unable to retrieve attribute 'Pi'",
+       "duals": {}
+      },
+      {
+       "setting": "homogeneous",
+       "gurobi_status": 13,
+       "ObjVal": 653103194.9008474,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 63,
+       "Runtime": 23.62067198753357,
+       "qcp_dual_warning": true,
+       "duals_readable": false,
+       "dual_error": "AttributeError: Unable to retrieve attribute 'Pi'",
+       "duals": {}
+      }
+     ]
+    },
+    {
+     "width": 0.001,
+     "model_size": {
+      "variables": 322596,
+      "constraints": 247608,
+      "ac_blocks": 48
+     },
+     "n_widened": 55408,
+     "settings": [
+      {
+       "setting": "default",
+       "gurobi_status": 13,
+       "ObjVal": 658888173.2044975,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 73,
+       "Runtime": 19.57929801940918,
+       "qcp_dual_warning": true,
+       "duals_readable": false,
+       "dual_error": "AttributeError: Unable to retrieve attribute 'Pi'",
+       "duals": {}
+      },
+      {
+       "setting": "homogeneous",
+       "gurobi_status": 13,
+       "ObjVal": 652451077.8041264,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 143,
+       "Runtime": 84.06136393547058,
+       "qcp_dual_warning": true,
+       "duals_readable": false,
+       "dual_error": "AttributeError: Unable to retrieve attribute 'Pi'",
+       "duals": {}
+      }
+     ]
+    },
+    {
+     "width": 0.01,
+     "model_size": {
+      "variables": 322596,
+      "constraints": 247608,
+      "ac_blocks": 48
+     },
+     "n_widened": 74886,
+     "settings": [
+      {
+       "setting": "default",
+       "gurobi_status": 13,
+       "ObjVal": 655030271.4260755,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 122,
+       "Runtime": 48.51399111747742,
+       "qcp_dual_warning": true,
+       "duals_readable": false,
+       "dual_error": "AttributeError: Unable to retrieve attribute 'Pi'",
+       "duals": {}
+      },
+      {
+       "setting": "homogeneous",
+       "gurobi_status": 13,
+       "ObjVal": 646438607.8625673,
+       "ObjBound": -Infinity,
+       "certified": false,
+       "relative_gap": null,
+       "BarIterCount": 52,
+       "Runtime": 24.816651821136475,
+       "qcp_dual_warning": true,
+       "duals_readable": false,
+       "dual_error": "AttributeError: Unable to retrieve attribute 'Pi'",
+       "duals": {}
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1104,6 +1104,54 @@ Duplicate-variable elimination is deferred until this baseline is validated.
 > when the equalities are written, or the centralized model will silently couple
 > MW to p.u.
 
+### B3 extension (P5.5-C0.2) — the missing capacity coupling
+
+B3 above specifies the *power* interface but says nothing about how capacity
+reaches the network blocks. That omission is now closed. Tracing production end
+to end (`p55c_c0_traces.py`, evidence `p55c_c0_traces.json`):
+
+```
+es_[se]_investment[y_inv]                                   ESSO, MVA / MVAh
+  -> es_[se]_rated_per_unit[y_inv, y]   for y in [y_inv, y_inv + tcal_norm)
+  -> es_[se]_rated[y] = Σ_{y_inv} es_[se]_rated_per_unit[y_inv, y]
+  -> es_s_available_per_unit == es_s_rated_per_unit                  (EXACT)
+     es_e_available_per_unit == es_e_rated_per_unit * soh_cumul
+  -> s_available[y], e_available[y] = Σ_{y_inv} (available per unit)
+  -> network: shared_es_s_rated_fixed = s_available / baseMVA        (p.u.)
+              shared_es_e_rated_fixed = e_available / baseMVA        (p.u.)
+```
+
+Verified numerically on the base candidate: `s_available == s_rated` exactly at
+every node and year, while `e_available / e_rated` is `0.983 / 0.974 / 0.966`
+for 2025 / 2030 / 2035 — the SoH factor.
+
+The centralized relaxation must therefore impose, per ADN node and year,
+
+```
+S_network^TSO * baseMVA_TSO == S_network^DSO * baseMVA_DSO == S_available^ESSO
+E_network^TSO * baseMVA_TSO == E_network^DSO * baseMVA_DSO == E_available^ESSO
+```
+
+with the `baseMVA` conversion written explicitly, and the network SOC limits and
+day-balance anchor referred to **`E_available`, never to rated `E`**. Coupling
+the SOC limits to rated energy would hand the relaxation energy the physical
+system does not have and would break the bound direction.
+
+Two further coupling requirements were discovered during implementation and are
+recorded here because B3 as written would have produced a model that bounds the
+wrong problem. Both are properties of production's own coordinated setup:
+
+- **Transmission `pc` / `qc` are variables, not parameters** (`network.py:308`),
+  because the ADN interface powers are set by the coordination procedure. Built
+  as parameters they take the data-file defaults, which are **zero** — the TSO
+  then sees no distribution demand at all.
+- In the coordinated problem production **frees the ADN load bounds** and
+  re-bounds the interface flexibility at the interface transformer rating
+  (`shared_resources_planning.py:2905-2928`), **frees the DSO interface voltage
+  magnitude** while keeping the angle reference
+  (`shared_resources_planning.py:3692-3702`), and **zeroes the interface voltage
+  slacks** on both sides.
+
 ## B4 — ESSO objective-level bound proof
 
 A7 argued feasible-set enlargement. B4 extends it to the **objective**, which is
@@ -1170,10 +1218,61 @@ Reasoning: salvage has no operational dependence, so it does not belong in an
 operational recourse at all; and leaving it inside a recourse whose degradation
 chain has been relaxed would let the LB claim salvage the physical system cannot
 deliver. Moving it to the master, expressed affinely in the investment
-variables with `soh_cumul` fixed at its **most pessimistic admissible value**
-(`soh_min`, or 1 if a *lower* salvage is the conservative direction — the sign
-must be checked against the salvage coefficient at implementation), keeps the
-master an LP and keeps the bound direction explicit.
+variables, keeps the master an LP and keeps the bound direction explicit.
+
+### B5 correction (P5.5-C0.1) — the sign is settled, and it is *maximum* salvage
+
+B5 originally left the choice of `soh_cumul` open, hedged as "`soh_min`, or 1 if
+a lower salvage is the conservative direction". The sign analysis has now been
+carried out and **`soh_min` is the wrong choice**. Production's residual
+fraction is
+
+```
+residual_fraction = recycling_floor + (1 − recycling_floor)
+                    * (soh_cumul − soh_min) / (1 − soh_min)
+```
+
+which is affine and **increasing** in `soh_cumul` whenever
+`recycling_floor ≤ 1`, so it attains its maximum at `soh_cumul = 1`, i.e. at
+`E_available = E_rated`. Since net recourse is `gross − salvage`, the *largest*
+salvage credit gives the *smallest* net recourse, which is the direction a lower
+bound requires. `soh_min` would give the smallest credit and hence an
+**over**-estimate of the recourse — not a bound.
+
+With `soh_cumul = 1` the residual fraction is exactly `1` and salvage collapses
+to the affine form
+
+```
+V_salvage^max(x) = Σ_{node, cohort} γ_{node,cohort} · E_investment[node, cohort]
+
+γ = terminal_discount · energy_recovery_fraction
+    · expected_unit_energy_cost(y_inv) · remaining_life_fraction(y_inv)
+```
+
+`terminal_discount = 0.743014730`. The coefficients are identical at all three
+nodes and depend only on the cohort:
+
+| cohort | salvage-eligible | remaining life fraction | γ |
+|---|---|---|---|
+| 2025 | **no** | 0.000000 | **0.000000** |
+| 2030 | yes | 0.333333 | **41251.925077** |
+| 2035 | yes | 0.666667 | **76365.320005** |
+
+with `energy_recovery_fraction = 1.0` and `recycling_floor_fraction = 0.0`, so
+the residual fraction reduces to `(soh_cumul − soh_min)/(1 − soh_min)`, which is
+still increasing in `soh_cumul` and still equals exactly `1` at `soh_cumul = 1`.
+
+`Σ γ = 352851.735247` over all nine (node, cohort) pairs. The 2025 cohort has
+`remaining_life = 0` at the terminal year and is therefore not salvage-eligible
+at all, so its coefficient is zero rather than small.
+
+**There is no direct `S` coefficient.** `_get_salvage_value_sensitivities` sets
+`sensitivities['s'] = 0.00` for every node and year and never overwrites it, and
+the salvage expression contains no `S` term.
+
+**Live confirmation of maximality.** On the canonical base candidate
+`V_salvage^max = 7505.080762`, while the production distributed run's actual
+terminal salvage is `3439.555140`. Actual ≤ maximum, as the proof requires.
 
 ### Final definition
 
@@ -1406,4 +1505,299 @@ P5.5-A PARTIAL — architecture is promising but unresolved convexity/bound-dire
 
 ```
 P5.5-A COMPLETE — ready for planner review before convex implementation
+```
+
+---
+
+# P5.5-C — centralized convex lower-bound oracle prototype
+
+Canonical environment throughout: `/opt/anaconda3/envs/opf_env_py311/bin/python`,
+checksum `5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358`,
+IPOPT 3.14.18 + MA97, Gurobi 13.0.1. Every run below passed the R0 provenance
+gate; `provenance.json` is written on pass only.
+
+Branch `feature/convex-planning`. New code path, additive: `convex_oracle.py`,
+`p55c_c1_oracle.py`. Nothing in the nonlinear production path was modified —
+no ADMM change, no H1 change, no IPOPT change, no `_add_benders_cut` change, and
+the replacement outer planning algorithm was never run.
+
+## C0 — closures required before building anything
+
+**C0.1 salvage** and **C0.2 capacity semantics** are complete. Because both
+correct statements made earlier in this document, they are written into B5 and
+B3 above rather than duplicated here. Evidence: `p55c_c0_traces.py`,
+`data/SRP1/Results/P55C/p55c_c0_traces.json`.
+
+## C1–C5 — what was built
+
+`convex_oracle.build_ac_block` produces one W-space block per
+(agent, year, day, scenario); `p55c_c1_oracle.build_centralized_relaxation`
+assembles them into a single parent model.
+
+| | |
+|---|---|
+| AC blocks | 48 = 4 agents × 3 years × 4 days × 1 scenario |
+| Variables | 322 596 |
+| Constraints | 244 152 |
+| Second-order cones (Gurobi presolve) | 35 549 |
+
+**C2 — W-space.** `e`, `f`, `vmag`, `voltage_mag_sqr_def`,
+`voltage_product_real_def`, `voltage_product_imag_def` and `voltage_mag_def` do
+not exist in this model. The primitives are `Wii` (as `vmag_sqr`) and, per
+branch, `(U_b, C_b, D_b)`, with the rank coupling relaxed to the rotated cone
+`C_b² + D_b² ≤ U_b · W_jj`. Every class-A production restriction is retained by
+calling the production rule functions directly, including `C_b ≥ 0` and the
+`vmag_sqr` bounds — the latter verbatim from `mch.vmag_sqr_bounds`, so the PV-bus
+setpoint pinning survives. **No ±30° constraints were introduced.**
+
+**C3 — OLTC.** The accepted B2 transformation, applied uniformly: lines get
+`U_b == W_ii[from]`, tap branches get the box
+`r_min² W_ii ≤ U_b ≤ r_max² W_ii`, and both then share one rank cone. `r` and
+`r_sqr` are never created.
+
+**C4 — shared ESS.** Retained in full. The SOC recursion, the `0.1E ≤ SOC ≤ 0.9E`
+limits and the day-balance anchor all reference **`E_available`**, per C0.2.
+Dropped in the LB oracle only: the H1 hat variables, the H1 link rows, the
+complementarity condition and its penalty. Production's nonlinear H1 is
+untouched.
+
+**C5 — ESSO.** `S_available == S_rated` exactly; `0 ≤ E_available ≤ E_rated`
+replaces `E_available == E_rated · soh_cumul`. Degradation, SoH, minimum-SoH,
+complementarity and their slacks are dropped. Since `soh_cumul ≤ 1`, the
+interval contains the physical identity and the relaxation direction holds.
+
+**C1 — couplings.** There is no ADMM. Capacity is indexed by (node, year) only,
+so it is shared across the representative days of a year by construction, and
+the TSO and DSO blocks reference the *same* variables. The vmag / pf / ess
+consensus families are exact affine equalities written from production's own
+interface definitions with production's unit conversions (B3 above).
+
+## C6 — objective-equivalence and outer-relaxation check
+
+Run **before** any solve, twice: per block against a standalone nonlinear SMOPF
+(`p55c_c6_mapping.py`), and on the full parent against a converged production
+distributed run (`p55c_c6_global.py`).
+
+A converged nonlinear point is mapped by `Wii = e²+f²`, `WijR = e_i e_j + f_i f_j`,
+`WijI = f_i e_j − e_i f_j`, `C_b = r·WijR`, `D_b = r·WijI`, `U_b = r²·Wii`, with
+operational variables copied verbatim.
+
+**Per-block (standalone).**
+
+| block | objective accounting residual | mapped-point violation | the nonlinear model's own violation |
+|---|---|---|---|
+| TSO | 9.15e-15 | 8.769e-09 | 8.769e-09 |
+| DSO 5 | −2.27e-15 | 9.848e-09 | 9.848e-09 |
+| DSO 7 | −1.63e-15 | 9.815e-09 | 9.815e-09 |
+| DSO 9 | −1.28e-15 | 9.482e-09 | 9.482e-09 |
+
+The mapped-point violation equals the nonlinear model's own residual **to the
+digit** in every case: the W-space relaxation introduces no violation of its own.
+
+**Full parent, against the production distributed run** (converged, 17 cycles):
+
+```
+production gross operational cost   838500270.368553
+parent objective at mapped point    838486621.079745
+dropped complementarity (weighted)      13649.288807
+residual                                 6.614e-07     (7.9e-16 relative)
+```
+
+and the run's net recourse was `838496830.8134136` — **bit-identical to the
+canonical value** recorded in P5.4-R.
+
+Block-local violations exceed the nonlinear point's own by at most **1.467e-07**.
+The interface rows are violated by the ADMM consensus gap of the mapped point
+(worst 14.16 kV² on vmag, i.e. 1.19e-04 p.u.² at a 345 kV base; 1.341 MW on
+interface active power), which is a property of an ADMM-converged point, not of
+the model — production's own consensus tolerances are `v: 0.01`, `pf: 0.01`.
+
+**This check earned its place: it found four real faults**, each then traced to
+production source rather than guessed.
+
+1. Transmission `pc`/`qc` built as parameters instead of variables — the TSO saw
+   zero ADN demand and the whole model was four orders of magnitude too cheap.
+2. Coordinated ADN load bounds and interface flexibility bounds not applied.
+3. Coordinated DSO reference magnitude pinned when production frees it.
+4. **Penalty parameters.** Production zeroes `penalty_ess_usage` (both roles) and
+   `penalty_gen_curtailment` (TSO) before the distributed solve, and
+   `get_primal_value` — the definition of the recourse being bounded — is
+   evaluated on the zeroed parameters. Charging production's standalone penalties
+   made the block objective **larger** than the quantity being bounded, which
+   breaks the lower-bound direction outright. This one would not have been
+   visible from any solve; only the exact accounting exposed it.
+
+## C7 — solve, and why there is no certificate
+
+Interface `gurobi_persistent`, `QCPDual=1`, and `NonConvex=0` so that Gurobi
+**refuses** the model unless every quadratic row is convex or conic. It did not
+refuse: presolve reports **35 549 second-order cone constraints**. The
+formulation is genuinely conic — that is a positive result for C2 and C3.
+
+The primal solves reproducibly. The dual does not.
+
+```
+full model, BarHomogeneous=1:  ObjVal = 653192095.073059     ObjBound = -inf
+```
+
+Searched without success: 8 numerics rungs (default, homogeneous, NumericFocus 3,
+ScaleFlag 2, no-presolve, objective scaling 1e6 and 1e8, tightened tolerances),
+6 accuracy settings (`BarQCPConvTol` 1e-6 … 1e-12, `BarConvTol` 1e-12), and 4
+box widths. Objective scaling made matters strictly worse — it shrinks the
+objective against unchanged constraint scaling and the barrier quits in 5
+iterations — so it is not the lever.
+
+**Diagnosis, in four steps** (`p55c_c7_subsolves.py`, `p55c_c7_dso_diag.py`,
+`p55c_c7_dualsweep.py`, `p55c_c7_narrowbounds.py`, `p55c_c7_widen.py`):
+
+1. **It is not size, and not the coupling.** A TSO-only model certifies in ten
+   barrier iterations: `ObjVal = −3378.0778031542`,
+   `ObjBound = −3378.0778198120`, relative gap 4.9e-09, capacity-row duals
+   readable. A DSO-only model of three times the size never certifies.
+2. **A finite `ObjBound` is not a certificate.** Every distribution solve prints
+   `failed to compute QCP dual solution`, at every accuracy setting. Where a
+   finite `ObjBound` does appear it is **constant at −39.12 regardless of
+   tolerance** while the capacity-row duals stay unreadable. Any `ObjBound`
+   accompanied by that warning must be treated as not dual-backed. Knocking out
+   individual families (degenerate zero-RHS cones, the tap box, the ESS cone, the
+   thermal cones, the voltage slacks, the rank cones) does not isolate a single
+   culprit: certification is knife-edge, and several knockouts make it worse.
+3. **Near-fixed variables are a real contributor.** Production boxes quantities
+   it wants to be effectively zero into `[0, EQUALITY_TOLERANCE] = [0, 1e-5]`
+   rather than fixing them. In a DSO block that is **18.9%** of all variables
+   (the reactive flexibility of loads that have none) against **0.1%** for the
+   TSO — the one structural difference that tracks the failure. Fixing them
+   restores certification on TSO+DSO5.
+4. **Widening — which is a relaxation, hence bound-preserving — helps, but not
+   far enough.** At width 1e-4 TSO+DSO5 certifies with a 1.3e-04 relative gap.
+   At four blocks or more nothing certifies at any width.
+
+**The obstruction scales with the number of distribution blocks and is not
+attributable to any single constraint family.**
+
+## C8 — where the looseness comes from
+
+Diagnostics on the solved (uncertified) primal point of the full model,
+`p55c_c8_tightness.py`:
+
+| diagnostic | worst value | where |
+|---|---|---|
+| `ρ_ij` AC rank gap, relative | **2.4499e-02** | **TSO blocks only** — all 8 worst are TSO |
+| `ρ_tr` OLTC rank gap, relative | 4.6562e-06 | negligible |
+| cycle angle residual | **1.2344e-02 rad** | the 12 meshed (TSO) blocks |
+| ESS simultaneous circulation `min(pch,pdch)/S` | **4.9893e-01** | shared ESS |
+| ESSO `E_available / E_rated` | ≥ 0.99754 | negligible |
+
+Read together these rank the causes rather than merely measuring the symptom.
+
+- **The dominant term is the dropped complementarity.** The shared ESS charges
+  and discharges simultaneously at **49.9% of its rating**. That is a physically
+  impossible degree of freedom which lets the storage absorb whatever the network
+  needs by burning energy through the round-trip efficiency, at no cost the
+  objective can see.
+- **Second is the meshed AC rank gap**, 2.45e-02, confined entirely to the
+  transmission network. The distribution networks are radial and their SOC
+  relaxation is essentially exact — the classical result, confirmed here. The
+  cycle-angle residual of 1.23e-02 rad independently confirms the TSO solution is
+  not realizable by any set of voltage angles.
+- **The B2 OLTC transformation and the C5 energy-interval relaxation contribute
+  essentially nothing** (4.66e-06 and <0.25% respectively). Both design decisions
+  are vindicated: neither is a source of looseness.
+
+## C9 — the bound, and whether it could ever be useful
+
+```
+V_salvage^max                      7505.080762
+production salvage (actual)        3439.555140      ≤ maximum, as C0.1 requires
+full-model ObjBound                −inf              NOT certified
+full-model relaxation value    653192095.073059      UNCERTIFIED — not a bound
+```
+
+`LB_rec` cannot be formed, because `ObjBound_R(x)` does not exist for the full
+model. Carrying the arithmetic through with the uncertified primal value —
+**clearly labelled, and only to answer whether a bound of this tightness could
+ever be useful** — gives `LB_rec = 653184589.99` and
+
+| against | gap | relative | in units of `tol_cut = 7.164e5` |
+|---|---|---|---|
+| cold `838496830.813414` | 185 312 240.82 | **22.10 %** | **258.7 ×** |
+| best recovered `836586463.43` | 183 401 873.44 | **21.92 %** | **256.0 ×** |
+
+C9 warned that a small percentage gap can still be useless if it exceeds the
+investment signal. Here the gap is not even small: it is **259 times the
+canonical cut tolerance**. Even if the dual certificate were obtained tomorrow,
+a bound at this tightness could not discriminate between investment candidates.
+That is the more consequential of the two negative findings, because it is a
+property of the formulation rather than of the solver.
+
+## C10 — cut contract on the real convex model
+
+Tested on the largest restriction for which Gurobi actually exposes duals —
+TSO + DSO5, 2025, Winter — since the contract cannot be tested where no dual
+exists.
+
+```
+base       ObjVal   = −3380.8078291107
+           ObjBound = −3392.7050849209      certified
+g_k from the capacity-fixing rows:  ∂/∂S = −3.137925e-03   ∂/∂E = −1.544827e-04
+```
+
+The `ObjBound`-anchored minorant `L_k(x) = ObjBound(x_k) + g_kᵀ(x − x_k)` was
+**never violated** at any of seven investment-scale probes (S +1/+10/+50 MVA,
+E +2/+20/+100 MVAh, and a joint step), consistent with B7's finding that the
+`ObjBound` anchor is valid where the `ObjVal` anchor is not.
+
+**But this does not validate `g_k` as a derivative, and it must not be reported
+as if it did.** Two reasons:
+
+- The base candidate carries **0.0106 MVA / 0.0213 MVAh** at every node-year, so
+  the value function barely responds: over a +50 MVA step the linear term predicts
+  −0.157 while the observed value moves by ~3e-04. The dual over-predicts the
+  true sensitivity by roughly two orders of magnitude.
+- The entire validity margin is the solver's own duality gap. Every violation
+  figure sits at ≈ −11.897, which is exactly `ObjBound − ObjVal` at the base. The
+  linear term contributes ~1e-06. The cut is "valid" only because the anchor slack
+  swamps it.
+- 2 of the 7 probes returned garbage objective values (~1.4e14), i.e. solver
+  failure rather than signal.
+
+Per C10's own instruction, the finding is recorded verbatim:
+
+> **solver-tolerance-safe empirical cut only; no formal dual certificate exposed**
+
+and **the master remains blocked.** `_add_benders_cut`, the master Benders logic,
+the nonlinear production ADMM, H1 and the IPOPT settings were not modified, and
+the replacement outer planning algorithm was not run.
+
+## C11 — controlled strengthening
+
+Not attempted, and deliberately so. C11 authorises strengthening one class-A/B
+family at a time *if necessary to close the gap*. C8 shows the gap is dominated
+by the **ESS complementarity** term (49.9% simultaneous circulation), which is
+class C — not an admissible class-A/B strengthening — and secondarily by the
+**meshed AC rank gap** on the transmission network, which is intrinsic to the SOC
+relaxation and cannot be removed by a class-A/B restriction either. Adding
+class-A/B families would not move a 259 × `tol_cut` gap, and the dormant ±30°
+constraints were **not** added.
+
+The design question this raises belongs to the planner, not to this stage: a
+convex surrogate that limits simultaneous circulation is the single highest-value
+change available, and it is the natural next specification.
+
+## P5.5-C verdict
+
+The relaxation is built, is genuinely conic, and is **verified exactly** — the
+objective accounting closes to 7.9e-16 relative against a converged production
+run, and the mapped-point feasibility excess is 1.5e-07. C0.1, C0.2 and C1–C6
+are complete and pass. C7 obtains no dual certificate on the full model under an
+extensive and documented search, so C9's `LB_rec` cannot be formed and C10 falls
+back to its own prescribed language. C8 additionally shows that the relaxation
+is 259 × `tol_cut` loose, so certification alone would not make it usable.
+
+```
+P5.5-C PARTIAL
+```
+
+```
+P5.5-C COMPLETE — ready for planner review before any replacement planning loop
 ```
