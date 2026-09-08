@@ -568,3 +568,379 @@ P5.6-A PARTIAL — nonlinear oracle works but feasibility, purity, branch stabil
 ```
 P5.6-A COMPLETE — ready for planner review before selecting the derivative-free search method
 ```
+
+---
+
+# P5.6-B — oracle policy stabilization and search-readiness
+
+Branch `feature/derivative-free-planning`. Canonical runtime and checksum gate as
+above, enforced by the oracle on load and by the R0 provenance gate in every
+harness. Evidence under `data/SRP1/Results/P56B/`; P5.6-A evidence untouched.
+
+Nothing in the accepted nonlinear SMOPF, ADMM, H1, IPOPT settings, the
+convex/MISOCP diagnostics or the Benders/master-cut code was modified. `p56b_policy.py`
+composes the P5.6-A building blocks unchanged and adds only two things they
+lacked: an explicit template argument, so templates can be **chained**; and a
+split between the operational stage and the polish, so one ADMM result can be
+polished under two anchors from `_clone_operational_models` copies. No search was
+launched.
+
+The B0 corrections are applied in place in the P5.6-A section above.
+
+## B1 — the template does not stabilize
+
+START-2 archives the canonical base candidate's **cold** solution, yet START-2
+then finds a materially better solution for that same candidate. So the template
+is not a fixed point of its own procedure, and B1 chains the refinement to find
+out whether it settles. Declared before evaluating: **stabilization tolerance
+100 monetary units**, at most 5 refinements, every refinement from a fresh
+candidate-specific deep copy, same candidate, same anchor policy, same physical
+ESSO/polish pipeline, no dependence on any non-base candidate.
+
+| refinement | template | total objective | delta | within 100 |
+|---|---|---|---|---|
+| 0 | T0 (archived cold base) | 828 021 090.360850 | — | — |
+| 1 | T1 | 827 415 318.563944 | −605 771.80 | no |
+| 2 | T2 | 826 824 028.845478 | −591 289.72 | no |
+| 3 | T3 | 826 405 022.193437 | −419 006.65 | no |
+| 4 | T4 | 825 961 521.882321 | −443 500.31 | no |
+
+**Not stabilized.** The chain improves monotonically, drifts **−2 059 568.48**
+over four refinements, and the last step is *larger* than the one before it, so
+it is not even reliably decelerating. Per B1's own instruction the result is
+reported as unstabilized rather than adopting whichever refinement happened to be
+last.
+
+Two consequences, and the second matters more than the first:
+
+- **T_STAR cannot be frozen by stabilization.** It is frozen by **rule** instead:
+  `T_STAR := T0`, the cold solution of the canonical base candidate — exactly what
+  P5.6-A used, reproducible from the rule alone, id
+  `a81f7f5191dd42dbf50d1726149b8909`, config hash and canonical checksum recorded
+  with it. It is a **declared** template, not a converged fixed point, and the
+  objective level it produces is demonstrably not the best available.
+- **The template must be frozen for the whole search.** Candidates evaluated
+  against different template generations are not comparable: one refinement moves
+  the base objective by ~4–6e5, which is four orders above the smallest
+  meaningful difference between candidates measured in B2 (33.27). Refining the
+  template mid-search would silently reorder everything evaluated before it.
+
+Purity was re-run against T_STAR under the locked pipeline: evaluating the base,
+then another candidate, then the base again returned `828021090.3608505` both
+times — **delta exactly 0.0**, bit-identical, matching the P5.6-A6 value from a
+different process.
+
+## B2 — interface anchor
+
+Twelve master-feasible candidates, none random: the canonical base, S-only and
+fixed-ratio S/E moves both negative and positive across nodes 5/7/9 and years
+2025/2030/2035, two duration increases at fixed power, a global move, and one
+candidate at the first-stage budget boundary (the base uses 5% of the budget, so
+scaling every investment by 19 uses 95% — built from the existing planning rules,
+not a new one). Master-infeasible candidates are never evaluated operationally.
+For each candidate the ADMM was solved **once** with T_STAR and the polish run
+**twice** from clones, so the comparison isolates the polish convention.
+
+| candidate | midpoint | DSO | Q(DSO) − Q(mid) |
+|---|---|---|---|
+| base | VALID | VALID | +1 482.45 |
+| `s\|node5\|2025\|-10%` | VALID | VALID | −702.16 |
+| `se\|node5\|2025\|-10%` | **POLISH_FAILURE** | **POLISH_FAILURE** | — |
+| `se\|node7\|2030\|-10%` | VALID | VALID | −771.08 |
+| `se\|node9\|2025\|-10%` | **POLISH_FAILURE** | **POLISH_FAILURE** | — |
+| `se\|node5\|2030\|+10%` | VALID | VALID | −705.00 |
+| `se\|node7\|2035\|+10%` | VALID | VALID | +1 487.34 |
+| `se\|node9\|2025\|+10%` | VALID | VALID | +11 175.98 |
+| `e\|node5\|2025\|+25%` | VALID | VALID | −13 365.80 |
+| `e\|node9\|2030\|+50%` | VALID | VALID | +5 607.92 |
+| `se\|ALL\|-10%` | **POLISH_FAILURE** | **POLISH_FAILURE** | — |
+| `se\|ALL\|x19` (boundary) | **SOLVER_CRASH** | — | — |
+
+```
+success rate, midpoint : 8 / 11 operationally evaluated  = 72.7 %
+success rate, DSO      : 8 / 11 operationally evaluated  = 72.7 %
+overall VALID          : 8 / 12 candidates               = 66.7 %
+anchor delta   mean +526.21   std 6 507.45   range -13 365.80 .. +11 175.98
+Spearman rank correlation between the two anchors : 0.9048
+```
+
+**The DSO anchor rescues nothing here.** All three polish failures fail under
+*both* anchors, and the failing blocks are the same physics either way
+(`se|node5|2025|-10%`: TSO 2025 Winter and DSO5 2025 Autumn; `se|node9|2025|-10%`:
+TSO 2025 Autumn and DSO9 2025 Autumn; `se|ALL|-10%`: **33 of the 48 blocks**).
+
+> **This contradicts P5.6-A and supersedes it.** In A6 the DSO anchor turned
+> `se|node9|2025|-10%` from POLISH_FAILURE into VALID. That evaluation used a
+> **cold** start. Under T_STAR the same candidate fails under both anchors. The
+> A-stage rescue was therefore a property of the *start*, not of the anchor, and
+> the "midpoint-first with DSO fallback" policy the A report recommended
+> investigating buys nothing at T_STAR while costing a second polish (~35 s)
+> every time it fires.
+
+**Ranking is not preserved.** Five of the eight jointly valid candidates change
+rank between anchors, and the worst pairwise reversal is
+`s|node5|2025|-10%` against `se|node7|2035|+10%`: the midpoint ranks them
+1 790.84 apart one way, the DSO anchor 398.67 apart the *other* way. Set against
+the spread of the valid population (46 146.04 under midpoint) and, more sharply,
+against the **smallest adjacent gap between candidates, 33.27**, the maximum
+anchor-induced variation of 13 365.80 is **402 times** the resolution the search
+would need. Mixing conventions within one search would therefore destroy the
+ordering the search exists to discover.
+
+**Locked recurring search-anchor policy: MIDPOINT-ONLY.** Both anchors have
+identical success rates, so nothing is bought by the fallback; midpoint is the
+convention under which the certified incumbent was computed, and a single fixed
+convention removes the mixed-convention inconsistency entirely — which is what
+makes `tau_search` meaningful in B4. DSO-always is equally defensible on success
+rate alone and remains available as a configuration; what is *not* defensible is
+mixing them. For **final incumbent certification** both anchors may still be run
+and the best VALID polished solution retained.
+
+## B3 — recurring start policy
+
+T_STAR was evaluated on the whole population. Cold was evaluated only on the
+strategic subset B3 prescribes: the base, the lowest and highest T_STAR
+objectives, the boundary candidate, and one candidate that failed under T_STAR.
+
+| candidate | cold | Q(cold) | Q(T_STAR) | cold − T_STAR |
+|---|---|---|---|---|
+| base | VALID | 829 338 237.86 | 828 021 090.36 | **+1 317 147.50** |
+| `e\|node5\|2025\|+25%` | VALID | 829 326 565.42 | 827 989 614.23 | **+1 336 951.19** |
+| `se\|node9\|2025\|+10%` | VALID | 838 922 190.37 | 828 035 760.28 | **+10 886 430.09** |
+| `se\|ALL\|x19` (boundary) | SOLVER_CRASH | — | — (crash) | — |
+| `se\|node5\|2025\|-10%` | **VALID** 838 974 140.19 | | **POLISH_FAILURE** | — |
+
+**Cold is never better on objective**, on any point where both succeeded — it is
+worse by 1.32e6 to 1.09e7. On the decision rule of B3 that authorizes
+
+```
+SEARCH START POLICY = T_STAR ONLY
+Q_search(x) = the deterministic T_STAR result under the midpoint anchor
+```
+
+with cold demoted to a final-certification / periodic-audit start rather than a
+recurring search cost.
+
+**But the two starts have different failure sets, and that is not a detail.**
+`se|node5|2025|-10%` is VALID under cold and POLISH_FAILURE under T_STAR; the
+boundary candidate crashes under both. So a T_STAR-only search will be handed
+nothing for candidates a cold start could have evaluated. That is tolerable for a
+pattern search, which treats a failed poll point as unsuccessful, but it means the
+recurring policy's ~27% failure rate is a property to design around rather than a
+defect to be fixed by choosing the other start.
+
+## B4 — search objective resolution, `tau_search`
+
+`tol_cut` is retired (B0.4). `tau_search` is derived from the measured behaviour
+of the **final proposed recurring policy** — T_STAR only, midpoint anchor only —
+and the two kinds of variation are kept apart, as B4 requires.
+
+**NUMERICAL REPEATABILITY** — what the same candidate under the same policy
+returns twice:
+
+| source | measured |
+|---|---|
+| repeat evaluation, identical candidate and policy (P5.6-A3) | **0.000000e+00**, three call histories |
+| repeat evaluation against T_STAR (P5.6-B2) | **0.000000e+00** |
+| repeat across independent processes (A6, A6 control, B2) | **0.000000e+00** |
+| polish reproducibility | **0.000000e+00** |
+| deterministic fallback path, with the anchor locked | **0.000000e+00** (no fallback exists) |
+
+**HEURISTIC BRANCH UNCERTAINTY** — explicitly *excluded* from `tau_search`, per
+B4's instruction not to inflate it:
+
+| source | measured | why excluded |
+|---|---|---|
+| cold versus T_STAR | 1.32e6 … 1.09e7 | a different fixed start finding a better branch is an optimality limitation, not noise |
+| template refinement (B1) | 4.19e5 … 6.06e5 per refinement | neutralised by freezing T_STAR for the whole search |
+| anchor convention | up to 1.34e4 | neutralised by locking one anchor; it would be *included* if the fallback were kept |
+
+**Smallest meaningful planning-objective difference observed** across the eight
+valid B2 candidates: adjacent gaps of 33.27, 128.68, 436.42, 1 401.27, 1 790.84,
+10 879.51, 31 476.13 — so **33.27** is the finest distinction the population
+actually contains.
+
+The numerical repeatability floor is exactly zero, so any positive threshold is
+defensible against noise; the binding constraint is that `tau_search` must stay
+well below the smallest difference worth resolving.
+
+```
+RECOMMENDED   tau_search = 10.0 monetary units
+
+    > 0        the measured repeatability floor, with margin for any future
+               non-determinism (a different BLAS, a threaded linear solver)
+    < 33.27    the smallest meaningful difference observed, by a factor of 3.3
+
+Acceptance rule:   accept a candidate only if   Q_new < Q_incumbent - tau_search
+```
+
+`tau_search` is only meaningful because the anchor is locked. Under
+midpoint-first-with-DSO-fallback the effective within-policy uncertainty would be
+13 365.80 — **402 ×** the smallest meaningful gap — and no acceptance threshold
+could both reject that artefact and resolve real differences.
+
+## B5 — first-stage search coordinates
+
+The first-stage feasible set is a polyhedron in the 18 investment variables:
+`s, e >= 0`; `e >= phi_min*s` with `phi_min = 2`; `e <= phi_max*s` with
+`phi_max = 10`; cumulative energy per node/year `<= max_capacity = 5.0` under the
+cohort/calendar-life mapping; and the expected discounted investment cost
+`<= budget = 1e6`. The base candidate sits **exactly** on `e = phi_min*s` at all
+nine (node, investment year) pairs, so the minimum-duration constraint is active
+everywhere.
+
+Feasible directions were counted, not argued (`p56b_b5_coordinates.py`):
+
+| point | Option A, native S/E | Option B, `(S, h)` with `h = E − phi_min*S` |
+|---|---|---|
+| **base** (`E = phi_min*S` active) | **18 / 36** (50 %) — every `+s` and every `−e` blocked | **27 / 36** (75 %) — only `−h` blocked |
+| interior (`E = 1.25*phi_min*S`) | 36 / 36 | 36 / 36 |
+
+In native coordinates at the base, a step in `+s` alone drops the ratio below
+`phi_min` and a step in `−e` alone does the same, so **half** the poll is rejected
+before any model is solved — and the search could only ever decrease power and
+increase energy. That is not a tuning inefficiency; it is a directionally
+incomplete poll at exactly the point the problem starts from.
+
+**Recommended: Option B — `(S, h)` with `h = E − phi_min*S >= 0`.** The map
+`E = phi_min*S + h` is a bijection onto `{e >= phi_min*s, s >= 0}`, so it is a
+change of variables and not a projection: the requested candidate is exactly
+representable and nothing is silently altered. Its value is precisely that it
+converts the binding general constraint `e >= 2s` into a simple **bound**
+`h >= 0`, which every pattern-search implementation handles natively, and which
+is where the base — and any minimum-duration-optimal solution — will sit. The
+remaining constraints stay general and are handled as Option C prescribes:
+`h <= (phi_max − phi_min)*s`, cumulative capacity and budget by exact
+master-feasibility rejection, with tangent-cone poll directions added only if the
+search actually reaches the capacity or budget face.
+
+## B6 — search-method selection (design only, not implemented)
+
+Measured properties to design against: 18 continuous variables; a linear
+first-stage polyhedron; ~115 s per evaluation; a **deterministic** oracle with
+**exactly zero** numerical noise; a ~27 % rate of operationally invalid points;
+nonsmooth branch structure (P5.6-A2.1: two mathematically equivalent problems
+return solutions 704 apart); a working cache; independent evaluations.
+
+| method | verdict |
+|---|---|
+| **Deterministic pattern search / MADS** | **Selected.** Failed evaluations are handled natively as unsuccessful poll points (the extreme-barrier treatment of hidden constraints) — which is exactly the ~27 % case. Bound constraints are native in `(S, h)`. Polling is embarrassingly parallel. Fully reproducible. Smallest implementation burden of anything that handles hidden constraints properly. |
+| Trust-region model-based DFO | Rejected. A linear model needs 19 well-poised points and a quadratic 190; failed evaluations poison the interpolation set, and the branch nonsmoothness breaks the model assumption the method's convergence rests on. |
+| Bayesian / surrogate | Rejected. Needs a separate feasibility classifier for the 27 % failures; the GP smoothness prior is contradicted by the measured branch structure; 18 dimensions is marginal; and reproducibility requires pinning every seed, giving up the method's main advantage. |
+| Evolutionary / random | Rejected on budget alone: thousands of evaluations at ~115 s. |
+
+Between plain GPS and MADS, the evidence favours MADS-style: GPS with a fixed
+`2n` direction set can stall on a nonsmooth function, and nonsmoothness is
+measured here rather than assumed. **OrthoMADS** is the specific recommendation
+because its direction sequence is deterministic, which preserves the
+reproducibility the whole stage has been built on.
+
+**Specification**
+
+| item | value |
+|---|---|
+| coordinates | `(S, h)` per (node, investment year); 18 variables; `S >= 0`, `h >= 0` as bounds |
+| general constraints | `h <= 8S`, cumulative capacity, budget — exact master rejection, no projection |
+| initial poll size | `Delta_S = 0.10 x s_base = 1.063e-3`; `Delta_h = 0.10 x phi_min x s_base = 2.127e-3` (a 10 % power move and a 10 % duration move) |
+| poll | OrthoMADS directions, opportunistic (accept the first improvement and move on) |
+| expansion / contraction | `x2` on a successful poll, `x0.5` on an unsuccessful one |
+| acceptance | `Q_new < Q_incumbent − tau_search`, `tau_search = 10.0` |
+| stopping | poll size below `0.01 x Delta_0`, or the evaluation budget |
+| max evaluations | 200 for a first campaign (see B7) |
+| parallel poll | 4 workers recommended, 8 only with the contention caveat in B7 |
+| cache | checked before every evaluation; key includes the template id and the anchor policy |
+| `INVALID_INVESTMENT` | rejected by the master check at zero solver cost; an infeasible poll point, not charged to the evaluation budget |
+| `POLISH_FAILURE` / `SOLVER_CRASH` | unsuccessful poll point under the extreme barrier; recorded, never assigned a value, never extrapolated |
+| final certification | re-evaluate the incumbent under both starts and both anchors, keep the best VALID, and report the full A1-style certificate |
+
+## B7 — search-cost estimate
+
+Measured under the final proposed recurring policy (T_STAR, midpoint anchor):
+
+| quantity | measured |
+|---|---|
+| ADMM with T_STAR | median **79.4 s** (23.4 – 90.6 s) |
+| polish | median **35.2 s** (24.4 – 451.6 s) |
+| **one uncached successful search evaluation** | **~115 s** |
+| one failed evaluation (typical, 2 blocks fail) | 132 s |
+| one failed evaluation (worst observed, 33 of 48 blocks fail) | 531 s |
+| one crashed evaluation | 23 s |
+| blended over the observed 8 valid / 3 failed / 1 crashed mix | **~134 s** |
+| one fallback-anchor evaluation (if the fallback were kept) | ~150 s |
+| one cold evaluation | 446 – 590 s |
+| **one final multi-start certification** (cold + T_STAR, both anchors) | **~740 s** |
+| one-off T_STAR construction | 518 s |
+| cache hit | 0.040 s |
+
+Wall clock at the blended 134 s, with the one-off 518 s template build included in every cell. **These
+are ideal upper-level concurrency figures**: they assume candidates are dispatched
+to workers with no scheduling loss and no resource contention, which is not what
+was observed.
+
+| uncached evaluations | 1 worker | 4 workers | 8 workers |
+|---|---|---|---|
+| 50 | 2.0 h | 0.6 h | 0.4 h |
+| 100 | 3.9 h | 1.1 h | 0.6 h |
+| 200 | 7.6 h | 2.0 h | 1.1 h |
+| 500 | 18.8 h | 4.8 h | 2.5 h |
+
+**Resource contention is an observed risk, not a hypothetical one.** Each worker
+runs one evaluation, and each evaluation runs IPOPT sequentially over 48 network
+blocks per ADMM cycle, so `W` workers means `W` simultaneous IPOPT processes on
+top of whatever threading MA97 uses. On this 8-core machine, a `SOLVER_CRASH`
+(`ApplicationError: Solver (ipopt) did not exit normally`) was actually observed
+during P5.6-A while several heavy processes ran concurrently, and that failure
+mode is now trapped and reported rather than propagated. **4 workers is the
+recommended parallelism**; 8 saturates the physical cores and reproduces the
+conditions under which that crash was seen.
+
+## Verdict
+
+**What B settled.**
+
+- *Anchor policy* — locked to **midpoint-only**. Both anchors have identical
+  72.7 % success, the DSO fallback rescues nothing at T_STAR, and mixing
+  conventions would inject up to 13 365.80 of variation and reverse candidate
+  orderings.
+- *Start policy* — **T_STAR only** for the search, cold demoted to certification.
+  Cold was never better on objective, by 1.32e6 to 1.09e7.
+- *`tau_search` = 10.0*, derived from a measured repeatability floor of exactly
+  zero and the smallest meaningful candidate gap of 33.27, with heuristic branch
+  uncertainty deliberately excluded.
+- *Coordinates* — `(S, h)`, which recovers the half of the poll that native S/E
+  loses at the base.
+- *Method and specification* — deterministic OrthoMADS pattern search, fully
+  specified above.
+- *Cost* — ~115 s per successful evaluation, ~134 s blended, ~740 s per final
+  certification, with a measured contention caveat on parallelism.
+
+**What B did not settle.**
+
+- *The template is not a fixed point.* Four refinements moved the base objective
+  by −2 059 568.48 with no sign of convergence, so T_STAR is frozen by rule and
+  the objective level it reports is knowingly not the best available. The search
+  will optimise a surface defined by that declared template, and a later
+  refinement would shift the whole surface by ~4–6e5 — four orders above
+  `tau_search`.
+- *The failure rate is ~27 %, and the two starts fail on different candidates.*
+  Three of eleven operationally evaluated candidates failed the polish under both
+  anchors, one crashed the solver, and one candidate that T_STAR fails on is
+  solvable from cold. A pattern search can absorb this as hidden constraints, but
+  a quarter of the poll returning nothing is a real efficiency and coverage cost
+  that has not been reduced, only characterised.
+- *The budget-boundary candidate is unsolvable.* `se|ALL|x19` crashed IPOPT under
+  both starts, so the region of the feasible polyhedron near the budget face is
+  currently unreachable by the oracle — which is the region an investment search
+  is most likely to want to explore.
+
+The policies are locked and the search is fully specified; the surface those
+policies define is stable to evaluate but not stable to refine, and a quarter of
+it cannot be evaluated at all. That is the middle verdict.
+
+```
+P5.6-B PARTIAL — oracle policy, anchor robustness, start policy or search resolution remains unresolved
+```
+
+```
+P5.6-B COMPLETE — ready for planner review before launching derivative-free optimization
+```

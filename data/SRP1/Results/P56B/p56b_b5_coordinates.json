@@ -1,0 +1,126 @@
+{
+ "stage": "P5.6-B5",
+ "provenance": {
+  "timestamp_utc": "2026-09-08T14:22:12.619108+00:00",
+  "git_head": "f7e0ed7624095950311a2521b926c05d653c4e94",
+  "sys_executable": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "version": "3.14.18",
+   "exists": true,
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)"
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-10",
+   "available": true,
+   "licence_id": "2805683",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "stage": "P5.6-B5 coordinates"
+ },
+ "timestamp_utc": "2026-09-08T14:22:12.779835+00:00",
+ "phi_min": 2.0,
+ "phi_max": 10.0,
+ "max_capacity": 5.0,
+ "budget": 1000000.0,
+ "step_used": 0.0010634892806127162,
+ "first_stage_constraints": [
+  "s[n,y] >= 0 and e[n,y] >= 0",
+  "e[n,y] >= phi_min * s[n,y]        (phi_min = 2)",
+  "e[n,y] <= phi_max * s[n,y]        (phi_max = 10)",
+  "cumulative E per node/year <= max_capacity   (cohort/calendar-life mapping)",
+  "expected discounted investment cost <= budget"
+ ],
+ "feasible_set_is_polyhedral": true,
+ "points": {
+  "base (E = phi_min * S active everywhere)": {
+   "OPTION_A_native_S_E": {
+    "directions": 36,
+    "feasible": 18,
+    "infeasible": 18,
+    "feasible_fraction": 0.5,
+    "blocked_examples": [
+     {
+      "direction": "+s|5|2025",
+      "reason": "minimum E/S ratio violated at node 5, year 2025"
+     },
+     {
+      "direction": "-e|5|2025",
+      "reason": "minimum E/S ratio violated at node 5, year 2025"
+     },
+     {
+      "direction": "+s|5|2030",
+      "reason": "minimum E/S ratio violated at node 5, year 2030"
+     },
+     {
+      "direction": "-e|5|2030",
+      "reason": "minimum E/S ratio violated at node 5, year 2030"
+     }
+    ],
+    "blocked_kinds": [
+     "+s",
+     "-e"
+    ]
+   },
+   "OPTION_B_power_plus_duration_slack": {
+    "directions": 36,
+    "feasible": 27,
+    "infeasible": 9,
+    "feasible_fraction": 0.75,
+    "blocked_examples": [
+     {
+      "direction": "-e|5|2025",
+      "reason": "minimum E/S ratio violated at node 5, year 2025"
+     },
+     {
+      "direction": "-e|5|2030",
+      "reason": "minimum E/S ratio violated at node 5, year 2030"
+     },
+     {
+      "direction": "-e|5|2035",
+      "reason": "minimum E/S ratio violated at node 5, year 2035"
+     },
+     {
+      "direction": "-e|7|2025",
+      "reason": "minimum E/S ratio violated at node 7, year 2025"
+     }
+    ],
+    "blocked_kinds": [
+     "-e"
+    ]
+   }
+  },
+  "interior (E = 1.25 * phi_min * S)": {
+   "OPTION_A_native_S_E": {
+    "directions": 36,
+    "feasible": 36,
+    "infeasible": 0,
+    "feasible_fraction": 1.0,
+    "blocked_examples": [],
+    "blocked_kinds": []
+   },
+   "OPTION_B_power_plus_duration_slack": {
+    "directions": 36,
+    "feasible": 36,
+    "infeasible": 0,
+    "feasible_fraction": 1.0,
+    "blocked_examples": [],
+    "blocked_kinds": []
+   }
+  }
+ }
+}

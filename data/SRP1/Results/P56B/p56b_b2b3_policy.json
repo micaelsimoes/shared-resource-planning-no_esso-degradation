@@ -1,0 +1,733 @@
+{
+ "stage": "P5.6-B2/B3",
+ "provenance": {
+  "timestamp_utc": "2026-09-08T14:00:43.036178+00:00",
+  "git_head": "721f0b4d591f1575191eb7d00f650d71a144a2f1",
+  "sys_executable": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "version": "3.14.18",
+   "exists": true,
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)"
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-10",
+   "available": true,
+   "licence_id": "2805683",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "stage": "P5.6-B2/B3 policy"
+ },
+ "timestamp_utc": "2026-09-08T14:00:43.152937+00:00",
+ "T_STAR": {
+  "definition": "T0 = cold solution of the canonical base candidate",
+  "frozen_by": "rule, not stabilization (B1 did not converge)",
+  "config_hash": "d9e1e156f00403c6bfb448a45f3daa2b",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "oracle_version": "p56a.2",
+  "build_runtime_s": 517.7629981040955,
+  "id": "a81f7f5191dd42dbf50d1726149b8909"
+ },
+ "purity_vs_T_STAR": {
+  "runs": [
+   {
+    "tag": "A1",
+    "status": "VALID",
+    "total_objective": 828021090.3608505,
+    "wall_clock_s": 114.67924189567566
+   },
+   {
+    "tag": "B",
+    "status": "POLISH_FAILURE",
+    "total_objective": null,
+    "wall_clock_s": 1019.8553421497345
+   },
+   {
+    "tag": "A2",
+    "status": "VALID",
+    "total_objective": 828021090.3608505,
+    "wall_clock_s": 127.19977688789368
+   }
+  ],
+  "declared_tolerance": 1.0,
+  "objective_delta": 0.0,
+  "bit_identical": true,
+  "pass": true
+ },
+ "B2_rows": [
+  {
+   "label": "base",
+   "anchors": {
+    "midpoint": {
+     "status": "VALID",
+     "total_objective": 828021090.3608505,
+     "polish_runtime_s": 29.1978759765625,
+     "failed_blocks": [],
+     "max_coordinated_residual": 1.1102230246251565e-16,
+     "esso_max_violation": 1.0502709812953981e-13,
+     "network_max_violation": 1.5000220759397997e-05,
+     "network_h1_violation": 0.0
+    },
+    "dso": {
+     "status": "VALID",
+     "total_objective": 828022572.8109363,
+     "polish_runtime_s": 23.238483905792236,
+     "failed_blocks": [],
+     "max_coordinated_residual": 5.551115123125783e-17,
+     "esso_max_violation": 1.0502709812953981e-13,
+     "network_max_violation": 1.3859737827026652e-05,
+     "network_h1_violation": 0.0
+    }
+   },
+   "master_feasible": true,
+   "admm": {
+    "status": null,
+    "converged": true,
+    "initialization_failed": false,
+    "cycles": 2,
+    "runtime_s": 80.4113221168518,
+    "n_recovery_diagnostics": 0,
+    "gross_operational_cost": 837191939.3227628,
+    "net_operational_recourse": 837188510.9012293
+   },
+   "anchor_delta": 1482.4500858783722
+  },
+  {
+   "label": "s|node5|2025|-10%",
+   "anchors": {
+    "midpoint": {
+     "status": "VALID",
+     "total_objective": 828023009.8609892,
+     "polish_runtime_s": 24.415496349334717,
+     "failed_blocks": [],
+     "max_coordinated_residual": 5.551115123125783e-17,
+     "esso_max_violation": 8.1601392309949e-14,
+     "network_max_violation": 8.423916573740975e-06,
+     "network_h1_violation": 0.0
+    },
+    "dso": {
+     "status": "VALID",
+     "total_objective": 828022307.6986217,
+     "polish_runtime_s": 23.623356103897095,
+     "failed_blocks": [],
+     "max_coordinated_residual": 1.1102230246251565e-16,
+     "esso_max_violation": 8.1601392309949e-14,
+     "network_max_violation": 1.3859737827026652e-05,
+     "network_h1_violation": 0.0
+    }
+   },
+   "master_feasible": true,
+   "admm": {
+    "status": null,
+    "converged": true,
+    "initialization_failed": false,
+    "cycles": 2,
+    "runtime_s": 79.30597996711731,
+    "n_recovery_diagnostics": 0,
+    "gross_operational_cost": 837175129.9350932,
+    "net_operational_recourse": 837171747.428066
+   },
+   "anchor_delta": -702.1623674631119
+  },
+  {
+   "label": "se|node5|2025|-10%",
+   "anchors": {
+    "midpoint": {
+     "status": "POLISH_FAILURE",
+     "total_objective": null,
+     "polish_runtime_s": 41.60035514831543,
+     "failed_blocks": [
+      "TSO|2025|Winter",
+      "DSO5|2025|Autumn"
+     ],
+     "max_coordinated_residual": null,
+     "esso_max_violation": null,
+     "network_max_violation": null,
+     "network_h1_violation": null
+    },
+    "dso": {
+     "status": "POLISH_FAILURE",
+     "total_objective": null,
+     "polish_runtime_s": 28.09632706642151,
+     "failed_blocks": [
+      "TSO|2025|Winter",
+      "DSO5|2025|Autumn",
+      "DSO5|2025|Winter"
+     ],
+     "max_coordinated_residual": null,
+     "esso_max_violation": null,
+     "network_max_violation": null,
+     "network_h1_violation": null
+    }
+   },
+   "master_feasible": true,
+   "admm": {
+    "status": null,
+    "converged": true,
+    "initialization_failed": false,
+    "cycles": 2,
+    "runtime_s": 90.6306083202362,
+    "n_recovery_diagnostics": 0,
+    "gross_operational_cost": 836897857.7650094,
+    "net_operational_recourse": 836894511.9781059
+   }
+  },
+  {
+   "label": "se|node7|2030|-10%",
+   "anchors": {
+    "midpoint": {
+     "status": "VALID",
+     "total_objective": 828023479.5398129,
+     "polish_runtime_s": 38.185744762420654,
+     "failed_blocks": [],
+     "max_coordinated_residual": 5.551115123125783e-17,
+     "esso_max_violation": 9.636735853746359e-14,
+     "network_max_violation": 1.3262045337303352e-05,
+     "network_h1_violation": 0.0
+    },
+    "dso": {
+     "status": "VALID",
+     "total_objective": 828022708.4557309,
+     "polish_runtime_s": 24.17935585975647,
+     "failed_blocks": [],
+     "max_coordinated_residual": 5.551115123125783e-17,
+     "esso_max_violation": 9.636735853746359e-14,
+     "network_max_violation": 1.3859737827026652e-05,
+     "network_h1_violation": 0.0
+    }
+   },
+   "master_feasible": true,
+   "admm": {
+    "status": null,
+    "converged": true,
+    "initialization_failed": false,
+    "cycles": 2,
+    "runtime_s": 86.27987670898438,
+    "n_recovery_diagnostics": 0,
+    "gross_operational_cost": 837151771.607844,
+    "net_operational_recourse": 837148425.836243
+   },
+   "anchor_delta": -771.0840820074081
+  },
+  {
+   "label": "se|node9|2025|-10%",
+   "anchors": {
+    "midpoint": {
+     "status": "POLISH_FAILURE",
+     "total_objective": null,
+     "polish_runtime_s": 37.499494314193726,
+     "failed_blocks": [
+      "TSO|2025|Autumn",
+      "DSO9|2025|Autumn"
+     ],
+     "max_coordinated_residual": null,
+     "esso_max_violation": null,
+     "network_max_violation": null,
+     "network_h1_violation": null
+    },
+    "dso": {
+     "status": "POLISH_FAILURE",
+     "total_objective": null,
+     "polish_runtime_s": 39.9769332408905,
+     "failed_blocks": [
+      "TSO|2025|Autumn",
+      "DSO9|2025|Autumn"
+     ],
+     "max_coordinated_residual": null,
+     "esso_max_violation": null,
+     "network_max_violation": null,
+     "network_h1_violation": null
+    }
+   },
+   "master_feasible": true,
+   "admm": {
+    "status": null,
+    "converged": true,
+    "initialization_failed": false,
+    "cycles": 2,
+    "runtime_s": 75.989511013031,
+    "n_recovery_diagnostics": 0,
+    "gross_operational_cost": 837029686.6525594,
+    "net_operational_recourse": 837026338.8604515
+   }
+  },
+  {
+   "label": "se|node5|2030|+10%",
+   "anchors": {
+    "midpoint": {
+     "status": "VALID",
+     "total_objective": 828023446.270227,
+     "polish_runtime_s": 34.47621417045593,
+     "failed_blocks": [],
+     "max_coordinated_residual": 1.1102230246251565e-16,
+     "esso_max_violation": 1.1679546219056647e-13,
+     "network_max_violation": 1.3234387642502288e-05,
+     "network_h1_violation": 0.0
+    },
+    "dso": {
+     "status": "VALID",
+     "total_objective": 828022741.2654663,
+     "polish_runtime_s": 24.305870056152344,
+     "failed_blocks": [],
+     "max_coordinated_residual": 1.1102230246251565e-16,
+     "esso_max_violation": 1.1679546219056647e-13,
+     "network_max_violation": 1.4020739874998078e-05,
+     "network_h1_violation": 0.0
+    }
+   },
+   "master_feasible": true,
+   "admm": {
+    "status": null,
+    "converged": true,
+    "initialization_failed": false,
+    "cycles": 2,
+    "runtime_s": 78.2561149597168,
+    "n_recovery_diagnostics": 0,
+    "gross_operational_cost": 837174868.0046214,
+    "net_operational_recourse": 837171367.2953748
+   },
+   "anchor_delta": -705.0047606229782
+  },
+  {
+   "label": "se|node7|2035|+10%",
+   "anchors": {
+    "midpoint": {
+     "status": "VALID",
+     "total_objective": 828021219.0258048,
+     "polish_runtime_s": 35.17933392524719,
+     "failed_blocks": [],
+     "max_coordinated_residual": 1.1102230246251565e-16,
+     "esso_max_violation": 1.226796442210798e-13,
+     "network_max_violation": 1.4854713114909046e-05,
+     "network_h1_violation": 0.0
+    },
+    "dso": {
+     "status": "VALID",
+     "total_objective": 828022706.3707334,
+     "polish_runtime_s": 24.95077896118164,
+     "failed_blocks": [],
+     "max_coordinated_residual": 5.551115123125783e-17,
+     "esso_max_violation": 1.226796442210798e-13,
+     "network_max_violation": 1.3859737827026652e-05,
+     "network_h1_violation": 0.0
+    }
+   },
+   "master_feasible": true,
+   "admm": {
+    "status": null,
+    "converged": true,
+    "initialization_failed": false,
+    "cycles": 2,
+    "runtime_s": 79.89592504501343,
+    "n_recovery_diagnostics": 0,
+    "gross_operational_cost": 837191698.5063734,
+    "net_operational_recourse": 837188160.6060159
+   },
+   "anchor_delta": 1487.3449286222458
+  },
+  {
+   "label": "se|node9|2025|+10%",
+   "anchors": {
+    "midpoint": {
+     "status": "VALID",
+     "total_objective": 828035760.2760962,
+     "polish_runtime_s": 38.84773898124695,
+     "failed_blocks": [],
+     "max_coordinated_residual": 1.1102230246251565e-16,
+     "esso_max_violation": 1.1401990462900358e-13,
+     "network_max_violation": 1.152315689179062e-05,
+     "network_h1_violation": 0.0
+    },
+    "dso": {
+     "status": "VALID",
+     "total_objective": 828046936.2547964,
+     "polish_runtime_s": 24.696964979171753,
+     "failed_blocks": [],
+     "max_coordinated_residual": 5.551115123125783e-17,
+     "esso_max_violation": 1.1401990462900358e-13,
+     "network_max_violation": 1.3859699777463153e-05,
+     "network_h1_violation": 0.0
+    }
+   },
+   "master_feasible": true,
+   "admm": {
+    "status": null,
+    "converged": true,
+    "initialization_failed": false,
+    "cycles": 2,
+    "runtime_s": 79.35457015037537,
+    "n_recovery_diagnostics": 0,
+    "gross_operational_cost": 837308758.8499,
+    "net_operational_recourse": 837305258.2250383
+   },
+   "anchor_delta": 11175.97870016098
+  },
+  {
+   "label": "e|node5|2025|+25%",
+   "anchors": {
+    "midpoint": {
+     "status": "VALID",
+     "total_objective": 827989614.2337531,
+     "polish_runtime_s": 33.30152916908264,
+     "failed_blocks": [],
+     "max_coordinated_residual": 1.1102230246251565e-16,
+     "esso_max_violation": 1.1601830607332886e-13,
+     "network_max_violation": 1.479943843379905e-05,
+     "network_h1_violation": 0.0
+    },
+    "dso": {
+     "status": "VALID",
+     "total_objective": 827976248.4336377,
+     "polish_runtime_s": 23.5412540435791,
+     "failed_blocks": [],
+     "max_coordinated_residual": 1.1102230246251565e-16,
+     "esso_max_violation": 1.1601830607332886e-13,
+     "network_max_violation": 1.3859737827026652e-05,
+     "network_h1_violation": 0.0
+    }
+   },
+   "master_feasible": true,
+   "admm": {
+    "status": null,
+    "converged": true,
+    "initialization_failed": false,
+    "cycles": 2,
+    "runtime_s": 85.52261686325073,
+    "n_recovery_diagnostics": 0,
+    "gross_operational_cost": 836898382.4116716,
+    "net_operational_recourse": 836894926.3512828
+   },
+   "anchor_delta": -13365.800115346909
+  },
+  {
+   "label": "e|node9|2030|+50%",
+   "anchors": {
+    "midpoint": {
+     "status": "VALID",
+     "total_objective": 828034358.9950917,
+     "polish_runtime_s": 35.24981904029846,
+     "failed_blocks": [],
+     "max_coordinated_residual": 1.1102230246251565e-16,
+     "esso_max_violation": 9.14823772291129e-14,
+     "network_max_violation": 8.425324022343084e-06,
+     "network_h1_violation": 0.0
+    },
+    "dso": {
+     "status": "VALID",
+     "total_objective": 828039966.9197997,
+     "polish_runtime_s": 24.76288104057312,
+     "failed_blocks": [],
+     "max_coordinated_residual": 5.551115123125783e-17,
+     "esso_max_violation": 9.14823772291129e-14,
+     "network_max_violation": 1.3859611985855835e-05,
+     "network_h1_violation": 0.0
+    }
+   },
+   "master_feasible": true,
+   "admm": {
+    "status": null,
+    "converged": true,
+    "initialization_failed": false,
+    "cycles": 2,
+    "runtime_s": 74.9112958908081,
+    "n_recovery_diagnostics": 0,
+    "gross_operational_cost": 837160099.3087481,
+    "net_operational_recourse": 837156282.4214064
+   },
+   "anchor_delta": 5607.924708008766
+  },
+  {
+   "label": "se|ALL|-10%",
+   "anchors": {
+    "midpoint": {
+     "status": "POLISH_FAILURE",
+     "total_objective": null,
+     "polish_runtime_s": 451.60980582237244,
+     "failed_blocks": [
+      "TSO|2025|Autumn",
+      "TSO|2030|Spring",
+      "TSO|2030|Summer",
+      "TSO|2030|Autumn",
+      "TSO|2030|Winter",
+      "TSO|2035|Spring",
+      "TSO|2035|Summer",
+      "TSO|2035|Autumn",
+      "TSO|2035|Winter",
+      "DSO5|2025|Autumn",
+      "DSO5|2030|Summer",
+      "DSO5|2030|Autumn",
+      "DSO5|2030|Winter",
+      "DSO5|2035|Spring",
+      "DSO5|2035|Summer",
+      "DSO5|2035|Autumn",
+      "DSO5|2035|Winter",
+      "DSO7|2025|Autumn",
+      "DSO7|2030|Spring",
+      "DSO7|2030|Summer",
+      "DSO7|2030|Autumn",
+      "DSO7|2030|Winter",
+      "DSO7|2035|Summer",
+      "DSO7|2035|Autumn",
+      "DSO7|2035|Winter",
+      "DSO9|2025|Autumn",
+      "DSO9|2030|Spring",
+      "DSO9|2030|Summer",
+      "DSO9|2030|Autumn",
+      "DSO9|2030|Winter",
+      "DSO9|2035|Summer",
+      "DSO9|2035|Autumn",
+      "DSO9|2035|Winter"
+     ],
+     "max_coordinated_residual": null,
+     "esso_max_violation": null,
+     "network_max_violation": null,
+     "network_h1_violation": null
+    },
+    "dso": {
+     "status": "POLISH_FAILURE",
+     "total_objective": null,
+     "polish_runtime_s": 412.0862760543823,
+     "failed_blocks": [
+      "TSO|2025|Autumn",
+      "TSO|2030|Spring",
+      "TSO|2030|Summer",
+      "TSO|2030|Autumn",
+      "TSO|2030|Winter",
+      "TSO|2035|Spring",
+      "TSO|2035|Summer",
+      "TSO|2035|Autumn",
+      "TSO|2035|Winter",
+      "DSO5|2025|Autumn",
+      "DSO5|2030|Spring",
+      "DSO5|2030|Summer",
+      "DSO5|2030|Autumn",
+      "DSO5|2030|Winter",
+      "DSO5|2035|Spring",
+      "DSO5|2035|Summer",
+      "DSO5|2035|Autumn",
+      "DSO5|2035|Winter",
+      "DSO7|2025|Autumn",
+      "DSO7|2030|Spring",
+      "DSO7|2030|Summer",
+      "DSO7|2030|Autumn",
+      "DSO7|2030|Winter",
+      "DSO7|2035|Autumn",
+      "DSO7|2035|Winter",
+      "DSO9|2025|Autumn",
+      "DSO9|2030|Spring",
+      "DSO9|2030|Summer",
+      "DSO9|2030|Autumn",
+      "DSO9|2030|Winter",
+      "DSO9|2035|Summer",
+      "DSO9|2035|Autumn",
+      "DSO9|2035|Winter"
+     ],
+     "max_coordinated_residual": null,
+     "esso_max_violation": null,
+     "network_max_violation": null,
+     "network_h1_violation": null
+    }
+   },
+   "master_feasible": true,
+   "admm": {
+    "status": null,
+    "converged": true,
+    "initialization_failed": false,
+    "cycles": 2,
+    "runtime_s": 79.47339510917664,
+    "n_recovery_diagnostics": 0,
+    "gross_operational_cost": 836887099.422472,
+    "net_operational_recourse": 836884537.7200569
+   }
+  },
+  {
+   "label": "se|ALL|x19 (budget boundary)",
+   "anchors": {},
+   "master_feasible": true,
+   "admm": {
+    "status": "SOLVER_CRASH",
+    "error": "ApplicationError: Solver (ipopt) did not exit normally",
+    "runtime_s": 23.447723150253296
+   },
+   "status": "SOLVER_CRASH"
+  }
+ ],
+ "B2_aggregate": {
+  "n_candidates": 12,
+  "n_operationally_evaluated": 11,
+  "midpoint_success": 8,
+  "dso_success": 8,
+  "midpoint_success_rate": 0.7272727272727273,
+  "dso_success_rate": 0.7272727272727273,
+  "n_both_valid": 8,
+  "anchor_delta_mean": 526.2058871537447,
+  "anchor_delta_max_abs": 13365.800115346909,
+  "anchor_delta_std": 6507.450332438958,
+  "anchor_delta_min": -13365.800115346909,
+  "anchor_delta_max": 11175.97870016098,
+  "spearman_rank_correlation": 0.9047619047619048,
+  "ranking_changes": [
+   "base",
+   "s|node5|2025|-10%",
+   "se|node7|2030|-10%",
+   "se|node5|2030|+10%",
+   "se|node7|2035|+10%"
+  ],
+  "worst_pairwise_reversal": {
+   "pair": [
+    "s|node5|2025|-10%",
+    "se|node7|2035|+10%"
+   ],
+   "midpoint_gap": 1790.835184454918,
+   "dso_gap": -398.67211163043976,
+   "min_gap_reversed": 398.67211163043976
+  },
+  "investment_objective_spread_midpoint": 46146.04234313965,
+  "investment_objective_spread_dso": 70687.82115864754
+ },
+ "B3_subset": [
+  "base",
+  "e|node5|2025|+25%",
+  "se|node9|2025|+10%",
+  "se|ALL|x19 (budget boundary)",
+  "se|node5|2025|-10%"
+ ],
+ "B3_rows": [
+  {
+   "label": "base",
+   "cold": {
+    "status": "VALID",
+    "master_feasible": true,
+    "interface_anchor": "midpoint",
+    "fallback_used": false,
+    "max_coordinated_residual": 5.551115123125783e-17,
+    "esso_max_violation": 2.035038804137912e-13,
+    "esso_production_violation": -3.2399961801259254e-05,
+    "esso_production_feasible": true,
+    "network_max_violation": 1.0928687118216818e-05,
+    "network_h1_violation": 0.0,
+    "converter_capability_violation": 1.6277210711235224e-08,
+    "physical_salvage": 3439.6598771430236,
+    "gross_operational_cost": 829291677.5221196,
+    "net_operational_recourse": 829288237.8622425,
+    "investment_cost": 50000.0,
+    "total_objective": 829338237.8622425,
+    "admm_cycles": 17,
+    "admm_runtime_s": 538.9281709194183,
+    "polish_runtime_s": 24.950387239456177,
+    "wall_clock_s": 582.1844983100891
+   },
+   "t_star_total_objective": 828021090.3608505,
+   "cold_minus_tstar": 1317147.5013920069
+  },
+  {
+   "label": "e|node5|2025|+25%",
+   "cold": {
+    "status": "VALID",
+    "master_feasible": true,
+    "interface_anchor": "midpoint",
+    "fallback_used": false,
+    "max_coordinated_residual": 1.1102230246251565e-16,
+    "esso_max_violation": 1.1968204205459188e-13,
+    "esso_production_violation": -3.2399961790246525e-05,
+    "esso_production_feasible": true,
+    "network_max_violation": 1.2525963622445069e-05,
+    "network_h1_violation": 0.0,
+    "converter_capability_violation": 1.550790586050954e-08,
+    "physical_salvage": 3278.3496333757594,
+    "gross_operational_cost": 829278763.7897166,
+    "net_operational_recourse": 829275485.4400833,
+    "investment_cost": 51079.984754171186,
+    "total_objective": 829326565.4248375,
+    "admm_cycles": 17,
+    "admm_runtime_s": 545.3916358947754,
+    "polish_runtime_s": 24.572813749313354,
+    "wall_clock_s": 589.6446390151978
+   },
+   "t_star_total_objective": 827989614.2337531,
+   "cold_minus_tstar": 1336951.191084385
+  },
+  {
+   "label": "se|node9|2025|+10%",
+   "cold": {
+    "status": "VALID",
+    "master_feasible": true,
+    "interface_anchor": "dso",
+    "fallback_used": true,
+    "max_coordinated_residual": 1.1102230246251565e-16,
+    "esso_max_violation": 1.0824674490095276e-13,
+    "esso_production_violation": -3.239996179397287e-05,
+    "esso_production_feasible": true,
+    "network_max_violation": 1.2372669606075526e-05,
+    "network_h1_violation": 0.0,
+    "converter_capability_violation": 9.999160844963534e-09,
+    "physical_salvage": 3791.457276839261,
+    "gross_operational_cost": 838875277.2388955,
+    "net_operational_recourse": 838871485.7816187,
+    "investment_cost": 50704.58462845418,
+    "total_objective": 838922190.3662472,
+    "admm_cycles": 9,
+    "admm_runtime_s": 329.70021080970764,
+    "polish_runtime_s": 35.25856900215149,
+    "wall_clock_s": 446.9526960849762
+   },
+   "t_star_total_objective": 828035760.2760962,
+   "cold_minus_tstar": 10886430.090150952
+  },
+  {
+   "label": "se|ALL|x19 (budget boundary)",
+   "cold": {
+    "status": "SOLVER_CRASH",
+    "failed_blocks": null
+   },
+   "t_star_total_objective": null
+  },
+  {
+   "label": "se|node5|2025|-10%",
+   "cold": {
+    "status": "VALID",
+    "master_feasible": true,
+    "interface_anchor": "dso",
+    "fallback_used": true,
+    "max_coordinated_residual": 1.1102230246251565e-16,
+    "esso_max_violation": 8.926193117986259e-14,
+    "esso_production_violation": -3.239996179376388e-05,
+    "esso_production_feasible": true,
+    "network_max_violation": 1.2484006675694825e-05,
+    "network_h1_violation": 0.0,
+    "converter_capability_violation": 9.999158809349947e-09,
+    "physical_salvage": 3816.8792900547705,
+    "gross_operational_cost": 838928661.6523522,
+    "net_operational_recourse": 838924844.7730621,
+    "investment_cost": 49295.41537154583,
+    "total_objective": 838974140.1884336,
+    "admm_cycles": 9,
+    "admm_runtime_s": 336.3797039985657,
+    "polish_runtime_s": 25.150120735168457,
+    "wall_clock_s": 446.1939311027527
+   },
+   "t_star_total_objective": null
+  }
+ ],
+ "B3_aggregate": {
+  "n": 3,
+  "cold_minus_tstar_min": 1317147.5013920069,
+  "cold_minus_tstar_max": 10886430.090150952,
+  "cold_ever_better": false,
+  "worst_cold_advantage": 1317147.5013920069
+ }
+}
