@@ -126,6 +126,29 @@ RIGOROUS FEASIBLE NONLINEAR UB INCUMBENT   =   829338237.862242  (total planning
                                                 829288237.862242  (net operational recourse)
 ```
 
+> **Superseded by P5.6-B0.1.** This is the certificate for the **START-1 cold**
+> evaluation. A5's START-2 evaluation of the same candidate returned a better
+> value, and P5.6-B0.1 re-audited the persisted evidence to confirm it passed the
+> *identical* complete pipeline — master feasibility, original nonlinear ESSO
+> (solved at all three nodes, max violation 1.050e-13, production feasibility
+> −3.240e-05 against the 1e-03 tolerance), exact TSO/DSO/ESSO P/Q consistency
+> (0.000e+00), exact S/E availability consistency (0.000e+00 and 3.469e-18), the
+> 48-block network audit (max 1.500e-05, H1 0.000e+00, converter capability
+> 9.999e-09) and physical salvage taken from the physical ESSO. It is therefore
+> promoted:
+>
+> ```
+> BEST RIGOROUS FEASIBLE NONLINEAR PLANNING INCUMBENT
+>     total planning objective   828021090.360850
+>     net operational recourse   827971090.360850
+>     gross operational cost     827974518.717105
+>     physical salvage                3428.356255
+>     investment cost                50000.000000
+> ```
+>
+> for the canonical base investment candidate. The cold certificate above stands
+> as a valid but weaker feasible point.
+
 Note this is **not** D1's `729361086.642965`. Two things changed: the capacities
 now come from the physical ESSO rather than from the ADMM's own ESSO, and — far
 more importantly — the polish itself was corrected. A2 explains why.
@@ -336,6 +359,20 @@ returned by the fixed start set.
 
 ¹ includes the one-off template build; subsequent START-2 evaluations cost ~100 s.
 
+> **Correction of record (P5.6-B0.2).** `Q_oracle(x) = min(START-1, START-2)`
+> requires **both** starts, so its recurring cost is approximately their **sum**,
+> about **660 s**, not ~100 s. The ~100 s figure is the cost of a
+> **START-2-only** recurring oracle after the one-off template construction has
+> been amortised, and it is only available once a start policy has been locked —
+> which is P5.6-B3's job, not A5's. Two quantities must be kept apart from here
+> on:
+>
+> - **SEARCH EVALUATION COST** — the recurring per-candidate cost of whatever
+>   single policy the search actually uses;
+> - **FINAL INCUMBENT CERTIFICATION COST** — the one-off cost of certifying a
+>   chosen incumbent, where evaluating several starts and both anchors and
+>   keeping the best VALID polished solution is affordable and desirable.
+
 The second start improved **3 of 3** candidates, by up to **1 317 147.50 = 1.84 ×
 `tol_cut`** — a material benefit, not a marginal one — while converging in 2 ADMM
 cycles instead of 17–18, i.e. 144 nonlinear local solves instead of 864. It does
@@ -462,7 +499,24 @@ spend.
 
 Against that, two facts have to be weighed: the oracle failed to return a value
 on 1 of 4 benchmark candidates under the default convention, and the choice of
-interface anchor moves the returned objective by far more than `tol_cut`.
+interface anchor moves the returned objective.
+
+> **Correction of record (P5.6-B0.3).** "Far more than `tol_cut`" is wrong. The
+> measured base-candidate change from midpoint to DSO anchoring is
+> **13 053.97 = 0.018 × `tol_cut`** — two orders *below* it. What makes it worth
+> attention is a different comparison: it is about **six times** the ~2 024
+> objective span observed across the three START-2 benchmark candidates, so an
+> anchor switch could reorder candidates that the search is trying to
+> distinguish. That is a resolution question, addressed in P5.6-B2 and B4, not a
+> `tol_cut` question.
+
+> **Correction of record (P5.6-B0.4) — `tol_cut` is retired as a resolution
+> criterion.** Every ratio quoted against `tol_cut` in this P5.6-A section is
+> retained only as *historical context*: `tol_cut = 7.164e5` was the acceptance
+> threshold of the Benders cut machinery, and that architecture was retired at
+> P5.5-D-C. It is not the tolerance a derivative-free search should use, and
+> nothing in P5.6 should be accepted or rejected against it. A search-specific
+> tolerance `tau_search` is derived from measured oracle behaviour in P5.6-B4.
 
 ## Verdict
 
@@ -495,7 +549,7 @@ interface anchor moves the returned objective by far more than `tol_cut`.
   rate is characterised on a wider population, a search cannot be told how often
   it will be handed nothing.
 - *Start dependence larger than the signal.* `Q_oracle` over a fixed start set is
-  deterministic, but its *level* depends on that set by up to 1.84 × `tol_cut`,
+  deterministic, but its *level* depends on that set by up to 1 317 147.50,
   and the spread across candidates differs by a factor of 300 between the two
   starts (674 337 cold against 2 024 template-started). Which start set to adopt
   is a planner decision with consequences larger than the investment signal.
