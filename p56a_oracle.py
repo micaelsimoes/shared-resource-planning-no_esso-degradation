@@ -83,6 +83,7 @@ STATUS_POLISH_FAILURE = 'POLISH_FAILURE'
 STATUS_ESSO_FEASIBILITY_FAILURE = 'ESSO_FEASIBILITY_FAILURE'
 STATUS_COUPLING_FAILURE = 'COUPLING_FAILURE'
 STATUS_ESSO_SOLVE_FAILURE = 'ESSO_SOLVE_FAILURE'
+STATUS_SOLVER_CRASH = 'SOLVER_CRASH'
 
 
 # ===========================================================================
@@ -229,7 +230,8 @@ def investment_cost(planning, candidate):
 # ===========================================================================
 #  coordinated quantities
 # ===========================================================================
-def common_coordinated_values(planning, models, consensus_vars):
+def common_coordinated_values(planning, models, consensus_vars,
+                              interface_anchor='midpoint'):
     """One common value per coordinated quantity, per (node, year, day, period).
 
     Where the ADMM maintains an explicit consensus variable it is used: the
@@ -238,6 +240,17 @@ def common_coordinated_values(planning, models, consensus_vars):
     DSO copies with no z, so the common value is their midpoint, which is the
     choice that minimises the largest correction asked of either side.  Both
     conventions are recorded per entry so the report can say which is which.
+
+    `interface_anchor` selects the interface convention:
+      'midpoint'  the average of the two sides -- the smallest correction asked
+                  of either, and the default;
+      'dso'       the DSO's own achieved value.  The DSO reached it, so it is
+                  feasible for the distribution block by construction, and the
+                  transmission block absorbs the whole correction through the
+                  interface flexibility production gives it for exactly that
+                  purpose.  Offered because the midpoint can push a distribution
+                  block outside its feasible set when the ADMM residual is large
+                  (P5.6-A6: DSO9 2030 Spring).
     """
     tso = planning.transmission_network
     common = {}
@@ -279,10 +292,14 @@ def common_coordinated_values(planning, models, consensus_vars):
                         'tso_sess_p': t_sp, 'dso_sess_p': d_sp,
                         'tso_sess_q': t_sq, 'dso_sess_q': d_sq,
                         # interface families: no ADMM z exists, use the midpoint
-                        'common_p': 0.5 * (t_p + d_p),
-                        'common_q': 0.5 * (t_q + d_q),
-                        'common_v': 0.5 * (t_v + d_v),
-                        'source_interface': 'midpoint (no ADMM z for vmag/pf)',
+                        'common_p': (0.5 * (t_p + d_p)
+                                     if interface_anchor == 'midpoint' else d_p),
+                        'common_q': (0.5 * (t_q + d_q)
+                                     if interface_anchor == 'midpoint' else d_q),
+                        'common_v': (0.5 * (t_v + d_v)
+                                     if interface_anchor == 'midpoint' else d_v),
+                        'source_interface': f'{interface_anchor} '
+                                            f'(no ADMM z for vmag/pf)',
                         # shared-ESS family: the ADMM's own consensus z, in MW,
                         # converted to the network per-unit base
                         'common_sess_p': float(z_p[p]) / t_net.baseMVA,
@@ -725,7 +742,7 @@ def _config_hash(planning):
     return hashlib.sha256('|'.join(parts).encode()).hexdigest()[:32]
 
 
-def cache_key(planning, candidate, start_policy):
+def cache_key(planning, candidate, start_policy, interface_anchor='midpoint'):
     nodes, years = nodes_and_years(planning)
     vector = []
     for node in nodes:
@@ -738,6 +755,7 @@ def cache_key(planning, candidate, start_policy):
         'config_hash': _config_hash(planning),
         'oracle_version': ORACLE_VERSION,
         'start_policy': start_policy,
+        'interface_anchor': interface_anchor,
     }
     blob = json.dumps(payload, sort_keys=True)
     return hashlib.sha256(blob.encode()).hexdigest(), payload
@@ -766,7 +784,7 @@ def store_cache(cache):
 # ===========================================================================
 def evaluate_planning_candidate(x, start_policy=START_COLD, eval_id=None,
                                 use_cache=True, verbose=False,
-                                keep_models=False):
+                                keep_models=False, interface_anchor='midpoint'):
     """Evaluate ONE investment candidate under ONE fixed start policy.
 
     Returns a dict that always carries `status`.  A failed evaluation reports
@@ -798,7 +816,8 @@ def evaluate_planning_candidate(x, start_policy=START_COLD, eval_id=None,
         return result
     result['investment_cost'] = investment_cost(planning, candidate)
 
-    key, payload = cache_key(planning, candidate, start_policy)
+    key, payload = cache_key(planning, candidate, start_policy,
+                             interface_anchor=interface_anchor)
     result['cache_key'] = key
     result['cache_payload'] = payload
     if use_cache:
@@ -816,11 +835,22 @@ def evaluate_planning_candidate(x, start_policy=START_COLD, eval_id=None,
     if start_policy == START_TEMPLATE:
         initial_state = build_fixed_template(verbose=verbose)
     admm_started = time.time()
-    with redirect_stdout(io.StringIO()):
-        convergence, _, models, _, _, state = planning.run_operational_planning(
-            type='distributed', candidate_solution=deepcopy(candidate),
-            print_results=False, debug_flag=False,
-            initial_state=initial_state, return_state=True)
+    try:
+        with redirect_stdout(io.StringIO()):
+            convergence, _, models, _, _, state = planning.run_operational_planning(
+                type='distributed', candidate_solution=deepcopy(candidate),
+                print_results=False, debug_flag=False,
+                initial_state=initial_state, return_state=True)
+    except Exception as error:
+        # A crashed solver process is a failed evaluation, not an exception the
+        # caller should have to handle: a derivative-free search must be able to
+        # keep going, and it must not receive a fabricated objective either.
+        result['status'] = STATUS_SOLVER_CRASH
+        result['error'] = f'{type(error).__name__}: {error}'
+        result['failed_stage'] = 'operational ADMM'
+        result['admm'] = {'runtime_s': time.time() - admm_started}
+        result['wall_clock_s'] = time.time() - started
+        return result
     result['admm'] = {
         'converged': bool(convergence),
         'initialization_failed': bool(state.get('initialization_failed', False)),
@@ -842,7 +872,9 @@ def evaluate_planning_candidate(x, start_policy=START_COLD, eval_id=None,
     result['per_block_admm'] = per_block_base_objectives(planning, models)
 
     # ---- step 4: one common value per coordinated quantity ----
-    common = common_coordinated_values(planning, models, state['consensus_vars'])
+    common = common_coordinated_values(planning, models, state['consensus_vars'],
+                                       interface_anchor=interface_anchor)
+    result['interface_anchor'] = interface_anchor
     result['admm_coordination_residuals'] = {
         'interface_p': max(abs(v['tso_p'] - v['dso_p']) for v in common.values()),
         'interface_q': max(abs(v['tso_q'] - v['dso_q']) for v in common.values()),
@@ -856,8 +888,15 @@ def evaluate_planning_candidate(x, start_policy=START_COLD, eval_id=None,
     # ---- step 5: the ORIGINAL nonlinear ESSO, physical capacities ----
     esso_started = time.time()
     request = esso_request_from_common(planning, state['consensus_vars'], common)
-    esso_models, esso_results, esso_solved, available = solve_physical_esso(
-        planning, candidate, request)
+    try:
+        esso_models, esso_results, esso_solved, available = solve_physical_esso(
+            planning, candidate, request)
+    except Exception as error:
+        result['status'] = STATUS_SOLVER_CRASH
+        result['error'] = f'{type(error).__name__}: {error}'
+        result['failed_stage'] = 'physical ESSO'
+        result['wall_clock_s'] = time.time() - started
+        return result
     result['esso'] = {'solved': esso_solved, 'runtime_s': time.time() - esso_started,
                       'solve_count': len(esso_solved)}
     if not all(esso_solved.values()):
@@ -870,10 +909,17 @@ def evaluate_planning_candidate(x, start_policy=START_COLD, eval_id=None,
 
     # ---- step 6: push physical capacities, fix coordination, re-solve ----
     polish_started = time.time()
-    result['capacity_shift_into_networks'] = apply_physical_capacities(
-        planning, models, available)
-    apply_common_values(planning, models, common)
-    blocks, all_solved = polish_networks(planning, models)
+    try:
+        result['capacity_shift_into_networks'] = apply_physical_capacities(
+            planning, models, available)
+        apply_common_values(planning, models, common)
+        blocks, all_solved = polish_networks(planning, models)
+    except Exception as error:
+        result['status'] = STATUS_SOLVER_CRASH
+        result['error'] = f'{type(error).__name__}: {error}'
+        result['failed_stage'] = 'exact-consensus polish'
+        result['wall_clock_s'] = time.time() - started
+        return result
     result['polish'] = {'blocks': blocks, 'all_solved': all_solved,
                         'runtime_s': time.time() - polish_started,
                         'solve_count': len(blocks)}

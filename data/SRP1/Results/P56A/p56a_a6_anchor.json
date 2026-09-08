@@ -1,0 +1,62 @@
+{
+ "stage": "P5.6-A6 interface anchor",
+ "provenance": {
+  "timestamp_utc": "2026-09-08T12:00:01.039765+00:00",
+  "git_head": "1de1a558b24475add3fe24998084bcc573629eac",
+  "sys_executable": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "version": "3.14.18",
+   "exists": true,
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)"
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-10",
+   "available": true,
+   "licence_id": "2805683",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "stage": "P5.6-A6 interface anchor"
+ },
+ "timestamp_utc": "2026-09-08T12:00:01.124306+00:00",
+ "cases": [
+  {
+   "label": "s+e|node9|2025|-10% (the failing candidate)",
+   "anchors": {
+    "midpoint": {
+     "status": "POLISH_FAILURE",
+     "wall_clock_s": 336.4439470767975,
+     "interface_anchor": "midpoint",
+     "failed_blocks": [
+      "DSO9|2030|Spring"
+     ]
+    },
+    "dso": {
+     "status": "VALID",
+     "wall_clock_s": 316.9410970211029,
+     "interface_anchor": "dso",
+     "total_objective": 838978240.7900167,
+     "net_operational_recourse": 838928945.3746451,
+     "max_coordinated_residual": 1.1102230246251565e-16,
+     "esso_max_violation": 1.1712852909795402e-13,
+     "network_max_violation": 1.3430894801824689e-05,
+     "network_h1_violation": 0.0
+    }
+   }
+  }
+ ]
+}
