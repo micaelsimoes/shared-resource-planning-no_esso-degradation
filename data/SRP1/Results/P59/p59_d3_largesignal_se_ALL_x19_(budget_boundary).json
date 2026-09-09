@@ -1,0 +1,228 @@
+{
+ "stage": "P5.9-D3",
+ "provenance": {
+  "timestamp_utc": "2026-09-09T17:17:31.237175+00:00",
+  "git_head": "c06f2cd4f2b093e7a49701e332e50fdfc3309be3",
+  "sys_executable": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "exists": true,
+   "version": "3.14.18",
+   "asl": "20241111",
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)",
+   "path_ipopt_not_used": {
+    "path": "/usr/local/bin/ipopt",
+    "version": "3.14.18",
+    "shadows_canonical": false
+   }
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-14",
+   "available": true,
+   "licence_id": "2807206",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "canonical_ipopt_path": "/usr/local/bin/ipopt",
+  "canonical_ipopt_version": "3.14.18",
+  "canonical_ipopt_asl": "20241111",
+  "canonical_hsl_linear_solver": "ma97",
+  "stage": "P5.9-D3 large signal",
+  "gate_failures": [],
+  "gate_passes": true
+ },
+ "timestamp_utc": "2026-09-09T17:17:31.353761+00:00",
+ "rho": {
+  "v": 1.5,
+  "pf": 1000.0
+ },
+ "generations": 1,
+ "rows": [
+  {
+   "status": "VALID",
+   "polish_all_solved": true,
+   "failed_blocks": [],
+   "admm_cycles": 2,
+   "admm_converged": true,
+   "admm_runtime_s": 85.79624891281128,
+   "primal_v": 4.27958871152138e-05,
+   "primal_pf": 0.006188735376819121,
+   "primal_ess": 0.0003303229230361604,
+   "primal_v_mean": 6.436507040703843e-06,
+   "primal_pf_mean": 0.0001230654886239756,
+   "primal_ess_mean": 5.0157725317850744e-05,
+   "dual_ess_mean": 3.8555814160257515e-05,
+   "objective_change_abs": 254850.65408039093,
+   "objective_convergence": true,
+   "residual_convergence": true,
+   "objective_tolerance": 837075.5719896652,
+   "admm_net_recourse_before_polish": 836820721.3355848,
+   "polished_net_operational_recourse": 827819733.3951479,
+   "admm_to_polish_improvement": -9000987.94043684,
+   "total_objective": 828769733.3951479,
+   "max_coordinated_residual": 1.1102230246251565e-16,
+   "esso_production_feasible": true,
+   "network_max_violation": 1.4348398377161953e-05,
+   "network_h1_violation": 0.0,
+   "wall_clock_s": 152.9946539402008,
+   "case_id": "d3_se_ALL_x19_(budget_boundary)_CURRENT",
+   "rho_requested": null,
+   "adaptive_penalty": null,
+   "rho_observed_final": {
+    "v": 1.5,
+    "pf": 2.25,
+    "ess": 1.0
+   },
+   "n_failed_polish_blocks": 0,
+   "primal_pf_ratio": 0.6188735376819121,
+   "primal_v_ratio": 0.00427958871152138,
+   "primal_ess_ratio": 0.003303229230361604,
+   "dual_pf_mean_ratio": 0.18656902692520305,
+   "dual_v_mean_ratio": 0.008854857241865166,
+   "terminating_criterion": {
+    "residual_convergence": true,
+    "objective_convergence": true,
+    "objective_change_abs": 254850.65408039093,
+    "objective_tolerance": 837075.5719896652,
+    "objective_slack_factor": 3.284572978673287,
+    "worst_primal_ratio": 0.6188735376819121,
+    "worst_dual_mean_ratio": 0.18656902692520305
+   },
+   "cost_families": {
+    "gross_operational_cost": 827953551.3202517,
+    "terminal_salvage_value": 133817.03522686486,
+    "net_operational_recourse": 827819734.2850249
+   },
+   "rho_actions": [
+    {
+     "cycle": 1,
+     "v": "held",
+     "pf": "held",
+     "ess": "held"
+    },
+    {
+     "cycle": 2,
+     "v": "held",
+     "pf": "held",
+     "ess": "held"
+    }
+   ],
+   "candidate": "se|ALL|x19 (budget boundary)",
+   "arm": "CURRENT",
+   "investment_cost": 949999.9999999999
+  },
+  {
+   "status": "VALID",
+   "polish_all_solved": true,
+   "failed_blocks": [],
+   "admm_cycles": 6,
+   "admm_converged": true,
+   "admm_runtime_s": 293.6814458370209,
+   "primal_v": 4.2382888061209986e-05,
+   "primal_pf": 0.0003836825531185184,
+   "primal_ess": 6.184643946171312e-05,
+   "primal_v_mean": 2.16213092012033e-06,
+   "primal_pf_mean": 6.76453145493847e-06,
+   "primal_ess_mean": 2.423348434154603e-06,
+   "dual_ess_mean": 2.9784695391290362e-06,
+   "objective_change_abs": 184064.11122250557,
+   "objective_convergence": true,
+   "residual_convergence": true,
+   "objective_tolerance": 827899.2554728669,
+   "admm_net_recourse_before_polish": 827715191.3616444,
+   "polished_net_operational_recourse": 828118145.8727092,
+   "admm_to_polish_improvement": 402954.51106476784,
+   "total_objective": 829068145.8727092,
+   "max_coordinated_residual": 1.1102230246251565e-16,
+   "esso_production_feasible": true,
+   "network_max_violation": 1.2003708881547226e-05,
+   "network_h1_violation": 0.0,
+   "wall_clock_s": 351.24010586738586,
+   "case_id": "d3_se_ALL_x19_(budget_boundary)_RESCALED",
+   "rho_requested": {
+    "v": 1.5,
+    "pf": 1000.0
+   },
+   "adaptive_penalty": null,
+   "rho_observed_final": {
+    "v": 1.5,
+    "pf": 131.68724279835388,
+    "ess": 1.0
+   },
+   "n_failed_polish_blocks": 0,
+   "primal_pf_ratio": 0.03836825531185184,
+   "primal_v_ratio": 0.004238288806120999,
+   "primal_ess_ratio": 0.0006184643946171312,
+   "dual_pf_mean_ratio": 0.9588761918358637,
+   "dual_v_mean_ratio": 0.008009457340180296,
+   "terminating_criterion": {
+    "residual_convergence": true,
+    "objective_convergence": true,
+    "objective_change_abs": 184064.11122250557,
+    "objective_tolerance": 827899.2554728669,
+    "objective_slack_factor": 4.497885274723992,
+    "worst_primal_ratio": 0.03836825531185184,
+    "worst_dual_mean_ratio": 0.9588761918358637
+   },
+   "cost_families": {
+    "gross_operational_cost": 828251960.3272803,
+    "terminal_salvage_value": 133814.0048572627,
+    "net_operational_recourse": 828118146.322423
+   },
+   "rho_actions": [
+    {
+     "cycle": 1,
+     "v": "held",
+     "pf": "decreased",
+     "ess": "held"
+    },
+    {
+     "cycle": 2,
+     "v": "held",
+     "pf": "decreased",
+     "ess": "held"
+    },
+    {
+     "cycle": 3,
+     "v": "held",
+     "pf": "decreased",
+     "ess": "held"
+    },
+    {
+     "cycle": 4,
+     "v": "held",
+     "pf": "decreased",
+     "ess": "held"
+    },
+    {
+     "cycle": 5,
+     "v": "held",
+     "pf": "decreased",
+     "ess": "held"
+    },
+    {
+     "cycle": 6,
+     "v": "held",
+     "pf": "held",
+     "ess": "held"
+    }
+   ],
+   "candidate": "se|ALL|x19 (budget boundary)",
+   "arm": "RESCALED",
+   "investment_cost": 949999.9999999999
+  }
+ ]
+}

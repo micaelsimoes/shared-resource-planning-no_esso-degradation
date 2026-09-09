@@ -1,0 +1,3758 @@
+{
+ "stage": "P5.9-D",
+ "provenance": {
+  "timestamp_utc": "2026-09-09T16:18:42.299971+00:00",
+  "git_head": "c06f2cd4f2b093e7a49701e332e50fdfc3309be3",
+  "sys_executable": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "exists": true,
+   "version": "3.14.18",
+   "asl": "20241111",
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)",
+   "path_ipopt_not_used": {
+    "path": "/usr/local/bin/ipopt",
+    "version": "3.14.18",
+    "shadows_canonical": false
+   }
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-14",
+   "available": true,
+   "licence_id": "2807206",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "canonical_ipopt_path": "/usr/local/bin/ipopt",
+  "canonical_ipopt_version": "3.14.18",
+  "canonical_ipopt_asl": "20241111",
+  "canonical_hsl_linear_solver": "ma97",
+  "stage": "P5.9-D oracle replay",
+  "gate_failures": [],
+  "gate_passes": true
+ },
+ "timestamp_utc": "2026-09-09T16:18:42.395968+00:00",
+ "best_configuration_from_A": "A2_rho_pf_1000",
+ "best_rho": {
+  "v": 1.5,
+  "pf": 1000.0
+ },
+ "generations": 8,
+ "planning_signal": 33031.0,
+ "current_base_chain_reference": {
+  "1": 828021090.36085,
+  "2": 827415318.563944,
+  "3": 826824028.845478,
+  "4": 826405022.193437,
+  "5": 825961521.882321,
+  "6": 825531306.746985,
+  "7": 825108709.695181,
+  "8": 824795363.718628
+ },
+ "candidates": {
+  "base": {
+   "note": "canonical base x0",
+   "CURRENT": {
+    "template_info": {
+     "template": "T0 (a81f7f5191dd42dbf50d1726149b8909)",
+     "rescaled": false,
+     "rho_requested": null,
+     "rho_in_template": {
+      "v": 1.5,
+      "pf": 2.25,
+      "ess": 1.0
+     }
+    },
+    "generations": [
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 2,
+      "admm_converged": true,
+      "admm_runtime_s": 84.31782484054565,
+      "primal_v": 3.2413096112023874e-05,
+      "primal_pf": 0.00618963415585684,
+      "primal_ess": 0.00022350438833710772,
+      "primal_v_mean": 4.363705821034263e-06,
+      "primal_pf_mean": 0.00011319766809559756,
+      "primal_ess_mean": 6.458662723761787e-06,
+      "dual_ess_mean": 6.883098127237368e-05,
+      "objective_change_abs": 17442.703753471375,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 837205.9536049827,
+      "admm_net_recourse_before_polish": 837188510.9012293,
+      "polished_net_operational_recourse": 827971090.3608505,
+      "admm_to_polish_improvement": -9217420.540378809,
+      "total_objective": 828021090.3608505,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 1.5000220759397997e-05,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 151.50555992126465,
+      "case_id": "d_current_base_j1",
+      "rho_requested": null,
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 2.25,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.618963415585684,
+      "primal_v_ratio": 0.0032413096112023873,
+      "primal_ess_ratio": 0.002235043883371077,
+      "dual_pf_mean_ratio": 0.18337193754535255,
+      "dual_v_mean_ratio": 0.009107461836461137,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 17442.703753471375,
+       "objective_tolerance": 837205.9536049827,
+       "objective_slack_factor": 47.99748739861304,
+       "worst_primal_ratio": 0.618963415585684,
+       "worst_dual_mean_ratio": 0.18337193754535255
+      },
+      "cost_families": {
+       "gross_operational_cost": 827974518.7171049,
+       "terminal_salvage_value": 3428.421533587638,
+       "net_operational_recourse": 827971090.2955713
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       },
+       {
+        "cycle": 2,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 1,
+      "step_delta": null
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 68.55291199684143,
+      "primal_v": 3.3787957838871925e-05,
+      "primal_pf": 0.0032492866939715093,
+      "primal_ess": 0.00022268274690018003,
+      "primal_v_mean": 4.660102476415047e-06,
+      "primal_pf_mean": 9.90095103328221e-05,
+      "primal_ess_mean": 6.251174730419848e-06,
+      "dual_ess_mean": 6.443739837911829e-05,
+      "objective_change_abs": 609729.6563947201,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 837188.5109012292,
+      "admm_net_recourse_before_polish": 836578781.2448345,
+      "polished_net_operational_recourse": 827365318.5639443,
+      "admm_to_polish_improvement": -9213462.680890203,
+      "total_objective": 827415318.5639443,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 1.2994872649746414e-05,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 126.70874881744385,
+      "case_id": "d_current_base_j2",
+      "rho_requested": null,
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 2.25,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.3249286693971509,
+      "primal_v_ratio": 0.0033787957838871925,
+      "primal_ess_ratio": 0.0022268274690018003,
+      "dual_pf_mean_ratio": 0.17234213894983844,
+      "dual_v_mean_ratio": 0.009007926555409778,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 609729.6563947201,
+       "objective_tolerance": 837188.5109012292,
+       "objective_slack_factor": 1.373048698092617,
+       "worst_primal_ratio": 0.3249286693971509,
+       "worst_dual_mean_ratio": 0.17234213894983844
+      },
+      "cost_families": {
+       "gross_operational_cost": 827368741.3635893,
+       "terminal_salvage_value": 3422.1845270476424,
+       "net_operational_recourse": 827365319.1790622
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 2,
+      "step_delta": -605771.7969061136
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 67.50167179107666,
+      "primal_v": 4.098800152982274e-05,
+      "primal_pf": 0.0009389688977237398,
+      "primal_ess": 0.0002048212674586082,
+      "primal_v_mean": 4.926643464657661e-06,
+      "primal_pf_mean": 8.834055154820098e-05,
+      "primal_ess_mean": 6.681620750205134e-06,
+      "dual_ess_mean": 6.109526130113355e-05,
+      "objective_change_abs": 749320.6302728653,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 836578.7812448345,
+      "admm_net_recourse_before_polish": 835829460.6145617,
+      "polished_net_operational_recourse": 826774028.8454782,
+      "admm_to_polish_improvement": -9055431.7690835,
+      "total_objective": 826824028.8454782,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 1.4185421759238537e-05,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 128.98680901527405,
+      "case_id": "d_current_base_j3",
+      "rho_requested": null,
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 2.25,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.09389688977237398,
+      "primal_v_ratio": 0.004098800152982274,
+      "primal_ess_ratio": 0.002048212674586082,
+      "dual_pf_mean_ratio": 0.16618478148222834,
+      "dual_v_mean_ratio": 0.008579191247569732,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 749320.6302728653,
+       "objective_tolerance": 836578.7812448345,
+       "objective_slack_factor": 1.116449684483122,
+       "worst_primal_ratio": 0.09389688977237398,
+       "worst_dual_mean_ratio": 0.16618478148222834
+      },
+      "cost_families": {
+       "gross_operational_cost": 826777446.5021619,
+       "terminal_salvage_value": 3416.9118305025045,
+       "net_operational_recourse": 826774029.5903313
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 3,
+      "step_delta": -591289.7184661627
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 64.13682198524475,
+      "primal_v": 3.9257504799341244e-05,
+      "primal_pf": 0.005107301459186178,
+      "primal_ess": 0.0001931125037153529,
+      "primal_v_mean": 3.670652182194762e-06,
+      "primal_pf_mean": 9.14186409367417e-05,
+      "primal_ess_mean": 5.466252400835133e-06,
+      "dual_ess_mean": 6.106997904913387e-05,
+      "objective_change_abs": 455393.2544031143,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 835829.4606145617,
+      "admm_net_recourse_before_polish": 835374067.3601586,
+      "polished_net_operational_recourse": 826355022.1934375,
+      "admm_to_polish_improvement": -9019045.166721106,
+      "total_objective": 826405022.1934375,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 1.4595880259316019e-05,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 122.3452079296112,
+      "case_id": "d_current_base_j4",
+      "rho_requested": null,
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 2.25,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.5107301459186178,
+      "primal_v_ratio": 0.003925750479934124,
+      "primal_ess_ratio": 0.001931125037153529,
+      "dual_pf_mean_ratio": 0.15490487704912975,
+      "dual_v_mean_ratio": 0.008577887928018554,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 455393.2544031143,
+       "objective_tolerance": 835829.4606145617,
+       "objective_slack_factor": 1.8354014964716299,
+       "worst_primal_ratio": 0.5107301459186178,
+       "worst_dual_mean_ratio": 0.15490487704912975
+      },
+      "cost_families": {
+       "gross_operational_cost": 826358434.7001548,
+       "terminal_salvage_value": 3412.1934263647054,
+       "net_operational_recourse": 826355022.5067284
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 4,
+      "step_delta": -419006.65204072
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 67.0573890209198,
+      "primal_v": 5.510557950790404e-05,
+      "primal_pf": 0.001591769732264261,
+      "primal_ess": 0.00018459346901668816,
+      "primal_v_mean": 5.716470020816131e-06,
+      "primal_pf_mean": 8.86812833651244e-05,
+      "primal_ess_mean": 6.286326743655555e-06,
+      "dual_ess_mean": 5.711851668573823e-05,
+      "objective_change_abs": 505412.6439958811,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 835374.0673601585,
+      "admm_net_recourse_before_polish": 834868654.7161627,
+      "polished_net_operational_recourse": 825911521.8823205,
+      "admm_to_polish_improvement": -8957132.833842158,
+      "total_objective": 825961521.8823205,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 9.021819496135564e-06,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 115.75256013870239,
+      "case_id": "d_current_base_j5",
+      "rho_requested": null,
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 2.25,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.1591769732264261,
+      "primal_v_ratio": 0.005510557950790404,
+      "primal_ess_ratio": 0.0018459346901668816,
+      "dual_pf_mean_ratio": 0.147529014051912,
+      "dual_v_mean_ratio": 0.00826745142069113,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 505412.6439958811,
+       "objective_tolerance": 835374.0673601585,
+       "objective_slack_factor": 1.652855497946281,
+       "worst_primal_ratio": 0.1591769732264261,
+       "worst_dual_mean_ratio": 0.147529014051912
+      },
+      "cost_families": {
+       "gross_operational_cost": 825914929.5725468,
+       "terminal_salvage_value": 3407.0226872082876,
+       "net_operational_recourse": 825911522.5498596
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 5,
+      "step_delta": -443500.3111169338
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 65.72515416145325,
+      "primal_v": 3.7884932064538376e-05,
+      "primal_pf": 0.0016886924362593803,
+      "primal_ess": 0.0001916149379252571,
+      "primal_v_mean": 4.533293114784898e-06,
+      "primal_pf_mean": 7.932259541530239e-05,
+      "primal_ess_mean": 5.554239838906326e-06,
+      "dual_ess_mean": 5.598721102416227e-05,
+      "objective_change_abs": 295968.94670188427,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 834868.6547161627,
+      "admm_net_recourse_before_polish": 834572685.7694608,
+      "polished_net_operational_recourse": 825481306.7469851,
+      "admm_to_polish_improvement": -9091379.02247572,
+      "total_objective": 825531306.7469851,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 9.921858578176845e-06,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 114.00080633163452,
+      "case_id": "d_current_base_j6",
+      "rho_requested": null,
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 2.25,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.16886924362593803,
+      "primal_v_ratio": 0.0037884932064538375,
+      "primal_ess_ratio": 0.001916149379252571,
+      "dual_pf_mean_ratio": 0.13898870655112336,
+      "dual_v_mean_ratio": 0.007852157014948161,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 295968.94670188427,
+       "objective_tolerance": 834868.6547161627,
+       "objective_slack_factor": 2.8207981412221836,
+       "worst_primal_ratio": 0.16886924362593803,
+       "worst_dual_mean_ratio": 0.13898870655112336
+      },
+      "cost_families": {
+       "gross_operational_cost": 825484709.8749223,
+       "terminal_salvage_value": 3402.543980602485,
+       "net_operational_recourse": 825481307.3309417
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 6,
+      "step_delta": -430215.1353354454
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 66.05399227142334,
+      "primal_v": 3.294148289032292e-05,
+      "primal_pf": 0.001505010323791094,
+      "primal_ess": 0.00023266657482973099,
+      "primal_v_mean": 3.765545866805925e-06,
+      "primal_pf_mean": 6.802254740678129e-05,
+      "primal_ess_mean": 4.648424906140973e-06,
+      "dual_ess_mean": 5.467220089431693e-05,
+      "objective_change_abs": 502439.07644569874,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 834572.6857694609,
+      "admm_net_recourse_before_polish": 834070246.6930151,
+      "polished_net_operational_recourse": 825058709.6951807,
+      "admm_to_polish_improvement": -9011536.997834444,
+      "total_objective": 825108709.6951807,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 8.71631326165856e-06,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 114.96844792366028,
+      "case_id": "d_current_base_j7",
+      "rho_requested": null,
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 2.25,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.1505010323791094,
+      "primal_v_ratio": 0.003294148289032292,
+      "primal_ess_ratio": 0.00232666574829731,
+      "dual_pf_mean_ratio": 0.13087045030444647,
+      "dual_v_mean_ratio": 0.007974630689043131,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 502439.07644569874,
+       "objective_tolerance": 834572.6857694609,
+       "objective_slack_factor": 1.6610425520110945,
+       "worst_primal_ratio": 0.1505010323791094,
+       "worst_dual_mean_ratio": 0.13087045030444647
+      },
+      "cost_families": {
+       "gross_operational_cost": 825062108.2954328,
+       "terminal_salvage_value": 3398.2340142169987,
+       "net_operational_recourse": 825058710.0614185
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 7,
+      "step_delta": -422597.05180442333
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 69.59797716140747,
+      "primal_v": 3.5859527232675477e-05,
+      "primal_pf": 0.001199317456575244,
+      "primal_ess": 0.00017521451422949095,
+      "primal_v_mean": 4.22416566178713e-06,
+      "primal_pf_mean": 6.53933515776789e-05,
+      "primal_ess_mean": 5.390175245958217e-06,
+      "dual_ess_mean": 5.438187018120993e-05,
+      "objective_change_abs": 190809.3660595417,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 834070.2466930151,
+      "admm_net_recourse_before_polish": 833879437.3269556,
+      "polished_net_operational_recourse": 824745363.7186278,
+      "admm_to_polish_improvement": -9134073.608327746,
+      "total_objective": 824795363.7186278,
+      "max_coordinated_residual": 5.551115123125783e-17,
+      "esso_production_feasible": true,
+      "network_max_violation": 1.173560537015561e-05,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 127.71228194236755,
+      "case_id": "d_current_base_j8",
+      "rho_requested": null,
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 2.25,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.1199317456575244,
+      "primal_v_ratio": 0.0035859527232675477,
+      "primal_ess_ratio": 0.0017521451422949095,
+      "dual_pf_mean_ratio": 0.12530000919646875,
+      "dual_v_mean_ratio": 0.007996976777957847,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 190809.3660595417,
+       "objective_tolerance": 834070.2466930151,
+       "objective_slack_factor": 4.371222775472903,
+       "worst_primal_ratio": 0.1199317456575244,
+       "worst_dual_mean_ratio": 0.12530000919646875
+      },
+      "cost_families": {
+       "gross_operational_cost": 824748757.5537865,
+       "terminal_salvage_value": 3393.7272455750085,
+       "net_operational_recourse": 824745363.826541
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 8,
+      "step_delta": -313345.97655284405
+     }
+    ]
+   },
+   "CURRENT_summary": {
+    "n_generations_run": 8,
+    "n_valid": 8,
+    "n_polish_failures": 0,
+    "generation_1_polish_clean": true,
+    "H2": 827415318.5639443,
+    "H4": 826405022.1934375,
+    "H8": 824795363.7186278,
+    "first_objective": 828021090.3608505,
+    "last_objective": 824795363.7186278,
+    "total_drift": -3225726.642222643,
+    "step_deltas": [
+     -605771.7969061136,
+     -591289.7184661627,
+     -419006.65204072,
+     -443500.3111169338,
+     -430215.1353354454,
+     -422597.05180442333,
+     -313345.97655284405
+    ],
+    "final_step_delta": -313345.97655284405,
+    "reaches_planning_signal_at_generation": null,
+    "reaches_tau_numerical_at_generation": null,
+    "admm_to_polish_gap": [
+     -9217420.540378809,
+     -9213462.680890203,
+     -9055431.7690835,
+     -9019045.166721106,
+     -8957132.833842158,
+     -9091379.02247572,
+     -9011536.997834444,
+     -9134073.608327746
+    ]
+   },
+   "RESCALED": {
+    "template_info": {
+     "template": "T0 (a81f7f5191dd42dbf50d1726149b8909)",
+     "rescaled": true,
+     "rho_requested": {
+      "v": 1.5,
+      "pf": 1000.0
+     },
+     "blocks_rescaled": 48,
+     "effective_scale_range": [
+      94145.72488468012,
+      116024.2464139821
+     ],
+     "rho_in_template": {
+      "v": 1.5,
+      "pf": 1000.0,
+      "ess": 1.0
+     }
+    },
+    "generations": [
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 6,
+      "admm_converged": true,
+      "admm_runtime_s": 300.24145579338074,
+      "primal_v": 4.237908407045667e-05,
+      "primal_pf": 0.00038365271033033113,
+      "primal_ess": 0.00012053384552583937,
+      "primal_v_mean": 2.1627888488351165e-06,
+      "primal_pf_mean": 6.76567648033503e-06,
+      "primal_ess_mean": 1.1430038581879646e-06,
+      "dual_ess_mean": 1.1288635926210148e-05,
+      "objective_change_abs": 184068.79505813122,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 828029.4609969885,
+      "admm_net_recourse_before_polish": 827845392.2019303,
+      "polished_net_operational_recourse": 828248310.2179484,
+      "admm_to_polish_improvement": 402918.01601815224,
+      "total_objective": 828298310.2179484,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 9.542526958505881e-06,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 358.44084882736206,
+      "case_id": "d_rescaled_base_j1",
+      "rho_requested": {
+       "v": 1.5,
+       "pf": 1000.0
+      },
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 131.68724279835388,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.03836527103303311,
+      "primal_v_ratio": 0.0042379084070456674,
+      "primal_ess_ratio": 0.0012053384552583937,
+      "dual_pf_mean_ratio": 0.9588937321408216,
+      "dual_v_mean_ratio": 0.008009507771663408,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 184068.79505813122,
+       "objective_tolerance": 828029.4609969885,
+       "objective_slack_factor": 4.4984781952611055,
+       "worst_primal_ratio": 0.03836527103303311,
+       "worst_dual_mean_ratio": 0.9588937321408216
+      },
+      "cost_families": {
+       "gross_operational_cost": 828251762.666861,
+       "terminal_salvage_value": 3452.2924259410856,
+       "net_operational_recourse": 828248310.3744351
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "decreased",
+        "ess": "held"
+       },
+       {
+        "cycle": 2,
+        "v": "held",
+        "pf": "decreased",
+        "ess": "held"
+       },
+       {
+        "cycle": 3,
+        "v": "held",
+        "pf": "decreased",
+        "ess": "held"
+       },
+       {
+        "cycle": 4,
+        "v": "held",
+        "pf": "decreased",
+        "ess": "held"
+       },
+       {
+        "cycle": 5,
+        "v": "held",
+        "pf": "decreased",
+        "ess": "held"
+       },
+       {
+        "cycle": 6,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 1,
+      "step_delta": null
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 75.83559489250183,
+      "primal_v": 3.060998843413499e-05,
+      "primal_pf": 0.000278055097298715,
+      "primal_ess": 3.183405403332784e-05,
+      "primal_v_mean": 1.95734336498482e-06,
+      "primal_pf_mean": 6.649153109330976e-06,
+      "primal_ess_mean": 9.37145272324408e-07,
+      "dual_ess_mean": 1.1173584435154842e-05,
+      "objective_change_abs": 92805.21548366547,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 827845.3922019303,
+      "admm_net_recourse_before_polish": 827752586.9864466,
+      "polished_net_operational_recourse": 828954868.4196392,
+      "admm_to_polish_improvement": 1202281.4331926107,
+      "total_objective": 829004868.4196392,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 1.3515578223211033e-05,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 138.80705404281616,
+      "case_id": "d_rescaled_base_j2",
+      "rho_requested": {
+       "v": 1.5,
+       "pf": 1000.0
+      },
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 131.68724279835388,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.027805509729871503,
+      "primal_v_ratio": 0.003060998843413499,
+      "primal_ess_ratio": 0.0003183405403332784,
+      "dual_pf_mean_ratio": 0.7484567240580554,
+      "dual_v_mean_ratio": 0.008099128616488835,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 92805.21548366547,
+       "objective_tolerance": 827845.3922019303,
+       "objective_slack_factor": 8.920246431060098,
+       "worst_primal_ratio": 0.027805509729871503,
+       "worst_dual_mean_ratio": 0.7484567240580554
+      },
+      "cost_families": {
+       "gross_operational_cost": 828958322.8094653,
+       "terminal_salvage_value": 3454.2657168470887,
+       "net_operational_recourse": 828954868.5437485
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 2,
+      "step_delta": 706558.201690793
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 76.87407112121582,
+      "primal_v": 1.7723071256357903e-05,
+      "primal_pf": 0.0001905449026257955,
+      "primal_ess": 2.6841634860382685e-05,
+      "primal_v_mean": 1.4480947376787966e-06,
+      "primal_pf_mean": 4.93581888470766e-06,
+      "primal_ess_mean": 6.34887360283161e-07,
+      "dual_ess_mean": 1.1079068952741408e-05,
+      "objective_change_abs": 47467.05745220184,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 827752.5869864466,
+      "admm_net_recourse_before_polish": 827705119.9289944,
+      "polished_net_operational_recourse": 827902825.6268431,
+      "admm_to_polish_improvement": 197705.69784867764,
+      "total_objective": 827952825.6268431,
+      "max_coordinated_residual": 5.551115123125783e-17,
+      "esso_production_feasible": true,
+      "network_max_violation": 3.588143005439637e-06,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 128.44955897331238,
+      "case_id": "d_rescaled_base_j3",
+      "rho_requested": {
+       "v": 1.5,
+       "pf": 1000.0
+      },
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 131.68724279835388,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.01905449026257955,
+      "primal_v_ratio": 0.0017723071256357903,
+      "primal_ess_ratio": 0.00026841634860382685,
+      "dual_pf_mean_ratio": 0.6060591682929329,
+      "dual_v_mean_ratio": 0.008166904764647348,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 47467.05745220184,
+       "objective_tolerance": 827752.5869864466,
+       "objective_slack_factor": 17.438464303795808,
+       "worst_primal_ratio": 0.01905449026257955,
+       "worst_dual_mean_ratio": 0.6060591682929329
+      },
+      "cost_families": {
+       "gross_operational_cost": 827906281.979926,
+       "terminal_salvage_value": 3456.258157251724,
+       "net_operational_recourse": 827902825.7217687
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 3,
+      "step_delta": -1052042.792796135
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 74.20653009414673,
+      "primal_v": 1.0745995803227888e-05,
+      "primal_pf": 0.0001360787223909554,
+      "primal_ess": 2.4438214099534866e-05,
+      "primal_v_mean": 1.0522556530750006e-06,
+      "primal_pf_mean": 2.8004869168003454e-06,
+      "primal_ess_mean": 4.2100975815758096e-07,
+      "dual_ess_mean": 1.1024112570212625e-05,
+      "objective_change_abs": 30421.213905334473,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 827705.1199289944,
+      "admm_net_recourse_before_polish": 827674698.7150891,
+      "polished_net_operational_recourse": 827794231.9061286,
+      "admm_to_polish_improvement": 119533.19103956223,
+      "total_objective": 827844231.9061286,
+      "max_coordinated_residual": 5.551115123125783e-17,
+      "esso_production_feasible": true,
+      "network_max_violation": 7.68644786289241e-06,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 123.73093676567078,
+      "case_id": "d_rescaled_base_j4",
+      "rho_requested": {
+       "v": 1.5,
+       "pf": 1000.0
+      },
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 131.68724279835388,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.01360787223909554,
+      "primal_v_ratio": 0.0010745995803227888,
+      "primal_ess_ratio": 0.00024438214099534866,
+      "dual_pf_mean_ratio": 0.5527251225233922,
+      "dual_v_mean_ratio": 0.008161151149150609,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 30421.213905334473,
+       "objective_tolerance": 827705.1199289944,
+       "objective_slack_factor": 27.208155549106912,
+       "worst_primal_ratio": 0.01360787223909554,
+       "worst_dual_mean_ratio": 0.5527251225233922
+      },
+      "cost_families": {
+       "gross_operational_cost": 827797690.21859,
+       "terminal_salvage_value": 3458.24743542044,
+       "net_operational_recourse": 827794231.9711546
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 4,
+      "step_delta": -108593.72071444988
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 74.00070905685425,
+      "primal_v": 9.111890626726285e-06,
+      "primal_pf": 0.00014091326514471093,
+      "primal_ess": 1.0457396785925471e-05,
+      "primal_v_mean": 8.279048889088689e-07,
+      "primal_pf_mean": 1.7382506707634498e-06,
+      "primal_ess_mean": 3.777188448203258e-07,
+      "dual_ess_mean": 1.099450900424243e-05,
+      "objective_change_abs": 30436.127534985542,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 827674.6987150891,
+      "admm_net_recourse_before_polish": 827644262.5875541,
+      "polished_net_operational_recourse": 827678630.2357488,
+      "admm_to_polish_improvement": 34367.64819467068,
+      "total_objective": 827728630.2357488,
+      "max_coordinated_residual": 5.551115123125783e-17,
+      "esso_production_feasible": true,
+      "network_max_violation": 2.9816507412516735e-06,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 125.95751881599426,
+      "case_id": "d_rescaled_base_j5",
+      "rho_requested": {
+       "v": 1.5,
+       "pf": 1000.0
+      },
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 131.68724279835388,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.014091326514471092,
+      "primal_v_ratio": 0.0009111890626726286,
+      "primal_ess_ratio": 0.00010457396785925471,
+      "dual_pf_mean_ratio": 0.512507470868071,
+      "dual_v_mean_ratio": 0.008143496383360411,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 30436.127534985542,
+       "objective_tolerance": 827674.6987150891,
+       "objective_slack_factor": 27.193824108001206,
+       "worst_primal_ratio": 0.014091326514471092,
+       "worst_dual_mean_ratio": 0.512507470868071
+      },
+      "cost_families": {
+       "gross_operational_cost": 827682090.4849368,
+       "terminal_salvage_value": 3460.206569363262,
+       "net_operational_recourse": 827678630.2783675
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 5,
+      "step_delta": -115601.67037987709
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 76.78177785873413,
+      "primal_v": 8.60616323619241e-06,
+      "primal_pf": 0.00018929769326106794,
+      "primal_ess": 7.08011688065318e-06,
+      "primal_v_mean": 6.372830737564539e-07,
+      "primal_pf_mean": 1.750958891454414e-06,
+      "primal_ess_mean": 3.7288807045619414e-07,
+      "dual_ess_mean": 1.0976732958610963e-05,
+      "objective_change_abs": 30712.666405797005,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 827644.2625875542,
+      "admm_net_recourse_before_polish": 827613549.9211483,
+      "polished_net_operational_recourse": 827666272.3126332,
+      "admm_to_polish_improvement": 52722.391484856606,
+      "total_objective": 827716272.3126332,
+      "max_coordinated_residual": 5.551115123125783e-17,
+      "esso_production_feasible": true,
+      "network_max_violation": 6.554852147844237e-06,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 135.7660129070282,
+      "case_id": "d_rescaled_base_j6",
+      "rho_requested": {
+       "v": 1.5,
+       "pf": 1000.0
+      },
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 131.68724279835388,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.018929769326106793,
+      "primal_v_ratio": 0.0008606163236192409,
+      "primal_ess_ratio": 7.08011688065318e-05,
+      "dual_pf_mean_ratio": 0.47929471996333695,
+      "dual_v_mean_ratio": 0.008124166566658465,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 30712.666405797005,
+       "objective_tolerance": 827644.2625875542,
+       "objective_slack_factor": 26.947978129028115,
+       "worst_primal_ratio": 0.018929769326106793,
+       "worst_dual_mean_ratio": 0.47929471996333695
+      },
+      "cost_families": {
+       "gross_operational_cost": 827669734.4702634,
+       "terminal_salvage_value": 3462.124110369547,
+       "net_operational_recourse": 827666272.346153
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 6,
+      "step_delta": -12357.923115611076
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 73.06907391548157,
+      "primal_v": 5.811798405210394e-06,
+      "primal_pf": 0.00014234391851017492,
+      "primal_ess": 6.56350800069469e-06,
+      "primal_v_mean": 5.134054668454857e-07,
+      "primal_pf_mean": 1.212341417654173e-06,
+      "primal_ess_mean": 3.471590303255709e-07,
+      "dual_ess_mean": 1.0962474421766601e-05,
+      "objective_change_abs": 31870.370777606964,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 827613.5499211483,
+      "admm_net_recourse_before_polish": 827581679.5503707,
+      "polished_net_operational_recourse": 827602447.4001483,
+      "admm_to_polish_improvement": 20767.849777579308,
+      "total_objective": 827652447.4001483,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 1.1247011513032534e-05,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 131.89052319526672,
+      "case_id": "d_rescaled_base_j7",
+      "rho_requested": {
+       "v": 1.5,
+       "pf": 1000.0
+      },
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 131.68724279835388,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.014234391851017492,
+      "primal_v_ratio": 0.0005811798405210394,
+      "primal_ess_ratio": 6.56350800069469e-05,
+      "dual_pf_mean_ratio": 0.45668447169797466,
+      "dual_v_mean_ratio": 0.00810749445847088,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 31870.370777606964,
+       "objective_tolerance": 827613.5499211483,
+       "objective_slack_factor": 25.968118027125474,
+       "worst_primal_ratio": 0.014234391851017492,
+       "worst_dual_mean_ratio": 0.45668447169797466
+      },
+      "cost_families": {
+       "gross_operational_cost": 827605911.4415389,
+       "terminal_salvage_value": 3464.006346974614,
+       "net_operational_recourse": 827602447.435192
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 7,
+      "step_delta": -63824.91248488426
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 73.40504002571106,
+      "primal_v": 5.381316593420838e-06,
+      "primal_pf": 0.00016513586441465833,
+      "primal_ess": 5.81356974244801e-06,
+      "primal_v_mean": 4.343034505061854e-07,
+      "primal_pf_mean": 8.628343158667556e-07,
+      "primal_ess_mean": 3.185891568996761e-07,
+      "dual_ess_mean": 1.0942839770125764e-05,
+      "objective_change_abs": 29544.6069419384,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 827581.6795503707,
+      "admm_net_recourse_before_polish": 827552134.9434288,
+      "polished_net_operational_recourse": 827564426.3100634,
+      "admm_to_polish_improvement": 12291.366634607315,
+      "total_objective": 827614426.3100634,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 1.300154777172935e-06,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 131.57362413406372,
+      "case_id": "d_rescaled_base_j8",
+      "rho_requested": {
+       "v": 1.5,
+       "pf": 1000.0
+      },
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 131.68724279835388,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.016513586441465833,
+      "primal_v_ratio": 0.0005381316593420838,
+      "primal_ess_ratio": 5.8135697424480104e-05,
+      "dual_pf_mean_ratio": 0.4372387458146461,
+      "dual_v_mean_ratio": 0.008098128843965187,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 29544.6069419384,
+       "objective_tolerance": 827581.6795503707,
+       "objective_slack_factor": 28.01126043669321,
+       "worst_primal_ratio": 0.016513586441465833,
+       "worst_dual_mean_ratio": 0.4372387458146461
+      },
+      "cost_families": {
+       "gross_operational_cost": 827567892.2194047,
+       "terminal_salvage_value": 3465.869508033775,
+       "net_operational_recourse": 827564426.3498967
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 8,
+      "step_delta": -38021.09008491039
+     }
+    ]
+   },
+   "RESCALED_summary": {
+    "n_generations_run": 8,
+    "n_valid": 8,
+    "n_polish_failures": 0,
+    "generation_1_polish_clean": true,
+    "H2": 829004868.4196392,
+    "H4": 827844231.9061286,
+    "H8": 827614426.3100634,
+    "first_objective": 828298310.2179484,
+    "last_objective": 827614426.3100634,
+    "total_drift": -683883.9078850746,
+    "step_deltas": [
+     706558.201690793,
+     -1052042.792796135,
+     -108593.72071444988,
+     -115601.67037987709,
+     -12357.923115611076,
+     -63824.91248488426,
+     -38021.09008491039
+    ],
+    "final_step_delta": -38021.09008491039,
+    "reaches_planning_signal_at_generation": 6,
+    "reaches_tau_numerical_at_generation": null,
+    "admm_to_polish_gap": [
+     402918.01601815224,
+     1202281.4331926107,
+     197705.69784867764,
+     119533.19103956223,
+     34367.64819467068,
+     52722.391484856606,
+     20767.849777579308,
+     12291.366634607315
+    ]
+   }
+  },
+  "se|node5|2025|-10%": {
+   "note": "improving candidate; P5.6-D best known incumbent",
+   "CURRENT": {
+    "template_info": {
+     "template": "T0 (a81f7f5191dd42dbf50d1726149b8909)",
+     "rescaled": false,
+     "rho_requested": null,
+     "rho_in_template": {
+      "v": 1.5,
+      "pf": 2.25,
+      "ess": 1.0
+     }
+    },
+    "generations": [
+     {
+      "status": "POLISH_FAILURE",
+      "polish_all_solved": false,
+      "failed_blocks": [
+       "TSO|2025|Winter",
+       "DSO5|2025|Autumn"
+      ],
+      "admm_cycles": 2,
+      "admm_converged": true,
+      "admm_runtime_s": 83.42962217330933,
+      "primal_v": 4.7746398074057495e-05,
+      "primal_pf": 0.006189561703310229,
+      "primal_ess": 0.0004949392777756339,
+      "primal_v_mean": 5.883412328327309e-06,
+      "primal_pf_mean": 0.00013096861880267276,
+      "primal_ess_mean": 2.1033606347451513e-05,
+      "dual_ess_mean": 7.79861442773948e-05,
+      "objective_change_abs": 311523.4090782404,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 837206.0353871841,
+      "admm_net_recourse_before_polish": 836894511.9781059,
+      "polished_net_operational_recourse": null,
+      "admm_to_polish_improvement": null,
+      "total_objective": null,
+      "max_coordinated_residual": null,
+      "esso_production_feasible": null,
+      "network_max_violation": null,
+      "network_h1_violation": null,
+      "wall_clock_s": 154.19552206993103,
+      "case_id": "d_current_se_node5_2025_-10pct_j1",
+      "rho_requested": null,
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 2.25,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 2,
+      "primal_pf_ratio": 0.6189561703310229,
+      "primal_v_ratio": 0.00477463980740575,
+      "primal_ess_ratio": 0.004949392777756339,
+      "dual_pf_mean_ratio": 0.18639878097625118,
+      "dual_v_mean_ratio": 0.008970847449322215,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 311523.4090782404,
+       "objective_tolerance": 837206.0353871841,
+       "objective_slack_factor": 2.6874578634856823,
+       "worst_primal_ratio": 0.6189561703310229,
+       "worst_dual_mean_ratio": 0.18639878097625118
+      },
+      "cost_families": {
+       "gross_operational_cost": 836897857.7650094,
+       "terminal_salvage_value": 3345.7869034840905,
+       "net_operational_recourse": 836894511.9781059
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       },
+       {
+        "cycle": 2,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 1,
+      "step_delta": null
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 62.69779014587402,
+      "primal_v": 3.6564006225067924e-05,
+      "primal_pf": 0.003378788784897324,
+      "primal_ess": 0.0002226954274901923,
+      "primal_v_mean": 5.125142512248972e-06,
+      "primal_pf_mean": 0.00010465378092151432,
+      "primal_ess_mean": 8.454247709281188e-06,
+      "dual_ess_mean": 7.439026119089626e-05,
+      "objective_change_abs": 336645.4887108803,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 836894.5119781059,
+      "admm_net_recourse_before_polish": 836557866.489395,
+      "polished_net_operational_recourse": 827355774.869886,
+      "admm_to_polish_improvement": -9202091.619508982,
+      "total_objective": 827405070.2852576,
+      "max_coordinated_residual": 5.551115123125783e-17,
+      "esso_production_feasible": true,
+      "network_max_violation": 8.543981912689791e-06,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 120.57476472854614,
+      "case_id": "d_current_se_node5_2025_-10pct_j2",
+      "rho_requested": null,
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 2.25,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.3378788784897324,
+      "primal_v_ratio": 0.0036564006225067924,
+      "primal_ess_ratio": 0.002226954274901923,
+      "dual_pf_mean_ratio": 0.17487790929218122,
+      "dual_v_mean_ratio": 0.00919025900464357,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 336645.4887108803,
+       "objective_tolerance": 836894.5119781059,
+       "objective_slack_factor": 2.48598166333027,
+       "worst_primal_ratio": 0.3378788784897324,
+       "worst_dual_mean_ratio": 0.17487790929218122
+      },
+      "cost_families": {
+       "gross_operational_cost": 827359125.3104686,
+       "terminal_salvage_value": 3350.6416454877535,
+       "net_operational_recourse": 827355774.6688231
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 2,
+      "step_delta": null
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 2,
+      "admm_converged": true,
+      "admm_runtime_s": 106.69656682014465,
+      "primal_v": 4.124380141817802e-05,
+      "primal_pf": 0.005107226018938111,
+      "primal_ess": 0.00019936187937676618,
+      "primal_v_mean": 4.47206737651725e-06,
+      "primal_pf_mean": 9.073408942755861e-05,
+      "primal_ess_mean": 7.242587274030991e-06,
+      "dual_ess_mean": 6.397745932575275e-05,
+      "objective_change_abs": 291922.51463997364,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 835647.8860365225,
+      "admm_net_recourse_before_polish": 835355963.5218824,
+      "polished_net_operational_recourse": 826350049.4387193,
+      "admm_to_polish_improvement": -9005914.083163142,
+      "total_objective": 826399344.8540908,
+      "max_coordinated_residual": 2.7755575615628914e-17,
+      "esso_production_feasible": true,
+      "network_max_violation": 1.3050799374747513e-05,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 165.8920750617981,
+      "case_id": "d_current_se_node5_2025_-10pct_j3",
+      "rho_requested": null,
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 2.25,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.5107226018938111,
+      "primal_v_ratio": 0.004124380141817802,
+      "primal_ess_ratio": 0.001993618793767662,
+      "dual_pf_mean_ratio": 0.15478640002713542,
+      "dual_v_mean_ratio": 0.008405079162586043,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 291922.51463997364,
+       "objective_tolerance": 835647.8860365225,
+       "objective_slack_factor": 2.8625674421417004,
+       "worst_primal_ratio": 0.5107226018938111,
+       "worst_dual_mean_ratio": 0.15478640002713542
+      },
+      "cost_families": {
+       "gross_operational_cost": 826353394.1260589,
+       "terminal_salvage_value": 3345.016994784487,
+       "net_operational_recourse": 826350049.1090641
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       },
+       {
+        "cycle": 2,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 3,
+      "step_delta": -1005725.4311667681
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 63.806397914886475,
+      "primal_v": 3.5747179853770184e-05,
+      "primal_pf": 0.0016393666879183488,
+      "primal_ess": 0.00018451580462357383,
+      "primal_v_mean": 3.1607700073546514e-06,
+      "primal_pf_mean": 8.333716181212058e-05,
+      "primal_ess_mean": 4.69456080856518e-06,
+      "dual_ess_mean": 6.20649432930413e-05,
+      "objective_change_abs": 377747.9626852274,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 835355.9635218824,
+      "admm_net_recourse_before_polish": 834978215.5591972,
+      "polished_net_operational_recourse": 825924842.3825207,
+      "admm_to_polish_improvement": -9053373.176676512,
+      "total_objective": 825974137.7978922,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 1.1688979298152269e-05,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 122.64354920387268,
+      "case_id": "d_current_se_node5_2025_-10pct_j4",
+      "rho_requested": null,
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 2.25,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.16393666879183488,
+      "primal_v_ratio": 0.0035747179853770185,
+      "primal_ess_ratio": 0.0018451580462357383,
+      "dual_pf_mean_ratio": 0.14585671919077312,
+      "dual_v_mean_ratio": 0.00847972850627452,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 377747.9626852274,
+       "objective_tolerance": 835355.9635218824,
+       "objective_slack_factor": 2.2114109036717005,
+       "worst_primal_ratio": 0.16393666879183488,
+       "worst_dual_mean_ratio": 0.14585671919077312
+      },
+      "cost_families": {
+       "gross_operational_cost": 825928183.5873542,
+       "terminal_salvage_value": 3341.28308444132,
+       "net_operational_recourse": 825924842.3042698
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 4,
+      "step_delta": -425207.05619859695
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 60.22968602180481,
+      "primal_v": 3.4485442569038626e-05,
+      "primal_pf": 0.0016891220544386965,
+      "primal_ess": 0.0003240029504969068,
+      "primal_v_mean": 3.5466442127174656e-06,
+      "primal_pf_mean": 8.165115708258423e-05,
+      "primal_ess_mean": 6.203413096553178e-06,
+      "dual_ess_mean": 6.0108637514937956e-05,
+      "objective_change_abs": 390131.0617865324,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 834978.2155591972,
+      "admm_net_recourse_before_polish": 834588084.4974107,
+      "polished_net_operational_recourse": 825499367.9651095,
+      "admm_to_polish_improvement": -9088716.532301188,
+      "total_objective": 825548663.380481,
+      "max_coordinated_residual": 5.551115123125783e-17,
+      "esso_production_feasible": true,
+      "network_max_violation": 9.939705055694859e-06,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 116.51050615310669,
+      "case_id": "d_current_se_node5_2025_-10pct_j5",
+      "rho_requested": null,
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 2.25,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.16891220544386965,
+      "primal_v_ratio": 0.0034485442569038628,
+      "primal_ess_ratio": 0.003240029504969068,
+      "dual_pf_mean_ratio": 0.13836248117787206,
+      "dual_v_mean_ratio": 0.008041325593762277,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 390131.0617865324,
+       "objective_tolerance": 834978.2155591972,
+       "objective_slack_factor": 2.1402505397431577,
+       "worst_primal_ratio": 0.16891220544386965,
+       "worst_dual_mean_ratio": 0.13836248117787206
+      },
+      "cost_families": {
+       "gross_operational_cost": 825502705.8663948,
+       "terminal_salvage_value": 3337.4730084486623,
+       "net_operational_recourse": 825499368.3933864
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 5,
+      "step_delta": -425474.41741120815
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 60.43485069274902,
+      "primal_v": 5.8771623342188146e-05,
+      "primal_pf": 0.0015051794444336597,
+      "primal_ess": 0.00029186013151903667,
+      "primal_v_mean": 4.889459162300668e-06,
+      "primal_pf_mean": 7.67768813929466e-05,
+      "primal_ess_mean": 6.218133117178173e-06,
+      "dual_ess_mean": 5.668431087270835e-05,
+      "objective_change_abs": 588844.2800617218,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 834588.0844974107,
+      "admm_net_recourse_before_polish": 833999240.2173489,
+      "polished_net_operational_recourse": 825061139.8729899,
+      "admm_to_polish_improvement": -8938100.34435904,
+      "total_objective": 825110435.2883614,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 1.4102674797622505e-05,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 116.91724705696106,
+      "case_id": "d_current_se_node5_2025_-10pct_j6",
+      "rho_requested": null,
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 2.25,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.15051794444336597,
+      "primal_v_ratio": 0.005877162334218814,
+      "primal_ess_ratio": 0.0029186013151903667,
+      "dual_pf_mean_ratio": 0.13244207475079733,
+      "dual_v_mean_ratio": 0.008011734474130623,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 588844.2800617218,
+       "objective_tolerance": 834588.0844974107,
+       "objective_slack_factor": 1.417332413265406,
+       "worst_primal_ratio": 0.15051794444336597,
+       "worst_dual_mean_ratio": 0.13244207475079733
+      },
+      "cost_families": {
+       "gross_operational_cost": 825064474.8026084,
+       "terminal_salvage_value": 3334.361607461812,
+       "net_operational_recourse": 825061140.4410009
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 6,
+      "step_delta": -438228.09211957455
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 64.92999505996704,
+      "primal_v": 6.119548995519691e-05,
+      "primal_pf": 0.0011970867118078843,
+      "primal_ess": 0.0002678768537243021,
+      "primal_v_mean": 6.167500121896951e-06,
+      "primal_pf_mean": 7.177883797719216e-05,
+      "primal_ess_mean": 5.1314805811147235e-06,
+      "dual_ess_mean": 5.458005383543848e-05,
+      "objective_change_abs": 252187.88817107677,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 833999.2402173489,
+      "admm_net_recourse_before_polish": 833747052.3291779,
+      "polished_net_operational_recourse": 824734151.5492672,
+      "admm_to_polish_improvement": -9012900.779910684,
+      "total_objective": 824783446.9646387,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 7.454138019169498e-06,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 122.89751696586609,
+      "case_id": "d_current_se_node5_2025_-10pct_j7",
+      "rho_requested": null,
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 2.25,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.11970867118078843,
+      "primal_v_ratio": 0.006119548995519691,
+      "primal_ess_ratio": 0.0026787685372430207,
+      "dual_pf_mean_ratio": 0.12690469862724937,
+      "dual_v_mean_ratio": 0.007886147774490739,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 252187.88817107677,
+       "objective_tolerance": 833999.2402173489,
+       "objective_slack_factor": 3.3070550939844843,
+       "worst_primal_ratio": 0.11970867118078843,
+       "worst_dual_mean_ratio": 0.12690469862724937
+      },
+      "cost_families": {
+       "gross_operational_cost": 824737483.4522574,
+       "terminal_salvage_value": 3331.721393055676,
+       "net_operational_recourse": 824734151.7308643
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 7,
+      "step_delta": -326988.32372272015
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 63.26833701133728,
+      "primal_v": 3.1036107657859826e-05,
+      "primal_pf": 0.0009762788693738855,
+      "primal_ess": 0.0001956344147333852,
+      "primal_v_mean": 3.3465857933184178e-06,
+      "primal_pf_mean": 6.313119769466514e-05,
+      "primal_ess_mean": 5.90059930934832e-06,
+      "dual_ess_mean": 5.327780986797528e-05,
+      "objective_change_abs": 236938.22007000446,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 833747.0523291779,
+      "admm_net_recourse_before_polish": 833510114.1091079,
+      "polished_net_operational_recourse": 824428393.8071902,
+      "admm_to_polish_improvement": -9081720.301917672,
+      "total_objective": 824477689.2225617,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 1.2465934104199938e-05,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 123.355966091156,
+      "case_id": "d_current_se_node5_2025_-10pct_j8",
+      "rho_requested": null,
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 2.25,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.09762788693738855,
+      "primal_v_ratio": 0.0031036107657859825,
+      "primal_ess_ratio": 0.0019563441473338518,
+      "dual_pf_mean_ratio": 0.1206539525261987,
+      "dual_v_mean_ratio": 0.007732963469372747,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 236938.22007000446,
+       "objective_tolerance": 833747.0523291779,
+       "objective_slack_factor": 3.5188373242731523,
+       "worst_primal_ratio": 0.09762788693738855,
+       "worst_dual_mean_ratio": 0.1206539525261987
+      },
+      "cost_families": {
+       "gross_operational_cost": 824431722.6049814,
+       "terminal_salvage_value": 3328.6408775600294,
+       "net_operational_recourse": 824428393.9641038
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 8,
+      "step_delta": -305757.742076993
+     }
+    ]
+   },
+   "CURRENT_summary": {
+    "n_generations_run": 8,
+    "n_valid": 7,
+    "n_polish_failures": 1,
+    "generation_1_polish_clean": false,
+    "H2": 826399344.8540908,
+    "H4": 825548663.380481,
+    "H8": null,
+    "first_objective": 827405070.2852576,
+    "last_objective": 824477689.2225617,
+    "total_drift": -2927381.062695861,
+    "step_deltas": [
+     -1005725.4311667681,
+     -425207.05619859695,
+     -425474.41741120815,
+     -438228.09211957455,
+     -326988.32372272015,
+     -305757.742076993
+    ],
+    "final_step_delta": -305757.742076993,
+    "reaches_planning_signal_at_generation": null,
+    "reaches_tau_numerical_at_generation": null,
+    "admm_to_polish_gap": [
+     null,
+     -9202091.619508982,
+     -9005914.083163142,
+     -9053373.176676512,
+     -9088716.532301188,
+     -8938100.34435904,
+     -9012900.779910684,
+     -9081720.301917672
+    ]
+   },
+   "RESCALED": {
+    "template_info": {
+     "template": "T0 (a81f7f5191dd42dbf50d1726149b8909)",
+     "rescaled": true,
+     "rho_requested": {
+      "v": 1.5,
+      "pf": 1000.0
+     },
+     "blocks_rescaled": 48,
+     "effective_scale_range": [
+      94145.72488468012,
+      116024.2464139821
+     ],
+     "rho_in_template": {
+      "v": 1.5,
+      "pf": 1000.0,
+      "ess": 1.0
+     }
+    },
+    "generations": [
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 6,
+      "admm_converged": true,
+      "admm_runtime_s": 299.7379240989685,
+      "primal_v": 4.2377989372152365e-05,
+      "primal_pf": 0.00038364363950357474,
+      "primal_ess": 0.00012052856403089313,
+      "primal_v_mean": 2.1629327771125396e-06,
+      "primal_pf_mean": 6.765824035038565e-06,
+      "primal_ess_mean": 1.1474163408170046e-06,
+      "dual_ess_mean": 1.2017882109739284e-05,
+      "objective_change_abs": 184205.5099029541,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 828029.7259143429,
+      "admm_net_recourse_before_polish": 827845520.4044399,
+      "polished_net_operational_recourse": 828248428.7540201,
+      "admm_to_polish_improvement": 402908.3495801687,
+      "total_objective": 828297724.1693916,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 6.630497959458914e-06,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 361.4761710166931,
+      "case_id": "d_rescaled_se_node5_2025_-10pct_j1",
+      "rho_requested": {
+       "v": 1.5,
+       "pf": 1000.0
+      },
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 131.68724279835388,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.03836436395035747,
+      "primal_v_ratio": 0.004237798937215236,
+      "primal_ess_ratio": 0.0012052856403089313,
+      "dual_pf_mean_ratio": 0.9588838537489467,
+      "dual_v_mean_ratio": 0.008009516456112373,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 184205.5099029541,
+       "objective_tolerance": 828029.7259143429,
+       "objective_slack_factor": 4.495140923583545,
+       "worst_primal_ratio": 0.03836436395035747,
+       "worst_dual_mean_ratio": 0.9588838537489467
+      },
+      "cost_families": {
+       "gross_operational_cost": 828251804.6748047,
+       "terminal_salvage_value": 3375.7577799470396,
+       "net_operational_recourse": 828248428.9170247
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "decreased",
+        "ess": "held"
+       },
+       {
+        "cycle": 2,
+        "v": "held",
+        "pf": "decreased",
+        "ess": "held"
+       },
+       {
+        "cycle": 3,
+        "v": "held",
+        "pf": "decreased",
+        "ess": "held"
+       },
+       {
+        "cycle": 4,
+        "v": "held",
+        "pf": "decreased",
+        "ess": "held"
+       },
+       {
+        "cycle": 5,
+        "v": "held",
+        "pf": "decreased",
+        "ess": "held"
+       },
+       {
+        "cycle": 6,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 1,
+      "step_delta": null
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 75.35242176055908,
+      "primal_v": 3.059989125608479e-05,
+      "primal_pf": 0.0002780491219555792,
+      "primal_ess": 0.0004088186452018937,
+      "primal_v_mean": 1.9573572128904556e-06,
+      "primal_pf_mean": 6.649229359948687e-06,
+      "primal_ess_mean": 1.237575873686733e-06,
+      "dual_ess_mean": 1.1702015173265086e-05,
+      "objective_change_abs": 92851.77779269218,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 827845.52040444,
+      "admm_net_recourse_before_polish": 827752668.6266472,
+      "polished_net_operational_recourse": 828954971.5412948,
+      "admm_to_polish_improvement": 1202302.9146475792,
+      "total_objective": 829004266.9566664,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 6.212731011867589e-06,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 138.07790112495422,
+      "case_id": "d_rescaled_se_node5_2025_-10pct_j2",
+      "rho_requested": {
+       "v": 1.5,
+       "pf": 1000.0
+      },
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 131.68724279835388,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.027804912195557918,
+      "primal_v_ratio": 0.0030599891256084793,
+      "primal_ess_ratio": 0.004088186452018937,
+      "dual_pf_mean_ratio": 0.7484514159570255,
+      "dual_v_mean_ratio": 0.008099157202730356,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 92851.77779269218,
+       "objective_tolerance": 827845.52040444,
+       "objective_slack_factor": 8.915774582719889,
+       "worst_primal_ratio": 0.027804912195557918,
+       "worst_dual_mean_ratio": 0.7484514159570255
+      },
+      "cost_families": {
+       "gross_operational_cost": 828958349.9277322,
+       "terminal_salvage_value": 3378.3662776825263,
+       "net_operational_recourse": 828954971.5614545
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 2,
+      "step_delta": 706542.7872747183
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 76.69279599189758,
+      "primal_v": 1.771502353712872e-05,
+      "primal_pf": 0.00019054440992873013,
+      "primal_ess": 0.0004004723464182125,
+      "primal_v_mean": 1.4480156429455792e-06,
+      "primal_pf_mean": 4.935612750264617e-06,
+      "primal_ess_mean": 9.323772142298106e-07,
+      "dual_ess_mean": 1.1417679492006584e-05,
+      "objective_change_abs": 47455.097387075424,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 827752.6686266472,
+      "admm_net_recourse_before_polish": 827705213.5292602,
+      "polished_net_operational_recourse": 827902928.1777952,
+      "admm_to_polish_improvement": 197714.6485350132,
+      "total_objective": 827952223.5931667,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 4.072313674219341e-06,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 127.96159315109253,
+      "case_id": "d_rescaled_se_node5_2025_-10pct_j3",
+      "rho_requested": {
+       "v": 1.5,
+       "pf": 1000.0
+      },
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 131.68724279835388,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.019054440992873012,
+      "primal_v_ratio": 0.001771502353712872,
+      "primal_ess_ratio": 0.004004723464182125,
+      "dual_pf_mean_ratio": 0.6060667393085205,
+      "dual_v_mean_ratio": 0.008166906747277136,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 47455.097387075424,
+       "objective_tolerance": 827752.6686266472,
+       "objective_slack_factor": 17.44286102449531,
+       "worst_primal_ratio": 0.019054440992873012,
+       "worst_dual_mean_ratio": 0.6060667393085205
+      },
+      "cost_families": {
+       "gross_operational_cost": 827906308.9401244,
+       "terminal_salvage_value": 3380.7812621438998,
+       "net_operational_recourse": 827902928.1588622
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 3,
+      "step_delta": -1052043.3634996414
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 72.73933696746826,
+      "primal_v": 1.074595669627382e-05,
+      "primal_pf": 0.00013607854219120695,
+      "primal_ess": 0.0002616525507540164,
+      "primal_v_mean": 1.0522814555928973e-06,
+      "primal_pf_mean": 2.800646084901622e-06,
+      "primal_ess_mean": 6.265157394996321e-07,
+      "dual_ess_mean": 1.1322426750814183e-05,
+      "objective_change_abs": 30433.520802497864,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 827705.2135292601,
+      "admm_net_recourse_before_polish": 827674780.0084577,
+      "polished_net_operational_recourse": 827794799.0125098,
+      "admm_to_polish_improvement": 120019.00405216217,
+      "total_objective": 827844094.4278814,
+      "max_coordinated_residual": 1.3877787807814457e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 7.676713231707932e-06,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 121.82337713241577,
+      "case_id": "d_rescaled_se_node5_2025_-10pct_j4",
+      "rho_requested": {
+       "v": 1.5,
+       "pf": 1000.0
+      },
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 131.68724279835388,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.013607854219120695,
+      "primal_v_ratio": 0.001074595669627382,
+      "primal_ess_ratio": 0.002616525507540164,
+      "dual_pf_mean_ratio": 0.5527287003138525,
+      "dual_v_mean_ratio": 0.008161147022288625,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 30433.520802497864,
+       "objective_tolerance": 827705.2135292601,
+       "objective_slack_factor": 27.197156020848084,
+       "worst_primal_ratio": 0.013607854219120695,
+       "worst_dual_mean_ratio": 0.5527287003138525
+      },
+      "cost_families": {
+       "gross_operational_cost": 827798182.1086322,
+       "terminal_salvage_value": 3383.0715272221205,
+       "net_operational_recourse": 827794799.037105
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 4,
+      "step_delta": -108129.16528534889
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 76.5866289138794,
+      "primal_v": 9.111685251453941e-06,
+      "primal_pf": 0.00014091324137140759,
+      "primal_ess": 0.00011765632207170681,
+      "primal_v_mean": 8.27862646919348e-07,
+      "primal_pf_mean": 1.7381194034328833e-06,
+      "primal_ess_mean": 4.6741534790546853e-07,
+      "dual_ess_mean": 1.1295521199254582e-05,
+      "objective_change_abs": 30435.506636977196,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 827674.7800084577,
+      "admm_net_recourse_before_polish": 827644344.5018207,
+      "polished_net_operational_recourse": 827678656.4264262,
+      "admm_to_polish_improvement": 34311.92460548878,
+      "total_objective": 827727951.8417977,
+      "max_coordinated_residual": 1.6653345369377348e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 8.139343245200381e-06,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 128.1612138748169,
+      "case_id": "d_rescaled_se_node5_2025_-10pct_j5",
+      "rho_requested": {
+       "v": 1.5,
+       "pf": 1000.0
+      },
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 131.68724279835388,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.014091324137140758,
+      "primal_v_ratio": 0.0009111685251453941,
+      "primal_ess_ratio": 0.0011765632207170681,
+      "dual_pf_mean_ratio": 0.5125070064777116,
+      "dual_v_mean_ratio": 0.008143492172818007,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 30435.506636977196,
+       "objective_tolerance": 827674.7800084577,
+       "objective_slack_factor": 27.194381545233938,
+       "worst_primal_ratio": 0.014091324137140758,
+       "worst_dual_mean_ratio": 0.5125070064777116
+      },
+      "cost_families": {
+       "gross_operational_cost": 827682041.8438185,
+       "terminal_salvage_value": 3385.3659938526425,
+       "net_operational_recourse": 827678656.4778247
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 5,
+      "step_delta": -116142.58608365059
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 76.23756313323975,
+      "primal_v": 8.60614039551813e-06,
+      "primal_pf": 0.00018931619682158285,
+      "primal_ess": 2.927625227086908e-05,
+      "primal_v_mean": 6.372860042944264e-07,
+      "primal_pf_mean": 1.7510300857693603e-06,
+      "primal_ess_mean": 4.12017762099439e-07,
+      "dual_ess_mean": 1.1270707506467716e-05,
+      "objective_change_abs": 30714.025675177574,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 827644.3445018207,
+      "admm_net_recourse_before_polish": 827613630.4761455,
+      "polished_net_operational_recourse": 827666356.6576385,
+      "admm_to_polish_improvement": 52726.1814930439,
+      "total_objective": 827715652.0730101,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 6.610476399659948e-06,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 135.4250409603119,
+      "case_id": "d_rescaled_se_node5_2025_-10pct_j6",
+      "rho_requested": {
+       "v": 1.5,
+       "pf": 1000.0
+      },
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 131.68724279835388,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.018931619682158285,
+      "primal_v_ratio": 0.000860614039551813,
+      "primal_ess_ratio": 0.0002927625227086908,
+      "dual_pf_mean_ratio": 0.4792902351866195,
+      "dual_v_mean_ratio": 0.008124167871246962,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 30714.025675177574,
+       "objective_tolerance": 827644.3445018207,
+       "objective_slack_factor": 26.946788195554106,
+       "worst_primal_ratio": 0.018931619682158285,
+       "worst_dual_mean_ratio": 0.4792902351866195
+      },
+      "cost_families": {
+       "gross_operational_cost": 827669744.364853,
+       "terminal_salvage_value": 3387.67735441742,
+       "net_operational_recourse": 827666356.6874986
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 6,
+      "step_delta": -12299.768787622452
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 72.95309281349182,
+      "primal_v": 5.811797393068011e-06,
+      "primal_pf": 0.00014234057407028544,
+      "primal_ess": 2.0346618235245195e-05,
+      "primal_v_mean": 5.134626455106532e-07,
+      "primal_pf_mean": 1.21224469391304e-06,
+      "primal_ess_mean": 3.679829843027879e-07,
+      "dual_ess_mean": 1.1241601052736268e-05,
+      "objective_change_abs": 31864.756877541542,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 827613.6304761455,
+      "admm_net_recourse_before_polish": 827581765.719268,
+      "polished_net_operational_recourse": 827602533.4511303,
+      "admm_to_polish_improvement": 20767.731862306595,
+      "total_objective": 827651828.8665018,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 1.2320732488690922e-06,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 134.15869402885437,
+      "case_id": "d_rescaled_se_node5_2025_-10pct_j7",
+      "rho_requested": {
+       "v": 1.5,
+       "pf": 1000.0
+      },
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 131.68724279835388,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.014234057407028544,
+      "primal_v_ratio": 0.0005811797393068011,
+      "primal_ess_ratio": 0.00020346618235245195,
+      "dual_pf_mean_ratio": 0.4566788521992356,
+      "dual_v_mean_ratio": 0.008107499844170587,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 31864.756877541542,
+       "objective_tolerance": 827613.6304761455,
+       "objective_slack_factor": 25.97269559145616,
+       "worst_primal_ratio": 0.014234057407028544,
+       "worst_dual_mean_ratio": 0.4566788521992356
+      },
+      "cost_families": {
+       "gross_operational_cost": 827605923.4147338,
+       "terminal_salvage_value": 3389.937276253995,
+       "net_operational_recourse": 827602533.4774575
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 7,
+      "step_delta": -63823.20650827885
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 71.8480818271637,
+      "primal_v": 5.381315583585145e-06,
+      "primal_pf": 0.00016513176111864424,
+      "primal_ess": 2.3967021547249834e-05,
+      "primal_v_mean": 4.3426308368204177e-07,
+      "primal_pf_mean": 8.627259913715535e-07,
+      "primal_ess_mean": 3.282990425421902e-07,
+      "dual_ess_mean": 1.1213093883892205e-05,
+      "objective_change_abs": 29545.93223953247,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 827581.765719268,
+      "admm_net_recourse_before_polish": 827552219.7870284,
+      "polished_net_operational_recourse": 827564505.0916224,
+      "admm_to_polish_improvement": 12285.304593920708,
+      "total_objective": 827613800.5069939,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 1.473837452525828e-06,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 126.92620730400085,
+      "case_id": "d_rescaled_se_node5_2025_-10pct_j8",
+      "rho_requested": {
+       "v": 1.5,
+       "pf": 1000.0
+      },
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 131.68724279835388,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.016513176111864425,
+      "primal_v_ratio": 0.0005381315583585144,
+      "primal_ess_ratio": 0.00023967021547249834,
+      "dual_pf_mean_ratio": 0.4372330776788949,
+      "dual_v_mean_ratio": 0.008098123083853798,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 29545.93223953247,
+       "objective_tolerance": 827581.765719268,
+       "objective_slack_factor": 28.010006894010377,
+       "worst_primal_ratio": 0.016513176111864425,
+       "worst_dual_mean_ratio": 0.4372330776788949
+      },
+      "cost_families": {
+       "gross_operational_cost": 827567897.2876306,
+       "terminal_salvage_value": 3392.163714688029,
+       "net_operational_recourse": 827564505.1239159
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 8,
+      "step_delta": -38028.35950791836
+     }
+    ]
+   },
+   "RESCALED_summary": {
+    "n_generations_run": 8,
+    "n_valid": 8,
+    "n_polish_failures": 0,
+    "generation_1_polish_clean": true,
+    "H2": 829004266.9566664,
+    "H4": 827844094.4278814,
+    "H8": 827613800.5069939,
+    "first_objective": 828297724.1693916,
+    "last_objective": 827613800.5069939,
+    "total_drift": -683923.6623977423,
+    "step_deltas": [
+     706542.7872747183,
+     -1052043.3634996414,
+     -108129.16528534889,
+     -116142.58608365059,
+     -12299.768787622452,
+     -63823.20650827885,
+     -38028.35950791836
+    ],
+    "final_step_delta": -38028.35950791836,
+    "reaches_planning_signal_at_generation": 6,
+    "reaches_tau_numerical_at_generation": null,
+    "admm_to_polish_gap": [
+     402908.3495801687,
+     1202302.9146475792,
+     197714.6485350132,
+     120019.00405216217,
+     34311.92460548878,
+     52726.1814930439,
+     20767.731862306595,
+     12285.304593920708
+    ]
+   }
+  },
+  "se|node9|2025|-10%": {
+   "note": "previously problematic; direct-T0 POLISH_FAILURE under CURRENT, rescued only by continuation (P5.7-D)",
+   "CURRENT": {
+    "template_info": {
+     "template": "T0 (a81f7f5191dd42dbf50d1726149b8909)",
+     "rescaled": false,
+     "rho_requested": null,
+     "rho_in_template": {
+      "v": 1.5,
+      "pf": 2.25,
+      "ess": 1.0
+     }
+    },
+    "generations": [
+     {
+      "status": "POLISH_FAILURE",
+      "polish_all_solved": false,
+      "failed_blocks": [
+       "TSO|2025|Autumn",
+       "DSO9|2025|Autumn"
+      ],
+      "admm_cycles": 2,
+      "admm_converged": true,
+      "admm_runtime_s": 83.72559189796448,
+      "primal_v": 4.211606039471798e-05,
+      "primal_pf": 0.006189550579308296,
+      "primal_ess": 0.0005212017367010359,
+      "primal_v_mean": 6.460195832783496e-06,
+      "primal_pf_mean": 0.00012580130074759058,
+      "primal_ess_mean": 2.0615915371633417e-05,
+      "dual_ess_mean": 7.885362742006951e-05,
+      "objective_change_abs": 179694.72004067898,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 837206.0335804921,
+      "admm_net_recourse_before_polish": 837026338.8604515,
+      "polished_net_operational_recourse": null,
+      "admm_to_polish_improvement": null,
+      "total_objective": null,
+      "max_coordinated_residual": null,
+      "esso_production_feasible": null,
+      "network_max_violation": null,
+      "network_h1_violation": null,
+      "wall_clock_s": 155.56041288375854,
+      "case_id": "d_current_se_node9_2025_-10pct_j1",
+      "rho_requested": null,
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 2.25,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 2,
+      "primal_pf_ratio": 0.6189550579308296,
+      "primal_v_ratio": 0.004211606039471798,
+      "primal_ess_ratio": 0.005212017367010359,
+      "dual_pf_mean_ratio": 0.18536707753993475,
+      "dual_v_mean_ratio": 0.009042867397176697,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 179694.72004067898,
+       "objective_tolerance": 837206.0335804921,
+       "objective_slack_factor": 4.659046372597742,
+       "worst_primal_ratio": 0.6189550579308296,
+       "worst_dual_mean_ratio": 0.18536707753993475
+      },
+      "cost_families": {
+       "gross_operational_cost": 837029686.6525594,
+       "terminal_salvage_value": 3347.792107913437,
+       "net_operational_recourse": 837026338.8604515
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       },
+       {
+        "cycle": 2,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 1,
+      "step_delta": null
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 69.78795599937439,
+      "primal_v": 5.223517258001806e-05,
+      "primal_pf": 0.003203412980937177,
+      "primal_ess": 0.00043968293934243396,
+      "primal_v_mean": 6.5334150035385e-06,
+      "primal_pf_mean": 0.00011104246784941809,
+      "primal_ess_mean": 1.0186313929958894e-05,
+      "dual_ess_mean": 7.275015110703714e-05,
+      "objective_change_abs": 489252.5421587229,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 837026.3388604515,
+      "admm_net_recourse_before_polish": 836537086.3182927,
+      "polished_net_operational_recourse": 827359183.1141697,
+      "admm_to_polish_improvement": -9177903.20412302,
+      "total_objective": 827408478.5295413,
+      "max_coordinated_residual": 5.551115123125783e-17,
+      "esso_production_feasible": true,
+      "network_max_violation": 1.3308548167501044e-05,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 119.83330988883972,
+      "case_id": "d_current_se_node9_2025_-10pct_j2",
+      "rho_requested": null,
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 2.25,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.3203412980937177,
+      "primal_v_ratio": 0.005223517258001806,
+      "primal_ess_ratio": 0.00439682939342434,
+      "dual_pf_mean_ratio": 0.17414228661528597,
+      "dual_v_mean_ratio": 0.009003026260366066,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 489252.5421587229,
+       "objective_tolerance": 837026.3388604515,
+       "objective_slack_factor": 1.710826754557576,
+       "worst_primal_ratio": 0.3203412980937177,
+       "worst_dual_mean_ratio": 0.17414228661528597
+      },
+      "cost_families": {
+       "gross_operational_cost": 827362534.63571,
+       "terminal_salvage_value": 3351.4589446335067,
+       "net_operational_recourse": 827359183.1767653
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 2,
+      "step_delta": null
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 2,
+      "admm_converged": true,
+      "admm_runtime_s": 105.60655498504639,
+      "primal_v": 3.9257622510363495e-05,
+      "primal_pf": 0.00510731363617644,
+      "primal_ess": 0.0003278617759850186,
+      "primal_v_mean": 5.181516698433504e-06,
+      "primal_pf_mean": 0.00010162502682823468,
+      "primal_ess_mean": 9.715442333649046e-06,
+      "dual_ess_mean": 6.191398566369047e-05,
+      "objective_change_abs": 585130.5928213596,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 835684.9885045728,
+      "admm_net_recourse_before_polish": 835099857.9117514,
+      "polished_net_operational_recourse": 826338852.6384997,
+      "admm_to_polish_improvement": -8761005.273251653,
+      "total_objective": 826388148.0538713,
+      "max_coordinated_residual": 5.551115123125783e-17,
+      "esso_production_feasible": true,
+      "network_max_violation": 1.0680309464383697e-05,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 165.28133606910706,
+      "case_id": "d_current_se_node9_2025_-10pct_j3",
+      "rho_requested": null,
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 2.25,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.510731363617644,
+      "primal_v_ratio": 0.00392576225103635,
+      "primal_ess_ratio": 0.0032786177598501855,
+      "dual_pf_mean_ratio": 0.15661068812827308,
+      "dual_v_mean_ratio": 0.008484238041119214,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 585130.5928213596,
+       "objective_tolerance": 835684.9885045728,
+       "objective_slack_factor": 1.4282025222354207,
+       "worst_primal_ratio": 0.510731363617644,
+       "worst_dual_mean_ratio": 0.15661068812827308
+      },
+      "cost_families": {
+       "gross_operational_cost": 826342198.5322917,
+       "terminal_salvage_value": 3346.242219578134,
+       "net_operational_recourse": 826338852.2900721
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       },
+       {
+        "cycle": 2,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 3,
+      "step_delta": -1020330.47566998
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 63.83183407783508,
+      "primal_v": 3.752390891359819e-05,
+      "primal_pf": 0.0016393442290672366,
+      "primal_ess": 0.0002873620668460689,
+      "primal_v_mean": 5.6555184352378125e-06,
+      "primal_pf_mean": 9.09884535123487e-05,
+      "primal_ess_mean": 7.767508593748713e-06,
+      "dual_ess_mean": 6.177737827721103e-05,
+      "objective_change_abs": 243218.8823028803,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 835099.8579117514,
+      "admm_net_recourse_before_polish": 834856639.0294485,
+      "polished_net_operational_recourse": 825889191.1569726,
+      "admm_to_polish_improvement": -8967447.872475863,
+      "total_objective": 825938486.5723442,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 1.2304184295985898e-05,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 123.83678793907166,
+      "case_id": "d_current_se_node9_2025_-10pct_j4",
+      "rho_requested": null,
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 2.25,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.16393442290672366,
+      "primal_v_ratio": 0.003752390891359819,
+      "primal_ess_ratio": 0.002873620668460689,
+      "dual_pf_mean_ratio": 0.14853019290108369,
+      "dual_v_mean_ratio": 0.00844327937174914,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 243218.8823028803,
+       "objective_tolerance": 835099.8579117514,
+       "objective_slack_factor": 3.43353217482433,
+       "worst_primal_ratio": 0.16393442290672366,
+       "worst_dual_mean_ratio": 0.14853019290108369
+      },
+      "cost_families": {
+       "gross_operational_cost": 825892533.5378139,
+       "terminal_salvage_value": 3342.4788663553036,
+       "net_operational_recourse": 825889191.0589476
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 4,
+      "step_delta": -449661.4815270901
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 66.43458676338196,
+      "primal_v": 3.429394688361714e-05,
+      "primal_pf": 0.0016889678834081058,
+      "primal_ess": 0.0002532292168833176,
+      "primal_v_mean": 4.661166100856348e-06,
+      "primal_pf_mean": 8.297451391496073e-05,
+      "primal_ess_mean": 8.63101837905644e-06,
+      "dual_ess_mean": 5.920177591981206e-05,
+      "objective_change_abs": 304078.1839786768,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 834856.6390294485,
+      "admm_net_recourse_before_polish": 834552560.8454698,
+      "polished_net_operational_recourse": 825482078.2977388,
+      "admm_to_polish_improvement": -9070482.547731042,
+      "total_objective": 825531373.7131103,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 1.4752466662548702e-05,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 122.77718806266785,
+      "case_id": "d_current_se_node9_2025_-10pct_j5",
+      "rho_requested": null,
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 2.25,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.16889678834081057,
+      "primal_v_ratio": 0.003429394688361714,
+      "primal_ess_ratio": 0.002532292168833176,
+      "dual_pf_mean_ratio": 0.1399115164087323,
+      "dual_v_mean_ratio": 0.007988533928874322,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 304078.1839786768,
+       "objective_tolerance": 834856.6390294485,
+       "objective_slack_factor": 2.745532836673321,
+       "worst_primal_ratio": 0.16889678834081057,
+       "worst_dual_mean_ratio": 0.1399115164087323
+      },
+      "cost_families": {
+       "gross_operational_cost": 825485417.3416384,
+       "terminal_salvage_value": 3338.587243760666,
+       "net_operational_recourse": 825482078.7543947
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 5,
+      "step_delta": -407112.8592338562
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 60.815751791000366,
+      "primal_v": 3.0234741962305925e-05,
+      "primal_pf": 0.0015057287362840466,
+      "primal_ess": 0.0002319529916187371,
+      "primal_v_mean": 2.891628949599361e-06,
+      "primal_pf_mean": 6.67025116712844e-05,
+      "primal_ess_mean": 5.394591573913174e-06,
+      "dual_ess_mean": 5.5966120691538536e-05,
+      "objective_change_abs": 544793.5645210743,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 834552.5608454698,
+      "admm_net_recourse_before_polish": 834007767.2809488,
+      "polished_net_operational_recourse": 825080634.0146027,
+      "admm_to_polish_improvement": -8927133.266346097,
+      "total_objective": 825129929.4299742,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 1.4491160077567677e-05,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 117.3593180179596,
+      "case_id": "d_current_se_node9_2025_-10pct_j6",
+      "rho_requested": null,
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 2.25,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.15057287362840466,
+      "primal_v_ratio": 0.0030234741962305925,
+      "primal_ess_ratio": 0.002319529916187371,
+      "dual_pf_mean_ratio": 0.13227358377768228,
+      "dual_v_mean_ratio": 0.00769876195290455,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 544793.5645210743,
+       "objective_tolerance": 834552.5608454698,
+       "objective_slack_factor": 1.5318693450043255,
+       "worst_primal_ratio": 0.15057287362840466,
+       "worst_dual_mean_ratio": 0.13227358377768228
+      },
+      "cost_families": {
+       "gross_operational_cost": 825083969.8388541,
+       "terminal_salvage_value": 3335.4409221493142,
+       "net_operational_recourse": 825080634.3979319
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 6,
+      "step_delta": -401444.2831361294
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 65.19569706916809,
+      "primal_v": 3.9300353662910955e-05,
+      "primal_pf": 0.0011994585327134643,
+      "primal_ess": 0.0002960243999273522,
+      "primal_v_mean": 3.958215858169235e-06,
+      "primal_pf_mean": 6.75767319881519e-05,
+      "primal_ess_mean": 4.790956169789851e-06,
+      "dual_ess_mean": 5.653245386957793e-05,
+      "objective_change_abs": 112029.24194979668,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 834007.7672809488,
+      "admm_net_recourse_before_polish": 833895738.038999,
+      "polished_net_operational_recourse": 824752590.4281962,
+      "admm_to_polish_improvement": -9143147.61080277,
+      "total_objective": 824801885.8435677,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 1.2799964286935861e-05,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 116.41570591926575,
+      "case_id": "d_current_se_node9_2025_-10pct_j7",
+      "rho_requested": null,
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 2.25,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.11994585327134642,
+      "primal_v_ratio": 0.003930035366291096,
+      "primal_ess_ratio": 0.0029602439992735216,
+      "dual_pf_mean_ratio": 0.12604233314982025,
+      "dual_v_mean_ratio": 0.007799099628412429,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 112029.24194979668,
+       "objective_tolerance": 834007.7672809488,
+       "objective_slack_factor": 7.444554232141374,
+       "worst_primal_ratio": 0.11994585327134642,
+       "worst_dual_mean_ratio": 0.12604233314982025
+      },
+      "cost_families": {
+       "gross_operational_cost": 824755922.7903086,
+       "terminal_salvage_value": 3332.3253926468,
+       "net_operational_recourse": 824752590.464916
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 7,
+      "step_delta": -328043.58640646935
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 66.71158719062805,
+      "primal_v": 3.641471058221794e-05,
+      "primal_pf": 0.0009795115374875252,
+      "primal_ess": 0.00017006790517868904,
+      "primal_v_mean": 4.0971451185616545e-06,
+      "primal_pf_mean": 6.107418409637704e-05,
+      "primal_ess_mean": 5.777986200618334e-06,
+      "dual_ess_mean": 5.442439237082398e-05,
+      "objective_change_abs": 324725.3223334551,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 833895.738038999,
+      "admm_net_recourse_before_polish": 833571012.7166655,
+      "polished_net_operational_recourse": 824449510.0246999,
+      "admm_to_polish_improvement": -9121502.69196558,
+      "total_objective": 824498805.4400715,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 1.1252434136910239e-05,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 125.00355911254883,
+      "case_id": "d_current_se_node9_2025_-10pct_j8",
+      "rho_requested": null,
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 2.25,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.09795115374875252,
+      "primal_v_ratio": 0.0036414710582217936,
+      "primal_ess_ratio": 0.0017006790517868904,
+      "dual_pf_mean_ratio": 0.12040585726203644,
+      "dual_v_mean_ratio": 0.007758881400809934,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 324725.3223334551,
+       "objective_tolerance": 833895.738038999,
+       "objective_slack_factor": 2.5680034191564687,
+       "worst_primal_ratio": 0.09795115374875252,
+       "worst_dual_mean_ratio": 0.12040585726203644
+      },
+      "cost_families": {
+       "gross_operational_cost": 824452838.9586759,
+       "terminal_salvage_value": 3328.8248842177927,
+       "net_operational_recourse": 824449510.1337917
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 8,
+      "step_delta": -303080.4034962654
+     }
+    ]
+   },
+   "CURRENT_summary": {
+    "n_generations_run": 8,
+    "n_valid": 7,
+    "n_polish_failures": 1,
+    "generation_1_polish_clean": false,
+    "H2": 826388148.0538713,
+    "H4": 825531373.7131103,
+    "H8": null,
+    "first_objective": 827408478.5295413,
+    "last_objective": 824498805.4400715,
+    "total_drift": -2909673.0894697905,
+    "step_deltas": [
+     -1020330.47566998,
+     -449661.4815270901,
+     -407112.8592338562,
+     -401444.2831361294,
+     -328043.58640646935,
+     -303080.4034962654
+    ],
+    "final_step_delta": -303080.4034962654,
+    "reaches_planning_signal_at_generation": null,
+    "reaches_tau_numerical_at_generation": null,
+    "admm_to_polish_gap": [
+     null,
+     -9177903.20412302,
+     -8761005.273251653,
+     -8967447.872475863,
+     -9070482.547731042,
+     -8927133.266346097,
+     -9143147.61080277,
+     -9121502.69196558
+    ]
+   },
+   "RESCALED": {
+    "template_info": {
+     "template": "T0 (a81f7f5191dd42dbf50d1726149b8909)",
+     "rescaled": true,
+     "rho_requested": {
+      "v": 1.5,
+      "pf": 1000.0
+     },
+     "blocks_rescaled": 48,
+     "effective_scale_range": [
+      94145.72488468012,
+      116024.2464139821
+     ],
+     "rho_in_template": {
+      "v": 1.5,
+      "pf": 1000.0,
+      "ess": 1.0
+     }
+    },
+    "generations": [
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 6,
+      "admm_converged": true,
+      "admm_runtime_s": 298.8766281604767,
+      "primal_v": 4.237918002066484e-05,
+      "primal_pf": 0.00038365304991963003,
+      "primal_ess": 0.000357874456853452,
+      "primal_v_mean": 2.163155345412441e-06,
+      "primal_pf_mean": 6.766312571448133e-06,
+      "primal_ess_mean": 1.395998716134733e-06,
+      "dual_ess_mean": 1.1868583419871197e-05,
+      "objective_change_abs": 184177.54298508167,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 828029.621660331,
+      "admm_net_recourse_before_polish": 827845444.1173459,
+      "polished_net_operational_recourse": 828248370.4819783,
+      "admm_to_polish_improvement": 402926.3646323681,
+      "total_objective": 828297665.8973498,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 9.565573273084826e-06,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 361.24568700790405,
+      "case_id": "d_rescaled_se_node9_2025_-10pct_j1",
+      "rho_requested": {
+       "v": 1.5,
+       "pf": 1000.0
+      },
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 131.68724279835388,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.038365304991963,
+      "primal_v_ratio": 0.0042379180020664835,
+      "primal_ess_ratio": 0.00357874456853452,
+      "dual_pf_mean_ratio": 0.9589086194176352,
+      "dual_v_mean_ratio": 0.008009530458947253,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 184177.54298508167,
+       "objective_tolerance": 828029.621660331,
+       "objective_slack_factor": 4.495822933892658,
+       "worst_primal_ratio": 0.038365304991963,
+       "worst_dual_mean_ratio": 0.9589086194176352
+      },
+      "cost_families": {
+       "gross_operational_cost": 828251749.0369012,
+       "terminal_salvage_value": 3378.5302214697863,
+       "net_operational_recourse": 828248370.5066798
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "decreased",
+        "ess": "held"
+       },
+       {
+        "cycle": 2,
+        "v": "held",
+        "pf": "decreased",
+        "ess": "held"
+       },
+       {
+        "cycle": 3,
+        "v": "held",
+        "pf": "decreased",
+        "ess": "held"
+       },
+       {
+        "cycle": 4,
+        "v": "held",
+        "pf": "decreased",
+        "ess": "held"
+       },
+       {
+        "cycle": 5,
+        "v": "held",
+        "pf": "decreased",
+        "ess": "held"
+       },
+       {
+        "cycle": 6,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 1,
+      "step_delta": null
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 73.92283225059509,
+      "primal_v": 3.058338832956445e-05,
+      "primal_pf": 0.00027805504097843325,
+      "primal_ess": 0.0005301196055674216,
+      "primal_v_mean": 1.957353832193911e-06,
+      "primal_pf_mean": 6.649241726621349e-06,
+      "primal_ess_mean": 1.402959697499913e-06,
+      "dual_ess_mean": 1.1539621893218445e-05,
+      "objective_change_abs": 92807.4603278637,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 827845.444117346,
+      "admm_net_recourse_before_polish": 827752636.6570181,
+      "polished_net_operational_recourse": 828954967.7333434,
+      "admm_to_polish_improvement": 1202331.0763252974,
+      "total_objective": 829004263.1487149,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 1.043142852408252e-05,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 135.42370891571045,
+      "case_id": "d_rescaled_se_node9_2025_-10pct_j2",
+      "rho_requested": {
+       "v": 1.5,
+       "pf": 1000.0
+      },
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 131.68724279835388,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.027805504097843325,
+      "primal_v_ratio": 0.003058338832956445,
+      "primal_ess_ratio": 0.005301196055674216,
+      "dual_pf_mean_ratio": 0.748448797563239,
+      "dual_v_mean_ratio": 0.008099206545145118,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 92807.4603278637,
+       "objective_tolerance": 827845.444117346,
+       "objective_slack_factor": 8.920031225860416,
+       "worst_primal_ratio": 0.027805504097843325,
+       "worst_dual_mean_ratio": 0.748448797563239
+      },
+      "cost_families": {
+       "gross_operational_cost": 828958348.6288481,
+       "terminal_salvage_value": 3380.889273307638,
+       "net_operational_recourse": 828954967.7395748
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 2,
+      "step_delta": 706597.2513650656
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 71.00334692001343,
+      "primal_v": 1.7700341103479162e-05,
+      "primal_pf": 0.00019054490253298084,
+      "primal_ess": 0.0003304876445646074,
+      "primal_v_mean": 1.4478022885637872e-06,
+      "primal_pf_mean": 4.935312997731776e-06,
+      "primal_ess_mean": 9.831886449973752e-07,
+      "dual_ess_mean": 1.1411806446490793e-05,
+      "objective_change_abs": 47463.93861091137,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 827752.6366570181,
+      "admm_net_recourse_before_polish": 827705172.7184072,
+      "polished_net_operational_recourse": 827902874.202276,
+      "admm_to_polish_improvement": 197701.48386883736,
+      "total_objective": 827952169.6176475,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 1.0444558809941107e-05,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 129.21559929847717,
+      "case_id": "d_rescaled_se_node9_2025_-10pct_j3",
+      "rho_requested": {
+       "v": 1.5,
+       "pf": 1000.0
+      },
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 131.68724279835388,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.019054490253298084,
+      "primal_v_ratio": 0.001770034110347916,
+      "primal_ess_ratio": 0.003304876445646074,
+      "dual_pf_mean_ratio": 0.6060569454400851,
+      "dual_v_mean_ratio": 0.00816693530566601,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 47463.93861091137,
+       "objective_tolerance": 827752.6366570181,
+       "objective_slack_factor": 17.439611226589783,
+       "worst_primal_ratio": 0.019054490253298084,
+       "worst_dual_mean_ratio": 0.6060569454400851
+      },
+      "cost_families": {
+       "gross_operational_cost": 827906257.415613,
+       "terminal_salvage_value": 3383.160634992503,
+       "net_operational_recourse": 827902874.2549781
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 3,
+      "step_delta": -1052093.5310673714
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 72.91610479354858,
+      "primal_v": 1.0746026142620078e-05,
+      "primal_pf": 0.00013607872403284204,
+      "primal_ess": 0.0001273258555171443,
+      "primal_v_mean": 1.0522394622016068e-06,
+      "primal_pf_mean": 2.8003496834819868e-06,
+      "primal_ess_mean": 5.393252114656929e-07,
+      "dual_ess_mean": 1.1362082309906479e-05,
+      "objective_change_abs": 30420.192730784416,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 827705.1727184071,
+      "admm_net_recourse_before_polish": 827674752.5256764,
+      "polished_net_operational_recourse": 827794298.0235637,
+      "admm_to_polish_improvement": 119545.49788737297,
+      "total_objective": 827843593.4389353,
+      "max_coordinated_residual": 8.326672684688674e-17,
+      "esso_production_feasible": true,
+      "network_max_violation": 7.655022580488335e-06,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 129.74379992485046,
+      "case_id": "d_rescaled_se_node9_2025_-10pct_j4",
+      "rho_requested": {
+       "v": 1.5,
+       "pf": 1000.0
+      },
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 131.68724279835388,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.013607872403284205,
+      "primal_v_ratio": 0.0010746026142620078,
+      "primal_ess_ratio": 0.0012732585551714429,
+      "dual_pf_mean_ratio": 0.5527249405777661,
+      "dual_v_mean_ratio": 0.00816113002421142,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 30420.192730784416,
+       "objective_tolerance": 827705.1727184071,
+       "objective_slack_factor": 27.20907063421698,
+       "worst_primal_ratio": 0.013607872403284205,
+       "worst_dual_mean_ratio": 0.5527249405777661
+      },
+      "cost_families": {
+       "gross_operational_cost": 827797683.5634551,
+       "terminal_salvage_value": 3385.4590862911728,
+       "net_operational_recourse": 827794298.1043688
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 4,
+      "step_delta": -108576.1787122488
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 71.93333601951599,
+      "primal_v": 9.111905895033356e-06,
+      "primal_pf": 0.00014091326823958638,
+      "primal_ess": 5.933820350101718e-05,
+      "primal_v_mean": 8.278867897680752e-07,
+      "primal_pf_mean": 1.7382501587996148e-06,
+      "primal_ess_mean": 4.4680337709942623e-07,
+      "dual_ess_mean": 1.1317979266421234e-05,
+      "objective_change_abs": 30435.373150229454,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 827674.7525256764,
+      "admm_net_recourse_before_polish": 827644317.1525261,
+      "polished_net_operational_recourse": 827678697.3640066,
+      "admm_to_polish_improvement": 34380.211480498314,
+      "total_objective": 827727992.7793782,
+      "max_coordinated_residual": 5.551115123125783e-17,
+      "esso_production_feasible": true,
+      "network_max_violation": 2.624129595979463e-06,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 131.03898072242737,
+      "case_id": "d_rescaled_se_node9_2025_-10pct_j5",
+      "rho_requested": {
+       "v": 1.5,
+       "pf": 1000.0
+      },
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 131.68724279835388,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.014091326823958639,
+      "primal_v_ratio": 0.0009111905895033356,
+      "primal_ess_ratio": 0.0005933820350101718,
+      "dual_pf_mean_ratio": 0.5125051777886042,
+      "dual_v_mean_ratio": 0.00814348935423521,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 30435.373150229454,
+       "objective_tolerance": 827674.7525256764,
+       "objective_slack_factor": 27.194499914302398,
+       "worst_primal_ratio": 0.014091326823958639,
+       "worst_dual_mean_ratio": 0.5125051777886042
+      },
+      "cost_families": {
+       "gross_operational_cost": 827682085.201206,
+       "terminal_salvage_value": 3387.7973525569373,
+       "net_operational_recourse": 827678697.4038534
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 5,
+      "step_delta": -115600.65955710411
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 69.9795880317688,
+      "primal_v": 8.606171349972589e-06,
+      "primal_pf": 0.00018928632682211344,
+      "primal_ess": 2.0601191354219228e-05,
+      "primal_v_mean": 6.372141054750196e-07,
+      "primal_pf_mean": 1.7509467001768893e-06,
+      "primal_ess_mean": 4.0899030209323656e-07,
+      "dual_ess_mean": 1.1275608895824826e-05,
+      "objective_change_abs": 30714.047120451927,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 827644.3171525261,
+      "admm_net_recourse_before_polish": 827613603.1054057,
+      "polished_net_operational_recourse": 827666344.9773045,
+      "admm_to_polish_improvement": 52741.87189877033,
+      "total_objective": 827715640.392676,
+      "max_coordinated_residual": 1.3877787807814457e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 6.254875620670397e-06,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 129.35752081871033,
+      "case_id": "d_rescaled_se_node9_2025_-10pct_j6",
+      "rho_requested": {
+       "v": 1.5,
+       "pf": 1000.0
+      },
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 131.68724279835388,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.018928632682211344,
+      "primal_v_ratio": 0.0008606171349972589,
+      "primal_ess_ratio": 0.00020601191354219228,
+      "dual_pf_mean_ratio": 0.4792895387493341,
+      "dual_v_mean_ratio": 0.008124164949511946,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 30714.047120451927,
+       "objective_tolerance": 827644.3171525261,
+       "objective_slack_factor": 26.946768490219995,
+       "worst_primal_ratio": 0.018928632682211344,
+       "worst_dual_mean_ratio": 0.4792895387493341
+      },
+      "cost_families": {
+       "gross_operational_cost": 827669735.0696312,
+       "terminal_salvage_value": 3390.068799300312,
+       "net_operational_recourse": 827666345.000832
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 6,
+      "step_delta": -12352.386702179909
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 75.25746202468872,
+      "primal_v": 5.811798306681801e-06,
+      "primal_pf": 0.00014234051914549184,
+      "primal_ess": 2.1385821859700588e-05,
+      "primal_v_mean": 5.134657162173884e-07,
+      "primal_pf_mean": 1.2123488106004297e-06,
+      "primal_ess_mean": 3.6333584557712975e-07,
+      "dual_ess_mean": 1.1244552107759135e-05,
+      "objective_change_abs": 31865.17868244648,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 827613.6031054057,
+      "admm_net_recourse_before_polish": 827581737.9267232,
+      "polished_net_operational_recourse": 827602505.888995,
+      "admm_to_polish_improvement": 20767.962271809578,
+      "total_objective": 827651801.3043666,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 7.414806632466409e-06,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 127.90145826339722,
+      "case_id": "d_rescaled_se_node9_2025_-10pct_j7",
+      "rho_requested": {
+       "v": 1.5,
+       "pf": 1000.0
+      },
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 131.68724279835388,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.014234051914549184,
+      "primal_v_ratio": 0.0005811798306681801,
+      "primal_ess_ratio": 0.00021385821859700588,
+      "dual_pf_mean_ratio": 0.45667894949326,
+      "dual_v_mean_ratio": 0.008107497308377655,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 31865.17868244648,
+       "objective_tolerance": 827613.6031054057,
+       "objective_slack_factor": 25.972350927418834,
+       "worst_primal_ratio": 0.014234051914549184,
+       "worst_dual_mean_ratio": 0.45667894949326
+      },
+      "cost_families": {
+       "gross_operational_cost": 827605898.2009839,
+       "terminal_salvage_value": 3392.283689958733,
+       "net_operational_recourse": 827602505.9172939
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 7,
+      "step_delta": -63839.088309407234
+     },
+     {
+      "status": "VALID",
+      "polish_all_solved": true,
+      "failed_blocks": [],
+      "admm_cycles": 1,
+      "admm_converged": true,
+      "admm_runtime_s": 75.8089051246643,
+      "primal_v": 5.381316497363699e-06,
+      "primal_pf": 0.00016513176106354167,
+      "primal_ess": 1.3181328413526539e-05,
+      "primal_v_mean": 4.3426201095130287e-07,
+      "primal_pf_mean": 8.627877435086668e-07,
+      "primal_ess_mean": 3.2492533744690756e-07,
+      "dual_ess_mean": 1.1220552267888684e-05,
+      "objective_change_abs": 29547.3480322361,
+      "objective_convergence": true,
+      "residual_convergence": true,
+      "objective_tolerance": 827581.7379267232,
+      "admm_net_recourse_before_polish": 827552190.578691,
+      "polished_net_operational_recourse": 827564485.975778,
+      "admm_to_polish_improvement": 12295.397086977959,
+      "total_objective": 827613781.3911495,
+      "max_coordinated_residual": 1.1102230246251565e-16,
+      "esso_production_feasible": true,
+      "network_max_violation": 8.182099994757941e-07,
+      "network_h1_violation": 0.0,
+      "wall_clock_s": 123.23062777519226,
+      "case_id": "d_rescaled_se_node9_2025_-10pct_j8",
+      "rho_requested": {
+       "v": 1.5,
+       "pf": 1000.0
+      },
+      "adaptive_penalty": null,
+      "rho_observed_final": {
+       "v": 1.5,
+       "pf": 131.68724279835388,
+       "ess": 1.0
+      },
+      "n_failed_polish_blocks": 0,
+      "primal_pf_ratio": 0.016513176106354166,
+      "primal_v_ratio": 0.0005381316497363698,
+      "primal_ess_ratio": 0.00013181328413526539,
+      "dual_pf_mean_ratio": 0.43723581991296706,
+      "dual_v_mean_ratio": 0.008098121579451473,
+      "terminating_criterion": {
+       "residual_convergence": true,
+       "objective_convergence": true,
+       "objective_change_abs": 29547.3480322361,
+       "objective_tolerance": 827581.7379267232,
+       "objective_slack_factor": 28.00866382403704,
+       "worst_primal_ratio": 0.016513176106354166,
+       "worst_dual_mean_ratio": 0.43723581991296706
+      },
+      "cost_families": {
+       "gross_operational_cost": 827567880.485237,
+       "terminal_salvage_value": 3394.4717106551548,
+       "net_operational_recourse": 827564486.0135263
+      },
+      "rho_actions": [
+       {
+        "cycle": 1,
+        "v": "held",
+        "pf": "held",
+        "ess": "held"
+       }
+      ],
+      "generation": 8,
+      "step_delta": -38019.91321706772
+     }
+    ]
+   },
+   "RESCALED_summary": {
+    "n_generations_run": 8,
+    "n_valid": 8,
+    "n_polish_failures": 0,
+    "generation_1_polish_clean": true,
+    "H2": 829004263.1487149,
+    "H4": 827843593.4389353,
+    "H8": 827613781.3911495,
+    "first_objective": 828297665.8973498,
+    "last_objective": 827613781.3911495,
+    "total_drift": -683884.5062003136,
+    "step_deltas": [
+     706597.2513650656,
+     -1052093.5310673714,
+     -108576.1787122488,
+     -115600.65955710411,
+     -12352.386702179909,
+     -63839.088309407234,
+     -38019.91321706772
+    ],
+    "final_step_delta": -38019.91321706772,
+    "reaches_planning_signal_at_generation": 6,
+    "reaches_tau_numerical_at_generation": null,
+    "admm_to_polish_gap": [
+     402926.3646323681,
+     1202331.0763252974,
+     197701.48386883736,
+     119545.49788737297,
+     34380.211480498314,
+     52741.87189877033,
+     20767.962271809578,
+     12295.397086977959
+    ]
+   }
+  }
+ },
+ "merged_from": [
+  "p59_d_replay_base.json",
+  "p59_d_replay_se_node5_2025_-10pct.json",
+  "p59_d_replay_se_node9_2025_-10pct.json"
+ ],
+ "note": "one process per candidate, inside the P5.6-B7 four-worker ceiling; every solve is deterministic given its inputs and each process used its own copy of T0"
+}
