@@ -151,6 +151,98 @@ Reproduction gate: A0 case A reproduced the accepted P5.6-D base chain exactly; 
 
 **E -- interface anchor audit** (no policy changed). Anchor exactly constant across generations and across both formulations (`0.0` for `pc` and `qc`); identical for a different candidate warm-started from T0 (`0.000000e+00`); and within `1.003037e-07 p.u.` for that candidate started **cold**. The P5.7 conjecture that cold starts use a candidate-dependent anchor is therefore refuted, and the P5.6-B cold-versus-T0 gaps stand as genuine branch differences.
 
+# DELIVERED, PENDING PLANNER REVIEW — P5.9 rescaled ADMM stabilization
+
+Report: `P5_9_RESCALED_ADMM_STABILIZATION_REPORT.md`. Evidence:
+`data/SRP1/Results/P59/`. Commit `fe6b5c63`.
+
+Delivered verdict:
+
+`P5.9-B — rescaling helps but ADMM coordination requires further redesign`.
+
+Harnesses: `p59_rho.py`, `p59_eval.py`, `p59_a_sweep.py`, `p59_a_refine.py`,
+`p59_b_adaptive.py`, `p59_c_criteria.py`, `p59_d_replay.py`,
+`p59_d2_signal.py`, `p59_d3_largesignal.py`, `p59_e_anchor.py`,
+`p59_e2_flexibility.py`.
+
+Reproduction gates, all exact: RESCALED at the template's own penalties returned
+P5.8-C generation 1 (`825814074.4930633`, same two failed blocks); the stage D
+CURRENT arm reproduced the accepted P5.6-D base chain at all eight generations;
+E2 reproduced P5.7 section 1's polish `K=0` cost families. No production code,
+parameter file, tolerance, stopping criterion, penalty rule or anchor policy was
+modified; nothing was merged; no investment optimization, derivative-free
+search, GPS/MADS, Benders run or convex planning model was executed.
+
+**RHO IS INHERITED THROUGH THE TEMPLATE, NOT READ FROM THE PARAMETER FILE.**
+`data/SRP1/SRP1_params.json` sets `rho = 1.0` for every family, but the frozen
+T0 template carries `rho_v = 1.5`, `rho_pf = 2.25`, `rho_ess = 1.0` — the
+adaptive rule's own output from T0's cold build. The warm path clones
+`initial_state['models']` and never rebuilds the augmented objectives, so every
+warm evaluation since P5.6-B has used the inherited values. Second instance of
+the channel P5.8-A0 found for `consecutive_converged_cycles`. **Any future stage
+that sets rho must set it on the template.**
+
+**A — penalty calibration.** `rho_v` inert (667x moves the objective `3327.60`,
+changes no polish outcome; voltage consensus never within `32x` of tolerance).
+`rho_ess` never binds (`primal_ess_ratio 0.0012..0.0057`; no ESS criterion
+within `175x` on any of 96 cycles), so A4's precondition is unmet and it was not
+run. `rho_pf` trades the gain against polish success near 1:1: agreement
+improves monotonically (`0.3258 -> 0.0384`) but polish success does not
+(2 -> 4 -> 3 -> 0 failures); the only clean configuration, `rho_pf = 1000`,
+returns `94.2%` of the `2157015.87` gain and lands `277219.86` worse than
+production. Refinement at 300/500 polished cleanly and landed worse. The
+ADMM-to-polish gap changes sign: `-9217420.54` (recovers) to `+402918.02`
+(costs).
+
+**B — adaptive rho is self-cancelling.** The dual residual is
+`rho * |z_current - z_prev| / base` (`4897`, `4938`), linear in rho, so raising
+rho trips the rule's own decrease branch: `300 -> 88.89`, `500 -> 98.77`,
+`1000 -> 131.69`, exactly `requested / 1.5^n`. Disabled and pinned, the chain is
+monotone (`-21309 -> -16798`) and beats production by `9434.20` at generation 1;
+enabled, it moves the objective up `706558` at generation 2. Three replacement
+rules proposed, none implemented.
+
+**C — the binding criterion moved.** On the 24 terminating cycles of 96,
+`stationarity_pf` binds on 17 and the objective test on 7, at median slacks
+`1.34` and `4.50`. P5.8-D found the objective test binding under CURRENT.
+Voltage and ESS criteria inert throughout. Objective tolerance unchanged at
+`826461..838497`; 59 of 96 cycles converged while the recourse still moved more
+than `33031`. Nothing modified.
+
+**D — coverage fixed, landscape transformed.** Both direct-T0 `POLISH_FAILURE`
+candidates — including P5.7-D's continuation-only target — evaluate directly
+under RESCALED. Cross-depth landscape uncertainty `459695.59 -> 540.92` (850x);
+uncertainty/signal `25.4x -> 6.0x`; base drift over eight generations
+`-3225726.64 -> -683883.91`. Absolute drift reduced 4.7x, not eliminated.
+
+**D2/D3 — the signal itself.** Added because D could not be interpreted without
+them. The separation collapse is caused by the rescaling, not by rho: `316..631`
+at every penalty including the untouched `2.25`, against `162172`/`293999` under
+CURRENT. But the rescaled oracle is not blind — a 19x capacity change separates
+by `130200.84` (`3.94x tau_planning`), and across a 190x range of perturbation
+CURRENT's separations vary only 11x while RESCALED's vary ~340x and track the
+perturbation. The evidence points to the P5.6-C/D investment signal having been
+largely numerical residue. **Stated as a reading, not a result**; confirming it
+needs a perturbation sweep at fixed depth under both formulations.
+
+**E — anchor.** `max |pc(T0) - pc(rescaled + rho)| = 0.0` exactly, same for
+`qc`. The P5.7 flexibility mechanism persists at about one third the magnitude.
+P5.8-E's conclusion stands; not a priority.
+
+## Carried forward from P5.9
+
+- adaptive-penalty-off was run at **one candidate for four generations only**;
+  its effect on the investment landscape is unmeasured and it is the most
+  promising next experiment;
+- no tested penalty gives both a high-quality solution and a working polish;
+- proximal gammas, penalty `min`/`max` clamps and consensus/stationarity
+  tolerances were not swept;
+- a self-consistent rescaled T0 build has still not been performed;
+- if the D3 reading holds, `tau_planning` must be re-derived from the rescaled
+  oracle before any search target is set.
+
+---
+
 # HARD REPRODUCIBILITY GATE
 
 All paper-instance work must use:
@@ -651,7 +743,7 @@ Best known rigorous feasible nonlinear planning incumbent, promoted in D0.1:
 
 Cost, end-to-end median per candidate: `250.3 s` (K=2), `503.6 s` (K=4), `999.1 s` (K=8), `1489.2 s` (K=12); `100.8 s` per terminal self-refinement; one-off T0 build about `500 s`.
 
-# CURRENT SOLVER / ORACLE POLICY FOR P5.6-C/D AND P5.7
+# CURRENT SOLVER / ORACLE POLICY — P5.6-C/D, P5.7, P5.8, P5.9
 
 Use only the accepted nonlinear production solvers and settings. Do not retune IPOPT/MA97, ADMM, H1, proximal regularization, recovery logic or adaptive rho during C.
 
@@ -825,7 +917,7 @@ Then:
 
 ---
 
-# LOCKED PRODUCTION DECISIONS — in force during P5.6-C/D and carried into P5.7
+# LOCKED PRODUCTION DECISIONS — in force during P5.6-C/D and carried unchanged through P5.7, P5.8 and P5.9
 
 Do not change:
 
@@ -861,7 +953,7 @@ Any later planner is a new architecture.
 
 # DEFERRED ITEMS
 
-Keep deferred during P5.6-C:
+Keep deferred:
 
 - physical complementarity tolerance `1e-5` / `1e-6` A/B;
 - B1 exact `f_ref=0`;

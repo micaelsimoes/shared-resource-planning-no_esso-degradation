@@ -24,8 +24,10 @@ ADMM.
   stability long ago. **For any stage work, this file wins over this
   CLAUDE.md.**
 
-Then read the reports for the two most recent stages: `P5_7_BRANCH_SELECTION_DIAGNOSIS_REPORT.md`
-and `P5_8_ADMM_SCALING_VALIDATION_REPORT.md`.
+Then read the reports for the three most recent stages:
+`P5_7_BRANCH_SELECTION_DIAGNOSIS_REPORT.md`,
+`P5_8_ADMM_SCALING_VALIDATION_REPORT.md` and
+`P5_9_RESCALED_ADMM_STABILIZATION_REPORT.md`.
 
 ## Where the work actually is
 
@@ -43,7 +45,8 @@ Branch: `feature/derivative-free-planning`, from the accepted P5.5-D HEAD.
 | P5.6-C | `P5.6-C-C` — derivative-free search is not ready | same |
 | P5.6-D | `P5.6-D-C` — uniform refinement does not stabilize the investment landscape | same |
 | P5.7 | `P5.7-A` — unique operational oracle can likely be recovered — **accepted** | `P5_7_BRANCH_SELECTION_DIAGNOSIS_REPORT.md` |
-| **P5.8** | `P5.8-B` — objective scaling improves stability but additional ADMM issues remain — **DELIVERED, AWAITING PLANNER REVIEW** | `P5_8_ADMM_SCALING_VALIDATION_REPORT.md` |
+| P5.8 | `P5.8-B` — objective scaling improves stability but additional ADMM issues remain — **delivered, awaiting review** | `P5_8_ADMM_SCALING_VALIDATION_REPORT.md` |
+| **P5.9** | `P5.9-B` — rescaling helps but ADMM coordination requires further redesign — **DELIVERED, AWAITING PLANNER REVIEW** | `P5_9_RESCALED_ADMM_STABILIZATION_REPORT.md` |
 
 **No new stage is authorized.** Do not start one.
 
@@ -52,12 +55,23 @@ objective as `base / effective_scale + consensus terms` with
 `effective_scale` about `1.05e5`, so IPOPT's stationarity tolerance is five
 orders of magnitude looser in base-objective units. P5.7 established that this
 accounts for `96.5%` of the ADMM-to-polish gap and ruled out initialization,
-IPOPT itself, and the formulation. P5.8 validated the rescaling — and found it
-necessary but not sufficient: the per-step drift persists at `80-90%`, the
-binding problem is now the stopping criterion
-(`objective_tolerance = max(1e3, 1e-3 * recourse) = 827971`, i.e. `25x` the
-`33031` planning signal), and rescaling breaks the downstream exact-consensus
-polish because better local optimality comes with worse agreement.
+IPOPT itself, and the formulation. P5.8 validated the rescaling as necessary but
+not sufficient. P5.9 then calibrated the penalties and found the calibration does
+not close: `rho_v` is inert, `rho_ess` never binds, and `rho_pf` trades the
+rescaling gain against polish success near 1:1. What rescaling *does* fix is
+oracle coverage (continuation is no longer needed for reachability) and
+cross-depth landscape uncertainty (`459696 -> 541`, an 850x reduction). What
+blocks it is two pieces of coordination machinery calibrated to the old
+operating point: the adaptive penalty rule, which is self-cancelling because the
+dual residual is linear in rho, and the exact-consensus polish, which now
+degrades the objective instead of recovering it.
+
+Two P5.9 findings any new session must know. **Rho is inherited from the T0
+template (`rho_v = 1.5`, `rho_pf = 2.25`), not read from
+`data/SRP1/SRP1_params.json`** — a stage that sets rho must set it on the
+template. And P5.9-D3 raises the possibility that the investment signal
+P5.6-C/D ranked on was largely numerical residue; that is recorded as a reading
+awaiting planner decision, not as a result.
 
 ## Standing prohibitions — in force until the planner says otherwise
 
