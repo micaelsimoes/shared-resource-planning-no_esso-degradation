@@ -1,0 +1,698 @@
+{
+ "stage": "P5.7-diag1",
+ "provenance": {
+  "timestamp_utc": "2026-09-09T06:02:04.369284+00:00",
+  "git_head": "668de111ec55f008d3d019991716917649c302f9",
+  "sys_executable": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "version": "3.14.18",
+   "exists": true,
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)"
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-10",
+   "available": true,
+   "licence_id": "2805683",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "stage": "P5.7 branch chain"
+ },
+ "timestamp_utc": "2026-09-09T06:02:04.464477+00:00",
+ "fixed_candidate": "canonical positive-bootstrap base x0",
+ "why_this_candidate": "at x = x0 every continuation point of H_K is x0, so the steps differ only in how many times the state has been re-solved; investment is held exactly constant",
+ "anchor": "midpoint",
+ "template": "T0 a81f7f5191dd42dbf50d1726149b8909",
+ "steps_planned": 12,
+ "tau_numerical": 10.0,
+ "p56d_base_chain_reference": {
+  "1": 828021090.36085,
+  "2": 827415318.563944,
+  "3": 826824028.845478,
+  "4": 826405022.193437,
+  "5": 825961521.882321,
+  "6": 825531306.746985,
+  "7": 825108709.695181,
+  "8": 824795363.718628,
+  "9": 824488243.726694,
+  "12": 823731333.558647
+ },
+ "reproduction": {
+  "1": {
+   "p56d": 828021090.36085,
+   "p57": 828021090.3608505,
+   "delta": 4.76837158203125e-07,
+   "within_tau_numerical": true
+  },
+  "2": {
+   "p56d": 827415318.563944,
+   "p57": 827415318.5639443,
+   "delta": 3.5762786865234375e-07,
+   "within_tau_numerical": true
+  },
+  "3": {
+   "p56d": 826824028.845478,
+   "p57": 826824028.8454782,
+   "delta": 1.1920928955078125e-07,
+   "within_tau_numerical": true
+  },
+  "4": {
+   "p56d": 826405022.193437,
+   "p57": 826405022.1934375,
+   "delta": 4.76837158203125e-07,
+   "within_tau_numerical": true
+  },
+  "5": {
+   "p56d": 825961521.882321,
+   "p57": 825961521.8823205,
+   "delta": -4.76837158203125e-07,
+   "within_tau_numerical": true
+  },
+  "6": {
+   "p56d": 825531306.746985,
+   "p57": 825531306.7469851,
+   "delta": 1.1920928955078125e-07,
+   "within_tau_numerical": true
+  },
+  "7": {
+   "p56d": 825108709.695181,
+   "p57": 825108709.6951807,
+   "delta": -3.5762786865234375e-07,
+   "within_tau_numerical": true
+  },
+  "8": {
+   "p56d": 824795363.718628,
+   "p57": 824795363.7186278,
+   "delta": -2.384185791015625e-07,
+   "within_tau_numerical": true
+  },
+  "9": {
+   "p56d": 824488243.726694,
+   "p57": 824488243.7266942,
+   "delta": 2.384185791015625e-07,
+   "within_tau_numerical": true
+  },
+  "12": {
+   "p56d": 823731333.558647,
+   "p57": 823731333.5586472,
+   "delta": 1.1920928955078125e-07,
+   "within_tau_numerical": true
+  }
+ },
+ "t0_build_runtime_s": 6.5397889614105225,
+ "reproduces_p56d": true,
+ "reproduction_failures": {},
+ "note": "per-block fingerprint summaries and per-block polished objectives are dropped here; the full record is p57_d1_chain.json and the exact solutions are the .npz archives, both untracked for size",
+ "steps": [
+  {
+   "j": 1,
+   "status": "VALID",
+   "input_state": "T0",
+   "total_objective": 828021090.3608505,
+   "net_operational_recourse": 827971090.3608505,
+   "gross_operational_cost": 827974518.7171049,
+   "physical_salvage": 3428.356254506647,
+   "investment_cost": 50000.0,
+   "admm": {
+    "status": null,
+    "converged": true,
+    "initialization_failed": false,
+    "cycles": 2,
+    "runtime_s": 69.7086079120636,
+    "n_recovery_diagnostics": 0,
+    "gross_operational_cost": 837191939.3227628,
+    "net_operational_recourse": 837188510.9012293
+   },
+   "coordination_residuals": {
+    "interface_p": 1.1102230246251565e-16,
+    "interface_q": 2.7755575615628914e-17,
+    "interface_v": 0.0,
+    "shared_ess_p_tso_dso": 0.0,
+    "shared_ess_q_tso_dso": 0.0,
+    "shared_ess_p_vs_esso": 0.0,
+    "shared_ess_q_vs_esso": 0.0,
+    "s_available": 0.0,
+    "e_available": 3.469446951953614e-18,
+    "max_coordinated": 1.1102230246251565e-16
+   },
+   "esso_max_violation": 1.0502709812953981e-13,
+   "esso_production_feasible": true,
+   "network_max_violation": 1.5000220759397997e-05,
+   "network_worst_block": "DSO9|2035|Autumn",
+   "network_h1_violation": 0.0,
+   "converter_capability_violation": 9.998696299213639e-09,
+   "fingerprint_admm": {
+    "archive": "data/SRP1/Results/P57/archives/chain_j1__admm.npz",
+    "total_weighted_base_objective": 837191939.3227628
+   },
+   "fingerprint_polished": {
+    "archive": "data/SRP1/Results/P57/archives/chain_j1__polished.npz",
+    "total_weighted_base_objective": 827974518.7171053
+   },
+   "polish_runtime_s": 28.162616968154907,
+   "wall_clock_s": 131.7417950630188
+  },
+  {
+   "j": 2,
+   "status": "VALID",
+   "input_state": "output of step 1",
+   "total_objective": 827415318.5639443,
+   "net_operational_recourse": 827365318.5639443,
+   "gross_operational_cost": 827368741.3635893,
+   "physical_salvage": 3422.7996449958696,
+   "investment_cost": 50000.0,
+   "admm": {
+    "status": null,
+    "converged": true,
+    "initialization_failed": false,
+    "cycles": 1,
+    "runtime_s": 47.963189125061035,
+    "n_recovery_diagnostics": 0,
+    "gross_operational_cost": 836582203.4293616,
+    "net_operational_recourse": 836578781.2448345
+   },
+   "coordination_residuals": {
+    "interface_p": 1.1102230246251565e-16,
+    "interface_q": 2.7755575615628914e-17,
+    "interface_v": 0.0,
+    "shared_ess_p_tso_dso": 0.0,
+    "shared_ess_q_tso_dso": 0.0,
+    "shared_ess_p_vs_esso": 0.0,
+    "shared_ess_q_vs_esso": 0.0,
+    "s_available": 0.0,
+    "e_available": 3.469446951953614e-18,
+    "max_coordinated": 1.1102230246251565e-16
+   },
+   "esso_max_violation": 4.3168502106283313e-10,
+   "esso_production_feasible": true,
+   "network_max_violation": 1.2994872649746414e-05,
+   "network_worst_block": "DSO5|2035|Summer",
+   "network_h1_violation": 0.0,
+   "converter_capability_violation": 1.0768152224061023e-08,
+   "fingerprint_admm": {
+    "archive": "data/SRP1/Results/P57/archives/chain_j2__admm.npz",
+    "total_weighted_base_objective": 836582203.4293616
+   },
+   "fingerprint_polished": {
+    "archive": "data/SRP1/Results/P57/archives/chain_j2__polished.npz",
+    "total_weighted_base_objective": 827368741.3635892
+   },
+   "polish_runtime_s": 22.80453610420227,
+   "wall_clock_s": 97.0669219493866
+  },
+  {
+   "j": 3,
+   "status": "VALID",
+   "input_state": "output of step 2",
+   "total_objective": 826824028.8454782,
+   "net_operational_recourse": 826774028.8454782,
+   "gross_operational_cost": 826777446.5021619,
+   "physical_salvage": 3417.6566836930415,
+   "investment_cost": 50000.0,
+   "admm": {
+    "status": null,
+    "converged": true,
+    "initialization_failed": false,
+    "cycles": 1,
+    "runtime_s": 52.369651079177856,
+    "n_recovery_diagnostics": 0,
+    "gross_operational_cost": 835832877.5263922,
+    "net_operational_recourse": 835829460.6145617
+   },
+   "coordination_residuals": {
+    "interface_p": 1.1102230246251565e-16,
+    "interface_q": 2.7755575615628914e-17,
+    "interface_v": 0.0,
+    "shared_ess_p_tso_dso": 0.0,
+    "shared_ess_q_tso_dso": 0.0,
+    "shared_ess_p_vs_esso": 0.0,
+    "shared_ess_q_vs_esso": 0.0,
+    "s_available": 0.0,
+    "e_available": 0.0,
+    "max_coordinated": 1.1102230246251565e-16
+   },
+   "esso_max_violation": 9.969802761133906e-14,
+   "esso_production_feasible": true,
+   "network_max_violation": 1.4185421759238537e-05,
+   "network_worst_block": "DSO5|2030|Spring",
+   "network_h1_violation": 0.0,
+   "converter_capability_violation": 9.998696328920726e-09,
+   "fingerprint_admm": {
+    "archive": "data/SRP1/Results/P57/archives/chain_j3__admm.npz",
+    "total_weighted_base_objective": 835832877.5263925
+   },
+   "fingerprint_polished": {
+    "archive": "data/SRP1/Results/P57/archives/chain_j3__polished.npz",
+    "total_weighted_base_objective": 826777446.5021622
+   },
+   "polish_runtime_s": 23.340306758880615,
+   "wall_clock_s": 102.67896699905396
+  },
+  {
+   "j": 4,
+   "status": "VALID",
+   "input_state": "output of step 3",
+   "total_objective": 826405022.1934375,
+   "net_operational_recourse": 826355022.1934375,
+   "gross_operational_cost": 826358434.7001548,
+   "physical_salvage": 3412.5067172850486,
+   "investment_cost": 50000.0,
+   "admm": {
+    "status": null,
+    "converged": true,
+    "initialization_failed": false,
+    "cycles": 1,
+    "runtime_s": 51.90619421005249,
+    "n_recovery_diagnostics": 0,
+    "gross_operational_cost": 835377479.5535849,
+    "net_operational_recourse": 835374067.3601586
+   },
+   "coordination_residuals": {
+    "interface_p": 1.1102230246251565e-16,
+    "interface_q": 2.7755575615628914e-17,
+    "interface_v": 0.0,
+    "shared_ess_p_tso_dso": 0.0,
+    "shared_ess_q_tso_dso": 0.0,
+    "shared_ess_p_vs_esso": 0.0,
+    "shared_ess_q_vs_esso": 0.0,
+    "s_available": 0.0,
+    "e_available": 3.469446951953614e-18,
+    "max_coordinated": 1.1102230246251565e-16
+   },
+   "esso_max_violation": 9.743317264110374e-13,
+   "esso_production_feasible": true,
+   "network_max_violation": 1.4595880259316019e-05,
+   "network_worst_block": "DSO5|2030|Spring",
+   "network_h1_violation": 0.0,
+   "converter_capability_violation": 9.99869687824732e-09,
+   "fingerprint_admm": {
+    "archive": "data/SRP1/Results/P57/archives/chain_j4__admm.npz",
+    "total_weighted_base_objective": 835377479.5535853
+   },
+   "fingerprint_polished": {
+    "archive": "data/SRP1/Results/P57/archives/chain_j4__polished.npz",
+    "total_weighted_base_objective": 826358434.7001553
+   },
+   "polish_runtime_s": 23.44170904159546,
+   "wall_clock_s": 102.11411571502686
+  },
+  {
+   "j": 5,
+   "status": "VALID",
+   "input_state": "output of step 4",
+   "total_objective": 825961521.8823205,
+   "net_operational_recourse": 825911521.8823205,
+   "gross_operational_cost": 825914929.5725468,
+   "physical_salvage": 3407.690226262499,
+   "investment_cost": 50000.0,
+   "admm": {
+    "status": null,
+    "converged": true,
+    "initialization_failed": false,
+    "cycles": 1,
+    "runtime_s": 51.19694685935974,
+    "n_recovery_diagnostics": 0,
+    "gross_operational_cost": 834872061.7388499,
+    "net_operational_recourse": 834868654.7161627
+   },
+   "coordination_residuals": {
+    "interface_p": 1.1102230246251565e-16,
+    "interface_q": 2.7755575615628914e-17,
+    "interface_v": 0.0,
+    "shared_ess_p_tso_dso": 0.0,
+    "shared_ess_q_tso_dso": 0.0,
+    "shared_ess_p_vs_esso": 0.0,
+    "shared_ess_q_vs_esso": 0.0,
+    "s_available": 0.0,
+    "e_available": 3.469446951953614e-18,
+    "max_coordinated": 1.1102230246251565e-16
+   },
+   "esso_max_violation": 4.718336832354453e-12,
+   "esso_production_feasible": true,
+   "network_max_violation": 9.021819496135564e-06,
+   "network_worst_block": "DSO9|2035|Autumn",
+   "network_h1_violation": 0.0,
+   "converter_capability_violation": 9.998682907926563e-09,
+   "fingerprint_admm": {
+    "archive": "data/SRP1/Results/P57/archives/chain_j5__admm.npz",
+    "total_weighted_base_objective": 834872061.73885
+   },
+   "fingerprint_polished": {
+    "archive": "data/SRP1/Results/P57/archives/chain_j5__polished.npz",
+    "total_weighted_base_objective": 825914929.5725468
+   },
+   "polish_runtime_s": 30.36381483078003,
+   "wall_clock_s": 107.48130321502686
+  },
+  {
+   "j": 6,
+   "status": "VALID",
+   "input_state": "output of step 5",
+   "total_objective": 825531306.7469851,
+   "net_operational_recourse": 825481306.7469851,
+   "gross_operational_cost": 825484709.8749223,
+   "physical_salvage": 3403.127937197338,
+   "investment_cost": 50000.0,
+   "admm": {
+    "status": null,
+    "converged": true,
+    "initialization_failed": false,
+    "cycles": 1,
+    "runtime_s": 53.18017315864563,
+    "n_recovery_diagnostics": 0,
+    "gross_operational_cost": 834576088.3134414,
+    "net_operational_recourse": 834572685.7694608
+   },
+   "coordination_residuals": {
+    "interface_p": 1.1102230246251565e-16,
+    "interface_q": 2.7755575615628914e-17,
+    "interface_v": 0.0,
+    "shared_ess_p_tso_dso": 0.0,
+    "shared_ess_q_tso_dso": 0.0,
+    "shared_ess_p_vs_esso": 0.0,
+    "shared_ess_q_vs_esso": 0.0,
+    "s_available": 0.0,
+    "e_available": 3.469446951953614e-18,
+    "max_coordinated": 1.1102230246251565e-16
+   },
+   "esso_max_violation": 2.0106138975961585e-12,
+   "esso_production_feasible": true,
+   "network_max_violation": 9.921858578176845e-06,
+   "network_worst_block": "DSO9|2025|Summer",
+   "network_h1_violation": 0.0,
+   "converter_capability_violation": 9.998697584492645e-09,
+   "fingerprint_admm": {
+    "archive": "data/SRP1/Results/P57/archives/chain_j6__admm.npz",
+    "total_weighted_base_objective": 834576088.3134414
+   },
+   "fingerprint_polished": {
+    "archive": "data/SRP1/Results/P57/archives/chain_j6__polished.npz",
+    "total_weighted_base_objective": 825484709.8749219
+   },
+   "polish_runtime_s": 23.68576693534851,
+   "wall_clock_s": 103.43393516540527
+  },
+  {
+   "j": 7,
+   "status": "VALID",
+   "input_state": "output of step 6",
+   "total_objective": 825108709.6951807,
+   "net_operational_recourse": 825058709.6951807,
+   "gross_operational_cost": 825062108.2954328,
+   "physical_salvage": 3398.6002521717887,
+   "investment_cost": 50000.0,
+   "admm": {
+    "status": null,
+    "converged": true,
+    "initialization_failed": false,
+    "cycles": 1,
+    "runtime_s": 52.483020067214966,
+    "n_recovery_diagnostics": 0,
+    "gross_operational_cost": 834073644.9270294,
+    "net_operational_recourse": 834070246.6930151
+   },
+   "coordination_residuals": {
+    "interface_p": 1.1102230246251565e-16,
+    "interface_q": 1.3877787807814457e-17,
+    "interface_v": 0.0,
+    "shared_ess_p_tso_dso": 0.0,
+    "shared_ess_q_tso_dso": 0.0,
+    "shared_ess_p_vs_esso": 0.0,
+    "shared_ess_q_vs_esso": 0.0,
+    "s_available": 0.0,
+    "e_available": 3.469446951953614e-18,
+    "max_coordinated": 1.1102230246251565e-16
+   },
+   "esso_max_violation": 1.071365218763276e-13,
+   "esso_production_feasible": true,
+   "network_max_violation": 8.71631326165856e-06,
+   "network_worst_block": "DSO5|2030|Winter",
+   "network_h1_violation": 0.0,
+   "converter_capability_violation": 9.998697877887494e-09,
+   "fingerprint_admm": {
+    "archive": "data/SRP1/Results/P57/archives/chain_j7__admm.npz",
+    "total_weighted_base_objective": 834073644.9270294
+   },
+   "fingerprint_polished": {
+    "archive": "data/SRP1/Results/P57/archives/chain_j7__polished.npz",
+    "total_weighted_base_objective": 825062108.2954323
+   },
+   "polish_runtime_s": 23.59440803527832,
+   "wall_clock_s": 102.979975938797
+  },
+  {
+   "j": 8,
+   "status": "VALID",
+   "input_state": "output of step 7",
+   "total_objective": 824795363.7186278,
+   "net_operational_recourse": 824745363.7186278,
+   "gross_operational_cost": 824748757.5537865,
+   "physical_salvage": 3393.8351586711715,
+   "investment_cost": 50000.0,
+   "admm": {
+    "status": null,
+    "converged": true,
+    "initialization_failed": false,
+    "cycles": 1,
+    "runtime_s": 52.39126777648926,
+    "n_recovery_diagnostics": 0,
+    "gross_operational_cost": 833882831.0542011,
+    "net_operational_recourse": 833879437.3269556
+   },
+   "coordination_residuals": {
+    "interface_p": 5.551115123125783e-17,
+    "interface_q": 2.7755575615628914e-17,
+    "interface_v": 0.0,
+    "shared_ess_p_tso_dso": 0.0,
+    "shared_ess_q_tso_dso": 0.0,
+    "shared_ess_p_vs_esso": 0.0,
+    "shared_ess_q_vs_esso": 0.0,
+    "s_available": 0.0,
+    "e_available": 0.0,
+    "max_coordinated": 5.551115123125783e-17
+   },
+   "esso_max_violation": 1.5576429035490946e-13,
+   "esso_production_feasible": true,
+   "network_max_violation": 1.173560537015561e-05,
+   "network_worst_block": "DSO9|2030|Winter",
+   "network_h1_violation": 0.0,
+   "converter_capability_violation": 9.99869834164502e-09,
+   "fingerprint_admm": {
+    "archive": "data/SRP1/Results/P57/archives/chain_j8__admm.npz",
+    "total_weighted_base_objective": 833882831.0542009
+   },
+   "fingerprint_polished": {
+    "archive": "data/SRP1/Results/P57/archives/chain_j8__polished.npz",
+    "total_weighted_base_objective": 824748757.5537864
+   },
+   "polish_runtime_s": 23.291158199310303,
+   "wall_clock_s": 102.5532579421997
+  },
+  {
+   "j": 9,
+   "status": "VALID",
+   "input_state": "output of step 8",
+   "total_objective": 824488243.7266942,
+   "net_operational_recourse": 824438243.7266942,
+   "gross_operational_cost": 824441633.2770691,
+   "physical_salvage": 3389.550374914548,
+   "investment_cost": 50000.0,
+   "admm": {
+    "status": null,
+    "converged": true,
+    "initialization_failed": false,
+    "cycles": 1,
+    "runtime_s": 52.29094910621643,
+    "n_recovery_diagnostics": 0,
+    "gross_operational_cost": 833575215.5361582,
+    "net_operational_recourse": 833571826.6047179
+   },
+   "coordination_residuals": {
+    "interface_p": 1.1102230246251565e-16,
+    "interface_q": 1.3877787807814457e-17,
+    "interface_v": 0.0,
+    "shared_ess_p_tso_dso": 0.0,
+    "shared_ess_q_tso_dso": 0.0,
+    "shared_ess_p_vs_esso": 0.0,
+    "shared_ess_q_vs_esso": 0.0,
+    "s_available": 0.0,
+    "e_available": 3.469446951953614e-18,
+    "max_coordinated": 1.1102230246251565e-16
+   },
+   "esso_max_violation": 1.0658141036401503e-13,
+   "esso_production_feasible": true,
+   "network_max_violation": 1.130669476046009e-05,
+   "network_worst_block": "DSO7|2025|Spring",
+   "network_h1_violation": 0.0,
+   "converter_capability_violation": 9.998704910793267e-09,
+   "fingerprint_admm": {
+    "archive": "data/SRP1/Results/P57/archives/chain_j9__admm.npz",
+    "total_weighted_base_objective": 833575215.5361581
+   },
+   "fingerprint_polished": {
+    "archive": "data/SRP1/Results/P57/archives/chain_j9__polished.npz",
+    "total_weighted_base_objective": 824441633.2770689
+   },
+   "polish_runtime_s": 23.346883058547974,
+   "wall_clock_s": 102.2677869796753
+  },
+  {
+   "j": 10,
+   "status": "VALID",
+   "input_state": "output of step 9",
+   "total_objective": 824210384.1879593,
+   "net_operational_recourse": 824160384.1879593,
+   "gross_operational_cost": 824163769.5769607,
+   "physical_salvage": 3385.389001340501,
+   "investment_cost": 50000.0,
+   "admm": {
+    "status": null,
+    "converged": true,
+    "initialization_failed": false,
+    "cycles": 1,
+    "runtime_s": 52.29301476478577,
+    "n_recovery_diagnostics": 0,
+    "gross_operational_cost": 833338454.2230389,
+    "net_operational_recourse": 833335069.0857131
+   },
+   "coordination_residuals": {
+    "interface_p": 1.1102230246251565e-16,
+    "interface_q": 1.3877787807814457e-17,
+    "interface_v": 0.0,
+    "shared_ess_p_tso_dso": 0.0,
+    "shared_ess_q_tso_dso": 0.0,
+    "shared_ess_p_vs_esso": 0.0,
+    "shared_ess_q_vs_esso": 0.0,
+    "s_available": 0.0,
+    "e_available": 3.469446951953614e-18,
+    "max_coordinated": 1.1102230246251565e-16
+   },
+   "esso_max_violation": 2.063027526588712e-11,
+   "esso_production_feasible": true,
+   "network_max_violation": 1.3097731844879945e-05,
+   "network_worst_block": "DSO5|2035|Winter",
+   "network_h1_violation": 0.0,
+   "converter_capability_violation": 9.998698395129222e-09,
+   "fingerprint_admm": {
+    "archive": "data/SRP1/Results/P57/archives/chain_j10__admm.npz",
+    "total_weighted_base_objective": 833338454.2230387
+   },
+   "fingerprint_polished": {
+    "archive": "data/SRP1/Results/P57/archives/chain_j10__polished.npz",
+    "total_weighted_base_objective": 824163769.5769606
+   },
+   "polish_runtime_s": 23.488651037216187,
+   "wall_clock_s": 102.5697181224823
+  },
+  {
+   "j": 11,
+   "status": "VALID",
+   "input_state": "output of step 10",
+   "total_objective": 823978992.7716019,
+   "net_operational_recourse": 823928992.7716019,
+   "gross_operational_cost": 823932374.0574023,
+   "physical_salvage": 3381.2858003294286,
+   "investment_cost": 50000.0,
+   "admm": {
+    "status": null,
+    "converged": true,
+    "initialization_failed": false,
+    "cycles": 1,
+    "runtime_s": 51.69387102127075,
+    "n_recovery_diagnostics": 0,
+    "gross_operational_cost": 832967963.2178459,
+    "net_operational_recourse": 832964582.1123965
+   },
+   "coordination_residuals": {
+    "interface_p": 1.1102230246251565e-16,
+    "interface_q": 1.3877787807814457e-17,
+    "interface_v": 0.0,
+    "shared_ess_p_tso_dso": 0.0,
+    "shared_ess_q_tso_dso": 0.0,
+    "shared_ess_p_vs_esso": 0.0,
+    "shared_ess_q_vs_esso": 0.0,
+    "s_available": 0.0,
+    "e_available": 3.469446951953614e-18,
+    "max_coordinated": 1.1102230246251565e-16
+   },
+   "esso_max_violation": 1.6064927166326015e-13,
+   "esso_production_feasible": true,
+   "network_max_violation": 1.4452410264820248e-05,
+   "network_worst_block": "DSO5|2030|Winter",
+   "network_h1_violation": 0.0,
+   "converter_capability_violation": 9.998698547091115e-09,
+   "fingerprint_admm": {
+    "archive": "data/SRP1/Results/P57/archives/chain_j11__admm.npz",
+    "total_weighted_base_objective": 832967963.2178463
+   },
+   "fingerprint_polished": {
+    "archive": "data/SRP1/Results/P57/archives/chain_j11__polished.npz",
+    "total_weighted_base_objective": 823932374.057403
+   },
+   "polish_runtime_s": 32.23695111274719,
+   "wall_clock_s": 110.31077790260315
+  },
+  {
+   "j": 12,
+   "status": "VALID",
+   "input_state": "output of step 11",
+   "total_objective": 823731333.5586472,
+   "net_operational_recourse": 823681333.5586472,
+   "gross_operational_cost": 823684710.5735856,
+   "physical_salvage": 3377.014938520867,
+   "investment_cost": 50000.0,
+   "admm": {
+    "status": null,
+    "converged": true,
+    "initialization_failed": false,
+    "cycles": 1,
+    "runtime_s": 55.608468770980835,
+    "n_recovery_diagnostics": 0,
+    "gross_operational_cost": 833036203.1215878,
+    "net_operational_recourse": 833032826.0635543
+   },
+   "coordination_residuals": {
+    "interface_p": 1.1102230246251565e-16,
+    "interface_q": 1.3877787807814457e-17,
+    "interface_v": 0.0,
+    "shared_ess_p_tso_dso": 0.0,
+    "shared_ess_q_tso_dso": 0.0,
+    "shared_ess_p_vs_esso": 0.0,
+    "shared_ess_q_vs_esso": 0.0,
+    "s_available": 0.0,
+    "e_available": 3.469446951953614e-18,
+    "max_coordinated": 1.1102230246251565e-16
+   },
+   "esso_max_violation": 4.3548498140921765e-12,
+   "esso_production_feasible": true,
+   "network_max_violation": 1.1537570788699991e-05,
+   "network_worst_block": "DSO9|2025|Autumn",
+   "network_h1_violation": 0.0,
+   "converter_capability_violation": 9.998698702871485e-09,
+   "fingerprint_admm": {
+    "archive": "data/SRP1/Results/P57/archives/chain_j12__admm.npz",
+    "total_weighted_base_objective": 833036203.1215876
+   },
+   "fingerprint_polished": {
+    "archive": "data/SRP1/Results/P57/archives/chain_j12__polished.npz",
+    "total_weighted_base_objective": 823684710.5735859
+   },
+   "polish_runtime_s": 24.288572788238525,
+   "wall_clock_s": 107.48395991325378
+  }
+ ]
+}

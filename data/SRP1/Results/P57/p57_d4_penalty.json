@@ -1,0 +1,114 @@
+{
+ "stage": "P5.7-D4 penalty continuation",
+ "provenance": {
+  "timestamp_utc": "2026-09-09T07:51:29.395431+00:00",
+  "git_head": "668de111ec55f008d3d019991716917649c302f9",
+  "sys_executable": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "version": "3.14.18",
+   "exists": true,
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)"
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-10",
+   "available": true,
+   "licence_id": "2805683",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "stage": "P5.7 D4 penalty continuation"
+ },
+ "timestamp_utc": "2026-09-09T07:51:29.506635+00:00",
+ "candidate": "canonical base x0",
+ "base_chain_reference": {
+  "1": 828021090.36085,
+  "2": 827415318.563944,
+  "3": 826824028.845478,
+  "4": 826405022.193437
+ },
+ "note": "both sequences reuse ONE ADMM result, so the consensus is identical throughout and cannot contribute",
+ "penalty_continuation": [
+  {
+   "exponent_t": 1.0,
+   "status": "VALID",
+   "rescale_factor_min": 8.618888128192918e-06,
+   "rescale_factor_max": 1.0621831222022118e-05,
+   "total_objective": 837067437.1586325,
+   "runtime_s": 393.89968395233154
+  },
+  {
+   "exponent_t": 0.6666666666666666,
+   "status": "VALID",
+   "rescale_factor_min": 0.00042037236924511654,
+   "rescale_factor_max": 0.0004832066815594609,
+   "total_objective": 828252439.8990103,
+   "runtime_s": 134.8338212966919
+  },
+  {
+   "exponent_t": 0.3333333333333333,
+   "status": "VALID",
+   "rescale_factor_min": 0.020502984398499565,
+   "rescale_factor_max": 0.021981962641207924,
+   "total_objective": 828114036.7070286,
+   "runtime_s": 54.164746046066284
+  },
+  {
+   "exponent_t": 0.0,
+   "status": "VALID",
+   "rescale_factor_min": 1.0,
+   "rescale_factor_max": 1.0,
+   "total_objective": 828021088.2782328,
+   "runtime_s": 47.114160776138306
+  }
+ ],
+ "fixed_consensus_control": [
+  {
+   "solve": 1,
+   "status": "VALID",
+   "total_objective": 828021090.3608505,
+   "runtime_s": 50.7888720035553
+  },
+  {
+   "solve": 2,
+   "status": "VALID",
+   "total_objective": 828021086.9741508,
+   "runtime_s": 45.48461318016052
+  },
+  {
+   "solve": 3,
+   "status": "VALID",
+   "total_objective": 828021092.0681605,
+   "runtime_s": 51.11552691459656
+  },
+  {
+   "solve": 4,
+   "status": "VALID",
+   "total_objective": 828021094.2799644,
+   "runtime_s": 45.751818895339966
+  }
+ ],
+ "admm": {
+  "status": null,
+  "converged": true,
+  "initialization_failed": false,
+  "cycles": 2,
+  "runtime_s": 1093.0921440124512,
+  "n_recovery_diagnostics": 0,
+  "gross_operational_cost": 837191939.3227628,
+  "net_operational_recourse": 837188510.9012293
+ }
+}
