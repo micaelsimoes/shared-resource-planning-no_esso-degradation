@@ -1354,3 +1354,338 @@ P5.6-C-C — derivative-free search is not ready
 ```
 P5.6-C COMPLETE — ready for planner review before any optimization campaign
 ```
+
+---
+
+# P5.6-D — uniformly refined nonlinear oracle
+
+Branch `feature/derivative-free-planning`. Canonical runtime and checksum gate
+enforced by the oracle on load and by the R0 provenance gate in every harness.
+Evidence under `data/SRP1/Results/P56D/`; P5.6-A/B/C evidence untouched. Nothing
+in the nonlinear SMOPF, ADMM, H1, IPOPT settings, the convex/MISOCP models or the
+Benders/master-cut code was modified, and no search campaign was launched.
+
+The D0 corrections are applied in place in the P5.6-C section above.
+
+## D1/D2 — the oracle, and the fair reference
+
+```
+x0     = the canonical positive-bootstrap base investment      FIXED FOREVER
+T0     = the frozen cold-base template a81f7f5191dd42dbf50d1726149b8909
+anchor = MIDPOINT
+
+lambda_j = j / K       x_j = (1 - lambda_j) * x0 + lambda_j * x      j = 1..K
+
+state_0 = T0
+for j = 1..K:  evaluate x_j from state_{j-1}; on VALID, state_j is its state
+H_K(x) = total planning objective at x_K = x
+```
+
+The origin is always `x0` — never the incumbent, the previous candidate, the
+nearest cached point or search history, any of which would reintroduce the
+search-order dependence the whole P5.6 line has been removing.
+
+**Generation labelling**, to retire the off-by-one ambiguity of the earlier
+reports: the *input* state of step `j` is `state_{j-1}`, the *output* state is
+`state_j`. So the template P5.6-C called `T4` is the **output of the fourth base
+evaluation**, and `H_K(x0)` is the output of the `K`-th.
+
+For `x = x0` every continuation point is `x0`, so `H_K(x0)` is `K` deterministic
+repeated refinements of the base. That is the only fair reference, and every
+delta below is `Delta_K(x) = H_K(x) - H_K(x0)` at the **same** `K`. No quantity
+in this section compares `H_K(x)` against `H_J(x0)` with `K != J`.
+
+The base refinement chain reproduced P5.6-C's first four values **bit-identically
+in a different process**, and is still moving at step 9:
+
+| step | H(base) | step delta |
+|---|---|---|
+| 1 | 828 021 090.360850 | — |
+| 2 | **827 415 318.563944** = `H_2(x0)` | −605 771.80 |
+| 3 | 826 824 028.845478 | −591 289.72 |
+| 4 | **826 405 022.193437** = `H_4(x0)` | −419 006.65 |
+| 5 | 825 961 521.882321 | −443 500.31 |
+| 6 | 825 531 306.746985 | −430 215.14 |
+| 7 | 825 108 709.695181 | −422 597.05 |
+| 8 | **824 795 363.718628** = `H_8(x0)` | −313 346.98 |
+| 9 | **824 488 243.726694** = `H_8plus(x0)` | −307 120.00 |
+| 12 | **823 731 333.558647** = `H_12(x0)` | (D9) |
+
+## D3/D4 — depth sweep over the core population
+
+All eight core candidates passed first-stage feasibility before any nonlinear
+solve. K=4 evidence was **reused** from P5.6-C4 for five candidates whose
+definition matches D1 exactly (λ = 0.25/0.50/0.75/1.00 from T0, midpoint anchor,
+full audit). Two were re-run rather than reused: `se|node7|2030|-10%`, which C4
+never evaluated, and `se|node5|2025|-10%`, because the C4 harness did not persist
+the converter-capability violation or the per-block network detail that D0.1
+requires. That re-run returned **825 109 566.5710827** — bit-identical to the C4
+value — which both confirms cross-stage determinism and completes the D0.1
+promotion.
+
+**Same-depth deltas** (negative = better than the base at that same depth):
+
+| candidate | Δ₂ | Δ₄ | Δ₈ | spread | sign consistent |
+|---|---|---|---|---|---|
+| base | 0.00 | 0.00 | 0.00 | 0.00 | — |
+| `se\|node5\|2025\|-10%` | −1 030 977.00 | −1 295 455.62 | −1 823 012.39 | 792 035.39 | yes |
+| `se\|node9\|2025\|-10%` | −1 009 158.46 | −1 277 056.83 | −2 088 494.88 | 1 079 336.42 | yes |
+| `e\|node5\|2025\|+25%` | −598 854.99 | −1 273 825.00 | −1 821 534.76 | 1 222 679.76 | yes |
+| `se\|node9\|2025\|+10%` | −593 486.66 | −1 257 975.24 | −2 055 463.54 | 1 461 976.88 | yes |
+| `se\|node7\|2030\|-10%` | −589 433.00 | −1 287 120.75 | −1 831 004.51 | 1 241 571.51 | yes |
+| `se\|ALL\|x19` (boundary) | **+172 583.48** | −846 470.90 | −1 085 192.62 | 1 257 776.10 | **no** |
+| `se\|ALL\|-10%` | POLISH_FAILURE | −1 242 830.73 | −1 853 053.64 | — | — |
+
+## D5 — landscape-stability metrics
+
+```
+jointly VALID at K = 2, 4, 8 : 7 of 8
+improvement sign reversals   : 1 of 7   (only the budget-boundary candidate,
+                                         and only between K=2 and deeper)
+```
+
+**That is a real improvement over P5.6-C**, where 6 of 9 candidates reversed the
+sign of their improvement. Under uniform refinement every local candidate is
+consistently better than the same-depth base at every depth. The *direction*
+problem is fixed.
+
+The *ordering* problem is not.
+
+| pair | Spearman | Kendall | reversals | max rank displacement | max \|ΔΔ\| |
+|---|---|---|---|---|---|
+| K2 vs K4 | 0.7500 | 0.6190 | 4 | 3 | 1 019 054.38 |
+| K2 vs K8 | 0.5714 | 0.4286 | 6 | 3 | 1 461 976.88 |
+| **K4 vs K8** | **0.5714** | **0.4286** | **6** | **3** | **811 438.05** |
+
+**The identity of the best candidate changes at every depth transition tested:**
+
+| depth | best | Δ | second | gap best→second |
+|---|---|---|---|---|
+| K=2 | `se\|node5\|2025\|-10%` | −1 030 977.00 | `se\|node9\|2025\|-10%` | 21 818.54 |
+| K=4 | `se\|node5\|2025\|-10%` | −1 295 455.62 | `se\|node7\|2030\|-10%` | 8 334.87 |
+| K=8 | `se\|node9\|2025\|-10%` | −2 088 494.88 | `se\|node9\|2025\|+10%` | 33 031.34 |
+| K=12 | `se\|node9\|2025\|+10%` | −2 370 665.32 | `se\|node9\|2025\|-10%` | 130 252.95 |
+
+## D6 — terminal self-refinement
+
+One additional evaluation at exactly the target investment, initialized from each
+H_8 final state. All eight succeeded. The relative deltas moved by:
+
+```
+54 738  ..  88 374        max 88 374 (se|ALL|x19)
+```
+
+An order of magnitude less than the 811 438 of K4→K8 — the landscape *is*
+converging with depth. But 88 374 from a **single** extra refinement already
+exceeds the K=8 best-to-second gap of 33 031 by a factor of 2.7. Even a perfectly
+converged K would have to move the deltas by less than that gap, and one step
+does not.
+
+## D7 — refined uncertainty
+
+```
+tau_numerical         = 10.0        unchanged; repeat evaluations remain exactly
+                                    0.000000e+00 apart, confirmed again here by
+                                    the bit-identical base chain and the
+                                    bit-identical K=4 re-run
+
+u_depth(x) = max( |Delta_8 - Delta_4| , |Delta_8plus - Delta_8| )
+
+    se|node9|2025|-10%           811 438.05
+    se|node9|2025|+10%           797 488.30
+    e|node5|2025|+25%            547 709.76
+    se|node7|2030|-10%           543 883.76
+    se|node5|2025|-10%           527 556.77
+    se|ALL|x19 (boundary)        238 721.72
+
+    max 811 438.05   p95 811 438.05   median 545 796.76
+
+tau_planning_refined  = 811 438.05
+```
+
+Against the benchmark it had to beat, `P56C_TEMPLATE_LANDSCAPE_UNCERTAINTY`
+= 4.25e5, this is an **improvement factor of 0.52** — the uniformly refined
+oracle is **1.9 × worse**, not better. Uniform refinement removed the sign
+reversals but did not reduce the magnitude of the landscape ambiguity; it moved
+the ambiguity from *which direction* to *how far*.
+
+The comparison that decides the stage is `tau_planning_refined` against the
+signal it must resolve: the best-to-second gaps are **8 335 … 33 031**. The
+uncertainty is **25 to 97 times** the difference between the best and second-best
+candidate.
+
+## D8 — no `K_STAR`
+
+D8 asks for the shallowest depth stable against the next deeper tested level.
+
+- **K=2 against K=4** — Spearman 0.7500, four reversals, max \|ΔΔ\| 1 019 054.
+  Not stable.
+- **K=4 against K=8** — Spearman 0.5714, six reversals, max \|ΔΔ\| 811 438, and
+  the best candidate changes identity. Not stable.
+
+```
+no K_STAR exists among the tested depths
+```
+
+Absolute offsets between depths were not used as grounds for rejection; every
+comparison above is between same-depth relative deltas.
+
+## D9 — K=12 escalation
+
+Entered because K4 versus K8 is materially unstable. Run on D9's reduced subset —
+the base, the best K=8 candidate, the one candidate whose improvement sign changed
+(which is also the budget-boundary control), and the candidate with the second
+largest depth movement. K=12 is this stage's hard maximum and was not exceeded.
+
+| candidate | Δ₈ | Δ₁₂ | movement K8→K12 | sign consistent |
+|---|---|---|---|---|
+| `se\|node9\|2025\|-10%` | −2 088 494.88 | −2 240 412.37 | 151 917.49 | yes |
+| `se\|node9\|2025\|+10%` | −2 055 463.54 | −2 370 665.32 | 315 201.78 | yes |
+| `se\|ALL\|x19` (boundary) | −1 085 192.62 | −1 472 170.87 | 386 978.25 | yes |
+
+```
+max movement K8 -> K12 :  386 978.25
+prior max K4 -> K8     :  811 438.05
+decay factor           :  2.10
+```
+
+The movement is decaying — it roughly halved while the depth went from the 4→8
+transition to the 8→12 one. But it is still **386 978** at the deepest authorized
+depth, and separating the top two candidates needs it below **33 031**: a further
+factor of 11.7. At the observed rate that is several more depth doublings, and
+cost is linear in `K` at ~124 s per step, so the required oracle would be well
+beyond both the K=12 ceiling this stage was given and any practical evaluation
+budget. The precise depth is not worth extrapolating from two transitions; what
+the two transitions do establish is that K=12 is not close.
+
+**And the decisive observation is not the magnitude but the sign of the move.**
+At node 9, investment year 2025, the two candidates `-10%` and `+10%` are
+*opposite* investment directions at the same decision variable:
+
+| depth | Δ for `-10%` | Δ for `+10%` | preferred direction |
+|---|---|---|---|
+| K=2 | −1 009 158.46 | −593 486.66 | **decrease** |
+| K=4 | −1 277 056.83 | −1 257 975.24 | **decrease** |
+| K=8 | −2 088 494.88 | −2 055 463.54 | **decrease** |
+| **K=12** | −2 240 412.37 | **−2 370 665.32** | **increase** |
+
+The oracle cannot determine even the **sign** of the optimal investment move at
+node 9 / 2025: it says "decrease" at three depths and "increase" at the fourth,
+and it has not converged at the deepest depth authorized. A pattern search polling
+`±` at that coordinate would be told different things by different depths of the
+same deterministic oracle.
+
+## D10 — path-schedule robustness
+
+**Not run.** D10 is conditional on a `K_STAR` being found, and D8 found none.
+Testing whether the `(j/K)²` schedule preserves a ranking would be premature when
+the uniform schedule does not preserve its own ranking between depths. It remains
+the right check once a depth-stable oracle exists.
+
+## D11 — coverage
+
+| depth | coverage | failures |
+|---|---|---|
+| K=2 | 7/8 = 87.5 % | `se\|ALL\|-10%` |
+| K=4 | **8/8 = 100 %** | — |
+| K=8 | **8/8 = 100 %** | — |
+| K=8plus | **8/8 = 100 %** | — |
+| K=12 (subset) | 4/4 = 100 % | — |
+
+Coverage is a solved problem. From K=4 onward every master-feasible candidate in
+the population — including the budget-boundary candidate that P5.6-B recorded as
+a solver crash and the three that direct-T0 evaluation could not polish — is
+reached with full feasibility audits passing. A master-feasible target is never
+declared physically infeasible on the strength of one failed path, and the
+recurring policy is a single fixed one with no fallback to an incompatible
+surface.
+
+## D12 — computational cost
+
+End-to-end per candidate, median over VALID evaluations:
+
+| depth | median | p95 | polish solves | ESSO solves |
+|---|---|---|---|---|
+| K=2 | 250.3 s | 280.8 s | 96 | 6 |
+| K=4 | 503.6 s | 541.9 s | 192 | 12 |
+| K=8 | 999.1 s | 1 028.8 s | 384 | 24 |
+| K=12 | 1 489.2 s | — | 576 | 36 |
+| one terminal refinement | 100.8 s | 101.9 s | 48 | 3 |
+
+Median failed-candidate runtime at K=2 was 173.0 s; there were no failures at
+K≥4.
+
+Campaign wall clock, ideal top-level concurrency, including one 500 s T0 build.
+**8 workers is not offered**, per D12, and the MA97/IPOPT contention warning from
+P5.6-B7 stands — a `SOLVER_CRASH` was actually observed under concurrent load
+earlier in this line of work.
+
+| evaluations | K=4, 1 w | K=4, 4 w | K=8, 1 w | K=8, 4 w | K=12, 1 w | K=12, 4 w |
+|---|---|---|---|---|---|---|
+| 50 | 7.1 h | 1.9 h | 14.0 h | 3.6 h | 20.8 h | 5.3 h |
+| 100 | 14.1 h | 3.6 h | 27.9 h | 7.1 h | 41.5 h | 10.5 h |
+| 200 | 28.1 h | 7.1 h | 55.6 h | 14.0 h | 82.9 h | 20.8 h |
+
+## D13 — search algorithm status
+
+P5.6-C8 is accepted unchanged: no trustworthy MADS implementation is installed,
+nothing was installed here, and nothing hand-written is called OrthoMADS. If the
+oracle becomes search-ready the first campaign will use a **deterministic
+generalized pattern search** in `(S, h)` coordinates with an exact first-stage
+feasibility screen, extreme-barrier treatment of hidden operational failures, the
+cache, deterministic positive-spanning poll directions, deterministic batch
+evaluation and at most 4 parallel workers. None of it was implemented or run in
+this stage.
+
+## D14 — search-readiness decision
+
+**What uniform refinement fixed.** Coverage is complete from K=4 (8/8, including
+every previously unreachable candidate). Improvement *directions* are now
+consistent — 1 sign reversal in 7 against 6 in 9 under the P5.6-C policy. The
+oracle is a single fixed surface with no fallback, determinism is unchanged and
+confirmed bit-identically twice more, and the incumbent promotion of D0.1 is
+complete.
+
+**What it did not fix.** `tau_planning_refined` is **811 438**, against the
+`P56C_TEMPLATE_LANDSCAPE_UNCERTAINTY` of 4.25e5 it had to beat — a factor of
+**1.9 in the wrong direction**. The best candidate changes identity at every one
+of the three depth transitions tested. Depth movement decays by a factor of only
+2.10 between the two transitions measured, leaving 386 978 at K=12 against the
+33 031 needed. And at node 9 / 2025 the oracle reverses the preferred *sign* of
+the investment between K=8 and K=12.
+
+That last point is the one that settles it. A derivative-free search exists to
+answer "should this coordinate go up or down". On the tested population this
+oracle answers that question differently depending on a refinement depth that is
+a free parameter, and it has not converged at the deepest depth authorized. The
+result would be reproducible, fully certified, and wrong in a way no downstream
+check would catch.
+
+**Recommendation: do not launch GPS.** The three routes D14 offers for planner
+decision, with what this stage learned about each:
+
+1. **Fixed multi-start / template ensemble.** Untested. Its appeal is that an
+   ensemble minimum may be less depth-sensitive than any single member; its cost
+   is the ensemble size multiplying an already 500–1500 s evaluation.
+2. **A different nonlinear coordination strategy.** The root cause is now well
+   localised: every refinement of the ADMM warm start finds a better local
+   solution, without converging, because the ADMM's own objective scaling makes
+   the base cost nearly invisible to the local solver (P5.6-A2.1 measured the
+   scale at ~1.1e5). That is a coordination-level property, not a planning-level
+   one, and addressing it there would attack the cause rather than average over
+   it. It is outside every current authorization and would reopen accepted
+   nonlinear decisions.
+3. **Report the planning problem as heuristic / non-identifiable under the
+   current local-NLP solution architecture.** Defensible on this evidence, and
+   the honest position if neither of the above is authorized: the operational
+   recourse is well defined and certifiable at a point, but the *differences*
+   between nearby investment candidates are smaller than the local-solution
+   ambiguity of the model that evaluates them.
+
+```
+P5.6-D-C — uniform refinement does not stabilize the investment landscape
+```
+
+```
+P5.6-D COMPLETE — ready for planner review before any search campaign
+```
