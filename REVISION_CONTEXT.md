@@ -13,7 +13,7 @@ This file is the repository-wide source of context. `LOCAL_NLP_STABILITY_PLAN.md
 
 ---
 
-# CURRENT SOURCE OF TRUTH — 2026-09-09
+# CURRENT SOURCE OF TRUTH — 2026-09-08
 
 This section supersedes older solver-policy, P5.4 planning and P5.5-A instructions recorded later in this file where they conflict with the current state.
 
@@ -98,11 +98,11 @@ Current warm-start handling in `network._create_smopf_solver`:
 - DSO warm starts retain configured acceptable settings unless explicitly overridden;
 - warm-start push/fraction settings inherit configured network values unless explicitly provided.
 
-Recovery remains limited to IPOPT `internalSolverError`; configured limited-memory recovery exists for `case33_2` and `case33_3`, while `case33_1` still has no explicit `recovery_options` block. Do not retune the nonlinear solver during P5.7.
+Recovery remains limited to IPOPT `internalSolverError`; configured limited-memory recovery exists for `case33_2` and `case33_3`, while `case33_1` still has no explicit `recovery_options` block. Do not retune the nonlinear solver during P5.6-C.
 
 ---
 
-# CURRENT PLANNING CHECKPOINT — P5.6-A/B/C/D reviewed; P5.7 authorized
+# CURRENT PLANNING CHECKPOINT — P5.5-D accepted; P5.6-A/B reviewed; P5.6-C authorized
 
 P5.4-R remains the canonical basis for the nonlinear production formulation and for retirement of the old nonlinear-recourse derivative cuts. P5.4-G was never run and remains permanently blocked.
 
@@ -133,17 +133,11 @@ P5.6-B then stabilized the **declared oracle policy** enough to specify the sear
 
 `P5.6-B PARTIAL — oracle policy, anchor robustness, start policy or search resolution remains unresolved`.
 
-P5.6-C ran the landscape-robustness and coverage gate and is accepted as:
-
-`P5.6-C-C — derivative-free search is not ready`.
-
-P5.6-D then built and tested a uniformly refined nonlinear oracle `H_K` and is accepted as:
-
-`P5.6-D-C — uniform refinement does not stabilize the investment landscape`.
-
 The next authorized stage is:
 
-**P5.7 — nonlinear operational branch-selection investigation**.
+**P5.6-C — landscape robustness and oracle coverage gate**.
+
+P5.6-C is the final gate before any derivative-free optimization campaign. It does **not** authorize the 200-evaluation search yet. It must determine whether the frozen T0 surface is representative enough for investment ranking, whether deterministic continuation can rescue false hidden-infeasible points, define the planning-level robustness threshold separately from numerical repeatability, lock deterministic parallel poll semantics, and identify a trustworthy practical MADS/pattern-search implementation path.
 
 ## Accepted P5.6-A nonlinear-oracle evidence
 
@@ -474,102 +468,188 @@ Planner interpretation:
 3. A lower-bound-safe disjunctive outer approximation of H1 is worth one controlled diagnostic before abandoning rigorous lower bounds.
 4. The planning master remains blocked.
 
-# COMPLETED STAGE — P5.7 nonlinear operational branch-selection investigation (verdict P5.7-A, accepted)
+# CURRENT ACTIVE STAGE — P5.6-C landscape robustness and oracle coverage gate
 
-## The conclusion P5.7 starts from
+P5.6-C is the **final pre-search gate**. It must not launch the full derivative-free investment optimization campaign.
 
-The nonlinear operational oracle is deterministic and feasible, but the evaluated investment landscape depends on the local NLP branch-selection path. Different deterministic refinement depths produce different investment rankings and even different preferred investment directions.
+Accepted/frozen unless contradicted by C evidence:
 
-The planning problem is therefore **not ready for optimization**.
+- nonlinear production mathematics and solver/ADMM policy;
+- `feature/derivative-free-planning`;
+- current best certified base-investment incumbent `828021090.360850`;
+- recurring direct template `T0`, id `a81f7f5191dd42dbf50d1726149b8909`;
+- recurring anchor `MIDPOINT ONLY`;
+- recurring direct start `T0 ONLY`;
+- coordinates `(S,h)` with `h = E - 2S`;
+- `tau_numerical = 10.0` as the provisional deterministic numerical threshold;
+- deterministic MADS/pattern-search as the preferred search family in principle;
+- four upper-level workers as the practical parallelism ceiling unless new measurements justify otherwise.
 
-Derivative-free optimization is **blocked**. Do not implement:
+## C1 — correct the P5.6-B interpretation
 
-- GPS;
-- MADS;
-- any investment search;
-- surrogate optimization.
+Record that P5.6-B **did** lock the declared midpoint anchor and T0 direct start. The unresolved questions are landscape representativeness, domain coverage/false hidden infeasibility and deterministic search implementation semantics, not whether the anchor policy itself is still open.
 
-## Objectives
+## C2 — cross-template investment-landscape test
 
-1. Characterize why repeated continuation/polishing finds progressively lower branches.
-2. Determine whether the issue is primarily ADMM initialization, augmented-objective scaling, IPOPT local convergence, missing globalisation/continuation strategy, or an insufficiently constrained operational formulation.
-3. Do not modify production equations yet.
+Use the deterministic P5.6-B benchmark population and evaluate the jointly reachable candidates under:
 
-## Required diagnostics
+- `T0`;
+- `T2`;
+- `T4`;
 
-For one fixed investment candidate, collect the ADMM solution, polish `K=0`, `H2`, `H4`, `H8` and `H12`. For every solution compare objective decomposition, generation dispatch, flexibility, voltage slacks, ESS schedules, TSO/DSO interface variables and active constraints. Identify which variables move between branches.
+with midpoint anchor only, a fresh candidate-specific baseline, original nonlinear ESSO, exact-consensus polish and full feasibility audit. Cache keys must include template id.
 
-## Controlled hypotheses
+For every template and candidate compute:
 
-- **A) Objective scaling** — solve selected local NLPs with equivalent base-objective scaling and verify whether the solution branch changes.
-- **B) Initialization sensitivity** — run the same NLP from the ADMM state, the previous continuation state, the best known state and a cold state.
-- **C) Constraint activity** — identify active-set differences between branches.
-- **D) Continuation path** — compare capacity continuation, penalty continuation and direct solve.
+`Delta_Tk(x) = Q_Tk(x) - Q_Tk(base)`.
 
-No planning search.
+The deltas, not absolute levels, are the central quantity.
 
-## Required output
+Across jointly VALID candidates report:
 
-`P5_7 — branch-selection diagnosis report`, ending with exactly one of:
+- Spearman rank correlation;
+- Kendall rank correlation;
+- complete rankings;
+- max rank displacement;
+- number of pairwise ordering reversals;
+- worst reversal magnitude;
+- per-candidate `Delta_T0`, `Delta_T2`, `Delta_T4`, range and standard deviation;
+- diagnostic affine fits `Q_T2 = a2 + b2*Q_T0` and `Q_T4 = a4 + b4*Q_T0`.
 
-`P5.7-A — unique operational oracle can likely be recovered`
+Do not infer robustness from correlation alone if a candidate that improves over base under one template becomes worse under another by a material amount.
+
+Classify the landscape as stable only if improvement signs/rankings are sufficiently preserved and template drift is predominantly a common offset. If stable, keep T0 for the recurring search. If unstable, do not launch MADS; return for a fixed better template, fixed ensemble or continuation-oracle decision.
+
+## C3 — deterministic continuation fallback
+
+Direct T0 failure is not physical infeasibility. Test a fixed, history-independent continuation from the canonical base investment `x0` to a master-feasible target `x`:
+
+`x(lambda) = (1-lambda)*x0 + lambda*x`
+
+with fixed schedule:
+
+`lambda = 0.25, 0.50, 0.75, 1.00`.
+
+Because the first-stage feasible set is a polyhedron, every segment point remains first-stage feasible whenever both endpoints are feasible.
+
+Starting from the frozen T0/base operational state, solve each continuation point in order and use each complete VALID state only to initialize the next. Every point must run the original nonlinear ESSO, production ADMM, midpoint-only exact-consensus polish and full feasibility audit. Do not switch anchors and do not use an adaptive lambda schedule in C.
+
+Test continuation on:
+
+- all T0/midpoint `POLISH_FAILURE` candidates from B;
+- the budget-boundary `SOLVER_CRASH` candidate;
+- at least two T0-direct VALID controls.
+
+For controls compare direct-T0 and continuation objectives. This determines whether continuation is a neutral coverage rescue or a materially different branch-selection policy.
+
+## C4 — lock oracle coverage policy
+
+Compare:
+
+- direct T0 only;
+- direct T0, fixed continuation only on failure;
+- fixed continuation for every candidate.
+
+Prefer direct-T0 + continuation-on-failure only if continuation materially improves coverage **and** direct-vs-continuation objectives on already-valid controls are compatible enough that fallback does not mix incompatible objective surfaces.
+
+If continuation materially changes valid-control objectives, either use continuation for every candidate or return PARTIAL. Never silently mix two incompatible surfaces.
+
+Recompute success rate and ordinary/failed/blended evaluation costs under the chosen coverage policy.
+
+## C5 — separate numerical and planning robustness thresholds
+
+Use:
+
+`tau_numerical = 10.0`
+
+unless C evidence shows a larger deterministic numerical floor.
+
+Define separately:
+
+`tau_planning`
+
+from cross-template **relative-to-base** delta variation. `tau_planning` governs whether an investment improvement is robust to known branch/template ambiguity. It is not a solver-repeatability tolerance.
+
+Future search acceptance may use `tau_numerical` internally on the locked black-box surface, but promotion/scientific claims must respect `tau_planning`.
+
+## C6 — deterministic parallel polling semantics
+
+Correct the P5.6-B “parallel opportunistic first improvement” idea. Future search must use deterministic **batch polling**:
+
+1. generate the ordered deterministic poll set;
+2. apply exact first-stage feasibility checks;
+3. remove duplicate/cache-hit points;
+4. select the batch by deterministic poll order;
+5. evaluate up to four candidates in parallel;
+6. wait for the whole selected batch;
+7. among all VALID results choose the best objective;
+8. break ties within `tau_numerical` by deterministic poll index;
+9. only then update incumbent and mesh.
+
+No asynchronous “first process to finish wins” rule is allowed, because it would make the search path depend on OS/solver completion order.
+
+## C7 — search implementation inventory
+
+Without installing anything, audit:
+
+- NOMAD / PyNOMAD availability in the canonical environment;
+- existing repository pattern/MADS utilities;
+- licences;
+- hidden-constraint evaluator support;
+- exact linear feasibility screening;
+- deterministic direction/seed control;
+- cache integration;
+- deterministic batch/parallel evaluation.
+
+Do not casually hand-code “OrthoMADS” without its actual mesh/direction requirements. If a trustworthy MADS implementation is unavailable or disproportionate to integrate, a deterministic generalized pattern search with a positive-spanning poll set is acceptable for the first campaign, with its limitations explicit.
+
+## C8 — pre-search classification
+
+End one:
+
+`P5.6-C-A — derivative-free search is ready to launch`
+
+only if template rankings are sufficiently stable, coverage policy is deterministic/acceptable, planning robustness is quantified, deterministic batch semantics are fixed and a practical search implementation path exists;
 
 or
 
-`P5.7-B — branch multiplicity is intrinsic and planning must be reformulated`.
+`P5.6-C-B — derivative-free search is ready only on a restricted validated domain`
 
-# ACCEPTED P5.7 RESULTS
+if the local landscape is robust and nearby coverage is good but remote/budget-near candidates remain unreachable. Any restricted domain must be specified explicitly from tested successful directions;
 
-Verdict:
+or
 
-`P5.7-A — unique operational oracle can likely be recovered`.
+`P5.6-C-C — derivative-free search is not ready`
 
-- **hypothesis A confirmed as primary.** Production forms the ADMM subproblem objective as `base / effective_scale + consensus terms`, `effective_scale` measured at `9.41e4 .. 1.16e5` (median `1.05e5`). Re-solving all 48 subproblems from their own converged point moves the base objective by `-383401.68` as-is and `-8892463.76` rescaled -- `96.5%` of the `9217420.61` ADMM-to-polish gap;
-- **hypothesis B rejected:** the same polish NLP from four starts spreads by `303.24` on `8.3e8`;
-- **hypothesis C:** only `213` active rows of about `40000` change between `polish K=0` and `H12`, in `flex_energy_balance_p` and `sg_capability`;
-- **hypothesis D:** at fixed consensus, four chained polishes are worth `7.3`; four refinement solves are worth `-1616084`. Continuation buys reachability, not quality;
-- the ADMM converges in ONE cycle at every warm-started generation while the consensus keeps sliding;
-- the TSO ADN interface anchor is inherited from `T0` and never refreshed on a warm start. The P5.7 section 5 conjecture that cold starts therefore use a different objective was **refuted by P5.8-E3** and is corrected in place in the P5.7 report.
+if template generations materially reorder investment improvements, continuation cannot provide acceptable deterministic coverage, or no practical deterministic search implementation path exists.
 
-# DELIVERED, PENDING PLANNER REVIEW — P5.8 ADMM numerical scaling validation
+Then:
 
-Report: `P5_8_ADMM_SCALING_VALIDATION_REPORT.md`. Evidence: `data/SRP1/Results/P58/`.
+`P5.6-C COMPLETE — ready for planner review before any optimization campaign`.
 
-Delivered verdict:
+## Locked production decisions during P5.6-C
 
-`P5.8-B — objective scaling improves stability but additional ADMM issues remain`.
+Do not change:
 
-Reproduction gate: A0 case A reproduced the accepted P5.6-D base chain exactly; B2 reproduced P5.7-A2 to the digit. No production code, parameter file, stopping criterion or anchor policy was modified, and nothing was merged.
+- nonlinear AC SMOPF equations;
+- active-energy ESS formulation;
+- D2-P sensitivity-clean shared-S formulation;
+- H1 dimensionless complementarity and `ESS_COMPLEMENTARITY_TOLERANCE = 1e-4`;
+- net-P/Q-only nonlinear ADMM coordination;
+- IPOPT tolerances/options;
+- MA97/exact-Hessian policy;
+- recovery/adaptive-rho/proximal policies;
+- existing master/Benders equations;
+- P5.5 convex/MISOCP diagnostic code.
 
-**A0 -- ESS/consensus tolerance screen.** Case B (`ess_mean` `1e-2 -> 1e-3`, `ess` `1e-1 -> 1e-2`) is **bit-identical** to case A at every generation, because the ESS consensus test never fires: realized `primal_ess` about `2.2e-4` and `primal_ess_mean` about `6.5e-6`, i.e. `450x` and `1500x` inside case A's tolerances. Case C (`minimum_consecutive_converged_cycles = 2`) advances the chain by exactly one refinement step and then reverts to one cycle per generation, because `consecutive_converged_cycles` is restored from `initial_state` (`shared_resources_planning.py:2093-2094`) and is inherited across warm starts. **ESS consensus tolerance is not a contributor; objective scaling remains the primary mechanism.**
+Do not yet run or productionize:
 
-**B -- rescaling validation.** `RESCALED = effective_scale * CURRENT` verified as an exact constant multiple on all 48 blocks (worst relative error `0.000e+00`). One-block: base-objective recovery `0.00 -> -257894.90` (`DSO5|2035|Autumn`) and `-0.00 -> -320612.44` (`DSO7|2035|Autumn`); expressed in base-objective units the terminal stationarity is `390x` to `1488x` tighter under RESCALED. Full 48-block replay: total base delta `-383401.68` (CURRENT) versus `-8892463.76` (RESCALED) for `33%` more IPOPT iterations, and max unscaled constraint violation improves `70x`, from `1.2241e-05` to `1.7603e-07`.
-
-**C -- full ADMM replay** (same T0 primal state; only the objective scaling differs). Pre-polish net recourse, CURRENT versus RESCALED: `837188510.90 / 825814074.49` (gen 1, better by `11374436.41`), `836578781.24 / 825257390.49`, `835829460.61 / 824796861.45`, `835374067.36 / 824408917.11`. One rescaled ADMM run, unpolished, beats the current pipeline's fully polished generation-1 result by `2157016` and is not matched until generation 5-6; eight rescaled generations reach `823101056.86`, `580277` better than twelve current polished refinements. **But** the drift persists at `80-90%` of its former magnitude (rescaled steps `-556684 -> -251242` against `-609730 -> -313346`), neither chain reaches `tau_planning = 33031`, and the rescaled ADMM **breaks the exact-consensus polish**: failures on 1-4 DSO blocks in 7 of 8 generations (`Restoration Failed`, `Maximum Number of Iterations Exceeded`) and a `+35647836` degradation in the one generation that succeeds. Cause: better local optimality comes with worse agreement, `primal_pf` rising to the `1e-2` tolerance boundary. Rho and adaptive-penalty settings were not re-tuned; they are locked.
-
-**D -- convergence criteria audit** (nothing modified). The stopping rule is `residual_convergence AND objective_convergence`, so consensus residuals are already not the only criterion. The binding one is the objective test: `objective_tolerance = max(1e3, 1e-3 * recourse) = 827971`, which is `25x` the `33031` planning signal and larger than every refinement step either formulation takes. Measured accepted recourse changes: `609729.66`, `749320.63`, `455393.25` (CURRENT); `787755.97 ... 251242.46` (RESCALED). Consensus residuals sit comfortably inside their tolerances throughout. Candidate future measures, **not implemented**: a recourse-change criterion tied to `tau_planning` rather than to the recourse level; per-subproblem local KKT residual in base-objective units (already in the IPOPT logs); base-objective improvement between cycles; and making the inherited `consecutive_converged_cycles` explicit.
-
-**E -- interface anchor audit** (no policy changed). Anchor exactly constant across generations and across both formulations (`0.0` for `pc` and `qc`); identical for a different candidate warm-started from T0 (`0.000000e+00`); and within `1.003037e-07 p.u.` for that candidate started **cold**. The P5.7 conjecture that cold starts use a candidate-dependent anchor is therefore refuted, and the P5.6-B cold-versus-T0 gaps stand as genuine branch differences.
-
-# COMPLETED STAGE — P5.6-D uniformly refined nonlinear oracle
-
-Accepted verdict:
-
-`P5.6-D-C — uniform refinement does not stabilize the investment landscape`.
-
-Uniform refinement fixed coverage (`100%` from `K=4`, including every previously unreachable candidate) and largely fixed improvement direction (1 sign reversal in 7, against 6 in 9 under P5.6-C). It did not fix the ordering: `tau_planning_refined = 811438.05` against the `4.25e5` benchmark it had to beat, the best candidate changes identity at every tested depth transition, and at node 9 / 2025 the oracle reverses the preferred **sign** of the investment between `K=8` and `K=12`. Depth movement decays by only `2.10` between the two transitions measured, leaving `386978` at `K=12` against the `33031` needed. No `K_STAR` exists among the tested depths.
-
-Best known rigorous feasible nonlinear planning incumbent: `se|node5|2025|-10%` at `825109566.571083`.
-
-The base refinement chain at `x0` is the reference for P5.7 and is recorded in `LOCAL_NLP_STABILITY_PLAN.md`.
-
-# COMPLETED STAGE — P5.6-C landscape robustness and oracle coverage gate
-
-Accepted verdict:
-
-`P5.6-C-C — derivative-free search is not ready`.
-
-Spearman T0 vs T4 = `-0.033` with 6 of 9 improvement signs reversed; continuation rescues every failure but moves direct-VALID controls by about `2.9e6`, so it cannot be a failure-only fallback; the P5.6-B `se|ALL|x19` `SOLVER_CRASH` record was withdrawn as not reproducible; and the P5.6-B7 cost figure was corrected to `135 s` VALID / `186 s` failed end-to-end.
+- the 200-evaluation derivative-free optimization campaign;
+- replacement outer planning loop;
+- full/production MISOCP planning;
+- distributed convex ADMM;
+- QCP/Benders cut recovery;
+- TSO SDP/QC strengthening.
 
 # COMPLETED STAGE — P5.5-D lower-bound architecture decision gate
 
@@ -585,7 +665,7 @@ P5.4-G remains permanently blocked for the old nonlinear-recourse derivative cut
 
 ## Deferred items
 
-Keep deferred during P5.7:
+Keep deferred during P5.6-C:
 
 - physical complementarity tolerance `1e-5` / `1e-6` A/B;
 - B1 exact `f_ref=0`;
@@ -1392,12 +1472,10 @@ Never describe the local-cut master estimate as a rigorous global lower bound or
 
 # Immediate instruction
 
-The immediate task is **P5.7 — nonlinear operational branch-selection investigation** on `feature/derivative-free-planning`.
+The immediate task is **P5.6-C — landscape robustness and oracle coverage gate** on `feature/derivative-free-planning`.
 
-Use only the canonical interpreter and checksum. Treat `P5.6-D-C` as accepted: derivative-free optimization is blocked, and GPS, MADS, any investment search and surrogate optimization must not be implemented.
+Use only the canonical interpreter and checksum. Treat P5.5-D-C as the accepted architecture decision: the rigorous lower-bound/Benders/MISOCP route is retired as the planning architecture, while the P5.5 convex code remains diagnostic/benchmark-only.
 
-Characterize why repeated continuation/polishing finds progressively lower branches, and determine whether the cause is primarily ADMM initialization, augmented-objective scaling, IPOPT local convergence, missing globalisation/continuation strategy, or an insufficiently constrained operational formulation. Do not modify production equations yet.
+Do not launch the derivative-free optimization campaign yet. First test T0/T2/T4 **relative investment rankings**, determine whether fixed continuation can rescue false hidden-infeasible points without mixing incompatible objective surfaces, define `tau_planning` separately from `tau_numerical = 10`, lock deterministic batch-poll semantics, and audit the practical MADS/pattern-search implementation path.
 
-Run the required diagnostics on one fixed investment candidate (ADMM, polish `K=0`, `H2`, `H4`, `H8`, `H12`), compare objective decomposition, generation dispatch, flexibility, voltage slacks, ESS schedules, TSO/DSO interface variables and active constraints, then test hypotheses A (objective scaling), B (initialization sensitivity), C (constraint activity) and D (continuation path).
-
-`LOCAL_NLP_STABILITY_PLAN.md` is authoritative for the full P5.7 execution protocol despite its legacy filename.
+`LOCAL_NLP_STABILITY_PLAN.md` is authoritative for the full P5.6-C execution protocol despite its legacy filename.
