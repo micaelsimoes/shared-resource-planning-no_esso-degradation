@@ -474,7 +474,7 @@ Planner interpretation:
 3. A lower-bound-safe disjunctive outer approximation of H1 is worth one controlled diagnostic before abandoning rigorous lower bounds.
 4. The planning master remains blocked.
 
-# CURRENT ACTIVE STAGE — P5.7 nonlinear operational branch-selection investigation
+# COMPLETED STAGE — P5.7 nonlinear operational branch-selection investigation (verdict P5.7-A, accepted)
 
 ## The conclusion P5.7 starts from
 
@@ -518,26 +518,38 @@ or
 
 `P5.7-B — branch multiplicity is intrinsic and planning must be reformulated`.
 
-# DELIVERED, PENDING PLANNER REVIEW — P5.7 branch-selection diagnosis
+# ACCEPTED P5.7 RESULTS
 
-Report: `P5_7_BRANCH_SELECTION_DIAGNOSIS_REPORT.md`. Evidence: `data/SRP1/Results/P57/`.
-
-Delivered verdict:
+Verdict:
 
 `P5.7-A — unique operational oracle can likely be recovered`.
 
-Key measured results:
+- **hypothesis A confirmed as primary.** Production forms the ADMM subproblem objective as `base / effective_scale + consensus terms`, `effective_scale` measured at `9.41e4 .. 1.16e5` (median `1.05e5`). Re-solving all 48 subproblems from their own converged point moves the base objective by `-383401.68` as-is and `-8892463.76` rescaled -- `96.5%` of the `9217420.61` ADMM-to-polish gap;
+- **hypothesis B rejected:** the same polish NLP from four starts spreads by `303.24` on `8.3e8`;
+- **hypothesis C:** only `213` active rows of about `40000` change between `polish K=0` and `H12`, in `flex_energy_balance_p` and `sg_capability`;
+- **hypothesis D:** at fixed consensus, four chained polishes are worth `7.3`; four refinement solves are worth `-1616084`. Continuation buys reachability, not quality;
+- the ADMM converges in ONE cycle at every warm-started generation while the consensus keeps sliding;
+- the TSO ADN interface anchor is inherited from `T0` and never refreshed on a warm start. The P5.7 section 5 conjecture that cold starts therefore use a different objective was **refuted by P5.8-E3** and is corrected in place in the P5.7 report.
 
-- the P5.7 chain reproduces the accepted P5.6-D base chain to float-printing residual (`<= 4.8e-07`) in a fresh process through a re-implemented evaluation path;
-- **hypothesis A confirmed as the primary cause.** Production forms the ADMM subproblem objective as `base / effective_scale + consensus terms`, with `effective_scale` measured at `9.41e4 .. 1.16e5` (median `1.05e5`). Re-solving all 48 ADMM subproblems from their own converged point moves the base objective by `-383401.68` as-is and by `-8892463.76` when multiplied by that block's own `effective_scale` — an identical argmin, feasible set, start and solver. That recovers `96.5%` of the `9217420.61` ADMM-to-polish gap. Symmetrically, scaling the polish objective DOWN to the ADMM magnitude returns `837067437.16`, i.e. back within `171074` of the ADMM point and `9046347` worse than production's polish;
-- **hypothesis B rejected.** The same polish NLP from four starts — ADMM state, previous continuation state, the deepest branch found (step 12) and cold — spreads by `303.24` on an objective of `8.3e8`;
-- **hypothesis C:** the active set does change, but only `213` rows of about `40000` inequalities between `polish K=0` and `H12`, confined to `flex_energy_balance_p` and `sg_capability`. The ADMM-to-polish step is different in kind: `sg_capability` goes from `164` to `3554` active of `3732`;
-- **hypothesis D:** at a fixed consensus, four chained polishes are worth `7.3` and a four-step objective-scaling homotopy lands `2.08` from the direct polish. Four refinement-chain solves, which move the consensus, are worth `-1616084`. Continuation buys **reachability**, not solution quality: the direct solve at `se|node9|2025|-10%` is `POLISH_FAILURE`, the `K=4` continuation is VALID at `825127965.3618163`;
-- **the ADMM converges in ONE cycle at every warm-started generation** while the consensus itself keeps sliding — `5.30e-02 p.u.` of interface drift at `DSO5|2025|Spring` between steps 1 and 12. Residual convergence is not optimality;
-- the chain's step deltas decay geometrically at ratio `0.926` (steps 5-12), extrapolating to a tail of about `-3.10e6` and a limit near `820633931`; resolving P5.6-D's `33031` signal would need `K ~ 72`, about `2.1 h` per candidate;
-- **structural finding:** the TSO ADN interface anchor `pc`/`qc` is fixed at `T0`'s cold-initialization consensus and never refreshed on a warm start (`shared_resources_planning.py:2905-2919` and `2173-2179`); `max |pc(T0) - pc(step 12)| = 0.0` over all 72 fixed entries. It is common to every `T0`-warm candidate; whether cold starts therefore use a different objective was NOT measured and must be before the P5.6-B cold-versus-`T0` gaps are interpreted.
+# DELIVERED, PENDING PLANNER REVIEW — P5.8 ADMM numerical scaling validation
 
-Recommendations returned (none implemented): rescale the ADMM subproblem objective rather than the base cost; give the ADMM convergence test an optimality component; decide what the frozen `T0` interface anchor should be; retain continuation for reachability only; do not pursue depth as the remedy.
+Report: `P5_8_ADMM_SCALING_VALIDATION_REPORT.md`. Evidence: `data/SRP1/Results/P58/`.
+
+Delivered verdict:
+
+`P5.8-B — objective scaling improves stability but additional ADMM issues remain`.
+
+Reproduction gate: A0 case A reproduced the accepted P5.6-D base chain exactly; B2 reproduced P5.7-A2 to the digit. No production code, parameter file, stopping criterion or anchor policy was modified, and nothing was merged.
+
+**A0 -- ESS/consensus tolerance screen.** Case B (`ess_mean` `1e-2 -> 1e-3`, `ess` `1e-1 -> 1e-2`) is **bit-identical** to case A at every generation, because the ESS consensus test never fires: realized `primal_ess` about `2.2e-4` and `primal_ess_mean` about `6.5e-6`, i.e. `450x` and `1500x` inside case A's tolerances. Case C (`minimum_consecutive_converged_cycles = 2`) advances the chain by exactly one refinement step and then reverts to one cycle per generation, because `consecutive_converged_cycles` is restored from `initial_state` (`shared_resources_planning.py:2093-2094`) and is inherited across warm starts. **ESS consensus tolerance is not a contributor; objective scaling remains the primary mechanism.**
+
+**B -- rescaling validation.** `RESCALED = effective_scale * CURRENT` verified as an exact constant multiple on all 48 blocks (worst relative error `0.000e+00`). One-block: base-objective recovery `0.00 -> -257894.90` (`DSO5|2035|Autumn`) and `-0.00 -> -320612.44` (`DSO7|2035|Autumn`); expressed in base-objective units the terminal stationarity is `390x` to `1488x` tighter under RESCALED. Full 48-block replay: total base delta `-383401.68` (CURRENT) versus `-8892463.76` (RESCALED) for `33%` more IPOPT iterations, and max unscaled constraint violation improves `70x`, from `1.2241e-05` to `1.7603e-07`.
+
+**C -- full ADMM replay** (same T0 primal state; only the objective scaling differs). Pre-polish net recourse, CURRENT versus RESCALED: `837188510.90 / 825814074.49` (gen 1, better by `11374436.41`), `836578781.24 / 825257390.49`, `835829460.61 / 824796861.45`, `835374067.36 / 824408917.11`. One rescaled ADMM run, unpolished, beats the current pipeline's fully polished generation-1 result by `2157016` and is not matched until generation 5-6; eight rescaled generations reach `823101056.86`, `580277` better than twelve current polished refinements. **But** the drift persists at `80-90%` of its former magnitude (rescaled steps `-556684 -> -251242` against `-609730 -> -313346`), neither chain reaches `tau_planning = 33031`, and the rescaled ADMM **breaks the exact-consensus polish**: failures on 1-4 DSO blocks in 7 of 8 generations (`Restoration Failed`, `Maximum Number of Iterations Exceeded`) and a `+35647836` degradation in the one generation that succeeds. Cause: better local optimality comes with worse agreement, `primal_pf` rising to the `1e-2` tolerance boundary. Rho and adaptive-penalty settings were not re-tuned; they are locked.
+
+**D -- convergence criteria audit** (nothing modified). The stopping rule is `residual_convergence AND objective_convergence`, so consensus residuals are already not the only criterion. The binding one is the objective test: `objective_tolerance = max(1e3, 1e-3 * recourse) = 827971`, which is `25x` the `33031` planning signal and larger than every refinement step either formulation takes. Measured accepted recourse changes: `609729.66`, `749320.63`, `455393.25` (CURRENT); `787755.97 ... 251242.46` (RESCALED). Consensus residuals sit comfortably inside their tolerances throughout. Candidate future measures, **not implemented**: a recourse-change criterion tied to `tau_planning` rather than to the recourse level; per-subproblem local KKT residual in base-objective units (already in the IPOPT logs); base-objective improvement between cycles; and making the inherited `consecutive_converged_cycles` explicit.
+
+**E -- interface anchor audit** (no policy changed). Anchor exactly constant across generations and across both formulations (`0.0` for `pc` and `qc`); identical for a different candidate warm-started from T0 (`0.000000e+00`); and within `1.003037e-07 p.u.` for that candidate started **cold**. The P5.7 conjecture that cold starts use a candidate-dependent anchor is therefore refuted, and the P5.6-B cold-versus-T0 gaps stand as genuine branch differences.
 
 # COMPLETED STAGE — P5.6-D uniformly refined nonlinear oracle
 

@@ -1,0 +1,166 @@
+{
+ "stage": "P5.8-E",
+ "provenance": {
+  "timestamp_utc": "2026-09-09T10:35:03.033972+00:00",
+  "git_head": "f6db8fceb563f16e23475dbd928894d281ab1470",
+  "sys_executable": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "version": "3.14.18",
+   "exists": true,
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)"
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-10",
+   "available": true,
+   "licence_id": "2805683",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "stage": "P5.8-E anchor audit"
+ },
+ "timestamp_utc": "2026-09-09T10:35:03.140303+00:00",
+ "other_candidate": "se|node5|2025|-10%",
+ "anchor_policy_changed": false,
+ "comparisons": {
+  "E1_anchor_evolution": {
+   "CURRENT (P5.7 chain)": {
+    "max_abs_pc_change_vs_generation_1": {
+     "1": 0.0,
+     "2": 0.0,
+     "4": 0.0,
+     "8": 0.0,
+     "12": 0.0
+    }
+   },
+   "RESCALED (P5.8-C chain)": {
+    "max_abs_pc_change_vs_generation_1": {
+     "8": 0.0
+    }
+   }
+  },
+  "E2_candidate_dependence": {
+   "pc": {
+    "max_over_blocks": 0.0,
+    "worst_block": "2025|Autumn",
+    "per_block": {
+     "2025|Autumn": 0.0,
+     "2025|Spring": 0.0,
+     "2025|Summer": 0.0,
+     "2025|Winter": 0.0,
+     "2030|Autumn": 0.0,
+     "2030|Spring": 0.0,
+     "2030|Summer": 0.0,
+     "2030|Winter": 0.0,
+     "2035|Autumn": 0.0,
+     "2035|Spring": 0.0,
+     "2035|Summer": 0.0,
+     "2035|Winter": 0.0
+    }
+   },
+   "qc": {
+    "max_over_blocks": 0.0,
+    "worst_block": "2025|Autumn",
+    "per_block": {
+     "2025|Autumn": 0.0,
+     "2025|Spring": 0.0,
+     "2025|Summer": 0.0,
+     "2025|Winter": 0.0,
+     "2030|Autumn": 0.0,
+     "2030|Spring": 0.0,
+     "2030|Summer": 0.0,
+     "2030|Winter": 0.0,
+     "2035|Autumn": 0.0,
+     "2035|Spring": 0.0,
+     "2035|Summer": 0.0,
+     "2035|Winter": 0.0
+    }
+   }
+  },
+  "E3_cold_vs_warm": {
+   "cold_vs_T0": {
+    "pc": {
+     "max_over_blocks": 1.0030372360469997e-07,
+     "worst_block": "2025|Summer",
+     "per_block": {
+      "2025|Autumn": 1.4975798379168737e-11,
+      "2025|Spring": 5.199266406297198e-09,
+      "2025|Summer": 1.0030372360469997e-07,
+      "2025|Winter": 5.691002474828011e-08,
+      "2030|Autumn": 3.929129133162235e-09,
+      "2030|Spring": 6.083301196113666e-09,
+      "2030|Summer": 1.998568943673007e-08,
+      "2030|Winter": 8.99228269624075e-09,
+      "2035|Autumn": 2.3989380593114618e-08,
+      "2035|Spring": 9.80910902503851e-09,
+      "2035|Summer": 3.256284131225584e-13,
+      "2035|Winter": 1.0125079330514097e-08
+     }
+    },
+    "qc": {
+     "max_over_blocks": 7.08602506949152e-08,
+     "worst_block": "2025|Summer",
+     "per_block": {
+      "2025|Autumn": 2.7828711557376096e-12,
+      "2025|Spring": 3.6279946755146675e-09,
+      "2025|Summer": 7.08602506949152e-08,
+      "2025|Winter": 4.199134415183714e-08,
+      "2030|Autumn": 2.623407033275349e-09,
+      "2030|Spring": 4.072250096159857e-09,
+      "2030|Summer": 2.223695746983445e-08,
+      "2030|Winter": 6.482414667552394e-09,
+      "2035|Autumn": 4.135174896946481e-09,
+      "2035|Spring": 7.052237863125477e-09,
+      "2035|Summer": 1.3792092468101202e-13,
+      "2035|Winter": 6.073116291110958e-09
+     }
+    }
+   }
+  }
+ },
+ "t0_fixed_counts": {
+  "2025|Spring": {
+   "pc_n_fixed": 72,
+   "qc_n_fixed": 72
+  },
+  "2025|Summer": {
+   "pc_n_fixed": 72,
+   "qc_n_fixed": 72
+  }
+ },
+ "E2_admm": {
+  "status": null,
+  "converged": true,
+  "initialization_failed": false,
+  "cycles": 2,
+  "runtime_s": 70.8950572013855,
+  "n_recovery_diagnostics": 0,
+  "gross_operational_cost": 836897857.7650094,
+  "net_operational_recourse": 836894511.9781059
+ },
+ "E2_runtime_s": 71.01527285575867,
+ "E3_admm": {
+  "status": null,
+  "converged": true,
+  "initialization_failed": false,
+  "cycles": 9,
+  "runtime_s": 322.5075309276581,
+  "n_recovery_diagnostics": 0,
+  "gross_operational_cost": 848235330.0965937,
+  "net_operational_recourse": 848231514.553524
+ },
+ "E3_runtime_s": 322.62795424461365
+}

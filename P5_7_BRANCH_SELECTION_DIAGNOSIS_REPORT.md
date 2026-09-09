@@ -304,6 +304,15 @@ Two consequences, stated at the level the evidence supports:
    is relied on. It is a candidate explanation for the P5.6-B cold-versus-`T0`
    discrepancy of 1.32e6 … 1.09e7, which was recorded there as a branch effect.
 
+> **Correction, from P5.8-E3.** This conjecture was measured and it is **wrong**.
+> A cold run at a different candidate returns an anchor within `1.003037e-07 p.u.`
+> of `T0`'s — solver-tolerance noise — so the anchor is common across candidates
+> *and* across start policies, and cold and `T0`-warm evaluations do share an
+> objective function. The P5.6-B cold-versus-`T0` gaps are genuine
+> branch/solution differences, as P5.6-B recorded them. What survives from this
+> section is point 1 and the narrower fact that the anchor is inherited from `T0`
+> and never refreshed.
+
 ---
 
 ## 6 — hypothesis B: initialization is not the cause
