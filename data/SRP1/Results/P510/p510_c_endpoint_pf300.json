@@ -1,0 +1,174 @@
+{
+ "stage": "P5.10-C",
+ "provenance": {
+  "timestamp_utc": "2026-09-09T19:05:45.313884+00:00",
+  "git_head": "0bfeb1aea509eafd9cc4e5f0c17608b2e47f03a1",
+  "sys_executable": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "exists": true,
+   "version": "3.14.18",
+   "asl": "20241111",
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)",
+   "path_ipopt_not_used": {
+    "path": "/usr/local/bin/ipopt",
+    "version": "3.14.18",
+    "shadows_canonical": false
+   }
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-14",
+   "available": true,
+   "licence_id": "2807206",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "canonical_ipopt_path": "/usr/local/bin/ipopt",
+  "canonical_ipopt_version": "3.14.18",
+  "canonical_ipopt_asl": "20241111",
+  "canonical_hsl_linear_solver": "ma97",
+  "stage": "P5.10-C oracle endpoint",
+  "gate_failures": [],
+  "gate_passes": true
+ },
+ "timestamp_utc": "2026-09-09T19:05:45.396764+00:00",
+ "config": {
+  "scaling_mode": "RESCALED",
+  "rho_v": 1.5,
+  "rho_pf": 300.0,
+  "rho_ess": 1.0,
+  "adaptive_penalty": false,
+  "neutralize_history": true,
+  "template_id": "a81f7f5191dd42dbf50d1726149b8909",
+  "initialization_policy": "warm from frozen T0",
+  "anchor": "MIDPOINT",
+  "notes": "P5.10-C endpoint comparison"
+ },
+ "config_hash": "fad84135e74076f5",
+ "per_unit_base_MVA": 100.0,
+ "asymmetry_note": "Oracle B returns one operating point; Oracle A returns per-agent solutions that disagree at the interface by the terminal primal residual. Each agent is individually feasible; there is no single physical point until they are reconciled.",
+ "candidates": {
+  "base": {
+   "status": "VALID",
+   "A_objective_net_recourse": 827885239.5417057,
+   "A_base_objective": 827888691.9640262,
+   "A_interface_disagreement_pu": 9.051837140987118e-05,
+   "A_interface_disagreement_MW": 0.018103674281974236,
+   "A_voltage_disagreement_pu": 2.0363115864230182e-05,
+   "A_unpolished_max_network_violation": 1.1537855774956807e-05,
+   "A_unpolished_worst_block": null,
+   "A_unpolished_h1_violation": 0.0,
+   "A_runtime_s": 251.55161380767822,
+   "A_cycles": 6,
+   "B_objective_total": 828008246.6625633,
+   "B_net_recourse": 827958246.6625633,
+   "B_max_coordinated_residual": 1.3877787807814457e-16,
+   "B_max_network_violation": 9.168004130616358e-06,
+   "B_esso_production_feasible": true,
+   "B_failed_blocks": [],
+   "B_runtime_s": 31.884971141815186,
+   "polish_effect_on_recourse": 73007.1208575964,
+   "repeat_A_objective": 827885239.5417057,
+   "repeat_B_objective": 828008246.6625633,
+   "A_bit_identical": true,
+   "B_bit_identical": true
+  },
+  "se|node5|2025|-10%": {
+   "status": "VALID",
+   "A_objective_net_recourse": 827885356.7225058,
+   "A_base_objective": 827888732.6118677,
+   "A_interface_disagreement_pu": 9.060983102838094e-05,
+   "A_interface_disagreement_MW": 0.018121966205676188,
+   "A_voltage_disagreement_pu": 2.034299644027788e-05,
+   "A_unpolished_max_network_violation": 1.1537855774956807e-05,
+   "A_unpolished_worst_block": null,
+   "A_unpolished_h1_violation": 0.0,
+   "A_runtime_s": 264.2338559627533,
+   "A_cycles": 6,
+   "B_objective_total": 828007656.3829914,
+   "B_net_recourse": 827958360.9676199,
+   "B_max_coordinated_residual": 1.3877787807814457e-16,
+   "B_max_network_violation": 9.168192548786314e-06,
+   "B_esso_production_feasible": true,
+   "B_failed_blocks": [],
+   "B_runtime_s": 37.10215497016907,
+   "polish_effect_on_recourse": 73004.24511408806,
+   "repeat_A_objective": 827885356.7225058,
+   "repeat_B_objective": 828007656.3829914,
+   "A_bit_identical": true,
+   "B_bit_identical": true
+  },
+  "se|node9|2025|-10%": {
+   "status": "VALID",
+   "A_objective_net_recourse": 827885291.3661005,
+   "A_base_objective": 827888670.0279324,
+   "A_interface_disagreement_pu": 9.051974879305647e-05,
+   "A_interface_disagreement_MW": 0.018103949758611293,
+   "A_voltage_disagreement_pu": 2.0318482545693427e-05,
+   "A_unpolished_max_network_violation": 1.1537855774956807e-05,
+   "A_unpolished_worst_block": null,
+   "A_unpolished_h1_violation": 0.0,
+   "A_runtime_s": 268.78267097473145,
+   "A_cycles": 6,
+   "B_objective_total": 828007602.4002186,
+   "B_net_recourse": 827958306.9848471,
+   "B_max_coordinated_residual": 1.1102230246251565e-16,
+   "B_max_network_violation": 9.166643568009336e-06,
+   "B_esso_production_feasible": true,
+   "B_failed_blocks": [],
+   "B_runtime_s": 37.728079080581665,
+   "polish_effect_on_recourse": 73015.61874651909,
+   "repeat_A_objective": 827885291.3661005,
+   "repeat_B_objective": 828007602.4002186,
+   "A_bit_identical": true,
+   "B_bit_identical": true
+  }
+ },
+ "ranking_oracle_A": {
+  "values": {
+   "base": 827885239.5417057,
+   "se|node5|2025|-10%": 827885356.7225058,
+   "se|node9|2025|-10%": 827885291.3661005
+  },
+  "deltas_from_base": {
+   "base": 0.0,
+   "se|node5|2025|-10%": 117.18080008029938,
+   "se|node9|2025|-10%": 51.82439482212067
+  },
+  "order": [
+   "base",
+   "se|node9|2025|-10%",
+   "se|node5|2025|-10%"
+  ]
+ },
+ "ranking_oracle_B": {
+  "values": {
+   "base": 828008246.6625633,
+   "se|node5|2025|-10%": 828007656.3829914,
+   "se|node9|2025|-10%": 828007602.4002186
+  },
+  "deltas_from_base": {
+   "base": 0.0,
+   "se|node5|2025|-10%": -590.279571890831,
+   "se|node9|2025|-10%": -644.2623447179794
+  },
+  "order": [
+   "se|node9|2025|-10%",
+   "se|node5|2025|-10%",
+   "base"
+  ]
+ }
+}

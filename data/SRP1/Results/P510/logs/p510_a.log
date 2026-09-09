@@ -1,0 +1,37 @@
+[R0] provenance for P5.10-A explicit state
+    executable      : /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python
+    CONDA_DEFAULT_ENV: None (from path: opf_env_py311)
+    python 3.11.11  numpy 2.4.2  pandas 3.0.0  scipy 1.17.0  pyomo 6.9.5
+    IPOPT           : 3.14.18 ASL(20241111) @ /usr/local/bin/ipopt (exists=True)
+    HSL solver      : ma97
+    gurobipy        : 13.0.1 available=True licence=ACADEMIC expires=2027-04-14
+    checksum        : 5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358
+    canonical match : True
+    -> /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P510/provenance.json
+[P5.10-A] inheritance channels on the frozen T0 template:
+   rho in template      : [{'ess': 1.0, 'pf': 2.25, 'v': 1.5}]  (parameter file says 1.0/1.0/1.0)
+   consecutive counters : 1
+   last_recourse        : 838496830.8134136
+   candidate_solution   : present (the base candidate)
+
+[P5.10-A] gate_CURRENT: CURRENT_v1.5_pf2.25_ess1_ad1_nh0 ...
+           total_objective = 828021090.3608505  expected 828021090.36085  delta 4.76837158203125e-07
+           GATE PASSED
+
+[P5.10-A] gate_RESCALED: RESCALED_v1.5_pf2.25_ess1_ad1_nh0 ...
+           admm_net_recourse_before_polish = 825814074.4930633  expected 825814074.49  delta 0.0030633211135864258
+           GATE PASSED
+
+[P5.10-A] A2 -- stopping rule, base versus non-base candidate
+
+   neutralize=False base                 cycles=2  cycle1 objective_change=1290877.2084308863  objective_converged=False
+   neutralize=False se|node5|2025|-10%   cycles=2  cycle1 objective_change=None  objective_converged=False
+   neutralize=True  base                 cycles=2  cycle1 objective_change=None  objective_converged=False
+   neutralize=True  se|node5|2025|-10%   cycles=2  cycle1 objective_change=None  objective_converged=False
+
+[P5.10-A] A3 -- purity: same configuration, different call history
+   first  = 828021090.3608505
+   repeat = 828021090.3608505
+   bit-identical = True
+
+[P5.10-A] report -> /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P510/p510_a_state.json
