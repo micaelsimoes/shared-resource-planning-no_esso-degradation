@@ -1,0 +1,127 @@
+# Canonical paper environment — Shared Resources Planning (SRP1)
+#
+# Captured 2026-09-09 from the canonical runtime on the Mac Studio:
+#   /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python
+# (osx-arm64). The MacBook Air path /opt/anaconda3/envs/opf_env_py311 is the
+# old machine's and is superseded.
+#
+# THE ENVIRONMENT IS HALF CONDA AND HALF PIP. This is not incidental and the
+# split must be reproduced, not flattened:
+#
+#   * 46 packages come from conda (defaults, conda-forge, and the gurobi
+#     channel);
+#   * 23 packages come from pip, listed under the `pip:` key below and
+#     mirrored in requirements.txt.
+#
+# The pip side carries load-bearing scientific packages, not just leaves:
+# pandas 3.0.0, scipy 1.17.0, matplotlib, scikit-learn — and copulas 0.14.0,
+# which is what generates the SRP1 stochastic scenario realization and
+# therefore what the canonical checksum
+#   5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358
+# is a checksum OF. Installing copulas from a different source or version is
+# a change to the paper instance, not a packaging detail.
+#
+# `pip list` reports 33 distributions rather than 23, because it also sees
+# conda-installed Python packages (numpy, pyomo, packaging, psutil, ply,
+# pandas-stubs, setuptools, wheel, pip, et_xmlfile) and gurobipy, which is
+# delivered by the conda `gurobi` package. The 23 above is conda's own
+# accounting of what pip actually installed.
+#
+# NOT CAPTURED HERE — the two solver components are outside conda and must be
+# installed separately:
+#
+#   * IPOPT 3.14.18, ASL 20241111, standalone binary at /usr/local/bin/ipopt.
+#     Note the `ipopt` entry below: conda-forge ships 3.14.19 into this
+#     environment, and it is NOT the canonical solver. Production reaches the
+#     canonical one through `solver_params.solver_path`. p54r_provenance.py
+#     asserts the version and ASL build for exactly this reason.
+#   * HSL 5.5.0 providing ma97 (libcoinhsl in /usr/local/lib), licensed
+#     separately and not redistributable.
+#
+# Recreate with:
+#   conda env create -f environment.yml -n opf_env_py311
+# then verify — do not assume — with:
+#   python p54r_provenance.py
+# which aborts unless the scenario checksum, IPOPT version, IPOPT ASL build
+# and HSL linear solver all match the canonical values.
+
+name: opf_env_py311
+
+channels:
+  - gurobi
+  - conda-forge
+  - defaults
+
+dependencies:
+  - bzip2=1.0.8=h80987f9_6
+  - ca-certificates=2026.3.19=hca03da5_0
+  - conda-forge::ampl-asl=1.0.0=h286801f_2
+  - conda-forge::cppad=20250000.2=h286801f_0
+  - conda-forge::icu=78.2=h38cb7af_0
+  - conda-forge::ipopt=3.14.19=h1dd5f02_0
+  - conda-forge::libscotch=7.0.5=h3b5efbb_3
+  - conda-forge::libsqlite=3.51.2=h1ae2325_0
+  - conda-forge::mumps-include=5.7.3=hce30654_5
+  - conda-forge::mumps-seq=5.7.3=he17653c_5
+  - conda-forge::numpy=2.4.2=py311had1e860_1
+  - conda-forge::openssl=3.6.1=hd24854e_1
+  - conda-forge::ply=3.11=pyhd8ed1ab_3
+  - conda-forge::pyomo=6.9.5=py311h251fd82_0
+  - conda-forge::python=3.11.11=h89a136b_0_cpython
+  - conda-forge::python_abi=3.11=8_cp311
+  - conda-forge::scip=9.2.4=h51b76a5_0
+  - expat=2.7.3=h50f4ffc_4
+  - gmp=6.3.0=h313beb8_0
+  - gurobi::gurobi=13.0.1=py311_0
+  - libblas=3.9.0=1_h9886b1c_netlib
+  - libcblas=3.9.0=1_h9886b1c_netlib
+  - libcxx=20.1.8=hd7fd590_1
+  - libexpat=2.7.3=h50f4ffc_4
+  - libffi=3.4.4=hca03da5_1
+  - libgfortran5=15.2.0=hb654fa1_1
+  - libgfortran=15.2.0=h09d7db9_1
+  - liblapack=3.9.0=1_h9886b1c_netlib
+  - libzlib=1.3.1=h5f15de7_0
+  - llvm-openmp=20.1.8=he822017_0
+  - metis=5.1.0=hc377ac9_0
+  - mpfr=4.2.1=h80987f9_0
+  - ncurses=6.5=hee39554_0
+  - packaging=25.0=py311hca03da5_1
+  - pandas-stubs=3.0.0.260204=py311hca03da5_0
+  - pip=25.3=pyhc872135_0
+  - psutil=7.0.0=py311haa24f5a_1
+  - readline=8.3=h0b18652_0
+  - setuptools=80.10.1=py311hca03da5_0
+  - sqlite=3.51.1=hab6afd1_0
+  - tbb=2022.0.0=h48ca7d4_0
+  - tk=8.6.15=hcd8a7d5_0
+  - tzdata=2025c=he532380_0
+  - wheel=0.46.3=py311hca03da5_0
+  - xz=5.6.4=h80987f9_1
+  - zlib=1.3.1=h5f15de7_0
+
+  # --- pip half: see the note at the top of this file ---------------------
+  - pip:
+      - contourpy==1.3.3
+      - copulas==0.14.0
+      - cycler==0.12.1
+      - dotenv==0.9.9
+      - et-xmlfile==2.0.0
+      - fonttools==4.61.1
+      - joblib==1.5.3
+      - kiwisolver==1.4.9
+      - loguru==0.7.3
+      - matplotlib==3.10.8
+      - narwhals==2.15.0
+      - networkx==3.6.1
+      - openpyxl==3.1.5
+      - pandas==3.0.0
+      - pillow==12.1.0
+      - plotly==6.5.2
+      - pyparsing==3.3.2
+      - python-dateutil==2.9.0.post0
+      - python-dotenv==1.2.1
+      - scikit-learn==1.8.0
+      - scipy==1.17.0
+      - six==1.17.0
+      - threadpoolctl==3.6.0

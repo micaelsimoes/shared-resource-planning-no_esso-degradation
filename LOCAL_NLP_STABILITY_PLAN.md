@@ -155,7 +155,11 @@ Reproduction gate: A0 case A reproduced the accepted P5.6-D base chain exactly; 
 
 All paper-instance work must use:
 
-`/opt/anaconda3/envs/opf_env_py311/bin/python`
+`/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python`
+
+superseding the old MacBook Air path `/opt/anaconda3/envs/opf_env_py311/bin/python`
+as of the 2026-09-09 Mac Studio migration, which is verified by an exact
+reproduction of the P5.6-D base chain (see `REVISION_CONTEXT.md`).
 
 Canonical SRP1 checksum:
 
@@ -172,7 +176,18 @@ Every active harness that loads SRP1 must record:
 - Gurobi/gurobipy version and licence status when relevant;
 - realized scenario checksum.
 
-Abort if the checksum differs. `srp_env` is noncanonical and its D3/D4 numerical evidence is historical only.
+Abort if the checksum differs.
+
+**The checksum is necessary but not sufficient, and the gate no longer treats it
+as sufficient.** `p54r_provenance.py` asserts the scenario checksum, the IPOPT
+version (`3.14.18`), the IPOPT ASL build (`20241111`) and the HSL linear solver
+(`ma97`), and aborts on any mismatch. Before 2026-09-09 it asserted the checksum
+only, which would have admitted the Mac Studio's original IPOPT `3.14.20` /
+ASL `20190605` without complaint. The conda environment's own
+`conda-forge::ipopt 3.14.19` is likewise not the canonical solver; the canonical
+one is `/usr/local/bin/ipopt`, reached via `solver_params.solver_path`.
+
+`srp_env` is noncanonical and its D3/D4 numerical evidence is historical only.
 
 ---
 

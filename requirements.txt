@@ -1,0 +1,39 @@
+# The pip half of the canonical paper environment (23 packages).
+#
+# This file is NOT sufficient on its own. The canonical environment is half
+# conda and half pip; environment.yml is the authoritative manifest and
+# already contains everything here under its `pip:` key. Use this file only
+# to reinstall the pip side into an existing conda environment.
+#
+# copulas generates the SRP1 stochastic scenario realization, so its version
+# is part of the canonical checksum
+# 5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358, not a
+# free packaging choice.
+#
+# Captured 2026-09-09 from
+# /Users/micaelsimoes/miniconda3/envs/opf_env_py311 (osx-arm64).
+# Verify any rebuild with `python p54r_provenance.py`.
+
+contourpy==1.3.3
+copulas==0.14.0
+cycler==0.12.1
+dotenv==0.9.9
+et-xmlfile==2.0.0
+fonttools==4.61.1
+joblib==1.5.3
+kiwisolver==1.4.9
+loguru==0.7.3
+matplotlib==3.10.8
+narwhals==2.15.0
+networkx==3.6.1
+openpyxl==3.1.5
+pandas==3.0.0
+pillow==12.1.0
+plotly==6.5.2
+pyparsing==3.3.2
+python-dateutil==2.9.0.post0
+python-dotenv==1.2.1
+scikit-learn==1.8.0
+scipy==1.17.0
+six==1.17.0
+threadpoolctl==3.6.0

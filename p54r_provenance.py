@@ -2,11 +2,33 @@
 Stage P5.4-R0 -- canonical-environment provenance and fail-fast reproducibility gate.
 
 Every P5.4-R harness calls `gate()` before doing any work. It records the full
-runtime provenance and ABORTS if the SRP1 scenario checksum is not the canonical
-paper value. It never silently continues.
+runtime provenance and ABORTS unless EVERY canonical identity below matches. It
+never silently continues.
 
-Canonical environment : /opt/anaconda3/envs/opf_env_py311/bin/python
+The gate asserts four things, not one:
+
+  * the realized SRP1 scenario checksum;
+  * the IPOPT version actually invoked at `solver_params.solver_path`;
+  * the ASL build stamped into that IPOPT banner;
+  * the HSL linear solver configured in the network parameter files.
+
+The last three were recorded but NOT asserted until the Mac Studio migration
+(2026-09-09). That gap was not hypothetical: this machine initially resolved
+IPOPT 3.14.20 built against ASL 20190605, which reproduces the canonical
+checksum and would therefore have passed the checksum-only gate silently while
+producing noncanonical numerical evidence. Recording a value the gate does not
+compare is not a gate.
+
+Note that the conda environment itself carries `conda-forge::ipopt 3.14.19`,
+which is NOT the canonical solver. The canonical IPOPT is the standalone binary
+at `/usr/local/bin/ipopt`, reached via `solver_params.solver_path`. The version
+assertion is what keeps the two apart.
+
+Canonical environment : /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python
 Canonical checksum    : 5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358
+Canonical IPOPT       : 3.14.18, ASL 20241111, at /usr/local/bin/ipopt
+Canonical HSL solver  : ma97 (HSL 5.5.0; the library version is not machine-
+                        readable from the IPOPT banner and is not asserted)
 
     python p54r_provenance.py          # run the gate on its own
 """
@@ -26,6 +48,13 @@ if REPO_ROOT not in sys.path:
 
 CANONICAL_CHECKSUM = '5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358'
 CANONICAL_ENV = 'opf_env_py311'
+
+# Asserted alongside the checksum since the 2026-09-09 migration. See module
+# docstring: a matching checksum under a different solver build is exactly the
+# failure mode this exists to stop.
+CANONICAL_IPOPT_VERSION = '3.14.18'
+CANONICAL_IPOPT_ASL = '20241111'
+CANONICAL_HSL_LINEAR_SOLVER = 'ma97'
 
 SPEC_DIR = 'data/SRP1'
 SPEC_FILE = 'SRP1.json'
@@ -53,8 +82,8 @@ def _git_head():
 
 
 def _ipopt_info(solver_path):
-    info = {'path': solver_path, 'version': None, 'exists': bool(
-        solver_path and os.path.exists(solver_path))}
+    info = {'path': solver_path, 'version': None, 'asl': None, 'resolved_from': None,
+            'exists': bool(solver_path and os.path.exists(solver_path))}
     for candidate in (solver_path, 'ipopt'):
         if not candidate:
             continue
@@ -66,6 +95,11 @@ def _ipopt_info(solver_path):
             if match:
                 info['version'] = match.group(1)
                 info['banner'] = text.strip().splitlines()[0][:200]
+                info['resolved_from'] = candidate
+                # e.g. "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)"
+                asl = re.search(r'ASL\s*\(\s*([0-9]{8})\s*\)', text)
+                if asl:
+                    info['asl'] = asl.group(1)
                 break
         except Exception:
             continue
@@ -154,18 +188,39 @@ def collect(planning=None):
         'scenario_checksum': checksum,
         'canonical_checksum': CANONICAL_CHECKSUM,
         'checksum_matches_canonical': checksum == CANONICAL_CHECKSUM,
+        'canonical_ipopt_version': CANONICAL_IPOPT_VERSION,
+        'canonical_ipopt_asl': CANONICAL_IPOPT_ASL,
+        'canonical_hsl_linear_solver': CANONICAL_HSL_LINEAR_SOLVER,
     }, planning
+
+
+def check(provenance):
+    """The canonical identities the gate asserts. Returns a list of failures."""
+    ipopt = provenance.get('ipopt') or {}
+    comparisons = [
+        ('scenario checksum', provenance.get('scenario_checksum'),
+         CANONICAL_CHECKSUM),
+        ('IPOPT version', ipopt.get('version'), CANONICAL_IPOPT_VERSION),
+        ('IPOPT ASL build', ipopt.get('asl'), CANONICAL_IPOPT_ASL),
+        ('HSL linear solver', provenance.get('hsl_linear_solver'),
+         CANONICAL_HSL_LINEAR_SOLVER),
+    ]
+    return [{'identity': name, 'observed': observed, 'canonical': expected}
+            for name, observed, expected in comparisons if observed != expected]
 
 
 def gate(stage, out_dir, planning=None, verbose=True):
     """R0 fail-fast gate. Returns (provenance, planning); raises on mismatch."""
     provenance, planning = collect(planning)
     provenance['stage'] = stage
+    failures = check(provenance)
+    provenance['gate_failures'] = failures
+    provenance['gate_passes'] = not failures
     os.makedirs(out_dir, exist_ok=True)
     # A run that fails the gate must never clobber a canonical provenance record.
     path = os.path.join(
         out_dir,
-        'provenance.json' if provenance['checksum_matches_canonical']
+        'provenance.json' if provenance['gate_passes']
         else 'provenance_REJECTED.json')
     with open(path, 'w') as handle:
         json.dump(provenance, handle, indent=1, default=str)
@@ -179,22 +234,28 @@ def gate(stage, out_dir, planning=None, verbose=True):
               f"pandas {provenance['pandas_version']}  scipy {provenance['scipy_version']}  "
               f"pyomo {provenance['pyomo_version']}")
         ipopt = provenance['ipopt']
-        print(f"    IPOPT           : {ipopt.get('version')} @ {ipopt.get('path')} "
-              f"(exists={ipopt.get('exists')})")
+        print(f"    IPOPT           : {ipopt.get('version')} ASL({ipopt.get('asl')}) "
+              f"@ {ipopt.get('path')} (exists={ipopt.get('exists')})")
         print(f"    HSL solver      : {provenance['hsl_linear_solver']}")
         g = provenance['gurobi']
         print(f"    gurobipy        : {g.get('gurobipy')} available={g.get('available')} "
               f"licence={g.get('licence')} expires={g.get('licence_expiry')}")
         print(f"    checksum        : {provenance['scenario_checksum']}")
-        print(f"    canonical match : {provenance['checksum_matches_canonical']}")
+        print(f"    canonical match : {provenance['gate_passes']}")
+        for failure in failures:
+            print(f"      MISMATCH {failure['identity']}: "
+                  f"observed {failure['observed']!r}, canonical {failure['canonical']!r}")
         print(f'    -> {path}')
 
-    if not provenance['checksum_matches_canonical']:
+    if failures:
+        detail = '; '.join(
+            f"{f['identity']} is {f['observed']!r}, canonical is {f['canonical']!r}"
+            for f in failures)
         raise ProvenanceError(
-            f"ABORT: SRP1 scenario checksum {provenance['scenario_checksum']} does not match "
-            f"the canonical paper checksum {CANONICAL_CHECKSUM}. "
-            f"Running under {provenance['sys_executable']}. "
-            f"P5.4-R results are only valid in the canonical environment "
+            f"ABORT: the runtime is not the canonical paper environment. {detail}. "
+            f"Running under {provenance['sys_executable']} with IPOPT at "
+            f"{(provenance.get('ipopt') or {}).get('path')}. "
+            f"Results are only valid in the canonical environment "
             f"({CANONICAL_ENV}). Not continuing."
         )
     return provenance, planning

@@ -1,122 +1,122 @@
 # CLAUDE.md
 
-Guidance for Claude Code when working in this repository. Read this file
-first in every session before touching anything related to the local-NLP
-stability initiative described below.
+Guidance for Claude Code in this repository. Read this file first, then read
+the two governing documents named below **in full** before doing any work on
+the active initiative. This file is a pointer and a status board, not a
+substitute for them.
 
 ## Project
 
 Shared Resources Planning Tool — an optimization research codebase for
 planning TSO-DSO shared energy storage resources. It formulates nonlinear
 SMOPF (sequential multi-period optimal power flow) subproblems in Pyomo,
-solved with IPOPT + the MA97 linear solver, coordinated across a
-transmission system operator (TSO) and multiple distribution system
-operators (DSOs) via ADMM, inside an outer Benders-type investment
-planning loop (`run_planning_problem()` in `shared_resources_planning.py`).
+solved with IPOPT + the MA97 linear solver, coordinated across a transmission
+system operator (TSO) and multiple distribution system operators (DSOs) via
+ADMM.
 
-## Active initiative: local-NLP numerical-stability investigation
+## Governing documents — read both, in this order
 
-We are mid-execution of a staged investigation into local SMOPF solve
-failures, governed by two documents that are the source of truth for
-scope, findings, and rules. **Read both in full before doing any work on
-this initiative — do not rely on this file's summary alone:**
+- `REVISION_CONTEXT.md` — repository-wide source of truth. Its
+  `CURRENT SOURCE OF TRUTH` section supersedes anything older recorded
+  further down the same file.
+- `LOCAL_NLP_STABILITY_PLAN.md` — the authoritative stage plan. The filename
+  is legacy; the active scope moved from local-NLP repair to nonlinear-oracle
+  stability long ago. **For any stage work, this file wins over this
+  CLAUDE.md.**
 
-- `REVISION_CONTEXT.md` — background, prior findings, why this
-  investigation exists.
-- `LOCAL_NLP_STABILITY_PLAN.md` — the authoritative staged plan (P1–P4.6).
-  For any P4.x work, **this file's rules win over anything else,
-  including this CLAUDE.md.**
+Then read the reports for the two most recent stages: `P5_7_BRANCH_SELECTION_DIAGNOSIS_REPORT.md`
+and `P5_8_ADMM_SCALING_VALIDATION_REPORT.md`.
 
-## Current status (as of 2026-09-06, commit `0171f451`)
+## Where the work actually is
 
-| Stage | Status | Report |
+The active initiative is **not** local-NLP repair, and it is **not** P4.6.
+Those are closed. It is: the nonlinear operational oracle returns a different
+answer depending on how many times it is re-solved, so the investment
+landscape it induces is not stable enough to optimize over.
+
+Branch: `feature/derivative-free-planning`, from the accepted P5.5-D HEAD.
+
+| Stage | Verdict | Report |
 |---|---|---|
-| P1–P3 | Diagnosis complete | `P3_AUDIT_REPORT.md`, `P3_5A_REPORT.md`–`P3_5D_REPORT.md` |
-| P4.1 Lifecycle audit | Complete | folded into P4.2 diff, see `docs/P4_PROGRESS.md` |
-| P4.2 Production implementation | Complete | `git show 0171f451 -- definitions.py model_construction_helpers.py network.py` |
-| P4.3 Construction/equivalence validation | Complete — all invariants held | `P4_3_P4_4_REPORT.md` |
-| P4.4 Frozen regression | Complete — required gate passed, 9/9 cases clean | `P4_3_P4_4_REPORT.md` |
-| P4.5 Seed-2026 operational smoke | Complete — converged, improved vs. P2.10 baseline | `P4_5_REPORT.md` |
-| **P4.6 Standard-ESS audit/extension gate** | **NOT STARTED — this is the next step** | — |
-| Final consolidated P4 report | Not started (depends on P4.6) | — |
+| P5.5-D | `P5.5-D-C` — practical rigorous lower-bound architecture is unavailable | `P5_5_CONVEX_PLANNING_ARCHITECTURE_REPORT.md` |
+| P5.6-A / B | `PARTIAL` — oracle built; policy locked (T0-only start, midpoint-only anchor, `(S,h)` coordinates) | `P5_6_NONLINEAR_DERIVATIVE_FREE_PLANNING_REPORT.md` |
+| P5.6-C | `P5.6-C-C` — derivative-free search is not ready | same |
+| P5.6-D | `P5.6-D-C` — uniform refinement does not stabilize the investment landscape | same |
+| P5.7 | `P5.7-A` — unique operational oracle can likely be recovered — **accepted** | `P5_7_BRANCH_SELECTION_DIAGNOSIS_REPORT.md` |
+| **P5.8** | `P5.8-B` — objective scaling improves stability but additional ADMM issues remain — **DELIVERED, AWAITING PLANNER REVIEW** | `P5_8_ADMM_SCALING_VALIDATION_REPORT.md` |
 
-Full narrative detail, exact diffs, and file/script inventory:
-`docs/P4_PROGRESS.md`.
+**No new stage is authorized.** Do not start one.
 
-## Standing rules — do not violate these
+The short version of the diagnosis: production forms each ADMM subproblem
+objective as `base / effective_scale + consensus terms` with
+`effective_scale` about `1.05e5`, so IPOPT's stationarity tolerance is five
+orders of magnitude looser in base-objective units. P5.7 established that this
+accounts for `96.5%` of the ADMM-to-polish gap and ruled out initialization,
+IPOPT itself, and the formulation. P5.8 validated the rescaling — and found it
+necessary but not sufficient: the per-step drift persists at `80-90%`, the
+binding problem is now the stopping criterion
+(`objective_tolerance = max(1e3, 1e-3 * recourse) = 827971`, i.e. `25x` the
+`33031` planning signal), and rescaling breaks the downstream exact-consensus
+polish because better local optimality comes with worse agreement.
 
-These prohibitions have applied throughout P1–P4.5 and remain in force for
-P4.6 and the final report unless the planner (the user, in their reviewer
-capacity) explicitly says otherwise in this session:
+## Standing prohibitions — in force until the planner says otherwise
 
-- Do **not** modify: `sess_comp`, shared-ESS or standard-ESS SOC, ESSO
-  degradation/SoH/calendar ageing, active/apparent throughput
-  definitions, generator/branch/voltage formulations, solver settings,
-  ADMM settings, or Benders/local-cut logic.
-- Do **not** modify standard/ordinary ESS equations unless P4.6's own
-  validation explicitly earns that change (see `LOCAL_NLP_STABILITY_PLAN.md`
-  §8) — and even then, only after an active standard-ESS test case is
-  identified and the equivalence is verified, not assumed.
-- Do **not** run the full planning problem (`run_planning_problem()`) —
-  only the reduced distributed-operational-only smoke configuration
-  (`SharedResourcesPlanning.run_operational_planning(type='distributed', ...)`),
-  until a stage explicitly authorizes more.
-- Every stage stops for planner review before the next stage starts. Each
-  stage report ends with a specific required closing phrase (see the plan
-  document and `docs/METHODOLOGY.md`) — never skip it, never paraphrase it.
-- Never guess a real invocation/entry point when unsure — surface the
-  candidate and its evidence, then wait for explicit confirmation before
-  treating it as authoritative.
-- Never fabricate or approximate a result. Every validation stage in this
-  investigation runs against real production code and real (frozen or
-  live) solves — see `docs/METHODOLOGY.md` for the exact discipline to
-  follow.
+- Do **not** modify production code. This includes the nonlinear AC SMOPF
+  equations, the active-energy ESS formulation, H1 complementarity and
+  `ESS_COMPLEMENTARITY_TOLERANCE = 1e-4`, D2-P shared-S bookkeeping, ESSO
+  degradation/SoH/salvage, IPOPT tolerances and options, the MA97/exact-Hessian
+  policy, ADMM tolerances, rho and adaptive-penalty settings, the interface
+  anchor policy, and the master/Benders cut code.
+- Do **not** run or implement derivative-free search, GPS, MADS, any
+  investment search, surrogate optimization, the replacement outer planning
+  loop, production MISOCP planning, distributed convex ADMM, QCP/Benders cut
+  recovery, or TSO SDP/QC strengthening.
+- Every stage stops for planner review before the next begins, and each stage
+  report ends with its specific required closing phrase — never skip it, never
+  paraphrase it. See `docs/METHODOLOGY.md`.
+- Never guess an invocation or entry point. Surface the candidate and its
+  evidence, then wait for confirmation.
+- Never fabricate or approximate a result. Every validation runs against real
+  production code and real solves.
 
-## Methodology
+## Environment — canonical runtime is a hard gate
 
-This investigation follows a strict, consistent diagnostic discipline —
-frozen-pickle regression with SHA-256 verification, calling real
-production functions directly rather than reimplementing them, a
-"required-first-gate-then-proceed" pattern for regression stages, and a
-consistent stage-report template. Follow it for P4.6 and the final
-report. Full detail: `docs/METHODOLOGY.md`.
-
-## Environment
-
-- Production code requires Pyomo + IPOPT + MA97. Check whether this
-  Claude Code environment has that stack available (e.g. `python -c
-  "import pyomo, pyomo.environ"`, and confirm IPOPT/MA97 are on PATH)
-  before assuming you must hand scripts to the user to run.
-  - If it's available: run P4.6's validation scripts yourself.
-  - If it's not: write the script, verify it compiles
-    (`python -m py_compile`), and ask the user to run it and share back
-    the JSON report — this was the necessary workflow in the prior
-    session (a sandboxed Cowork environment with no Pyomo/IPOPT), and it
-    still works fine here if needed.
-- Git: this repo lives at
-  `/Users/micaelsimoes/PycharmProjects/shared-resources-planning`, on
-  branch `admm_residual_balancing_tests`. The P4 kappa-scaling fix and
-  all P3.5/P4 diagnostic scripts, reports, and small JSON/log evidence
-  files are committed as of `0171f451`.
-  - `data/` result/diagram output directories (multi-GB of pickles and
-    `.xlsx` files) are intentionally **not** committed — do not `git add`
-    them wholesale (no `git add -A` / `git add .`). Stage specific files
-    by name, as the existing commits do.
-  - `.env` exists in the working tree and must never be committed.
-
-## Next step
-
-Execute **P4.6** (standard-ESS audit/extension gate) exactly as specified
-in `LOCAL_NLP_STABILITY_PLAN.md` §8 — audit first, and only implement a
-production change if an active standard-ESS test case exists and
-equivalence is verified; otherwise return a design recommendation and
-wait for planner approval. Then produce the final consolidated P4 report
-per §10 (sections A–F), ending with exactly one of:
+The canonical interpreter on **this machine (Mac Studio, since 2026-09-09)**:
 
 ```
-P4 PASS — recommend planner approval for reduced planning baseline
-P4 PARTIAL — planner review required before further execution
-P4 FAIL — do not proceed
+/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python
 ```
 
-Then stop.
+The path `/opt/anaconda3/envs/opf_env_py311/bin/python` that still appears in
+the stage reports and in many `p5*.py` harness docstrings is the old MacBook
+Air's and is superseded. The reports are left as written because they record
+the runtime that produced their evidence.
+
+Canonical identity, all four asserted by `p54r_provenance.gate()`, which
+aborts on any mismatch:
+
+- SRP1 scenario checksum `5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358`;
+- IPOPT `3.14.18`, ASL `20241111`, at `/usr/local/bin/ipopt`;
+- HSL linear solver `ma97` (HSL `5.5.0`).
+
+Every harness that loads SRP1 must call that gate before doing any work. Note
+that the conda environment also contains `conda-forge::ipopt 3.14.19`, which
+is **not** the canonical solver — production reaches the canonical binary via
+`solver_params.solver_path`, and the version assertion is what keeps them
+apart.
+
+The environment is captured in `environment.yml` (authoritative) and
+`requirements.txt` (pip half only). It is half conda (46 packages) and half
+pip (23); `copulas 0.14.0` is on the pip side and generates the scenario
+realization the checksum is a checksum of. IPOPT and HSL are outside conda.
+
+## Repository conventions
+
+- `data/` result and diagram directories are multi-GB and intentionally **not**
+  committed. Never `git add -A` or `git add .`; stage files by name.
+- `.env` exists in the working tree and must never be committed.
+- Diagnostic harnesses are `p5*.py` at the repository root, one per stage, each
+  gated by `p54r_provenance.gate()`. Follow that pattern.
+- Methodology — frozen-pickle regression with SHA-256 verification, calling
+  real production functions rather than reimplementing them, and the stage
+  report template — is in `docs/METHODOLOGY.md`.

@@ -46,9 +46,17 @@ The old pre-P5.4 checkpoint `f77d829359ffd873367f556882546bc2dcc8ec99` remains h
 
 All future paper-instance validation, benchmark and planning-oracle work must use:
 
-`/opt/anaconda3/envs/opf_env_py311/bin/python`
+`/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python`
 
-Canonical environment/provenance from P5.4-R:
+**Machine migration, 2026-09-09.** The work moved from a MacBook Air to a Mac
+Studio. The old machine's path `/opt/anaconda3/envs/opf_env_py311/bin/python`
+is superseded everywhere it still appears — including in the stage reports,
+which are left as written because they record the runtime that produced their
+evidence at the time. The migration is verified: `p57_d1_chain.py` reproduced
+all twelve steps of the accepted P5.6-D base chain on the new machine,
+`828021090.3608505` through `823731333.5586472`, every step within `5e-07`.
+
+Canonical environment/provenance from P5.4-R, re-confirmed on the Mac Studio:
 
 - Python `3.11.11`;
 - NumPy `2.4.2`;
@@ -76,6 +84,23 @@ Canonical SRP1 configuration:
 The fail-fast provenance gate introduced in P5.4-R is now a required infrastructure convention: paper-case harnesses must record interpreter/environment/package/solver provenance and abort if the checksum differs. A rejected environment must never silently produce evidence that is mixed with canonical results.
 
 `srp_env` is noncanonical for paper validation because it generates a different stochastic realization (`4d948b9b...`). Seed `2026` alone is therefore **not** a sufficient reproducibility specification.
+
+Nor is the checksum alone. Until 2026-09-09 `p54r_provenance.py` recorded the
+IPOPT and HSL identity but asserted only the checksum, so a different solver
+build would have passed silently — and that was not hypothetical: the Mac Studio
+initially resolved IPOPT `3.14.20` against ASL `20190605`, which reproduces the
+canonical checksum. The gate now asserts the scenario checksum, the IPOPT
+version, the IPOPT ASL build and the HSL linear solver, and aborts on any
+mismatch. Note also that the conda environment itself carries
+`conda-forge::ipopt 3.14.19`, which is **not** the canonical solver; production
+reaches the canonical `/usr/local/bin/ipopt` through
+`solver_params.solver_path`.
+
+The environment is captured in `environment.yml` (authoritative) and
+`requirements.txt` (the pip half only). It is half conda (46 packages) and half
+pip (23), and the pip half includes `copulas 0.14.0`, which generates the
+scenario realization the checksum is a checksum of. IPOPT and HSL are outside
+conda and must be installed separately.
 
 ## Current live nonlinear network solver policy
 
