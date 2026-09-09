@@ -24,7 +24,7 @@ Nothing production is modified.  Every rescale is a positive constant multiple
 applied to a per-evaluation deep copy, and every initial point is transferred
 into non-fixed variables only.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p57_hypotheses.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p57_hypotheses.py
 """
 
 import io

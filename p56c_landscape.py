@@ -14,7 +14,7 @@ T0, T2 and T4 with the locked midpoint anchor.
 Everything reported per candidate is the delta relative to that template's own
 base value, because that is the quantity a search actually follows.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p56c_landscape.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p56c_landscape.py
 """
 
 import hashlib

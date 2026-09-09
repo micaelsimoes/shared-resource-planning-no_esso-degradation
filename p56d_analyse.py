@@ -11,7 +11,7 @@ here.  The question is not whether objective LEVELS agree across depths -- they
 will not, because each refinement lowers everything -- but whether the RELATIVE
 investment effects stabilise as the same refinement is applied uniformly.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p56d_analyse.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p56d_analyse.py
 """
 
 import json

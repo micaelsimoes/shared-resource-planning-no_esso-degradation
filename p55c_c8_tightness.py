@@ -21,7 +21,7 @@ comes from, family by family:
                               and this says how much of that interval the
                               relaxation actually exploits.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p55c_c8_tightness.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p55c_c8_tightness.py
 """
 
 import io

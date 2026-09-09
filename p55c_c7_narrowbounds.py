@@ -18,7 +18,7 @@ FIXING THEM IS NOT A PROPOSED CHANGE.  It removes up to 1e-5 of slack per
 variable and so slightly SHRINKS the feasible set, which would break the
 outer-relaxation direction.  It is run here only to confirm or refute the cause.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p55c_c7_narrowbounds.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p55c_c7_narrowbounds.py
 """
 
 import io, json, math, os, sys

@@ -22,7 +22,7 @@ which is exactly why it is worth running before any binaries are introduced.
 The fixed-mode model is NOT itself claimed to be a lower bound on the original
 nonlinear problem; fixing the mode restricts the set.  It is a screen.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p55d_d4_fixedmode.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p55d_d4_fixedmode.py
 """
 
 import io

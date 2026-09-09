@@ -20,7 +20,7 @@ overall NLP error, and the block's consensus residual.
 
 Nothing production is modified: the rescale is applied to a Pyomo clone.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p58_b_rescale.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p58_b_rescale.py
 """
 
 import io

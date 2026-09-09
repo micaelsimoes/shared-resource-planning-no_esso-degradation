@@ -23,7 +23,7 @@ Everything below is proved analytically and then checked numerically against the
 production constants and, where a solved point is available, against the D1
 polished nonlinear schedule.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p55d_d2d3_hull.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p55d_d2d3_hull.py
 """
 
 import io

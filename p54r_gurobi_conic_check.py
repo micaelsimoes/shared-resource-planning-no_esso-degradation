@@ -14,7 +14,7 @@ Solves a small convex QCP/SOCP with a known analytic optimum and checks:
 Nothing is installed. Also confirms the Pyomo interfaces, since the convex SMOPF
 prototype will be written in Pyomo.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p54r_gurobi_conic_check.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p54r_gurobi_conic_check.py
 """
 
 import json

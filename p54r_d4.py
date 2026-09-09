@@ -8,7 +8,7 @@ Every branch state is regenerated canonically in this process. No srp_env
 archived state, model, warm start or sensitivity is read. Output goes to
 P54R_D4/ so the noncanonical P54D4/ evidence is preserved.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p54r_d4.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p54r_d4.py
 """
 
 import io

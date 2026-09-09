@@ -92,18 +92,28 @@ the stage reports and in many `p5*.py` harness docstrings is the old MacBook
 Air's and is superseded. The reports are left as written because they record
 the runtime that produced their evidence.
 
-Canonical identity, all four asserted by `p54r_provenance.gate()`, which
+Canonical identity, all five asserted by `p54r_provenance.gate()`, which
 aborts on any mismatch:
 
 - SRP1 scenario checksum `5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358`;
-- IPOPT `3.14.18`, ASL `20241111`, at `/usr/local/bin/ipopt`;
+- IPOPT resolved path `/usr/local/bin/ipopt`;
+- IPOPT version `3.14.18`;
+- IPOPT ASL build `20241111`;
 - HSL linear solver `ma97` (HSL `5.5.0`).
 
-Every harness that loads SRP1 must call that gate before doing any work. Note
-that the conda environment also contains `conda-forge::ipopt 3.14.19`, which
-is **not** the canonical solver — production reaches the canonical binary via
-`solver_params.solver_path`, and the version assertion is what keeps them
-apart.
+Every harness that loads SRP1 must call that gate before doing any work.
+
+**IPOPT must always be the locally installed `/usr/local/bin/ipopt`, never the
+conda environment's.** The environment also contains
+`conda-forge::ipopt 3.14.19` (ASL `20231111`), which shadows the canonical
+binary on `PATH` whenever the environment is activated. Production is not
+affected and is not to be changed: `network.py:487` and
+`shared_energy_storage_data.py:859` both pass
+`executable=solver_params.solver_path`, which `SolverParameters` reads from
+`NLP_SOLVER_PATH` in `.env` with `require_path=True`, so `PATH` is never
+consulted. The gate probes that same configured path and nothing else, asserts
+it, and records the shadowing `PATH` binary separately as an explicitly unused
+diagnostic.
 
 The environment is captured in `environment.yml` (authoritative) and
 `requirements.txt` (pip half only). It is half conda (46 packages) and half

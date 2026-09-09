@@ -17,7 +17,7 @@ places a random-but-reproducible feasible-shaped point on (e, f, r), evaluates
 the production expressions, evaluates the transformed affine expressions, and
 differences them.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p55b_oltc_transform_check.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p55b_oltc_transform_check.py
 """
 
 import io

@@ -9,7 +9,7 @@ C0.1  Prove V_salvage is maximised at SoH = 1 (E_avail = E_rated) and extract th
 C0.2  Trace investment S/E -> ESSO rated -> ESSO available -> TSO/DSO
       operational capacity, including the baseMVA conversion.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p55c_c0_traces.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p55c_c0_traces.py
 """
 
 import io

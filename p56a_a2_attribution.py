@@ -7,7 +7,7 @@ attribution as unproved.  This script attributes it from the recorded per-block
 base-objective decomposition, which the oracle captures before and after
 polishing within the SAME evaluation, so no second ADMM run is needed.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p56a_a2_attribution.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p56a_a2_attribution.py
 """
 
 import json

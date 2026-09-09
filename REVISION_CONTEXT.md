@@ -65,7 +65,10 @@ Canonical environment/provenance from P5.4-R, re-confirmed on the Mac Studio:
 - Pyomo `6.9.5`;
 - IPOPT `3.14.18` at `/usr/local/bin/ipopt`;
 - HSL linear solver `ma97`;
-- Gurobi / `gurobipy` `13.0.1`, academic licence, expiry `2027-04-10`.
+- Gurobi / `gurobipy` `13.0.1`, academic licence id `2807206`, expiry
+  `2027-04-14`. The licence was reissued after P5.4-R; the stage reports
+  correctly record the licence in force at the time (id `2805683`, expiry
+  `2027-04-10`).
 
 Canonical SRP1 configuration:
 
@@ -89,12 +92,19 @@ Nor is the checksum alone. Until 2026-09-09 `p54r_provenance.py` recorded the
 IPOPT and HSL identity but asserted only the checksum, so a different solver
 build would have passed silently — and that was not hypothetical: the Mac Studio
 initially resolved IPOPT `3.14.20` against ASL `20190605`, which reproduces the
-canonical checksum. The gate now asserts the scenario checksum, the IPOPT
-version, the IPOPT ASL build and the HSL linear solver, and aborts on any
-mismatch. Note also that the conda environment itself carries
-`conda-forge::ipopt 3.14.19`, which is **not** the canonical solver; production
-reaches the canonical `/usr/local/bin/ipopt` through
-`solver_params.solver_path`.
+canonical checksum. The gate now asserts the scenario checksum, the resolved
+IPOPT path, the IPOPT version, the IPOPT ASL build and the HSL linear solver,
+and aborts on any mismatch.
+
+IPOPT must always be the locally installed `/usr/local/bin/ipopt`. The conda
+environment also carries `conda-forge::ipopt 3.14.19` (ASL `20231111`), which
+shadows it on `PATH` whenever the environment is activated. Production is
+unaffected: `network.py:487` and `shared_energy_storage_data.py:859` both pass
+`executable=solver_params.solver_path`, read from `NLP_SOLVER_PATH` in `.env`
+with `require_path=True`, so `PATH` is never consulted. The gate probes that
+same configured path and nothing else — it previously fell back to a `PATH`
+lookup, which could have let the conda binary stand in for the canonical one in
+the record and in the assertion.
 
 The environment is captured in `environment.yml` (authoritative) and
 `requirements.txt` (the pip half only). It is half conda (46 packages) and half
@@ -464,7 +474,7 @@ P5.5-C investigated this on the real convex model and found no usable full-model
 Canonical environment provides:
 
 - `gurobipy 13.0.1`;
-- academic licence valid through `2027-04-10`;
+- academic licence id `2807206`, valid through `2027-04-14`;
 - `gurobi`, `gurobi_direct`, and `gurobi_persistent` available;
 - `QCPDual=1` supported;
 - linear and quadratic/conic duals available;

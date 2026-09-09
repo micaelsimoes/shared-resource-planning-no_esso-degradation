@@ -6,7 +6,7 @@ A6's summary keeps only the status for a failed run, which is not enough to act
 on.  This re-runs that one candidate and records which of the 48 network SMOPFs
 failed and what the ADMM did beforehand.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p56a_a6_failure.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p56a_a6_failure.py
 """
 
 import json

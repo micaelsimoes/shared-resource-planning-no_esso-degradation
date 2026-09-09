@@ -27,7 +27,7 @@ The objectives are checked against the accepted P5.6-D base chain.  A
 re-implementation that drifts from the thing it is diagnosing is worthless, so a
 mismatch beyond tau_numerical aborts the run.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p57_d1_chain.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p57_d1_chain.py
 """
 
 import json

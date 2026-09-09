@@ -23,7 +23,7 @@ the capacity variable.
 A second test adds a multi-period active-sum row and SOC energy limits, so the
 contract is checked on something structurally closer to the shared-ESS block.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p55b_cut_contract.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p55b_cut_contract.py
 """
 
 import json

@@ -16,7 +16,7 @@ REFINEMENT DRIFT, so each case runs a four-generation chain rather than a single
 evaluation -- a single evaluation cannot show drift.  Case A must reproduce the
 accepted P5.6-D base chain, which is checked and reported.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p58_a0_tolerances.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p58_a0_tolerances.py
 """
 
 import json

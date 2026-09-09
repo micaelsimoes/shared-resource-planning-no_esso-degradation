@@ -179,13 +179,18 @@ Every active harness that loads SRP1 must record:
 Abort if the checksum differs.
 
 **The checksum is necessary but not sufficient, and the gate no longer treats it
-as sufficient.** `p54r_provenance.py` asserts the scenario checksum, the IPOPT
-version (`3.14.18`), the IPOPT ASL build (`20241111`) and the HSL linear solver
-(`ma97`), and aborts on any mismatch. Before 2026-09-09 it asserted the checksum
-only, which would have admitted the Mac Studio's original IPOPT `3.14.20` /
-ASL `20190605` without complaint. The conda environment's own
-`conda-forge::ipopt 3.14.19` is likewise not the canonical solver; the canonical
-one is `/usr/local/bin/ipopt`, reached via `solver_params.solver_path`.
+as sufficient.** `p54r_provenance.py` asserts the scenario checksum, the
+resolved IPOPT path (`/usr/local/bin/ipopt`), the IPOPT version (`3.14.18`),
+the IPOPT ASL build (`20241111`) and the HSL linear solver (`ma97`), and aborts
+on any mismatch. Before 2026-09-09 it asserted the checksum only, which would
+have admitted the Mac Studio's original IPOPT `3.14.20` / ASL `20190605`
+without complaint.
+
+The canonical IPOPT is always the locally installed `/usr/local/bin/ipopt`,
+reached via `solver_params.solver_path`. The conda environment's own
+`conda-forge::ipopt 3.14.19` is not the canonical solver and shadows it on
+`PATH` when the environment is activated; the gate probes the configured path
+alone and never falls back to `PATH`.
 
 `srp_env` is noncanonical and its D3/D4 numerical evidence is historical only.
 

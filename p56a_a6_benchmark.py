@@ -12,7 +12,7 @@ than estimated.  Both declared start policies are evaluated for every candidate,
 because A5 defines Q_oracle as the best VALID total objective over the fixed
 start set and the benefit of the second start has to be paid for to be judged.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p56a_a6_benchmark.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p56a_a6_benchmark.py
 """
 
 import json

@@ -24,7 +24,7 @@ holds on the fixed-consensus set.
 A2.2 fingerprints the dominant blocks so the recovered branch can be compared
 with the P5.4-D4 evidence.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p56a_a2_branch.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p56a_a2_branch.py
 """
 
 import io

@@ -12,7 +12,7 @@ K4 -> K8 moved them by up to 811 438, which is consistent either with decay or
 with the terminal step simply being one step rather than four.  K=12 separates
 those.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p56d_k12.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p56d_k12.py
 """
 
 import json

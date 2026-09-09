@@ -12,7 +12,7 @@ Every variant here MODIFIES the model and therefore bounds a different problem.
 Nothing produced here is a bound on anything; the only output that matters is
 whether the barrier certifies.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p55c_c7_dso_diag.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p55c_c7_dso_diag.py
 """
 
 import io

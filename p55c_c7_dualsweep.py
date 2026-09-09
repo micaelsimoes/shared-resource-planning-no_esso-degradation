@@ -13,7 +13,7 @@ This sweeps the accuracy parameters Gurobi names, on one DSO block and one TSO
 block, and -- the point of the exercise -- actually tries to READ the duals of
 the capacity-fixing rows rather than trusting ObjBound to be finite.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p55c_c7_dualsweep.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p55c_c7_dualsweep.py
 """
 
 import io, json, math, os, sys

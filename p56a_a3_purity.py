@@ -27,7 +27,7 @@ the investment signal -- materially below it, as required.  Bit-identical
 agreement is reported separately but is not the pass criterion, and solver logs
 are not required to match.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p56a_a3_purity.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p56a_a3_purity.py
 """
 
 import io

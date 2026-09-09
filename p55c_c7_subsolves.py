@@ -10,7 +10,7 @@ then one whole year, then everything, separates those two explanations.
 A restricted model bounds a restricted problem.  None of the values here is a
 bound on the planning recourse; they are solver-behaviour evidence only.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p55c_c7_subsolves.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p55c_c7_subsolves.py
 """
 
 import io

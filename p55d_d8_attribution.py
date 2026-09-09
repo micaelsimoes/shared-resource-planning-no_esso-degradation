@@ -19,7 +19,7 @@ point decomposes EXACTLY, block by block:
 That decomposition is what this script computes.  It needs the per-block values
 of the polished point, which P5.5-D1 writes out.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p55d_d8_attribution.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p55d_d8_attribution.py
 """
 
 import io

@@ -9,7 +9,7 @@ the transmission side has interface flexibility for exactly that purpose.  This
 tests that alternative on the failing candidate and, as a control, on the base
 candidate.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p56a_a6_anchor.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p56a_a6_anchor.py
 """
 
 import json

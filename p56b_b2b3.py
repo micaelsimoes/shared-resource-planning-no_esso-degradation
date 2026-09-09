@@ -16,7 +16,7 @@ B2 measures the anchor convention with the ADMM solved ONCE per candidate and th
 polish run twice from clones, so the comparison isolates the polish convention.
 B3 then adds cold evaluations on a small strategic subset only.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p56b_b2b3.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p56b_b2b3.py
 """
 
 import hashlib

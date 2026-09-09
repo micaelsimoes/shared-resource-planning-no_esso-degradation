@@ -16,7 +16,7 @@ comparable to the accepted P5.6-D chain.
 The CURRENT chain is not re-run here: it is the accepted P5.6-D base chain,
 reproduced twice already (P5.7 to 4.8e-07, P5.8-A0 case A exactly).
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p58_c_replay.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p58_c_replay.py
 """
 
 import json

@@ -10,7 +10,7 @@ Answers the two questions the stage asks of the diagnostic set:
 
 Reads only persisted evidence; solves nothing.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p57_analyse.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p57_analyse.py
 """
 
 import json

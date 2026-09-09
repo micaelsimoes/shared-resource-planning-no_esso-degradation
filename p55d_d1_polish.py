@@ -30,7 +30,7 @@ polished point is zero by construction; what is actually being tested is whether
 the local nonlinear models remain FEASIBLE at the common values, and what the
 resulting rigorous upper-bound incumbent costs.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p55d_d1_polish.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p55d_d1_polish.py
 """
 
 import io

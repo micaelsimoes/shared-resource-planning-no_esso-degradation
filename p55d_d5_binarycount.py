@@ -9,7 +9,7 @@ period is mathematically sufficient given the retained separate-copy
 architecture.  That question has an answer independent of whether the MISOCP is
 ever solved, and it is answered here.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p55d_d5_binarycount.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p55d_d5_binarycount.py
 """
 
 import io

@@ -9,7 +9,7 @@ tol_cut is derived, not chosen:
               actually determined
   tol_cut     = max(tol_repeat, tol_admm)
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p54r_d3_analysis.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p54r_d3_analysis.py
 """
 
 import glob

@@ -19,7 +19,7 @@ C10  The cut contract, on the real convex model rather than the B6/B7 toy:
      actually exposes duals, because that is the only place the contract can be
      tested at all.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p55c_c10_cut.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p55c_c10_cut.py
 """
 
 import io

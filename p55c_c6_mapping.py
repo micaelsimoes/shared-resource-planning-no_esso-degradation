@@ -7,7 +7,7 @@ genuine outer relaxation, every nonlinear feasible point must map to a convex
 feasible point, and the relaxed objective there must be <= the nonlinear
 objective by exactly the dropped non-negative terms.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p55c_c6_mapping.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p55c_c6_mapping.py
 """
 
 import io

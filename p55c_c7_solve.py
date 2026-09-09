@@ -11,7 +11,7 @@ C8  Tightness diagnostics: AC rank gap, OLTC rank gap, TSO cycle consistency via
 C9  LB_rec(x) = ObjBound_R(x) - V_salvage_max(x) against the canonical nonlinear
     values.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p55c_c7_solve.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p55c_c7_solve.py
 """
 
 import io

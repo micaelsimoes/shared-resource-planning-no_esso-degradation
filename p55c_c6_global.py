@@ -19,7 +19,7 @@ point satisfies the consensus only to the ADMM tolerance, so the residual there
 is a measurement of that tolerance, not of a modelling error -- both numbers are
 reported so they can be told apart.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p55c_c6_global.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p55c_c6_global.py
 """
 
 import io

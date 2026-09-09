@@ -7,7 +7,7 @@ supplies the same-depth reference for every K), then K=8 with its terminal
 self-refinement, then K=2, then the two K=4 completions.  Results are persisted
 after every evaluation so a partial run is still usable.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p56d_run.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p56d_run.py
 """
 
 import io

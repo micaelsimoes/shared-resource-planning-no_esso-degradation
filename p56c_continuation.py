@@ -21,7 +21,7 @@ ADMM, the exact midpoint polish and the complete feasibility audit.  There is no
 anchor switching and no adaptive schedule, so the path is identical every time the
 same target is evaluated.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p56c_continuation.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p56c_continuation.py
 """
 
 import io

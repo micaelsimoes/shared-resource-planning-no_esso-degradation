@@ -23,7 +23,7 @@ physical/coupling gate passes.  If it oscillates or is still moving materially
 after 5 refinements, report PARTIAL rather than taking whichever happens to be
 last.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p56b_b1_template.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p56b_b1_template.py
 """
 
 import hashlib

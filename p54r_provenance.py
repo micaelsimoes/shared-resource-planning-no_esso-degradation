@@ -8,7 +8,8 @@ never silently continues.
 The gate asserts four things, not one:
 
   * the realized SRP1 scenario checksum;
-  * the IPOPT version actually invoked at `solver_params.solver_path`;
+  * the resolved IPOPT path, which must be the locally installed binary;
+  * the IPOPT version actually invoked at that path;
   * the ASL build stamped into that IPOPT banner;
   * the HSL linear solver configured in the network parameter files.
 
@@ -19,14 +20,24 @@ checksum and would therefore have passed the checksum-only gate silently while
 producing noncanonical numerical evidence. Recording a value the gate does not
 compare is not a gate.
 
-Note that the conda environment itself carries `conda-forge::ipopt 3.14.19`,
-which is NOT the canonical solver. The canonical IPOPT is the standalone binary
-at `/usr/local/bin/ipopt`, reached via `solver_params.solver_path`. The version
-assertion is what keeps the two apart.
+The gate probes ONLY the binary at `solver_params.solver_path` and never falls
+back to whatever `ipopt` is first on PATH. That fallback existed here until
+2026-09-09 and was a hole in the instrument rather than in production: the conda
+environment carries `conda-forge::ipopt 3.14.19`, so a gate that resolved IPOPT
+off PATH could have reported and asserted a solver that production never calls.
+
+Production itself is not ambiguous and is not being changed. Both call sites --
+`network.py:487` and `shared_energy_storage_data.py:859` -- pass
+`executable=solver_params.solver_path`, which `SolverParameters` reads from
+`NLP_SOLVER_PATH` in `.env` with `require_path=True`, exiting if it is unset.
+The locally installed `/usr/local/bin/ipopt` is therefore the only solver
+production can invoke. The path assertion below pins that, so a `.env` edited to
+point elsewhere -- at the conda binary, say -- aborts instead of running.
 
 Canonical environment : /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python
 Canonical checksum    : 5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358
 Canonical IPOPT       : 3.14.18, ASL 20241111, at /usr/local/bin/ipopt
+                        (locally installed; NOT the conda environment's 3.14.19)
 Canonical HSL solver  : ma97 (HSL 5.5.0; the library version is not machine-
                         readable from the IPOPT banner and is not asserted)
 
@@ -37,6 +48,7 @@ import io
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 from contextlib import redirect_stdout
@@ -52,6 +64,7 @@ CANONICAL_ENV = 'opf_env_py311'
 # Asserted alongside the checksum since the 2026-09-09 migration. See module
 # docstring: a matching checksum under a different solver build is exactly the
 # failure mode this exists to stop.
+CANONICAL_IPOPT_PATH = '/usr/local/bin/ipopt'
 CANONICAL_IPOPT_VERSION = '3.14.18'
 CANONICAL_IPOPT_ASL = '20241111'
 CANONICAL_HSL_LINEAR_SOLVER = 'ma97'
@@ -81,28 +94,49 @@ def _git_head():
         return None
 
 
+def _probe_ipopt(executable):
+    """Version/ASL of one specific IPOPT binary. No PATH search, no fallback."""
+    result = {'version': None, 'asl': None, 'banner': None}
+    if not executable:
+        return result
+    try:
+        out = subprocess.run([executable, '--version'], capture_output=True,
+                             text=True, timeout=30)
+        text = (out.stdout or '') + (out.stderr or '')
+        match = re.search(r'Ipopt\s+([0-9]+\.[0-9]+\.[0-9]+)', text)
+        if match:
+            result['version'] = match.group(1)
+            result['banner'] = text.strip().splitlines()[0][:200]
+            # e.g. "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)"
+            asl = re.search(r'ASL\s*\(\s*([0-9]{8})\s*\)', text)
+            if asl:
+                result['asl'] = asl.group(1)
+    except Exception as error:
+        result['error'] = f'{type(error).__name__}: {error}'
+    return result
+
+
 def _ipopt_info(solver_path):
-    info = {'path': solver_path, 'version': None, 'asl': None, 'resolved_from': None,
+    """Provenance of the IPOPT production will actually invoke.
+
+    Deliberately probes `solver_path` alone. Falling back to a PATH `ipopt`
+    would let the conda environment's 3.14.19 stand in for the locally
+    installed solver in the record, and in the assertion.
+    """
+    info = {'path': solver_path,
             'exists': bool(solver_path and os.path.exists(solver_path))}
-    for candidate in (solver_path, 'ipopt'):
-        if not candidate:
-            continue
-        try:
-            out = subprocess.run([candidate, '--version'], capture_output=True,
-                                 text=True, timeout=30)
-            text = (out.stdout or '') + (out.stderr or '')
-            match = re.search(r'Ipopt\s+([0-9]+\.[0-9]+\.[0-9]+)', text)
-            if match:
-                info['version'] = match.group(1)
-                info['banner'] = text.strip().splitlines()[0][:200]
-                info['resolved_from'] = candidate
-                # e.g. "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)"
-                asl = re.search(r'ASL\s*\(\s*([0-9]{8})\s*\)', text)
-                if asl:
-                    info['asl'] = asl.group(1)
-                break
-        except Exception:
-            continue
+    info.update(_probe_ipopt(solver_path))
+
+    # Recorded for visibility only, never asserted and never used: whatever
+    # `ipopt` PATH resolves to, which on this machine is the conda 3.14.19.
+    which = shutil.which('ipopt')
+    info['path_ipopt_not_used'] = {
+        'path': which,
+        'version': _probe_ipopt(which)['version'] if which else None,
+        'shadows_canonical': bool(which and solver_path
+                                  and os.path.realpath(which)
+                                  != os.path.realpath(solver_path)),
+    }
     return info
 
 
@@ -188,6 +222,7 @@ def collect(planning=None):
         'scenario_checksum': checksum,
         'canonical_checksum': CANONICAL_CHECKSUM,
         'checksum_matches_canonical': checksum == CANONICAL_CHECKSUM,
+        'canonical_ipopt_path': CANONICAL_IPOPT_PATH,
         'canonical_ipopt_version': CANONICAL_IPOPT_VERSION,
         'canonical_ipopt_asl': CANONICAL_IPOPT_ASL,
         'canonical_hsl_linear_solver': CANONICAL_HSL_LINEAR_SOLVER,
@@ -200,6 +235,7 @@ def check(provenance):
     comparisons = [
         ('scenario checksum', provenance.get('scenario_checksum'),
          CANONICAL_CHECKSUM),
+        ('IPOPT path', ipopt.get('path'), CANONICAL_IPOPT_PATH),
         ('IPOPT version', ipopt.get('version'), CANONICAL_IPOPT_VERSION),
         ('IPOPT ASL build', ipopt.get('asl'), CANONICAL_IPOPT_ASL),
         ('HSL linear solver', provenance.get('hsl_linear_solver'),
@@ -237,6 +273,10 @@ def gate(stage, out_dir, planning=None, verbose=True):
         print(f"    IPOPT           : {ipopt.get('version')} ASL({ipopt.get('asl')}) "
               f"@ {ipopt.get('path')} (exists={ipopt.get('exists')})")
         print(f"    HSL solver      : {provenance['hsl_linear_solver']}")
+        shadow = ipopt.get('path_ipopt_not_used') or {}
+        if shadow.get('shadows_canonical'):
+            print(f"    (PATH ipopt     : {shadow.get('version')} @ {shadow.get('path')} "
+                  f"-- shadows the canonical binary, NOT used by production)")
         g = provenance['gurobi']
         print(f"    gurobipy        : {g.get('gurobipy')} available={g.get('available')} "
               f"licence={g.get('licence')} expires={g.get('licence_expiry')}")
@@ -262,7 +302,11 @@ def gate(stage, out_dir, planning=None, verbose=True):
 
 
 if __name__ == '__main__':
-    out = os.path.join(REPO_ROOT, 'data', 'SRP1', 'Results', 'P54R')
+    # Deliberately NOT a stage evidence directory. Writing a standalone check
+    # into data/SRP1/Results/P54R would overwrite the provenance record of the
+    # P5.4-R run itself, which its report cites. The same mistake overwrote
+    # P57/provenance.json during the 2026-09-09 migration.
+    out = os.path.join(REPO_ROOT, 'data', 'SRP1', 'Results', 'ProvenanceCheck')
     try:
         gate('P5.4-R0 standalone', out)
         print('\n[R0] GATE PASSED — canonical environment confirmed.')

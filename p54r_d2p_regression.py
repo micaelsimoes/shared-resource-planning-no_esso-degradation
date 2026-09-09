@@ -7,7 +7,7 @@ holds on the CANONICAL SRP1 scenarios. No formulation change.
 Writes to data/SRP1/Results/P54R_D2P/ so the earlier noncanonical evidence under
 P54H1/ and P54E/ is preserved untouched.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p54r_d2p_regression.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p54r_d2p_regression.py
 """
 
 import json

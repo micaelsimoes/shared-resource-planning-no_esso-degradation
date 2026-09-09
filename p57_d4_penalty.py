@@ -19,7 +19,7 @@ throughout and cannot contribute:
       the previous.  Four solves, same count, no scaling change and no consensus
       change.  This separates "more solves" from "more ADMM updates".
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p57_d4_penalty.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p57_d4_penalty.py
 """
 
 import json

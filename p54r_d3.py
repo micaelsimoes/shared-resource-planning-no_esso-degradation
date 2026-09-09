@@ -10,7 +10,7 @@ noncanonical evidence under P54D3/ is preserved untouched.
 Candidate set is identical to the completed prior D3 population, for a
 like-for-like comparison.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p54r_d3.py --group s9
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p54r_d3.py --group s9
 """
 
 import argparse

@@ -12,7 +12,7 @@ Reported for each width: whether a dual certificate appears, the bound, and the
 bound's distance from the unwidened primal value -- that distance is the price
 paid for the certificate.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p55c_c7_widen.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p55c_c7_widen.py
 """
 
 import io, json, math, os, sys

@@ -17,7 +17,7 @@ P5.8-E closes the two questions P5.7 left explicitly unmeasured:
 
 No anchor policy is changed.  Nothing is written to production data.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p58_e_anchor.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p58_e_anchor.py
 """
 
 import json

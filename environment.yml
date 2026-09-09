@@ -31,10 +31,18 @@
 # installed separately:
 #
 #   * IPOPT 3.14.18, ASL 20241111, standalone binary at /usr/local/bin/ipopt.
-#     Note the `ipopt` entry below: conda-forge ships 3.14.19 into this
-#     environment, and it is NOT the canonical solver. Production reaches the
-#     canonical one through `solver_params.solver_path`. p54r_provenance.py
-#     asserts the version and ASL build for exactly this reason.
+#     Note the `ipopt` entry below: conda-forge ships 3.14.19 (ASL 20231111)
+#     into this environment. It is NOT the canonical solver, and it SHADOWS the
+#     canonical one on PATH whenever the environment is activated. It is listed
+#     because the manifest must record what is actually installed, not because
+#     it should be used.
+#
+#     Production only ever invokes the locally installed binary: network.py:487
+#     and shared_energy_storage_data.py:859 pass
+#     executable=solver_params.solver_path, which SolverParameters reads from
+#     NLP_SOLVER_PATH in .env with require_path=True. PATH is never consulted.
+#     p54r_provenance.py asserts the resolved path, version and ASL build for
+#     exactly this reason, and never falls back to a PATH lookup.
 #   * HSL 5.5.0 providing ma97 (libcoinhsl in /usr/local/lib), licensed
 #     separately and not redistributable.
 #

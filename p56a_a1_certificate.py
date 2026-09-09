@@ -13,7 +13,7 @@ SMOPFs, and audits every constraint family on both sides.
 Only if the complete original nonlinear system passes may the point be renamed
 RIGOROUS FEASIBLE NONLINEAR UB INCUMBENT.
 
-    /opt/anaconda3/envs/opf_env_py311/bin/python p56a_a1_certificate.py
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p56a_a1_certificate.py
 """
 
 import io
