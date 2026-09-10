@@ -1,7 +1,11 @@
 # Revision Context — Shared Resources Planning
 
 Repository:
-`/Users/micaelsimoes/PycharmProjects/shared-resources-planning`
+`/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation`
+
+Preparation-copy note: this document may be edited in another checkout before
+being transferred to the Mac Studio. All authorized execution must nevertheless
+use the Mac Studio repository path above.
 
 ## Role
 
@@ -9,11 +13,254 @@ Act as a technical planner and mathematical-programming reviewer for the shared 
 
 Read this file first. When checking the mathematical formulation, also consult `simoes_2026_revisions.pdf` where relevant and inspect the current implementation before proposing changes. Prefer reviewer-driven implementation and validation plans before production edits.
 
-This file is the repository-wide source of context. `LOCAL_NLP_STABILITY_PLAN.md` contains the currently authorized implementation/audit scope and takes precedence for the active P5.6 derivative-free planning work. Despite its legacy filename, that plan now governs nonlinear-oracle landscape robustness, coverage and pre-search validation rather than another local-NLP repair stage.
+This file is the repository-wide source of context. `LOCAL_NLP_STABILITY_PLAN.md`
+contains the currently authorized implementation/audit scope and takes
+precedence for active execution. Despite its legacy filename, that plan now
+governs the P5.12-A cold-RESCALED convergence diagnostic rather than another
+local-NLP production repair stage.
 
 ---
 
-# CURRENT SOURCE OF TRUTH — 2026-09-09 (P5.9 delivered)
+# CURRENT SOURCE OF TRUTH — 2026-09-10
+
+This section supersedes every older "current", "active" or "immediate"
+instruction later in this file. Those sections remain historical evidence only.
+
+## Repository and accepted branch state
+
+The authorized worker checkout is the Mac Studio repository:
+
+`/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation`
+
+The active branch remains:
+
+`feature/derivative-free-planning`
+
+At the end of P5.11 the Mac Studio state was:
+
+- HEAD `fbdb2f6a7a6a88eab6d1bdaeb569c6e070eaf1dd`;
+- tracked working tree clean;
+- upstream `origin/feature/derivative-free-planning`;
+- ahead 7, behind 0;
+- no merge, pull, push, rebase, cherry-pick or commit performed by P5.11.
+
+The remote remained at stale commit `518aa1d8`, while the Mac Studio checkout
+contained the accepted restoration and later P5.9/P5.10 history. This is a
+repository-preservation risk, but it is **not** authorization to push or rewrite
+history. Any repository synchronization requires separate user approval.
+
+## Current canonical Mac Studio runtime
+
+The current paper-instance runtime on the Mac Studio is:
+
+`/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python`
+
+P5.11 independently enumerated ten interpreters and found exactly one matching
+the accepted provenance. `/opt/anaconda3` does not exist on the Mac Studio.
+
+Accepted runtime identity:
+
+- Python `3.11.11`, arm64;
+- NumPy `2.4.2`;
+- pandas `3.0.0`;
+- SciPy `1.17.0`;
+- Pyomo `6.9.5`;
+- copulas `0.14.0`;
+- IPOPT `3.14.18` / ASL `20241111` at `/usr/local/bin/ipopt`;
+- HSL `ma97`;
+- canonical realized-scenario checksum
+  `5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358`.
+
+The old `/opt/anaconda3/envs/opf_env_py311/bin/python` path later in this file is
+historical machine-specific provenance and is not the Mac Studio command.
+
+## Accepted P5.10 stabilized-oracle evidence
+
+Accepted report:
+
+`P5_10_STABILIZED_RESCALLED_ADMM_ORACLE_REPORT.md`
+
+SHA-256:
+
+`fe674ee534ba9b7cf72c188b756a1ad585133727b53aad453091531fd289311e`
+
+P5.10 made no production changes. It established an explicit harness-level
+oracle configuration and identified four carried-state channels:
+
+1. rho stored in the template;
+2. objective scaling stored in cloned models;
+3. `consecutive_converged_cycles`;
+4. `last_recourse`.
+
+`last_recourse` was a latent candidate-history asymmetry. Neutralizing all
+history channels left the base result bit-identical and must remain part of the
+declared oracle contract.
+
+The accepted stabilized diagnostic oracle uses:
+
+- `RESCALED` objective construction;
+- fixed `rho_v = 1.5`, `rho_ess = 1.0`;
+- fixed `rho_pf`, with 300 the faster working value and 1000 retained as a
+  separate certification cross-check;
+- adaptive rho disabled;
+- histories neutralized before every evaluation/generation;
+- midpoint anchor held identical across candidates;
+- exact-consensus polish as the authoritative endpoint.
+
+At fixed `rho_pf` 300, 500 and 1000, base, node-5 and node-9 candidates all
+solved and polished directly with zero failed blocks. `rho_pf = 300` was about
+2.4 times cheaper than 1000 while producing the same qualitative three-point
+landscape. The original P5.10 selection rule between 300 and 1000 was internally
+contradictory, so neither value is a new production setting.
+
+Exact-consensus polish is mandatory. The unpolished ADMM states were locally
+feasible but did not represent one common physical point. At `rho_pf = 1000`,
+about 1.6 kW of interface disagreement produced an approximately 850-unit polish
+correction against an investment signal around 600. Polished and unpolished
+oracles ranked candidates in opposite orders.
+
+The current adaptive-rho rule self-cancels under the RESCALED residual
+definition because the measured dual residual scales linearly with rho and
+therefore triggers rho reduction. Requested `rho_pf` values 300, 500 and 1000
+decayed to approximately 88.89, 98.77 and 131.69. No adaptive-rho redesign was
+implemented or authorized.
+
+Across nine stabilized terminating cycles, `stationarity_pf` was the sole
+binding convergence criterion. Objective stationarity, consensus, voltage and
+ESS criteria were materially inside tolerance. This is an open diagnostic
+question, not authorization to retune convergence tolerances.
+
+The eight-generation replay at RESCALED, fixed `rho_pf = 1000`, adaptive rho
+off and neutralized history produced:
+
+- all generations VALID;
+- zero failed polish blocks;
+- node 9 preferred at every depth;
+- zero ranking flips;
+- cross-depth relative uncertainty reduced from about `459695.59` to `22.09`;
+- uncertainty/signal reduced from `25.42` to `0.67`;
+- best-to-second mean gap only `32.87`, still thin relative to the numerical
+  floor `tau_numerical = 10`;
+- absolute base-chain drift about `-201099`, so only same-depth relative
+  comparisons are scientifically valid.
+
+P5.10 validated only three candidates. It did not establish a broad investment
+landscape, a self-consistent cold RESCALED T0, a production adaptive-rho policy,
+or readiness for an investment-search campaign.
+
+## Accepted P5.11 consolidation evidence
+
+Accepted report:
+
+`P5_11_STABILIZED_ORACLE_CONSOLIDATION_REPORT.md`
+
+SHA-256:
+
+`a9f9e3422a533d993ccd890cbee53a4a8e1dcbbc3469e95af3a592ec04281b3b`
+
+P5.11.0 passed:
+
+- the Mac Studio checkout and history were identified correctly;
+- the governing documents were not rolled back to P5.6-C, although they had not
+  yet been extended with P5.10;
+- all P5.10 harnesses and 21 evidence files were present, tracked and unmodified;
+- the R0 provenance gate passed;
+- CURRENT polished total reproduced bit-identically as
+  `828021090.3608505`;
+- RESCALED pre-polish recourse reproduced bit-identically as
+  `825814074.4930633`.
+
+P5.11.1 attempted to construct a diagnostic T0 cold under RESCALED, with fixed
+rho `1.5 / 300 / 1.0`, adaptive rho disabled and carried histories neutralized.
+The 48 augmented objectives were RESCALED at construction. The diagnostic state
+identity was:
+
+- template id `P511-SELFCONSISTENT-T0`;
+- consensus/dual state SHA-256
+  `14a7ea85ce283a595a35b1768c93c2a60bda872d4f5138c5168b3691a625cbf0`;
+- artifact file SHA-256
+  `3629784b277724e1f2c406f4a6dbd4599ea92b9d7ee126ac67bb2148909a67bd`;
+- configuration hash `a080612dedf2727e`.
+
+The cold RESCALED construction did **not** converge within the frozen production
+cap of 25 ADMM cycles. `cycle_convergence` was false at every cycle. Recourse
+moved from approximately `2.3520e9` at cycle 1 to `1.4612e9` at cycle 13 and
+`1.4024e9` at cycle 25; `primal_pf` was `3.5893e-4` at cycle 25 and had worsened
+relative to cycle 13.
+
+Candidate evaluations warm-started from this non-converged state returned local
+and polish successes, but they do not validate a self-consistent template. The
+inherited-versus-diagnostic relative-delta discrepancies were:
+
+- `rho_pf = 300`: `122.37` for node 5 and `27.59` for node 9;
+- `rho_pf = 1000`: `68.61` for node 5 and `81.55` for node 9.
+
+All exceeded the required `22.09` bound, so the P5.11.1 stopping rule fired.
+P5.11.2, P5.11.3 and P5.11.4 were correctly not run.
+
+This result does not invalidate P5.10. The inherited-template oracle reproduced
+the accepted gates exactly and its P5.11 values matched P5.10. What failed was
+the attempted hardening through a cold-built RESCALED T0.
+
+## Current interpretation
+
+The inherited CURRENT-built / RESCALED-evaluated template remains the only
+validated construction path. It is promising but restricted:
+
+- its three-point relative landscape is stable on the tested three candidates;
+- its exact-consensus polished endpoint is repeatable;
+- its cold RESCALED construction path is not yet validated;
+- it is not yet supported by broad candidate coverage;
+- no production setting should be changed on the basis of P5.10/P5.11.
+
+The next question must isolate whether the cold RESCALED path merely needs more
+iterations under exactly the same recurrence or fails to approach convergence.
+Changing penalty, tolerance, adaptive-rho logic or construction mathematics in
+the same experiment would confound that question.
+
+## CURRENT AUTHORIZED STAGE — P5.12-A only
+
+P5.12-A is a bounded diagnostic continuation of the single base-candidate cold
+RESCALED trajectory:
+
+- fixed rho `1.5 / 300 / 1.0`;
+- adaptive rho disabled;
+- existing formulation, IPOPT options, ADMM updates, convergence definitions,
+  tolerances, anchor and initialization unchanged;
+- one uninterrupted trajectory continued from the verified cycle-25 state to
+  the first production-equivalent convergence, numerical failure or cycle 100;
+- detached exact-consensus polish diagnostics at cycles 25, 50, 75 and 100 or
+  at first convergence;
+- no candidate comparisons;
+- no alternate rho or tolerance;
+- no production `num_max_iters` change;
+- no full planning or investment-search run.
+
+P5.12-A must stop after its report. The authoritative procedure and stopping
+rules are in `LOCAL_NLP_STABILITY_PLAN.md`.
+
+## Locked prohibitions during P5.12-A
+
+Do not change:
+
+- production nonlinear formulation;
+- IPOPT settings;
+- production ADMM settings or iteration cap;
+- adaptive-rho logic;
+- convergence tolerances or stationarity definitions;
+- objective scaling in production;
+- TSO proximal regularization;
+- ESSO degradation or active-energy degradation work;
+- Benders logic or convex models;
+- anchor or initialization policy;
+- accepted P5.10/P5.11 evidence.
+
+Do not run the full planning problem, derivative-free search, expanded candidate
+population, stationarity sensitivity or another fixed-rho value.
+
+---
+
+# HISTORICAL SOURCE OF TRUTH — 2026-09-08
 
 This section supersedes older solver-policy, P5.4 planning and P5.5-A instructions recorded later in this file where they conflict with the current state.
 
@@ -46,17 +293,9 @@ The old pre-P5.4 checkpoint `f77d829359ffd873367f556882546bc2dcc8ec99` remains h
 
 All future paper-instance validation, benchmark and planning-oracle work must use:
 
-`/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python`
+`/opt/anaconda3/envs/opf_env_py311/bin/python`
 
-**Machine migration, 2026-09-09.** The work moved from a MacBook Air to a Mac
-Studio. The old machine's path `/opt/anaconda3/envs/opf_env_py311/bin/python`
-is superseded everywhere it still appears — including in the stage reports,
-which are left as written because they record the runtime that produced their
-evidence at the time. The migration is verified: `p57_d1_chain.py` reproduced
-all twelve steps of the accepted P5.6-D base chain on the new machine,
-`828021090.3608505` through `823731333.5586472`, every step within `5e-07`.
-
-Canonical environment/provenance from P5.4-R, re-confirmed on the Mac Studio:
+Canonical environment/provenance from P5.4-R:
 
 - Python `3.11.11`;
 - NumPy `2.4.2`;
@@ -65,10 +304,7 @@ Canonical environment/provenance from P5.4-R, re-confirmed on the Mac Studio:
 - Pyomo `6.9.5`;
 - IPOPT `3.14.18` at `/usr/local/bin/ipopt`;
 - HSL linear solver `ma97`;
-- Gurobi / `gurobipy` `13.0.1`, academic licence id `2807206`, expiry
-  `2027-04-14`. The licence was reissued after P5.4-R; the stage reports
-  correctly record the licence in force at the time (id `2805683`, expiry
-  `2027-04-10`).
+- Gurobi / `gurobipy` `13.0.1`, academic licence, expiry `2027-04-10`.
 
 Canonical SRP1 configuration:
 
@@ -87,30 +323,6 @@ Canonical SRP1 configuration:
 The fail-fast provenance gate introduced in P5.4-R is now a required infrastructure convention: paper-case harnesses must record interpreter/environment/package/solver provenance and abort if the checksum differs. A rejected environment must never silently produce evidence that is mixed with canonical results.
 
 `srp_env` is noncanonical for paper validation because it generates a different stochastic realization (`4d948b9b...`). Seed `2026` alone is therefore **not** a sufficient reproducibility specification.
-
-Nor is the checksum alone. Until 2026-09-09 `p54r_provenance.py` recorded the
-IPOPT and HSL identity but asserted only the checksum, so a different solver
-build would have passed silently — and that was not hypothetical: the Mac Studio
-initially resolved IPOPT `3.14.20` against ASL `20190605`, which reproduces the
-canonical checksum. The gate now asserts the scenario checksum, the resolved
-IPOPT path, the IPOPT version, the IPOPT ASL build and the HSL linear solver,
-and aborts on any mismatch.
-
-IPOPT must always be the locally installed `/usr/local/bin/ipopt`. The conda
-environment also carries `conda-forge::ipopt 3.14.19` (ASL `20231111`), which
-shadows it on `PATH` whenever the environment is activated. Production is
-unaffected: `network.py:487` and `shared_energy_storage_data.py:859` both pass
-`executable=solver_params.solver_path`, read from `NLP_SOLVER_PATH` in `.env`
-with `require_path=True`, so `PATH` is never consulted. The gate probes that
-same configured path and nothing else — it previously fell back to a `PATH`
-lookup, which could have let the conda binary stand in for the canonical one in
-the record and in the assertion.
-
-The environment is captured in `environment.yml` (authoritative) and
-`requirements.txt` (the pip half only). It is half conda (46 packages) and half
-pip (23), and the pip half includes `copulas 0.14.0`, which generates the
-scenario realization the checksum is a checksum of. IPOPT and HSL are outside
-conda and must be installed separately.
 
 ## Current live nonlinear network solver policy
 
@@ -133,11 +345,11 @@ Current warm-start handling in `network._create_smopf_solver`:
 - DSO warm starts retain configured acceptable settings unless explicitly overridden;
 - warm-start push/fraction settings inherit configured network values unless explicitly provided.
 
-Recovery remains limited to IPOPT `internalSolverError`; configured limited-memory recovery exists for `case33_2` and `case33_3`, while `case33_1` still has no explicit `recovery_options` block. Do not retune the nonlinear solver. This was not changed in P5.7, P5.8 or P5.9 and remains locked.
+Recovery remains limited to IPOPT `internalSolverError`; configured limited-memory recovery exists for `case33_2` and `case33_3`, while `case33_1` still has no explicit `recovery_options` block. Do not retune the nonlinear solver during P5.6-C.
 
 ---
 
-# CURRENT PLANNING CHECKPOINT — P5.7 accepted; P5.8 and P5.9 delivered, pending planner review
+# HISTORICAL PLANNING CHECKPOINT — P5.5-D accepted; P5.6-A/B reviewed; P5.6-C authorized
 
 P5.4-R remains the canonical basis for the nonlinear production formulation and for retirement of the old nonlinear-recourse derivative cuts. P5.4-G was never run and remains permanently blocked.
 
@@ -168,17 +380,11 @@ P5.6-B then stabilized the **declared oracle policy** enough to specify the sear
 
 `P5.6-B PARTIAL — oracle policy, anchor robustness, start policy or search resolution remains unresolved`.
 
-P5.6-C ran the landscape-robustness and coverage gate and is accepted as:
+The next authorized stage is:
 
-`P5.6-C-C — derivative-free search is not ready`.
+**P5.6-C — landscape robustness and oracle coverage gate**.
 
-P5.6-D then built and tested a uniformly refined nonlinear oracle `H_K` and is accepted as:
-
-`P5.6-D-C — uniform refinement does not stabilize the investment landscape`.
-
-P5.7 was then run and accepted; P5.8 and P5.9 followed and are delivered,
-pending planner review. **No stage is currently authorized** — see the
-checkpoint above and the immediate instruction at the end of this file.
+P5.6-C is the final gate before any derivative-free optimization campaign. It does **not** authorize the 200-evaluation search yet. It must determine whether the frozen T0 surface is representative enough for investment ranking, whether deterministic continuation can rescue false hidden-infeasible points, define the planning-level robustness threshold separately from numerical repeatability, lock deterministic parallel poll semantics, and identify a trustworthy practical MADS/pattern-search implementation path.
 
 ## Accepted P5.6-A nonlinear-oracle evidence
 
@@ -474,7 +680,7 @@ P5.5-C investigated this on the real convex model and found no usable full-model
 Canonical environment provides:
 
 - `gurobipy 13.0.1`;
-- academic licence id `2807206`, valid through `2027-04-14`;
+- academic licence valid through `2027-04-10`;
 - `gurobi`, `gurobi_direct`, and `gurobi_persistent` available;
 - `QCPDual=1` supported;
 - linear and quadratic/conic duals available;
@@ -509,250 +715,188 @@ Planner interpretation:
 3. A lower-bound-safe disjunctive outer approximation of H1 is worth one controlled diagnostic before abandoning rigorous lower bounds.
 4. The planning master remains blocked.
 
-# COMPLETED STAGE — P5.7 nonlinear operational branch-selection investigation (verdict P5.7-A, accepted)
+# HISTORICAL ACTIVE STAGE — P5.6-C landscape robustness and oracle coverage gate
 
-## The conclusion P5.7 starts from
+P5.6-C is the **final pre-search gate**. It must not launch the full derivative-free investment optimization campaign.
 
-The nonlinear operational oracle is deterministic and feasible, but the evaluated investment landscape depends on the local NLP branch-selection path. Different deterministic refinement depths produce different investment rankings and even different preferred investment directions.
+Accepted/frozen unless contradicted by C evidence:
 
-The planning problem is therefore **not ready for optimization**.
+- nonlinear production mathematics and solver/ADMM policy;
+- `feature/derivative-free-planning`;
+- current best certified base-investment incumbent `828021090.360850`;
+- recurring direct template `T0`, id `a81f7f5191dd42dbf50d1726149b8909`;
+- recurring anchor `MIDPOINT ONLY`;
+- recurring direct start `T0 ONLY`;
+- coordinates `(S,h)` with `h = E - 2S`;
+- `tau_numerical = 10.0` as the provisional deterministic numerical threshold;
+- deterministic MADS/pattern-search as the preferred search family in principle;
+- four upper-level workers as the practical parallelism ceiling unless new measurements justify otherwise.
 
-Derivative-free optimization is **blocked**. Do not implement:
+## C1 — correct the P5.6-B interpretation
 
-- GPS;
-- MADS;
-- any investment search;
-- surrogate optimization.
+Record that P5.6-B **did** lock the declared midpoint anchor and T0 direct start. The unresolved questions are landscape representativeness, domain coverage/false hidden infeasibility and deterministic search implementation semantics, not whether the anchor policy itself is still open.
 
-## Objectives
+## C2 — cross-template investment-landscape test
 
-1. Characterize why repeated continuation/polishing finds progressively lower branches.
-2. Determine whether the issue is primarily ADMM initialization, augmented-objective scaling, IPOPT local convergence, missing globalisation/continuation strategy, or an insufficiently constrained operational formulation.
-3. Do not modify production equations yet.
+Use the deterministic P5.6-B benchmark population and evaluate the jointly reachable candidates under:
 
-## Required diagnostics
+- `T0`;
+- `T2`;
+- `T4`;
 
-For one fixed investment candidate, collect the ADMM solution, polish `K=0`, `H2`, `H4`, `H8` and `H12`. For every solution compare objective decomposition, generation dispatch, flexibility, voltage slacks, ESS schedules, TSO/DSO interface variables and active constraints. Identify which variables move between branches.
+with midpoint anchor only, a fresh candidate-specific baseline, original nonlinear ESSO, exact-consensus polish and full feasibility audit. Cache keys must include template id.
 
-## Controlled hypotheses
+For every template and candidate compute:
 
-- **A) Objective scaling** — solve selected local NLPs with equivalent base-objective scaling and verify whether the solution branch changes.
-- **B) Initialization sensitivity** — run the same NLP from the ADMM state, the previous continuation state, the best known state and a cold state.
-- **C) Constraint activity** — identify active-set differences between branches.
-- **D) Continuation path** — compare capacity continuation, penalty continuation and direct solve.
+`Delta_Tk(x) = Q_Tk(x) - Q_Tk(base)`.
 
-No planning search.
+The deltas, not absolute levels, are the central quantity.
 
-## Required output
+Across jointly VALID candidates report:
 
-`P5_7 — branch-selection diagnosis report`, ending with exactly one of:
+- Spearman rank correlation;
+- Kendall rank correlation;
+- complete rankings;
+- max rank displacement;
+- number of pairwise ordering reversals;
+- worst reversal magnitude;
+- per-candidate `Delta_T0`, `Delta_T2`, `Delta_T4`, range and standard deviation;
+- diagnostic affine fits `Q_T2 = a2 + b2*Q_T0` and `Q_T4 = a4 + b4*Q_T0`.
 
-`P5.7-A — unique operational oracle can likely be recovered`
+Do not infer robustness from correlation alone if a candidate that improves over base under one template becomes worse under another by a material amount.
+
+Classify the landscape as stable only if improvement signs/rankings are sufficiently preserved and template drift is predominantly a common offset. If stable, keep T0 for the recurring search. If unstable, do not launch MADS; return for a fixed better template, fixed ensemble or continuation-oracle decision.
+
+## C3 — deterministic continuation fallback
+
+Direct T0 failure is not physical infeasibility. Test a fixed, history-independent continuation from the canonical base investment `x0` to a master-feasible target `x`:
+
+`x(lambda) = (1-lambda)*x0 + lambda*x`
+
+with fixed schedule:
+
+`lambda = 0.25, 0.50, 0.75, 1.00`.
+
+Because the first-stage feasible set is a polyhedron, every segment point remains first-stage feasible whenever both endpoints are feasible.
+
+Starting from the frozen T0/base operational state, solve each continuation point in order and use each complete VALID state only to initialize the next. Every point must run the original nonlinear ESSO, production ADMM, midpoint-only exact-consensus polish and full feasibility audit. Do not switch anchors and do not use an adaptive lambda schedule in C.
+
+Test continuation on:
+
+- all T0/midpoint `POLISH_FAILURE` candidates from B;
+- the budget-boundary `SOLVER_CRASH` candidate;
+- at least two T0-direct VALID controls.
+
+For controls compare direct-T0 and continuation objectives. This determines whether continuation is a neutral coverage rescue or a materially different branch-selection policy.
+
+## C4 — lock oracle coverage policy
+
+Compare:
+
+- direct T0 only;
+- direct T0, fixed continuation only on failure;
+- fixed continuation for every candidate.
+
+Prefer direct-T0 + continuation-on-failure only if continuation materially improves coverage **and** direct-vs-continuation objectives on already-valid controls are compatible enough that fallback does not mix incompatible objective surfaces.
+
+If continuation materially changes valid-control objectives, either use continuation for every candidate or return PARTIAL. Never silently mix two incompatible surfaces.
+
+Recompute success rate and ordinary/failed/blended evaluation costs under the chosen coverage policy.
+
+## C5 — separate numerical and planning robustness thresholds
+
+Use:
+
+`tau_numerical = 10.0`
+
+unless C evidence shows a larger deterministic numerical floor.
+
+Define separately:
+
+`tau_planning`
+
+from cross-template **relative-to-base** delta variation. `tau_planning` governs whether an investment improvement is robust to known branch/template ambiguity. It is not a solver-repeatability tolerance.
+
+Future search acceptance may use `tau_numerical` internally on the locked black-box surface, but promotion/scientific claims must respect `tau_planning`.
+
+## C6 — deterministic parallel polling semantics
+
+Correct the P5.6-B “parallel opportunistic first improvement” idea. Future search must use deterministic **batch polling**:
+
+1. generate the ordered deterministic poll set;
+2. apply exact first-stage feasibility checks;
+3. remove duplicate/cache-hit points;
+4. select the batch by deterministic poll order;
+5. evaluate up to four candidates in parallel;
+6. wait for the whole selected batch;
+7. among all VALID results choose the best objective;
+8. break ties within `tau_numerical` by deterministic poll index;
+9. only then update incumbent and mesh.
+
+No asynchronous “first process to finish wins” rule is allowed, because it would make the search path depend on OS/solver completion order.
+
+## C7 — search implementation inventory
+
+Without installing anything, audit:
+
+- NOMAD / PyNOMAD availability in the canonical environment;
+- existing repository pattern/MADS utilities;
+- licences;
+- hidden-constraint evaluator support;
+- exact linear feasibility screening;
+- deterministic direction/seed control;
+- cache integration;
+- deterministic batch/parallel evaluation.
+
+Do not casually hand-code “OrthoMADS” without its actual mesh/direction requirements. If a trustworthy MADS implementation is unavailable or disproportionate to integrate, a deterministic generalized pattern search with a positive-spanning poll set is acceptable for the first campaign, with its limitations explicit.
+
+## C8 — pre-search classification
+
+End one:
+
+`P5.6-C-A — derivative-free search is ready to launch`
+
+only if template rankings are sufficiently stable, coverage policy is deterministic/acceptable, planning robustness is quantified, deterministic batch semantics are fixed and a practical search implementation path exists;
 
 or
 
-`P5.7-B — branch multiplicity is intrinsic and planning must be reformulated`.
+`P5.6-C-B — derivative-free search is ready only on a restricted validated domain`
 
-# ACCEPTED P5.7 RESULTS
+if the local landscape is robust and nearby coverage is good but remote/budget-near candidates remain unreachable. Any restricted domain must be specified explicitly from tested successful directions;
 
-Verdict:
+or
 
-`P5.7-A — unique operational oracle can likely be recovered`.
+`P5.6-C-C — derivative-free search is not ready`
 
-- **hypothesis A confirmed as primary.** Production forms the ADMM subproblem objective as `base / effective_scale + consensus terms`, `effective_scale` measured at `9.41e4 .. 1.16e5` (median `1.05e5`). Re-solving all 48 subproblems from their own converged point moves the base objective by `-383401.68` as-is and `-8892463.76` rescaled -- `96.5%` of the `9217420.61` ADMM-to-polish gap;
-- **hypothesis B rejected:** the same polish NLP from four starts spreads by `303.24` on `8.3e8`;
-- **hypothesis C:** only `213` active rows of about `40000` change between `polish K=0` and `H12`, in `flex_energy_balance_p` and `sg_capability`;
-- **hypothesis D:** at fixed consensus, four chained polishes are worth `7.3`; four refinement solves are worth `-1616084`. Continuation buys reachability, not quality;
-- the ADMM converges in ONE cycle at every warm-started generation while the consensus keeps sliding;
-- the TSO ADN interface anchor is inherited from `T0` and never refreshed on a warm start. The P5.7 section 5 conjecture that cold starts therefore use a different objective was **refuted by P5.8-E3** and is corrected in place in the P5.7 report.
+if template generations materially reorder investment improvements, continuation cannot provide acceptable deterministic coverage, or no practical deterministic search implementation path exists.
 
-# DELIVERED, PENDING PLANNER REVIEW — P5.8 ADMM numerical scaling validation
+Then:
 
-Report: `P5_8_ADMM_SCALING_VALIDATION_REPORT.md`. Evidence: `data/SRP1/Results/P58/`.
+`P5.6-C COMPLETE — ready for planner review before any optimization campaign`.
 
-Delivered verdict:
+## Locked production decisions during P5.6-C
 
-`P5.8-B — objective scaling improves stability but additional ADMM issues remain`.
+Do not change:
 
-Reproduction gate: A0 case A reproduced the accepted P5.6-D base chain exactly; B2 reproduced P5.7-A2 to the digit. No production code, parameter file, stopping criterion or anchor policy was modified, and nothing was merged.
+- nonlinear AC SMOPF equations;
+- active-energy ESS formulation;
+- D2-P sensitivity-clean shared-S formulation;
+- H1 dimensionless complementarity and `ESS_COMPLEMENTARITY_TOLERANCE = 1e-4`;
+- net-P/Q-only nonlinear ADMM coordination;
+- IPOPT tolerances/options;
+- MA97/exact-Hessian policy;
+- recovery/adaptive-rho/proximal policies;
+- existing master/Benders equations;
+- P5.5 convex/MISOCP diagnostic code.
 
-**A0 -- ESS/consensus tolerance screen.** Case B (`ess_mean` `1e-2 -> 1e-3`, `ess` `1e-1 -> 1e-2`) is **bit-identical** to case A at every generation, because the ESS consensus test never fires: realized `primal_ess` about `2.2e-4` and `primal_ess_mean` about `6.5e-6`, i.e. `450x` and `1500x` inside case A's tolerances. Case C (`minimum_consecutive_converged_cycles = 2`) advances the chain by exactly one refinement step and then reverts to one cycle per generation, because `consecutive_converged_cycles` is restored from `initial_state` (`shared_resources_planning.py:2093-2094`) and is inherited across warm starts. **ESS consensus tolerance is not a contributor; objective scaling remains the primary mechanism.**
+Do not yet run or productionize:
 
-**B -- rescaling validation.** `RESCALED = effective_scale * CURRENT` verified as an exact constant multiple on all 48 blocks (worst relative error `0.000e+00`). One-block: base-objective recovery `0.00 -> -257894.90` (`DSO5|2035|Autumn`) and `-0.00 -> -320612.44` (`DSO7|2035|Autumn`); expressed in base-objective units the terminal stationarity is `390x` to `1488x` tighter under RESCALED. Full 48-block replay: total base delta `-383401.68` (CURRENT) versus `-8892463.76` (RESCALED) for `33%` more IPOPT iterations, and max unscaled constraint violation improves `70x`, from `1.2241e-05` to `1.7603e-07`.
-
-**C -- full ADMM replay** (same T0 primal state; only the objective scaling differs). Pre-polish net recourse, CURRENT versus RESCALED: `837188510.90 / 825814074.49` (gen 1, better by `11374436.41`), `836578781.24 / 825257390.49`, `835829460.61 / 824796861.45`, `835374067.36 / 824408917.11`. One rescaled ADMM run, unpolished, beats the current pipeline's fully polished generation-1 result by `2157016` and is not matched until generation 5-6; eight rescaled generations reach `823101056.86`, `580277` better than twelve current polished refinements. **But** the drift persists at `80-90%` of its former magnitude (rescaled steps `-556684 -> -251242` against `-609730 -> -313346`), neither chain reaches `tau_planning = 33031`, and the rescaled ADMM **breaks the exact-consensus polish**: failures on 1-4 DSO blocks in 7 of 8 generations (`Restoration Failed`, `Maximum Number of Iterations Exceeded`) and a `+35647836` degradation in the one generation that succeeds. Cause: better local optimality comes with worse agreement, `primal_pf` rising to the `1e-2` tolerance boundary. Rho and adaptive-penalty settings were not re-tuned; they are locked.
-
-**D -- convergence criteria audit** (nothing modified). The stopping rule is `residual_convergence AND objective_convergence`, so consensus residuals are already not the only criterion. The binding one is the objective test: `objective_tolerance = max(1e3, 1e-3 * recourse) = 827971`, which is `25x` the `33031` planning signal and larger than every refinement step either formulation takes. Measured accepted recourse changes: `609729.66`, `749320.63`, `455393.25` (CURRENT); `787755.97 ... 251242.46` (RESCALED). Consensus residuals sit comfortably inside their tolerances throughout. Candidate future measures, **not implemented**: a recourse-change criterion tied to `tau_planning` rather than to the recourse level; per-subproblem local KKT residual in base-objective units (already in the IPOPT logs); base-objective improvement between cycles; and making the inherited `consecutive_converged_cycles` explicit.
-
-**E -- interface anchor audit** (no policy changed). Anchor exactly constant across generations and across both formulations (`0.0` for `pc` and `qc`); identical for a different candidate warm-started from T0 (`0.000000e+00`); and within `1.003037e-07 p.u.` for that candidate started **cold**. The P5.7 conjecture that cold starts use a candidate-dependent anchor is therefore refuted, and the P5.6-B cold-versus-T0 gaps stand as genuine branch differences.
-
-# DELIVERED, PENDING PLANNER REVIEW — P5.9 rescaled ADMM stabilization
-
-Report: `P5_9_RESCALED_ADMM_STABILIZATION_REPORT.md`. Evidence:
-`data/SRP1/Results/P59/`. Commit `fe6b5c63`.
-
-Delivered verdict:
-
-`P5.9-B — rescaling helps but ADMM coordination requires further redesign`.
-
-Reproduction gates: RESCALED at the template's own penalties returned P5.8-C
-generation 1 exactly (`825814074.4930633`, same two failed blocks); the stage D
-CURRENT arm reproduced the accepted P5.6-D base chain to the digit at all eight
-generations; E2 reproduced P5.7 section 1's polish `K=0` cost families to the
-cent. No production code, parameter file, tolerance, stopping criterion,
-penalty rule or anchor policy was modified, and nothing was merged.
-
-## The premise correction — rho is inherited, and the parameter file is dead
-
-`data/SRP1/SRP1_params.json` sets `rho_v = rho_pf = rho_ess = 1.0`. **That is
-not what the oracle runs.** The frozen T0 template carries
-
-`rho_v = 1.5`, `rho_pf = 2.25`, `rho_ess = 1.0`
-
-— production's own adaptive rule's output at the end of T0's cold build
-(`1.5^1` and `1.5^2`). The warm-start path clones `initial_state['models']`
-(`shared_resources_planning.py:2173-2179`) and never rebuilds the augmented
-objectives, so every warm evaluation from P5.6-B onward has inherited those
-penalties. This is a second instance of the inherited-state channel P5.8-A0
-documented for `consecutive_converged_cycles`
-(`shared_resources_planning.py:2093-2094`). Any future stage that sets rho must
-set it on the template, not in the parameter file.
-
-## A — penalty calibration
-
-- `rho_v` is **inert**: 667x from 1.5 to 1000 moves the objective by `3327.60`
-  on `8.26e8`, leaves `primal_pf_ratio` at `0.3257` and changes no polish
-  outcome. Voltage consensus is never closer than `32x` to its tolerance.
-- `rho_ess` **never binds**: `primal_ess_ratio` is `0.0012 .. 0.0057` under
-  every configuration, and no ESS criterion came within `175x` of its threshold
-  on any of 96 cycles. A4 was therefore not run; its precondition is unmet.
-  Third independent confirmation of P5.8-A0.
-- `rho_pf` is the only lever and it trades the rescaling gain against polish
-  success at close to 1:1. Agreement improves monotonically
-  (`primal_pf_ratio 0.3258 -> 0.1858 -> 0.0936 -> 0.0384`) but polish success
-  does not (2 -> 4 -> 3 -> 0 failed blocks). The only clean configuration,
-  `rho_pf = 1000`, hands back `2031317.71` of the `2157015.87` rescaling gain —
-  `94.2%` — and lands `277219.86` **worse** than the current pipeline. An
-  informed refinement at `rho_pf` 300 and 500 polished cleanly and landed worse
-  still.
-- The ADMM-to-polish gap **changes sign**: `-9217420.54` under CURRENT (the
-  polish recovers) versus `+402918.02` under RESCALED (the polish costs).
-
-## B — the adaptive penalty rule is self-cancelling after rescaling
-
-Production measures the dual residual as `rho * |z_current - z_prev| / base`
-(`shared_resources_planning.py:4897, 4938`) — **linear in rho** — and then
-decreases rho when `dual_ratio` exceeds `decrease_balance_ratio * primal_ratio`.
-Raising rho therefore raises its own measured dual residual and trips its own
-decrease branch. Measured terminal values against requested:
-
-`300 -> 88.89 = 300/1.5^3`; `500 -> 98.77 = 500/1.5^4`;
-`1000 -> 131.69 = 1000/1.5^5`.
-
-With the rule **disabled** and rho pinned at 1000 the chain is monotone and
-decaying (`-21309 -> -20186 -> -16798`) and its generation-1 objective
-`828011656.16` is `9434.20` **better** than the current pipeline. With the rule
-enabled the same configuration moves the objective **up** by `706558` at
-generation 2. Three replacement rules were proposed in the report and **none was
-implemented**.
-
-## C — the binding convergence criterion has moved
-
-On the 24 terminating cycles of 96 recorded, the binding criterion (least
-relative slack) is `stationarity_pf` on **17** and the objective test on **7**.
-P5.8-D found the objective test binding under CURRENT; after rescaling
-`stationarity_pf` binds on 71% of terminating cycles at a median slack of
-`1.34`. Voltage and ESS criteria are inert throughout (never closer than `32x`
-and `175x`). The objective tolerance remains `max(1e3, 1e-3 * recourse)` =
-`826461 .. 838497`, and 59 of 96 cycles were declared objective-converged while
-the recourse was still moving by more than `33031`. Nothing was changed.
-
-## D — coverage fixed, landscape transformed, absolute drift persists
-
-Coverage: both candidates that were `POLISH_FAILURE` direct from T0 under
-CURRENT — including `se|node9|2025|-10%`, the P5.7-D target reachable only by
-continuation — evaluate directly under RESCALED. **Continuation is no longer
-needed for reachability on the tested candidates.**
-
-| | CURRENT | RESCALED |
-|---|---|---|
-| cross-depth landscape uncertainty | `459695.59` | `540.92` |
-| uncertainty / signal | `25.4x` | `6.0x` |
-| base drift over 8 generations | `-3225726.64` | `-683883.91` |
-
-An 850x reduction in cross-depth uncertainty. Absolute drift is reduced 4.7x but
-has not stopped.
-
-## D2/D3 — the investment signal itself, and a reading that re-frames P5.6-C/D
-
-Not in the stage specification; added because D could not be interpreted without
-them.
-
-The candidate-separation collapse is caused by the **rescaling, not by rho**: at
-generation 1 the RESCALED oracle separates the +-10% candidates from base by
-`316 .. 631` at *every* penalty, including the untouched inherited `2.25`, while
-CURRENT separates them by `162172` and `293999`.
-
-But the rescaled oracle is **not blind**. On a 19x capacity change
-(`se|ALL|x19`, investment `950000`) it returns a separation of `130200.84` —
-`3.94x tau_planning`. Across perturbations spanning a factor of ~190 in
-capacity, CURRENT's separations vary only from `32228` to `367790`, a factor of
-11, i.e. nearly independent of the size of the physical change; RESCALED's vary
-by a factor of ~340 and track it.
-
-**The evidence points to the investment signal P5.6-C and P5.6-D were ranking on
-having been largely numerical residue** from subproblems stopping `8.9e6` short
-of base-optimality (P5.7-A4). On that reading a Spearman of `-0.033` with
-6-of-9 sign reversals is what ranking on noise looks like, and
-`tau_planning = 33031` — derived from those values — is not the resolution a
-correctly scaled oracle needs. This is **a reading the evidence supports, not a
-settled result**: it rests on one large-perturbation pair at one generation.
-Confirming it requires a perturbation sweep across several capacity magnitudes
-at fixed depth under both formulations, which is a stage, not an addendum.
-
-## E — anchor
-
-`max |pc(T0) - pc(rescaled + rho template)| = 0.0` exactly, same for `qc`:
-neither the rescaling nor the rho override touches the anchor. The P5.7
-flexibility-against-a-frozen-reference mechanism persists at about one third the
-magnitude (`+298653` against `+865891` over four generations). **P5.8-E's
-conclusion stands; the anchor is not a priority.**
-
-## What P5.9 leaves open
-
-- The adaptive-penalty-off configuration was run at **one candidate for four
-  generations only**. Its effect on the investment landscape is unmeasured, and
-  it is the most promising next experiment: it is the only configuration that
-  produced a monotone chain beating the current pipeline.
-- No penalty in the tested range gives both a high-quality economic solution and
-  a working polish. The polish and the adaptive rule are both calibrated to the
-  pre-rescaling operating point.
-- The proximal-regularization gammas, the penalty `min`/`max` clamps and the
-  consensus/stationarity tolerances were not swept.
-- A self-consistent rescaled T0 build was still not performed (carried over from
-  P5.8).
-- If the D3 reading holds, `tau_planning` must be re-derived from the rescaled
-  oracle before any search target is set.
-
-# COMPLETED STAGE — P5.6-D uniformly refined nonlinear oracle
-
-Accepted verdict:
-
-`P5.6-D-C — uniform refinement does not stabilize the investment landscape`.
-
-Uniform refinement fixed coverage (`100%` from `K=4`, including every previously unreachable candidate) and largely fixed improvement direction (1 sign reversal in 7, against 6 in 9 under P5.6-C). It did not fix the ordering: `tau_planning_refined = 811438.05` against the `4.25e5` benchmark it had to beat, the best candidate changes identity at every tested depth transition, and at node 9 / 2025 the oracle reverses the preferred **sign** of the investment between `K=8` and `K=12`. Depth movement decays by only `2.10` between the two transitions measured, leaving `386978` at `K=12` against the `33031` needed. No `K_STAR` exists among the tested depths.
-
-Best known rigorous feasible nonlinear planning incumbent: `se|node5|2025|-10%` at `825109566.571083`.
-
-The base refinement chain at `x0` is the reference for P5.7 and is recorded in `LOCAL_NLP_STABILITY_PLAN.md`.
-
-# COMPLETED STAGE — P5.6-C landscape robustness and oracle coverage gate
-
-Accepted verdict:
-
-`P5.6-C-C — derivative-free search is not ready`.
-
-Spearman T0 vs T4 = `-0.033` with 6 of 9 improvement signs reversed; continuation rescues every failure but moves direct-VALID controls by about `2.9e6`, so it cannot be a failure-only fallback; the P5.6-B `se|ALL|x19` `SOLVER_CRASH` record was withdrawn as not reproducible; and the P5.6-B7 cost figure was corrected to `135 s` VALID / `186 s` failed end-to-end.
+- the 200-evaluation derivative-free optimization campaign;
+- replacement outer planning loop;
+- full/production MISOCP planning;
+- distributed convex ADMM;
+- QCP/Benders cut recovery;
+- TSO SDP/QC strengthening.
 
 # COMPLETED STAGE — P5.5-D lower-bound architecture decision gate
 
@@ -768,7 +912,7 @@ P5.4-G remains permanently blocked for the old nonlinear-recourse derivative cut
 
 ## Deferred items
 
-Keep deferred:
+Keep deferred during P5.6-C:
 
 - physical complementarity tolerance `1e-5` / `1e-6` A/B;
 - B1 exact `f_ref=0`;
@@ -1575,33 +1719,18 @@ Never describe the local-cut master estimate as a rigorous global lower bound or
 
 # Immediate instruction
 
-**No stage is authorized.** P5.8 and P5.9 are both delivered and awaiting
-planner review. Do not start a new stage, and do not modify production code.
+The immediate task is **P5.12-A — cold RESCALED fixed-rho convergence
+diagnostic** on `feature/derivative-free-planning`.
 
-P5.9 is accepted-pending-review as:
+Use only the verified Mac Studio runtime and canonical scenario checksum.
+Continue the one verified base-candidate cold RESCALED trajectory at fixed rho
+`1.5 / 300 / 1.0` from cycle 25 to the first existing convergence decision,
+numerical failure or cycle 100. This is a diagnostic horizon only and must not
+change the production iteration cap.
 
-`P5.9-B — rescaling helps but ADMM coordination requires further redesign`.
+Do not compare candidates, try another rho/tolerance, redesign adaptive rho,
+modify production code, or launch any investment search. Stop after the P5.12-A
+report and wait for planner review.
 
-Derivative-free optimization remains blocked: GPS, MADS, any investment search
-and surrogate optimization must not be implemented.
-
-The three questions a planner review has to settle before the next stage can be
-specified:
-
-1. **Is the D3 reading accepted?** If the ±10% investment signal is genuinely of
-   order `10^2` rather than `10^4`, then `tau_planning = 33031` is not the right
-   target and the whole search-resolution argument from P5.6-B onward has to be
-   restated against the rescaled oracle.
-2. **Should the objective rescaling be productionized?** It is a
-   numerically-equivalent reformulation, validated twice (P5.8-B, P5.9-A0), and
-   it fixes oracle coverage outright. It has not been merged.
-3. **Which of the two coordination components is redesigned first** — the
-   adaptive penalty rule (self-cancelling by construction, §B) or the
-   exact-consensus polish (now degrades rather than recovers the objective, §A)?
-
-Use only the canonical interpreter and checksum, and the widened provenance gate,
-which asserts the resolved IPOPT path, version and ASL build and the HSL linear
-solver alongside the scenario checksum.
-
-`LOCAL_NLP_STABILITY_PLAN.md` remains authoritative for stage protocol despite
-its legacy filename.
+`LOCAL_NLP_STABILITY_PLAN.md` is authoritative for the complete P5.12-A
+execution protocol and stopping rules.
