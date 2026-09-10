@@ -1,13 +1,20 @@
 # Local NLP Stability Investigation Plan
 
 Repository:
-`/Users/micaelsimoes/PycharmProjects/shared-resources-planning`
+`/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation`
+
+Preparation-copy note: this document may be edited in another checkout before
+being transferred to the Mac Studio. All authorized execution must use the Mac
+Studio repository path above.
 
 ## Role and scope
 
 Act as an implementation and diagnostic agent.
 
-Read `REVISION_CONTEXT.md` first, then read this file. For the current P5.6 work, this file takes precedence regarding what may and may not be changed. The filename is retained for continuity even though the active scope has moved from local-NLP repair to deterministic nonlinear-oracle landscape robustness, coverage and derivative-free pre-search validation.
+Read `REVISION_CONTEXT.md` first, then read this file. For P5.12-A, this file
+takes precedence regarding what may and may not be changed. The filename is
+retained for continuity even though the active scope is now a bounded cold
+RESCALED ADMM convergence diagnostic.
 
 Work in small isolated experiments. After each stage report:
 
@@ -23,7 +30,327 @@ Do not automatically proceed from a diagnostic result to a production formulatio
 
 ---
 
-# CURRENT AUTHORIZED STAGE — P5.6-C landscape robustness and oracle coverage gate
+# CURRENT AUTHORIZED STAGE — P5.12-A cold RESCALED fixed-rho convergence diagnostic
+
+Perform **P5.12-A only** and stop after its report. No later roadmap stage is
+authorized by this document.
+
+## Accepted starting point
+
+The accepted reports are:
+
+- `P5_10_STABILIZED_RESCALLED_ADMM_ORACLE_REPORT.md`, SHA-256
+  `fe674ee534ba9b7cf72c188b756a1ad585133727b53aad453091531fd289311e`;
+- `P5_11_STABILIZED_ORACLE_CONSOLIDATION_REPORT.md`, SHA-256
+  `a9f9e3422a533d993ccd890cbee53a4a8e1dcbbc3469e95af3a592ec04281b3b`.
+
+Treat these reports as evidence, not as independent authorization to execute
+their recommendations.
+
+P5.10 established a promising explicit RESCALED oracle under fixed rho,
+history-neutralized evaluations and exact-consensus polish. It also established
+that the polish is mandatory, that the current adaptive-rho rule self-cancels
+under RESCALED residual measurement, and that the three-point population is not
+enough to authorize investment optimization.
+
+P5.11.0 passed repository, artifact, environment and reproduction gates. Both
+accepted numerical gates reproduced bit-identically:
+
+- CURRENT polished total `828021090.3608505`;
+- RESCALED pre-polish recourse `825814074.4930633`.
+
+P5.11.1 built a base T0 cold under RESCALED with fixed rho
+`1.5 / 300 / 1.0`, adaptive rho disabled and the known carried-state channels
+neutralized. The construction did not converge in 25 cycles. Its
+`cycle_convergence` flag was false at every cycle, and the state was still
+moving materially at the cap.
+
+Candidate comparisons from that non-converged state exceeded the accepted
+relative-delta bound of `22.09`, so P5.11 stopped. P5.11.2 through P5.11.4 were
+not run. This does not invalidate the inherited-template P5.10 oracle; it means
+the cold RESCALED construction path remains unresolved.
+
+## Scientific question
+
+With the exact P5.11 cold RESCALED configuration and ADMM recurrence held fixed,
+does the base construction converge if the same trajectory is continued beyond
+the production cap of 25 cycles?
+
+This is a diagnostic-horizon experiment only. It is not authorization to raise
+the production iteration cap.
+
+## Hard repository gate
+
+Work only in:
+
+`/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation`
+
+Do not use or modify any other checkout.
+
+Before numerical work report:
+
+- hostname and absolute repository path;
+- branch, HEAD and upstream;
+- ahead/behind state without fetching;
+- tracked and untracked working-tree status;
+- hashes of all existing untracked P5.11 harness/evidence files;
+- whether tracked production files differ from P5.11.
+
+At the end of P5.11 the reported state was:
+
+- branch `feature/derivative-free-planning`;
+- HEAD `fbdb2f6a7a6a88eab6d1bdaeb569c6e070eaf1dd`;
+- tracked files clean;
+- upstream ahead 7, behind 0.
+
+Do not assume that state remains unchanged; verify it. Do not delete or
+overwrite P5.11 untracked files.
+
+Do not merge, pull, fetch, push, rebase, cherry-pick, reset or clean. Do not
+commit unless separately authorized.
+
+## Hard reproducibility gate
+
+Use the verified Mac Studio runtime:
+
+`/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python`
+
+Required identity:
+
+- Python `3.11.11`, arm64;
+- NumPy `2.4.2`;
+- pandas `3.0.0`;
+- SciPy `1.17.0`;
+- Pyomo `6.9.5`;
+- copulas `0.14.0`;
+- IPOPT `3.14.18` / ASL `20241111` at `/usr/local/bin/ipopt`;
+- HSL `ma97`;
+- realized-scenario checksum
+  `5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358`.
+
+Run R0 and abort if any material identity differs. The old `/opt/anaconda3`
+path in historical sections below is not the Mac Studio runtime.
+
+Before continuing the cold trajectory, re-run the two accepted P5.10
+reproduction gates and require bit-identical results.
+
+## Frozen P5.12-A configuration
+
+Use exactly:
+
+- candidate: base only;
+- objective mode: `RESCALED`;
+- `rho_v = 1.5`;
+- `rho_pf = 300`;
+- `rho_ess = 1.0`;
+- adaptive rho disabled;
+- original P5.11 cold initialization;
+- the identical midpoint anchor;
+- existing production ADMM update equations;
+- existing production convergence definitions and tolerances;
+- existing IPOPT options and nonlinear formulation;
+- existing proximal regularization;
+- maximum diagnostic horizon: 100 total cycles.
+
+Do not test `rho_pf = 500` or `rho_pf = 1000`. Do not test another tolerance,
+anchor, initialization or objective mode.
+
+Neutralize the four known carried-state channels once at cold construction:
+
+1. template rho;
+2. objective scaling in cloned models;
+3. `consecutive_converged_cycles`;
+4. `last_recourse`.
+
+Initialize `candidate_solution` identically to P5.11. After construction begins,
+do not reset legitimate history between cycles. The experiment is one
+uninterrupted trajectory.
+
+## Production isolation
+
+Implement the longer horizon only in a new diagnostic harness or by manually
+continuing a private deep copy. Do not modify the production `num_max_iters`
+setting or a production configuration file.
+
+Do not write `data/SRP1/SRP1_params.json`.
+
+Do not modify accepted P5.10/P5.11 harnesses, reports or evidence.
+
+Use distinct P5.12-A names, for example:
+
+- `p512_a_cold_rescaled_convergence.py`;
+- `data/SRP1/Results/P512A/`;
+- `P5_12_A_COLD_RESCALED_CONVERGENCE_REPORT.md`.
+
+## P5.12-A0 — state verification
+
+If continuing the saved P5.11 state, verify:
+
+- template id `P511-SELFCONSISTENT-T0`;
+- consensus/dual state SHA-256
+  `14a7ea85ce283a595a35b1768c93c2a60bda872d4f5138c5168b3691a625cbf0`;
+- artifact file SHA-256
+  `3629784b277724e1f2c406f4a6dbd4599ea92b9d7ee126ac67bb2148909a67bd`;
+- configuration hash `a080612dedf2727e`.
+
+If direct continuation from the serialized state is not technically reliable,
+rebuild deterministically from cold. Require its cycle-25 state, convergence
+flags and recorded metrics to match P5.11 before proceeding. Do not splice
+incompatible states.
+
+Stop before continuation if:
+
+- repository or runtime provenance differs materially;
+- tracked production files changed;
+- P5.11 artifacts are missing or altered;
+- either reproduction gate changes;
+- the cycle-25 state cannot be verified or reproduced;
+- continuation requires a production change.
+
+Do not attempt a workaround after one of these stops.
+
+## P5.12-A1 — exact trajectory continuation
+
+Continue the verified cold RESCALED base trajectory from cycle 25. Stop the live
+trajectory at the first of:
+
+- the existing production-equivalent convergence decision;
+- a local NLP or coordination failure;
+- a nonfinite value;
+- cycle 100.
+
+Do not restart after a failure.
+
+For every cycle record:
+
+- cycle number;
+- `cycle_convergence`;
+- `consecutive_converged_cycles`;
+- all primal and dual residuals;
+- `stationarity_pf`;
+- every convergence threshold and normalized criterion slack;
+- consensus/interface disagreement;
+- recourse objective and change from the previous cycle;
+- consensus-state and dual-state step norms;
+- start/end rho;
+- every local NLP termination condition and IPOPT iteration count;
+- failed-block count;
+- wall-clock time.
+
+Use the existing convergence decision exactly. Visual trends do not constitute
+convergence.
+
+## Detached checkpoint polish
+
+At total cycles 25, 50, 75 and 100, or at the first converged cycle, deep-copy
+the state and run exact-consensus polish on the copy only. The polish must not
+alter the live trajectory.
+
+For each checkpoint report:
+
+- pre-polish interface disagreement;
+- polish success/failure and failed blocks;
+- polish correction;
+- polished recourse and total objective;
+- state and configuration hashes.
+
+A successful polish of a non-converged checkpoint does not make it a valid T0.
+
+## Descriptive terminal-window analysis
+
+If the run reaches cycle 100, compare cycles 81-90 with cycles 91-100. For each
+principal nonnegative residual and state-step norm compute:
+
+`trend_ratio = median(cycles 91-100) / median(cycles 81-90)`.
+
+Classify each metric descriptively as:
+
+- decreasing: ratio `< 0.8`;
+- approximately flat: ratio `0.8 .. 1.25`;
+- increasing: ratio `> 1.25`.
+
+Also report minima, maxima and their cycle indices. This classification does not
+replace the existing convergence decision.
+
+## Outcome classification
+
+Classify `CONVERGED` only if the unchanged convergence logic terminates by cycle
+100 and exact-consensus polish at that state succeeds with zero failed blocks.
+
+Classify `UNRESOLVED` if cycle 100 is reached without convergence, all values
+remain finite and no local block fails. Do not call the last state a
+self-consistent T0.
+
+Classify `FAILED` if any local block fails, a purportedly converged state cannot
+be polished, values become nonfinite, continuation is corrupted or provenance
+changes.
+
+## Mandatory execution stops
+
+Stop immediately if:
+
+- a local NLP block fails;
+- an objective, residual, consensus or dual value becomes nonfinite;
+- rho changes;
+- adaptive rho becomes enabled;
+- a production formulation or setting changes;
+- the trajectory fails to match P5.11 through cycle 25;
+- legitimate state history is reset during continuation;
+- another rho, tolerance, anchor or initialization would be required.
+
+Do not try a second configuration or numerical fix.
+
+## Required report
+
+Produce:
+
+`P5_12_A_COLD_RESCALED_CONVERGENCE_REPORT.md`
+
+Include:
+
+1. repository and runtime provenance;
+2. initial/final branch, HEAD and working-tree state;
+3. P5.10 reproduction-gate results;
+4. P5.11 cycle-25 state verification;
+5. exact code diff;
+6. every command executed;
+7. complete per-cycle trajectory;
+8. convergence thresholds and normalized slacks;
+9. detached checkpoint-polish results;
+10. terminal-window trend ratios, if applicable;
+11. exact stopping reason;
+12. evidence that no production file or setting changed;
+13. a recommendation for exactly one next stage.
+
+End with exactly one of:
+
+`P5.12-A PASS — cold RESCALED fixed-rho construction converged; planner may authorize a fresh T0 A/B`
+
+`P5.12-A PARTIAL — cold RESCALED construction did not converge within the diagnostic horizon`
+
+`P5.12-A FAIL — cold RESCALED diagnostic encountered a numerical or provenance failure`
+
+Then stop and wait for planner review.
+
+## Later roadmap — not authorized now
+
+If P5.12-A passes, the next possible stage is a fresh inherited-T0 versus
+genuinely converged RESCALED-T0 A/B. If that later A/B passes, expanded
+candidate/depth coverage, interface-stationarity sensitivity and a separate
+`rho_pf = 1000` certification may be considered in sequence.
+
+If P5.12-A remains unresolved, planner review must choose exactly one of:
+
+- one alternative fixed-penalty cold-construction diagnostic; or
+- acceptance of the inherited-template oracle with an explicit
+  construction-path limitation.
+
+Adaptive-rho redesign and every investment-search run remain deferred in all
+P5.12-A outcomes.
+
+---
+
+# HISTORICAL AUTHORIZED STAGE — P5.6-C landscape robustness and oracle coverage gate
 
 P5.4-R completed canonical-environment revalidation. P5.5-D closed the rigorous lower-bound architecture decision and remains accepted as:
 
@@ -84,7 +411,7 @@ The active questions are:
 4. what deterministic batch polling semantics preserve reproducibility under parallelism?;
 5. is a trustworthy NOMAD/PyNOMAD/repository MADS implementation available, or should the first campaign use a simpler deterministic generalized pattern search?
 
-# HARD REPRODUCIBILITY GATE
+# HISTORICAL P5.6-C REPRODUCIBILITY GATE
 
 All paper-instance work must use:
 
@@ -495,7 +822,7 @@ Four workers are recommended. Eight workers risk resource contention and have al
 
 ---
 
-# CURRENT SOLVER / ORACLE POLICY FOR P5.6-C
+# HISTORICAL SOLVER / ORACLE POLICY FOR P5.6-C
 
 Use only the accepted nonlinear production solvers and settings. Do not retune IPOPT/MA97, ADMM, H1, proximal regularization, recovery logic or adaptive rho during C.
 

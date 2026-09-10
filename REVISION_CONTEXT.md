@@ -1,7 +1,11 @@
 # Revision Context — Shared Resources Planning
 
 Repository:
-`/Users/micaelsimoes/PycharmProjects/shared-resources-planning`
+`/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation`
+
+Preparation-copy note: this document may be edited in another checkout before
+being transferred to the Mac Studio. All authorized execution must nevertheless
+use the Mac Studio repository path above.
 
 ## Role
 
@@ -9,11 +13,254 @@ Act as a technical planner and mathematical-programming reviewer for the shared 
 
 Read this file first. When checking the mathematical formulation, also consult `simoes_2026_revisions.pdf` where relevant and inspect the current implementation before proposing changes. Prefer reviewer-driven implementation and validation plans before production edits.
 
-This file is the repository-wide source of context. `LOCAL_NLP_STABILITY_PLAN.md` contains the currently authorized implementation/audit scope and takes precedence for the active P5.6 derivative-free planning work. Despite its legacy filename, that plan now governs nonlinear-oracle landscape robustness, coverage and pre-search validation rather than another local-NLP repair stage.
+This file is the repository-wide source of context. `LOCAL_NLP_STABILITY_PLAN.md`
+contains the currently authorized implementation/audit scope and takes
+precedence for active execution. Despite its legacy filename, that plan now
+governs the P5.12-A cold-RESCALED convergence diagnostic rather than another
+local-NLP production repair stage.
 
 ---
 
-# CURRENT SOURCE OF TRUTH — 2026-09-08
+# CURRENT SOURCE OF TRUTH — 2026-09-10
+
+This section supersedes every older "current", "active" or "immediate"
+instruction later in this file. Those sections remain historical evidence only.
+
+## Repository and accepted branch state
+
+The authorized worker checkout is the Mac Studio repository:
+
+`/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation`
+
+The active branch remains:
+
+`feature/derivative-free-planning`
+
+At the end of P5.11 the Mac Studio state was:
+
+- HEAD `fbdb2f6a7a6a88eab6d1bdaeb569c6e070eaf1dd`;
+- tracked working tree clean;
+- upstream `origin/feature/derivative-free-planning`;
+- ahead 7, behind 0;
+- no merge, pull, push, rebase, cherry-pick or commit performed by P5.11.
+
+The remote remained at stale commit `518aa1d8`, while the Mac Studio checkout
+contained the accepted restoration and later P5.9/P5.10 history. This is a
+repository-preservation risk, but it is **not** authorization to push or rewrite
+history. Any repository synchronization requires separate user approval.
+
+## Current canonical Mac Studio runtime
+
+The current paper-instance runtime on the Mac Studio is:
+
+`/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python`
+
+P5.11 independently enumerated ten interpreters and found exactly one matching
+the accepted provenance. `/opt/anaconda3` does not exist on the Mac Studio.
+
+Accepted runtime identity:
+
+- Python `3.11.11`, arm64;
+- NumPy `2.4.2`;
+- pandas `3.0.0`;
+- SciPy `1.17.0`;
+- Pyomo `6.9.5`;
+- copulas `0.14.0`;
+- IPOPT `3.14.18` / ASL `20241111` at `/usr/local/bin/ipopt`;
+- HSL `ma97`;
+- canonical realized-scenario checksum
+  `5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358`.
+
+The old `/opt/anaconda3/envs/opf_env_py311/bin/python` path later in this file is
+historical machine-specific provenance and is not the Mac Studio command.
+
+## Accepted P5.10 stabilized-oracle evidence
+
+Accepted report:
+
+`P5_10_STABILIZED_RESCALLED_ADMM_ORACLE_REPORT.md`
+
+SHA-256:
+
+`fe674ee534ba9b7cf72c188b756a1ad585133727b53aad453091531fd289311e`
+
+P5.10 made no production changes. It established an explicit harness-level
+oracle configuration and identified four carried-state channels:
+
+1. rho stored in the template;
+2. objective scaling stored in cloned models;
+3. `consecutive_converged_cycles`;
+4. `last_recourse`.
+
+`last_recourse` was a latent candidate-history asymmetry. Neutralizing all
+history channels left the base result bit-identical and must remain part of the
+declared oracle contract.
+
+The accepted stabilized diagnostic oracle uses:
+
+- `RESCALED` objective construction;
+- fixed `rho_v = 1.5`, `rho_ess = 1.0`;
+- fixed `rho_pf`, with 300 the faster working value and 1000 retained as a
+  separate certification cross-check;
+- adaptive rho disabled;
+- histories neutralized before every evaluation/generation;
+- midpoint anchor held identical across candidates;
+- exact-consensus polish as the authoritative endpoint.
+
+At fixed `rho_pf` 300, 500 and 1000, base, node-5 and node-9 candidates all
+solved and polished directly with zero failed blocks. `rho_pf = 300` was about
+2.4 times cheaper than 1000 while producing the same qualitative three-point
+landscape. The original P5.10 selection rule between 300 and 1000 was internally
+contradictory, so neither value is a new production setting.
+
+Exact-consensus polish is mandatory. The unpolished ADMM states were locally
+feasible but did not represent one common physical point. At `rho_pf = 1000`,
+about 1.6 kW of interface disagreement produced an approximately 850-unit polish
+correction against an investment signal around 600. Polished and unpolished
+oracles ranked candidates in opposite orders.
+
+The current adaptive-rho rule self-cancels under the RESCALED residual
+definition because the measured dual residual scales linearly with rho and
+therefore triggers rho reduction. Requested `rho_pf` values 300, 500 and 1000
+decayed to approximately 88.89, 98.77 and 131.69. No adaptive-rho redesign was
+implemented or authorized.
+
+Across nine stabilized terminating cycles, `stationarity_pf` was the sole
+binding convergence criterion. Objective stationarity, consensus, voltage and
+ESS criteria were materially inside tolerance. This is an open diagnostic
+question, not authorization to retune convergence tolerances.
+
+The eight-generation replay at RESCALED, fixed `rho_pf = 1000`, adaptive rho
+off and neutralized history produced:
+
+- all generations VALID;
+- zero failed polish blocks;
+- node 9 preferred at every depth;
+- zero ranking flips;
+- cross-depth relative uncertainty reduced from about `459695.59` to `22.09`;
+- uncertainty/signal reduced from `25.42` to `0.67`;
+- best-to-second mean gap only `32.87`, still thin relative to the numerical
+  floor `tau_numerical = 10`;
+- absolute base-chain drift about `-201099`, so only same-depth relative
+  comparisons are scientifically valid.
+
+P5.10 validated only three candidates. It did not establish a broad investment
+landscape, a self-consistent cold RESCALED T0, a production adaptive-rho policy,
+or readiness for an investment-search campaign.
+
+## Accepted P5.11 consolidation evidence
+
+Accepted report:
+
+`P5_11_STABILIZED_ORACLE_CONSOLIDATION_REPORT.md`
+
+SHA-256:
+
+`a9f9e3422a533d993ccd890cbee53a4a8e1dcbbc3469e95af3a592ec04281b3b`
+
+P5.11.0 passed:
+
+- the Mac Studio checkout and history were identified correctly;
+- the governing documents were not rolled back to P5.6-C, although they had not
+  yet been extended with P5.10;
+- all P5.10 harnesses and 21 evidence files were present, tracked and unmodified;
+- the R0 provenance gate passed;
+- CURRENT polished total reproduced bit-identically as
+  `828021090.3608505`;
+- RESCALED pre-polish recourse reproduced bit-identically as
+  `825814074.4930633`.
+
+P5.11.1 attempted to construct a diagnostic T0 cold under RESCALED, with fixed
+rho `1.5 / 300 / 1.0`, adaptive rho disabled and carried histories neutralized.
+The 48 augmented objectives were RESCALED at construction. The diagnostic state
+identity was:
+
+- template id `P511-SELFCONSISTENT-T0`;
+- consensus/dual state SHA-256
+  `14a7ea85ce283a595a35b1768c93c2a60bda872d4f5138c5168b3691a625cbf0`;
+- artifact file SHA-256
+  `3629784b277724e1f2c406f4a6dbd4599ea92b9d7ee126ac67bb2148909a67bd`;
+- configuration hash `a080612dedf2727e`.
+
+The cold RESCALED construction did **not** converge within the frozen production
+cap of 25 ADMM cycles. `cycle_convergence` was false at every cycle. Recourse
+moved from approximately `2.3520e9` at cycle 1 to `1.4612e9` at cycle 13 and
+`1.4024e9` at cycle 25; `primal_pf` was `3.5893e-4` at cycle 25 and had worsened
+relative to cycle 13.
+
+Candidate evaluations warm-started from this non-converged state returned local
+and polish successes, but they do not validate a self-consistent template. The
+inherited-versus-diagnostic relative-delta discrepancies were:
+
+- `rho_pf = 300`: `122.37` for node 5 and `27.59` for node 9;
+- `rho_pf = 1000`: `68.61` for node 5 and `81.55` for node 9.
+
+All exceeded the required `22.09` bound, so the P5.11.1 stopping rule fired.
+P5.11.2, P5.11.3 and P5.11.4 were correctly not run.
+
+This result does not invalidate P5.10. The inherited-template oracle reproduced
+the accepted gates exactly and its P5.11 values matched P5.10. What failed was
+the attempted hardening through a cold-built RESCALED T0.
+
+## Current interpretation
+
+The inherited CURRENT-built / RESCALED-evaluated template remains the only
+validated construction path. It is promising but restricted:
+
+- its three-point relative landscape is stable on the tested three candidates;
+- its exact-consensus polished endpoint is repeatable;
+- its cold RESCALED construction path is not yet validated;
+- it is not yet supported by broad candidate coverage;
+- no production setting should be changed on the basis of P5.10/P5.11.
+
+The next question must isolate whether the cold RESCALED path merely needs more
+iterations under exactly the same recurrence or fails to approach convergence.
+Changing penalty, tolerance, adaptive-rho logic or construction mathematics in
+the same experiment would confound that question.
+
+## CURRENT AUTHORIZED STAGE — P5.12-A only
+
+P5.12-A is a bounded diagnostic continuation of the single base-candidate cold
+RESCALED trajectory:
+
+- fixed rho `1.5 / 300 / 1.0`;
+- adaptive rho disabled;
+- existing formulation, IPOPT options, ADMM updates, convergence definitions,
+  tolerances, anchor and initialization unchanged;
+- one uninterrupted trajectory continued from the verified cycle-25 state to
+  the first production-equivalent convergence, numerical failure or cycle 100;
+- detached exact-consensus polish diagnostics at cycles 25, 50, 75 and 100 or
+  at first convergence;
+- no candidate comparisons;
+- no alternate rho or tolerance;
+- no production `num_max_iters` change;
+- no full planning or investment-search run.
+
+P5.12-A must stop after its report. The authoritative procedure and stopping
+rules are in `LOCAL_NLP_STABILITY_PLAN.md`.
+
+## Locked prohibitions during P5.12-A
+
+Do not change:
+
+- production nonlinear formulation;
+- IPOPT settings;
+- production ADMM settings or iteration cap;
+- adaptive-rho logic;
+- convergence tolerances or stationarity definitions;
+- objective scaling in production;
+- TSO proximal regularization;
+- ESSO degradation or active-energy degradation work;
+- Benders logic or convex models;
+- anchor or initialization policy;
+- accepted P5.10/P5.11 evidence.
+
+Do not run the full planning problem, derivative-free search, expanded candidate
+population, stationarity sensitivity or another fixed-rho value.
+
+---
+
+# HISTORICAL SOURCE OF TRUTH — 2026-09-08
 
 This section supersedes older solver-policy, P5.4 planning and P5.5-A instructions recorded later in this file where they conflict with the current state.
 
@@ -102,7 +349,7 @@ Recovery remains limited to IPOPT `internalSolverError`; configured limited-memo
 
 ---
 
-# CURRENT PLANNING CHECKPOINT — P5.5-D accepted; P5.6-A/B reviewed; P5.6-C authorized
+# HISTORICAL PLANNING CHECKPOINT — P5.5-D accepted; P5.6-A/B reviewed; P5.6-C authorized
 
 P5.4-R remains the canonical basis for the nonlinear production formulation and for retirement of the old nonlinear-recourse derivative cuts. P5.4-G was never run and remains permanently blocked.
 
@@ -468,7 +715,7 @@ Planner interpretation:
 3. A lower-bound-safe disjunctive outer approximation of H1 is worth one controlled diagnostic before abandoning rigorous lower bounds.
 4. The planning master remains blocked.
 
-# CURRENT ACTIVE STAGE — P5.6-C landscape robustness and oracle coverage gate
+# HISTORICAL ACTIVE STAGE — P5.6-C landscape robustness and oracle coverage gate
 
 P5.6-C is the **final pre-search gate**. It must not launch the full derivative-free investment optimization campaign.
 
@@ -1472,10 +1719,18 @@ Never describe the local-cut master estimate as a rigorous global lower bound or
 
 # Immediate instruction
 
-The immediate task is **P5.6-C — landscape robustness and oracle coverage gate** on `feature/derivative-free-planning`.
+The immediate task is **P5.12-A — cold RESCALED fixed-rho convergence
+diagnostic** on `feature/derivative-free-planning`.
 
-Use only the canonical interpreter and checksum. Treat P5.5-D-C as the accepted architecture decision: the rigorous lower-bound/Benders/MISOCP route is retired as the planning architecture, while the P5.5 convex code remains diagnostic/benchmark-only.
+Use only the verified Mac Studio runtime and canonical scenario checksum.
+Continue the one verified base-candidate cold RESCALED trajectory at fixed rho
+`1.5 / 300 / 1.0` from cycle 25 to the first existing convergence decision,
+numerical failure or cycle 100. This is a diagnostic horizon only and must not
+change the production iteration cap.
 
-Do not launch the derivative-free optimization campaign yet. First test T0/T2/T4 **relative investment rankings**, determine whether fixed continuation can rescue false hidden-infeasible points without mixing incompatible objective surfaces, define `tau_planning` separately from `tau_numerical = 10`, lock deterministic batch-poll semantics, and audit the practical MADS/pattern-search implementation path.
+Do not compare candidates, try another rho/tolerance, redesign adaptive rho,
+modify production code, or launch any investment search. Stop after the P5.12-A
+report and wait for planner review.
 
-`LOCAL_NLP_STABILITY_PLAN.md` is authoritative for the full P5.6-C execution protocol despite its legacy filename.
+`LOCAL_NLP_STABILITY_PLAN.md` is authoritative for the complete P5.12-A
+execution protocol and stopping rules.
