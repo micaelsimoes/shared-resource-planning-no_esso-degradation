@@ -1,0 +1,185 @@
+{
+ "stage": "P5.11.1 compare",
+ "provenance": {
+  "timestamp_utc": "2026-09-10T05:03:18.923415+00:00",
+  "git_head": "fbdb2f6a7a6a88eab6d1bdaeb569c6e070eaf1dd",
+  "sys_executable": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "exists": true,
+   "version": "3.14.18",
+   "asl": "20241111",
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)",
+   "path_ipopt_not_used": {
+    "path": "/usr/local/bin/ipopt",
+    "version": "3.14.18",
+    "shadows_canonical": false
+   }
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-14",
+   "available": true,
+   "licence_id": "2807206",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "canonical_ipopt_path": "/usr/local/bin/ipopt",
+  "canonical_ipopt_version": "3.14.18",
+  "canonical_ipopt_asl": "20241111",
+  "canonical_hsl_linear_solver": "ma97",
+  "stage": "P5.11.1 comparison",
+  "gate_failures": [],
+  "gate_passes": true
+ },
+ "timestamp_utc": "2026-09-10T05:03:19.022064+00:00",
+ "selfconsistent_template": {
+  "template_id": "P511-SELFCONSISTENT-T0",
+  "state_sha256": "14a7ea85ce283a595a35b1768c93c2a60bda872d4f5138c5168b3691a625cbf0",
+  "file_sha256": "3629784b277724e1f2c406f4a6dbd4599ea92b9d7ee126ac67bb2148909a67bd",
+  "config_hash": "a080612dedf2727e"
+ },
+ "delta_tolerance": 22.09,
+ "rows": [
+  {
+   "template": "inherited",
+   "rho_pf": 300.0,
+   "candidate": "base",
+   "config_hash": "10f6d2a579e18b27",
+   "status": "VALID",
+   "investment_cost": 50000.0,
+   "net_operational_recourse": 827958246.6625633,
+   "total_objective": 828008246.6625633,
+   "admm_cycles": 6,
+   "termination": {
+    "residual_convergence": true,
+    "objective_convergence": true,
+    "objective_change_abs": 59458.56479048729,
+    "objective_tolerance": 827944.6981064962,
+    "objective_slack_factor": 13.924733989525395,
+    "worst_primal_ratio": 0.009051837140987118,
+    "worst_dual_mean_ratio": 0.906183793111952
+   },
+   "rho_start": 300.0,
+   "rho_end": {
+    "v": 1.5,
+    "pf": 300.0,
+    "ess": 1.0
+   },
+   "max_interface_disagreement_prepolish": 9.051837140987118e-05,
+   "polish_correction": 73007.1208575964,
+   "local_block_failures": 0,
+   "polish_failures": 0,
+   "failed_blocks": [],
+   "wall_clock_s": 324.2240970134735
+  },
+  {
+   "template": "self_consistent",
+   "rho_pf": 300.0,
+   "candidate": "base",
+   "config_hash": "a080612dedf2727e",
+   "status": "VALID",
+   "investment_cost": 50000.0,
+   "net_operational_recourse": 1310809830.281126,
+   "total_objective": 1310859830.281126,
+   "admm_cycles": 25,
+   "termination": {
+    "residual_convergence": false,
+    "objective_convergence": false,
+    "objective_change_abs": 3132624.2501294613,
+    "objective_tolerance": 1313944.0378924466,
+    "objective_slack_factor": 0.41943876219375675,
+    "worst_primal_ratio": 0.022272900369664228,
+    "worst_dual_mean_ratio": 8.735520810091424
+   },
+   "rho_start": 300.0,
+   "rho_end": {
+    "v": 1.5,
+    "pf": 300.0,
+    "ess": 1.0
+   },
+   "max_interface_disagreement_prepolish": 0.0002227290036966423,
+   "polish_correction": -1583.361191034317,
+   "local_block_failures": 0,
+   "polish_failures": 0,
+   "failed_blocks": [],
+   "wall_clock_s": 1363.7603211402893
+  },
+  {
+   "template": "inherited",
+   "rho_pf": 1000.0,
+   "candidate": "base",
+   "config_hash": "111a0a9e502056b3",
+   "status": "VALID",
+   "investment_cost": 50000.0,
+   "net_operational_recourse": 827961656.1647184,
+   "total_objective": 828011656.1647184,
+   "admm_cycles": 16,
+   "termination": {
+    "residual_convergence": true,
+    "objective_convergence": true,
+    "objective_change_abs": 23831.251091122627,
+    "objective_tolerance": 827984.6375875406,
+    "objective_slack_factor": 34.743649606208585,
+    "worst_primal_ratio": 0.001555613440324066,
+    "worst_dual_mean_ratio": 0.9994864398680458
+   },
+   "rho_start": 1000.0,
+   "rho_end": {
+    "v": 1.5,
+    "pf": 1000.0,
+    "ess": 1.0
+   },
+   "max_interface_disagreement_prepolish": 1.555613440324066e-05,
+   "polish_correction": 849.8282690048218,
+   "local_block_failures": 0,
+   "polish_failures": 0,
+   "failed_blocks": [],
+   "wall_clock_s": 798.5732100009918
+  },
+  {
+   "template": "self_consistent",
+   "rho_pf": 1000.0,
+   "candidate": "base",
+   "config_hash": "403c5607d8b91eff",
+   "status": "VALID",
+   "investment_cost": 50000.0,
+   "net_operational_recourse": 1371092017.920833,
+   "total_objective": 1371142017.920833,
+   "admm_cycles": 25,
+   "termination": {
+    "residual_convergence": false,
+    "objective_convergence": true,
+    "objective_change_abs": 1167033.0209767818,
+    "objective_tolerance": 1372261.2938416859,
+    "objective_slack_factor": 1.1758547266238726,
+    "worst_primal_ratio": 0.015966586243035152,
+    "worst_dual_mean_ratio": 9.908044775302296
+   },
+   "rho_start": 1000.0,
+   "rho_end": {
+    "v": 1.5,
+    "pf": 1000.0,
+    "ess": 1.0
+   },
+   "max_interface_disagreement_prepolish": 0.00015966586243035152,
+   "polish_correction": -2242.8998758792877,
+   "local_block_failures": 0,
+   "polish_failures": 0,
+   "failed_blocks": [],
+   "wall_clock_s": 1374.0624408721924
+  }
+ ]
+}
