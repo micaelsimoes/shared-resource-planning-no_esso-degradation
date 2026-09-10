@@ -11,10 +11,10 @@ Studio repository path above.
 
 Act as an implementation and diagnostic agent.
 
-Read `REVISION_CONTEXT.md` first, then read this file. For P5.12-A, this file
+Read `REVISION_CONTEXT.md` first, then read this file. For P5.12-B, this file
 takes precedence regarding what may and may not be changed. The filename is
-retained for continuity even though the active scope is now a bounded cold
-RESCALED ADMM convergence diagnostic.
+retained for continuity even though the active scope is now a bounded forensic
+audit of the first cold-RESCALED local NLP failure.
 
 Work in small isolated experiments. After each stage report:
 
@@ -30,10 +30,347 @@ Do not automatically proceed from a diagnostic result to a production formulatio
 
 ---
 
-# CURRENT AUTHORIZED STAGE — P5.12-A cold RESCALED fixed-rho convergence diagnostic
+# CURRENT AUTHORIZED STAGE — P5.12-B cycle-21 local-failure forensic audit
 
-Perform **P5.12-A only** and stop after its report. No later roadmap stage is
-authorized by this document.
+Perform **P5.12-B only** and stop after its audit report. This stage may preserve
+evidence and propose exactly one later frozen A/B. It must not implement that
+A/B.
+
+## Accepted evidence and qualification
+
+Verify the supplied reports before use:
+
+- P5.10 report SHA-256
+  `fe674ee534ba9b7cf72c188b756a1ad585133727b53aad453091531fd289311e`;
+- P5.11 report SHA-256
+  `a9f9e3422a533d993ccd890cbee53a4a8e1dcbbc3469e95af3a592ec04281b3b`;
+- P5.12-A report-text SHA-256
+  `a1424ec1b47944ad1aa5a9038306ab1fec4870bf0a3ed41993a29ba1f2c89e96`.
+
+P5.12-A passed repository/runtime provenance, reproduced both P5.10 numerical
+gates bit-identically and verified the P5.11 cold-state hashes. Its binding
+result is a local NLP failure at cycle 21 of the base cold RESCALED trajectory.
+
+P5.12-A did not comply with its immediate-stop rule. Four top-level trajectories
+were run concurrently to caps 25, 50, 75 and 100, and all continued after the
+cycle-21 failure. Evidence after the first failure is exploratory only and must
+not be used as a valid ADMM trajectory, convergence classification or T0.
+
+The accepted stage verdict is:
+
+`P5.12-A FAIL — cold RESCALED diagnostic encountered a numerical failure`.
+
+P5.10 remains accepted on its restricted construction path: RESCALED evaluation
+warm-started from a CURRENT-built template, fixed rho, neutralized evaluation
+history and exact-consensus polish. The cold RESCALED construction path remains
+invalid.
+
+## Scientific question
+
+Which exact local block first fails at cold-RESCALED cycle 21, with what IPOPT
+termination and pre-solve state, and what changed relative to the same block's
+successful cycle-20 solve?
+
+The goal is preservation and diagnosis, not repair.
+
+## Repository gate
+
+Work only in:
+
+`/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation`
+
+At the start report:
+
+- hostname and absolute repository path;
+- branch, HEAD and upstream;
+- ahead/behind state without fetching;
+- tracked and untracked working-tree status;
+- commits affecting the two governing documents since P5.11;
+- hashes of P5.10, P5.11 and P5.12-A harnesses/evidence;
+- any difference in tracked production files since P5.12-A.
+
+The P5.12-A worker reported branch `feature/derivative-free-planning`, HEAD
+`808590d23ad250627be9ff9d4ae51d059cbdbcdb`, a clean tracked tree and upstream
+ahead 8 / behind 0. Verify rather than assume this state.
+
+Do not merge, pull, fetch, push, rebase, cherry-pick, reset or clean. Do not
+commit unless separately authorized. Do not delete, overwrite or normalize
+existing evidence.
+
+## Reproducibility gate
+
+Use only:
+
+`/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python`
+
+Require:
+
+- Python `3.11.11`, arm64;
+- NumPy `2.4.2`;
+- pandas `3.0.0`;
+- SciPy `1.17.0`;
+- Pyomo `6.9.5`;
+- copulas `0.14.0`;
+- IPOPT `3.14.18` / ASL `20241111` at `/usr/local/bin/ipopt`;
+- HSL `ma97`;
+- realized-scenario checksum
+  `5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358`.
+
+Run R0 and stop if a material identity differs.
+
+Do not repeat the full P5.12-A horizon. Use existing accepted evidence for its
+repository and numerical gates. The new run is solely the cycle-21 forensic
+replay.
+
+## Frozen trajectory configuration
+
+Use exactly the configuration that produced the P5.11/P5.12-A cold trajectory:
+
+- candidate: base only;
+- objective mode: `RESCALED` from cold model construction;
+- `rho_v = 1.5`;
+- `rho_pf = 300`;
+- `rho_ess = 1.0`;
+- adaptive rho disabled;
+- original cold initialization;
+- identical midpoint anchor;
+- existing production nonlinear formulation;
+- existing IPOPT options and MA97 policy;
+- existing ADMM updates, tolerances and convergence definitions;
+- existing proximal regularization;
+- one top-level process;
+- hard diagnostic cap: cycle 21.
+
+Do not run multiple trajectories concurrently. Preserve the production block
+order and ordinary internal execution semantics; do not introduce new
+parallelism or scheduling.
+
+Initialize the known carried-state fields exactly as in P5.11/P5.12-A. Clear
+them once before the cold trajectory, then permit legitimate within-trajectory
+history to evolve. Do not reset history between cycles.
+
+## Harness isolation
+
+Instrumentation must be process-local and confined to a new diagnostic harness.
+It may wrap or observe local-solve calls but must not edit production source.
+
+Use distinct files, for example:
+
+- `p512_b_cycle21_forensic.py`;
+- `data/SRP1/Results/P512B/`;
+- `P5_12_B_CYCLE21_FORENSIC_REPORT.md`.
+
+Do not modify `data/SRP1/SRP1_params.json` or the production iteration cap.
+
+If exact pre-solve capture cannot be installed without a production edit, stop
+before the numerical replay and report the instrumentation blocker.
+
+## B0 — existing-evidence inventory
+
+Before replay, inspect the P5.12-A JSON and logs read-only. Report:
+
+- whether the identity of each cycle-21 failing block is already present;
+- every available termination condition and solver status;
+- whether a cycle-20 and cycle-21 pre-solve state was saved;
+- whether raw IPOPT logs cover the first failure;
+- the accepted cycle-1, cycle-13, cycle-20 and cycle-21 markers available in
+  evidence;
+- limitations caused by post-failure continuation.
+
+Do not infer missing values from later cycles.
+
+## B1 — deterministic replay through cycle 20
+
+Run one cold trajectory from cycle 1 through cycle 20.
+
+For every cycle record the same configuration, rho, recourse and convergence
+diagnostics used by P5.12-A. Require the available accepted markers and the
+complete cycle-20 state to match the existing evidence.
+
+At the end of cycle 20 preserve:
+
+- one complete cycle-level state before cycle-21 updates;
+- all consensus variables and duals;
+- `last_recourse` and convergence counters;
+- every block's primal variables and imported warm-start multipliers;
+- configuration and model-structure hashes.
+
+Do not polish cycle 20 and do not alter the state before cycle 21.
+
+If the replay differs before cycle 21, stop immediately. Do not proceed in the
+hope that the same failure appears later.
+
+## B2 — cycle-21 pre-solve preservation
+
+Before any cycle-21 local solver invocation, preserve the complete pre-solve
+state for every block, including:
+
+- agent, network, year, representative day and block identifier;
+- model/objective/configuration hashes;
+- active variable/constraint counts;
+- fixed rho and all consensus targets;
+- relevant ADMM duals and proximal references;
+- primal warm start;
+- bound and constraint multipliers supplied to IPOPT;
+- objective decomposition and scaling metadata;
+- constraint residuals and distances to active bounds at the starting point;
+- shared-ESS capacities, schedules and interface values;
+- exact solver options.
+
+Store a manifest and SHA-256 for every preserved artifact.
+
+The capture must be observational. Do not round, project, repair or reinitialize
+the state.
+
+## B3 — attempt cycle 21 once
+
+Attempt the ordinary cycle-21 local solves once, in the existing production
+order and with unchanged settings.
+
+At the first unsuccessful local solve:
+
+1. preserve the raw solver result and complete IPOPT log;
+2. record solver status, termination condition, iteration count and final
+   reported objective/constraint/KKT metrics;
+3. preserve the failed model state if available without retrying;
+4. record any already-completed cycle-21 block results as partial evidence;
+5. terminate the entire diagnostic before consensus, dual, rho or recourse
+   updates and before cycle 22.
+
+If the implementation starts a batch of cycle-21 solves concurrently, do not
+start additional work after the first observed failure. Already-started solves
+may finish only if they cannot be cancelled safely; record that limitation and
+do not perform any cycle-level update.
+
+Do not retry the failed block—not even once—with another start, Hessian mode,
+linear solver, tolerance, bound push, restoration option or recovery path.
+
+## B4 — matched cycle-20 versus cycle-21 audit
+
+For every cycle-21 failing block, compare its preserved cycle-21 input against
+the same block's successful cycle-20 input.
+
+Report at minimum:
+
+- identical/different model structure and active-set membership;
+- changes in consensus targets, duals and proximal references;
+- changes in primal start by variable family, including max absolute and scaled
+  norms;
+- changes in imported bound and constraint multipliers;
+- starting constraint violations and smallest inequality margins;
+- objective component values, scale factors and gradient norms where existing
+  read-only utilities can compute them safely;
+- variables newly at or near bounds;
+- constraint families newly active or closest to violation;
+- IPOPT iteration/termination/log differences;
+- whether the failed start is finite and inside declared bounds;
+- whether any state field is missing, stale or inconsistent.
+
+Prioritize evidence already present in the preserved model and logs. Do not add
+a broad Jacobian/Hessian campaign unless it is required to describe the exact
+first-failure state; if it is required, propose it as the later A/B instead.
+
+## B5 — causal ranking and one proposed A/B
+
+Rank candidate mechanisms `HIGH / MEDIUM / LOW`, with direct evidence and
+counterevidence for each. Separate:
+
+- invalid/corrupted warm-start state;
+- multiplier or bound-proximity pathology;
+- RESCALED objective/ADMM coefficient imbalance;
+- local active-set transition;
+- shared-ESS/interface state movement;
+- IPOPT restoration or linear-system failure;
+- concurrency/resource contention.
+
+Propose exactly **one** next frozen A/B targeted at the highest-ranked mechanism.
+Specify its two arms, single changed factor, preserved controls, measurements,
+acceptance criterion and stop rules.
+
+Do not implement the A/B.
+
+## Immediate stopping rules
+
+Stop immediately and report if:
+
+- repository or runtime provenance differs materially;
+- a tracked production file is modified;
+- P5.12-A evidence required for matching is missing or altered;
+- exact capture requires a production edit;
+- the trajectory differs from accepted evidence before cycle 21;
+- a local failure occurs before cycle 21;
+- cycle 21 succeeds with zero local failures;
+- the first failure cannot be preserved completely;
+- a nonfinite value appears;
+- rho changes or adaptive rho becomes enabled;
+- a retry or parameter change would be needed.
+
+If cycle 21 does not reproduce in the isolated single-process run, stop there.
+Do not chase the later cycle-83 observation.
+
+## Locked prohibitions
+
+Do not change:
+
+- production formulation;
+- IPOPT settings or recovery policy;
+- ADMM settings, iteration cap, residuals or stopping rules;
+- rho values or adaptive-rho logic;
+- objective scaling;
+- TSO proximal regularization;
+- ESSO degradation or active-energy degradation work;
+- Benders logic or convex models;
+- anchor, candidate or initialization;
+- accepted evidence.
+
+Do not run:
+
+- cycle 22 or later;
+- another penalty/tolerance;
+- concurrent top-level trajectories;
+- exact-consensus polish;
+- candidate comparisons;
+- expanded coverage or stationarity experiments;
+- derivative-free search, Benders or the full planning problem.
+
+## Required report
+
+Produce:
+
+`P5_12_B_CYCLE21_FORENSIC_REPORT.md`
+
+Include:
+
+1. repository/runtime provenance and initial/final Git state;
+2. exact diff and every command;
+3. existing P5.12-A evidence inventory;
+4. cycle-1 through cycle-20 reproduction table;
+5. hashes/manifests for cycle-20 and cycle-21 pre-solve states;
+6. every cycle-21 local result obtained before termination;
+7. exact failing-block identity and IPOPT evidence;
+8. matched cycle-20/cycle-21 comparison;
+9. ranked causal table;
+10. exactly one proposed frozen A/B;
+11. stopping-rule compliance;
+12. confirmation that no production file/setting changed.
+
+End with exactly one of:
+
+`P5.12-B-A — deterministic cycle-21 failure reproduced and preserved; one frozen A/B proposed`
+
+`P5.12-B-B — cycle-21 failure did not reproduce under isolated execution`
+
+`P5.12-B-C — forensic evidence or provenance is incomplete`
+
+Then stop and wait for planner review.
+
+---
+
+# COMPLETED STAGE — P5.12-A cold RESCALED fixed-rho convergence diagnostic
+
+P5.12-A is complete with a qualified FAIL and must not be rerun. The instructions
+below are retained only as a historical execution record. The current P5.12-B
+stage above supersedes every imperative in this section.
 
 ## Accepted starting point
 
@@ -347,6 +684,71 @@ If P5.12-A remains unresolved, planner review must choose exactly one of:
 
 Adaptive-rho redesign and every investment-search run remain deferred in all
 P5.12-A outcomes.
+
+---
+
+# RECOVERED ACCEPTED P5.6-C THROUGH P5.9 RESULTS
+
+This summary restores accepted decisions pruned by the repeated
+documentation-only merges. It is historical evidence, not active authorization.
+
+## P5.6-C
+
+Accepted verdict:
+
+`P5.6-C-C — derivative-free search is not ready`.
+
+T0/T4 relative landscapes were unstable: Spearman `-0.033`, with 6 of 9
+improvement signs reversed. Fixed continuation repaired coverage but changed
+direct-VALID controls by about `2.9e6`, so failure-only continuation would mix
+incompatible surfaces.
+
+## P5.6-D
+
+Accepted verdict:
+
+`P5.6-D-C — uniform refinement does not stabilize the investment landscape`.
+
+Coverage reached 100% from `K=4`, but ordering remained unstable;
+`tau_planning_refined = 811438.05`, the best candidate changed across every
+tested depth transition, and a node-9 direction reversed between `K=8` and
+`K=12`. No `K_STAR` was accepted.
+
+## P5.7
+
+Accepted verdict:
+
+`P5.7-A — unique operational oracle can likely be recovered`.
+
+Objective scaling was the primary branch-selection mechanism. The production
+augmented objective divided the base term by `effective_scale` of roughly
+`9.41e4 .. 1.16e5`; equivalent RESCALED local objectives recovered
+`-8892463.76` versus `-383401.68` under CURRENT scaling. Initialization and
+active-set differences were secondary. No production formulation changed.
+
+## P5.8
+
+Accepted verdict:
+
+`P5.8-B — objective scaling improves stability but additional ADMM issues remain`.
+
+RESCALED objectives were exact positive multiples of CURRENT on all 48 blocks
+and improved local optimality/constraint residuals, but the initial replay still
+drifted and frequently broke exact-consensus polish. The inherited
+`consecutive_converged_cycles` channel and overly loose objective test were
+identified. The anchor was shown to remain common across starts.
+
+## P5.9
+
+P5.9 established that voltage rho and ESS consensus were not binding, while the
+adaptive active-power penalty rule reduced requested `rho_pf` values 300, 500
+and 1000 to approximately 88.89, 98.77 and 131.69. Its CURRENT eight-depth
+comparison still had two ranking flips and relative uncertainty `459695.59`
+against signal `18085.03`. These findings motivated the explicit fixed-rho,
+history-neutralized P5.10 oracle.
+
+No stage in this recovered lineage authorized derivative-free investment search
+or a production adaptive-rho change.
 
 ---
 

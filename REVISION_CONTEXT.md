@@ -16,8 +16,8 @@ Read this file first. When checking the mathematical formulation, also consult `
 This file is the repository-wide source of context. `LOCAL_NLP_STABILITY_PLAN.md`
 contains the currently authorized implementation/audit scope and takes
 precedence for active execution. Despite its legacy filename, that plan now
-governs the P5.12-A cold-RESCALED convergence diagnostic rather than another
-local-NLP production repair stage.
+governs the P5.12-B forensic audit of the first cold-RESCALED local NLP failure
+rather than another local-NLP production repair stage.
 
 ---
 
@@ -36,16 +36,22 @@ The active branch remains:
 
 `feature/derivative-free-planning`
 
-At the end of P5.11 the Mac Studio state was:
+At the end of P5.12-A the Mac Studio state was:
 
-- HEAD `fbdb2f6a7a6a88eab6d1bdaeb569c6e070eaf1dd`;
+- HEAD `808590d23ad250627be9ff9d4ae51d059cbdbcdb`;
 - tracked working tree clean;
 - upstream `origin/feature/derivative-free-planning`;
-- ahead 7, behind 0;
-- no merge, pull, push, rebase, cherry-pick or commit performed by P5.11.
+- ahead 8, behind 0;
+- no merge, pull, fetch, push, rebase, cherry-pick, reset or commit performed by
+  the P5.12-A worker.
 
-The remote remained at stale commit `518aa1d8`, while the Mac Studio checkout
-contained the accepted restoration and later P5.9/P5.10 history. This is a
+HEAD moved after P5.11 through a user merge that touched only
+`REVISION_CONTEXT.md` and `LOCAL_NLP_STABILITY_PLAN.md`. That merge selected the
+origin documents and again pruned the explicit P5.6-D, P5.7 and P5.8 record.
+The accepted lineage remains recoverable from pre-merge commit `fbdb2f6a` and
+local ancestor `bff465d7`. The recovered summary below restores those decisions.
+
+The Mac Studio checkout remains several commits ahead of its remote. This is a
 repository-preservation risk, but it is **not** authorization to push or rewrite
 history. Any repository synchronization requires separate user approval.
 
@@ -73,6 +79,93 @@ Accepted runtime identity:
 
 The old `/opt/anaconda3/envs/opf_env_py311/bin/python` path later in this file is
 historical machine-specific provenance and is not the Mac Studio command.
+
+## Recovered accepted P5.6-C through P5.9 lineage
+
+The following accepted history was pruned by the documentation-only merge and
+is restored here from the accepted pre-merge lineage.
+
+### P5.6-C — landscape and coverage gate
+
+Accepted verdict:
+
+`P5.6-C-C — derivative-free search is not ready`.
+
+T0 versus T4 Spearman correlation was `-0.033`; 6 of 9 improvement signs
+reversed. Fixed continuation rescued every tested direct failure but changed
+already-VALID controls by about `2.9e6`, so it could not be used only on failure
+without mixing incompatible oracle surfaces. The reported P5.6-B
+`se|ALL|x19` crash was withdrawn as non-reproducible. End-to-end costs were
+corrected to about 135 seconds for VALID and 186 seconds for failed evaluations.
+
+### P5.6-D — uniformly refined nonlinear oracle
+
+Accepted verdict:
+
+`P5.6-D-C — uniform refinement does not stabilize the investment landscape`.
+
+Uniform refinement reached 100% coverage from `K=4` and substantially improved
+direction consistency, but did not stabilize ordering. The accepted
+`tau_planning_refined` was `811438.05`, the best candidate changed at every
+tested depth transition, and node 9 / 2025 reversed its preferred investment
+sign between `K=8` and `K=12`. No accepted `K_STAR` exists.
+
+The best known feasible nonlinear planning incumbent from that stage was
+`se|node5|2025|-10%` with total `825109566.571083`.
+
+### P5.7 — branch-selection diagnosis
+
+Accepted verdict:
+
+`P5.7-A — unique operational oracle can likely be recovered`.
+
+Objective scaling was the primary diagnosed mechanism. Production formed each
+augmented subproblem objective as `base / effective_scale + consensus terms`,
+with `effective_scale` about `9.41e4 .. 1.16e5`. Re-solving all 48 subproblems
+from their own converged point changed the recovered base objective by
+`-383401.68` under CURRENT scaling and `-8892463.76` under RESCALED scaling,
+explaining about 96.5% of the ADMM-to-polish gap.
+
+Initialization sensitivity was small by comparison: four starts of the same
+polish NLP spread by only `303.24` on an objective around `8.3e8`. Active-set
+differences were sparse, and continuation improved reachability rather than
+fixed-consensus local quality. The earlier conjecture that cold starts used a
+candidate-dependent TSO anchor was later refuted by P5.8.
+
+### P5.8 — ADMM objective-scaling validation
+
+Accepted verdict:
+
+`P5.8-B — objective scaling improves stability but additional ADMM issues remain`.
+
+`RESCALED = effective_scale * CURRENT` was verified as an exact positive
+multiple on all 48 blocks. RESCALED recovered much more of the base objective
+and improved the maximum unscaled constraint violation by about 70 times, but
+the initial RESCALED replay still drifted, often broke exact-consensus polish,
+and approached the active-power interface tolerance. The inherited
+`consecutive_converged_cycles` channel was also exposed.
+
+The then-current objective stopping threshold was about 25 times the planning
+signal, while the anchor was shown to remain effectively common across starts.
+No production scaling or stopping-rule change was authorized by P5.8.
+
+### P5.9 — partial stabilization and parameter diagnosis
+
+P5.9 carried RESCALED evaluation forward and established the facts later used
+by P5.10:
+
+- `rho_v` was numerically inert across the tested 667-fold range;
+- ESS consensus remained far inside tolerance;
+- the adaptive `rho_pf` rule compressed requested values 300, 500 and 1000 to
+  approximately 88.89, 98.77 and 131.69 because its dual residual scaled with
+  rho;
+- the CURRENT eight-depth comparison still had two ranking flips and
+  cross-depth relative uncertainty `459695.59` against a mean signal
+  `18085.03`, an uncertainty/signal ratio of `25.42`;
+- RESCALED improved coverage and the landscape but did not yet establish a
+  stable, explicitly configured polished oracle.
+
+P5.9 did not authorize production adaptive-rho changes or investment search.
 
 ## Accepted P5.10 stabilized-oracle evidence
 
@@ -202,44 +295,69 @@ This result does not invalidate P5.10. The inherited-template oracle reproduced
 the accepted gates exactly and its P5.11 values matched P5.10. What failed was
 the attempted hardening through a cold-built RESCALED T0.
 
-## Current interpretation
+## Accepted P5.12-A cold-RESCALED diagnostic, with qualification
+
+Accepted report text SHA-256:
+
+`a1424ec1b47944ad1aa5a9038306ab1fec4870bf0a3ed41993a29ba1f2c89e96`
+
+Accepted stage verdict:
+
+`P5.12-A FAIL — cold RESCALED diagnostic encountered a numerical failure`.
+
+Repository/runtime provenance, both P5.10 reproduction gates and the P5.11
+cycle-25 state hashes passed. No tracked production file or parameter changed.
+
+The decisive authorized evidence is the first local NLP failure at cycle 21.
+Retrospective instrumentation also established that the P5.11 cold build had
+local failures at cycles 21-24 that its earlier harness did not record. This
+strengthens the rejection of the P5.11 diagnostic T0.
+
+P5.12-A did not enforce its stop rule correctly. Instead of one trajectory that
+terminated at the first failure, it launched four concurrent cold runs capped at
+25, 50, 75 and 100. The runs continued after cycle 21, and later states were
+formed while production retained schedules across failed local solves.
+Therefore:
+
+- cycle 21 is accepted as the binding failure evidence;
+- cycle 25-100 results are exploratory only;
+- the reported repeated failures from cycle 83 onward do not establish a valid
+  "permanent breakdown" conclusion;
+- detached polish results after the first failure cannot certify a T0;
+- concurrency is an avoidable experimental confound for future replay.
 
 The inherited CURRENT-built / RESCALED-evaluated template remains the only
-validated construction path. It is promising but restricted:
+validated construction path. P5.10 continues to stand for its restricted
+three-candidate, exact-consensus-polished surface. The cold RESCALED construction
+is invalid and must not be used for candidate ranking.
 
-- its three-point relative landscape is stable on the tested three candidates;
-- its exact-consensus polished endpoint is repeatable;
-- its cold RESCALED construction path is not yet validated;
-- it is not yet supported by broad candidate coverage;
-- no production setting should be changed on the basis of P5.10/P5.11.
+## CURRENT AUTHORIZED STAGE — P5.12-B only
 
-The next question must isolate whether the cold RESCALED path merely needs more
-iterations under exactly the same recurrence or fails to approach convergence.
-Changing penalty, tolerance, adaptive-rho logic or construction mathematics in
-the same experiment would confound that question.
+P5.12-B is a read-only forensic preservation and matched-state audit of the
+first cold-RESCALED local failure at cycle 21.
 
-## CURRENT AUTHORIZED STAGE — P5.12-A only
+The stage must:
 
-P5.12-A is a bounded diagnostic continuation of the single base-candidate cold
-RESCALED trajectory:
+- use one process and one base-candidate trajectory only;
+- reproduce the accepted cold RESCALED configuration through cycle 20;
+- capture cycle-20 successful and cycle-21 pre-solve states before attempting
+  the first failing local solves;
+- identify every failing block, IPOPT termination condition and solver-log
+  signature at cycle 21;
+- compare each failing cycle-21 block with its matched successful cycle-20
+  instance;
+- terminate the entire experiment immediately when the first cycle-21 local
+  failure is observed;
+- propose exactly one later frozen A/B, without implementing it.
 
-- fixed rho `1.5 / 300 / 1.0`;
-- adaptive rho disabled;
-- existing formulation, IPOPT options, ADMM updates, convergence definitions,
-  tolerances, anchor and initialization unchanged;
-- one uninterrupted trajectory continued from the verified cycle-25 state to
-  the first production-equivalent convergence, numerical failure or cycle 100;
-- detached exact-consensus polish diagnostics at cycles 25, 50, 75 and 100 or
-  at first convergence;
-- no candidate comparisons;
-- no alternate rho or tolerance;
-- no production `num_max_iters` change;
-- no full planning or investment-search run.
+P5.12-B must not continue to cycle 22, retry a failed block, reproduce cycle 83,
+or change any formulation, solver option, ADMM parameter, penalty, tolerance,
+anchor, initialization or production source.
 
-P5.12-A must stop after its report. The authoritative procedure and stopping
-rules are in `LOCAL_NLP_STABILITY_PLAN.md`.
+The authoritative protocol and stopping rules are in
+`LOCAL_NLP_STABILITY_PLAN.md`.
 
-## Locked prohibitions during P5.12-A
+## Locked prohibitions during P5.12-B
 
 Do not change:
 
@@ -253,10 +371,11 @@ Do not change:
 - ESSO degradation or active-energy degradation work;
 - Benders logic or convex models;
 - anchor or initialization policy;
-- accepted P5.10/P5.11 evidence.
+- accepted P5.10/P5.11/P5.12-A evidence.
 
 Do not run the full planning problem, derivative-free search, expanded candidate
-population, stationarity sensitivity or another fixed-rho value.
+population, stationarity sensitivity, another fixed-rho value, or any
+post-failure ADMM cycle.
 
 ---
 
@@ -1719,18 +1838,18 @@ Never describe the local-cut master estimate as a rigorous global lower bound or
 
 # Immediate instruction
 
-The immediate task is **P5.12-A — cold RESCALED fixed-rho convergence
-diagnostic** on `feature/derivative-free-planning`.
+The immediate task is **P5.12-B — cycle-21 cold-RESCALED local-failure forensic
+audit** on `feature/derivative-free-planning`.
 
-Use only the verified Mac Studio runtime and canonical scenario checksum.
-Continue the one verified base-candidate cold RESCALED trajectory at fixed rho
-`1.5 / 300 / 1.0` from cycle 25 to the first existing convergence decision,
-numerical failure or cycle 100. This is a diagnostic horizon only and must not
-change the production iteration cap.
+Use one isolated process and the verified Mac Studio runtime. Reproduce only the
+accepted base cold-RESCALED trajectory through cycle 20, preserve the matched
+cycle-20 and cycle-21 pre-solve states, attempt cycle 21 once, and terminate the
+whole experiment at the first local failure.
 
-Do not compare candidates, try another rho/tolerance, redesign adaptive rho,
-modify production code, or launch any investment search. Stop after the P5.12-A
-report and wait for planner review.
+Do not continue to cycle 22, rerun the long-horizon experiment, retry with new
+solver settings, change any production formulation/parameter, or launch any
+candidate comparison or investment search. Stop after the P5.12-B audit and
+propose exactly one frozen A/B for planner review.
 
-`LOCAL_NLP_STABILITY_PLAN.md` is authoritative for the complete P5.12-A
+`LOCAL_NLP_STABILITY_PLAN.md` is authoritative for the complete P5.12-B
 execution protocol and stopping rules.
