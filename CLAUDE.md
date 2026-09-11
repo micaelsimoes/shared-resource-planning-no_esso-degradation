@@ -36,23 +36,13 @@ Role-specific instructions are under:
 Production-code changes should normally be performed only by Worker after
 Planner authorization.
 
-## Canonical environment
+## Runtime environment
 
-Python:
+Machine-specific interpreter and solver paths are defined in
+`CLAUDE.local.md`.
 
-`/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python`
-
-IPOPT:
-
-`/usr/local/bin/ipopt`
-
-Canonical solver identity is verified through `p54r_provenance.gate()`.
-
-Every diagnostic harness that loads SRP1 must execute the provenance gate
-before performing the experiment.
-
-Do not substitute the conda IPOPT installation for the configured canonical
-IPOPT executable.
+All production and diagnostic runs must use the canonical environment for
+the current machine and must pass the repository provenance checks.
 
 ## Repository rules
 
