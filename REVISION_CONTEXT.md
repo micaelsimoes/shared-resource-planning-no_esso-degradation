@@ -16,8 +16,8 @@ Read this file first. When checking the mathematical formulation, also consult `
 This file is the repository-wide source of context. `LOCAL_NLP_STABILITY_PLAN.md`
 contains the currently authorized implementation/audit scope and takes
 precedence for active execution. Despite its legacy filename, that plan now
-governs the P5.12-B forensic audit of the first cold-RESCALED local NLP failure
-rather than another local-NLP production repair stage.
+governs P5.12-R, the bounded deterministic recapture of the first cold-RESCALED
+local NLP failure's input, rather than a production repair or an A/B solve.
 
 ---
 
@@ -36,7 +36,25 @@ The active branch remains:
 
 `feature/derivative-free-planning`
 
-At the end of P5.12-A the Mac Studio state was:
+At the independent P5.12-C planner audit, verified again before this document
+update, the Mac Studio state was:
+
+- HEAD `dd0001675e4e38cbf4ec0282df312469bcb435e5`;
+- verified unified baseline `72468913499f5f9eca77ddbef6ed71fd61be7a97` is an ancestor;
+- the sole later commit, `dd000167`, preserves P5.11/P5.12-A/P5.12-B reports,
+  harnesses and evidence plus `.gitignore`, with no production change;
+- upstream `origin/feature/derivative-free-planning`, ahead 0 / behind 0
+  against the local reference, without fetching;
+- tracked and staged files clean before this authorized governing-document
+  update; pre-existing untracked and ignored artifacts remain untouched;
+- `P5_12_C_BOUND_MULTIPLIER_AB_REPORT.md` is untracked; no P5.12-C checkpoint
+  commit or arm harness was found.
+
+This is not a fresh verification of the remote server. The P5.11 cycle-25
+diagnostic pickle remains ignored and local; its recorded hash verifies, but
+it is not a cycle-21 restart point. No repository synchronization is authorized.
+
+Historical P5.12-A end state:
 
 - HEAD `808590d23ad250627be9ff9d4ae51d059cbdbcdb`;
 - tracked working tree clean;
@@ -51,9 +69,8 @@ origin documents and again pruned the explicit P5.6-D, P5.7 and P5.8 record.
 The accepted lineage remains recoverable from pre-merge commit `fbdb2f6a` and
 local ancestor `bff465d7`. The recovered summary below restores those decisions.
 
-The Mac Studio checkout remains several commits ahead of its remote. This is a
-repository-preservation risk, but it is **not** authorization to push or rewrite
-history. Any repository synchronization requires separate user approval.
+The earlier ahead-of-origin and untracked-report observations are historical;
+the checkpoint state above supersedes them. Do not push or rewrite history.
 
 ## Current canonical Mac Studio runtime
 
@@ -331,33 +348,86 @@ validated construction path. P5.10 continues to stand for its restricted
 three-candidate, exact-consensus-polished surface. The cold RESCALED construction
 is invalid and must not be used for candidate ranking.
 
-## CURRENT AUTHORIZED STAGE — P5.12-B only
+## Accepted P5.12-B evidence, with independent-review qualifications
 
-P5.12-B is a read-only forensic preservation and matched-state audit of the
-first cold-RESCALED local failure at cycle 21.
+P5.12-B reproduced `DSO:case33_3 | 2025 | Spring | cycle 21`, terminating at
+IPOPT's 3000-iteration limit. The matched cycle-20 solve was optimal in 115
+iterations. Final unscaled constraint violation rose from `7.21495e-7` to
+`0.06192134`, and dual infeasibility from `0.00113231` to `51.59806`.
+The terminal failure was not restoration or a MA97 error.
 
-The stage must:
+The report, harness, aggregate JSON, provenance and filtered log hashes match
+those in `P5_12_C_BOUND_MULTIPLIER_AB_REPORT.md`. The original raw log also
+survives at
+`data/SRP1/Results/P56A/evals/p512b_forensic/logs/optim_log_case33_3_2025_Spring.log`,
+SHA-256 `57987d2e0be0fcb9849b9db5bd67b79795a7fa8c201a05692705d5e8faa1e0c5`.
 
-- use one process and one base-candidate trajectory only;
-- reproduce the accepted cold RESCALED configuration through cycle 20;
-- capture cycle-20 successful and cycle-21 pre-solve states before attempting
-  the first failing local solves;
-- identify every failing block, IPOPT termination condition and solver-log
-  signature at cycle 21;
-- compare each failing cycle-21 block with its matched successful cycle-20
-  instance;
-- terminate the entire experiment immediately when the first cycle-21 local
-  failure is observed;
-- propose exactly one later frozen A/B, without implementing it.
+The following qualifications supersede B's full-preservation and immediate-stop
+claims without withdrawing its recorded numerical failure:
 
-P5.12-B must not continue to cycle 22, retry a failed block, reproduce cycle 83,
-or change any formulation, solver option, ADMM parameter, penalty, tolerance,
-anchor, initialization or production source.
+- B saved selected summaries, four leading primal values and short fingerprints,
+  not a complete indexed model or replayable state. There is no complete
+  cycle-20 restart checkpoint or exact cycle-21 snapshot manifest.
+- `NetworkData.optimize` clones before `run_smopf`; `_create_smopf_solver` then
+  refreshes bound-input suffixes from output suffixes. B's summaries therefore
+  do not establish the actual ordered multipliers exported to IPOPT.
+- The failure was DSO solve 25 of 36. Eleven more sequential DSO solves ran
+  before the wrapper aborted, although no DSO-stage consensus update or cycle 22
+  followed. This was not an immediate stop at the first observed failure.
+- Equal counts do not establish identical structure or active-set membership;
+  differences of L1 norms do not establish norms of pointwise state changes.
 
-The authoritative protocol and stopping rules are in
-`LOCAL_NLP_STABILITY_PLAN.md`.
+Large bound multipliers remain a structural suspect, not a demonstrated cause.
+The accepted production `vmag_nodes` refactor remains a numerical-stability
+improvement; the remaining local-NLP failures are a separate residual-conditioning
+problem.
 
-## Locked prohibitions during P5.12-B
+## Accepted P5.12-C preflight stop
+
+The complete report is `P5_12_C_BOUND_MULTIPLIER_AB_REPORT.md`. Its stop was valid:
+the required exact input was unavailable, and its authorization prohibited
+trajectory replay. Neither arm ran; there is no causal or convergence result.
+Its required closing phrase "A/B COMPLETE" denotes report delivery only.
+No production or governing file was changed and nothing was committed or pushed
+by that task. R0 was not rerun, so C makes no fresh runtime-provenance claim.
+
+The independent audit verified all six hashes in C's artifact table. Searches
+including ignored files found only historical P5.7, cycle-25 P5.11 and cycle-7
+comparator pickles. Summaries and solver-log norms cannot recover the missing
+indexed primals, parameters and multipliers losslessly. The later cycle-25 state
+cannot substitute or be inverted into the target input. No external original
+snapshot has been verified.
+
+The later C authorization supersedes B's proposed experiment: the future frozen
+local A/B retains constraint duals and suppresses only `ipopt_zL_in` and
+`ipopt_zU_in` in Arm B. It does not compare two ADMM trajectories. Neither arm
+is authorized by P5.12-R.
+
+## CURRENT AUTHORIZED STAGE — P5.12-R deterministic pre-solve recapture
+
+Following planner audit and user approval, authorize one capture stage only in
+the existing Local checkout. Replay the frozen base cold-RESCALED configuration
+through cycle 20, preserving the target's cycle-20 input and a complete
+cycle-20 checkpoint. Enter cycle 21 in ordinary order only as far as
+`DSO:case33_3 | 2025 | Spring` (24 preceding DSO solves under the recorded order).
+
+Capture both the pre-setup model for comparison with B and the exact input after
+solver setup refreshes bound multipliers, immediately before `solver.solve`.
+Serialize and verify the state, then terminate WITHOUT solving the target.
+This narrowly authorizes the recapture replay previously prohibited during C;
+it does not authorize either A/B arm, a repair, a retry or a continuation.
+
+Require complete indexed state, solver export ordering, effective settings,
+full SHA-256 manifests and a no-solve reload-equivalence check. Historical
+summary matching is not proof of exact historical full-state equality because
+no original full-state hash exists. Any later Arm A must still reproduce the
+3000-iteration failure under separate authorization.
+
+`LOCAL_NLP_STABILITY_PLAN.md` is authoritative for the complete P5.12-R protocol,
+evidence requirements and immediate stopping rules. Stop after its report for
+planner review. This document update does not itself execute the worker stage.
+
+## Locked prohibitions during P5.12-R
 
 Do not change:
 
@@ -371,11 +441,11 @@ Do not change:
 - ESSO degradation or active-energy degradation work;
 - Benders logic or convex models;
 - anchor or initialization policy;
-- accepted P5.10/P5.11/P5.12-A evidence.
+- accepted P5.10/P5.11/P5.12-A/P5.12-B/P5.12-C evidence.
 
 Do not run the full planning problem, derivative-free search, expanded candidate
-population, stationarity sensitivity, another fixed-rho value, or any
-post-failure ADMM cycle.
+population, stationarity sensitivity, another fixed-rho value, polish, either
+A/B arm, the target cycle-21 solve, any later block or any post-failure update.
 
 ---
 
@@ -1838,18 +1908,12 @@ Never describe the local-cut master estimate as a rigorous global lower bound or
 
 # Immediate instruction
 
-The immediate task is **P5.12-B — cycle-21 cold-RESCALED local-failure forensic
-audit** on `feature/derivative-free-planning`.
+The authorized worker stage is **P5.12-R — deterministic pre-solve recapture**
+on `feature/derivative-free-planning`, in the existing Local checkout.
 
-Use one isolated process and the verified Mac Studio runtime. Reproduce only the
-accepted base cold-RESCALED trajectory through cycle 20, preserve the matched
-cycle-20 and cycle-21 pre-solve states, attempt cycle 21 once, and terminate the
-whole experiment at the first local failure.
+Use one isolated process and the verified Mac Studio runtime. Preserve the exact
+cycle-21 target input after solver setup and stop before its solver invocation.
+Do not execute either A/B arm, retry, polish, continue the cycle or change any
+production formulation/parameter. Report and stop for planner review.
 
-Do not continue to cycle 22, rerun the long-horizon experiment, retry with new
-solver settings, change any production formulation/parameter, or launch any
-candidate comparison or investment search. Stop after the P5.12-B audit and
-propose exactly one frozen A/B for planner review.
-
-`LOCAL_NLP_STABILITY_PLAN.md` is authoritative for the complete P5.12-B
-execution protocol and stopping rules.
+`LOCAL_NLP_STABILITY_PLAN.md` is authoritative for the complete P5.12-R protocol.

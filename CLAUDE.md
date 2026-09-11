@@ -1,146 +1,78 @@
 # CLAUDE.md
 
-Guidance for Claude Code in this repository. Read this file first, then read
-the two governing documents named below **in full** before doing any work on
-the active initiative. This file is a pointer and a status board, not a
-substitute for them.
+Repository-wide instructions for Claude Code.
 
 ## Project
 
-Shared Resources Planning Tool — an optimization research codebase for
-planning TSO-DSO shared energy storage resources. It formulates nonlinear
-SMOPF (sequential multi-period optimal power flow) subproblems in Pyomo,
-solved with IPOPT + the MA97 linear solver, coordinated across a transmission
-system operator (TSO) and multiple distribution system operators (DSOs) via
-ADMM.
+Shared Resources Planning Tool: nonlinear SMOPF and distributed
+TSO-DSO coordination using ADMM.
 
-## Governing documents — read both, in this order
+## Current project state
 
-- `REVISION_CONTEXT.md` — repository-wide source of truth. Its
-  `CURRENT SOURCE OF TRUTH` section supersedes anything older recorded
-  further down the same file.
-- `LOCAL_NLP_STABILITY_PLAN.md` — the authoritative stage plan. The filename
-  is legacy; the active scope moved from local-NLP repair to nonlinear-oracle
-  stability long ago. **For any stage work, this file wins over this
-  CLAUDE.md.**
+Do not infer the current investigation stage from this file.
 
-Then read the reports for the three most recent stages:
-`P5_7_BRANCH_SELECTION_DIAGNOSIS_REPORT.md`,
-`P5_8_ADMM_SCALING_VALIDATION_REPORT.md` and
-`P5_9_RESCALED_ADMM_STABILIZATION_REPORT.md`.
+For current state, read:
 
-## Where the work actually is
+1. `REVISION_CONTEXT.md`
+2. `LOCAL_NLP_STABILITY_PLAN.md`
+3. the latest relevant stage reports
+4. `EXPERT_REVIEW.md` when relevant
 
-The active initiative is **not** local-NLP repair, and it is **not** P4.6.
-Those are closed. It is: the nonlinear operational oracle returns a different
-answer depending on how many times it is re-solved, so the investment
-landscape it induces is not stable enough to optimize over.
+`REVISION_CONTEXT.md` is the repository-wide source of truth.
+The current sections of that document supersede older historical sections.
 
-Branch: `feature/derivative-free-planning`, from the accepted P5.5-D HEAD.
+## Agent workflow
 
-| Stage | Verdict | Report |
-|---|---|---|
-| P5.5-D | `P5.5-D-C` — practical rigorous lower-bound architecture is unavailable | `P5_5_CONVEX_PLANNING_ARCHITECTURE_REPORT.md` |
-| P5.6-A / B | `PARTIAL` — oracle built; policy locked (T0-only start, midpoint-only anchor, `(S,h)` coordinates) | `P5_6_NONLINEAR_DERIVATIVE_FREE_PLANNING_REPORT.md` |
-| P5.6-C | `P5.6-C-C` — derivative-free search is not ready | same |
-| P5.6-D | `P5.6-D-C` — uniform refinement does not stabilize the investment landscape | same |
-| P5.7 | `P5.7-A` — unique operational oracle can likely be recovered — **accepted** | `P5_7_BRANCH_SELECTION_DIAGNOSIS_REPORT.md` |
-| P5.8 | `P5.8-B` — objective scaling improves stability but additional ADMM issues remain — **delivered, awaiting review** | `P5_8_ADMM_SCALING_VALIDATION_REPORT.md` |
-| **P5.9** | `P5.9-B` — rescaling helps but ADMM coordination requires further redesign — **DELIVERED, AWAITING PLANNER REVIEW** | `P5_9_RESCALED_ADMM_STABILIZATION_REPORT.md` |
+The project uses three roles:
 
-**No new stage is authorized.** Do not start one.
+- Planner — coordinates the investigation and owns technical decisions.
+- Advisor — independently reviews mathematical, numerical, and algorithmic issues.
+- Worker — performs bounded implementation, testing, and experiments.
 
-The short version of the diagnosis: production forms each ADMM subproblem
-objective as `base / effective_scale + consensus terms` with
-`effective_scale` about `1.05e5`, so IPOPT's stationarity tolerance is five
-orders of magnitude looser in base-objective units. P5.7 established that this
-accounts for `96.5%` of the ADMM-to-polish gap and ruled out initialization,
-IPOPT itself, and the formulation. P5.8 validated the rescaling as necessary but
-not sufficient. P5.9 then calibrated the penalties and found the calibration does
-not close: `rho_v` is inert, `rho_ess` never binds, and `rho_pf` trades the
-rescaling gain against polish success near 1:1. What rescaling *does* fix is
-oracle coverage (continuation is no longer needed for reachability) and
-cross-depth landscape uncertainty (`459696 -> 541`, an 850x reduction). What
-blocks it is two pieces of coordination machinery calibrated to the old
-operating point: the adaptive penalty rule, which is self-cancelling because the
-dual residual is linear in rho, and the exact-consensus polish, which now
-degrades the objective instead of recovering it.
+Role-specific instructions are under:
 
-Two P5.9 findings any new session must know. **Rho is inherited from the T0
-template (`rho_v = 1.5`, `rho_pf = 2.25`), not read from
-`data/SRP1/SRP1_params.json`** — a stage that sets rho must set it on the
-template. And P5.9-D3 raises the possibility that the investment signal
-P5.6-C/D ranked on was largely numerical residue; that is recorded as a reading
-awaiting planner decision, not as a result.
+`.claude/agents/`
 
-## Standing prohibitions — in force until the planner says otherwise
+Production-code changes should normally be performed only by Worker after
+Planner authorization.
 
-- Do **not** modify production code. This includes the nonlinear AC SMOPF
-  equations, the active-energy ESS formulation, H1 complementarity and
-  `ESS_COMPLEMENTARITY_TOLERANCE = 1e-4`, D2-P shared-S bookkeeping, ESSO
-  degradation/SoH/salvage, IPOPT tolerances and options, the MA97/exact-Hessian
-  policy, ADMM tolerances, rho and adaptive-penalty settings, the interface
-  anchor policy, and the master/Benders cut code.
-- Do **not** run or implement derivative-free search, GPS, MADS, any
-  investment search, surrogate optimization, the replacement outer planning
-  loop, production MISOCP planning, distributed convex ADMM, QCP/Benders cut
-  recovery, or TSO SDP/QC strengthening.
-- Every stage stops for planner review before the next begins, and each stage
-  report ends with its specific required closing phrase — never skip it, never
-  paraphrase it. See `docs/METHODOLOGY.md`.
-- Never guess an invocation or entry point. Surface the candidate and its
-  evidence, then wait for confirmation.
-- Never fabricate or approximate a result. Every validation runs against real
-  production code and real solves.
+## Canonical environment
 
-## Environment — canonical runtime is a hard gate
+Python:
 
-The canonical interpreter on **this machine (Mac Studio, since 2026-09-09)**:
+`/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python`
 
-```
-/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python
-```
+IPOPT:
 
-The path `/opt/anaconda3/envs/opf_env_py311/bin/python` that still appears in
-the stage reports and in many `p5*.py` harness docstrings is the old MacBook
-Air's and is superseded. The reports are left as written because they record
-the runtime that produced their evidence.
+`/usr/local/bin/ipopt`
 
-Canonical identity, all five asserted by `p54r_provenance.gate()`, which
-aborts on any mismatch:
+Canonical solver identity is verified through `p54r_provenance.gate()`.
 
-- SRP1 scenario checksum `5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358`;
-- IPOPT resolved path `/usr/local/bin/ipopt`;
-- IPOPT version `3.14.18`;
-- IPOPT ASL build `20241111`;
-- HSL linear solver `ma97` (HSL `5.5.0`).
+Every diagnostic harness that loads SRP1 must execute the provenance gate
+before performing the experiment.
 
-Every harness that loads SRP1 must call that gate before doing any work.
+Do not substitute the conda IPOPT installation for the configured canonical
+IPOPT executable.
 
-**IPOPT must always be the locally installed `/usr/local/bin/ipopt`, never the
-conda environment's.** The environment also contains
-`conda-forge::ipopt 3.14.19` (ASL `20231111`), which shadows the canonical
-binary on `PATH` whenever the environment is activated. Production is not
-affected and is not to be changed: `network.py:487` and
-`shared_energy_storage_data.py:859` both pass
-`executable=solver_params.solver_path`, which `SolverParameters` reads from
-`NLP_SOLVER_PATH` in `.env` with `require_path=True`, so `PATH` is never
-consulted. The gate probes that same configured path and nothing else, asserts
-it, and records the shadowing `PATH` binary separately as an explicitly unused
-diagnostic.
+## Repository rules
 
-The environment is captured in `environment.yml` (authoritative) and
-`requirements.txt` (pip half only). It is half conda (46 packages) and half
-pip (23); `copulas 0.14.0` is on the pip side and generates the scenario
-realization the checksum is a checksum of. IPOPT and HSL are outside conda.
+- `.env` must never be committed.
+- `data/` result and diagram directories are intentionally untracked.
+- Never use `git add .` or `git add -A`.
+- Stage files explicitly by filename.
+- Diagnostic harnesses follow the existing `p5*.py` convention.
+- Use real production functions rather than reimplementing them in diagnostics.
+- Follow `docs/METHODOLOGY.md` for experimental and reporting conventions.
+- Never fabricate or approximate experimental results.
+- Do not guess invocation commands when they are uncertain; inspect the
+  repository and existing methodology first.
 
-## Repository conventions
+## Investigation discipline
 
-- `data/` result and diagram directories are multi-GB and intentionally **not**
-  committed. Never `git add -A` or `git add .`; stage files by name.
-- `.env` exists in the working tree and must never be committed.
-- Diagnostic harnesses are `p5*.py` at the repository root, one per stage, each
-  gated by `p54r_provenance.gate()`. Follow that pattern.
-- Methodology — frozen-pickle regression with SHA-256 verification, calling
-  real production functions rather than reimplementing them, and the stage
-  report template — is in `docs/METHODOLOGY.md`.
+Do not start a new stage merely because the previous stage produced a report.
+
+Planner must first assess the evidence and authorize the next action.
+
+Distinguish observations, hypotheses, evidence, and conclusions.
+
+Prefer minimal diagnostic experiments over speculative algorithm changes.

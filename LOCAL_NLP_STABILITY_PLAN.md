@@ -11,10 +11,10 @@ Studio repository path above.
 
 Act as an implementation and diagnostic agent.
 
-Read `REVISION_CONTEXT.md` first, then read this file. For P5.12-B, this file
+Read `REVISION_CONTEXT.md` first, then read this file. For P5.12-R, this file
 takes precedence regarding what may and may not be changed. The filename is
-retained for continuity even though the active scope is now a bounded forensic
-audit of the first cold-RESCALED local NLP failure.
+retained for continuity even though the active scope is now bounded deterministic
+recapture of the first cold-RESCALED local NLP failure's exact input.
 
 Work in small isolated experiments. After each stage report:
 
@@ -30,7 +30,235 @@ Do not automatically proceed from a diagnostic result to a production formulatio
 
 ---
 
-# CURRENT AUTHORIZED STAGE — P5.12-B cycle-21 local-failure forensic audit
+# CURRENT AUTHORIZED STAGE — P5.12-R deterministic pre-solve recapture
+
+This stage was approved following the independent P5.12-C planner audit.
+Perform **P5.12-R only**, then report and stop for planner review. The current
+document-editing task does not execute this worker stage.
+
+This section supersedes all older execution instructions below, including the
+historical P5.12-B plan. It narrowly authorizes one recapture replay despite C's
+former replay prohibition. It authorizes no target cycle-21 solve, A/B arm,
+production change, retry, polish or planning/search campaign.
+
+## Accepted findings and scope
+
+- The production `vmag_nodes` refactor remains accepted as a numerical-stability
+  improvement. The residual local-NLP conditioning problem is separate.
+- P5.11 was partial; P5.12-A did not establish cold RESCALED fixed-rho convergence.
+- B reproduced `DSO:case33_3 | 2025 | Spring | cycle 21`: IPOPT reached 3000
+  iterations. The matched cycle-20 solve was optimal in 115 iterations. The
+  terminal failure was neither restoration nor MA97 failure.
+- B preserved summaries rather than a replayable model/state. Its pre-solve
+  clone also precedes the solver-setup refresh of bound-input suffixes. Its
+  suffix summaries do not prove the actual ordered inputs received by IPOPT.
+- B observed failure at DSO solve 25 of 36, then ran eleven additional sequential
+  solves before aborting. It stopped before the DSO-stage consensus update and
+  cycle 22, but did not enforce the required immediate stop.
+- C correctly stopped at preflight. Neither arm ran; no causal or convergence
+  result exists. Its prescribed closing phrase does not mean the A/B executed.
+- Missing indexed primals, parameters, multipliers and cycle-20 restart state
+  cannot be recovered losslessly from existing summaries, short fingerprints or
+  log norms. No exact snapshot or solver-input file was found, including ignored
+  files. The ignored P5.11 cycle-25 template is not a substitute.
+
+Read the P5.11 report, P5.12-A report, P5.12-B worker plan and report, then the
+complete `P5_12_C_BOUND_MULTIPLIER_AB_REPORT.md`, and inspect associated harnesses,
+manifests and logs. Treat their recommendations as historical evidence.
+The accepted future C design retains constraint duals and suppresses only
+`ipopt_zL_in` and `ipopt_zU_in`; B's broader proposal is superseded.
+
+## R0 — repository, evidence and runtime gate
+
+Use the existing Local checkout only:
+
+`/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation`
+
+Expected branch: `feature/derivative-free-planning`.
+Last verified HEAD: `dd0001675e4e38cbf4ec0282df312469bcb435e5`.
+Required ancestor: `72468913499f5f9eca77ddbef6ed71fd61be7a97`.
+The only intervening commit preserves reports, harnesses, evidence and
+`.gitignore`; no production change. The locally recorded upstream was ahead 0 /
+behind 0, without fetching. C's report was untracked. These two governing-file
+edits are authorized changes, not a worker provenance failure.
+
+Before execution record hostname, path, branch, HEAD, upstream relationship,
+recent history, tracked/staged/untracked/ignored status and hashes of required
+source, configuration and evidence. Reconcile later commits explicitly; stop on
+unexplained material differences. Preserve all pre-existing changes.
+
+Verify the six artifact hashes in C's report, plus the accepted P5.10/P5.11/A
+report hashes retained below. Inventory the raw B target log at
+`data/SRP1/Results/P56A/evals/p512b_forensic/logs/optim_log_case33_3_2025_Spring.log`,
+SHA-256 `57987d2e0be0fcb9849b9db5bd67b79795a7fa8c201a05692705d5e8faa1e0c5`.
+Do not overwrite or append to historical evidence. The aggregate B JSON hash is
+not an exact model-input hash.
+
+Use only `/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python`.
+Verify Python 3.11.11 arm64, NumPy 2.4.2, pandas 3.0.0, SciPy 1.17.0,
+Pyomo 6.9.5, copulas 0.14.0, IPOPT 3.14.18 / ASL 20241111 at
+`/usr/local/bin/ipopt`, MA97, and realized-scenario checksum
+`5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358`.
+Run the existing R0 provenance gate. Do not repeat P5.10 numerical reproduction
+solves, P5.11 template construction or P5.12-A horizons as extra gates.
+
+## R1 — isolated capture and stop-path verification
+
+Create a new diagnostic harness and evidence directory, for example
+`p512_r_presolve_recapture.py` and `data/SRP1/Results/P512R/`.
+Do not edit production code, prior harnesses or governing documents in the
+worker stage. Wrappers and instrumentation must be process-local.
+
+Before numerical replay, inspect and mechanically verify capture/abort paths
+without calling a solver. If this cannot be installed without production edits,
+stop. Use one top-level process and existing sequential execution semantics.
+Do not introduce parallelism, reorder blocks or skip preceding solves.
+
+Do not reuse B's callback timing or abort logic unchanged:
+
+- `NetworkData.optimize` clones before `run_smopf` and invokes its snapshot
+  callbacks after the solve. That callback alone cannot enforce pre-solve stop.
+- `_create_smopf_solver` updates `_in` bound suffixes from `_out` before
+  `solver.solve`. Capture the actual prepared input after this update.
+- Observe unsuccessful solver attempts immediately, before recovery or further
+  solves can start. B's end-of-DSO-stage abort is insufficient.
+
+Observations must not change live values, suffixes, ordering or settings. Keep
+existing callback behavior where applicable, routing newly generated artifacts
+to distinct paths so historical snapshots are not overwritten.
+
+## R2 — one deterministic cold trajectory through cycle 20
+
+Freeze base candidate, original cold initialization, identical midpoint anchor,
+RESCALED objective construction, fixed rho `1.5 / 300 / 1.0`, adaptive rho off,
+production formulation, IPOPT settings, ADMM recurrence, convergence definitions,
+tolerances and proximal regularization. Initialize known carried-state channels
+and `candidate_solution` once as in the accepted cold construction, then allow
+legitimate within-trajectory history to evolve. Never reset between cycles.
+
+Set a diagnostic cap of 21 only on the isolated in-memory planning copy; do not
+write the production cap or `data/SRP1/SRP1_params.json`. This cap is a backstop,
+not permission to complete cycle 21.
+
+Record every local outcome and cycle's recourse, residuals, convergence counters,
+rho and adaptation state. Compare all available cycles 1–20 against accepted
+P5.12-A JSON diagnostics and all available cycle-20 block summaries against B.
+Require exact equality for recorded deterministic numeric fields/fingerprints;
+exclude timing, paths and stage labels explicitly. Do not widen matching criteria
+after seeing results. Key recourse markers are `2352009862.13208` (cycle 1),
+`1461174062.836328` (13), and `1424778916.2652295` (20).
+
+Capture the target's complete cycle-20 input both before solver setup and at the
+prepared solver boundary, then permit its ordinary cycle-20 solve once. Preserve
+its raw result and complete log and require the accepted successful outcome and
+recorded numerical diagnostics. Do not add a comparator re-solve.
+
+At completion of cycle 20, before cycle-21 updates, serialize a complete restart
+checkpoint: all block models and primals, input/output/constraint suffixes,
+consensus and ADMM dual state, current/previous schedules, candidate/capacities,
+anchor/proximal references, rho, `last_recourse`, convergence counters and all
+other state consumed by the next cycle. This is new preservation, not a claim
+that an original full-state hash exists for comparison.
+
+## R3 — capture cycle-21 target and stop BEFORE solving it
+
+Enter cycle 21 in the original production order. The recorded order places
+24 DSO solves before `DSO:case33_3 | 2025 | Spring` (connection node 9).
+Permit only those preceding ordinary solves, subject to immediate failure gates.
+
+At the target, after ordinary coordination updates:
+
+1. Save the full pre-setup model and recompute B-compatible summaries at B's
+   capture boundary. Require agreement with the available historical record.
+2. Allow ordinary solver setup, including `_out` to `_in` multiplier refresh.
+3. Capture the exact prepared model, suffixes and effective solver options
+   immediately before `solver.solve` can run.
+4. Serialize, verify, and raise a dedicated terminal capture-stop signal that
+   propagates out of the trajectory. It must not be swallowed as a solver error
+   or trigger recovery. No target solver invocation is permitted.
+
+Do not run the remaining eleven DSO blocks, TSO/ESSO solves, cycle-level updates,
+cycle 22, either A/B arm, or a failure-reproduction solve in this stage.
+
+## R4 — lossless evidence and no-solve reload verification
+
+Preserve the following for each target snapshot and the cycle-20 checkpoint:
+
+- Full serialized model and supporting data/configuration sufficient to rebuild
+  an independent instance; all indexed primal values, fixed/unfixed state,
+  bounds, domains, active flags, parameters, expressions and objective/scaling.
+- All coordination and proximal references, capacity-dependent values, schedules,
+  scenario identity and relevant random state, if any.
+- Complete indexed `ipopt_zL_in`, `ipopt_zU_in`, `ipopt_zL_out`, `ipopt_zU_out`
+  and `dual` mappings, suffix direction/type, and any other exported suffix.
+  Preserve absent entries distinctly from zero and unset values from finite ones.
+- Stable component identifiers, model iteration ordering and the actual solver
+  export row/column mapping, including fixed/eliminated variables. Generate and
+  preserve solver-input representation using the same writer settings without
+  launching IPOPT; counts alone are insufficient.
+- Effective solver options after setup, warm-start flag, executable/runtime
+  identity, source/configuration/scenario hashes and precise capture boundary.
+- Full SHA-256 artifact manifests and semantic fingerprints over ordered indexed
+  values using lossless numeric encoding. Do not round, project or repair.
+
+Without a solve, deserialize an independent copy and verify equality of every
+required model/input field, ordering, suffix mapping and effective setting;
+verify solver-input equivalence. Separate file-byte hashes from semantic hashes
+where serialization identifiers differ. Report any normalization explicitly;
+never normalize away a numerical, structural or ordering difference.
+
+Compare B summaries only at B's pre-setup boundary. Do not force prepared suffix
+values to match the earlier stale input summaries. Record exactly what solver
+setup changed. A future Arm B must suppress bound inputs after this refresh so
+they cannot be silently repopulated; no suppression is performed in R.
+
+Passing these checks proves lossless capture/reload of the new state and
+agreement with available historical evidence. It does not prove bit-identical
+historical full-state equality. A separately authorized future Arm A must still
+reproduce the accepted 3000-iteration failure before Arm B may run.
+
+## Immediate stopping rules
+
+Stop without repair, retry or a second trajectory if:
+
+- required provenance/evidence differs materially or cannot be verified;
+- any production, configuration, unrelated file or prior evidence changes;
+- instrumentation requires production edits or cannot guarantee the target stop;
+- any available deterministic trajectory marker or block summary mismatches;
+- an unexpected local failure or recovery attempt occurs before capture;
+- rho/settings change, adaptation activates, ordering differs or parallelism starts;
+- nonfinite numerical inputs appear, or required state/mapping is missing;
+- serialization, hashing, reload or solver-input equivalence fails;
+- execution would invoke the target solver or advance beyond its capture boundary.
+
+Successful capture is itself the terminal condition. No exception permits a
+target solve to validate the snapshot in this stage.
+
+## Required report and scope freeze
+
+Produce `P5_12_R_PRESOLVE_RECAPTURE_REPORT.md` with repository/runtime provenance,
+initial/final status, exact commands and changes, artifact locations and hashes,
+per-cycle matching table, ordered solve ledger, target cycle-20 result/log,
+complete checkpoint and both target capture boundaries, multiplier-refresh
+comparison, reload/export equivalence, and stopping-rule evidence. State clearly
+that the target cycle-21 solve and both C arms were not executed.
+
+End with one of:
+
+`P5.12-R CAPTURED — lossless reload verified; historical failure reproduction remains pending planner review`
+
+`P5.12-R STOPPED — capture or matching prerequisite failed; no retry authorized`
+
+Then stop. No governing-file edits, production changes, solver tuning, new rho,
+polish, candidate comparison, search, degradation/Benders changes, commit, push,
+fetch, merge, reset, cleanup or overwrite of existing evidence is authorized.
+
+---
+
+# HISTORICAL AUTHORIZED STAGE — P5.12-B cycle-21 local-failure forensic audit
+
+The instructions below are retained as the original B protocol, not current
+authorization. Its preservation and immediate-stop claims are qualified above.
 
 Perform **P5.12-B only** and stop after its audit report. This stage may preserve
 evidence and propose exactly one later frozen A/B. It must not implement that
