@@ -3266,3 +3266,69 @@ normalization, the ancestor of `/interface_rating`; all messages are "Update".
 artifact, so their claims are unrecoverable — correctly scoped to branches this time.
 
 **No lever run. S2 stops here.**
+
+## AB1 — adaptive rho on the cold path (2026-09-12)
+
+Both arms complete under the pre-registered design
+`data/SRP1/Results/P514S2/frozen_ab1_adaptive_cold_v2_6e23cac0.json` (committed
+`eaaa196a` before either arm ran). Guards armed: **0 blocked solves in either arm**. Full
+record in `P5_14_AB1_REPORT.md`.
+
+| | treatment (adaptive) | control (fixed rho) |
+|---|---|---|
+| cycles to convergence | **32** | **none — capped at 50** |
+| local solves / wall clock | 1683 / 1293 s | 2601 / 2119 s |
+| final `rho_pf` | 3.4683 | 300 |
+| final recourse | 826,829,641 | 1,310,469,508 (descending) |
+
+**The cold-path cost without adaptation is STILL unknown.** The control hit the cap, which
+was predeclared as inconclusive; no cost may be extrapolated from it. The bound moves from
+21 cycles (P5.12-R) to "more than 50".
+
+**Attractor prediction FALSIFIED.** Predicted `rho_pf` in [80, 200], most likely 133.33;
+observed **3.4683** after eleven consecutive decreases, held for 20 cycles, having passed
+through 133.33 at cycle 2. No oscillation, so the attractor idea survives; what fails is
+initialization-independence. The same rule and dead band settle at **131.687 warm** and
+**3.4683 cold** — a factor of 38. The adaptive rule's operating point is a property of the
+trajectory it is placed on, reinforcing the S2 finding that initialization dominates.
+
+**The result inverts — the arms were not held to the same standard.** Dividing rho out of
+`dual = rho*|dz|/base` recovers the physical iterate step: treatment at its declared
+convergence `6.079e-04`; control at cycle 32 `3.326e-04`; control at cycle 50
+`2.907e-04`. **The control's iterates were moving ~2x LESS than the treatment's, yet the
+control fails the test and the treatment passes**, because the standards differ by
+`300/3.4683 = 86.50`. On a common standard neither converged: to pass at rho 300 the step
+must be under `3.33e-05`, and the treatment sits at **18.2x** that while the control sits
+at **8.7x**. Measured identically, the control is CLOSER to convergence than the treatment
+ever got. "Adaptation converged the cold path in 32 cycles" is therefore substantially a
+criterion artifact — the S1 coupling at its extreme.
+
+**What is real: the descent.** At matched cycle 32 the treatment's recourse is **40%
+lower** (826.8 M vs 1372.7 M). The control's decrements over its last five cycles are
+3.273, 3.206, 3.183, 3.152, 3.127 M, a ratio of 0.890 per ten cycles against a 484 M
+remaining gap; **no extrapolation is offered**, per the frozen design. Mechanism: at rho
+300 the consensus penalty dominates each local objective, holding iterates near consensus
+(`primal_pf = 2.15e-04`, 21x tighter) but descending slowly; at rho 3.47 agents optimize
+economically, consensus is looser but inside tolerance, and the objective falls faster.
+
+**Two findings larger than the A/B question.**
+1. *The stationarity criterion is incommensurable across rho settings* — not merely
+   scale-sensitive. Any convergence comparison between an adaptive and a fixed-rho run
+   compares two different tests, so "cycles to convergence" is not a valid cross-rho cost
+   measure unless restated on a rho-free quantity.
+2. *The declared consensus tolerance admits a wide objective band.* Both arms sit inside
+   `primal_pf <= 0.01` yet differ by 40% in recourse at matched cycles, the treatment's
+   convergence point having consensus 21x looser. Whether `Q(x)` is well defined at this
+   tolerance is now live, and any cut or ranking built on `Q` inherits the band.
+
+**Caveats.** Both arms run under C3, so no objective here is comparable with pre-C3
+figures. One local solve failed (treatment, cycle 11, during the rho collapse; production
+held the penalty update and the run recovered) — 1 in 4284 solves across the stage. Solve
+identities: 1683 vs `51x32` and 2601 vs `51x50`, each differing by exactly one
+initialization block of 51; reported, not absorbed.
+
+**Verdict.** `adaptation_helps` **not established** — the cycle comparison it rests on is
+invalid. `adaptation_harms` not established. The cost question is **INCONCLUSIVE**. AB1
+licenses no cost figure for an independent oracle; it licenses a sharper question: on a
+rho-free standard, what does the cold path cost, and is the consensus tolerance tight
+enough for `Q(x)` to mean anything?
