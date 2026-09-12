@@ -10,3 +10,17 @@
 # Committing it would need Git LFS or another approved artifact store; until one
 # is chosen, this entry keeps it out of the index.
 data/SRP1/Results/P511/*.pkl
+
+# Editor / OS / interpreter noise. Kept out so that `git status` stays short:
+# the investigation's integrity gates read tracked state and untracked listings,
+# and drift is far easier to review against a short list than a long one.
+.DS_Store
+**/.DS_Store
+__pycache__/
+*.pyc
+
+# Stray solver logs written to the repository root by relative output_file
+# settings (ESSO uses optim_log_node_<id>.txt; IPOPT writes ipopt.log).
+/ipopt.log
+/optim_log*.txt
+/p57_d1_chain_studio.log

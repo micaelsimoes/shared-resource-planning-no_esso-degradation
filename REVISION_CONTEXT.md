@@ -2356,9 +2356,18 @@ sum- or norm-based metric, where 100-102 guaranteed zeros would dilute the stati
 ### Interpretation note — the TSO interface zeros
 
 `expected_interface_pf_p` and `_pf_q` differ by exactly 0.0 between arms in the Y
-fixture. These variables are **free** in that model — not Pyomo-fixed, not equal-bound
-(`lb`/`ub` are `None`) — so the zeros are a genuine measurement at `.sol` precision and
-a property of the fixture's solution, not a pinning artifact and not a measurement gap.
+fixture. Verified from the NL b-section rather than from the pickle: both families are
+**bound code 3 (free)** across all 72 entries each, while `expected_interface_vmag` is
+**code 2 (lower bound only)**. So the two families that are exactly 0.0 are the free
+ones, and the single family that moved — by 2.14e-16 — is the bounded one. The zeros
+are therefore a genuine measurement at `.sol` precision and a property of the fixture's
+solution, not a pinning artifact and not a measurement gap.
+
+The same NL b-section independently confirms the equal-bound accounting: Y's histogram
+is 102 code-4, 1770 code-0, 300 code-2, 864 code-3, so 3036 - 102 = 2934 matches
+IPOPT's reported column count, and 1770 / 300 match the log's "lower and upper bounds"
+and "only lower bounds" lines. Amendment 1's accounting and the structural-mootness
+argument both stand on the NL alone, independent of any harness.
 
 ### Cost of the missing independent check
 
@@ -2398,6 +2407,13 @@ any capture campaign.
   `frozen_formula_spec_v2_45edc424.json` with lineage in `frozen_spec_lineage.json`.
   Going forward: **frozen artifacts are named with version and content hash, are never
   replaced in place, and each version records its predecessor's hash.**
+- **Evidence-staging rule (general convention).** Every committed report travels
+  with its primary evidence base **and** that evidence's hash inventory. The first
+  P5.12 preservation commit violated this in alternating directions: the G and T
+  journals were committed without their manifests, while the K manifest was committed
+  without its journal, leaving exactly one half of each pair for three stages. Like the
+  frozen-artifact naming rule, this is a one-off correction promoted to a convention,
+  because promotion is what prevents the same class of omission recurring.
 - **Pattern, not three unrelated corrections.** Duplicate fixture basenames with
   different hashes; a frozen plan carrying the fixture-specific constant 9166 as if
   general; and a frozen approved artifact replaced in place — in each case an
