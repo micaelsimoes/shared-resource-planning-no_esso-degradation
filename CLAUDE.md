@@ -103,7 +103,14 @@ incidents behind each rule are in `REVISION_CONTEXT.md`, section
 - Report a difference with its resolution. Any difference of two iteratively-computed
   quantities must be reported together with the error implied by where each computation
   stopped — for an ADMM recourse, the per-cycle objective change at termination. **A
-  difference smaller than that error is indeterminate, not a result.** The cold-versus-warm
+  difference smaller than that error is indeterminate, not a result.**
+  **Refinement (2026-09-13):** the bar bounds *stopping slack*, not *path divergence*. Two
+  runs still descending toward different limits can differ by far more than the sum of their
+  terminal steps — Track C1 showed exactly that when tightening the tolerance grew the offset
+  9.4x. So "determinate at N x the error bar" licenses only "not explained by stopping
+  slack"; it does not license "a real difference in the limit". The bar is a **local** measure,
+  valid only when both runs have genuinely settled — and rule ten is what tells you whether
+  they have. The cold-versus-warm
   offset of 1,055,598 carried an error bar of 766,062, so it was barely distinguishable from
   its own uncertainty, and the ranking signal it had to support was 32.87.
 - Report the terminal-step-to-threshold ratio for every cell of every evaluation. A run that

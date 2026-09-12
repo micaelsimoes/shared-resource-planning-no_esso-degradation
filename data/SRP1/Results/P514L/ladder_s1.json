@@ -1,0 +1,167 @@
+{
+ "stage": "P5.14-L",
+ "spec": "data/SRP1/Results/P514L/frozen_ladder_v1_c1ea6393.json",
+ "s_mva": 1.0,
+ "e_mwh": 4.0,
+ "ratio": 4.0,
+ "timestamp_utc": "2026-09-12T22:58:49.416838+00:00",
+ "nodes": {
+  "5": {
+   "succeeded": true,
+   "termination": "optimal",
+   "status": "ok"
+  },
+  "7": {
+   "succeeded": false,
+   "termination": "infeasible",
+   "status": "warning",
+   "diagnostic_resolve_loaded": true,
+   "residuals": {
+    "total_violated_rows": 951,
+    "worst": [
+     {
+      "component": "rated_s_capacity_unit",
+      "key": "5",
+      "violation": 6.844620760416056e-05,
+      "body": 6.844620760416056e-05
+     },
+     {
+      "component": "rated_s_capacity_unit",
+      "key": "6",
+      "violation": 6.844620760416056e-05,
+      "body": 6.844620760416056e-05
+     },
+     {
+      "component": "rated_s_capacity_unit",
+      "key": "3",
+      "violation": 2.573789616411304e-05,
+      "body": 2.573789616411304e-05
+     },
+     {
+      "component": "rated_s_capacity",
+      "key": "3",
+      "violation": 2.2817916206285815e-05,
+      "body": 2.2817916206285815e-05
+     },
+     {
+      "component": "energy_storage_operation_agg",
+      "key": "1187",
+      "violation": 1.0003102346445303e-08,
+      "body": 1.0003102346445303e-08
+     },
+     {
+      "component": "energy_storage_normalization",
+      "key": "539",
+      "violation": 8.856444466687208e-10,
+      "body": -8.856444466687208e-10
+     },
+     {
+      "component": "energy_storage_normalization",
+      "key": "537",
+      "violation": 8.856443356464183e-10,
+      "body": -8.856443356464183e-10
+     },
+     {
+      "component": "energy_storage_normalization",
+      "key": "498",
+      "violation": 8.85155060359466e-10,
+      "body": -8.85155060359466e-10
+     },
+     {
+      "component": "energy_storage_normalization",
+      "key": "496",
+      "violation": 8.851078758809194e-10,
+      "body": -8.851078758809194e-10
+     },
+     {
+      "component": "energy_storage_normalization",
+      "key": "518",
+      "violation": 8.850524757519906e-10,
+      "body": -8.850524757519906e-10
+     },
+     {
+      "component": "energy_storage_normalization",
+      "key": "520",
+      "violation": 8.849833088575565e-10,
+      "body": -8.849833088575565e-10
+     },
+     {
+      "component": "energy_storage_normalization",
+      "key": "472",
+      "violation": 8.843862309149131e-10,
+      "body": -8.843862309149131e-10
+     }
+    ],
+    "by_component": {
+     "rated_s_capacity_unit": {
+      "n_rows": 4,
+      "max_violation": 6.844620760416056e-05
+     },
+     "rated_s_capacity": {
+      "n_rows": 1,
+      "max_violation": 2.2817916206285815e-05
+     },
+     "energy_storage_operation_agg": {
+      "n_rows": 584,
+      "max_violation": 1.0003102346445303e-08
+     },
+     "energy_storage_normalization": {
+      "n_rows": 332,
+      "max_violation": 8.856444466687208e-10
+     },
+     "energy_storage_capacity_degradation": {
+      "n_rows": 10,
+      "max_violation": 5.4169890795208175e-11
+     },
+     "energy_storage_charging_discharging": {
+      "n_rows": 3,
+      "max_violation": 7.105427357601002e-15
+     },
+     "rated_e_capacity": {
+      "n_rows": 2,
+      "max_violation": 8.881784197001252e-16
+     },
+     "rated_e_capacity_unit": {
+      "n_rows": 3,
+      "max_violation": 3.0983958457545123e-16
+     },
+     "available_s_capacity_unit": {
+      "n_rows": 6,
+      "max_violation": 1.6095096754283732e-16
+     },
+     "available_e_capacity_unit": {
+      "n_rows": 6,
+      "max_violation": 1.6095096754283732e-16
+     }
+    }
+   },
+   "aggregate_complementarity_violated": true,
+   "cohort_complementarity_violated": false
+  },
+  "9": {
+   "succeeded": true,
+   "termination": "optimal",
+   "status": "ok"
+  }
+ },
+ "first_stage_feasible": {
+  "feasible": true,
+  "reason": ""
+ },
+ "all_esso_succeeded": false,
+ "failed_nodes": [
+  "7"
+ ],
+ "solve_profile": {
+  "observed": {
+   "permitted_solve": 52,
+   "permitted_exec": 52,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "initialization_solves": 51,
+  "diagnostic_solves": 1,
+  "blocked": 0
+ },
+ "wall_clock_s": 42.229212045669556
+}

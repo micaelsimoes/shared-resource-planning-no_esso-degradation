@@ -3819,3 +3819,79 @@ warning that "no storage" may not be a clean control.
 **To complete the campaign:** a decision on the uncoordinated path's penalty; a diagnosis
 of node 7; a resolution of the normalization-floor confound; an explanation of the anomaly.
 None authorized.
+
+## GOVERNING FACT — the oracle cannot evaluate a plan large enough to matter (2026-09-13)
+
+Recorded as the governing fact of the numerical programme, not as one blocker among four.
+**Every stabilization finding — `Q` well defined, ADMM converging, one local failure in
+1,095 — was established in a regime where the storage is economically negligible. At the
+first capacity where it is not, the evaluation aborts before ADMM starts.**
+
+One sub-result separates cleanly: **the cost model transferred and the reliability model
+did not.** Cell 2 took 3,621 solves against 3,519 predicted, **2.9% over**; the 1-in-1,095
+local-solve failure rate became **1-in-3**.
+
+## P5.14-L — capacity ladder: C* = 0.96875 MVA / 3.875 MWh per node (2026-09-13)
+
+Frozen spec `c1ea6393` with both go/no-go branches and the prime suspect predeclared. Seven
+rungs, initialization stage only, ADMM never started, 358 solves, ~5 minutes. Full record in
+`P5_14_L_CAPACITY_LADDER_REPORT.md`.
+
+| `s` MVA/node | 0.25 | 0.50 | 0.75 | 0.875 | 0.9375 | **0.96875** | 1.00 |
+|---|---|---|---|---|---|---|---|
+| outcome | PASS | PASS | PASS | PASS | PASS | **PASS** | **FAIL (node 7)** |
+
+**A clean, monotone threshold**, bracketed to within **3.2%**. By the predeclared rule that
+makes it **a finding about the plan**: `case33_2` cannot host 4.00 MWh at ratio 4 but can
+host 3.875 MWh. **Largest evaluable capacity: `C* = 0.96875 MVA / 3.875 MWh` per node**
+(2.91 MVA / 11.6 MWh system-wide).
+
+**The predeclared prime suspect is FALSIFIED.** The unslacked aggregate complementarity row
+(`shared_energy_storage_data.py:618-620`) is satisfied to **1e-08**. The violation sits on
+two pure definitional identities — `es_s_rated_per_unit == es_s_investment` (`:442`) and its
+sum (`:454`) — at **6.845e-05**, matching IPOPT's reported figure exactly. Those are linear
+equalities in otherwise free variables and cannot be infeasible alone, so that is where
+restoration left residual, not a physical conflict. The sharp threshold and the restoration
+artifact are **compatible**: a genuine feasibility boundary, with the residual reported on
+definitional rows. What is ruled out is the specific hypothesis that the unslacked
+aggregate row is the binding obstruction.
+
+**Limit: the ladder tested INITIALIZATION ONLY.** `C*` is the largest capacity whose ESSO
+subproblems solve at initialization, **not** the largest that completes a full ADMM
+evaluation — and P5.12 established that a trajectory can initialize cleanly and fail later.
+Scope: ratio 4, single cohort 2025, `rel` 1e-4, `rho_pf` 300 adaptive, C3.
+
+**Go/no-go status.** The bounded error bar at `rel` 1e-4 is ~**164,000**, i.e. **0.02%** of
+the objective, against a claimed 2.01% effect of ~16.6e6 — **~100x the bar**. So resolution
+is *not* the binding constraint at `C*`; an effect would have to be under 1% of the claim to
+be unresolvable. Deciding GO/NO-GO needs **one cold evaluation at `C*` paired against cell
+2** (~3,600 solves, ~35 min). Not run.
+
+## Refinements and design constraints recorded alongside the ladder (2026-09-13)
+
+**Rule nine refined** in `CLAUDE.md`: the bar bounds *stopping slack*, not *path
+divergence*. Two runs still descending toward different limits can differ by far more than
+the sum of their terminal steps — C1 showed exactly that when tightening grew the offset
+9.4x. "Determinate at N x the error bar" licenses only "not explained by stopping slack",
+never "a real difference in the limit". The bar is **local**, valid only when both runs have
+settled, and **rule ten is what tells you whether they have**. Applied to the D1 anomaly:
+cell 2's rule-ten ratio is **0.8414** against the C1 cold cell's **0.5800**, so a third and
+cheapest explanation joins the two already recorded — **both runs are simply at different
+points on their descents**, which alone can account for 1.6M without invoking structure or
+basins.
+
+**Cell 1 is less open than it looked.** `_add_dso_scenario_deviation_penalty` assembles
+**three** components (`shared_resources_planning.py:2829-2833`): `scenario_deviation_voltage`,
+`scenario_deviation_interface_power` and `scenario_deviation_shared_ess`. An uncoordinated
+DSO has no shared ESS by construction, so the shared-ESS component should simply be absent
+while the other two remain — a guarded component, not a formulation question. It fits the
+gate pattern trivially, since behaviour preservation is free when the mode currently raises.
+**Not applied; awaiting authorization.** Recorded separately: *a production mode nobody runs
+is a mode nobody notices breaking* — three weeks of silent breakage.
+
+**The normalization confound is a design constraint on the comparison, not an observation.**
+`max(|rating|, 0.10)` gives cell 2 (zero) and the bootstrap cell the same 0.10 normalization
+while any real plan uses its own rating — a tenfold difference on the ESS consensus channel
+at 1.00 MVA, layered on the capacity difference. **Any future cell-3-versus-cell-2
+comparison must either hold the normalization fixed or quantify its contribution
+separately.**

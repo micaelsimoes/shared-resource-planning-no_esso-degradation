@@ -1,0 +1,40 @@
+{
+  "design": "P5.14-L — capacity ladder on the failing configuration",
+  "status": "FROZEN — written and hashed before any rung runs",
+  "purpose": "Separate the two explanations the D1 report refused to choose between, and produce the number the project needs: THE LARGEST PLAN THIS ORACLE CAN EVALUATE.",
+
+  "governing_fact_this_serves": "The oracle cannot evaluate a plan large enough to exhibit the effect the paper claims. Every stabilization finding — Q well defined, ADMM converging, one local failure in 1,095 — was established where the storage is economically negligible. At the first capacity where it is not, the evaluation aborts before ADMM starts.",
+
+  "rungs": {"capacities_MVA": [0.25, 0.50, 0.75, 1.00], "ratio": 4.0,
+    "energy_MWh": [1.0, 2.0, 3.0, 4.0],
+    "1.00_is_the_known_failing_reference": true,
+    "all_three_nodes": "the initialization solves all networks and all three ESSO subproblems, so all three nodes are reported at the same cost as node 7 alone"},
+
+  "method": {
+    "stop_point": "the initialization block is replicated verbatim (create_admm_variables -> create_distribution_networks_models -> create_transmission_network_model -> create_shared_energy_storage_model, shared_resources_planning.py:2100-2112) and the run STOPS there. ADMM is never started.",
+    "configuration": "identical to D1 cell 3: cold, rho_pf 300 adaptive, rel 1e-4, budget 5.0e6, C3 active",
+    "diagnostic_resolve": "if a node's ESSO fails, that one model is re-solved directly with load_solutions=False and the .sol loaded manually, so that per-constraint residuals can be read AT THE TERMINAL POINT. Production leaves the model at its initial values after a failed solve, so this extra solve is necessary and is declared."
+  },
+  "solve_profile": {"per_rung": "51 (36 DSO + 12 TSO + 3 ESSO) + at most 1 diagnostic re-solve per failing node",
+    "upper_bound_total": 216, "mode": "armed and counted; any blocked solve fails the stage"},
+
+  "primary_question": {
+    "clean_threshold": "solves at or below some capacity and fails above it, monotonically -> a FINDING ABOUT THE PLAN: that network cannot host that much storage, which is real engineering information",
+    "erratic": "non-monotonic or node-inconsistent failure -> a FINDING ABOUT THE TOOL",
+    "either_way": "the largest evaluable capacity is recorded"
+  },
+  "prime_suspect_predeclared": {
+    "row": "es_pch_hat_agg * es_pdch_hat_agg <= ESS_COMPLEMENTARITY_TOLERANCE, shared_energy_storage_data.py:618-620",
+    "why": "it has NO SLACK, unlike the cohort rows at :569 which carry slack_es_ch_comp_per_unit. It was identified as hard-infeasible rather than merely penalized during the throughput analysis (P5.13-A, site 2). A terminal violation of 6.84e-05 against a 1e-4 tolerance is consistent with it. At negligible capacity the normalized powers are tiny and the row never approaches binding; at 1.00 MVA it can.",
+    "test": "report which constraint rows carry the terminal violation and whether the aggregate complementarity row is among them. That distinguishes a hard-row infeasibility from a diffuse numerical failure immediately.",
+    "falsification": "if the violation is spread across many rows with no single dominant one, or the aggregate row is satisfied, the hypothesis is wrong and the failure is numerical"
+  },
+
+  "PREDECLARED GO/NO-GO": {
+    "rule": "once the largest evaluable capacity C* is known, compare the effect it can produce against the resolution. The bounded error bar at rel 1e-4 is twice the tolerance; the estimated bar is the sum of the two cells' terminal steps.",
+    "GO": "if a plan at C* yields an effect comfortably above the bounded error bar, the campaign proceeds at that size and the paper's comparison is recoverable AT REDUCED SCALE — which must be stated as reduced scale, not as the paper's plan",
+    "NO_GO": "if it does not, then THIS TOOL AS IT STANDS CANNOT DEMONSTRATE THE PAPER'S NUMERICAL CLAIMS. That conclusion goes to the manuscript rather than being treated as another blocker to clear.",
+    "recorded_before_running": true
+  },
+  "not_permitted": ["starting ADMM on any rung", "fixing any production defect", "reading a comparison from a rung"]
+}
