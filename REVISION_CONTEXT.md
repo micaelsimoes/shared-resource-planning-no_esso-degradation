@@ -2573,6 +2573,18 @@ quantity* as the salvage transition and cannot be deferred behind it. Both must 
 settled before any ranking baseline is re-derived, or the baseline would have to be
 derived twice.
 
+**Concrete instance — the complementarity slack (added 2026-09-12, from P5.13-A).**
+`slack_es_ch_comp_per_unit` (`shared_energy_storage_data.py:569`, penalized at `:641`
+via `PENALTY_ESSO_SLACK`) would silently absorb the Option B throughput definition:
+expectation-valued directional powers violate the 1e-4 complementarity row by ~2500x
+in the product, the run does not fail, and the violation appears as cost inside
+`gross_operational_cost`. This is a penalty **absorbing** a modelling inconsistency
+rather than **signalling** one. It raises penalty classification from accounting
+hygiene to failure detection: a penalty classified as operating cost cannot signal a
+modelling inconsistency, it prices one. The classification must therefore state, per
+penalty, whether a nonzero value is an economic cost or a *detector* that must be
+zero — and for this slack the two readings differ in kind.
+
 
 ### P5.10 acceptance statistics — inputs preserved, definition UNPRESERVED
 
@@ -2618,8 +2630,9 @@ the same argument that made penalty classification blocking rather than sequenti
 ## P5.13-A — expected directional throughput versus expected net power (2026-09-12)
 
 Definitional decision with code trace; no solver work. Full record in
-`P5_13_A_THROUGHPUT_DEFINITION.md`. Frozen diagnostic specification:
-`data/SRP1/Results/P513A/frozen_throughput_diagnostic_spec_v1_bf56149e.json`.
+`P5_13_A_THROUGHPUT_DEFINITION.md` (including corrections C1-C6 of 2026-09-12).
+Frozen diagnostic specification, current version:
+`data/SRP1/Results/P513A/frozen_throughput_diagnostic_spec_v2_8b2d8f77.json`.
 
 **Established by code trace.** Network shared-ESS variables are per scenario
 (`[e, s_m, s_o, p]`). Coordination averages the **signed net** quantity —
@@ -2649,12 +2662,95 @@ not a separate concern.
 **Open definitional decision (author's to make).** Option A: degradation represents the
 committed common schedule — the implementation is then correct as written and the
 obligation is editorial, since the paper must not claim realized cycling. Option B:
-degradation represents realized operation — which needs no per-scenario ESSO, because
-with fixed efficiencies passing `E[pch]` and `E[pdch]` instead of the single `E[pnet]`
-suffices. Trade-off under B: both expectations may be strictly positive in the same
-period, which is correct for throughput accounting but must not be read as simultaneous
-physical charge/discharge, and it weakens the ESSO-level complementarity interpretation.
-Planner recommendation is B as physically faithful, with the choice reserved to the
-author. **Blocking:** whichever is chosen changes the degradation term and hence the
-objective, so it must be settled before any ranking baseline is re-derived — the same
-argument that made penalty classification blocking.
+degradation represents realized operation, driven by `E[pch]` and `E[pdch]` rather than
+by a directional decomposition of the single `E[pnet]`. **Blocking:** whichever is
+chosen changes the degradation term and hence the objective, so it must be settled
+before any ranking baseline is re-derived — the same argument that made penalty
+classification blocking.
+
+**Option B is blocked by enforced complementarity — corrected 2026-09-12.** The first
+record of this stage called the trade-off under B a weakening of "the ESSO-level
+complementarity interpretation". That was too weak and made B look like the cheaper
+option. Complementarity is *actively enforced*, and B's correct values violate it by
+orders of magnitude. `ESS_COMPLEMENTARITY_TOLERANCE = SMALL_TOLERANCE = 1e-4`
+(`definitions.py:80-81`) applies to **normalized** variables in `[0, 1]`, so equal
+directional values are capped at `sqrt(1e-4)` = **1% of rating**. A two-scenario ±50/50
+split needs `0.5` in each component: **50x over per component, 2500x over in the
+product** — binding by three orders of magnitude, not marginally tight.
+
+Three sites, two failure modes:
+
+| # | Row | Location | Under Option B |
+|---|---|---|---|
+| 1 | `pch_hat * pdch_hat <= slack_es_ch_comp_per_unit + 1e-4` (per cohort) | `shared_energy_storage_data.py:569` | **slack-absorbed**; slack penalized at `:641` via `PENALTY_ESSO_SLACK`, landing in `gross_operational_cost` |
+| 2 | `es_pch_hat_agg * es_pdch_hat_agg <= 1e-4` (aggregate) | `shared_energy_storage_data.py:618-620` | **no slack — infeasible** |
+| 3 | `shared_es_pch_hat * shared_es_pdch_hat <= 1e-4` (per scenario) | `model_construction_helpers.py:836-838`, penalty `:1726` | rows hold (per-realization); the P5.4-H1.6 *rationale* for site 2 does not survive |
+
+Site 3 requires care: the network rows are per scenario and are not violated by B.
+What B breaks is the P5.4-H1.6 argument (`shared_energy_storage_data.py:599-605`) that
+produced site 2 — that the ESSO aggregate feasible set must match the network's, "or
+ADMM would be reconciling two different feasible sets". Under B the ESSO's directional
+variables are expectations while the network's are per-realization, so the two sides
+no longer describe the same object.
+
+**Corrected cost of Option B.** Not "two expectations rather than one": the two ESSO
+complementarity sites must be redefined or removed; the ADMM channel changes, because
+`update_shared_energy_storage_model_to_admm` (`shared_resources_planning.py:3783-3827`)
+reconciles exactly one expected net pair `(es_pnet, es_qnet)` against `(p_req, q_req)`
+with one dual pair and one `rho`, so a directional pair adds a consensus quantity, a
+dual, a residual and a stopping test per node and period; P5.4-H1.6 must be re-derived;
+and the `(0,0)` oracle restriction still blocks any configuration that could exhibit
+the discrepancy.
+
+**Site 1 belongs to the penalty-classification item.** Adopt B's expectations without
+the model change and nothing fails — the correct expected throughput appears as
+`PENALTY_ESSO_SLACK` cost inside `gross_operational_cost`, the exact quantity whose
+penalty status is already blocking. This is a concrete instance of a penalty
+**absorbing** a modelling inconsistency rather than **signalling** one, and is the
+strongest available argument that penalty status must be settled rather than
+documented.
+
+**Option C examined — NOT established.** Proposal: the networks pass `E[pch]`, `E[pdch]`
+used *only* as inputs to the degradation law, leaving ESSO dispatch semantics and the
+complementarity rows untouched. Three obstacles, the first structural:
+
+- **O1 (index mismatch).** The law consumes `es_avg_ch_dch_per_unit[y_inv, y]`
+  (`shared_energy_storage_data.py:479-490`), a per-**cohort**, per-year scalar already
+  aggregated over days and periods, feeding a per-cohort SoH chain (`:509-532`) with
+  per-cohort `es_e_rated_per_unit`. The network models have no cohort decomposition
+  (`shared_es_pch[e, s_m, s_o, p]`). An exogenous expectation can constrain only the
+  cohort sum, leaving the split the law consumes undetermined. This is the sharper form
+  of the per-period concern: the consumed quantity is not per-period at all.
+- **O2 (price channel).** In the operational subproblem the ESSO objective is
+  `feasibility_penalty` plus the AL terms; degradation enters through constraints
+  (throughput → degradation → SoH → `es_e_available_per_unit`) and reaches the economics
+  via available capacity and salvage. Make throughput exogenous and degradation stops
+  depending on any ESSO **dispatch** variable, severing the only channel — the ESSO's
+  preference expressed through `dual_p_req` — by which cycling cost reaches the
+  networks, whose objectives contain no degradation term (`penalty_ess_usage`
+  `model_construction_helpers.py:1652`; complementarity penalty `:1726`). No agent then
+  prices cycling against dispatch.
+- **O3 (reconciled variant).** Reconciling throughput as a consensus quantity with its
+  own dual forces the ESSO to reproduce an expected gross throughput while also meeting
+  the `es_pnet` consensus and the complementarity rows — exactly the conflict that is
+  infeasible at site 2 and slack-absorbed at site 1. The violation moves onto a residual
+  that cannot close without slack.
+
+Option C must not be cited as a cheaper alternative. O1 needs an explicit
+cohort-allocation rule; O2/O3 show the hoped-for decoupling exists only in the form
+that removes the degradation price. Secondary: any new consensus channel changes the
+ADMM operator whose stability is the subject of the open cycle-21 investigation.
+
+**Frozen specification, v2.**
+`data/SRP1/Results/P513A/frozen_throughput_diagnostic_spec_v2_8b2d8f77.json`
+(SHA-256 `8b2d8f77…a5ed`), lineage in the same directory's `frozen_spec_lineage.json`;
+v1 `bf56149e…d311` preserved unmodified. v2 (a) preserves the derivation of the sign
+expectation `A >= B` — for nonnegative directional powers `|E[X - Y]| <= E[X + Y]`, and
+per-scenario complementarity makes `X + Y = |X - Y|` within a realization, so this is
+`|E[z]| <= E[|z|]`; opposite-sign dispatch cancels in the expectation of the net and
+adds in the expectation of the throughput — with its three assumptions and the
+efficiency-independent equality condition; and (b) **corrects** v1's blanket rule that
+any `A < B` is a diagnostic defect. With the site-1 slack active, both directional
+values can be strictly positive and `B` can exceed `A`; `A < B` is then a *finding*
+(slack absorption), and the diagnostic must report active slack alongside every `A`/`B`
+pair. Neither version has been executed.
