@@ -61,10 +61,51 @@ must vanish. At the capacities proposed here the complementarity slack (site 1 o
 is far more likely to be active than at 0.0213 p.u., which makes the classification
 question **more** pressing in this track, not less.
 
+## Executed on the COLD path — the templated oracle is disqualified
+
+Track C1 settled which oracle this track may use.
+
+**The templated oracle is 1.03% high, and the bias is roughly half the effect the paper
+exists to report (2.01%).** It is high because it stops early in its template's basin, and
+in a minimization that systematically overstates cost.
+
+**The hopeful reading is closed off by the mechanism, not merely unmeasured.** A constant
+bias would cancel in an incremental comparison. But the bias is precisely the amount by
+which a warm path fails to leave its template's basin, and in a campaign **each candidate
+inherits its own template**. There is no reason to expect constancy, and the mechanism
+actively predicts candidate-dependence: a candidate whose template sits in a better basin
+shows a smaller bias. **The templated oracle cannot support the paper's headline
+comparison at any price.**
+
+So the cold path is the oracle — the only one not reporting an artifact of its own
+initialization. Independence costs 11.5x and rises as the tolerance tightens, and at a 1%
+bias against a 2% effect the cheap path is unusable regardless.
+
+### Cold-path cost and resolution, per pair
+
+Error bars follow the ninth rule: a pair-difference carries **both** cells' terminal steps,
+so the error bar is twice the per-evaluation terminal step.
+
+| tolerance | solves / evaluation | terminal step | error bar on a pair | 2.01% storage (1.66e7) | 18.25% combined (1.51e8) | four plans |
+|---|---|---|---|---|---|---|
+| `rel` 1e-3 | 1,683 | 706,604 | 1,413,207 | **11.8x** | 106.9x | **6,732 solves** |
+| `rel` 1e-4 | 3,519 | 47,545 | 95,090 | **175.0x** | 1589.1x | **14,076 solves** |
+
+Both clear the built-in gate of 10, but **1e-3 is marginal for the headline effect** at
+11.8x — barely above the gate, and the gate exists to be cleared comfortably. At 1e-4 the
+same comparison sits at 175x for roughly **double the cost**. That is the real choice this
+track presents, and it is a cheap one: 14,076 solves is about four times a single AB1 arm.
+
+No further tolerance work is required for this track.
+
 ## What is being proposed for decision
 
-1. Whether to run the four cells at all.
-2. If so, the capacities to use, taken from the manuscript.
+1. The candidate set — the capacities, taken from the manuscript. (The author has
+   indicated this decision is his.)
+2. **The tolerance: `rel` 1e-3 at 6,732 solves with the headline comparison at 11.8x its
+   error bar, or 1e-4 at 14,076 solves and 175x.** The Planner recommends 1e-4: the
+   marginality at 1e-3 is exactly the condition under which a result later turns out to
+   have been indeterminate, which this project has now seen twice.
 3. Whether penalty classification is settled first, or the probe runs with the
    classification recorded as an open dependency on every number it produces.
 

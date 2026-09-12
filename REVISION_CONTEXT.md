@@ -3700,3 +3700,56 @@ against. The realised ratio drifted 0.8216 -> 0.8451, so a second decade costs *
 offered.
 
 **C2 stops here for the author's decision on a second decade.**
+
+## C2 decision and its consequence — the templated oracle is disqualified (2026-09-12)
+
+**C2: no second decade.** The sweep answered its question. The two initializations do not
+share a reachable fixed point — the cold path has never stopped descending at any tolerance
+tried, and the warm path is parked in its template's basin. A third point would confirm what
+the mechanism already predicts, at >= 36 cycles and plausibly double: a confirmation, not a
+decision.
+
+**Decrement-ratio extrapolation is RETIRED as a method**, not merely cautioned against. It
+was tested directly and failed: predicted ~11.7 extra cold cycles for the decade, measured
+**36** — a 3.1x underestimate. It must not be used to produce a cost, a horizon or a
+remaining-gap estimate.
+
+**The consequence that decides the project.** The templated oracle is **1.03% high**, and it
+is high because it stops early in a worse basin; in a minimization that systematically
+**overstates cost**. The paper's claimed incremental storage benefit is **2.01%**, so the
+bias is roughly **half the effect the paper exists to report**.
+
+**The hopeful reading is closed off by the mechanism, not merely unmeasured.** A constant
+bias would cancel in an incremental comparison, and we could never measure constancy across
+candidates. But the bias *is* the amount by which a warm path fails to leave its template's
+basin, and in a campaign **each candidate inherits its own template** — so there is no reason
+to expect constancy, and the mechanism actively predicts candidate-dependence: a candidate
+whose template sits in a better basin shows a smaller bias. **The templated oracle cannot
+support the paper's headline comparison at any price.**
+
+**The cold path is the oracle** — the only one not reporting an artifact of its own
+initialization. Independence costs 11.5x and rises with the tolerance, but at a 1% bias
+against a 2% effect the cheap path is unusable regardless of price.
+
+**And for the comparison the paper actually makes, today's resolution suffices.** Error bars
+per the ninth rule (a pair-difference carries both cells' terminal steps):
+
+| tolerance | solves/evaluation | error bar on a pair | 2.01% storage | 18.25% combined | four plans |
+|---|---|---|---|---|---|
+| `rel` 1e-3 | 1,683 | 1,413,207 | **11.8x** | 106.9x | **6,732** |
+| `rel` 1e-4 | 3,519 | 95,090 | **175.0x** | 1589.1x | **14,076** |
+
+Both clear the built-in gate of 10, but 1e-3 is **marginal** for the headline effect at
+11.8x. **Track D is now the priority, executed on the cold path**, and no further tolerance
+work is needed for it. The author decides the candidate set; the Planner recommends 1e-4.
+
+**Tenth rule adopted** in `CLAUDE.md`: report the terminal-step-to-threshold ratio for every
+cell of every evaluation. A settled run stops well inside its threshold; one terminating at
+~99% of it is being *stopped*, not converging. C1's contrast — warm **99.3%**, cold
+**58.0%** — diagnosed the mechanism, and reporting it earlier would have flagged the 2x2's
+warm cells before their agreement was read as a result.
+
+**Objective convention recorded** in `CLAUDE.md`: `gross_operational_cost` and
+`net_operational_recourse` differ by exactly the terminal salvage credit — 3,448.87 on the
+X22 warm-adaptive cell, which is why that table reads 827,738,663 (gross) where C1's reads
+827,735,215 (net). State the convention on every table.

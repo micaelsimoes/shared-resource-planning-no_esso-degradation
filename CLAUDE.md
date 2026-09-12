@@ -106,6 +106,19 @@ incidents behind each rule are in `REVISION_CONTEXT.md`, section
   difference smaller than that error is indeterminate, not a result.** The cold-versus-warm
   offset of 1,055,598 carried an error bar of 766,062, so it was barely distinguishable from
   its own uncertainty, and the ranking signal it had to support was 32.87.
+- Report the terminal-step-to-threshold ratio for every cell of every evaluation. A run that
+  has genuinely settled stops well inside its threshold; one terminating at ~99% of it is
+  being *stopped*, not converging. It costs nothing and is computable from artifacts already
+  preserved. In Track C1 the warm cell stopped at **99.3%** of its bound and the cold cell at
+  **58.0%** — the contrast diagnosed the mechanism, and reporting it earlier would have
+  flagged the 2x2's warm cells before their agreement was read as a result.
+
+## Reporting conventions
+
+- State the objective convention on every table. `gross_operational_cost` and
+  `net_operational_recourse` differ by exactly the terminal salvage credit — 3,448.87 on the
+  X22 warm-adaptive cell, which is why its table reads 827,738,663 (gross) where C1's reads
+  827,735,215 (net). The two reconcile only once the convention is stated.
 
 ## Investigation discipline
 
