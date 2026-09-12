@@ -2524,15 +2524,20 @@ total, `total + terminal_salvage_value`. This is arithmetic on existing artifact
 - P5.7 (3 files), P5.8 (4 files), P5.9 (14 files) carry the keys.
 - **P5.10, including the acceptance statistics.** `p510_b_fixedrho_pf{300,500,1000}.json`
   carry `cost_families` per row, and — decisively — the eight-generation replay files
-  `p510_f_replay_*.json` carry `cost_families` **per generation**
-  (e.g. gross `827965125.950184`, salvage `3469.7529292681957`, net
-  `827961656.1972548`). So **`22.09`, `32.87` and `0.67` can be recomputed on the
-  zero-salvage convention from preserved artifacts** rather than abandoned. They must
-  be recomputed, not reused as-is.
+  `p510_f_replay_*.json` carry `cost_families` **per generation** — each file declares
+  `generations: 8` and holds exactly 8 `gross_operational_cost` occurrences, for all
+  three candidates (e.g. gross `827965125.950184`, salvage `3469.7529292681957`, net
+  `827961656.1972548`). The **inputs** to `22.09` / `32.87` / `0.67` are therefore
+  preserved at every generation. Their **definition** is not: see the separate entry
+  below. They are not simply "recoverable".
 - All per-cycle recourse markers — `P512A` trajectory files store
   `gross_operational_cost` beside `recourse`, and `P512R/run.json` stores gross,
-  salvage and recourse together (cycle 20: `1424782485.8041718 − 3569.5389424068017 =
-  1424778916.2652295`).
+  salvage and recourse together. Cycle 20 reconciles **to double precision, not to the
+  last printed digit**: `1424782485.8041718 − 3569.5389424068017 = 1424778916.26522939`
+  against the recorded `1424778916.2652295`, a relative residual of about `7.6e-17`.
+  That is float round-off in the decimal transcription, not a data problem; a reader
+  recomputing from the printed strings will see a last-digit difference and should
+  expect it.
 
 **NEEDS A ONE-OFF CROSS-CHECK — the stage's own artifacts lack the split:**
 
@@ -2567,3 +2572,45 @@ are economic costs and which must vanish for physical feasibility.
 quantity* as the salvage transition and cannot be deferred behind it. Both must be
 settled before any ranking baseline is re-derived, or the baseline would have to be
 derived twice.
+
+
+### P5.10 acceptance statistics — inputs preserved, definition UNPRESERVED
+
+Searched rather than assumed. `22.09`, `32.87` and `0.67` appear in **no artifact**.
+The apparent JSON matches are incidental substrings inside longer unrelated numbers
+(`22.09141692720717` is a residual in the P512A trajectories; `22.091315306584715` is
+in `P53B1`); a context search returns nothing. `p510_e_criteria.py` computes
+`planning_signal` and `objective_tolerance` and nothing resembling these three, and
+`p510_e_criteria.json` preserves `planning_signal = 33031.0` and `tau_numerical = 10.0`,
+which are different quantities. The three figures exist only in Markdown: the P5.10 and
+P5.11 reports, the P5.12-X and P5.12-Y reports, and these two governing documents.
+
+So the position is narrower than "recoverable": **the inputs are preserved, the
+definition is not.** Nothing on disk states what the cross-depth uncertainty ranges
+over, how best-to-second is formed, or what the ratio divides. Recovering them means
+reconstructing a formula whose only source is report prose.
+
+This is the **fourth instance of the identifier/denotation pattern, and the most
+consequential**, because these three function as acceptance thresholds for candidate
+ranking — a heavier load than the classification metrics P5.12-Z re-derived.
+
+**Protocol when the recomputation is authorized** (a Z-shaped stage, with one addition
+that was unavailable in Z):
+
+1. Freeze a formula specification reconstructed from the P5.10 report's prose, and have
+   it approved, under the frozen-artifact naming rule.
+2. **First reproduce the salvage-inclusive `22.09` / `32.87` / `0.67` under the old
+   convention** from the preserved `cost_families`. That reproduction is what
+   distinguishes a reconstructed definition from a guessed one.
+3. Only once step 2 passes, compute the zero-salvage values.
+
+If step 2 fails, the definition is wrong and the zero-salvage figures would have
+inherited the error silently. The asymmetry that makes this work: in P5.12-Z the prose
+numbers were the thing being checked and so could not also validate the method; here
+the old-convention numbers are a genuine independent target, because what is unknown is
+the formula, not the data.
+
+**Hold** this recomputation until the throughput and penalty-classification items are
+settled. Its inputs are not going anywhere, and re-deriving a ranking baseline before
+the penalty status of `gross_operational_cost` is decided would mean doing it twice —
+the same argument that made penalty classification blocking rather than sequential.

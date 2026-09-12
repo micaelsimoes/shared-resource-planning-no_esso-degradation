@@ -57,6 +57,27 @@ the current machine and must pass the repository provenance checks.
 - Do not guess invocation commands when they are uncertain; inspect the
   repository and existing methodology first.
 
+## Evidence and artifact rules
+
+Obligations on whoever creates or commits an artifact. Worked examples and the
+incidents behind each rule are in `REVISION_CONTEXT.md`, section
+"P5.12-G / W / X / Y / Z results".
+
+- Name frozen artifacts with version and content hash, e.g.
+  `frozen_formula_spec_v2_45edc424.json`. Never replace a frozen artifact in place;
+  each version must record its predecessor's hash.
+- Commit every report together with its primary evidence base and that evidence's
+  hash inventory. Never commit a journal without its manifest, or a manifest without
+  its journal.
+- Ensure every identifier uniquely denotes its content: path-qualify fixture identity
+  where basenames repeat, and state constants in frozen plans operationally rather
+  than as fixture-specific literals.
+- Commit or hash-record the settling artifact for any claim you commit, even when its
+  directory is excluded in bulk. A claim whose evidence cannot be re-verified is not
+  preserved.
+- Preserve the formula, not only the inputs. A reported statistic whose definition
+  exists only in prose is unpreserved, however complete its input data.
+
 ## Investigation discipline
 
 Do not start a new stage merely because the previous stage produced a report.
