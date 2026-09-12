@@ -2431,3 +2431,74 @@ any capture campaign.
 - Timestamps are standardised on Z-suffixed UTC. P5.12-R's trajectory ran 1176.3 s
   (19.6 min), which supersedes the ~16 min estimate used when sizing a future
   instrumented capture.
+
+## Zero-salvage objective transition — incomparability register (2026-09-12)
+
+The author's decision to exclude terminal salvage from the objective is
+**definitional, not numerical**: it fixes what the oracle is supposed to compute.
+It therefore has to precede any capture campaign rather than run alongside it —
+captures taken under the current objective would be captures of an objective about to
+change. This register enumerates, now, which existing results carry a salvage credit,
+because the list is cheap to produce today and expensive to reconstruct afterwards.
+
+**Mechanism.** `net_operational_recourse = gross_operational_cost -
+terminal_salvage_value` (`shared_resources_planning.py:722-733`); the per-cycle ADMM
+`recourse` diagnostic is that net value (`:395`); the block decomposition carries a
+`('SALVAGE', None, None, None)` term with negative sign so the blocks sum to the net
+recourse (`:736-745`).
+
+### AFFECTED — carry a salvage credit; NOT comparable with any future zero-salvage result
+
+- P5.6-A START-1: net recourse `829288237.862242`, total `829338237.862242`
+  (salvage `3439.659877`).
+- P5.6-B START-2, the current best certified incumbent: net recourse
+  `827971090.360850`, total `828021090.360850` (salvage `3428.356255`).
+- P5.6-B template chain totals T0..T4: `828021090.360850`, `827415318.563944`,
+  `826824028.845478`, `826405022.193437`, `825961521.882321`, and the T0->T4 drift
+  `-2.059568e6`.
+- P5.6-D: best incumbent `se|node5|2025|-10%` total `825109566.571083`;
+  `tau_planning_refined = 811438.05`.
+- P5.4-R canonical: `Q0 = 838496830.813414`; D4 cold base `838496830.81`; best
+  recovered branch `836586463.43`; `tol_cut = 7.164e5`.
+- P5.10 / P5.11 reproduction gates: CURRENT polished total `828021090.3608505`;
+  RESCALED pre-polish recourse `825814074.4930633`.
+- **P5.10 landscape statistics**: cross-depth relative uncertainty `22.09`,
+  uncertainty/signal `0.67`, best-to-second mean gap `32.87`, base-chain drift
+  `-201099`. Also P5.9's CURRENT eight-depth uncertainty `459695.59` against signal
+  `18085.03`.
+- P5.11 / P5.12-A / P5.12-R per-cycle recourse markers `2352009862.13208` (cycle 1),
+  `1461174062.836328` (13), `1424778916.2652295` (20), `1402384338.113119` (25), and
+  every per-cycle recourse in the P512A and P512R trajectory records.
+- P5.7 recovered-objective deltas `-383401.68` (CURRENT) and `-8892463.76` (RESCALED),
+  computed on the same net convention.
+
+### UNAFFECTED — salvage-free by construction
+
+- `gross_operational_cost` figures (`829291677.522120`, `827974518.717105`).
+- **All block-level IPOPT objectives and residuals** in P5.12-B / R / Arm A / P / W /
+  X / Y / Z — `1348.4251823032162`, `354.15536755956111`, `337946.00264311919` and
+  their arms — because salvage is an outer ESSO-derived credit that never enters a
+  network block objective.
+- All solver telemetry: iteration counts, safeguard counts, `delta_c` / `delta_x`,
+  step sizes, residuals, complementarity, barrier progression.
+- All P5.12-Z classification metrics: primal distances, interface distances, iteration
+  ratios. The weighted figures (X LOW `2.186` planning units, etc.) are block-objective
+  differences multiplied by the planning weight and are therefore salvage-free — but
+  they are expressed in planning units and may only be compared against a
+  same-convention planning signal.
+- P5.5 convex-oracle results, which already use a different salvage convention
+  (`-V_salvage_max`, salvage excluded from `R(x)`).
+
+### Consequences to carry
+
+1. The P5.10 acceptance statistics (`22.09`, `32.87`, `0.67`) are stated on the
+   salvage-inclusive objective. **Any future ranking evidence gathered under zero
+   salvage must re-derive its own uncertainty and signal baseline**; these numbers may
+   not be reused as thresholds across the transition.
+2. For the recorded early-cohort base candidate the credit is about `3.4e3` on `8.3e8`
+   (~`4e-6` relative), so the numerical shift is small while the **definition** differs.
+   The Expert's warning stands: early cohorts mask this because remaining-life salvage
+   can be zero; a late cohort would not.
+3. The transition must be applied consistently across operational evaluation, candidate
+   ranking and any sensitivity or cut accounting, or results from the three will not be
+   mutually comparable either.
