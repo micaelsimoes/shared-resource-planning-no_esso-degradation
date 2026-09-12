@@ -2535,6 +2535,17 @@ captures taken under the current objective would be captures of an objective abo
 change. This register enumerates, now, which existing results carry a salvage credit,
 because the list is cheap to produce today and expensive to reconstruct afterwards.
 
+**Magnitude note, added 2026-09-12 (from P5.14-G).** The definitional incomparability
+stands and is unaffected by what follows. But the *numerical* weight of the salvage term
+at the recourse level is now measured: from P5.9-B's `cost_families`,
+`terminal_salvage_value` is **3,452.29** against `net_operational_recourse`
+**828,248,310** — **4.17 ppm**. A future reader should therefore **not over-weight the
+salvage boundary when comparing recourse values**: at this magnitude the salvage
+convention cannot explain a recourse difference of even a few hundredths of a percent.
+It must still be respected in full for (a) salvage-specific claims, (b) any ranking whose
+best-to-second gap is narrow enough for 4 ppm to matter, and (c) the definitional
+question of what the objective *is*, which is not a magnitude question at all.
+
 **Mechanism.** `net_operational_recourse = gross_operational_cost -
 terminal_salvage_value` (`shared_resources_planning.py:722-733`); the per-cycle ADMM
 `recourse` diagnostic is that net value (`:395`); the block decomposition carries a
@@ -3354,11 +3365,17 @@ through `BC.population -> p56a_candidates.base_vector` (`:39-43`). Re-derived he
 So AB1, P5.9-B and P5.12-R all evaluate the same instance.
 
 **But the proposed cold-versus-warm inversion still cannot be tested — for a different
-reason.** AB1 ran under **C3** (`k = 11541.56`); P5.9-B ran **pre-C3** (`k = 10000`). The
-degradation constant enters SoH, hence available capacity and the salvage credit, hence
-`net_operational_recourse`. The observed 0.12% gap (826.83 M under C3 against 827.85 M
-pre-C3) is **confounded with the formulation change**, and its sign is what the C3 change
-alone would produce: higher `k` -> less degradation -> higher salvage -> lower recourse.
+reason.** AB1 ran under **C3** (`k = 11541.56`); P5.9-B ran **pre-C3** (`k = 10000`), so
+the 0.12% gap is **confounded with the formulation change**.
+
+*Channel corrected.* The confound does NOT run mainly through salvage. From P5.9-B's own
+`cost_families`, `terminal_salvage_value` is **3,452.29** against a
+`net_operational_recourse` of **828,248,310** — **4.17 ppm**. The gap in question is
+827,845,392 - 826,829,641 = **1,015,751**, so the entire salvage term is **0.34% of the
+gap** and cannot account for it even if C3 doubled it. The dominant channel is the other
+branch: SoH -> available capacity -> usable storage energy in every period -> dispatch ->
+`gross_operational_cost`. **A C3 warm-path run therefore measures a dispatch-level
+difference, not a salvage-level one.**
 Reading that gap as two oracles agreeing on `Q` would repeat the salvage-incomparability
 error across a boundary we created ourselves. The comparison requires a warm-path run
 **under C3**, which is a solve and is on hold.
@@ -3373,8 +3390,25 @@ mean interface increment with rho divided out; the single fixed physical standar
 | control | 50 | 0.220027 | 2.907e-04 | **8.72x** | no |
 
 Both arms start at an identical step, which independently confirms a shared instance and
-initialization. **Neither reached the physical threshold**, and the **control approaches
-it faster — by 2.09x** at each arm's best. On the standard that does not move with rho,
-the fixed-rho arm is the one making more progress toward convergence, while the adaptive
-arm is the one making more progress on the objective. The two questions have opposite
-answers, and the stationarity criterion as implemented cannot distinguish them.
+initialization. **Neither reached the physical threshold**, and the control's step is
+**2.09x smaller** at each arm's best.
+
+**That does not mean the control is closer to a solution — and the earlier framing
+conceded too much to it.** At matched cycle 32, same candidate and same formulation, the
+control's recourse is 1,372.7 M against the treatment's 826.8 M: a 40% worse objective
+with smaller iterate steps. **Small `|dz|` under a stiff penalty is not near-convergence;
+it is being stuck.** A penalty of 300 pins the blocks near consensus, suppressing motion
+while preventing the coupled system from descending, so the control's advantage on the
+motion standard measures **immobility, not proximity to a solution**.
+
+**The sharper conclusion: both motion-based standards are gameable by rho, in opposite
+directions.** `rho*|dz|` inflates with rho, so raising rho pushes the test away from
+satisfaction; bare `|dz|` deflates with rho, so raising rho pushes the test toward
+satisfaction. Neither is a rho-independent measure of anything. **Of the three members of
+the composite test, the objective criterion is the only rho-independent one — and it is
+precisely the member that refused the control.**
+
+**Remedy direction, recorded as the standing finding of S1 and S2 together:** not a
+better-scaled stationarity measure, but an **optimality-based criterion rather than a
+motion-based one** — the objective's own convergence, or a KKT-style residual on the
+original coupled problem rather than on the consensus iteration.
