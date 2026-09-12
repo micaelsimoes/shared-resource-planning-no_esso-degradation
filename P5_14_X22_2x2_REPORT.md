@@ -81,12 +81,18 @@ objective gain.
 Predeclared: under 1% is evidence the structurally different oracles agree; over 5% is
 evidence `Q` is initialization-dependent.
 
+**Sign convention: every row is `(first − second)/second × 100`, so a negative row means
+the first cell is LOWER (better).** Row 4 is written with P5.9-B first precisely so that
+its sign is comparable with the rest; ours is below P5.9-B's, and the row reads `+` because
+P5.9-B is the first term. The systematic-sign qualification below depends on the rows being
+on one convention.
+
 | comparison | difference |
 |---|---|
 | cold_adaptive vs warm_fixed | **−0.1275%** |
 | cold_adaptive vs warm_adaptive | **−0.1094%** |
 | warm_adaptive vs warm_fixed | −0.0181% |
-| our warm_adaptive vs P5.9-B warm adaptive (pre-C3) | +0.0133% |
+| P5.9-B warm adaptive (pre-C3) vs our warm_adaptive | +0.0133% |
 
 **All well under 1%.** A cold independent start and a warm templated start — different
 oracles by construction — agree on `Q` to about **one part in a thousand**. That is the
@@ -118,11 +124,20 @@ cost.
 `warm_adaptive` settled at `rho_pf = 88.889` after three decreases (300 -> 200 -> 133.33
 -> 88.889, then held) — **inside the predicted [80, 200] band**.
 
-So the prediction holds warm and fails cold, exactly as the scoped reading anticipated:
-the rule's operating point is a property of the iterate regime. Even within the warm
-regime it is start-dependent along the multiplicative grid — P5.9-B settled at 131.687
-from a start of 1000, this cell at 88.889 from 300 — so what the band captures is a
-*range*, not a unique fixed point.
+**The endpoints are exactly quantized on the decrease grid**, which makes the traces
+self-checking: `300/1.5^11 = 3.4683059832`, `300/1.5^3 = 88.8888888889`,
+`1000/1.5^5 = 131.6872427984` — all three reproduce the observed values exactly. The rule
+only ever decreased; it never increased and never landed off-grid.
+
+*Reframed, more kindly than "start-dependent".* Warm from 300 lands at 88.9; warm from
+1000 lands at 131.7 — **adjacent grid points**. Two starts a factor of 3.3 apart
+converging to neighbouring grid points is **convergence to a region**, not start
+dependence. The genuine dependence is on **regime**: warm ~10^2, cold ~3.5, which is
+state-dependent balancing behaving as it should.
+
+*Corresponding caution.* The predicted band [80, 200] spans about 2.4x — roughly two grid
+intervals — so `warm_adaptive` landing inside it is **weak confirmation**, not a clean
+hit.
 
 ## 7. Solve-profile identity, and a label to correct
 

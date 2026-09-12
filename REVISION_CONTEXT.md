@@ -3477,3 +3477,74 @@ from 300), so the band captures a range, not a unique fixed point.
 1683/2601/357/255 for 32/50/6/4 cycles. The harness's "UNEXPLAINED" label was wrong; its
 explanation list allowed only a 48-block polish or zero, and no polish ran in the warm
 cells.
+
+## P5.14-Y2 — the resolution limit on `Q`, established before the experiment (2026-09-12)
+
+Frozen design `data/SRP1/Results/P514Y2/frozen_y2_offset_design_v1_d6f7dd9e.json`.
+**NOT authorized to run; held.** Zero solves in producing it.
+
+**The rho-endpoints are exactly quantized on the decrease grid**, which makes the traces
+self-checking: `300/1.5^11 = 3.4683059832`, `300/1.5^3 = 88.8888888889`,
+`1000/1.5^5 = 131.6872427984`, all reproducing the observed values exactly. The rule only
+ever decreased, never increased, never landed off-grid. **Attractor reframed:** warm from
+300 lands at 88.9 and warm from 1000 at 131.7 — *adjacent grid points*. Two starts a
+factor of 3.3 apart converging to neighbours is **convergence to a region**, not start
+dependence; the genuine dependence is on **regime** (warm ~10^2, cold ~3.5), which is
+state-dependent balancing behaving as it should. Corresponding caution: the predicted band
+[80, 200] spans ~2.4x, about two grid intervals, so the warm cell landing inside it is
+**weak confirmation**, not a clean hit.
+
+**The offset against the signal, on the correct footing.** `PLANNING_SIGNAL = 33031.0`
+(`p510_e_criteria.py:53`) is the *pre-stabilized* best-to-second gap; the stabilized
+oracle's gap is **32.87** with cross-depth uncertainty **22.09** (ratio 0.67 — the
+Expert's "not strong separation"). These are the same quantity on two oracles and must not
+be divided by one another. The measured cold-versus-warm offset is **1,055,598** absolute
+(vs `warm_fixed`), i.e. ~32,000x the stabilized signal. That is not fatal, because rankings
+are differences *within* one path and a constant offset cancels exactly — but it sets the
+bar: the offset must reproduce across candidates to within **~33 absolute units out of
+1.06e6, i.e. 0.0031%**.
+
+**Pre-registered resolution analysis — the bar cannot be met, and this is established
+before running anything.** Arithmetic is not the limit: the warm path reproduced a pre-C3
+run to 16 digits, so the pipeline is bitwise deterministic. The limit is **where each run
+stops**. `Q` is read at the point where the per-cycle objective change falls under
+tolerance, so it is known only to about the size of the last step taken:
+
+| cell | terminal per-cycle objective change |
+|---|---|
+| cold_adaptive | 706,604 |
+| warm_fixed | 59,459 |
+| warm_adaptive | 212,489 |
+
+The error bar on the cold/warm_fixed offset is their sum, **766,062** — so the measured
+offset of 1,055,598 is only **1.4x its own error bar**, and the ranking bar of 33 units is
+**~23,000x finer than that**. The experiment as posed is **INDETERMINATE by construction**.
+
+**The finding this yields, which is larger than either outcome.** The objective criterion —
+the only rho-independent member of the composite test — is itself far too loose to resolve
+the ranking it supports. `objective_tolerance = 827,945` against a stabilized signal of
+**32.87**: a factor of **25,188**, and still **25x** the *pre-stabilized* 33,031. `Q` is
+defined only to within ~±8.3e5 by its own stopping rule while the quantity to be resolved
+is 32.87. The empirical cross-depth uncertainty of 22.09 is four orders of magnitude
+smaller than that bound, which means **the templated ranking works — where it works — by
+the determinism of identical code paths cancelling the slack, not because the criterion
+resolves anything.** That is fragile: any perturbation of a trajectory (a different
+candidate, a solver retry, a code edit) can move a stopping point by up to a tolerance
+width.
+
+**Cost of a resolution-adequate oracle — indicative only.** Continuing the cold cell at its
+observed late decrement ratio 0.8216 until the per-cycle change falls under 33 units
+implies ~50.7 more cycles, ~2,588 more solves per evaluation. **This is an extrapolation of
+a decrement ratio — the exact operation that has gone wrong three times in this project —
+and the ratio is not stable (0.87 -> 0.98 in the R trajectory, 0.8216 here). Order of
+magnitude only; it must never be quoted as a cost.** The resulting total (~4,271) lands
+near the withdrawn 4,600 by a different route; that is a coincidence and does not vindicate
+the withdrawn figure, whose derivation was wrong.
+
+**Recommended redesign, frozen with the above.** Measure the two initializations at a
+**common, criterion-free reference** — an identical fixed cycle budget — reporting the
+offset together with each cell's per-cycle change at that budget as an explicit error bar;
+then ask only whether the offset reproduces *within the stated error bar*, which is the
+strongest claim the current stopping rule supports. What would actually settle it is
+tightening the objective tolerance until the terminal per-cycle change falls below the
+signal — a parameter change, not authorized, with the indicative cost above.
