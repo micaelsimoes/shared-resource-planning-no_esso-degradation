@@ -1,0 +1,62 @@
+{
+  "stage": "P5.13-D — Step 0: activate calibration C3 and two determinism fixes",
+  "version": "v2",
+  "status": "FROZEN GATE — written and hashed BEFORE the reverted change is re-applied",
+  "supersedes": {
+    "version": "v1",
+    "file": "frozen_c3_impact_gate_v1_8ee17c92.json",
+    "sha256": "8ee17c925a6917d3efb345b4bbe35067cacc6f84f04c19cbf81dd05645841949",
+    "why_it_failed": "v1 asserted 'no solver is invoked' and forbade solves. The capture path SOLVES: create_shared_energy_storage_model -> shared_ess_data.optimize (shared_resources_planning.py:3156) -> _optimize (shared_energy_storage_data.py:947) -> _run_solver_attempt (:950), with a recovery path at :974. Three active DSO nodes, so three solves per capture. v1's E1 therefore demanded byte-identity of post-solve variable values, which must move when the constant moves; that is a mis-specification, not a failure of the change.",
+    "disposition": "the working tree was REVERTED to the committed state and the change will be re-applied only after this specification is frozen. The v1 run's outputs are retained as evidence of the defect, not as evidence for the change."
+  },
+  "why_pre_registration_matters_here": "This is the first production code change in the sequence, made by an agent that is simultaneously its author and its only verifier, with no independent Worker. The gate is not one check among several; it is the only independent check that exists for this change. A gate written after seeing the data would remove the last thing standing between a production edit and no check at all.",
+  "disclosure": "The v1 run's pre/post captures were already observed. The component list in E1c below is therefore NOT blind. It is pre-registered here in the sense that it is fixed before re-application and any deviation fails; the per-component quantitative expectations are derived from the algebra of the law, not from the observed numbers.",
+
+  "solve_profile": {
+    "principle": "specify the expected solves and enforce them; never write 'no solve'",
+    "mechanism": "p513_solve_profile_guard.SolveProfileGuard, installed for the whole capture",
+    "permitted_call_site": [["shared_energy_storage_data.py", "_run_solver_attempt"]],
+    "expected_per_capture": {"OptSolver.solve": 3, "SystemCallSolver._execute_command": 3},
+    "expected_total_for_the_three_captures": {"OptSolver.solve": 9, "SystemCallSolver._execute_command": 9},
+    "rule": "the observed count must equal the declared count EXACTLY, in either direction. Too few means the path under test did not run. A process-launch count above the solve count means a recovery retry fired, i.e. a solve did not converge on its first attempt.",
+    "everything_else_blocks": "a solve reached from any other call site raises SolverInvocationBlocked and aborts the capture; it is never absorbed into a count",
+    "p512_t_reaudit": {"expected": {"OptSolver.solve": 0, "SystemCallSolver._execute_command": 0}, "mode": "blocking", "note": "P5.12-T's committed 'Zero solves' is asserted, not enforced. Re-run under armed guards so the enforced zero replaces the asserted one. Recorded as the same defect found in an earlier stage, not as a separate incident."}
+  },
+
+  "expectations": {
+    "E1a_nl_bytes": "the .nl export must differ pre vs post (the constant changed) and must be IDENTICAL between the two determinism captures and between pre and the reversion capture",
+    "E1b_structure": "component structure — component names, index sets, and every constraint expression string — must be identical pre vs post EXCEPT the six rows of energy_storage_capacity_degradation that carry the constant. No other constraint row, no variable bound, domain or fixed flag, no Param, Set, Objective or named Expression may differ.",
+    "E1c_values_expected_to_move": {
+      "rule": "post-solve variable VALUES may differ only in the components named below; a value change in any other component fails the gate",
+      "components": ["es_avg_ch_dch_per_unit", "es_degradation_per_unit", "es_degradation_per_unit_cumul", "es_e_available_per_unit", "es_pch_hat_agg", "es_pch_hat_per_unit", "es_pch_per_unit", "es_pdch_hat_agg", "es_pdch_hat_per_unit", "es_pdch_per_unit", "es_soh_per_unit", "es_soh_per_unit_cumul", "slack_es_ch_comp_per_unit", "slack_es_pnet_down", "slack_es_pnet_up", "slack_es_soh_per_unit_cumul_down", "slack_es_soh_per_unit_cumul_up", "slack_es_soh_per_unit_down", "slack_es_soh_per_unit_up"],
+      "quantitative_expectation": "the law is es_degradation_per_unit * (2*k*E) == throughput, so for unchanged throughput es_degradation_per_unit scales by cl_nom/k = 0.8664339756999315. Report the observed ratio. No named component may move by more than 20% in relative terms — the magnitude of the constant's own change (15.4%) bounds what a well-posed response should be; exceeding it is a finding to report, not a tolerance to widen.",
+      "tolerance": "values are compared exactly; the tolerance applies only to the reported ratio, which must lie within 0.8664 +/- 0.05"
+    },
+    "E2_coefficient": "the six changed rows carry 2k = 23083.120654223414 and none still carries 2*cl_nom = 20000",
+    "E3_derivation": "k == N*D/(-ln R) for (10000, 0.80, 0.50) == 11541.560327111707 to double precision",
+    "E4_determinism": "two captures of the SAME tree must be identical in every respect including post-solve values",
+    "E5_reversion": "setting calibration status back to DECLARED_NOT_CONSUMED, with the new code still in place, must reproduce the committed-baseline capture BYTE-IDENTICALLY including post-solve values. This is retained unchanged from v1, where it passed; it is what demonstrates that the option pin and the warm-start assignment are empirically neutral rather than neutral by argument.",
+    "E6_consistency_guard": "with the calibration ACTIVE, cycles_n must equal cl_nom and reference_dod_d must equal dod_nom, or construction raises",
+    "E7_warm_start": "exported ipopt_zL_in/_zU_in key sets equal the _out key sets exactly, verified by injecting a stale key and calling the production solver-creation function",
+    "E8_option_pin": "fixed_variable_treatment = make_parameter is present on both the network and ESSO paths, applied before configuration so a case file still overrides it"
+  },
+
+  "not_permitted": [
+    "any solve outside the declared profile",
+    "any change to rho, tolerances, warm-start pushes or any ADMM parameter",
+    "any change to the STRUCTURE of the degradation law — only the constant it consumes changes",
+    "acting on S1, S2 or S3 in this stage",
+    "widening this specification after observing a result"
+  ],
+
+  "decision_rule": {
+    "pass": "E1a-E8 all hold AND the solve profile matches exactly",
+    "fail": "revert and report; a post hoc amendment to this document is not an available response"
+  },
+
+  "what_this_gate_does_not_prove": [
+    "it does not measure C3's impact on Q(x) or on any ADMM trajectory; that needs a full run and is not authorized here",
+    "the analytic SoH consequence is already recorded in P5_13_B_CYCLING_CALIBRATION.md (15-year retention at 1 EFC/day 0.5784 -> 0.6223) and is not re-derived",
+    "it says nothing about whether ADMM stabilizes; that is S1-S3"
+  ]
+}

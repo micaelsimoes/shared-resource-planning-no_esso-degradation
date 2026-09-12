@@ -77,6 +77,14 @@ incidents behind each rule are in `REVISION_CONTEXT.md`, section
   preserved.
 - Preserve the formula, not only the inputs. A reported statistic whose definition
   exists only in prose is unpreserved, however complete its input data.
+- Enforce solve claims with armed guards; never assert them. A "no solve" or bounded-solve
+  claim must be backed by guards installed for the whole run, raising on entry from any
+  undeclared call site, with the permitted count declared in advance and checked exactly —
+  too few fails as loudly as too many, since it means the path under test did not run.
+  Use `p513_solve_profile_guard.SolveProfileGuard` (bounded) or the blocking form.
+  Three of the six P5.12/P5.13 stages asserted the claim instead of arming it, and one of
+  those assertions was false in a committed report; the mechanism already existed and was
+  simply not used.
 
 ## Investigation discipline
 

@@ -19,11 +19,11 @@
 		"depth_of_discharge_nominal": 0.80,
 		"minimum_soh": 0.50,
 		"calibration": {
-			"status": "DECLARED_NOT_CONSUMED",
+			"status": "ACTIVE",
 			"cycles_n": 10000,
 			"reference_dod_d": 0.80,
-			"eol_retention_r": null,
-			"_note": "k = cycles_n * reference_dod_d / (-ln eol_retention_r). DECLARED ONLY -- no constraint consumes this block. eol_retention_r is null because the (N, D, R) decision is open; see P5_13_B_CYCLING_CALIBRATION.md. Any status other than DECLARED_NOT_CONSUMED raises."
+			"eol_retention_r": 0.50,
+			"_note": "k = cycles_n * reference_dod_d / (-ln eol_retention_r). ACTIVE since P5.13-D: calibration C3 = (10000, 0.80, 0.50) gives k = 11541.560327111707, consumed by the degradation law in place of cycle_life_nominal. See P5_13_B_CYCLING_CALIBRATION.md for the candidates and P5_13_D_* for the impact gate. Setting status back to DECLARED_NOT_CONSUMED restores k = cycle_life_nominal exactly."
 		}
 	},
 	"solver": {

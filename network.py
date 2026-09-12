@@ -11,7 +11,8 @@ from generator import Generator
 from energy_storage import EnergyStorage
 from model_construction_helpers import *
 from hierarchical_coordination import *
-from helper_functions import derive_random_seed, solver_result_succeeded, solver_result_summary
+from helper_functions import (derive_random_seed, solver_result_succeeded, solver_result_summary,
+                              replace_warm_start_suffix, IPOPT_FIXED_VARIABLE_TREATMENT)
 
 
 # ======================================================================================================================
@@ -487,6 +488,11 @@ def _create_smopf_solver(network, model, params, from_warm_start=False, option_o
     solver = po.SolverFactory(solver_params.solver, executable=solver_params.solver_path)
     solve_context = f'{network.name}, year={network.year}, day={network.day}'
     options = dict()
+    if solver_params.solver.lower() == 'ipopt':
+        # P5.13-D: pinned explicitly; equals the in-use IPOPT 3.14.18 default,
+        # so neutral today, and no longer silently dependent on it.
+        # Configuration still wins, being applied afterwards.
+        options['fixed_variable_treatment'] = IPOPT_FIXED_VARIABLE_TREATMENT
     if solver_params.options:
         options.update(solver_params.options)
     if option_overrides:
@@ -513,8 +519,10 @@ def _create_smopf_solver(network, model, params, from_warm_start=False, option_o
                 solver.options[key] = value
 
     if from_warm_start and solver_params.solver.lower() == 'ipopt':
-        model.ipopt_zL_in.update(model.ipopt_zL_out)
-        model.ipopt_zU_in.update(model.ipopt_zU_out)
+        # P5.13-D: assignment, not merge -- see
+        # helper_functions.replace_warm_start_suffix for the argument.
+        replace_warm_start_suffix(model.ipopt_zL_in, model.ipopt_zL_out)
+        replace_warm_start_suffix(model.ipopt_zU_in, model.ipopt_zU_out)
         if network.is_transmission:
             solver.options['acceptable_iter'] = 0
             solver.options['acceptable_tol'] = options.get('tol', 1e-5)

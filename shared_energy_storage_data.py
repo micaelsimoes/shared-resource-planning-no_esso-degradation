@@ -468,7 +468,11 @@ def _build_subproblem(shared_ess_data, node_id):
     # eta_ch*pch*dt + pdch*dt/eta_dch -- the same quantity the network SOC
     # recursion moves -- instead of the former apparent-power sum (sch + sdch).
     #
-    # Units: the degradation law below divides this by (2 * cl_nom * E_rated),
+    # P5.13-D: the law divides by (2 * cl_eff * E_rated), where cl_eff is the
+    # calibration's characteristic constant k = N*D/(-ln R) when the (N, D, R)
+    # triple is ACTIVE, and cl_nom otherwise. See shared_energy_storage_parameters.py.
+    #
+    # Units: the degradation law below divides this by (2 * cl_eff * E_rated),
     # with E_rated in p.u. energy, so the numerator must be energy, not power.
     # The former expression summed powers over the periods of a day and was
     # therefore only dimensionally correct under an implicit dt = 1 h. That
@@ -511,7 +515,7 @@ def _build_subproblem(shared_ess_data, node_id):
             model.es_soh_per_unit_cumul[y_inv, y].fixed = False
 
             # Daily degradation
-            _add_esso_cohort_constraint(model, 'energy_storage_capacity_degradation', y_inv, y, model.es_degradation_per_unit[y_inv, y] * (2 * shared_energy_storage.cl_nom * model.es_e_rated_per_unit[y_inv, y]) == model.es_avg_ch_dch_per_unit[y_inv, y])
+            _add_esso_cohort_constraint(model, 'energy_storage_capacity_degradation', y_inv, y, model.es_degradation_per_unit[y_inv, y] * (2 * shared_energy_storage.cl_eff * model.es_e_rated_per_unit[y_inv, y]) == model.es_avg_ch_dch_per_unit[y_inv, y])
 
             # Annual SoH
             if shared_ess_data.params.slacks:
@@ -863,6 +867,12 @@ def _create_solver(model, params, from_warm_start=False, node_id=None, option_ov
 
     solver = po.SolverFactory(params.solver, executable=params.solver_path)
     options = dict()
+    if params.solver.lower() == 'ipopt':
+        # P5.13-D: pinned explicitly. This equals the default of the IPOPT
+        # binary in use (3.14.18 reports "make_parameter"), so it is neutral
+        # today; it removes the silent dependence on that default. Configuration
+        # may still override it, since params.options is applied afterwards.
+        options['fixed_variable_treatment'] = IPOPT_FIXED_VARIABLE_TREATMENT
     if params.verbose and params.solver.lower() == 'ipopt':
         options['print_level'] = 6
     if params.options:
@@ -886,8 +896,13 @@ def _create_solver(model, params, from_warm_start=False, node_id=None, option_ov
         solver.options[key] = value
 
     if from_warm_start and params.solver.lower() == 'ipopt':
-        model.ipopt_zL_in.update(model.ipopt_zL_out)
-        model.ipopt_zU_in.update(model.ipopt_zU_out)
+        # P5.13-D: assignment, not merge. `update` left entries from earlier
+        # solves in place for any variable absent from the current `_out` --
+        # i.e. the equal-bound variables IPOPT removes under
+        # fixed_variable_treatment = make_parameter. Those stale multipliers were
+        # exported but never used; assigning removes the latent path entirely.
+        replace_warm_start_suffix(model.ipopt_zL_in, model.ipopt_zL_out)
+        replace_warm_start_suffix(model.ipopt_zU_in, model.ipopt_zU_out)
         solver.options['warm_start_init_point'] = 'yes'
         solver.options['warm_start_bound_push'] = 1e-9
         solver.options['warm_start_bound_frac'] = 1e-9

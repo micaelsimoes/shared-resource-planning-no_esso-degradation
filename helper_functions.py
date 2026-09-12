@@ -176,3 +176,24 @@ class CustomGaussianKDE(GaussianKDE):
     def _fit(self, X):
         super()._fit(X)
         self.kde.set_bandwidth(bw_method=self.custom_bandwidth)
+
+
+# ======================================================================================================================
+#  IPOPT warm start / options -- P5.13-D
+# ======================================================================================================================
+IPOPT_FIXED_VARIABLE_TREATMENT = 'make_parameter'
+
+
+def replace_warm_start_suffix(suffix_in, suffix_out):
+    """Assign `_out` onto `_in`, dropping entries `_out` no longer reports.
+
+    P5.13-D. The former `_in.update(_out)` preserved multipliers for variables
+    absent from the current `_out`. Those are the equal-bound variables IPOPT
+    removes under `fixed_variable_treatment = make_parameter`, so their stale
+    values were exported to the .nl and then ignored by the solver. Assignment
+    keeps the exported warm start equal to what the solver last reported, and
+    removes the latent path by which a stale multiplier could reach a solve if
+    that option ever changed.
+    """
+    suffix_in.clear()
+    suffix_in.update(suffix_out)

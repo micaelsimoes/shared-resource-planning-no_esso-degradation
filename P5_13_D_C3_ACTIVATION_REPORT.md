@@ -1,9 +1,11 @@
 # P5.13-D — Step 0: activate calibration C3, plus two determinism fixes
 
-**Gate verdict: FAILED AS FROZEN on E1. The production change is implemented but
-NOT COMMITTED, pending the author's decision.** E2, E3, E5, E7 and E8 pass. The
-failure is a mis-specified invariant, not a defect in the change — but the gate is
-frozen, so it fails, and the reason it was mis-specified is a real error of mine.
+**Final verdict: gate v1 FAILED as frozen; the change was REVERTED, gate v2 was frozen,
+and the change was re-applied and re-run. Gate v2 PASSES on every expectation.**
+
+The sequence below is deliberately preserved in full — the v1 failure, the revert, the
+re-registration and the v2 pass — because the reason v1 failed is a real error of mine
+and the remedy is the point of the stage.
 
 Frozen gate: `data/SRP1/Results/P513D/frozen_c3_impact_gate_v1_8ee17c92.json`
 (SHA-256 `8ee17c925a6917d3efb345b4bbe35067cacc6f84f04c19cbf81dd05645841949`), written
@@ -109,3 +111,78 @@ the record carries the failed gate. Two defensible options:
 
 I recommend the second. The evidence would be identical, and the difference is precisely
 the property this project's gates exist to protect.
+
+
+---
+
+# Gate v2 — pre-registered, solve-aware, PASSED
+
+`data/SRP1/Results/P513D/frozen_c3_impact_gate_v2_afc863a1.json`
+(SHA-256 `afc863a1bbf0d5b6f7ad186a8f99c74d0aae966cb165f88474b27fe9381028ab`),
+predecessor `8ee17c92…1949`.
+
+**The working tree was reverted to the committed state before v2 was written**, and the
+change was re-applied from a preserved patch (`p513d_step0.patch`, SHA-256
+`9656b344db174b9426de3a8c5695c5dfb5c5933a83b4fe257d80dd1b5ba35920`) only afterwards, so
+the re-run was not conducted against a gate written to fit it. One disclosure is on the
+face of the specification: the v1 captures had already been observed, so the component
+list in E1c is not blind. It is fixed before re-application, and its *quantitative*
+expectations are derived from the algebra of the law rather than from the observed
+numbers.
+
+## The solve profile — specified, not denied
+
+The v1 error was writing "no solve" for a path that solves. v2 declares the profile and
+arms it: `p513_solve_profile_guard.SolveProfileGuard` permits solves reached through
+`shared_energy_storage_data._run_solver_attempt`, counts them, and raises on any other
+call site.
+
+| Capture | `OptSolver.solve` | `_execute_command` | blocked | declared |
+|---|---|---|---|---|
+| `v2_pre` (reverted tree) | 3 | 3 | 0 | 3 / 3 |
+| `v2_post` (C3 active) | 3 | 3 | 0 | 3 / 3 |
+| `v2_post2` (determinism) | 3 | 3 | 0 | 3 / 3 |
+| `v2_revert` (status reverted, new code) | 3 | 3 | 0 | 3 / 3 |
+
+Exact-count matching in both directions. The launch count equalling the solve count also
+shows **no recovery retry fired**: every ESSO solve converged on its first attempt.
+
+## Results
+
+| Expectation | Result |
+|---|---|
+| **E1a** `.nl` differs pre vs post; identical for determinism and reversion | **PASS** — `961f81fd…` (pre) vs `119b3868…` (post); `v2_revert` returns to `961f81fd…` |
+| **E1b** structure confined to the degradation rows | **PASS** — sole differing component `constraints.energy_storage_capacity_degradation`, 6 of 30 rows |
+| **E1c** values move only in the 19 named components | **PASS** — no unexpected movers |
+| **E1c** ratio `es_degradation_per_unit` ≈ `cl_nom/k` | **PASS** — predicted `0.8664339757`, observed **`0.8664416996`** |
+| **E1c** worst relative move ≤ 20% | **PASS** — `es_degradation_per_unit[(2,2)]` at `13.356%`, which is `1 − 0.8664` |
+| **E2** rows carry `2k`, none carries `20000` | **PASS** |
+| **E3** `k = 11541.560327111707` | **PASS** |
+| **E4** two captures of the same tree identical | **PASS** — `v2_post` vs `v2_post2`, state and `.nl` |
+| **E5** reversion reproduces the baseline byte-identically | **PASS** |
+| **E6/E7/E8** guard, warm start, option pin | **PASS** |
+
+The ratio agreement is the strongest single number here. The law gives
+`δ = throughput/(2kE)`, so for unchanged throughput `δ` must scale by `cl_nom/k`. The
+pre-registered prediction `0.8664339757` and the observed `0.8664416996` agree to five
+significant figures; the residual is the ESSO re-optimizing throughput slightly.
+
+## E5, restated at its proper weight
+
+`v2_revert` ran with the **new** code — `cl_eff`, the pinned `fixed_variable_treatment`,
+the warm-start assignment — with only the JSON `status` reverted, and reproduced the
+`v2_pre` capture **byte-identically**, including `.nl` bytes and post-solve values, on a
+path that performs three solves. Its `.nl` hash `961f81fd…` also equals the P5.13-C
+baseline captured days earlier under the old code.
+
+So the two determinism fixes are **empirically neutral, not neutral by argument**, and
+the C3 activation is exactly reversible through one JSON field. That result was obtained
+under v1 and is unaffected by v1's mis-specification.
+
+## What the `cl_eff` guard closes
+
+`effective_cycle_constant()` raises unless `cycles_n == cl_nom` and
+`reference_dod_d == dod_nom`. The count and the depth can no longer drift apart
+silently, which was the actual defect behind the whole calibration episode (P5.13-B, F0:
+`cl_nom` untouched since 2024-04-08 while `dod_nom` moved twice). `dod_nom` is now
+load-bearing rather than vestigial.

@@ -3040,6 +3040,61 @@ file can still override. (c) Both warm-start merge sites (`network.py:516-517`,
 `shared_energy_storage_data.py:889-890`) replaced by
 `helper_functions.replace_warm_start_suffix`, which clears before updating.
 
-**Open decision.** Accept under a gate v2 written after seeing the data (weaker than
-pre-registration, and to be labelled so), or revert and re-run under a pre-registered
-solve-aware v2 at a cost of three captures. The Planner recommends the second.
+**Resolved: reverted, re-registered, re-run — gate v2 PASSES.** The working tree was
+reverted to the committed state; gate v2
+(`data/SRP1/Results/P513D/frozen_c3_impact_gate_v2_afc863a1.json`, predecessor
+`8ee17c92…`) was frozen; the change was re-applied from a preserved patch
+(`9656b344…`) and the captures re-run. The reason pre-registration was not negotiable
+here: this is the first production code change in the sequence, made by an agent that is
+both its author and its only verifier, so the gate is not one check among several — it
+is the only independent check that exists. Disclosed on the face of v2: the v1 captures
+had been observed, so E1c's component list is not blind; its quantitative expectations
+are derived from the algebra of the law instead.
+
+**Solve profile — specified and armed, never denied.** `SolveProfileGuard`
+(`p513_solve_profile_guard.py`) permits solves reached through
+`shared_energy_storage_data._run_solver_attempt`, counts them and raises on any other
+call site. All four captures: **3 solves, 3 process launches, 0 blocked**, matching the
+declared count exactly in both directions. Launches equalling solves also shows no
+recovery retry fired.
+
+**Results.** E1a (`.nl` `961f81fd…` -> `119b3868…`, reversion back to `961f81fd…`),
+E1b (sole differing component `constraints.energy_storage_capacity_degradation`, 6 of 30
+rows), E1c (no unexpected movers; worst move `es_degradation_per_unit` at 13.356%),
+E2, E3, E4 (`v2_post` vs `v2_post2` identical), E5, E6, E7, E8 — **all PASS**. The
+sharpest datum: the law gives `delta = throughput/(2kE)`, so `es_degradation_per_unit`
+must scale by `cl_nom/k`; the pre-registered prediction `0.8664339757` and the observed
+`0.8664416996` agree to five significant figures, the residual being the ESSO
+re-optimizing throughput.
+
+**E5 at its proper weight.** `v2_revert` ran with the *new* code — `cl_eff`, the pinned
+option, the warm-start assignment — with only the JSON status reverted, and reproduced
+the baseline byte-identically including post-solve values, on a path that solves; its
+`.nl` hash also equals the P5.13-C baseline captured under the old code. The two
+determinism fixes are therefore **empirically neutral, not neutral by argument**.
+
+**What is now structurally closed.** `effective_cycle_constant()` raises unless
+`cycles_n == cl_nom` and `reference_dod_d == dod_nom`, so the count and the depth cannot
+drift apart silently again — the actual defect behind the calibration episode
+(P5.13-B, F0). `dod_nom` is load-bearing.
+
+## P5.13-F — P5.12-T's zero-solve claim re-audited under armed guards (2026-09-12)
+
+Same defect class as the P5.13-C/D error, found in an earlier stage and recorded as such
+rather than as a separate incident. The guards raise as well as count
+(`_blocked_solve` increments, then raises `SolverInvocationBlocked`), so a stage that
+installs them **cannot** make a false zero-solve claim. Three stages installed them —
+P5.12-G, P5.12-K, P5.12-Z. Three did not — P5.12-T, P5.13-C, P5.13-D.
+
+P5.12-T's committed "Zero solves were performed" was therefore an argument, not
+evidence — the same distinction on which the P5.12-R first-repair rejection turned.
+`p513_f_t_reaudit.py` re-runs T's harness **unchanged** with every solve path blocked,
+redirecting output to `data/SRP1/Results/P512T_REAUDIT` so the original artifacts are
+untouched. Result: **0 solves, 0 process launches, 0 blocked**, T's own 41 parser checks
+still passing. The enforced zero replaces the asserted one; verdict in
+`data/SRP1/Results/P513D/t_reaudit_verdict.json`.
+
+**Promoted to a convention.** `CLAUDE.md` now carries a sixth evidence rule: enforce
+solve claims with armed guards, never assert them, with the permitted count declared in
+advance and checked exactly — too few fails as loudly as too many, since it means the
+path under test did not run.
