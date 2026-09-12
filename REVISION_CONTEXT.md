@@ -3753,3 +3753,69 @@ warm cells before their agreement was read as a result.
 `net_operational_recourse` differ by exactly the terminal salvage credit — 3,448.87 on the
 X22 warm-adaptive cell, which is why that table reads 827,738,663 (gross) where C1's reads
 827,735,215 (net). State the convention on every table.
+
+## Track D1 — three-cell campaign SUSPENDED (2026-09-12)
+
+Frozen spec `2c8c7bef` before any cell ran; overrides `budget = 5.0e6` (derived so
+`max_capacity` binds before the budget at every admissible ratio, and verified inert on the
+cold path) and `rel = 1e-4`. Full record in `P5_14_TRACK_D1_CAMPAIGN_REPORT.md`.
+**Neither comparison is available.**
+
+| cell | outcome | solves |
+|---|---|---|
+| 1 — uncoordinated, no storage | **BLOCKED — production defect** | 0 |
+| 2 — coordinated, no storage | succeeded | 3,621 |
+| 3 — coordinated, 1.00 MVA / 4.00 MWh | **FAILED at initialization** | 51 |
+
+**Cell 1: the uncoordinated mode is broken in the current tree.**
+`_add_dso_scenario_deviation_penalty` unconditionally references `expected_shared_ess_p`
+(`shared_resources_planning.py:2826`); the ADMM path builds it first (`:3013-3018`), the
+uncoordinated path does not (`:5850-5859`). Introduced by `99a59fec` (2026-08-18). The
+`no_coordination` workbook predates it, so the mode worked once and has been broken ~3
+weeks. **Not fixed** — whether an uncoordinated DSO should carry a shared-ESS deviation
+penalty is a formulation question, not a typo.
+
+**Cell 2 succeeded:** 70 cycles, 3,621 solves (`51x70+51`), recourse **820,746,762.46**
+(= gross, no salvage), rule-ten ratio **0.8414**, zero local-solve failures, final
+`rho_pf` 5.2025, **no non-vanishing slacks** among 17 families at 1e-6. *Spec premise
+corrected*: cell 2 does build all 17 slack families at zero capacity — trivially zero
+rather than absent.
+
+**Cell 3 failed at initialization.** The candidate passed first-stage feasibility; the ESSO
+subproblem at **node 7** converged to a locally infeasible point (165 iterations,
+constraint violation **6.84e-05**, dual infeasibility 1.0e3), and ADMM never started.
+**Nodes 5 and 9 solved optimally at identical capacity**, so it is node-specific.
+**Whether this is genuine infeasibility or numerical failure is NOT established** — the
+violation is of the same order as `ESS_COMPLEMENTARITY_TOLERANCE = 1e-4`, which hints at
+numerical difficulty, but two of three solving settles nothing. The distinction decides
+whether it is a finding about the plan or about the tool.
+
+**The transfer caveat was measured and DID NOT transfer — the campaign's principal
+result.** Local-solve reliability at negligible capacity was 1 in 1,095 (1 in 4,284 across
+AB1/X22); at 1.00 MVA / 4.00 MWh it was **1 failure in 3 ESSO solves**, aborting the run.
+Evaluation cost at real capacity is **not measurable** because the run never started.
+
+**The ESSO recovery path is inapplicable by design.**
+`_is_recoverable_shared_ess_failure` (`shared_energy_storage_data.py:934-940`) fires only
+on `internalSolverError`; node 7 terminated as `infeasible`, so no retry occurred —
+confirmed by the solve count `51 = 36+12+3`. The recovery covers solver crashes, and the
+failure mode that occurs at real capacity is the one it does not cover.
+
+**A structural confound that would affect cell 3 even if it ran.**
+`max(|rating|, shared_ess_normalization_floor_mva = 0.10)` means cell 2 (zero) and the C1
+cold cell (0.0106) both normalize the shared-ESS consensus terms by **0.10**, while cell 3
+would use **1.00** — a factor-of-10 difference in the ESS consensus weighting, on top of
+the capacity difference. Any cell3-minus-cell2 difference would confound the two.
+
+**An unexplained anomaly in the one available pair.** Cell 2 (no storage) against the C1
+cold cell (bootstrap 0.0106 MVA), identical in every other respect: difference
+**1,601,421** against an error bar of 116,608 — **13.7x, determinate**. But the bootstrap
+plan is ~10.6 kW / 21 kWh per node costing ~7,046 per node, so 1.6M of operating saving
+**cannot be storage value**. Either zero capacity differs structurally beyond the
+normalization floor, or the two trajectories settled in different basins (the
+path-dependence C1 established). **Recorded as an anomaly, not a measurement** — and a
+warning that "no storage" may not be a clean control.
+
+**To complete the campaign:** a decision on the uncoordinated path's penalty; a diagnosis
+of node 7; a resolution of the normalization-floor confound; an explanation of the anomaly.
+None authorized.

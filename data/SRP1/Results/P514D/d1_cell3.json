@@ -1,0 +1,259 @@
+{
+ "stage": "Track D1",
+ "cell": "cell3",
+ "spec": "data/SRP1/Results/P514D/frozen_d1_campaign_v1_2c8c7bef.json",
+ "timestamp_utc": "2026-09-12T22:07:15.135148+00:00",
+ "predeclared_varied_settings": {
+  "budget": 5000000.0,
+  "tol_objective_rel": 0.0001
+ },
+ "effective_configuration": {
+  "budget": 5000000.0,
+  "tol_objective": {
+   "abs": 1000.0,
+   "rel": 0.0001
+  },
+  "tol_stationarity": {
+   "v": 0.01,
+   "pf": 0.01,
+   "ess": 0.01
+  },
+  "tol_consensus": {
+   "v": 0.01,
+   "v_mean": 0.001,
+   "pf": 0.01,
+   "pf_mean": 0.001,
+   "ess": 0.1,
+   "ess_mean": 0.01
+  },
+  "num_max_iters": 90,
+  "rho": {
+   "v": 1.5,
+   "pf": 300.0,
+   "ess": 1.0
+  },
+  "adaptive_penalty": true
+ },
+ "mode": "cold ADMM (distributed)",
+ "instance": {
+  "investment": {
+   "5": {
+    "2025": {
+     "s": 1.0,
+     "e": 4.0
+    },
+    "2030": {
+     "s": 0.0,
+     "e": 0.0
+    },
+    "2035": {
+     "s": 0.0,
+     "e": 0.0
+    }
+   },
+   "7": {
+    "2025": {
+     "s": 1.0,
+     "e": 4.0
+    },
+    "2030": {
+     "s": 0.0,
+     "e": 0.0
+    },
+    "2035": {
+     "s": 0.0,
+     "e": 0.0
+    }
+   },
+   "9": {
+    "2025": {
+     "s": 1.0,
+     "e": 4.0
+    },
+    "2030": {
+     "s": 0.0,
+     "e": 0.0
+    },
+    "2035": {
+     "s": 0.0,
+     "e": 0.0
+    }
+   }
+  },
+  "total_capacity": {
+   "5": {
+    "2025": {
+     "s": 1.0,
+     "e": 4.0
+    },
+    "2030": {
+     "s": 1.0,
+     "e": 4.0
+    },
+    "2035": {
+     "s": 1.0,
+     "e": 4.0
+    }
+   },
+   "7": {
+    "2025": {
+     "s": 1.0,
+     "e": 4.0
+    },
+    "2030": {
+     "s": 1.0,
+     "e": 4.0
+    },
+    "2035": {
+     "s": 1.0,
+     "e": 4.0
+    }
+   },
+   "9": {
+    "2025": {
+     "s": 1.0,
+     "e": 4.0
+    },
+    "2030": {
+     "s": 1.0,
+     "e": 4.0
+    },
+    "2035": {
+     "s": 1.0,
+     "e": 4.0
+    }
+   }
+  }
+ },
+ "first_stage_feasible": {
+  "feasible": true,
+  "reason": ""
+ },
+ "console_tail": "ning SMOPF, Network case33_3, 2035, Autumn...\n[INFO] \t\t\t - Running SMOPF, Network case33_3, 2035, Winter...\n[INFO] \t\t - Transmission Network...\n[INFO] \t\t\t - Running SMOPF, Network case9, 2025, Spring...\n[INFO] \t\t\t - Running SMOPF, Network case9, 2025, Summer...\n[INFO] \t\t\t - Running SMOPF, Network case9, 2025, Autumn...\n[INFO] \t\t\t - Running SMOPF, Network case9, 2025, Winter...\n[INFO] \t\t\t - Running SMOPF, Network case9, 2030, Spring...\n[INFO] \t\t\t - Running SMOPF, Network case9, 2030, Summer...\n[INFO] \t\t\t - Running SMOPF, Network case9, 2030, Autumn...\n[INFO] \t\t\t - Running SMOPF, Network case9, 2030, Winter...\n[INFO] \t\t\t - Running SMOPF, Network case9, 2035, Spring...\n[INFO] \t\t\t - Running SMOPF, Network case9, 2035, Summer...\n[INFO] \t\t\t - Running SMOPF, Network case9, 2035, Autumn...\n[INFO] \t\t\t - Running SMOPF, Network case9, 2035, Winter...\n[INFO] \t\t - Running Shared ESS optimization (subproblem)...\n[INFO] \t\t\t - Node 5...\n[INFO] \t\t\t - Node 7...\n[WARNING] Shared ESS solver did not converge for ESS node=7: status=warning, termination=infeasible, message=Ipopt 3.14.18\\x3a Converged to a locally infeasible point. Problem may be infeasible. | warm_start=False\n[WARNING] IPOPT solver log for ESS node=7: /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/optim_log_node_7.txt\n[INFO] \t\t\t - Node 9...\n[WARNING] Operational initialization failed because at least one local problem did not solve successfully. ADMM will not be started.\n[INFO] \t - Execution time: 29.96 s\n",
+ "wall_clock_s": 40.892441272735596,
+ "cycles": [],
+ "cycles_run": 0,
+ "converged_at_cycle": null,
+ "hit_cap": false,
+ "recourse": null,
+ "gross_operational_cost": null,
+ "terminal_objective_change_abs": null,
+ "terminal_objective_tolerance": null,
+ "rule_ten_terminal_step_over_threshold": null,
+ "local_solve_failures": 0,
+ "final_rho_pf": null,
+ "slacks_and_penalties": {
+  "slack_v_sqr_down": {
+   "max_abs": 2.6898283892699764e-08,
+   "n_components": 48,
+   "non_vanishing": false,
+   "threshold": 1e-06
+  },
+  "slack_v_sqr_up": {
+   "max_abs": 2.6898286650884703e-08,
+   "n_components": 48,
+   "non_vanishing": false,
+   "threshold": 1e-06
+  },
+  "slack_es_soc_final_up": {
+   "max_abs": 0.0,
+   "n_components": 48,
+   "non_vanishing": false,
+   "threshold": 1e-06
+  },
+  "slack_es_soc_final_down": {
+   "max_abs": 0.0,
+   "n_components": 48,
+   "non_vanishing": false,
+   "threshold": 1e-06
+  },
+  "slack_shared_es_soc_final_up": {
+   "max_abs": 9.909091294543115e-09,
+   "n_components": 48,
+   "non_vanishing": false,
+   "threshold": 1e-06
+  },
+  "slack_shared_es_soc_final_down": {
+   "max_abs": 9.909090884396146e-09,
+   "n_components": 48,
+   "non_vanishing": false,
+   "threshold": 1e-06
+  },
+  "slack_es_s_investment_up": {
+   "max_abs": 9.090909090909099e-09,
+   "n_components": 3,
+   "non_vanishing": false,
+   "threshold": 1e-06
+  },
+  "slack_es_s_investment_down": {
+   "max_abs": 9.090909090909099e-09,
+   "n_components": 3,
+   "non_vanishing": false,
+   "threshold": 1e-06
+  },
+  "slack_es_e_investment_up": {
+   "max_abs": 9.090909090909099e-09,
+   "n_components": 3,
+   "non_vanishing": false,
+   "threshold": 1e-06
+  },
+  "slack_es_e_investment_down": {
+   "max_abs": 9.090909090909099e-09,
+   "n_components": 3,
+   "non_vanishing": false,
+   "threshold": 1e-06
+  },
+  "slack_es_pnet_up": {
+   "max_abs": 9.154615414023679e-09,
+   "n_components": 3,
+   "non_vanishing": false,
+   "threshold": 1e-06
+  },
+  "slack_es_pnet_down": {
+   "max_abs": 9.22506278533751e-09,
+   "n_components": 3,
+   "non_vanishing": false,
+   "threshold": 1e-06
+  },
+  "slack_es_ch_comp_per_unit": {
+   "max_abs": 9.098580256256227e-09,
+   "n_components": 3,
+   "non_vanishing": false,
+   "threshold": 1e-06
+  },
+  "slack_es_soh_per_unit_up": {
+   "max_abs": 9.17080010860985e-09,
+   "n_components": 3,
+   "non_vanishing": false,
+   "threshold": 1e-06
+  },
+  "slack_es_soh_per_unit_down": {
+   "max_abs": 9.091019532508496e-09,
+   "n_components": 3,
+   "non_vanishing": false,
+   "threshold": 1e-06
+  },
+  "slack_es_soh_per_unit_cumul_up": {
+   "max_abs": 9.090995604970514e-09,
+   "n_components": 3,
+   "non_vanishing": false,
+   "threshold": 1e-06
+  },
+  "slack_es_soh_per_unit_cumul_down": {
+   "max_abs": 9.090909211680721e-09,
+   "n_components": 3,
+   "non_vanishing": false,
+   "threshold": 1e-06
+  }
+ },
+ "non_vanishing_terms": [],
+ "solve_profile": {
+  "observed": {
+   "permitted_solve": 51,
+   "permitted_exec": 51,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "blocked": 0
+ }
+}
