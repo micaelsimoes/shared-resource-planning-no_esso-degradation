@@ -1,0 +1,40 @@
+{
+  "artifact": "P5.12-Z formula specification lineage",
+  "recorded_utc": "2026-09-12T12:30Z",
+  "defect_recorded": {
+    "what": "The approved frozen specification was overwritten in place when the user's two amendments were applied. The name frozen_formula_spec.json denoted two different documents at two different times, in a stage whose value rests on hashing a frozen artifact before execution.",
+    "substance": "not affected — the amendments were the user's own and were applied correctly",
+    "discipline": "violated"
+  },
+  "versions": [
+    {"version": "v1",
+     "sha256": "5545fc65bfddf077844f2525796b0ef31a729f0845124d913257c434982eb261",
+     "status": "UNRECOVERABLE — bytes were overwritten in place and exist nowhere in the repository",
+     "hash_source": "user message of 2026-09-12 approving the spec; the repository no longer holds these bytes",
+     "role": "the version the user reviewed and approved"},
+    {"version": "v2",
+     "sha256": "45edc424cd52edc9611a7bc220107f8fb30fefa4fadc5c3c486dc209cbdeb66b",
+     "file": "frozen_formula_spec_v2_45edc424.json",
+     "predecessor_sha256": "5545fc65bfddf077844f2525796b0ef31a729f0845124d913257c434982eb261",
+     "changes_from_v1": ["amendment 1: C_opt defined operationally per fixture, cross-checked against each log's reported variable count; literal 9166 not inherited",
+                          "amendment 2: gap-3 column-set attribution labelled a HYPOTHESIS with predeclared outcomes",
+                          "W baseline dual derivation tightened: baseline's own symbol map, NL-hash precondition gate, A/B disagreement = bug",
+                          "implementation note: discriminate variables from constraints by mapping key prefix (v/c), never by name suffix"],
+     "status": "THE SPECIFICATION ACTUALLY EXECUTED by p512_z_classification.py",
+     "executed_by": "p512_z_classification.py",
+     "result_artifact": "classification.json"}
+  ],
+  "convention_adopted": {
+    "rule": "frozen artifacts are named with version and content hash, e.g. frozen_formula_spec_v2_45edc424.json; they are NEVER replaced in place; each version records its predecessor's sha256",
+    "scope": "all future frozen plans, specifications and baselines in this investigation"
+  },
+  "pattern": {
+    "statement": "Three instances of one failure mode: an identifier that does not uniquely denote its content.",
+    "instances": [
+      "duplicate fixture basenames carrying different hashes (FrozenSMOPF matched_success_* exists in two directories, +91 bytes apart; only the path disambiguates)",
+      "a frozen plan carrying the fixture-specific constant 9166 as if it were general (valid for W; wrong for X 9168 and Y 2934)",
+      "a frozen, approved specification replaced in place (this defect)"
+    ],
+    "remedy": "version-and-hash naming; operational rather than literal constants in frozen plans; path-qualified fixture identity"
+  }
+}

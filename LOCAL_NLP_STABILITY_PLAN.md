@@ -41,6 +41,175 @@ historical P5.12-B plan. It narrowly authorizes one recapture replay despite C's
 former replay prohibition. It authorizes no target cycle-21 solve, A/B arm,
 production change, retry, polish or planning/search campaign.
 
+## Pre-execution amendment — 2026-09-11 (supersedes conflicting R0/R1 text below)
+
+`REVISION_CONTEXT.md` records the repository transition (`dd000167` →
+`ba202e2b`, three documentation/agent-configuration commits, no production
+change), the harness readiness review, the rejected first repair and the
+accepted amendment. Operational consequences for this stage:
+
+- R1 is complete: the harness exists and is frozen at SHA-256
+  `f0f120c26ec2c50b774ff42051c233b87fba0341e3d959faafe70283301d86f0`. It must not
+  be edited. Its accepted no-solve rehearsal is
+  `data/SRP1/Results/P512R_REHEARSAL/20260911T160420Z/`.
+- R0 is re-established by the Planner, not the Worker, in the fresh directory
+  `data/SRP1/Results/P512R/R0_v2_ba202e2b/`, created only after this document
+  edit. It records HEAD, branch, upstream/divergence, staged diff, the
+  approved uncommitted tracked diff, the complete tracked-path set with SHA-256
+  of every tracked file, the harness path and SHA-256, a fresh
+  `p54r_provenance.gate()` result (interpreter, IPOPT/ASL, MA97, SRP1 checksum),
+  accepted-evidence hashes including the P5.12-C report and the four
+  historical R0 files, and a reconciliation against the old R0. Its generator
+  script is stored in that directory. The historical R0 files in
+  `data/SRP1/Results/P512R/` are never modified.
+- The "Last verified HEAD" in R0 below is historical; the new baseline is
+  authoritative.
+- Run command (one invocation, canonical interpreter, repository root as cwd):
+  `/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -B p512_r_presolve_recapture.py run --baseline-dir data/SRP1/Results/P512R/R0_v2_ba202e2b`.
+- The harness enforces integrity at start and end, measures target-solve
+  activity at the guard, solve and process-launch layers, and reports
+  `CAPTURED` only if `final_verdict()` accepts every condition. Otherwise the
+  stage ends `STOPPED`; no retry is authorized.
+- Frozen-state rule: after the baseline is created, no tracked file, staged
+  state, HEAD, branch, harness byte, accepted artifact or historical R0 file
+  may change until the report is delivered. Drift stops the stage.
+- The stage remains capture-only: the cycle-21 target is never solved.
+
+## COMPLETED — P5.12-T / G / W / X / Y / Z (2026-09-12)
+
+All completed; `REVISION_CONTEXT.md` holds the full record and is authoritative.
+Verdicts: T `ESCAPE SIGNATURE OBSERVED — MECHANISM UNRESOLVED`;
+G `NO ARM-A-UNIQUE LOCAL-GEOMETRY SIGNATURE`; W / X / Y `BREADTH PROBE INCONCLUSIVE`;
+Z re-derived every W/X/Y classification number from primary artifacts under a frozen
+specification, with zero solves.
+
+Operational points binding on any successor stage:
+
+- **Tier-2 spectral/SVD analysis remains unauthorized.** G's triggers 1 and 3 are not
+  met; trigger 2 (primal/dual activity disagreement, Arm A 1912 rows against 249/251)
+  is confounded by Arm A's terminal infeasibility.
+- **The preserved replayable fixture pool is exhausted at n = 3.** Breadth cannot be
+  advanced from preserved artifacts. No new ADMM trajectory is authorized.
+- **P5.12-Y ladder authorization** (user-approved before execution): +/-10x around the
+  fixture's own historical baseline — BASELINE `1e-6`, LOW `1e-7`, HIGH `1e-5`. This
+  closes the `NOT RUN — INSTRUCTION CONFLICT` status in the P5.12-X report. The
+  perturbation family is common across fixtures; absolute values differ because the
+  configured baselines differ. TSO options must never be harmonized with DSO options.
+- **Frozen-artifact convention, binding going forward:** frozen plans, specifications
+  and baselines are named with version and content hash, are never replaced in place,
+  and each version records its predecessor's hash. Frozen plans must state constants
+  operationally, never as a fixture-specific literal (the 9166 case).
+- **Do not assert write containment for any `fresh_planning`-based stage**; X and Y
+  wrote 52 diagram PDFs outside their stage directories.
+- Fixture identity is **path-qualified**: duplicate `matched_success_*` basenames exist
+  in two directories with different hashes.
+- Defect phrasing for the record: at cycle 21 the production-configured `1e-5` is the
+  value that fails, while `1e-6` and `1e-4` converge.
+
+Next objective, per accepted scope: the `EXPERT_REVIEW.md` agenda (consistent
+zero-salvage objective across operational evaluation, ranking and cut accounting;
+expected directional throughput versus expected net power; cycling calibration
+including the unused `dod_nom`; cohort SOC realizability; manuscript truthfulness),
+then one instrumented capture run, then a breadth campaign against the final
+objective. No solve is authorized by this entry.
+
+## AUTHORIZED NEXT STAGE — P5.12-T no-solve trajectory forensic (2026-09-12)
+
+P5.12-P is complete (`PATH SENSITIVITY SUPPORTED`); see `REVISION_CONTEXT.md`.
+Authorized: ONE bounded no-solve comparative trajectory forensic over the three
+preserved IPOPT logs (Variant 1 `1e-6`, Arm A `1e-5`, Variant 2 `1e-4`), to
+localize what first distinguishes the clean-convergence, persistent-stall and
+transient-safeguard-then-escape paths. Zero solves. Outputs to a new directory.
+
+Requirements: parse per-iteration telemetry present in all three print-level-6
+logs; validate the parser by reproducing known headline facts (iteration counts,
+terminations, safeguard counts and onsets, iteration-0 and final blocks) before
+any interpretation; compare both by absolute iteration and event-aligned to the
+first/last safeguard event and to the first sustained residual deterioration or
+improvement; predeclare the divergence criterion; report rates over short
+windows, not only point values. Do not invent fields that are absent.
+
+The forensic must not claim causality from telemetry correlation, and must not
+conclude that `warm_start_bound_push` should change in production, or that
+safeguard messages, OLTC geometry or multiplier growth cause the failure. It
+may identify candidate mechanisms for a later, separately authorized
+intervention test.
+
+## COMPLETED — P5.12-P path-sensitivity probe (2026-09-12)
+
+Arm A and the P5.12-K no-solve forensic are complete; see `REVISION_CONTEXT.md`.
+Authorized: ONE bounded numerical path-sensitivity experiment on the frozen
+Arm A cycle-21 fixture, to distinguish
+
+- `H_PATH` — the failure is knife-edge sensitive to a small numerical-path
+  perturbation; from
+- `H_GEOMETRY` — the frozen cycle-21 NLP drives IPOPT into essentially the same
+  failure despite such perturbations.
+
+Single varied parameter: `warm_start_bound_push`. Justification from the Arm A
+effective option set: `warm_start_init_point=yes`, so the warm-start family
+governs initialization, and the effective `1e-5` is inherited from `bound_push`
+via `network.py:522`. Overriding `warm_start_bound_push` after solver setup
+changes exactly one key, leaves the cold-start `bound_push` untouched, and
+cannot alter the NL. Predeclared values: baseline `1e-5` (Arm A, not rerun),
+variant 1 `1e-6`, variant 2 `1e-4`. Both are valid (parameter must be > 0).
+
+At most TWO new solves. No retry, no adaptive search, no additional values, no
+value changes after seeing a result. Everything else identical to Arm A; the
+generated NL must be byte-identical to `5934341b...39a7` before each solve, and
+`output_file` is the only other permitted option difference. This is sensitivity
+diagnosis, not solver tuning: values were not chosen to make IPOPT converge.
+
+Comparison must not reduce to converged/failed. Report where each trajectory
+first materially diverges from Arm A, whether safeguard onset moves or
+disappears, whether complementarity stagnates the same way, whether the same
+OLTC/reference-bus terminal geometry develops, and whether the final signature
+is unchanged. Convergence is not required to support `H_PATH`; a substantially
+different trajectory suffices.
+
+## HISTORICAL — Arm A reproduction only (2026-09-11)
+
+P5.12-R is complete and accepted (`P5.12-R CAPTURED`). The stale
+bound-multiplier hypotheses are contradicted; see `REVISION_CONTEXT.md`,
+"Cycle-21 mechanism status after P5.12-R". Arm A is authorized as a
+reproduction experiment only and must not test any mechanism.
+
+Replay boundary, which is binding:
+
+- start from the P5.12-R cycle-21 **before-setup** snapshot
+  (`data/SRP1/Results/P512R/cycle21_pre_setup/snapshot.pkl`); never re-prepare
+  an already-prepared snapshot;
+- verify its hashes and manifest, then invoke production
+  `_create_smopf_solver(..., from_warm_start=True)` exactly once;
+- before solving, require exact equality of the regenerated prepared state with
+  the frozen `cycle21_prepared` capture under the P5.12-R comparison contract:
+  variables, parameters, constraints, objective, `dual`, `ipopt_zL_in`,
+  `ipopt_zU_in`, `ipopt_zL_out`, `ipopt_zU_out`, solver options, warm-start flag
+  and NL/symbol-map representation. The single permitted difference is the
+  `output_file` option, which must be redirected out of the frozen P5.12-R
+  evidence directory so the preserved target log cannot be appended to; that
+  deviation must be recorded explicitly;
+- if the equality gate fails, STOP without invoking IPOPT;
+- otherwise solve the target exactly once, with no numerical change of any kind
+  and no retry.
+
+Reproduction is judged against the original P5.12-B cycle-21 trace at the
+strongest level the logs support: option echo, iteration-0 objective/primal
+infeasibility/dual infeasibility/complementarity and 17-digit norms, the
+complete iteration table, step lengths, regularization, barrier parameter,
+restoration entries if any, iteration count, termination status and final
+objective/residuals. "3000 iterations" alone is not reproduction.
+
+Preserve the Arm A NL file, symbol map, effective options, full IPOPT log,
+final `.sol` if produced, `SolverResults`, a replay manifest and hashes of every
+frozen input and produced output. Relate the Arm A NL to the P5.12-R prepared
+capture; do not claim byte identity with the historical P5.12-B live NL, which
+was not preserved.
+
+Arm A concludes only whether the frozen state reproduces the failure. It must
+not infer cause. Arm B, the crossover experiment, disabling multiplier warm
+starts and the pre-solve KKT diagnostic remain unauthorized.
+
 ## Accepted findings and scope
 
 - The production `vmag_nodes` refactor remains accepted as a numerical-stability

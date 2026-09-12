@@ -21,10 +21,328 @@ local NLP failure's input, rather than a production repair or an A/B solve.
 
 ---
 
-# CURRENT SOURCE OF TRUTH — 2026-09-10
+# CURRENT SOURCE OF TRUTH — 2026-09-10, amended 2026-09-11
 
 This section supersedes every older "current", "active" or "immediate"
 instruction later in this file. Those sections remain historical evidence only.
+
+## P5.12-R pre-execution update — 2026-09-11 (supersedes the repository-state bullets below)
+
+Repository transition. The first P5.12-R R0 preflight (`data/SRP1/Results/P512R/`
+`provenance.json`, `initial_repository.json`, `runtime_identity.json`,
+`accepted_hashes.json`, recorded at HEAD `dd000167` with the two governing
+documents modified) is historical evidence and must not be modified. HEAD is now
+`ba202e2b0e937306f3c163de2173951c1d0c24f0`, ahead 3 / behind 0 of
+`origin/feature/derivative-free-planning` (no fetch). The intervening commits
+change no `.py` or parameter file and cannot alter production numerics:
+
+- `d20220dd` commits the governing-document edits whose bytes the old R0 had
+  already hashed as approved modifications, plus `CLAUDE.md` (agent
+  instructions, read by no code);
+- `8b83b139` adds `.claude/agents/{advisor,planner,worker}.md` and
+  `.claude/settings.json` (agent configuration, imported by no code);
+- `ba202e2b` changes `CLAUDE.md` only.
+
+Harness readiness. A planner pre-execution review of the drafted
+`p512_r_presolve_recapture.py` (never run) found it NOT READY: `model_state()`
+crashed on non-indexed Pyomo Sets present in every block (`vmag_nodes`,
+`apparent_power_limited_branches`), which would have ended the single run at the
+cycle-20 capture; the target-solve count was asserted, not measured; the harness
+hash, HEAD, branch, staged state and tracked-path set were unchecked; the
+baseline path was hard-coded to the historical R0 files. A first Worker repair
+fixed these and passed a no-solve rehearsal but was REJECTED because the
+end-of-run integrity and no-target-solve evidence was recorded, not enforced.
+A narrow amendment added a pure `final_verdict()` so `CAPTURED` requires
+end-of-run integrity, zero target guard/solve/process-launch activity and an
+unadvanced target IPOPT log; its no-solve rehearsal
+(`data/SRP1/Results/P512R_REHEARSAL/20260911T160420Z/`, zero solver calls and
+launches, all nine verdict negative controls as expected) was ACCEPTED.
+
+Authorized frozen harness: `p512_r_presolve_recapture.py`, SHA-256
+`f0f120c26ec2c50b774ff42051c233b87fba0341e3d959faafe70283301d86f0`. It must not be
+edited before or during the run.
+
+Fresh R0 required. Because the old R0 no longer matches the tree, a new baseline
+is created by the Planner at `data/SRP1/Results/P512R/R0_v2_ba202e2b/` only after
+these governing-document edits are complete. Its generator script and
+definition are stored inside that directory; it does not claim equivalence to
+the missing original R0 generator. P5.12-C report SHA-256
+`36812879af01aa3cd549b62cdb424af33a8dd080866041398a930c942e9a24b5` and the four
+historical R0 file hashes are added to its protected-artifact list.
+
+Frozen-state rule. From baseline creation until the P5.12-R report: HEAD,
+branch and upstream reference unchanged; nothing staged; all tracked paths and
+bytes equal to the baseline (the uncommitted governing-document edits are
+recorded in its `approved_diff`); no new tracked files; harness bytes equal to
+the SHA above; accepted artifacts and historical R0 files unchanged; the same
+interpreter and IPOPT identity. No git operation or tracked-file edit is
+permitted. Any drift stops the stage; the baseline is not regenerated without
+new authorization.
+
+P5.12-R remains capture-only. It authorizes one cold-RESCALED replay to capture
+the cycle-21 target input and stop before `solver.solve`. It does not authorize
+solving the target, a retry, Arm A/B, KKT analysis or any repair.
+
+## Cycle-21 mechanism status after P5.12-R — 2026-09-11
+
+P5.12-R completed: `P5.12-R CAPTURED`, report
+`P5_12_R_PRESOLVE_RECAPTURE_REPORT.md`. The following supersedes the
+causal ranking in `P5_12_B_CYCLE21_FORENSIC_REPORT.md` sections 8-9. That
+report is historical evidence and is not rewritten; its recorded numerical
+failure stands.
+
+Superseded: B's `HIGH` ranking of "multiplier / bound-proximity pathology" and
+the proposed bound-multiplier A/B rest on `ipopt_zL_in` / `ipopt_zU_in` values
+that IPOPT never received.
+
+Established by P5.12-R and the subsequent independent review:
+
+- production refreshes warm-start multipliers with `_in.update(_out)`, a merge,
+  so entries absent from the previous `.sol` keep older values;
+- all 54 such stale entries lie on `pg`/`qg` variables whose lower and upper
+  bounds are exactly equal, and which Pyomo has not marked fixed;
+- `fixed_variable_treatment` is nowhere configured, so IPOPT 3.14's default
+  `make_parameter` applies: the 102 equal-bound variables are removed from the
+  solved problem. The `.nl` declares 9268 variables, IPOPT reports 9166, and the
+  Jacobian nonzero counts differ by the same 102;
+- IPOPT's own iteration-0 multiplier norms confirm the exclusion. At objective
+  scaling `1e-3`, `||curr_z_L||_inf` is `101.13796` at cycle 20 and `101.16099`
+  at cycle 21, matching the refreshed multiplier on a non-fixed variable
+  (`slack_shared_es_soc_final_up`, about `1.011e5` unscaled). The stale
+  `7.995e6` and `1.021e7` values would appear as `7995` and `10.2`.
+
+Therefore the following are CONTRADICTED as causal hypotheses: the magnitude of
+the large stale values; staleness of multiplier entries as such; and the single
+entry (`qg[2,0,0,21]`) whose staleness differs between cycles 20 and 21.
+
+The merge behaviour of `_in.update(_out)` remains a code-hygiene concern,
+because stale entries would reach the solver under a different
+`fixed_variable_treatment`. It is not the current failure mechanism and no
+production change is authorized.
+
+The active mechanism is UNRESOLVED. Two hypothesis classes lead:
+
+1. the cycle-21 problem data enters a difficult or degenerate region as the
+   interior-point trajectory progresses;
+2. the solve is path-sensitive to small differences in the starting state.
+
+Supporting observation, not a conclusion: both cycles follow nearly the same
+path for roughly 44 iterations from the default initial barrier parameter
+`mu = 0.1`, through the same objective values and the same `mu` reductions, and
+diverge only once `mu` has fallen to about `2e-6`. Cycle 20 made a similar
+excursion (`inf_pr` about `0.123`) and recovered; cycle 21 jammed with
+persistent bound-multiplier safeguard flags and step lengths near `5e-5`.
+
+## Arm A result — 2026-09-11: ARM A EXACT REPRODUCTION
+
+Evidence: `data/SRP1/Results/P512ArmA/` (manifest, equality gate, IPOPT log
+`4f66a7ef…9d58`, consumed NL and `.sol`, `SolverResults`, replay script SHA-256
+`4379f7cb…e643`). Established:
+
+- the frozen P5.12-R cycle-21 state is a deterministic replay fixture;
+- regenerating the prepared state from the frozen before-setup capture
+  reproduces the frozen after-setup state exactly under the capture contract
+  (ordered-state digest `3fd294d7…a85f`, all five suffixes included);
+- the NL consumed by Arm A is byte-identical to the frozen prepared NL
+  (`5934341b…39a7`); the symbol map matches (`c13732e8…d2ff`);
+- the effective IPOPT configuration matches except the authorized `output_file`
+  redirection, which protects the frozen P5.12-R log;
+- the complete Arm A IPOPT trace reproduces the P5.12-B cycle-21 trace exactly:
+  0 differing lines in 243497, after normalizing only the log-file boundary
+  artifact (one leading blank line in a fresh file) and the elapsed-time field.
+  Iteration-0 norms, the full 3000-row iteration table, termination and the
+  final unscaled objective/residual/evaluation-count block are identical;
+- exactly one target solve occurred (one option echo, one `EXIT`, counter 1);
+- Arm A additionally preserves the final `.sol`, which the historical run did
+  not.
+
+This establishes reproducibility of the failure, not its cause. The active
+mechanism remains UNRESOLVED between the two classes recorded above.
+
+## P5.12-K no-solve forensic result — 2026-09-12
+
+Report `data/SRP1/Results/P512K/P5_12_K_NO_SOLVE_KKT_FORENSIC_REPORT.md`,
+verdict `H_TRANSFER REJECTED — ATTRIBUTION INCONCLUSIVE`. Zero solver calls
+(both counters 0); 5 of 6 Jacobian builds used, about 0.32 s each. Established:
+
+- **H_TRANSFER is rejected.** The stationarity reconstruction is calibrated
+  against IPOPT to high accuracy: relative error `9.1e-09` at the converged
+  cycle-20 state (target `1.1323057973496387e-03`), `2.5e-14` at the cycle-21
+  start and `6.3e-15` at the cycle-20 start. The transferred cycle-20
+  multipliers are consistent with the problem they came from.
+- The large initial cycle-21 stationarity residual is created primarily by the
+  ADMM consensus-parameter transition, concentrated at
+  `expected_interface_pf_p[23]` (100% of the residual change at its argmax).
+  Its magnitude does NOT explain the failure: the successful cycle-20 start has
+  essentially the same residual (`1.8369213729230112e+04` versus
+  `1.8366791482401353e+04`).
+- **H_PUSH is rejected** as the explanation of that residual: the bound-push
+  contribution is at most `0.0999`, not `1e4`.
+- The shared-ESS SOC reset is **normal per-cycle production behaviour**, not a
+  cycle-21 anomaly. `configure_shared_ess_operational_state`
+  (`model_construction_helpers.py:1020`) re-initializes SOC to
+  `e_capacity * ENERGY_STORAGE_RELATIVE_INIT_SOC` (0.50) on every DSO
+  coordination update (`shared_resources_planning.py:4543`). The cycle-20 start
+  is equally flat (all 24 periods `8.942982436855709e-05`). This reset, not the
+  push, drives the iteration-0 feasibility level (raw argmax
+  `sess_soc_def[0,0,0,6]`, `7.59e-05` raw versus `6.62e-05` pushed).
+- **Start-state diagnostics do not distinguish** the successful cycle-20 solve
+  from the failing cycle-21 solve: same residual magnitude, same argmax
+  variable, same flat SOC, same starting feasibility.
+- The first clear behavioural divergence is downstream, around iterations
+  70-77, when bound-multiplier safeguard activity begins (2924 of 3001 rows
+  flagged at cycle 21 from iteration 77; 0 of 116 at cycle 20).
+- Terminal violations concentrate on the reference-bus active-power balances
+  and the OLTC branch: model branch index 31 is `branch_id 1`, bus 1 -> bus 2,
+  `is_transformer`, `vmag_reg`; node index 0 is the type-3 reference bus 1 and
+  node index 1 is bus 2. Periods 15, 8 and 9 dominate. Complementarity never
+  converged: `zL*(x-l)` mean `1.77e-03` against terminal `mu = 1.84e-06`, with
+  all 7390 entries above `mu`. This is an observed failure geometry, NOT a
+  demonstrated cause.
+
+Housekeeping: "mapping hash" must distinguish the harness's internal content
+digest (`digest()` over the atom-encoded record, e.g. `c13732e8...d2ff`) from
+the on-disk file SHA-256 of `*_mapping.json` (e.g. `b39cd878...`). They are
+different hash spaces; both were verified consistent.
+
+## P5.12-P path-sensitivity result — 2026-09-12: PATH SENSITIVITY SUPPORTED
+
+Evidence `data/SRP1/Results/P512P/` (two variant directories with equality
+gates, logs, consumed NL and `.sol`, `SolverResults`). Exactly two solves ran.
+
+Scope of the claim: path sensitivity is established **specifically with respect
+to `warm_start_bound_push` on the frozen cycle-21 fixture**. The factor-of-10
+perturbations are small, modelling-invariant numerical-path perturbations; they
+must NOT be described as mathematically "infinitesimal".
+
+Verified singular perturbation: both variants' 17-key option sets differ from
+Arm A in exactly `output_file` (log redirect) and `warm_start_bound_push`;
+IPOPT's own echo confirms the received value while `bound_push` stayed `1e-05`;
+both prepared states hash to `3fd294d7...a85f`; the consumed NL, the gate
+exports, Arm A's consumed NL and the frozen capture all hash to
+`5934341b...39a7`. The NLP, start point, multipliers, parameters and bounds were
+byte-identically untouched.
+
+| | Arm A `1e-5` | Variant 1 `1e-6` | Variant 2 `1e-4` |
+|---|---|---|---|
+| result | maxIterations | Optimal | Optimal |
+| iterations | 3000 | 89 | 151 |
+| final dual infeasibility | `5.16e+01` | `1.66e-03` | `1.35e-07` |
+| final constraint violation | `6.19e-02` | `1.96e-07` | `6.88e-12` |
+| final complementarity | `6.20e-03` | `1.06e-05` | `9.09e-06` |
+| safeguard rows | 2924 of 3001, from iter 77 to 3000 | 0 | 21, iters 82-102 only |
+
+Iteration-0 unscaled dual infeasibility is identical in all three runs
+(`1.8366791482401353e+04`), while complementarity forms a clean x10 ladder with
+identical mantissa (`1.0116e-01` / `1.0116e+00` / `1.0116e+01`), confirming the
+knob acted as intended and only as intended.
+
+Additional established points:
+
+- **Safeguard activation alone is not sufficient for failure.**
+- Variant 2 enters the safeguard regime near the same iteration as Arm A
+  (82 versus 77) but escapes after 21 contiguous iterations and converges.
+- **The discriminator is therefore persistence versus escape after entering the
+  difficult regime, not merely safeguard onset.**
+- Neither variant develops Arm A's terminal reference-bus / OLTC violation
+  geometry, and neither reproduces its complementarity stagnation.
+- **No production parameter change is justified from this single frozen
+  instance.** Two data points, one per side, on one captured failure would be
+  tuning to that instance.
+
+Not established: any mechanism; well-posedness of the NLP near this point; and
+whether comparable knife-edge behaviour affects other blocks, cycles or
+candidates. That last question bears on oracle reliability and remains open.
+
+## P5.12-T trajectory forensic result — 2026-09-12
+
+Verdict `ESCAPE SIGNATURE OBSERVED — MECHANISM UNRESOLVED`. Evidence
+`data/SRP1/Results/P512T/` plus `P5_12_T_TRAJECTORY_FORENSIC_REPORT.md`. Zero
+solves. Established, with the trajectory facts verified independently by the
+Planner from the raw logs:
+
+- **All three trajectories undergo a comparable feasibility excursion**, each
+  from a healthy state: V1 peaks at iteration 60 (`inf_pr = 2.22e-01`), Arm A at
+  70 (`1.49e-01`), V2 at 78 (`1.67e-01`). All three reach `lg(mu) = -5.7` at
+  iterations 36 / 40 / 40.
+- **Excursion onset and magnitude do not predict the outcome.** Arm A has the
+  smallest peak and is the only run that never recovers. Recovery below
+  `inf_pr = 1e-2` takes 2 iterations (V1), 32 (V2), and never for Arm A.
+- **The distinguishing behaviour is recovery versus persistent stall.**
+- **Arm A begins deteriorating before safeguard messages appear**: `inf_pr`
+  rises from `2.6e-05` (iter 65) to `1.49e-01` (iter 70) and `alpha_pr` decays
+  0.43 -> 0.063 -> 0.034 -> 0.004, roughly 7 iterations before the first `z`
+  marker at 77. **Safeguard activity is therefore a symptom of the stalled
+  regime, not the trigger, on current evidence.** On exit, V2's markers cease at
+  103, about 5 iterations before its step unlock at 108-110.
+- Variant 2 enters a similar safeguard regime (iterations 82-102) and later
+  escapes: markers cease -> steps recover -> full steps and residual collapse at
+  110 -> `mu` advances to `-8.0` at 113 -> multipliers release.
+- **Multiplier growth is retired as a candidate mechanism.** At iteration 40 all
+  three runs carry transiently large norms (`z_L ~ 5.8e4`, `y_c ~ 3.3e4`),
+  including both that converge; by iteration 60 all three settle to identical
+  values. Arm A is characterized by subsequent **stasis**: `z_L = 1.0131e+02`,
+  `y_d = 1.1516e+02`, `y_c = 6.3039e+02` held to 4-5 significant figures for
+  2940 iterations.
+- **No solver-telemetry quantity observed so far provides a useful
+  pre-excursion predictor** of success versus failure. All observed signals are
+  terminal facets of one stalled regime, not predictive.
+- The Arm A terminal state is a **stalled fixed-point-like regime**: barrier
+  parameter pinned at `lg(mu) = -5.7`, accepted steps ~`5.4e-05`, `||d|| ~ 1.7`,
+  persistent infeasibility (`6.19e-02`) and complementarity failure
+  (`6.20e-03` against `mu = 1.84e-06`).
+
+Housekeeping: stage scripts and reports are placed inconsistently — some
+reports live in the repository root (`P5_12_R`, `P5_12_T`), others in their
+stage directory (`P5_12_K`). Record only; do not reorganize historical
+artifacts now.
+
+## Solver-telemetry facts carried into P5.12-G — 2026-09-12
+
+Independent Advisor review of the proposed geometric diagnostic, with every
+load-bearing claim verified by the Planner directly from the preserved logs:
+
+- **`delta_c` and `delta_x` are different quantities and must never be combined
+  into one "regularization event" count.** `delta_c` is constraint-side
+  regularization; `delta_x` is primal/Hessian-side.
+- **Arm A has `delta_c = 0` across all 3000 factorizations.** This is direct
+  counter-evidence to strong-form constraint-Jacobian rank failure of the kind
+  that would require IPOPT constraint regularization. It does **not** prove
+  LICQ, full numerical rank, or good conditioning.
+- Only 27 Arm A events carry nonzero perturbation, and those are **`delta_x`**,
+  all before iteration 70 — i.e. before the stall. The converged controls show
+  substantially MORE `delta_x` activity (36 of 89 for V1, 70 of 151 for V2, that
+  is 40-46% of iterations, versus 0.9% for Arm A). **`delta_x` frequency is
+  therefore not evidence for the Arm A failure mechanism.**
+- The stalled step is accepted on the **first** line-search trial
+  (`alpha = 5.42e-05`, `ls 1`), with sufficient reduction and filter
+  acceptability both succeeding and `ALPHA_MIN = 1.06e-13` eight orders lower.
+  The step is truncated, not rejected.
+- Safeguard corrections are numerically tiny (~`3.4e-08` to `3.87e-08`) and must
+  be quantified independently; their textual prominence in the log is not
+  evidence of numerical importance.
+- **Correction to the earlier geometric proposal:** an *active bound* must not
+  be described as having a "near-zero gradient". Constraint-row geometry
+  (anomalously small Jacobian rows on active/near-active rows) and bound
+  geometry (variables near a bound, with multipliers and step-limiter evidence)
+  are separate objects. A variable may be called *blocking* only if preserved
+  direction/telemetry evidence supports it; otherwise it is a **near-bound
+  candidate**.
+- Current stronger candidate: Arm A becomes trapped by local bound/active-set
+  geometry and fraction-to-boundary truncation. This remains a mechanism
+  CANDIDATE, not an established cause.
+
+Housekeeping correction: IPOPT in the current configuration **does** supply
+constraint scaling — all three logs report `c scaling provided` and
+`d scaling provided` alongside the `1.000000e-03` objective scaling. This
+supersedes the carried-forward P5.3-A2 statement that only the objective was
+scaled. Do not rewrite the historical P5.3 reports.
+
+Authorized next: ONE bounded no-solve Tier 0 + Tier 1 forensic (telemetry, then
+activity and constraint-row/bound geometry). **Tier 2 spectral/SVD analysis is
+NOT authorized** and may only be reconsidered against its declared triggers. No
+solve is authorized. Production repair, Arm B, crossover, multiplier-warm-start
+changes and investment search remain unauthorized.
 
 ## Repository and accepted branch state
 
@@ -36,8 +354,9 @@ The active branch remains:
 
 `feature/derivative-free-planning`
 
-At the independent P5.12-C planner audit, verified again before this document
-update, the Mac Studio state was:
+Historical (superseded by the 2026-09-11 update above): at the independent
+P5.12-C planner audit, verified again before the 2026-09-10 document update,
+the Mac Studio state was:
 
 - HEAD `dd0001675e4e38cbf4ec0282df312469bcb435e5`;
 - verified unified baseline `72468913499f5f9eca77ddbef6ed71fd61be7a97` is an ancestor;
@@ -1911,9 +2230,188 @@ Never describe the local-cut master estimate as a rigorous global lower bound or
 The authorized worker stage is **P5.12-R — deterministic pre-solve recapture**
 on `feature/derivative-free-planning`, in the existing Local checkout.
 
-Use one isolated process and the verified Mac Studio runtime. Preserve the exact
+Use one isolated process and the verified Mac Studio runtime, the frozen harness
+(SHA-256 `f0f120c2…86f0`) and the fresh baseline
+`data/SRP1/Results/P512R/R0_v2_ba202e2b/`. Preserve the exact
 cycle-21 target input after solver setup and stop before its solver invocation.
 Do not execute either A/B arm, retry, polish, continue the cycle or change any
 production formulation/parameter. Report and stop for planner review.
 
 `LOCAL_NLP_STABILITY_PLAN.md` is authoritative for the complete P5.12-R protocol.
+
+## P5.12-G / W / X / Y / Z results — 2026-09-12
+
+All four stages were planned, executed and reported by the Planner alone: the Worker
+has been unavailable since P5.12-G (external API spend limit). This removes the
+independent-execution check the workflow relies on. The concrete cost is recorded
+under "Cost of the missing independent check" below, as an instance rather than a
+generality.
+
+### P5.12-G — NO ARM-A-UNIQUE LOCAL-GEOMETRY SIGNATURE
+
+Report `P5_12_G_GEOMETRY_FORENSIC_REPORT.md`; evidence `data/SRP1/Results/P512G/`.
+Zero solves. Gates: 9166 optimization columns, 0 AD failures, 4 Jacobian builds.
+
+Negatives: `delta_c` is zero in **all three** runs, so strong-form constraint-Jacobian
+rank failure requiring IPOPT constraint regularization is unsupported (this does not
+prove LICQ, full rank or good conditioning). `delta_x` fires 36 / 27 / 70 times
+(V1 / Arm A / V2) and **never during the Arm A stall**; the converged controls
+regularize far more, so its frequency cannot explain the failure. Row-norm ladders are
+identical across all four states and the Arm-A-unique small-gradient set is empty.
+One Arm-A-unique near-bound variable at 1e-4 (`flex_p_up[2,0,0,6]`). The blocking
+variable is **not identifiable** from preserved artifacts because `d_x` was never
+preserved. Safeguard corrections span 3.37e-08 to 9.7e-07, mean 4.02e-08 — cosmetic
+by magnitude. Line-search rejection is excluded: every line-search event in all three
+runs is single-trial.
+
+SUPPORTED (carried, not only the negatives): **primal/dual activity disagreement is
+materially stronger in Arm A** — 1912 rows dual-active but primal-inactive against
+249 (V1) and 251 (V2), with 6182 dual-active rows against 4483 each. G's own confound
+stands as G stated it: Arm A is infeasible at termination (6.19e-02) while both
+controls are feasible (1.96e-07, 6.88e-12), and a violated row carries a large
+multiplier with a large slack, which produces exactly this pattern. The signal is
+therefore substantially, and possibly wholly, a restatement of infeasibility.
+
+Tier-2 spectral/SVD analysis remains **unauthorized**: triggers 1 and 3 are not met and
+trigger 2 is confounded as above.
+
+### P5.12-W / X / Y — breadth probe, and P5.12-Z re-derivation
+
+`BREADTH PROBE INCONCLUSIVE`. Reports `P5_12_W_BREADTH_PROBE_REPORT.md`,
+`P5_12_X_COMPARATOR_BREADTH_REPORT.md`, `P5_12_Y_TSO_COMPARATOR_REPORT.md`.
+All classification numbers were re-derived from primary artifacts by
+`p512_z_classification.py` under a frozen specification; results in
+`data/SRP1/Results/P512Z/classification.json`. Zero solves in Z; guards are
+**enforcing** (they replace `OptSolver.solve` and `_execute_command` with functions
+that raise), so a completed run with both counters at zero is genuine evidence.
+
+**Y ladder authorization.** The user approved, **before execution**, applying the
++/-10x ladder around this fixture's own historical baseline: BASELINE `1e-6`,
+LOW `1e-7`, HIGH `1e-5`. The perturbation FAMILY is common across fixtures; the
+absolute values differ because case9's configured `bound_push` is `1e-6`. This
+**closes** the `NOT RUN — INSTRUCTION CONFLICT, REFERRED TO USER` status recorded in
+the P5.12-X report.
+
+Both comparator reconstruction gates passed **byte-identically** against the historical
+cycle-7 traces: DSO 0 differing lines in 7691, TSO 0 in 3118, normalizing only
+`output_file`, `Total seconds in IPOPT` and the fresh-file leading blank line.
+Preserved comparator fixtures are therefore faithfully replayable from a preserved
+pre-solve model plus deterministically reconstructed context.
+
+| fixture | validity | objective | interface (all 3 families) | branch | path |
+|---|---|---|---|---|---|
+| `TARGET_cycle20` (2025 Spring, w=460) | ROBUST | EQUIVALENT (2.21e-10 / 1.33e-08) | EQUIVALENT (worst 7.45e-11 / 8.00e-09) | EQUIVALENT | not material (0.9% / 3.5%) |
+| DSO `case33_2` c7 (2025 Autumn, w=455) | ROBUST | **INDETERMINATE** (1.357e-05 / 3.650e-06) | EQUIVALENT (worst 1.60e-08) | EQUIVALENT | not material (12.1% / 37.4%) |
+| TSO `case9` c7 (2025 Summer, w=455) | ROBUST | EQUIVALENT (1.72e-16 / 0.0) | EQUIVALENT (2.14e-16, `pf_p` and `pf_q` exactly 0.0) | EQUIVALENT | not material (2.7%) |
+
+Breadth counts over previously-unknown fixtures, with `TARGET_cycle21` excluded as
+KNOWN POSITIVE CONTROL: **3 tested; 0 outcome flips; 0 operational-output/branch
+flips; 0 path-only; 2 robust on every axis; 1 robust except objective-equivalence
+INDETERMINATE.**
+
+Weighted objective differences (descriptive only, weight = `N_year * D_day *
+annualization`): W 1.37e-04 and 8.23e-03 planning units; X **2.186** and 0.588;
+Y 2.65e-08 and 0. X's 2.19 is ~10% of the accepted 22.09 cross-depth uncertainty and
+~7% of the 32.87 best-to-second gap — non-negligible, not decisive, and it does not
+alter any threshold.
+
+**Two structural limits qualify how much weight the INCONCLUSIVE verdict carries.**
+All three previously-unknown fixtures are `matched_success` captures, so selection is
+conditioned on historical success and the sample cannot estimate the prevalence of
+fragility. And none sits in the failure's difficulty stratum: baselines of 37, 91 and
+115 iterations against the failure's 3000, the TSO fixture having only 2934 columns
+and converging in 0.08 s with zero safeguard activity and arms agreeing to 1e-16, so
+its diagnostic power against oracle fragility is low. Neither limit changes any frozen
+threshold or classification.
+
+**Fixture-pool exhaustion.** The preserved replayable base is spent at n = 3. Breadth
+cannot be advanced from preserved artifacts; new preserved captures would be required.
+
+**Defect phrasing, to be used wherever this enters the record.** At cycle 21 the
+production-configured `1e-5` is the value that **fails**, while `1e-6` and `1e-4` both
+converge. The defect is that the production setting is the failing one on this
+instance — not that perturbation breaks a working solve.
+
+### Corrected fact — constraint scaling is fixture-dependent
+
+Superseding the earlier over-generalized note: Arm A and DSO `case33_2` report
+`c scaling provided`; TSO `case9` reports **`No c scaling provided`**. Constraint
+scaling therefore differs by fixture, and that is itself a modelling-invariant
+conditioning difference between agent types bearing on cross-agent comparability.
+Recorded alongside the fixture-dependent equal-bound removal count (W 102, X **100**,
+Y 102, against NL columns 9268 / 9268 / 3036 and IPOPT-reported 9166 / 9168 / 2934,
+each cross-checked against its own log). Historical P5.3 reports are not rewritten.
+
+### Gap 3 — structurally moot, with a reusable corollary
+
+`C_nl` and `C_opt` give identical maxima and identical threshold counts. This is
+**structural, not a coincidence of these data**: the columns in `C_nl \ C_opt` are
+exactly the equal-bound variables IPOPT removes under `make_parameter`, whose lower and
+upper bounds are equal, so their values are identical in baseline and every arm by
+construction, their scaled distance is identically zero, and they can never be the
+argmax nor cross 1e-3. For a maximum or a threshold count the two sets must agree, for
+any fixture. **Corollary:** the distinction would NOT be moot for any future mean-,
+sum- or norm-based metric, where 100-102 guaranteed zeros would dilute the statistic.
+
+### Interpretation note — the TSO interface zeros
+
+`expected_interface_pf_p` and `_pf_q` differ by exactly 0.0 between arms in the Y
+fixture. These variables are **free** in that model — not Pyomo-fixed, not equal-bound
+(`lb`/`ub` are `None`) — so the zeros are a genuine measurement at `.sol` precision and
+a property of the fixture's solution, not a pinning artifact and not a measurement gap.
+
+### Cost of the missing independent check
+
+Two interface cells were recorded as EQUIVALENT without measurement: `TARGET_cycle20`
+was never measured at all, and TSO `case9` was measured on `expected_interface_vmag`
+alone while `_pf_p` and `_pf_q` were present and uncompared. The earlier rationale
+that this was "consistent with a transmission block's interface role" is **false and
+withdrawn** — all three fixtures carry all three families (24 / 24 / 72 entries).
+P5.12-Z completed both measurements and both classifications were confirmed unchanged.
+This is the concrete cost of losing the independent-execution check, and it is the
+strongest available argument for restoring the Worker or an equivalent check before
+any capture campaign.
+
+### Housekeeping
+
+- Classification evidence had **no preserved generator** until P5.12-Z; the W/X/Y
+  numbers came from unpreserved ad-hoc steps. `p512_z_classification.py` plus its
+  frozen specification now supply a reproducible derivation.
+- `fresh_planning`-based stages are **not write-contained**: X and Y wrote 52 scenario
+  diagram PDFs under `data/SRP1/Diagrams/`, outside the stage directories (untracked,
+  no frozen or tracked artifact touched). Do not assert write containment for any
+  future `fresh_planning` stage. P5.12-Z made no such call and its containment was
+  confirmed after the run.
+- **Duplicate fixture basenames carry different hashes**: the `matched_success_*`
+  pickles exist in both `data/SRP1/Results/FrozenSMOPF/` and
+  `data/SRP1/Results/P512R/production_snapshots/FrozenSMOPF/` (TSO `6b94d87c…` vs
+  `2814948e…`; DSO `0bf972b9…` vs `d2342ba2…`, consistently +91 bytes). X and Y used
+  and froze the `production_snapshots` copies. Only the path disambiguates.
+- `p512_y_tso_replay.py` self-identifies as P5.12-X in its docstring, usage line and
+  console tag. Harness bytes are left exactly as run.
+- **Frozen-artifact naming rule (general convention).** The approved P5.12-Z
+  specification was overwritten in place when the user's amendments were applied. v1,
+  SHA-256 `5545fc65bfddf077844f2525796b0ef31a729f0845124d913257c434982eb261`, is
+  **unrecoverable** — its bytes exist nowhere in the repository and the hash is
+  recorded from the approving message. The executed specification is v2,
+  `45edc424cd52edc9611a7bc220107f8fb30fefa4fadc5c3c486dc209cbdeb66b`, now stored as
+  `frozen_formula_spec_v2_45edc424.json` with lineage in `frozen_spec_lineage.json`.
+  Going forward: **frozen artifacts are named with version and content hash, are never
+  replaced in place, and each version records its predecessor's hash.**
+- **Pattern, not three unrelated corrections.** Duplicate fixture basenames with
+  different hashes; a frozen plan carrying the fixture-specific constant 9166 as if
+  general; and a frozen approved artifact replaced in place — in each case an
+  identifier fails to uniquely denote its content. Remedy: version-and-hash naming,
+  operational rather than literal constants in frozen plans, path-qualified fixture
+  identity.
+- `COWORK_HANDOFF.md` was drafted by the user before P5.12-Y completed and is
+  **superseded** by this section; it is not committed as current.
+- **Provenance vocabulary.** Distinguish NUMERICAL FROZEN STATE (production source,
+  numerical inputs, frozen fixtures, solve harness, solver/runtime configuration) —
+  unchanged and verified throughout — from ORCHESTRATION-ONLY APPROVED DRIFT
+  (`.claude/agents/planner.md` and `worker.md` model/effort edits). The repository was
+  not literally frozen; the drift is recorded, not ignored, and does not touch the
+  numerical experiment.
+- Timestamps are standardised on Z-suffixed UTC. P5.12-R's trajectory ran 1176.3 s
+  (19.6 min), which supersedes the ~16 min estimate used when sizing a future
+  instrumented capture.

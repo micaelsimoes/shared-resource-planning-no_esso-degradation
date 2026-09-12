@@ -1,0 +1,531 @@
+{
+ "spec_sha256": "45edc424cd52edc9611a7bc220107f8fb30fefa4fadc5c3c486dc209cbdeb66b",
+ "fixtures": {
+  "W_TARGET_cycle20": {
+   "sources": {
+    "symbol_map": "data/SRP1/Results/P512R/cycle20_prepared/original_mapping.json",
+    "model_for_bounds": "data/SRP1/Results/P512R/cycle20_pre_setup/snapshot.pkl",
+    "baseline_log": "data/SRP1/Results/P512R/cycle20_target.log",
+    "baseline_primals": "data/SRP1/Results/P512R/cycle20_target_result.pkl"
+   },
+   "nl_hash_gate": {
+    "hashes": [
+     "fbe9e6e846f6b5b51febdc26ab345315e150d0033979a818a8a909806817dbda",
+     "fbe9e6e846f6b5b51febdc26ab345315e150d0033979a818a8a909806817dbda",
+     "fbe9e6e846f6b5b51febdc26ab345315e150d0033979a818a8a909806817dbda"
+    ],
+    "all_equal": true
+   },
+   "columns": {
+    "n_nl": 9268,
+    "n_opt": 9166,
+    "n_removed": 102,
+    "n_opt_log": 9166,
+    "cross_check_ok": true
+   },
+   "weight": {
+    "N_year": 5,
+    "D_day": 92,
+    "annualization": 1.0,
+    "weight": 460
+   },
+   "baseline": {
+    "objective": 1348.4251823032162,
+    "iterations": 115
+   },
+   "LOW": {
+    "sources": {
+     "primals": "data/SRP1/Results/P512W/LOW_1e-6/used_tmpton9z_qo.pyomo.sol",
+     "log": "data/SRP1/Results/P512W/LOW_1e-6/logs/optim_log_case33_3_2025_Spring.log"
+    },
+    "C_nl": {
+     "max_scaled_primal": 4.045906129682836e-06,
+     "argmax_col": 8397,
+     "argmax_name": "flex_p_up[28,0,0,18]",
+     "n_cols_gt_1e-3": 0,
+     "region": "INDETERMINATE"
+    },
+    "C_opt": {
+     "max_scaled_primal": 4.045906129682836e-06,
+     "argmax_col": 8397,
+     "argmax_name": "flex_p_up[28,0,0,18]",
+     "n_cols_gt_1e-3": 0,
+     "region": "INDETERMINATE"
+    },
+    "C_opt_methodB": {
+     "max_scaled_primal": 4.045906129682836e-06,
+     "argmax_name": "flex_p_up[28,0,0,18]",
+     "agrees_with_methodA": true
+    },
+    "interface": {
+     "families_found": [
+      "expected_interface_vmag",
+      "expected_interface_pf_p",
+      "expected_interface_pf_q"
+     ],
+     "families_compared": [
+      "expected_interface_pf_p",
+      "expected_interface_pf_q",
+      "expected_interface_vmag"
+     ],
+     "per_family": {
+      "expected_interface_vmag": {
+       "n_entries": 24,
+       "max_scaled": 3.387424245890997e-15,
+       "region": "EQUIVALENT"
+      },
+      "expected_interface_pf_p": {
+       "n_entries": 24,
+       "max_scaled": 8.18611844977113e-12,
+       "region": "EQUIVALENT"
+      },
+      "expected_interface_pf_q": {
+       "n_entries": 24,
+       "max_scaled": 7.453945100044379e-11,
+       "region": "EQUIVALENT"
+      }
+     },
+     "worst_region": "EQUIVALENT"
+    },
+    "objective": {
+     "value": 1348.425182601801,
+     "relative_difference": 2.2143226096185148e-10,
+     "region": "EQUIVALENT"
+    },
+    "weighted_obj_planning_units": 0.00013734902495343704,
+    "iterations": {
+     "value": 114,
+     "ratio_change": 0.008695652173913044,
+     "material": false
+    },
+    "branch": "EQUIVALENT"
+   },
+   "HIGH": {
+    "sources": {
+     "primals": "data/SRP1/Results/P512W/HIGH_1e-4/used_tmpijynzl7b.pyomo.sol",
+     "log": "data/SRP1/Results/P512W/HIGH_1e-4/logs/optim_log_case33_3_2025_Spring.log"
+    },
+    "C_nl": {
+     "max_scaled_primal": 0.00020084363213407536,
+     "argmax_col": 8290,
+     "argmax_name": "flex_p_up[24,0,0,7]",
+     "n_cols_gt_1e-3": 0,
+     "region": "INDETERMINATE"
+    },
+    "C_opt": {
+     "max_scaled_primal": 0.00020084363213407536,
+     "argmax_col": 8290,
+     "argmax_name": "flex_p_up[24,0,0,7]",
+     "n_cols_gt_1e-3": 0,
+     "region": "INDETERMINATE"
+    },
+    "C_opt_methodB": {
+     "max_scaled_primal": 0.00020084363213407536,
+     "argmax_name": "flex_p_up[24,0,0,7]",
+     "agrees_with_methodA": true
+    },
+    "interface": {
+     "families_found": [
+      "expected_interface_vmag",
+      "expected_interface_pf_p",
+      "expected_interface_pf_q"
+     ],
+     "families_compared": [
+      "expected_interface_pf_p",
+      "expected_interface_pf_q",
+      "expected_interface_vmag"
+     ],
+     "per_family": {
+      "expected_interface_vmag": {
+       "n_entries": 24,
+       "max_scaled": 4.445472824480771e-12,
+       "region": "EQUIVALENT"
+      },
+      "expected_interface_pf_p": {
+       "n_entries": 24,
+       "max_scaled": 3.9249437033817003e-10,
+       "region": "EQUIVALENT"
+      },
+      "expected_interface_pf_q": {
+       "n_entries": 24,
+       "max_scaled": 8.004301839392713e-09,
+       "region": "EQUIVALENT"
+      }
+     },
+     "worst_region": "EQUIVALENT"
+    },
+    "objective": {
+     "value": 1348.4252001948971,
+     "relative_difference": 1.326857521601771e-08,
+     "region": "EQUIVALENT"
+    },
+    "weighted_obj_planning_units": 0.008230173239098804,
+    "iterations": {
+     "value": 111,
+     "ratio_change": 0.034782608695652174,
+     "material": false
+    },
+    "branch": "EQUIVALENT"
+   }
+  },
+  "X_DSO_case33_2_cycle7": {
+   "sources": {
+    "symbol_map": "data/SRP1/Results/P512X/BASELINE/prepared_mapping.json",
+    "model_for_bounds": "data/SRP1/Results/P512R/production_snapshots/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+    "baseline_log": "data/SRP1/Results/P512X/BASELINE/logs/optim_log_case33_2_2025_Autumn.log",
+    "baseline_primals": "data/SRP1/Results/P512X/BASELINE/used_tmpgl2348nh.pyomo.sol"
+   },
+   "columns": {
+    "n_nl": 9268,
+    "n_opt": 9168,
+    "n_removed": 100,
+    "n_opt_log": 9168,
+    "cross_check_ok": true
+   },
+   "weight": {
+    "N_year": 5,
+    "D_day": 91,
+    "annualization": 1.0,
+    "weight": 455
+   },
+   "baseline": {
+    "objective": 354.1553675595611,
+    "iterations": 91
+   },
+   "LOW": {
+    "sources": {
+     "primals": "data/SRP1/Results/P512X/LOW_1e-6/used_tmpgzkl8w41.pyomo.sol",
+     "log": "data/SRP1/Results/P512X/LOW_1e-6/logs/optim_log_case33_2_2025_Autumn.log"
+    },
+    "C_nl": {
+     "max_scaled_primal": 0.06581731861266765,
+     "argmax_col": 161,
+     "argmax_name": "qg[1,0,0,19]",
+     "n_cols_gt_1e-3": 279,
+     "region": "MATERIALLY DIFFERENT"
+    },
+    "C_opt": {
+     "max_scaled_primal": 0.06581731861266765,
+     "argmax_col": 161,
+     "argmax_name": "qg[1,0,0,19]",
+     "n_cols_gt_1e-3": 279,
+     "region": "MATERIALLY DIFFERENT"
+    },
+    "interface": {
+     "families_found": [
+      "expected_interface_vmag",
+      "expected_interface_pf_p",
+      "expected_interface_pf_q"
+     ],
+     "families_compared": [
+      "expected_interface_pf_p",
+      "expected_interface_pf_q",
+      "expected_interface_vmag"
+     ],
+     "per_family": {
+      "expected_interface_vmag": {
+       "n_entries": 24,
+       "max_scaled": 1.8943767455254596e-09,
+       "region": "EQUIVALENT"
+      },
+      "expected_interface_pf_p": {
+       "n_entries": 24,
+       "max_scaled": 4.943735643081482e-09,
+       "region": "EQUIVALENT"
+      },
+      "expected_interface_pf_q": {
+       "n_entries": 24,
+       "max_scaled": 1.601802657527629e-08,
+       "region": "EQUIVALENT"
+      }
+     },
+     "worst_region": "EQUIVALENT"
+    },
+    "objective": {
+     "value": 354.1601730165203,
+     "relative_difference": 1.3568781950913608e-05,
+     "region": "INDETERMINATE"
+    },
+    "weighted_obj_planning_units": 2.186482916418413,
+    "iterations": {
+     "value": 102,
+     "ratio_change": 0.12087912087912088,
+     "material": false
+    },
+    "branch": "EQUIVALENT"
+   },
+   "HIGH": {
+    "sources": {
+     "primals": "data/SRP1/Results/P512X/HIGH_1e-4/used_tmprbk43kzr.pyomo.sol",
+     "log": "data/SRP1/Results/P512X/HIGH_1e-4/logs/optim_log_case33_2_2025_Autumn.log"
+    },
+    "C_nl": {
+     "max_scaled_primal": 0.03349779299089108,
+     "argmax_col": 157,
+     "argmax_name": "qg[1,0,0,15]",
+     "n_cols_gt_1e-3": 53,
+     "region": "MATERIALLY DIFFERENT"
+    },
+    "C_opt": {
+     "max_scaled_primal": 0.03349779299089108,
+     "argmax_col": 157,
+     "argmax_name": "qg[1,0,0,15]",
+     "n_cols_gt_1e-3": 53,
+     "region": "MATERIALLY DIFFERENT"
+    },
+    "interface": {
+     "families_found": [
+      "expected_interface_vmag",
+      "expected_interface_pf_p",
+      "expected_interface_pf_q"
+     ],
+     "families_compared": [
+      "expected_interface_pf_p",
+      "expected_interface_pf_q",
+      "expected_interface_vmag"
+     ],
+     "per_family": {
+      "expected_interface_vmag": {
+       "n_entries": 24,
+       "max_scaled": 1.3744014663282611e-09,
+       "region": "EQUIVALENT"
+      },
+      "expected_interface_pf_p": {
+       "n_entries": 24,
+       "max_scaled": 3.0863778754941507e-09,
+       "region": "EQUIVALENT"
+      },
+      "expected_interface_pf_q": {
+       "n_entries": 24,
+       "max_scaled": 7.371565378944123e-09,
+       "region": "EQUIVALENT"
+      }
+     },
+     "worst_region": "EQUIVALENT"
+    },
+    "objective": {
+     "value": 354.15407497225556,
+     "relative_difference": 3.6497747145935776e-06,
+     "region": "INDETERMINATE"
+    },
+    "weighted_obj_planning_units": 0.5881272240281987,
+    "iterations": {
+     "value": 125,
+     "ratio_change": 0.37362637362637363,
+     "material": false
+    },
+    "branch": "EQUIVALENT"
+   }
+  },
+  "Y_TSO_case9_cycle7": {
+   "sources": {
+    "symbol_map": "data/SRP1/Results/P512Y/BASELINE/prepared_mapping.json",
+    "model_for_bounds": "data/SRP1/Results/P512R/production_snapshots/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl",
+    "baseline_log": "data/SRP1/Results/P512Y/BASELINE/logs/optim_log_case9_2025_Summer.log",
+    "baseline_primals": "data/SRP1/Results/P512Y/BASELINE/used_tmpeiaa5h37.pyomo.sol"
+   },
+   "columns": {
+    "n_nl": 3036,
+    "n_opt": 2934,
+    "n_removed": 102,
+    "n_opt_log": 2934,
+    "cross_check_ok": true
+   },
+   "weight": {
+    "N_year": 5,
+    "D_day": 91,
+    "annualization": 1.0,
+    "weight": 455
+   },
+   "baseline": {
+    "objective": 337946.0026431192,
+    "iterations": 37
+   },
+   "LOW": {
+    "sources": {
+     "primals": "data/SRP1/Results/P512Y/LOW_1e-7/used_tmp8lfnzdww.pyomo.sol",
+     "log": "data/SRP1/Results/P512Y/LOW_1e-7/logs/optim_log_case9_2025_Summer.log"
+    },
+    "C_nl": {
+     "max_scaled_primal": 1.459943277382081e-14,
+     "argmax_col": 2887,
+     "argmax_name": "qg[1,0,0,1]",
+     "n_cols_gt_1e-3": 0,
+     "region": "EQUIVALENT"
+    },
+    "C_opt": {
+     "max_scaled_primal": 1.459943277382081e-14,
+     "argmax_col": 2887,
+     "argmax_name": "qg[1,0,0,1]",
+     "n_cols_gt_1e-3": 0,
+     "region": "EQUIVALENT"
+    },
+    "interface": {
+     "families_found": [
+      "expected_interface_vmag",
+      "expected_interface_pf_p",
+      "expected_interface_pf_q"
+     ],
+     "families_compared": [
+      "expected_interface_pf_p",
+      "expected_interface_pf_q",
+      "expected_interface_vmag"
+     ],
+     "per_family": {
+      "expected_interface_vmag": {
+       "n_entries": 72,
+       "max_scaled": 2.1395393007999443e-16,
+       "region": "EQUIVALENT"
+      },
+      "expected_interface_pf_p": {
+       "n_entries": 72,
+       "max_scaled": 0.0,
+       "region": "EQUIVALENT"
+      },
+      "expected_interface_pf_q": {
+       "n_entries": 72,
+       "max_scaled": 0.0,
+       "region": "EQUIVALENT"
+      }
+     },
+     "worst_region": "EQUIVALENT"
+    },
+    "objective": {
+     "value": 337946.00264311914,
+     "relative_difference": 1.7223953074816034e-16,
+     "region": "EQUIVALENT"
+    },
+    "weighted_obj_planning_units": 2.648448571562767e-08,
+    "iterations": {
+     "value": 38,
+     "ratio_change": 0.02702702702702703,
+     "material": false
+    },
+    "branch": "EQUIVALENT"
+   },
+   "HIGH": {
+    "sources": {
+     "primals": "data/SRP1/Results/P512Y/HIGH_1e-5/used_tmpt2glqxwh.pyomo.sol",
+     "log": "data/SRP1/Results/P512Y/HIGH_1e-5/logs/optim_log_case9_2025_Summer.log"
+    },
+    "C_nl": {
+     "max_scaled_primal": 7.794703077435017e-11,
+     "argmax_col": 999,
+     "argmax_name": "shared_es_pdch_hat[1,0,0,18]",
+     "n_cols_gt_1e-3": 0,
+     "region": "EQUIVALENT"
+    },
+    "C_opt": {
+     "max_scaled_primal": 7.794703077435017e-11,
+     "argmax_col": 999,
+     "argmax_name": "shared_es_pdch_hat[1,0,0,18]",
+     "n_cols_gt_1e-3": 0,
+     "region": "EQUIVALENT"
+    },
+    "interface": {
+     "families_found": [
+      "expected_interface_vmag",
+      "expected_interface_pf_p",
+      "expected_interface_pf_q"
+     ],
+     "families_compared": [
+      "expected_interface_pf_p",
+      "expected_interface_pf_q",
+      "expected_interface_vmag"
+     ],
+     "per_family": {
+      "expected_interface_vmag": {
+       "n_entries": 72,
+       "max_scaled": 2.1395393007999443e-16,
+       "region": "EQUIVALENT"
+      },
+      "expected_interface_pf_p": {
+       "n_entries": 72,
+       "max_scaled": 0.0,
+       "region": "EQUIVALENT"
+      },
+      "expected_interface_pf_q": {
+       "n_entries": 72,
+       "max_scaled": 0.0,
+       "region": "EQUIVALENT"
+      }
+     },
+     "worst_region": "EQUIVALENT"
+    },
+    "objective": {
+     "value": 337946.0026431192,
+     "relative_difference": 0.0,
+     "region": "EQUIVALENT"
+    },
+    "weighted_obj_planning_units": 0.0,
+    "iterations": {
+     "value": 38,
+     "ratio_change": 0.02702702702702703,
+     "material": false
+    },
+    "branch": "EQUIVALENT"
+   }
+  }
+ },
+ "mismatch_log": [
+  {
+   "type": "REPORT CORRECTION",
+   "fixture": "W_TARGET_cycle20",
+   "axis": "interface/propagating-output",
+   "reported": "EQUIVALENT (asserted; no measurement existed)",
+   "rederived": "EQUIVALENT, measured on all three families: LOW vmag 3.387e-15 / pf_p 8.186e-12 / pf_q 7.454e-11; HIGH 4.445e-12 / 3.925e-10 / 8.004e-09",
+   "settling_artifact": "data/SRP1/Results/P512Z/classification.json from P512W/*/used_*.sol + P512R/cycle20_prepared/original_mapping.json",
+   "effect": "classification unchanged; the cell is now measured rather than asserted"
+  },
+  {
+   "type": "REPORT CORRECTION",
+   "fixture": "Y_TSO_case9_cycle7",
+   "axis": "interface/propagating-output",
+   "reported": "EQUIVALENT (2.1e-16), measured on expected_interface_vmag only; _pf_p and _pf_q present but uncompared",
+   "rederived": "EQUIVALENT on all three families: vmag 2.140e-16, pf_p 0.0, pf_q 0.0 (both arms), 72 entries each",
+   "settling_artifact": "data/SRP1/Results/P512Z/classification.json from P512Y/*/used_*.sol + P512Y/BASELINE/prepared_mapping.json",
+   "effect": "completion of an unfinished measurement under unchanged frozen thresholds; NOT a threshold revision; classification unchanged",
+   "withdrawn_rationale": "the earlier 'consistent with a transmission block's interface role' explanation is false and is withdrawn"
+  },
+  {
+   "type": "HYPOTHESIS RESOLVED AS MOOT",
+   "topic": "gap 3 column-set attribution",
+   "predeclared": "C_nl reproduces => unpreserved step used C_nl; C_opt reproduces => it honoured the frozen wording; neither => third cause",
+   "observed": "C_nl and C_opt yield IDENTICAL max_scaled_primal and identical n_cols_gt_1e-3 for all three fixtures and both arms",
+   "conclusion": "the earlier numbers are consistent with either column set; no cause can be or needs to be attributed. The distinction does not affect any reported value.",
+   "note": "recorded per the rule that a cause is not recorded ahead of evidence"
+  },
+  {
+   "type": "NEW VALUE",
+   "topic": "planning weights",
+   "rederived": "W = 5 x 92 = 460 (2025 Spring, never previously computed); X = Y = 5 x 91 = 455 (confirmed)",
+   "weighted_objective_units": {
+    "W_LOW": 0.0001373,
+    "W_HIGH": 0.00823,
+    "X_LOW": 2.186,
+    "X_HIGH": 0.5881,
+    "Y_LOW": 2.648e-08,
+    "Y_HIGH": 0.0
+   }
+  },
+  {
+   "type": "FIXTURE PROPERTY",
+   "topic": "optimization column counts",
+   "rederived": "n_nl/n_opt/n_removed = W 9268/9166/102, X 9268/9168/100, Y 3036/2934/102; each cross-checked against its own IPOPT log and all three agree",
+   "note": "the equal-bound removal count is fixture-dependent (100 vs 102), recorded alongside the fixture-dependent c-scaling as a modelling-invariant conditioning difference between blocks"
+  },
+  {
+   "type": "GATE",
+   "topic": "W baseline dual derivation",
+   "result": "NL hash gate passed (P512R/cycle20_prepared/original.nl equals both W arms' prepared.nl); method A and method B agree exactly for both arms",
+   "note": "given the shared symbol map by construction, agreement was required; a disagreement would have been a bug"
+  }
+ ],
+ "zero_solver": {
+  "counters": {
+   "OptSolver.solve": 0,
+   "SystemCallSolver._execute_command": 0
+  },
+  "zero_confirmed": true
+ }
+}
