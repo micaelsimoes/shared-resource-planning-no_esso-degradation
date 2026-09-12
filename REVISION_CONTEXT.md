@@ -3181,3 +3181,79 @@ distorts. **No evaluation artifact exists for any branch**, so what these experi
 showed is not recoverable.
 
 **No lever is proposed. S1 stops here; S2 is not started.**
+
+## S2 — cost model and lever designs (design stage, 2026-09-12)
+
+Zero solves **enforced** (0 solves, 0 launches); nothing changed; no lever run. Full
+record in `P5_14_S2_COST_AND_LEVER_DESIGN.md`; artifacts under
+`data/SRP1/Results/P514S2/`.
+
+**Correction that comes first: residual balancing HAS been evaluated.** `p59_b_adaptive.py`
+and `data/SRP1/Results/P59/p59_b_adaptive.json` are a two-arm A/B of that lever with a
+control, and its docstring already states the mechanism S1 rediscovered — dual linear in
+rho, the update rule therefore pushing rho back down, "measured below, not asserted".
+S1's mechanism analysis is a rediscovery. My S1 wording ("no evaluation artifact for any
+branch") was true of branches and invited the wrong generalisation to stages.
+
+**What P5.9-B measured** (same template, same start `rho_pf` = 1000, first generation):
+adaptive **off** 16 cycles / 783.6 s at fixed rho; adaptive **on** 6 cycles / 295.4 s with
+`rho_pf` driven to **131.687** and the objective better by 109,131 of 8.28e8. A **2.67x
+cycle reduction**, and the coupling is **self-correcting, not oscillatory**. The off arm's
+16 cycles independently reproduces P5.10-B at `rho_pf` 1000.
+
+**Proximal regularization is the lever with genuinely no evaluation** — searched; only
+provenance dumps and a docstring noting it was unchanged.
+
+**Cost model.** 51 local solves per cycle (36 DSO + 12 TSO + 3 ESSO), verified from the
+P5.12-R ledger (1095 = 780 + 252 + 63).
+
+| Path | cycles | ADMM solves | `Q(x)` depends on |
+|---|---|---|---|
+| cold, uncapped | **>= 21** | **>= 1071** | `x` alone |
+| warm from template, gen 1, rho_pf 300 | 6 | 306 | `x` and the template |
+| warm from template, gen 1, rho_pf 1000 | 16 | 816 | `x` and the template |
+| warm, gen 1, adaptive from 1000 | 6 | 306 | `x` and the template |
+| warm **continuation**, gens 2+ | 1 | 51 | `x` and the whole campaign history |
+
+Polish is not separately counted in the ledgers; inferred as one pass over 48 network
+blocks per generation and excluded from the counts — an inference, not a measurement.
+
+**Withdrawn figures.** The ~69-further-cycles / ~4,600-solves estimate is withdrawn: the
+cold run carried `cap: 21` in its own configuration and was stopped by configuration, not
+by stalling. The 15x cold-to-warm ratio is withdrawn with it. The supported ratio is
+**>= 3.5x** (>= 1071 against 306), with the true cold cost unknown and bounded below only —
+replacing one unsupported number with another would repeat the original error.
+
+**Headline.** Cold at rho_pf 300, capped at 21, still descending; warm-from-template at
+rho_pf 300, converged in 6. Same rho, same tolerances. **Initialization dominates rho as a
+cost lever, and the P5.10 sweep varied the weaker of the two.**
+
+**The tension for the outer layer.** The cheap path is cheap *because* it inherits a
+template, and inheritance is what makes `Q(x)` depend on history rather than on `x` alone
+— the same concern the Expert raised about P5.10's inherited-template comparison. A cheap
+oracle whose value depends partly on where it started, or an independent oracle at several
+times the cost: any outer method needs the second to mean anything, any campaign needs the
+first to be affordable. Generations 2+ at 1 cycle / 51 solves are 20x cheaper than a cold
+evaluation's lower bound and depend on the entire preceding campaign. A formulation
+question, not a tuning one.
+
+**Frozen designs, costed, NOT run.** `AB1 — adaptive rho on the COLD path`
+(`frozen_ab1_adaptive_cold_v1_5d996737.json`): the warm path is already answered, so the
+untested case is the cold one; predeclared **attractor hypothesis** — the update rule's
+fixed point is a property of the problem and the dead band, not the starting value, so
+from `rho_pf` 300 the adaptive arm should settle in [80, 200], falsified by settling
+outside it or by oscillation; cost **>= 2142 solves for both arms**, a lower bound.
+`AB2 — DSO proximal regularization` (`frozen_ab2_dso_proximal_v1_76e0051d.json`): the
+never-measured asymmetry (`tso.enabled true`, `dso.enabled false`, both gamma 1.0), warm
+path, prediction that DSO block movement falls with **no directional prediction for cycle
+count**; cost ~612 solves for both arms. **AB2 runs first if both are authorized**, and
+its control must reproduce P5.10-B's 6 cycles before any treatment number is read.
+
+**Prior art, two unmerged branches.** `residual_balancing_mod` (42 commits) is misnamed —
+it removes the blocks labelled residual balancing and introduces average-interface-power
+normalization, the ancestor of `/interface_rating`; all messages are "Update".
+`warm_start_tests` (5 commits) is 40 lines setting `from_warm_start = True`; messages
+"Blegh", "Debug", "Correction", "Small correction", "Test." Neither has an evaluation
+artifact, so their claims are unrecoverable — correctly scoped to branches this time.
+
+**No lever run. S2 stops here.**
