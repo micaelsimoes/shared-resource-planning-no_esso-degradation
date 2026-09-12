@@ -3287,8 +3287,11 @@ was predeclared as inconclusive; no cost may be extrapolated from it. The bound 
 
 **Attractor prediction FALSIFIED.** Predicted `rho_pf` in [80, 200], most likely 133.33;
 observed **3.4683** after eleven consecutive decreases, held for 20 cycles, having passed
-through 133.33 at cycle 2. No oscillation, so the attractor idea survives; what fails is
-initialization-independence. The same rule and dead band settle at **131.687 warm** and
+through 133.33 at cycle 2. No oscillation. **The falsification is scoped to the
+prediction, not to the rule:** what fails is naive initialization-independence. Cold and
+warm are different iterate regimes, and a rule that settles low where iterates move freely
+and high near a solution is behaving as state-dependent penalty balancing should;
+discarding the mechanism on this evidence would be the wrong lesson. The same rule and dead band settle at **131.687 warm** and
 **3.4683 cold** — a factor of 38. The adaptive rule's operating point is a property of the
 trajectory it is placed on, reinforcing the S2 finding that initialization dominates.
 
@@ -3316,10 +3319,14 @@ economically, consensus is looser but inside tolerance, and the objective falls 
    scale-sensitive. Any convergence comparison between an adaptive and a fixed-rho run
    compares two different tests, so "cycles to convergence" is not a valid cross-rho cost
    measure unless restated on a rho-free quantity.
-2. *The declared consensus tolerance admits a wide objective band.* Both arms sit inside
-   `primal_pf <= 0.01` yet differ by 40% in recourse at matched cycles, the treatment's
-   convergence point having consensus 21x looser. Whether `Q(x)` is well defined at this
-   tolerance is now live, and any cut or ranking built on `Q` inherits the band.
+2. *Consensus alone is never a valid convergence proxy.* The control sits inside
+   `primal_pf <= 0.01` — 21x tighter than the treatment's converged point — while its
+   objective still falls 3.1 M per cycle at cycle 50. **Corrected reading:** the 40%
+   recourse spread is NOT evidence of a wide objective band at tolerance, because the
+   control is mid-descent; two points on one descent trajectory differing by 40% show only
+   that one has not finished. The finding *vindicates* the composite residual-AND-objective
+   test, which correctly refused to declare the control converged where consensus alone
+   would have.
 
 **Caveats.** Both arms run under C3, so no objective here is comparable with pre-C3
 figures. One local solve failed (treatment, cycle 11, during the rho collapse; production
@@ -3332,3 +3339,42 @@ invalid. `adaptation_harms` not established. The cost question is **INCONCLUSIVE
 licenses no cost figure for an independent oracle; it licenses a sharper question: on a
 rho-free standard, what does the cold path cost, and is the consensus tolerance tight
 enough for `Q(x)` to mean anything?
+
+## P5.14-G — candidate recovery and the rho-free comparison (2026-09-12)
+
+Zero solves **enforced** (0/0/0/0). Artifact
+`data/SRP1/Results/P514AB1/p514g_candidate_and_rhofree.json`.
+
+**Candidate recovered, and the eighth-rule defect closed retroactively.** AB1 recorded
+its settings exhaustively and never named its problem instance. The candidate is
+nonetheless recoverable because it is deterministic: AB1 builds it with
+`srp._build_positive_bootstrap_candidate`, and P5.9-B reaches **the same function**
+through `BC.population -> p56a_candidates.base_vector` (`:39-43`). Re-derived here and
+**cross-checked byte-for-byte against the candidate P5.12-R recorded verbatim: identical**.
+So AB1, P5.9-B and P5.12-R all evaluate the same instance.
+
+**But the proposed cold-versus-warm inversion still cannot be tested — for a different
+reason.** AB1 ran under **C3** (`k = 11541.56`); P5.9-B ran **pre-C3** (`k = 10000`). The
+degradation constant enters SoH, hence available capacity and the salvage credit, hence
+`net_operational_recourse`. The observed 0.12% gap (826.83 M under C3 against 827.85 M
+pre-C3) is **confounded with the formulation change**, and its sign is what the C3 change
+alone would produce: higher `k` -> less degradation -> higher salvage -> lower recourse.
+Reading that gap as two oracles agreeing on `Q` would repeat the salvage-incomparability
+error across a boundary we created ourselves. The comparison requires a warm-path run
+**under C3**, which is a solve and is on hold.
+
+**The rho-free comparison, free from stored data.** Step `= dual_pf_mean / rho_pf` is the
+mean interface increment with rho divided out; the single fixed physical standard is
+`tol/rho_ref = 0.01/300 = 3.333e-05`.
+
+| arm | cycles | first step | final step | multiple of the physical threshold | reached it |
+|---|---|---|---|---|---|
+| treatment | 32 | 0.220027 | 6.079e-04 | **18.24x** | no |
+| control | 50 | 0.220027 | 2.907e-04 | **8.72x** | no |
+
+Both arms start at an identical step, which independently confirms a shared instance and
+initialization. **Neither reached the physical threshold**, and the **control approaches
+it faster — by 2.09x** at each arm's best. On the standard that does not move with rho,
+the fixed-rho arm is the one making more progress toward convergence, while the adaptive
+arm is the one making more progress on the objective. The two questions have opposite
+answers, and the stationarity criterion as implemented cannot distinguish them.

@@ -32,11 +32,17 @@ Predicted `rho_pf` settles in **[80, 200]**, most likely 133.33. Observed **3.46
 eleven consecutive decreases, zero increases, held for the last 20 cycles. The walk
 passed *through* 133.33 at cycle 2 and kept descending.
 
-No oscillation and no failure to settle, so the attractor *idea* survives; what fails is
-the claim that the fixed point is initialization-independent. The same rule with the same
-dead band settles at **131.687 warm** and **3.4683 cold** — a factor of 38. The adaptive
-rule's operating point is a property of the trajectory it is placed on, which
-independently reinforces the S2 finding that initialization dominates.
+No oscillation and no failure to settle. **The falsification is scoped to the
+prediction, not to the rule.** What fails is naive initialization-independence: the same
+rule with the same dead band settles at **131.687 warm** and **3.4683 cold**, a factor of
+38.
+
+That is not misbehaviour. Cold and warm are different iterate regimes, and a balancing
+rule that settles low where iterates move freely and high near a solution is doing what
+state-dependent penalty balancing is supposed to do. Discarding the mechanism on this
+evidence would be the wrong lesson. What the result does establish is that the operating
+point is a property of the trajectory the rule is placed on — which independently
+reinforces the S2 finding that initialization dominates.
 
 ## 3. The result inverts: the two arms were not held to the same standard
 
@@ -100,11 +106,19 @@ headline of this stage — is comparing against two different tests. Reporting "
 convergence" across arms with different rho is therefore not a valid cost comparison
 unless the standard is restated on a rho-free quantity.
 
-**The declared consensus tolerance admits a wide objective band.** Both arms sit inside
-`primal_pf ≤ 0.01`, and differ by 40% in recourse at matched cycles. The treatment's
-declared convergence is a point with consensus 21x looser than the control's. Whether
-`Q(x)` is well defined at this tolerance is now a live question, and it bears directly on
-the outer layer: a cut or a ranking built on `Q` inherits that band.
+**Consensus is satisfied long before the objective converges, so consensus alone is
+never a valid convergence proxy.** The control sits inside `primal_pf <= 0.01` from early
+on — indeed 21x tighter than the treatment's converged point — while its objective is
+still falling by 3.1 M per cycle at cycle 50.
+
+*Corrected reading.* An earlier draft called the 40% recourse spread evidence that the
+consensus tolerance admits a wide objective band, and therefore that `Q(x)` might be ill
+defined. **That does not follow.** The control is mid-descent; two points on one descent
+trajectory differing by 40% show only that one of them has not finished, and say nothing
+about the width of `Q` at a converged point. The defensible finding is the one above, and
+it *vindicates* the composite test rather than threatening `Q`: residual AND objective,
+together, correctly refused to declare the control converged when consensus alone would
+have.
 
 ## 6. Caveats
 

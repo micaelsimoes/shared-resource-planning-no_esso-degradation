@@ -93,6 +93,13 @@ incidents behind each rule are in `REVISION_CONTEXT.md`, section
   docstring already stated the mechanism a later stage then rediscovered. A branch-scoped
   search had been widened to stages without being redone. Same family as rules five and six:
   claims that read as established but were never checked.
+- Record the problem instance, not only the settings. An objective, recourse or residual
+  value without its candidate is uninterpretable and incomparable, however exhaustively the
+  configuration around it is documented. AB1 recorded rho, cap, tolerances, the adaptive
+  flag, the solve profile and what was not permitted — and never named the investment
+  vector, so its recourse could not be compared with any other stage until the candidate was
+  recovered retroactively. Record the instance identifier, or a hash of it, in every artifact
+  that reports a value.
 
 ## Investigation discipline
 
