@@ -3548,3 +3548,105 @@ then ask only whether the offset reproduces *within the stated error bar*, which
 strongest claim the current stopping rule supports. What would actually settle it is
 tightening the objective tolerance until the terminal per-cycle change falls below the
 signal — a parameter change, not authorized, with the indicative cost above.
+
+## Track A — ADMM stabilization track CLOSED (2026-09-12)
+
+Documentation only; no solves. Full record in `P5_14_TRACK_A_STABILIZATION_CLOSURE.md`.
+S1, S2, AB1 and the 2x2 stand as recorded, with the rediscovery, the corrections and the
+withdrawn claims intact.
+
+**The resolution finding is the track's principal result.** `objective_tolerance = 827,945`
+against a stabilized best-to-second gap of **32.87** — a factor of **25,188**, and still
+25x the pre-stabilized `PLANNING_SIGNAL = 33,031`. The observed cross-depth uncertainty of
+**22.09** sits four orders of magnitude below that bound, and the **path-identity
+mechanism** explains why: identical code paths visiting identical iterates stop at identical
+points, so the stopping slack cancels exactly in a difference. P5.10's ranking stability is
+a consequence of **determinism, not resolution**. It generalises to reruns of the same
+candidates on the same code and data; it does **not** generalise to any comparison where the
+paths differ — a different candidate, a solver retry, a code edit, a different
+initialization — each of which can move a stopping point by up to a tolerance width, i.e.
+~25,000 times the signal.
+
+**Consequence: `Q`'s resolution, not its convexity, is the immediate disqualifier for
+cut-based methods.** A cut or a finite-difference slope built on differences of `Q` inherits
+an uncertainty four orders of magnitude larger than the effects being ranked. Convexity
+remains unestablished and is now a second-order question.
+
+**The codebase already encodes the gate it fails.** `benders_parameters.py:17` sets
+`minimum_signal_to_noise_ratio = 10.0` and the case file sets
+`benders.finite_difference.enabled = false`. The current ratio is
+`32.87 / 827,945 = 3.97e-05`, failing that gate by **2.5e5** — more than five orders of
+magnitude. Someone built the right check and switched it off: independent corroboration
+from the opposite direction.
+
+**Ninth rule promoted** to `CLAUDE.md`: report a difference with its resolution; a
+difference smaller than the error implied by where each computation stopped is
+indeterminate, not a result.
+
+**Closure reason.** `Q` well defined across structurally different initializations (~0.1%,
+systematic); ADMM converges (32 cycles cold adaptive, 4-6 warm); local solves fail once in
+1,095 (once in 4,284 across AB1/X22); a warm evaluation costs 255 solves; **no remaining
+lever with an identified decision-relevant payoff**. The cycle-21 mechanism stays open and
+unpursued; the breadth line stays closed at n = 3.
+
+## Track B — configuration reconciliation: OVERRIDE, not drift (2026-09-12)
+
+Zero solves, enforced. Full record in `P5_14_TRACK_B_CONFIG_RECONCILIATION.md`; evidence
+`data/SRP1/Results/P514B/b_config_reconciliation.json`. **Nothing changed; the decision is
+the author's.**
+
+**Per-stage governing configuration** (tolerances *derived* from each stage's own numbers,
+not read from the case file): every preserved stage ran at `rho_v = 1.5`, `rho_pf` 300 or
+1000, stationarity and consensus tolerances 0.01. `adaptive_penalty` was False everywhere
+except P5.9-B's treatment arm and the 2x2's adaptive cells. `num_max_iters` is not
+serialized by the older stages — a gap against the eighth rule.
+
+**Mechanism: programmatic override.** `data/SRP1/SRP1_params.json` has carried
+`rho.{v,pf,ess} = 1.0` and `adaptive_penalty = true` **continuously since 2025-12-15
+(`784346d7`)**, which pre-dates every preserved stage. The file was never edited to diverge;
+the harnesses override rho and the adaptive flag in memory via
+`p59_rho.apply_rho_to_params` / `set_adaptive_penalty`. What *did* move in the file are the
+**tolerances** (stationarity `0.05 -> 0.001 -> 0.01`; objective rel
+`0.0005 -> 0.005 -> 0.001 -> 0.01 -> 0.001`) and `num_max_iters 50 -> 25` on 2026-09-04 —
+and tolerances are **not** overridden, so each stage ran with whatever the file held.
+
+**A plain production run today** would use `rho = 1.0` everywhere, `adaptive_penalty = True`,
+`num_max_iters = 25`, stationarity 0.01, objective (1000, 1e-3), TSO proximal on, DSO
+proximal off, C3 active — **matching no preserved stage**.
+
+**Decision put to the author with both readings.** (1) *Deliberate baseline*: P5.9-B and the
+2x2 both show adaptation works and finds its own level, so `adaptive = True` with
+`rho.pf = 1.0` is rational; if so, record it as the new intended baseline and state the
+corollary that **every preserved result was produced under a now-superseded configuration**.
+One measurable caveat: the rule has only ever been started *above* its settling range, so
+only the decrease branch has ever fired; starting at 1.0 would require the increase branch,
+which no preserved run exercises. (2) *Drift*: the tolerance edits are labelled "Debug." and
+moved five times in six weeks, so the file should be restored to the evidence-base values.
+
+## Tracks C, D, E — status (2026-09-12)
+
+**C0 frozen** (`data/SRP1/Results/P514C/frozen_c0_tolerance_sweep_v1_43da5cb6.json`): one
+decade, `admm.tol.objective.rel` 1e-3 -> 1e-4, overridden **in the harness**, the case file
+untouched. Configuration inherited from the 2x2's adaptive cells so the tolerance is the
+only varied setting. Predeclared classes: proportional shrink / plateau / indeterminate.
+Recorded in the spec: **at 1e-3 the cold/warm offset (905,573) was already smaller than its
+own error bar (919,092)**, so the baseline comparison is itself indeterminate — C1 tests
+whether one decade changes that. C1 running; **C2 stops for the author's decision** on a
+second decade, whose cost is an order of magnitude uncertain (12 cycles at r = 0.82, 114 at
+r = 0.98) and must be measured.
+
+**D proposed, nothing run** (`P5_14_TRACK_D_CANDIDATE_RESIZE_PROPOSAL.md`): the conditioning
+problem is in the experiment, not the solver. P5.10's 0.0000040% perturbation gives
+`signal/resolution = 0.00004x`; the paper's claimed effects give **20.1x** (2.01% storage)
+and **182.5x** (18.25% coordination + storage), both clearing the built-in SNR gate of 10.
+The caveat to be measured rather than assumed: at real capacities neither the 255-solve warm
+cost nor the 1-in-1,095 reliability transfers, because both were measured where the storage
+is nearly inert. Penalty classification becomes live again in this track.
+
+**E delivered** (`P5_14_TRACK_E_MANUSCRIPT_RECONCILIATION.md`): claim / status / correction
+for the Expert's five items plus five established since — the 0.50% gap is
+`benders.tol_rel = 0.005`, a configured stopping tolerance reported as an achieved gap; the
+70% SoH is a live `paper_revisions` divergence; the 60/80% sensitivities were not runnable
+while the constants were hard-coded; ranking stability rests on path-identity cancellation;
+and branch governance must be stated. Penalty classification is recorded as a blocking
+dependency the paper should make visible.

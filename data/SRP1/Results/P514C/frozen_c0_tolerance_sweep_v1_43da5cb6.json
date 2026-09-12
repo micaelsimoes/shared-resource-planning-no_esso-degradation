@@ -1,0 +1,48 @@
+{
+  "design": "Track C0 — objective-tolerance decade sweep, 1e-3 -> 1e-4",
+  "status": "FROZEN — written and hashed before C1 runs",
+  "question": "NOT spread reduction. Whether the two initializations share a fixed point — which every outer method depends on and nothing so far has tested.",
+
+  "mechanism": {
+    "parameter": "admm.tol.objective.rel, a CASE-FILE parameter read by _read_parameters_from_file",
+    "method": "overridden in the harness on the in-memory planning problem, exactly as P5.12-P/W/X/Y did. data/SRP1/SRP1_params.json is NOT edited.",
+    "why_not_in_place": "every preserved result would stop being reproducible from the tree, and 16-digit reproduction from the tree is now a load-bearing property (X22 reproduced a pre-C3 run exactly).",
+    "no_code_change": "the tolerance is a parameter, so no neutrality gate is required for the mechanism",
+    "effective_tolerance": "objective_tolerance = max(abs 1000, rel * recourse). At rel 1e-3 that is 827,945; at 1e-4 it is 82,795 — still ~2,500x the stabilized signal of 32.87."
+  },
+
+  "configuration_inherited_from_the_2x2_ADAPTIVE_cells": {
+    "rho": {"v": 1.5, "pf": 300.0, "ess": 1.0},
+    "adaptive_penalty": true,
+    "rationale": "so the existing 1e-3 measurements (cold_adaptive 826,829,641.1; warm_adaptive 827,735,214.6) serve as the baseline and the TOLERANCE IS THE ONLY VARIED SETTING",
+    "note": "this is inherited from the 2x2, NOT from the case file. Track B governs what 'production' means; it does not gate this design."
+  },
+
+  "cells": {
+    "cold_1e-4": "cold start, adaptive, rel 1e-4",
+    "warm_1e-4": "warm from frozen T0, adaptive, rel 1e-4",
+    "baselines": "the 2x2's cold_adaptive and warm_adaptive cells at rel 1e-3"
+  },
+  "instance": "the recovered AB1 candidate, C3 active; instance and full effective configuration recorded per rule eight",
+  "cap": {"value": 90, "identical_for_both_cells": true,
+           "rule": "hitting the cap is INCONCLUSIVE for that cell — no value and no offset may be read from a capped cell"},
+
+  "predeclared_outcome_classes": {
+    "proportional_shrink": "the offset falls roughly in proportion to the tolerance (about 10x) -> the 0.11% was stopping slack, and Q is path-independent in the limit",
+    "plateau": "the offset is materially unchanged -> Q is genuinely path-dependent, and independence at 6.6x becomes MANDATORY rather than a trade-off",
+    "indeterminate": "the new offset is still smaller than its own error bar -> reported as indeterminate, and no reading of either kind is permitted"
+  },
+  "error_bar_rule": "EVERY offset is reported with its error bar: the sum of the two cells' terminal per-cycle objective changes (ninth rule). A difference smaller than that error is indeterminate, not a result.",
+  "baseline_error_bar_for_reference": {"offset_at_1e-3": 905573.4, "error_bar_at_1e-3": 919092.4,
+    "note": "at 1e-3 the cold/warm_adaptive offset was ALREADY smaller than its own error bar (706,603.5 + 212,488.8), so the baseline comparison is itself indeterminate. C1 tests whether one decade changes that."},
+
+  "solve_profile": {"mode": "armed and counted", "permitted_call_sites": "the production ADMM and ESSO solve paths",
+    "identity": "permitted solves == 51 * cycles + 51 (one initialization block), exactly as in all four 2x2 cells; a mismatch fails the cell",
+    "upper_bound_per_cell": 4641, "hard_failure": "any blocked solve, or a total above the bound"},
+
+  "C2_stop": "after C1 the stage STOPS for the author's decision on a second decade. One decade costs ln(10)/(-ln r) extra cycles — about 12 at r = 0.82 but 114 at r = 0.98 — so the cost is an order of magnitude uncertain and MUST BE MEASURED, not estimated. C1 reports the realised ratio.",
+
+  "framing_note": "varying a tolerance as the independent variable of a predeclared sweep is legitimate. It is not 'changing thresholds after seeing results', which covers classification thresholds applied post hoc. Nothing here is committed to production.",
+  "not_permitted": ["editing data/SRP1/SRP1_params.json", "tightening beyond this one decade",
+                    "reading a value from a capped cell", "reporting an offset without its error bar"]
+}
