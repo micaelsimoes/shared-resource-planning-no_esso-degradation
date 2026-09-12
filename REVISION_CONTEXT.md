@@ -2754,3 +2754,95 @@ any `A < B` is a diagnostic defect. With the site-1 slack active, both direction
 values can be strictly positive and `B` can exceed `A`; `A < B` is then a *finding*
 (slack absorption), and the diagnostic must report active slack alongside every `A`/`B`
 pair. Neither version has been executed.
+
+## P5.13-B — cycling calibration: `cl_nom`, `dod_nom`, `soh_min`, `t_cal` (2026-09-12)
+
+Code trace, git history and arithmetic; no solver work, no production change. Full
+record in `P5_13_B_CYCLING_CALIBRATION.md`.
+
+**Primary finding — the (count, depth) pair was never maintained as a pair.** Recovered
+from `git log --full-history` over `shared_energy_storage.py` (default history
+simplification omits commits and must not be used for this question).
+`cl_nom = 10000` dates from the initial commit (`4c6fef21`, 2024-04-08) and has **never
+been changed**: an original modelling choice, not a leftover. If it was ever paired with
+a depth, that depth was **0.95**, not 0.80 — `dod_nom` went `0.95 -> 0.90` the next day
+(`ceb76b9a`) and `0.90 -> 0.80` twenty months later (`f952c969`, 2025-12-05), with the
+count revisited at neither. `soh_min` did not exist when `cl_nom` was introduced; when it
+appeared (`1a318339`) it was `0.10`, becoming `0.50` only on 2026-08-03 (`edcfbd95`).
+So the defect is not that one of two readings of `cl_nom` is right — it is that a paired
+`(count, depth)` specification was never maintained as a pair, because the law consumes
+only the count.
+
+**The apparent calibration is an accident.** Today's constants imply, at 10000 cycles of
+depth 0.80, a retention `exp(-0.8) = 0.449`, close to today's `soh_min = 0.50`, which
+makes the implementation look calibrated. It is not: the `0.80`/`0.50` pairing is the
+residue of two independent later edits made twenty months apart, neither mentioning the
+other quantity. Treated exactly like the two cancelling defects below — a coincidence
+that must never be cited as justification.
+
+**`t_cal` — a governance finding.** Seven value changes after the initial commit
+(`20 -> 10 -> 20 -> 15 -> 10 -> 15 -> 20 -> 15`), two of them buried in commits
+describing unrelated work: `39f83c47` "Planning. Test." (`15 -> 10`) and `7e3b3246`
+"vmag_sqr redefined to vmag." (`10 -> 15`). `t_cal` gates cohort activation
+(`shared_energy_storage_data.py:269`, `:432`, `:500`) and the salvage remaining-life
+fraction (`:712-717`), so any result depending on it is interpretable only with its
+commit pinned. Independent argument for the parameter move.
+
+**The manuscript's 70% is DIVERGENT, not stale — revises the `EXPERT_REVIEW.md:51`
+item.** `soh_min = 0.70` exists (`a3c76922`, 2026-07-29, "Default minimum SoH updated.")
+but is **not on this branch**: it lives on `paper_revisions`, which is not an ancestor of
+HEAD; the branches diverged at `285cbb42` (2026-07-28). `paper_revisions` is at **0.70
+today**; `feature/derivative-free-planning`, which produced every P5.x result, went
+`0.10 -> 0.50` on 2026-08-03 and is at **0.50 today**. The values are concurrent, not
+sequential. The paper's 70% is supported by the code on its own branch and contradicted
+by the code that generated the numbers; Table 7's 49.62% is consistent with the 0.50
+floor binding. `soh_min` enters both the feasibility floor (`:529`) and the salvage
+valuation (`:680`, `:748`, `:787`). The earlier phrasing — that the 70% claim had no
+mechanism behind it — is **withdrawn**: it had one, on the other branch. The 60%/80%
+sensitivity cases remain unsupported on either branch. Note also that the 0.50 value has
+its own undocumented origin: `edcfbd95`'s message does not mention changing a default
+that had stood at 0.10 for over two years.
+
+**The law assumes a reference DoD of 1.0.** The throughput accumulator is cell-side
+energy (`eff_ch*pch*dt + pdch*dt/eff_dch`, `:479-490`), so a full-depth cycle contributes
+exactly `2E`; the normalization `2*cl_nom*E` (`:509`) is thus `cl_nom` cycles at
+**DoD = 1.0** while the object declares depth `0.80` — the `1.25x` arm of the unmaintained
+pair.
+
+**`cl_nom` functions as a decay constant, not as cycles-to-EOL.** The SoH chain is
+multiplicative per day (`:513`/`:515`, `:524`/`:526`, exponent `365*5 = 1825`), so
+retention is `~exp(-EFC_total/cl_nom)`: at exactly `cl_nom` EFC the model retains
+**36.8%**; SoH 0.50 at **6931 EFC**, SoH 0.80 at **2231 EFC**, rate-independent.
+**Correction to earlier advice:** defaulting to the manufacturer-count reading because it
+is conservative was wrong as general advice — depth and end-of-life retention point in
+opposite directions. Depth gives `1.25x` towards shorter life; but manufacturer counts
+are conventionally quoted to 70-80% SoH, and under that convention the implemented law
+**understates** life by roughly `3.6x`. The conservative-default instruction is withdrawn.
+
+**Also recorded.** (a) The comment at `:511` calls `es_soh_per_unit` the "Annual SoH"; it
+is the **daily** retention factor — a factor-365 trap. (b) `es_degradation_per_unit ~ 1e-4`
+against a bound of 1.0, multiplied by `20000*E_rated` in a bilinear equality: a
+**candidate** row-scaling item for the NLP-stability work, with no causal claim.
+
+**The decision, reframed as a triple.** State the calibration as `(N, D, R)` — cycles,
+reference depth, end-of-life retention — and derive the law's constant
+`k = N*D/(-ln R)`, using `2*k*E_rated` in place of `2*cl_nom*E_rated`. The law then
+consumes all three, so the pair cannot silently break again, and `dod_nom` becomes
+load-bearing rather than vestigial. The identity `EFC_to_R = -ln(R)*k = N*D` holds for
+every triple, so each candidate reaches its own `R` at exactly `N*D` cycles and the
+candidates differ only in curve steepness.
+
+| # | `N` | `D` | `R` | `k` | `k`/10000 | 15-yr retention at 1 EFC/day |
+|---|---|---|---|---|---|---|
+| C1 as implemented | 10000 | 1.00 | 0.368 | 10000 | 1.000 | 0.5784 |
+| C2 conventional datasheet | 10000 | 0.80 | 0.80 | 35851 | 3.585 | 0.8584 |
+| C3 this branch's floor | 10000 | 0.80 | 0.50 | 11542 | 1.154 | 0.6223 |
+| C4 manuscript branch's floor | 10000 | 0.80 | 0.70 | 22429 | 2.243 | 0.7834 |
+
+Under C1 a cohort cycled once daily loses 42% of capacity over the horizon and
+approaches the 0.50 floor; under C2 it loses 14%, the floor stops binding and the
+salvage term changes materially. C3 is within 8% of present behaviour at 15 years; C2 and
+C4 are not. C4 is on the table only because of the branch divergence, which means
+choosing C2 or C3 also decides what the paper must say. **Anything other than
+`k = 10000` changes the degradation term and hence the objective — blocking against the
+ranking-baseline re-derivation.** The choice of `(N, D, R)` is the author's.
