@@ -2502,3 +2502,68 @@ recourse (`:736-745`).
 3. The transition must be applied consistently across operational evaluation, candidate
    ranking and any sensitivity or cut accounting, or results from the three will not be
    mutually comparable either.
+
+### Convertibility audit — most of the affected list survives the transition
+
+Audited against preserved artifacts rather than assumed. **Conversion rule:** the
+zero-salvage value is `gross_operational_cost`, which is stored directly wherever the
+cost families were preserved; equivalently `net + terminal_salvage_value`, and for a
+total, `total + terminal_salvage_value`. This is arithmetic on existing artifacts —
+**no re-solve**.
+
+**CONVERTIBLE — gross and/or salvage preserved alongside the reported value:**
+
+- P5.6-A START-1 — `P56A/p56a_a1_certificate.json` holds
+  `gross_operational_cost = 829291677.5221196`, `physical_salvage = 3439.6598771430236`,
+  `net = 829288237.8622425`, `total_objective = 829338237.8622425`.
+- **P5.4-R `Q0`** — the same certificate's `admm` block holds
+  `gross_operational_cost = 838500270.3685532`, `terminal_salvage_value =
+  3439.5551395370985`, `net_operational_recourse = 838496830.8134136`.
+- P5.6-B template chain T0..T4 — `P56B/p56b_b1_template.json` carries the keys.
+- P5.6-D `tau_planning_refined` — `P56D/p56d_depths.json`, `p56d_k12.json`.
+- P5.7 (3 files), P5.8 (4 files), P5.9 (14 files) carry the keys.
+- **P5.10, including the acceptance statistics.** `p510_b_fixedrho_pf{300,500,1000}.json`
+  carry `cost_families` per row, and — decisively — the eight-generation replay files
+  `p510_f_replay_*.json` carry `cost_families` **per generation**
+  (e.g. gross `827965125.950184`, salvage `3469.7529292681957`, net
+  `827961656.1972548`). So **`22.09`, `32.87` and `0.67` can be recomputed on the
+  zero-salvage convention from preserved artifacts** rather than abandoned. They must
+  be recomputed, not reused as-is.
+- All per-cycle recourse markers — `P512A` trajectory files store
+  `gross_operational_cost` beside `recourse`, and `P512R/run.json` stores gross,
+  salvage and recourse together (cycle 20: `1424782485.8041718 − 3569.5389424068017 =
+  1424778916.2652295`).
+
+**NEEDS A ONE-OFF CROSS-CHECK — the stage's own artifacts lack the split:**
+
+- P5.11's two reproduction gates (`828021090.3608505`, `825814074.4930633`): none of
+  the six `P511/*.json` files carries the cost families. The same quantities do appear
+  in `P56B` / `P510` artifacts that do carry them, so the split is very likely
+  recoverable by matching values across stages — but that match must be verified, not
+  assumed.
+- P5.4-R `tol_cut = 7.164e5`: `P54R` itself carries no cost families; `P54R_D3` has
+  four key-bearing files. Its derivation from the recourse scale must be re-traced.
+
+**Consequence.** The earlier statement that the affected results are simply
+"incomparable" was too strong. Most are **convertible by arithmetic on preserved
+artifacts**; only the two items above need tracing. What remains true is that no
+salvage-inclusive number may be compared against a zero-salvage number without
+performing the conversion first.
+
+### Dependency — a zero-salvage objective is not automatically an economic objective
+
+`_get_operational_recourse_components` states in its own docstring that the quantity
+"excludes scenario-deviation regularization and ADMM augmentation terms, but **may
+include artificial penalty terms and is therefore not necessarily a pure economic
+operating cost**" (`shared_resources_planning.py:723-724`).
+
+So `gross_operational_cost` — precisely the quantity the zero-salvage convention
+promotes to the objective — carries penalties of unstated status by its own admission.
+A zero-salvage ranking baseline is therefore **not** an economic baseline until those
+penalties are classified, which is the Expert's requirement to state which penalties
+are economic costs and which must vanish for physical feasibility.
+
+**Sequencing consequence, recorded:** penalty classification lands in the *same
+quantity* as the salvage transition and cannot be deferred behind it. Both must be
+settled before any ranking baseline is re-derived, or the baseline would have to be
+derived twice.
