@@ -3106,6 +3106,15 @@ Diagnose only; zero solves **enforced** (`SolveProfileGuard` blocking mode: 0 so
 `data/SRP1/Results/P514S1/frozen_s1_criterion_spec_v1_6c1d0a81.json`; full record in
 `P5_14_S1_CRITERION_VALIDITY_REPORT.md`.
 
+**Rediscovery, recorded (added from S2).** S1's *mechanism framing* — the dual residual
+being linear in rho and the coupling with an absolute tolerance — was already documented
+in `p59_b_adaptive.py`'s docstring, with a two-arm A/B attached and a top-level JSON key
+`dual_residual_is_linear_in_rho`. S1 rediscovered it. S1's **results** are not in that
+docstring and stand: the strong form falsified (terminal slacks 1.1035 / 1.0644 / 1.0005,
+so the criterion is satisfiable), the `p ~ 0.42-0.68` partial-compensation
+quantification, the terminal-circularity insight, the absolute-versus-relative tolerance
+mismatch in kind, and the 8x max-versus-mean asymmetry.
+
 **Headline: the primary hypothesis is partially confirmed and its strong form is
 contradicted.** The rho/tolerance coupling is real by construction, but `stationarity_pf`
 is **not unsatisfiable** — it is satisfied at termination in all nine preserved runs.

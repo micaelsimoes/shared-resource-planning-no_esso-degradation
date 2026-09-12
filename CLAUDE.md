@@ -85,6 +85,14 @@ incidents behind each rule are in `REVISION_CONTEXT.md`, section
   Three of the six P5.12/P5.13 stages asserted the claim instead of arming it, and one of
   those assertions was false in a committed report; the mechanism already existed and was
   simply not used.
+- Scope every negative claim about the evidence base. "No prior art exists", "no
+  evaluation artifact exists", "nothing in the repository decides this" — each must record
+  what was searched: branches, stage scripts, stage artifacts, docstrings and reports. State
+  the claim as scoped, never as absolute. S2 found that "neither lever was ever evaluated"
+  was false — `p59_b_adaptive.json` is a two-arm A/B of one of them, and that stage's
+  docstring already stated the mechanism a later stage then rediscovered. A branch-scoped
+  search had been widened to stages without being redone. Same family as rules five and six:
+  claims that read as established but were never checked.
 
 ## Investigation discipline
 
