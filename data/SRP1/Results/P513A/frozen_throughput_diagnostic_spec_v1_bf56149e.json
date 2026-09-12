@@ -1,0 +1,33 @@
+{
+  "stage": "P5.13-A multi-scenario throughput discrepancy diagnostic",
+  "status": "FROZEN SPECIFICATION — not executed; no case currently satisfies its precondition",
+  "purpose": "quantify the gap between the expectation of realized directional throughput and the directional throughput of the expected net schedule",
+  "precondition": {
+    "requirement": "a configuration with more than one market or operation scenario at the shared-ESS-bearing networks",
+    "current_status": "SRP1 has NumMarketScenarios = 1 and num_operation_scenarios = 1 for the TSO and all three DSOs, so the discrepancy is identically zero by construction",
+    "rule": "DO NOT run this diagnostic on a single-scenario configuration; a zero result there is structural and must never be recorded as a measured null"
+  },
+  "quantities": {
+    "A_expectation_of_realized_throughput": "sum_{s_m,s_o} pi_m*pi_o * sum_p ( eff_ch * shared_es_pch[e,s_m,s_o,p] * dt + shared_es_pdch[e,s_m,s_o,p] * dt / eff_dch )",
+    "B_throughput_of_expected_schedule": "sum_p ( eff_ch * pch_hat[p] * dt + pdch_hat[p] * dt / eff_dch ), where pch_hat/pdch_hat are the ESSO's directional decomposition of expected_shared_ess_p[p] = sum_{s_m,s_o} pi_m*pi_o*shared_es_pnet[e,s_m,s_o,p]",
+    "discrepancy": "A - B, reported absolutely, relative to A, and as equivalent full cycles via 2*cl_nom*E_rated",
+    "sign_expectation": "A >= B, with equality iff no period has scenarios of opposing dispatch sign; report any violation as a defect in the diagnostic, not a finding"
+  },
+  "reporting": {
+    "per": ["shared ESS unit", "representative day", "year", "period"],
+    "aggregate": "annualized via the same (num_days/365) weighting the production law uses",
+    "must_report": ["number of periods with sign disagreement across scenarios", "worst-period discrepancy with its scenario decomposition", "resulting SoH difference after the cumulative exponent"]
+  },
+  "controls": [
+    "recompute B by the production path and require it to match the ESSO's own es_avg_ch_dch_per_unit to machine precision; a mismatch invalidates the diagnostic",
+    "run once on a deliberately single-scenario case and require the discrepancy to be exactly zero, as a null control for the implementation"
+  ],
+  "interpretation_limits": [
+    "this measures a modelling discrepancy, not an error: which of A or B is correct depends on the definitional decision recorded in P5_13_A_THROUGHPUT_DEFINITION.md",
+    "no causal or planning-ranking claim may be drawn from it without re-deriving the ranking baseline under the chosen definition"
+  ],
+  "dependencies": {
+    "blocked_by": "the definitional decision (Option A or Option B) and the penalty-classification decision, both of which change the objective",
+    "implementation_consequence": "the coordination/evaluation path hard-wires scenario (0,0) at p56a_oracle.py:275-287 and :393-397, so a multi-scenario case requires changing that path before this diagnostic can run"
+  }
+}

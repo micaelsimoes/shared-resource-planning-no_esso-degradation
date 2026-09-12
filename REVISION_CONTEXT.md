@@ -2614,3 +2614,47 @@ the formula, not the data.
 settled. Its inputs are not going anywhere, and re-deriving a ranking baseline before
 the penalty status of `gross_operational_cost` is decided would mean doing it twice —
 the same argument that made penalty classification blocking rather than sequential.
+
+## P5.13-A — expected directional throughput versus expected net power (2026-09-12)
+
+Definitional decision with code trace; no solver work. Full record in
+`P5_13_A_THROUGHPUT_DEFINITION.md`. Frozen diagnostic specification:
+`data/SRP1/Results/P513A/frozen_throughput_diagnostic_spec_v1_bf56149e.json`.
+
+**Established by code trace.** Network shared-ESS variables are per scenario
+(`[e, s_m, s_o, p]`). Coordination averages the **signed net** quantity —
+`dn_interface_expected_sess_p_def` (`model_construction_helpers.py:1798`) sums
+`pi_m * pi_o * shared_es_pnet`, so opposite-sign dispatch cancels there. Consensus
+parameters are indexed by period only. The ESSO then re-decomposes that expected net
+schedule into its own directional `es_pch_per_unit` / `es_pdch_per_unit`, which carry
+**no scenario index**, and degradation is driven by those
+(`shared_energy_storage_data.py:~480`). So the degradation-driving quantity is the
+directional throughput **of the expected schedule**, not the expectation of realized
+directional throughput. The two differ whenever scenarios disagree in sign.
+
+**The structural zero.** `SRP1.json` has `NumMarketScenarios = 1` and
+`num_operation_scenarios = 1` for the TSO and all three DSOs, so this discrepancy is
+**identically zero in this configuration by construction, not by measurement**.
+Recorded explicitly: computing it here would yield zero and would be a false negative
+that reads as validation. No quantification is attempted.
+
+**One finding, not two.** The evaluation oracle hard-wires scenario `(0,0)` when reading
+coordinated quantities (`p56a_oracle.py:275-287`, `:393-397`), while production's model
+construction does sum over scenarios. Moving to the paper's 25 market/operational
+combinations is therefore **not a data change the oracle would absorb** — it requires
+changing that path. The Expert's point that the reduced-case certificate cannot carry
+unchanged into the full stochastic study is a **direct consequence of this indexing**,
+not a separate concern.
+
+**Open definitional decision (author's to make).** Option A: degradation represents the
+committed common schedule — the implementation is then correct as written and the
+obligation is editorial, since the paper must not claim realized cycling. Option B:
+degradation represents realized operation — which needs no per-scenario ESSO, because
+with fixed efficiencies passing `E[pch]` and `E[pdch]` instead of the single `E[pnet]`
+suffices. Trade-off under B: both expectations may be strictly positive in the same
+period, which is correct for throughput accounting but must not be read as simultaneous
+physical charge/discharge, and it weakens the ESSO-level complementarity interpretation.
+Planner recommendation is B as physically faithful, with the choice reserved to the
+author. **Blocking:** whichever is chosen changes the degradation term and hence the
+objective, so it must be settled before any ranking baseline is re-derived — the same
+argument that made penalty classification blocking.
