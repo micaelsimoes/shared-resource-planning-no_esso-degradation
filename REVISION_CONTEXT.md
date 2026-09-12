@@ -3368,6 +3368,18 @@ So AB1, P5.9-B and P5.12-R all evaluate the same instance.
 reason.** AB1 ran under **C3** (`k = 11541.56`); P5.9-B ran **pre-C3** (`k = 10000`), so
 the 0.12% gap is **confounded with the formulation change**.
 
+**WITHDRAWN 2026-09-12 (P5.14-X22): the confound is numerically NIL on this instance.**
+The warm fixed cell run under C3 reproduces P5.10-B's pre-C3 run to all sixteen digits —
+recourse `827885239.5417057`, `dual_pf_mean_ratio 0.906183793111952`, `primal_pf
+9.051837140987118e-05`, 6 cycles. I invoked the C3 boundary to block the cold-versus-warm
+comparison and asserted the confound's existence without measuring its size, which is the
+same error pattern as the salvage channel below. The definitional incomparability stands;
+the numerical effect on this candidate is nil, so the comparison IS available. Likely
+mechanism, recorded as a hypothesis: at `e = 0.0213` p.u. the degradation term's coupling
+into available energy is far below what the network dispatch can resolve. The analysis
+that follows is retained because its channel reasoning is correct and would apply on an
+instance with material storage.
+
 *Channel corrected.* The confound does NOT run mainly through salvage. From P5.9-B's own
 `cost_families`, `terminal_salvage_value` is **3,452.29** against a
 `net_operational_recourse` of **828,248,310** — **4.17 ppm**. The gap in question is
@@ -3412,3 +3424,56 @@ precisely the member that refused the control.**
 better-scaled stationarity measure, but an **optimality-based criterion rather than a
 motion-based one** — the objective's own convergence, or a KKT-style residual on the
 original coupled problem rather than on the consensus iteration.
+
+## P5.14-X22 — the 2x2 under one formulation (2026-09-12)
+
+Four cells, one candidate, one formulation (C3), guards armed, **0 blocked solves**.
+Frozen spec `data/SRP1/Results/P514X22/frozen_2x2_spec_v1_55b10d16.json`. Full record in
+`P5_14_X22_2x2_REPORT.md`.
+
+| cell | cycles | solves | final `rho_pf` | terminal `gross_operational_cost` |
+|---|---|---|---|---|
+| cold_fixed | 50 **(capped)** | 2601 | 300 | 1,310,473,449 |
+| cold_adaptive | 32 | 1683 | 3.4683 | 826,833,558 |
+| warm_fixed | 6 | 357 | 300 | 827,888,692 |
+| warm_adaptive | **4** | **255** | 88.8889 | 827,738,664 |
+
+Cycle 1 is identical within each initialization, confirming one shared instance and two
+shared starting points.
+
+**C3 is numerically inert here — my confound caution is withdrawn.** `warm_fixed` under C3
+reproduces P5.10-B's pre-C3 run to sixteen digits. Definitional incomparability stands;
+the numerical effect on this candidate is nil. By-products: byte-level determinism of the
+warm path across the P5.13-C/D production edits, and a retroactive demonstration that
+those edits were neutral on a *solving* trajectory rather than only on a model build.
+
+**Adaptation's advantage is COLD-SPECIFIC** (predeclared outcome). Cold pair at matched
+cycle 32: **−39.8%**. Warm pair at terminal: **−0.018%**. Adaptation mostly compensates for
+a bad cold start rather than improving the method. Warm it is still a **29% cost saving**
+(4 cycles / 255 solves against 6 / 357) — a cost gain, not an objective gain.
+
+**The two oracles AGREE on `Q` to ~0.1%** (predeclared threshold: under 1% = agreement).
+cold_adaptive vs warm_fixed **−0.1275%**; vs warm_adaptive **−0.1094%**; warm pair
+−0.0181%; our warm_adaptive vs P5.9-B's pre-C3 warm adaptive **+0.0133%**. A cold
+independent start and a warm templated start agree on `Q` to about one part in a thousand:
+**evidence that `Q(x)` is well defined rather than an artifact of where the iteration
+began** — the strongest result of the stabilization effort so far. Qualification: the sign
+is **systematic**, the templated oracle sitting **~0.11% high**, which matters for any
+ranking whose best-to-second gap is narrower than that. `cold_fixed` is capped and
+contributes only a bound.
+
+**The cost of independence, measured:** cold_adaptive / warm_adaptive = **6.60x**;
+/ warm_fixed = **4.71x**. This replaces the withdrawn 15x and the earlier ">= 3.5x" bound.
+The outer-layer tension is now quantified: **0.11% of objective bias against a factor of
+6.6 in cost.**
+
+**The attractor prediction holds in the regime where it was derived.** `warm_adaptive`
+settled at **88.889**, inside the predicted [80, 200]; the cold cell settled at 3.4683,
+outside it. The rule's operating point is a property of the iterate regime. Even warm it is
+start-dependent along the multiplicative grid (P5.9-B 131.687 from 1000; this cell 88.889
+from 300), so the band captures a range, not a unique fixed point.
+
+**Solve identity:** every cell is `51 x cycles + 51` — one initialization block —
+1683/2601/357/255 for 32/50/6/4 cycles. The harness's "UNEXPLAINED" label was wrong; its
+explanation list allowed only a 48-block polish or zero, and no polish ran in the warm
+cells.
