@@ -114,6 +114,11 @@ class SharedEnergyStorageData:
                 shared_energy_storage = SharedEnergyStorage()
                 shared_energy_storage.bus = node_id
                 shared_energy_storage.dn_name = planning_problem.distribution_networks[node_id].name
+                # P5.13-C: ageing constants come from the ESS parameters file.
+                # `read_parameters_from_file` runs immediately before this call,
+                # and the parameter defaults reproduce the former hard-coded
+                # values exactly, so an absent key changes nothing.
+                self.params.ageing.apply_to(shared_energy_storage)
                 self.shared_energy_storages[year].append(shared_energy_storage)
 
     def get_shared_energy_storage_idx(self, node_id):

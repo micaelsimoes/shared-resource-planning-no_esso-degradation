@@ -15,6 +15,11 @@ class SharedEnergyStorage:
         self.eff_dch = 0.96                 # Discharging efficiency, [0-1]
         self.max_pf = 0.90                  # Maximum power factor
         self.min_pf = -0.90                 # Minimum power factor
+        # P5.13-C: the four ageing constants below are FALLBACK DEFAULTS ONLY.
+        # `SharedEnergyStorageData.create_shared_energy_storages` overwrites them
+        # from the ESS parameters file (`ageing` block). Edit the parameters
+        # file, not these lines; their values are kept identical to the
+        # parameter defaults so that the two sources cannot disagree silently.
         self.t_cal = 15                     # Calendar life of the ESS, [years]
         self.cl_nom = 10000                 # Cycle life, nominal, [number of cycles]
         self.dod_nom = 0.80                 # Depth-of-Discharge, nominal, [0-1]

@@ -2846,3 +2846,54 @@ C4 are not. C4 is on the table only because of the branch divergence, which mean
 choosing C2 or C3 also decides what the paper must say. **Anything other than
 `k = 10000` changes the degradation term and hence the objective — blocking against the
 ranking-baseline re-derivation.** The choice of `(N, D, R)` is the author's.
+
+## P5.13-C — ESS ageing constants relocated into the parameters file (2026-09-12)
+
+First production code change in this sequence, authorized as a behaviour-preserving
+refactor. **Gate PASS.** No solve. Full record in `P5_13_C_PARAM_MOVE_REPORT.md`.
+
+**What changed.** `t_cal`, `cl_nom`, `dod_nom`, `soh_min` are now read from
+`data/SRP1/SharedESS/SRP1_ESS_Params.json` (`ageing` block) and applied in
+`create_shared_energy_storages` via `self.params.ageing.apply_to(...)`;
+`read_parameters_from_file` runs on the immediately preceding line
+(`shared_resources_planning.py:6104-6105`), and each has exactly one call site. Parameter
+defaults equal the former hard-coded values exactly, so an absent key changes nothing.
+`shared_energy_storage.py` keeps the literals as annotated fallbacks (comment-only diff).
+
+**Gate.** `data/SRP1/Results/P513C/frozen_param_move_gate_v1_bd8ab535.json`, frozen and
+hashed before any edit; harness `p513_c_param_move_gate.py` (`99cae59e…b122`), which
+builds the ESSO models through the production path and runs no solver. Invariants:
+ordered semantic state (I1), `.nl` bytes (I2), the four constants on every ESS object in
+every year (I3), objective/penalty/salvage expression strings (I4), diff confinement (I5).
+
+**Three runs, not one.** (a) *Determinism control* `pre` vs `pre2` on the unmodified
+tree — identical, including `.nl` bytes; without it the gate would prove nothing.
+(b) *Neutrality* `pre` vs `post_final` — **PASS on I1-I4**. (c) *Negative control*
+`probe`, with `cycle_life_nominal` 10000 -> 12345 and `minimum_soh` 0.50 -> 0.55 —
+**FAIL as required**, differing in I1, I2, I3 and the salvage expression, proving the
+parameters file is genuinely load-bearing rather than inert. Probe reverted and
+neutrality re-verified.
+
+**Type preservation is the load-bearing detail.** `_read_optional_number` keeps a JSON
+integer an integer: `cl_nom` enters a constraint expression, so coercing `10000` to
+`10000.0` would change the rendered model and the `.nl` bytes. That is the easiest way
+for a "neutral" refactor to stop being neutral.
+
+**The calibration triple is DECLARED, NOT CONSUMED.** The schema carries
+`ageing.calibration` (`status`, `cycles_n`, `reference_dod_d`, `eol_retention_r`, the
+last `null`). Nothing in model construction reads it; `characteristic_constant()`
+(`k = N*D/(-ln R)`) is called nowhere; any status other than `DECLARED_NOT_CONSUMED`
+raises. Consuming it changes the objective and is the author's open decision, so it
+cannot ride along inside a refactor advertised as neutral.
+
+**Disclosed deviation (I5).** The frozen gate permitted three files; a fourth,
+`shared_energy_storage.py`, was touched with a comment only (no `+`/`-` line contains an
+assignment). Recorded as a deviation rather than absorbed by widening the frozen
+specification after the fact; reverting it costs nothing.
+
+**Limits.** The gate proves the model handed to the solver is byte-identical, so every
+existing result remains valid without re-running any of them; identical `.nl` and
+identical options imply an identical solve. But all three ESSO models produced the same
+I1 and I2 hashes, so the gate exercises **one structure replicated three times**, not
+three independent ones. The 15 ordered-state files (20 MB) are hash-recorded in the
+manifests rather than committed.

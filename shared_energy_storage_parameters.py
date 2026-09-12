@@ -1,3 +1,5 @@
+from math import log
+
 from solver_parameters import SolverParameters
 from helper_functions import *
 
@@ -47,6 +49,127 @@ class SalvageValueParameters:
 
 
 # ======================================================================================================================
+#  Degradation Calibration -- DECLARED, NOT CONSUMED
+# ======================================================================================================================
+class DegradationCalibrationParameters:
+    """The (N, D, R) calibration triple for the cycling degradation law.
+
+    N -- cycle count, D -- reference depth of discharge, R -- end-of-life
+    retention. The law's characteristic constant is k = N * D / (-ln R), and the
+    identity EFC_to_R = -ln(R) * k = N * D holds for every triple.
+
+    P5.13-C declares this block in the schema and reads it, but NOTHING CONSUMES
+    IT: the degradation law still uses `cl_nom` directly
+    (`shared_energy_storage_data.py`, the `energy_storage_capacity_degradation`
+    rows). Consuming it changes the degradation term and therefore the
+    objective, so it requires the author's (N, D, R) decision and a separate,
+    non-neutral change. See `P5_13_B_CYCLING_CALIBRATION.md`.
+    """
+
+    STATUS_DECLARED = 'DECLARED_NOT_CONSUMED'
+
+    def __init__(self):
+        self.cycles_n = None
+        self.reference_dod_d = None
+        self.eol_retention_r = None
+        self.status = self.STATUS_DECLARED
+
+    def characteristic_constant(self):
+        """k = N * D / (-ln R), or None while the triple is undecided.
+
+        Provided so that the eventual consumption is a one-line change. It is
+        not called anywhere in the model construction path.
+        """
+        if self.cycles_n is None or self.reference_dod_d is None or self.eol_retention_r is None:
+            return None
+        return self.cycles_n * self.reference_dod_d / (-log(self.eol_retention_r))
+
+    def read_parameters(self, params_data):
+        if not params_data:
+            return
+
+        self.cycles_n = _read_optional_number(params_data, 'cycles_n', self.cycles_n)
+        self.reference_dod_d = _read_optional_number(params_data, 'reference_dod_d', self.reference_dod_d)
+        self.eol_retention_r = _read_optional_number(params_data, 'eol_retention_r', self.eol_retention_r)
+        self.status = str(params_data.get('status', self.status)).upper()
+
+        if self.status != self.STATUS_DECLARED:
+            raise NotImplementedError(
+                'The degradation calibration triple is declared but not consumed. '
+                'Activating it changes the degradation term and hence the objective, '
+                'and requires the author\'s (N, D, R) decision -- see '
+                'P5_13_B_CYCLING_CALIBRATION.md. Set status back to '
+                f'{self.STATUS_DECLARED}.')
+        if self.reference_dod_d is not None and not 0.00 < self.reference_dod_d <= 1.00:
+            raise ValueError('Calibration reference_dod_d must lie in (0, 1].')
+        if self.eol_retention_r is not None and not 0.00 < self.eol_retention_r < 1.00:
+            raise ValueError('Calibration eol_retention_r must lie in (0, 1).')
+        if self.cycles_n is not None and self.cycles_n <= 0:
+            raise ValueError('Calibration cycles_n must be positive.')
+
+
+# ======================================================================================================================
+#  Energy Storage Ageing Parameters
+# ======================================================================================================================
+class EnergyStorageAgeingParameters:
+    """Ageing constants applied to every SharedEnergyStorage instance.
+
+    P5.13-C moved these out of `SharedEnergyStorage.__init__`, where they were
+    hard-coded and therefore identical for every case and invisible to review.
+    The defaults below reproduce those hard-coded values EXACTLY, so an absent
+    key leaves behaviour unchanged.
+    """
+
+    def __init__(self):
+        self.t_cal = 15                                 # Calendar life, [years]
+        self.cl_nom = 10000                             # Cycle life, nominal, [cycles]
+        self.dod_nom = 0.80                             # Depth-of-Discharge, nominal, [0-1]
+        self.soh_min = 0.50                             # Minimum SoH, [0-1]
+        self.calibration = DegradationCalibrationParameters()
+
+    def read_parameters(self, params_data):
+        if not params_data:
+            return
+
+        self.t_cal = _read_optional_number(params_data, 'calendar_life_years', self.t_cal)
+        self.cl_nom = _read_optional_number(params_data, 'cycle_life_nominal', self.cl_nom)
+        self.dod_nom = _read_optional_number(params_data, 'depth_of_discharge_nominal', self.dod_nom)
+        self.soh_min = _read_optional_number(params_data, 'minimum_soh', self.soh_min)
+        self.calibration.read_parameters(params_data.get('calibration'))
+
+        if self.t_cal <= 0:
+            raise ValueError('ESS calendar_life_years must be positive.')
+        if self.cl_nom <= 0:
+            raise ValueError('ESS cycle_life_nominal must be positive.')
+        if not 0.00 < self.dod_nom <= 1.00:
+            raise ValueError('ESS depth_of_discharge_nominal must lie in (0, 1].')
+        if not 0.00 <= self.soh_min < 1.00:
+            raise ValueError('ESS minimum_soh must lie in [0, 1).')
+
+    def apply_to(self, shared_energy_storage):
+        """Apply the ageing constants to one SharedEnergyStorage instance."""
+        shared_energy_storage.t_cal = self.t_cal
+        shared_energy_storage.cl_nom = self.cl_nom
+        shared_energy_storage.dod_nom = self.dod_nom
+        shared_energy_storage.soh_min = self.soh_min
+        return shared_energy_storage
+
+
+def _read_optional_number(params_data, key, current):
+    """Read a numeric key, preserving its JSON type (int stays int).
+
+    Type preservation matters: `cl_nom` enters a constraint expression, and
+    coercing 10000 to 10000.0 would change the rendered model.
+    """
+    if key not in params_data or params_data[key] is None:
+        return current
+    value = params_data[key]
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(f'ESS parameter {key} must be numeric.')
+    return value
+
+
+# ======================================================================================================================
 #  Energy Storage Parameters
 # ======================================================================================================================
 class SharedEnergyStorageParameters:
@@ -61,6 +184,7 @@ class SharedEnergyStorageParameters:
         self.print_results_to_file = False              # Write results to file
         self.verbose = False                            # Verbose -- Bool
         self.salvage_value = SalvageValueParameters()
+        self.ageing = EnergyStorageAgeingParameters()
         self.solver_params = SolverParameters(
             default_solver='ipopt',
             path_env_vars=('NLP_SOLVER_PATH', 'SOLVER_PATH'),
@@ -93,3 +217,4 @@ def _read_parameters_from_file(planning_parameters, filename):
     if 'lp_solver' in params_data:
         planning_parameters.lp_solver_params.read_solver_parameters(params_data['lp_solver'])
     planning_parameters.salvage_value.read_parameters(params_data.get('salvage_value'))
+    planning_parameters.ageing.read_parameters(params_data.get('ageing'))

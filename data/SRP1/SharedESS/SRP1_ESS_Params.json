@@ -13,6 +13,19 @@
 		"health_basis": "NORMALIZED_ABOVE_MINIMUM_SOH",
 		"calendar_life_basis": "REMAINING_FRACTION_AT_TERMINAL"
 	},
+	"ageing": {
+		"calendar_life_years": 15,
+		"cycle_life_nominal": 10000,
+		"depth_of_discharge_nominal": 0.80,
+		"minimum_soh": 0.50,
+		"calibration": {
+			"status": "DECLARED_NOT_CONSUMED",
+			"cycles_n": 10000,
+			"reference_dod_d": 0.80,
+			"eol_retention_r": null,
+			"_note": "k = cycles_n * reference_dod_d / (-ln eol_retention_r). DECLARED ONLY -- no constraint consumes this block. eol_retention_r is null because the (N, D, R) decision is open; see P5_13_B_CYCLING_CALIBRATION.md. Any status other than DECLARED_NOT_CONSUMED raises."
+		}
+	},
 	"solver": {
 		"name": "ipopt",
 		"verbose": false,
