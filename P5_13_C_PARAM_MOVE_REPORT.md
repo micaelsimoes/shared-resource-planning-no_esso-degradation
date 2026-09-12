@@ -1,6 +1,13 @@
 # P5.13-C — relocating the ESS ageing constants into the parameters file
 
-**Behaviour-preserving refactor. Gate: PASS. No solve of any kind was run.**
+**Behaviour-preserving refactor. Gate: PASS.**
+
+> **CORRECTION (2026-09-12, from P5.13-D).** This report originally stated that no
+> solve was run. **That was false.** The capture path calls
+> `create_shared_energy_storage_model`, which calls `shared_ess_data.optimize(...)`
+> (`shared_resources_planning.py:3156`) and therefore performs **three IPOPT solves,
+> one per ESSO node, on every capture**. The error was mine: I asserted the property
+> instead of tracing the call. See the corrected limits section at the end.
 
 Date: 2026-09-12. Branch `feature/derivative-free-planning`, baseline HEAD
 `8a25713b`. Authorized by the author as the first production code change in this
@@ -25,17 +32,17 @@ permitted files. Decision rule: any inequality fails, with no argument that a di
 is immaterial.
 
 Harness `p513_c_param_move_gate.py`, SHA-256
-`99cae59ef67bf633cdb2779117602830519a0c5a51bf33c434b7f74ffa6ab122`. It builds the three
-ESSO models through the production path already used by
+`99cae59ef67bf633cdb2779117602830519a0c5a51bf33c434b7f74ffa6ab122`. It builds the three ESSO models through the production path already used by
 `p54c_esso_active_energy_validation.py` (`read_planning_problem` ->
 `_build_positive_bootstrap_candidate` -> `create_admm_variables` ->
-`create_shared_energy_storage_model`) and runs no solver.
+`create_shared_energy_storage_model`). **That last call solves**: three IPOPT solves
+per capture, one per node (correction of 2026-09-12).
 
 ## 2. Three runs, not one
 
 | Run | Purpose | Result |
 |---|---|---|
-| `pre` vs `pre2` | **determinism control** — two captures of the *unmodified* tree | PASS: identical, including `.nl` bytes. Without this the gate would prove nothing. |
+| `pre` vs `pre2` | **determinism control** — two captures of the *unmodified* tree | PASS: identical, including `.nl` bytes **and post-solve variable values**, so the ESSO solves are bit-reproducible on this machine. Without this the gate would prove nothing. |
 | `pre` vs `post_final` | **neutrality** — the actual claim | **PASS on I1–I4** |
 | `pre` vs `probe` | **negative control** — `cycle_life_nominal` 10000 -> 12345 and `minimum_soh` 0.50 -> 0.55 in the JSON, then reverted | **FAIL, as required**: I1, I2, I3 and the salvage expression all differ |
 
@@ -109,8 +116,13 @@ rather than committed, per the artifact rule's "committed or hash-recorded" clau
 - It proves the model handed to the solver is **byte-identical**, which is exactly the
   property a behaviour-preserving relocation claims. It therefore implies that every
   existing result remains valid unchanged **without re-running any of them**.
-- It runs **no solve**, so it makes no claim about solver trajectories. None is needed:
-  identical `.nl` input and identical options imply an identical solve.
+- **Corrected.** It does run solves — three per capture. What the comparison covers is
+  therefore *larger* than first claimed: the captured state includes post-solve variable
+  values, so `pre` vs `post_final` equality shows the ESSO solves returned identical
+  results as well as identical models. What was wrong is the description, not the
+  evidence. The cost of the error is that "no solve" appeared in a committed report and
+  in a frozen gate written on that premise (P5.13-D, E1), where it caused a genuine
+  mis-specification.
 - **Coverage is narrower than "three models" suggests.** All three ESSO models produced
   identical I1 and I2 hashes, so the gate exercises one structure replicated three
   times, not three independent structures. It covers the ESSO models only — the surface

@@ -2225,19 +2225,113 @@ Never describe the local-cut master estimate as a rigorous global lower bound or
 
 ---
 
-# Immediate instruction
+# ACTIVE TRACK — ADMM recourse stabilization (from 2026-09-12)
 
-The authorized worker stage is **P5.12-R — deterministic pre-solve recapture**
-on `feature/derivative-free-planning`, in the existing Local checkout.
+Supersedes the previous "Immediate instruction" block (P5.12-R, complete). The outer
+Benders-like layer is **deferred**: once stabilization holds, that heuristic will either
+be rethought or replaced by a new outer layer, and the discussion is explicitly out of
+scope until then.
 
-Use one isolated process and the verified Mac Studio runtime, the frozen harness
-(SHA-256 `f0f120c2…86f0`) and the fresh baseline
-`data/SRP1/Results/P512R/R0_v2_ba202e2b/`. Preserve the exact
-cycle-21 target input after solver setup and stop before its solver invocation.
-Do not execute either A/B arm, retry, polish, continue the cycle or change any
-production formulation/parameter. Report and stop for planner review.
+## Premise correction — stabilization is not a convexity argument
 
-`LOCAL_NLP_STABILITY_PLAN.md` is authoritative for the complete P5.12-R protocol.
+**Do not carry the rationale that stabilizing ADMM makes the recourse convex, or that it
+is what Benders validity waits on.** These are different objects:
+
+- **ADMM stabilization** concerns whether the algorithm reliably reaches a fixed point
+  for a given investment vector `x`. It is a property of the iteration.
+- **Benders validity** concerns whether `Q(x)`, the recourse value as a function of `x`,
+  is convex. It is a property of the underlying problem.
+
+The recourse is an AC OPF and is nonconvex in the power-flow equations. It remains
+nonconvex however well the iteration behaves. The repository already recorded this:
+P5.8's verdict was "ADMM objective scaling validated, but it is **necessary and not
+sufficient**" (`bff465d7`) and P5.9's was "rescaling fixes coverage and the landscape,
+**coordination does not transfer**" (`fe6b5c63`).
+
+## The correct rationale for stabilizing first
+
+1. **Reproducibility.** P5.12-P showed `Q` depends on the solver path. Until `Q(x)` is
+   deterministic, nothing downstream — cut validity, convexity, candidate rankings — can
+   be measured at all.
+2. **Cost.** At the observed descent ratio and ~51 local solves per cycle, one candidate
+   evaluation approaches ~4,600 local solves. That gates every outer method equally,
+   Benders and derivative-free alike.
+3. **Testability.** Convexity cannot even be tested without a cheap, reproducible oracle.
+
+## "Deferred" does not mean "legacy"
+
+The Benders layer is **live production code**, not something only the paper describes:
+`add_benders_cut` (`shared_resources_planning.py:180`), `upper_bound`/`lower_bound`
+(`:291-293`), `gap_abs`/`gap_rel` (`:302-303`, `:430-433`) and `num_max_iters` (`:332`)
+are all in the active path, and `planning_parameters.py:2,14` imports and instantiates
+`BendersParameters` — despite the branch name `feature/derivative-free-planning`.
+
+## Order of work
+
+**Step 0 — activate C3 before stabilizing.** `(N, D, R) = (10000, 0.80, 0.50)`,
+`k = 11542`, under a frozen impact gate. This changes the degradation term and therefore
+the recourse; stabilizing against the current objective would mean stabilizing against
+one about to change. Folded into the same gated stage as two determinism fixes that are
+stabilization work rather than housekeeping: pin `fixed_variable_treatment` explicitly
+(removing the silent dependence on the IPOPT 3.14 default), then replace the
+`_in.update(_out)` warm-start merge with a clean assignment — provably inert once the
+first is pinned, and it removes the latent path by which stale multipliers could reach
+the solver.
+
+**S1 — criterion validity. Zero solves. First.** `stationarity_pf` is the binding
+criterion on 93 of 93 cycles in `p510_e_criteria.json`, unchanged across
+`rho_pf` in {300, 500, 1000} and in the endpoint and replay cases, while the objective
+criterion sits 3.47x from satisfied at cycle 20. Two criteria — one never satisfiable and
+one merely far away — is a sign that part of "ADMM does not converge" may be an artefact
+of a mis-scaled test rather than a property of the iteration. Analyse the 93 preserved
+`binding_slack` values from existing artifacts: is the pf stationarity measure
+approaching satisfaction, static or diverging; is it scale-dependent; is its
+normalization commensurate with `objective_tolerance = max(1e3, 1e-3 * recourse)`; and is
+the per-family `dual_<group>_mean_ratio` construction the right aggregation? Freeze a
+spec first. **Change no tolerance, criterion or parameter — diagnose only.**
+
+**S2 — convergence rate. The cost driver.** Verify first: the per-cycle objective
+decrements from cycle 6 form a geometric sequence whose ratio climbs
+`0.87 -> 0.94 -> 0.97 -> 0.982`, with the cycle-20 decrement still `4.95e6` against a
+`1.42e6` tolerance — extrapolating to roughly 69 further cycles with about 19% of the
+objective still to fall. Record plainly what follows: **the cycle-21 failure interrupted
+a trajectory roughly a quarter of the way through, not one near convergence.** Then, before
+proposing any lever, survey the prior art on the abandoned branches (read-only; no
+checkout, no merge): `origin/admm_residual_balancing_tests`, `residual_balancing_mod`,
+`origin/check_convergence_per_adn` (relevant to S1), `admm_initialization`,
+`admm_prev_iter_vars`, `primal_value_update`, `admm_loop_corrections`,
+`consensus_vars_sess_prev_iter`, `warm_start_tests`. Report what was tried, what the
+commit messages claim, and whether any of it was ever evaluated. Already tried, not to be
+repeated without new reason: `rho_pf` in {300, 500, 1000}, adaptive penalty off, objective
+rescaling. Record remaining untried levers as candidates with rationale; run none.
+
+**S3 — local solve reliability. Deprioritized.** One failure in 1,095 solves across the
+P5.12-R trajectory. The rate is recorded explicitly because the class has absorbed
+several weeks and the number reframes its urgency. The cycle-21 mechanism stays open and
+unpursued; the breadth line stays closed at n = 3 with the fixture pool exhausted.
+
+## Prepared but NOT run — the convexity probe
+
+Three collinear investment points and a secant test on `Q`: a single violation of
+`Q(0.5(x1+x2)) <= 0.5(Q(x1) + Q(x2))` would permanently retire the global-cut claim.
+`benders_parameters` already carries `sensitivity_probe` and `finite_difference` groups.
+The design is to be frozen and costed two ways — the cheap template-and-polish path in
+the manner of P5.10-F, and a cold oracle — stating clearly that **the two test different
+functions**. It runs after stabilization, as part of the outer-layer discussion.
+
+## Out of scope until stabilization holds
+
+Outer-layer redesign, cut validity, the 0.50% gap question, cohort SOC realizability,
+penalty classification, the P5.10 recomputation. **Option A remains the interim
+throughput reading**; B and C stay as formulation items. Penalty classification remains
+blocking for the ranking-baseline re-derivation.
+
+## Standing rules for this track
+
+Frozen, hashed specifications before execution; gates carrying both a determinism control
+and a negative control; no solves outside an authorized stage; the five artifact rules of
+`CLAUDE.md`; `git log --full-history` for any file archaeology. **Report and stop at each
+stage boundary** — S1 before S2, and S2's prior-art survey before any lever is proposed.
 
 ## P5.12-G / W / X / Y / Z results — 2026-09-12
 
@@ -2862,7 +2956,12 @@ defaults equal the former hard-coded values exactly, so an absent key changes no
 
 **Gate.** `data/SRP1/Results/P513C/frozen_param_move_gate_v1_bd8ab535.json`, frozen and
 hashed before any edit; harness `p513_c_param_move_gate.py` (`99cae59e…b122`), which
-builds the ESSO models through the production path and runs no solver. Invariants:
+builds the ESSO models through the production path. **Correction (P5.13-D):** that path
+**solves** — `create_shared_energy_storage_model` calls `shared_ess_data.optimize(...)`
+(`shared_resources_planning.py:3156`), three IPOPT solves per capture. The original
+"runs no solver" claim was asserted, not traced, and is withdrawn. The evidence is
+unaffected and in fact broader than described, since the compared state includes
+post-solve variable values. Invariants:
 ordered semantic state (I1), `.nl` bytes (I2), the four constants on every ESS object in
 every year (I3), objective/penalty/salvage expression strings (I4), diff confinement (I5).
 
@@ -2897,3 +2996,50 @@ identical options imply an identical solve. But all three ESSO models produced t
 I1 and I2 hashes, so the gate exercises **one structure replicated three times**, not
 three independent ones. The 15 ordered-state files (20 MB) are hash-recorded in the
 manifests rather than committed.
+
+## P5.13-D — Step 0: C3 activation and two determinism fixes — GATE FAILED AS FROZEN (2026-09-12)
+
+Full record in `P5_13_D_C3_ACTIVATION_REPORT.md`. Frozen gate
+`data/SRP1/Results/P513D/frozen_c3_impact_gate_v1_8ee17c92.json`. **The production
+change is implemented but NOT COMMITTED**, pending the author's decision.
+
+**The error, first.** The frozen gate asserted "no solver is invoked" and forbade solves.
+That premise was false and was inherited from P5.13-C without tracing the call:
+`create_shared_energy_storage_model` -> `shared_ess_data.optimize(...)`
+(`shared_resources_planning.py:3156`) performs **three IPOPT solves per capture**. Two
+consequences, both recorded: P5.13-C's committed "no solve" claim is corrected in place,
+and my own gate was breached by my own harness. The breach is of my specification, not
+of the authorization, and it is the direct cause of the mis-specified invariant below.
+
+**Results.** E2 (the changed rows carry `2k = 23083.120654223414`, 6 of 30 rows, none
+still carrying `20000`), E3 (`k = 11541.560327111707`), E5 (reversion byte-identical),
+E6 (consistency guard), E7 (warm-start assignment drops stale keys) and E8 (option pin
+on both paths, configuration still overriding) all **PASS**. **E1 FAILS as frozen**: the
+degradation component changed as intended, and 19 `vars.*` components also changed —
+but only in their **values**, which are post-solve values, and which must move when the
+constant moves. E1 demanded byte-identical variables, impossible for a capture that
+solves.
+
+**The substantive result stands:** C3's structural impact is confined to the six
+degradation rows, where the constant changes from `2*cl_nom` to `2k`, a factor
+`1.1541560327111706`.
+
+**E5 proves more than reversibility.** The reversion capture ran with the *new* code —
+`cl_eff`, the pinned `fixed_variable_treatment`, the warm-start assignment — and only
+the JSON status reverted, yet it reproduced the old-code baseline byte-identically,
+including post-solve values. So the two determinism fixes are **empirically neutral**,
+not merely neutral by argument, and C3 is reversible through one JSON field.
+
+**The three changes.** (a) The law consumes `cl_eff` = `k` when the calibration is
+ACTIVE and `cl_nom` otherwise, with a guard raising unless `cycles_n == cl_nom` and
+`reference_dod_d == dod_nom` — which is what stops the count and depth drifting apart
+again (P5.13-B, F0); `dod_nom` is now load-bearing. (b) `fixed_variable_treatment`
+pinned to `make_parameter`, the value read from this machine's binary via
+`ipopt --print-options` rather than from memory, applied before configuration so a case
+file can still override. (c) Both warm-start merge sites (`network.py:516-517`,
+`shared_energy_storage_data.py:889-890`) replaced by
+`helper_functions.replace_warm_start_suffix`, which clears before updating.
+
+**Open decision.** Accept under a gate v2 written after seeing the data (weaker than
+pre-registration, and to be labelled so), or revert and re-run under a pre-registered
+solve-aware v2 at a cost of three captures. The Planner recommends the second.
