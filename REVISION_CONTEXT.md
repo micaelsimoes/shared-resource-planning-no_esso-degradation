@@ -3098,3 +3098,86 @@ still passing. The enforced zero replaces the asserted one; verdict in
 solve claims with armed guards, never assert them, with the permitted count declared in
 advance and checked exactly — too few fails as loudly as too many, since it means the
 path under test did not run.
+
+## S1 — criterion validity for `stationarity_pf` (2026-09-12)
+
+Diagnose only; zero solves **enforced** (`SolveProfileGuard` blocking mode: 0 solves,
+0 launches); nothing changed. Frozen spec
+`data/SRP1/Results/P514S1/frozen_s1_criterion_spec_v1_6c1d0a81.json`; full record in
+`P5_14_S1_CRITERION_VALIDITY_REPORT.md`.
+
+**Headline: the primary hypothesis is partially confirmed and its strong form is
+contradicted.** The rho/tolerance coupling is real by construction, but `stationarity_pf`
+is **not unsatisfiable** — it is satisfied at termination in all nine preserved runs.
+What higher `rho_pf` costs is cycles, not satisfiability.
+
+**Harness defect, caught by the predeclared cross-check.** The first run re-derived 9
+slacks against 93: the top-level `rows` of each `p510_b` artifact are three terminal
+summaries, while the per-cycle data lives in `cycle_detail` (3 repeats x 6, 9, 16 =
+18+27+48 = 93). Corrected, the cross-check matches **93 of 93 to 1e-12**. Pre-correction
+numbers are void.
+
+**P1/P2 as predeclared.** `g = dual_pf_mean/rho_pf` is not invariant: `g(1000)/g(300)` =
+0.338 full-trajectory, 0.498 at matched cycles — the increments shrink as rho rises.
+Slack ratio `slack(1000)/slack(300)`: **0.877** full (predeclared class
+"compensating — mechanism ABSENT") versus **0.600** at matched cycles 1-6 (class
+"partial"); exponent `p` in `slack ~ rho^(-p)` = 0.106 full, **0.422** matched, **0.675**
+at cycle 1 alone. The spec predeclared that a disagreement between the two would itself
+be a finding; it is, and §3 of the report gives its cause.
+
+**Selection effect — terminal values are circular.** The run stops when residual
+convergence is met, so terminal slack is pinned just above 1 by the stopping rule in
+every setting (1.1035 / 1.0644 / 1.0005 for rho 300/500/1000). Cross-rho comparison must
+be made at matched cycle indices; the full-trajectory median is contaminated by differing
+lengths and by this pinning. Honest reading: **partial rho domination, `p ~ 0.42-0.68`.**
+
+**The criterion improves monotonically.** Log-slack trend per cycle is positive in every
+setting (+0.0293, +0.0196, +0.0106). Median slack by cycle at rho 300:
+0.262, 0.486, 0.623, 0.780, 0.965, 1.104. "Binding on 93 of 93" therefore means *the
+active constraint that sets the stopping time*, not a test that can never be met.
+
+**The cost is cycles: 6 -> 9 -> 16 per repeat for rho_pf 300 -> 500 -> 1000.** Raising
+rho by 3.33x nearly triples the cycles required, at ~51 local solves per cycle. This is
+an S2 quantity. (Configuration `RESCALED_v1.5 ... ad0 nh1`, history-neutralised; not
+interchangeable with the production trajectory of P5.12-R.)
+
+**Q2 — mismatch in kind.** The stationarity tolerance in force is **0.01 absolute**
+(re-derived as `dual_pf_mean / dual_pf_mean_ratio`), applied to a residual already scaled
+by rho and normalized by `interface_rating`, while the objective tolerance is relative
+(`max(1e3, 1e-3 * recourse)`). Boyd et al. §3.3.1 use tolerances with both absolute and
+relative parts; `rho*(z^k - z^(k-1))` itself is textbook.
+
+**Q3 — aggregation asymmetry.** Consensus uses max AND mean per family; stationarity uses
+the mean alone. Median `max/mean` is 8.37 / 8.02 / 8.12 across settings, so a max-based
+stationarity criterion would bind about **8x harder**. Recorded, not recommended.
+
+**Scope limit (predeclared).** All 93 cycles share one binding criterion, so the dataset
+holds no counterexample and supports no claim about what distinguishes binding from
+non-binding criteria — the selection-on-success shape of the P5.12-W/X/Y probe. P1/P2 are
+within-criterion and unaffected.
+
+### Prior-art survey (read-only) — two results that change the picture
+
+**Most of the named branches are merged, not abandoned.** Six are ancestors of HEAD with
+zero commits ahead: `origin/admm_residual_balancing_tests`,
+`origin/check_convergence_per_adn`, `admm_initialization`, `admm_prev_iter_vars`,
+`primal_value_update`, `admm_loop_corrections`. `consensus_vars_sess_prev_iter` does not
+exist. Only `residual_balancing_mod` (42 commits, 2024-06) and `warm_start_tests`
+(5 commits, 2024-05) carry unmerged work.
+
+**`residual_balancing_mod` is misnamed.** It *removes* the blocks labelled
+"Augmented Lagrangian -- Interface power flow (residual balancing)" and replaces the
+interface normalization with an average-interface-power form — the ancestor of today's
+`/interface_rating`. All commit messages are "Update".
+
+**Boyd-style residual balancing is already in production and is disabled.**
+`shared_resources_planning.py:5472-5502` raises rho when
+`primal_ratio > increase_balance_ratio * dual_ratio` and lowers it when
+`dual_ratio > decrease_balance_ratio * primal_ratio`, applying the factor to `rho_v`,
+`rho_pf`, `rho_ess` across TSO and all DSO models; `admm_parameters.py:18` defaults
+`adaptive_penalty = False` and every P5.10 config is labelled `ad0`. It balances
+**ratios** — residual over tolerance — which is exactly the quantity the coupling
+distorts. **No evaluation artifact exists for any branch**, so what these experiments
+showed is not recoverable.
+
+**No lever is proposed. S1 stops here; S2 is not started.**
