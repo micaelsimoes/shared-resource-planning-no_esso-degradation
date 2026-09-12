@@ -78,6 +78,15 @@ objective gain.
 
 ## 4. Secondary question — the two oracles AGREE on Q
 
+> **RETRACTED 2026-09-12 by Track C1.** This section's conclusion is **false**. The
+> agreement reported below was already indeterminate under the ninth rule — the offset was
+> 0.99x its own error bar — and C1 showed it wrong in substance: at a tolerance one decade
+> tighter the offset **grew 9.39x**, to 8,507,695 (1.03% of the objective) at 65.6x its
+> error bar. The two initializations do **not** share a fixed point. What survives is the
+> *direction*: the templated oracle is systematically high. The section is left standing,
+> struck, because the retraction is the finding.
+
+
 Predeclared: under 1% is evidence the structurally different oracles agree; over 5% is
 evidence `Q` is initialization-dependent.
 

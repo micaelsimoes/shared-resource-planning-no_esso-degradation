@@ -3452,7 +3452,13 @@ cycle 32: **−39.8%**. Warm pair at terminal: **−0.018%**. Adaptation mostly 
 a bad cold start rather than improving the method. Warm it is still a **29% cost saving**
 (4 cycles / 255 solves against 6 / 357) — a cost gain, not an objective gain.
 
-**The two oracles AGREE on `Q` to ~0.1%** (predeclared threshold: under 1% = agreement).
+**~~The two oracles AGREE on `Q` to ~0.1%~~ — RETRACTED 2026-09-12 by Track C1.** The
+agreement was already indeterminate under the ninth rule (offset 0.99x its own error bar),
+and C1 showed it wrong in substance: one decade tighter, the offset **grew 9.39x** to
+8,507,695 — 1.03% of the objective, at 65.6x its error bar. The two initializations do
+**not** share a fixed point. What survives is the *direction*: the templated oracle is
+systematically high. Original text retained below, struck, because the retraction is the
+finding.
 cold_adaptive vs warm_fixed **−0.1275%**; vs warm_adaptive **−0.1094%**; warm pair
 −0.0181%; our warm_adaptive vs P5.9-B's pre-C3 warm adaptive **+0.0133%**. A cold
 independent start and a warm templated start agree on `Q` to about one part in a thousand:
@@ -3650,3 +3656,47 @@ for the Expert's five items plus five established since — the 0.50% gap is
 while the constants were hard-coded; ranking stability rests on path-identity cancellation;
 and branch governance must be stated. Penalty classification is recorded as a blocking
 dependency the paper should make visible.
+
+## Track C1 — one tolerance decade: the oracles DIVERGE (2026-09-12)
+
+Frozen spec `43da5cb6` before either cell ran; case file never edited; guards clean;
+identities exact (`3519 = 51x68+51`, `306 = 51x5+51`). Full record in
+`P5_14_TRACK_C1_TOLERANCE_DECADE.md`.
+
+| | cold 1e-3 | cold 1e-4 | warm 1e-3 | warm 1e-4 |
+|---|---|---|---|---|
+| cycles | 32 | **68** | 4 | **5** |
+| recourse | 826,829,641 | **819,145,341** | 827,735,215 | **827,653,037** |
+| terminal step | 706,604 | 47,545 | 212,489 | 82,178 |
+| solves | 1683 | **3519** | 255 | 306 |
+
+**The offset GREW.** At 1e-3: 905,573 against an error bar of 919,092 — ratio 0.99,
+**indeterminate**. At 1e-4: **8,507,695** against 129,723 — ratio **65.6, determinate**,
+and 1.0279% of the objective. Growth of **9.39x** where proportional shrink would have
+given ~0.1x. **This is outside the three predeclared classes** (shrink / plateau /
+indeterminate) and is recorded as such rather than mapped onto "plateau", though its
+implication is the plateau implication amplified tenfold.
+
+**The two initializations do NOT share a fixed point.** Tightening let the cold path
+descend a further 7,684,300 over 36 extra cycles while the warm path moved 82,178 in one.
+Tightening pulls them apart rather than together. **The 2x2 headline is retracted**: the
+0.1% agreement was a coincidence of two early stopping points.
+
+**Mechanism, and a correction to Track A.** The stopping rule tests the **rate** of
+objective change, not proximity to an optimum, so a path whose increments decay quickly
+stops early regardless of its objective. Warm stopped at **99.3%** of its threshold, cold
+at 58%. Track A recorded the objective criterion as "the only rho-independent member" —
+true, but it is **not an optimality test**: **all three members of the composite test are
+motion-based**, and no reweighting of them yields an optimality criterion. The remedy
+direction — a KKT residual on the original coupled problem — is reinforced and broadened.
+
+**Cost, measured.** Independence is now **11.5x** (3519/306), up from 6.60x at 1e-3: the
+cost of independence grows as the tolerance tightens, because the cold path is the one
+still descending. **The ratio-based decade estimate was falsified by measurement**: it
+predicted ~11.7 extra cold cycles, the measured cost was **36** — a 3.1x underestimate.
+The decrement-ratio extrapolation is now **retired as a method**, not merely cautioned
+against. The realised ratio drifted 0.8216 -> 0.8451, so a second decade costs **at least**
+36 cycles (>= 1,836 solves, >= 35 minutes) and plausibly double; no single figure is
+offered.
+
+**C2 stops here for the author's decision on a second decade.**

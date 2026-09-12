@@ -28,6 +28,12 @@ neither measures anything rho-independently. **The objective criterion is the on
 rho-independent member of the composite test, and it is the member that refused the
 control.**
 
+> **Refined 2026-09-12 by Track C1.** Rho-independent, yes — but **not an optimality
+> test**. It tests the objective's *rate of change*, so a path whose increments decay
+> quickly stops early regardless of where it stands in objective terms. **All three members
+> of the composite test are motion-based**, and no reweighting of them yields an optimality
+> criterion. C1 measured the consequence: warm and cold stop 8.5e6 apart at 1e-4.
+
 **The 2x2.** One candidate, one formulation, four cells. `Q` agrees across structurally
 different initializations to **~0.1%** (cold vs warm_fixed −0.1275%, vs warm_adaptive
 −0.1094%), with a **systematic** sign: the templated oracle sits ~0.11% high. Independence
@@ -80,7 +86,11 @@ resolution finding, arrived at from the opposite direction.
 
 ## Closure reason
 
-- `Q` is well defined across structurally different initializations (~0.1%, systematic).
+- ~~`Q` is well defined across structurally different initializations (~0.1%, systematic).~~
+  **RETRACTED by C1**: the two initializations do not share a fixed point; the offset grows
+  to 1.03% at one decade tighter, determinate at 65.6x its error bar. The closure stands on
+  the remaining reasons, and the `Q` path-dependence is now an **open finding** carried into
+  the outer-layer discussion rather than a settled property.
 - ADMM converges: 32 cycles cold adaptive, 4–6 warm.
 - Local solves fail once in 1,095 (and once in 4,284 across the AB1/X22 stages).
 - A warm evaluation costs 255 solves.
