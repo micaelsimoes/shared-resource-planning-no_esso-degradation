@@ -1,0 +1,193 @@
+{
+  "stage": "P5.15 Addendum 3 item 2 (H3 rule) -- single-cohort regression",
+  "authority": "PLANNER_BRIEF_2026-09-13.md, Addendum 3, \"Authorized\" item 2 / \"Verification required\" item 1",
+  "instance": {
+    "construction_source": "p515_1_esso_reform_smoke.py + p515_h_tol_remedy_check.py (imported, not reimplemented)",
+    "smoke_nodes_with_investment": [
+      7,
+      9
+    ],
+    "s_candidate_mva": 1.0,
+    "e_candidate_mvah": 2.0,
+    "amplitude_mw_formula": "0.10 * S_CANDIDATE_MVA",
+    "active_nodes": [
+      5,
+      7,
+      9
+    ],
+    "cohorts_active_per_node": "exactly 1 (first representative year only) -- single-cohort by construction"
+  },
+  "guard": {
+    "permitted_call_sites": [
+      [
+        "shared_energy_storage_data.py",
+        "_run_solver_attempt"
+      ]
+    ],
+    "expected_solves_declared_in_advance": 6,
+    "observed_counts": {
+      "permitted_solve": 6,
+      "permitted_exec": 6,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+    },
+    "permitted_sites_hit": {
+      "shared_energy_storage_data.py:_run_solver_attempt": 6
+    },
+    "verify_failures": []
+  },
+  "arm_b_stripped_rows_removed_per_node": {
+    "5": 864,
+    "7": 864,
+    "9": 864
+  },
+  "comparison_per_node": {
+    "5": {
+      "termination_condition_a": "optimal",
+      "termination_condition_b": "optimal",
+      "objective_a": -0.005745565995494309,
+      "objective_b": -0.005745565995494309,
+      "objective_abs_diff": 0.0,
+      "dispatch_max_abs_diffs": {
+        "es_pnet": {
+          "max_abs_diff": 0.0,
+          "argmax_key": null
+        },
+        "es_qnet": {
+          "max_abs_diff": 0.0,
+          "argmax_key": null
+        },
+        "es_pch_per_unit": {
+          "max_abs_diff": 0.0,
+          "argmax_key": null
+        },
+        "es_pdch_per_unit": {
+          "max_abs_diff": 0.0,
+          "argmax_key": null
+        },
+        "es_soh_per_unit_cumul": {
+          "max_abs_diff": 0.0,
+          "argmax_key": null
+        },
+        "es_D_per_unit": {
+          "max_abs_diff": 0.0,
+          "argmax_key": null
+        }
+      },
+      "h3_census_arm_a": {
+        "total_structural_rows": 864,
+        "active_rows": 0,
+        "shares": {
+          "0_0": 0.0,
+          "0_1": 0.0,
+          "0_2": 0.0,
+          "1_0": 0.0,
+          "1_1": 0.0,
+          "1_2": 0.0,
+          "2_0": 0.0,
+          "2_1": 0.0,
+          "2_2": 0.0
+        }
+      }
+    },
+    "7": {
+      "termination_condition_a": "optimal",
+      "termination_condition_b": "optimal",
+      "objective_a": 0.023047848581170288,
+      "objective_b": 0.023047848581170288,
+      "objective_abs_diff": 0.0,
+      "dispatch_max_abs_diffs": {
+        "es_pnet": {
+          "max_abs_diff": 0.0,
+          "argmax_key": null
+        },
+        "es_qnet": {
+          "max_abs_diff": 0.0,
+          "argmax_key": null
+        },
+        "es_pch_per_unit": {
+          "max_abs_diff": 0.0,
+          "argmax_key": null
+        },
+        "es_pdch_per_unit": {
+          "max_abs_diff": 0.0,
+          "argmax_key": null
+        },
+        "es_soh_per_unit_cumul": {
+          "max_abs_diff": 0.0,
+          "argmax_key": null
+        },
+        "es_D_per_unit": {
+          "max_abs_diff": 0.0,
+          "argmax_key": null
+        }
+      },
+      "h3_census_arm_a": {
+        "total_structural_rows": 864,
+        "active_rows": 0,
+        "shares": {
+          "0_0": 0.0,
+          "0_1": 0.0,
+          "0_2": 0.0,
+          "1_0": 0.0,
+          "1_1": 0.0,
+          "1_2": 0.0,
+          "2_0": 0.0,
+          "2_1": 0.0,
+          "2_2": 0.0
+        }
+      }
+    },
+    "9": {
+      "termination_condition_a": "optimal",
+      "termination_condition_b": "optimal",
+      "objective_a": 0.023047848581170288,
+      "objective_b": 0.023047848581170288,
+      "objective_abs_diff": 0.0,
+      "dispatch_max_abs_diffs": {
+        "es_pnet": {
+          "max_abs_diff": 0.0,
+          "argmax_key": null
+        },
+        "es_qnet": {
+          "max_abs_diff": 0.0,
+          "argmax_key": null
+        },
+        "es_pch_per_unit": {
+          "max_abs_diff": 0.0,
+          "argmax_key": null
+        },
+        "es_pdch_per_unit": {
+          "max_abs_diff": 0.0,
+          "argmax_key": null
+        },
+        "es_soh_per_unit_cumul": {
+          "max_abs_diff": 0.0,
+          "argmax_key": null
+        },
+        "es_D_per_unit": {
+          "max_abs_diff": 0.0,
+          "argmax_key": null
+        }
+      },
+      "h3_census_arm_a": {
+        "total_structural_rows": 864,
+        "active_rows": 0,
+        "shares": {
+          "0_0": 0.0,
+          "0_1": 0.0,
+          "0_2": 0.0,
+          "1_0": 0.0,
+          "1_1": 0.0,
+          "1_2": 0.0,
+          "2_0": 0.0,
+          "2_1": 0.0,
+          "2_2": 0.0
+        }
+      }
+    }
+  },
+  "all_h3_shares_zero_in_arm_a": true,
+  "all_h3_rows_inactive_in_arm_a": true,
+  "conclusion": "H3 rule INERT on this single-cohort fixture: zero active rows, all shares 0.0, Arm A vs Arm B (H3 components physically removed) differ only by ordinary solver noise."
+}

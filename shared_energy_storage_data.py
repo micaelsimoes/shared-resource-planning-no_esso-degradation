@@ -1,4 +1,5 @@
 import os
+import re
 from math import isclose, exp
 import pandas as pd
 import pyomo.opt as po
@@ -32,6 +33,12 @@ class SharedEnergyStorageData:
         self.params = SharedEnergyStorageParameters()
         self.active_distribution_network_nodes = list()
         self.solver_recovery_diagnostics = list()
+        # P5.15 Addendum 3 item 1b: per-ESSO-solve complementarity-leak
+        # diagnostics (ratio detector, closed-form spurious-throughput bound,
+        # mu_final/s_obj parsed from that solve's IPOPT log). Populated by
+        # `_optimize` for every ESSO subproblem solve; see
+        # `_get_esso_complementarity_diagnostics`.
+        self.esso_complementarity_diagnostics = list()
 
     def build_master_problem(self):
         return _build_master_problem(self)
@@ -57,6 +64,14 @@ class SharedEnergyStorageData:
                 from_warm_start=from_warm_start,
                 node_id=node_id,
                 diagnostic_sink=self.solver_recovery_diagnostics,
+                # P5.15 Addendum 3 item 1 (remedy (h)): tightened tol/acceptable_tol
+                # for every ESSO subproblem solve (primary and recovery), applied
+                # here -- the production entry point for the ESSO subproblem --
+                # via option_overrides rather than the case file. See
+                # `ESSO_TOL_OVERRIDES` above `_create_solver` for why this is the
+                # correct site.
+                option_overrides=ESSO_TOL_OVERRIDES,
+                complementarity_diagnostics_sink=self.esso_complementarity_diagnostics,
             )
         return results
 
@@ -175,6 +190,11 @@ class SharedEnergyStorageData:
 
     def get_complementarity_violation(self, models):
         return _get_complementarity_violation(self, models)
+
+    def get_complementarity_violation_ratio(self, models):
+        # P5.15 Addendum 3 item 1b: ratio form of the detector above. Does not
+        # alter `_get_complementarity_violation`'s semantics or return type.
+        return _get_complementarity_violation_ratio(self, models)
 
     def write_optimization_results_to_excel(self, models):
         results = self.process_results(models)
@@ -403,12 +423,63 @@ def _build_subproblem(shared_ess_data, node_id):
     # `pch_hat_agg * pdch_hat_agg <= tol` row) and `slack_es_ch_comp_per_unit` are
     # all retired. Complementarity is no longer enforced by a constraint; it now
     # follows from the LP structure of the throughput regularization added to
-    # `feasibility_penalty` below (EPS_ESSO_THROUGHPUT * sum(pch + pdch)): since
-    # charging and discharging both cost the same epsilon per unit of throughput
-    # and no other term in the objective rewards using both directions at once,
-    # an LP optimum never has pch > 0 and pdch > 0 simultaneously unless forced
-    # to by another binding constraint. This is a detector-checked property, not
-    # an enforced one -- see `get_complementarity_violation` / the post-solve
+    # `feasibility_penalty` below (EPS_ESSO_THROUGHPUT * sum(pch + pdch)).
+    #
+    # P5.15 Addendum 3 (`P5_15_EXPERT_HANDOFF.md` section 2, 2026-09-13) amends
+    # the justification originally recorded here, which asserted as established
+    # fact a claim that measurement later falsified:
+    #
+    # The LP STATEMENT STANDS: since charging and discharging both cost the same
+    # epsilon per unit of throughput and no other term in the objective rewards
+    # using both directions at once, an LP VERTEX optimum never has pch > 0 and
+    # pdch > 0 simultaneously unless forced to by another binding constraint.
+    #
+    # The INFERENCE THAT IPOPT RETURNS THAT OPTIMUM DOES NOT STAND. IPOPT is an
+    # interior-point method: it does not return vertices, and it stops at an
+    # interior point whose distance from the pch=0-or-pdch=0 vertex is set by
+    # its terminal barrier parameter, not by the LP structure. The measured
+    # complementarity leak at that interior point obeys the barrier identity
+    # (verified to 0.10-0.36% against a committed IPOPT log):
+    #
+    #     min(pch, pdch) = mu_final / (2 * s_obj * eps)
+    #
+    # where `mu_final` is IPOPT's terminal barrier parameter (the scaled
+    # `Complementarity` line of the solver log), `s_obj` is the objective
+    # scaling factor IPOPT derives from PENALTY_ESSO_SLACK (the ratio of the
+    # scaled to the unscaled `Objective` line), and `eps` is
+    # EPS_ESSO_THROUGHPUT. The leak is therefore proportional to `mu_final`,
+    # which the solver's `tol` controls directly -- this is the lever remedy
+    # (h) (Addendum 3 item 1) uses: `_create_solver` applies
+    # `tol = 1e-8` / `acceptable_tol = 1e-7` via `option_overrides` (not the
+    # case file) to every ESSO solve, shrinking `mu_final` and hence the leak
+    # without any change to this formulation. The identity also gives a
+    # CLOSED-FORM ESTIMATE of the resulting spurious throughput over an
+    # ESSO solve's active cohort-periods,
+    #
+    #     2 * N_periods * mu_final / (2 * s_obj * eps)
+    #
+    # which `_get_esso_complementarity_diagnostics` computes and logs for every
+    # ESSO solve, parsing `mu_final` and `s_obj` from that solve's own IPOPT log
+    # (never assumed), alongside the ratio-form detector
+    # `get_complementarity_violation_ratio`.
+    #
+    # It is an ESTIMATE, NOT AN UPPER BOUND. Measured/estimate is 1.00323 at
+    # tol=1e-6 and 0.99716 at tol=1e-8 (`data/SRP1/Results/P5151/
+    # tol_remedy_check_summary.json`) -- i.e. it is exceeded in one direction and
+    # undershot in the other, an unbiased estimator with roughly +/-0.35%
+    # scatter. Interpretation (Planner, not verified): IPOPT's reported
+    # `Complementarity` is an aggregate measure over ALL bound pairs, not the
+    # exact barrier parameter governing this one pair. Do not describe it as a
+    # bound in the manuscript or rely on it to certify a leak ceiling; to bound
+    # the leak, read the ratio detector, which is a direct measurement. The
+    # identity's PREDICTIVE content is nonetheless confirmed across two decades:
+    # mu_final fell 101.5x between the two arms and the leak fell 102.1x,
+    # agreeing to 0.65%.
+    #
+    # Complementarity is a
+    # DETECTOR-CHECKED property, not an enforced one -- see
+    # `get_complementarity_violation` (absolute form) /
+    # `get_complementarity_violation_ratio` (ratio form) / the post-solve
     # detector documented at the end of this function's constraint block.
     model.es_avg_ch_dch_per_unit = pe.Var(model.years, model.years, domain=pe.Reals, initialize=0.00)
     # P5.15-1 (Step 1 item 2): D[y_inv, y] is the LOG-DOMAIN annual fractional
@@ -587,6 +658,18 @@ def _build_subproblem(shared_ess_data, node_id):
                     _add_esso_cohort_constraint(model, 'energy_storage_limits', y_inv, y, pch <= s_max)
                     _add_esso_cohort_constraint(model, 'energy_storage_limits', y_inv, y, pdch <= s_max)
 
+    # P5.15 Addendum 3 item 2 (H3 rule, PLANNER_BRIEF_2026-09-13.md, Addendum 3,
+    # "Authorized" item 2): per-cohort pro-rata share of the aggregate net
+    # power, indexed (y_inv, y). Values are set as plain PYTHON FLOATS by
+    # `_configure_esso_cohort_pnet_share_rows` (called from
+    # `_update_model_with_candidate_solution`), computed from
+    # `es_e_investment_fixed` (a Param) -- never as a Pyomo expression built
+    # from the rated-capacity Vars, which would make the row a Var-ratio
+    # (nonlinear). See that function for the row-count argument (N_active-1,
+    # never N) and the single-cohort inertness it preserves.
+    model.es_pnet_cohort_share_h3 = pe.Param(model.years, model.years, mutable=True, initialize=0.00)
+    model.energy_storage_cohort_pnet_share_h3 = pe.ConstraintList()
+
     # - Shared ESS operation, aggregated
     model.energy_storage_operation_agg = pe.ConstraintList()
     for y in model.years:
@@ -612,6 +695,24 @@ def _build_subproblem(shared_ess_data, node_id):
 
                 model.energy_storage_operation_agg.add(
                     model.es_pnet[y, d, p] ** 2 + model.es_qnet[y, d, p] ** 2 <= model.es_s_rated[y] ** 2)
+
+                # P5.15 Addendum 3 item 2 (H3 rule): one candidate pro-rata row
+                # per cohort, built against the SAME `agg_pnet` expression used
+                # by the aggregate-definition row directly above (not against
+                # `es_pnet`, which can differ from `agg_pnet` by the
+                # slack_es_pnet_{up,down} pair when slacks are enabled --
+                # Addendum 3 requires the row against `agg_pnet` specifically).
+                # Built unconditionally for every y_inv here, mirroring the
+                # unconditional-grid convention `available_s/e_capacity_unit`
+                # already uses; `_configure_esso_cohort_pnet_share_rows` is
+                # what leaves at most N_active(y)-1 of these ACTIVE at any
+                # time (never N), deactivating the rest (including all of them
+                # whenever <=1 cohort is active for year y).
+                for y_inv in model.years:
+                    _add_esso_cohort_constraint(
+                        model, 'energy_storage_cohort_pnet_share_h3', y_inv, y,
+                        model.es_pch_per_unit[y_inv, y, d, p] - model.es_pdch_per_unit[y_inv, y, d, p]
+                        == model.es_pnet_cohort_share_h3[y_inv, y] * agg_pnet)
 
                 # P5.15-1 (Step 1 item 3): the aggregate complementarity link
                 # (agg_pch/agg_pdch vs. es_pch_hat_agg/es_pdch_hat_agg and the
@@ -861,6 +962,25 @@ def _get_salvage_value_results(shared_ess_data, models):
     }
 
 
+# P5.15 Addendum 3 item 1 (remedy (h), PLANNER_BRIEF_2026-09-13.md): the ESSO's
+# complementarity leak is an interior-point barrier residual,
+# `min(pch, pdch) = mu_final / (2 * s_obj * eps)` (see the comment on the
+# es_pch_per_unit/es_pdch_per_unit declaration in `_build_subproblem`, and
+# `P5_15_EXPERT_HANDOFF.md` section 2). Because the leak is proportional to
+# `mu_final`, and `mu_final` is controlled by the ESSO's `tol`, tightening
+# `tol` shrinks the leak with no change to the formulation. This tightens
+# `tol`/`acceptable_tol` relative to the case-file values (currently 1e-6 /
+# 1e-5 in `data/SRP1/SharedESS/SRP1_ESS_Params.json`, which this task may not
+# edit) for every ESSO subproblem solve, applied via `option_overrides` --
+# the highest-precedence merge in `_create_solver` (params.options is merged
+# first, option_overrides last) -- so it takes effect regardless of the case
+# file and cannot be silently defeated by it. Consumed at `optimize()`, the
+# production entry point for the ESSO subproblem (called from
+# `create_shared_energy_storage_model`); NOT applied to the master problem
+# (`optimize_master_problem`, an LP solve where this identity does not apply).
+ESSO_TOL_OVERRIDES = {'tol': 1e-8, 'acceptable_tol': 1e-7}
+
+
 def _create_solver(model, params, from_warm_start=False, node_id=None, option_overrides=None, log_suffix=None):
 
     solver = po.SolverFactory(params.solver, executable=params.solver_path)
@@ -957,15 +1077,22 @@ def _format_solver_options(options):
     return ', '.join(f'{key}={value}' for key, value in sorted(options.items()))
 
 
-def _optimize(model, params, from_warm_start=False, node_id=None, diagnostic_sink=None):
+def _optimize(model, params, from_warm_start=False, node_id=None, diagnostic_sink=None,
+               option_overrides=None, complementarity_diagnostics_sink=None):
 
     solve_context = f'ESS node={node_id}' if node_id is not None else 'master problem'
+    # P5.15 Addendum 3 item 1: option_overrides (e.g. ESSO_TOL_OVERRIDES) only
+    # apply to an ipopt solve -- guards the master problem's non-ipopt LP
+    # solver against receiving ipopt-only option names even if a caller passed
+    # overrides in error.
+    esso_option_overrides = option_overrides if (option_overrides and params.solver.lower() == 'ipopt') else None
     primary_result, primary_log_path = _run_solver_attempt(
         model,
         params,
         solve_context,
         from_warm_start=from_warm_start,
         node_id=node_id,
+        option_overrides=esso_option_overrides,
     )
     result = primary_result
     recovery_result = None
@@ -986,6 +1113,10 @@ def _optimize(model, params, from_warm_start=False, node_id=None, diagnostic_sin
             if key != 'hessian_approximation'
         }
         recovery_options['warm_start_init_point'] = 'no'
+        if esso_option_overrides:
+            # P5.15 Addendum 3 item 1: the recovery retry is still an ESSO
+            # solve, so the same tol/acceptable_tol tightening applies to it.
+            recovery_options.update(esso_option_overrides)
         print(
             f'[WARNING] Shared ESS primary solve did not converge for {solve_context}: '
             f'{solver_result_summary(primary_result)} | warm_start={from_warm_start}'
@@ -1024,6 +1155,21 @@ def _optimize(model, params, from_warm_start=False, node_id=None, diagnostic_sin
             result = None
         if recovery_attempted and result is not None:
             print(f'[INFO] Shared ESS recovery solve succeeded for {solve_context}.')
+        # P5.15 Addendum 3 item 1b: log the complementarity-leak detector and
+        # the closed-form spurious-throughput bound for every ESSO solve
+        # (node_id is not None only for the ESSO subproblem, never the master
+        # problem). Uses whichever log produced the loaded solution.
+        if node_id is not None and params.solver.lower() == 'ipopt' and result is not None:
+            diagnostics_log_path = (
+                recovery_log_path if (recovery_attempted and recovery_result is not None) else primary_log_path
+            )
+            complementarity_diagnostics = _get_esso_complementarity_diagnostics(
+                model, node_id, diagnostics_log_path
+            )
+            print(f'[INFO] Shared ESS complementarity diagnostics for {solve_context}: '
+                  f'{_format_esso_complementarity_diagnostics(complementarity_diagnostics)}')
+            if complementarity_diagnostics_sink is not None:
+                complementarity_diagnostics_sink.append(complementarity_diagnostics)
     else:
         attempt_label = 'recovery' if recovery_attempted else 'solver'
         failed_attempt_result = recovery_result if recovery_attempted else result
@@ -1066,6 +1212,12 @@ def _update_model_with_candidate_solution(shared_ess_data, models, candidate_sol
             # the investment values consumed by the rest of the model, so there
             # is nothing left to .fix() here.
             _configure_esso_cohort_state(model, y_inv, s_candidate, e_candidate, shared_ess_data.params.slacks)
+
+        # P5.15 Addendum 3 item 2 (H3 rule): run once per node, AFTER every
+        # cohort's own activity has been (re)established above, since the
+        # per-cohort share and row selection need to know the FULL active-
+        # cohort set for each calendar year, not just this one cohort.
+        _configure_esso_cohort_pnet_share_rows(model)
 
 
 def _get_candidate_solution(self, model):
@@ -1219,6 +1371,103 @@ def _configure_esso_cohort_state(model, y_inv, s_capacity, e_capacity, slacks_en
 
     return inactive
 
+
+def _configure_esso_cohort_pnet_share_rows(model):
+    """
+    P5.15 Addendum 3 item 2 (H3 rule, PLANNER_BRIEF_2026-09-13.md, Addendum 3,
+    "Authorized" item 2): pins each active cohort's per-period net power to
+    its pro-rata share (by rated energy capacity) of the aggregate net power,
+    for every calendar year with more than one active cohort. This is a
+    HOMOGENEOUS-FLEET APPROXIMATION -- to be stated in the manuscript
+    (answers Expert Section 2.4 / R3.3 cohort realizability). It resolves the
+    per-cohort split degeneracy noted as H3 in `P5_15_EXPERT_HANDOFF.md`
+    section 3, reason 3: the throughput regularization in
+    `feasibility_penalty` is indifferent to how `|pnet|` is split among
+    active cohorts, so per-cohort `es_D_per_unit` / `es_soh_per_unit_cumul`
+    are non-unique whenever two or more cohorts are active, even under
+    perfect complementarity.
+
+    ROW COUNT (mandatory constraint, Addendum 3 item 2): exactly
+    N_active(y)-1 rows are left ACTIVE per (y, d, p) -- never N. The shares
+    sum to 1 by construction and `agg_pnet` (used identically by
+    `energy_storage_operation_agg`'s own row, immediately above where these
+    rows are built) is already defined as the sum of the same per-cohort
+    powers; writing all N pro-rata rows would therefore make the constraint
+    set linearly dependent -- an LICQ violation of exactly the class this
+    programme has been removing elsewhere. The omitted cohort, per year, is
+    the one with the LARGEST y_inv among that year's active cohorts -- a
+    deterministic, otherwise-arbitrary convention (any single fixed choice
+    works, because of the sum-to-one identity); `energy_storage_operation_agg`
+    supplies its value.
+
+    PARAMETER, NOT EXPRESSION (mandatory constraint, Addendum 3 item 2): every
+    share written here is a plain PYTHON FLOAT, computed from
+    `es_e_investment_fixed` (a mutable Param) via `pe.value(...)`, and is
+    then pushed into the model with `.set_value(...)` on the mutable Param
+    `es_pnet_cohort_share_h3`. It is never built as a Pyomo expression out of
+    the rated-capacity Vars (`es_e_rated_per_unit`) -- dividing by a SUM OF
+    VARS would make the row's coefficient a decision variable, i.e. a
+    bilinear (Var * Var) row, which is exactly what this rule must not
+    reintroduce.
+
+    INERTNESS on every currently runnable fixture: when <=1 cohort is active
+    for a given year (true everywhere today -- every preserved fixture and
+    case file invests in at most one cohort at a time), every H3 row for that
+    year is deactivated and every share is set to 0.0, so this function has
+    no effect on the model actually sent to the solver.
+    """
+    years = list(model.years)
+
+    # Group this model's own tracked H3 constraint entries by (y, y_inv) once,
+    # rather than rescanning `_esso_cohort_constraints` inside the year loop
+    # below -- `_esso_cohort_constraints[y_inv]` mixes entries from every
+    # cohort constraint family (energy_storage_limits, the degradation rows,
+    # this one, ...), so the family name must still be filtered here.
+    rows_by_year_cohort = {y: {y_inv: [] for y_inv in years} for y in years}
+    for y_inv in years:
+        for constraint_name, constraint_idx, row_year in model._esso_cohort_constraints[y_inv]:
+            if constraint_name == 'energy_storage_cohort_pnet_share_h3':
+                rows_by_year_cohort[row_year][y_inv].append(constraint_idx)
+
+    for y in years:
+
+        # Same activity test the surrounding code uses (`_configure_esso_cohort_state`
+        # / `_esso_cohort_pair_is_within_lifetime`): a cohort counts as active for
+        # year y only if its investment is non-zero (not `_esso_cohort_inactive`)
+        # AND (y_inv, y) is within its calendar-life window.
+        active_cohorts = [
+            y_inv for y_inv in years
+            if (not model._esso_cohort_inactive.get(y_inv, False))
+            and _esso_cohort_pair_is_within_lifetime(model, y_inv, y)
+        ]
+        n_active = len(active_cohorts)
+
+        if n_active <= 1:
+            for y_inv in years:
+                model.es_pnet_cohort_share_h3[y_inv, y].set_value(0.00)
+                for constraint_idx in rows_by_year_cohort[y][y_inv]:
+                    model.energy_storage_cohort_pnet_share_h3[constraint_idx].deactivate()
+            continue
+
+        total_e_rated = sum(
+            pe.value(model.es_e_investment_fixed[y_inv]) for y_inv in active_cohorts
+        )
+        omitted = max(active_cohorts)
+
+        for y_inv in years:
+
+            share = 0.00
+            if y_inv in active_cohorts and total_e_rated > 0.00:
+                share = pe.value(model.es_e_investment_fixed[y_inv]) / total_e_rated
+            model.es_pnet_cohort_share_h3[y_inv, y].set_value(share)
+
+            enable_row = (y_inv in active_cohorts) and (y_inv != omitted)
+            for constraint_idx in rows_by_year_cohort[y][y_inv]:
+                constraint = model.energy_storage_cohort_pnet_share_h3[constraint_idx]
+                if enable_row:
+                    constraint.activate()
+                else:
+                    constraint.deactivate()
 
 
 # ======================================================================================================================
@@ -1461,6 +1710,166 @@ def _get_complementarity_violation(shared_ess_data, models):
                         if violation > max_violation:
                             max_violation = violation
     return max_violation
+
+
+def _complementarity_ratio_for_model(model):
+    """Single-model helper behind `_get_complementarity_violation_ratio`
+    (P5.15 Addendum 3 item 1b) and the per-solve logging in `_optimize`.
+    Iterates the SAME active-cohort-pair filter as `_get_complementarity_violation`
+    (`_esso_cohort_pair_is_within_lifetime`, `_esso_cohort_inactive`), so
+    `n_periods` is counted from this model's own active cohorts rather than
+    assumed (e.g. 288).
+
+    Returns (max_ratio, n_periods, argmax, spurious_throughput_measured):
+      - max_ratio: max over active cohort-periods of min(pch, pdch) / s_max,
+        skipping s_max == 0 (ratio form of `_get_complementarity_violation`'s
+        absolute-form detector).
+      - n_periods: count of active cohort-periods iterated -- the same
+        iteration the ratio and the closed-form spurious-throughput bound are
+        taken over.
+      - argmax: dict describing the (y_inv, y, d, p) at which max_ratio was
+        found, or None if no active cohort-period had s_max > 0.
+      - spurious_throughput_measured: 2 * sum(min(pch, pdch)) over the same
+        active cohort-periods -- the measured counterpart to the closed-form
+        bound `2 * n_periods * mu_final / (2 * s_obj * eps)` (both legs of the
+        pair are inflated by the leak, hence the factor of 2).
+    """
+    max_ratio = 0.0
+    argmax = None
+    n_periods = 0
+    sum_min_pch_pdch = 0.0
+    for y_inv in model.years:
+        for y in model.years:
+            if not _esso_cohort_pair_is_within_lifetime(model, y_inv, y):
+                continue
+            if model._esso_cohort_inactive.get(y_inv, False):
+                continue
+            s_max = pe.value(model.es_s_rated_per_unit[y_inv, y])
+            for d in model.days:
+                for p in model.periods:
+                    n_periods += 1
+                    pch = pe.value(model.es_pch_per_unit[y_inv, y, d, p])
+                    pdch = pe.value(model.es_pdch_per_unit[y_inv, y, d, p])
+                    min_pch_pdch = min(pch, pdch)
+                    sum_min_pch_pdch += min_pch_pdch
+                    if not s_max:  # skips None and exactly 0.0
+                        continue
+                    ratio = min_pch_pdch / s_max
+                    if ratio > max_ratio:
+                        max_ratio = ratio
+                        argmax = {'y_inv': y_inv, 'y': y, 'd': d, 'p': p,
+                                  'pch': pch, 'pdch': pdch, 's_max': s_max}
+    spurious_throughput_measured = 2.0 * sum_min_pch_pdch
+    return max_ratio, n_periods, argmax, spurious_throughput_measured
+
+
+def _get_complementarity_violation_ratio(shared_ess_data, models):
+    """Ratio form of the post-solve complementarity DETECTOR (P5.15 Addendum 3
+    item 1b): max over active cohort-periods of min(pch, pdch) / s_max,
+    skipping s_max == 0, across all active nodes. Companion to
+    `_get_complementarity_violation`; that function's semantics and return
+    type are UNCHANGED by this addition.
+    """
+    max_ratio = 0.0
+    for node_id in shared_ess_data.active_distribution_network_nodes:
+        node_ratio, _, _, _ = _complementarity_ratio_for_model(models[node_id])
+        if node_ratio > max_ratio:
+            max_ratio = node_ratio
+    return max_ratio
+
+
+_IPOPT_OBJECTIVE_LINE_RE = re.compile(r'^Objective\.+:\s+(\S+)\s+(\S+)', re.MULTILINE)
+_IPOPT_COMPLEMENTARITY_LINE_RE = re.compile(r'^Complementarity\.+:\s+(\S+)\s+(\S+)', re.MULTILINE)
+
+
+def _parse_ipopt_barrier_terms(log_path):
+    """Parse `mu_final` and `s_obj` from an IPOPT log for the barrier identity
+    (P5.15 Addendum 3 item 1, `PLANNER_BRIEF_2026-09-13.md`). `mu_final` is the
+    SCALED `Complementarity` value; `s_obj` is the ratio of the scaled to the
+    unscaled `Objective` value.
+
+    Returns (mu_final, s_obj, reason). `reason` is None on success. On any
+    failure both values are None and `reason` states why -- this NEVER
+    substitutes a default (e.g. s_obj = 0.1 is a measured constant of one
+    instance under one PENALTY_ESSO_SLACK value, not a fallback to assume).
+    """
+    if not log_path or not os.path.exists(log_path):
+        return None, None, f'IPOPT log not found: {log_path}'
+    text = open(log_path, 'r', errors='replace').read()
+    obj_match = _IPOPT_OBJECTIVE_LINE_RE.search(text)
+    comp_match = _IPOPT_COMPLEMENTARITY_LINE_RE.search(text)
+    if obj_match is None:
+        return None, None, 'scaled/unscaled Objective line not found in IPOPT log'
+    if comp_match is None:
+        return None, None, 'scaled Complementarity line not found in IPOPT log'
+    try:
+        scaled_obj = float(obj_match.group(1))
+        unscaled_obj = float(obj_match.group(2))
+        mu_final = float(comp_match.group(1))
+    except ValueError as exc:
+        return None, None, f'could not parse Objective/Complementarity floats: {exc}'
+    if unscaled_obj == 0.0:
+        return None, None, 'unscaled objective is exactly 0.0; s_obj (scaled/unscaled) is undefined'
+    return mu_final, scaled_obj / unscaled_obj, None
+
+
+def _get_esso_complementarity_diagnostics(model, node_id, log_path):
+    """P5.15 Addendum 3 item 1b: per-ESSO-solve complementarity-leak
+    diagnostics. Computes the ratio-form detector and the closed-form
+    spurious-throughput bound
+
+        2 * N_periods * mu_final / (2 * s_obj * eps)
+
+    from the barrier identity `min(pch, pdch) = mu_final / (2 * s_obj * eps)`
+    documented at the es_pch_per_unit/es_pdch_per_unit declaration in
+    `_build_subproblem`. `mu_final` and `s_obj` are PARSED from this solve's
+    own IPOPT log (`_parse_ipopt_barrier_terms`), never assumed; `eps` is
+    `EPS_ESSO_THROUGHPUT` as actually in force (module-level global, looked up
+    at call time so a harness override is reflected). If `mu_final`/`s_obj`
+    cannot be parsed, `spurious_throughput_bound` is None and `parse_reason`
+    records why -- no silent fallback to a default such as s_obj = 0.1.
+    """
+    max_ratio, n_periods, argmax, spurious_throughput_measured = _complementarity_ratio_for_model(model)
+    mu_final, s_obj, parse_reason = _parse_ipopt_barrier_terms(log_path)
+    eps_in_force = EPS_ESSO_THROUGHPUT
+    bound = None
+    if mu_final is not None and s_obj not in (None, 0.0) and eps_in_force:
+        bound = 2.0 * n_periods * mu_final / (2.0 * s_obj * eps_in_force)
+    return {
+        'node_id': node_id,
+        'log_path': log_path,
+        'complementarity_ratio_max': max_ratio,
+        'complementarity_ratio_argmax': argmax,
+        'n_active_cohort_periods': n_periods,
+        'eps_esso_throughput_in_force': eps_in_force,
+        'mu_final': mu_final,
+        's_obj': s_obj,
+        'parse_reason': parse_reason,
+        'spurious_throughput_bound': bound,
+        'spurious_throughput_measured': spurious_throughput_measured,
+    }
+
+
+def _format_esso_complementarity_diagnostics(diagnostics):
+    def _fmt(value):
+        if value is None:
+            return 'None'
+        if isinstance(value, float):
+            return f'{value:.6e}'
+        return str(value)
+
+    parts = [
+        f'ratio_max={_fmt(diagnostics["complementarity_ratio_max"])}',
+        f'n_periods={diagnostics["n_active_cohort_periods"]}',
+        f'mu_final={_fmt(diagnostics["mu_final"])}',
+        f's_obj={_fmt(diagnostics["s_obj"])}',
+        f'eps={_fmt(diagnostics["eps_esso_throughput_in_force"])}',
+        f'bound={_fmt(diagnostics["spurious_throughput_bound"])}',
+        f'measured={_fmt(diagnostics["spurious_throughput_measured"])}',
+    ]
+    if diagnostics['parse_reason']:
+        parts.append(f'parse_reason={diagnostics["parse_reason"]}')
+    return ' '.join(parts)
 
 
 def _process_relaxation_variables_operation_aggregated(shared_ess_data, models):
