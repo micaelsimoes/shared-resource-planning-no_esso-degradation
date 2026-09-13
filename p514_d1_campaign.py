@@ -36,6 +36,7 @@ SPEC = 'data/SRP1/Results/P514D/frozen_d1_campaign_v1_2c8c7bef.json'
 BUDGET, REL, CAP = 5.0e6, 1e-4, 90
 RHO = {'v': 1.5, 'pf': 300.0, 'ess': 1.0}
 S_INV, E_INV, INVEST_YEAR = 1.00, 4.00, 2025
+# P5.14-M: capacity overridable on the command line for the C* evaluation
 VANISH = 1e-6
 PERMITTED = [('network.py', '_run_smopf_solver_attempt'),
              ('shared_energy_storage_data.py', '_run_solver_attempt')]
@@ -164,4 +165,7 @@ def main(cell):
 
 
 if __name__ == '__main__':
+    if len(sys.argv) > 2:                      # optional capacity override (P5.14-M)
+        S_INV = float(sys.argv[2])
+        E_INV = S_INV * 4.0
     sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else 'cell1'))

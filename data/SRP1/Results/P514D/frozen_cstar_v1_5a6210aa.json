@@ -1,0 +1,39 @@
+{
+  "design": "P5.14-M — full cold evaluation at C*",
+  "status": "FROZEN — written and hashed before the run",
+  "authorization": "author, 2026-09-13: GO. Resolution is comfortably non-binding, so thirty-five minutes is worth spending.",
+
+  "WHAT THIS TESTS": {
+    "reframed": "Since resolution is settled, this is a FEASIBILITY TEST OF THE WHOLE PIPELINE AT MATERIAL CAPACITY, not a measurement.",
+    "binding_risk": "the ladder tested INITIALIZATION ONLY, and P5.12 established that a trajectory can initialize cleanly and fail mid-trajectory (cycle 21).",
+    "PREDECLARED": "A MID-TRAJECTORY FAILURE IS THE PRIMARY ANTICIPATED OUTCOME AND IS ITSELF THE FINDING — not a failed stage to be retried. If it fails at cycle 40, that is the answer to whether this oracle can evaluate a material plan, and it is worth knowing in thirty-five minutes."
+  },
+
+  "cell": {"s_mva_per_node": 0.96875, "e_mwh_per_node": 3.875, "ratio": 4.0,
+    "invested_year": 2025, "single_cohort": true,
+    "system_wide": "2.90625 MVA / 11.625 MWh",
+    "why_this_capacity": "the largest capacity whose ESSO subproblems solve at initialization (P5.14-L ladder), bracketed to within 3.2% below the failing 1.00"},
+  "configuration": {"path": "cold", "rho": {"v": 1.5, "pf": 300.0, "ess": 1.0}, "adaptive_penalty": true,
+    "tol_objective_rel": 1e-4, "budget": 5.0e6, "cap": 90, "formulation": "C3 active"},
+
+  "THREE POINTS, NOT TWO": {
+    "series": [
+      {"s_mva": 0.0, "cell": "D1 cell 2", "recourse": 820746762.46, "rel": 1e-4, "rule_ten": 0.8414},
+      {"s_mva": 0.010634892806127162, "cell": "C1 cold", "recourse": 819145341.20, "rel": 1e-4, "rule_ten": 0.5800},
+      {"s_mva": 0.96875, "cell": "this run", "recourse": null, "rel": 1e-4, "rule_ten": null}
+    ],
+    "verified_before_relying_on_it": "all three are cold, rel 1e-4, C3, rho_pf 300 adaptive. The C1 cold cell used the default budget 1.0e6, which the pre-flight established is INERT on the cold path, so it does not differ materially.",
+    "why": "a monotone storage-value trend across two orders of magnitude of capacity is persuasive in a way a single difference is not",
+    "resolves_the_anomaly_in_passing": "if the 0 -> 0.0106 step is 1.6M while the 0.0106 -> 0.96875 step is of comparable or SMALLER magnitude, the D1 anomaly is confirmed as PATH DIVERGENCE rather than storage value — which is what the rule-ten ratios already suggest"
+  },
+
+  "LIMITS STATED BEFORE RUNNING": {
+    "normalization_confound_is_live_in_this_pair": "max(|rating|, 0.10) gives cell 2 a normalization of 0.10 and this run 0.96875 — a 9.7x difference on the ESS consensus channel, layered on the capacity difference. It affects the convergence test and therefore the stopping point, and C1 established that the stopping point determines the reported value. Reported as a KNOWN CONFOUND on the cell-2 comparison, not discovered afterwards.",
+    "cell_2_is_a_weak_control": "its rule-ten ratio is 0.8414 — it stopped NEAR its bound, not comfortably inside it. Combined with the confound, the 0 -> C* difference is the LEAST trustworthy of the three comparisons.",
+    "reporting_obligation": "rule ten for all three points, and a plain statement that where any cell stops near its threshold the comparison is limited by that rather than by the bar"
+  },
+
+  "solve_profile": {"mode": "armed and counted", "identity": "51 x cycles + 51", "upper_bound": 4641},
+  "not_permitted": ["retrying a mid-trajectory failure", "reading a measurement from a failed run",
+                    "presenting C* as the paper's plan"]
+}

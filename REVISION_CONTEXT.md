@@ -3895,3 +3895,42 @@ while any real plan uses its own rating — a tenfold difference on the ESS cons
 at 1.00 MVA, layered on the capacity difference. **Any future cell-3-versus-cell-2
 comparison must either hold the normalization fixed or quantify its contribution
 separately.**
+
+## P5.14-M — C* evaluation BLOCKED by a third production defect (2026-09-13)
+
+Frozen spec `5a6210aa` before the run. GO was authorized and **cannot execute**. Full
+record in `P5_14_M_CSTAR_BLOCKED.md`.
+
+Initialization succeeded at `C* = 0.96875 MVA / 3.875 MWh` as the ladder predicted, ADMM
+started, and cycle 1 raised `KeyError: 'sch'` in
+`_print_worst_primal_residual_diagnostics` (`shared_resources_planning.py:5186`) — **a
+diagnostic print statement, not the solver.**
+
+**Producer/consumer mismatch.** The `charge_discharge` dict is built with `pch`/`pdch`
+(`:5014`, `:5023`, `:5035`); the printer reads `sch`/`sdch` (`:5186-5187`), the retired
+apparent-power names. The printer dates from `1777457d` (2026-09-02); the producer was
+converted by **`58f4911b`, "P5.4-C: ESSO active-energy conversion" (2026-09-06)** — which
+converted the producer and not the consumer. Broken for a week.
+
+**Why it never fired before:** the diagnostic is guarded by
+`primal['ess'] > tol['consensus']['ess']` = 0.1 (`:5152`). At negligible capacity the ESS
+primal residual never reaches 0.1; at material capacity it is exceeded on cycle 1. The
+defect was not *caused* by material capacity — it was finally *reached* by it.
+
+**The pattern is now the substantive finding.** Three blockers, all in paths that only
+material capacity or an unused mode reaches: the uncoordinated mode (`99a59fec`,
+2026-08-18), node 7's genuine feasibility boundary (not a defect), and this printer
+(`58f4911b`, 2026-09-06). **The tool has been exercised only in a regime where its
+storage-specific code paths are inert** — so the code that handles a materially loaded
+shared ESS has never been executed, and its defects have accumulated unobserved. That is
+the governing fact restated with a mechanism.
+
+**Severity differs sharply:** the printer is two dictionary keys and changes no number;
+cell 1 is one guarded penalty component with a formulation reading behind it; node 7 is not
+a defect but a real capacity limit — the only one of the three that is information about the
+system rather than about the code.
+
+**Status:** `C*` not obtained, GO unexecuted, no artifact written (`d1_cell3.json` still
+holds the 1.00 MVA run). The three-point capacity series remains at two points. **No
+production change made** — and fixing a third defect in a path no test exercises is itself a
+decision rather than a patch.

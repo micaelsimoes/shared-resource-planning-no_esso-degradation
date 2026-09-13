@@ -1,7 +1,9 @@
 # P5.14-L — capacity ladder: the largest plan this oracle can evaluate
 
 **Seven rungs, ESSO-initialization stage only, ADMM never started. 358 solves total,
-~5 minutes. Guards clean.** Frozen spec
+~5 minutes. Guards clean.** Count reconciled: `6 x 51 + 52 = 358` — six passing rungs at 51
+each, plus the failing rung's 51 initialization solves and **one declared diagnostic
+re-solve** to read residuals at the terminal point. Frozen spec
 `data/SRP1/Results/P514L/frozen_ladder_v1_c1ea6393.json` (`c1ea6393`), with both go/no-go
 branches and the prime suspect predeclared before any rung ran.
 
@@ -69,6 +71,27 @@ feasibility boundary near 1.00 MVA (the sharp threshold), with the unclosable re
 reported on definitional rows (the restoration artifact). What the ladder rules out is the
 *specific* hypothesis that the unslacked aggregate complementarity row is the binding
 obstruction.
+
+**The monotonicity is what makes that reading convincing, and it is the argument.** A
+residual sitting on bookkeeping rows would, on its own, look like evidence *against* a
+genuine boundary — the natural reading is "the solver failed to close identities it should
+have closed", i.e. a numerical artifact. What rules that out is the shape of the ladder:
+**a numerical artifact would not produce six consecutive passes and then a clean failure.**
+Restoration residual on definitional rows is therefore evidence sitting *beside* the
+boundary, not against it.
+
+### An alternative route into restoration, logged and not tested
+
+The plan invests in 2025 only, so the 2030 and 2035 cohorts have **zero rated capacity**,
+and the degradation equality
+`es_degradation_per_unit * (2k * es_e_rated_per_unit) == es_avg_ch_dch_per_unit`
+degenerates for them: with `es_e_rated_per_unit = 0` it forces `avg_ch_dch = 0` and leaves
+`es_degradation_per_unit` **free in [0, 1]**. Degenerate rows of that shape are a plausible
+route into restoration, and restoration is where the identity residual comes from.
+
+It **cannot alone explain the threshold**, since those cohorts are equally degenerate at
+every passing rung — but it could interact with a tightening feasible set. Logged; not
+tested.
 
 ## 3. The limit this result does NOT have
 
