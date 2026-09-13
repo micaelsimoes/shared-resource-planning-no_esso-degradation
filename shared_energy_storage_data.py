@@ -1,5 +1,5 @@
 import os
-from math import isclose
+from math import isclose, exp
 import pandas as pd
 import pyomo.opt as po
 import pyomo.environ as pe
@@ -140,17 +140,15 @@ class SharedEnergyStorageData:
         results['soh']['aggregated'] = self.process_soh_results_aggregated(models)
         results['soh']['detailed'] = self.process_soh_results_detailed(models)
         results['salvage_value'] = self.get_salvage_value_results(models)
+        # P5.15-1 (Step 1 items 1-3): the investment-fixing slacks, the
+        # degradation slacks and the complementarity slack are retired along
+        # with the variables they used to relax, so there is nothing left to
+        # report for them. Only the (unaffected) aggregate operation slack
+        # (slack_es_pnet_{up,down}) remains.
         results['relaxation_variables'] = dict()
-        results['relaxation_variables']['investment'] = self.process_relaxation_variables_investment(models)
         if self.params.slacks:
-            results['relaxation_variables']['degradation'] = dict()
-            results['relaxation_variables']['degradation']['aggregated'] = dict()
-            results['relaxation_variables']['degradation']['detailed'] = self.process_relaxation_variables_degradation_detailed(
-                models)
             results['relaxation_variables']['operation'] = dict()
             results['relaxation_variables']['operation']['aggregated'] = self.process_relaxation_variables_operation_aggregated(
-                models)
-            results['relaxation_variables']['operation']['detailed'] = self.process_relaxation_variables_operation_detailed(
                 models)
         return results
 
@@ -166,17 +164,17 @@ class SharedEnergyStorageData:
     def process_soh_results_detailed(self, models):
         return _process_soh_results_detailed(self, models)
 
-    def process_relaxation_variables_investment(self, models):
-        return _process_relaxation_variables_investment(self, models)
-
-    def process_relaxation_variables_degradation_detailed(self, models):
-        return _process_relaxation_variables_degradation_detailed(self, models)
+    # P5.15-1: process_relaxation_variables_investment,
+    # process_relaxation_variables_degradation_detailed and
+    # process_relaxation_variables_operation_detailed are retired along with
+    # the slack families they reported (investment-fixing, degradation and
+    # complementarity slacks respectively).
 
     def process_relaxation_variables_operation_aggregated(self, models):
         return _process_relaxation_variables_operation_aggregated(self, models)
 
-    def process_relaxation_variables_operation_detailed(self, models):
-        return _process_relaxation_variables_operation_detailed(self, models)
+    def get_complementarity_violation(self, models):
+        return _get_complementarity_violation(self, models)
 
     def write_optimization_results_to_excel(self, models):
         results = self.process_results(models)
@@ -227,11 +225,10 @@ class SharedEnergyStorageData:
         _write_terminal_salvage_value_to_excel(workbook, salvage_value_results)
 
     def write_relaxation_slacks_results_to_excel(self, workbook, results):
-        _write_investment_relaxation_slacks_results_to_excel(self, workbook, results['relaxation_variables']['investment'])
+        # P5.15-1: the investment and degradation/complementarity relaxation
+        # sheets are retired along with the slack families they reported.
         if self.params.slacks:
-            _write_detailed_degradation_relaxation_slacks_results_to_excel(self, workbook, results['relaxation_variables']['degradation']['detailed'])
             _write_aggregated_operation_relaxation_slacks_results_to_excel(self, workbook, results['relaxation_variables']['operation']['aggregated'])
-            _write_detailed_operation_relaxation_slacks_results_to_excel(self, workbook, results['relaxation_variables']['operation']['detailed'])
 
 
 # ======================================================================================================================
@@ -369,14 +366,16 @@ def _build_subproblem(shared_ess_data, node_id):
 
     # ------------------------------------------------------------------------------------------------------------------
     # Variables
+    # P5.15-1 (PLANNER_BRIEF_2026-09-13.md Step 1 item 1): investments are now
+    # mutable Params (data supplied by the master problem / candidate solution),
+    # not decision variables. The four investment-fixing slacks
+    # (slack_es_{s,e}_investment_{up,down}) and the `energy_storage_capacity_fixing`
+    # equality they used to slack are retired -- there is nothing left to slack,
+    # since a Param cannot be infeasible against itself. `es_s_investment_fixed` /
+    # `es_e_investment_fixed` ARE the investment values used everywhere below
+    # (`rated_s_capacity_unit` / `rated_e_capacity_unit` reference them directly).
     model.es_s_investment_fixed = pe.Param(model.years, mutable=True, initialize=0.00)
     model.es_e_investment_fixed = pe.Param(model.years, mutable=True, initialize=0.00)
-    model.es_s_investment = pe.Var(model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.es_e_investment = pe.Var(model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.slack_es_s_investment_up = pe.Var(model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.slack_es_s_investment_down = pe.Var(model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.slack_es_e_investment_up = pe.Var(model.years, domain=pe.NonNegativeReals, initialize=0.0)
-    model.slack_es_e_investment_down = pe.Var(model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_s_rated = pe.Var(model.years, domain=pe.NonNegativeReals, initialize=0.0)
     model.es_e_rated = pe.Var(model.years, domain=pe.NonNegativeReals, initialize=0.0)
     # P5.4-C: es_snet and the slack pair that existed only for the retired
@@ -398,36 +397,41 @@ def _build_subproblem(shared_ess_data, node_id):
 
     model.es_pch_per_unit = pe.Var(model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_pdch_per_unit = pe.Var(model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-    # P5.4-H1: dimensionless charge/discharge, per cohort and aggregated. Used ONLY
-    # by the complementarity rows. Bounds [0, 1] are implied by the existing
-    # `pch <= s_max` / `pdch <= s_max` cohort limits (and, for the aggregate, by
-    # es_s_rated == sum of the cohort ratings), so they add no restriction.
-    model.es_pch_hat_per_unit = pe.Var(model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, bounds=(0.00, 1.00), initialize=0.00)
-    model.es_pdch_hat_per_unit = pe.Var(model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, bounds=(0.00, 1.00), initialize=0.00)
-    model.es_pch_hat_agg = pe.Var(model.years, model.days, model.periods, domain=pe.NonNegativeReals, bounds=(0.00, 1.00), initialize=0.00)
-    model.es_pdch_hat_agg = pe.Var(model.years, model.days, model.periods, domain=pe.NonNegativeReals, bounds=(0.00, 1.00), initialize=0.00)
-    if shared_ess_data.params.slacks:
-        model.slack_es_ch_comp_per_unit = pe.Var(model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+    # P5.15-1 (PLANNER_BRIEF_2026-09-13.md Step 1 item 3): the dimensionless
+    # pch_hat/pdch_hat pair, the per-cohort and aggregate normalization rows, the
+    # complementarity rows (`energy_storage_complementarity` and the aggregate
+    # `pch_hat_agg * pdch_hat_agg <= tol` row) and `slack_es_ch_comp_per_unit` are
+    # all retired. Complementarity is no longer enforced by a constraint; it now
+    # follows from the LP structure of the throughput regularization added to
+    # `feasibility_penalty` below (EPS_ESSO_THROUGHPUT * sum(pch + pdch)): since
+    # charging and discharging both cost the same epsilon per unit of throughput
+    # and no other term in the objective rewards using both directions at once,
+    # an LP optimum never has pch > 0 and pdch > 0 simultaneously unless forced
+    # to by another binding constraint. This is a detector-checked property, not
+    # an enforced one -- see `get_complementarity_violation` / the post-solve
+    # detector documented at the end of this function's constraint block.
     model.es_avg_ch_dch_per_unit = pe.Var(model.years, model.years, domain=pe.Reals, initialize=0.00)
-    model.es_soh_per_unit = pe.Var(model.years, model.years, domain=pe.NonNegativeReals, initialize=1.00, bounds=(0.00, 1.00))
-    model.es_degradation_per_unit = pe.Var(model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
+    # P5.15-1 (Step 1 item 2): D[y_inv, y] is the LOG-DOMAIN annual fractional
+    # loss (dimensionless, per unit, NonNegativeReals). It replaces
+    # es_degradation_per_unit / es_soh_per_unit (deleted, along with their slack
+    # families slack_es_soh_per_unit_{up,down}) with a single LP row per
+    # cohort-year (see `energy_storage_capacity_degradation` below); the only
+    # remaining nonlinearity in the SoH chain is the one `exp` in the cumulative
+    # SoH row. es_degradation_per_unit_cumul (== 1 - soh_cumul) is also deleted;
+    # callers that need it now compute it from es_soh_per_unit_cumul directly.
+    # The two es_soh_per_unit_cumul slacks (slack_es_soh_per_unit_cumul_{up,down})
+    # are deleted too: no caller outside this file's own (now-removed) Excel
+    # writer read them (verified by repository-wide grep), so nothing needs them.
     model.es_soh_per_unit_cumul = pe.Var(model.years, model.years, domain=pe.NonNegativeReals, initialize=1.00, bounds=(0.00, 1.00))
-    model.es_degradation_per_unit_cumul = pe.Var(model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00, bounds=(0.00, 1.00))
-    if shared_ess_data.params.slacks:
-        model.slack_es_soh_per_unit_up = pe.Var(model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_es_soh_per_unit_down = pe.Var(model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_es_soh_per_unit_cumul_up = pe.Var(model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-        model.slack_es_soh_per_unit_cumul_down = pe.Var(model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
-    model.es_soh_per_unit.fix(1.00)
+    model.es_D_per_unit = pe.Var(model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_soh_per_unit_cumul.fix(1.00)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
-    # - Sinv and Einv fixing constraints
-    model.energy_storage_capacity_fixing = pe.ConstraintList()
-    for y in model.years:
-        model.energy_storage_capacity_fixing.add(model.es_s_investment[y] == model.es_s_investment_fixed[y] + model.slack_es_s_investment_up[y] - model.slack_es_s_investment_down[y])
-        model.energy_storage_capacity_fixing.add(model.es_e_investment[y] == model.es_e_investment_fixed[y] + model.slack_es_e_investment_up[y] - model.slack_es_e_investment_down[y])
+    # P5.15-1 (Step 1 item 1): the "Sinv and Einv fixing constraints" ConstraintList
+    # (`energy_storage_capacity_fixing`) is retired along with the investment
+    # Vars and slacks it used to link -- `es_s_investment_fixed` / `es_e_investment_fixed`
+    # are consumed directly below.
 
     # - Rated capacities of each investment
     model.rated_s_capacity_unit = pe.ConstraintList()
@@ -439,8 +443,8 @@ def _build_subproblem(shared_ess_data, node_id):
         for y in range(y_inv, max_tcal_norm):
             model.es_s_rated_per_unit[y_inv, y].fixed = False
             model.es_e_rated_per_unit[y_inv, y].fixed = False
-            model.rated_s_capacity_unit.add(model.es_s_rated_per_unit[y_inv, y] == model.es_s_investment[y_inv])
-            model.rated_e_capacity_unit.add(model.es_e_rated_per_unit[y_inv, y] == model.es_e_investment[y_inv])
+            model.rated_s_capacity_unit.add(model.es_s_rated_per_unit[y_inv, y] == model.es_s_investment_fixed[y_inv])
+            model.rated_e_capacity_unit.add(model.es_e_rated_per_unit[y_inv, y] == model.es_e_investment_fixed[y_inv])
 
     # - Rated yearly capacities as a function of yearly investments
     model.rated_s_capacity = pe.ConstraintList()
@@ -455,6 +459,18 @@ def _build_subproblem(shared_ess_data, node_id):
         model.rated_e_capacity.add(model.es_e_rated[y] == total_e_capacity)
 
     # - Available capacities of each investment
+    # P5.15-1: `available_e_capacity_unit` is intentionally NOT reformulated to
+    # substitute `es_e_investment_fixed` for `es_e_rated_per_unit` here, unlike
+    # the D-row above: this loop runs over ALL (y_inv, y) pairs, including years
+    # outside the cohort's calendar-life window, where `es_e_rated_per_unit` is
+    # fixed to 0 (equipment retired) while `es_e_investment_fixed` is generally
+    # NOT zero. Substituting the Param would silently reinstate rated capacity
+    # for expired cohorts, which is exactly the cohort-deactivation logic the
+    # brief says must stay as is. This equality therefore remains one bilinear
+    # (Var * Var) row per cohort-year -- the sole residual nonlinearity in the
+    # ESSO beyond the converter circle and the one `exp` per cohort-year in the
+    # SoH chain; recorded here as a deliberate, scope-preserving choice, not an
+    # oversight (see P5_15_1_REPORT.md).
     model.available_s_capacity_unit = pe.ConstraintList()
     model.available_e_capacity_unit = pe.ConstraintList()
     for y_inv in model.years:
@@ -501,6 +517,12 @@ def _build_subproblem(shared_ess_data, node_id):
             _add_esso_cohort_constraint(model, 'energy_storage_charging_discharging', y_inv, y, model.es_avg_ch_dch_per_unit[y_inv, y] == avg_ch_dch)
 
     # - Capacity degradation
+    # P5.15-1 (PLANNER_BRIEF_2026-09-13.md Step 1 item 2): log-domain SoH chain.
+    # `num_years` is read ONCE per investment cohort y_inv (from the investment
+    # year's representative-year block width) and reused for every y in this
+    # cohort's calendar-life window, EXACTLY as the retired power-law form did.
+    # This is correct only when every represented year block has the same width
+    # (the Planner/Expert's remark) -- preserved verbatim here, not re-derived.
     model.energy_storage_capacity_degradation = pe.ConstraintList()
     for y_inv in model.years:
 
@@ -508,76 +530,62 @@ def _build_subproblem(shared_ess_data, node_id):
         shared_energy_storage = shared_ess_data.shared_energy_storages[repr_years[y_inv]][shared_ess_idx]
         tcal_norm = round(shared_energy_storage.t_cal / (shared_ess_data.years[repr_years[y_inv]]))
         max_tcal_norm = min(y_inv + tcal_norm, len(shared_ess_data.years))
+        phi_cal = shared_energy_storage.phi_cal
 
         for y in range(y_inv, max_tcal_norm):
 
-            model.es_soh_per_unit[y_inv, y].fixed = False
             model.es_soh_per_unit_cumul[y_inv, y].fixed = False
 
-            # Daily degradation
-            _add_esso_cohort_constraint(model, 'energy_storage_capacity_degradation', y_inv, y, model.es_degradation_per_unit[y_inv, y] * (2 * shared_energy_storage.cl_eff * model.es_e_rated_per_unit[y_inv, y]) == model.es_avg_ch_dch_per_unit[y_inv, y])
-
-            # Annual SoH
-            if shared_ess_data.params.slacks:
-                _add_esso_cohort_constraint(model, 'energy_storage_capacity_degradation', y_inv, y, model.es_soh_per_unit[y_inv, y] == 1.00 - model.es_degradation_per_unit[y_inv, y] + model.slack_es_soh_per_unit_up[y_inv, y] - model.slack_es_soh_per_unit_down[y_inv, y])
-            else:
-                _add_esso_cohort_constraint(model, 'energy_storage_capacity_degradation', y_inv, y, model.es_soh_per_unit[y_inv, y] == 1.00 - model.es_degradation_per_unit[y_inv, y])
+            # Annual fractional loss D[y_inv, y] -- LINEAR: `es_e_investment_fixed`
+            # (a Param) is used here instead of the Var `es_e_rated_per_unit`,
+            # even though the two are equal for every (y_inv, y) in this range
+            # (by `rated_e_capacity_unit` above); this keeps the row a plain
+            # `D * constant == constant * avg_ch_dch` LP row instead of a
+            # bilinear D * Var product ("E_rated is now a constant", Step 1
+            # item 2). This substitution is only valid within this y-range,
+            # which is exactly where this row is defined.
+            _add_esso_cohort_constraint(
+                model, 'energy_storage_capacity_degradation', y_inv, y,
+                model.es_D_per_unit[y_inv, y] * (2 * shared_energy_storage.cl_eff * model.es_e_investment_fixed[y_inv])
+                == 365.00 * num_years * model.es_avg_ch_dch_per_unit[y_inv, y])
 
             # Previous cumulative SoH
             prev_soh = 1.00
             if y > y_inv:
                 prev_soh = model.es_soh_per_unit_cumul[y_inv, y - 1]
 
-            # Cumulative SoH
-            if shared_ess_data.params.slacks:
-                _add_esso_cohort_constraint(model, 'energy_storage_capacity_degradation', y_inv, y, model.es_soh_per_unit_cumul[y_inv, y] == prev_soh * (model.es_soh_per_unit[y_inv, y] ** (365.00 * num_years)) + model.slack_es_soh_per_unit_cumul_up[y_inv, y] - model.slack_es_soh_per_unit_cumul_down[y_inv, y])
-            else:
-                _add_esso_cohort_constraint(model, 'energy_storage_capacity_degradation', y_inv, y, model.es_soh_per_unit_cumul[y_inv, y] == prev_soh * (model.es_soh_per_unit[y_inv, y] ** (365.00 * num_years)))
+            # Cumulative SoH -- continuous-compounding (log-domain) form. One
+            # `exp` per cohort-year; `phi_cal` is the calendar-ageing retention
+            # factor (`ageing.calendar_retention_per_year`, default 1.0/neutral).
+            _add_esso_cohort_constraint(
+                model, 'energy_storage_capacity_degradation', y_inv, y,
+                model.es_soh_per_unit_cumul[y_inv, y]
+                == prev_soh * pe.exp(-model.es_D_per_unit[y_inv, y]) * (phi_cal ** num_years))
 
-            # Minimum admissible capacity / SoH
-            _add_esso_cohort_constraint(model, 'energy_storage_capacity_degradation', y_inv, y, model.es_e_available_per_unit[y_inv, y] >= shared_energy_storage.soh_min * model.es_e_rated_per_unit[y_inv, y])
-
-            # Cumulative degradation
-            _add_esso_cohort_constraint(model, 'energy_storage_capacity_degradation', y_inv, y, model.es_degradation_per_unit_cumul[y_inv, y] == 1.00 - model.es_soh_per_unit_cumul[y_inv, y])
+            # Minimum admissible SoH -- LINEAR floor directly on the cumulative
+            # SoH variable (Step 1 item 2). Equivalent to the retired
+            # `e_available >= soh_min * e_rated` floor given
+            # `available_e_capacity_unit`'s definition of e_available (above).
+            _add_esso_cohort_constraint(
+                model, 'energy_storage_capacity_degradation', y_inv, y,
+                model.es_soh_per_unit_cumul[y_inv, y] >= shared_energy_storage.soh_min)
 
     # - P, Q, S, SoC, per unit as a function of available capacities
+    # P5.15-1 (Step 1 item 3): `energy_storage_complementarity`,
+    # `energy_storage_normalization` and the pch_hat/pdch_hat link rows are
+    # retired (see the Variables section above). `energy_storage_limits`
+    # (pch <= s_max, pdch <= s_max) is unchanged and remains linear.
     model.energy_storage_limits = pe.ConstraintList()
-    model.energy_storage_complementarity = pe.ConstraintList()
-    model.energy_storage_normalization = pe.ConstraintList()
     for y_inv in model.years:
         for y in model.years:
             s_max = model.es_s_rated_per_unit[y_inv, y]
             for d in model.days:
                 for p in model.periods:
-
-                    # P5.4-C: the per-cohort directional powers are ACTIVE.
-                    # P5.4-H1: the per-cohort complementarity is now RELATIVE to
-                    # the cohort's installed power, matching the network agents.
-                    # The previous absolute `pch*pdch <= 1e-4` is superseded: at
-                    # bootstrap capacities (S ~ 2e-4 p.u.) it permitted
-                    # directional powers ~47x the rating and never bound. The
-                    # tolerance VALUE 1e-4 is unchanged; only its meaning is made
-                    # consistent across agents.
-                    #
-                    # S_cohort is the production-defined per-cohort installed
-                    # power `es_s_rated_per_unit[y_inv, y]` -- the same s_max the
-                    # limit rows below already use -- not a new quantity. The
-                    # link rows keep a unit coefficient on the physical power and
-                    # never divide by the rating.
                     pch = model.es_pch_per_unit[y_inv, y, d, p]
                     pdch = model.es_pdch_per_unit[y_inv, y, d, p]
-                    pch_hat = model.es_pch_hat_per_unit[y_inv, y, d, p]
-                    pdch_hat = model.es_pdch_hat_per_unit[y_inv, y, d, p]
 
                     _add_esso_cohort_constraint(model, 'energy_storage_limits', y_inv, y, pch <= s_max)
                     _add_esso_cohort_constraint(model, 'energy_storage_limits', y_inv, y, pdch <= s_max)
-                    _add_esso_cohort_constraint(model, 'energy_storage_normalization', y_inv, y, pch - s_max * pch_hat == 0)
-                    _add_esso_cohort_constraint(model, 'energy_storage_normalization', y_inv, y, pdch - s_max * pdch_hat == 0)
-
-                    if shared_ess_data.params.slacks:
-                        _add_esso_cohort_constraint(model, 'energy_storage_complementarity', y_inv, y, pch_hat * pdch_hat <= model.slack_es_ch_comp_per_unit[y_inv, y, d, p] + ESS_COMPLEMENTARITY_TOLERANCE)
-                    else:
-                        _add_esso_cohort_constraint(model, 'energy_storage_complementarity', y_inv, y, pch_hat * pdch_hat <= ESS_COMPLEMENTARITY_TOLERANCE)
 
     # - Shared ESS operation, aggregated
     model.energy_storage_operation_agg = pe.ConstraintList()
@@ -605,54 +613,44 @@ def _build_subproblem(shared_ess_data, node_id):
                 model.energy_storage_operation_agg.add(
                     model.es_pnet[y, d, p] ** 2 + model.es_qnet[y, d, p] ** 2 <= model.es_s_rated[y] ** 2)
 
-                # P5.4-H1.6: per-cohort complementarity alone permits one cohort
-                # to charge while another discharges at the same node/time. The
-                # network agent represents ONE aggregate shared ESS and imposes
-                # complementarity on its aggregate charge/discharge, so the ESSO
-                # aggregate feasible set must be compatible or ADMM would be
-                # reconciling two different feasible sets.
-                #
-                # S_total is the production-defined aggregate installed power
-                # `es_s_rated[y]`, which `rated_s_capacity` already defines as the
-                # sum of the cohort ratings. No new or oversized rating is
-                # introduced. Cohort-level complementarity is PRESERVED: the
-                # aggregate row does not imply it.
-                agg_pch = sum(model.es_pch_per_unit[y_inv, y, d, p] for y_inv in model.years)
-                agg_pdch = sum(model.es_pdch_per_unit[y_inv, y, d, p] for y_inv in model.years)
-                model.energy_storage_operation_agg.add(
-                    agg_pch - model.es_s_rated[y] * model.es_pch_hat_agg[y, d, p] == 0)
-                model.energy_storage_operation_agg.add(
-                    agg_pdch - model.es_s_rated[y] * model.es_pdch_hat_agg[y, d, p] == 0)
-                model.energy_storage_operation_agg.add(
-                    model.es_pch_hat_agg[y, d, p] * model.es_pdch_hat_agg[y, d, p]
-                    <= ESS_COMPLEMENTARITY_TOLERANCE)
+                # P5.15-1 (Step 1 item 3): the aggregate complementarity link
+                # (agg_pch/agg_pdch vs. es_pch_hat_agg/es_pdch_hat_agg and the
+                # `pch_hat_agg * pdch_hat_agg <= tol` row) is retired along with
+                # the per-cohort complementarity it mirrored. Aggregate
+                # complementarity now follows, like the per-cohort case, from
+                # the LP throughput regularization in `feasibility_penalty`.
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective function
+    # P5.15-1 (Step 1 items 1-3): the investment-fixing slacks, the degradation
+    # slacks (both es_soh_per_unit and es_soh_per_unit_cumul families) and the
+    # complementarity slack are all retired along with the variables/constraints
+    # they used to relax. The remaining slack family (`slack_es_pnet_{up,down}`,
+    # the aggregate operation-definition slack) is unaffected and unchanged.
     slack_penalty = 0.0
     for y_inv in model.years:
 
-        # Slacks for investment fixing
-        slack_penalty += PENALTY_ESSO_SLACK * (model.slack_es_s_investment_up[y_inv] + model.slack_es_s_investment_down[y_inv])
-        slack_penalty += PENALTY_ESSO_SLACK * (model.slack_es_e_investment_up[y_inv] + model.slack_es_e_investment_down[y_inv])
-
         if shared_ess_data.params.slacks:
-
-            # Degradation
-            for y in model.years:
-                slack_penalty += PENALTY_ESSO_SLACK * (model.slack_es_soh_per_unit_up[y_inv, y] + model.slack_es_soh_per_unit_down[y_inv, y])
-                slack_penalty += PENALTY_ESSO_SLACK * (model.slack_es_soh_per_unit_cumul_up[y_inv, y] + model.slack_es_soh_per_unit_cumul_down[y_inv, y])
-
-            # Complementarity
-            for y in model.years:
-                for d in model.days:
-                    for p in model.periods:
-                        slack_penalty += PENALTY_ESSO_SLACK * (model.slack_es_ch_comp_per_unit[y_inv, y, d, p])
 
             # Expected power slacks
             for d in model.days:
                 for p in model.periods:
                     slack_penalty += PENALTY_ESSO_SLACK * (model.slack_es_pnet_up[y_inv, d, p] + model.slack_es_pnet_down[y_inv, d, p])
+
+    # P5.15-1 (Step 1 item 3): throughput regularization. Complementarity is no
+    # longer an explicit constraint; it follows from LP structure because both
+    # directions of throughput are penalized identically here (see the Variables
+    # section comment above). Summed over ALL cohort-periods, not just active
+    # ones: pch/pdch are fixed to 0.0 for inactive cohort-years by
+    # `_configure_esso_cohort_state`, so inactive terms contribute exactly zero
+    # and do not need to be excluded explicitly.
+    throughput = 0.0
+    for y_inv in model.years:
+        for y in model.years:
+            for d in model.days:
+                for p in model.periods:
+                    throughput += model.es_pch_per_unit[y_inv, y, d, p] + model.es_pdch_per_unit[y_inv, y, d, p]
+    slack_penalty += EPS_ESSO_THROUGHPUT * throughput
 
     salvage_value = _build_terminal_salvage_value_expression(shared_ess_data, model, shared_ess_idx)
 
@@ -1063,8 +1061,10 @@ def _update_model_with_candidate_solution(shared_ess_data, models, candidate_sol
             e_candidate = candidate_solution[node_id][year]['e']
             model.es_s_investment_fixed[y_inv].set_value(s_candidate)
             model.es_e_investment_fixed[y_inv].set_value(e_candidate)
-            model.es_s_investment[y_inv].fix(s_candidate)
-            model.es_e_investment[y_inv].fix(e_candidate)
+            # P5.15-1: es_s_investment / es_e_investment (Vars) are retired;
+            # es_s_investment_fixed / es_e_investment_fixed (Params, above) ARE
+            # the investment values consumed by the rest of the model, so there
+            # is nothing left to .fix() here.
             _configure_esso_cohort_state(model, y_inv, s_candidate, e_candidate, shared_ess_data.params.slacks)
 
 
@@ -1187,16 +1187,14 @@ def _configure_esso_cohort_state(model, y_inv, s_capacity, e_capacity, slacks_en
         active_pair = (not inactive and within_lifetime)
 
         # Annual degradation quantities
+        # P5.15-1: es_degradation_per_unit / es_degradation_per_unit_cumul /
+        # es_soh_per_unit and their slack families are retired; es_D_per_unit
+        # takes es_degradation_per_unit's former place (same gating, inactive
+        # value 0.0 -- consistent with D representing zero throughput/loss when
+        # the cohort is inactive or outside its calendar-life window).
         _set_esso_variable_state(model.es_avg_ch_dch_per_unit[y_inv, y], active_pair, 0.0)
-        _set_esso_variable_state(model.es_degradation_per_unit[y_inv, y], active_pair, 0.0)
-        _set_esso_variable_state(model.es_degradation_per_unit_cumul[y_inv, y], active_pair, 0.0)
-        _set_esso_variable_state(model.es_soh_per_unit[y_inv, y], active_pair, 1.0)
+        _set_esso_variable_state(model.es_D_per_unit[y_inv, y], active_pair, 0.0)
         _set_esso_variable_state(model.es_soh_per_unit_cumul[y_inv, y], active_pair, 1.0)
-        if slacks_enabled:
-            _set_esso_variable_state(model.slack_es_soh_per_unit_up[y_inv, y], active_pair, 0.0)
-            _set_esso_variable_state(model.slack_es_soh_per_unit_down[y_inv, y], active_pair, 0.0)
-            _set_esso_variable_state(model.slack_es_soh_per_unit_cumul_up[y_inv, y], active_pair, 0.0)
-            _set_esso_variable_state(model.slack_es_soh_per_unit_cumul_down[y_inv, y], active_pair, 0.0)
 
         # --------------------------------------------------------------
         # Time-dependent operation
@@ -1205,12 +1203,8 @@ def _configure_esso_cohort_state(model, y_inv, s_capacity, e_capacity, slacks_en
             for p in model.periods:
                 _set_esso_variable_state(model.es_pch_per_unit[y_inv, y, d, p], active_pair, 0.0)
                 _set_esso_variable_state(model.es_pdch_per_unit[y_inv, y, d, p], active_pair, 0.0)
-                # P5.4-H1: the dimensionless pair follows exactly the same cohort
-                # gating as the physical pair.
-                _set_esso_variable_state(model.es_pch_hat_per_unit[y_inv, y, d, p], active_pair, 0.0)
-                _set_esso_variable_state(model.es_pdch_hat_per_unit[y_inv, y, d, p], active_pair, 0.0)
-                if slacks_enabled:
-                    _set_esso_variable_state(model.slack_es_ch_comp_per_unit[y_inv, y, d, p], active_pair, 0.0)
+                # P5.15-1: es_pch_hat_per_unit / es_pdch_hat_per_unit / the
+                # complementarity slack are retired (Step 1 item 3).
 
     # ------------------------------------------------------------------
     # Constraints
@@ -1403,18 +1397,27 @@ def _process_soh_results_detailed(shared_ess_data, models):
             }
 
     for node_id in shared_ess_data.active_distribution_network_nodes:
+        shared_ess_idx = shared_ess_data.get_shared_energy_storage_idx(node_id)
         for y_inv in models[node_id].years:
             year_inv = repr_years[y_inv]
+            # P5.15-1: es_soh_per_unit / es_degradation_per_unit are retired;
+            # the per-year (non-cumulative) SoH retention factor is recovered
+            # from D and phi_cal directly (`exp(-D) * phi_cal**num_years`),
+            # reproducing the reporting semantics without a stored Var.
+            shared_energy_storage = shared_ess_data.shared_energy_storages[year_inv][shared_ess_idx]
+            num_years = shared_ess_data.years[year_inv]
+            phi_cal = shared_energy_storage.phi_cal
             for y_curr in models[node_id].years:
                 year_curr = repr_years[y_curr]
                 s_rated = pe.value(models[node_id].es_s_rated_per_unit[y_inv, y_curr])
                 e_rated = pe.value(models[node_id].es_e_rated_per_unit[y_inv, y_curr])
                 s_available = pe.value(models[node_id].es_s_available_per_unit[y_inv, y_curr])
                 e_available = pe.value(models[node_id].es_e_available_per_unit[y_inv, y_curr])
-                soh_unit = pe.value(models[node_id].es_soh_per_unit[y_inv, y_curr])
-                degradation_unit = pe.value(models[node_id].es_degradation_per_unit[y_inv, y_curr])
+                d_value = pe.value(models[node_id].es_D_per_unit[y_inv, y_curr])
+                soh_unit = exp(-d_value) * (phi_cal ** num_years)
+                degradation_unit = 1.00 - soh_unit
                 soh_cumul = pe.value(models[node_id].es_soh_per_unit_cumul[y_inv, y_curr])
-                degradation_cumul = pe.value(models[node_id].es_degradation_per_unit_cumul[y_inv, y_curr])
+                degradation_cumul = 1.00 - soh_cumul
                 processed_results[year_inv][year_curr]['s_rated'][node_id] = s_rated
                 processed_results[year_inv][year_curr]['e_rated'][node_id] = e_rated
                 processed_results[year_inv][year_curr]['s_available'][node_id] = s_available
@@ -1427,57 +1430,37 @@ def _process_soh_results_detailed(shared_ess_data, models):
     return processed_results
 
 
-def _process_relaxation_variables_investment(shared_ess_data, models):
+def _get_complementarity_violation(shared_ess_data, models):
+    """Post-solve complementarity DETECTOR (Step 1 item 3) -- NOT a cost.
 
-    repr_years = [year for year in shared_ess_data.years]
-
-    processed_results = dict()
-    for year_inv in repr_years:
-        processed_results[year_inv] = dict()
-        for node_id in shared_ess_data.active_distribution_network_nodes:
-            processed_results[year_inv][node_id] = dict()
-
+    Complementarity (pch/pdch not both positive) is no longer enforced by a
+    constraint; it is expected to follow from the LP throughput regularization
+    in `feasibility_penalty`. This checks `min(pch, pdch) <= 1e-6 * s_max` for
+    every cohort-period whose cohort-year pair is active (within calendar
+    life and non-zero investment), and reports the maximum violation
+    (`max(0, min(pch, pdch) - 1e-6 * s_max)`) across all nodes/cohorts/periods.
+    A violation of 0.0 means the detector found no counterexample; it does not
+    by itself prove complementarity holds everywhere (e.g. at s_max == 0).
+    """
+    max_violation = 0.00
     for node_id in shared_ess_data.active_distribution_network_nodes:
-        for y_inv in models[node_id].years:
-            year_inv = repr_years[y_inv]
-            processed_results[year_inv][node_id] = dict()
-            processed_results[year_inv][node_id]['s_up'] = pe.value(models[node_id].slack_es_s_investment_up[y_inv])
-            processed_results[year_inv][node_id]['s_down'] = pe.value(models[node_id].slack_es_s_investment_down[y_inv])
-            processed_results[year_inv][node_id]['e_up'] = pe.value(models[node_id].slack_es_e_investment_up[y_inv])
-            processed_results[year_inv][node_id]['e_down'] = pe.value(models[node_id].slack_es_e_investment_down[y_inv])
-
-    return processed_results
-
-
-def _process_relaxation_variables_degradation_detailed(shared_ess_data, models):
-
-    repr_years = [year for year in shared_ess_data.years]
-
-    processed_results = dict()
-    for year_inv in repr_years:
-        processed_results[year_inv] = dict()
-        for year_curr in repr_years:
-            processed_results[year_inv][year_curr] = dict()
-            for node_id in shared_ess_data.active_distribution_network_nodes:
-                processed_results[year_inv][year_curr][node_id] = dict()
-
-    for node_id in shared_ess_data.active_distribution_network_nodes:
-        for y_inv in models[node_id].years:
-            year_inv = repr_years[y_inv]
-            for y_curr in models[node_id].years:
-                year_curr = repr_years[y_curr]
-                if shared_ess_data.params.slacks:
-                    # - Degradation per unit
-                    soh_per_unit_up = pe.value(models[node_id].slack_es_soh_per_unit_up[y_inv, y_curr])
-                    soh_per_unit_down = pe.value(models[node_id].slack_es_soh_per_unit_down[y_inv, y_curr])
-                    soh_per_unit_cumul_up = pe.value(models[node_id].slack_es_soh_per_unit_cumul_up[y_inv, y_curr])
-                    soh_per_unit_cumul_down = pe.value(models[node_id].slack_es_soh_per_unit_cumul_down[y_inv, y_curr])
-                    processed_results[year_inv][year_curr][node_id]['soh_per_unit_up'] = soh_per_unit_up
-                    processed_results[year_inv][year_curr][node_id]['soh_per_unit_down'] = soh_per_unit_down
-                    processed_results[year_inv][year_curr][node_id]['soh_per_unit_cumul_up'] = soh_per_unit_cumul_up
-                    processed_results[year_inv][year_curr][node_id]['soh_per_unit_cumul_down'] = soh_per_unit_cumul_down
-
-    return processed_results
+        model = models[node_id]
+        for y_inv in model.years:
+            for y in model.years:
+                if not _esso_cohort_pair_is_within_lifetime(model, y_inv, y):
+                    continue
+                if model._esso_cohort_inactive.get(y_inv, False):
+                    continue
+                s_max = pe.value(model.es_s_rated_per_unit[y_inv, y])
+                threshold = 1e-6 * s_max
+                for d in model.days:
+                    for p in model.periods:
+                        pch = pe.value(model.es_pch_per_unit[y_inv, y, d, p])
+                        pdch = pe.value(model.es_pdch_per_unit[y_inv, y, d, p])
+                        violation = min(pch, pdch) - threshold
+                        if violation > max_violation:
+                            max_violation = violation
+    return max_violation
 
 
 def _process_relaxation_variables_operation_aggregated(shared_ess_data, models):
@@ -1510,38 +1493,6 @@ def _process_relaxation_variables_operation_aggregated(shared_ess_data, models):
     return processed_results
 
 
-def _process_relaxation_variables_operation_detailed(shared_ess_data, models):
-
-    repr_days = [day for day in shared_ess_data.days]
-    repr_years = [year for year in shared_ess_data.years]
-
-    processed_results = dict()
-    for year_inv in repr_years:
-        processed_results[year_inv] = dict()
-        for year_curr in repr_years:
-            processed_results[year_inv][year_curr] = dict()
-            for day in repr_days:
-                processed_results[year_inv][year_curr][day] = dict()
-                for node_id in shared_ess_data.active_distribution_network_nodes:
-                    processed_results[year_inv][year_curr][day][node_id] = dict()
-                    processed_results[year_inv][year_curr][day][node_id]['comp'] = list()
-
-    for node_id in shared_ess_data.active_distribution_network_nodes:
-        for y_inv in models[node_id].years:
-            year_inv = repr_years[y_inv]
-            for y_curr in models[node_id].years:
-                year_curr = repr_years[y_curr]
-                for d in models[node_id].days:
-                    day = repr_days[d]
-                    if shared_ess_data.params.slacks:
-                        # - Complementarity
-                        for p in models[node_id].periods:
-                            comp = pe.value(models[node_id].slack_es_ch_comp_per_unit[y_inv, y_curr, d, p])
-                            processed_results[year_inv][year_curr][day][node_id]['comp'].append(comp)
-
-    return processed_results
-
-
 def _get_available_capacity(shared_ess_data, models):
 
     years = [year for year in shared_ess_data.years]
@@ -1560,8 +1511,11 @@ def _get_available_capacity(shared_ess_data, models):
             year = years[y]
 
             ess_capacity['investment'][node_id][year] = dict()
-            ess_capacity['investment'][node_id][year]['power'] = pe.value(models[node_id].es_s_investment[y])
-            ess_capacity['investment'][node_id][year]['energy'] = pe.value(models[node_id].es_e_investment[y])
+            # P5.15-1: es_s_investment / es_e_investment (Vars) are retired;
+            # es_s_investment_fixed / es_e_investment_fixed (Params) hold the
+            # same values.
+            ess_capacity['investment'][node_id][year]['power'] = pe.value(models[node_id].es_s_investment_fixed[y])
+            ess_capacity['investment'][node_id][year]['energy'] = pe.value(models[node_id].es_e_investment_fixed[y])
 
             ess_capacity['rated'][node_id][year] = dict()
             ess_capacity['rated'][node_id][year]['power'] = pe.value(models[node_id].es_s_rated[y])
@@ -2188,110 +2142,10 @@ def _write_detailed_shared_energy_storage_soh_results_to_excel(shared_ess_data, 
                 row_idx = row_idx + 1
 
 
-def _write_investment_relaxation_slacks_results_to_excel(shared_ess_data, workbook, results):
-
-    sheet = workbook.create_sheet('Slacks investment')
-
-    row_idx = 1
-    decimal_style = '0.00'
-
-    # Write Header
-    sheet.cell(row=row_idx, column=1).value = 'Node ID'
-    sheet.cell(row=row_idx, column=2).value = 'Year Investment'
-    sheet.cell(row=row_idx, column=3).value = 'Quantity'
-    sheet.cell(row=row_idx, column=4).value = 'Value'
-    row_idx = row_idx + 1
-
-    for node_id in shared_ess_data.active_distribution_network_nodes:
-        for year_inv in results:
-
-            # - Sup
-            sheet.cell(row=row_idx, column=1).value = node_id
-            sheet.cell(row=row_idx, column=2).value = int(year_inv)
-            sheet.cell(row=row_idx, column=3).value = 'S, up'
-            sheet.cell(row=row_idx, column=4).value = results[year_inv][node_id]['s_up']
-            sheet.cell(row=row_idx, column=4).number_format = decimal_style
-            row_idx = row_idx + 1
-
-            # - Sdown
-            sheet.cell(row=row_idx, column=1).value = node_id
-            sheet.cell(row=row_idx, column=2).value = int(year_inv)
-            sheet.cell(row=row_idx, column=3).value = 'S, down'
-            sheet.cell(row=row_idx, column=4).value = results[year_inv][node_id]['s_down']
-            sheet.cell(row=row_idx, column=4).number_format = decimal_style
-            row_idx = row_idx + 1
-
-            # - Eup
-            sheet.cell(row=row_idx, column=1).value = node_id
-            sheet.cell(row=row_idx, column=2).value = int(year_inv)
-            sheet.cell(row=row_idx, column=3).value = 'E, up'
-            sheet.cell(row=row_idx, column=4).value = results[year_inv][node_id]['e_up']
-            sheet.cell(row=row_idx, column=4).number_format = decimal_style
-            row_idx = row_idx + 1
-
-            # - Edown
-            sheet.cell(row=row_idx, column=1).value = node_id
-            sheet.cell(row=row_idx, column=2).value = int(year_inv)
-            sheet.cell(row=row_idx, column=3).value = 'E, down'
-            sheet.cell(row=row_idx, column=4).value = results[year_inv][node_id]['e_down']
-            sheet.cell(row=row_idx, column=4).number_format = decimal_style
-            row_idx = row_idx + 1
-
-
-def _write_detailed_degradation_relaxation_slacks_results_to_excel(shared_ess_data, workbook, results):
-
-    sheet = workbook.create_sheet('Slacks degradation, detailed')
-
-    row_idx = 1
-    decimal_style = '0.00'
-
-    # Write Header
-    sheet.cell(row=row_idx, column=1).value = 'Node ID'
-    sheet.cell(row=row_idx, column=2).value = 'Year Investment'
-    sheet.cell(row=row_idx, column=3).value = 'Year Current'
-    sheet.cell(row=row_idx, column=4).value = 'Quantity'
-    sheet.cell(row=row_idx, column=5).value = 'Value'
-    row_idx = row_idx + 1
-
-    for node_id in shared_ess_data.active_distribution_network_nodes:
-        for year_inv in results:
-            for year_curr in results[year_inv]:
-
-                # - SoH per unit, up
-                sheet.cell(row=row_idx, column=1).value = node_id
-                sheet.cell(row=row_idx, column=2).value = int(year_inv)
-                sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                sheet.cell(row=row_idx, column=4).value = 'SoH unit, up'
-                sheet.cell(row=row_idx, column=5).value = results[year_inv][year_curr][node_id]['soh_per_unit_up']
-                sheet.cell(row=row_idx, column=5).number_format = decimal_style
-                row_idx = row_idx + 1
-
-                # - SoH per unit, down
-                sheet.cell(row=row_idx, column=1).value = node_id
-                sheet.cell(row=row_idx, column=2).value = int(year_inv)
-                sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                sheet.cell(row=row_idx, column=4).value = 'SoH unit, down'
-                sheet.cell(row=row_idx, column=5).value = results[year_inv][year_curr][node_id]['soh_per_unit_down']
-                sheet.cell(row=row_idx, column=5).number_format = decimal_style
-                row_idx = row_idx + 1
-
-                # - SoH per unit (cumulative), up
-                sheet.cell(row=row_idx, column=1).value = node_id
-                sheet.cell(row=row_idx, column=2).value = int(year_inv)
-                sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                sheet.cell(row=row_idx, column=4).value = 'SoH cumul., up'
-                sheet.cell(row=row_idx, column=5).value = results[year_inv][year_curr][node_id]['soh_per_unit_cumul_up']
-                sheet.cell(row=row_idx, column=5).number_format = decimal_style
-                row_idx = row_idx + 1
-
-                # - SoH per unit (cumulative), down
-                sheet.cell(row=row_idx, column=1).value = node_id
-                sheet.cell(row=row_idx, column=2).value = int(year_inv)
-                sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                sheet.cell(row=row_idx, column=4).value = 'SoH cumul., down'
-                sheet.cell(row=row_idx, column=5).value = results[year_inv][year_curr][node_id]['soh_per_unit_cumul_down']
-                sheet.cell(row=row_idx, column=5).number_format = decimal_style
-                row_idx = row_idx + 1
+# P5.15-1: _write_investment_relaxation_slacks_results_to_excel and
+# _write_detailed_degradation_relaxation_slacks_results_to_excel are retired
+# along with the slack families they wrote (investment-fixing and
+# degradation/SoH slacks respectively; Step 1 items 1-2).
 
 
 def _write_aggregated_operation_relaxation_slacks_results_to_excel(shared_ess_data, workbook, results):
@@ -2339,40 +2193,8 @@ def _write_aggregated_operation_relaxation_slacks_results_to_excel(shared_ess_da
                 row_idx = row_idx + 1
 
 
-def _write_detailed_operation_relaxation_slacks_results_to_excel(shared_ess_data, workbook, results):
-
-    sheet = workbook.create_sheet('Slacks operation, detailed')
-
-    row_idx = 1
-    decimal_style = '0.00'
-
-    # Write Header
-    sheet.cell(row=row_idx, column=1).value = 'Node ID'
-    sheet.cell(row=row_idx, column=2).value = 'Year Investment'
-    sheet.cell(row=row_idx, column=3).value = 'Year Current'
-    sheet.cell(row=row_idx, column=4).value = 'Day'
-    sheet.cell(row=row_idx, column=5).value = 'Quantity'
-    for p in range(shared_ess_data.num_instants):
-        sheet.cell(row=row_idx, column=p + 6).value = p
-    row_idx = row_idx + 1
-
-    for node_id in shared_ess_data.active_distribution_network_nodes:
-        for year_inv in results:
-            for year_curr in results[year_inv]:
-                for day in results[year_inv][year_curr]:
-
-                    if shared_ess_data.params.slacks:
-
-                        # - Complementarity
-                        sheet.cell(row=row_idx, column=1).value = node_id
-                        sheet.cell(row=row_idx, column=2).value = int(year_inv)
-                        sheet.cell(row=row_idx, column=3).value = int(year_curr)
-                        sheet.cell(row=row_idx, column=4).value = day
-                        sheet.cell(row=row_idx, column=5).value = 'Complementary'
-                        for p in range(shared_ess_data.num_instants):
-                            comp = results[year_inv][year_curr][day][node_id]['comp'][p]
-                            sheet.cell(row=row_idx, column=p + 6).value = comp
-                            sheet.cell(row=row_idx, column=p + 6).number_format = decimal_style
-                        row_idx = row_idx + 1
-
-    return results
+# P5.15-1: _write_detailed_operation_relaxation_slacks_results_to_excel is
+# retired along with slack_es_ch_comp_per_unit, the only quantity it wrote
+# (Step 1 item 3). The post-solve complementarity detector
+# (`get_complementarity_violation` / `_get_complementarity_violation`) reports
+# the maximum violation as a plain number, not an Excel sheet.

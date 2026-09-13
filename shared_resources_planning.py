@@ -178,6 +178,8 @@ class SharedResourcesPlanning:
         return _get_primal_value(self, tso_model, dso_models, esso_model)
 
     def add_benders_cut(self, model, recourse_value, sensitivities, candidate_solution):
+        # P5.15-1 (PLANNER_BRIEF_2026-09-13.md, Governing decisions + Step 1
+        # item 5): deactivated, not deleted -- see `_add_benders_cut`.
         return _add_benders_cut(self, model, recourse_value, sensitivities, candidate_solution)
 
     def update_admm_consensus_variables(self, tso_model, dso_models, esso_model, consensus_vars, dual_vars, results, params, update_tn=False, update_dns=False, update_sess=False):
@@ -2024,6 +2026,24 @@ def _restore_candidate_data(planning_problem, candidate_solution):
 
 
 def _add_benders_cut(planning_problem, model, recourse_value, sensitivities, candidate_solution):
+    # P5.15-1 (PLANNER_BRIEF_2026-09-13.md, Governing decisions: "The
+    # investment-fixing slacks in the ESSO subproblem are retired: investments
+    # become fixed parameters. The 'feasibility cut from slack activation' path
+    # in the master is retired with them." / Step 1 item 5): DEACTIVATED, not
+    # deleted. The ESSO's investment-fixing slacks that this local sensitivity
+    # cut implicitly relied on to stay well-defined even when a candidate
+    # nominally violated the fixed investment are gone (investments are now
+    # mutable Params in the subproblem, exact by construction -- see
+    # `shared_energy_storage_data.py::_build_subproblem`). This cut-adding path
+    # is retired pending the derivative-free outer method (Step 4, NOT yet
+    # authorized). Callers already handle `cut_added == False` (see the
+    # `positive_bootstrap` / `sensitivity_unavailable` branches around the
+    # `add_benders_cut` call in `_run_planning_problem`'s outer loop): the outer
+    # Benders loop now always stops after the first candidate evaluation
+    # (unless the positive-bootstrap fallback fires), which is the intended,
+    # documented consequence of this retirement -- not a bug to be worked
+    # around by re-enabling the code below.
+    return False
     years = [year for year in planning_problem.years]
     benders_cut = recourse_value
     for e in model.energy_storages:

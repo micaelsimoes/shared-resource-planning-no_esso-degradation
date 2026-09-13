@@ -61,6 +61,10 @@ PENALTY_LOAD_CURTAILMENT = 1e2
 PENALTY_FLEXIBILITY_USAGE = 1e-2
 PENALTY_ESS_USAGE = 1e-1
 PENALTY_ESSO_SLACK = 1e3
+# P5.15-1 (PLANNER_BRIEF_2026-09-13.md Step 1 item 3): throughput regularization
+# added to the ESSO's feasibility_penalty, replacing the retired complementarity
+# constraint (EPS_ESSO_THROUGHPUT * sum(pch + pdch) over active cohort-periods).
+EPS_ESSO_THROUGHPUT = 1e-3
 PENALTY_SCENARIO_DEVIATION = 9e4
 PENALTY_SHARED_ESS_SCENARIO_DEVIATION = 1e4
 PENALTY_REGULARIZATION = 1e4

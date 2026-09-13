@@ -135,6 +135,13 @@ class EnergyStorageAgeingParameters:
         self.dod_nom = 0.80                             # Depth-of-Discharge, nominal, [0-1]
         self.soh_min = 0.50                             # Minimum SoH, [0-1]
         self.calibration = DegradationCalibrationParameters()
+        # P5.15-1 (PLANNER_BRIEF_2026-09-13.md Step 1 item 2): calendar-ageing
+        # retention factor consumed by the log-domain SoH chain
+        # (shared_energy_storage_data.py, `energy_storage_capacity_degradation`):
+        # soh_cumul[y] = soh_cumul[y-1] * exp(-D[y]) * phi_cal**num_years.
+        # Default 1.0 is NEUTRAL (no calendar ageing beyond cycling), reproducing
+        # today's behaviour exactly when absent from the parameters file.
+        self.calendar_retention_per_year = 1.00
 
     def read_parameters(self, params_data):
         if not params_data:
@@ -144,6 +151,9 @@ class EnergyStorageAgeingParameters:
         self.cl_nom = _read_optional_number(params_data, 'cycle_life_nominal', self.cl_nom)
         self.dod_nom = _read_optional_number(params_data, 'depth_of_discharge_nominal', self.dod_nom)
         self.soh_min = _read_optional_number(params_data, 'minimum_soh', self.soh_min)
+        self.calendar_retention_per_year = _read_optional_number(
+            params_data, 'calendar_retention_per_year', self.calendar_retention_per_year
+        )
         self.calibration.read_parameters(params_data.get('calibration'))
 
         if self.t_cal <= 0:
@@ -154,6 +164,8 @@ class EnergyStorageAgeingParameters:
             raise ValueError('ESS depth_of_discharge_nominal must lie in (0, 1].')
         if not 0.00 <= self.soh_min < 1.00:
             raise ValueError('ESS minimum_soh must lie in [0, 1).')
+        if not 0.00 < self.calendar_retention_per_year <= 1.00:
+            raise ValueError('ESS calendar_retention_per_year must lie in (0, 1].')
 
     def apply_to(self, shared_energy_storage):
         """Apply the ageing constants to one SharedEnergyStorage instance.
@@ -170,6 +182,7 @@ class EnergyStorageAgeingParameters:
         shared_energy_storage.dod_nom = self.dod_nom
         shared_energy_storage.soh_min = self.soh_min
         shared_energy_storage.cl_eff = self.effective_cycle_constant()
+        shared_energy_storage.phi_cal = self.calendar_retention_per_year
         return shared_energy_storage
 
     def effective_cycle_constant(self):
