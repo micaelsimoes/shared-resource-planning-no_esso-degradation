@@ -1,0 +1,10 @@
+{
+  "corrects": "data/SRP1/Results/P514N/n1_k10000.json",
+  "field": "determinism_gate.verdict",
+  "recorded_value": "FAIL — NON-DETERMINISM AT MATERIAL CAPACITY, a major finding that supersedes the EFC question",
+  "status": "SPURIOUS — THIS VERDICT DOES NOT APPLY TO THIS ARM AND MUST NOT BE READ AS A FINDING",
+  "why": "The determinism gate compares the observed recourse against REFERENCE_RECOURSE = 816121464.1554238, which is the CONTROL arm's value. The k=10000 arm is the perturbation: it is SUPPOSED to differ, and in fact it did not converge at all, so its recourse is None and the comparison is undefined. The harness applied a control-arm gate to every arm without scoping it.",
+  "harness_defect": "p514_n_instrumented_cstar.py computes determinism_gate unconditionally instead of only when k_override is None. The correct behaviour is to skip the gate on any perturbation arm.",
+  "the_real_determinism_result": "PASS, on the control arm: n1_control.json records delta = 0.0 against the reference, with cycles 67, solves 3468, rule ten 0.9329 and zero local-solve failures all matching. The instrumentation is proved non-perturbing.",
+  "second_capture_gap_recorded": "neither P5.14-N report stores the per-cycle rows, so the cycle at which the perturbed arm's local solves began failing cannot be recovered from the artifact. Rule eleven covered the ESSO quantities the frozen spec named; it did not cover the per-cycle trajectory, which this stage turned out to need."
+}

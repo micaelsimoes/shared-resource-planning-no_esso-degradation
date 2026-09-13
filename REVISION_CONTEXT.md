@@ -4031,3 +4031,56 @@ moving less or not at all means the model is inert even where storage does real 
 **combined with salvage at exactly zero would mean this run values effectively ideal,
 non-degrading storage with no terminal value, and the paper's degradation modelling
 contributes nothing to any number it reports.**
+
+## P5.14-N — the ageing model at material capacity: LIVE, and destabilizing (2026-09-13)
+
+Frozen spec `f1bbddf4` before either arm; rule eleven asserted before execution in both.
+Full record in `P5_14_N_AGEING_PERTURBATION.md`.
+
+**Control arm: the determinism gate PASSES exactly** — recourse `816,121,464.1554238`,
+**delta = 0.0**, with cycles 67, solves 3,468, rule ten 0.9329 and zero local-solve failures
+all matching. That confirms the campaign's only material-capacity number **and** proves the
+added capture non-perturbing, so no separate neutrality run was needed. ESSO models
+serialized (5.3 MB).
+
+**The EFC answer: cycling is substantial.** 1.1124 EFC/day peak, ~0.99 average, uniform
+across the three nodes — **above the 0.76 interpretability guide and below the 1.4612
+floor-binding threshold** (margin 0.349, 76.1% of threshold). Cumulative SoH falls
+`1.0 -> 0.8387 -> 0.7284 -> 0.6248`, a **37.5% capacity loss** over the horizon.
+
+**Perturbation arm (`cl_eff` 11,541.56 -> 10,000, the same 15.4% change that moved nothing
+at bootstrap capacity): the mechanism responded exactly and the solve destabilized.**
+Degradation/day rose `9.64e-05 -> 1.112e-04`, a ratio of **1.1535** against the expected
+1.1542; terminal SoH fell `0.6248 -> 0.5867`. But the run **hit the 90-cycle cap with 74 of
+90 cycles carrying local-solve failures**, against **zero** in the control, and produced no
+recourse.
+
+**Verdict.** The predeclared branches both required a value to compare against the 164,149
+bar, and a capped cell yields none — **the objective comparison is INCONCLUSIVE**. But the
+question behind them is answered, the other way from the one we were braced for:
+
+> **The ageing model is not inert at material capacity. It is live and consequential enough
+> that a 15.4% change in its constant takes the problem from converging in 67 cycles with
+> zero local-solve failures to not converging in 90 cycles with 74 failure-cycles.**
+
+Physically coherent: smaller `k` means faster degradation, so `es_e_available = es_e_rated *
+soh_cumul` shrinks faster and tightens the feasible set through the horizon. The SoH floor
+is **not** the cause — terminal SoH 0.5867 is still above 0.50, margin 0.0867 against the
+control's 0.1248.
+
+**What this licenses.** It **retires** the "degradation modelling contributes nothing"
+branch *at material capacity* — at bootstrap capacity it contributed nothing measurable, at
+C\* it dominates the solve's behaviour. It does **not** attribute the 0.37% storage effect
+to degradation value; that needed the inconclusive comparison. And it **raises a new
+robustness concern**: the C\* baseline sits close to a regime where a 15.4% parameter change
+causes local-solve failure in 82% of cycles — the converged baseline is real, but its
+neighbourhood is not benign.
+
+**Two harness defects recorded.** (a) The determinism gate was applied to an arm it does not
+apply to, so the perturbed artifact carries a **spurious** `FAIL — NON-DETERMINISM` verdict;
+the gate compares against the control's reference and the perturbation is supposed to
+differ. Corrected in `n1_k10000_gate_correction.json` rather than by editing the result. The
+real determinism result is the control's PASS. (b) Neither report stores per-cycle rows, so
+the cycle at which failures began is unrecoverable — rule eleven covered the ESSO quantities
+the spec named, and the spec did not name the trajectory. The rule worked as written; the
+gap was in the requirement.

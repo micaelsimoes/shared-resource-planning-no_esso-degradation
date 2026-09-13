@@ -113,6 +113,13 @@ incidents behind each rule are in `REVISION_CONTEXT.md`, section
   they have. The cold-versus-warm
   offset of 1,055,598 carried an error bar of 766,062, so it was barely distinguishable from
   its own uncertainty, and the ranking signal it had to support was 32.87.
+- Assert the capture path before executing. A harness must verify, **before it runs**, that
+  a capture path exists for every quantity its frozen specification requires — a checklist
+  assertion that fails fast. The C\* campaign spec *required* realized EFC/day with its
+  margin to the binding threshold; the harness implemented no capture for it; nothing checked
+  before the run; and the quantity was unrecoverable afterwards because the models were not
+  serialized. This makes "the spec required it" a statement about the code rather than about
+  intent — the same move rule six made for solve claims.
 - Report the terminal-step-to-threshold ratio for every cell of every evaluation. A run that
   has genuinely settled stops well inside its threshold; one terminating at ~99% of it is
   being *stopped*, not converging. It costs nothing and is computable from artifacts already
