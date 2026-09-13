@@ -65,12 +65,22 @@ class SlacksOperation:
 class SlacksFlexibility:
 
     def __init__(self):
-        self.day_balance = False
+        # P5.15-1b (PLANNER_BRIEF_2026-09-13.md, Step 2 Candidate 4): the
+        # flexibility day-balance band `pe.inequality(-SMALL_TOLERANCE,
+        # p_up - p_down, SMALL_TOLERANCE)` is replaced production-wide by the
+        # already-implemented slacked-equality branch in
+        # `flex_energy_balance_p_rule`. This is pinned True in code -- not
+        # read from the case-parameter file (see `read_slacks_parameters`
+        # below) -- because the committed case files under `data/` set
+        # `"flexibility": {"day_balance": false}` and may not be edited.
+        self.day_balance = True
 
     def read_slacks_parameters(self, slacks_data):
-        if 'flexibility' in slacks_data:
-            if 'day_balance' in slacks_data['flexibility']:
-                self.day_balance = slacks_data['flexibility']['day_balance']
+        # Candidate 4 pins `day_balance = True` above, unconditionally. The
+        # case-file value is intentionally NOT read for this field so that
+        # existing `"day_balance": false` entries do not reintroduce the
+        # two-sided band this reformulation retires.
+        pass
 
 
 class SlacksEnergyStorage:

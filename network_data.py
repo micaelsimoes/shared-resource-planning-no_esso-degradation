@@ -2836,42 +2836,60 @@ def _get_sensitivities(network_planning, model):
             if hasattr(model_repr_day, 'admm_objective_scale'):
                 objective_scale = pe.value(model_repr_day.admm_objective_scale)
 
-            for e in model_repr_day.shared_energy_storage_s_sensitivities:
-                if network_planning.is_transmission:
-                    node_id = network_repr_day.shared_energy_storages[e].bus
-                else:
-                    node_id = network_planning.tn_connection_nodeid
-                if shared_ess_capacity_is_inactive(
-                        pe.value(model_repr_day.shared_es_s_rated_fixed[e]),
-                        pe.value(model_repr_day.shared_es_e_rated_fixed[e])):
-                    sensitivity_available['s'][year][node_id] = False
-                    continue
-                constraint = model_repr_day.shared_energy_storage_s_sensitivities[e]
-                dual = model_repr_day.dual.get(constraint)
-                if dual is None:
-                    sensitivity_available['s'][year][node_id] = False
-                else:
-                    # Restore cost units from the normalized ADMM objective, then convert the per-unit RHS to MVA.
-                    sensitivity_s = objective_scale * dual / network_repr_day.baseMVA
-                    sensitivities['s'][year][node_id] += annualization * num_years * num_days * sensitivity_s
+            # P5.15-1b (PLANNER_BRIEF_2026-09-13.md, Step 2 Candidate 2):
+            # DEACTIVATED, not deleted -- same treatment as
+            # `shared_resources_planning.py::_add_benders_cut`. The Benders
+            # capacity-sensitivity channel is retired (Addendum 1); the two
+            # capacity `Var`s these loops read duals for
+            # (`shared_es_s_rated`/`shared_es_e_rated`, pinned by
+            # `shared_energy_storage_s/e_sensitivities`) are deleted from the
+            # model, so the original bodies below are unreachable (guarded by
+            # the constant below) rather than removed, and are replaced by an
+            # unconditional "unavailable" mark so `_get_sensitivities` keeps
+            # returning a well-formed (all-`None`) structure for any caller
+            # that still inspects it, instead of raising `AttributeError`.
+            _BENDERS_SENSITIVITY_CHANNEL_RETIRED = True
+            if not _BENDERS_SENSITIVITY_CHANNEL_RETIRED:
+                for e in model_repr_day.shared_energy_storage_s_sensitivities:
+                    if network_planning.is_transmission:
+                        node_id = network_repr_day.shared_energy_storages[e].bus
+                    else:
+                        node_id = network_planning.tn_connection_nodeid
+                    if shared_ess_capacity_is_inactive(
+                            pe.value(model_repr_day.shared_es_s_rated_fixed[e]),
+                            pe.value(model_repr_day.shared_es_e_rated_fixed[e])):
+                        sensitivity_available['s'][year][node_id] = False
+                        continue
+                    constraint = model_repr_day.shared_energy_storage_s_sensitivities[e]
+                    dual = model_repr_day.dual.get(constraint)
+                    if dual is None:
+                        sensitivity_available['s'][year][node_id] = False
+                    else:
+                        # Restore cost units from the normalized ADMM objective, then convert the per-unit RHS to MVA.
+                        sensitivity_s = objective_scale * dual / network_repr_day.baseMVA
+                        sensitivities['s'][year][node_id] += annualization * num_years * num_days * sensitivity_s
 
-            for e in model_repr_day.shared_energy_storage_e_sensitivities:
-                if network_planning.is_transmission:
-                    node_id = network_repr_day.shared_energy_storages[e].bus
-                else:
-                    node_id = network_planning.tn_connection_nodeid
-                if shared_ess_capacity_is_inactive(
-                        pe.value(model_repr_day.shared_es_s_rated_fixed[e]),
-                        pe.value(model_repr_day.shared_es_e_rated_fixed[e])):
+                for e in model_repr_day.shared_energy_storage_e_sensitivities:
+                    if network_planning.is_transmission:
+                        node_id = network_repr_day.shared_energy_storages[e].bus
+                    else:
+                        node_id = network_planning.tn_connection_nodeid
+                    if shared_ess_capacity_is_inactive(
+                            pe.value(model_repr_day.shared_es_s_rated_fixed[e]),
+                            pe.value(model_repr_day.shared_es_e_rated_fixed[e])):
+                        sensitivity_available['e'][year][node_id] = False
+                        continue
+                    constraint = model_repr_day.shared_energy_storage_e_sensitivities[e]
+                    dual = model_repr_day.dual.get(constraint)
+                    if dual is None:
+                        sensitivity_available['e'][year][node_id] = False
+                    else:
+                        sensitivity_e = objective_scale * dual / network_repr_day.baseMVA
+                        sensitivities['e'][year][node_id] += annualization * num_years * num_days * sensitivity_e
+            else:
+                for node_id in node_ids:
+                    sensitivity_available['s'][year][node_id] = False
                     sensitivity_available['e'][year][node_id] = False
-                    continue
-                constraint = model_repr_day.shared_energy_storage_e_sensitivities[e]
-                dual = model_repr_day.dual.get(constraint)
-                if dual is None:
-                    sensitivity_available['e'][year][node_id] = False
-                else:
-                    sensitivity_e = objective_scale * dual / network_repr_day.baseMVA
-                    sensitivities['e'][year][node_id] += annualization * num_years * num_days * sensitivity_e
 
         for node_id in node_ids:
             if not sensitivity_available['s'][year][node_id]:

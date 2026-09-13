@@ -355,10 +355,16 @@ def _build_model(network, params):
             model.slack_es_soc_final_down = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(slack_es_balance_bounds, network=network))
 
     # - Shared Energy Storage devices
-    model.shared_es_s_rated_fixed = pe.Param(model.shared_energy_storages, mutable=True, initialize=0.00)          # Benders' -- used to get the dual variables (sensitivities)
-    model.shared_es_e_rated_fixed = pe.Param(model.shared_energy_storages, mutable=True, initialize=0.00)          # (...)
-    model.shared_es_s_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.0)
-    model.shared_es_e_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.0)
+    # P5.15-1b (PLANNER_BRIEF_2026-09-13.md, Step 2 Candidate 2): capacity is
+    # carried ONLY by these two mutable Params now. The `shared_es_s_rated`/
+    # `shared_es_e_rated` `Var`s (formerly pinned to these Params by the
+    # `shared_energy_storage_s/e_sensitivities` equalities, which carried the
+    # Benders capacity-sensitivity duals) are deleted: the outer Benders
+    # sensitivity channel is retired (Addendum 1; `_add_benders_cut` already
+    # returns False unconditionally). This makes `sess_converter_capability` a
+    # convex SOC row and the two H1 hat-links linear.
+    model.shared_es_s_rated_fixed = pe.Param(model.shared_energy_storages, mutable=True, initialize=0.00)
+    model.shared_es_e_rated_fixed = pe.Param(model.shared_energy_storages, mutable=True, initialize=0.00)
     model.shared_es_pch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     model.shared_es_pdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
     # P5.4-H1: dimensionless charge/discharge, used ONLY by the complementarity row.
@@ -447,15 +453,21 @@ def _build_model(network, params):
     model.sess_pdch_hat_link = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pdch_hat_link_rule)
     model.sess_converter_capability = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_converter_capability_rule)
     model.sess_active_sum_limit = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_active_sum_limit_rule)
-    model.sess_phi_limit_lower = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_phi_limits_lower, network=network))
-    model.sess_phi_limit_upper = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_phi_limits_upper, network=network))
+    # P5.15-1b (Step 2 Candidate 1, form (a)): `sess_phi_limit_lower`/`_upper`
+    # (tying |qnet| to instantaneous pch+pdch) are deleted; `sess_converter_capability`
+    # carries the reactive limit alone. See the deletion note in
+    # `model_construction_helpers.py` above `period_duration_hours`.
     model.sess_soc_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_soc_rule, network=network, params=params))
     model.sess_soc_limit_upper = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_soc_upper_limit)
     model.sess_soc_limit_lower = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_soc_lower_limit)
     model.sess_soc_final = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, rule=partial(sess_soc_final_rule, network=network, params=params))
     model.sess_comp = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_comp_rule, network=network, params=params))
-    model.shared_energy_storage_s_sensitivities = pe.Constraint(model.shared_energy_storages, rule=sess_s_sensitivities)
-    model.shared_energy_storage_e_sensitivities = pe.Constraint(model.shared_energy_storages, rule=sess_e_sensitivities)
+    # P5.15-1b (Step 2 Candidate 2): `shared_energy_storage_s_sensitivities` /
+    # `_e_sensitivities` (the pinning equalities for the deleted
+    # `shared_es_s_rated`/`shared_es_e_rated` Vars) are DELETED. See the note
+    # in `model_construction_helpers.py` where their rule functions used to be
+    # defined, and `network_data.py::_get_sensitivities` for the deactivated
+    # consumer of their duals.
 
     # - Node Balance constraints
     model.node_balance_p = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(node_balance_p_rule, network=network, params=params))
@@ -1393,7 +1405,7 @@ def _process_results(network, model, params, results=dict()):
             # Shared Energy Storages
             for e in model.shared_energy_storages:
                 node_id = network.shared_energy_storages[e].bus
-                capacity = pe.value(model.shared_es_e_rated[e]) * network.baseMVA
+                capacity = pe.value(model.shared_es_e_rated_fixed[e]) * network.baseMVA
                 if isclose(capacity, 0.0, abs_tol=1e-6):
                     capacity = 1.00
                 processed_results['scenarios'][s_m][s_o]['shared_energy_storages']['p'][node_id] = []

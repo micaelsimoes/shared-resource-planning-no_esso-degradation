@@ -498,6 +498,13 @@ def sg_sqr_rule(m, g, s_m, s_o, p, network):
 
 
 def sg_avail_rule(m, g, s_m, s_o, p, network, params):
+    # P5.15-1b Candidate 3' (per-period normalization of this row) was
+    # implemented, measured and HELD by the Planner on 2026-09-13: it failed its
+    # own gate -- dispatch differed by 1.95e-05 against a 1e-8 requirement, the
+    # objective by 2.86e-03 (~0.3%), neither explained by solver tolerance, and
+    # cold-start iterations ROSE from 39 to 65, the opposite of the conditioning
+    # gain it was proposed for. Evidence: data/SRP1/Results/P5151B/.
+    # The un-normalized row below is therefore unchanged and in force.
     gen = network.generators[g]
     if not gen.is_curtaillable() or renewable_generation_is_unavailable(gen, s_o, p):
         return pe.Constraint.Skip
@@ -739,7 +746,30 @@ def ess_soc_final_rule(m, e, s_m, s_o, network, params):
 
 
 # Shared Energy Storage
+# P5.15-1b (PLANNER_BRIEF_2026-09-13.md, Step 2 Candidate 1, form (a)): the
+# power-factor rows `sess_phi_limits_lower`/`sess_phi_limits_upper`, which tied
+# `|qnet|` to instantaneous `pch + pdch`, are DELETED. The P5.15-2 audit found
+# they created an LICQ-degenerate vertex at every idle period (four active
+# inequalities in a 3-dimensional subspace at `pch = pdch = 0`) and disagreed
+# with the ESSO subproblem's own reactive feasible set, which imposes only the
+# converter circle. `sess_converter_capability` (pnet^2 + qnet^2 <= S_rated^2)
+# now carries the reactive limit alone.
+#
+# PLANNER AMENDMENT (2026-09-13): the two rule FUNCTIONS below are RETAINED,
+# unwired and unused, rather than deleted. Deleting them broke unpickling of
+# every preserved network fixture -- including
+# `data/SRP1/Results/P512R/cycle21_pre_setup/snapshot.pkl`, the cycle-21 anchor
+# of the whole P5.12 line, and the FrozenSMOPF comparators -- because the
+# pickled models hold `functools.partial` objects that resolve these names at
+# load time. Candidate 1 requires the ROWS to be gone, which is achieved by
+# removing the wiring in `network.py` and the entries in
+# `_SHARED_ESS_OPERATIONAL_CONSTRAINTS`; it does not require deleting the
+# callables. This follows the same "deactivate, do not delete" precedent as
+# `_add_benders_cut`. Do not call these from any model build.
+
+
 def sess_phi_limits_lower(m, e, s_m, s_o, p, network):
+    """RETIRED by P5.15-1b Candidate 1 -- retained only for fixture unpickling."""
     ess = network.shared_energy_storages[e]
     tangent_lower, tangent_upper = _power_factor_tangents(ess)
     pch = m.shared_es_pch[e, s_m, s_o, p]
@@ -748,6 +778,7 @@ def sess_phi_limits_lower(m, e, s_m, s_o, p, network):
 
 
 def sess_phi_limits_upper(m, e, s_m, s_o, p, network):
+    """RETIRED by P5.15-1b Candidate 1 -- retained only for fixture unpickling."""
     ess = network.shared_energy_storages[e]
     tangent_lower, tangent_upper = _power_factor_tangents(ess)
     pch = m.shared_es_pch[e, s_m, s_o, p]
@@ -775,9 +806,14 @@ def sess_converter_capability_rule(m, e, s_m, s_o, p):
     Replaces the former apparent-charge/discharge geometry. Reactive power is
     limited by the converter rating but no longer participates in the stored
     battery energy.
+
+    P5.15-1b (Step 2 Candidate 2): `S_rated` is read from
+    `shared_es_s_rated_fixed`, a mutable Param, rather than from the retired
+    `shared_es_s_rated` Var -- see the note above `configure_shared_ess_operational_state`.
+    This row is therefore a convex SOC constraint, not an indefinite quadratic.
     """
     return (m.shared_es_pnet[e, s_m, s_o, p] ** 2
-            + m.shared_es_qnet[e, s_m, s_o, p] ** 2) <= m.shared_es_s_rated[e] ** 2
+            + m.shared_es_qnet[e, s_m, s_o, p] ** 2) <= m.shared_es_s_rated_fixed[e] ** 2
 
 
 def sess_active_sum_limit_rule(m, e, s_m, s_o, p):
@@ -786,19 +822,20 @@ def sess_active_sum_limit_rule(m, e, s_m, s_o, p):
     Derived from the retired production feasible set, which enforced
     `pch <= sch`, `pdch <= sdch` and `sch + sdch <= S_rated`; those together
     imply `pch + pdch <= S_rated`, so this preserves the original active-power
-    envelope exactly.
+    envelope exactly. `S_rated` is `shared_es_s_rated_fixed` (P5.15-1b
+    Candidate 2); this row is linear.
     """
     return (m.shared_es_pch[e, s_m, s_o, p]
-            + m.shared_es_pdch[e, s_m, s_o, p]) <= m.shared_es_s_rated[e]
+            + m.shared_es_pdch[e, s_m, s_o, p]) <= m.shared_es_s_rated_fixed[e]
 
 
 def sess_soc_lower_limit(m, e, s_m, s_o, p):
-    soc_min = m.shared_es_e_rated[e] * ENERGY_STORAGE_MIN_ENERGY_STORED
+    soc_min = m.shared_es_e_rated_fixed[e] * ENERGY_STORAGE_MIN_ENERGY_STORED
     return m.shared_es_soc[e, s_m, s_o, p] >= soc_min
 
 
 def sess_soc_upper_limit(m, e, s_m, s_o, p):
-    soc_max = m.shared_es_e_rated[e] * ENERGY_STORAGE_MAX_ENERGY_STORED
+    soc_max = m.shared_es_e_rated_fixed[e] * ENERGY_STORAGE_MAX_ENERGY_STORED
     return m.shared_es_soc[e, s_m, s_o, p] <= soc_max
 
 
@@ -810,14 +847,17 @@ def sess_pch_hat_link_rule(m, e, s_m, s_o, p):
     so the row keeps a unit coefficient on the physical variable. That unit
     coefficient is what keeps the row from being zero-gradient at zero dispatch
     -- the defect that `sess_snet_def` had.
+
+    P5.15-1b (Step 2 Candidate 2): `S_rated` is now `shared_es_s_rated_fixed`
+    (a Param), so this row is LINEAR rather than bilinear.
     """
     return (m.shared_es_pch[e, s_m, s_o, p]
-            - m.shared_es_s_rated[e] * m.shared_es_pch_hat[e, s_m, s_o, p]) == 0
+            - m.shared_es_s_rated_fixed[e] * m.shared_es_pch_hat[e, s_m, s_o, p]) == 0
 
 
 def sess_pdch_hat_link_rule(m, e, s_m, s_o, p):
     return (m.shared_es_pdch[e, s_m, s_o, p]
-            - m.shared_es_s_rated[e] * m.shared_es_pdch_hat[e, s_m, s_o, p]) == 0
+            - m.shared_es_s_rated_fixed[e] * m.shared_es_pdch_hat[e, s_m, s_o, p]) == 0
 
 
 def sess_comp_rule(m, e, s_m, s_o, p, network, params):
@@ -854,7 +894,7 @@ def sess_soc_rule(m, e, s_m, s_o, p, network, params):
     eff_dch = sess.eff_dch
     dt = period_duration_hours(m)
     if p == 0:
-        soc_prev = m.shared_es_e_rated[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC
+        soc_prev = m.shared_es_e_rated_fixed[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC
     else:
         soc_prev = m.shared_es_soc[e, s_m, s_o, p - 1]
 
@@ -865,7 +905,7 @@ def sess_soc_rule(m, e, s_m, s_o, p, network, params):
 
 
 def sess_soc_final_rule(m, e, s_m, s_o, network, params):
-    final_soc = m.shared_es_e_rated[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC
+    final_soc = m.shared_es_e_rated_fixed[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC
     final_p = m.periods[-1]
     if params.slacks.shared_ess.day_balance:
         return m.shared_es_soc[e, s_m, s_o, final_p] == final_soc + m.slack_shared_es_soc_final_up[e, s_m, s_o] - m.slack_shared_es_soc_final_down[e, s_m, s_o]
@@ -931,8 +971,9 @@ _SHARED_ESS_OPERATIONAL_CONSTRAINTS = (
     'sess_pdch_hat_link',
     'sess_converter_capability',
     'sess_active_sum_limit',
-    'sess_phi_limit_lower',
-    'sess_phi_limit_upper',
+    # P5.15-1b Candidate 1: 'sess_phi_limit_lower'/'sess_phi_limit_upper' are
+    # removed (see the deletion note above `period_duration_hours`); no longer
+    # wired in `network.py`, so they are dropped from this activation list too.
     'sess_soc_def',
     'sess_soc_limit_upper',
     'sess_soc_limit_lower',
@@ -998,14 +1039,18 @@ def configure_shared_ess_operational_state(
     inactive = shared_ess_capacity_is_inactive(s_capacity, e_capacity)
 
     # P5.4-A: the shared-ESS rows now depend directly on the rated-capacity
-    # variable (`shared_es_s_rated`), so a capacity change is carried by the
-    # model itself. The former `sess_snet_def` kappa scale and its
+    # parameter (`shared_es_s_rated_fixed`), so a capacity change is carried by
+    # the model itself. The former `sess_snet_def` kappa scale and its
     # KKT-consistent multiplier transfer are gone with that row, and no
     # replacement multiplier transformation is required.
+    #
+    # P5.15-1b (Step 2 Candidate 2): `shared_es_s_rated`/`shared_es_e_rated`
+    # (the `Var`s pinned to these Params by the now-deleted
+    # `shared_energy_storage_s/e_sensitivities` equalities) are gone --
+    # `shared_es_s_rated_fixed`/`shared_es_e_rated_fixed`, set here, are the
+    # sole capacity quantities read by the shared-ESS rows.
     model.shared_es_s_rated_fixed[shared_ess_idx].set_value(s_capacity)
     model.shared_es_e_rated_fixed[shared_ess_idx].set_value(e_capacity)
-    model.shared_es_s_rated[shared_ess_idx].set_value(s_capacity)
-    model.shared_es_e_rated[shared_ess_idx].set_value(e_capacity)
 
     for variable_name in _SHARED_ESS_OPERATIONAL_VARIABLES:
         if not hasattr(model, variable_name):
@@ -1056,11 +1101,32 @@ def configure_shared_ess_operational_state(
     return inactive
 
 
+# P5.15-1b (PLANNER_BRIEF_2026-09-13.md, Step 2 Candidate 2): `sess_s_sensitivities`
+# / `sess_e_sensitivities` -- the equalities pinning the (now-deleted)
+# `shared_es_s_rated`/`shared_es_e_rated` Vars to `shared_es_s_rated_fixed`/
+# `shared_es_e_rated_fixed` -- are DELETED, not deactivated: the Vars they
+# pinned no longer exist. Their Benders capacity-sensitivity duals
+# (`network_data.py::_get_sensitivities`) are consumed only by the
+# already-retired `_add_benders_cut` path (Step 1 item 5); that consumer is
+# separately deactivated with its own comment.
+
+
+# P5.15-1b Candidate 2: the capacity-pinning ROWS are gone (the Vars they pinned
+# are now mutable Params). The two rule functions are RETAINED, unwired and
+# unused, for the same reason as `sess_phi_limits_*` above: preserved network
+# fixtures hold `functools.partial` objects that resolve these names at unpickle
+# time. They reference `m.shared_es_s_rated`/`m.shared_es_e_rated`, which no
+# longer exist on newly built models, so they must never be called -- they exist
+# only so that historical artifacts remain loadable.
+
+
 def sess_s_sensitivities(m, e):
+    """RETIRED by P5.15-1b Candidate 2 -- retained only for fixture unpickling."""
     return m.shared_es_s_rated_fixed[e] == m.shared_es_s_rated[e]
 
 
 def sess_e_sensitivities(m, e):
+    """RETIRED by P5.15-1b Candidate 2 -- retained only for fixture unpickling."""
     return m.shared_es_e_rated_fixed[e] == m.shared_es_e_rated[e]
 
 
@@ -1696,8 +1762,14 @@ def slack_penalties(model, network, s_m, s_o, params):
     if params.fl_reg and params.slacks.flexibility.day_balance:
         for c in model.loads:
             if network.loads[c].fl_reg:
-                total += base * PENALTY_FLEXIBILITY * sum(model.slack_flex_p_balance_up[c, s_m, s_o] + model.slack_flex_p_balance_down[c, s_m, s_o])
-                total += base * PENALTY_FLEXIBILITY * sum(model.slack_flex_q_balance_up[c, s_m, s_o] + model.slack_flex_q_balance_down[c, s_m, s_o] )
+                # P5.15-1b Candidate 4: this branch is now reachable in
+                # production (day_balance defaults True). `slack_flex_*[c, s_m,
+                # s_o]` are scalar VarData (no period index); `sum(...)` on a
+                # single non-iterable expression raised TypeError at build
+                # time. Fixed to plain addition (P5.15-2 audit, "considered
+                # and not shortlisted" table, latent-bug entry).
+                total += base * PENALTY_FLEXIBILITY * (model.slack_flex_p_balance_up[c, s_m, s_o] + model.slack_flex_p_balance_down[c, s_m, s_o])
+                total += base * PENALTY_FLEXIBILITY * (model.slack_flex_q_balance_up[c, s_m, s_o] + model.slack_flex_q_balance_down[c, s_m, s_o])
 
     return total
 

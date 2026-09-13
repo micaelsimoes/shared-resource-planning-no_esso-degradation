@@ -2804,6 +2804,17 @@ def _compute_common_admm_objective_scale(planning_problem, tso_model, dso_models
 
 def _add_tso_scenario_deviation_penalty(model, network, include_voltage=True):
 
+    # P5.15-1b (PLANNER_BRIEF_2026-09-13.md, Step 2 Candidate 5): with a
+    # single market and a single operation scenario the five deviation
+    # residuals are identically zero on the feasible set, enforced by
+    # explicit expected-value equalities elsewhere in the model -- a provable
+    # no-op (P5.15-2 audit, Candidate 5). Skip the block entirely rather than
+    # add 120 redundant rank-one PSD Hessian blocks per model. Callers already
+    # tolerate the resulting absence of `scenario_deviation_penalty` via
+    # `hasattr(model, 'scenario_deviation_penalty')`.
+    if len(model.scenarios_market) * len(model.scenarios_operation) == 1:
+        return
+
     voltage_deviation = 0.0
     interface_power_deviation = 0.0
     shared_ess_deviation = 0.0
@@ -2829,6 +2840,11 @@ def _add_tso_scenario_deviation_penalty(model, network, include_voltage=True):
 
 
 def _add_dso_scenario_deviation_penalty(model, network, include_voltage=True):
+
+    # P5.15-1b (PLANNER_BRIEF_2026-09-13.md, Step 2 Candidate 5): see the
+    # identical guard and rationale in `_add_tso_scenario_deviation_penalty`.
+    if len(model.scenarios_market) * len(model.scenarios_operation) == 1:
+        return
 
     voltage_deviation = 0.0
     interface_power_deviation = 0.0
