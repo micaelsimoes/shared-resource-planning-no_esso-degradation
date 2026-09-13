@@ -3985,3 +3985,49 @@ model **UNKNOWN**.
 capacity — change the degradation constant and see whether the recourse moves, as it did
 not at bootstrap capacity. Until then the 0.37% effect **cannot be attributed to a model in
 which storage degrades.**
+
+## P5.14-M corrections and the EFC gap (2026-09-13)
+
+**The per-MVA ratio is WITHDRAWN.** The 47.7x mixed conventions: step 1 used C1's per-node
+*cumulative* capacity (0.0319047) while step 2 used a system-wide denominator with C1 at its
+*annual* investment. Computed consistently — the system-wide factor of three cancels, so
+only C1's convention matters — the ratio is **15.6x** (per-node cumulative) or **23.6x**
+(horizon-average). **The ratio is not load-bearing**: C1's capacity is a rising trajectory
+while C\*'s is constant, so per-MVA normalization is ambiguous and the choice swings the
+answer by 50%. **The absolute statement carries the conclusion and needs no convention:
+1.6M of operating saving from 32 kW per node cumulative is not credible on its face.**
+
+**C\* is the limiting endpoint of EVERY comparison**, not only the weakest. Its rule-ten
+ratio is **0.9329**. All three pairs contain C\*, so the **0.37% second step (endpoints
+0.5800 and 0.9329) is limited by C\*'s near-bound stop** exactly as the cell-2 pair is, and
+must be reported with that qualification.
+
+**The zero salvage was a deliberate trade, recorded as such.** The 2025-only single-cohort
+shape was chosen to sidestep cohort-SOC realizability; its cost is a structurally zero
+terminal value. **The design traded one inert component for another.** A later cohort would
+carry remaining life and nonzero salvage, at the price of reintroducing multi-cohort
+allocation.
+
+**The realized EFC/day at C\* is NOT recoverable — a reporting miss.** The campaign spec
+required it with its margin to the 1.4612 threshold; the harness captured per-cycle ADMM
+diagnostics and slack maxima but not `es_avg_ch_dch_per_unit`, `es_degradation_per_unit` or
+`es_soh_per_unit_cumul`, and the ESSO models were not serialized. **It cannot be obtained
+with zero solves.** Options: (a) instrumented re-run of the C\* baseline, ~3,468 solves and
+~35 min, giving the exact converged EFC and doubling as a determinism check on
+816,121,464 — **recommended**; (b) initialization-only probe, 51 solves, indicative only
+since initialization cycling is not converged cycling; (c) instrument the perturbation arm,
+which gives the perturbed arm's EFC rather than the baseline's.
+
+**Why it gates the perturbation.** Negligible cycling would make an inert ageing model
+*physically correct* rather than a defect, and the perturbation predictable rather than
+informative; substantial cycling near 1.4612/day would make inertness a genuine defect and
+the perturbation exactly the test.
+
+**The perturbation, predeclared if warranted:** set `ageing.calibration.status` back to
+`DECLARED_NOT_CONSUMED`, restoring `k = 10000` — the same 15.4% change already characterised
+at bootstrap capacity, hence like-for-like. Against the **164,149** bounded bar: moving more
+means the ageing model is live and the 0.37% is attributable to a degrading-storage model;
+moving less or not at all means the model is inert even where storage does real work, which
+**combined with salvage at exactly zero would mean this run values effectively ideal,
+non-degrading storage with no terminal value, and the paper's degradation modelling
+contributes nothing to any number it reports.**
