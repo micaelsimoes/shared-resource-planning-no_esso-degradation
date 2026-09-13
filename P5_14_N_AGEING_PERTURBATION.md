@@ -104,3 +104,80 @@ which the perturbed arm's failures began cannot be recovered. Rule eleven covere
 quantities the frozen spec named; it did not cover the per-cycle trajectory, which this
 stage turned out to need. The rule works as written — the gap is in what the spec required,
 not in the assertion.
+
+---
+
+# Addendum — the failure mode, and what it decides
+
+## The termination conditions
+
+| source | `Optimal` | `Acceptable` | **`Max Iterations`** | `Locally infeasible` |
+|---|---|---|---|---|
+| network solves (4,368 in the perturbed arm) | 4,348 | 19 | **1** | 0 |
+| ESSO node 5 (last 120) | 120 | — | **0** | 0 |
+| **ESSO node 7 (last 120)** | 47 | — | **73** | 0 |
+| ESSO node 9 (last 120) | 112 | — | **8** | 0 |
+
+**The failures are `Maximum Number of Iterations Exceeded`, in the ESSO subproblems, and
+overwhelmingly at node 7.** No solve reported local infeasibility. `max_iter` is unset, so
+each failure burned IPOPT's default 3,000 iterations — which is also why the arm took
+3,348 s against the control's 2,342 s.
+
+## Which reading that selects
+
+By the predeclared dichotomy this is **numerical fragility, not genuine tightness**:
+
+- **Genuine tightness** would have produced `locally infeasible`. And we know this solver
+  reports that when it concludes it: **the same node 7, at 1.00 MVA in the ladder, returned
+  exactly `Converged to a point of local infeasibility`.** Same solver, same subproblem
+  family, same machine — it says "infeasible" when it finds infeasibility, and it did not
+  say so here.
+- **Numerical fragility** predicts `maxIterations`, which is what occurred.
+
+**The honest qualification:** `maxIterations` proves non-convergence within 3,000
+iterations, not that the feasible set is untightened. A tighter set can manifest as slow
+convergence. What it does establish is that the perturbed problem **did not look infeasible
+to IPOPT**, which is the distinction the two readings turn on.
+
+So the sentence for the paper is the fragility one: at material capacity, a 6.1% reduction
+in terminal available energy (2.421 -> 2.274 MWh) leaves the solver unable to navigate the
+problem in 82% of cycles — not because the plan becomes physically infeasible, but because
+the subproblem becomes numerically intractable within its iteration budget.
+
+## The mechanism validation is a positive result and should be read as one
+
+`degradation/day` moved `9.64e-05 -> 1.112e-04`, a ratio of **1.1535** against the law's
+`11541.56 / 10000 = 1.15416` — a **0.06% match**.
+
+This is the **first direct validation that the degradation implementation does what the law
+says**, on the component we had four independent reasons to suspect was inert. The ageing
+model is live and consequential at material capacity. **That branch is closed, and closed
+favourably.**
+
+## P5.12 in retrospect
+
+P5.12 spent weeks on **one local NLP failure in 1,095 solves** at bootstrap capacity,
+treating it as a rare anomaly whose mechanism had to be found.
+
+It was an early symptom of a fragility that becomes dominant at realistic scale. **One
+parameter-step from the material-capacity baseline, that failure mode is the normal
+behaviour** — 74 of 90 cycles. This makes the P5.12 effort look better rather than worse:
+it was chasing something real, at the only magnitude where it was then visible.
+
+## The campaign's question, answered negatively
+
+| component | status |
+|---|---|
+| resolution | **fine** — 28x headroom at `rel` 1e-4 |
+| reliability at a point | **fine** — zero failures in 3,468 solves at C\* |
+| **reliability across the design space** | **NOT ESTABLISHED, and the one data point is catastrophic** |
+
+A planning campaign varies the **candidate**, which is a far larger perturbation than 15.4%
+of a fixed model constant. If a constant-step of that size produces 82% cycle failure, **a
+campaign cannot be expected to hold together.** That is the finding the whole of Track D was
+for.
+
+**And it puts C\*'s own numbers in question.** The 816,121,464 baseline sits one small
+parameter-step from 82% failure and stopped at 93% of its threshold. **Wherever the 0.37%
+storage effect is reported, this must be reported with it:** the number is real, and the
+ground it stands on is not stable.

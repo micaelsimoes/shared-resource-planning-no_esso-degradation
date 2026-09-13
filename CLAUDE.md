@@ -127,6 +127,19 @@ incidents behind each rule are in `REVISION_CONTEXT.md`, section
   **58.0%** — the contrast diagnosed the mechanism, and reporting it earlier would have
   flagged the 2x2's warm cells before their agreement was read as a result.
 
+## Stage templates
+
+- **Scope a gate per arm.** A gate that compares every arm against a control reference is
+  ill-defined for an arm designed to differ. P5.14-N's perturbation arm was handed the
+  control's determinism gate and produced a **spurious** "FAIL — NON-DETERMINISM" verdict for
+  a run that was supposed to differ and had not converged. Gates must state which arms they
+  apply to, and skip the rest.
+- **Record per-cycle state by default.** Any stage whose run can fail records the per-cycle
+  trajectory as standard, rather than leaving each spec to remember. P5.14-N could not
+  recover the cycle at which its failures began — the third capture gap in this programme.
+  Rule eleven asserts what the spec requires; making the trajectory a default is what stops
+  a fourth gap arising from a spec that simply did not think to ask.
+
 ## Reporting conventions
 
 - State the objective convention on every table. `gross_operational_cost` and

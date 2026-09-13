@@ -4084,3 +4084,76 @@ real determinism result is the control's PASS. (b) Neither report stores per-cyc
 the cycle at which failures began is unrecoverable — rule eleven covered the ESSO quantities
 the spec named, and the spec did not name the trajectory. The rule worked as written; the
 gap was in the requirement.
+
+## NUMERICAL PROGRAMME CLOSED — Track D and the numerical work (2026-09-13)
+
+### The failure mode: numerical fragility, not infeasibility
+
+| source | `Optimal` | `Acceptable` | **`Max Iterations`** | `Locally infeasible` |
+|---|---|---|---|---|
+| network solves (4,368) | 4,348 | 19 | **1** | 0 |
+| ESSO node 5 / 7 / 9 (last 120 each) | 120 / 47 / 112 | — | **0 / 73 / 8** | 0 |
+
+Failures are **`Maximum Number of Iterations Exceeded`** in the **ESSO** subproblems,
+overwhelmingly at **node 7**; `max_iter` is unset so each burned IPOPT's default 3,000
+iterations. **No solve reported local infeasibility.** Decisive by contrast: **the same node
+7, at 1.00 MVA in the ladder, returned `Converged to a point of local infeasibility`** — the
+solver says "infeasible" when it finds infeasibility, and it did not say so here.
+Qualification: `maxIterations` proves non-convergence within budget, not that the set is
+untightened; what it establishes is that the perturbed problem **did not look infeasible to
+IPOPT**. So the paper's sentence is the fragility one: a 6.1% cut in terminal available
+energy (2.421 -> 2.274 MWh) leaves the solver unable to navigate 82% of cycles, not because
+the plan becomes infeasible but because the subproblem becomes numerically intractable.
+
+### A positive result, on the component we most suspected
+
+`degradation/day` moved `9.64e-05 -> 1.112e-04`, ratio **1.1535** against the law's
+`11541.56/10000 = 1.15416` — a **0.06% match**. **The first direct validation that the
+degradation implementation does what the law says**, on the component we had four
+independent reasons to think inert. **The ageing model is live and consequential at material
+capacity; that branch is closed favourably.**
+
+### P5.12 reframed retrospectively
+
+P5.12 spent weeks on **one local NLP failure in 1,095 solves** at bootstrap capacity as a
+rare anomaly. It was an **early symptom of a fragility that becomes dominant at realistic
+scale** — one parameter-step from the material-capacity baseline it is the normal behaviour,
+74 of 90 cycles. This makes that effort look **better**: it was chasing something real, at
+the only magnitude where it was then visible.
+
+### The campaign's question, answered negatively
+
+| component | status |
+|---|---|
+| resolution | fine — 28x headroom at `rel` 1e-4 |
+| reliability at a point | fine — zero failures in 3,468 solves at C\* |
+| **reliability across the design space** | **not established; the one data point is catastrophic** |
+
+A campaign varies the **candidate**, a far larger perturbation than 15.4% of a fixed model
+constant. If a constant-step of that size produces 82% cycle failure, **a campaign cannot be
+expected to hold together.** That is what Track D was for.
+
+**C\*'s own numbers are implicated.** The 816,121,464 baseline sits one small parameter-step
+from 82% failure and stopped at 93% of its threshold. **Wherever the 0.37% storage effect is
+reported, this must be reported with it.**
+
+### Closure
+
+**Track D and the numerical programme are CLOSED** — not because nothing further could be
+learned, but because the question they were asked has been answered specifically and
+documented: **the tool cannot currently support a planning campaign at material capacity,
+and we now know why in terms precise enough to write down.** Further stages would
+characterise a fragility already established as disqualifying.
+
+**Track E is the remaining work**, with a considerably sharper set of claims to reconcile
+than when it started.
+
+### Two process fixes promoted to `CLAUDE.md` stage templates
+
+- **Scope a gate per arm** — a gate comparing every arm against a control reference is
+  ill-defined for an arm designed to differ, and produced a spurious non-determinism verdict
+  here.
+- **Record per-cycle state by default** — any stage whose run can fail records the
+  trajectory as standard. This was the **third** capture gap; rule eleven asserts what a spec
+  requires, and a default is what stops a fourth arising from a spec that did not think to
+  ask.
