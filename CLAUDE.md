@@ -126,6 +126,23 @@ incidents behind each rule are in `REVISION_CONTEXT.md`, section
   preserved. In Track C1 the warm cell stopped at **99.3%** of its bound and the cold cell at
   **58.0%** — the contrast diagnosed the mechanism, and reporting it earlier would have
   flagged the 2x2's warm cells before their agreement was read as a result.
+- Deactivate and unwire; never delete. A callable that a preserved fixture may resolve at
+  unpickling must be retained, unwired and unused, with a comment saying so — retiring a
+  constraint means removing its **row** from newly built models, not removing its **symbol**
+  from the module. Pickled networks hold `functools.partial` objects that resolve rule
+  functions by name at load time, so deleting four retired `model_construction_helpers` rules
+  in P5.15-1b broke unpickling of *every* preserved fixture, including the cycle-21 anchor
+  `P512R/cycle21_pre_setup/snapshot.pkl` and the FrozenSMOPF comparator. Verify by loading
+  each preserved fixture, and separately assert via `hasattr` that the row is absent from a
+  freshly built model. `_add_benders_cut` is the precedent to follow.
+- Never re-run a harness onto an artifact a committed report cites. Re-running writes to the
+  same path by default, so the pre-change evidence is destroyed by the very act of verifying
+  the change. Redirect the output to a new name, or copy the original aside first, and say
+  which you did. In P5.15 a verification step re-ran the capacity ladder and overwrote
+  `data/SRP1/Results/P514L/ladder_s1.json`, the pre-repair result cited as the central finding
+  of `P5_14_L_CAPACITY_LADDER_REPORT.md`; the values survived only because a sibling log
+  happened to hold them. The obligation is on whoever writes the task instruction, not on the
+  agent following it — the instruction there said "run the harness" and named no output path.
 
 ## Stage templates
 

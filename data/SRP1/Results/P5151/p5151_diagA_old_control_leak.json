@@ -1,0 +1,496 @@
+{
+ "stage": "P5.15 Diag-A",
+ "objective": "zero-solve integrity check + leak measurement on the OLD control pickle",
+ "timestamp_utc": "2026-09-13T17:36:58.987684+00:00",
+ "pickle_path": "data/SRP1/Results/P514N/esso_models_control.pkl",
+ "provenance": {
+  "sha256": "071052d19de4d48048be7e2aa96fcade9afa8d99f10f85df510619b2e0e360c2",
+  "size_bytes": 5264123,
+  "mtime_utc": "2026-09-13T11:35:16.960568+00:00"
+ },
+ "sibling_artifacts": {
+  "control_console.log": {
+   "sha256": "d8e65fafa9f3e18fac639a90ddd549350de3484e9e918ccdc9f8c42d049d2619",
+   "size_bytes": 250,
+   "mtime_utc": "2026-09-13T11:35:16.998099+00:00"
+  },
+  "n1_control.json": {
+   "sha256": "52cdce5e44846b2019934ecb2f7c7f1725b84f02ee43f454c66cceff8c18c606",
+   "size_bytes": 6772,
+   "mtime_utc": "2026-09-13T11:35:16.972649+00:00"
+  },
+  "frozen_n1_control_arm_v1_f1bbddf4.json": {
+   "sha256": "f1bbddf43e15840130c9bde0bb6d7a61eac682d6ffb6cae886cf88bfdfb82391",
+   "size_bytes": 3747,
+   "mtime_utc": "2026-09-13T10:55:27.147991+00:00"
+  }
+ },
+ "reformulation_commit_b03c9b14": "b03c9b141b46896ddf9ea8edb50c75fa372c90db,2026-09-13 16:30:51 +0100",
+ "models_container_type": "dict",
+ "node_ids": [
+  5,
+  7,
+  9
+ ],
+ "integrity_check": {
+  "attrs_present_per_node": {
+   "5": [
+    "es_degradation_per_unit",
+    "es_degradation_per_unit_cumul",
+    "es_soh_per_unit",
+    "es_soh_per_unit_cumul",
+    "energy_storage_complementarity",
+    "energy_storage_normalization",
+    "es_pch_hat_per_unit",
+    "es_pdch_hat_per_unit",
+    "es_pch_hat_agg",
+    "es_pdch_hat_agg",
+    "slack_es_ch_comp_per_unit"
+   ],
+   "7": [
+    "es_degradation_per_unit",
+    "es_degradation_per_unit_cumul",
+    "es_soh_per_unit",
+    "es_soh_per_unit_cumul",
+    "energy_storage_complementarity",
+    "energy_storage_normalization",
+    "es_pch_hat_per_unit",
+    "es_pdch_hat_per_unit",
+    "es_pch_hat_agg",
+    "es_pdch_hat_agg",
+    "slack_es_ch_comp_per_unit"
+   ],
+   "9": [
+    "es_degradation_per_unit",
+    "es_degradation_per_unit_cumul",
+    "es_soh_per_unit",
+    "es_soh_per_unit_cumul",
+    "energy_storage_complementarity",
+    "energy_storage_normalization",
+    "es_pch_hat_per_unit",
+    "es_pdch_hat_per_unit",
+    "es_pch_hat_agg",
+    "es_pdch_hat_agg",
+    "slack_es_ch_comp_per_unit"
+   ]
+  },
+  "pre_markers_present": true,
+  "complementarity_row_present": true,
+  "es_D_per_unit_present": false,
+  "verdict": "PRE-REFORMULATION -- diagnostic proceeds"
+ },
+ "measurements": {
+  "5": {
+   "cohort_year_pairs": {
+    "(0, 0)": {
+     "s_max_p_u": 0.96875,
+     "max_min_pch_pdch_physical": 0.007487188927096291,
+     "max_min_pch_pdch_physical_over_s_max": 0.00772871115055101,
+     "max_min_pch_pdch_hat": 0.00772871115055101,
+     "sum_pch_physical_unweighted": 17.780628924100757,
+     "sum_pdch_physical_unweighted": 16.569626697401212,
+     "n_periods": 96
+    },
+    "(0, 1)": {
+     "s_max_p_u": 0.96875,
+     "max_min_pch_pdch_physical": 0.007485141727183194,
+     "max_min_pch_pdch_physical_over_s_max": 0.0077265979119310385,
+     "max_min_pch_pdch_hat": 0.007726597911931039,
+     "sum_pch_physical_unweighted": 14.251271781910022,
+     "sum_pdch_physical_unweighted": 13.28930484721928,
+     "n_periods": 96
+    },
+    "(0, 2)": {
+     "s_max_p_u": 0.96875,
+     "max_min_pch_pdch_physical": 0.007418425141001823,
+     "max_min_pch_pdch_physical_over_s_max": 0.007657729177808333,
+     "max_min_pch_pdch_hat": 0.007657729177808333,
+     "sum_pch_physical_unweighted": 15.478353017671306,
+     "sum_pdch_physical_unweighted": 14.486264346949467,
+     "n_periods": 96
+    }
+   },
+   "active_cohort_year_pairs": [
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     1
+    ],
+    [
+     0,
+     2
+    ]
+   ],
+   "summary": {
+    "max_min_pch_pdch_physical_p_u": 0.007487188927096291,
+    "max_min_pch_pdch_physical_over_s_max": 0.00772871115055101,
+    "max_min_pch_pdch_hat": 0.00772871115055101,
+    "max_min_pch_pdch_hat_agg": 0.00772871115055101,
+    "note_hat_vs_physical": "hat pair is pch/s_max, pdch/s_max (normalized); physical pair feeds avg_ch_dch_per_unit directly (energy_storage_charging_discharging row). Degradation accounting is fed by the PHYSICAL pair (es_pch_per_unit / es_pdch_per_unit), not the hat pair -- the hat pair exists ONLY to feed the complementarity row.",
+    "sum_pch_physical_unweighted_total": 47.51025372368205,
+    "sum_pdch_physical_unweighted_total": 44.345195891569986,
+    "total_throughput_unweighted": 91.85544961525204,
+    "spurious_component_2x_sum_min_unweighted": 1.2735141014941527,
+    "spurious_fraction_pct_unweighted": 1.3864328211645849,
+    "n_periods_total": 288,
+    "convention_note": "UNWEIGHTED convention: plain sum of pch, pdch, min(pch,pdch) over all (active cohort-year, day, period) samples actually stored in the pickle, with NO num_days/365 day-count weighting and no efficiency weighting (unlike es_avg_ch_dch_per_unit, which uses (num_days/365)*(eff_ch*pch*dt + pdch*dt/eff_dch)). num_days is a property of SharedEnergyStorageData.days, not stored on the pickled model, so a day-weighted throughput figure could not be recomputed without external data not authorized for use here (measurement reported unweighted; flagged as a limitation)."
+   },
+   "avg_ch_dch_per_unit": {
+    "stored": {
+     "(0, 0)": {
+      "stored": 8.621410485149667
+     },
+     "(0, 1)": {
+      "stored": 6.9097737221638
+     },
+     "(0, 2)": {
+      "stored": 7.519741293477858
+     },
+     "(1, 0)": {
+      "stored": 0.0
+     },
+     "(1, 1)": {
+      "stored": 0.0
+     },
+     "(1, 2)": {
+      "stored": 0.0
+     },
+     "(2, 0)": {
+      "stored": 0.0
+     },
+     "(2, 1)": {
+      "stored": 0.0
+     },
+     "(2, 2)": {
+      "stored": 0.0
+     }
+    },
+    "leak_free_recomputation": "NOT PERFORMED: eff_ch/eff_dch/dt/cl_eff are not stored as model attributes (they are Python floats baked into constraint coefficients at construction time inside SharedEnergyStorageData, not on the pickled Pyomo model). Recovering them would require importing current-code constants, which the task explicitly forbids (\"the current values may differ\"). Reported as NOT RECOVERABLE from the pickle alone.",
+    "params_found_on_model": {
+     "eff_ch": false,
+     "eff_dch": false,
+     "dt": false,
+     "cl_eff": false
+    }
+   },
+   "soh_chain": {
+    "es_soh_per_unit_cumul": {
+     "(0, 0)": 0.838691639504732,
+     "(0, 1)": 0.7284046262724772,
+     "(0, 2)": 0.6247952809513038,
+     "(1, 0)": 1.0,
+     "(1, 1)": 1.0,
+     "(1, 2)": 1.0,
+     "(2, 0)": 1.0,
+     "(2, 1)": 1.0,
+     "(2, 2)": 1.0
+    },
+    "es_degradation_per_unit": {
+     "(0, 0)": 9.638558661663615e-05,
+     "(0, 1)": 7.724984151330705e-05,
+     "(0, 2)": 8.406915284055442e-05,
+     "(1, 0)": 0.0,
+     "(1, 1)": 0.0,
+     "(1, 2)": 0.0,
+     "(2, 0)": 0.0,
+     "(2, 1)": 0.0,
+     "(2, 2)": 0.0
+    },
+    "leak_free_soh_trajectory": "NOT COMPUTED: the degradation constants (cl_eff, e_rated used in the daily-degradation row) are recoverable in principle (es_e_rated_per_unit IS a stored Var), but cl_eff (the calendar/cycling efficiency constant multiplying e_rated in `es_degradation_per_unit * (2*cl_eff*e_rated) == avg_ch_dch`) is a Python float baked into the constraint coefficient at build time and is NOT stored as a retrievable model attribute or Param. Without it we cannot solve back for a leak-free D from a leak-free avg_ch_dch. Not imported from current code per task instructions."
+   },
+   "complementarity_slack": {
+    "max_slack": 0.0,
+    "any_active_above_1e-9": false,
+    "n_evaluated": 288
+   }
+  },
+  "7": {
+   "cohort_year_pairs": {
+    "(0, 0)": {
+     "s_max_p_u": 0.96875,
+     "max_min_pch_pdch_physical": 0.007487133360234268,
+     "max_min_pch_pdch_physical_over_s_max": 0.007728653791209567,
+     "max_min_pch_pdch_hat": 0.007728653791209567,
+     "sum_pch_physical_unweighted": 17.776559686052348,
+     "sum_pdch_physical_unweighted": 16.566115710671458,
+     "n_periods": 96
+    },
+    "(0, 1)": {
+     "s_max_p_u": 0.96875,
+     "max_min_pch_pdch_physical": 0.00747444620124688,
+     "max_min_pch_pdch_physical_over_s_max": 0.007715557369029038,
+     "max_min_pch_pdch_hat": 0.007715557369029037,
+     "sum_pch_physical_unweighted": 14.481310853022162,
+     "sum_pdch_physical_unweighted": 13.503708220975279,
+     "n_periods": 96
+    },
+    "(0, 2)": {
+     "s_max_p_u": 0.96875,
+     "max_min_pch_pdch_physical": 0.007445025590250026,
+     "max_min_pch_pdch_physical_over_s_max": 0.007685187706064543,
+     "max_min_pch_pdch_hat": 0.007685187706064543,
+     "sum_pch_physical_unweighted": 15.508130293860098,
+     "sum_pdch_physical_unweighted": 14.48410857569446,
+     "n_periods": 96
+    }
+   },
+   "active_cohort_year_pairs": [
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     1
+    ],
+    [
+     0,
+     2
+    ]
+   ],
+   "summary": {
+    "max_min_pch_pdch_physical_p_u": 0.007487133360234268,
+    "max_min_pch_pdch_physical_over_s_max": 0.007728653791209567,
+    "max_min_pch_pdch_hat": 0.007728653791209567,
+    "max_min_pch_pdch_hat_agg": 0.007728653791209567,
+    "note_hat_vs_physical": "hat pair is pch/s_max, pdch/s_max (normalized); physical pair feeds avg_ch_dch_per_unit directly (energy_storage_charging_discharging row). Degradation accounting is fed by the PHYSICAL pair (es_pch_per_unit / es_pdch_per_unit), not the hat pair -- the hat pair exists ONLY to feed the complementarity row.",
+    "sum_pch_physical_unweighted_total": 47.76600083293465,
+    "sum_pdch_physical_unweighted_total": 44.55393250734121,
+    "total_throughput_unweighted": 92.31993334027587,
+    "spurious_component_2x_sum_min_unweighted": 1.2840870756993634,
+    "spurious_fraction_pct_unweighted": 1.3909098817981518,
+    "n_periods_total": 288,
+    "convention_note": "UNWEIGHTED convention: plain sum of pch, pdch, min(pch,pdch) over all (active cohort-year, day, period) samples actually stored in the pickle, with NO num_days/365 day-count weighting and no efficiency weighting (unlike es_avg_ch_dch_per_unit, which uses (num_days/365)*(eff_ch*pch*dt + pdch*dt/eff_dch)). num_days is a property of SharedEnergyStorageData.days, not stored on the pickled model, so a day-weighted throughput figure could not be recomputed without external data not authorized for use here (measurement reported unweighted; flagged as a limitation)."
+   },
+   "avg_ch_dch_per_unit": {
+    "stored": {
+     "(0, 0)": {
+      "stored": 8.619509203904432
+     },
+     "(0, 1)": {
+      "stored": 7.021086252183693
+     },
+     "(0, 2)": {
+      "stored": 7.5263538147502995
+     },
+     "(1, 0)": {
+      "stored": 0.0
+     },
+     "(1, 1)": {
+      "stored": 0.0
+     },
+     "(1, 2)": {
+      "stored": 0.0
+     },
+     "(2, 0)": {
+      "stored": 0.0
+     },
+     "(2, 1)": {
+      "stored": 0.0
+     },
+     "(2, 2)": {
+      "stored": 0.0
+     }
+    },
+    "leak_free_recomputation": "NOT PERFORMED: eff_ch/eff_dch/dt/cl_eff are not stored as model attributes (they are Python floats baked into constraint coefficients at construction time inside SharedEnergyStorageData, not on the pickled Pyomo model). Recovering them would require importing current-code constants, which the task explicitly forbids (\"the current values may differ\"). Reported as NOT RECOVERABLE from the pickle alone.",
+    "params_found_on_model": {
+     "eff_ch": false,
+     "eff_dch": false,
+     "dt": false,
+     "cl_eff": false
+    }
+   },
+   "soh_chain": {
+    "es_soh_per_unit_cumul": {
+     "(0, 0)": 0.8387241778604788,
+     "(0, 1)": 0.7267802737039236,
+     "(0, 2)": 0.6233178703286254,
+     "(1, 0)": 1.0,
+     "(1, 1)": 1.0,
+     "(1, 2)": 1.0,
+     "(2, 0)": 1.0,
+     "(2, 1)": 1.0,
+     "(2, 2)": 1.0
+    },
+    "es_degradation_per_unit": {
+     "(0, 0)": 9.636433068543314e-05,
+     "(0, 1)": 7.849429258337612e-05,
+     "(0, 2)": 8.414307946114128e-05,
+     "(1, 0)": 0.0,
+     "(1, 1)": 0.0,
+     "(1, 2)": 0.0,
+     "(2, 0)": 0.0,
+     "(2, 1)": 0.0,
+     "(2, 2)": 0.0
+    },
+    "leak_free_soh_trajectory": "NOT COMPUTED: the degradation constants (cl_eff, e_rated used in the daily-degradation row) are recoverable in principle (es_e_rated_per_unit IS a stored Var), but cl_eff (the calendar/cycling efficiency constant multiplying e_rated in `es_degradation_per_unit * (2*cl_eff*e_rated) == avg_ch_dch`) is a Python float baked into the constraint coefficient at build time and is NOT stored as a retrievable model attribute or Param. Without it we cannot solve back for a leak-free D from a leak-free avg_ch_dch. Not imported from current code per task instructions."
+   },
+   "complementarity_slack": {
+    "max_slack": 0.0,
+    "any_active_above_1e-9": false,
+    "n_evaluated": 288
+   }
+  },
+  "9": {
+   "cohort_year_pairs": {
+    "(0, 0)": {
+     "s_max_p_u": 0.96875,
+     "max_min_pch_pdch_physical": 0.007485313225099698,
+     "max_min_pch_pdch_physical_over_s_max": 0.007726774942038398,
+     "max_min_pch_pdch_hat": 0.007726774942038397,
+     "sum_pch_physical_unweighted": 17.780361400420485,
+     "sum_pdch_physical_unweighted": 16.569535236155527,
+     "n_periods": 96
+    },
+    "(0, 1)": {
+     "s_max_p_u": 0.96875,
+     "max_min_pch_pdch_physical": 0.007483307680605594,
+     "max_min_pch_pdch_physical_over_s_max": 0.007724704702560614,
+     "max_min_pch_pdch_hat": 0.007724704702560614,
+     "sum_pch_physical_unweighted": 14.584509869025693,
+     "sum_pdch_physical_unweighted": 13.600192014557539,
+     "n_periods": 96
+    },
+    "(0, 2)": {
+     "s_max_p_u": 0.96875,
+     "max_min_pch_pdch_physical": 0.007285577518063929,
+     "max_min_pch_pdch_physical_over_s_max": 0.007520596147678894,
+     "max_min_pch_pdch_hat": 0.007520596147678894,
+     "sum_pch_physical_unweighted": 15.465531846320621,
+     "sum_pdch_physical_unweighted": 14.475983303448672,
+     "n_periods": 96
+    }
+   },
+   "active_cohort_year_pairs": [
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     1
+    ],
+    [
+     0,
+     2
+    ]
+   ],
+   "summary": {
+    "max_min_pch_pdch_physical_p_u": 0.007485313225099698,
+    "max_min_pch_pdch_physical_over_s_max": 0.007726774942038398,
+    "max_min_pch_pdch_hat": 0.007726774942038397,
+    "max_min_pch_pdch_hat_agg": 0.007726774942038397,
+    "note_hat_vs_physical": "hat pair is pch/s_max, pdch/s_max (normalized); physical pair feeds avg_ch_dch_per_unit directly (energy_storage_charging_discharging row). Degradation accounting is fed by the PHYSICAL pair (es_pch_per_unit / es_pdch_per_unit), not the hat pair -- the hat pair exists ONLY to feed the complementarity row.",
+    "sum_pch_physical_unweighted_total": 47.83040311576682,
+    "sum_pdch_physical_unweighted_total": 44.64571055416174,
+    "total_throughput_unweighted": 92.47611366992857,
+    "spurious_component_2x_sum_min_unweighted": 1.2393262536357892,
+    "spurious_fraction_pct_unweighted": 1.3401582359519006,
+    "n_periods_total": 288,
+    "convention_note": "UNWEIGHTED convention: plain sum of pch, pdch, min(pch,pdch) over all (active cohort-year, day, period) samples actually stored in the pickle, with NO num_days/365 day-count weighting and no efficiency weighting (unlike es_avg_ch_dch_per_unit, which uses (num_days/365)*(eff_ch*pch*dt + pdch*dt/eff_dch)). num_days is a property of SharedEnergyStorageData.days, not stored on the pickled model, so a day-weighted throughput figure could not be recomputed without external data not authorized for use here (measurement reported unweighted; flagged as a limitation)."
+   },
+   "avg_ch_dch_per_unit": {
+    "stored": {
+     "(0, 0)": {
+      "stored": 8.621320934756785
+     },
+     "(0, 1)": {
+      "stored": 7.071099888178507
+     },
+     "(0, 2)": {
+      "stored": 7.513930542010396
+     },
+     "(1, 0)": {
+      "stored": 0.0
+     },
+     "(1, 1)": {
+      "stored": 0.0
+     },
+     "(1, 2)": {
+      "stored": 0.0
+     },
+     "(2, 0)": {
+      "stored": 0.0
+     },
+     "(2, 1)": {
+      "stored": 0.0
+     },
+     "(2, 2)": {
+      "stored": 0.0
+     }
+    },
+    "leak_free_recomputation": "NOT PERFORMED: eff_ch/eff_dch/dt/cl_eff are not stored as model attributes (they are Python floats baked into constraint coefficients at construction time inside SharedEnergyStorageData, not on the pickled Pyomo model). Recovering them would require importing current-code constants, which the task explicitly forbids (\"the current values may differ\"). Reported as NOT RECOVERABLE from the pickle alone.",
+    "params_found_on_model": {
+     "eff_ch": false,
+     "eff_dch": false,
+     "dt": false,
+     "cl_eff": false
+    }
+   },
+   "soh_chain": {
+    "es_soh_per_unit_cumul": {
+     "(0, 0)": 0.838693172034215,
+     "(0, 1)": 0.7260121219501653,
+     "(0, 2)": 0.6228169313939221,
+     "(1, 0)": 1.0,
+     "(1, 1)": 1.0,
+     "(1, 2)": 1.0,
+     "(2, 0)": 1.0,
+     "(2, 1)": 1.0,
+     "(2, 2)": 1.0
+    },
+    "es_degradation_per_unit": {
+     "(0, 0)": 9.638458546175962e-05,
+     "(0, 1)": 7.90534346927206e-05,
+     "(0, 2)": 8.400418984060915e-05,
+     "(1, 0)": 0.0,
+     "(1, 1)": 0.0,
+     "(1, 2)": 0.0,
+     "(2, 0)": 0.0,
+     "(2, 1)": 0.0,
+     "(2, 2)": 0.0
+    },
+    "leak_free_soh_trajectory": "NOT COMPUTED: the degradation constants (cl_eff, e_rated used in the daily-degradation row) are recoverable in principle (es_e_rated_per_unit IS a stored Var), but cl_eff (the calendar/cycling efficiency constant multiplying e_rated in `es_degradation_per_unit * (2*cl_eff*e_rated) == avg_ch_dch`) is a Python float baked into the constraint coefficient at build time and is NOT stored as a retrievable model attribute or Param. Without it we cannot solve back for a leak-free D from a leak-free avg_ch_dch. Not imported from current code per task instructions."
+   },
+   "complementarity_slack": {
+    "max_slack": 0.0,
+    "any_active_above_1e-9": false,
+    "n_evaluated": 288
+   }
+  }
+ },
+ "comparison_table_vs_reformulated_fixture": {
+  "NEW_reformulated_max_min_over_s_max": 0.00046319,
+  "NEW_reformulated_spurious_fraction_pct": 0.9175,
+  "OLD_control_per_node": [
+   {
+    "node": "5",
+    "max_min_pch_pdch_over_s_max_OLD": 0.00772871115055101,
+    "spurious_fraction_pct_OLD_unweighted": 1.3864328211645849
+   },
+   {
+    "node": "7",
+    "max_min_pch_pdch_over_s_max_OLD": 0.007728653791209567,
+    "spurious_fraction_pct_OLD_unweighted": 1.3909098817981518
+   },
+   {
+    "node": "9",
+    "max_min_pch_pdch_over_s_max_OLD": 0.007726774942038398,
+    "spurious_fraction_pct_OLD_unweighted": 1.3401582359519006
+   }
+  ]
+ },
+ "guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ }
+}

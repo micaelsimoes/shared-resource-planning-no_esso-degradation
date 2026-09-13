@@ -16,6 +16,7 @@ import sys
 import time
 from contextlib import redirect_stdout
 from datetime import datetime, timezone
+from types import SimpleNamespace
 
 import pyomo.environ as pe
 import pyomo.opt as po
@@ -27,6 +28,7 @@ if REPO not in sys.path:
 import p56a_oracle as O  # noqa: E402
 import p58_rescale as R  # noqa: E402
 import p59_rho as RH  # noqa: E402
+import shared_energy_storage_data as sesd  # noqa: E402
 import shared_resources_planning as srp  # noqa: E402
 from p513_solve_profile_guard import SolveProfileGuard  # noqa: E402
 
@@ -39,7 +41,16 @@ PERMITTED = [('network.py', '_run_smopf_solver_attempt'),
              ('shared_energy_storage_data.py', '_run_solver_attempt'),
              ('p514_l_capacity_ladder.py', 'diagnostic_resolve')]
 AGG_ROWS = ('energy_storage_operation_agg',)
-COMP_ROWS = ('energy_storage_complementarity',)
+# P5.15-1 repair (Addendum-2 task a): `energy_storage_complementarity` was DELETED
+# by the ESSO reformulation (commit b03c9b14) -- complementarity is no longer an
+# enforced constraint row, so a row-name lookup can never fire again (silently
+# vacuous). It is replaced below by the post-solve DETECTOR
+# `SharedEnergyStorageData.get_complementarity_violation` (implementation
+# `_get_complementarity_violation`, shared_energy_storage_data.py:1433), called
+# with the exact signature the Planner specified: `shared_ess_data.get_
+# complementarity_violation(models)`, over the full esso_models dict -- this
+# reports ONE violation across all active nodes/cohorts/periods, not a
+# per-node value, because that is the function's own signature.
 
 
 def diagnostic_resolve(model, params):
@@ -83,6 +94,52 @@ def residuals(model, top=12):
         entry['n_rows'] += 1
         entry['max_violation'] = max(entry['max_violation'], row['violation'])
     return {'total_violated_rows': len(rows), 'worst': rows[:top], 'by_component': by_component}
+
+
+def node_complementarity_absolute(shared_ess_data, esso_models, node_id):
+    """Per-node absolute complementarity violation, scoped to a single node.
+
+    `get_complementarity_violation` takes the whole model dict and loops over
+    `shared_ess_data.active_distribution_network_nodes` internally, so it always
+    returns one violation across ALL active nodes. To read a single node's value
+    without mutating the real `shared_ess_data` instance, this calls the SAME
+    underlying detector function (`_get_complementarity_violation`) with a
+    throwaway proxy object exposing only the one attribute it reads
+    (`active_distribution_network_nodes`). No arithmetic is duplicated; the
+    detector's own filtering (`_esso_cohort_pair_is_within_lifetime`,
+    `_esso_cohort_inactive`) and threshold (1e-6 * s_max) are reused verbatim.
+    """
+    proxy = SimpleNamespace(active_distribution_network_nodes=[node_id])
+    return sesd._get_complementarity_violation(proxy, esso_models)
+
+
+def node_complementarity_ratio(esso_models, node_id):
+    """Harness-only ratio form: max over the SAME active cohort-periods the
+    detector scans of min(pch, pdch) / s_max, skipping any pair with s_max == 0.
+    Not produced by production code (per task instructions); reuses the
+    detector's own active-pair filter (`_esso_cohort_pair_is_within_lifetime`,
+    `_esso_cohort_inactive`) so the set of scanned (y_inv, y, d, p) is identical
+    to the absolute-violation scan above, only the reported quantity differs.
+    """
+    model = esso_models[node_id]
+    max_ratio = 0.0
+    for y_inv in model.years:
+        for y in model.years:
+            if not sesd._esso_cohort_pair_is_within_lifetime(model, y_inv, y):
+                continue
+            if model._esso_cohort_inactive.get(y_inv, False):
+                continue
+            s_max = pe.value(model.es_s_rated_per_unit[y_inv, y])
+            if s_max == 0:
+                continue
+            for d in model.days:
+                for p in model.periods:
+                    pch = pe.value(model.es_pch_per_unit[y_inv, y, d, p])
+                    pdch = pe.value(model.es_pdch_per_unit[y_inv, y, d, p])
+                    ratio = min(pch, pdch) / s_max
+                    if ratio > max_ratio:
+                        max_ratio = ratio
+    return max_ratio
 
 
 def main(s_mva):
@@ -138,9 +195,37 @@ def main(s_mva):
                     by = entry['residuals']['by_component']
                     entry['aggregate_complementarity_violated'] = any(
                         name in by for name in AGG_ROWS)
-                    entry['cohort_complementarity_violated'] = any(
-                        name in by for name in COMP_ROWS)
+                    # P5.15-1 repair: `energy_storage_complementarity` no longer
+                    # exists as a constraint row (deleted by the reformulation),
+                    # so this is now the post-solve DETECTOR read AT THE SAME
+                    # diagnostic-resolved terminal point the residuals above use,
+                    # scoped to this one node (see node_complementarity_absolute).
+                    # `cohort_complementarity_violated` changes meaning from "row
+                    # X appears among violated constraints" (row-existence) to
+                    # "the detector's own tolerance (1e-6 * s_max) is exceeded
+                    # somewhere in this node's active cohort-periods" -- reported
+                    # here as a SEMANTIC CHOICE for the Planner, not a mechanical
+                    # rename.
+                    entry['cohort_complementarity_violation_abs'] = (
+                        node_complementarity_absolute(sed, esso_models, node_id))
+                    entry['cohort_complementarity_violation_ratio'] = (
+                        node_complementarity_ratio(esso_models, node_id))
+                    entry['cohort_complementarity_violated'] = (
+                        entry['cohort_complementarity_violation_abs'] > 0.0)
                 report['nodes'][str(node_id)] = entry
+
+            # Global form of the detector, called with the EXACT signature
+            # specified by the Planner (`shared_ess_data.get_complementarity_
+            # violation(models)`, over the full esso_models dict) -- this is
+            # the function's native scope (all active nodes/cohorts/periods at
+            # once), independent of which individual node's ESSO solve failed.
+            report['complementarity_detector_global'] = {
+                'absolute_violation': sed.get_complementarity_violation(esso_models),
+                'note': ('max(0, min(pch, pdch) - 1e-6*s_max) over every active '
+                         'cohort-period across ALL active nodes; 0.0 means the '
+                         'detector found no counterexample anywhere, not a proof '
+                         'complementarity holds everywhere (e.g. at s_max == 0).'),
+            }
     finally:
         guard.uninstall()
 

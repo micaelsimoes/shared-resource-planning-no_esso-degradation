@@ -2,6 +2,15 @@
 P5.5-C — centralized convex lower-bound oracle for the shared-resources planning
 problem.
 
+HISTORICAL — DOES NOT BUILD AS OF P5.15-1b (2026-09-13). Left unrepaired by
+author decision (`PLANNER_BRIEF_2026-09-13.md`, Addendum 2). This module calls
+the shared-ESS power-factor rule functions directly; Candidate 1 unwired those
+rows from the production models, so the callables survive only for fixture
+unpickling and this module's shared-ESS block will raise when built. Nothing in
+the current programme depends on it. Anyone reviving it must first decide what
+the shared-ESS reactive limit is in W-space now that the converter circle
+carries it alone -- that is a modelling decision, not a repair.
+
 This is a NEW code path. It does not modify, wrap or replace the nonlinear
 production SMOPF, which remains the upper-bound / feasibility model.
 

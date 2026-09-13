@@ -1,0 +1,348 @@
+# Planner Brief — ESSO/SMOPF conditioning programme (authorized 2026-09-13)
+
+Author: Micael Simões. Prepared with the external expert (Cowork session). This brief
+**supersedes** the "NUMERICAL PROGRAMME CLOSED" verdict in `REVISION_CONTEXT.md` and the
+"Current next proposed action" in `COWORK_HANDOFF.md`. Background and reasoning are in
+`EXPERT_REVIEW_2_ACTION_PLAN.md` (read it first; §1 contains the diagnosis this brief acts on).
+
+## Governing decisions (author, final)
+
+- The ESSO agent **stays** in the ADMM loop. Option B (forward recursion) is rejected.
+- No explicit cycling/degradation cost is added anywhere. Degradation is tracked and propagated;
+  the only intertemporal trade-off enforced in operation is the SoH floor. The manuscript will say so.
+- The investment-fixing slacks in the ESSO subproblem are **retired**: investments become fixed
+  parameters. The "feasibility cut from slack activation" path in the master is retired with them.
+- ESSO charge/discharge complementarity rows are **replaced** by an ε-linear regularization of
+  throughput in the ESSO objective. Network complementarity rows are unchanged.
+- The SoH chain moves to the log domain (continuous-compounding form); calendar ageing enters
+  as `phi_cal` with default `1.0` (neutral until the author sets it).
+- Open author decisions that do **not** block Steps 0–2: salvage reinstatement, calibration triple
+  (C2 vs C3), outer-method choice. Do not change them.
+
+## Authorization
+
+**Steps 0, 1 and 2 are authorized now**, in that order for Worker execution (Step 2 may run in
+parallel as an Advisor read-only task). **Stop and report to the author at the end of each step.**
+Steps 3–6 are roadmap only — not authorized.
+
+Process for Steps 0–2: ordinary Worker tasks with a short report each (`P5_15_<step>_REPORT.md`
+plus evidence directory `data/SRP1/Results/P515<step>/`). The frozen-specification ceremony is
+**not** required for these diagnostics; the `CLAUDE.md` evidence rules still apply to any number
+that will be reused (record the instance, the convention, the error bar, the rule-ten ratio).
+Solver options are hypotheses, not frozen state: the Worker may vary them freely on preserved
+instances. Production adoption of a change still needs the gate stated in each step.
+
+Check first that the Worker is available (it was unavailable during P5.12-G onward). If it is not,
+the Planner executes and says so in the report, as before.
+
+---
+
+## Step 0 — ESSO warm-start policy A/B on the preserved failing instance
+
+**Hypothesis (H-WS).** The `maxIterations` failures of the ESSO subproblem are caused by the
+warm-start policy in `shared_energy_storage_data.py:_create_solver` — imported bound multipliers
+with `warm_start_mult_bound_push = 1e-9` (and 1e-9 for the other four pushes) — which throttles
+the dual step by the fraction-to-boundary rule. Evidence: in `optim_log_node_7.txt` (P5.14-N
+perturbation arm) every failing solve starts primal-feasible, `lg(mu)` freezes at −3.8 after
+iteration 1, `alpha_du` ≈ 2e-8–5e-7 for 3,000 iterations, dual infeasibility grows 7e-3 → 1.8e3.
+The last node-7 solve of that arm is one of the failures, so the serialized model is a genuine
+failing instance.
+
+**Instance.** `data/SRP1/Results/P514N/esso_models_k10000.pkl`, node 7 (also nodes 5 and 9 as
+controls — they converged). The pickled model still holds `p_req`, `q_req`, `dual_p_req`,
+`dual_q_req`, `rho`, and the `ipopt_zL_out/zU_out` suffixes of the last solve. Do not rebuild the
+model; load it and re-solve through the production path (`_run_solver_attempt`) with
+`option_overrides`. Verify before solving that the loaded model's `admm_objective` is active and
+the request parameters are non-trivial; record their hash.
+
+**Arms** (each an independent solve from the loaded state; only options differ):
+
+| arm | settings |
+|---|---|
+| A0 | current production policy (reproduction gate: must hit `maxIterations`) |
+| A1 | warm start, `warm_start_mult_bound_push = 1e-3`, `warm_start_bound_push = 1e-3`, `warm_start_slack_bound_push = 1e-3`, `_frac` options at IPOPT defaults |
+| A2 | warm start primal only: do not export `ipopt_zL_in/zU_in` (clear the suffixes), pushes as A1 |
+| A3 | A1 + `mu_strategy = adaptive` |
+| A4 | cold start (`warm_start_init_point = no`, no suffix export) |
+| A5 | A0 + `max_iter = 500` (cost-of-failure check only) |
+
+**Evidence per arm.** Exit status, iterations, wall time, objective (`admm_objective`), max
+constraint violation, and the full iteration table saved. Success criterion for a candidate
+policy: converged in < 200 iterations with objective equal to A4's to 1e-6 relative and
+constraint violation < 1e-6. If A0 does not reproduce `maxIterations`, stop and report (the
+instance is not what we think it is).
+
+**Then repeat** A0–A4 on the preserved cycle-21 DSO fixture using the P5.12-P harness
+(`p512_p_path_sensitivity.py`) with the network policy (`network.py:521-534`, 1e-6 pushes),
+overriding to IPOPT defaults / primal-only / adaptive / cold. Same evidence.
+
+**Permitted changes:** none to production in this step. Harness only (`p515_0_esso_warmstart_ab.py`).
+
+**Report must state:** which arms converged, whether H-WS is supported or falsified separately
+for the ESSO and the DSO fixture, and a recommended production policy for each solver family
+(one option block), plus the recommendation to (a) set `max_iter` for the ESSO (500) and networks,
+and (b) extend `_is_recoverable_shared_ess_failure` to fire on `maxIterations` and
+`infeasible` with a cold retry. Production adoption of the policy happens in Step 1's gate run,
+not here.
+
+---
+
+## Step 1 — ESSO subproblem reformulation
+
+**Objective.** Remove the avoidable nonlinearity and mis-scaling from `_build_subproblem`
+(`shared_energy_storage_data.py:346-675`) so that the ESSO is an LP plus one `exp` per
+cohort-year and the converter circle.
+
+**Changes (all in `shared_energy_storage_data.py` unless noted):**
+
+1. **Investments as parameters.** `es_s_investment`, `es_e_investment` become mutable `Param`
+   (or the existing `_fixed` params are used directly); delete the four investment slacks and
+   their penalty terms. `es_s_rated_per_unit`, `es_e_rated_per_unit`, `es_s_rated`, `es_e_rated`
+   then become parameters (or expressions) — the Worker chooses whichever keeps
+   `_configure_esso_cohort_state`, `get_updated_capacities`, `_get_terminal_salvage_value_*`,
+   `_map_available_capacity_sensitivities_to_investments` and `update_model_with_candidate_solution`
+   working. Consequences to handle: `pch ≤ s_max`, the normalization rows and the floor become
+   linear; the cohort-deactivation logic can stay as is.
+2. **Log-domain SoH chain.** Per cohort-year define `D[y_inv,y]` (annual fractional loss,
+   `NonNegativeReals`, initialize 0) with the linear row
+   `D[y_inv,y] * (2 * cl_eff * E_rated_per_unit[y_inv,y]) == 365 * num_years * es_avg_ch_dch_per_unit[y_inv,y]`
+   (E_rated is now a constant), and
+   `es_soh_per_unit_cumul[y_inv,y] == prev * exp(-D[y_inv,y]) * phi_cal ** num_years`
+   with `phi_cal` read from `ageing.calendar_retention_per_year` (default 1.0, neutral).
+   Delete `es_soh_per_unit`, `es_degradation_per_unit`, `es_degradation_per_unit_cumul` and
+   their slack families (keep the two `soh_cumul` slacks only if the Worker finds a caller that
+   needs them; otherwise delete). Keep `num_years` semantics exactly as today (from the
+   investment-year block — note the Expert's remark that this is only correct for equal-width
+   blocks; record, do not change). Floor: `soh_cumul >= soh_min` (linear).
+3. **Complementarity by regularization.** Delete `energy_storage_complementarity`, the
+   `*_hat_*` variables, the normalization rows, `slack_es_ch_comp_per_unit`, and the aggregate
+   complementarity row. Add to `feasibility_penalty` the term
+   `EPS_ESSO_THROUGHPUT * Σ (pch + pdch)` over active cohort-periods, with
+   `EPS_ESSO_THROUGHPUT` in `definitions.py`, initial value `1e-3` (units: same as the AL
+   terms, which are normalized by `2*rating`; the Worker must check the resulting gradient scale
+   against the AL gradient at the P5.14-N control state and report it). Keep `pch, pdch ≥ 0`,
+   `pch ≤ s_max`, `pdch ≤ s_max`, and the converter circle. Document in the code that
+   complementarity now follows from LP structure, not from a constraint, and add a
+   post-solve check that `min(pch, pdch) ≤ 1e-6 * s_max` for every active cohort-period
+   (report the maximum violation; it is a detector, not a cost).
+4. **Solver policy.** Adopt the Step 0 recommendation for the ESSO; set `max_iter`; extend the
+   recovery path as recommended.
+5. **Master side.** Retire the slack-based "recovery/feasibility cut" branch in
+   `shared_resources_planning.py` (`add_benders_cut` and callers) — deactivate, do not delete,
+   with a comment pointing at this brief. Verify nothing else reads the deleted ESSO variables
+   (`grep` for every deleted name across the repository, including `p5*` harnesses that remain
+   in use; historical harnesses may break and that is acceptable, list them).
+
+**Not permitted:** changes to network models, ADMM driver logic, tolerances, rho, or the
+`(N, D, R)` calibration; adding any degradation cost; changing throughput definition (Option A
+stays).
+
+**Gate (must pass before commit):**
+
+- G1 — Re-run the P5.14-N control arm (C\*, `k = 11,541.56`, cold, `rel = 1e-4`, `rho_pf` 300
+  adaptive) with the new ESSO. Required: per-cohort SoH trajectory within 1e-6 absolute of the
+  control (`1.0 → 0.8387 → 0.7284 → 0.6248`); EFC/day within 1e-4; recourse within the rule-nine
+  error bar of `816,121,464.16` (bar ≈ 164,000) — **report the difference and the bar; do not
+  demand equality**, the `exp` form and the removed slacks make bit-identity impossible. Record
+  cycles, solves, rule-ten ratio, ESSO iteration counts (mean/max) and zero local failures.
+- G2 — Re-run the P5.14-N perturbation arm (`k = 10,000`). Required: converges within the cap,
+  zero `maxIterations` exits at any node. Report recourse and the pair difference against G1
+  with its bar (this also answers the P5.14-N objective comparison left inconclusive).
+- G3 — Capacity ladder (P5.14-L harness) extended to 1.00, 1.25 and 1.62 MVA / 3.24 MWh at
+  node 7 (the paper's plan), initialization stage: all must PASS. Then one full cold evaluation
+  at 1.62 MVA / 3.24 MWh (node 7 only, other nodes zero) — converged, zero failures.
+- G4 — Determinism: G1 run twice, identical.
+
+**Report must state:** per-change diff summary, the iteration-count distribution before/after,
+G1–G4 results with error bars and rule-ten ratios, the complementarity detector maximum, and any
+harness broken by the deletions.
+
+---
+
+## Step 2 — SMOPF constraint-family conditioning audit (Advisor, read-only; may run in parallel)
+
+**Objective.** A formulation-level audit of one DSO model (`case33_2`, node 7, the fixture that
+failed at cycle 21) and the TSO model (`case9`), replacing solver-telemetry forensics with a
+constraint-family inventory. No solves.
+
+For every constraint family in `model_construction_helpers.py` / `network.py`: nonlinearity type
+(linear / bilinear / quadratic / trig / product-zero-gradient), variables involved with their
+bounds and typical magnitude at the preserved converged solution (P5.12 fixtures), whether the
+row has zero gradient at that solution, its penalty coefficient (from `definitions.py`) against
+the objective scale, and whether it is one of the P5.3 HIGH-risk families (`sess_comp`, RES
+`sg_capability`). Also inventory the warm-start policy and every IPOPT option in force.
+
+**Deliverable.** `P5_15_2_SMOPF_CONDITIONING_AUDIT.md` with a ranked shortlist of at most five
+reformulation candidates, each with: the row(s), the proposed replacement, what it changes
+mathematically, the expected conditioning effect, and the cheapest test. **No implementation.**
+The Planner reviews and brings the shortlist to the author.
+
+---
+
+## Roadmap — NOT authorized (for orientation only)
+
+- Step 3 — ADMM stopping rule: Boyd-style absolute+relative primal/dual residual test on the
+  original consensus problem; objective-change test auxiliary; rule-ten ratio reported per
+  evaluation; one recorded configuration baseline (Track B decision).
+- Step 4 — Outer layer: derivative-free master search over `(S, h = E − φ_min S)` with the cold
+  oracle; no cuts, no gap claim. Pending the author's outer-method decision.
+- Step 5 — Reviewer campaign at full configuration (5 years, 4 days, 25 scenarios via the
+  scenario-summing production path): uncoordinated (after fixing the
+  `_add_dso_scenario_deviation_penalty` guard), coordinated without storage, coordinated with the
+  optimized plan; R3.6 matrix; salvage; discount rate (fixed-plan first); `soh_min` cases.
+- Step 6 — Manuscript reconciliation (Track E list + `EXPERT_REVIEW_2_ACTION_PLAN.md` §2).
+
+---
+
+# Addendum 1 — after Steps 0 and 2 (2026-09-13, author + external expert)
+
+## Corrections to this brief
+
+- **Fixture identification.** The cycle-21 failing fixture is **`case33_3`, node 9, 2025 Spring**
+  (`data/SRP1/Results/P512R/cycle21_pre_setup/snapshot.pkl`). `case33_2` node 7, 2025 Autumn,
+  cycle 7 is the *converged* comparator. Step 0 used the correct fixture; the text of Step 0 and
+  Step 2 above is wrong and is corrected by this note.
+- **ESSO instances.** Nodes 7 **and 9** of `esso_models_k10000.pkl` are failing instances; only
+  node 5 is a control.
+
+## Step 0 verdict and the production policy it licenses
+
+H-WS is **supported** on both solver families (two ESSO instances, one DSO fixture; A0
+reproduces `maxIterations` on all three; A1/A2/A4 converge to the same point). Adopted policy,
+to be implemented in Step 1a and validated by Step 1's gate runs:
+
+- **Primary:** warm start with imported bound multipliers; all five `warm_start_*` pushes/fracs
+  at IPOPT defaults (1e-3 / 1e-3 / 1e-3 / 1e-3 / 1e-3), for the ESSO **and** both network
+  families. `warm_start_mult_bound_push` is its own option — the derivation from `bound_push`
+  at `network.py:534` is removed.
+- **`max_iter = 500`** for the ESSO and the networks.
+- **Recovery** fires on `maxIterations`, `infeasible` and `internalSolverError`, and is **one
+  change**: cold start (`warm_start_init_point = no`, suffixes cleared, including `model.dual`)
+  with the primary options and the exact Hessian. The limited-memory Hessian is dropped from
+  `recovery_options` so a recovery success identifies its cause.
+- **`mu_strategy = adaptive` is not used**, as primary or recovery. A3 found a *different* local
+  optimum on the ESSO (lower objective, −0.01279 vs −0.01198). This is evidence of multimodality
+  in the un-reformulated ESSO and becomes gate G5 below.
+- The TSO's warm-start override of `acceptable_iter = 0` / `acceptable_tol = tol` is removed
+  (undocumented asymmetry with the DSO); both families use the case-file values.
+
+## Step 1 — amendments
+
+**Step 1a (first commit, own gate):** fix the `option_overrides` clobbering in
+`shared_energy_storage_data.py:_create_solver` (apply the warm-start block *before* the override
+merge, or make it `.get(key, default)` like `network.py`), remove the `bound_push` derivation in
+`network.py:534`, implement the policy above in both `_create_solver` functions and both
+`_is_recoverable_*` functions. Gate: the Step 0 `clobber_probe` shows overrides respected; A0
+re-run with no override still reproduces `maxIterations` on node 7 (i.e. the reproduction path is
+intact); A1 re-run through `option_overrides` alone converges in ~30 iterations.
+
+**Pre-Step-1 zero-solve check:** read a preserved P5.12-R `.nl` and state whether constraint
+multipliers (`dual` suffix) are exported. If yes, clear `model.dual` on cold solves (part of 1a)
+and re-run Step 0's A4 once on node 7; if the objective is unchanged to 1e-6, A4 stands.
+
+**Gate G5 (new):** on the reformulated ESSO, re-solve the node-7 and node-9 instances under A1,
+A3 and A4. All three must agree to 1e-6 relative. Disagreement means the reformulation left a
+nonconvexity and Step 1 does not close until it is identified.
+
+**Gate reporting:** count `maxIterations` / recovery events across G1–G4 for both families; the
+policy is adopted if the count is zero at C\* and at 1.62 MVA.
+
+## Step 2 — candidate decisions
+
+| candidate | decision |
+|---|---|
+| 1 — shared-ESS power-factor rows tying `\|q\|` to `pch + pdch` | **Accepted, form (a)**: delete both rows; the converter circle carries the reactive limit. Removes the LICQ-degenerate idle vertex and the ESSO/network reactive-set asymmetry. Manuscript sentence on power-factor limits to be removed (Track E). Implement in **Step 1b** (network side), same gate runs. |
+| 2 — network capacity `Var`s → `Param`s | **Accepted — unblocked** (author confirmed the derivative-free outer method, 2026-09-13; the Benders sensitivity channel is retired). Implement in Step 1b. |
+| 3 — RES converter capability separated from availability | **WITHDRAWN as a feasible-set change** (author, 2026-09-13): RES apparent capability stays equal to the available active power; no reactive support when idle (`Pmax`/`Qmax` are MATPOWER-style box limits, not a nameplate). To be stated in Section 3 of the manuscript. **Replaced by Candidate 3′ — conditioning only, feasible set unchanged:** (a) normalize `sg_capability` per period, `(pg/pg_avail)² + (qg/pg_avail)² ≤ 1` for `pg_avail > ε`; (b) for periods with `pg_avail ≤ ε` build no row and fix `pg = qg = 0` by bounds. Gate: identical dispatch to 1e-8 on a converged fixture; report cold-start iteration count before/after. Step 1b, own commit. |
+| 4 — flexibility day-balance band → slacked equality | **Accepted** (`slacks.flexibility.day_balance = true`, penalty as configured). Step 1b. |
+| 5 — guard scenario-deviation penalties off at one scenario | **Accepted** (provable no-op). Step 1b. |
+
+Step 1b is a **separate commit** from the ESSO reformulation (Step 1 items 1–5), each with its
+own diff summary, so that a gate regression can be attributed. Order: 1a → ESSO reformulation
+→ 1b → gates G1–G5.
+
+## Step 3 agenda (still NOT authorized; recorded so it is not lost)
+
+The audit's two dominant findings belong here and outrank the stopping rule:
+(1) the DSO objective is divided by `effective_scale ≈ 1.05e5` while the AL terms are undivided
+— P5.7 measured this as 96.5 % of the ADMM-to-polish gap; the objective and the AL must sit on
+one scale; (2) the shared-ESS AL normalization `2·max(S, 0.10)` gives `1/S²` curvature
+(952 → 2.5e5 over the campaign range) — normalize by a fixed per-node reference rating instead.
+Then the Boyd-style residual tests and one recorded configuration baseline (Track B).
+
+---
+
+# Addendum 2 — after Steps 1a / 1 / 1b Set 1 (2026-09-13, author + external expert)
+
+- **Candidate 3′ is DROPPED.** Same feasible set, different local optimum (0.3 % objective,
+  1.95e-5 dispatch), cold-start iterations 39 → 65. The note at `sg_avail_rule` stands. The
+  finding to carry is the multimodality itself: **the DSO SMOPF has local optima ~0.3 % apart
+  in objective at material capacity** (consistent with A3's 1e-5 on the cycle-21 fixture and
+  Track C1's 1.03 % templated-vs-cold bias). Record in `REVISION_CONTEXT.md` as a standing
+  fact: `Q(x)` is defined up to the local optimum the deterministic path selects.
+- **`_add_benders_cut` disabled entirely: confirmed** (guarded deactivation, comment → brief).
+- **New `CLAUDE.md` rule:** deactivate and unwire; never delete a callable that a preserved
+  fixture may resolve at unpickling. Candidate 1's "delete both rows" wording is corrected to
+  "unwire both rows".
+- **Erratum accepted:** the DSO production warm-start pushes resolve to **1e-5** (case-file
+  `bound_push`), the TSO's to 1e-6.
+- **ε check (before the gates):** two arms, `EPS_ESSO_THROUGHPUT` 1e-3 vs 1e-7, on the
+  reformulated node-7 instance. Report (i) `pnet` displacement (predict < 1e-6 p.u.),
+  (ii) complementarity detector `max min(pch, pdch)/s_max` in both arms (predict ≤ 1e-6 at
+  1e-3; drift at 1e-7 argues *for* 1e-3), (iii) ESSO iterations. Gate G1–G5 on **1e-3**. The
+  displacement framing (ε / AL curvature) is the accepted comparator; gradient ratio is not.
+- The preference for `slack_es_pnet_down` over `pdch` near the SoH floor is the floor acting
+  through its only channel; it lands in `gross_operational_cost` and is an instance of the
+  penalty-classification item (Track E §D), not a non-uniqueness of the split.
+- `convex_oracle.py`: mark historical (P5.5-C), leave unrepaired. Dead `limited-memory`
+  entries in four case files: author removes. Harnesses: repair only
+  `p514_n_instrumented_cstar.py` and `p514_l_capacity_ladder.py`; list the other seven as
+  broken-historical.
+- **Dispatch order:** harness repair → ε check → G1–G5 → `REVISION_CONTEXT.md` rewrite → stop.
+
+---
+
+# Addendum 3 — after the gate hold (`P5_15_EXPERT_HANDOFF.md`) (2026-09-13)
+
+The barrier identity `min(pch, pdch) = μ_final / (2·s_obj·ε)` is accepted as measured. The
+conclusions drawn from it are amended:
+
+- The leak is proportional to `μ_final`, which the ESSO's `tol` controls. §6 of the handoff
+  omitted this lever. At `tol = 1e-8` the leak is ~5e-6 (≈0.01 % of throughput on the fixture,
+  ≈0.004 % at C\*), below the recourse resolution and two orders below the local-optimum spread.
+- The identity gives a **closed-form bound** on spurious throughput,
+  `2·N_periods·μ_final/(2·s_obj·ε)` — the first such bound any formulation here has had. It is
+  reported on every ESSO solve and stated in the manuscript.
+- Remedy (d)/(e2) (single signed power with `√(p²+δ²)`) is **NOT authorized**: it contributes
+  spurious throughput `≈ δ·(η_ch + 1/η_dch)/2` at every idle period and curvature `1/δ` there;
+  it changes the owner of the artifact, not its class. Kept as fallback if the detector at
+  `tol = 1e-8` exceeds 1e-4 relative throughput at C\*.
+
+**Authorized:**
+
+1. **Remedy (h):** ESSO `tol = 1e-8`, `acceptable_tol = 1e-7` (case file, author applies or
+   Worker via `option_overrides` now that overrides are honoured). Detector
+   `max min(pch, pdch)/s_max` and the analytic bound logged per ESSO solve.
+2. **H3 rule (formulation change, authorized):** per active cohort,
+   `pnet_cohort[y_inv, y, d, p] = (E_rated[y_inv, y] / Σ E_rated[·, y]) · pnet_agg[y, d, p]` —
+   linear, parameters only (homogeneous-fleet approximation; to be stated in the manuscript,
+   answering Expert §2.4 / R3.3 cohort realizability).
+3. **G1 re-specified as a reconciliation gate, per node** (5, 7, 9 separately): the measured
+   Δ(SoH_y) between the old control (`esso_models_control.pkl`) and the reformulated run must
+   equal the Δ predicted from the two leak fractions (old 1.386–1.391 %, new = the run's own
+   detector) through `D ∝ throughput`, `SoH = Π exp(−D)`, to within 10 % of that Δ. Same for
+   EFC/day. Recourse within the rule-nine bar. The old trajectory is a known-biased comparator,
+   not a target.
+4. Amend the comment at `shared_energy_storage_data.py:400-412`: the LP statement stands; the
+   inference does not; state the barrier identity and the bound.
+5. Nine broken-historical harnesses, none repaired: accepted (count corrected from seven).
+6. Then G1–G5 (G1 as above) → `REVISION_CONTEXT.md` rewrite, which must also record that every
+   previously reported SoH trajectory carried ≈1.4 % spurious throughput from the relaxed
+   complementarity row, so no published degradation number is reusable.
+
+## Update obligations
+
+At the end of Step 1 the Planner rewrites the "CURRENT SOURCE OF TRUTH" head of
+`REVISION_CONTEXT.md` to reflect: the withdrawal of the `C*` feasibility-boundary claim, the
+warm-start mechanism, the reformulated ESSO, and the reopened numerical programme. Historical
+sections are not rewritten. `COWORK_HANDOFF.md` is marked superseded by this brief.

@@ -22,6 +22,7 @@ import time
 from contextlib import redirect_stdout
 from copy import deepcopy
 from datetime import datetime, timezone
+from math import exp
 
 import pyomo.environ as pe
 
@@ -47,9 +48,15 @@ PERMITTED = [('network.py', '_run_smopf_solver_attempt'),
              ('shared_energy_storage_data.py', '_run_solver_attempt')]
 
 # ---- rule eleven: the capture checklist, asserted BEFORE the run ----
-REQUIRED_ESSO_ATTRS = ('es_avg_ch_dch_per_unit', 'es_degradation_per_unit',
+# P5.15-1 repair (Addendum-2 task a): es_degradation_per_unit was deleted by the
+# ESSO reformulation (commit b03c9b14); its replacement in the same cohort-year
+# slot is the Var es_D_per_unit (`energy_storage_capacity_degradation`,
+# shared_energy_storage_data.py). The spec's physical quantity -- the per-year
+# degradation fraction -- is recovered as the DERIVED entry
+# `degradation_fraction_per_year` below, not by renaming a deleted attribute.
+REQUIRED_ESSO_ATTRS = ('es_avg_ch_dch_per_unit', 'es_D_per_unit',
                        'es_soh_per_unit_cumul', 'es_e_rated_per_unit')
-REQUIRED_DERIVED = ('efc_per_day', 'efc_margin_to_threshold')
+REQUIRED_DERIVED = ('efc_per_day', 'efc_margin_to_threshold', 'degradation_fraction_per_year')
 REQUIRED_ARTIFACTS = ('esso_models_pickle',)
 
 
@@ -78,12 +85,39 @@ def _indexed(model, name):
 
 
 EXTRACTORS = {name: (lambda m, n=name: _indexed(m, n)) for name in REQUIRED_ESSO_ATTRS}
-DERIVED = {'efc_per_day': True, 'efc_margin_to_threshold': True}
+DERIVED = {'efc_per_day': True, 'efc_margin_to_threshold': True, 'degradation_fraction_per_year': True}
 ARTIFACTS = {'esso_models_pickle': True}
 
 
-def capture_esso(models):
-    """Every required ESSO quantity, per node, per cohort-year, plus the derived EFC."""
+def _degradation_fraction_per_year(sed, node_id, model):
+    """Realized one-year retention loss per (y_inv, y) cohort-year: 1 - exp(-D)
+    * phi_cal**num_years, sourced from the just-captured es_D_per_unit and the
+    IDENTICAL phi_cal / num_years the model itself used to build the log-domain
+    SoH chain (`energy_storage_capacity_degradation`,
+    shared_energy_storage_data.py) -- the same source
+    `_process_soh_results_detailed` reads for its own post-solve `soh_unit`
+    recovery: `num_years = shared_ess_data.years[year_inv]`,
+    `phi_cal = shared_energy_storage.phi_cal` where
+    `shared_energy_storage = shared_ess_data.shared_energy_storages[year_inv][shared_ess_idx]`.
+    """
+    repr_years = [year for year in sed.years]
+    shared_ess_idx = sed.get_shared_energy_storage_idx(node_id)
+    out = {}
+    for y_inv in model.years:
+        year_inv = repr_years[y_inv]
+        shared_energy_storage = sed.shared_energy_storages[year_inv][shared_ess_idx]
+        num_years = sed.years[year_inv]
+        phi_cal = shared_energy_storage.phi_cal
+        for y in model.years:
+            key = f'{(y_inv, y)}'
+            d_value = pe.value(model.es_D_per_unit[y_inv, y], exception=False)
+            out[key] = None if d_value is None else 1.0 - exp(-d_value) * (phi_cal ** num_years)
+    return out
+
+
+def capture_esso(models, sed):
+    """Every required ESSO quantity, per node, per cohort-year, plus the derived EFC
+    and the derived per-year degradation fraction."""
     out = {}
     for node_id, model in models.items():
         for name in REQUIRED_ESSO_ATTRS:
@@ -104,6 +138,8 @@ def capture_esso(models):
         live = [v['efc_per_day'] for v in efc.values() if v]
         entry['efc_per_day_max'] = max(live) if live else None
         entry['efc_per_day_min'] = min(live) if live else None
+        entry['degradation_fraction_per_year_per_cohort_year'] = _degradation_fraction_per_year(
+            sed, node_id, model)
         out[str(node_id)] = entry
     return out
 
@@ -161,7 +197,7 @@ def main(k_override=None):
             if last.get('objective_change_abs') and last.get('objective_tolerance') else None),
         'local_solve_failures': sum(1 for r in rows if r.get('local_solves_ok') is False),
     })
-    report['esso_capture'] = capture_esso(models['esso'])
+    report['esso_capture'] = capture_esso(models['esso'], sed)
 
     pickle_path = os.path.join(OUT, f'esso_models_{label}.pkl')
     try:
