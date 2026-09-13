@@ -5183,8 +5183,8 @@ def _print_worst_primal_residual_diagnostics(residual_metrics, params):
                     base_text = f', base={values["base_mva"]:.6f} MVA'
                 print(
                     f'[DIAG][ESS COMP] {agent.upper()} | '
-                    f'Sch={values["sch"]:.6f} MVA, '
-                    f'Sdch={values["sdch"]:.6f} MVA, '
+                    f'Sch={values["pch"]:.6f} MVA, '
+                    f'Sdch={values["pdch"]:.6f} MVA, '
                     f'net={values["net"]:.6f} MVA, '
                     f'product={values["product"]:.6e} MVA^2, '
                     f'simultaneous={values["simultaneous"]:.6f} MVA'

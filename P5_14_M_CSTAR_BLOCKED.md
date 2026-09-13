@@ -78,3 +78,60 @@ The three-point capacity series — 0 / 0.0106 / 0.96875 MVA — remains at two 
 **No production change has been made.** Fixing the printer is two keys, but it is a
 production edit and is not authorized; and it would be the third defect fixed in a path
 that no test exercises, which is itself worth a decision rather than a patch.
+
+---
+
+# Addendum — the fix, and both branches of the C* run
+
+## The two-key fix, with its proportionate gate
+
+Applied to `_print_worst_primal_residual_diagnostics`: `values["sch"]` -> `values["pch"]`
+and `values["sdch"]` -> `values["pdch"]`. Nothing else.
+
+Gate, sized to what the change could possibly affect:
+
+1. **The diff is exactly those two keys** — `git diff --numstat` reports `2 2`.
+2. **The function is verified print-only** — every binding in it is a local read
+   (`worst_v = residual_metrics.get(...)`, `values = charge_discharge[agent]`,
+   `base_text = ...`); no mutation of inputs, no append/update, no return. Its sole effect
+   is `print`.
+3. **The C* run proceeds past the point it previously crashed.**
+
+No neutrality reproduction was run. A change confined to two string literals inside an
+f-string, in a function whose only effect is `print`, cannot move a number — and running a
+35-minute reproduction for it would be the discipline turning into ceremony.
+
+**Checked before patching:** the other keys the printer reads — `product`, `simultaneous`,
+`net`, `base_mva` — all exist in the producer dict (`:5014-5041`). A partial fix would have
+crashed on the next line.
+
+### Two cosmetic defects deferred to the bundle, not one
+
+Both remain in the output and would mislead a future reader **in different directions**:
+
+- **The names.** The labels read `Sch=` and `Sdch=` — the *retired apparent-power* names —
+  for what are now active-power values.
+- **The units.** The labels read `MVA`, but per the producer's own P5.4-C comment the ESSO
+  entries "stay in p.u. (`base_mva` is None) while the TSO/DSO entries are in MW". So the
+  unit is wrong for every agent, and wrong in two different ways between them.
+
+The values printed are now correct; their names and units are not.
+
+## The success branch, named so it has somewhere to go
+
+A mid-trajectory failure is predeclared as the expected outcome and is itself the finding.
+**If C\* instead completes**, it produces the first storage-benefit number this tool has
+ever generated at material capacity — and it must not be reported as validating the
+mechanism without one further check.
+
+**Proposed follow-up (NOT authorized): a C3-style perturbation at C\* capacity.** Change
+the degradation constant and see whether the recourse moves.
+
+- If it **moves**, the ageing mechanism is live at this capacity and the number means what
+  it says.
+- If it **still does not move**, the degradation model is inert even where the storage is
+  doing real work — **a finding about the model rather than about the case study**, and a
+  far deeper one than anything in Track D so far.
+
+At bootstrap capacity the same perturbation moved nothing to sixteen digits, which is what
+makes the check worth running rather than assuming.

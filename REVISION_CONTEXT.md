@@ -3934,3 +3934,54 @@ system rather than about the code.
 holds the 1.00 MVA run). The three-point capacity series remains at two points. **No
 production change made** — and fixing a third defect in a path no test exercises is itself a
 decision rather than a patch.
+
+## P5.14-M — C* evaluation COMPLETED; the anomaly resolves as path divergence (2026-09-13)
+
+The success branch. 67 cycles, converged inside the cap, **zero local-solve failures**, no
+non-vanishing slacks, identity exact (`3468 = 51x67+51`). First storage-benefit number this
+tool has produced at material capacity. Full record in `P5_14_M_CSTAR_RESULT.md`.
+
+**Three-point series** (all cold, `rel` 1e-4, C3, `rho_pf` 300 adaptive):
+
+| point | `s` MVA/node | recourse | rule ten | solves |
+|---|---|---|---|---|
+| cell 2 | 0 | 820,746,762.5 | 0.8414 | 3,621 |
+| C1 cold | 0.0106 | 819,145,341.2 | 0.5800 | 3,519 |
+| **C\*** | **0.96875** | **816,121,464.2** | **0.9329** | 3,468 |
+
+Monotone decreasing. Pairs: `0 -> 0.0106` **1,601,421** (13.7x est bar); `0.0106 -> C*`
+**3,023,877** (24.4x); `0 -> C*` **4,625,298** (31.9x est, 28.2x bounded, **0.5635%** of
+base) against the paper's claimed 2.01%.
+
+**The D1 anomaly is RESOLVED as path divergence.** Per MVA added: step 1 delivers
+**50,193,933/MVA**, step 2 **1,052,023/MVA** — the first step is **47.7x** more valuable per
+MVA, which is economically incoherent for storage value (10.6 kW/node cannot deliver half
+what 958 kW/node delivers). **The 1.6M first step is not storage value.** Consequence: the
+`0 -> C*` figure is an **upper bound** on the storage effect, not a measurement, since it
+inherits the contaminated step. The cleaner quantity is the second step alone, **3,023,877
+(0.37%)**, between two cells that both contain a shared ESS.
+
+**Limits as predeclared.** The `0 -> C*` pair is the weakest: **both** endpoints stopped
+near their bounds (rule ten 0.8414 and 0.9329), and under the refined ninth rule the bar
+bounds stopping slack rather than path divergence and is valid only where both runs have
+settled. So 31.9x licenses "not explained by stopping slack" and **not** "a real difference
+in the limit". The normalization confound is live in that same pair (0.10 against 0.96875,
+**9.7x** on the ESS consensus channel).
+
+**Two corrections to earlier framing.** (a) **Reliability DID transfer** — zero failures in
+3,468 solves at C\*. The 1-in-3 rate was the *feasibility boundary* at 1.00 MVA, not general
+degradation at material capacity; my earlier statement is right about 1.00 and wrong as a
+general claim. (b) **Cost transferred slightly downward** — 3,468 solves against 3,519 at
+bootstrap, 1.5% fewer.
+
+**What C\* still does not exercise.** `gross == recourse` exactly, so **salvage is zero**:
+investing in 2025 only with `t_cal = 15` over a 15-year horizon leaves the single cohort
+fully depreciated at the terminal. The terminal-value component of the Track E inertness
+table is therefore **still inert — by plan shape, not magnitude**. Updated status at C\*:
+consensus channel **live**, ESSO constraint set **live**, terminal value **inert**, ageing
+model **UNKNOWN**.
+
+**The follow-up this makes necessary (not authorized):** a C3-style perturbation at C\*
+capacity — change the degradation constant and see whether the recourse moves, as it did
+not at bootstrap capacity. Until then the 0.37% effect **cannot be attributed to a model in
+which storage degrades.**

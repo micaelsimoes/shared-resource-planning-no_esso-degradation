@@ -38,6 +38,45 @@ edits — the author owns those. Zero solves.**
 - **Degradation reflects the committed schedule, not realized cycling** (throughput Option
   A, the interim reading). The paper must not claim the latter.
 
+## C2. The governing claim — no existing result was produced by code that was doing anything with storage
+
+**This is the sharpest item on the list and it belongs in the manuscript, not only in the
+stage record.**
+
+Every result currently in the repository was produced in a regime where the
+storage-specific code paths are **inert**. The candidate behind the whole evidence base is
+~0.0106 MVA / 0.0213 MWh per node — about 10.6 kW. **All four of the components that make
+this a shared-energy-storage paper rather than a coordination paper are inert in every
+existing result:**
+
+| component | evidence of inertness |
+|---|---|
+| **the ageing model** | C3, a **15.4% change in the degradation constant**, moved the recourse by **nothing to sixteen digits** (`827885239.5417057` before and after) |
+| **the ESS consensus channel** | the primal residual **never reached its 0.1 guard**, which is how a `KeyError` survived a week inside the diagnostic behind it (`58f4911b`, 2026-09-06) |
+| **the ESSO constraint set** | never approached its feasibility boundary; at 1.00 MVA it fails outright at node 7, the boundary sitting between 0.96875 and 1.00 |
+| **the terminal value** | salvage is **3,452 against a recourse of 828M — about 4 ppm** of the objective |
+
+Stated together, that is considerably harder to requalify than any one of them separately.
+
+So the claim to record is stronger and more specific than "the case study is too small to
+exhibit the effect":
+
+> **The paper's storage-benefit claims cannot be supported by any result currently in the
+> repository — not because the numbers are too small to resolve, but because the mechanism
+> that generates them was not executing.**
+
+The distinction matters for what the paper must do. A resolution problem is fixed by a
+bigger effect or a tighter tolerance. This is not a resolution problem: at ~10 kW per node
+the degradation, complementarity and capacity machinery is numerically inert, so a reported
+"incremental storage benefit" from such a run is not a small measurement of a real effect —
+it is a measurement of something else.
+
+**Required correction:** any storage-benefit figure in the manuscript must be traced to the
+capacity at which it was produced. If it came from a run at the bootstrap capacity, it must
+be withdrawn rather than requalified. The ladder gives the largest capacity the tool can
+currently evaluate — `C* = 0.96875 MVA / 3.875 MWh` per node — and any restated claim must
+sit at or below it, labelled as reduced scale.
+
 ## D. Blocking dependency to state in the paper
 
 **Penalty classification is unresolved.** `gross_operational_cost` — the quantity a
