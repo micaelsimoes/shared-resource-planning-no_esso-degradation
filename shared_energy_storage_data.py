@@ -873,6 +873,10 @@ def _create_solver(model, params, from_warm_start=False, node_id=None, option_ov
         # today; it removes the silent dependence on that default. Configuration
         # may still override it, since params.options is applied afterwards.
         options['fixed_variable_treatment'] = IPOPT_FIXED_VARIABLE_TREATMENT
+        # P5.15-1a (PLANNER_BRIEF_2026-09-13.md Step 1a / Addendum 1): bound the
+        # cost of a non-converging solve. Configuration may still override it,
+        # since params.options / option_overrides are applied afterwards.
+        options['max_iter'] = 500
     if params.verbose and params.solver.lower() == 'ipopt':
         options['print_level'] = 6
     if params.options:
@@ -904,11 +908,16 @@ def _create_solver(model, params, from_warm_start=False, node_id=None, option_ov
         replace_warm_start_suffix(model.ipopt_zL_in, model.ipopt_zL_out)
         replace_warm_start_suffix(model.ipopt_zU_in, model.ipopt_zU_out)
         solver.options['warm_start_init_point'] = 'yes'
-        solver.options['warm_start_bound_push'] = 1e-9
-        solver.options['warm_start_bound_frac'] = 1e-9
-        solver.options['warm_start_slack_bound_frac'] = 1e-9
-        solver.options['warm_start_slack_bound_push'] = 1e-9
-        solver.options['warm_start_mult_bound_push'] = 1e-9
+        # P5.15-1a (PLANNER_BRIEF_2026-09-13.md Step 1a / Addendum 1): the five
+        # warm_start_*_push/frac options are left at IPOPT's compiled default
+        # (1e-3) unless the case file (params.options) or the caller's
+        # option_overrides explicitly set them -- both are already merged into
+        # `options` and applied to `solver.options` above, *before* this block
+        # runs, so an explicit value is never lost here. The previous
+        # unconditional assignment to 1e-9 both throttled the dual step via the
+        # fraction-to-boundary rule (H-WS, PLANNER_BRIEF_2026-09-13.md Step 0)
+        # and silently clobbered any caller override on these five keys
+        # (P5.15-0 finding 1); do not reintroduce either.
 
     return solver, solver_log_path
 
@@ -937,7 +946,13 @@ def _is_recoverable_shared_ess_failure(result, params, node_id):
     recovery_options = getattr(params, 'recovery_options', None)
     if not recovery_options or not hasattr(result, 'solver'):
         return False
-    return result.solver.termination_condition == po.TerminationCondition.internalSolverError
+    # P5.15-1a (PLANNER_BRIEF_2026-09-13.md Step 1a / Addendum 1): recovery now
+    # also fires on maxIterations and infeasible, not only internalSolverError.
+    return result.solver.termination_condition in (
+        po.TerminationCondition.internalSolverError,
+        po.TerminationCondition.maxIterations,
+        po.TerminationCondition.infeasible,
+    )
 
 
 def _format_solver_options(options):
@@ -960,7 +975,19 @@ def _optimize(model, params, from_warm_start=False, node_id=None, diagnostic_sin
     recovery_attempted = _is_recoverable_shared_ess_failure(primary_result, params, node_id)
 
     if recovery_attempted:
-        recovery_options = params.recovery_options
+        # P5.15-1a (PLANNER_BRIEF_2026-09-13.md Step 1a / Addendum 1): recovery
+        # is exactly one change -- cold start, with the same primary options
+        # and the exact Hessian. The case-file recovery_options'
+        # 'hessian_approximation' entry (limited-memory) is deliberately not
+        # applied here, so that a recovery success identifies its cause (the
+        # warm start, not the Hessian approximation); it is therefore dead
+        # configuration in data/SRP1/SharedESS/SRP1_ESS_Params.json (not
+        # edited -- reported to the Planner, see P5_15_1A_REPORT.md).
+        recovery_options = {
+            key: value for key, value in params.recovery_options.items()
+            if key != 'hessian_approximation'
+        }
+        recovery_options['warm_start_init_point'] = 'no'
         print(
             f'[WARNING] Shared ESS primary solve did not converge for {solve_context}: '
             f'{solver_result_summary(primary_result)} | warm_start={from_warm_start}'
@@ -968,14 +995,23 @@ def _optimize(model, params, from_warm_start=False, node_id=None, diagnostic_sin
         if primary_log_path:
             print(f'[WARNING] IPOPT primary log for {solve_context}: {primary_log_path}')
         print(
-            f'[INFO] Retrying Shared ESS solve once for {solve_context} with '
+            f'[INFO] Retrying Shared ESS solve once for {solve_context}, cold start, with '
             f'{_format_solver_options(recovery_options)}.'
         )
+        # Belt-and-braces: also clear the imported-multiplier and constraint-dual
+        # suffixes before the cold retry. Not load-bearing -- the preserved
+        # P5.12-R `.nl` files show the ESSO's `.nl` export never carries a `dual`
+        # suffix segment (constraint multipliers are not exported), so
+        # `model.dual` is empty in practice; `warm_start_init_point='no'` above
+        # already makes IPOPT ignore `ipopt_zL_in`/`ipopt_zU_in` regardless.
+        model.ipopt_zL_in.clear()
+        model.ipopt_zU_in.clear()
+        model.dual.clear()
         recovery_result, recovery_log_path = _run_solver_attempt(
             model,
             params,
             solve_context,
-            from_warm_start=from_warm_start,
+            from_warm_start=False,
             node_id=node_id,
             option_overrides=recovery_options,
             log_suffix='recovery',
@@ -1008,7 +1044,7 @@ def _optimize(model, params, from_warm_start=False, node_id=None, diagnostic_sin
             'warm_start': from_warm_start,
             'primary_result': solver_result_summary(primary_result),
             'recovery_result': solver_result_summary(recovery_result),
-            'recovery_options': _format_solver_options(params.recovery_options),
+            'recovery_options': _format_solver_options(recovery_options),
             'recovery_succeeded': solver_result_succeeded(result),
             'primary_log': primary_log_path,
             'recovery_log': recovery_log_path,

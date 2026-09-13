@@ -493,6 +493,10 @@ def _create_smopf_solver(network, model, params, from_warm_start=False, option_o
         # so neutral today, and no longer silently dependent on it.
         # Configuration still wins, being applied afterwards.
         options['fixed_variable_treatment'] = IPOPT_FIXED_VARIABLE_TREATMENT
+        # P5.15-1a (PLANNER_BRIEF_2026-09-13.md Step 1a / Addendum 1): bound the
+        # cost of a non-converging solve. Configuration may still override it,
+        # since solver_params.options / option_overrides are applied afterwards.
+        options['max_iter'] = 500
     if solver_params.options:
         options.update(solver_params.options)
     if option_overrides:
@@ -523,15 +527,21 @@ def _create_smopf_solver(network, model, params, from_warm_start=False, option_o
         # helper_functions.replace_warm_start_suffix for the argument.
         replace_warm_start_suffix(model.ipopt_zL_in, model.ipopt_zL_out)
         replace_warm_start_suffix(model.ipopt_zU_in, model.ipopt_zU_out)
-        if network.is_transmission:
-            solver.options['acceptable_iter'] = 0
-            solver.options['acceptable_tol'] = options.get('tol', 1e-5)
         solver.options['warm_start_init_point'] = 'yes'
-        solver.options['warm_start_bound_push'] = options.get('warm_start_bound_push', options.get('bound_push', 1e-6))
-        solver.options['warm_start_bound_frac'] = options.get('warm_start_bound_frac', options.get('bound_frac', 1e-6))
-        solver.options['warm_start_slack_bound_frac'] = options.get('warm_start_slack_bound_frac', options.get('slack_bound_frac', 1e-6))
-        solver.options['warm_start_slack_bound_push'] = options.get('warm_start_slack_bound_push', options.get('slack_bound_push', 1e-6))
-        solver.options['warm_start_mult_bound_push'] = options.get('warm_start_mult_bound_push', options.get('bound_push', 1e-6))
+        # P5.15-1a (PLANNER_BRIEF_2026-09-13.md Step 1a / Addendum 1): the five
+        # warm_start_*_push/frac options are left at IPOPT's compiled default
+        # (1e-3) unless the case file (solver_params.options) or the caller's
+        # option_overrides explicitly set the warm_start_* key itself -- both
+        # are already merged into `options` and applied to `solver.options`
+        # above, *before* this block runs, so an explicit value is never lost
+        # here. The former derivation from the generic
+        # bound_push/bound_frac/slack_bound_push/slack_bound_frac keys (with a
+        # hardcoded 1e-6 fallback) is removed, including
+        # warm_start_mult_bound_push's derivation from bound_push, since it
+        # silently re-hardened the warm start whenever a case file set only the
+        # generic key (H-WS, PLANNER_BRIEF_2026-09-13.md Step 0). The TSO-only
+        # acceptable_iter=0 / acceptable_tol override is also removed; both
+        # network families now use the case-file values.
 
     return solver, solver_log_path, solve_context
 
@@ -552,7 +562,13 @@ def _is_recoverable_network_failure(result, params):
         return False
     if not solver_params.recovery_options or not hasattr(result, 'solver'):
         return False
-    return result.solver.termination_condition == po.TerminationCondition.internalSolverError
+    # P5.15-1a (PLANNER_BRIEF_2026-09-13.md Step 1a / Addendum 1): recovery now
+    # also fires on maxIterations and infeasible, not only internalSolverError.
+    return result.solver.termination_condition in (
+        po.TerminationCondition.internalSolverError,
+        po.TerminationCondition.maxIterations,
+        po.TerminationCondition.infeasible,
+    )
 
 
 def _format_solver_options(options):
@@ -606,8 +622,20 @@ def _run_smopf(network, model, params, from_warm_start=False):
 
     if recovery_attempted:
         _print_network_failure_context(network, model, primary_result, from_warm_start, primary_log_path, attempt_label='primary solve')
-        recovery_options = params.solver_params.recovery_options
-        print(f'[INFO] Retrying network solve once for {solve_context}, without multiplier warm start, with {_format_solver_options(recovery_options)}.')
+        # P5.15-1a (PLANNER_BRIEF_2026-09-13.md Step 1a / Addendum 1): recovery
+        # is exactly one change -- cold start, with the same primary options
+        # and the exact Hessian. The case-file recovery_options'
+        # 'hessian_approximation' entry (limited-memory) is deliberately not
+        # applied here, so that a recovery success identifies its cause (the
+        # warm start, not the Hessian approximation); it is therefore dead
+        # configuration in the case JSON (not edited -- reported to the
+        # Planner, see P5_15_1A_REPORT.md).
+        recovery_options = {
+            key: value for key, value in params.solver_params.recovery_options.items()
+            if key != 'hessian_approximation'
+        }
+        recovery_options['warm_start_init_point'] = 'no'
+        print(f'[INFO] Retrying network solve once for {solve_context}, cold start, with {_format_solver_options(recovery_options)}.')
         multiplier_snapshot = _snapshot_multiplier_suffixes(model)
         _clear_multiplier_suffixes(model)
         recovery_result, recovery_log_path = _run_smopf_solver_attempt(network, model, params, from_warm_start=False, option_overrides=recovery_options, log_suffix='recovery')

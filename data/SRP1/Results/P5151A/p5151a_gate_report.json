@@ -1,0 +1,236 @@
+{
+ "stage": "P5.15-1a",
+ "objective": "Gate check for the option_overrides-clobbering fix and the new primary warm-start policy in shared_energy_storage_data.py and network.py (PLANNER_BRIEF_2026-09-13.md Step 1a).",
+ "pickle_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P514N/esso_models_k10000.pkl",
+ "nodes_in_pickle": [
+  5,
+  7,
+  9
+ ],
+ "preflight": {
+  "5": {
+   "has_admm_objective": true,
+   "admm_objective_active": true,
+   "has_all_request_attrs": true,
+   "n_periods": 288,
+   "p_req_nonzero_count": 288,
+   "q_req_nonzero_count": 288,
+   "dual_p_req_nonzero_count": 288,
+   "dual_q_req_nonzero_count": 288,
+   "rho": 1.0,
+   "non_trivial": true,
+   "request_parameter_hash_sha256": "b4b7294f7a71e264d349655a9121d01bbc75f307ee5cc9e910bbd6cda66af5d8",
+   "pass": true
+  },
+  "7": {
+   "has_admm_objective": true,
+   "admm_objective_active": true,
+   "has_all_request_attrs": true,
+   "n_periods": 288,
+   "p_req_nonzero_count": 288,
+   "q_req_nonzero_count": 288,
+   "dual_p_req_nonzero_count": 288,
+   "dual_q_req_nonzero_count": 288,
+   "rho": 1.0,
+   "non_trivial": true,
+   "request_parameter_hash_sha256": "5ee32516902f99998fddc87121f2ff4c44f83b44309c17b8ffcdc718baf3f9cd",
+   "pass": true
+  },
+  "9": {
+   "has_admm_objective": true,
+   "admm_objective_active": true,
+   "has_all_request_attrs": true,
+   "n_periods": 288,
+   "p_req_nonzero_count": 288,
+   "q_req_nonzero_count": 288,
+   "dual_p_req_nonzero_count": 288,
+   "dual_q_req_nonzero_count": 288,
+   "rho": 1.0,
+   "non_trivial": true,
+   "request_parameter_hash_sha256": "62117b844bc66895c5658ebef6e12d1e10aa8f72a7c061723386f5ac43b8b3d6",
+   "pass": true
+  },
+  "all_pass": true
+ },
+ "solver_params": {
+  "solver": "ipopt",
+  "solver_path": "/usr/local/bin/ipopt",
+  "options": {
+   "tol": 1e-06,
+   "acceptable_tol": 1e-05,
+   "acceptable_iter": 5,
+   "linear_solver": "ma57"
+  },
+  "recovery_options": {
+   "hessian_approximation": "limited-memory",
+   "acceptable_tol": 0.0001,
+   "acceptable_iter": 1
+  }
+ },
+ "clobber_probe": {
+  "option_overrides_requested": {
+   "warm_start_mult_bound_push": 0.001,
+   "warm_start_bound_push": 0.001,
+   "warm_start_slack_bound_push": 0.001
+  },
+  "solver_options_observed_after_create_solver": {
+   "warm_start_mult_bound_push": 0.001,
+   "warm_start_bound_push": 0.001,
+   "warm_start_slack_bound_push": 0.001,
+   "warm_start_init_point": "yes"
+  },
+  "clobbered": false
+ },
+ "gate1_overrides_respected": {
+  "required": "clobber_probe.clobbered must now be False (overrides reach solver.options)",
+  "observed": {
+   "option_overrides_requested": {
+    "warm_start_mult_bound_push": 0.001,
+    "warm_start_bound_push": 0.001,
+    "warm_start_slack_bound_push": 0.001
+   },
+   "solver_options_observed_after_create_solver": {
+    "warm_start_mult_bound_push": 0.001,
+    "warm_start_bound_push": 0.001,
+    "warm_start_slack_bound_push": 0.001,
+    "warm_start_init_point": "yes"
+   },
+   "clobbered": false
+  },
+  "pass": true
+ },
+ "arms": {
+  "node7_old_policy": {
+   "node_id": 7,
+   "arm": "old_policy",
+   "option_overrides_requested": {
+    "warm_start_mult_bound_push": 1e-09,
+    "warm_start_bound_push": 1e-09,
+    "warm_start_bound_frac": 1e-09,
+    "warm_start_slack_bound_push": 1e-09,
+    "warm_start_slack_bound_frac": 1e-09
+   },
+   "solver_options_observed_after_create_solver": {
+    "warm_start_mult_bound_push": 1e-09,
+    "warm_start_bound_push": 1e-09,
+    "warm_start_bound_frac": 1e-09,
+    "warm_start_slack_bound_push": 1e-09,
+    "warm_start_slack_bound_frac": 1e-09,
+    "warm_start_init_point": "yes"
+   },
+   "termination_condition": "maxIterations",
+   "status": "warning",
+   "n_iterations": 500,
+   "admm_objective": 1.366326462684692,
+   "max_constraint_violation": 6.453671667294714e-06,
+   "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151A/logs/node7_old_policy.txt"
+  },
+  "node7_a1_policy": {
+   "node_id": 7,
+   "arm": "a1_policy",
+   "option_overrides_requested": {
+    "warm_start_mult_bound_push": 0.001,
+    "warm_start_bound_push": 0.001,
+    "warm_start_bound_frac": 0.001,
+    "warm_start_slack_bound_push": 0.001,
+    "warm_start_slack_bound_frac": 0.001
+   },
+   "solver_options_observed_after_create_solver": {
+    "warm_start_mult_bound_push": 0.001,
+    "warm_start_bound_push": 0.001,
+    "warm_start_bound_frac": 0.001,
+    "warm_start_slack_bound_push": 0.001,
+    "warm_start_slack_bound_frac": 0.001,
+    "warm_start_init_point": "yes"
+   },
+   "termination_condition": "optimal",
+   "status": "ok",
+   "n_iterations": 30,
+   "admm_objective": -0.01198375471524498,
+   "max_constraint_violation": 2.916356045545854e-11,
+   "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151A/logs/node7_a1_policy.txt"
+  },
+  "node9_old_policy": {
+   "node_id": 9,
+   "arm": "old_policy",
+   "option_overrides_requested": {
+    "warm_start_mult_bound_push": 1e-09,
+    "warm_start_bound_push": 1e-09,
+    "warm_start_bound_frac": 1e-09,
+    "warm_start_slack_bound_push": 1e-09,
+    "warm_start_slack_bound_frac": 1e-09
+   },
+   "solver_options_observed_after_create_solver": {
+    "warm_start_mult_bound_push": 1e-09,
+    "warm_start_bound_push": 1e-09,
+    "warm_start_bound_frac": 1e-09,
+    "warm_start_slack_bound_push": 1e-09,
+    "warm_start_slack_bound_frac": 1e-09,
+    "warm_start_init_point": "yes"
+   },
+   "termination_condition": "maxIterations",
+   "status": "warning",
+   "n_iterations": 500,
+   "admm_objective": 1.3721959549978053,
+   "max_constraint_violation": 1.0986621789887963e-05,
+   "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151A/logs/node9_old_policy.txt"
+  },
+  "node9_a1_policy": {
+   "node_id": 9,
+   "arm": "a1_policy",
+   "option_overrides_requested": {
+    "warm_start_mult_bound_push": 0.001,
+    "warm_start_bound_push": 0.001,
+    "warm_start_bound_frac": 0.001,
+    "warm_start_slack_bound_push": 0.001,
+    "warm_start_slack_bound_frac": 0.001
+   },
+   "solver_options_observed_after_create_solver": {
+    "warm_start_mult_bound_push": 0.001,
+    "warm_start_bound_push": 0.001,
+    "warm_start_bound_frac": 0.001,
+    "warm_start_slack_bound_push": 0.001,
+    "warm_start_slack_bound_frac": 0.001,
+    "warm_start_init_point": "yes"
+   },
+   "termination_condition": "optimal",
+   "status": "ok",
+   "n_iterations": 23,
+   "admm_objective": -0.008104095649293843,
+   "max_constraint_violation": 1.0752509993494641e-12,
+   "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151A/logs/node9_a1_policy.txt"
+  }
+ },
+ "gates": {
+  "node7": {
+   "old_policy_reproduces_maxIterations": {
+    "required": "termination_condition == maxIterations",
+    "observed": "maxIterations",
+    "n_iterations": 500,
+    "pass": true
+   },
+   "a1_policy_converges_fast": {
+    "required": "termination_condition == optimal, roughly ~30 iterations (<=60 as a loose gate bound)",
+    "observed": "optimal",
+    "n_iterations": 30,
+    "pass": true
+   }
+  },
+  "node9": {
+   "old_policy_reproduces_maxIterations": {
+    "required": "termination_condition == maxIterations",
+    "observed": "maxIterations",
+    "n_iterations": 500,
+    "pass": true
+   },
+   "a1_policy_converges_fast": {
+    "required": "termination_condition == optimal, roughly ~30 iterations (<=60 as a loose gate bound)",
+    "observed": "optimal",
+    "n_iterations": 23,
+    "pass": true
+   }
+  }
+ },
+ "all_gates_pass": true,
+ "status": "DONE"
+}
