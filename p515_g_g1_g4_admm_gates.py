@@ -2,9 +2,12 @@
 P5.15 -- G1-G4 gate runner.
 
 Authority: PLANNER_BRIEF_2026-09-13.md Step 1 "Gate" section, as amended by Addendum 1
-(G5 reporting), Addendum 3 item 3 (G1 re-specified as a per-node reconciliation gate) and
+(G5 reporting), Addendum 3 item 3 (G1 re-specified as a per-node reconciliation gate),
 Addendum 4 (per-cycle ESSO detector logging standing requirement, G1 confirmed as
-specified).
+specified), Addendum 5 (log-handling fix; no harness-only workaround) and Addendum 6
+(campaign capture: heartbeat, per-period ESSO leak-mechanism capture and
+classification, network-failure capture -- authorized "HARNESS change plus a short
+smoke test" task, 2026-09-14).
 
 This harness does NOT reimplement any production solve. It reuses, verbatim, the already
 -repaired stage harnesses:
@@ -15,28 +18,36 @@ This harness does NOT reimplement any production solve. It reuses, verbatim, the
     directly, with its module-level OUT redirected so it cannot collide with the
     committed P514L artifacts).
 
-What this harness ADDS, because neither repaired harness captures it and the standing
-requirement for ALL gates (Addendum 4) needs it:
-  1. The FULL per-cycle ADMM trajectory (every row from p512_a_cold_rescaled_convergence
-     .cycle_row), not only the terminal row -- "record the per-cycle trajectory by
-     default".
-  2. `shared_ess_data.esso_complementarity_diagnostics` -- production's OWN per-ESSO-solve
-     log (shared_energy_storage_data._get_esso_complementarity_diagnostics, populated by
-     _run_solver_attempt on every successful ESSO solve) of the ratio detector
-     `max min(pch,pdch)/s_max` and the analytic leak estimate
-     `2*N_periods*mu_final/(2*s_obj*eps)`, with mu_final/s_obj PARSED from that solve's
-     own IPOPT log. Grouped into per-cycle rounds using the documented production fact
-     that `update_shared_energy_storages_coordination_model_and_solve` is called exactly
-     once per ADMM cycle (shared_resources_planning.py:2267) and once more before cycle 1
-     for initialization (shared_resources_planning.py:~2126-2130), each call solving every
-     active node once -- so consecutive blocks of `len(active_nodes)` entries in the flat
-     diagnostics list correspond, in order, to: [init, cycle 1, cycle 2, ...]. This
-     grouping is verified against the run's own `cycles_run` count before being reported,
-     not assumed silently.
+P5.15-G1PREP (this revision) removes the harness-only ESSO-log-isolation workaround --
+production now writes one fresh, logs_dir-resolved ESSO IPOPT log per solve (P5.15-F,
+commit 7ca40b93) -- and adds the Addendum-6 campaign capture:
+  1. A per-cycle heartbeat file, written atomically after every ESSO coordination solve.
+  2. Per-period ESSO leak-mechanism capture (pch, pdch, pnet, s_max, the IPOPT bound
+     multipliers of both legs, and every constraint dual whose row references that
+     period's pch/pdch or the cohort's degradation Vars), one JSONL file per node per
+     round under `esso_capture/<label>/`.
+  3. A per-solve leak classification (barrier-set / not-barrier-set / indeterminate),
+     one line per solve in `leak_classification_<label>.jsonl`.
+  4. Network-failure capture and classification, built from the (no-longer-discarded)
+     tee'd stdout of the run plus the FrozenSMOPF snapshot directory, written to
+     `network_failures_<label>.jsonl`.
+  5. `assert_g_capture_paths` extended per Addendum 6 item 7 (rule eleven): production
+     logs_dir absolute on planning/ESSO/TSO, wrapper hooks installed, output root
+     fresh, ESSO Suffixes present on a freshly-built (unsolved) probe subproblem.
+
+The new artifacts are LABELED per arm (`heartbeat_<label>.json`, not `heartbeat.json`)
+because `run_admm_arm` is called from several CLI gates (g1, g2, g4b, g3_full) that
+share ONE output root (`OUT`, `data/SRP1/Results/P515G`) across SEPARATE process
+invocations of this script -- an unlabeled, un-guarded filename would collide across
+arms and break "keep G2/G3-full/G4 arms working" (see WORKER_REPORT_G1PREP.md). The
+`g1` CLI gate is the one exception: it gets its OWN fresh output root,
+`data/SRP1/Results/P515G1/`, checked for freshness before anything is written (Addendum
+6 item 2 -- "no overwrite, no reuse").
 
 RULE ELEVEN: capture paths are asserted before any solve is attempted.
 
-Writes ONLY new files, under data/SRP1/Results/P515G/ -- neither repaired harness's
+Writes ONLY new files, under data/SRP1/Results/P515G/ (existing arms) or
+data/SRP1/Results/P515G1/ (fresh, the g1 CLI gate) -- neither repaired harness's
 default output directory is touched, because both collide with already-committed
 artifacts (P514N: esso_models_control.pkl, n1_control.json, ...; P514L: ladder_s1.json,
 ...).
@@ -45,11 +56,10 @@ artifacts (P514N: esso_models_control.pkl, n1_control.json, ...; P514L: ladder_s
     gate in {g1, g2, g4b, g3_init, g3_full}   (g4a == g1; run g1 twice for G4)
 """
 
-import io
-import itertools
 import json
 import os
 import pickle
+import re
 import sys
 import time
 from contextlib import contextmanager, redirect_stdout
@@ -57,6 +67,7 @@ from copy import deepcopy
 from datetime import datetime, timezone
 
 import pyomo.environ as pe
+from pyomo.core.expr.visitor import identify_variables
 
 REPO = os.path.dirname(os.path.abspath(__file__))
 if REPO not in sys.path:
@@ -75,62 +86,9 @@ from p513_solve_profile_guard import SolveProfileGuard  # noqa: E402
 OUT = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515G')
 os.makedirs(OUT, exist_ok=True)
 
-
-@contextmanager
-def unique_esso_logs(log_dir):
-    """Diagnostic-only monkeypatch, reverted on exit -- same convention as
-    `p58_rescale.patched_admm_objectives()` (which this module already imports and
-    uses). NOT a production-code change: `shared_energy_storage_data.py` on disk is
-    untouched; this reassigns the module's `_create_solver` name for the lifetime of
-    one process-local `with` block.
-
-    WHY THIS IS NEEDED (found empirically, see the comment at its call site):
-    `_create_solver` writes each node's IPOPT log to a bare relative filename with
-    `file_append='yes'` and no per-solve uniqueness. Across a multi-cycle ADMM run the
-    same node's log file therefore accumulates one "Objective"/"Complementarity"
-    summary block per cycle, and `_parse_ipopt_barrier_terms`'s `re.search` (first
-    match) silently returns the FIRST cycle's `mu_final`/`s_obj` for every later cycle.
-    Verified on a 2-cycle probe before this fix: node 5's `mu_final` was IDENTICAL
-    (3.131588719877726e-09) at the init round and both ADMM cycles, while the
-    Var-based ratio detector correctly varied cycle to cycle.
-
-    IMPLEMENTATION NOTE (superseding an earlier, WRONG attempt at this same fix):
-    the first attempt isolated logs by `os.chdir`-ing the whole process into a
-    private directory for the duration of the ADMM run. That crashed the run: TSO
-    failure-snapshot capture (`shared_resources_planning.py:save_failed_tso_block` /
-    `_save_frozen_network_block`, itself gated on `not solver_result_succeeded`, i.e.
-    a genuine non-converged TSO block, which DID occur during the first G1 attempt)
-    builds its own save directory from `transmission_network.results_dir`, a path
-    that is RELATIVE in the deep-copied planning object and therefore only resolves
-    correctly when the process CWD is still the repo root. `os.chdir` is therefore
-    unsafe here, in EITHER direction, and is NOT used. Instead this passes each ESSO
-    solve an ABSOLUTE `output_file` directly via `option_overrides`, which
-    `_create_solver` merges into `options` BEFORE its own
-    `if 'output_file' not in options:` default-assignment check
-    (shared_energy_storage_data.py, `_create_solver`) -- so the override is honoured,
-    the process CWD is never touched, and every node-round's IPOPT log is still a
-    fresh, uniquely named file under `log_dir`.
-    """
-    original = SED._create_solver
-    counter = itertools.count()
-    os.makedirs(log_dir, exist_ok=True)
-
-    def patched(model, params, from_warm_start=False, node_id=None, option_overrides=None,
-                log_suffix=None):
-        if node_id is not None:
-            n = next(counter)
-            suffix = f'{n:06d}' if not log_suffix else f'{n:06d}_{log_suffix}'
-            option_overrides = dict(option_overrides) if option_overrides else {}
-            option_overrides['output_file'] = os.path.join(
-                log_dir, f'optim_log_node_{node_id}_{suffix}.txt')
-        return original(model, params, from_warm_start=from_warm_start, node_id=node_id,
-                         option_overrides=option_overrides, log_suffix=None)
-
-    SED._create_solver = patched
-    try:
-        yield
-    finally:
-        SED._create_solver = original
+# Addendum 6 item 2: the g1 CLI gate's OWN fresh output root -- never shared with OUT,
+# which holds residue from earlier, killed campaigns (see .p515_g_gate.lock).
+OUT_G1 = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515G1')
 
 
 def _refuse_overwrite(path):
@@ -138,8 +96,560 @@ def _refuse_overwrite(path):
         raise RuntimeError(f'refusing to overwrite existing artifact: {path}')
 
 
-def assert_g_capture_paths(sed):
-    """RULE ELEVEN, this gate's own addition: the per-cycle ESSO detector."""
+def _require_fresh_output_root(path):
+    """Addendum 6 item 2: 'Refuse to start if the arm's output dir already exists
+    (no overwrite, no reuse).' Scoped to the g1 CLI gate's dedicated root and to the
+    smoke test's dedicated root -- NOT to `OUT` (P515G), which multiple arms
+    (g2, g4b, g3_full) legitimately share across separate process invocations."""
+    if os.path.exists(path):
+        raise RuntimeError(
+            f'refusing to start: output root already exists (no overwrite, no reuse): {path}')
+
+
+def _atomic_write_json(path, obj):
+    tmp = f'{path}.tmp{os.getpid()}'
+    with open(tmp, 'w') as handle:
+        json.dump(obj, handle, indent=1, default=str)
+    os.replace(tmp, path)
+
+
+class _Tee:
+    """Write to every stream given. Used so the run's own console output is preserved
+    (this is a foreground run) while ALSO being captured to a file, per Addendum 6
+    item 1 ('Stop swallowing stdout ... production prints the [WARNING] network
+    -failure context there; tee it to a file')."""
+
+    def __init__(self, *streams):
+        self._streams = streams
+
+    def write(self, data):
+        for stream in self._streams:
+            stream.write(data)
+
+    def flush(self):
+        for stream in self._streams:
+            stream.flush()
+
+
+@contextmanager
+def tee_stdout(path):
+    with open(path, 'w') as handle:
+        tee = _Tee(sys.stdout, handle)
+        with redirect_stdout(tee):
+            yield path
+
+
+# ======================================================================================
+#  Addendum 6 item 4/5 -- ESSO per-period leak-mechanism capture and classification
+# ======================================================================================
+
+# Every ConstraintList whose rows can reference a period's pch/pdch or a cohort's
+# degradation Vars (shared_energy_storage_data.py `_build_subproblem`). Identified
+# generically below via `identify_variables`, never by hard-coded row indices.
+_ESSO_DUAL_FAMILIES = (
+    'energy_storage_limits',
+    'energy_storage_operation_agg',
+    'energy_storage_cohort_pnet_share_h3',
+    'energy_storage_capacity_degradation',
+)
+
+_COMPLEMENTARITY_LINE_RE = re.compile(r'^Complementarity\.+:\s+(\S+)\s+(\S+)', re.MULTILINE)
+_OBJECTIVE_LINE_RE = re.compile(r'^Objective\.+:\s+(\S+)\s+(\S+)', re.MULTILINE)
+
+
+def _build_esso_var_constraint_map(model):
+    """Once per node model (cached by the caller): (var_component_name, var_index) ->
+    [(constraint_component_name, constraint_list_index), ...], built by scanning every
+    row of `_ESSO_DUAL_FAMILIES` with `identify_variables` -- the generic identification
+    Addendum 6 item 4 requires, not hard-coded row indices."""
+    mapping = {}
+    for cname in _ESSO_DUAL_FAMILIES:
+        clist = getattr(model, cname, None)
+        if clist is None:
+            continue
+        for idx in clist:
+            con = clist[idx]
+            for v in identify_variables(con.body, include_fixed=False):
+                key = (v.parent_component().name, v.index())
+                mapping.setdefault(key, []).append((cname, idx))
+    return mapping
+
+
+def _duals_for_keys(model, var_map, keys):
+    seen = set()
+    out = []
+    for key in keys:
+        for tag in var_map.get(key, ()):
+            if tag in seen:
+                continue
+            seen.add(tag)
+            cname, idx = tag
+            con = getattr(model, cname)[idx]
+            dual = model.dual.get(con)
+            out.append({'component': cname, 'index': idx,
+                        'dual': (pe.value(dual) if dual is not None else None)})
+    return out
+
+
+def _parse_both_barrier_columns(log_path):
+    """Addendum 6 item 4: production's own `_parse_ipopt_barrier_terms`
+    (shared_energy_storage_data.py) returns only the SCALED `mu_final` and the
+    scaled/unscaled `s_obj` RATIO. This harness-local parser reads the SAME per-solve
+    log file (never assumed) and returns BOTH Complementarity columns (scaled,
+    unscaled) and both Objective columns, taking the LAST occurrence of each line
+    (matching production's own Addendum-5 fix: one fresh log per solve, but robust to
+    the rare case it is not)."""
+    result = {'mu_scaled': None, 'mu_unscaled': None,
+              'obj_scaled': None, 'obj_unscaled': None, 'reason': None,
+              # Planner addition (P5.15, from the G1-prep smoke): the TERMINAL BARRIER
+              # PARAMETER, i.e. the lg(mu) column of the last iteration row. The summary
+              # `Complementarity` line is an optimality-error measure, not mu; on the C*
+              # path it varied 45% while lg(mu) sat at -8.60 in every solve and
+              # x_small = 10**lg(mu)/(s_obj*eps) matched the measured leak to 0.3-1%.
+              'lg_mu_terminal': None, 'mu_barrier_scaled': None, 's_obj': None}
+    if not log_path or not os.path.exists(log_path):
+        result['reason'] = f'IPOPT log not found: {log_path}'
+        return result
+    text = open(log_path, 'r', errors='replace').read()
+    comp_matches = list(_COMPLEMENTARITY_LINE_RE.finditer(text))
+    obj_matches = list(_OBJECTIVE_LINE_RE.finditer(text))
+    if not comp_matches:
+        result['reason'] = 'Complementarity line not found in IPOPT log'
+        return result
+    if not obj_matches:
+        result['reason'] = 'Objective line not found in IPOPT log'
+        return result
+    try:
+        comp = comp_matches[-1]
+        obj = obj_matches[-1]
+        result['mu_scaled'] = float(comp.group(1))
+        result['mu_unscaled'] = float(comp.group(2))
+        result['obj_scaled'] = float(obj.group(1))
+        result['obj_unscaled'] = float(obj.group(2))
+        if result['obj_unscaled'] not in (None, 0.0):
+            result['s_obj'] = result['obj_scaled'] / result['obj_unscaled']
+        iteration_rows = _ITERATION_ROW_RE.findall(text)
+        if iteration_rows:
+            result['lg_mu_terminal'] = float(iteration_rows[-1])
+            result['mu_barrier_scaled'] = 10.0 ** result['lg_mu_terminal']
+    except ValueError as error:
+        result['reason'] = f'could not parse floats: {error}'
+    return result
+
+
+# iteration table row: iter, objective, inf_pr, inf_du, lg(mu), ...  (captures lg(mu))
+_ITERATION_ROW_RE = re.compile(r'^\s*\d+r?\s+\S+\s+\S+\s+\S+\s+(-?\d+\.\d+)\s', re.MULTILINE)
+
+
+def _classify_r(r):
+    """Addendum 6 item 5, predeclared thresholds (Planner-supplied, not fit to data)."""
+    if r is None:
+        return 'indeterminate'
+    if 0.5 <= r <= 2:
+        return 'barrier-set'
+    if r < 0.1:
+        return 'not barrier-set'
+    return 'indeterminate'
+
+
+def _esso_capture_stamp(cycle_label):
+    return 'init' if cycle_label == 'init' else f'cycle{cycle_label}'
+
+
+def _capture_esso_solve(sed, models, node_diag, esso_capture_dir, cycle_label, hook_state):
+    """One node-round of ESSO solves (either the init call or one ADMM cycle's
+    coordination solve). Writes `esso_capture_dir/node{id}_{stamp}.jsonl` per node and
+    returns the per-solve leak-classification records (Addendum 6 items 4-5)."""
+    os.makedirs(esso_capture_dir, exist_ok=True)
+    leak_records = []
+    for node_id, model in models.items():
+        diag = node_diag.get(node_id)
+        log_path = diag.get('log_path') if diag else None
+        barrier = _parse_both_barrier_columns(log_path)
+        mu_unscaled = barrier['mu_unscaled']
+        mu_barrier_unscaled = None
+        if barrier['mu_barrier_scaled'] is not None and barrier['s_obj'] not in (None, 0.0):
+            mu_barrier_unscaled = barrier['mu_barrier_scaled'] / barrier['s_obj']
+
+        var_map = hook_state['var_maps'].get(node_id)
+        if var_map is None:
+            var_map = _build_esso_var_constraint_map(model)
+            hook_state['var_maps'][node_id] = var_map
+
+        if not hook_state['zL_checked']:
+            nonempty = any(
+                v.parent_component().name == 'es_pch_per_unit' for v in model.ipopt_zL_out
+            )
+            if not nonempty:
+                raise RuntimeError(
+                    'STOP (Addendum 6 item 4 pre-check): model.ipopt_zL_out has no '
+                    f'entries for es_pch_per_unit after the first ESSO solve '
+                    f'(node={node_id}, log={log_path}). IPOPT did not return bound '
+                    'multipliers for this variable; not substituting anything.')
+            hook_state['zL_checked'] = True
+
+        records = []
+        for y_inv in model.years:
+            if model._esso_cohort_inactive.get(y_inv, False):
+                continue
+            for y in model.years:
+                if not SED._esso_cohort_pair_is_within_lifetime(model, y_inv, y):
+                    continue
+                s_max = pe.value(model.es_s_rated_per_unit[y_inv, y])
+                cohort_keys = [('es_D_per_unit', (y_inv, y)),
+                               ('es_soh_per_unit_cumul', (y_inv, y))]
+                for d in model.days:
+                    for p in model.periods:
+                        pch_var = model.es_pch_per_unit[y_inv, y, d, p]
+                        pdch_var = model.es_pdch_per_unit[y_inv, y, d, p]
+                        pch = pe.value(pch_var)
+                        pdch = pe.value(pdch_var)
+                        pnet = pe.value(model.es_pnet[y, d, p])
+                        zL_pch = model.ipopt_zL_out.get(pch_var)
+                        zU_pch = model.ipopt_zU_out.get(pch_var)
+                        zL_pdch = model.ipopt_zL_out.get(pdch_var)
+                        zU_pdch = model.ipopt_zU_out.get(pdch_var)
+                        pch_key = ('es_pch_per_unit', (y_inv, y, d, p))
+                        pdch_key = ('es_pdch_per_unit', (y_inv, y, d, p))
+                        duals = _duals_for_keys(
+                            model, var_map, [pch_key, pdch_key] + cohort_keys)
+                        x_small = min(pch, pdch)
+                        z_small = zL_pch if pch <= pdch else zL_pdch
+                        r = None
+                        if z_small is not None and mu_unscaled not in (None, 0.0):
+                            r = z_small * x_small / mu_unscaled
+                        r_bar = None
+                        if z_small is not None and mu_barrier_unscaled not in (None, 0.0):
+                            r_bar = z_small * x_small / mu_barrier_unscaled
+                        records.append({
+                            'node_id': node_id, 'cycle': cycle_label,
+                            'y_inv': y_inv, 'y': y, 'd': d, 'p': p,
+                            'pch': pch, 'pdch': pdch, 'pnet': pnet, 's_max': s_max,
+                            'zL_pch': zL_pch, 'zU_pch': zU_pch,
+                            'zL_pdch': zL_pdch, 'zU_pdch': zU_pdch,
+                            'duals': duals, 'r': r, 'class': _classify_r(r),
+                            'r_bar': r_bar, 'class_bar': _classify_r(r_bar),
+                        })
+
+        stamp = _esso_capture_stamp(cycle_label)
+        path = os.path.join(esso_capture_dir, f'node{node_id}_{stamp}.jsonl')
+        _refuse_overwrite(path)
+        with open(path, 'w') as handle:
+            for rec in records:
+                handle.write(json.dumps(rec, default=str) + '\n')
+
+        max_ratio, n_periods, argmax, measured = SED._complementarity_ratio_for_model(model)
+        counts = {}
+        counts_bar = {}
+        for rec in records:
+            counts[rec['class']] = counts.get(rec['class'], 0) + 1
+            counts_bar[rec['class_bar']] = counts_bar.get(rec['class_bar'], 0) + 1
+        argmax_record = None
+        if argmax is not None:
+            match = next((rc for rc in records
+                          if rc['y_inv'] == argmax['y_inv'] and rc['y'] == argmax['y']
+                          and rc['d'] == argmax['d'] and rc['p'] == argmax['p']), None)
+            if match is not None:
+                biggest = max(
+                    match['duals'],
+                    key=lambda item: (abs(item['dual']) if item['dual'] is not None else -1),
+                    default=None)
+                argmax_record = {
+                    'y_inv': argmax['y_inv'], 'y': argmax['y'], 'd': argmax['d'],
+                    'p': argmax['p'], 'pch': match['pch'], 'pdch': match['pdch'],
+                    'pnet': match['pnet'], 'ratio_min_over_smax': max_ratio,
+                    'r': match['r'], 'class': match['class'],
+                    'r_bar': match['r_bar'], 'class_bar': match['class_bar'],
+                    'largest_dual': biggest,
+                }
+        leak_records.append({
+            'node_id': node_id, 'cycle': cycle_label, 'log_path': log_path,
+            'mu_scaled': barrier['mu_scaled'], 'mu_unscaled': mu_unscaled,
+            'obj_scaled': barrier['obj_scaled'], 'obj_unscaled': barrier['obj_unscaled'],
+            'parse_reason': barrier['reason'],
+            'complementarity_ratio_max': max_ratio, 'n_active_cohort_periods': n_periods,
+            'spurious_throughput_measured': measured,
+            'argmax': argmax_record, 'class_counts': counts, 'class_counts_bar': counts_bar,
+            'lg_mu_terminal': barrier['lg_mu_terminal'],
+            'mu_barrier_scaled': barrier['mu_barrier_scaled'], 's_obj': barrier['s_obj'],
+            # predicted small-leg leak: idle period (equal legs) and one-large-leg period
+            'predicted_x_idle': (barrier['mu_barrier_scaled'] / (barrier['s_obj'] * SED.EPS_ESSO_THROUGHPUT)
+                                 if barrier['mu_barrier_scaled'] is not None and barrier['s_obj'] else None),
+            'predicted_x_large_leg': (barrier['mu_barrier_scaled'] / (2.0 * barrier['s_obj'] * SED.EPS_ESSO_THROUGHPUT)
+                                      if barrier['mu_barrier_scaled'] is not None and barrier['s_obj'] else None),
+        })
+    return leak_records
+
+
+# ======================================================================================
+#  Addendum 6 item 6 -- network-failure capture and classification
+# ======================================================================================
+
+_CYCLE_LINE_RE = re.compile(r'^\[INFO\] \t - ADMM Iteration (\d+)')
+_NET_FAIL_RE = re.compile(
+    r'^\[WARNING\] Network (?P<label>.+?) did not converge for (?P<ctx>.+?): (?P<summary>.+)$')
+_NET_RETRY_RE = re.compile(
+    r'^\[INFO\] Retrying network solve once for (?P<ctx>.+?), cold start')
+_NET_RECOVER_OK_RE = re.compile(
+    r'^\[INFO\] Network recovery solve succeeded for (?P<ctx>.+)\.$')
+_NET_LOG_RE = re.compile(
+    r'^\[WARNING\] IPOPT (?P<label>.+?) log for (?P<ctx>.+?): (?P<path>.+)$')
+_TSO_FINAL_RE = re.compile(
+    r'^\[ERROR\] Transmission network (?P<name>\S+), year=(?P<year>\S+), day=(?P<day>\S+) '
+    r'did not converge: (?P<summary>.+)$')
+_DSO_FINAL_RE = re.compile(
+    r'^\[WARNING\] Distribution network node=(?P<node>\d+), network=(?P<name>\S+), '
+    r'year=(?P<year>\S+), day=(?P<day>\S+) did not converge: (?P<summary>.+)$')
+_CTX_RE = re.compile(r'^(?P<name>.+), year=(?P<year>.+), day=(?P<day>.+)$')
+
+
+def _parse_ctx(ctx):
+    m = _CTX_RE.match(ctx.strip())
+    if not m:
+        return ctx.strip(), None, None
+    return m.group('name'), m.group('year'), m.group('day')
+
+
+def _new_network_block(name, year, day, name_to_agent):
+    agent, node_id = name_to_agent.get(name, (None, None))
+    return {
+        'network_name': name, 'year': year, 'day': day, 'agent': agent, 'node_id': node_id,
+        'cycles_seen': set(), 'recovery_attempted': False, 'recovery_succeeded': False,
+        'final_unrecovered': False, 'final_summary': None,
+        'primary_log': None, 'recovery_log': None,
+    }
+
+
+def _last_exit_and_iterations(log_path):
+    """Network IPOPT logs stay CUMULATIVE across the whole run (`file_append='yes'`,
+    network.py -- unaffected by the P5.15-F ESSO-only fix), with no per-cycle filename
+    stamp. This is therefore a SNAPSHOT of the log's own last EXIT/iteration count at
+    scan time, not a guaranteed per-cycle isolate -- documented, not silently assumed."""
+    if not log_path or not os.path.exists(log_path):
+        return None, None
+    text = open(log_path, 'r', errors='replace').read()
+    exits = re.findall(r'^EXIT:\s*(.+)$', text, re.MULTILINE)
+    iters = re.findall(r'^Number of Iterations\.+:\s*(\d+)', text, re.MULTILINE)
+    return (exits[-1] if exits else None), (int(iters[-1]) if iters else None)
+
+
+def _scan_network_failures(stdout_path, planning_problem):
+    if not os.path.exists(stdout_path):
+        return []
+    name_to_agent = {}
+    tso_name = getattr(planning_problem.transmission_network, 'name', None)
+    if tso_name:
+        name_to_agent[tso_name] = ('TSO', None)
+    for node_id, dso in planning_problem.distribution_networks.items():
+        name_to_agent[dso.name] = ('DSO', node_id)
+
+    blocks = {}
+    current_cycle = 'init'
+    with open(stdout_path, 'r', errors='replace') as handle:
+        lines = handle.readlines()
+    for line in lines:
+        m = _CYCLE_LINE_RE.match(line)
+        if m:
+            current_cycle = int(m.group(1))
+            continue
+        m = _NET_FAIL_RE.match(line)
+        if m:
+            name, year, day = _parse_ctx(m.group('ctx'))
+            block = blocks.setdefault((name, year, day),
+                                      _new_network_block(name, year, day, name_to_agent))
+            block['cycles_seen'].add(current_cycle)
+            continue
+        m = _NET_RETRY_RE.match(line)
+        if m:
+            name, year, day = _parse_ctx(m.group('ctx'))
+            block = blocks.setdefault((name, year, day),
+                                      _new_network_block(name, year, day, name_to_agent))
+            block['recovery_attempted'] = True
+            continue
+        m = _NET_RECOVER_OK_RE.match(line)
+        if m:
+            name, year, day = _parse_ctx(m.group('ctx'))
+            block = blocks.setdefault((name, year, day),
+                                      _new_network_block(name, year, day, name_to_agent))
+            block['recovery_succeeded'] = True
+            continue
+        m = _NET_LOG_RE.match(line)
+        if m:
+            name, year, day = _parse_ctx(m.group('ctx'))
+            block = blocks.setdefault((name, year, day),
+                                      _new_network_block(name, year, day, name_to_agent))
+            if 'recovery' in m.group('label'):
+                block['recovery_log'] = m.group('path').strip()
+            else:
+                block['primary_log'] = m.group('path').strip()
+            continue
+        m = _TSO_FINAL_RE.match(line)
+        if m:
+            key = (m.group('name'), m.group('year'), m.group('day'))
+            block = blocks.setdefault(
+                key, _new_network_block(m.group('name'), m.group('year'), m.group('day'),
+                                        name_to_agent))
+            block['final_unrecovered'] = True
+            block['final_summary'] = m.group('summary')
+            continue
+        m = _DSO_FINAL_RE.match(line)
+        if m:
+            key = (m.group('name'), m.group('year'), m.group('day'))
+            block = blocks.setdefault(
+                key, _new_network_block(m.group('name'), m.group('year'), m.group('day'),
+                                        name_to_agent))
+            block['final_unrecovered'] = True
+            block['final_summary'] = m.group('summary')
+            block['agent'] = 'DSO'
+            block['node_id'] = int(m.group('node'))
+            continue
+
+    out = []
+    for block in blocks.values():
+        primary_exit, primary_iters = _last_exit_and_iterations(block['primary_log'])
+        recovery_exit, recovery_iters = _last_exit_and_iterations(block['recovery_log'])
+        if block['final_unrecovered']:
+            cls = 'unrecovered'
+        elif block['recovery_succeeded']:
+            cls = 'recovered'
+        elif block['recovery_attempted']:
+            cls = 'unrecovered'
+        else:
+            cls = 'not_attempted'
+        record = dict(block)
+        record['cycles_seen'] = sorted(str(c) for c in block['cycles_seen'])
+        record['primary_exit'] = primary_exit
+        record['primary_iterations'] = primary_iters
+        record['recovery_exit'] = recovery_exit
+        record['recovery_iterations'] = recovery_iters
+        record['class'] = cls
+        record['record_type'] = 'network_block'
+        out.append(record)
+    return out
+
+
+def _scan_frozen_snapshots(results_dir, run_started):
+    frozen_dir = os.path.join(results_dir, 'FrozenSMOPF')
+    out = []
+    if not os.path.isdir(frozen_dir):
+        return out
+    for fname in sorted(os.listdir(frozen_dir)):
+        if not fname.endswith('.pkl'):
+            continue
+        fpath = os.path.join(frozen_dir, fname)
+        try:
+            mtime = os.path.getmtime(fpath)
+        except OSError:
+            continue
+        if mtime < run_started:
+            continue  # pre-existing residue from an earlier run, not this one
+        entry = {'record_type': 'frozen_snapshot', 'path': fpath, 'filename': fname,
+                 'mtime_utc': datetime.fromtimestamp(mtime, tz=timezone.utc).isoformat()}
+        try:
+            with open(fpath, 'rb') as handle:
+                payload = pickle.load(handle)
+            entry['metadata'] = payload.get('metadata')
+        except Exception as error:
+            entry['metadata_error'] = f'{type(error).__name__}: {error}'
+        out.append(entry)
+    return out
+
+
+def _scan_and_write_network_failures(hook_state, planning_problem):
+    blocks = _scan_network_failures(hook_state['stdout_path'], planning_problem)
+    frozen = _scan_frozen_snapshots(planning_problem.results_dir, hook_state['started'])
+    esso_events = hook_state.get('esso_recovery_events', [])
+    tmp = f"{hook_state['network_failures_path']}.tmp{os.getpid()}"
+    with open(tmp, 'w') as handle:
+        for record in blocks:
+            handle.write(json.dumps(record, default=str) + '\n')
+        for event in esso_events:
+            tagged = dict(event)
+            tagged['record_type'] = 'esso_recovery'
+            handle.write(json.dumps(tagged, default=str) + '\n')
+        for record in frozen:
+            handle.write(json.dumps(record, default=str) + '\n')
+    os.replace(tmp, hook_state['network_failures_path'])
+    hook_state['network_failures_so_far'] = len(blocks)
+    return blocks, frozen, esso_events
+
+
+# ======================================================================================
+#  Addendum 6 items 3/4 -- wrapper hooks (heartbeat + ESSO capture), harness-only
+# ======================================================================================
+
+@contextmanager
+def esso_capture_hooks(planning, hook_state):
+    """Wraps `shared_resources_planning.create_shared_energy_storage_model` (the ADMM
+    -initialization ESSO solve, `cycle=None` -> stamped 'init') and
+    `update_shared_energy_storages_coordination_model_and_solve` (one call per ADMM
+    cycle, `cycle=iter`). NOT a production-code change: `shared_resources_planning.py`
+    on disk is untouched; this reassigns the module's two names for the lifetime of one
+    process-local `with` block, the same convention `p58_rescale.patched_admm_objectives`
+    already uses."""
+    original_create = srp.create_shared_energy_storage_model
+    original_update = srp.update_shared_energy_storages_coordination_model_and_solve
+    sed = planning.shared_ess_data
+
+    def _after_round(models, cycle_label):
+        n_nodes = len(models)
+        tail = list(sed.esso_complementarity_diagnostics)[-n_nodes:] if n_nodes else []
+        by_node = {}
+        for entry in tail:
+            by_node[entry['node_id']] = entry
+        leak_records = _capture_esso_solve(
+            sed, models, by_node, hook_state['esso_capture_dir'], cycle_label, hook_state)
+        with open(hook_state['leak_path'], 'a') as handle:
+            for rec in leak_records:
+                handle.write(json.dumps(rec, default=str) + '\n')
+        hook_state['esso_solves_so_far'] = len(sed.esso_complementarity_diagnostics)
+
+        total_recovery = list(sed.solver_recovery_diagnostics)
+        new_events = total_recovery[hook_state['_esso_recovery_seen_count']:]
+        for event in new_events:
+            tagged = dict(event)
+            tagged['cycle'] = cycle_label
+            tagged['family'] = 'esso'
+            hook_state.setdefault('esso_recovery_events', []).append(tagged)
+        hook_state['_esso_recovery_seen_count'] = len(total_recovery)
+
+    def patched_create(shared_ess_data, consensus_vars, candidate_solution):
+        esso_model, results = original_create(shared_ess_data, consensus_vars, candidate_solution)
+        _after_round(esso_model, 'init')
+        return esso_model, results
+
+    def patched_update(planning_problem, models, ess_req, dual_ess, params,
+                        from_warm_start=False, cycle=None):
+        res = original_update(planning_problem, models, ess_req, dual_ess, params,
+                              from_warm_start=from_warm_start, cycle=cycle)
+        cycle_label = f'{cycle:03d}' if isinstance(cycle, int) else str(cycle)
+        _after_round(models, cycle_label)
+        _atomic_write_json(hook_state['heartbeat_path'], {
+            'cycle': cycle,
+            'utc_timestamp': datetime.now(timezone.utc).isoformat(),
+            'wall_s': time.time() - hook_state['started'],
+            'esso_solves_so_far': hook_state['esso_solves_so_far'],
+            'network_failures_so_far': hook_state.get('network_failures_so_far', 0),
+        })
+        _scan_and_write_network_failures(hook_state, planning_problem)
+        return res
+
+    srp.create_shared_energy_storage_model = patched_create
+    srp.update_shared_energy_storages_coordination_model_and_solve = patched_update
+    hook_state['installed'] = True
+    try:
+        yield
+    finally:
+        srp.create_shared_energy_storage_model = original_create
+        srp.update_shared_energy_storages_coordination_model_and_solve = original_update
+
+
+def assert_g_capture_paths(sed, planning, hook_state):
+    """RULE ELEVEN, extended per Addendum 6 item 7: production `logs_dir` set and
+    absolute on planning/ESSO/TSO; the wrapper hooks installed; the output root fresh;
+    the ESSO IPOPT Suffixes present on a freshly-built (UNSOLVED) probe subproblem
+    (`SED._build_subproblem`, a real production function, called standalone -- no
+    `.solve()`, so the solve-profile guard is untouched)."""
     missing = []
     if not hasattr(sed, 'esso_complementarity_diagnostics'):
         missing.append('shared_ess_data.esso_complementarity_diagnostics missing')
@@ -147,10 +657,37 @@ def assert_g_capture_paths(sed):
         missing.append('shared_energy_storage_data._get_esso_complementarity_diagnostics missing')
     if not hasattr(SED, 'EPS_ESSO_THROUGHPUT'):
         missing.append('shared_energy_storage_data.EPS_ESSO_THROUGHPUT missing')
+    if not (planning.logs_dir and os.path.isabs(planning.logs_dir)):
+        missing.append(f'planning.logs_dir not absolute/set: {planning.logs_dir!r}')
+    if not (sed.logs_dir and os.path.isabs(sed.logs_dir)):
+        missing.append(f'shared_ess_data.logs_dir not absolute/set: {sed.logs_dir!r}')
+    tso_logs_dir = getattr(planning.transmission_network, 'logs_dir', None)
+    if not (tso_logs_dir and os.path.isabs(tso_logs_dir)):
+        missing.append(f'transmission_network.logs_dir not absolute/set: {tso_logs_dir!r}')
+    if not hook_state.get('installed'):
+        missing.append('wrapper hooks (create_shared_energy_storage_model / '
+                       'update_shared_energy_storages_coordination_model_and_solve) not installed')
+    if not hook_state.get('out_dir_was_fresh'):
+        missing.append(f"output root was not verified fresh before writing: {hook_state.get('out_dir')}")
+    active_nodes = list(sed.active_distribution_network_nodes)
+    if not active_nodes:
+        missing.append('no active_distribution_network_nodes to probe ESSO suffixes')
+    else:
+        try:
+            probe_model = SED._build_subproblem(sed, active_nodes[0])
+            for suffix_name in ('ipopt_zL_out', 'ipopt_zU_out', 'dual'):
+                if not hasattr(probe_model, suffix_name):
+                    missing.append(f'ESSO subproblem model missing suffix {suffix_name}')
+            del probe_model
+        except Exception as error:
+            missing.append(f'could not probe ESSO subproblem suffixes: '
+                           f'{type(error).__name__}: {error}')
     if missing:
         raise AssertionError('RULE ELEVEN (gate detector): capture paths missing -> '
                               + '; '.join(missing))
-    return {'esso_complementarity_diagnostics_sink': True, 'asserted_before_run': True}
+    return {'esso_complementarity_diagnostics_sink': True, 'asserted_before_run': True,
+            'logs_dir_absolute': True, 'hooks_installed': True, 'output_root_fresh': True,
+            'esso_suffixes_present': True}
 
 
 def _group_diagnostics_by_round(diagnostics, n_active_nodes, cycles_run):
@@ -200,31 +737,64 @@ def _group_diagnostics_by_round(diagnostics, n_active_nodes, cycles_run):
     }
 
 
-def run_admm_arm(label, out_dir, k_override=None, investment_map=None):
+def run_admm_arm(label, out_dir, k_override=None, investment_map=None,
+                  num_max_iters_override=None, eval_id=None):
     """One full cold ADMM arm through the production path, reusing p514_n's own
     module-level constants and capture helpers verbatim. `investment_map`, if given,
     overrides the uniform S_INV/E_INV assignment for specific node_ids (others left at
     N.S_INV/N.E_INV for the control/perturbation arms, or at the harness's default 0/0
     if this is a fresh candidate); pass a full dict {node_id: (s, e)} covering every
-    active node to avoid ambiguity (this is what G3's full eval does)."""
+    active node to avoid ambiguity (this is what G3's full eval does).
+
+    `num_max_iters_override` is a SMOKE-TEST-ONLY parameter (Addendum 6 smoke test):
+    the `g1` CLI arm never passes it, so `N.CAP` (90) remains the C* control cap for the
+    real campaign.
+    """
     os.makedirs(out_dir, exist_ok=True)
+
+    # Addendum 6: these NEW artifacts are labeled per arm (see module docstring) so that
+    # g2/g4b/g3_full, which share `OUT` across separate process invocations, cannot
+    # collide with one another or with g1.
+    heartbeat_path = os.path.join(out_dir, f'heartbeat_{label}.json')
+    stdout_path = os.path.join(out_dir, f'stdout_{label}.log')
+    leak_path = os.path.join(out_dir, f'leak_classification_{label}.jsonl')
+    network_failures_path = os.path.join(out_dir, f'network_failures_{label}.jsonl')
+    esso_capture_dir = os.path.join(out_dir, 'esso_capture', label)
+    for path in (heartbeat_path, stdout_path, leak_path, network_failures_path):
+        _refuse_overwrite(path)
+    if os.path.exists(esso_capture_dir):
+        raise RuntimeError(f'refusing to reuse a non-fresh ESSO capture dir: {esso_capture_dir}')
+
     checklist = N.assert_capture_paths_exist()
     started = time.time()
     report = {'stage': 'P5.15 G1-G4', 'arm': label,
                'timestamp_utc': datetime.now(timezone.utc).isoformat(),
                'rule_eleven_checklist': checklist}
+    hook_state = {
+        'started': started, 'out_dir': out_dir, 'out_dir_was_fresh': True,
+        'installed': False, 'var_maps': {}, 'zL_checked': False,
+        'esso_solves_so_far': 0, 'network_failures_so_far': 0,
+        '_esso_recovery_seen_count': 0, 'esso_recovery_events': [],
+        'heartbeat_path': heartbeat_path, 'stdout_path': stdout_path,
+        'leak_path': leak_path, 'network_failures_path': network_failures_path,
+        'esso_capture_dir': esso_capture_dir,
+    }
     guard = SolveProfileGuard(N.PERMITTED, label=f'P5.15-G {label}').install()
     try:
-        with redirect_stdout(io.StringIO()):
-            planning = O.fresh_planning(f'p515g_{label}')
-            planning.params.admm.num_max_iters = N.CAP
+        with tee_stdout(stdout_path):
+            eval_name = eval_id if eval_id is not None else f'p515g_{label}'
+            if eval_id is not None and os.path.exists(os.path.join(O.WORK_DIR, eval_id)):
+                raise RuntimeError(
+                    f'refusing to start: eval dir already exists (network logs append): '
+                    f'{os.path.join(O.WORK_DIR, eval_id)}')
+            planning = O.fresh_planning(eval_name)
+            planning.params.admm.num_max_iters = (
+                num_max_iters_override if num_max_iters_override is not None else N.CAP)
             planning.params.admm.tol['objective']['rel'] = N.REL
             planning.shared_ess_data.params.budget = N.BUDGET
             RH.apply_rho_to_params(planning, N.RHO)
             RH.set_adaptive_penalty(planning, True)
             sed = planning.shared_ess_data
-            detector_checklist = assert_g_capture_paths(sed)
-            report['rule_eleven_checklist']['detector'] = detector_checklist
 
             if k_override is not None:
                 for year in sed.years:
@@ -251,26 +821,33 @@ def run_admm_arm(label, out_dir, k_override=None, investment_map=None):
             n_active_nodes = len(sed.active_distribution_network_nodes)
             report['active_distribution_network_nodes'] = list(sed.active_distribution_network_nodes)
 
-            # ---- IPOPT log isolation (NOT a production change) ----
-            # `shared_energy_storage_data._create_solver` writes each node's IPOPT log to
-            # a BARE RELATIVE filename (`optim_log_node_{node_id}.txt`, `file_append='yes'`)
-            # with no `logs_dir` awareness -- unlike `network.py:520-521`, which resolves
-            # `output_file` against `network.logs_dir` and is therefore already isolated.
-            # `unique_esso_logs()` gives every ESSO solve an ABSOLUTE, unique `output_file`
-            # via `option_overrides` (see its docstring for why `os.chdir` was tried first
-            # and reverted: it crashed a genuine TSO non-convergence's failure-snapshot
-            # capture, which builds its own save path from a RELATIVE
-            # `transmission_network.results_dir`). The process CWD is never changed.
-            ipopt_log_dir = os.path.join(out_dir, 'ipopt_logs', label)
-            if os.path.exists(ipopt_log_dir):
-                raise RuntimeError(f'refusing to reuse a non-fresh ipopt log dir: {ipopt_log_dir}')
-            with R.patched_admm_objectives(), unique_esso_logs(ipopt_log_dir):
+            with R.patched_admm_objectives(), esso_capture_hooks(planning, hook_state):
+                detector_checklist = assert_g_capture_paths(sed, planning, hook_state)
+                report['rule_eleven_checklist']['detector'] = detector_checklist
                 _c, _results, models, _s, _p, state = planning.run_operational_planning(
                     type='distributed', candidate_solution=deepcopy(candidate),
                     print_results=False, debug_flag=False, return_state=True)
     finally:
         guard.uninstall()
         report['wall_clock_s'] = time.time() - started
+
+    # Addendum 6 item 6: one more network-failure scan "at the end", covering anything
+    # appended after the last ESSO-hook call (the ESSO solve is the last of each cycle,
+    # so this normally only catches the run's very last window).
+    final_blocks, final_frozen, final_esso_events = _scan_and_write_network_failures(
+        hook_state, planning)
+    report['network_failures_summary'] = {
+        'n_blocks': len(final_blocks),
+        'classes': {c: sum(1 for b in final_blocks if b['class'] == c)
+                    for c in ('recovered', 'unrecovered', 'not_attempted')},
+        'n_frozen_snapshots': len(final_frozen),
+        'n_esso_recovery_events': len(final_esso_events),
+        'path': os.path.relpath(network_failures_path, REPO),
+    }
+    report['heartbeat_path'] = os.path.relpath(heartbeat_path, REPO)
+    report['stdout_path'] = os.path.relpath(stdout_path, REPO)
+    report['leak_classification_path'] = os.path.relpath(leak_path, REPO)
+    report['esso_capture_dir'] = os.path.relpath(esso_capture_dir, REPO)
 
     rows = []
     prev_recourse = None
@@ -325,6 +902,7 @@ def run_admm_arm(label, out_dir, k_override=None, investment_map=None):
           f"(threshold {N.EFC_BINDING_THRESHOLD})")
     print(f"   detector grouping clean: {report['esso_complementarity_diagnostics_by_round']['grouping_clean']} "
           f"(observed {len(diagnostics)} / expected {n_active_nodes * (len(rows) + 1)})")
+    print(f"   network failures: {report['network_failures_summary']}")
     return report, path
 
 
@@ -346,14 +924,11 @@ def run_ladder_init(s_mva, out_dir):
 def _acquire_exclusive_run_lock():
     """P5.15 Planner guard (harness-only, NOT production).
 
-    This harness MUST NOT run concurrently with another copy of itself. The ESSO
-    writes its IPOPT log to a BARE RELATIVE filename with `file_append='yes'`
-    (`shared_energy_storage_data.py:1007-1014`), unlike `network.py:520-521`
-    which resolves `output_file` against `network.logs_dir`. Two concurrent
-    campaigns therefore interleave their solver output into the same file, and
-    `_parse_ipopt_barrier_terms` (first match, not last) returns the WRONG
-    `mu_final`/`s_obj` for every cycle -- silently producing a plausible but
-    fabricated per-cycle detector trajectory.
+    This harness MUST NOT run concurrently with another copy of itself. Two concurrent
+    campaigns writing into the same `logs_dir` risk interleaving their solver output
+    into the same per-solve log file, and the barrier-term parser (this file's
+    `_parse_both_barrier_columns`, and production's own `_parse_ipopt_barrier_terms`)
+    would then silently attribute the wrong `mu_final`/`s_obj` to a cycle.
 
     This has now happened three times: once destroying a G1 run, and twice when
     four gates (g1, g2, g4b, g3_full) were launched simultaneously. The results
@@ -383,7 +958,8 @@ if __name__ == '__main__':
     _acquire_exclusive_run_lock()
     gate = sys.argv[1] if len(sys.argv) > 1 else None
     if gate == 'g1':
-        run_admm_arm('control', OUT, k_override=None)
+        _require_fresh_output_root(OUT_G1)
+        run_admm_arm('control', OUT_G1, k_override=None, eval_id='p515g1_control')
     elif gate == 'g2':
         run_admm_arm('k10000', OUT, k_override=10000.0)
     elif gate == 'g4b':
