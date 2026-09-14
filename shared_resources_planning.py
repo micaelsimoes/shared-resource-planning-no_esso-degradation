@@ -37,9 +37,25 @@ class SharedResourcesPlanning:
         self.market_data_file = str()
         self.num_market_scenarios = int()
         self.plot_market_data = bool()
-        self.results_dir = os.path.join(data_dir, 'Results')
-        self.diagrams_dir = os.path.join(data_dir, 'Diagrams')
-        self.logs_dir = os.path.join(self.results_dir, 'Logs')
+        # P5.15-F (PLANNER_BRIEF_2026-09-13.md Addendum 5 item 4,
+        # P5_15_G1_G4_BLOCKED.md): resolved to an ABSOLUTE path at
+        # construction, before any caller can change the process cwd. `data_dir`
+        # itself may be relative; `os.path.abspath` resolves it against the cwd
+        # at THIS point in time (construction), which is early -- before the
+        # ADMM loop's per-cycle solves run, and in particular before any
+        # `os.chdir` a harness might perform for log isolation (the isolation
+        # this fix's item 1 makes unnecessary). Every downstream `results_dir`
+        # (TSO, DSO, ESSO -- see `_read_planning_problem`, all assigned
+        # `= planning_problem.results_dir`) inherits the absolute path from
+        # this single point, so the failure-snapshot path
+        # (`_save_frozen_network_block`) is cwd-independent regardless of what
+        # any caller does later. Previously relative: this is what turned a
+        # recorded TSO failure into an aborted campaign
+        # (`FileNotFoundError: 'data'` at `_save_frozen_network_block`,
+        # `P5_15_G1_G4_BLOCKED.md`).
+        self.results_dir = os.path.abspath(os.path.join(data_dir, 'Results'))
+        self.diagrams_dir = os.path.abspath(os.path.join(data_dir, 'Diagrams'))
+        self.logs_dir = os.path.abspath(os.path.join(self.results_dir, 'Logs'))
         self.params_file = str()
         self.years = dict()
         self.days = dict()
@@ -2267,7 +2283,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         results['esso'] = update_shared_energy_storages_coordination_model_and_solve(
             planning_problem, esso_model,
             consensus_vars['ess']['z'], dual_vars['ess']['esso'],
-            admm_parameters, from_warm_start=from_warm_start
+            admm_parameters, from_warm_start=from_warm_start, cycle=iter
         )
 
         # Update the final block and evaluate convergence only after a complete cycle.
@@ -4492,58 +4508,90 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
 
 
 def _save_frozen_smopf_block(model, save_dir, node_id, network_name, year, day, cycle, from_warm_start):
+    # P5.15-F (PLANNER_BRIEF_2026-09-13.md Addendum 5 item 4,
+    # P5_15_G1_G4_BLOCKED.md): this is a diagnostic snapshot save, not part of
+    # what makes a local solve count as a failure (that is decided by the
+    # caller's own `_solver_result_succeeded` check, independently of this
+    # function). It must therefore never raise out into the ADMM loop -- on
+    # ANY exception (e.g. `os.makedirs`/`open` against an unwritable or,
+    # pre-item-4, a cwd-relative `save_dir`) it logs a clear `[WARNING]` with
+    # the exception and returns None; the failure itself is still recorded by
+    # the caller as before.
+    try:
+        os.makedirs(save_dir, exist_ok=True)
+        filename = f'frozen_DSO_node{node_id}_{network_name}_{year}_{day}_cycle{cycle}.pkl'
+        filepath = os.path.join(save_dir, filename)
+        payload = {
+            'metadata': {
+                'agent': 'DSO',
+                'node_id': node_id,
+                'network_name': network_name,
+                'year': year,
+                'day': day,
+                'cycle': cycle,
+                'from_warm_start': from_warm_start,
+            },
+            'model': model, # this is the PRE-SOLVE model, not the failed post-solve model.
+        }
 
-    os.makedirs(save_dir, exist_ok=True)
-    filename = f'frozen_DSO_node{node_id}_{network_name}_{year}_{day}_cycle{cycle}.pkl'
-    filepath = os.path.join(save_dir, filename)
-    payload = {
-        'metadata': {
-            'agent': 'DSO',
-            'node_id': node_id,
-            'network_name': network_name,
-            'year': year,
-            'day': day,
-            'cycle': cycle,
-            'from_warm_start': from_warm_start,
-        },
-        'model': model, # this is the PRE-SOLVE model, not the failed post-solve model.
-    }
+        with open(filepath, 'wb') as file:
+            pickle.dump(payload, file, protocol=pickle.HIGHEST_PROTOCOL)
 
-    with open(filepath, 'wb') as file:
-        pickle.dump(payload, file, protocol=pickle.HIGHEST_PROTOCOL)
+        print(f'[DEBUG][FROZEN SMOPF] Saved failing pre-solve block to {filepath}')
 
-    print(f'[DEBUG][FROZEN SMOPF] Saved failing pre-solve block to {filepath}')
-
-    return filepath
+        return filepath
+    except Exception as error:
+        print(
+            f'[WARNING][FROZEN SMOPF] Could not save failing pre-solve block for '
+            f'DSO node={node_id}, network={network_name}, year={year}, day={day}, '
+            f'cycle={cycle} to save_dir={save_dir}: {error!r}'
+        )
+        return None
 
 
 def _save_frozen_network_block(model, save_dir, agent, network_name, year, day, cycle, from_warm_start, result, label, node_id=None):
+    # P5.15-F (Addendum 5 item 4, P5_15_G1_G4_BLOCKED.md): same non-raising
+    # contract as `_save_frozen_smopf_block` above -- see that function's
+    # comment. This is the function whose `os.makedirs(save_dir, ...)` crashed
+    # the G1 campaign with `FileNotFoundError: [Errno 2] No such file or
+    # directory: 'data'` when `results_dir` was relative and the caller had
+    # changed cwd; item 4's absolute-`results_dir`-at-construction change
+    # (`SharedResourcesPlanning.__init__`) removes the relative-path cause,
+    # and this try/except removes the "aborts the campaign" consequence for
+    # any OTHER cause (permissions, disk full, etc.).
+    try:
+        os.makedirs(save_dir, exist_ok=True)
+        node_token = f'_node{node_id}' if node_id is not None else ''
+        filename = f'{label}_{agent}{node_token}_{network_name}_{year}_{day}_cycle{cycle}.pkl'
+        filepath = os.path.join(save_dir, filename)
+        payload = {
+            'metadata': {
+                'agent': agent,
+                'node_id': node_id,
+                'network_name': network_name,
+                'year': year,
+                'day': day,
+                'cycle': cycle,
+                'from_warm_start': from_warm_start,
+                'captured_outcome': solver_result_summary(result),
+                'label': label,
+            },
+            'model': model,  # This is the exact PRE-SOLVE model.
+        }
 
-    os.makedirs(save_dir, exist_ok=True)
-    node_token = f'_node{node_id}' if node_id is not None else ''
-    filename = f'{label}_{agent}{node_token}_{network_name}_{year}_{day}_cycle{cycle}.pkl'
-    filepath = os.path.join(save_dir, filename)
-    payload = {
-        'metadata': {
-            'agent': agent,
-            'node_id': node_id,
-            'network_name': network_name,
-            'year': year,
-            'day': day,
-            'cycle': cycle,
-            'from_warm_start': from_warm_start,
-            'captured_outcome': solver_result_summary(result),
-            'label': label,
-        },
-        'model': model,  # This is the exact PRE-SOLVE model.
-    }
+        with open(filepath, 'wb') as file:
+            pickle.dump(payload, file, protocol=pickle.HIGHEST_PROTOCOL)
 
-    with open(filepath, 'wb') as file:
-        pickle.dump(payload, file, protocol=pickle.HIGHEST_PROTOCOL)
+        print(f'[DEBUG][FROZEN SMOPF] Saved {label} pre-solve block to {filepath}')
 
-    print(f'[DEBUG][FROZEN SMOPF] Saved {label} pre-solve block to {filepath}')
-
-    return filepath
+        return filepath
+    except Exception as error:
+        print(
+            f'[WARNING][FROZEN SMOPF] Could not save {label} pre-solve block for '
+            f'agent={agent}, node_id={node_id}, network={network_name}, year={year}, '
+            f'day={day}, cycle={cycle} to save_dir={save_dir}: {error!r}'
+        )
+        return None
 
 
 def update_distribution_coordination_models_and_solve(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=False, parallel_execution=False, cycle=None):
@@ -4737,7 +4785,7 @@ def update_and_solve_dso(node_id, distribution_network, model, vmag_req, dual_vm
     return (node_id, res, model)
 
 
-def update_shared_energy_storages_coordination_model_and_solve(planning_problem, models, ess_req, dual_ess, params, from_warm_start=False):
+def update_shared_energy_storages_coordination_model_and_solve(planning_problem, models, ess_req, dual_ess, params, from_warm_start=False, cycle=None):
 
     print('[INFO] \t\t - Updating SharedESS...')
     shared_ess_data = planning_problem.shared_ess_data
@@ -4763,7 +4811,9 @@ def update_shared_energy_storages_coordination_model_and_solve(planning_problem,
                     models[node_id].dual_q_req[y, d, p].set_value(dual_q_req)
 
     # Solve!
-    res = shared_ess_data.optimize(models, from_warm_start=from_warm_start)
+    # P5.15-F (Addendum 5 item 2): `cycle` stamps the per-solve ESSO IPOPT log
+    # filename (see `_create_solver`, shared_energy_storage_data.py).
+    res = shared_ess_data.optimize(models, from_warm_start=from_warm_start, cycle=cycle)
     for node_id in planning_problem.active_distribution_network_nodes:
         if not _solver_result_succeeded(res[node_id]):
             print(
@@ -6130,6 +6180,14 @@ def _read_planning_problem(planning_problem):
     shared_ess_data.name = planning_problem.name
     shared_ess_data.data_dir = planning_problem.data_dir
     shared_ess_data.results_dir = planning_problem.results_dir
+    # P5.15-F (Addendum 5 item 1): pushed the same way `distribution_network.logs_dir`
+    # / `transmission_network.logs_dir` are pushed above (lines ~6044, ~6088) --
+    # `_create_solver` (shared_energy_storage_data.py) resolves the ESSO's IPOPT
+    # `output_file` against it, exactly as `network.py:520-521` already does for
+    # the TSO/DSO. `p56a_oracle.fresh_planning` already reassigns it on
+    # `planning.shared_ess_data` like the network logs_dirs (guarded by
+    # `hasattr`), so no change was needed there.
+    shared_ess_data.logs_dir = planning_problem.logs_dir
     shared_ess_data.years = planning_problem.years
     shared_ess_data.days = planning_problem.days
     shared_ess_data.num_instants = planning_problem.num_instants

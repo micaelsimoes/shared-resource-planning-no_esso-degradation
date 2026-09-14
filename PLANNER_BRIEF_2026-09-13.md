@@ -388,6 +388,28 @@ conclusions drawn from it are amended:
 - Order: stage this round by name (lock file stays untracked) → fix + tests → zero-solve check →
   G1 → G2 → G3-full → G4, sequentially → `REVISION_CONTEXT.md` rewrite → stop.
 
+---
+
+# Addendum 6 — after `P5_15_EXPERT_HANDOFF_4.md` (2026-09-14)
+
+- Log fix and its three tests: **accepted.** The 51-solve deviation for the ladder re-run is
+  accepted as declared.
+- **Campaign launch:** one background run started through the tool itself, stderr captured,
+  lock guard on, exit notification; no `screen`/`nohup`/`&`. The harness writes a heartbeat
+  file (cycle, timestamp) every cycle.
+- **Commit the fix before G1.**
+- **At C\* quote the measured detector only.** Manuscript: the estimate is the fixture-validated
+  mechanism; the reported quantity is the measured per-solve detector.
+- **Finding 1 — the C\* leak is not barrier-set** (μ-insensitive). Add to G1's per-cycle
+  logging, per period and cohort: `pch`, `pdch`, `pnet`, and the IPOPT bound multipliers
+  `zL`/`zU` of both legs. Test per period: `zL_small·x_small ≈ μ` ⇒ barrier-set; otherwise the
+  O(1) multiplier present (upper bound of the large leg, SoH-floor price through `D`, warm-start
+  push not decayed) names the mechanism. Characterization only; not a blocker (≈0.05 %
+  spurious throughput at 2.6e-5).
+- The Addendum 5 `s_obj` explanation of the 5× gap is **withdrawn** (`s_obj = 0.1` on both
+  paths; `tol = 1e-8` in force). The gap is covered by the same capture.
+- Order: commit → G1 (with capture) → G2 → G3-full → G4 → `REVISION_CONTEXT.md` rewrite → stop.
+
 ## Update obligations
 
 At the end of Step 1 the Planner rewrites the "CURRENT SOURCE OF TRUTH" head of

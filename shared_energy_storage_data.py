@@ -20,6 +20,16 @@ class SharedEnergyStorageData:
         self.name = str()
         self.data_dir = str()
         self.results_dir = str()
+        # P5.15-F (PLANNER_BRIEF_2026-09-13.md Addendum 5): ESSO IPOPT logs now
+        # resolve against this directory, the same way network.py resolves
+        # `output_file` against `network.logs_dir`. Propagated from
+        # `planning_problem.logs_dir` in `_read_planning_problem`
+        # (shared_resources_planning.py), and reassigned by
+        # `p56a_oracle.fresh_planning` like the network logs_dirs. Empty by
+        # default (str()): callers that never set it keep the pre-fix
+        # behaviour of writing into the process cwd -- documented fallback,
+        # not a silent default.
+        self.logs_dir = str()
         self.plots_dir = str()
         self.data_file = str()
         self.params_file = str()
@@ -51,9 +61,16 @@ class SharedEnergyStorageData:
 
     def optimize_master_problem(self, model, from_warm_start=False):
         print('[INFO] \t\t - Running Shared ESS optimization (master problem)...')
-        return _optimize(model, self.params.lp_solver_params, from_warm_start=from_warm_start)
+        return _optimize(model, self.params.lp_solver_params, from_warm_start=from_warm_start,
+                          logs_dir=self.logs_dir)
 
-    def optimize(self, models, from_warm_start=False):
+    def optimize(self, models, from_warm_start=False, cycle=None):
+        # P5.15-F (PLANNER_BRIEF_2026-09-13.md Addendum 5): `cycle` stamps the
+        # per-solve IPOPT log filename (see `_create_solver`) so the per-cycle
+        # detector trajectory is a directory listing, not a parse. `cycle=None`
+        # is the documented fallback -- the initialization call site
+        # (`create_shared_energy_storage_model`) does not pass it and gets the
+        # 'init' stamp; every ADMM-loop call site passes `cycle=iter`.
         print('[INFO] \t\t - Running Shared ESS optimization (subproblem)...')
         results = dict()
         for node_id in self.active_distribution_network_nodes:
@@ -72,6 +89,8 @@ class SharedEnergyStorageData:
                 # correct site.
                 option_overrides=ESSO_TOL_OVERRIDES,
                 complementarity_diagnostics_sink=self.esso_complementarity_diagnostics,
+                cycle=cycle,
+                logs_dir=self.logs_dir,
             )
         return results
 
@@ -981,7 +1000,8 @@ def _get_salvage_value_results(shared_ess_data, models):
 ESSO_TOL_OVERRIDES = {'tol': 1e-8, 'acceptable_tol': 1e-7}
 
 
-def _create_solver(model, params, from_warm_start=False, node_id=None, option_overrides=None, log_suffix=None):
+def _create_solver(model, params, from_warm_start=False, node_id=None, option_overrides=None, log_suffix=None,
+                    cycle=None, logs_dir=None):
 
     solver = po.SolverFactory(params.solver, executable=params.solver_path)
     options = dict()
@@ -1005,14 +1025,66 @@ def _create_solver(model, params, from_warm_start=False, node_id=None, option_ov
     solver_log_path = None
     if params.solver.lower() == 'ipopt':
         if 'output_file' not in options:
+            # P5.15-F (PLANNER_BRIEF_2026-09-13.md Addendum 5 item 2): one log
+            # file per ESSO solve, stamped by node and cycle. `cycle=None` (the
+            # documented fallback for callers that do not pass it, in
+            # particular the initialization call site
+            # `create_shared_energy_storage_model`) stamps 'init'; every
+            # ADMM-loop call site threads `cycle=iter`
+            # (`update_shared_energy_storages_coordination_model_and_solve`).
+            # This makes the per-cycle detector trajectory
+            # (`esso_complementarity_diagnostics`) a directory listing, not a
+            # parse of one accumulating file.
+            stamp = f'cycle{cycle:03d}' if isinstance(cycle, int) else 'init'
             options['output_file'] = (
-                f'optim_log_node_{node_id}.txt' if node_id is not None else 'optim_log.txt'
+                f'optim_log_esso_node{node_id}_{stamp}.txt' if node_id is not None
+                else f'optim_log_esso_master_{stamp}.txt'
             )
         if log_suffix:
             path_stem, path_extension = os.path.splitext(options['output_file'])
             options['output_file'] = f'{path_stem}_{log_suffix}{path_extension}'
-        options['file_append'] = 'yes'
-        solver_log_path = os.path.abspath(options['output_file'])
+
+        # P5.15-F (Addendum 5 item 1): resolve against the same logs directory
+        # `network.py` resolves `output_file` against (`network.py:520-521`),
+        # instead of the bare relative filename this used to be (the defect
+        # `P5_15_G1_G4_BLOCKED.md` identified: the ESSO was the only solver
+        # family without log-directory isolation, which forced every P5.15
+        # harness to `os.chdir` -- the `os.chdir` window is what let a TSO
+        # failure crash the campaign against a now-relative `results_dir`,
+        # see item below). `logs_dir` falsy (the `str()` default from
+        # `SharedEnergyStorageData.__init__`, or a caller that never set it,
+        # e.g. a historical harness) is the documented backward-compatible
+        # fallback: resolve exactly as before this fix, against the process
+        # cwd. `os.path.join` with an already-absolute `output_file` (as some
+        # harnesses set via `option_overrides`) discards `logs_dir` and keeps
+        # the caller's absolute path, so this is a no-op for those callers.
+        if logs_dir:
+            os.makedirs(logs_dir, exist_ok=True)
+            candidate_path = os.path.join(logs_dir, options['output_file'])
+        else:
+            candidate_path = options['output_file']
+        resolved_path = os.path.abspath(candidate_path)
+
+        # P5.15-F (Addendum 5 item 2): a fresh file per solve -- `file_append`
+        # is no longer relied on for isolation. If the stamped name already
+        # exists (e.g. a re-run reusing the same node/cycle against the same
+        # logs_dir), do not silently append to it: choose a non-colliding
+        # name and say so.
+        if os.path.exists(resolved_path):
+            path_stem, path_extension = os.path.splitext(resolved_path)
+            dup = 2
+            while os.path.exists(f'{path_stem}_dup{dup}{path_extension}'):
+                dup += 1
+            new_resolved_path = f'{path_stem}_dup{dup}{path_extension}'
+            print(
+                f'[WARNING] ESSO IPOPT log already exists, NOT appending: {resolved_path} -- '
+                f'writing to {new_resolved_path} instead.'
+            )
+            resolved_path = new_resolved_path
+
+        options['output_file'] = resolved_path
+        options['file_append'] = 'no'
+        solver_log_path = resolved_path
 
     for key, value in options.items():
         solver.options[key] = value
@@ -1040,7 +1112,8 @@ def _create_solver(model, params, from_warm_start=False, node_id=None, option_ov
     return solver, solver_log_path
 
 
-def _run_solver_attempt(model, params, solve_context, from_warm_start=False, node_id=None, option_overrides=None, log_suffix=None):
+def _run_solver_attempt(model, params, solve_context, from_warm_start=False, node_id=None, option_overrides=None,
+                         log_suffix=None, cycle=None, logs_dir=None):
 
     solver, solver_log_path = _create_solver(
         model,
@@ -1049,6 +1122,8 @@ def _run_solver_attempt(model, params, solve_context, from_warm_start=False, nod
         node_id=node_id,
         option_overrides=option_overrides,
         log_suffix=log_suffix,
+        cycle=cycle,
+        logs_dir=logs_dir,
     )
     result = None
     try:
@@ -1078,7 +1153,7 @@ def _format_solver_options(options):
 
 
 def _optimize(model, params, from_warm_start=False, node_id=None, diagnostic_sink=None,
-               option_overrides=None, complementarity_diagnostics_sink=None):
+               option_overrides=None, complementarity_diagnostics_sink=None, cycle=None, logs_dir=None):
 
     solve_context = f'ESS node={node_id}' if node_id is not None else 'master problem'
     # P5.15 Addendum 3 item 1: option_overrides (e.g. ESSO_TOL_OVERRIDES) only
@@ -1093,6 +1168,8 @@ def _optimize(model, params, from_warm_start=False, node_id=None, diagnostic_sin
         from_warm_start=from_warm_start,
         node_id=node_id,
         option_overrides=esso_option_overrides,
+        cycle=cycle,
+        logs_dir=logs_dir,
     )
     result = primary_result
     recovery_result = None
@@ -1144,6 +1221,8 @@ def _optimize(model, params, from_warm_start=False, node_id=None, diagnostic_sin
             node_id=node_id,
             option_overrides=recovery_options,
             log_suffix='recovery',
+            cycle=cycle,
+            logs_dir=logs_dir,
         )
         result = recovery_result if recovery_result is not None else primary_result
 
@@ -1788,6 +1867,17 @@ def _parse_ipopt_barrier_terms(log_path):
     SCALED `Complementarity` value; `s_obj` is the ratio of the scaled to the
     unscaled `Objective` value.
 
+    P5.15-F (Addendum 5 item 3, `P5_15_G1_G4_BLOCKED.md` third item): takes the
+    LAST `Objective`/`Complementarity` line in the log (`finditer`, not
+    `search`), not the first. With one fresh file per solve (this task's item
+    1/2) a log now normally holds exactly one IPOPT run, so first and last
+    coincide; this remains correct for the rare case a log was NOT freshly
+    isolated (`file_append` deliberately left in force by a caller via
+    `option_overrides`, or a pre-existing log from before this fix), where
+    `re.search`'s first-match behaviour previously reported the FIRST solve's
+    `mu_final`/`s_obj` for every later solve in the same file -- silently,
+    with plausible-looking numbers (`df46f118`, `P5_15_G1_G4_BLOCKED.md`).
+
     Returns (mu_final, s_obj, reason). `reason` is None on success. On any
     failure both values are None and `reason` states why -- this NEVER
     substitutes a default (e.g. s_obj = 0.1 is a measured constant of one
@@ -1796,12 +1886,14 @@ def _parse_ipopt_barrier_terms(log_path):
     if not log_path or not os.path.exists(log_path):
         return None, None, f'IPOPT log not found: {log_path}'
     text = open(log_path, 'r', errors='replace').read()
-    obj_match = _IPOPT_OBJECTIVE_LINE_RE.search(text)
-    comp_match = _IPOPT_COMPLEMENTARITY_LINE_RE.search(text)
-    if obj_match is None:
+    obj_matches = list(_IPOPT_OBJECTIVE_LINE_RE.finditer(text))
+    comp_matches = list(_IPOPT_COMPLEMENTARITY_LINE_RE.finditer(text))
+    if not obj_matches:
         return None, None, 'scaled/unscaled Objective line not found in IPOPT log'
-    if comp_match is None:
+    if not comp_matches:
         return None, None, 'scaled Complementarity line not found in IPOPT log'
+    obj_match = obj_matches[-1]
+    comp_match = comp_matches[-1]
     try:
         scaled_obj = float(obj_match.group(1))
         unscaled_obj = float(obj_match.group(2))

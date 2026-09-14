@@ -1,0 +1,18 @@
+=== T2 Part A: deliberately triggered TSO block failure, different cwd ===
+cwd_at_chdir_time /var/folders/hg/hctq266s7210qrp5fl0qkhyc0000gn/T/p515f_t2_cwd_plehv8g4
+tso_results_dir_before_chdir /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515F/t2_results
+tso_results_dir_is_absolute True
+target_block_forced (2025, 'Spring')
+forced_solver_attempt_calls 2
+completed_without_exception True
+error None
+wall_clock_s 78.57078504562378
+guard_counts {'permitted_solve': 104, 'permitted_exec': 104, 'blocked_solve': 0, 'blocked_exec': 0}
+frozen_smopf_dir /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515F/t2_results/FrozenSMOPF
+frozen_smopf_files ['failure_TSO_case9_2025_Spring_cycle1.pkl']
+failure_snapshot_files ['failure_TSO_case9_2025_Spring_cycle1.pkl']
+=== T2 Part B: _save_frozen_network_block against an unwritable save_dir ===
+[WARNING][FROZEN SMOPF] Could not save failure pre-solve block for agent=TSO, node_id=None, network=unit_test_network, year=2025, day=UnitTest, cycle=1 to save_dir=/var/folders/hg/hctq266s7210qrp5fl0qkhyc0000gn/T/p515f_t2_partb_lxyj1aoy/blocker/FrozenSMOPF: NotADirectoryError(20, 'Not a directory')
+unwritable_save_dir /var/folders/hg/hctq266s7210qrp5fl0qkhyc0000gn/T/p515f_t2_partb_lxyj1aoy/blocker/FrozenSMOPF
+_save_frozen_network_block return value None
+no_abort_path_ok (returned None, no exception propagated) True
