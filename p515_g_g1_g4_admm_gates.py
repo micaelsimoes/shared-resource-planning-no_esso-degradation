@@ -399,6 +399,7 @@ def _capture_esso_solve(sed, models, node_diag, esso_capture_dir, cycle_label, h
                         pch = pe.value(pch_var)
                         pdch = pe.value(pdch_var)
                         pnet = pe.value(model.es_pnet[y, d, p])
+                        slack_pnet_up, slack_pnet_down = _esso_slack_values(sed, model, y, d, p)
                         zL_pch = model.ipopt_zL_out.get(pch_var)
                         zU_pch = model.ipopt_zU_out.get(pch_var)
                         zL_pdch = model.ipopt_zL_out.get(pdch_var)
@@ -419,6 +420,7 @@ def _capture_esso_solve(sed, models, node_diag, esso_capture_dir, cycle_label, h
                             'node_id': node_id, 'cycle': cycle_label,
                             'y_inv': y_inv, 'y': y, 'd': d, 'p': p,
                             'pch': pch, 'pdch': pdch, 'pnet': pnet, 's_max': s_max,
+                            'slack_pnet_up': slack_pnet_up, 'slack_pnet_down': slack_pnet_down,
                             'zL_pch': zL_pch, 'zU_pch': zU_pch,
                             'zL_pdch': zL_pdch, 'zU_pdch': zU_pdch,
                             'duals': duals, 'r': r, 'class': _classify_r(r),
@@ -1312,6 +1314,31 @@ def _acquire_exclusive_run_lock():
     atexit.register(lambda: os.path.exists(lock_path) and os.remove(lock_path))
 
 
+def _esso_slack_values(sed, model, y, d, p):
+    """P5.15 Addendum 7 item 1 (G2 re-run): ESSO aggregate-row slack values per period.
+
+    `es_pnet[y,d,p] == sum_cohort(pch - pdch) + slack_es_pnet_up - slack_es_pnet_down` when the
+    ESSO slacks are enabled. Captured so the slack-dominated initialization (SoH floor binding)
+    is measured rather than inferred from duals. Fails fast (rule eleven) if the ESSO declares
+    slacks but the variables are missing; returns (None, None) only when slacks are disabled."""
+    slacks_enabled = bool(getattr(sed.params, 'slacks', False))
+    has_vars = hasattr(model, 'slack_es_pnet_up') and hasattr(model, 'slack_es_pnet_down')
+    if slacks_enabled and not has_vars:
+        raise RuntimeError('STOP (rule eleven): ESSO slacks enabled but slack_es_pnet_up/down '
+                           'missing on the model; cannot capture slack values.')
+    if not has_vars:
+        return None, None
+    return (pe.value(model.slack_es_pnet_up[y, d, p], exception=False),
+            pe.value(model.slack_es_pnet_down[y, d, p], exception=False))
+
+
+# P5.15 Addendum 7 item 1 — G2 re-run: G2's configuration (k = 10,000 on C*) under the NEW
+# default recovery policy (every network and the ESSO eligible, case33_1 included; tier 2 on),
+# with ESSO slack values captured per period.
+OUT_G2R = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515G2R')
+G2R_EVAL_ID = 'p515g2r_k10000'
+
+
 # ---------------------------------------------------------------------------------------
 # P5.15 Addendum 7 item 2 — ablation A (frozen spec data/SRP1/Results/P515A/
 # frozen_ablation_spec_v1_2271c77f.json): G1 configuration with Candidate 4 reverted, under
@@ -1351,6 +1378,19 @@ if __name__ == '__main__':
         print('[P5.15 ablation A] Candidate 4 reverted (day_balance=False on TSO and all DSOs); '
               'recovery G1-equivalent (tier2 off, node 5 ineligible)')
         run_admm_arm('ablation_a', OUT_ABL_A, k_override=None, eval_id=ABL_A_EVAL_ID)
+    elif gate == 'g2r':
+        _require_fresh_output_root(OUT_G2R)
+        _original_fresh_planning_g2r = O.fresh_planning
+
+        def _fresh_planning_g2r(eval_id):
+            planning = _original_fresh_planning_g2r(eval_id)
+            RH.set_recovery_policy(planning, enabled=True, tier2_enabled=True)
+            return planning
+
+        O.fresh_planning = _fresh_planning_g2r
+        print('[P5.15 G2 re-run] k=10000; recovery policy: all networks and ESSO enabled '
+              '(case33_1 included), tier 2 on; ESSO slack values captured')
+        run_admm_arm('k10000_r', OUT_G2R, k_override=10000.0, eval_id=G2R_EVAL_ID)
     elif gate == 'g1':
         _require_fresh_output_root(OUT_G1)
         run_admm_arm('control', OUT_G1, k_override=None, eval_id='p515g1_control')
