@@ -1332,6 +1332,24 @@ def _esso_slack_values(sed, model, y, d, p):
             pe.value(model.slack_es_pnet_down[y, d, p], exception=False))
 
 
+# ---------------------------------------------------------------------------------------
+# P5.15 Addendum 8 — ablation C (hypothesis H-epsilon), frozen spec
+# data/SRP1/Results/P515A/frozen_ablation_c_spec_v1_410f8262.json: G1 configuration with
+# EPS_ESSO_THROUGHPUT = 1e-5 instead of 1e-3, G1-equivalent recovery, so epsilon is the only
+# change. `_build_subproblem` and the leak diagnostics read the module global at call time.
+# ---------------------------------------------------------------------------------------
+OUT_ABL_C = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515A', 'run_c')
+ABL_C_EVAL_ID = 'p515a_eps_1e-5'
+ABL_C_EPS = 1e-5
+
+
+def _configure_ablation_c(planning):
+    SED.EPS_ESSO_THROUGHPUT = ABL_C_EPS
+    RH.set_recovery_policy(planning, enabled=True, tier2_enabled=False,
+                           node_overrides={5: {'enabled': False}})
+    return planning
+
+
 # P5.15 Addendum 7 item 1 — G2 re-run: G2's configuration (k = 10,000 on C*) under the NEW
 # default recovery policy (every network and the ESSO eligible, case33_1 included; tier 2 on),
 # with ESSO slack values captured per period.
@@ -1442,6 +1460,17 @@ if __name__ == '__main__':
         print('[P5.15 ablation B] Candidate 1 re-wired (sess_phi_limit_lower/upper restored); '
               'Candidate 4 as in G1; recovery G1-equivalent (tier2 off, node 5 ineligible)')
         run_admm_arm('ablation_b', OUT_ABL_B, k_override=None, eval_id=ABL_B_EVAL_ID)
+    elif gate == 'ablation_c':
+        _require_fresh_output_root(OUT_ABL_C)
+        _original_fresh_planning_c = O.fresh_planning
+
+        def _fresh_planning_ablation_c(eval_id):
+            return _configure_ablation_c(_original_fresh_planning_c(eval_id))
+
+        O.fresh_planning = _fresh_planning_ablation_c
+        print(f'[P5.15 ablation C] EPS_ESSO_THROUGHPUT = {ABL_C_EPS:g} (G1: 1e-3); '
+              'recovery G1-equivalent (tier2 off, node 5 ineligible)')
+        run_admm_arm('ablation_c', OUT_ABL_C, k_override=None, eval_id=ABL_C_EVAL_ID)
     elif gate == 'g2r':
         _require_fresh_output_root(OUT_G2R)
         _original_fresh_planning_g2r = O.fresh_planning
