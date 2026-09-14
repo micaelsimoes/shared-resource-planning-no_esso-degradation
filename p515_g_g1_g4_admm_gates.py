@@ -1364,6 +1364,59 @@ def _configure_ablation_a(planning):
     return planning
 
 
+# ---------------------------------------------------------------------------------------
+# P5.15 Addendum 7 item 2 — ablation B (authorized because A failed the frozen criterion,
+# data/SRP1/Results/P515A/ablation_a_evaluation.json): G1 configuration with Candidate 1
+# re-wired, Candidate 4 as in G1, G1-equivalent recovery.
+# ---------------------------------------------------------------------------------------
+OUT_ABL_B = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515A', 'run_b')
+ABL_B_EVAL_ID = 'p515a_candidate1_rewired'
+_CANDIDATE1_ROWS = ('sess_phi_limit_lower', 'sess_phi_limit_upper')
+
+
+def _rewire_candidate1(network_cls):
+    """Restore the pre-Step-1b shared-ESS power-factor rows without editing production.
+
+    Pre-1b `network.py` declared, right after `sess_active_sum_limit`,
+    `sess_phi_limit_lower/_upper = pe.Constraint(shared_energy_storages, scenarios_market,
+    scenarios_operation, periods, rule=partial(sess_phi_limits_lower/_upper, network=network))`,
+    and `_SHARED_ESS_OPERATIONAL_CONSTRAINTS` listed both after `sess_active_sum_limit`. The
+    callables were retained (unwired) for fixture unpickling. The activation loop in
+    `model_construction_helpers` reads that tuple by module-global name at call time, so
+    rebinding the module attribute takes effect."""
+    from functools import partial
+    import model_construction_helpers as MCH
+    if not getattr(network_cls, '_p515_candidate1_rewired', False):
+        original_build = network_cls.build_model
+
+        def build_model(self, params):
+            model = original_build(self, params)
+            if hasattr(model, 'sess_converter_capability') and not hasattr(model, 'sess_phi_limit_lower'):
+                index = (model.shared_energy_storages, model.scenarios_market,
+                         model.scenarios_operation, model.periods)
+                model.sess_phi_limit_lower = pe.Constraint(
+                    *index, rule=partial(MCH.sess_phi_limits_lower, network=self))
+                model.sess_phi_limit_upper = pe.Constraint(
+                    *index, rule=partial(MCH.sess_phi_limits_upper, network=self))
+            return model
+
+        network_cls.build_model = build_model
+        network_cls._p515_candidate1_rewired = True
+    names = [n for n in MCH._SHARED_ESS_OPERATIONAL_CONSTRAINTS if n not in _CANDIDATE1_ROWS]
+    position = names.index('sess_active_sum_limit') + 1
+    MCH._SHARED_ESS_OPERATIONAL_CONSTRAINTS = tuple(
+        names[:position] + list(_CANDIDATE1_ROWS) + names[position:])
+
+
+def _configure_ablation_b(planning):
+    tn = planning.transmission_network
+    sample_year = next(iter(tn.years)); sample_day = next(iter(tn.days))
+    _rewire_candidate1(type(tn.network[sample_year][sample_day]))
+    RH.set_recovery_policy(planning, enabled=True, tier2_enabled=False,
+                           node_overrides={5: {'enabled': False}})
+    return planning
+
+
 if __name__ == '__main__':
     _acquire_exclusive_run_lock()
     gate = sys.argv[1] if len(sys.argv) > 1 else None
@@ -1378,6 +1431,17 @@ if __name__ == '__main__':
         print('[P5.15 ablation A] Candidate 4 reverted (day_balance=False on TSO and all DSOs); '
               'recovery G1-equivalent (tier2 off, node 5 ineligible)')
         run_admm_arm('ablation_a', OUT_ABL_A, k_override=None, eval_id=ABL_A_EVAL_ID)
+    elif gate == 'ablation_b':
+        _require_fresh_output_root(OUT_ABL_B)
+        _original_fresh_planning_b = O.fresh_planning
+
+        def _fresh_planning_ablation_b(eval_id):
+            return _configure_ablation_b(_original_fresh_planning_b(eval_id))
+
+        O.fresh_planning = _fresh_planning_ablation_b
+        print('[P5.15 ablation B] Candidate 1 re-wired (sess_phi_limit_lower/upper restored); '
+              'Candidate 4 as in G1; recovery G1-equivalent (tier2 off, node 5 ineligible)')
+        run_admm_arm('ablation_b', OUT_ABL_B, k_override=None, eval_id=ABL_B_EVAL_ID)
     elif gate == 'g2r':
         _require_fresh_output_root(OUT_G2R)
         _original_fresh_planning_g2r = O.fresh_planning
