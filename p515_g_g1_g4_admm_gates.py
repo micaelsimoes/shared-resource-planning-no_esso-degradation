@@ -97,7 +97,9 @@ OUT_G1 = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515G1')
 # overwrite mechanism Fix 1 addresses -- one arm's `out_dir` must never collide with
 # another's).
 OUT_G2 = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515G2')
-OUT_G3F = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515G3F')
+# r2: the first G3-full attempt (P515G3F, eval ids p515g3f_node7 / p515g3f_probe) stopped on a
+# false pre-check and is preserved as a failed attempt; the re-run uses fresh names.
+OUT_G3F = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515G3F_r2')
 OUT_G4 = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515G4')
 
 # G2PREP Fix 1: the shared, PRESERVED FrozenSMOPF tree that must never be written to
@@ -360,7 +362,15 @@ def _capture_esso_solve(sed, models, node_diag, esso_capture_dir, cycle_label, h
             var_map = _build_esso_var_constraint_map(model)
             hook_state['var_maps'][node_id] = var_map
 
-        if not hook_state['zL_checked']:
+        # G3-full fix (Planner, 2026-09-14): a node with NO active cohort-periods (zero
+        # investment, e.g. nodes 5 and 9 in G3-full) has its pch/pdch fixed, so IPOPT
+        # correctly returns no bound multipliers for it. The pre-check must only judge a
+        # node that has active cohort-periods, and must not mark itself done otherwise.
+        node_has_active_periods = any(
+            (not model._esso_cohort_inactive.get(y_inv, False))
+            and SED._esso_cohort_pair_is_within_lifetime(model, y_inv, y)
+            for y_inv in model.years for y in model.years)
+        if not hook_state['zL_checked'] and node_has_active_periods:
             nonempty = any(
                 v.parent_component().name == 'es_pch_per_unit' for v in model.ipopt_zL_out
             )
@@ -1249,7 +1259,7 @@ if __name__ == '__main__':
         # candidate, no investment -- but still MUST NOT reuse an eval id that
         # already has a logs dir under O.WORK_DIR, since network IPOPT logs append).
         _require_fresh_output_root(OUT_G3F)
-        probe_eval_id = 'p515g3f_probe'
+        probe_eval_id = 'p515g3f_probe_r2'
         probe_eval_dir = os.path.join(O.WORK_DIR, probe_eval_id)
         if os.path.exists(probe_eval_dir):
             raise RuntimeError(
@@ -1266,7 +1276,7 @@ if __name__ == '__main__':
             raise RuntimeError(f'node 7 not in active_distribution_network_nodes={active_nodes}')
         investment_map[7] = (1.62, 3.24)
         run_admm_arm('g3_full_node7', OUT_G3F, k_override=None, investment_map=investment_map,
-                     eval_id='p515g3f_node7')
+                     eval_id='p515g3f_node7_r2')
     else:
         print(__doc__)
         sys.exit(1)
