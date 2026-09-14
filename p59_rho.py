@@ -112,6 +112,48 @@ def set_adaptive_penalty(planning, enabled):
     return before
 
 
+def set_recovery_policy(planning, enabled=True, tier2_enabled=True, node_overrides=None,
+                         include_tso=True, include_esso=True):
+    """P5.15 Addendum 7 Part 1 item 4 (PLANNER_BRIEF_2026-09-13.md): set
+    `recovery.enabled` / `recovery.tier2_enabled` (`solver_parameters.py`) on
+    every network's (and the ESSO's) `SolverParameters` on a deep-copy `planning`
+    object, before any solve -- no case-file edit, mirrors `apply_rho_to_params`/
+    `set_adaptive_penalty` above.
+
+    `enabled` / `tier2_enabled` are the DEFAULT applied to every DSO network, the
+    TSO (if `include_tso`) and the ESSO (if `include_esso`). `node_overrides` is
+    an optional `{node_id: {'enabled': bool, 'tier2_enabled': bool}}` dict for
+    per-DSO exceptions, e.g. `{5: {'enabled': False}}` to reproduce case33_1's
+    (node 5, `data/SRP1/SRP1.json` `connection_node_id`) pre-Part-1
+    ineligibility for the G1-equivalent-policy reproduction (Part 1 item 4 /
+    R2): `set_recovery_policy(planning, enabled=True, tier2_enabled=False,
+    node_overrides={5: {'enabled': False}})`.
+
+    Returns the previous `(enabled, tier2_enabled)` pairs keyed by
+    `'TSO'` / node_id / `'ESSO'`, so a caller can restore them.
+    """
+    node_overrides = node_overrides or {}
+    before = {}
+
+    def _apply(solver_params, record_key, override_key):
+        override = node_overrides.get(override_key, {})
+        e = override.get('enabled', enabled)
+        t2 = override.get('tier2_enabled', tier2_enabled)
+        before[record_key] = (getattr(solver_params, 'recovery_enabled', True),
+                               getattr(solver_params, 'recovery_tier2_enabled', True))
+        solver_params.recovery_enabled = bool(e)
+        solver_params.recovery_tier2_enabled = bool(t2)
+
+    if include_tso:
+        _apply(planning.transmission_network.params.solver_params, 'TSO', 'TSO')
+    for node_id, dso in planning.distribution_networks.items():
+        _apply(dso.params.solver_params, node_id, node_id)
+    if include_esso:
+        _apply(planning.shared_ess_data.params.solver_params, 'ESSO', 'ESSO')
+
+    return before
+
+
 def rho_snapshot(planning):
     admm = planning.params.admm
     return {'rho': {g: dict(admm.rho[g]) for g in admm.rho},

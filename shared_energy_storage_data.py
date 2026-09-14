@@ -1136,8 +1136,10 @@ def _run_solver_attempt(model, params, solve_context, from_warm_start=False, nod
 def _is_recoverable_shared_ess_failure(result, params, node_id):
     if node_id is None or params.solver.lower() != 'ipopt' or result is None:
         return False
-    recovery_options = getattr(params, 'recovery_options', None)
-    if not recovery_options or not hasattr(result, 'solver'):
+    # P5.15 Addendum 7 Part 1 item 1 (PLANNER_BRIEF_2026-09-13.md): eligibility
+    # is now the explicit `recovery.enabled` flag, independent of whether
+    # `recovery_options` happens to be populated.
+    if not getattr(params, 'recovery_enabled', True) or not hasattr(result, 'solver'):
         return False
     # P5.15-1a (PLANNER_BRIEF_2026-09-13.md Step 1a / Addendum 1): recovery now
     # also fires on maxIterations and infeasible, not only internalSolverError.
@@ -1174,7 +1176,12 @@ def _optimize(model, params, from_warm_start=False, node_id=None, diagnostic_sin
     result = primary_result
     recovery_result = None
     recovery_log_path = None
+    tier2_result = None
+    tier2_log_path = None
     recovery_attempted = _is_recoverable_shared_ess_failure(primary_result, params, node_id)
+    tier2_attempted = False
+    recovery_options = None
+    tier2_options = None
 
     if recovery_attempted:
         # P5.15-1a (PLANNER_BRIEF_2026-09-13.md Step 1a / Addendum 1): recovery
@@ -1186,7 +1193,7 @@ def _optimize(model, params, from_warm_start=False, node_id=None, diagnostic_sin
         # configuration in data/SRP1/SharedESS/SRP1_ESS_Params.json (not
         # edited -- reported to the Planner, see P5_15_1A_REPORT.md).
         recovery_options = {
-            key: value for key, value in params.recovery_options.items()
+            key: value for key, value in (params.recovery_options or {}).items()
             if key != 'hessian_approximation'
         }
         recovery_options['warm_start_init_point'] = 'no'
@@ -1226,6 +1233,44 @@ def _optimize(model, params, from_warm_start=False, node_id=None, diagnostic_sin
         )
         result = recovery_result if recovery_result is not None else primary_result
 
+        if not solver_result_succeeded(recovery_result):
+            # P5.15 Addendum 7 Part 1 item 2: tier-2 retry -- one further solve
+            # after a failed tier-1 cold retry, cold start + mu_strategy=adaptive,
+            # same other recovery options, only if `recovery.tier2_enabled` is on
+            # and the tier-1 failure is itself of a recoverable class.
+            tier2_attempted = (
+                getattr(params, 'recovery_tier2_enabled', True)
+                and _is_recoverable_shared_ess_failure(recovery_result, params, node_id)
+            )
+            if tier2_attempted:
+                print(
+                    f'[WARNING] Shared ESS recovery did not converge for {solve_context}: '
+                    f'{solver_result_summary(recovery_result)} | warm_start=False'
+                )
+                if recovery_log_path:
+                    print(f'[WARNING] IPOPT recovery log for {solve_context}: {recovery_log_path}')
+                tier2_options = dict(recovery_options)
+                tier2_options['mu_strategy'] = 'adaptive'
+                print(
+                    f'[INFO] Retrying Shared ESS solve (tier 2: cold, mu_strategy=adaptive) for '
+                    f'{solve_context}, with {_format_solver_options(tier2_options)}.'
+                )
+                model.ipopt_zL_in.clear()
+                model.ipopt_zU_in.clear()
+                model.dual.clear()
+                tier2_result, tier2_log_path = _run_solver_attempt(
+                    model,
+                    params,
+                    solve_context,
+                    from_warm_start=False,
+                    node_id=node_id,
+                    option_overrides=tier2_options,
+                    log_suffix='recovery_tier2',
+                    cycle=cycle,
+                    logs_dir=logs_dir,
+                )
+                result = tier2_result if tier2_result is not None else recovery_result
+
     if solver_result_succeeded(result):
         try:
             model.solutions.load_from(result)
@@ -1233,15 +1278,21 @@ def _optimize(model, params, from_warm_start=False, node_id=None, diagnostic_sin
             print(f'[WARNING] Shared ESS solution could not be loaded for {solve_context}: {error}')
             result = None
         if recovery_attempted and result is not None:
-            print(f'[INFO] Shared ESS recovery solve succeeded for {solve_context}.')
+            if tier2_attempted:
+                print(f'[INFO] Shared ESS tier-2 recovery solve succeeded for {solve_context}.')
+            else:
+                print(f'[INFO] Shared ESS recovery solve succeeded for {solve_context}.')
         # P5.15 Addendum 3 item 1b: log the complementarity-leak detector and
         # the closed-form spurious-throughput bound for every ESSO solve
         # (node_id is not None only for the ESSO subproblem, never the master
         # problem). Uses whichever log produced the loaded solution.
         if node_id is not None and params.solver.lower() == 'ipopt' and result is not None:
-            diagnostics_log_path = (
-                recovery_log_path if (recovery_attempted and recovery_result is not None) else primary_log_path
-            )
+            if tier2_attempted and tier2_result is not None:
+                diagnostics_log_path = tier2_log_path
+            elif recovery_attempted and recovery_result is not None:
+                diagnostics_log_path = recovery_log_path
+            else:
+                diagnostics_log_path = primary_log_path
             complementarity_diagnostics = _get_esso_complementarity_diagnostics(
                 model, node_id, diagnostics_log_path
             )
@@ -1250,17 +1301,27 @@ def _optimize(model, params, from_warm_start=False, node_id=None, diagnostic_sin
             if complementarity_diagnostics_sink is not None:
                 complementarity_diagnostics_sink.append(complementarity_diagnostics)
     else:
-        attempt_label = 'recovery' if recovery_attempted else 'solver'
-        failed_attempt_result = recovery_result if recovery_attempted else result
+        if tier2_attempted:
+            attempt_label = 'tier-2 recovery'
+            failed_attempt_result = tier2_result
+            final_log_path = tier2_log_path
+        elif recovery_attempted:
+            attempt_label = 'recovery'
+            failed_attempt_result = recovery_result
+            final_log_path = recovery_log_path
+        else:
+            attempt_label = 'solver'
+            failed_attempt_result = result
+            final_log_path = primary_log_path
         print(
             f'[WARNING] Shared ESS {attempt_label} did not converge for {solve_context}: '
             f'{solver_result_summary(failed_attempt_result)} | warm_start={from_warm_start}'
         )
-        final_log_path = recovery_log_path if recovery_attempted else primary_log_path
         if final_log_path:
             print(f'[WARNING] IPOPT {attempt_label} log for {solve_context}: {final_log_path}')
 
     if recovery_attempted and diagnostic_sink is not None:
+        # P5.15 Addendum 7 Part 1 item 3: record the recovery tier explicitly.
         diagnostic_sink.append({
             'subsystem': 'esso',
             'node_id': node_id,
@@ -1271,6 +1332,11 @@ def _optimize(model, params, from_warm_start=False, node_id=None, diagnostic_sin
             'recovery_succeeded': solver_result_succeeded(result),
             'primary_log': primary_log_path,
             'recovery_log': recovery_log_path,
+            'tier': 'tier2' if tier2_attempted else 'tier1',
+            'tier2_attempted': tier2_attempted,
+            'tier2_result': solver_result_summary(tier2_result) if tier2_attempted else None,
+            'tier2_options': _format_solver_options(tier2_options) if tier2_attempted else None,
+            'tier2_log': tier2_log_path if tier2_attempted else None,
         })
 
     return result

@@ -572,7 +572,12 @@ def _is_recoverable_network_failure(result, params):
     solver_params = params.solver_params
     if solver_params.solver.lower() != 'ipopt' or result is None:
         return False
-    if not solver_params.recovery_options or not hasattr(result, 'solver'):
+    # P5.15 Addendum 7 Part 1 item 1 (PLANNER_BRIEF_2026-09-13.md): eligibility
+    # is now the explicit `recovery.enabled` flag, independent of whether
+    # `recovery_options` happens to be populated (previously an empty/absent
+    # `recovery_options` silently made a network ineligible -- case33_1's case
+    # file has none, so its failures were never retried).
+    if not getattr(solver_params, 'recovery_enabled', True) or not hasattr(result, 'solver'):
         return False
     # P5.15-1a (PLANNER_BRIEF_2026-09-13.md Step 1a / Addendum 1): recovery now
     # also fires on maxIterations and infeasible, not only internalSolverError.
@@ -629,8 +634,14 @@ def _run_smopf(network, model, params, from_warm_start=False):
     result = primary_result
     recovery_result = None
     recovery_log_path = None
+    tier2_result = None
+    tier2_log_path = None
     multiplier_snapshot = None
     recovery_attempted = _is_recoverable_network_failure(primary_result, params)
+    tier2_attempted = False
+    final_attempt_label = 'solver'
+    final_log_path = primary_log_path
+    final_warm_start = from_warm_start
 
     if recovery_attempted:
         _print_network_failure_context(network, model, primary_result, from_warm_start, primary_log_path, attempt_label='primary solve')
@@ -643,7 +654,7 @@ def _run_smopf(network, model, params, from_warm_start=False):
         # configuration in the case JSON (not edited -- reported to the
         # Planner, see P5_15_1A_REPORT.md).
         recovery_options = {
-            key: value for key, value in params.solver_params.recovery_options.items()
+            key: value for key, value in (params.solver_params.recovery_options or {}).items()
             if key != 'hessian_approximation'
         }
         recovery_options['warm_start_init_point'] = 'no'
@@ -652,8 +663,32 @@ def _run_smopf(network, model, params, from_warm_start=False):
         _clear_multiplier_suffixes(model)
         recovery_result, recovery_log_path = _run_smopf_solver_attempt(network, model, params, from_warm_start=False, option_overrides=recovery_options, log_suffix='recovery')
         result = recovery_result
+        final_attempt_label = 'recovery solve'
+        final_log_path = recovery_log_path
+        final_warm_start = False
+
         if not solver_result_succeeded(recovery_result):
             _restore_multiplier_suffixes(model, multiplier_snapshot)
+            # P5.15 Addendum 7 Part 1 item 2: tier-2 retry -- one further solve
+            # after a failed tier-1 cold retry, cold start + mu_strategy=adaptive,
+            # same other recovery options, only if `recovery.tier2_enabled` is on
+            # and the tier-1 failure is itself of a recoverable class.
+            tier2_attempted = (
+                getattr(params.solver_params, 'recovery_tier2_enabled', True)
+                and _is_recoverable_network_failure(recovery_result, params)
+            )
+            if tier2_attempted:
+                _print_network_failure_context(network, model, recovery_result, False, recovery_log_path, attempt_label='recovery solve')
+                tier2_options = dict(recovery_options)
+                tier2_options['mu_strategy'] = 'adaptive'
+                print(f'[INFO] Retrying network solve (tier 2: cold, mu_strategy=adaptive) for {solve_context}, with {_format_solver_options(tier2_options)}.')
+                _clear_multiplier_suffixes(model)
+                tier2_result, tier2_log_path = _run_smopf_solver_attempt(network, model, params, from_warm_start=False, option_overrides=tier2_options, log_suffix='recovery_tier2')
+                result = tier2_result
+                final_attempt_label = 'tier-2 recovery solve'
+                final_log_path = tier2_log_path
+                if not solver_result_succeeded(tier2_result):
+                    _restore_multiplier_suffixes(model, multiplier_snapshot)
 
     if solver_result_succeeded(result):
         try:
@@ -664,11 +699,12 @@ def _run_smopf(network, model, params, from_warm_start=False):
                 _restore_multiplier_suffixes(model, multiplier_snapshot)
             result = None
         if recovery_attempted and result is not None:
-            print(f'[INFO] Network recovery solve succeeded for {solve_context}.')
+            if tier2_attempted:
+                print(f'[INFO] Network tier-2 recovery solve succeeded for {solve_context}.')
+            else:
+                print(f'[INFO] Network recovery solve succeeded for {solve_context}.')
     else:
-        attempt_label = 'recovery solve' if recovery_attempted else 'solver'
-        final_log_path = recovery_log_path if recovery_attempted else primary_log_path
-        _print_network_failure_context(network, model, result, False if recovery_attempted else from_warm_start, final_log_path, attempt_label=attempt_label)
+        _print_network_failure_context(network, model, result, final_warm_start, final_log_path, attempt_label=final_attempt_label)
 
     #if params.solver_params.verbose:
     if not solver_result_succeeded(result):

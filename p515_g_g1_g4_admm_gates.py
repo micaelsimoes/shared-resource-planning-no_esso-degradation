@@ -486,6 +486,13 @@ _NET_RETRY_RE = re.compile(
     r'^\[INFO\] Retrying network solve once for (?P<ctx>.+?), cold start')
 _NET_RECOVER_OK_RE = re.compile(
     r'^\[INFO\] Network recovery solve succeeded for (?P<ctx>.+)\.$')
+# P5.15 Addendum 7 Part 1 items 2/3: tier-2 retry markers (network.py `_run_smopf`
+# after Part 1). Distinct wording from the tier-1 lines above -- never matched by
+# them (see `_scan_network_failures` docstring addendum below).
+_NET_RETRY_TIER2_RE = re.compile(
+    r'^\[INFO\] Retrying network solve \(tier 2: cold, mu_strategy=adaptive\) for (?P<ctx>.+?), with')
+_NET_RECOVER_TIER2_OK_RE = re.compile(
+    r'^\[INFO\] Network tier-2 recovery solve succeeded for (?P<ctx>.+)\.$')
 _NET_LOG_RE = re.compile(
     r'^\[WARNING\] IPOPT (?P<label>.+?) log for (?P<ctx>.+?): (?P<path>.+)$')
 _TSO_FINAL_RE = re.compile(
@@ -531,6 +538,9 @@ def _new_network_event(name, year, day, cycle, name_to_agent):
         'primary_termination': None, 'primary_summary': None, 'primary_log': None,
         'recovery_attempted': False,
         'recovery_termination': None, 'recovery_summary': None, 'recovery_log': None,
+        # P5.15 Addendum 7 Part 1 items 2/3: tier-2 fields.
+        'tier2_attempted': False,
+        'tier2_termination': None, 'tier2_summary': None, 'tier2_log': None,
         'termination': None, 'class': None,
         'final_summary_crosscheck': None, 'note': None,
     }
@@ -638,6 +648,16 @@ def _scan_network_failures(stdout_path, name_to_agent):
                 open_by_key[key] = ev
                 events.append(ev)
             elif label == 'recovery solve':
+                # P5.15 Addendum 7 Part 1 items 2/3: production (network.py
+                # `_run_smopf`) prints this line EXACTLY ONCE per (network, year,
+                # day) tier-1 failure, whether or not a tier-2 attempt follows --
+                # it is the sole failure line when tier 2 is off/ineligible, and
+                # the intermediate line immediately before "Retrying ... tier 2"
+                # otherwise (never printed twice). The class set here is
+                # therefore 'unrecovered' unconditionally; if a tier-2 outcome
+                # line follows, it overwrites `ev['class']` on this SAME object
+                # (already appended below), never appending a second row for
+                # this key.
                 ev = open_by_key.get(key)
                 if ev is None:
                     ev = _new_network_event(name, year, day, current_cycle, name_to_agent)
@@ -649,6 +669,22 @@ def _scan_network_failures(stdout_path, name_to_agent):
                 ev['termination'] = termination
                 ev['class'] = 'unrecovered'
                 events.append(ev)
+            elif label == 'tier-2 recovery solve':
+                # Tier-2 failed (both tiers failed). `ev` must already be open and
+                # already appended via the 'recovery solve' branch above (which
+                # always precedes this print in production); the malformed-
+                # capture fallback below is defensive only.
+                ev = open_by_key.get(key)
+                if ev is None:
+                    ev = _new_network_event(name, year, day, current_cycle, name_to_agent)
+                    ev['note'] = ('tier-2-failure print with no matching open '
+                                  'primary-solve event (malformed capture)')
+                    open_by_key[key] = ev
+                    events.append(ev)
+                ev['tier2_termination'] = termination
+                ev['tier2_summary'] = m.group('summary')
+                ev['termination'] = termination
+                ev['class'] = 'unrecovered'
             else:
                 ev = _new_network_event(name, year, day, current_cycle, name_to_agent)
                 ev['primary_summary'] = m.group('summary')
@@ -666,8 +702,18 @@ def _scan_network_failures(stdout_path, name_to_agent):
                 ev['recovery_attempted'] = True
             continue
 
+        m = _NET_RETRY_TIER2_RE.match(line)
+        if m:
+            name, year, day = _parse_ctx(m.group('ctx'))
+            ev = open_by_key.get((name, year, day))
+            if ev is not None:
+                ev['tier2_attempted'] = True
+            continue
+
         m = _NET_RECOVER_OK_RE.match(line)
         if m:
+            # Tier-1 success only -- production never prints this text for a
+            # tier-2 success (see `_NET_RECOVER_TIER2_OK_RE` below).
             name, year, day = _parse_ctx(m.group('ctx'))
             key = (name, year, day)
             ev = open_by_key.get(key)
@@ -677,8 +723,26 @@ def _scan_network_failures(stdout_path, name_to_agent):
                               'primary-solve event (malformed capture)')
                 open_by_key[key] = ev
             ev['termination'] = 'recovered'
-            ev['class'] = 'recovered'
+            ev['class'] = 'recovered_tier1'
             events.append(ev)
+            continue
+
+        m = _NET_RECOVER_TIER2_OK_RE.match(line)
+        if m:
+            # `ev` must already be open and already appended via the 'recovery
+            # solve' branch above (always precedes this print in production);
+            # the malformed-capture fallback is defensive only.
+            name, year, day = _parse_ctx(m.group('ctx'))
+            key = (name, year, day)
+            ev = open_by_key.get(key)
+            if ev is None:
+                ev = _new_network_event(name, year, day, current_cycle, name_to_agent)
+                ev['note'] = ('tier-2-success print with no matching open '
+                              'primary-solve event (malformed capture)')
+                open_by_key[key] = ev
+                events.append(ev)
+            ev['termination'] = 'recovered_tier2'
+            ev['class'] = 'recovered_tier2'
             continue
 
         m = _NET_LOG_RE.match(line)
@@ -686,7 +750,12 @@ def _scan_network_failures(stdout_path, name_to_agent):
             name, year, day = _parse_ctx(m.group('ctx'))
             ev = open_by_key.get((name, year, day))
             if ev is not None:
-                if 'recovery' in m.group('label'):
+                # 'tier-2' check FIRST: the label 'tier-2 recovery solve' also
+                # contains the substring 'recovery', so it must not fall into
+                # the tier-1 `recovery_log` branch below.
+                if 'tier-2' in m.group('label'):
+                    ev['tier2_log'] = m.group('path').strip()
+                elif 'recovery' in m.group('label'):
                     ev['recovery_log'] = m.group('path').strip()
                 else:
                     ev['primary_log'] = m.group('path').strip()
@@ -1118,10 +1187,17 @@ def run_admm_arm(label, out_dir, k_override=None, investment_map=None,
     # so this normally only catches the run's very last window).
     final_blocks, final_frozen, final_esso_events = _scan_and_write_network_failures(
         hook_state, planning)
+    # P5.15 Addendum 7 Part 1 item 3: tier-split classes, plus 'recovered' kept as
+    # tier1+tier2 for backward comparison against pre-tier-2 reports (G1's
+    # committed stdout, scanned by this same parser, has zero tier-2 lines, so
+    # 'recovered_tier2' is 0 there and 'recovered' reproduces the old count).
+    _class_counts = {c: sum(1 for b in final_blocks if b['class'] == c)
+                      for c in ('recovered_tier1', 'recovered_tier2', 'unrecovered',
+                                'not_attempted', 'indeterminate')}
+    _class_counts['recovered'] = _class_counts['recovered_tier1'] + _class_counts['recovered_tier2']
     report['network_failures_summary'] = {
         'n_blocks': len(final_blocks),
-        'classes': {c: sum(1 for b in final_blocks if b['class'] == c)
-                    for c in ('recovered', 'unrecovered', 'not_attempted', 'indeterminate')},
+        'classes': _class_counts,
         'n_frozen_snapshots': len(final_frozen),
         'n_esso_recovery_events': len(final_esso_events),
         'path': os.path.relpath(network_failures_path, REPO),

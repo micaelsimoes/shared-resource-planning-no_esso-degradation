@@ -7087,6 +7087,11 @@ def _write_solver_recovery_diagnostics_to_excel(workbook, diagnostics):
         ('recovery_succeeded', 'Recovery Successful', 'General'),
         ('primary_log', 'Primary Log', 'General'),
         ('recovery_log', 'Recovery Log', 'General'),
+        # P5.15 Addendum 7 Part 1 item 3: record the recovery tier explicitly.
+        ('tier', 'Recovery Tier', 'General'),
+        ('tier2_attempted', 'Tier-2 Attempted', 'General'),
+        ('tier2_result', 'Tier-2 Result', 'General'),
+        ('tier2_log', 'Tier-2 Log', 'General'),
     ]
 
     for column_idx, (_, label, _) in enumerate(columns, start=1):

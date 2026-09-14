@@ -16,6 +16,12 @@ class SolverParameters:
         self.verbose = False
         self.options = None
         self.recovery_options = None
+        # P5.15 Addendum 7 Part 1 item 1 (PLANNER_BRIEF_2026-09-13.md): explicit
+        # recovery-eligibility policy, independent of whether `recovery_options`
+        # happens to be populated. Defaults hold even if `read_solver_parameters`
+        # is never called (e.g. a harness that builds `SolverParameters` directly).
+        self.recovery_enabled = True
+        self.recovery_tier2_enabled = True
         self.solver_path = next((os.getenv(var) for var in path_env_vars if os.getenv(var)), None)
 
         if require_path and not self.solver_path:
@@ -32,3 +38,13 @@ def _read_solver_parameters(parameters, solver_data):
     parameters.verbose = solver_data['verbose']
     parameters.options = solver_data['options']
     parameters.recovery_options = solver_data.get('recovery_options')
+    # P5.15 Addendum 7 Part 1 item 1: optional nested `recovery` block --
+    # `solver.recovery.enabled` / `solver.recovery.tier2_enabled` in the case/
+    # ESSO params JSON (`solver_data` IS the "solver" object, see the callers in
+    # network_parameters.py / shared_energy_storage_parameters.py). A case file
+    # is never required to declare this block; absence means the default
+    # (True/True) applies, and eligibility no longer depends on
+    # `recovery_options` being non-empty.
+    recovery_policy = solver_data.get('recovery') or {}
+    parameters.recovery_enabled = bool(recovery_policy.get('enabled', True))
+    parameters.recovery_tier2_enabled = bool(recovery_policy.get('tier2_enabled', True))

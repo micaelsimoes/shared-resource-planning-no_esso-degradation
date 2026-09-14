@@ -410,6 +410,35 @@ conclusions drawn from it are amended:
   paths; `tol = 1e-8` in force). The gap is covered by the same capture.
 - Order: commit → G1 (with capture) → G2 → G3-full → G4 → `REVISION_CONTEXT.md` rewrite → stop.
 
+---
+
+# Addendum 7 — after `P5_15_EXPERT_HANDOFF_5.md` (2026-09-14)
+
+**Standing result:** the ESSO is closed as a component — detector flat across 72–90 cycles,
+terminal μ identical in every solve, leak barrier-set (63,072/63,072), 5× gap predicted to 3
+figures, G4 bitwise. Addendum 6's "not barrier-set" premise is withdrawn (the summary
+`Complementarity` line is an optimality error, not μ). Remaining fragility is network-side and
+configurational.
+
+1. **Recovery policy (authorized):** explicit `recovery.enabled` (default true) for every network
+   and the ESSO, independent of `recovery_options`; `case33_1` on the same policy; remove the
+   `limited-memory` entries only after this lands. **Tier-2 retry** after a failed cold retry:
+   cold + `mu_strategy = adaptive`, logged and counted separately. Test the tier on the saved
+   cycle-38 block first (item 3). Then **re-run G2**, capturing ESSO slack values as well as
+   duals.
+2. **G1 attribution — ablation before re-baselining, two runs max.** Ablation A: G1
+   configuration with Candidate 4 reverted (flexibility band restored). If old EFC/day and
+   recourse are recovered within the bar, Candidate 4 is the cause; record that the old numbers
+   carried a spurious flexible-energy source. Otherwise ablation B: G1 with Candidate 1 re-wired.
+   In every case the new formulation is the baseline afterwards; the ablation serves the
+   manuscript's account of the change.
+3. **Cycle-38 block (authorized, single solves):** current policy, cold, cold + adaptive μ,
+   `tol` one decade looser. Classify intrinsic vs path-dependent.
+4. **G2 initialization:** intended behaviour (the paper's end-of-life rule acting at cycle 1 via
+   the slack); recorded, no formulation change. Convergence question deferred to the G2 re-run.
+5. **Comparators:** accept the loss and record it; do not regenerate.
+6. Order: recovery policy + cycle-38 tests → ablation A (→ B) → G2 re-run → report → stop.
+
 ## Update obligations
 
 At the end of Step 1 the Planner rewrites the "CURRENT SOURCE OF TRUTH" head of
