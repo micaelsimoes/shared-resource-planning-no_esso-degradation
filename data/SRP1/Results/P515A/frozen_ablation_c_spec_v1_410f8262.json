@@ -1,0 +1,50 @@
+{
+ "arm": "G1 configuration (C* control, k = 11,541.56, cold, rel 1e-4, rho_pf 300 adaptive, cap 90, budget 5.0e6, ESSO tol 1e-8 / acceptable_tol 1e-7, H3, Candidates 1/2/4/5 as committed) with EPS_ESSO_THROUGHPUT = 1e-5 instead of 1e-3, applied at runtime on the shared_energy_storage_data module before model build. Recovery G1-equivalent (case33_1 ineligible, tier 2 off) so that epsilon is the only change.",
+ "authority": "PLANNER_BRIEF_2026-09-13.md Addendum 8",
+ "criterion": {
+  "always_report": "per-node EFC/day and relative distance to old; EFC gap closure vs G1; detector range and ratio to G1; recourse vs G1 and old with rule-nine bars; terminal lg(mu) and s_obj",
+  "decision": "H-epsilon SUPPORTED iff efc (all nodes) AND detector; then production eps = 1e-5, ESSO tol = 1e-10, acceptable_tol = 1e-9, G1 re-run as new baseline, then G3-full re-run. NOT SUPPORTED otherwise: record the EFC change as unattributed to Step 1b / epsilon and keep eps = 1e-3.",
+  "detector": "supported iff max over cycles >= 1 of the measured detector (min(pch,pdch)/s_max) lies in [0.5, 2] * (100 * g1_detector_max_cycles) = [1.2928e-03, 5.1712e-03]",
+  "efc": "supported on node n iff |EFC_C(n) - EFC_old(n)| <= 0.02 * EFC_old(n); required on all three nodes 5, 7, 9",
+  "validity": "applies only if C converged within the cap and rule ten (terminal step / tolerance) < 1; otherwise INDETERMINATE"
+ },
+ "declared_before_run": true,
+ "hypothesis": "H-epsilon: EPS_ESSO_THROUGHPUT acts as a throughput price at the ADMM fixed point (transmitted to the networks by the consensus dual), suppressing storage cycling.",
+ "not_permitted": [
+  "more than one ablation-C run",
+  "changing the criterion after the result is seen",
+  "tuning tol, rho, cap or budget in the arm"
+ ],
+ "predecessor_sha256": null,
+ "reference_values": {
+  "g1_detector_max_cycles": 2.585609444064082e-05,
+  "g1_detector_min_cycles": 2.503719706636401e-05,
+  "g1_efc_year1": {
+   "5": 0.9725282263121774,
+   "7": 0.9722376047552705,
+   "9": 0.9723672487025958
+  },
+  "identity_prediction_idle_at_eps_1e-5": "mu_barrier/(s_obj*eps) = 10**-8.6/(0.1*1e-5) = 2.512e-3",
+  "old_efc_year1": {
+   "5": 1.112440062599957,
+   "7": 1.1121947359876687,
+   "9": 1.112428507710553
+  }
+ },
+ "sources": {
+  "g1": {
+   "path": "data/SRP1/Results/P515G1/g_control.json",
+   "sha256": "5dcae17acccd31b1e17cd3b9b6b8f110b5f5424f522abc10460c32cbf015d12a"
+  },
+  "g1_leak": {
+   "path": "data/SRP1/Results/P515G1/leak_classification_control.jsonl",
+   "sha256": "aac46f414f03d627fc165de8b3876a0bca0056bbb74706f645ab7de0befcc4e0"
+  },
+  "old_control": {
+   "path": "data/SRP1/Results/P514N/n1_control.json",
+   "sha256": "52cdce5e44846b2019934ecb2f7c7f1725b84f02ee43f454c66cceff8c18c606"
+  }
+ },
+ "stage": "P5.15 ablation C (Addendum 8, hypothesis H-epsilon)",
+ "version": 1
+}
