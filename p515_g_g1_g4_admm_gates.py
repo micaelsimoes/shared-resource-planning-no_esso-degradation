@@ -825,17 +825,33 @@ def _scan_and_write_network_failures(hook_state, planning_problem):
     blocks = _scan_network_failures(hook_state['stdout_path'], name_to_agent)
     frozen = _scan_frozen_snapshots(planning_problem.results_dir, hook_state['started'])
     esso_events = hook_state.get('esso_recovery_events', [])
-    tmp = f"{hook_state['network_failures_path']}.tmp{os.getpid()}"
-    with open(tmp, 'w') as handle:
-        for record in blocks:
-            handle.write(json.dumps(record, default=str) + '\n')
-        for event in esso_events:
-            tagged = dict(event)
-            tagged['record_type'] = 'esso_recovery'
-            handle.write(json.dumps(tagged, default=str) + '\n')
-        for record in frozen:
-            handle.write(json.dumps(record, default=str) + '\n')
-    os.replace(tmp, hook_state['network_failures_path'])
+    # P5.15 Addendum 8 parser fix: the failure file holds ONLY classified network events.
+    # Earlier runs wrote the frozen-snapshot inventory (and would have written ESSO
+    # recovery events) into the same JSONL; those records carry no `class`, which is what
+    # surfaced as "empty rows" in G2, G3-full, ablation B and the G2 re-run. No reported
+    # count was affected (summaries use the returned lists). They now go to sibling files.
+    failures_path = hook_state['network_failures_path']
+    directory, basename = os.path.split(failures_path)
+    snapshots_path = os.path.join(directory, basename.replace('network_failures_', 'frozen_snapshots_', 1))
+    esso_events_path = os.path.join(directory, basename.replace('network_failures_', 'esso_recovery_events_', 1))
+    if snapshots_path == failures_path or esso_events_path == failures_path:
+        raise RuntimeError(f'cannot derive sibling paths from {failures_path}')
+
+    def _atomic_jsonl(path, records, record_type=None):
+        tmp = f"{path}.tmp{os.getpid()}"
+        with open(tmp, 'w') as handle:
+            for record in records:
+                row = dict(record)
+                if record_type is not None:
+                    row['record_type'] = record_type
+                handle.write(json.dumps(row, default=str) + '\n')
+        os.replace(tmp, path)
+
+    _atomic_jsonl(failures_path, blocks)
+    _atomic_jsonl(snapshots_path, frozen)
+    _atomic_jsonl(esso_events_path, esso_events, record_type='esso_recovery')
+    hook_state['frozen_snapshots_path'] = snapshots_path
+    hook_state['esso_recovery_events_path'] = esso_events_path
     hook_state['network_failures_so_far'] = len(blocks)
     return blocks, frozen, esso_events
 
