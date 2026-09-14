@@ -1312,10 +1312,46 @@ def _acquire_exclusive_run_lock():
     atexit.register(lambda: os.path.exists(lock_path) and os.remove(lock_path))
 
 
+# ---------------------------------------------------------------------------------------
+# P5.15 Addendum 7 item 2 — ablation A (frozen spec data/SRP1/Results/P515A/
+# frozen_ablation_spec_v1_2271c77f.json): G1 configuration with Candidate 4 reverted, under
+# G1-equivalent recovery, so exactly one thing differs from G1.
+# ---------------------------------------------------------------------------------------
+OUT_ABL_A = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515A', 'run_a')
+ABL_A_EVAL_ID = 'p515a_candidate4_reverted'
+
+
+def _configure_ablation_a(planning):
+    """Revert Candidate 4 and pin G1's recovery behaviour on a fresh planning object.
+
+    Candidate 4 pinned `SlacksFlexibility.day_balance = True` in code; the pre-Step-1b
+    behaviour (and the committed case files) is False, which restores the two-sided band
+    `pe.inequality(-SMALL_TOLERANCE, p_up - p_down, SMALL_TOLERANCE)` in
+    `flex_energy_balance_p_rule` and removes the `slack_flex_*_balance_*` variables and
+    their penalty. Recovery: G1 ran with case33_1 (node 5) ineligible and no tier 2."""
+    planning.transmission_network.params.slacks.flexibility.day_balance = False
+    for dso in planning.distribution_networks.values():
+        dso.params.slacks.flexibility.day_balance = False
+    RH.set_recovery_policy(planning, enabled=True, tier2_enabled=False,
+                           node_overrides={5: {'enabled': False}})
+    return planning
+
+
 if __name__ == '__main__':
     _acquire_exclusive_run_lock()
     gate = sys.argv[1] if len(sys.argv) > 1 else None
-    if gate == 'g1':
+    if gate == 'ablation_a':
+        _require_fresh_output_root(OUT_ABL_A)
+        _original_fresh_planning = O.fresh_planning
+
+        def _fresh_planning_ablation_a(eval_id):
+            return _configure_ablation_a(_original_fresh_planning(eval_id))
+
+        O.fresh_planning = _fresh_planning_ablation_a
+        print('[P5.15 ablation A] Candidate 4 reverted (day_balance=False on TSO and all DSOs); '
+              'recovery G1-equivalent (tier2 off, node 5 ineligible)')
+        run_admm_arm('ablation_a', OUT_ABL_A, k_override=None, eval_id=ABL_A_EVAL_ID)
+    elif gate == 'g1':
         _require_fresh_output_root(OUT_G1)
         run_admm_arm('control', OUT_G1, k_override=None, eval_id='p515g1_control')
     elif gate == 'g2':
