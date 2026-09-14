@@ -13,15 +13,102 @@ Act as a technical planner and mathematical-programming reviewer for the shared 
 
 Read this file first. When checking the mathematical formulation, also consult `simoes_2026_revisions.pdf` where relevant and inspect the current implementation before proposing changes. Prefer reviewer-driven implementation and validation plans before production edits.
 
-This file is the repository-wide source of context. `LOCAL_NLP_STABILITY_PLAN.md`
-contains the currently authorized implementation/audit scope and takes
-precedence for active execution. Despite its legacy filename, that plan now
-governs P5.12-R, the bounded deterministic recapture of the first cold-RESCALED
-local NLP failure's input, rather than a production repair or an A/B solve.
+This file is the repository-wide source of context. **As of 2026-09-14 the active
+authority is `PLANNER_BRIEF_2026-09-13.md` with its Addenda 1–6**; it supersedes
+`COWORK_HANDOFF.md` and the P5.12-R scope formerly governed by
+`LOCAL_NLP_STABILITY_PLAN.md`, which is retained as a historical record.
 
 ---
 
-# CURRENT SOURCE OF TRUTH — 2026-09-10, amended 2026-09-11
+# CURRENT SOURCE OF TRUTH — 2026-09-14 (P5.15 Step 1 closed through gates G1–G5)
+
+This section supersedes every earlier "current" section, including the 2026-09-10/11 block below,
+which is retained unedited as a historical record. Authority: `PLANNER_BRIEF_2026-09-13.md`,
+Addenda 1–6. Stage reports: `P5_15_G1_REPORT.md`, `P5_15_G2_REPORT.md`, `P5_15_G3F_REPORT.md`,
+`P5_15_G4_REPORT.md`, `P5_15_G5_REPORT.md`, and the four expert handoffs `P5_15_EXPERT_HANDOFF*.md`.
+
+## Withdrawn
+
+- **The `C*` feasibility-boundary claim** (P5.14-L/N) is withdrawn. The pre-reformulation infeasibility
+  at 1.00 MVA was on the capacity rows (`rated_s_capacity_unit`), not a feasibility boundary; after
+  Candidate 2 (investments as parameters) G3-init passes at 1.00, 1.25 and 1.62 MVA.
+- **The "programme closed" verdict** (`COWORK_HANDOFF.md`) is withdrawn. The numerical programme is open.
+- **Every previously reported SoH trajectory and degradation number is not reusable.** The
+  pre-reformulation model enforced complementarity only through a relaxed, penalized row
+  (`pch_hat·pdch_hat ≤ slack + 1e-4`); measured at the P5.14-N C\* control it carried **1.386–1.391 %
+  spurious throughput** (`max min(pch,pdch)/s_max = 0.007729`). The mechanism applies to every
+  pre-reformulation run; the fraction is measured only at C\*. The published
+  `1.0 → 0.8387 → 0.7284 → 0.6248` (node 5's trajectory, quoted without a node) is affected.
+
+## Established
+
+- **Warm-start mechanism (Step 0).** The ESSO `maxIterations` failures were a warm-start policy defect
+  (imported bound multipliers with 1e-9 pushes throttling the dual step), not intrinsic conditioning.
+  Production pushes resolve to 1e-5 (DSO) and 1e-6 (TSO).
+- **Solver and recovery policy (Step 1a).** Warm-start pushes at IPOPT defaults unless configured;
+  `max_iter = 500`; one cold retry on `internalSolverError`, `maxIterations` or `infeasible`.
+- **Reformulated ESSO (Step 1, `b03c9b14`).** Investments are parameters; log-domain cumulative SoH
+  `soh = prev·exp(−D)·φ_cal^n`; nine slack families and the complementarity/normalization rows deleted
+  (callables retained for fixture unpickling); throughput regularization `ε·Σ(pch+pdch)`, `ε = 1e-3`.
+- **Set 1 network changes (Step 1b).** Candidates 1 (power-factor rows unwired), 2 (capacity variables →
+  parameters; sensitivity channel retired), 4 (flexibility band as slacked equality) and 5 (single-scenario
+  deviation penalties off). Candidate 3′ dropped. `_add_benders_cut` disabled entirely.
+- **Multimodality.** The DSO SMOPF has local optima ~0.3 % apart in objective at material capacity
+  (Candidate 3′ evidence). `Q(x)` is defined up to the local optimum the deterministic path selects.
+- **Remedy (h) and the leak mechanism.** ESSO `tol = 1e-8`, `acceptable_tol = 1e-7`. The residual
+  simultaneous charge/discharge is an **interior-point barrier residual set by IPOPT's terminal barrier
+  parameter** (`lg(mu)` = −8.6 in every ESSO solve of G1–G4): at idle periods `x_small = μ/(s_obj·ε)`
+  (≈2.5e-5 absolute), with one large leg `x_small ≈ μ/(2·s_obj·ε)`. All cycle periods in G1–G4 are
+  barrier-set by `zL·x/μ`. Spurious throughput ≈ 0.009 % at C\*. **The reported quantity is the measured
+  per-solve detector**; the closed-form estimate holds on the ε fixture only and is not quoted at C\*.
+  The earlier "μ-insensitive" reading came from treating the summary `Complementarity` line as μ.
+- **Log handling (P5.15-F, `7ca40b93`).** One fresh ESSO log per solve, stamped node/cycle, in the logs
+  directory; last-match parsing; absolute `results_dir`; failure snapshots never abort a campaign.
+- **H3.** Pro-rata cohort-split rows (`N_active − 1`, parameter shares) — correct and **inert on every
+  current instance** (single active cohort); not tested by any gate.
+
+## Gate outcomes (Step 1)
+
+| gate | outcome |
+|---|---|
+| G5 — A1/A3/A4 agreement, reformulated ESSO | **PASS** (re-specified): net power agrees to 4.2e-16; D/SoH within the summed leak estimates |
+| G1 — C\* control, reconciliation against old control | **Converged** (72 cycles, recourse 817,618,798.07, rule ten 0.891); **reconciliation FAILS**: measured ΔSoH 4.1–9.6× the leak-predicted Δ, year-1 EFC/day 1.112 → 0.972, recourse 10.05× the rule-nine bar. The reformulated model reaches a different operating point; the gate cannot attribute the change among the model changes. |
+| G2 — `k = 10,000` | **FAILS**: no convergence in 90 cycles; node 5 `case33_1` 2035 Autumn failed every cycle 66–90 and was never retried. Initialization slack-dominated (SoH floor binding). Pair difference indeterminate. |
+| G3-init — 1.00 / 1.25 / 1.62 MVA | **PASS** |
+| G3-full — 1.62 MVA / 3.24 MWh at node 7 | **Converged** (80 cycles, recourse 819,016,107.91); **zero-failures NOT met**: one unrecovered DSO failure (node 7 `case33_2` 2035 Autumn, cycle 38; pre-solve block preserved) and one ineligible failure |
+| G4 — G1 repeated | **PASS**, bitwise identical |
+
+TSO local failures across G1–G4: every one recovered on the single cold retry.
+
+## Open hazards and defects
+
+1. **Recovery eligibility is decided by dead configuration.** `_is_recoverable_network_failure` requires a
+   non-empty `recovery_options`; `case33_1` has none (never eligible — the driver of G2's non-convergence),
+   and `case33_2`/`case33_3` hold only `hessian_approximation: limited-memory`, which the retry discards.
+   **Removing those "dead" entries would silently disable recovery there.**
+2. **Two preserved comparators overwritten.** `data/SRP1/Results/FrozenSMOPF/matched_success_*_cycle7.pkl`
+   (audited hashes in `P3_AUDIT_REPORT.md`) were overwritten during G1 and are not recoverable. Campaigns now
+   redirect `results_dir` to their own root and hash-check the shared directory.
+3. **Harness reporting defects.** The detector-vs-prediction ratio mixes a `min/s_max` ratio with an absolute
+   prediction (visible at `s_max ≠ 1`); the print-based failure parser emits a few empty rows (G2: 2, G3-full: 3).
+4. **Pickle hashes are not byte-stable** and are not a determinism test.
+
+## Not established
+
+- Which of the Step-1 changes moved the C\* operating point (G1).
+- Whether G2 converges if node 5's failing block is eligible for recovery.
+- Whether the unrecovered G3-full block fails intrinsically or path-dependently.
+- H3 on any multi-cohort instance.
+
+## Execution discipline in force
+
+Campaigns run as one tool-tracked background process, stderr captured, exclusive lock, per-cycle heartbeat,
+fresh output root and eval id per arm, never concurrent, never detached (`CLAUDE.md`). Large per-period
+capture directories are hash-recorded in `evidence_manifest_sha256.json`, not committed.
+
+---
+
+# SUPERSEDED SOURCE OF TRUTH — 2026-09-10, amended 2026-09-11 (superseded 2026-09-14; retained unedited)
 
 This section supersedes every older "current", "active" or "immediate"
 instruction later in this file. Those sections remain historical evidence only.
