@@ -56,6 +56,7 @@ artifacts (P514N: esso_models_control.pkl, n1_control.json, ...; P514L: ladder_s
     gate in {g1, g2, g4b, g3_init, g3_full}   (g4a == g1; run g1 twice for G4)
 """
 
+import hashlib
 import json
 import os
 import pickle
@@ -89,6 +90,89 @@ os.makedirs(OUT, exist_ok=True)
 # Addendum 6 item 2: the g1 CLI gate's OWN fresh output root -- never shared with OUT,
 # which holds residue from earlier, killed campaigns (see .p515_g_gate.lock).
 OUT_G1 = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515G1')
+
+# G2PREP Fix 2: every remaining arm gets its OWN fresh output root too, for the same
+# reason g1 does (OUT/P515G is shared residue from earlier campaigns and multiple
+# arms writing `results_dir`-anchored artifacts into the SAME root is exactly the G1
+# overwrite mechanism Fix 1 addresses -- one arm's `out_dir` must never collide with
+# another's).
+OUT_G2 = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515G2')
+OUT_G3F = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515G3F')
+OUT_G4 = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515G4')
+
+# G2PREP Fix 1: the shared, PRESERVED FrozenSMOPF tree that must never be written to
+# by any arm launched from this harness (every arm's `results_dir` is redirected away
+# from it -- see `_set_results_dir_for_arm` below). Hashed before/after every arm as a
+# post-run integrity check (CLAUDE.md rule: "commit or hash-record the settling
+# artifact for any claim you commit").
+SHARED_FROZEN_SMOPF_DIR = os.path.join(REPO, 'data', 'SRP1', 'Results', 'FrozenSMOPF')
+
+
+def _hash_dir_pkls(dir_path):
+    """sha256 of every non-recursive `*.pkl` in `dir_path`, keyed by filename. Used to
+    prove (not assert) that a shared, preserved directory was not touched by an arm."""
+    out = {}
+    if not os.path.isdir(dir_path):
+        return out
+    for fname in sorted(os.listdir(dir_path)):
+        if not fname.endswith('.pkl'):
+            continue
+        fpath = os.path.join(dir_path, fname)
+        if not os.path.isfile(fpath):
+            continue
+        digest = hashlib.sha256()
+        with open(fpath, 'rb') as handle:
+            for chunk in iter(lambda: handle.read(1 << 20), b''):
+                digest.update(chunk)
+        out[fname] = digest.hexdigest()
+    return out
+
+
+def _set_results_dir_for_arm(planning, results_dir):
+    """G2PREP Fix 1.
+
+    Cause of the G1 overwrite: `p56a_oracle.fresh_planning` isolates `logs_dir` per
+    eval (planning, every holder `O._holders()` walks -- transmission_network, each
+    distribution_network, each holder's per-year/per-day `network[year][day]` object
+    -- and `shared_ess_data`) but leaves `results_dir` untouched, still pointing at
+    the value frozen into the deep-copied baseline at `SharedResourcesPlanning.__init__`
+    time: `data/SRP1/Results` (shared_resources_planning.py:56, absolute since P5.15-F).
+    Every save-path callback below reads `<holder>.results_dir` (not `logs_dir`), so
+    two concurrent/sequential arms both write into the SAME
+    `data/SRP1/Results/FrozenSMOPF/`:
+
+      * `save_failed_tso_block` / `save_selected_tso_comparator`
+        (shared_resources_planning.py:4460-4487) -> `transmission_network.results_dir`
+        (line 4463, 4478).
+      * `save_failed_dso_block` / `save_selected_dso_comparator`
+        (shared_resources_planning.py:4651-4691) -> `distribution_network.results_dir`
+        (line 4661, 4679).
+      * `_save_frozen_network_block` (shared_resources_planning.py:4552-4594) and
+        `_save_frozen_smopf_block` (shared_resources_planning.py:4510-4549) -- the
+        two functions the callbacks above call -- take `save_dir` as an argument; they
+        do not read `results_dir` themselves, but every caller passes
+        `os.path.join(<holder>.results_dir, 'FrozenSMOPF')`.
+
+    This function redirects EVERY holder `O._holders()` walks for `logs_dir`, doing the
+    exact same traversal, but for `results_dir`, plus `shared_ess_data.results_dir`
+    (which `fresh_planning` also redirects for `logs_dir`, outside `O._holders()`).
+    `network[year][day].results_dir` is included even though no current callback reads
+    it directly (network_data.py:183 copies it at construction time from the OLD,
+    shared `results_dir`, before `fresh_planning` ever runs) -- redirected here anyway,
+    both to mirror the `logs_dir` traversal exactly (as instructed) and because
+    `shared_energy_storage_data.py:220` and `network_data.py:143` do read a
+    per-object `.results_dir` for (unrelated, non-failure) Excel writers.
+    """
+    os.makedirs(results_dir, exist_ok=True)
+    planning.results_dir = results_dir
+    for holder in O._holders(planning):
+        if hasattr(holder, 'results_dir'):
+            holder.results_dir = results_dir
+        for year in holder.years:
+            for day in holder.days:
+                holder.network[year][day].results_dir = results_dir
+    if hasattr(planning.shared_ess_data, 'results_dir'):
+        planning.shared_ess_data.results_dir = results_dir
 
 
 def _refuse_overwrite(path):
@@ -401,6 +485,7 @@ _DSO_FINAL_RE = re.compile(
     r'^\[WARNING\] Distribution network node=(?P<node>\d+), network=(?P<name>\S+), '
     r'year=(?P<year>\S+), day=(?P<day>\S+) did not converge: (?P<summary>.+)$')
 _CTX_RE = re.compile(r'^(?P<name>.+), year=(?P<year>.+), day=(?P<day>.+)$')
+_TERMINATION_RE = re.compile(r'termination=([^,|]+)')
 
 
 def _parse_ctx(ctx):
@@ -410,40 +495,110 @@ def _parse_ctx(ctx):
     return m.group('name'), m.group('year'), m.group('day')
 
 
-def _new_network_block(name, year, day, name_to_agent):
-    agent, node_id = name_to_agent.get(name, (None, None))
-    return {
-        'network_name': name, 'year': year, 'day': day, 'agent': agent, 'node_id': node_id,
-        'cycles_seen': set(), 'recovery_attempted': False, 'recovery_succeeded': False,
-        'final_unrecovered': False, 'final_summary': None,
-        'primary_log': None, 'recovery_log': None,
-    }
+def _extract_termination(summary):
+    m = _TERMINATION_RE.search(summary)
+    return m.group(1).strip() if m else None
 
 
-def _last_exit_and_iterations(log_path):
-    """Network IPOPT logs stay CUMULATIVE across the whole run (`file_append='yes'`,
-    network.py -- unaffected by the P5.15-F ESSO-only fix), with no per-cycle filename
-    stamp. This is therefore a SNAPSHOT of the log's own last EXIT/iteration count at
-    scan time, not a guaranteed per-cycle isolate -- documented, not silently assumed."""
-    if not log_path or not os.path.exists(log_path):
-        return None, None
-    text = open(log_path, 'r', errors='replace').read()
-    exits = re.findall(r'^EXIT:\s*(.+)$', text, re.MULTILINE)
-    iters = re.findall(r'^Number of Iterations\.+:\s*(\d+)', text, re.MULTILINE)
-    return (exits[-1] if exits else None), (int(iters[-1]) if iters else None)
-
-
-def _scan_network_failures(stdout_path, planning_problem):
-    if not os.path.exists(stdout_path):
-        return []
+def _build_name_to_agent(planning_problem):
+    """network_name -> (agent, node_id), sourced from the SAME planning object the
+    run being scanned actually used (never hard-coded)."""
     name_to_agent = {}
     tso_name = getattr(planning_problem.transmission_network, 'name', None)
     if tso_name:
         name_to_agent[tso_name] = ('TSO', None)
     for node_id, dso in planning_problem.distribution_networks.items():
         name_to_agent[dso.name] = ('DSO', node_id)
+    return name_to_agent
 
-    blocks = {}
+
+def _new_network_event(name, year, day, cycle, name_to_agent):
+    agent, node_id = name_to_agent.get(name, (None, None))
+    return {
+        'record_type': 'network_block',
+        'network_name': name, 'year': year, 'day': day, 'cycle': cycle,
+        'agent': agent, 'node_id': node_id,
+        'primary_termination': None, 'primary_summary': None, 'primary_log': None,
+        'recovery_attempted': False,
+        'recovery_termination': None, 'recovery_summary': None, 'recovery_log': None,
+        'termination': None, 'class': None,
+        'final_summary_crosscheck': None, 'note': None,
+    }
+
+
+def _scan_network_failures(stdout_path, name_to_agent):
+    """G2PREP Fix 3.
+
+    Rewritten to classify from the tee'd stdout ONLY, using production's own prints
+    (`network.py` `_print_network_failure_context`/`_run_smofp` -- verified at
+    `network.py:606-650`, `~590-660` after this fix's line shifts) rather than
+    re-parsing each network's IPOPT log file, which is CUMULATIVE across the whole
+    run (`file_append='yes'`, unaffected by the P5.15-F ESSO-only per-solve-log fix)
+    -- its last `EXIT:` line is therefore whichever cycle last touched that
+    (network, year, day) combination, not necessarily the cycle being scanned. That
+    was the G1 bug (`primary_exit: Optimal Solution Found` on a failing row).
+
+    One EVENT per (network_name, year, day, cycle) -- NOT per (network_name, year,
+    day) alone, which is the second G1 bug: the same DSO network solves once per
+    cycle, so the same (name, year, day) triple recurs across many cycles (e.g. node
+    5's case33_1 failed at cycles 7, 39, 43, 46, 48, 49); keying by the triple alone
+    silently merged all of those into ONE block, overwriting the earlier cycles'
+    outcome with the latest and collapsing 6 failed cycles into 4 rows (12
+    recovered / 4 unrecovered / 0 not_attempted, against a 6-not_attempted ground
+    truth). Including `cycle` in the key/record fixes this.
+
+    `network.py`'s `_run_smofp` prints exactly ONE of two possible sequences per
+    (network, year, day) solve, both matched from `_NET_FAIL_RE`'s `label` group
+    (previously captured but discarded):
+
+      * recovery NOT eligible (`_is_recoverable_network_failure` False -- e.g. no
+        `recovery_options` configured for that network's case file, or a
+        termination condition outside {internalSolverError, maxIterations,
+        infeasible}): exactly ONE print, `attempt_label='solver'` --
+        "[WARNING] Network solver did not converge for <net>, year=Y, day=D:
+        status=..., termination=T | warm_start=...". -> class 'not_attempted'.
+        (No "Retrying" line is ever printed for this event -- the `if
+        recovery_attempted:` guard in `_run_smofp` that prints the retry request
+        and the `attempt_label='primary solve'` failure line is False.)
+      * recovery eligible: FIRST "[WARNING] Network primary solve did not converge
+        for <net>, ...: status=..., termination=T | warm_start=..." (opens the
+        event), then "[INFO] Retrying network solve once for <net>, ..., cold
+        start, ..." (`recovery_attempted=True`), then EITHER "[INFO] Network
+        recovery solve succeeded for <net>, ...." -> class 'recovered' (no further
+        did-not-converge print exists for this outcome -- `_run_smofp` only calls
+        `_print_network_failure_context` again in the `else` branch, which success
+        skips), OR "[WARNING] Network recovery solve did not converge for <net>,
+        ...: status=..., termination=T | warm_start=False" (`attempt_label=
+        'recovery solve'`) -> class 'unrecovered'.
+
+    `[WARNING] IPOPT {attempt_label} log for <net>, ...: <path>` lines (also
+    produced by `_print_network_failure_context`, immediately after each
+    did-not-converge print) are attached to whichever event is currently open for
+    that (name, year, day) key -- there is at most one open event per key at a time
+    (a DSO network solves its (year, day) blocks sequentially, never concurrently,
+    in the non-parallel path this harness uses).
+
+    Cycle attribution: `[INFO] \\t - ADMM Iteration N` (shared_resources_planning.py
+    line ~2225) prints at the very START of cycle N's body, strictly before that
+    cycle's DSO/TSO/ESSO solves run (single-threaded, sequential execution) and
+    strictly before the NEXT "ADMM Iteration N+1" line. Every line between one
+    "ADMM Iteration N" line and the next is therefore unambiguously cycle N's. Lines
+    before the first such marker (the ADMM initialization block) are cycle 'init'.
+    This rule was already in force in the pre-fix harness and is validated below
+    against `g_control.json`'s own `cycle_trajectory` (`local_solves_ok = False`
+    cycles); it is NOT changed by this fix, only the block keying is.
+
+    `[ERROR] Transmission network ... did not converge: ...` /
+    `[WARNING] Distribution network node=N, network=... did not converge: ...`
+    (shared_resources_planning.py, printed by the CALLER after `.optimize()`
+    returns, i.e. after any retry already happened) are kept as a CROSS-CHECK only
+    (`final_summary_crosscheck`), never as the classification signal.
+    """
+    if not os.path.exists(stdout_path):
+        return []
+
+    events = []          # finalized (classified) events, in file order
+    open_by_key = {}      # (name, year, day) -> the event dict currently in flight
     current_cycle = 'init'
     with open(stdout_path, 'r', errors='replace') as handle:
         lines = handle.readlines()
@@ -452,80 +607,109 @@ def _scan_network_failures(stdout_path, planning_problem):
         if m:
             current_cycle = int(m.group(1))
             continue
+
         m = _NET_FAIL_RE.match(line)
         if m:
+            label = m.group('label')
             name, year, day = _parse_ctx(m.group('ctx'))
-            block = blocks.setdefault((name, year, day),
-                                      _new_network_block(name, year, day, name_to_agent))
-            block['cycles_seen'].add(current_cycle)
+            key = (name, year, day)
+            termination = _extract_termination(m.group('summary'))
+            if label == 'primary solve':
+                ev = _new_network_event(name, year, day, current_cycle, name_to_agent)
+                ev['primary_termination'] = termination
+                ev['primary_summary'] = m.group('summary')
+                open_by_key[key] = ev
+            elif label == 'solver':
+                ev = _new_network_event(name, year, day, current_cycle, name_to_agent)
+                ev['primary_termination'] = termination
+                ev['primary_summary'] = m.group('summary')
+                ev['termination'] = termination
+                ev['class'] = 'not_attempted'
+                open_by_key[key] = ev
+                events.append(ev)
+            elif label == 'recovery solve':
+                ev = open_by_key.get(key)
+                if ev is None:
+                    ev = _new_network_event(name, year, day, current_cycle, name_to_agent)
+                    ev['note'] = ('recovery-failure print with no matching open '
+                                  'primary-solve event (malformed capture)')
+                    open_by_key[key] = ev
+                ev['recovery_termination'] = termination
+                ev['recovery_summary'] = m.group('summary')
+                ev['termination'] = termination
+                ev['class'] = 'unrecovered'
+                events.append(ev)
+            else:
+                ev = _new_network_event(name, year, day, current_cycle, name_to_agent)
+                ev['primary_summary'] = m.group('summary')
+                ev['note'] = f'unrecognized attempt_label={label!r}'
+                ev['class'] = 'indeterminate'
+                open_by_key[key] = ev
+                events.append(ev)
             continue
+
         m = _NET_RETRY_RE.match(line)
         if m:
             name, year, day = _parse_ctx(m.group('ctx'))
-            block = blocks.setdefault((name, year, day),
-                                      _new_network_block(name, year, day, name_to_agent))
-            block['recovery_attempted'] = True
+            ev = open_by_key.get((name, year, day))
+            if ev is not None:
+                ev['recovery_attempted'] = True
             continue
+
         m = _NET_RECOVER_OK_RE.match(line)
         if m:
             name, year, day = _parse_ctx(m.group('ctx'))
-            block = blocks.setdefault((name, year, day),
-                                      _new_network_block(name, year, day, name_to_agent))
-            block['recovery_succeeded'] = True
+            key = (name, year, day)
+            ev = open_by_key.get(key)
+            if ev is None:
+                ev = _new_network_event(name, year, day, current_cycle, name_to_agent)
+                ev['note'] = ('recovery-success print with no matching open '
+                              'primary-solve event (malformed capture)')
+                open_by_key[key] = ev
+            ev['termination'] = 'recovered'
+            ev['class'] = 'recovered'
+            events.append(ev)
             continue
+
         m = _NET_LOG_RE.match(line)
         if m:
             name, year, day = _parse_ctx(m.group('ctx'))
-            block = blocks.setdefault((name, year, day),
-                                      _new_network_block(name, year, day, name_to_agent))
-            if 'recovery' in m.group('label'):
-                block['recovery_log'] = m.group('path').strip()
-            else:
-                block['primary_log'] = m.group('path').strip()
+            ev = open_by_key.get((name, year, day))
+            if ev is not None:
+                if 'recovery' in m.group('label'):
+                    ev['recovery_log'] = m.group('path').strip()
+                else:
+                    ev['primary_log'] = m.group('path').strip()
             continue
+
+        # Cross-check only -- never used for classification (see docstring).
         m = _TSO_FINAL_RE.match(line)
         if m:
-            key = (m.group('name'), m.group('year'), m.group('day'))
-            block = blocks.setdefault(
-                key, _new_network_block(m.group('name'), m.group('year'), m.group('day'),
-                                        name_to_agent))
-            block['final_unrecovered'] = True
-            block['final_summary'] = m.group('summary')
+            ev = open_by_key.get((m.group('name'), m.group('year'), m.group('day')))
+            if ev is not None:
+                ev['final_summary_crosscheck'] = m.group('summary')
             continue
         m = _DSO_FINAL_RE.match(line)
         if m:
-            key = (m.group('name'), m.group('year'), m.group('day'))
-            block = blocks.setdefault(
-                key, _new_network_block(m.group('name'), m.group('year'), m.group('day'),
-                                        name_to_agent))
-            block['final_unrecovered'] = True
-            block['final_summary'] = m.group('summary')
-            block['agent'] = 'DSO'
-            block['node_id'] = int(m.group('node'))
+            ev = open_by_key.get((m.group('name'), m.group('year'), m.group('day')))
+            if ev is not None:
+                ev['final_summary_crosscheck'] = m.group('summary')
+                if ev.get('node_id') is None:
+                    ev['node_id'] = int(m.group('node'))
+                if ev.get('agent') is None:
+                    ev['agent'] = 'DSO'
             continue
 
-    out = []
-    for block in blocks.values():
-        primary_exit, primary_iters = _last_exit_and_iterations(block['primary_log'])
-        recovery_exit, recovery_iters = _last_exit_and_iterations(block['recovery_log'])
-        if block['final_unrecovered']:
-            cls = 'unrecovered'
-        elif block['recovery_succeeded']:
-            cls = 'recovered'
-        elif block['recovery_attempted']:
-            cls = 'unrecovered'
-        else:
-            cls = 'not_attempted'
-        record = dict(block)
-        record['cycles_seen'] = sorted(str(c) for c in block['cycles_seen'])
-        record['primary_exit'] = primary_exit
-        record['primary_iterations'] = primary_iters
-        record['recovery_exit'] = recovery_exit
-        record['recovery_iterations'] = recovery_iters
-        record['class'] = cls
-        record['record_type'] = 'network_block'
-        out.append(record)
-    return out
+    # Any event that never received a resolving line (class still None) is a
+    # malformed-capture signal -- surfaced loudly, never silently dropped.
+    for ev in open_by_key.values():
+        if ev.get('class') is None:
+            ev['class'] = 'indeterminate'
+            note = 'unresolved at end of stdout (no recovery outcome line found)'
+            ev['note'] = f"{ev['note']}; {note}" if ev.get('note') else note
+            events.append(ev)
+
+    return events
 
 
 def _scan_frozen_snapshots(results_dir, run_started):
@@ -556,7 +740,8 @@ def _scan_frozen_snapshots(results_dir, run_started):
 
 
 def _scan_and_write_network_failures(hook_state, planning_problem):
-    blocks = _scan_network_failures(hook_state['stdout_path'], planning_problem)
+    name_to_agent = _build_name_to_agent(planning_problem)
+    blocks = _scan_network_failures(hook_state['stdout_path'], name_to_agent)
     frozen = _scan_frozen_snapshots(planning_problem.results_dir, hook_state['started'])
     esso_events = hook_state.get('esso_recovery_events', [])
     tmp = f"{hook_state['network_failures_path']}.tmp{os.getpid()}"
@@ -664,6 +849,26 @@ def assert_g_capture_paths(sed, planning, hook_state):
     tso_logs_dir = getattr(planning.transmission_network, 'logs_dir', None)
     if not (tso_logs_dir and os.path.isabs(tso_logs_dir)):
         missing.append(f'transmission_network.logs_dir not absolute/set: {tso_logs_dir!r}')
+
+    # G2PREP Fix 1: every holder's results_dir must be absolute AND under this arm's
+    # own out_dir (never the shared data/SRP1/Results/FrozenSMOPF tree) -- checked
+    # before any solve is attempted, same as the logs_dir checks above.
+    arm_out_dir = hook_state.get('out_dir')
+
+    def _check_results_dir(owner_label, value):
+        if not (value and os.path.isabs(value)):
+            missing.append(f'{owner_label}.results_dir not absolute/set: {value!r}')
+            return
+        if not (arm_out_dir and os.path.commonpath([value, arm_out_dir]) == os.path.normpath(arm_out_dir)):
+            missing.append(f'{owner_label}.results_dir not under this arm\'s out_dir '
+                           f'({arm_out_dir!r}): {value!r}')
+
+    _check_results_dir('planning', getattr(planning, 'results_dir', None))
+    _check_results_dir('shared_ess_data', getattr(sed, 'results_dir', None))
+    _check_results_dir('transmission_network', getattr(planning.transmission_network, 'results_dir', None))
+    for node_id, dso in planning.distribution_networks.items():
+        _check_results_dir(f'distribution_networks[{node_id}]', getattr(dso, 'results_dir', None))
+
     if not hook_state.get('installed'):
         missing.append('wrapper hooks (create_shared_energy_storage_model / '
                        'update_shared_energy_storages_coordination_model_and_solve) not installed')
@@ -687,7 +892,7 @@ def assert_g_capture_paths(sed, planning, hook_state):
                               + '; '.join(missing))
     return {'esso_complementarity_diagnostics_sink': True, 'asserted_before_run': True,
             'logs_dir_absolute': True, 'hooks_installed': True, 'output_root_fresh': True,
-            'esso_suffixes_present': True}
+            'esso_suffixes_present': True, 'results_dir_absolute_and_under_out_dir': True}
 
 
 def _group_diagnostics_by_round(diagnostics, n_active_nodes, cycles_run):
@@ -737,6 +942,84 @@ def _group_diagnostics_by_round(diagnostics, n_active_nodes, cycles_run):
     }
 
 
+def _construct_arm_planning(label, out_dir, report, k_override=None,
+                             investment_map=None, eval_id=None,
+                             num_max_iters_override=None):
+    """G2PREP: everything `run_admm_arm` does up to (NOT including) the
+    `planning.run_operational_planning(...)` call -- eval-dir freshness check,
+    `O.fresh_planning`, Fix 1's `results_dir` redirection (away from the shared
+    `data/SRP1/Results/FrozenSMOPF`), ADMM/budget/rho parameters, `k_override`, and
+    the investment candidate. Returns `(planning, sed, candidate)`.
+
+    Factored out of `run_admm_arm` so the Fix 1 zero-solve verification ("construct
+    the planning object for a dummy arm exactly as run_admm_arm does, up to but not
+    including the operational-planning call, guard at 0") calls the SAME code
+    `run_admm_arm` calls, rather than a re-implementation that could silently drift
+    from it.
+    """
+    eval_name = eval_id if eval_id is not None else f'p515g_{label}'
+    if eval_id is not None and os.path.exists(os.path.join(O.WORK_DIR, eval_id)):
+        raise RuntimeError(
+            f'refusing to start: eval dir already exists (network logs append): '
+            f'{os.path.join(O.WORK_DIR, eval_id)}')
+    planning = O.fresh_planning(eval_name)
+
+    # G2PREP Fix 1: redirect results_dir to this arm's OWN root, before anything else
+    # touches the planning object (in particular, before any solve or failure/
+    # comparator callback could resolve `<holder>.results_dir` to the shared tree).
+    results_dir = os.path.join(out_dir, 'results')
+    _set_results_dir_for_arm(planning, results_dir)
+    report['results_dir_redirect'] = {
+        'target_results_dir': results_dir,
+        'planning': planning.results_dir,
+        'transmission_network': planning.transmission_network.results_dir,
+        'distribution_networks': {str(nid): dso.results_dir
+                                  for nid, dso in planning.distribution_networks.items()},
+        'shared_ess_data': planning.shared_ess_data.results_dir,
+        'network_year_day_sample': {
+            holder_name: {
+                str(year): {str(day): net.results_dir for day, net in days.items()}
+                for year, days in holder.network.items()
+            }
+            for holder_name, holder in (
+                [('transmission_network', planning.transmission_network)] +
+                [(f'distribution_networks[{nid}]', dso)
+                 for nid, dso in planning.distribution_networks.items()])
+        },
+    }
+
+    planning.params.admm.num_max_iters = (
+        num_max_iters_override if num_max_iters_override is not None else N.CAP)
+    planning.params.admm.tol['objective']['rel'] = N.REL
+    planning.shared_ess_data.params.budget = N.BUDGET
+    RH.apply_rho_to_params(planning, N.RHO)
+    RH.set_adaptive_penalty(planning, True)
+    sed = planning.shared_ess_data
+
+    if k_override is not None:
+        for year in sed.years:
+            for ess in sed.shared_energy_storages[year]:
+                ess.cl_eff = k_override
+    report['k_in_force'] = {str(y): getattr(sed.shared_energy_storages[y][0], 'cl_eff', None)
+                            for y in sed.years}
+
+    candidate = planning.get_initial_candidate_solution()
+    if investment_map is None:
+        for node_id in sed.active_distribution_network_nodes:
+            candidate['investment'][node_id][N.INVEST_YEAR]['s'] = N.S_INV
+            candidate['investment'][node_id][N.INVEST_YEAR]['e'] = N.E_INV
+        report['instance'] = {'s_mva': N.S_INV, 'e_mwh': N.E_INV, 'year': N.INVEST_YEAR,
+                               'assignment': 'uniform across active nodes (control/perturbation)'}
+    else:
+        for node_id, (s_val, e_val) in investment_map.items():
+            candidate['investment'][node_id][N.INVEST_YEAR]['s'] = s_val
+            candidate['investment'][node_id][N.INVEST_YEAR]['e'] = e_val
+        report['instance'] = {'year': N.INVEST_YEAR, 'assignment': 'per-node',
+                               'investment_map': {str(k): v for k, v in investment_map.items()}}
+    srp._rebuild_candidate_total_capacities(planning, candidate)
+    return planning, sed, candidate
+
+
 def run_admm_arm(label, out_dir, k_override=None, investment_map=None,
                   num_max_iters_override=None, eval_id=None):
     """One full cold ADMM arm through the production path, reusing p514_n's own
@@ -779,44 +1062,18 @@ def run_admm_arm(label, out_dir, k_override=None, investment_map=None,
         'leak_path': leak_path, 'network_failures_path': network_failures_path,
         'esso_capture_dir': esso_capture_dir,
     }
+    # G2PREP Fix 1: hash the SHARED, preserved FrozenSMOPF tree before this arm does
+    # anything, so a post-run comparison can prove (not assert) it was not touched --
+    # bracketing the WHOLE arm, not just the solve window.
+    pre_frozen_hashes = _hash_dir_pkls(SHARED_FROZEN_SMOPF_DIR)
+
     guard = SolveProfileGuard(N.PERMITTED, label=f'P5.15-G {label}').install()
     try:
         with tee_stdout(stdout_path):
-            eval_name = eval_id if eval_id is not None else f'p515g_{label}'
-            if eval_id is not None and os.path.exists(os.path.join(O.WORK_DIR, eval_id)):
-                raise RuntimeError(
-                    f'refusing to start: eval dir already exists (network logs append): '
-                    f'{os.path.join(O.WORK_DIR, eval_id)}')
-            planning = O.fresh_planning(eval_name)
-            planning.params.admm.num_max_iters = (
-                num_max_iters_override if num_max_iters_override is not None else N.CAP)
-            planning.params.admm.tol['objective']['rel'] = N.REL
-            planning.shared_ess_data.params.budget = N.BUDGET
-            RH.apply_rho_to_params(planning, N.RHO)
-            RH.set_adaptive_penalty(planning, True)
-            sed = planning.shared_ess_data
-
-            if k_override is not None:
-                for year in sed.years:
-                    for ess in sed.shared_energy_storages[year]:
-                        ess.cl_eff = k_override
-            report['k_in_force'] = {str(y): getattr(sed.shared_energy_storages[y][0], 'cl_eff', None)
-                                    for y in sed.years}
-
-            candidate = planning.get_initial_candidate_solution()
-            if investment_map is None:
-                for node_id in sed.active_distribution_network_nodes:
-                    candidate['investment'][node_id][N.INVEST_YEAR]['s'] = N.S_INV
-                    candidate['investment'][node_id][N.INVEST_YEAR]['e'] = N.E_INV
-                report['instance'] = {'s_mva': N.S_INV, 'e_mwh': N.E_INV, 'year': N.INVEST_YEAR,
-                                       'assignment': 'uniform across active nodes (control/perturbation)'}
-            else:
-                for node_id, (s_val, e_val) in investment_map.items():
-                    candidate['investment'][node_id][N.INVEST_YEAR]['s'] = s_val
-                    candidate['investment'][node_id][N.INVEST_YEAR]['e'] = e_val
-                report['instance'] = {'year': N.INVEST_YEAR, 'assignment': 'per-node',
-                                       'investment_map': {str(k): v for k, v in investment_map.items()}}
-            srp._rebuild_candidate_total_capacities(planning, candidate)
+            planning, sed, candidate = _construct_arm_planning(
+                label, out_dir, report, k_override=k_override,
+                investment_map=investment_map, eval_id=eval_id,
+                num_max_iters_override=num_max_iters_override)
 
             n_active_nodes = len(sed.active_distribution_network_nodes)
             report['active_distribution_network_nodes'] = list(sed.active_distribution_network_nodes)
@@ -831,6 +1088,21 @@ def run_admm_arm(label, out_dir, k_override=None, investment_map=None,
         guard.uninstall()
         report['wall_clock_s'] = time.time() - started
 
+    # G2PREP Fix 1: post-run integrity check on the shared FrozenSMOPF tree.
+    post_frozen_hashes = _hash_dir_pkls(SHARED_FROZEN_SMOPF_DIR)
+    frozen_modified = [
+        {'file': fname, 'pre_sha256': digest, 'post_sha256': post_frozen_hashes.get(fname)}
+        for fname, digest in pre_frozen_hashes.items()
+        if post_frozen_hashes.get(fname) != digest
+    ]
+    frozen_new_files = sorted(set(post_frozen_hashes) - set(pre_frozen_hashes))
+    if frozen_modified or frozen_new_files:
+        print(f'[ERROR] shared FrozenSMOPF directory modified during arm {label}: '
+              f'modified={frozen_modified} new={frozen_new_files}')
+    report['shared_frozen_smopf_modified'] = frozen_modified
+    report['shared_frozen_smopf_new_files'] = frozen_new_files
+    report['shared_frozen_smopf_dir'] = os.path.relpath(SHARED_FROZEN_SMOPF_DIR, REPO)
+
     # Addendum 6 item 6: one more network-failure scan "at the end", covering anything
     # appended after the last ESSO-hook call (the ESSO solve is the last of each cycle,
     # so this normally only catches the run's very last window).
@@ -839,7 +1111,7 @@ def run_admm_arm(label, out_dir, k_override=None, investment_map=None,
     report['network_failures_summary'] = {
         'n_blocks': len(final_blocks),
         'classes': {c: sum(1 for b in final_blocks if b['class'] == c)
-                    for c in ('recovered', 'unrecovered', 'not_attempted')},
+                    for c in ('recovered', 'unrecovered', 'not_attempted', 'indeterminate')},
         'n_frozen_snapshots': len(final_frozen),
         'n_esso_recovery_events': len(final_esso_events),
         'path': os.path.relpath(network_failures_path, REPO),
@@ -961,25 +1233,40 @@ if __name__ == '__main__':
         _require_fresh_output_root(OUT_G1)
         run_admm_arm('control', OUT_G1, k_override=None, eval_id='p515g1_control')
     elif gate == 'g2':
-        run_admm_arm('k10000', OUT, k_override=10000.0)
+        # G2PREP Fix 2: own fresh root and fresh eval id, like g1.
+        _require_fresh_output_root(OUT_G2)
+        run_admm_arm('k10000', OUT_G2, k_override=10000.0, eval_id='p515g2_k10000')
     elif gate == 'g4b':
-        run_admm_arm('control_rep2', OUT, k_override=None)
+        # G2PREP Fix 2: own fresh root and fresh eval id, like g1.
+        _require_fresh_output_root(OUT_G4)
+        run_admm_arm('control_rep2', OUT_G4, k_override=None, eval_id='p515g4_control_rep2')
     elif gate == 'g3_init':
         for s in (1.00, 1.25, 1.62):
             run_ladder_init(s, os.path.join(OUT, 'ladder'))
     elif gate == 'g3_full':
+        # G2PREP Fix 2: own fresh root, plus a distinct, fresh probe eval id (the
+        # probe below only reads active_distribution_network_nodes -- no solve, no
+        # candidate, no investment -- but still MUST NOT reuse an eval id that
+        # already has a logs dir under O.WORK_DIR, since network IPOPT logs append).
+        _require_fresh_output_root(OUT_G3F)
+        probe_eval_id = 'p515g3f_probe'
+        probe_eval_dir = os.path.join(O.WORK_DIR, probe_eval_id)
+        if os.path.exists(probe_eval_dir):
+            raise RuntimeError(
+                f'refusing to start: probe eval dir already exists (network logs '
+                f'append): {probe_eval_dir}')
         # node 7 only, others zero, per PLANNER task text.
-        planning_probe = None  # active node ids discovered inside run_admm_arm via sed
         # discovered lazily: build investment_map after loading a fresh planning to read
         # the active node list, without solving anything.
-        probe = O.fresh_planning('p515g_g3_full_probe')
+        probe = O.fresh_planning(probe_eval_id)
         active_nodes = list(probe.shared_ess_data.active_distribution_network_nodes)
         del probe
         investment_map = {nid: (0.0, 0.0) for nid in active_nodes}
         if 7 not in investment_map:
             raise RuntimeError(f'node 7 not in active_distribution_network_nodes={active_nodes}')
         investment_map[7] = (1.62, 3.24)
-        run_admm_arm('g3_full_node7', OUT, k_override=None, investment_map=investment_map)
+        run_admm_arm('g3_full_node7', OUT_G3F, k_override=None, investment_map=investment_map,
+                     eval_id='p515g3f_node7')
     else:
         print(__doc__)
         sys.exit(1)
