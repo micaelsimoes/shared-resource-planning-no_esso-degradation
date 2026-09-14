@@ -144,6 +144,17 @@ incidents behind each rule are in `REVISION_CONTEXT.md`, section
   happened to hold them. The obligation is on whoever writes the task instruction, not on the
   agent following it — the instruction there said "run the harness" and named no output path.
 
+- Run campaigns attached, alone, and with both streams captured. A harness that runs a
+  campaign must capture **stderr** as well as stdout, must **refuse to run concurrently**
+  with another copy of itself whenever any production path it relies on writes to a shared
+  or relative location, and must **never be detached** (`screen`, `nohup`, shell
+  backgrounding). Give a Worker **one gate per task, with the exact command**. The failure
+  mode these prevent is not a crash but plausible false data: in P5.15 the G1–G4 gates were
+  launched four at a time into ESSO IPOPT logs written to one relative, appended filename, and a
+  first-match parser would have reported cycle 1's `mu_final` for every cycle of every gate;
+  a stdout-only launch left G1's first failure as a 0-byte log with no traceback; and a run
+  detached with `screen -dmS` survived the task that owned it.
+
 ## Stage templates
 
 - **Scope a gate per arm.** A gate that compares every arm against a control reference is

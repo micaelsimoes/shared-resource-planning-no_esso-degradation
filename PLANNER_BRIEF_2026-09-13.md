@@ -340,6 +340,54 @@ conclusions drawn from it are amended:
    previously reported SoH trajectory carried ≈1.4 % spurious throughput from the relaxed
    complementarity row, so no published degradation number is reusable.
 
+---
+
+# Addendum 4 — after `P5_15_EXPERT_HANDOFF_2.md` (2026-09-13)
+
+- Remedy (h) **confirmed**: μ_final ↓101.5×, leak ↓102.1× — the identity is predictive. Spurious
+  throughput 0.0091 % at `tol = 1e-8`. ESSO closed as a component pending G1–G4.
+- **"Estimate", not "bound"**: the identity holds exactly only at the terminal barrier optimum;
+  measured/estimate scatters ±0.35 %. Manuscript wording: *estimate*; gates use the measured
+  detector. The Planner's override of Addendum 3's wording is accepted.
+- **G5 re-specified** (the 1e-6 absolute criterion was mis-set, same class as the detector
+  threshold): (i) net power `pch − pdch` across A1/A3/A4 to 1e-10 — **passed** (1e-16);
+  (ii) `es_D_per_unit` and `es_soh_per_unit_cumul` across arms within the sum of the two arms'
+  analytic leak estimates propagated through `D ∝ throughput` (in practice ≤ 1e-4 absolute on
+  SoH). On the reported numbers (7.6e-5 on D, 2.2e-5 on SoH) **G5 passes**; record it as passed
+  with the re-specified criterion and the decomposition table as the evidence that no
+  nonconvexity remains.
+- **G1 stands as specified.** The reconciliation Δ is dominated by the old control's 1.39 %
+  leak, not by the new run's 0.009 %; Δ(SoH) ≈ 1.4e-3 against a 10 % criterion is well resolved.
+- The ESSO detector and the per-solve estimate are logged in every G run, per cycle.
+- Commit this round explicitly by name. Then G1–G4 → `REVISION_CONTEXT.md` rewrite → stop.
+
+---
+
+# Addendum 5 — after `P5_15_EXPERT_HANDOFF_3.md` (2026-09-14)
+
+- **G3-init passes** at 1.00 / 1.25 / 1.62 MVA, all nodes, zero failures. Credit recorded to
+  Candidate 2.
+- **ESSO log-handling fix authorized as one change**, four parts: (1) ESSO logs go to the same
+  logs directory `network.py` uses; (2) **one log file per ESSO solve**, stamped cycle/node —
+  the per-cycle detector trajectory is then a directory listing, not a parse; (3) the parser
+  reads the *last* `Complementarity`/`Objective` lines; (4) the network failure handler resolves
+  `results_dir` to an absolute path at construction and saves the failure snapshot without
+  aborting. Tests: two-cycle probe with distinct `mu_final` per cycle; a deliberately triggered
+  network failure that snapshots and continues; single-solve detector values unchanged from the
+  committed results.
+- **No harness-only workaround** for gate reporting. These logs are the paper's reporting path.
+- **Zero-solve check before G1:** from the ladder logs compute `mu_final/(2·s_obj·ε)` at the
+  initialization call site. If it reproduces ~2.4e-5, the 5× gap is an `s_obj` difference at
+  initialization (consistent with the identity; record it). If not, `tol = 1e-8` is not in force
+  on that path — fix the plumbing in the same commit.
+- **The lost TSO failure at C\*** is the first network failure under the new policy; on the G1
+  re-run it must be captured, counted and classified (exit status, iterations, recovery outcome).
+- **`CLAUDE.md` rules adopted:** campaign harnesses capture stderr, refuse to run concurrently,
+  and are never detached (`screen`/`nohup`/background); one gate per Worker task with the exact
+  command.
+- Order: stage this round by name (lock file stays untracked) → fix + tests → zero-solve check →
+  G1 → G2 → G3-full → G4, sequentially → `REVISION_CONTEXT.md` rewrite → stop.
+
 ## Update obligations
 
 At the end of Step 1 the Planner rewrites the "CURRENT SOURCE OF TRUTH" head of
