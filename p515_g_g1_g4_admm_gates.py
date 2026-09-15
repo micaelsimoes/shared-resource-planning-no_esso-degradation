@@ -2200,6 +2200,382 @@ def write_boyd_terminal_s32(planning, sed, models, rows, report, out_dir, label)
     return path
 
 
+# ===========================================================================
+# P5.15 Step 3.2 E2 -- gamma tied to rho, cycle-30 freeze, 3 consecutive
+# converged cycles. Level-capture arm `s33e2`. Authority:
+# PLANNER_BRIEF_2026-09-13.md Addendum 14. Binding specification:
+# data/SRP1/Results/P515S33/frozen_s33_e2_spec_v3_825f1f02.json (supersedes
+# v2 data/SRP1/Results/P515S32/frozen_s32_spec_v2_516bd749.json). Same
+# machinery as `s32` (lock, heartbeat, stdout/stderr, results_dir redirect,
+# guard, trajectory, post-run writers) -- other arms (including `s32`) are
+# UNCHANGED by this section.
+# ===========================================================================
+
+OUT_S33E2 = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S33_E2_run')
+S33E2_SPEC_PATH = os.path.join(
+    REPO, 'data', 'SRP1', 'Results', 'P515S33', 'frozen_s33_e2_spec_v3_825f1f02.json')
+S33E2_SPEC_SHA256 = '825f1f02d5319137e0248fc529b9aefdca0251272529ee140e09af6e73a04780'
+S33E2_CAP = 150
+S33E2_REL = 1e-4
+S33E2_S31C_G_PATH = os.path.join(OUT_S31C, 'g_baseline.json')
+S33E2_S32_G_PATH = os.path.join(OUT_S32, 'g_baseline.json')
+S33E2_MATCHED_CYCLES = (1, 2, 3, 5, 10, 18, 20, 30, 40, 50, 60, 70, 80, 90, 100, 125, 150)
+
+# Per-cycle-channel fields are unchanged from v2 (gamma is not stored as a
+# per-channel-suffixed key inside `get_admm_boyd_residual_metrics`'s
+# `channel_entry` dict -- it lives in the ADMM-loop-level `admm_diagnostics`
+# dict as `gamma_{group}_before/after`, checked via
+# S33E2_ADMM_DIAGNOSTICS_KEYS below, together with `freeze_active`'s
+# production name `rho_freeze_active`).
+S33E2_REPORT_PER_CYCLE_CHANNEL_FIELDS = S32_REPORT_PER_CYCLE_CHANNEL_FIELDS
+S33E2_ADMM_DIAGNOSTICS_KEYS = S32_ADMM_DIAGNOSTICS_KEYS + (
+    'gamma_v_before', 'gamma_v_after', 'gamma_pf_before', 'gamma_pf_after',
+    'gamma_ess_before', 'gamma_ess_after', 'rho_freeze_active',
+    'freeze_after_cycle', 'gamma_policy', 'gamma_tau',
+)
+
+
+def _s33e2_spec_hash():
+    with open(S33E2_SPEC_PATH, 'rb') as handle:
+        return hashlib.sha256(handle.read()).hexdigest()
+
+
+def assert_s33e2_capture_paths(planning):
+    """Rule eleven for the s33e2 arm (frozen spec v3). Reuses
+    `assert_s31c_capture_paths` (still required: the s33e2 hook also calls
+    `write_component_levels_terminal` and
+    `write_interface_settlement_detail_s31c`, which cover `report_terminal`'s
+    "D rows", "cancellation residual", "per-DSO settlement and flexibility
+    volumes" and "network failures by tier" fields) and adds the v3-only
+    checks (gamma tied to rho, tau, cycle-30 freeze, 3 consecutive converged
+    cycles, the new gamma/freeze diagnostics keys, and the new interface-
+    voltage writer). Deliberately does NOT call `assert_s32_capture_paths`
+    (that function hashes the v2 spec file against `S32_SPEC_SHA256`, which
+    is orthogonal to and would be misleading for a v3 run); the Boyd
+    per-cycle-channel field check it performs is reused directly via
+    `S32_REPORT_PER_CYCLE_CHANNEL_FIELDS` (unchanged by v3) instead. Zero
+    solves.
+    """
+    checklist = dict(assert_s31c_capture_paths(planning))
+
+    # -- spec file identity (v3) ------------------------------------------
+    observed_hash = _s33e2_spec_hash()
+    checklist['spec_file_hash_matches'] = (observed_hash == S33E2_SPEC_SHA256)
+    checklist['spec_file_hash_observed'] = observed_hash
+
+    # -- boyd tolerance source and value (unchanged from s32) -------------
+    admm_params = planning.params.admm
+    checklist['boyd_eps_source_is_case_file'] = (admm_params.boyd_eps_source == 'case_file')
+    checklist['boyd_eps_abs_is_1e-5'] = (admm_params.tol['boyd']['eps_abs'] == 1e-5)
+    checklist['boyd_eps_rel_is_1e-4'] = (admm_params.tol['boyd']['eps_rel'] == 1e-4)
+
+    # -- v3-only case-file settings ----------------------------------------
+    checklist['gamma_policy_is_tied_to_rho'] = (
+        admm_params.proximal_regularization['tso'].get('gamma_policy') == 'tied_to_rho')
+    checklist['gamma_tau_is_1'] = (admm_params.proximal_regularization['tso'].get('tau') == 1.0)
+    checklist['freeze_after_cycle_is_30'] = (admm_params.penalty_update.get('freeze_after_cycle') == 30)
+    checklist['minimum_consecutive_converged_cycles_is_3'] = (admm_params.minimum_consecutive_converged_cycles == 3)
+
+    # -- initial rho: case-file value (1.0); N.RHO must NOT be applied ----
+    rho_all_one = all(
+        float(v) == 1.0
+        for group in ('v', 'pf', 'ess')
+        for v in admm_params.rho[group].values()
+    )
+    checklist['initial_rho_all_one'] = rho_all_one
+    checklist['initial_rho_snapshot'] = {
+        group: dict(admm_params.rho[group]) for group in ('v', 'pf', 'ess')
+    }
+
+    # -- per-cycle-channel capture (unchanged from v2) ---------------------
+    checklist['srp_get_admm_boyd_residual_metrics'] = callable(
+        getattr(srp, 'get_admm_boyd_residual_metrics', None))
+    checklist['srp_update_admm_penalties_accepts_iter'] = (
+        'iter' in inspect.signature(srp._update_admm_penalties).parameters)
+
+    boyd_fn_source = inspect.getsource(srp.get_admm_boyd_residual_metrics)
+    for field in S33E2_REPORT_PER_CYCLE_CHANNEL_FIELDS:
+        checklist[f'boyd_field_{field}_in_source'] = (f"'{field}':" in boyd_fn_source)
+
+    module_source = inspect.getsource(srp)
+    for key in S33E2_ADMM_DIAGNOSTICS_KEYS:
+        checklist[f'admm_diagnostics_key_{key}_present'] = (f"'{key}':" in module_source)
+
+    # -- structural: TSO gamma Params are mutable (spec v3 requirement) ---
+    checklist['prox_gamma_v_mutable_in_source'] = (
+        'model[year][day].prox_gamma_v = pe.Param(mutable=True' in module_source)
+
+    # -- report_terminal fields not already covered by assert_s31c_capture_paths
+    checklist['s31c_g_baseline_reference_exists'] = os.path.exists(S33E2_S31C_G_PATH)
+    checklist['s32_g_baseline_reference_exists'] = os.path.exists(S33E2_S32_G_PATH)
+    checklist['write_interface_voltage_terminal_callable'] = callable(
+        globals().get('write_interface_voltage_terminal'))
+
+    missing = [name for name, ok in checklist.items()
+               if isinstance(ok, bool) and not ok]
+    if missing:
+        raise RuntimeError(f'S33E2 capture-path pre-flight FAILED, missing/broken: {missing}')
+    return checklist
+
+
+def _s33e2_gamma_trajectory(rows):
+    trajectory = {'v': [], 'pf': [], 'ess': []}
+    for row in rows:
+        for group in ('v', 'pf', 'ess'):
+            trajectory[group].append({
+                'cycle': row.get('cycle'),
+                'gamma_before': row.get(f'gamma_{group}_before'),
+                'gamma_after': row.get(f'gamma_{group}_after'),
+                'rho_freeze_active': row.get('rho_freeze_active'),
+            })
+    return trajectory
+
+
+def _s33e2_system_cost_vs_references(rows, report):
+    """System cost (gross_operational_cost -- see `objective_convention` in
+    the payload this feeds) vs BOTH the s31c and s32 reference trajectories,
+    at the spec's matched cycles and at the terminal point, WITH each run's
+    own terminal step (rule ten: bounds stopping slack only, not path
+    divergence -- CLAUDE.md evidence rule)."""
+    result = {}
+    for ref_name, ref_path in (('s31c', S33E2_S31C_G_PATH), ('s32', S33E2_S32_G_PATH)):
+        if not os.path.exists(ref_path):
+            result[ref_name] = {'available': False, 'reason': f'{ref_name} reference not found at {ref_path}'}
+            continue
+        with open(ref_path) as handle:
+            ref_report = json.load(handle)
+        ref_rows = ref_report.get('cycle_trajectory', [])
+        ref_by_cycle = {r['cycle']: r for r in ref_rows if r.get('cycle') is not None}
+        e2_by_cycle = {r['cycle']: r for r in rows if r.get('cycle') is not None}
+
+        matched = []
+        for cycle in S33E2_MATCHED_CYCLES:
+            if cycle not in ref_by_cycle or cycle not in e2_by_cycle:
+                continue
+            e2_v = e2_by_cycle[cycle].get('gross_operational_cost')
+            ref_v = ref_by_cycle[cycle].get('gross_operational_cost')
+            matched.append({
+                'cycle': cycle,
+                's33e2_gross_operational_cost': e2_v,
+                f'{ref_name}_gross_operational_cost': ref_v,
+                'difference': (e2_v - ref_v) if (e2_v is not None and ref_v is not None) else None,
+            })
+
+        e2_last = rows[-1] if rows else {}
+        ref_last = ref_rows[-1] if ref_rows else {}
+        e2_terminal_step = e2_last.get('objective_change_abs')
+        ref_terminal_step = ref_last.get('objective_change_abs')
+        terminal_difference = (
+            (e2_last.get('gross_operational_cost') - ref_last.get('gross_operational_cost'))
+            if (e2_last.get('gross_operational_cost') is not None and ref_last.get('gross_operational_cost') is not None)
+            else None
+        )
+        error_bar = (
+            (abs(e2_terminal_step) + abs(ref_terminal_step))
+            if (e2_terminal_step is not None and ref_terminal_step is not None) else None
+        )
+        result[ref_name] = {
+            'available': True,
+            'reference_path': os.path.relpath(ref_path, REPO),
+            'matched_cycles': matched,
+            'terminal': {
+                's33e2_cycle': e2_last.get('cycle'),
+                f'{ref_name}_cycle': ref_last.get('cycle'),
+                's33e2_gross_operational_cost': e2_last.get('gross_operational_cost'),
+                f'{ref_name}_gross_operational_cost': ref_last.get('gross_operational_cost'),
+                'difference': terminal_difference,
+                's33e2_terminal_step_objective_change_abs': e2_terminal_step,
+                f'{ref_name}_terminal_step_objective_change_abs': ref_terminal_step,
+                'error_bar_sum_of_terminal_steps': error_bar,
+                'determinate_at_gt_error_bar': (
+                    (abs(terminal_difference) > error_bar)
+                    if (terminal_difference is not None and error_bar) else None
+                ),
+            },
+        }
+    return result
+
+
+def _interface_voltage_detail(planning, models):
+    """Zero solves: per-entry interface-voltage detail at the CURRENT
+    (terminal, or preflight-cycle) model state -- TSO copy
+    (`expected_interface_vmag[dn, p]`, already in pu -- see
+    `update_transmission_model_to_admm`, multiplied by `v_base` elsewhere to
+    get kV) and DSO copy (`expected_interface_vmag[p]`, same convention),
+    and the distance to the TSO node's own [v_min, v_max] pu bounds
+    (`network.get_node_voltage_limits`)."""
+    transmission_network = planning.transmission_network
+    tso_model = models['tso']
+    dso_models_by_node = models['dso']
+
+    entries = []
+    for node_id in planning.active_distribution_network_nodes:
+        dn = transmission_network.active_distribution_network_nodes.index(node_id)
+        dso_model = dso_models_by_node[node_id]
+        for year in planning.years:
+            for day in planning.days:
+                network = transmission_network.network[year][day]
+                v_min, v_max = network.get_node_voltage_limits(node_id)
+                for p in tso_model[year][day].periods:
+                    tso_pu = pe.value(tso_model[year][day].expected_interface_vmag[dn, p])
+                    dso_pu = pe.value(dso_model[year][day].expected_interface_vmag[p])
+                    dist_to_min = tso_pu - v_min
+                    dist_to_max = v_max - tso_pu
+                    if dist_to_min <= dist_to_max:
+                        nearest_bound, distance = 'v_min', dist_to_min
+                    else:
+                        nearest_bound, distance = 'v_max', dist_to_max
+                    entries.append({
+                        'node_id': node_id, 'year': str(year), 'day': str(day), 'period': p,
+                        'tso_pu': tso_pu, 'dso_pu': dso_pu,
+                        'v_min_pu': v_min, 'v_max_pu': v_max,
+                        'distance_to_nearest_bound_pu': distance,
+                        'nearest_bound': nearest_bound,
+                    })
+
+    per_node_min = {}
+    for e in entries:
+        nid = e['node_id']
+        if nid not in per_node_min or e['distance_to_nearest_bound_pu'] < per_node_min[nid]:
+            per_node_min[nid] = e['distance_to_nearest_bound_pu']
+    min_distance_overall = min((e['distance_to_nearest_bound_pu'] for e in entries), default=None)
+    n_at_bound = sum(1 for e in entries if e['distance_to_nearest_bound_pu'] <= 1e-6)
+    n_within_0p005 = sum(1 for e in entries if e['distance_to_nearest_bound_pu'] <= 0.005)
+
+    summary = {
+        'n_entries': len(entries),
+        'min_distance_to_bound_pu_overall': min_distance_overall,
+        'min_distance_to_bound_pu_per_node': {str(k): v for k, v in per_node_min.items()},
+        'n_entries_at_bound_within_1e-6_pu': n_at_bound,
+        'n_entries_within_0p005_pu': n_within_0p005,
+    }
+    return entries, summary
+
+
+def write_interface_voltage_terminal(planning, models, out_dir, label, cycle=None):
+    """Spec v3 `report_terminal` -- "per-entry terminal interface V: TSO and
+    DSO copies per node/year/day/period (pu), and distance to the TSO node
+    bounds". Top-level shape is exactly `{"entries": [...], "summary": {...}}`
+    (metadata folded into `summary`, not a separate top-level key)."""
+    entries, summary = _interface_voltage_detail(planning, models)
+    summary = dict(summary)
+    summary.update({
+        'stage': 'P5.15 Step 3.2 E2 -- per-entry terminal interface voltage vs TSO node bounds',
+        'authority': 'data/SRP1/Results/P515S33/frozen_s33_e2_spec_v3_825f1f02.json report_terminal',
+        'timestamp_utc': datetime.now(timezone.utc).isoformat(),
+        'label': label,
+        'cycle': cycle,
+    })
+    payload = {'entries': entries, 'summary': summary}
+
+    path = os.path.join(out_dir, 'interface_voltage_terminal.json')
+    _refuse_overwrite(path)
+    with open(path, 'w') as handle:
+        json.dump(payload, handle, indent=1, default=str)
+    print(f'[S33E2] interface_voltage_terminal.json written: {path}')
+    return path
+
+
+def write_boyd_terminal_s33e2(planning, sed, models, rows, report, out_dir, label):
+    """s33e2 Part 2: writes `boyd_terminal.json` -- the frozen v3 spec's
+    `report_terminal` fields not already covered by
+    `write_interface_settlement_detail_s31c` (cancellation residual,
+    per-DSO settlement/flexibility volumes) and `write_component_levels_terminal`
+    (D rows), which this function calls FIRST, exactly as the s32 hook does
+    -- and `write_interface_voltage_terminal`. Zero extra solves -- reads
+    the SAME final `models` `run_admm_arm` built."""
+    settlement_path = write_interface_settlement_detail_s31c(
+        planning, sed, models, rows, report, out_dir, label)
+
+    last_row = rows[-1] if rows else {}
+    converged_at_cycle = report.get('converged_at_cycle')
+    stopped_by = 'boyd' if (converged_at_cycle is not None and converged_at_cycle == last_row.get('cycle')) else 'cap'
+
+    voltage_path = write_interface_voltage_terminal(
+        planning, models, out_dir, label, cycle=last_row.get('cycle'))
+
+    with open(S33E2_SPEC_PATH) as handle:
+        spec_json = json.load(handle)
+
+    # Consecutive-converged-cycles run at the terminal row, and the cycle it
+    # began (scanning backward from the terminal row while cycle_convergence
+    # holds; sanity-checked against the row's own recorded count).
+    consecutive_converged_at_stop = last_row.get('consecutive_converged_cycles')
+    began_at_cycle = None
+    if consecutive_converged_at_stop:
+        count = 0
+        for row in reversed(rows):
+            if row.get('cycle_convergence'):
+                count += 1
+                began_at_cycle = row.get('cycle')
+            else:
+                break
+        if count != consecutive_converged_at_stop:
+            began_at_cycle = None
+
+    payload = {
+        'stage': 'P5.15 Step 3.2 E2 (s33e2) -- gamma tied to rho, freeze at cycle 30, 3 consecutive converged cycles',
+        'authority': [
+            'PLANNER_BRIEF_2026-09-13.md Addendum 14',
+            'data/SRP1/Results/P515S33/frozen_s33_e2_spec_v3_825f1f02.json',
+        ],
+        'spec_file': os.path.relpath(S33E2_SPEC_PATH, REPO),
+        'spec_file_sha256': S33E2_SPEC_SHA256,
+        'predecessor_spec_file': spec_json.get('predecessor', {}).get('path'),
+        'predecessor_spec_sha256': spec_json.get('predecessor', {}).get('sha256'),
+        'timestamp_utc': datetime.now(timezone.utc).isoformat(),
+        'label': label,
+        'objective_convention': (
+            'gross_operational_cost (matched-cycle and terminal comparisons '
+            'below use gross, NOT net_operational_recourse -- see CLAUDE.md '
+            '"Reporting conventions")'
+        ),
+        'cycles': len(rows),
+        'stopped_by': stopped_by,
+        'converged_at_cycle': converged_at_cycle,
+        'consecutive_converged_at_stop': consecutive_converged_at_stop,
+        'consecutive_converged_run_began_at_cycle': began_at_cycle,
+        'binding_test_per_channel': _s32_binding_test(last_row),
+        'rho_trajectory_per_channel': _s32_rho_trajectory(rows),
+        'gamma_trajectory_per_channel': _s33e2_gamma_trajectory(rows),
+        'freeze_after_cycle': last_row.get('freeze_after_cycle'),
+        'rho_freeze_active_at_terminal': last_row.get('rho_freeze_active'),
+        'gamma_policy': last_row.get('gamma_policy'),
+        'gamma_tau': last_row.get('gamma_tau'),
+        'system_cost_vs_references': _s33e2_system_cost_vs_references(rows, report),
+        'e4_noise_floor_delta_c_vs_terminal_steps': {
+            'delta_c_from_spec_eps_abs_derivation': spec_json.get('stopping_rule', {}).get('eps_abs_derivation', {}).get('delta_c'),
+            'terminal_boyd_r_per_channel': {g: last_row.get(f'boyd_{g}_r') for g in ('v', 'pf', 'ess')},
+            'terminal_boyd_s_per_channel': {g: last_row.get(f'boyd_{g}_s') for g in ('v', 'pf', 'ess')},
+            'note': (
+                'delta_c (E4) is the per-entry local-solver noise floor; '
+                'boyd_{g}_r/s are Euclidean-norm residuals over ALL entries '
+                'in channel g (not per-entry) -- reported side by side per '
+                'report_terminal, not rescaled to per-entry here.'
+            ),
+        },
+        'network_failures_summary': report.get('network_failures_summary'),
+        'component_levels_terminal_and_settlement_detail_path': settlement_path,
+        'interface_voltage_terminal_path': os.path.relpath(voltage_path, REPO),
+        'note_D_rows_and_cancellation_residual': (
+            'D rows are in component_levels_terminal.json (written by '
+            'write_component_levels_terminal, called first by '
+            'write_interface_settlement_detail_s31c above); the cancellation '
+            'residual T_TSO + sum(T_DSO) is '
+            '"t_tso_plus_t_dso_terminal" and per-DSO settlement/flexibility '
+            'volumes are "interface_consensus_residual_per_dso" / '
+            '"flexibility_volumes_per_dso" in interface_settlement_detail_s31c.json.'
+        ),
+    }
+
+    path = os.path.join(out_dir, 'boyd_terminal.json')
+    _refuse_overwrite(path)
+    with open(path, 'w') as handle:
+        json.dump(payload, handle, indent=1, default=str)
+    print(f'[S33E2] boyd_terminal.json written: {path}')
+    return path
+
+
 if __name__ == '__main__':
     _acquire_exclusive_run_lock()
     gate = sys.argv[1] if len(sys.argv) > 1 else None
@@ -2411,6 +2787,57 @@ if __name__ == '__main__':
         run_admm_arm('baseline', OUT_S32, k_override=None, eval_id='p515s32_baseline',
                      num_max_iters_override=S32_CAP, apply_rho=False,
                      full_diagnostics_in_rows=True, post_run_hook=_s32_hook)
+    elif gate == 's33e2':
+        # S33 E2 worker task (PLANNER_BRIEF_2026-09-13.md Addendum 14; frozen
+        # spec v3 data/SRP1/Results/P515S33/frozen_s33_e2_spec_v3_825f1f02.json,
+        # supersedes v2 frozen_s32_spec_v2_516bd749.json -- gamma tied to rho
+        # (tau=1), rho/gamma adaptation frozen after cycle 30,
+        # minimum_consecutive_converged_cycles=3): Boyd stopping rule +
+        # residual balancing + tied-gamma stabiliser gate, cap 150,
+        # case-file rho in force (N.RHO NOT applied) -- own fresh root and
+        # eval id; the s32 run directory is never written.
+        if N.REL != S33E2_REL:
+            raise RuntimeError(
+                f'p514_n_instrumented_cstar.REL ({N.REL}) no longer matches the '
+                f'frozen s33e2 objective-change (diagnostic) tolerance {S33E2_REL}; '
+                'the spec requires 1e-4.')
+        observed_spec_hash = _s33e2_spec_hash()
+        if observed_spec_hash != S33E2_SPEC_SHA256:
+            raise RuntimeError(
+                f'frozen s33e2 spec hash mismatch: file={observed_spec_hash} '
+                f'expected={S33E2_SPEC_SHA256}')
+        _require_fresh_output_root(OUT_S33E2)
+        preflight_eval_id = 'p515s33e2_preflight_capture_check'
+        preflight_eval_dir = os.path.join(O.WORK_DIR, preflight_eval_id)
+        if os.path.exists(preflight_eval_dir):
+            raise RuntimeError(
+                f'refusing to start: preflight eval dir already exists (network '
+                f'logs append): {preflight_eval_dir}')
+        preflight_planning = O.fresh_planning(preflight_eval_id)
+        s33e2_checklist = assert_s33e2_capture_paths(preflight_planning)
+        preflight_admm_params = preflight_planning.params.admm
+        del preflight_planning
+        print(f'[P5.15 S33 E2] capture-path pre-flight passed: {s33e2_checklist}')
+        print(
+            '[P5.15 S33 E2] cap=150, objective rel=1e-4 (diagnostic), adaptive on, '
+            f'case-file rho in force (N.RHO NOT applied): '
+            f'v={preflight_admm_params.rho["v"]}, pf={preflight_admm_params.rho["pf"]}, '
+            f'ess={preflight_admm_params.rho["ess"]}; '
+            f'boyd eps_source={preflight_admm_params.boyd_eps_source}, '
+            f'eps_abs={preflight_admm_params.tol["boyd"]["eps_abs"]:.1e}, '
+            f'eps_rel={preflight_admm_params.tol["boyd"]["eps_rel"]:.1e}; '
+            f'gamma_policy={preflight_admm_params.proximal_regularization["tso"]["gamma_policy"]}, '
+            f'tau={preflight_admm_params.proximal_regularization["tso"]["tau"]}; '
+            f'freeze_after_cycle={preflight_admm_params.penalty_update["freeze_after_cycle"]}; '
+            f'minimum_consecutive_converged_cycles={preflight_admm_params.minimum_consecutive_converged_cycles}'
+        )
+
+        def _s33e2_hook(planning, sed, models, rows, report, out_dir, label):
+            write_boyd_terminal_s33e2(planning, sed, models, rows, report, out_dir, label)
+
+        run_admm_arm('baseline', OUT_S33E2, k_override=None, eval_id='p515s33e2_baseline',
+                     num_max_iters_override=S33E2_CAP, apply_rho=False,
+                     full_diagnostics_in_rows=True, post_run_hook=_s33e2_hook)
     else:
         print(__doc__)
         sys.exit(1)

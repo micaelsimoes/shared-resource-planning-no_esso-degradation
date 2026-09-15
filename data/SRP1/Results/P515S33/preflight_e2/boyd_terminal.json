@@ -1,0 +1,244 @@
+{
+ "stage": "P5.15 Step 3.2 E2 (s33e2) -- gamma tied to rho, freeze at cycle 30, 3 consecutive converged cycles",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 14",
+  "data/SRP1/Results/P515S33/frozen_s33_e2_spec_v3_825f1f02.json"
+ ],
+ "spec_file": "data/SRP1/Results/P515S33/frozen_s33_e2_spec_v3_825f1f02.json",
+ "spec_file_sha256": "825f1f02d5319137e0248fc529b9aefdca0251272529ee140e09af6e73a04780",
+ "predecessor_spec_file": "data/SRP1/Results/P515S32/frozen_s32_spec_v2_516bd749.json",
+ "predecessor_spec_sha256": "516bd749c5eff6c5f26c0dac570d10964ca989b2c64394ac1ba5deca32356b85",
+ "timestamp_utc": "2026-09-15T22:30:53.982022+00:00",
+ "label": "preflight_e2",
+ "objective_convention": "gross_operational_cost (matched-cycle and terminal comparisons below use gross, NOT net_operational_recourse -- see CLAUDE.md \"Reporting conventions\")",
+ "cycles": 2,
+ "stopped_by": "cap",
+ "converged_at_cycle": null,
+ "consecutive_converged_at_stop": 0,
+ "consecutive_converged_run_began_at_cycle": null,
+ "binding_test_per_channel": {
+  "v": {
+   "r": 0.00631649011560989,
+   "s": 0.05610532436413436,
+   "eps_pri": 0.0032284685998089134,
+   "eps_dual": 0.00029790601484148705,
+   "primal_ratio": 1.9564973052498482,
+   "dual_ratio": 188.33229800340712,
+   "dual_ratio_balance": 133.17104503465487,
+   "primal_pass": false,
+   "dual_pass": false,
+   "channel_pass": false
+  },
+  "pf": {
+   "r": 2.816024502757768,
+   "s": 3.2637970937456813,
+   "eps_pri": 0.0014426417371720742,
+   "eps_dual": 0.0006490057968057792,
+   "primal_ratio": 1951.9915653333692,
+   "dual_ratio": 5028.918246661519,
+   "dual_ratio_balance": 3555.9821942471235,
+   "primal_pass": false,
+   "dual_pass": false,
+   "channel_pass": false
+  },
+  "ess": {
+   "r": 0.004218200883269535,
+   "s": 0.003751296292093479,
+   "eps_pri": 0.0007300425322660258,
+   "eps_dual": 0.0007209046803394704,
+   "primal_ratio": 5.778020727335421,
+   "dual_ratio": 5.20359541892142,
+   "dual_ratio_balance": 3.5387551891188957,
+   "primal_pass": false,
+   "dual_pass": false,
+   "channel_pass": false
+  }
+ },
+ "rho_trajectory_per_channel": {
+  "v": [
+   {
+    "cycle": 1,
+    "rho_before": 1.0,
+    "rho_after": 1.0,
+    "action": "held"
+   },
+   {
+    "cycle": 2,
+    "rho_before": 1.0,
+    "rho_after": 0.6666666666666671,
+    "action": "decreased"
+   }
+  ],
+  "pf": [
+   {
+    "cycle": 1,
+    "rho_before": 1.0,
+    "rho_after": 1.0,
+    "action": "held"
+   },
+   {
+    "cycle": 2,
+    "rho_before": 1.0,
+    "rho_after": 1.0,
+    "action": "held"
+   }
+  ],
+  "ess": [
+   {
+    "cycle": 1,
+    "rho_before": 1.0,
+    "rho_after": 1.0,
+    "action": "held"
+   },
+   {
+    "cycle": 2,
+    "rho_before": 1.0,
+    "rho_after": 1.0,
+    "action": "held"
+   }
+  ]
+ },
+ "gamma_trajectory_per_channel": {
+  "v": [
+   {
+    "cycle": 1,
+    "gamma_before": 1.0,
+    "gamma_after": 1.0,
+    "rho_freeze_active": false
+   },
+   {
+    "cycle": 2,
+    "gamma_before": 1.0,
+    "gamma_after": 0.6666666666666666,
+    "rho_freeze_active": false
+   }
+  ],
+  "pf": [
+   {
+    "cycle": 1,
+    "gamma_before": 1.0,
+    "gamma_after": 1.0,
+    "rho_freeze_active": false
+   },
+   {
+    "cycle": 2,
+    "gamma_before": 1.0,
+    "gamma_after": 1.0,
+    "rho_freeze_active": false
+   }
+  ],
+  "ess": [
+   {
+    "cycle": 1,
+    "gamma_before": 1.0,
+    "gamma_after": 1.0,
+    "rho_freeze_active": false
+   },
+   {
+    "cycle": 2,
+    "gamma_before": 1.0,
+    "gamma_after": 1.0,
+    "rho_freeze_active": false
+   }
+  ]
+ },
+ "freeze_after_cycle": 30,
+ "rho_freeze_active_at_terminal": false,
+ "gamma_policy": "tied_to_rho",
+ "gamma_tau": 1.0,
+ "system_cost_vs_references": {
+  "s31c": {
+   "available": true,
+   "reference_path": "data/SRP1/Results/P515S31C_run/g_baseline.json",
+   "matched_cycles": [
+    {
+     "cycle": 1,
+     "s33e2_gross_operational_cost": 968494925.0938367,
+     "s31c_gross_operational_cost": 2359311749.284464,
+     "difference": -1390816824.190627
+    },
+    {
+     "cycle": 2,
+     "s33e2_gross_operational_cost": 1219820650.0962644,
+     "s31c_gross_operational_cost": 1635793408.6698973,
+     "difference": -415972758.57363296
+    }
+   ],
+   "terminal": {
+    "s33e2_cycle": 2,
+    "s31c_cycle": 90,
+    "s33e2_gross_operational_cost": 1219820650.0962644,
+    "s31c_gross_operational_cost": 661400927.7360976,
+    "difference": 558419722.3601668,
+    "s33e2_terminal_step_objective_change_abs": 251325725.0024277,
+    "s31c_terminal_step_objective_change_abs": 129616.68283557892,
+    "error_bar_sum_of_terminal_steps": 251455341.68526328,
+    "determinate_at_gt_error_bar": true
+   }
+  },
+  "s32": {
+   "available": true,
+   "reference_path": "data/SRP1/Results/P515S32_run/g_baseline.json",
+   "matched_cycles": [
+    {
+     "cycle": 1,
+     "s33e2_gross_operational_cost": 968494925.0938367,
+     "s32_gross_operational_cost": 968494925.0938367,
+     "difference": 0.0
+    },
+    {
+     "cycle": 2,
+     "s33e2_gross_operational_cost": 1219820650.0962644,
+     "s32_gross_operational_cost": 1219820650.0962644,
+     "difference": 0.0
+    }
+   ],
+   "terminal": {
+    "s33e2_cycle": 2,
+    "s32_cycle": 150,
+    "s33e2_gross_operational_cost": 1219820650.0962644,
+    "s32_gross_operational_cost": 654413409.7351172,
+    "difference": 565407240.3611472,
+    "s33e2_terminal_step_objective_change_abs": 251325725.0024277,
+    "s32_terminal_step_objective_change_abs": 30394.44314610958,
+    "error_bar_sum_of_terminal_steps": 251356119.4455738,
+    "determinate_at_gt_error_bar": true
+   }
+  }
+ },
+ "e4_noise_floor_delta_c_vs_terminal_steps": {
+  "delta_c_from_spec_eps_abs_derivation": {
+   "ESS": 6.603706009759045e-08,
+   "PF": 1.2525028627568471e-08,
+   "V": 1.04294014501525e-14
+  },
+  "terminal_boyd_r_per_channel": {
+   "v": 0.00631649011560989,
+   "pf": 2.816024502757768,
+   "ess": 0.004218200883269535
+  },
+  "terminal_boyd_s_per_channel": {
+   "v": 0.05610532436413436,
+   "pf": 3.2637970937456813,
+   "ess": 0.003751296292093479
+  },
+  "note": "delta_c (E4) is the per-entry local-solver noise floor; boyd_{g}_r/s are Euclidean-norm residuals over ALL entries in channel g (not per-entry) -- reported side by side per report_terminal, not rescaled to per-entry here."
+ },
+ "network_failures_summary": {
+  "n_blocks": 0,
+  "classes": {
+   "recovered_tier1": 0,
+   "recovered_tier2": 0,
+   "unrecovered": 0,
+   "not_attempted": 0,
+   "indeterminate": 0,
+   "recovered": 0
+  },
+  "n_frozen_snapshots": 0,
+  "n_esso_recovery_events": 0,
+  "path": "data/SRP1/Results/P515S33/preflight_e2/network_failures_preflight_e2.jsonl"
+ },
+ "component_levels_terminal_and_settlement_detail_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S33/preflight_e2/interface_settlement_detail_s31c.json",
+ "interface_voltage_terminal_path": "data/SRP1/Results/P515S33/preflight_e2/interface_voltage_terminal.json",
+ "note_D_rows_and_cancellation_residual": "D rows are in component_levels_terminal.json (written by write_component_levels_terminal, called first by write_interface_settlement_detail_s31c above); the cancellation residual T_TSO + sum(T_DSO) is \"t_tso_plus_t_dso_terminal\" and per-DSO settlement/flexibility volumes are \"interface_consensus_residual_per_dso\" / \"flexibility_volumes_per_dso\" in interface_settlement_detail_s31c.json."
+}
