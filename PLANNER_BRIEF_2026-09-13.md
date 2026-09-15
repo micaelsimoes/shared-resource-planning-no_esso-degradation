@@ -551,7 +551,7 @@ reported separately from cost).
 | 8 | **Shared ESS 0; split the flag** so local-ESS usage is not silently zeroed | inert in SRP1; hygiene for future cases |
 | 9 | **Remove** the network complementarity penalty | hard relaxed row exists; the penalty is indefinite and redundant |
 | 12 | **D** | per the semantics above |
-| 18 | **Author's decision (2026-09-15): soft non-anticipativity retained, made defensible.** Interface P, Q: deviation of each scenario from the day-ahead schedule priced at a **stated imbalance price** (multiple of the energy price or the flexibility price), linear on `\|dev\|` or quadratic — declared; category **E**, in Q(x). Interface V: **no deviation term** (physical state, not a commitment). **Shared-ESS dispatch scenario-independent** in the network models (hard NA for the committed schedule the ESSO degrades — closes the P5.13-A discrepancy by construction). Results report realized interface deviations per scenario (max/expected, MW and % of rating) and per-scenario AC feasibility. Implement in Step 5. | replaces an arbitrary 9e4 (effective 85.7 after scaling — hard NA in disguise) with a priced, interpretable term; consistent with Option A |
+| 18 | **Author's decision (2026-09-15): soft non-anticipativity retained, made defensible.** Interface P, Q: deviation of each scenario from the day-ahead schedule priced at `c = α·π̄`, with `π̄` the probability-weighted market price of the representative day and `α` an author-set **imbalance premium** (default 0.25; sensitivity over α ∈ {0.1, 0.25, 0.5, 1.0}; α = 1 is "deviation at the full energy price", the author's conservative case); **linear** in `\|dev\|` (two nonnegative variables); category **E**, in Q(x). Interface V: **no deviation term** (physical state, not a commitment). **Shared-ESS dispatch scenario-independent** in the network models (hard NA for the committed schedule the ESSO degrades — closes the P5.13-A discrepancy by construction). Results report realized interface deviations per scenario (max/expected, MW and % of rating) and per-scenario AC feasibility. Implement in Step 5. | replaces an arbitrary 9e4 (effective 85.7 after scaling — hard NA in disguise) with a priced, interpretable term; consistent with Option A |
 | 20 | **Accept category R** | honest label; appendix sentence with measured bias and nil price effect at 1e-5 |
 | D2, D3, D6 | **Fix with the table** | orphan slacks removed; ESSO slacks reported directly; shared-ESS day-balance slack bounded like local |
 
@@ -559,6 +559,44 @@ reported separately from cost).
 campaign with **per-block component levels** captured at the terminal cycle (three splits per
 draft §5) → reading rule per draft §5; report whether Q(x) moved and by how much, with the bar
 → 3.2.
+
+---
+
+# Addendum 11 — after `P5_15_S31_BASELINE_REPORT.md` (2026-09-15)
+
+**Governing finding:** 99.8 % of the pre-signature recourse (817.5 M) was the TSO's interface
+flexibility charge (row 3). Every candidate ranking, `C*`, the 0.37 % storage effect and the
+templated bias were measured on a transfer payment, not on system cost. Record in
+`REVISION_CONTEXT.md` and in the manuscript list: all Table 8 costs and the Fig. 5
+generation/flexibility split are to be regenerated under the system-cost definition.
+
+**Diagnosis accepted:** removing the charge left the TSO an unpriced direction at each interface;
+the consensus dual is the only price and ADMM discovers it slowly (90-cycle climb, tripled
+failures, DSO flex cost 209 M).
+
+**Remedy — row 3′, the cancelling transfer (authorized):**
+- TSO block: reinstate the interface flexibility charge `+T = c_flex · |p_int − p_anchor|`
+  (and Q as today), category **A-transfer**.
+- DSO block: add the symmetric revenue `−T` on the DSO's copy of the interface variables, same
+  price, **same anchor**.
+- Anchor: the DSO's warm-start (uncoordinated) interface exchange, passed to the TSO as a
+  parameter at initialization; stated in the paper as the flexibility baseline. Verify whether
+  the current anchor already is this quantity.
+- `Q(x)` = system cost; the transfer is excluded by construction (cancels at consensus) and is
+  **reported separately** per DSO as "TSO flexibility procurement cost". Interface flexibility
+  variables are NOT fixed at zero.
+- Gate: converged campaign at C\* (cycles, failures, rule-ten); `T_TSO + T_DSO` at the terminal
+  point reported (should vanish to the consensus residual); system-cost recourse becomes the
+  economic baseline for Step 3. 3.0 remains the determinism reference only.
+
+**Discriminator (zero-solve, run first):** terminal interface flexibility variables and interface
+residuals from the capped campaign; expected to show large unpriced interface movement.
+
+**3.2 note:** a recourse-relative objective tolerance is ill-defined when the recourse can start
+near zero — the objective-change test is diagnostic-only, as already specified.
+
+**Order:** discriminator → row 3′ implementation (one commit, zero-solve checks, fixtures
+unpickle) → converged baseline campaign with component levels → report → 3.2.
 
 ## Update obligations
 

@@ -28,6 +28,42 @@ Addenda 1–6. Stage reports: `P5_15_G1_REPORT.md`, `P5_15_G2_REPORT.md`, `P5_15
 `P5_15_G4_REPORT.md`, `P5_15_G5_REPORT.md`, and the four expert handoffs `P5_15_EXPERT_HANDOFF*.md`.
 
 
+## Amendment — 2026-09-15 (Addenda 9–11): the prior recourse was a transfer payment. Governs all statements below.
+
+Authority: `PLANNER_BRIEF_2026-09-13.md` Addenda 9–11. Reports: `P5_15_S30_REPORT.md`,
+`P5_15_S31_PENALTY_TABLE_DRAFT.md` (signed), `P5_15_S31_BASELINE_REPORT.md`.
+
+- **Governing finding.** 99.8 % of the pre-signature recourse was the TSO's flexibility charge on the ADN
+  interface loads (penalty-table row 3), priced against an anchor fixed at model creation. At Step 3.0's first cycle the
+  recourse was 2,808,928,724 and the row-3 charge 2,803,570,588; at the capped post-signature campaign's terminal point
+  the charge would be 2.65e9 against a recourse of 5.18e8. **Every candidate ranking, `C*`, the 0.37 % storage effect
+  and the templated bias were measured on a transfer payment, not on system cost.** Every recourse value reported before
+  this amendment (including Step 3.0's 817,520,272.93) is superseded as an economic quantity.
+- **Step 3.0** (`P515S30`, bitwise identical to `P515G1B`) remains the **determinism reference only**.
+- **Penalty table signed** (Addendum 10): categories E, D, R, A; D terms stay in the solver objective, are excluded from
+  reported Q(x), and are reported as violations (measured at bound-relaxation floor: excluding them moves Q by 0.0025 %).
+  Implemented rows 3, 5, 8, 9, 14 and defects D2, D3, D6 (`fc200780`). Row 18 (soft non-anticipativity priced at
+  `α·π̄`) is a Step 5 item.
+- **Removing row 3 alone is not a valid formulation** (Addendum 11). The capped campaign (`P515S31_run`) did not
+  converge in 90 cycles: interface primal PF residual 44.5 → 12.4× tolerance, dual PF 161 → 8.9, recourse still climbing.
+  The TSO was left an unpriced direction at each interface (terminal downward interface flexibility ≈ 108–113 pu·periods
+  in every block). **Remedy authorized: row 3′, the cancelling transfer** — reinstate the charge `+T` in the TSO as category
+  **A-transfer** and add the symmetric revenue `−T` in the DSO on its copy of the interface variables, same price, same
+  anchor (the DSO's warm-start, uncoordinated interface exchange). **Q(x) = system cost**, the transfer excluded by
+  construction and reported separately per DSO as "TSO flexibility procurement cost". Interface flexibility variables are
+  not fixed at zero. The converged row-3′ campaign becomes Step 3's economic baseline.
+
+### Manuscript list — regeneration obligations (open)
+
+1. **All Table 8 costs** regenerated under the system-cost definition, with a new **transfer-payment column** (TSO
+   flexibility procurement cost per DSO).
+2. **The Fig. 5 generation/flexibility split** regenerated under the system-cost definition.
+3. The penalty-classification table (signed) in the appendix, with category D semantics and category R for ε.
+4. The ε price effect (ablation C) and the ~1.39 % spurious throughput in previously published SoH trajectories.
+5. The homogeneous-fleet cohort approximation (H3).
+6. Row 18's imbalance-price definition `α·π̄` and its α sensitivity (Step 5).
+7. Stopping-rule definitions, ρ policy, σ constants and the polish gap (Step 3.2–3.5).
+
 ## Amendment — 2026-09-15: Step 1 closed (Addenda 7–8). Supersedes conflicting statements below.
 
 Authority: `PLANNER_BRIEF_2026-09-13.md` Addenda 7–8. Report: `P5_15_STEP1_CLOSING_REPORT.md`.
