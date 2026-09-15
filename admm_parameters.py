@@ -11,7 +11,14 @@ class ADMMParameters:
                 'ess': 0.1e-2, 'ess_mean': 1e-2
             },
             'stationarity': {'v': 0.5e-2, 'pf': 0.5e-2, 'ess': 5e-2},
-            'objective': {'abs': 1e4, 'rel': 5e-4}}
+            'objective': {'abs': 1e4, 'rel': 5e-4},
+            # P5.15 Step 3.2 (Boyd et al. 2011 Sec. 3.3.1) stopping-rule
+            # tolerances: eps_pri = sqrt(p)*eps_abs + eps_rel*max(||x||,||z||),
+            # eps_dual = sqrt(n)*eps_abs + eps_rel*||y||. Defaults used when the
+            # case file has no `admm.tol.boyd` block (`boyd_eps_source`
+            # records which applied).
+            'boyd': {'eps_abs': 1e-5, 'eps_rel': 1e-4}}
+        self.boyd_eps_source = 'default'
         self.num_max_iters = 1000
         self.minimum_consecutive_converged_cycles = 2
         self.shared_ess_normalization_floor_mva = 0.10
@@ -69,6 +76,23 @@ def _read_parameters_from_file(admm_params, params_data):
     objective_tolerances = params_data['tol'].get('objective', {})
     admm_params.tol['objective']['abs'] = float(objective_tolerances.get('abs', admm_params.tol['objective']['abs']))
     admm_params.tol['objective']['rel'] = float(objective_tolerances.get('rel', admm_params.tol['objective']['rel']))
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # P5.15 Step 3.2 Boyd stopping-rule tolerances (optional; other case
+    # studies keep loading unchanged and fall back to the defaults set in
+    # __init__).
+    boyd_tolerances = params_data['tol'].get('boyd')
+    if boyd_tolerances is not None:
+        admm_params.tol['boyd']['eps_abs'] = float(boyd_tolerances['eps_abs'])
+        admm_params.tol['boyd']['eps_rel'] = float(boyd_tolerances['eps_rel'])
+        admm_params.boyd_eps_source = 'case_file'
+    else:
+        admm_params.boyd_eps_source = 'default'
+    if admm_params.tol['boyd']['eps_abs'] <= 0.0:
+        raise ValueError('ADMM Boyd eps_abs must be positive.')
+    if admm_params.tol['boyd']['eps_rel'] <= 0.0:
+        raise ValueError('ADMM Boyd eps_rel must be positive.')
+
     admm_params.num_max_iters = int(params_data['num_max_iters'])
     admm_params.minimum_consecutive_converged_cycles = int(params_data.get('minimum_consecutive_converged_cycles', admm_params.minimum_consecutive_converged_cycles))
     admm_params.shared_ess_normalization_floor_mva = float(params_data.get('shared_ess_normalization_floor_mva', admm_params.shared_ess_normalization_floor_mva))

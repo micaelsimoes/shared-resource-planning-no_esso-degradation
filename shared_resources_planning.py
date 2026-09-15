@@ -2531,6 +2531,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             _print_shared_ess_consensus_diagnostics(planning_problem, consensus_vars)
 
         residual_metrics = get_admm_residual_metrics(planning_problem, tso_model, dso_models, esso_model, consensus_vars)
+        boyd_metrics = get_admm_boyd_residual_metrics(planning_problem, tso_model, dso_models, esso_model, consensus_vars, dual_vars, admm_parameters)
         _print_worst_primal_residual_diagnostics(residual_metrics, admm_parameters)
         worst_v_primal = residual_metrics.get('worst_v_primal')
         worst_pf_primal = residual_metrics.get('worst_pf_primal')
@@ -2672,14 +2673,27 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         else:
             print(f'[INFO]\t\t - Recourse stationarity failed. {objective_change_abs:.6f} > {objective_tolerance:.6f}')
 
-        cycle_convergence = residual_convergence and objective_convergence
+        # P5.15 Step 3.2 (Boyd et al. 2011 Sec. 3.3.1): the stopping test is the
+        # Boyd primal/dual residual test on every channel (r <= eps_pri and
+        # s <= eps_dual for v, pf, ess), gated on every local solve having
+        # succeeded this cycle. The recourse-stationarity (objective-change)
+        # test above, and the legacy consensus/stationarity test
+        # (`residual_convergence`), remain computed and reported but are
+        # diagnostic-only -- neither gates `cycle_convergence` any more.
+        boyd_all_pass = boyd_metrics['all_boyd_pass']
+        cycle_convergence = boyd_all_pass and local_solves_ok
         if cycle_convergence:
             consecutive_converged_cycles += 1
         else:
             consecutive_converged_cycles = 0
         convergence = (consecutive_converged_cycles >= admm_parameters.minimum_consecutive_converged_cycles)
 
-        penalty_actions, penalties_before, penalties_after = _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, admm_parameters, allow_update=local_solves_ok)
+        objective_change_ratio = (
+            (objective_change_abs / objective_tolerance)
+            if (objective_change_abs is not None and objective_tolerance) else None
+        )
+
+        penalty_actions, penalties_before, penalties_after = _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, boyd_metrics, admm_parameters, allow_update=local_solves_ok)
         admm_diagnostics.append({
             'cycle': iter,
             'local_solves_ok': local_solves_ok,
@@ -2775,6 +2789,82 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             'rho_v_action': penalty_actions['v'],
             'rho_pf_action': penalty_actions['pf'],
             'rho_ess_action': penalty_actions['ess'],
+            'objective_change_ratio': objective_change_ratio,
+            'boyd_all_pass': boyd_all_pass,
+            'boyd_stop': cycle_convergence,
+            'boyd_eps_abs': boyd_metrics['eps_abs'],
+            'boyd_eps_rel': boyd_metrics['eps_rel'],
+            'boyd_eps_source': boyd_metrics['boyd_eps_source'],
+            # P5.15 Step 3.2/3.3(a) Boyd per-channel residuals -- see
+            # `get_admm_boyd_residual_metrics` docstring for the exact
+            # channel mapping and normalization.
+            'boyd_v_r': boyd_metrics['v']['r'],
+            'boyd_v_s': boyd_metrics['v']['s'],
+            'boyd_v_s_rho_part': boyd_metrics['v']['s_rho_part'],
+            'boyd_v_s_proximal_part': boyd_metrics['v']['s_proximal_part'],
+            'boyd_v_proximal_share': boyd_metrics['v']['proximal_share'],
+            'boyd_v_eps_pri': boyd_metrics['v']['eps_pri'],
+            'boyd_v_eps_dual': boyd_metrics['v']['eps_dual'],
+            'boyd_v_norm_x': boyd_metrics['v']['norm_x'],
+            'boyd_v_norm_z': boyd_metrics['v']['norm_z'],
+            'boyd_v_norm_y': boyd_metrics['v']['norm_y'],
+            'boyd_v_primal_ratio': boyd_metrics['v']['primal_ratio'],
+            'boyd_v_dual_ratio': boyd_metrics['v']['dual_ratio'],
+            'boyd_v_primal_pass': boyd_metrics['v']['primal_pass'],
+            'boyd_v_dual_pass': boyd_metrics['v']['dual_pass'],
+            'boyd_v_channel_pass': boyd_metrics['v']['channel_pass'],
+            'boyd_pf_r': boyd_metrics['pf']['r'],
+            'boyd_pf_s': boyd_metrics['pf']['s'],
+            'boyd_pf_s_rho_part': boyd_metrics['pf']['s_rho_part'],
+            'boyd_pf_s_proximal_part': boyd_metrics['pf']['s_proximal_part'],
+            'boyd_pf_proximal_share': boyd_metrics['pf']['proximal_share'],
+            'boyd_pf_eps_pri': boyd_metrics['pf']['eps_pri'],
+            'boyd_pf_eps_dual': boyd_metrics['pf']['eps_dual'],
+            'boyd_pf_norm_x': boyd_metrics['pf']['norm_x'],
+            'boyd_pf_norm_z': boyd_metrics['pf']['norm_z'],
+            'boyd_pf_norm_y': boyd_metrics['pf']['norm_y'],
+            'boyd_pf_primal_ratio': boyd_metrics['pf']['primal_ratio'],
+            'boyd_pf_dual_ratio': boyd_metrics['pf']['dual_ratio'],
+            'boyd_pf_primal_pass': boyd_metrics['pf']['primal_pass'],
+            'boyd_pf_dual_pass': boyd_metrics['pf']['dual_pass'],
+            'boyd_pf_channel_pass': boyd_metrics['pf']['channel_pass'],
+            'boyd_ess_r': boyd_metrics['ess']['r'],
+            'boyd_ess_s': boyd_metrics['ess']['s'],
+            'boyd_ess_s_rho_part': boyd_metrics['ess']['s_rho_part'],
+            'boyd_ess_s_proximal_part': boyd_metrics['ess']['s_proximal_part'],
+            'boyd_ess_proximal_share': boyd_metrics['ess']['proximal_share'],
+            'boyd_ess_eps_pri': boyd_metrics['ess']['eps_pri'],
+            'boyd_ess_eps_dual': boyd_metrics['ess']['eps_dual'],
+            'boyd_ess_norm_x': boyd_metrics['ess']['norm_x'],
+            'boyd_ess_norm_z': boyd_metrics['ess']['norm_z'],
+            'boyd_ess_norm_y': boyd_metrics['ess']['norm_y'],
+            'boyd_ess_norm_y_tso': boyd_metrics['ess']['norm_y_tso'],
+            'boyd_ess_norm_y_dso': boyd_metrics['ess']['norm_y_dso'],
+            'boyd_ess_norm_y_esso': boyd_metrics['ess']['norm_y_esso'],
+            'boyd_ess_primal_ratio': boyd_metrics['ess']['primal_ratio'],
+            'boyd_ess_dual_ratio': boyd_metrics['ess']['dual_ratio'],
+            'boyd_ess_primal_pass': boyd_metrics['ess']['primal_pass'],
+            'boyd_ess_dual_pass': boyd_metrics['ess']['dual_pass'],
+            'boyd_ess_channel_pass': boyd_metrics['ess']['channel_pass'],
+            # Diagnostic gap proxy G/Q (frozen spec, item (e)): G = sum over
+            # blocks of sigma_b * (|y_b^T r_b| + ||s_b|| * 2 sqrt(n_b)).
+            # sigma_b (the block's `admm_objective_scale`) is NOT available
+            # for the ESSO block -- its objective is not divided by an
+            # effective scale (F5: `update_shared_energy_storage_model_to_admm`,
+            # `obj = copy(models[node_id].objective.expr)`, no `/effective_scale`
+            # term, no `admm_objective_scale` Param on the ESSO model). Per the
+            # "never approximate" rule this is recorded as None with a reason
+            # rather than summed over the TSO/DSO blocks alone.
+            'gap_proxy_G': None,
+            'gap_proxy_G_reason': (
+                'sigma_b (admm_objective_scale) is not defined for the ESSO '
+                'block: its objective is not divided by an effective scale '
+                '(F5, known concern, 3.4 scope). G requires sigma_b for '
+                'every block; summing the TSO/DSO blocks only would silently '
+                'omit the ESSO block, which the evidence rules forbid.'
+            ),
+            'gap_proxy_Q': gross_operational_cost,
+            'gap_proxy_G_over_Q': None,
         })
 
         objective_change_text = (f'{objective_change_abs:.6f}' if objective_change_abs is not None else 'N/A')
@@ -5426,6 +5516,240 @@ def get_admm_residual_metrics(planning_problem, tso_model, dso_models, esso_mode
     return residual_metrics
 
 
+def get_admm_boyd_residual_metrics(planning_problem, tso_model, dso_models, esso_model, consensus_vars, dual_vars, admm_parameters):
+    """
+    Boyd et al. (2011), Sec. 3.3.1, per-channel primal/dual residuals and
+    stopping thresholds.
+
+    Authority: PLANNER_BRIEF_2026-09-13.md Addendum 9 sections 3.2 and
+    3.3(a); frozen specification
+    data/SRP1/Results/P515S32/frozen_s32_spec_v1_14a18674.json.
+
+    Channel mapping (Advisor findings F1-F4, accepted by the Planner):
+
+      V / PF -- two-block ADMM. The cycle solves the DSO first, then the
+      TSO against the DSO's just-updated copy (see the cycle loop: DSO
+      solve -> consensus update -> TSO solve -> consensus/dual update).
+      x = DSO interface copy, z = TSO interface copy, y = lambda_DSO
+      converted to model units (V: /v_base; PF: /s_base, the DSO's own
+      s_base -- see `update_distribution_coordination_models_and_solve_sequential`,
+      `dual_pf['current'][...] / s_base`).
+        r = x_DSO - z_TSO                              (normalized)
+        s = sqrt(rho_tso^2 + gamma_prox_tso^2) * (z_TSO^k - z_TSO^{k-1})
+      The legacy dual term rho*|Delta x_DSO| (see `get_admm_residual_metrics`)
+      is NOT a Boyd quantity under this mapping and is excluded here; it
+      remains in the legacy metrics for the s31c comparison.
+
+      ESS -- weighted consensus ADMM, a_i = 1 / (2 * S_i) (existing
+      normalization, unchanged):
+        r = (a_i (x_i - z))_i over TSO, DSO, ESSO
+        s = (rho_i * a_i * dz)_i, PLUS one extra TSO-proximal entry per
+            coordinate: gamma_prox_tso * a_TSO * (x_TSO^k - x_TSO^{k-1}).
+
+    Norms: Euclidean over all normalized entries; no probability or
+    annualization weights. Per the frozen spec, p = n = entry count per
+    channel (nodes x years x days x periods [x p,q] [x agents]) -- this is
+    a stated simplification: the extra ESS TSO-proximal entries contribute
+    to the norm of s but are NOT added to the entry count used for
+    sqrt(p)/sqrt(n).
+    """
+    proximal_cfg = admm_parameters.proximal_regularization
+    tso_proximal_enabled = bool(proximal_cfg['enabled'] and proximal_cfg['tso']['enabled'])
+    gamma_tso = proximal_cfg['tso']['gamma']
+
+    boyd_eps = admm_parameters.tol['boyd']
+    eps_abs = boyd_eps['eps_abs']
+    eps_rel = boyd_eps['eps_rel']
+
+    sumsq = {
+        'v': {'r': 0.0, 's': 0.0, 's_rho': 0.0, 's_prox': 0.0, 'x': 0.0, 'z': 0.0, 'y': 0.0},
+        'pf': {'r': 0.0, 's': 0.0, 's_rho': 0.0, 's_prox': 0.0, 'x': 0.0, 'z': 0.0, 'y': 0.0},
+        'ess': {
+            'r': 0.0, 's': 0.0, 's_rho': 0.0, 's_prox': 0.0, 'x': 0.0, 'z': 0.0,
+            'y': 0.0, 'y_tso': 0.0, 'y_dso': 0.0, 'y_esso': 0.0,
+        },
+    }
+    count = {'v': 0, 'pf': 0, 'ess': 0}
+
+    for node_id in planning_problem.active_distribution_network_nodes:
+
+        dso_model = dso_models[node_id]
+
+        for year in planning_problem.years:
+            for day in planning_problem.days:
+
+                network = planning_problem.transmission_network.network[year][day]
+                s_base_tso = network.baseMVA
+                dso_network = planning_problem.distribution_networks[node_id].network[year][day]
+                s_base_dso = dso_network.baseMVA
+                v_base = network.get_node_base_kv(node_id)
+                interface_rating = dso_network.get_interface_branch_rating()
+
+                normalization_floor = admm_parameters.shared_ess_normalization_floor_mva
+                shared_ess_idx = network.get_shared_energy_storage_idx(node_id)
+                tso_rating = _shared_ess_admm_normalization_mva(network.shared_energy_storages[shared_ess_idx].s * s_base_tso, normalization_floor)
+                dso_ref_node_id = dso_network.get_reference_node_id()
+                dso_shared_ess_idx = dso_network.get_shared_energy_storage_idx(dso_ref_node_id)
+                dso_rating = _shared_ess_admm_normalization_mva(dso_network.shared_energy_storages[dso_shared_ess_idx].s * s_base_dso, normalization_floor)
+                esso_shared_ess_idx = planning_problem.shared_ess_data.get_shared_energy_storage_idx(node_id)
+                esso_rating = _shared_ess_admm_normalization_mva(planning_problem.shared_ess_data.shared_energy_storages[year][esso_shared_ess_idx].s, normalization_floor)
+                ess_ratings = {'tso': tso_rating, 'dso': dso_rating, 'esso': esso_rating}
+                a = {agent: 1.0 / (2.0 * ess_ratings[agent]) for agent in ('tso', 'dso', 'esso')}
+
+                rho_tso_v = pe.value(tso_model[year][day].rho_v)
+                rho_tso_pf = pe.value(tso_model[year][day].rho_pf)
+                rho_ess = {
+                    'tso': pe.value(tso_model[year][day].rho_ess),
+                    'dso': pe.value(dso_model[year][day].rho_ess),
+                    'esso': pe.value(esso_model[node_id].rho),
+                }
+
+                gamma_v = gamma_tso['v'] if tso_proximal_enabled else 0.0
+                gamma_pf = gamma_tso['pf'] if tso_proximal_enabled else 0.0
+                gamma_ess = gamma_tso['ess'] if tso_proximal_enabled else 0.0
+
+                for p in range(planning_problem.num_instants):
+
+                    # ==============================================================
+                    # Interface voltage
+                    # ==============================================================
+                    x_dso_v = consensus_vars['vmag']['dso']['current'][node_id][year][day][p]
+                    z_tso_v = consensus_vars['vmag']['tso']['current'][node_id][year][day][p]
+                    z_tso_v_prev = consensus_vars['vmag']['tso']['prev'][node_id][year][day][p]
+                    lambda_dso_v = dual_vars['vmag']['dso']['current'][node_id][year][day][p]
+
+                    r_v = (x_dso_v - z_tso_v) / v_base
+                    dz_v = (z_tso_v - z_tso_v_prev) / v_base
+                    s_rho_v = rho_tso_v * dz_v
+                    s_prox_v = gamma_v * dz_v
+                    s_v = sqrt(rho_tso_v ** 2 + gamma_v ** 2) * dz_v
+                    y_v = lambda_dso_v / v_base
+
+                    sumsq['v']['r'] += r_v ** 2
+                    sumsq['v']['s'] += s_v ** 2
+                    sumsq['v']['s_rho'] += s_rho_v ** 2
+                    sumsq['v']['s_prox'] += s_prox_v ** 2
+                    sumsq['v']['x'] += (x_dso_v / v_base) ** 2
+                    sumsq['v']['z'] += (z_tso_v / v_base) ** 2
+                    sumsq['v']['y'] += y_v ** 2
+                    count['v'] += 1
+
+                    # ==============================================================
+                    # Active and reactive power
+                    # ==============================================================
+                    for power_type in ('p', 'q'):
+
+                        # ----------------------------------------------------------
+                        # TSO-DSO interface power flow
+                        # ----------------------------------------------------------
+                        x_dso_pf = consensus_vars['pf']['dso']['current'][node_id][year][day][power_type][p]
+                        z_tso_pf = consensus_vars['pf']['tso']['current'][node_id][year][day][power_type][p]
+                        z_tso_pf_prev = consensus_vars['pf']['tso']['prev'][node_id][year][day][power_type][p]
+                        lambda_dso_pf = dual_vars['pf']['dso']['current'][node_id][year][day][power_type][p]
+
+                        r_pf = (x_dso_pf - z_tso_pf) / interface_rating
+                        dz_pf = (z_tso_pf - z_tso_pf_prev) / interface_rating
+                        s_rho_pf = rho_tso_pf * dz_pf
+                        s_prox_pf = gamma_pf * dz_pf
+                        s_pf = sqrt(rho_tso_pf ** 2 + gamma_pf ** 2) * dz_pf
+                        y_pf = lambda_dso_pf / s_base_dso
+
+                        sumsq['pf']['r'] += r_pf ** 2
+                        sumsq['pf']['s'] += s_pf ** 2
+                        sumsq['pf']['s_rho'] += s_rho_pf ** 2
+                        sumsq['pf']['s_prox'] += s_prox_pf ** 2
+                        sumsq['pf']['x'] += (x_dso_pf / interface_rating) ** 2
+                        sumsq['pf']['z'] += (z_tso_pf / interface_rating) ** 2
+                        sumsq['pf']['y'] += y_pf ** 2
+                        count['pf'] += 1
+
+                        # ----------------------------------------------------------
+                        # Shared ESS consensus (weighted, three agents)
+                        # ----------------------------------------------------------
+                        z_new = consensus_vars['ess']['z']['current'][node_id][year][day][power_type][p]
+                        z_prev = consensus_vars['ess']['z']['prev'][node_id][year][day][power_type][p]
+                        dz_ess = z_new - z_prev
+
+                        for agent in ('tso', 'dso', 'esso'):
+
+                            x_agent = consensus_vars['ess'][agent]['current'][node_id][year][day][power_type][p]
+                            y_agent = dual_vars['ess'][agent]['current'][node_id][year][day][power_type][p]
+
+                            r_agent = a[agent] * (x_agent - z_new)
+                            s_agent_rho = rho_ess[agent] * a[agent] * dz_ess
+
+                            sumsq['ess']['r'] += r_agent ** 2
+                            sumsq['ess']['s'] += s_agent_rho ** 2
+                            sumsq['ess']['s_rho'] += s_agent_rho ** 2
+                            sumsq['ess']['x'] += (a[agent] * x_agent) ** 2
+                            sumsq['ess']['z'] += (a[agent] * z_new) ** 2
+                            sumsq['ess'][f'y_{agent}'] += y_agent ** 2
+                            sumsq['ess']['y'] += y_agent ** 2
+                            count['ess'] += 1
+
+                        # TSO-proximal block (F2/F3): one extra entry per coordinate,
+                        # added to the norm of s but NOT to the entry count (see
+                        # docstring -- frozen-spec "p = n = entry count per channel").
+                        if tso_proximal_enabled:
+                            x_tso_prev = consensus_vars['ess']['tso']['prev'][node_id][year][day][power_type][p]
+                            x_tso_curr = consensus_vars['ess']['tso']['current'][node_id][year][day][power_type][p]
+                            dx_tso = x_tso_curr - x_tso_prev
+                            s_prox_ess = gamma_ess * a['tso'] * dx_tso
+                            sumsq['ess']['s'] += s_prox_ess ** 2
+                            sumsq['ess']['s_prox'] += s_prox_ess ** 2
+
+    channels = dict()
+    for group in ('v', 'pf', 'ess'):
+        n = count[group]
+        r = sqrt(sumsq[group]['r'])
+        s = sqrt(sumsq[group]['s'])
+        s_rho_part = sqrt(sumsq[group]['s_rho'])
+        s_proximal_part = sqrt(sumsq[group]['s_prox'])
+        norm_x = sqrt(sumsq[group]['x'])
+        norm_z = sqrt(sumsq[group]['z'])
+        norm_y = sqrt(sumsq[group]['y'])
+
+        eps_pri = sqrt(n) * eps_abs + eps_rel * max(norm_x, norm_z)
+        eps_dual = sqrt(n) * eps_abs + eps_rel * norm_y
+
+        primal_ratio = (r / eps_pri) if eps_pri > 0.0 else float('inf')
+        dual_ratio = (s / eps_dual) if eps_dual > 0.0 else float('inf')
+        primal_pass = bool(r <= eps_pri)
+        dual_pass = bool(s <= eps_dual)
+        proximal_share = (s_proximal_part / s) if s > 0.0 else 0.0
+
+        channel_entry = {
+            'r': r,
+            's': s,
+            's_rho_part': s_rho_part,
+            's_proximal_part': s_proximal_part,
+            'proximal_share': proximal_share,
+            'eps_pri': eps_pri,
+            'eps_dual': eps_dual,
+            'norm_x': norm_x,
+            'norm_z': norm_z,
+            'norm_y': norm_y,
+            'primal_ratio': primal_ratio,
+            'dual_ratio': dual_ratio,
+            'primal_pass': primal_pass,
+            'dual_pass': dual_pass,
+            'channel_pass': bool(primal_pass and dual_pass),
+            'n_entries': n,
+        }
+        if group == 'ess':
+            channel_entry['norm_y_tso'] = sqrt(sumsq['ess']['y_tso'])
+            channel_entry['norm_y_dso'] = sqrt(sumsq['ess']['y_dso'])
+            channel_entry['norm_y_esso'] = sqrt(sumsq['ess']['y_esso'])
+        channels[group] = channel_entry
+
+    channels['all_boyd_pass'] = all(channels[g]['channel_pass'] for g in ('v', 'pf', 'ess'))
+    channels['eps_abs'] = eps_abs
+    channels['eps_rel'] = eps_rel
+    channels['boyd_eps_source'] = admm_parameters.boyd_eps_source
+
+    return channels
+
+
 def check_admm_convergence(planning_problem, consensus_vars, residual_metrics, params, debug_flag=False):
     consensus_convergence = check_consensus_convergence(residual_metrics, params)
     stationary_convergence = check_stationary_convergence(residual_metrics, params)
@@ -5766,20 +6090,37 @@ def _get_admm_penalty_summary(tso_model, dso_models, esso_model):
     }
 
 
-def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, params, allow_update=True):
+def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, boyd_metrics, params, allow_update=True):
+    """
+    P5.15 Step 3.3(a) residual balancing (Advisor-reviewed, frozen spec
+    P515S32/frozen_s32_spec_v1_14a18674.json, `balancing_rule_3_3a`).
+
+    The balancing decision is driven by the Boyd primal/dual ratios
+    (`boyd_metrics[group]['primal_ratio'|'dual_ratio']` = r/eps_pri,
+    s/eps_dual). The freeze clause ("held" once both ratios are <= 1) is
+    REMOVED: with `minimum_consecutive_converged_cycles` >= 1 this is moot
+    at the terminal cycle (the run stops as soon as both ratios are <= 1
+    on every channel), but removing it lets the dead-band test act on an
+    imbalanced channel during earlier cycles even where one of its two
+    ratios is already <= 1.
+
+    Legacy tolerance-normalized ratios (`residual_metrics`) are still
+    computed and printed for the s31c comparison; they no longer gate the
+    update.
+    """
 
     before = _get_admm_penalty_summary(tso_model, dso_models, esso_model)
 
     actions = dict()
     factors = dict()
+    legacy_diagnostics = dict()
     update_params = params.penalty_update
 
     for group in ('v', 'pf', 'ess'):
 
         # --------------------------------------------------------------
-        # Adaptive penalty balancing uses normalized residual severity.
-        # For the primal residual, consider both the worst-case and mean
-        # convergence criteria; retain the mean dual residual.
+        # Legacy tolerance-normalized severities -- diagnostic only,
+        # printed for the s31c comparison; do not gate the update.
         # --------------------------------------------------------------
         primal_max = residual_metrics['primal'][group]
         primal_mean = residual_metrics['primal'][f'{group}_mean']
@@ -5789,14 +6130,23 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
         primal_mean_tol = params.tol['consensus'][f'{group}_mean']
         dual_tol = params.tol['stationarity'][group]
 
-        # Normalized residual severities
         primal_max_ratio = primal_max / primal_max_tol
         primal_mean_ratio = primal_mean / primal_mean_tol
+        legacy_primal_selected = max(primal_max_ratio, primal_mean_ratio)
+        legacy_dual_ratio = dual_mean / dual_tol
 
-        primal_ratio = max(primal_max_ratio, primal_mean_ratio)
-        dual_ratio = dual_mean / dual_tol
+        legacy_diagnostics[group] = {
+            'primal_max_ratio': primal_max_ratio,
+            'primal_mean_ratio': primal_mean_ratio,
+            'primal_selected': legacy_primal_selected,
+            'dual_ratio': legacy_dual_ratio,
+        }
 
-        adaptation_converged = (primal_ratio <= 1.0 and dual_ratio <= 1.0)
+        # --------------------------------------------------------------
+        # Boyd primal/dual ratios -- gate the update (3.3(a)).
+        # --------------------------------------------------------------
+        boyd_primal_ratio = boyd_metrics[group]['primal_ratio']
+        boyd_dual_ratio = boyd_metrics[group]['dual_ratio']
 
         # --------------------------------------------------------------
         # Residual-balance thresholds
@@ -5808,30 +6158,18 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
         action = 'held'
 
         # --------------------------------------------------------------
-        # Determine penalty update
+        # Determine penalty update -- freeze clause removed.
         # --------------------------------------------------------------
         if not params.adaptive_penalty:
             action = 'fixed'
         elif not allow_update:
             action = 'held after solver failure'
-        elif not adaptation_converged:
-            if (primal_ratio > increase_balance_ratio * dual_ratio):
-                factor = update_params['increase_factor']
-                action = 'increased'
-            elif (dual_ratio > decrease_balance_ratio * primal_ratio):
-                factor = 1.0 / update_params['decrease_factor']
-                action = 'decreased'
-
-        print(
-            f'[ADMM RHO] {group.upper()} | '
-            f'primal max ratio={primal_max_ratio:.3f} | '
-            f'primal mean ratio={primal_mean_ratio:.3f} | '
-            f'primal selected={primal_ratio:.3f} | '
-            f'dual mean ratio={dual_ratio:.3f} | '
-            f'increase threshold={increase_balance_ratio:.1f} | '
-            f'decrease threshold={decrease_balance_ratio:.1f} | '
-            f'action={action}'
-        )
+        elif boyd_primal_ratio > increase_balance_ratio * boyd_dual_ratio:
+            factor = update_params['increase_factor']
+            action = 'increased'
+        elif boyd_dual_ratio > decrease_balance_ratio * boyd_primal_ratio:
+            factor = 1.0 / update_params['decrease_factor']
+            action = 'decreased'
 
         actions[group] = action
         factors[group] = factor
@@ -5865,6 +6203,33 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
             _scale_admm_penalty(model.rho, factors['ess'], update_params)
 
     after = _get_admm_penalty_summary(tso_model, dso_models, esso_model)
+
+    for group in ('v', 'pf', 'ess'):
+        legacy = legacy_diagnostics[group]
+        increase_balance_ratio = update_params['residual_balance_ratio']
+        decrease_balance_ratio = (update_params.get('residual_balance_ratio_pf_decrease', update_params['residual_balance_ratio']) if group == 'pf' else update_params['residual_balance_ratio'])
+        print(
+            f'[ADMM RHO] {group.upper()} | '
+            f'primal max ratio={legacy["primal_max_ratio"]:.3f} | '
+            f'primal mean ratio={legacy["primal_mean_ratio"]:.3f} | '
+            f'primal selected={legacy["primal_selected"]:.3f} | '
+            f'dual mean ratio={legacy["dual_ratio"]:.3f} | '
+            f'increase threshold={increase_balance_ratio:.1f} | '
+            f'decrease threshold={decrease_balance_ratio:.1f} | '
+            f'action={actions[group]}'
+        )
+        print(
+            f'[ADMM RHO BOYD] {group.upper()} | '
+            f'r={boyd_metrics[group]["r"]:.6e} | '
+            f's={boyd_metrics[group]["s"]:.6e} | '
+            f'eps_pri={boyd_metrics[group]["eps_pri"]:.6e} | '
+            f'eps_dual={boyd_metrics[group]["eps_dual"]:.6e} | '
+            f'primal_ratio={boyd_metrics[group]["primal_ratio"]:.6e} | '
+            f'dual_ratio={boyd_metrics[group]["dual_ratio"]:.6e} | '
+            f'rho_before={before[group]:.6e} | '
+            f'rho_after={after[group]:.6e} | '
+            f'action={actions[group]}'
+        )
 
     return actions, before, after
 
