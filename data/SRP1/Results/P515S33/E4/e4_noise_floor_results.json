@@ -1,0 +1,815 @@
+{
+ "stage": "P5.15 Step 3.2 E4",
+ "spec_path": "data/SRP1/Results/P515S33/frozen_e4_noise_floor_spec_v1_35f54dfe.json",
+ "spec_sha256": "35f54dfe4f48ef252b6f4fbcbbee8b2b60617aa82cb62b8c66255e6aa06a3a54",
+ "fixture_verification": {
+  "matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl": {
+   "path": "data/SRP1/Results/P515S32_run/results/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+   "expected_bytes": 4090848,
+   "actual_bytes": 4090848,
+   "expected_sha256": "85afdd2d5153dff943d568f97f16183999f2c114089fef0bb25e86f8731c9c25",
+   "actual_sha256": "85afdd2d5153dff943d568f97f16183999f2c114089fef0bb25e86f8731c9c25",
+   "ok": true
+  },
+  "matched_success_TSO_case9_2025_Summer_cycle7.pkl": {
+   "path": "data/SRP1/Results/P515S32_run/results/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl",
+   "expected_bytes": 1588345,
+   "actual_bytes": 1588345,
+   "expected_sha256": "21695017d48d5997218fb3cda877f064e3f788d850050c8aee83b9c51672639c",
+   "actual_sha256": "21695017d48d5997218fb3cda877f064e3f788d850050c8aee83b9c51672639c",
+   "ok": true
+  }
+ },
+ "guard": {
+  "permitted_call_sites": [
+   [
+    "p515_s33_e4_noise_floor.py",
+    "_do_solve"
+   ]
+  ],
+  "expected_solves_declared_in_advance": 8,
+  "observed_counts": {
+   "permitted_solve": 8,
+   "permitted_exec": 8,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "permitted_sites_hit": {
+   "p515_s33_e4_noise_floor.py:_do_solve": 8
+  },
+  "verify_failures": []
+ },
+ "solve_records": {
+  "matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl": {
+   "W1": {
+    "fixture_key": "matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+    "kind": "DSO",
+    "variant": "W1",
+    "from_warm_start": true,
+    "identity_ok": true,
+    "metadata": {
+     "agent": "DSO",
+     "node_id": 7,
+     "network_name": "case33_2",
+     "year": 2025,
+     "day": "Autumn",
+     "cycle": 7,
+     "from_warm_start": true,
+     "captured_outcome": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+     "label": "matched_success"
+    },
+    "objective_name": "p58_rescaled_admm_objective",
+    "objective_value": 58751.882589337234,
+    "wall_seconds": 0.4675109386444092,
+    "status": "ok",
+    "termination_condition": "optimal",
+    "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+    "solve_result_id": 0,
+    "succeeded": true,
+    "loaded_solution": true,
+    "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S33/E4/logs/optim_log_case33_2_2025_Autumn_W1.log",
+    "log_iterations": 46,
+    "log_exit": "Optimal Solution Found",
+    "log_unscaled_summary": {
+     "objective": 58751.88258933389,
+     "dual_infeasibility": 0.0012102507142499432,
+     "constraint_violation": 1.31120225788095e-10,
+     "complementarity": 1.082336834102074e-05,
+     "overall_nlp_error": 0.0012102507142499432,
+     "variable_bound_violation": 9.912238870335395e-09
+    },
+    "log_scaled_summary": {
+     "objective": 58.75188258933389,
+     "dual_infeasibility": 1.2102507142499431e-06,
+     "constraint_violation": 1.31120225788095e-10,
+     "complementarity": 1.0823368341020739e-08,
+     "overall_nlp_error": 1.2102507142499431e-06,
+     "variable_bound_violation": 9.912238870335395e-09
+    },
+    "effective_options": {
+     "fixed_variable_treatment": "make_parameter",
+     "max_iter": 500,
+     "tol": 1e-05,
+     "acceptable_tol": 0.0001,
+     "acceptable_iter": 5,
+     "linear_solver": "ma97",
+     "bound_push": 1e-05,
+     "bound_frac": 1e-05,
+     "slack_bound_frac": 1e-05,
+     "slack_bound_push": 1e-05,
+     "output_file": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S33/E4/logs/optim_log_case33_2_2025_Autumn_W1.log",
+     "file_append": "yes",
+     "file_print_level": 6,
+     "warm_start_init_point": "yes"
+    },
+    "t1_tolerance_override": null,
+    "entry_counts": {
+     "V": 24,
+     "PF": 48,
+     "ESS": 48
+    }
+   },
+   "W2": {
+    "fixture_key": "matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+    "kind": "DSO",
+    "variant": "W2",
+    "from_warm_start": true,
+    "identity_ok": true,
+    "metadata": {
+     "agent": "DSO",
+     "node_id": 7,
+     "network_name": "case33_2",
+     "year": 2025,
+     "day": "Autumn",
+     "cycle": 7,
+     "from_warm_start": true,
+     "captured_outcome": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+     "label": "matched_success"
+    },
+    "objective_name": "p58_rescaled_admm_objective",
+    "objective_value": 58751.882589337234,
+    "wall_seconds": 0.4479961395263672,
+    "status": "ok",
+    "termination_condition": "optimal",
+    "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+    "solve_result_id": 0,
+    "succeeded": true,
+    "loaded_solution": true,
+    "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S33/E4/logs/optim_log_case33_2_2025_Autumn_W2.log",
+    "log_iterations": 46,
+    "log_exit": "Optimal Solution Found",
+    "log_unscaled_summary": {
+     "objective": 58751.88258933389,
+     "dual_infeasibility": 0.0012102507142499432,
+     "constraint_violation": 1.31120225788095e-10,
+     "complementarity": 1.082336834102074e-05,
+     "overall_nlp_error": 0.0012102507142499432,
+     "variable_bound_violation": 9.912238870335395e-09
+    },
+    "log_scaled_summary": {
+     "objective": 58.75188258933389,
+     "dual_infeasibility": 1.2102507142499431e-06,
+     "constraint_violation": 1.31120225788095e-10,
+     "complementarity": 1.0823368341020739e-08,
+     "overall_nlp_error": 1.2102507142499431e-06,
+     "variable_bound_violation": 9.912238870335395e-09
+    },
+    "effective_options": {
+     "fixed_variable_treatment": "make_parameter",
+     "max_iter": 500,
+     "tol": 1e-05,
+     "acceptable_tol": 0.0001,
+     "acceptable_iter": 5,
+     "linear_solver": "ma97",
+     "bound_push": 1e-05,
+     "bound_frac": 1e-05,
+     "slack_bound_frac": 1e-05,
+     "slack_bound_push": 1e-05,
+     "output_file": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S33/E4/logs/optim_log_case33_2_2025_Autumn_W2.log",
+     "file_append": "yes",
+     "file_print_level": 6,
+     "warm_start_init_point": "yes"
+    },
+    "t1_tolerance_override": null,
+    "entry_counts": {
+     "V": 24,
+     "PF": 48,
+     "ESS": 48
+    }
+   },
+   "C1": {
+    "fixture_key": "matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+    "kind": "DSO",
+    "variant": "C1",
+    "from_warm_start": false,
+    "identity_ok": true,
+    "metadata": {
+     "agent": "DSO",
+     "node_id": 7,
+     "network_name": "case33_2",
+     "year": 2025,
+     "day": "Autumn",
+     "cycle": 7,
+     "from_warm_start": true,
+     "captured_outcome": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+     "label": "matched_success"
+    },
+    "objective_name": "p58_rescaled_admm_objective",
+    "objective_value": 58751.88258934214,
+    "wall_seconds": 0.42926597595214844,
+    "status": "ok",
+    "termination_condition": "optimal",
+    "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+    "solve_result_id": 0,
+    "succeeded": true,
+    "loaded_solution": true,
+    "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S33/E4/logs/optim_log_case33_2_2025_Autumn_C1.log",
+    "log_iterations": 40,
+    "log_exit": "Optimal Solution Found",
+    "log_unscaled_summary": {
+     "objective": 58751.88258933882,
+     "dual_infeasibility": 0.0012102507136948317,
+     "constraint_violation": 1.3111978169888516e-10,
+     "complementarity": 1.0823368340097817e-05,
+     "overall_nlp_error": 0.0012102507136948317,
+     "variable_bound_violation": 9.912238870335397e-09
+    },
+    "log_scaled_summary": {
+     "objective": 58.75188258933882,
+     "dual_infeasibility": 1.2102507136948316e-06,
+     "constraint_violation": 1.3111978169888516e-10,
+     "complementarity": 1.0823368340097817e-08,
+     "overall_nlp_error": 1.2102507136948316e-06,
+     "variable_bound_violation": 9.912238870335397e-09
+    },
+    "effective_options": {
+     "fixed_variable_treatment": "make_parameter",
+     "max_iter": 500,
+     "tol": 1e-05,
+     "acceptable_tol": 0.0001,
+     "acceptable_iter": 5,
+     "linear_solver": "ma97",
+     "bound_push": 1e-05,
+     "bound_frac": 1e-05,
+     "slack_bound_frac": 1e-05,
+     "slack_bound_push": 1e-05,
+     "output_file": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S33/E4/logs/optim_log_case33_2_2025_Autumn_C1.log",
+     "file_append": "yes",
+     "file_print_level": 6
+    },
+    "t1_tolerance_override": null,
+    "entry_counts": {
+     "V": 24,
+     "PF": 48,
+     "ESS": 48
+    }
+   },
+   "T1": {
+    "fixture_key": "matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+    "kind": "DSO",
+    "variant": "T1",
+    "from_warm_start": true,
+    "identity_ok": true,
+    "metadata": {
+     "agent": "DSO",
+     "node_id": 7,
+     "network_name": "case33_2",
+     "year": 2025,
+     "day": "Autumn",
+     "cycle": 7,
+     "from_warm_start": true,
+     "captured_outcome": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+     "label": "matched_success"
+    },
+    "objective_name": "p58_rescaled_admm_objective",
+    "objective_value": 58751.882578604695,
+    "wall_seconds": 0.45491909980773926,
+    "status": "ok",
+    "termination_condition": "optimal",
+    "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+    "solve_result_id": 0,
+    "succeeded": true,
+    "loaded_solution": true,
+    "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S33/E4/logs/optim_log_case33_2_2025_Autumn_T1.log",
+    "log_iterations": 47,
+    "log_exit": "Optimal Solution Found",
+    "log_unscaled_summary": {
+     "objective": 58751.88257860131,
+     "dual_infeasibility": 2.5592932775741997e-07,
+     "constraint_violation": 2.1083135237631723e-12,
+     "complementarity": 9.156792088986024e-06,
+     "overall_nlp_error": 9.156792088986024e-06,
+     "variable_bound_violation": 9.912238869909224e-09
+    },
+    "log_scaled_summary": {
+     "objective": 58.75188257860131,
+     "dual_infeasibility": 2.5592932775741997e-10,
+     "constraint_violation": 2.1083135237631723e-12,
+     "complementarity": 9.156792088986024e-09,
+     "overall_nlp_error": 9.156792088986024e-09,
+     "variable_bound_violation": 9.912238869909224e-09
+    },
+    "effective_options": {
+     "fixed_variable_treatment": "make_parameter",
+     "max_iter": 500,
+     "tol": 1.0000000000000002e-06,
+     "acceptable_tol": 1e-05,
+     "acceptable_iter": 5,
+     "linear_solver": "ma97",
+     "bound_push": 1e-05,
+     "bound_frac": 1e-05,
+     "slack_bound_frac": 1e-05,
+     "slack_bound_push": 1e-05,
+     "output_file": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S33/E4/logs/optim_log_case33_2_2025_Autumn_T1.log",
+     "file_append": "yes",
+     "file_print_level": 6,
+     "warm_start_init_point": "yes"
+    },
+    "t1_tolerance_override": {
+     "base_tol": 1e-05,
+     "base_acceptable_tol": 0.0001,
+     "divisor": 10.0,
+     "applied_tol": 1.0000000000000002e-06,
+     "applied_acceptable_tol": 1e-05
+    },
+    "entry_counts": {
+     "V": 24,
+     "PF": 48,
+     "ESS": 48
+    }
+   }
+  },
+  "matched_success_TSO_case9_2025_Summer_cycle7.pkl": {
+   "W1": {
+    "fixture_key": "matched_success_TSO_case9_2025_Summer_cycle7.pkl",
+    "kind": "TSO",
+    "variant": "W1",
+    "from_warm_start": true,
+    "identity_ok": true,
+    "metadata": {
+     "agent": "TSO",
+     "node_id": null,
+     "network_name": "case9",
+     "year": 2025,
+     "day": "Summer",
+     "cycle": 7,
+     "from_warm_start": true,
+     "captured_outcome": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+     "label": "matched_success"
+    },
+    "objective_name": "p58_rescaled_admm_objective",
+    "objective_value": -73682.36599525607,
+    "wall_seconds": 0.18171286582946777,
+    "status": "ok",
+    "termination_condition": "optimal",
+    "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+    "solve_result_id": 0,
+    "succeeded": true,
+    "loaded_solution": true,
+    "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S33/E4/logs/optim_log_case9_2025_Summer_W1.log",
+    "log_iterations": 29,
+    "log_exit": "Optimal Solution Found",
+    "log_unscaled_summary": {
+     "objective": -73682.36599525674,
+     "dual_infeasibility": 9.27482446400063e-06,
+     "constraint_violation": 1.1685630241231593e-10,
+     "complementarity": 9.657667531138044e-05,
+     "overall_nlp_error": 9.657667531138044e-05,
+     "variable_bound_violation": 9.581866085688688e-09
+    },
+    "log_scaled_summary": {
+     "objective": -73.68236599525675,
+     "dual_infeasibility": 9.27482446400063e-09,
+     "constraint_violation": 1.1685630241231593e-10,
+     "complementarity": 9.657667531138045e-08,
+     "overall_nlp_error": 9.657667531138045e-08,
+     "variable_bound_violation": 9.581866085688688e-09
+    },
+    "effective_options": {
+     "fixed_variable_treatment": "make_parameter",
+     "max_iter": 500,
+     "tol": 1e-05,
+     "acceptable_tol": 0.0001,
+     "acceptable_iter": 5,
+     "linear_solver": "ma97",
+     "compl_inf_tol": 0.0005,
+     "bound_push": 1e-06,
+     "bound_frac": 1e-06,
+     "slack_bound_frac": 1e-06,
+     "slack_bound_push": 1e-06,
+     "output_file": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S33/E4/logs/optim_log_case9_2025_Summer_W1.log",
+     "file_append": "yes",
+     "file_print_level": 6,
+     "warm_start_init_point": "yes"
+    },
+    "t1_tolerance_override": null,
+    "entry_counts": {
+     "V": 72,
+     "PF": 144,
+     "ESS": 144
+    }
+   },
+   "W2": {
+    "fixture_key": "matched_success_TSO_case9_2025_Summer_cycle7.pkl",
+    "kind": "TSO",
+    "variant": "W2",
+    "from_warm_start": true,
+    "identity_ok": true,
+    "metadata": {
+     "agent": "TSO",
+     "node_id": null,
+     "network_name": "case9",
+     "year": 2025,
+     "day": "Summer",
+     "cycle": 7,
+     "from_warm_start": true,
+     "captured_outcome": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+     "label": "matched_success"
+    },
+    "objective_name": "p58_rescaled_admm_objective",
+    "objective_value": -73682.36599525607,
+    "wall_seconds": 0.1335911750793457,
+    "status": "ok",
+    "termination_condition": "optimal",
+    "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+    "solve_result_id": 0,
+    "succeeded": true,
+    "loaded_solution": true,
+    "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S33/E4/logs/optim_log_case9_2025_Summer_W2.log",
+    "log_iterations": 29,
+    "log_exit": "Optimal Solution Found",
+    "log_unscaled_summary": {
+     "objective": -73682.36599525674,
+     "dual_infeasibility": 9.27482446400063e-06,
+     "constraint_violation": 1.1685630241231593e-10,
+     "complementarity": 9.657667531138044e-05,
+     "overall_nlp_error": 9.657667531138044e-05,
+     "variable_bound_violation": 9.581866085688688e-09
+    },
+    "log_scaled_summary": {
+     "objective": -73.68236599525675,
+     "dual_infeasibility": 9.27482446400063e-09,
+     "constraint_violation": 1.1685630241231593e-10,
+     "complementarity": 9.657667531138045e-08,
+     "overall_nlp_error": 9.657667531138045e-08,
+     "variable_bound_violation": 9.581866085688688e-09
+    },
+    "effective_options": {
+     "fixed_variable_treatment": "make_parameter",
+     "max_iter": 500,
+     "tol": 1e-05,
+     "acceptable_tol": 0.0001,
+     "acceptable_iter": 5,
+     "linear_solver": "ma97",
+     "compl_inf_tol": 0.0005,
+     "bound_push": 1e-06,
+     "bound_frac": 1e-06,
+     "slack_bound_frac": 1e-06,
+     "slack_bound_push": 1e-06,
+     "output_file": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S33/E4/logs/optim_log_case9_2025_Summer_W2.log",
+     "file_append": "yes",
+     "file_print_level": 6,
+     "warm_start_init_point": "yes"
+    },
+    "t1_tolerance_override": null,
+    "entry_counts": {
+     "V": 72,
+     "PF": 144,
+     "ESS": 144
+    }
+   },
+   "C1": {
+    "fixture_key": "matched_success_TSO_case9_2025_Summer_cycle7.pkl",
+    "kind": "TSO",
+    "variant": "C1",
+    "from_warm_start": false,
+    "identity_ok": true,
+    "metadata": {
+     "agent": "TSO",
+     "node_id": null,
+     "network_name": "case9",
+     "year": 2025,
+     "day": "Summer",
+     "cycle": 7,
+     "from_warm_start": true,
+     "captured_outcome": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+     "label": "matched_success"
+    },
+    "objective_name": "p58_rescaled_admm_objective",
+    "objective_value": -73682.36599525608,
+    "wall_seconds": 0.1257002353668213,
+    "status": "ok",
+    "termination_condition": "optimal",
+    "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+    "solve_result_id": 0,
+    "succeeded": true,
+    "loaded_solution": true,
+    "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S33/E4/logs/optim_log_case9_2025_Summer_C1.log",
+    "log_iterations": 26,
+    "log_exit": "Optimal Solution Found",
+    "log_unscaled_summary": {
+     "objective": -73682.36599525686,
+     "dual_infeasibility": 9.27482624035747e-06,
+     "constraint_violation": 1.16856080367711e-10,
+     "complementarity": 9.657667531223542e-05,
+     "overall_nlp_error": 9.657667531223542e-05,
+     "variable_bound_violation": 9.581866085688688e-09
+    },
+    "log_scaled_summary": {
+     "objective": -73.68236599525686,
+     "dual_infeasibility": 9.27482624035747e-09,
+     "constraint_violation": 1.16856080367711e-10,
+     "complementarity": 9.657667531223542e-08,
+     "overall_nlp_error": 9.657667531223542e-08,
+     "variable_bound_violation": 9.581866085688688e-09
+    },
+    "effective_options": {
+     "fixed_variable_treatment": "make_parameter",
+     "max_iter": 500,
+     "tol": 1e-05,
+     "acceptable_tol": 0.0001,
+     "acceptable_iter": 5,
+     "linear_solver": "ma97",
+     "compl_inf_tol": 0.0005,
+     "bound_push": 1e-06,
+     "bound_frac": 1e-06,
+     "slack_bound_frac": 1e-06,
+     "slack_bound_push": 1e-06,
+     "output_file": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S33/E4/logs/optim_log_case9_2025_Summer_C1.log",
+     "file_append": "yes",
+     "file_print_level": 6
+    },
+    "t1_tolerance_override": null,
+    "entry_counts": {
+     "V": 72,
+     "PF": 144,
+     "ESS": 144
+    }
+   },
+   "T1": {
+    "fixture_key": "matched_success_TSO_case9_2025_Summer_cycle7.pkl",
+    "kind": "TSO",
+    "variant": "T1",
+    "from_warm_start": true,
+    "identity_ok": true,
+    "metadata": {
+     "agent": "TSO",
+     "node_id": null,
+     "network_name": "case9",
+     "year": 2025,
+     "day": "Summer",
+     "cycle": 7,
+     "from_warm_start": true,
+     "captured_outcome": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+     "label": "matched_success"
+    },
+    "objective_name": "p58_rescaled_admm_objective",
+    "objective_value": -73682.36599525607,
+    "wall_seconds": 0.13594770431518555,
+    "status": "ok",
+    "termination_condition": "optimal",
+    "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+    "solve_result_id": 0,
+    "succeeded": true,
+    "loaded_solution": true,
+    "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S33/E4/logs/optim_log_case9_2025_Summer_T1.log",
+    "log_iterations": 29,
+    "log_exit": "Optimal Solution Found",
+    "log_unscaled_summary": {
+     "objective": -73682.36599525674,
+     "dual_infeasibility": 9.27482446400063e-06,
+     "constraint_violation": 1.1685630241231593e-10,
+     "complementarity": 9.657667531138044e-05,
+     "overall_nlp_error": 9.657667531138044e-05,
+     "variable_bound_violation": 9.581866085688688e-09
+    },
+    "log_scaled_summary": {
+     "objective": -73.68236599525675,
+     "dual_infeasibility": 9.27482446400063e-09,
+     "constraint_violation": 1.1685630241231593e-10,
+     "complementarity": 9.657667531138045e-08,
+     "overall_nlp_error": 9.657667531138045e-08,
+     "variable_bound_violation": 9.581866085688688e-09
+    },
+    "effective_options": {
+     "fixed_variable_treatment": "make_parameter",
+     "max_iter": 500,
+     "tol": 1.0000000000000002e-06,
+     "acceptable_tol": 1e-05,
+     "acceptable_iter": 5,
+     "linear_solver": "ma97",
+     "compl_inf_tol": 0.0005,
+     "bound_push": 1e-06,
+     "bound_frac": 1e-06,
+     "slack_bound_frac": 1e-06,
+     "slack_bound_push": 1e-06,
+     "output_file": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S33/E4/logs/optim_log_case9_2025_Summer_T1.log",
+     "file_append": "yes",
+     "file_print_level": 6,
+     "warm_start_init_point": "yes"
+    },
+    "t1_tolerance_override": {
+     "base_tol": 1e-05,
+     "base_acceptable_tol": 0.0001,
+     "divisor": 10.0,
+     "applied_tol": 1.0000000000000002e-06,
+     "applied_acceptable_tol": 1e-05
+    },
+    "entry_counts": {
+     "V": 72,
+     "PF": 144,
+     "ESS": 144
+    }
+   }
+  }
+ },
+ "w1_w2_bitwise_identical": {
+  "matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl": {
+   "V": true,
+   "PF": true,
+   "ESS": true
+  },
+  "matched_success_TSO_case9_2025_Summer_cycle7.pkl": {
+   "V": true,
+   "PF": true,
+   "ESS": true
+  }
+ },
+ "pair_statistics": {
+  "matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl": {
+   "W1_vs_W2": {
+    "V": {
+     "rms_per_entry": 0.0,
+     "max_abs_per_entry": 0.0,
+     "entry_count": 24
+    },
+    "PF": {
+     "rms_per_entry": 0.0,
+     "max_abs_per_entry": 0.0,
+     "entry_count": 48
+    },
+    "ESS": {
+     "rms_per_entry": 0.0,
+     "max_abs_per_entry": 0.0,
+     "entry_count": 48
+    },
+    "objective": {
+     "a_value": 58751.882589337234,
+     "b_value": 58751.882589337234,
+     "abs_diff": 0.0,
+     "rel_diff": 0.0
+    },
+    "termination_a": "optimal",
+    "termination_b": "optimal",
+    "iterations_a": 46,
+    "iterations_b": 46
+   },
+   "W1_vs_C1": {
+    "V": {
+     "rms_per_entry": 6.8028155221945065e-15,
+     "max_abs_per_entry": 1.432187701766452e-14,
+     "entry_count": 24
+    },
+    "PF": {
+     "rms_per_entry": 6.691929234549594e-14,
+     "max_abs_per_entry": 3.2518432391270835e-13,
+     "entry_count": 48
+    },
+    "ESS": {
+     "rms_per_entry": 1.4466819196637416e-17,
+     "max_abs_per_entry": 2.222614453595284e-17,
+     "entry_count": 48
+    },
+    "objective": {
+     "a_value": 58751.882589337234,
+     "b_value": 58751.88258934214,
+     "abs_diff": -4.903995431959629e-09,
+     "rel_diff": -8.346958796601431e-14
+    },
+    "termination_a": "optimal",
+    "termination_b": "optimal",
+    "iterations_a": 46,
+    "iterations_b": 40
+   },
+   "W1_vs_T1": {
+    "V": {
+     "rms_per_entry": 1.04294014501525e-14,
+     "max_abs_per_entry": 2.1871393585115584e-14,
+     "entry_count": 24
+    },
+    "PF": {
+     "rms_per_entry": 1.2525028627568471e-08,
+     "max_abs_per_entry": 8.047839833436043e-08,
+     "entry_count": 48
+    },
+    "ESS": {
+     "rms_per_entry": 6.603706009759045e-08,
+     "max_abs_per_entry": 1.7651974972630988e-07,
+     "entry_count": 48
+    },
+    "objective": {
+     "a_value": 58751.882589337234,
+     "b_value": 58751.882578604695,
+     "abs_diff": 1.0732539521995932e-05,
+     "rel_diff": 1.826756701059952e-10
+    },
+    "termination_a": "optimal",
+    "termination_b": "optimal",
+    "iterations_a": 46,
+    "iterations_b": 47
+   }
+  },
+  "matched_success_TSO_case9_2025_Summer_cycle7.pkl": {
+   "W1_vs_W2": {
+    "V": {
+     "rms_per_entry": 0.0,
+     "max_abs_per_entry": 0.0,
+     "entry_count": 72
+    },
+    "PF": {
+     "rms_per_entry": 0.0,
+     "max_abs_per_entry": 0.0,
+     "entry_count": 144
+    },
+    "ESS": {
+     "rms_per_entry": 0.0,
+     "max_abs_per_entry": 0.0,
+     "entry_count": 144
+    },
+    "objective": {
+     "a_value": -73682.36599525607,
+     "b_value": -73682.36599525607,
+     "abs_diff": 0.0,
+     "rel_diff": 0.0
+    },
+    "termination_a": "optimal",
+    "termination_b": "optimal",
+    "iterations_a": 29,
+    "iterations_b": 29
+   },
+   "W1_vs_C1": {
+    "V": {
+     "rms_per_entry": 3.925231146709438e-17,
+     "max_abs_per_entry": 2.220446049250313e-16,
+     "entry_count": 72
+    },
+    "PF": {
+     "rms_per_entry": 1.1972421776407486e-17,
+     "max_abs_per_entry": 6.938893903907228e-17,
+     "entry_count": 144
+    },
+    "ESS": {
+     "rms_per_entry": 2.235015988849301e-18,
+     "max_abs_per_entry": 5.366800753803247e-18,
+     "entry_count": 144
+    },
+    "objective": {
+     "a_value": -73682.36599525607,
+     "b_value": -73682.36599525608,
+     "abs_diff": 1.4551915228366852e-11,
+     "rel_diff": 1.974952219816578e-16
+    },
+    "termination_a": "optimal",
+    "termination_b": "optimal",
+    "iterations_a": 29,
+    "iterations_b": 26
+   },
+   "W1_vs_T1": {
+    "V": {
+     "rms_per_entry": 0.0,
+     "max_abs_per_entry": 0.0,
+     "entry_count": 72
+    },
+    "PF": {
+     "rms_per_entry": 0.0,
+     "max_abs_per_entry": 0.0,
+     "entry_count": 144
+    },
+    "ESS": {
+     "rms_per_entry": 0.0,
+     "max_abs_per_entry": 0.0,
+     "entry_count": 144
+    },
+    "objective": {
+     "a_value": -73682.36599525607,
+     "b_value": -73682.36599525607,
+     "abs_diff": 0.0,
+     "rel_diff": 0.0
+    },
+    "termination_a": "optimal",
+    "termination_b": "optimal",
+    "iterations_a": 29,
+    "iterations_b": 29
+   }
+  }
+ },
+ "validity": {
+  "invalid_reasons": [],
+  "valid": true
+ },
+ "derivation": {
+  "valid": true,
+  "invalid_reasons": [],
+  "delta_c": {
+   "V": 1.04294014501525e-14,
+   "PF": 1.2525028627568471e-08,
+   "ESS": 6.603706009759045e-08
+  },
+  "max_c_delta_c": 6.603706009759045e-08,
+  "three_times_max_delta_c": 1.9811118029277136e-07,
+  "pre_round_value": 1e-05,
+  "eps_abs": 1e-05,
+  "s32_reference_steps": {
+   "V": 9.2e-05,
+   "PF": 0.00017,
+   "ESS": 5.5e-05
+  },
+  "delta_c_vs_s32_reference_ratio": {
+   "V": 1.1336305924078804e-10,
+   "PF": 7.367663898569688e-05,
+   "ESS": 0.00120067381995619
+  }
+ },
+ "floor_mva_used": 0.1,
+ "one_process_justification": "All 8 solves ran in one Python process. Each solve unpickled the fixture fresh from disk (pickle.load immediately before use) and called network._create_smopf_solver fresh (new SolverFactory instance, new .options dict) immediately before solver.solve. The guard counted permitted_exec (SystemCallSolver._execute_command, i.e. actual ipopt subprocess launches) equal to permitted_solve (8 each); see guard.observed_counts below. No separate-process fallback was triggered."
+}
