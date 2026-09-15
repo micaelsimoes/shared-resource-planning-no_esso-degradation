@@ -1692,6 +1692,202 @@ def write_component_levels_terminal(planning, sed, models, rows, report, out_dir
     return path
 
 
+# ===========================================================================
+# S31C worker task (2026-09-15) -- Part 3: interface energy settlement / signed
+# delta reporting, level-capture arm `s31c`. Authority:
+# PLANNER_BRIEF_2026-09-13.md Addendum 12.
+# ===========================================================================
+
+OUT_S31C = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S31C_run')
+
+
+def assert_s31c_capture_paths(planning):
+    """Rule eleven, extended for Addendum 12's signed interface reparametrization
+    and interface energy settlement. Reuses `assert_s31_capture_paths` (still
+    required -- the S31C hook also calls `write_component_levels_terminal`) and
+    adds the new capture paths. Zero solves."""
+    checklist = dict(assert_s31_capture_paths(planning))
+
+    transmission_network = planning.transmission_network
+    year0 = next(iter(transmission_network.years))
+    day0 = next(iter(transmission_network.days))
+    tso_probe_model = transmission_network.network[year0][day0].build_model(transmission_network.params)
+
+    checklist['tso_interface_delta_p_present'] = hasattr(tso_probe_model, 'interface_delta_p')
+    checklist['tso_interface_delta_q_present'] = hasattr(tso_probe_model, 'interface_delta_q')
+    checklist['tso_interface_settlement_present'] = hasattr(tso_probe_model, 'interface_settlement')
+    checklist['tso_interface_settlement_weight_present'] = hasattr(tso_probe_model, 'interface_settlement_weight')
+    checklist['tso_expected_interface_pf_p_will_exist_after_admm_setup'] = callable(
+        getattr(srp, 'create_transmission_network_model', None))
+
+    node0 = next(iter(planning.distribution_networks))
+    distribution_network0 = planning.distribution_networks[node0]
+    dso_probe_model = distribution_network0.network[year0][day0].build_model(distribution_network0.params)
+    checklist['dso_interface_settlement_present'] = hasattr(dso_probe_model, 'interface_settlement')
+    checklist['dso_interface_settlement_weight_present'] = hasattr(dso_probe_model, 'interface_settlement_weight')
+
+    checklist['srp_get_interface_reporting_detail'] = callable(getattr(srp, '_get_interface_reporting_detail', None))
+    checklist['srp_get_operational_interface_settlement_blocks'] = callable(
+        getattr(srp, '_get_operational_interface_settlement_blocks', None))
+    checklist['srp_get_local_interface_settlement'] = callable(getattr(srp, '_get_local_interface_settlement', None))
+
+    missing = [name for name, ok in checklist.items() if not ok]
+    if missing:
+        raise RuntimeError(f'S31C Part 3 capture-path pre-flight FAILED, missing/broken: {missing}')
+    return checklist
+
+
+def _s31c_interface_detail(planning, models):
+    """S31C Part 3. Zero solves: reads existing model Vars/Expressions and the
+    Part 1 reporting helpers (`_get_interface_reporting_detail`,
+    `_get_operational_interface_settlement_blocks`,
+    `_get_local_interface_settlement`) only -- no re-derivation."""
+    transmission_network = planning.transmission_network
+
+    reporting_detail = srp._get_interface_reporting_detail(planning, models)
+    settlement_blocks = srp._get_operational_interface_settlement_blocks(planning, models)
+
+    per_block = {}
+    for (kind, node_id, year, day), weighted_value in settlement_blocks.items():
+        if kind == 'TSO':
+            model = models['tso'][year][day]
+            key = f'TSO|{year}|{day}'
+        else:
+            model = models['dso'][node_id][year][day]
+            key = f'DSO|{node_id}|{year}|{day}'
+        unweighted_value = srp._get_local_interface_settlement(model)
+        per_block[key] = {
+            'kind': kind, 'node_id': node_id, 'year': str(year), 'day': str(day),
+            'interface_settlement_unweighted': unweighted_value,
+            'interface_settlement_weighted': weighted_value,
+        }
+
+    t_tso_total = sum(v for (kind, _n, _y, _d), v in settlement_blocks.items() if kind == 'TSO')
+    t_dso_by_node = {}
+    for (kind, node_id, _y, _d), v in settlement_blocks.items():
+        if kind == 'DSO':
+            t_dso_by_node[node_id] = t_dso_by_node.get(node_id, 0.0) + v
+    t_tso_plus_t_dso_terminal = t_tso_total + sum(t_dso_by_node.values())
+
+    consensus_residual_per_dso = {}
+    flexibility_volumes_per_dso = {}
+    for node_id, by_year in reporting_detail.items():
+        residual_periods = {}
+        sum_pi_baseMVA_residual_unweighted = 0.0
+        sum_pi_baseMVA_residual_weighted = 0.0
+        dso_settlement_sum_pi_p_int_unweighted = 0.0
+        dso_settlement_sum_pi_p_int_weighted = 0.0
+        abs_delta_p_sum_mw = 0.0
+        abs_delta_q_sum_mvar = 0.0
+        max_abs_delta_p_mw = 0.0
+        max_abs_delta_q_mvar = 0.0
+        s_base = None
+        for year, by_day in by_year.items():
+            for day, day_detail in by_day.items():
+                s_base = transmission_network.network[year][day].baseMVA
+                # Same ADMM block weight (year-count * day-count * discount
+                # annualization) `_get_admm_block_weight` gives, and the SAME one
+                # `settlement_blocks` (hence t_tso_plus_t_dso_terminal) already
+                # carries -- required so the two are comparable (Addendum 12's
+                # gate: "T_TSO + T_DSO ... equals the priced consensus residual").
+                block_weight = srp._get_admm_block_weight(transmission_network, year, day)
+                dso_settlement_sum_pi_p_int_unweighted += day_detail['dso_settlement_sum_pi_p_int']
+                dso_settlement_sum_pi_p_int_weighted += block_weight * day_detail['dso_settlement_sum_pi_p_int']
+                for p, period_detail in day_detail['periods'].items():
+                    residual_mw = period_detail['p_int_tso_expected_mw'] - period_detail['p_int_dso_expected_mw']
+                    priced_residual = period_detail['price_per_mwh'] * residual_mw
+                    residual_periods[f'{year}|{day}|{p}'] = {
+                        'p_int_tso_expected_mw': period_detail['p_int_tso_expected_mw'],
+                        'p_int_dso_expected_mw': period_detail['p_int_dso_expected_mw'],
+                        'residual_mw': residual_mw,
+                        'priced_residual_pi_baseMVA_residual_unweighted': priced_residual,
+                        'priced_residual_pi_baseMVA_residual_weighted': block_weight * priced_residual,
+                        'admm_block_weight': block_weight,
+                    }
+                    sum_pi_baseMVA_residual_unweighted += priced_residual
+                    sum_pi_baseMVA_residual_weighted += block_weight * priced_residual
+                    for delta_p_mw in period_detail['delta_p_mw'].values():
+                        abs_delta_p_sum_mw += abs(delta_p_mw)
+                        max_abs_delta_p_mw = max(max_abs_delta_p_mw, abs(delta_p_mw))
+                    for delta_q_mvar in period_detail['delta_q_mvar'].values():
+                        abs_delta_q_sum_mvar += abs(delta_q_mvar)
+                        max_abs_delta_q_mvar = max(max_abs_delta_q_mvar, abs(delta_q_mvar))
+
+        consensus_residual_per_dso[node_id] = {
+            'periods': residual_periods,
+            'sum_pi_baseMVA_residual_unweighted': sum_pi_baseMVA_residual_unweighted,
+            'sum_pi_baseMVA_residual_weighted': sum_pi_baseMVA_residual_weighted,
+            'dso_settlement_sum_pi_p_int_unweighted': dso_settlement_sum_pi_p_int_unweighted,
+            'dso_settlement_sum_pi_p_int_weighted': dso_settlement_sum_pi_p_int_weighted,
+        }
+        flexibility_volumes_per_dso[node_id] = {
+            'sum_abs_delta_p_mw': abs_delta_p_sum_mw,
+            'max_abs_delta_p_mw': max_abs_delta_p_mw,
+            'sum_abs_delta_q_mvar': abs_delta_q_sum_mvar,
+            'max_abs_delta_q_mvar': max_abs_delta_q_mvar,
+            'sum_abs_delta_p_pu': (abs_delta_p_sum_mw / s_base) if s_base else None,
+            'max_abs_delta_p_pu': (max_abs_delta_p_mw / s_base) if s_base else None,
+            'sum_abs_delta_q_pu': (abs_delta_q_sum_mvar / s_base) if s_base else None,
+            'max_abs_delta_q_pu': (max_abs_delta_q_mvar / s_base) if s_base else None,
+        }
+
+    return {
+        'per_block_interface_settlement': per_block,
+        't_tso_total': t_tso_total,
+        't_dso_by_node': t_dso_by_node,
+        't_tso_plus_t_dso_terminal': t_tso_plus_t_dso_terminal,
+        'interface_consensus_residual_per_dso': consensus_residual_per_dso,
+        'flexibility_volumes_per_dso': flexibility_volumes_per_dso,
+        'interface_reporting_detail': reporting_detail,
+    }
+
+
+def write_interface_settlement_detail_s31c(planning, sed, models, rows, report, out_dir, label):
+    """S31C Part 3. REUSES `write_component_levels_terminal` (the s31 post-run
+    level writer, unmodified) and EXTENDS its output with the interface energy
+    settlement / signed-delta detail Addendum 12 requires, into a companion
+    artifact -- zero extra solves, same FINAL models `run_admm_arm` already
+    built."""
+    base_path = write_component_levels_terminal(planning, sed, models, rows, report, out_dir, label)
+    detail = _s31c_interface_detail(planning, models)
+
+    payload = {
+        'stage': 'P5.15 Step 3.1-C (S31C) Part 3 -- interface settlement / signed-delta detail',
+        'authority': ['PLANNER_BRIEF_2026-09-13.md Addendum 12'],
+        'timestamp_utc': datetime.now(timezone.utc).isoformat(),
+        'label': label,
+        'cycles_run': len(rows),
+        'converged_at_cycle': report.get('converged_at_cycle'),
+        'component_levels_terminal_path': base_path,
+        **detail,
+        'reading_rule': (
+            't_tso_plus_t_dso_terminal (block-weighted, year-count * day-count * '
+            'discount annualization) should equal MINUS the priced consensus '
+            'residual on the SAME weighting -- t_tso_plus_t_dso_terminal == '
+            '-1 * sum(sum_pi_baseMVA_residual_weighted over '
+            'consensus_residual_per_dso). Sign: T_TSO = -prob*pi*baseMVA*p_TSO, '
+            'T_DSO = +prob*pi*baseMVA*p_DSO, so T_TSO+T_DSO = '
+            'prob*pi*baseMVA*(p_DSO - p_TSO); the residual field here is defined '
+            '(TSO - DSO) per the worker task text, i.e. the NEGATIVE of that '
+            'difference -- verified exactly on the P5.15 S31C Part 2 zero-solve '
+            'cancellation-identity check (same-magnitude, opposite-sign) and '
+            'reproduced on the Part 4 one-cycle preflight (840,010,674.369291 vs '
+            '-840,010,674.369292). The *_unweighted fields are the per-block, '
+            'scenario-probability-weighted-only quantities (comparable to '
+            '"unweighted" elsewhere in this schema), NOT expected to reconcile '
+            'with t_tso_plus_t_dso_terminal on their own (that quantity is '
+            'block-weighted).'
+        ),
+    }
+
+    path = os.path.join(out_dir, 'interface_settlement_detail_s31c.json')
+    _refuse_overwrite(path)
+    with open(path, 'w') as handle:
+        json.dump(payload, handle, indent=1, default=str)
+    print(f'[S31C Part 3] interface_settlement_detail_s31c.json written: {path}')
+    return path
+
+
 if __name__ == '__main__':
     _acquire_exclusive_run_lock()
     gate = sys.argv[1] if len(sys.argv) > 1 else None
@@ -1833,6 +2029,30 @@ if __name__ == '__main__':
 
         run_admm_arm('baseline', OUT_S31, k_override=None, eval_id='p515s31_baseline',
                      post_run_hook=_s31_hook)
+    elif gate == 's31c':
+        # S31C worker task (PLANNER_BRIEF_2026-09-13.md Addendum 12): the
+        # post-signature interface energy settlement / signed-delta baseline
+        # campaign. Production defaults, no overrides -- own fresh root and
+        # eval id.
+        _require_fresh_output_root(OUT_S31C)
+        preflight_eval_id = 'p515s31c_preflight_capture_check'
+        preflight_eval_dir = os.path.join(O.WORK_DIR, preflight_eval_id)
+        if os.path.exists(preflight_eval_dir):
+            raise RuntimeError(
+                f'refusing to start: preflight eval dir already exists (network '
+                f'logs append): {preflight_eval_dir}')
+        preflight_planning = O.fresh_planning(preflight_eval_id)
+        s31c_checklist = assert_s31c_capture_paths(preflight_planning)
+        del preflight_planning
+        print(f'[P5.15 S31C] capture-path pre-flight passed: {s31c_checklist}')
+        print('[P5.15 S31C] production defaults, no overrides; signed interface '
+              'reparametrization + interface energy settlement in force (Addendum 12)')
+
+        def _s31c_hook(planning, sed, models, rows, report, out_dir, label):
+            write_interface_settlement_detail_s31c(planning, sed, models, rows, report, out_dir, label)
+
+        run_admm_arm('baseline', OUT_S31C, k_override=None, eval_id='p515s31c_baseline',
+                     post_run_hook=_s31c_hook)
     else:
         print(__doc__)
         sys.exit(1)
