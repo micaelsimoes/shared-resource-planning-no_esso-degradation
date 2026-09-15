@@ -95,6 +95,9 @@ OUT_G1 = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515G1')
 # entries removed). These arms apply NO overrides: every value comes from production.
 OUT_G1B = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515G1B')
 OUT_G3F_B = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515G3F_B')
+# P5.15 Step 3.0 (Addendum 9): the new-baseline G1 repeated, production defaults, no overrides;
+# compared bitwise with P515G1B on per-cycle recourse, residuals, SoH and detector.
+OUT_S30 = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S30')
 
 # G2PREP Fix 2: every remaining arm gets its OWN fresh output root too, for the same
 # reason g1 does (OUT/P515G is shared residue from earlier campaigns and multiple
@@ -1511,6 +1514,12 @@ if __name__ == '__main__':
               f'EPS_ESSO_THROUGHPUT={SED.EPS_ESSO_THROUGHPUT:g}, ESSO overrides={SED.ESSO_TOL_OVERRIDES}; '
               'recovery policy production default (all enabled, tier 2 on)')
         run_admm_arm('baseline', OUT_G1B, k_override=None, eval_id='p515g1b_baseline')
+    elif gate == 's30':
+        _require_fresh_output_root(OUT_S30)
+        print('[P5.15 Step 3.0 determinism] repeat of the new-baseline G1, production defaults: '
+              f'EPS_ESSO_THROUGHPUT={SED.EPS_ESSO_THROUGHPUT:g}, ESSO overrides={SED.ESSO_TOL_OVERRIDES}; '
+              'recovery production default (all enabled, tier 2 on)')
+        run_admm_arm('baseline_rep', OUT_S30, k_override=None, eval_id='p515s30_baseline_rep')
     elif gate == 'g3_full_b':
         _require_fresh_output_root(OUT_G3F_B)
         probe_eval_id_b = 'p515g3fb_probe'

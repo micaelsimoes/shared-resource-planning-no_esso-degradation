@@ -463,6 +463,72 @@ configurational.
 - Order: parser fix + entries removal → ablation C → production ε/tol per outcome → G1 re-run
   (new baseline) → G3-full re-run → report → **Step 1 closes; Step 3 begins.**
 
+---
+
+# Addendum 9 — Step 1 CLOSED; Step 3 AUTHORIZED (2026-09-15)
+
+Step 1 closes on `P5_15_STEP1_CLOSING_REPORT.md` (commit `e19a580d`). New production baseline:
+ε = 1e-5, ESSO `tol` 1e-10 / `acceptable_tol` 1e-9, explicit recovery policy with tier 2,
+`limited-memory` entries removed. Detector ratio 0.57–0.94 at the new tolerance: expected
+(terminal μ at `mu_min`, legs near `bound_relax_factor` scale); recorded, no action. Tier 2
+reported as not yet exercised in a campaign: correct; it is counted when it fires.
+
+## Step 3 — ADMM objective consistency, penalty policy and stopping rule
+
+**Purpose.** Make the ADMM fixed point the recourse the paper defines, and make the stopping rule
+able to certify it. Every campaign is one background run per the Addendum 5/6 process; cold
+start; C\* candidate unless stated; ~40 min each.
+
+### 3.0 — Baseline determinism (one run)
+G1 at the new baseline, repeated: bitwise on per-cycle recourse, residuals, SoH, detector. This
+is the reference every Step 3 change is measured against.
+
+### 3.1 — Penalty classification and objective consistency (author decisions; zero solves)
+Produce the table the Expert asked for on day one: for every penalty term in TSO, DSO and ESSO
+objectives (`definitions.py` constants and `_prepare_*_objectives_for_admm`), state whether it is
+an **economic cost** (part of the recourse) or a **feasibility detector** (must be zero at a
+valid solution and is reported, not priced). Then make the TSO and DSO objective composition
+consistent: same treatment of RES curtailment, ESS usage and scenario deviation on both sides,
+or a stated reason for a difference. **Author decides each row.** The Planner drafts the table
+with the current status and a recommendation per row; the expert reviews before the author
+signs. This row-by-row table goes into the manuscript's appendix (R2.5/R3.7).
+
+### 3.2 — Stopping rule (production change, one gate run)
+Replace the composite motion test with Boyd et al. §3.3.1: per channel, primal residual
+`r = ‖x − z‖`, dual residual `s = ρ‖z^k − z^{k−1}‖`, tolerances `ε_pri = √p·ε_abs + ε_rel·max(‖x‖, ‖z‖)`,
+`ε_dual = √n·ε_abs + ε_rel·‖ρu‖`, with `ε_abs`, `ε_rel` in the case file. The objective-change
+test becomes a **diagnostic** (reported, not a criterion). Rule-ten ratio reported per channel.
+Gate: the 3.0 run under the new rule converges; report cycles and the terminal residuals.
+
+### 3.3 — ρ policy and ESS normalization (production change, one to two gate runs)
+(a) Residual balancing **on** as the baseline (the P5.9-B/AB1 mechanism), initial ρ from the
+case file, dead band as configured; report the ρ trajectory per channel. (b) Normalize the
+shared-ESS consensus residual by a **fixed per-node reference rating** (the maximum installable
+`S_ref = E_max/φ_min`, 2.5 MVA here) instead of `2·max(S, 0.10)`, so the AL curvature is
+candidate-independent. Gate: converges under 3.2's rule; ESS-channel residual and ρ trajectory
+reported; recourse compared with 3.0 with the bar.
+
+### 3.4 — Objective scale (production change, one gate run)
+Keep the `f/σ` scaling IPOPT needs, but make σ a **fixed, recorded per-network constant** in the
+case file rather than a per-run computed `effective_scale`, so `Q(x)` is evaluated under
+identical scaling for every candidate. Report the constant and the run's agreement with 3.3.
+
+### 3.5 — Polish-gap gate (48 network solves, no ADMM)
+At the converged 3.4 point, re-solve every network block with the **unscaled base objective** at
+fixed consensus (P5.7's test). Gate: the recourse change is < 0.1 % of the recourse. This is the
+measurement that the ADMM point is base-objective-optimal, and it is the number the paper
+reports as the decomposition's optimality evidence (R2.5). If it fails, the ρ/σ ratio is the
+lever, and the Planner stops for review before touching it.
+
+### Also in Step 3
+G2 at the new baseline (needed for the R3.6 matrix later; one run, after 3.4). H3 stays inert
+(single cohort) — a two-cohort probe is deferred to Step 5.
+
+### Step 3 closes when
+3.0–3.5 pass, `REVISION_CONTEXT.md` head records the ADMM configuration as **the** baseline
+(Track B decision closed), and the manuscript list carries: penalty table, stopping-rule
+definitions, ρ policy, σ constants, polish gap. Then Step 4 (outer method).
+
 ## Update obligations
 
 At the end of Step 1 the Planner rewrites the "CURRENT SOURCE OF TRUTH" head of
