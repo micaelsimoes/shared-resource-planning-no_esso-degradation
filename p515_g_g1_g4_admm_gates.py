@@ -57,6 +57,7 @@ artifacts (P514N: esso_models_control.pkl, n1_control.json, ...; P514L: ladder_s
 """
 
 import hashlib
+import inspect
 import json
 import os
 import pickle
@@ -1054,7 +1055,7 @@ def _group_diagnostics_by_round(diagnostics, n_active_nodes, cycles_run):
 
 def _construct_arm_planning(label, out_dir, report, k_override=None,
                              investment_map=None, eval_id=None,
-                             num_max_iters_override=None):
+                             num_max_iters_override=None, apply_rho=True):
     """G2PREP: everything `run_admm_arm` does up to (NOT including) the
     `planning.run_operational_planning(...)` call -- eval-dir freshness check,
     `O.fresh_planning`, Fix 1's `results_dir` redirection (away from the shared
@@ -1066,6 +1067,14 @@ def _construct_arm_planning(label, out_dir, report, k_override=None,
     including the operational-planning call, guard at 0") calls the SAME code
     `run_admm_arm` calls, rather than a re-implementation that could silently drift
     from it.
+
+    `apply_rho` (P5.15 Step 3.2+3.3(a), s32 arm): when False, `N.RHO` (the
+    p514_n control/perturbation rho override, v=1.5/pf=300/ess=1) is NOT
+    applied -- the case-file rho (`data/SRP1/SRP1_params.json` `admm.rho`,
+    1.0 on every network and channel) stays in force, per the frozen s32
+    spec ("the harness MUST NOT apply p514_n_instrumented_cstar.RHO").
+    Defaults to True so every other arm (g1, g2, s31, s31c, ...) is
+    unaffected.
     """
     eval_name = eval_id if eval_id is not None else f'p515g_{label}'
     if eval_id is not None and os.path.exists(os.path.join(O.WORK_DIR, eval_id)):
@@ -1102,7 +1111,9 @@ def _construct_arm_planning(label, out_dir, report, k_override=None,
         num_max_iters_override if num_max_iters_override is not None else N.CAP)
     planning.params.admm.tol['objective']['rel'] = N.REL
     planning.shared_ess_data.params.budget = N.BUDGET
-    RH.apply_rho_to_params(planning, N.RHO)
+    report['apply_rho'] = apply_rho
+    if apply_rho:
+        RH.apply_rho_to_params(planning, N.RHO)
     RH.set_adaptive_penalty(planning, True)
     sed = planning.shared_ess_data
 
@@ -1131,7 +1142,8 @@ def _construct_arm_planning(label, out_dir, report, k_override=None,
 
 
 def run_admm_arm(label, out_dir, k_override=None, investment_map=None,
-                  num_max_iters_override=None, eval_id=None, post_run_hook=None):
+                  num_max_iters_override=None, eval_id=None, post_run_hook=None,
+                  apply_rho=True, full_diagnostics_in_rows=False):
     """One full cold ADMM arm through the production path, reusing p514_n's own
     module-level constants and capture helpers verbatim. `investment_map`, if given,
     overrides the uniform S_INV/E_INV assignment for specific node_ids (others left at
@@ -1151,6 +1163,17 @@ def run_admm_arm(label, out_dir, k_override=None, investment_map=None,
     function used to build its own report, zero extra solves. S31 (Part 3, S31 worker
     task) uses this to write `component_levels_terminal.json` without re-implementing
     any part of `run_admm_arm`.
+
+    `apply_rho`: forwarded to `_construct_arm_planning` (see its docstring).
+    Defaults to True so every arm other than s32 is unaffected.
+
+    `full_diagnostics_in_rows` (P5.15 Step 3.2+3.3(a), s32 arm): when True,
+    each trajectory row is the RAW `admm_diagnostics` entry (every Boyd field
+    this stage added, plus every pre-existing field, e.g. `rho_v_before`,
+    `rho_v_action`) with `A.cycle_row`'s derived fields (ratios, slack,
+    `state_step_norm`, `nonfinite`) layered on top -- i.e. nothing production
+    records is dropped. Defaults to False, so every other arm's trajectory
+    (built from `A.cycle_row` alone) is unchanged.
     """
     os.makedirs(out_dir, exist_ok=True)
 
@@ -1192,7 +1215,8 @@ def run_admm_arm(label, out_dir, k_override=None, investment_map=None,
             planning, sed, candidate = _construct_arm_planning(
                 label, out_dir, report, k_override=k_override,
                 investment_map=investment_map, eval_id=eval_id,
-                num_max_iters_override=num_max_iters_override)
+                num_max_iters_override=num_max_iters_override,
+                apply_rho=apply_rho)
 
             n_active_nodes = len(sed.active_distribution_network_nodes)
             report['active_distribution_network_nodes'] = list(sed.active_distribution_network_nodes)
@@ -1251,6 +1275,16 @@ def run_admm_arm(label, out_dir, k_override=None, investment_map=None,
     prev_recourse = None
     for e in (state.get('admm_diagnostics') or []):
         row = A.cycle_row(e, prev_recourse)
+        if full_diagnostics_in_rows:
+            # s32: every raw admm_diagnostics field (every Boyd field this
+            # stage added -- boyd_v_*, boyd_pf_*, boyd_ess_*, rho_*_before/
+            # after/action, objective_change_ratio, gap_proxy_* -- plus every
+            # pre-existing field), with A.cycle_row's derived fields (ratios,
+            # slack, state_step_norm, nonfinite) as an overlay so nothing is
+            # silently shadowed.
+            merged = dict(e)
+            merged.update(row)
+            row = merged
         rows.append(row)
         prev_recourse = row.get('recourse')
 
@@ -1888,6 +1922,279 @@ def write_interface_settlement_detail_s31c(planning, sed, models, rows, report, 
     return path
 
 
+# ===========================================================================
+# P5.15 Step 3.2 + 3.3(a) -- Boyd stopping rule and residual balancing,
+# level-capture arm `s32`. Authority: PLANNER_BRIEF_2026-09-13.md Addendum 9
+# sections 3.2, 3.3(a), Addendum 13. Binding specification:
+# data/SRP1/Results/P515S32/frozen_s32_spec_v1_14a18674.json.
+# ===========================================================================
+
+OUT_S32 = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S32_run')
+S32_SPEC_PATH = os.path.join(
+    REPO, 'data', 'SRP1', 'Results', 'P515S32', 'frozen_s32_spec_v1_14a18674.json')
+S32_SPEC_SHA256 = '14a18674c2f2f7119781fafb72c569a3a4788b8edbfc821a9ffc2921934e7356'
+S32_CAP = 150
+S32_REL = 1e-4
+S32_S31C_G_PATH = os.path.join(OUT_S31C, 'g_baseline.json')
+
+# Frozen spec `report_per_cycle_channel` (per channel v/pf/ess); the
+# channel-scoped fields, checked against `get_admm_boyd_residual_metrics`'s
+# source and the `admm_diagnostics` dict literal in `shared_resources_planning.py`.
+S32_REPORT_PER_CYCLE_CHANNEL_FIELDS = (
+    'r', 's', 's_rho_part', 's_proximal_part', 'eps_pri', 'eps_dual',
+    'norm_x', 'norm_z', 'norm_y', 'primal_ratio', 'dual_ratio',
+)
+S32_ADMM_DIAGNOSTICS_KEYS = (
+    'boyd_v_r', 'boyd_v_s', 'boyd_v_s_rho_part', 'boyd_v_s_proximal_part',
+    'boyd_v_proximal_share', 'boyd_v_eps_pri', 'boyd_v_eps_dual',
+    'boyd_v_norm_x', 'boyd_v_norm_z', 'boyd_v_norm_y', 'boyd_v_primal_ratio',
+    'boyd_v_dual_ratio', 'boyd_v_primal_pass', 'boyd_v_dual_pass', 'boyd_v_channel_pass',
+    'boyd_pf_r', 'boyd_pf_s', 'boyd_pf_s_rho_part', 'boyd_pf_s_proximal_part',
+    'boyd_pf_eps_pri', 'boyd_pf_eps_dual', 'boyd_pf_norm_x', 'boyd_pf_norm_z',
+    'boyd_pf_norm_y', 'boyd_pf_primal_ratio', 'boyd_pf_dual_ratio', 'boyd_pf_channel_pass',
+    'boyd_ess_r', 'boyd_ess_s', 'boyd_ess_s_rho_part', 'boyd_ess_s_proximal_part',
+    'boyd_ess_eps_pri', 'boyd_ess_eps_dual', 'boyd_ess_norm_x', 'boyd_ess_norm_z',
+    'boyd_ess_norm_y', 'boyd_ess_norm_y_tso', 'boyd_ess_norm_y_dso', 'boyd_ess_norm_y_esso',
+    'boyd_ess_primal_ratio', 'boyd_ess_dual_ratio', 'boyd_ess_channel_pass',
+    'boyd_all_pass', 'boyd_stop', 'boyd_eps_abs', 'boyd_eps_rel', 'boyd_eps_source',
+    'rho_v_before', 'rho_v_after', 'rho_v_action',
+    'rho_pf_before', 'rho_pf_after', 'rho_pf_action',
+    'rho_ess_before', 'rho_ess_after', 'rho_ess_action',
+    'objective_change_ratio', 'objective_change_abs', 'objective_tolerance',
+    'gap_proxy_G', 'gap_proxy_G_reason', 'gap_proxy_Q', 'gap_proxy_G_over_Q',
+    'recourse', 'gross_operational_cost',
+)
+
+
+def _s32_spec_hash():
+    with open(S32_SPEC_PATH, 'rb') as handle:
+        return hashlib.sha256(handle.read()).hexdigest()
+
+
+def assert_s32_capture_paths(planning):
+    """Rule eleven for the s32 arm: verify, BEFORE the run, that a capture
+    path exists for every field the frozen spec's `report_per_cycle_channel`
+    and `report_terminal` require (structural: production callables/source
+    exist and carry the field), that `boyd_eps_source == 'case_file'`, that
+    the spec file's hash matches its own filename, and that every initial
+    rho is 1.0 (the case-file value -- N.RHO must NOT be applied). Zero
+    solves.
+
+    Reuses `assert_s31c_capture_paths` (still required: the s32 hook also
+    calls `write_component_levels_terminal` and
+    `write_interface_settlement_detail_s31c`, which cover `report_terminal`'s
+    "D rows", "cancellation residual", "per-DSO settlement and flexibility
+    volumes" and "network failures by tier" fields) and adds the new Boyd
+    checks.
+    """
+    checklist = dict(assert_s31c_capture_paths(planning))
+
+    # -- spec file identity ---------------------------------------------
+    observed_hash = _s32_spec_hash()
+    checklist['spec_file_hash_matches'] = (observed_hash == S32_SPEC_SHA256)
+    checklist['spec_file_hash_observed'] = observed_hash
+
+    # -- boyd tolerance source and value ----------------------------------
+    admm_params = planning.params.admm
+    checklist['boyd_eps_source_is_case_file'] = (admm_params.boyd_eps_source == 'case_file')
+    checklist['boyd_tol_present'] = (
+        'boyd' in admm_params.tol
+        and 'eps_abs' in admm_params.tol['boyd']
+        and 'eps_rel' in admm_params.tol['boyd']
+    )
+
+    # -- initial rho: case-file value (1.0); N.RHO must NOT be applied ----
+    rho_all_one = all(
+        float(v) == 1.0
+        for group in ('v', 'pf', 'ess')
+        for v in admm_params.rho[group].values()
+    )
+    checklist['initial_rho_all_one'] = rho_all_one
+    checklist['initial_rho_snapshot'] = {
+        group: dict(admm_params.rho[group]) for group in ('v', 'pf', 'ess')
+    }
+
+    # -- per-cycle-channel capture: the production function and the balancing
+    #    function's new signature exist, and their source literally carries
+    #    every field the frozen spec's report_per_cycle_channel requires ----
+    checklist['srp_get_admm_boyd_residual_metrics'] = callable(
+        getattr(srp, 'get_admm_boyd_residual_metrics', None))
+    checklist['srp_update_admm_penalties_accepts_boyd_metrics'] = (
+        'boyd_metrics' in inspect.signature(srp._update_admm_penalties).parameters)
+
+    boyd_fn_source = inspect.getsource(srp.get_admm_boyd_residual_metrics)
+    for field in S32_REPORT_PER_CYCLE_CHANNEL_FIELDS:
+        checklist[f'boyd_field_{field}_in_source'] = (f"'{field}':" in boyd_fn_source)
+
+    module_source = inspect.getsource(srp)
+    for key in S32_ADMM_DIAGNOSTICS_KEYS:
+        checklist[f'admm_diagnostics_key_{key}_present'] = (f"'{key}':" in module_source)
+
+    # -- report_terminal fields not already covered by assert_s31c_capture_paths
+    checklist['s31c_g_baseline_reference_exists'] = os.path.exists(S32_S31C_G_PATH)
+
+    missing = [name for name, ok in checklist.items()
+               if isinstance(ok, bool) and not ok]
+    if missing:
+        raise RuntimeError(f'S32 capture-path pre-flight FAILED, missing/broken: {missing}')
+    return checklist
+
+
+def _s32_rho_trajectory(rows):
+    trajectory = {'v': [], 'pf': [], 'ess': []}
+    for row in rows:
+        for group in ('v', 'pf', 'ess'):
+            trajectory[group].append({
+                'cycle': row.get('cycle'),
+                'rho_before': row.get(f'rho_{group}_before'),
+                'rho_after': row.get(f'rho_{group}_after'),
+                'action': row.get(f'rho_{group}_action'),
+            })
+    return trajectory
+
+
+def _s32_binding_test(last_row):
+    binding = {}
+    for group in ('v', 'pf', 'ess'):
+        binding[group] = {
+            'r': last_row.get(f'boyd_{group}_r'),
+            's': last_row.get(f'boyd_{group}_s'),
+            'eps_pri': last_row.get(f'boyd_{group}_eps_pri'),
+            'eps_dual': last_row.get(f'boyd_{group}_eps_dual'),
+            'primal_ratio': last_row.get(f'boyd_{group}_primal_ratio'),
+            'dual_ratio': last_row.get(f'boyd_{group}_dual_ratio'),
+            'primal_pass': last_row.get(f'boyd_{group}_primal_pass'),
+            'dual_pass': last_row.get(f'boyd_{group}_dual_pass'),
+            'channel_pass': last_row.get(f'boyd_{group}_channel_pass'),
+        }
+    return binding
+
+
+def _s32_system_cost_vs_s31c(rows, report):
+    """System cost (recourse) vs the s31c reference trajectory, at matched
+    cycles and at the terminal point, WITH each run's own terminal step
+    (rule ten: the per-cycle objective change at termination bounds only
+    stopping slack, not path divergence -- CLAUDE.md evidence rule). s31c
+    (cap 90) did not settle; the bar is reported, not asserted as valid."""
+    if not os.path.exists(S32_S31C_G_PATH):
+        return {'available': False, 'reason': f's31c reference not found at {S32_S31C_G_PATH}'}
+
+    with open(S32_S31C_G_PATH) as handle:
+        s31c_report = json.load(handle)
+    s31c_rows = s31c_report.get('cycle_trajectory', [])
+    s31c_by_cycle = {r['cycle']: r for r in s31c_rows if r.get('cycle') is not None}
+    s32_by_cycle = {r['cycle']: r for r in rows if r.get('cycle') is not None}
+
+    matched_cycles = sorted(set(s31c_by_cycle) & set(s32_by_cycle))
+    matched = []
+    for cycle in matched_cycles:
+        s32_r = s32_by_cycle[cycle].get('recourse')
+        s31c_r = s31c_by_cycle[cycle].get('recourse')
+        matched.append({
+            'cycle': cycle,
+            's32_recourse': s32_r,
+            's31c_recourse': s31c_r,
+            'difference': (s32_r - s31c_r) if (s32_r is not None and s31c_r is not None) else None,
+        })
+
+    s32_last = rows[-1] if rows else {}
+    s31c_last = s31c_rows[-1] if s31c_rows else {}
+    s32_terminal_step = s32_last.get('objective_change_abs')
+    s31c_terminal_step = s31c_last.get('objective_change_abs')
+    terminal_difference = (
+        (s32_last.get('recourse') - s31c_last.get('recourse'))
+        if (s32_last.get('recourse') is not None and s31c_last.get('recourse') is not None)
+        else None
+    )
+    error_bar = (
+        (abs(s32_terminal_step) + abs(s31c_terminal_step))
+        if (s32_terminal_step is not None and s31c_terminal_step is not None) else None
+    )
+
+    return {
+        'available': True,
+        's31c_reference_path': os.path.relpath(S32_S31C_G_PATH, REPO),
+        'matched_cycles': matched,
+        'terminal': {
+            's32_cycle': s32_last.get('cycle'),
+            's31c_cycle': s31c_last.get('cycle'),
+            's32_recourse': s32_last.get('recourse'),
+            's31c_recourse': s31c_last.get('recourse'),
+            'difference': terminal_difference,
+            's32_terminal_step_objective_change_abs': s32_terminal_step,
+            's31c_terminal_step_objective_change_abs': s31c_terminal_step,
+            'error_bar_sum_of_terminal_steps': error_bar,
+            'determinate_at_gt_error_bar': (
+                (abs(terminal_difference) > error_bar)
+                if (terminal_difference is not None and error_bar) else None
+            ),
+        },
+        'reading_rule': (
+            's31c (cap 90, rule-ten 1.96) was NOT converged (Addendum 13: "still '
+            'descending"), so this bar bounds stopping slack only, not path '
+            'divergence (CLAUDE.md evidence rule, 2026-09-13 refinement): a '
+            'difference smaller than error_bar_sum_of_terminal_steps is '
+            'indeterminate, not a result; a difference larger than it is only '
+            '"not explained by stopping slack", not evidence of a real limiting '
+            'difference, because s31c has not settled. Trajectories differ by '
+            'initial rho (pf 1.0 vs 300, v 1.0 vs 1.5) and by the balancing rule '
+            '(freeze clause removed), so matched-cycle differences are NOT '
+            'attributable to the stopping rule alone (frozen spec `gates.not_a_pass_criterion`).'
+        ),
+    }
+
+
+def write_boyd_terminal_s32(planning, sed, models, rows, report, out_dir, label):
+    """s32 Part 2: writes `boyd_terminal.json` -- the frozen spec's
+    `report_terminal` fields not already covered by
+    `write_interface_settlement_detail_s31c` (cancellation residual,
+    per-DSO settlement/flexibility volumes) and `write_component_levels_terminal`
+    (D rows), which this function calls FIRST, exactly as the s31c hook does.
+    Zero extra solves -- reads the SAME final `models` `run_admm_arm` built."""
+    settlement_path = write_interface_settlement_detail_s31c(
+        planning, sed, models, rows, report, out_dir, label)
+
+    last_row = rows[-1] if rows else {}
+    converged_at_cycle = report.get('converged_at_cycle')
+    stopped_by = 'boyd' if (converged_at_cycle is not None and converged_at_cycle == last_row.get('cycle')) else 'cap'
+
+    payload = {
+        'stage': 'P5.15 Step 3.2 + 3.3(a) (s32) -- Boyd stopping rule / residual balancing terminal report',
+        'authority': [
+            'PLANNER_BRIEF_2026-09-13.md Addendum 9 sections 3.2, 3.3(a)',
+            'PLANNER_BRIEF_2026-09-13.md Addendum 13',
+        ],
+        'spec_file': os.path.relpath(S32_SPEC_PATH, REPO),
+        'spec_file_sha256': S32_SPEC_SHA256,
+        'timestamp_utc': datetime.now(timezone.utc).isoformat(),
+        'label': label,
+        'cycles': len(rows),
+        'stopped_by': stopped_by,
+        'converged_at_cycle': converged_at_cycle,
+        'binding_test_per_channel': _s32_binding_test(last_row),
+        'rho_trajectory_per_channel': _s32_rho_trajectory(rows),
+        'system_cost_vs_s31c': _s32_system_cost_vs_s31c(rows, report),
+        'network_failures_summary': report.get('network_failures_summary'),
+        'component_levels_terminal_and_settlement_detail_path': settlement_path,
+        'note_D_rows_and_cancellation_residual': (
+            'D rows are in component_levels_terminal.json (written by '
+            'write_component_levels_terminal, called first by '
+            'write_interface_settlement_detail_s31c above); the cancellation '
+            'residual T_TSO + sum(T_DSO) is '
+            '"t_tso_plus_t_dso_terminal" and per-DSO settlement/flexibility '
+            'volumes are "interface_consensus_residual_per_dso" / '
+            '"flexibility_volumes_per_dso" in interface_settlement_detail_s31c.json.'
+        ),
+    }
+
+    path = os.path.join(out_dir, 'boyd_terminal.json')
+    _refuse_overwrite(path)
+    with open(path, 'w') as handle:
+        json.dump(payload, handle, indent=1, default=str)
+    print(f'[S32] boyd_terminal.json written: {path}')
+    return path
+
+
 if __name__ == '__main__':
     _acquire_exclusive_run_lock()
     gate = sys.argv[1] if len(sys.argv) > 1 else None
@@ -2053,6 +2360,50 @@ if __name__ == '__main__':
 
         run_admm_arm('baseline', OUT_S31C, k_override=None, eval_id='p515s31c_baseline',
                      post_run_hook=_s31c_hook)
+    elif gate == 's32':
+        # S32 worker task (PLANNER_BRIEF_2026-09-13.md Addendum 9 sections 3.2,
+        # 3.3(a); Addendum 13; frozen spec
+        # data/SRP1/Results/P515S32/frozen_s32_spec_v1_14a18674.json): Boyd
+        # stopping rule + residual balancing gate, cap 150, case-file rho in
+        # force (N.RHO NOT applied) -- own fresh root and eval id.
+        if N.REL != S32_REL:
+            raise RuntimeError(
+                f'p514_n_instrumented_cstar.REL ({N.REL}) no longer matches the '
+                f'frozen s32 objective-change (diagnostic) tolerance {S32_REL}; '
+                'the spec requires 1e-4.')
+        observed_spec_hash = _s32_spec_hash()
+        if observed_spec_hash != S32_SPEC_SHA256:
+            raise RuntimeError(
+                f'frozen s32 spec hash mismatch: file={observed_spec_hash} '
+                f'expected={S32_SPEC_SHA256}')
+        _require_fresh_output_root(OUT_S32)
+        preflight_eval_id = 'p515s32_preflight_capture_check'
+        preflight_eval_dir = os.path.join(O.WORK_DIR, preflight_eval_id)
+        if os.path.exists(preflight_eval_dir):
+            raise RuntimeError(
+                f'refusing to start: preflight eval dir already exists (network '
+                f'logs append): {preflight_eval_dir}')
+        preflight_planning = O.fresh_planning(preflight_eval_id)
+        s32_checklist = assert_s32_capture_paths(preflight_planning)
+        preflight_admm_params = preflight_planning.params.admm
+        del preflight_planning
+        print(f'[P5.15 S32] capture-path pre-flight passed: {s32_checklist}')
+        print(
+            '[P5.15 S32] cap=150, objective rel=1e-4 (diagnostic), adaptive on, '
+            f'case-file rho in force (N.RHO NOT applied): '
+            f'v={preflight_admm_params.rho["v"]}, pf={preflight_admm_params.rho["pf"]}, '
+            f'ess={preflight_admm_params.rho["ess"]}; '
+            f'boyd eps_source={preflight_admm_params.boyd_eps_source}, '
+            f'eps_abs={preflight_admm_params.tol["boyd"]["eps_abs"]:.1e}, '
+            f'eps_rel={preflight_admm_params.tol["boyd"]["eps_rel"]:.1e}'
+        )
+
+        def _s32_hook(planning, sed, models, rows, report, out_dir, label):
+            write_boyd_terminal_s32(planning, sed, models, rows, report, out_dir, label)
+
+        run_admm_arm('baseline', OUT_S32, k_override=None, eval_id='p515s32_baseline',
+                     num_max_iters_override=S32_CAP, apply_rho=False,
+                     full_diagnostics_in_rows=True, post_run_hook=_s32_hook)
     else:
         print(__doc__)
         sys.exit(1)
