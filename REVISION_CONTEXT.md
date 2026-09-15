@@ -27,6 +27,26 @@ which is retained unedited as a historical record. Authority: `PLANNER_BRIEF_202
 Addenda 1–6. Stage reports: `P5_15_G1_REPORT.md`, `P5_15_G2_REPORT.md`, `P5_15_G3F_REPORT.md`,
 `P5_15_G4_REPORT.md`, `P5_15_G5_REPORT.md`, and the four expert handoffs `P5_15_EXPERT_HANDOFF*.md`.
 
+
+## Amendment — 2026-09-15: Step 1 closed (Addenda 7–8). Supersedes conflicting statements below.
+
+Authority: `PLANNER_BRIEF_2026-09-13.md` Addenda 7–8. Report: `P5_15_STEP1_CLOSING_REPORT.md`.
+
+- **Production baseline now:** `EPS_ESSO_THROUGHPUT = 1e-5` (was 1e-3); ESSO `tol = 1e-10`, `acceptable_tol = 1e-9`
+  (was 1e-8 / 1e-7); explicit `recovery.enabled` (default true, all networks and the ESSO, `case33_1` included) with a
+  tier-2 retry (cold + adaptive μ); the dead `limited-memory` entries removed. Statements below that give ε = 1e-3 or
+  ESSO tol = 1e-8 describe the superseded baseline.
+- **H-ε supported (ablation C, frozen criteria):** at ε = 1e-3 the throughput regularization priced storage cycling at
+  the ADMM fixed point, cutting year-1 EFC/day 1.112 → 0.972. **Attribution of G1's change:** cycling → ε; recourse →
+  mostly Candidate 4 (ablation A, ≈90 %); Candidate 1 → neither (ablation B).
+- **New baseline G1 re-run:** 71 cycles, zero local failures, 22 network failures all recovered on tier 1, year-1
+  EFC/day 1.103, SoH 0.840 → 0.731 → 0.627, recourse 817,520,272.93 (within the bar of the old G1), terminal
+  `lg(mu)` −11.0, spurious throughput 0.0029 %. **G3-full re-run:** 80 cycles, zero local failures; tier 2 not needed.
+- **Resolved hazards:** recovery eligibility no longer depends on configuration contents (G2 converges with node 5
+  eligible, 71 cycles); the failure-parser "empty rows" were the snapshot inventory, now written separately.
+- **Open for Step 3:** tier 2 inside a campaign; determinism of the new baseline; G2 at ε = 1e-5; the detector reading
+  0.57–0.94 of its idle prediction at `lg(mu)` = −11.0; every result at ε = 1e-3 or earlier is superseded as a baseline.
+
 ## Withdrawn
 
 - **The `C*` feasibility-boundary claim** (P5.14-L/N) is withdrawn. The pre-reformulation infeasibility
