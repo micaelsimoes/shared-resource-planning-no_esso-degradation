@@ -64,7 +64,14 @@ PENALTY_ESSO_SLACK = 1e3
 # P5.15-1 (PLANNER_BRIEF_2026-09-13.md Step 1 item 3): throughput regularization
 # added to the ESSO's feasibility_penalty, replacing the retired complementarity
 # constraint (EPS_ESSO_THROUGHPUT * sum(pch + pdch) over active cohort-periods).
-EPS_ESSO_THROUGHPUT = 1e-3
+# P5.15 Addendum 8 (PLANNER_BRIEF_2026-09-13.md), ablation C, frozen spec
+# data/SRP1/Results/P515A/frozen_ablation_c_spec_v1_410f8262.json: at 1e-3 this
+# regularization acted as a PRICE on storage cycling at the ADMM fixed point (the
+# consensus dual carried it to the networks), cutting year-1 EFC/day from 1.112 to 0.972.
+# At 1e-5 EFC/day returned to within 2% of 1.112 on every node. Paired with ESSO
+# tol = 1e-10 (shared_energy_storage_data.ESSO_TOL_OVERRIDES) to keep the barrier leak
+# mu/(s_obj*eps) small. Previous value: 1e-3.
+EPS_ESSO_THROUGHPUT = 1e-5
 PENALTY_SCENARIO_DEVIATION = 9e4
 PENALTY_SHARED_ESS_SCENARIO_DEVIATION = 1e4
 PENALTY_REGULARIZATION = 1e4

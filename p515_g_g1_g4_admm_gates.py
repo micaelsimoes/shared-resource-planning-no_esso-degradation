@@ -90,6 +90,11 @@ os.makedirs(OUT, exist_ok=True)
 # Addendum 6 item 2: the g1 CLI gate's OWN fresh output root -- never shared with OUT,
 # which holds residue from earlier, killed campaigns (see .p515_g_gate.lock).
 OUT_G1 = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515G1')
+# P5.15 Addendum 8: re-runs under the new production baseline (EPS_ESSO_THROUGHPUT = 1e-5,
+# ESSO tol 1e-10 / acceptable_tol 1e-9, explicit recovery policy with tier 2, limited-memory
+# entries removed). These arms apply NO overrides: every value comes from production.
+OUT_G1B = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515G1B')
+OUT_G3F_B = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515G3F_B')
 
 # G2PREP Fix 2: every remaining arm gets its OWN fresh output root too, for the same
 # reason g1 does (OUT/P515G is shared residue from earlier campaigns and multiple
@@ -1500,6 +1505,29 @@ if __name__ == '__main__':
         print('[P5.15 G2 re-run] k=10000; recovery policy: all networks and ESSO enabled '
               '(case33_1 included), tier 2 on; ESSO slack values captured')
         run_admm_arm('k10000_r', OUT_G2R, k_override=10000.0, eval_id=G2R_EVAL_ID)
+    elif gate == 'g1b':
+        _require_fresh_output_root(OUT_G1B)
+        print('[P5.15 G1 re-run, new baseline] production defaults: '
+              f'EPS_ESSO_THROUGHPUT={SED.EPS_ESSO_THROUGHPUT:g}, ESSO overrides={SED.ESSO_TOL_OVERRIDES}; '
+              'recovery policy production default (all enabled, tier 2 on)')
+        run_admm_arm('baseline', OUT_G1B, k_override=None, eval_id='p515g1b_baseline')
+    elif gate == 'g3_full_b':
+        _require_fresh_output_root(OUT_G3F_B)
+        probe_eval_id_b = 'p515g3fb_probe'
+        if os.path.exists(os.path.join(O.WORK_DIR, probe_eval_id_b)):
+            raise RuntimeError(f'refusing to start: probe eval dir already exists: {probe_eval_id_b}')
+        probe_b = O.fresh_planning(probe_eval_id_b)
+        active_nodes_b = list(probe_b.shared_ess_data.active_distribution_network_nodes)
+        del probe_b
+        investment_map_b = {nid: (0.0, 0.0) for nid in active_nodes_b}
+        if 7 not in investment_map_b:
+            raise RuntimeError(f'node 7 not in active_distribution_network_nodes={active_nodes_b}')
+        investment_map_b[7] = (1.62, 3.24)
+        print('[P5.15 G3-full re-run, new baseline] production defaults: '
+              f'EPS_ESSO_THROUGHPUT={SED.EPS_ESSO_THROUGHPUT:g}, ESSO overrides={SED.ESSO_TOL_OVERRIDES}; '
+              'recovery default (tier 2 on); node 7 at 1.62 MVA / 3.24 MWh, others zero')
+        run_admm_arm('g3_full_node7_b', OUT_G3F_B, k_override=None, investment_map=investment_map_b,
+                     eval_id='p515g3fb_node7')
     elif gate == 'g1':
         _require_fresh_output_root(OUT_G1)
         run_admm_arm('control', OUT_G1, k_override=None, eval_id='p515g1_control')

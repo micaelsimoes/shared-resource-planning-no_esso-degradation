@@ -469,7 +469,7 @@ def _build_subproblem(shared_ess_data, node_id):
     # EPS_ESSO_THROUGHPUT. The leak is therefore proportional to `mu_final`,
     # which the solver's `tol` controls directly -- this is the lever remedy
     # (h) (Addendum 3 item 1) uses: `_create_solver` applies
-    # `tol = 1e-8` / `acceptable_tol = 1e-7` via `option_overrides` (not the
+    # `tol = 1e-8` / `acceptable_tol = 1e-7` (Addendum 3; tightened to 1e-10 / 1e-9 by Addendum 8) via `option_overrides` (not the
     # case file) to every ESSO solve, shrinking `mu_final` and hence the leak
     # without any change to this formulation. The identity also gives a
     # CLOSED-FORM ESTIMATE of the resulting spurious throughput over an
@@ -997,7 +997,12 @@ def _get_salvage_value_results(shared_ess_data, models):
 # production entry point for the ESSO subproblem (called from
 # `create_shared_energy_storage_model`); NOT applied to the master problem
 # (`optimize_master_problem`, an LP solve where this identity does not apply).
-ESSO_TOL_OVERRIDES = {'tol': 1e-8, 'acceptable_tol': 1e-7}
+# P5.15 Addendum 8: tightened from {'tol': 1e-8, 'acceptable_tol': 1e-7} together with
+# EPS_ESSO_THROUGHPUT 1e-3 -> 1e-5. The leak is x_small = mu_barrier/(s_obj*eps) (idle
+# periods), so lowering eps by 100x raises it 100x at fixed mu; ablation C measured 0.92%
+# spurious throughput at tol 1e-8. Two decades tighter tol lowers the terminal barrier
+# parameter accordingly (target leak ~1e-5, ~0.02% throughput).
+ESSO_TOL_OVERRIDES = {'tol': 1e-10, 'acceptable_tol': 1e-9}
 
 
 def _create_solver(model, params, from_warm_start=False, node_id=None, option_overrides=None, log_suffix=None,
