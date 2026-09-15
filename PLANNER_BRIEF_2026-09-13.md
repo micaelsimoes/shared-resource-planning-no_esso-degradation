@@ -529,6 +529,37 @@ G2 at the new baseline (needed for the R3.6 matrix later; one run, after 3.4). H
 (Track B decision closed), and the manuscript list carries: penalty table, stopping-rule
 definitions, ρ policy, σ constants, polish gap. Then Step 4 (outer method).
 
+---
+
+# Addendum 10 — Step 3.0 passed; 3.1 expert review of the penalty table (2026-09-15)
+
+3.0: bitwise deterministic at the new baseline — the Step 3 reference. Report accepted.
+
+**Semantics of category D (add to the table header):** a detector term stays in the solver
+objective (feasibility of intermediate iterates) but is **excluded from the reported Q(x)**; its
+terminal value is reported as a violation, and a nonzero value flags the solution rather than
+pricing it. Applies to every benchmark case, including uncoordinated (voltage violations
+reported separately from cost).
+
+**Expert recommendations on the author rows** (author decides):
+
+| row | recommendation | reason |
+|---|---|---|
+| 3 / D1 | **Remove** | transfer payment double-counted (DSO has no receipt term); anchor-dependent, so Q(x) inherits initialization; the consensus dual already carries the DSO's marginal cost |
+| 2 | **E**, stated in the paper | [27] convention (downward only; Q at P price) is defensible but must be declared |
+| 5 | **Identical both sides; 0** (or small identical value as **R**) | curtailed RES has zero marginal cost and is replaced by priced generation via the interface; an explicit penalty double-prices; curtailment stays a reported metric |
+| 8 | **Shared ESS 0; split the flag** so local-ESS usage is not silently zeroed | inert in SRP1; hygiene for future cases |
+| 9 | **Remove** the network complementarity penalty | hard relaxed row exists; the penalty is indefinite and redundant |
+| 12 | **D** | per the semantics above |
+| 18 | **Author's decision (2026-09-15): soft non-anticipativity retained, made defensible.** Interface P, Q: deviation of each scenario from the day-ahead schedule priced at a **stated imbalance price** (multiple of the energy price or the flexibility price), linear on `\|dev\|` or quadratic — declared; category **E**, in Q(x). Interface V: **no deviation term** (physical state, not a commitment). **Shared-ESS dispatch scenario-independent** in the network models (hard NA for the committed schedule the ESSO degrades — closes the P5.13-A discrepancy by construction). Results report realized interface deviations per scenario (max/expected, MW and % of rating) and per-scenario AC feasibility. Implement in Step 5. | replaces an arbitrary 9e4 (effective 85.7 after scaling — hard NA in disguise) with a priced, interpretable term; consistent with Option A |
+| 20 | **Accept category R** | honest label; appendix sentence with measured bias and nil price effect at 1e-5 |
+| D2, D3, D6 | **Fix with the table** | orphan slacks removed; ESSO slacks reported directly; shared-ESS day-balance slack bounded like local |
+
+**Sequence after signature:** implement signed rows + D2/D3/D6 (one commit) → one baseline
+campaign with **per-block component levels** captured at the terminal cycle (three splits per
+draft §5) → reading rule per draft §5; report whether Q(x) moved and by how much, with the bar
+→ 3.2.
+
 ## Update obligations
 
 At the end of Step 1 the Planner rewrites the "CURRENT SOURCE OF TRUTH" head of
