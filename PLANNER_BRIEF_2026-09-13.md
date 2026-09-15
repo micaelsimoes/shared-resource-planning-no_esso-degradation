@@ -439,6 +439,30 @@ configurational.
 5. **Comparators:** accept the loss and record it; do not regenerate.
 6. Order: recovery policy + cycle-38 tests → ablation A (→ B) → G2 re-run → report → stop.
 
+---
+
+# Addendum 8 — after `P5_15_EXPERT_HANDOFF_6.md` (2026-09-14)
+
+- **G2 converges with node 5 eligible** (71 cycles, zero failures): G2's earlier non-convergence
+  was the recovery-eligibility defect. Recourse indeterminate vs G1 (within the bar). Recorded.
+- **Ablation A/B read:** Candidate 4 accounts for ~90 % of the recourse change; neither
+  Candidate 4 nor Candidate 1 explains the year-1 EFC/day drop 1.112 → 0.972.
+- **Hypothesis H-ε (expert):** the ε regularization acts as a throughput *price* at the ADMM
+  fixed point — the consensus dual transmits ε to the networks, whose economic layer sits at
+  1e-3–1 after the `effective_scale` division (audit §2.7) — i.e. a cycling cost by the back
+  door. Addendum 3's displacement argument held at fixed duals only.
+- **Ablation C (authorized, one run):** G1 configuration with `EPS_ESSO_THROUGHPUT = 1e-5`.
+  Frozen criteria: year-1 EFC/day within 2 % of 1.112 **and** detector ≈ 100× G1's (identity
+  prediction ≈ 2.5e-3) ⇒ H-ε supported. Then production: ε = 1e-5 with ESSO `tol = 1e-10`,
+  `acceptable_tol = 1e-9` (leak ≈ 1e-5, ~0.02 % throughput), G1 re-run as the new baseline,
+  price effect reported in the manuscript. If C does not move EFC: record as unattributed to
+  Step 1b/ε; proceed with ε = 1e-3.
+- `limited-memory` entries: **remove now.** Tier 2: exercised by the G3-full re-run after the ε
+  decision; no dedicated run. Cycle-38 block: classified path-dependent, recovered by tier 2 —
+  closed. Parser fix: yes.
+- Order: parser fix + entries removal → ablation C → production ε/tol per outcome → G1 re-run
+  (new baseline) → G3-full re-run → report → **Step 1 closes; Step 3 begins.**
+
 ## Update obligations
 
 At the end of Step 1 the Planner rewrites the "CURRENT SOURCE OF TRUTH" head of
