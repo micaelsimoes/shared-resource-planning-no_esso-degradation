@@ -402,9 +402,17 @@ def q_bounds(m, e, s_m, s_o, p, network):
     return (-ess.s - EQUALITY_TOLERANCE, ess.s + EQUALITY_TOLERANCE)
 
 
+# P5.15 Step 3 (D6, signed table `P5_15_S31_PENALTY_TABLE_DRAFT.md`): the
+# local-ESS day-balance slack is bounded to this fraction of the (fixed)
+# energy capacity; the shared-ESS one is now bounded the same way (see
+# `configure_shared_ess_operational_state`), tracking the CURRENT candidate
+# capacity rather than a build-time snapshot.
+ESS_DAY_BALANCE_SLACK_FRACTION = 0.05
+
+
 def slack_es_balance_bounds(m, e, s_m, s_o, network):
     ess = network.energy_storages[e]
-    return (0.00, ess.e * 0.05 + EQUALITY_TOLERANCE)
+    return (0.00, ess.e * ESS_DAY_BALANCE_SLACK_FRACTION + EQUALITY_TOLERANCE)
 
 
 def soc_initialize(m, e, s_m, s_o, p, network):
@@ -1067,6 +1075,25 @@ def configure_shared_ess_operational_state(
                         e_capacity * ENERGY_STORAGE_RELATIVE_INIT_SOC
                     )
 
+    # P5.15 Step 3 (D6, signed table `P5_15_S31_PENALTY_TABLE_DRAFT.md`): the
+    # shared-ESS day-balance slack is bounded to the same fraction of energy
+    # capacity as the local-ESS one (`slack_es_balance_bounds`,
+    # `ESS_DAY_BALANCE_SLACK_FRACTION`). Capacity is candidate-dependent (Step
+    # 2 Candidate 2 made it a mutable Param), so a `bounds=` callable evaluated
+    # once at Var-construction time cannot track it; the bound is instead
+    # re-applied here, every time this function runs (i.e. every time the
+    # candidate capacity is set -- `shared_resources_planning.py`, every
+    # caller of `configure_shared_ess_operational_state`). Previously
+    # unbounded (D6 defect).
+    for variable_name in ('slack_shared_es_soc_final_up', 'slack_shared_es_soc_final_down'):
+        if not hasattr(model, variable_name):
+            continue
+        variable = getattr(model, variable_name)
+        slack_ub = 0.0 if inactive else e_capacity * ESS_DAY_BALANCE_SLACK_FRACTION + EQUALITY_TOLERANCE
+        for entry in _component_entries_for_shared_ess(variable, shared_ess_idx):
+            entry.setlb(0.0)
+            entry.setub(slack_ub)
+
     for constraint_name in _SHARED_ESS_OPERATIONAL_CONSTRAINTS:
         constraint = getattr(model, constraint_name)
         for entry in _component_entries_for_shared_ess(
@@ -1514,6 +1541,9 @@ def branch_flow_limit_ji_rule(model, b, s_m, s_o, p, network, params):
 def setup_cost_parameters(model, params):
 
     model.penalty_ess_usage = pe.Param(initialize=PENALTY_ESS_USAGE, mutable=True)
+    # P5.15 Step 3 (row 8): shared-ESS usage weight, split from the local-ESS
+    # one above so each can be zeroed independently by `_prepare_*`.
+    model.penalty_shared_ess_usage = pe.Param(initialize=PENALTY_ESS_USAGE, mutable=True)
     if params.obj_type == OBJ_MIN_COST:
         model.cost_load_curtailment = pe.Param(initialize=COST_CONSUMPTION_CURTAILMENT, mutable=True)
         model.penalty_gen_curtailment = pe.Param(initialize=PENALTY_GENERATION_CURTAILMENT, mutable=True)
@@ -1585,17 +1615,55 @@ def total_generation_cost_rule(model, network):
     return total_gen_cost
 
 
+def load_is_tso_adn_interface(network, load):
+    # P5.15 Step 3 (row 3 / D1, signed table `P5_15_S31_PENALTY_TABLE_DRAFT.md`):
+    # identifies the TSO's ADN-interface loads exactly as
+    # `flex_energy_balance_p_rule` does, so the two call sites cannot diverge.
+    return network.is_transmission and load.bus in network.active_distribution_network_nodes
+
+
 def flexibility_cost(model, network, s_m, s_o, params):
     flex_cost = 0.0
     if params.fl_reg:
         c_flex = network.cost_flex[s_m]
         for c in model.loads:
-            if network.loads[c].fl_reg:
+            load = network.loads[c]
+            if load.fl_reg:
+                # P5.15 Step 3 (row 3 / D1): the TSO's ADN-interface loads are
+                # excluded from this charge -- it priced movement of the
+                # interface away from a fixed build-time anchor, a double-counted
+                # transfer payment (no DSO receipt term); removed per the signed
+                # table (Addendum 10). The freeing of flex_* and the fixing of
+                # pc/qc to the consensus value (shared_resources_planning.py
+                # ~2963-2980) are unchanged.
+                if load_is_tso_adn_interface(network, load):
+                    continue
                 for p in model.periods:
                     flex_cost += c_flex[p] * network.baseMVA * (
                             model.flex_p_down[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]
                     )
     return flex_cost
+
+
+def adn_interface_flexibility_cost(model, network, s_m, s_o, params):
+    """P5.15 Step 3, row 3 / D1 -- definitional-decomposition helper only.
+
+    Value the REMOVED TSO ADN-interface flexibility charge would have had at
+    the current point, at the pre-signature weight `cost_flex`. NOT part of
+    any solver objective (`flexibility_cost` above excludes these loads);
+    used only by reporting/harness code (Part 3 of the S31 worker task).
+    """
+    cost = 0.0
+    if params.fl_reg and network.is_transmission:
+        c_flex = network.cost_flex[s_m]
+        for c in model.loads:
+            load = network.loads[c]
+            if load.fl_reg and load_is_tso_adn_interface(network, load):
+                for p in model.periods:
+                    cost += c_flex[p] * network.baseMVA * (
+                            model.flex_p_down[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]
+                    )
+    return cost
 
 
 def flex_cost_rule(model, s_m, s_o, network, params):
@@ -1648,6 +1716,24 @@ def gen_curtailment_penalty(model, network, s_m, s_o, params):
 
 def gen_curtailment_penalty_rule(model, s_m, s_o, network, params):
     return gen_curtailment_penalty(model, network, s_m, s_o, params)
+
+
+def gen_curtailment_definitional_value(model, network, s_m, s_o, params, weight):
+    """P5.15 Step 3, row 5 -- definitional-decomposition helper only.
+
+    Same physical term as `gen_curtailment_penalty` (RES curtailment,
+    `pg_avail - pg`), evaluated at an explicit `weight` instead of the model's
+    (now zeroed) `penalty_gen_curtailment` Param -- e.g. the pre-signature DSO
+    weight `PENALTY_GENERATION_CURTAILMENT`. NOT part of any solver objective;
+    used only by reporting/harness code (Part 3 of the S31 worker task).
+    """
+    total = 0.0
+    if params.rg_curt:
+        for g in model.generators:
+            if network.generators[g].is_curtaillable():
+                for p in model.periods:
+                    total += weight * network.baseMVA * (model.pg_avail[g, s_o, p] - model.pg[g, s_m, s_o, p])
+    return total
 
 
 def total_gen_curtailment_penalty_rule(model, network):
@@ -1715,7 +1801,13 @@ def ess_utilization_cost_penalty(model, network, s_m, s_o, params):
             # P5.4-A: usage penalty follows ACTIVE charge/discharge power.
             # Coefficients are unchanged; this is part of the active-energy
             # physical correction, not an objective-tuning change.
-            cost += model.penalty_ess_usage * network.baseMVA * (model.shared_es_pch[e, s_m, s_o, p] + model.shared_es_pdch[e, s_m, s_o, p])
+            # P5.15 Step 3 (row 8, signed table): the shared-ESS usage weight is
+            # now its own Param (`penalty_shared_ess_usage`), split from the
+            # local-ESS weight (`penalty_ess_usage`) so that `_prepare_*` can
+            # zero the shared term for ADMM without silently zeroing the local
+            # one too (hygiene for future cases with `es_reg` active; inert on
+            # SRP1 -- see `P5_15_S31_PENALTY_TABLE_DRAFT.md` row 8).
+            cost += model.penalty_shared_ess_usage * network.baseMVA * (model.shared_es_pch[e, s_m, s_o, p] + model.shared_es_pdch[e, s_m, s_o, p])
     if params.es_reg:
         for e in model.energy_storages:
             for p in model.periods:
@@ -1735,33 +1827,59 @@ def total_ess_utilization_cost_penalty_rule(model, network):
     return total_ess_utilization_cost_penalty
 
 
-def slack_penalties(model, network, s_m, s_o, params):
+def voltage_slack_penalty(model, network, s_m, s_o, params):
+    # P5.15 Step 3 (row 12, D-category): squared-voltage slacks. Split out of
+    # `slack_penalties` so the terminal level can be reported per D-row
+    # (`_get_operational_recourse_components`, Part 1 item 6) without
+    # duplicating the term.
+    total = 0
+    if params.slacks.grid_operation.voltage:
+        for i in model.nodes:
+            for p in model.periods:
+                total += PENALTY_VOLTAGE_SQUARED * (model.slack_v_sqr_down[i, s_m, s_o, p] + model.slack_v_sqr_up[i, s_m, s_o, p])
+    return total
 
+
+def node_balance_slack_penalty(model, network, s_m, s_o, params):
+    # P5.15 Step 3 (row 15, D-category): node-balance slacks.
     total = 0
     base = network.baseMVA
-
     for i in model.nodes:
         for p in model.periods:
-            if params.slacks.grid_operation.voltage:
-                total += PENALTY_VOLTAGE_SQUARED * (model.slack_v_sqr_down[i, s_m, s_o, p] + model.slack_v_sqr_up[i, s_m, s_o, p])
             if params.slacks.node_balance.active_power:
                 total += base * PENALTY_NODE_BALANCE * (model.slack_node_balance_p_up[i, s_m, s_o, p] + model.slack_node_balance_p_down[i, s_m, s_o, p])
             if params.slacks.node_balance.reactive_power:
                 total += base * PENALTY_NODE_BALANCE * (model.slack_node_balance_q_up[i, s_m, s_o, p] + model.slack_node_balance_q_down[i, s_m, s_o, p])
+    return total
 
-    for b in model.branches:
-        for p in model.periods:
-            if params.slacks.grid_operation.branch_flow:
-                total += base * PENALTY_CURRENT * (model.slack_flow_ij_sqr[b, s_m, s_o, p])
 
+def branch_flow_slack_penalty(model, network, s_m, s_o, params):
+    # P5.15 Step 3 (row 16, D-category): branch-flow slacks.
+    total = 0
+    base = network.baseMVA
     if params.slacks.grid_operation.branch_flow:
+        for b in model.branches:
+            for p in model.periods:
+                total += base * PENALTY_CURRENT * (model.slack_flow_ij_sqr[b, s_m, s_o, p])
         for b in model.apparent_power_limited_branches:
             for p in model.periods:
                 total += base * PENALTY_CURRENT * model.slack_flow_ji_sqr[b, s_m, s_o, p]
+    return total
 
+
+def flexibility_p_day_balance_slack_penalty(model, network, s_m, s_o, params):
+    # P5.15 Step 3 (row 13, D-category): flexibility P day-balance slack, of
+    # network-INTERNAL fl_reg loads only. The TSO's ADN-interface loads are
+    # excluded here (row 14 / D2): their P day-balance constraint is skipped
+    # (`flex_energy_balance_p_rule`), so the slack would be orphaned (penalized
+    # with no governing constraint); those variables are fixed to 0 at
+    # creation (`network.py`) instead of being penalized.
+    total = 0
+    base = network.baseMVA
     if params.fl_reg and params.slacks.flexibility.day_balance:
         for c in model.loads:
-            if network.loads[c].fl_reg:
+            load = network.loads[c]
+            if load.fl_reg and not load_is_tso_adn_interface(network, load):
                 # P5.15-1b Candidate 4: this branch is now reachable in
                 # production (day_balance defaults True). `slack_flex_*[c, s_m,
                 # s_o]` are scalar VarData (no period index); `sum(...)` on a
@@ -1769,37 +1887,87 @@ def slack_penalties(model, network, s_m, s_o, params):
                 # time. Fixed to plain addition (P5.15-2 audit, "considered
                 # and not shortlisted" table, latent-bug entry).
                 total += base * PENALTY_FLEXIBILITY * (model.slack_flex_p_balance_up[c, s_m, s_o] + model.slack_flex_p_balance_down[c, s_m, s_o])
-                total += base * PENALTY_FLEXIBILITY * (model.slack_flex_q_balance_up[c, s_m, s_o] + model.slack_flex_q_balance_down[c, s_m, s_o])
-
     return total
+
+
+def slack_penalties(model, network, s_m, s_o, params):
+    # P5.15 Step 3 (row 14 / D2, signed table): the flexibility Q day-balance
+    # slack penalty is REMOVED (its constraint, `flex_energy_balance_q`, is
+    # unwired at every load -- `network.py` ~433 -- so the slack was orphaned:
+    # penalized with no governing constraint). The P day-balance slacks of the
+    # TSO's ADN-interface loads are excluded for the same reason (their P
+    # balance constraint is also skipped). Both families of orphaned variables
+    # are fixed to 0 at creation in `network.py` so they cannot float free in
+    # the NLP.
+    return (
+        voltage_slack_penalty(model, network, s_m, s_o, params)
+        + node_balance_slack_penalty(model, network, s_m, s_o, params)
+        + branch_flow_slack_penalty(model, network, s_m, s_o, params)
+        + flexibility_p_day_balance_slack_penalty(model, network, s_m, s_o, params)
+    )
 
 
 def slack_penalties_rule(model, s_m, s_o, network, params):
     return slack_penalties(model, network, s_m, s_o, params)
 
 
-def ess_complementarity_penalties(model, network, s_m, s_o, p, params):
-
+def local_ess_day_balance_slack_penalty(model, network, s_m, s_o, params):
+    # P5.15 Step 3 (row 10, D-category): local-ESS day-balance slack.
     total = 0
     base = network.baseMVA
+    if params.es_reg:
+        for e in model.energy_storages:
+            if params.slacks.ess.day_balance:
+                total += base * PENALTY_ESS_BALANCE * (model.slack_es_soc_final_up[e, s_m, s_o] + model.slack_es_soc_final_down[e, s_m, s_o])
+    return total
 
+
+def shared_ess_day_balance_slack_penalty(model, network, s_m, s_o, params):
+    # P5.15 Step 3 (row 11, D-category): shared-ESS day-balance slack.
+    total = 0
+    base = network.baseMVA
+    for e in model.shared_energy_storages:
+        if params.slacks.shared_ess.day_balance:
+            total += base * PENALTY_SHARED_ESS_BALANCE * (model.slack_shared_es_soc_final_up[e, s_m, s_o] + model.slack_shared_es_soc_final_down[e, s_m, s_o])
+    return total
+
+
+def ess_complementarity_bilinear_value(model, network, s_m, s_o, params):
+    """P5.15 Step 3, row 9 -- definitional-decomposition helper only.
+
+    Value the REMOVED bilinear `pch * pdch` complementarity penalty (local and
+    shared ESS) would have had at the current point, at the pre-signature
+    weight `PENALTY_ESS_COMPLEMENTARITY`. NOT part of any solver objective;
+    used only by reporting/harness code (Part 3 of the S31 worker task).
+    """
+    total = 0
+    base = network.baseMVA
     if params.es_reg:
         for e in model.energy_storages:
             for p in model.periods:
                 if params.ess_model == ESS_MODEL_BILINEAR_RELAXATION:
                     total += base * PENALTY_ESS_COMPLEMENTARITY * (model.es_pch[e, s_m, s_o, p] * model.es_pdch[e, s_m, s_o, p])
-            if params.slacks.ess.day_balance:
-                total += base * PENALTY_ESS_BALANCE * (model.slack_es_soc_final_up[e, s_m, s_o] + model.slack_es_soc_final_down[e, s_m, s_o])
-
     for e in model.shared_energy_storages:
         for p in model.periods:
             if params.shared_ess_model == ESS_MODEL_BILINEAR_RELAXATION:
-                # P5.4-A: complementarity penalty follows ACTIVE power; coefficient unchanged.
                 total += base * PENALTY_ESS_COMPLEMENTARITY * (model.shared_es_pch[e, s_m, s_o, p] * model.shared_es_pdch[e, s_m, s_o, p])
-        if params.slacks.shared_ess.day_balance:
-            total += base * PENALTY_SHARED_ESS_BALANCE * (model.slack_shared_es_soc_final_up[e, s_m, s_o] + model.slack_shared_es_soc_final_down[e, s_m, s_o])
-
     return total
+
+
+def ess_complementarity_penalties(model, network, s_m, s_o, p, params):
+    # P5.15 Step 3 (row 9, signed table): the bilinear `pch * pdch`
+    # complementarity penalty (local and shared ESS) is REMOVED from the
+    # objective -- the hard relaxed complementarity constraint (`ess_comp` /
+    # `sess_comp`, network.py) already enforces feasibility; the penalty was
+    # indefinite and redundant (Addendum 10). The day-balance slack terms
+    # (rows 10, 11) are KEPT, factored into the two helpers above so they can
+    # be reported separately from complementarity (Part 1 item 6 / Part 3
+    # split 1). The network's hard complementarity constraints are unchanged
+    # by this function.
+    return (
+        local_ess_day_balance_slack_penalty(model, network, s_m, s_o, params)
+        + shared_ess_day_balance_slack_penalty(model, network, s_m, s_o, params)
+    )
 
 
 def ess_complementarity_penalties_rule(model, s_m, s_o, network, params):

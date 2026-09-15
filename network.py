@@ -322,6 +322,28 @@ def _build_model(network, params):
             model.slack_flex_p_balance_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 0.01))
             model.slack_flex_q_balance_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 0.01))
             model.slack_flex_q_balance_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 0.01))
+            # P5.15 Step 3 (row 14 / D2, signed table
+            # `P5_15_S31_PENALTY_TABLE_DRAFT.md`): the Q day-balance constraint
+            # is unwired for EVERY load (`flex_energy_balance_q` is never
+            # activated below), and the TSO's ADN-interface loads have no P
+            # day-balance constraint either (`flex_energy_balance_p_rule`
+            # skips them). Both families of slacks are orphaned -- no
+            # governing constraint, and (since Step 3) no objective term
+            # (`flexibility_p_day_balance_slack_penalty`,
+            # `model_construction_helpers.py`) -- so they are fixed to 0 here
+            # rather than left to float free in the NLP. The variables are
+            # KEPT (not deleted) so results-processing code
+            # (`_process_results_detail`, ~1490-1530 below) can still read
+            # them unconditionally for every load.
+            for c in model.loads:
+                load_is_adn_interface = load_is_tso_adn_interface(network, network.loads[c])
+                for s_m in model.scenarios_market:
+                    for s_o in model.scenarios_operation:
+                        model.slack_flex_q_balance_up[c, s_m, s_o].fix(0.0)
+                        model.slack_flex_q_balance_down[c, s_m, s_o].fix(0.0)
+                        if load_is_adn_interface:
+                            model.slack_flex_p_balance_up[c, s_m, s_o].fix(0.0)
+                            model.slack_flex_p_balance_down[c, s_m, s_o].fix(0.0)
     if params.l_curt:
         model.pc_curt_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(pc_curt_down_bounds, network=network, params=params))
         model.pc_curt_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(pc_curt_up_bounds, network=network, params=params))

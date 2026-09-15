@@ -737,6 +737,67 @@ def _get_operational_recourse_value(planning_problem, models):
     return _get_operational_recourse_components(planning_problem, models)['net_operational_recourse']
 
 
+def _get_local_detector_components(model, network, params):
+    # P5.15 Step 3 (Part 1 item 6 of the S31 worker task): per-block D-row
+    # (feasibility-detector) levels, computed from the SAME helper functions
+    # the objective (`slack_penalties`, `ess_complementarity_penalties` in
+    # `model_construction_helpers.py`) is built from -- no duplicated logic.
+    # Mirrors the style of `_get_local_slack_penalty_components` above.
+    components = {
+        'voltage_slack': 0.0,               # row 12
+        'node_balance_slack': 0.0,          # row 15
+        'branch_flow_slack': 0.0,           # row 16
+        'flexibility_p_day_balance_slack': 0.0,  # row 13
+        'local_ess_day_balance_slack': 0.0,      # row 10
+        'shared_ess_day_balance_slack': 0.0,     # row 11
+    }
+    for s_m in model.scenarios_market:
+        for s_o in model.scenarios_operation:
+            probability = network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
+            components['voltage_slack'] += probability * pe.value(voltage_slack_penalty(model, network, s_m, s_o, params))
+            components['node_balance_slack'] += probability * pe.value(node_balance_slack_penalty(model, network, s_m, s_o, params))
+            components['branch_flow_slack'] += probability * pe.value(branch_flow_slack_penalty(model, network, s_m, s_o, params))
+            components['flexibility_p_day_balance_slack'] += probability * pe.value(flexibility_p_day_balance_slack_penalty(model, network, s_m, s_o, params))
+            components['local_ess_day_balance_slack'] += probability * pe.value(local_ess_day_balance_slack_penalty(model, network, s_m, s_o, params))
+            components['shared_ess_day_balance_slack'] += probability * pe.value(shared_ess_day_balance_slack_penalty(model, network, s_m, s_o, params))
+
+    components['detector_penalty_total'] = sum(
+        components[name] for name in (
+            'voltage_slack', 'node_balance_slack', 'branch_flow_slack',
+            'flexibility_p_day_balance_slack', 'local_ess_day_balance_slack',
+            'shared_ess_day_balance_slack',
+        )
+    )
+    return components
+
+
+def _get_operational_detector_component_blocks(planning_problem, models):
+    # P5.15 Step 3 (Part 1 item 6): weighted (year/day/discount, as
+    # `get_primal_value` uses -- `_get_admm_block_weight`) per-block D-row
+    # levels, TSO + every DSO.
+    blocks = {}
+
+    transmission_network = planning_problem.transmission_network
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+            network = transmission_network.network[year][day]
+            local_model = models['tso'][year][day]
+            components = _get_local_detector_components(local_model, network, transmission_network.params)
+            weight = _get_admm_block_weight(transmission_network, year, day)
+            blocks[('TSO', None, year, day)] = {name: weight * value for name, value in components.items()}
+
+    for node_id, distribution_network in planning_problem.distribution_networks.items():
+        for year in distribution_network.years:
+            for day in distribution_network.days:
+                network = distribution_network.network[year][day]
+                local_model = models['dso'][node_id][year][day]
+                components = _get_local_detector_components(local_model, network, distribution_network.params)
+                weight = _get_admm_block_weight(distribution_network, year, day)
+                blocks[('DSO', node_id, year, day)] = {name: weight * value for name, value in components.items()}
+
+    return blocks
+
+
 def _get_operational_recourse_components(planning_problem, models):
     # Operational recourse is based on the local base SMOPF objectives.
     # It excludes scenario-deviation regularization and ADMM augmentation terms, but may include artificial penalty terms and is therefore not necessarily a pure economic operating cost.
@@ -744,10 +805,29 @@ def _get_operational_recourse_components(planning_problem, models):
     for node_id, distribution_network in planning_problem.distribution_networks.items():
         gross_operational_cost += distribution_network.get_primal_value(models['dso'][node_id])
     terminal_salvage_value = planning_problem.shared_ess_data.get_salvage_value(models['esso'])
+    net_operational_recourse = gross_operational_cost - terminal_salvage_value
+
+    # P5.15 Step 3 (Part 1 item 6, signed table `P5_15_S31_PENALTY_TABLE_DRAFT.md`):
+    # D-row (feasibility-detector) reporting. These fields are ADDITIONAL --
+    # `gross_operational_cost` / `net_operational_recourse` above are UNCHANGED
+    # (the ADMM stopping test used today reads those two; changing their
+    # definition is Step 3.2's change, not this one).
+    detector_blocks = _get_operational_detector_component_blocks(planning_problem, models)
+    detector_totals = {}
+    for block_components in detector_blocks.values():
+        for name, value in block_components.items():
+            detector_totals[name] = detector_totals.get(name, 0.0) + value
+    detector_penalty_total = detector_totals.get('detector_penalty_total', 0.0)
+    voltage_slack_total = detector_totals.get('voltage_slack', 0.0)
+
     return {
         'gross_operational_cost': gross_operational_cost,
         'terminal_salvage_value': terminal_salvage_value,
-        'net_operational_recourse': gross_operational_cost - terminal_salvage_value,
+        'net_operational_recourse': net_operational_recourse,
+        'detector_penalty_total': detector_penalty_total,
+        'detector_components': detector_totals,
+        'economic_recourse_all_D_excluded': net_operational_recourse - detector_penalty_total,
+        'economic_recourse_voltage_excluded': net_operational_recourse - voltage_slack_total,
     }
 
 
@@ -3563,7 +3643,12 @@ def _shared_ess_admm_normalization_pu(rating_pu, s_base, floor_mva):
 def _prepare_transmission_objectives_for_admm(transmission_network, model):
     for year in transmission_network.years:
         for day in transmission_network.days:
-            model[year][day].penalty_ess_usage.set_value(0.00)
+            # P5.15 Step 3 (row 8, signed table): only the SHARED-ESS usage
+            # weight is zeroed for ADMM; the local-ESS weight
+            # (`penalty_ess_usage`) is left at `PENALTY_ESS_USAGE` (inert on
+            # SRP1, since `network.energy_storages` is empty on every SRP1
+            # network -- see `WORKER_REPORT_S31_IMPL.md`).
+            model[year][day].penalty_shared_ess_usage.set_value(0.00)
             model[year][day].penalty_gen_curtailment.set_value(0.00)
             if transmission_network.params.obj_type == OBJ_MIN_COST:
                 model[year][day].cost_load_curtailment.set_value(COST_CONSUMPTION_CURTAILMENT)
@@ -3715,8 +3800,17 @@ def _prepare_distribution_objectives_for_admm(distribution_networks, models):
         distribution_network = distribution_networks[node_id]
         for year in distribution_network.years:
             for day in distribution_network.days:
-                dso_model[year][day].penalty_ess_usage.set_value(0.00)
-                # dso_model[year][day].penalty_gen_curtailment.set_value(0.00)
+                # P5.15 Step 3 (row 8, signed table): only the SHARED-ESS usage
+                # weight is zeroed for ADMM; the local-ESS weight
+                # (`penalty_ess_usage`) is left at `PENALTY_ESS_USAGE` (inert on
+                # SRP1 -- see `WORKER_REPORT_S31_IMPL.md`).
+                dso_model[year][day].penalty_shared_ess_usage.set_value(0.00)
+                # P5.15 Step 3 (row 5, signed table): DSO RES curtailment
+                # penalty is now zeroed for ADMM, identical to the TSO's
+                # `penalty_gen_curtailment.set_value(0.00)` above -- curtailed
+                # RES has zero marginal cost; curtailment stays a reported
+                # metric (Addendum 10). Previously commented out (D-row audit).
+                dso_model[year][day].penalty_gen_curtailment.set_value(0.00)
                 if distribution_network.params.obj_type == OBJ_MIN_COST:
                     dso_model[year][day].cost_load_curtailment.set_value(COST_CONSUMPTION_CURTAILMENT)
                 elif distribution_network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:

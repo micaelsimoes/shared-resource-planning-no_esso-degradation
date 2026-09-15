@@ -107,7 +107,22 @@ class SharedEnergyStorageData:
         return penalty
 
     def get_feasibility_violation(self, models):
-        return self.get_feasibility_penalty(models) / PENALTY_ESSO_SLACK
+        # P5.15 Step 3 (D3, signed table `P5_15_S31_PENALTY_TABLE_DRAFT.md`):
+        # `feasibility_penalty` now also includes the row-20 throughput
+        # regularization term (`EPS_ESSO_THROUGHPUT * throughput`), so dividing
+        # it by `PENALTY_ESSO_SLACK` no longer isolates the slack violation.
+        # Report the aggregate slacks (`slack_es_pnet_up/down`) directly
+        # instead -- same name, same callers, uncontaminated value.
+        violation = 0.00
+        for node_id in self.active_distribution_network_nodes:
+            model = models[node_id]
+            for y_inv in model.years:
+                for d in model.days:
+                    for p in model.periods:
+                        violation += pe.value(
+                            model.slack_es_pnet_up[y_inv, d, p] + model.slack_es_pnet_down[y_inv, d, p]
+                        )
+        return violation
 
     def get_salvage_value(self, models):
         salvage_value = 0.00
