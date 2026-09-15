@@ -551,7 +551,7 @@ reported separately from cost).
 | 8 | **Shared ESS 0; split the flag** so local-ESS usage is not silently zeroed | inert in SRP1; hygiene for future cases |
 | 9 | **Remove** the network complementarity penalty | hard relaxed row exists; the penalty is indefinite and redundant |
 | 12 | **D** | per the semantics above |
-| 18 | **Author's decision (2026-09-15): soft non-anticipativity retained, made defensible.** Interface P, Q: deviation of each scenario from the day-ahead schedule priced at `c = α·π̄`, with `π̄` the probability-weighted market price of the representative day and `α` an author-set **imbalance premium** (default 0.25; sensitivity over α ∈ {0.1, 0.25, 0.5, 1.0}; α = 1 is "deviation at the full energy price", the author's conservative case); **linear** in `\|dev\|` (two nonnegative variables); category **E**, in Q(x). Interface V: **no deviation term** (physical state, not a commitment). **Shared-ESS dispatch scenario-independent** in the network models (hard NA for the committed schedule the ESSO degrades — closes the P5.13-A discrepancy by construction). Results report realized interface deviations per scenario (max/expected, MW and % of rating) and per-scenario AC feasibility. Implement in Step 5. | replaces an arbitrary 9e4 (effective 85.7 after scaling — hard NA in disguise) with a priced, interpretable term; consistent with Option A |
+| 18 | **Author's decision (2026-09-15): soft non-anticipativity retained, made defensible.** Interface P, Q: deviation of each scenario from the day-ahead schedule priced at `c = α·π̄`, with `π̄` the probability-weighted market price of the representative day and `α` an author-set **imbalance premium** (default 0.25; sensitivity over α ∈ {0.1, 0.25, 0.5, 1.0}; α = 1 is "deviation at the full energy price", the author's conservative case); **linear** in `\|dev\|` (two nonnegative variables); category **E**, in Q(x). **Borne by the DSO** (author, 2026-09-15): the deviation terms live in the DSO block, on its per-scenario interface P **and** Q against the committed schedule; the same `α·π̄` is used for Q (stated as an assumption). The TSO operates on the committed schedule and carries no dispersion term. Interface V: **no deviation term** (physical state, not a commitment). **Shared-ESS dispatch scenario-independent** in the network models (hard NA for the committed schedule the ESSO degrades — closes the P5.13-A discrepancy by construction). Results report realized interface deviations per scenario (max/expected, MW and % of rating) and per-scenario AC feasibility. Implement in Step 5. | replaces an arbitrary 9e4 (effective 85.7 after scaling — hard NA in disguise) with a priced, interpretable term; consistent with Option A |
 | 20 | **Accept category R** | honest label; appendix sentence with measured bias and nil price effect at 1e-5 |
 | D2, D3, D6 | **Fix with the table** | orphan slacks removed; ESSO slacks reported directly; shared-ESS day-balance slack bounded like local |
 
@@ -597,6 +597,33 @@ near zero — the objective-change test is diagnostic-only, as already specified
 
 **Order:** discriminator → row 3′ implementation (one commit, zero-solve checks, fixtures
 unpickle) → converged baseline campaign with component levels → report → 3.2.
+
+---
+
+# Addendum 12 — row 3′ made well-posed (after `P5_15_S31B_ROW3PRIME_REVIEW.md`, 2026-09-15)
+
+The Planner's objections are accepted: `−c·|Δ|` is concave and a cancelling transfer only
+shifts the dual. Two changes, one per problem:
+
+1. **Transfer = interface energy settlement at the market price (signed, linear).** DSO block:
+   `+π_t · p_int` (imports paid at the scenario's hourly wholesale price); TSO block:
+   `−π_t · p_int`. Cancels exactly at consensus; no anchor needed in the optimization (constant).
+   Price is `π_t`, **not** `c_flex` (internal activation is already priced at `c_flex`, row 2).
+   Category A-transfer. Interpreted as a dual warm start near the marginal value of interface
+   energy. `δ = p_int − a` (a = DSO uncoordinated exchange) is kept for **reporting** flexibility
+   volumes only.
+2. **Null space removed by reparametrization.** TSO interface: `p_int = pc + δ_P`,
+   `δ_P ∈ [−rating, +rating]`, one signed variable; same for `δ_Q`. Flexibility is not fixed
+   at zero. Confirmed consistent with Addendum 11.
+3. **No settlement on Q.** Reactive exchange unremunerated (stated in the paper); the DSO's
+   `flex_q_down` cost (row 2) carries it; the TSO sees it through the dual.
+
+Reporting: `Q(x)` = system cost with settlements excluded by construction; per DSO report the
+interface settlement `Σ_t π_t·p_int,t` and the flexibility volume `δ_P`, `δ_Q`.
+
+Gate unchanged from Addendum 11: converged campaign at C\*; terminal `T_TSO + T_DSO` (should
+vanish to the consensus residual); system-cost recourse; cycles, failures, rule-ten; per-block
+component levels. Then 3.2.
 
 ## Update obligations
 
