@@ -1,0 +1,330 @@
+{
+ "stage": "P5.15 s32 mapping diagnostic (bounded, no production-code changes)",
+ "authority": [
+  "Planner task: bounded diagnostic, s32 Boyd residual implementation (commits 2d765573 production, 7305a476 harness)",
+  "data/SRP1/Results/P515S32/frozen_s32_spec_v1_14a18674.json",
+  "data/SRP1/Results/P515S32/preflight/g_preflight.json (observation source)"
+ ],
+ "capture_path_checklist": {
+  "tso_total_gen_cost": true,
+  "tso_total_flex_cost": true,
+  "tso_total_load_curt_cost": true,
+  "tso_total_gen_curt_penalty": true,
+  "tso_total_ess_utilization_cost_penalty": true,
+  "tso_slack_flex_q_balance_up_present": true,
+  "mch_adn_interface_flexibility_cost": true,
+  "mch_gen_curtailment_definitional_value": true,
+  "mch_ess_complementarity_bilinear_value": true,
+  "mch_load_is_tso_adn_interface": true,
+  "srp_get_local_detector_components": true,
+  "srp_get_operational_recourse_components": true,
+  "srp_get_admm_block_weight": true,
+  "esso_get_feasibility_violation": true,
+  "tso_detector_components_evaluate": true,
+  "tso_adn_interface_flex_cost_evaluate": true,
+  "tso_interface_delta_p_present": true,
+  "tso_interface_delta_q_present": true,
+  "tso_interface_settlement_present": true,
+  "tso_interface_settlement_weight_present": true,
+  "tso_expected_interface_pf_p_will_exist_after_admm_setup": true,
+  "dso_interface_settlement_present": true,
+  "dso_interface_settlement_weight_present": true,
+  "srp_get_interface_reporting_detail": true,
+  "srp_get_operational_interface_settlement_blocks": true,
+  "srp_get_local_interface_settlement": true,
+  "spec_file_hash_matches": true,
+  "spec_file_hash_observed": "14a18674c2f2f7119781fafb72c569a3a4788b8edbfc821a9ffc2921934e7356",
+  "boyd_eps_source_is_case_file": true,
+  "boyd_tol_present": true,
+  "initial_rho_all_one": true,
+  "initial_rho_snapshot": {
+   "v": {
+    "case9": 1.0,
+    "case33_1": 1.0,
+    "case33_2": 1.0,
+    "case33_3": 1.0
+   },
+   "pf": {
+    "case9": 1.0,
+    "case33_1": 1.0,
+    "case33_2": 1.0,
+    "case33_3": 1.0
+   },
+   "ess": {
+    "case9": 1.0,
+    "case33_1": 1.0,
+    "case33_2": 1.0,
+    "case33_3": 1.0,
+    "esso": 1.0
+   }
+  },
+  "srp_get_admm_boyd_residual_metrics": true,
+  "srp_update_admm_penalties_accepts_boyd_metrics": true,
+  "boyd_field_r_in_source": true,
+  "boyd_field_s_in_source": true,
+  "boyd_field_s_rho_part_in_source": true,
+  "boyd_field_s_proximal_part_in_source": true,
+  "boyd_field_eps_pri_in_source": true,
+  "boyd_field_eps_dual_in_source": true,
+  "boyd_field_norm_x_in_source": true,
+  "boyd_field_norm_z_in_source": true,
+  "boyd_field_norm_y_in_source": true,
+  "boyd_field_primal_ratio_in_source": true,
+  "boyd_field_dual_ratio_in_source": true,
+  "admm_diagnostics_key_boyd_v_r_present": true,
+  "admm_diagnostics_key_boyd_v_s_present": true,
+  "admm_diagnostics_key_boyd_v_s_rho_part_present": true,
+  "admm_diagnostics_key_boyd_v_s_proximal_part_present": true,
+  "admm_diagnostics_key_boyd_v_proximal_share_present": true,
+  "admm_diagnostics_key_boyd_v_eps_pri_present": true,
+  "admm_diagnostics_key_boyd_v_eps_dual_present": true,
+  "admm_diagnostics_key_boyd_v_norm_x_present": true,
+  "admm_diagnostics_key_boyd_v_norm_z_present": true,
+  "admm_diagnostics_key_boyd_v_norm_y_present": true,
+  "admm_diagnostics_key_boyd_v_primal_ratio_present": true,
+  "admm_diagnostics_key_boyd_v_dual_ratio_present": true,
+  "admm_diagnostics_key_boyd_v_primal_pass_present": true,
+  "admm_diagnostics_key_boyd_v_dual_pass_present": true,
+  "admm_diagnostics_key_boyd_v_channel_pass_present": true,
+  "admm_diagnostics_key_boyd_pf_r_present": true,
+  "admm_diagnostics_key_boyd_pf_s_present": true,
+  "admm_diagnostics_key_boyd_pf_s_rho_part_present": true,
+  "admm_diagnostics_key_boyd_pf_s_proximal_part_present": true,
+  "admm_diagnostics_key_boyd_pf_eps_pri_present": true,
+  "admm_diagnostics_key_boyd_pf_eps_dual_present": true,
+  "admm_diagnostics_key_boyd_pf_norm_x_present": true,
+  "admm_diagnostics_key_boyd_pf_norm_z_present": true,
+  "admm_diagnostics_key_boyd_pf_norm_y_present": true,
+  "admm_diagnostics_key_boyd_pf_primal_ratio_present": true,
+  "admm_diagnostics_key_boyd_pf_dual_ratio_present": true,
+  "admm_diagnostics_key_boyd_pf_channel_pass_present": true,
+  "admm_diagnostics_key_boyd_ess_r_present": true,
+  "admm_diagnostics_key_boyd_ess_s_present": true,
+  "admm_diagnostics_key_boyd_ess_s_rho_part_present": true,
+  "admm_diagnostics_key_boyd_ess_s_proximal_part_present": true,
+  "admm_diagnostics_key_boyd_ess_eps_pri_present": true,
+  "admm_diagnostics_key_boyd_ess_eps_dual_present": true,
+  "admm_diagnostics_key_boyd_ess_norm_x_present": true,
+  "admm_diagnostics_key_boyd_ess_norm_z_present": true,
+  "admm_diagnostics_key_boyd_ess_norm_y_present": true,
+  "admm_diagnostics_key_boyd_ess_norm_y_tso_present": true,
+  "admm_diagnostics_key_boyd_ess_norm_y_dso_present": true,
+  "admm_diagnostics_key_boyd_ess_norm_y_esso_present": true,
+  "admm_diagnostics_key_boyd_ess_primal_ratio_present": true,
+  "admm_diagnostics_key_boyd_ess_dual_ratio_present": true,
+  "admm_diagnostics_key_boyd_ess_channel_pass_present": true,
+  "admm_diagnostics_key_boyd_all_pass_present": true,
+  "admm_diagnostics_key_boyd_stop_present": true,
+  "admm_diagnostics_key_boyd_eps_abs_present": true,
+  "admm_diagnostics_key_boyd_eps_rel_present": true,
+  "admm_diagnostics_key_boyd_eps_source_present": true,
+  "admm_diagnostics_key_rho_v_before_present": true,
+  "admm_diagnostics_key_rho_v_after_present": true,
+  "admm_diagnostics_key_rho_v_action_present": true,
+  "admm_diagnostics_key_rho_pf_before_present": true,
+  "admm_diagnostics_key_rho_pf_after_present": true,
+  "admm_diagnostics_key_rho_pf_action_present": true,
+  "admm_diagnostics_key_rho_ess_before_present": true,
+  "admm_diagnostics_key_rho_ess_after_present": true,
+  "admm_diagnostics_key_rho_ess_action_present": true,
+  "admm_diagnostics_key_objective_change_ratio_present": true,
+  "admm_diagnostics_key_objective_change_abs_present": true,
+  "admm_diagnostics_key_objective_tolerance_present": true,
+  "admm_diagnostics_key_gap_proxy_G_present": true,
+  "admm_diagnostics_key_gap_proxy_G_reason_present": true,
+  "admm_diagnostics_key_gap_proxy_Q_present": true,
+  "admm_diagnostics_key_gap_proxy_G_over_Q_present": true,
+  "admm_diagnostics_key_recourse_present": true,
+  "admm_diagnostics_key_gross_operational_cost_present": true,
+  "s31c_g_baseline_reference_exists": true
+ },
+ "call_log_order": [
+  {
+   "index": 0,
+   "tag": "pre_admm_init",
+   "update_tn": true,
+   "update_dns": true
+  },
+  {
+   "index": 1,
+   "tag": "cycle1_dso",
+   "update_tn": false,
+   "update_dns": true
+  },
+  {
+   "index": 2,
+   "tag": "cycle1_tso",
+   "update_tn": true,
+   "update_dns": false
+  },
+  {
+   "index": 3,
+   "tag": "cycle1_esso",
+   "update_tn": false,
+   "update_dns": false
+  }
+ ],
+ "update_and_check_convergence_call_order": [
+  {
+   "index": 0,
+   "update_flags": {
+    "update_tn": false,
+    "update_dns": true,
+    "update_sess": false
+   }
+  },
+  {
+   "index": 1,
+   "update_flags": {
+    "update_tn": true,
+    "update_dns": false,
+    "update_sess": false
+   }
+  },
+  {
+   "index": 2,
+   "update_flags": {
+    "update_tn": false,
+    "update_dns": false,
+    "update_sess": true
+   }
+  }
+ ],
+ "solve_profile_observed": {
+  "permitted_solve": 102,
+  "permitted_exec": 102,
+  "blocked_solve": 0,
+  "blocked_exec": 0
+ },
+ "solve_profile_expected_permitted_solve": 102,
+ "channel_report": {
+  "v": {
+   "n_entries": 864,
+   "norm_lambda0": 0.0,
+   "max_abs_lambda0": 0.0,
+   "norm_delta_lambda_preinit": 31.319064604548917,
+   "norm_r0_raw": 31.319064604548917,
+   "norm_delta_lambda_cycle1": 34.90238457664326,
+   "norm_r1_raw": 34.90238457664326,
+   "norm_lambda_boyd_time": 12.936073541917667,
+   "norm_lambda_after_preinit_plus_cycle1": 12.936073541917667,
+   "rho_at_preinit": 1.0,
+   "rho_at_cycle1": 1.0,
+   "max_abs_diff__x_boyd_time_vs_lambda_update_time": 0.0,
+   "max_abs_diff__z_boyd_time_vs_lambda_update_time": 0.0,
+   "max_abs_diff__lambda_boyd_time_vs_lambda_update_time": 0.0,
+   "dso_only_call_leaves_lambda_unchanged_max_abs_diff": 0.0,
+   "esso_only_call_leaves_x_unchanged_max_abs_diff": 0.0,
+   "esso_only_call_leaves_z_unchanged_max_abs_diff": 0.0,
+   "entrywise_identity_max_abs_diff__delta_lambda_cycle1_vs_rho_times_r1": 0.0,
+   "entrywise_identity_max_abs_diff__delta_lambda_preinit_vs_rho_times_r0": 0.0,
+   "identity_max_abs_diff__y_boyd_vs_lambda0_plus_two_deltas": 0.0
+  },
+  "pf_p": {
+   "n_entries": 864,
+   "norm_lambda0": 0.0,
+   "max_abs_lambda0": 0.0,
+   "norm_delta_lambda_preinit": 488.2667976934877,
+   "norm_r0_raw": 815.6191886064192,
+   "norm_delta_lambda_cycle1": 304.5401669946522,
+   "norm_r1_raw": 474.14304115428513,
+   "norm_lambda_boyd_time": 385.81872202019963,
+   "norm_lambda_after_preinit_plus_cycle1": 385.81872202019963,
+   "rho_at_preinit": 1.0,
+   "rho_at_cycle1": 1.0,
+   "max_abs_diff__x_boyd_time_vs_lambda_update_time": 0.0,
+   "max_abs_diff__z_boyd_time_vs_lambda_update_time": 0.0,
+   "max_abs_diff__lambda_boyd_time_vs_lambda_update_time": 0.0,
+   "dso_only_call_leaves_lambda_unchanged_max_abs_diff": 0.0,
+   "esso_only_call_leaves_x_unchanged_max_abs_diff": 0.0,
+   "esso_only_call_leaves_z_unchanged_max_abs_diff": 0.0,
+   "entrywise_identity_max_abs_diff__delta_lambda_cycle1_vs_rho_times_r1": 3.552713678800501e-15,
+   "entrywise_identity_max_abs_diff__delta_lambda_preinit_vs_rho_times_r0": 3.552713678800501e-15,
+   "identity_max_abs_diff__y_boyd_vs_lambda0_plus_two_deltas": 0.0
+  },
+  "pf_q": {
+   "n_entries": 864,
+   "norm_lambda0": 0.0,
+   "max_abs_lambda0": 0.0,
+   "norm_delta_lambda_preinit": 474.53334556342907,
+   "norm_r0_raw": 733.4642579697878,
+   "norm_delta_lambda_cycle1": 199.51181013929042,
+   "norm_r1_raw": 255.7612925298618,
+   "norm_lambda_boyd_time": 327.1544513261252,
+   "norm_lambda_after_preinit_plus_cycle1": 327.1544513261252,
+   "rho_at_preinit": 1.0,
+   "rho_at_cycle1": 1.0,
+   "max_abs_diff__x_boyd_time_vs_lambda_update_time": 0.0,
+   "max_abs_diff__z_boyd_time_vs_lambda_update_time": 0.0,
+   "max_abs_diff__lambda_boyd_time_vs_lambda_update_time": 0.0,
+   "dso_only_call_leaves_lambda_unchanged_max_abs_diff": 0.0,
+   "esso_only_call_leaves_x_unchanged_max_abs_diff": 0.0,
+   "esso_only_call_leaves_z_unchanged_max_abs_diff": 0.0,
+   "entrywise_identity_max_abs_diff__delta_lambda_cycle1_vs_rho_times_r1": 3.552713678800501e-15,
+   "entrywise_identity_max_abs_diff__delta_lambda_preinit_vs_rho_times_r0": 3.552713678800501e-15,
+   "identity_max_abs_diff__y_boyd_vs_lambda0_plus_two_deltas": 0.0
+  }
+ },
+ "official_boyd_result_cycle1": {
+  "v": {
+   "r": 0.10116633210621236,
+   "s": 0.053027160802523655,
+   "s_rho_part": 0.03749586499053396,
+   "s_proximal_part": 0.03749586499053396,
+   "proximal_share": 0.7071067811865474,
+   "norm_x": 29.28933610910866,
+   "norm_z": 29.34280533267508,
+   "norm_y": 0.03749586533889183
+  },
+  "pf": {
+   "r": 3.6407372288890447,
+   "s": 7.127406410524604,
+   "s_rho_part": 5.039837405154417,
+   "s_proximal_part": 5.039837405154417,
+   "proximal_share": 0.7071067811865475,
+   "norm_x": 10.167607013464593,
+   "norm_z": 8.64625238350076,
+   "norm_y": 5.058518768214646
+  },
+  "ess": {
+   "r": 0.0052877172482701,
+   "s": 0.005875285332869096,
+   "s_rho_part": 0.0018403688080641093,
+   "s_proximal_part": 0.005579607548289714,
+   "proximal_share": 0.9496743106372687,
+   "norm_x": 0.10012117293449214,
+   "norm_z": 0.09998144485893798,
+   "norm_y": 0.0052877172482701
+  }
+ },
+ "ess_dual_norms_before_first_update_and_check_convergence_call": {
+  "tso": {
+   "norm": 0.0,
+   "max_abs": 0.0
+  },
+  "dso": {
+   "norm": 0.0,
+   "max_abs": 0.0
+  },
+  "esso": {
+   "norm": 0.0,
+   "max_abs": 0.0
+  }
+ },
+ "row_cycle1_selected_fields": {
+  "boyd_v_r": 0.10116633210621236,
+  "boyd_v_s": 0.053027160802523655,
+  "boyd_v_s_rho_part": 0.03749586499053396,
+  "boyd_v_norm_y": 0.03749586533889183,
+  "boyd_pf_r": 3.6407372288890447,
+  "boyd_pf_s": 7.127406410524604,
+  "boyd_pf_s_rho_part": 5.039837405154417,
+  "boyd_pf_norm_y": 5.058518768214646,
+  "boyd_ess_r": 0.0052877172482701,
+  "boyd_ess_s": 0.005875285332869096,
+  "boyd_ess_norm_y": 0.0052877172482701,
+  "rho_v_before": 1.0,
+  "rho_pf_before": 1.0,
+  "rho_ess_before": 1.0
+ }
+}
