@@ -56,3 +56,11 @@ comparable across the reformulation boundary** — a pre-`b03c9b14` fingerprint 
 
 `convex_oracle.py` (P5.5-C) — marked historical in its own module docstring. Reviving it
 requires a modelling decision about the shared-ESS reactive limit in W-space, not a repair.
+
+## Broken by the Step 3.1 signed-table implementation (2026-09-15)
+
+| harness | cause |
+|---|---|
+| `p53b3_active_power_ess.py` | asserts `model.penalty_ess_usage` is zeroed under ADMM; row 8 split the weight into shared (zeroed) and local (kept), so the local Param is no longer zero |
+
+Not repaired, per scope discipline; its historical artifacts remain valid for the stage that produced them.

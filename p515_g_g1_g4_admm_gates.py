@@ -82,6 +82,8 @@ import p58_rescale as R  # noqa: E402
 import p59_rho as RH  # noqa: E402
 import shared_energy_storage_data as SED  # noqa: E402
 import shared_resources_planning as srp  # noqa: E402
+import model_construction_helpers as mch  # noqa: E402
+from definitions import PENALTY_FLEXIBILITY, PENALTY_GENERATION_CURTAILMENT  # noqa: E402
 from p513_solve_profile_guard import SolveProfileGuard  # noqa: E402
 
 OUT = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515G')
@@ -98,6 +100,9 @@ OUT_G3F_B = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515G3F_B')
 # P5.15 Step 3.0 (Addendum 9): the new-baseline G1 repeated, production defaults, no overrides;
 # compared bitwise with P515G1B on per-cycle recourse, residuals, SoH and detector.
 OUT_S30 = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S30')
+# P5.15 Step 3.1 (S31 worker task, Part 3): the signed-table baseline campaign, production
+# defaults, no overrides -- own fresh root, never shared with P515S30/P515G1B.
+OUT_S31 = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S31_run')
 
 # G2PREP Fix 2: every remaining arm gets its OWN fresh output root too, for the same
 # reason g1 does (OUT/P515G is shared residue from earlier campaigns and multiple
@@ -1126,7 +1131,7 @@ def _construct_arm_planning(label, out_dir, report, k_override=None,
 
 
 def run_admm_arm(label, out_dir, k_override=None, investment_map=None,
-                  num_max_iters_override=None, eval_id=None):
+                  num_max_iters_override=None, eval_id=None, post_run_hook=None):
     """One full cold ADMM arm through the production path, reusing p514_n's own
     module-level constants and capture helpers verbatim. `investment_map`, if given,
     overrides the uniform S_INV/E_INV assignment for specific node_ids (others left at
@@ -1137,6 +1142,15 @@ def run_admm_arm(label, out_dir, k_override=None, investment_map=None,
     `num_max_iters_override` is a SMOKE-TEST-ONLY parameter (Addendum 6 smoke test):
     the `g1` CLI arm never passes it, so `N.CAP` (90) remains the C* control cap for the
     real campaign.
+
+    `post_run_hook`, if given, is called as
+    `post_run_hook(planning=planning, sed=sed, models=models, rows=rows, report=report,
+    out_dir=out_dir, label=label)` AFTER the ADMM run and its own captures (esso_capture,
+    diagnostics, pickle) are complete, and BEFORE this function returns -- i.e. with the
+    SAME final `models` dict (`models['tso']`, `models['dso']`, `models['esso']`) this
+    function used to build its own report, zero extra solves. S31 (Part 3, S31 worker
+    task) uses this to write `component_levels_terminal.json` without re-implementing
+    any part of `run_admm_arm`.
     """
     os.makedirs(out_dir, exist_ok=True)
 
@@ -1272,6 +1286,14 @@ def run_admm_arm(label, out_dir, k_override=None, investment_map=None,
 
     report['solve_profile'] = {'observed': dict(guard.counts),
                                'identity_holds': guard.counts['permitted_solve'] == 51 * len(rows) + 51}
+
+    if post_run_hook is not None:
+        # S31 worker task, Part 3: zero extra solves -- `models` is the SAME dict
+        # `run_operational_planning` returned above; the guard has already been
+        # uninstalled (report timing only), but nothing below calls a solver.
+        post_run_hook(planning=planning, sed=sed, models=models, rows=rows,
+                      report=report, out_dir=out_dir, label=label)
+
     path = os.path.join(out_dir, f'g_{label}.json')
     _refuse_overwrite(path)
     with open(path, 'w') as handle:
@@ -1459,6 +1481,217 @@ def _configure_ablation_b(planning):
     return planning
 
 
+# ===========================================================================
+# S31 worker task (2026-09-15) -- Part 3: per-block component levels at the
+# terminal cycle, from the returned final models, zero extra solves.
+# Authority: PLANNER_BRIEF_2026-09-13.md Addendum 10 and
+# P5_15_S31_PENALTY_TABLE_DRAFT.md section 5.
+# ===========================================================================
+
+def assert_s31_capture_paths(planning):
+    """Rule eleven: verify, BEFORE the run, that a capture path exists for every
+    quantity the S31 Part 3 schema requires. Zero solves -- attribute/callable
+    checks on the freshly-built (unsolved) TSO model of this SAME planning
+    object only (it is discarded after the check; `run_admm_arm` below builds
+    its own models through the normal production path)."""
+    transmission_network = planning.transmission_network
+    year0 = next(iter(transmission_network.years))
+    day0 = next(iter(transmission_network.days))
+    probe_model = transmission_network.network[year0][day0].build_model(transmission_network.params)
+    network = transmission_network.network[year0][day0]
+    params = transmission_network.params
+
+    checklist = {
+        'tso_total_gen_cost': hasattr(probe_model, 'total_gen_cost'),
+        'tso_total_flex_cost': hasattr(probe_model, 'total_flex_cost'),
+        'tso_total_load_curt_cost': hasattr(probe_model, 'total_load_curt_cost'),
+        'tso_total_gen_curt_penalty': hasattr(probe_model, 'total_gen_curt_penalty'),
+        'tso_total_ess_utilization_cost_penalty': hasattr(probe_model, 'total_ess_utilization_cost_penalty'),
+        'tso_slack_flex_q_balance_up_present': hasattr(probe_model, 'slack_flex_q_balance_up'),
+        'mch_adn_interface_flexibility_cost': callable(getattr(mch, 'adn_interface_flexibility_cost', None)),
+        'mch_gen_curtailment_definitional_value': callable(getattr(mch, 'gen_curtailment_definitional_value', None)),
+        'mch_ess_complementarity_bilinear_value': callable(getattr(mch, 'ess_complementarity_bilinear_value', None)),
+        'mch_load_is_tso_adn_interface': callable(getattr(mch, 'load_is_tso_adn_interface', None)),
+        'srp_get_local_detector_components': callable(getattr(srp, '_get_local_detector_components', None)),
+        'srp_get_operational_recourse_components': callable(getattr(srp, '_get_operational_recourse_components', None)),
+        'srp_get_admm_block_weight': callable(getattr(srp, '_get_admm_block_weight', None)),
+        'esso_get_feasibility_violation': callable(getattr(planning.shared_ess_data, 'get_feasibility_violation', None)),
+    }
+    # Exercise every reporting call site once, zero-solve, on the probe model's
+    # initial point, so a signature mismatch fails HERE, not after the campaign.
+    checklist['tso_detector_components_evaluate'] = isinstance(
+        srp._get_local_detector_components(probe_model, network, params), dict)
+    checklist['tso_adn_interface_flex_cost_evaluate'] = isinstance(
+        float(pe.value(mch.adn_interface_flexibility_cost(
+            probe_model, network, next(iter(probe_model.scenarios_market)),
+            next(iter(probe_model.scenarios_operation)), params))), float)
+
+    missing = [name for name, ok in checklist.items() if not ok]
+    if missing:
+        raise RuntimeError(f'S31 Part 3 capture-path pre-flight FAILED, missing/broken: {missing}')
+    return checklist
+
+
+def _s31_scenario_weighted(model, network, params, func):
+    total = 0.0
+    for s_m in model.scenarios_market:
+        for s_o in model.scenarios_operation:
+            probability = network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
+            total += probability * float(pe.value(func(model, network, s_m, s_o, params)))
+    return total
+
+
+def _s31_block_components(model, network, params):
+    """Unweighted (per-block, scenario-probability-weighted only -- the SAME
+    convention `model.total_*` Expressions and `_get_local_detector_components`
+    use) level of every S31 Part 3 component, at the terminal point. Zero
+    solves: reads existing model Expressions/Vars only; no re-derivation of
+    quantities the objective already computes."""
+
+    out = {
+        'generation_cost': float(pe.value(model.total_gen_cost)) if hasattr(model, 'total_gen_cost') else 0.0,
+        'flexibility_cost_internal': float(pe.value(model.total_flex_cost)) if hasattr(model, 'total_flex_cost') else 0.0,
+        'load_curtailment_cost': float(pe.value(model.total_load_curt_cost)) if hasattr(model, 'total_load_curt_cost') else 0.0,
+        'res_curtailment_penalty': float(pe.value(model.total_gen_curt_penalty)) if hasattr(model, 'total_gen_curt_penalty') else 0.0,
+        'ess_usage_cost': float(pe.value(model.total_ess_utilization_cost_penalty)) if hasattr(model, 'total_ess_utilization_cost_penalty') else 0.0,
+    }
+
+    # Split 2: TSO ADN-interface flexibility cost (row 3 / D1). Removed from the
+    # objective; evaluable directly (flex_p_down/flex_q_down of ADN loads are
+    # still free variables, only their PRICING was removed).
+    out['flexibility_cost_tso_adn_interface_definitional'] = _s31_scenario_weighted(
+        model, network, params, mch.adn_interface_flexibility_cost)
+
+    # D-row detector components (rows 10, 11, 12, 13, 15, 16); split 1 keeps ESS
+    # complementarity (removed) separate from local/shared day-balance (kept).
+    detector = srp._get_local_detector_components(model, network, params)
+    out['voltage_slack'] = detector['voltage_slack']                                    # row 12
+    out['node_balance_slack'] = detector['node_balance_slack']                          # row 15
+    out['branch_flow_slack'] = detector['branch_flow_slack']                            # row 16
+    out['flexibility_p_day_balance_slack'] = detector['flexibility_p_day_balance_slack']  # row 13
+    out['local_ess_day_balance_slack'] = detector['local_ess_day_balance_slack']        # row 10
+    out['shared_ess_day_balance_slack'] = detector['shared_ess_day_balance_slack']      # row 11
+    out['detector_penalty_total'] = detector['detector_penalty_total']
+
+    # Split 1 / row 9: bilinear ESS complementarity, definitional (removed from
+    # the objective; evaluable directly, pch/pdch remain free variables).
+    out['ess_complementarity_bilinear_definitional'] = _s31_scenario_weighted(
+        model, network, params, mch.ess_complementarity_bilinear_value)
+
+    # Split 3 / row 14 (D2): orphan slacks. Fixed to 0.0 at model construction
+    # (network.py) -- read directly, NOT re-derived, and expected to be exactly
+    # 0.0. If a nonzero value appears here, the fix in network.py did not take
+    # (a regression, not a measurement).
+    orphan_q_raw = 0.0
+    orphan_adn_p_raw = 0.0
+    if hasattr(model, 'slack_flex_q_balance_up'):
+        for c in model.loads:
+            is_adn = mch.load_is_tso_adn_interface(network, network.loads[c])
+            for s_m in model.scenarios_market:
+                for s_o in model.scenarios_operation:
+                    orphan_q_raw += float(pe.value(
+                        model.slack_flex_q_balance_up[c, s_m, s_o] + model.slack_flex_q_balance_down[c, s_m, s_o]))
+                    if is_adn:
+                        orphan_adn_p_raw += float(pe.value(
+                            model.slack_flex_p_balance_up[c, s_m, s_o] + model.slack_flex_p_balance_down[c, s_m, s_o]))
+    out['orphan_flex_q_day_balance_slack_raw'] = orphan_q_raw
+    out['orphan_tso_adn_flex_p_day_balance_slack_raw'] = orphan_adn_p_raw
+    # Definitional value at the pre-signature weight PENALTY_FLEXIBILITY: since
+    # the raw slacks above are fixed to 0.0, this is 0.0 BY CONSTRUCTION, not an
+    # independent measurement -- the variables cannot take any other value, so
+    # this quantity cannot be evaluated as potentially nonzero on this model.
+    out['orphan_flex_q_day_balance_penalty_at_PENALTY_FLEXIBILITY_definitional'] = orphan_q_raw * PENALTY_FLEXIBILITY
+    out['orphan_tso_adn_flex_p_day_balance_penalty_at_PENALTY_FLEXIBILITY_definitional'] = orphan_adn_p_raw * PENALTY_FLEXIBILITY
+
+    # Definitional / row 5: DSO RES curtailment at the pre-signature weight 1
+    # (PENALTY_GENERATION_CURTAILMENT). Removed from the objective (weight set
+    # to 0); evaluable directly (pg_avail, pg are still free/parametric as before).
+    out['res_curtailment_definitional_at_weight_1'] = _s31_scenario_weighted(
+        model, network, params,
+        lambda m, n, sm, so, p: mch.gen_curtailment_definitional_value(m, n, sm, so, p, PENALTY_GENERATION_CURTAILMENT))
+
+    return out
+
+
+def write_component_levels_terminal(planning, sed, models, rows, report, out_dir, label):
+    """S31 Part 3. Writes `component_levels_terminal.json` under `out_dir` from
+    the FINAL models `run_admm_arm` already built -- zero extra solves."""
+
+    transmission_network = planning.transmission_network
+    blocks = {}
+
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+            model = models['tso'][year][day]
+            network = transmission_network.network[year][day]
+            params = transmission_network.params
+            weight = srp._get_admm_block_weight(transmission_network, year, day)
+            unweighted = _s31_block_components(model, network, params)
+            weighted = {name: weight * value for name, value in unweighted.items()}
+            key = f'TSO|{year}|{day}'
+            blocks[key] = {'kind': 'TSO', 'node_id': None, 'year': str(year), 'day': str(day),
+                          'admm_block_weight': weight, 'unweighted': unweighted, 'weighted': weighted}
+
+    for node_id, distribution_network in planning.distribution_networks.items():
+        for year in distribution_network.years:
+            for day in distribution_network.days:
+                model = models['dso'][node_id][year][day]
+                network = distribution_network.network[year][day]
+                params = distribution_network.params
+                weight = srp._get_admm_block_weight(distribution_network, year, day)
+                unweighted = _s31_block_components(model, network, params)
+                weighted = {name: weight * value for name, value in unweighted.items()}
+                key = f'DSO|{node_id}|{year}|{day}'
+                blocks[key] = {'kind': 'DSO', 'node_id': node_id, 'year': str(year), 'day': str(day),
+                              'admm_block_weight': weight, 'unweighted': unweighted, 'weighted': weighted}
+
+    totals_weighted = {}
+    for block in blocks.values():
+        for name, value in block['weighted'].items():
+            totals_weighted[name] = totals_weighted.get(name, 0.0) + value
+
+    recourse_components = srp._get_operational_recourse_components(planning, models)
+    esso_feasibility_violation = planning.shared_ess_data.get_feasibility_violation(models['esso'])
+
+    payload = {
+        'stage': 'P5.15 Step 3.1 (S31) Part 3 -- per-block component levels at the terminal cycle',
+        'authority': ['PLANNER_BRIEF_2026-09-13.md Addendum 10', 'P5_15_S31_PENALTY_TABLE_DRAFT.md section 5'],
+        'timestamp_utc': datetime.now(timezone.utc).isoformat(),
+        'label': label,
+        'cycles_run': len(rows),
+        'converged_at_cycle': report.get('converged_at_cycle'),
+        'blocks': blocks,
+        'totals_weighted': totals_weighted,
+        'recourse_components': recourse_components,
+        'esso_feasibility_violation_D3': esso_feasibility_violation,
+        'weight_convention': (
+            '"unweighted" = per-block, scenario-probability-weighted only (the '
+            'same convention model.total_* Expressions and '
+            '_get_local_detector_components use). "weighted" = unweighted * '
+            '_get_admm_block_weight(network_data, year, day) (year-count * '
+            'day-count * discount annualization), the SAME weight '
+            'get_primal_value uses.'
+        ),
+        'orphan_slack_note': (
+            'orphan_flex_q_day_balance_slack_raw and '
+            'orphan_tso_adn_flex_p_day_balance_slack_raw are read directly from '
+            'variables FIXED to 0.0 by production (row 14 / D2, network.py); '
+            'they are expected to be exactly 0.0 in every block. The '
+            '_definitional penalty fields derived from them are therefore 0.0 '
+            'BY CONSTRUCTION, not an independent measurement -- these two '
+            'removed terms cannot be evaluated as potentially nonzero on this '
+            'model, because the variables they would have penalized are fixed.'
+        ),
+    }
+
+    path = os.path.join(out_dir, 'component_levels_terminal.json')
+    _refuse_overwrite(path)
+    with open(path, 'w') as handle:
+        json.dump(payload, handle, indent=1, default=str)
+    print(f'[S31 Part 3] component_levels_terminal.json written: {path}')
+    return path
+
+
 if __name__ == '__main__':
     _acquire_exclusive_run_lock()
     gate = sys.argv[1] if len(sys.argv) > 1 else None
@@ -1575,6 +1808,31 @@ if __name__ == '__main__':
         investment_map[7] = (1.62, 3.24)
         run_admm_arm('g3_full_node7', OUT_G3F, k_override=None, investment_map=investment_map,
                      eval_id='p515g3f_node7_r2')
+    elif gate == 's31':
+        # S31 worker task (PLANNER_BRIEF_2026-09-13.md Addendum 10 / Sequence
+        # after signature): the signed-table baseline campaign. Production
+        # defaults, no overrides -- own fresh root and eval id.
+        _require_fresh_output_root(OUT_S31)
+        preflight_eval_id = 'p515s31_preflight_capture_check'
+        preflight_eval_dir = os.path.join(O.WORK_DIR, preflight_eval_id)
+        if os.path.exists(preflight_eval_dir):
+            raise RuntimeError(
+                f'refusing to start: preflight eval dir already exists (network '
+                f'logs append): {preflight_eval_dir}')
+        preflight_planning = O.fresh_planning(preflight_eval_id)
+        s31_checklist = assert_s31_capture_paths(preflight_planning)
+        del preflight_planning
+        print(f'[P5.15 S31] capture-path pre-flight passed: {s31_checklist}')
+        print('[P5.15 S31] production defaults: '
+              f'EPS_ESSO_THROUGHPUT={SED.EPS_ESSO_THROUGHPUT:g}, ESSO overrides={SED.ESSO_TOL_OVERRIDES}; '
+              'recovery policy production default (all enabled, tier 2 on); '
+              'signed-table Step 3.1 penalty changes in force')
+
+        def _s31_hook(planning, sed, models, rows, report, out_dir, label):
+            write_component_levels_terminal(planning, sed, models, rows, report, out_dir, label)
+
+        run_admm_arm('baseline', OUT_S31, k_override=None, eval_id='p515s31_baseline',
+                     post_run_hook=_s31_hook)
     else:
         print(__doc__)
         sys.exit(1)
