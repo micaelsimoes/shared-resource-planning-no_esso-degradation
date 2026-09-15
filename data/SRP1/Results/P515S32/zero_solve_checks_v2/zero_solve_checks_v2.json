@@ -1,0 +1,306 @@
+{
+ "stage": "P5.15 Step 3.2 + 3.3(a) v2 (s32 worker task, balance on s_rho_part) -- zero-solve verification",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 9 sections 3.2, 3.3(a)",
+  "data/SRP1/Results/P515S32/frozen_s32_spec_v2_516bd749.json"
+ ],
+ "spec_file": "data/SRP1/Results/P515S32/frozen_s32_spec_v2_516bd749.json",
+ "spec_file_sha256": "516bd749c5eff6c5f26c0dac570d10964ca989b2c64394ac1ba5deca32356b85",
+ "pre_change_commit": "2d765573",
+ "timestamp_utc": "2026-09-15T17:15:25.785364+00:00",
+ "solve_profile_guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "checks": {
+  "balancing_unit_test": {
+   "sub_results": {
+    "increase": {
+     "action": "increased",
+     "before": 1.0,
+     "after": 1.5,
+     "pass": true
+    },
+    "decrease": {
+     "action": "decreased",
+     "before": 1.0,
+     "after": 0.6666666666666671,
+     "pass": true
+    },
+    "dead_band_held": {
+     "action": "held",
+     "before": 1.0,
+     "after": 1.0,
+     "pass": true
+    },
+    "no_freeze": {
+     "primal_ratio": 0.5,
+     "dual_ratio_balance": 0.05,
+     "both_ratios_le_1_legacy_converged": true,
+     "action": "increased",
+     "before": 1.0,
+     "after": 1.5,
+     "pass": true
+    },
+    "failure_hold": {
+     "action_v": "held after solver failure",
+     "action_pf": "held after solver failure",
+     "before": {
+      "v": 1.0,
+      "pf": 1.0,
+      "ess": 1.0
+     },
+     "after": {
+      "v": 1.0,
+      "pf": 1.0,
+      "ess": 1.0
+     },
+     "pass": true
+    },
+    "proximal_flip_v2_spec_numbers": {
+     "source": "frozen_s32_spec_v2_516bd749.json change_from_v1.why (preflight commit 7305a476, cycle 1, rho=gamma=1)",
+     "v_dual_ratio_full": 178.13,
+     "v_dual_ratio_balance": 125.96,
+     "v_primal_ratio": 31.34,
+     "v_decrease_threshold": 156.7,
+     "pf_dual_ratio_full": 7734.2,
+     "pf_dual_ratio_balance": 5468.9,
+     "pf_primal_ratio": 2541.6,
+     "pf_decrease_threshold": 7624.799999999999,
+     "v1_rule_would_decrease_v": true,
+     "v1_rule_would_decrease_pf": true,
+     "v2_rule_decides_decrease_v": false,
+     "v2_rule_decides_decrease_pf": false,
+     "v2_action_v": "held",
+     "v2_action_pf": "held",
+     "v_before": 1.0,
+     "v_after": 1.0,
+     "pf_before": 1.0,
+     "pf_after": 1.0,
+     "pass": true
+    }
+   },
+   "pass": true
+  },
+  "stop_rule_uses_full_s": {
+   "method": "real get_admm_boyd_residual_metrics call, single perturbed V-channel entry, dz_norm=0.02, rho_v/gamma_v from the case-file default (1.0/1.0), eps_dual set (via one dual entry) strictly between s_rho_part and s.",
+   "rho_v": 1.0,
+   "gamma_v": 1.0,
+   "n_v": 864,
+   "dz_norm": 0.02,
+   "s_rho_part_expected": 0.02,
+   "s_full_expected": 0.028284271247461905,
+   "eps_dual_target": 0.02414213562373095,
+   "norm_y_needed": 238.48196854596966,
+   "observed": {
+    "r": 0.0,
+    "s": 0.02828427124746204,
+    "s_rho_part": 0.020000000000000098,
+    "eps_pri": 0.0032333951814660306,
+    "eps_dual": 0.02414213562373095,
+    "primal_ratio": 0.0,
+    "dual_ratio": 1.1715728752538157,
+    "dual_ratio_balance": 0.8284271247461942,
+    "primal_pass": true,
+    "dual_pass": false,
+    "channel_pass": false
+   },
+   "pass": true
+  },
+  "penalties_update_isolated": {
+   "actions": {
+    "v": "increased",
+    "pf": "held",
+    "ess": "held"
+   },
+   "rho_before": {
+    "v": 1.0,
+    "pf": 1.0,
+    "ess": 1.0
+   },
+   "rho_after": {
+    "v": 1.5,
+    "pf": 1.0,
+    "ess": 1.0
+   },
+   "consensus_vars_unchanged": true,
+   "dual_vars_unchanged": true,
+   "rho_v_changed_as_expected": true,
+   "pass": true
+  },
+  "legacy_and_boyd_bit_identical_to_2d765573": {
+   "snapshot_coordinate": {
+    "node_id": 5,
+    "year": "2025",
+    "day": "Spring",
+    "p": 0,
+    "power_type": "p",
+    "v_base": 345.0
+   },
+   "pre_change_commit": "2d765573",
+   "legacy_metrics_identical": true,
+   "legacy_new": {
+    "primal": {
+     "v": 0.0,
+     "pf": 0.01,
+     "ess": 1.5000000000000002,
+     "v_mean": 0.0,
+     "pf_mean": 5.787037037037037e-06,
+     "ess_mean": 0.0004822530864197533
+    },
+    "dual": {
+     "v": 0.020000000000000098,
+     "pf": 0.05,
+     "ess": 2.0,
+     "v_mean": 2.3148148148148262e-05,
+     "pf_mean": 1.8807870370370372e-05,
+     "ess_mean": 0.0011574074074074073
+    }
+   },
+   "legacy_pre": {
+    "primal": {
+     "v": 0.0,
+     "pf": 0.01,
+     "ess": 1.5000000000000002,
+     "v_mean": 0.0,
+     "pf_mean": 5.787037037037037e-06,
+     "ess_mean": 0.0004822530864197533
+    },
+    "dual": {
+     "v": 0.020000000000000098,
+     "pf": 0.05,
+     "ess": 2.0,
+     "v_mean": 2.3148148148148262e-05,
+     "pf_mean": 1.8807870370370372e-05,
+     "ess_mean": 0.0011574074074074073
+    }
+   },
+   "boyd_per_channel": {
+    "v": {
+     "new_only_keys": [
+      "dual_ratio_balance"
+     ],
+     "mismatches": {},
+     "pass": true
+    },
+    "pf": {
+     "new_only_keys": [
+      "dual_ratio_balance"
+     ],
+     "mismatches": {},
+     "pass": true
+    },
+    "ess": {
+     "new_only_keys": [
+      "dual_ratio_balance"
+     ],
+     "mismatches": {},
+     "pass": true
+    }
+   },
+   "boyd_top_level_mismatches": {},
+   "boyd_top_level_pass": true,
+   "pass": true
+  },
+  "al_objective_unchanged": {
+   "pre_change_commit": "2d765573",
+   "functions": {
+    "update_transmission_model_to_admm": {
+     "identical": true,
+     "new_sha256": "190334b54a6a63c6266466658609921029b98740381e551864a91de6d52f0b0f",
+     "pre_sha256": "190334b54a6a63c6266466658609921029b98740381e551864a91de6d52f0b0f"
+    },
+    "update_distribution_models_to_admm": {
+     "identical": true,
+     "new_sha256": "f219775d8d89f7e8a89fc34f72c7c01f0b757939639eba6c92ff8d71d1d6e63c",
+     "pre_sha256": "f219775d8d89f7e8a89fc34f72c7c01f0b757939639eba6c92ff8d71d1d6e63c"
+    },
+    "update_shared_energy_storage_model_to_admm": {
+     "identical": true,
+     "new_sha256": "ef660ce1b73753e2f02bbff4c279bf5f98d36028748b97776833a7cbf0d251b0",
+     "pre_sha256": "ef660ce1b73753e2f02bbff4c279bf5f98d36028748b97776833a7cbf0d251b0"
+    },
+    "_prepare_transmission_objectives_for_admm": {
+     "identical": true,
+     "new_sha256": "85878ed70648314a1618e43f6174c31e95c38be843d6116ea689d9013774dfda",
+     "pre_sha256": "85878ed70648314a1618e43f6174c31e95c38be843d6116ea689d9013774dfda"
+    },
+    "_prepare_distribution_objectives_for_admm": {
+     "identical": true,
+     "new_sha256": "e07fb20003b59b44e974ea3cc5694335616e020ee0dafc88a1bcffe2e44faec1",
+     "pre_sha256": "e07fb20003b59b44e974ea3cc5694335616e020ee0dafc88a1bcffe2e44faec1"
+    },
+    "_update_tso_proximal_centres_after_solve": {
+     "identical": true,
+     "new_sha256": "2429e090f753b7eec5b1696f8dabc19032b523da5f7498830690bb017951dd5d",
+     "pre_sha256": "2429e090f753b7eec5b1696f8dabc19032b523da5f7498830690bb017951dd5d"
+    }
+   },
+   "pass": true
+  },
+  "other_case_params_load": {
+   "cs1_params_path": "data/CS1/CS1_params.json",
+   "cs1_boyd_eps_source": "default",
+   "cs1_boyd_tol": {
+    "eps_abs": 1e-05,
+    "eps_rel": 0.0001
+   },
+   "srp1_params_path": "data/SRP1/SRP1_params.json",
+   "srp1_boyd_eps_source": "case_file",
+   "srp1_boyd_tol": {
+    "eps_abs": 1e-05,
+    "eps_rel": 0.0001
+   },
+   "pass": true
+  },
+  "fixture_unpickling": {
+   "fixtures": [
+    {
+     "path": "data/SRP1/Results/P512R/cycle21_pre_setup/snapshot.pkl",
+     "loads": true
+    },
+    {
+     "path": "data/SRP1/Results/P512R/production_snapshots/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+     "loads": true
+    },
+    {
+     "path": "data/SRP1/Results/P515G3F_r2/results/FrozenSMOPF/frozen_DSO_node7_case33_2_2035_Autumn_cycle38.pkl",
+     "loads": true
+    }
+   ],
+   "pass": true
+  },
+  "hierarchical_uncoordinated_untouched": {
+   "method": "exact source-text equality (git HEAD, which already contains v1, vs the current uncommitted tree, which adds v2) for both path functions, PLUS every diff hunk header (isolating v2s own hunks).",
+   "functions": {
+    "_run_operational_planning_hierarchical": {
+     "identical": true
+    },
+    "_run_operational_planning_without_coordination": {
+     "identical": true
+    }
+   },
+   "diff_hunk_count": 10,
+   "diff_hunk_headers": [
+    "@@ -2810,6 +2810,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat",
+    "@@ -2825,6 +2826,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat",
+    "@@ -2843,6 +2845,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat",
+    "@@ -5523,7 +5526,16 @@ def get_admm_boyd_residual_metrics(planning_problem, tso_model, dso_models, esso",
+    "@@ -5714,6 +5726,11 @@ def get_admm_boyd_residual_metrics(planning_problem, tso_model, dso_models, esso",
+    "@@ -5731,6 +5748,7 @@ def get_admm_boyd_residual_metrics(planning_problem, tso_model, dso_models, esso",
+    "@@ -6093,11 +6111,18 @@ def _get_admm_penalty_summary(tso_model, dso_models, esso_model):",
+    "@@ -6143,10 +6168,11 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics,",
+    "@@ -6164,10 +6190,10 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics,",
+    "@@ -6226,6 +6252,7 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics,"
+   ],
+   "pass": true
+  }
+ },
+ "all_checks_pass": true
+}

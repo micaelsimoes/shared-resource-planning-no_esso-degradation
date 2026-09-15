@@ -2810,6 +2810,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             'boyd_v_norm_y': boyd_metrics['v']['norm_y'],
             'boyd_v_primal_ratio': boyd_metrics['v']['primal_ratio'],
             'boyd_v_dual_ratio': boyd_metrics['v']['dual_ratio'],
+            'boyd_v_dual_ratio_balance': boyd_metrics['v']['dual_ratio_balance'],
             'boyd_v_primal_pass': boyd_metrics['v']['primal_pass'],
             'boyd_v_dual_pass': boyd_metrics['v']['dual_pass'],
             'boyd_v_channel_pass': boyd_metrics['v']['channel_pass'],
@@ -2825,6 +2826,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             'boyd_pf_norm_y': boyd_metrics['pf']['norm_y'],
             'boyd_pf_primal_ratio': boyd_metrics['pf']['primal_ratio'],
             'boyd_pf_dual_ratio': boyd_metrics['pf']['dual_ratio'],
+            'boyd_pf_dual_ratio_balance': boyd_metrics['pf']['dual_ratio_balance'],
             'boyd_pf_primal_pass': boyd_metrics['pf']['primal_pass'],
             'boyd_pf_dual_pass': boyd_metrics['pf']['dual_pass'],
             'boyd_pf_channel_pass': boyd_metrics['pf']['channel_pass'],
@@ -2843,6 +2845,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             'boyd_ess_norm_y_esso': boyd_metrics['ess']['norm_y_esso'],
             'boyd_ess_primal_ratio': boyd_metrics['ess']['primal_ratio'],
             'boyd_ess_dual_ratio': boyd_metrics['ess']['dual_ratio'],
+            'boyd_ess_dual_ratio_balance': boyd_metrics['ess']['dual_ratio_balance'],
             'boyd_ess_primal_pass': boyd_metrics['ess']['primal_pass'],
             'boyd_ess_dual_pass': boyd_metrics['ess']['dual_pass'],
             'boyd_ess_channel_pass': boyd_metrics['ess']['channel_pass'],
@@ -5523,7 +5526,16 @@ def get_admm_boyd_residual_metrics(planning_problem, tso_model, dso_models, esso
 
     Authority: PLANNER_BRIEF_2026-09-13.md Addendum 9 sections 3.2 and
     3.3(a); frozen specification
-    data/SRP1/Results/P515S32/frozen_s32_spec_v1_14a18674.json.
+    data/SRP1/Results/P515S32/frozen_s32_spec_v2_516bd749.json (supersedes
+    v1 frozen_s32_spec_v1_14a18674.json).
+
+    `dual_ratio_balance` (spec v2, `balancing_rule_3_3a`) is
+    `s_rho_part / eps_dual` -- the rho-dependent part of s only, excluding
+    the TSO proximal part gamma*dz. It feeds ONLY the residual-balancing
+    decision in `_update_admm_penalties`. `dual_ratio` (= s/eps_dual, the
+    FULL s, rho part plus proximal part) is unchanged and still feeds the
+    Boyd stopping test (`channel_pass`/`all_boyd_pass`) -- the stopping
+    rule is unchanged by v2.
 
     Channel mapping (Advisor findings F1-F4, accepted by the Planner):
 
@@ -5714,6 +5726,11 @@ def get_admm_boyd_residual_metrics(planning_problem, tso_model, dso_models, esso
 
         primal_ratio = (r / eps_pri) if eps_pri > 0.0 else float('inf')
         dual_ratio = (s / eps_dual) if eps_dual > 0.0 else float('inf')
+        # Spec v2 `balancing_rule_3_3a`: rho-dependent part of s only (the
+        # TSO proximal part gamma*dz is excluded), used ONLY by the
+        # residual-balancing decision in `_update_admm_penalties`. The
+        # stopping test above still uses the full `dual_ratio` (= s/eps_dual).
+        dual_ratio_balance = (s_rho_part / eps_dual) if eps_dual > 0.0 else float('inf')
         primal_pass = bool(r <= eps_pri)
         dual_pass = bool(s <= eps_dual)
         proximal_share = (s_proximal_part / s) if s > 0.0 else 0.0
@@ -5731,6 +5748,7 @@ def get_admm_boyd_residual_metrics(planning_problem, tso_model, dso_models, esso
             'norm_y': norm_y,
             'primal_ratio': primal_ratio,
             'dual_ratio': dual_ratio,
+            'dual_ratio_balance': dual_ratio_balance,
             'primal_pass': primal_pass,
             'dual_pass': dual_pass,
             'channel_pass': bool(primal_pass and dual_pass),
@@ -6093,11 +6111,18 @@ def _get_admm_penalty_summary(tso_model, dso_models, esso_model):
 def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, boyd_metrics, params, allow_update=True):
     """
     P5.15 Step 3.3(a) residual balancing (Advisor-reviewed, frozen spec
-    P515S32/frozen_s32_spec_v1_14a18674.json, `balancing_rule_3_3a`).
+    P515S32/frozen_s32_spec_v2_516bd749.json, `balancing_rule_3_3a`;
+    supersedes v1 frozen_s32_spec_v1_14a18674.json).
 
-    The balancing decision is driven by the Boyd primal/dual ratios
-    (`boyd_metrics[group]['primal_ratio'|'dual_ratio']` = r/eps_pri,
-    s/eps_dual). The freeze clause ("held" once both ratios are <= 1) is
+    The balancing decision is driven by
+    `boyd_metrics[group]['primal_ratio']` (= r/eps_pri, unchanged) and, as
+    of v2, `boyd_metrics[group]['dual_ratio_balance']` (=
+    s_rho_part/eps_dual -- the rho-dependent part of s only; the TSO
+    proximal part gamma*dz is excluded from the balancing ratio, since it
+    does not scale with rho and can otherwise walk rho toward the clamp --
+    Advisor concern C3). `boyd_metrics[group]['dual_ratio']` (full s) is no
+    longer used here; it still gates the (unchanged) Boyd stopping test in
+    the caller. The freeze clause ("held" once both ratios are <= 1) is
     REMOVED: with `minimum_consecutive_converged_cycles` >= 1 this is moot
     at the terminal cycle (the run stops as soon as both ratios are <= 1
     on every channel), but removing it lets the dead-band test act on an
@@ -6143,10 +6168,11 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
         }
 
         # --------------------------------------------------------------
-        # Boyd primal/dual ratios -- gate the update (3.3(a)).
+        # Boyd primal ratio / balancing dual ratio -- gate the update
+        # (3.3(a), spec v2: dual_ratio_balance = s_rho_part/eps_dual).
         # --------------------------------------------------------------
         boyd_primal_ratio = boyd_metrics[group]['primal_ratio']
-        boyd_dual_ratio = boyd_metrics[group]['dual_ratio']
+        boyd_dual_ratio_balance = boyd_metrics[group]['dual_ratio_balance']
 
         # --------------------------------------------------------------
         # Residual-balance thresholds
@@ -6164,10 +6190,10 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
             action = 'fixed'
         elif not allow_update:
             action = 'held after solver failure'
-        elif boyd_primal_ratio > increase_balance_ratio * boyd_dual_ratio:
+        elif boyd_primal_ratio > increase_balance_ratio * boyd_dual_ratio_balance:
             factor = update_params['increase_factor']
             action = 'increased'
-        elif boyd_dual_ratio > decrease_balance_ratio * boyd_primal_ratio:
+        elif boyd_dual_ratio_balance > decrease_balance_ratio * boyd_primal_ratio:
             factor = 1.0 / update_params['decrease_factor']
             action = 'decreased'
 
@@ -6226,6 +6252,7 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
             f'eps_dual={boyd_metrics[group]["eps_dual"]:.6e} | '
             f'primal_ratio={boyd_metrics[group]["primal_ratio"]:.6e} | '
             f'dual_ratio={boyd_metrics[group]["dual_ratio"]:.6e} | '
+            f'dual_ratio_balance={boyd_metrics[group]["dual_ratio_balance"]:.6e} | '
             f'rho_before={before[group]:.6e} | '
             f'rho_after={after[group]:.6e} | '
             f'action={actions[group]}'
