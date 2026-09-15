@@ -2693,7 +2693,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             if (objective_change_abs is not None and objective_tolerance) else None
         )
 
-        penalty_actions, penalties_before, penalties_after = _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, boyd_metrics, admm_parameters, allow_update=local_solves_ok)
+        penalty_actions, penalties_before, penalties_after, gamma_before, gamma_after, rho_freeze_active = _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, boyd_metrics, admm_parameters, iter=iter, allow_update=local_solves_ok)
         admm_diagnostics.append({
             'cycle': iter,
             'local_solves_ok': local_solves_ok,
@@ -2789,6 +2789,20 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             'rho_v_action': penalty_actions['v'],
             'rho_pf_action': penalty_actions['pf'],
             'rho_ess_action': penalty_actions['ess'],
+            # P5.15 Step 3.2 E2 (frozen spec v3, Addendum 14): gamma tied to
+            # rho (mean over TSO models, like the rho summary above; None
+            # when the TSO proximal term is disabled), the cycle-30 freeze
+            # indicator, and the case-file policy/tau in force this run.
+            'gamma_v_before': gamma_before['v'],
+            'gamma_v_after': gamma_after['v'],
+            'gamma_pf_before': gamma_before['pf'],
+            'gamma_pf_after': gamma_after['pf'],
+            'gamma_ess_before': gamma_before['ess'],
+            'gamma_ess_after': gamma_after['ess'],
+            'rho_freeze_active': rho_freeze_active,
+            'freeze_after_cycle': admm_parameters.penalty_update.get('freeze_after_cycle'),
+            'gamma_policy': admm_parameters.proximal_regularization['tso'].get('gamma_policy', 'fixed'),
+            'gamma_tau': admm_parameters.proximal_regularization['tso'].get('tau', 1.0),
             'objective_change_ratio': objective_change_ratio,
             'boyd_all_pass': boyd_all_pass,
             'boyd_stop': cycle_convergence,
@@ -3916,6 +3930,13 @@ def update_transmission_model_to_admm(planning_problem, model, params, objective
     proximal_cfg = params.proximal_regularization
     use_tso_proximal = (proximal_cfg['enabled'] and proximal_cfg['tso']['enabled'])
     tso_proximal_cfg = proximal_cfg['tso']
+    # P5.15 Step 3.2 E2 (frozen spec v3, `gamma_policy`): 'fixed' (default)
+    # preserves prior behaviour exactly. 'tied_to_rho' initializes each
+    # channel's TSO gamma to tau * that channel's initial rho (case file);
+    # `_update_admm_penalties` then keeps gamma = tau * rho after every
+    # residual-balancing rho change.
+    tso_gamma_policy = tso_proximal_cfg.get('gamma_policy', 'fixed')
+    tso_gamma_tau = tso_proximal_cfg.get('tau', 1.0)
 
     for year in transmission_network.years:
         for day in transmission_network.days:
@@ -3923,9 +3944,19 @@ def update_transmission_model_to_admm(planning_problem, model, params, objective
             s_base = transmission_network.network[year][day].baseMVA
 
             if use_tso_proximal:
-                model[year][day].prox_gamma_v = pe.Param(initialize=tso_proximal_cfg['gamma']['v'])
-                model[year][day].prox_gamma_pf = pe.Param(initialize=tso_proximal_cfg['gamma']['pf'])
-                model[year][day].prox_gamma_ess = pe.Param(initialize=tso_proximal_cfg['gamma']['ess'])
+                # P5.15 Step 3.2 E2 (frozen spec v3): gamma Params are now
+                # mutable (were immutable). Under 'tied_to_rho' each is
+                # initialized to tau * that channel's initial rho (the same
+                # case-file value used to initialize rho_v/pf/ess below);
+                # under 'fixed' (default) initialization is unchanged.
+                if tso_gamma_policy == 'tied_to_rho':
+                    model[year][day].prox_gamma_v = pe.Param(mutable=True, initialize=tso_gamma_tau * params.rho['v'][transmission_network.name])
+                    model[year][day].prox_gamma_pf = pe.Param(mutable=True, initialize=tso_gamma_tau * params.rho['pf'][transmission_network.name])
+                    model[year][day].prox_gamma_ess = pe.Param(mutable=True, initialize=tso_gamma_tau * params.rho['ess'][transmission_network.name])
+                else:
+                    model[year][day].prox_gamma_v = pe.Param(mutable=True, initialize=tso_proximal_cfg['gamma']['v'])
+                    model[year][day].prox_gamma_pf = pe.Param(mutable=True, initialize=tso_proximal_cfg['gamma']['pf'])
+                    model[year][day].prox_gamma_ess = pe.Param(mutable=True, initialize=tso_proximal_cfg['gamma']['ess'])
 
                 # Previous successful TSO iterate: interface voltage
                 model[year][day].prox_v_prev = pe.Param(model[year][day].active_distribution_networks, model[year][day].periods, mutable=True, domain=pe.Reals, initialize=1.0)
@@ -5525,9 +5556,10 @@ def get_admm_boyd_residual_metrics(planning_problem, tso_model, dso_models, esso
     stopping thresholds.
 
     Authority: PLANNER_BRIEF_2026-09-13.md Addendum 9 sections 3.2 and
-    3.3(a); frozen specification
-    data/SRP1/Results/P515S32/frozen_s32_spec_v2_516bd749.json (supersedes
-    v1 frozen_s32_spec_v1_14a18674.json).
+    3.3(a), Addendum 14; frozen specification
+    data/SRP1/Results/P515S33/frozen_s33_e2_spec_v3_825f1f02.json (v3,
+    supersedes v2 data/SRP1/Results/P515S32/frozen_s32_spec_v2_516bd749.json,
+    which superseded v1 frozen_s32_spec_v1_14a18674.json).
 
     `dual_ratio_balance` (spec v2, `balancing_rule_3_3a`) is
     `s_rho_part / eps_dual` -- the rho-dependent part of s only, excluding
@@ -5535,7 +5567,17 @@ def get_admm_boyd_residual_metrics(planning_problem, tso_model, dso_models, esso
     decision in `_update_admm_penalties`. `dual_ratio` (= s/eps_dual, the
     FULL s, rho part plus proximal part) is unchanged and still feeds the
     Boyd stopping test (`channel_pass`/`all_boyd_pass`) -- the stopping
-    rule is unchanged by v2.
+    rule is unchanged by v2 or v3.
+
+    Spec v3 (`gamma_policy`): gamma_prox_tso (used in `s`, `s_proximal_part`
+    and `proximal_share` below) is read from the TSO model's mutable
+    `prox_gamma_v/pf/ess` Params IN FORCE at the cycle's TSO solve -- i.e.
+    the value used to build that cycle's TSO objective, whether the
+    case-file `gamma_policy` is 'fixed' (constant, matches the pre-v3
+    case-file constant) or 'tied_to_rho' (gamma_c = tau*rho_c, updated by
+    `_update_admm_penalties` after every rho change; see that function).
+    This function is called before the end-of-cycle penalty update, so it
+    sees the gamma used in that cycle's TSO solve, unchanged.
 
     Channel mapping (Advisor findings F1-F4, accepted by the Planner):
 
@@ -5567,7 +5609,6 @@ def get_admm_boyd_residual_metrics(planning_problem, tso_model, dso_models, esso
     """
     proximal_cfg = admm_parameters.proximal_regularization
     tso_proximal_enabled = bool(proximal_cfg['enabled'] and proximal_cfg['tso']['enabled'])
-    gamma_tso = proximal_cfg['tso']['gamma']
 
     boyd_eps = admm_parameters.tol['boyd']
     eps_abs = boyd_eps['eps_abs']
@@ -5616,9 +5657,13 @@ def get_admm_boyd_residual_metrics(planning_problem, tso_model, dso_models, esso
                     'esso': pe.value(esso_model[node_id].rho),
                 }
 
-                gamma_v = gamma_tso['v'] if tso_proximal_enabled else 0.0
-                gamma_pf = gamma_tso['pf'] if tso_proximal_enabled else 0.0
-                gamma_ess = gamma_tso['ess'] if tso_proximal_enabled else 0.0
+                # Spec v3: gamma is read from the TSO model's Params IN
+                # FORCE (mutable under 'tied_to_rho', constant under
+                # 'fixed'), not from the case-file constant -- see the
+                # function docstring.
+                gamma_v = pe.value(tso_model[year][day].prox_gamma_v) if tso_proximal_enabled else 0.0
+                gamma_pf = pe.value(tso_model[year][day].prox_gamma_pf) if tso_proximal_enabled else 0.0
+                gamma_ess = pe.value(tso_model[year][day].prox_gamma_ess) if tso_proximal_enabled else 0.0
 
                 for p in range(planning_problem.num_instants):
 
@@ -6108,11 +6153,35 @@ def _get_admm_penalty_summary(tso_model, dso_models, esso_model):
     }
 
 
-def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, boyd_metrics, params, allow_update=True):
+def _get_admm_gamma_summary(tso_model):
+    """
+    P5.15 Step 3.2 E2 (frozen spec v3): mean TSO proximal gamma per channel,
+    over TSO models only (gamma is TSO-only; DSO/ESSO have no `prox_gamma_*`
+    Params). Mirrors `_get_admm_penalty_summary`'s averaging convention.
+    Returns None per group when the TSO proximal term is disabled (no
+    `prox_gamma_*` attribute on the model).
+    """
+    gammas = {'v': [], 'pf': [], 'ess': []}
+    for year_models in tso_model.values():
+        for model in year_models.values():
+            if hasattr(model, 'prox_gamma_v'):
+                gammas['v'].append(pe.value(model.prox_gamma_v))
+            if hasattr(model, 'prox_gamma_pf'):
+                gammas['pf'].append(pe.value(model.prox_gamma_pf))
+            if hasattr(model, 'prox_gamma_ess'):
+                gammas['ess'].append(pe.value(model.prox_gamma_ess))
+    return {
+        group: (sum(values) / len(values) if values else None)
+        for group, values in gammas.items()
+    }
+
+
+def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, boyd_metrics, params, iter=None, allow_update=True):
     """
     P5.15 Step 3.3(a) residual balancing (Advisor-reviewed, frozen spec
-    P515S32/frozen_s32_spec_v2_516bd749.json, `balancing_rule_3_3a`;
-    supersedes v1 frozen_s32_spec_v1_14a18674.json).
+    P515S33/frozen_s33_e2_spec_v3_825f1f02.json, `balancing_rule_3_3a`;
+    supersedes v2 P515S32/frozen_s32_spec_v2_516bd749.json, which
+    superseded v1 frozen_s32_spec_v1_14a18674.json).
 
     The balancing decision is driven by
     `boyd_metrics[group]['primal_ratio']` (= r/eps_pri, unchanged) and, as
@@ -6132,9 +6201,41 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
     Legacy tolerance-normalized ratios (`residual_metrics`) are still
     computed and printed for the s31c comparison; they no longer gate the
     update.
+
+    Spec v3 additions (Addendum 14):
+
+    * Cycle-30 freeze (`params.penalty_update['freeze_after_cycle']`,
+      case file: 30): `frozen = freeze_after_cycle is not None and
+      iter is not None and iter > freeze_after_cycle`. When frozen, EVERY
+      channel is held (`action = 'held (frozen after cycle N)'`, N the
+      configured `freeze_after_cycle`), with no rho or gamma change,
+      REGARDLESS of `allow_update`/local-solve outcome. `iter=None`
+      (default) means never frozen -- preserves the exact v2 behaviour of
+      any caller that does not pass `iter` (e.g. a pre-v3 test harness).
+    * Precedence (highest first): (1) frozen -- overrides everything,
+      including a failed local solve; (2) `not params.adaptive_penalty` ->
+      'fixed'; (3) `not allow_update` (failure hold) -> 'held after solver
+      failure', its own label, UNCHANGED, but it only applies when NOT
+      frozen; (4) the ordinary increase/decrease/dead-band rule.
+    * Tied gamma (`params.proximal_regularization['tso']['gamma_policy']
+      == 'tied_to_rho'`): whenever rho is actually scaled (i.e. inside the
+      same `adaptive_penalty and allow_update and not frozen` guard as the
+      rho scaling below), every TSO model's `prox_gamma_c` Param is reset
+      to `tau * (that model's new rho_c)` for c in {v, pf, ess}, AFTER the
+      rho scaling loop, so it reads the already-updated rho. Under
+      `gamma_policy == 'fixed'` (default) gamma is never touched here,
+      exactly as before v3. The proximal centre (`prox_*_prev`) update is
+      unchanged (performed elsewhere, in `update_transmission_model_to_admm`
+      at the next model rebuild).
     """
 
     before = _get_admm_penalty_summary(tso_model, dso_models, esso_model)
+    before_gamma = _get_admm_gamma_summary(tso_model)
+
+    freeze_after_cycle = params.penalty_update.get('freeze_after_cycle')
+    frozen = bool(freeze_after_cycle is not None and iter is not None and iter > freeze_after_cycle)
+    gamma_policy = params.proximal_regularization['tso'].get('gamma_policy', 'fixed')
+    gamma_tau = params.proximal_regularization['tso'].get('tau', 1.0)
 
     actions = dict()
     factors = dict()
@@ -6184,9 +6285,14 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
         action = 'held'
 
         # --------------------------------------------------------------
-        # Determine penalty update -- freeze clause removed.
+        # Determine penalty update. Precedence (highest first): cycle-30
+        # freeze (spec v3) > not-adaptive ('fixed') > failure hold (only
+        # when not frozen) > increase/decrease/dead-band. The pre-v3
+        # "freeze clause" (held once both ratios are <= 1) remains removed.
         # --------------------------------------------------------------
-        if not params.adaptive_penalty:
+        if frozen:
+            action = f'held (frozen after cycle {int(freeze_after_cycle)})'
+        elif not params.adaptive_penalty:
             action = 'fixed'
         elif not allow_update:
             action = 'held after solver failure'
@@ -6201,9 +6307,14 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
         factors[group] = factor
 
     # ------------------------------------------------------------------
-    # Apply common group-wise scaling factors
+    # Apply common group-wise scaling factors. Spec v3: guarded on
+    # `not frozen` in addition to the pre-existing `adaptive_penalty and
+    # allow_update` -- when frozen, factors are already all 1.0 (the
+    # per-group loop above never reaches the increase/decrease branches),
+    # so this guard is a literal, explicit "no rho change" rather than a
+    # relied-upon side effect of factor==1.0.
     # ------------------------------------------------------------------
-    if params.adaptive_penalty and allow_update:
+    if params.adaptive_penalty and allow_update and not frozen:
 
         # TSO
         for year_models in tso_model.values():
@@ -6228,7 +6339,25 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
         for model in esso_model.values():
             _scale_admm_penalty(model.rho, factors['ess'], update_params)
 
+        # ------------------------------------------------------------------
+        # Spec v3 (Addendum 14, `gamma_policy`): under 'tied_to_rho', keep
+        # every TSO model's prox_gamma_c = tau * rho_c, reading rho_c AFTER
+        # the scaling above. Under 'fixed' (default) gamma is untouched --
+        # bit-identical to pre-v3 behaviour. The proximal centre
+        # (prox_*_prev) is unchanged here.
+        # ------------------------------------------------------------------
+        if gamma_policy == 'tied_to_rho':
+            for year_models in tso_model.values():
+                for model in year_models.values():
+                    if hasattr(model, 'prox_gamma_v'):
+                        model.prox_gamma_v.set_value(gamma_tau * pe.value(model.rho_v))
+                    if hasattr(model, 'prox_gamma_pf'):
+                        model.prox_gamma_pf.set_value(gamma_tau * pe.value(model.rho_pf))
+                    if hasattr(model, 'prox_gamma_ess'):
+                        model.prox_gamma_ess.set_value(gamma_tau * pe.value(model.rho_ess))
+
     after = _get_admm_penalty_summary(tso_model, dso_models, esso_model)
+    after_gamma = _get_admm_gamma_summary(tso_model)
 
     for group in ('v', 'pf', 'ess'):
         legacy = legacy_diagnostics[group]
@@ -6244,6 +6373,8 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
             f'decrease threshold={decrease_balance_ratio:.1f} | '
             f'action={actions[group]}'
         )
+        gamma_before_text = f'{before_gamma[group]:.6e}' if before_gamma[group] is not None else 'N/A'
+        gamma_after_text = f'{after_gamma[group]:.6e}' if after_gamma[group] is not None else 'N/A'
         print(
             f'[ADMM RHO BOYD] {group.upper()} | '
             f'r={boyd_metrics[group]["r"]:.6e} | '
@@ -6255,10 +6386,12 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
             f'dual_ratio_balance={boyd_metrics[group]["dual_ratio_balance"]:.6e} | '
             f'rho_before={before[group]:.6e} | '
             f'rho_after={after[group]:.6e} | '
+            f'gamma_before={gamma_before_text} | '
+            f'gamma_after={gamma_after_text} | '
             f'action={actions[group]}'
         )
 
-    return actions, before, after
+    return actions, before, after, before_gamma, after_gamma, frozen
 
 
 def _scale_admm_penalty(penalty, factor, params):

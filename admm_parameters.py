@@ -30,6 +30,13 @@ class ADMMParameters:
             'decrease_factor': 2.0,
             'min': 1e-4,
             'max': 1e4,
+            # P5.15 Step 3.2 E2 (frozen spec v3,
+            # data/SRP1/Results/P515S33/frozen_s33_e2_spec_v3_825f1f02.json,
+            # `balancing_rule_3_3a.freeze`): optional cycle index after
+            # which rho (and, under the tied gamma policy, gamma) adaptation
+            # is held on every channel. None (default) means never freeze --
+            # other case studies are unaffected.
+            'freeze_after_cycle': None,
         }
         self.rho = {'v': dict(), 'pf': dict(), 'ess': dict()}
         self.previous_iter = {'v': dict(), 'pf': dict(), 'ess': dict()}
@@ -43,6 +50,13 @@ class ADMMParameters:
                     'pf': 1.0,
                     'ess': 1.0,
                 },
+                # P5.15 Step 3.2 E2 (frozen spec v3, `gamma_policy`):
+                # 'fixed' (default) keeps gamma at the configured value
+                # above, exactly as before this change. 'tied_to_rho' sets
+                # gamma_c = tau * rho_c per channel (Deng and Yin, 2016).
+                # `tau` is only used when tied.
+                'gamma_policy': 'fixed',
+                'tau': 1.0,
             },
             'dso': {
                 'enabled': False,
@@ -99,8 +113,21 @@ def _read_parameters_from_file(admm_params, params_data):
     admm_params.adaptive_penalty = bool(params_data['adaptive_penalty'])
     penalty_update = params_data.get('penalty_update', {})
     for key in admm_params.penalty_update:
+        # `freeze_after_cycle` is an optional cycle index (or None), not a
+        # float penalty-update coefficient; handled separately below.
+        if key == 'freeze_after_cycle':
+            continue
         if key in penalty_update:
             admm_params.penalty_update[key] = float(penalty_update[key])
+    if 'freeze_after_cycle' in penalty_update and penalty_update['freeze_after_cycle'] is not None:
+        admm_params.penalty_update['freeze_after_cycle'] = int(penalty_update['freeze_after_cycle'])
+    else:
+        admm_params.penalty_update['freeze_after_cycle'] = None
+    if (
+            admm_params.penalty_update['freeze_after_cycle'] is not None and
+            admm_params.penalty_update['freeze_after_cycle'] < 0
+    ):
+        raise ValueError('ADMM penalty_update.freeze_after_cycle must be non-negative.')
 
     if admm_params.minimum_consecutive_converged_cycles < 1:
         raise ValueError('ADMM minimum_consecutive_converged_cycles must be at least 1.')
@@ -145,3 +172,18 @@ def _read_parameters_from_file(admm_params, params_data):
             if gamma < 0.0:
                 raise ValueError(f'ADMM proximal gamma for {agent.upper()} {group.upper()} must be non-negative.')
             admm_params.proximal_regularization[agent]['gamma'][group] = gamma
+
+        # ------------------------------------------------------------------------------------------------------------
+        # P5.15 Step 3.2 E2 (frozen spec v3): TSO-only gamma policy. Other
+        # agents (DSO) and other case studies are unaffected -- optional,
+        # defaults preserve current behaviour exactly.
+        if agent == 'tso':
+            gamma_policy = agent_data.get('gamma_policy', admm_params.proximal_regularization['tso']['gamma_policy'])
+            if gamma_policy not in ('fixed', 'tied_to_rho'):
+                raise ValueError("ADMM proximal_regularization.tso.gamma_policy must be 'fixed' or 'tied_to_rho'.")
+            admm_params.proximal_regularization['tso']['gamma_policy'] = gamma_policy
+
+            tau = float(agent_data.get('tau', admm_params.proximal_regularization['tso']['tau']))
+            if tau <= 0.0:
+                raise ValueError('ADMM proximal_regularization.tso.tau must be positive.')
+            admm_params.proximal_regularization['tso']['tau'] = tau

@@ -42,7 +42,7 @@
 			"boyd": {"eps_abs": 1e-5, "eps_rel": 1e-4}
 		},
 		"num_max_iters": 25,
-		"minimum_consecutive_converged_cycles": 1,
+		"minimum_consecutive_converged_cycles": 3,
 		"shared_ess_normalization_floor_mva": 0.10,
 		"adaptive_penalty": true,
 		"penalty_update": {
@@ -51,7 +51,8 @@
 			"increase_factor": 1.5,
 			"decrease_factor": 1.5,
 			"min": 1e-4,
-			"max": 1e4
+			"max": 1e4,
+			"freeze_after_cycle": 30
 		},
 		"rho": {
 			"v": {
@@ -82,7 +83,9 @@
 					"v": 1.0,
 					"pf": 1.0,
 					"ess": 1.0
-				}
+				},
+				"gamma_policy": "tied_to_rho",
+				"tau": 1.0
 			},
 			"dso": {
 				"enabled": false,
