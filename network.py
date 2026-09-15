@@ -402,6 +402,27 @@ def _build_model(network, params):
         model.slack_shared_es_soc_final_up = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
         model.slack_shared_es_soc_final_down = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
 
+    # - ADN interface signed reparametrization (P5.15 Step 3.1-C, PLANNER_BRIEF_2026-09-13.md
+    # Addendum 12 item 2). One signed variable per interface, per scenario, per period,
+    # FIXED AT 0 by default in every TSO model. `create_transmission_network_model`
+    # (shared_resources_planning.py, ADMM path only) frees these with bounds
+    # [-rating, +rating] and fixes the ADN load legs (`flex_p_up/down`,
+    # `flex_q_up/down`) at 0 instead -- the redundant pair is removed there.
+    # The hierarchical and uncoordinated paths never touch these Vars, so they
+    # stay fixed at 0 and those paths keep using the legs exactly as today
+    # (`interface_pf_p_transmission_def` / `compute_node_load` add this term
+    # ADDITIVELY to the existing pc + legs terms, so the interface expression and
+    # the node-balance contribution are identical whichever channel is active).
+    if network.is_transmission:
+        model.interface_delta_p = pe.Var(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+        model.interface_delta_q = pe.Var(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+        for dn in model.adn_nodes:
+            for s_m in model.scenarios_market:
+                for s_o in model.scenarios_operation:
+                    for p in model.periods:
+                        model.interface_delta_p[dn, s_m, s_o, p].fix(0.0)
+                        model.interface_delta_q[dn, s_m, s_o, p].fix(0.0)
+
     # Expressions
     model.pg_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_p_per_node_def, network=network))
     model.qg_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_q_per_node_def, network=network))

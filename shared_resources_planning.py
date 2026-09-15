@@ -190,6 +190,9 @@ class SharedResourcesPlanning:
     def get_operational_recourse_components(self, models):
         return _get_operational_recourse_components(self, models)
 
+    def get_interface_reporting_detail(self, models):
+        return _get_interface_reporting_detail(self, models)
+
     def get_primal_value(self, tso_model, dso_models, esso_model):
         return _get_primal_value(self, tso_model, dso_models, esso_model)
 
@@ -798,20 +801,146 @@ def _get_operational_detector_component_blocks(planning_problem, models):
     return blocks
 
 
+def _get_local_interface_settlement(model):
+    # P5.15 Step 3.1-C (PLANNER_BRIEF_2026-09-13.md Addendum 12 item 1): the
+    # local block's settlement contribution at its CURRENT weight (1 in the
+    # ADMM path, 0 otherwise) -- `model.interface_settlement_weight *
+    # model.interface_settlement`, read directly off the model so it can never
+    # diverge from what `objective_function_rule` actually added.
+    return pe.value(model.interface_settlement_weight) * pe.value(model.interface_settlement)
+
+
+def _get_operational_interface_settlement_blocks(planning_problem, models):
+    # P5.15 Step 3.1-C (Addendum 12 item 1): weighted (year/day/discount, as
+    # `get_primal_value` uses -- `_get_admm_block_weight`) per-block settlement
+    # T_TSO / T_DSO, mirroring `_get_operational_detector_component_blocks`.
+    blocks = {}
+
+    transmission_network = planning_problem.transmission_network
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+            local_model = models['tso'][year][day]
+            weight = _get_admm_block_weight(transmission_network, year, day)
+            blocks[('TSO', None, year, day)] = weight * _get_local_interface_settlement(local_model)
+
+    for node_id, distribution_network in planning_problem.distribution_networks.items():
+        for year in distribution_network.years:
+            for day in distribution_network.days:
+                local_model = models['dso'][node_id][year][day]
+                weight = _get_admm_block_weight(distribution_network, year, day)
+                blocks[('DSO', node_id, year, day)] = weight * _get_local_interface_settlement(local_model)
+
+    return blocks
+
+
+def _get_interface_reporting_detail(planning_problem, models):
+    """P5.15 Step 3.1-C (PLANNER_BRIEF_2026-09-13.md Addendum 12, Part 1 item 4).
+
+    Per DSO node, per year/day/period: the interface active/reactive power on
+    the TSO and DSO sides (expected -- the AL-coupled quantities), the signed
+    flexibility `delta_P`/`delta_Q` (per market/operation scenario -- SRP1 has
+    exactly one of each), the anchor `a` (the TSO's fixed `pc`/`qc`, per
+    scenario), and the per-DSO settlement `sum_t pi_t * p_int,t` (using the
+    DSO-side expected interface P, m.u., UNWEIGHTED by year/day/discount --
+    this is reporting granularity, not the recourse total computed by
+    `_get_operational_interface_settlement_blocks`). All power quantities are
+    in MW/MVAr (converted from the model's per-unit values via `baseMVA`).
+    """
+    transmission_network = planning_problem.transmission_network
+    distribution_networks = planning_problem.distribution_networks
+
+    detail = {}
+    for node_id, distribution_network in distribution_networks.items():
+        detail[node_id] = {}
+        for year in transmission_network.years:
+            detail[node_id][year] = {}
+            for day in transmission_network.days:
+
+                network = transmission_network.network[year][day]
+                s_base = network.baseMVA
+                dn = transmission_network.active_distribution_network_nodes.index(node_id)
+                adn_load_idx = network.get_adn_load_idx(node_id)
+                local_tso_model = models['tso'][year][day]
+                local_dso_model = models['dso'][node_id][year][day]
+                c_p_by_scenario = network.cost_energy_p
+
+                periods_detail = {}
+                dso_settlement_sum_pi_p_int = 0.0
+                for p in local_tso_model.periods:
+
+                    delta_p_by_scenario = {}
+                    delta_q_by_scenario = {}
+                    anchor_p_by_scenario = {}
+                    anchor_q_by_scenario = {}
+                    for s_m in local_tso_model.scenarios_market:
+                        for s_o in local_tso_model.scenarios_operation:
+                            scen_key = f'{s_m}_{s_o}'
+                            delta_p_by_scenario[scen_key] = pe.value(local_tso_model.interface_delta_p[dn, s_m, s_o, p]) * s_base
+                            delta_q_by_scenario[scen_key] = pe.value(local_tso_model.interface_delta_q[dn, s_m, s_o, p]) * s_base
+                            anchor_p_by_scenario[scen_key] = pe.value(local_tso_model.pc[adn_load_idx, s_m, s_o, p]) * s_base
+                            anchor_q_by_scenario[scen_key] = pe.value(local_tso_model.qc[adn_load_idx, s_m, s_o, p]) * s_base
+
+                    p_int_tso_expected = pe.value(local_tso_model.expected_interface_pf_p[dn, p]) * s_base
+                    q_int_tso_expected = pe.value(local_tso_model.expected_interface_pf_q[dn, p]) * s_base
+                    p_int_dso_expected = pe.value(local_dso_model.expected_interface_pf_p[p]) * s_base
+                    q_int_dso_expected = pe.value(local_dso_model.expected_interface_pf_q[p]) * s_base
+
+                    s_m0 = next(iter(local_tso_model.scenarios_market))
+                    price = c_p_by_scenario[s_m0][p]
+                    dso_settlement_sum_pi_p_int += price * p_int_dso_expected
+
+                    periods_detail[p] = {
+                        'p_int_tso_expected_mw': p_int_tso_expected,
+                        'q_int_tso_expected_mvar': q_int_tso_expected,
+                        'p_int_dso_expected_mw': p_int_dso_expected,
+                        'q_int_dso_expected_mvar': q_int_dso_expected,
+                        'delta_p_mw': delta_p_by_scenario,
+                        'delta_q_mvar': delta_q_by_scenario,
+                        'anchor_p_mw': anchor_p_by_scenario,
+                        'anchor_q_mvar': anchor_q_by_scenario,
+                        'price_per_mwh': price,
+                    }
+
+                detail[node_id][year][day] = {
+                    'periods': periods_detail,
+                    'dso_settlement_sum_pi_p_int': dso_settlement_sum_pi_p_int,
+                }
+
+    return detail
+
+
 def _get_operational_recourse_components(planning_problem, models):
     # Operational recourse is based on the local base SMOPF objectives.
     # It excludes scenario-deviation regularization and ADMM augmentation terms, but may include artificial penalty terms and is therefore not necessarily a pure economic operating cost.
-    gross_operational_cost = planning_problem.transmission_network.get_primal_value(models['tso'])
+    gross_operational_cost_including_settlement = planning_problem.transmission_network.get_primal_value(models['tso'])
     for node_id, distribution_network in planning_problem.distribution_networks.items():
-        gross_operational_cost += distribution_network.get_primal_value(models['dso'][node_id])
+        gross_operational_cost_including_settlement += distribution_network.get_primal_value(models['dso'][node_id])
+
+    # P5.15 Step 3.1-C (Addendum 12 item 1 and 3): the interface energy
+    # settlement (`interface_settlement_weight * interface_settlement`, weight 1
+    # in the ADMM path) is a category A-transfer -- it cancels at the interface
+    # consensus point and must not be priced into Q(x). `gross_operational_cost`
+    # / `net_operational_recourse` below are therefore the SETTLEMENT-EXCLUDED
+    # (system-cost) recourse; `gross_operational_cost_including_settlement` is
+    # kept for traceability only. The ADMM stopping test in
+    # `_run_operational_planning` reads `net_operational_recourse` -- the
+    # stopping-rule MECHANISM (objective-change test, tolerances) is unchanged;
+    # its INPUT is now the settlement-excluded recourse, per the S31C worker task.
+    settlement_blocks = _get_operational_interface_settlement_blocks(planning_problem, models)
+    interface_settlement_tso = sum(value for (kind, _node, _year, _day), value in settlement_blocks.items() if kind == 'TSO')
+    interface_settlement_dso = {}
+    for (kind, node_id, year, day), value in settlement_blocks.items():
+        if kind == 'DSO':
+            interface_settlement_dso[node_id] = interface_settlement_dso.get(node_id, 0.0) + value
+    interface_settlement_total = interface_settlement_tso + sum(interface_settlement_dso.values())
+
+    gross_operational_cost = gross_operational_cost_including_settlement - interface_settlement_total
     terminal_salvage_value = planning_problem.shared_ess_data.get_salvage_value(models['esso'])
     net_operational_recourse = gross_operational_cost - terminal_salvage_value
 
     # P5.15 Step 3 (Part 1 item 6, signed table `P5_15_S31_PENALTY_TABLE_DRAFT.md`):
-    # D-row (feasibility-detector) reporting. These fields are ADDITIONAL --
-    # `gross_operational_cost` / `net_operational_recourse` above are UNCHANGED
-    # (the ADMM stopping test used today reads those two; changing their
-    # definition is Step 3.2's change, not this one).
+    # D-row (feasibility-detector) reporting. These fields are ADDITIONAL to the
+    # settlement-excluded `gross_operational_cost` / `net_operational_recourse`.
     detector_blocks = _get_operational_detector_component_blocks(planning_problem, models)
     detector_totals = {}
     for block_components in detector_blocks.values():
@@ -822,6 +951,10 @@ def _get_operational_recourse_components(planning_problem, models):
 
     return {
         'gross_operational_cost': gross_operational_cost,
+        'gross_operational_cost_including_settlement': gross_operational_cost_including_settlement,
+        'interface_settlement_tso': interface_settlement_tso,
+        'interface_settlement_dso': interface_settlement_dso,
+        'interface_settlement_total': interface_settlement_total,
         'terminal_salvage_value': terminal_salvage_value,
         'net_operational_recourse': net_operational_recourse,
         'detector_penalty_total': detector_penalty_total,
@@ -840,6 +973,15 @@ def _get_operational_recourse_block_components(planning_problem, models):
         ('SALVAGE', None, None, None)
     The salvage contribution is stored with a negative sign so that:
         sum(blocks.values()) == net_operational_recourse
+
+    P5.15 Step 3.1-C (Addendum 12 item 3): `get_primal_value` re-evaluates
+    `objective_function_rule`, which now includes `interface_settlement_weight *
+    interface_settlement` (1 in the ADMM path) -- the SAME category A-transfer
+    `_get_operational_recourse_components` excludes from `net_operational_recourse`.
+    Each block's local interface-settlement contribution is subtracted here too,
+    so this decomposition keeps reconciling with `net_operational_recourse`
+    exactly as its own docstring states, instead of diverging by the settlement
+    total.
     """
 
     blocks = dict()
@@ -850,7 +992,9 @@ def _get_operational_recourse_block_components(planning_problem, models):
 
     for year in transmission_network.years:
         for day in transmission_network.days:
-            local_value = transmission_network.network[year][day].get_primal_value(models['tso'][year][day], transmission_network.params)
+            model = models['tso'][year][day]
+            local_value = transmission_network.network[year][day].get_primal_value(model, transmission_network.params)
+            local_value -= _get_local_interface_settlement(model)
             weight = _get_admm_block_weight(transmission_network, year, day)
             blocks[('TSO', None, year, day)] = float(weight * local_value)
 
@@ -859,7 +1003,9 @@ def _get_operational_recourse_block_components(planning_problem, models):
     for node_id, distribution_network in planning_problem.distribution_networks.items():
         for year in distribution_network.years:
             for day in distribution_network.days:
-                local_value = distribution_network.network[year][day].get_primal_value(models['dso'][node_id][year][day], distribution_network.params)
+                model = models['dso'][node_id][year][day]
+                local_value = distribution_network.network[year][day].get_primal_value(model, distribution_network.params)
+                local_value -= _get_local_interface_settlement(model)
                 weight = _get_admm_block_weight(distribution_network, year, day)
                 blocks[('DSO', node_id, year, day)] = float(weight * local_value)
 
@@ -3050,14 +3196,23 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
                             fix_or_set(tso_model[year][day].pc[adn_load_idx, s_m, s_o, p], interface_pf_p)
                             fix_or_set(tso_model[year][day].qc[adn_load_idx, s_m, s_o, p], interface_pf_q)
 
-                            tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].fixed = False
-                            tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].fixed = False
-                            tso_model[year][day].flex_q_up[adn_load_idx, s_m, s_o, p].fixed = False
-                            tso_model[year][day].flex_q_down[adn_load_idx, s_m, s_o, p].fixed = False
-                            tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].setub(interface_transf_rating)
-                            tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].setub(interface_transf_rating)
-                            tso_model[year][day].flex_q_up[adn_load_idx, s_m, s_o, p].setub(interface_transf_rating)
-                            tso_model[year][day].flex_q_down[adn_load_idx, s_m, s_o, p].setub(interface_transf_rating)
+                            # P5.15 Step 3.1-C (PLANNER_BRIEF_2026-09-13.md Addendum 12
+                            # item 2): the redundant flexibility pair is removed here --
+                            # the ADN load legs are fixed at 0 and interface flexibility
+                            # is carried by the signed `interface_delta_p/q` instead,
+                            # bounded by the same interface rating the legs used today.
+                            # Interface flexibility is NOT fixed at zero: `delta` is free.
+                            tso_model[year][day].flex_p_up[adn_load_idx, s_m, s_o, p].fix(0.00)
+                            tso_model[year][day].flex_p_down[adn_load_idx, s_m, s_o, p].fix(0.00)
+                            tso_model[year][day].flex_q_up[adn_load_idx, s_m, s_o, p].fix(0.00)
+                            tso_model[year][day].flex_q_down[adn_load_idx, s_m, s_o, p].fix(0.00)
+
+                            tso_model[year][day].interface_delta_p[dn, s_m, s_o, p].fixed = False
+                            tso_model[year][day].interface_delta_q[dn, s_m, s_o, p].fixed = False
+                            tso_model[year][day].interface_delta_p[dn, s_m, s_o, p].setlb(-interface_transf_rating)
+                            tso_model[year][day].interface_delta_p[dn, s_m, s_o, p].setub(interface_transf_rating)
+                            tso_model[year][day].interface_delta_q[dn, s_m, s_o, p].setlb(-interface_transf_rating)
+                            tso_model[year][day].interface_delta_q[dn, s_m, s_o, p].setub(interface_transf_rating)
 
             # Add expected interface values shared-ESS schedule
             tso_model[year][day].expected_interface_vmag = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.0)
@@ -3655,6 +3810,9 @@ def _prepare_transmission_objectives_for_admm(transmission_network, model):
             elif transmission_network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
                 model[year][day].penalty_load_curtailment.set_value(PENALTY_LOAD_CURTAILMENT)
                 model[year][day].penalty_flex_usage.set_value(0.00)
+            # P5.15 Step 3.1-C (Addendum 12 item 1): interface energy settlement
+            # is active (weight 1) only in the ADMM path.
+            model[year][day].interface_settlement_weight.set_value(1.00)
 
 
 def update_transmission_model_to_admm(planning_problem, model, params, objective_scale):
@@ -3816,6 +3974,9 @@ def _prepare_distribution_objectives_for_admm(distribution_networks, models):
                 elif distribution_network.params.obj_type == OBJ_CONGESTION_MANAGEMENT:
                     dso_model[year][day].penalty_load_curtailment.set_value(PENALTY_LOAD_CURTAILMENT)
                     dso_model[year][day].penalty_flex_usage.set_value(0.00)
+                # P5.15 Step 3.1-C (Addendum 12 item 1): interface energy
+                # settlement is active (weight 1) only in the ADMM path.
+                dso_model[year][day].interface_settlement_weight.set_value(1.00)
 
 
 def update_distribution_models_to_admm(planning_problem, models, params, objective_scale):

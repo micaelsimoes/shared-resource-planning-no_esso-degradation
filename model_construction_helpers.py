@@ -1171,6 +1171,15 @@ def interface_pf_p_transmission_def(m, dn, s_m, s_o, p, network, params):
         m.pc_curt_down[adn_load_idx, s_m, s_o, p].fix(EQUALITY_TOLERANCE)
         m.pc_curt_up[adn_load_idx, s_m, s_o, p].fix(EQUALITY_TOLERANCE)
     pc_adn = m.pc[adn_load_idx, s_m, s_o, p]
+    # P5.15 Step 3.1-C (Addendum 12 item 2): signed interface reparametrization.
+    # `interface_delta_p` is fixed at 0 in every TSO model except the ADMM path,
+    # where it is freed and the legs below are fixed at 0 instead (see
+    # `create_transmission_network_model`, shared_resources_planning.py). Adding
+    # it here unconditionally, alongside the unchanged legs term, makes the
+    # interface expression `pc + legs` in the hierarchical/uncoordinated paths
+    # (delta == 0) and `pc + delta` in the ADMM path (legs == 0), without a
+    # path-specific branch in this shared rule.
+    pc_adn += m.interface_delta_p[dn, s_m, s_o, p]
     if params.fl_reg:
         pc_adn += m.flex_p_up[adn_load_idx, s_m, s_o, p] - m.flex_p_down[adn_load_idx, s_m, s_o, p]
     return pc_adn
@@ -1183,6 +1192,8 @@ def interface_pf_q_transmission_def(m, dn, s_m, s_o, p, network, params):
         m.qc_curt_down[adn_load_idx, s_m, s_o, p].fix(EQUALITY_TOLERANCE)
         m.qc_curt_up[adn_load_idx, s_m, s_o, p].fix(EQUALITY_TOLERANCE)
     qc_adn = m.qc[adn_load_idx, s_m, s_o, p]
+    # P5.15 Step 3.1-C (Addendum 12 item 2): see interface_pf_p_transmission_def.
+    qc_adn += m.interface_delta_q[dn, s_m, s_o, p]
     if params.fl_reg:
         qc_adn += m.flex_q_up[adn_load_idx, s_m, s_o, p] - m.flex_q_down[adn_load_idx, s_m, s_o, p]
     return qc_adn
@@ -1283,6 +1294,16 @@ def compute_node_load(model, i, s_m, s_o, p, network, params):
         if load.bus == node.bus_i:
             Pd += model.pc[c, s_m, s_o, p]
             Qd += model.qc[c, s_m, s_o, p]
+            # P5.15 Step 3.1-C (Addendum 12 item 2): the TSO's ADN-interface load
+            # additionally carries `interface_delta_p/q` (fixed at 0 outside the
+            # ADMM path -- see interface_pf_p_transmission_def), so the node
+            # balance stays identical to the `pc_adn`/`qc_adn` interface
+            # expression: `pc + legs + delta`, with exactly one of legs/delta
+            # nonzero depending on the path.
+            if network.is_transmission and load_is_tso_adn_interface(network, load):
+                dn = network.active_distribution_network_nodes.index(load.bus)
+                Pd += model.interface_delta_p[dn, s_m, s_o, p]
+                Qd += model.interface_delta_q[dn, s_m, s_o, p]
             if params.fl_reg and load.fl_reg:
                 Pd += model.flex_p_up[c, s_m, s_o, p] - model.flex_p_down[c, s_m, s_o, p]
                 Qd += model.flex_q_up[c, s_m, s_o, p] - model.flex_q_down[c, s_m, s_o, p]
@@ -1579,7 +1600,48 @@ def build_objective(model, network, params):
     model.total_slack_penalties = pe.Expression(rule=partial(total_slack_penalties_rule, network=network))
     model.total_ess_complementarity_penalties = pe.Expression(rule=partial(total_ess_complementarity_penalties_rule, network=network))
 
+    # P5.15 Step 3.1-C (PLANNER_BRIEF_2026-09-13.md Addendum 12 item 1):
+    # interface energy settlement, category A-transfer. Weight is 0 by default
+    # (every non-ADMM build); set to 1 in the ADMM path by
+    # `_prepare_transmission_objectives_for_admm` / `_prepare_distribution_objectives_for_admm`
+    # (shared_resources_planning.py). Added to the PHYSICAL objective here, before
+    # the `effective_scale` division the ADMM path applies to `model.objective.expr`
+    # as a whole, so cancellation between the TSO's and the DSOs' settlement holds
+    # in currency units.
+    model.interface_settlement_weight = pe.Param(initialize=0.00, mutable=True)
+    model.interface_settlement = pe.Expression(expr=interface_energy_settlement(model, network))
+
     model.objective = pe.Objective(sense=pe.minimize, rule=partial(objective_function_rule, params=params))
+
+
+def interface_energy_settlement(model, network):
+    """P5.15 Step 3.1-C (Addendum 12 item 1): interface energy settlement at the
+    scenario's hourly market price `network.cost_energy_p` -- the same array
+    `generation_cost` uses. TSO block pays `-pi_t * p_int` (a revenue for
+    delivering interface energy to the DSO); DSO block pays `+pi_t * p_int` (the
+    cost of importing it). The two cancel exactly when the TSO's and the DSO's
+    interface quantities agree (the ADMM consensus point), by construction and
+    with no anchor. No settlement on Q (Addendum 12 item 3) -- the DSO's
+    `flex_q_down` cost (row 2) prices reactive exchange instead.
+    """
+    settlement = 0.0
+    if network.is_transmission:
+        for dn in model.adn_nodes:
+            for s_m in model.scenarios_market:
+                c_p = network.cost_energy_p[s_m]
+                for s_o in model.scenarios_operation:
+                    probability = network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
+                    for p in model.periods:
+                        settlement += probability * c_p[p] * network.baseMVA * model.pc_adn[dn, s_m, s_o, p]
+        return -settlement
+    else:
+        for s_m in model.scenarios_market:
+            c_p = network.cost_energy_p[s_m]
+            for s_o in model.scenarios_operation:
+                probability = network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
+                for p in model.periods:
+                    settlement += probability * c_p[p] * network.baseMVA * model.pg_adn[s_m, s_o, p]
+        return settlement
 
 
 def objective_function_rule(model, params):
@@ -1590,6 +1652,11 @@ def objective_function_rule(model, params):
     obj += model.total_ess_utilization_cost_penalty
     obj += model.total_slack_penalties
     obj += model.total_ess_complementarity_penalties
+    # P5.15 Step 3.1-C (Addendum 12 item 1): 0 unless the ADMM path sets the
+    # weight to 1. Excluded from reported Q(x) by construction --
+    # `_get_operational_recourse_components` (shared_resources_planning.py)
+    # subtracts it back out.
+    obj += model.interface_settlement_weight * model.interface_settlement
     return obj
 
 
