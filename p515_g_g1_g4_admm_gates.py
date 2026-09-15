@@ -1926,13 +1926,16 @@ def write_interface_settlement_detail_s31c(planning, sed, models, rows, report, 
 # P5.15 Step 3.2 + 3.3(a) -- Boyd stopping rule and residual balancing,
 # level-capture arm `s32`. Authority: PLANNER_BRIEF_2026-09-13.md Addendum 9
 # sections 3.2, 3.3(a), Addendum 13. Binding specification:
-# data/SRP1/Results/P515S32/frozen_s32_spec_v1_14a18674.json.
+# data/SRP1/Results/P515S32/frozen_s32_spec_v2_516bd749.json (supersedes v1
+# data/SRP1/Results/P515S32/frozen_s32_spec_v1_14a18674.json: the balancing
+# dual ratio now uses s_rho_part instead of full s; the stopping rule is
+# unchanged).
 # ===========================================================================
 
 OUT_S32 = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S32_run')
 S32_SPEC_PATH = os.path.join(
-    REPO, 'data', 'SRP1', 'Results', 'P515S32', 'frozen_s32_spec_v1_14a18674.json')
-S32_SPEC_SHA256 = '14a18674c2f2f7119781fafb72c569a3a4788b8edbfc821a9ffc2921934e7356'
+    REPO, 'data', 'SRP1', 'Results', 'P515S32', 'frozen_s32_spec_v2_516bd749.json')
+S32_SPEC_SHA256 = '516bd749c5eff6c5f26c0dac570d10964ca989b2c64394ac1ba5deca32356b85'
 S32_CAP = 150
 S32_REL = 1e-4
 S32_S31C_G_PATH = os.path.join(OUT_S31C, 'g_baseline.json')
@@ -1943,19 +1946,20 @@ S32_S31C_G_PATH = os.path.join(OUT_S31C, 'g_baseline.json')
 S32_REPORT_PER_CYCLE_CHANNEL_FIELDS = (
     'r', 's', 's_rho_part', 's_proximal_part', 'eps_pri', 'eps_dual',
     'norm_x', 'norm_z', 'norm_y', 'primal_ratio', 'dual_ratio',
+    'dual_ratio_balance',
 )
 S32_ADMM_DIAGNOSTICS_KEYS = (
     'boyd_v_r', 'boyd_v_s', 'boyd_v_s_rho_part', 'boyd_v_s_proximal_part',
     'boyd_v_proximal_share', 'boyd_v_eps_pri', 'boyd_v_eps_dual',
     'boyd_v_norm_x', 'boyd_v_norm_z', 'boyd_v_norm_y', 'boyd_v_primal_ratio',
-    'boyd_v_dual_ratio', 'boyd_v_primal_pass', 'boyd_v_dual_pass', 'boyd_v_channel_pass',
+    'boyd_v_dual_ratio', 'boyd_v_dual_ratio_balance', 'boyd_v_primal_pass', 'boyd_v_dual_pass', 'boyd_v_channel_pass',
     'boyd_pf_r', 'boyd_pf_s', 'boyd_pf_s_rho_part', 'boyd_pf_s_proximal_part',
     'boyd_pf_eps_pri', 'boyd_pf_eps_dual', 'boyd_pf_norm_x', 'boyd_pf_norm_z',
-    'boyd_pf_norm_y', 'boyd_pf_primal_ratio', 'boyd_pf_dual_ratio', 'boyd_pf_channel_pass',
+    'boyd_pf_norm_y', 'boyd_pf_primal_ratio', 'boyd_pf_dual_ratio', 'boyd_pf_dual_ratio_balance', 'boyd_pf_channel_pass',
     'boyd_ess_r', 'boyd_ess_s', 'boyd_ess_s_rho_part', 'boyd_ess_s_proximal_part',
     'boyd_ess_eps_pri', 'boyd_ess_eps_dual', 'boyd_ess_norm_x', 'boyd_ess_norm_z',
     'boyd_ess_norm_y', 'boyd_ess_norm_y_tso', 'boyd_ess_norm_y_dso', 'boyd_ess_norm_y_esso',
-    'boyd_ess_primal_ratio', 'boyd_ess_dual_ratio', 'boyd_ess_channel_pass',
+    'boyd_ess_primal_ratio', 'boyd_ess_dual_ratio', 'boyd_ess_dual_ratio_balance', 'boyd_ess_channel_pass',
     'boyd_all_pass', 'boyd_stop', 'boyd_eps_abs', 'boyd_eps_rel', 'boyd_eps_source',
     'rho_v_before', 'rho_v_after', 'rho_v_action',
     'rho_pf_before', 'rho_pf_after', 'rho_pf_action',
@@ -2063,6 +2067,7 @@ def _s32_binding_test(last_row):
             'eps_dual': last_row.get(f'boyd_{group}_eps_dual'),
             'primal_ratio': last_row.get(f'boyd_{group}_primal_ratio'),
             'dual_ratio': last_row.get(f'boyd_{group}_dual_ratio'),
+            'dual_ratio_balance': last_row.get(f'boyd_{group}_dual_ratio_balance'),
             'primal_pass': last_row.get(f'boyd_{group}_primal_pass'),
             'dual_pass': last_row.get(f'boyd_{group}_dual_pass'),
             'channel_pass': last_row.get(f'boyd_{group}_channel_pass'),
@@ -2362,8 +2367,10 @@ if __name__ == '__main__':
                      post_run_hook=_s31c_hook)
     elif gate == 's32':
         # S32 worker task (PLANNER_BRIEF_2026-09-13.md Addendum 9 sections 3.2,
-        # 3.3(a); Addendum 13; frozen spec
-        # data/SRP1/Results/P515S32/frozen_s32_spec_v1_14a18674.json): Boyd
+        # 3.3(a); Addendum 13; frozen spec v2
+        # data/SRP1/Results/P515S32/frozen_s32_spec_v2_516bd749.json,
+        # supersedes v1 frozen_s32_spec_v1_14a18674.json -- balancing dual
+        # ratio now s_rho_part/eps_dual, stopping rule unchanged): Boyd
         # stopping rule + residual balancing gate, cap 150, case-file rho in
         # force (N.RHO NOT applied) -- own fresh root and eval id.
         if N.REL != S32_REL:
