@@ -1,0 +1,910 @@
+{
+ "stage": "P5.15-S34",
+ "authority": "Planner task 2026-09-16 (EFC* price-taking benchmark)",
+ "timestamp_utc": "2026-09-16T09:08:37.730456+00:00",
+ "instance": {
+  "s_mva": 0.96875,
+  "e_mwh": 3.875,
+  "invest_year": 2025,
+  "eff_ch": 0.97,
+  "eff_dch": 0.96,
+  "soc_min_frac": 0.1,
+  "soc_max_frac": 0.9,
+  "soc_init_frac": 0.5,
+  "dt_hours": 1.0
+ },
+ "row3_variant": {
+  "computed": false,
+  "skip_reason": "Row 3 (the TSO's ADN-interface flexibility charge, historically the source of the order-1 EFC/day figures the gate cites) is NOT part of any current production solver objective: `flexibility_cost` (model_construction_helpers.py:1687-1701) explicitly `continue`s over TSO ADN-interface loads (`load_is_tso_adn_interface`, model_construction_helpers.py:1682-1685), and the counterfactual value it WOULD have had is computed only by `adn_interface_flexibility_cost` (model_construction_helpers.py:1712-1732), whose own docstring states it is 'NOT part of any solver objective... used only by reporting/harness code' (REVISION_CONTEXT.md Amendment 2026-09-15, row 3 removal per the signed penalty table, Addendum 10/11). The shared ESS's own dispatch variables (`shared_es_pch`/`shared_es_pdch` at the DSO's bus, network.py:390-391) are physically distinct from the TSO's ADN-interface load flexibility variables (`flex_p_down`/`flex_q_down` on loads at the TSO's ADN-interface buses, model_construction_helpers.py:1693-1699); any mapping from 'one unit of shared-ESS discharge at node e' to 'one unit of displaced TSO-side interface flexibility' runs through the coupled AC power flow of both the TSO and DSO networks and the ADMM interface consensus -- there is no committed algebraic identity for it, and recovering one would require re-solving the coupled AC OPF, which this bounded diagnostic (zero production solves) is barred from doing. Per the task's own instruction ('If the mapping is not well defined from committed sources, say so and skip this variant rather than inventing one'), variant 2 is skipped. `cost_flex` itself IS readable from committed production data (`SharedResourcesPlanning.cost_flex[year][day][0]`, shared_resources_planning.py:7119, populated exactly like `cost_energy_p`) -- e.g. cost_flex[2025]['Spring'][0][:6] = [50.39, 48.65, 46.73, 43.06, 45.28, 47.58] $/MWh at the time of this run -- so the skip is about the MAPPING onto the storage, not about data availability."
+ },
+ "price_cross_check_vs_s31c_json": {
+  "available": true,
+  "per_cell": {
+   "5/2025/Spring": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "5/2025/Summer": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "5/2025/Autumn": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "5/2025/Winter": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "5/2030/Spring": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "5/2030/Summer": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "5/2030/Autumn": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "5/2030/Winter": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "5/2035/Spring": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "5/2035/Summer": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "5/2035/Autumn": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "5/2035/Winter": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "7/2025/Spring": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "7/2025/Summer": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "7/2025/Autumn": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "7/2025/Winter": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "7/2030/Spring": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "7/2030/Summer": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "7/2030/Autumn": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "7/2030/Winter": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "7/2035/Spring": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "7/2035/Summer": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "7/2035/Autumn": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "7/2035/Winter": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "9/2025/Spring": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "9/2025/Summer": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "9/2025/Autumn": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "9/2025/Winter": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "9/2030/Spring": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "9/2030/Summer": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "9/2030/Autumn": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "9/2030/Winter": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "9/2035/Spring": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "9/2035/Summer": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "9/2035/Autumn": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   },
+   "9/2035/Winter": {
+    "max_abs_diff": 0.0,
+    "n_periods_checked": 24
+   }
+  },
+  "max_abs_diff_overall": 0.0
+ },
+ "results": {
+  "5": {
+   "2025": {
+    "Spring": {
+     "price_stats": {
+      "mean": 83.60145377354466,
+      "max_minus_min": 154.82793029444778,
+      "mean_abs_deviation": 47.10342718431135,
+      "min": 3.2589652668910762,
+      "max": 158.08689556133885
+     },
+     "efc_star_energy": 1.036941580756014,
+     "efc_star_energy_esso_style": 1.0416666666666667,
+     "profit_variant1": 402.8610854863779,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 7,
+     "energy_bound_period_count_variant1": 11,
+     "efc_star_efficiency1": 2.3499999999999996,
+     "profit_variant3": 441.0997959320945,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Summer": {
+     "price_stats": {
+      "mean": 90.60782341050286,
+      "max_minus_min": 110.62293068300211,
+      "mean_abs_deviation": 31.7355511914825,
+      "min": 33.63971087294918,
+      "max": 144.2626415559513
+     },
+     "efc_star_energy": 0.7963711340206185,
+     "efc_star_energy_esso_style": 0.8,
+     "profit_variant1": 270.2762121712365,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 5,
+     "energy_bound_period_count_variant1": 16,
+     "efc_star_efficiency1": 2.1500000000000004,
+     "profit_variant3": 301.28441628660084,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Autumn": {
+     "price_stats": {
+      "mean": 104.31500466875927,
+      "max_minus_min": 81.25158245832753,
+      "mean_abs_deviation": 15.2006168687575,
+      "min": 80.5488384104911,
+      "max": 161.80042086881863
+     },
+     "efc_star_energy": 1.6586917525773197,
+     "efc_star_energy_esso_style": 1.6662500000000002,
+     "profit_variant1": 190.46437353724633,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 12,
+     "energy_bound_period_count_variant1": 7,
+     "efc_star_efficiency1": 2.4749999999999996,
+     "profit_variant3": 245.91153480624533,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Winter": {
+     "price_stats": {
+      "mean": 103.11592806157795,
+      "max_minus_min": 56.88089453028202,
+      "mean_abs_deviation": 14.523789462956131,
+      "min": 84.1287791281758,
+      "max": 141.0096736584578
+     },
+     "efc_star_energy": 1.851977663230241,
+     "efc_star_energy_esso_style": 1.8604166666666668,
+     "profit_variant1": 173.39352685280127,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 13,
+     "energy_bound_period_count_variant1": 8,
+     "efc_star_efficiency1": 2.475,
+     "profit_variant3": 229.0283480362602,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    }
+   },
+   "2030": {
+    "Spring": {
+     "price_stats": {
+      "mean": 94.58737140898431,
+      "max_minus_min": 175.17359191999532,
+      "mean_abs_deviation": 53.29320437162536,
+      "min": 3.6872200684858494,
+      "max": 178.86081198848117
+     },
+     "efc_star_energy": 1.036941580756014,
+     "efc_star_energy_esso_style": 1.0416666666666667,
+     "profit_variant1": 455.8003407733198,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 7,
+     "energy_bound_period_count_variant1": 11,
+     "efc_star_efficiency1": 2.3499999999999996,
+     "profit_variant3": 499.06393182195,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Summer": {
+     "price_stats": {
+      "mean": 111.42647910215022,
+      "max_minus_min": 140.48560592892238,
+      "mean_abs_deviation": 37.56286710644571,
+      "min": 42.75631128099415,
+      "max": 183.24191720991652
+     },
+     "efc_star_energy": 1.297006529209622,
+     "efc_star_energy_esso_style": 1.3029166666666667,
+     "profit_variant1": 360.5660723399382,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 9,
+     "energy_bound_period_count_variant1": 14,
+     "efc_star_efficiency1": 2.1500000000000004,
+     "profit_variant3": 404.95349438663186,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Autumn": {
+     "price_stats": {
+      "mean": 119.90674664688125,
+      "max_minus_min": 82.92101017517528,
+      "mean_abs_deviation": 19.35678665066732,
+      "min": 92.1510859186698,
+      "max": 175.0720960938451
+     },
+     "efc_star_energy": 1.677356701030928,
+     "efc_star_energy_esso_style": 1.6850000000000003,
+     "profit_variant1": 206.92850532128853,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 12,
+     "energy_bound_period_count_variant1": 9,
+     "efc_star_efficiency1": 2.3499999999999996,
+     "profit_variant3": 264.4091727876318,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Winter": {
+     "price_stats": {
+      "mean": 113.95752059192974,
+      "max_minus_min": 69.01817292001355,
+      "mean_abs_deviation": 17.234089770838978,
+      "min": 92.36652066248404,
+      "max": 161.3846935824976
+     },
+     "efc_star_energy": 1.8519776632302407,
+     "efc_star_energy_esso_style": 1.8604166666666666,
+     "profit_variant1": 210.28517647268828,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 13,
+     "energy_bound_period_count_variant1": 8,
+     "efc_star_efficiency1": 2.4749999999999996,
+     "profit_variant3": 271.0677908845277,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    }
+   },
+   "2035": {
+    "Spring": {
+     "price_stats": {
+      "mean": 137.64203840024675,
+      "max_minus_min": 195.9067533820801,
+      "mean_abs_deviation": 69.5819406074083,
+      "min": 23.42925119851346,
+      "max": 219.33600458059357
+     },
+     "efc_star_energy": 1.2791711340206187,
+     "efc_star_energy_esso_style": 1.2850000000000004,
+     "profit_variant1": 533.8171723426898,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 8,
+     "energy_bound_period_count_variant1": 9,
+     "efc_star_efficiency1": 2.3499999999999996,
+     "profit_variant3": 590.712927786035,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Summer": {
+     "price_stats": {
+      "mean": 115.2785896694375,
+      "max_minus_min": 143.29493581238972,
+      "mean_abs_deviation": 41.27068471755506,
+      "min": 41.52905268473293,
+      "max": 184.82398849712266
+     },
+     "efc_star_energy": 0.7963711340206185,
+     "efc_star_energy_esso_style": 0.8,
+     "profit_variant1": 352.28017292222336,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 5,
+     "energy_bound_period_count_variant1": 16,
+     "efc_star_efficiency1": 2.1500000000000004,
+     "profit_variant3": 392.4354985107229,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Autumn": {
+     "price_stats": {
+      "mean": 89.70368397337545,
+      "max_minus_min": 134.6017324718593,
+      "mean_abs_deviation": 27.002141652428833,
+      "min": 40.999513777279745,
+      "max": 175.60124624913902
+     },
+     "efc_star_energy": 1.5384065292096223,
+     "efc_star_energy_esso_style": 1.5454166666666669,
+     "profit_variant1": 265.23494688274,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 10,
+     "energy_bound_period_count_variant1": 10,
+     "efc_star_efficiency1": 2.4250000000000003,
+     "profit_variant3": 309.5212036265729,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Winter": {
+     "price_stats": {
+      "mean": 136.89315390496952,
+      "max_minus_min": 56.17355912502909,
+      "mean_abs_deviation": 13.83253336598853,
+      "min": 115.33630857444551,
+      "max": 171.5098676994746
+     },
+     "efc_star_energy": 1.8519776632302407,
+     "efc_star_energy_esso_style": 1.8604166666666668,
+     "profit_variant1": 143.54919206308696,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 13,
+     "energy_bound_period_count_variant1": 8,
+     "efc_star_efficiency1": 2.475,
+     "profit_variant3": 215.24719754490758,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    }
+   }
+  },
+  "7": {
+   "2025": {
+    "Spring": {
+     "price_stats": {
+      "mean": 83.60145377354466,
+      "max_minus_min": 154.82793029444778,
+      "mean_abs_deviation": 47.10342718431135,
+      "min": 3.2589652668910762,
+      "max": 158.08689556133885
+     },
+     "efc_star_energy": 1.036941580756014,
+     "efc_star_energy_esso_style": 1.0416666666666667,
+     "profit_variant1": 402.8610854863779,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 7,
+     "energy_bound_period_count_variant1": 11,
+     "efc_star_efficiency1": 2.3499999999999996,
+     "profit_variant3": 441.0997959320945,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Summer": {
+     "price_stats": {
+      "mean": 90.60782341050286,
+      "max_minus_min": 110.62293068300211,
+      "mean_abs_deviation": 31.7355511914825,
+      "min": 33.63971087294918,
+      "max": 144.2626415559513
+     },
+     "efc_star_energy": 0.7963711340206185,
+     "efc_star_energy_esso_style": 0.8,
+     "profit_variant1": 270.2762121712365,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 5,
+     "energy_bound_period_count_variant1": 16,
+     "efc_star_efficiency1": 2.1500000000000004,
+     "profit_variant3": 301.28441628660084,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Autumn": {
+     "price_stats": {
+      "mean": 104.31500466875927,
+      "max_minus_min": 81.25158245832753,
+      "mean_abs_deviation": 15.2006168687575,
+      "min": 80.5488384104911,
+      "max": 161.80042086881863
+     },
+     "efc_star_energy": 1.6586917525773197,
+     "efc_star_energy_esso_style": 1.6662500000000002,
+     "profit_variant1": 190.46437353724633,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 12,
+     "energy_bound_period_count_variant1": 7,
+     "efc_star_efficiency1": 2.4749999999999996,
+     "profit_variant3": 245.91153480624533,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Winter": {
+     "price_stats": {
+      "mean": 103.11592806157795,
+      "max_minus_min": 56.88089453028202,
+      "mean_abs_deviation": 14.523789462956131,
+      "min": 84.1287791281758,
+      "max": 141.0096736584578
+     },
+     "efc_star_energy": 1.851977663230241,
+     "efc_star_energy_esso_style": 1.8604166666666668,
+     "profit_variant1": 173.39352685280127,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 13,
+     "energy_bound_period_count_variant1": 8,
+     "efc_star_efficiency1": 2.475,
+     "profit_variant3": 229.0283480362602,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    }
+   },
+   "2030": {
+    "Spring": {
+     "price_stats": {
+      "mean": 94.58737140898431,
+      "max_minus_min": 175.17359191999532,
+      "mean_abs_deviation": 53.29320437162536,
+      "min": 3.6872200684858494,
+      "max": 178.86081198848117
+     },
+     "efc_star_energy": 1.036941580756014,
+     "efc_star_energy_esso_style": 1.0416666666666667,
+     "profit_variant1": 455.8003407733198,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 7,
+     "energy_bound_period_count_variant1": 11,
+     "efc_star_efficiency1": 2.3499999999999996,
+     "profit_variant3": 499.06393182195,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Summer": {
+     "price_stats": {
+      "mean": 111.42647910215022,
+      "max_minus_min": 140.48560592892238,
+      "mean_abs_deviation": 37.56286710644571,
+      "min": 42.75631128099415,
+      "max": 183.24191720991652
+     },
+     "efc_star_energy": 1.297006529209622,
+     "efc_star_energy_esso_style": 1.3029166666666667,
+     "profit_variant1": 360.5660723399382,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 9,
+     "energy_bound_period_count_variant1": 14,
+     "efc_star_efficiency1": 2.1500000000000004,
+     "profit_variant3": 404.95349438663186,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Autumn": {
+     "price_stats": {
+      "mean": 119.90674664688125,
+      "max_minus_min": 82.92101017517528,
+      "mean_abs_deviation": 19.35678665066732,
+      "min": 92.1510859186698,
+      "max": 175.0720960938451
+     },
+     "efc_star_energy": 1.677356701030928,
+     "efc_star_energy_esso_style": 1.6850000000000003,
+     "profit_variant1": 206.92850532128853,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 12,
+     "energy_bound_period_count_variant1": 9,
+     "efc_star_efficiency1": 2.3499999999999996,
+     "profit_variant3": 264.4091727876318,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Winter": {
+     "price_stats": {
+      "mean": 113.95752059192974,
+      "max_minus_min": 69.01817292001355,
+      "mean_abs_deviation": 17.234089770838978,
+      "min": 92.36652066248404,
+      "max": 161.3846935824976
+     },
+     "efc_star_energy": 1.8519776632302407,
+     "efc_star_energy_esso_style": 1.8604166666666666,
+     "profit_variant1": 210.28517647268828,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 13,
+     "energy_bound_period_count_variant1": 8,
+     "efc_star_efficiency1": 2.4749999999999996,
+     "profit_variant3": 271.0677908845277,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    }
+   },
+   "2035": {
+    "Spring": {
+     "price_stats": {
+      "mean": 137.64203840024675,
+      "max_minus_min": 195.9067533820801,
+      "mean_abs_deviation": 69.5819406074083,
+      "min": 23.42925119851346,
+      "max": 219.33600458059357
+     },
+     "efc_star_energy": 1.2791711340206187,
+     "efc_star_energy_esso_style": 1.2850000000000004,
+     "profit_variant1": 533.8171723426898,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 8,
+     "energy_bound_period_count_variant1": 9,
+     "efc_star_efficiency1": 2.3499999999999996,
+     "profit_variant3": 590.712927786035,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Summer": {
+     "price_stats": {
+      "mean": 115.2785896694375,
+      "max_minus_min": 143.29493581238972,
+      "mean_abs_deviation": 41.27068471755506,
+      "min": 41.52905268473293,
+      "max": 184.82398849712266
+     },
+     "efc_star_energy": 0.7963711340206185,
+     "efc_star_energy_esso_style": 0.8,
+     "profit_variant1": 352.28017292222336,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 5,
+     "energy_bound_period_count_variant1": 16,
+     "efc_star_efficiency1": 2.1500000000000004,
+     "profit_variant3": 392.4354985107229,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Autumn": {
+     "price_stats": {
+      "mean": 89.70368397337545,
+      "max_minus_min": 134.6017324718593,
+      "mean_abs_deviation": 27.002141652428833,
+      "min": 40.999513777279745,
+      "max": 175.60124624913902
+     },
+     "efc_star_energy": 1.5384065292096223,
+     "efc_star_energy_esso_style": 1.5454166666666669,
+     "profit_variant1": 265.23494688274,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 10,
+     "energy_bound_period_count_variant1": 10,
+     "efc_star_efficiency1": 2.4250000000000003,
+     "profit_variant3": 309.5212036265729,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Winter": {
+     "price_stats": {
+      "mean": 136.89315390496952,
+      "max_minus_min": 56.17355912502909,
+      "mean_abs_deviation": 13.83253336598853,
+      "min": 115.33630857444551,
+      "max": 171.5098676994746
+     },
+     "efc_star_energy": 1.8519776632302407,
+     "efc_star_energy_esso_style": 1.8604166666666668,
+     "profit_variant1": 143.54919206308696,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 13,
+     "energy_bound_period_count_variant1": 8,
+     "efc_star_efficiency1": 2.475,
+     "profit_variant3": 215.24719754490758,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    }
+   }
+  },
+  "9": {
+   "2025": {
+    "Spring": {
+     "price_stats": {
+      "mean": 83.60145377354466,
+      "max_minus_min": 154.82793029444778,
+      "mean_abs_deviation": 47.10342718431135,
+      "min": 3.2589652668910762,
+      "max": 158.08689556133885
+     },
+     "efc_star_energy": 1.036941580756014,
+     "efc_star_energy_esso_style": 1.0416666666666667,
+     "profit_variant1": 402.8610854863779,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 7,
+     "energy_bound_period_count_variant1": 11,
+     "efc_star_efficiency1": 2.3499999999999996,
+     "profit_variant3": 441.0997959320945,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Summer": {
+     "price_stats": {
+      "mean": 90.60782341050286,
+      "max_minus_min": 110.62293068300211,
+      "mean_abs_deviation": 31.7355511914825,
+      "min": 33.63971087294918,
+      "max": 144.2626415559513
+     },
+     "efc_star_energy": 0.7963711340206185,
+     "efc_star_energy_esso_style": 0.8,
+     "profit_variant1": 270.2762121712365,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 5,
+     "energy_bound_period_count_variant1": 16,
+     "efc_star_efficiency1": 2.1500000000000004,
+     "profit_variant3": 301.28441628660084,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Autumn": {
+     "price_stats": {
+      "mean": 104.31500466875927,
+      "max_minus_min": 81.25158245832753,
+      "mean_abs_deviation": 15.2006168687575,
+      "min": 80.5488384104911,
+      "max": 161.80042086881863
+     },
+     "efc_star_energy": 1.6586917525773197,
+     "efc_star_energy_esso_style": 1.6662500000000002,
+     "profit_variant1": 190.46437353724633,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 12,
+     "energy_bound_period_count_variant1": 7,
+     "efc_star_efficiency1": 2.4749999999999996,
+     "profit_variant3": 245.91153480624533,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Winter": {
+     "price_stats": {
+      "mean": 103.11592806157795,
+      "max_minus_min": 56.88089453028202,
+      "mean_abs_deviation": 14.523789462956131,
+      "min": 84.1287791281758,
+      "max": 141.0096736584578
+     },
+     "efc_star_energy": 1.851977663230241,
+     "efc_star_energy_esso_style": 1.8604166666666668,
+     "profit_variant1": 173.39352685280127,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 13,
+     "energy_bound_period_count_variant1": 8,
+     "efc_star_efficiency1": 2.475,
+     "profit_variant3": 229.0283480362602,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    }
+   },
+   "2030": {
+    "Spring": {
+     "price_stats": {
+      "mean": 94.58737140898431,
+      "max_minus_min": 175.17359191999532,
+      "mean_abs_deviation": 53.29320437162536,
+      "min": 3.6872200684858494,
+      "max": 178.86081198848117
+     },
+     "efc_star_energy": 1.036941580756014,
+     "efc_star_energy_esso_style": 1.0416666666666667,
+     "profit_variant1": 455.8003407733198,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 7,
+     "energy_bound_period_count_variant1": 11,
+     "efc_star_efficiency1": 2.3499999999999996,
+     "profit_variant3": 499.06393182195,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Summer": {
+     "price_stats": {
+      "mean": 111.42647910215022,
+      "max_minus_min": 140.48560592892238,
+      "mean_abs_deviation": 37.56286710644571,
+      "min": 42.75631128099415,
+      "max": 183.24191720991652
+     },
+     "efc_star_energy": 1.297006529209622,
+     "efc_star_energy_esso_style": 1.3029166666666667,
+     "profit_variant1": 360.5660723399382,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 9,
+     "energy_bound_period_count_variant1": 14,
+     "efc_star_efficiency1": 2.1500000000000004,
+     "profit_variant3": 404.95349438663186,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Autumn": {
+     "price_stats": {
+      "mean": 119.90674664688125,
+      "max_minus_min": 82.92101017517528,
+      "mean_abs_deviation": 19.35678665066732,
+      "min": 92.1510859186698,
+      "max": 175.0720960938451
+     },
+     "efc_star_energy": 1.677356701030928,
+     "efc_star_energy_esso_style": 1.6850000000000003,
+     "profit_variant1": 206.92850532128853,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 12,
+     "energy_bound_period_count_variant1": 9,
+     "efc_star_efficiency1": 2.3499999999999996,
+     "profit_variant3": 264.4091727876318,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Winter": {
+     "price_stats": {
+      "mean": 113.95752059192974,
+      "max_minus_min": 69.01817292001355,
+      "mean_abs_deviation": 17.234089770838978,
+      "min": 92.36652066248404,
+      "max": 161.3846935824976
+     },
+     "efc_star_energy": 1.8519776632302407,
+     "efc_star_energy_esso_style": 1.8604166666666666,
+     "profit_variant1": 210.28517647268828,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 13,
+     "energy_bound_period_count_variant1": 8,
+     "efc_star_efficiency1": 2.4749999999999996,
+     "profit_variant3": 271.0677908845277,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    }
+   },
+   "2035": {
+    "Spring": {
+     "price_stats": {
+      "mean": 137.64203840024675,
+      "max_minus_min": 195.9067533820801,
+      "mean_abs_deviation": 69.5819406074083,
+      "min": 23.42925119851346,
+      "max": 219.33600458059357
+     },
+     "efc_star_energy": 1.2791711340206187,
+     "efc_star_energy_esso_style": 1.2850000000000004,
+     "profit_variant1": 533.8171723426898,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 8,
+     "energy_bound_period_count_variant1": 9,
+     "efc_star_efficiency1": 2.3499999999999996,
+     "profit_variant3": 590.712927786035,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Summer": {
+     "price_stats": {
+      "mean": 115.2785896694375,
+      "max_minus_min": 143.29493581238972,
+      "mean_abs_deviation": 41.27068471755506,
+      "min": 41.52905268473293,
+      "max": 184.82398849712266
+     },
+     "efc_star_energy": 0.7963711340206185,
+     "efc_star_energy_esso_style": 0.8,
+     "profit_variant1": 352.28017292222336,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 5,
+     "energy_bound_period_count_variant1": 16,
+     "efc_star_efficiency1": 2.1500000000000004,
+     "profit_variant3": 392.4354985107229,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Autumn": {
+     "price_stats": {
+      "mean": 89.70368397337545,
+      "max_minus_min": 134.6017324718593,
+      "mean_abs_deviation": 27.002141652428833,
+      "min": 40.999513777279745,
+      "max": 175.60124624913902
+     },
+     "efc_star_energy": 1.5384065292096223,
+     "efc_star_energy_esso_style": 1.5454166666666669,
+     "profit_variant1": 265.23494688274,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 10,
+     "energy_bound_period_count_variant1": 10,
+     "efc_star_efficiency1": 2.4250000000000003,
+     "profit_variant3": 309.5212036265729,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    },
+    "Winter": {
+     "price_stats": {
+      "mean": 136.89315390496952,
+      "max_minus_min": 56.17355912502909,
+      "mean_abs_deviation": 13.83253336598853,
+      "min": 115.33630857444551,
+      "max": 171.5098676994746
+     },
+     "efc_star_energy": 1.8519776632302407,
+     "efc_star_energy_esso_style": 1.8604166666666668,
+     "profit_variant1": 143.54919206308696,
+     "binding_constraint_variant1": "power+energy",
+     "power_bound_period_count_variant1": 13,
+     "energy_bound_period_count_variant1": 8,
+     "efc_star_efficiency1": 2.475,
+     "profit_variant3": 215.24719754490758,
+     "binding_constraint_variant3": "power+energy",
+     "efc_star_row3": null
+    }
+   }
+  }
+ },
+ "summary": {
+  "efc_star_energy_2025_max_across_nodes": {
+   "value": 1.851977663230241,
+   "node": 5,
+   "day": "Winter"
+  },
+  "efc_star_efficiency1_2025_max_across_nodes": {
+   "value": 2.475,
+   "node": 5,
+   "day": "Winter"
+  },
+  "efc_star_row3_2025_max_across_nodes": null,
+  "harness_reference_values": {
+   "s33e2_efc_per_day": 0.067,
+   "s31c_efc_per_day": 0.0285,
+   "pre_table_runs_efc_per_day_order1": 1.1,
+   "efc_binding_threshold": 1.4612
+  }
+ },
+ "verdict": "EFC*_energy (2025, max across nodes 5/7/9) = 1.8520 (node 5, Winter) -> order 1.",
+ "solve_profile": {
+  "observed": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "permitted_declared": 0,
+  "guard_verify_failures": []
+ }
+}
