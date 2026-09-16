@@ -109,6 +109,40 @@ Two claims in §3 are **withdrawn or qualified**, and the mechanism is restated.
   unmeasured, which is why the price-taker benchmark `EFC*` is being computed before the 3.4 gate reads EFC/day
   against any target.
 
+## 7. Two measurements that close the open questions (2026-09-16)
+
+**Z4 — the oscillation is a decaying transient, and my earlier description of it was wrong.**
+Commit `a3eca693`, zero solves. The oscillating quantity is `gross_operational_cost`, with period **~20 cycles**
+(convergent across DFT, autocorrelation, peak spacing and zero crossings), and a **decaying** envelope: exponential fit
+R² = 0.84–0.87, half-life ≈ 20 cycles, amplitude falling from 3.7 × tolerance at cycle 34 to 0.04–0.09 × at cycles
+138–143. **Correction to this note and to `P5_15_S33_E2_GATE_REPORT.md` §4:** the "185,571 range = 2.8 × tolerance over
+cycles 101–150" is the **raw span, which is dominated by the residual trend**; the *detrended* oscillation in that
+window is only 0.09–0.38 × tolerance. The honest statement is therefore: late in `s33e2` the cost is slowly descending
+with a decaying ~20-cycle oscillation superimposed — neither "still descending" without qualification, nor "oscillating
+by 2.8 × tolerance". The unidentifiability of the ESS cost contribution (§4 of the gate report) is unaffected.
+The mode is **not** caused by the cycle-30 ρ/γ freeze: it appears in `s32`, which has no freeze, at 2–3 × the relative
+amplitude. No robust coupling to the 18 network failures (permutation p = 0.035 / 0.622 across two windows, not
+significant after accounting for both). V and ESS dual residuals co-move with the cost step; PF does not.
+**Capture gap found:** the `[RECOURSE JUMP]` block decomposition stops at cycle 62, so block-level localisation is
+unrecoverable for the late window. Future gates must capture it unconditionally.
+
+**EFC\* — the price-taker benchmark, which replaces "EFC/day was 1.1 before".**
+Commit `d1b8cf9c`, zero production solves (36 LPs in scipy, guard armed at zero Pyomo/IPOPT entries; prices
+cross-checked bitwise against the run's own serialized settlement detail, max abs diff 0.0 over 864 cells).
+For C\* (s = 0.96875 MVA, e = 3.875 MWh): **`EFC*` = 1.8520 for 2025** (max across nodes 5/7/9; 0.7964–1.8520 across
+the twelve year/day cells; 2.1500–2.4750 with round-trip efficiency forced to 1.0). Every cell binds **both** the
+converter rating and the SoC range, a consequence of C\*'s ≈3.3 h energy-to-power ratio against a 24-period day.
+Consequences:
+- **"Order 1" is a defensible derived target**, and is if anything conservative: `EFC*` exceeds the retired 1.1 figure.
+  The gate's storage diagnostic is read against `EFC*`, never against 1.1. Today's 0.067 is **3.6 %** of it.
+- **But `EFC*` > the degradation-binding threshold 1.4612**, so a price-taker would want to cycle past the point where
+  the SoH constraint binds. The achievable equilibrium under the full formulation is therefore expected to sit **near
+  the threshold, not at 1.85** — and if storage settles near 1.46 with the SoH constraint active, that is success, not
+  a shortfall.
+- The `EFC*_row3` variant was **skipped, correctly**: no committed algebraic mapping exists from the row-3 interface
+  charge onto the storage's own dispatch, and inventing one would be an approximation. The price-deletion mechanism in
+  §6 therefore stands on the code reading, not on a counterfactual number.
+
 ## Evidence
 
 `data/SRP1/Results/{P515G1,P515G1B,P515S30,P515G3F_B,P515A,P515S31_run,P515S31C_run,P515S32_run,P515S33_E2_run}/`
