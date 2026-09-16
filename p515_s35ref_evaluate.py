@@ -16,7 +16,7 @@ no channel frozen at a rho clamp (spec v5 gates.G_reference). Everything else is
   * system cost at matched cycles vs s34, s33e2, s32, s31c; bars valid only if both runs settled (none of the
     references did), so every bar is marked not valid;
   * failures by tier, solve identity, cancellation closure, terminal interface voltages vs bounds.
-Usage: python p515_s35ref_evaluate.py [RUN_DIR] [--dry-run]; writes RUN_DIR/s35ref_evaluation.json (write-once).
+Usage: python p515_s35ref_evaluate.py [RUN_DIR] [--dry-run]; writes RUN_DIR/s35ref_evaluation_v2.json (write-once; v1 retained unchanged, its hash recorded).
 """
 import glob
 import json
@@ -56,7 +56,8 @@ def main(argv):
     dry = '--dry-run' in argv
     args = [a for a in argv if not a.startswith('--')]
     run = os.path.abspath(args[0]) if args else os.path.join(RES, 'P515S35_REF_run')
-    out_path = os.path.join(run, 's35ref_evaluation.json')
+    out_path = os.path.join(run, 's35ref_evaluation_v2.json')
+    v1_path = os.path.join(run, 's35ref_evaluation.json')
     if not dry and os.path.exists(out_path):
         raise RuntimeError(f'refusing to overwrite {out_path}')
     guard = SolveProfileGuard(permitted=(), label='P5.15 s35ref evaluation').install()
@@ -68,12 +69,16 @@ def main(argv):
         last, n = rows[-1], len(rows)
 
         allpass = [r['cycle'] for r in rows if r.get('boyd_all_pass')]
-        run_start = None
-        if bt.get('stopped_by') == 'boyd' and allpass:
-            k = allpass[-1]
-            run_start = k
-            while run_start - 1 in allpass:
-                run_start -= 1
+        required = last.get('required_consecutive_cycles') or 3
+        cap = 500
+        # Stop cause derived from the TRAJECTORY (v2). v1 trusted boyd_terminal.stopped_by, which the s35ref writer
+        # computes as 'boyd' only when converged_at_cycle == last cycle; production records the FIRST cycle of the
+        # consecutive run, so any stop needing more than one consecutive cycle was mislabelled 'cap'.
+        tail = [r['cycle'] for r in rows[-required:]]
+        tail_all_pass = len(tail) == required and all(k in allpass for k in tail) and \
+            all(tail[i] + 1 == tail[i + 1] for i in range(len(tail) - 1))
+        stopped_by_trajectory = 'boyd' if (tail_all_pass and n < cap) else ('cap' if n >= cap else 'other')
+        run_start = tail[0] if tail_all_pass else None
         clamp_any = any(r.get(f'rho_at_clamp_{c}') for r in rows for c in CH)
 
         term = {}
@@ -126,13 +131,28 @@ def main(argv):
             matched.append(row)
 
         out = {
-            'stage': 'P5.15 Addendum 16 run 1 (s35ref, spec v5) - evaluation',
+            'stage': 'P5.15 Addendum 16 run 1 (s35ref, spec v5) - evaluation v2',
+            'predecessor': ({'path': os.path.relpath(v1_path, REPO),
+                             'sha256': __import__('hashlib').sha256(open(v1_path, 'rb').read()).hexdigest(),
+                             'why_superseded': 'v1 took the stop cause from boyd_terminal.stopped_by, which is wrong '
+                                               'whenever more than one consecutive converged cycle is required'}
+                            if os.path.exists(v1_path) else None),
             'run_dir': os.path.relpath(run, REPO), 'instance': g.get('instance'),
             'spec': {'file': bt.get('spec_file'), 'sha256': bt.get('spec_file_sha256')},
             'REFERENCE_ESTABLISHED': {
-                'stopped_by': bt.get('stopped_by'), 'cycles': n, 'converged_at_cycle': g.get('converged_at_cycle'),
+                'stopped_by_trajectory': stopped_by_trajectory, 'stopped_by_harness_field': bt.get('stopped_by'),
+                'harness_field_defect': ('boyd_terminal.stopped_by disagrees with the trajectory: the writer compares '
+                                         'converged_at_cycle (first cycle of the consecutive run) with the last cycle')
+                                        if bt.get('stopped_by') != stopped_by_trajectory else None,
+                'cycles': n, 'cap': cap, 'converged_at_cycle': g.get('converged_at_cycle'),
+                'required_consecutive_cycles': required, 'stop_run_cycles': tail if tail_all_pass else None,
                 'stop_run_first_cycle': run_start, 'rho_at_clamp_any': clamp_any,
-                'verdict': 'ESTABLISHED' if (bt.get('stopped_by') == 'boyd' and not clamp_any) else 'NOT ESTABLISHED'},
+                'verdict': 'ESTABLISHED' if (stopped_by_trajectory == 'boyd' and not clamp_any) else 'NOT ESTABLISHED'},
+            'settling_quality': {
+                'terminal_ratio_to_threshold_per_channel': {c: max(last.get(f'boyd_{c}_primal_ratio') or 0.0,
+                                                                    last.get(f'boyd_{c}_dual_ratio') or 0.0) for c in CH},
+                'objective_rule_ten': last.get('objective_change_ratio'),
+                'rule': 'CLAUDE.md: a run that genuinely settled stops well inside its threshold; ~99 % means stopped, not converged'},
             'terminal_per_channel': term,
             'efc': {'terminal_max': efc_t, 'late_slope_per_cycle_last_30': slope,
                     'sampled': [e for e in efc if e[0] in MATCH or e[0] == n],
