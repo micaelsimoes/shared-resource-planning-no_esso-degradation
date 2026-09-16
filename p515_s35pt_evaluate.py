@@ -21,7 +21,7 @@ Also reported, not gated:
   * EFC per cohort-year for both runs against the price-taker bound (Z2: 1.1918 / 1.1888 / 0.9647);
   * SoH floor block (active rows, floor multiplier) from each run's floor sidecar;
   * network failures per cycle for both runs; cycles to stop; system cost and EFC trajectories at matched cycles.
-Usage: python p515_s35pt_evaluate.py [PT_RUN_DIR] [--dry-run]; writes PT_RUN_DIR/s35pt_evaluation.json (write-once).
+Usage: python p515_s35pt_evaluate.py [PT_RUN_DIR] [--dry-run]; writes PT_RUN_DIR/s35pt_evaluation_v2.json (write-once; v1 retained, its hash recorded).
 """
 import glob
 import hashlib
@@ -88,7 +88,8 @@ def main(argv):
     dry = '--dry-run' in argv
     args = [a for a in argv if not a.startswith('--')]
     pt_run = os.path.abspath(args[0]) if args else os.path.join(RES, 'P515S35_PT_run')
-    out_path = os.path.join(pt_run, 's35pt_evaluation.json')
+    out_path = os.path.join(pt_run, 's35pt_evaluation_v2.json')
+    v1_path = os.path.join(pt_run, 's35pt_evaluation.json')
     if not dry and os.path.exists(out_path):
         raise RuntimeError(f'refusing to overwrite {out_path}')
     guard = SolveProfileGuard(permitted=(), label='P5.15 s35pt independent evaluation').install()
@@ -106,7 +107,9 @@ def main(argv):
         crit_a = (s_pt['stopped_by'] == 'boyd') and not clamp_pt
         crit_b = (abs(cost_pt - cost_ref) <= bar) if bar is not None else None
         crit_c = (abs(efc_pt - efc_ref) <= 0.02 * abs(efc_ref)) if (efc_pt is not None and efc_ref) else None
-        valid_bc = (s_ref['stopped_by'] == 'boyd')
+        # v2: (b) and (c) test reproducibility of a fixed point only if BOTH runs stopped under Boyd. v1 checked the
+        # reference alone, so a cap-stopped initialized run was wrongly treated as a valid comparator.
+        valid_bc = (s_ref['stopped_by'] == 'boyd') and (s_pt['stopped_by'] == 'boyd')
 
         slope_pt, slope_ref = _late_slope(pt), _late_slope(ref)
         bracket = {
@@ -132,7 +135,10 @@ def main(argv):
                    for k in MATCH if k <= len(pt) and k in refd]
 
         out = {
-            'stage': 'P5.15 Addendum 16 item 3 - gate s35pt - independent evaluation',
+            'stage': 'P5.15 Addendum 16 item 3 - gate s35pt - independent evaluation v2',
+            'predecessor': ({'path': os.path.relpath(v1_path, REPO), 'sha256': hashlib.sha256(open(v1_path, 'rb').read()).hexdigest(),
+                             'why_superseded': 'v1 marked criteria (b)/(c) well posed when only the reference had stopped under Boyd'}
+                            if os.path.exists(v1_path) else None),
             'sources': {'pt': {'path': os.path.relpath(pt_path, REPO), 'sha256': hashlib.sha256(open(pt_path, 'rb').read()).hexdigest()},
                         'ref': {'path': os.path.relpath(ref_path, REPO), 'sha256': hashlib.sha256(open(ref_path, 'rb').read()).hexdigest()}},
             'stop': {'pt': s_pt, 'ref': s_ref, 'pt_rho_at_clamp_any': clamp_pt},
@@ -145,6 +151,8 @@ def main(argv):
                                                 'rel_diff': (abs(efc_pt - efc_ref) / efc_ref) if (efc_pt is not None and efc_ref) else None,
                                                 'bound': 0.02, 'pass': crit_c},
                 'criteria_b_c_well_posed': valid_bc,
+                'criterion_b_status': ('evaluated' if valid_bc else 'INDETERMINATE - the initialized run did not settle, so the rule-nine bar does not apply'),
+                'criterion_c_status': ('evaluated' if valid_bc else 'NOT A FIXED-POINT TEST here - the two runs approach from opposite directions and one did not stop'),
                 'PASS': bool(crit_a and crit_b and crit_c and valid_bc)},
             'bracket_analysis': bracket,
             'settling_quality': {'pt': settling(lp), 'ref': settling(lr),
