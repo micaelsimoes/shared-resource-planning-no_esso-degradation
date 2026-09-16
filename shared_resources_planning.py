@@ -2356,6 +2356,16 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         initial_state.get('consecutive_converged_cycles', 0)
         if continuing_same_candidate else 0
     )
+    # P5.15 Step 3.4 (frozen spec v4, `changes_from_v3.c_rho_policy.freeze`):
+    # per-channel freeze bookkeeping (unchanged-streak, ever-acted, frozen,
+    # at-clamp), persisted across cycles the same way as
+    # `consecutive_converged_cycles` above -- reset for a genuinely new
+    # candidate, carried forward otherwise.
+    freeze_state = (
+        deepcopy(initial_state.get('freeze_state'))
+        if continuing_same_candidate and initial_state.get('freeze_state') is not None
+        else _init_admm_freeze_state()
+    )
 
     if initial_state is None:
         # Create ADMM variables and obtain the initial local solutions.
@@ -2393,6 +2403,10 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
                 'last_slack_component_blocks': None,
                 'last_tso_voltage_slack_state': None,
                 'consecutive_converged_cycles': 0,
+                'freeze_state': freeze_state,
+                'sigma_computed': None,
+                'sigma_fixed': None,
+                'al_scale_esso': None,
                 'admm_diagnostics': admm_diagnostics,
                 'solver_recovery_diagnostics': deepcopy(shared_ess_data.solver_recovery_diagnostics),
                 'initialization_failed': True,
@@ -2409,11 +2423,13 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
 
         _prepare_distribution_objectives_for_admm(distribution_networks, dso_models)
         _prepare_transmission_objectives_for_admm(transmission_network, tso_model)
-        objective_scale = _compute_common_admm_objective_scale(planning_problem, tso_model, dso_models)
+        objective_scale_computed = _compute_common_admm_objective_scale(planning_problem, tso_model, dso_models)
+        objective_scale, sigma_computed, sigma_fixed = _resolve_common_admm_objective_scale(objective_scale_computed, admm_parameters)
+        al_scale_esso = _resolve_esso_al_scale(planning_problem, admm_parameters, objective_scale)[0]
 
         update_distribution_models_to_admm(planning_problem, dso_models, admm_parameters, objective_scale)
         update_transmission_model_to_admm(planning_problem, tso_model, admm_parameters, objective_scale)
-        update_shared_energy_storage_model_to_admm(planning_problem, esso_model, admm_parameters)
+        update_shared_energy_storage_model_to_admm(planning_problem, esso_model, admm_parameters, al_scale_esso=al_scale_esso)
         _initialize_shared_ess_consensus(planning_problem, consensus_vars)
 
         # Initialize only the TSO-DSO interface coordination here.
@@ -2439,6 +2455,13 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         consensus_vars = deepcopy(initial_state['consensus_vars'])
         dual_vars = deepcopy(initial_state['dual_vars'])
         _update_operational_models_with_candidate(planning_problem, models, candidate_solution)
+        # P5.15 Step 3.4: sigma/al_scale_esso are baked into the model's own
+        # ADMM Params at construction (`if initial_state is None:` above)
+        # and are not recomputed when continuing -- reload the values for
+        # per-cycle diagnostics only, regardless of `continuing_same_candidate`.
+        sigma_computed = initial_state.get('sigma_computed')
+        sigma_fixed = initial_state.get('sigma_fixed')
+        al_scale_esso = initial_state.get('al_scale_esso')
 
     sess_available_capacities = shared_ess_data.get_updated_capacities(esso_model)
 
@@ -2693,7 +2716,11 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             if (objective_change_abs is not None and objective_tolerance) else None
         )
 
-        penalty_actions, penalties_before, penalties_after, gamma_before, gamma_after, rho_freeze_active = _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, boyd_metrics, admm_parameters, iter=iter, allow_update=local_solves_ok)
+        penalty_actions, penalties_before, penalties_after, gamma_before, gamma_after, rho_freeze_active, freeze_state = _update_admm_penalties(
+            tso_model, dso_models, esso_model, residual_metrics, boyd_metrics, admm_parameters,
+            iter=iter, allow_update=local_solves_ok, freeze_state=freeze_state,
+        )
+        efc_per_day_max = _get_admm_efc_per_day_max(esso_model)
         admm_diagnostics.append({
             'cycle': iter,
             'local_solves_ok': local_solves_ok,
@@ -2803,6 +2830,25 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             'freeze_after_cycle': admm_parameters.penalty_update.get('freeze_after_cycle'),
             'gamma_policy': admm_parameters.proximal_regularization['tso'].get('gamma_policy', 'fixed'),
             'gamma_tau': admm_parameters.proximal_regularization['tso'].get('tau', 1.0),
+            # P5.15 Step 3.4 (frozen spec v4): fixed sigma, the ESSO AL
+            # scale, S_ref, per-channel freeze diagnostics (streak/clamp),
+            # and the per-cycle EFC/day diagnostic.
+            'sigma_fixed': sigma_fixed,
+            'sigma_computed': sigma_computed,
+            'al_scale_esso': al_scale_esso,
+            'shared_ess_reference_rating_mva': admm_parameters.shared_ess_reference_rating_mva,
+            'freeze_after_unchanged_cycles': admm_parameters.penalty_update.get('freeze_after_unchanged_cycles'),
+            'freeze_backstop_cycle': admm_parameters.penalty_update.get('freeze_backstop_cycle'),
+            'rho_frozen_v': freeze_state['v']['frozen'],
+            'rho_frozen_pf': freeze_state['pf']['frozen'],
+            'rho_frozen_ess': freeze_state['ess']['frozen'],
+            'rho_unchanged_streak_v': freeze_state['v']['unchanged_streak'],
+            'rho_unchanged_streak_pf': freeze_state['pf']['unchanged_streak'],
+            'rho_unchanged_streak_ess': freeze_state['ess']['unchanged_streak'],
+            'rho_at_clamp_v': freeze_state['v']['at_clamp'],
+            'rho_at_clamp_pf': freeze_state['pf']['at_clamp'],
+            'rho_at_clamp_ess': freeze_state['ess']['at_clamp'],
+            'efc_per_day_max': efc_per_day_max,
             'objective_change_ratio': objective_change_ratio,
             'boyd_all_pass': boyd_all_pass,
             'boyd_stop': cycle_convergence,
@@ -2964,6 +3010,10 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         'last_slack_component_blocks': deepcopy(previous_slack_component_blocks),
         'last_tso_voltage_slack_state': deepcopy(previous_tso_voltage_slack_state),
         'consecutive_converged_cycles': consecutive_converged_cycles,
+        'freeze_state': deepcopy(freeze_state),
+        'sigma_computed': sigma_computed,
+        'sigma_fixed': sigma_fixed,
+        'al_scale_esso': al_scale_esso,
         'admm_diagnostics': admm_diagnostics,
         'solver_recovery_diagnostics': deepcopy(shared_ess_data.solver_recovery_diagnostics),
         'initialization_failed': False,
@@ -3149,6 +3199,108 @@ def _compute_common_admm_objective_scale(planning_problem, tso_model, dso_models
         )
 
     return objective_scale
+
+
+def _resolve_common_admm_objective_scale(objective_scale_computed, admm_parameters):
+    """
+    P5.15 Step 3.4 (frozen spec v4, `changes_from_v3.b_sigma_fixed`):
+    `_compute_common_admm_objective_scale` stays wired and is ALWAYS called
+    (see the caller); this only decides which value the ADMM objectives
+    actually use. `admm_parameters.objective_scale` is None by default
+    (other case studies, and SRP1 before 3.4): the computed value is used,
+    unchanged. When set (SRP1: 93635360.0), the fixed value is used instead,
+    and the computed value is asserted within `objective_scale_assert_factor`
+    of it, failing loudly (with both numbers) outside that calibration
+    range.
+
+    Returns (objective_scale_used, sigma_computed, sigma_fixed).
+    """
+    sigma_computed = objective_scale_computed
+    sigma_fixed = admm_parameters.objective_scale
+
+    if sigma_fixed is None:
+        return sigma_computed, sigma_computed, None
+
+    factor = admm_parameters.objective_scale_assert_factor
+    ratio = sigma_computed / sigma_fixed
+    if not (isfinite(ratio) and (1.0 / factor) <= ratio <= factor):
+        raise ValueError(
+            'ADMM fixed objective scale (sigma) failed its calibration-range assertion: '
+            f'sigma_computed={sigma_computed:.6e} | sigma_fixed={sigma_fixed:.6e} | '
+            f'ratio={ratio:.6e} | objective_scale_assert_factor={factor:.3f}.'
+        )
+
+    print(
+        '[ADMM OF SCALE] Fixed sigma in force '
+        f'sigma_fixed={sigma_fixed:.6e} | sigma_computed={sigma_computed:.6e} | '
+        f'ratio={ratio:.6e} | assert_factor={factor:.3f}'
+    )
+
+    return sigma_fixed, sigma_computed, sigma_fixed
+
+
+def _compute_median_admm_block_weight(planning_problem):
+    """
+    P5.15 Step 3.4 (frozen spec v4, `changes_from_v3.a_D5_esso_scaling`):
+    median block weight over the SAME TSO/DSO block set
+    `_compute_common_admm_objective_scale` sums over (w_ref), used only to
+    derive `al_scale_esso` under `esso_al_scale.mode ==
+    'sigma_over_median_block_weight'`.
+    """
+    weights = []
+
+    transmission_network = planning_problem.transmission_network
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+            weights.append(_get_admm_block_weight(transmission_network, year, day))
+
+    for node_id, distribution_network in planning_problem.distribution_networks.items():
+        for year in distribution_network.years:
+            for day in distribution_network.days:
+                weights.append(_get_admm_block_weight(distribution_network, year, day))
+
+    if not weights:
+        raise ValueError('Cannot compute median ADMM block weight: no TSO/DSO blocks were found.')
+
+    median_weight = float(np.median(weights))
+    if not (isfinite(median_weight) and median_weight > SMALL_TOLERANCE):
+        raise ValueError(f'Invalid median ADMM block weight: {median_weight}')
+
+    return median_weight
+
+
+def _resolve_esso_al_scale(planning_problem, admm_parameters, objective_scale_used):
+    """
+    P5.15 Step 3.4 (frozen spec v4, `changes_from_v3.a_D5_esso_scaling`):
+    resolves the scalar `al_scale_esso` that multiplies ONLY the ESSO's AL
+    terms (see `update_shared_energy_storage_model_to_admm`). Returns
+    (al_scale_esso, apply_flag). `apply_flag` is False only when
+    `admm_parameters.esso_al_scale['source'] == 'default'` (the case-file
+    key is absent), in which case `update_shared_energy_storage_model_to_admm`
+    does not even construct the multiplication -- the ESSO objective stays
+    bit-identical to the pre-3.4 code.
+    """
+    esso_cfg = admm_parameters.esso_al_scale
+
+    if esso_cfg.get('source') != 'case_file':
+        return 1.0, False
+
+    if esso_cfg['mode'] == 'sigma_over_median_block_weight':
+        median_block_weight = _compute_median_admm_block_weight(planning_problem)
+        al_scale_esso = objective_scale_used / median_block_weight
+        print(
+            '[ADMM ESSO AL SCALE] mode=sigma_over_median_block_weight | '
+            f'sigma={objective_scale_used:.6e} | median_block_weight={median_block_weight:.6e} | '
+            f'al_scale_esso={al_scale_esso:.6e}'
+        )
+    else:
+        al_scale_esso = esso_cfg['value']
+        print(f'[ADMM ESSO AL SCALE] mode=fixed | al_scale_esso={al_scale_esso:.6e}')
+
+    if not (isfinite(al_scale_esso) and al_scale_esso > 0.0):
+        raise ValueError(f'Invalid ESSO AL scale: {al_scale_esso}')
+
+    return al_scale_esso, True
 
 
 def _add_tso_scenario_deviation_penalty(model, network, include_voltage=True):
@@ -3891,13 +4043,30 @@ def _initialize_shared_ess_consensus(planning_problem, consensus_vars):
                         consensus_vars['ess']['z']['prev'][node_id][year][day][power_type][p] = z_value
 
 
-def _shared_ess_admm_normalization_mva(rating_mva, floor_mva):
+def _admm_shared_ess_reference_mva(params):
+    """
+    P5.15 Step 3.4 (frozen spec v4, `changes_from_v3.d_ess_reference_rating`):
+    the SINGLE source every one of the 13 shared-ESS ADMM normalization call
+    sites must read, so the three agents (TSO, DSO, ESSO) cannot diverge.
+    `params` is the ADMMParameters instance in force. None (default) means
+    the current per-agent `2*max(S, shared_ess_normalization_floor_mva)`
+    normalization, unchanged; a float means every site uses that fixed
+    S_ref (MVA) instead.
+    """
+    return getattr(params, 'shared_ess_reference_rating_mva', None)
+
+
+def _shared_ess_admm_normalization_mva(rating_mva, floor_mva, reference_mva=None):
+    if reference_mva is not None:
+        return float(reference_mva)
     return max(abs(rating_mva), floor_mva)
 
 
-def _shared_ess_admm_normalization_pu(rating_pu, s_base, floor_mva):
+def _shared_ess_admm_normalization_pu(rating_pu, s_base, floor_mva, reference_mva=None):
     if s_base <= 0.00:
         raise ValueError('Network base power must be positive for ADMM normalization.')
+    if reference_mva is not None:
+        return float(reference_mva) / s_base
     rating_mva = abs(rating_pu) * s_base
     return _shared_ess_admm_normalization_mva(rating_mva, floor_mva) / s_base
 
@@ -4048,7 +4217,7 @@ def update_transmission_model_to_admm(planning_problem, model, params, objective
 
             for e in model[year][day].shared_energy_storages:
 
-                shared_ess_rating = _shared_ess_admm_normalization_pu(transmission_network.network[year][day].shared_energy_storages[e].s, s_base, params.shared_ess_normalization_floor_mva)
+                shared_ess_rating = _shared_ess_admm_normalization_pu(transmission_network.network[year][day].shared_energy_storages[e].s, s_base, params.shared_ess_normalization_floor_mva, reference_mva=_admm_shared_ess_reference_mva(params))
 
                 for p in model[year][day].periods:
 
@@ -4171,6 +4340,7 @@ def update_distribution_models_to_admm(planning_problem, models, params, objecti
                     distribution_network.network[year][day].shared_energy_storages[shared_ess_idx].s,
                     s_base,
                     params.shared_ess_normalization_floor_mva,
+                    reference_mva=_admm_shared_ess_reference_mva(params),
                 )
 
                 interface_transf_rating = distribution_network.network[year][day].get_interface_branch_rating() / s_base
@@ -4211,10 +4381,28 @@ def update_distribution_models_to_admm(planning_problem, models, params, objecti
                 dso_model[year][day].admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
 
 
-def update_shared_energy_storage_model_to_admm(planning_problem, models, params):
+def update_shared_energy_storage_model_to_admm(planning_problem, models, params, al_scale_esso=1.0):
+    """
+    P5.15 Step 3.4 (frozen spec v4, `changes_from_v3.a_D5_esso_scaling`,
+    Addendum 15 item 5(a)): `al_scale_esso` multiplies ONLY the ESSO's AL
+    terms below (the two dual terms and the two rho/2 terms) -- the ESSO
+    base objective (`obj = copy(models[node_id].objective.expr)`) is NEVER
+    divided or scaled, unlike the TSO/DSO objectives (see
+    `update_transmission_model_to_admm`, `update_distribution_models_to_admm`).
+    This is argmin-identical to a base-objective division by the same
+    factor (see `_resolve_esso_al_scale`'s caller and the zero-solve D5
+    equivalence check) but keeps `PENALTY_ESSO_SLACK` (which enforces the
+    storage dynamics) at its configured absolute magnitude.
+
+    When `params.esso_al_scale['source'] == 'default'` (the case-file key
+    absent), the multiplication is not even constructed -- the built
+    expression is bit-identical to the pre-3.4 code, matching every other
+    optional 3.4 key's "absent means unchanged" convention.
+    """
 
     shared_ess_data = planning_problem.shared_ess_data
     years = list(shared_ess_data.years)
+    apply_al_scale = (params.esso_al_scale.get('source') == 'case_file')
 
     for node_id in shared_ess_data.active_distribution_network_nodes:
 
@@ -4222,6 +4410,9 @@ def update_shared_energy_storage_model_to_admm(planning_problem, models, params)
 
         # Add ADMM variables
         models[node_id].rho = pe.Param(mutable=True, domain=pe.NonNegativeReals, initialize=params.rho['ess']['esso'])
+
+        if apply_al_scale:
+            models[node_id].admm_esso_al_scale = pe.Param(initialize=al_scale_esso)
 
         # Free Pnet, Qnet
         for y in models[node_id].years:
@@ -4243,15 +4434,22 @@ def update_shared_energy_storage_model_to_admm(planning_problem, models, params)
             shared_ess_rating = _shared_ess_admm_normalization_mva(
                 shared_ess_data.shared_energy_storages[year][shared_ess_idx].s,
                 params.shared_ess_normalization_floor_mva,
+                reference_mva=_admm_shared_ess_reference_mva(params),
             )
             for d in models[node_id].days:
                 for p in models[node_id].periods:
                     constraint_p_req = (models[node_id].es_pnet[y, d, p] - models[node_id].p_req[y, d, p]) / (2 * shared_ess_rating)
                     constraint_q_req = (models[node_id].es_qnet[y, d, p] - models[node_id].q_req[y, d, p]) / (2 * shared_ess_rating)
-                    obj += models[node_id].dual_p_req[y, d, p] * constraint_p_req
-                    obj += models[node_id].dual_q_req[y, d, p] * constraint_q_req
-                    obj += (models[node_id].rho / 2) * constraint_p_req ** 2
-                    obj += (models[node_id].rho / 2) * constraint_q_req ** 2
+                    if apply_al_scale:
+                        obj += models[node_id].admm_esso_al_scale * (models[node_id].dual_p_req[y, d, p] * constraint_p_req)
+                        obj += models[node_id].admm_esso_al_scale * (models[node_id].dual_q_req[y, d, p] * constraint_q_req)
+                        obj += models[node_id].admm_esso_al_scale * ((models[node_id].rho / 2) * constraint_p_req ** 2)
+                        obj += models[node_id].admm_esso_al_scale * ((models[node_id].rho / 2) * constraint_q_req ** 2)
+                    else:
+                        obj += models[node_id].dual_p_req[y, d, p] * constraint_p_req
+                        obj += models[node_id].dual_q_req[y, d, p] * constraint_q_req
+                        obj += (models[node_id].rho / 2) * constraint_p_req ** 2
+                        obj += (models[node_id].rho / 2) * constraint_q_req ** 2
 
         # Add ADMM OF, deactivate original OF
         models[node_id].admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
@@ -4397,7 +4595,7 @@ def _update_tso_proximal_centres_after_solve(planning_problem, model, results, c
 
             for e in local_model.shared_energy_storages:
 
-                shared_ess_rating = _shared_ess_admm_normalization_pu(network.shared_energy_storages[e].s, s_base, params.shared_ess_normalization_floor_mva)
+                shared_ess_rating = _shared_ess_admm_normalization_pu(network.shared_energy_storages[e].s, s_base, params.shared_ess_normalization_floor_mva, reference_mva=_admm_shared_ess_reference_mva(params))
                 normalization = 2 * shared_ess_rating
                 node_id = ess_node_by_idx.get(e)
 
@@ -5289,17 +5487,17 @@ def get_admm_residual_metrics(planning_problem, tso_model, dso_models, esso_mode
                 normalization_floor = (planning_problem.params.admm.shared_ess_normalization_floor_mva)
 
                 # TSO shared-ESS normalization, in MVA
-                tso_rating = _shared_ess_admm_normalization_mva(network.shared_energy_storages[shared_ess_idx].s * s_base, normalization_floor)
+                tso_rating = _shared_ess_admm_normalization_mva(network.shared_energy_storages[shared_ess_idx].s * s_base, normalization_floor, reference_mva=_admm_shared_ess_reference_mva(planning_problem.params.admm))
 
                 # DSO shared-ESS normalization, in MVA
                 dso_network = (planning_problem.distribution_networks[node_id].network[year][day])
                 dso_ref_node_id = dso_network.get_reference_node_id()
                 dso_shared_ess_idx = dso_network.get_shared_energy_storage_idx(dso_ref_node_id)
-                dso_rating = _shared_ess_admm_normalization_mva(dso_network.shared_energy_storages[dso_shared_ess_idx].s * dso_network.baseMVA, normalization_floor)
+                dso_rating = _shared_ess_admm_normalization_mva(dso_network.shared_energy_storages[dso_shared_ess_idx].s * dso_network.baseMVA, normalization_floor, reference_mva=_admm_shared_ess_reference_mva(planning_problem.params.admm))
 
                 # ESSO shared-ESS normalization, in MVA
                 esso_shared_ess_idx = planning_problem.shared_ess_data.get_shared_energy_storage_idx(node_id)
-                esso_rating = _shared_ess_admm_normalization_mva(planning_problem.shared_ess_data.shared_energy_storages[year][esso_shared_ess_idx].s, normalization_floor)
+                esso_rating = _shared_ess_admm_normalization_mva(planning_problem.shared_ess_data.shared_energy_storages[year][esso_shared_ess_idx].s, normalization_floor, reference_mva=_admm_shared_ess_reference_mva(planning_problem.params.admm))
                 ess_ratings = {
                     'tso': tso_rating,
                     'dso': dso_rating,
@@ -5640,12 +5838,12 @@ def get_admm_boyd_residual_metrics(planning_problem, tso_model, dso_models, esso
 
                 normalization_floor = admm_parameters.shared_ess_normalization_floor_mva
                 shared_ess_idx = network.get_shared_energy_storage_idx(node_id)
-                tso_rating = _shared_ess_admm_normalization_mva(network.shared_energy_storages[shared_ess_idx].s * s_base_tso, normalization_floor)
+                tso_rating = _shared_ess_admm_normalization_mva(network.shared_energy_storages[shared_ess_idx].s * s_base_tso, normalization_floor, reference_mva=_admm_shared_ess_reference_mva(admm_parameters))
                 dso_ref_node_id = dso_network.get_reference_node_id()
                 dso_shared_ess_idx = dso_network.get_shared_energy_storage_idx(dso_ref_node_id)
-                dso_rating = _shared_ess_admm_normalization_mva(dso_network.shared_energy_storages[dso_shared_ess_idx].s * s_base_dso, normalization_floor)
+                dso_rating = _shared_ess_admm_normalization_mva(dso_network.shared_energy_storages[dso_shared_ess_idx].s * s_base_dso, normalization_floor, reference_mva=_admm_shared_ess_reference_mva(admm_parameters))
                 esso_shared_ess_idx = planning_problem.shared_ess_data.get_shared_energy_storage_idx(node_id)
-                esso_rating = _shared_ess_admm_normalization_mva(planning_problem.shared_ess_data.shared_energy_storages[year][esso_shared_ess_idx].s, normalization_floor)
+                esso_rating = _shared_ess_admm_normalization_mva(planning_problem.shared_ess_data.shared_energy_storages[year][esso_shared_ess_idx].s, normalization_floor, reference_mva=_admm_shared_ess_reference_mva(admm_parameters))
                 ess_ratings = {'tso': tso_rating, 'dso': dso_rating, 'esso': esso_rating}
                 a = {agent: 1.0 / (2.0 * ess_ratings[agent]) for agent in ('tso', 'dso', 'esso')}
 
@@ -6132,6 +6330,29 @@ def _print_shared_ess_consensus_diagnostics(planning_problem, consensus_vars):
                     )
 
 
+def _get_admm_efc_per_day_max(esso_model):
+    """
+    P5.15 Step 3.4 (frozen spec v4, `capture_additions`, `admm_diagnostics`
+    key `efc_per_day_max`): per-cycle EFC/day diagnostic, max across nodes
+    AND cohort-years, read directly from the ESSO model's own just-solved
+    `es_avg_ch_dch_per_unit` / `es_e_rated_per_unit` Vars -- the SAME
+    formula `p514_n_instrumented_cstar.py`'s `capture_esso` uses at the
+    terminal cycle only (`avg / (2.0 * rated)`), evaluated here every cycle.
+    Read-only (no new solves, no side effects); returns None if no cell is
+    available this cycle (e.g. a not-yet-populated model).
+    """
+    values = []
+    for model in esso_model.values():
+        for y_inv in model.years:
+            for y in model.years:
+                avg = pe.value(model.es_avg_ch_dch_per_unit[y_inv, y], exception=False)
+                rated = pe.value(model.es_e_rated_per_unit[y_inv, y], exception=False)
+                if avg is None or not rated:
+                    continue
+                values.append(avg / (2.0 * rated))
+    return max(values) if values else None
+
+
 def _get_admm_penalty_summary(tso_model, dso_models, esso_model):
     penalties = {'v': [], 'pf': [], 'ess': []}
     for year_models in tso_model.values():
@@ -6176,7 +6397,38 @@ def _get_admm_gamma_summary(tso_model):
     }
 
 
-def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, boyd_metrics, params, iter=None, allow_update=True):
+def _init_admm_freeze_state():
+    """
+    P5.15 Step 3.4 (frozen spec v4, `changes_from_v3.c_rho_policy.freeze`):
+    fresh per-channel freeze bookkeeping. `frozen` is sticky (once True,
+    stays True for the rest of the run); `unchanged_streak` counts
+    consecutive cycles since the last real rho change (increase/decrease);
+    `ever_acted` records whether the channel has ever had a real rho
+    change; `at_clamp` is set once, at the cycle the channel freezes, if
+    rho then sits at `penalty_update['min']` or `['max']` -- a recorded
+    gate-failure flag, not an exception; `reason` in
+    {None, 'legacy_cycle', 'backstop', 'streak'}.
+    """
+    return {
+        group: {
+            'frozen': False,
+            'unchanged_streak': 0,
+            'ever_acted': False,
+            'at_clamp': False,
+            'reason': None,
+        }
+        for group in ('v', 'pf', 'ess')
+    }
+
+
+def _admm_rho_at_clamp(rho_value, update_params, rel_tol=1e-9):
+    return (
+        isclose(rho_value, update_params['min'], rel_tol=rel_tol) or
+        isclose(rho_value, update_params['max'], rel_tol=rel_tol)
+    )
+
+
+def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, boyd_metrics, params, iter=None, allow_update=True, freeze_state=None):
     """
     P5.15 Step 3.3(a) residual balancing (Advisor-reviewed, frozen spec
     P515S33/frozen_s33_e2_spec_v3_825f1f02.json, `balancing_rule_3_3a`;
@@ -6219,21 +6471,58 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
       frozen; (4) the ordinary increase/decrease/dead-band rule.
     * Tied gamma (`params.proximal_regularization['tso']['gamma_policy']
       == 'tied_to_rho'`): whenever rho is actually scaled (i.e. inside the
-      same `adaptive_penalty and allow_update and not frozen` guard as the
-      rho scaling below), every TSO model's `prox_gamma_c` Param is reset
-      to `tau * (that model's new rho_c)` for c in {v, pf, ess}, AFTER the
+      same `adaptive_penalty and allow_update` guard as the rho scaling
+      below, per-channel factors already forced to 1.0 on a frozen
+      channel), every TSO model's `prox_gamma_c` Param is reset to
+      `tau * (that model's new rho_c)` for c in {v, pf, ess}, AFTER the
       rho scaling loop, so it reads the already-updated rho. Under
       `gamma_policy == 'fixed'` (default) gamma is never touched here,
       exactly as before v3. The proximal centre (`prox_*_prev`) update is
       unchanged (performed elsewhere, in `update_transmission_model_to_admm`
       at the next model rebuild).
+
+    Spec v4 additions (P5.15 Step 3.4, frozen spec
+    P515S34/frozen_s34_spec_v4_966940a7.json,
+    `changes_from_v3.c_rho_policy.freeze`): the fixed cycle-30 freeze above
+    is superseded (for any case study that no longer sets
+    `freeze_after_cycle`) by a per-channel rule, additive to it (whichever
+    fires first holds the channel, permanently, for the rest of the run):
+
+    * Per-channel unchanged-streak freeze
+      (`params.penalty_update['freeze_after_unchanged_cycles']`): a channel
+      freezes once rho has been unchanged (action not 'increased'/
+      'decreased') for that many CONSECUTIVE cycles AND the channel has had
+      at least one real increase/decrease at some point in the run
+      ("balancing has acted on that channel at least once"). The trigger is
+      evaluated after the ordinary branch runs, so it takes effect starting
+      the NEXT cycle.
+    * Global backstop (`params.penalty_update['freeze_backstop_cycle']`):
+      freezes EVERY channel from that cycle on, regardless of the
+      per-channel history above -- effective the SAME cycle (`iter >=
+      freeze_backstop_cycle`), unlike the legacy cycle-30 freeze's `>`.
+    * A channel that freezes (by any of the three mechanisms) while its rho
+      sits at `params.penalty_update['min']` or `['max']` is flagged
+      `rho_at_clamp[channel] = True` at the moment it freezes -- a recorded
+      GATE-FAILURE diagnostic, never an exception.
+    * `freeze_state` (in/out, mutated in place; see `_init_admm_freeze_state`)
+      carries this bookkeeping across cycles; `freeze_state=None` (the
+      default, e.g. any pre-v4 caller) builds a fresh, single-cycle state,
+      matching v3 behaviour exactly whenever the v4 keys are both None.
     """
 
     before = _get_admm_penalty_summary(tso_model, dso_models, esso_model)
     before_gamma = _get_admm_gamma_summary(tso_model)
 
-    freeze_after_cycle = params.penalty_update.get('freeze_after_cycle')
-    frozen = bool(freeze_after_cycle is not None and iter is not None and iter > freeze_after_cycle)
+    if freeze_state is None:
+        freeze_state = _init_admm_freeze_state()
+
+    legacy_freeze_after_cycle = params.penalty_update.get('freeze_after_cycle')
+    legacy_frozen_global = bool(legacy_freeze_after_cycle is not None and iter is not None and iter > legacy_freeze_after_cycle)
+
+    freeze_after_unchanged_cycles = params.penalty_update.get('freeze_after_unchanged_cycles')
+    freeze_backstop_cycle = params.penalty_update.get('freeze_backstop_cycle')
+    backstop_frozen_global = bool(freeze_backstop_cycle is not None and iter is not None and iter >= freeze_backstop_cycle)
+
     gamma_policy = params.proximal_regularization['tso'].get('gamma_policy', 'fixed')
     gamma_tau = params.proximal_regularization['tso'].get('tau', 1.0)
 
@@ -6284,14 +6573,36 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
         factor = 1.0
         action = 'held'
 
+        group_state = freeze_state[group]
+        channel_frozen_this_cycle = bool(
+            group_state['frozen'] or legacy_frozen_global or backstop_frozen_global
+        )
+
         # --------------------------------------------------------------
-        # Determine penalty update. Precedence (highest first): cycle-30
-        # freeze (spec v3) > not-adaptive ('fixed') > failure hold (only
-        # when not frozen) > increase/decrease/dead-band. The pre-v3
-        # "freeze clause" (held once both ratios are <= 1) remains removed.
+        # Determine penalty update. Precedence (highest first): frozen
+        # (spec v3's cycle-30 freeze, OR spec v4's per-channel
+        # unchanged-streak trigger, OR spec v4's global backstop -- any of
+        # the three, once true for a channel, holds it PERMANENTLY) >
+        # not-adaptive ('fixed') > failure hold (only when not frozen) >
+        # increase/decrease/dead-band. The pre-v3 "freeze clause" (held
+        # once both ratios are <= 1) remains removed.
         # --------------------------------------------------------------
-        if frozen:
-            action = f'held (frozen after cycle {int(freeze_after_cycle)})'
+        if channel_frozen_this_cycle:
+            if not group_state['frozen']:
+                # Newly triggered THIS cycle by the legacy fixed-cycle
+                # freeze or the spec v4 global backstop. (A per-channel
+                # streak trigger is only ever detected below, AFTER the
+                # ordinary branch runs, so it cannot reach this branch on
+                # the cycle it fires -- it takes effect the cycle after.)
+                group_state['frozen'] = True
+                group_state['reason'] = 'legacy_cycle' if legacy_frozen_global else 'backstop'
+                group_state['at_clamp'] = _admm_rho_at_clamp(before[group], update_params)
+            if group_state['reason'] == 'legacy_cycle':
+                action = f'held (frozen after cycle {int(legacy_freeze_after_cycle)})'
+            elif group_state['reason'] == 'backstop':
+                action = f'held (frozen backstop cycle {int(freeze_backstop_cycle)})'
+            else:
+                action = f'held (frozen after {int(freeze_after_unchanged_cycles)} unchanged cycles)'
         elif not params.adaptive_penalty:
             action = 'fixed'
         elif not allow_update:
@@ -6303,18 +6614,42 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
             factor = 1.0 / update_params['decrease_factor']
             action = 'decreased'
 
+        if not channel_frozen_this_cycle:
+            # --------------------------------------------------------------
+            # Spec v4 per-channel unchanged-streak bookkeeping. Streak
+            # resets to 0 on a real change; the trigger (once ever_acted)
+            # freezes the channel starting the NEXT cycle -- this cycle's
+            # `action` above is unaffected.
+            # --------------------------------------------------------------
+            if action in ('increased', 'decreased'):
+                group_state['unchanged_streak'] = 0
+                group_state['ever_acted'] = True
+            else:
+                group_state['unchanged_streak'] += 1
+
+            if (
+                    freeze_after_unchanged_cycles is not None and
+                    group_state['ever_acted'] and
+                    group_state['unchanged_streak'] >= freeze_after_unchanged_cycles
+            ):
+                group_state['frozen'] = True
+                group_state['reason'] = 'streak'
+                group_state['at_clamp'] = _admm_rho_at_clamp(before[group], update_params)
+
         actions[group] = action
         factors[group] = factor
 
     # ------------------------------------------------------------------
-    # Apply common group-wise scaling factors. Spec v3: guarded on
-    # `not frozen` in addition to the pre-existing `adaptive_penalty and
-    # allow_update` -- when frozen, factors are already all 1.0 (the
-    # per-group loop above never reaches the increase/decrease branches),
-    # so this guard is a literal, explicit "no rho change" rather than a
-    # relied-upon side effect of factor==1.0.
+    # Apply common group-wise scaling factors. Spec v4: the per-channel
+    # freeze precedence above already forces `factors[group] == 1.0` on
+    # every frozen channel (the loop never reaches the increase/decrease
+    # branches for it), so the outer guard only needs the pre-v3
+    # `adaptive_penalty and allow_update` condition -- applying a factor of
+    # 1.0 (and, under 'tied_to_rho', re-setting gamma to tau * an unchanged
+    # rho) to a frozen channel is a literal no-op, not a relied-upon side
+    # effect.
     # ------------------------------------------------------------------
-    if params.adaptive_penalty and allow_update and not frozen:
+    if params.adaptive_penalty and allow_update:
 
         # TSO
         for year_models in tso_model.values():
@@ -6391,7 +6726,9 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
             f'action={actions[group]}'
         )
 
-    return actions, before, after, before_gamma, after_gamma, frozen
+    rho_freeze_active = all(freeze_state[g]['frozen'] for g in ('v', 'pf', 'ess'))
+
+    return actions, before, after, before_gamma, after_gamma, rho_freeze_active, freeze_state
 
 
 def _scale_admm_penalty(penalty, factor, params):
@@ -6593,18 +6930,18 @@ def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_mod
                     tso_network = transmission_network.network[year][day]
                     tso_s_base = tso_network.baseMVA
                     tso_shared_ess_idx = tso_network.get_shared_energy_storage_idx(node_id)
-                    tso_rating = _shared_ess_admm_normalization_mva(tso_network.shared_energy_storages[tso_shared_ess_idx].s * tso_s_base, normalization_floor)
+                    tso_rating = _shared_ess_admm_normalization_mva(tso_network.shared_energy_storages[tso_shared_ess_idx].s * tso_s_base, normalization_floor, reference_mva=_admm_shared_ess_reference_mva(params))
 
                     # - DSO
                     dso_network = distribution_network.network[year][day]
                     dso_s_base = dso_network.baseMVA
                     dso_ref_node_id = dso_network.get_reference_node_id()
                     dso_shared_ess_idx = dso_network.get_shared_energy_storage_idx(dso_ref_node_id)
-                    dso_rating = _shared_ess_admm_normalization_mva(dso_network.shared_energy_storages[dso_shared_ess_idx].s * dso_s_base, normalization_floor)
+                    dso_rating = _shared_ess_admm_normalization_mva(dso_network.shared_energy_storages[dso_shared_ess_idx].s * dso_s_base, normalization_floor, reference_mva=_admm_shared_ess_reference_mva(params))
 
                     # - ESSO
                     esso_shared_ess_idx = shared_ess_data.get_shared_energy_storage_idx(node_id)
-                    esso_rating = _shared_ess_admm_normalization_mva(shared_ess_data.shared_energy_storages[year][esso_shared_ess_idx].s, normalization_floor)
+                    esso_rating = _shared_ess_admm_normalization_mva(shared_ess_data.shared_energy_storages[year][esso_shared_ess_idx].s, normalization_floor, reference_mva=_admm_shared_ess_reference_mva(params))
 
                     ratings = {
                         'tso': tso_rating,

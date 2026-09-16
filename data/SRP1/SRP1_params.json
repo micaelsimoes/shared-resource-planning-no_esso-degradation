@@ -45,6 +45,9 @@
 		"minimum_consecutive_converged_cycles": 3,
 		"shared_ess_normalization_floor_mva": 0.10,
 		"adaptive_penalty": true,
+		"objective_scale": 93635360.0,
+		"shared_ess_reference_rating_mva": 2.5,
+		"esso_al_scale": "sigma_over_median_block_weight",
 		"penalty_update": {
 			"residual_balance_ratio": 5.0,
 			"residual_balance_ratio_pf_decrease": 3.0,
@@ -52,27 +55,28 @@
 			"decrease_factor": 1.5,
 			"min": 1e-4,
 			"max": 1e4,
-			"freeze_after_cycle": 30
+			"freeze_after_unchanged_cycles": 10,
+			"freeze_backstop_cycle": 60
 		},
 		"rho": {
 			"v": {
-				"case9": 1.00,
-				"case33_1": 1.00,
-				"case33_2": 1.00,
-				"case33_3": 1.00
+				"case9": 0.0077,
+				"case33_1": 0.0077,
+				"case33_2": 0.0077,
+				"case33_3": 0.0077
 			},
 			"pf": {
-				"case9": 1.00,
-				"case33_1": 1.00,
-				"case33_2": 1.00,
-				"case33_3": 1.00
+				"case9": 0.198,
+				"case33_1": 0.198,
+				"case33_2": 0.198,
+				"case33_3": 0.198
 			},
 			"ess": {
-				"case9": 1.00,
-				"case33_1": 1.00,
-				"case33_2": 1.00,
-				"case33_3": 1.00,
-				"esso": 1.00
+				"case9": 0.05,
+				"case33_1": 0.05,
+				"case33_2": 0.05,
+				"case33_3": 0.05,
+				"esso": 0.05
 			}
 		},
 		"proximal_regularization": {

@@ -35,8 +35,24 @@ class ADMMParameters:
             # `balancing_rule_3_3a.freeze`): optional cycle index after
             # which rho (and, under the tied gamma policy, gamma) adaptation
             # is held on every channel. None (default) means never freeze --
-            # other case studies are unaffected.
+            # other case studies are unaffected. Superseded for SRP1 by the
+            # spec v4 per-channel rule below (kept wired for any case study
+            # that still sets it and not the v4 keys).
             'freeze_after_cycle': None,
+            # P5.15 Step 3.4 (frozen spec v4,
+            # data/SRP1/Results/P515S34/frozen_s34_spec_v4_966940a7.json,
+            # `changes_from_v3.c_rho_policy.freeze`): a channel freezes once
+            # rho has been unchanged for `freeze_after_unchanged_cycles`
+            # consecutive cycles AND balancing has acted on that channel at
+            # least once; `freeze_backstop_cycle` freezes every channel
+            # regardless, from that cycle on. Both None (default) means
+            # neither v4 mechanism is active -- other case studies are
+            # unaffected. Additive to `freeze_after_cycle` above (whichever
+            # fires first holds the channel); a channel frozen at the rho
+            # clamp is recorded as `rho_at_clamp`, a gate-failure flag, not
+            # an exception.
+            'freeze_after_unchanged_cycles': None,
+            'freeze_backstop_cycle': None,
         }
         self.rho = {'v': dict(), 'pf': dict(), 'ess': dict()}
         self.previous_iter = {'v': dict(), 'pf': dict(), 'ess': dict()}
@@ -66,6 +82,45 @@ class ADMMParameters:
                     'ess': 1.0,
                 },
             },
+        }
+
+        # ------------------------------------------------------------------------------------------------------------
+        # P5.15 Step 3.4 (frozen spec v4, `changes_from_v3.b_sigma_fixed`,
+        # `.a_D5_esso_scaling`, `.d_ess_reference_rating`): optional,
+        # per-case-study keys. Every default below reproduces exactly the
+        # pre-3.4 behaviour, so other case studies (and SRP1 itself, if the
+        # keys were removed) load unchanged.
+        # ------------------------------------------------------------------------------------------------------------
+        # Fixed common ADMM objective scale (sigma). None (default) means
+        # `_compute_common_admm_objective_scale` is used every run, exactly
+        # as before. When set, that computed value is still obtained (the
+        # function stays wired) and asserted within `objective_scale_assert_factor`
+        # of the fixed value, failing loudly outside the calibration range.
+        self.objective_scale = None
+        self.objective_scale_source = 'default'
+        self.objective_scale_assert_factor = 3.0
+
+        # Fixed shared-ESS reference rating (S_ref, MVA), applied at every
+        # ADMM shared-ESS normalization call site. None (default) means the
+        # current per-agent `2*max(S, shared_ess_normalization_floor_mva)`
+        # normalization, unchanged.
+        self.shared_ess_reference_rating_mva = None
+        self.shared_ess_reference_rating_source = 'default'
+
+        # ESSO augmented-Lagrangian scale (D5, Addendum 15 item 5(a)):
+        # multiplies ONLY the ESSO's AL terms (the two dual terms and the
+        # two rho/2 terms), never the ESSO base objective. 'fixed' with
+        # value 1.0 and source 'default' (the state below) reproduces the
+        # pre-3.4 ESSO objective bit-for-bit -- the multiplication is not
+        # even constructed in that case (see
+        # `update_shared_energy_storage_model_to_admm`). 'mode' may also be
+        # 'sigma_over_median_block_weight', in which case the case-file
+        # value is ignored and the scale is derived at runtime as
+        # sigma / median(TSO and DSO block weights).
+        self.esso_al_scale = {
+            'mode': 'fixed',
+            'value': 1.0,
+            'source': 'default',
         }
 
     def read_parameters_from_file(self, params_data):
@@ -112,10 +167,12 @@ def _read_parameters_from_file(admm_params, params_data):
     admm_params.shared_ess_normalization_floor_mva = float(params_data.get('shared_ess_normalization_floor_mva', admm_params.shared_ess_normalization_floor_mva))
     admm_params.adaptive_penalty = bool(params_data['adaptive_penalty'])
     penalty_update = params_data.get('penalty_update', {})
+    _cycle_index_keys = ('freeze_after_cycle', 'freeze_after_unchanged_cycles', 'freeze_backstop_cycle')
     for key in admm_params.penalty_update:
-        # `freeze_after_cycle` is an optional cycle index (or None), not a
-        # float penalty-update coefficient; handled separately below.
-        if key == 'freeze_after_cycle':
+        # The three freeze-cycle keys are optional integer cycle indices (or
+        # None), not float penalty-update coefficients; handled separately
+        # below.
+        if key in _cycle_index_keys:
             continue
         if key in penalty_update:
             admm_params.penalty_update[key] = float(penalty_update[key])
@@ -128,6 +185,30 @@ def _read_parameters_from_file(admm_params, params_data):
             admm_params.penalty_update['freeze_after_cycle'] < 0
     ):
         raise ValueError('ADMM penalty_update.freeze_after_cycle must be non-negative.')
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # P5.15 Step 3.4 (frozen spec v4, `changes_from_v3.c_rho_policy.freeze`):
+    # per-channel unchanged-streak freeze and the global backstop. Both
+    # optional; None (default) means neither v4 mechanism is active.
+    if 'freeze_after_unchanged_cycles' in penalty_update and penalty_update['freeze_after_unchanged_cycles'] is not None:
+        admm_params.penalty_update['freeze_after_unchanged_cycles'] = int(penalty_update['freeze_after_unchanged_cycles'])
+    else:
+        admm_params.penalty_update['freeze_after_unchanged_cycles'] = None
+    if (
+            admm_params.penalty_update['freeze_after_unchanged_cycles'] is not None and
+            admm_params.penalty_update['freeze_after_unchanged_cycles'] < 1
+    ):
+        raise ValueError('ADMM penalty_update.freeze_after_unchanged_cycles must be at least 1.')
+
+    if 'freeze_backstop_cycle' in penalty_update and penalty_update['freeze_backstop_cycle'] is not None:
+        admm_params.penalty_update['freeze_backstop_cycle'] = int(penalty_update['freeze_backstop_cycle'])
+    else:
+        admm_params.penalty_update['freeze_backstop_cycle'] = None
+    if (
+            admm_params.penalty_update['freeze_backstop_cycle'] is not None and
+            admm_params.penalty_update['freeze_backstop_cycle'] < 1
+    ):
+        raise ValueError('ADMM penalty_update.freeze_backstop_cycle must be at least 1.')
 
     if admm_params.minimum_consecutive_converged_cycles < 1:
         raise ValueError('ADMM minimum_consecutive_converged_cycles must be at least 1.')
@@ -187,3 +268,55 @@ def _read_parameters_from_file(admm_params, params_data):
             if tau <= 0.0:
                 raise ValueError('ADMM proximal_regularization.tso.tau must be positive.')
             admm_params.proximal_regularization['tso']['tau'] = tau
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # P5.15 Step 3.4 (frozen spec v4): fixed sigma, S_ref and the ESSO AL
+    # scale. All optional; absent means the pre-3.4 behaviour, unchanged.
+    # ------------------------------------------------------------------------------------------------------------------
+    if 'objective_scale' in params_data and params_data['objective_scale'] is not None:
+        objective_scale = float(params_data['objective_scale'])
+        if objective_scale <= 0.0:
+            raise ValueError('ADMM objective_scale must be positive.')
+        admm_params.objective_scale = objective_scale
+        admm_params.objective_scale_source = 'case_file'
+    else:
+        admm_params.objective_scale = None
+        admm_params.objective_scale_source = 'default'
+
+    objective_scale_assert_factor = float(params_data.get('objective_scale_assert_factor', admm_params.objective_scale_assert_factor))
+    if objective_scale_assert_factor < 1.0:
+        raise ValueError('ADMM objective_scale_assert_factor must be at least 1.')
+    admm_params.objective_scale_assert_factor = objective_scale_assert_factor
+
+    if 'shared_ess_reference_rating_mva' in params_data and params_data['shared_ess_reference_rating_mva'] is not None:
+        shared_ess_reference_rating_mva = float(params_data['shared_ess_reference_rating_mva'])
+        if shared_ess_reference_rating_mva <= 0.0:
+            raise ValueError('ADMM shared_ess_reference_rating_mva must be positive.')
+        admm_params.shared_ess_reference_rating_mva = shared_ess_reference_rating_mva
+        admm_params.shared_ess_reference_rating_source = 'case_file'
+    else:
+        admm_params.shared_ess_reference_rating_mva = None
+        admm_params.shared_ess_reference_rating_source = 'default'
+
+    esso_al_scale_data = params_data.get('esso_al_scale')
+    if esso_al_scale_data is None:
+        admm_params.esso_al_scale = {'mode': 'fixed', 'value': 1.0, 'source': 'default'}
+    elif isinstance(esso_al_scale_data, str):
+        if esso_al_scale_data != 'sigma_over_median_block_weight':
+            raise ValueError(
+                "ADMM esso_al_scale, when a string, must be 'sigma_over_median_block_weight'."
+            )
+        admm_params.esso_al_scale = {
+            'mode': 'sigma_over_median_block_weight',
+            'value': None,
+            'source': 'case_file',
+        }
+    else:
+        esso_al_scale_value = float(esso_al_scale_data)
+        if esso_al_scale_value <= 0.0:
+            raise ValueError('ADMM esso_al_scale must be positive.')
+        admm_params.esso_al_scale = {
+            'mode': 'fixed',
+            'value': esso_al_scale_value,
+            'source': 'case_file',
+        }
