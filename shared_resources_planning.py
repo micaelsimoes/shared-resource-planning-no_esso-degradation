@@ -21,6 +21,7 @@ from load import Load
 from shared_energy_storage import SharedEnergyStorage
 from planning_parameters import PlanningParameters
 from shared_energy_storage_data import SharedEnergyStorageData
+import shared_ess_price_taker
 from model_construction_helpers import *
 from helper_functions import *
 
@@ -2324,6 +2325,21 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
     if initial_state is not None and initial_state.get('initialization_failed', False):
         print('[WARNING] Ignoring a previously failed operational state and rebuilding initialization.')
         initial_state = None
+
+    # P5.15 Addendum 16 items 2-3, PHASE 1 (frozen spec v6,
+    # data/SRP1/Results/P515S35/frozen_s35pt_spec_v6_651a9d84.json,
+    # `initialization.scope`): "applies only when initial_state is None;
+    # with the flag on in a continuation, raise". Checked here, once, right
+    # after the only place `initial_state` can still be reset to None above.
+    shared_ess_initialization_mode = getattr(admm_parameters, 'shared_ess_initialization', 'standalone')
+    if shared_ess_initialization_mode == 'price_taker' and initial_state is not None:
+        raise ValueError(
+            "admm.shared_ess_initialization='price_taker' is only valid for a fresh "
+            "initialization (initial_state is None); it was requested for a continuation of "
+            "an existing ADMM state, which frozen spec v6 explicitly disallows "
+            "('initialization.scope')."
+        )
+
     from_warm_start = initial_state is not None
     primal_evolution = list()
     admm_diagnostics = list()
@@ -2431,6 +2447,19 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         update_transmission_model_to_admm(planning_problem, tso_model, admm_parameters, objective_scale)
         update_shared_energy_storage_model_to_admm(planning_problem, esso_model, admm_parameters, al_scale_esso=al_scale_esso)
         _initialize_shared_ess_consensus(planning_problem, consensus_vars)
+
+        # P5.15 Addendum 16 items 2-3, PHASE 1 (frozen spec v6,
+        # `initialization.what_is_set`): must run AFTER
+        # `_initialize_shared_ess_consensus` (which would otherwise
+        # overwrite z) and AFTER `update_transmission_model_to_admm` (whose
+        # `prox_ess_p_prev`/`prox_ess_q_prev` this call overrides), and
+        # BEFORE `sess_available_capacities = shared_ess_data.get_updated_capacities(esso_model)`
+        # below (the ESSO state this sets must be in place before the
+        # capacities it implies are read and published to the networks).
+        clipped_q_cells = 0
+        if shared_ess_initialization_mode == 'price_taker':
+            clipped_q_cells = _initialize_shared_ess_from_price_taker(
+                planning_problem, candidate_solution, tso_model, esso_model, consensus_vars)
 
         # Initialize only the TSO-DSO interface coordination here.
         # Shared-ESS dual variables must remain zero before the first consensus-ADMM cycle.
@@ -4041,6 +4070,114 @@ def _initialize_shared_ess_consensus(planning_problem, consensus_vars):
 
                         consensus_vars['ess']['z']['current'][node_id][year][day][power_type][p] = z_value
                         consensus_vars['ess']['z']['prev'][node_id][year][day][power_type][p] = z_value
+
+
+def _initialize_shared_ess_from_price_taker(planning_problem, candidate_solution, tso_model, esso_model, consensus_vars):
+    """P5.15 Addendum 16 items 2-3, PHASE 1 (frozen spec v6,
+    `data/SRP1/Results/P515S35/frozen_s35pt_spec_v6_651a9d84.json`,
+    `initialization.what_is_set`). Sets INITIAL VALUES ONLY -- never fixes
+    anything -- for the shared-ESS ADMM consensus, from a history-free
+    price-taking LP (`shared_ess_price_taker.solve_price_taker_schedule`).
+
+    Called exactly once per fresh candidate evaluation (see the guard at
+    this function's only call site, `_run_operational_planning`), AFTER
+    `_initialize_shared_ess_consensus` (item 1: "written immediately after
+    ... which otherwise overwrites z") and AFTER
+    `update_transmission_model_to_admm` (item 4: overrides the
+    `prox_ess_p_prev`/`prox_ess_q_prev` that call already set from the
+    zero-dispatch standalone solution), and BEFORE
+    `shared_ess_data.get_updated_capacities(esso_model)` is read at this
+    function's call site (item 5: "before the capacity-publishing step").
+
+    Does NOT touch network primal values (`shared_es_pch`/`pdch`/`pnet`/
+    `expected_shared_ess_p` on the TSO/DSO models) -- spec v6
+    `initialization.not_set`. Does NOT touch `dual_vars` -- the ESS duals
+    stay exactly zero, as `create_admm_variables` already initializes them
+    and this function never writes to `dual_vars`.
+
+    Returns the number of (node, year, day, period) cells where the
+    existing z_q needed clipping onto the converter capability circle
+    (item 2), for reporting.
+    """
+    shared_ess_data = planning_problem.shared_ess_data
+    years = list(shared_ess_data.years)
+    days = list(shared_ess_data.days)
+    n_periods = planning_problem.num_instants
+
+    lp_result = shared_ess_price_taker.solve_price_taker_schedule(
+        planning_problem, candidate_solution['investment'])
+
+    clipped_q_cells = 0
+
+    for node_id in planning_problem.active_distribution_network_nodes:
+
+        node_result = lp_result[node_id]
+        s_nameplate_by_year = node_result['s_nameplate_per_year']
+
+        for year in years:
+            s_avail = s_nameplate_by_year[year]
+            for day in days:
+                p_schedule = node_result['p'][year][day]  # MW, load convention (pch - pdch)
+
+                for p in range(n_periods):
+                    p_val = float(p_schedule[p])
+
+                    # item 1: z current AND prev, active power = LP p (MW).
+                    consensus_vars['ess']['z']['current'][node_id][year][day]['p'][p] = p_val
+                    consensus_vars['ess']['z']['prev'][node_id][year][day]['p'][p] = p_val
+
+                    # item 2: reactive q -- the EXISTING z_q (0.0 before this
+                    # call: create_admm_variables initializes every
+                    # consensus['ess'] entry to 0.0 and nothing has written
+                    # to it yet) projected onto the converter circle.
+                    q_val = consensus_vars['ess']['z']['current'][node_id][year][day]['q'][p]
+                    max_q_sq = max(0.0, s_avail ** 2 - p_val ** 2)
+                    max_q = sqrt(max_q_sq)
+                    if abs(q_val) > max_q:
+                        clipped_q_cells += 1
+                        q_val = max_q if q_val >= 0.0 else -max_q
+                    consensus_vars['ess']['z']['current'][node_id][year][day]['q'][p] = q_val
+                    consensus_vars['ess']['z']['prev'][node_id][year][day]['q'][p] = q_val
+
+                    # item 3: the three agent copies, current AND prev = z.
+                    for agent in ('tso', 'dso', 'esso'):
+                        consensus_vars['ess'][agent]['current'][node_id][year][day]['p'][p] = p_val
+                        consensus_vars['ess'][agent]['prev'][node_id][year][day]['p'][p] = p_val
+                        consensus_vars['ess'][agent]['current'][node_id][year][day]['q'][p] = q_val
+                        consensus_vars['ess'][agent]['prev'][node_id][year][day]['q'][p] = q_val
+
+                    # item 4 (MANDATORY): TSO proximal centres = z / s_base.
+                    tso_network = planning_problem.transmission_network.network[year][day]
+                    s_base = tso_network.baseMVA
+                    tso_shared_ess_idx = tso_network.get_shared_energy_storage_idx(node_id)
+                    tso_model[year][day].prox_ess_p_prev[tso_shared_ess_idx, p].set_value(p_val / s_base)
+                    tso_model[year][day].prox_ess_q_prev[tso_shared_ess_idx, p].set_value(q_val / s_base)
+
+        # item 5: ESSO state consistent with the LP, before the
+        # capacity-publishing step at this function's call site.
+        esso_m = esso_model[node_id]
+        active_cohort_year = node_result['active_cohort_year']
+        y_inv_idx = years.index(active_cohort_year) if active_cohort_year is not None else None
+
+        for y in esso_m.years:
+            year = years[y]
+            if y_inv_idx is not None and not esso_m.es_soh_per_unit_cumul[y_inv_idx, y].fixed:
+                esso_m.es_soh_per_unit_cumul[y_inv_idx, y].set_value(node_result['soh_per_year'][year])
+            if y_inv_idx is not None:
+                esso_m.es_e_available_per_unit[y_inv_idx, y].set_value(node_result['e_available_per_year'][year])
+
+            for d in esso_m.days:
+                day = days[d]
+                pch_day = node_result['pch'][year][day]
+                pdch_day = node_result['pdch'][year][day]
+                p_day = node_result['p'][year][day]
+                for p in esso_m.periods:
+                    esso_m.es_pnet[y, d, p].set_value(float(p_day[p]))
+                    if y_inv_idx is not None:
+                        esso_m.es_pch_per_unit[y_inv_idx, y, d, p].set_value(float(pch_day[p]))
+                        esso_m.es_pdch_per_unit[y_inv_idx, y, d, p].set_value(float(pdch_day[p]))
+
+    return clipped_q_cells
 
 
 def _admm_shared_ess_reference_mva(params):

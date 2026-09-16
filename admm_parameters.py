@@ -107,6 +107,23 @@ class ADMMParameters:
         self.shared_ess_reference_rating_mva = None
         self.shared_ess_reference_rating_source = 'default'
 
+        # P5.15 Addendum 16 items 2-3 (frozen spec v6,
+        # data/SRP1/Results/P515S35/frozen_s35pt_spec_v6_651a9d84.json,
+        # `initialization.case_file`): how the shared-ESS ADMM consensus is
+        # initialized on a FRESH candidate evaluation (`initial_state is
+        # None`). 'standalone' (default, absent key) preserves current
+        # behaviour exactly -- z starts at the average of the three agents'
+        # zero-dispatch standalone solutions
+        # (`_initialize_shared_ess_consensus`). 'price_taker' additionally
+        # runs `_initialize_shared_ess_from_price_taker`
+        # (`shared_resources_planning.py`), which sets INITIAL VALUES ONLY
+        # (never fixes) for z, the agent copies, the TSO proximal centres
+        # and the ESSO warm state from a history-free price-taking LP
+        # (`shared_ess_price_taker.solve_price_taker_schedule`). Other case
+        # studies are unaffected by this key's absence.
+        self.shared_ess_initialization = 'standalone'
+        self.shared_ess_initialization_source = 'default'
+
         # ESSO augmented-Lagrangian scale (D5, Addendum 15 item 5(a)):
         # multiplies ONLY the ESSO's AL terms (the two dual terms and the
         # two rho/2 terms), never the ESSO base objective. 'fixed' with
@@ -320,3 +337,18 @@ def _read_parameters_from_file(admm_params, params_data):
             'value': esso_al_scale_value,
             'source': 'case_file',
         }
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # P5.15 Addendum 16 items 2-3 (frozen spec v6): optional shared-ESS
+    # consensus initialization mode. Absent key -> 'standalone', source
+    # 'default', no behavioural change for any case study.
+    if 'shared_ess_initialization' in params_data and params_data['shared_ess_initialization'] is not None:
+        shared_ess_initialization = str(params_data['shared_ess_initialization'])
+        if shared_ess_initialization not in ('standalone', 'price_taker'):
+            raise ValueError(
+                "ADMM shared_ess_initialization must be 'standalone' or 'price_taker'.")
+        admm_params.shared_ess_initialization = shared_ess_initialization
+        admm_params.shared_ess_initialization_source = 'case_file'
+    else:
+        admm_params.shared_ess_initialization = 'standalone'
+        admm_params.shared_ess_initialization_source = 'default'
