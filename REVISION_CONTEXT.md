@@ -53,6 +53,54 @@ Authority: `PLANNER_BRIEF_2026-09-13.md` Addenda 9–11. Reports: `P5_15_S30_REP
   construction and reported separately per DSO as "TSO flexibility procurement cost". Interface flexibility variables are
   not fixed at zero. The converged row-3′ campaign becomes Step 3's economic baseline.
 
+## Amendment — 2026-09-16 (Addendum 15): the coordination was stiffer than the economics. Governs the storage results.
+
+Authority: `PLANNER_BRIEF_2026-09-13.md` Addendum 15. Reports: `P5_15_S32_BOYD_GATE_REPORT.md`,
+`P5_15_S33_E2_GATE_REPORT.md`, `P5_15_STEP32_EXPERT_REPORT.md`.
+
+- **Governing finding.** In every ADMM run to date the local objective is divided by a scale
+  (`effective_scale = σ / block_weight` ≈ 2.0e5–2.5e5, σ = 9.363536e7 for C\*) while the augmented-Lagrangian terms —
+  duals, ρ/2 quadratics and the TSO proximal term — are added **undivided**, and the ESSO objective is not divided at
+  all (defect D5). At ρ = 1 the coordination therefore outweighs the local economics by 2–3 orders of magnitude.
+  The shared-ESS channel's constant-speed drift in gate `s33e2` is this asymmetry made visible: a linear arbitrage
+  gradient walked down at a rate set by ρ and the normalization, with the dual residual **ρ-invariant** (it measures
+  the forcing, not the motion). It is **not** a stopping-rule defect and **not** a pricing defect.
+- **Every prior "storage effect" figure was measured with the storage immobilised by coordination stiffness.** This is
+  a second, independent reason — beyond the transfer-payment amendment above — why the 0.37 % storage effect, the `C*`
+  ranking and the templated bias cannot be read as economic results. Gate `s33e2` measured storage at **0.79 % of
+  rating** and EFC/day 0.067 against a 1.4612 threshold, drifting toward arbitrage at a rate that would need ~14,900
+  cycles to reach rating.
+- **Mechanism evidence** (zero-solve, guards armed): throughput rises rather than falls, so the ESSO throughput term is
+  not the driver; failure-induced multiplier bias is excluded; the drift correlates with the within-day price deviation
+  at cos = −0.516 at every node and window (charge ≈33/MWh below the day mean, discharge ≈29 above); shared-ESS usage
+  is priced at zero (row 8) and the ESSO carries no degradation cost, so only round-trip loss bounds the arbitrage.
+- **Decisions in force.**
+  1. **No suboptimality bound in the paper** (a convex-case result on a nonconvex recourse). Optimality evidence for
+     R2.5 is: the Boyd §3.3.1 residuals with **noise-floor-derived tolerances** (ε_abs = 1e-5 from the E4 measurement:
+     solver noise V 1.0e-14, PF 1.3e-8, ESS 6.6e-8), the **3.5 polish gap**, and the **count of active bounds**.
+  2. **No shared-ESS usage price; row 8 stands.** After D5, ε must be **re-verified at the new scaling** by the
+     detector identity and an EFC-vs-ε ablation before it is trusted.
+  3. **Convergence with active voltage bounds is acceptable**, and the count is reported as a result (gate `s33e2`:
+     52 of 864 terminal interface voltages within 1e-6 pu of a bound, 339 within 0.005 pu, node maxima exactly 1.1 pu).
+  4. The **~30-cycle cost oscillation** (range 185,571 over cycles 101–150, 2.8 × the objective tolerance) is attributed
+     in one zero-solve pass; not blocking.
+  5. **Step 3.4 proceeds now with 3.3(b) folded in**, as one production commit: ESSO objective on the networks' σ
+     convention (D5); σ a fixed recorded per-network constant; ρ dimensionless relative to the scaled objective,
+     starting low, with balancing frozen once ρ has been unchanged for 10 consecutive cycles; ESS residual normalized
+     by a fixed `S_ref` = 2.5 MVA. Then zero-solve checks, a two-cycle preflight, and one gate at cap 150 with the
+     prediction recorded in advance: storage reaches its arbitrage equilibrium within ~50 cycles, EFC/day rises from
+     0.067 to O(1), and all three channels pass Boyd with 3 consecutive cycles. **Pass closes 3.2–3.4 together and
+     opens 3.5; fail stops for review** with the ρ, γ, residual and EFC trajectories.
+- **Status of Step 3.2 gates.** `s32` (fixed γ = 1): 150 cycles, cap, no channel ever passed its dual test.
+  `s33e2` (γ = τρ, ρ frozen after cycle 30, 3 consecutive cycles): 150 cycles, cap; **V certified from cycle 48**
+  (partly by bound saturation), PF not certified but decaying ×0.552 per 50 cycles, **ESS not certifiable at
+  ε_abs 1e-5** under the old scaling. Both gates are superseded as convergence evidence by the 3.4 re-scaling, but
+  their diagnostics stand.
+- **Manuscript list additions** (append to the list below): the storage-effect figures must be regenerated after the
+  3.4 gate under the corrected scaling, stating explicitly that the previous values were measured with the storage
+  immobilised; the stopping rule and its noise-floor-derived tolerances are reported as method; the active-bound count
+  is reported as a result; and the σ constants and ρ policy are recorded with the ADMM configuration.
+
 ### Manuscript list — regeneration obligations (open)
 
 1. **All Table 8 costs** regenerated under the system-cost definition, with a new **transfer-payment column** (TSO
