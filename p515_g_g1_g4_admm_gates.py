@@ -84,6 +84,7 @@ import p58_rescale as R  # noqa: E402
 import p59_rho as RH  # noqa: E402
 import shared_energy_storage_data as SED  # noqa: E402
 import shared_resources_planning as srp  # noqa: E402
+import shared_ess_price_taker  # noqa: E402 -- P5.15 Addendum 16 item 2-3 PHASE 2, s35pt arm
 import model_construction_helpers as mch  # noqa: E402
 from definitions import PENALTY_FLEXIBILITY, PENALTY_GENERATION_CURTAILMENT  # noqa: E402
 from p513_solve_profile_guard import SolveProfileGuard  # noqa: E402
@@ -3692,6 +3693,590 @@ def write_boyd_terminal_s35ref(planning, sed, models, rows, report, out_dir, lab
     return path
 
 
+
+# ===========================================================================
+# P5.15 Addendum 16 items 2-3, PHASE 2 -- s35pt arm (price-taker
+# initialization gate). Frozen spec v6,
+# data/SRP1/Results/P515S35/frozen_s35pt_spec_v6_651a9d84.json. Supersedes
+# NOTHING -- this is a NEW, separate arm alongside s35ref (frozen v5); the
+# s35ref arm above is UNCHANGED (its writer, its artifacts, and the harness
+# defect it embeds -- see this section's `_derive_stopped_by_from_trajectory`
+# below -- are left exactly as committed). Reuses s35ref's own helpers BY
+# CALLING THEM: `assert_s35ref_capture_paths` (rule eleven, includes the
+# zero-solve pre-solve SoH floor-row identification), `s35ref_capture_hooks`
+# (recourse-jump + ESS-entry-stride + SoH-floor sidecars, via
+# `s34_capture_hooks`), `write_interface_settlement_detail_s31c`,
+# `write_interface_voltage_terminal`, `_s32_binding_test`,
+# `_s34_rho_gamma_freeze_trajectory`, `_s35ref_terminal_floor_and_efc`.
+# ===========================================================================
+
+OUT_S35PT = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S35_PT_run')
+S35PT_SPEC_PATH = os.path.join(
+    REPO, 'data', 'SRP1', 'Results', 'P515S35', 'frozen_s35pt_spec_v6_651a9d84.json')
+S35PT_SPEC_SHA256 = '651a9d84103c9f0803a7c5ad83e0ca3d8aed1b6ea0a458559e45b0e647bb6f3c'
+S35PT_CAP = 150
+S35PT_REL = S35REF_REL  # 1e-4, diagnostic-only objective-change tolerance, unchanged
+S35PT_INITIAL_RHO_ESS = S35REF_INITIAL_RHO_ESS  # 0.1125, case-file rho unchanged from s35ref
+S35PT_REQUIRED_CONSECUTIVE_CYCLES = 3  # spec v6 configuration: "3 consecutive cycles"
+S35PT_ESS_STRIDE = 5  # spec-permitted: "a stride of every 5 cycles is acceptable"
+S35PT_MATCHED_CYCLES = S35REF_MATCHED_CYCLES  # unchanged: max 150, == this arm's own cap
+
+# Gate-3 reference artifacts: run 1 (s35ref), read BY PATH at gate-run time,
+# hashed, NEVER typed in as literal numbers (task instruction).
+S35PT_S35REF_G_PATH = os.path.join(OUT_S35REF, 'g_baseline.json')
+S35PT_S35REF_EVAL_PATH = os.path.join(OUT_S35REF, 's35ref_evaluation_v2.json')
+
+
+def _s35pt_spec_hash():
+    with open(S35PT_SPEC_PATH, 'rb') as handle:
+        return hashlib.sha256(handle.read()).hexdigest()
+
+
+def _hash_consensus_ess_z(consensus_vars):
+    """Deterministic sha256 of the initialized shared-ESS consensus z (p and
+    q, current AND prev) immediately after
+    `_initialize_shared_ess_from_price_taker` returns -- Z3/preflight
+    diagnostic evidence, and the `initialized z hash` this arm's
+    `boyd_terminal.json` records per the task. Sorted-key JSON serialization
+    of plain floats only (no Pyomo objects), so the hash is reproducible
+    across processes."""
+    z = consensus_vars['ess']['z']
+    payload = {
+        which: {
+            str(node_id): {
+                str(year): {
+                    str(day): {
+                        'p': [float(v) for v in z[which][node_id][year][day]['p']],
+                        'q': [float(v) for v in z[which][node_id][year][day]['q']],
+                    }
+                    for day in z[which][node_id][year]
+                }
+                for year in z[which][node_id]
+            }
+            for node_id in z[which]
+        }
+        for which in ('current', 'prev')
+    }
+    blob = json.dumps(payload, sort_keys=True).encode('utf-8')
+    return hashlib.sha256(blob).hexdigest()
+
+
+def assert_s35pt_capture_paths(planning):
+    """Rule eleven for the s35pt arm (frozen spec v6). Reuses
+    `assert_s35ref_capture_paths` DIRECTLY (by calling it) for every check
+    unchanged from v5 (Boyd eps, fixed sigma with its calibration assertion,
+    al_scale_esso, S_ref 2.5, freeze parameters, 3 consecutive cycles,
+    initial rho v/pf/ess) -- including its zero-solve pre-solve SoH
+    floor-row identification, whose `floor_rows_by_node` return value is
+    reused verbatim by `s35pt_capture_hooks` below (candidate-independent,
+    per spec v6 `initialization` note in `assert_s35ref_capture_paths`'s own
+    docstring). Adds spec v6's OWN checks: the spec-file identity, the
+    case-file `shared_ess_initialization == 'price_taker'` flag and its
+    source, the new production module/wrapper/harness callables, and the
+    existence (by path) of run 1's reference artifacts gate 3 reads.
+
+    Returns (checklist, floor_rows_by_node).
+    """
+    s35ref_checklist, floor_rows_by_node = assert_s35ref_capture_paths(planning)
+    checklist = dict(s35ref_checklist)
+
+    admm_params = planning.params.admm
+
+    # -- spec file identity (v6) --------------------------------------------
+    observed_hash = _s35pt_spec_hash()
+    checklist['s35pt_spec_file_hash_matches'] = (observed_hash == S35PT_SPEC_SHA256)
+    checklist['s35pt_spec_file_hash_observed'] = observed_hash
+    checklist['s35pt_predecessor_spec_sha256_matches_s35ref'] = (
+        S35REF_SPEC_SHA256 == '995548ababa1b428e9bc4354a078ffd8322cc54d00f04b9ef7a694e43311c7ba')
+
+    # -- price-taker initialization flag (spec v6 `initialization.case_file`) --
+    checklist['shared_ess_initialization_is_price_taker'] = (
+        getattr(admm_params, 'shared_ess_initialization', None) == 'price_taker')
+    checklist['shared_ess_initialization_source_is_case_file'] = (
+        getattr(admm_params, 'shared_ess_initialization_source', None) == 'case_file')
+
+    # -- production module / wrapper / harness callables (capture-path existence) --
+    checklist['shared_ess_price_taker_solve_price_taker_schedule_callable'] = callable(
+        getattr(shared_ess_price_taker, 'solve_price_taker_schedule', None))
+    checklist['shared_ess_price_taker_lp_call_counter_callable'] = callable(
+        getattr(shared_ess_price_taker, 'get_lp_call_count', None))
+    checklist['srp_initialize_shared_ess_from_price_taker_callable'] = callable(
+        getattr(srp, '_initialize_shared_ess_from_price_taker', None))
+    checklist['s35pt_capture_hooks_callable'] = callable(globals().get('s35pt_capture_hooks'))
+    checklist['write_boyd_terminal_s35pt_callable'] = callable(globals().get('write_boyd_terminal_s35pt'))
+    checklist['hash_consensus_ess_z_callable'] = callable(globals().get('_hash_consensus_ess_z'))
+
+    # -- gate 3 reference artifacts (run 1, s35ref) -- existence only here;
+    #    the values themselves are read+hashed at report-write time
+    #    (`_s35pt_reference_values`), never typed in ------------------------
+    checklist['s35ref_g_baseline_reference_exists'] = os.path.exists(S35PT_S35REF_G_PATH)
+    checklist['s35ref_evaluation_v2_reference_exists'] = os.path.exists(S35PT_S35REF_EVAL_PATH)
+
+    missing = [name for name, ok in checklist.items()
+               if isinstance(ok, bool) and not ok]
+    if missing:
+        raise RuntimeError(f'S35PT capture-path pre-flight FAILED, missing/broken: {missing}')
+    return checklist, floor_rows_by_node
+
+
+@contextmanager
+def s35pt_capture_hooks(recourse_jump_path, ess_stride_path, floor_sidecar_path,
+                         floor_rows_by_node, price_taker_capture, stride=S35PT_ESS_STRIDE):
+    """s35pt capture_additions ON TOP OF `s35ref_capture_hooks` (reused BY
+    CALLING IT, unmodified -- recourse-jump / ESS-entry-stride / SoH-floor
+    sidecars, unchanged mechanism). Layers TWO further monkeypatches, both
+    restored in `finally`, both zero extra solves (they intercept an
+    already-happening call and read/store its own arguments/return value):
+
+    1. `shared_ess_price_taker.solve_price_taker_schedule` -- captures the
+       LP result dict (status, per-node per-year EFC/floor multiplier)
+       returned to `_initialize_shared_ess_from_price_taker` the ONE time it
+       is called (spec v6 `initialization.scope`: fresh evaluation only).
+    2. `srp._initialize_shared_ess_from_price_taker` -- calls through to the
+       real wrapper (which internally calls (1) above), then hashes the
+       resulting `consensus_vars['ess']['z']` (`_hash_consensus_ess_z`) and
+       records it alongside the wrapper's own `clipped_q_cells` return value.
+
+    `price_taker_capture` is a caller-owned dict populated in place with
+    keys `lp_result` (raw dict, node_id -> ...), `clipped_q_cells`, and
+    `z_hash_after_initialization`; read by `write_boyd_terminal_s35pt` after
+    the arm completes.
+    """
+    with s35ref_capture_hooks(recourse_jump_path, ess_stride_path, floor_sidecar_path,
+                               floor_rows_by_node, stride=stride) as state:
+        real_solve = shared_ess_price_taker.solve_price_taker_schedule
+        real_init = srp._initialize_shared_ess_from_price_taker
+
+        def _wrapped_solve(*args, **kwargs):
+            result = real_solve(*args, **kwargs)
+            price_taker_capture['lp_result'] = result
+            return result
+
+        def _wrapped_init(planning_problem, candidate_solution, tso_model, esso_model, consensus_vars):
+            clipped_q_cells = real_init(planning_problem, candidate_solution, tso_model, esso_model, consensus_vars)
+            price_taker_capture['clipped_q_cells'] = clipped_q_cells
+            price_taker_capture['z_hash_after_initialization'] = _hash_consensus_ess_z(consensus_vars)
+            return clipped_q_cells
+
+        shared_ess_price_taker.solve_price_taker_schedule = _wrapped_solve
+        srp._initialize_shared_ess_from_price_taker = _wrapped_init
+        try:
+            yield state
+        finally:
+            shared_ess_price_taker.solve_price_taker_schedule = real_solve
+            srp._initialize_shared_ess_from_price_taker = real_init
+
+
+def _derive_stopped_by_from_trajectory(rows, cap, required_consecutive):
+    """Derives `stopped_by` FROM THE TRAJECTORY, correcting the harness
+    defect `write_boyd_terminal_s35ref` embeds (task's "Harness defect you
+    must NOT copy"): that writer labels `stopped_by = 'boyd'` only when
+    `converged_at_cycle` (the FIRST cycle anywhere in the run with
+    `cycle_convergence` True, `run_admm_arm`'s own
+    `next((r['cycle'] for r in rows if r['cycle_convergence']), None)`)
+    equals the LAST row's cycle -- but production breaks the loop on
+    `consecutive_converged_cycles >= required_consecutive`, i.e. on the
+    FIRST cycle of the final run of `required_consecutive` consecutive
+    converged cycles, which need not be the SAME cycle `converged_at_cycle`
+    records if convergence flickered earlier in the run (exactly what
+    happened in s35ref: 475 vs 477).
+
+    'boyd' iff (a) the run ended before the cap (`len(rows) < cap` -- the
+    ONLY way `_run_operational_planning`'s cycle loop exits without running
+    every declared iteration is the `if convergence: break` on this exact
+    condition) AND (b) the last `required_consecutive` rows' cycle numbers
+    are consecutive integers AND (c) every one of those rows has
+    `boyd_all_pass` True (the raw per-cycle Boyd pass/fail, available here
+    because `full_diagnostics_in_rows=True`; `cycle_convergence` --
+    `boyd_all_pass and local_solves_ok` -- is checked too, as the stronger
+    condition production itself gates the break on). Otherwise 'cap'.
+
+    Returns dict: stopped_by, converged_at_cycle (first cycle of the
+    consecutive stopping run, or None), stop_run_cycles (list, or []).
+    """
+    if not rows:
+        return {'stopped_by': 'cap', 'converged_at_cycle': None, 'stop_run_cycles': []}
+
+    ended_before_cap = len(rows) < cap
+    if not ended_before_cap or len(rows) < required_consecutive:
+        return {'stopped_by': 'cap', 'converged_at_cycle': None, 'stop_run_cycles': []}
+
+    tail = rows[-required_consecutive:]
+    cycles = [r.get('cycle') for r in tail]
+    consecutive_ok = all(
+        (cycles[i] is not None and cycles[i + 1] is not None and cycles[i + 1] - cycles[i] == 1)
+        for i in range(len(cycles) - 1)
+    )
+    all_boyd_pass = all(bool(r.get('boyd_all_pass')) for r in tail)
+    all_cycle_convergence = all(bool(r.get('cycle_convergence')) for r in tail)
+
+    if consecutive_ok and all_boyd_pass and all_cycle_convergence:
+        return {'stopped_by': 'boyd', 'converged_at_cycle': cycles[0], 'stop_run_cycles': cycles}
+    return {'stopped_by': 'cap', 'converged_at_cycle': None, 'stop_run_cycles': []}
+
+
+def _s35pt_reference_values():
+    """Gate-3 reference values, read from run 1's (s35ref) OWN committed
+    artifacts BY PATH, each hashed -- never typed in as literals (task
+    instruction). `ref_terminal_system_cost`/`ref_terminal_objective_step`
+    from `g_baseline.json` (production's own `gross_operational_cost` /
+    `terminal_objective_change_abs`, the SAME fields `write_boyd_terminal_s35ref`
+    reads); `ref_terminal_efc_per_day_max` from `s35ref_evaluation_v2.json`'s
+    `efc.terminal_max` (the same evaluated quantity
+    `boyd_terminal.json['efc_per_day_max_terminal']` reports for that run,
+    cross-checked against it below)."""
+    with open(S35PT_S35REF_G_PATH, 'rb') as handle:
+        g_bytes = handle.read()
+    g_data = json.loads(g_bytes)
+
+    with open(S35PT_S35REF_EVAL_PATH, 'rb') as handle:
+        eval_bytes = handle.read()
+    eval_data = json.loads(eval_bytes)
+
+    ref_rows = g_data.get('cycle_trajectory', [])
+    ref_stop_info = _derive_stopped_by_from_trajectory(
+        ref_rows, cap=S35REF_CAP, required_consecutive=S35PT_REQUIRED_CONSECUTIVE_CYCLES)
+
+    return {
+        'g_baseline_path': os.path.relpath(S35PT_S35REF_G_PATH, REPO),
+        'g_baseline_sha256': hashlib.sha256(g_bytes).hexdigest(),
+        's35ref_evaluation_v2_path': os.path.relpath(S35PT_S35REF_EVAL_PATH, REPO),
+        's35ref_evaluation_v2_sha256': hashlib.sha256(eval_bytes).hexdigest(),
+        'ref_terminal_system_cost': g_data.get('gross_operational_cost'),
+        'ref_terminal_objective_step': g_data.get('terminal_objective_change_abs'),
+        'ref_terminal_efc_per_day_max': eval_data.get('efc', {}).get('terminal_max'),
+        'ref_cycles_run': g_data.get('cycles_run'),
+        'ref_boyd_terminal_efc_per_day_max_cross_check': eval_data.get('efc', {}).get('terminal_max'),
+        # spec v6 `gate_s35pt.validity_condition`: well-posed only if run 1
+        # ITSELF stopped under Boyd -- recomputed here from run 1's own
+        # cycle_trajectory with the CORRECTED derivation above (run 1's own
+        # committed boyd_terminal.json mislabels this 'cap' due to the
+        # harness defect this task's arm must not copy).
+        'ref_stopped_by_corrected': ref_stop_info['stopped_by'],
+        'ref_converged_at_cycle_corrected': ref_stop_info['converged_at_cycle'],
+        'ref_stop_run_cycles_corrected': ref_stop_info['stop_run_cycles'],
+    }
+
+
+def _s35pt_gate3(rows, report, cap, required_consecutive, ref):
+    """Frozen spec v6 `gate_s35pt`: the three `pass_iff` criteria, each
+    with its own numbers, an overall `pass` True only if ALL hold AND the
+    `validity_condition` is satisfied (run 1 itself stopped under Boyd --
+    `ref['ref_stopped_by_corrected'] == 'boyd'`; otherwise `pass` is None
+    /indeterminate, per spec: "the Planner STOPS for review and does not
+    substitute criteria")."""
+    last_row = rows[-1] if rows else {}
+    stop_info = _derive_stopped_by_from_trajectory(rows, cap=cap, required_consecutive=required_consecutive)
+
+    rho_at_clamp_per_channel = {
+        group: last_row.get(f'rho_at_clamp_{group}') for group in ('v', 'pf', 'ess')
+    }
+    no_clamp = not any(rho_at_clamp_per_channel.values())
+    criterion_a_boyd_stop_no_clamp = (stop_info['stopped_by'] == 'boyd') and no_clamp
+
+    own_terminal_cost = last_row.get('gross_operational_cost')
+    own_terminal_step = last_row.get('objective_change_abs')
+    ref_terminal_cost = ref['ref_terminal_system_cost']
+    ref_terminal_step = ref['ref_terminal_objective_step']
+    cost_diff = (
+        abs(own_terminal_cost - ref_terminal_cost)
+        if (own_terminal_cost is not None and ref_terminal_cost is not None) else None
+    )
+    rule_nine_bar = (
+        (abs(own_terminal_step) + abs(ref_terminal_step))
+        if (own_terminal_step is not None and ref_terminal_step is not None) else None
+    )
+    criterion_b_cost = (
+        (cost_diff <= rule_nine_bar) if (cost_diff is not None and rule_nine_bar is not None) else None
+    )
+
+    own_efc = last_row.get('efc_per_day_max')
+    ref_efc = ref['ref_terminal_efc_per_day_max']
+    efc_diff = (abs(own_efc - ref_efc) if (own_efc is not None and ref_efc is not None) else None)
+    efc_bound = (0.02 * abs(ref_efc)) if ref_efc is not None else None
+    criterion_c_efc = (
+        (efc_diff <= efc_bound) if (efc_diff is not None and efc_bound is not None) else None
+    )
+
+    validity_ok = (ref['ref_stopped_by_corrected'] == 'boyd')
+
+    if not validity_ok:
+        overall_pass = None
+        reason = (
+            "validity_condition FAILED: run 1 (s35ref) did not itself stop under Boyd "
+            "(corrected stopped_by="
+            f"{ref['ref_stopped_by_corrected']!r}) -- criteria (b)/(c) are indeterminate "
+            "(the bar measures stopping slack, not distance to the limit); Planner must "
+            "STOP for review, criteria are NOT substituted."
+        )
+    elif criterion_a_boyd_stop_no_clamp is None or criterion_b_cost is None or criterion_c_efc is None:
+        overall_pass = None
+        reason = 'one or more criteria could not be evaluated (missing terminal row data).'
+    else:
+        overall_pass = bool(criterion_a_boyd_stop_no_clamp and criterion_b_cost and criterion_c_efc)
+        reason = None
+
+    return {
+        'validity_condition_ok_run1_stopped_by_boyd': validity_ok,
+        'run1_stopped_by_corrected': ref['ref_stopped_by_corrected'],
+        'criterion_a_boyd_stop_within_cap_no_clamp': {
+            'stopped_by_derived': stop_info['stopped_by'],
+            'converged_at_cycle_derived': stop_info['converged_at_cycle'],
+            'stop_run_cycles_derived': stop_info['stop_run_cycles'],
+            'cap': cap,
+            'cycles_run': len(rows),
+            'rho_at_clamp_per_channel': rho_at_clamp_per_channel,
+            'no_clamp': no_clamp,
+            'pass': criterion_a_boyd_stop_no_clamp,
+        },
+        'criterion_b_terminal_system_cost_within_rule_nine_bar': {
+            's35pt_terminal_system_cost': own_terminal_cost,
+            's35ref_terminal_system_cost': ref_terminal_cost,
+            'difference_abs': cost_diff,
+            's35pt_terminal_objective_step': own_terminal_step,
+            's35ref_terminal_objective_step': ref_terminal_step,
+            'rule_nine_bar_sum_of_terminal_steps': rule_nine_bar,
+            'pass': criterion_b_cost,
+        },
+        'criterion_c_terminal_efc_within_2pct_of_ref': {
+            's35pt_terminal_efc_per_day_max': own_efc,
+            's35ref_terminal_efc_per_day_max': ref_efc,
+            'difference_abs': efc_diff,
+            'bound_2pct_of_ref': efc_bound,
+            'pass': criterion_c_efc,
+        },
+        'pass': overall_pass,
+        'reason_if_not_pass': reason,
+        'reference_source': {
+            'g_baseline_path': ref['g_baseline_path'], 'g_baseline_sha256': ref['g_baseline_sha256'],
+            's35ref_evaluation_v2_path': ref['s35ref_evaluation_v2_path'],
+            's35ref_evaluation_v2_sha256': ref['s35ref_evaluation_v2_sha256'],
+        },
+    }
+
+
+def _s35pt_system_cost_vs_s35ref(rows, report):
+    """Matched-cycle + terminal system-cost comparison vs run 1 (s35ref),
+    same computation `_s35ref_system_cost_vs_s34` uses for its one-new-leg
+    comparison against s34 (rule ten: reported together with its own error
+    bar). Diagnostic context alongside gate 3's own criterion (b); not
+    itself a gate criterion."""
+    ref_path = S35PT_S35REF_G_PATH
+    if not os.path.exists(ref_path):
+        return {'available': False, 'reason': f's35ref reference not found at {ref_path}'}
+    with open(ref_path) as handle:
+        ref_report = json.load(handle)
+    ref_rows = ref_report.get('cycle_trajectory', [])
+    ref_by_cycle = {r['cycle']: r for r in ref_rows if r.get('cycle') is not None}
+    own_by_cycle = {r['cycle']: r for r in rows if r.get('cycle') is not None}
+
+    matched = []
+    for cycle in S35PT_MATCHED_CYCLES:
+        if cycle not in ref_by_cycle or cycle not in own_by_cycle:
+            continue
+        own_v = own_by_cycle[cycle].get('gross_operational_cost')
+        ref_v = ref_by_cycle[cycle].get('gross_operational_cost')
+        matched.append({
+            'cycle': cycle,
+            's35pt_gross_operational_cost': own_v,
+            's35ref_gross_operational_cost': ref_v,
+            'difference': (own_v - ref_v) if (own_v is not None and ref_v is not None) else None,
+        })
+
+    own_last = rows[-1] if rows else {}
+    ref_last = ref_rows[-1] if ref_rows else {}
+    own_terminal_step = own_last.get('objective_change_abs')
+    ref_terminal_step = ref_last.get('objective_change_abs')
+    terminal_difference = (
+        (own_last.get('gross_operational_cost') - ref_last.get('gross_operational_cost'))
+        if (own_last.get('gross_operational_cost') is not None and ref_last.get('gross_operational_cost') is not None)
+        else None
+    )
+    error_bar = (
+        (abs(own_terminal_step) + abs(ref_terminal_step))
+        if (own_terminal_step is not None and ref_terminal_step is not None) else None
+    )
+    return {
+        'available': True,
+        'reference_path': os.path.relpath(ref_path, REPO),
+        'matched_cycles': matched,
+        'terminal': {
+            's35pt_cycle': own_last.get('cycle'), 's35ref_cycle': ref_last.get('cycle'),
+            's35pt_gross_operational_cost': own_last.get('gross_operational_cost'),
+            's35ref_gross_operational_cost': ref_last.get('gross_operational_cost'),
+            'difference': terminal_difference,
+            's35pt_terminal_step_objective_change_abs': own_terminal_step,
+            's35ref_terminal_step_objective_change_abs': ref_terminal_step,
+            'error_bar_sum_of_terminal_steps': error_bar,
+            'determinate_at_gt_error_bar': (
+                (abs(terminal_difference) > error_bar)
+                if (terminal_difference is not None and error_bar) else None
+            ),
+        },
+    }
+
+
+def write_boyd_terminal_s35pt(planning, sed, models, rows, report, out_dir, label,
+                               floor_rows_by_node=None, floor_sidecar_path=None,
+                               price_taker_capture=None):
+    """s35pt terminal report -- `boyd_terminal.json`. Reuses the SAME
+    constituent helpers `write_boyd_terminal_s35ref` itself calls
+    (`write_interface_settlement_detail_s31c`, `write_interface_voltage_terminal`,
+    `_s32_binding_test`, `_s34_rho_gamma_freeze_trajectory`,
+    `_s35ref_terminal_floor_and_efc`) rather than the s35ref TOP-LEVEL writer
+    itself (which hardcodes the v5 spec identity and the OLD, defective
+    `stopped_by` derivation and would overwrite the SAME `boyd_terminal.json`
+    path with s35ref-specific content) -- `write_boyd_terminal_s35ref` is
+    itself built the same way, on top of s31c/s32/s34's helpers, not by
+    calling s34's whole writer. `stopped_by` is derived from the trajectory
+    (`_derive_stopped_by_from_trajectory`), NOT via the s35ref writer's
+    `converged_at_cycle == last cycle` shortcut. Adds gate 3 (spec v6
+    `gate_s35pt`) and the price-taker LP/injection capture (LP status,
+    per-year EFC, floor multiplier, clipped-q count, initialized z hash) the
+    task requires. `write_boyd_terminal_s35ref` and its artifacts (run 1) are
+    NEVER called or touched here."""
+    settlement_path = write_interface_settlement_detail_s31c(
+        planning, sed, models, rows, report, out_dir, label)
+
+    last_row = rows[-1] if rows else {}
+    stop_info = _derive_stopped_by_from_trajectory(
+        rows, cap=S35PT_CAP, required_consecutive=S35PT_REQUIRED_CONSECUTIVE_CYCLES)
+    stopped_by = stop_info['stopped_by']
+    converged_at_cycle = stop_info['converged_at_cycle']
+
+    voltage_path = write_interface_voltage_terminal(
+        planning, models, out_dir, label, cycle=last_row.get('cycle'))
+
+    with open(S35PT_SPEC_PATH) as handle:
+        spec_json = json.load(handle)
+
+    consecutive_converged_at_stop = last_row.get('consecutive_converged_cycles')
+
+    freeze_cycle_per_channel = {}
+    rho_at_clamp_per_channel = {}
+    for group in ('v', 'pf', 'ess'):
+        freeze_cycle_per_channel[group] = next(
+            (row.get('cycle') for row in rows if row.get(f'rho_frozen_{group}')), None)
+        rho_at_clamp_per_channel[group] = last_row.get(f'rho_at_clamp_{group}')
+
+    admm_params = planning.params.admm
+
+    floor_and_efc_terminal = _s35ref_terminal_floor_and_efc(floor_sidecar_path)
+
+    ref = _s35pt_reference_values()
+    gate3 = _s35pt_gate3(rows, report, cap=S35PT_CAP,
+                          required_consecutive=S35PT_REQUIRED_CONSECUTIVE_CYCLES, ref=ref)
+
+    price_taker_capture = price_taker_capture or {}
+    lp_result = price_taker_capture.get('lp_result') or {}
+    lp_summary_by_node = {}
+    for node_id, node_result in lp_result.items():
+        lp_summary_by_node[str(node_id)] = {
+            'lp_status': node_result.get('lp_status'),
+            'lp_message': node_result.get('lp_message'),
+            'lp_objective': node_result.get('lp_objective'),
+            'active_cohort_year': str(node_result.get('active_cohort_year')),
+            'efc_per_day_harness_by_year': {
+                str(y): v for y, v in (node_result.get('efc_per_day_harness') or {}).items()
+            },
+            'floor_multiplier_per_year': {
+                str(y): v for y, v in (node_result.get('floor_multiplier_per_year') or {}).items()
+            },
+            'soh_per_year': {
+                str(y): v for y, v in (node_result.get('soh_per_year') or {}).items()
+            },
+            'converged': node_result.get('converged'),
+            'outer_iterations_run': node_result.get('outer_iterations_run'),
+            'final_rel_change': node_result.get('final_rel_change'),
+        }
+
+    payload = {
+        'stage': 'P5.15 Addendum 16 items 2-3, PHASE 2 (s35pt, price-taker initialization) '
+                 '-- terminal report',
+        'authority': [
+            'PLANNER_BRIEF_2026-09-13.md Addendum 16 items 2 and 3',
+            'data/SRP1/Results/P515S35/frozen_s35pt_spec_v6_651a9d84.json',
+        ],
+        'spec_file': os.path.relpath(S35PT_SPEC_PATH, REPO),
+        'spec_file_sha256': S35PT_SPEC_SHA256,
+        'predecessor_spec_file': spec_json.get('predecessor', {}).get('path'),
+        'predecessor_spec_sha256': spec_json.get('predecessor', {}).get('sha256'),
+        'timestamp_utc': datetime.now(timezone.utc).isoformat(),
+        'label': label,
+        'objective_convention': (
+            'gross_operational_cost (matched-cycle and terminal comparisons '
+            'below use gross, NOT net_operational_recourse -- see CLAUDE.md '
+            '"Reporting conventions")'
+        ),
+        'cycles': len(rows),
+        'cap': S35PT_CAP,
+        'required_consecutive_cycles': S35PT_REQUIRED_CONSECUTIVE_CYCLES,
+        'stopped_by': stopped_by,
+        'stopped_by_derivation': (
+            "derived from the trajectory (last "
+            f"{S35PT_REQUIRED_CONSECUTIVE_CYCLES} cycles consecutive AND all "
+            "boyd_all_pass/cycle_convergence True, run ended before the cap) -- "
+            "NOT via write_boyd_terminal_s35ref's converged_at_cycle==last-cycle "
+            "shortcut, which mislabels a 3-consecutive stop as 'cap' whenever "
+            "convergence flickered earlier in the run (s35ref: 475 vs 477)."
+        ),
+        'converged_at_cycle': converged_at_cycle,
+        'stop_run_cycles': stop_info['stop_run_cycles'],
+        'consecutive_converged_at_stop': consecutive_converged_at_stop,
+        'gate3': gate3,
+        'shared_ess_initialization_mode': getattr(admm_params, 'shared_ess_initialization', None),
+        'shared_ess_initialization_source': getattr(admm_params, 'shared_ess_initialization_source', None),
+        'price_taker_initialization': {
+            'clipped_q_cells': price_taker_capture.get('clipped_q_cells'),
+            'z_hash_after_initialization': price_taker_capture.get('z_hash_after_initialization'),
+            'lp_call_count': shared_ess_price_taker.get_lp_call_count(),
+            'lp_result_by_node': lp_summary_by_node,
+        },
+        'binding_test_per_channel': _s32_binding_test(last_row),
+        'rho_gamma_freeze_trajectory_per_channel': _s34_rho_gamma_freeze_trajectory(rows),
+        'sigma_fixed': last_row.get('sigma_fixed'),
+        'sigma_computed': last_row.get('sigma_computed'),
+        'al_scale_esso': last_row.get('al_scale_esso'),
+        'shared_ess_reference_rating_mva': last_row.get('shared_ess_reference_rating_mva'),
+        'initial_rho': {group: dict(admm_params.rho[group]) for group in ('v', 'pf', 'ess')},
+        'initial_rho_ess_value_v6': S35PT_INITIAL_RHO_ESS,
+        'freeze_after_unchanged_cycles': last_row.get('freeze_after_unchanged_cycles'),
+        'freeze_backstop_cycle': last_row.get('freeze_backstop_cycle'),
+        'freeze_cycle_per_channel': freeze_cycle_per_channel,
+        'rho_at_clamp_per_channel_at_terminal': rho_at_clamp_per_channel,
+        'rho_at_clamp_any_true_gate_failure_flag': any(rho_at_clamp_per_channel.values()),
+        'efc_per_day_max_terminal': last_row.get('efc_per_day_max'),
+        'soh_floor_multiplier_and_efc_per_cohort_year_terminal': floor_and_efc_terminal,
+        'soh_floor_row_counts_by_node': ({n: len(r) for n, r in floor_rows_by_node.items()}
+                                          if floor_rows_by_node else None),
+        'system_cost_vs_s35ref': _s35pt_system_cost_vs_s35ref(rows, report),
+        'network_failures_summary': report.get('network_failures_summary'),
+        'component_levels_terminal_and_settlement_detail_path': settlement_path,
+        'interface_voltage_terminal_path': os.path.relpath(voltage_path, REPO),
+        'recourse_jump_sidecar_path': report.get('s34_recourse_jump_sidecar_path'),
+        'ess_entry_stride_sidecar_path': report.get('s34_ess_entry_stride_sidecar_path'),
+        'ess_entry_stride_value': S35PT_ESS_STRIDE,
+        'soh_floor_sidecar_path': report.get('s35ref_soh_floor_sidecar_path'),
+        'note_D_rows_and_cancellation_residual': (
+            'D rows are in component_levels_terminal.json (written by '
+            'write_component_levels_terminal, called first by '
+            'write_interface_settlement_detail_s31c above); the cancellation '
+            'residual T_TSO + sum(T_DSO) is '
+            '"t_tso_plus_t_dso_terminal" and per-DSO settlement/flexibility '
+            'volumes are "interface_consensus_residual_per_dso" / '
+            '"flexibility_volumes_per_dso" in interface_settlement_detail_s31c.json.'
+        ),
+    }
+
+    path = os.path.join(out_dir, 'boyd_terminal.json')
+    _refuse_overwrite(path)
+    with open(path, 'w') as handle:
+        json.dump(payload, handle, indent=1, default=str)
+    print(f'[S35PT] boyd_terminal.json written: {path}')
+    return path
+
+
+
 if __name__ == '__main__':
     _acquire_exclusive_run_lock()
     gate = sys.argv[1] if len(sys.argv) > 1 else None
@@ -4101,6 +4686,92 @@ if __name__ == '__main__':
             run_admm_arm('baseline', OUT_S35REF, k_override=None, eval_id='p515s35ref_baseline',
                          num_max_iters_override=S35REF_CAP, apply_rho=False,
                          full_diagnostics_in_rows=True, post_run_hook=_s35ref_hook)
+    elif gate == 's35pt':
+        # P5.15 Addendum 16 items 2-3, PHASE 2 (frozen spec v6,
+        # data/SRP1/Results/P515S35/frozen_s35pt_spec_v6_651a9d84.json --
+        # predecessor v5 frozen_s35_reference_spec_v5_995548ab.json, i.e.
+        # run 1/s35ref): "identical configuration to run 1 (spec v5) ...
+        # EXCEPT the shared-ESS initialization ... and cap 150". The
+        # case-file flag `admm.shared_ess_initialization = "price_taker"`
+        # (data/SRP1/SRP1_params.json) is what actually switches the
+        # initialization on -- this branch only asserts it is in force
+        # before solving anything. Own fresh output root; the s35ref run
+        # directory (`OUT_S35REF`) is read-only here (gate-3 reference).
+        #
+        # THE PLANNER LAUNCHES THIS GATE, NOT THE WORKER -- this branch is
+        # prepared code only (P5.15 Addendum 16 item 2-3 PHASE 2 worker
+        # task); it is never invoked by any Worker-run command in that task.
+        if N.REL != S35PT_REL:
+            raise RuntimeError(
+                f'p514_n_instrumented_cstar.REL ({N.REL}) no longer matches the '
+                f'frozen s35pt objective-change (diagnostic) tolerance {S35PT_REL}; '
+                'the spec requires 1e-4.')
+        observed_spec_hash = _s35pt_spec_hash()
+        if observed_spec_hash != S35PT_SPEC_SHA256:
+            raise RuntimeError(
+                f'frozen s35pt spec hash mismatch: file={observed_spec_hash} '
+                f'expected={S35PT_SPEC_SHA256}')
+        _require_fresh_output_root(OUT_S35PT)
+        preflight_eval_id = 'p515s35pt_preflight_capture_check'
+        preflight_eval_dir = os.path.join(O.WORK_DIR, preflight_eval_id)
+        if os.path.exists(preflight_eval_dir):
+            raise RuntimeError(
+                f'refusing to start: preflight eval dir already exists (network '
+                f'logs append): {preflight_eval_dir}')
+        preflight_planning = O.fresh_planning(preflight_eval_id)
+        s35pt_checklist, s35pt_floor_rows_by_node = assert_s35pt_capture_paths(preflight_planning)
+        preflight_admm_params = preflight_planning.params.admm
+        del preflight_planning
+        print(f'[P5.15 S35PT] capture-path pre-flight passed: {s35pt_checklist}')
+        print(
+            '[P5.15 S35PT] cap=150, objective rel=1e-4 (diagnostic), adaptive on, '
+            f'case-file rho in force (N.RHO NOT applied): '
+            f'v={preflight_admm_params.rho["v"]}, pf={preflight_admm_params.rho["pf"]}, '
+            f'ess={preflight_admm_params.rho["ess"]}; '
+            f'boyd eps_source={preflight_admm_params.boyd_eps_source}, '
+            f'eps_abs={preflight_admm_params.tol["boyd"]["eps_abs"]:.1e}, '
+            f'eps_rel={preflight_admm_params.tol["boyd"]["eps_rel"]:.1e}; '
+            f'gamma_policy={preflight_admm_params.proximal_regularization["tso"]["gamma_policy"]}, '
+            f'tau={preflight_admm_params.proximal_regularization["tso"]["tau"]}; '
+            f'objective_scale={preflight_admm_params.objective_scale} '
+            f'(source={preflight_admm_params.objective_scale_source}, '
+            f'assert_factor={preflight_admm_params.objective_scale_assert_factor}); '
+            f'esso_al_scale={preflight_admm_params.esso_al_scale} '
+            f'(numeric value and >1 check deferred to the first cycle -- unresolved '
+            f'before any solve); '
+            f'shared_ess_reference_rating_mva={preflight_admm_params.shared_ess_reference_rating_mva}; '
+            f'freeze_after_unchanged_cycles={preflight_admm_params.penalty_update["freeze_after_unchanged_cycles"]}; '
+            f'freeze_backstop_cycle={preflight_admm_params.penalty_update["freeze_backstop_cycle"]}; '
+            f'minimum_consecutive_converged_cycles={preflight_admm_params.minimum_consecutive_converged_cycles}; '
+            f'shared_ess_initialization={preflight_admm_params.shared_ess_initialization} '
+            f'(source={preflight_admm_params.shared_ess_initialization_source}); '
+            f'soh_floor_row_counts_by_node={ {n: len(r) for n, r in s35pt_floor_rows_by_node.items()} }'
+        )
+
+        s35pt_recourse_jump_path = os.path.join(OUT_S35PT, 'recourse_jump_sidecar_baseline.jsonl')
+        s35pt_ess_stride_path = os.path.join(OUT_S35PT, 'ess_entry_stride_baseline.jsonl')
+        s35pt_floor_sidecar_path = os.path.join(OUT_S35PT, 'soh_floor_sidecar_baseline.jsonl')
+        _refuse_overwrite(s35pt_recourse_jump_path)
+        _refuse_overwrite(s35pt_ess_stride_path)
+        _refuse_overwrite(s35pt_floor_sidecar_path)
+
+        s35pt_price_taker_capture = {}
+
+        def _s35pt_hook(planning, sed, models, rows, report, out_dir, label):
+            report['s34_recourse_jump_sidecar_path'] = os.path.relpath(s35pt_recourse_jump_path, REPO)
+            report['s34_ess_entry_stride_sidecar_path'] = os.path.relpath(s35pt_ess_stride_path, REPO)
+            report['s35ref_soh_floor_sidecar_path'] = os.path.relpath(s35pt_floor_sidecar_path, REPO)
+            write_boyd_terminal_s35pt(planning, sed, models, rows, report, out_dir, label,
+                                        floor_rows_by_node=s35pt_floor_rows_by_node,
+                                        floor_sidecar_path=s35pt_floor_sidecar_path,
+                                        price_taker_capture=s35pt_price_taker_capture)
+
+        with s35pt_capture_hooks(s35pt_recourse_jump_path, s35pt_ess_stride_path,
+                                   s35pt_floor_sidecar_path, s35pt_floor_rows_by_node,
+                                   s35pt_price_taker_capture, stride=S35PT_ESS_STRIDE):
+            run_admm_arm('baseline', OUT_S35PT, k_override=None, eval_id='p515s35pt_baseline',
+                         num_max_iters_override=S35PT_CAP, apply_rho=False,
+                         full_diagnostics_in_rows=True, post_run_hook=_s35pt_hook)
     else:
         print(__doc__)
         sys.exit(1)

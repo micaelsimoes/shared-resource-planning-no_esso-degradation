@@ -1,0 +1,77 @@
+{
+ "stage": "P5.15-S35PT-PHASE2",
+ "timestamp_utc": "2026-09-16T19:45:29.728625+00:00",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 16 items 2 and 3, PHASE 2",
+  "data/SRP1/Results/P515S35/frozen_s35pt_spec_v6_651a9d84.json"
+ ],
+ "precycle1_capture_method": "A monkeypatched stop on the first cycle-1 DSO solve (shared_resources_planning.update_distribution_coordination_models_and_solve) that raises _PreCycle1Stop BEFORE calling through (zero solves, zero ADMM cycles), combined with call-through capture wrappers on the four ADMM-model constructors (create_admm_variables, create_distribution_networks_models, create_transmission_network_model, create_shared_energy_storage_model) that store references to their OWN return values -- the SAME mutable objects _run_operational_planning continues to mutate in place (never reconstructed) up to the loop, so state is read out only once execution reaches EXACTLY the pre-cycle-1 point, catching any later pre-loop step that overwrites it.",
+ "Z3": {
+  "passed": true,
+  "n_cells_checked": 864,
+  "problems": [],
+  "clipped_q_cells_reported_by_wrapper": 231,
+  "clipped_q_cells_recomputed": 0,
+  "lp_call_count": 120,
+  "lp_call_count_declared": 120,
+  "lp_call_count_matches_declared": true,
+  "ipopt_solve_count": 51,
+  "ipopt_solve_count_declared": 51,
+  "guard_counts": {
+   "permitted_solve": 51,
+   "permitted_exec": 51,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "guard_verify_failures": [],
+  "shared_ess_initialization_mode": "price_taker",
+  "shared_ess_initialization_source": "case_file"
+ },
+ "Z4": {
+  "passed": true,
+  "problems": [],
+  "non_ess_pre_loop_state_identical_to_z3": true,
+  "vmag_max_abs_diff_vs_z3": 0.0,
+  "vmag_worst_path": null,
+  "pf_max_abs_diff_vs_z3": 0.0,
+  "pf_worst_path": null,
+  "dual_vmag_max_abs_diff_vs_z3": 0.0,
+  "dual_pf_max_abs_diff_vs_z3": 0.0,
+  "tolerance": 1e-09,
+  "ess_z_cells_total": 864,
+  "ess_z_cells_matching_lp_schedule": 0,
+  "ess_z_fraction_matching_lp_schedule": 0.0,
+  "ess_z_fraction_threshold": 0.5,
+  "ess_differs_from_lp_as_expected": true,
+  "price_taker_wrapper_called_under_standalone_flag": false,
+  "lp_calls_during_z4_construction": 0,
+  "lp_calls_declared": 0,
+  "lp_call_count_matches_declared": true,
+  "ipopt_solve_count": 51,
+  "ipopt_solve_count_declared": 51,
+  "guard_counts": {
+   "permitted_solve": 51,
+   "permitted_exec": 51,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "guard_verify_failures": [],
+  "shared_ess_initialization_mode": "standalone",
+  "shared_ess_initialization_source": "phase2_check_override_not_case_file"
+ },
+ "Z7_ipopt_part": {
+  "z3_ipopt_solve_count": 51,
+  "z4_ipopt_solve_count": 51,
+  "equal": true,
+  "both_match_declared": true,
+  "declared": 51,
+  "passed": true
+ },
+ "all_passed": true,
+ "summary": {
+  "Z3_passed": true,
+  "Z4_passed": true,
+  "Z7_ipopt_part_passed": true,
+  "ALL_PASSED": true
+ }
+}
