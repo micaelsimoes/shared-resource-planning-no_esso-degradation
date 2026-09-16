@@ -2576,6 +2576,487 @@ def write_boyd_terminal_s33e2(planning, sed, models, rows, report, out_dir, labe
     return path
 
 
+# ===========================================================================
+# P5.15 Step 3.4 (+3.3(b) folded in) -- D5 ESSO AL scaling, fixed sigma, the
+# v4 rho/freeze policy, S_ref. Authority: PLANNER_BRIEF_2026-09-13.md
+# Addendum 15 item 5. Binding specification:
+# data/SRP1/Results/P515S34/frozen_s34_spec_v4_966940a7.json (supersedes v3
+# data/SRP1/Results/P515S33/frozen_s33_e2_spec_v3_825f1f02.json). Same
+# machinery as `s33e2` (lock, heartbeat, stdout/stderr, results_dir
+# redirect, guard, trajectory, post-run writers) -- other arms (including
+# `s32`, `s33e2`) are UNCHANGED by this section.
+# ===========================================================================
+
+OUT_S34 = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S34_run')
+S34_SPEC_PATH = os.path.join(
+    REPO, 'data', 'SRP1', 'Results', 'P515S34', 'frozen_s34_spec_v4_966940a7.json')
+S34_SPEC_SHA256 = '966940a789db3093a57d5fdc23be8ccb172b762bf02d0cd09eeaaf0f52f544e9'
+S34_CAP = 150
+S34_REL = 1e-4
+S34_S31C_G_PATH = os.path.join(OUT_S31C, 'g_baseline.json')
+S34_S32_G_PATH = os.path.join(OUT_S32, 'g_baseline.json')
+S34_S33E2_G_PATH = os.path.join(OUT_S33E2, 'g_baseline.json')
+S34_S33E2_LEAK_PATH = os.path.join(OUT_S33E2, 'leak_classification_baseline.jsonl')
+S34_MATCHED_CYCLES = S33E2_MATCHED_CYCLES
+
+# Per-cycle-channel fields are unchanged from v2/v3 (S_ref, sigma and
+# al_scale_esso are run-level constants, not per-channel Boyd fields).
+S34_REPORT_PER_CYCLE_CHANNEL_FIELDS = S32_REPORT_PER_CYCLE_CHANNEL_FIELDS
+S34_ADMM_DIAGNOSTICS_KEYS = S33E2_ADMM_DIAGNOSTICS_KEYS + (
+    'sigma_fixed', 'sigma_computed', 'al_scale_esso', 'shared_ess_reference_rating_mva',
+    'freeze_after_unchanged_cycles', 'freeze_backstop_cycle',
+    'rho_frozen_v', 'rho_frozen_pf', 'rho_frozen_ess',
+    'rho_unchanged_streak_v', 'rho_unchanged_streak_pf', 'rho_unchanged_streak_ess',
+    'rho_at_clamp_v', 'rho_at_clamp_pf', 'rho_at_clamp_ess',
+    'efc_per_day_max',
+)
+
+
+def _s34_spec_hash():
+    with open(S34_SPEC_PATH, 'rb') as handle:
+        return hashlib.sha256(handle.read()).hexdigest()
+
+
+def assert_s34_capture_paths(planning):
+    """Rule eleven for the s34 arm (frozen spec v4). Reuses
+    `assert_s31c_capture_paths` (still required: the s34 hook also calls
+    `write_component_levels_terminal` and `write_interface_settlement_detail_s31c`,
+    which cover `report_terminal`'s "D rows", "cancellation residual",
+    "per-DSO settlement and flexibility volumes" and "network failures by
+    tier" fields). Deliberately does NOT reuse `assert_s32_capture_paths` or
+    `assert_s33e2_capture_paths` -- both hard-assert THEIR OWN spec's rho/
+    freeze case-file values (rho==1.0, `freeze_after_cycle==30`), which are
+    superseded by v4 and would raise here; the genuinely still-required
+    structural checks those functions perform (the Boyd per-cycle-channel
+    fields, the interface-voltage writer) are reproduced directly below
+    instead. Zero solves.
+    """
+    checklist = dict(assert_s31c_capture_paths(planning))
+
+    # -- spec file identity (v4) ------------------------------------------
+    observed_hash = _s34_spec_hash()
+    checklist['s34_spec_file_hash_matches'] = (observed_hash == S34_SPEC_SHA256)
+    checklist['s34_spec_file_hash_observed'] = observed_hash
+
+    admm_params = planning.params.admm
+
+    # -- boyd tolerance source and value (unchanged from s32/s33e2) -------
+    checklist['boyd_eps_source_is_case_file'] = (admm_params.boyd_eps_source == 'case_file')
+    checklist['boyd_eps_abs_is_1e-5'] = (admm_params.tol['boyd']['eps_abs'] == 1e-5)
+    checklist['boyd_eps_rel_is_1e-4'] = (admm_params.tol['boyd']['eps_rel'] == 1e-4)
+
+    # -- fixed sigma (b_sigma_fixed) ---------------------------------------
+    checklist['objective_scale_is_93635360'] = (admm_params.objective_scale == 93635360.0)
+    checklist['objective_scale_source_is_case_file'] = (admm_params.objective_scale_source == 'case_file')
+    checklist['objective_scale_assert_factor_at_least_1'] = (admm_params.objective_scale_assert_factor >= 1.0)
+    checklist['srp_resolve_common_admm_objective_scale_callable'] = callable(
+        getattr(srp, '_resolve_common_admm_objective_scale', None))
+
+    # -- ESSO AL scaling (a_D5_esso_scaling) -------------------------------
+    checklist['al_scale_esso_present'] = (admm_params.esso_al_scale.get('source') == 'case_file')
+    checklist['al_scale_esso_mode_is_sigma_over_median_block_weight'] = (
+        admm_params.esso_al_scale.get('mode') == 'sigma_over_median_block_weight')
+    checklist['srp_resolve_esso_al_scale_callable'] = callable(getattr(srp, '_resolve_esso_al_scale', None))
+    checklist['srp_update_shared_energy_storage_model_to_admm_accepts_al_scale_esso'] = (
+        'al_scale_esso' in inspect.signature(srp.update_shared_energy_storage_model_to_admm).parameters)
+
+    # -- S_ref (d_ess_reference_rating) ------------------------------------
+    checklist['shared_ess_reference_rating_mva_is_2p5'] = (admm_params.shared_ess_reference_rating_mva == 2.5)
+    checklist['srp_admm_shared_ess_reference_mva_callable'] = callable(
+        getattr(srp, '_admm_shared_ess_reference_mva', None))
+
+    # -- initial rho: v 0.0077 / pf 0.198 / ess 0.05, EVERY network + esso -
+    initial_rho_ok = (
+        all(float(v) == 0.0077 for v in admm_params.rho['v'].values()) and
+        all(float(v) == 0.198 for v in admm_params.rho['pf'].values()) and
+        all(float(v) == 0.05 for v in admm_params.rho['ess'].values())
+    )
+    checklist['initial_rho_v_pf_ess_matches_spec_v4'] = initial_rho_ok
+    checklist['initial_rho_snapshot'] = {
+        group: dict(admm_params.rho[group]) for group in ('v', 'pf', 'ess')
+    }
+
+    # -- v4 freeze policy (c_rho_policy) -----------------------------------
+    checklist['freeze_after_unchanged_cycles_is_10'] = (admm_params.penalty_update.get('freeze_after_unchanged_cycles') == 10)
+    checklist['freeze_backstop_cycle_is_60'] = (admm_params.penalty_update.get('freeze_backstop_cycle') == 60)
+    checklist['minimum_consecutive_converged_cycles_is_3'] = (admm_params.minimum_consecutive_converged_cycles == 3)
+    checklist['srp_update_admm_penalties_accepts_freeze_state'] = (
+        'freeze_state' in inspect.signature(srp._update_admm_penalties).parameters)
+    checklist['srp_init_admm_freeze_state_callable'] = callable(getattr(srp, '_init_admm_freeze_state', None))
+
+    # -- per-cycle-channel / admm_diagnostics capture ----------------------
+    checklist['srp_get_admm_boyd_residual_metrics'] = callable(
+        getattr(srp, 'get_admm_boyd_residual_metrics', None))
+    boyd_fn_source = inspect.getsource(srp.get_admm_boyd_residual_metrics)
+    for field in S34_REPORT_PER_CYCLE_CHANNEL_FIELDS:
+        checklist[f'boyd_field_{field}_in_source'] = (f"'{field}':" in boyd_fn_source)
+
+    module_source = inspect.getsource(srp)
+    for key in S34_ADMM_DIAGNOSTICS_KEYS:
+        checklist[f'admm_diagnostics_key_{key}_present'] = (f"'{key}':" in module_source)
+
+    checklist['srp_get_admm_efc_per_day_max_callable'] = callable(getattr(srp, '_get_admm_efc_per_day_max', None))
+
+    # -- structural: TSO gamma Params are mutable (spec v3, unchanged by v4)
+    checklist['prox_gamma_v_mutable_in_source'] = (
+        'model[year][day].prox_gamma_v = pe.Param(mutable=True' in module_source)
+    checklist['write_interface_voltage_terminal_callable'] = callable(
+        globals().get('write_interface_voltage_terminal'))
+    checklist['write_component_levels_terminal_callable'] = callable(
+        globals().get('write_component_levels_terminal'))
+    checklist['write_interface_settlement_detail_s31c_callable'] = callable(
+        globals().get('write_interface_settlement_detail_s31c'))
+
+    # -- capture_additions: per-cycle sidecar hook points must exist -------
+    checklist['srp_get_operational_recourse_block_components_callable'] = callable(
+        getattr(srp, '_get_operational_recourse_block_components', None))
+    checklist['srp_get_operational_objective_component_blocks_callable'] = callable(
+        getattr(srp, '_get_operational_objective_component_blocks', None))
+    checklist['s34_capture_hooks_callable'] = callable(globals().get('s34_capture_hooks'))
+
+    # -- report_terminal fields not already covered by assert_s33e2_capture_paths
+    checklist['s31c_g_baseline_reference_exists'] = os.path.exists(S34_S31C_G_PATH)
+    checklist['s32_g_baseline_reference_exists'] = os.path.exists(S34_S32_G_PATH)
+    checklist['s33e2_g_baseline_reference_exists'] = os.path.exists(S34_S33E2_G_PATH)
+    checklist['s33e2_leak_classification_baseline_exists'] = os.path.exists(S34_S33E2_LEAK_PATH)
+    checklist['write_boyd_terminal_s34_callable'] = callable(globals().get('write_boyd_terminal_s34'))
+
+    missing = [name for name, ok in checklist.items()
+               if isinstance(ok, bool) and not ok]
+    if missing:
+        raise RuntimeError(f'S34 capture-path pre-flight FAILED, missing/broken: {missing}')
+    return checklist
+
+
+@contextmanager
+def s34_capture_hooks(recourse_jump_path, ess_stride_path, stride=1):
+    """P5.15 Step 3.4 `capture_additions` (spec v4): monkeypatches
+    `srp.get_admm_boyd_residual_metrics` -- called exactly once per ADMM
+    cycle, with the SAME already-solved `tso_model`/`dso_models`/`esso_model`
+    and the SAME `consensus_vars` the cycle's own dual/Boyd computation uses
+    -- to ALSO, unconditionally (no tolerance gate, unlike production's OWN
+    `[RECOURSE JUMP]` print which only fires when recourse stationarity
+    FAILS; Z4 found it stops appearing after cycle 62 for that reason),
+    write two per-cycle JSONL sidecars:
+
+      1. `recourse_jump_path`: the SAME block decomposition production's own
+         `_print_recourse_jump_diagnostics` computes (top-10 |delta| blocks,
+         reconciliation), via the SAME unmodified production functions
+         (`_get_operational_recourse_block_components`,
+         `_get_operational_objective_component_blocks`), every cycle.
+      2. `ess_stride_path`: per-entry shared-ESS z (consensus) and x
+         (TSO/DSO/ESSO copies) on the given cycle stride (default 1 = every
+         cycle), plus EFC/day per node (not just the max the production
+         `efc_per_day_max` diagnostic reports).
+
+    Zero extra solves (both sidecars only read already-solved Pyomo Var/Param
+    values); the wrapped function's own return value and behaviour are
+    unchanged -- a pure side-effecting wrapper, uninstalled (restoring the
+    original function) even on error.
+    """
+    real_fn = srp.get_admm_boyd_residual_metrics
+    state = {
+        'cycle': 0,
+        'previous_recourse_blocks': None,
+        'previous_objective_component_blocks': None,
+    }
+
+    def wrapper(planning_problem, tso_model, dso_models, esso_model, consensus_vars, dual_vars, admm_parameters):
+        state['cycle'] += 1
+        cycle = state['cycle']
+        operational_models = {'tso': tso_model, 'dso': dso_models, 'esso': esso_model}
+
+        # ---- (1) unconditional [RECOURSE JUMP] block decomposition ----
+        try:
+            current_blocks = srp._get_operational_recourse_block_components(planning_problem, operational_models)
+            current_obj_blocks = srp._get_operational_objective_component_blocks(planning_problem, operational_models)
+            capture_error = None
+        except Exception as error:  # pragma: no cover -- defensive, never expected
+            current_blocks, current_obj_blocks = None, None
+            capture_error = f'{type(error).__name__}: {error}'
+
+        entry = {'cycle': cycle, 'error': capture_error, 'block_deltas': None,
+                 'block_total_current': None, 'block_total_previous': None,
+                 'objective_component_block_deltas': None}
+        if current_blocks is not None:
+            entry['block_total_current'] = sum(current_blocks.values())
+            if state['previous_recourse_blocks'] is not None:
+                previous_blocks = state['previous_recourse_blocks']
+                entry['block_total_previous'] = sum(previous_blocks.values())
+                deltas = []
+                for key in set(current_blocks) | set(previous_blocks):
+                    prev_v = previous_blocks.get(key, 0.0)
+                    cur_v = current_blocks.get(key, 0.0)
+                    agent, node_id, year, day = key
+                    deltas.append({
+                        'agent': agent, 'node_id': node_id, 'year': str(year), 'day': str(day),
+                        'previous': prev_v, 'current': cur_v, 'delta': cur_v - prev_v,
+                        'abs_delta': abs(cur_v - prev_v),
+                    })
+                deltas.sort(key=lambda e: e['abs_delta'], reverse=True)
+                entry['block_deltas'] = deltas[:10]
+            state['previous_recourse_blocks'] = current_blocks
+        if current_obj_blocks is not None:
+            # Each block's value is itself a {component_name: value} dict
+            # (`_get_local_objective_components`), NOT a scalar -- flatten to
+            # (block_key, component_name) before differencing.
+            if state['previous_objective_component_blocks'] is not None:
+                previous_obj_blocks = state['previous_objective_component_blocks']
+                flat_current = {
+                    (block_key, name): value
+                    for block_key, components in current_obj_blocks.items()
+                    for name, value in components.items()
+                }
+                flat_previous = {
+                    (block_key, name): value
+                    for block_key, components in previous_obj_blocks.items()
+                    for name, value in components.items()
+                }
+                obj_deltas = []
+                for key in set(flat_current) | set(flat_previous):
+                    prev_v = flat_previous.get(key, 0.0)
+                    cur_v = flat_current.get(key, 0.0)
+                    block_key, component_name = key
+                    obj_deltas.append({'block_key': str(block_key), 'component': component_name,
+                                        'previous': prev_v, 'current': cur_v,
+                                        'delta': cur_v - prev_v, 'abs_delta': abs(cur_v - prev_v)})
+                obj_deltas.sort(key=lambda e: e['abs_delta'], reverse=True)
+                entry['objective_component_block_deltas'] = obj_deltas[:10]
+            state['previous_objective_component_blocks'] = current_obj_blocks
+
+        with open(recourse_jump_path, 'a') as handle:
+            handle.write(json.dumps(entry, default=str) + '\n')
+
+        # ---- (2) per-entry ESS z/x on the recorded stride, + EFC/day/node ----
+        if (cycle - 1) % max(int(stride), 1) == 0:
+            ess_entries = []
+            for node_id in planning_problem.active_distribution_network_nodes:
+                for year in planning_problem.years:
+                    for day in planning_problem.days:
+                        for power_type in ('p', 'q'):
+                            z_series = list(consensus_vars['ess']['z']['current'][node_id][year][day][power_type])
+                            x_series = {
+                                agent: list(consensus_vars['ess'][agent]['current'][node_id][year][day][power_type])
+                                for agent in ('tso', 'dso', 'esso')
+                            }
+                            ess_entries.append({
+                                'node_id': node_id, 'year': str(year), 'day': str(day),
+                                'power_type': power_type, 'z': z_series, 'x': x_series,
+                            })
+            efc_per_node = {}
+            for node_id, model in esso_model.items():
+                values = []
+                for y_inv in model.years:
+                    for y in model.years:
+                        avg = pe.value(model.es_avg_ch_dch_per_unit[y_inv, y], exception=False)
+                        rated = pe.value(model.es_e_rated_per_unit[y_inv, y], exception=False)
+                        if avg is None or not rated:
+                            continue
+                        values.append(avg / (2.0 * rated))
+                efc_per_node[str(node_id)] = max(values) if values else None
+            with open(ess_stride_path, 'a') as handle:
+                handle.write(json.dumps(
+                    {'cycle': cycle, 'stride': stride, 'entries': ess_entries,
+                     'efc_per_day_per_node': efc_per_node},
+                    default=str) + '\n')
+
+        return real_fn(planning_problem, tso_model, dso_models, esso_model, consensus_vars, dual_vars, admm_parameters)
+
+    srp.get_admm_boyd_residual_metrics = wrapper
+    try:
+        yield state
+    finally:
+        srp.get_admm_boyd_residual_metrics = real_fn
+
+
+def _s34_rho_gamma_freeze_trajectory(rows):
+    trajectory = {'v': [], 'pf': [], 'ess': []}
+    for row in rows:
+        for group in ('v', 'pf', 'ess'):
+            trajectory[group].append({
+                'cycle': row.get('cycle'),
+                'rho_before': row.get(f'rho_{group}_before'),
+                'rho_after': row.get(f'rho_{group}_after'),
+                'action': row.get(f'rho_{group}_action'),
+                'gamma_before': row.get(f'gamma_{group}_before'),
+                'gamma_after': row.get(f'gamma_{group}_after'),
+                'rho_frozen': row.get(f'rho_frozen_{group}'),
+                'rho_unchanged_streak': row.get(f'rho_unchanged_streak_{group}'),
+                'rho_at_clamp': row.get(f'rho_at_clamp_{group}'),
+            })
+    return trajectory
+
+
+def _s34_system_cost_vs_references(rows, report):
+    """System cost (gross_operational_cost) vs s31c, s32 AND s33e2, at the
+    spec's matched cycles and at the terminal point, WITH each run's own
+    terminal step (rule ten). Extends `_s33e2_system_cost_vs_references` with
+    the s33e2 reference itself."""
+    result = {}
+    for ref_name, ref_path in (('s31c', S34_S31C_G_PATH), ('s32', S34_S32_G_PATH), ('s33e2', S34_S33E2_G_PATH)):
+        if not os.path.exists(ref_path):
+            result[ref_name] = {'available': False, 'reason': f'{ref_name} reference not found at {ref_path}'}
+            continue
+        with open(ref_path) as handle:
+            ref_report = json.load(handle)
+        ref_rows = ref_report.get('cycle_trajectory', [])
+        ref_by_cycle = {r['cycle']: r for r in ref_rows if r.get('cycle') is not None}
+        s34_by_cycle = {r['cycle']: r for r in rows if r.get('cycle') is not None}
+
+        matched = []
+        for cycle in S34_MATCHED_CYCLES:
+            if cycle not in ref_by_cycle or cycle not in s34_by_cycle:
+                continue
+            s34_v = s34_by_cycle[cycle].get('gross_operational_cost')
+            ref_v = ref_by_cycle[cycle].get('gross_operational_cost')
+            matched.append({
+                'cycle': cycle,
+                's34_gross_operational_cost': s34_v,
+                f'{ref_name}_gross_operational_cost': ref_v,
+                'difference': (s34_v - ref_v) if (s34_v is not None and ref_v is not None) else None,
+            })
+
+        s34_last = rows[-1] if rows else {}
+        ref_last = ref_rows[-1] if ref_rows else {}
+        s34_terminal_step = s34_last.get('objective_change_abs')
+        ref_terminal_step = ref_last.get('objective_change_abs')
+        terminal_difference = (
+            (s34_last.get('gross_operational_cost') - ref_last.get('gross_operational_cost'))
+            if (s34_last.get('gross_operational_cost') is not None and ref_last.get('gross_operational_cost') is not None)
+            else None
+        )
+        error_bar = (
+            (abs(s34_terminal_step) + abs(ref_terminal_step))
+            if (s34_terminal_step is not None and ref_terminal_step is not None) else None
+        )
+        result[ref_name] = {
+            'available': True,
+            'reference_path': os.path.relpath(ref_path, REPO),
+            'matched_cycles': matched,
+            'terminal': {
+                's34_cycle': s34_last.get('cycle'),
+                f'{ref_name}_cycle': ref_last.get('cycle'),
+                's34_gross_operational_cost': s34_last.get('gross_operational_cost'),
+                f'{ref_name}_gross_operational_cost': ref_last.get('gross_operational_cost'),
+                'difference': terminal_difference,
+                's34_terminal_step_objective_change_abs': s34_terminal_step,
+                f'{ref_name}_terminal_step_objective_change_abs': ref_terminal_step,
+                'error_bar_sum_of_terminal_steps': error_bar,
+                'determinate_at_gt_error_bar': (
+                    (abs(terminal_difference) > error_bar)
+                    if (terminal_difference is not None and error_bar) else None
+                ),
+            },
+        }
+    return result
+
+
+def write_boyd_terminal_s34(planning, sed, models, rows, report, out_dir, label):
+    """s34 Part 2: writes `boyd_terminal.json` -- the frozen v4 spec's
+    `report_terminal` fields not already covered by
+    `write_interface_settlement_detail_s31c` (cancellation residual,
+    per-DSO settlement/flexibility volumes), `write_component_levels_terminal`
+    (D rows) and `write_interface_voltage_terminal`, plus the v4-specific
+    additions: sigma_fixed/sigma_computed, al_scale_esso, S_ref, initial rho,
+    per-channel freeze cycle and rho_at_clamp, and the system-cost comparison
+    against s31c, s32 AND s33e2 at matched cycles. Zero extra solves."""
+    settlement_path = write_interface_settlement_detail_s31c(
+        planning, sed, models, rows, report, out_dir, label)
+
+    last_row = rows[-1] if rows else {}
+    converged_at_cycle = report.get('converged_at_cycle')
+    stopped_by = 'boyd' if (converged_at_cycle is not None and converged_at_cycle == last_row.get('cycle')) else 'cap'
+
+    voltage_path = write_interface_voltage_terminal(
+        planning, models, out_dir, label, cycle=last_row.get('cycle'))
+
+    with open(S34_SPEC_PATH) as handle:
+        spec_json = json.load(handle)
+
+    consecutive_converged_at_stop = last_row.get('consecutive_converged_cycles')
+    began_at_cycle = None
+    if consecutive_converged_at_stop:
+        count = 0
+        for row in reversed(rows):
+            if row.get('cycle_convergence'):
+                count += 1
+                began_at_cycle = row.get('cycle')
+            else:
+                break
+        if count != consecutive_converged_at_stop:
+            began_at_cycle = None
+
+    # Per-channel freeze cycle: the first row where rho_frozen_<g> is True.
+    freeze_cycle_per_channel = {}
+    rho_at_clamp_per_channel = {}
+    for group in ('v', 'pf', 'ess'):
+        freeze_cycle_per_channel[group] = next(
+            (row.get('cycle') for row in rows if row.get(f'rho_frozen_{group}')), None)
+        rho_at_clamp_per_channel[group] = last_row.get(f'rho_at_clamp_{group}')
+
+    admm_params = planning.params.admm
+
+    payload = {
+        'stage': 'P5.15 Step 3.4 (+3.3(b) folded in) (s34) -- D5 ESSO AL scaling, '
+                 'fixed sigma, v4 rho/freeze policy, S_ref -- terminal report',
+        'authority': [
+            'PLANNER_BRIEF_2026-09-13.md Addendum 15 item 5',
+            'data/SRP1/Results/P515S34/frozen_s34_spec_v4_966940a7.json',
+        ],
+        'spec_file': os.path.relpath(S34_SPEC_PATH, REPO),
+        'spec_file_sha256': S34_SPEC_SHA256,
+        'predecessor_spec_file': spec_json.get('predecessor', {}).get('path'),
+        'predecessor_spec_sha256': spec_json.get('predecessor', {}).get('sha256'),
+        'timestamp_utc': datetime.now(timezone.utc).isoformat(),
+        'label': label,
+        'objective_convention': (
+            'gross_operational_cost (matched-cycle and terminal comparisons '
+            'below use gross, NOT net_operational_recourse -- see CLAUDE.md '
+            '"Reporting conventions")'
+        ),
+        'cycles': len(rows),
+        'stopped_by': stopped_by,
+        'converged_at_cycle': converged_at_cycle,
+        'consecutive_converged_at_stop': consecutive_converged_at_stop,
+        'consecutive_converged_run_began_at_cycle': began_at_cycle,
+        'binding_test_per_channel': _s32_binding_test(last_row),
+        'rho_gamma_freeze_trajectory_per_channel': _s34_rho_gamma_freeze_trajectory(rows),
+        'sigma_fixed': last_row.get('sigma_fixed'),
+        'sigma_computed': last_row.get('sigma_computed'),
+        'al_scale_esso': last_row.get('al_scale_esso'),
+        'shared_ess_reference_rating_mva': last_row.get('shared_ess_reference_rating_mva'),
+        'initial_rho': {group: dict(admm_params.rho[group]) for group in ('v', 'pf', 'ess')},
+        'freeze_after_unchanged_cycles': last_row.get('freeze_after_unchanged_cycles'),
+        'freeze_backstop_cycle': last_row.get('freeze_backstop_cycle'),
+        'freeze_cycle_per_channel': freeze_cycle_per_channel,
+        'rho_at_clamp_per_channel_at_terminal': rho_at_clamp_per_channel,
+        'rho_at_clamp_any_true_gate_failure_flag': any(rho_at_clamp_per_channel.values()),
+        'efc_per_day_max_terminal': last_row.get('efc_per_day_max'),
+        'system_cost_vs_s31c_s32_s33e2': _s34_system_cost_vs_references(rows, report),
+        'network_failures_summary': report.get('network_failures_summary'),
+        'component_levels_terminal_and_settlement_detail_path': settlement_path,
+        'interface_voltage_terminal_path': os.path.relpath(voltage_path, REPO),
+        'recourse_jump_sidecar_path': report.get('s34_recourse_jump_sidecar_path'),
+        'ess_entry_stride_sidecar_path': report.get('s34_ess_entry_stride_sidecar_path'),
+        'note_D_rows_and_cancellation_residual': (
+            'D rows are in component_levels_terminal.json (written by '
+            'write_component_levels_terminal, called first by '
+            'write_interface_settlement_detail_s31c above); the cancellation '
+            'residual T_TSO + sum(T_DSO) is '
+            '"t_tso_plus_t_dso_terminal" and per-DSO settlement/flexibility '
+            'volumes are "interface_consensus_residual_per_dso" / '
+            '"flexibility_volumes_per_dso" in interface_settlement_detail_s31c.json.'
+        ),
+    }
+
+    path = os.path.join(out_dir, 'boyd_terminal.json')
+    _refuse_overwrite(path)
+    with open(path, 'w') as handle:
+        json.dump(payload, handle, indent=1, default=str)
+    print(f'[S34] boyd_terminal.json written: {path}')
+    return path
+
+
 if __name__ == '__main__':
     _acquire_exclusive_run_lock()
     gate = sys.argv[1] if len(sys.argv) > 1 else None
@@ -2838,6 +3319,73 @@ if __name__ == '__main__':
         run_admm_arm('baseline', OUT_S33E2, k_override=None, eval_id='p515s33e2_baseline',
                      num_max_iters_override=S33E2_CAP, apply_rho=False,
                      full_diagnostics_in_rows=True, post_run_hook=_s33e2_hook)
+    elif gate == 's34':
+        # S34 worker task (PLANNER_BRIEF_2026-09-13.md Addendum 15 item 5;
+        # frozen spec v4 data/SRP1/Results/P515S34/frozen_s34_spec_v4_966940a7.json,
+        # supersedes v3 frozen_s33_e2_spec_v3_825f1f02.json -- D5 ESSO AL
+        # scaling, fixed sigma, the v4 rho/freeze policy, S_ref = 2.5 MVA):
+        # Boyd stopping rule + residual balancing + tied-gamma stabiliser +
+        # D5/sigma/S_ref/v4-freeze gate, cap 150, case-file rho in force
+        # (N.RHO NOT applied) -- own fresh root and eval id; the s32/s33e2
+        # run directories are never written.
+        if N.REL != S34_REL:
+            raise RuntimeError(
+                f'p514_n_instrumented_cstar.REL ({N.REL}) no longer matches the '
+                f'frozen s34 objective-change (diagnostic) tolerance {S34_REL}; '
+                'the spec requires 1e-4.')
+        observed_spec_hash = _s34_spec_hash()
+        if observed_spec_hash != S34_SPEC_SHA256:
+            raise RuntimeError(
+                f'frozen s34 spec hash mismatch: file={observed_spec_hash} '
+                f'expected={S34_SPEC_SHA256}')
+        _require_fresh_output_root(OUT_S34)
+        preflight_eval_id = 'p515s34_preflight_capture_check'
+        preflight_eval_dir = os.path.join(O.WORK_DIR, preflight_eval_id)
+        if os.path.exists(preflight_eval_dir):
+            raise RuntimeError(
+                f'refusing to start: preflight eval dir already exists (network '
+                f'logs append): {preflight_eval_dir}')
+        preflight_planning = O.fresh_planning(preflight_eval_id)
+        s34_checklist = assert_s34_capture_paths(preflight_planning)
+        preflight_admm_params = preflight_planning.params.admm
+        del preflight_planning
+        print(f'[P5.15 S34] capture-path pre-flight passed: {s34_checklist}')
+        print(
+            '[P5.15 S34] cap=150, objective rel=1e-4 (diagnostic), adaptive on, '
+            f'case-file rho in force (N.RHO NOT applied): '
+            f'v={preflight_admm_params.rho["v"]}, pf={preflight_admm_params.rho["pf"]}, '
+            f'ess={preflight_admm_params.rho["ess"]}; '
+            f'boyd eps_source={preflight_admm_params.boyd_eps_source}, '
+            f'eps_abs={preflight_admm_params.tol["boyd"]["eps_abs"]:.1e}, '
+            f'eps_rel={preflight_admm_params.tol["boyd"]["eps_rel"]:.1e}; '
+            f'gamma_policy={preflight_admm_params.proximal_regularization["tso"]["gamma_policy"]}, '
+            f'tau={preflight_admm_params.proximal_regularization["tso"]["tau"]}; '
+            f'objective_scale={preflight_admm_params.objective_scale} '
+            f'(source={preflight_admm_params.objective_scale_source}, '
+            f'assert_factor={preflight_admm_params.objective_scale_assert_factor}); '
+            f'esso_al_scale={preflight_admm_params.esso_al_scale} '
+            f'(numeric value and >1 check deferred to the first cycle -- unresolved '
+            f'before any solve); '
+            f'shared_ess_reference_rating_mva={preflight_admm_params.shared_ess_reference_rating_mva}; '
+            f'freeze_after_unchanged_cycles={preflight_admm_params.penalty_update["freeze_after_unchanged_cycles"]}; '
+            f'freeze_backstop_cycle={preflight_admm_params.penalty_update["freeze_backstop_cycle"]}; '
+            f'minimum_consecutive_converged_cycles={preflight_admm_params.minimum_consecutive_converged_cycles}'
+        )
+
+        s34_recourse_jump_path = os.path.join(OUT_S34, 'recourse_jump_sidecar_baseline.jsonl')
+        s34_ess_stride_path = os.path.join(OUT_S34, 'ess_entry_stride_baseline.jsonl')
+        _refuse_overwrite(s34_recourse_jump_path)
+        _refuse_overwrite(s34_ess_stride_path)
+
+        def _s34_hook(planning, sed, models, rows, report, out_dir, label):
+            report['s34_recourse_jump_sidecar_path'] = os.path.relpath(s34_recourse_jump_path, REPO)
+            report['s34_ess_entry_stride_sidecar_path'] = os.path.relpath(s34_ess_stride_path, REPO)
+            write_boyd_terminal_s34(planning, sed, models, rows, report, out_dir, label)
+
+        with s34_capture_hooks(s34_recourse_jump_path, s34_ess_stride_path, stride=1):
+            run_admm_arm('baseline', OUT_S34, k_override=None, eval_id='p515s34_baseline',
+                         num_max_iters_override=S34_CAP, apply_rho=False,
+                         full_diagnostics_in_rows=True, post_run_hook=_s34_hook)
     else:
         print(__doc__)
         sys.exit(1)
