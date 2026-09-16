@@ -1,0 +1,693 @@
+{
+ "stage": "P5.15-S36-A17-step1",
+ "authority": "PLANNER_BRIEF_2026-09-13.md Addendum 17 (2026-09-16)",
+ "timestamp_utc": "2026-09-16T22:40:46.052423+00:00",
+ "runs": {
+  "run1_reference": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_REF_run",
+  "gate3_pt": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_PT_run"
+ },
+ "terminal_cycles": {
+  "run1_reference": 477,
+  "gate3_pt": 150
+ },
+ "guard": {
+  "pyomo_ipopt_solve_guard": {
+   "observed": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "permitted_declared": 0,
+   "guard_verify_failures": []
+  },
+  "scipy_lp_calls": {
+   "declared": 0,
+   "observed": 0,
+   "exact_match": true
+  }
+ },
+ "part0_data_availability_audit": {
+  "item1_storage_consensus_duals": {
+   "run1_reference": {
+    "item": "1_storage_consensus_duals",
+    "run": "run1_reference",
+    "searched": [
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_REF_run/g_baseline.json",
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_REF_run/esso_models_baseline.pkl",
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_REF_run/**/*.pkl (recursive)"
+    ],
+    "aggregate_norm_per_agent_at_terminal_cycle": {
+     "tso": 0.006267941556752565,
+     "dso": 0.005340650900621736,
+     "esso": 0.0021524208513791884,
+     "combined": 0.00851131945838184
+    },
+    "aggregate_norm_granularity": "per (year,day,period,type) SCALAR L2 norm over all storage entries, per agent, per cycle -- available at EVERY cycle 1..terminal in cycle_trajectory, not just the terminal one",
+    "esso_per_entry_dual": {
+     "available": true,
+     "source": "esso_models_baseline.pkl -- ESSO Pyomo model per node, dual_p_req/dual_q_req Params (shared_resources_planning.py:5519-5525 sets these one-to-one from dual_vars['ess']['esso']['current'][node][year][day][p/q][period] immediately before the ESSO's own solve; the pickle freezes whatever state the model held when the run stopped, i.e. this run's own terminal cycle 477, regardless of Boyd vs cap stop)",
+     "granularity": "per (node, year, day, period), separately for p and q -- 288 entries/node/power-type",
+     "per_node": {
+      "5": {
+       "dual_p_req_entries": 288,
+       "dual_q_req_entries": 288,
+       "rho": 0.16875
+      },
+      "7": {
+       "dual_p_req_entries": 288,
+       "dual_q_req_entries": 288,
+       "rho": 0.16875
+      },
+      "9": {
+       "dual_p_req_entries": 288,
+       "dual_q_req_entries": 288,
+       "rho": 0.16875
+      }
+     },
+     "agent_scope": "ESSO ONLY -- this is the ESSO agent's OWN copy of the consensus dual, not TSO's or DSO's"
+    },
+    "tso_dso_per_entry_dual": {
+     "available": false,
+     "reason": "no TSO or DSO model is ever pickled in this run's committed evidence at the terminal cycle (the only non-ESSO .pkl files present are the two FrozenSMOPF regression fixtures, frozen at a fixed early cycle 7, for a DIFFERENT purpose -- see item 3 below)",
+     "non_esso_pkl_files_found": [
+      "results/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+      "results/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl"
+     ],
+     "capture_that_would_supply_it": "pickle the TSO model and each DSO model (as esso_models_baseline.pkl already does for ESSO) at the run's terminal cycle, before discarding them, reading dual_ess_p_req/dual_ess_q_req (shared_resources_planning.py:5162-5163 TSO, 5353-5354/5478-5479 DSO) -- zero additional solves, a serialization change only."
+    }
+   },
+   "gate3_pt": {
+    "item": "1_storage_consensus_duals",
+    "run": "gate3_pt",
+    "searched": [
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_PT_run/g_baseline.json",
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_PT_run/esso_models_baseline.pkl",
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_PT_run/**/*.pkl (recursive)"
+    ],
+    "aggregate_norm_per_agent_at_terminal_cycle": {
+     "tso": 0.0019289064229052575,
+     "dso": 0.0016165374283601491,
+     "esso": 0.0006180071489713603,
+     "combined": 0.0025914872335772977
+    },
+    "aggregate_norm_granularity": "per (year,day,period,type) SCALAR L2 norm over all storage entries, per agent, per cycle -- available at EVERY cycle 1..terminal in cycle_trajectory, not just the terminal one",
+    "esso_per_entry_dual": {
+     "available": true,
+     "source": "esso_models_baseline.pkl -- ESSO Pyomo model per node, dual_p_req/dual_q_req Params (shared_resources_planning.py:5519-5525 sets these one-to-one from dual_vars['ess']['esso']['current'][node][year][day][p/q][period] immediately before the ESSO's own solve; the pickle freezes whatever state the model held when the run stopped, i.e. this run's own terminal cycle 150, regardless of Boyd vs cap stop)",
+     "granularity": "per (node, year, day, period), separately for p and q -- 288 entries/node/power-type",
+     "per_node": {
+      "5": {
+       "dual_p_req_entries": 288,
+       "dual_q_req_entries": 288,
+       "rho": 0.16875
+      },
+      "7": {
+       "dual_p_req_entries": 288,
+       "dual_q_req_entries": 288,
+       "rho": 0.16875
+      },
+      "9": {
+       "dual_p_req_entries": 288,
+       "dual_q_req_entries": 288,
+       "rho": 0.16875
+      }
+     },
+     "agent_scope": "ESSO ONLY -- this is the ESSO agent's OWN copy of the consensus dual, not TSO's or DSO's"
+    },
+    "tso_dso_per_entry_dual": {
+     "available": false,
+     "reason": "no TSO or DSO model is ever pickled in this run's committed evidence at the terminal cycle (the only non-ESSO .pkl files present are the two FrozenSMOPF regression fixtures, frozen at a fixed early cycle 7, for a DIFFERENT purpose -- see item 3 below)",
+     "non_esso_pkl_files_found": [
+      "results/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+      "results/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl"
+     ],
+     "capture_that_would_supply_it": "pickle the TSO model and each DSO model (as esso_models_baseline.pkl already does for ESSO) at the run's terminal cycle, before discarding them, reading dual_ess_p_req/dual_ess_q_req (shared_resources_planning.py:5162-5163 TSO, 5353-5354/5478-5479 DSO) -- zero additional solves, a serialization change only."
+    }
+   }
+  },
+  "item2_storage_consensus_z_and_x": {
+   "run1_reference": {
+    "item": "2_storage_consensus_z_and_x",
+    "run": "run1_reference",
+    "searched": [
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_REF_run/ess_entry_stride_baseline.jsonl"
+    ],
+    "z_and_x_per_entry": {
+     "available": true,
+     "granularity": "per (node, year, day, power_type) -- z (consensus, list over periods) and x (dict tso/dso/esso, each a list over periods) -- confirmed field names below",
+     "entry_keys": [
+      "day",
+      "node_id",
+      "power_type",
+      "x",
+      "year",
+      "z"
+     ],
+     "entries_per_recorded_cycle": 72,
+     "stride_values_seen": [
+      1
+     ],
+     "n_cycles_recorded": 477,
+     "first_cycle_recorded": 1,
+     "last_cycle_recorded": 477,
+     "terminal_cycle_present_exactly": true,
+     "note": null
+    }
+   },
+   "gate3_pt": {
+    "item": "2_storage_consensus_z_and_x",
+    "run": "gate3_pt",
+    "searched": [
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_PT_run/ess_entry_stride_baseline.jsonl"
+    ],
+    "z_and_x_per_entry": {
+     "available": true,
+     "granularity": "per (node, year, day, power_type) -- z (consensus, list over periods) and x (dict tso/dso/esso, each a list over periods) -- confirmed field names below",
+     "entry_keys": [
+      "day",
+      "node_id",
+      "power_type",
+      "x",
+      "year",
+      "z"
+     ],
+     "entries_per_recorded_cycle": 72,
+     "stride_values_seen": [
+      5
+     ],
+     "n_cycles_recorded": 30,
+     "first_cycle_recorded": 1,
+     "last_cycle_recorded": 146,
+     "terminal_cycle_present_exactly": false,
+     "note": "stride=[5]: the run's own terminal cycle 150 is NOT one of the recorded cycles; the closest recorded cycle is 146 (4 cycles short)"
+    }
+   }
+  },
+  "item3_nodal_prices_lmps": {
+   "run1_reference": {
+    "item": "3_nodal_prices_lmps",
+    "run": "run1_reference",
+    "searched": [
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_REF_run/g_baseline.json",
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_REF_run/boyd_terminal.json",
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_REF_run/component_levels_terminal.json",
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_REF_run/interface_settlement_detail_s31c.json",
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_REF_run/interface_voltage_terminal.json",
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_REF_run/stdout_baseline.log",
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_REF_run/results/FrozenSMOPF"
+    ],
+    "node_balance_duals_terminal_cycle": {
+     "available": false,
+     "json_field_scan_hits": {
+      "g_baseline.json": [],
+      "boyd_terminal.json": [],
+      "component_levels_terminal.json": [],
+      "interface_settlement_detail_s31c.json": [],
+      "interface_voltage_terminal.json": []
+     },
+     "stdout_grep_hits": {
+      "stdout_baseline.log": []
+     },
+     "any_hit": false,
+     "frozen_smopf_regression_fixtures_found": [
+      {
+       "file": "matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+       "metadata": {
+        "agent": "DSO",
+        "node_id": 7,
+        "network_name": "case33_2",
+        "year": 2025,
+        "day": "Autumn",
+        "cycle": 7,
+        "from_warm_start": true,
+        "captured_outcome": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+        "label": "matched_success"
+       },
+       "has_dual_suffix": true,
+       "has_node_balance_constraint": true
+      },
+      {
+       "file": "matched_success_TSO_case9_2025_Summer_cycle7.pkl",
+       "metadata": {
+        "agent": "TSO",
+        "node_id": null,
+        "network_name": "case9",
+        "year": 2025,
+        "day": "Summer",
+        "cycle": 7,
+        "from_warm_start": true,
+        "captured_outcome": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+        "label": "matched_success"
+       },
+       "has_dual_suffix": true,
+       "has_node_balance_constraint": true
+      }
+     ],
+     "reading": "the FrozenSMOPF pickles DO carry a populated `dual` Suffix with values on the `node_balance_p`/`node_balance_q` constraints (confirmed by direct inspection), which shows the underlying IPOPT/Pyomo mechanism for nodal duals is live in production -- but these two files are frozen at a FIXED EARLY CYCLE (7, see metadata above) for an unrelated regression- fixture purpose (p44_production_frozen_regression.py), not at the run's terminal cycle, and not for every cycle. No terminal-cycle (or any-other-cycle) TSO/DSO node-balance dual is captured anywhere in this run's committed evidence.",
+     "capture_that_would_supply_it": "read model.dual[model.node_balance_p[scenario, y, d, p]] (and _q) for the TSO model at bus indices corresponding to nodes 5/7/9, and for each DSO model at its reference/substation bus index, at the run's terminal cycle, before the models are discarded -- the `dual` Suffix is already populated by the existing IPOPT solve (no additional solve needed); a serialization/capture change only."
+    }
+   },
+   "gate3_pt": {
+    "item": "3_nodal_prices_lmps",
+    "run": "gate3_pt",
+    "searched": [
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_PT_run/g_baseline.json",
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_PT_run/boyd_terminal.json",
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_PT_run/component_levels_terminal.json",
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_PT_run/interface_settlement_detail_s31c.json",
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_PT_run/interface_voltage_terminal.json",
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_PT_run/stdout_baseline.log",
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_PT_run/results/FrozenSMOPF"
+    ],
+    "node_balance_duals_terminal_cycle": {
+     "available": false,
+     "json_field_scan_hits": {
+      "g_baseline.json": [],
+      "boyd_terminal.json": [],
+      "component_levels_terminal.json": [],
+      "interface_settlement_detail_s31c.json": [],
+      "interface_voltage_terminal.json": []
+     },
+     "stdout_grep_hits": {
+      "stdout_baseline.log": []
+     },
+     "any_hit": false,
+     "frozen_smopf_regression_fixtures_found": [
+      {
+       "file": "matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+       "metadata": {
+        "agent": "DSO",
+        "node_id": 7,
+        "network_name": "case33_2",
+        "year": 2025,
+        "day": "Autumn",
+        "cycle": 7,
+        "from_warm_start": true,
+        "captured_outcome": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+        "label": "matched_success"
+       },
+       "has_dual_suffix": true,
+       "has_node_balance_constraint": true
+      },
+      {
+       "file": "matched_success_TSO_case9_2025_Summer_cycle7.pkl",
+       "metadata": {
+        "agent": "TSO",
+        "node_id": null,
+        "network_name": "case9",
+        "year": 2025,
+        "day": "Summer",
+        "cycle": 7,
+        "from_warm_start": true,
+        "captured_outcome": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+        "label": "matched_success"
+       },
+       "has_dual_suffix": true,
+       "has_node_balance_constraint": true
+      }
+     ],
+     "reading": "the FrozenSMOPF pickles DO carry a populated `dual` Suffix with values on the `node_balance_p`/`node_balance_q` constraints (confirmed by direct inspection), which shows the underlying IPOPT/Pyomo mechanism for nodal duals is live in production -- but these two files are frozen at a FIXED EARLY CYCLE (7, see metadata above) for an unrelated regression- fixture purpose (p44_production_frozen_regression.py), not at the run's terminal cycle, and not for every cycle. No terminal-cycle (or any-other-cycle) TSO/DSO node-balance dual is captured anywhere in this run's committed evidence.",
+     "capture_that_would_supply_it": "read model.dual[model.node_balance_p[scenario, y, d, p]] (and _q) for the TSO model at bus indices corresponding to nodes 5/7/9, and for each DSO model at its reference/substation bus index, at the run's terminal cycle, before the models are discarded -- the `dual` Suffix is already populated by the existing IPOPT solve (no additional solve needed); a serialization/capture change only."
+    }
+   }
+  },
+  "item4_cycle0_lmps": {
+   "item": "4_cycle0_lmps",
+   "run": "both (searched once, mechanism is run-independent)",
+   "searched": [
+    "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35/pt_phase2_checks/phase2_checks_results.json",
+    "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35/preflight_ref",
+    "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35/preflight_pt"
+   ],
+   "cycle0_lmps": {
+    "available": false,
+    "precycle1_capture_method_text": "A monkeypatched stop on the first cycle-1 DSO solve (shared_resources_planning.update_distribution_coordination_models_and_solve) that raises _PreCycle1Stop BEFORE calling through (zero solves, zero ADMM cycles), combined with call-through capture wrappers on the four ADMM-model constructors (create_admm_variables, create_distribution_networks_models, create_transmission_network_model, create_shared_energy_storage_model) that store references to their OWN return values -- the SAME mutable objects _run_operational_planning continues to mutate in place (never reconstructed) up to the loop, so state is read out only once execution reaches EXACTLY the pre-cycle-1 point, catching any later pre-loop step that overwrites it.",
+    "reading": "the pt_phase2_checks harness's OWN description of how it captures \"the state immediately before cycle 1's first network solve\" is: monkeypatch a stop that raises BEFORE the first DSO solve is called through -- i.e. by construction, ZERO IPOPT solves have executed at that point. There is no standalone/cold \"cycle-0\" OPF solve anywhere in this pipeline for either run: cycle 1's own first DSO solve (with duals initialized to zero, or to the price-taker schedule's implied state for gate 3) IS the first solve. No node-balance dual from any pre-cycle-1 solve exists in the committed evidence of either run.",
+    "preflight_dirs_checked": {
+     "preflight_ref": {
+      "exists": true,
+      "files": [
+       "boyd_terminal.json",
+       "component_levels_terminal.json",
+       "ess_entry_stride_preflight.jsonl",
+       "esso_capture",
+       "esso_models_preflight.pkl",
+       "esso_recovery_events_preflight.jsonl",
+       "frozen_snapshots_preflight.jsonl",
+       "g_preflight.json",
+       "heartbeat_preflight.json",
+       "interface_settlement_detail_s31c.json",
+       "interface_voltage_terminal.json",
+       "leak_classification_preflight.jsonl",
+       "network_failures_preflight.jsonl",
+       "preflight_verification.json",
+       "recourse_jump_sidecar_preflight.jsonl",
+       "results",
+       "soh_floor_sidecar_preflight.jsonl",
+       "stdout_preflight.log"
+      ]
+     },
+     "preflight_pt": {
+      "exists": true,
+      "files": [
+       "boyd_terminal.json",
+       "component_levels_terminal.json",
+       "ess_entry_stride_preflight.jsonl",
+       "esso_capture",
+       "esso_models_preflight.pkl",
+       "esso_recovery_events_preflight.jsonl",
+       "frozen_snapshots_preflight.jsonl",
+       "g_preflight.json",
+       "heartbeat_preflight.json",
+       "interface_settlement_detail_s31c.json",
+       "interface_voltage_terminal.json",
+       "leak_classification_preflight.jsonl",
+       "network_failures_preflight.jsonl",
+       "preflight_verification.json",
+       "recourse_jump_sidecar_preflight.jsonl",
+       "results",
+       "soh_floor_sidecar_preflight.jsonl",
+       "stdout_preflight.log"
+      ]
+     }
+    },
+    "capture_that_would_supply_it": "if \"cycle-0 LMPs\" means the node-balance duals from cycle 1's first TSO/DSO solve specifically (duals still at their zero/initial value, so the network optimizes close to a standalone objective) -- that requires the SAME capture as item 3, just at cycle 1 instead of the terminal cycle: read the `dual` Suffix on node_balance_p/q right after cycle 1's TSO/DSO solves, before it is overwritten by cycle 2. Zero additional solves either way (the solve already happens); a capture/serialization change only."
+   }
+  },
+  "item5_esso_own_duals": {
+   "run1_reference": {
+    "item": "5_esso_own_duals_esso_capture",
+    "run": "run1_reference",
+    "searched": [
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_REF_run/esso_capture/baseline"
+    ],
+    "esso_own_duals": {
+     "available": true,
+     "granularity": "per (node, cycle, period-row); one file per (node, cycle), one JSON object per period (288 lines/file matching the 12 year-day combinations x 24 periods), each carrying a 'duals' list of {component, index, dual} for the ESSO's OWN local NLP constraints",
+     "files_per_node": {
+      "5": 477,
+      "7": 477,
+      "9": 477
+     },
+     "component_names_at_terminal_cycle": [
+      "energy_storage_capacity_degradation",
+      "energy_storage_cohort_pnet_share_h3",
+      "energy_storage_limits",
+      "energy_storage_operation_agg"
+     ],
+     "distinct_from_item1": "these are the ESSO's LOCAL interior-point KKT multipliers on ITS OWN physical constraints (energy_storage_limits, energy_storage_operation_agg, energy_storage_cohort_pnet_share_h3, energy_storage_capacity_degradation) -- NOT the ADMM consensus dual lambda_esso (that is dual_p_req/dual_q_req, item 1)"
+    }
+   },
+   "gate3_pt": {
+    "item": "5_esso_own_duals_esso_capture",
+    "run": "gate3_pt",
+    "searched": [
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_PT_run/esso_capture/baseline"
+    ],
+    "esso_own_duals": {
+     "available": true,
+     "granularity": "per (node, cycle, period-row); one file per (node, cycle), one JSON object per period (288 lines/file matching the 12 year-day combinations x 24 periods), each carrying a 'duals' list of {component, index, dual} for the ESSO's OWN local NLP constraints",
+     "files_per_node": {
+      "5": 150,
+      "7": 150,
+      "9": 150
+     },
+     "component_names_at_terminal_cycle": [
+      "energy_storage_capacity_degradation",
+      "energy_storage_cohort_pnet_share_h3",
+      "energy_storage_limits",
+      "energy_storage_operation_agg"
+     ],
+     "distinct_from_item1": "these are the ESSO's LOCAL interior-point KKT multipliers on ITS OWN physical constraints (energy_storage_limits, energy_storage_operation_agg, energy_storage_cohort_pnet_share_h3, energy_storage_capacity_degradation) -- NOT the ADMM consensus dual lambda_esso (that is dual_p_req/dual_q_req, item 1)"
+    }
+   }
+  }
+ },
+ "part1a_dual_direction_comparison": {
+  "esso_per_entry": {
+   "p_only": {
+    "label": "ESSO dual_p_req",
+    "n_entries": 864,
+    "norm_run1_terminal": 0.002147018218224345,
+    "norm_gate3_terminal": 0.0006099826786103938,
+    "norm_ratio_gate3_over_run1": 0.28410689459117383,
+    "cosine": 0.5913970863143077,
+    "sign_agreement_all_entries": 0.5694444444444444,
+    "noise_floor": 1e-08,
+    "n_entries_both_below_noise_floor": 221,
+    "n_entries_at_least_one_above_noise_floor": 643,
+    "sign_agreement_excluding_both_below_noise_floor": 0.5583203732503889
+   },
+   "q_only": {
+    "label": "ESSO dual_q_req",
+    "n_entries": 864,
+    "norm_run1_terminal": 0.00010020603677907327,
+    "norm_gate3_terminal": 8.182485302146437e-05,
+    "norm_ratio_gate3_over_run1": 0.8165661037155441,
+    "cosine": 0.9164736514783085,
+    "sign_agreement_all_entries": 1.0,
+    "noise_floor": 1e-08,
+    "n_entries_both_below_noise_floor": 0,
+    "n_entries_at_least_one_above_noise_floor": 864,
+    "sign_agreement_excluding_both_below_noise_floor": 1.0
+   },
+   "p_and_q_combined": {
+    "label": "ESSO dual_p_req + dual_q_req concatenated",
+    "n_entries": 1728,
+    "norm_run1_terminal": 0.002149355363636786,
+    "norm_gate3_terminal": 0.0006154463216046512,
+    "norm_ratio_gate3_over_run1": 0.28633995662927236,
+    "cosine": 0.5911902671468803,
+    "sign_agreement_all_entries": 0.7847222222222222,
+    "noise_floor": 1e-08,
+    "n_entries_both_below_noise_floor": 221,
+    "n_entries_at_least_one_above_noise_floor": 1507,
+    "sign_agreement_excluding_both_below_noise_floor": 0.8115461181154612
+   },
+   "index_sets_match": true,
+   "rho_ess_run1_terminal": 0.16875,
+   "rho_ess_gate3_terminal": 0.16875
+  },
+  "aggregate_norms_per_agent_at_terminal_cycles": {
+   "tso": {
+    "norm_run1_terminal_cycle477": 0.006267941556752565,
+    "norm_gate3_terminal_cycle150": 0.0019289064229052575,
+    "norm_ratio_gate3_over_run1": 0.30774160949653595,
+    "direction_determinable": false,
+    "note": "AGGREGATE NORM ONLY -- direction is NOT determinable (no per-entry TSO/DSO consensus dual is captured in either run's committed evidence; see PART 0 item 1)."
+   },
+   "dso": {
+    "norm_run1_terminal_cycle477": 0.005340650900621736,
+    "norm_gate3_terminal_cycle150": 0.0016165374283601491,
+    "norm_ratio_gate3_over_run1": 0.30268547007481034,
+    "direction_determinable": false,
+    "note": "AGGREGATE NORM ONLY -- direction is NOT determinable (no per-entry TSO/DSO consensus dual is captured in either run's committed evidence; see PART 0 item 1)."
+   },
+   "esso": {
+    "norm_run1_terminal_cycle477": 0.0021524208513791884,
+    "norm_gate3_terminal_cycle150": 0.0006180071489713603,
+    "norm_ratio_gate3_over_run1": 0.2871218928098402,
+    "direction_determinable": true,
+    "note": "per-entry vector available (see esso_per_entry above)"
+   }
+  },
+  "gate3_norm_trend_toward_run1": {
+   "tso": {
+    "series_cycle_norm": [
+     {
+      "cycle": 100,
+      "norm": 0.0017076325626878114
+     },
+     {
+      "cycle": 110,
+      "norm": 0.0017503992919087683
+     },
+     {
+      "cycle": 113,
+      "norm": 0.0017647091575662163
+     },
+     {
+      "cycle": 120,
+      "norm": 0.0017979076829108048
+     },
+     {
+      "cycle": 130,
+      "norm": 0.0018428070835359214
+     },
+     {
+      "cycle": 140,
+      "norm": 0.0018835845065428643
+     },
+     {
+      "cycle": 145,
+      "norm": 0.0019060100024092478
+     },
+     {
+      "cycle": 148,
+      "norm": 0.001919730046745704
+     },
+     {
+      "cycle": 149,
+      "norm": 0.0019243409544987676
+     },
+     {
+      "cycle": 150,
+      "norm": 0.0019289064229052575
+     }
+    ],
+    "monotonic_increasing_over_series": true,
+    "target_run1_terminal_norm": 0.006267941556752565,
+    "reading": "NORM trend only (no per-entry history for any agent across cycles is captured, ESSO included -- only ONE terminal ESSO snapshot exists per run). Increasing toward run 1's terminal norm is consistent with, but does not by itself prove, convergence toward a shared direction."
+   },
+   "dso": {
+    "series_cycle_norm": [
+     {
+      "cycle": 100,
+      "norm": 0.0014542638903773557
+     },
+     {
+      "cycle": 110,
+      "norm": 0.0014914779785028928
+     },
+     {
+      "cycle": 113,
+      "norm": 0.0015028800238516163
+     },
+     {
+      "cycle": 120,
+      "norm": 0.0015287616797545825
+     },
+     {
+      "cycle": 130,
+      "norm": 0.0015643581363344512
+     },
+     {
+      "cycle": 140,
+      "norm": 0.0015891230819519771
+     },
+     {
+      "cycle": 145,
+      "norm": 0.0016026281776666796
+     },
+     {
+      "cycle": 148,
+      "norm": 0.0016109385626907116
+     },
+     {
+      "cycle": 149,
+      "norm": 0.001613746808639267
+     },
+     {
+      "cycle": 150,
+      "norm": 0.0016165374283601491
+     }
+    ],
+    "monotonic_increasing_over_series": true,
+    "target_run1_terminal_norm": 0.005340650900621736,
+    "reading": "NORM trend only (no per-entry history for any agent across cycles is captured, ESSO included -- only ONE terminal ESSO snapshot exists per run). Increasing toward run 1's terminal norm is consistent with, but does not by itself prove, convergence toward a shared direction."
+   },
+   "esso": {
+    "series_cycle_norm": [
+     {
+      "cycle": 100,
+      "norm": 0.0005420493189269486
+     },
+     {
+      "cycle": 110,
+      "norm": 0.0005499710376823583
+     },
+     {
+      "cycle": 113,
+      "norm": 0.0005539238513767085
+     },
+     {
+      "cycle": 120,
+      "norm": 0.0005643313965944461
+     },
+     {
+      "cycle": 130,
+      "norm": 0.0005792329601037178
+     },
+     {
+      "cycle": 140,
+      "norm": 0.0005943717582309981
+     },
+     {
+      "cycle": 145,
+      "norm": 0.0006056885320428319
+     },
+     {
+      "cycle": 148,
+      "norm": 0.0006129812795876526
+     },
+     {
+      "cycle": 149,
+      "norm": 0.0006154463216046506
+     },
+     {
+      "cycle": 150,
+      "norm": 0.0006180071489713603
+     }
+    ],
+    "monotonic_increasing_over_series": true,
+    "target_run1_terminal_norm": 0.0021524208513791884,
+    "reading": "NORM trend only (no per-entry history for any agent across cycles is captured, ESSO included -- only ONE terminal ESSO snapshot exists per run). Increasing toward run 1's terminal norm is consistent with, but does not by itself prove, convergence toward a shared direction."
+   }
+  }
+ },
+ "part1bc_shadow_price_lp": {
+  "b_run1_terminal_nodal_prices_lp": {
+   "computable": false,
+   "reason": "NOT COMPUTABLE: PART 0 item 3 finds no TSO/DSO node-balance dual (nodal price) captured at run 1's terminal cycle, at any granularity, in the committed evidence. The production price-taker LP (`shared_ess_price_taker.solve_price_taker_schedule`) was NOT called with a substituted or fabricated price series -- doing so would approximate a missing quantity, which this task forbids.",
+   "capture_needed": "read model.dual[model.node_balance_p[scenario, y, d, p]] (and _q) for the TSO model at bus indices corresponding to nodes 5/7/9, and for each DSO model at its reference/substation bus index, at the run's terminal cycle, before the models are discarded -- the `dual` Suffix is already populated by the existing IPOPT solve (no additional solve needed); a serialization/capture change only."
+  },
+  "c_cycle0_lmps_lp": {
+   "computable": false,
+   "reason": "NOT COMPUTABLE: PART 0 item 4 finds no cycle-0 (pre-cycle-1, standalone) node-balance dual anywhere in either run's committed evidence, and no such standalone solve exists in this pipeline at all. The production price-taker LP was NOT called with a substituted or fabricated price series.",
+   "capture_needed": "if \"cycle-0 LMPs\" means the node-balance duals from cycle 1's first TSO/DSO solve specifically (duals still at their zero/initial value, so the network optimizes close to a standalone objective) -- that requires the SAME capture as item 3, just at cycle 1 instead of the terminal cycle: read the `dual` Suffix on node_balance_p/q right after cycle 1's TSO/DSO solves, before it is overwritten by cycle 2. Zero additional solves either way (the solve already happens); a capture/serialization change only."
+  },
+  "scipy_lp_calls_this_script": {
+   "declared": 0,
+   "observed": 0,
+   "exact_match": true
+  }
+ },
+ "efc_comparison_table": {
+  "values": {
+   "run1_certified_cycle477": 1.058952279550704,
+   "gate3_terminal_cycle150": 1.1842435189565115,
+   "market_price_lp_z2": 1.1917770631428612,
+   "b_run1_terminal_prices_lp": "NOT COMPUTABLE (see PART 1(b))",
+   "c_cycle0_lmps_lp": "NOT COMPUTABLE (see PART 1(c))"
+  },
+  "pairwise_differences": {
+   "gate3_minus_run1": 0.12529123940580744,
+   "market_lp_minus_run1": 0.13282478359215721,
+   "market_lp_minus_gate3": 0.007533544186349772
+  },
+  "source_market_price_lp": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35/Z2/z2_floor_slackness_results.json :: part_A_summary.efc_per_day_max_by_node (uniform across nodes 5/7/9)",
+  "note": "run 1 is a certified LOWER bound only (EFC/day still rising at its Boyd stop, slope halving 3.79e-4 -> 1.77e-4/cycle over its last 77 cycles); gate 3 is a cap-stopped point still FALLING (rule ten 0.088, PF ratio 1.4); the bracket [1.059, 1.184] is one-sided, not symmetric (P5_15_ADDENDUM16_EXPERT_REPORT.md Sec.6)."
+ },
+ "addendum17_step2_readiness": {
+  "requirement": "Addendum 17 step 2's mapping test: applied to run 1's terminal prices, the mapping must reproduce run 1's terminal storage duals (per agent) to a stated tolerance.",
+  "run1_terminal_storage_duals_per_agent": {
+   "esso": "AVAILABLE per-entry (esso_models_baseline.pkl, dual_p_req/dual_q_req)",
+   "tso": "NOT AVAILABLE per-entry (aggregate norm only)",
+   "dso": "NOT AVAILABLE per-entry (aggregate norm only)"
+  },
+  "run1_terminal_nodal_prices_needed_as_mapping_input": "NOT AVAILABLE at any granularity (PART 0 item 3)",
+  "verdict": "step 2 CANNOT be validated as specified: it needs run 1's terminal per-entry nodal prices (absent) and run 1's terminal per-agent storage duals for ALL THREE agents (only ESSO's is available per-entry; TSO's and DSO's are not). The mapping test could be validated for the ESSO agent alone with a bounded capture of run 1's terminal nodal prices (item 3's capture); validating it per Addendum 17's \"per agent\" requirement for TSO and DSO needs BOTH captures (item 1's TSO/DSO model pickling AND item 3's nodal-price capture) -- neither exists today.",
+  "minimal_bounded_capture_to_close_the_gap": [
+   "pickle the TSO model and each DSO model at the terminal cycle (mirrors the existing ESSO capture) -- supplies TSO/DSO per-entry storage duals (item 1).",
+   "capture model.dual on node_balance_p/node_balance_q for the TSO model (buses 5/7/9) and each DSO model (reference bus) at the terminal cycle -- supplies the nodal prices (item 3).",
+   "both are read-outs of state already produced by the existing IPOPT solve; zero additional solves."
+  ],
+  "inputs_available_now": {
+   "esso_per_entry_duals": true,
+   "tso_dso_per_entry_duals": false,
+   "terminal_nodal_prices": false,
+   "cycle0_lmps": false
+  }
+ }
+}
