@@ -115,6 +115,34 @@ Authority: `PLANNER_BRIEF_2026-09-13.md` Addendum 15. Reports: `P5_15_S32_BOYD_G
   immobilised; the stopping rule and its noise-floor-derived tolerances are reported as method; the active-bound count
   is reported as a result; and the σ constants and ρ policy are recorded with the ADMM configuration.
 
+## Amendment — 2026-09-16 (Addenda 16–17): the first certified evaluation, and what it does and does not certify
+
+Authority: `PLANNER_BRIEF_2026-09-13.md` Addenda 16 and 17. Reports: `P5_15_S35REF_REPORT.md`,
+`P5_15_Z2_FLOOR_SLACK_NOTE.md`, `P5_15_S35PT_GATE3_REPORT.md`, `P5_15_ADDENDUM16_EXPERT_REPORT.md`.
+
+- **Run 1 (`s35ref`) is the programme's first certified evaluation.** Boyd stop at cycle 477 (all three channels
+  passing on 475–477); **system cost 651,039,166, settled** (rule ten 0.0039). The storage channel stopped at 0.988 of
+  its threshold: **EFC/day ≥ 1.059, pinned from below only.** The harness `stopped_by` field is defective for stops
+  needing more than one consecutive cycle; the trajectory-derived v2 evaluator is the accepted reading.
+- **Success at C\* is Boyd certification.** Addendum 16's "equilibrium at the SoH threshold with the floor active" was
+  a prediction, falsified by Z2 before run 1 was launched. **At C\* storage is network-limited, not
+  degradation-limited:** terminal SoH 0.659, floor dual ≈ 0, and even the price-taker upper bound leaves SoH at 0.589.
+  This is a result about the candidate.
+- **Insight (iii)**, the degradation shadow price, is demonstrated in Step 5 wherever the SoH floor binds (the
+  k = 10,000 arm, larger or longer-cycled plans). If it binds nowhere, the paper says so and the degradation effect is
+  carried by available capacity and salvage. It is not manufactured.
+- **Gate 3 (price-taker initialization) read.** The schedule was initialized correctly, but the pace is set by the
+  storage duals building up from zero. Initialization must therefore be **primal and dual, and history-free**.
+- **Claims to avoid (adopted verbatim from `P5_15_ADDENDUM16_EXPERT_REPORT.md` §6):** EFC, storage utilisation, SoH or
+  storage value "at the optimum"; a symmetric EFC bound; "cost certified to 0.03 %"; "price-taker initialization removes
+  the walk"; "a different fixed point" (nothing supports one); "over-relaxation will fix storage"; gate 3's EFC per
+  cohort-year as equilibrium values.
+- **Manuscript list additions** (append to the list below):
+  - storage use is reported as the one-sided statement "EFC/day ≥ 1.059 at the certified point" unless the Addendum 17
+    gate certifies EFC;
+  - the network-limited, not degradation-limited, character of storage at C\* is reported as a result;
+  - the claims to avoid above apply to the manuscript verbatim.
+
 ### Manuscript list — regeneration obligations (open)
 
 1. **All Table 8 costs** regenerated under the system-cost definition, with a new **transfer-payment column** (TSO
