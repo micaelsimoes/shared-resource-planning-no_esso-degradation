@@ -81,6 +81,34 @@ reference.** "EFC/day was 1.1 before" is therefore not, by itself, a target for 
    they were also measured under a formulation in which the interface flexibility charge, not storage economics,
    dominated the objective.
 
+## 6. Correction (same day, after independent review and Planner verification)
+
+Two claims in §3 are **withdrawn or qualified**, and the mechanism is restated.
+
+- **Withdrawn: "row 3′ moved where the optimum sits."** That clause compared *transients*. All four post-table runs
+  hit their caps, and within `s33e2` the per-node storage throughput rose 0.0154 → 2.219 (≈144×) while still moving in
+  a perfectly persistent direction (cos = 1.000). **The 0.067 is a point on a trajectory, not an equilibrium**, and
+  s31's 1.2110 is equally a transient of a diverging run. Nothing in the archaeology fixes where either optimum lies.
+- **Qualified: the 47× ratio compares unlike objects.** The order-1 family (G1, G1B/s30, G3F_B, ablation C) are
+  *converged* points of an objective that contained the row-3 charge; the post-table runs are *capped transients* of
+  the corrected objective. The dating of the change to s31c stands; the magnitude does not carry economic meaning.
+- **Mechanism restated — price deletion, verified in code.** Before s31c the only price on interface energy movement
+  sat in row 3: `flexibility_cost` charged `cost_flex · baseMVA · (flex_p_down + flex_q_down)` on the TSO's
+  ADN-interface loads (`model_construction_helpers.py:1692–1712`, gate `load_is_tso_adn_interface` at `:1685–1689`).
+  The DSO's own import is its reference generator, which is **excluded from `generation_cost`** for distribution
+  networks (`:1663–1670`), so the DSO priced interface energy at zero. The shared ESS enters the **TSO node balance**
+  (`shared_es_pnet`, `:1329`), so TSO-side storage displaced exactly the volume that charge was levied on. Removing
+  row 3 therefore **deleted the implicit remuneration for storage**, before any question of substitution by δ. Two
+  qualifications the code imposes: the charge was **one-sided** (down legs only), and it was judged a transfer payment
+  because it had no DSO receipt term — which is why it was removed and must not simply be restored.
+- **The strong substitution reading is not supported.** If free δ had made storage worthless, the storage gradient
+  would have vanished; instead `s33e2` shows a constant, price-aligned gradient (cos −0.516 against the within-day
+  price deviation) pointing toward *more* cycling. δ may reduce storage's value; it has not eliminated it.
+- **Net position.** Coordination stiffness is supported as a **rate** mechanism (ρ-invariant residual; ~14,900 cycles
+  to rating). Neither stiffness nor row 3′ is established as setting the **destination**. The destination is currently
+  unmeasured, which is why the price-taker benchmark `EFC*` is being computed before the 3.4 gate reads EFC/day
+  against any target.
+
 ## Evidence
 
 `data/SRP1/Results/{P515G1,P515G1B,P515S30,P515G3F_B,P515A,P515S31_run,P515S31C_run,P515S32_run,P515S33_E2_run}/`

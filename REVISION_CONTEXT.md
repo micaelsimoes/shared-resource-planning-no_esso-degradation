@@ -96,6 +96,20 @@ Authority: `PLANNER_BRIEF_2026-09-13.md` Addendum 15. Reports: `P5_15_S32_BOYD_G
   (partly by bound saturation), PF not certified but decaying ×0.552 per 50 cycles, **ESS not certifiable at
   ε_abs 1e-5** under the old scaling. Both gates are superseded as convergence evidence by the 3.4 re-scaling, but
   their diagnostics stand.
+- **Correction (2026-09-16, same day; `P5_15_EFC_ARCHAEOLOGY_NOTE.md` §6).** The stiffness reading is **kept as a
+  rate claim** and **withdrawn as a destination claim**. Storage utilisation (EFC/day) was 0.97–1.34 in every run
+  through `s31` and fell to 0.0285 at `s31c`, while σ, `effective_scale`, the undivided AL terms and the unscaled ESSO
+  objective were **identical** across all of them — so stiffness cannot by itself explain that change. The verified
+  mechanism at `s31c` is **price deletion**: row 3 charged `cost_flex·(flex_p_down + flex_q_down)` on the TSO's
+  ADN-interface loads (`model_construction_helpers.py:1692–1712`), the DSO's import is its reference generator and is
+  excluded from `generation_cost` (`:1663–1670`), and the shared ESS sits in the TSO node balance (`:1329`) — so
+  TSO-side storage displaced the charged volume and was implicitly remunerated by it. Removing row 3 deleted that
+  remuneration. The charge was one-sided and had no DSO receipt term, which is why it was removed and must not be
+  restored as-is. **Both the 0.067 and the 1.1-era figures are transients**, so neither is a target: the 3.4 gate reads
+  EFC/day against a derived price-taker benchmark `EFC*`, not against 1.1. Consequently the statement above that prior
+  storage figures were measured with storage immobilised must be read as: **prior storage figures were measured either
+  under the transfer-payment objective that implicitly paid for cycling, or on unconverged transients, and in all cases
+  with coordination stiffness limiting the rate of movement.**
 - **Manuscript list additions** (append to the list below): the storage-effect figures must be regenerated after the
   3.4 gate under the corrected scaling, stating explicitly that the previous values were measured with the storage
   immobilised; the stopping rule and its noise-floor-derived tolerances are reported as method; the active-bound count
