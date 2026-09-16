@@ -1,0 +1,523 @@
+{
+ "stage": "P5.15 Addendum 16 item 1 (s35ref, run 1) -- reference equilibrium at cap 500, rho_ess=0.1125 -- terminal report",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 16 item 1",
+  "data/SRP1/Results/P515S35/frozen_s35_reference_spec_v5_995548ab.json"
+ ],
+ "spec_file": "data/SRP1/Results/P515S35/frozen_s35_reference_spec_v5_995548ab.json",
+ "spec_file_sha256": "995548ababa1b428e9bc4354a078ffd8322cc54d00f04b9ef7a694e43311c7ba",
+ "predecessor_spec_file": "data/SRP1/Results/P515S34/frozen_s34_spec_v4_966940a7.json",
+ "predecessor_spec_sha256": "966940a789db3093a57d5fdc23be8ccb172b762bf02d0cd09eeaaf0f52f544e9",
+ "timestamp_utc": "2026-09-16T14:06:44.924298+00:00",
+ "label": "preflight",
+ "objective_convention": "gross_operational_cost (matched-cycle and terminal comparisons below use gross, NOT net_operational_recourse -- see CLAUDE.md \"Reporting conventions\")",
+ "cycles": 1,
+ "stopped_by": "cap",
+ "converged_at_cycle": null,
+ "consecutive_converged_at_stop": 0,
+ "consecutive_converged_run_began_at_cycle": null,
+ "binding_test_per_channel": {
+  "v": {
+   "r": 0.24768415463525367,
+   "s": 0.00200183601864494,
+   "eps_pri": 0.003241887831210895,
+   "eps_dual": 0.00029408031915708407,
+   "primal_ratio": 76.40121050787245,
+   "dual_ratio": 6.807106386387088,
+   "dual_ratio_balance": 4.813351086072564,
+   "primal_pass": false,
+   "dual_pass": false,
+   "channel_pass": false
+  },
+  "pf": {
+   "r": 3.4864631124640804,
+   "s": 1.4446077546065823,
+   "eps_pri": 0.0013869184840452848,
+   "eps_dual": 0.0005195674324698649,
+   "primal_ratio": 2513.8197756907553,
+   "dual_ratio": 2780.404745038307,
+   "dual_ratio_balance": 1966.0430496598403,
+   "primal_pass": false,
+   "dual_pass": false,
+   "channel_pass": false
+  },
+  "ess": {
+   "r": 0.08790943614395298,
+   "s": 0.01398626261417765,
+   "eps_pri": 0.0007308082374749604,
+   "eps_dual": 0.0007209889811566195,
+   "primal_ratio": 120.29070231568787,
+   "dual_ratio": 19.398718953708162,
+   "dual_ratio_balance": 9.702943844770406,
+   "primal_pass": false,
+   "dual_pass": false,
+   "channel_pass": false
+  }
+ },
+ "rho_gamma_freeze_trajectory_per_channel": {
+  "v": [
+   {
+    "cycle": 1,
+    "rho_before": 0.0076999999999999985,
+    "rho_after": 0.011549999999999998,
+    "action": "increased",
+    "gamma_before": 0.007699999999999999,
+    "gamma_after": 0.011550000000000003,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   }
+  ],
+  "pf": [
+   {
+    "cycle": 1,
+    "rho_before": 0.1980000000000002,
+    "rho_after": 0.1980000000000002,
+    "action": "held",
+    "gamma_before": 0.19799999999999998,
+    "gamma_after": 0.19799999999999998,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 1,
+    "rho_at_clamp": false
+   }
+  ],
+  "ess": [
+   {
+    "cycle": 1,
+    "rho_before": 0.11249999999999989,
+    "rho_after": 0.16875000000000007,
+    "action": "increased",
+    "gamma_before": 0.11250000000000003,
+    "gamma_after": 0.16874999999999998,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   }
+  ]
+ },
+ "sigma_fixed": 93635360.0,
+ "sigma_computed": 93635360.28800085,
+ "al_scale_esso": 227210.9966521344,
+ "shared_ess_reference_rating_mva": 2.5,
+ "initial_rho": {
+  "v": {
+   "case9": 0.0077,
+   "case33_1": 0.0077,
+   "case33_2": 0.0077,
+   "case33_3": 0.0077
+  },
+  "pf": {
+   "case9": 0.198,
+   "case33_1": 0.198,
+   "case33_2": 0.198,
+   "case33_3": 0.198
+  },
+  "ess": {
+   "case9": 0.1125,
+   "case33_1": 0.1125,
+   "case33_2": 0.1125,
+   "case33_3": 0.1125,
+   "esso": 0.1125
+  }
+ },
+ "initial_rho_ess_value_v5": 0.1125,
+ "freeze_after_unchanged_cycles": 10,
+ "freeze_backstop_cycle": 60,
+ "freeze_cycle_per_channel": {
+  "v": null,
+  "pf": null,
+  "ess": null
+ },
+ "rho_at_clamp_per_channel_at_terminal": {
+  "v": false,
+  "pf": false,
+  "ess": false
+ },
+ "rho_at_clamp_any_true_gate_failure_flag": false,
+ "efc_per_day_max_terminal": 0.0002874939717676194,
+ "soh_floor_multiplier_and_efc_per_cohort_year_terminal": {
+  "available": true,
+  "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35/preflight_ref/soh_floor_sidecar_preflight.jsonl",
+  "cycle": 1,
+  "dual_sign_convention": "model.dual.get(con) as returned by Pyomo (Suffix direction=IMPORT_EXPORT, populated from the IPOPT .sol file) for the row es_soh_per_unit_cumul[y_inv, y] >= soh_min; NO sign flip applied -- the SAME mechanism _duals_for_keys uses elsewhere in this harness",
+  "threshold_efc_binding": 1.4612,
+  "per_node_per_cohort_year": [
+   {
+    "node_id": 5,
+    "y_inv": "0",
+    "y": "0",
+    "constraint_idx": 3,
+    "dual": 1.8182729389460593e-10,
+    "es_soh_per_unit_cumul": 0.9999724334317571,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 0.00017433731275217203,
+    "efc_margin_to_threshold": 1.461025662687248,
+    "efc_fraction_of_threshold": 0.00011931105444304135
+   },
+   {
+    "node_id": 5,
+    "y_inv": "0",
+    "y": "1",
+    "constraint_idx": 6,
+    "dual": 1.818383306803614e-10,
+    "es_soh_per_unit_cumul": 0.999942087721606,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 0.00019191879632008454,
+    "efc_margin_to_threshold": 1.4610080812036799,
+    "efc_fraction_of_threshold": 0.0001313432769778843
+   },
+   {
+    "node_id": 5,
+    "y_inv": "0",
+    "y": "2",
+    "constraint_idx": 9,
+    "dual": 1.8184869823002095e-10,
+    "es_soh_per_unit_cumul": 0.999913582958278,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 0.00018028119431346554,
+    "efc_margin_to_threshold": 1.4610197188056866,
+    "efc_fraction_of_threshold": 0.00012337886279322854
+   },
+   {
+    "node_id": 5,
+    "y_inv": "1",
+    "y": "1",
+    "constraint_idx": 12,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 5,
+    "y_inv": "1",
+    "y": "2",
+    "constraint_idx": 15,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 5,
+    "y_inv": "2",
+    "y": "2",
+    "constraint_idx": 18,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 7,
+    "y_inv": "0",
+    "y": "0",
+    "constraint_idx": 3,
+    "dual": 1.8182750788218745e-10,
+    "es_soh_per_unit_cumul": 0.9999718448766636,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 0.00017805947260925566,
+    "efc_margin_to_threshold": 1.4610219405273908,
+    "efc_fraction_of_threshold": 0.00012185838530608791
+   },
+   {
+    "node_id": 7,
+    "y_inv": "0",
+    "y": "1",
+    "constraint_idx": 6,
+    "dual": 1.8184054441848798e-10,
+    "es_soh_per_unit_cumul": 0.9999360009422561,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 0.00022669249599475768,
+    "efc_margin_to_threshold": 1.4609733075040052,
+    "efc_fraction_of_threshold": 0.000155141319459867
+   },
+   {
+    "node_id": 7,
+    "y_inv": "0",
+    "y": "2",
+    "constraint_idx": 9,
+    "dual": 1.818508947982182e-10,
+    "es_soh_per_unit_cumul": 0.9999075461636575,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 0.00017996593846256675,
+    "efc_margin_to_threshold": 1.4610200340615376,
+    "efc_fraction_of_threshold": 0.00012316311145809387
+   },
+   {
+    "node_id": 7,
+    "y_inv": "1",
+    "y": "1",
+    "constraint_idx": 12,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 7,
+    "y_inv": "1",
+    "y": "2",
+    "constraint_idx": 15,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 7,
+    "y_inv": "2",
+    "y": "2",
+    "constraint_idx": 18,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 9,
+    "y_inv": "0",
+    "y": "0",
+    "constraint_idx": 3,
+    "dual": 1.818274679539095e-10,
+    "es_soh_per_unit_cumul": 0.9999719546499081,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 0.0001773652166643602,
+    "efc_margin_to_threshold": 1.4610226347833357,
+    "efc_fraction_of_threshold": 0.00012138325805116355
+   },
+   {
+    "node_id": 9,
+    "y_inv": "0",
+    "y": "1",
+    "constraint_idx": 6,
+    "dual": 1.8184400126813134e-10,
+    "es_soh_per_unit_cumul": 0.9999264971867625,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 0.0002874939717676194,
+    "efc_margin_to_threshold": 1.4609125060282324,
+    "efc_fraction_of_threshold": 0.0001967519653487677
+   },
+   {
+    "node_id": 9,
+    "y_inv": "0",
+    "y": "2",
+    "constraint_idx": 9,
+    "dual": 1.8185444472534602e-10,
+    "es_soh_per_unit_cumul": 0.9998977875552416,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 0.00018157947201044426,
+    "efc_margin_to_threshold": 1.4610184205279897,
+    "efc_fraction_of_threshold": 0.00012426736381771438
+   },
+   {
+    "node_id": 9,
+    "y_inv": "1",
+    "y": "1",
+    "constraint_idx": 12,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 9,
+    "y_inv": "1",
+    "y": "2",
+    "constraint_idx": 15,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 9,
+    "y_inv": "2",
+    "y": "2",
+    "constraint_idx": 18,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   }
+  ],
+  "per_node_max_efc_per_day": {
+   "5": {
+    "efc_per_day": 0.00019191879632008454,
+    "y_inv": "0",
+    "y": "1",
+    "margin_to_threshold": 1.4610080812036799,
+    "fraction_of_threshold": 0.0001313432769778843
+   },
+   "7": {
+    "efc_per_day": 0.00022669249599475768,
+    "y_inv": "0",
+    "y": "1",
+    "margin_to_threshold": 1.4609733075040052,
+    "fraction_of_threshold": 0.000155141319459867
+   },
+   "9": {
+    "efc_per_day": 0.0002874939717676194,
+    "y_inv": "0",
+    "y": "1",
+    "margin_to_threshold": 1.4609125060282324,
+    "fraction_of_threshold": 0.0001967519653487677
+   }
+  }
+ },
+ "soh_floor_row_counts_by_node": {
+  "5": 6,
+  "7": 6,
+  "9": 6
+ },
+ "system_cost_vs_s31c_s32_s33e2_s34": {
+  "s31c": {
+   "available": true,
+   "reference_path": "data/SRP1/Results/P515S31C_run/g_baseline.json",
+   "matched_cycles": [
+    {
+     "cycle": 1,
+     "s34_gross_operational_cost": 908027813.2045348,
+     "s31c_gross_operational_cost": 2359311749.284464,
+     "difference": -1451283936.079929
+    }
+   ],
+   "terminal": {
+    "s34_cycle": 1,
+    "s31c_cycle": 90,
+    "s34_gross_operational_cost": 908027813.2045348,
+    "s31c_gross_operational_cost": 661400927.7360976,
+    "difference": 246626885.4684372,
+    "s34_terminal_step_objective_change_abs": null,
+    "s31c_terminal_step_objective_change_abs": 129616.68283557892,
+    "error_bar_sum_of_terminal_steps": null,
+    "determinate_at_gt_error_bar": null
+   }
+  },
+  "s32": {
+   "available": true,
+   "reference_path": "data/SRP1/Results/P515S32_run/g_baseline.json",
+   "matched_cycles": [
+    {
+     "cycle": 1,
+     "s34_gross_operational_cost": 908027813.2045348,
+     "s32_gross_operational_cost": 968494925.0938367,
+     "difference": -60467111.889301896
+    }
+   ],
+   "terminal": {
+    "s34_cycle": 1,
+    "s32_cycle": 150,
+    "s34_gross_operational_cost": 908027813.2045348,
+    "s32_gross_operational_cost": 654413409.7351172,
+    "difference": 253614403.46941757,
+    "s34_terminal_step_objective_change_abs": null,
+    "s32_terminal_step_objective_change_abs": 30394.44314610958,
+    "error_bar_sum_of_terminal_steps": null,
+    "determinate_at_gt_error_bar": null
+   }
+  },
+  "s33e2": {
+   "available": true,
+   "reference_path": "data/SRP1/Results/P515S33_E2_run/g_baseline.json",
+   "matched_cycles": [
+    {
+     "cycle": 1,
+     "s34_gross_operational_cost": 908027813.2045348,
+     "s33e2_gross_operational_cost": 968494925.0938367,
+     "difference": -60467111.889301896
+    }
+   ],
+   "terminal": {
+    "s34_cycle": 1,
+    "s33e2_cycle": 150,
+    "s34_gross_operational_cost": 908027813.2045348,
+    "s33e2_gross_operational_cost": 653826841.6344557,
+    "difference": 254200971.5700791,
+    "s34_terminal_step_objective_change_abs": null,
+    "s33e2_terminal_step_objective_change_abs": 5179.306692242622,
+    "error_bar_sum_of_terminal_steps": null,
+    "determinate_at_gt_error_bar": null
+   }
+  },
+  "s34": {
+   "available": true,
+   "reference_path": "data/SRP1/Results/P515S34_run/g_baseline.json",
+   "matched_cycles": [
+    {
+     "cycle": 1,
+     "s35ref_gross_operational_cost": 908027813.2045348,
+     "s34_gross_operational_cost": 907716715.668015,
+     "difference": 311097.53651976585
+    }
+   ],
+   "terminal": {
+    "s35ref_cycle": 1,
+    "s34_cycle": 150,
+    "s35ref_gross_operational_cost": 908027813.2045348,
+    "s34_gross_operational_cost": 651180637.2519937,
+    "difference": 256847175.9525411,
+    "s35ref_terminal_step_objective_change_abs": null,
+    "s34_terminal_step_objective_change_abs": 4682.301938891411,
+    "error_bar_sum_of_terminal_steps": null,
+    "determinate_at_gt_error_bar": null
+   }
+  }
+ },
+ "network_failures_summary": {
+  "n_blocks": 0,
+  "classes": {
+   "recovered_tier1": 0,
+   "recovered_tier2": 0,
+   "unrecovered": 0,
+   "not_attempted": 0,
+   "indeterminate": 0,
+   "recovered": 0
+  },
+  "n_frozen_snapshots": 0,
+  "n_esso_recovery_events": 0,
+  "path": "data/SRP1/Results/P515S35/preflight_ref/network_failures_preflight.jsonl"
+ },
+ "component_levels_terminal_and_settlement_detail_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35/preflight_ref/interface_settlement_detail_s31c.json",
+ "interface_voltage_terminal_path": "data/SRP1/Results/P515S35/preflight_ref/interface_voltage_terminal.json",
+ "recourse_jump_sidecar_path": "data/SRP1/Results/P515S35/preflight_ref/recourse_jump_sidecar_preflight.jsonl",
+ "ess_entry_stride_sidecar_path": "data/SRP1/Results/P515S35/preflight_ref/ess_entry_stride_preflight.jsonl",
+ "soh_floor_sidecar_path": "data/SRP1/Results/P515S35/preflight_ref/soh_floor_sidecar_preflight.jsonl",
+ "note_D_rows_and_cancellation_residual": "D rows are in component_levels_terminal.json (written by write_component_levels_terminal, called first by write_interface_settlement_detail_s31c above); the cancellation residual T_TSO + sum(T_DSO) is \"t_tso_plus_t_dso_terminal\" and per-DSO settlement/flexibility volumes are \"interface_consensus_residual_per_dso\" / \"flexibility_volumes_per_dso\" in interface_settlement_detail_s31c.json."
+}

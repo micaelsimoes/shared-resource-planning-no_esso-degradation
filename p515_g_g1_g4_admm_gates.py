@@ -59,6 +59,7 @@ artifacts (P514N: esso_models_control.pkl, n1_control.json, ...; P514L: ladder_s
 import hashlib
 import inspect
 import json
+import math
 import os
 import pickle
 import re
@@ -3057,6 +3058,640 @@ def write_boyd_terminal_s34(planning, sed, models, rows, report, out_dir, label)
     return path
 
 
+# ===========================================================================
+# P5.15 Addendum 16 item 1 -- S35REF worker task ("run 1", reference
+# equilibrium). Binding specification: frozen spec v5
+# data/SRP1/Results/P515S35/frozen_s35_reference_spec_v5_995548ab.json
+# (supersedes v4 data/SRP1/Results/P515S34/frozen_s34_spec_v4_966940a7.json).
+# Same machinery as `s34` (Boyd stopping rule, residual balancing, tied-gamma
+# stabiliser, D5/sigma/S_ref/v4-freeze gate, heartbeat, lock, stdout/stderr,
+# results_dir redirect, guard, trajectory, post-run writers) -- OTHER ARMS
+# (including `s32`, `s33e2`, `s34`) are UNCHANGED by this section. The ONLY
+# two changes from s34, per the frozen v5 spec's `changes_from_v4`: cap 500
+# (was 150), and initial rho_ess = 0.1125 on every network and the ESSO
+# (case-file value, changed in data/SRP1/SRP1_params.json -- NOT overridden
+# in code; "the harness MUST NOT apply p514_n_instrumented_cstar.RHO",
+# unchanged from v4). This section ALSO adds the two NEW capture
+# requirements the v5 spec's `capture_requirements` introduces (neither
+# existed in s34): the SoH floor-multiplier sidecar (Addendum 16, decisive)
+# and EFC/day per cohort-year (not just the per-node max s34 captured).
+# Helpers already defined above for s34 (`s34_capture_hooks`,
+# `_s34_rho_gamma_freeze_trajectory`, `_s34_system_cost_vs_references`,
+# `write_interface_settlement_detail_s31c`, `write_interface_voltage_terminal`,
+# `write_component_levels_terminal`, `assert_s31c_capture_paths`) are reused
+# BY CALLING THEM, not copied.
+# ===========================================================================
+
+OUT_S35REF = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S35_REF_run')
+S35REF_SPEC_PATH = os.path.join(
+    REPO, 'data', 'SRP1', 'Results', 'P515S35', 'frozen_s35_reference_spec_v5_995548ab.json')
+S35REF_SPEC_SHA256 = '995548ababa1b428e9bc4354a078ffd8322cc54d00f04b9ef7a694e43311c7ba'
+S35REF_CAP = 500
+S35REF_REL = 1e-4
+S35REF_INITIAL_RHO_ESS = 0.1125
+S35REF_S31C_G_PATH = S34_S31C_G_PATH
+S35REF_S32_G_PATH = S34_S32_G_PATH
+S35REF_S33E2_G_PATH = S34_S33E2_G_PATH
+S35REF_S33E2_LEAK_PATH = S34_S33E2_LEAK_PATH
+S35REF_S34_G_PATH = os.path.join(OUT_S34, 'g_baseline.json')
+S35REF_MATCHED_CYCLES = S34_MATCHED_CYCLES  # unchanged from v4 -- the frozen v5
+
+# report_terminal matched-cycle list stops at 150, not extended to cap 500.
+S35REF_REPORT_PER_CYCLE_CHANNEL_FIELDS = S34_REPORT_PER_CYCLE_CHANNEL_FIELDS
+S35REF_ADMM_DIAGNOSTICS_KEYS = S34_ADMM_DIAGNOSTICS_KEYS
+
+
+def _s35ref_spec_hash():
+    with open(S35REF_SPEC_PATH, 'rb') as handle:
+        return hashlib.sha256(handle.read()).hexdigest()
+
+
+def _identify_soh_floor_rows(esso_model):
+    """Identify the soh_min FLOOR rows of `energy_storage_capacity_degradation`
+    per (node, y_inv, y), BEFORE any solve. `esso_model` is
+    {node_id: model}, either the pre-solve probe subproblems
+    (`SED._build_subproblem`) or the real arm's own (freshly-built,
+    pre-first-solve) `esso_model` dict -- structurally identical for a given
+    node_id (see `assert_s35ref_capture_paths`'s docstring for why the two
+    are interchangeable).
+
+    IDENTIFICATION METHOD -- construction order, cross-validated by
+    expression inspection (both used together, neither alone):
+
+    1. CONSTRUCTION ORDER: production's own `model._esso_cohort_constraints
+       [y_inv]` (shared_energy_storage_data.py, `_add_esso_cohort_constraint`,
+       called from `_build_subproblem` ~652-676) records EVERY row of the
+       `energy_storage_capacity_degradation` family, per y_inv, in the EXACT
+       order those three `_add_esso_cohort_constraint` calls execute for a
+       given y before the loop moves to y+1: [D_eq, soh_recursion_eq,
+       floor_ineq]. Filtering to constraint_name ==
+       'energy_storage_capacity_degradation' therefore yields, per y_inv, a
+       sequence of fixed-length-3 groups, one per y; the THIRD entry of each
+       group is the floor row. This is the SAME `_esso_cohort_constraints`
+       list production itself groups by constraint_name elsewhere
+       (`_configure_esso_cohort_pnet_share_rows`, shared_energy_storage_data.py
+       ~1586-1595) -- not a new mechanism.
+    2. EXPRESSION INSPECTION (Pyomo API only, zero reimplementation of
+       production numerics): for EVERY triple (not sampled), the first two
+       rows must have `con.equality is True`; the third (candidate floor)
+       row must have `con.equality is False`, its body (`identify_variables`)
+       must be EXACTLY the single Var `es_soh_per_unit_cumul[y_inv, y]`, its
+       `con.upper` must be None (one-sided >=), and its `con.lower` (the
+       row's OWN soh_min, read directly off the built Pyomo object, never
+       re-derived from `shared_ess_data`) must be a finite constant.
+       Structural self-consistency: the `y` recorded for all three rows of a
+       triple must agree, and `y` must be strictly increasing across
+       consecutive triples within a y_inv (matching production's `for y in
+       range(y_inv, max_tcal_norm)` -- catches any triple mis-grouping).
+
+    Any mismatch RAISES (construction order and expression form disagreeing
+    would mean this identification is unsafe) -- this doubles as the
+    'assert the count of floor rows equals the expected number of (y_inv, y)
+    pairs' requirement: the floor-row count returned is, by this
+    construction, exactly the count of distinct (y_inv, y) pairs for which
+    production added ANY `energy_storage_capacity_degradation` row (pairs
+    outside the calendar-life window get none), and every such pair is
+    checked to contribute EXACTLY one qualifying floor row -- not merely a
+    total-count coincidence.
+
+    Zero solves: reads only already-built Pyomo model structure (row bounds/
+    equality flag/body), never solved values.
+
+    Returns (result, counts):
+      result: {node_id: {(y_inv, y): {'constraint_idx': int, 'soh_min': float}}}
+      counts: {node_id: int}  (== len(result[node_id]))
+    """
+    result = {}
+    counts = {}
+    for node_id, model in esso_model.items():
+        clist = model.energy_storage_capacity_degradation
+        node_rows = {}
+        for y_inv in model.years:
+            triples = [(cname, idx, y) for (cname, idx, y) in model._esso_cohort_constraints[y_inv]
+                       if cname == 'energy_storage_capacity_degradation']
+            if len(triples) % 3 != 0:
+                raise RuntimeError(
+                    f'S35REF floor identification FAILED node={node_id} y_inv={y_inv}: '
+                    f'{len(triples)} energy_storage_capacity_degradation rows is not a '
+                    f'multiple of 3 (expected [D_eq, soh_eq, floor] triples)')
+            previous_y = None
+            for g in range(0, len(triples), 3):
+                group = triples[g:g + 3]
+                ys = {t[2] for t in group}
+                if len(ys) != 1:
+                    raise RuntimeError(
+                        f'S35REF floor identification FAILED node={node_id} y_inv={y_inv}: '
+                        f'triple {group} spans more than one y')
+                y = group[0][2]
+                if previous_y is not None and not (y > previous_y):
+                    raise RuntimeError(
+                        f'S35REF floor identification FAILED node={node_id} y_inv={y_inv}: '
+                        f'y={y} does not strictly increase after previous_y={previous_y} '
+                        f'(construction order assumption violated)')
+                previous_y = y
+                d_eq_idx, soh_eq_idx, floor_idx = group[0][1], group[1][1], group[2][1]
+                d_eq_con = clist[d_eq_idx]
+                soh_eq_con = clist[soh_eq_idx]
+                floor_con = clist[floor_idx]
+                if not (d_eq_con.equality and soh_eq_con.equality):
+                    raise RuntimeError(
+                        f'S35REF floor identification FAILED node={node_id} y_inv={y_inv} y={y}: '
+                        f'expected the first two rows of the triple to be equalities '
+                        f'(D_eq idx={d_eq_idx} equality={d_eq_con.equality}, '
+                        f'soh_eq idx={soh_eq_idx} equality={soh_eq_con.equality})')
+                if floor_con.equality:
+                    raise RuntimeError(
+                        f'S35REF floor identification FAILED node={node_id} y_inv={y_inv} y={y}: '
+                        f'candidate floor row idx={floor_idx} is an EQUALITY row, not the floor')
+                floor_vars = list(identify_variables(floor_con.body, include_fixed=False))
+                expected_var = model.es_soh_per_unit_cumul[y_inv, y]
+                if not (len(floor_vars) == 1 and floor_vars[0] is expected_var):
+                    raise RuntimeError(
+                        f'S35REF floor identification FAILED node={node_id} y_inv={y_inv} y={y}: '
+                        f'floor row idx={floor_idx} body vars={floor_vars}, expected exactly '
+                        f'[{expected_var}]')
+                if floor_con.upper is not None:
+                    raise RuntimeError(
+                        f'S35REF floor identification FAILED node={node_id} y_inv={y_inv} y={y}: '
+                        f'floor row idx={floor_idx} has an upper bound {floor_con.upper}, '
+                        f'expected a one-sided >= row')
+                soh_min = floor_con.lower
+                soh_min = float(pe.value(soh_min)) if soh_min is not None else None
+                if soh_min is None or not math.isfinite(soh_min):
+                    raise RuntimeError(
+                        f'S35REF floor identification FAILED node={node_id} y_inv={y_inv} y={y}: '
+                        f'floor row idx={floor_idx} has non-finite lower bound {soh_min}')
+                node_rows[(y_inv, y)] = {'constraint_idx': floor_idx, 'soh_min': soh_min}
+        result[node_id] = node_rows
+        counts[node_id] = len(node_rows)
+    return result, counts
+
+
+def assert_s35ref_capture_paths(planning):
+    """Rule eleven for the s35ref arm (frozen spec v5). Builds on
+    `assert_s31c_capture_paths` DIRECTLY (not `assert_s34_capture_paths`):
+    `assert_s34_capture_paths` hard-asserts v4's OWN rho_ess == 0.05, which
+    v5 supersedes (rho_ess = 0.1125) and would therefore raise here -- the
+    SAME reason `assert_s34_capture_paths` itself did not reuse
+    `assert_s32_capture_paths`/`assert_s33e2_capture_paths` (see that
+    function's docstring). The structural checks `assert_s34_capture_paths`
+    performs (all UNCHANGED by v5 except the rho_ess value) are reproduced
+    directly below instead. Additionally identifies the SoH floor rows
+    (Addendum 16, decisive) on a throwaway, freshly-built (UNSOLVED) probe
+    ESSO subproblem per active node (`SED._build_subproblem`, the SAME
+    zero-solve probe mechanism `assert_g_capture_paths` already uses for the
+    IPOPT Suffix check) -- BEFORE any solve. This mapping is candidate-
+    independent (construction order/constraint_idx of
+    `energy_storage_capacity_degradation` depends only on the shared-ESS
+    calendar-life configuration, not on the investment candidate -- only
+    WHICH rows get deactivated at solve time depends on the candidate, per
+    `_configure_esso_cohort_state`), so the SAME mapping is reused, verbatim,
+    for the real arm's own esso_model instances by `s35ref_capture_hooks`
+    (never re-derived per cycle). Zero solves.
+
+    Returns (checklist, floor_rows_by_node).
+    """
+    checklist = dict(assert_s31c_capture_paths(planning))
+
+    # -- spec file identity (v5) --------------------------------------------
+    observed_hash = _s35ref_spec_hash()
+    checklist['s35ref_spec_file_hash_matches'] = (observed_hash == S35REF_SPEC_SHA256)
+    checklist['s35ref_spec_file_hash_observed'] = observed_hash
+    checklist['s35ref_predecessor_spec_sha256_matches_s34'] = (
+        S34_SPEC_SHA256 == '966940a789db3093a57d5fdc23be8ccb172b762bf02d0cd09eeaaf0f52f544e9')
+
+    admm_params = planning.params.admm
+
+    # -- boyd tolerance source and value (unchanged from s32/s33e2/s34) -----
+    checklist['boyd_eps_source_is_case_file'] = (admm_params.boyd_eps_source == 'case_file')
+    checklist['boyd_eps_abs_is_1e-5'] = (admm_params.tol['boyd']['eps_abs'] == 1e-5)
+    checklist['boyd_eps_rel_is_1e-4'] = (admm_params.tol['boyd']['eps_rel'] == 1e-4)
+
+    # -- fixed sigma (b_sigma_fixed, unchanged from s34) ---------------------
+    checklist['objective_scale_is_93635360'] = (admm_params.objective_scale == 93635360.0)
+    checklist['objective_scale_source_is_case_file'] = (admm_params.objective_scale_source == 'case_file')
+    checklist['objective_scale_assert_factor_at_least_1'] = (admm_params.objective_scale_assert_factor >= 1.0)
+    checklist['srp_resolve_common_admm_objective_scale_callable'] = callable(
+        getattr(srp, '_resolve_common_admm_objective_scale', None))
+
+    # -- ESSO AL scaling (a_D5_esso_scaling, unchanged from s34); the numeric
+    #    al_scale_esso > 1 check is DEFERRED to the first cycle (unresolved
+    #    before any solve, same as s34's own dispatch print) -------------
+    checklist['al_scale_esso_present'] = (admm_params.esso_al_scale.get('source') == 'case_file')
+    checklist['al_scale_esso_mode_is_sigma_over_median_block_weight'] = (
+        admm_params.esso_al_scale.get('mode') == 'sigma_over_median_block_weight')
+    checklist['srp_resolve_esso_al_scale_callable'] = callable(getattr(srp, '_resolve_esso_al_scale', None))
+    checklist['srp_update_shared_energy_storage_model_to_admm_accepts_al_scale_esso'] = (
+        'al_scale_esso' in inspect.signature(srp.update_shared_energy_storage_model_to_admm).parameters)
+
+    # -- S_ref (d_ess_reference_rating, unchanged from s34) -------------------
+    checklist['shared_ess_reference_rating_mva_is_2p5'] = (admm_params.shared_ess_reference_rating_mva == 2.5)
+    checklist['srp_admm_shared_ess_reference_mva_callable'] = callable(
+        getattr(srp, '_admm_shared_ess_reference_mva', None))
+
+    # -- initial rho: v 0.0077 / pf 0.198 UNCHANGED from v4; ess 0.1125 on
+    #    EVERY network + esso -- the ONLY rho change v5 makes -------------
+    initial_rho_ok = (
+        all(float(v) == 0.0077 for v in admm_params.rho['v'].values()) and
+        all(float(v) == 0.198 for v in admm_params.rho['pf'].values()) and
+        all(float(v) == S35REF_INITIAL_RHO_ESS for v in admm_params.rho['ess'].values())
+    )
+    checklist['initial_rho_v_pf_ess_matches_spec_v5'] = initial_rho_ok
+    checklist['initial_rho_snapshot'] = {
+        group: dict(admm_params.rho[group]) for group in ('v', 'pf', 'ess')
+    }
+
+    # -- v4 freeze policy (c_rho_policy, unchanged by v5) ---------------------
+    checklist['freeze_after_unchanged_cycles_is_10'] = (admm_params.penalty_update.get('freeze_after_unchanged_cycles') == 10)
+    checklist['freeze_backstop_cycle_is_60'] = (admm_params.penalty_update.get('freeze_backstop_cycle') == 60)
+    checklist['minimum_consecutive_converged_cycles_is_3'] = (admm_params.minimum_consecutive_converged_cycles == 3)
+    checklist['srp_update_admm_penalties_accepts_freeze_state'] = (
+        'freeze_state' in inspect.signature(srp._update_admm_penalties).parameters)
+    checklist['srp_init_admm_freeze_state_callable'] = callable(getattr(srp, '_init_admm_freeze_state', None))
+
+    # -- per-cycle-channel / admm_diagnostics capture (unchanged from s34) --
+    checklist['srp_get_admm_boyd_residual_metrics'] = callable(
+        getattr(srp, 'get_admm_boyd_residual_metrics', None))
+    boyd_fn_source = inspect.getsource(srp.get_admm_boyd_residual_metrics)
+    for field in S35REF_REPORT_PER_CYCLE_CHANNEL_FIELDS:
+        checklist[f'boyd_field_{field}_in_source'] = (f"'{field}':" in boyd_fn_source)
+
+    module_source = inspect.getsource(srp)
+    for key in S35REF_ADMM_DIAGNOSTICS_KEYS:
+        checklist[f'admm_diagnostics_key_{key}_present'] = (f"'{key}':" in module_source)
+
+    checklist['srp_get_admm_efc_per_day_max_callable'] = callable(getattr(srp, '_get_admm_efc_per_day_max', None))
+
+    # -- structural: TSO gamma Params are mutable (unchanged) -----------------
+    checklist['prox_gamma_v_mutable_in_source'] = (
+        'model[year][day].prox_gamma_v = pe.Param(mutable=True' in module_source)
+    checklist['write_interface_voltage_terminal_callable'] = callable(
+        globals().get('write_interface_voltage_terminal'))
+    checklist['write_component_levels_terminal_callable'] = callable(
+        globals().get('write_component_levels_terminal'))
+    checklist['write_interface_settlement_detail_s31c_callable'] = callable(
+        globals().get('write_interface_settlement_detail_s31c'))
+
+    # -- capture_additions: per-cycle sidecar hook points must exist ---------
+    checklist['srp_get_operational_recourse_block_components_callable'] = callable(
+        getattr(srp, '_get_operational_recourse_block_components', None))
+    checklist['srp_get_operational_objective_component_blocks_callable'] = callable(
+        getattr(srp, '_get_operational_objective_component_blocks', None))
+    checklist['s34_capture_hooks_callable'] = callable(globals().get('s34_capture_hooks'))
+    checklist['s35ref_capture_hooks_callable'] = callable(globals().get('s35ref_capture_hooks'))
+    checklist['write_boyd_terminal_s35ref_callable'] = callable(globals().get('write_boyd_terminal_s35ref'))
+
+    # -- report_terminal reference artifacts (s31c/s32/s33e2/s34) ------------
+    checklist['s31c_g_baseline_reference_exists'] = os.path.exists(S35REF_S31C_G_PATH)
+    checklist['s32_g_baseline_reference_exists'] = os.path.exists(S35REF_S32_G_PATH)
+    checklist['s33e2_g_baseline_reference_exists'] = os.path.exists(S35REF_S33E2_G_PATH)
+    checklist['s33e2_leak_classification_baseline_exists'] = os.path.exists(S35REF_S33E2_LEAK_PATH)
+    checklist['s34_g_baseline_reference_exists'] = os.path.exists(S35REF_S34_G_PATH)
+
+    # -- Addendum 16, decisive: SoH floor-row identification, BEFORE any solve
+    active_nodes = list(planning.shared_ess_data.active_distribution_network_nodes)
+    checklist['active_distribution_network_nodes_nonempty'] = bool(active_nodes)
+    floor_rows_by_node, floor_counts_by_node = {}, {}
+    floor_identification_error = None
+    if active_nodes:
+        try:
+            probe_esso_models = {node_id: SED._build_subproblem(planning.shared_ess_data, node_id)
+                                  for node_id in active_nodes}
+            floor_rows_by_node, floor_counts_by_node = _identify_soh_floor_rows(probe_esso_models)
+            del probe_esso_models
+        except Exception as error:
+            floor_identification_error = f'{type(error).__name__}: {error}'
+    checklist['soh_floor_rows_identified_pre_solve'] = (
+        floor_identification_error is None and bool(floor_rows_by_node)
+        and all(n > 0 for n in floor_counts_by_node.values()))
+    checklist['soh_floor_identification_error'] = floor_identification_error
+    checklist['soh_floor_row_counts_by_node'] = floor_counts_by_node
+    counts_seen = set(floor_counts_by_node.values())
+    checklist['soh_floor_row_count_uniform_across_nodes'] = (len(counts_seen) <= 1)
+
+    missing = [name for name, ok in checklist.items()
+               if isinstance(ok, bool) and not ok]
+    if missing:
+        raise RuntimeError(f'S35REF capture-path pre-flight FAILED, missing/broken: {missing}')
+    return checklist, floor_rows_by_node
+
+
+@contextmanager
+def s35ref_capture_hooks(recourse_jump_path, ess_stride_path, floor_sidecar_path,
+                          floor_rows_by_node, stride=1):
+    """S35REF capture_additions ON TOP OF `s34_capture_hooks` (frozen spec
+    v5's only NEW capture requirements vs v4, per its `capture_requirements`:
+    the SoH floor-multiplier sidecar, Addendum 16 decisive, and EFC/day per
+    cohort-year -- neither existed in s34, whose `ess_entry_stride` sidecar
+    only records the per-node MAX EFC/day).
+
+    Reuses `s34_capture_hooks` BY CALLING IT (unmodified, not copied) for the
+    recourse-jump and ESS-entry-stride sidecars; layers a SECOND monkeypatch
+    of the (now s34-wrapped) `srp.get_admm_boyd_residual_metrics` on top,
+    called AFTER the s34-wrapped function returns (same already-solved
+    `esso_model` dict, same cycle), writing `floor_sidecar_path` every cycle:
+    per (node, y_inv, y) in `floor_rows_by_node` (the PRE-SOLVE mapping
+    `assert_s35ref_capture_paths` -> `_identify_soh_floor_rows` computed --
+    NOT re-derived here), the floor row's dual (`model.dual.get(con)`, the
+    SAME mechanism `_duals_for_keys` uses elsewhere in this harness, NO sign
+    flip applied), `es_soh_per_unit_cumul`, `soh_min`, `active` (SoH within
+    1e-6 of soh_min), and EFC/day at that SAME (y_inv, y) (the SAME formula
+    `s34_capture_hooks` uses for its per-node max: avg_ch_dch / (2 * rated)).
+    Zero extra solves -- reads only already-solved Pyomo Var/dual values.
+    """
+    with s34_capture_hooks(recourse_jump_path, ess_stride_path, stride=stride) as state:
+        inner_fn = srp.get_admm_boyd_residual_metrics  # the s34-wrapped function
+
+        def wrapper2(planning_problem, tso_model, dso_models, esso_model, consensus_vars, dual_vars, admm_parameters):
+            result = inner_fn(planning_problem, tso_model, dso_models, esso_model, consensus_vars, dual_vars, admm_parameters)
+            cycle = state['cycle']  # s34's wrapper already incremented this for this call
+            floor_entries = []
+            for node_id, model in esso_model.items():
+                node_rows = floor_rows_by_node.get(node_id, {})
+                for (y_inv, y), row_info in node_rows.items():
+                    con = model.energy_storage_capacity_degradation[row_info['constraint_idx']]
+                    dual_raw = model.dual.get(con)
+                    dual_val = float(pe.value(dual_raw)) if dual_raw is not None else None
+                    soh_val = pe.value(model.es_soh_per_unit_cumul[y_inv, y], exception=False)
+                    soh_val = float(soh_val) if soh_val is not None else None
+                    soh_min = row_info['soh_min']
+                    active = (soh_val is not None) and (abs(soh_val - soh_min) <= 1e-6)
+                    avg = pe.value(model.es_avg_ch_dch_per_unit[y_inv, y], exception=False)
+                    rated = pe.value(model.es_e_rated_per_unit[y_inv, y], exception=False)
+                    efc_per_day = (float(avg) / (2.0 * float(rated))) if (avg is not None and rated) else None
+                    floor_entries.append({
+                        'node_id': node_id, 'y_inv': str(y_inv), 'y': str(y),
+                        'constraint_idx': row_info['constraint_idx'],
+                        'dual': dual_val,
+                        'es_soh_per_unit_cumul': soh_val,
+                        'soh_min': soh_min,
+                        'active': active,
+                        'efc_per_day': efc_per_day,
+                    })
+            with open(floor_sidecar_path, 'a') as handle:
+                handle.write(json.dumps({
+                    'cycle': cycle,
+                    'dual_sign_convention': (
+                        "model.dual.get(con) as returned by Pyomo (Suffix "
+                        "direction=IMPORT_EXPORT, populated from the IPOPT .sol "
+                        "file) for the row es_soh_per_unit_cumul[y_inv, y] >= "
+                        "soh_min; NO sign flip applied -- the SAME mechanism "
+                        "_duals_for_keys uses elsewhere in this harness"
+                    ),
+                    'entries': floor_entries,
+                }, default=str) + '\n')
+            return result
+
+        srp.get_admm_boyd_residual_metrics = wrapper2
+        try:
+            yield state
+        finally:
+            srp.get_admm_boyd_residual_metrics = inner_fn
+
+
+def _s35ref_system_cost_vs_s34(rows, report):
+    """The ONE additional reference (s34) the frozen v5 spec adds to
+    `_s34_system_cost_vs_references`'s three (s31c, s32, s33e2) -- s34
+    predates s35ref and could not compare against itself, so this could not
+    be added there. Same computation (matched cycles + terminal, rule ten)
+    applied to `S35REF_S34_G_PATH`."""
+    ref_path = S35REF_S34_G_PATH
+    if not os.path.exists(ref_path):
+        return {'available': False, 'reason': f's34 reference not found at {ref_path}'}
+    with open(ref_path) as handle:
+        ref_report = json.load(handle)
+    ref_rows = ref_report.get('cycle_trajectory', [])
+    ref_by_cycle = {r['cycle']: r for r in ref_rows if r.get('cycle') is not None}
+    s35_by_cycle = {r['cycle']: r for r in rows if r.get('cycle') is not None}
+
+    matched = []
+    for cycle in S35REF_MATCHED_CYCLES:
+        if cycle not in ref_by_cycle or cycle not in s35_by_cycle:
+            continue
+        s35_v = s35_by_cycle[cycle].get('gross_operational_cost')
+        ref_v = ref_by_cycle[cycle].get('gross_operational_cost')
+        matched.append({
+            'cycle': cycle,
+            's35ref_gross_operational_cost': s35_v,
+            's34_gross_operational_cost': ref_v,
+            'difference': (s35_v - ref_v) if (s35_v is not None and ref_v is not None) else None,
+        })
+
+    s35_last = rows[-1] if rows else {}
+    ref_last = ref_rows[-1] if ref_rows else {}
+    s35_terminal_step = s35_last.get('objective_change_abs')
+    ref_terminal_step = ref_last.get('objective_change_abs')
+    terminal_difference = (
+        (s35_last.get('gross_operational_cost') - ref_last.get('gross_operational_cost'))
+        if (s35_last.get('gross_operational_cost') is not None and ref_last.get('gross_operational_cost') is not None)
+        else None
+    )
+    error_bar = (
+        (abs(s35_terminal_step) + abs(ref_terminal_step))
+        if (s35_terminal_step is not None and ref_terminal_step is not None) else None
+    )
+    return {
+        'available': True,
+        'reference_path': os.path.relpath(ref_path, REPO),
+        'matched_cycles': matched,
+        'terminal': {
+            's35ref_cycle': s35_last.get('cycle'),
+            's34_cycle': ref_last.get('cycle'),
+            's35ref_gross_operational_cost': s35_last.get('gross_operational_cost'),
+            's34_gross_operational_cost': ref_last.get('gross_operational_cost'),
+            'difference': terminal_difference,
+            's35ref_terminal_step_objective_change_abs': s35_terminal_step,
+            's34_terminal_step_objective_change_abs': ref_terminal_step,
+            'error_bar_sum_of_terminal_steps': error_bar,
+            'determinate_at_gt_error_bar': (
+                (abs(terminal_difference) > error_bar)
+                if (terminal_difference is not None and error_bar) else None
+            ),
+        },
+    }
+
+
+def _s35ref_system_cost_vs_references(rows, report):
+    """system cost vs s34, s33e2, s32, s31c at matched cycles (frozen v5
+    spec `report_terminal`). Reuses `_s34_system_cost_vs_references` BY
+    CALLING IT for the s31c/s32/s33e2 legs (identical computation, s34's own
+    function, UNMODIFIED) and adds the one new s34 leg above."""
+    result = dict(_s34_system_cost_vs_references(rows, report))
+    result['s34'] = _s35ref_system_cost_vs_s34(rows, report)
+    return result
+
+
+def _s35ref_terminal_floor_and_efc(floor_sidecar_path, threshold=None):
+    """Reads the LAST line of THIS run's own SoH-floor sidecar
+    (`s35ref_capture_hooks`) and reports, per (node, y_inv, y): the floor
+    row's dual, es_soh_per_unit_cumul, soh_min, active flag, EFC/day, and
+    EFC/day's margin/fraction vs `threshold` (default
+    `N.EFC_BINDING_THRESHOLD`, 1.4612) -- plus, per node, the (y_inv, y) with
+    the MAX EFC/day (matching `efc_per_day_max`'s semantics) with the same
+    margin/fraction. Zero solves -- reads the sidecar this run itself
+    already wrote; no re-derivation."""
+    if threshold is None:
+        threshold = N.EFC_BINDING_THRESHOLD
+    if not floor_sidecar_path or not os.path.exists(floor_sidecar_path):
+        return {'available': False, 'path': floor_sidecar_path}
+
+    last_line = None
+    with open(floor_sidecar_path) as handle:
+        for line in handle:
+            line = line.strip()
+            if line:
+                last_line = line
+    if last_line is None:
+        return {'available': False, 'reason': 'sidecar empty', 'path': floor_sidecar_path}
+
+    terminal = json.loads(last_line)
+    entries = terminal.get('entries', [])
+    per_entry = []
+    per_node_max_efc = {}
+    for entry in entries:
+        efc = entry.get('efc_per_day')
+        row = dict(entry)
+        if isinstance(efc, (int, float)):
+            row['efc_margin_to_threshold'] = threshold - efc
+            row['efc_fraction_of_threshold'] = (efc / threshold) if threshold else None
+            node_id = entry.get('node_id')
+            if node_id not in per_node_max_efc or efc > per_node_max_efc[node_id]['efc_per_day']:
+                per_node_max_efc[node_id] = {
+                    'efc_per_day': efc, 'y_inv': entry.get('y_inv'), 'y': entry.get('y'),
+                    'margin_to_threshold': threshold - efc,
+                    'fraction_of_threshold': (efc / threshold) if threshold else None,
+                }
+        else:
+            row['efc_margin_to_threshold'] = None
+            row['efc_fraction_of_threshold'] = None
+        per_entry.append(row)
+
+    return {
+        'available': True,
+        'path': floor_sidecar_path,
+        'cycle': terminal.get('cycle'),
+        'dual_sign_convention': terminal.get('dual_sign_convention'),
+        'threshold_efc_binding': threshold,
+        'per_node_per_cohort_year': per_entry,
+        'per_node_max_efc_per_day': per_node_max_efc,
+    }
+
+
+def write_boyd_terminal_s35ref(planning, sed, models, rows, report, out_dir, label,
+                                floor_rows_by_node=None, floor_sidecar_path=None):
+    """s35ref Part 2: writes `boyd_terminal.json` -- the frozen v5 spec's
+    `report_terminal` fields not already covered by
+    `write_interface_settlement_detail_s31c` (cancellation residual,
+    per-DSO settlement/flexibility volumes), `write_component_levels_terminal`
+    (D rows) and `write_interface_voltage_terminal`, plus the v5-specific
+    additions on top of s34 (Addendum 16): the SoH floor-multiplier terminal
+    block, EFC/day per cohort-year with margin/fraction vs 1.4612, and the
+    system-cost comparison against s34, s33e2, s32 AND s31c. Reuses
+    `_s34_rho_gamma_freeze_trajectory` and `_s32_binding_test` directly (BY
+    CALLING, not copying). Zero extra solves."""
+    settlement_path = write_interface_settlement_detail_s31c(
+        planning, sed, models, rows, report, out_dir, label)
+
+    last_row = rows[-1] if rows else {}
+    converged_at_cycle = report.get('converged_at_cycle')
+    stopped_by = 'boyd' if (converged_at_cycle is not None and converged_at_cycle == last_row.get('cycle')) else 'cap'
+
+    voltage_path = write_interface_voltage_terminal(
+        planning, models, out_dir, label, cycle=last_row.get('cycle'))
+
+    with open(S35REF_SPEC_PATH) as handle:
+        spec_json = json.load(handle)
+
+    consecutive_converged_at_stop = last_row.get('consecutive_converged_cycles')
+    began_at_cycle = None
+    if consecutive_converged_at_stop:
+        count = 0
+        for row in reversed(rows):
+            if row.get('cycle_convergence'):
+                count += 1
+                began_at_cycle = row.get('cycle')
+            else:
+                break
+        if count != consecutive_converged_at_stop:
+            began_at_cycle = None
+
+    freeze_cycle_per_channel = {}
+    rho_at_clamp_per_channel = {}
+    for group in ('v', 'pf', 'ess'):
+        freeze_cycle_per_channel[group] = next(
+            (row.get('cycle') for row in rows if row.get(f'rho_frozen_{group}')), None)
+        rho_at_clamp_per_channel[group] = last_row.get(f'rho_at_clamp_{group}')
+
+    admm_params = planning.params.admm
+
+    floor_and_efc_terminal = _s35ref_terminal_floor_and_efc(floor_sidecar_path)
+
+    payload = {
+        'stage': 'P5.15 Addendum 16 item 1 (s35ref, run 1) -- reference equilibrium at '
+                 'cap 500, rho_ess=0.1125 -- terminal report',
+        'authority': [
+            'PLANNER_BRIEF_2026-09-13.md Addendum 16 item 1',
+            'data/SRP1/Results/P515S35/frozen_s35_reference_spec_v5_995548ab.json',
+        ],
+        'spec_file': os.path.relpath(S35REF_SPEC_PATH, REPO),
+        'spec_file_sha256': S35REF_SPEC_SHA256,
+        'predecessor_spec_file': spec_json.get('predecessor', {}).get('path'),
+        'predecessor_spec_sha256': spec_json.get('predecessor', {}).get('sha256'),
+        'timestamp_utc': datetime.now(timezone.utc).isoformat(),
+        'label': label,
+        'objective_convention': (
+            'gross_operational_cost (matched-cycle and terminal comparisons '
+            'below use gross, NOT net_operational_recourse -- see CLAUDE.md '
+            '"Reporting conventions")'
+        ),
+        'cycles': len(rows),
+        'stopped_by': stopped_by,
+        'converged_at_cycle': converged_at_cycle,
+        'consecutive_converged_at_stop': consecutive_converged_at_stop,
+        'consecutive_converged_run_began_at_cycle': began_at_cycle,
+        'binding_test_per_channel': _s32_binding_test(last_row),
+        'rho_gamma_freeze_trajectory_per_channel': _s34_rho_gamma_freeze_trajectory(rows),
+        'sigma_fixed': last_row.get('sigma_fixed'),
+        'sigma_computed': last_row.get('sigma_computed'),
+        'al_scale_esso': last_row.get('al_scale_esso'),
+        'shared_ess_reference_rating_mva': last_row.get('shared_ess_reference_rating_mva'),
+        'initial_rho': {group: dict(admm_params.rho[group]) for group in ('v', 'pf', 'ess')},
+        'initial_rho_ess_value_v5': S35REF_INITIAL_RHO_ESS,
+        'freeze_after_unchanged_cycles': last_row.get('freeze_after_unchanged_cycles'),
+        'freeze_backstop_cycle': last_row.get('freeze_backstop_cycle'),
+        'freeze_cycle_per_channel': freeze_cycle_per_channel,
+        'rho_at_clamp_per_channel_at_terminal': rho_at_clamp_per_channel,
+        'rho_at_clamp_any_true_gate_failure_flag': any(rho_at_clamp_per_channel.values()),
+        'efc_per_day_max_terminal': last_row.get('efc_per_day_max'),
+        'soh_floor_multiplier_and_efc_per_cohort_year_terminal': floor_and_efc_terminal,
+        'soh_floor_row_counts_by_node': ({n: len(r) for n, r in floor_rows_by_node.items()}
+                                          if floor_rows_by_node else None),
+        'system_cost_vs_s31c_s32_s33e2_s34': _s35ref_system_cost_vs_references(rows, report),
+        'network_failures_summary': report.get('network_failures_summary'),
+        'component_levels_terminal_and_settlement_detail_path': settlement_path,
+        'interface_voltage_terminal_path': os.path.relpath(voltage_path, REPO),
+        'recourse_jump_sidecar_path': report.get('s34_recourse_jump_sidecar_path'),
+        'ess_entry_stride_sidecar_path': report.get('s34_ess_entry_stride_sidecar_path'),
+        'soh_floor_sidecar_path': report.get('s35ref_soh_floor_sidecar_path'),
+        'note_D_rows_and_cancellation_residual': (
+            'D rows are in component_levels_terminal.json (written by '
+            'write_component_levels_terminal, called first by '
+            'write_interface_settlement_detail_s31c above); the cancellation '
+            'residual T_TSO + sum(T_DSO) is '
+            '"t_tso_plus_t_dso_terminal" and per-DSO settlement/flexibility '
+            'volumes are "interface_consensus_residual_per_dso" / '
+            '"flexibility_volumes_per_dso" in interface_settlement_detail_s31c.json.'
+        ),
+    }
+
+    path = os.path.join(out_dir, 'boyd_terminal.json')
+    _refuse_overwrite(path)
+    with open(path, 'w') as handle:
+        json.dump(payload, handle, indent=1, default=str)
+    print(f'[S35REF] boyd_terminal.json written: {path}')
+    return path
+
+
 if __name__ == '__main__':
     _acquire_exclusive_run_lock()
     gate = sys.argv[1] if len(sys.argv) > 1 else None
@@ -3386,6 +4021,86 @@ if __name__ == '__main__':
             run_admm_arm('baseline', OUT_S34, k_override=None, eval_id='p515s34_baseline',
                          num_max_iters_override=S34_CAP, apply_rho=False,
                          full_diagnostics_in_rows=True, post_run_hook=_s34_hook)
+    elif gate == 's35ref':
+        # S35REF worker task (PLANNER_BRIEF_2026-09-13.md Addendum 16 item 1;
+        # frozen spec v5 data/SRP1/Results/P515S35/frozen_s35_reference_spec_v5_995548ab.json,
+        # supersedes v4 frozen_s34_spec_v4_966940a7.json -- the ONLY two
+        # changes from s34: cap 500 (was 150), and initial rho_ess = 0.1125
+        # on every network and the ESSO, case-file value, was 0.05):
+        # Boyd stopping rule + residual balancing + tied-gamma stabiliser +
+        # D5/sigma/S_ref/v4-freeze gate + Addendum-16 SoH-floor-multiplier
+        # and per-cohort-year-EFC capture, cap 500, case-file rho in force
+        # (N.RHO NOT applied) -- own fresh root and eval id; the
+        # s31c/s32/s33e2/s34 run directories are never written.
+        #
+        # THE PLANNER LAUNCHES THIS GATE, NOT THE WORKER -- this branch is
+        # prepared code only (P5.15 Addendum 16 run-1-prep worker task); it
+        # is never invoked by any Worker-run command in that task.
+        if N.REL != S35REF_REL:
+            raise RuntimeError(
+                f'p514_n_instrumented_cstar.REL ({N.REL}) no longer matches the '
+                f'frozen s35ref objective-change (diagnostic) tolerance {S35REF_REL}; '
+                'the spec requires 1e-4.')
+        observed_spec_hash = _s35ref_spec_hash()
+        if observed_spec_hash != S35REF_SPEC_SHA256:
+            raise RuntimeError(
+                f'frozen s35ref spec hash mismatch: file={observed_spec_hash} '
+                f'expected={S35REF_SPEC_SHA256}')
+        _require_fresh_output_root(OUT_S35REF)
+        preflight_eval_id = 'p515s35ref_preflight_capture_check'
+        preflight_eval_dir = os.path.join(O.WORK_DIR, preflight_eval_id)
+        if os.path.exists(preflight_eval_dir):
+            raise RuntimeError(
+                f'refusing to start: preflight eval dir already exists (network '
+                f'logs append): {preflight_eval_dir}')
+        preflight_planning = O.fresh_planning(preflight_eval_id)
+        s35ref_checklist, s35ref_floor_rows_by_node = assert_s35ref_capture_paths(preflight_planning)
+        preflight_admm_params = preflight_planning.params.admm
+        del preflight_planning
+        print(f'[P5.15 S35REF] capture-path pre-flight passed: {s35ref_checklist}')
+        print(
+            '[P5.15 S35REF] cap=500, objective rel=1e-4 (diagnostic), adaptive on, '
+            f'case-file rho in force (N.RHO NOT applied): '
+            f'v={preflight_admm_params.rho["v"]}, pf={preflight_admm_params.rho["pf"]}, '
+            f'ess={preflight_admm_params.rho["ess"]}; '
+            f'boyd eps_source={preflight_admm_params.boyd_eps_source}, '
+            f'eps_abs={preflight_admm_params.tol["boyd"]["eps_abs"]:.1e}, '
+            f'eps_rel={preflight_admm_params.tol["boyd"]["eps_rel"]:.1e}; '
+            f'gamma_policy={preflight_admm_params.proximal_regularization["tso"]["gamma_policy"]}, '
+            f'tau={preflight_admm_params.proximal_regularization["tso"]["tau"]}; '
+            f'objective_scale={preflight_admm_params.objective_scale} '
+            f'(source={preflight_admm_params.objective_scale_source}, '
+            f'assert_factor={preflight_admm_params.objective_scale_assert_factor}); '
+            f'esso_al_scale={preflight_admm_params.esso_al_scale} '
+            f'(numeric value and >1 check deferred to the first cycle -- unresolved '
+            f'before any solve); '
+            f'shared_ess_reference_rating_mva={preflight_admm_params.shared_ess_reference_rating_mva}; '
+            f'freeze_after_unchanged_cycles={preflight_admm_params.penalty_update["freeze_after_unchanged_cycles"]}; '
+            f'freeze_backstop_cycle={preflight_admm_params.penalty_update["freeze_backstop_cycle"]}; '
+            f'minimum_consecutive_converged_cycles={preflight_admm_params.minimum_consecutive_converged_cycles}; '
+            f'soh_floor_row_counts_by_node={ {n: len(r) for n, r in s35ref_floor_rows_by_node.items()} }'
+        )
+
+        s35ref_recourse_jump_path = os.path.join(OUT_S35REF, 'recourse_jump_sidecar_baseline.jsonl')
+        s35ref_ess_stride_path = os.path.join(OUT_S35REF, 'ess_entry_stride_baseline.jsonl')
+        s35ref_floor_sidecar_path = os.path.join(OUT_S35REF, 'soh_floor_sidecar_baseline.jsonl')
+        _refuse_overwrite(s35ref_recourse_jump_path)
+        _refuse_overwrite(s35ref_ess_stride_path)
+        _refuse_overwrite(s35ref_floor_sidecar_path)
+
+        def _s35ref_hook(planning, sed, models, rows, report, out_dir, label):
+            report['s34_recourse_jump_sidecar_path'] = os.path.relpath(s35ref_recourse_jump_path, REPO)
+            report['s34_ess_entry_stride_sidecar_path'] = os.path.relpath(s35ref_ess_stride_path, REPO)
+            report['s35ref_soh_floor_sidecar_path'] = os.path.relpath(s35ref_floor_sidecar_path, REPO)
+            write_boyd_terminal_s35ref(planning, sed, models, rows, report, out_dir, label,
+                                        floor_rows_by_node=s35ref_floor_rows_by_node,
+                                        floor_sidecar_path=s35ref_floor_sidecar_path)
+
+        with s35ref_capture_hooks(s35ref_recourse_jump_path, s35ref_ess_stride_path,
+                                   s35ref_floor_sidecar_path, s35ref_floor_rows_by_node, stride=1):
+            run_admm_arm('baseline', OUT_S35REF, k_override=None, eval_id='p515s35ref_baseline',
+                         num_max_iters_override=S35REF_CAP, apply_rho=False,
+                         full_diagnostics_in_rows=True, post_run_hook=_s35ref_hook)
     else:
         print(__doc__)
         sys.exit(1)
