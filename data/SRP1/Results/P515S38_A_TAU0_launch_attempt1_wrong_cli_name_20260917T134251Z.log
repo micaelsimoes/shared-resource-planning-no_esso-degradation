@@ -1,0 +1,57 @@
+
+P5.15 -- G1-G4 gate runner.
+
+Authority: PLANNER_BRIEF_2026-09-13.md Step 1 "Gate" section, as amended by Addendum 1
+(G5 reporting), Addendum 3 item 3 (G1 re-specified as a per-node reconciliation gate),
+Addendum 4 (per-cycle ESSO detector logging standing requirement, G1 confirmed as
+specified), Addendum 5 (log-handling fix; no harness-only workaround) and Addendum 6
+(campaign capture: heartbeat, per-period ESSO leak-mechanism capture and
+classification, network-failure capture -- authorized "HARNESS change plus a short
+smoke test" task, 2026-09-14).
+
+This harness does NOT reimplement any production solve. It reuses, verbatim, the already
+-repaired stage harnesses:
+  * p514_n_instrumented_cstar.py  (control / perturbation arm: assert_capture_paths_exist,
+    capture_esso, and every module-level constant -- S_INV, E_INV, INVEST_YEAR, BUDGET,
+    REL, CAP, RHO, REFERENCE_RECOURSE, EFC_BINDING_THRESHOLD, PERMITTED);
+  * p514_l_capacity_ladder.py     (ladder initialization-stage harness: main() called
+    directly, with its module-level OUT redirected so it cannot collide with the
+    committed P514L artifacts).
+
+P5.15-G1PREP (this revision) removes the harness-only ESSO-log-isolation workaround --
+production now writes one fresh, logs_dir-resolved ESSO IPOPT log per solve (P5.15-F,
+commit 7ca40b93) -- and adds the Addendum-6 campaign capture:
+  1. A per-cycle heartbeat file, written atomically after every ESSO coordination solve.
+  2. Per-period ESSO leak-mechanism capture (pch, pdch, pnet, s_max, the IPOPT bound
+     multipliers of both legs, and every constraint dual whose row references that
+     period's pch/pdch or the cohort's degradation Vars), one JSONL file per node per
+     round under `esso_capture/<label>/`.
+  3. A per-solve leak classification (barrier-set / not-barrier-set / indeterminate),
+     one line per solve in `leak_classification_<label>.jsonl`.
+  4. Network-failure capture and classification, built from the (no-longer-discarded)
+     tee'd stdout of the run plus the FrozenSMOPF snapshot directory, written to
+     `network_failures_<label>.jsonl`.
+  5. `assert_g_capture_paths` extended per Addendum 6 item 7 (rule eleven): production
+     logs_dir absolute on planning/ESSO/TSO, wrapper hooks installed, output root
+     fresh, ESSO Suffixes present on a freshly-built (unsolved) probe subproblem.
+
+The new artifacts are LABELED per arm (`heartbeat_<label>.json`, not `heartbeat.json`)
+because `run_admm_arm` is called from several CLI gates (g1, g2, g4b, g3_full) that
+share ONE output root (`OUT`, `data/SRP1/Results/P515G`) across SEPARATE process
+invocations of this script -- an unlabeled, un-guarded filename would collide across
+arms and break "keep G2/G3-full/G4 arms working" (see WORKER_REPORT_G1PREP.md). The
+`g1` CLI gate is the one exception: it gets its OWN fresh output root,
+`data/SRP1/Results/P515G1/`, checked for freshness before anything is written (Addendum
+6 item 2 -- "no overwrite, no reuse").
+
+RULE ELEVEN: capture paths are asserted before any solve is attempted.
+
+Writes ONLY new files, under data/SRP1/Results/P515G/ (existing arms) or
+data/SRP1/Results/P515G1/ (fresh, the g1 CLI gate) -- neither repaired harness's
+default output directory is touched, because both collide with already-committed
+artifacts (P514N: esso_models_control.pkl, n1_control.json, ...; P514L: ladder_s1.json,
+...).
+
+    python p515_g_g1_g4_admm_gates.py <gate>
+    gate in {g1, g2, g4b, g3_init, g3_full}   (g4a == g1; run g1 twice for G4)
+
