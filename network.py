@@ -657,6 +657,79 @@ def _restore_multiplier_suffixes(model, snapshot):
             suffix[component] = value
 
 
+def capture_block_mutable_state(model):
+    """P5.15 Step 3.6 (PLANNER_BRIEF_2026-09-13.md Addendum 21 item 4,
+    WORKER_REPORT_S36_CLONE_CAPTURE.md): a lightweight, `clone()`-free
+    capture of everything the ADMM loop can mutate on an already-built
+    block between cycles -- every MUTABLE Param's value (immutable, i.e.
+    static network-data, Params are skipped: they never change and never
+    need `set_value`, e.g. `pg_avail`/`sg_avail`/DSO's `pc`/`qc`), every
+    Var's value/lower bound/upper bound/fixed flag (covers both ordinary
+    value updates -- e.g. from `model.solutions.load_from` -- and the
+    `.fix()`/`.unfix()`/`.setlb()`/`.setub()` mutations
+    `configure_shared_ess_operational_state` performs), every Constraint's
+    and Objective's per-entry active flag (covers the same function's
+    `.activate()`/`.deactivate()` calls), and the warm-start multiplier
+    suffixes (`_snapshot_multiplier_suffixes`, reused as-is). Deliberately
+    does NOT capture component STRUCTURE (Sets, constraint/objective
+    expression trees, Var/Param declarations) -- those are assumed
+    unchanged from whatever pristine, structurally-identical block this
+    capture will later be replayed onto via `apply_block_mutable_state`;
+    true for both the DSO and TSO ADMM loops, which never add, remove, or
+    redefine a component after construction. See
+    `WORKER_REPORT_S36_CLONE_CAPTURE.md` for the equivalence checks that
+    verify this against a real `clone()`."""
+    state = {'params': {}, 'vars': {}, 'constraints': {}, 'objectives': {}}
+    for comp in model.component_objects(pe.Param, active=None):
+        if not comp.mutable:
+            continue
+        state['params'][comp.name] = {index: comp[index].value for index in comp}
+    for comp in model.component_objects(pe.Var, active=None):
+        state['vars'][comp.name] = {
+            index: (comp[index].value, comp[index].lb, comp[index].ub, comp[index].fixed)
+            for index in comp
+        }
+    for comp in model.component_objects(pe.Constraint, active=None):
+        state['constraints'][comp.name] = {index: comp[index].active for index in comp}
+    for comp in model.component_objects(pe.Objective, active=None):
+        state['objectives'][comp.name] = {index: comp[index].active for index in comp}
+    state['suffixes'] = _snapshot_multiplier_suffixes(model)
+    return state
+
+
+def apply_block_mutable_state(model, state):
+    """Inverse of `capture_block_mutable_state`: replays a captured state
+    onto a structurally-identical block (typically a fresh `clone()` of the
+    pristine, pre-ADMM-loop block) in place, and returns it. Bounds are
+    restored before the fixed flag/value, so a value never has to satisfy a
+    bound that has not been set yet."""
+    for name, entries in state['params'].items():
+        comp = getattr(model, name)
+        for index, value in entries.items():
+            comp[index].set_value(value)
+    for name, entries in state['vars'].items():
+        comp = getattr(model, name)
+        for index, (value, lb, ub, fixed) in entries.items():
+            var_data = comp[index]
+            var_data.setlb(lb)
+            var_data.setub(ub)
+            if var_data.fixed and not fixed:
+                var_data.unfix()
+            var_data.set_value(value)
+            if fixed:
+                var_data.fix(value)
+    for name, entries in state['constraints'].items():
+        comp = getattr(model, name)
+        for index, active in entries.items():
+            comp[index].activate() if active else comp[index].deactivate()
+    for name, entries in state['objectives'].items():
+        comp = getattr(model, name)
+        for index, active in entries.items():
+            comp[index].activate() if active else comp[index].deactivate()
+    _restore_multiplier_suffixes(model, state.get('suffixes', {}))
+    return model
+
+
 def _print_network_failure_context(network, model, result, from_warm_start, solver_log_path, attempt_label='solver'):
     solve_context = f'{network.name}, year={network.year}, day={network.day}'
     print(f'[WARNING] Network {attempt_label} did not converge for {solve_context}: {solver_result_summary(result)} | warm_start={from_warm_start}')
