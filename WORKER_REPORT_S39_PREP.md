@@ -428,5 +428,25 @@ incident.
 
 ## Commit hashes
 
-Recorded after each commit below (order: production+checks script+output →
-replay script+output → harness+evaluator+preflight script → preflight evidence+report).
+| order | commit | contents |
+|---|---|---|
+| 1 | `6d628d7e` | production (`admm_parameters.py`, `shared_resources_planning.py`) + `p515_s39_zero_solve_checks.py` |
+| 2 | `8cdd0978` | zero-solve checks evidence (`data/SRP1/Results/P515S39/zero_solve_checks/`) |
+| 3 | `0f9918e8` | `p515_s39_d_policy_replay.py` |
+| 4 | `3ee7bb37` | D-policy replay evidence (`data/SRP1/Results/P515S39/d_policy_replay_on_s38/`) |
+| 5 | `cf480653` | harness s39 section (`p515_g_g1_g4_admm_gates.py`) + `p515_s39_evaluate.py` + `p515_s39_preflight.py` |
+| 6 | `054eed0c` | preflight C/D evidence + this report (`WORKER_REPORT_S39_PREP.md`) |
+
+`git log --oneline -6` on branch `feature/derivative-free-planning` after this task:
+```
+054eed0c P5.15 Addendum 21 (s39 W1): C/D two-cycle preflight evidence + worker report
+cf480653 P5.15 Addendum 21 (s39 W1): harness arms C/D, evaluator, preflight script
+3ee7bb37 P5.15 Addendum 21 (s39 W1): D-policy replay evidence on v9 arm A and B trajectories
+0f9918e8 P5.15 Addendum 21 (s39 W1): zero-solve open-loop replay of arm D's ESS policy
+8cdd0978 P5.15 Addendum 21 (s39 W1): zero-solve checks evidence
+6d628d7e P5.15 Addendum 21 (s39 W1): production conditional ESS balancing exemption + zero-solve checks
+```
+
+No changes were made outside the six commits above; `git status --porcelain` on every
+path this task touched (production files, all new `p515_s39_*.py` scripts, `data/SRP1/
+Results/P515S39/`, this report) is clean after commit 6.
