@@ -635,15 +635,40 @@ def derive_param_update_and_bookkeeping(records):
     `bookkeeping` (phase 'e' minus diagnostics_parse) is, for every
     (cycle, agent, block) with a `block_total` event:
         bookkeeping = block_total
-                      - sum(clone for that block)
                       - sum(solve_bundle for that block, all attempts)
                       - sum(load_solution for that block, all attempts)
                       - sum(diagnostics_parse for that block, ESSO only)
-    A negative bookkeeping value (should not occur -- block_total wraps
-    strictly around clone+solve_bundle+load_solution+diagnostics_parse in
-    the source, per the file:line citations in the module docstring) is
-    left in the output, unclamped, as a correctness signal rather than
-    silently floored to 0.
+    `clone` is DELIBERATELY EXCLUDED from this subtraction (P5.15 Step 3.6
+    Worker task, defect D1 -- the original version of this function
+    subtracted `clone` here too, which produced a negative `bookkeeping`
+    total, e.g. -8.37 s aggregate in the v1 measurement). Re-reading the
+    actual nesting (`network_data.py:54-68`, `NetworkData.optimize`):
+
+        pre_solve_model = model[year][day].clone()               # :61
+        results[year][day] = self.network[year][day].run_smopf(  # :62-63
+            model[year][day], self.params, ...)
+
+    `clone()` (:61) is a SIBLING call that runs BEFORE `run_smopf()` (:62-63,
+    the `block_total` wrap), not a call nested INSIDE it -- `block_total`'s
+    measured span never includes any `clone()` time at all (confirmed by
+    reading the source, not assumed from the phase name). Subtracting it from
+    `block_total` therefore subtracts time that was never part of that span,
+    which is exactly why v1 went negative. `clone` remains its own reported
+    phase (already summed separately into `overhead_local_components.clone`
+    in `analyze_phase_timing`); it is simply never used to reduce
+    `block_total` here.
+
+    A negative bookkeeping value should not occur now that the wrap the
+    subtraction is applied against (`block_total`) strictly and only encloses
+    `solve_bundle`+`load_solution`+`diagnostics_parse` (verified against
+    `network.py:673-777` / `shared_energy_storage_data.py:1177-1330`, both
+    read again for this task) -- so, unlike the prior version, a negative
+    result here is now treated as a CORRECTNESS DEFECT, not a signal to note
+    and move on: `_raise_if_negative_duration` below raises `ValueError`
+    (never silently reports a negative `elapsed_s`) whenever a derived
+    `param_update` or `bookkeeping` record's `elapsed_s` is more negative
+    than `_DERIVATION_NEGATIVE_TOLERANCE` (a small floating-point-noise
+    allowance, not a license to hide a real negative value).
 
     Returns a NEW list of derived records (phase in {'param_update',
     'bookkeeping'}), in the SAME record schema as the live-wrapped ones,
@@ -696,9 +721,13 @@ def derive_param_update_and_bookkeeping(records):
             })
 
     # ---- bookkeeping ----
+    # D1 fix: 'clone' is DELIBERATELY excluded from this grouping -- see the
+    # docstring above. block_total (Network.run_smopf / SED._optimize) never
+    # encloses clone() at all (it is a sibling call in NetworkData.optimize,
+    # network_data.py:61 vs :62-63), so it must never be subtracted from it.
     by_block = {}
     for r in records:
-        if r['phase'] in ('block_total', 'clone', 'solve_bundle', 'load_solution', 'diagnostics_parse'):
+        if r['phase'] in ('block_total', 'solve_bundle', 'load_solution', 'diagnostics_parse'):
             by_block.setdefault(_block_key(r), []).append(r)
     for key, group in by_block.items():
         totals = [r for r in group if r['phase'] == 'block_total']
@@ -715,7 +744,38 @@ def derive_param_update_and_bookkeeping(records):
             'elapsed_s': block_total_sum - nested_sum, 'derived': True,
         })
 
+    for record in derived:
+        _raise_if_negative_duration(record)
+
     return derived
+
+
+# Floating-point-noise allowance ONLY -- perf_counter deltas summed/subtracted
+# across several independently-timed events can disagree from true zero by a
+# few microseconds; anything more negative than this is a real nesting/nesting-
+# assumption defect (D1's own failure mode: -8.37 s, six orders of magnitude
+# past this tolerance) and must raise, never be silently reported.
+_DERIVATION_NEGATIVE_TOLERANCE = 1e-6
+
+
+def _raise_if_negative_duration(record):
+    """Deliverable requirement (P5.15 Step 3.6 Worker task): a derived phase
+    ('param_update' or 'bookkeeping') that computes to a negative duration
+    must RAISE, never be silently reported as a negative `elapsed_s` -- the
+    prior version of this module (v1) left such values in the output
+    unclamped as a mere "correctness signal", which is how the -8.37 s D1
+    defect reached a committed analysis artifact undetected."""
+    elapsed = record.get('elapsed_s')
+    if elapsed is not None and elapsed < -_DERIVATION_NEGATIVE_TOLERANCE:
+        raise ValueError(
+            f"derive_param_update_and_bookkeeping produced a negative "
+            f"'{record['phase']}' duration ({elapsed!r} s) for cycle="
+            f"{record.get('cycle')!r}, agent={record.get('agent')!r}, "
+            f"block={record.get('block')!r} -- this indicates a nesting/"
+            f"derivation defect (e.g. subtracting a phase that is not "
+            f"actually enclosed by the parent span), not a value to report. "
+            f"Full record: {record!r}"
+        )
 
 
 def lpt_partition(durations, workers):
@@ -736,15 +796,75 @@ _DEGRADED_VERDICT = 'INDETERMINATE (NL-write share not separated)'
 
 
 def analyze_phase_timing(records, x_threshold, production_iter_wall_by_cycle=None,
-                          projection_workers=8, nl_write_seconds=None):
+                          projection_workers=8, nl_write_seconds=None,
+                          solve_bundle_subtimes=None):
     """Compute the design §5 per-block-type table, overhead_local vs
     overhead_serial, the X-threshold screening verdict, and the Amdahl
     `projection_workers`-worker projected speed-up.
 
-    `x_threshold`: REQUIRED, no default (Planner decision, P5.15 Step 3.6 follow-up:
-    Addendum 20's X=70% is an interim screening figure -- "the measurement sets the
-    real one" -- so a caller must state the threshold it is screening against
-    explicitly; there is no silent fallback value).
+    P5.15 Step 3.6 Worker task (re-analysis of the already-captured
+    measurement) fixed THREE defects in this function relative to the v1
+    version that produced the committed `phase_timing_analysis.json`:
+
+    D2 (window inconsistency): v1 summed EVERY record regardless of `cycle`,
+    which silently included the pre-ADMM-loop INITIALIZATION solves (cycle is
+    `None` for those -- `create_distribution_networks_models` /
+    `create_transmission_network_model` / `create_shared_energy_storage_model`
+    go through the SAME wrapped `Network.run_smopf` / `SED._optimize` /
+    `OptSolver.solve` / `ModelSolutions.load_from` call sites as the ADMM
+    loop, but outside any `update_..._and_solve(cycle=...)` stage wrap, so
+    `recorder.current_cycle` is still `None` when they fire). This function
+    now restricts every total/table to records whose `cycle` is one of the
+    SAMPLED ADMM cycles (i.e. `cycle is not None`); the excluded `cycle is
+    None` records are reported separately under `initialization_totals`
+    (never silently dropped, never silently mixed in). Recovery/tier-2
+    re-solves (`attempt != 'primary'`, still WITHIN a sampled cycle) are
+    also reported separately under `recovery_totals`, in addition to being
+    included in the (now cycle-scoped) main totals -- so a cycle with a
+    recovery event does not silently look "the same shape" as one without.
+
+    D3 (classification error): v1 put the FULL `solve_bundle - NL-write`
+    remainder into `overhead_serial` under the key
+    `solve_bundle_remainder_(ipopt_plus_sol_parse)`. That remainder is NOT
+    homogeneous: the IPOPT subprocess (c) is real, parallelizable SOLVE work
+    (already handled separately by the LPT 8-worker projection below) and is
+    not "overhead" in the sense
+    `WORKER_REPORT_S36_PARALLEL_AUDIT.md`'s own `overhead = wall - IPOPT`
+    table already uses; only the `.sol`-parse remainder (d1) is per-block,
+    local overhead. This function now requires `solve_bundle_subtimes` (a
+    per-record `{seq: {'nl_write', 'ipopt', 'sol_parse'}}` map, built from
+    Pyomo's own `report_timing=True` stdout, one triplet per solve, matched
+    to `solve_bundle` records by call order / `seq` -- see
+    `p515_s36_step36_timing_reanalyze.py`) to compute a DETERMINATE verdict:
+
+        overhead_total   = wall_total - ipopt_total   (cycle-scoped)
+        overhead_local   = param_update + clone (only where it fires)
+                          + nl_write (b) + load_solution (d2)
+                          + bookkeeping + diagnostics_parse (e)
+                          + sol_parse (d1) + solve_bundle_glue
+                            (solve_bundle's own measured elapsed_s minus its
+                             three measured sub-times -- small Python/Pyomo
+                             wrapper overhead inside solve(), still per-block
+                             and local, never silently dropped)
+        overhead_serial  = admm_global (f) + unattributed
+        overhead_local + overhead_serial == overhead_total (by construction)
+        verdict_ratio    = overhead_local / overhead_total
+
+    When `solve_bundle_subtimes` does NOT cover every in-scope `solve_bundle`
+    record (missing entirely, or partial coverage), this function falls back
+    to the OLD (v1) aggregate-only classification -- `nl_write_seconds`
+    (optional `{...: seconds}`, summed) as an aggregate NL-write figure, full
+    `solve_bundle` counted as the NL-write UPPER BOUND when even that is
+    absent -- and `verdict_pass` is a HARD NON-VERDICT (`_DEGRADED_VERDICT`,
+    never `True`/`False`), because the IPOPT/`.sol`-parse split within the
+    remainder is unknown and D3 showed that guessing its classification is
+    exactly the defect being fixed. `nl_write_share_is_upper_bound` reports
+    which mode was used.
+
+    `x_threshold`: REQUIRED, no default (Planner decision, P5.15 Step 3.6
+    follow-up: Addendum 20's X=70% is an interim screening figure -- "the
+    measurement sets the real one" -- so a caller must state the threshold
+    it is screening against explicitly; there is no silent fallback value).
 
     `records`: the recorder's raw records PLUS `derive_param_update_and_bookkeeping`'s
     derived records (caller concatenates; kept as two functions so a caller can
@@ -759,62 +879,43 @@ def analyze_phase_timing(records, x_threshold, production_iter_wall_by_cycle=Non
     When not given, `unattributed` is reported as None for every cycle (not
     fabricated as 0).
 
-    `nl_write_seconds`: optional {(cycle, agent, block-tuple, attempt): seconds},
-    the NL-write (b) share of `solve_bundle`, ONLY obtainable from parsing
-    Pyomo's own `report_timing=True` stdout for a run where
-    `recorder_installed(..., inject_report_timing=True)` was used (design
-    §2.5's one-off cross-check). When not given, `overhead_local`'s NL-write
-    share is reported as an explicit UPPER BOUND equal to the FULL
-    `solve_bundle` time (documented, not silently substituted) and the report
-    dict's `'nl_write_share_is_upper_bound'` flag is True.
+    `solve_bundle_subtimes`: optional `{seq: {'nl_write': s, 'ipopt': s,
+    'sol_parse': s}}`, keyed by the RAW `solve_bundle` record's own `seq`
+    (never `None` -- only live-wrapped records carry a real `seq`). Produced
+    by parsing Pyomo's `report_timing=True` stdout 1:1, in call order,
+    against the `solve_bundle` records sorted by `seq` (see
+    `p515_s36_step36_timing_reanalyze.py::parse_report_timing_subtimes`).
 
-    ---- design §5 formulas, reproduced exactly ----
-
-    overhead_local = param_update + clone (only where it fires) +
-                     [NL-write share of solve_bundle] + load_solution +
-                     bookkeeping + diagnostics_parse
-
-    overhead_serial = admm_global + unattributed +
-                       [solve_bundle - NL-write share] (the IPOPT-subprocess +
-                       .sol-parse remainder of solve_bundle; this remainder is
-                       itself parallelized separately, by the LPT partition
-                       below, and is NOT double counted into overhead_serial's
-                       reported total -- see `speedup_projection` below, which
-                       is the only place solve_bundle's non-NL-write remainder
-                       actually enters the Amdahl calculation)
-
-    verdict:  overhead_local_total / (overhead_local_total + overhead_serial_total) >= x_threshold
-              (Addendum 20: X = 70% interim, "the measurement sets the real one")
-              -- EXCEPT: Planner decision (P5.15 Step 3.6 follow-up, item 2) -- this is a
-              HARD NON-VERDICT, not a PASS/FAIL, whenever `nl_write_share_is_upper_bound`
-              is True (i.e. the Pyomo `report_timing` cross-check produced no NL-write
-              sub-times, so `overhead_local`'s NL-write share is only an upper bound, not
-              a measured value). In that case `verdict_pass` is the literal string
-              `_DEGRADED_VERDICT` ('INDETERMINATE (NL-write share not separated)') --
-              never `True`/`False` -- even though `verdict_ratio` is still computed and
-              reported (it is informative, just not decisive). All other tables
-              (`per_phase_by_agent`, the overhead component breakdowns, the Amdahl
-              projection) are still written in full; only the verdict itself is
-              downgraded to a non-verdict.
+    `nl_write_seconds`: optional aggregate `{...: seconds}` map (summed),
+    ONLY consulted in the degraded fallback path described above (kept for
+    backward compatibility with the v1 caller's call signature).
 
     Amdahl projection (design §5, `speedup(W) = 1 / (f_serial + (1 - f_serial)/W)`):
         f_serial = (overhead_serial_total + sum_over_agents(lpt_partition(
-                       that agent's per-block solve_bundle-IPOPT-remainder
-                       durations, W))) / wall
+                       that agent's per-block MEASURED IPOPT durations, W)))
+                   / wall_total
         speedup(W) = 1 / (f_serial + (1 - f_serial) / W)
-      where `wall` = sum over sampled cycles of production_iter_wall (if given)
-      else the recorder's own reconstructed per-cycle span sum.
+      (degraded fallback: LPT runs on the solve_bundle-minus-NL-write
+      remainder, exactly as v1 did, since no separate IPOPT figure exists.)
 
     Returns a dict with 'per_phase_by_agent' (median/mean/max/sum, PER SAMPLED
     CYCLE INDIVIDUALLY -- design §5: "report both cycles individually rather
     than a median, since 2 points do not support a robust median" -- plus an
     aggregate across all sampled cycles for convenience, clearly labeled),
-    'overhead_local_total', 'overhead_serial_total', 'x_threshold', 'verdict',
-    'wall_total', 'f_serial', f'speedup_at_{projection_workers}',
-    'nl_write_share_is_upper_bound', 'per_cycle_unattributed'.
+    'overhead_local_total', 'overhead_serial_total', 'overhead_total',
+    'x_threshold', 'verdict_pass', 'wall_total', 'ipopt_total', 'f_serial',
+    f'speedup_at_{projection_workers}', 'nl_write_share_is_upper_bound',
+    'per_cycle_unattributed', 'initialization_totals', 'recovery_totals'.
     """
     nl_write_seconds = nl_write_seconds or {}
+    solve_bundle_subtimes = solve_bundle_subtimes or {}
     cycles = sorted({r['cycle'] for r in records if r['cycle'] is not None})
+
+    # D2: restrict every total/table below to records tagged with a SAMPLED
+    # cycle; report the excluded (cycle is None, i.e. pre-loop initialization)
+    # records separately, never silently.
+    in_scope = [r for r in records if r['cycle'] in cycles]
+    init_records = [r for r in records if r['cycle'] is None]
 
     per_phase_by_agent = {}
     for agent in ('dso', 'tso', 'esso', 'admm_global'):
@@ -822,19 +923,38 @@ def analyze_phase_timing(records, x_threshold, production_iter_wall_by_cycle=Non
         for phase in PHASES:
             if phase == 'unattributed':
                 continue
-            values = [r['elapsed_s'] for r in records if r['agent'] == agent and r['phase'] == phase]
+            values = [r['elapsed_s'] for r in in_scope if r['agent'] == agent and r['phase'] == phase]
             per_phase_by_agent[agent][phase] = _stats(values)
             per_phase_by_agent[agent][phase]['per_cycle'] = {
-                cycle: _stats([r['elapsed_s'] for r in records
+                cycle: _stats([r['elapsed_s'] for r in in_scope
                                if r['agent'] == agent and r['phase'] == phase and r['cycle'] == cycle])
                 for cycle in cycles
             }
 
+    # ---- initialization_totals (cycle is None -- pre-ADMM-loop solves) ----
+    initialization_totals = {}
+    for agent in ('dso', 'tso', 'esso'):
+        initialization_totals[agent] = {
+            phase: _stats([r['elapsed_s'] for r in init_records
+                           if r['agent'] == agent and r['phase'] == phase])
+            for phase in PHASES if phase != 'unattributed'
+        }
+
+    # ---- recovery_totals (attempt != primary/n/a, WITHIN a sampled cycle) ----
+    recovery_totals = {}
+    for agent in ('dso', 'tso', 'esso'):
+        recovery_totals[agent] = {
+            phase: _stats([r['elapsed_s'] for r in in_scope
+                           if r['agent'] == agent and r['phase'] == phase
+                           and r['attempt'] in (_ATTEMPT_TIER1, _ATTEMPT_TIER2)])
+            for phase in ('solve_bundle', 'load_solution')
+        }
+
     # ---- recorder-reconstructed per-cycle span, and unattributed ----
     per_cycle_span = {}
     for cycle in cycles:
-        starts = [r['start_perf'] for r in records if r['cycle'] == cycle and r['start_perf'] is not None]
-        ends = [r['end_perf'] for r in records if r['cycle'] == cycle and r['end_perf'] is not None]
+        starts = [r['start_perf'] for r in in_scope if r['cycle'] == cycle and r['start_perf'] is not None]
+        ends = [r['end_perf'] for r in in_scope if r['cycle'] == cycle and r['end_perf'] is not None]
         per_cycle_span[cycle] = (max(ends) - min(starts)) if starts and ends else None
 
     per_cycle_unattributed = {}
@@ -846,58 +966,79 @@ def analyze_phase_timing(records, x_threshold, production_iter_wall_by_cycle=Non
         else:
             per_cycle_unattributed[cycle] = None
 
-    # ---- overhead_local / overhead_serial totals ----
-    def _sum_phase(agent, phase):
-        return sum(r['elapsed_s'] for r in records if r['agent'] == agent and r['phase'] == phase)
-
-    solve_bundle_total = sum(r['elapsed_s'] for r in records if r['phase'] == 'solve_bundle')
-    nl_write_total = sum(nl_write_seconds.values()) if nl_write_seconds else solve_bundle_total
-    nl_write_is_upper_bound = not bool(nl_write_seconds)
-    solve_bundle_remainder_total = max(solve_bundle_total - nl_write_total, 0.0)
-
-    param_update_total = sum(r['elapsed_s'] for r in records if r['phase'] == 'param_update')
-    clone_total = sum(r['elapsed_s'] for r in records if r['phase'] == 'clone')
-    load_solution_total = sum(r['elapsed_s'] for r in records if r['phase'] == 'load_solution')
-    bookkeeping_total = sum(r['elapsed_s'] for r in records if r['phase'] == 'bookkeeping')
-    diagnostics_parse_total = sum(r['elapsed_s'] for r in records if r['phase'] == 'diagnostics_parse')
-    admm_global_total = sum(r['elapsed_s'] for r in records if r['phase'] == 'admm_global')
-    unattributed_total = sum(v for v in per_cycle_unattributed.values() if v is not None)
-
-    overhead_local_total = (param_update_total + clone_total + nl_write_total
-                             + load_solution_total + bookkeeping_total + diagnostics_parse_total)
-    overhead_serial_total = admm_global_total + unattributed_total + solve_bundle_remainder_total
-
-    denom = overhead_local_total + overhead_serial_total
-    verdict_ratio = (overhead_local_total / denom) if denom else None
-    if nl_write_is_upper_bound:
-        # Planner decision (P5.15 Step 3.6 follow-up, item 2): a hard non-verdict --
-        # never PASS/FAIL -- when the NL-write share was not actually separated out
-        # (report_timing cross-check produced no sub-times). verdict_ratio is still
-        # reported above; it is informative, just not decisive.
-        verdict = _DEGRADED_VERDICT
-    else:
-        verdict = (verdict_ratio is not None) and (verdict_ratio >= x_threshold)
-
-    # ---- Amdahl projection ----
+    # ---- wall_total (cycle-scoped, computed before overhead so D3's
+    #      overhead_total = wall_total - ipopt_total can use it) ----
     wall_total = None
     if production_iter_wall_by_cycle:
         wall_total = sum(production_iter_wall_by_cycle.get(c, 0.0) for c in cycles)
     elif all(v is not None for v in per_cycle_span.values()) and per_cycle_span:
         wall_total = sum(per_cycle_span.values())
 
+    # ---- D3: solve_bundle b/c/d1 split ----
+    sb_in_scope = [r for r in in_scope if r['phase'] == 'solve_bundle']
+    sb_seqs = {r['seq'] for r in sb_in_scope}
+    fully_covered = bool(sb_seqs) and sb_seqs.issubset(solve_bundle_subtimes.keys())
+
+    param_update_total = sum(r['elapsed_s'] for r in in_scope if r['phase'] == 'param_update')
+    clone_total = sum(r['elapsed_s'] for r in in_scope if r['phase'] == 'clone')
+    load_solution_total = sum(r['elapsed_s'] for r in in_scope if r['phase'] == 'load_solution')
+    bookkeeping_total = sum(r['elapsed_s'] for r in in_scope if r['phase'] == 'bookkeeping')
+    diagnostics_parse_total = sum(r['elapsed_s'] for r in in_scope if r['phase'] == 'diagnostics_parse')
+    admm_global_total = sum(r['elapsed_s'] for r in in_scope if r['phase'] == 'admm_global')
+    unattributed_total = sum(v for v in per_cycle_unattributed.values() if v is not None)
+    solve_bundle_total = sum(r['elapsed_s'] for r in sb_in_scope)
+
+    if fully_covered:
+        nl_write_is_upper_bound = False
+        nl_write_total = sum(solve_bundle_subtimes[r['seq']]['nl_write'] for r in sb_in_scope)
+        ipopt_total = sum(solve_bundle_subtimes[r['seq']]['ipopt'] for r in sb_in_scope)
+        sol_parse_total = sum(solve_bundle_subtimes[r['seq']]['sol_parse'] for r in sb_in_scope)
+        glue_total = sum(
+            max(r['elapsed_s'] - sum(solve_bundle_subtimes[r['seq']].values()), 0.0)
+            for r in sb_in_scope)
+        overhead_local_total = (param_update_total + clone_total + nl_write_total
+                                 + load_solution_total + bookkeeping_total
+                                 + diagnostics_parse_total + sol_parse_total + glue_total)
+        overhead_serial_total = admm_global_total + unattributed_total
+        overhead_total = overhead_local_total + overhead_serial_total
+        overhead_total_cross_check = (wall_total - ipopt_total) if wall_total is not None else None
+        solve_bundle_remainder_total = None  # superseded by the sol_parse/ipopt split below
+    else:
+        # Degraded fallback -- v1's aggregate-only classification, kept for
+        # when a per-record report_timing cross-check is unavailable.
+        nl_write_total = sum(nl_write_seconds.values()) if nl_write_seconds else solve_bundle_total
+        nl_write_is_upper_bound = not bool(nl_write_seconds)
+        ipopt_total = None
+        sol_parse_total = None
+        glue_total = None
+        solve_bundle_remainder_total = max(solve_bundle_total - nl_write_total, 0.0)
+        overhead_local_total = (param_update_total + clone_total + nl_write_total
+                                 + load_solution_total + bookkeeping_total + diagnostics_parse_total)
+        overhead_serial_total = admm_global_total + unattributed_total + solve_bundle_remainder_total
+        overhead_total = overhead_local_total + overhead_serial_total
+        overhead_total_cross_check = None
+
+    denom = overhead_total
+    verdict_ratio = (overhead_local_total / denom) if denom else None
+    if nl_write_is_upper_bound or not fully_covered:
+        # Hard non-verdict (Addendum 20 item 2, extended by D3's own finding:
+        # a verdict is only decisive once solve_bundle's b/c/d1 split -- not
+        # only its NL-write share -- is actually measured, not guessed).
+        verdict = _DEGRADED_VERDICT
+    else:
+        verdict = (verdict_ratio is not None) and (verdict_ratio >= x_threshold)
+
+    # ---- Amdahl projection ----
     lpt_residual_total = 0.0
     for agent in ('dso', 'tso', 'esso'):
-        durations = [r['elapsed_s'] for r in records
-                     if r['agent'] == agent and r['phase'] == 'solve_bundle']
-        # Subtract this agent's share of the NL-write time proportionally if
-        # a per-record NL-write map was given; otherwise the LPT partition
-        # runs on the FULL solve_bundle duration for that agent (a
-        # conservative/pessimistic choice matching
-        # WORKER_REPORT_S36_PARALLEL_AUDIT.md's own pessimistic bound when
-        # nl_write_seconds is absent).
-        if nl_write_seconds:
-            durations = [max(d - (sum(nl_write_seconds.values()) / max(len(durations), 1)), 0.0)
-                         for d in durations]
+        agent_sb = [r for r in sb_in_scope if r['agent'] == agent]
+        if fully_covered:
+            durations = [solve_bundle_subtimes[r['seq']]['ipopt'] for r in agent_sb]
+        else:
+            durations = [r['elapsed_s'] for r in agent_sb]
+            if nl_write_seconds:
+                durations = [max(d - (sum(nl_write_seconds.values()) / max(len(durations), 1)), 0.0)
+                             for d in durations]
         if durations:
             lpt_residual_total += lpt_partition(durations, projection_workers)
 
@@ -910,21 +1051,30 @@ def analyze_phase_timing(records, x_threshold, production_iter_wall_by_cycle=Non
 
     return {
         'per_phase_by_agent': per_phase_by_agent,
+        'initialization_totals': initialization_totals,
+        'recovery_totals': recovery_totals,
         'per_cycle_unattributed': per_cycle_unattributed,
         'per_cycle_span': per_cycle_span,
         'overhead_local_total': overhead_local_total,
         'overhead_serial_total': overhead_serial_total,
+        'overhead_total': overhead_total,
+        'overhead_total_cross_check_(wall_minus_ipopt)': overhead_total_cross_check,
         'overhead_local_components': {
             'param_update': param_update_total, 'clone': clone_total,
             'nl_write_share_of_solve_bundle': nl_write_total,
             'load_solution': load_solution_total, 'bookkeeping': bookkeeping_total,
             'diagnostics_parse': diagnostics_parse_total,
+            'sol_parse_share_of_solve_bundle': sol_parse_total,
+            'solve_bundle_glue': glue_total,
         },
         'overhead_serial_components': {
             'admm_global': admm_global_total, 'unattributed': unattributed_total,
-            'solve_bundle_remainder_(ipopt_plus_sol_parse)': solve_bundle_remainder_total,
+            'solve_bundle_remainder_(ipopt_plus_sol_parse)_degraded_only': solve_bundle_remainder_total,
         },
+        'ipopt_total': ipopt_total,
+        'solve_bundle_total': solve_bundle_total,
         'nl_write_share_is_upper_bound': nl_write_is_upper_bound,
+        'solve_bundle_subtimes_fully_covered': fully_covered,
         'x_threshold': x_threshold,
         'verdict_ratio': verdict_ratio,
         'verdict_pass': verdict,

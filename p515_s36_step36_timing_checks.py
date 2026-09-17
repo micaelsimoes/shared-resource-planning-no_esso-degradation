@@ -32,18 +32,33 @@ script, `verify(expected_solves=0, expected_execs=0)` at the end):
      (`p515_s36_step36_timing_run._check_preconditions`) refuses when a
      LISTED file is dirty -- simulated by stubbing the git-status subprocess
      call only, never by dirtying a real file.
+  8. (P5.15 Step 3.6 Worker task, defect D1) a derived phase that computes to
+     a negative duration RAISES `ValueError` (never silently reported), AND
+     a D1 regression guard: `clone` at the same block as a correctly-nested
+     `block_total` is never subtracted from `bookkeeping`.
+  9. (defect D2) totals exclude `cycle is None` (pre-ADMM-loop
+     initialization) records; those are reported separately under
+     `initialization_totals`.
+ 10. (defect D3) `solve_bundle_subtimes` (per-seq {nl_write, ipopt,
+     sol_parse}) produces a DETERMINATE verdict (plain bool) and
+     `overhead_total == wall_total - ipopt_total`; PARTIAL coverage still
+     falls back to the degraded indeterminate path (never a partial
+     verdict).
 
 Output directory: `data/SRP1/Results/P515S36/step36_timing/zero_solve_checks/`
 by default, overridable via the `P515_S36_CHECKS_OUT_DIR` environment
-variable (used for the follow-up re-run so the original, committed
-`zero_solve_checks/` directory is never overwritten) -- refuses to run if the
-selected directory already exists -- `results.json` plus a sha256 manifest.
+variable (used for the follow-up re-runs so the original, committed
+`zero_solve_checks/`/`zero_solve_checks_v2/` directories are never
+overwritten) -- refuses to run if the selected directory already exists --
+`results.json` plus a sha256 manifest.
 
 Usage (original run, still reproducible):
     /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p515_s36_step36_timing_checks.py
 
-Usage (follow-up re-run, item 5 -- writes to a NEW directory):
+Usage (follow-up re-runs -- write to a NEW directory each time):
     P515_S36_CHECKS_OUT_DIR=data/SRP1/Results/P515S36/step36_timing/zero_solve_checks_v2 \\
+        /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p515_s36_step36_timing_checks.py
+    P515_S36_CHECKS_OUT_DIR=data/SRP1/Results/P515S36/step36_timing/zero_solve_checks_v3 \\
         /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p515_s36_step36_timing_checks.py
 """
 
@@ -685,18 +700,28 @@ def main():
         _check('C7_degraded_mode_verdict_is_indeterminate_via_run_helper',
                R.verdict_is_indeterminate(degraded_analysis) is True)
 
-        # Non-degraded: supply an explicit (toy, non-zero) NL-write sub-time
-        # so nl_write_share_is_upper_bound is False.
-        determined_analysis = T.analyze_phase_timing(
+        # P5.15 Step 3.6 Worker task (defect D3) CORRECTION: an aggregate-only
+        # `nl_write_seconds` (no per-record `solve_bundle_subtimes`) makes
+        # `nl_write_share_is_upper_bound` False, but is STILL indeterminate --
+        # D3 showed that knowing the NL-write share ALONE is not enough to
+        # classify the rest of `solve_bundle` (the v1 defect was putting the
+        # UNKNOWN ipopt+sol_parse remainder entirely into overhead_serial).
+        # A determinate verdict now requires the FULL per-record b/c/d1 split
+        # (`solve_bundle_subtimes`, exercised in Check 11) -- this check was
+        # originally written expecting aggregate-only NL-write to be
+        # sufficient; that expectation was itself part of the pre-D3-fix
+        # picture and is corrected here, not merely re-asserted.
+        aggregate_nl_write_analysis = T.analyze_phase_timing(
             all_records, x_threshold=0.70, production_iter_wall_by_cycle={1: 1.100},
             projection_workers=2, nl_write_seconds={'aggregate': 0.20})
-        _check('C7_determined_mode_nl_write_share_not_flagged_as_upper_bound',
-               determined_analysis['nl_write_share_is_upper_bound'] is False)
-        _check('C7_determined_mode_verdict_pass_is_a_plain_bool',
-               isinstance(determined_analysis['verdict_pass'], bool),
-               determined_analysis['verdict_pass'])
-        _check('C7_determined_mode_verdict_is_not_indeterminate_via_run_helper',
-               R.verdict_is_indeterminate(determined_analysis) is False)
+        _check('C7_aggregate_nl_write_alone_sets_upper_bound_flag_false',
+               aggregate_nl_write_analysis['nl_write_share_is_upper_bound'] is False)
+        _check('C7_D3_aggregate_nl_write_alone_is_STILL_indeterminate_without_solve_bundle_subtimes',
+               aggregate_nl_write_analysis['verdict_pass'] == 'INDETERMINATE (NL-write share not separated)'
+               and aggregate_nl_write_analysis['solve_bundle_subtimes_fully_covered'] is False,
+               aggregate_nl_write_analysis['verdict_pass'])
+        _check('C7_D3_aggregate_nl_write_alone_indeterminate_via_run_helper',
+               R.verdict_is_indeterminate(aggregate_nl_write_analysis) is True)
 
         # Sanity: the helper itself, on synthetic dicts, with no analyze_phase_timing
         # call at all (isolates the helper's own logic from the analysis function).
@@ -741,6 +766,154 @@ def main():
         # i.e. this check never leaves `subprocess.run` monkeypatched.
         _check('C8_check_preconditions_subprocess_run_restored_after_stub_removed',
                R.subprocess.run is _real_subprocess_run)
+
+        # =================================================================
+        # CHECK 9 (P5.15 Step 3.6 Worker task, defect D1) -- a derived phase
+        # that computes to a negative duration RAISES `ValueError`, never
+        # silently reports the negative value. Two toy examples:
+        #   (a) a nesting-defect toy (`block_total` shorter than the
+        #       `solve_bundle` it is supposed to enclose) -- must raise.
+        #   (b) the SAME toy structurally, but with `clone` ALSO present at
+        #       the same block, VALID (block_total properly encloses
+        #       solve_bundle+load_solution; clone is a sibling, per the D1
+        #       fix) -- must NOT raise, and `clone` must NOT appear anywhere
+        #       in the bookkeeping subtraction (regression guard for D1
+        #       itself: the exact defect that produced -8.37 s in v1).
+        # =================================================================
+        toy_negative = [
+            {'seq': 1, 'cycle': 1, 'agent': 'dso', 'block': {'kind': 'dso', 'name': 'nX', 'year': 2025, 'day': 'Summer'},
+             'phase': 'block_total', 'attempt': 'n/a', 'start_perf': 0.0, 'end_perf': 0.1, 'elapsed_s': 0.1},
+            {'seq': 2, 'cycle': 1, 'agent': 'dso', 'block': {'kind': 'dso', 'name': 'nX', 'year': 2025, 'day': 'Summer'},
+             'phase': 'solve_bundle', 'attempt': 'primary', 'start_perf': 0.0, 'end_perf': 0.3, 'elapsed_s': 0.3},
+        ]
+        raised_on_negative = False
+        negative_error_detail = None
+        try:
+            T.derive_param_update_and_bookkeeping(toy_negative)
+        except ValueError as error:
+            raised_on_negative = True
+            negative_error_detail = str(error)
+        _check('C9_derive_raises_valueerror_on_negative_bookkeeping',
+               raised_on_negative, negative_error_detail)
+
+        # (b) D1 regression guard: clone present at the SAME block as a
+        # correctly-nested block_total must NOT be subtracted -- bookkeeping
+        # = block_total - solve_bundle - load_solution (clone excluded).
+        #   block_total: 0.500 (n5), solve_bundle 0.300, load_solution 0.050,
+        #   clone 0.180 (a SIBLING event, timestamps outside block_total's
+        #   own span, exactly as network_data.py:61 vs :62-63) ->
+        #   bookkeeping = 0.500 - 0.300 - 0.050 = 0.150 (clone NEVER
+        #   subtracted; if it were, this would be 0.150 - 0.180 = -0.030,
+        #   which per Check 9(a)'s own contract would raise).
+        toy_clone_sibling = [
+            {'seq': 1, 'cycle': 1, 'agent': 'dso', 'block': {'kind': 'dso', 'name': 'n5', 'year': 2025, 'day': 'Summer'},
+             'phase': 'clone', 'attempt': 'n/a', 'start_perf': 0.000, 'end_perf': 0.180, 'elapsed_s': 0.180},
+            {'seq': 2, 'cycle': 1, 'agent': 'dso', 'block': {'kind': 'dso', 'name': 'n5', 'year': 2025, 'day': 'Summer'},
+             'phase': 'block_total', 'attempt': 'n/a', 'start_perf': 0.200, 'end_perf': 0.700, 'elapsed_s': 0.500},
+            {'seq': 3, 'cycle': 1, 'agent': 'dso', 'block': {'kind': 'dso', 'name': 'n5', 'year': 2025, 'day': 'Summer'},
+             'phase': 'solve_bundle', 'attempt': 'primary', 'start_perf': 0.300, 'end_perf': 0.600, 'elapsed_s': 0.300},
+            {'seq': 4, 'cycle': 1, 'agent': 'dso', 'block': {'kind': 'dso', 'name': 'n5', 'year': 2025, 'day': 'Summer'},
+             'phase': 'load_solution', 'attempt': 'primary', 'start_perf': 0.600, 'end_perf': 0.650, 'elapsed_s': 0.050},
+        ]
+        derived_clone_sibling = T.derive_param_update_and_bookkeeping(toy_clone_sibling)
+        bk_clone_sibling = [d['elapsed_s'] for d in derived_clone_sibling if d['phase'] == 'bookkeeping']
+        _check('C9_D1_regression_clone_is_never_subtracted_from_bookkeeping',
+               len(bk_clone_sibling) == 1 and round(bk_clone_sibling[0], 6) == 0.150,
+               bk_clone_sibling)
+
+        # =================================================================
+        # CHECK 10 (P5.15 Step 3.6 Worker task, defect D2) -- totals exclude
+        # `cycle is None` (pre-ADMM-loop initialization) records; those are
+        # reported separately under `initialization_totals`, never silently
+        # mixed into the sampled-cycle totals.
+        # =================================================================
+        toy_cycle1 = [
+            {'seq': 10, 'cycle': 1, 'agent': 'dso', 'block': {'kind': 'dso'}, 'phase': 'stage_total',
+             'attempt': 'n/a', 'start_perf': 0.000, 'end_perf': 1.000, 'elapsed_s': 1.000},
+            {'seq': 11, 'cycle': 1, 'agent': 'dso', 'block': {'kind': 'dso', 'name': 'n5', 'year': 2025, 'day': 'Summer'},
+             'phase': 'block_total', 'attempt': 'n/a', 'start_perf': 0.200, 'end_perf': 0.700, 'elapsed_s': 0.500},
+            {'seq': 12, 'cycle': 1, 'agent': 'dso', 'block': {'kind': 'dso', 'name': 'n5', 'year': 2025, 'day': 'Summer'},
+             'phase': 'solve_bundle', 'attempt': 'primary', 'start_perf': 0.300, 'end_perf': 0.600, 'elapsed_s': 0.300},
+            {'seq': 13, 'cycle': 1, 'agent': 'dso', 'block': {'kind': 'dso', 'name': 'n5', 'year': 2025, 'day': 'Summer'},
+             'phase': 'load_solution', 'attempt': 'primary', 'start_perf': 0.600, 'end_perf': 0.650, 'elapsed_s': 0.050},
+        ]
+        toy_init = [
+            {'seq': 1, 'cycle': None, 'agent': 'dso', 'block': {'kind': 'dso', 'name': 'n_init', 'year': 2025, 'day': 'Summer'},
+             'phase': 'block_total', 'attempt': 'n/a', 'start_perf': 0.0, 'end_perf': 0.4, 'elapsed_s': 0.4},
+            {'seq': 2, 'cycle': None, 'agent': 'dso', 'block': {'kind': 'dso', 'name': 'n_init', 'year': 2025, 'day': 'Summer'},
+             'phase': 'solve_bundle', 'attempt': 'primary', 'start_perf': 0.0, 'end_perf': 0.3, 'elapsed_s': 0.3},
+            {'seq': 3, 'cycle': None, 'agent': 'dso', 'block': {'kind': 'dso', 'name': 'n_init', 'year': 2025, 'day': 'Summer'},
+             'phase': 'load_solution', 'attempt': 'primary', 'start_perf': 0.3, 'end_perf': 0.35, 'elapsed_s': 0.05},
+        ]
+        toy_d2 = toy_cycle1 + toy_init
+        derived_d2 = T.derive_param_update_and_bookkeeping(toy_d2)
+        analysis_d2 = T.analyze_phase_timing(toy_d2 + derived_d2, x_threshold=0.70,
+                                             production_iter_wall_by_cycle={1: 1.100},
+                                             projection_workers=2)
+        _check('C10_solve_bundle_count_excludes_init_cycle_none_records',
+               analysis_d2['per_phase_by_agent']['dso']['solve_bundle']['count'] == 1,
+               analysis_d2['per_phase_by_agent']['dso']['solve_bundle'])
+        _check('C10_initialization_totals_captures_the_excluded_cycle_none_solve_bundle',
+               analysis_d2['initialization_totals']['dso']['solve_bundle']['count'] == 1
+               and round(analysis_d2['initialization_totals']['dso']['solve_bundle']['sum'], 6) == 0.300,
+               analysis_d2['initialization_totals']['dso']['solve_bundle'])
+        _check('C10_initialization_totals_captures_the_excluded_cycle_none_bookkeeping',
+               analysis_d2['initialization_totals']['dso']['bookkeeping']['count'] == 1
+               and round(analysis_d2['initialization_totals']['dso']['bookkeeping']['sum'], 6) == 0.050,
+               analysis_d2['initialization_totals']['dso']['bookkeeping'])
+
+        # =================================================================
+        # CHECK 11 (P5.15 Step 3.6 Worker task, defect D3) -- `solve_bundle_subtimes`
+        # (per-seq {nl_write, ipopt, sol_parse}) produces a DETERMINATE
+        # verdict (plain bool), and `overhead_total` is computed as
+        # `wall_total - ipopt_total`, cross-checked against
+        # `overhead_local_total + overhead_serial_total`.
+        #   Toy (same records as Check 5's n5/n7 solve_bundle events):
+        #     seq 3 (n5, elapsed 0.300): nl_write=0.10, ipopt=0.15, sol_parse=0.03 (glue=0.02)
+        #     seq 6 (n7, elapsed 0.150): nl_write=0.05, ipopt=0.08, sol_parse=0.01 (glue=0.01)
+        #   nl_write_total=0.15, ipopt_total=0.23, sol_parse_total=0.04, glue_total=0.03
+        #   overhead_local  = param_update(0.25) + clone(0) + nl_write(0.15)
+        #                    + load_solution(0.05) + bookkeeping(0.25)
+        #                    + diagnostics_parse(0) + sol_parse(0.04) + glue(0.03) = 0.77
+        #   overhead_serial = admm_global(0) + unattributed(0.10) = 0.10
+        #   overhead_total  = 0.87 == wall_total(1.10) - ipopt_total(0.23) = 0.87
+        #   verdict_ratio   = 0.77 / 0.87 = 0.885... >= 0.70 -> verdict_pass is True (a bool)
+        # =================================================================
+        subtimes = {3: {'nl_write': 0.10, 'ipopt': 0.15, 'sol_parse': 0.03},
+                    6: {'nl_write': 0.05, 'ipopt': 0.08, 'sol_parse': 0.01}}
+        analysis_d3 = T.analyze_phase_timing(all_records, x_threshold=0.70,
+                                             production_iter_wall_by_cycle={1: 1.100},
+                                             projection_workers=2, solve_bundle_subtimes=subtimes)
+        _check('C11_solve_bundle_subtimes_fully_covered_flag_true',
+               analysis_d3['solve_bundle_subtimes_fully_covered'] is True)
+        _check('C11_nl_write_share_not_flagged_as_upper_bound',
+               analysis_d3['nl_write_share_is_upper_bound'] is False)
+        _check('C11_overhead_local_total_matches_hand_computation',
+               round(analysis_d3['overhead_local_total'], 6) == 0.77, analysis_d3['overhead_local_total'])
+        _check('C11_overhead_serial_total_matches_hand_computation',
+               round(analysis_d3['overhead_serial_total'], 6) == 0.10, analysis_d3['overhead_serial_total'])
+        _check('C11_overhead_total_equals_wall_minus_ipopt_crosscheck',
+               round(analysis_d3['overhead_total'], 6) == 0.87
+               and round(analysis_d3['overhead_total_cross_check_(wall_minus_ipopt)'], 6) == 0.87,
+               {'overhead_total': analysis_d3['overhead_total'],
+                'cross_check': analysis_d3['overhead_total_cross_check_(wall_minus_ipopt)']})
+        _check('C11_verdict_pass_is_plain_bool_true_when_fully_covered',
+               analysis_d3['verdict_pass'] is True, analysis_d3['verdict_pass'])
+        _check('C11_ipopt_total_matches_hand_computation',
+               round(analysis_d3['ipopt_total'], 6) == 0.23, analysis_d3['ipopt_total'])
+
+        # Partial coverage (only ONE of the two solve_bundle seqs has
+        # subtimes) must NOT be treated as fully covered -- falls back to
+        # the degraded path, never silently computes a partial verdict.
+        partial_subtimes = {3: {'nl_write': 0.10, 'ipopt': 0.15, 'sol_parse': 0.03}}
+        analysis_partial = T.analyze_phase_timing(all_records, x_threshold=0.70,
+                                                   production_iter_wall_by_cycle={1: 1.100},
+                                                   projection_workers=2,
+                                                   solve_bundle_subtimes=partial_subtimes)
+        _check('C11_partial_coverage_falls_back_to_degraded_indeterminate',
+               analysis_partial['solve_bundle_subtimes_fully_covered'] is False
+               and analysis_partial['verdict_pass'] == 'INDETERMINATE (NL-write share not separated)',
+               analysis_partial['verdict_pass'])
 
         results_path = os.path.join(OUT_DIR, 'results.json')
         with open(results_path, 'w') as handle:
