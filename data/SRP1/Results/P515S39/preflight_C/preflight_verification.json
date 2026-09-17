@@ -1,0 +1,174 @@
+{
+ "stage": "P5.15 Addendum 21 (s39 preparation worker task) -- s39_C two-cycle preflight",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 21",
+  "data/SRP1/Results/P515S39/frozen_s39_oracle_spec_v10_f1b2b999.json"
+ ],
+ "label": "C",
+ "arm": "s39_C",
+ "num_cycles": 2,
+ "out_dir": "data/SRP1/Results/P515S39/preflight_C",
+ "solve_profile_identity": {
+  "base_permitted_solves": 153,
+  "n_tier1_recovered": 0,
+  "n_tier2_recovered": 0,
+  "retry_overhead": 0,
+  "expected_permitted_solves": 153,
+  "observed_permitted_solves": 153,
+  "exact": true
+ },
+ "exempt_channels": [
+  "ess"
+ ],
+ "exempt_until": {},
+ "per_cycle_channel_check": [
+  {
+   "cycle": 1,
+   "v": {
+    "rho_after": 0.011549999999999998,
+    "gamma_after": 0.0,
+    "gamma_ok": true,
+    "action": "increased",
+    "label_ok": true
+   },
+   "pf": {
+    "rho_after": 0.1980000000000002,
+    "gamma_after": 0.0,
+    "gamma_ok": true,
+    "action": "held",
+    "label_ok": true
+   },
+   "ess": {
+    "rho_after": 0.010000000000000004,
+    "gamma_after": 0.0,
+    "gamma_ok": true,
+    "action": "exempt (fixed)",
+    "label_ok": true
+   },
+   "required_consecutive_cycles": 10,
+   "min_consecutive_ok": true
+  },
+  {
+   "cycle": 2,
+   "v": {
+    "rho_after": 0.01732500000000001,
+    "gamma_after": 0.0,
+    "gamma_ok": true,
+    "action": "increased",
+    "label_ok": true
+   },
+   "pf": {
+    "rho_after": 0.13199999999999992,
+    "gamma_after": 0.0,
+    "gamma_ok": true,
+    "action": "decreased",
+    "label_ok": true
+   },
+   "ess": {
+    "rho_after": 0.010000000000000004,
+    "gamma_after": 0.0,
+    "gamma_ok": true,
+    "action": "exempt (fixed)",
+    "label_ok": true
+   },
+   "required_consecutive_cycles": 10,
+   "min_consecutive_ok": true
+  }
+ ],
+ "all_gamma_zero": true,
+ "all_action_labels_correct": true,
+ "all_min_consecutive_converged_cycles_10": true,
+ "exempt_until_sidecar_check": null,
+ "exempt_until_not_lifted_ok": true,
+ "pf_capture_identity_per_cycle": [
+  {
+   "cycle": 1,
+   "identity_holds": true,
+   "rel_err_r": 2.6716801065859524e-16,
+   "rel_err_s": 0.0,
+   "n_entries": 1728
+  },
+  {
+   "cycle": 2,
+   "identity_holds": true,
+   "rel_err_r": 0.0,
+   "rel_err_s": 0.0,
+   "n_entries": 1728
+  }
+ ],
+ "pf_capture_identity_all_hold": true,
+ "pf_entry_stride_path": "data/SRP1/Results/P515S39/preflight_C/pf_entry_stride_s39_C.jsonl",
+ "capture_paths_populated": {
+  "recourse_jump_sidecar": true,
+  "ess_entry_stride_sidecar": true,
+  "soh_floor_sidecar": true,
+  "pf_entry_stride_sidecar": true,
+  "ess_exempt_until_state_sidecar": true,
+  "boyd_terminal": true,
+  "g_baseline": true,
+  "interface_voltage_terminal": true,
+  "interface_settlement_detail": true,
+  "component_levels_terminal": true,
+  "esso_models_pickle": true
+ },
+ "all_capture_paths_populated": true,
+ "evaluator_dry_run_return_code": 0,
+ "bitwise_vs_v9_arm_a": {
+  "reference_path": "data/SRP1/Results/P515S38_A_TAU0_run/g_s38_A_tau0.json",
+  "excluded_fields": [
+   "balancing_exempt_ess",
+   "balancing_exempt_pf",
+   "required_consecutive_cycles",
+   "rho_pf_action"
+  ],
+  "per_cycle": {
+   "1": {
+    "n_fields_compared": 192,
+    "n_mismatches": 2,
+    "match": false,
+    "mismatches": {
+     "rho_frozen_pf": {
+      "this_arm": false,
+      "v9_arm_A": true
+     },
+     "rho_unchanged_streak_pf": {
+      "this_arm": 1,
+      "v9_arm_A": 0
+     }
+    }
+   },
+   "2": {
+    "n_fields_compared": 192,
+    "n_mismatches": 2,
+    "match": false,
+    "mismatches": {
+     "rho_frozen_pf": {
+      "this_arm": false,
+      "v9_arm_A": true
+     },
+     "rho_pf_after": {
+      "this_arm": 0.13199999999999992,
+      "v9_arm_A": 0.1980000000000002
+     }
+    }
+   }
+  },
+  "all_match": false
+ },
+ "network_failures_summary": {
+  "n_blocks": 0,
+  "classes": {
+   "recovered_tier1": 0,
+   "recovered_tier2": 0,
+   "unrecovered": 0,
+   "not_attempted": 0,
+   "indeterminate": 0,
+   "recovered": 0
+  },
+  "n_frozen_snapshots": 0,
+  "n_esso_recovery_events": 0,
+  "path": "data/SRP1/Results/P515S39/preflight_C/network_failures_s39_C.jsonl"
+ },
+ "local_solve_failures": 0,
+ "wall_clock_s": 96.19325304031372
+}
