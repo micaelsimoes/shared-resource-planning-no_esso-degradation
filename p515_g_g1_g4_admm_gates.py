@@ -4532,6 +4532,403 @@ def s35ref_replay_bitwise_identity_check(rows, report):
     return {'passed': True, 'n_cycles_compared': len(rows)}
 
 
+# ===========================================================================
+# P5.15 Addendum 19 -- s37 arms (`s37_rho0p01`, `s37_rho0p001`), the rho_ess
+# experiment. Frozen spec v8,
+# data/SRP1/Results/P515S37/frozen_s37_rho_ess_spec_v8_f91de983.json.
+# Predecessor: run 1 (s35ref, frozen spec v5). Supersedes NOTHING -- s35ref,
+# s35pt and s35ref_replay above are UNCHANGED. Run 1's OWN configuration is
+# applied through DEEP-COPIED parameter overrides on a freshly-constructed
+# planning object (`_s37_configure_hook` below), NEVER by editing the case
+# file: `shared_ess_initialization='standalone'` (mirrors
+# `_s35ref_replay_force_standalone_hook`), rho_v=0.0077 / rho_pf=0.198
+# (unchanged from run 1, reapplied via `p59_rho.apply_rho_to_params` for
+# explicitness even though the case file already carries these values), and
+# rho_ess FIXED at the arm value (0.01 or 0.001) on every network AND the
+# ESSO (the SAME override function's 'ess' group iterates every key of
+# `admm.rho['ess']`, which includes 'esso' -- see `SRP1_params.json`). The
+# ONE mechanism difference from run 1: `admm.penalty_update.
+# balancing_exempt_channels = ['ess']` (Addendum 19 production change,
+# `shared_resources_planning._update_admm_penalties`) -- V/PF balancing
+# stays exactly as run 1 (freeze after 10 unchanged cycles with at least one
+# prior action, backstop cycle 60). Both arms share ALL of this
+# implementation; only `rho_ess` and the output root differ (`S37_ARMS`).
+#
+# Reuses UNCHANGED: `run_admm_arm`'s `pre_solve_hook`/`state`-passthrough
+# (Addendum 17 PART C), `_construct_arm_planning`, `assert_s31c_capture_
+# paths`, `_identify_soh_floor_rows`, `s35ref_capture_hooks` (recourse-jump
+# + per-entry ESS x/z at stride 1 + EFC/day per node + SoH-floor sidecars,
+# via `s34_capture_hooks`), `write_boyd_terminal_s35ref` (the SAME terminal
+# writer run 1 uses -- its `stopped_by` field is diagnostic only; the s37
+# evaluator below derives `stopped_by` from the trajectory itself, per the
+# task's explicit instruction, never from this writer's own cycle-== -last
+# comparison). `s32`, `s33e2`, `s34`, `s35ref`, `s35pt`, `s35ref_replay` are
+# untouched.
+# ===========================================================================
+
+S37_SPEC_PATH = os.path.join(
+    REPO, 'data', 'SRP1', 'Results', 'P515S37', 'frozen_s37_rho_ess_spec_v8_f91de983.json')
+S37_SPEC_SHA256 = 'f91de9836d279a08767b7d84a5ca7e37cdc7e7a3fa05a240be6e713910714e72'
+S37_CAP = 150
+S37_REL = S35REF_REL  # 1e-4, diagnostic-only objective-change tolerance, unchanged from run 1
+S37_RHO_V = 0.0077
+S37_RHO_PF = 0.198
+S37_REQUIRED_CONSECUTIVE_CYCLES = 3  # unchanged from run 1 (minimum_consecutive_converged_cycles)
+S37_STANDALONE_SOURCE = 'p515s37_override_not_case_file'
+S37_EXEMPT_SOURCE = 'p515s37_override_not_case_file'
+S37_MATCHED_CYCLES = tuple(c for c in S35REF_MATCHED_CYCLES if c <= S37_CAP)
+
+OUT_S37_RHO0P01 = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S37_RHO0P01_run')
+OUT_S37_RHO0P001 = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S37_RHO0P001_run')
+
+# Spec v8 `arms`: order 1 (0.01) launched first; order 2 (0.001) "after arm
+# 1 has exited; never concurrently" -- a Planner launch-sequencing
+# constraint (this harness's own `_acquire_exclusive_run_lock` already
+# prevents two copies of this SCRIPT from running concurrently at all;
+# documented here for the record, not re-enforced structurally beyond that).
+S37_ARMS = {
+    's37_rho0p01': {
+        'rho_ess': 0.01, 'order': 1, 'out_dir': OUT_S37_RHO0P01,
+        'eval_id': 'p515s37_rho0p01_baseline',
+        'preflight_eval_id': 'p515s37_rho0p01_preflight_capture_check',
+        'launch_condition': None,
+    },
+    's37_rho0p001': {
+        'rho_ess': 0.001, 'order': 2, 'out_dir': OUT_S37_RHO0P001,
+        'eval_id': 'p515s37_rho0p001_baseline',
+        'preflight_eval_id': 'p515s37_rho0p001_preflight_capture_check',
+        'launch_condition': 'after arm 1 has exited; never concurrently',
+    },
+}
+
+
+def _s37_spec_hash():
+    with open(S37_SPEC_PATH, 'rb') as handle:
+        return hashlib.sha256(handle.read()).hexdigest()
+
+
+def assert_s37_capture_paths(planning, rho_ess_value):
+    """Rule eleven for the s37 arms (frozen spec v8). Builds on
+    `assert_s31c_capture_paths` DIRECTLY -- NOT `assert_s35ref_capture_
+    paths`, whose own `initial_rho_v_pf_ess_matches_spec_v5` HARD-ASSERTS
+    rho_ess == 0.1125 and would therefore raise here (the s37 arms fix
+    rho_ess at 0.01/0.001 instead; v/pf are unchanged from run 1) -- the
+    SAME reason `assert_s35ref_capture_paths` itself did not reuse
+    `assert_s34_capture_paths`. The structural checks `assert_s35ref_
+    capture_paths` performs (unchanged by v8 except the rho_ess value) are
+    reproduced directly below, plus the s37-specific configuration checks:
+    rho_ess fixed at the arm value on EVERY network AND the esso, the
+    balancing exemption in force (['ess'] only), and the standalone
+    initialization override. Reuses the SAME zero-solve, pre-solve SoH
+    floor-row identification (`_identify_soh_floor_rows`) `assert_s35ref_
+    capture_paths` uses, on a throwaway probe ESSO subproblem per active
+    node. Zero solves. Returns (checklist, floor_rows_by_node)."""
+    checklist = dict(assert_s31c_capture_paths(planning))
+
+    observed_hash = _s37_spec_hash()
+    checklist['s37_spec_file_hash_matches'] = (observed_hash == S37_SPEC_SHA256)
+    checklist['s37_spec_file_hash_observed'] = observed_hash
+    checklist['s37_predecessor_spec_sha256_matches_s35ref'] = (
+        S35REF_SPEC_SHA256 == '995548ababa1b428e9bc4354a078ffd8322cc54d00f04b9ef7a694e43311c7ba')
+
+    admm_params = planning.params.admm
+
+    # -- boyd tolerance source and value (unchanged from run 1) -------------
+    checklist['boyd_eps_source_is_case_file'] = (admm_params.boyd_eps_source == 'case_file')
+    checklist['boyd_eps_abs_is_1e-5'] = (admm_params.tol['boyd']['eps_abs'] == 1e-5)
+    checklist['boyd_eps_rel_is_1e-4'] = (admm_params.tol['boyd']['eps_rel'] == 1e-4)
+
+    # -- fixed sigma (unchanged from run 1) ----------------------------------
+    checklist['objective_scale_is_93635360'] = (admm_params.objective_scale == 93635360.0)
+    checklist['objective_scale_source_is_case_file'] = (admm_params.objective_scale_source == 'case_file')
+    checklist['objective_scale_assert_factor_at_least_1'] = (admm_params.objective_scale_assert_factor >= 1.0)
+    checklist['srp_resolve_common_admm_objective_scale_callable'] = callable(
+        getattr(srp, '_resolve_common_admm_objective_scale', None))
+
+    # -- ESSO AL scaling (unchanged from run 1) ------------------------------
+    checklist['al_scale_esso_present'] = (admm_params.esso_al_scale.get('source') == 'case_file')
+    checklist['al_scale_esso_mode_is_sigma_over_median_block_weight'] = (
+        admm_params.esso_al_scale.get('mode') == 'sigma_over_median_block_weight')
+    checklist['srp_resolve_esso_al_scale_callable'] = callable(getattr(srp, '_resolve_esso_al_scale', None))
+
+    # -- S_ref (unchanged from run 1) ----------------------------------------
+    checklist['shared_ess_reference_rating_mva_is_2p5'] = (admm_params.shared_ess_reference_rating_mva == 2.5)
+    checklist['srp_admm_shared_ess_reference_mva_callable'] = callable(
+        getattr(srp, '_admm_shared_ess_reference_mva', None))
+
+    # -- initial rho: v 0.0077 / pf 0.198 UNCHANGED from run 1; ess FIXED at
+    #    the arm value on EVERY network AND the esso (the ONE rho change v8
+    #    makes) --------------------------------------------------------
+    rho_ok = (
+        all(float(v) == S37_RHO_V for v in admm_params.rho['v'].values()) and
+        all(float(v) == S37_RHO_PF for v in admm_params.rho['pf'].values()) and
+        all(float(v) == float(rho_ess_value) for v in admm_params.rho['ess'].values())
+    )
+    checklist['rho_v_pf_ess_matches_spec_v8'] = rho_ok
+    checklist['rho_ess_value_in_force'] = admm_params.rho['ess'].get('esso')
+    checklist['rho_ess_arm_value_expected'] = rho_ess_value
+    checklist['rho_ess_on_esso_present'] = ('esso' in admm_params.rho['ess'])
+    checklist['rho_snapshot'] = {group: dict(admm_params.rho[group]) for group in ('v', 'pf', 'ess')}
+
+    # -- Addendum 19 balancing exemption: ess exempt, v/pf balance exactly as
+    #    run 1 ------------------------------------------------------------
+    checklist['balancing_exempt_channels_is_ess_only'] = (
+        admm_params.penalty_update.get('balancing_exempt_channels') == ['ess'])
+    checklist['balancing_exempt_channels_source_is_override'] = (
+        getattr(admm_params, 'balancing_exempt_channels_source', None) == S37_EXEMPT_SOURCE)
+    checklist['srp_update_admm_penalties_accepts_balancing_exempt_channels_in_source'] = (
+        'balancing_exempt_channels' in inspect.getsource(srp._update_admm_penalties))
+    checklist['srp_init_admm_freeze_state_has_exempt_field'] = (
+        "'exempt': False" in inspect.getsource(srp._init_admm_freeze_state))
+
+    # -- v4 freeze policy on v/pf (unchanged from run 1) ---------------------
+    checklist['freeze_after_unchanged_cycles_is_10'] = (admm_params.penalty_update.get('freeze_after_unchanged_cycles') == 10)
+    checklist['freeze_backstop_cycle_is_60'] = (admm_params.penalty_update.get('freeze_backstop_cycle') == 60)
+    checklist['minimum_consecutive_converged_cycles_is_3'] = (
+        admm_params.minimum_consecutive_converged_cycles == S37_REQUIRED_CONSECUTIVE_CYCLES)
+    checklist['srp_update_admm_penalties_accepts_freeze_state'] = (
+        'freeze_state' in inspect.signature(srp._update_admm_penalties).parameters)
+    checklist['srp_init_admm_freeze_state_callable'] = callable(getattr(srp, '_init_admm_freeze_state', None))
+
+    # -- standalone shared-ESS initialization override (the case file now
+    #    defaults to price_taker; run 1 used standalone) ---------------------
+    checklist['shared_ess_initialization_is_standalone'] = (
+        admm_params.shared_ess_initialization == 'standalone')
+    checklist['shared_ess_initialization_source_is_override'] = (
+        admm_params.shared_ess_initialization_source == S37_STANDALONE_SOURCE)
+
+    # -- tied gamma stabiliser (unchanged from run 1) ------------------------
+    checklist['gamma_policy_is_tied_to_rho'] = (
+        admm_params.proximal_regularization['tso'].get('gamma_policy') == 'tied_to_rho')
+    checklist['gamma_tau_is_1'] = (admm_params.proximal_regularization['tso'].get('tau') == 1.0)
+    checklist['prox_gamma_v_mutable_in_source'] = (
+        'model[year][day].prox_gamma_v = pe.Param(mutable=True' in inspect.getsource(srp))
+
+    # -- per-cycle-channel / admm_diagnostics capture (unchanged from run 1,
+    #    plus the Addendum 19 balancing_exempt_* diagnostic keys) -----------
+    checklist['srp_get_admm_boyd_residual_metrics'] = callable(
+        getattr(srp, 'get_admm_boyd_residual_metrics', None))
+    boyd_fn_source = inspect.getsource(srp.get_admm_boyd_residual_metrics)
+    for field in S35REF_REPORT_PER_CYCLE_CHANNEL_FIELDS:
+        checklist[f'boyd_field_{field}_in_source'] = (f"'{field}':" in boyd_fn_source)
+
+    module_source = inspect.getsource(srp)
+    for key in S35REF_ADMM_DIAGNOSTICS_KEYS:
+        checklist[f'admm_diagnostics_key_{key}_present'] = (f"'{key}':" in module_source)
+    for key in ('balancing_exempt_v', 'balancing_exempt_pf', 'balancing_exempt_ess'):
+        checklist[f'admm_diagnostics_key_{key}_present'] = (f"'{key}':" in module_source)
+
+    checklist['srp_get_admm_efc_per_day_max_callable'] = callable(getattr(srp, '_get_admm_efc_per_day_max', None))
+    checklist['write_interface_voltage_terminal_callable'] = callable(
+        globals().get('write_interface_voltage_terminal'))
+    checklist['write_component_levels_terminal_callable'] = callable(
+        globals().get('write_component_levels_terminal'))
+    checklist['write_interface_settlement_detail_s31c_callable'] = callable(
+        globals().get('write_interface_settlement_detail_s31c'))
+
+    # -- capture_requirements (spec v8): per-entry ESS x/z at stride 1, EFC
+    #    per cycle per node, ESS action label per cycle, "everything s35ref
+    #    captured" -- verified as concrete capture paths, not merely as
+    #    intent, per the evidence rule on asserting the capture path before
+    #    executing --------------------------------------------------------
+    s34_hooks_source = inspect.getsource(s34_capture_hooks)
+    checklist['capture_per_entry_ess_x_z_stride_1_in_source'] = (
+        "'z': z_series" in s34_hooks_source and "'x': x_series" in s34_hooks_source)
+    checklist['capture_efc_per_day_per_node_in_source'] = ('efc_per_day_per_node' in s34_hooks_source)
+    checklist['capture_ess_action_label_field_rho_ess_action_present'] = (
+        'rho_ess_action' in S35REF_ADMM_DIAGNOSTICS_KEYS)
+    checklist['s34_capture_hooks_callable'] = callable(globals().get('s34_capture_hooks'))
+    checklist['s35ref_capture_hooks_callable'] = callable(globals().get('s35ref_capture_hooks'))
+    checklist['write_boyd_terminal_s35ref_callable'] = callable(globals().get('write_boyd_terminal_s35ref'))
+
+    # -- reference artifact (run 1), read by path at evaluation time, never
+    #    typed in as literal numbers -- existence only here ------------------
+    checklist['s35ref_g_baseline_reference_exists'] = os.path.exists(os.path.join(OUT_S35REF, 'g_baseline.json'))
+
+    # -- Addendum 16, decisive: SoH floor-row identification, BEFORE any solve
+    active_nodes = list(planning.shared_ess_data.active_distribution_network_nodes)
+    checklist['active_distribution_network_nodes_nonempty'] = bool(active_nodes)
+    floor_rows_by_node, floor_counts_by_node = {}, {}
+    floor_identification_error = None
+    if active_nodes:
+        try:
+            probe_esso_models = {node_id: SED._build_subproblem(planning.shared_ess_data, node_id)
+                                  for node_id in active_nodes}
+            floor_rows_by_node, floor_counts_by_node = _identify_soh_floor_rows(probe_esso_models)
+            del probe_esso_models
+        except Exception as error:
+            floor_identification_error = f'{type(error).__name__}: {error}'
+    checklist['soh_floor_rows_identified_pre_solve'] = (
+        floor_identification_error is None and bool(floor_rows_by_node)
+        and all(n > 0 for n in floor_counts_by_node.values()))
+    checklist['soh_floor_identification_error'] = floor_identification_error
+    checklist['soh_floor_row_counts_by_node'] = floor_counts_by_node
+    counts_seen = set(floor_counts_by_node.values())
+    checklist['soh_floor_row_count_uniform_across_nodes'] = (len(counts_seen) <= 1)
+
+    missing = [name for name, ok in checklist.items()
+               if isinstance(ok, bool) and not ok]
+    if missing:
+        raise RuntimeError(f'S37 capture-path pre-flight FAILED, missing/broken: {missing}')
+    return checklist, floor_rows_by_node
+
+
+def _assert_s37_overrides_in_force(planning, rho_ess_value):
+    """Lightweight, hook-local check that the Addendum 19 overrides
+    (`_s37_configure_hook`) actually took effect on THIS planning object.
+    Run from `pre_solve_hook`, i.e. AFTER `s35ref_capture_hooks`'s `with`
+    block (which wraps the WHOLE `run_admm_arm` call in `run_s37_arm`) has
+    already monkeypatched `srp.get_admm_boyd_residual_metrics` -- so this
+    deliberately does NOT re-run `assert_s37_capture_paths`'s module-source
+    inspection of that function (`inspect.getsource` would read the
+    WRAPPER's source at this point, not the original, and spuriously fail
+    the `boyd_field_*_in_source` checks -- a harness call-order artifact,
+    not a production defect). The FULL structural checklist (including
+    those source checks) is already run to completion by `run_s37_arm`'s
+    OWN throwaway precheck planning object, BEFORE this `with` block is
+    even entered -- genuinely before any solve. This second, in-hook check
+    verifies only that the override recipe took effect on the REAL run's
+    OWN planning object (the one thing the precheck, on a SEPARATE object,
+    cannot directly confirm). Raises on failure. Zero solves (planning is
+    not yet solved at this point)."""
+    admm_params = planning.params.admm
+    checks = {
+        'rho_v_is_0p0077': all(float(v) == S37_RHO_V for v in admm_params.rho['v'].values()),
+        'rho_pf_is_0p198': all(float(v) == S37_RHO_PF for v in admm_params.rho['pf'].values()),
+        'rho_ess_matches_arm_value': all(float(v) == float(rho_ess_value) for v in admm_params.rho['ess'].values()),
+        'rho_ess_on_esso_present': ('esso' in admm_params.rho['ess']),
+        'balancing_exempt_channels_is_ess_only': (
+            admm_params.penalty_update.get('balancing_exempt_channels') == ['ess']),
+        'balancing_exempt_channels_source_is_override': (
+            getattr(admm_params, 'balancing_exempt_channels_source', None) == S37_EXEMPT_SOURCE),
+        'shared_ess_initialization_is_standalone': (admm_params.shared_ess_initialization == 'standalone'),
+        'shared_ess_initialization_source_is_override': (
+            admm_params.shared_ess_initialization_source == S37_STANDALONE_SOURCE),
+    }
+    missing = [key for key, ok in checks.items() if not ok]
+    if missing:
+        raise RuntimeError(f'S37 pre-solve override verification FAILED, missing/broken: {missing}')
+    return checks
+
+
+def _s37_configure_hook(rho_ess_value):
+    """Returns a `pre_solve_hook` (see `run_admm_arm`'s docstring) for the
+    given arm's rho_ess value. Deep-copies `planning.params` (the case file
+    is NEVER touched) and applies, in order: the standalone shared-ESS
+    initialization override (mirrors `_s35ref_replay_force_standalone_
+    hook`), rho v/pf/ess via `p59_rho.apply_rho_to_params` (which iterates
+    every key of `admm.rho[group]` -- for 'ess' this includes 'esso', so
+    the ESSO's own rho is set by the SAME call, not a separate one), and
+    the Addendum 19 balancing exemption (`['ess']` only). Then runs the
+    lightweight override-in-force check (`_assert_s37_overrides_in_force`)
+    on the now-fully-configured planning object, BEFORE any solve, storing
+    it on `report` -- the FULL rule-eleven checklist
+    (`assert_s37_capture_paths`) already ran to completion, on a separate
+    throwaway planning object, in `run_s37_arm` before this hook is ever
+    reached (see `_assert_s37_overrides_in_force`'s docstring for why it is
+    not safely re-runnable here)."""
+    def hook(planning, sed, candidate, report):
+        planning.params = deepcopy(planning.params)
+        admm_params = planning.params.admm
+        admm_params.shared_ess_initialization = 'standalone'
+        admm_params.shared_ess_initialization_source = S37_STANDALONE_SOURCE
+        RH.apply_rho_to_params(planning, {'v': S37_RHO_V, 'pf': S37_RHO_PF, 'ess': float(rho_ess_value)})
+        admm_params.penalty_update['balancing_exempt_channels'] = ['ess']
+        admm_params.balancing_exempt_channels_source = S37_EXEMPT_SOURCE
+        override_checks = _assert_s37_overrides_in_force(planning, rho_ess_value)
+        report.setdefault('rule_eleven_checklist', {})['s37_pre_solve_override_verification'] = override_checks
+    return hook
+
+
+def run_s37_arm(arm_key, num_max_iters_override=None, output_root_override=None):
+    """Shared implementation for BOTH s37 arms (`s37_rho0p01`,
+    `s37_rho0p001`) -- ONLY `rho_ess` and the output root differ between
+    them (`S37_ARMS`), per the task's explicit instruction to share the
+    implementation. Mirrors the `s35ref`/`s35ref_replay` preflight pattern
+    exactly: a throwaway `O.fresh_planning` object, with the SAME
+    configuration `_s37_configure_hook` will apply to the real run's
+    planning object, is checked and discarded BEFORE the real arm is
+    constructed.
+
+    `num_max_iters_override`/`output_root_override`: smoke-test-only
+    parameters (P515S37 preflight, cap 2, its own fresh output root under
+    `data/SRP1/Results/P515S37/preflight_<arm_key>/`); default to the spec
+    v8 cap (150) and `S37_ARMS[arm_key]['out_dir']` respectively, so the
+    real, spec-compliant launch command (`python p515_g_g1_g4_admm_gates.py
+    <arm_key>`) is completely unaffected by their existence.
+
+    Returns `(report, report_path)`, exactly `run_admm_arm`'s own return
+    value (passed straight through).
+    """
+    arm_cfg = S37_ARMS[arm_key]
+    rho_ess_value = arm_cfg['rho_ess']
+    out_dir = output_root_override if output_root_override is not None else arm_cfg['out_dir']
+    cap = num_max_iters_override if num_max_iters_override is not None else S37_CAP
+
+    if N.REL != S37_REL:
+        raise RuntimeError(
+            f'p514_n_instrumented_cstar.REL ({N.REL}) no longer matches the '
+            f'frozen s37 objective-change (diagnostic) tolerance {S37_REL}; '
+            'the spec requires 1e-4.')
+    observed_spec_hash = _s37_spec_hash()
+    if observed_spec_hash != S37_SPEC_SHA256:
+        raise RuntimeError(
+            f'frozen s37 spec hash mismatch: file={observed_spec_hash} '
+            f'expected={S37_SPEC_SHA256}')
+
+    _require_fresh_output_root(out_dir)
+    preflight_eval_id = arm_cfg['preflight_eval_id']
+    preflight_eval_dir = os.path.join(O.WORK_DIR, preflight_eval_id)
+    if os.path.exists(preflight_eval_dir):
+        raise RuntimeError(
+            f'refusing to start: preflight eval dir already exists (network '
+            f'logs append): {preflight_eval_dir}')
+    preflight_planning = O.fresh_planning(preflight_eval_id)
+    preflight_planning.params = deepcopy(preflight_planning.params)
+    preflight_admm_params = preflight_planning.params.admm
+    preflight_admm_params.shared_ess_initialization = 'standalone'
+    preflight_admm_params.shared_ess_initialization_source = S37_STANDALONE_SOURCE
+    RH.apply_rho_to_params(preflight_planning, {'v': S37_RHO_V, 'pf': S37_RHO_PF, 'ess': float(rho_ess_value)})
+    preflight_admm_params.penalty_update['balancing_exempt_channels'] = ['ess']
+    preflight_admm_params.balancing_exempt_channels_source = S37_EXEMPT_SOURCE
+    s37_checklist, s37_floor_rows_by_node = assert_s37_capture_paths(preflight_planning, rho_ess_value)
+    del preflight_planning
+    print(f'[P5.15 S37 {arm_key}] capture-path pre-flight passed: {s37_checklist}')
+    print(
+        f'[P5.15 S37 {arm_key}] cap={cap}, objective rel=1e-4 (diagnostic), adaptive on, '
+        f'rho: v={S37_RHO_V}, pf={S37_RHO_PF}, ess={rho_ess_value} (fixed, every network + esso); '
+        f'balancing_exempt_channels=["ess"] (source={S37_EXEMPT_SOURCE}); '
+        f'shared_ess_initialization=standalone (source={S37_STANDALONE_SOURCE}); '
+        f'boyd eps_abs=1e-5, eps_rel=1e-4; gamma_policy=tied_to_rho, tau=1.0; '
+        f'freeze_after_unchanged_cycles=10; freeze_backstop_cycle=60; '
+        f'minimum_consecutive_converged_cycles={S37_REQUIRED_CONSECUTIVE_CYCLES}; '
+        f'soh_floor_row_counts_by_node={ {n: len(r) for n, r in s37_floor_rows_by_node.items()} }; '
+        f'launch_condition={arm_cfg["launch_condition"]}'
+    )
+
+    recourse_jump_path = os.path.join(out_dir, 'recourse_jump_sidecar_baseline.jsonl')
+    ess_stride_path = os.path.join(out_dir, 'ess_entry_stride_baseline.jsonl')
+    floor_sidecar_path = os.path.join(out_dir, 'soh_floor_sidecar_baseline.jsonl')
+    _refuse_overwrite(recourse_jump_path)
+    _refuse_overwrite(ess_stride_path)
+    _refuse_overwrite(floor_sidecar_path)
+
+    def _s37_hook(planning, sed, models, rows, report, out_dir, label):
+        report['s34_recourse_jump_sidecar_path'] = os.path.relpath(recourse_jump_path, REPO)
+        report['s34_ess_entry_stride_sidecar_path'] = os.path.relpath(ess_stride_path, REPO)
+        report['s35ref_soh_floor_sidecar_path'] = os.path.relpath(floor_sidecar_path, REPO)
+        write_boyd_terminal_s35ref(planning, sed, models, rows, report, out_dir, label,
+                                    floor_rows_by_node=s37_floor_rows_by_node,
+                                    floor_sidecar_path=floor_sidecar_path)
+
+    with s35ref_capture_hooks(recourse_jump_path, ess_stride_path, floor_sidecar_path,
+                               s37_floor_rows_by_node, stride=1):
+        return run_admm_arm(arm_key, out_dir, k_override=None, eval_id=arm_cfg['eval_id'],
+                            num_max_iters_override=cap, apply_rho=False,
+                            full_diagnostics_in_rows=True, post_run_hook=_s37_hook,
+                            pre_solve_hook=_s37_configure_hook(rho_ess_value))
+
+
 if __name__ == '__main__':
     _acquire_exclusive_run_lock()
     gate = sys.argv[1] if len(sys.argv) > 1 else None
@@ -5117,6 +5514,27 @@ if __name__ == '__main__':
             json.dump(identity_check, handle, indent=1, default=str)
         print(f'[S35REF_REPLAY] bitwise identity vs run 1: {identity_check}')
         print(f'[S35REF_REPLAY] wrote: {identity_path}')
+    elif gate == 's37_rho0p01':
+        # P5.15 Addendum 19 -- the rho_ess experiment, arm 1 (rho_ess=0.01).
+        # Frozen spec v8, data/SRP1/Results/P515S37/
+        # frozen_s37_rho_ess_spec_v8_f91de983.json. Exact command:
+        #   .../bin/python -u p515_g_g1_g4_admm_gates.py s37_rho0p01 \
+        #     > data/SRP1/Results/P515S37_RHO0P01_launch.log 2>&1
+        #
+        # THE PLANNER LAUNCHES THIS GATE, NOT THE WORKER -- this branch is
+        # prepared code only (P5.15 Addendum 19 s37-preparation worker
+        # task); it is never invoked by any Worker-run command in that task.
+        run_s37_arm('s37_rho0p01')
+    elif gate == 's37_rho0p001':
+        # P5.15 Addendum 19 -- the rho_ess experiment, arm 2 (rho_ess=0.001).
+        # Spec v8 `launch_condition`: "after arm 1 has exited; never
+        # concurrently". Exact command:
+        #   .../bin/python -u p515_g_g1_g4_admm_gates.py s37_rho0p001 \
+        #     > data/SRP1/Results/P515S37_RHO0P001_launch.log 2>&1
+        #
+        # THE PLANNER LAUNCHES THIS GATE, NOT THE WORKER -- prepared code
+        # only; never invoked by any Worker-run command in this task.
+        run_s37_arm('s37_rho0p001')
     else:
         print(__doc__)
         sys.exit(1)
