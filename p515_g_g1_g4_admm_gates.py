@@ -5746,6 +5746,21 @@ def _s39_spec_hash():
         return hashlib.sha256(handle.read()).hexdigest()
 
 
+def _s39_ids_for_mode(arm_key, mode):
+    """The three working-dir ids for one mode label. `mode` is 'real' or
+    'preflight' in normal use; the Planner may pass a distinct label (e.g.
+    'preflight_v2') to re-run a preflight at a later commit WITHOUT touching
+    the committed evidence of an earlier one (P5.15 Addendum 21: the first
+    C/D preflights ran before the code was committed, so they were re-run at
+    the committed HEAD under their own ids)."""
+    arm_cfg = S39_ARMS[arm_key]
+    return {
+        'precheck': f"{arm_cfg['precheck_id_stub']}_{mode}",
+        'probe': f'p515s39_{arm_key}_tso_probe_checklist_{mode}',
+        'run': f"{arm_cfg['run_id_stub']}_{mode}",
+    }
+
+
 def _s39_working_dir_ids(arm_key):
     """The THREE working-dir ids (pre-check, probe, run) this arm uses in
     EACH mode ('real' / 'preflight') -- the structural fix's own evidence
@@ -5753,15 +5768,7 @@ def _s39_working_dir_ids(arm_key):
     above this section). Zero solves; pure string derivation, mirroring
     exactly what `run_s39_arm`/`assert_s39_capture_paths` themselves
     compute."""
-    arm_cfg = S39_ARMS[arm_key]
-    ids_by_mode = {}
-    for mode in ('real', 'preflight'):
-        ids_by_mode[mode] = {
-            'precheck': f"{arm_cfg['precheck_id_stub']}_{mode}",
-            'probe': f'p515s39_{arm_key}_tso_probe_checklist_{mode}',
-            'run': f"{arm_cfg['run_id_stub']}_{mode}",
-        }
-    return ids_by_mode
+    return {mode: _s39_ids_for_mode(arm_key, mode) for mode in ('real', 'preflight')}
 
 
 @contextmanager
@@ -5966,13 +5973,17 @@ def assert_s39_capture_paths(planning, arm_key, mode):
     preflight_ids = set(ids_by_mode['preflight'].values())
     checklist['working_dir_ids_disjoint_between_modes'] = real_ids.isdisjoint(preflight_ids)
     checklist['working_dir_ids_by_mode'] = ids_by_mode
-    checklist['this_call_mode_is_valid'] = mode in ('real', 'preflight')
+    checklist['this_call_mode_ids'] = _s39_ids_for_mode(arm_key, mode)
+    # 'real' / 'preflight', or a Planner-supplied smoke-test label that must
+    # extend 'preflight' (e.g. 'preflight_v2'), never 'real'.
+    checklist['this_call_mode_is_valid'] = (
+        mode == 'real' or mode == 'preflight' or mode.startswith('preflight_'))
 
     # -- Addendum 21, decisive: tau in force on a FRESHLY BUILT (zero-solve)
     #    TSO model's OWN prox_gamma_v/pf/ess Params, BEFORE any solve --
     #    reuses `_s38_build_probe_tso_model` UNCHANGED (s39's rho base is
     #    IDENTICAL to s38's); probe id is MODE-derived (structural fix) ------
-    probe_eval_id = ids_by_mode[mode]['probe']
+    probe_eval_id = _s39_ids_for_mode(arm_key, mode)['probe']
     probe_planning, probe_tso_model = _s38_build_probe_tso_model(probe_eval_id, S39_TAU)
     expected_gamma = {'v': 0.0, 'pf': 0.0, 'ess': 0.0}
     observed_gamma_sample = {}
@@ -6108,7 +6119,8 @@ def _s39_configure_hook(arm_key):
     return hook
 
 
-def run_s39_arm(arm_key, num_max_iters_override=None, output_root_override=None):
+def run_s39_arm(arm_key, num_max_iters_override=None, output_root_override=None,
+                 mode_label_override=None):
     """Shared implementation for both s39 arms -- ONLY `balancing_exempt_
     channels`/`balancing_exempt_until` and the output root differ
     (`S39_ARMS`). Mirrors `run_s38_arm`, with the STRUCTURAL FIX described
@@ -6130,7 +6142,9 @@ def run_s39_arm(arm_key, num_max_iters_override=None, output_root_override=None)
     exempt_until = arm_cfg['exempt_until']
     out_dir = output_root_override if output_root_override is not None else arm_cfg['out_dir']
     cap = num_max_iters_override if num_max_iters_override is not None else S39_CAP
-    mode = 'real' if output_root_override is None else 'preflight'
+    mode = 'real' if output_root_override is None else (mode_label_override or 'preflight')
+    if output_root_override is None and mode_label_override is not None:
+        raise RuntimeError('mode_label_override is only for smoke tests (output_root_override given)')
 
     if N.REL != S39_REL:
         raise RuntimeError(
@@ -6145,8 +6159,8 @@ def run_s39_arm(arm_key, num_max_iters_override=None, output_root_override=None)
 
     _require_fresh_output_root(out_dir)
 
-    ids_by_mode = _s39_working_dir_ids(arm_key)
-    precheck_eval_id = ids_by_mode[mode]['precheck']
+    ids_this_mode = _s39_ids_for_mode(arm_key, mode)
+    precheck_eval_id = ids_this_mode['precheck']
     precheck_eval_dir = os.path.join(O.WORK_DIR, precheck_eval_id)
     if os.path.exists(precheck_eval_dir):
         raise RuntimeError(
@@ -6203,7 +6217,7 @@ def run_s39_arm(arm_key, num_max_iters_override=None, output_root_override=None)
                                     floor_rows_by_node=s39_floor_rows_by_node,
                                     floor_sidecar_path=floor_sidecar_path)
 
-    run_eval_id = ids_by_mode[mode]['run']
+    run_eval_id = ids_this_mode['run']
     run_eval_dir = os.path.join(O.WORK_DIR, run_eval_id)
     if os.path.exists(run_eval_dir):
         raise RuntimeError(

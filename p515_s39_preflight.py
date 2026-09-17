@@ -158,7 +158,7 @@ def _ancestor_pids(max_depth=15):
     return pids
 
 
-def _check_preconditions(label):
+def _check_preconditions(label, out_dir_override=None):
     failures = []
     lock_path = os.path.join(REPO, '.p515_g_gate.lock')
     if os.path.exists(lock_path):
@@ -178,7 +178,7 @@ def _check_preconditions(label):
         if any(substring in line for substring in FORBIDDEN_LIVE_PROCESS_SUBSTRINGS):
             failures.append(f'a forbidden process appears to be alive: {line.strip()}')
 
-    out_dir = OUT_DIR_BY_LABEL[label]
+    out_dir = out_dir_override or OUT_DIR_BY_LABEL[label]
     if os.path.exists(out_dir):
         failures.append(f'preflight output directory already exists (write-once): {out_dir}')
 
@@ -191,9 +191,17 @@ def main():
         sys.exit(1)
     label = sys.argv[1]
     arm_key = ARM_KEY_BY_LABEL[label]
-    out_dir = OUT_DIR_BY_LABEL[label]
+    # Optional second argument: a suffix (e.g. 'v2') that re-runs this
+    # preflight into its OWN output dir under its OWN working-dir ids,
+    # leaving an earlier preflight's committed evidence untouched. P5.15
+    # Addendum 21: the first C/D preflights ran BEFORE the code was
+    # committed, so the Planner re-ran them at the committed HEAD with
+    # suffix 'v2' (never re-running a harness onto a cited artifact).
+    suffix = sys.argv[2].strip('_') if len(sys.argv) > 2 and sys.argv[2].strip('_') else None
+    out_dir = OUT_DIR_BY_LABEL[label] + (f'_{suffix}' if suffix else '')
+    mode_label = f'preflight_{suffix}' if suffix else None
 
-    precondition_failures = _check_preconditions(label)
+    precondition_failures = _check_preconditions(label, out_dir)
     if precondition_failures:
         print(f'[S39 preflight {label}] PRECONDITION CHECK FAILED: {precondition_failures}')
         sys.exit(1)
@@ -204,7 +212,8 @@ def main():
     G._acquire_exclusive_run_lock()
 
     report, report_path = G.run_s39_arm(
-        arm_key, num_max_iters_override=NUM_CYCLES, output_root_override=out_dir)
+        arm_key, num_max_iters_override=NUM_CYCLES, output_root_override=out_dir,
+        mode_label_override=mode_label)
 
     print(f'[S39 preflight {label}] arm report: {report_path}')
     print(f"[S39 preflight {label}] cycles_run={report['cycles_run']} "
