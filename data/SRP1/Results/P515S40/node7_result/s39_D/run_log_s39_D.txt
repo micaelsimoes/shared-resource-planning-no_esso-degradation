@@ -1,0 +1,17 @@
+=== arm s39_D (v10 arm D -- the ADOPTED ORACLE (Addendum 22)), run_dir=data/SRP1/Results/P515S39_D_run ===
+instance: {'s_mva': 0.96875, 'e_mwh': 3.875, 'year': 2025, 'assignment': 'uniform across active nodes (control/perturbation)'}; cycles_run=139, converged_at_cycle=125, gross_operational_cost=650966975.2943751
+pf_entry_stride stop cycle = 139 (matches g.cycles_run)
+node-7 entries collected: 576 (expect 576 = 2 power_types x 3 years x 4 days x 24 periods)
+node 7 at-rating (>= 0.99) period-slots: 23 / 288
+node 7 at-rating (>= 0.95) period-slots: 27 / 288
+  top_n_vs_ge99pct: n_top=25 n_at_rating=23 coincidence=0 (0.000) expected_under_independence=1.997 enrichment=0.0
+  top_n_vs_ge95pct: n_top=25 n_at_rating=27 coincidence=2 (0.080) expected_under_independence=2.344 enrichment=0.8533333333333334
+  top_pct_vs_ge99pct: n_top=57 n_at_rating=23 coincidence=0 (0.000) expected_under_independence=4.552 enrichment=0.0
+  top_pct_vs_ge95pct: n_top=57 n_at_rating=27 coincidence=2 (0.035) expected_under_independence=5.344 enrichment=0.3742690058479532
+  2030 concentration [at_rating_ge99pct]: 8/23 = 0.348 (baseline 0.333, enrichment 1.0434782608695652)
+  2030 concentration [at_rating_ge95pct]: 10/27 = 0.370 (baseline 0.333, enrichment 1.1111111111111112)
+  2030 concentration [top_n_s2]: 13/25 = 0.520 (baseline 0.333, enrichment 1.56)
+  2030 concentration [top_pct_s2]: 28/57 = 0.491 (baseline 0.333, enrichment 1.4736842105263157)
+  RESULT node 5: rating=200.0 MVA, n_binding(>=99%)=0, n_binding(>=95%)=0, of which storage>=99%-own-rating (>=99% interface)=0, (>=95% interface)=0
+  RESULT node 7: rating=100.0 MVA, n_binding(>=99%)=23, n_binding(>=95%)=27, of which storage>=99%-own-rating (>=99% interface)=1, (>=95% interface)=2
+  RESULT node 9: rating=150.0 MVA, n_binding(>=99%)=0, n_binding(>=95%)=0, of which storage>=99%-own-rating (>=99% interface)=0, (>=95% interface)=0
