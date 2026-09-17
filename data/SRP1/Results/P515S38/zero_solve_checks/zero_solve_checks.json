@@ -1,0 +1,142 @@
+{
+ "stage": "P5.15 Addendum 20 (s38 preparation worker task) -- zero-solve verification of the tau relaxation, the PF per-entry capture hook and the Addendum 20 freeze policy (10-unchanged + absolute freeze at 200)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 20",
+  "data/SRP1/Results/P515S38/frozen_s38_pf_pace_spec_v9_7a2b4ab7.json"
+ ],
+ "spec_file": "data/SRP1/Results/P515S38/frozen_s38_pf_pace_spec_v9_7a2b4ab7.json",
+ "spec_file_sha256_observed": "7a2b4ab7a98ae0145d647a977aa1d2c63a88b0e169a4c6089cdf96543e409dbd",
+ "timestamp_utc": "2026-09-17T13:09:34.200016+00:00",
+ "solve_profile_guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "checks": {
+  "tau_validation": {
+   "tau_0_loads": true,
+   "tau_0_error": null,
+   "tau_0_value_stored": 0.0,
+   "tau_negative_rejected": true,
+   "tau_negative_error": "ADMM proximal_regularization.tso.tau must be non-negative.",
+   "tau_0p25_loads": true,
+   "tau_0p25_value_stored": 0.25,
+   "pass": true
+  },
+  "tso_gamma_and_proximal_term": {
+   "note_on_pf_term_computation": "the pf_p/pf_q terms are computed WITHOUT the production interface_transf_rating scaling factor (a positive constant not stored as a model attribute) -- dividing by a positive constant before squaring does not change whether a zero-gamma term evaluates to exactly zero, so this is a faithful, if simplified, reproduction",
+   "gamma_arm_a_tau_0": {
+    "v": 0.0,
+    "pf": 0.0,
+    "ess": 0.0
+   },
+   "gamma_arm_a_all_exactly_zero": true,
+   "gamma_arm_b_tau_1": {
+    "v": 0.0077,
+    "pf": 0.198,
+    "ess": 0.01
+   },
+   "rho_arm_b": {
+    "v": 0.0077,
+    "pf": 0.198,
+    "ess": 0.01
+   },
+   "gamma_arm_b_equals_rho": true,
+   "proximal_terms_arm_a_at_arbitrary_nonzero_z_vs_z_prev": {
+    "v": 0.0,
+    "pf_p": 0.0,
+    "pf_q": 0.0,
+    "ess_p": 0.0,
+    "ess_q": 0.0
+   },
+   "all_terms_exactly_zero": true,
+   "pass": true
+  },
+  "freeze_policy_replay": {
+   "no_freeze_at_cycle_60": {
+    "no_channel_frozen_at_60": true,
+    "no_channel_reason_backstop_at_60": true,
+    "row_60_freeze_state": {
+     "v": {
+      "frozen": false,
+      "unchanged_streak": 0,
+      "ever_acted": true,
+      "at_clamp": false,
+      "reason": null,
+      "exempt": false
+     },
+     "pf": {
+      "frozen": false,
+      "unchanged_streak": 0,
+      "ever_acted": true,
+      "at_clamp": false,
+      "reason": null,
+      "exempt": false
+     },
+     "ess": {
+      "frozen": false,
+      "unchanged_streak": 0,
+      "ever_acted": true,
+      "at_clamp": false,
+      "reason": null,
+      "exempt": false
+     }
+    },
+    "pass": true
+   },
+   "freeze_at_cycle_200_every_non_exempt_channel": {
+    "all_frozen_at_200": true,
+    "all_reason_backstop_at_200": true,
+    "all_action_label_correct_at_200": true,
+    "not_frozen_before_200": true,
+    "pass": true
+   },
+   "streak_freeze_only_after_prior_action": {
+    "never_acts_case": {
+     "v_never_ever_acted": true,
+     "v_never_frozen_via_streak": true,
+     "v_frozen_via_backstop_at_200": true
+    },
+    "act_once_then_hold_case": {
+     "streak_freeze_cycle": 11,
+     "streak_freeze_at_expected_cycle_11": true,
+     "streak_freeze_before_backstop": true
+    },
+    "pass": true
+   },
+   "pf_exempt_in_a_never_changes": {
+    "pf_rho_constant": true,
+    "pf_gamma_constant": true,
+    "pf_action_always_exempt": true,
+    "pf_never_at_clamp": true,
+    "pf_survives_backstop_at_cycle_200": true,
+    "ratios_used": [
+     1000000.0,
+     1e-06,
+     1e-06
+    ],
+    "pass": true
+   },
+   "pass": true
+  },
+  "pf_capture_identity": {
+   "n_entries_perturbed_inputs": 216,
+   "n_entries_captured": 1728,
+   "production_boyd_pf_r": 0.4493051025094223,
+   "production_boyd_pf_s": 0.11885266383677977,
+   "reconstructed_r": 0.4493051025094223,
+   "reconstructed_s": 0.11885266383677977,
+   "rel_err_r": 0.0,
+   "rel_err_s": 0.0,
+   "identity_holds": true,
+   "wrapped_function_restored_after_exit": true,
+   "pass": true
+  }
+ },
+ "all_checks_pass": true
+}

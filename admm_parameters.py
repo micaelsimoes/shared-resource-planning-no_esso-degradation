@@ -319,8 +319,21 @@ def _read_parameters_from_file(admm_params, params_data):
             admm_params.proximal_regularization['tso']['gamma_policy'] = gamma_policy
 
             tau = float(agent_data.get('tau', admm_params.proximal_regularization['tso']['tau']))
-            if tau <= 0.0:
-                raise ValueError('ADMM proximal_regularization.tso.tau must be positive.')
+            # P5.15 Addendum 20 / frozen spec v9 (data/SRP1/Results/P515S38/
+            # frozen_s38_pf_pace_spec_v9_7a2b4ab7.json, arms s38_A_tau0 /
+            # s38_C_combined): tau = 0.0 (proximal term off on every TSO
+            # channel) is a deliberately authorized configuration, not an
+            # error -- relaxed from "must be positive" to "must be
+            # non-negative". Verified before this change: no code path
+            # divides by tau or by any prox_gamma_* Param (gamma only
+            # multiplies, e.g. `(model[year][day].prox_gamma_v / 2) *
+            # proximal_v ** 2` in `update_transmission_model_to_admm`;
+            # `proximal_share = s_proximal_part / s` in
+            # `get_admm_boyd_residual_metrics` divides by the residual norm
+            # `s`, not by gamma or tau, and is already guarded `if s > 0.0
+            # else 0.0`), so tau/gamma == 0 is numerically safe.
+            if tau < 0.0:
+                raise ValueError('ADMM proximal_regularization.tso.tau must be non-negative.')
             admm_params.proximal_regularization['tso']['tau'] = tau
 
     # ------------------------------------------------------------------------------------------------------------------
