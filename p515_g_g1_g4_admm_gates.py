@@ -4589,7 +4589,7 @@ OUT_S37_RHO0P001 = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S37_RHO0P0
 S37_ARMS = {
     's37_rho0p01': {
         'rho_ess': 0.01, 'order': 1, 'out_dir': OUT_S37_RHO0P01,
-        'eval_id': 'p515s37_rho0p01_baseline',
+        'eval_id': 'p515s37_rho0p01_arm',  # distinct from the preflight's 'p515s37_rho0p01_baseline' working dir, which committed preflight evidence cites
         'preflight_eval_id': 'p515s37_rho0p01_preflight_capture_check',
         'launch_condition': None,
     },
