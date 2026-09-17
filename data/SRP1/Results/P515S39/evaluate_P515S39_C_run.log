@@ -1,0 +1,129 @@
+{
+ "LEAD": {
+  "arm": "s39_C",
+  "certified": true,
+  "certification_cycle": 191,
+  "cycle_count": 191,
+  "pf_first_pass_cycle": 130,
+  "storage_terminal_ratio": 0.8087297841683105,
+  "cost_inside_bar": false,
+  "tso_instability_triggered": false
+ },
+ "CERTIFICATION": {
+  "certified": true,
+  "certification_cycle": 191,
+  "cycles_run": 191,
+  "cap": 300,
+  "required_consecutive_cycles": 10,
+  "terminal_cycle_convergence": true,
+  "terminal_consecutive_converged_cycles": 10,
+  "local_solve_failures_total": 0
+ },
+ "REPORTED_NOT_GATED": {
+  "terminal_ratios_per_channel": {
+   "v": 0.07944741122397433,
+   "pf": 0.3249430263891103,
+   "ess": 0.8087297841683105
+  },
+  "rule_ten_objective_ratio": 0.00734211549655249,
+  "clamp_flags_ever_true_per_channel": {
+   "v": false,
+   "pf": false,
+   "ess": false
+  },
+  "cost_vs_run1": {
+   "arm_cost": 650981422.986398,
+   "run1_cost": 651039166.0347285,
+   "abs_diff": 57743.048330545425,
+   "arm_max_objective_step_last_10_cycles": {
+    "max_step": 477.95843029022217,
+    "n_cycles_used": 10,
+    "n_steps_available": 10
+   },
+   "run1_max_step_last10": 256.2581009864807,
+   "bar": 734.2165312767029,
+   "inside_bar": false,
+   "spec_v10_path": "data/SRP1/Results/P515S39/frozen_s39_oracle_spec_v10_f1b2b999.json",
+   "spec_v10_sha256": "f1b2b9999101fc69be89d7eb1e265cfc9b6f3e81c5c0602e9d81b15101076f10",
+   "reading": "inside the bar: the cost difference to run 1 is within stopping slack (indeterminate, consistent with run 1); outside the bar: not explained by stopping slack alone, reported as a difference to be explained - never as a lower-cost or different point (the bar is local and valid only when both runs are settled; the arm is settled under the 10-consecutive bar, run 1 under Addendum 16)"
+  }
+ },
+ "TSO_INSTABILITY_TRIGGER": {
+  "criterion_i_unrecovered_tso_failure": {
+   "pass_meaning_triggered": false,
+   "available": true,
+   "path": "data/SRP1/Results/P515S39_C_run/network_failures_s39_C.jsonl",
+   "n_tso_events": 6,
+   "n_tso_unrecovered": 0,
+   "tso_unrecovered_events": []
+  },
+  "criterion_ii_tso_failure_rate_gt_2x_run1": {
+   "triggered": false,
+   "observed_rate_per_cycle": 0.031413612565445025,
+   "bound_2x_run1": 0.2431865828092243,
+   "run1_rate": 0.12159329140461216
+  },
+  "criterion_iii_pf_oscillation_flag": {
+   "triggered": false,
+   "detail": {
+    "flag": false,
+    "first_flagged_cycle": null,
+    "reason": null
+   },
+   "pf_stride_path": "data/SRP1/Results/P515S39_C_run/pf_entry_stride_s39_C.jsonl"
+  },
+  "criterion_iv_ess_oscillation_flag": {
+   "triggered": false,
+   "detail": {
+    "flag": false,
+    "first_flagged_cycle": null,
+    "reason": null
+   },
+   "ess_stride_path": "data/SRP1/Results/P515S39_C_run/ess_entry_stride_baseline.jsonl"
+  },
+  "TRIGGERED": false,
+  "note": "not_a_trigger: failure to certify, slow PF convergence, or DSO failures alone (spec v9)."
+ },
+ "cross_arm": {
+  "PREDICTIONS": {
+   "s39_C": {
+    "status": "SCORED",
+    "prediction_1_pf_first_pass_le_131": {
+     "pf_first_pass_cycle": 130,
+     "bound": 131,
+     "pass": true
+    },
+    "prediction_2_certification_cycle_le_150": {
+     "certification_cycle": 191,
+     "bound": 150,
+     "pass": false
+    },
+    "both_pass": false
+   },
+   "s39_D": {
+    "status": "SCORED",
+    "prediction_1_certifies_under_the_bar": {
+     "certified": true,
+     "certification_cycle": 139,
+     "pass": true
+    },
+    "prediction_2_storage_terminal_ratio_lt_0p5_at_certification": {
+     "storage_terminal_ratio": 0.7861991344785002,
+     "bound": 0.5,
+     "evaluated_at": "certification cycle (== terminal cycle when certified)",
+     "pass": false
+    },
+    "both_pass": false
+   }
+  },
+  "ADOPTION": {
+   "status": "DECIDED",
+   "c_certified": true,
+   "d_certified": true,
+   "d_storage_terminal_ratio": 0.7861991344785002,
+   "oracle": "s39_C",
+   "verdict": "D does not meet its storage-ratio condition -- C certifies, so C is the production oracle (spec v10 fallback)."
+  }
+ }
+}
+[S39 evaluate] wrote /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S39_C_run/s39_evaluation.json
