@@ -2877,6 +2877,12 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             'rho_at_clamp_v': freeze_state['v']['at_clamp'],
             'rho_at_clamp_pf': freeze_state['pf']['at_clamp'],
             'rho_at_clamp_ess': freeze_state['ess']['at_clamp'],
+            # P5.15 Addendum 19 (frozen spec v8): per-channel balancing
+            # exemption marker (True iff that channel is permanently
+            # exempt from residual balancing this run).
+            'balancing_exempt_v': freeze_state['v']['exempt'],
+            'balancing_exempt_pf': freeze_state['pf']['exempt'],
+            'balancing_exempt_ess': freeze_state['ess']['exempt'],
             'efc_per_day_max': efc_per_day_max,
             'objective_change_ratio': objective_change_ratio,
             'boyd_all_pass': boyd_all_pass,
@@ -6544,7 +6550,13 @@ def _init_admm_freeze_state():
     change; `at_clamp` is set once, at the cycle the channel freezes, if
     rho then sits at `penalty_update['min']` or `['max']` -- a recorded
     gate-failure flag, not an exception; `reason` in
-    {None, 'legacy_cycle', 'backstop', 'streak'}.
+    {None, 'legacy_cycle', 'backstop', 'streak', 'exempt'}.
+
+    P5.15 Addendum 19 (frozen spec v8): `exempt` marks a channel permanently
+    excluded from balancing (`params.penalty_update['balancing_exempt_channels']`);
+    False until `_update_admm_penalties` first sees that channel listed as
+    exempt, at which point it is set True alongside `frozen=True`,
+    `reason='exempt'`, `at_clamp` left False -- see that function.
     """
     return {
         group: {
@@ -6553,6 +6565,7 @@ def _init_admm_freeze_state():
             'ever_acted': False,
             'at_clamp': False,
             'reason': None,
+            'exempt': False,
         }
         for group in ('v', 'pf', 'ess')
     }
@@ -6645,6 +6658,23 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
       carries this bookkeeping across cycles; `freeze_state=None` (the
       default, e.g. any pre-v4 caller) builds a fresh, single-cycle state,
       matching v3 behaviour exactly whenever the v4 keys are both None.
+
+    Spec v8 addition (P5.15 Addendum 19, frozen spec
+    data/SRP1/Results/P515S37/frozen_s37_rho_ess_spec_v8_f91de983.json,
+    `production_change`): a channel listed in
+    `params.penalty_update['balancing_exempt_channels']` (optional, default
+    []) is marked `freeze_state[channel]['exempt'] = True` and
+    `['frozen'] = True` the FIRST time this function sees it, and its
+    action is recorded as `'exempt (fixed)'` for every cycle thereafter --
+    the highest-precedence branch, ahead of the freeze/backstop labels
+    above. `factors[channel]` is left at its neutral 1.0 (never an
+    increase/decrease), so the scaling loop below is a numeric no-op on
+    that channel's rho (and, under `gamma_policy == 'tied_to_rho'`, its
+    gamma recomputes to the same `tau * rho` every cycle since rho itself
+    never changes) -- an exempt channel's `at_clamp` is never set (True)
+    and it never re-enters the legacy-cycle/backstop/streak bookkeeping.
+    Absent key (default []): no channel exempt, bit-identical to pre-v8
+    behaviour for every other case study and every previous arm.
     """
 
     before = _get_admm_penalty_summary(tso_model, dso_models, esso_model)
@@ -6667,6 +6697,10 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
     factors = dict()
     legacy_diagnostics = dict()
     update_params = params.penalty_update
+    # P5.15 Addendum 19 (frozen spec v8, `production_change`): channels
+    # permanently exempt from balancing. Default [] -- empty set, no
+    # behaviour change for any case study/arm that does not set this key.
+    balancing_exempt_channels = set(update_params.get('balancing_exempt_channels', []) or [])
 
     for group in ('v', 'pf', 'ess'):
 
@@ -6711,20 +6745,41 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
         action = 'held'
 
         group_state = freeze_state[group]
+
+        # --------------------------------------------------------------
+        # P5.15 Addendum 19 (frozen spec v8): a channel listed in
+        # `balancing_exempt_channels` is marked exempt and frozen on the
+        # FIRST call that sees it (sticky thereafter, mirroring `frozen`).
+        # `at_clamp` is never set for an exempt channel -- exemption is not
+        # a gate-failure condition -- and, because `group_state['frozen']`
+        # is already True from this point on, the legacy-cycle/backstop/
+        # streak triggers below never re-enter their own "newly triggered"
+        # branch for this channel and can never overwrite `reason`.
+        # --------------------------------------------------------------
+        if group in balancing_exempt_channels and not group_state['exempt']:
+            group_state['exempt'] = True
+            group_state['frozen'] = True
+            group_state['reason'] = 'exempt'
+            group_state['at_clamp'] = False
+
         channel_frozen_this_cycle = bool(
             group_state['frozen'] or legacy_frozen_global or backstop_frozen_global
         )
 
         # --------------------------------------------------------------
-        # Determine penalty update. Precedence (highest first): frozen
-        # (spec v3's cycle-30 freeze, OR spec v4's per-channel
+        # Determine penalty update. Precedence (highest first): exempt
+        # (Addendum 19, `balancing_exempt_channels` -- overrides every
+        # other branch, including the freeze/backstop labels below) >
+        # frozen (spec v3's cycle-30 freeze, OR spec v4's per-channel
         # unchanged-streak trigger, OR spec v4's global backstop -- any of
         # the three, once true for a channel, holds it PERMANENTLY) >
         # not-adaptive ('fixed') > failure hold (only when not frozen) >
         # increase/decrease/dead-band. The pre-v3 "freeze clause" (held
         # once both ratios are <= 1) remains removed.
         # --------------------------------------------------------------
-        if channel_frozen_this_cycle:
+        if group_state['exempt']:
+            action = 'exempt (fixed)'
+        elif channel_frozen_this_cycle:
             if not group_state['frozen']:
                 # Newly triggered THIS cycle by the legacy fixed-cycle
                 # freeze or the spec v4 global backstop. (A per-channel

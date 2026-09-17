@@ -53,7 +53,20 @@ class ADMMParameters:
             # an exception.
             'freeze_after_unchanged_cycles': None,
             'freeze_backstop_cycle': None,
+            # P5.15 Addendum 19 (frozen spec v8,
+            # data/SRP1/Results/P515S37/frozen_s37_rho_ess_spec_v8_f91de983.json,
+            # `production_change`): optional list of channels ('v', 'pf',
+            # 'ess') permanently EXEMPT from residual balancing -- never
+            # increased or decreased; `_update_admm_penalties` records the
+            # action as "exempt (fixed)", freezes `freeze_state[channel]`
+            # from the first call with `at_clamp` permanently False and an
+            # `exempt` marker True, and never lets that channel trip the
+            # clamp flag or the freeze-streak/backstop bookkeeping. Default
+            # [] (empty list): no channel exempt, so every other case study
+            # and every previous arm is unchanged.
+            'balancing_exempt_channels': [],
         }
+        self.balancing_exempt_channels_source = 'default'
         self.rho = {'v': dict(), 'pf': dict(), 'ess': dict()}
         self.previous_iter = {'v': dict(), 'pf': dict(), 'ess': dict()}
         self.rho_previous_iter = {'v': dict(), 'pf': dict(), 'ess': dict()}
@@ -185,11 +198,15 @@ def _read_parameters_from_file(admm_params, params_data):
     admm_params.adaptive_penalty = bool(params_data['adaptive_penalty'])
     penalty_update = params_data.get('penalty_update', {})
     _cycle_index_keys = ('freeze_after_cycle', 'freeze_after_unchanged_cycles', 'freeze_backstop_cycle')
+    # P5.15 Addendum 19 (frozen spec v8): 'balancing_exempt_channels' is a
+    # list of channel names, not a float penalty-update coefficient; handled
+    # separately below, alongside the freeze-cycle keys.
+    _non_float_penalty_update_keys = _cycle_index_keys + ('balancing_exempt_channels',)
     for key in admm_params.penalty_update:
         # The three freeze-cycle keys are optional integer cycle indices (or
         # None), not float penalty-update coefficients; handled separately
         # below.
-        if key in _cycle_index_keys:
+        if key in _non_float_penalty_update_keys:
             continue
         if key in penalty_update:
             admm_params.penalty_update[key] = float(penalty_update[key])
@@ -226,6 +243,26 @@ def _read_parameters_from_file(admm_params, params_data):
             admm_params.penalty_update['freeze_backstop_cycle'] < 1
     ):
         raise ValueError('ADMM penalty_update.freeze_backstop_cycle must be at least 1.')
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # P5.15 Addendum 19 (frozen spec v8, `production_change`): optional
+    # per-channel balancing exemption. Absent key -> [] (default), source
+    # 'default' -- no behaviour change for any case study that does not set
+    # this key.
+    if 'balancing_exempt_channels' in penalty_update and penalty_update['balancing_exempt_channels'] is not None:
+        balancing_exempt_channels = penalty_update['balancing_exempt_channels']
+        if not isinstance(balancing_exempt_channels, list):
+            raise ValueError('ADMM penalty_update.balancing_exempt_channels must be a list.')
+        invalid_channels = [c for c in balancing_exempt_channels if c not in ('v', 'pf', 'ess')]
+        if invalid_channels:
+            raise ValueError(
+                "ADMM penalty_update.balancing_exempt_channels entries must be drawn from "
+                f"{{'v', 'pf', 'ess'}}; got invalid entries: {invalid_channels}.")
+        admm_params.penalty_update['balancing_exempt_channels'] = list(balancing_exempt_channels)
+        admm_params.balancing_exempt_channels_source = 'case_file'
+    else:
+        admm_params.penalty_update['balancing_exempt_channels'] = []
+        admm_params.balancing_exempt_channels_source = 'default'
 
     if admm_params.minimum_consecutive_converged_cycles < 1:
         raise ValueError('ADMM minimum_consecutive_converged_cycles must be at least 1.')
