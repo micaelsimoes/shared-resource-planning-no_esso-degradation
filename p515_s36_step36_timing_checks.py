@@ -22,12 +22,29 @@ script, `verify(expected_solves=0, expected_execs=0)` at the end):
      to exactly match the real call sites' (file, function, local variable
      names) without executing any real production code.
   4. `analyze_phase_timing` reproduces a hand-computed toy example.
+  5. (P5.15 Step 3.6 follow-up, item 3) `analyze_phase_timing`'s `x_threshold`
+     has no default and is required.
+  6. (item 2) the degraded-mode hard non-verdict: `verdict_pass` is the
+     literal string `'INDETERMINATE (NL-write share not separated)'`, never
+     a bool, whenever `nl_write_seconds` is absent -- and a plain bool
+     otherwise, on the same toy records.
+  7. (item 1) the widened precondition function
+     (`p515_s36_step36_timing_run._check_preconditions`) refuses when a
+     LISTED file is dirty -- simulated by stubbing the git-status subprocess
+     call only, never by dirtying a real file.
 
-Output: `data/SRP1/Results/P515S36/step36_timing/zero_solve_checks/` (refuses
-to run if it already exists) -- `results.json` plus a sha256 manifest.
+Output directory: `data/SRP1/Results/P515S36/step36_timing/zero_solve_checks/`
+by default, overridable via the `P515_S36_CHECKS_OUT_DIR` environment
+variable (used for the follow-up re-run so the original, committed
+`zero_solve_checks/` directory is never overwritten) -- refuses to run if the
+selected directory already exists -- `results.json` plus a sha256 manifest.
 
-Usage:
+Usage (original run, still reproducible):
     /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p515_s36_step36_timing_checks.py
+
+Usage (follow-up re-run, item 5 -- writes to a NEW directory):
+    P515_S36_CHECKS_OUT_DIR=data/SRP1/Results/P515S36/step36_timing/zero_solve_checks_v2 \\
+        /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p515_s36_step36_timing_checks.py
 """
 
 import dis
@@ -41,10 +58,18 @@ REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
 if REPO_ROOT not in sys.path:
     sys.path.insert(0, REPO_ROOT)
 
-OUT_DIR = os.path.join(REPO_ROOT, 'data', 'SRP1', 'Results', 'P515S36', 'step36_timing', 'zero_solve_checks')
+# Output directory: overridable via P515_S36_CHECKS_OUT_DIR so a re-run adding
+# new checks (P5.15 Step 3.6 follow-up, item 5) never overwrites the committed
+# `zero_solve_checks/` directory the original run wrote -- the write-once
+# `os.makedirs(..., exist_ok=False)` guard below still applies to whichever
+# directory is selected.
+OUT_DIR = os.environ.get(
+    'P515_S36_CHECKS_OUT_DIR',
+    os.path.join(REPO_ROOT, 'data', 'SRP1', 'Results', 'P515S36', 'step36_timing', 'zero_solve_checks'))
 
 from p513_solve_profile_guard import SolveProfileGuard  # noqa: E402
 import p515_s36_step36_timing as T  # noqa: E402
+import p515_s36_step36_timing_run as R  # noqa: E402
 
 FAILURES = []
 RESULTS = {}
@@ -589,8 +614,9 @@ def main():
                bk == {'n5': 0.150, 'n7': 0.100}, bk)
 
         all_records = toy + derived
-        analysis = T.analyze_phase_timing(all_records, production_iter_wall_by_cycle={1: 1.100},
-                                          x_threshold=0.70, projection_workers=2)
+        analysis = T.analyze_phase_timing(all_records, x_threshold=0.70,
+                                          production_iter_wall_by_cycle={1: 1.100},
+                                          projection_workers=2)
         # Hand computation:
         #   overhead_local = param_update(0.25) + clone(0) + nl_write(=solve_bundle upper
         #     bound, 0.45) + load_solution(0.05) + bookkeeping(0.25) + diagnostics_parse(0)
@@ -600,7 +626,11 @@ def main():
         #   overhead_serial = admm_global(0) + unattributed(0.100) + solve_bundle_remainder(0,
         #     since nl_write_seconds is absent -> the WHOLE solve_bundle is the NL-write
         #     upper bound, per the docstring, so the "remainder" is 0)
-        #   verdict_ratio = 1.00 / (1.00 + 0.100) = 0.90909...  -> pass at X=0.70
+        #   verdict_ratio = 1.00 / (1.00 + 0.100) = 0.90909...  -> would PASS at X=0.70 on the
+        #     ratio alone, BUT nl_write_seconds is absent here (degraded mode), so per item 2
+        #     (Planner decision, P5.15 Step 3.6 follow-up) verdict_pass must be the hard
+        #     non-verdict string, never True/False, even though the ratio clears the bar --
+        #     see C7 below for the same formula exercised in BOTH modes explicitly.
         expected_overhead_local = round(0.25 + 0.45 + 0.05 + 0.25, 6)
         expected_overhead_serial = round(0.100, 6)
         _check('C5_overhead_local_total_matches_hand_computation',
@@ -609,11 +639,108 @@ def main():
         _check('C5_overhead_serial_total_matches_hand_computation',
                round(analysis['overhead_serial_total'], 6) == expected_overhead_serial,
                analysis['overhead_serial_total'])
-        _check('C5_verdict_pass_at_x_0p70', analysis['verdict_pass'] is True, analysis['verdict_ratio'])
+        _check('C5_verdict_ratio_clears_x_0p70_bar',
+               analysis['verdict_ratio'] is not None and analysis['verdict_ratio'] >= 0.70,
+               analysis['verdict_ratio'])
+        _check('C5_verdict_pass_is_degraded_nonverdict_not_bool_true',
+               analysis['verdict_pass'] == 'INDETERMINATE (NL-write share not separated)'
+               and not isinstance(analysis['verdict_pass'], bool),
+               analysis['verdict_pass'])
         _check('C5_nl_write_share_flagged_as_upper_bound', analysis['nl_write_share_is_upper_bound'] is True)
         _check('C5_unattributed_matches_hand_computation',
                round(analysis['per_cycle_unattributed'][1], 6) == 0.100,
                analysis['per_cycle_unattributed'])
+
+        # =================================================================
+        # CHECK 6 (P5.15 Step 3.6 follow-up, item 3) -- `x_threshold` has NO
+        # default; it is a required positional-or-keyword argument.
+        # =================================================================
+        import inspect as _inspect
+        sig = _inspect.signature(T.analyze_phase_timing)
+        _check('C6_x_threshold_parameter_has_no_default',
+               sig.parameters['x_threshold'].default is _inspect.Parameter.empty,
+               str(sig.parameters['x_threshold']))
+        try:
+            T.analyze_phase_timing(all_records)
+            raised_without_threshold = False
+        except TypeError:
+            raised_without_threshold = True
+        _check('C6_calling_analyze_phase_timing_without_x_threshold_raises_TypeError',
+               raised_without_threshold)
+        _check('C6_run_entrypoint_states_x_threshold_as_module_constant_0p70',
+               R.X_THRESHOLD == 0.70, R.X_THRESHOLD)
+
+        # =================================================================
+        # CHECK 7 (P5.15 Step 3.6 follow-up, item 2) -- degraded mode (no
+        # NL-write sub-times) is a hard non-verdict; a run WITH sub-times
+        # still returns a plain bool. Same toy records, both modes, on the
+        # SAME x_threshold, so the only variable is `nl_write_seconds`.
+        # =================================================================
+        degraded_analysis = T.analyze_phase_timing(
+            all_records, x_threshold=0.70, production_iter_wall_by_cycle={1: 1.100},
+            projection_workers=2, nl_write_seconds=None)
+        _check('C7_degraded_mode_verdict_pass_is_indeterminate_string',
+               degraded_analysis['verdict_pass'] == 'INDETERMINATE (NL-write share not separated)',
+               degraded_analysis['verdict_pass'])
+        _check('C7_degraded_mode_verdict_is_indeterminate_via_run_helper',
+               R.verdict_is_indeterminate(degraded_analysis) is True)
+
+        # Non-degraded: supply an explicit (toy, non-zero) NL-write sub-time
+        # so nl_write_share_is_upper_bound is False.
+        determined_analysis = T.analyze_phase_timing(
+            all_records, x_threshold=0.70, production_iter_wall_by_cycle={1: 1.100},
+            projection_workers=2, nl_write_seconds={'aggregate': 0.20})
+        _check('C7_determined_mode_nl_write_share_not_flagged_as_upper_bound',
+               determined_analysis['nl_write_share_is_upper_bound'] is False)
+        _check('C7_determined_mode_verdict_pass_is_a_plain_bool',
+               isinstance(determined_analysis['verdict_pass'], bool),
+               determined_analysis['verdict_pass'])
+        _check('C7_determined_mode_verdict_is_not_indeterminate_via_run_helper',
+               R.verdict_is_indeterminate(determined_analysis) is False)
+
+        # Sanity: the helper itself, on synthetic dicts, with no analyze_phase_timing
+        # call at all (isolates the helper's own logic from the analysis function).
+        _check('C7_run_helper_flags_string_verdict_as_indeterminate',
+               R.verdict_is_indeterminate({'verdict_pass': 'INDETERMINATE (NL-write share not separated)'}) is True)
+        _check('C7_run_helper_flags_bool_true_as_determinate',
+               R.verdict_is_indeterminate({'verdict_pass': True}) is False)
+        _check('C7_run_helper_flags_bool_false_as_determinate',
+               R.verdict_is_indeterminate({'verdict_pass': False}) is False)
+
+        # =================================================================
+        # CHECK 8 (P5.15 Step 3.6 follow-up, item 1) -- the widened
+        # precondition function (`p515_s36_step36_timing_run._check_preconditions`)
+        # refuses when a LISTED file is dirty. Simulated by stubbing the
+        # git-status subprocess call only (never by actually dirtying a real
+        # file); the real `ps aux` scan and lock/output-dir checks still run
+        # for real underneath, so this may ALSO surface real, unrelated
+        # failures (e.g. the s38 numerical campaign's own live process) --
+        # this check only asserts that the SIMULATED dirty-file failure is
+        # present among whatever `_check_preconditions()` returns.
+        # =================================================================
+        _real_subprocess_run = R.subprocess.run
+
+        def _stub_subprocess_run(args, *pos, **kwargs):
+            if len(args) >= 2 and args[0] == 'git' and args[1] == 'status':
+                class _FakeCompleted:
+                    stdout = ' M admm_parameters.py\n'
+                return _FakeCompleted()
+            return _real_subprocess_run(args, *pos, **kwargs)
+
+        try:
+            R.subprocess.run = _stub_subprocess_run
+            simulated_failures = R._check_preconditions()
+        finally:
+            R.subprocess.run = _real_subprocess_run
+        dirty_failure_present = any(
+            'production files are not clean in git' in f and 'admm_parameters.py' in f
+            for f in simulated_failures)
+        _check('C8_check_preconditions_refuses_on_simulated_dirty_listed_file',
+               dirty_failure_present, simulated_failures)
+        # Confirm the real (unstubbed) call is restored afterward (identity),
+        # i.e. this check never leaves `subprocess.run` monkeypatched.
+        _check('C8_check_preconditions_subprocess_run_restored_after_stub_removed',
+               R.subprocess.run is _real_subprocess_run)
 
         results_path = os.path.join(OUT_DIR, 'results.json')
         with open(results_path, 'w') as handle:

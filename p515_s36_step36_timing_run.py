@@ -22,16 +22,26 @@ fresh eval ids / output roots so nothing committed is ever touched.
 ======================================================================
 WHAT THIS SCRIPT DOES (when the Planner runs it)
 ======================================================================
-  1. Precondition checks (all must pass BEFORE anything is written):
+  1. Precondition checks (all must pass BEFORE anything is written) -- THIS
+     is the safety mechanism guarding accidental execution (Planner decision,
+     P5.15 Step 3.6 follow-up, item 4: no more `main()`/`main_()` fail-safe
+     split -- `python p515_s36_step36_timing_run.py` runs the real entry
+     point directly, and these checks are what must refuse when it is not
+     safe to proceed):
        a. `.p515_g_gate.lock` does not already exist.
-       b. no OTHER `p515_g_g1_g4_admm_gates.py` process is alive (`ps aux`
-          scan, excluding this script's own PID).
+       b. no OTHER `p515_g_g1_g4_admm_gates.py` process, and no `p515_s38_*`
+          numerical-campaign-arm process, is alive (`ps aux` scan, excluding
+          this script's own PID -- `_FORBIDDEN_LIVE_PROCESS_SUBSTRINGS`).
        c. neither output directory
           (`data/SRP1/Results/P515S36/step36_timing/{off,on}/`) exists yet.
-       d. every production file this instrumentation reads (NOT edits) is
-          clean in git (`git status --porcelain` on the exact file list in
-          `_PRODUCTION_FILES_TO_CHECK_CLEAN`) -- a defensive check that the
-          measurement is against the SAME code the wrap-point citations in
+       d. every file this instrumentation reads (NOT edits) is clean in git
+          (`git status --porcelain` on the exact file list in
+          `_PRODUCTION_FILES_TO_CHECK_CLEAN` -- widened, item 1, beyond the
+          original four production files to also cover
+          `admm_parameters.py`, `p515_g_g1_g4_admm_gates.py`,
+          `data/SRP1/SRP1_params.json`, and this instrumentation's own three
+          source files) -- a defensive check that the measurement is against
+          the SAME code the wrap-point citations in
           `WORKER_REPORT_S36_TIMING.md` describe, not a mid-edit tree.
   2. Acquires the campaign harness's OWN exclusive run lock
      (`G._acquire_exclusive_run_lock()`, `.p515_g_gate.lock`, `O_CREAT|O_EXCL`
@@ -114,16 +124,33 @@ OUT_ROOT = os.path.join(REPO_ROOT, 'data', 'SRP1', 'Results', 'P515S36', 'step36
 OUT_OFF = os.path.join(OUT_ROOT, 'off')
 OUT_ON = os.path.join(OUT_ROOT, 'on')
 
-# Production files this instrumentation reads (via the wrap points cited in
-# WORKER_REPORT_S36_TIMING.md) but never edits -- checked clean in git before
-# the measurement runs, so the run is provably against the code those
-# citations describe.
+# Files this instrumentation reads (production files via the wrap points cited
+# in WORKER_REPORT_S36_TIMING.md; the campaign harness and its params file
+# read-only; this script's own three sibling files) but never edits -- checked
+# clean in git before the measurement runs, so the run is provably against the
+# code those citations describe. Widened per Planner decision (P5.15 Step 3.6
+# follow-up, item 1) beyond the original four production files to also cover
+# the harness this script reuses read-only, its params file, and this
+# instrumentation's own three source files.
 _PRODUCTION_FILES_TO_CHECK_CLEAN = (
     'shared_resources_planning.py',
     'network.py',
     'network_data.py',
     'shared_energy_storage_data.py',
+    'admm_parameters.py',
+    'p515_g_g1_g4_admm_gates.py',
+    os.path.join('data', 'SRP1', 'SRP1_params.json'),
+    'p515_s36_step36_timing.py',
+    'p515_s36_step36_timing_run.py',
+    'p515_s36_step36_timing_checks.py',
 )
+
+# Process-table substrings that must not match any OTHER live process (this
+# script's own PID is always excluded) before this measurement is allowed to
+# start -- the campaign harness itself, and any s38 numerical-campaign arm
+# (Planner decision, item 1: "refuse if any process matching
+# p515_g_g1_g4_admm_gates.py or p515_s38_ is alive").
+_FORBIDDEN_LIVE_PROCESS_SUBSTRINGS = ('p515_g_g1_g4_admm_gates.py', 'p515_s38_')
 
 ITERATION_LINE_RE = re.compile(r'Iteration (\d+):\s*([0-9.]+)\s*s')
 # Pyomo `report_timing=True`'s own NL-write print (pyomo/opt/base/solvers.py
@@ -169,11 +196,12 @@ def _check_preconditions():
         ps_output = ''
     this_pid = str(os.getpid())
     for line in ps_output.splitlines():
-        if 'p515_g_g1_g4_admm_gates.py' in line:
+        if any(substring in line for substring in _FORBIDDEN_LIVE_PROCESS_SUBSTRINGS):
             fields = line.split()
             pid = fields[1] if len(fields) > 1 else None
             if pid != this_pid:
-                failures.append(f'a p515_g_g1_g4_admm_gates.py process appears to be alive: {line}')
+                failures.append(f'a forbidden process appears to be alive '
+                                 f'(matches {_FORBIDDEN_LIVE_PROCESS_SUBSTRINGS}): {line}')
 
     for path in (OUT_OFF, OUT_ON):
         if os.path.exists(path):
@@ -282,6 +310,22 @@ def _run_one(label, out_dir, eval_id, recorder=None, inject_report_timing=False)
     return report, path, floor_sidecar_path
 
 
+# Item 3 (Planner decision): `analyze_phase_timing`'s `x_threshold` has no
+# default -- this script states the threshold it screens against explicitly,
+# here, once, as the single source of truth for this entry point.
+X_THRESHOLD = 0.70
+
+
+def verdict_is_indeterminate(analysis):
+    """Item 2 (Planner decision): the degraded-mode hard non-verdict is the
+    literal string `p515_s36_step36_timing._DEGRADED_VERDICT`, never a bool --
+    so any non-bool `verdict_pass` means the run must be treated as
+    INDETERMINATE, not PASS/FAIL. A module-level function (not inlined in
+    `main()`) so it can be unit-tested against a synthetic `analysis` dict
+    without running the measurement."""
+    return not isinstance(analysis.get('verdict_pass'), bool)
+
+
 def _read_jsonl(path):
     rows = []
     if not os.path.exists(path):
@@ -341,19 +385,12 @@ def _bitwise_diff(report_off, report_on, floor_sidecar_off_path, floor_sidecar_o
 
 
 def main():
-    raise SystemExit(
-        'p515_s36_step36_timing_run.py is NOT to be executed by the Worker that wrote it '
-        '(P5.15 Step 3.6, Worker task W3: "DO NOT RUN IT"). This guard is the FAIL-SAFE, '
-        'not the primary control -- the primary control is that no agent invokes this file. '
-        'The Planner removes this guard (or invokes main_() directly) when authorizing the '
-        'measurement run, per the exact launch command in this file\'s module docstring.')
-
-
-def main_():
-    """The real entry point, split from `main()` so the fail-safe above cannot
-    be bypassed by merely calling `python p515_s36_step36_timing_run.py` --
-    the Planner must edit this file (or invoke `main_()` from a fresh
-    process) to actually run it, an explicit, auditable action."""
+    """The measurement entry point (Planner decision, P5.15 Step 3.6 follow-up,
+    item 4: the earlier `main()`/`main_()` fail-safe split is retired --
+    `_check_preconditions()` IS the safety mechanism now, not a raise-unconditionally
+    stub. `python p515_s36_step36_timing_run.py` runs this directly; it refuses to
+    proceed unless every precondition passes (lock absent, no forbidden process
+    alive, output dirs absent, the full file list clean in git)."""
     failures = _check_preconditions()
     if failures:
         for f in failures:
@@ -393,13 +430,13 @@ def main_():
         nl_write_total = parse_report_timing_nl_write_seconds(os.path.join(OUT_ON, 'stdout_on.log'))
         nl_write_seconds = {'aggregate': nl_write_total} if nl_write_total is not None else None
         analysis = T.analyze_phase_timing(
-            all_records, production_iter_wall_by_cycle=production_iter_wall,
-            x_threshold=0.70, projection_workers=8, nl_write_seconds=nl_write_seconds)
+            all_records, x_threshold=X_THRESHOLD, production_iter_wall_by_cycle=production_iter_wall,
+            projection_workers=8, nl_write_seconds=nl_write_seconds)
         analysis_path = os.path.join(OUT_ROOT, 'phase_timing_analysis.json')
         with open(analysis_path, 'w') as handle:
             json.dump(analysis, handle, indent=1, default=str)
         print(f'[P5.15-S36-TIMING] wrote {analysis_path}')
-        print(f"[P5.15-S36-TIMING] verdict (X=70%): {analysis['verdict_pass']} "
+        print(f"[P5.15-S36-TIMING] verdict (X={X_THRESHOLD:.0%}): {analysis['verdict_pass']} "
               f"(ratio={analysis['verdict_ratio']})")
         print(f"[P5.15-S36-TIMING] projected 8-worker speedup: "
               f"{analysis.get('speedup_at_8_workers')}")
@@ -416,6 +453,16 @@ def main_():
 
     print(f'[P5.15-S36-TIMING] total wall time: {time.time() - started:.1f} s')
     print(f'[P5.15-S36-TIMING] wrote sha256 manifest: {manifest_path}')
+
+    # Item 2 (Planner decision): a degraded (indeterminate) verdict is a hard
+    # non-verdict -- everything above is still written in full, but the
+    # process exits non-zero AFTER writing, so a degraded run can never be
+    # mistaken for a decisive PASS/FAIL by an automated caller checking the
+    # exit code alone.
+    if verdict_is_indeterminate(analysis):
+        print(f"[P5.15-S36-TIMING] verdict is INDETERMINATE ({analysis['verdict_pass']!r}) -- "
+              f"exiting non-zero. All measured tables were still written above.")
+        sys.exit(1)
 
 
 if __name__ == '__main__':

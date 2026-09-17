@@ -732,11 +732,19 @@ def lpt_partition(durations, workers):
     return max(loads) if loads else 0.0
 
 
-def analyze_phase_timing(records, production_iter_wall_by_cycle=None, x_threshold=0.70,
+_DEGRADED_VERDICT = 'INDETERMINATE (NL-write share not separated)'
+
+
+def analyze_phase_timing(records, x_threshold, production_iter_wall_by_cycle=None,
                           projection_workers=8, nl_write_seconds=None):
     """Compute the design §5 per-block-type table, overhead_local vs
     overhead_serial, the X-threshold screening verdict, and the Amdahl
     `projection_workers`-worker projected speed-up.
+
+    `x_threshold`: REQUIRED, no default (Planner decision, P5.15 Step 3.6 follow-up:
+    Addendum 20's X=70% is an interim screening figure -- "the measurement sets the
+    real one" -- so a caller must state the threshold it is screening against
+    explicitly; there is no silent fallback value).
 
     `records`: the recorder's raw records PLUS `derive_param_update_and_bookkeeping`'s
     derived records (caller concatenates; kept as two functions so a caller can
@@ -777,6 +785,17 @@ def analyze_phase_timing(records, production_iter_wall_by_cycle=None, x_threshol
 
     verdict:  overhead_local_total / (overhead_local_total + overhead_serial_total) >= x_threshold
               (Addendum 20: X = 70% interim, "the measurement sets the real one")
+              -- EXCEPT: Planner decision (P5.15 Step 3.6 follow-up, item 2) -- this is a
+              HARD NON-VERDICT, not a PASS/FAIL, whenever `nl_write_share_is_upper_bound`
+              is True (i.e. the Pyomo `report_timing` cross-check produced no NL-write
+              sub-times, so `overhead_local`'s NL-write share is only an upper bound, not
+              a measured value). In that case `verdict_pass` is the literal string
+              `_DEGRADED_VERDICT` ('INDETERMINATE (NL-write share not separated)') --
+              never `True`/`False` -- even though `verdict_ratio` is still computed and
+              reported (it is informative, just not decisive). All other tables
+              (`per_phase_by_agent`, the overhead component breakdowns, the Amdahl
+              projection) are still written in full; only the verdict itself is
+              downgraded to a non-verdict.
 
     Amdahl projection (design §5, `speedup(W) = 1 / (f_serial + (1 - f_serial)/W)`):
         f_serial = (overhead_serial_total + sum_over_agents(lpt_partition(
@@ -850,7 +869,14 @@ def analyze_phase_timing(records, production_iter_wall_by_cycle=None, x_threshol
 
     denom = overhead_local_total + overhead_serial_total
     verdict_ratio = (overhead_local_total / denom) if denom else None
-    verdict = (verdict_ratio is not None) and (verdict_ratio >= x_threshold)
+    if nl_write_is_upper_bound:
+        # Planner decision (P5.15 Step 3.6 follow-up, item 2): a hard non-verdict --
+        # never PASS/FAIL -- when the NL-write share was not actually separated out
+        # (report_timing cross-check produced no sub-times). verdict_ratio is still
+        # reported above; it is informative, just not decisive.
+        verdict = _DEGRADED_VERDICT
+    else:
+        verdict = (verdict_ratio is not None) and (verdict_ratio >= x_threshold)
 
     # ---- Amdahl projection ----
     wall_total = None
