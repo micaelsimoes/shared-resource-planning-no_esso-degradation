@@ -17,6 +17,7 @@ from openpyxl import Workbook
 from openpyxl.styles import PatternFill
 from centralized_coordination import combine_networks
 from network_data import NetworkData
+from network import capture_block_mutable_state, apply_block_mutable_state
 from load import Load
 from shared_energy_storage import SharedEnergyStorage
 from planning_parameters import PlanningParameters
@@ -2494,6 +2495,25 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
 
     sess_available_capacities = shared_ess_data.get_updated_capacities(esso_model)
 
+    # P5.15 Step 3.6 (PLANNER_BRIEF_2026-09-13.md Addendum 21 item 4,
+    # WORKER_REPORT_S36_CLONE_CAPTURE.md): pristine, unmutated TSO block per
+    # (year, day), cloned ONCE here -- right before the ADMM loop starts
+    # mutating `tso_model` -- instead of on every cycle. Covers BOTH branches
+    # above (fresh construction and continuation) uniformly, since both
+    # converge to a fully ADMM-ready `tso_model` by this point.
+    # `update_transmission_coordination_model_and_solve`'s lightweight
+    # per-cycle capture replays onto a fresh clone of this base to rebuild an
+    # equivalent FrozenSMOPF pre-solve snapshot on demand, without paying
+    # `model.clone()` every cycle. None when the legacy per-cycle-clone path
+    # is selected (`admm_parameters.tso_snapshot_capture_mode ==
+    # 'legacy_clone'`), so that path never pays this cost either.
+    tso_pristine_base = None
+    if admm_parameters.tso_snapshot_capture_mode != 'legacy_clone':
+        tso_pristine_base = {
+            year: {day: tso_model[year][day].clone() for day in transmission_network.days}
+            for year in transmission_network.years
+        }
+
     # ------------------------------------------------------------------------------------------------------------------
     # ADMM -- Main cycle
     # ------------------------------------------------------------------------------------------------------------------
@@ -2541,6 +2561,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             sess_available_capacities,
             from_warm_start=from_warm_start,
             cycle=iter,
+            tso_pristine_base=tso_pristine_base,
         )
 
         # Update the proximal centre only with successful TSO solutions.
@@ -5127,7 +5148,7 @@ def _get_tso_voltage_slack_state(planning_problem, tso_models):
     return blocks
 
 
-def update_transmission_coordination_model_and_solve(transmission_network, model, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=False, cycle=None):
+def update_transmission_coordination_model_and_solve(transmission_network, model, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=False, cycle=None, tso_pristine_base=None):
 
     print('[INFO] \t\t - Updating transmission network...')
 
@@ -5206,15 +5227,61 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
                 label='matched_success',
             )
 
-    success_snapshot_callback = save_selected_tso_comparator if cycle == 7 else None
+    # P5.15 Step 3.6 (PLANNER_BRIEF_2026-09-13.md Addendum 21 item 4,
+    # WORKER_REPORT_S36_CLONE_CAPTURE.md): `tso_pristine_base` non-None (the
+    # default -- see `_run_operational_planning` and
+    # `admm_parameters.tso_snapshot_capture_mode`) selects the lightweight
+    # path: capture this cycle's mutable state (clone-free) right here --
+    # the exact point the legacy `NetworkData.optimize` clone used to fire,
+    # i.e. after this cycle's Param updates above, before the solve -- solve
+    # WITHOUT wiring either snapshot callback (so `NetworkData.optimize`
+    # never clones), and rebuild a block ON DEMAND, only for the (rare)
+    # blocks that actually need a snapshot written, by replaying the
+    # capture onto a fresh clone of the pristine base.
+    # `tso_pristine_base is None` (either `tso_snapshot_capture_mode ==
+    # 'legacy_clone'`, or a caller that predates this parameter) falls back
+    # to the exact pre-Step-3.6 behaviour, byte-for-byte.
+    if tso_pristine_base is not None:
 
-    # Solve!
-    res = transmission_network.optimize(
-        model,
-        from_warm_start=from_warm_start,
-        failure_snapshot_callback=save_failed_tso_block,
-        pre_solve_snapshot_callback=success_snapshot_callback,
-    )
+        captured_state = {
+            (year, day): capture_block_mutable_state(model[year][day])
+            for year in transmission_network.years
+            for day in transmission_network.days
+        }
+
+        res = transmission_network.optimize(model, from_warm_start=from_warm_start)
+
+        for year in transmission_network.years:
+            for day in transmission_network.days:
+                result = res[year][day]
+                needs_failure_snapshot = not _solver_result_succeeded(result)
+                needs_comparator_snapshot = (
+                    cycle == 7 and str(year) == '2025' and str(day) == 'Summer'
+                    and _solver_result_succeeded(result)
+                )
+                if not (needs_failure_snapshot or needs_comparator_snapshot):
+                    continue
+                rebuilt_block = apply_block_mutable_state(
+                    tso_pristine_base[year][day].clone(),
+                    captured_state[(year, day)],
+                )
+                if needs_failure_snapshot:
+                    save_failed_tso_block(rebuilt_block, year, day, result)
+                if needs_comparator_snapshot:
+                    save_selected_tso_comparator(rebuilt_block, year, day, result)
+
+    else:
+
+        success_snapshot_callback = save_selected_tso_comparator if cycle == 7 else None
+
+        # Solve!
+        res = transmission_network.optimize(
+            model,
+            from_warm_start=from_warm_start,
+            failure_snapshot_callback=save_failed_tso_block,
+            pre_solve_snapshot_callback=success_snapshot_callback,
+        )
+
     for year in transmission_network.years:
         for day in transmission_network.days:
             if not _solver_result_succeeded(res[year][day]):
