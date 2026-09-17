@@ -117,15 +117,24 @@ from pyomo.core.base.block import BlockData  # noqa: E402
 ARM_KEY = 's39_D'
 NUM_CYCLES = 2
 
-OUT_ROOT = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S40', 'clone_preflight')
+# Optional run suffix (argv[1]): redirects BOTH output roots and BOTH
+# working-dir mode labels, so a corrected-comparator re-run never touches the
+# committed evidence of an earlier one (CLAUDE.md: never re-run a harness onto
+# a cited artifact).
+_RUN_SUFFIX = ''
+for _arg in sys.argv[1:]:
+    if not _arg.startswith('--'):
+        _RUN_SUFFIX = '_' + _arg.strip('_')
+        break
+OUT_ROOT = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S40', f'clone_preflight{_RUN_SUFFIX}')
 OUT_LEGACY = os.path.join(OUT_ROOT, 'legacy')
 OUT_LIGHTWEIGHT = os.path.join(OUT_ROOT, 'lightweight')
 
 # Must both start with 'preflight_' -- `assert_s39_capture_paths`'s own
 # `this_call_mode_is_valid` check (`p515_g_g1_g4_admm_gates.py`) hard-requires
 # `mode == 'real' or mode == 'preflight' or mode.startswith('preflight_')`.
-MODE_LEGACY = 'preflight_s40cpre_legacy'
-MODE_LIGHTWEIGHT = 'preflight_s40cpre_lightweight'
+MODE_LEGACY = f'preflight_s40cpre{_RUN_SUFFIX}_legacy'
+MODE_LIGHTWEIGHT = f'preflight_s40cpre{_RUN_SUFFIX}_lightweight'
 
 FORBIDDEN_LIVE_PROCESS_SUBSTRINGS = (
     'p515_g_g1_g4_admm_gates.py',
@@ -154,6 +163,12 @@ PRODUCTION_FILES_TO_CHECK_CLEAN = (
 # ---------------------------------------------------------------------------
 EXCLUDE_KEY_NAMES = {
     'timestamp_utc',
+    # P5.15 Addendum 22 (Planner, after the v1 run): the ESSO complementarity
+    # diagnostics embed the per-solve IPOPT log path, which lives under each
+    # run's OWN eval working dir and therefore must differ. v1 did not
+    # anticipate it and reported 18 such diffs (doubled by the report/g-json
+    # double compare). Numeric diagnostics in the same records ARE compared.
+    'log_path',
     'wall_clock_s',
     'heartbeat_path',
     'stdout_path',
@@ -175,9 +190,18 @@ EXCLUDE_KEY_NAMES = {
 # Scoped by full dotted path (key name alone, 'path', is too generic to
 # blanket-exclude -- these two are the only places it appears as an
 # out-dir-relative path).
-EXCLUDE_DOTTED_KEYS = {
+# Matched as dotted-path SUFFIXES (v1 matched them as full paths from the
+# comparison root, so 'report.esso_models_pickle.path' and
+# 'g_s39_D.json.esso_models_pickle.path' both escaped the exclusion).
+EXCLUDE_DOTTED_SUFFIXES = {
     'esso_models_pickle.path',
     'network_failures_summary.path',
+    'soh_floor_multiplier_and_efc_per_cohort_year_terminal.path',
+}
+# Reported separately as an INTENTIONAL difference, never as a gate failure:
+# the marker recording which capture mode each run requested.
+INTENTIONAL_DIFF_SUFFIXES = {
+    'rule_eleven_checklist.s40_tso_snapshot_capture_mode_requested',
 }
 
 
@@ -375,7 +399,9 @@ def _diff(a, b, path_prefix=''):
     if isinstance(a, dict) and isinstance(b, dict):
         for key in sorted(set(a) | set(b), key=str):
             dotted = f'{path_prefix}.{key}' if path_prefix else str(key)
-            if key in EXCLUDE_KEY_NAMES or dotted in EXCLUDE_DOTTED_KEYS:
+            if (key in EXCLUDE_KEY_NAMES
+                    or any(dotted.endswith(sfx) for sfx in EXCLUDE_DOTTED_SUFFIXES)
+                    or any(dotted.endswith(sfx) for sfx in INTENTIONAL_DIFF_SUFFIXES)):
                 continue
             if key not in a:
                 diffs.append({'field': dotted, 'legacy': '<MISSING>', 'lightweight': b[key]})
@@ -534,7 +560,8 @@ def main():
         },
         'clone_counts_match_expected': clone_counts_match_expected,
         'excluded_field_names': sorted(EXCLUDE_KEY_NAMES),
-        'excluded_dotted_fields': sorted(EXCLUDE_DOTTED_KEYS),
+        'excluded_dotted_suffixes': sorted(EXCLUDE_DOTTED_SUFFIXES),
+        'intentional_difference_suffixes': sorted(INTENTIONAL_DIFF_SUFFIXES),
         'bitwise_diff': {
             'report_g_s39_D': {'diffs': diff_report, 'n_diffs': len(diff_report)},
             'artifacts': artifact_diffs,
