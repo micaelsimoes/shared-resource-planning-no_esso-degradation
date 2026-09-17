@@ -58,6 +58,7 @@ evaluator's own helper functions where applicable (never reimplemented).
 """
 import glob
 import json
+import math
 import os
 import sys
 
@@ -141,7 +142,18 @@ def main():
             action = r.get(f'rho_{ch}_action')
             expected_gamma = (0.0 if tau_expected == 0.0 else (tau_expected * rho_after
                                                                 if rho_after is not None else None))
-            gamma_ok = (gamma_after == expected_gamma) if expected_gamma is not None else False
+            # `gamma_after` (like s37's `rho_ess_before`/`_after`) is
+            # `_get_admm_gamma_summary`'s AVERAGE over every TSO model
+            # (12 year/day blocks) -- exact float equality is too strict
+            # (averaging several models' Params that are each individually
+            # bit-identical still accumulates ~1e-17 relative rounding);
+            # `math.isclose` at a tight tolerance is the correct check
+            # (same fix s37's own preflight needed for rho_ess).
+            gamma_ok = (
+                (gamma_after == 0.0 == expected_gamma) or
+                (gamma_after is not None and expected_gamma is not None
+                 and math.isclose(gamma_after, expected_gamma, rel_tol=1e-9))
+            ) if expected_gamma is not None else False
             if ch in exempt_channels:
                 label_ok = (action == 'exempt (fixed)')
             else:

@@ -5510,7 +5510,18 @@ def run_s38_arm(arm_key, num_max_iters_override=None, output_root_override=None,
     `num_max_iters_override`/`output_root_override`: smoke-test-only
     parameters (P515S38 preflights, cap 2, their own fresh output roots
     under `data/SRP1/Results/P515S38/preflight_<arm>/`); default to the spec
-    v9 cap (300) and `S38_ARMS[arm_key]['out_dir']` respectively.
+    v9 cap (300) and `S38_ARMS[arm_key]['out_dir']` respectively. WHENEVER
+    `output_root_override` is given, the REAL `run_admm_arm` call below uses
+    its OWN distinct eval id (`arm_cfg['preflight_eval_id'] + '_run'`),
+    NEVER `arm_cfg['eval_id']` -- the s37 preparation task's own worked
+    example of what NOT to do: "the s37 arm-1 launch was refused because the
+    preflight and the arm shared a working directory" (s37's preflight ran
+    its real 2-cycle `run_admm_arm` call under the SAME eval id the later
+    150-cycle launch used, so the Planner's real launch then found a
+    non-fresh eval dir and had to be re-pointed). This auto-derivation means
+    no caller of this function can reproduce that bug by omission -- the
+    THIRD id (distinct from both `eval_id` and `preflight_eval_id`) is
+    computed here, not left to the caller.
 
     Returns `(report, report_path)`, exactly `run_admm_arm`'s own return
     value (passed straight through).
@@ -5594,9 +5605,22 @@ def run_s38_arm(arm_key, num_max_iters_override=None, output_root_override=None,
                                     floor_rows_by_node=s38_floor_rows_by_node,
                                     floor_sidecar_path=floor_sidecar_path)
 
+    # Distinct eval id for the REAL run_admm_arm call whenever this is a
+    # smoke test (output_root_override given) -- see the docstring above.
+    # The real (non-preflight) launch is unaffected: eval_id stays
+    # arm_cfg['eval_id'], exactly as before.
+    run_eval_id = (arm_cfg['eval_id'] if output_root_override is None
+                   else f"{preflight_eval_id}_run")
+    if output_root_override is not None:
+        run_eval_dir = os.path.join(O.WORK_DIR, run_eval_id)
+        if os.path.exists(run_eval_dir):
+            raise RuntimeError(
+                f'refusing to start: preflight RUN eval dir already exists (network '
+                f'logs append): {run_eval_dir}')
+
     with s38_pf_capture_hooks(recourse_jump_path, ess_stride_path, floor_sidecar_path,
                               pf_stride_path, s38_floor_rows_by_node, stride=1):
-        return run_admm_arm(arm_key, out_dir, k_override=None, eval_id=arm_cfg['eval_id'],
+        return run_admm_arm(arm_key, out_dir, k_override=None, eval_id=run_eval_id,
                             num_max_iters_override=cap, apply_rho=False,
                             full_diagnostics_in_rows=True, post_run_hook=_s38_hook,
                             pre_solve_hook=_s38_configure_hook(tau_value, exempt_channels))
