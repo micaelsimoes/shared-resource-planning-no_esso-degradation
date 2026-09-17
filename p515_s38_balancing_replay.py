@@ -485,6 +485,16 @@ def run_counterfactual(run_name, run_cfg, admm_block_template):
 
         per_cycle_records.append(cycle_record)
 
+    n_cycles = len(per_cycle_records)
+    cycle_200_available = n_cycles >= 200
+    # Index of the record whose 'cycle' field is 200, when the trajectory
+    # actually reaches that far; otherwise None -- the s37 arms (150 cycles)
+    # never reach cycle 200, so "frozen by 200" is NOT verifiable from them
+    # and must not be reported as if it were. `terminal_state` (last
+    # available cycle) is reported unconditionally, separately, and is
+    # honestly labelled with the cycle number it corresponds to.
+    frozen_at_200 = per_cycle_records[199]['channels'] if cycle_200_available else None
+
     channel_summary = {}
     for g in CHANNELS:
         channel_summary[g] = {
@@ -492,8 +502,9 @@ def run_counterfactual(run_name, run_cfg, admm_block_template):
             'first_divergence_from_actual_trajectory': first_divergence[g],
             'subsequent_open_loop_firings_not_predictive': subsequent_firings[g],
             'n_subsequent_firings': len(subsequent_firings[g]),
-            'frozen_by_200_open_loop': per_cycle_records[min(199, len(per_cycle_records) - 1)]['channels'][g]['frozen']
-                if len(per_cycle_records) >= 1 else None,
+            'cycle_200_reached_by_this_trajectory': cycle_200_available,
+            'frozen_at_cycle_200_open_loop': (frozen_at_200[g]['frozen'] if frozen_at_200 else None),
+            'terminal_cycle_used': per_cycle_records[-1]['cycle'],
             'terminal_state': per_cycle_records[-1]['channels'][g],
         }
 
