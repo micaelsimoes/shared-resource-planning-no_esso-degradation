@@ -65,8 +65,26 @@ class ADMMParameters:
             # [] (empty list): no channel exempt, so every other case study
             # and every previous arm is unchanged.
             'balancing_exempt_channels': [],
+            # P5.15 Addendum 21 (frozen spec v10,
+            # data/SRP1/Results/P515S39/frozen_s39_oracle_spec_v10_f1b2b999.json,
+            # `production_change`): optional, per-channel CONDITIONAL
+            # exemption -- a channel is held exempt ("exempt (fixed)")
+            # until its own Boyd `dual_ratio` (full s/eps_dual) has been
+            # strictly below a configured threshold for a configured
+            # number of CONSECUTIVE cycles, at which point the exemption
+            # lifts, one-way (never re-exempted), and the channel is
+            # balanced by the standard rule from that same update on.
+            # Dict keyed by channel ('v', 'pf', 'ess'), each value
+            # `{'dual_ratio_below': <float > 0>, 'consecutive_cycles':
+            # <int >= 1>}`. A channel may not appear in BOTH this dict and
+            # `balancing_exempt_channels` above (validated below). Default
+            # {} (empty dict): no channel conditionally exempt, so every
+            # other case study, channel and arm that does not set this key
+            # is byte-identical to pre-v10 behaviour.
+            'balancing_exempt_until': {},
         }
         self.balancing_exempt_channels_source = 'default'
+        self.balancing_exempt_until_source = 'default'
         self.rho = {'v': dict(), 'pf': dict(), 'ess': dict()}
         self.previous_iter = {'v': dict(), 'pf': dict(), 'ess': dict()}
         self.rho_previous_iter = {'v': dict(), 'pf': dict(), 'ess': dict()}
@@ -201,7 +219,7 @@ def _read_parameters_from_file(admm_params, params_data):
     # P5.15 Addendum 19 (frozen spec v8): 'balancing_exempt_channels' is a
     # list of channel names, not a float penalty-update coefficient; handled
     # separately below, alongside the freeze-cycle keys.
-    _non_float_penalty_update_keys = _cycle_index_keys + ('balancing_exempt_channels',)
+    _non_float_penalty_update_keys = _cycle_index_keys + ('balancing_exempt_channels', 'balancing_exempt_until')
     for key in admm_params.penalty_update:
         # The three freeze-cycle keys are optional integer cycle indices (or
         # None), not float penalty-update coefficients; handled separately
@@ -263,6 +281,54 @@ def _read_parameters_from_file(admm_params, params_data):
     else:
         admm_params.penalty_update['balancing_exempt_channels'] = []
         admm_params.balancing_exempt_channels_source = 'default'
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # P5.15 Addendum 21 (frozen spec v10, `production_change`): optional
+    # per-channel CONDITIONAL balancing exemption. Absent/empty key -> {}
+    # (default), source 'default' -- no behaviour change for any case
+    # study that does not set this key.
+    if 'balancing_exempt_until' in penalty_update and penalty_update['balancing_exempt_until']:
+        balancing_exempt_until = penalty_update['balancing_exempt_until']
+        if not isinstance(balancing_exempt_until, dict):
+            raise ValueError('ADMM penalty_update.balancing_exempt_until must be a dict.')
+        invalid_channels = [c for c in balancing_exempt_until if c not in ('v', 'pf', 'ess')]
+        if invalid_channels:
+            raise ValueError(
+                "ADMM penalty_update.balancing_exempt_until keys must be drawn from "
+                f"{{'v', 'pf', 'ess'}}; got invalid entries: {invalid_channels}.")
+        overlap = sorted(set(balancing_exempt_until) & set(admm_params.penalty_update['balancing_exempt_channels']))
+        if overlap:
+            raise ValueError(
+                "ADMM penalty_update: a channel may not be in BOTH balancing_exempt_channels "
+                f"and balancing_exempt_until; overlap: {overlap}.")
+        normalized_exempt_until = {}
+        for channel, channel_cfg in balancing_exempt_until.items():
+            if not isinstance(channel_cfg, dict):
+                raise ValueError(
+                    f"ADMM penalty_update.balancing_exempt_until['{channel}'] must be a dict "
+                    "with keys 'dual_ratio_below' and 'consecutive_cycles'.")
+            if 'dual_ratio_below' not in channel_cfg or 'consecutive_cycles' not in channel_cfg:
+                raise ValueError(
+                    f"ADMM penalty_update.balancing_exempt_until['{channel}'] must set both "
+                    "'dual_ratio_below' and 'consecutive_cycles'.")
+            dual_ratio_below = float(channel_cfg['dual_ratio_below'])
+            consecutive_cycles = int(channel_cfg['consecutive_cycles'])
+            if dual_ratio_below <= 0.0:
+                raise ValueError(
+                    f"ADMM penalty_update.balancing_exempt_until['{channel}'].dual_ratio_below "
+                    "must be positive.")
+            if consecutive_cycles < 1:
+                raise ValueError(
+                    f"ADMM penalty_update.balancing_exempt_until['{channel}'].consecutive_cycles "
+                    "must be at least 1.")
+            normalized_exempt_until[channel] = {
+                'dual_ratio_below': dual_ratio_below, 'consecutive_cycles': consecutive_cycles,
+            }
+        admm_params.penalty_update['balancing_exempt_until'] = normalized_exempt_until
+        admm_params.balancing_exempt_until_source = 'case_file'
+    else:
+        admm_params.penalty_update['balancing_exempt_until'] = {}
+        admm_params.balancing_exempt_until_source = 'default'
 
     if admm_params.minimum_consecutive_converged_cycles < 1:
         raise ValueError('ADMM minimum_consecutive_converged_cycles must be at least 1.')

@@ -6557,6 +6557,18 @@ def _init_admm_freeze_state():
     False until `_update_admm_penalties` first sees that channel listed as
     exempt, at which point it is set True alongside `frozen=True`,
     `reason='exempt'`, `at_clamp` left False -- see that function.
+
+    P5.15 Addendum 21 (frozen spec v10): `exempt_until_streak` counts
+    CONSECUTIVE calls (per channel) whose Boyd `dual_ratio` has been below
+    the configured `balancing_exempt_until[channel]['dual_ratio_below']`
+    threshold (reset to 0 on any call where it is not); `exempt_until_lifted`
+    is False until that streak reaches the configured
+    `consecutive_cycles`, at which point it is set True, permanently (the
+    lift is one-way); `exempt_until_lift_cycle` records the `iter` value of
+    the call that lifted it (None until then). All three fields are inert
+    no-ops for any channel not listed in
+    `params.penalty_update['balancing_exempt_until']` (default {}) -- see
+    `_update_admm_penalties`.
     """
     return {
         group: {
@@ -6566,6 +6578,9 @@ def _init_admm_freeze_state():
             'at_clamp': False,
             'reason': None,
             'exempt': False,
+            'exempt_until_streak': 0,
+            'exempt_until_lifted': False,
+            'exempt_until_lift_cycle': None,
         }
         for group in ('v', 'pf', 'ess')
     }
@@ -6675,6 +6690,43 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
     and it never re-enters the legacy-cycle/backstop/streak bookkeeping.
     Absent key (default []): no channel exempt, bit-identical to pre-v8
     behaviour for every other case study and every previous arm.
+
+    Addendum 21 addition (P5.15, frozen spec v10,
+    data/SRP1/Results/P515S39/frozen_s39_oracle_spec_v10_f1b2b999.json,
+    `production_change`): a per-channel CONDITIONAL exemption,
+    `params.penalty_update['balancing_exempt_until']` (optional, default
+    {}, e.g. `{'ess': {'dual_ratio_below': 1.0, 'consecutive_cycles': 5}}`;
+    validated in `admm_parameters.py` -- channel in {'v','pf','ess'},
+    `dual_ratio_below` > 0, `consecutive_cycles` >= 1, and a channel may
+    not appear in BOTH this dict and `balancing_exempt_channels`). A
+    channel listed here is held at `'exempt (fixed)'` -- same label and
+    same precedence rank as the unconditional exemption above, evaluated
+    immediately after it -- for as long as its OWN Boyd `dual_ratio`
+    (`boyd_metrics[group]['dual_ratio']`, the FULL s/eps_dual ratio that
+    also gates the Boyd stopping test, NOT `dual_ratio_balance`) has not
+    yet been strictly below the configured threshold on `consecutive_cycles`
+    CONSECUTIVE calls to this function (`freeze_state[group]
+    ['exempt_until_streak']`, incremented when the ratio is below
+    threshold, reset to 0 otherwise). On the call that completes that
+    streak, the exemption LIFTS -- one-way, `freeze_state[group]
+    ['exempt_until_lifted'] = True` permanently, `['exempt_until_lift_cycle']
+    = iter` -- and the SAME call falls through to the standard
+    frozen/fixed/failure-hold/increase/decrease/dead-band rule below, so
+    the lift cycle's own action may be 'increased', 'decreased' or a
+    'held'-family label; a 'held'-family action AT the lift cycle is
+    relabelled with a ' (exemption lifted)' suffix (e.g.
+    `'held (exemption lifted)'`) so the lift cycle is distinguishable in
+    the trajectory even when it happens not to change rho. Every call
+    after the lift treats the channel exactly as any other non-exempt
+    channel, INCLUDING the unchanged-streak freeze (whose
+    `unchanged_streak`/`ever_acted` bookkeeping is untouched, hence still
+    at its initial 0/False, while the channel was pending, so the streak
+    is counted fresh FROM the lift) and the absolute backstop. `at_clamp`
+    is never set while pending (mirrors the unconditional exemption).
+    Absent/empty `balancing_exempt_until` (default {}): `exempt_until_cfg`
+    is None for every group and this entire addition is a numeric no-op --
+    byte-identical to pre-v10 behaviour for every case study, channel and
+    arm that does not set this key.
     """
 
     before = _get_admm_penalty_summary(tso_model, dso_models, esso_model)
@@ -6701,6 +6753,10 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
     # permanently exempt from balancing. Default [] -- empty set, no
     # behaviour change for any case study/arm that does not set this key.
     balancing_exempt_channels = set(update_params.get('balancing_exempt_channels', []) or [])
+    # P5.15 Addendum 21 (frozen spec v10, `production_change`): per-channel
+    # CONDITIONAL exemption. Default {} -- empty dict, no behaviour change
+    # for any case study/arm that does not set this key.
+    balancing_exempt_until = dict(update_params.get('balancing_exempt_until', {}) or {})
 
     for group in ('v', 'pf', 'ess'):
 
@@ -6762,6 +6818,39 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
             group_state['reason'] = 'exempt'
             group_state['at_clamp'] = False
 
+        # --------------------------------------------------------------
+        # P5.15 Addendum 21 (frozen spec v10): per-channel CONDITIONAL
+        # exemption -- see this function's own docstring for the full
+        # rule. `exempt_until_cfg is None` (channel absent from
+        # `balancing_exempt_until`, the default for every group) makes
+        # this block a complete no-op: `group_pending_exempt_until` stays
+        # False and `group_just_lifted_this_cycle` stays False, exactly as
+        # if this addition did not exist.
+        # --------------------------------------------------------------
+        exempt_until_cfg = balancing_exempt_until.get(group)
+        group_pending_exempt_until = False
+        group_just_lifted_this_cycle = False
+        if (
+                exempt_until_cfg is not None and not group_state['exempt']
+                and not group_state['exempt_until_lifted']
+        ):
+            dual_ratio_below = exempt_until_cfg['dual_ratio_below']
+            required_consecutive = exempt_until_cfg['consecutive_cycles']
+            full_dual_ratio = boyd_metrics[group]['dual_ratio']
+            if full_dual_ratio < dual_ratio_below:
+                group_state['exempt_until_streak'] += 1
+            else:
+                group_state['exempt_until_streak'] = 0
+            if group_state['exempt_until_streak'] >= required_consecutive:
+                # Streak complete on THIS call -- lift one-way and fall
+                # through to the standard rule below (never sets `action`
+                # here; `group_pending_exempt_until` stays False).
+                group_state['exempt_until_lifted'] = True
+                group_state['exempt_until_lift_cycle'] = iter
+                group_just_lifted_this_cycle = True
+            else:
+                group_pending_exempt_until = True
+
         channel_frozen_this_cycle = bool(
             group_state['frozen'] or legacy_frozen_global or backstop_frozen_global
         )
@@ -6770,14 +6859,20 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
         # Determine penalty update. Precedence (highest first): exempt
         # (Addendum 19, `balancing_exempt_channels` -- overrides every
         # other branch, including the freeze/backstop labels below) >
-        # frozen (spec v3's cycle-30 freeze, OR spec v4's per-channel
-        # unchanged-streak trigger, OR spec v4's global backstop -- any of
-        # the three, once true for a channel, holds it PERMANENTLY) >
-        # not-adaptive ('fixed') > failure hold (only when not frozen) >
+        # pending conditional exemption (Addendum 21,
+        # `balancing_exempt_until`, same precedence rank and label as the
+        # unconditional exemption -- a channel that lifts THIS cycle falls
+        # through past this branch, never taking it) > frozen (spec v3's
+        # cycle-30 freeze, OR spec v4's per-channel unchanged-streak
+        # trigger, OR spec v4's global backstop -- any of the three, once
+        # true for a channel, holds it PERMANENTLY) > not-adaptive
+        # ('fixed') > failure hold (only when not frozen) >
         # increase/decrease/dead-band. The pre-v3 "freeze clause" (held
         # once both ratios are <= 1) remains removed.
         # --------------------------------------------------------------
         if group_state['exempt']:
+            action = 'exempt (fixed)'
+        elif group_pending_exempt_until:
             action = 'exempt (fixed)'
         elif channel_frozen_this_cycle:
             if not group_state['frozen']:
@@ -6806,12 +6901,28 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics, 
             factor = 1.0 / update_params['decrease_factor']
             action = 'decreased'
 
-        if not channel_frozen_this_cycle:
+        # --------------------------------------------------------------
+        # P5.15 Addendum 21 (frozen spec v10): the lift cycle's own action
+        # is distinguishable in the trajectory even when the standard rule
+        # it just fell through to happens not to change rho (`held`,
+        # `fixed` or `held after solver failure`) -- an 'increased'/
+        # 'decreased' lift-cycle action is left exactly as-is.
+        # --------------------------------------------------------------
+        if group_just_lifted_this_cycle and action not in ('increased', 'decreased'):
+            action = f'{action} (exemption lifted)'
+
+        if not channel_frozen_this_cycle and not group_pending_exempt_until:
             # --------------------------------------------------------------
             # Spec v4 per-channel unchanged-streak bookkeeping. Streak
             # resets to 0 on a real change; the trigger (once ever_acted)
             # freezes the channel starting the NEXT cycle -- this cycle's
-            # `action` above is unaffected.
+            # `action` above is unaffected. Addendum 21: also skipped while
+            # `group_pending_exempt_until` (the channel is still in its
+            # conditional-exemption pending phase, `channel_frozen_this_
+            # cycle` is False for it, but this bookkeeping must not run --
+            # `unchanged_streak`/`ever_acted` stay at their initial 0/False
+            # so the streak is counted FRESH from the lift cycle, per this
+            # function's own docstring).
             # --------------------------------------------------------------
             if action in ('increased', 'decreased'):
                 group_state['unchanged_streak'] = 0
