@@ -177,6 +177,33 @@ Authority: `PLANNER_BRIEF_2026-09-13.md` Addenda 17–20. Reports: `P5_15_ADDEND
   - "ρ_ess = 0.001 / 0.01 is adopted";
   - "the proximal term is the cause" before the arms report.
 
+## Amendment — 2026-09-17 (Addendum 21): the PF pace is fixed; new certification bar; τ = 0 adopted
+
+Authority: `PLANNER_BRIEF_2026-09-13.md` Addendum 21. Reports: `P5_15_S38_PF_PACE_REPORT.md`,
+`P5_15_ADDENDUM20_EXPERT_REPORT.md`.
+
+- **HP1 + HP2 confirmed, with HP1 the larger lever.** Arm A (τ = 0) reached a Boyd stop at cycle 133 with PF first
+  passing at 131; arm B (PF balancing live) stopped at 151 with PF at 146; run 1 stopped at 477 with PF at 226. The late
+  PF residual concentrates in active power at the node 7 interface; the mechanism has not been examined.
+- **τ = 0 globally is the oracle setting.** The proximal term leaves the method, consistent with the paper's Algorithm 2.
+  Per-channel τ is a recorded fallback, used only on evidence of TSO instability.
+- **Criterion (c), storage terminal ratio < 0.9, is withdrawn.** It tests which channel closes the stop, and run 1 fails
+  it at 0.988. **The certification bar from now on:** all channels inside their Boyd tolerances for 10 consecutive
+  cycles. Terminal ratios and rule ten are reported, not gated. The rule-nine cost bar uses the maximum objective step
+  over the last 10 cycles. **Run 1 remains certified under Addendum 16.**
+- **Authorized, in order (spec v10, `P515S39/frozen_s39_oracle_spec_v10_f1b2b999.json`):**
+  1. arm C: τ = 0, PF balancing live, ρ_ess 0.01 exempt, cap 300, new bar;
+  2. arm D: C plus the two-phase ESS schedule. If D certifies with storage terminal ratio < 0.5, it is the production
+     oracle; otherwise C is.
+
+  In parallel: the zero-solve node 7 look, and the Step 3.6 TSO-clone replacement. Its preflight and gate come after C
+  and D, followed by the 10-cycle re-measurement and then persistent workers. Once the oracle is fixed: Step 3.5 (polish
+  gap), then Step 3 closes.
+- **Claims to avoid:**
+  - A/B cost differences to run 1 as results;
+  - "criterion (c) failed" as a finding about the method;
+  - "the proximal term is removed" before an oracle arm certifies without it.
+
 ### Manuscript list — regeneration obligations (open)
 
 1. **All Table 8 costs** regenerated under the system-cost definition, with a new **transfer-payment column** (TSO
