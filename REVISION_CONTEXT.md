@@ -143,6 +143,40 @@ Authority: `PLANNER_BRIEF_2026-09-13.md` Addenda 16 and 17. Reports: `P5_15_S35R
   - the network-limited, not degradation-limited, character of storage at C\* is reported as a result;
   - the claims to avoid above apply to the manuscript verbatim.
 
+## Amendment — 2026-09-17 (Addenda 17–20): the storage lever worked; the PF channel now sets the pace
+
+Authority: `PLANNER_BRIEF_2026-09-13.md` Addenda 17–20. Reports: `P5_15_ADDENDUM17_EXPERT_REPORT.md`,
+`P5_15_S37_RHO_ESS_REPORT.md`, `P5_15_ADDENDUM19_EXPERT_REPORT.md` (supersedes the stage report on two ESS figures).
+
+- **Dual initialization is closed as a lever (Addendum 19).** Per-agent storage duals are identified only up to the span
+  of the duplicated active storage rows. Run 1 remains the certified evaluation.
+- **The storage walk speed scales as 1/ρ_ess, and residual balancing is mis-specified on the ESS channel.** The ESS dual
+  residual is gradient-dominated, so balancing drove ρ_ess up. **The ESS channel is exempt from balancing.** At fixed
+  ρ_ess = 0.01 / 0.001 (cap 150), the storage channel first passes at cycle 95 / 87 (run 1: 475), and EFC/day ≥ 1.06 by
+  cycle 33 / 3.
+- **Neither ρ_ess arm certified; the PF dual residual set the verdict.** Its ratio is ρ_ess-invariant (within 1.3 % of
+  run 1 at every matched cycle; run 1 first passes PF at 226). The accepted reading is HP1 + HP2: the τ = 1 TSO proximal
+  term halves the TSO step, and ρ_pf is too large late while the cycle-60 backstop froze balancing. The √2 in the PF
+  dual is correct accounting, not a cause. At low ρ_ess the storage channel is **not settled** (under-damped once the
+  gradient is spent). A two-phase ESS schedule is recorded for later, not adopted.
+- **Policy changes (Addendum 20):**
+  - the cycle-60 backstop is removed for all channels; the freeze rule is 10 unchanged cycles (with a prior action)
+    plus an absolute freeze at cycle 200;
+  - certification runs use cap 300, which is a budget, not a criterion; tolerances are unchanged.
+- **Authorized now (frozen spec v9, `P515S38/frozen_s38_pf_pace_spec_v9_7a2b4ab7.json`):**
+  - a zero-solve replay of the balancing rule;
+  - arm A: τ = 0 with ρ_pf held; fallback τ = 0.25 only on a pre-registered TSO-instability trigger;
+  - arm B: τ = 1 with PF balancing live.
+  - Both arms run at cap 300, cold, with ρ_ess = 0.01 fixed and exempt, and per-entry PF capture as standard.
+  - The combined configuration is run only if both arms help (PF first pass ≤ 180); the adopted configuration then
+    becomes the oracle and Step 3.5 follows.
+- **Step 3.6** proceeds in parallel, with an interim screening target of S = 3 / X = 70 %. The two "cheap wins" are
+  dropped, as they are already defaults. Timing measurements never share the machine with an arm.
+- **Claims to avoid:**
+  - EFC 1.14 / 1.16, or any cost from the uncertified ρ_ess arms, as equilibrium or lower-cost results;
+  - "ρ_ess = 0.001 / 0.01 is adopted";
+  - "the proximal term is the cause" before the arms report.
+
 ### Manuscript list — regeneration obligations (open)
 
 1. **All Table 8 costs** regenerated under the system-cost definition, with a new **transfer-payment column** (TSO
