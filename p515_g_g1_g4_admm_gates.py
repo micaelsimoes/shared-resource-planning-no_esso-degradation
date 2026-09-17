@@ -84,6 +84,7 @@ import p58_rescale as R  # noqa: E402
 import p59_rho as RH  # noqa: E402
 import shared_energy_storage_data as SED  # noqa: E402
 import shared_resources_planning as srp  # noqa: E402
+import admm_parameters  # noqa: E402 -- P5.15 Addendum 21, s39 structural checklist source check
 import shared_ess_price_taker  # noqa: E402 -- P5.15 Addendum 16 item 2-3 PHASE 2, s35pt arm
 import model_construction_helpers as mch  # noqa: E402
 from definitions import PENALTY_FLEXIBILITY, PENALTY_GENERATION_CURTAILMENT  # noqa: E402
@@ -5626,6 +5627,598 @@ def run_s38_arm(arm_key, num_max_iters_override=None, output_root_override=None,
                             pre_solve_hook=_s38_configure_hook(tau_value, exempt_channels))
 
 
+# ===========================================================================
+# P5.15 Addendum 21 -- s39 arms (the oracle arms under the new certification
+# bar), frozen spec v10, data/SRP1/Results/P515S39/
+# frozen_s39_oracle_spec_v10_f1b2b999.json. Predecessor: s38 (frozen spec
+# v9, `7a2b4ab7...`) -- base configuration is v9 arm A (`s38_A_tau0`)
+# UNCHANGED (rho_v=0.0077, rho_pf=0.198, rho_ess=0.01 fixed on every
+# network AND the esso, standalone shared-ESS initialization, tau=0.0
+# globally). Supersedes NOTHING -- s31c ... s38 above are UNCHANGED.
+#
+# Addendum 21 reading (Planner interpretation of the new certification
+# bar, spec v10 `certification_bar`): all three channels (V, PF, ESS)
+# inside their Boyd tolerances for 10 CONSECUTIVE cycles
+# (`minimum_consecutive_converged_cycles = 10`, override -- NOT s38's 3),
+# within the cap of 300; the cost bar (rule nine) is redefined for
+# REPORTING only (never gated) using the maximum objective step over the
+# arm's own last 10 cycles PLUS run 1's own `run1_max_step_last10`
+# (256.2581009864807, read from the frozen spec by path with sha256 -- see
+# `p515_s39_evaluate.py`). Two arms:
+#   C (`s39_C`) -- ESS permanently exempt from balancing
+#     (`balancing_exempt_channels = ['ess']`, rho_ess fixed 0.01, EXACTLY
+#     s38 arm A's own exemption for that one channel -- s38 arm A also
+#     exempts PF; s39_C does NOT, `pf_balancing: "ACTIVE (not exempt)"`
+#     per spec v10 `common_configuration`).
+#   D (`s39_D`) -- TWO-PHASE ESS schedule: `balancing_exempt_channels = []`
+#     (ESS is NOT unconditionally exempt) plus the NEW production
+#     conditional-exemption config,
+#     `balancing_exempt_until = {'ess': {'dual_ratio_below': 1.0,
+#     'consecutive_cycles': 5}}` -- see `_update_admm_penalties`'s own
+#     docstring (`shared_resources_planning.py`, Addendum 21 addition) for
+#     the full one-way lift rule.
+# V balancing is ACTIVE (not exempt) in BOTH arms; PF balancing is ACTIVE
+# (not exempt) in BOTH arms (unlike s38 arm A, which exempts PF too --
+# spec v10 explicitly sets `pf_balancing: "ACTIVE (not exempt)"` in
+# `common_configuration`, shared by C and D). Cap 300 for every arm (spec
+# v10 `decisions_in_force.cap`, unchanged reading from Addendum 20: "the
+# cap is a budget, not a criterion").
+#
+# STRUCTURAL FIX (mandatory, Addendum 21 W1 task): s38's `run_s38_arm` used
+# ONE eval id (`arm_cfg['preflight_eval_id']`) for its throwaway pre-check
+# planning object REGARDLESS of whether the call was a 2-cycle smoke test
+# or the real 300-cycle launch, and ONE probe id
+# (`f'p515s38_{arm_key}_tso_probe_checklist'`, inside
+# `assert_s38_capture_paths`) likewise mode-independent -- so a preflight
+# run consumed both ids on disk, and the LATER real launch then found them
+# already occupied (the Planner had to move 4 empty dirs aside; see
+# WORKER_REPORT_S38_PREP.md / WORKER_REPORT_S38_REPLAY.md history). `run_
+# s39_arm` below derives ALL THREE working-dir ids (pre-check, probe, run)
+# from a `mode` suffix ('real' when `output_root_override is None`,
+# 'preflight' otherwise), so preflight mode and real launch mode can NEVER
+# share any id, regardless of invocation order. `p515_s39_zero_solve_
+# checks.py` asserts this disjointness directly (zero solves, string-level).
+#
+# NEW capture requirement (spec v10 `common_configuration.capture`,
+# "everything v9 captured", plus this stage's own NEW production change):
+# a per-cycle ESS conditional-exemption-state sidecar
+# (`s39_exempt_until_capture_hooks`, wrapping `srp._update_admm_penalties`
+# -- the SAME monkeypatch technique `s38_pf_capture_hooks` uses on `srp.
+# get_admm_boyd_residual_metrics`), recording, for every channel
+# configured in `params.penalty_update['balancing_exempt_until']` (ESS
+# only for arm D; the sidecar is written EMPTY -- zero lines -- for arm C,
+# whose `balancing_exempt_until` is {}), the streak count, the lifted
+# flag, the lift cycle (once set) and that cycle's own action label,
+# straight from the REAL `freeze_state` the production function itself
+# just returned -- zero re-derivation, zero extra solves.
+#
+# Reuses UNCHANGED: `run_admm_arm`'s `pre_solve_hook`/`state`-passthrough,
+# `_construct_arm_planning`, `assert_s31c_capture_paths`, `_identify_soh_
+# floor_rows`, `s35ref_capture_hooks`/`s34_capture_hooks`, `write_boyd_
+# terminal_s35ref`, `s38_pf_capture_hooks` (PF per-entry capture, layered
+# unmodified on top of s35ref/s34), `_s38_build_probe_tso_model` (the s39
+# rho base is IDENTICAL to s38's -- `S38_RHO_V`/`S38_RHO_PF`/`S38_RHO_ESS`
+# -- so the existing zero-solve TSO-model probe is reused directly, tau
+# always 0.0 for both s39 arms). `s31c` ... `s38` are untouched.
+# ===========================================================================
+
+S39_SPEC_PATH = os.path.join(
+    REPO, 'data', 'SRP1', 'Results', 'P515S39', 'frozen_s39_oracle_spec_v10_f1b2b999.json')
+S39_SPEC_SHA256 = 'f1b2b9999101fc69be89d7eb1e265cfc9b6f3e81c5c0602e9d81b15101076f10'
+S39_CAP = 300
+S39_REL = S35REF_REL  # 1e-4, diagnostic-only objective-change tolerance, unchanged from run 1
+S39_RHO_V = 0.0077
+S39_RHO_PF = 0.198
+S39_RHO_ESS = 0.01  # spec v10 `common_configuration.base`: s38 arm A / s37_rho0p01 exactly
+S39_TAU = 0.0  # spec v10 `decisions_in_force.tau`: tau=0.0 globally, BOTH arms
+S39_REQUIRED_CONSECUTIVE_CYCLES = 10  # spec v10 `minimum_consecutive_converged_cycles` override (was 3 in s38)
+S39_STANDALONE_SOURCE = 'p515s39_override_not_case_file'
+S39_EXEMPT_SOURCE = 'p515s39_override_not_case_file'
+S39_FREEZE_AFTER_UNCHANGED_CYCLES = 10
+S39_FREEZE_BACKSTOP_CYCLE = 200
+S39_MATCHED_CYCLES = (1, 2, 5, 10, 20, 30, 50, 75, 100, 125, 131, 140, 145, 150, 175, 200, 250, 300)
+
+OUT_S39_C = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S39_C_run')
+OUT_S39_D = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S39_D_run')
+
+# Spec v10 `arms`: balancing_exempt_channels / balancing_exempt_until and
+# output_root per arm -- every OTHER configuration value (rho v/pf/ess,
+# tau, freeze policy, cap, minimum_consecutive_converged_cycles, standalone
+# init) is shared (`common_configuration`).
+S39_ARMS = {
+    's39_C': {
+        'exempt_channels': ['ess'], 'exempt_until': {}, 'out_dir': OUT_S39_C,
+        'run_id_stub': 'p515s39_c_arm', 'precheck_id_stub': 'p515s39_c_precheck',
+        'launch_condition': None, 'order': 1,
+    },
+    's39_D': {
+        'exempt_channels': [],
+        'exempt_until': {'ess': {'dual_ratio_below': 1.0, 'consecutive_cycles': 5}},
+        'out_dir': OUT_S39_D,
+        'run_id_stub': 'p515s39_d_arm', 'precheck_id_stub': 'p515s39_d_precheck',
+        'launch_condition': 'after C has exited; never concurrently', 'order': 2,
+    },
+}
+
+
+def _s39_spec_hash():
+    with open(S39_SPEC_PATH, 'rb') as handle:
+        return hashlib.sha256(handle.read()).hexdigest()
+
+
+def _s39_working_dir_ids(arm_key):
+    """The THREE working-dir ids (pre-check, probe, run) this arm uses in
+    EACH mode ('real' / 'preflight') -- the structural fix's own evidence
+    that the two sets never intersect (see the module-level comment block
+    above this section). Zero solves; pure string derivation, mirroring
+    exactly what `run_s39_arm`/`assert_s39_capture_paths` themselves
+    compute."""
+    arm_cfg = S39_ARMS[arm_key]
+    ids_by_mode = {}
+    for mode in ('real', 'preflight'):
+        ids_by_mode[mode] = {
+            'precheck': f"{arm_cfg['precheck_id_stub']}_{mode}",
+            'probe': f'p515s39_{arm_key}_tso_probe_checklist_{mode}',
+            'run': f"{arm_cfg['run_id_stub']}_{mode}",
+        }
+    return ids_by_mode
+
+
+@contextmanager
+def s39_exempt_until_capture_hooks(exempt_until_state_path):
+    """P5.15 Addendum 21 (frozen spec v10) capture addition: monkeypatches
+    `srp._update_admm_penalties` (the SAME technique `s38_pf_capture_hooks`
+    uses on `srp.get_admm_boyd_residual_metrics` -- module-level function
+    calls inside `shared_resources_planning.py` resolve this name via the
+    module's own global dict at call time, so reassigning `srp.
+    _update_admm_penalties` from here intercepts the UNQUALIFIED internal
+    call at `shared_resources_planning.py` ~line 2748, exactly as the PF
+    hook intercepts the unqualified `get_admm_boyd_residual_metrics` call).
+
+    Per call (i.e. per ADMM cycle), for every channel present in `params.
+    penalty_update['balancing_exempt_until']` (empty for arm C -- the
+    sidecar is then written with a `channels` field of `{}` every cycle,
+    never raising; ESS only for arm D), appends ONE line to
+    `exempt_until_state_path` recording, straight from the REAL `freeze_
+    state` this call just returned (zero re-derivation): `streak`
+    (`exempt_until_streak`), `lifted` (`exempt_until_lifted`), `lift_cycle`
+    (`exempt_until_lift_cycle`, None until set) and that cycle's own
+    `action` label (so the lift cycle -- where `lifted` first becomes True
+    -- is directly readable, including its 'exemption lifted' suffix on a
+    non-acting action). Zero extra solves -- reads only the tuple the real,
+    unmodified production function already computed and returned.
+    Uninstalled (restoring the real function) even on error."""
+    inner_fn = srp._update_admm_penalties
+
+    def wrapper(tso_model, dso_models, esso_model, residual_metrics, boyd_metrics, params,
+                iter=None, allow_update=True, freeze_state=None):
+        result = inner_fn(tso_model, dso_models, esso_model, residual_metrics, boyd_metrics,
+                          params, iter=iter, allow_update=allow_update, freeze_state=freeze_state)
+        actions, _before, _after, _bgamma, _agamma, _rfa, returned_freeze_state = result
+        exempt_until_cfg = params.penalty_update.get('balancing_exempt_until', {}) or {}
+        channels_entry = {}
+        for group, cfg in exempt_until_cfg.items():
+            group_state = returned_freeze_state[group]
+            channels_entry[group] = {
+                'streak': group_state['exempt_until_streak'],
+                'lifted': group_state['exempt_until_lifted'],
+                'lift_cycle': group_state['exempt_until_lift_cycle'],
+                'action': actions[group],
+                'dual_ratio_below': cfg['dual_ratio_below'],
+                'consecutive_cycles': cfg['consecutive_cycles'],
+            }
+        with open(exempt_until_state_path, 'a') as handle:
+            handle.write(json.dumps({'cycle': iter, 'channels': channels_entry}, default=str) + '\n')
+        return result
+
+    srp._update_admm_penalties = wrapper
+    try:
+        yield
+    finally:
+        srp._update_admm_penalties = inner_fn
+
+
+def assert_s39_capture_paths(planning, arm_key, mode):
+    """Rule eleven for the s39 arms (frozen spec v10). Builds on
+    `assert_s31c_capture_paths` DIRECTLY -- NOT `assert_s38_capture_paths`,
+    whose own checks hard-assert `minimum_consecutive_converged_cycles ==
+    3` (s39 overrides this to 10) and index `S38_ARMS[arm_key]` (s39's arm
+    keys, 's39_C'/'s39_D', are not in that dict). The structural checks
+    `assert_s38_capture_paths` performs are reproduced directly below with
+    s39's OWN configuration values, plus the s39-specific additions: `mode`
+    ('real'/'preflight') threading into the probe id (structural-fix
+    evidence), `balancing_exempt_until` in force (arm-specific), the new
+    capture hook's presence, and `minimum_consecutive_converged_cycles ==
+    10`. Zero solves. Returns (checklist, floor_rows_by_node)."""
+    arm_cfg = S39_ARMS[arm_key]
+    exempt_channels = arm_cfg['exempt_channels']
+    exempt_until = arm_cfg['exempt_until']
+
+    checklist = dict(assert_s31c_capture_paths(planning))
+
+    with open(S39_SPEC_PATH) as handle:
+        spec_text = handle.read()
+    observed_hash = hashlib.sha256(spec_text.encode('utf-8')).hexdigest()
+    spec_data = json.loads(spec_text)
+    checklist['s39_spec_file_hash_matches'] = (observed_hash == S39_SPEC_SHA256)
+    checklist['s39_spec_file_hash_observed'] = observed_hash
+    checklist['s39_predecessor_spec_sha256_matches_s38'] = (
+        spec_data.get('predecessor', {}).get('sha256') == S38_SPEC_SHA256)
+
+    admm_params = planning.params.admm
+
+    # -- boyd tolerance / fixed sigma / ESSO AL scaling / S_ref (unchanged
+    #    from run 1, spec v10 `common_configuration.base`) ----------------
+    checklist['boyd_eps_source_is_case_file'] = (admm_params.boyd_eps_source == 'case_file')
+    checklist['boyd_eps_abs_is_1e-5'] = (admm_params.tol['boyd']['eps_abs'] == 1e-5)
+    checklist['boyd_eps_rel_is_1e-4'] = (admm_params.tol['boyd']['eps_rel'] == 1e-4)
+    checklist['objective_scale_is_93635360'] = (admm_params.objective_scale == 93635360.0)
+    checklist['objective_scale_source_is_case_file'] = (admm_params.objective_scale_source == 'case_file')
+    checklist['objective_scale_assert_factor_at_least_1'] = (admm_params.objective_scale_assert_factor >= 1.0)
+    checklist['al_scale_esso_present'] = (admm_params.esso_al_scale.get('source') == 'case_file')
+    checklist['al_scale_esso_mode_is_sigma_over_median_block_weight'] = (
+        admm_params.esso_al_scale.get('mode') == 'sigma_over_median_block_weight')
+    checklist['shared_ess_reference_rating_mva_is_2p5'] = (admm_params.shared_ess_reference_rating_mva == 2.5)
+
+    # -- rho: v/pf/ess all fixed at the spec v10 base (s38 arm A / s37_rho0p01) -
+    rho_ok = (
+        all(float(v) == S39_RHO_V for v in admm_params.rho['v'].values()) and
+        all(float(v) == S39_RHO_PF for v in admm_params.rho['pf'].values()) and
+        all(float(v) == S39_RHO_ESS for v in admm_params.rho['ess'].values())
+    )
+    checklist['rho_v_pf_ess_matches_spec_v10_base'] = rho_ok
+    checklist['rho_snapshot'] = {group: dict(admm_params.rho[group]) for group in ('v', 'pf', 'ess')}
+
+    # -- balancing exemption: arm-specific unconditional + conditional lists -
+    checklist['balancing_exempt_channels_matches_arm'] = (
+        admm_params.penalty_update.get('balancing_exempt_channels') == list(exempt_channels))
+    checklist['balancing_exempt_channels_source_is_override'] = (
+        getattr(admm_params, 'balancing_exempt_channels_source', None) == S39_EXEMPT_SOURCE)
+    checklist['balancing_exempt_until_matches_arm'] = (
+        admm_params.penalty_update.get('balancing_exempt_until') == dict(exempt_until))
+    checklist['balancing_exempt_until_source_is_override'] = (
+        getattr(admm_params, 'balancing_exempt_until_source', None) == S39_EXEMPT_SOURCE)
+    checklist['srp_update_admm_penalties_accepts_balancing_exempt_until_in_source'] = (
+        "'balancing_exempt_until'" in inspect.getsource(srp._update_admm_penalties))
+    checklist['srp_update_admm_penalties_has_exemption_lifted_label_in_source'] = (
+        'exemption lifted' in inspect.getsource(srp._update_admm_penalties))
+    checklist['srp_init_admm_freeze_state_has_exempt_until_fields_in_source'] = (
+        "'exempt_until_lifted': False" in inspect.getsource(srp._init_admm_freeze_state))
+    checklist['admm_parameters_validates_exempt_until_overlap_in_source'] = (
+        'may not be in BOTH balancing_exempt_channels' in inspect.getsource(admm_parameters))
+
+    # -- freeze rule: 10-unchanged + absolute freeze at 200 (unchanged from s38) -
+    checklist['freeze_after_unchanged_cycles_is_10'] = (
+        admm_params.penalty_update.get('freeze_after_unchanged_cycles') == S39_FREEZE_AFTER_UNCHANGED_CYCLES)
+    checklist['freeze_backstop_cycle_is_200'] = (
+        admm_params.penalty_update.get('freeze_backstop_cycle') == S39_FREEZE_BACKSTOP_CYCLE)
+
+    # -- Addendum 21: minimum_consecutive_converged_cycles == 10 (NOT s38's 3) -
+    checklist['minimum_consecutive_converged_cycles_is_10'] = (
+        admm_params.minimum_consecutive_converged_cycles == S39_REQUIRED_CONSECUTIVE_CYCLES)
+
+    # -- standalone shared-ESS initialization override -----------------------
+    checklist['shared_ess_initialization_is_standalone'] = (
+        admm_params.shared_ess_initialization == 'standalone')
+    checklist['shared_ess_initialization_source_is_override'] = (
+        admm_params.shared_ess_initialization_source == S39_STANDALONE_SOURCE)
+
+    # -- tau: 0.0 for BOTH arms, checked on `planning.params.admm` -----------
+    checklist['gamma_policy_is_tied_to_rho'] = (
+        admm_params.proximal_regularization['tso'].get('gamma_policy') == 'tied_to_rho')
+    checklist['tau_in_force_is_0p0'] = (
+        admm_params.proximal_regularization['tso'].get('tau') == float(S39_TAU))
+    checklist['prox_gamma_v_mutable_in_source'] = (
+        'model[year][day].prox_gamma_v = pe.Param(mutable=True' in inspect.getsource(srp))
+
+    # -- per-cycle-channel / admm_diagnostics capture (unchanged from run 1) -
+    checklist['srp_get_admm_boyd_residual_metrics'] = callable(
+        getattr(srp, 'get_admm_boyd_residual_metrics', None))
+    boyd_fn_source = inspect.getsource(srp.get_admm_boyd_residual_metrics)
+    for field in S35REF_REPORT_PER_CYCLE_CHANNEL_FIELDS:
+        checklist[f'boyd_field_{field}_in_source'] = (f"'{field}':" in boyd_fn_source)
+
+    module_source = inspect.getsource(srp)
+    for key in S35REF_ADMM_DIAGNOSTICS_KEYS:
+        checklist[f'admm_diagnostics_key_{key}_present'] = (f"'{key}':" in module_source)
+    for key in ('balancing_exempt_v', 'balancing_exempt_pf', 'balancing_exempt_ess'):
+        checklist[f'admm_diagnostics_key_{key}_present'] = (f"'{key}':" in module_source)
+
+    checklist['srp_get_admm_efc_per_day_max_callable'] = callable(getattr(srp, '_get_admm_efc_per_day_max', None))
+    checklist['write_interface_voltage_terminal_callable'] = callable(
+        globals().get('write_interface_voltage_terminal'))
+    checklist['write_component_levels_terminal_callable'] = callable(
+        globals().get('write_component_levels_terminal'))
+    checklist['write_interface_settlement_detail_s31c_callable'] = callable(
+        globals().get('write_interface_settlement_detail_s31c'))
+
+    # -- capture_requirements (spec v10): "everything v9 captured" ----------
+    s34_hooks_source = inspect.getsource(s34_capture_hooks)
+    checklist['capture_per_entry_ess_x_z_stride_1_in_source'] = (
+        "'z': z_series" in s34_hooks_source and "'x': x_series" in s34_hooks_source)
+    checklist['capture_efc_per_day_per_node_in_source'] = ('efc_per_day_per_node' in s34_hooks_source)
+    checklist['capture_ess_action_label_field_rho_ess_action_present'] = (
+        'rho_ess_action' in S35REF_ADMM_DIAGNOSTICS_KEYS)
+    checklist['s34_capture_hooks_callable'] = callable(globals().get('s34_capture_hooks'))
+    checklist['s35ref_capture_hooks_callable'] = callable(globals().get('s35ref_capture_hooks'))
+    checklist['write_boyd_terminal_s35ref_callable'] = callable(globals().get('write_boyd_terminal_s35ref'))
+    checklist['s38_pf_capture_hooks_callable'] = callable(globals().get('s38_pf_capture_hooks'))
+    pf_hooks_source = inspect.getsource(s38_pf_capture_hooks) if checklist['s38_pf_capture_hooks_callable'] else ''
+    checklist['pf_capture_asserts_identity_raises_on_failure'] = (
+        'raise RuntimeError' in pf_hooks_source and 'identity_holds' in pf_hooks_source)
+
+    # -- capture_requirements (spec v10): NEW ESS exempt_until state sidecar -
+    checklist['s39_exempt_until_capture_hooks_callable'] = callable(globals().get('s39_exempt_until_capture_hooks'))
+    exempt_hooks_source = (inspect.getsource(s39_exempt_until_capture_hooks)
+                           if checklist['s39_exempt_until_capture_hooks_callable'] else '')
+    checklist['s39_exempt_until_capture_wraps_update_admm_penalties_in_source'] = (
+        'srp._update_admm_penalties = wrapper' in exempt_hooks_source)
+    checklist['s39_exempt_until_capture_reads_returned_freeze_state_in_source'] = (
+        "'streak': group_state['exempt_until_streak']" in exempt_hooks_source
+        and "'lifted': group_state['exempt_until_lifted']" in exempt_hooks_source
+        and "'lift_cycle': group_state['exempt_until_lift_cycle']" in exempt_hooks_source)
+
+    # -- Addendum 21 structural fix: working-dir ids never collide between
+    #    modes (zero-solve, string-level; re-verified independently by
+    #    `p515_s39_zero_solve_checks.py`) ------------------------------------
+    ids_by_mode = _s39_working_dir_ids(arm_key)
+    real_ids = set(ids_by_mode['real'].values())
+    preflight_ids = set(ids_by_mode['preflight'].values())
+    checklist['working_dir_ids_disjoint_between_modes'] = real_ids.isdisjoint(preflight_ids)
+    checklist['working_dir_ids_by_mode'] = ids_by_mode
+    checklist['this_call_mode_is_valid'] = mode in ('real', 'preflight')
+
+    # -- Addendum 21, decisive: tau in force on a FRESHLY BUILT (zero-solve)
+    #    TSO model's OWN prox_gamma_v/pf/ess Params, BEFORE any solve --
+    #    reuses `_s38_build_probe_tso_model` UNCHANGED (s39's rho base is
+    #    IDENTICAL to s38's); probe id is MODE-derived (structural fix) ------
+    probe_eval_id = ids_by_mode[mode]['probe']
+    probe_planning, probe_tso_model = _s38_build_probe_tso_model(probe_eval_id, S39_TAU)
+    expected_gamma = {'v': 0.0, 'pf': 0.0, 'ess': 0.0}
+    observed_gamma_sample = {}
+    gamma_matches = True
+    for year in probe_planning.transmission_network.years:
+        for day in probe_planning.transmission_network.days:
+            block = probe_tso_model[year][day]
+            block_gamma = {
+                'v': pe.value(block.prox_gamma_v), 'pf': pe.value(block.prox_gamma_pf),
+                'ess': pe.value(block.prox_gamma_ess),
+            }
+            observed_gamma_sample[f'{year}_{day}'] = block_gamma
+            for group in ('v', 'pf', 'ess'):
+                if block_gamma[group] != expected_gamma[group]:
+                    gamma_matches = False
+    checklist['prox_gamma_v_pf_ess_in_built_tso_model_matches_expected'] = gamma_matches
+    checklist['prox_gamma_expected'] = expected_gamma
+    checklist['prox_gamma_observed_sample'] = observed_gamma_sample
+    del probe_planning, probe_tso_model
+
+    # -- reference artifacts (run 1 / spec v10 cost-bar literals), read by
+    #    path at evaluation time ---------------------------------------------
+    checklist['s35ref_g_baseline_reference_exists'] = os.path.exists(os.path.join(OUT_S35REF, 'g_baseline.json'))
+    checklist['spec_v10_cost_bar_run1_cost_present'] = (
+        'run1_cost' in spec_data.get('certification_bar', {}).get('cost_bar', {}))
+    checklist['spec_v10_cost_bar_run1_max_step_last10_present'] = (
+        'run1_max_step_last10' in spec_data.get('certification_bar', {}).get('cost_bar', {}))
+
+    # -- Addendum 16 (unchanged): SoH floor-row identification, BEFORE any solve
+    active_nodes = list(planning.shared_ess_data.active_distribution_network_nodes)
+    checklist['active_distribution_network_nodes_nonempty'] = bool(active_nodes)
+    floor_rows_by_node, floor_counts_by_node = {}, {}
+    floor_identification_error = None
+    if active_nodes:
+        try:
+            probe_esso_models = {node_id: SED._build_subproblem(planning.shared_ess_data, node_id)
+                                  for node_id in active_nodes}
+            floor_rows_by_node, floor_counts_by_node = _identify_soh_floor_rows(probe_esso_models)
+            del probe_esso_models
+        except Exception as error:
+            floor_identification_error = f'{type(error).__name__}: {error}'
+    checklist['soh_floor_rows_identified_pre_solve'] = (
+        floor_identification_error is None and bool(floor_rows_by_node)
+        and all(n > 0 for n in floor_counts_by_node.values()))
+    checklist['soh_floor_identification_error'] = floor_identification_error
+    checklist['soh_floor_row_counts_by_node'] = floor_counts_by_node
+    counts_seen = set(floor_counts_by_node.values())
+    checklist['soh_floor_row_count_uniform_across_nodes'] = (len(counts_seen) <= 1)
+
+    # -- Addendum 20 (unchanged reading): cap is a budget, not a criterion --
+    checklist['cap_is_300'] = (S39_CAP == 300)
+
+    missing = [name for name, ok in checklist.items()
+               if isinstance(ok, bool) and not ok]
+    if missing:
+        raise RuntimeError(f'S39 capture-path pre-flight FAILED, missing/broken: {missing}')
+    return checklist, floor_rows_by_node
+
+
+def _assert_s39_overrides_in_force(planning, arm_key):
+    """Lightweight, hook-local check that the Addendum 21 overrides
+    (`_s39_configure_hook`) actually took effect on THIS planning object.
+    Mirrors `_assert_s38_overrides_in_force`'s reasoning EXACTLY (run from
+    `pre_solve_hook`, i.e. genuinely before any solve; the FULL structural
+    checklist, `assert_s39_capture_paths`, already ran to completion, on a
+    SEPARATE throwaway planning object, in `run_s39_arm` before this hook
+    is ever reached). Raises on failure. Zero solves."""
+    arm_cfg = S39_ARMS[arm_key]
+    admm_params = planning.params.admm
+    checks = {
+        'rho_v_is_0p0077': all(float(v) == S39_RHO_V for v in admm_params.rho['v'].values()),
+        'rho_pf_is_0p198': all(float(v) == S39_RHO_PF for v in admm_params.rho['pf'].values()),
+        'rho_ess_is_0p01': all(float(v) == S39_RHO_ESS for v in admm_params.rho['ess'].values()),
+        'rho_ess_on_esso_present': ('esso' in admm_params.rho['ess']),
+        'tau_is_0p0': (admm_params.proximal_regularization['tso']['tau'] == float(S39_TAU)),
+        'balancing_exempt_channels_matches_arm': (
+            admm_params.penalty_update.get('balancing_exempt_channels') == list(arm_cfg['exempt_channels'])),
+        'balancing_exempt_channels_source_is_override': (
+            getattr(admm_params, 'balancing_exempt_channels_source', None) == S39_EXEMPT_SOURCE),
+        'balancing_exempt_until_matches_arm': (
+            admm_params.penalty_update.get('balancing_exempt_until') == dict(arm_cfg['exempt_until'])),
+        'balancing_exempt_until_source_is_override': (
+            getattr(admm_params, 'balancing_exempt_until_source', None) == S39_EXEMPT_SOURCE),
+        'freeze_after_unchanged_cycles_is_10': (
+            admm_params.penalty_update.get('freeze_after_unchanged_cycles') == S39_FREEZE_AFTER_UNCHANGED_CYCLES),
+        'freeze_backstop_cycle_is_200': (
+            admm_params.penalty_update.get('freeze_backstop_cycle') == S39_FREEZE_BACKSTOP_CYCLE),
+        'minimum_consecutive_converged_cycles_is_10': (
+            admm_params.minimum_consecutive_converged_cycles == S39_REQUIRED_CONSECUTIVE_CYCLES),
+        'shared_ess_initialization_is_standalone': (admm_params.shared_ess_initialization == 'standalone'),
+        'shared_ess_initialization_source_is_override': (
+            admm_params.shared_ess_initialization_source == S39_STANDALONE_SOURCE),
+    }
+    missing = [key for key, ok in checks.items() if not ok]
+    if missing:
+        raise RuntimeError(f'S39 pre-solve override verification FAILED, missing/broken: {missing}')
+    return checks
+
+
+def _s39_configure_hook(arm_key):
+    """Returns a `pre_solve_hook` (see `run_admm_arm`'s docstring) for the
+    given s39 arm. Deep-copies `planning.params` (the case file is NEVER
+    touched) and applies, in order: the standalone shared-ESS
+    initialization override, rho v/pf/ess (fixed at the spec v10 base) via
+    `p59_rho.apply_rho_to_params`, the arm's own `balancing_exempt_
+    channels` AND `balancing_exempt_until` (spec v10's new production
+    change), the Addendum 20 freeze policy (10-unchanged + ABSOLUTE freeze
+    at 200), tau=0.0 (global, both arms) and `minimum_consecutive_
+    converged_cycles = 10` (spec v10's new certification-bar override).
+    Then runs the lightweight override-in-force check (`_assert_s39_
+    overrides_in_force`) on the now-fully-configured planning object,
+    BEFORE any solve, storing it on `report`."""
+    arm_cfg = S39_ARMS[arm_key]
+    exempt_channels = arm_cfg['exempt_channels']
+    exempt_until = arm_cfg['exempt_until']
+
+    def hook(planning, sed, candidate, report):
+        planning.params = deepcopy(planning.params)
+        admm_params = planning.params.admm
+        admm_params.shared_ess_initialization = 'standalone'
+        admm_params.shared_ess_initialization_source = S39_STANDALONE_SOURCE
+        RH.apply_rho_to_params(planning, {'v': S39_RHO_V, 'pf': S39_RHO_PF, 'ess': S39_RHO_ESS})
+        admm_params.penalty_update['balancing_exempt_channels'] = list(exempt_channels)
+        admm_params.balancing_exempt_channels_source = S39_EXEMPT_SOURCE
+        admm_params.penalty_update['balancing_exempt_until'] = deepcopy(exempt_until)
+        admm_params.balancing_exempt_until_source = S39_EXEMPT_SOURCE
+        admm_params.penalty_update['freeze_after_unchanged_cycles'] = S39_FREEZE_AFTER_UNCHANGED_CYCLES
+        admm_params.penalty_update['freeze_backstop_cycle'] = S39_FREEZE_BACKSTOP_CYCLE
+        admm_params.proximal_regularization['tso']['tau'] = float(S39_TAU)
+        admm_params.minimum_consecutive_converged_cycles = S39_REQUIRED_CONSECUTIVE_CYCLES
+        override_checks = _assert_s39_overrides_in_force(planning, arm_key)
+        report.setdefault('rule_eleven_checklist', {})['s39_pre_solve_override_verification'] = override_checks
+    return hook
+
+
+def run_s39_arm(arm_key, num_max_iters_override=None, output_root_override=None):
+    """Shared implementation for both s39 arms -- ONLY `balancing_exempt_
+    channels`/`balancing_exempt_until` and the output root differ
+    (`S39_ARMS`). Mirrors `run_s38_arm`, with the STRUCTURAL FIX described
+    in this section's own module-level comment block: ALL THREE working-
+    dir ids (pre-check, probe, run) are derived from `mode` ('real' when
+    `output_root_override is None`, i.e. the actual 300-cycle launch;
+    'preflight' otherwise, i.e. a smoke test), so a preflight run and the
+    real launch NEVER share an id, in either invocation order.
+
+    `num_max_iters_override`/`output_root_override`: smoke-test-only
+    parameters (P515S39 preflights, cap 2, their own fresh output roots
+    under `data/SRP1/Results/P515S39/preflight_<C|D>/`); default to the
+    spec v10 cap (300) and `S39_ARMS[arm_key]['out_dir']` respectively.
+
+    Returns `(report, report_path)`, exactly `run_admm_arm`'s own return
+    value (passed straight through)."""
+    arm_cfg = S39_ARMS[arm_key]
+    exempt_channels = arm_cfg['exempt_channels']
+    exempt_until = arm_cfg['exempt_until']
+    out_dir = output_root_override if output_root_override is not None else arm_cfg['out_dir']
+    cap = num_max_iters_override if num_max_iters_override is not None else S39_CAP
+    mode = 'real' if output_root_override is None else 'preflight'
+
+    if N.REL != S39_REL:
+        raise RuntimeError(
+            f'p514_n_instrumented_cstar.REL ({N.REL}) no longer matches the '
+            f'frozen s39 objective-change (diagnostic) tolerance {S39_REL}; '
+            'the spec requires 1e-4.')
+    observed_spec_hash = _s39_spec_hash()
+    if observed_spec_hash != S39_SPEC_SHA256:
+        raise RuntimeError(
+            f'frozen s39 spec hash mismatch: file={observed_spec_hash} '
+            f'expected={S39_SPEC_SHA256}')
+
+    _require_fresh_output_root(out_dir)
+
+    ids_by_mode = _s39_working_dir_ids(arm_key)
+    precheck_eval_id = ids_by_mode[mode]['precheck']
+    precheck_eval_dir = os.path.join(O.WORK_DIR, precheck_eval_id)
+    if os.path.exists(precheck_eval_dir):
+        raise RuntimeError(
+            f'refusing to start: pre-check eval dir already exists (network '
+            f'logs append): {precheck_eval_dir}')
+    precheck_planning = O.fresh_planning(precheck_eval_id)
+    precheck_planning.params = deepcopy(precheck_planning.params)
+    precheck_admm_params = precheck_planning.params.admm
+    precheck_admm_params.shared_ess_initialization = 'standalone'
+    precheck_admm_params.shared_ess_initialization_source = S39_STANDALONE_SOURCE
+    RH.apply_rho_to_params(precheck_planning, {'v': S39_RHO_V, 'pf': S39_RHO_PF, 'ess': S39_RHO_ESS})
+    precheck_admm_params.penalty_update['balancing_exempt_channels'] = list(exempt_channels)
+    precheck_admm_params.balancing_exempt_channels_source = S39_EXEMPT_SOURCE
+    precheck_admm_params.penalty_update['balancing_exempt_until'] = deepcopy(exempt_until)
+    precheck_admm_params.balancing_exempt_until_source = S39_EXEMPT_SOURCE
+    precheck_admm_params.penalty_update['freeze_after_unchanged_cycles'] = S39_FREEZE_AFTER_UNCHANGED_CYCLES
+    precheck_admm_params.penalty_update['freeze_backstop_cycle'] = S39_FREEZE_BACKSTOP_CYCLE
+    precheck_admm_params.proximal_regularization['tso']['tau'] = float(S39_TAU)
+    precheck_admm_params.minimum_consecutive_converged_cycles = S39_REQUIRED_CONSECUTIVE_CYCLES
+    s39_checklist, s39_floor_rows_by_node = assert_s39_capture_paths(precheck_planning, arm_key, mode)
+    del precheck_planning
+    print(f'[P5.15 S39 {arm_key}] mode={mode} capture-path pre-flight passed: {s39_checklist}')
+    print(
+        f'[P5.15 S39 {arm_key}] cap={cap}, mode={mode}, objective rel=1e-4 (diagnostic), adaptive on, '
+        f'rho: v={S39_RHO_V}, pf={S39_RHO_PF}, ess={S39_RHO_ESS} (fixed, every network + esso); '
+        f'tau={S39_TAU} (source override, not case file); '
+        f'balancing_exempt_channels={exempt_channels} (source={S39_EXEMPT_SOURCE}); '
+        f'balancing_exempt_until={exempt_until} (source={S39_EXEMPT_SOURCE}); '
+        f'shared_ess_initialization=standalone (source={S39_STANDALONE_SOURCE}); '
+        f'boyd eps_abs=1e-5, eps_rel=1e-4; gamma_policy=tied_to_rho; '
+        f'freeze_after_unchanged_cycles={S39_FREEZE_AFTER_UNCHANGED_CYCLES}; '
+        f'freeze_backstop_cycle={S39_FREEZE_BACKSTOP_CYCLE}; '
+        f'minimum_consecutive_converged_cycles={S39_REQUIRED_CONSECUTIVE_CYCLES}; '
+        f'soh_floor_row_counts_by_node={ {n: len(r) for n, r in s39_floor_rows_by_node.items()} }; '
+        f'launch_condition={arm_cfg["launch_condition"]}'
+    )
+
+    recourse_jump_path = os.path.join(out_dir, 'recourse_jump_sidecar_baseline.jsonl')
+    ess_stride_path = os.path.join(out_dir, 'ess_entry_stride_baseline.jsonl')
+    floor_sidecar_path = os.path.join(out_dir, 'soh_floor_sidecar_baseline.jsonl')
+    pf_stride_path = os.path.join(out_dir, f'pf_entry_stride_{arm_key}.jsonl')
+    exempt_until_state_path = os.path.join(out_dir, f'ess_exempt_until_state_{arm_key}.jsonl')
+    for path in (recourse_jump_path, ess_stride_path, floor_sidecar_path, pf_stride_path,
+                exempt_until_state_path):
+        _refuse_overwrite(path)
+
+    def _s39_hook(planning, sed, models, rows, report, out_dir, label):
+        report['s34_recourse_jump_sidecar_path'] = os.path.relpath(recourse_jump_path, REPO)
+        report['s34_ess_entry_stride_sidecar_path'] = os.path.relpath(ess_stride_path, REPO)
+        report['s35ref_soh_floor_sidecar_path'] = os.path.relpath(floor_sidecar_path, REPO)
+        report['s38_pf_entry_stride_sidecar_path'] = os.path.relpath(pf_stride_path, REPO)
+        report['s39_ess_exempt_until_state_sidecar_path'] = os.path.relpath(exempt_until_state_path, REPO)
+        write_boyd_terminal_s35ref(planning, sed, models, rows, report, out_dir, label,
+                                    floor_rows_by_node=s39_floor_rows_by_node,
+                                    floor_sidecar_path=floor_sidecar_path)
+
+    run_eval_id = ids_by_mode[mode]['run']
+    run_eval_dir = os.path.join(O.WORK_DIR, run_eval_id)
+    if os.path.exists(run_eval_dir):
+        raise RuntimeError(
+            f'refusing to start: run eval dir already exists (network '
+            f'logs append): {run_eval_dir}')
+
+    with s38_pf_capture_hooks(recourse_jump_path, ess_stride_path, floor_sidecar_path,
+                              pf_stride_path, s39_floor_rows_by_node, stride=1), \
+         s39_exempt_until_capture_hooks(exempt_until_state_path):
+        return run_admm_arm(arm_key, out_dir, k_override=None, eval_id=run_eval_id,
+                            num_max_iters_override=cap, apply_rho=False,
+                            full_diagnostics_in_rows=True, post_run_hook=_s39_hook,
+                            pre_solve_hook=_s39_configure_hook(arm_key))
+
+
 if __name__ == '__main__':
     _acquire_exclusive_run_lock()
     gate = sys.argv[1] if len(sys.argv) > 1 else None
@@ -6269,6 +6862,31 @@ if __name__ == '__main__':
         # cleanly with the spec's own reasoning. Prepared in code only, per
         # Addendum 20 (c).
         run_s38_arm('s38_C_combined')
+    elif gate == 's39_c':
+        # P5.15 Addendum 21 -- s39 arm C (ESS permanently exempt from
+        # balancing, V and PF balancing ACTIVE, tau=0.0, minimum_consecutive_
+        # converged_cycles=10). Frozen spec v10, data/SRP1/Results/P515S39/
+        # frozen_s39_oracle_spec_v10_f1b2b999.json. Exact CLI name: `s39_c`
+        # (lowercase). Exact command:
+        #   .../bin/python -u p515_g_g1_g4_admm_gates.py s39_c \
+        #     > data/SRP1/Results/P515S39_C_launch.log 2>&1
+        #
+        # THE PLANNER LAUNCHES THIS GATE, NOT THE WORKER -- prepared code
+        # only (P5.15 Addendum 21 W1 preparation worker task); never invoked
+        # by any Worker-run command in that task.
+        run_s39_arm('s39_C')
+    elif gate == 's39_d':
+        # P5.15 Addendum 21 -- s39 arm D (two-phase ESS schedule:
+        # balancing_exempt_until = {'ess': {'dual_ratio_below': 1.0,
+        # 'consecutive_cycles': 5}}). Spec v10 `arms.s39_D.launch_condition`:
+        # "after C has exited; never concurrently". Exact CLI name: `s39_d`
+        # (lowercase). Exact command:
+        #   .../bin/python -u p515_g_g1_g4_admm_gates.py s39_d \
+        #     > data/SRP1/Results/P515S39_D_launch.log 2>&1
+        #
+        # THE PLANNER LAUNCHES THIS GATE, NOT THE WORKER -- prepared code
+        # only; never invoked by any Worker-run command in this task.
+        run_s39_arm('s39_D')
     else:
         print(__doc__)
         sys.exit(1)
