@@ -171,6 +171,27 @@ class ADMMParameters:
             'source': 'default',
         }
 
+        # P5.15 Step 3.6 (PLANNER_BRIEF_2026-09-13.md Addendum 21 item 4,
+        # WORKER_REPORT_S36_CLONE_CAPTURE.md): the TSO's FrozenSMOPF
+        # pre-solve snapshot (failure diagnostics + the cycle-7 comparator)
+        # used to be captured by `model.clone()`-ing the whole TSO block on
+        # EVERY cycle, unconditionally (WORKER_REPORT_S36_TIMING_MEASUREMENT.md
+        # D-Step). 'lightweight' (default): one clone per (year, day) TSO
+        # block, taken ONCE per `_run_operational_planning` call before the
+        # ADMM loop starts, then a `clone()`-free per-cycle capture of only
+        # the mutable Param/Var/Suffix/active-constraint state
+        # (`network.capture_block_mutable_state`); a snapshot is rebuilt
+        # on demand -- only when a failure or the cycle-7 comparator
+        # actually needs to be written -- by replaying that capture onto a
+        # fresh clone of the pristine base
+        # (`network.apply_block_mutable_state`). 'legacy_clone' restores
+        # the pre-Step-3.6 behaviour exactly (clone every cycle, every TSO
+        # block, via `NetworkData.optimize`'s `failure_snapshot_callback`/
+        # `pre_solve_snapshot_callback`) -- kept for regression comparison
+        # and as a fallback; not wired to any case-file key, set
+        # programmatically only.
+        self.tso_snapshot_capture_mode = 'lightweight'
+
     def read_parameters_from_file(self, params_data):
         _read_parameters_from_file(self, params_data)
 
