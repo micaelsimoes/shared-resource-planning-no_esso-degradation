@@ -390,3 +390,180 @@ scale of a capped-500 certification run.
    ("the measurement sets the real one") — should `analyze_phase_timing`'s `x_threshold`
    default be changed once the Planner has a firmer bar, or is passing it explicitly at call
    time (as `p515_s36_step36_timing_run.py` already does) sufficient?
+
+---
+
+## Addendum: follow-up Worker task (2026-09-17) — Planner decisions on Questions 1–3, plus Q4 (main()/main_() split)
+
+**Context**: this addendum was implemented by a follow-up Worker while a 300-cycle numerical
+arm (`s38_A_tau0`, PID confirmed alive throughout via `ps aux`) was running in the same working
+tree. No solve was executed by this addendum; `p515_g_g1_g4_admm_gates.py`, every production
+file, the case file, and everything under `data/SRP1/Results/P515S38*` were untouched (not
+opened with `Edit`/`Write`).
+
+### Task received
+
+The Planner's decisions on the three prior Worker's questions, plus a fourth item:
+
+1. Widen the precondition clean-file check in `p515_s36_step36_timing_run.py` to also cover
+   `admm_parameters.py`, `p515_g_g1_g4_admm_gates.py`, `data/SRP1/SRP1_params.json`, and the
+   three `p515_s36_step36_timing*.py` files (all committed) — plus refuse if any process
+   matching `p515_g_g1_g4_admm_gates.py` or `p515_s38_` is alive, or `.p515_g_gate.lock` exists
+   (existing checks kept).
+2. Degraded mode (no NL-write sub-times from the `report_timing` cross-check) becomes a hard
+   non-verdict: `analyze_phase_timing` still writes every measured table, but sets
+   `verdict_pass` to the literal string `'INDETERMINATE (NL-write share not separated)'` —
+   never `True`/`False` — and the entry point exits non-zero after writing everything.
+3. `analyze_phase_timing`'s `x_threshold` gets no default (required argument); the entry
+   point passes `0.70` explicitly, once, as a module constant.
+4. Replace the `main()`/`main_()` fail-safe split with a single `main()` under
+   `if __name__ == '__main__':` — the precondition checks are now the sole safety mechanism.
+   Update the launch command in this report if it changed (it did not).
+5. Re-run `p515_s36_step36_timing_checks.py` (zero solves, `SolveProfileGuard` armed) into a
+   **new** output directory (`zero_solve_checks_v2/`, never overwriting the committed
+   `zero_solve_checks/`), adding checks for items 2 and 3 on the toy example, plus a check
+   that item 1's precondition function refuses when a listed file is dirty (simulated via a
+   stub of the git-status subprocess call, never by dirtying a real file).
+
+### Files inspected
+
+`CLAUDE.md`; this report (as it stood before this addendum); `p515_s36_step36_timing.py`;
+`p515_s36_step36_timing_run.py`; `p515_s36_step36_timing_checks.py`; `p513_solve_profile_guard.py`
+(`SolveProfileGuard` API, reused unmodified). `git status --porcelain` / `ps aux` / the
+`.p515_g_gate.lock` file, to confirm the live numerical arm's state before and after every
+change.
+
+### Files modified
+
+- `p515_s36_step36_timing.py` — `analyze_phase_timing`: `x_threshold` moved to a required
+  (no-default) parameter, positioned right after `records`; added module-level
+  `_DEGRADED_VERDICT = 'INDETERMINATE (NL-write share not separated)'`; `verdict_pass` is now
+  that string whenever `nl_write_share_is_upper_bound` is `True`, otherwise unchanged
+  (`bool`). `verdict_ratio` is still always computed and reported, even in degraded mode —
+  only `verdict_pass` is downgraded. Docstring updated in place.
+- `p515_s36_step36_timing_run.py` — `_PRODUCTION_FILES_TO_CHECK_CLEAN` widened to 10 entries
+  (the original 4 production files, plus `admm_parameters.py`,
+  `p515_g_g1_g4_admm_gates.py`, `data/SRP1/SRP1_params.json`, and the three
+  `p515_s36_step36_timing*.py` files); new `_FORBIDDEN_LIVE_PROCESS_SUBSTRINGS = ('p515_g_g1_g4_admm_gates.py', 'p515_s38_')`
+  used by the `ps aux` scan (was hardcoded to the single harness-name substring before); new
+  module constant `X_THRESHOLD = 0.70`, passed explicitly to `analyze_phase_timing`; new
+  `verdict_is_indeterminate(analysis)` helper (module-level, unit-testable without a run);
+  `main()` now performs the real measurement directly (the previous `main()` fail-safe stub
+  and the `main_()` real-logic function are merged into one `main()`); after writing every
+  artifact (recorder JSONL, bitwise-diff JSON, analysis JSON, sha256 manifest), `main()` calls
+  `sys.exit(1)` if `verdict_is_indeterminate(analysis)`. Module docstring's precondition list
+  (item d) and the "1. Precondition checks" section updated to describe the widened file list
+  and process substrings; the "EXACT LAUNCH COMMAND" section is **unchanged** (still the
+  single command already given in the base report — the merge into one `main()` does not
+  change how the script is invoked).
+- `p515_s36_step36_timing_checks.py` — `OUT_DIR` now reads
+  `os.environ.get('P515_S36_CHECKS_OUT_DIR', <original default path>)`, so the default
+  (unset-env-var) behaviour is byte-identical to before and still write-once-protected
+  against the committed `zero_solve_checks/`; added `import p515_s36_step36_timing_run as R`.
+  Existing Check 5's toy-example assertion `C5_verdict_pass_at_x_0p70` (expected `True`)
+  replaced by two assertions matching the new degraded-mode behaviour: the ratio itself still
+  clears 0.70 (`C5_verdict_ratio_clears_x_0p70_bar`), but `verdict_pass` is now the
+  indeterminate string, not `True` (`C5_verdict_pass_is_degraded_nonverdict_not_bool_true`) —
+  the toy example's `nl_write_seconds` was never supplied, so it was always in degraded mode;
+  only the check's expectation was stale. Added Check 6 (item 3: `x_threshold` has no default,
+  `TypeError` when omitted, `R.X_THRESHOLD == 0.70`), Check 7 (item 2: the same toy records
+  analyzed once with `nl_write_seconds=None` — degraded, string verdict — and once with a
+  non-empty `nl_write_seconds` — determined, bool verdict — plus direct unit tests of
+  `R.verdict_is_indeterminate` on synthetic dicts), and Check 8 (item 1: `R._check_preconditions()`
+  called with `R.subprocess.run` monkeypatched so a `['git', 'status', ...]` call returns a
+  fabricated ` M admm_parameters.py` line — never touching a real file — verifying the
+  returned failure list contains a "production files are not clean in git" entry naming
+  `admm_parameters.py`; `subprocess.run` identity is confirmed restored afterward).
+
+### Commands / experiments run
+
+1. `python3 -c "import ast; ast.parse(...)"` on all three files after each edit — syntax
+   checked before any execution.
+2. `git status --porcelain -- shared_resources_planning.py network.py network_data.py
+   shared_energy_storage_data.py admm_parameters.py p515_g_g1_g4_admm_gates.py
+   data/SRP1/SRP1_params.json p515_s36_step36_timing.py p515_s36_step36_timing_run.py
+   p515_s36_step36_timing_checks.py` — empty (all ten clean) before any edit, confirming the
+   starting state matched what the widened precondition list will require of a real run.
+3. `ps aux | grep -i "p515_g_g1_g4_admm_gates.py\|p515_s38_"` and `ls -la .p515_g_gate.lock` —
+   run before, during, and after this addendum's edits and the checks re-run: PID 65458
+   (`p515_g_g1_g4_admm_gates.py s38_a_tau0`) alive throughout, `.p515_g_gate.lock` present
+   throughout — confirmed the numerical arm was never touched.
+4. `git add -- p515_s36_step36_timing.py p515_s36_step36_timing_run.py
+   p515_s36_step36_timing_checks.py` then
+   `git commit --only -m "..." -- <same three files>` — commit `e22c6975` (script changes,
+   before the checks re-run, per the Planner's ordering instruction).
+5. `P515_S36_CHECKS_OUT_DIR=data/SRP1/Results/P515S36/step36_timing/zero_solve_checks_v2 \
+   /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p515_s36_step36_timing_checks.py`
+   — the exact re-run command (env-var override, no other change).
+6. `ls -la data/SRP1/Results/P515S36/step36_timing/zero_solve_checks/
+   data/SRP1/Results/P515S36/step36_timing/zero_solve_checks_v2/` — confirmed the original
+   directory's file mtimes (14:04) predate this addendum's run (14:57) and are unchanged; the
+   v2 directory is new.
+7. `shasum -a 256 data/SRP1/Results/P515S36/step36_timing/zero_solve_checks_v2/results.json`
+   — matched the `manifest_sha256.json` the script itself wrote.
+
+### Results
+
+- **48/48 checks passed** in the re-run (34 original + 14 new: 3 in Check 6, 8 in Check 7, 2
+  in Check 8, plus one extra ratio-check split out of the old Check 5). `FAILURES: []`.
+  Evidence: `data/SRP1/Results/P515S36/step36_timing/zero_solve_checks_v2/results.json`
+  (sha256 `e8f3180d0fc074be45517f461cbc739866806ebd37262d7818f56268b8205f1d`, matching its own
+  `manifest_sha256.json`).
+- `SolveProfileGuard(permitted=())` verified `0` permitted solves, `0` blocked solves for the
+  whole re-run (same guard discipline as the original run).
+- Check 8's real (unstubbed) `ps aux`/lock-file half of `_check_preconditions()` independently
+  surfaced the **live** `s38_a_tau0` process and the live `.p515_g_gate.lock` as real failures
+  (visible in the check's own recorded detail, alongside the simulated dirty-file failure) —
+  incidental confirmation, from real process state, that the widened precondition function
+  behaves correctly under the exact conditions this task required it not to disturb.
+
+### Validation
+
+- **Code executes correctly**: yes — all three files parse and the checks script runs clean.
+- **Test passes**: yes — 48/48, `SolveProfileGuard` verified at 0 solves.
+- **Requested diagnostic works**: the three Planner decisions (widened preconditions, hard
+  non-verdict, required `x_threshold`) and the `main()`/`main_()` merge are implemented and
+  unit-tested on synthetic/toy data; whether they behave identically inside an actual 2-cycle
+  ADMM run is still **not established** — this addendum, like the base task, never ran
+  `p515_s36_step36_timing_run.py`'s `main()`.
+- **Underlying numerical/performance question**: still not addressed — no measurement was
+  taken by this addendum either.
+
+### Unexpected findings
+
+None beyond what Check 8 incidentally confirmed (above) — no drift, no surprising interaction
+with the live numerical arm.
+
+### Remaining issues
+
+Same as the base report's "Remaining issues" — the measurement itself has still not been run.
+
+### Questions for Planner
+
+None — all four items were fully specified by the Planner's decisions; no ambiguity was
+encountered during implementation.
+
+### Commit hashes
+
+- `e22c6975` — script changes (`p515_s36_step36_timing.py`, `p515_s36_step36_timing_run.py`,
+  `p515_s36_step36_timing_checks.py`), committed **before** the checks re-run.
+- (next commit, this report + `zero_solve_checks_v2/` outputs + their sha256 manifest) — see
+  the commit that follows this addendum in the repository history.
+
+### Exact commands (for reproducibility)
+
+```
+# Re-run the (updated) zero-solve checks into a NEW directory, never touching the
+# committed zero_solve_checks/:
+P515_S36_CHECKS_OUT_DIR=data/SRP1/Results/P515S36/step36_timing/zero_solve_checks_v2 \
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python p515_s36_step36_timing_checks.py
+```
+
+The measurement entry point's own launch command is **unchanged** from the base report (single
+`main()` now, but same invocation):
+
+```
+/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u \
+    p515_s36_step36_timing_run.py \
+    > data/SRP1/Results/P515S36_STEP36_TIMING_launch.log 2>&1
+```
