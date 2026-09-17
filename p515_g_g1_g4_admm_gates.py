@@ -1145,13 +1145,23 @@ def _construct_arm_planning(label, out_dir, report, k_override=None,
 
 def run_admm_arm(label, out_dir, k_override=None, investment_map=None,
                   num_max_iters_override=None, eval_id=None, post_run_hook=None,
-                  apply_rho=True, full_diagnostics_in_rows=False):
+                  apply_rho=True, full_diagnostics_in_rows=False, pre_solve_hook=None):
     """One full cold ADMM arm through the production path, reusing p514_n's own
     module-level constants and capture helpers verbatim. `investment_map`, if given,
     overrides the uniform S_INV/E_INV assignment for specific node_ids (others left at
     N.S_INV/N.E_INV for the control/perturbation arms, or at the harness's default 0/0
     if this is a fresh candidate); pass a full dict {node_id: (s, e)} covering every
     active node to avoid ambiguity (this is what G3's full eval does).
+
+    `pre_solve_hook`, if given, is called as
+    `pre_solve_hook(planning=planning, sed=sed, candidate=candidate, report=report)`
+    immediately after `_construct_arm_planning` returns and BEFORE
+    `planning.run_operational_planning(...)` is called -- i.e. before any
+    solve. Defaults to None (no-op), so every existing arm is unaffected.
+    Added for the `s35ref_replay` arm (Addendum 17 PART C), whose ONLY
+    configuration difference from `s35ref` is a params override
+    (`shared_ess_initialization = "standalone"` on a deep-copied
+    `planning.params`) that must happen at exactly this point.
 
     `num_max_iters_override` is a SMOKE-TEST-ONLY parameter (Addendum 6 smoke test):
     the `g1` CLI arm never passes it, so `N.CAP` (90) remains the C* control cap for the
@@ -1219,6 +1229,9 @@ def run_admm_arm(label, out_dir, k_override=None, investment_map=None,
                 investment_map=investment_map, eval_id=eval_id,
                 num_max_iters_override=num_max_iters_override,
                 apply_rho=apply_rho)
+
+            if pre_solve_hook is not None:
+                pre_solve_hook(planning=planning, sed=sed, candidate=candidate, report=report)
 
             n_active_nodes = len(sed.active_distribution_network_nodes)
             report['active_distribution_network_nodes'] = list(sed.active_distribution_network_nodes)
@@ -1327,8 +1340,17 @@ def run_admm_arm(label, out_dir, k_override=None, investment_map=None,
         # S31 worker task, Part 3: zero extra solves -- `models` is the SAME dict
         # `run_operational_planning` returned above; the guard has already been
         # uninstalled (report timing only), but nothing below calls a solver.
-        post_run_hook(planning=planning, sed=sed, models=models, rows=rows,
-                      report=report, out_dir=out_dir, label=label)
+        hook_kwargs = dict(planning=planning, sed=sed, models=models, rows=rows,
+                           report=report, out_dir=out_dir, label=label)
+        # Addendum 17 PART C (s35ref_replay): pass `state` (holds `dual_vars`,
+        # the per-agent shared-ESS consensus duals) ONLY to a hook that
+        # declares a `state` parameter -- every pre-existing post_run_hook
+        # (`_s34_hook`, `_s35ref_hook`, `_s35pt_hook`, ...) does not, so this
+        # is a no-op for them (signature-inspected, not a blanket **kwargs
+        # change that could silently alter an existing hook's behaviour).
+        if 'state' in inspect.signature(post_run_hook).parameters:
+            hook_kwargs['state'] = state
+        post_run_hook(**hook_kwargs)
 
     path = os.path.join(out_dir, f'g_{label}.json')
     _refuse_overwrite(path)
@@ -4276,6 +4298,239 @@ def write_boyd_terminal_s35pt(planning, sed, models, rows, report, out_dir, labe
     return path
 
 
+# ===========================================================================
+# P5.15 Addendum 17 PART C -- `s35ref_replay` arm (PREPARED, NOT LAUNCHED).
+#
+# Exact run-1 (s35ref, frozen spec v5) configuration, applied through
+# DEEP-COPIED parameter overrides on a freshly-constructed planning object
+# (`_s35ref_replay_force_standalone_hook` below), NEVER by editing the case
+# file (`data/SRP1/SRP1_params.json` has since gained
+# `admm.shared_ess_initialization = "price_taker"` as its default; run 1
+# used "standalone" -- the ONE field that has drifted). Every other s35ref
+# value (rho v/pf/ess, freeze policy, minimum_consecutive_converged_cycles,
+# sigma_fixed, al_scale_esso mode, S_ref=2.5, boyd eps) is asserted, not
+# reapplied, by reusing `assert_s35ref_capture_paths` VERBATIM.
+#
+# Reuses UNCHANGED: `run_admm_arm` (via its new, purely-additive
+# `pre_solve_hook`/`state`-passthrough parameters added just above this
+# section -- both no-ops for every OTHER arm, verified: no pre-existing
+# `post_run_hook` implementation declares a `state` parameter), `_construct_
+# arm_planning`, `assert_s35ref_capture_paths`, `s35ref_capture_hooks`,
+# `write_boyd_terminal_s35ref`. Only ONE new context manager
+# (`s35ref_replay_cycle0_lmp_hooks`, wrapping the two construction-time
+# constructors to capture their ALREADY-solved models' node-balance duals --
+# reusing `p515_s36_cycle0_lmp_capture`'s own capture functions BY CALLING
+# THEM, not reimplemented) and two new post-run write functions are added.
+# `s32`, `s33e2`, `s34`, `s35ref`, `s35pt` and every other arm are UNCHANGED.
+# ===========================================================================
+
+OUT_S35REF_REPLAY = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S36_REPLAY_run')
+S35REF_REPLAY_EVAL_ID = 'p515s36_s35ref_replay_baseline'
+S35REF_REPLAY_STANDALONE_SOURCE = 'p515s36_replay_override_not_case_file'
+
+
+def assert_s35ref_replay_capture_paths(planning):
+    """Rule eleven for `s35ref_replay`. Reuses `assert_s35ref_capture_paths`
+    VERBATIM (same rho v/pf/ess, freeze policy,
+    minimum_consecutive_converged_cycles, sigma_fixed, al_scale_esso mode,
+    S_ref=2.5, boyd eps -- none of these have drifted since run 1) and adds
+    the ONE check specific to the replay: `shared_ess_initialization` must
+    be the OVERRIDDEN 'standalone' (via `_s35ref_replay_force_standalone_
+    hook`'s deep-copied `planning.params`), not whatever the case file
+    currently defaults to. Zero solves."""
+    checklist, floor_rows_by_node = assert_s35ref_capture_paths(planning)
+    checklist['shared_ess_initialization_is_standalone'] = (
+        planning.params.admm.shared_ess_initialization == 'standalone')
+    checklist['shared_ess_initialization_source_is_replay_override'] = (
+        planning.params.admm.shared_ess_initialization_source == S35REF_REPLAY_STANDALONE_SOURCE)
+    missing = [name for name, ok in checklist.items()
+               if isinstance(ok, bool) and not ok]
+    if missing:
+        raise RuntimeError(f'S35REF_REPLAY capture-path pre-flight FAILED, missing/broken: {missing}')
+    return checklist, floor_rows_by_node
+
+
+def _s35ref_replay_force_standalone_hook(planning, sed, candidate, report):
+    """`pre_solve_hook` for `run_admm_arm` (called AFTER `_construct_arm_
+    planning` returns, BEFORE any solve). Deep-copies `planning.params`
+    (the case file itself is NEVER touched) and forces `admm.shared_ess_
+    initialization = 'standalone'` -- run 1's actual configuration. Same
+    override technique `p515_s35pt_phase2_checks._run_precycle1_capture`'s
+    `force_standalone=True` already validated (its Z4 check: standalone
+    dispatch differs from the price-taker LP schedule in >50% of cells, as
+    expected -- i.e. the override demonstrably takes effect through this
+    exact one-line assignment on `planning.params`, not merely intended to)."""
+    planning.params = deepcopy(planning.params)
+    planning.params.admm.shared_ess_initialization = 'standalone'
+    planning.params.admm.shared_ess_initialization_source = S35REF_REPLAY_STANDALONE_SOURCE
+    checklist, floor_rows_by_node = assert_s35ref_replay_capture_paths(planning)
+    report.setdefault('rule_eleven_checklist', {})['s35ref_replay'] = checklist
+    report['_s35ref_replay_floor_rows_by_node'] = floor_rows_by_node
+
+
+@contextmanager
+def s35ref_replay_cycle0_lmp_hooks(cycle0_lmp_path, node_ids=(5, 7, 9)):
+    """Wraps `srp.create_transmission_network_model` and `srp.create_
+    distribution_networks_models` (call-through, UNCHANGED -- the real
+    functions still run their own standalone SMOPF solves exactly as
+    production does) to capture the run's OWN cycle-0 node-balance duals
+    the FIRST (and only -- construction runs once per arm) time these are
+    called, reusing `p515_s36_cycle0_lmp_capture.capture_tso_node_balance_
+    duals` / `capture_dso_reference_node_balance_duals` BY CALLING THEM (not
+    reimplemented). Writes `cycle0_lmp_path` once both captures are
+    available, then the wrapper is a pure pass-through for the rest of the
+    run. Zero extra solves: both wrapped functions already perform a real
+    standalone SMOPF solve as part of production construction; this only
+    reads the resulting model's already-populated `model.dual` Suffix.
+    """
+    import p515_s36_cycle0_lmp_capture as C0
+
+    real_tso_ctor = srp.create_transmission_network_model
+    real_dso_ctor = srp.create_distribution_networks_models
+    state = {'tso_model': None, 'transmission_network': None,
+             'dso_models': None, 'distribution_networks': None, 'written': False}
+
+    def _maybe_write():
+        if state['written'] or state['tso_model'] is None or state['dso_models'] is None:
+            return
+        tso_duals = C0.capture_tso_node_balance_duals(
+            state['tso_model'], state['transmission_network'], node_ids)
+        dso_duals, dso_base_mva = C0.capture_dso_reference_node_balance_duals(
+            state['dso_models'], state['distribution_networks'], node_ids)
+        with open(cycle0_lmp_path, 'w') as handle:
+            json.dump({
+                'tso_node_balance_duals_pu': tso_duals,
+                'dso_reference_node_balance_duals_pu': dso_duals,
+                'dso_base_mva': dso_base_mva,
+                'sign_convention_and_units': (
+                    'IDENTICAL to p515_s36_cycle0_lmp_capture.py -- see that script\'s module '
+                    'docstring: model.dual.get(constraint), NO sign flip; LMP [$/MWh] = '
+                    'dual_pu / network.baseMVA; UNSCALED objective at construction.'
+                ),
+            }, handle, default=str)
+        state['written'] = True
+
+    def w_tso(planning_problem, consensus_vars, total_capacity):
+        m, r = real_tso_ctor(planning_problem, consensus_vars, total_capacity)
+        state['tso_model'] = m
+        state['transmission_network'] = planning_problem.transmission_network
+        _maybe_write()
+        return m, r
+
+    def w_dso(distribution_networks, consensus_vars, total_capacity, parallel_execution=False):
+        m, r = real_dso_ctor(distribution_networks, consensus_vars, total_capacity,
+                             parallel_execution=parallel_execution)
+        state['dso_models'] = m
+        state['distribution_networks'] = distribution_networks
+        _maybe_write()
+        return m, r
+
+    srp.create_transmission_network_model = w_tso
+    srp.create_distribution_networks_models = w_dso
+    try:
+        yield state
+    finally:
+        srp.create_transmission_network_model = real_tso_ctor
+        srp.create_distribution_networks_models = real_dso_ctor
+
+
+def write_terminal_storage_duals_s35ref_replay(planning, sed, models, rows, report, out_dir, label, state=None):
+    """`post_run_hook` (declares `state` -- see `run_admm_arm`'s new
+    signature-inspected passthrough above). Dumps `dual_vars['ess'][agent]
+    ['current']` for ALL THREE agents (TSO, DSO, ESSO), per (node, year,
+    day, power_type, period) -- the SAME quantity PART A reconstructed
+    zero-solve for run 1 from committed artifacts, captured HERE directly
+    from the live terminal ADMM state (`state['dual_vars']`, returned by
+    `planning.run_operational_planning(..., return_state=True)`), zero
+    extra solves. Also dumps the terminal consensus `z` and each agent's
+    `x` copy (same shape) so PART A's reconstruction can be cross-checked
+    against a REAL replay, not just against run 1's own artifacts."""
+    if state is None or 'dual_vars' not in state or 'consensus_vars' not in state:
+        report['s35ref_replay_terminal_storage_duals_error'] = (
+            'state (dual_vars/consensus_vars) not available to post_run_hook -- '
+            f'state keys observed: {sorted(state.keys()) if isinstance(state, dict) else state}')
+        return
+    dual_vars = state['dual_vars']
+    consensus_vars = state['consensus_vars']
+    years = list(sed.years)
+    days = list(sed.days)
+    node_ids = list(sed.active_distribution_network_nodes)
+
+    duals_out, z_out, x_out = {}, {}, {}
+    for agent in ('tso', 'dso', 'esso'):
+        duals_out[agent] = {}
+        x_out[agent] = {}
+        for node_id in node_ids:
+            duals_out[agent][str(node_id)] = {}
+            x_out[agent][str(node_id)] = {}
+            for year in years:
+                duals_out[agent][str(node_id)][str(year)] = {}
+                x_out[agent][str(node_id)][str(year)] = {}
+                for day in days:
+                    duals_out[agent][str(node_id)][str(year)][str(day)] = {
+                        'p': list(dual_vars['ess'][agent]['current'][node_id][year][day]['p']),
+                        'q': list(dual_vars['ess'][agent]['current'][node_id][year][day]['q']),
+                    }
+                    x_out[agent][str(node_id)][str(year)][str(day)] = {
+                        'p': list(consensus_vars['ess'][agent]['current'][node_id][year][day]['p']),
+                        'q': list(consensus_vars['ess'][agent]['current'][node_id][year][day]['q']),
+                    }
+    for node_id in node_ids:
+        z_out[str(node_id)] = {}
+        for year in years:
+            z_out[str(node_id)][str(year)] = {}
+            for day in days:
+                z_out[str(node_id)][str(year)][str(day)] = {
+                    'p': list(consensus_vars['ess']['z']['current'][node_id][year][day]['p']),
+                    'q': list(consensus_vars['ess']['z']['current'][node_id][year][day]['q']),
+                }
+
+    path = os.path.join(out_dir, f'terminal_storage_duals_{label}.json')
+    _refuse_overwrite(path)
+    with open(path, 'w') as handle:
+        json.dump({'lambda_per_agent': duals_out, 'x_per_agent': x_out, 'z': z_out}, handle, default=str)
+    report['s35ref_replay_terminal_storage_duals_path'] = os.path.relpath(path, REPO)
+
+
+def s35ref_replay_bitwise_identity_check(rows, report):
+    """POST-RUN function (called by the dispatch branch below, after the
+    arm returns): compares the replay's per-cycle trajectory against run
+    1's `g_baseline.json` on EVERY numeric field -- EXACT equality required
+    (no tolerance). Also compares the terminal stride `x`/`z` against run
+    1's own `ess_entry_stride_baseline.jsonl` terminal row. Returns a dict
+    with `passed` and, if not passed, the first differing cycle/field.
+    """
+    ref_g_path = os.path.join(OUT_S35REF, 'g_baseline.json')
+    if not os.path.exists(ref_g_path):
+        return {'passed': False, 'reason': f'run 1 reference not found: {ref_g_path}'}
+    with open(ref_g_path) as handle:
+        ref_rows = json.load(handle)['cycle_trajectory']
+
+    if len(rows) != len(ref_rows):
+        return {'passed': False, 'reason': 'cycle count differs',
+                'replay_cycles': len(rows), 'run1_cycles': len(ref_rows)}
+
+    for i, (replay_row, ref_row) in enumerate(zip(rows, ref_rows)):
+        for key in sorted(set(replay_row) | set(ref_row)):
+            rv, fv = replay_row.get(key), ref_row.get(key)
+            if rv != fv:
+                return {'passed': False, 'first_differing_cycle': i + 1, 'field': key,
+                        'replay_value': rv, 'run1_value': fv}
+
+    replay_stride_path = os.path.join(OUT_S35REF_REPLAY, 'ess_entry_stride_baseline.jsonl')
+    ref_stride_path = os.path.join(OUT_S35REF, 'ess_entry_stride_baseline.jsonl')
+    if os.path.exists(replay_stride_path) and os.path.exists(ref_stride_path):
+        with open(replay_stride_path) as handle:
+            replay_stride_rows = [json.loads(line) for line in handle]
+        with open(ref_stride_path) as handle:
+            ref_stride_rows = [json.loads(line) for line in handle]
+        if replay_stride_rows[-1] != ref_stride_rows[-1]:
+            return {'passed': False, 'reason': 'terminal stride x/z entries differ',
+                    'replay_terminal_cycle': replay_stride_rows[-1].get('cycle'),
+                    'run1_terminal_cycle': ref_stride_rows[-1].get('cycle')}
+
+    return {'passed': True, 'n_cycles_compared': len(rows)}
+
 
 if __name__ == '__main__':
     _acquire_exclusive_run_lock()
@@ -4772,6 +5027,96 @@ if __name__ == '__main__':
             run_admm_arm('baseline', OUT_S35PT, k_override=None, eval_id='p515s35pt_baseline',
                          num_max_iters_override=S35PT_CAP, apply_rho=False,
                          full_diagnostics_in_rows=True, post_run_hook=_s35pt_hook)
+    elif gate == 's35ref_replay':
+        # Addendum 17 PART C -- exact run-1 (s35ref) replay, WITH the
+        # standalone-initialization override (case file now defaults to
+        # price_taker) and cycle-0 / terminal storage-dual capture. Mirrors
+        # the s35ref/s35pt preflight pattern exactly (a throwaway
+        # `O.fresh_planning` object checked, then discarded, BEFORE the real
+        # arm is constructed) -- the ONE difference is the preflight object
+        # also gets the standalone override applied to it (matching what
+        # `_s35ref_replay_force_standalone_hook` will do to the REAL run's
+        # planning object), so `assert_s35ref_replay_capture_paths` checks
+        # the SAME configuration the real run will use.
+        #
+        # THE PLANNER LAUNCHES THIS GATE, NOT THE WORKER -- prepared code
+        # only (Addendum 17 capture-and-reconstruction Worker task); never
+        # invoked by any Worker-run command in that task. Exact command:
+        #   .../bin/python -u p515_g_g1_g4_admm_gates.py s35ref_replay \
+        #     > data/SRP1/Results/P515S36_REPLAY_launch.log 2>&1
+        _require_fresh_output_root(OUT_S35REF_REPLAY)
+        preflight_eval_id = 'p515s36_s35ref_replay_preflight_capture_check'
+        preflight_eval_dir = os.path.join(O.WORK_DIR, preflight_eval_id)
+        if os.path.exists(preflight_eval_dir):
+            raise RuntimeError(
+                f'refusing to start: preflight eval dir already exists (network '
+                f'logs append): {preflight_eval_dir}')
+        preflight_planning = O.fresh_planning(preflight_eval_id)
+        preflight_planning.params = deepcopy(preflight_planning.params)
+        preflight_planning.params.admm.shared_ess_initialization = 'standalone'
+        preflight_planning.params.admm.shared_ess_initialization_source = S35REF_REPLAY_STANDALONE_SOURCE
+        replay_checklist, replay_floor_rows_by_node = assert_s35ref_replay_capture_paths(preflight_planning)
+        preflight_admm_params = preflight_planning.params.admm
+        del preflight_planning
+        print(f'[P5.15 S35REF_REPLAY] capture-path pre-flight passed: {replay_checklist}')
+        print(
+            '[P5.15 S35REF_REPLAY] cap=500, objective rel=1e-4 (diagnostic), adaptive on, '
+            f'case-file rho in force (N.RHO NOT applied): '
+            f'v={preflight_admm_params.rho["v"]}, pf={preflight_admm_params.rho["pf"]}, '
+            f'ess={preflight_admm_params.rho["ess"]}; '
+            f'boyd eps_source={preflight_admm_params.boyd_eps_source}, '
+            f'eps_abs={preflight_admm_params.tol["boyd"]["eps_abs"]:.1e}, '
+            f'eps_rel={preflight_admm_params.tol["boyd"]["eps_rel"]:.1e}; '
+            f'gamma_policy={preflight_admm_params.proximal_regularization["tso"]["gamma_policy"]}, '
+            f'tau={preflight_admm_params.proximal_regularization["tso"]["tau"]}; '
+            f'shared_ess_reference_rating_mva={preflight_admm_params.shared_ess_reference_rating_mva}; '
+            f'freeze_after_unchanged_cycles={preflight_admm_params.penalty_update["freeze_after_unchanged_cycles"]}; '
+            f'freeze_backstop_cycle={preflight_admm_params.penalty_update["freeze_backstop_cycle"]}; '
+            f'minimum_consecutive_converged_cycles={preflight_admm_params.minimum_consecutive_converged_cycles}; '
+            f'shared_ess_initialization={preflight_admm_params.shared_ess_initialization} '
+            f'(source={preflight_admm_params.shared_ess_initialization_source}); '
+            f'soh_floor_row_counts_by_node={ {n: len(r) for n, r in replay_floor_rows_by_node.items()} }'
+        )
+
+        replay_recourse_jump_path = os.path.join(OUT_S35REF_REPLAY, 'recourse_jump_sidecar_baseline.jsonl')
+        replay_ess_stride_path = os.path.join(OUT_S35REF_REPLAY, 'ess_entry_stride_baseline.jsonl')
+        replay_floor_sidecar_path = os.path.join(OUT_S35REF_REPLAY, 'soh_floor_sidecar_baseline.jsonl')
+        replay_cycle0_lmp_path = os.path.join(OUT_S35REF_REPLAY, 'cycle0_lmp_baseline.json')
+        _refuse_overwrite(replay_recourse_jump_path)
+        _refuse_overwrite(replay_ess_stride_path)
+        _refuse_overwrite(replay_floor_sidecar_path)
+        _refuse_overwrite(replay_cycle0_lmp_path)
+
+        replay_rows_holder = {}
+
+        def _replay_hook(planning, sed, models, rows, report, out_dir, label, state=None):
+            replay_rows_holder['rows'] = rows
+            report['s34_recourse_jump_sidecar_path'] = os.path.relpath(replay_recourse_jump_path, REPO)
+            report['s34_ess_entry_stride_sidecar_path'] = os.path.relpath(replay_ess_stride_path, REPO)
+            report['s35ref_soh_floor_sidecar_path'] = os.path.relpath(replay_floor_sidecar_path, REPO)
+            report['cycle0_lmp_path'] = os.path.relpath(replay_cycle0_lmp_path, REPO)
+            write_boyd_terminal_s35ref(planning, sed, models, rows, report, out_dir, label,
+                                        floor_rows_by_node=replay_floor_rows_by_node,
+                                        floor_sidecar_path=replay_floor_sidecar_path)
+            write_terminal_storage_duals_s35ref_replay(planning, sed, models, rows, report, out_dir, label,
+                                                        state=state)
+
+        with s35ref_capture_hooks(replay_recourse_jump_path, replay_ess_stride_path,
+                                   replay_floor_sidecar_path, replay_floor_rows_by_node, stride=1), \
+             s35ref_replay_cycle0_lmp_hooks(replay_cycle0_lmp_path):
+            run_admm_arm('baseline', OUT_S35REF_REPLAY, k_override=None,
+                         eval_id=S35REF_REPLAY_EVAL_ID,
+                         num_max_iters_override=S35REF_CAP, apply_rho=False,
+                         full_diagnostics_in_rows=True, post_run_hook=_replay_hook,
+                         pre_solve_hook=_s35ref_replay_force_standalone_hook)
+
+        identity_check = s35ref_replay_bitwise_identity_check(replay_rows_holder.get('rows', []), {})
+        identity_path = os.path.join(OUT_S35REF_REPLAY, 'bitwise_identity_check_vs_run1.json')
+        _refuse_overwrite(identity_path)
+        with open(identity_path, 'w') as handle:
+            json.dump(identity_check, handle, indent=1, default=str)
+        print(f'[S35REF_REPLAY] bitwise identity vs run 1: {identity_check}')
+        print(f'[S35REF_REPLAY] wrote: {identity_path}')
     else:
         print(__doc__)
         sys.exit(1)
