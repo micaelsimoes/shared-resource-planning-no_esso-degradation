@@ -1,0 +1,254 @@
+{
+ "stage": "P5.15 Addendum 21 (s39 preparation worker task) -- zero-solve verification of the conditional balancing exemption (balancing_exempt_until) and the s39 harness working-dir-id structural fix",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 21",
+  "data/SRP1/Results/P515S39/frozen_s39_oracle_spec_v10_f1b2b999.json"
+ ],
+ "spec_file": "data/SRP1/Results/P515S39/frozen_s39_oracle_spec_v10_f1b2b999.json",
+ "spec_file_sha256_observed": "f1b2b9999101fc69be89d7eb1e265cfc9b6f3e81c5c0602e9d81b15101076f10",
+ "timestamp_utc": "2026-09-17T17:26:15.620932+00:00",
+ "solve_profile_guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "checks": {
+  "default_off_identity": {
+   "method": "p515_s38_balancing_replay's own methodology (stand-in Pyomo models, the REAL srp._update_admm_penalties/_init_admm_freeze_state, per-cycle re-seeding from ground truth), extended to 5 trajectories with per-run config INFERRED from each trajectory's own first cycle",
+   "runs": {
+    "run1_s35ref": {
+     "run": "run1_s35ref",
+     "trajectory_path": "data/SRP1/Results/P515S35_REF_run/g_baseline.json",
+     "n_cycles": 477,
+     "inferred_config": {
+      "balancing_exempt_channels": [],
+      "freeze_backstop_cycle": 60,
+      "freeze_after_unchanged_cycles": 10,
+      "tau": 1.0
+     },
+     "passed": true,
+     "n_mismatches": 0,
+     "mismatches": []
+    },
+    "s37_rho0p01": {
+     "run": "s37_rho0p01",
+     "trajectory_path": "data/SRP1/Results/P515S37_RHO0P01_run/g_s37_rho0p01.json",
+     "n_cycles": 150,
+     "inferred_config": {
+      "balancing_exempt_channels": [
+       "ess"
+      ],
+      "freeze_backstop_cycle": 60,
+      "freeze_after_unchanged_cycles": 10,
+      "tau": 1.0
+     },
+     "passed": true,
+     "n_mismatches": 0,
+     "mismatches": []
+    },
+    "s37_rho0p001": {
+     "run": "s37_rho0p001",
+     "trajectory_path": "data/SRP1/Results/P515S37_RHO0P001_run/g_s37_rho0p001.json",
+     "n_cycles": 150,
+     "inferred_config": {
+      "balancing_exempt_channels": [
+       "ess"
+      ],
+      "freeze_backstop_cycle": 60,
+      "freeze_after_unchanged_cycles": 10,
+      "tau": 1.0
+     },
+     "passed": true,
+     "n_mismatches": 0,
+     "mismatches": []
+    },
+    "s38_A_tau0": {
+     "run": "s38_A_tau0",
+     "trajectory_path": "data/SRP1/Results/P515S38_A_TAU0_run/g_s38_A_tau0.json",
+     "n_cycles": 133,
+     "inferred_config": {
+      "balancing_exempt_channels": [
+       "pf",
+       "ess"
+      ],
+      "freeze_backstop_cycle": 200,
+      "freeze_after_unchanged_cycles": 10,
+      "tau": 0.0
+     },
+     "passed": true,
+     "n_mismatches": 0,
+     "mismatches": []
+    },
+    "s38_B_pfbal": {
+     "run": "s38_B_pfbal",
+     "trajectory_path": "data/SRP1/Results/P515S38_B_PFBAL_run/g_s38_B_pfbal.json",
+     "n_cycles": 151,
+     "inferred_config": {
+      "balancing_exempt_channels": [
+       "ess"
+      ],
+      "freeze_backstop_cycle": 200,
+      "freeze_after_unchanged_cycles": 10,
+      "tau": 1.0
+     },
+     "passed": true,
+     "n_mismatches": 0,
+     "mismatches": []
+    }
+   },
+   "pass": true
+  },
+  "synthetic_sequences": {
+   "sub1_lift_after_4_break_5_consecutive": {
+    "lift_cycle": 10,
+    "expected_lift_cycle": 10,
+    "lift_cycle_correct": true,
+    "pending_exempt_fixed_before_lift": true,
+    "streak_reset_at_break_cycle_5": true,
+    "streak_trajectory": [
+     1,
+     2,
+     3,
+     4,
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     5,
+     5,
+     5
+    ],
+    "pass": true
+   },
+   "sub2_one_way_never_re_exempted": {
+    "lifted_at_cycle_5": true,
+    "never_re_exempted_after": true,
+    "actions_after_lift": [
+     "held",
+     "held",
+     "held",
+     "held",
+     "held",
+     "held",
+     "held",
+     "held",
+     "held",
+     "held"
+    ],
+    "pass": true
+   },
+   "sub3_balances_at_lift_when_ratio_test_says_so": {
+    "lift_cycle": 5,
+    "lifted": true,
+    "action_at_lift": "increased",
+    "rho_before": 1.0,
+    "rho_after": 1.5,
+    "rho_actually_changed": true,
+    "pass": true
+   },
+   "sub4_streak_freeze_counts_from_lift": {
+    "lift_cycle": 5,
+    "streak_freeze_cycle": 15,
+    "expected_streak_freeze_cycle": 15,
+    "not_frozen_before_expected_cycle": true,
+    "pass": true
+   },
+   "sub5_absolute_backstop_post_lift_vs_pending": {
+    "post_lift_frozen_by_cycle_200": true,
+    "post_lift_frozen_via_backstop_not_streak": true,
+    "post_lift_not_frozen_before_cycle_200": true,
+    "pending_channel_action_at_cycle_250": "exempt (fixed)",
+    "pending_channel_never_lifted_at_250": true,
+    "pending_survives_backstop_at_250": true,
+    "pass": true
+   },
+   "sub6_validation_errors": {
+    "valid_config_loads": true,
+    "valid_config_error": null,
+    "unknown_channel_rejected": true,
+    "unknown_channel_error": "ADMM penalty_update.balancing_exempt_until keys must be drawn from {'v', 'pf', 'ess'}; got invalid entries: ['xyz'].",
+    "zero_threshold_rejected": true,
+    "zero_threshold_error": "ADMM penalty_update.balancing_exempt_until['ess'].dual_ratio_below must be positive.",
+    "negative_threshold_rejected": true,
+    "negative_threshold_error": "ADMM penalty_update.balancing_exempt_until['ess'].dual_ratio_below must be positive.",
+    "zero_consecutive_rejected": true,
+    "zero_consecutive_error": "ADMM penalty_update.balancing_exempt_until['ess'].consecutive_cycles must be at least 1.",
+    "overlap_with_exempt_channels_rejected": true,
+    "overlap_error": "ADMM penalty_update: a channel may not be in BOTH balancing_exempt_channels and balancing_exempt_until; overlap: ['ess'].",
+    "pass": true
+   },
+   "pass": true
+  },
+  "tau0_and_min_consecutive_10": {
+   "loaded_via_read_parameters_from_file": {
+    "tau_loads_as_0": true,
+    "min_consecutive_loads_as_10": true
+   },
+   "in_force_on_built_unsolved_planning_object": {
+    "tau_in_force": true,
+    "min_consecutive_in_force": true
+   },
+   "pass": true
+  },
+  "working_dir_ids_disjoint": {
+   "per_arm": {
+    "s39_C": {
+     "ids_by_mode": {
+      "real": {
+       "precheck": "p515s39_c_precheck_real",
+       "probe": "p515s39_s39_C_tso_probe_checklist_real",
+       "run": "p515s39_c_arm_real"
+      },
+      "preflight": {
+       "precheck": "p515s39_c_precheck_preflight",
+       "probe": "p515s39_s39_C_tso_probe_checklist_preflight",
+       "run": "p515s39_c_arm_preflight"
+      }
+     },
+     "real_disjoint_from_preflight": true
+    },
+    "s39_D": {
+     "ids_by_mode": {
+      "real": {
+       "precheck": "p515s39_d_precheck_real",
+       "probe": "p515s39_s39_D_tso_probe_checklist_real",
+       "run": "p515s39_d_arm_real"
+      },
+      "preflight": {
+       "precheck": "p515s39_d_precheck_preflight",
+       "probe": "p515s39_s39_D_tso_probe_checklist_preflight",
+       "run": "p515s39_d_arm_preflight"
+      }
+     },
+     "real_disjoint_from_preflight": true
+    }
+   },
+   "all_ids_flat": [
+    "p515s39_c_arm_preflight",
+    "p515s39_c_arm_real",
+    "p515s39_c_precheck_preflight",
+    "p515s39_c_precheck_real",
+    "p515s39_d_arm_preflight",
+    "p515s39_d_arm_real",
+    "p515s39_d_precheck_preflight",
+    "p515s39_d_precheck_real",
+    "p515s39_s39_C_tso_probe_checklist_preflight",
+    "p515s39_s39_C_tso_probe_checklist_real",
+    "p515s39_s39_D_tso_probe_checklist_preflight",
+    "p515s39_s39_D_tso_probe_checklist_real"
+   ],
+   "n_ids_total": 12,
+   "n_ids_distinct": 12,
+   "all_twelve_ids_pairwise_distinct": true,
+   "pass": true
+  }
+ },
+ "all_checks_pass": true
+}
