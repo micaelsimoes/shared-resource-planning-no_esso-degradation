@@ -1,0 +1,33 @@
+{
+ "stage": "P5.15 Addendum 20 item (a) -- balancing replay VALIDATION",
+ "overall_passed": true,
+ "runs": {
+  "run1_s35ref": {
+   "run": "run1_s35ref",
+   "label": "run 1 (s35ref) -- ESS not exempt, 477 cycles, backstop 60 (actual)",
+   "n_cycles": 477,
+   "passed": true,
+   "n_mismatches": 0,
+   "mismatches": [],
+   "note": "per-cycle re-seeding from the trajectory's own rho_before/gamma_before (ground truth), so a mismatch is attributable to the single cycle that produced it, not to accumulated drift"
+  },
+  "s37_rho0p01": {
+   "run": "s37_rho0p01",
+   "label": "s37 arm rho_ess=0.01 -- ESS exempt, 150 cycles, backstop 60 (actual)",
+   "n_cycles": 150,
+   "passed": true,
+   "n_mismatches": 0,
+   "mismatches": [],
+   "note": "per-cycle re-seeding from the trajectory's own rho_before/gamma_before (ground truth), so a mismatch is attributable to the single cycle that produced it, not to accumulated drift"
+  },
+  "s37_rho0p001": {
+   "run": "s37_rho0p001",
+   "label": "s37 arm rho_ess=0.001 -- ESS exempt, 150 cycles, backstop 60 (actual)",
+   "n_cycles": 150,
+   "passed": true,
+   "n_mismatches": 0,
+   "mismatches": [],
+   "note": "per-cycle re-seeding from the trajectory's own rho_before/gamma_before (ground truth), so a mismatch is attributable to the single cycle that produced it, not to accumulated drift"
+  }
+ }
+}
