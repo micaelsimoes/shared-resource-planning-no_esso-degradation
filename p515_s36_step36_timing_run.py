@@ -1,6 +1,13 @@
 """
-P5.15 Step 3.6, Worker task W3 -- the two-cycle recorder-off / recorder-on
+P5.15 Step 3.6, Worker task W3 -- the recorder-off / recorder-on phase-timing
 measurement entry point (design `P5_15_STEP36_TIMING_DESIGN.md` §2.4/§5).
+Two cycles by default (the already-committed, already-run evidence under
+`data/SRP1/Results/P515S36/step36_timing/{off,on}/`); an optional positional
+CLI argument (P5.15 Addendum 22 item (2) follow-up, Worker-prepared, NOT run
+by that Worker) parameterizes the cycle count for a LONGER re-measurement
+(e.g. 10 cycles) into its OWN, cycle-count-aware output root and eval ids
+(`_out_root_for_cycles`/`_eval_id_for` below), so a longer run can never
+collide with, or overwrite, the committed 2-cycle evidence.
 
 *** DO NOT RUN. The Planner launches this script; this task explicitly
     forbids executing it (the machine is reserved for a numerical campaign). ***
@@ -15,9 +22,10 @@ CLI branch (`p515_g_g1_g4_admm_gates.py`, `elif gate == 's35ref':`) calls, in
 the SAME order, with the SAME configuration class (k_override=None,
 apply_rho=False -- case-file rho in force, N.RHO NOT applied,
 full_diagnostics_in_rows=True, investment_map=None -- uniform N.S_INV/N.E_INV
-across active nodes), the ONLY deliberate difference being `num_max_iters_override
-=2` (a two-cycle preflight, design §5, not the certified 500-cycle run) and
-fresh eval ids / output roots so nothing committed is ever touched.
+across active nodes), the ONLY deliberate differences being `num_max_iters_
+override=<cycle count>` (2 by default, design §5's two-cycle preflight; NOT
+the certified 500-cycle run) and fresh eval ids / output roots so nothing
+committed is ever touched.
 
 ======================================================================
 WHAT THIS SCRIPT DOES (when the Planner runs it)
@@ -48,13 +56,14 @@ WHAT THIS SCRIPT DOES (when the Planner runs it)
      -- reused verbatim, not re-implemented, so its semantics are identical
      by construction) -- refuses to run if another copy of
      `p515_g_g1_g4_admm_gates.py` (or this script) already holds it.
-  3. Run OFF: two ADMM cycles, cold, recorder NOT installed -- byte-for-byte
-     today's production path (design §2.2: an unmodified call, since this
-     harness-side deviation never threads a `timing_recorder` kwarg into
-     production AT ALL; "OFF" here means this script's OWN
-     `p515_s36_step36_timing.recorder_installed(...)` context manager is
-     simply not entered for this run).
-  4. Run ON: the SAME two cycles, cold, with
+  3. Run OFF: `NUM_CYCLES` ADMM cycles (2 by default; parameterized by an
+     optional CLI argument, see "EXACT LAUNCH COMMAND" below), cold, recorder
+     NOT installed -- byte-for-byte today's production path (design §2.2: an
+     unmodified call, since this harness-side deviation never threads a
+     `timing_recorder` kwarg into production AT ALL; "OFF" here means this
+     script's OWN `p515_s36_step36_timing.recorder_installed(...)` context
+     manager is simply not entered for this run).
+  4. Run ON: the SAME `NUM_CYCLES` cycles, cold, with
      `p515_s36_step36_timing.recorder_installed(recorder, inject_report_timing=True)`
      wrapped AROUND the `G.run_admm_arm(...)` call (i.e. OUTSIDE
      `run_admm_arm`'s own `SolveProfileGuard.install()/uninstall()` pair --
@@ -89,22 +98,40 @@ WHAT THIS SCRIPT DOES (when the Planner runs it)
 ======================================================================
 EXACT LAUNCH COMMAND (for the Planner; NOT executed by this Worker)
 ======================================================================
+Original 2-cycle measurement (already run; re-running this exact command
+would collide with the committed evidence -- do not re-issue it):
     /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u \\
         p515_s36_step36_timing_run.py \\
         > data/SRP1/Results/P515S36_STEP36_TIMING_launch.log 2>&1
+
+10-cycle re-measurement (P5.15 Addendum 22 item (2) follow-up; NOT run by the
+Worker who added this parameter -- writes to
+`data/SRP1/Results/P515S36/step36_timing_10cyc/{off,on}/`, distinct from the
+committed 2-cycle evidence):
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u \\
+        p515_s36_step36_timing_run.py 10 \\
+        > data/SRP1/Results/P515S36_STEP36_TIMING_10CYC_launch.log 2>&1
 
 Attached, alone, both streams captured -- no `screen`/`nohup`/backgrounding
 (CLAUDE.md's campaign-running evidence rule). Refuses to run concurrently
 with `p515_g_g1_g4_admm_gates.py` or with a second copy of itself (the shared
 `.p515_g_gate.lock`).
 
-Expected wall time: two ADMM cycles at the s35ref reference configuration's
+Expected wall time (2-cycle default): two ADMM cycles at the s35ref reference
+configuration's
 per-cycle wall time (`WORKER_REPORT_S36_PARALLEL_AUDIT.md` median 33.7 s,
 cold cycle 1 alone measured 30.3 s there) TWICE (OFF then ON), i.e.
 approximately 1-2 minutes total, not counting model construction/
 initialization (~tens of seconds, `P515S35_REF_run` evidence) paid once per
 run -- so a few minutes end to end, not the ~4-5 hour scale of a capped-500
 certification run.
+
+Expected wall time (10-cycle re-measurement): ten cycles at the same
+per-cycle wall time, TWICE (OFF then ON), i.e. roughly 5x the 2-cycle
+figure above (order 5-10 minutes of cycle time per run, so order 10-20
+minutes total across both runs, plus the two initializations) -- still far
+below the capped-500 certification-run scale. Not independently measured by
+this Worker (this script was prepared, not run, per this task's scope).
 """
 
 import hashlib
@@ -120,7 +147,54 @@ REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
 if REPO_ROOT not in sys.path:
     sys.path.insert(0, REPO_ROOT)
 
-OUT_ROOT = os.path.join(REPO_ROOT, 'data', 'SRP1', 'Results', 'P515S36', 'step36_timing')
+
+def _parse_num_cycles(argv):
+    """P5.15 Addendum 22 item (2) follow-up (Worker task, S40 clone-capture
+    preflight): optional positional CLI argument, the ADMM cycle count for
+    this measurement. Default UNCHANGED at 2 (the already-committed,
+    already-run evidence under `data/SRP1/Results/P515S36/step36_timing/`) --
+    `python p515_s36_step36_timing_run.py` with no argument reproduces
+    exactly the prior 2-cycle invocation, same output roots, same eval ids.
+    Any OTHER value (e.g. 10, for the Planner's 10-cycle re-measurement) is
+    validated as a positive integer and routed to cycle-count-aware output
+    roots/eval ids (`_out_root_for_cycles`/`_eval_id_for` below) so it can
+    NEVER collide with the committed 2-cycle evidence, regardless of
+    argument order or repeated invocation."""
+    if len(argv) < 2:
+        return 2
+    try:
+        value = int(argv[1])
+    except ValueError:
+        raise SystemExit(f'invalid cycle count {argv[1]!r}: must be a positive integer')
+    if value < 1:
+        raise SystemExit(f'invalid cycle count {value}: must be a positive integer')
+    return value
+
+
+NUM_CYCLES = _parse_num_cycles(sys.argv)
+
+
+def _out_root_for_cycles(num_cycles):
+    """`step36_timing/` (unchanged path) for the default 2-cycle case --
+    ANY other cycle count gets its OWN, distinct root
+    (`step36_timing_<N>cyc/`), so a 10-cycle re-measurement can never write
+    into, or collide with, the committed 2-cycle evidence directory."""
+    if num_cycles == 2:
+        return os.path.join(REPO_ROOT, 'data', 'SRP1', 'Results', 'P515S36', 'step36_timing')
+    return os.path.join(REPO_ROOT, 'data', 'SRP1', 'Results', 'P515S36', f'step36_timing_{num_cycles}cyc')
+
+
+def _eval_id_for(label, num_cycles):
+    """`p515s36_timing_<off|on>` (unchanged) for the default 2-cycle case;
+    `p515s36_timing_<off|on>_<N>cyc` otherwise -- same collision-avoidance
+    reasoning as `_out_root_for_cycles`, applied to the `O.WORK_DIR` eval
+    ids (which persist independently of `OUT_ROOT` and would otherwise
+    collide across cycle counts even if the output directories did not)."""
+    suffix = '' if num_cycles == 2 else f'_{num_cycles}cyc'
+    return f'p515s36_timing_{label}{suffix}'
+
+
+OUT_ROOT = _out_root_for_cycles(NUM_CYCLES)
 OUT_OFF = os.path.join(OUT_ROOT, 'off')
 OUT_ON = os.path.join(OUT_ROOT, 'on')
 
@@ -253,11 +327,13 @@ def parse_report_timing_nl_write_seconds(stdout_path):
     return total if found else None
 
 
-def _run_one(label, out_dir, eval_id, recorder=None, inject_report_timing=False):
+def _run_one(label, out_dir, eval_id, recorder=None, inject_report_timing=False, num_cycles=2):
     """Mirrors the committed `elif gate == 's35ref':` branch of
     `p515_g_g1_g4_admm_gates.py` (cited, not copied -- every called function
     below is `G.<name>`, the SAME object that branch calls), with
-    `num_max_iters_override=2` (design §5's two-cycle preflight) instead of
+    `num_max_iters_override=num_cycles` (design §5's two-cycle preflight by
+    default; `num_cycles` parameterizes this for the Planner's 10-cycle
+    re-measurement, P5.15 Addendum 22 item (2) follow-up) instead of
     `G.S35REF_CAP` (500, the certified run-1 cap) and a fresh `out_dir`/
     `eval_id` pair so nothing committed under `P515S35_REF_run` is ever
     touched.
@@ -297,7 +373,7 @@ def _run_one(label, out_dir, eval_id, recorder=None, inject_report_timing=False)
                                     floor_rows_by_node, stride=1):
             return G.run_admm_arm(
                 label, out_dir, k_override=None, investment_map=None,
-                num_max_iters_override=2, eval_id=eval_id, post_run_hook=_hook,
+                num_max_iters_override=num_cycles, eval_id=eval_id, post_run_hook=_hook,
                 apply_rho=False, full_diagnostics_in_rows=True)
 
     if recorder is not None:
@@ -406,13 +482,17 @@ def main():
     stderr_path = os.path.join(OUT_ROOT, 'stderr_combined.log')
     started = time.time()
     with tee_stderr(stderr_path):
-        print('[P5.15-S36-TIMING] run OFF (recorder not installed) -- 2 cycles, cold, s35ref config class.')
-        report_off, path_off, floor_off = _run_one('off', OUT_OFF, 'p515s36_timing_off', recorder=None)
+        print(f'[P5.15-S36-TIMING] run OFF (recorder not installed) -- {NUM_CYCLES} cycles, '
+              f'cold, s35ref config class.')
+        report_off, path_off, floor_off = _run_one(
+            'off', OUT_OFF, _eval_id_for('off', NUM_CYCLES), recorder=None, num_cycles=NUM_CYCLES)
 
-        print('[P5.15-S36-TIMING] run ON (recorder installed, report_timing cross-check) -- 2 cycles, cold.')
+        print(f'[P5.15-S36-TIMING] run ON (recorder installed, report_timing cross-check) -- '
+              f'{NUM_CYCLES} cycles, cold.')
         recorder = T.PhaseTimingRecorder()
-        report_on, path_on, floor_on = _run_one('on', OUT_ON, 'p515s36_timing_on', recorder=recorder,
-                                                 inject_report_timing=True)
+        report_on, path_on, floor_on = _run_one(
+            'on', OUT_ON, _eval_id_for('on', NUM_CYCLES), recorder=recorder,
+            inject_report_timing=True, num_cycles=NUM_CYCLES)
 
         n_records = recorder.to_jsonl(os.path.join(OUT_ON, 'phase_timing_records.jsonl'))
         print(f'[P5.15-S36-TIMING] wrote {n_records} raw phase-timing records.')
