@@ -66,7 +66,11 @@ WORK_DIR = os.path.join(OUT_DIR, 'evals')
 CACHE_PATH = os.path.join(OUT_DIR, 'p56a_cache.json')
 
 # Bumped whenever anything in this module could change a returned objective.
-ORACLE_VERSION = 'p56a.2'
+# p56a.3 (P5.15 Addendum 24): `_interface_expression` fixed to read the TSO's
+# own `pc_adn`/`qc_adn` expression (includes `interface_delta_p/q`) instead of
+# a stale hand-built form that omitted it; invalidates any cached entry
+# produced under `apply_common_values` with the old, defective helper.
+ORACLE_VERSION = 'p56a.3'
 
 CANONICAL_CHECKSUM = ('5a02b77ccbbbbbb869de92958a3851d09'
                       '5624711abc2dbfc0157466064410358')
@@ -387,8 +391,48 @@ def _sess_pairs(network, node_of):
     return [(network.get_shared_energy_storage_idx(ref), node_of)]
 
 
-def _interface_expression(t_model, adn_load, p, kind):
-    """Production's own interface_pf_[pq]_transmission_def, as an expression."""
+def _interface_expression(t_model, dn, p, kind):
+    """The TSO's OWN production interface-flow expression -- read directly,
+    not re-derived.
+
+    This is exactly `t_model.pc_adn[dn, 0, 0, p]` / `t_model.qc_adn[dn, 0, 0, p]`
+    (`network.py:435-436`), the `Expression` built from
+    `interface_pf_p_transmission_def` / `interface_pf_q_transmission_def`
+    (`model_construction_helpers.py:1167-1199`):
+    `pc[adn_load] + interface_delta_[p|q][dn] + (fl_reg ? flex_up - flex_down : 0)`.
+    `dn` is the ADN index (`list(t_net.active_distribution_network_nodes).index(node)`),
+    the same index `common_coordinated_values` already uses to read `pc_adn`/`qc_adn`
+    (`p56a_oracle.py:275-276`) -- NOT the ADN-load index the pre-Addendum-12 form
+    below used.
+
+    P5.15 Addendum 24 fix: the previous hand-built form (kept below, unwired, as
+    `_interface_expression_legacy_pre_addendum12`) omitted `interface_delta_p/q`
+    (P5.15 Step 3.1-C / Addendum 12 item 2), which on the current ADMM path
+    (`shared_resources_planning.py:3591-3607`, `create_transmission_network_model`)
+    is the SOLE carrier of interface flexibility: `pc` is fixed once at
+    construction to the DSO's cycle-0 consensus interface power and the
+    `flex_p/q_up/down` legs are also fixed at 0, so the legacy expression
+    evaluated to the CONSTANT `pc` while the model's own achieved interface flow
+    is `pc + interface_delta_p(achieved)` -- a different constant whenever
+    `interface_delta_p` is materially nonzero (generically true). Reading
+    `pc_adn`/`qc_adn` directly tracks whatever production computes on whichever
+    path is active (ADMM, hierarchical, uncoordinated), by construction, so this
+    fix cannot go stale the same way again.
+    """
+    return t_model.pc_adn[dn, 0, 0, p] if kind == 'p' else t_model.qc_adn[dn, 0, 0, p]
+
+
+def _interface_expression_legacy_pre_addendum12(t_model, adn_load, p, kind):
+    """DEACTIVATED, UNWIRED (CLAUDE.md "deactivate and unwire; never delete").
+
+    The pre-Addendum-12 hand-built interface expression `pc + flex_up - flex_down`.
+    Not called anywhere in this module (or, per the Addendum-24 consumer scan in
+    WORKER_REPORT_S42_HELPER.md, anywhere else in the repository) -- kept callable
+    under this explicit name only in case a preserved fixture or committed stage
+    is later found to need the OLD (stale) behaviour reproduced exactly, per
+    CLAUDE.md's rule against deleting a callable a preserved artifact might
+    resolve. See `_interface_expression`'s docstring for the defect this omits.
+    """
     base = t_model.pc if kind == 'p' else t_model.qc
     value = base[adn_load, 0, 0, p]
     up_name = 'flex_p_up' if kind == 'p' else 'flex_q_up'
@@ -409,7 +453,7 @@ def apply_common_values(planning, models, common):
                 t_model = models['tso'][year][day]
                 d_model = models['dso'][node][year][day]
                 adn_idx = t_net.get_node_idx(node)
-                adn_load = t_net.get_adn_load_idx(node)
+                dn = list(t_net.active_distribution_network_nodes).index(node)
                 ref_id = d_net.get_reference_node_id()
                 ref_idx = d_net.get_node_idx(ref_id)
                 ref_gen = d_net.get_reference_gen_idx()
@@ -424,22 +468,26 @@ def apply_common_values(planning, models, common):
                 for p in t_model.periods:
                     entry = common[(node, year, day, p)]
                     # Transmission interface.  Production FIXES pc at the DSO's
-                    # consensus interface power and lets the TSO deviate only
-                    # through flex, charging flexibility_cost for the DOWN
-                    # direction (shared_resources_planning.py:2905-2928,
-                    # model_construction_helpers.py:flexibility_cost).  So pc is
-                    # left exactly where production put it and only the TOTAL
-                    # interface power is pinned:
+                    # consensus interface power once, at construction, and the
+                    # ADMM path (P5.15 Step 3.1-C / Addendum 12 item 2) carries
+                    # ALL interface flexibility through the signed
+                    # `interface_delta_p/q` Var (the `flex_p/q_up/down` legs are
+                    # fixed at 0 on that path -- shared_resources_planning.py:
+                    # 3591-3607). So pc is left exactly where production put it
+                    # and only the TOTAL interface power -- the model's OWN
+                    # `pc_adn`/`qc_adn` expression, `_interface_expression`
+                    # above -- is pinned:
                     #
-                    #     pc + flex_p_up - flex_p_down == common_p
+                    #     pc_adn == pc + interface_delta_p (+ flex legs, if any)
+                    #     pc_adn == common_p
                     #
-                    # Fixing pc at the achieved value and zeroing the flex
+                    # Fixing pc at the achieved value and zeroing delta/flex
                     # instead would deliver the same physical interface power at
                     # ZERO flexibility cost -- which is not a cheaper plan, only
                     # a different accounting of the same one.
-                    rows.add(_interface_expression(t_model, adn_load, p, 'p')
+                    rows.add(_interface_expression(t_model, dn, p, 'p')
                              == entry['common_p'])
-                    rows.add(_interface_expression(t_model, adn_load, p, 'q')
+                    rows.add(_interface_expression(t_model, dn, p, 'q')
                              == entry['common_q'])
                     # voltage through the squared magnitude leaves the angle free
                     t_model.vmag_sqr[adn_idx, 0, 0, p].fix(entry['common_v'] ** 2)
