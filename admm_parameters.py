@@ -230,6 +230,27 @@ class ADMMParameters:
             'num_workers': 8,
         }
 
+        # P5.15 Step 3.7 (PLANNER_BRIEF_2026-09-13.md Addendum 22/23; frozen
+        # spec `data/SRP1/Results/P515S41/
+        # frozen_s41_hull_aa_spec_v12_6e5a546f.json`, `item4_step_3_7_anderson`):
+        # type-II Anderson acceleration on the joint (z, u) ADMM consensus/
+        # dual iterate -- see `admm_anderson_acceleration.py`'s module
+        # docstring for the full design. DEFAULT OFF (`enabled: False`):
+        # `_run_operational_planning` never calls anything in
+        # `admm_anderson_acceleration` (its `if aa_enabled:` guards), so the
+        # existing serial ADMM cycle is byte-for-byte unchanged. Not wired
+        # to any case-file key; set programmatically only, exactly like
+        # `persistent_workers`/`tso_snapshot_capture_mode` above. `memory`
+        # (m, number of secant columns) and `regularization` (Tikhonov
+        # lambda on the least-squares solve) are the frozen-spec values
+        # (5, 1e-10); kept configurable here only so a zero-solve check can
+        # exercise small memories without constructing a full case study.
+        self.anderson_acceleration = {
+            'enabled': False,
+            'memory': 5,
+            'regularization': 1e-10,
+        }
+
     def read_parameters_from_file(self, params_data):
         _read_parameters_from_file(self, params_data)
 

@@ -1,6 +1,7 @@
 import os
 import pickle
 import gc
+import resource
 import time
 from copy import copy, deepcopy
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -19,6 +20,7 @@ from centralized_coordination import combine_networks
 from network_data import NetworkData
 from network import capture_block_mutable_state, apply_block_mutable_state
 import admm_persistent_workers
+import admm_anderson_acceleration
 from load import Load
 from shared_energy_storage import SharedEnergyStorage
 from planning_parameters import PlanningParameters
@@ -2558,6 +2560,25 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             guard_permitted=getattr(admm_parameters, 'persistent_workers_guard_permitted', None),
         )
 
+    # P5.15 Step 3.7 (Addendum 22/23, `admm_anderson_acceleration.py`):
+    # Anderson acceleration, DEFAULT OFF. `aa_layout` (the static per-run
+    # entry ordering/scaling) and `aa_state` (the memory/safeguard state
+    # machine) are built ONCE here, exactly like `tso_pristine_base` above.
+    # With the flag off (the default), `aa_enabled` is False, `aa_layout`/
+    # `aa_state` stay None, and NEITHER of the two `if aa_enabled:` blocks
+    # inside the cycle loop below ever runs -- no call into
+    # `admm_anderson_acceleration` is made anywhere in this function.
+    aa_enabled = admm_anderson_acceleration.anderson_acceleration_enabled(admm_parameters)
+    aa_layout = None
+    aa_state = None
+    if aa_enabled:
+        aa_layout = admm_anderson_acceleration.build_iterate_layout(planning_problem, admm_parameters)
+        aa_settings = admm_parameters.anderson_acceleration
+        aa_state = admm_anderson_acceleration.AndersonAccelerationState(
+            memory=aa_settings.get('memory', 5),
+            regularization=aa_settings.get('regularization', 1e-10),
+        )
+
     # ------------------------------------------------------------------------------------------------------------------
     # ADMM -- Main cycle
     # ------------------------------------------------------------------------------------------------------------------
@@ -2569,6 +2590,17 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         print_memory_usage(f"\t - ADMM Iteration {iter} Start", debug_flag)
 
         iter_start = time.time()
+
+        # P5.15 Step 3.7: snapshot w_k = (z_k, u_k) BEFORE this cycle's
+        # DSO->TSO->ESSO solves mutate consensus_vars/dual_vars, using the
+        # rho in force for THIS cycle's local solves (rho only changes at
+        # the end of a cycle, in `_update_admm_penalties` below). No-op
+        # with the flag off.
+        aa_w_before = None
+        aa_rho_before = None
+        if aa_enabled:
+            aa_rho_before = _get_admm_rho_channel_scalars_for_aa(tso_model, dso_models, esso_model, admm_parameters)
+            aa_w_before = admm_anderson_acceleration.collect_w(aa_layout, consensus_vars, dual_vars, aa_rho_before)
 
         # --------------------------------------------------------------------------------------------------------------
         # 1. Solve DSOs problems
@@ -2736,6 +2768,24 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             print('[WARNING]\t\t - At least one local ADMM problem did not solve successfully.')
             residual_convergence = False
 
+        # P5.15 Step 3.7: the AA decision for this cycle, using the w_before
+        # snapshot taken at the top of the loop and the (plain) state
+        # `boyd_metrics` was just computed on. On an accepted step this
+        # OVERWRITES consensus_vars/dual_vars in place with the extrapolated
+        # (z, u) -- everything downstream in this cycle (recourse/objective
+        # reporting, `_update_admm_penalties`, the next cycle's solves)
+        # reads the post-AA state, exactly as it would read a plain
+        # iterate. No-op with the flag off.
+        aa_record = None
+        if aa_enabled:
+            if local_solves_ok:
+                aa_record = _anderson_acceleration_cycle_step(
+                    aa_state, aa_layout, consensus_vars, dual_vars,
+                    aa_w_before, aa_rho_before, boyd_metrics, iter,
+                )
+            else:
+                aa_record = aa_state.skip_on_failure(iter)
+
         recourse = None
         gross_operational_cost = None
         recourse_blocks = None
@@ -2855,6 +2905,26 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             tso_model, dso_models, esso_model, residual_metrics, boyd_metrics, admm_parameters,
             iter=iter, allow_update=local_solves_ok, freeze_state=freeze_state,
         )
+
+        # P5.15 Step 3.7: memory clear on ANY rho change on ANY channel
+        # (Addendum 23 amendment (i)), detected from the penalty-update
+        # STATE just returned (`penalties_before`/`penalties_after`), not
+        # from a log string. A channel merely held/frozen/exempt this cycle
+        # has `before[g] == after[g]` exactly (`_scale_admm_penalty`'s
+        # `factor == 1.0` path is an IEEE-754 no-op), so freezing alone
+        # never clears memory -- only an actual balancing increase/decrease
+        # does. No-op with the flag off.
+        if aa_enabled:
+            aa_rho_changed = sorted(g for g in ('v', 'pf', 'ess') if penalties_after[g] != penalties_before[g])
+            if aa_rho_changed:
+                aa_rho_change_record = aa_state.clear_for_rho_change(iter, aa_rho_changed)
+                if aa_record is not None:
+                    aa_record = dict(aa_record)
+                    aa_record['rho_changed_channels'] = aa_rho_changed
+                    aa_record['memory_size_after'] = aa_rho_change_record['memory_size_after']
+                else:
+                    aa_record = aa_rho_change_record
+
         efc_per_day_max = _get_admm_efc_per_day_max(esso_model)
         admm_diagnostics.append({
             'cycle': iter,
@@ -3069,6 +3139,23 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             ),
             'gap_proxy_Q': gross_operational_cost,
             'gap_proxy_G_over_Q': None,
+            # P5.15 Step 3.7 (Anderson acceleration; None on every field when
+            # `aa_enabled` is False, i.e. every pre-3.7 run and every run
+            # with the flag off): per-cycle AA action/safeguard record --
+            # see `admm_anderson_acceleration.AndersonAccelerationState.step`
+            # for the fields' exact meaning.
+            'aa_enabled': aa_enabled,
+            'aa_action': aa_record['action'] if aa_record is not None else None,
+            'aa_accepted': aa_record.get('accepted') if aa_record is not None else None,
+            'aa_combined_residual': aa_record.get('combined_residual') if aa_record is not None else None,
+            'aa_baseline_residual_before': aa_record.get('baseline_residual_before') if aa_record is not None else None,
+            'aa_memory_size_before': aa_record.get('memory_size_before') if aa_record is not None else None,
+            'aa_memory_size_after': aa_record.get('memory_size_after') if aa_record is not None else None,
+            'aa_gamma_columns': aa_record.get('gamma_columns') if aa_record is not None else None,
+            'aa_reset': aa_record.get('reset') if aa_record is not None else None,
+            'aa_reset_reason': aa_record.get('reset_reason') if aa_record is not None else None,
+            'aa_rho_changed_channels': aa_record.get('rho_changed_channels') if aa_record is not None else None,
+            'aa_boyd_all_pass': aa_record.get('boyd_all_pass') if aa_record is not None else None,
         })
 
         objective_change_text = (f'{objective_change_abs:.6f}' if objective_change_abs is not None else 'N/A')
@@ -3151,6 +3238,17 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
     if convergence:
         sensitivities = _get_operational_sensitivities(planning_problem, optim_models)
 
+    # P5.15 Step 3.7 (Addendum 23, "Record peak RSS of one serial certified
+    # run (the 3.7 run) to size candidate-level parallelism on 32 GB"):
+    # captured unconditionally (cheap, not gated by the AA flag -- it is a
+    # general resource-usage record for this run, not part of the AA
+    # algorithm). `ru_maxrss` units are PLATFORM-DEPENDENT: BYTES on
+    # macOS/BSD, KILOBYTES on Linux (Python `resource` module docs;
+    # CLAUDE.local.md's canonical interpreter runs on macOS for this
+    # machine) -- `peak_rss_platform_units` records which convention
+    # applies to `peak_rss_ru_maxrss` so a reader does not have to guess.
+    peak_rss_ru_maxrss = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+
     state = {
         'models': optim_models,
         'consensus_vars': deepcopy(consensus_vars),
@@ -3169,6 +3267,8 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         'admm_diagnostics': admm_diagnostics,
         'solver_recovery_diagnostics': deepcopy(shared_ess_data.solver_recovery_diagnostics),
         'initialization_failed': False,
+        'peak_rss_ru_maxrss': peak_rss_ru_maxrss,
+        'peak_rss_platform_units': 'bytes on macOS/BSD, kilobytes on Linux (Python resource module, RUSAGE_SELF.ru_maxrss)',
     }
 
     return convergence, results, optim_models, sensitivities, primal_evolution, total_execution_time, state
@@ -6359,6 +6459,93 @@ def get_admm_boyd_residual_metrics(planning_problem, tso_model, dso_models, esso
     channels['boyd_eps_source'] = admm_parameters.boyd_eps_source
 
     return channels
+
+
+# ======================================================================================================================
+#  P5.15 Step 3.7 -- Anderson acceleration orchestration helpers
+#
+#  Authority: PLANNER_BRIEF_2026-09-13.md Addendum 22/23; frozen spec
+#  `data/SRP1/Results/P515S41/frozen_s41_hull_aa_spec_v12_6e5a546f.json`,
+#  `item4_step_3_7_anderson`. See `admm_anderson_acceleration.py`'s module
+#  docstring for the full design (w/F/g definition, scaling, safeguard,
+#  memory-clear rule). These two helpers are the ONLY call sites into that
+#  module from `_run_operational_planning`; both are gated by
+#  `admm_anderson_acceleration.anderson_acceleration_enabled(admm_parameters)`
+#  at every call site -- with the flag off, neither is ever invoked.
+# ======================================================================================================================
+def _get_admm_rho_channel_scalars_for_aa(tso_model, dso_models, esso_model, admm_parameters):
+    """
+    Single per-channel rho scalar (v, pf, ess), asserted UNIFORM across
+    every agent (TSO, every DSO, and for 'ess' the ESSO too) that holds
+    that channel's rho. `_update_admm_penalties`
+    (`shared_resources_planning.py`, the "Apply common group-wise scaling
+    factors" block) applies the SAME multiplicative factor to every
+    agent's rho_v/rho_pf/rho_ess every cycle, and the case file
+    (`SRP1_params.json`, `admm.rho`) seeds them equal across agents, so
+    this invariant holds for the life of a run started from the case
+    file. Anderson acceleration's u = y/rho construction
+    (`admm_anderson_acceleration.py`) relies on a SINGLE rho per channel;
+    this function is the guard that raises, rather than silently
+    mis-scaling the iterate, if a case file or a future change ever
+    breaks the invariant.
+    """
+    raw = {'v': [], 'pf': [], 'ess': []}
+    for year_models in tso_model.values():
+        for model in year_models.values():
+            raw['v'].append(pe.value(model.rho_v))
+            raw['pf'].append(pe.value(model.rho_pf))
+            raw['ess'].append(pe.value(model.rho_ess))
+    for node_models in dso_models.values():
+        for year_models in node_models.values():
+            for model in year_models.values():
+                raw['v'].append(pe.value(model.rho_v))
+                raw['pf'].append(pe.value(model.rho_pf))
+                raw['ess'].append(pe.value(model.rho_ess))
+    for model in esso_model.values():
+        raw['ess'].append(pe.value(model.rho))
+
+    scalars = {}
+    for group in ('v', 'pf', 'ess'):
+        values = raw[group]
+        lo, hi = min(values), max(values)
+        if hi - lo > 1e-9 * max(abs(hi), 1.0):
+            raise ValueError(
+                'Anderson acceleration requires a single shared rho per channel; channel '
+                f'{group!r} has non-uniform rho across agents (min={lo!r}, max={hi!r}). The AA '
+                'iterate (z, u) construction assumes rho_v/rho_pf/rho_ess is identical across '
+                'TSO, every DSO, and (for ess) the ESSO -- see WORKER_REPORT_S41_AA.md.'
+            )
+        scalars[group] = values[0]
+    return scalars
+
+
+def _anderson_acceleration_cycle_step(aa_state, aa_layout, consensus_vars, dual_vars,
+                                       w_before, rho_channel, boyd_metrics, iter):
+    """
+    Called once per cycle, AFTER the DSO->TSO->ESSO plain cycle and its
+    consensus/dual updates have completed and `boyd_metrics` has been
+    computed on the resulting (plain) state, and BEFORE
+    `_update_admm_penalties` runs (rho for this cycle's w_before/w_after
+    pair must be the SAME rho that was in force during this cycle's local
+    solves). `w_before` and `rho_channel` are the snapshot taken at the
+    TOP of this same cycle (`_get_admm_rho_channel_scalars_for_aa` +
+    `admm_anderson_acceleration.collect_w`, before the DSO solve).
+
+    On an accepted AA step, writes the extrapolated (z, u) back into
+    `consensus_vars`/`dual_vars` in place (`admm_anderson_acceleration.
+    write_back_w`) so the NEXT cycle's DSO/TSO/ESSO solves read it. On any
+    other outcome, the stores are left exactly as the plain cycle left
+    them (no write-back).
+    """
+    w_after = admm_anderson_acceleration.collect_w(aa_layout, consensus_vars, dual_vars, rho_channel)
+    g = w_after - w_before
+    combined_residual = admm_anderson_acceleration.combined_scaled_residual(boyd_metrics)
+    boyd_all_pass = boyd_metrics['all_boyd_pass']
+
+    w_next, record = aa_state.step(iter, w_before, g, combined_residual, boyd_all_pass)
+    if record['action'] == 'accepted':
+        admm_anderson_acceleration.write_back_w(aa_layout, w_next, consensus_vars, dual_vars, rho_channel)
+    return record
 
 
 def check_admm_convergence(planning_problem, consensus_vars, residual_metrics, params, debug_flag=False):
