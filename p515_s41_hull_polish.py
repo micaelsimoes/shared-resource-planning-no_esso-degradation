@@ -591,25 +591,49 @@ def _polish_all_blocks_hull(planning, models, consensus_vars):
     max_abs_delta_block = None
     if all_solved:
         after_recourse = planning.get_operational_recourse_components(models)
-        recourse_before = before_recourse['gross_operational_cost']
-        recourse_after = after_recourse['gross_operational_cost']
-        delta_total = recourse_after - recourse_before
-        relative = abs(delta_total) / abs(recourse_before) if recourse_before else None
+        # P5.15 Addendum 23 / spec v12 item2_hull_polish (Planner correction before the full
+        # run): the GATE quantity is Delta = sum_i [f_i(polished) - f_i(certified)] over the
+        # 48 blocks' weighted base objectives -- the quantity each block minimises, and the one
+        # for which Delta <= 0 holds by construction. It equals the change in
+        # gross_operational_cost_INCLUDING_settlement (sum_i f_i reproduces that total exactly).
+        # The settlement-EXCLUDED gross_operational_cost additionally moves with the interface
+        # settlement transfer, which cancels between TSO and DSO only when both sides hold the
+        # same interface values; after independent polishing within the hull it need not (smoke
+        # test: -10.6M at 2 cycles). That change is REPORTED, not gated. Denominator: the
+        # certified settlement-excluded cost, the convention the oracle's cost is quoted in.
         tso_delta = sum(r['delta'] for r in per_block_records if r['agent'] == 'TSO')
         dso_delta = sum(r['delta'] for r in per_block_records if r['agent'] != 'TSO')
+        delta_sum_blocks = tso_delta + dso_delta
+        certified_cost = before_recourse['gross_operational_cost']
+        relative = abs(delta_sum_blocks) / abs(certified_cost) if certified_cost else None
+        incl_before = before_recourse.get('gross_operational_cost_including_settlement')
+        incl_after = after_recourse.get('gross_operational_cost_including_settlement')
+        sum_f_before = sum(r['weighted_base_objective_before'] for r in per_block_records)
         max_abs_row = max(per_block_records, key=lambda r: abs(r['delta']))
         max_abs_delta_block = {'block': max_abs_row['block'], 'delta': max_abs_row['delta']}
         gate = {
-            'objective_convention': ('gross_operational_cost -- settlement-excluded '
-                                     'system-cost recourse, the SAME convention the '
-                                     'certified cost is reported in'),
-            'recourse_before': recourse_before, 'recourse_after': recourse_after,
-            'delta_total': delta_total, 'tso_delta': tso_delta, 'dso_delta': dso_delta,
-            'reconciliation_residual': delta_total - (tso_delta + dso_delta),
+            'gate_quantity': 'Delta = sum over the 48 blocks of [f_i(polished) - f_i(certified)] (weighted base objectives)',
+            'denominator': 'certified gross_operational_cost (settlement-excluded; the oracle cost convention)',
+            'delta_sum_blocks': delta_sum_blocks, 'tso_delta': tso_delta, 'dso_delta': dso_delta,
+            'delta_sign_as_expected_le_0': bool(delta_sum_blocks <= 0.0),
+            'certified_cost': certified_cost,
             'max_abs_delta_block': max_abs_delta_block,
             'relative_pct': (relative * 100.0) if relative is not None else None,
             'threshold_pct': GATE_THRESHOLD_PCT,
             'pass': (relative is not None and relative < GATE_THRESHOLD_PCT / 100.0),
+            'reconciliation_sum_f_before_vs_gross_including_settlement': {
+                'sum_f_before': sum_f_before, 'gross_including_settlement_before': incl_before,
+                'abs_diff': (abs(sum_f_before - incl_before) if incl_before is not None else None)},
+            'reported_not_gated': {
+                'gross_operational_cost_before': before_recourse['gross_operational_cost'],
+                'gross_operational_cost_after': after_recourse['gross_operational_cost'],
+                'gross_operational_cost_change_settlement_excluded':
+                    after_recourse['gross_operational_cost'] - before_recourse['gross_operational_cost'],
+                'gross_including_settlement_change': (incl_after - incl_before
+                                                      if (incl_after is not None and incl_before is not None) else None),
+                'interface_settlement_total_before': before_recourse.get('interface_settlement_total'),
+                'interface_settlement_total_after': after_recourse.get('interface_settlement_total'),
+            },
         }
 
     per_block_sorted = sorted(per_block_records, key=lambda r: abs(r['delta']), reverse=True)
