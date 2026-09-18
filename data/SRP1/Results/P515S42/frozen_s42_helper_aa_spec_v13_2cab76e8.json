@@ -1,0 +1,46 @@
+{
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 24",
+  "P5_15_S41_STEP3_CLOSED_REPORT.md (reviewed; Step 3 closure accepted)"
+ ],
+ "item1_helper_fix": {
+  "deactivate_and_unwire": "keep the old behaviour callable under an explicit name only if a preserved fixture or committed stage needs it; delete nothing a pickled fixture may reference",
+  "exact_fix_rerun": "the exact-fix (midpoint) polish of p515_s40_polish_gap.py semantics, with the fixed helper, at D's certified point obtained by the in-process bitwise reproduction; 48 polish solves; fresh output root and ids; the hull polish is NOT re-run",
+  "fix": "p56a_oracle._interface_expression takes the TSO interface flow from the model's OWN expression (pc_adn / qc_adn or the equivalent production expression) instead of re-deriving it; if it must be hand-built it includes interface_delta_p/q exactly as production does",
+  "persist_certified_models": "optional: pickle the certified TSO/DSO block models (hash-recorded) so future polish variants need no 80-minute reproduction; record size and hash",
+  "regression_check": "zero-solve: at the certified snapshots available without a new run (and on a freshly built TSO block with nonzero interface_delta values), the helper equals the model's own interface expression for every (adn node, period, p/q), to 0 or round-off; also for the pre-Addendum-12 structure if still constructible, state which"
+ },
+ "items_2_3": "as spec v12 item3 (persistent workers) and item4 (Step 3.7), with the Addendum 24 acceptance of the AA code choices (skip-and-clear on a local-solve failure; safeguard mark unchanged on rejection; 2.7e-16 dual round trip acceptable with the flag on; flag off must not touch the iterate)",
+ "one_background_run_at_a_time": true,
+ "order": [
+  "1 helper fix (p56a_oracle._interface_expression) + zero-solve regression check + exact-fix re-run at D's point (48 polish solves after the reproduction)",
+  "2 persistent-worker bounded task (spec v12 item3), then the path is paused",
+  "3 Step 3.7: integrate the worktree AA code; flag-off two-cycle bitwise gate (AA code must not touch the iterate with the flag off); flag-on run under the spec v12 item4 gate",
+  "STOP FOR REVIEW after 3.7"
+ ],
+ "predecessor": {
+  "note": "v12 items 1-2 done (hull polish PASS 0.000309 %); the v11 exact-fix run is VOID (stale helper)",
+  "path": "data/SRP1/Results/P515S41/frozen_s41_hull_aa_spec_v12_6e5a546f.json",
+  "sha256": "6e5a546f6bc16451e1fa4c4ef59e4d2b3c2bf3f294508324cf46f8ecd1fe3192"
+ },
+ "predictions_recorded_in_advance": {
+  "exact_fix_rerun": [
+   "the six spring/summer TSO blocks (2025/2030/2035 Spring, Summer) - where node 7's interface midpoint exceeds 100 MVA - report local infeasibility with constraint violation <= 5e-4 MVA",
+   "the six autumn/winter TSO blocks (2025/2030/2035 Autumn, Winter) solve",
+   "the five DSO-2025 blocks (DSO5 Spring; DSO7 Spring, Autumn; DSO9 Spring, Autumn): recorded without prediction"
+  ],
+  "on_all_12_TSO_solve": "re-examine what quantity the rating-midpoint check (utilization 1.000005) measures (e.g. S from the stride's MVA quantities vs the TSO model's rating row and its per-unit form)",
+  "step_3_7": "unchanged from spec v12: <= 80 cycles (gate); Planner expectation central 90 (70-115)"
+ },
+ "reporting_obligations": {
+  "hull_polish": [
+   "block-objective change -2,012.21 (3.1e-6 of cost) = the construction guarantee",
+   "system-cost change +11,967 (1.8e-5, settlement excluded) = the R2.5 headline",
+   "their difference is the settlement transfer, which cancels only at exact consensus; the settlement's non-cancelling remainder at the certified tolerance is 36,679 (5.6e-5 of cost), excluded from the reported cost by construction (Q = gross operational cost)",
+   "hull-bound active counts EXCLUDING degenerate intervals (zero-solve read of the committed hull-polish evidence, if cheap)"
+  ],
+  "manuscript_sentence": "The coupling variables are confined to the interval between the agents' certified values rather than fixed, because the certified point satisfies consensus only to tolerance and exact fixing is not guaranteed feasible where a coupling constraint is active. [+ if the prediction holds:] At the baseline point exact fixing is infeasible in the blocks where the node 7 interface is at its rating.",
+  "void": "the v11 exact-fix run (57d523d0 evidence) is void and has no manuscript use"
+ },
+ "stage": "P5.15 Addendum 24 - helper fix + exact-fix re-run, persistent-worker bounded task, Step 3.7 - frozen specification v13"
+}
