@@ -1,0 +1,78 @@
+{
+ "stage": "P5.15 Addendum 24 item 1 -- interface-expression helper fix, zero-solve regression check",
+ "authority": [
+  "data/SRP1/Results/P515S42/frozen_s42_helper_aa_spec_v13_2cab76e8.json",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 24"
+ ],
+ "note_on_preexisting_fixtures": "the spec asks the check to run \"at the certified snapshots available without a new run\" AND \"on a freshly built TSO block with nonzero interface_delta values\". This script uses the latter exclusively: no committed pickle carries a LIVE (unpickled, still-attached-to-Pyomo) TSO model built on the Addendum-12 ADMM path with a materially nonzero interface_delta AND a still-solvable state (the preserved P5.12-vintage fixtures in p515_s31c_zero_solve_checks.FIXTURES predate the interface_delta reparametrization on the branch that built them, per that file's own docstring, and the certified D run's live models are not preserved -- only its JSON report is). A freshly built, production-constructed, never-solved TSO block (`p515_s32_zero_solve_checks._build_admm_ready_state`, the same pattern `p515_s41_hull_polish_checks.py` uses) is therefore the check's evidence base, exactly as the spec's parenthetical permits.",
+ "timestamp_utc": "2026-09-18T17:45:32.449950+00:00",
+ "n_entries_checked": 864,
+ "checks": {
+  "fixed_helper_equals_model_expression": {
+   "n_checked": 1728,
+   "n_matches": 1728,
+   "max_abs_diff": 0.0,
+   "exact": true,
+   "note": "the fixed helper LITERALLY returns t_model.pc_adn/qc_adn (same Pyomo object), so equality is exact (0.0), not merely round-off -- confirmed numerically above, not merely by construction.",
+   "pass": true
+  },
+  "old_helper_defect_equals_interface_delta": {
+   "n_checked": 1728,
+   "n_matches": 1728,
+   "max_abs_diff_from_predicted_defect": 0.0,
+   "exact_or_round_off": "exact",
+   "sample_mismatches": [],
+   "pass": true
+  },
+  "free_variable_content": {
+   "node": 5,
+   "year": 2025,
+   "day": "Spring",
+   "p": 0,
+   "pc_fixed": true,
+   "delta_fixed": false,
+   "leg_up_fixed": true,
+   "leg_down_fixed": true,
+   "fixed_helper_free_var_ids_count": 1,
+   "fixed_helper_free_is_delta_only": true,
+   "legacy_helper_free_var_ids_count": 0,
+   "legacy_helper_is_constant": true,
+   "pass": true
+  },
+  "apply_common_values_row_feasible": {
+   "node": 5,
+   "year": 2025,
+   "day": "Spring",
+   "p": 0,
+   "pc_fixed_val": 0.0,
+   "common_p": 0.125,
+   "required_interface_delta_p": 0.125,
+   "delta_p_bounds": [
+    -2.0,
+    2.0
+   ],
+   "row_p_free_var_is_delta_only": true,
+   "row_p_required_value_within_bounds": true,
+   "qc_fixed_val": 0.0,
+   "common_q": -0.060000000000000005,
+   "required_interface_delta_q": -0.060000000000000005,
+   "delta_q_bounds": [
+    -2.0,
+    2.0
+   ],
+   "row_q_free_var_is_delta_only": true,
+   "row_q_required_value_within_bounds": true,
+   "legacy_row_would_have_been_feasible_by_construction": false,
+   "pass": true
+  }
+ },
+ "solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ }
+}
