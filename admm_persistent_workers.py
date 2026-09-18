@@ -252,6 +252,34 @@ def capture_block_state_for_ipc(model):
     return state
 
 
+def _mark_all_vars_stale(model, pe_module):
+    """Cosmetic-only bookkeeping fix, found by this task's own two-cycle
+    preflight (a real, if non-numerical, divergence -- reported, not
+    silently patched over without explanation): serial production's ESSO
+    subproblem model, dumped whole into `esso_models_pickle` by
+    `p515_g_g1_g4_admm_gates.py`'s own reporting code, shows EVERY Var's
+    Pyomo `.stale` flag True after the ADMM loop's last cycle (checked
+    directly, both arms, by this task -- 2949/2949 for a representative
+    ESSO node). `.stale` is a pure bookkeeping flag Pyomo sets/clears on
+    `Var.set_value()` and `model.solutions.load_from()`; it is READ BY NO
+    production computation (confirmed by search) -- only by Pyomo's own
+    `pprint()`/warning machinery. This worker's per-cycle protocol calls
+    `Var.set_value()` on every Var while applying the received captured
+    state (`apply_block_state_for_ipc`, reusing `network.
+    apply_block_mutable_state`'s generic Var-restore loop), which clears
+    `.stale` for whichever Vars that touches -- a side effect serial's own
+    flow never triggers (its per-cycle Param-update loops never call
+    `Var.set_value()` on a decision variable; only `model.solutions.
+    load_from(result)`, inside the solve primitive itself, does). Setting
+    every Var stale=True here, right after the solve (which is exactly
+    when serial's own model is observed to be in this state), reproduces
+    serial's bookkeeping state exactly, with NO effect on any Var's VALUE,
+    bound, or fixed flag (unaffected by this call), and NO effect on the
+    solve itself (already complete by this point)."""
+    for var_data in model.component_data_objects(pe_module.Var, active=None):
+        var_data.stale = True
+
+
 def apply_block_state_for_ipc(model, state):
     from network import apply_block_mutable_state
 
@@ -554,6 +582,7 @@ def _worker_main(worker_id, block_specs, task_queue, result_queue, guard_permitt
                         model, spec['network'], spec['network_params'], spec['node_id'],
                         key[2], key[3], cycle, from_warm_start, spec['results_dir'],
                     )
+                    _mark_all_vars_stale(model, pe)
                     block_results.append({
                         'key': key, 'model': model, 'result': result,
                         'result_summary': solver_result_summary(result),
@@ -564,6 +593,7 @@ def _worker_main(worker_id, block_specs, task_queue, result_queue, guard_permitt
                         from_warm_start, spec['results_dir'], spec['tso_snapshot_capture_mode'],
                         spec.get('tso_pristine_snapshot_base'), state,
                     )
+                    _mark_all_vars_stale(model, pe)
                     block_results.append({
                         'key': key, 'model': model, 'result': result,
                         'result_summary': solver_result_summary(result),
@@ -578,6 +608,7 @@ def _worker_main(worker_id, block_specs, task_queue, result_queue, guard_permitt
                         complementarity_diagnostics_sink=local_complementarity_sink,
                         cycle=cycle, logs_dir=spec['esso_logs_dir'],
                     )
+                    _mark_all_vars_stale(model, pe)
                     block_results.append({
                         'key': key, 'model': model, 'result': result,
                         'result_summary': solver_result_summary(result),
