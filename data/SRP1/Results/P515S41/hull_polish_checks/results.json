@@ -1,0 +1,144 @@
+{
+ "stage": "P5.15 Addendum 23 item 2 -- hull polish zero-solve checks",
+ "authority": [
+  "data/SRP1/Results/P515S41/frozen_s41_hull_aa_spec_v12_6e5a546f.json"
+ ],
+ "timestamp_utc": "2026-09-18T15:07:11.867865+00:00",
+ "checks": {
+  "distinct_pf_values": {
+   "tso_pc_before": 0.0,
+   "tso_p_achieved": 0.031,
+   "dso_p_achieved": 0.469,
+   "tso_q_achieved": -0.017,
+   "dso_q_achieved": 0.094,
+   "p_distinct": true,
+   "q_distinct": true
+  },
+  "hull_entry_esso_endpoint": {
+   "esso_sess_p_pu": -4e-05,
+   "esso_sess_q_pu": 8.999999999999999e-05,
+   "expected_p_pu": -4e-05,
+   "expected_q_pu": 8.999999999999999e-05,
+   "matches": true
+  },
+  "row_counts": {
+   "before": {
+    "tso_p": 0,
+    "tso_q": 0,
+    "dso_p": 0,
+    "dso_q": 0
+   },
+   "after": {
+    "tso_p": 72,
+    "tso_q": 72,
+    "dso_p": 24,
+    "dso_q": 24
+   },
+   "n_periods_total": 24,
+   "n_nodes_total": 3,
+   "expected_added": {
+    "tso_p": 72,
+    "tso_q": 72,
+    "dso_p": 24,
+    "dso_q": 24
+   },
+   "matches": true
+  },
+  "voltage_nondegenerate": {
+   "lo_expected": 1.0424409999999997,
+   "hi_expected": 1.0878489999999998,
+   "tso_lb": 1.0424409999999997,
+   "tso_ub": 1.0878489999999998,
+   "tso_fixed": false,
+   "dso_lb": 1.0424409999999997,
+   "dso_ub": 1.0878489999999998,
+   "dso_fixed": false,
+   "bounds_match": true,
+   "not_fixed": true,
+   "certified_point_inside": true
+  },
+  "voltage_degenerate": {
+   "expected_value": 1.0302249999999997,
+   "tso_fixed": true,
+   "tso_value": 1.0302249999999997,
+   "dso_fixed": true,
+   "dso_value": 1.0302249999999997,
+   "matches": true
+  },
+  "interface_p_row": {
+   "lo_expected": 0.031,
+   "hi_expected": 0.469,
+   "row_lower": 0.031,
+   "row_upper": 0.469,
+   "current_pc_adn_value": 0.031,
+   "current_pg_adn_value": 0.469,
+   "row_matches": true,
+   "certified_point_inside": true
+  },
+  "ess_p_three_agent_nondegenerate": {
+   "lo_expected": -4e-05,
+   "hi_expected": 0.031,
+   "esso_ess_p_synth_mw": -0.004,
+   "esso_ess_p_synth_pu": -4e-05,
+   "tso_lb": -4e-05,
+   "tso_ub": 0.031,
+   "tso_fixed": false,
+   "dso_lb": -4e-05,
+   "dso_ub": 0.031,
+   "dso_fixed": false,
+   "bounds_match": true,
+   "not_fixed": true,
+   "esso_var_untouched": true,
+   "certified_point_inside": true
+  },
+  "ess_p_three_agent_degenerate": {
+   "expected_value": 0.25,
+   "tso_fixed": true,
+   "tso_value": 0.25,
+   "dso_fixed": true,
+   "dso_value": 0.25,
+   "matches": true
+  },
+  "all_descriptors_contain_achieved_point": {
+   "n_descriptors": 8640,
+   "n_failures": 0,
+   "pass": true
+  },
+  "objective_switch_isolated": {
+   "active_objectives_before": [
+    "admm_objective"
+   ],
+   "active_objectives_after": [
+    "objective"
+   ],
+   "objective_now_active": true,
+   "vars_unchanged": true,
+   "constraints_unchanged": true
+  },
+  "no_multiplier_import": {
+   "pre_clear_counts": {
+    "ipopt_zL_in": 1,
+    "ipopt_zU_in": 1,
+    "dual": 1
+   },
+   "post_clear_counts": {
+    "ipopt_zL_in": 0,
+    "ipopt_zU_in": 0,
+    "dual": 0
+   },
+   "all_cleared": true
+  },
+  "from_warm_start_gate_present": {
+   "source_contains_gate": true
+  }
+ },
+ "solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ }
+}
