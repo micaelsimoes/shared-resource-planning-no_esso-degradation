@@ -17,10 +17,19 @@ state` BY IMPORT (the production model-construction sequence,
 reaches a solver -- never reimplemented here).
 
 Checks:
-  (i)   objective switching (`p56a_oracle.restore_base_objective`) leaves the
-        model otherwise unchanged: every Var's value and `.fixed` flag are
-        identical before/after, only `admm_objective.active` flips False and
-        `objective.active` flips True.
+  (i)   objective switching (`p515_s40_polish_gap._switch_to_base_objective`,
+        BY IMPORT -- the function the real polish gap uses, NOT `p56a_oracle.
+        restore_base_objective`; see that function's own docstring for why:
+        `restore_base_objective` predates Step 3.4's objective-rescaling
+        integration and leaves a THIRD Objective component active after a
+        real `run_admm_arm` run, breaking the AMPL/IPOPT interface). Tested
+        on TWO model states: the plain two-objective build-default state
+        (`objective`/`admm_objective`), and the SAME state after
+        `p58_rescale.rescale_block` (a real production/p58 function, zero
+        solves) adds the third `p58_rescaled_admm_objective` -- reproducing
+        the real post-`run_admm_arm` situation. In both cases: every Var's
+        value and `.fixed` flag are identical before/after, and EXACTLY
+        `objective` is active afterward.
   (ii)  the fixing step (`p56a_oracle.apply_common_values`) fixes EXACTLY the
         intended variables (`vmag_sqr` on both interface nodes, `pg`/`qg` at
         the DSO reference generator, `shared_es_pnet`/`shared_es_qnet` on both
@@ -59,6 +68,8 @@ if REPO not in sys.path:
     sys.path.insert(0, REPO)
 
 import p56a_oracle as O  # noqa: E402
+import p58_rescale as R58  # noqa: E402
+import p515_s40_polish_gap as PG  # noqa: E402 -- the function under test, BY IMPORT
 from p513_solve_profile_guard import SolveProfileGuard  # noqa: E402
 from p515_s32_zero_solve_checks import _build_admm_ready_state  # noqa: E402
 
@@ -89,9 +100,20 @@ def _snapshot_all_vars(model):
     return snapshot
 
 
+def _all_objective_names_active(model):
+    return sorted(o.local_name for o in
+                 model.component_objects(pe.Objective, active=True, descend_into=False))
+
+
 def check_i_objective_switching(planning, tso_model, dso_models, results):
-    """Pick one TSO block and one DSO block; verify `restore_base_objective`
-    changes ONLY the two Objective components' active flags."""
+    """Pick one TSO block and one DSO block; verify `p515_s40_polish_gap.
+    _switch_to_base_objective` -- the function the real polish gap uses --
+    changes ONLY Objective active flags, on two states per model: (a) the
+    plain two-objective build-default state; (b) the SAME state after
+    `p58_rescale.rescale_block` adds a third, active `p58_rescaled_admm_
+    objective` -- the real post-`run_admm_arm` situation (Step 3.4 made
+    objective rescaling production behaviour; see `_switch_to_base_
+    objective`'s own docstring in `p515_s40_polish_gap.py`)."""
     year = next(iter(planning.transmission_network.years))
     day = next(iter(planning.transmission_network.days))
     t_model = tso_model[year][day]
@@ -101,16 +123,15 @@ def check_i_objective_switching(planning, tso_model, dso_models, results):
     d_model = dso_models[node_id][d_year][d_day]
 
     per_model = {}
-    for label, model in (('tso', t_model), ('dso', d_model)):
-        has_admm_obj = hasattr(model, 'admm_objective')
-        admm_active_before = bool(model.admm_objective.active) if has_admm_obj else None
-        base_active_before = bool(model.objective.active)
+    for label, model, add_p58_rescale in (
+            ('tso_two_objectives', t_model, False),
+            ('dso_two_objectives', d_model, False)):
+        objectives_before = _all_objective_names_active(model)
         before = _snapshot_all_vars(model)
 
-        O.restore_base_objective(model)
+        PG._switch_to_base_objective(model)
 
-        admm_active_after = bool(model.admm_objective.active) if has_admm_obj else None
-        base_active_after = bool(model.objective.active)
+        objectives_after = _all_objective_names_active(model)
         after = _snapshot_all_vars(model)
 
         same_keys = (set(before) == set(after))
@@ -119,18 +140,51 @@ def check_i_objective_switching(planning, tso_model, dso_models, results):
                           if same_keys else None)
 
         per_model[label] = {
-            'has_admm_objective': has_admm_obj,
-            'admm_objective_active_before': admm_active_before,
-            'admm_objective_active_after': admm_active_after,
-            'base_objective_active_before': base_active_before,
-            'base_objective_active_after': base_active_after,
+            'objectives_active_before': objectives_before,
+            'objectives_active_after': objectives_after,
             'var_key_sets_identical': same_keys,
             'n_vars_changed': n_changed,
             'changed_sample': [str(k) for k in changed_sample] if changed_sample else [],
+            'pass': bool(same_keys and n_changed == 0 and objectives_after == ['objective']),
+        }
+
+    # (b) the three-objective state, reproducing the real post-run_admm_arm
+    # situation (p58_rescale.rescale_block is a REAL production/p58
+    # function, zero solves -- never reimplemented here).
+    for label, model in (('tso_three_objectives_after_p58_rescale', t_model),
+                        ('dso_three_objectives_after_p58_rescale', d_model)):
+        # `_switch_to_base_objective` already left `objective` active and
+        # `admm_objective` inactive above; `rescale_block` (a real p58/
+        # production function) doesn't require `admm_objective` to be active
+        # -- it only reads its EXPRESSION and deactivates it -- so it is
+        # called as-is, reproducing the component that exists on the real
+        # post-`run_admm_arm` model (`objective` inactive, `admm_objective`
+        # inactive, `p58_rescaled_admm_objective` active).
+        model.objective.deactivate()
+        scale = R58.rescale_block(model)
+
+        objectives_before = _all_objective_names_active(model)
+        before = _snapshot_all_vars(model)
+
+        PG._switch_to_base_objective(model)
+
+        objectives_after = _all_objective_names_active(model)
+        after = _snapshot_all_vars(model)
+
+        same_keys = (set(before) == set(after))
+        n_changed = sum(1 for k in before if before[k] != after.get(k)) if same_keys else None
+
+        per_model[label] = {
+            'p58_rescale_factor_applied': scale,
+            'objectives_active_before': objectives_before,
+            'objectives_active_after': objectives_after,
+            'var_key_sets_identical': same_keys,
+            'n_vars_changed': n_changed,
             'pass': bool(
-                same_keys and n_changed == 0
-                and (not has_admm_obj or (admm_active_before and not admm_active_after))
-                and (not base_active_before) and base_active_after),
+                scale is not None
+                and objectives_before == [R58.RESCALED_OBJECTIVE]
+                and same_keys and n_changed == 0
+                and objectives_after == ['objective']),
         }
 
     results['i_objective_switching'] = {

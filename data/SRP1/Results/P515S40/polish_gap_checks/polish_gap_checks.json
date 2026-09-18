@@ -1,0 +1,149 @@
+{
+ "stage": "P5.15 Addendum 22 item (4) -- Step 3.5 polish-gap zero-solve structural checks",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Step 3.5, Addendum 22 item 4_step_3_5",
+  "data/SRP1/Results/P515S40/frozen_s40_closure_spec_v11_0e9a37be.json"
+ ],
+ "timestamp_utc": "2026-09-18T09:24:46.359708+00:00",
+ "solve_profile_guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "checks": {
+  "i_objective_switching": {
+   "per_model": {
+    "tso_two_objectives": {
+     "objectives_active_before": [
+      "admm_objective"
+     ],
+     "objectives_active_after": [
+      "objective"
+     ],
+     "var_key_sets_identical": true,
+     "n_vars_changed": 0,
+     "changed_sample": [],
+     "pass": true
+    },
+    "dso_two_objectives": {
+     "objectives_active_before": [
+      "admm_objective"
+     ],
+     "objectives_active_after": [
+      "objective"
+     ],
+     "var_key_sets_identical": true,
+     "n_vars_changed": 0,
+     "changed_sample": [],
+     "pass": true
+    },
+    "tso_three_objectives_after_p58_rescale": {
+     "p58_rescale_factor_applied": 0.002173913043478261,
+     "objectives_active_before": [
+      "p58_rescaled_admm_objective"
+     ],
+     "objectives_active_after": [
+      "objective"
+     ],
+     "var_key_sets_identical": true,
+     "n_vars_changed": 0,
+     "pass": true
+    },
+    "dso_three_objectives_after_p58_rescale": {
+     "p58_rescale_factor_applied": 0.002173913043478261,
+     "objectives_active_before": [
+      "p58_rescaled_admm_objective"
+     ],
+     "objectives_active_after": [
+      "objective"
+     ],
+     "var_key_sets_identical": true,
+     "n_vars_changed": 0,
+     "pass": true
+    }
+   },
+   "pass": true
+  },
+  "ii_fixing_step": {
+   "n_expected_fixed_targets": 6912,
+   "n_expected_covered_and_correct": 6912,
+   "n_unexpected_touched": 0,
+   "unexpected_touched_sample": [],
+   "n_value_mismatches": 0,
+   "value_mismatch_sample": [],
+   "n_missing_expected": 0,
+   "missing_expected_sample": [],
+   "p56a_interface_rows_expected_count": 1728,
+   "p56a_interface_rows_observed_count": 1728,
+   "p56a_interface_rows_max_residual": 0.0,
+   "pass": true
+  },
+  "iii_recourse_aggregation": {
+   "n_perturbed_vars": 15,
+   "perturbed_sample": [
+    [
+     "tso",
+     "0",
+     "0"
+    ],
+    [
+     "tso",
+     "0",
+     "1"
+    ],
+    [
+     "tso",
+     "0",
+     "2"
+    ],
+    [
+     "tso",
+     "1",
+     "0"
+    ],
+    [
+     "tso",
+     "1",
+     "1"
+    ],
+    [
+     "tso",
+     "1",
+     "2"
+    ],
+    [
+     "dso5",
+     "0",
+     "0"
+    ],
+    [
+     "dso5",
+     "0",
+     "1"
+    ],
+    [
+     "dso5",
+     "0",
+     "2"
+    ],
+    [
+     "dso7",
+     "0",
+     "0"
+    ]
+   ],
+   "sum_per_block_weighted_base_objective": 2609858.251721687,
+   "gross_operational_cost_including_settlement": 2609858.251721687,
+   "gross_operational_cost_settlement_excluded": 1631161.4073260545,
+   "absolute_difference": 0.0,
+   "n_blocks": 48,
+   "pass": true
+  }
+ },
+ "all_checks_pass": true
+}

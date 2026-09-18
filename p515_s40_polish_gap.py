@@ -50,22 +50,39 @@ Vars (the actual Boyd-residual "x", tied by hard equality constraints --
 `shared_resources_planning.py` ~3615-3693 -- to the physical variables
 `apply_common_values` fixes directly) at a SINGLE number on both sides, i.e.
 the primal residual r = x - z is set to exactly zero by construction, not
-merely driven below the Boyd tolerance. `restore_base_objective` then
-deactivates the augmented-Lagrangian `admm_objective` and reactivates the
-plain `objective` (no consensus penalty term at all, since consensus is now
-a hard constraint), and `polish_networks` re-solves every block with
-`network.run_smopf`, production's own SMOPF entry point -- exactly what
-Step 3.5 asks for: "re-solve every network block with the unscaled base
-objective at fixed consensus".
+merely driven below the Boyd tolerance. The base objective is then
+reactivated (no consensus penalty term at all, since consensus is now a hard
+constraint), and every block is re-solved with `network.run_smopf`,
+production's own SMOPF entry point -- exactly what Step 3.5 asks for:
+"re-solve every network block with the unscaled base objective at fixed
+consensus".
 
-`common_coordinated_values`/`apply_common_values`/`restore_base_objective`/
-`polish_networks`/`per_block_base_objectives`/`_tagged_holders` are imported
-BY IMPORT from `p56a_oracle.py` (already a dependency of
-`p515_g_g1_g4_admm_gates.py`, imported there as `O`) and called verbatim --
-never reimplemented -- on the live `planning`/`models` a case-file-alone
-`run_admm_arm` call returns, via `post_run_hook` (zero extra solves besides
-the 48 polish solves themselves; `models` is the SAME dict
+`common_coordinated_values`/`apply_common_values`/`per_block_base_objectives`/
+`_tagged_holders` are imported BY IMPORT from `p56a_oracle.py` (already a
+dependency of `p515_g_g1_g4_admm_gates.py`, imported there as `O`) and called
+verbatim -- never reimplemented -- on the live `planning`/`models` a
+case-file-alone `run_admm_arm` call returns, via `post_run_hook` (zero extra
+solves besides the 48 polish solves themselves; `models` is the SAME dict
 `run_operational_planning` returned, per `run_admm_arm`'s own docstring).
+
+`p56a_oracle.restore_base_objective`/`polish_networks` are NOT reused as-is
+(finding, confirmed by the smoke test): `restore_base_objective` predates
+Step 3.4 (frozen spec v4), which made objective rescaling PRODUCTION
+behaviour -- `run_admm_arm` wraps every ADMM cycle in `p58_rescale.
+patched_admm_objectives()` unconditionally (`p515_g_g1_g4_admm_gates.py`'s
+own `R = p58_rescale` import), which activates a THIRD Objective component
+(`p58_rescale.RESCALED_OBJECTIVE`) that `restore_base_objective` does not
+know about. Calling it alone after a real `run_admm_arm` run leaves BOTH the
+base `objective` and the rescaled objective active; IPOPT's AMPL interface
+then raises "more than one objective function ... AmplTNLP::set_active_
+objective has not been called" on every block -- reproduced directly (see
+Worker report) and confirmed to be the actual cause of every one of the
+first smoke-test attempt's 48 polish failures, not an inherent property of a
+far-from-converged fixed-consensus point. `_switch_to_base_objective` below
+generalizes it (deactivate every Objective except `objective`, activate
+`objective`, assert exactly one ends up active) and `_polish_networks_fixed_
+consensus` is `polish_networks` with that one substitution -- otherwise
+identical, same `_tagged_holders` loop, same `network.run_smopf` call.
 
 Available shared-ESS S/E capacity is NOT separately reconciled here (unlike
 `p55d_d1_polish.py`'s explicit capacity-shift step): Step 3.5's text names
@@ -157,12 +174,16 @@ SMOKE TEST (hidden option; the Worker runs THIS one)
 """
 
 import argparse
+import io
 import json
 import os
 import subprocess
 import sys
 import time
+from contextlib import redirect_stdout
 from datetime import datetime, timezone
+
+import pyomo.environ as pe
 
 REPO = os.path.dirname(os.path.abspath(__file__))
 if REPO not in sys.path:
@@ -172,6 +193,7 @@ import p515_g_g1_g4_admm_gates as G  # noqa: E402
 import p56a_oracle as O  # noqa: E402 -- "P5.7's test" primitives, BY IMPORT
 import p515_s40_clone_capture_preflight as CP  # noqa: E402 -- comparator conventions, BY IMPORT
 import shared_energy_storage_data as SED  # noqa: E402
+import shared_resources_planning as srp  # noqa: E402
 from p513_solve_profile_guard import SolveProfileGuard  # noqa: E402
 
 ARM_LABEL = 's39_D'
@@ -328,6 +350,66 @@ def _build_floor_rows(precheck_eval_id):
     return capture_checklist, floor_rows_by_node, floor_counts_by_node
 
 
+def _switch_to_base_objective(model):
+    """`p56a_oracle.restore_base_objective`, GENERALIZED (finding, see Worker
+    report): deactivates EVERY Objective component on `model` except
+    `objective` (the base), then activates `objective`.
+
+    `p56a_oracle.restore_base_objective` only knows about `admm_objective`
+    (P5.6/P5.7-era: only two Objective components ever existed). Step 3.4
+    (frozen spec v4) made objective rescaling PRODUCTION behaviour:
+    `run_admm_arm` wraps every ADMM cycle in `p58_rescale.
+    patched_admm_objectives()` (`p515_g_g1_g4_admm_gates.py`'s own `R =
+    p58_rescale` import, applied UNCONDITIONALLY -- not a P5.8-only
+    diagnostic any more), which deactivates `admm_objective` and activates a
+    THIRD component, `p58_rescale.RESCALED_OBJECTIVE`
+    ('p58_rescaled_admm_objective' = `effective_scale * admm_objective`) --
+    the objective IPOPT actually solves on every real cycle. Calling only
+    `p56a_oracle.restore_base_objective` after a real `run_admm_arm` run
+    leaves BOTH `objective` and `p58_rescaled_admm_objective` active; IPOPT's
+    AMPL interface then raises "There is more than one objective function in
+    the AMPL model, but AmplTNLP::set_active_objective has not been called"
+    on every block. Reproduced directly (single-block probe, `tee=True`) and
+    is the ROOT CAUSE of every one of the 48 smoke-test polish failures --
+    NOT an inherent property of the far-from-converged 2-cycle fixed-
+    consensus point.
+
+    Asserts exactly one Objective is active afterward -- fails loudly, not
+    silently, if this generalization is ever itself incomplete."""
+    for obj in list(model.component_objects(pe.Objective, active=True, descend_into=False)):
+        if obj.local_name != 'objective':
+            obj.deactivate()
+    model.objective.activate()
+    active = [o.local_name for o in
+             model.component_objects(pe.Objective, active=True, descend_into=False)]
+    if active != ['objective']:
+        raise RuntimeError(f"S40 polish gap: expected exactly one active objective "
+                           f"(['objective']) after switching, got {active}")
+
+
+def _polish_networks_fixed_consensus(planning, models):
+    """`p56a_oracle.polish_networks`, with `_switch_to_base_objective` in
+    place of `restore_base_objective` (see its docstring); otherwise
+    identical -- same per-block loop (`p56a_oracle._tagged_holders`), same
+    `network.run_smopf` call (production's own SMOPF entry point), same
+    return shape `(blocks, all_solved)`."""
+    blocks, all_solved = [], True
+    for tag, holder in O._tagged_holders(planning):
+        node_of = None if tag == 'TSO' else int(tag[3:])
+        for year in holder.years:
+            for day in holder.days:
+                network = holder.network[year][day]
+                model = (models['tso'][year][day] if tag == 'TSO'
+                         else models['dso'][node_of][year][day])
+                _switch_to_base_objective(model)
+                with redirect_stdout(io.StringIO()):
+                    result = network.run_smopf(model, holder.params, print_header=False)
+                ok = bool(srp._solver_result_succeeded(result))
+                all_solved &= ok
+                blocks.append({'agent': tag, 'year': year, 'day': day, 'solved': ok})
+    return blocks, all_solved
+
+
 def _polish_all_blocks(planning, models, consensus_vars):
     """The polish step itself (build items 3-4). Mutates `models` in place
     (no clone -- these models are discarded by the caller regardless, the
@@ -342,7 +424,7 @@ def _polish_all_blocks(planning, models, consensus_vars):
 
     guard = SolveProfileGuard(POLISH_PERMITTED, label='P5.15-S40 polish-gap').install()
     try:
-        blocks, all_solved = O.polish_networks(planning, models)
+        blocks, all_solved = _polish_networks_fixed_consensus(planning, models)
     finally:
         guard.uninstall()
 
