@@ -355,18 +355,64 @@ def _load_jsonl(path):
     return rows
 
 
+# Found while running this gate (see WORKER_REPORT_S43_AA_PREP.md, "Unexpected
+# findings"): `p515_g_g1_g4_admm_gates.py`'s recourse-jump capture hook builds
+# `objective_component_block_deltas` by iterating `set(flat_current) |
+# flat_previous)` (tuples of `(block_key, component_name)` strings) and then
+# `list.sort(key=abs_delta, reverse=True)` -- a STABLE sort, so any two
+# entries with EXACTLY EQUAL `abs_delta` keep the relative order of that set
+# iteration. `economic_market_cost` and `generation_cost` are recorded as two
+# separate, always-numerically-identical aliases of the same block objective
+# component (`shared_resources_planning.py:5158`), so their `abs_delta` ties
+# EXACTLY -- and Python's per-process string-hash randomization
+# (`PYTHONHASHSEED`, unset here, so randomized by default) makes `set`
+# iteration order of string tuples vary BETWEEN SEPARATE PROCESS INVOCATIONS
+# (reproduced directly: `for i in 1..6: python3 -c "print(list({('k','economic_market_cost'),('k','generation_cost')}))"`
+# gave both orders across 6 independent processes). This is a PRE-EXISTING
+# harness-level (not production-numeric, not AA-related) non-determinism in a
+# diagnostic-only top-10 sidecar list; the two entries' `previous`/`current`/
+# `delta`/`abs_delta` values are bit-identical in both runs (verified: `_diff`
+# does not flag them) -- only the `component` LABEL at a given list index
+# differs, exactly when it is this alias pair.
+KNOWN_TIE_BREAK_ALIAS_PAIRS = {frozenset({'economic_market_cost', 'generation_cost'})}
+
+
+def _is_provenance_diff(field):
+    """`rule_eleven_checklist` records HOW a run was configured/verified, not
+    what it computed (same reasoning `p515_s40_polish_gap._reproduction_check`
+    already applies to its own D-comparison) -- reported, never gating, per
+    this task's own instruction ("rule_eleven_checklist provenance
+    non-gating")."""
+    return '.rule_eleven_checklist' in field or field.startswith('rule_eleven_checklist')
+
+
+def _is_known_tie_break_diff(d):
+    field = str(d.get('field', ''))
+    if not field.endswith('.component'):
+        return False
+    pair = frozenset({d.get('legacy'), d.get('lightweight')})
+    return pair in KNOWN_TIE_BREAK_ALIAS_PAIRS
+
+
 def _classify_diffs(diffs):
-    """Split raw `_diff`/`_reproduction_check` output into `aa_new_field_
-    diffs` (the reference lacks the key entirely AND the new run's value
-    matches the documented flag-off constant) and `genuine_diffs` (gates).
-    A diff is classified as `aa_new_field_diffs` ONLY when BOTH conditions
-    hold -- a field that happens to share a name in `AA_NEW_DIAGNOSTIC_
-    FIELD_NAMES` but differs for any other reason (reference not `<MISSING>`,
-    or the new value is not the documented flag-off constant) is a genuine
-    diff and gates, exactly like any unexplained difference would."""
-    aa_new_field_diffs, genuine_diffs = [], []
+    """Split raw `_diff`/`_reproduction_check` output into four buckets:
+    `provenance_diffs` (rule_eleven_checklist subtree -- reported, never
+    gating), `aa_new_field_diffs` (the reference lacks the key entirely AND
+    the new run's value matches the documented flag-off constant --
+    reported, never gating), `known_tie_break_diffs` (the pre-existing
+    PYTHONHASHSEED-driven sort-tie non-determinism documented above --
+    reported, never gating, WITH the causal evidence recorded alongside it),
+    and `genuine_diffs` (GATES). A diff lands in a non-gating bucket ONLY
+    when its exact documented condition holds -- anything else, including a
+    field that merely shares a name or suffix with one of these categories
+    but fails the value check, is a genuine diff and gates, exactly like any
+    unexplained difference would."""
+    provenance_diffs, aa_new_field_diffs, known_tie_break_diffs, genuine_diffs = [], [], [], []
     for d in diffs:
         field = str(d.get('field', ''))
+        if _is_provenance_diff(field):
+            provenance_diffs.append(d)
+            continue
         leaf = field.rsplit('.', 1)[-1]
         # `CP._diff` ALWAYS names the two compared values 'legacy' (its first
         # positional argument) and 'lightweight' (its second) regardless of
@@ -378,12 +424,14 @@ def _classify_diffs(diffs):
             ref_val = d.get('legacy')
             new_val = d.get('lightweight')
             expected_new = AA_NEW_FIELD_EXPECTED_FLAG_OFF_VALUE.get(leaf, None)
-            is_expected = (ref_val == '<MISSING>' and new_val == expected_new)
-            if is_expected:
+            if ref_val == '<MISSING>' and new_val == expected_new:
                 aa_new_field_diffs.append(d)
                 continue
+        if _is_known_tie_break_diff(d):
+            known_tie_break_diffs.append(d)
+            continue
         genuine_diffs.append(d)
-    return aa_new_field_diffs, genuine_diffs
+    return provenance_diffs, aa_new_field_diffs, known_tie_break_diffs, genuine_diffs
 
 
 def _find_peak_rss_keys(obj, path=''):
@@ -414,7 +462,9 @@ def main():
           'fresh output dir, production files clean, both references present).')
 
     G._acquire_exclusive_run_lock()
-    os.makedirs(OUT_DIR, exist_ok=True)
+    # NOTE: OUT_DIR is intentionally NOT pre-created here -- `run_s39_arm` ->
+    # `run_admm_arm` calls `_require_fresh_output_root(out_dir)` itself (refuses
+    # if the path already exists) and only then `os.makedirs(out_dir, exist_ok=True)`.
     started = time.time()
 
     print(f'[S43-FLAGOFF-GATE] run {ARM_KEY} for {NUM_CYCLES} cycles, '
@@ -439,56 +489,54 @@ def main():
           "NOT necessarily present in the written report -- checked below).")
 
     # ---- (1) truncated comparison vs D's own committed trajectory ---------
+    # `_reproduction_check` already strips `rule_eleven_checklist` provenance
+    # diffs internally before returning `diffs` -- `_classify_diffs`'s own
+    # provenance filter is therefore a no-op guard here, not load-bearing.
     d_repro = _reproduction_check(report)
-    d_aa_new_field_diffs, d_genuine_diffs = _classify_diffs(d_repro['diffs'])
+    _d_prov, d_aa_new_field_diffs, d_tie_break_diffs, d_genuine_diffs = _classify_diffs(d_repro['diffs'])
     print(f"[S43-FLAGOFF-GATE] vs D committed (truncated, mode={d_repro['mode']}): "
           f"n_diffs_raw={d_repro['n_diffs']} aa_new_field_diffs={len(d_aa_new_field_diffs)} "
-          f"genuine_diffs={len(d_genuine_diffs)} "
+          f"known_tie_break_diffs={len(d_tie_break_diffs)} genuine_diffs={len(d_genuine_diffs)} "
           f"n_provenance_diffs_reported_not_gating={d_repro['n_provenance_diffs']}")
 
     # ---- (2) full comparison vs clone_preflight_v2/lightweight ------------
     lw_report_path = os.path.join(LIGHTWEIGHT_REFERENCE_DIR, f'g_{ARM_LABEL}.json')
     lw_report = _load_json(lw_report_path)
     lw_report_diff_raw = CP._diff(lw_report, report, 'report') if lw_report is not None else None
-    lw_aa_new_field_diffs, lw_genuine_diffs = (
-        _classify_diffs(lw_report_diff_raw) if lw_report_diff_raw is not None else ([], []))
+    if lw_report_diff_raw is not None:
+        lw_prov, lw_aa_new_field_diffs, lw_tie_break_diffs, lw_genuine_diffs = _classify_diffs(lw_report_diff_raw)
+    else:
+        lw_prov, lw_aa_new_field_diffs, lw_tie_break_diffs, lw_genuine_diffs = [], [], [], []
     print(f"[S43-FLAGOFF-GATE] vs clone_preflight_v2/lightweight report: "
           f"n_diffs_raw={len(lw_report_diff_raw) if lw_report_diff_raw is not None else None} "
-          f"aa_new_field_diffs={len(lw_aa_new_field_diffs)} genuine_diffs={len(lw_genuine_diffs)}")
+          f"provenance_diffs={len(lw_prov)} aa_new_field_diffs={len(lw_aa_new_field_diffs)} "
+          f"known_tie_break_diffs={len(lw_tie_break_diffs)} genuine_diffs={len(lw_genuine_diffs)}")
+
+    def _diff_bucket(a_json, b_json, label, is_jsonl=False):
+        if a_json is None or b_json is None:
+            return {
+                'error': f'missing artifact: reference_exists={a_json is not None} mine_exists={b_json is not None}',
+                'provenance_diffs': [], 'aa_new_field_diffs': [], 'known_tie_break_diffs': [],
+                'genuine_diffs': [], 'n_genuine_diffs': None,
+            }
+        raw = CP._diff(a_json, b_json, label)
+        prov, aa_new, tie, genuine = _classify_diffs(raw)
+        return {
+            'provenance_diffs': prov, 'aa_new_field_diffs': aa_new, 'known_tie_break_diffs': tie,
+            'genuine_diffs': genuine, 'n_genuine_diffs': len(genuine),
+        }
 
     lw_artifact_diffs = {}
     for fname in CP.ARTIFACT_FILES:
-        a_path = os.path.join(LIGHTWEIGHT_REFERENCE_DIR, fname)
-        b_path = os.path.join(OUT_DIR, fname)
-        a_json, b_json = _load_json(a_path), _load_json(b_path)
-        if a_json is None or b_json is None:
-            lw_artifact_diffs[fname] = {
-                'error': f'missing artifact: reference_exists={a_json is not None} mine_exists={b_json is not None}',
-                'aa_new_field_diffs': [], 'genuine_diffs': [], 'n_genuine_diffs': None,
-            }
-            continue
-        raw = CP._diff(a_json, b_json, fname)
-        aa_new, genuine = _classify_diffs(raw)
-        lw_artifact_diffs[fname] = {
-            'aa_new_field_diffs': aa_new, 'genuine_diffs': genuine, 'n_genuine_diffs': len(genuine),
-        }
+        a_json = _load_json(os.path.join(LIGHTWEIGHT_REFERENCE_DIR, fname))
+        b_json = _load_json(os.path.join(OUT_DIR, fname))
+        lw_artifact_diffs[fname] = _diff_bucket(a_json, b_json, fname)
 
     lw_sidecar_diffs = {}
     for fname in CP.SIDECAR_JSONL_FILES:
-        a_path = os.path.join(LIGHTWEIGHT_REFERENCE_DIR, fname)
-        b_path = os.path.join(OUT_DIR, fname)
-        a_rows, b_rows = _load_jsonl(a_path), _load_jsonl(b_path)
-        if a_rows is None or b_rows is None:
-            lw_sidecar_diffs[fname] = {
-                'error': f'missing sidecar: reference_exists={a_rows is not None} mine_exists={b_rows is not None}',
-                'aa_new_field_diffs': [], 'genuine_diffs': [], 'n_genuine_diffs': None,
-            }
-            continue
-        raw = CP._diff(a_rows, b_rows, fname)
-        aa_new, genuine = _classify_diffs(raw)
-        lw_sidecar_diffs[fname] = {
-            'aa_new_field_diffs': aa_new, 'genuine_diffs': genuine, 'n_genuine_diffs': len(genuine),
-        }
+        a_rows = _load_jsonl(os.path.join(LIGHTWEIGHT_REFERENCE_DIR, fname))
+        b_rows = _load_jsonl(os.path.join(OUT_DIR, fname))
+        lw_sidecar_diffs[fname] = _diff_bucket(a_rows, b_rows, fname, is_jsonl=True)
 
     lw_all_genuine_n = (
         len(lw_genuine_diffs)
@@ -498,6 +546,11 @@ def main():
     lw_all_artifacts_present = (
         all('error' not in v for v in lw_artifact_diffs.values())
         and all('error' not in v for v in lw_sidecar_diffs.values())
+    )
+    lw_all_tie_break_n = (
+        len(lw_tie_break_diffs)
+        + sum(len(v.get('known_tie_break_diffs', [])) for v in lw_artifact_diffs.values())
+        + sum(len(v.get('known_tie_break_diffs', [])) for v in lw_sidecar_diffs.values())
     )
 
     # ---- peak_rss reach check: does the NEW state-only field ever land in a
@@ -559,10 +612,34 @@ def main():
         'aa_new_diagnostic_field_names': sorted(AA_NEW_DIAGNOSTIC_FIELD_NAMES),
         'aa_field_pattern_ok': aa_pattern_ok,
         'aa_field_pattern_violations': aa_pattern_violations,
+        'known_tie_break_alias_pairs': [sorted(p) for p in KNOWN_TIE_BREAK_ALIAS_PAIRS],
+        'known_tie_break_root_cause_evidence': {
+            'mechanism': (
+                "p515_g_g1_g4_admm_gates.py's recourse-jump capture hook iterates "
+                "set(flat_current) | set(flat_previous) (tuples of (block_key, component_name) "
+                "strings) then list.sort(key=abs_delta, reverse=True) -- a STABLE sort. "
+                "'economic_market_cost' and 'generation_cost' are two always-numerically-"
+                "identical aliases of the same block objective component "
+                "(shared_resources_planning.py:5158), so their abs_delta ties EXACTLY; the tie "
+                "is then broken by set-iteration order, which depends on Python's per-process "
+                "string-hash randomization (PYTHONHASHSEED, unset/randomized here)."
+            ),
+            'pythonhashseed_env': os.environ.get('PYTHONHASHSEED'),
+            'reproduction': (
+                "six independent `python3 -c \"print(list({('k','economic_market_cost'),"
+                "('k','generation_cost')}))\"` invocations in this same shell session produced "
+                "BOTH possible orderings across the six separate processes -- confirms the "
+                "ordering is process-random, not a function of run content. Not caused by AA "
+                "or by the flag-off configuration; a pre-existing property of this diagnostic-"
+                "only (never gates production cost) sidecar's tie-breaking."
+            ),
+        },
         'vs_d_committed_truncated': {
             **{k: v for k, v in d_repro.items() if k != 'diffs'},
             'aa_new_field_diffs': d_aa_new_field_diffs,
             'n_aa_new_field_diffs': len(d_aa_new_field_diffs),
+            'known_tie_break_diffs': d_tie_break_diffs,
+            'n_known_tie_break_diffs': len(d_tie_break_diffs),
             'genuine_diffs': d_genuine_diffs,
             'n_genuine_diffs': len(d_genuine_diffs),
         },
@@ -570,17 +647,21 @@ def main():
             'reference_dir': os.path.relpath(LIGHTWEIGHT_REFERENCE_DIR, REPO),
             'reference_report_exists': lw_report is not None,
             'report_diff': {
+                'provenance_diffs': lw_prov, 'n_provenance_diffs': len(lw_prov),
                 'aa_new_field_diffs': lw_aa_new_field_diffs, 'n_aa_new_field_diffs': len(lw_aa_new_field_diffs),
+                'known_tie_break_diffs': lw_tie_break_diffs, 'n_known_tie_break_diffs': len(lw_tie_break_diffs),
                 'genuine_diffs': lw_genuine_diffs, 'n_genuine_diffs': len(lw_genuine_diffs),
             },
             'artifact_diffs': lw_artifact_diffs,
             'sidecar_diffs': lw_sidecar_diffs,
             'total_genuine_diffs': lw_all_genuine_n,
+            'total_known_tie_break_diffs': lw_all_tie_break_n,
             'all_artifacts_present': lw_all_artifacts_present,
             'note_on_intervening_production_changes': (
                 'This reference (commit 8214be0d) predates BOTH the Step 3.6 bound-restore fix '
-                '(16a19456) and AA integration (9a965494); any genuine (non-aa_*) diff found here '
-                'is reported as-is, with its likely attribution stated, never rationalized away.'),
+                '(16a19456) and AA integration (9a965494); any genuine (non-provenance, '
+                'non-aa_*, non-tie-break) diff found here is reported as-is, with its likely '
+                'attribution stated, never rationalized away.'),
         },
         'excluded_field_names': sorted(CP.EXCLUDE_KEY_NAMES),
         'excluded_dotted_suffixes': sorted(CP.EXCLUDE_DOTTED_SUFFIXES),
