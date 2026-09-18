@@ -135,12 +135,6 @@ COST_ABS_TOLERANCE = COST_RELATIVE_TOLERANCE * D_CERTIFIED_COST  # == 97645.05 (
 # named here explicitly, with the source cited, rather than silently
 # re-deriving it.
 DOMINANT_TWO_COMPONENTS = ['generation_cost', 'flexibility_cost_internal']
-# Harness-chosen (the frozen spec's gate text, "reconciles to generation +
-# internal flexibility cost", does not itself state a numeric tolerance):
-# the unaccounted residual is judged small enough to call "reconciled" when
-# it is within 5% of the headline diff OR within an absolute $1,000 floor
-# (whichever is larger) -- flagged explicitly in the report as a WORKER
-# CHOICE, not a Planner-specified number, for confirmation/adjustment.
 # Planner decision before the full run (spec v12 item4 gate (c): the AA-vs-D difference must reconcile to the two known
 # components). Every earlier decomposition (run 1, A, C, D; p515_s40_cost_decomposition.py) reconciled to ~1e-7 with
 # every other priced component IDENTICALLY zero, so the pass condition is: |unaccounted residual| <= 1.0 (currency
