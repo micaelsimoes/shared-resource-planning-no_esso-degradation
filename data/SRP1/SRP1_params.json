@@ -41,9 +41,9 @@
 			"objective": {"abs": 1e3, "rel": 0.1e-2},
 			"boyd": {"eps_abs": 1e-5, "eps_rel": 1e-4}
 		},
-		"num_max_iters": 25,
-		"minimum_consecutive_converged_cycles": 3,
-		"shared_ess_initialization": "price_taker",
+		"num_max_iters": 300,
+		"minimum_consecutive_converged_cycles": 10,
+		"shared_ess_initialization": "standalone",
 		"shared_ess_normalization_floor_mva": 0.10,
 		"adaptive_penalty": true,
 		"objective_scale": 93635360.0,
@@ -57,7 +57,10 @@
 			"min": 1e-4,
 			"max": 1e4,
 			"freeze_after_unchanged_cycles": 10,
-			"freeze_backstop_cycle": 60
+			"freeze_backstop_cycle": 200,
+			"balancing_exempt_until": {
+				"ess": {"dual_ratio_below": 1.0, "consecutive_cycles": 5}
+			}
 		},
 		"rho": {
 			"v": {
@@ -73,11 +76,11 @@
 				"case33_3": 0.198
 			},
 			"ess": {
-				"case9": 0.1125,
-				"case33_1": 0.1125,
-				"case33_2": 0.1125,
-				"case33_3": 0.1125,
-				"esso": 0.1125
+				"case9": 0.01,
+				"case33_1": 0.01,
+				"case33_2": 0.01,
+				"case33_3": 0.01,
+				"esso": 0.01
 			}
 		},
 		"proximal_regularization": {
@@ -90,7 +93,7 @@
 					"ess": 1.0
 				},
 				"gamma_policy": "tied_to_rho",
-				"tau": 1.0
+				"tau": 0.0
 			},
 			"dso": {
 				"enabled": false,
