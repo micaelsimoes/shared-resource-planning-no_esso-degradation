@@ -192,6 +192,23 @@ class ADMMParameters:
         # programmatically only.
         self.tso_snapshot_capture_mode = 'lightweight'
 
+        # P5.15 Addendum 22 item (2), Step 3.6 (PLANNER_BRIEF_2026-09-13.md
+        # Addendum 18, `admm_persistent_workers.py`): within-cycle block
+        # parallelism via persistent, single-threaded worker processes (one
+        # fixed subset of the 36 DSO / 12 TSO / 3 ESSO blocks per worker,
+        # models built once, only consensus/dual state and solved blocks
+        # exchanged per cycle -- see `admm_persistent_workers.py`'s module
+        # docstring for the full design). DEFAULT OFF
+        # (`enabled: False`): `_run_operational_planning` never constructs a
+        # `PersistentWorkerPool` and every per-cycle dispatch call is
+        # byte-for-byte the existing serial code path. Not wired to any
+        # case-file key; set programmatically only, exactly like
+        # `tso_snapshot_capture_mode` above.
+        self.persistent_workers = {
+            'enabled': False,
+            'num_workers': 8,
+        }
+
     def read_parameters_from_file(self, params_data):
         _read_parameters_from_file(self, params_data)
 

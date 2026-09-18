@@ -1,0 +1,139 @@
+{
+ "stage": "P5.15 Addendum 22 item (2) -- persistent-workers zero-solve checks",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 18",
+  "data/SRP1/Results/P515S40/frozen_s40_closure_spec_v11_0e9a37be.json"
+ ],
+ "timestamp_utc": "2026-09-18T06:41:00.464449+00:00",
+ "1_flag_off_default": {
+  "persistent_workers_value": {
+   "enabled": false,
+   "num_workers": 8
+  },
+  "persistent_workers_enabled_reads": false,
+  "pass": true,
+  "static_source_checks": {
+   "has_persistent_pool_none_default": true,
+   "has_enabled_gate": true,
+   "dso_else_calls_original": true,
+   "tso_else_calls_original": true,
+   "esso_else_calls_original": true
+  },
+  "static_pass": true
+ },
+ "2_block_partition": {
+  "n_dso_keys": 36,
+  "n_tso_keys": 12,
+  "n_esso_keys": 3,
+  "n_total_keys": 51,
+  "n_distinct_keys": 51,
+  "expected_36_12_3": true,
+  "determinism_by_num_workers": {
+   "1": true,
+   "2": true,
+   "3": true,
+   "7": true,
+   "8": true,
+   "51": true,
+   "97": true
+  },
+  "coverage_by_num_workers": {
+   "1": true,
+   "2": true,
+   "3": true,
+   "7": true,
+   "8": true,
+   "51": true,
+   "97": true
+  },
+  "pass": true
+ },
+ "3_pool_startup": {
+  "num_workers": 2,
+  "env_caps_set_in_children": true,
+  "parent_env_restored_after_spawn": true,
+  "worker_tempdirs": [
+   "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S40/persistent_workers_checks/tmp/p515s40_persistent_workers_checks_1789713660/worker_0",
+   "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S40/persistent_workers_checks/tmp/p515s40_persistent_workers_checks_1789713660/worker_1"
+  ],
+  "worker_tempdirs_distinct": true,
+  "worker_for_key_covers_all_51": true,
+  "ready_info_ok_flags": [
+   true,
+   true
+  ],
+  "pass": true
+ },
+ "5_injected_exception_lifecycle": {
+  "error_raised": "PersistentWorkerError",
+  "error_mentions_attributeerror_or_the_bogus_name": true,
+  "all_worker_processes_dead_after": true,
+  "pool_alive_flag_after": false,
+  "child_guard_counts_after_injected_failure": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "no_solve_reached_before_failure": true,
+  "idempotent_second_shutdown_ok": true,
+  "idempotent_second_shutdown_error": null,
+  "pass": true
+ },
+ "4_fixture_reload": {
+  "fixtures": {
+   "data/SRP1/Results/P512R/cycle21_pre_setup/snapshot.pkl": {
+    "exists": true,
+    "unpickled": true,
+    "n_vars": 10756
+   },
+   "data/SRP1/Results/P512R/cycle21_prepared/snapshot.pkl": {
+    "exists": true,
+    "unpickled": true,
+    "n_vars": 10756
+   },
+   "data/SRP1/Results/P512R/production_snapshots/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl": {
+    "exists": true,
+    "unpickled": true,
+    "n_vars": 10756
+   },
+   "data/SRP1/Results/P512R/production_snapshots/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl": {
+    "exists": true,
+    "unpickled": true,
+    "n_vars": 3756
+   },
+   "data/SRP1/Results/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl": {
+    "exists": true,
+    "unpickled": true,
+    "n_vars": 10882
+   },
+   "data/SRP1/Results/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl": {
+    "exists": true,
+    "unpickled": true,
+    "n_vars": 3762
+   },
+   "data/SRP1/Results/P515F/t2_results/FrozenSMOPF/failure_TSO_case9_2025_Spring_cycle1.pkl": {
+    "exists": true,
+    "unpickled": true,
+    "n_vars": 3762
+   }
+  },
+  "pass": true
+ },
+ "guard_verification": {
+  "parent_guard_counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "parent_guard_failures": [],
+  "child_guard_counts_total": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  }
+ },
+ "all_checks_pass": true
+}

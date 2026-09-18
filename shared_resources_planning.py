@@ -18,6 +18,7 @@ from openpyxl.styles import PatternFill
 from centralized_coordination import combine_networks
 from network_data import NetworkData
 from network import capture_block_mutable_state, apply_block_mutable_state
+import admm_persistent_workers
 from load import Load
 from shared_energy_storage import SharedEnergyStorage
 from planning_parameters import PlanningParameters
@@ -2514,6 +2515,31 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             for year in transmission_network.years
         }
 
+    # P5.15 Addendum 22 item (2), Step 3.6 (Addendum 18 design,
+    # `admm_persistent_workers.py`): persistent worker pool, DEFAULT OFF.
+    # Built once here (same point as `tso_pristine_base` above -- both need
+    # the fully ADMM-ready `dso_models`/`tso_model`/`esso_model` state) and
+    # shut down at every exit from this function via the `finally` mirrored
+    # around each per-stage dispatch call below and the explicit shutdown
+    # at the loop's natural exit point. With the flag off (the default),
+    # `persistent_pool` stays None and every dispatch call below is the
+    # existing serial code path, unchanged.
+    persistent_pool = None
+    if admm_persistent_workers.persistent_workers_enabled(admm_parameters):
+        persistent_pool = admm_persistent_workers.PersistentWorkerPool(
+            num_workers=admm_parameters.persistent_workers.get('num_workers', 8),
+            distribution_networks=distribution_networks,
+            dso_models=dso_models,
+            transmission_network=transmission_network,
+            tso_model=tso_model,
+            tso_pristine_base=tso_pristine_base,
+            tso_snapshot_capture_mode=admm_parameters.tso_snapshot_capture_mode,
+            shared_ess_data=shared_ess_data,
+            esso_model=esso_model,
+            tempdir_root=os.path.join(planning_problem.results_dir, 'PersistentWorkersTmp'),
+            guard_permitted=getattr(admm_parameters, 'persistent_workers_guard_permitted', None),
+        )
+
     # ------------------------------------------------------------------------------------------------------------------
     # ADMM -- Main cycle
     # ------------------------------------------------------------------------------------------------------------------
@@ -2528,17 +2554,32 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
 
         # --------------------------------------------------------------------------------------------------------------
         # 1. Solve DSOs problems
-        results['dso'] = update_distribution_coordination_models_and_solve(
-            distribution_networks, dso_models,
-            consensus_vars['vmag'], dual_vars['vmag']['dso'],
-            consensus_vars['pf'], dual_vars['pf']['dso'],
-            consensus_vars['ess'], dual_vars['ess']['dso'],
-            admm_parameters,
-            sess_available_capacities,
-            from_warm_start=from_warm_start,
-            parallel_execution=planning_problem.parallel_execution,
-            cycle=iter,
-        )
+        if persistent_pool is not None:
+            try:
+                results['dso'] = persistent_pool.run_dso_stage(
+                    consensus_vars['vmag'], dual_vars['vmag']['dso'],
+                    consensus_vars['pf'], dual_vars['pf']['dso'],
+                    consensus_vars['ess'], dual_vars['ess']['dso'],
+                    admm_parameters,
+                    sess_available_capacities,
+                    from_warm_start=from_warm_start,
+                    cycle=iter,
+                )
+            except Exception:
+                persistent_pool.shutdown()
+                raise
+        else:
+            results['dso'] = update_distribution_coordination_models_and_solve(
+                distribution_networks, dso_models,
+                consensus_vars['vmag'], dual_vars['vmag']['dso'],
+                consensus_vars['pf'], dual_vars['pf']['dso'],
+                consensus_vars['ess'], dual_vars['ess']['dso'],
+                admm_parameters,
+                sess_available_capacities,
+                from_warm_start=from_warm_start,
+                parallel_execution=planning_problem.parallel_execution,
+                cycle=iter,
+            )
 
         # Update ADMM consensus variables and primal diagnostics.
         update_and_check_convergence(
@@ -2552,17 +2593,32 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
 
         # --------------------------------------------------------------------------------------------------------------
         # 2. Solve TSO problem
-        results['tso'] = update_transmission_coordination_model_and_solve(
-            transmission_network, tso_model,
-            consensus_vars['vmag'], dual_vars['vmag']['tso'],
-            consensus_vars['pf'], dual_vars['pf']['tso'],
-            consensus_vars['ess'], dual_vars['ess']['tso'],
-            admm_parameters,
-            sess_available_capacities,
-            from_warm_start=from_warm_start,
-            cycle=iter,
-            tso_pristine_base=tso_pristine_base,
-        )
+        if persistent_pool is not None:
+            try:
+                results['tso'] = persistent_pool.run_tso_stage(
+                    consensus_vars['vmag'], dual_vars['vmag']['tso'],
+                    consensus_vars['pf'], dual_vars['pf']['tso'],
+                    consensus_vars['ess'], dual_vars['ess']['tso'],
+                    admm_parameters,
+                    sess_available_capacities,
+                    from_warm_start=from_warm_start,
+                    cycle=iter,
+                )
+            except Exception:
+                persistent_pool.shutdown()
+                raise
+        else:
+            results['tso'] = update_transmission_coordination_model_and_solve(
+                transmission_network, tso_model,
+                consensus_vars['vmag'], dual_vars['vmag']['tso'],
+                consensus_vars['pf'], dual_vars['pf']['tso'],
+                consensus_vars['ess'], dual_vars['ess']['tso'],
+                admm_parameters,
+                sess_available_capacities,
+                from_warm_start=from_warm_start,
+                cycle=iter,
+                tso_pristine_base=tso_pristine_base,
+            )
 
         # Update the proximal centre only with successful TSO solutions.
         tso_proximal_movements = _update_tso_proximal_centres_after_solve(planning_problem, tso_model, results['tso'], cycle=iter)
@@ -2579,11 +2635,21 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
 
         # --------------------------------------------------------------------------------------------------------------
         # 3. Solve ESSO problem
-        results['esso'] = update_shared_energy_storages_coordination_model_and_solve(
-            planning_problem, esso_model,
-            consensus_vars['ess']['z'], dual_vars['ess']['esso'],
-            admm_parameters, from_warm_start=from_warm_start, cycle=iter
-        )
+        if persistent_pool is not None:
+            try:
+                results['esso'] = persistent_pool.run_esso_stage(
+                    consensus_vars['ess']['z'], dual_vars['ess']['esso'],
+                    admm_parameters, from_warm_start=from_warm_start, cycle=iter,
+                )
+            except Exception:
+                persistent_pool.shutdown()
+                raise
+        else:
+            results['esso'] = update_shared_energy_storages_coordination_model_and_solve(
+                planning_problem, esso_model,
+                consensus_vars['ess']['z'], dual_vars['ess']['esso'],
+                admm_parameters, from_warm_start=from_warm_start, cycle=iter
+            )
 
         # Update the final block and evaluate convergence only after a complete cycle.
         update_and_check_convergence(
@@ -3045,6 +3111,17 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
 
     if not convergence:
         print(f'[WARNING] \t - ADMM did NOT converge in {admm_parameters.num_max_iters} iterations!')
+
+    # P5.15 Addendum 22 item (2): clean shutdown on the loop's ordinary exit
+    # path (break-on-convergence or iteration exhaustion). The exception
+    # path is covered by the per-dispatch try/except above (belt-and-braces
+    # against any OTHER exception raised between dispatch calls, e.g. in
+    # residual/penalty-update code, is `PersistentWorkerPool.__del__`-free
+    # by design -- see the module docstring's Lifecycle section; a future
+    # caller wanting a stronger guarantee should wrap the whole loop in a
+    # `with persistent_pool:` block instead of this narrower mechanism).
+    if persistent_pool is not None:
+        persistent_pool.shutdown()
 
     end = time.time()
     total_execution_time = end - start
