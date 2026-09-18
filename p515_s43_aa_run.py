@@ -141,8 +141,12 @@ DOMINANT_TWO_COMPONENTS = ['generation_cost', 'flexibility_cost_internal']
 # it is within 5% of the headline diff OR within an absolute $1,000 floor
 # (whichever is larger) -- flagged explicitly in the report as a WORKER
 # CHOICE, not a Planner-specified number, for confirmation/adjustment.
-RECONCILIATION_RESIDUAL_REL_TOL = 0.05
-RECONCILIATION_RESIDUAL_ABS_FLOOR = 1000.0
+# Planner decision before the full run (spec v12 item4 gate (c): the AA-vs-D difference must reconcile to the two known
+# components). Every earlier decomposition (run 1, A, C, D; p515_s40_cost_decomposition.py) reconciled to ~1e-7 with
+# every other priced component IDENTICALLY zero, so the pass condition is: |unaccounted residual| <= 1.0 (currency
+# units) AND every non-dominant priced component's difference is exactly 0.0. The detector-penalty difference is
+# reported (it was ~1e-4 between configurations) and counted in the accounted total, not gated.
+RECONCILIATION_RESIDUAL_ABS_TOL = 1.0
 
 FORBIDDEN_LIVE_PROCESS_SUBSTRINGS = ('p515_g_g1_g4_admm_gates.py', 'p515_s39_', 'p515_s4')
 PRODUCTION_FILES_TO_CHECK_CLEAN = tuple(CP.PRODUCTION_FILES_TO_CHECK_CLEAN) + (
@@ -322,8 +326,10 @@ def _cost_decomposition_vs_d(aa_component_levels, aa_gross_cost):
         if k not in DOMINANT_TWO_COMPONENTS)
     accounted = dominant_two_diff + other_priced_diff + detector_diff
     unaccounted_residual = headline_diff - accounted
-    tolerance = max(RECONCILIATION_RESIDUAL_ABS_FLOOR,
-                    RECONCILIATION_RESIDUAL_REL_TOL * abs(headline_diff))
+    tolerance = RECONCILIATION_RESIDUAL_ABS_TOL
+    other_priced_nonzero = [k for k in CD.PRICED_COMPONENT_KEYS
+                            if k not in DOMINANT_TWO_COMPONENTS
+                            and component_table[k]['diff_AA_minus_D'] not in (0, 0.0)]
 
     return {
         'method_note': (
@@ -349,8 +355,9 @@ def _cost_decomposition_vs_d(aa_component_levels, aa_gross_cost):
         'unaccounted_residual_over_abs_headline_diff': (
             abs(unaccounted_residual) / abs(headline_diff) if headline_diff else None),
         'reconciliation_tolerance_used': tolerance,
-        'reconciliation_tolerance_is_harness_chosen_not_spec_specified': True,
-        'reconciles_informal': bool(abs(unaccounted_residual) <= tolerance),
+        'reconciliation_tolerance_source': 'Planner, before the full run: |residual| <= 1.0 and other priced components identically 0',
+        'other_priced_components_nonzero': other_priced_nonzero,
+        'reconciles': bool(abs(unaccounted_residual) <= tolerance and not other_priced_nonzero),
         'component_table': component_table,
     }
 
@@ -456,7 +463,7 @@ def _make_post_run_hook(out_dir, label, floor_rows_by_node, floor_sidecar_path,
         print(f"[S43-AA-RUN] gate (c): headline_diff={decomposition['headline_diff_AA_minus_D']} "
               f"dominant_two_diff={decomposition['dominant_two_diff']} "
               f"unaccounted_residual={decomposition['unaccounted_residual']} "
-              f"reconciles_informal={decomposition['reconciles_informal']}")
+              f"reconciles={decomposition['reconciles']}")
 
         # -- item (e), BEFORE polish mutates models: optionally persist certified models --
         if persist_models:
@@ -626,8 +633,8 @@ def main():
     gate_d = (result_holder.get('gate_d_hull_polish') or {}).get('gate')
     print(f"[S43-AA-RUN] GATE SUMMARY: (a) certification_cycle<=80: {gate_a.get('pass')} "
           f"(b) cost_within_tolerance: {gate_b.get('pass')} "
-          f"(c) reconciles_informal: "
-          f"{(result_holder.get('gate_c_cost_decomposition') or {}).get('reconciles_informal')} "
+          f"(c) reconciles: "
+          f"{(result_holder.get('gate_c_cost_decomposition') or {}).get('reconciles')} "
           f"(d) hull_polish_pass: {gate_d.get('pass') if gate_d else None}")
 
 
