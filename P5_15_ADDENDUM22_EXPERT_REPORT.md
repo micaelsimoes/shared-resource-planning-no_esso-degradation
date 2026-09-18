@@ -208,7 +208,7 @@ on neither blocked item.
 | persistent workers | `admm_persistent_workers.py`; `p515_s40_persistent_workers_{checks,preflight}.py`; `P515S40/persistent_workers_*`; `WORKER_REPORT_S40_PERSISTENT_WORKERS.md` | `c6d60857`…`d8414fb7` |
 | case file | `data/SRP1/SRP1_params.json`; `p515_s40_case_file_{oracle_checks,repro}.py`; `WORKER_REPORT_S40_CASE_FILE.md` | `fb3de341`, `ee976eff`, `bc01238e` |
 | polish gap | `p515_s40_polish_gap{,_checks}.py`; `P5_15_S40_POLISH_PRELAUNCH_NOTE.md`; `P515S40/polish_gap{,_v2,_smoke,_checks}/`; `WORKER_REPORT_S40_POLISH_GAP_PREP.md` | `9422ba9b`, `affdc19f`, `51a5fb48`, `57d523d0` |
-| polish-failure checks; closure report | `p515_s40_polish_failure_checks.py`, `P515S40/polish_failure_checks.json`; `P5_15_S40_STEP3_CLOSURE_REPORT.md` | `96e9848d` and the commit before it |
+| polish-failure checks; closure report | `p515_s40_polish_failure_checks.py`, `P515S40/polish_failure_checks.json`; `P5_15_S40_STEP3_CLOSURE_REPORT.md` | `7d92ba3c` (checks), `96e9848d` (report) |
 
 Every zero-solve claim above is backed by an armed `SolveProfileGuard`. Per-entry strides and `esso_capture/` are
 hash-recorded; all other evidence is committed with sha256 manifests.
