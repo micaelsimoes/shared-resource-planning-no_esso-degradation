@@ -202,6 +202,73 @@ def _set_thread_env_vars(value='1'):
     return previous
 
 
+# ==========================================================================
+# Cross-process-safe state capture/apply. `network.capture_block_mutable_
+# state` / `apply_block_mutable_state` are reused for the Param/Var/
+# Constraint/Objective legs (already plain (name, index) -> value data, safe
+# to pickle) -- ONLY the warm-start-suffix leg is replaced.
+# `network._snapshot_multiplier_suffixes` (which `capture_block_mutable_
+# state` uses internally) keys its captured entries by the LIVE Pyomo
+# component OBJECT itself, which is safe only within the SAME process (its
+# one existing production use, the TSO snapshot rebuild, always clones a
+# pristine base and applies IN THE SAME PROCESS that captured the state).
+# Pickling a raw component reference to ANOTHER process does not give a
+# reference into that process's structurally-identical model: Pyomo pickles
+# the referenced component's ENTIRE containing block, and the unpickled
+# object belongs to that embedded, otherwise-discarded copy. Applying it
+# onto a DIFFERENT (worker) resident model produces `dual`/`ipopt_z*_in`
+# suffix entries keyed by objects that do not belong to that model (Pyomo:
+# "model contains export suffix ... that contains N keys that are not Var,
+# Constraint, Objective, or the model. Skipping.") -- harmless for the NL
+# write itself (Pyomo's writer already detects and skips them), but a LATER
+# `model.clone()` on the resulting object can raise
+# (`pyomo.common.collections.component_map._rehash_keys`,
+# `AttributeError: 'NoneType' object has no attribute 'values'`) -- this was
+# found by this task's own two-cycle preflight (worker 4, a DSO node-7
+# block, whose legacy snapshot path clones after applying received state),
+# not by design review; see WORKER_REPORT_S40_PERSISTENT_WORKERS.md
+# "Unexpected findings". `capture_block_state_for_ipc` /
+# `apply_block_state_for_ipc` below replace the suffix leg with a
+# (component name, index) -> value capture, resolved back to the TARGET
+# model's own component via `getattr(model, name)[index]` on apply -- safe
+# across a pickle round-trip, and used for EVERY per-cycle state transfer in
+# this module, including the worker's own same-process TSO snapshot-rebuild
+# call (for uniformity: `state` is always in this format once captured).
+# ==========================================================================
+
+def capture_block_state_for_ipc(model):
+    from network import capture_block_mutable_state
+
+    state = capture_block_mutable_state(model)
+    ipc_suffixes = {}
+    for suffix_name in ('ipopt_zL_in', 'ipopt_zU_in', 'dual'):
+        if hasattr(model, suffix_name):
+            entries = []
+            for component, value in getattr(model, suffix_name).items():
+                parent = component.parent_component()
+                entries.append((parent.name, component.index(), value))
+            ipc_suffixes[suffix_name] = entries
+    state['suffixes'] = ipc_suffixes
+    return state
+
+
+def apply_block_state_for_ipc(model, state):
+    from network import apply_block_mutable_state
+
+    safe_state = dict(state)
+    ipc_suffixes = safe_state.get('suffixes', {})
+    safe_state['suffixes'] = {}
+    apply_block_mutable_state(model, safe_state)
+    for suffix_name, entries in ipc_suffixes.items():
+        if not hasattr(model, suffix_name):
+            continue
+        suffix = getattr(model, suffix_name)
+        for comp_name, index, value in entries:
+            comp = getattr(model, comp_name)
+            suffix[comp[index]] = value
+    return model
+
+
 def _restore_env_vars(previous):
     for name, value in previous.items():
         if value is None:
@@ -374,8 +441,6 @@ def _solve_tso_block_in_worker(model, network_yd, network_params, year, day, cyc
     `capture_block_mutable_state` call."""
     import shared_resources_planning as srp
     from helper_functions import solver_result_succeeded
-    from network import apply_block_mutable_state
-
     if tso_snapshot_capture_mode != 'legacy_clone' and pristine_snapshot_base is not None:
         result = network_yd.run_smopf(model, network_params, from_warm_start=from_warm_start, print_header=True)
         needs_failure_snapshot = not solver_result_succeeded(result)
@@ -383,7 +448,7 @@ def _solve_tso_block_in_worker(model, network_yd, network_params, year, day, cyc
             cycle == 7 and str(year) == '2025' and str(day) == 'Summer' and solver_result_succeeded(result)
         )
         if needs_failure_snapshot or needs_comparator_snapshot:
-            rebuilt_block = apply_block_mutable_state(pristine_snapshot_base.clone(), state_for_snapshot)
+            rebuilt_block = apply_block_state_for_ipc(pristine_snapshot_base.clone(), state_for_snapshot)
             if needs_failure_snapshot:
                 srp._save_frozen_network_block(
                     rebuilt_block, os.path.join(results_dir, 'FrozenSMOPF'),
@@ -431,7 +496,6 @@ def _worker_main(worker_id, block_specs, task_queue, result_queue, guard_permitt
         import pyomo.environ as pe  # noqa: F401
         from pyomo.common.tempfiles import TempfileManager
         import shared_resources_planning as srp  # noqa: F401
-        from network import apply_block_mutable_state, capture_block_mutable_state
         from shared_energy_storage_data import _optimize as esso_optimize, ESSO_TOL_OVERRIDES
         from helper_functions import solver_result_summary
 
@@ -482,7 +546,7 @@ def _worker_main(worker_id, block_specs, task_queue, result_queue, guard_permitt
                 spec = resident[key]
                 model = spec['pristine_model']
                 state = task['state']
-                apply_block_mutable_state(model, state)
+                apply_block_state_for_ipc(model, state)
 
                 kind = spec['kind']
                 if kind == 'dso':
@@ -698,7 +762,6 @@ class PersistentWorkerPool:
 
     def run_dso_stage(self, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess,
                        admm_parameters, sess_estimated_capacities, from_warm_start, cycle):
-        from network import capture_block_mutable_state
         from helper_functions import solver_result_succeeded, solver_result_summary
 
         captured_states = {}
@@ -713,7 +776,7 @@ class PersistentWorkerPool:
                 vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess,
                 admm_parameters.previous_iter['ess']['dso'],
             )
-            captured_states[key] = capture_block_mutable_state(model_yd)
+            captured_states[key] = capture_block_state_for_ipc(model_yd)
 
         ordered_results = self._dispatch_stage('dso', self.canonical_dso_keys, cycle, from_warm_start, captured_states)
 
@@ -732,7 +795,6 @@ class PersistentWorkerPool:
 
     def run_tso_stage(self, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess,
                        admm_parameters, sess_estimated_capacities, from_warm_start, cycle):
-        from network import capture_block_mutable_state
         from helper_functions import solver_result_succeeded, solver_result_summary
 
         captured_states = {}
@@ -746,7 +808,7 @@ class PersistentWorkerPool:
                 vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess,
                 admm_parameters.previous_iter['ess']['tso'],
             )
-            captured_states[key] = capture_block_mutable_state(model_yd)
+            captured_states[key] = capture_block_state_for_ipc(model_yd)
 
         ordered_results = self._dispatch_stage('tso', self.canonical_tso_keys, cycle, from_warm_start, captured_states)
 
@@ -828,8 +890,7 @@ class PersistentWorkerPool:
 
 
 def _capture_esso_state(model_node):
-    from network import capture_block_mutable_state
-    return capture_block_mutable_state(model_node)
+    return capture_block_state_for_ipc(model_node)
 
 
 def persistent_workers_enabled(admm_parameters):
