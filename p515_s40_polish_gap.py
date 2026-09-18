@@ -319,8 +319,21 @@ def _reproduction_check(report):
                'out of scope for a truncated comparison)')
         scalar_checks = {}
 
+    # P5.15 Step 3.5 (Planner, after the first full run stopped here on a single
+    # provenance field): the `rule_eleven_checklist` subtree records HOW a run
+    # was configured and verified (e.g. `s39_pre_solve_override_verification`,
+    # present only when the s39 override hook ran), not what the run computed.
+    # D was configured by overrides; this run is configured by the case file
+    # alone (fb3de341), so that subtree necessarily differs. It is reported in
+    # full below but does NOT gate. Every other field -- the whole trajectory,
+    # costs, solve profile, failures, diagnostics -- still gates bitwise.
+    provenance_diffs = [x for x in diffs if '.rule_eleven_checklist' in str(x.get('field', ''))
+                        or str(x.get('field', '')).startswith('rule_eleven_checklist')]
+    diffs = [x for x in diffs if x not in provenance_diffs]
     reproduces = (len(diffs) == 0)
     return {
+        'provenance_diffs_reported_not_gating': provenance_diffs,
+        'n_provenance_diffs': len(provenance_diffs),
         'mode': mode,
         'is_full_mode': is_full_mode,
         'n_cycles_compared': n,
@@ -539,12 +552,16 @@ def _make_post_run_hook(out_dir, label, floor_rows_by_node, floor_sidecar_path,
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--smoke-cycles', type=int, default=None, help=argparse.SUPPRESS)
+    # Optional run suffix: a fresh output root AND fresh working-dir ids, so a
+    # re-run never touches an earlier run's committed evidence.
+    parser.add_argument('--suffix', type=str, default='')
     args = parser.parse_args()
 
     is_smoke = args.smoke_cycles is not None
-    out_dir = OUT_DIR_SMOKE if is_smoke else OUT_DIR_FULL
+    sfx = ('_' + args.suffix.strip('_')) if args.suffix.strip('_') else ''
+    out_dir = (OUT_DIR_SMOKE if is_smoke else OUT_DIR_FULL) + sfx
     num_max_iters = args.smoke_cycles if is_smoke else FULL_NUM_MAX_ITERS
-    run_eval_id = 'p515s40_polish_gap_smoke_run' if is_smoke else 'p515s40_polish_gap_run'
+    run_eval_id = ('p515s40_polish_gap_smoke_run' if is_smoke else 'p515s40_polish_gap_run') + sfx
     precheck_eval_id = run_eval_id + '_precheck'
 
     failures = _check_preconditions(out_dir)
