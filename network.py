@@ -685,8 +685,23 @@ def capture_block_mutable_state(model):
             continue
         state['params'][comp.name] = {index: comp[index].value for index in comp}
     for comp in model.component_objects(pe.Var, active=None):
+        # P5.15 Addendum 23/24, Step 3.6 persistent-worker bounded task
+        # (WORKER_REPORT_S40_PERSISTENT_WORKERS.md "esso_models_pickle.bytes"
+        # finding): capture the RAW, explicitly-stored bound
+        # (`._lb`/`._ub`, `None` when the Var was never given an explicit
+        # bound and its effective bound is purely domain-derived), not the
+        # RESOLVED `.lb`/`.ub` property (which always returns a concrete
+        # number, folding the domain bound in). Capturing the resolved value
+        # and replaying it via `setlb`/`setub` in `apply_block_mutable_state`
+        # silently turns an implicit (domain) bound into an explicit one --
+        # same effective bound, different internal Pyomo representation --
+        # which is numerically inert everywhere production reads `.lb`/`.ub`
+        # but changes the model's pickled byte size. Capturing the raw value
+        # and replaying it with `setlb(None)`/`setub(None)` when unset
+        # reproduces the exact original representation (Pyomo's
+        # `_process_bound` passes `None` straight through).
         state['vars'][comp.name] = {
-            index: (comp[index].value, comp[index].lb, comp[index].ub, comp[index].fixed)
+            index: (comp[index].value, comp[index]._lb, comp[index]._ub, comp[index].fixed)
             for index in comp
         }
     for comp in model.component_objects(pe.Constraint, active=None):
@@ -711,13 +726,24 @@ def apply_block_mutable_state(model, state):
         comp = getattr(model, name)
         for index, (value, lb, ub, fixed) in entries.items():
             var_data = comp[index]
+            # `lb`/`ub` are the RAW captured bound (possibly `None` --
+            # see `capture_block_mutable_state`); `setlb(None)`/`setub(None)`
+            # restores the implicit (domain-derived) representation exactly,
+            # rather than converting it to an explicit stored bound.
             var_data.setlb(lb)
             var_data.setub(ub)
             if var_data.fixed and not fixed:
                 var_data.unfix()
-            var_data.set_value(value)
+            # `skip_validation=True`: this generic restore loop legitimately
+            # replays values captured mid-ADMM-cycle (e.g. IPOPT slack
+            # values a hair outside their nominal domain, ~1e-9) that the
+            # original `model.solutions.load_from()` warm-start path never
+            # validates either -- validating them here only produces Pyomo
+            # W1001 log noise (WORKER_REPORT_S40_PERSISTENT_WORKERS.md), not
+            # a real domain violation caught anywhere else.
+            var_data.set_value(value, skip_validation=True)
             if fixed:
-                var_data.fix(value)
+                var_data.fix(value, skip_validation=True)
     for name, entries in state['constraints'].items():
         comp = getattr(model, name)
         for index, active in entries.items():

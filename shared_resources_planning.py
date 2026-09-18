@@ -2515,6 +2515,22 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             for year in transmission_network.years
         }
 
+    # P5.15 Addendum 23/24, Step 3.6 persistent-worker bounded task item 3
+    # (`admm_parameters.dso_snapshot_capture_mode`, same design as
+    # `tso_pristine_base` above): pristine, unmutated node-7 DSO block per
+    # (year, day), cloned ONCE here. Only node 7 is built -- it is the only
+    # DSO block that ever wires a snapshot callback
+    # (`update_distribution_coordination_models_and_solve_sequential`).
+    # `7 in dso_models` guards a case study with no node-7 DSO (none exist
+    # in this programme, but the guard costs nothing and avoids a KeyError
+    # for a hypothetical one).
+    dso_pristine_base = None
+    if admm_parameters.dso_snapshot_capture_mode != 'legacy_clone' and 7 in dso_models:
+        dso_pristine_base = {
+            year: {day: dso_models[7][year][day].clone() for day in distribution_networks[7].days}
+            for year in distribution_networks[7].years
+        }
+
     # P5.15 Addendum 22 item (2), Step 3.6 (Addendum 18 design,
     # `admm_persistent_workers.py`): persistent worker pool, DEFAULT OFF.
     # Built once here (same point as `tso_pristine_base` above -- both need
@@ -2534,6 +2550,8 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             tso_model=tso_model,
             tso_pristine_base=tso_pristine_base,
             tso_snapshot_capture_mode=admm_parameters.tso_snapshot_capture_mode,
+            dso_pristine_base=dso_pristine_base,
+            dso_snapshot_capture_mode=admm_parameters.dso_snapshot_capture_mode,
             shared_ess_data=shared_ess_data,
             esso_model=esso_model,
             tempdir_root=os.path.join(planning_problem.results_dir, 'PersistentWorkersTmp'),
@@ -2579,6 +2597,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
                 from_warm_start=from_warm_start,
                 parallel_execution=planning_problem.parallel_execution,
                 cycle=iter,
+                dso_pristine_base=dso_pristine_base,
             )
 
         # Update ADMM consensus variables and primal diagnostics.
@@ -5458,14 +5477,14 @@ def _save_frozen_network_block(model, save_dir, agent, network_name, year, day, 
         return None
 
 
-def update_distribution_coordination_models_and_solve(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=False, parallel_execution=False, cycle=None):
+def update_distribution_coordination_models_and_solve(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=False, parallel_execution=False, cycle=None, dso_pristine_base=None):
     if parallel_execution:
         return update_distribution_coordination_models_and_solve_parallel(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=from_warm_start)
     else:
-        return update_distribution_coordination_models_and_solve_sequential(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=from_warm_start, cycle=cycle)
+        return update_distribution_coordination_models_and_solve_sequential(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=from_warm_start, cycle=cycle, dso_pristine_base=dso_pristine_base)
 
 
-def update_distribution_coordination_models_and_solve_sequential(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=False, cycle=None):
+def update_distribution_coordination_models_and_solve_sequential(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=False, cycle=None, dso_pristine_base=None):
 
     print('[INFO] \t\t - Updating distribution networks:')
     res = dict()
@@ -5556,12 +5575,56 @@ def update_distribution_coordination_models_and_solve_sequential(distribution_ne
 
         # --------------------------------------------------------------------------------------------------------------
         # Solve
-        res[node_id] = distribution_network.optimize(
-            model,
-            from_warm_start=from_warm_start,
-            failure_snapshot_callback=snapshot_callback,
-            pre_solve_snapshot_callback=success_snapshot_callback,
-        )
+        # P5.15 Addendum 23/24, Step 3.6 persistent-worker bounded task item
+        # 3 (same design as `update_transmission_coordination_model_and_
+        # solve`'s `tso_pristine_base` branch, WORKER_REPORT_S36_CLONE_
+        # CAPTURE.md): `dso_pristine_base` non-None (only ever built for
+        # node 7, the only node whose callbacks are non-None above) selects
+        # the lightweight path -- capture this cycle's mutable state
+        # (clone-free) right here, the exact point the legacy `NetworkData.
+        # optimize` clone used to fire, solve WITHOUT wiring either
+        # snapshot callback (so `NetworkData.optimize` never clones), and
+        # rebuild a block ON DEMAND, only for the (rare) blocks that
+        # actually need a snapshot written, by replaying the capture onto a
+        # fresh clone of the pristine base.
+        if node_id == 7 and dso_pristine_base is not None:
+
+            captured_state = {
+                (year, day): capture_block_mutable_state(model[year][day])
+                for year in distribution_network.years
+                for day in distribution_network.days
+            }
+
+            res[node_id] = distribution_network.optimize(model, from_warm_start=from_warm_start)
+
+            for year in distribution_network.years:
+                for day in distribution_network.days:
+                    result = res[node_id][year][day]
+                    needs_failure_snapshot = not _solver_result_succeeded(result)
+                    needs_comparator_snapshot = (
+                        cycle == 7 and str(year) == '2025' and str(day) == 'Autumn'
+                        and _solver_result_succeeded(result)
+                    )
+                    if not (needs_failure_snapshot or needs_comparator_snapshot):
+                        continue
+                    rebuilt_block = apply_block_mutable_state(
+                        dso_pristine_base[year][day].clone(),
+                        captured_state[(year, day)],
+                    )
+                    if needs_failure_snapshot:
+                        save_failed_dso_block(rebuilt_block, year, day, result)
+                    if needs_comparator_snapshot:
+                        save_selected_dso_comparator(rebuilt_block, year, day, result)
+
+        else:
+
+            res[node_id] = distribution_network.optimize(
+                model,
+                from_warm_start=from_warm_start,
+                failure_snapshot_callback=snapshot_callback,
+                pre_solve_snapshot_callback=success_snapshot_callback,
+            )
+
         for year in distribution_network.years:
             for day in distribution_network.days:
                 if not _solver_result_succeeded(res[node_id][year][day]):

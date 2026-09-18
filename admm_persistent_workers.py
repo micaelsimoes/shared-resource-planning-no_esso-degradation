@@ -417,16 +417,24 @@ def _apply_esso_block_params(model_node, node_id, years_list, days_list, ess_req
 # ==========================================================================
 
 def _solve_dso_block_in_worker(model, network_yd, network_params, node_id, year, day, cycle,
-                                from_warm_start, results_dir):
+                                from_warm_start, results_dir, dso_snapshot_capture_mode,
+                                pristine_snapshot_base, state_for_snapshot):
     """Reproduces, for exactly ONE (node, year, day) block, the solve +
     snapshot contract `network_data.NetworkData.optimize` gives the DSO
     sequential path (`shared_resources_planning.py`,
     `update_distribution_coordination_models_and_solve_sequential`) --
-    node-7-only failure snapshot (legacy per-cycle clone; the DSO path was
-    NOT converted to the lightweight capture, per
-    `WORKER_REPORT_S36_CLONE_CAPTURE.md` Q2 / Remaining issues), node-7
-    cycle-7 success comparator. Solve itself: `network.run_smopf`, unchanged
-    (recovery tiers included)."""
+    node-7-only failure snapshot, node-7 cycle-7 success comparator. Solve
+    itself: `network.run_smopf`, unchanged (recovery tiers included).
+
+    P5.15 Addendum 23/24, Step 3.6 persistent-worker bounded task item 3
+    (same design as `_solve_tso_block_in_worker` below, `WORKER_REPORT_
+    S36_CLONE_CAPTURE.md` Q2): when `dso_snapshot_capture_mode !=
+    'legacy_clone'` and a `pristine_snapshot_base` is available (node 7
+    only -- every other node passes `None`), a snapshot is rebuilt ON
+    DEMAND from `state_for_snapshot` (the SAME captured-state payload this
+    block was just brought up to date with) instead of paying an
+    unconditional per-cycle `model.clone()`. Any other node, or the
+    `'legacy_clone'` override, falls back to the exact pre-task behaviour."""
     import shared_resources_planning as srp
     from helper_functions import solver_result_succeeded
 
@@ -434,24 +442,46 @@ def _solve_dso_block_in_worker(model, network_yd, network_params, node_id, year,
     needs_failure_snapshot_capability = is_node7
     needs_comparator_capability = is_node7 and cycle == 7
 
-    pre_solve_model = None
-    if needs_failure_snapshot_capability or needs_comparator_capability:
-        pre_solve_model = model.clone()
-
-    result = network_yd.run_smopf(model, network_params, from_warm_start=from_warm_start, print_header=True)
-
-    if needs_failure_snapshot_capability and not solver_result_succeeded(result):
-        srp._save_frozen_smopf_block(
-            pre_solve_model, os.path.join(results_dir, 'FrozenSMOPF'),
-            node_id=node_id, network_name=network_yd.name, year=year, day=day,
-            cycle=cycle, from_warm_start=from_warm_start,
+    if is_node7 and dso_snapshot_capture_mode != 'legacy_clone' and pristine_snapshot_base is not None:
+        result = network_yd.run_smopf(model, network_params, from_warm_start=from_warm_start, print_header=True)
+        needs_failure_snapshot = needs_failure_snapshot_capability and not solver_result_succeeded(result)
+        needs_comparator_snapshot = (
+            needs_comparator_capability and str(year) == '2025' and str(day) == 'Autumn'
+            and solver_result_succeeded(result)
         )
-    if needs_comparator_capability and str(year) == '2025' and str(day) == 'Autumn' and solver_result_succeeded(result):
-        srp._save_frozen_network_block(
-            pre_solve_model, os.path.join(results_dir, 'FrozenSMOPF'),
-            agent='DSO', node_id=node_id, network_name=network_yd.name, year=year, day=day,
-            cycle=cycle, from_warm_start=from_warm_start, result=result, label='matched_success',
-        )
+        if needs_failure_snapshot or needs_comparator_snapshot:
+            rebuilt_block = apply_block_state_for_ipc(pristine_snapshot_base.clone(), state_for_snapshot)
+            if needs_failure_snapshot:
+                srp._save_frozen_smopf_block(
+                    rebuilt_block, os.path.join(results_dir, 'FrozenSMOPF'),
+                    node_id=node_id, network_name=network_yd.name, year=year, day=day,
+                    cycle=cycle, from_warm_start=from_warm_start,
+                )
+            if needs_comparator_snapshot:
+                srp._save_frozen_network_block(
+                    rebuilt_block, os.path.join(results_dir, 'FrozenSMOPF'),
+                    agent='DSO', node_id=node_id, network_name=network_yd.name, year=year, day=day,
+                    cycle=cycle, from_warm_start=from_warm_start, result=result, label='matched_success',
+                )
+    else:
+        pre_solve_model = None
+        if needs_failure_snapshot_capability or needs_comparator_capability:
+            pre_solve_model = model.clone()
+
+        result = network_yd.run_smopf(model, network_params, from_warm_start=from_warm_start, print_header=True)
+
+        if needs_failure_snapshot_capability and not solver_result_succeeded(result):
+            srp._save_frozen_smopf_block(
+                pre_solve_model, os.path.join(results_dir, 'FrozenSMOPF'),
+                node_id=node_id, network_name=network_yd.name, year=year, day=day,
+                cycle=cycle, from_warm_start=from_warm_start,
+            )
+        if needs_comparator_capability and str(year) == '2025' and str(day) == 'Autumn' and solver_result_succeeded(result):
+            srp._save_frozen_network_block(
+                pre_solve_model, os.path.join(results_dir, 'FrozenSMOPF'),
+                agent='DSO', node_id=node_id, network_name=network_yd.name, year=year, day=day,
+                cycle=cycle, from_warm_start=from_warm_start, result=result, label='matched_success',
+            )
     return result
 
 
@@ -581,6 +611,7 @@ def _worker_main(worker_id, block_specs, task_queue, result_queue, guard_permitt
                     result = _solve_dso_block_in_worker(
                         model, spec['network'], spec['network_params'], spec['node_id'],
                         key[2], key[3], cycle, from_warm_start, spec['results_dir'],
+                        spec['dso_snapshot_capture_mode'], spec.get('dso_pristine_snapshot_base'), state,
                     )
                     _mark_all_vars_stale(model, pe)
                     block_results.append({
@@ -633,7 +664,8 @@ class PersistentWorkerPool:
 
     def __init__(self, num_workers, distribution_networks, dso_models, transmission_network, tso_model,
                  tso_pristine_base, tso_snapshot_capture_mode, shared_ess_data, esso_model,
-                 tempdir_root, guard_permitted=None):
+                 tempdir_root, guard_permitted=None, dso_pristine_base=None,
+                 dso_snapshot_capture_mode='lightweight'):
         self.num_workers = num_workers
         self.distribution_networks = distribution_networks
         self.dso_models = dso_models
@@ -673,6 +705,11 @@ class PersistentWorkerPool:
                 'network': network_yd,
                 'network_params': distribution_network.params,
                 'results_dir': distribution_network.results_dir,
+                'dso_snapshot_capture_mode': dso_snapshot_capture_mode,
+                'dso_pristine_snapshot_base': (
+                    dso_pristine_base[year][day].clone()
+                    if (node_id == 7 and dso_pristine_base is not None) else None
+                ),
             }
             block_specs_by_worker[self.worker_for_key[key]].append(spec)
         for key in tso_keys:

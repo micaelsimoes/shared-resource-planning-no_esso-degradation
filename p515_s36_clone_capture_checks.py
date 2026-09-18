@@ -72,7 +72,18 @@ from p515_s32_zero_solve_checks import _build_admm_ready_state  # noqa: E402
 # data/, absent from this detached worktree). Read-only; never written.
 MAIN_REPO = '/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation'
 
-OUT_DIR = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S36', 'clone_capture_checks')
+# Optional run suffix (argv[1]): redirects OUT_DIR so a re-run (e.g. P5.15
+# Addendum 23/24, Step 3.6 persistent-worker bounded task item 2's TSO-
+# capture regression re-check after the `network.apply_block_mutable_state`
+# bound-restore/W1001 fix) never overwrites the original committed evidence
+# (CLAUDE.md: never re-run a harness onto a cited artifact). Default
+# behaviour (no suffix) is unchanged.
+_RUN_SUFFIX = ''
+for _arg in sys.argv[1:]:
+    if not _arg.startswith('--'):
+        _RUN_SUFFIX = '_' + _arg.strip('_')
+        break
+OUT_DIR = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S36', f'clone_capture_checks{_RUN_SUFFIX}')
 RESULTS_PATH = os.path.join(OUT_DIR, 'results.json')
 MANIFEST_PATH = os.path.join(OUT_DIR, 'manifest_sha256.json')
 

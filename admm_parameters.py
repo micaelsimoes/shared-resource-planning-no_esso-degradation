@@ -192,6 +192,27 @@ class ADMMParameters:
         # programmatically only.
         self.tso_snapshot_capture_mode = 'lightweight'
 
+        # P5.15 Addendum 23/24, Step 3.6 persistent-worker bounded task item
+        # 3 (`WORKER_REPORT_S36_CLONE_CAPTURE.md` Q2 / `WORKER_REPORT_
+        # S36_TIMING_10CYC.md` Defect 1 finding): the SAME clone -> capture
+        # replacement as `tso_snapshot_capture_mode` above, applied to the
+        # DSO node-7 FrozenSMOPF pre-solve snapshot (failure diagnostics +
+        # the cycle-7 comparator) -- the only DSO block that ever wires
+        # `NetworkData.optimize`'s snapshot callbacks (every other node
+        # passes `None`/`None` and already never clones). 'lightweight'
+        # (default): one clone per (year, day) node-7 block, taken ONCE per
+        # `_run_operational_planning` call, then a `clone()`-free per-cycle
+        # capture (`network.capture_block_mutable_state`); a snapshot is
+        # rebuilt on demand, only when a failure or the cycle-7 comparator
+        # actually needs one written, by replaying the capture onto a fresh
+        # clone of the pristine base (`network.apply_block_mutable_state`).
+        # 'legacy_clone' restores the pre-task behaviour exactly (clone
+        # every cycle for node 7, via `NetworkData.optimize`'s
+        # `failure_snapshot_callback`/`pre_solve_snapshot_callback`) -- kept
+        # for regression comparison and as a fallback; not wired to any
+        # case-file key, set programmatically only.
+        self.dso_snapshot_capture_mode = 'lightweight'
+
         # P5.15 Addendum 22 item (2), Step 3.6 (PLANNER_BRIEF_2026-09-13.md
         # Addendum 18, `admm_persistent_workers.py`): within-cycle block
         # parallelism via persistent, single-threaded worker processes (one
