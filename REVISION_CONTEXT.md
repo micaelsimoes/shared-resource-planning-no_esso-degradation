@@ -13,14 +13,85 @@ Act as a technical planner and mathematical-programming reviewer for the shared 
 
 Read this file first. When checking the mathematical formulation, also consult `simoes_2026_revisions.pdf` where relevant and inspect the current implementation before proposing changes. Prefer reviewer-driven implementation and validation plans before production edits.
 
-This file is the repository-wide source of context. **As of 2026-09-14 the active
-authority is `PLANNER_BRIEF_2026-09-13.md` with its Addenda 1–6**; it supersedes
+This file is the repository-wide source of context. **As of 2026-09-18 the active
+authority is `PLANNER_BRIEF_2026-09-13.md` with its Addenda 1–23**; it supersedes
 `COWORK_HANDOFF.md` and the P5.12-R scope formerly governed by
 `LOCAL_NLP_STABILITY_PLAN.md`, which is retained as a historical record.
 
 ---
 
-# CURRENT SOURCE OF TRUTH — 2026-09-14 (P5.15 Step 1 closed through gates G1–G5)
+# CURRENT SOURCE OF TRUTH — 2026-09-18 (P5.15 Step 3 CLOSED; the ADMM oracle is fixed)
+
+Supersedes every earlier "current" section for the ADMM configuration and the Step 3 results. Authority:
+`PLANNER_BRIEF_2026-09-13.md` Addenda 1–23. Closing evidence: `P5_15_S39_ORACLE_REPORT.md`,
+`P5_15_S40_STEP3_CLOSURE_REPORT.md`, `P5_15_S41_STEP3_CLOSED_REPORT.md`, and the handoffs `P5_15_ADDENDUM2[0-2]_EXPERT_REPORT.md`.
+
+## The baseline ADMM configuration — THE oracle (Track B closed)
+
+Arm D (`s39_D`), written into `data/SRP1/SRP1_params.json` at `fb3de341`; the case file alone reproduces D bitwise.
+- **Coordination:** τ = 0 (no TSO proximal term); ρ_v 0.0077 and ρ_pf 0.198 initial, V and PF residual balancing
+  live; ρ_ess 0.01 with the **two-phase ESS schedule** — exempt from balancing until the ESS Boyd dual ratio is < 1 on 5
+  consecutive cycles, then standard balancing, one-way; freeze after 10 unchanged cycles plus an absolute freeze at cycle
+  200; cold standalone initialization; σ fixed 9.363536e7, S_ref 2.5 MVA, D5 ESSO scaling.
+- **Certification bar:** all three channels inside their Boyd tolerances (ε_abs 1e-5, ε_rel 1e-4), every local solve
+  successful, for **10 consecutive cycles**, cap 300. Terminal ratios and rule ten are reported, not gated.
+- **At C\*:** certified at cycle 139, gross_operational_cost **650,966,975.2943751**, bar 7,898.63 (max objective step
+  over the last 10 cycles). ESS exemption lifted at cycle 31; ρ_ess 0.01 → 0.015 → 0.0225, frozen from 43; ρ_pf
+  0.198 → 0.132 at cycle 2, frozen from 12; no clamp on any channel.
+- **Reproducibility:** τ = 0 determinism established — D reproduced bitwise over all 139 cycles three times
+  (`51a5fb48`, `57d523d0`, `2e6c5570` runs).
+
+## The R2.5 package (Addenda 22–23)
+
+What nonconvex consensus ADMM delivers here is block-stationarity at the certified tolerance, not global optimality
+(Hong, Luo & Razaviyayn, SIAM J. Optim. 2016; Wang, Yin & Zeng, J. Sci. Comput. 2019). The package:
+1. **Certified consensus:** 10 plain cycles inside the Boyd tolerances.
+2. **Step 3.5 — interval-hull polish gap: PASSED.** Every coupling entry bounded to the interval of the agents' achieved
+   values at cycle 139; unscaled base objective; primal warm start; no multiplier import. All 48 blocks solved without
+   retries; Δ = −2,012.21 (TSO −33.82, DSO −1,978.39), **|Δ|/cost = 0.000309 %** against 0.1 %; max |Δ_i| 775 on DSO7
+   2035 Spring; none flagged (`2e6c5570`).
+3. **Configuration-reproducibility band:** four configurations certified under the same bar reach operating points
+   within 0.011 % in system cost through a generation / internal-flexibility trade-off (determinate, not stopping slack).
+4. **Acknowledged DSO SMOPF multimodality:** ~0.3 %.
+
+## Rules adopted for every campaign
+
+- One frozen oracle configuration for every candidate in a campaign; costs from different configurations never share a
+  table; every reported cost carries its bar.
+- Manuscript reproducibility statement (method section, next to the stopping rule), Addendum 23 wording: at C\* four
+  configurations certified under the same bar reach operating points within 0.011 % in system cost, through a
+  generation/internal-flexibility trade-off; the campaign uses one frozen configuration and compares candidates only
+  within it; the reported cost is that configuration's. Not an uncertainty band on candidate differences.
+
+## Findings recorded at closure
+
+- **Node 7 (Addendum 22's reading withdrawn):** the node 7 interface is the only active coupling constraint (23 of 288
+  periods; nodes 5 and 9 peak at 51 % / 67 %); the storage is idle in those periods; relief comes from DSO-side
+  flexibility; storage dispatch is set by price arbitrage and wear cost. "Congestion-relief value" and "reason for
+  siting" are struck. The Step 5 Phase A screen must include node-7-empty candidates.
+- **The exact-fix polish (17/48 infeasible, v11) was confounded by a harness defect.** `p56a_oracle._interface_expression`
+  predates Addendum 12's reparametrization: it builds the interface flow as `pc + flex_up − flex_down` and omits
+  `interface_delta_p/q`, which now carries all interface deviation, so `apply_common_values` equated two unequal
+  constants (the TSO violations were frozen at 0.20–0.84 pu across warm/cold/adaptive restarts). The earlier readings
+  ("ill-posed at active coupling constraints"; node 7's rating explaining six TSO failures) are **not established**.
+  Only the v11 exact-fix run is affected (P5.5–P5.8 consumers predate Addendum 12; the hull harness bypasses the
+  helper). The Addendum 23 manuscript sentence on the exact-fix outcome needs restating; the helper is unfixed pending
+  authorization.
+- **Step 3.6:** the TSO whole-model clone is replaced by a lightweight capture (bitwise gate passed, `8214be0d`); the
+  remaining per-cycle clone cost (~3 s) is the DSO node-7 failure snapshot. The within-cycle persistent-worker path
+  measured ~1.1× (screening's 97 % / 5.09× was mis-accounted: parent state sync counted as absorbable); one bounded task
+  remains, then the path is paused. Step 5 parallelism is candidate-level.
+
+## Open after Step 3
+
+Persistent-worker bounded task (5-cycle profiling, bound-restore fix, DSO node-7 clone removal; then paused); Step 3.7
+Anderson acceleration (implemented in a detached worktree, default off, not yet integrated); the `p56a_oracle`
+interface-helper fix (needs authorization); the superseded stages' checklists that now fail by design against the new
+case file (`WORKER_REPORT_S40_CASE_FILE.md`).
+
+---
+
+# SUPERSEDED "CURRENT" SECTION — 2026-09-14 (P5.15 Step 1 closed through gates G1–G5)
 
 This section supersedes every earlier "current" section, including the 2026-09-10/11 block below,
 which is retained unedited as a historical record. Authority: `PLANNER_BRIEF_2026-09-13.md`,
@@ -213,7 +284,15 @@ Authority: `PLANNER_BRIEF_2026-09-13.md` Addendum 21. Reports: `P5_15_S38_PF_PAC
 4. The ε price effect (ablation C) and the ~1.39 % spurious throughput in previously published SoH trajectories.
 5. The homogeneous-fleet cohort approximation (H3).
 6. Row 18's imbalance-price definition `α·π̄` and its α sensitivity (Step 5).
-7. Stopping-rule definitions, ρ policy, σ constants and the polish gap (Step 3.2–3.5).
+7. Stopping-rule definitions, ρ policy, σ constants and the polish gap (Step 3.2–3.5) — now: the 10-consecutive-cycle
+   Boyd bar; the oracle's penalty table (τ = 0, two-phase ESS, freeze 10/200); σ 9.363536e7; the **interval-hull polish**
+   definition and its gap (0.000309 %).
+8. The reproducibility statement (Addendum 23 wording) in the method section, next to the stopping rule.
+9. The exact-fix sentence — **to be restated**: the v11 exact-fix outcome was confounded by the stale `p56a_oracle`
+   interface helper (see the 2026-09-18 current section).
+10. Node 7 restated to what holds; "congestion-relief value" and "reason for siting" struck.
+11. References: Hong, Luo & Razaviyayn (2016); Wang, Yin & Zeng (2019); Walker & Ni (2011); Fu, Zhang & Boyd (2020);
+    the AA paragraph and convergence figure only if Step 3.7 is adopted.
 
 ## Amendment — 2026-09-15: Step 1 closed (Addenda 7–8). Supersedes conflicting statements below.
 
