@@ -171,30 +171,54 @@ def _parse_num_cycles(argv):
     return value
 
 
+def _parse_run_suffix(argv):
+    """P5.15 Addendum 22 item (2), timing-defects Worker task: optional
+    SECOND positional CLI argument, a free-text label further distinguishing
+    this run's output root / eval ids from an EARLIER run at the SAME cycle
+    count. Needed because `step36_timing_10cyc/{off,on}` already exists (the
+    pre-fix, committed 10-cycle evidence that showed the two defects this
+    task fixes) and must never be overwritten or re-run onto (CLAUDE.md
+    evidence rule: never re-run a harness onto an artifact a committed report
+    cites). Default '' reproduces the EXACT prior naming for every cycle
+    count that has not yet been re-run under a suffix -- this parameter does
+    not change behavior for any invocation that omits it."""
+    if len(argv) < 3:
+        return ''
+    label = argv[2].strip('_')
+    if not label:
+        raise SystemExit(f'invalid run suffix {argv[2]!r}: must be non-empty once stripped of underscores')
+    return '_' + label
+
+
 NUM_CYCLES = _parse_num_cycles(sys.argv)
+RUN_SUFFIX = _parse_run_suffix(sys.argv)
 
 
-def _out_root_for_cycles(num_cycles):
-    """`step36_timing/` (unchanged path) for the default 2-cycle case --
-    ANY other cycle count gets its OWN, distinct root
-    (`step36_timing_<N>cyc/`), so a 10-cycle re-measurement can never write
-    into, or collide with, the committed 2-cycle evidence directory."""
-    if num_cycles == 2:
+def _out_root_for_cycles(num_cycles, run_suffix=''):
+    """`step36_timing/` (unchanged path) for the default 2-cycle, no-suffix
+    case -- ANY other cycle count, or ANY non-empty suffix, gets its OWN,
+    distinct root (`step36_timing_<N>cyc[<suffix>]/`), so a re-measurement
+    can never write into, or collide with, an earlier committed evidence
+    directory."""
+    if num_cycles == 2 and not run_suffix:
         return os.path.join(REPO_ROOT, 'data', 'SRP1', 'Results', 'P515S36', 'step36_timing')
-    return os.path.join(REPO_ROOT, 'data', 'SRP1', 'Results', 'P515S36', f'step36_timing_{num_cycles}cyc')
+    return os.path.join(REPO_ROOT, 'data', 'SRP1', 'Results', 'P515S36',
+                         f'step36_timing_{num_cycles}cyc{run_suffix}')
 
 
-def _eval_id_for(label, num_cycles):
-    """`p515s36_timing_<off|on>` (unchanged) for the default 2-cycle case;
-    `p515s36_timing_<off|on>_<N>cyc` otherwise -- same collision-avoidance
-    reasoning as `_out_root_for_cycles`, applied to the `O.WORK_DIR` eval
-    ids (which persist independently of `OUT_ROOT` and would otherwise
-    collide across cycle counts even if the output directories did not)."""
-    suffix = '' if num_cycles == 2 else f'_{num_cycles}cyc'
-    return f'p515s36_timing_{label}{suffix}'
+def _eval_id_for(label, num_cycles, run_suffix=''):
+    """`p515s36_timing_<off|on>` (unchanged) for the default 2-cycle,
+    no-suffix case; `p515s36_timing_<off|on>_<N>cyc[<suffix>]` otherwise --
+    same collision-avoidance reasoning as `_out_root_for_cycles`, applied to
+    the `O.WORK_DIR` eval ids (which persist independently of `OUT_ROOT` and
+    would otherwise collide across runs even if the output directories did
+    not)."""
+    if num_cycles == 2 and not run_suffix:
+        return f'p515s36_timing_{label}'
+    return f'p515s36_timing_{label}_{num_cycles}cyc{run_suffix}'
 
 
-OUT_ROOT = _out_root_for_cycles(NUM_CYCLES)
+OUT_ROOT = _out_root_for_cycles(NUM_CYCLES, RUN_SUFFIX)
 OUT_OFF = os.path.join(OUT_ROOT, 'off')
 OUT_ON = os.path.join(OUT_ROOT, 'on')
 
@@ -230,6 +254,21 @@ ITERATION_LINE_RE = re.compile(r'Iteration (\d+):\s*([0-9.]+)\s*s')
 # Pyomo `report_timing=True`'s own NL-write print (pyomo/opt/base/solvers.py
 # OptSolver._presolve): "   N.NN seconds required to write file"
 REPORT_TIMING_NL_WRITE_RE = re.compile(r'([0-9.]+)\s+seconds required to write file')
+
+# P5.15 Addendum 22 item (2), timing-defects Worker task (Defect 2): the full
+# four-line report_timing group this entry point's `main()` did NOT parse
+# before this fix -- it only ever built the AGGREGATE NL-write figure above
+# and passed it through `analyze_phase_timing`'s DEGRADED (v1-equivalent)
+# fallback path, which is why `solve_bundle_subtimes_fully_covered` was
+# always `False` here regardless of cycle count (see `build_solve_bundle_
+# subtimes_with_coverage` below and the Worker Report for the full
+# root-cause finding). These four patterns are the same ones
+# `p515_s36_step36_timing_reanalyze.py::parse_report_timing_groups` already
+# uses (reproduced, not imported -- that script is a separate, frozen,
+# 2-cycle-only artifact; this module owns its own copy).
+REPORT_TIMING_SOLVER_RE = re.compile(r'([0-9.]+)\s+seconds required for solver')
+REPORT_TIMING_LOGREAD_RE = re.compile(r'([0-9.]+)\s+seconds required to read logfile')
+REPORT_TIMING_SOLREAD_RE = re.compile(r'([0-9.]+)\s+seconds required to read solution file')
 
 
 class _Tee:
@@ -327,6 +366,121 @@ def parse_report_timing_nl_write_seconds(stdout_path):
     return total if found else None
 
 
+def parse_report_timing_groups(stdout_path):
+    """P5.15 Addendum 22 item (2), timing-defects Worker task (Defect 2).
+    Same grouping logic as `p515_s36_step36_timing_reanalyze.py`'s function of
+    the same name (reproduced, not imported): one dict per real `solver.solve(
+    ..., report_timing=True)` call, in stdout order, with keys `nl_write`,
+    `ipopt`, `log_read`, `sol_read` when all four of that solve's report_timing
+    lines were found. Returns `(complete_groups, n_incomplete)` -- unlike the
+    2-cycle-only reanalyze script's version, this ALSO reports how many
+    started-but-incomplete groups were dropped (e.g. truncated stdout), so
+    that count is visible to the caller rather than silently discarded."""
+    groups = []
+    cur = {}
+    with open(stdout_path, 'r', errors='replace') as handle:
+        for line in handle:
+            m = REPORT_TIMING_NL_WRITE_RE.search(line)
+            if m:
+                if cur:
+                    groups.append(cur)
+                cur = {'nl_write': float(m.group(1))}
+                continue
+            m = REPORT_TIMING_SOLVER_RE.search(line)
+            if m:
+                cur['ipopt'] = float(m.group(1))
+                continue
+            m = REPORT_TIMING_LOGREAD_RE.search(line)
+            if m:
+                cur['log_read'] = float(m.group(1))
+                continue
+            m = REPORT_TIMING_SOLREAD_RE.search(line)
+            if m:
+                cur['sol_read'] = float(m.group(1))
+                continue
+    if cur:
+        groups.append(cur)
+    required = {'nl_write', 'ipopt', 'log_read', 'sol_read'}
+    complete = [g for g in groups if required <= g.keys()]
+    return complete, len(groups) - len(complete)
+
+
+def build_solve_bundle_subtimes_with_coverage(records, stdout_path):
+    """P5.15 Addendum 22 item (2), timing-defects Worker task (Defect 2 fix).
+
+    ROOT CAUSE this function fixes: this script's `main()` previously called
+    `analyze_phase_timing(...)` WITHOUT ever passing `solve_bundle_subtimes`
+    at all -- only the aggregate `nl_write_seconds` figure. Since
+    `analyze_phase_timing` defaults `solve_bundle_subtimes` to `{}` when not
+    given, `fully_covered` (`sb_seqs.issubset(solve_bundle_subtimes.keys())`)
+    was `False` by construction, for EVERY invocation of this script
+    (2-cycle default included), regardless of whether Pyomo's report_timing
+    stdout actually covered every solve. The only code path that ever built
+    the real per-solve {nl_write, ipopt, sol_parse} split was
+    `p515_s36_step36_timing_reanalyze.py`, a SEPARATE script hardcoded to the
+    committed 2-cycle `step36_timing/` output root -- it was never run, and
+    cannot be pointed, at `step36_timing_10cyc/`. Verified directly against
+    the already-captured 10-cycle evidence
+    (`data/SRP1/Results/P515S36/step36_timing_10cyc/on/{phase_timing_records.
+    jsonl,stdout_on.log}`): 564 raw `solve_bundle` records (51/cycle x 10
+    cycles + 3 tier-1 recovery retries + 51 pre-loop init) against 564
+    COMPLETE report_timing groups parsed from that run's own stdout -- an
+    EXACT match, zero incomplete groups. The 10-cycle INDETERMINATE verdict
+    was therefore never caused by a genuine report_timing coverage failure
+    at that scale (retries, interleaving, or buffering do not break the
+    parse here); it was caused by this wiring gap. See the Worker Report for
+    the full evidence.
+
+    This function closes the wiring gap AND, per the task's own instruction
+    ("fix the parser so coverage is exact or the shortfall is reported per
+    record"), makes the matching itself defensive: it only trusts the
+    positional (stdout-order == solve_bundle-call-order) correspondence when
+    the two sequences have EXACTLY the same length. On any count mismatch it
+    does NOT guess which prefix/subset is still trustworthy (a mismatch can
+    occur anywhere in the sequence, so no positional subset is safe to
+    assume) -- it reports EVERY raw `solve_bundle` record's coverage status
+    individually (`covered: False` for all of them in that case), never
+    silently drops a record from the report.
+
+    Returns `(subtimes, coverage)`:
+      subtimes: {seq: {'nl_write':.., 'ipopt':.., 'sol_parse':..}}, populated
+                only when `coverage['status'] == 'exact'`.
+      coverage: {'status': 'exact' | 'mismatch',
+                 'n_solve_bundle_records': int,
+                 'n_report_timing_groups_complete': int,
+                 'n_report_timing_groups_incomplete': int,
+                 'per_record': [{'seq', 'cycle', 'agent', 'block', 'attempt',
+                                  'covered'}, ...]}  -- one entry per raw
+                 solve_bundle record, in seq order, ALWAYS present.
+    """
+    sb_records = sorted((r for r in records if r['phase'] == 'solve_bundle'), key=lambda r: r['seq'])
+    groups, n_incomplete = parse_report_timing_groups(stdout_path)
+    exact = (len(sb_records) == len(groups))
+    subtimes = {}
+    per_record = []
+    for i, record in enumerate(sb_records):
+        covered = exact
+        per_record.append({
+            'seq': record['seq'], 'cycle': record['cycle'], 'agent': record['agent'],
+            'block': record['block'], 'attempt': record['attempt'], 'covered': covered,
+        })
+        if covered:
+            group = groups[i]
+            subtimes[record['seq']] = {
+                'nl_write': group['nl_write'],
+                'ipopt': group['ipopt'],
+                'sol_parse': group['log_read'] + group['sol_read'],
+            }
+    coverage = {
+        'status': 'exact' if exact else 'mismatch',
+        'n_solve_bundle_records': len(sb_records),
+        'n_report_timing_groups_complete': len(groups),
+        'n_report_timing_groups_incomplete': n_incomplete,
+        'per_record': per_record,
+    }
+    return subtimes, coverage
+
+
 def _run_one(label, out_dir, eval_id, recorder=None, inject_report_timing=False, num_cycles=2):
     """Mirrors the committed `elif gate == 's35ref':` branch of
     `p515_g_g1_g4_admm_gates.py` (cited, not copied -- every called function
@@ -414,7 +568,33 @@ def _read_jsonl(path):
     return rows
 
 
-def _bitwise_diff(report_off, report_on, floor_sidecar_off_path, floor_sidecar_on_path):
+# P5.15 Addendum 22 item (2), timing-defects Worker task ("Also" item): the
+# ONLY field excluded from the identity comparison below -- a path field that
+# necessarily differs between the OFF and ON run's own output/eval
+# directories (`.../evals/p515s36_timing_off*/logs/...` vs
+# `.../evals/p515s36_timing_on*/logs/...`). Same technique the Planner
+# already applied to `p515_s40_clone_capture_preflight.py` (commit
+# `8f5cff48`): key-name exclusion, recursive at any depth, listed explicitly
+# (never a wildcard/substring match). Confirmed against the already-captured
+# 10-cycle evidence (`bitwise_identity_check.json`): all 66 leaf diffs are
+# `esso_complementarity_diagnostics_by_round[...].log_path`, nothing else.
+IDENTITY_EXCLUDED_FIELDS = ('log_path',)
+
+
+def _strip_excluded_fields(obj, excluded):
+    """Recursively rebuild `obj`, dropping any dict key in `excluded` at any
+    depth. Only used for the identity comparison below -- never mutates a
+    source file on disk. Same technique as
+    `p515_s36_step36_timing_reanalyze.py::_strip_excluded_fields` (D4 fix)."""
+    if isinstance(obj, dict):
+        return {k: _strip_excluded_fields(v, excluded) for k, v in obj.items() if k not in excluded}
+    if isinstance(obj, list):
+        return [_strip_excluded_fields(v, excluded) for v in obj]
+    return obj
+
+
+def _bitwise_diff(report_off, report_on, floor_sidecar_off_path, floor_sidecar_on_path,
+                   excluded_fields=IDENTITY_EXCLUDED_FIELDS):
     """Design §2.4: recorder OFF vs ON must be bitwise identical on every
     numeric artifact already used as the determinism reference elsewhere in
     this programme. Compares:
@@ -426,12 +606,15 @@ def _bitwise_diff(report_off, report_on, floor_sidecar_off_path, floor_sidecar_o
       - the SoH floor-multiplier sidecar (`s35ref_capture_hooks`' own
         per-run JSONL artifact -- the SoH trajectory -- read and compared
         line-by-line, since it is a sidecar file, not part of `report`).
-    Returns a dict with 'identical': bool and, if not, the first field/row
-    where the two runs diverge.
+    `excluded_fields` (default `IDENTITY_EXCLUDED_FIELDS`) is stripped,
+    recursively, from BOTH sides before comparing -- see that constant's
+    comment for why `log_path` is the one legitimate exclusion.
+    Returns a dict with 'identical': bool and, if not, every field/row
+    where the two runs diverge (capped at 50, as before).
     """
     diffs = []
-    rows_off = report_off.get('cycle_trajectory', [])
-    rows_on = report_on.get('cycle_trajectory', [])
+    rows_off = _strip_excluded_fields(report_off.get('cycle_trajectory', []), excluded_fields)
+    rows_on = _strip_excluded_fields(report_on.get('cycle_trajectory', []), excluded_fields)
     if len(rows_off) != len(rows_on):
         diffs.append({'field': 'cycle_trajectory_length', 'off': len(rows_off), 'on': len(rows_on)})
     else:
@@ -442,14 +625,16 @@ def _bitwise_diff(report_off, report_on, floor_sidecar_off_path, floor_sidecar_o
                     diffs.append({'field': f'cycle_trajectory[{i}].{key}',
                                   'off': row_off.get(key), 'on': row_on.get(key)})
 
-    detector_off = report_off.get('esso_complementarity_diagnostics_by_round')
-    detector_on = report_on.get('esso_complementarity_diagnostics_by_round')
+    detector_off = _strip_excluded_fields(
+        report_off.get('esso_complementarity_diagnostics_by_round'), excluded_fields)
+    detector_on = _strip_excluded_fields(
+        report_on.get('esso_complementarity_diagnostics_by_round'), excluded_fields)
     if detector_off != detector_on:
         diffs.append({'field': 'esso_complementarity_diagnostics_by_round',
                       'off': detector_off, 'on': detector_on})
 
-    soh_off = _read_jsonl(floor_sidecar_off_path)
-    soh_on = _read_jsonl(floor_sidecar_on_path)
+    soh_off = _strip_excluded_fields(_read_jsonl(floor_sidecar_off_path), excluded_fields)
+    soh_on = _strip_excluded_fields(_read_jsonl(floor_sidecar_on_path), excluded_fields)
     if len(soh_off) != len(soh_on):
         diffs.append({'field': 'soh_floor_sidecar_length', 'off': len(soh_off), 'on': len(soh_on)})
     else:
@@ -457,7 +642,8 @@ def _bitwise_diff(report_off, report_on, floor_sidecar_off_path, floor_sidecar_o
             if row_off != row_on:
                 diffs.append({'field': f'soh_floor_sidecar[{i}]', 'off': row_off, 'on': row_on})
 
-    return {'identical': len(diffs) == 0, 'diffs': diffs[:50], 'n_diffs': len(diffs)}
+    return {'identical': len(diffs) == 0, 'diffs': diffs[:50], 'n_diffs': len(diffs),
+            'excluded_fields': list(excluded_fields)}
 
 
 def main():
@@ -483,15 +669,16 @@ def main():
     started = time.time()
     with tee_stderr(stderr_path):
         print(f'[P5.15-S36-TIMING] run OFF (recorder not installed) -- {NUM_CYCLES} cycles, '
-              f'cold, s35ref config class.')
+              f'cold, s35ref config class. run_suffix={RUN_SUFFIX!r}')
         report_off, path_off, floor_off = _run_one(
-            'off', OUT_OFF, _eval_id_for('off', NUM_CYCLES), recorder=None, num_cycles=NUM_CYCLES)
+            'off', OUT_OFF, _eval_id_for('off', NUM_CYCLES, RUN_SUFFIX), recorder=None,
+            num_cycles=NUM_CYCLES)
 
         print(f'[P5.15-S36-TIMING] run ON (recorder installed, report_timing cross-check) -- '
               f'{NUM_CYCLES} cycles, cold.')
         recorder = T.PhaseTimingRecorder()
         report_on, path_on, floor_on = _run_one(
-            'on', OUT_ON, _eval_id_for('on', NUM_CYCLES), recorder=recorder,
+            'on', OUT_ON, _eval_id_for('on', NUM_CYCLES, RUN_SUFFIX), recorder=recorder,
             inject_report_timing=True, num_cycles=NUM_CYCLES)
 
         n_records = recorder.to_jsonl(os.path.join(OUT_ON, 'phase_timing_records.jsonl'))
@@ -501,17 +688,58 @@ def main():
         diff_path = os.path.join(OUT_ROOT, 'bitwise_identity_check.json')
         with open(diff_path, 'w') as handle:
             json.dump(diff, handle, indent=1, default=str)
-        print(f'[P5.15-S36-TIMING] bitwise identity (off vs on): {diff["identical"]} '
-              f'({diff["n_diffs"]} diffs) -- see {diff_path}')
+        print(f'[P5.15-S36-TIMING] bitwise identity (off vs on, log_path excluded): '
+              f'{diff["identical"]} ({diff["n_diffs"]} diffs) -- see {diff_path}')
 
         derived = T.derive_param_update_and_bookkeeping(recorder.records)
         all_records = recorder.records + derived
-        production_iter_wall = parse_cycle_wall_times(os.path.join(OUT_ON, 'stdout_on.log'))
-        nl_write_total = parse_report_timing_nl_write_seconds(os.path.join(OUT_ON, 'stdout_on.log'))
+        stdout_on_path = os.path.join(OUT_ON, 'stdout_on.log')
+        production_iter_wall = parse_cycle_wall_times(stdout_on_path)
+        nl_write_total = parse_report_timing_nl_write_seconds(stdout_on_path)
         nl_write_seconds = {'aggregate': nl_write_total} if nl_write_total is not None else None
+
+        # P5.15 Addendum 22 item (2), timing-defects Worker task (Defect 2
+        # fix): actually build the D3 report_timing b/c/d1 split and pass it
+        # to `analyze_phase_timing` -- previously this call never did, so
+        # `solve_bundle_subtimes_fully_covered` was always False here (see
+        # `build_solve_bundle_subtimes_with_coverage`'s docstring for the
+        # full root-cause finding). Only pass it through when coverage is
+        # exact; otherwise `analyze_phase_timing` falls back to its own
+        # documented degraded mode, and the coverage shortfall is still
+        # recorded in full (per record) under
+        # `solve_bundle_subtime_coverage` below, never silently dropped.
+        solve_bundle_subtimes, subtime_coverage = build_solve_bundle_subtimes_with_coverage(
+            recorder.records, stdout_on_path)
+        print(f"[P5.15-S36-TIMING] solve_bundle report_timing coverage: "
+              f"status={subtime_coverage['status']} "
+              f"n_solve_bundle_records={subtime_coverage['n_solve_bundle_records']} "
+              f"n_report_timing_groups_complete={subtime_coverage['n_report_timing_groups_complete']} "
+              f"n_report_timing_groups_incomplete={subtime_coverage['n_report_timing_groups_incomplete']}")
+
         analysis = T.analyze_phase_timing(
             all_records, x_threshold=X_THRESHOLD, production_iter_wall_by_cycle=production_iter_wall,
-            projection_workers=8, nl_write_seconds=nl_write_seconds)
+            projection_workers=8, nl_write_seconds=nl_write_seconds,
+            solve_bundle_subtimes=(solve_bundle_subtimes if subtime_coverage['status'] == 'exact' else None))
+        analysis['solve_bundle_subtime_coverage'] = subtime_coverage
+
+        # P5.15 Addendum 22 item (2), timing-defects Worker task (Defect 2
+        # fix): per-cycle analysis ("Include per cycle" deliverable) -- this
+        # entry point never computed it before (only the 2-cycle-only
+        # `p515_s36_step36_timing_reanalyze.py` did); re-run
+        # `analyze_phase_timing` restricted to each SAMPLED cycle
+        # individually, same pattern as that script's own per-cycle loop.
+        per_cycle_analysis = {}
+        for cycle in sorted(production_iter_wall.keys()):
+            cycle_raw = [r for r in recorder.records if r['cycle'] == cycle]
+            cycle_derived = T.derive_param_update_and_bookkeeping(cycle_raw)
+            cycle_all = cycle_raw + cycle_derived
+            per_cycle_analysis[cycle] = T.analyze_phase_timing(
+                cycle_all, x_threshold=X_THRESHOLD,
+                production_iter_wall_by_cycle={cycle: production_iter_wall[cycle]},
+                projection_workers=8,
+                solve_bundle_subtimes=(solve_bundle_subtimes if subtime_coverage['status'] == 'exact' else None))
+        analysis['per_cycle_analysis'] = per_cycle_analysis
+
         analysis_path = os.path.join(OUT_ROOT, 'phase_timing_analysis.json')
         with open(analysis_path, 'w') as handle:
             json.dump(analysis, handle, indent=1, default=str)
