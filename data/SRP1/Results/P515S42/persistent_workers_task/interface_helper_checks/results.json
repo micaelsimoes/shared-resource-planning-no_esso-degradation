@@ -1,0 +1,113 @@
+{
+ "stage": "P5.15 Addendum 23/24, Step 3.6 persistent-worker bounded task -- zero-solve checks",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 23 (Step 3.6 persistent workers)",
+  "data/SRP1/Results/P515S41/frozen_s41_hull_aa_spec_v12_6e5a546f.json item3_persistent_workers_bounded_task",
+  "data/SRP1/Results/P515S42/frozen_s42_helper_aa_spec_v13_2cab76e8.json"
+ ],
+ "timestamp_utc": "2026-09-18T21:38:45.056026+00:00",
+ "results": {
+  "switch_default": {
+   "default_dso_snapshot_capture_mode": "lightweight",
+   "default_is_lightweight": true,
+   "settable_to_legacy_clone": true
+  },
+  "bound_restore_fix": {
+   "probe_var": "r_sqr[(0, 0, 0, 0)]",
+   "baseline_lb_raw_is_none": true,
+   "baseline_lb_resolved": 0,
+   "baseline_pickle_bytes": 1107038,
+   "fixed_pickle_bytes": 1107038,
+   "fixed_lb_raw_is_none": true,
+   "fixed_representation_preserved": true,
+   "old_pickle_bytes": 1107039,
+   "old_lb_raw_is_none": false,
+   "old_bug_reproduced": true
+  },
+  "w1001_elimination": {
+   "probe_var": "r_sqr[(0, 0, 0, 0)]",
+   "fixed_path_w1001_count": 0,
+   "old_path_w1001_count": 1,
+   "fixed_path_zero_warnings": true,
+   "old_path_reproduces_warning": true
+  },
+  "dso_dispatch_clone_counts": {
+   "node7_n_year_day_blocks": 12,
+   "case_A_legacy_no_failure": {
+    "clones": 12,
+    "expected": 12,
+    "match": true
+   },
+   "case_B_lightweight_no_failure_not_cycle7": {
+    "clones": 0,
+    "expected": 0,
+    "match": true
+   },
+   "case_C_lightweight_one_failure": {
+    "clones": 1,
+    "expected": 1,
+    "match": true
+   },
+   "case_D_lightweight_cycle7_comparator": {
+    "clones": 1,
+    "expected": 1,
+    "match": true
+   }
+  },
+  "persistent_worker_dso_branch": {
+   "node7_lightweight_no_failure": {
+    "clones": 0,
+    "expected": 0,
+    "match": true
+   },
+   "node7_lightweight_failure": {
+    "clones": 1,
+    "expected": 1,
+    "match": true
+   },
+   "node7_legacy_clone_no_failure": {
+    "clones": 1,
+    "expected": 1,
+    "match": true
+   },
+   "non_node7_no_clone_regardless_of_mode": {
+    "clones": 0,
+    "expected": 0,
+    "match": true
+   }
+  },
+  "fixture_reload": {
+   "data/SRP1/Results/P512R/cycle21_pre_setup/snapshot.pkl": {
+    "unpickled": true,
+    "n_vars": 10756
+   },
+   "data/SRP1/Results/P512R/cycle21_prepared/snapshot.pkl": {
+    "unpickled": true,
+    "n_vars": 10756
+   },
+   "data/SRP1/Results/P512R/production_snapshots/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl": {
+    "unpickled": true,
+    "n_vars": 10756
+   },
+   "data/SRP1/Results/P512R/production_snapshots/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl": {
+    "unpickled": true,
+    "n_vars": 3756
+   },
+   "data/SRP1/Results/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl": {
+    "unpickled": true,
+    "n_vars": 10882
+   },
+   "data/SRP1/Results/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl": {
+    "unpickled": true,
+    "n_vars": 3762
+   },
+   "data/SRP1/Results/P515F/t2_results/FrozenSMOPF/failure_TSO_case9_2025_Spring_cycle1.pkl": {
+    "unpickled": true,
+    "n_vars": 3762
+   }
+  }
+ },
+ "guard_verify": [],
+ "all_checks_pass": true,
+ "wall_clock_s": 30.800537109375
+}

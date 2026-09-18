@@ -1,0 +1,160 @@
+{
+ "stage": "P5.15 Step 3.6 -- clone-capture zero-solve equivalence checks",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 21 item 4",
+  "WORKER_REPORT_S36_CLONE_CAPTURE.md"
+ ],
+ "timestamp_utc": "2026-09-18T21:40:09.794745+00:00",
+ "solve_profile_guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "checks": {
+  "block_picks": {
+   "tso": {
+    "year": 2025,
+    "day": "Summer"
+   },
+   "dso": {
+    "node_id": 7,
+    "year": 2025,
+    "day": "Autumn"
+   }
+  },
+  "tso_mutation": {
+   "exercised_shared_ess_idx": 0,
+   "n_params_perturbed": 1097,
+   "n_vars_perturbed": 2664,
+   "suffix_counts": {
+    "zL": 5,
+    "zU": 5,
+    "dual": 5
+   }
+  },
+  "tso_equivalence": {
+   "block_label": "TSO",
+   "n_diffs": 0,
+   "diffs_sample": [],
+   "equivalent": true,
+   "n_constraint_expr_strings_compared": 3378,
+   "timing_seconds": {
+    "legacy_clone_median": 0.08224487499865063,
+    "lightweight_capture_median": 0.01821837500028778,
+    "on_demand_rebuild_median": 0.08618550000028335,
+    "n_reps": 15
+   }
+  },
+  "dso_mutation": {
+   "exercised_shared_ess_idx": 0,
+   "n_params_perturbed": 1786,
+   "n_vars_perturbed": 10600,
+   "suffix_counts": {
+    "zL": 5,
+    "zU": 5,
+    "dual": 5
+   }
+  },
+  "dso_equivalence": {
+   "block_label": "DSO node 7",
+   "n_diffs": 0,
+   "diffs_sample": [],
+   "equivalent": true,
+   "n_constraint_expr_strings_compared": 7779,
+   "timing_seconds": {
+    "legacy_clone_median": 0.19168262500170385,
+    "lightweight_capture_median": 0.05737800000133575,
+    "on_demand_rebuild_median": 0.20411962500111258,
+    "n_reps": 15
+   }
+  },
+  "end_to_end_dispatch": {
+   "n_tso_blocks": 12,
+   "legacy_path_clone_calls": 12,
+   "legacy_path_expected": 12,
+   "legacy_path_matches_expected": true,
+   "lightweight_no_failure_clone_calls": 0,
+   "lightweight_no_failure_expected": 0,
+   "lightweight_no_failure_matches_expected": true,
+   "lightweight_one_failure_clone_calls": 1,
+   "lightweight_one_failure_expected": 1,
+   "lightweight_one_failure_matches_expected": true,
+   "comparator_present": true,
+   "lightweight_cycle7_comparator_clone_calls": 1,
+   "lightweight_cycle7_comparator_expected": 1,
+   "lightweight_cycle7_comparator_matches_expected": true
+  },
+  "switch": {
+   "default_mode": "lightweight",
+   "default_is_lightweight": true,
+   "settable_to_legacy_clone": true
+  },
+  "fixture_reload": {
+   "records": [
+    {
+     "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P512R/cycle21_pre_setup/snapshot.pkl",
+     "exists": true,
+     "unpickled": true,
+     "has_model_key": true,
+     "model_type": "ConcreteModel",
+     "n_vars": 10756
+    },
+    {
+     "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P512R/cycle21_prepared/snapshot.pkl",
+     "exists": true,
+     "unpickled": true,
+     "has_model_key": true,
+     "model_type": "ConcreteModel",
+     "n_vars": 10756
+    },
+    {
+     "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P512R/production_snapshots/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+     "exists": true,
+     "unpickled": true,
+     "has_model_key": true,
+     "model_type": "ConcreteModel",
+     "n_vars": 10756
+    },
+    {
+     "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P512R/production_snapshots/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl",
+     "exists": true,
+     "unpickled": true,
+     "has_model_key": true,
+     "model_type": "ConcreteModel",
+     "n_vars": 3756
+    },
+    {
+     "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+     "exists": true,
+     "unpickled": true,
+     "has_model_key": true,
+     "model_type": "ConcreteModel",
+     "n_vars": 10882
+    },
+    {
+     "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl",
+     "exists": true,
+     "unpickled": true,
+     "has_model_key": true,
+     "model_type": "ConcreteModel",
+     "n_vars": 3906
+    },
+    {
+     "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515F/t2_results/FrozenSMOPF/failure_TSO_case9_2025_Spring_cycle1.pkl",
+     "exists": true,
+     "unpickled": true,
+     "has_model_key": true,
+     "model_type": "ConcreteModel",
+     "n_vars": 3762
+    }
+   ],
+   "all_ok": true
+  }
+ },
+ "all_checks_pass": true
+}
