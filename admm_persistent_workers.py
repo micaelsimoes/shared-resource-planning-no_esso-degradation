@@ -337,7 +337,7 @@ def _apply_tso_block_params(model_yd, network_yd, transmission_network, year, da
 
     s_base = network_yd.baseMVA
 
-    for dn in model_yd.active_distribution_network_nodes:
+    for dn in model_yd.active_distribution_networks:
         node_id = transmission_network.active_distribution_network_nodes[dn]
         v_base = network_yd.get_node_base_kv(node_id)
         shared_ess_idx = network_yd.get_shared_energy_storage_idx(node_id)
