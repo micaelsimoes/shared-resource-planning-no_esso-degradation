@@ -1,0 +1,1384 @@
+"""
+P5.15 Addendum 25 -- paper-scale BUILD measurement (Step 4/5 design input; "measure, do not
+assume").
+
+Authority: PLANNER_BRIEF_2026-09-13.md Addendum 25 ("Scale"); STEP4_DFO_METHOD.md section 7;
+frozen spec v14 `data/SRP1/Results/P515S44/frozen_s44_selection_spec_v14_e4500e27.json`,
+key `item4_scale_measurement`: "build only (zero solves, SolveProfileGuard armed): block
+count, variable/constraint counts, peak RSS; a memory WATCHDOG aborts the build above 24 GB
+(32 GB machine), recording RSS reached and build stage; only if it fits, time ONE cycle, the
+single declared solve set. Runs alone."
+
+================================================================================
+WHAT "PAPER SCALE" IS IN THIS CODE BASE (established from code and repository history)
+================================================================================
+The planning instance is configured entirely by the case file `data/SRP1/SRP1.json`:
+`Years` ({year: number of calendar years the representative year stands for}), `Days`
+({season: days}), `NumMarketScenarios`, and per network `num_operation_scenarios`.
+Scenarios are NOT data files: `_read_market_data_from_file`
+(shared_resources_planning.py) and `network_data._read_network_data` fit a Gaussian copula
+with KDE marginals to the season base profiles of `SRP1_market_data.xlsx` /
+`<network>_operational_data.xlsx`, draw 100 synthetic days, and SAMPLE
+`NumMarketScenarios` / `num_operation_scenarios` of them per (year, day) from seeds derived
+from `RandomSeed`. Per-year network data are `data/SRP1/<network>/<network>_<year>.json`
+(present for 2025-2040 and 2045 for case9 and case33_1..3); ESS unit costs
+(`SRP1_ESS.xlsx`) cover 2020-2054. So a larger instance needs NO new data file, only a
+different case file.
+
+The paper instance ("5 years x 4 days x 25 scenarios"):
+  * EXPERT_REVIEW.md:81 -- "The paper specifies five representative years and 25
+    market/operational combinations per day"; :147 -- "five three-year blocks beginning in
+    2025 cover through 2039" (label 2037 is the last representative year); :140-145 --
+    sum_y N_y = 15.
+  * git 0198407e (2025-12-21, "Update. Case studies"), `data/SRP1/SRP1.json`: Years
+    {2025: 3, 2028: 3, 2031: 3, 2034: 3, 2037: 3}, the same four days, NumMarketScenarios 5,
+    num_operation_scenarios 5 for case9 and all three DSOs -- the only 5-year, 25-combination
+    SRP1 configuration in the file's history (all 170 commits of data/SRP1/SRP1.json read).
+  * data/SRP1/Results/20251221_3 years/ (untracked, preserved): "Main Info" reports years
+    2025/2028/2031/2034/2037 x 4 days with 5 market and 5 operation scenarios.
+The derived case file therefore changes EXACTLY these keys of the current SRP1.json and
+nothing else (RandomSeed 2026, DiscountFactor, days, networks, params files unchanged):
+    Years -> {2025: 3, 2028: 3, 2031: 3, 2034: 3, 2037: 3}
+    NumMarketScenarios -> 5
+    TransmissionNetwork.num_operation_scenarios and every DistributionNetworks[*]
+    .num_operation_scenarios -> 5
+It is written into the (write-once) measurement directory, never into data/SRP1. The scenario
+realization it produces is NEW (different years and counts -> different derived seeds); its
+combined checksum is recorded, and no canonical value exists to compare it with.
+
+================================================================================
+SCALING MECHANISM (code trace)
+================================================================================
+A network BLOCK is one Pyomo ConcreteModel per (network, year, day): `NetworkData.build_model`
+loops years x days and calls `Network.build_model` once each. Scenarios are INDEXED INSIDE
+each block: `network._build_model` declares `model.scenarios_market` and
+`model.scenarios_operation` and indexes every operational Var/Constraint by
+[..., s_m, s_o, p] (e.g. `model.e[node, s_m, s_o, p]`). So:
+    network blocks = (1 TSO + 3 DSOs) x |years| x |days|  -> 48 (SRP1), 80 (paper)
+    scenario combinations per block = NumMarketScenarios x num_operation_scenarios -> 1, 25
+    ESSO models = one per active node (3), each indexed by (year, day, period), NO scenario
+    index -> grows with |years| only.
+The expert's "2,000 blocks" is 80 blocks x 25 scenario combinations; the Pyomo block count is
+80, each block ~25x larger in its scenario-indexed part. The per-cycle solve count is
+80 + 3 = 83 (51 at SRP1); each network NLP is ~25x larger.
+
+================================================================================
+HOW THE BUILD IS MEASURED WITH ZERO SOLVES
+================================================================================
+Production's initialization interleaves build and solve (each `create_*_model` builds its
+blocks and then calls `.optimize`), so "build everything, solve nothing" cannot be obtained
+by stopping production at its first solve (that would build one DSO only). This script
+follows the zero-solve precedent of `p515_s44_addendum26_confirmations.py` item 3 (spec v14,
+key `addendum26_confirmations_zero_solve`): the oracle's construction path
+(`p515_g_g1_g4_admm_gates._construct_arm_planning`, D arm, `apply_rho=False`, C* at nodes 5,
+7, 9, investment year 2025) and then production's own initialization functions, called in
+the order of `_run_operational_planning`'s `initial_state is None` branch, with each agent's
+`.optimize` replaced ON THAT PLANNING INSTANCE ONLY by an interceptor that records the call
+and returns "no result" (never a solver, never a fabricated solution). Declared intercepts:
+one per DSO network, one TSO, one ESSO initialization -- checked exactly.
+`SolveProfileGuard(permitted=())` is installed before any production import and verified
+at exactly 0 solves / 0 launches / 0 blocked.
+  Steps (production order): create_admm_variables; create_distribution_networks_models
+  (sequential); create_transmission_network_model; create_shared_energy_storage_model;
+  _prepare_distribution/transmission_objectives_for_admm;
+  _compute_common_admm_objective_scale (attempted and recorded: it reads SOLVED objective
+  values, so on unsolved blocks it may fail -- trace artifact); the case-file fixed sigma is
+  then used (DECLARED SUBSTITUTION, as in the precedent; the sigma calibration assertion needs
+  the initialization solves and is not exercised); _resolve_esso_al_scale;
+  update_distribution/transmission_models_to_admm under p58_rescale.patched_admm_objectives
+  (as run_admm_arm does); update_shared_energy_storage_model_to_admm;
+  _initialize_shared_ess_consensus; update_interface_power_flow_variables (skips unsolved
+  blocks by production's own test); get_updated_capacities; and the two pristine clones the
+  ADMM loop keeps (`tso_pristine_base`: every TSO block; `dso_pristine_base`: every node-7 DSO
+  block), built with production's own expression under production's own condition
+  (`*_snapshot_capture_mode != 'legacy_clone'`) -- glue replicated from
+  `_run_operational_planning`, declared.
+NOT in the build figure (they exist only after real solves): the IPOPT SolverResults objects
+kept per block, the multiplier suffix contents loaded by `model.solutions.load_from`, the NL
+writer's transient peak, and the IPOPT processes' own memory. The oracle's zero-solve SoH
+floor-row precheck (`p515_s40_polish_gap._build_floor_rows`, a transient planning copy plus
+3 ESSO builds, deleted) and the harness's s38/s39 capture wrappers are also not included.
+`--time-one-cycle` measures all of these directly.
+
+================================================================================
+MEMORY WATCHDOG
+================================================================================
+A daemon thread in each child samples every 0.5 s: RSS of the process and of all its
+descendants (psutil), the process phys_footprint (libproc proc_pid_rusage -- counts
+compressed/swapped pages RSS does not), system available memory and swap. Trigger:
+max(tree RSS, footprint + descendants' RSS) > 24 GiB (25,769,803,776 bytes; "24 GB" of the
+spec, on a machine psutil reports as 32.0 GiB), or -- a declared secondary safety trigger --
+system available memory < 1.0 GiB. On trigger it writes `watchdog_abort_<mode>.json` (cause,
+RSS reached, footprint, the build stage in force, elapsed time, the last samples), kills the
+process's descendants and exits with the distinct code 97 (`os._exit`, so the memory is
+released at once). Every sample is appended live to `rss_samples_<mode>.jsonl` and every
+stage transition to `stages_<mode>.jsonl`, so an aborted run keeps its trajectory. The parent
+(which imports no model code) polls the child tree as a backstop and kills it above 25 GiB
+(exit record `parent_backstop_kill_<mode>.json`). The limit is recorded in launch.json and read
+by the children from there; `--rss-limit-gib` (default 24, the spec) exists ONLY to exercise the
+abort path at small scale and is recorded with a `rss_limit_is_spec_default` flag.
+
+================================================================================
+PROCESS MODEL, OUTPUT, LOCKS
+================================================================================
+Parent (this file, no `--child`): refuses if the label directory exists (write-once), if
+this script's own lock `.p515_s44_scale_measurement.lock` exists, and -- for any instance
+other than `srp1` -- if the campaign lock or the legacy run lock exists or another p51x/p514
+harness process is running ("runs alone"). Writes the derived case file, launch.json and
+parent_run.log, then runs the BUILD child (fresh interpreter, attached, thread caps of the
+campaign harness, stdout/stderr to build_child_stdout.log / build_child_stderr.log), then --
+only with `--time-one-cycle` AND a complete build under the watchdog -- the CYCLE child (a
+production evaluation, `run_admm_arm`, cap 1: initialization + exactly one ADMM cycle under
+SolveProfileGuard(p514_n PERMITTED), declared solve count 2 x (network blocks + ESSO nodes)
+checked exactly). Finally summary.json and manifest_sha256.json (every file in the label
+directory, plus the P56A working-dir files of the run's eval ids).
+Output: `data/SRP1/Results/P515S44/scale_measurement/<label>/`.
+Exit codes: 0 complete; 97 watchdog abort; 98 parent backstop kill; 1 error; 2 refused.
+
+================================================================================
+COMMANDS (repo root; attached; both streams captured; never detached)
+================================================================================
+SRP1 calibration (Worker; may run alongside the selection campaign):
+  /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s44_scale_measurement.py \\
+      --instance srp1 --label srp1_calibration_r2 \\
+      > data/SRP1/Results/P515S44/scale_measurement/srp1_calibration_r2_launch.log 2>&1
+Paper scale (Planner; alone, after the selection run):
+  /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s44_scale_measurement.py \\
+      --instance paper --label paper_build \\
+      > data/SRP1/Results/P515S44/scale_measurement/paper_build_launch.log 2>&1
+  (add `--time-one-cycle` to time one cycle if, and only if, the build completes under the
+  watchdog; the flag is off by default.)
+Watchdog abort-path test (Worker; SRP1 scale, limit lowered to 0.5 GiB, recorded):
+  /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s44_scale_measurement.py \\
+      --instance srp1 --label srp1_watchdog_abort_test_r2 --rss-limit-gib 0.5 \\
+      > data/SRP1/Results/P515S44/scale_measurement/srp1_watchdog_abort_test_r2_launch.log 2>&1
+"""
+
+import argparse
+import ctypes
+import hashlib
+import json
+import os
+import re
+import resource
+import signal
+import subprocess
+import sys
+import threading
+import time
+import traceback
+from contextlib import contextmanager
+from datetime import datetime, timezone
+
+import psutil
+
+REPO = os.path.dirname(os.path.abspath(__file__))
+if REPO not in sys.path:
+    sys.path.insert(0, REPO)
+
+SCRIPT_PATH = os.path.abspath(__file__)
+PYTHON = sys.executable
+STAGE = 'P5.15 Addendum 25 paper-scale build measurement (frozen spec v14 item4_scale_measurement)'
+AUTHORITY = [
+    'PLANNER_BRIEF_2026-09-13.md Addendum 25 (Scale)',
+    'STEP4_DFO_METHOD.md section 7',
+    'data/SRP1/Results/P515S44/frozen_s44_selection_spec_v14_e4500e27.json item4_scale_measurement',
+]
+SCHEMA = 'p515_s44_scale_measurement_v1'
+
+DATA_DIR = os.path.join(REPO, 'data', 'SRP1')
+SOURCE_CASE_REL = os.path.join('data', 'SRP1', 'SRP1.json')
+SOURCE_CASE = os.path.join(REPO, SOURCE_CASE_REL)
+OUT_ROOT = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S44', 'scale_measurement')
+OWN_LOCK_PATH = os.path.join(REPO, '.p515_s44_scale_measurement.lock')
+CAMPAIGN_LOCK_PATH = os.path.join(REPO, '.p515_s44_campaign.lock')
+LEGACY_RUN_LOCK_PATH = os.path.join(REPO, '.p515_g_gate.lock')
+
+GIB = 1 << 30
+RSS_LIMIT_GIB_DEFAULT = 24           # spec: "aborts the build above 24 GB (32 GB machine)"
+RSS_LIMIT_BYTES = RSS_LIMIT_GIB_DEFAULT * GIB
+BACKSTOP_MARGIN_BYTES = 1 * GIB      # parent kills the child tree above limit + 1 GiB if the child's watchdog failed
+MIN_AVAILABLE_BYTES = 1 * GIB        # declared secondary trigger (machine protection)
+SAMPLE_INTERVAL_S = 0.5
+PARENT_POLL_S = 1.0
+
+EXIT_OK = 0
+EXIT_ERROR = 1
+EXIT_REFUSED = 2
+EXIT_WATCHDOG = 97
+EXIT_BACKSTOP = 98
+
+# C* of the selection run (spec v14 item3_selection_run.candidates.C_star; the harness's
+# INVESTMENT_YEAR 2025 and nodes 5, 7, 9).
+C_STAR = {5: (0.96875, 3.875), 7: (0.96875, 3.875), 9: (0.96875, 3.875)}
+C_STAR_LABEL = '0.96875 MVA / 3.875 MWh at nodes 5, 7, 9, investment year 2025 (spec v14 C_star)'
+BUILD_CAP = 500   # spec v14 item3: the campaign cap (num_max_iters; irrelevant to the build)
+CYCLE_CAP = 1     # --time-one-cycle: exactly one ADMM cycle
+REQUIRED_CONSECUTIVE_CYCLES = 10  # campaign spec field (campaign_spec_s44_gate_4047b4e3.json); case-file value
+
+PAPER_YEARS = {'2025': 3, '2028': 3, '2031': 3, '2034': 3, '2037': 3}
+INSTANCES = {
+    'srp1': {
+        'description': 'the current SRP1 case file unchanged (3 years x 4 days x 1 x 1 scenario)',
+        'years': None, 'num_market_scenarios': None, 'num_operation_scenarios': None,
+    },
+    'paper': {
+        'description': ('the paper instance: 5 representative years (2025, 2028, 2031, 2034, 2037; '
+                        'each a 3-year block, sum 15) x 4 days x 5 market x 5 operation scenarios '
+                        '(25 combinations per block)'),
+        'years': PAPER_YEARS, 'num_market_scenarios': 5, 'num_operation_scenarios': 5,
+        'sources': [
+            'EXPERT_REVIEW.md:81 (five representative years, 25 market/operational combinations per day)',
+            'EXPERT_REVIEW.md:147 (five three-year blocks beginning in 2025; 2037 last label)',
+            'git 0198407e:data/SRP1/SRP1.json (Years 2025/2028/2031/2034/2037 x 3; NumMarketScenarios 5; '
+            'num_operation_scenarios 5 for case9 and case33_1..3)',
+            'data/SRP1/Results/20251221_3 years/ Main Info (5 years, 5 market / 5 operation scenarios)',
+        ],
+    },
+}
+
+THREAD_CAP_ENV = {  # = p515_s44_campaign_harness.THREAD_CAP_ENV (checked at child start)
+    'OMP_NUM_THREADS': '1', 'MKL_NUM_THREADS': '1', 'OPENBLAS_NUM_THREADS': '1',
+    'VECLIB_MAXIMUM_THREADS': '1', 'NUMEXPR_NUM_THREADS': '1',
+}
+HARNESS_PATTERN = re.compile(r'p51\d\w*\.py|p514_\w*\.py')
+
+
+# ======================================================================================
+#  small utilities
+# ======================================================================================
+def _utc():
+    return datetime.now(timezone.utc).isoformat()
+
+
+def sha256_file(path):
+    digest = hashlib.sha256()
+    with open(path, 'rb') as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b''):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _write_once_json(path, obj):
+    if os.path.exists(path):
+        raise RuntimeError(f'refusing to overwrite existing artifact: {path}')
+    tmp = path + '.tmp'
+    with open(tmp, 'w') as handle:
+        json.dump(obj, handle, indent=1, default=str)
+    os.replace(tmp, path)
+
+
+def _append_jsonl(path, obj):
+    with open(path, 'a') as handle:
+        handle.write(json.dumps(obj, default=str) + '\n')
+        handle.flush()
+
+
+def _git(args):
+    try:
+        return subprocess.run(['git'] + args, cwd=REPO, capture_output=True, text=True,
+                              check=True).stdout.strip()
+    except Exception as error:  # noqa: BLE001 -- recorded
+        return f'<git error: {error}>'
+
+
+def label_dir(label):
+    return os.path.join(OUT_ROOT, label)
+
+
+def eval_id(label, mode):
+    return f'p515s44_scale_{label}_{mode}'
+
+
+# ======================================================================================
+#  memory sampling (psutil + macOS phys_footprint)
+# ======================================================================================
+class _RUsageInfoV0(ctypes.Structure):
+    _fields_ = [('ri_uuid', ctypes.c_uint8 * 16)] + [
+        (name, ctypes.c_uint64) for name in (
+            'ri_user_time', 'ri_system_time', 'ri_pkg_idle_wkups', 'ri_interrupt_wkups',
+            'ri_pageins', 'ri_wired_size', 'ri_resident_size', 'ri_phys_footprint',
+            'ri_proc_start_abstime', 'ri_proc_exit_abstime')]
+
+
+try:
+    _LIBPROC = ctypes.CDLL('/usr/lib/libproc.dylib')
+    _LIBPROC.proc_pid_rusage.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_void_p]
+except OSError:  # non-macOS: footprint unavailable, recorded as None
+    _LIBPROC = None
+
+
+def phys_footprint(pid):
+    if _LIBPROC is None:
+        return None
+    info = _RUsageInfoV0()
+    if _LIBPROC.proc_pid_rusage(int(pid), 0, ctypes.byref(info)) != 0:
+        return None
+    return int(info.ri_phys_footprint)
+
+
+def tree_memory(pid):
+    """RSS of `pid` and of all its live descendants, plus pid's phys_footprint."""
+    try:
+        proc = psutil.Process(pid)
+        rss_self = proc.memory_info().rss
+        kids = proc.children(recursive=True)
+    except psutil.NoSuchProcess:
+        return None
+    rss_children = 0
+    for kid in kids:
+        try:
+            rss_children += kid.memory_info().rss
+        except psutil.NoSuchProcess:
+            pass
+    footprint = phys_footprint(pid)
+    return {'rss_self': rss_self, 'rss_children': rss_children, 'n_children': len(kids),
+            'rss_tree': rss_self + rss_children, 'footprint_self': footprint,
+            'measure': max(rss_self + rss_children, (footprint or 0) + rss_children)}
+
+
+def _kill_descendants(pid):
+    try:
+        kids = psutil.Process(pid).children(recursive=True)
+    except psutil.NoSuchProcess:
+        return []
+    killed = []
+    for kid in kids:
+        try:
+            kid.kill()
+            killed.append(kid.pid)
+        except psutil.NoSuchProcess:
+            pass
+    return killed
+
+
+# ======================================================================================
+#  CHILD: stage tracker + watchdog
+# ======================================================================================
+STAGE_REF = {'name': 'child start', 'since': time.time()}
+
+
+class Watchdog(threading.Thread):
+    def __init__(self, out_dir, mode, limit_bytes=RSS_LIMIT_BYTES, interval=SAMPLE_INTERVAL_S,
+                 min_available=MIN_AVAILABLE_BYTES):
+        super().__init__(name='rss-watchdog', daemon=True)
+        self.out_dir, self.mode = out_dir, mode
+        self.limit, self.interval, self.min_available = limit_bytes, interval, min_available
+        self.samples_path = os.path.join(out_dir, f'rss_samples_{mode}.jsonl')
+        self.abort_path = os.path.join(out_dir, f'watchdog_abort_{mode}.json')
+        self.t0 = time.time()
+        self.pid = os.getpid()
+        self.peak = {'measure': 0, 'rss_tree': 0, 'rss_self': 0, 'footprint_self': 0,
+                     'stage_at_peak_measure': None, 't_at_peak_measure': None}
+        self.tail = []
+        self.n_samples = 0
+        self._halt = threading.Event()
+
+    def sample(self):
+        mem = tree_memory(self.pid)
+        vm = psutil.virtual_memory()
+        sw = psutil.swap_memory()
+        s = {'t': round(time.time() - self.t0, 3), 'stage': STAGE_REF['name'],
+             **(mem or {}), 'sys_available': vm.available, 'sys_used_pct': vm.percent,
+             'swap_used': sw.used}
+        return s
+
+    def _update_peak(self, s):
+        for key in ('rss_tree', 'rss_self', 'footprint_self'):
+            if (s.get(key) or 0) > self.peak[key]:
+                self.peak[key] = s[key]
+        if (s.get('measure') or 0) > self.peak['measure']:
+            self.peak['measure'] = s['measure']
+            self.peak['stage_at_peak_measure'] = s['stage']
+            self.peak['t_at_peak_measure'] = s['t']
+
+    def _abort(self, s, cause):
+        record = {
+            'schema': SCHEMA, 'mode': self.mode, 'status': 'watchdog_abort', 'cause': cause,
+            'limit_bytes': self.limit, 'limit_gib': self.limit / GIB,
+            'min_available_bytes': self.min_available,
+            'rss_reached': s, 'stage_at_abort': s.get('stage'),
+            'stage_since_s': round(time.time() - STAGE_REF['since'], 3),
+            'elapsed_s': round(time.time() - self.t0, 3), 'peak_so_far': dict(self.peak),
+            'ru_maxrss_self': resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
+            'last_samples': list(self.tail), 'utc': _utc(),
+            'exit_code': EXIT_WATCHDOG,
+        }
+        try:
+            with open(self.abort_path, 'w') as handle:
+                json.dump(record, handle, indent=1, default=str)
+            record['killed_descendants'] = _kill_descendants(self.pid)
+            print(f'[WATCHDOG] ABORT ({cause}): measure={s.get("measure")} bytes at stage '
+                  f'"{s.get("stage")}" -- exiting {EXIT_WATCHDOG}', file=sys.stderr, flush=True)
+            sys.stdout.flush()
+        finally:
+            os._exit(EXIT_WATCHDOG)
+
+    def run(self):
+        with open(self.samples_path, 'a') as handle:
+            while not self._halt.is_set():
+                s = self.sample()
+                self.n_samples += 1
+                self._update_peak(s)
+                self.tail.append(s)
+                del self.tail[:-20]
+                handle.write(json.dumps(s) + '\n')
+                handle.flush()
+                if (s.get('measure') or 0) > self.limit:
+                    self._abort(s, f'process-tree memory above {self.limit / GIB:.2f} GiB ({self.limit} bytes)')
+                if self.min_available and s['sys_available'] < self.min_available:
+                    self._abort(s, f'system available memory below {self.min_available / GIB:.1f} GiB '
+                                   '(declared secondary trigger)')
+                self._halt.wait(self.interval)
+
+    def stop(self):
+        self._halt.set()
+        self.join(timeout=5)
+        final = self.sample()
+        self._update_peak(final)
+        return final
+
+
+class StageLog:
+    def __init__(self, path, watchdog):
+        self.path, self.wd = path, watchdog
+        self.entries = []
+
+    @contextmanager
+    def stage(self, name):
+        previous = STAGE_REF['name']
+        STAGE_REF['name'], STAGE_REF['since'] = name, time.time()
+        t0 = time.time()
+        before = self.wd.sample()
+        _append_jsonl(self.path, {'event': 'start', 'stage': name, 't': round(t0 - self.wd.t0, 3),
+                                  'rss_tree': before.get('rss_tree'),
+                                  'footprint_self': before.get('footprint_self')})
+        ok, err = True, None
+        try:
+            yield
+        except BaseException as error:
+            ok, err = False, f'{type(error).__name__}: {error}'
+            raise
+        finally:
+            after = self.wd.sample()
+            entry = {'event': 'end', 'stage': name, 'ok': ok, 'error': err,
+                     't_start': round(t0 - self.wd.t0, 3), 'wall_s': round(time.time() - t0, 3),
+                     'rss_tree_before': before.get('rss_tree'), 'rss_tree_after': after.get('rss_tree'),
+                     'rss_self_after': after.get('rss_self'),
+                     'footprint_self_after': after.get('footprint_self'),
+                     'peak_measure_so_far': self.wd.peak['measure'],
+                     'ru_maxrss_self_after': resource.getrusage(resource.RUSAGE_SELF).ru_maxrss}
+            _append_jsonl(self.path, entry)
+            self.entries.append(entry)
+            STAGE_REF['name'], STAGE_REF['since'] = previous, time.time()
+
+
+# ======================================================================================
+#  CHILD: model counting
+# ======================================================================================
+def len_counts(block, pe):
+    """Cheap: sum of len() over component objects (constructed data objects), per type."""
+    out = {}
+    for key, ctype in (('var', pe.Var), ('constraint', pe.Constraint), ('expression', pe.Expression),
+                       ('param', pe.Param), ('objective', pe.Objective), ('suffix', pe.Suffix)):
+        n = 0
+        for comp in block.component_objects(ctype, active=None, descend_into=True):
+            try:
+                n += len(comp)
+            except TypeError:
+                n += 1
+        out[key] = n
+    return out
+
+
+def deep_counts(block, pe):
+    """Full iteration: fixed variables, active / equality constraints, active objectives."""
+    nv = nfixed = 0
+    for v in block.component_data_objects(pe.Var, descend_into=True):
+        nv += 1
+        if v.fixed:
+            nfixed += 1
+    nc = nact = neq = 0
+    for c in block.component_data_objects(pe.Constraint, active=None, descend_into=True):
+        nc += 1
+        if c.active:
+            nact += 1
+            if c.equality:
+                neq += 1
+    nobj = sum(1 for _ in block.component_data_objects(pe.Objective, active=True, descend_into=True))
+    return {'var_data': nv, 'var_fixed': nfixed, 'var_free': nv - nfixed, 'constraint_data': nc,
+            'constraint_active': nact, 'constraint_active_equality': neq,
+            'constraint_active_inequality': nact - neq, 'objective_active': nobj}
+
+
+def _scenario_combinations(block):
+    try:
+        return len(block.scenarios_market) * len(block.scenarios_operation)
+    except AttributeError:
+        return None
+
+
+def count_all_models(tso, dso, esso, pe, deep=True):
+    blocks = []
+    for year in tso:
+        for day in tso[year]:
+            m = tso[year][day]
+            blocks.append({'agent': 'TSO', 'node': None, 'year': year, 'day': day, 'name': m.name,
+                           'scenario_combinations': _scenario_combinations(m),
+                           'len_counts': len_counts(m, pe), **({'deep': deep_counts(m, pe)} if deep else {})})
+    for node in sorted(dso):
+        for year in dso[node]:
+            for day in dso[node][year]:
+                m = dso[node][year][day]
+                blocks.append({'agent': 'DSO', 'node': node, 'year': year, 'day': day, 'name': m.name,
+                               'scenario_combinations': _scenario_combinations(m),
+                               'len_counts': len_counts(m, pe),
+                               **({'deep': deep_counts(m, pe)} if deep else {})})
+    for node in sorted(esso):
+        m = esso[node]
+        blocks.append({'agent': 'ESSO', 'node': node, 'year': None, 'day': None, 'name': m.name,
+                       'scenario_combinations': None, 'len_counts': len_counts(m, pe),
+                       **({'deep': deep_counts(m, pe)} if deep else {})})
+    agg = {}
+    for b in blocks:
+        a = agg.setdefault(b['agent'], {'models': 0, 'len_counts': {}, 'deep': {}})
+        a['models'] += 1
+        for k, v in b['len_counts'].items():
+            a['len_counts'][k] = a['len_counts'].get(k, 0) + v
+        for k, v in (b.get('deep') or {}).items():
+            a['deep'][k] = a['deep'].get(k, 0) + v
+    total = {'models': 0, 'len_counts': {}, 'deep': {}}
+    for a in agg.values():
+        total['models'] += a['models']
+        for part in ('len_counts', 'deep'):
+            for k, v in a[part].items():
+                total[part][k] = total[part].get(k, 0) + v
+    agg['ALL'] = total
+    return blocks, agg
+
+
+# ======================================================================================
+#  CHILD: shared setup (planning from the derived case file, oracle baseline injection)
+# ======================================================================================
+def _child_env_check():
+    bad = {k: os.environ.get(k) for k, v in THREAD_CAP_ENV.items() if os.environ.get(k) != v}
+    if bad:
+        raise SystemExit(f'CHILD REFUSES: thread caps not in force: {bad}')
+
+
+def _launch_limit(out_dir):
+    return int(_load_launch(out_dir)['thresholds']['rss_limit_bytes'])
+
+
+def _load_launch(out_dir):
+    with open(os.path.join(out_dir, 'launch.json')) as handle:
+        return json.load(handle)
+
+
+def read_planning_from_derived_case(launch, out_dir, stages):
+    """Production's own reader on the derived case file. data_dir is data/SRP1 (networks and
+    market data are resolved from it); the derived file lives in the measurement directory
+    and is passed as a path relative to data_dir. Diagram/result/log dirs are redirected into
+    the measurement directory BEFORE reading (the reader plots scenarios; production would
+    otherwise overwrite data/SRP1/Diagrams). planning.name is set to 'SRP1' (the case name)."""
+    from shared_resources_planning import SharedResourcesPlanning
+    case_path = os.path.join(REPO, launch['derived_case']['path'])
+    rel = os.path.relpath(case_path, DATA_DIR)
+    planning = SharedResourcesPlanning(DATA_DIR, rel)
+    planning.name = 'SRP1'
+    planning.results_dir = os.path.join(out_dir, 'planning_read', 'Results')
+    planning.diagrams_dir = os.path.join(out_dir, 'planning_read', 'Diagrams')
+    planning.logs_dir = os.path.join(planning.results_dir, 'Logs')
+    with stages.stage('read_planning_problem (data, copula/KDE scenario generation, networks, ESS)'):
+        planning.read_planning_problem()
+    return planning
+
+
+def inject_oracle_baseline(O, planning, launch):
+    checksum = planning.scenario_metadata['combined_scenario_checksum']
+    if launch['instance'] == 'srp1' and checksum != O.CANONICAL_CHECKSUM:
+        raise RuntimeError(f'srp1 instance: scenario checksum {checksum} != canonical {O.CANONICAL_CHECKSUM}')
+    if O._BASELINE is not None:
+        raise RuntimeError('oracle baseline already loaded in this process; refusing to inject')
+    O._BASELINE = {'planning': planning, 'checksum': checksum}
+    return checksum
+
+
+def provenance_record(planning, instance, checksum):
+    import p54r_provenance as P
+    prov, _ = P.collect(planning)
+    prov['scenario_checksum'] = checksum
+    prov['checksum_matches_canonical'] = checksum == P.CANONICAL_CHECKSUM
+    failures = P.check(prov)
+    non_checksum = [f for f in failures if f['identity'] != 'scenario checksum']
+    prov['gate_failures'] = failures
+    prov['checksum_expected_to_differ'] = instance != 'srp1'
+    prov['gate_passes_for_this_instance'] = (not non_checksum) and (
+        instance != 'srp1' or checksum == P.CANONICAL_CHECKSUM)
+    return prov
+
+
+def planning_dimensions(planning):
+    return {
+        'years': {str(y): w for y, w in planning.years.items()},
+        'days': dict(planning.days),
+        'num_instants': planning.num_instants,
+        'random_seed': planning.random_seed,
+        'num_market_scenarios': planning.num_market_scenarios,
+        'num_operation_scenarios': {
+            planning.transmission_network.name: planning.transmission_network.num_oper_scenarios,
+            **{planning.distribution_networks[n].name: planning.distribution_networks[n].num_oper_scenarios
+               for n in sorted(planning.distribution_networks)}},
+        'active_distribution_network_nodes': list(planning.active_distribution_network_nodes),
+        'scenario_metadata': planning.scenario_metadata,
+    }
+
+
+def expected_block_counts(planning):
+    n_yd = len(planning.years) * len(planning.days)
+    n_dso = len(planning.distribution_networks)
+    return {'tso_blocks': n_yd, 'dso_blocks': n_dso * n_yd, 'network_blocks': (1 + n_dso) * n_yd,
+            'esso_models': len(planning.active_distribution_network_nodes),
+            'solves_per_cycle': (1 + n_dso) * n_yd + len(planning.active_distribution_network_nodes)}
+
+
+def d_configuration_check(H, planning, sed, candidate, report, cap):
+    """The campaign child's own D-configuration verification (no overrides), reused."""
+    spec_like = {'configuration': {'overrides': {}}, 'cap': cap,
+                 'required_consecutive_cycles': REQUIRED_CONSECUTIVE_CYCLES}
+    holder = {}
+    H._config_hook_factory(spec_like, holder, overrides={})(planning=planning, sed=sed,
+                                                            candidate=candidate, report=report)
+    return holder.get('configuration_checks')
+
+
+# ======================================================================================
+#  CHILD: build mode (zero solves)
+# ======================================================================================
+class Interceptor:
+    """Same contract as p515_s44_addendum26_confirmations._Interceptor: replaces `.optimize`
+    on ONE planning instance's agents, records the call, returns "no result" (None per
+    block/node). Never calls a solver; never fabricates a solution."""
+
+    def __init__(self):
+        self.calls = []
+
+    def network(self, holder, kind):
+        def _stub(model, *args, **kwargs):
+            self.calls.append(kind)
+            return {year: {day: None for day in holder.days} for year in holder.years}
+        return _stub
+
+    def esso(self, sed):
+        def _stub(models, *args, **kwargs):
+            self.calls.append('esso_coordination' if kwargs.get('cycle') is not None else 'esso_init')
+            return {node_id: None for node_id in sed.active_distribution_network_nodes}
+        return _stub
+
+    def counts(self):
+        out = {}
+        for c in self.calls:
+            out[c] = out.get(c, 0) + 1
+        return out
+
+
+@contextmanager
+def per_block_build_recorder(network_module, pe, blocks_path, wd):
+    """Class-level wrapper of `Network.build_model` (this process only, restored on exit):
+    per block, the stage label for the watchdog, wall time, RSS after, cheap counts."""
+    original = network_module.Network.build_model
+    records = []
+
+    def wrapped(self, params):
+        agent = 'TSO' if self.is_transmission else 'DSO'
+        node = None if self.is_transmission else getattr(self, 'tn_connection_nodeid', None)
+        previous = STAGE_REF['name']
+        STAGE_REF['name'] = f'{previous} :: build_model {agent} {self.name} {self.year} {self.day}'
+        t0 = time.time()
+        try:
+            model = original(self, params)
+        finally:
+            STAGE_REF['name'] = previous
+        s = wd.sample()
+        rec = {'agent': agent, 'node': node, 'network': self.name, 'year': self.year, 'day': self.day,
+               'wall_s': round(time.time() - t0, 3), 'rss_tree_after': s.get('rss_tree'),
+               'footprint_self_after': s.get('footprint_self'),
+               'scenario_combinations': _scenario_combinations(model),
+               'len_counts_at_build_model': len_counts(model, pe)}
+        _append_jsonl(blocks_path, rec)
+        records.append(rec)
+        return model
+
+    network_module.Network.build_model = wrapped
+    try:
+        yield records
+    finally:
+        network_module.Network.build_model = original
+
+
+def child_build(args):
+    out_dir = label_dir(args.label)
+    started = time.time()
+    _child_env_check()
+    wd = Watchdog(out_dir, 'build', limit_bytes=_launch_limit(out_dir))
+    wd.start()
+    stages = StageLog(os.path.join(out_dir, 'stages_build.jsonl'), wd)
+    launch = _load_launch(out_dir)
+
+    from p513_solve_profile_guard import SolveProfileGuard
+    guard = SolveProfileGuard(permitted=(), label='P5.15 S44 scale measurement BUILD (zero solves)').install()
+
+    steps_not_exercised = [
+        'every solve: the initialization solves (intercepted, "no result") and the ADMM loop',
+        '_compute_common_admm_objective_scale on solved blocks -> the fixed-sigma calibration '
+        'assertion (needs the initialization solves); case-file fixed sigma used (declared substitution)',
+        'IPOPT SolverResults objects, multiplier suffix contents loaded by load_from, NL-writer transient, '
+        'IPOPT process memory (exist only after real solves; --time-one-cycle measures them)',
+        'p515_s40_polish_gap._build_floor_rows (the campaign child\'s zero-solve floor-row precheck: a '
+        'transient planning copy + 3 ESSO builds, deleted before the run)',
+        'the harness capture wrappers s38_pf_capture_hooks / s39_exempt_until_capture_hooks and '
+        'esso_capture_hooks (per-solve sidecar writers)',
+    ]
+    record = {'schema': SCHEMA, 'stage': STAGE, 'authority': AUTHORITY, 'mode': 'build',
+              'label': args.label, 'instance': launch['instance'],
+              'instance_definition': launch['instance_definition'], 'derived_case': launch['derived_case'],
+              'candidate': C_STAR_LABEL, 'status': 'running', 'pid': os.getpid(),
+              'thread_caps_seen': {k: os.environ.get(k) for k in THREAD_CAP_ENV},
+              'steps_not_exercised': steps_not_exercised,
+              'declared_substitutions': [
+                  'initialization .optimize intercepted on the planning instance (returns no result)',
+                  'objective scale: case-file fixed sigma (admm.objective_scale) used without the '
+                  'calibration assertion against a computed sigma',
+                  'tso_pristine_base / dso_pristine_base: production\'s clone expressions replicated '
+                  '(glue from _run_operational_planning) under production\'s own condition']}
+    try:
+        with stages.stage('import production modules'):
+            import pyomo.environ as pe
+            import network as network_module
+            import shared_resources_planning as srp
+            import p515_g_g1_g4_admm_gates as G
+            import p515_s44_campaign_harness as H
+            O, R = G.O, G.R
+        planning0 = read_planning_from_derived_case(launch, out_dir, stages)
+        checksum = inject_oracle_baseline(O, planning0, launch)
+        record['scenario_checksum'] = checksum
+        record['checksum_matches_canonical'] = checksum == O.CANONICAL_CHECKSUM
+        record['planning_dimensions'] = planning_dimensions(planning0)
+        record['expected_block_counts'] = expected_block_counts(planning0)
+        with stages.stage('provenance (IPOPT identity probe: `ipopt --version`, not a solve)'):
+            record['provenance'] = provenance_record(planning0, launch['instance'], checksum)
+
+        construct_report = {}
+        with stages.stage('oracle construction: _construct_arm_planning (fresh_planning deepcopy, results '
+                          'redirect, budget, candidate C*)'):
+            planning, sed, candidate = G._construct_arm_planning(
+                's44_scale_build', os.path.join(out_dir, 'arm_build'), construct_report,
+                investment_map=C_STAR, eval_id=eval_id(args.label, 'build'),
+                num_max_iters_override=BUILD_CAP, apply_rho=False)
+        record['construct_report'] = construct_report
+        record['d_configuration_checks'] = d_configuration_check(H, planning, sed, candidate,
+                                                                 construct_report, BUILD_CAP)
+        params = planning.params.admm
+        if planning.parallel_execution:
+            raise RuntimeError('ParallelExecution is on; the build trace follows the sequential path')
+
+        interceptor = Interceptor()
+        tn = planning.transmission_network
+        tn.optimize = interceptor.network(tn, 'tso')
+        for dn in planning.distribution_networks.values():
+            dn.optimize = interceptor.network(dn, 'dso')
+        sed.optimize = interceptor.esso(sed)
+        trace = {}
+        blocks_path = os.path.join(out_dir, 'blocks_build.jsonl')
+        with per_block_build_recorder(network_module, pe, blocks_path, wd) as block_records:
+            with stages.stage('create_admm_variables'):
+                cv, dv = srp.create_admm_variables(planning)
+            with stages.stage('create_distribution_networks_models (sequential; optimize intercepted)'):
+                dso_models, res_dso = srp.create_distribution_networks_models(
+                    planning.distribution_networks, cv, candidate['total_capacity'],
+                    parallel_execution=planning.parallel_execution)
+            with stages.stage('create_transmission_network_model (optimize intercepted)'):
+                tso_model, res_tso = srp.create_transmission_network_model(planning, cv, candidate['total_capacity'])
+            with stages.stage('create_shared_energy_storage_model (optimize intercepted)'):
+                esso_model, res_esso = srp.create_shared_energy_storage_model(sed, cv, candidate['investment'])
+        results = {'tso': res_tso, 'dso': res_dso, 'esso': res_esso}
+        trace['admm_local_solves_succeeded_on_intercepted_results (expected False)'] = \
+            srp._admm_local_solves_succeeded(planning, results)
+        with stages.stage('_prepare_distribution/transmission_objectives_for_admm'):
+            srp._prepare_distribution_objectives_for_admm(planning.distribution_networks, dso_models)
+            srp._prepare_transmission_objectives_for_admm(tn, tso_model)
+        with stages.stage('_compute_common_admm_objective_scale (attempted on unsolved blocks)'):
+            try:
+                trace['sigma_computed_on_unsolved_blocks'] = srp._compute_common_admm_objective_scale(
+                    planning, tso_model, dso_models)
+            except Exception as error:  # noqa: BLE001 -- recorded trace artifact
+                trace['sigma_computed_on_unsolved_blocks'] = f'{type(error).__name__}: {error}'
+        if params.objective_scale is None:
+            raise RuntimeError('case file has no fixed objective_scale; the zero-solve trace cannot continue')
+        scale = params.objective_scale
+        trace['objective_scale_used'] = scale
+        with stages.stage('ADMM preparation: ESSO AL scale; update_*_to_admm (TSO/DSO under '
+                          'patched_admm_objectives); ESSO AL objective; consensus initialization'):
+            al_scale = srp._resolve_esso_al_scale(planning, params, scale)[0]
+            with R.patched_admm_objectives():
+                srp.update_distribution_models_to_admm(planning, dso_models, params, scale)
+                srp.update_transmission_model_to_admm(planning, tso_model, params, scale)
+            srp.update_shared_energy_storage_model_to_admm(planning, esso_model, params, al_scale_esso=al_scale)
+            srp._initialize_shared_ess_consensus(planning, cv)
+        trace['al_scale_esso'] = al_scale
+        trace['shared_ess_initialization'] = params.shared_ess_initialization
+        with stages.stage('update_interface_power_flow_variables (skips unsolved blocks)'):
+            planning.update_interface_power_flow_variables(tso_model, dso_models, cv, dv, results, params,
+                                                           update_tn=True, update_dns=True)
+        with stages.stage('get_updated_capacities'):
+            sed.get_updated_capacities(esso_model)
+        pristine = {}
+        with stages.stage('pristine clones kept by the ADMM loop (tso_pristine_base, dso_pristine_base)'):
+            if params.tso_snapshot_capture_mode != 'legacy_clone':
+                pristine['tso'] = {year: {day: tso_model[year][day].clone() for day in tn.days}
+                                   for year in tn.years}
+            if params.dso_snapshot_capture_mode != 'legacy_clone' and 7 in dso_models:
+                dn7 = planning.distribution_networks[7]
+                pristine['dso7'] = {year: {day: dso_models[7][year][day].clone() for day in dn7.days}
+                                    for year in dn7.years}
+        trace['tso_snapshot_capture_mode'] = params.tso_snapshot_capture_mode
+        trace['dso_snapshot_capture_mode'] = params.dso_snapshot_capture_mode
+        trace['pristine_clone_blocks'] = {k: sum(len(v) for v in d.values()) for k, d in pristine.items()}
+
+        build_complete = wd.sample()
+        record['memory_at_build_complete'] = build_complete
+        record['ru_maxrss_self_at_build_complete'] = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+        record['build_wall_s'] = round(time.time() - started, 3)
+        STAGE_REF['name'] = 'counting (after build complete)'
+
+        del planning.transmission_network.optimize
+        for dn in planning.distribution_networks.values():
+            del dn.optimize
+        del sed.optimize
+
+        with stages.stage('model counting (len per component type, all models; deep iteration, all models)'):
+            blocks, agg = count_all_models(tso_model, dso_models, esso_model, pe, deep=not args.no_deep_counts)
+        record['counts_by_agent'] = agg
+        record['counts_per_model'] = blocks
+        record['counts_note'] = (
+            'len_counts = sum of len() over component objects (constructed data objects) per type, '
+            'descend_into=True; deep = full iteration (fixed vars, active/equality constraints). '
+            'Counted on the final models after ADMM preparation. The pristine clones (see '
+            'trace.pristine_clone_blocks) are structural copies of the TSO blocks and the node-7 DSO '
+            'blocks at loop start and are not re-counted.')
+        record['blocks_at_build_model'] = block_records
+        record['block_counts'] = {
+            'tso_blocks': sum(len(v) for v in tso_model.values()),
+            'dso_blocks': sum(len(v) for d in dso_models.values() for v in d.values()),
+            'dso_blocks_per_node': {str(n): sum(len(v) for v in d.values()) for n, d in dso_models.items()},
+            'esso_models': len(esso_model),
+            'network_build_model_calls': len(block_records),
+            'pristine_clone_blocks': trace['pristine_clone_blocks'],
+        }
+        record['block_counts']['network_blocks'] = (record['block_counts']['tso_blocks']
+                                                    + record['block_counts']['dso_blocks'])
+        record['block_counts_match_expected'] = (
+            record['block_counts']['network_blocks'] == record['expected_block_counts']['network_blocks']
+            and record['block_counts']['esso_models'] == record['expected_block_counts']['esso_models'])
+        declared = {'dso': len(planning.distribution_networks), 'tso': 1, 'esso_init': 1}
+        observed = interceptor.counts()
+        record['interceptor_check'] = {'declared': declared, 'observed': observed,
+                                       'exact_match': observed == declared}
+        record['trace'] = trace
+    except BaseException as error:  # noqa: BLE001 -- recorded, then re-raised as exit code
+        guard.uninstall()
+        final = wd.stop()
+        record.update({'status': 'error', 'error': f'{type(error).__name__}: {error}',
+                       'traceback': traceback.format_exc(), 'stage_at_error': STAGE_REF['name'],
+                       'guard_counts': dict(guard.counts), 'watchdog_peak': wd.peak,
+                       'memory_final': final, 'stages': stages.entries,
+                       'wall_s': round(time.time() - started, 3)})
+        _write_once_json(os.path.join(out_dir, 'build_error.json'), record)
+        print(traceback.format_exc(), file=sys.stderr, flush=True)
+        return EXIT_ERROR
+
+    guard.uninstall()
+    guard_failures = guard.verify(0)
+    final = wd.stop()
+    record.update({
+        'status': 'complete' if not guard_failures and record['interceptor_check']['exact_match'] else 'check_failed',
+        'guard': {'permitted': [], 'counts': dict(guard.counts), 'declared_solves': 0,
+                  'verify_failures': guard_failures},
+        'watchdog': {'limit_bytes': wd.limit, 'sample_interval_s': SAMPLE_INTERVAL_S,
+                     'n_samples': wd.n_samples, 'peak': wd.peak,
+                     'min_available_bytes': MIN_AVAILABLE_BYTES},
+        'peak_under_limit': wd.peak['measure'] < wd.limit,
+        'memory_final': final,
+        'ru_maxrss_self_final': resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
+        'ru_maxrss_units': 'bytes on macOS',
+        'stages': stages.entries,
+        'wall_s': round(time.time() - started, 3),
+        'utc_end': _utc(),
+    })
+    _write_once_json(os.path.join(out_dir, 'build_record.json'), record)
+    print(f"[SCALE-BUILD] status={record['status']} network_blocks={record['block_counts']['network_blocks']} "
+          f"esso={record['block_counts']['esso_models']} peak_tree_rss={wd.peak['rss_tree']} "
+          f"at_build_complete={build_complete.get('rss_tree')} solves={guard.counts['permitted_solve']} "
+          f"wall={record['wall_s']:.1f}s", flush=True)
+    return EXIT_OK if record['status'] == 'complete' else EXIT_ERROR
+
+
+# ======================================================================================
+#  CHILD: one-cycle timing mode (a production evaluation, cap 1)
+# ======================================================================================
+@contextmanager
+def srp_stage_wrappers(srp, network_module, stamps):
+    """Stage labels + first-call timestamps (this process only, restored on exit)."""
+    names = {
+        'create_admm_variables': 'init: create_admm_variables',
+        'create_distribution_networks_models': 'init: DSO build + solve',
+        'create_transmission_network_model': 'init: TSO build + solve',
+        'create_shared_energy_storage_model': 'init: ESSO build + solve',
+        'update_distribution_coordination_models_and_solve': 'cycle: DSO solves',
+        'update_transmission_coordination_model_and_solve': 'cycle: TSO solves',
+        'update_shared_energy_storages_coordination_model_and_solve': 'cycle: ESSO solves',
+    }
+    originals = {name: getattr(srp, name) for name in names}
+
+    def make(name, label, original):
+        def wrapped(*a, **k):
+            previous = STAGE_REF['name']
+            STAGE_REF['name'], STAGE_REF['since'] = label, time.time()
+            t0 = time.time()
+            stamps.setdefault(name, []).append({'t_start': t0})
+            try:
+                return original(*a, **k)
+            finally:
+                stamps[name][-1]['t_end'] = time.time()
+                STAGE_REF['name'] = previous
+        return wrapped
+
+    original_smopf = network_module.Network.run_smopf
+
+    def smopf(self, *a, **k):
+        previous = STAGE_REF['name']
+        STAGE_REF['name'] = f'{previous} :: solve {self.name} {self.year} {self.day}'
+        try:
+            return original_smopf(self, *a, **k)
+        finally:
+            STAGE_REF['name'] = previous
+
+    for name, label in names.items():
+        setattr(srp, name, make(name, label, originals[name]))
+    network_module.Network.run_smopf = smopf
+    try:
+        yield
+    finally:
+        for name, original in originals.items():
+            setattr(srp, name, original)
+        network_module.Network.run_smopf = original_smopf
+
+
+def child_cycle(args):
+    out_dir = label_dir(args.label)
+    started = time.time()
+    _child_env_check()
+    wd = Watchdog(out_dir, 'cycle', limit_bytes=_launch_limit(out_dir))
+    wd.start()
+    stages = StageLog(os.path.join(out_dir, 'stages_cycle.jsonl'), wd)
+    launch = _load_launch(out_dir)
+    record = {'schema': SCHEMA, 'stage': STAGE, 'authority': AUTHORITY, 'mode': 'cycle',
+              'label': args.label, 'instance': launch['instance'], 'derived_case': launch['derived_case'],
+              'candidate': C_STAR_LABEL, 'status': 'running', 'pid': os.getpid(),
+              'cap': CYCLE_CAP,
+              'path': ('p515_g_g1_g4_admm_gates.run_admm_arm (the campaign child\'s evaluation call), D '
+                       'configuration verified by p515_s44_campaign_harness._config_hook_factory, cap 1; '
+                       'includes run_admm_arm\'s own esso_capture_hooks; without the s38/s39 capture '
+                       'wrappers and the floor-row precheck')}
+    from p513_solve_profile_guard import SolveProfileGuard
+    import p514_n_instrumented_cstar as N
+    guard = SolveProfileGuard(N.PERMITTED, label='P5.15 S44 scale measurement ONE CYCLE').install()
+    stamps = {}
+    try:
+        with stages.stage('import production modules'):
+            import network as network_module
+            import shared_resources_planning as srp
+            import p515_g_g1_g4_admm_gates as G
+            import p515_s44_campaign_harness as H
+            O = G.O
+        planning0 = read_planning_from_derived_case(launch, out_dir, stages)
+        checksum = inject_oracle_baseline(O, planning0, launch)
+        record['scenario_checksum'] = checksum
+        record['planning_dimensions'] = planning_dimensions(planning0)
+        expected = expected_block_counts(planning0)
+        declared_solves = 2 * expected['solves_per_cycle']  # initialization + one cycle
+        record['expected_block_counts'] = expected
+        record['declared_solves'] = declared_solves
+        prov = provenance_record(planning0, launch['instance'], checksum)
+        record['provenance'] = prov
+        if [f for f in prov['gate_failures'] if f['identity'] != 'scenario checksum']:
+            raise RuntimeError(f'provenance: non-canonical solver identity: {prov["gate_failures"]}')
+        holder = {}
+        spec_like = {'configuration': {'overrides': {}}, 'cap': CYCLE_CAP,
+                     'required_consecutive_cycles': REQUIRED_CONSECUTIVE_CYCLES}
+        cycle_dir = os.path.join(out_dir, 'one_cycle')
+        with srp_stage_wrappers(srp, network_module, stamps), \
+                stages.stage('run_admm_arm, cap 1 (initialization + one ADMM cycle)'):
+            report, report_path = G.run_admm_arm(
+                's44_scale_cycle', cycle_dir, k_override=None, investment_map=C_STAR,
+                num_max_iters_override=CYCLE_CAP, eval_id=eval_id(args.label, 'cycle'), apply_rho=False,
+                full_diagnostics_in_rows=True,
+                pre_solve_hook=H._config_hook_factory(spec_like, holder, overrides={}))
+        t_end = time.time()
+    except BaseException as error:  # noqa: BLE001
+        guard.uninstall()
+        final = wd.stop()
+        record.update({'status': 'error', 'error': f'{type(error).__name__}: {error}',
+                       'traceback': traceback.format_exc(), 'stage_at_error': STAGE_REF['name'],
+                       'guard_counts': dict(guard.counts), 'watchdog_peak': wd.peak, 'memory_final': final,
+                       'stamps': stamps, 'stages': stages.entries, 'wall_s': round(time.time() - started, 3)})
+        _write_once_json(os.path.join(out_dir, 'cycle_error.json'), record)
+        print(traceback.format_exc(), file=sys.stderr, flush=True)
+        return EXIT_ERROR
+    guard.uninstall()
+    guard_failures = guard.verify(declared_solves)
+    final = wd.stop()
+
+    def first(name, key):
+        return (stamps.get(name) or [{}])[0].get(key)
+
+    init_start = first('create_admm_variables', 't_start')
+    cycle_start = first('update_distribution_coordination_models_and_solve', 't_start')
+    esso_cycle_end = first('update_shared_energy_storages_coordination_model_and_solve', 't_end')
+    printed = None
+    try:
+        with open(os.path.join(REPO, report['stdout_path'])) as handle:
+            m = re.search(r'Iteration 1: ([0-9.]+) s', handle.read())
+            printed = float(m.group(1)) if m else None
+    except Exception:  # noqa: BLE001
+        printed = None
+    rows = report.get('cycle_trajectory') or []
+    record.update({
+        'status': 'complete' if not guard_failures else 'solve_count_mismatch',
+        'guard': {'permitted': [list(p) for p in N.PERMITTED], 'counts': dict(guard.counts),
+                  'declared_solves': declared_solves, 'verify_failures': guard_failures},
+        'run_admm_arm_identity_holds_note': ('run_admm_arm\'s own solve_profile.identity_holds uses the SRP1 '
+                                             'constant 51 per cycle; superseded here by the declared count'),
+        'timing_s': {
+            'initialization (create_admm_variables -> first cycle DSO dispatch)':
+                (cycle_start - init_start) if init_start and cycle_start else None,
+            'cycle_1 (first DSO dispatch -> ESSO coordination return)':
+                (esso_cycle_end - cycle_start) if cycle_start and esso_cycle_end else None,
+            'cycle_1_production_printed (Iteration 1: X s)': printed,
+            'run_admm_arm_wall_clock_s': report.get('wall_clock_s'),
+            'child_total_s': t_end - started,
+        },
+        'stage_stamps': stamps,
+        'cycle_row': {k: (rows[0].get(k) if rows else None) for k in (
+            'cycle', 'local_solves_ok', 'recourse', 'gross_operational_cost', 'objective_change_abs')},
+        'network_failures_summary': report.get('network_failures_summary'),
+        'g_report_path': os.path.relpath(report_path, REPO),
+        'watchdog': {'limit_bytes': wd.limit, 'n_samples': wd.n_samples, 'peak': wd.peak},
+        'memory_final': final,
+        'ru_maxrss_self': resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
+        'ru_maxrss_children_ipopt': resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss,
+        'stages': stages.entries,
+        'utc_end': _utc(),
+    })
+    _write_once_json(os.path.join(out_dir, 'cycle_record.json'), record)
+    print(f"[SCALE-CYCLE] status={record['status']} timing={record['timing_s']} "
+          f"solves={guard.counts['permitted_solve']}/{declared_solves} peak_tree_rss={wd.peak['rss_tree']}",
+          flush=True)
+    return EXIT_OK if record['status'] == 'complete' else EXIT_ERROR
+
+
+# ======================================================================================
+#  PARENT
+# ======================================================================================
+class ParentLog:
+    def __init__(self, path):
+        self.path = path
+
+    def __call__(self, msg):
+        line = f'{datetime.now(timezone.utc).strftime("%H:%M:%S")} {msg}'
+        print(line, flush=True)
+        with open(self.path, 'a') as handle:
+            handle.write(line + '\n')
+
+
+def derive_case(instance, overrides_cli):
+    with open(SOURCE_CASE) as handle:
+        case = json.load(handle)
+    spec = dict(INSTANCES[instance])
+    for key in ('years', 'num_market_scenarios', 'num_operation_scenarios'):
+        if overrides_cli.get(key) is not None:
+            spec[key] = overrides_cli[key]
+    changes = []
+    if spec['years'] is not None:
+        changes.append({'key': 'Years', 'from': case['Years'], 'to': spec['years']})
+        case['Years'] = spec['years']
+    if spec['num_market_scenarios'] is not None:
+        changes.append({'key': 'NumMarketScenarios', 'from': case['NumMarketScenarios'],
+                        'to': spec['num_market_scenarios']})
+        case['NumMarketScenarios'] = spec['num_market_scenarios']
+    if spec['num_operation_scenarios'] is not None:
+        tn = case['TransmissionNetwork']
+        changes.append({'key': f'TransmissionNetwork[{tn["name"]}].num_operation_scenarios',
+                        'from': tn['num_operation_scenarios'], 'to': spec['num_operation_scenarios']})
+        tn['num_operation_scenarios'] = spec['num_operation_scenarios']
+        for dn in case['DistributionNetworks']:
+            changes.append({'key': f'DistributionNetworks[{dn["name"]}].num_operation_scenarios',
+                            'from': dn['num_operation_scenarios'], 'to': spec['num_operation_scenarios']})
+            dn['num_operation_scenarios'] = spec['num_operation_scenarios']
+    return case, spec, changes
+
+
+def _other_harness_processes():
+    me = {os.getpid(), os.getppid()}
+    found = []
+    for proc in psutil.process_iter(['pid', 'cmdline']):
+        try:
+            cmd = ' '.join(proc.info['cmdline'] or [])
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            continue
+        if proc.info['pid'] in me or 'python' not in cmd:
+            continue
+        if HARNESS_PATTERN.search(cmd):
+            found.append({'pid': proc.info['pid'], 'cmdline': cmd[:300]})
+    return found
+
+
+def run_child(mode, args, out_dir, log):
+    backstop_bytes = int(args.rss_limit_gib * GIB) + BACKSTOP_MARGIN_BYTES
+    cmd = [PYTHON, '-u', SCRIPT_PATH, '--child', mode, '--label', args.label]
+    if mode == 'build' and args.no_deep_counts:
+        cmd.append('--no-deep-counts')
+    env = dict(os.environ)
+    env.update(THREAD_CAP_ENV)
+    out_path = os.path.join(out_dir, f'{mode}_child_stdout.log')
+    err_path = os.path.join(out_dir, f'{mode}_child_stderr.log')
+    for p in (out_path, err_path):
+        if os.path.exists(p):
+            raise RuntimeError(f'refusing to overwrite {p}')
+    t0 = time.time()
+    backstop = None
+    peak = {'measure': 0, 'rss_tree': 0}
+    with open(out_path, 'w') as out_h, open(err_path, 'w') as err_h:
+        proc = subprocess.Popen(cmd, cwd=REPO, env=env, stdout=out_h, stderr=err_h)
+        log(f'{mode} child started pid={proc.pid}: {" ".join(cmd)}')
+        last_note = t0
+        while True:
+            pid, status, ru = os.wait4(proc.pid, os.WNOHANG)
+            if pid != 0:
+                break
+            mem = tree_memory(proc.pid)
+            if mem:
+                peak['measure'] = max(peak['measure'], mem['measure'])
+                peak['rss_tree'] = max(peak['rss_tree'], mem['rss_tree'])
+                if mem['measure'] > backstop_bytes and backstop is None:
+                    backstop = {'mode': mode, 'status': 'parent_backstop_kill', 'memory': mem,
+                                'limit_bytes': backstop_bytes, 'utc': _utc(),
+                                'elapsed_s': time.time() - t0}
+                    killed = _kill_descendants(proc.pid)
+                    os.kill(proc.pid, signal.SIGKILL)
+                    backstop['killed'] = [proc.pid] + killed
+                    log(f'PARENT BACKSTOP: child tree above {backstop_bytes / GIB:.1f} GiB -- killed')
+            if time.time() - last_note > 60:
+                log(f'{mode} child alive: tree_rss={mem and mem["rss_tree"]} peak={peak["measure"]}')
+                last_note = time.time()
+            time.sleep(PARENT_POLL_S)
+        proc.returncode = os.waitstatus_to_exitcode(status)
+    exit_code = proc.returncode if backstop is None else EXIT_BACKSTOP
+    info = {'mode': mode, 'command': cmd, 'exit_code': exit_code, 'raw_returncode': proc.returncode,
+            'wall_s': time.time() - t0, 'parent_observed_peak': peak,
+            'wait4_rusage': {k: getattr(ru, k) for k in ('ru_utime', 'ru_stime', 'ru_maxrss', 'ru_minflt',
+                                                          'ru_majflt', 'ru_nvcsw', 'ru_nivcsw')},
+            'thread_caps_in_child_env': THREAD_CAP_ENV}
+    if backstop is not None:
+        _write_once_json(os.path.join(out_dir, f'parent_backstop_kill_{mode}.json'), backstop)
+    with open(os.path.join(out_dir, f'{mode}_exit_code.txt'), 'w') as handle:
+        handle.write(f'{exit_code}\n')
+    log(f'{mode} child exited {exit_code} after {info["wall_s"]:.1f}s')
+    return info
+
+
+def _read_json(path):
+    if not os.path.exists(path):
+        return None
+    with open(path) as handle:
+        return json.load(handle)
+
+
+def write_manifest(out_dir, label):
+    files = {}
+    for root, _dirs, names in os.walk(out_dir):
+        for name in sorted(names):
+            path = os.path.join(root, name)
+            if name == 'manifest_sha256.json':
+                continue
+            files[os.path.relpath(path, REPO)] = {'sha256': sha256_file(path), 'bytes': os.path.getsize(path)}
+    work = {}
+    work_root = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P56A', 'evals')
+    for mode in ('build', 'cycle'):
+        d = os.path.join(work_root, eval_id(label, mode))
+        for root, _dirs, names in os.walk(d):
+            for name in sorted(names):
+                path = os.path.join(root, name)
+                work[os.path.relpath(path, REPO)] = {'sha256': sha256_file(path), 'bytes': os.path.getsize(path)}
+    manifest = {'stage': STAGE, 'label': label, 'generated_utc': _utc(), 'files': files,
+                'p56a_working_dir_files': work}
+    _write_once_json(os.path.join(out_dir, 'manifest_sha256.json'), manifest)
+    return manifest
+
+
+def main_parent(args):
+    from p513_solve_profile_guard import SolveProfileGuard  # pyomo only; no model code
+    parent_guard = SolveProfileGuard(permitted=(), label='P5.15 S44 scale measurement parent (never solves)').install()
+    out_dir = label_dir(args.label)
+    if not re.fullmatch(r'[A-Za-z0-9_.-]+', args.label):
+        print(f'REFUSED: label must match [A-Za-z0-9_.-]+: {args.label!r}', file=sys.stderr)
+        return EXIT_REFUSED
+    if os.path.exists(out_dir):
+        print(f'REFUSED: output directory exists (write-once): {out_dir}', file=sys.stderr)
+        return EXIT_REFUSED
+    for mode in ('build', 'cycle'):
+        wd_path = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P56A', 'evals', eval_id(args.label, mode))
+        if os.path.exists(wd_path):
+            print(f'REFUSED: working-dir id already used (never reusable): {wd_path}', file=sys.stderr)
+            return EXIT_REFUSED
+    runs_alone = args.instance != 'srp1'
+    if runs_alone:
+        held = [p for p in (CAMPAIGN_LOCK_PATH, LEGACY_RUN_LOCK_PATH) if os.path.exists(p)]
+        others = _other_harness_processes()
+        if held or others:
+            print(f'REFUSED: instance {args.instance!r} runs alone; locks held={held} '
+                  f'harness processes={others}', file=sys.stderr)
+            return EXIT_REFUSED
+    try:
+        fd = os.open(OWN_LOCK_PATH, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+    except FileExistsError:
+        print(f'REFUSED: another scale measurement holds {OWN_LOCK_PATH}', file=sys.stderr)
+        return EXIT_REFUSED
+    with os.fdopen(fd, 'w') as handle:
+        json.dump({'pid': os.getpid(), 'label': args.label, 'started_utc': _utc()}, handle)
+    try:
+        os.makedirs(out_dir)
+        log = ParentLog(os.path.join(out_dir, 'parent_run.log'))
+        log(f'{STAGE}: label={args.label} instance={args.instance} time_one_cycle={args.time_one_cycle} '
+            f'rss_limit_gib={args.rss_limit_gib}')
+        case_dir = os.path.join(out_dir, 'case')
+        os.makedirs(case_dir)
+        overrides_cli = {'years': (json.loads(args.override_years) if args.override_years else None),
+                         'num_market_scenarios': args.override_market_scenarios,
+                         'num_operation_scenarios': args.override_operation_scenarios}
+        case, spec, changes = derive_case(args.instance, overrides_cli)
+        case_path = os.path.join(case_dir, f'SRP1__{args.instance}.json')
+        with open(case_path, 'w') as handle:
+            json.dump(case, handle, indent='\t')
+        derived = {'path': os.path.relpath(case_path, REPO), 'sha256': sha256_file(case_path),
+                   'source': SOURCE_CASE_REL, 'source_sha256': sha256_file(SOURCE_CASE),
+                   'source_last_commit': _git(['log', '-1', '--format=%H', '--', SOURCE_CASE_REL]),
+                   'changes_vs_source': changes,
+                   'cli_overrides': {k: v for k, v in overrides_cli.items() if v is not None}}
+        tracked_dirty = _git(['status', '--porcelain', '--untracked-files=no'])
+        launch = {
+            'schema': SCHEMA, 'stage': STAGE, 'authority': AUTHORITY, 'label': args.label,
+            'instance': args.instance, 'instance_definition': spec, 'derived_case': derived,
+            'candidate': C_STAR_LABEL, 'argv': sys.argv, 'interpreter': PYTHON, 'script': os.path.relpath(SCRIPT_PATH, REPO),
+            'script_sha256': sha256_file(SCRIPT_PATH), 'git_head': _git(['rev-parse', 'HEAD']),
+            'git_tracked_changes': tracked_dirty.splitlines(),
+            'nlp_solver_path_env': os.environ.get('NLP_SOLVER_PATH'),
+            'thresholds': {'rss_limit_bytes': int(args.rss_limit_gib * GIB), 'rss_limit_gib': args.rss_limit_gib,
+                           'rss_limit_is_spec_default': args.rss_limit_gib == RSS_LIMIT_GIB_DEFAULT,
+                           'parent_backstop_bytes': int(args.rss_limit_gib * GIB) + BACKSTOP_MARGIN_BYTES,
+                           'min_available_bytes': MIN_AVAILABLE_BYTES, 'sample_interval_s': SAMPLE_INTERVAL_S},
+            'runs_alone_enforced': runs_alone, 'time_one_cycle_requested': args.time_one_cycle,
+            'machine': {'total_memory_bytes': psutil.virtual_memory().total, 'cpu_count': os.cpu_count(),
+                        'available_at_launch': psutil.virtual_memory().available},
+            'started_utc': _utc(), 'parent_pid': os.getpid(),
+        }
+        _write_once_json(os.path.join(out_dir, 'launch.json'), launch)
+        log(f'derived case {derived["path"]} sha256={derived["sha256"][:16]} changes={len(changes)}')
+
+        summary = {'schema': SCHEMA, 'label': args.label, 'instance': args.instance, 'launch': 'launch.json'}
+        build_info = run_child('build', args, out_dir, log)
+        summary['build_child'] = build_info
+        build_record = _read_json(os.path.join(out_dir, 'build_record.json'))
+        abort = _read_json(os.path.join(out_dir, 'watchdog_abort_build.json'))
+        summary['build_status'] = (build_record or {}).get('status') or (abort and 'watchdog_abort') or \
+            ('parent_backstop_kill' if build_info['exit_code'] == EXIT_BACKSTOP else 'error')
+        if build_record:
+            summary['build'] = {
+                'block_counts': build_record.get('block_counts'),
+                'counts_by_agent': build_record.get('counts_by_agent'),
+                'memory_at_build_complete': build_record.get('memory_at_build_complete'),
+                'watchdog_peak': (build_record.get('watchdog') or {}).get('peak'),
+                'ru_maxrss_self_final': build_record.get('ru_maxrss_self_final'),
+                'guard': build_record.get('guard'), 'interceptor_check': build_record.get('interceptor_check'),
+                'scenario_checksum': build_record.get('scenario_checksum'),
+                'stage_wall_s': [(e['stage'], e['wall_s'], e['rss_tree_after']) for e in build_record.get('stages', [])],
+            }
+        if abort:
+            summary['build_abort'] = {k: abort.get(k) for k in ('cause', 'stage_at_abort', 'rss_reached',
+                                                                'elapsed_s', 'peak_so_far')}
+        exit_code = build_info['exit_code']
+        if args.time_one_cycle:
+            fits = (build_info['exit_code'] == EXIT_OK and build_record is not None
+                    and build_record.get('status') == 'complete' and build_record.get('peak_under_limit'))
+            summary['time_one_cycle'] = {'requested': True, 'build_fits_under_watchdog': bool(fits)}
+            if fits:
+                cycle_info = run_child('cycle', args, out_dir, log)
+                summary['cycle_child'] = cycle_info
+                cycle_record = _read_json(os.path.join(out_dir, 'cycle_record.json'))
+                cycle_abort = _read_json(os.path.join(out_dir, 'watchdog_abort_cycle.json'))
+                summary['cycle_status'] = (cycle_record or {}).get('status') or (cycle_abort and 'watchdog_abort') \
+                    or ('parent_backstop_kill' if cycle_info['exit_code'] == EXIT_BACKSTOP else 'error')
+                if cycle_record:
+                    summary['cycle'] = {k: cycle_record.get(k) for k in ('timing_s', 'guard', 'watchdog',
+                                                                         'ru_maxrss_self', 'ru_maxrss_children_ipopt',
+                                                                         'cycle_row', 'network_failures_summary')}
+                if cycle_abort:
+                    summary['cycle_abort'] = {k: cycle_abort.get(k) for k in ('cause', 'stage_at_abort',
+                                                                              'rss_reached', 'elapsed_s')}
+                exit_code = exit_code or cycle_info['exit_code']
+            else:
+                summary['time_one_cycle']['skipped_reason'] = 'build did not complete under the watchdog'
+                log('time-one-cycle SKIPPED: build did not complete under the watchdog')
+        parent_guard.uninstall()
+        summary['parent_guard'] = {'counts': dict(parent_guard.counts), 'verify_failures': parent_guard.verify(0)}
+        summary['exit_code'] = exit_code
+        summary['ended_utc'] = _utc()
+        _write_once_json(os.path.join(out_dir, 'summary.json'), summary)
+        log(f'summary: build_status={summary["build_status"]} exit={exit_code}')
+        write_manifest(out_dir, args.label)
+        log(f'manifest written; done ({out_dir})')
+        return exit_code
+    finally:
+        try:
+            os.remove(OWN_LOCK_PATH)
+        except FileNotFoundError:
+            pass
+
+
+def main():
+    parser = argparse.ArgumentParser(description=STAGE)
+    parser.add_argument('--instance', choices=sorted(INSTANCES), help='instance preset')
+    parser.add_argument('--label', required=True, help='write-once output label')
+    parser.add_argument('--time-one-cycle', action='store_true',
+                        help='after a complete build under the watchdog, time ONE ADMM cycle (real solves)')
+    parser.add_argument('--rss-limit-gib', type=float, default=RSS_LIMIT_GIB_DEFAULT,
+                        help='watchdog limit in GiB (default 24 = the spec; lower ONLY to test the abort path)')
+    parser.add_argument('--no-deep-counts', action='store_true',
+                        help='skip the full-iteration counts (fixed vars, active constraints)')
+    parser.add_argument('--override-years', default=None,
+                        help='JSON {year: weight} replacing the preset years (recorded)')
+    parser.add_argument('--override-market-scenarios', type=int, default=None)
+    parser.add_argument('--override-operation-scenarios', type=int, default=None)
+    parser.add_argument('--child', choices=('build', 'cycle'), default=None, help=argparse.SUPPRESS)
+    args = parser.parse_args()
+    if args.child == 'build':
+        return child_build(args)
+    if args.child == 'cycle':
+        return child_cycle(args)
+    if not args.instance:
+        parser.error('--instance is required')
+    return main_parent(args)
+
+
+if __name__ == '__main__':
+    sys.exit(main())
