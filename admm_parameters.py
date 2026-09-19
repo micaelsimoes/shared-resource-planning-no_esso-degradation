@@ -190,6 +190,23 @@ class ADMMParameters:
         # `pre_solve_snapshot_callback`) -- kept for regression comparison
         # and as a fallback; not wired to any case-file key, set
         # programmatically only.
+        # P5.15 Addendum 27 item 5(a) adds a THIRD legal value, 'off': no
+        # pristine base is built at all and no per-cycle capture is taken,
+        # so the FrozenSMOPF diagnostics (failure snapshots and the cycle-7
+        # comparator) are NOT produced -- a failed block instead prints a
+        # warning naming this mode and writes a small JSON marker file in
+        # the FrozenSMOPF directory (never a `.pkl`, so no snapshot scanner
+        # can mistake it for one). Motivation: at paper scale the pristine
+        # clones alone added >= 5.7 GiB and were the stage that crossed the
+        # 24 GiB build watchdog (`data/SRP1/Results/P515S44/
+        # scale_measurement/paper_build/watchdog_abort_build.json`). DEFAULT
+        # STAYS 'lightweight': campaign and verification runs keep today's
+        # behaviour bit-for-bit. Legal values are validated once per
+        # `_run_operational_planning` call
+        # (`shared_resources_planning._validate_snapshot_capture_modes`),
+        # which also refuses 'off' together with `persistent_workers`
+        # enabled (that path clones a block per solve). Not wired to any
+        # case-file key, set programmatically only.
         self.tso_snapshot_capture_mode = 'lightweight'
 
         # P5.15 Addendum 23/24, Step 3.6 persistent-worker bounded task item
@@ -211,6 +228,12 @@ class ADMMParameters:
         # `failure_snapshot_callback`/`pre_solve_snapshot_callback`) -- kept
         # for regression comparison and as a fallback; not wired to any
         # case-file key, set programmatically only.
+        # P5.15 Addendum 27 item 5(a): the same third legal value 'off' as
+        # `tso_snapshot_capture_mode` above (no pristine node-7 base, no
+        # per-cycle capture, a warning plus a JSON marker instead of a
+        # snapshot on a failed node-7 block), with the same default
+        # ('lightweight'), the same validation, and the same refusal to run
+        # with `persistent_workers` enabled.
         self.dso_snapshot_capture_mode = 'lightweight'
 
         # P5.15 Addendum 22 item (2), Step 3.6 (PLANNER_BRIEF_2026-09-13.md

@@ -90,9 +90,12 @@ at exactly 0 solves / 0 launches / 0 blocked.
   _initialize_shared_ess_consensus; update_interface_power_flow_variables (skips unsolved
   blocks by production's own test); get_updated_capacities; and the two pristine clones the
   ADMM loop keeps (`tso_pristine_base`: every TSO block; `dso_pristine_base`: every node-7 DSO
-  block), built with production's own expression under production's own condition
-  (`*_snapshot_capture_mode != 'legacy_clone'`) -- glue replicated from
-  `_run_operational_planning`, declared.
+  block), built by CALLING production's own `shared_resources_planning.
+  _build_pristine_snapshot_bases` (which holds both the mode validation and the clone
+  expressions `_run_operational_planning` uses), declared. P5.15 Addendum 27 item 5(a):
+  `--snapshots off` sets BOTH capture modes to 'off' on this child's planning object, so that
+  helper builds NO pristine base and this stage costs nothing; the modes applied are verified
+  and recorded (`build_record.json` -> `snapshot_setting`, `cycle_record.json` likewise).
 NOT in the build figure (they exist only after real solves): the IPOPT SolverResults objects
 kept per block, the multiplier suffix contents loaded by `model.solutions.load_from`, the NL
 writer's transient peak, and the IPOPT processes' own memory. The oracle's zero-solve SoH
@@ -148,6 +151,11 @@ Paper scale (Planner; alone, after the selection run):
       > data/SRP1/Results/P515S44/scale_measurement/paper_build_launch.log 2>&1
   (add `--time-one-cycle` to time one cycle if, and only if, the build completes under the
   watchdog; the flag is off by default.)
+Paper scale without the pristine snapshot clones (P5.15 Addendum 27 item 5(a); the clone stage
+is what crossed the 24 GiB watchdog in label `paper_build`):
+  /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s44_scale_measurement.py \\
+      --instance paper --label paper_build_nosnap --snapshots off \\
+      > data/SRP1/Results/P515S44/scale_measurement/paper_build_nosnap_launch.log 2>&1
 Watchdog abort-path test (Worker; SRP1 scale, limit lowered to 0.5 GiB, recorded):
   /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s44_scale_measurement.py \\
       --instance srp1 --label srp1_watchdog_abort_test_r2 --rss-limit-gib 0.5 \\
@@ -604,6 +612,57 @@ def inject_oracle_baseline(O, planning, launch):
     return checksum
 
 
+# ======================================================================================
+#  P5.15 Addendum 27 item 5(a): --snapshots on|off
+# ======================================================================================
+def apply_snapshot_setting(planning, snapshots, record):
+    """Applies `--snapshots` to ONE planning object and records what happened.
+
+    'on' (default) changes nothing at all -- not even an assignment -- so the run is the
+    committed behaviour. 'off' sets BOTH `admm_parameters.tso_snapshot_capture_mode` and
+    `dso_snapshot_capture_mode` to 'off' (production validates the value and builds no
+    pristine base, `shared_resources_planning._build_pristine_snapshot_bases`), then
+    VERIFIES that the setting took effect and raises if it did not -- the setting must be
+    demonstrable, not assumed. The record goes into the child's record under
+    'snapshot_setting'."""
+    params = planning.params.admm
+    applied = {
+        'requested': snapshots,
+        'tso_mode_before': getattr(params, 'tso_snapshot_capture_mode', None),
+        'dso_mode_before': getattr(params, 'dso_snapshot_capture_mode', None),
+    }
+    if snapshots == 'off':
+        params.tso_snapshot_capture_mode = 'off'
+        params.dso_snapshot_capture_mode = 'off'
+    applied['tso_mode_after'] = getattr(params, 'tso_snapshot_capture_mode', None)
+    applied['dso_mode_after'] = getattr(params, 'dso_snapshot_capture_mode', None)
+    expected = ('off', 'off') if snapshots == 'off' else (applied['tso_mode_before'],
+                                                          applied['dso_mode_before'])
+    applied['expected'] = list(expected)
+    applied['took_effect'] = (applied['tso_mode_after'], applied['dso_mode_after']) == expected
+    applied['persistent_workers_enabled'] = bool(
+        (getattr(params, 'persistent_workers', None) or {}).get('enabled', False))
+    if record is not None:
+        record['snapshot_setting'] = applied
+    if not applied['took_effect']:
+        raise RuntimeError(f'--snapshots {snapshots}: capture modes did not take effect: {applied}')
+    return applied
+
+
+def snapshot_hook_wrapper(inner_hook, snapshots, record):
+    """Wraps a `run_admm_arm` `pre_solve_hook` so `--snapshots` is applied to the planning
+    object the arm actually runs on, AFTER the inner hook has done its own configuration --
+    the same wrap-the-hook pattern as `p515_s40_clone_capture_preflight._capture_mode_hook_
+    override`, never an edit to the harness. The applied record is written both into the
+    child's record (via `apply_snapshot_setting`) and into the arm report's
+    `rule_eleven_checklist`."""
+    def hook(planning, sed, candidate, report):
+        inner_hook(planning=planning, sed=sed, candidate=candidate, report=report)
+        applied = apply_snapshot_setting(planning, snapshots, record)
+        report.setdefault('rule_eleven_checklist', {})['s44_snapshot_setting'] = applied
+    return hook
+
+
 def provenance_record(planning, instance, checksum):
     import p54r_provenance as P
     prov, _ = P.collect(planning)
@@ -749,8 +808,9 @@ def child_build(args):
                   'initialization .optimize intercepted on the planning instance (returns no result)',
                   'objective scale: case-file fixed sigma (admm.objective_scale) used without the '
                   'calibration assertion against a computed sigma',
-                  'tso_pristine_base / dso_pristine_base: production\'s clone expressions replicated '
-                  '(glue from _run_operational_planning) under production\'s own condition']}
+                  'tso_pristine_base / dso_pristine_base: production\'s own '
+                  'shared_resources_planning._build_pristine_snapshot_bases is CALLED (since P5.15 '
+                  'Addendum 27 item 5(a)); before that its clone expressions were replicated here']}
     try:
         with stages.stage('import production modules'):
             import pyomo.environ as pe
@@ -779,6 +839,10 @@ def child_build(args):
         record['d_configuration_checks'] = d_configuration_check(H, planning, sed, candidate,
                                                                  construct_report, BUILD_CAP)
         params = planning.params.admm
+        # P5.15 Addendum 27 item 5(a): --snapshots, applied to THIS child's planning object
+        # (the build child constructs its own arm planning, so there is no pre_solve_hook to
+        # wrap here) and verified before anything is built.
+        apply_snapshot_setting(planning, launch.get('snapshots', 'on'), record)
         if planning.parallel_execution:
             raise RuntimeError('ParallelExecution is on; the build trace follows the sequential path')
 
@@ -834,13 +898,16 @@ def child_build(args):
             sed.get_updated_capacities(esso_model)
         pristine = {}
         with stages.stage('pristine clones kept by the ADMM loop (tso_pristine_base, dso_pristine_base)'):
-            if params.tso_snapshot_capture_mode != 'legacy_clone':
-                pristine['tso'] = {year: {day: tso_model[year][day].clone() for day in tn.days}
-                                   for year in tn.years}
-            if params.dso_snapshot_capture_mode != 'legacy_clone' and 7 in dso_models:
-                dn7 = planning.distribution_networks[7]
-                pristine['dso7'] = {year: {day: dso_models[7][year][day].clone() for day in dn7.days}
-                                    for year in dn7.years}
+            # P5.15 Addendum 27 item 5(a): production's own helper is called here (it holds
+            # both the validation and the clone expressions), instead of the replica this
+            # script carried before -- so the measured stage is the production path, and
+            # --snapshots off reaches it exactly as a production run would.
+            tso_pristine_base, dso_pristine_base = srp._build_pristine_snapshot_bases(
+                params, tn, tso_model, planning.distribution_networks, dso_models)
+            if tso_pristine_base is not None:
+                pristine['tso'] = tso_pristine_base
+            if dso_pristine_base is not None:
+                pristine['dso7'] = dso_pristine_base
         trace['tso_snapshot_capture_mode'] = params.tso_snapshot_capture_mode
         trace['dso_snapshot_capture_mode'] = params.dso_snapshot_capture_mode
         trace['pristine_clone_blocks'] = {k: sum(len(v) for v in d.values()) for k, d in pristine.items()}
@@ -1017,13 +1084,18 @@ def child_cycle(args):
         spec_like = {'configuration': {'overrides': {}}, 'cap': CYCLE_CAP,
                      'required_consecutive_cycles': REQUIRED_CONSECUTIVE_CYCLES}
         cycle_dir = os.path.join(out_dir, 'one_cycle')
+        # P5.15 Addendum 27 item 5(a): --snapshots is applied to the arm's planning object by
+        # wrapping the harness's own pre_solve_hook (never editing it); with 'on' the wrapper
+        # changes nothing but still records the modes in force.
+        cycle_hook = snapshot_hook_wrapper(H._config_hook_factory(spec_like, holder, overrides={}),
+                                           launch.get('snapshots', 'on'), record)
         with srp_stage_wrappers(srp, network_module, stamps), \
                 stages.stage('run_admm_arm, cap 1 (initialization + one ADMM cycle)'):
             report, report_path = G.run_admm_arm(
                 's44_scale_cycle', cycle_dir, k_override=None, investment_map=C_STAR,
                 num_max_iters_override=CYCLE_CAP, eval_id=eval_id(args.label, 'cycle'), apply_rho=False,
                 full_diagnostics_in_rows=True,
-                pre_solve_hook=H._config_hook_factory(spec_like, holder, overrides={}))
+                pre_solve_hook=cycle_hook)
         t_end = time.time()
     except BaseException as error:  # noqa: BLE001
         guard.uninstall()
@@ -1260,7 +1332,7 @@ def main_parent(args):
         os.makedirs(out_dir)
         log = ParentLog(os.path.join(out_dir, 'parent_run.log'))
         log(f'{STAGE}: label={args.label} instance={args.instance} time_one_cycle={args.time_one_cycle} '
-            f'rss_limit_gib={args.rss_limit_gib}')
+            f'rss_limit_gib={args.rss_limit_gib} snapshots={args.snapshots}')
         case_dir = os.path.join(out_dir, 'case')
         os.makedirs(case_dir)
         overrides_cli = {'years': (json.loads(args.override_years) if args.override_years else None),
@@ -1288,6 +1360,11 @@ def main_parent(args):
                            'parent_backstop_bytes': int(args.rss_limit_gib * GIB) + BACKSTOP_MARGIN_BYTES,
                            'min_available_bytes': MIN_AVAILABLE_BYTES, 'sample_interval_s': SAMPLE_INTERVAL_S},
             'runs_alone_enforced': runs_alone, 'time_one_cycle_requested': args.time_one_cycle,
+            'snapshots': args.snapshots,
+            'snapshots_note': ('P5.15 Addendum 27 item 5(a): "on" = committed behaviour (capture modes '
+                               'untouched); "off" = both admm_parameters.*_snapshot_capture_mode set to '
+                               '\'off\' on the planning object, verified per child and recorded in '
+                               'build_record.json / cycle_record.json under "snapshot_setting"'),
             'machine': {'total_memory_bytes': psutil.virtual_memory().total, 'cpu_count': os.cpu_count(),
                         'available_at_launch': psutil.virtual_memory().available},
             'started_utc': _utc(), 'parent_pid': os.getpid(),
@@ -1361,6 +1438,15 @@ def main():
     parser.add_argument('--label', required=True, help='write-once output label')
     parser.add_argument('--time-one-cycle', action='store_true',
                         help='after a complete build under the watchdog, time ONE ADMM cycle (real solves)')
+    parser.add_argument('--snapshots', choices=('on', 'off'), default='on',
+                        help=('P5.15 Addendum 27 item 5(a): FrozenSMOPF snapshot capture. '
+                              '"on" (default) = the committed behaviour, both capture modes left '
+                              'exactly as the case file/defaults set them (lightweight: pristine '
+                              'TSO and node-7 DSO clones are built). "off" sets BOTH '
+                              'admm_parameters.tso_snapshot_capture_mode and '
+                              'dso_snapshot_capture_mode to \'off\' on the planning object of the '
+                              'build child and (through the pre_solve_hook) of the cycle child, so '
+                              'no pristine base is cloned and no per-cycle capture is taken.'))
     parser.add_argument('--rss-limit-gib', type=float, default=RSS_LIMIT_GIB_DEFAULT,
                         help='watchdog limit in GiB (default 24 = the spec; lower ONLY to test the abort path)')
     parser.add_argument('--no-deep-counts', action='store_true',

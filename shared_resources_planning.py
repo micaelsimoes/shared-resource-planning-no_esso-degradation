@@ -1,4 +1,5 @@
 import os
+import json
 import pickle
 import gc
 import resource
@@ -2311,6 +2312,86 @@ def _add_benders_cut(planning_problem, model, recourse_value, sensitivities, can
 # ======================================================================================================================
 #  OPERATIONAL PLANNING (DISTRIBUTED)
 # ======================================================================================================================
+
+# P5.15 Addendum 27 item 5(a): the legal values of
+# `admm_parameters.tso_snapshot_capture_mode` /
+# `admm_parameters.dso_snapshot_capture_mode` (see `admm_parameters.py` for
+# what each one means). 'lightweight' is the default and the behaviour of
+# every campaign and verification run to date; 'legacy_clone' is the
+# pre-Step-3.6 fallback; 'off' (new) builds no pristine base and takes no
+# per-cycle capture at all.
+SNAPSHOT_CAPTURE_MODES = ('lightweight', 'legacy_clone', 'off')
+
+
+def _validate_snapshot_capture_modes(admm_parameters):
+    """P5.15 Addendum 27 item 5(a). Validates both snapshot capture modes
+    ONCE per `_run_operational_planning` call, before any pristine base is
+    built, and returns the two resolved modes as a (tso, dso) tuple. Raises
+    ValueError on an illegal value, and on 'off' together with an enabled
+    persistent-worker pool -- that path clones a block per solve inside the
+    worker (`admm_persistent_workers._solve_tso_block`/`_solve_dso_block`),
+    so 'off' would not have the effect it claims there. A params object that
+    predates these attributes resolves to the default, 'lightweight'."""
+    modes = []
+    persistent_enabled = admm_persistent_workers.persistent_workers_enabled(admm_parameters)
+    for attribute in ('tso_snapshot_capture_mode', 'dso_snapshot_capture_mode'):
+        mode = getattr(admm_parameters, attribute, 'lightweight')
+        if mode not in SNAPSHOT_CAPTURE_MODES:
+            raise ValueError(
+                f'admm_parameters.{attribute} = {mode!r} is not a legal snapshot capture mode; '
+                f'legal values are {SNAPSHOT_CAPTURE_MODES}'
+            )
+        if mode == 'off' and persistent_enabled:
+            raise ValueError(
+                f"admm_parameters.{attribute} = 'off' is not supported with "
+                f'persistent_workers enabled: the persistent-worker path clones the block being '
+                f'solved on every solve, so snapshot capture cannot be switched off there'
+            )
+        modes.append(mode)
+    return tuple(modes)
+
+
+def _build_pristine_snapshot_bases(admm_parameters, transmission_network, tso_model, distribution_networks, dso_models):
+    """P5.15 Step 3.6 (PLANNER_BRIEF_2026-09-13.md Addendum 21 item 4,
+    WORKER_REPORT_S36_CLONE_CAPTURE.md) + Addendum 27 item 5(a). Builds the
+    pristine, unmutated per-(year, day) blocks the lightweight FrozenSMOPF
+    capture replays onto, cloned ONCE per `_run_operational_planning` call --
+    right before the ADMM loop starts mutating the models -- instead of on
+    every cycle:
+
+      * `tso_pristine_base`: every TSO block;
+      * `dso_pristine_base`: every node-7 DSO block -- node 7 is the only DSO
+        block that ever wires a snapshot callback
+        (`update_distribution_coordination_models_and_solve_sequential`);
+        `7 in dso_models` guards a case study without one (none exist in this
+        programme, but the guard costs nothing and avoids a KeyError).
+
+    Each base is built only when ITS mode is 'lightweight'. 'legacy_clone'
+    (None base) falls back to the pre-Step-3.6 per-cycle clone inside
+    `NetworkData.optimize`; 'off' (None base) takes no snapshot at all, so
+    neither path pays this cost. Since `_validate_snapshot_capture_modes`
+    has already rejected every other value, `== 'lightweight'` here is
+    exactly the previous `!= 'legacy_clone'` condition for the two
+    pre-existing modes -- 'off' is the only case that behaves differently."""
+    tso_capture_mode, dso_capture_mode = _validate_snapshot_capture_modes(admm_parameters)
+
+    tso_pristine_base = None
+    if tso_capture_mode == 'lightweight':
+        tso_pristine_base = {
+            year: {day: tso_model[year][day].clone() for day in transmission_network.days}
+            for year in transmission_network.years
+        }
+
+    dso_pristine_base = None
+    if dso_capture_mode == 'lightweight' and 7 in dso_models:
+        dso_pristine_base = {
+            year: {day: dso_models[7][year][day].clone() for day in distribution_networks[7].days}
+            for year in distribution_networks[7].years
+        }
+
+    return tso_pristine_base, dso_pristine_base
+
+
 def _run_operational_planning(planning_problem, candidate_solution, initial_state=None, debug_flag=False):
 
     transmission_network = planning_problem.transmission_network
@@ -2499,39 +2580,17 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
     sess_available_capacities = shared_ess_data.get_updated_capacities(esso_model)
 
     # P5.15 Step 3.6 (PLANNER_BRIEF_2026-09-13.md Addendum 21 item 4,
-    # WORKER_REPORT_S36_CLONE_CAPTURE.md): pristine, unmutated TSO block per
-    # (year, day), cloned ONCE here -- right before the ADMM loop starts
-    # mutating `tso_model` -- instead of on every cycle. Covers BOTH branches
-    # above (fresh construction and continuation) uniformly, since both
-    # converge to a fully ADMM-ready `tso_model` by this point.
-    # `update_transmission_coordination_model_and_solve`'s lightweight
-    # per-cycle capture replays onto a fresh clone of this base to rebuild an
-    # equivalent FrozenSMOPF pre-solve snapshot on demand, without paying
-    # `model.clone()` every cycle. None when the legacy per-cycle-clone path
-    # is selected (`admm_parameters.tso_snapshot_capture_mode ==
-    # 'legacy_clone'`), so that path never pays this cost either.
-    tso_pristine_base = None
-    if admm_parameters.tso_snapshot_capture_mode != 'legacy_clone':
-        tso_pristine_base = {
-            year: {day: tso_model[year][day].clone() for day in transmission_network.days}
-            for year in transmission_network.years
-        }
-
-    # P5.15 Addendum 23/24, Step 3.6 persistent-worker bounded task item 3
-    # (`admm_parameters.dso_snapshot_capture_mode`, same design as
-    # `tso_pristine_base` above): pristine, unmutated node-7 DSO block per
-    # (year, day), cloned ONCE here. Only node 7 is built -- it is the only
-    # DSO block that ever wires a snapshot callback
-    # (`update_distribution_coordination_models_and_solve_sequential`).
-    # `7 in dso_models` guards a case study with no node-7 DSO (none exist
-    # in this programme, but the guard costs nothing and avoids a KeyError
-    # for a hypothetical one).
-    dso_pristine_base = None
-    if admm_parameters.dso_snapshot_capture_mode != 'legacy_clone' and 7 in dso_models:
-        dso_pristine_base = {
-            year: {day: dso_models[7][year][day].clone() for day in distribution_networks[7].days}
-            for year in distribution_networks[7].years
-        }
+    # WORKER_REPORT_S36_CLONE_CAPTURE.md) + Addendum 27 item 5(a): the
+    # pristine, unmutated TSO and node-7 DSO blocks the lightweight
+    # FrozenSMOPF capture replays onto, cloned ONCE here -- right before the
+    # ADMM loop starts mutating the models -- instead of on every cycle.
+    # This point covers BOTH branches above (fresh construction and
+    # continuation) uniformly, since both converge to fully ADMM-ready
+    # models by here. The helper validates both capture modes first, so an
+    # illegal mode (or 'off' together with persistent workers) raises here,
+    # before any solve. See `_build_pristine_snapshot_bases`.
+    tso_pristine_base, dso_pristine_base = _build_pristine_snapshot_bases(
+        admm_parameters, transmission_network, tso_model, distribution_networks, dso_models)
 
     # P5.15 Addendum 22 item (2), Step 3.6 (Addendum 18 design,
     # `admm_persistent_workers.py`): persistent worker pool, DEFAULT OFF.
@@ -5440,7 +5499,49 @@ def update_transmission_coordination_model_and_solve(transmission_network, model
     # `tso_pristine_base is None` (either `tso_snapshot_capture_mode ==
     # 'legacy_clone'`, or a caller that predates this parameter) falls back
     # to the exact pre-Step-3.6 behaviour, byte-for-byte.
-    if tso_pristine_base is not None:
+    # P5.15 Addendum 27 item 5(a): `tso_snapshot_capture_mode == 'off'`
+    # takes the FIRST branch below -- no pristine base (none was built), no
+    # per-cycle capture, no clone anywhere, and therefore no FrozenSMOPF
+    # snapshot. A failed block is still reported exactly as before by the
+    # per-block loop at the end of this function; the branch additionally
+    # prints a warning naming the mode and the block and writes a small
+    # JSON marker in the FrozenSMOPF directory the snapshot would have gone
+    # to, so a later reader cannot mistake "no snapshot here" for "this
+    # block did not fail". The other two modes are untouched.
+    tso_capture_mode = getattr(params, 'tso_snapshot_capture_mode', 'lightweight')
+
+    if tso_capture_mode == 'off':
+
+        res = transmission_network.optimize(model, from_warm_start=from_warm_start)
+
+        for year in transmission_network.years:
+            for day in transmission_network.days:
+                if not _solver_result_succeeded(res[year][day]):
+                    print(
+                        f'[WARNING][FROZEN SMOPF] snapshot capture is OFF '
+                        f'(tso_snapshot_capture_mode=off): NO pre-solve snapshot written for failed '
+                        f'block agent=TSO | network={transmission_network.name} | year={year} | '
+                        f'day={day} | cycle={cycle}'
+                    )
+                    _write_snapshot_skipped_marker(
+                        os.path.join(transmission_network.results_dir, 'FrozenSMOPF'),
+                        agent='TSO',
+                        network_name=transmission_network.name,
+                        year=year,
+                        day=day,
+                        cycle=cycle,
+                        from_warm_start=from_warm_start,
+                        result=res[year][day],
+                        label='failure',
+                        mode='off',
+                    )
+        if cycle == 7:
+            print(
+                '[INFO][FROZEN SMOPF] cycle-7 TSO comparator snapshot SKIPPED '
+                '(tso_snapshot_capture_mode=off)'
+            )
+
+    elif tso_pristine_base is not None:
 
         captured_state = {
             (year, day): capture_block_mutable_state(model[year][day])
@@ -5580,6 +5681,55 @@ def _save_frozen_network_block(model, save_dir, agent, network_name, year, day, 
         return None
 
 
+def _write_snapshot_skipped_marker(save_dir, agent, network_name, year, day, cycle, from_warm_start,
+                                   result, label, mode, node_id=None):
+    # P5.15 Addendum 27 item 5(a): the trace left behind when snapshot
+    # capture is switched OFF (`*_snapshot_capture_mode == 'off'`) and a
+    # block that WOULD have had a pre-solve snapshot written fails. It is a
+    # small JSON file, never a `.pkl`: every snapshot reader in this
+    # programme selects `.pkl` files (e.g.
+    # `p515_g_g1_g4_admm_gates._scan_frozen_snapshots`), so a marker can
+    # never be counted as, or unpickled as, a snapshot. Same non-raising
+    # contract as `_save_frozen_network_block` above: a diagnostic writer
+    # must never abort the ADMM loop; the failure itself is recorded by the
+    # caller, independently of this function.
+    try:
+        os.makedirs(save_dir, exist_ok=True)
+        node_token = f'_node{node_id}' if node_id is not None else ''
+        filename = f'snapshot_skipped_{label}_{agent}{node_token}_{network_name}_{year}_{day}_cycle{cycle}.json'
+        filepath = os.path.join(save_dir, filename)
+        payload = {
+            'record_type': 'frozen_snapshot_skipped_marker',
+            'note': ('snapshot capture was switched off for this run; this file is a MARKER, not a '
+                     'snapshot, and holds no model'),
+            'snapshot_capture_mode': mode,
+            'agent': agent,
+            'node_id': node_id,
+            'network_name': network_name,
+            'year': str(year),
+            'day': str(day),
+            'cycle': cycle,
+            'from_warm_start': from_warm_start,
+            'label': label,
+            'captured_outcome': solver_result_summary(result),
+            'utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
+        }
+
+        with open(filepath, 'w') as file:
+            json.dump(payload, file, indent=1, default=str)
+
+        print(f'[DEBUG][FROZEN SMOPF] Wrote snapshot-skipped marker to {filepath}')
+
+        return filepath
+    except Exception as error:
+        print(
+            f'[WARNING][FROZEN SMOPF] Could not write snapshot-skipped marker for '
+            f'agent={agent}, node_id={node_id}, network={network_name}, year={year}, '
+            f'day={day}, cycle={cycle} to save_dir={save_dir}: {error!r}'
+        )
+        return None
+
+
 def update_distribution_coordination_models_and_solve(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=False, parallel_execution=False, cycle=None, dso_pristine_base=None):
     if parallel_execution:
         return update_distribution_coordination_models_and_solve_parallel(distribution_networks, models, vmag_req, dual_vmag, pf_req, dual_pf, ess_req, dual_ess, params, sess_estimated_capacities, from_warm_start=from_warm_start)
@@ -5690,7 +5840,48 @@ def update_distribution_coordination_models_and_solve_sequential(distribution_ne
         # rebuild a block ON DEMAND, only for the (rare) blocks that
         # actually need a snapshot written, by replaying the capture onto a
         # fresh clone of the pristine base.
-        if node_id == 7 and dso_pristine_base is not None:
+        # P5.15 Addendum 27 item 5(a): `dso_snapshot_capture_mode == 'off'`
+        # takes the FIRST branch below for node 7 -- no pristine base (none
+        # was built), no per-cycle capture, no clone, no FrozenSMOPF
+        # snapshot; a warning naming the mode and the block plus a JSON
+        # marker instead. Every other node already passes `None`/`None`
+        # callbacks and is unaffected (it keeps taking the `else` branch,
+        # unchanged). The other two modes are untouched.
+        dso_capture_mode = getattr(params, 'dso_snapshot_capture_mode', 'lightweight')
+
+        if node_id == 7 and dso_capture_mode == 'off':
+
+            res[node_id] = distribution_network.optimize(model, from_warm_start=from_warm_start)
+
+            for year in distribution_network.years:
+                for day in distribution_network.days:
+                    if not _solver_result_succeeded(res[node_id][year][day]):
+                        print(
+                            f'[WARNING][FROZEN SMOPF] snapshot capture is OFF '
+                            f'(dso_snapshot_capture_mode=off): NO pre-solve snapshot written for failed '
+                            f'block agent=DSO | node={node_id} | network={distribution_network.name} | '
+                            f'year={year} | day={day} | cycle={cycle}'
+                        )
+                        _write_snapshot_skipped_marker(
+                            os.path.join(distribution_network.results_dir, 'FrozenSMOPF'),
+                            agent='DSO',
+                            network_name=distribution_network.name,
+                            year=year,
+                            day=day,
+                            cycle=cycle,
+                            from_warm_start=from_warm_start,
+                            result=res[node_id][year][day],
+                            label='failure',
+                            mode='off',
+                            node_id=node_id,
+                        )
+            if cycle == 7:
+                print(
+                    f'[INFO][FROZEN SMOPF] cycle-7 DSO node={node_id} comparator snapshot SKIPPED '
+                    f'(dso_snapshot_capture_mode=off)'
+                )
+
+        elif node_id == 7 and dso_pristine_base is not None:
 
             captured_state = {
                 (year, day): capture_block_mutable_state(model[year][day])
