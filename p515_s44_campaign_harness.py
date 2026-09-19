@@ -818,9 +818,11 @@ def assert_record_capture_paths():
         checks[f'harness_fn_{fn}'] = callable(getattr(G, fn, None))
     for fn in ('_certification_from_trajectory', '_first_pass_cycle', '_terminal_ratios'):
         checks[f'evaluator_fn_{fn}'] = callable(getattr(E39, fn, None))
+    # settlement remainder: produced by production `_get_operational_recourse_components`
+    # (key 'interface_settlement_total'), which `write_component_levels_terminal` calls.
     checks['component_levels_recourse_key_interface_settlement_total'] = (
-        "'interface_settlement_total'" in inspect.getsource(G.write_component_levels_terminal)
-        or "'interface_settlement_total'" in inspect.getsource(G))
+        "'interface_settlement_total':" in inspect.getsource(srp._get_operational_recourse_components)
+        and '_get_operational_recourse_components' in inspect.getsource(G.write_component_levels_terminal))
     checks['run_admm_arm_accepts_investment_map'] = (
         'investment_map' in inspect.signature(G.run_admm_arm).parameters)
     checks['run_admm_arm_post_run_hook_gets_state'] = ("'state' in inspect.signature(post_run_hook)"
