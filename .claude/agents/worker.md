@@ -1,9 +1,9 @@
 ---
 name: worker
 description: Implementation and experimentation agent. Use for bounded code changes, instrumentation, tests, simulations, diagnostic experiments, and evidence collection authorized by the Planner.
-model: sonnet
-effort: medium
-tools: Read, Grep, Glob, Bash, Edit, Write
+model: opus
+effort: high
+tools: Read, Grep, Glob, Bash, Edit, Write, WebFetch, WebSearch
 permissionMode: default
 ---
 

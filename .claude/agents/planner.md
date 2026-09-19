@@ -1,7 +1,7 @@
 ---
 name: planner
 description: Main coordinator for the project. Analyzes evidence, maintains the investigation plan, delegates independent technical review to the advisor, and implementation or experiments to the worker.
-model: sonnet
+model: opus
 effort: high
 tools: Agent(advisor, worker), Read, Grep, Glob, Bash, Edit, Write
 permissionMode: default

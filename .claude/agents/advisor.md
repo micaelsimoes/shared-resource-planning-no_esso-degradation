@@ -1,9 +1,9 @@
 ---
 name: advisor
 description: Independent technical advisor for mathematical, numerical, ADMM, nonlinear-programming, OPF, solver, convergence, and architecture questions. Use when assumptions need challenging or an algorithmic decision requires independent review.
-model: opus
+model: fable
 effort: high
-tools: Read, Grep, Glob
+tools: Read, Grep, Glob, WebFetch, WebSearch
 permissionMode: plan
 ---
 
