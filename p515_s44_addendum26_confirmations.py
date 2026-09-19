@@ -922,14 +922,37 @@ def item3_zero_investment(O, srp, SED, G, N, R, pe, eval_id, stdout_sink):
                   planning, results)},
               _func_span(srp._admm_local_solves_succeeded))
 
-        def admm_prep():
+        def objective_prep():
             with redirect_stdout(stdout_sink):
                 srp._prepare_distribution_objectives_for_admm(planning.distribution_networks,
                                                               state['dso'])
                 srp._prepare_transmission_objectives_for_admm(tn, state['tso'])
+            return {}
+        if ok:
+            ok = _step(steps, '8a _prepare_distribution/transmission_objectives_for_admm',
+                       objective_prep, _func_span(srp._prepare_transmission_objectives_for_admm))
+
+        def sigma_computed():
+            with redirect_stdout(stdout_sink):
                 computed = srp._compute_common_admm_objective_scale(planning, state['tso'],
                                                                     state['dso'])
-                scale, sig_c, sig_f = srp._resolve_common_admm_objective_scale(computed, params)
+            return {'sigma_computed': computed}
+        if ok:
+            _step(steps, '8b _compute_common_admm_objective_scale on UNSOLVED blocks (reads the '
+                         "initialization's solved objective values; expected to fail here -- a "
+                         'trace artifact, not a finding about x = 0)', sigma_computed,
+                  _func_span(srp._compute_common_admm_objective_scale))
+
+        def admm_prep():
+            # sigma: the case-file FIXED value, which `_resolve_common_admm_objective_scale`
+            # returns whenever `objective_scale` is set (its calibration assertion against the
+            # computed value -- factor `objective_scale_assert_factor` -- needs a solve and is
+            # therefore NOT exercised here). Declared substitution for the trace only.
+            if params.objective_scale is None:
+                raise RuntimeError('case file has no fixed objective_scale; cannot continue '
+                                   'the trace without a solve')
+            scale = params.objective_scale
+            with redirect_stdout(stdout_sink):
                 al_scale = srp._resolve_esso_al_scale(planning, params, scale)[0]
                 with R.patched_admm_objectives():
                     srp.update_distribution_models_to_admm(planning, state['dso'], params, scale)
@@ -938,12 +961,17 @@ def item3_zero_investment(O, srp, SED, G, N, R, pe, eval_id, stdout_sink):
                                                                al_scale_esso=al_scale)
                 srp._initialize_shared_ess_consensus(planning, state['cv'])
             state['al_scale'] = al_scale
-            return {'objective_scale_computed_at_unsolved_point': computed,
-                    'objective_scale_used': scale, 'al_scale_esso': al_scale,
+            return {'objective_scale_used': scale,
+                    'objective_scale_source': 'case-file fixed sigma (declared substitution; '
+                                              'calibration assertion not exercised)',
+                    'objective_scale_assert_factor': params.objective_scale_assert_factor,
+                    'al_scale_esso': al_scale,
                     'price_taker_branch_taken': params.shared_ess_initialization == 'price_taker'}
         if ok:
-            ok = _step(steps, '8 ADMM objective preparation + ESSO AL + consensus initialization '
-                              '(production order, _run_operational_planning init branch)',
+            ok = _step(steps, '8c ESSO AL scale, update_*_to_admm (TSO/DSO under '
+                              'p58_rescale.patched_admm_objectives, as in run_admm_arm), ESSO '
+                              'AL objective, consensus initialization (production order, '
+                              '_run_operational_planning init branch)',
                        admm_prep, _func_span(srp._run_operational_planning))
 
         def sref():
@@ -1087,6 +1115,10 @@ def item3_zero_investment(O, srp, SED, G, N, R, pe, eval_id, stdout_sink):
         'update_interface_power_flow_variables and every post-solve read of the initialization '
         '(require solved results)',
         'the ADMM main cycle (every DSO/TSO/ESSO solve), convergence certification, polish',
+        'the fixed-sigma calibration assertion (_resolve_common_admm_objective_scale: '
+        'sigma_computed = max weighted SOLVED initialization block objective, required within '
+        'objective_scale_assert_factor of the case-file sigma) -- needs the x = 0 '
+        'initialization solves',
         'IPOPT behaviour on the ESSO converter-circle rows whose right-hand side is pinned to 0 '
         '(see step 10) and on the TSO/DSO blocks with the shared ESS fixed at 0 -- a solve '
         'question; see historical_evidence',
