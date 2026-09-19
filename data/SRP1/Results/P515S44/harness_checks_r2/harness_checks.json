@@ -1,0 +1,553 @@
+{
+ "stage": "P5.15 Addendum 25 item 1 -- campaign harness zero-solve checks",
+ "timestamp_utc": "2026-09-19T09:33:38.772432+00:00",
+ "harness_sha256": "42b99b9302f7005fdfa6a9f2d52d6701ba0d730f7ae0a66384e7ffbcde687cdb",
+ "git_head": "10e49f2d2d24a4f46bc52e19b2f4723ffef723f1",
+ "C1_canonical_candidate": {
+  "checks": {
+   "key_independent_of_order_and_numeric_spelling": true,
+   "zero_spellings_same_key": true,
+   "gate_candidates_distinct_keys": true,
+   "all_invalid_candidates_rejected": true,
+   "canonical_c_star": true
+  },
+  "keys": {
+   "c_star": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "paper_plan": "d1a02e67107d0bace5f3de92e28df61f2f6be93f6c9d7020a68efffc6d836c0c",
+   "node7_empty": "e30704e6e4dd3765d2cc8960d5a3d48c5adb362bc6fd067dda567f14086b46b5"
+  },
+  "error_cases": {
+   "s_zero_e_positive": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "node 5: s == 0 <=> e == 0 violated (s=0.0, e=1.0)"
+   },
+   "missing_node": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "candidate must cover exactly the active nodes [5, 7, 9]: missing=[9] extra=[]"
+   },
+   "extra_node": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "candidate must cover exactly the active nodes [5, 7, 9]: missing=[] extra=[11]"
+   },
+   "negative": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "node 5: negative s=-1.0"
+   },
+   "nan": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "node 5: non-finite s=nan"
+   }
+  },
+  "eval_ids_c_star_s44_gate": {
+   "run": "p515s44_s44_gate_578636daa6d6360d_run",
+   "precheck": "p515s44_s44_gate_578636daa6d6360d_precheck"
+  },
+  "pass": true
+ },
+ "C2_frozen_spec": {
+  "checks": {
+   "file_sha256_equals_returned": true,
+   "file_name_carries_sha8": true,
+   "load_by_hash_finds_same_file": true,
+   "spec_records_case_file_sha256": true,
+   "spec_records_harness_sha256": true,
+   "spec_records_thread_caps": true,
+   "all_refusals_raised": true
+  },
+  "spec_path": "data/SRP1/Results/P515S44/harness_checks_r2/c2_spec_root/campaign_spec_c2_04e91893.json",
+  "spec_sha256": "04e9189372edc5b7e53b00de06e43ac5aa3330892475d306b4c5a87e971615d9",
+  "refusals": {
+   "second_freeze_into_nonempty_root": {
+    "raised": true,
+    "type": "RuntimeError",
+    "message": "campaign root exists and is not empty (write-once): /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/harness_checks_r2/c2_spec_root"
+   },
+   "unsupported_override": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "unsupported configuration overrides ['rho']; supported: ['anderson_acceleration']"
+   },
+   "duplicate_candidate": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "duplicate candidate label or canonical key: b / 578636daa6d6360d"
+   }
+  },
+  "pass": true
+ },
+ "C3_campaign_lock": {
+  "checks": {
+   "acquire_writes_pid_and_spec": true,
+   "second_acquire_refused": true,
+   "release_by_wrong_pid_refused": true,
+   "release_ok_and_removed": true,
+   "legacy_lock_blocks_campaign": true,
+   "no_leftover_lock_files": true
+  },
+  "second": {
+   "raised": true,
+   "type": "SystemExit",
+   "message": "REFUSING TO RUN: campaign lock held: /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/harness_checks_r2/c3_campaign.lock ({\"pid\": 32420, \"campaign_id\": \"c3\", \"campaign_spec_sha256\": \"abc\", \"started_utc\": \"2026-09-19T09:33:38.817457+00:00\"})"
+  },
+  "wrong_pid": {
+   "raised": true,
+   "type": "RuntimeError",
+   "message": "campaign lock /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/harness_checks_r2/c3_campaign.lock is not held by pid 1032419: {'pid': 32420, 'campaign_id': 'c3', 'campaign_spec_sha256': 'abc', 'started_utc': '2026-09-19T09:33:38.817457+00:00'}"
+  },
+  "legacy_refusal": {
+   "raised": true,
+   "type": "SystemExit",
+   "message": "REFUSING TO RUN: the legacy one-run lock exists: /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/harness_checks_r2/c3_legacy.lock"
+  },
+  "pass": true
+ },
+ "C4_spawn_stub_evaluations": {
+  "checks": {
+   "four_records_in_batch_order": true,
+   "all_stub_ok_exit_0": true,
+   "spec_sha256_in_every_record": true,
+   "distinct_child_processes": true,
+   "children_are_direct_children_of_parent": true,
+   "child_saw_lock_naming_parent": true,
+   "thread_caps_in_every_child": true,
+   "slot_limit_respected_and_used": true,
+   "wall_consistent_with_2_slots": true,
+   "per_eval_files_present": true,
+   "wait4_rusage_captures_child_memory": true,
+   "reevaluation_in_same_campaign_refused": true,
+   "failing_child_gives_parent_barrier_record": true,
+   "child_refuses_foreign_lock": true,
+   "stub_refused_under_non_test_spec": true
+  },
+  "per_eval": [
+   {
+    "label": "s1",
+    "dir_files": [
+     "child_stderr.log",
+     "child_stdout.log",
+     "evaluation_record.json",
+     "exit_code.txt",
+     "launch.json",
+     "wait4_rusage.json"
+    ],
+    "exit_code": "0",
+    "record_status": "stub",
+    "record_spec_sha256_ok": true,
+    "child_pid": 32426,
+    "child_ppid": 32420,
+    "thread_caps_seen": {
+     "OMP_NUM_THREADS": "1",
+     "MKL_NUM_THREADS": "1",
+     "OPENBLAS_NUM_THREADS": "1",
+     "VECLIB_MAXIMUM_THREADS": "1",
+     "NUMEXPR_NUM_THREADS": "1"
+    },
+    "wait4_ru_maxrss": 120651776,
+    "child_self_ru_maxrss": 120143872,
+    "lock_pid_seen": 32420,
+    "PYTHONHASHSEED_in_child": null
+   },
+   {
+    "label": "s2",
+    "dir_files": [
+     "child_stderr.log",
+     "child_stdout.log",
+     "evaluation_record.json",
+     "exit_code.txt",
+     "launch.json",
+     "wait4_rusage.json"
+    ],
+    "exit_code": "0",
+    "record_status": "stub",
+    "record_spec_sha256_ok": true,
+    "child_pid": 32427,
+    "child_ppid": 32420,
+    "thread_caps_seen": {
+     "OMP_NUM_THREADS": "1",
+     "MKL_NUM_THREADS": "1",
+     "OPENBLAS_NUM_THREADS": "1",
+     "VECLIB_MAXIMUM_THREADS": "1",
+     "NUMEXPR_NUM_THREADS": "1"
+    },
+    "wait4_ru_maxrss": 120848384,
+    "child_self_ru_maxrss": 120340480,
+    "lock_pid_seen": 32420,
+    "PYTHONHASHSEED_in_child": null
+   },
+   {
+    "label": "s3",
+    "dir_files": [
+     "child_stderr.log",
+     "child_stdout.log",
+     "evaluation_record.json",
+     "exit_code.txt",
+     "launch.json",
+     "wait4_rusage.json"
+    ],
+    "exit_code": "0",
+    "record_status": "stub",
+    "record_spec_sha256_ok": true,
+    "child_pid": 32440,
+    "child_ppid": 32420,
+    "thread_caps_seen": {
+     "OMP_NUM_THREADS": "1",
+     "MKL_NUM_THREADS": "1",
+     "OPENBLAS_NUM_THREADS": "1",
+     "VECLIB_MAXIMUM_THREADS": "1",
+     "NUMEXPR_NUM_THREADS": "1"
+    },
+    "wait4_ru_maxrss": 120684544,
+    "child_self_ru_maxrss": 120209408,
+    "lock_pid_seen": 32420,
+    "PYTHONHASHSEED_in_child": null
+   },
+   {
+    "label": "s4",
+    "dir_files": [
+     "child_stderr.log",
+     "child_stdout.log",
+     "evaluation_record.json",
+     "exit_code.txt",
+     "launch.json",
+     "wait4_rusage.json"
+    ],
+    "exit_code": "0",
+    "record_status": "stub",
+    "record_spec_sha256_ok": true,
+    "child_pid": 32441,
+    "child_ppid": 32420,
+    "thread_caps_seen": {
+     "OMP_NUM_THREADS": "1",
+     "MKL_NUM_THREADS": "1",
+     "OPENBLAS_NUM_THREADS": "1",
+     "VECLIB_MAXIMUM_THREADS": "1",
+     "NUMEXPR_NUM_THREADS": "1"
+    },
+    "wait4_ru_maxrss": 120389632,
+    "child_self_ru_maxrss": 119914496,
+    "lock_pid_seen": 32420,
+    "PYTHONHASHSEED_in_child": null
+   }
+  ],
+  "batch_info": {
+   "max_concurrent_observed": 2,
+   "timeline": [
+    {
+     "event": "start",
+     "label": "s1",
+     "pid": 32426,
+     "t": 1789810418.853769
+    },
+    {
+     "event": "start",
+     "label": "s2",
+     "pid": 32427,
+     "t": 1789810418.855699
+    },
+    {
+     "event": "end",
+     "label": "s1",
+     "pid": 32426,
+     "t": 1789810423.8592,
+     "exit_code": 0
+    },
+    {
+     "event": "end",
+     "label": "s2",
+     "pid": 32427,
+     "t": 1789810423.860258,
+     "exit_code": 0
+    },
+    {
+     "event": "start",
+     "label": "s3",
+     "pid": 32440,
+     "t": 1789810428.870868
+    },
+    {
+     "event": "start",
+     "label": "s4",
+     "pid": 32441,
+     "t": 1789810428.8751612
+    },
+    {
+     "event": "end",
+     "label": "s3",
+     "pid": 32440,
+     "t": 1789810433.8815591,
+     "exit_code": 0
+    },
+    {
+     "event": "end",
+     "label": "s4",
+     "pid": 32441,
+     "t": 1789810433.884078,
+     "exit_code": 0
+    }
+   ]
+  },
+  "wall_s": 15.033942937850952,
+  "peak_concurrency_from_timeline": 2,
+  "rerun_refusal": {
+   "raised": true,
+   "type": "RuntimeError",
+   "message": "evaluation dir already exists (write-once, never reusable): /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/harness_checks_r2/c4_stub_campaign/evals/578636daa6d6360d_s1"
+  },
+  "fail_record": {
+   "schema": "p515_s44_evaluation_record_v1",
+   "campaign_id": "c4f",
+   "campaign_spec_path": "data/SRP1/Results/P515S44/harness_checks_r2/c4_fail_campaign/campaign_spec_c4f_b96c62d6.json",
+   "campaign_spec_sha256": "b96c62d638605f85bbf80847f2ac6c7a300c61fbecd8ea95c700a7c250c0f177",
+   "candidate_label": "fail1",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.96875,
+      3.875
+     ],
+     "7": [
+      0.96875,
+      3.875
+     ],
+     "9": [
+      0.96875,
+      3.875
+     ]
+    }
+   },
+   "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "status": "harness_error",
+   "barrier": true,
+   "barrier_cause": "child exited with code 3 and wrote no evaluation_record.json",
+   "stderr_tail": [
+    "stub child: failing on purpose\n"
+   ],
+   "stdout_tail": [
+    "[S44-CHILD] pid=32445 ppid=32420 label=fail1 key=578636daa6d6360d caps={'OMP_NUM_THREADS': '1', 'MKL_NUM_THREADS': '1', 'OPENBLAS_NUM_THREADS': '1', 'VECLIB_MAXIMUM_THREADS': '1', 'NUMEXPR_NUM_THREADS': '1'} PYTHONHASHSEED=None\n"
+   ],
+   "synthesized_by_parent": true,
+   "parent_view": {
+    "exit_code": 3,
+    "wall_s": 5.006323337554932,
+    "wait4_ru_maxrss": 20152320
+   }
+  },
+  "foreign_lock_record": {
+   "schema": "p515_s44_evaluation_record_v1",
+   "campaign_id": "c4l",
+   "campaign_spec_path": "data/SRP1/Results/P515S44/harness_checks_r2/c4_foreign_lock_campaign/campaign_spec_c4l_800e7da8.json",
+   "campaign_spec_sha256": "800e7da894c94b9aae57c9e36ac2d10acf09ed774b2d7de12a56f5e226d32431",
+   "candidate_label": "foreign",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.96875,
+      3.875
+     ],
+     "7": [
+      0.96875,
+      3.875
+     ],
+     "9": [
+      0.96875,
+      3.875
+     ]
+    }
+   },
+   "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "status": "harness_error",
+   "barrier": true,
+   "barrier_cause": "child exited with code 1 and wrote no evaluation_record.json",
+   "stderr_tail": [
+    "CHILD REFUSES: campaign lock pid 1 != parent pid 32420\n"
+   ],
+   "stdout_tail": [],
+   "synthesized_by_parent": true,
+   "parent_view": {
+    "exit_code": 1,
+    "wall_s": 5.006123065948486,
+    "wait4_ru_maxrss": 19841024
+   }
+  },
+  "nonstub_record": {
+   "schema": "p515_s44_evaluation_record_v1",
+   "campaign_id": "c4n",
+   "campaign_spec_path": "data/SRP1/Results/P515S44/harness_checks_r2/c4_nonstub_spec_campaign/campaign_spec_c4n_34c6cffc.json",
+   "campaign_spec_sha256": "34c6cffcfea7cae9032a5fdf3127121d02425499d9c37f7750d5d4b897d1a024",
+   "candidate_label": "nonstub",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.96875,
+      3.875
+     ],
+     "7": [
+      0.96875,
+      3.875
+     ],
+     "9": [
+      0.96875,
+      3.875
+     ]
+    }
+   },
+   "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "status": "harness_error",
+   "barrier": true,
+   "barrier_cause": "child exited with code 1 and wrote no evaluation_record.json",
+   "stderr_tail": [
+    "CHILD REFUSES: stub mode requested but the frozen spec is not a test-only stub spec\n"
+   ],
+   "stdout_tail": [
+    "[S44-CHILD] pid=32467 ppid=32420 label=nonstub key=578636daa6d6360d caps={'OMP_NUM_THREADS': '1', 'MKL_NUM_THREADS': '1', 'OPENBLAS_NUM_THREADS': '1', 'VECLIB_MAXIMUM_THREADS': '1', 'NUMEXPR_NUM_THREADS': '1'} PYTHONHASHSEED=None\n"
+   ],
+   "synthesized_by_parent": true,
+   "parent_view": {
+    "exit_code": 1,
+    "wall_s": 5.006371974945068,
+    "wait4_ru_maxrss": 20152320
+   }
+  },
+  "pass": true
+ },
+ "C5_record_schema": {
+  "checks": {
+   "all_2_5_keys_present": true,
+   "certified": true,
+   "certification_cycle_139": true,
+   "certified_cost_equals_D": true,
+   "bar_is_max_step_last_10": true,
+   "pf_first_pass_matches_committed_s39_evaluation": true,
+   "ess_terminal_ratio_matches_committed_s39_evaluation": true,
+   "settlement_remainder_equals_component_levels": true,
+   "storage_per_node_three_nodes_with_efc": true,
+   "record_json_serializable": true,
+   "truncated_uncertified_is_barrier": true,
+   "zero_node_marked_no_storage": true
+  },
+  "record_path": "data/SRP1/Results/P515S44/harness_checks_r2/c5_record_from_D_reference.json",
+  "record_summary": {
+   "status": "certified",
+   "certification_cycle": 139,
+   "certified_cost": 650966975.2943751,
+   "first_pass_cycle_per_channel": {
+    "v": 48,
+    "pf": 125,
+    "ess": 75
+   },
+   "settlement_remainder": {
+    "definition": "recourse_components.interface_settlement_total: T_TSO + sum(T_DSO), the non-cancelling interface settlement at the terminal point, excluded from the cost",
+    "value": 36679.078142642975
+   }
+  },
+  "bar": 7898.630394935608,
+  "pass": true
+ },
+ "C6_capture_paths": {
+  "checks": {
+   "assert_record_capture_paths_passes": true
+  },
+  "detail": {
+   "trajectory_field_boyd_all_pass": true,
+   "trajectory_field_boyd_ess_channel_pass": true,
+   "trajectory_field_boyd_ess_dual_ratio": true,
+   "trajectory_field_boyd_ess_primal_ratio": true,
+   "trajectory_field_boyd_pf_channel_pass": true,
+   "trajectory_field_boyd_pf_dual_ratio": true,
+   "trajectory_field_boyd_pf_primal_ratio": true,
+   "trajectory_field_boyd_stop": true,
+   "trajectory_field_boyd_v_channel_pass": true,
+   "trajectory_field_boyd_v_dual_ratio": true,
+   "trajectory_field_boyd_v_primal_ratio": true,
+   "trajectory_field_consecutive_converged_cycles": true,
+   "trajectory_field_cycle": true,
+   "trajectory_field_cycle_convergence": true,
+   "trajectory_field_efc_per_day_max": true,
+   "trajectory_field_gross_operational_cost": true,
+   "trajectory_field_local_solves_ok": true,
+   "trajectory_field_objective_change_abs": true,
+   "trajectory_field_objective_change_ratio": true,
+   "trajectory_field_objective_tolerance": true,
+   "trajectory_field_recourse": true,
+   "trajectory_field_rho_ess_action": true,
+   "trajectory_field_rho_ess_after": true,
+   "trajectory_field_rho_freeze_active": true,
+   "trajectory_field_rho_pf_action": true,
+   "trajectory_field_rho_pf_after": true,
+   "trajectory_field_rho_v_action": true,
+   "trajectory_field_rho_v_after": true,
+   "trajectory_field_terminal_salvage_value": true,
+   "esso_capture_attr_es_avg_ch_dch_per_unit": true,
+   "esso_capture_attr_es_soh_per_unit_cumul": true,
+   "esso_capture_attr_es_e_rated_per_unit": true,
+   "harness_fn_run_admm_arm": true,
+   "harness_fn_write_boyd_terminal_s35ref": true,
+   "harness_fn_s38_pf_capture_hooks": true,
+   "harness_fn_s39_exempt_until_capture_hooks": true,
+   "harness_fn__s35ref_terminal_floor_and_efc": true,
+   "harness_fn__derive_stopped_by_from_trajectory": true,
+   "harness_fn__identify_soh_floor_rows": true,
+   "evaluator_fn__certification_from_trajectory": true,
+   "evaluator_fn__first_pass_cycle": true,
+   "evaluator_fn__terminal_ratios": true,
+   "component_levels_recourse_key_interface_settlement_total": true,
+   "run_admm_arm_accepts_investment_map": true,
+   "run_admm_arm_post_run_hook_gets_state": true,
+   "production_state_has_peak_rss": true
+  },
+  "pass": true
+ },
+ "C7_configuration_hook": {
+  "checks": {
+   "d_configuration_checks_all_pass_no_override": true,
+   "d_leaves_aa_off": true,
+   "aa_override_applied": true,
+   "hook_records_provenance_in_rule_eleven_checklist": true,
+   "instance_is_per_node_map": true
+  },
+  "configuration_checks": {
+   "rho_v_matches_D": true,
+   "rho_pf_matches_D": true,
+   "rho_ess_matches_D": true,
+   "tau_is_0": true,
+   "gamma_policy_tied_to_rho": true,
+   "balancing_exempt_until_matches_D": true,
+   "balancing_exempt_channels_empty": true,
+   "freeze_after_unchanged_cycles_is_10": true,
+   "freeze_backstop_cycle_is_200": true,
+   "minimum_consecutive_converged_cycles_matches_spec": true,
+   "shared_ess_initialization_is_standalone": true,
+   "num_max_iters_is_spec_cap": true,
+   "anderson_acceleration_off_before_overrides": true,
+   "persistent_workers_off": true,
+   "parallel_execution_off": true
+  },
+  "aa_settings_after_override": {
+   "anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10
+   }
+  },
+  "pass": true
+ },
+ "solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "all_pass": true,
+ "wall_clock_s": 43.45865797996521
+}
