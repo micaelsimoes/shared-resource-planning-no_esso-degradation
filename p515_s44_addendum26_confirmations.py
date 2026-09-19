@@ -1142,7 +1142,7 @@ def item4_esso_multipliers(pe):
         'rated_e_capacity_unit': _loc(sed_py, 'model.rated_e_capacity_unit.add('),
         'energy_storage_capacity_degradation_D_row_(E_inv_as_coefficient)':
             _loc(sed_py, "model.es_D_per_unit[y_inv, y] * (2 * shared_energy_storage.cl_eff * model.es_e_investment_fixed[y_inv])"),
-        'downstream_rated_s_capacity_aggregate': _loc(sed_py, 'model.rated_s_capacity.add('),
+        'downstream_rated_s_capacity_aggregate': _loc(sed_py, 'model.rated_s_capacity.add(', 2),
         'downstream_energy_storage_limits_pch_pdch_le_s': _loc(sed_py, "'energy_storage_limits', y_inv, y, pch <= s_max"),
         'downstream_converter_circle': _loc(sed_py, 'model.es_pnet[y, d, p] ** 2 + model.es_qnet[y, d, p] ** 2 <= model.es_s_rated[y] ** 2'),
         'downstream_available_e_capacity_unit': _loc(sed_py, 'model.available_e_capacity_unit.add('),
