@@ -65,10 +65,11 @@ What nonconvex consensus ADMM delivers here is block-stationarity at the certifi
 
 ## Findings recorded at closure
 
-- **Node 7 (Addendum 22's reading withdrawn):** the node 7 interface is the only active coupling constraint (23 of 288
-  periods; nodes 5 and 9 peak at 51 % / 67 %); the storage is idle in those periods; relief comes from DSO-side
-  flexibility; storage dispatch is set by price arbitrage and wear cost. "Congestion-relief value" and "reason for
-  siting" are struck. The Step 5 Phase A screen must include node-7-empty candidates.
+- **Node 7 (Addendum 22's reading withdrawn; wording per Addendum 27):** the DN's interface branch at node 7 is the only
+  active interface constraint (23 of 288 periods; nodes 5 and 9 peak at 51 % / 67 %); the storage is idle in those
+  periods; relief comes from DSO-side flexibility; the storage's dispatch follows the networks' price and flexibility
+  signals under the ageing constraints (available capacity, SoH floor); no wear price is charged. "Congestion-relief
+  value" and "reason for siting" are struck. The Step 5 Phase A screen must include node-7-empty candidates.
 - **The exact-fix polish (17/48 infeasible, v11) was confounded by a harness defect.** `p56a_oracle._interface_expression`
   predates Addendum 12's reparametrization: it builds the interface flow as `pc + flex_up − flex_down` and omits
   `interface_delta_p/q`, which now carries all interface deviation, so `apply_common_values` equated two unequal
@@ -122,6 +123,75 @@ Report: `P5_15_S44_SELECTION_REPORT.md`.
   - x = 0 builds;
   - ESSO capacity duals are available without extra solves; their units and sign are unestablished.
 - **Node 7 wording:** "the DN's interface branch at node 7 is the only active interface constraint".
+
+## Step 4 Phase A under way (Addendum 27, 2026-09-19). Governs the configuration, cost file and harness.
+
+Authority: Addendum 27 (with the author's decisions) and `STEP4_DFO_METHOD.md`. Frozen spec v15:
+`data/SRP1/Results/P515S45/frozen_s45_phaseA_spec_v15_5feefd7b.json` (`0a188005`).
+
+**The oracle is AA-on (`keep_memory`), from the case file.**
+- `data/SRP1/SRP1_params.json` carries `admm.anderson_acceleration` = {enabled, memory 5, 1e-10, keep_memory} (`b5629311`). The loader reads it; case files without the key load unchanged.
+- **Re-verified:** the case-file-alone run at C\* reproduces the AA C\* evaluation: 107 cycles, 650,982,939.9389359, every trajectory field.
+  - The one differing field is `terminal_salvage_value`: ×1.25, ≤ 8.4e-35 EUR, from the corrected cost file.
+  - Ruled PASS in `P5_15_S45_REVERIFY_RULING.md` (`b2c86a1a`).
+- **The AA saving falls with storage size:** 23 / 17 / 21 / 4 % at C\* / paper plan / node-7-empty / 2×C\*.
+- **Running D from now on** needs a declared campaign spec with an explicit `enabled: False` override. An undeclared spec now refuses to run.
+
+**Cost file.** The corrected `SRP1_ESS.xlsx` is from `7ce1d1ab` (`2cada62b`, sha256 `e17bd588…e39cd6`).
+- Energy costs are exactly ×1.25; power costs are unchanged.
+- It enters I(x) and the salvage reporting expression, not Q(x).
+- I(x) with it (`9e623dd3`, EUR 2025):
+
+| candidate | I(x), EUR |
+|---|---|
+| paper plan | 1,237,798 |
+| C\* | 3,696,250 |
+| lattice plan 1.5 / 3.0 | 1,146,109 (now over the €1M budget) |
+| 0.25 / 0.5 | 191,018 |
+| 0.25 / 1.0 | 317,957 |
+
+- **Budget frontier:** the largest budget-feasible E per duration is the same at every node.
+
+| duration | 2025 | 2030 | 2035 |
+|---|---|---|---|
+| 2 h | 2 MWh | 3 MWh | 4 MWh |
+| 4 h | 3 MWh | 4 MWh | 5 MWh |
+
+**Master constraints and objective.**
+- `max_capacity` = energy ≤ 5 MWh per node.
+- B = €1M, applied in Phase B only.
+- F(x) = I(x) + Q(x), with Q = `gross_operational_cost`. Salvage is reported and excluded.
+- Salvage is ~0 for 2025 cohorts. It is material for 2030/2035 cohorts: up to 51.6k / 95.5k EUR per MWh of residual energy.
+
+**Probability audit** (`6b343bb2`, `P5_15_S45_PROBABILITY_AUDIT_NOTE.md`): no defect at SRP1 or at paper scale.
+- The workbook's investment-cost scenario probabilities feed I(x), the budget and salvage only.
+- Every operational term uses the networks' own probabilities.
+- The attribute name `shared_ess_data.prob_market_scenarios` is misleading; it is left as is, since preserved pickles carry it.
+
+**Harness (Phase A).**
+- The bar is now the max |Δ gross_operational_cost| over the last 10 cycles; it was the net-recourse step.
+  - Every committed bar is unchanged (max |diff| 0.0).
+  - The net-step value is kept, reported as `bar_net_recourse_step_reported`.
+- A case-file-AA evaluation cannot pass as a D reference.
+- Error records carry the configuration fields (`c1469fab`).
+- Phase A concurrency is **7**: measured peak 2.40–2.55 GiB per evaluation; about 21 GiB non-reclaimable-free.
+- **The harness evaluates investment year 2025 only**: the child refuses any other year, and the spec freeze has no year. The A1 year ladder and A2 staging need a harness/gates extension before they can run. Production supports any year and multi-cohort nodes.
+
+**Paper scale.**
+- The change plan is in hand (snapshot switch `'off'`; four single-scenario paths; timed cycle).
+- The scale script currently refuses under the AA-on case file until it declares AA.
+- Risks:
+  - post-solve memory is unmeasured;
+  - the σ calibration check may trip;
+  - the row-18 scenario-deviation penalties activate at 25 scenarios;
+  - the paper's investment years (2025/28/31/34/37) do not map onto SRP1's.
+
+**Order** (Addendum 27):
+1. A0: 8 points, AA-on, 7 + 1 batches, running.
+2. The paper-scale bounded task, including the timed cycle, run alone.
+3. A1: the 2025 ladders (30), the year ladder (20), A2, A3.
+4. **Stop for review.**
+5. Phase B under spec v16.
 
 ---
 
