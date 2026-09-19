@@ -245,6 +245,11 @@ class ADMMParameters:
         # lambda on the least-squares solve) are the frozen-spec values
         # (5, 1e-10); kept configurable here only so a zero-solve check can
         # exercise small memories without constructing a full case study.
+        # P5.15 Addendum 25 item 2: an OPTIONAL key `reject_policy`
+        # ('clear_memory' default = the Step 3.7 behaviour, or 'keep_memory')
+        # may be added to this dict programmatically; it is deliberately NOT
+        # a default key here, so every existing settings dict keeps meaning
+        # the Step 3.7 behaviour (see `admm_anderson_acceleration.py`).
         self.anderson_acceleration = {
             'enabled': False,
             'memory': 5,

@@ -128,6 +128,28 @@ progress past the last acceleration's mark; resetting the bound to +inf on
 every rejection would make every subsequent single-secant candidate trivially
 "pass" and defeat the ratchet's purpose).
 
+Reject policy (P5.15 Addendum 25 item 2; frozen spec v14
+`data/SRP1/Results/P515S44/frozen_s44_selection_spec_v14_e4500e27.json`,
+`item2_aa_variant`): `anderson_acceleration['reject_policy']`, read by the
+caller with a default of `DEFAULT_REJECT_POLICY` and passed to
+`AndersonAccelerationState(reject_policy=...)`. The key is OPTIONAL and is not
+added to `ADMMParameters`' default dict, so every existing settings dict (and
+every committed run) means the default.
+  - 'clear_memory' (DEFAULT; the committed Step 3.7 behaviour, run 76095561):
+    a safeguard rejection takes the plain iterate, leaves the mark unchanged
+    and CLEARS the memory -- exactly the paragraph above.
+  - 'keep_memory' (the Addendum 25 variant): a safeguard rejection takes the
+    plain iterate and leaves the mark unchanged, but RETAINS the memory,
+    including this cycle's (w_k, g_k) pair (already appended before the
+    decision; the deque's maxlen drops the oldest pair when full). Rationale
+    (Addendum 25): every visited (w, g) pair is a valid sample of the fixed-
+    point map whichever step produced it, so a rejection is no reason to
+    discard the history. The record reads action 'rejected (safeguard; memory
+    retained)', reset False, memory_size_after = the post-append size.
+    Memory is still cleared, under BOTH policies, by `clear_for_rho_change`
+    and `skip_on_failure` -- the only map changes (rho) and invalid-sample
+    cycles (local solve failure). Nothing else differs between the policies.
+
 Certificate independence (frozen spec `certificate_independence`): the
 caller skips calling `AndersonAccelerationState.step` for extrapolation
 (uses the plain iterate) whenever `boyd_metrics['all_boyd_pass']` is True,
@@ -151,6 +173,11 @@ that happens to coincide with an exemption lift, does).
 from collections import deque
 
 import numpy as np
+
+
+# P5.15 Addendum 25 item 2: the safeguard-rejection memory policy (module docstring, "Reject policy").
+REJECT_POLICIES = ('clear_memory', 'keep_memory')
+DEFAULT_REJECT_POLICY = 'clear_memory'
 
 
 # ======================================================================================================================
@@ -348,11 +375,15 @@ class AndersonAccelerationState:
     docstring for the algorithm and the safeguard's exact semantics.
     """
 
-    def __init__(self, memory=5, regularization=1e-10):
+    def __init__(self, memory=5, regularization=1e-10, reject_policy=DEFAULT_REJECT_POLICY):
         self.memory = int(memory)
         if self.memory < 1:
             raise ValueError('Anderson acceleration memory must be at least 1.')
         self.regularization = float(regularization)
+        if reject_policy not in REJECT_POLICIES:
+            raise ValueError(f'Anderson acceleration reject_policy must be one of {REJECT_POLICIES}; '
+                             f'got {reject_policy!r}.')
+        self.reject_policy = reject_policy
         self._history = deque(maxlen=self.memory + 1)  # (w, g) pairs, oldest first
         self.last_accepted_residual = float('inf')
         self.records = []
@@ -485,6 +516,18 @@ class AndersonAccelerationState:
             )
             self.records.append(record)
             return w_hat, record
+        elif self.reject_policy == 'keep_memory':
+            # Addendum 25 variant: plain iterate, mark unchanged, memory
+            # RETAINED -- (w_k, g_k) was appended above and stays.
+            record.update(
+                action='rejected (safeguard; memory retained)',
+                accepted=False,
+                memory_size_after=self.memory_size(),
+                gamma_columns=int(m_k),
+                reset=False, reset_reason=None,
+            )
+            self.records.append(record)
+            return w_plain, record
         else:
             self.clear_memory()
             record.update(

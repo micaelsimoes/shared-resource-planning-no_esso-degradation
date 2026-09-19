@@ -2577,6 +2577,9 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         aa_state = admm_anderson_acceleration.AndersonAccelerationState(
             memory=aa_settings.get('memory', 5),
             regularization=aa_settings.get('regularization', 1e-10),
+            # P5.15 Addendum 25 item 2: optional sub-option; absent -> the
+            # Step 3.7 default ('clear_memory'). See the AA module docstring.
+            reject_policy=aa_settings.get('reject_policy', admm_anderson_acceleration.DEFAULT_REJECT_POLICY),
         )
 
     # ------------------------------------------------------------------------------------------------------------------
