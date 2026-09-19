@@ -1,0 +1,821 @@
+{
+ "stage": "P5.15 Addendum 25 item 1 -- s44_gate post-gate tie-order analysis (zero solves)",
+ "timestamp_utc": "2026-09-19T10:55:43.926240+00:00",
+ "hypothesis": "every recourse-jump sidecar difference is the 8682cfdd sort-key change acting on exact abs_delta ties (incl. tie groups straddling the top-10 cut)",
+ "gate_result_unchanged": {
+  "gate_pass": false,
+  "totals_by_class": {
+   "provenance": 3,
+   "aa_new_field": 1668,
+   "known_tie_break": 208,
+   "candidate_specification_provenance": 4,
+   "genuine": 43
+  }
+ },
+ "inputs": {
+  "D_sidecar": "data/SRP1/Results/P515S39_D_run/recourse_jump_sidecar_baseline.jsonl",
+  "D_sidecar_sha256": "4be9ac62f584648ac1720622959b3a83a5af47f481aeec1dfe999105e096f08d",
+  "this_run_sidecar": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/578636daa6d6360d_c_star/recourse_jump_sidecar_baseline.jsonl",
+  "this_run_sidecar_sha256": "4f49cfa07ce460eca979ed83efe5a8ea1c06f7db898033a1a704d925d4740104",
+  "gate_results_sha256": "08f2d6e594ea3c84b620a48858f863444c2201a569116336d90dfab99920afa4"
+ },
+ "n_rows": {
+  "D": 139,
+  "this_run": 139
+ },
+ "row_class_counts": {
+  "identical": 50,
+  "resort": 78,
+  "straddle": 11
+ },
+ "tie_groups_observed": {
+  "classified_total | economic_market_cost": {
+   "rows_D": 0,
+   "rows_this_run": 6,
+   "values_identical": [
+    false
+   ]
+  },
+  "classified_total | economic_market_cost | generation_cost": {
+   "rows_D": 2,
+   "rows_this_run": 2,
+   "values_identical": [
+    false
+   ]
+  },
+  "economic_market_cost | flexibility_cost": {
+   "rows_D": 100,
+   "rows_this_run": 100,
+   "values_identical": [
+    true
+   ]
+  },
+  "economic_market_cost | generation_cost": {
+   "rows_D": 135,
+   "rows_this_run": 129,
+   "values_identical": [
+    true
+   ]
+  }
+ },
+ "non_identical_rows": [
+  {
+   "row": 1,
+   "cycle": 2,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 2,
+   "cycle": 3,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 3,
+   "cycle": 4,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 4,
+   "cycle": 5,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 5,
+   "cycle": 6,
+   "class": "straddle",
+   "detail": {
+    "k0": 9,
+    "straddling_tie_abs_delta": 1422270.5555291064,
+    "D_members_at_cut": [
+     [
+      "('TSO', None, 2035, 'Summer')",
+      "generation_cost"
+     ]
+    ],
+    "this_run_members_at_cut": [
+     [
+      "('TSO', None, 2035, 'Summer')",
+      "economic_market_cost"
+     ]
+    ]
+   }
+  },
+  {
+   "row": 6,
+   "cycle": 7,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 7,
+   "cycle": 8,
+   "class": "straddle",
+   "detail": {
+    "k0": 9,
+    "straddling_tie_abs_delta": 1075290.4913612008,
+    "D_members_at_cut": [
+     [
+      "('TSO', None, 2025, 'Spring')",
+      "generation_cost"
+     ]
+    ],
+    "this_run_members_at_cut": [
+     [
+      "('TSO', None, 2025, 'Spring')",
+      "economic_market_cost"
+     ]
+    ]
+   }
+  },
+  {
+   "row": 8,
+   "cycle": 9,
+   "class": "straddle",
+   "detail": {
+    "k0": 9,
+    "straddling_tie_abs_delta": 717232.3664693311,
+    "D_members_at_cut": [
+     [
+      "('TSO', None, 2035, 'Spring')",
+      "generation_cost"
+     ]
+    ],
+    "this_run_members_at_cut": [
+     [
+      "('TSO', None, 2035, 'Spring')",
+      "economic_market_cost"
+     ]
+    ]
+   }
+  },
+  {
+   "row": 9,
+   "cycle": 10,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 10,
+   "cycle": 11,
+   "class": "straddle",
+   "detail": {
+    "k0": 9,
+    "straddling_tie_abs_delta": 715141.9140073732,
+    "D_members_at_cut": [
+     [
+      "('TSO', None, 2035, 'Spring')",
+      "generation_cost"
+     ]
+    ],
+    "this_run_members_at_cut": [
+     [
+      "('TSO', None, 2035, 'Spring')",
+      "economic_market_cost"
+     ]
+    ]
+   }
+  },
+  {
+   "row": 11,
+   "cycle": 12,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 12,
+   "cycle": 13,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 13,
+   "cycle": 14,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 14,
+   "cycle": 15,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 15,
+   "cycle": 16,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 16,
+   "cycle": 17,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 17,
+   "cycle": 18,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 18,
+   "cycle": 19,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 19,
+   "cycle": 20,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 20,
+   "cycle": 21,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 21,
+   "cycle": 22,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 22,
+   "cycle": 23,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 23,
+   "cycle": 24,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 24,
+   "cycle": 25,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 25,
+   "cycle": 26,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 26,
+   "cycle": 27,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 27,
+   "cycle": 28,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 28,
+   "cycle": 29,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 29,
+   "cycle": 30,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 30,
+   "cycle": 31,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 31,
+   "cycle": 32,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 32,
+   "cycle": 33,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 33,
+   "cycle": 34,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 34,
+   "cycle": 35,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 35,
+   "cycle": 36,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 36,
+   "cycle": 37,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 37,
+   "cycle": 38,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 38,
+   "cycle": 39,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 39,
+   "cycle": 40,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 40,
+   "cycle": 41,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 41,
+   "cycle": 42,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 42,
+   "cycle": 43,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 43,
+   "cycle": 44,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 44,
+   "cycle": 45,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 45,
+   "cycle": 46,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 46,
+   "cycle": 47,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 47,
+   "cycle": 48,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 48,
+   "cycle": 49,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 49,
+   "cycle": 50,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 50,
+   "cycle": 51,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 51,
+   "cycle": 52,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 52,
+   "cycle": 53,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 53,
+   "cycle": 54,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 54,
+   "cycle": 55,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 55,
+   "cycle": 56,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 56,
+   "cycle": 57,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 57,
+   "cycle": 58,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 58,
+   "cycle": 59,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 59,
+   "cycle": 60,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 60,
+   "cycle": 61,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 61,
+   "cycle": 62,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 62,
+   "cycle": 63,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 63,
+   "cycle": 64,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 64,
+   "cycle": 65,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 65,
+   "cycle": 66,
+   "class": "straddle",
+   "detail": {
+    "k0": 9,
+    "straddling_tie_abs_delta": 4752.142975637689,
+    "D_members_at_cut": [
+     [
+      "('DSO', 7, 2035, 'Summer')",
+      "flexibility_cost"
+     ]
+    ],
+    "this_run_members_at_cut": [
+     [
+      "('DSO', 7, 2035, 'Summer')",
+      "economic_market_cost"
+     ]
+    ]
+   }
+  },
+  {
+   "row": 67,
+   "cycle": 68,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 68,
+   "cycle": 69,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 69,
+   "cycle": 70,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 76,
+   "cycle": 77,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 77,
+   "cycle": 78,
+   "class": "straddle",
+   "detail": {
+    "k0": 8,
+    "straddling_tie_abs_delta": 3493.694678220898,
+    "D_members_at_cut": [
+     [
+      "('TSO', None, 2030, 'Summer')",
+      "economic_market_cost"
+     ],
+     [
+      "('TSO', None, 2030, 'Summer')",
+      "generation_cost"
+     ]
+    ],
+    "this_run_members_at_cut": [
+     [
+      "('TSO', None, 2030, 'Summer')",
+      "classified_total"
+     ],
+     [
+      "('TSO', None, 2030, 'Summer')",
+      "economic_market_cost"
+     ]
+    ]
+   }
+  },
+  {
+   "row": 101,
+   "cycle": 102,
+   "class": "straddle",
+   "detail": {
+    "k0": 8,
+    "straddling_tie_abs_delta": 2148.9955411814153,
+    "D_members_at_cut": [
+     [
+      "('TSO', None, 2030, 'Summer')",
+      "economic_market_cost"
+     ],
+     [
+      "('TSO', None, 2030, 'Summer')",
+      "generation_cost"
+     ]
+    ],
+    "this_run_members_at_cut": [
+     [
+      "('TSO', None, 2030, 'Summer')",
+      "classified_total"
+     ],
+     [
+      "('TSO', None, 2030, 'Summer')",
+      "economic_market_cost"
+     ]
+    ]
+   }
+  },
+  {
+   "row": 107,
+   "cycle": 108,
+   "class": "straddle",
+   "detail": {
+    "k0": 8,
+    "straddling_tie_abs_delta": 1850.0500153712928,
+    "D_members_at_cut": [
+     [
+      "('TSO', None, 2030, 'Summer')",
+      "economic_market_cost"
+     ],
+     [
+      "('TSO', None, 2030, 'Summer')",
+      "generation_cost"
+     ]
+    ],
+    "this_run_members_at_cut": [
+     [
+      "('TSO', None, 2030, 'Summer')",
+      "classified_total"
+     ],
+     [
+      "('TSO', None, 2030, 'Summer')",
+      "economic_market_cost"
+     ]
+    ]
+   }
+  },
+  {
+   "row": 108,
+   "cycle": 109,
+   "class": "straddle",
+   "detail": {
+    "k0": 8,
+    "straddling_tie_abs_delta": 1795.0154179260135,
+    "D_members_at_cut": [
+     [
+      "('TSO', None, 2030, 'Summer')",
+      "economic_market_cost"
+     ],
+     [
+      "('TSO', None, 2030, 'Summer')",
+      "generation_cost"
+     ]
+    ],
+    "this_run_members_at_cut": [
+     [
+      "('TSO', None, 2030, 'Summer')",
+      "classified_total"
+     ],
+     [
+      "('TSO', None, 2030, 'Summer')",
+      "economic_market_cost"
+     ]
+    ]
+   }
+  },
+  {
+   "row": 109,
+   "cycle": 110,
+   "class": "straddle",
+   "detail": {
+    "k0": 8,
+    "straddling_tie_abs_delta": 1739.5564490929246,
+    "D_members_at_cut": [
+     [
+      "('TSO', None, 2030, 'Summer')",
+      "economic_market_cost"
+     ],
+     [
+      "('TSO', None, 2030, 'Summer')",
+      "generation_cost"
+     ]
+    ],
+    "this_run_members_at_cut": [
+     [
+      "('TSO', None, 2030, 'Summer')",
+      "classified_total"
+     ],
+     [
+      "('TSO', None, 2030, 'Summer')",
+      "economic_market_cost"
+     ]
+    ]
+   }
+  },
+  {
+   "row": 121,
+   "cycle": 122,
+   "class": "straddle",
+   "detail": {
+    "k0": 8,
+    "straddling_tie_abs_delta": 1238.2618799880147,
+    "D_members_at_cut": [
+     [
+      "('TSO', None, 2030, 'Summer')",
+      "economic_market_cost"
+     ],
+     [
+      "('TSO', None, 2030, 'Summer')",
+      "generation_cost"
+     ]
+    ],
+    "this_run_members_at_cut": [
+     [
+      "('TSO', None, 2030, 'Summer')",
+      "classified_total"
+     ],
+     [
+      "('TSO', None, 2030, 'Summer')",
+      "economic_market_cost"
+     ]
+    ]
+   }
+  },
+  {
+   "row": 123,
+   "cycle": 124,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 124,
+   "cycle": 125,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 125,
+   "cycle": 126,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 126,
+   "cycle": 127,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 127,
+   "cycle": 128,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 128,
+   "cycle": 129,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 129,
+   "cycle": 130,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 130,
+   "cycle": 131,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 131,
+   "cycle": 132,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 132,
+   "cycle": 133,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 133,
+   "cycle": 134,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 136,
+   "cycle": 137,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 137,
+   "cycle": 138,
+   "class": "resort",
+   "detail": null
+  },
+  {
+   "row": 138,
+   "cycle": 139,
+   "class": "resort",
+   "detail": null
+  }
+ ],
+ "n_unexplained_rows": 0,
+ "hypothesis_holds_for_every_row": true,
+ "solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ }
+}
