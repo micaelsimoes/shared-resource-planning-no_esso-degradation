@@ -97,8 +97,31 @@ What nonconvex consensus ADMM delivers here is block-stationarity at the certifi
 - **Resource:** peak RSS of one serial certified evaluation 2.55 GB, so about 10–12 concurrent candidate evaluations
   fit on 32 GB.
 - **Still open:** the superseded stages' checklists that fail by design against the new case file
-  (`WORKER_REPORT_S40_CASE_FILE.md`); the recourse-jump sidecar's alias tie-break non-determinism (documented, not
-  fixed).
+  (`WORKER_REPORT_S40_CASE_FILE.md`).
+
+## Step 4 opened — configuration-selection run (Addendum 25, 2026-09-19)
+
+Report: `P5_15_S44_SELECTION_REPORT.md`.
+- **Campaign harness built** (`p515_s44_campaign_harness.py`). Its gate passed on the Planner's ruling
+  (`P5_15_S44_GATE_RULING.md`): C\* through the harness, concurrent with two others, reproduces D exactly. The alias
+  tie-break is fixed (sorted by name).
+- **D certifies at all four selection candidates:** C\* 139, paper's plan 139, node-7-empty 136, 2×C\* 187. Cap 500,
+  zero local-solve failures; per-node zero storage is evaluable.
+- **AA `keep_memory` variant** (a rejection keeps the memory) certifies at C\* in 107 against 109 for Step 3.7's arm,
+  and goes forward.
+- **The adoption rule reads "AA adopted":** AA certifies faster than D at all four candidates (107/116/107/180), and
+  (b)–(d) pass at each. **The case-file update is held for review.** The 2×C\* margin is 7 cycles.
+- **Paper scale** (5 years × 4 days × 25 scenarios): 80 blocks, each about 25× SRP1, because scenarios sit inside each
+  block. The model state is about 18 GiB; the pristine snapshot clones push the build past the 24 GiB watchdog. The
+  cycle was not timed.
+- **Addendum 26 confirmations:**
+  - the committed `SRP1_ESS.xlsx` is not confirmed as the corrected file (a newer one exists on `paper_revisions`,
+    `7ce1d1ab`);
+  - C\* and the paper's plan are over the €1M budget;
+  - `max_capacity` caps energy (5 MWh), not power;
+  - x = 0 builds;
+  - ESSO capacity duals are available without extra solves; their units and sign are unestablished.
+- **Node 7 wording:** "the DN's interface branch at node 7 is the only active interface constraint".
 
 ---
 
