@@ -1,0 +1,20 @@
+12:28:36 [S44-AAV-CAMPAIGN] preconditions passed (SMOKE; campaign s44_aa_variant_smoke; cap 3)
+12:28:36 [S44-AAV-CAMPAIGN] frozen campaign spec: data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/campaign_spec_s44_aa_variant_smoke_e3f83174.json sha256=e3f83174b2f784e0ed4dccae61ba27e414a8c9cbe9495b3b7723a5f2512abeed
+12:28:36 [S44-AAV-CAMPAIGN] campaign lock acquired: {'pid': 69421, 'campaign_id': 's44_aa_variant_smoke', 'campaign_spec_sha256': 'e3f83174b2f784e0ed4dccae61ba27e414a8c9cbe9495b3b7723a5f2512abeed', 'started_utc': '2026-09-19T12:28:36.752591+00:00'}
+12:28:36 [S44-HARNESS] launched c_star_aa_keep_memory (key 578636daa6d6360d) pid=69447
+12:28:36 [S44-HARNESS] launched c_star_d (key 578636daa6d6360d) pid=69448
+12:28:36 [S44-HARNESS] heartbeat c_star_aa_keep_memory: 0s cycle=None; c_star_d: 0s cycle=None
+12:29:36 [S44-HARNESS] heartbeat c_star_aa_keep_memory: 60s cycle=None; c_star_d: 60s cycle=None
+12:30:36 [S44-HARNESS] heartbeat c_star_aa_keep_memory: 120s cycle=2; c_star_d: 120s cycle=2
+12:31:11 [S44-HARNESS] finished c_star_aa_keep_memory pid=69447 exit=0 status=not_certified wall=155s
+12:31:11 [S44-HARNESS] finished c_star_d pid=69448 exit=0 status=not_certified wall=155s
+12:31:11 [S44-AAV-CAMPAIGN] campaign lock released
+12:31:11 [S44-AAV-CAMPAIGN] c_star_aa_keep_memory: status=not_certified cycles=3 cert_cycle=None cost=None post_cert=skipped reason=trajectory not certified under the spec's bar (cycles_run=3, cap=3, required_consecutive=10, terminal_consecutive_converged_cycles=0, stopped_by='cap'); post-certification items are never evaluated at an uncertified point
+12:31:11 [S44-AAV-CAMPAIGN]   aa actions: {'insufficient memory (m_k=0)': 3} retained-on-reject: 0
+12:31:11 [S44-AAV-CAMPAIGN] c_star_d: status=not_certified cycles=3 cert_cycle=None cost=None post_cert=None reason=None
+12:31:11 [S44-AAV-CAMPAIGN] AA trajectory vs committed Step 3.7 AA run: {'first_differing_cycle': None, 'n_rows_compared': 3, 'identical_over_compared_rows': True}
+12:31:11 [S44-AAV-CAMPAIGN] choice-rule inputs: {'variant_certified': False, 'variant_certification_cycle': None, 'step37_arm_certification_cycle': 109, 'D_certification_cycle_at_c_star': 139, 'variant_gates_b_c_d': {'b': None, 'c': None, 'd': None}, 'mechanical_reading': None, 'note': "reported for the Planner; the ruling is the Planner's"}
+12:31:11 [S44-AAV-CAMPAIGN] smoke checks: {'both_records_present_not_certified_at_cap_3': True, 'aa_post_certification_skipped_with_reason': True, 'aa_post_certification_file_written': True, 'aa_no_persisted_models_no_hull_detail': True, 'aa_settings_in_force_keep_memory': True, 'aa_sidecar_3_rows_aa_enabled': True, 'd_no_aa_sidecar_no_post_cert': True, 'd_first_3_rows_vs_D_committed_zero_genuine': True, 'aa_first_3_rows_identical_to_step37_aa_run': True, 'spec_sha256_in_every_record': True}
+12:31:11 [S44-AAV-CAMPAIGN] smoke AA sidecar: [(1, 'insufficient memory (m_k=0)', 0, 0, ['v']), (2, 'insufficient memory (m_k=0)', 0, 0, ['pf', 'v']), (3, 'insufficient memory (m_k=0)', 0, 0, [])]
+12:31:11 [S44-AAV-CAMPAIGN] parent guard {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0} verify0_failures=[]
+12:31:11 [S44-AAV-CAMPAIGN] OK
