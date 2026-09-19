@@ -82,12 +82,23 @@ What nonconvex consensus ADMM delivers here is block-stationarity at the certifi
   measured ~1.1× (screening's 97 % / 5.09× was mis-accounted: parent state sync counted as absorbable); one bounded task
   remains, then the path is paused. Step 5 parallelism is candidate-level.
 
-## Open after Step 3
+## After Step 3 (Addendum 24, 2026-09-19)
 
-Persistent-worker bounded task (5-cycle profiling, bound-restore fix, DSO node-7 clone removal; then paused); Step 3.7
-Anderson acceleration (implemented in a detached worktree, default off, not yet integrated); the `p56a_oracle`
-interface-helper fix (needs authorization); the superseded stages' checklists that now fail by design against the new
-case file (`WORKER_REPORT_S40_CASE_FILE.md`).
+- **`p56a_oracle` helper fixed** (`2051309c`): it returns the model's own `pc_adn`/`qc_adn`. The exact-fix re-run at
+  D's point: 11/12 TSO blocks solve (v11: 0/12), so the stale helper caused v11. The prediction scored 5/12: the
+  rating-midpoint check measured the DSO node-7 interface branch rating, not a TSO row. Addendum 24's conditional
+  manuscript clause is **not supported**; the principle sentence stands (`63a4d7b5`).
+- **Persistent-worker path paused** after its bounded task: DSO node-7 clone removed (bitwise; no whole-model clone left
+  on the serial per-cycle path); bound-restore fix; parallel ≈ serial wall because per-worker round trips cost about
+  what they parallelize. Step 5 parallelism is candidate-level.
+- **Step 3.7 Anderson acceleration: not adopted.** It certified at 109 cycles against the ≤ 80 gate; cost, decomposition
+  and hull-polish items passed. The code stays in, default off, flag-off bitwise-verified. **The campaign runs D**
+  (`76095561`).
+- **Resource:** peak RSS of one serial certified evaluation 2.55 GB, so about 10–12 concurrent candidate evaluations
+  fit on 32 GB.
+- **Still open:** the superseded stages' checklists that fail by design against the new case file
+  (`WORKER_REPORT_S40_CASE_FILE.md`); the recourse-jump sidecar's alias tie-break non-determinism (documented, not
+  fixed).
 
 ---
 
