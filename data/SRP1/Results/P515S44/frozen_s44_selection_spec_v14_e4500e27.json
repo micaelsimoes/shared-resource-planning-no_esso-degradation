@@ -1,0 +1,76 @@
+{
+ "addendum26_confirmations_zero_solve": [
+  "confirm the committed data/SRP1/SharedESS/SRP1_ESS.xlsx is the author's corrected cost file (git history, content of the unit-cost sheets) and record its sha256",
+  "report I(x) (STEP4_DFO_METHOD.md 1.3: discounted, scenario-weighted, exactly model.investment_cost) and the budget slack B - I(x), B = budget 1e6, at the paper's plan and at C*; state units and whether budget and max_capacity (5.0) are active in the model",
+  "confirm whether x = 0 (no storage at ANY node) is evaluable by the oracle",
+  "report whether the ESSO capacity multipliers (duals of the capacity rows) are available without extra solves"
+ ],
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 25",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 26",
+  "STEP4_DFO_METHOD.md v1 (orientation only; the Step 4 spec is written after this round)",
+  "P5_15_S43_STEP37_REPORT.md (reviewed)"
+ ],
+ "item1_harness": {
+  "alias_fix": "the recourse-jump capture's top-k block-delta list sorts by (-abs_delta, block_key, component_name): a total order by name, never iteration over a set; every harness reporting that list inherits it",
+  "candidate_definition": "per-node (s_mva, e_mwh) investment map, investment year 2025 as for C*, through the harness's existing investment_map path",
+  "gate": "a C* evaluation (case-file oracle configuration, cap 500) through the harness, concurrent with two other evaluations, reproduces D bitwise on every numeric trajectory field and cost (cycle 139, 650,966,975.2943751); comparator conventions of 8f5cff48; rule_eleven_checklist provenance non-gating",
+  "gate_companions": "the two concurrent companions are the selection run's D-configuration evaluations at the paper's plan and at node-7-empty; they count for item 3 only if the gate passes, otherwise they are re-run",
+  "harness": "N concurrent evaluations, each its own OS process with OMP_NUM_THREADS=1 (and MKL/OPENBLAS/VECLIB equivalents), its own write-once results directory and working-dir ids, heartbeat, exit code and per-cycle record; ONE campaign-level lock (replaces the one-run lock for campaign use only); a frozen campaign spec per campaign (candidates, configuration, cap, concurrency) hashed into every evaluation's record; the parent never solves; evaluation interface evaluate(batch) -> records per STEP4_DFO_METHOD.md section 2.7",
+  "per_node_zero_check": "BEFORE any run, zero-solve: establish that a node with zero storage (s = e = 0) while other nodes carry storage is evaluable (construction, S_ref normalization, ESSO model, consensus entries, EFC/SoH captures, evaluator). If not, STOP and report; no structural substitute (e.g. removing the node) without authorization"
+ },
+ "item2_aa_variant": {
+  "change": "identical to the Step 3.7 run (76095561) except: on a safeguard rejection the plain iterate is taken, the mark is unchanged, and the (w, g) pair is RETAINED; memory cleared only on a rho change (balancing step, ESS exemption lift, freeze) or a local-solve-failure cycle",
+  "choice_rule": "the better AA arm at C* goes forward: fewer certification cycles among arms passing (b)-(d); tie -> the Step 3.7 arm",
+  "flag": "a sub-option of the AA flag, default = the Step 3.7 behaviour, so the committed 3.7 run stays reproducible; the flag-off path stays bitwise-verified",
+  "gates": "(b) |Q - D| <= 1.5e-4 D; (c) reconciliation residual <= 1.0 with other priced components identically 0; (d) hull polish < 0.1 % at the variant's certified point, 48/48; certification cycle recorded"
+ },
+ "item3_selection_run": {
+  "adoption_rule": "AA-on adopted as the frozen campaign configuration ONLY IF it certifies in fewer cycles than D at all four candidates AND passes (b)-(d) at each, band 1.5e-4 relative to D's cost at the SAME candidate; otherwise D; case file updated before Phase A if adopted",
+  "candidates": {
+   "C_star": "0.96875 MVA / 3.875 MWh at nodes 5, 7, 9 (D 139; AA 3.7 arm 109; variant from item 2)",
+   "node7_empty": "C* at nodes 5 and 9; node 7 zero",
+   "paper_plan": "node 7 only, 1.62 MVA / 3.24 MWh; nodes 5 and 9 zero",
+   "two_c_star": "1.9375 MVA / 7.75 MWh at nodes 5, 7, 9"
+  },
+  "evaluations": "each candidate cold under D (case file) and under the chosen AA arm: 6 certified runs; concurrency 3; cap 500",
+  "note": "off-lattice C* and paper plan kept deliberately (Addendum 26): this run tests configuration robustness, not the campaign",
+  "per_candidate_report": "per STEP4_DFO_METHOD.md section 2.5: certified cost and bar, certification cycle, first pass per channel, terminal ratios, rule ten, decomposition, settlement remainder, EFC and terminal SoH per node, wall time, peak RSS; plus hull polish per arm",
+  "stop_rule": "a candidate at which D fails to certify within cap 500 stops the run for review"
+ },
+ "item4_scale_measurement": {
+  "instance": "paper scale: 5 years x 4 days x 25 scenarios (SRP1: 3 years x 4 days x 1 scenario, 48 network blocks)",
+  "never_concurrent": "runs alone, after the selection run",
+  "procedure": "build only (zero solves, SolveProfileGuard armed): block count, variable/constraint counts, peak RSS; a memory WATCHDOG aborts the build above 24 GB (32 GB machine), recording RSS reached and build stage; only if it fits, time ONE cycle, the single declared solve set"
+ },
+ "order": [
+  "1 alias tie-break fix + campaign harness; gate: C* (oracle D configuration) through the harness, concurrent with two others, reproduces D bitwise",
+  "2 AA variant arm at C* (single change: a rejected step keeps the memory)",
+  "3 configuration-selection run: 3 candidates x {D, chosen AA arm}, cold, 3 concurrent, cap 500",
+  "4 paper-scale build measurement (zero solves unless it fits; never concurrent with anything)",
+  "Addendum 26 confirmations (zero solves) wherever they fit",
+  "STOP FOR REVIEW after the selection run, with the scale measurement and the confirmations attached"
+ ],
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S42/frozen_s42_helper_aa_spec_v13_2cab76e8.json",
+  "sha256": "2cab76e844372cb6c95d207be7cf8b4f3acf9abc4dd53163b259216ba4f451ef"
+ },
+ "predictions_recorded_in_advance": {
+  "item2_variant": {
+   "expert": "80-95 cycles",
+   "planner": "central 88, range 78-100; (b)-(d) pass"
+  },
+  "item3_selection": {
+   "planner": [
+    "D certifies within cap 500 at the paper's plan and at node-7-empty; 2 x C* is the riskiest candidate and D certifying there is judged uncertain",
+    "AA-on faster than D at all four candidates with (b)-(d) passing at each: judged uncertain (more likely than not at >= 3 of 4)"
+   ]
+  },
+  "item4_scale": {
+   "expert": "~42x SRP1: ~100 GB, ~25 min/cycle; not runnable on 32 GB",
+   "planner": "the watchdog aborts the build; per-block RSS growth up to the abort supports the ~42x extrapolation within a factor of 2"
+  }
+ },
+ "stage": "P5.15 Addendum 25 (+26 confirmations) - campaign harness, AA memory-retaining variant, configuration-selection run, paper-scale build measurement - frozen specification v14",
+ "wording_correction": "node 7 result and manuscript: 'the DN's interface branch at node 7 is the only active interface constraint' (the 100 MVA rating belongs to the distribution network's interface branch); the Addendum 24 conditional clause is struck"
+}
