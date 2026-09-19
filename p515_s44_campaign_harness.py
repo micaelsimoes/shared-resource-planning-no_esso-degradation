@@ -51,8 +51,10 @@ campaign lock exists, names ITS parent's pid (`os.getppid()`) and the same
 campaign spec sha256 -- a child can run only under the live campaign that
 spawned it. The parent refuses to start if EITHER lock exists. The legacy
 lock is not taken by the parent (spec v14: the campaign lock replaces it for
-campaign use); legacy one-run harnesses do not read the campaign lock -- see
-the worker report (a gap recorded for the Planner, not closed here).
+campaign use). Since Addendum 25 item 2 (gate-ruling follow-up) the legacy
+lock function `_acquire_exclusive_run_lock` refuses while the campaign lock
+exists; both acquirers re-check the other lock AFTER creating their own, so a
+simultaneous start cannot let both proceed.
 
 Why concurrency is safe (checked, not assumed; see the worker report): each
 evaluation has its own `eval_id` working dir (`p56a_oracle.fresh_planning`
@@ -365,6 +367,13 @@ def acquire_campaign_lock(campaign_id, spec_sha256, lock_path=CAMPAIGN_LOCK_PATH
                'started_utc': _utc()}
     os.write(fd, json.dumps(content).encode())
     os.close(fd)
+    if os.path.exists(legacy_lock_path):
+        # Mirror of `p515_g_g1_g4_admm_gates._acquire_exclusive_run_lock`'s
+        # post-create re-check (Addendum 25 item 2 follow-up): a legacy one-run
+        # lock appeared between the first check and our O_EXCL create -- back
+        # out (remove OUR lock) and refuse, so the two can never both proceed.
+        os.remove(lock_path)
+        raise SystemExit(f'REFUSING TO RUN: the legacy one-run lock appeared: {legacy_lock_path}')
     return content
 
 

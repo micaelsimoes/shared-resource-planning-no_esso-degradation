@@ -1386,7 +1386,14 @@ def run_ladder_init(s_mva, out_dir):
     return target
 
 
-def _acquire_exclusive_run_lock():
+# P5.15 Addendum 25 item 2 follow-up (P5_15_S44_GATE_RULING.md, "Follow-ups"):
+# the campaign-level lock of `p515_s44_campaign_harness.py` (its
+# `CAMPAIGN_LOCK_PATH`; the harness checks assert the two paths agree). Named
+# here, not imported, so this module never imports the harness.
+CAMPAIGN_LOCK_PATH = os.path.join(REPO, '.p515_s44_campaign.lock')
+
+
+def _acquire_exclusive_run_lock(lock_path=None, campaign_lock_path=None):
     """P5.15 Planner guard (harness-only, NOT production).
 
     This harness MUST NOT run concurrently with another copy of itself. Two concurrent
@@ -1398,9 +1405,36 @@ def _acquire_exclusive_run_lock():
     This has now happened three times: once destroying a G1 run, and twice when
     four gates (g1, g2, g4b, g3_full) were launched simultaneously. The results
     would have been contaminated, not merely slow. Fail loudly instead.
+
+    P5.15 Addendum 25 item 2 follow-up: also refuses while a CAMPAIGN lock
+    (`CAMPAIGN_LOCK_PATH`, `.p515_s44_campaign.lock`) exists. Campaign
+    children never call this function (neither `p515_s44_campaign_harness.py`
+    nor `run_admm_arm` references it -- asserted by the follow-up checks), so
+    the refusal cannot block a campaign's own evaluations. The campaign lock
+    is checked both before AND after this lock is created (the harness's
+    `acquire_campaign_lock` does the mirror image), so a legacy run and a
+    campaign starting at the same moment cannot both proceed. `lock_path`/
+    `campaign_lock_path` default to the repository paths; the parameters
+    exist only so the zero-solve checks can exercise the refusal on
+    temporary paths.
     """
     import atexit
-    lock_path = os.path.join(REPO, '.p515_g_gate.lock')
+    if lock_path is None:
+        lock_path = os.path.join(REPO, '.p515_g_gate.lock')
+    if campaign_lock_path is None:
+        campaign_lock_path = CAMPAIGN_LOCK_PATH
+
+    def _campaign_refusal():
+        try:
+            holder = open(campaign_lock_path).read().strip()
+        except OSError:
+            holder = 'unknown'
+        return (f'REFUSING TO RUN: a campaign lock exists: {campaign_lock_path} ({holder}).\n'
+                'A one-run harness must not start while a campaign is live. If no campaign '
+                'process exists, remove the campaign lock file by hand.')
+
+    if os.path.exists(campaign_lock_path):
+        raise SystemExit(_campaign_refusal())
     try:
         fd = os.open(lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
     except FileExistsError:
@@ -1416,6 +1450,11 @@ def _acquire_exclusive_run_lock():
             'If no such process exists, remove the lock file by hand.')
     os.write(fd, f'{os.getpid()} {" ".join(sys.argv[1:])}'.encode())
     os.close(fd)
+    if os.path.exists(campaign_lock_path):
+        # A campaign lock appeared between the first check and our O_EXCL create:
+        # back out (remove OUR lock) and refuse.
+        os.remove(lock_path)
+        raise SystemExit(_campaign_refusal())
     atexit.register(lambda: os.path.exists(lock_path) and os.remove(lock_path))
 
 
@@ -2818,7 +2857,16 @@ def s34_capture_hooks(recourse_jump_path, ess_stride_path, stride=1):
                         'previous': prev_v, 'current': cur_v, 'delta': cur_v - prev_v,
                         'abs_delta': abs(cur_v - prev_v),
                     })
-                deltas.sort(key=lambda e: e['abs_delta'], reverse=True)
+                # P5.15 Addendum 25 item 2 follow-up (P5_15_S44_GATE_RULING.md,
+                # "Follow-ups"): the same total-order tie-break 8682cfdd gave
+                # `obj_deltas` below. Sorting by abs_delta alone left exact ties
+                # in `set(current_blocks) | set(previous_blocks)` iteration
+                # order, which depends on per-process string-hash randomization
+                # (PYTHONHASHSEED). Tie-break by the block's name fields
+                # (agent, node_id, year, day), each as str so mixed/None node
+                # ids never compare across types.
+                deltas.sort(key=lambda e: (-e['abs_delta'], str(e['agent']), str(e['node_id']),
+                                           e['year'], e['day']))
                 entry['block_deltas'] = deltas[:10]
             state['previous_recourse_blocks'] = current_blocks
         if current_obj_blocks is not None:
