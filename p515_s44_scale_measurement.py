@@ -132,9 +132,42 @@ parent_run.log, then runs the BUILD child (fresh interpreter, attached, thread c
 campaign harness, stdout/stderr to build_child_stdout.log / build_child_stderr.log), then --
 only with `--time-one-cycle` AND a complete build under the watchdog -- the CYCLE child (a
 production evaluation, `run_admm_arm`, cap 1: initialization + exactly one ADMM cycle under
-SolveProfileGuard(p514_n PERMITTED), declared solve count 2 x (network blocks + ESSO nodes)
-checked exactly). Finally summary.json and manifest_sha256.json (every file in the label
-directory, plus the P56A working-dir files of the run's eval ids).
+SolveProfileGuard(p514_n PERMITTED); see SOLVE DECLARATION below). Finally summary.json --
+whose `scale_measurement` block holds the whole calibration in one place (per-cycle wall time,
+the initialization time separately, peak RSS of each child, sigma / ESSO AL scale and the sigma
+calibration outcome, snapshot mode, effective AA, solves, failures) -- and manifest_sha256.json
+(every file in the label directory, plus the P56A working-dir files of the run's eval ids).
+
+================================================================================
+CASE-FILE ANDERSON ACCELERATION (P5.15 Addendum 27 item 1; W12)
+================================================================================
+Since b5629311 `data/SRP1/SRP1_params.json` carries `admm.anderson_acceleration` ON. Both
+`spec_like` dicts this file hands to `p515_s44_campaign_harness._config_hook_factory` therefore
+DECLARE `configuration.case_file_anderson_acceleration` = the exact dict the case file loads to
+(`CASE_FILE_AA`, the literal `p515_s45_a0_campaign.CASE_FILE_AA` carries; the two are checked to
+agree before the run, by parsing that file's source -- importing it would install a
+`permitted=()` guard). Without the declaration the hook keeps its pre-Addendum-27 check and
+refuses BOTH children with `configuration not as frozen:
+['anderson_acceleration_off_before_overrides']`. With it, the hook compares the LOADED AA dict
+against the declaration and RAISES on any difference -- so an instance that ever loaded a case
+file WITHOUT AA (the `admm_parameters` default is `{'enabled': False, 'memory': 5,
+'regularization': 1e-10}`, which has no `reject_policy` and `enabled` False) fails
+`anderson_acceleration_case_file_matches_declaration` and is refused, never run silently.
+
+================================================================================
+SOLVE DECLARATION FOR THE TIMED CYCLE (W12)
+================================================================================
+Not a strict constant: production retries a failed local NLP (tier 1) and may then retry from a
+frozen snapshot (tier 2). `declared_solve_profile` derives, from the planning object and BEFORE
+the run,
+    solves_per_cycle = (1 + n_dso) x n_years x n_days + n_esso_nodes   (51 SRP1; 83 paper)
+    base             = solves_per_cycle x (1 initialization + CYCLE_CAP cycles)  (102; 166)
+and the run is gated on the identity
+    observed == base + 1 x recovered_tier1 + 2 x recovered_tier2
+with the tier counts read from the run's OWN `network_failures_summary`. The bounded
+`SolveProfileGuard(p514_n.PERMITTED)` is armed for the whole cycle child and `verify()`-ed
+EXACTLY against that reconciled total (too few fails as loudly as too many). This follows
+`p515_s45_snapshot_off_failure_gate.py` section (5), which does the same for its two arms.
 Output: `data/SRP1/Results/P515S44/scale_measurement/<label>/`.
 Exit codes: 0 complete; 97 watchdog abort; 98 parent backstop kill; 1 error; 2 refused.
 
@@ -156,6 +189,15 @@ is what crossed the 24 GiB watchdog in label `paper_build`):
   /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s44_scale_measurement.py \\
       --instance paper --label paper_build_nosnap --snapshots off \\
       > data/SRP1/Results/P515S44/scale_measurement/paper_build_nosnap_launch.log 2>&1
+SRP1 per-cycle calibration under the AA-on case file, snapshots off (P5.15 Addendum 27 W12;
+this is the run the paper-scale estimate is calibrated on):
+  /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s44_scale_measurement.py \\
+      --instance srp1 --label srp1_cycle_snapoff_r1 --snapshots off --time-one-cycle \\
+      > data/SRP1/Results/P515S44/scale_measurement/srp1_cycle_snapoff_r1_launch.log 2>&1
+Paper scale, snapshots off, one timed cycle (Planner; alone):
+  /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s44_scale_measurement.py \\
+      --instance paper --label paper_cycle_snapoff_r1 --snapshots off --time-one-cycle \\
+      > data/SRP1/Results/P515S44/scale_measurement/paper_cycle_snapoff_r1_launch.log 2>&1
 Watchdog abort-path test (Worker; SRP1 scale, limit lowered to 0.5 GiB, recorded):
   /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s44_scale_measurement.py \\
       --instance srp1 --label srp1_watchdog_abort_test_r2 --rss-limit-gib 0.5 \\
@@ -163,6 +205,7 @@ Watchdog abort-path test (Worker; SRP1 scale, limit lowered to 0.5 GiB, recorded
 """
 
 import argparse
+import ast
 import ctypes
 import hashlib
 import json
@@ -223,6 +266,20 @@ C_STAR_LABEL = '0.96875 MVA / 3.875 MWh at nodes 5, 7, 9, investment year 2025 (
 BUILD_CAP = 500   # spec v14 item3: the campaign cap (num_max_iters; irrelevant to the build)
 CYCLE_CAP = 1     # --time-one-cycle: exactly one ADMM cycle
 REQUIRED_CONSECUTIVE_CYCLES = 10  # campaign spec field (campaign_spec_s44_gate_4047b4e3.json); case-file value
+
+# P5.15 Addendum 27 item 1 (W12). Since b5629311 the SRP1 case file carries Anderson
+# acceleration ON (`data/SRP1/SRP1_params.json` -> `admm.anderson_acceleration`). The campaign
+# harness's `_config_hook_factory` only accepts an AA-on case file when the spec it is handed
+# DECLARES the exact dict the case file loads to; without the declaration it keeps its
+# pre-Addendum-27 check and refuses the run with `configuration not as frozen:
+# ['anderson_acceleration_off_before_overrides']`. Both `spec_like` dicts in this file
+# therefore declare it. The literal is the one `p515_s45_a0_campaign.CASE_FILE_AA` carries;
+# `check_case_file_aa_declaration()` verifies the two agree WITHOUT importing that module
+# (importing it installs a `permitted=()` SolveProfileGuard at module level, which would block
+# this stage's solves).
+CASE_FILE_AA = {'enabled': True, 'memory': 5, 'regularization': 1e-10, 'reject_policy': 'keep_memory'}
+CASE_FILE_AA_SOURCE = 'p515_s45_a0_campaign.py'
+CASE_FILE_AA_SOURCE_NAME = 'CASE_FILE_AA'
 
 PAPER_YEARS = {'2025': 3, '2028': 3, '2031': 3, '2034': 3, '2037': 3}
 INSTANCES = {
@@ -296,6 +353,36 @@ def label_dir(label):
 
 def eval_id(label, mode):
     return f'p515s44_scale_{label}_{mode}'
+
+
+def check_case_file_aa_declaration():
+    """Verify this file's `CASE_FILE_AA` is the literal `p515_s45_a0_campaign.py` declares.
+
+    Parsed with `ast` from that file's SOURCE, never imported: importing it installs a
+    module-level `SolveProfileGuard(permitted=())`, which would block every solve of the
+    cycle child. Raises on disagreement (the declaration is what the configuration hook
+    checks the loaded case file against, so the two must not drift); records both literals."""
+    path = os.path.join(REPO, CASE_FILE_AA_SOURCE)
+    record = {'declared_here': dict(CASE_FILE_AA), 'source_file': CASE_FILE_AA_SOURCE,
+              'source_name': CASE_FILE_AA_SOURCE_NAME, 'source_present': os.path.exists(path),
+              'method': 'ast.literal_eval of the assignment in the source (never imported)'}
+    if not record['source_present']:
+        record['agree'] = None
+        record['note'] = 'source file absent; the declaration here stands on its own'
+        return record
+    with open(path) as handle:
+        tree = ast.parse(handle.read(), filename=path)
+    found = None
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and any(
+                isinstance(t, ast.Name) and t.id == CASE_FILE_AA_SOURCE_NAME for t in node.targets):
+            found = ast.literal_eval(node.value)
+    record['source_literal'] = found
+    record['agree'] = found == CASE_FILE_AA
+    if not record['agree']:
+        raise RuntimeError(f'case-file AA declaration disagrees with {CASE_FILE_AA_SOURCE}: '
+                           f'here {CASE_FILE_AA} vs there {found}')
+    return record
 
 
 # ======================================================================================
@@ -701,14 +788,60 @@ def expected_block_counts(planning):
             'solves_per_cycle': (1 + n_dso) * n_yd + len(planning.active_distribution_network_nodes)}
 
 
+def declared_solve_profile(planning, cap):
+    """The solve declaration for the timed cycle, DERIVED FROM THE INSTANCE (never hard-coded).
+
+    solves_per_cycle = (1 + n_dso) x n_years x n_days + n_esso_nodes
+      SRP1: (1 + 3) x 3 x 4 + 3 = 51; the paper instance: (1 + 3) x 5 x 4 + 3 = 83.
+    base = solves_per_cycle x (cap + 1) -- one initialization round plus `cap` ADMM cycles;
+    with `CYCLE_CAP` = 1 that is solves_per_cycle x 2 (102 at SRP1, 166 at paper scale).
+
+    The base is NOT the strict count: production retries a failed local NLP (tier 1) and may
+    then retry from a frozen snapshot (tier 2), so the identity gated on is
+        observed == base + 1 * recovered_tier1 + 2 * recovered_tier2
+    with the recovery counts taken from the run's OWN `network_failures_summary`
+    (p515_s45_snapshot_off_failure_gate.py section (5), which does exactly this)."""
+    n_years, n_days = len(planning.years), len(planning.days)
+    n_dso = len(planning.distribution_networks)
+    n_esso = len(planning.active_distribution_network_nodes)
+    n_yd = n_years * n_days
+    per_cycle = (1 + n_dso) * n_yd + n_esso
+    return {
+        'derivation': '(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object',
+        'n_years': n_years, 'n_days': n_days, 'n_year_day_blocks': n_yd, 'n_dso': n_dso,
+        'n_networks': 1 + n_dso, 'network_solves_per_cycle': (1 + n_dso) * n_yd,
+        'n_esso_nodes': n_esso, 'esso_solves_per_cycle': n_esso,
+        'solves_per_cycle': per_cycle, 'cap': cap, 'rounds': cap + 1,
+        'rounds_note': 'one initialization round + cap ADMM cycles',
+        'declared_base_solves': per_cycle * (cap + 1),
+        'identity': ('observed == base + 1 * recovered_tier1 + 2 * recovered_tier2 (recovery counts '
+                     'from the run\'s own network_failures_summary)'),
+    }
+
+
 def d_configuration_check(H, planning, sed, candidate, report, cap):
-    """The campaign child's own D-configuration verification (no overrides), reused."""
-    spec_like = {'configuration': {'overrides': {}}, 'cap': cap,
-                 'required_consecutive_cycles': REQUIRED_CONSECUTIVE_CYCLES}
+    """The campaign child's own D-configuration verification (no overrides), reused.
+
+    Addendum 27 item 1 (W12): the spec DECLARES the case file's AA dict (`CASE_FILE_AA`), so
+    the hook verifies the LOADED `anderson_acceleration` against that declaration instead of
+    requiring AA off. A case file whose AA differs from the declaration in any key -- including
+    one with no AA block at all, which loads the `admm_parameters` default
+    {'enabled': False, 'memory': 5, 'regularization': 1e-10} -- fails
+    `anderson_acceleration_case_file_matches_declaration` and the hook RAISES; it never
+    proceeds silently. Returns the checks together with the declaration and the effective AA."""
+    spec_like = {'configuration': {'overrides': {},
+                                   'case_file_anderson_acceleration': dict(CASE_FILE_AA)},
+                 'cap': cap, 'required_consecutive_cycles': REQUIRED_CONSECUTIVE_CYCLES}
     holder = {}
     H._config_hook_factory(spec_like, holder, overrides={})(planning=planning, sed=sed,
                                                             candidate=candidate, report=report)
-    return holder.get('configuration_checks')
+    return {'configuration_checks': holder.get('configuration_checks'),
+            'case_file_anderson_acceleration_declared': dict(CASE_FILE_AA),
+            'anderson_acceleration_effective': holder.get('anderson_acceleration_effective'),
+            'overrides_applied': holder.get('overrides_applied'),
+            'declaration_note': ('spec_like declares configuration.case_file_anderson_acceleration; '
+                                 'the harness hook checks the loaded AA equals it exactly and raises '
+                                 'otherwise (p515_s44_campaign_harness._config_hook_factory)')}
 
 
 # ======================================================================================
@@ -1041,6 +1174,59 @@ def srp_stage_wrappers(srp, network_module, stamps):
         network_module.Network.run_smopf = original_smopf
 
 
+def objective_scale_record(rows, stdout_text, assert_factor):
+    """sigma (fixed and computed), the ESSO AL scale, and whether the sigma CALIBRATION check
+    passed, taken from the run itself.
+
+    Primary evidence is production's own print in the arm's stdout --
+    `[ADMM OF SCALE] Fixed sigma in force sigma_fixed=... | sigma_computed=... | ratio=... |
+    assert_factor=...` and `[ADMM ESSO AL SCALE] ... al_scale_esso=...`
+    (shared_resources_planning._resolve_common_admm_objective_scale / _resolve_esso_al_scale).
+    The calibration check is an ASSERTION INSIDE PRODUCTION: it raises outside
+    [1/factor, factor], so reaching this point at all means it did not raise; the ratio is
+    re-derived here and re-checked so the outcome is a recorded number, not an inference.
+    The per-cycle row fields (sigma_fixed/sigma_computed/al_scale_esso, run-level constants
+    carried on every row) are recorded alongside and must agree."""
+    row = rows[0] if rows else {}
+    out = {'sigma_fixed': row.get('sigma_fixed'), 'sigma_computed': row.get('sigma_computed'),
+           'al_scale_esso': row.get('al_scale_esso'),
+           'assert_factor_from_case_file': assert_factor,
+           'source': 'cycle_trajectory row 1 (run-level constants) + the arm stdout prints'}
+    m = re.search(r'\[ADMM OF SCALE\] Fixed sigma in force sigma_fixed=([0-9.eE+-]+) \| '
+                  r'sigma_computed=([0-9.eE+-]+) \| ratio=([0-9.eE+-]+) \| '
+                  r'assert_factor=([0-9.eE+-]+)', stdout_text or '')
+    out['printed_of_scale_line'] = m.group(0) if m else None
+    if m:
+        out['printed'] = {'sigma_fixed': float(m.group(1)), 'sigma_computed': float(m.group(2)),
+                          'ratio': float(m.group(3)), 'assert_factor': float(m.group(4))}
+    m2 = re.search(r'\[ADMM ESSO AL SCALE\][^\n]*al_scale_esso=([0-9.eE+-]+)', stdout_text or '')
+    out['printed_esso_al_scale_line'] = m2.group(0) if m2 else None
+    if m2:
+        out['printed_al_scale_esso'] = float(m2.group(1))
+    sf, sc = out['sigma_fixed'], out['sigma_computed']
+    factor = (out.get('printed') or {}).get('assert_factor', assert_factor)
+    if sf and sc and factor:
+        ratio = sc / sf
+        out['ratio_sigma_computed_over_fixed'] = ratio
+        out['calibration_range'] = [1.0 / factor, factor]
+        out['calibration_check_passed'] = bool((1.0 / factor) <= ratio <= factor)
+    else:
+        out['calibration_check_passed'] = None
+    out['calibration_note'] = (
+        'production raises ValueError in _resolve_common_admm_objective_scale outside the range; '
+        'a completed run necessarily passed it -- the value here makes the margin explicit')
+    def _close(a, b):
+        # the prints carry 7 significant figures (`:.6e`), so agreement is relative, not exact
+        return a is not None and b is not None and abs(a - b) <= 1e-6 * max(abs(a), abs(b), 1.0)
+
+    out['row_agrees_with_print'] = (
+        None if not out.get('printed') else
+        (_close(out['printed']['sigma_fixed'], sf) and _close(out['printed']['sigma_computed'], sc)
+         and _close(out.get('printed_al_scale_esso'), out['al_scale_esso'])))
+    out['row_print_agreement_tolerance'] = 'relative 1e-6 (the prints are :.6e)'
+    return out
+
+
 def child_cycle(args):
     out_dir = label_dir(args.label)
     started = time.time()
@@ -1073,15 +1259,32 @@ def child_cycle(args):
         record['scenario_checksum'] = checksum
         record['planning_dimensions'] = planning_dimensions(planning0)
         expected = expected_block_counts(planning0)
-        declared_solves = 2 * expected['solves_per_cycle']  # initialization + one cycle
+        # W12: the solve DECLARATION, derived from the instance and stated BEFORE the run.
+        # `declared_base_solves` = solves_per_cycle x (1 initialization + CYCLE_CAP cycles);
+        # the count gated on is base + 1*tier1 + 2*tier2, reconciled after the run against the
+        # run's own failure summary (see `declared_solve_profile`).
+        declared = declared_solve_profile(planning0, CYCLE_CAP)
+        declared_solves = declared['declared_base_solves']
+        if declared['solves_per_cycle'] != expected['solves_per_cycle']:
+            raise RuntimeError(f'solve declaration disagrees with expected_block_counts: '
+                               f'{declared} vs {expected}')
         record['expected_block_counts'] = expected
+        record['declared_solve_profile'] = declared
         record['declared_solves'] = declared_solves
+        record['case_file_anderson_acceleration_declared'] = dict(CASE_FILE_AA)
+        record['case_file_aa_declaration_agreement'] = check_case_file_aa_declaration()
+        record['objective_scale_assert_factor_from_case_file'] = getattr(
+            planning0.params.admm, 'objective_scale_assert_factor', None)
         prov = provenance_record(planning0, launch['instance'], checksum)
         record['provenance'] = prov
         if [f for f in prov['gate_failures'] if f['identity'] != 'scenario checksum']:
             raise RuntimeError(f'provenance: non-canonical solver identity: {prov["gate_failures"]}')
         holder = {}
-        spec_like = {'configuration': {'overrides': {}}, 'cap': CYCLE_CAP,
+        # Addendum 27 item 1 (W12): declare the case file's AA dict, as d_configuration_check
+        # does for the build child -- without it the hook refuses the AA-on case file.
+        spec_like = {'configuration': {'overrides': {},
+                                       'case_file_anderson_acceleration': dict(CASE_FILE_AA)},
+                     'cap': CYCLE_CAP,
                      'required_consecutive_cycles': REQUIRED_CONSECUTIVE_CYCLES}
         cycle_dir = os.path.join(out_dir, 'one_cycle')
         # P5.15 Addendum 27 item 5(a): --snapshots is applied to the arm's planning object by
@@ -1108,7 +1311,15 @@ def child_cycle(args):
         print(traceback.format_exc(), file=sys.stderr, flush=True)
         return EXIT_ERROR
     guard.uninstall()
-    guard_failures = guard.verify(declared_solves)
+    # W12 solve reconciliation: the base was declared before the run; the count actually gated
+    # on adds the run's OWN recovery attempts (1 extra solve per tier-1 recovery, 2 per tier-2),
+    # and the process-wide guard -- armed for the whole child -- is verify()-ed EXACTLY against
+    # it (too few fails as loudly as too many).
+    _classes = ((report.get('network_failures_summary') or {}).get('classes')) or {}
+    _tier1 = _classes.get('recovered_tier1', 0)
+    _tier2 = _classes.get('recovered_tier2', 0)
+    reconciled_solves = declared_solves + _tier1 + 2 * _tier2
+    guard_failures = guard.verify(reconciled_solves)
     final = wd.stop()
 
     def first(name, key):
@@ -1118,19 +1329,32 @@ def child_cycle(args):
     cycle_start = first('update_distribution_coordination_models_and_solve', 't_start')
     esso_cycle_end = first('update_shared_energy_storages_coordination_model_and_solve', 't_end')
     printed = None
+    stdout_text = ''
     try:
         with open(os.path.join(REPO, report['stdout_path'])) as handle:
-            m = re.search(r'Iteration 1: ([0-9.]+) s', handle.read())
-            printed = float(m.group(1)) if m else None
+            stdout_text = handle.read()
+        m = re.search(r'Iteration 1: ([0-9.]+) s', stdout_text)
+        printed = float(m.group(1)) if m else None
     except Exception:  # noqa: BLE001
         printed = None
     rows = report.get('cycle_trajectory') or []
+    record['objective_scale'] = objective_scale_record(
+        rows, stdout_text, record.get('objective_scale_assert_factor_from_case_file'))
     record.update({
         'status': 'complete' if not guard_failures else 'solve_count_mismatch',
         'guard': {'permitted': [list(p) for p in N.PERMITTED], 'counts': dict(guard.counts),
-                  'declared_solves': declared_solves, 'verify_failures': guard_failures},
+                  'declared_base_solves': declared_solves,
+                  'recovered_tier1': _tier1, 'recovered_tier2': _tier2,
+                  'reconciled_expected_solves': reconciled_solves,
+                  'observed_solves': guard.counts['permitted_solve'],
+                  'identity': record['declared_solve_profile']['identity'],
+                  'identity_holds': guard.counts['permitted_solve'] == reconciled_solves,
+                  'declared_solves': reconciled_solves, 'verify_failures': guard_failures},
         'run_admm_arm_identity_holds_note': ('run_admm_arm\'s own solve_profile.identity_holds uses the SRP1 '
-                                             'constant 51 per cycle; superseded here by the declared count'),
+                                             'constant 51 per cycle and no recovery term; superseded here by '
+                                             'the declared base reconciled with the run\'s own tier counts'),
+        'anderson_acceleration_effective_in_child': holder.get('anderson_acceleration_effective'),
+        'configuration_checks': holder.get('configuration_checks'),
         'timing_s': {
             'initialization (create_admm_variables -> first cycle DSO dispatch)':
                 (cycle_start - init_start) if init_start and cycle_start else None,
@@ -1144,6 +1368,7 @@ def child_cycle(args):
         'cycle_row': {k: (rows[0].get(k) if rows else None) for k in (
             'cycle', 'local_solves_ok', 'recourse', 'gross_operational_cost', 'objective_change_abs')},
         'network_failures_summary': report.get('network_failures_summary'),
+        'arm_solve_profile': report.get('solve_profile'),
         'g_report_path': os.path.relpath(report_path, REPO),
         'watchdog': {'limit_bytes': wd.limit, 'n_samples': wd.n_samples, 'peak': wd.peak},
         'memory_final': final,
@@ -1154,8 +1379,12 @@ def child_cycle(args):
     })
     _write_once_json(os.path.join(out_dir, 'cycle_record.json'), record)
     print(f"[SCALE-CYCLE] status={record['status']} timing={record['timing_s']} "
-          f"solves={guard.counts['permitted_solve']}/{declared_solves} peak_tree_rss={wd.peak['rss_tree']}",
-          flush=True)
+          f"solves={guard.counts['permitted_solve']}/{reconciled_solves} "
+          f"(base {declared_solves} + {_tier1} tier1 + 2 x {_tier2} tier2) "
+          f"aa={record['anderson_acceleration_effective_in_child']} "
+          f"sigma={record['objective_scale'].get('sigma_fixed')} "
+          f"al_scale_esso={record['objective_scale'].get('al_scale_esso')} "
+          f"peak_tree_rss={wd.peak['rss_tree']}", flush=True)
     return EXIT_OK if record['status'] == 'complete' else EXIT_ERROR
 
 
@@ -1298,6 +1527,79 @@ def write_manifest(out_dir, label):
     return manifest
 
 
+def scale_measurement_block(args, launch, build_record, build_info, cycle_info, cycle_record):
+    """P5.15 Addendum 27 W12 item 3: every quantity the calibration is read from, in ONE place.
+
+    Per-cycle wall time; the initialization time SEPARATELY; peak RSS of the build child and of
+    the cycle child separately; the computed sigma and the ESSO AL scale; whether the sigma
+    calibration check passed; the snapshot mode; the effective AA; solves observed vs declared
+    base vs reconciled; and the failure / recovery counts. Every value is copied from the
+    children's own records -- nothing is recomputed here."""
+    build_record = build_record or {}
+    cycle_record = cycle_record or {}
+    timing = cycle_record.get('timing_s') or {}
+    failures = cycle_record.get('network_failures_summary') or {}
+    guard = cycle_record.get('guard') or {}
+    scale = cycle_record.get('objective_scale') or {}
+    init_key = 'initialization (create_admm_variables -> first cycle DSO dispatch)'
+    cycle_key = 'cycle_1 (first DSO dispatch -> ESSO coordination return)'
+    return {
+        'instance': args.instance, 'label': args.label,
+        'snapshots_requested': launch.get('snapshots'),
+        'snapshot_setting_build': build_record.get('snapshot_setting'),
+        'snapshot_setting_cycle': cycle_record.get('snapshot_setting'),
+        'case_file_anderson_acceleration_declared': launch.get('case_file_anderson_acceleration_declared'),
+        'anderson_acceleration_effective_cycle': cycle_record.get('anderson_acceleration_effective_in_child'),
+        'anderson_acceleration_effective_build': (
+            (build_record.get('d_configuration_checks') or {}).get('anderson_acceleration_effective')
+            if isinstance(build_record.get('d_configuration_checks'), dict) else None),
+        'timing_s': {
+            'build_child_wall_s': build_info.get('wall_s') if build_info else None,
+            'build_stage_wall_s': build_record.get('build_wall_s'),
+            'initialization_s': timing.get(init_key),
+            'one_cycle_s': timing.get(cycle_key),
+            'one_cycle_production_printed_s': timing.get('cycle_1_production_printed (Iteration 1: X s)'),
+            'run_admm_arm_wall_clock_s': timing.get('run_admm_arm_wall_clock_s'),
+            'cycle_child_wall_s': cycle_info.get('wall_s') if cycle_info else None,
+        },
+        'peak_rss_bytes': {
+            'build_child_watchdog_peak': (build_record.get('watchdog') or {}).get('peak'),
+            'build_child_parent_observed_peak': (build_info or {}).get('parent_observed_peak'),
+            'cycle_child_watchdog_peak': (cycle_record.get('watchdog') or {}).get('peak'),
+            'cycle_child_parent_observed_peak': (cycle_info or {}).get('parent_observed_peak'),
+            'cycle_child_ru_maxrss_self': cycle_record.get('ru_maxrss_self'),
+            'cycle_child_ru_maxrss_children_ipopt': cycle_record.get('ru_maxrss_children_ipopt'),
+            'watchdog_limit_bytes': (launch.get('thresholds') or {}).get('rss_limit_bytes'),
+        },
+        'objective_scale': {
+            'sigma_fixed': scale.get('sigma_fixed'), 'sigma_computed': scale.get('sigma_computed'),
+            'ratio_sigma_computed_over_fixed': scale.get('ratio_sigma_computed_over_fixed'),
+            'assert_factor': (scale.get('printed') or {}).get(
+                'assert_factor', scale.get('assert_factor_from_case_file')),
+            'calibration_check_passed': scale.get('calibration_check_passed'),
+            'al_scale_esso': scale.get('al_scale_esso'),
+        },
+        'solves': {
+            'declared_base': guard.get('declared_base_solves'),
+            'derivation': (cycle_record.get('declared_solve_profile') or {}).get('derivation'),
+            'solves_per_cycle': (cycle_record.get('declared_solve_profile') or {}).get('solves_per_cycle'),
+            'recovered_tier1': guard.get('recovered_tier1'), 'recovered_tier2': guard.get('recovered_tier2'),
+            'reconciled_expected': guard.get('reconciled_expected_solves'),
+            'observed': guard.get('observed_solves'),
+            'identity': guard.get('identity'), 'identity_holds': guard.get('identity_holds'),
+            'guard_verify_failures': guard.get('verify_failures'),
+            'build_child_zero_solve_guard': build_record.get('guard'),
+        },
+        'failures': {
+            'n_blocks_with_failures': failures.get('n_blocks'),
+            'classes': failures.get('classes'),
+            'n_frozen_snapshots': failures.get('n_frozen_snapshots'),
+            'n_esso_recovery_events': failures.get('n_esso_recovery_events'),
+            'local_solves_ok_cycle_1': (cycle_record.get('cycle_row') or {}).get('local_solves_ok'),
+        },
+    }
+
+
 def main_parent(args):
     from p513_solve_profile_guard import SolveProfileGuard  # pyomo only; no model code
     parent_guard = SolveProfileGuard(permitted=(), label='P5.15 S44 scale measurement parent (never solves)').install()
@@ -1338,6 +1640,11 @@ def main_parent(args):
         overrides_cli = {'years': (json.loads(args.override_years) if args.override_years else None),
                          'num_market_scenarios': args.override_market_scenarios,
                          'num_operation_scenarios': args.override_operation_scenarios}
+        # W12: the case-file AA declaration must agree with p515_s45_a0_campaign.CASE_FILE_AA
+        # BEFORE anything is launched (it raises on disagreement).
+        aa_declaration = check_case_file_aa_declaration()
+        log(f'case-file AA declaration {CASE_FILE_AA} (agrees with {CASE_FILE_AA_SOURCE}: '
+            f'{aa_declaration["agree"]})')
         case, spec, changes = derive_case(args.instance, overrides_cli)
         case_path = os.path.join(case_dir, f'SRP1__{args.instance}.json')
         with open(case_path, 'w') as handle:
@@ -1360,6 +1667,14 @@ def main_parent(args):
                            'parent_backstop_bytes': int(args.rss_limit_gib * GIB) + BACKSTOP_MARGIN_BYTES,
                            'min_available_bytes': MIN_AVAILABLE_BYTES, 'sample_interval_s': SAMPLE_INTERVAL_S},
             'runs_alone_enforced': runs_alone, 'time_one_cycle_requested': args.time_one_cycle,
+            # Addendum 27 item 1 (W12): the AA dict both spec_like declarations hand the harness hook
+            'case_file_anderson_acceleration_declared': dict(CASE_FILE_AA),
+            'case_file_aa_declaration_agreement': aa_declaration,
+            'case_file_aa_note': ('the harness hook (p515_s44_campaign_harness._config_hook_factory) '
+                                  'checks the LOADED admm.anderson_acceleration equals this declaration '
+                                  'exactly and RAISES otherwise; a case file without AA loads the '
+                                  "admm_parameters default (enabled False, no reject_policy), which does "
+                                  'not equal the declaration, so the hook refuses rather than proceeding'),
             'snapshots': args.snapshots,
             'snapshots_note': ('P5.15 Addendum 27 item 5(a): "on" = committed behaviour (capture modes '
                                'untouched); "off" = both admm_parameters.*_snapshot_capture_mode set to '
@@ -1381,6 +1696,8 @@ def main_parent(args):
             ('parent_backstop_kill' if build_info['exit_code'] == EXIT_BACKSTOP else 'error')
         if build_record:
             summary['build'] = {
+                'd_configuration_checks': build_record.get('d_configuration_checks'),
+                'snapshot_setting': build_record.get('snapshot_setting'),
                 'block_counts': build_record.get('block_counts'),
                 'counts_by_agent': build_record.get('counts_by_agent'),
                 'memory_at_build_complete': build_record.get('memory_at_build_complete'),
@@ -1406,9 +1723,11 @@ def main_parent(args):
                 summary['cycle_status'] = (cycle_record or {}).get('status') or (cycle_abort and 'watchdog_abort') \
                     or ('parent_backstop_kill' if cycle_info['exit_code'] == EXIT_BACKSTOP else 'error')
                 if cycle_record:
-                    summary['cycle'] = {k: cycle_record.get(k) for k in ('timing_s', 'guard', 'watchdog',
-                                                                         'ru_maxrss_self', 'ru_maxrss_children_ipopt',
-                                                                         'cycle_row', 'network_failures_summary')}
+                    summary['cycle'] = {k: cycle_record.get(k) for k in (
+                        'timing_s', 'guard', 'watchdog', 'ru_maxrss_self', 'ru_maxrss_children_ipopt',
+                        'cycle_row', 'network_failures_summary', 'declared_solve_profile',
+                        'objective_scale', 'snapshot_setting', 'anderson_acceleration_effective_in_child',
+                        'configuration_checks', 'arm_solve_profile')}
                 if cycle_abort:
                     summary['cycle_abort'] = {k: cycle_abort.get(k) for k in ('cause', 'stage_at_abort',
                                                                               'rss_reached', 'elapsed_s')}
@@ -1418,6 +1737,10 @@ def main_parent(args):
                 log('time-one-cycle SKIPPED: build did not complete under the watchdog')
         parent_guard.uninstall()
         summary['parent_guard'] = {'counts': dict(parent_guard.counts), 'verify_failures': parent_guard.verify(0)}
+        # W12 item 3: the single block the calibration is read from, every quantity in one place.
+        summary['scale_measurement'] = scale_measurement_block(
+            args, launch, build_record, build_info, summary.get('cycle_child'),
+            _read_json(os.path.join(out_dir, 'cycle_record.json')))
         summary['exit_code'] = exit_code
         summary['ended_utc'] = _utc()
         _write_once_json(os.path.join(out_dir, 'summary.json'), summary)
