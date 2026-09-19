@@ -1,0 +1,511 @@
+{
+ "schema": "p515_s44_evaluation_record_v2",
+ "campaign_id": "s44_aa_variant",
+ "campaign_spec_path": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/campaign_spec_s44_aa_variant_f90618e8.json",
+ "campaign_spec_sha256": "f90618e8d00299969a7e35c48850e0316b3a2f15436763d66bf1306afb392186",
+ "candidate_label": "two_c_star_d",
+ "candidate_canonical": {
+  "investment_year": 2025,
+  "nodes": {
+   "5": [
+    1.9375,
+    7.75
+   ],
+   "7": [
+    1.9375,
+    7.75
+   ],
+   "9": [
+    1.9375,
+    7.75
+   ]
+  }
+ },
+ "candidate_key": "4e53fa5560bbfa101c5ce8da78776179b92b0d817c42d04dd7330b077ab8c41c",
+ "instance_note": "candidate_key = sha256 of the canonical candidate; identifies the problem instance",
+ "working_dir_ids": {
+  "precheck": "p515s44_s44_aa_variant_4e53fa5560bbfa10_precheck",
+  "run": "p515s44_s44_aa_variant_4e53fa5560bbfa10_run"
+ },
+ "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/4e53fa5560bbfa10_two_c_star_d",
+ "configuration": {
+  "apply_rho": false,
+  "arm_label": "s39_D",
+  "case_file": "data/SRP1/SRP1_params.json",
+  "case_file_last_commit": "fb3de341b359422dfbfb77e6bbffd7dc83a80bab",
+  "case_file_sha256": "490e5b211f5083fe6ffca11d2aa07cd26739f141654fce3a23898258d610edf8",
+  "full_diagnostics_in_rows": true,
+  "name": "per-evaluation: AA keep_memory (override) and D (case file, fb3de341)",
+  "note": "campaign-level overrides empty; each entry carries its own (AA entry only); num_max_iters := cap (run_admm_arm always sets it)",
+  "overrides": {}
+ },
+ "cap": 500,
+ "required_consecutive_cycles": 10,
+ "status": "certified",
+ "barrier": false,
+ "barrier_cause": null,
+ "objective_convention": "gross_operational_cost: settlement-EXCLUDED gross operational cost (the oracle cost convention); net_operational_recourse = gross minus terminal salvage credit",
+ "certified_cost": 648138276.7714801,
+ "terminal_gross_operational_cost": 648138276.7714801,
+ "terminal_net_operational_recourse": 648138276.7714801,
+ "bar": {
+  "definition": "max objective_change_abs (|gross cost step|) over the last 10 cycles",
+  "value": 1542.70920920372,
+  "n_cycles_in_window": 10,
+  "n_steps_available": 10,
+  "window": [
+   {
+    "cycle": 178,
+    "objective_change_abs": 1020.215472817421
+   },
+   {
+    "cycle": 179,
+    "objective_change_abs": 1417.8939007520676
+   },
+   {
+    "cycle": 180,
+    "objective_change_abs": 1460.9481934309006
+   },
+   {
+    "cycle": 181,
+    "objective_change_abs": 1500.681741476059
+   },
+   {
+    "cycle": 182,
+    "objective_change_abs": 1494.4844186306
+   },
+   {
+    "cycle": 183,
+    "objective_change_abs": 1332.480616569519
+   },
+   {
+    "cycle": 184,
+    "objective_change_abs": 1447.8317396640778
+   },
+   {
+    "cycle": 185,
+    "objective_change_abs": 1542.70920920372
+   },
+   {
+    "cycle": 186,
+    "objective_change_abs": 1509.6587278842926
+   },
+   {
+    "cycle": 187,
+    "objective_change_abs": 1447.2479875087738
+   }
+  ]
+ },
+ "certification": {
+  "certified": true,
+  "certification_cycle": 187,
+  "cycles_run": 187,
+  "cap": 500,
+  "required_consecutive_cycles": 10,
+  "terminal_cycle_convergence": true,
+  "terminal_consecutive_converged_cycles": 10,
+  "local_solve_failures_total": 0
+ },
+ "certification_cycle": 187,
+ "cycles_run": 187,
+ "stopped_by_trajectory": {
+  "stopped_by": "boyd",
+  "converged_at_cycle": 178,
+  "stop_run_cycles": [
+   178,
+   179,
+   180,
+   181,
+   182,
+   183,
+   184,
+   185,
+   186,
+   187
+  ]
+ },
+ "first_pass_cycle_per_channel": {
+  "v": 48,
+  "pf": 93,
+  "ess": 149
+ },
+ "terminal_ratios_per_channel": {
+  "v": {
+   "primal": 0.006970609462960314,
+   "dual": 0.07946545330590023,
+   "max": 0.07946545330590023
+  },
+  "pf": {
+   "primal": 0.04986947306004675,
+   "dual": 0.09706204972641842,
+   "max": 0.09706204972641842
+  },
+  "ess": {
+   "primal": 0.8748717833872933,
+   "dual": 0.3598574597019462,
+   "max": 0.8748717833872933
+  }
+ },
+ "rule_ten": {
+  "reported_not_gated": true,
+  "terminal_objective_change_abs": 1447.2479875087738,
+  "terminal_objective_tolerance": 64813.97240194676,
+  "terminal_step_over_threshold": 0.022329259168587915,
+  "boyd_terminal_ratio_max_per_channel": {
+   "v": 0.07946545330590023,
+   "pf": 0.09706204972641842,
+   "ess": 0.8748717833872933
+  }
+ },
+ "component_decomposition_totals_weighted": {
+  "generation_cost": 441974944.90750784,
+  "flexibility_cost_internal": 206176133.3372043,
+  "load_curtailment_cost": 0.0,
+  "res_curtailment_penalty": 0.0,
+  "ess_usage_cost": 0.0,
+  "flexibility_cost_tso_adn_interface_definitional": 0.0,
+  "voltage_slack": -11796.93985084861,
+  "node_balance_slack": 0.0,
+  "branch_flow_slack": 0.0,
+  "flexibility_p_day_balance_slack": -946.4781749487659,
+  "local_ess_day_balance_slack": 0.0,
+  "shared_ess_day_balance_slack": -58.0552064279766,
+  "detector_penalty_total": -12801.473232225351,
+  "ess_complementarity_bilinear_definitional": 52.486524689544254,
+  "orphan_flex_q_day_balance_slack_raw": 0.0,
+  "orphan_tso_adn_flex_p_day_balance_slack_raw": 0.0,
+  "orphan_flex_q_day_balance_penalty_at_PENALTY_FLEXIBILITY_definitional": 0.0,
+  "orphan_tso_adn_flex_p_day_balance_penalty_at_PENALTY_FLEXIBILITY_definitional": 0.0,
+  "res_curtailment_definitional_at_weight_1": 560.6173420835077
+ },
+ "recourse_components": {
+  "gross_operational_cost": 648138276.7714801,
+  "gross_operational_cost_including_settlement": 648137476.3535662,
+  "interface_settlement_tso": -1133643833.6347957,
+  "interface_settlement_dso": {
+   "5": 428791341.7041235,
+   "7": 311863144.18869483,
+   "9": 392988547.32406354
+  },
+  "interface_settlement_total": -800.4179139137268,
+  "terminal_salvage_value": 5.1695717219631706e-36,
+  "net_operational_recourse": 648138276.7714801,
+  "detector_penalty_total": -12801.473232225351,
+  "detector_components": {
+   "voltage_slack": -11796.93985084861,
+   "node_balance_slack": 0.0,
+   "branch_flow_slack": 0.0,
+   "flexibility_p_day_balance_slack": -946.4781749487659,
+   "local_ess_day_balance_slack": 0.0,
+   "shared_ess_day_balance_slack": -58.0552064279766,
+   "detector_penalty_total": -12801.473232225351
+  },
+  "economic_recourse_all_D_excluded": 648151078.2447124,
+  "economic_recourse_voltage_excluded": 648150073.7113309
+ },
+ "settlement_remainder": {
+  "definition": "recourse_components.interface_settlement_total: T_TSO + sum(T_DSO), the non-cancelling interface settlement at the terminal point, excluded from the cost",
+  "value": -800.4179139137268
+ },
+ "storage_per_node": {
+  "5": {
+   "s_mva": 1.9375,
+   "e_mwh": 7.75,
+   "has_storage": true,
+   "efc_per_day_max": 1.1278610301379497,
+   "efc_per_day_per_cohort_year": {
+    "(0, 0)": 1.1278610301379497,
+    "(0, 1)": 0.9501372031586699,
+    "(0, 2)": 0.7713847297323556
+   },
+   "terminal_soh_per_active_cohort_year": {
+    "(0, 0)": 0.8366561345702662,
+    "(0, 1)": 0.7199440275452115,
+    "(0, 2)": 0.6372734718577522
+   },
+   "terminal_soh_min_over_active_cohort_years": 0.6372734718577522,
+   "soh_floor_rows_active_at_terminal": [],
+   "published_available_capacity_terminal": {
+    "2025": {
+     "s_available": 1.9375,
+     "e_available": 6.484085042919563
+    },
+    "2030": {
+     "s_available": 1.9375,
+     "e_available": 5.579566213475389
+    },
+    "2035": {
+     "s_available": 1.9375,
+     "e_available": 4.938869406897579
+    }
+   },
+   "note_zero_node": null
+  },
+  "7": {
+   "s_mva": 1.9375,
+   "e_mwh": 7.75,
+   "has_storage": true,
+   "efc_per_day_max": 1.1318017079708493,
+   "efc_per_day_per_cohort_year": {
+    "(0, 0)": 1.1318017079708493,
+    "(0, 1)": 0.9511751209646775,
+    "(0, 2)": 0.7696663230857642
+   },
+   "terminal_soh_per_active_cohort_year": {
+    "(0, 0)": 0.8361349627163711,
+    "(0, 1)": 0.7193774844625825,
+    "(0, 2)": 0.6369450327741404
+   },
+   "terminal_soh_min_over_active_cohort_years": 0.6369450327741404,
+   "soh_floor_rows_active_at_terminal": [],
+   "published_available_capacity_terminal": {
+    "2025": {
+     "s_available": 1.9375,
+     "e_available": 6.480045961051876
+    },
+    "2030": {
+     "s_available": 1.9375,
+     "e_available": 5.575175504585014
+    },
+    "2035": {
+     "s_available": 1.9375,
+     "e_available": 4.936324003999588
+    }
+   },
+   "note_zero_node": null
+  },
+  "9": {
+   "s_mva": 1.9375,
+   "e_mwh": 7.75,
+   "has_storage": true,
+   "efc_per_day_max": 1.1299623925753741,
+   "efc_per_day_per_cohort_year": {
+    "(0, 0)": 1.1299623925753741,
+    "(0, 1)": 0.9509428721837563,
+    "(0, 2)": 0.773192259099563
+   },
+   "terminal_soh_per_active_cohort_year": {
+    "(0, 0)": 0.8363781797854982,
+    "(0, 1)": 0.7196131654684966,
+    "(0, 2)": 0.6367985703493542
+   },
+   "terminal_soh_min_over_active_cohort_years": 0.6367985703493542,
+   "soh_floor_rows_active_at_terminal": [],
+   "published_available_capacity_terminal": {
+    "2025": {
+     "s_available": 1.9375,
+     "e_available": 6.481930893337611
+    },
+    "2030": {
+     "s_available": 1.9375,
+     "e_available": 5.577002032380849
+    },
+    "2035": {
+     "s_available": 1.9375,
+     "e_available": 4.935188920207494
+    }
+   },
+   "note_zero_node": null
+  }
+ },
+ "local_solve_failures": 0,
+ "network_failures_summary": {
+  "n_blocks": 96,
+  "classes": {
+   "recovered_tier1": 87,
+   "recovered_tier2": 9,
+   "unrecovered": 0,
+   "not_attempted": 0,
+   "indeterminate": 0,
+   "recovered": 96
+  },
+  "n_frozen_snapshots": 2,
+  "n_esso_recovery_events": 0,
+  "path": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/4e53fa5560bbfa10_two_c_star_d/network_failures_s39_D.jsonl"
+ },
+ "solve_profile": {
+  "observed": {
+   "permitted_solve": 9693,
+   "permitted_exec": 9693,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "identity_holds": false
+ },
+ "wall_time_s": {
+  "child_process_s": 5814.709722042084,
+  "run_admm_arm_s": 5800.483010053635,
+  "run_admm_arm_reported_wall_clock_s": 5763.8323011398315
+ },
+ "peak_rss": {
+  "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+  "child_python_process_ru_maxrss": 3467214848,
+  "production_state_peak_rss_ru_maxrss": 2438971392,
+  "solver_subprocesses_max_ru_maxrss": 56770560,
+  "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+ },
+ "record_capture_checklist_asserted_before_run": {
+  "trajectory_field_boyd_all_pass": true,
+  "trajectory_field_boyd_ess_channel_pass": true,
+  "trajectory_field_boyd_ess_dual_ratio": true,
+  "trajectory_field_boyd_ess_primal_ratio": true,
+  "trajectory_field_boyd_pf_channel_pass": true,
+  "trajectory_field_boyd_pf_dual_ratio": true,
+  "trajectory_field_boyd_pf_primal_ratio": true,
+  "trajectory_field_boyd_stop": true,
+  "trajectory_field_boyd_v_channel_pass": true,
+  "trajectory_field_boyd_v_dual_ratio": true,
+  "trajectory_field_boyd_v_primal_ratio": true,
+  "trajectory_field_consecutive_converged_cycles": true,
+  "trajectory_field_cycle": true,
+  "trajectory_field_cycle_convergence": true,
+  "trajectory_field_efc_per_day_max": true,
+  "trajectory_field_gross_operational_cost": true,
+  "trajectory_field_local_solves_ok": true,
+  "trajectory_field_objective_change_abs": true,
+  "trajectory_field_objective_change_ratio": true,
+  "trajectory_field_objective_tolerance": true,
+  "trajectory_field_recourse": true,
+  "trajectory_field_rho_ess_action": true,
+  "trajectory_field_rho_ess_after": true,
+  "trajectory_field_rho_freeze_active": true,
+  "trajectory_field_rho_pf_action": true,
+  "trajectory_field_rho_pf_after": true,
+  "trajectory_field_rho_v_action": true,
+  "trajectory_field_rho_v_after": true,
+  "trajectory_field_terminal_salvage_value": true,
+  "esso_capture_attr_es_avg_ch_dch_per_unit": true,
+  "esso_capture_attr_es_soh_per_unit_cumul": true,
+  "esso_capture_attr_es_e_rated_per_unit": true,
+  "harness_fn_run_admm_arm": true,
+  "harness_fn_write_boyd_terminal_s35ref": true,
+  "harness_fn_s38_pf_capture_hooks": true,
+  "harness_fn_s39_exempt_until_capture_hooks": true,
+  "harness_fn__s35ref_terminal_floor_and_efc": true,
+  "harness_fn__derive_stopped_by_from_trajectory": true,
+  "harness_fn__identify_soh_floor_rows": true,
+  "evaluator_fn__certification_from_trajectory": true,
+  "evaluator_fn__first_pass_cycle": true,
+  "evaluator_fn__terminal_ratios": true,
+  "component_levels_recourse_key_interface_settlement_total": true,
+  "run_admm_arm_accepts_investment_map": true,
+  "run_admm_arm_post_run_hook_gets_state": true,
+  "production_state_has_peak_rss": true
+ },
+ "eval_key": "4e53fa5560bbfa101c5ce8da78776179b92b0d817c42d04dd7330b077ab8c41c",
+ "evaluation_overrides_effective": {},
+ "post_certification_capture_checklist_asserted_before_run": {
+  "certification_fn": true,
+  "stopped_by_fn": true,
+  "hull_polish_fn": true,
+  "persist_fn": true,
+  "decomposition_fn_accepts_reference_dir": true,
+  "cost_band_constant_1_5e_4": true,
+  "reconciliation_tol_1_0": true,
+  "hull_gate_threshold_0_1_pct": true,
+  "aa_sidecar_fn": true,
+  "run_admm_arm_passes_state_to_hook": true
+ },
+ "post_certification": {
+  "status": "evaluated",
+  "evaluated": true,
+  "skip_reason": null,
+  "error": null,
+  "certified_cost": 648138276.7714801,
+  "gate_c_pass": null,
+  "persisted_models": {
+   "path": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/4e53fa5560bbfa10_two_c_star_d/certified_models.pkl",
+   "sha256": "320ddbc504de0927a243b733a481f9e76e0482fd2838a1b32defc522d3d4008c",
+   "size_bytes": 165541189
+  },
+  "hull_bound_detail_path": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/4e53fa5560bbfa10_two_c_star_d/hull_bound_detail.json",
+  "requested": {
+   "hull_polish": true,
+   "persist_certified_models": true,
+   "reference": null
+  },
+  "gate_b": null,
+  "gate_c": null,
+  "gate_d": {
+   "blocks_solved": 48,
+   "n_blocks": 48,
+   "relative_pct": 2.437124692395468e-05,
+   "threshold_pct": 0.1,
+   "settlement_excluded_change": 958.8472536802292,
+   "settlement_remainder_before": -800.4179139137268,
+   "settlement_remainder_after": -1917.224547624588,
+   "hull_bounds_non_degenerate_by_channel": {
+    "V": {
+     "total": 1728,
+     "degenerate": 0,
+     "non_degenerate": 1728,
+     "active_non_degenerate": 735
+    },
+    "PF_P": {
+     "total": 1728,
+     "degenerate": 0,
+     "non_degenerate": 1728,
+     "active_non_degenerate": 483
+    },
+    "PF_Q": {
+     "total": 1728,
+     "degenerate": 0,
+     "non_degenerate": 1728,
+     "active_non_degenerate": 177
+    },
+    "ESS_P": {
+     "total": 1728,
+     "degenerate": 0,
+     "non_degenerate": 1728,
+     "active_non_degenerate": 30
+    },
+    "ESS_Q": {
+     "total": 1728,
+     "degenerate": 0,
+     "non_degenerate": 1728,
+     "active_non_degenerate": 1117
+    }
+   },
+   "pass": true
+  }
+ },
+ "post_certification_path": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/4e53fa5560bbfa10_two_c_star_d/post_certification.json",
+ "aa_per_cycle": null,
+ "configuration_checks_in_child": {
+  "rho_v_matches_D": true,
+  "rho_pf_matches_D": true,
+  "rho_ess_matches_D": true,
+  "tau_is_0": true,
+  "gamma_policy_tied_to_rho": true,
+  "balancing_exempt_until_matches_D": true,
+  "balancing_exempt_channels_empty": true,
+  "freeze_after_unchanged_cycles_is_10": true,
+  "freeze_backstop_cycle_is_200": true,
+  "minimum_consecutive_converged_cycles_matches_spec": true,
+  "shared_ess_initialization_is_standalone": true,
+  "num_max_iters_is_spec_cap": true,
+  "anderson_acceleration_off_before_overrides": true,
+  "persistent_workers_off": true,
+  "parallel_execution_off": true
+ },
+ "overrides_applied_in_child": {},
+ "thread_caps_seen_by_child": {
+  "OMP_NUM_THREADS": "1",
+  "MKL_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "VECLIB_MAXIMUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1"
+ },
+ "PYTHONHASHSEED_in_child": null,
+ "nlp_solver_path_in_child": "/usr/local/bin/ipopt",
+ "campaign_lock_seen_by_child": {
+  "pid": 70211,
+  "campaign_id": "s44_aa_variant",
+  "campaign_spec_sha256": "f90618e8d00299969a7e35c48850e0316b3a2f15436763d66bf1306afb392186",
+  "started_utc": "2026-09-19T12:38:03.976379+00:00"
+ },
+ "child_pid": 70223,
+ "parent_pid": 70211,
+ "report_path": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/4e53fa5560bbfa10_two_c_star_d/g_s39_D.json",
+ "per_cycle_record_path": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/4e53fa5560bbfa10_two_c_star_d/per_cycle_record.jsonl"
+}
