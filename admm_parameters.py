@@ -238,18 +238,24 @@ class ADMMParameters:
         # docstring for the full design. DEFAULT OFF (`enabled: False`):
         # `_run_operational_planning` never calls anything in
         # `admm_anderson_acceleration` (its `if aa_enabled:` guards), so the
-        # existing serial ADMM cycle is byte-for-byte unchanged. Not wired
-        # to any case-file key; set programmatically only, exactly like
-        # `persistent_workers`/`tso_snapshot_capture_mode` above. `memory`
+        # existing serial ADMM cycle is byte-for-byte unchanged. Since P5.15
+        # Addendum 27 item 1 this dict MAY be set from the case file: an
+        # OPTIONAL `admm.anderson_acceleration` object (keys `enabled`,
+        # `memory`, `regularization`, `reject_policy`), validated and merged
+        # onto these defaults by `_read_parameters_from_file`; when the key
+        # is absent the dict below is left exactly as is (no key added), so
+        # every case study without it loads unchanged. It may also still be
+        # set programmatically. `memory`
         # (m, number of secant columns) and `regularization` (Tikhonov
         # lambda on the least-squares solve) are the frozen-spec values
         # (5, 1e-10); kept configurable here only so a zero-solve check can
         # exercise small memories without constructing a full case study.
         # P5.15 Addendum 25 item 2: an OPTIONAL key `reject_policy`
         # ('clear_memory' default = the Step 3.7 behaviour, or 'keep_memory')
-        # may be added to this dict programmatically; it is deliberately NOT
-        # a default key here, so every existing settings dict keeps meaning
-        # the Step 3.7 behaviour (see `admm_anderson_acceleration.py`).
+        # may be added to this dict (programmatically, or from the case
+        # file); it is deliberately NOT a default key here, so every existing
+        # settings dict keeps meaning the Step 3.7 behaviour (see
+        # `admm_anderson_acceleration.py`).
         self.anderson_acceleration = {
             'enabled': False,
             'memory': 5,
@@ -553,3 +559,50 @@ def _read_parameters_from_file(admm_params, params_data):
     else:
         admm_params.shared_ess_initialization = 'standalone'
         admm_params.shared_ess_initialization_source = 'default'
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # P5.15 Addendum 27 item 1 (frozen spec v15 `data/SRP1/Results/P515S45/
+    # frozen_s45_phaseA_spec_v15_5feefd7b.json`): optional Anderson
+    # acceleration settings. Absent key -> nothing is touched (the __init__
+    # default dict, with no `reject_policy` key, stays exactly as it is), so
+    # every case study without this key loads unchanged. Present -> must be
+    # an object with keys drawn from {enabled, memory, regularization,
+    # reject_policy}, merged onto the current dict.
+    if 'anderson_acceleration' in params_data:
+        admm_params.anderson_acceleration = _read_anderson_acceleration(
+            admm_params.anderson_acceleration, params_data['anderson_acceleration'])
+
+
+def _read_anderson_acceleration(current_settings, aa_data):
+    import admm_anderson_acceleration  # numpy only; imported only when the case file carries the key
+    supported_keys = ('enabled', 'memory', 'regularization', 'reject_policy')
+    if not isinstance(aa_data, dict):
+        raise ValueError('ADMM anderson_acceleration must be an object (dict).')
+    unknown_keys = sorted(set(aa_data) - set(supported_keys))
+    if unknown_keys:
+        raise ValueError(
+            f'ADMM anderson_acceleration: unsupported keys {unknown_keys}; supported: {list(supported_keys)}.')
+    settings = dict(current_settings)
+    if 'enabled' in aa_data:
+        if not isinstance(aa_data['enabled'], bool):
+            raise ValueError('ADMM anderson_acceleration.enabled must be a bool.')
+        settings['enabled'] = aa_data['enabled']
+    if 'memory' in aa_data:
+        if isinstance(aa_data['memory'], bool) or not isinstance(aa_data['memory'], int):
+            raise ValueError('ADMM anderson_acceleration.memory must be an int.')
+        if aa_data['memory'] < 1:
+            raise ValueError('ADMM anderson_acceleration.memory must be at least 1.')
+        settings['memory'] = aa_data['memory']
+    if 'regularization' in aa_data:
+        if isinstance(aa_data['regularization'], bool) or not isinstance(aa_data['regularization'], float):
+            raise ValueError('ADMM anderson_acceleration.regularization must be a float.')
+        if aa_data['regularization'] < 0.0:
+            raise ValueError('ADMM anderson_acceleration.regularization must be non-negative.')
+        settings['regularization'] = aa_data['regularization']
+    if 'reject_policy' in aa_data:
+        if aa_data['reject_policy'] not in admm_anderson_acceleration.REJECT_POLICIES:
+            raise ValueError(
+                'ADMM anderson_acceleration.reject_policy must be one of '
+                f'{admm_anderson_acceleration.REJECT_POLICIES}; got {aa_data["reject_policy"]!r}.')
+        settings['reject_policy'] = aa_data['reject_policy']
+    return settings

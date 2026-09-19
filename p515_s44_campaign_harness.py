@@ -97,6 +97,12 @@ hash-recorded in the spec at freeze time and re-verified by the child before the
 run and before use). `eval_key` = the candidate key for the case-file
 configuration, else sha256{candidate_key, overrides} (`evaluation_key`); it names
 the eval dir and working-dir ids, so one campaign can hold C* under D and under AA.
+Addendum 27 item 1: a spec may declare `configuration.case_file_anderson_acceleration`
+(the exact AA dict the case file loads to, `validate_case_file_anderson_acceleration`);
+the configuration hook then checks the loaded dict equals it instead of requiring
+case-file AA off, `eval_key` becomes sha256{candidate_key, effective AA dict,
+overrides} (never the bare candidate key), and each entry records its effective AA
+dict. Specs without the declaration keep their exact meaning and keys.
 AFTER the run, in the child, inside `run_admm_arm`'s post_run_hook (same live
 models/state), `run_post_certification` does, only if the trajectory is
 certified under the spec's bar (else it records `status: skipped` + reason):
@@ -313,11 +319,61 @@ def validate_overrides(overrides):
     return out
 
 
-def evaluation_key(candidate_key_hex, overrides):
+CASE_FILE_AA_KEYS = frozenset({'enabled', 'memory', 'regularization', 'reject_policy'})
+
+
+def validate_case_file_anderson_acceleration(declared):
+    """P5.15 Addendum 27 item 1: a campaign spec may declare
+    `configuration.case_file_anderson_acceleration` -- the EXACT
+    `anderson_acceleration` dict the case file must load to (checked by the
+    child's configuration hook). None = not declared (the pre-Addendum-27
+    meaning: the case file must carry AA off). Returns a normalized copy."""
+    if declared is None:
+        return None
+    import admm_anderson_acceleration as AA  # numpy only; no model code
+    if not isinstance(declared, dict):
+        raise ValueError('case_file_anderson_acceleration must be a dict')
+    bad = sorted(set(declared) - CASE_FILE_AA_KEYS)
+    missing = sorted({'enabled', 'memory', 'regularization'} - set(declared))
+    if bad or missing:
+        raise ValueError(f'case_file_anderson_acceleration: unsupported keys {bad} / missing keys {missing}; '
+                         f'keys: {sorted(CASE_FILE_AA_KEYS)} (reject_policy optional)')
+    if not isinstance(declared['enabled'], bool):
+        raise ValueError('case_file_anderson_acceleration.enabled must be a bool')
+    if declared['memory'] != FROZEN_AA_MEMORY or declared['regularization'] != FROZEN_AA_REGULARIZATION:
+        raise ValueError(f'case_file_anderson_acceleration memory/regularization must be the frozen '
+                         f'{FROZEN_AA_MEMORY}/{FROZEN_AA_REGULARIZATION}: {declared}')
+    if 'reject_policy' in declared and declared['reject_policy'] not in AA.REJECT_POLICIES:
+        raise ValueError(f'case_file_anderson_acceleration.reject_policy must be one of {AA.REJECT_POLICIES}')
+    return dict(declared)
+
+
+def effective_anderson_acceleration(case_file_aa, overrides):
+    """The AA settings an evaluation runs with when the spec declares the case
+    file's AA dict: the declaration with the evaluation's AA override merged on
+    top (as `_config_hook_factory` applies it). None when not declared."""
+    if case_file_aa is None:
+        return None
+    merged = dict(case_file_aa)
+    merged.update((overrides or {}).get('anderson_acceleration') or {})
+    return merged
+
+
+def evaluation_key(candidate_key_hex, overrides, case_file_aa=None):
     """Identity of one EVALUATION (candidate x configuration). The case-file
     configuration (no overrides) keeps the candidate key itself, so a D
     evaluation's directory name is `<candidate key16>_<label>` as in s44_gate;
-    any override gives sha256 of {candidate_key, overrides}."""
+    any override gives sha256 of {candidate_key, overrides}.
+    Addendum 27 item 1: when the spec declares `case_file_anderson_acceleration`
+    (`case_file_aa`), the key is sha256 of {candidate_key,
+    effective_anderson_acceleration, overrides}, so a case-file-AA evaluation
+    never collides with the D (or an AA-override) evaluation of the same
+    candidate. Specs without the declaration keep the formula above exactly."""
+    if case_file_aa is not None:
+        text = json.dumps({'candidate_key': candidate_key_hex,
+                           'effective_anderson_acceleration': effective_anderson_acceleration(case_file_aa, overrides),
+                           'overrides': overrides or {}}, sort_keys=True, separators=(',', ':'))
+        return hashlib.sha256(text.encode()).hexdigest()
     if not overrides:
         return candidate_key_hex
     text = json.dumps({'candidate_key': candidate_key_hex, 'overrides': overrides}, sort_keys=True,
@@ -426,6 +482,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
     if os.path.exists(campaign_root) and os.listdir(campaign_root):
         raise RuntimeError(f'campaign root exists and is not empty (write-once): {campaign_root}')
     overrides = validate_overrides(configuration.get('overrides'))
+    # Addendum 27 item 1: optional declaration of the case file's AA dict (None = not declared).
+    case_file_aa = validate_case_file_anderson_acceleration(configuration.get('case_file_anderson_acceleration'))
     cand_entries, seen_labels, seen_keys = [], set(), set()
     for item in candidates:
         if len(item) == 2:
@@ -440,16 +498,19 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         canon = canonical_candidate(cand)
         key = candidate_key(canon)
         eff_overrides = validate_overrides(options['overrides']) if 'overrides' in options else dict(overrides)
-        ekey = evaluation_key(key, eff_overrides)
+        ekey = evaluation_key(key, eff_overrides, case_file_aa=case_file_aa)
         if label in seen_labels or ekey in seen_keys:
             raise ValueError(f'duplicate evaluation label or key (candidate x configuration): {label} / {ekey[:16]}')
         seen_labels.add(label)
         seen_keys.add(ekey)
         post_cert = resolve_post_certification(options.get('post_certification'), key)
-        cand_entries.append({'label': label, 'canonical': canon, 'key': key, 'eval_key': ekey,
-                             'overrides': eff_overrides, 'post_certification': post_cert,
-                             'eval_dir': eval_dir_name(ekey, label),
-                             'working_dir_ids': eval_ids(campaign_id, ekey)})
+        cand_entry = {'label': label, 'canonical': canon, 'key': key, 'eval_key': ekey,
+                      'overrides': eff_overrides, 'post_certification': post_cert,
+                      'eval_dir': eval_dir_name(ekey, label),
+                      'working_dir_ids': eval_ids(campaign_id, ekey)}
+        if case_file_aa is not None:  # only when declared, so undeclared specs keep their exact format
+            cand_entry['effective_anderson_acceleration'] = effective_anderson_acceleration(case_file_aa, eff_overrides)
+        cand_entries.append(cand_entry)
     os.makedirs(campaign_root, exist_ok=True)  # only after every validation above has passed
     try:
         head = _git(['rev-parse', 'HEAD'])
@@ -484,6 +545,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         'harness': {'path': os.path.relpath(HARNESS_PATH, REPO), 'sha256': sha256_file(HARNESS_PATH)},
         'extra': extra or {},
     }
+    if case_file_aa is not None:  # only when declared, so undeclared specs keep their exact format
+        spec['configuration']['case_file_anderson_acceleration'] = case_file_aa
     text = json.dumps(spec, indent=1, sort_keys=True, default=str)
     digest = hashlib.sha256(text.encode()).hexdigest()
     path = os.path.join(campaign_root, f'campaign_spec_{_sanitize_id(campaign_id)}_{digest[:8]}.json')
@@ -1080,11 +1143,19 @@ def _config_hook_factory(spec, holder, overrides=None):
     `spec['configuration']['overrides']`; none for D). Only the AA flag and its
     reject-policy may be overridden (`validate_overrides`); after an AA override
     the frozen memory (5) and regularization (1e-10) are verified unchanged.
-    Records into the report's rule_eleven_checklist (provenance)."""
+    Records into the report's rule_eleven_checklist (provenance).
+    Addendum 27 item 1: if the spec declares
+    `configuration.case_file_anderson_acceleration`, the loaded AA dict must
+    EQUAL that declaration exactly (and carry the frozen memory/regularization)
+    in place of the "AA off before overrides" check; without the declaration
+    the AA-off check stays, so a spec frozen before Addendum 27 can never run
+    AA from the case file."""
     import p515_g_g1_g4_admm_gates as G
     if overrides is None:
         overrides = spec['configuration'].get('overrides') or {}
     overrides = validate_overrides(overrides)
+    case_file_aa = validate_case_file_anderson_acceleration(
+        spec['configuration'].get('case_file_anderson_acceleration'))
 
     def hook(planning, sed, candidate, report):
         a = planning.params.admm
@@ -1104,10 +1175,17 @@ def _config_hook_factory(spec, holder, overrides=None):
                 a.minimum_consecutive_converged_cycles == int(spec['required_consecutive_cycles'])),
             'shared_ess_initialization_is_standalone': a.shared_ess_initialization == 'standalone',
             'num_max_iters_is_spec_cap': a.num_max_iters == int(spec['cap']),
-            'anderson_acceleration_off_before_overrides': not a.anderson_acceleration.get('enabled'),
-            'persistent_workers_off': not a.persistent_workers.get('enabled'),
-            'parallel_execution_off': not planning.parallel_execution,
         }
+        if case_file_aa is None:
+            checks['anderson_acceleration_off_before_overrides'] = not a.anderson_acceleration.get('enabled')
+        else:
+            checks['anderson_acceleration_case_file_matches_declaration'] = (
+                a.anderson_acceleration == case_file_aa)
+            checks['anderson_acceleration_case_file_memory_regularization_frozen'] = (
+                a.anderson_acceleration.get('memory') == FROZEN_AA_MEMORY
+                and a.anderson_acceleration.get('regularization') == FROZEN_AA_REGULARIZATION)
+        checks['persistent_workers_off'] = not a.persistent_workers.get('enabled')
+        checks['parallel_execution_off'] = not planning.parallel_execution
         missing = sorted(k for k, v in checks.items() if not v)
         if missing:
             raise RuntimeError(f'S44 campaign child: configuration not as frozen (case file D + cap): {missing}')
@@ -1130,6 +1208,7 @@ def _config_hook_factory(spec, holder, overrides=None):
         report['rule_eleven_checklist']['s44_campaign_overrides_applied'] = applied
         holder['configuration_checks'] = checks
         holder['overrides_applied'] = applied
+        holder['anderson_acceleration_effective'] = dict(a.anderson_acceleration)
     return hook
 
 
@@ -1353,7 +1432,15 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     capture_checklist = assert_record_capture_paths()
     eff_overrides = validate_overrides(entry['overrides'] if 'overrides' in entry
                                        else (spec['configuration'].get('overrides') or {}))
-    aa_on = bool((eff_overrides.get('anderson_acceleration') or {}).get('enabled'))
+    # Addendum 27 item 1: with a declared case-file AA dict, AA is on iff the effective (declaration +
+    # override) dict says so; undeclared specs keep the override-only rule (their hook requires case-file AA off).
+    case_file_aa = validate_case_file_anderson_acceleration(
+        spec['configuration'].get('case_file_anderson_acceleration'))
+    if case_file_aa is None:
+        aa_on = bool((eff_overrides.get('anderson_acceleration') or {}).get('enabled'))
+    else:
+        aa_on = bool(effective_anderson_acceleration(case_file_aa, eff_overrides).get('enabled'))
+    case_file_sha256_in_child = sha256_file(CASE_FILE)
     post_request = entry.get('post_certification')
     post_checklist = None
     if post_request:
@@ -1477,6 +1564,8 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             'aa_per_cycle': holder.get('aa_sidecar'),
             'configuration_checks_in_child': holder.get('configuration_checks'),
             'overrides_applied_in_child': holder.get('overrides_applied'),
+            'anderson_acceleration_effective_in_child': holder.get('anderson_acceleration_effective'),
+            'case_file_sha256_in_child': case_file_sha256_in_child,
             'thread_caps_seen_by_child': env_caps,
             'PYTHONHASHSEED_in_child': os.environ.get('PYTHONHASHSEED'),
             'nlp_solver_path_in_child': os.environ.get('NLP_SOLVER_PATH'),
