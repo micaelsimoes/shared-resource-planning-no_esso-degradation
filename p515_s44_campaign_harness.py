@@ -85,6 +85,36 @@ and `..._precheck` -- derived from the campaign id and the canonical
 candidate key; the child refuses if either exists (never reusable).
 
 ================================================================================
+PER-EVALUATION CONFIGURATION AND THE POST-CERTIFICATION STEP (Addendum 25 item 2)
+================================================================================
+A spec entry is one EVALUATION (candidate x configuration). An entry may carry
+its own `overrides` (replacing the campaign-level ones; ONLY
+`anderson_acceleration.{enabled, reject_policy}` -- `validate_overrides`) and a
+`post_certification` request (`resolve_post_certification`):
+`persist_certified_models`, `hull_polish`, and `reference` = the D evaluation
+of the SAME candidate (certified, no overrides; its record and component levels
+hash-recorded in the spec at freeze time and re-verified by the child before the
+run and before use). `eval_key` = the candidate key for the case-file
+configuration, else sha256{candidate_key, overrides} (`evaluation_key`); it names
+the eval dir and working-dir ids, so one campaign can hold C* under D and under AA.
+AFTER the run, in the child, inside `run_admm_arm`'s post_run_hook (same live
+models/state), `run_post_certification` does, only if the trajectory is
+certified under the spec's bar (else it records `status: skipped` + reason):
+(b) |Q - Q_ref| <= 1.5e-4 Q_ref and (c) the decomposition vs the reference
+(`p515_s43_aa_run._cost_decomposition_vs_d(..., reference_dir=...)`: residual
+<= 1.0, other priced components identically 0); then persists the certified
+TSO/DSO models (`p515_s42_exact_fix_rerun._persist_certified_models`, BEFORE the
+polish mutates them); then the interval-hull polish
+(`p515_s41_hull_polish._polish_all_blocks_hull`: gate on the sum of per-block
+changes, plus the settlement-excluded change, the settlement remainder and the
+non-degenerate active-bound counts). Output: `post_certification.json`,
+`hull_bound_detail.json`, `certified_models.pkl`, and a summary in the record.
+An evaluation with AA on also gets `aa_per_cycle.jsonl`
+(`p515_s43_aa_run._build_aa_per_cycle_sidecar`) and an action summary. A
+post-certification exception is recorded (status 'error', traceback) and the
+child exits 2 after writing its record; the evaluation itself stands.
+
+================================================================================
 FROZEN CAMPAIGN SPEC
 ================================================================================
 `freeze_campaign_spec(...)` writes `<campaign_root>/campaign_spec_<id>_<sha8>.json`
@@ -119,8 +149,8 @@ LEGACY_RUN_LOCK_PATH = os.path.join(REPO, '.p515_g_gate.lock')
 RESULTS_ROOT = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S44')
 CASE_FILE_REL = os.path.join('data', 'SRP1', 'SRP1_params.json')
 CASE_FILE = os.path.join(REPO, CASE_FILE_REL)
-RECORD_SCHEMA = 'p515_s44_evaluation_record_v1'
-SPEC_SCHEMA = 'p515_s44_campaign_spec_v1'
+RECORD_SCHEMA = 'p515_s44_evaluation_record_v2'  # v2 (Addendum 25 item 2): per-evaluation config + post-certification
+SPEC_SCHEMA = 'p515_s44_campaign_spec_v2'
 
 THREAD_CAP_ENV = {
     'OMP_NUM_THREADS': '1',
@@ -130,6 +160,13 @@ THREAD_CAP_ENV = {
     'NUMEXPR_NUM_THREADS': '1',
 }
 SUPPORTED_OVERRIDE_KEYS = frozenset({'anderson_acceleration'})
+# Addendum 25 item 2: the ONLY configuration a campaign spec may override is the AA flag and its
+# reject-policy sub-option (memory / regularization stay at the frozen 5 / 1e-10).
+SUPPORTED_AA_OVERRIDE_SUBKEYS = frozenset({'enabled', 'reject_policy'})
+FROZEN_AA_MEMORY = 5
+FROZEN_AA_REGULARIZATION = 1e-10
+POST_CERTIFICATION_KEYS = frozenset({'persist_certified_models', 'hull_polish', 'reference'})
+EVALUATION_OPTION_KEYS = frozenset({'overrides', 'post_certification'})
 ACTIVE_NODES = (5, 7, 9)
 INVESTMENT_YEAR = 2025
 BAR_WINDOW = 10  # STEP4 2.5: "its bar (max objective step over the last 10 cycles)"
@@ -246,6 +283,125 @@ def eval_ids(campaign_id, key):
     return {'run': f'{stub}_run', 'precheck': f'{stub}_precheck'}
 
 
+# ==============================================================================
+#  per-evaluation configuration (Addendum 25 item 2)
+# ==============================================================================
+def validate_overrides(overrides):
+    """The spec's configuration overrides: ONLY `anderson_acceleration` with
+    sub-keys `enabled` (bool) and `reject_policy` (one of
+    `admm_anderson_acceleration.REJECT_POLICIES`). Returns a normalized copy."""
+    overrides = dict(overrides or {})
+    unsupported = sorted(set(overrides) - SUPPORTED_OVERRIDE_KEYS)
+    if unsupported:
+        raise ValueError(f'unsupported configuration overrides {unsupported}; supported: '
+                         f'{sorted(SUPPORTED_OVERRIDE_KEYS)}')
+    out = {}
+    if 'anderson_acceleration' in overrides:
+        import admm_anderson_acceleration as AA  # numpy only; no model code
+        aa = overrides['anderson_acceleration']
+        if not isinstance(aa, dict):
+            raise ValueError('anderson_acceleration override must be a dict')
+        bad = sorted(set(aa) - SUPPORTED_AA_OVERRIDE_SUBKEYS)
+        if bad:
+            raise ValueError(f'unsupported anderson_acceleration override sub-keys {bad}; supported: '
+                             f'{sorted(SUPPORTED_AA_OVERRIDE_SUBKEYS)}')
+        if 'enabled' in aa and not isinstance(aa['enabled'], bool):
+            raise ValueError('anderson_acceleration.enabled must be a bool')
+        if 'reject_policy' in aa and aa['reject_policy'] not in AA.REJECT_POLICIES:
+            raise ValueError(f"anderson_acceleration.reject_policy must be one of {AA.REJECT_POLICIES}")
+        out['anderson_acceleration'] = dict(aa)
+    return out
+
+
+def evaluation_key(candidate_key_hex, overrides):
+    """Identity of one EVALUATION (candidate x configuration). The case-file
+    configuration (no overrides) keeps the candidate key itself, so a D
+    evaluation's directory name is `<candidate key16>_<label>` as in s44_gate;
+    any override gives sha256 of {candidate_key, overrides}."""
+    if not overrides:
+        return candidate_key_hex
+    text = json.dumps({'candidate_key': candidate_key_hex, 'overrides': overrides}, sort_keys=True,
+                      separators=(',', ':'))
+    return hashlib.sha256(text.encode()).hexdigest()
+
+
+def resolve_post_certification(request, candidate_key_hex):
+    """Validate a per-evaluation post-certification request and resolve its
+    reference evaluation (hash-recorded) at spec-freeze time. Returns None if
+    nothing is requested. The reference must be a CERTIFIED evaluation of the
+    SAME candidate under the case-file configuration (no overrides), i.e. the D
+    evaluation of that candidate."""
+    if not request:
+        return None
+    if not isinstance(request, dict):
+        raise ValueError('post_certification must be a dict')
+    bad = sorted(set(request) - POST_CERTIFICATION_KEYS)
+    if bad:
+        raise ValueError(f'unsupported post_certification keys {bad}; supported: {sorted(POST_CERTIFICATION_KEYS)}')
+    persist = bool(request.get('persist_certified_models', False))
+    polish = bool(request.get('hull_polish', False))
+    for name in ('persist_certified_models', 'hull_polish'):
+        if name in request and not isinstance(request[name], bool):
+            raise ValueError(f'post_certification.{name} must be a bool')
+    ref = request.get('reference')
+    resolved_ref = None
+    if ref is not None:
+        if not isinstance(ref, dict) or set(ref) != {'eval_dir'}:
+            raise ValueError("post_certification.reference must be {'eval_dir': <repo-relative eval dir>}")
+        ref_dir = os.path.join(REPO, ref['eval_dir'])
+        rec_path = os.path.join(ref_dir, 'evaluation_record.json')
+        cl_path = os.path.join(ref_dir, 'component_levels_terminal.json')
+        for p in (rec_path, cl_path):
+            if not os.path.isfile(p):
+                raise ValueError(f'reference evaluation file missing: {p}')
+        with open(rec_path) as handle:
+            ref_rec = json.load(handle)
+        with open(cl_path) as handle:
+            ref_cl = json.load(handle)
+        ref_overrides = (ref_rec.get('evaluation_overrides_effective')
+                         if 'evaluation_overrides_effective' in ref_rec
+                         else (ref_rec.get('configuration') or {}).get('overrides'))
+        problems = []
+        if ref_rec.get('status') != 'certified' or ref_rec.get('certified_cost') is None:
+            problems.append(f"reference not certified (status={ref_rec.get('status')})")
+        if ref_rec.get('candidate_key') != candidate_key_hex:
+            problems.append(f"reference candidate_key {str(ref_rec.get('candidate_key'))[:16]} != "
+                            f'{candidate_key_hex[:16]} (must be the SAME candidate)')
+        if ref_overrides:
+            problems.append(f'reference is not the case-file (D) configuration: overrides={ref_overrides}')
+        ref_gross = (ref_cl.get('recourse_components') or {}).get('gross_operational_cost')
+        if ref_gross != ref_rec.get('certified_cost'):
+            problems.append(f"reference component_levels gross {ref_gross} != record certified_cost "
+                            f"{ref_rec.get('certified_cost')}")
+        if problems:
+            raise ValueError(f'invalid post_certification.reference {ref["eval_dir"]}: {problems}')
+        resolved_ref = {
+            'eval_dir': ref['eval_dir'],
+            'evaluation_record_sha256': sha256_file(rec_path),
+            'component_levels_terminal_sha256': sha256_file(cl_path),
+            'certified_cost': ref_rec.get('certified_cost'),
+            'certification_cycle': ref_rec.get('certification_cycle'),
+            'candidate_key': ref_rec.get('candidate_key'),
+            'campaign_spec_sha256': ref_rec.get('campaign_spec_sha256'),
+            'configuration_overrides': ref_overrides or {},
+        }
+    if not (persist or polish or resolved_ref):
+        return None
+    return {'persist_certified_models': persist, 'hull_polish': polish, 'reference': resolved_ref}
+
+
+def verify_reference_unchanged(resolved_ref):
+    """Child side (before the run, and again before use): the reference files
+    still hash to what the frozen spec recorded."""
+    ref_dir = os.path.join(REPO, resolved_ref['eval_dir'])
+    got = {'evaluation_record_sha256': sha256_file(os.path.join(ref_dir, 'evaluation_record.json')),
+           'component_levels_terminal_sha256': sha256_file(os.path.join(ref_dir, 'component_levels_terminal.json'))}
+    bad = {k: (resolved_ref[k], v) for k, v in got.items() if resolved_ref[k] != v}
+    if bad:
+        raise RuntimeError(f'post-certification reference changed since the spec was frozen: {bad}')
+    return got
+
+
 def eval_dir_name(key, label):
     return f'{key[:16]}_{_sanitize_id(label)}'
 
@@ -257,25 +413,43 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
                          authority, required_consecutive_cycles=10, extra=None):
     """Write the campaign's frozen spec (write-once) and return (path, sha256, spec).
 
-    `candidates`: list of (label, {node: (s, e)}). Labels and keys must be unique."""
+    `candidates`: list of (label, {node: (s, e)}) or (label, {node: (s, e)}, options).
+    `options` (Addendum 25 item 2) may carry
+      - 'overrides': this evaluation's configuration overrides, REPLACING the
+        campaign-level `configuration['overrides']` for it (validated by
+        `validate_overrides`: the AA flag and its reject-policy only);
+      - 'post_certification': {'persist_certified_models': bool, 'hull_polish':
+        bool, 'reference': {'eval_dir': ...} | None} (`resolve_post_certification`).
+    One entry = one EVALUATION: its `eval_key` (`evaluation_key`) identifies
+    candidate x configuration; labels and eval keys must be unique (the same
+    candidate may appear under two configurations)."""
     if os.path.exists(campaign_root) and os.listdir(campaign_root):
         raise RuntimeError(f'campaign root exists and is not empty (write-once): {campaign_root}')
-    overrides = dict(configuration.get('overrides') or {})
-    unsupported = sorted(set(overrides) - SUPPORTED_OVERRIDE_KEYS)
-    if unsupported:
-        raise ValueError(f'unsupported configuration overrides {unsupported}; supported: '
-                         f'{sorted(SUPPORTED_OVERRIDE_KEYS)}')
+    overrides = validate_overrides(configuration.get('overrides'))
     cand_entries, seen_labels, seen_keys = [], set(), set()
-    for label, cand in candidates:
+    for item in candidates:
+        if len(item) == 2:
+            (label, cand), options = item, {}
+        else:
+            label, cand, options = item
+            options = dict(options or {})
+        bad = sorted(set(options) - EVALUATION_OPTION_KEYS)
+        if bad:
+            raise ValueError(f'unsupported evaluation options {bad} for {label}; supported: '
+                             f'{sorted(EVALUATION_OPTION_KEYS)}')
         canon = canonical_candidate(cand)
         key = candidate_key(canon)
-        if label in seen_labels or key in seen_keys:
-            raise ValueError(f'duplicate candidate label or canonical key: {label} / {key[:16]}')
+        eff_overrides = validate_overrides(options['overrides']) if 'overrides' in options else dict(overrides)
+        ekey = evaluation_key(key, eff_overrides)
+        if label in seen_labels or ekey in seen_keys:
+            raise ValueError(f'duplicate evaluation label or key (candidate x configuration): {label} / {ekey[:16]}')
         seen_labels.add(label)
-        seen_keys.add(key)
-        cand_entries.append({'label': label, 'canonical': canon, 'key': key,
-                             'eval_dir': eval_dir_name(key, label),
-                             'working_dir_ids': eval_ids(campaign_id, key)})
+        seen_keys.add(ekey)
+        post_cert = resolve_post_certification(options.get('post_certification'), key)
+        cand_entries.append({'label': label, 'canonical': canon, 'key': key, 'eval_key': ekey,
+                             'overrides': eff_overrides, 'post_certification': post_cert,
+                             'eval_dir': eval_dir_name(ekey, label),
+                             'working_dir_ids': eval_ids(campaign_id, ekey)})
     os.makedirs(campaign_root, exist_ok=True)  # only after every validation above has passed
     try:
         head = _git(['rev-parse', 'HEAD'])
@@ -414,6 +588,9 @@ PRODUCTION_FILES_TO_CHECK_CLEAN = (
     'p514_n_instrumented_cstar.py', 'p515_s39_evaluate.py', 'p515_s40_polish_gap.py',
     'p515_s40_clone_capture_preflight.py', 'p515_s43_aa_flagoff_gate.py',
     'p515_s44_campaign_harness.py', CASE_FILE_REL,
+    # Addendum 25 item 2: imported by the post-certification step / AA sidecar
+    'p515_s41_hull_polish.py', 'p515_s42_exact_fix_rerun.py', 'p515_s43_aa_run.py',
+    'p515_s40_cost_decomposition.py',
 )
 FORBIDDEN_LIVE_PROCESS_SUBSTRINGS = ('p515_g_g1_g4_admm_gates.py', 'p515_s4')
 
@@ -488,18 +665,32 @@ class CampaignContext:
         self.evals_root = os.path.join(campaign_root, 'evals')
 
 
+def _entry_eval_key(entry):
+    return entry.get('eval_key', entry['key'])  # v1 specs (s44_gate) carry no eval_key: eval key == candidate key
+
+
 def _spec_candidate(ctx, candidate):
+    """Resolve one batch item to its spec entry: a str is an evaluation LABEL;
+    a dict is a candidate, which must then match exactly one entry (a candidate
+    listed under two configurations must be named by label)."""
+    if isinstance(candidate, str):
+        hits = [e for e in ctx.spec['candidates'] if e['label'] == candidate]
+        if len(hits) != 1:
+            raise ValueError(f'evaluation label {candidate!r} is not (uniquely) in the frozen campaign spec')
+        return hits[0]
     canon = canonical_candidate(candidate)
     key = candidate_key(canon)
-    for entry in ctx.spec['candidates']:
-        if entry['key'] == key:
-            return entry
+    hits = [e for e in ctx.spec['candidates'] if e['key'] == key]
+    if len(hits) > 1:
+        raise ValueError(f'candidate {key[:16]} appears under {len(hits)} configurations; name it by label')
+    if hits:
+        return hits[0]
     raise ValueError(f'candidate {canon} (key {key[:16]}) is not in the frozen campaign spec')
 
 
 def _child_command(ctx, entry):
     return [PYTHON, '-u', HARNESS_PATH, '--child', '--campaign-root', ctx.campaign_root,
-            '--spec-sha256', ctx.spec_sha256, '--eval-key', entry['key']] + list(ctx.child_extra_args)
+            '--spec-sha256', ctx.spec_sha256, '--eval-key', _entry_eval_key(entry)] + list(ctx.child_extra_args)
 
 
 def _rusage_dict(ru):
@@ -522,7 +713,7 @@ def _barrier_record_for_missing(ctx, entry, eval_dir, exit_code):
         'campaign_spec_path': os.path.relpath(ctx.spec_path, REPO),
         'campaign_spec_sha256': ctx.spec_sha256,
         'candidate_label': entry['label'], 'candidate_canonical': entry['canonical'],
-        'candidate_key': entry['key'],
+        'candidate_key': entry['key'], 'eval_key': _entry_eval_key(entry),
         'status': 'harness_error', 'barrier': True,
         'barrier_cause': f'child exited with code {exit_code} and wrote no evaluation_record.json',
         'stderr_tail': _tail(os.path.join(eval_dir, 'child_stderr.log')),
@@ -534,13 +725,14 @@ def _barrier_record_for_missing(ctx, entry, eval_dir, exit_code):
 def evaluate(batch, ctx):
     """STEP4_DFO_METHOD.md 2.7: `evaluate(batch: list[x]) -> list[record]`.
 
-    `batch`: list of candidates ({node: (s, e)}), each present in the frozen
-    campaign spec, no duplicates. Returns the evaluation records in batch
+    `batch`: list of candidates ({node: (s, e)}) or evaluation labels (str),
+    each present in the frozen campaign spec, no duplicates (a candidate listed
+    under two configurations must be given by label). Returns the evaluation records in batch
     order (a parent-synthesized barrier record when a child left none)."""
     entries = [_spec_candidate(ctx, x) for x in batch]
-    keys = [e['key'] for e in entries]
+    keys = [_entry_eval_key(e) for e in entries]
     if len(set(keys)) != len(keys):
-        raise ValueError('duplicate candidates in one batch')
+        raise ValueError('duplicate evaluations in one batch')
     os.makedirs(ctx.evals_root, exist_ok=True)
     for entry in entries:
         eval_dir = os.path.join(ctx.evals_root, entry['eval_dir'])
@@ -569,6 +761,7 @@ def evaluate(batch, ctx):
             'command': cmd, 'cwd': REPO, 'thread_caps_in_child_env': dict(THREAD_CAP_ENV),
             'pid': proc.pid, 'parent_pid': os.getpid(), 'started_utc': _utc(),
             'campaign_spec_sha256': ctx.spec_sha256, 'label': entry['label'], 'key': entry['key'],
+            'eval_key': _entry_eval_key(entry),
         })
         running[proc.pid] = (i, proc, started, (out_h, err_h))
         timeline.append({'event': 'start', 'label': entry['label'], 'pid': proc.pid, 't': started})
@@ -880,12 +1073,18 @@ def _child_stub(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     _write_once_json(os.path.join(eval_dir, 'evaluation_record.json'), record)
 
 
-def _config_hook_factory(spec, holder):
+def _config_hook_factory(spec, holder, overrides=None):
     """pre_solve_hook: verify the case file carries the D oracle configuration
     (same checks as `p515_s43_aa_run._aa_on_pre_solve_hook`), then apply the
-    frozen spec's overrides (none for D). Records into the report's
-    rule_eleven_checklist (provenance)."""
+    evaluation's overrides (`overrides`; default = the campaign-level
+    `spec['configuration']['overrides']`; none for D). Only the AA flag and its
+    reject-policy may be overridden (`validate_overrides`); after an AA override
+    the frozen memory (5) and regularization (1e-10) are verified unchanged.
+    Records into the report's rule_eleven_checklist (provenance)."""
     import p515_g_g1_g4_admm_gates as G
+    if overrides is None:
+        overrides = spec['configuration'].get('overrides') or {}
+    overrides = validate_overrides(overrides)
 
     def hook(planning, sed, candidate, report):
         a = planning.params.admm
@@ -912,7 +1111,6 @@ def _config_hook_factory(spec, holder):
         missing = sorted(k for k, v in checks.items() if not v)
         if missing:
             raise RuntimeError(f'S44 campaign child: configuration not as frozen (case file D + cap): {missing}')
-        overrides = spec['configuration'].get('overrides') or {}
         applied = {}
         for key, value in overrides.items():
             if key not in SUPPORTED_OVERRIDE_KEYS:
@@ -923,6 +1121,10 @@ def _config_hook_factory(spec, holder):
                 a.anderson_acceleration = merged
                 if a.anderson_acceleration != merged:
                     raise RuntimeError('anderson_acceleration override did not take effect')
+                if (a.anderson_acceleration.get('memory') != FROZEN_AA_MEMORY
+                        or a.anderson_acceleration.get('regularization') != FROZEN_AA_REGULARIZATION):
+                    raise RuntimeError(f'anderson_acceleration memory/regularization not at the frozen '
+                                       f'{FROZEN_AA_MEMORY}/{FROZEN_AA_REGULARIZATION}: {a.anderson_acceleration}')
                 applied[key] = dict(a.anderson_acceleration)
         report.setdefault('rule_eleven_checklist', {})['s44_campaign_configuration_checks'] = checks
         report['rule_eleven_checklist']['s44_campaign_overrides_applied'] = applied
@@ -931,12 +1133,234 @@ def _config_hook_factory(spec, holder):
     return hook
 
 
+# ==============================================================================
+#  the optional POST-CERTIFICATION step (Addendum 25 item 2; P5_15_S44_GATE_RULING.md "Deviation")
+# ==============================================================================
+POST_CERTIFICATION_FILE = 'post_certification.json'
+HULL_BOUND_DETAIL_FILE = 'hull_bound_detail.json'
+AA_SIDECAR_FILE = 'aa_per_cycle.jsonl'
+
+
+def assert_post_certification_capture_paths():
+    """Rule eleven for the post-certification step: every function it reuses
+    exists with the signature it is called with -- asserted in the child
+    BEFORE the run whenever the evaluation requests the step."""
+    import inspect
+    import p515_s39_evaluate as E39
+    import p515_g_g1_g4_admm_gates as G
+    import p515_s41_hull_polish as HP
+    import p515_s42_exact_fix_rerun as EF
+    import p515_s43_aa_run as S43
+    checks = {
+        'certification_fn': callable(getattr(E39, '_certification_from_trajectory', None)),
+        'stopped_by_fn': callable(getattr(G, '_derive_stopped_by_from_trajectory', None)),
+        'hull_polish_fn': list(inspect.signature(HP._polish_all_blocks_hull).parameters)
+        == ['planning', 'models', 'consensus_vars'],
+        'persist_fn': list(inspect.signature(EF._persist_certified_models).parameters) == ['models', 'out_dir'],
+        'decomposition_fn_accepts_reference_dir': 'reference_dir' in inspect.signature(
+            S43._cost_decomposition_vs_d).parameters,
+        'cost_band_constant_1_5e_4': S43.COST_RELATIVE_TOLERANCE == 1.5e-4,
+        'reconciliation_tol_1_0': S43.RECONCILIATION_RESIDUAL_ABS_TOL == 1.0,
+        'hull_gate_threshold_0_1_pct': HP.GATE_THRESHOLD_PCT == 0.1,
+        'aa_sidecar_fn': callable(getattr(S43, '_build_aa_per_cycle_sidecar', None)),
+        'run_admm_arm_passes_state_to_hook': ("'state' in inspect.signature(post_run_hook)"
+                                              in inspect.getsource(G.run_admm_arm)),
+    }
+    missing = sorted(k for k, v in checks.items() if not v)
+    if missing:
+        raise AssertionError(f'RULE ELEVEN: post-certification capture paths missing: {missing}')
+    return checks
+
+
+def non_degenerate_hull_counts(hull_bound_detail):
+    """Per channel: hull descriptors and ACTIVE descriptors EXCLUDING degenerate
+    intervals (Addendum 24 convention, as `p515_s42_hull_counts.py` applied to
+    the committed Step 3.5 evidence; `_hull_bounds_active` counts a degenerate
+    interval as active by definition)."""
+    out = {}
+    for d in hull_bound_detail or []:
+        c = out.setdefault(d['channel'], {'total': 0, 'degenerate': 0, 'non_degenerate': 0,
+                                          'active_non_degenerate': 0})
+        c['total'] += 1
+        if d['degenerate']:
+            c['degenerate'] += 1
+        else:
+            c['non_degenerate'] += 1
+            if d['active']:
+                c['active_non_degenerate'] += 1
+    return out
+
+
+def aa_sidecar_summary(rows):
+    """Counts over the AA per-cycle fields already in the trajectory."""
+    actions = {}
+    retained = []
+    for r in rows:
+        act = r.get('aa_action')
+        actions[act] = actions.get(act, 0) + 1
+        if isinstance(act, str) and act.startswith('rejected') and (r.get('aa_memory_size_after') or 0) > 0:
+            retained.append({'cycle': r.get('cycle'), 'memory_size_before': r.get('aa_memory_size_before'),
+                             'memory_size_after': r.get('aa_memory_size_after'),
+                             'rho_changed_channels': r.get('aa_rho_changed_channels')})
+    return {'n_rows': len(rows), 'action_counts': actions,
+            'n_accepted': sum(1 for r in rows if r.get('aa_accepted') is True),
+            'n_rejected': sum(v for k, v in actions.items() if isinstance(k, str) and k.startswith('rejected')),
+            'rejections_with_memory_retained': retained,
+            'first_accept_cycle': next((r.get('cycle') for r in rows if r.get('aa_accepted') is True), None),
+            'first_reject_cycle': next((r.get('cycle') for r in rows if isinstance(r.get('aa_action'), str)
+                                        and r['aa_action'].startswith('rejected')), None)}
+
+
+def run_post_certification(*, planning, models, rows, report, state, spec, entry, eval_dir,
+                           polish_fn=None, persist_fn=None, decomposition_fn=None):
+    """The optional post-certification step, IN the child, inside `run_admm_arm`'s
+    post_run_hook (same live models / state, after `write_boyd_terminal_s35ref`
+    wrote component_levels_terminal.json). Order as `p515_s43_aa_run.py`:
+    certification test -> (b) cost vs reference -> (c) decomposition vs
+    reference -> persist certified models (BEFORE the polish mutates them) ->
+    (d) interval-hull polish. Skipped cleanly, with the reason recorded, when
+    the trajectory is not certified under the spec's own bar. The *_fn
+    parameters exist only so the zero-solve checks can substitute fakes for the
+    two solving/pickling calls; production callers pass nothing."""
+    import p515_s39_evaluate as E39
+    import p515_g_g1_g4_admm_gates as G
+    import p515_s41_hull_polish as HP
+    import p515_s42_exact_fix_rerun as EF
+    import p515_s43_aa_run as S43
+    polish_fn = polish_fn or HP._polish_all_blocks_hull
+    persist_fn = persist_fn or EF._persist_certified_models
+    decomposition_fn = decomposition_fn or S43._cost_decomposition_vs_d
+
+    request = entry.get('post_certification')
+    cap, required = int(spec['cap']), int(spec['required_consecutive_cycles'])
+    out = {'requested': request, 'status': None}
+    if not request:
+        out.update(status='not_requested', evaluated=False)
+        return out, None
+    if not rows:
+        out.update(status='skipped', evaluated=False, skip_reason='no trajectory')
+        return out, None
+    cert = E39._certification_from_trajectory(rows, cap, required)
+    stopped = G._derive_stopped_by_from_trajectory(rows, cap=cap, required_consecutive=required)
+    out['certification'] = cert
+    out['stopped_by'] = stopped
+    if not cert.get('certified'):
+        out.update(status='skipped', evaluated=False, skip_reason=(
+            f"trajectory not certified under the spec's bar (cycles_run={cert.get('cycles_run')}, cap={cap}, "
+            f"required_consecutive={required}, terminal_consecutive_converged_cycles="
+            f"{cert.get('terminal_consecutive_converged_cycles')}, stopped_by={stopped.get('stopped_by')!r}); "
+            'post-certification items are never evaluated at an uncertified point'))
+        return out, None
+    out['evaluated'] = True
+    q = report.get('gross_operational_cost')
+    out['certified_cost'] = q
+    out['objective_convention'] = 'gross_operational_cost (settlement-excluded), as the evaluation record'
+
+    ref = request.get('reference')
+    if ref:
+        verify_reference_unchanged(ref)
+        q_ref = ref['certified_cost']
+        abs_tol = S43.COST_RELATIVE_TOLERANCE * q_ref
+        abs_diff = abs(q - q_ref) if q is not None else None
+        out['gate_b_cost_vs_reference'] = {
+            'definition': '|Q - Q_ref| <= 1.5e-4 * Q_ref (p515_s43_aa_run gate (b), reference = the D evaluation '
+                          'of the same candidate)',
+            'certified_cost': q, 'reference_certified_cost': q_ref, 'reference_eval_dir': ref['eval_dir'],
+            'abs_diff': abs_diff, 'relative_tolerance': S43.COST_RELATIVE_TOLERANCE, 'abs_tolerance': abs_tol,
+            'pass': bool(abs_diff is not None and abs_diff <= abs_tol)}
+        with open(os.path.join(eval_dir, 'component_levels_terminal.json')) as handle:
+            my_cl = json.load(handle)
+        decomposition = decomposition_fn(my_cl, q, reference_dir=os.path.join(REPO, ref['eval_dir']))
+        decomposition['labels_note'] = ("keys named 'D'/'AA' by p515_s43_aa_run: 'D' = the reference evaluation, "
+                                        "'AA' = this evaluation")
+        out['gate_c_cost_decomposition_vs_reference'] = decomposition
+        out['gate_c_pass'] = bool(decomposition.get('reconciles'))
+    else:
+        out['gate_b_cost_vs_reference'] = None
+        out['gate_c_cost_decomposition_vs_reference'] = None
+        out['gate_c_pass'] = None
+
+    if request.get('persist_certified_models'):
+        out['persisted_models'] = persist_fn(models, eval_dir)
+    else:
+        out['persisted_models'] = None
+
+    hull_bound_detail = None
+    if request.get('hull_polish'):
+        if state is None or 'consensus_vars' not in state:
+            raise RuntimeError('post-certification hull polish: state/consensus_vars not available')
+        t0 = time.time()
+        polish, hull_bound_detail = polish_fn(planning, models, state['consensus_vars'])
+        polish['runtime_s'] = time.time() - t0
+        gate = polish.get('gate')
+        n_solved = sum(1 for b in polish.get('per_block') or [] if b.get('solved'))
+        out['gate_d_hull_polish'] = {
+            'definition': ('p515_s41_hull_polish gate: |sum over blocks of [f_i(polished) - f_i(certified)]| / '
+                           'certified cost < 0.1 %, evaluated only when every block solves'),
+            'blocks_solved': n_solved, 'n_blocks': polish.get('n_blocks'), 'all_solved': polish.get('all_solved'),
+            'failed_blocks': polish.get('failed_blocks'),
+            'delta_sum_blocks': gate.get('delta_sum_blocks') if gate else None,
+            'relative_pct': gate.get('relative_pct') if gate else None,
+            'threshold_pct': HP.GATE_THRESHOLD_PCT,
+            'settlement_excluded_change': (gate['reported_not_gated']['gross_operational_cost_change_settlement_excluded']
+                                           if gate else None),
+            'settlement_remainder_before': (gate['reported_not_gated']['interface_settlement_total_before']
+                                            if gate else None),
+            'settlement_remainder_after': (gate['reported_not_gated']['interface_settlement_total_after']
+                                           if gate else None),
+            'hull_bounds_active_by_channel_incl_degenerate': polish.get('hull_bounds_active_by_channel'),
+            'hull_bounds_non_degenerate_by_channel': non_degenerate_hull_counts(hull_bound_detail),
+            'flagged_blocks': polish.get('flagged_blocks'), 'flag_abs_threshold': polish.get('flag_abs_threshold'),
+            'solve_profile': polish.get('solve_profile'), 'runtime_s': polish['runtime_s'],
+            'pass': bool(gate is not None and polish.get('all_solved') and gate.get('pass')),
+        }
+        out['hull_polish_full'] = polish
+        path = os.path.join(eval_dir, HULL_BOUND_DETAIL_FILE)
+        _write_once_json(path, hull_bound_detail)
+        out['hull_bound_detail_path'] = os.path.relpath(path, REPO)
+    else:
+        out['gate_d_hull_polish'] = None
+    out['status'] = 'evaluated'
+    return out, hull_bound_detail
+
+
+def post_certification_summary(pc):
+    """The compact block copied into evaluation_record.json (full detail stays in post_certification.json)."""
+    if pc is None:
+        return None
+    s = {k: pc.get(k) for k in ('status', 'evaluated', 'skip_reason', 'error', 'certified_cost',
+                                 'gate_c_pass', 'persisted_models', 'hull_bound_detail_path')}
+    s['requested'] = pc.get('requested')
+    b = pc.get('gate_b_cost_vs_reference')
+    s['gate_b'] = ({k: b.get(k) for k in ('abs_diff', 'abs_tolerance', 'reference_certified_cost', 'pass')}
+                   if b else None)
+    c = pc.get('gate_c_cost_decomposition_vs_reference')
+    s['gate_c'] = ({k: c.get(k) for k in ('headline_diff_AA_minus_D', 'dominant_two_diff', 'unaccounted_residual',
+                                          'other_priced_components_nonzero', 'reconciles')} if c else None)
+    d = pc.get('gate_d_hull_polish')
+    s['gate_d'] = ({k: d.get(k) for k in ('blocks_solved', 'n_blocks', 'relative_pct', 'threshold_pct',
+                                          'settlement_excluded_change', 'settlement_remainder_before',
+                                          'settlement_remainder_after', 'hull_bounds_non_degenerate_by_channel',
+                                          'pass')} if d else None)
+    return s
+
+
 def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, started):
     import pyomo.environ as pe  # noqa: F401
     import p515_g_g1_g4_admm_gates as G
     from p515_s40_polish_gap import _build_floor_rows
 
     capture_checklist = assert_record_capture_paths()
+    eff_overrides = validate_overrides(entry['overrides'] if 'overrides' in entry
+                                       else (spec['configuration'].get('overrides') or {}))
+    aa_on = bool((eff_overrides.get('anderson_acceleration') or {}).get('enabled'))
+    post_request = entry.get('post_certification')
+    post_checklist = None
+    if post_request:
+        post_checklist = assert_post_certification_capture_paths()
+        if post_request.get('reference'):
+            post_checklist['reference_hashes_verified_before_run'] = verify_reference_unchanged(
+                post_request['reference'])
     ids = entry['working_dir_ids']
     for eid in ids.values():
         if os.path.exists(os.path.join(G.O.WORK_DIR, eid)):
@@ -955,7 +1379,8 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
         'pf_stride': os.path.join(eval_dir, f'pf_entry_stride_{label}.jsonl'),
         'exempt': os.path.join(eval_dir, f'ess_exempt_until_state_{label}.jsonl'),
     }
-    for p in paths.values():
+    for p in list(paths.values()) + [os.path.join(eval_dir, f) for f in (
+            POST_CERTIFICATION_FILE, HULL_BOUND_DETAIL_FILE, AA_SIDECAR_FILE, 'certified_models.pkl')]:
         if os.path.exists(p):
             raise RuntimeError(f'refusing to overwrite existing artifact: {p}')
 
@@ -974,6 +1399,28 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
         st = state or {}
         holder['peak_rss_ru_maxrss_production'] = st.get('peak_rss_ru_maxrss')
         holder['peak_rss_platform_units'] = st.get('peak_rss_platform_units')
+        if aa_on:
+            import p515_s43_aa_run as S43  # its sidecar builder, BY IMPORT, unchanged
+            S43._build_aa_per_cycle_sidecar(rows, os.path.join(eval_dir, AA_SIDECAR_FILE))
+            holder['aa_sidecar'] = {'path': os.path.relpath(os.path.join(eval_dir, AA_SIDECAR_FILE), REPO),
+                                    **aa_sidecar_summary(rows)}
+        if post_request:
+            t_pc = time.time()
+            try:
+                pc, _detail = run_post_certification(planning=planning, models=models, rows=rows, report=report,
+                                                     state=state, spec=spec, entry=entry, eval_dir=eval_dir)
+            except Exception as error:  # noqa: BLE001 -- recorded loudly; the evaluation itself stands
+                tb = traceback.format_exc()
+                print(tb, file=sys.stderr, flush=True)
+                pc = {'requested': post_request, 'status': 'error', 'evaluated': False,
+                      'error': f'{type(error).__name__}: {error}', 'traceback': tb}
+            pc['runtime_s'] = time.time() - t_pc
+            pc['production_peak_rss_before_step'] = st.get('peak_rss_ru_maxrss')
+            pc['process_ru_maxrss_after_step'] = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+            _write_once_json(os.path.join(eval_dir, POST_CERTIFICATION_FILE), pc)
+            holder['post_certification'] = pc
+            print(f"[S44-CHILD] post-certification: status={pc.get('status')} "
+                  f"reason={pc.get('skip_reason') or pc.get('error')}", flush=True)
 
     t0 = time.time()
     with G.s38_pf_capture_hooks(paths['recourse_jump'], paths['ess_stride'], paths['floor'],
@@ -983,7 +1430,7 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             label, eval_dir, k_override=None, investment_map=investment_map,
             num_max_iters_override=int(spec['cap']), eval_id=ids['run'], apply_rho=False,
             full_diagnostics_in_rows=True, post_run_hook=post_run_hook,
-            pre_solve_hook=_config_hook_factory(spec, holder))
+            pre_solve_hook=_config_hook_factory(spec, holder, overrides=eff_overrides))
     run_wall = time.time() - t0
 
     rows = report.get('cycle_trajectory') or []
@@ -1008,7 +1455,9 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
         'semantics': ('child_python_process = RUSAGE_SELF of the evaluation process at record time '
                       '(the evaluation\'s own peak); production_state = the same measure taken by '
                       'production at the end of run_operational_planning; solver_subprocesses = '
-                      'RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched'),
+                      'RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a '
+                      'post-certification step ran, child_python_process includes it (the ADMM run alone is '
+                      'production_state)'),
     }
     wall = {'child_process_s': time.time() - started, 'run_admm_arm_s': run_wall,
             'run_admm_arm_reported_wall_clock_s': report.get('wall_clock_s')}
@@ -1019,6 +1468,13 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
         published_caps=holder.get('published_caps'), peak_rss=peak_rss, wall=wall, eval_dir=eval_dir,
         extra={
             'record_capture_checklist_asserted_before_run': capture_checklist,
+            'eval_key': _entry_eval_key(entry),
+            'evaluation_overrides_effective': eff_overrides,
+            'post_certification_capture_checklist_asserted_before_run': post_checklist,
+            'post_certification': post_certification_summary(holder.get('post_certification')),
+            'post_certification_path': (os.path.relpath(os.path.join(eval_dir, POST_CERTIFICATION_FILE), REPO)
+                                        if holder.get('post_certification') is not None else None),
+            'aa_per_cycle': holder.get('aa_sidecar'),
             'configuration_checks_in_child': holder.get('configuration_checks'),
             'overrides_applied_in_child': holder.get('overrides_applied'),
             'thread_caps_seen_by_child': env_caps,
@@ -1041,6 +1497,7 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     print(f"[S44-CHILD] {entry['label']}: status={record['status']} cycles={record['cycles_run']} "
           f"certified_cost={record['certified_cost']} bar={record['bar']['value']} "
           f"peak_rss={self_ru.ru_maxrss}")
+    return {'post_certification_error': (holder.get('post_certification') or {}).get('status') == 'error'}
 
 
 def main_child(argv):
@@ -1058,7 +1515,7 @@ def main_child(argv):
     env_caps = _child_verify_env()
     spec_path, spec = load_frozen_spec(args.campaign_root, args.spec_sha256)
     lock_content = verify_child_lock(args.spec_sha256, lock_path=args.lock_path)
-    entry = next((e for e in spec['candidates'] if e['key'] == args.eval_key), None)
+    entry = next((e for e in spec['candidates'] if _entry_eval_key(e) == args.eval_key), None)
     if entry is None:
         raise SystemExit(f'CHILD REFUSES: eval key {args.eval_key} not in the frozen spec')
     eval_dir = os.path.join(args.campaign_root, 'evals', entry['eval_dir'])
@@ -1070,7 +1527,11 @@ def main_child(argv):
         if args.stub_mode is not None:
             _child_stub(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, started)
         else:
-            _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, started)
+            outcome = _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, started)
+            if outcome and outcome.get('post_certification_error'):
+                print('[S44-CHILD] post-certification step FAILED (recorded in post_certification.json); '
+                      'exiting 2', file=sys.stderr, flush=True)
+                sys.exit(2)
     except SystemExit:
         raise
     except BaseException as error:  # noqa: BLE001 -- recorded as a barrier with its cause, then exit 1

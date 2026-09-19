@@ -290,8 +290,12 @@ def _zero_solve_precheck(precheck_eval_id):
 #  own method/constants to the (D, AA) pair; that script's main() is not
 #  factored into a callable two-run function.
 # ==============================================================================
-def _cost_decomposition_vs_d(aa_component_levels, aa_gross_cost):
-    d_dir = CD.RUNS['D']['dir']
+def _cost_decomposition_vs_d(aa_component_levels, aa_gross_cost, reference_dir=None):
+    # P5.15 Addendum 25 item 2 (campaign harness post-certification step):
+    # `reference_dir` names the D evaluation to reconcile against (the harness
+    # passes the D evaluation of the SAME candidate). Default None = D's
+    # committed run dir, exactly as before -- this script's own call is unchanged.
+    d_dir = reference_dir if reference_dir is not None else CD.RUNS['D']['dir']
     with open(os.path.join(d_dir, 'component_levels_terminal.json')) as handle:
         d_cl = json.load(handle)
     d_gross = d_cl['recourse_components']['gross_operational_cost']

@@ -33,6 +33,30 @@ and `.p515_g_gate.lock` are never touched):
      by `_construct_arm_planning` with the C* map and cap 500: every D-oracle
      check passes, no override applied for D; the AA override path applies
      `anderson_acceleration.enabled` on a separate object.
+Added for Addendum 25 item 2 (per-evaluation configuration, post-certification
+step, AA keep_memory variant); run with the argv suffix `r3` (new root
+`harness_checks_r3/`, C1-C7 re-run as regression on the extended harness):
+  C8 per-evaluation spec entries: the same candidate under D and under AA
+     keep_memory in one spec (distinct eval keys, dirs and working ids; the D
+     eval key = the candidate key, dir as in s44_gate); the post-certification
+     reference resolved and hash-recorded; refusals (AA memory sub-key, unknown
+     policy, non-bool flag, other override keys, unknown post-cert key,
+     reference of another candidate / missing / uncertified / not D, duplicate
+     evaluation, unknown option, ambiguous candidate in a batch, tampered
+     reference).
+  C9 stub spawn of the same candidate under two configurations, concurrently.
+  C10 `run_post_certification` (REAL) with fakes only for the persist and the
+     polish calls: skip path on the committed 3-cycle AA smoke trajectory (no
+     call, no file); certified path on the committed Step 3.7 AA run vs the D
+     c_star evaluation as reference -- gate (b) and the REAL decomposition
+     reproduce the committed S43 gate (b)/(c) numbers, persist precedes polish,
+     the gate (d) summary reproduces the committed S43 polish numbers; the
+     non-degenerate counts reproduce the committed P515S42 hull counts.
+  C11 the AA sidecar builder reproduces the committed S43 aa_per_cycle.jsonl
+     byte for byte; the action summary counts.
+  C12 the configuration hook with AA keep_memory on a real, unsolved C*
+     planning: settings in force, the state production would build, the AA
+     layout, memory override refused, post-cert capture paths.
 
 Launch (attached, both streams captured):
     /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u \\
@@ -40,6 +64,7 @@ Launch (attached, both streams captured):
         > data/SRP1/Results/P515S44/harness_checks_launch.log 2>&1
 """
 
+import hashlib
 import json
 import os
 import subprocess
@@ -380,6 +405,284 @@ def c7_config_hook():
             'aa_settings_after_override': holder2['overrides_applied']}
 
 
+# ======================================================================================================================
+#  Addendum 25 item 2 -- per-evaluation configuration and the post-certification step (C8-C12)
+# ======================================================================================================================
+TWO_C_STAR = {5: (1.9375, 7.75), 7: (1.9375, 7.75), 9: (1.9375, 7.75)}
+D_CSTAR_EVAL_REL = os.path.join('data', 'SRP1', 'Results', 'P515S44', 'campaign_s44_gate', 'evals',
+                                '578636daa6d6360d_c_star')
+AA_RUN_DIR = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S43', 'aa_run')
+AA_SMOKE_DIR = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S43', 'aa_run_smoke')
+S41_HULL_DETAIL = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S41', 'hull_polish', 'hull_bound_detail.json')
+S42_HULL_COUNTS = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P515S42', 'hull_counts',
+                               'hull_counts_excluding_degenerate.json')
+AA_KEEP = {'anderson_acceleration': {'enabled': True, 'reject_policy': 'keep_memory'}}
+POST_FULL = {'persist_certified_models': True, 'hull_polish': True, 'reference': {'eval_dir': D_CSTAR_EVAL_REL}}
+
+
+def _fake_reference(name, status='certified', overrides=None, candidate=C_STAR):
+    """A scratch reference dir (checks only) copying the committed D c_star files with one field changed."""
+    import shutil
+    d = os.path.join(OUT, 'c8_fake_refs', name)
+    os.makedirs(d)
+    shutil.copy(os.path.join(REPO, D_CSTAR_EVAL_REL, 'component_levels_terminal.json'), d)
+    with open(os.path.join(REPO, D_CSTAR_EVAL_REL, 'evaluation_record.json')) as handle:
+        rec = json.load(handle)
+    rec['status'] = status
+    rec['candidate_key'] = H.candidate_key(H.canonical_candidate(candidate))
+    if overrides is not None:
+        rec['evaluation_overrides_effective'] = overrides
+    with open(os.path.join(d, 'evaluation_record.json'), 'w') as handle:
+        json.dump(rec, handle)
+    return os.path.relpath(d, REPO)
+
+
+def c8_per_evaluation_spec():
+    root = os.path.join(OUT, 'c8_spec_root')
+    cands = [('c_star_d', C_STAR), ('c_star_aa_keep', C_STAR, {'overrides': AA_KEEP, 'post_certification': POST_FULL}),
+             ('two_c_star_d', TWO_C_STAR, {'post_certification': {'persist_certified_models': True,
+                                                                  'hull_polish': True}})]
+    path, sha, spec = H.freeze_campaign_spec(
+        root, 'c8', cands, configuration={'name': 'checks', 'arm_label': 's39_D', 'overrides': {}},
+        cap=3, concurrency=2, authority=['checks only'], extra={'test_only_stub': True})
+    e = {x['label']: x for x in spec['candidates']}
+    k_cstar = H.candidate_key(H.canonical_candidate(C_STAR))
+    ref = e['c_star_aa_keep']['post_certification']['reference']
+    expected_aa_key = hashlib.sha256(json.dumps({'candidate_key': k_cstar, 'overrides': AA_KEEP}, sort_keys=True,
+                                                  separators=(',', ':')).encode()).hexdigest()
+    ctx = H.CampaignContext(root, path, sha, spec, log=lambda m: None)
+    refusals = {
+        'aa_memory_subkey': _expect_raise(lambda: H.validate_overrides(
+            {'anderson_acceleration': {'enabled': True, 'memory': 3}}), ValueError),
+        'aa_bogus_policy': _expect_raise(lambda: H.validate_overrides(
+            {'anderson_acceleration': {'enabled': True, 'reject_policy': 'bogus'}}), ValueError),
+        'aa_enabled_not_bool': _expect_raise(lambda: H.validate_overrides(
+            {'anderson_acceleration': {'enabled': 1}}), ValueError),
+        'other_override_key': _expect_raise(lambda: H.validate_overrides({'rho': 1.0}), ValueError),
+        'post_cert_unknown_key': _expect_raise(lambda: H.resolve_post_certification(
+            {'hull_polish': True, 'extra': 1}, k_cstar), ValueError),
+        'reference_other_candidate': _expect_raise(lambda: H.resolve_post_certification(
+            {'reference': {'eval_dir': D_CSTAR_EVAL_REL}}, H.candidate_key(H.canonical_candidate(TWO_C_STAR))),
+            ValueError),
+        'reference_missing_dir': _expect_raise(lambda: H.resolve_post_certification(
+            {'reference': {'eval_dir': 'data/does/not/exist'}}, k_cstar), ValueError),
+        'reference_uncertified': _expect_raise(lambda: H.resolve_post_certification(
+            {'reference': {'eval_dir': _fake_reference('uncertified', status='not_certified')}}, k_cstar), ValueError),
+        'reference_not_D_configuration': _expect_raise(lambda: H.resolve_post_certification(
+            {'reference': {'eval_dir': _fake_reference('aa_ref', overrides=AA_KEEP)}}, k_cstar), ValueError),
+        'duplicate_evaluation_same_config': _expect_raise(lambda: H.freeze_campaign_spec(
+            os.path.join(OUT, 'c8_dup'), 'x', [('a', C_STAR, {'overrides': AA_KEEP}), ('b', C_STAR, {'overrides': AA_KEEP})],
+            configuration={'name': 'x', 'overrides': {}}, cap=1, concurrency=1, authority=[]), ValueError),
+        'unknown_evaluation_option': _expect_raise(lambda: H.freeze_campaign_spec(
+            os.path.join(OUT, 'c8_opt'), 'x', [('a', C_STAR, {'cap': 3})],
+            configuration={'name': 'x', 'overrides': {}}, cap=1, concurrency=1, authority=[]), ValueError),
+        'ambiguous_candidate_in_batch': _expect_raise(lambda: H._spec_candidate(ctx, C_STAR), ValueError),
+        'tampered_reference_detected': _expect_raise(lambda: H.verify_reference_unchanged(
+            dict(ref, evaluation_record_sha256='0' * 64)), RuntimeError),
+    }
+    checks = {
+        'three_evaluations_two_share_a_candidate': len(spec['candidates']) == 3
+        and e['c_star_d']['key'] == e['c_star_aa_keep']['key'],
+        'd_eval_key_is_candidate_key': e['c_star_d']['eval_key'] == k_cstar == e['c_star_d']['key'],
+        'd_eval_dir_as_in_s44_gate': e['c_star_d']['eval_dir'] == f'{k_cstar[:16]}_c_star_d',
+        'aa_eval_key_is_hash_of_candidate_and_overrides': e['c_star_aa_keep']['eval_key'] == expected_aa_key,
+        'distinct_eval_dirs_and_working_ids': len({x['eval_dir'] for x in spec['candidates']}) == 3
+        and len({x['working_dir_ids']['run'] for x in spec['candidates']}) == 3,
+        'overrides_recorded_per_entry': e['c_star_d']['overrides'] == {} and e['c_star_aa_keep']['overrides'] == AA_KEEP,
+        'no_post_cert_for_plain_d': e['c_star_d']['post_certification'] is None,
+        'reference_resolved_and_hash_recorded': ref is not None
+        and ref['evaluation_record_sha256'] == H.sha256_file(os.path.join(REPO, D_CSTAR_EVAL_REL, 'evaluation_record.json'))
+        and ref['component_levels_terminal_sha256'] == H.sha256_file(
+            os.path.join(REPO, D_CSTAR_EVAL_REL, 'component_levels_terminal.json'))
+        and ref['certified_cost'] == 650966975.2943751 and ref['certification_cycle'] == 139,
+        'two_c_star_post_cert_without_reference': e['two_c_star_d']['post_certification'] == {
+            'persist_certified_models': True, 'hull_polish': True, 'reference': None},
+        'label_resolves_in_batch': H._spec_candidate(ctx, 'c_star_aa_keep') is e['c_star_aa_keep'],
+        'all_refusals_raised': all(v['raised'] and not v.get('unexpected_type') for v in refusals.values()),
+    }
+    return {'checks': checks, 'spec_path': os.path.relpath(path, REPO), 'spec_sha256': sha,
+            'entries': spec['candidates'], 'refusals': refusals}
+
+
+def c9_stub_spawn_per_evaluation():
+    """The same candidate under two configurations, spawned concurrently (stub children): each child finds
+    its own entry by eval key and writes its own record in its own dir."""
+    root = os.path.join(OUT, 'c9_stub_campaign')
+    lock = os.path.join(OUT, 'c9_campaign.lock')
+    legacy = os.path.join(OUT, 'c9_legacy_absent.lock')
+    cands = [('c_star_d', C_STAR), ('c_star_aa_keep', C_STAR, {'overrides': AA_KEEP})]
+    path, sha, spec = H.freeze_campaign_spec(
+        root, 'c9', cands, configuration={'name': 'STUB (checks only)', 'arm_label': 's39_D', 'overrides': {}},
+        cap=3, concurrency=2, authority=['checks only'], extra={'test_only_stub': True})
+    H.acquire_campaign_lock('c9', sha, lock_path=lock, legacy_lock_path=legacy)
+    try:
+        ctx = _ctx(root, path, sha, spec, lock, ['--stub-mode', 'ok', '--stub-sleep-s', '2', '--stub-alloc-mb', '16'])
+        records = H.evaluate(['c_star_d', 'c_star_aa_keep'], ctx)
+        info = dict(getattr(H.evaluate, 'last_batch_info', {}))
+    finally:
+        H.release_campaign_lock(lock_path=lock, expected_pid=os.getpid())
+    dirs = [os.path.join(root, 'evals', x['eval_dir']) for x in spec['candidates']]
+    checks = {
+        'two_stub_records_in_order': [r.get('candidate_label') for r in records] == ['c_star_d', 'c_star_aa_keep']
+        and all(r.get('status') == 'stub' for r in records),
+        'same_candidate_key_both': len({r.get('candidate_key') for r in records}) == 1,
+        'separate_dirs_each_with_record': all(os.path.isfile(os.path.join(d, 'evaluation_record.json')) for d in dirs),
+        'launch_json_carries_eval_key': all(
+            json.load(open(os.path.join(d, 'launch.json')))['eval_key'] == x['eval_key']
+            for d, x in zip(dirs, spec['candidates'])),
+        'ran_concurrently': info.get('max_concurrent_observed') == 2,
+    }
+    return {'checks': checks, 'eval_dirs': [os.path.relpath(d, REPO) for d in dirs]}
+
+
+def c10_post_certification():
+    """run_post_certification (the REAL function) with fakes ONLY for the two calls that would solve
+    or pickle live models; decomposition is REAL."""
+    import p515_s40_clone_capture_preflight as CP
+    import p515_s43_aa_run as S43
+    import shutil
+    ref = H.resolve_post_certification({'reference': {'eval_dir': D_CSTAR_EVAL_REL}},
+                                       H.candidate_key(H.canonical_candidate(C_STAR)))['reference']
+    base_spec = {'cap': 500, 'required_consecutive_cycles': 10}
+    calls = []
+
+    def fake_persist(models, out_dir):
+        calls.append('persist')
+        return {'path': 'FAKE', 'sha256': 'FAKE', 'size_bytes': 0}
+
+    committed_aa = CP._load_json(os.path.join(AA_RUN_DIR, 'aa_run_results.json'))
+    committed_detail = CP._load_json(os.path.join(AA_RUN_DIR, 'hull_bound_detail.json'))
+
+    def fake_polish(planning, models, consensus_vars):
+        calls.append('polish')
+        return json.loads(json.dumps(committed_aa['gate_d_hull_polish'])), committed_detail
+
+    # (i) skip path: the committed 3-cycle AA smoke trajectory under cap 3
+    smoke = CP._load_json(os.path.join(AA_SMOKE_DIR, 'g_s39_D.json'))
+    d_skip = os.path.join(OUT, 'c10_skip_eval')
+    os.makedirs(d_skip)
+    entry_full = {'label': 'x', 'post_certification': {'persist_certified_models': True, 'hull_polish': True,
+                                                       'reference': ref}}
+    pc_skip, _ = H.run_post_certification(
+        planning=None, models=None, rows=smoke['cycle_trajectory'], report=smoke, state={'consensus_vars': {}},
+        spec={'cap': 3, 'required_consecutive_cycles': 10}, entry=entry_full, eval_dir=d_skip,
+        polish_fn=fake_polish, persist_fn=fake_persist)
+    skip_ok = (pc_skip['status'] == 'skipped' and pc_skip['evaluated'] is False and 'not certified' in pc_skip['skip_reason']
+               and calls == [] and os.listdir(d_skip) == [])
+
+    # (ii) certified path: "this evaluation" = the committed S43 AA run (certified at 109), reference = the D c_star
+    #      evaluation; decomposition must reproduce the committed S43 gate (c) numbers; polish summary must
+    #      reproduce the committed S43 gate (d) numbers.
+    aa_report = CP._load_json(os.path.join(AA_RUN_DIR, 'g_s39_D.json'))
+    d_cert = os.path.join(OUT, 'c10_certified_eval')
+    os.makedirs(d_cert)
+    shutil.copy(os.path.join(AA_RUN_DIR, 'component_levels_terminal.json'), d_cert)
+    pc, detail = H.run_post_certification(
+        planning=None, models=None, rows=aa_report['cycle_trajectory'], report=aa_report,
+        state={'consensus_vars': {}}, spec=base_spec, entry=entry_full, eval_dir=d_cert,
+        polish_fn=fake_polish, persist_fn=fake_persist)
+    comm_c = committed_aa['gate_c_cost_decomposition']
+    mine_c = pc['gate_c_cost_decomposition_vs_reference']
+    same_c_numbers = all(mine_c[k] == comm_c[k] for k in (
+        'd_gross_operational_cost', 'aa_gross_operational_cost', 'headline_diff_AA_minus_D', 'dominant_two_diff',
+        'other_priced_components_diff', 'detector_penalty_total_diff', 'accounted_total', 'unaccounted_residual',
+        'other_priced_components_nonzero', 'reconciles', 'component_table'))
+    comm_gate = committed_aa['gate_d_hull_polish']['gate']
+    gd = pc['gate_d_hull_polish']
+    s42 = CP._load_json(S42_HULL_COUNTS)
+    nondeg_s41 = H.non_degenerate_hull_counts(CP._load_json(S41_HULL_DETAIL))
+    nondeg_matches_s42 = all(
+        nondeg_s41[ch]['non_degenerate'] == v['n_non_degenerate']
+        and nondeg_s41[ch]['active_non_degenerate'] == v['n_active_excluding_degenerate']
+        and nondeg_s41[ch]['degenerate'] == v['n_degenerate'] for ch, v in s42['per_channel'].items())
+    summary = H.post_certification_summary(pc)
+    checks = {
+        'skip_path_clean_no_calls_no_files': skip_ok,
+        'certified_path_evaluated': pc['status'] == 'evaluated' and pc['certification']['certified'] is True
+        and pc['certification']['certification_cycle'] == 109,
+        'gate_b_matches_committed_s43': pc['gate_b_cost_vs_reference']['abs_diff'] == committed_aa['gate_b_cost_vs_d']['abs_diff']
+        and pc['gate_b_cost_vs_reference']['pass'] is True
+        and pc['gate_b_cost_vs_reference']['abs_tolerance'] == committed_aa['gate_b_cost_vs_d']['abs_tolerance'],
+        'gate_c_real_decomposition_reproduces_committed_s43_vs_new_reference': same_c_numbers and pc['gate_c_pass'] is True,
+        'persist_called_before_polish': calls == ['persist', 'polish'],
+        'gate_d_summary_reproduces_committed_s43': gd['relative_pct'] == comm_gate['relative_pct']
+        and gd['delta_sum_blocks'] == comm_gate['delta_sum_blocks']
+        and gd['settlement_excluded_change'] == comm_gate['reported_not_gated']['gross_operational_cost_change_settlement_excluded']
+        and gd['settlement_remainder_before'] == comm_gate['reported_not_gated']['interface_settlement_total_before']
+        and gd['blocks_solved'] == 48 == gd['n_blocks'] and gd['pass'] is True,
+        'non_degenerate_counts_reproduce_committed_s42_hull_counts': nondeg_matches_s42,
+        'hull_bound_detail_written': os.path.isfile(os.path.join(d_cert, H.HULL_BOUND_DETAIL_FILE)),
+        'summary_has_gates_b_c_d': summary['gate_b']['pass'] is True and summary['gate_c']['reconciles'] is True
+        and summary['gate_d']['pass'] is True,
+        'not_requested_path': H.run_post_certification(
+            planning=None, models=None, rows=[], report={}, state=None, spec=base_spec, entry={'label': 'y'},
+            eval_dir=d_cert)[0]['status'] == 'not_requested',
+    }
+    return {'checks': checks, 'skip_record': pc_skip, 'summary': summary,
+            'gate_c_vs_new_reference': {k: mine_c[k] for k in ('d_dir', 'headline_diff_AA_minus_D',
+                                                               'unaccounted_residual', 'reconciles')},
+            'non_degenerate_counts_s41': nondeg_s41,
+            'decomposition_reference_dir_default_unchanged': S43._cost_decomposition_vs_d.__defaults__ == (None,)}
+
+
+def c11_aa_sidecar():
+    import p515_s40_clone_capture_preflight as CP
+    import p515_s43_aa_run as S43
+    report = CP._load_json(os.path.join(AA_RUN_DIR, 'g_s39_D.json'))
+    rows = report['cycle_trajectory']
+    path = os.path.join(OUT, 'c11_aa_per_cycle.jsonl')
+    S43._build_aa_per_cycle_sidecar(rows, path)
+    same_bytes = H.sha256_file(path) == H.sha256_file(os.path.join(AA_RUN_DIR, 'aa_per_cycle.jsonl'))
+    summ = H.aa_sidecar_summary(rows)
+    synth = [{'cycle': 1, 'aa_action': 'insufficient memory (m_k=0)', 'aa_accepted': False, 'aa_memory_size_after': 0},
+             {'cycle': 2, 'aa_action': 'accepted', 'aa_accepted': True, 'aa_memory_size_after': 1},
+             {'cycle': 3, 'aa_action': 'rejected (safeguard; memory retained)', 'aa_accepted': False,
+              'aa_memory_size_before': 1, 'aa_memory_size_after': 2, 'aa_rho_changed_channels': []}]
+    s2 = H.aa_sidecar_summary(synth)
+    checks = {
+        'sidecar_bytes_equal_committed_s43': same_bytes,
+        'summary_counts_step37': summ['n_accepted'] == 50 and summ['n_rejected'] == 22
+        and summ['first_accept_cycle'] == 4 and summ['first_reject_cycle'] == 14
+        and summ['rejections_with_memory_retained'] == [],
+        'summary_sees_retained_memory': s2['n_rejected'] == 1 and len(s2['rejections_with_memory_retained']) == 1,
+    }
+    return {'checks': checks, 'step37_summary': summ, 'synthetic_summary': s2}
+
+
+def c12_keep_memory_config_hook():
+    import p515_g_g1_g4_admm_gates as G
+    import admm_anderson_acceleration as AA
+    eid = f'{EVAL_ID_PREFIX}_keep'
+    if os.path.exists(os.path.join(G.O.WORK_DIR, eid)):
+        raise RuntimeError(f'eval dir already exists: {eid}')
+    spec = {'cap': 500, 'required_consecutive_cycles': 10, 'configuration': {'overrides': {}}}
+    report, holder = {}, {}
+    planning, sed, cand = G._construct_arm_planning(
+        's39_D', os.path.join(OUT, 'c12_scratch_keep'), report, investment_map=H.investment_map_from_canonical(
+            H.canonical_candidate(C_STAR)), eval_id=eid, num_max_iters_override=500, apply_rho=False)
+    H._config_hook_factory(spec, holder, overrides=AA_KEEP)(planning=planning, sed=sed, candidate=cand, report=report)
+    settings = dict(planning.params.admm.anderson_acceleration)
+    # the production construction expression (shared_resources_planning._run_operational_planning), evaluated
+    # on the settings in force -- V3 of p515_s44_aa_variant_checks asserts that exact source text
+    state = AA.AndersonAccelerationState(memory=settings.get('memory', 5),
+                                         regularization=settings.get('regularization', 1e-10),
+                                         reject_policy=settings.get('reject_policy', AA.DEFAULT_REJECT_POLICY))
+    layout = AA.build_iterate_layout(planning, planning.params.admm)
+    bad_hook = _expect_raise(lambda: H._config_hook_factory(
+        spec, {}, overrides={'anderson_acceleration': {'enabled': True, 'memory': 3}}), ValueError)
+    checks = {
+        'settings_in_force_keep_memory': settings == {'enabled': True, 'memory': 5, 'regularization': 1e-10,
+                                                      'reject_policy': 'keep_memory'},
+        'd_configuration_checks_pass': all(holder['configuration_checks'].values()),
+        'overrides_applied_recorded': holder['overrides_applied'] == {'anderson_acceleration': settings},
+        'state_built_from_settings_is_keep_memory': state.reject_policy == 'keep_memory',
+        'aa_layout_builds': layout['n'] > 0,
+        'hook_refuses_memory_override': bad_hook['raised'] and not bad_hook.get('unexpected_type'),
+        'post_certification_capture_paths_pass': all(H.assert_post_certification_capture_paths().values()),
+    }
+    return {'checks': checks, 'settings_in_force': settings, 'layout_n': layout['n']}
+
+
 def main():
     if os.path.exists(OUT):
         raise SystemExit(f'output root already exists (write-once): {OUT}')
@@ -394,7 +697,12 @@ def main():
     for name, fn in (('C1_canonical_candidate', c1_canonical), ('C2_frozen_spec', c2_spec),
                      ('C3_campaign_lock', c3_lock), ('C4_spawn_stub_evaluations', c4_spawn),
                      ('C5_record_schema', c5_record_schema), ('C6_capture_paths', c6_capture_paths),
-                     ('C7_configuration_hook', c7_config_hook)):
+                     ('C7_configuration_hook', c7_config_hook),
+                     ('C8_per_evaluation_spec', c8_per_evaluation_spec),
+                     ('C9_stub_spawn_per_evaluation', c9_stub_spawn_per_evaluation),
+                     ('C10_post_certification', c10_post_certification),
+                     ('C11_aa_sidecar', c11_aa_sidecar),
+                     ('C12_keep_memory_config_hook', c12_keep_memory_config_hook)):
         print(f'[S44-HCHK] ===== {name} =====', flush=True)
         try:
             out = fn()
