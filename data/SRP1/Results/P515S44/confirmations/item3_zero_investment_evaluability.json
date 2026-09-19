@@ -1,0 +1,959 @@
+{
+ "stage": "P5.15 Addendum 26 zero-solve confirmations (frozen spec v14)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 26",
+  "STEP4_DFO_METHOD.md v1 Sec 1.2-1.3, Sec 9",
+  "data/SRP1/Results/P515S44/frozen_s44_selection_spec_v14_e4500e27.json (key addendum26_confirmations_zero_solve)"
+ ],
+ "spec_sha256": "e4500e272be84e158e763256e1c7156593f89bdb50d197d0801dbf70d1d22c9b",
+ "spec_key": [
+  "confirm the committed data/SRP1/SharedESS/SRP1_ESS.xlsx is the author's corrected cost file (git history, content of the unit-cost sheets) and record its sha256",
+  "report I(x) (STEP4_DFO_METHOD.md 1.3: discounted, scenario-weighted, exactly model.investment_cost) and the budget slack B - I(x), B = budget 1e6, at the paper's plan and at C*; state units and whether budget and max_capacity (5.0) are active in the model",
+  "confirm whether x = 0 (no storage at ANY node) is evaluable by the oracle",
+  "report whether the ESSO capacity multipliers (duals of the capacity rows) are available without extra solves"
+ ],
+ "started_utc": "2026-09-19T08:14:35.598117+00:00",
+ "git_HEAD": "96fa8cc8b3c8727d3576da5b94cced5140bc3627",
+ "script_sha256": "95aba9475c2a57532215cbd238e8906606bd09892445246e67807d9c8c7f52c2",
+ "solve_profile_guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "preflight": {
+  "checked_with": "ps -axo pid=,command=",
+  "other_p5_harness_processes": []
+ },
+ "result": {
+  "steps": [
+   {
+    "step": "1 oracle construction (_construct_arm_planning, D arm apply_rho=False, investment_map all zero)",
+    "ok": true,
+    "where": "p515_g_g1_g4_admm_gates.py:1059-1144",
+    "eval_id": "p515s44_confirm_x0_20260919T081435Z",
+    "instance": {
+     "year": 2025,
+     "assignment": "per-node",
+     "investment_map": {
+      "5": [
+       0.0,
+       0.0
+      ],
+      "7": [
+       0.0,
+       0.0
+      ],
+      "9": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "is_zero_investment_candidate": true,
+    "total_capacity": {
+     "5": {
+      "2025": {
+       "s": 0.0,
+       "e": 0.0
+      },
+      "2030": {
+       "s": 0.0,
+       "e": 0.0
+      },
+      "2035": {
+       "s": 0.0,
+       "e": 0.0
+      }
+     },
+     "7": {
+      "2025": {
+       "s": 0.0,
+       "e": 0.0
+      },
+      "2030": {
+       "s": 0.0,
+       "e": 0.0
+      },
+      "2035": {
+       "s": 0.0,
+       "e": 0.0
+      }
+     },
+     "9": {
+      "2025": {
+       "s": 0.0,
+       "e": 0.0
+      },
+      "2030": {
+       "s": 0.0,
+       "e": 0.0
+      },
+      "2035": {
+       "s": 0.0,
+       "e": 0.0
+      }
+     }
+    },
+    "shared_ess_initialization": "standalone",
+    "parallel_execution": false,
+    "budget_in_force_on_oracle_copy": 5000000.0,
+    "fresh_planning_logs_dir_created": "data/SRP1/Results/P56A/evals/p515s44_confirm_x0_20260919T081435Z/logs"
+   },
+   {
+    "step": "2 first-stage feasibility at x = 0",
+    "ok": true,
+    "where": "shared_resources_planning.py:1851-1886",
+    "feasible": true,
+    "reasons": ""
+   },
+   {
+    "step": "3 create_admm_variables",
+    "ok": true,
+    "where": "shared_resources_planning.py:4146-4278",
+    "ess_consensus_nodes": [
+     5,
+     7,
+     9
+    ]
+   },
+   {
+    "step": "4 create_distribution_networks_models (sequential; optimize intercepted)",
+    "ok": true,
+    "where": "shared_resources_planning.py:3780-3845",
+    "dso_nodes_built": [
+     5,
+     7,
+     9
+    ],
+    "sample_block_shared_es_s_rated_fixed": [
+     0.0
+    ],
+    "sample_block_active_sess_rows": {
+     "sess_converter_capability": {
+      "rows": 24,
+      "active": 0
+     },
+     "sess_active_sum_limit": {
+      "rows": 24,
+      "active": 0
+     },
+     "sess_soc_def": {
+      "rows": 24,
+      "active": 0
+     },
+     "sess_soc_limit_upper": {
+      "rows": 24,
+      "active": 0
+     },
+     "sess_soc_limit_lower": {
+      "rows": 24,
+      "active": 0
+     },
+     "sess_soc_final": {
+      "rows": 1,
+      "active": 0
+     }
+    },
+    "sample_block_expected_shared_ess_p_all_fixed_zero": true
+   },
+   {
+    "step": "5 create_transmission_network_model (optimize intercepted)",
+    "ok": true,
+    "where": "shared_resources_planning.py:3663-3770",
+    "tso_blocks_built": 12,
+    "sample_block_shared_es_s_rated_fixed": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "sample_block_active_sess_rows": {
+     "sess_converter_capability": {
+      "rows": 72,
+      "active": 0
+     },
+     "sess_active_sum_limit": {
+      "rows": 72,
+      "active": 0
+     },
+     "sess_soc_def": {
+      "rows": 72,
+      "active": 0
+     },
+     "sess_soc_limit_upper": {
+      "rows": 72,
+      "active": 0
+     },
+     "sess_soc_limit_lower": {
+      "rows": 72,
+      "active": 0
+     },
+     "sess_soc_final": {
+      "rows": 3,
+      "active": 0
+     }
+    },
+    "sample_block_expected_shared_ess_p_all_fixed_zero": true
+   },
+   {
+    "step": "6 create_shared_energy_storage_model (build + candidate + TSO-request fixing; optimize intercepted)",
+    "ok": true,
+    "where": "shared_resources_planning.py:3931-3972",
+    "per_node": {
+     "5": {
+      "cohort_inactive": {
+       "0": true,
+       "1": true,
+       "2": true
+      },
+      "pch_pdch_free": 0,
+      "active_rows": {
+       "rated_s_capacity_unit": 6,
+       "rated_e_capacity_unit": 6,
+       "energy_storage_limits": 0,
+       "energy_storage_operation_agg": 576,
+       "energy_storage_capacity_degradation": 0,
+       "energy_storage_charging_discharging": 0,
+       "energy_storage_cohort_pnet_share_h3": 0
+      },
+      "es_s_investment_fixed": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "7": {
+      "cohort_inactive": {
+       "0": true,
+       "1": true,
+       "2": true
+      },
+      "pch_pdch_free": 0,
+      "active_rows": {
+       "rated_s_capacity_unit": 6,
+       "rated_e_capacity_unit": 6,
+       "energy_storage_limits": 0,
+       "energy_storage_operation_agg": 576,
+       "energy_storage_capacity_degradation": 0,
+       "energy_storage_charging_discharging": 0,
+       "energy_storage_cohort_pnet_share_h3": 0
+      },
+      "es_s_investment_fixed": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "9": {
+      "cohort_inactive": {
+       "0": true,
+       "1": true,
+       "2": true
+      },
+      "pch_pdch_free": 0,
+      "active_rows": {
+       "rated_s_capacity_unit": 6,
+       "rated_e_capacity_unit": 6,
+       "energy_storage_limits": 0,
+       "energy_storage_operation_agg": 576,
+       "energy_storage_capacity_degradation": 0,
+       "energy_storage_charging_discharging": 0,
+       "energy_storage_cohort_pnet_share_h3": 0
+      },
+      "es_s_investment_fixed": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
+    }
+   },
+   {
+    "step": "7 production initialization-success check on the intercepted results (expected False: nothing was solved -- trace artifact, not a finding)",
+    "ok": true,
+    "where": "shared_resources_planning.py:6746-6757",
+    "_admm_local_solves_succeeded": false
+   },
+   {
+    "step": "8a _prepare_distribution/transmission_objectives_for_admm",
+    "ok": true,
+    "where": "shared_resources_planning.py:4434-4451"
+   },
+   {
+    "step": "8b _compute_common_admm_objective_scale on UNSOLVED blocks (reads the initialization's solved objective values; expected to fail here -- a trace artifact, not a finding about x = 0)",
+    "ok": false,
+    "where": "shared_resources_planning.py:3365-3453",
+    "error": "ValueError: Cannot compute common ADMM objective scale: no valid weighted TSO/DSO objective values were found.",
+    "traceback": "Traceback (most recent call last):\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_addendum26_confirmations.py\", line 728, in _step\n    result = fn()\n             ^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_addendum26_confirmations.py\", line 937, in sigma_computed\n    computed = srp._compute_common_admm_objective_scale(planning, state['tso'],\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/shared_resources_planning.py\", line 3425, in _compute_common_admm_objective_scale\n    raise ValueError('Cannot compute common ADMM objective scale: no valid weighted TSO/DSO objective values were found.')\nValueError: Cannot compute common ADMM objective scale: no valid weighted TSO/DSO objective values were found.\n"
+   },
+   {
+    "step": "8c ESSO AL scale, update_*_to_admm (TSO/DSO under p58_rescale.patched_admm_objectives, as in run_admm_arm), ESSO AL objective, consensus initialization (production order, _run_operational_planning init branch)",
+    "ok": true,
+    "where": "shared_resources_planning.py:2314-3274",
+    "objective_scale_used": 93635360.0,
+    "objective_scale_source": "case-file fixed sigma (declared substitution; calibration assertion not exercised)",
+    "objective_scale_assert_factor": 3.0,
+    "al_scale_esso": 227210.9966521344,
+    "price_taker_branch_taken": false
+   },
+   {
+    "step": "9 S_ref normalization at x = 0 (the single source every ADMM shared-ESS normalization site reads)",
+    "ok": true,
+    "where": "shared_resources_planning.py:4419-4422",
+    "reference_rating_mva_in_force": 2.5,
+    "floor_mva": 0.1,
+    "esso_normalization_mva_by_year_node": {
+     "2025": {
+      "5": 2.5,
+      "7": 2.5,
+      "9": 2.5
+     },
+     "2030": {
+      "5": 2.5,
+      "7": 2.5,
+      "9": 2.5
+     },
+     "2035": {
+      "5": 2.5,
+      "7": 2.5,
+      "9": 2.5
+     }
+    },
+    "tso_sample_normalization_pu": [
+     0.025,
+     0.025,
+     0.025
+    ],
+    "tso_baseMVA": 100.0,
+    "installed_s_seen_by_normalization": [
+     0.0
+    ],
+    "counterfactual_if_reference_None_mva": 0.1,
+    "reader": "shared_resources_planning.py:4406-4416"
+   },
+   {
+    "step": "10 ESSO structure after ADMM preparation at x = 0",
+    "ok": true,
+    "per_node": {
+     "5": {
+      "circle_rows_active": 288,
+      "es_pnet_fixed": 0,
+      "es_qnet_fixed": 0,
+      "rated_s_capacity_unit_rhs_params": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "rated_s_per_unit_fixed_outside_lifetime": 3,
+      "admm_objective_active": true
+     },
+     "7": {
+      "circle_rows_active": 288,
+      "es_pnet_fixed": 0,
+      "es_qnet_fixed": 0,
+      "rated_s_capacity_unit_rhs_params": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "rated_s_per_unit_fixed_outside_lifetime": 3,
+      "admm_objective_active": true
+     },
+     "9": {
+      "circle_rows_active": 288,
+      "es_pnet_fixed": 0,
+      "es_qnet_fixed": 0,
+      "rated_s_capacity_unit_rhs_params": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "rated_s_per_unit_fixed_outside_lifetime": 3,
+      "admm_objective_active": true
+     }
+    },
+    "row_form": "es_pnet[y,d,p]^2 + es_qnet[y,d,p]^2 <= es_s_rated[y]^2 (shared_energy_storage_data.py:731); es_s_rated[y] == sum es_s_rated_per_unit == es_s_investment_fixed = 0 through active equality rows"
+   },
+   {
+    "step": "11 get_updated_capacities (published to the networks each cycle)",
+    "ok": true,
+    "sess_available_capacities": {
+     "5": {
+      "2025": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2030": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2035": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      }
+     },
+     "7": {
+      "2025": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2030": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2035": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      }
+     },
+     "9": {
+      "2025": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2030": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2035": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      }
+     }
+    }
+   },
+   {
+    "step": "12 ESSO coordination update, cycle 1 (param setting; optimize intercepted)",
+    "ok": true,
+    "where": "shared_resources_planning.py:5815-5851",
+    "p_req_sample": 0.0,
+    "dual_p_req_sample": 0.0
+   },
+   {
+    "step": "13 ADMM residual metrics (legacy + Boyd) on the x = 0 state",
+    "ok": true,
+    "legacy_metrics_keys": [
+     "dual",
+     "primal",
+     "worst_ess_primal",
+     "worst_pf_dual",
+     "worst_pf_primal",
+     "worst_v_primal"
+    ],
+    "boyd_ess_channel_at_unsolved_state": {
+     "r": 0.0,
+     "s": 0.0,
+     "s_rho_part": 0.0,
+     "s_proximal_part": 0.0,
+     "proximal_share": 0.0,
+     "eps_pri": 0.00072,
+     "eps_dual": 0.00072,
+     "norm_x": 0.0,
+     "norm_z": 0.0,
+     "norm_y": 0.0,
+     "primal_ratio": 0.0,
+     "dual_ratio": 0.0,
+     "dual_ratio_balance": 0.0,
+     "primal_pass": true,
+     "dual_pass": true,
+     "channel_pass": true,
+     "n_entries": 5184,
+     "norm_y_tso": 0.0,
+     "norm_y_dso": 0.0,
+     "norm_y_esso": 0.0
+    }
+   },
+   {
+    "step": "14 evaluator captures on the x = 0 ESSO models (EFC, SoH/degradation, complementarity detectors, available capacity, salvage, harness per-solve capture)",
+    "ok": true,
+    "efc_per_day_max": null,
+    "p514n_capture_esso": {
+     "5": {
+      "efc_per_day_max": null,
+      "efc_per_day_min": null,
+      "degradation_fraction_per_year_per_cohort_year": {
+       "(0, 0)": 0.0,
+       "(0, 1)": 0.0,
+       "(0, 2)": 0.0,
+       "(1, 0)": 0.0,
+       "(1, 1)": 0.0,
+       "(1, 2)": 0.0,
+       "(2, 0)": 0.0,
+       "(2, 1)": 0.0,
+       "(2, 2)": 0.0
+      }
+     },
+     "7": {
+      "efc_per_day_max": null,
+      "efc_per_day_min": null,
+      "degradation_fraction_per_year_per_cohort_year": {
+       "(0, 0)": 0.0,
+       "(0, 1)": 0.0,
+       "(0, 2)": 0.0,
+       "(1, 0)": 0.0,
+       "(1, 1)": 0.0,
+       "(1, 2)": 0.0,
+       "(2, 0)": 0.0,
+       "(2, 1)": 0.0,
+       "(2, 2)": 0.0
+      }
+     },
+     "9": {
+      "efc_per_day_max": null,
+      "efc_per_day_min": null,
+      "degradation_fraction_per_year_per_cohort_year": {
+       "(0, 0)": 0.0,
+       "(0, 1)": 0.0,
+       "(0, 2)": 0.0,
+       "(1, 0)": 0.0,
+       "(1, 1)": 0.0,
+       "(1, 2)": 0.0,
+       "(2, 0)": 0.0,
+       "(2, 1)": 0.0,
+       "(2, 2)": 0.0
+      }
+     }
+    },
+    "complementarity_ratio_max": 0.0,
+    "complementarity_per_node": {
+     "5": [
+      0.0,
+      0
+     ],
+     "7": [
+      0.0,
+      0
+     ],
+     "9": [
+      0.0,
+      0
+     ]
+    },
+    "available_capacity": {
+     "investment": {
+      "5": {
+       "2025": {
+        "power": 0.0,
+        "energy": 0.0
+       },
+       "2030": {
+        "power": 0.0,
+        "energy": 0.0
+       },
+       "2035": {
+        "power": 0.0,
+        "energy": 0.0
+       }
+      },
+      "7": {
+       "2025": {
+        "power": 0.0,
+        "energy": 0.0
+       },
+       "2030": {
+        "power": 0.0,
+        "energy": 0.0
+       },
+       "2035": {
+        "power": 0.0,
+        "energy": 0.0
+       }
+      },
+      "9": {
+       "2025": {
+        "power": 0.0,
+        "energy": 0.0
+       },
+       "2030": {
+        "power": 0.0,
+        "energy": 0.0
+       },
+       "2035": {
+        "power": 0.0,
+        "energy": 0.0
+       }
+      }
+     },
+     "rated": {
+      "5": {
+       "2025": {
+        "power": 0.0,
+        "energy": 0.0
+       },
+       "2030": {
+        "power": 0.0,
+        "energy": 0.0
+       },
+       "2035": {
+        "power": 0.0,
+        "energy": 0.0
+       }
+      },
+      "7": {
+       "2025": {
+        "power": 0.0,
+        "energy": 0.0
+       },
+       "2030": {
+        "power": 0.0,
+        "energy": 0.0
+       },
+       "2035": {
+        "power": 0.0,
+        "energy": 0.0
+       }
+      },
+      "9": {
+       "2025": {
+        "power": 0.0,
+        "energy": 0.0
+       },
+       "2030": {
+        "power": 0.0,
+        "energy": 0.0
+       },
+       "2035": {
+        "power": 0.0,
+        "energy": 0.0
+       }
+      }
+     },
+     "available": {
+      "5": {
+       "2025": {
+        "power": 0.0,
+        "energy": 0.0,
+        "soh": 0.0,
+        "degradation_factor": 1.0
+       },
+       "2030": {
+        "power": 0.0,
+        "energy": 0.0,
+        "soh": 0.0,
+        "degradation_factor": 1.0
+       },
+       "2035": {
+        "power": 0.0,
+        "energy": 0.0,
+        "soh": 0.0,
+        "degradation_factor": 1.0
+       }
+      },
+      "7": {
+       "2025": {
+        "power": 0.0,
+        "energy": 0.0,
+        "soh": 0.0,
+        "degradation_factor": 1.0
+       },
+       "2030": {
+        "power": 0.0,
+        "energy": 0.0,
+        "soh": 0.0,
+        "degradation_factor": 1.0
+       },
+       "2035": {
+        "power": 0.0,
+        "energy": 0.0,
+        "soh": 0.0,
+        "degradation_factor": 1.0
+       }
+      },
+      "9": {
+       "2025": {
+        "power": 0.0,
+        "energy": 0.0,
+        "soh": 0.0,
+        "degradation_factor": 1.0
+       },
+       "2030": {
+        "power": 0.0,
+        "energy": 0.0,
+        "soh": 0.0,
+        "degradation_factor": 1.0
+       },
+       "2035": {
+        "power": 0.0,
+        "energy": 0.0,
+        "soh": 0.0,
+        "degradation_factor": 1.0
+       }
+      }
+     }
+    },
+    "salvage_value": 0.0,
+    "salvage_value_results_keys": [
+     "calendar_life_basis",
+     "cohorts",
+     "cost_basis",
+     "enabled",
+     "energy_recovery_fraction",
+     "health_basis",
+     "recycling_floor_fraction",
+     "terminal_discount_factor",
+     "terminal_horizon_years",
+     "total_salvage_value"
+    ],
+    "feasibility_violation": 0.0,
+    "penalty_summary": {
+     "v": 0.0076999999999999985,
+     "pf": 0.1980000000000002,
+     "ess": 0.010000000000000004
+    },
+    "harness_capture_esso_solve": {
+     "records_written_per_node_file": {
+      "node5_cyclex0probe.jsonl": 0,
+      "node7_cyclex0probe.jsonl": 0,
+      "node9_cyclex0probe.jsonl": 0
+     },
+     "leak_records": [
+      {
+       "node_id": 5,
+       "n_active_cohort_periods": 0,
+       "complementarity_ratio_max": 0.0,
+       "parse_reason": "IPOPT log not found: None"
+      },
+      {
+       "node_id": 7,
+       "n_active_cohort_periods": 0,
+       "complementarity_ratio_max": 0.0,
+       "parse_reason": "IPOPT log not found: None"
+      },
+      {
+       "node_id": 9,
+       "n_active_cohort_periods": 0,
+       "complementarity_ratio_max": 0.0,
+       "parse_reason": "IPOPT log not found: None"
+      }
+     ],
+     "zL_precheck_marked_done": false
+    }
+   }
+  ],
+  "interceptor_check": {
+   "declared": {
+    "dso": 3,
+    "tso": 1,
+    "esso_init": 1,
+    "esso_coordination": 1
+   },
+   "observed": {
+    "dso": 3,
+    "tso": 1,
+    "esso_init": 1,
+    "esso_coordination": 1
+   },
+   "exact_match": true
+  },
+  "not_exercised_zero_solve": [
+   "update_interface_power_flow_variables and every post-solve read of the initialization (require solved results)",
+   "the ADMM main cycle (every DSO/TSO/ESSO solve), convergence certification, polish",
+   "the fixed-sigma calibration assertion (_resolve_common_admm_objective_scale: sigma_computed = max weighted SOLVED initialization block objective, required within objective_scale_assert_factor of the case-file sigma) -- needs the x = 0 initialization solves",
+   "IPOPT behaviour on the ESSO converter-circle rows whose right-hand side is pinned to 0 (see step 10) and on the TSO/DSO blocks with the shared ESS fixed at 0 -- a solve question; see historical_evidence"
+  ],
+  "campaign_harness_files_present_at_run_time": [],
+  "historical_evidence": {
+   "searched": "every data/SRP1/Results/**/g_*.json (instance.investment_map / s_mva,e_mwh); P515G3F_r2 leak/stdout; P514D/d1_cell2.json",
+   "g_json_files_scanned": 75,
+   "runs_with_some_zero_nodes": [
+    {
+     "artifact": "data/SRP1/Results/P515G3F_B/g_g3_full_node7_b.json",
+     "investment_map": {
+      "5": [
+       0.0,
+       0.0
+      ],
+      "7": [
+       1.62,
+       3.24
+      ],
+      "9": [
+       0.0,
+       0.0
+      ]
+     },
+     "zero_nodes": [
+      "5",
+      "9"
+     ],
+     "cycles_run": 80,
+     "converged_at_cycle": 80,
+     "esso_diagnostics_grouping": {
+      "n_active_nodes": 3,
+      "cycles_run": 80,
+      "expected_total_solves": 243,
+      "observed_total_solves": 243,
+      "grouping_clean": true
+     }
+    },
+    {
+     "artifact": "data/SRP1/Results/P515G3F_r2/g_g3_full_node7.json",
+     "investment_map": {
+      "5": [
+       0.0,
+       0.0
+      ],
+      "7": [
+       1.62,
+       3.24
+      ],
+      "9": [
+       0.0,
+       0.0
+      ]
+     },
+     "zero_nodes": [
+      "5",
+      "9"
+     ],
+     "cycles_run": 80,
+     "converged_at_cycle": 80,
+     "esso_diagnostics_grouping": {
+      "n_active_nodes": 3,
+      "cycles_run": 80,
+      "expected_total_solves": 243,
+      "observed_total_solves": 243,
+      "grouping_clean": true
+     }
+    }
+   ],
+   "runs_with_all_nodes_zero": [],
+   "g3_full_zero_node_esso_outcomes": {
+    "artifacts": {
+     "data/SRP1/Results/P515G3F_r2/leak_classification_g3_full_node7.jsonl": "8ab58d3e21d949b3138b876b770fc8e3b97271572a93b5888b0678e86980a40d",
+     "data/SRP1/Results/P515G3F_r2/stdout_g3_full_node7.log": "cfba4f9974b41ecdb605501b8b87a1d5a47156c4d7f7c0982ae6e561b4518300"
+    },
+    "per_node_esso_rounds": {
+     "5": {
+      "rounds": 81,
+      "mu_parsed": 81,
+      "n_active_cohort_periods": [
+       0
+      ]
+     },
+     "7": {
+      "rounds": 81,
+      "mu_parsed": 81,
+      "n_active_cohort_periods": [
+       288
+      ]
+     },
+     "9": {
+      "rounds": 81,
+      "mu_parsed": 81,
+      "n_active_cohort_periods": [
+       0
+      ]
+     }
+    },
+    "stdout_lines_shared_ess_did_not_converge": 0,
+    "note": "a leak record exists only for a round in which _optimize loaded a solution (diagnostics are appended only on success)"
+   },
+   "track_d1_cell2_no_storage": {
+    "artifact": "data/SRP1/Results/P514D/d1_cell2.json",
+    "sha256": "6cdcd948b16ef5222a1d0313ff394cea0f626402e71853b2105ea555581cae50",
+    "fields": {
+     "cell": "cell2",
+     "instance": {
+      "investment": {
+       "5": {
+        "2025": {
+         "s": 0.0,
+         "e": 0.0
+        },
+        "2030": {
+         "s": 0.0,
+         "e": 0.0
+        },
+        "2035": {
+         "s": 0.0,
+         "e": 0.0
+        }
+       },
+       "7": {
+        "2025": {
+         "s": 0.0,
+         "e": 0.0
+        },
+        "2030": {
+         "s": 0.0,
+         "e": 0.0
+        },
+        "2035": {
+         "s": 0.0,
+         "e": 0.0
+        }
+       },
+       "9": {
+        "2025": {
+         "s": 0.0,
+         "e": 0.0
+        },
+        "2030": {
+         "s": 0.0,
+         "e": 0.0
+        },
+        "2035": {
+         "s": 0.0,
+         "e": 0.0
+        }
+       }
+      },
+      "total_capacity": {
+       "5": {
+        "2025": {
+         "s": 0.0,
+         "e": 0.0
+        },
+        "2030": {
+         "s": 0.0,
+         "e": 0.0
+        },
+        "2035": {
+         "s": 0.0,
+         "e": 0.0
+        }
+       },
+       "7": {
+        "2025": {
+         "s": 0.0,
+         "e": 0.0
+        },
+        "2030": {
+         "s": 0.0,
+         "e": 0.0
+        },
+        "2035": {
+         "s": 0.0,
+         "e": 0.0
+        }
+       },
+       "9": {
+        "2025": {
+         "s": 0.0,
+         "e": 0.0
+        },
+        "2030": {
+         "s": 0.0,
+         "e": 0.0
+        },
+        "2035": {
+         "s": 0.0,
+         "e": 0.0
+        }
+       }
+      }
+     },
+     "cycles_run": 70,
+     "recourse": 820746762.4645956,
+     "converged_at_cycle": 70,
+     "local_solve_failures": 0
+    }
+   }
+  }
+ }
+}
