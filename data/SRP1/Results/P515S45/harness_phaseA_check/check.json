@@ -1,0 +1,1921 @@
+{
+ "stage": "P5.15 Addendum 27 W5 -- Phase A harness fixes: zero-solve checks",
+ "started_utc": "2026-09-19T18:35:00.151875+00:00",
+ "git_head": "b2c86a1ada11a9fe27ad9071e2df653dd74f412c",
+ "harness_sha256_working_tree": "d7457f79b239527aac55eece29eec7b057ef7d77d3f328ea1a72fe1d5e2891b6",
+ "harness_sha256_head": "ac13f0e4a96b9e22059eba4519c6f167409e246f77b83f866b63109018024ab8",
+ "script_sha256": "cd43fb8732a61e0d39e9f60b4b66da49a4fe61630134a337b7c602b23b67e24a",
+ "checks": {
+  "K1_bar": {
+   "records_tracked_found": true,
+   "real_records_with_per_cycle_record_11": true,
+   "every_new_bar_within_1e-6_of_recorded": true,
+   "every_reported_net_bar_reproduces_recorded_exactly": true,
+   "every_record_2025": true,
+   "every_record_rebuilt_unchanged_except_bar": true
+  },
+  "K2_keys_and_references": {
+   "committed_specs_found_23": true,
+   "every_key_eval_key_dir_id_unchanged": true,
+   "every_recorded_post_certification_resolution_reproduced": true
+  },
+  "K3_reference_d_ness": {
+   "reference_matrix_all_as_expected": true,
+   "head_harness_accepted_case_file_aa_reference_new_refuses": true,
+   "polish_without_reference_freezes_in_case_file_aa_spec": true,
+   "d_reference_freezes_in_case_file_aa_spec": true,
+   "case_file_aa_reference_refused_at_freeze": true,
+   "post_certification_without_reference_evaluated": true,
+   "gates_b_c_none_without_reference": true,
+   "gate_d_present_persist_before_polish": true
+  },
+  "K4_error_records": {
+   "A_fail_first_ok": true,
+   "B_workdir_refusal_ok": true,
+   "C_after_hook_ok": true,
+   "D_parent_synthesized_ok": true
+  }
+ },
+ "detail": {
+  "K1_bar": {
+   "per_record": [
+    {
+     "record": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/4e53fa5560bbfa10_two_c_star_d/evaluation_record.json",
+     "candidate_key16": "4e53fa5560bbfa10",
+     "eval_key16": "4e53fa5560bbfa10",
+     "label": "two_c_star_d",
+     "status": "certified",
+     "investment_year": 2025,
+     "cycles_run": 187,
+     "recorded_bar": 1542.70920920372,
+     "new_bar_gross": 1542.70920920372,
+     "new_minus_recorded": 0.0,
+     "abs_diff": 0.0,
+     "within_1e-6": true,
+     "reported_net_bar_reproduces_recorded_exactly": true,
+     "new_bar_n_steps_available": 10,
+     "first_window_row": {
+      "cycle": 178,
+      "gross_operational_cost": 648151430.7080152,
+      "predecessor_cycle": 177,
+      "predecessor_gross_operational_cost": 648152450.923488,
+      "gross_step_abs": 1020.215472817421
+     },
+     "trajectory_cycles_contiguous_from_1": true,
+     "max_per_row_gross_vs_net_step_gap_in_window": 0.0,
+     "max_abs_terminal_salvage_over_trajectory": 1.3930031937767904e-34,
+     "per_cycle_record_sha256": "ca9b191ed69dad33af3665308033b338db629bfe0bf174c8ebfeba8ec9a8f111"
+    },
+    {
+     "record": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/evaluation_record.json",
+     "candidate_key16": "578636daa6d6360d",
+     "eval_key16": "837fc982565dbba3",
+     "label": "c_star_aa_keep_memory",
+     "status": "certified",
+     "investment_year": 2025,
+     "cycles_run": 107,
+     "recorded_bar": 5895.477788805962,
+     "new_bar_gross": 5895.477788805962,
+     "new_minus_recorded": 0.0,
+     "abs_diff": 0.0,
+     "within_1e-6": true,
+     "reported_net_bar_reproduces_recorded_exactly": true,
+     "new_bar_n_steps_available": 10,
+     "first_window_row": {
+      "cycle": 98,
+      "gross_operational_cost": 651025026.1151848,
+      "predecessor_cycle": 97,
+      "predecessor_gross_operational_cost": 651024914.1176494,
+      "gross_step_abs": 111.99753534793854
+     },
+     "trajectory_cycles_contiguous_from_1": true,
+     "max_per_row_gross_vs_net_step_gap_in_window": 0.0,
+     "max_abs_terminal_salvage_over_trajectory": 6.749009278652274e-35,
+     "per_cycle_record_sha256": "f38b0bdf0473424f5f5db67d54c78c5e15575df4030d0d49c46d497f10441f7d"
+    },
+    {
+     "record": "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/evals/578636daa6d6360d_c_star_d/evaluation_record.json",
+     "candidate_key16": "578636daa6d6360d",
+     "eval_key16": "578636daa6d6360d",
+     "label": "c_star_d",
+     "status": "not_certified",
+     "investment_year": 2025,
+     "cycles_run": 3,
+     "recorded_bar": 845717094.9825618,
+     "new_bar_gross": 845717094.9825618,
+     "new_minus_recorded": 0.0,
+     "abs_diff": 0.0,
+     "within_1e-6": true,
+     "reported_net_bar_reproduces_recorded_exactly": true,
+     "new_bar_n_steps_available": 2,
+     "first_window_row": {
+      "cycle": 1,
+      "gross_operational_cost": 1586459924.5573957,
+      "predecessor_cycle": null,
+      "predecessor_gross_operational_cost": null,
+      "gross_step_abs": null
+     },
+     "trajectory_cycles_contiguous_from_1": true,
+     "max_per_row_gross_vs_net_step_gap_in_window": 0.0,
+     "max_abs_terminal_salvage_over_trajectory": 6.749009278652274e-35,
+     "per_cycle_record_sha256": "b9608f619d6baac2aa33d5961689fb61ebacb0a9c04e060d7372c123e4473d96"
+    },
+    {
+     "record": "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/evals/837fc982565dbba3_c_star_aa_keep_memory/evaluation_record.json",
+     "candidate_key16": "578636daa6d6360d",
+     "eval_key16": "837fc982565dbba3",
+     "label": "c_star_aa_keep_memory",
+     "status": "not_certified",
+     "investment_year": 2025,
+     "cycles_run": 3,
+     "recorded_bar": 845717094.9825618,
+     "new_bar_gross": 845717094.9825618,
+     "new_minus_recorded": 0.0,
+     "abs_diff": 0.0,
+     "within_1e-6": true,
+     "reported_net_bar_reproduces_recorded_exactly": true,
+     "new_bar_n_steps_available": 2,
+     "first_window_row": {
+      "cycle": 1,
+      "gross_operational_cost": 1586459924.5573957,
+      "predecessor_cycle": null,
+      "predecessor_gross_operational_cost": null,
+      "gross_step_abs": null
+     },
+     "trajectory_cycles_contiguous_from_1": true,
+     "max_per_row_gross_vs_net_step_gap_in_window": 0.0,
+     "max_abs_terminal_salvage_over_trajectory": 6.749009278652274e-35,
+     "per_cycle_record_sha256": "b9608f619d6baac2aa33d5961689fb61ebacb0a9c04e060d7372c123e4473d96"
+    },
+    {
+     "record": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/578636daa6d6360d_c_star/evaluation_record.json",
+     "candidate_key16": "578636daa6d6360d",
+     "eval_key16": "None",
+     "label": "c_star",
+     "status": "certified",
+     "investment_year": 2025,
+     "cycles_run": 139,
+     "recorded_bar": 7898.630394935608,
+     "new_bar_gross": 7898.630394935608,
+     "new_minus_recorded": 0.0,
+     "abs_diff": 0.0,
+     "within_1e-6": true,
+     "reported_net_bar_reproduces_recorded_exactly": true,
+     "new_bar_n_steps_available": 10,
+     "first_window_row": {
+      "cycle": 130,
+      "gross_operational_cost": 650973771.7145019,
+      "predecessor_cycle": 129,
+      "predecessor_gross_operational_cost": 650981670.3448968,
+      "gross_step_abs": 7898.630394935608
+     },
+     "trajectory_cycles_contiguous_from_1": true,
+     "max_per_row_gross_vs_net_step_gap_in_window": 0.0,
+     "max_abs_terminal_salvage_over_trajectory": 6.749009278652274e-35,
+     "per_cycle_record_sha256": "28d67fd27b389d67996bd94556b63042ee946bdf4d895b760bc92e281b49ff61"
+    },
+    {
+     "record": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/d1a02e67107d0bac_paper_plan/evaluation_record.json",
+     "candidate_key16": "d1a02e67107d0bac",
+     "eval_key16": "None",
+     "label": "paper_plan",
+     "status": "certified",
+     "investment_year": 2025,
+     "cycles_run": 139,
+     "recorded_bar": 661.5779943466187,
+     "new_bar_gross": 661.5779943466187,
+     "new_minus_recorded": 0.0,
+     "abs_diff": 0.0,
+     "within_1e-6": true,
+     "reported_net_bar_reproduces_recorded_exactly": true,
+     "new_bar_n_steps_available": 10,
+     "first_window_row": {
+      "cycle": 130,
+      "gross_operational_cost": 653034647.8052604,
+      "predecessor_cycle": 129,
+      "predecessor_gross_operational_cost": 653034918.2356824,
+      "gross_step_abs": 270.4304219484329
+     },
+     "trajectory_cycles_contiguous_from_1": true,
+     "max_per_row_gross_vs_net_step_gap_in_window": 0.0,
+     "max_abs_terminal_salvage_over_trajectory": 2.3181777933220268e-37,
+     "per_cycle_record_sha256": "f5aeb7b05168f0dbe7ec55c92c20098736218f1da925d2aef6dd1fe27573caa9"
+    },
+    {
+     "record": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/e30704e6e4dd3765_node7_empty/evaluation_record.json",
+     "candidate_key16": "e30704e6e4dd3765",
+     "eval_key16": "None",
+     "label": "node7_empty",
+     "status": "certified",
+     "investment_year": 2025,
+     "cycles_run": 136,
+     "recorded_bar": 9104.680594921112,
+     "new_bar_gross": 9104.680594921112,
+     "new_minus_recorded": 0.0,
+     "abs_diff": 0.0,
+     "within_1e-6": true,
+     "reported_net_bar_reproduces_recorded_exactly": true,
+     "new_bar_n_steps_available": 10,
+     "first_window_row": {
+      "cycle": 127,
+      "gross_operational_cost": 651958092.5303923,
+      "predecessor_cycle": 126,
+      "predecessor_gross_operational_cost": 651964377.0124762,
+      "gross_step_abs": 6284.482083916664
+     },
+     "trajectory_cycles_contiguous_from_1": true,
+     "max_per_row_gross_vs_net_step_gap_in_window": 0.0,
+     "max_abs_terminal_salvage_over_trajectory": 4.342293821367741e-35,
+     "per_cycle_record_sha256": "0d4bdbbd73ea32a43f865b77fa2b1dde6e5be35e9fe1f61e30a4d1638a8d8630"
+    },
+    {
+     "record": "data/SRP1/Results/P515S44/campaign_s44_selection_aa/evals/0796b6dceeb0f95f_node7_empty_aa_keep_memory/evaluation_record.json",
+     "candidate_key16": "e30704e6e4dd3765",
+     "eval_key16": "0796b6dceeb0f95f",
+     "label": "node7_empty_aa_keep_memory",
+     "status": "certified",
+     "investment_year": 2025,
+     "cycles_run": 107,
+     "recorded_bar": 6228.195416331291,
+     "new_bar_gross": 6228.195416331291,
+     "new_minus_recorded": 0.0,
+     "abs_diff": 0.0,
+     "within_1e-6": true,
+     "reported_net_bar_reproduces_recorded_exactly": true,
+     "new_bar_n_steps_available": 10,
+     "first_window_row": {
+      "cycle": 98,
+      "gross_operational_cost": 651944785.3979841,
+      "predecessor_cycle": 97,
+      "predecessor_gross_operational_cost": 651950972.8238666,
+      "gross_step_abs": 6187.425882458687
+     },
+     "trajectory_cycles_contiguous_from_1": true,
+     "max_per_row_gross_vs_net_step_gap_in_window": 0.0,
+     "max_abs_terminal_salvage_over_trajectory": 7.684616693029147e-35,
+     "per_cycle_record_sha256": "b36f308bfbb805790d2818d918b795cd7c1f990520820d6bc27c53d49004da4c"
+    },
+    {
+     "record": "data/SRP1/Results/P515S44/campaign_s44_selection_aa/evals/8e48f3ec8993a283_paper_plan_aa_keep_memory/evaluation_record.json",
+     "candidate_key16": "d1a02e67107d0bac",
+     "eval_key16": "8e48f3ec8993a283",
+     "label": "paper_plan_aa_keep_memory",
+     "status": "certified",
+     "investment_year": 2025,
+     "cycles_run": 116,
+     "recorded_bar": 6861.7444405555725,
+     "new_bar_gross": 6861.7444405555725,
+     "new_minus_recorded": 0.0,
+     "abs_diff": 0.0,
+     "within_1e-6": true,
+     "reported_net_bar_reproduces_recorded_exactly": true,
+     "new_bar_n_steps_available": 10,
+     "first_window_row": {
+      "cycle": 107,
+      "gross_operational_cost": 653058087.5773971,
+      "predecessor_cycle": 106,
+      "predecessor_gross_operational_cost": 653063881.3941371,
+      "gross_step_abs": 5793.816740036011
+     },
+     "trajectory_cycles_contiguous_from_1": true,
+     "max_per_row_gross_vs_net_step_gap_in_window": 0.0,
+     "max_abs_terminal_salvage_over_trajectory": 1.2252074835813152e-35,
+     "per_cycle_record_sha256": "3b929a727704205d7e5c11ca601c14f9211ed60302a6b2e4b72f24e1198336bb"
+    },
+    {
+     "record": "data/SRP1/Results/P515S44/campaign_s44_selection_aa/evals/a6ca6c94e033e460_two_c_star_aa_keep_memory/evaluation_record.json",
+     "candidate_key16": "4e53fa5560bbfa10",
+     "eval_key16": "a6ca6c94e033e460",
+     "label": "two_c_star_aa_keep_memory",
+     "status": "certified",
+     "investment_year": 2025,
+     "cycles_run": 180,
+     "recorded_bar": 1347.937882900238,
+     "new_bar_gross": 1347.937882900238,
+     "new_minus_recorded": 0.0,
+     "abs_diff": 0.0,
+     "within_1e-6": true,
+     "reported_net_bar_reproduces_recorded_exactly": true,
+     "new_bar_n_steps_available": 10,
+     "first_window_row": {
+      "cycle": 171,
+      "gross_operational_cost": 648162570.2959273,
+      "predecessor_cycle": 170,
+      "predecessor_gross_operational_cost": 648163755.813851,
+      "gross_step_abs": 1185.5179237127304
+     },
+     "trajectory_cycles_contiguous_from_1": true,
+     "max_per_row_gross_vs_net_step_gap_in_window": 0.0,
+     "max_abs_terminal_salvage_over_trajectory": 1.2023306109738345e-34,
+     "per_cycle_record_sha256": "80196d1c4d86b4cdc6886a8608abed8b571358ba8cdb2a0ff5b4f43754d7fc56"
+    },
+    {
+     "record": "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file/evaluation_record.json",
+     "candidate_key16": "578636daa6d6360d",
+     "eval_key16": "3e741dac72c9e1bc",
+     "label": "c_star_aa_case_file",
+     "status": "certified",
+     "investment_year": 2025,
+     "cycles_run": 107,
+     "recorded_bar": 5895.477788805962,
+     "new_bar_gross": 5895.477788805962,
+     "new_minus_recorded": 0.0,
+     "abs_diff": 0.0,
+     "within_1e-6": true,
+     "reported_net_bar_reproduces_recorded_exactly": true,
+     "new_bar_n_steps_available": 10,
+     "first_window_row": {
+      "cycle": 98,
+      "gross_operational_cost": 651025026.1151848,
+      "predecessor_cycle": 97,
+      "predecessor_gross_operational_cost": 651024914.1176494,
+      "gross_step_abs": 111.99753534793854
+     },
+     "trajectory_cycles_contiguous_from_1": true,
+     "max_per_row_gross_vs_net_step_gap_in_window": 0.0,
+     "max_abs_terminal_salvage_over_trajectory": 8.436261598315344e-35,
+     "per_cycle_record_sha256": "362af4daef80da49889930020368e566b184b57fdd6f8e9e0f2af172b6266f14"
+    }
+   ],
+   "max_abs_diff_eur": 0.0,
+   "not_within_1e-6": [],
+   "skipped_no_per_cycle_record": [
+    {
+     "record": "data/SRP1/Results/P515S44/harness_checks/c4_stub_campaign/evals/578636daa6d6360d_s1/evaluation_record.json",
+     "status": "stub",
+     "stub": true,
+     "reason": "no per_cycle_record.jsonl in the eval dir (stub / fake reference fixture)"
+    },
+    {
+     "record": "data/SRP1/Results/P515S44/harness_checks/c4_stub_campaign/evals/cc03ce8e9b04c327_s4/evaluation_record.json",
+     "status": "stub",
+     "stub": true,
+     "reason": "no per_cycle_record.jsonl in the eval dir (stub / fake reference fixture)"
+    },
+    {
+     "record": "data/SRP1/Results/P515S44/harness_checks/c4_stub_campaign/evals/d1a02e67107d0bac_s2/evaluation_record.json",
+     "status": "stub",
+     "stub": true,
+     "reason": "no per_cycle_record.jsonl in the eval dir (stub / fake reference fixture)"
+    },
+    {
+     "record": "data/SRP1/Results/P515S44/harness_checks/c4_stub_campaign/evals/e30704e6e4dd3765_s3/evaluation_record.json",
+     "status": "stub",
+     "stub": true,
+     "reason": "no per_cycle_record.jsonl in the eval dir (stub / fake reference fixture)"
+    },
+    {
+     "record": "data/SRP1/Results/P515S44/harness_checks_r2/c4_stub_campaign/evals/578636daa6d6360d_s1/evaluation_record.json",
+     "status": "stub",
+     "stub": true,
+     "reason": "no per_cycle_record.jsonl in the eval dir (stub / fake reference fixture)"
+    },
+    {
+     "record": "data/SRP1/Results/P515S44/harness_checks_r2/c4_stub_campaign/evals/cc03ce8e9b04c327_s4/evaluation_record.json",
+     "status": "stub",
+     "stub": true,
+     "reason": "no per_cycle_record.jsonl in the eval dir (stub / fake reference fixture)"
+    },
+    {
+     "record": "data/SRP1/Results/P515S44/harness_checks_r2/c4_stub_campaign/evals/d1a02e67107d0bac_s2/evaluation_record.json",
+     "status": "stub",
+     "stub": true,
+     "reason": "no per_cycle_record.jsonl in the eval dir (stub / fake reference fixture)"
+    },
+    {
+     "record": "data/SRP1/Results/P515S44/harness_checks_r2/c4_stub_campaign/evals/e30704e6e4dd3765_s3/evaluation_record.json",
+     "status": "stub",
+     "stub": true,
+     "reason": "no per_cycle_record.jsonl in the eval dir (stub / fake reference fixture)"
+    },
+    {
+     "record": "data/SRP1/Results/P515S44/harness_checks_r3/c4_stub_campaign/evals/578636daa6d6360d_s1/evaluation_record.json",
+     "status": "stub",
+     "stub": true,
+     "reason": "no per_cycle_record.jsonl in the eval dir (stub / fake reference fixture)"
+    },
+    {
+     "record": "data/SRP1/Results/P515S44/harness_checks_r3/c4_stub_campaign/evals/cc03ce8e9b04c327_s4/evaluation_record.json",
+     "status": "stub",
+     "stub": true,
+     "reason": "no per_cycle_record.jsonl in the eval dir (stub / fake reference fixture)"
+    },
+    {
+     "record": "data/SRP1/Results/P515S44/harness_checks_r3/c4_stub_campaign/evals/d1a02e67107d0bac_s2/evaluation_record.json",
+     "status": "stub",
+     "stub": true,
+     "reason": "no per_cycle_record.jsonl in the eval dir (stub / fake reference fixture)"
+    },
+    {
+     "record": "data/SRP1/Results/P515S44/harness_checks_r3/c4_stub_campaign/evals/e30704e6e4dd3765_s3/evaluation_record.json",
+     "status": "stub",
+     "stub": true,
+     "reason": "no per_cycle_record.jsonl in the eval dir (stub / fake reference fixture)"
+    },
+    {
+     "record": "data/SRP1/Results/P515S44/harness_checks_r3/c8_fake_refs/aa_ref/evaluation_record.json",
+     "status": "certified",
+     "stub": false,
+     "reason": "no per_cycle_record.jsonl in the eval dir (stub / fake reference fixture)"
+    },
+    {
+     "record": "data/SRP1/Results/P515S44/harness_checks_r3/c8_fake_refs/uncertified/evaluation_record.json",
+     "status": "not_certified",
+     "stub": false,
+     "reason": "no per_cycle_record.jsonl in the eval dir (stub / fake reference fixture)"
+    },
+    {
+     "record": "data/SRP1/Results/P515S44/harness_checks_r3/c9_stub_campaign/evals/578636daa6d6360d_c_star_d/evaluation_record.json",
+     "status": "stub",
+     "stub": true,
+     "reason": "no per_cycle_record.jsonl in the eval dir (stub / fake reference fixture)"
+    },
+    {
+     "record": "data/SRP1/Results/P515S44/harness_checks_r3/c9_stub_campaign/evals/837fc982565dbba3_c_star_aa_keep/evaluation_record.json",
+     "status": "stub",
+     "stub": true,
+     "reason": "no per_cycle_record.jsonl in the eval dir (stub / fake reference fixture)"
+    }
+   ],
+   "whole_record_rebuild": {
+    "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/4e53fa5560bbfa10_two_c_star_d/evaluation_record.json": {
+     "rebuilt": true,
+     "fields_compared": 36,
+     "differing_fields_other_than_bar": [],
+     "only_difference_is_pre_existing_schema_v1_label": false,
+     "net_reported_equals_recorded_bar_value_and_window": true,
+     "rebuilt_bar_from_full_trajectory_equals_per_cycle_recompute": true
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/evaluation_record.json": {
+     "rebuilt": true,
+     "fields_compared": 36,
+     "differing_fields_other_than_bar": [],
+     "only_difference_is_pre_existing_schema_v1_label": false,
+     "net_reported_equals_recorded_bar_value_and_window": true,
+     "rebuilt_bar_from_full_trajectory_equals_per_cycle_recompute": true
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/evals/578636daa6d6360d_c_star_d/evaluation_record.json": {
+     "rebuilt": true,
+     "fields_compared": 36,
+     "differing_fields_other_than_bar": [],
+     "only_difference_is_pre_existing_schema_v1_label": false,
+     "net_reported_equals_recorded_bar_value_and_window": true,
+     "rebuilt_bar_from_full_trajectory_equals_per_cycle_recompute": true
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/evals/837fc982565dbba3_c_star_aa_keep_memory/evaluation_record.json": {
+     "rebuilt": true,
+     "fields_compared": 36,
+     "differing_fields_other_than_bar": [],
+     "only_difference_is_pre_existing_schema_v1_label": false,
+     "net_reported_equals_recorded_bar_value_and_window": true,
+     "rebuilt_bar_from_full_trajectory_equals_per_cycle_recompute": true
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_gate/evals/578636daa6d6360d_c_star/evaluation_record.json": {
+     "rebuilt": true,
+     "fields_compared": 36,
+     "differing_fields_other_than_bar": [
+      "schema"
+     ],
+     "only_difference_is_pre_existing_schema_v1_label": true,
+     "net_reported_equals_recorded_bar_value_and_window": true,
+     "rebuilt_bar_from_full_trajectory_equals_per_cycle_recompute": true
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_gate/evals/d1a02e67107d0bac_paper_plan/evaluation_record.json": {
+     "rebuilt": true,
+     "fields_compared": 36,
+     "differing_fields_other_than_bar": [
+      "schema"
+     ],
+     "only_difference_is_pre_existing_schema_v1_label": true,
+     "net_reported_equals_recorded_bar_value_and_window": true,
+     "rebuilt_bar_from_full_trajectory_equals_per_cycle_recompute": true
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_gate/evals/e30704e6e4dd3765_node7_empty/evaluation_record.json": {
+     "rebuilt": true,
+     "fields_compared": 36,
+     "differing_fields_other_than_bar": [
+      "schema"
+     ],
+     "only_difference_is_pre_existing_schema_v1_label": true,
+     "net_reported_equals_recorded_bar_value_and_window": true,
+     "rebuilt_bar_from_full_trajectory_equals_per_cycle_recompute": true
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_selection_aa/evals/0796b6dceeb0f95f_node7_empty_aa_keep_memory/evaluation_record.json": {
+     "rebuilt": true,
+     "fields_compared": 36,
+     "differing_fields_other_than_bar": [],
+     "only_difference_is_pre_existing_schema_v1_label": false,
+     "net_reported_equals_recorded_bar_value_and_window": true,
+     "rebuilt_bar_from_full_trajectory_equals_per_cycle_recompute": true
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_selection_aa/evals/8e48f3ec8993a283_paper_plan_aa_keep_memory/evaluation_record.json": {
+     "rebuilt": true,
+     "fields_compared": 36,
+     "differing_fields_other_than_bar": [],
+     "only_difference_is_pre_existing_schema_v1_label": false,
+     "net_reported_equals_recorded_bar_value_and_window": true,
+     "rebuilt_bar_from_full_trajectory_equals_per_cycle_recompute": true
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_selection_aa/evals/a6ca6c94e033e460_two_c_star_aa_keep_memory/evaluation_record.json": {
+     "rebuilt": true,
+     "fields_compared": 36,
+     "differing_fields_other_than_bar": [],
+     "only_difference_is_pre_existing_schema_v1_label": false,
+     "net_reported_equals_recorded_bar_value_and_window": true,
+     "rebuilt_bar_from_full_trajectory_equals_per_cycle_recompute": true
+    },
+    "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file/evaluation_record.json": {
+     "rebuilt": true,
+     "fields_compared": 36,
+     "differing_fields_other_than_bar": [],
+     "only_difference_is_pre_existing_schema_v1_label": false,
+     "net_reported_equals_recorded_bar_value_and_window": true,
+     "rebuilt_bar_from_full_trajectory_equals_per_cycle_recompute": true
+    }
+   },
+   "tolerance_eur": 1e-06
+  },
+  "K2_keys_and_references": {
+   "n_specs": 23,
+   "n_entries": 46,
+   "per_spec": {
+    "data/SRP1/Results/P515S44/campaign_s44_aa_variant/campaign_spec_s44_aa_variant_f90618e8.json": {
+     "campaign_id": "s44_aa_variant",
+     "declares_case_file_aa": false,
+     "n_entries": 2,
+     "entries": [
+      {
+       "label": "c_star_aa_keep_memory",
+       "recorded_eval_key16": "837fc982565dbba3",
+       "recomputed_eval_key16": "837fc982565dbba3",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "two_c_star_d",
+       "recorded_eval_key16": "4e53fa5560bbfa10",
+       "recomputed_eval_key16": "4e53fa5560bbfa10",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/campaign_spec_s44_aa_variant_smoke_e3f83174.json": {
+     "campaign_id": "s44_aa_variant_smoke",
+     "declares_case_file_aa": false,
+     "n_entries": 2,
+     "entries": [
+      {
+       "label": "c_star_aa_keep_memory",
+       "recorded_eval_key16": "837fc982565dbba3",
+       "recomputed_eval_key16": "837fc982565dbba3",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "c_star_d",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_gate/campaign_spec_s44_gate_4047b4e3.json": {
+     "campaign_id": "s44_gate",
+     "declares_case_file_aa": false,
+     "n_entries": 3,
+     "entries": [
+      {
+       "label": "c_star",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "paper_plan",
+       "recorded_eval_key16": "d1a02e67107d0bac",
+       "recomputed_eval_key16": "d1a02e67107d0bac",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "node7_empty",
+       "recorded_eval_key16": "e30704e6e4dd3765",
+       "recomputed_eval_key16": "e30704e6e4dd3765",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_selection_aa/campaign_spec_s44_selection_aa_4135c8d4.json": {
+     "campaign_id": "s44_selection_aa",
+     "declares_case_file_aa": false,
+     "n_entries": 3,
+     "entries": [
+      {
+       "label": "paper_plan_aa_keep_memory",
+       "recorded_eval_key16": "8e48f3ec8993a283",
+       "recomputed_eval_key16": "8e48f3ec8993a283",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "node7_empty_aa_keep_memory",
+       "recorded_eval_key16": "0796b6dceeb0f95f",
+       "recomputed_eval_key16": "0796b6dceeb0f95f",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "two_c_star_aa_keep_memory",
+       "recorded_eval_key16": "a6ca6c94e033e460",
+       "recomputed_eval_key16": "a6ca6c94e033e460",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks/c2_spec_root/campaign_spec_c2_f24bc344.json": {
+     "campaign_id": "c2",
+     "declares_case_file_aa": false,
+     "n_entries": 2,
+     "entries": [
+      {
+       "label": "a",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "b",
+       "recorded_eval_key16": "d1a02e67107d0bac",
+       "recomputed_eval_key16": "d1a02e67107d0bac",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks/c4_fail_campaign/campaign_spec_c4f_92ac6360.json": {
+     "campaign_id": "c4f",
+     "declares_case_file_aa": false,
+     "n_entries": 1,
+     "entries": [
+      {
+       "label": "fail1",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks/c4_foreign_lock_campaign/campaign_spec_c4l_1ce4890b.json": {
+     "campaign_id": "c4l",
+     "declares_case_file_aa": false,
+     "n_entries": 1,
+     "entries": [
+      {
+       "label": "foreign",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks/c4_nonstub_spec_campaign/campaign_spec_c4n_59849c27.json": {
+     "campaign_id": "c4n",
+     "declares_case_file_aa": false,
+     "n_entries": 1,
+     "entries": [
+      {
+       "label": "nonstub",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks/c4_stub_campaign/campaign_spec_c4_cf3b201c.json": {
+     "campaign_id": "c4",
+     "declares_case_file_aa": false,
+     "n_entries": 4,
+     "entries": [
+      {
+       "label": "s1",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "s2",
+       "recorded_eval_key16": "d1a02e67107d0bac",
+       "recomputed_eval_key16": "d1a02e67107d0bac",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "s3",
+       "recorded_eval_key16": "e30704e6e4dd3765",
+       "recomputed_eval_key16": "e30704e6e4dd3765",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "s4",
+       "recorded_eval_key16": "cc03ce8e9b04c327",
+       "recomputed_eval_key16": "cc03ce8e9b04c327",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r2/c2_spec_root/campaign_spec_c2_04e91893.json": {
+     "campaign_id": "c2",
+     "declares_case_file_aa": false,
+     "n_entries": 2,
+     "entries": [
+      {
+       "label": "a",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "b",
+       "recorded_eval_key16": "d1a02e67107d0bac",
+       "recomputed_eval_key16": "d1a02e67107d0bac",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r2/c4_fail_campaign/campaign_spec_c4f_b96c62d6.json": {
+     "campaign_id": "c4f",
+     "declares_case_file_aa": false,
+     "n_entries": 1,
+     "entries": [
+      {
+       "label": "fail1",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r2/c4_foreign_lock_campaign/campaign_spec_c4l_800e7da8.json": {
+     "campaign_id": "c4l",
+     "declares_case_file_aa": false,
+     "n_entries": 1,
+     "entries": [
+      {
+       "label": "foreign",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r2/c4_nonstub_spec_campaign/campaign_spec_c4n_34c6cffc.json": {
+     "campaign_id": "c4n",
+     "declares_case_file_aa": false,
+     "n_entries": 1,
+     "entries": [
+      {
+       "label": "nonstub",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r2/c4_stub_campaign/campaign_spec_c4_0bca1b39.json": {
+     "campaign_id": "c4",
+     "declares_case_file_aa": false,
+     "n_entries": 4,
+     "entries": [
+      {
+       "label": "s1",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "s2",
+       "recorded_eval_key16": "d1a02e67107d0bac",
+       "recomputed_eval_key16": "d1a02e67107d0bac",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "s3",
+       "recorded_eval_key16": "e30704e6e4dd3765",
+       "recomputed_eval_key16": "e30704e6e4dd3765",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "s4",
+       "recorded_eval_key16": "cc03ce8e9b04c327",
+       "recomputed_eval_key16": "cc03ce8e9b04c327",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r3/c2_spec_root/campaign_spec_c2_1ea09b7b.json": {
+     "campaign_id": "c2",
+     "declares_case_file_aa": false,
+     "n_entries": 2,
+     "entries": [
+      {
+       "label": "a",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "b",
+       "recorded_eval_key16": "d1a02e67107d0bac",
+       "recomputed_eval_key16": "d1a02e67107d0bac",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r3/c4_fail_campaign/campaign_spec_c4f_0f059fc1.json": {
+     "campaign_id": "c4f",
+     "declares_case_file_aa": false,
+     "n_entries": 1,
+     "entries": [
+      {
+       "label": "fail1",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r3/c4_foreign_lock_campaign/campaign_spec_c4l_3029ea43.json": {
+     "campaign_id": "c4l",
+     "declares_case_file_aa": false,
+     "n_entries": 1,
+     "entries": [
+      {
+       "label": "foreign",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r3/c4_nonstub_spec_campaign/campaign_spec_c4n_8ca5f6d7.json": {
+     "campaign_id": "c4n",
+     "declares_case_file_aa": false,
+     "n_entries": 1,
+     "entries": [
+      {
+       "label": "nonstub",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r3/c4_stub_campaign/campaign_spec_c4_83da5ad0.json": {
+     "campaign_id": "c4",
+     "declares_case_file_aa": false,
+     "n_entries": 4,
+     "entries": [
+      {
+       "label": "s1",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "s2",
+       "recorded_eval_key16": "d1a02e67107d0bac",
+       "recomputed_eval_key16": "d1a02e67107d0bac",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "s3",
+       "recorded_eval_key16": "e30704e6e4dd3765",
+       "recomputed_eval_key16": "e30704e6e4dd3765",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "s4",
+       "recorded_eval_key16": "cc03ce8e9b04c327",
+       "recomputed_eval_key16": "cc03ce8e9b04c327",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r3/c8_spec_root/campaign_spec_c8_d6300da7.json": {
+     "campaign_id": "c8",
+     "declares_case_file_aa": false,
+     "n_entries": 3,
+     "entries": [
+      {
+       "label": "c_star_d",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "c_star_aa_keep",
+       "recorded_eval_key16": "837fc982565dbba3",
+       "recomputed_eval_key16": "837fc982565dbba3",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "two_c_star_d",
+       "recorded_eval_key16": "4e53fa5560bbfa10",
+       "recomputed_eval_key16": "4e53fa5560bbfa10",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r3/c9_stub_campaign/campaign_spec_c9_276119b8.json": {
+     "campaign_id": "c9",
+     "declares_case_file_aa": false,
+     "n_entries": 2,
+     "entries": [
+      {
+       "label": "c_star_d",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "c_star_aa_keep",
+       "recorded_eval_key16": "837fc982565dbba3",
+       "recomputed_eval_key16": "837fc982565dbba3",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/selection_aa_dry_run/campaign_spec_s44_selection_aa_075e33ef.json": {
+     "campaign_id": "s44_selection_aa",
+     "declares_case_file_aa": false,
+     "n_entries": 3,
+     "entries": [
+      {
+       "label": "paper_plan_aa_keep_memory",
+       "recorded_eval_key16": "8e48f3ec8993a283",
+       "recomputed_eval_key16": "8e48f3ec8993a283",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "node7_empty_aa_keep_memory",
+       "recorded_eval_key16": "0796b6dceeb0f95f",
+       "recomputed_eval_key16": "0796b6dceeb0f95f",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "two_c_star_aa_keep_memory",
+       "recorded_eval_key16": "a6ca6c94e033e460",
+       "recomputed_eval_key16": "a6ca6c94e033e460",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S45/reverify_aa_c_star/campaign_spec_s45_reverify_aa_c_star_4a214b99.json": {
+     "campaign_id": "s45_reverify_aa_c_star",
+     "declares_case_file_aa": true,
+     "n_entries": 1,
+     "entries": [
+      {
+       "label": "c_star_aa_case_file",
+       "recorded_eval_key16": "3e741dac72c9e1bc",
+       "recomputed_eval_key16": "3e741dac72c9e1bc",
+       "ok": {
+        "candidate_key": true,
+        "eval_key": true,
+        "eval_dir": true,
+        "working_dir_ids": true,
+        "effective_aa": true
+       }
+      }
+     ]
+    }
+   },
+   "post_certification_re_resolution": [
+    {
+     "spec": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/campaign_spec_s44_aa_variant_f90618e8.json",
+     "label": "c_star_aa_keep_memory",
+     "reference_eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/578636daa6d6360d_c_star",
+     "new_resolution_equals_recorded": true,
+     "error": null
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/campaign_spec_s44_aa_variant_f90618e8.json",
+     "label": "two_c_star_d",
+     "reference_eval_dir": null,
+     "new_resolution_equals_recorded": true,
+     "error": null
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/campaign_spec_s44_aa_variant_smoke_e3f83174.json",
+     "label": "c_star_aa_keep_memory",
+     "reference_eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/578636daa6d6360d_c_star",
+     "new_resolution_equals_recorded": true,
+     "error": null
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/campaign_s44_selection_aa/campaign_spec_s44_selection_aa_4135c8d4.json",
+     "label": "paper_plan_aa_keep_memory",
+     "reference_eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/d1a02e67107d0bac_paper_plan",
+     "new_resolution_equals_recorded": true,
+     "error": null
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/campaign_s44_selection_aa/campaign_spec_s44_selection_aa_4135c8d4.json",
+     "label": "node7_empty_aa_keep_memory",
+     "reference_eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/e30704e6e4dd3765_node7_empty",
+     "new_resolution_equals_recorded": true,
+     "error": null
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/campaign_s44_selection_aa/campaign_spec_s44_selection_aa_4135c8d4.json",
+     "label": "two_c_star_aa_keep_memory",
+     "reference_eval_dir": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/4e53fa5560bbfa10_two_c_star_d",
+     "new_resolution_equals_recorded": true,
+     "error": null
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/harness_checks_r3/c8_spec_root/campaign_spec_c8_d6300da7.json",
+     "label": "c_star_aa_keep",
+     "reference_eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/578636daa6d6360d_c_star",
+     "new_resolution_equals_recorded": true,
+     "error": null
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/harness_checks_r3/c8_spec_root/campaign_spec_c8_d6300da7.json",
+     "label": "two_c_star_d",
+     "reference_eval_dir": null,
+     "new_resolution_equals_recorded": true,
+     "error": null
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/selection_aa_dry_run/campaign_spec_s44_selection_aa_075e33ef.json",
+     "label": "paper_plan_aa_keep_memory",
+     "reference_eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/d1a02e67107d0bac_paper_plan",
+     "new_resolution_equals_recorded": true,
+     "error": null
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/selection_aa_dry_run/campaign_spec_s44_selection_aa_075e33ef.json",
+     "label": "node7_empty_aa_keep_memory",
+     "reference_eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/e30704e6e4dd3765_node7_empty",
+     "new_resolution_equals_recorded": true,
+     "error": null
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/selection_aa_dry_run/campaign_spec_s44_selection_aa_075e33ef.json",
+     "label": "two_c_star_aa_keep_memory",
+     "reference_eval_dir": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/4e53fa5560bbfa10_two_c_star_d",
+     "new_resolution_equals_recorded": true,
+     "error": null
+    }
+   ]
+  },
+  "K3_reference_d_ness": {
+   "matrix": {
+    "gate_c_star": {
+     "group": "D",
+     "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/578636daa6d6360d_c_star",
+     "new": {
+      "accepted": true,
+      "configuration_overrides": {},
+      "effective_anderson_acceleration": null
+     },
+     "head": {
+      "accepted": true,
+      "configuration_overrides": {},
+      "effective_anderson_acceleration": null
+     },
+     "expected_accepted": true,
+     "ok": true
+    },
+    "gate_paper_plan": {
+     "group": "D",
+     "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/d1a02e67107d0bac_paper_plan",
+     "new": {
+      "accepted": true,
+      "configuration_overrides": {},
+      "effective_anderson_acceleration": null
+     },
+     "head": {
+      "accepted": true,
+      "configuration_overrides": {},
+      "effective_anderson_acceleration": null
+     },
+     "expected_accepted": true,
+     "ok": true
+    },
+    "gate_node7_empty": {
+     "group": "D",
+     "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/e30704e6e4dd3765_node7_empty",
+     "new": {
+      "accepted": true,
+      "configuration_overrides": {},
+      "effective_anderson_acceleration": null
+     },
+     "head": {
+      "accepted": true,
+      "configuration_overrides": {},
+      "effective_anderson_acceleration": null
+     },
+     "expected_accepted": true,
+     "ok": true
+    },
+    "aa_variant_two_c_star_d": {
+     "group": "D",
+     "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/4e53fa5560bbfa10_two_c_star_d",
+     "new": {
+      "accepted": true,
+      "configuration_overrides": {},
+      "effective_anderson_acceleration": null
+     },
+     "head": {
+      "accepted": true,
+      "configuration_overrides": {},
+      "effective_anderson_acceleration": null
+     },
+     "expected_accepted": true,
+     "ok": true
+    },
+    "aa_variant_c_star_aa_keep_memory": {
+     "group": "AA_override",
+     "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory",
+     "new": {
+      "accepted": false,
+      "message": "invalid post_certification.reference data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory: [\"reference is not the case-file (D) configuration: overrides={'anderson_acceleration': {'enabled': True, 'reject_policy': 'keep_memory'}}\"]"
+     },
+     "head": {
+      "accepted": false,
+      "message": "invalid post_certification.reference data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory: [\"reference is not the case-file (D) configuration: overrides={'anderson_acceleration': {'enabled': True, 'reject_policy': 'keep_memory'}}\"]"
+     },
+     "expected_accepted": false,
+     "ok": true
+    },
+    "selection_paper_plan_aa": {
+     "group": "AA_override",
+     "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_selection_aa/evals/8e48f3ec8993a283_paper_plan_aa_keep_memory",
+     "new": {
+      "accepted": false,
+      "message": "invalid post_certification.reference data/SRP1/Results/P515S44/campaign_s44_selection_aa/evals/8e48f3ec8993a283_paper_plan_aa_keep_memory: [\"reference is not the case-file (D) configuration: overrides={'anderson_acceleration': {'enabled': True, 'reject_policy': 'keep_memory'}}\"]"
+     },
+     "head": {
+      "accepted": false,
+      "message": "invalid post_certification.reference data/SRP1/Results/P515S44/campaign_s44_selection_aa/evals/8e48f3ec8993a283_paper_plan_aa_keep_memory: [\"reference is not the case-file (D) configuration: overrides={'anderson_acceleration': {'enabled': True, 'reject_policy': 'keep_memory'}}\"]"
+     },
+     "expected_accepted": false,
+     "ok": true
+    },
+    "selection_node7_empty_aa": {
+     "group": "AA_override",
+     "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_selection_aa/evals/0796b6dceeb0f95f_node7_empty_aa_keep_memory",
+     "new": {
+      "accepted": false,
+      "message": "invalid post_certification.reference data/SRP1/Results/P515S44/campaign_s44_selection_aa/evals/0796b6dceeb0f95f_node7_empty_aa_keep_memory: [\"reference is not the case-file (D) configuration: overrides={'anderson_acceleration': {'enabled': True, 'reject_policy': 'keep_memory'}}\"]"
+     },
+     "head": {
+      "accepted": false,
+      "message": "invalid post_certification.reference data/SRP1/Results/P515S44/campaign_s44_selection_aa/evals/0796b6dceeb0f95f_node7_empty_aa_keep_memory: [\"reference is not the case-file (D) configuration: overrides={'anderson_acceleration': {'enabled': True, 'reject_policy': 'keep_memory'}}\"]"
+     },
+     "expected_accepted": false,
+     "ok": true
+    },
+    "selection_two_c_star_aa": {
+     "group": "AA_override",
+     "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_selection_aa/evals/a6ca6c94e033e460_two_c_star_aa_keep_memory",
+     "new": {
+      "accepted": false,
+      "message": "invalid post_certification.reference data/SRP1/Results/P515S44/campaign_s44_selection_aa/evals/a6ca6c94e033e460_two_c_star_aa_keep_memory: [\"reference is not the case-file (D) configuration: overrides={'anderson_acceleration': {'enabled': True, 'reject_policy': 'keep_memory'}}\"]"
+     },
+     "head": {
+      "accepted": false,
+      "message": "invalid post_certification.reference data/SRP1/Results/P515S44/campaign_s44_selection_aa/evals/a6ca6c94e033e460_two_c_star_aa_keep_memory: [\"reference is not the case-file (D) configuration: overrides={'anderson_acceleration': {'enabled': True, 'reject_policy': 'keep_memory'}}\"]"
+     },
+     "expected_accepted": false,
+     "ok": true
+    },
+    "s45_case_file_aa_c_star": {
+     "group": "case_file_AA",
+     "eval_dir": "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file",
+     "new": {
+      "accepted": false,
+      "message": "invalid post_certification.reference data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file: [\"reference is not the D configuration: effective anderson_acceleration {'enabled': True, 'memory': 5, 'regularization': 1e-10, 'reject_policy': 'keep_memory'} (case-file declaration {'enabled': True, 'memory': 5, 'regularization': 1e-10, 'reject_policy': 'keep_memory'} + overrides {})\"]"
+     },
+     "head": {
+      "accepted": true,
+      "configuration_overrides": {},
+      "effective_anderson_acceleration": null
+     },
+     "expected_accepted_new": false,
+     "head_accepted_before_the_fix": true,
+     "ok": true
+    },
+    "fixture_declared_on_override_off": {
+     "group": "fixture_effective_aa_off",
+     "eval_dir": "/var/folders/hg/hctq266s7210qrp5fl0qkhyc0000gn/T/p515s45_w5_fixtures_u5hdfjdt/k3_fixture_refs/declared_aa_on_plus_enabled_false_override",
+     "new": {
+      "accepted": true,
+      "configuration_overrides": {
+       "anderson_acceleration": {
+        "enabled": false
+       }
+      },
+      "effective_anderson_acceleration": {
+       "enabled": false,
+       "memory": 5,
+       "regularization": 1e-10,
+       "reject_policy": "keep_memory"
+      }
+     },
+     "expected_accepted_new": true,
+     "ok": true
+    },
+    "fixture_declared_off": {
+     "group": "fixture_effective_aa_off",
+     "eval_dir": "/var/folders/hg/hctq266s7210qrp5fl0qkhyc0000gn/T/p515s45_w5_fixtures_u5hdfjdt/k3_fixture_refs/declared_aa_off_no_override",
+     "new": {
+      "accepted": true,
+      "configuration_overrides": {},
+      "effective_anderson_acceleration": {
+       "enabled": false,
+       "memory": 5,
+       "regularization": 1e-10,
+       "reject_policy": "keep_memory"
+      }
+     },
+     "expected_accepted_new": true,
+     "ok": true
+    }
+   },
+   "fixture_spec_polish_no_reference_entry": {
+    "label": "c_star",
+    "canonical": {
+     "investment_year": 2025,
+     "nodes": {
+      "5": [
+       0.96875,
+       3.875
+      ],
+      "7": [
+       0.96875,
+       3.875
+      ],
+      "9": [
+       0.96875,
+       3.875
+      ]
+     }
+    },
+    "key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+    "eval_key": "3e741dac72c9e1bcccc04ce5cc2e29f91cd639c43620d4efa3e36885915263aa",
+    "overrides": {},
+    "post_certification": {
+     "persist_certified_models": true,
+     "hull_polish": true,
+     "reference": null
+    },
+    "eval_dir": "3e741dac72c9e1bc_c_star",
+    "working_dir_ids": {
+     "run": "p515s44_s45_w5chk_k3a_3e741dac72c9e1bc_run",
+     "precheck": "p515s44_s45_w5chk_k3a_3e741dac72c9e1bc_precheck"
+    },
+    "effective_anderson_acceleration": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    }
+   },
+   "fixture_spec_d_reference_entry": {
+    "label": "c_star",
+    "canonical": {
+     "investment_year": 2025,
+     "nodes": {
+      "5": [
+       0.96875,
+       3.875
+      ],
+      "7": [
+       0.96875,
+       3.875
+      ],
+      "9": [
+       0.96875,
+       3.875
+      ]
+     }
+    },
+    "key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+    "eval_key": "3e741dac72c9e1bcccc04ce5cc2e29f91cd639c43620d4efa3e36885915263aa",
+    "overrides": {},
+    "post_certification": {
+     "persist_certified_models": true,
+     "hull_polish": true,
+     "reference": {
+      "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/578636daa6d6360d_c_star",
+      "evaluation_record_sha256": "f7722fc44a2785f1d085dbc2f72703bc0962d06cf9a3796dbd4bce89d9ed7870",
+      "component_levels_terminal_sha256": "ff9050bb1759cff14f9d4e94d7e095b7a9b7fc3fa7ca8439f2a9ed5c0aa0444d",
+      "certified_cost": 650966975.2943751,
+      "certification_cycle": 139,
+      "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+      "campaign_spec_sha256": "4047b4e3f1852c3616a80ad26f2d43f2aa4b333847e447fb5b9323fb3bce7f33",
+      "configuration_overrides": {}
+     }
+    },
+    "eval_dir": "3e741dac72c9e1bc_c_star",
+    "working_dir_ids": {
+     "run": "p515s44_s45_w5chk_k3b_3e741dac72c9e1bc_run",
+     "precheck": "p515s44_s45_w5chk_k3b_3e741dac72c9e1bc_precheck"
+    },
+    "effective_anderson_acceleration": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    }
+   },
+   "case_file_aa_reference_refusal": {
+    "raised": true,
+    "message": "invalid post_certification.reference data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file: [\"reference is not the D configuration: effective anderson_acceleration {'enabled': True, 'memory': 5, 'regularization': 1e-10, 'reject_policy': 'keep_memory'} (case-file declaration {'enabled': True, 'memory': 5, 'regularization': 1e-10, 'reject_policy': 'keep_memory'} + overrides {})\"]"
+   },
+   "post_certification_no_reference_summary": {
+    "status": "evaluated",
+    "evaluated": true,
+    "skip_reason": null,
+    "error": null,
+    "certified_cost": 650982939.9389359,
+    "gate_c_pass": null,
+    "persisted_models": {
+     "path": "FAKE",
+     "sha256": "FAKE",
+     "size_bytes": 0
+    },
+    "hull_bound_detail_path": "../../../../var/folders/hg/hctq266s7210qrp5fl0qkhyc0000gn/T/p515s45_w5_fixtures_u5hdfjdt/k3_post_certification_no_reference_eval/hull_bound_detail.json",
+    "requested": {
+     "persist_certified_models": true,
+     "hull_polish": true,
+     "reference": null
+    },
+    "gate_b": null,
+    "gate_c": null,
+    "gate_d": {
+     "blocks_solved": 48,
+     "n_blocks": 48,
+     "relative_pct": 0.00034672244777478865,
+     "threshold_pct": 0.1,
+     "settlement_excluded_change": 12266.55964076519,
+     "settlement_remainder_before": 39431.72301340103,
+     "settlement_remainder_after": 24908.08888912201,
+     "hull_bounds_non_degenerate_by_channel": {
+      "V": {
+       "total": 1728,
+       "degenerate": 0,
+       "non_degenerate": 1728,
+       "active_non_degenerate": 586
+      },
+      "PF_P": {
+       "total": 1728,
+       "degenerate": 0,
+       "non_degenerate": 1728,
+       "active_non_degenerate": 493
+      },
+      "PF_Q": {
+       "total": 1728,
+       "degenerate": 0,
+       "non_degenerate": 1728,
+       "active_non_degenerate": 215
+      },
+      "ESS_P": {
+       "total": 1728,
+       "degenerate": 0,
+       "non_degenerate": 1728,
+       "active_non_degenerate": 30
+      },
+      "ESS_Q": {
+       "total": 1728,
+       "degenerate": 0,
+       "non_degenerate": 1728,
+       "active_non_degenerate": 1414
+      }
+     },
+     "pass": true
+    }
+   },
+   "post_certification_no_reference_note": "gate (d) numbers come from the FAKE polish (C10 fixture: the committed S43 aa_run polish); only the control flow is under test"
+  },
+  "K4_error_records": {
+   "scenarios": {
+    "A_fail_first": {
+     "exit_code": 1,
+     "full_record": {
+      "schema": "p515_s44_evaluation_record_v2",
+      "campaign_id": "s45_w5chk_a",
+      "campaign_spec_path": "../../../../var/folders/hg/hctq266s7210qrp5fl0qkhyc0000gn/T/p515s45_w5_fixtures_u5hdfjdt/k4_a_fail_first/campaign_spec_s45_w5chk_a_5fefc890.json",
+      "campaign_spec_sha256": "5fefc8909011f81dbf02d25638af6daf3151bc616cedddaee47baf9f245b626c",
+      "candidate_label": "c_star",
+      "candidate_canonical": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.96875,
+         3.875
+        ],
+        "7": [
+         0.96875,
+         3.875
+        ],
+        "9": [
+         0.96875,
+         3.875
+        ]
+       }
+      },
+      "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+      "status": "error",
+      "barrier": true,
+      "barrier_cause": "RuntimeError: W5 check: injected failure at the first statement of the evaluation",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py\", line 1696, in main_child\n    outcome = _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, started,\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py\", line 1509, in _child_real\n    capture_checklist = assert_record_capture_paths()\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s45_harness_phasea_check.py\", line 481, in _raise_first\n    raise RuntimeError('W5 check: injected failure at the first statement of the evaluation')\nRuntimeError: W5 check: injected failure at the first statement of the evaluation\n",
+      "wall_time_s": {
+       "child_process_s": 0.001093149185180664
+      },
+      "anderson_acceleration_effective_in_child": null,
+      "case_file_sha256_in_child": null
+     },
+     "record": {
+      "status": "error",
+      "barrier_cause": "RuntimeError: W5 check: injected failure at the first statement of the evaluation",
+      "anderson_acceleration_effective_in_child": null,
+      "case_file_sha256_in_child": null
+     },
+     "keys_present": true,
+     "ok": true
+    },
+    "B_workdir_refusal": {
+     "exit_code": 1,
+     "full_record": {
+      "schema": "p515_s44_evaluation_record_v2",
+      "campaign_id": "s45_w5chk_b",
+      "campaign_spec_path": "../../../../var/folders/hg/hctq266s7210qrp5fl0qkhyc0000gn/T/p515s45_w5_fixtures_u5hdfjdt/k4_b_workdir_used/campaign_spec_s45_w5chk_b_e9b92cda.json",
+      "campaign_spec_sha256": "e9b92cdaea7939b791d2a9d2a46f060ed828a291a72463868d0ac26bf808fe55",
+      "candidate_label": "c_star",
+      "candidate_canonical": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.96875,
+         3.875
+        ],
+        "7": [
+         0.96875,
+         3.875
+        ],
+        "9": [
+         0.96875,
+         3.875
+        ]
+       }
+      },
+      "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+      "status": "error",
+      "barrier": true,
+      "barrier_cause": "RuntimeError: working dir id already used (never reusable): p515s44_s45_w5chk_b_3e741dac72c9e1bc_run",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py\", line 1696, in main_child\n    outcome = _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, started,\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py\", line 1532, in _child_real\n    raise RuntimeError(f'working dir id already used (never reusable): {eid}')\nRuntimeError: working dir id already used (never reusable): p515s44_s45_w5chk_b_3e741dac72c9e1bc_run\n",
+      "wall_time_s": {
+       "child_process_s": 0.007013082504272461
+      },
+      "anderson_acceleration_effective_in_child": null,
+      "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b"
+     },
+     "record": {
+      "status": "error",
+      "barrier_cause": "RuntimeError: working dir id already used (never reusable): p515s44_s45_w5chk_b_3e741dac72c9e1bc_run",
+      "anderson_acceleration_effective_in_child": null,
+      "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b"
+     },
+     "ok": true
+    },
+    "C_after_hook": {
+     "exit_code": 1,
+     "full_record": {
+      "schema": "p515_s44_evaluation_record_v2",
+      "campaign_id": "s45_w5chk_c",
+      "campaign_spec_path": "../../../../var/folders/hg/hctq266s7210qrp5fl0qkhyc0000gn/T/p515s45_w5_fixtures_u5hdfjdt/k4_c_after_hook/campaign_spec_s45_w5chk_c_ab942fcd.json",
+      "campaign_spec_sha256": "ab942fcd9103353257a6d8d0840bd60198e480b1a63b2b10cfd58ece82f24893",
+      "candidate_label": "c_star",
+      "candidate_canonical": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.96875,
+         3.875
+        ],
+        "7": [
+         0.96875,
+         3.875
+        ],
+        "9": [
+         0.96875,
+         3.875
+        ]
+       }
+      },
+      "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+      "status": "error",
+      "barrier": true,
+      "barrier_cause": "RuntimeError: W5 check: injected failure after the configuration hook, before any solve",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py\", line 1696, in main_child\n    outcome = _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, started,\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py\", line 1592, in _child_real\n    report, report_path = G.run_admm_arm(\n                          ^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s45_harness_phasea_check.py\", line 525, in fake_run_admm_arm\n    raise RuntimeError('W5 check: injected failure after the configuration hook, before any solve')\nRuntimeError: W5 check: injected failure after the configuration hook, before any solve\n",
+      "wall_time_s": {
+       "child_process_s": 11.929502964019775
+      },
+      "anderson_acceleration_effective_in_child": {
+       "enabled": true,
+       "memory": 5,
+       "regularization": 1e-10,
+       "reject_policy": "keep_memory"
+      },
+      "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b"
+     },
+     "record": {
+      "status": "error",
+      "barrier_cause": "RuntimeError: W5 check: injected failure after the configuration hook, before any solve",
+      "anderson_acceleration_effective_in_child": {
+       "enabled": true,
+       "memory": 5,
+       "regularization": 1e-10,
+       "reject_policy": "keep_memory"
+      },
+      "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b"
+     },
+     "hook_checks": {
+      "rho_v_matches_D": true,
+      "rho_pf_matches_D": true,
+      "rho_ess_matches_D": true,
+      "tau_is_0": true,
+      "gamma_policy_tied_to_rho": true,
+      "balancing_exempt_until_matches_D": true,
+      "balancing_exempt_channels_empty": true,
+      "freeze_after_unchanged_cycles_is_10": true,
+      "freeze_backstop_cycle_is_200": true,
+      "minimum_consecutive_converged_cycles_matches_spec": true,
+      "shared_ess_initialization_is_standalone": true,
+      "num_max_iters_is_spec_cap": true,
+      "anderson_acceleration_case_file_matches_declaration": true,
+      "anderson_acceleration_case_file_memory_regularization_frozen": true,
+      "persistent_workers_off": true,
+      "parallel_execution_off": true
+     },
+     "ok": true
+    },
+    "D_parent_synthesized": {
+     "record_new_keys": {
+      "anderson_acceleration_effective_in_child": null,
+      "case_file_sha256_in_child": null
+     },
+     "ok": true
+    }
+   },
+   "write_trace_child_pre_solve_path": {
+    "traced_scope": "main_child in-process, fixture C: assert_record_capture_paths, _build_floor_rows (precheck fresh_planning -> p56a_oracle.load_baseline), _construct_arm_planning, the configuration hook; NOT the ADMM loop (it solves)",
+    "baseline_loaded_in_this_process_before_C": false,
+    "n_write_events_total": 62,
+    "writes_outside_this_check_root_by_directory": {
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1": {
+      "n": 2,
+      "sample": [
+       "os.mkdir:Diagrams",
+       "os.mkdir:Results"
+      ]
+     },
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Diagrams": {
+      "n": 52,
+      "sample": [
+       "open_write:SRP1_market_prices_2025_Autumn.pdf",
+       "open_write:SRP1_market_prices_2025_Spring.pdf",
+       "open_write:SRP1_market_prices_2025_Summer.pdf",
+       "open_write:SRP1_market_prices_2025_Winter.pdf",
+       "open_write:case33_1_RES_generation_scenarios_2025_Autumn.pdf",
+       "open_write:case33_1_RES_generation_scenarios_2025_Spring.pdf",
+       "open_write:case33_1_RES_generation_scenarios_2025_Summer.pdf",
+       "open_write:case33_1_RES_generation_scenarios_2025_Winter.pdf",
+       "open_write:case33_1_flexibility_scenarios_2025_Autumn.pdf",
+       "open_write:case33_1_flexibility_scenarios_2025_Spring.pdf",
+       "open_write:case33_1_flexibility_scenarios_2025_Summer.pdf",
+       "open_write:case33_1_flexibility_scenarios_2025_Winter.pdf",
+       "open_write:case33_1_load_scenarios_2025_Autumn.pdf",
+       "open_write:case33_1_load_scenarios_2025_Spring.pdf",
+       "open_write:case33_1_load_scenarios_2025_Summer.pdf",
+       "open_write:case33_1_load_scenarios_2025_Winter.pdf",
+       "open_write:case33_2_RES_generation_scenarios_2025_Autumn.pdf",
+       "open_write:case33_2_RES_generation_scenarios_2025_Spring.pdf",
+       "open_write:case33_2_RES_generation_scenarios_2025_Summer.pdf",
+       "open_write:case33_2_RES_generation_scenarios_2025_Winter.pdf",
+       "open_write:case33_2_flexibility_scenarios_2025_Autumn.pdf",
+       "open_write:case33_2_flexibility_scenarios_2025_Spring.pdf",
+       "open_write:case33_2_flexibility_scenarios_2025_Summer.pdf",
+       "open_write:case33_2_flexibility_scenarios_2025_Winter.pdf",
+       "open_write:case33_2_load_scenarios_2025_Autumn.pdf",
+       "open_write:case33_2_load_scenarios_2025_Spring.pdf",
+       "open_write:case33_2_load_scenarios_2025_Summer.pdf",
+       "open_write:case33_2_load_scenarios_2025_Winter.pdf",
+       "open_write:case33_3_RES_generation_scenarios_2025_Autumn.pdf",
+       "open_write:case33_3_RES_generation_scenarios_2025_Spring.pdf",
+       "open_write:case33_3_RES_generation_scenarios_2025_Summer.pdf",
+       "open_write:case33_3_RES_generation_scenarios_2025_Winter.pdf",
+       "open_write:case33_3_flexibility_scenarios_2025_Autumn.pdf",
+       "open_write:case33_3_flexibility_scenarios_2025_Spring.pdf",
+       "open_write:case33_3_flexibility_scenarios_2025_Summer.pdf",
+       "open_write:case33_3_flexibility_scenarios_2025_Winter.pdf",
+       "open_write:case33_3_load_scenarios_2025_Autumn.pdf",
+       "open_write:case33_3_load_scenarios_2025_Spring.pdf",
+       "open_write:case33_3_load_scenarios_2025_Summer.pdf",
+       "open_write:case33_3_load_scenarios_2025_Winter.pdf",
+       "open_write:case9_RES_generation_scenarios_2025_Autumn.pdf",
+       "open_write:case9_RES_generation_scenarios_2025_Spring.pdf",
+       "open_write:case9_RES_generation_scenarios_2025_Summer.pdf",
+       "open_write:case9_RES_generation_scenarios_2025_Winter.pdf",
+       "open_write:case9_flexibility_scenarios_2025_Autumn.pdf",
+       "open_write:case9_flexibility_scenarios_2025_Spring.pdf",
+       "open_write:case9_flexibility_scenarios_2025_Summer.pdf",
+       "open_write:case9_flexibility_scenarios_2025_Winter.pdf",
+       "open_write:case9_load_scenarios_2025_Autumn.pdf",
+       "open_write:case9_load_scenarios_2025_Spring.pdf",
+       "open_write:case9_load_scenarios_2025_Summer.pdf",
+       "open_write:case9_load_scenarios_2025_Winter.pdf"
+      ]
+     },
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results": {
+      "n": 1,
+      "sample": [
+       "os.mkdir:Logs"
+      ]
+     },
+     "/var/folders/hg/hctq266s7210qrp5fl0qkhyc0000gn/T/p515s45_w5_fixtures_u5hdfjdt/k4_c_after_hook": {
+      "n": 1,
+      "sample": [
+       "os.mkdir:fixture_work_dir"
+      ]
+     },
+     "/var/folders/hg/hctq266s7210qrp5fl0qkhyc0000gn/T/p515s45_w5_fixtures_u5hdfjdt/k4_c_after_hook/evals/3e741dac72c9e1bc_c_star": {
+      "n": 2,
+      "sample": [
+       "open_write:evaluation_record.json",
+       "os.mkdir:results"
+      ]
+     },
+     "/var/folders/hg/hctq266s7210qrp5fl0qkhyc0000gn/T/p515s45_w5_fixtures_u5hdfjdt/k4_c_after_hook/fixture_work_dir": {
+      "n": 2,
+      "sample": [
+       "os.mkdir:p515s44_s45_w5chk_c_3e741dac72c9e1bc_precheck",
+       "os.mkdir:p515s44_s45_w5chk_c_3e741dac72c9e1bc_run"
+      ]
+     },
+     "/var/folders/hg/hctq266s7210qrp5fl0qkhyc0000gn/T/p515s45_w5_fixtures_u5hdfjdt/k4_c_after_hook/fixture_work_dir/p515s44_s45_w5chk_c_3e741dac72c9e1bc_precheck": {
+      "n": 1,
+      "sample": [
+       "os.mkdir:logs"
+      ]
+     },
+     "/var/folders/hg/hctq266s7210qrp5fl0qkhyc0000gn/T/p515s45_w5_fixtures_u5hdfjdt/k4_c_after_hook/fixture_work_dir/p515s44_s45_w5chk_c_3e741dac72c9e1bc_run": {
+      "n": 1,
+      "sample": [
+       "os.mkdir:logs"
+      ]
+     }
+    },
+    "data_SRP1_Diagrams": {
+     "n_files": 52,
+     "n_files_rewritten_content_changed": 52,
+     "tracked_in_git": false
+    }
+   }
+  }
+ },
+ "solve_profile_guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "all_checks_pass": true,
+ "ended_utc": "2026-09-19T18:35:13.733633+00:00"
+}

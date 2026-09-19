@@ -103,6 +103,13 @@ the configuration hook then checks the loaded dict equals it instead of requirin
 case-file AA off, `eval_key` becomes sha256{candidate_key, effective AA dict,
 overrides} (never the bare candidate key), and each entry records its effective AA
 dict. Specs without the declaration keep their exact meaning and keys.
+Addendum 27 (W5, pre-A1 fixes): the record's `bar` is the max GROSS cost step
+over the last 10 cycles (`_max_step_last_n`; the net-recourse step production
+records as `objective_change_abs` is kept as `bar_net_recourse_step_reported`);
+a post-certification reference is D iff its EFFECTIVE AA is off (declaration +
+overrides; undeclared records: no overrides); error / parent-synthesized
+records carry `anderson_acceleration_effective_in_child` and
+`case_file_sha256_in_child` (None when unknowable).
 AFTER the run, in the child, inside `run_admm_arm`'s post_run_hook (same live
 models/state), `run_post_certification` does, only if the trajectory is
 certified under the spec's bar (else it records `status: skipped` + reason):
@@ -385,8 +392,12 @@ def resolve_post_certification(request, candidate_key_hex):
     """Validate a per-evaluation post-certification request and resolve its
     reference evaluation (hash-recorded) at spec-freeze time. Returns None if
     nothing is requested. The reference must be a CERTIFIED evaluation of the
-    SAME candidate under the case-file configuration (no overrides), i.e. the D
-    evaluation of that candidate."""
+    SAME candidate under the D configuration: for a reference record without a
+    `case_file_anderson_acceleration` declaration, the case-file configuration
+    with no overrides (unchanged); for a declared one (Addendum 27), an
+    effective AA dict (declaration + overrides) with AA off -- so a case-file-AA
+    evaluation never passes as a D reference. `reference` is optional: the
+    persist / hull-polish items run without one (gates (b)/(c) are then None)."""
     if not request:
         return None
     if not isinstance(request, dict):
@@ -417,14 +428,26 @@ def resolve_post_certification(request, candidate_key_hex):
         ref_overrides = (ref_rec.get('evaluation_overrides_effective')
                          if 'evaluation_overrides_effective' in ref_rec
                          else (ref_rec.get('configuration') or {}).get('overrides'))
+        # Addendum 27 (W5): D-ness is read from the reference's EFFECTIVE AA configuration. A reference
+        # whose spec declared `case_file_anderson_acceleration` ran with (declaration + overrides); it is D
+        # only if that effective AA is off. Records without the declaration keep the pre-Addendum-27
+        # reading exactly (no overrides <=> D), since their case file had to carry AA off.
+        ref_case_file_aa = (ref_rec.get('configuration') or {}).get('case_file_anderson_acceleration')
+        ref_effective_aa = (effective_anderson_acceleration(ref_case_file_aa, ref_overrides)
+                            if ref_case_file_aa is not None else None)
         problems = []
         if ref_rec.get('status') != 'certified' or ref_rec.get('certified_cost') is None:
             problems.append(f"reference not certified (status={ref_rec.get('status')})")
         if ref_rec.get('candidate_key') != candidate_key_hex:
             problems.append(f"reference candidate_key {str(ref_rec.get('candidate_key'))[:16]} != "
                             f'{candidate_key_hex[:16]} (must be the SAME candidate)')
-        if ref_overrides:
-            problems.append(f'reference is not the case-file (D) configuration: overrides={ref_overrides}')
+        if ref_case_file_aa is None:
+            if ref_overrides:
+                problems.append(f'reference is not the case-file (D) configuration: overrides={ref_overrides}')
+        elif ref_effective_aa.get('enabled'):
+            problems.append(f'reference is not the D configuration: effective anderson_acceleration '
+                            f'{ref_effective_aa} (case-file declaration {ref_case_file_aa} + overrides '
+                            f'{ref_overrides or {}})')
         ref_gross = (ref_cl.get('recourse_components') or {}).get('gross_operational_cost')
         if ref_gross != ref_rec.get('certified_cost'):
             problems.append(f"reference component_levels gross {ref_gross} != record certified_cost "
@@ -441,6 +464,9 @@ def resolve_post_certification(request, candidate_key_hex):
             'campaign_spec_sha256': ref_rec.get('campaign_spec_sha256'),
             'configuration_overrides': ref_overrides or {},
         }
+        if ref_case_file_aa is not None:  # only when the reference declared it, so old resolutions are unchanged
+            resolved_ref['case_file_anderson_acceleration'] = ref_case_file_aa
+            resolved_ref['effective_anderson_acceleration'] = ref_effective_aa
     if not (persist or polish or resolved_ref):
         return None
     return {'persist_certified_models': persist, 'hull_polish': polish, 'reference': resolved_ref}
@@ -782,6 +808,9 @@ def _barrier_record_for_missing(ctx, entry, eval_dir, exit_code):
         'stderr_tail': _tail(os.path.join(eval_dir, 'child_stderr.log')),
         'stdout_tail': _tail(os.path.join(eval_dir, 'child_stdout.log')),
         'synthesized_by_parent': True,
+        # Addendum 27 (W5): same schema as a child record; the parent cannot know the child's values.
+        'anderson_acceleration_effective_in_child': None,
+        'case_file_sha256_in_child': None,
     }
 
 
@@ -925,10 +954,50 @@ def evaluate(batch, ctx):
 #  the STEP4 2.5 record (pure function of an evaluation's own artifacts)
 # ==============================================================================
 def _max_step_last_n(rows, n=BAR_WINDOW):
+    """The bar (STEP4 2.5): max over the last `n` cycles of the GROSS cost step
+    |gross_operational_cost[k] - gross_operational_cost[k-1]| (P5.15 Addendum 27,
+    P5_15_S45_REVERIFY_RULING.md consequence 2). The step at cycle k uses the row of
+    cycle k-1 looked up in the FULL trajectory `rows` (not only the window), so the
+    first window row's step is exact whenever cycle k-1 exists; it is None (not
+    available) when cycle k-1 is absent (cycle 1: no predecessor) or either gross
+    value is None (a failed cycle) -- the same availability rule production applies
+    to `objective_change_abs` (`previous_recourse = recourse` every cycle,
+    shared_resources_planning.py:3192)."""
+    tail = rows[-n:] if len(rows) >= n else rows
+    gross_by_cycle = {r.get('cycle'): r.get('gross_operational_cost') for r in rows}
+    cycles = [r.get('cycle') for r in rows]
+    window = []
+    for r in tail:
+        c, g = r.get('cycle'), r.get('gross_operational_cost')
+        prev_c = (c - 1) if isinstance(c, int) and (c - 1) in gross_by_cycle else None
+        g_prev = gross_by_cycle.get(prev_c) if prev_c is not None else None
+        step = abs(g - g_prev) if (g is not None and g_prev is not None) else None
+        window.append({'cycle': c, 'gross_operational_cost': g, 'predecessor_cycle': prev_c,
+                       'predecessor_gross_operational_cost': g_prev, 'gross_step_abs': step})
+    vals = [w['gross_step_abs'] for w in window if w['gross_step_abs'] is not None]
+    return {'definition': (f'max over the last {n} cycles of |gross_operational_cost[k] - '
+                           f'gross_operational_cost[k-1]| (settlement-excluded gross cost; the predecessor of the '
+                           f'first window row is taken from the full trajectory; a step is unavailable when cycle '
+                           f'k-1 is absent or either gross value is None)'),
+            'value': max(vals) if vals else None, 'n_cycles_in_window': len(tail),
+            'n_steps_available': len(vals),
+            'trajectory_cycles_contiguous_from_1': cycles == list(range(1, len(rows) + 1)),
+            'window': window}
+
+
+def _max_net_recourse_step_last_n(rows, n=BAR_WINDOW):
+    """REPORTED, not the bar: max `objective_change_abs` over the last `n` cycles.
+    Production computes `objective_change_abs` on the NET recourse
+    (shared_resources_planning.py:2849, `abs(recourse - previous_recourse)` with
+    `recourse = net_operational_recourse`, :2814), i.e. gross minus the terminal
+    salvage credit. Until Addendum 27 this was the record's `bar` (mislabelled
+    "|gross cost step|"); kept as `bar_net_recourse_step_reported`."""
     tail = rows[-n:] if len(rows) >= n else rows
     steps = [(r.get('cycle'), r.get('objective_change_abs')) for r in tail]
     vals = [s for _c, s in steps if s is not None]
-    return {'definition': f'max objective_change_abs (|gross cost step|) over the last {n} cycles',
+    return {'definition': (f'max objective_change_abs over the last {n} cycles (production: |net_operational_recourse'
+                           f'[k] - net_operational_recourse[k-1]|, shared_resources_planning.py:2849/2814; NET of the '
+                           f'terminal salvage credit; reported, not the bar)'),
             'value': max(vals) if vals else None, 'n_cycles_in_window': len(tail),
             'n_steps_available': len(vals), 'window': [{'cycle': c, 'objective_change_abs': s} for c, s in steps]}
 
@@ -1020,6 +1089,7 @@ def build_evaluation_record(*, spec, spec_path, spec_sha256, entry, report, comp
         'terminal_gross_operational_cost': report.get('gross_operational_cost'),
         'terminal_net_operational_recourse': rc.get('net_operational_recourse'),
         'bar': bar,
+        'bar_net_recourse_step_reported': _max_net_recourse_step_last_n(rows),
         'certification': cert,
         'certification_cycle': cert.get('certification_cycle'),
         'cycles_run': len(rows),
@@ -1424,11 +1494,18 @@ def post_certification_summary(pc):
     return s
 
 
-def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, started):
+def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, started, progress=None):
+    """`progress` (Addendum 27, W5): a dict the caller (`main_child`) owns; filled with
+    `case_file_sha256_in_child` and the configuration-hook `holder` as soon as each is
+    known, so the exception-path record carries them (None when not reached)."""
     import pyomo.environ as pe  # noqa: F401
     import p515_g_g1_g4_admm_gates as G
     from p515_s40_polish_gap import _build_floor_rows
 
+    if progress is None:
+        progress = {}
+    holder = {}
+    progress['holder'] = holder
     capture_checklist = assert_record_capture_paths()
     eff_overrides = validate_overrides(entry['overrides'] if 'overrides' in entry
                                        else (spec['configuration'].get('overrides') or {}))
@@ -1441,6 +1518,7 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     else:
         aa_on = bool(effective_anderson_acceleration(case_file_aa, eff_overrides).get('enabled'))
     case_file_sha256_in_child = sha256_file(CASE_FILE)
+    progress['case_file_sha256_in_child'] = case_file_sha256_in_child
     post_request = entry.get('post_certification')
     post_checklist = None
     if post_request:
@@ -1470,8 +1548,6 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             POST_CERTIFICATION_FILE, HULL_BOUND_DETAIL_FILE, AA_SIDECAR_FILE, 'certified_models.pkl')]:
         if os.path.exists(p):
             raise RuntimeError(f'refusing to overwrite existing artifact: {p}')
-
-    holder = {}
 
     def post_run_hook(planning, sed, models, rows, report, out_dir, label, state=None):
         report['s34_recourse_jump_sidecar_path'] = os.path.relpath(paths['recourse_jump'], REPO)
@@ -1612,11 +1688,13 @@ def main_child(argv):
         raise SystemExit(f'CHILD REFUSES: eval dir missing or already holds a record: {eval_dir}')
     print(f"[S44-CHILD] pid={os.getpid()} ppid={os.getppid()} label={entry['label']} key={entry['key'][:16]} "
           f"caps={env_caps} PYTHONHASHSEED={os.environ.get('PYTHONHASHSEED')}", flush=True)
+    progress = {}
     try:
         if args.stub_mode is not None:
             _child_stub(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, started)
         else:
-            outcome = _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, started)
+            outcome = _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, started,
+                                  progress=progress)
             if outcome and outcome.get('post_certification_error'):
                 print('[S44-CHILD] post-certification step FAILED (recorded in post_certification.json); '
                       'exiting 2', file=sys.stderr, flush=True)
@@ -1635,6 +1713,10 @@ def main_child(argv):
                 'candidate_key': entry['key'], 'status': 'error', 'barrier': True,
                 'barrier_cause': f'{type(error).__name__}: {error}', 'traceback': tb,
                 'wall_time_s': {'child_process_s': time.time() - started},
+                # Addendum 27 (W5): same schema as a success record; None when the failure came first.
+                'anderson_acceleration_effective_in_child': (
+                    (progress.get('holder') or {}).get('anderson_acceleration_effective')),
+                'case_file_sha256_in_child': progress.get('case_file_sha256_in_child'),
             })
         sys.exit(1)
 

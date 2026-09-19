@@ -1,0 +1,44 @@
+18:35:00 [W5-CHECK] K1_bar ...
+18:35:01 [W5-CHECK] K1_bar: {'records_tracked_found': True, 'real_records_with_per_cycle_record_11': True, 'every_new_bar_within_1e-6_of_recorded': True, 'every_reported_net_bar_reproduces_recorded_exactly': True, 'every_record_2025': True, 'every_record_rebuilt_unchanged_except_bar': True}
+18:35:01 [W5-CHECK] K2_keys_and_references ...
+18:35:01 [W5-CHECK] K2_keys_and_references: {'committed_specs_found_23': True, 'every_key_eval_key_dir_id_unchanged': True, 'every_recorded_post_certification_resolution_reproduced': True}
+18:35:01 [W5-CHECK] K3_reference_d_ness ...
+18:35:01 [W5-CHECK] K3_reference_d_ness: {'reference_matrix_all_as_expected': True, 'head_harness_accepted_case_file_aa_reference_new_refuses': True, 'polish_without_reference_freezes_in_case_file_aa_spec': True, 'd_reference_freezes_in_case_file_aa_spec': True, 'case_file_aa_reference_refused_at_freeze': True, 'post_certification_without_reference_evaluated': True, 'gates_b_c_none_without_reference': True, 'gate_d_present_persist_before_polish': True}
+18:35:01 [W5-CHECK] K4_error_records ...
+[S44-CHILD] pid=24632 ppid=24629 label=c_star key=578636daa6d6360d caps={'OMP_NUM_THREADS': '1', 'MKL_NUM_THREADS': '1', 'OPENBLAS_NUM_THREADS': '1', 'VECLIB_MAXIMUM_THREADS': '1', 'NUMEXPR_NUM_THREADS': '1'} PYTHONHASHSEED=None
+Traceback (most recent call last):
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py", line 1696, in main_child
+    outcome = _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, started,
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py", line 1509, in _child_real
+    capture_checklist = assert_record_capture_paths()
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s45_harness_phasea_check.py", line 481, in _raise_first
+    raise RuntimeError('W5 check: injected failure at the first statement of the evaluation')
+RuntimeError: W5 check: injected failure at the first statement of the evaluation
+
+[S44-CHILD] pid=24632 ppid=24629 label=c_star key=578636daa6d6360d caps={'OMP_NUM_THREADS': '1', 'MKL_NUM_THREADS': '1', 'OPENBLAS_NUM_THREADS': '1', 'VECLIB_MAXIMUM_THREADS': '1', 'NUMEXPR_NUM_THREADS': '1'} PYTHONHASHSEED=None
+Traceback (most recent call last):
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py", line 1696, in main_child
+    outcome = _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, started,
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py", line 1532, in _child_real
+    raise RuntimeError(f'working dir id already used (never reusable): {eid}')
+RuntimeError: working dir id already used (never reusable): p515s44_s45_w5chk_b_3e741dac72c9e1bc_run
+
+[S44-CHILD] pid=24632 ppid=24629 label=c_star key=578636daa6d6360d caps={'OMP_NUM_THREADS': '1', 'MKL_NUM_THREADS': '1', 'OPENBLAS_NUM_THREADS': '1', 'VECLIB_MAXIMUM_THREADS': '1', 'NUMEXPR_NUM_THREADS': '1'} PYTHONHASHSEED=None
+Traceback (most recent call last):
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py", line 1696, in main_child
+    outcome = _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, started,
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py", line 1592, in _child_real
+    report, report_path = G.run_admm_arm(
+                          ^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s45_harness_phasea_check.py", line 525, in fake_run_admm_arm
+    raise RuntimeError('W5 check: injected failure after the configuration hook, before any solve')
+RuntimeError: W5 check: injected failure after the configuration hook, before any solve
+
+18:35:13 [W5-CHECK] K4_error_records: {'A_fail_first_ok': True, 'B_workdir_refusal_ok': True, 'C_after_hook_ok': True, 'D_parent_synthesized_ok': True}
+18:35:13 [W5-CHECK] bar max |new - recorded| = 0.0 EUR over 11 records; not within 1e-6: []
+18:35:13 [W5-CHECK] guard {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0} verify0_failures=[]
+18:35:13 [W5-CHECK] ALL PASS
