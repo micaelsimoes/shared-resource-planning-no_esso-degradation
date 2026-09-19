@@ -1,0 +1,265 @@
+{
+ "stage": "P5.15 Addendum 25 item 1 (Task 1) -- alias tie-break fix determinism check",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 25",
+  "data/SRP1/Results/P515S44/frozen_s44_selection_spec_v14_e4500e27.json",
+  "WORKER_REPORT_S43_AA_PREP.md (Unexpected Finding 1)"
+ ],
+ "timestamp_utc": "2026-09-19T07:40:41.512362+00:00",
+ "fix": "p515_g_g1_g4_admm_gates.py s34_capture_hooks: obj_deltas.sort(key=lambda e: (-e['abs_delta'], e['block_key'], e['component']))",
+ "hash_seeds_tested": [
+  "0",
+  "1",
+  "2",
+  "42",
+  "100",
+  "999",
+  "12345",
+  "777",
+  "55"
+ ],
+ "per_seed_results": [
+  {
+   "PYTHONHASHSEED": "0",
+   "full_order": [
+    "economic_market_cost",
+    "generation_cost",
+    "other_x"
+   ],
+   "tied_pair_order": [
+    "economic_market_cost",
+    "generation_cost"
+   ],
+   "abs_deltas": [
+    [
+     "economic_market_cost",
+     40.0
+    ],
+    [
+     "generation_cost",
+     40.0
+    ],
+    [
+     "other_x",
+     0.5
+    ]
+   ]
+  },
+  {
+   "PYTHONHASHSEED": "1",
+   "full_order": [
+    "economic_market_cost",
+    "generation_cost",
+    "other_x"
+   ],
+   "tied_pair_order": [
+    "economic_market_cost",
+    "generation_cost"
+   ],
+   "abs_deltas": [
+    [
+     "economic_market_cost",
+     40.0
+    ],
+    [
+     "generation_cost",
+     40.0
+    ],
+    [
+     "other_x",
+     0.5
+    ]
+   ]
+  },
+  {
+   "PYTHONHASHSEED": "2",
+   "full_order": [
+    "economic_market_cost",
+    "generation_cost",
+    "other_x"
+   ],
+   "tied_pair_order": [
+    "economic_market_cost",
+    "generation_cost"
+   ],
+   "abs_deltas": [
+    [
+     "economic_market_cost",
+     40.0
+    ],
+    [
+     "generation_cost",
+     40.0
+    ],
+    [
+     "other_x",
+     0.5
+    ]
+   ]
+  },
+  {
+   "PYTHONHASHSEED": "42",
+   "full_order": [
+    "economic_market_cost",
+    "generation_cost",
+    "other_x"
+   ],
+   "tied_pair_order": [
+    "economic_market_cost",
+    "generation_cost"
+   ],
+   "abs_deltas": [
+    [
+     "economic_market_cost",
+     40.0
+    ],
+    [
+     "generation_cost",
+     40.0
+    ],
+    [
+     "other_x",
+     0.5
+    ]
+   ]
+  },
+  {
+   "PYTHONHASHSEED": "100",
+   "full_order": [
+    "economic_market_cost",
+    "generation_cost",
+    "other_x"
+   ],
+   "tied_pair_order": [
+    "economic_market_cost",
+    "generation_cost"
+   ],
+   "abs_deltas": [
+    [
+     "economic_market_cost",
+     40.0
+    ],
+    [
+     "generation_cost",
+     40.0
+    ],
+    [
+     "other_x",
+     0.5
+    ]
+   ]
+  },
+  {
+   "PYTHONHASHSEED": "999",
+   "full_order": [
+    "economic_market_cost",
+    "generation_cost",
+    "other_x"
+   ],
+   "tied_pair_order": [
+    "economic_market_cost",
+    "generation_cost"
+   ],
+   "abs_deltas": [
+    [
+     "economic_market_cost",
+     40.0
+    ],
+    [
+     "generation_cost",
+     40.0
+    ],
+    [
+     "other_x",
+     0.5
+    ]
+   ]
+  },
+  {
+   "PYTHONHASHSEED": "12345",
+   "full_order": [
+    "economic_market_cost",
+    "generation_cost",
+    "other_x"
+   ],
+   "tied_pair_order": [
+    "economic_market_cost",
+    "generation_cost"
+   ],
+   "abs_deltas": [
+    [
+     "economic_market_cost",
+     40.0
+    ],
+    [
+     "generation_cost",
+     40.0
+    ],
+    [
+     "other_x",
+     0.5
+    ]
+   ]
+  },
+  {
+   "PYTHONHASHSEED": "777",
+   "full_order": [
+    "economic_market_cost",
+    "generation_cost",
+    "other_x"
+   ],
+   "tied_pair_order": [
+    "economic_market_cost",
+    "generation_cost"
+   ],
+   "abs_deltas": [
+    [
+     "economic_market_cost",
+     40.0
+    ],
+    [
+     "generation_cost",
+     40.0
+    ],
+    [
+     "other_x",
+     0.5
+    ]
+   ]
+  },
+  {
+   "PYTHONHASHSEED": "55",
+   "full_order": [
+    "economic_market_cost",
+    "generation_cost",
+    "other_x"
+   ],
+   "tied_pair_order": [
+    "economic_market_cost",
+    "generation_cost"
+   ],
+   "abs_deltas": [
+    [
+     "economic_market_cost",
+     40.0
+    ],
+    [
+     "generation_cost",
+     40.0
+    ],
+    [
+     "other_x",
+     0.5
+    ]
+   ]
+  }
+ ],
+ "distinct_tied_pair_orders_observed": [
+  [
+   "economic_market_cost",
+   "generation_cost"
+  ]
+ ],
+ "deterministic_across_seeds": true,
+ "order_matches_alphabetical_component_name": true
+}

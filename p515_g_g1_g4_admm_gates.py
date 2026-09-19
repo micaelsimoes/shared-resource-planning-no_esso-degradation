@@ -2845,7 +2845,19 @@ def s34_capture_hooks(recourse_jump_path, ess_stride_path, stride=1):
                     obj_deltas.append({'block_key': str(block_key), 'component': component_name,
                                         'previous': prev_v, 'current': cur_v,
                                         'delta': cur_v - prev_v, 'abs_delta': abs(cur_v - prev_v)})
-                obj_deltas.sort(key=lambda e: e['abs_delta'], reverse=True)
+                # P5.15 Addendum 25 item 1 (alias tie-break fix): two entries
+                # ('economic_market_cost', 'generation_cost') are always-
+                # numerically-identical aliases of the same block objective
+                # component (shared_resources_planning.py:5158), so their
+                # abs_delta ties EXACTLY. Sorting by abs_delta alone left the
+                # tie broken by `set(flat_current) | set(flat_previous)`
+                # iteration order, which depends on Python's per-process
+                # string-hash randomization (PYTHONHASHSEED) -- non-
+                # deterministic across processes (WORKER_REPORT_S43_AA_PREP.md
+                # Unexpected Finding 1). A total order by name (block_key,
+                # component) as the tie-break makes the result independent of
+                # hash seed and of set iteration order.
+                obj_deltas.sort(key=lambda e: (-e['abs_delta'], e['block_key'], e['component']))
                 entry['objective_component_block_deltas'] = obj_deltas[:10]
             state['previous_objective_component_blocks'] = current_obj_blocks
 
