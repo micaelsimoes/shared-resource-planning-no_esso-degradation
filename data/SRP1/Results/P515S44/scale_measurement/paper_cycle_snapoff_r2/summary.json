@@ -1,0 +1,573 @@
+{
+ "schema": "p515_s44_scale_measurement_v1",
+ "label": "paper_cycle_snapoff_r2",
+ "instance": "paper",
+ "launch": "launch.json",
+ "build_child": {
+  "mode": "build",
+  "command": [
+   "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+   "-u",
+   "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_scale_measurement.py",
+   "--child",
+   "build",
+   "--label",
+   "paper_cycle_snapoff_r2"
+  ],
+  "exit_code": 0,
+  "raw_returncode": 0,
+  "wall_s": 297.0580132007599,
+  "parent_observed_peak": {
+   "measure": 19624114840,
+   "rss_tree": 16844816384,
+   "gating_measure": "rss_tree",
+   "gating_value": 16844816384
+  },
+  "parent_backstop_gating_measure": "rss_tree",
+  "parent_backstop_bytes": 31138512896,
+  "wait4_rusage": {
+   "ru_utime": 280.270259,
+   "ru_stime": 14.487388,
+   "ru_maxrss": 16970268672,
+   "ru_minflt": 6303950,
+   "ru_majflt": 3026,
+   "ru_nvcsw": 4128,
+   "ru_nivcsw": 25001
+  },
+  "thread_caps_in_child_env": {
+   "OMP_NUM_THREADS": "1",
+   "MKL_NUM_THREADS": "1",
+   "OPENBLAS_NUM_THREADS": "1",
+   "VECLIB_MAXIMUM_THREADS": "1",
+   "NUMEXPR_NUM_THREADS": "1"
+  }
+ },
+ "build_status": "complete",
+ "build": {
+  "d_configuration_checks": {
+   "configuration_checks": {
+    "rho_v_matches_D": true,
+    "rho_pf_matches_D": true,
+    "rho_ess_matches_D": true,
+    "tau_is_0": true,
+    "gamma_policy_tied_to_rho": true,
+    "balancing_exempt_until_matches_D": true,
+    "balancing_exempt_channels_empty": true,
+    "freeze_after_unchanged_cycles_is_10": true,
+    "freeze_backstop_cycle_is_200": true,
+    "minimum_consecutive_converged_cycles_matches_spec": true,
+    "shared_ess_initialization_is_standalone": true,
+    "num_max_iters_is_spec_cap": true,
+    "anderson_acceleration_case_file_matches_declaration": true,
+    "anderson_acceleration_case_file_memory_regularization_frozen": true,
+    "persistent_workers_off": true,
+    "parallel_execution_off": true
+   },
+   "case_file_anderson_acceleration_declared": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "anderson_acceleration_effective": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "overrides_applied": {},
+   "declaration_note": "spec_like declares configuration.case_file_anderson_acceleration; the harness hook checks the loaded AA equals it exactly and raises otherwise (p515_s44_campaign_harness._config_hook_factory)"
+  },
+  "snapshot_setting": {
+   "requested": "off",
+   "tso_mode_before": "lightweight",
+   "dso_mode_before": "lightweight",
+   "tso_mode_after": "off",
+   "dso_mode_after": "off",
+   "expected": [
+    "off",
+    "off"
+   ],
+   "took_effect": true,
+   "persistent_workers_enabled": false
+  },
+  "block_counts": {
+   "tso_blocks": 20,
+   "dso_blocks": 60,
+   "dso_blocks_per_node": {
+    "5": 20,
+    "7": 20,
+    "9": 20
+   },
+   "esso_models": 3,
+   "network_build_model_calls": 80,
+   "pristine_clone_blocks": {},
+   "network_blocks": 80
+  },
+  "counts_by_agent": {
+   "TSO": {
+    "models": 20,
+    "len_counts": {
+     "var": 1780200,
+     "constraint": 1507170,
+     "expression": 759740,
+     "param": 65220,
+     "objective": 60,
+     "suffix": 0
+    },
+    "deep": {
+     "var_data": 1780200,
+     "var_fixed": 294000,
+     "var_free": 1486200,
+     "constraint_data": 1507170,
+     "constraint_active": 1507170,
+     "constraint_active_equality": 728700,
+     "constraint_active_inequality": 778470,
+     "objective_active": 20
+    }
+   },
+   "DSO": {
+    "models": 60,
+    "len_counts": {
+     "var": 16150200,
+     "constraint": 11480685,
+     "expression": 6239220,
+     "param": 2391240,
+     "objective": 180,
+     "suffix": 0
+    },
+    "deep": {
+     "var_data": 16150200,
+     "var_fixed": 96000,
+     "var_free": 16054200,
+     "constraint_data": 11480685,
+     "constraint_active": 11480685,
+     "constraint_active_equality": 6284700,
+     "constraint_active_inequality": 5195985,
+     "objective_active": 60
+    }
+   },
+   "ESSO": {
+    "models": 3,
+    "len_counts": {
+     "var": 20715,
+     "constraint": 24960,
+     "expression": 9,
+     "param": 5871,
+     "objective": 6,
+     "suffix": 0
+    },
+    "deep": {
+     "var_data": 20715,
+     "var_fixed": 11760,
+     "var_free": 8955,
+     "constraint_data": 24960,
+     "constraint_active": 6090,
+     "constraint_active_equality": 1755,
+     "constraint_active_inequality": 4335,
+     "objective_active": 3
+    }
+   },
+   "ALL": {
+    "models": 83,
+    "len_counts": {
+     "var": 17951115,
+     "constraint": 13012815,
+     "expression": 6998969,
+     "param": 2462331,
+     "objective": 246,
+     "suffix": 0
+    },
+    "deep": {
+     "var_data": 17951115,
+     "var_fixed": 401760,
+     "var_free": 17549355,
+     "constraint_data": 13012815,
+     "constraint_active": 12993945,
+     "constraint_active_equality": 7015155,
+     "constraint_active_inequality": 5978790,
+     "objective_active": 83
+    }
+   }
+  },
+  "memory_at_build_complete": {
+   "t": 234.377,
+   "stage": "child start",
+   "rss_self": 15251849216,
+   "rss_children": 0,
+   "n_children": 0,
+   "rss_tree": 15251849216,
+   "footprint_self": 19624098456,
+   "measure": 19624098456,
+   "sys_available": 12939247616,
+   "sys_used_pct": 62.3,
+   "swap_used": 262144,
+   "gating_measure": "rss_tree",
+   "gating_value": 15251849216
+  },
+  "watchdog_peak": {
+   "measure": 19624098456,
+   "rss_tree": 16684695552,
+   "rss_self": 16684695552,
+   "footprint_self": 19624098456,
+   "stage_at_peak_measure": "model counting (len per component type, all models; deep iteration, all models)",
+   "t_at_peak_measure": 234.86,
+   "gating_measure": "rss_tree",
+   "gating_value": 16684695552,
+   "stage_at_peak_gating_value": "create_distribution_networks_models (sequential; optimize intercepted) :: build_model DSO case33_3 2037 Summer",
+   "t_at_peak_gating_value": 208.233,
+   "swap_used": 262144,
+   "stage_at_peak_swap_used": "child start"
+  },
+  "ru_maxrss_self_final": 16694280192,
+  "guard": {
+   "permitted": [],
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "declared_solves": 0,
+   "verify_failures": []
+  },
+  "interceptor_check": {
+   "declared": {
+    "dso": 3,
+    "tso": 1,
+    "esso_init": 1
+   },
+   "observed": {
+    "dso": 3,
+    "tso": 1,
+    "esso_init": 1
+   },
+   "exact_match": true
+  },
+  "scenario_checksum": "1e8bdd3e5233442a87fbe44b78281c8ae61b09c09700388fed20ab9684d18aef",
+  "stage_wall_s": [
+   [
+    "import production modules",
+    2.759,
+    220512256
+   ],
+   [
+    "read_planning_problem (data, copula/KDE scenario generation, networks, ESS)",
+    12.36,
+    377126912
+   ],
+   [
+    "provenance (IPOPT identity probe: `ipopt --version`, not a solve)",
+    0.209,
+    382304256
+   ],
+   [
+    "oracle construction: _construct_arm_planning (fresh_planning deepcopy, results redirect, budget, candidate C*)",
+    0.128,
+    400441344
+   ],
+   [
+    "create_admm_variables",
+    0.013,
+    400752640
+   ],
+   [
+    "create_distribution_networks_models (sequential; optimize intercepted)",
+    197.434,
+    16188096512
+   ],
+   [
+    "create_transmission_network_model (optimize intercepted)",
+    12.933,
+    15320268800
+   ],
+   [
+    "create_shared_energy_storage_model (optimize intercepted)",
+    0.161,
+    15301836800
+   ],
+   [
+    "_prepare_distribution/transmission_objectives_for_admm",
+    0.013,
+    15304179712
+   ],
+   [
+    "_compute_common_admm_objective_scale (attempted on unsolved blocks)",
+    7.994,
+    15250833408
+   ],
+   [
+    "ADMM preparation: ESSO AL scale; update_*_to_admm (TSO/DSO under patched_admm_objectives); ESSO AL objective; consensus initialization",
+    0.298,
+    15251554304
+   ],
+   [
+    "update_interface_power_flow_variables (skips unsolved blocks)",
+    0.012,
+    15251718144
+   ],
+   [
+    "get_updated_capacities",
+    0.012,
+    15251767296
+   ],
+   [
+    "pristine clones kept by the ADMM loop (tso_pristine_base, dso_pristine_base)",
+    0.012,
+    15251849216
+   ],
+   [
+    "model counting (len per component type, all models; deep iteration, all models)",
+    8.744,
+    14534574080
+   ]
+  ]
+ },
+ "time_one_cycle": {
+  "requested": true,
+  "build_fits_under_watchdog": true
+ },
+ "cycle_child": {
+  "mode": "cycle",
+  "command": [
+   "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+   "-u",
+   "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_scale_measurement.py",
+   "--child",
+   "cycle",
+   "--label",
+   "paper_cycle_snapoff_r2"
+  ],
+  "exit_code": 97,
+  "raw_returncode": 97,
+  "wall_s": 1596.360864162445,
+  "parent_observed_peak": {
+   "measure": 38791278912,
+   "rss_tree": 14908489728,
+   "gating_measure": "rss_tree",
+   "gating_value": 14908489728
+  },
+  "parent_backstop_gating_measure": "rss_tree",
+  "parent_backstop_bytes": 31138512896,
+  "wait4_rusage": {
+   "ru_utime": 1522.81032,
+   "ru_stime": 83.647308,
+   "ru_maxrss": 14999683072,
+   "ru_minflt": 30600634,
+   "ru_majflt": 2085,
+   "ru_nvcsw": 19299,
+   "ru_nivcsw": 111489
+  },
+  "thread_caps_in_child_env": {
+   "OMP_NUM_THREADS": "1",
+   "MKL_NUM_THREADS": "1",
+   "OPENBLAS_NUM_THREADS": "1",
+   "VECLIB_MAXIMUM_THREADS": "1",
+   "NUMEXPR_NUM_THREADS": "1"
+  }
+ },
+ "cycle_status": "watchdog_abort",
+ "cycle_abort": {
+  "cause": "swap used grew by 1147011072 bytes (above 1.00 GiB) within 60 s (thrashing guard)",
+  "guard_triggered": "swap_growth_rate",
+  "guard_detail": {
+   "swap_used": 1155268608,
+   "window_baseline_swap_used": 8257536,
+   "growth_bytes": 1147011072,
+   "window_span_s": 59.946,
+   "swap_growth_limit_bytes": 1073741824,
+   "swap_growth_window_s": 60.0
+  },
+  "gating_measure": "rss_tree",
+  "gating_value_at_abort": 2582626304,
+  "thresholds": {
+   "gating_measure": "rss_tree",
+   "gating_measure_sample_field": "rss_tree",
+   "gating_measures_available": [
+    "rss_tree",
+    "footprint"
+   ],
+   "rss_limit_bytes": 30064771072,
+   "rss_limit_gib": 28.0,
+   "min_available_bytes": 1073741824,
+   "swap_used_limit_bytes": 2147483648,
+   "swap_growth_limit_bytes": 1073741824,
+   "swap_growth_window_s": 60.0,
+   "sample_interval_s": 0.5
+  },
+  "stage_at_abort": "init: TSO build + solve :: solve case9 2034 Autumn",
+  "rss_reached": {
+   "t": 1594.078,
+   "stage": "init: TSO build + solve :: solve case9 2034 Autumn",
+   "rss_self": 2173353984,
+   "rss_children": 409272320,
+   "n_children": 1,
+   "rss_tree": 2582626304,
+   "footprint_self": 38488076656,
+   "measure": 38897348976,
+   "sys_available": 6380814336,
+   "sys_used_pct": 81.4,
+   "swap_used": 1155268608,
+   "gating_measure": "rss_tree",
+   "gating_value": 2582626304
+  },
+  "elapsed_s": 1594.078,
+  "peak_so_far": {
+   "measure": 38897348976,
+   "rss_tree": 14875033600,
+   "rss_self": 14875033600,
+   "footprint_self": 38547517808,
+   "stage_at_peak_measure": "init: TSO build + solve :: solve case9 2034 Autumn",
+   "t_at_peak_measure": 1594.078,
+   "gating_measure": "rss_tree",
+   "gating_value": 14875033600,
+   "stage_at_peak_gating_value": "init: DSO build + solve",
+   "t_at_peak_gating_value": 486.447,
+   "swap_used": 1155268608,
+   "stage_at_peak_swap_used": "init: TSO build + solve :: solve case9 2034 Autumn"
+  }
+ },
+ "parent_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "scale_measurement": {
+  "instance": "paper",
+  "label": "paper_cycle_snapoff_r2",
+  "snapshots_requested": "off",
+  "snapshot_setting_build": {
+   "requested": "off",
+   "tso_mode_before": "lightweight",
+   "dso_mode_before": "lightweight",
+   "tso_mode_after": "off",
+   "dso_mode_after": "off",
+   "expected": [
+    "off",
+    "off"
+   ],
+   "took_effect": true,
+   "persistent_workers_enabled": false
+  },
+  "snapshot_setting_cycle": null,
+  "case_file_anderson_acceleration_declared": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "anderson_acceleration_effective_cycle": null,
+  "anderson_acceleration_effective_build": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "timing_s": {
+   "build_child_wall_s": 297.0580132007599,
+   "build_stage_wall_s": 234.377,
+   "initialization_s": null,
+   "one_cycle_s": null,
+   "one_cycle_production_printed_s": null,
+   "run_admm_arm_wall_clock_s": null,
+   "cycle_child_wall_s": 1596.360864162445
+  },
+  "peak_rss_bytes": {
+   "build_child_watchdog_peak": {
+    "measure": 19624098456,
+    "rss_tree": 16684695552,
+    "rss_self": 16684695552,
+    "footprint_self": 19624098456,
+    "stage_at_peak_measure": "model counting (len per component type, all models; deep iteration, all models)",
+    "t_at_peak_measure": 234.86,
+    "gating_measure": "rss_tree",
+    "gating_value": 16684695552,
+    "stage_at_peak_gating_value": "create_distribution_networks_models (sequential; optimize intercepted) :: build_model DSO case33_3 2037 Summer",
+    "t_at_peak_gating_value": 208.233,
+    "swap_used": 262144,
+    "stage_at_peak_swap_used": "child start"
+   },
+   "build_child_parent_observed_peak": {
+    "measure": 19624114840,
+    "rss_tree": 16844816384,
+    "gating_measure": "rss_tree",
+    "gating_value": 16844816384
+   },
+   "cycle_child_watchdog_peak": null,
+   "cycle_child_parent_observed_peak": {
+    "measure": 38791278912,
+    "rss_tree": 14908489728,
+    "gating_measure": "rss_tree",
+    "gating_value": 14908489728
+   },
+   "cycle_child_ru_maxrss_self": null,
+   "cycle_child_ru_maxrss_children_ipopt": null,
+   "watchdog_limit_bytes": 30064771072,
+   "watchdog_gating_measure": "rss_tree",
+   "watchdog_thresholds": {
+    "rss_limit_bytes": 30064771072,
+    "rss_limit_gib": 28.0,
+    "rss_limit_is_spec_default": false,
+    "gating_measure": "rss_tree",
+    "gating_measure_sample_field": "rss_tree",
+    "gating_measure_is_default": true,
+    "gating_measures_available": [
+     "rss_tree",
+     "footprint"
+    ],
+    "parent_backstop_bytes": 31138512896,
+    "parent_backstop_gating_measure": "rss_tree",
+    "min_available_bytes": 1073741824,
+    "swap_used_limit_bytes": 2147483648,
+    "swap_growth_limit_bytes": 1073741824,
+    "swap_growth_window_s": 60.0,
+    "sample_interval_s": 0.5
+   },
+   "watchdog_thresholds_note": "P5.15 Addendum 27 W13. The memory limit gates on `gating_measure`: \"rss_tree\" (default) = RSS of the child and its descendants; \"footprint\" = the pre-W13 quantity `measure` = max(rss_tree, macOS phys_footprint + descendants' RSS), which counts COMPRESSED pages. Both are computed and recorded on every sample whichever gates. Guards in force: (1) gating measure > rss_limit_bytes; (2) system available memory < min_available_bytes; (3) thrashing -- swap used > swap_used_limit_bytes, or swap used grown by more than swap_growth_limit_bytes within any swap_growth_window_s window."
+  },
+  "objective_scale": {
+   "sigma_fixed": null,
+   "sigma_computed": null,
+   "ratio_sigma_computed_over_fixed": null,
+   "assert_factor": null,
+   "calibration_check_passed": null,
+   "al_scale_esso": null
+  },
+  "solves": {
+   "declared_base": null,
+   "derivation": null,
+   "solves_per_cycle": null,
+   "recovered_tier1": null,
+   "recovered_tier2": null,
+   "reconciled_expected": null,
+   "observed": null,
+   "identity": null,
+   "identity_holds": null,
+   "guard_verify_failures": null,
+   "build_child_zero_solve_guard": {
+    "permitted": [],
+    "counts": {
+     "permitted_solve": 0,
+     "permitted_exec": 0,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "declared_solves": 0,
+    "verify_failures": []
+   }
+  },
+  "failures": {
+   "n_blocks_with_failures": null,
+   "classes": null,
+   "n_frozen_snapshots": null,
+   "n_esso_recovery_events": null,
+   "local_solves_ok_cycle_1": null
+  }
+ },
+ "exit_code": 97,
+ "ended_utc": "2026-09-20T06:40:45.564819+00:00"
+}
