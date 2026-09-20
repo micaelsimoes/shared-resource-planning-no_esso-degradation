@@ -108,18 +108,36 @@ MEMORY WATCHDOG
 ================================================================================
 A daemon thread in each child samples every 0.5 s: RSS of the process and of all its
 descendants (psutil), the process phys_footprint (libproc proc_pid_rusage -- counts
-compressed/swapped pages RSS does not), system available memory and swap. Trigger:
-max(tree RSS, footprint + descendants' RSS) > 24 GiB (25,769,803,776 bytes; "24 GB" of the
-spec, on a machine psutil reports as 32.0 GiB), or -- a declared secondary safety trigger --
-system available memory < 1.0 GiB. On trigger it writes `watchdog_abort_<mode>.json` (cause,
-RSS reached, footprint, the build stage in force, elapsed time, the last samples), kills the
-process's descendants and exits with the distinct code 97 (`os._exit`, so the memory is
-released at once). Every sample is appended live to `rss_samples_<mode>.jsonl` and every
-stage transition to `stages_<mode>.jsonl`, so an aborted run keeps its trajectory. The parent
-(which imports no model code) polls the child tree as a backstop and kills it above 25 GiB
-(exit record `parent_backstop_kill_<mode>.json`). The limit is recorded in launch.json and read
-by the children from there; `--rss-limit-gib` (default 24, the spec) exists ONLY to exercise the
-abort path at small scale and is recorded with a `rss_limit_is_spec_default` flag.
+compressed/swapped pages RSS does not), system available memory and swap. EVERY one of these
+is recorded on every sample regardless of which one gates.
+
+GATING MEASURE (P5.15 Addendum 27 W13; `--watchdog-measure`, default `rss_tree`). The memory
+limit is compared against `rss_tree` = RSS of the process plus its descendants. Before W13 it
+was compared against `measure` = max(rss_tree, phys_footprint + descendants' RSS); that
+quantity is still computed, peak-tracked and reported, and `--watchdog-measure footprint`
+restores it as the gate, so the change is visible and reversible. The reason for the default:
+label `paper_cycle_snapoff_r1` aborted at t=933 s with footprint_self 25.78 GB above the 24
+GiB limit while rss_tree was 15.93 GB, system available 12.14 GB and swap used 0.25 MB -- the
+abort fired on compressed pages, not on residency, and the machine was not short of memory.
+The gating measure's NAME is written into every sample, every peak record, launch.json,
+summary.json and `watchdog_abort_<mode>.json` (`gating_measure`), so the two quantities can
+never be confused by a later reader.
+
+Triggers (all recorded in launch.json -> thresholds, and each names itself in the abort record):
+  1. gating measure > the RSS limit (`--rss-limit-gib`, default 24 = the spec's "24 GB" on a
+     machine psutil reports as 32.0 GiB);
+  2. system available memory < 1.0 GiB (declared secondary trigger, machine protection);
+  3. THRASHING (W13): swap used > 2.0 GiB, or swap used grown by more than 1.0 GiB within any
+     60 s window (the swap series is in every sample, as it already was).
+On trigger the watchdog writes `watchdog_abort_<mode>.json` (cause, the triggered guard, the
+gating measure and its value, RSS, footprint, swap, the stage in force, elapsed time, the last
+samples), kills the process's descendants and exits with the distinct code 97 (`os._exit`, so
+the memory is released at once). Every sample is appended live to `rss_samples_<mode>.jsonl`
+and every stage transition to `stages_<mode>.jsonl`, so an aborted run keeps its trajectory.
+The parent (which imports no model code) polls the child tree as a backstop on the SAME gating
+measure and kills it above limit + 1 GiB (exit record `parent_backstop_kill_<mode>.json`). The
+limit and the gating measure are recorded in launch.json and read by the children from there;
+`--rss-limit-gib` is recorded with a `rss_limit_is_spec_default` flag.
 
 ================================================================================
 PROCESS MODEL, OUTPUT, LOCKS
@@ -198,6 +216,14 @@ Paper scale, snapshots off, one timed cycle (Planner; alone):
   /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s44_scale_measurement.py \\
       --instance paper --label paper_cycle_snapoff_r1 --snapshots off --time-one-cycle \\
       > data/SRP1/Results/P515S44/scale_measurement/paper_cycle_snapoff_r1_launch.log 2>&1
+Paper scale, snapshots off, one timed cycle, W13 watchdog (gating measure `rss_tree`, limit 28
+GiB on the 32 GiB machine, system-available floor and thrashing guards active) -- the re-run of
+`paper_cycle_snapoff_r1`, which aborted on the footprint measure at t=933 s while rss_tree was
+15.93 GB (Planner; alone):
+  /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s44_scale_measurement.py \\
+      --instance paper --label paper_cycle_snapoff_r2 --snapshots off --time-one-cycle \\
+      --rss-limit-gib 28 \\
+      > data/SRP1/Results/P515S44/scale_measurement/paper_cycle_snapoff_r2_launch.log 2>&1
 Watchdog abort-path test (Worker; SRP1 scale, limit lowered to 0.5 GiB, recorded):
   /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s44_scale_measurement.py \\
       --instance srp1 --label srp1_watchdog_abort_test_r2 --rss-limit-gib 0.5 \\
@@ -252,6 +278,32 @@ BACKSTOP_MARGIN_BYTES = 1 * GIB      # parent kills the child tree above limit +
 MIN_AVAILABLE_BYTES = 1 * GIB        # declared secondary trigger (machine protection)
 SAMPLE_INTERVAL_S = 0.5
 PARENT_POLL_S = 1.0
+
+# P5.15 Addendum 27 W13. WHICH measured quantity the memory limit gates on. Both are
+# computed and recorded on every sample, whichever gates:
+#   'rss_tree'  -- resident memory of the process and its descendants (the DEFAULT since W13:
+#                  it is what actually occupies physical RAM);
+#   'footprint' -- the pre-W13 quantity `measure` = max(rss_tree, phys_footprint + children
+#                  RSS). macOS `phys_footprint` counts COMPRESSED pages, so it can exceed true
+#                  residency by many GiB on a machine under no memory pressure.
+# Evidence for the change: label `paper_cycle_snapoff_r1` aborted at t=933 s with
+# footprint_self 25.78 GB above the 24 GiB limit while rss_tree was 15.93 GB, system
+# available memory 12.14 GB and swap used 0.25 MB -- the machine was not short of memory.
+# Nothing is removed: `measure` and `footprint_self` are still sampled, still peak-tracked and
+# still reported, so the r1 artifacts stay comparable field for field.
+GATING_MEASURES = ('rss_tree', 'footprint')
+GATING_MEASURE_DEFAULT = 'rss_tree'
+GATING_MEASURE_FIELD = {'rss_tree': 'rss_tree', 'footprint': 'measure'}
+# Thrashing guard (W13 item 3): swap is what actually threatens the machine once compression
+# stops being free. Absolute ceiling, and a growth rate over a sliding window.
+SWAP_USED_LIMIT_BYTES = 2 * GIB
+SWAP_GROWTH_LIMIT_BYTES = 1 * GIB
+SWAP_GROWTH_WINDOW_S = 60.0
+
+
+def gating_value(sample, measure=GATING_MEASURE_DEFAULT):
+    """The value the memory limit is compared against, for the named gating measure."""
+    return (sample or {}).get(GATING_MEASURE_FIELD[measure]) or 0
 
 EXIT_OK = 0
 EXIT_ERROR = 1
@@ -455,19 +507,44 @@ STAGE_REF = {'name': 'child start', 'since': time.time()}
 
 class Watchdog(threading.Thread):
     def __init__(self, out_dir, mode, limit_bytes=RSS_LIMIT_BYTES, interval=SAMPLE_INTERVAL_S,
-                 min_available=MIN_AVAILABLE_BYTES):
+                 min_available=MIN_AVAILABLE_BYTES, gating_measure=GATING_MEASURE_DEFAULT,
+                 swap_used_limit=SWAP_USED_LIMIT_BYTES, swap_growth_limit=SWAP_GROWTH_LIMIT_BYTES,
+                 swap_growth_window_s=SWAP_GROWTH_WINDOW_S):
         super().__init__(name='rss-watchdog', daemon=True)
+        if gating_measure not in GATING_MEASURES:
+            raise ValueError(f'unknown gating measure {gating_measure!r} (expected one of {GATING_MEASURES})')
         self.out_dir, self.mode = out_dir, mode
         self.limit, self.interval, self.min_available = limit_bytes, interval, min_available
+        self.gating_measure = gating_measure
+        self.gating_field = GATING_MEASURE_FIELD[gating_measure]
+        self.swap_used_limit = swap_used_limit
+        self.swap_growth_limit = swap_growth_limit
+        self.swap_growth_window_s = swap_growth_window_s
         self.samples_path = os.path.join(out_dir, f'rss_samples_{mode}.jsonl')
         self.abort_path = os.path.join(out_dir, f'watchdog_abort_{mode}.json')
         self.t0 = time.time()
         self.pid = os.getpid()
         self.peak = {'measure': 0, 'rss_tree': 0, 'rss_self': 0, 'footprint_self': 0,
-                     'stage_at_peak_measure': None, 't_at_peak_measure': None}
+                     'stage_at_peak_measure': None, 't_at_peak_measure': None,
+                     # W13: the GATED quantity, named, alongside every pre-W13 field (unchanged)
+                     'gating_measure': gating_measure, 'gating_value': 0,
+                     'stage_at_peak_gating_value': None, 't_at_peak_gating_value': None,
+                     'swap_used': 0, 'stage_at_peak_swap_used': None}
         self.tail = []
+        self.swap_window = []      # (t, swap_used) pairs within the growth window
         self.n_samples = 0
         self._halt = threading.Event()
+
+    def thresholds(self):
+        """Every guard threshold in force, by name (W13: recorded, never implicit)."""
+        return {'gating_measure': self.gating_measure, 'gating_measure_sample_field': self.gating_field,
+                'gating_measures_available': list(GATING_MEASURES),
+                'rss_limit_bytes': self.limit, 'rss_limit_gib': self.limit / GIB,
+                'min_available_bytes': self.min_available,
+                'swap_used_limit_bytes': self.swap_used_limit,
+                'swap_growth_limit_bytes': self.swap_growth_limit,
+                'swap_growth_window_s': self.swap_growth_window_s,
+                'sample_interval_s': self.interval}
 
     def sample(self):
         mem = tree_memory(self.pid)
@@ -476,6 +553,10 @@ class Watchdog(threading.Thread):
         s = {'t': round(time.time() - self.t0, 3), 'stage': STAGE_REF['name'],
              **(mem or {}), 'sys_available': vm.available, 'sys_used_pct': vm.percent,
              'swap_used': sw.used}
+        # W13: the gated quantity, by name, on every sample. `measure` (footprint-based) and
+        # `footprint_self` remain exactly as before, whichever of them gates.
+        s['gating_measure'] = self.gating_measure
+        s['gating_value'] = gating_value(s, self.gating_measure)
         return s
 
     def _update_peak(self, s):
@@ -486,10 +567,34 @@ class Watchdog(threading.Thread):
             self.peak['measure'] = s['measure']
             self.peak['stage_at_peak_measure'] = s['stage']
             self.peak['t_at_peak_measure'] = s['t']
+        if (s.get('gating_value') or 0) > self.peak['gating_value']:
+            self.peak['gating_value'] = s['gating_value']
+            self.peak['stage_at_peak_gating_value'] = s['stage']
+            self.peak['t_at_peak_gating_value'] = s['t']
+        if (s.get('swap_used') or 0) > self.peak['swap_used']:
+            self.peak['swap_used'] = s['swap_used']
+            self.peak['stage_at_peak_swap_used'] = s['stage']
 
-    def _abort(self, s, cause):
+    def _swap_growth(self, s):
+        """Swap growth within the trailing window: current `swap_used` minus the smallest
+        `swap_used` seen in the last `swap_growth_window_s` seconds. Returns
+        (growth_bytes, window_baseline, window_span_s)."""
+        t = s['t']
+        self.swap_window.append((t, s.get('swap_used') or 0))
+        cutoff = t - self.swap_growth_window_s
+        while len(self.swap_window) > 1 and self.swap_window[0][0] < cutoff:
+            self.swap_window.pop(0)
+        baseline = min(v for _, v in self.swap_window)
+        return (s.get('swap_used') or 0) - baseline, baseline, round(t - self.swap_window[0][0], 3)
+
+    def _abort(self, s, cause, guard, detail=None):
         record = {
             'schema': SCHEMA, 'mode': self.mode, 'status': 'watchdog_abort', 'cause': cause,
+            # W13: WHICH guard fired, and WHICH quantity the memory limit gates on
+            'guard_triggered': guard, 'guard_detail': detail or {},
+            'gating_measure': self.gating_measure,
+            'gating_value_at_abort': s.get('gating_value'),
+            'thresholds': self.thresholds(),
             'limit_bytes': self.limit, 'limit_gib': self.limit / GIB,
             'min_available_bytes': self.min_available,
             'rss_reached': s, 'stage_at_abort': s.get('stage'),
@@ -503,8 +608,12 @@ class Watchdog(threading.Thread):
             with open(self.abort_path, 'w') as handle:
                 json.dump(record, handle, indent=1, default=str)
             record['killed_descendants'] = _kill_descendants(self.pid)
-            print(f'[WATCHDOG] ABORT ({cause}): measure={s.get("measure")} bytes at stage '
-                  f'"{s.get("stage")}" -- exiting {EXIT_WATCHDOG}', file=sys.stderr, flush=True)
+            print(f'[WATCHDOG] ABORT ({guard}: {cause}): gating_measure={self.gating_measure} '
+                  f'gating_value={s.get("gating_value")} rss_tree={s.get("rss_tree")} '
+                  f'footprint_self={s.get("footprint_self")} measure={s.get("measure")} '
+                  f'swap_used={s.get("swap_used")} sys_available={s.get("sys_available")} '
+                  f'at stage "{s.get("stage")}" -- exiting {EXIT_WATCHDOG}',
+                  file=sys.stderr, flush=True)
             sys.stdout.flush()
         finally:
             os._exit(EXIT_WATCHDOG)
@@ -519,11 +628,34 @@ class Watchdog(threading.Thread):
                 del self.tail[:-20]
                 handle.write(json.dumps(s) + '\n')
                 handle.flush()
-                if (s.get('measure') or 0) > self.limit:
-                    self._abort(s, f'process-tree memory above {self.limit / GIB:.2f} GiB ({self.limit} bytes)')
+                growth, baseline, span = self._swap_growth(s)
+                if (s.get('gating_value') or 0) > self.limit:
+                    self._abort(s, f'gating measure {self.gating_measure} above '
+                                   f'{self.limit / GIB:.2f} GiB ({self.limit} bytes)',
+                                'rss_limit',
+                                {'gating_measure': self.gating_measure, 'gating_value': s.get('gating_value'),
+                                 'limit_bytes': self.limit, 'rss_tree': s.get('rss_tree'),
+                                 'measure_footprint_based': s.get('measure')})
                 if self.min_available and s['sys_available'] < self.min_available:
                     self._abort(s, f'system available memory below {self.min_available / GIB:.1f} GiB '
-                                   '(declared secondary trigger)')
+                                   '(declared secondary trigger)', 'sys_available_floor',
+                                {'sys_available': s.get('sys_available'),
+                                 'min_available_bytes': self.min_available})
+                # W13 item 3: thrashing guard -- absolute swap ceiling and swap growth rate
+                if self.swap_used_limit and (s.get('swap_used') or 0) > self.swap_used_limit:
+                    self._abort(s, f'swap used above {self.swap_used_limit / GIB:.2f} GiB (thrashing guard)',
+                                'swap_used_limit',
+                                {'swap_used': s.get('swap_used'),
+                                 'swap_used_limit_bytes': self.swap_used_limit})
+                if self.swap_growth_limit and growth > self.swap_growth_limit:
+                    self._abort(s, f'swap used grew by {growth} bytes (above '
+                                   f'{self.swap_growth_limit / GIB:.2f} GiB) within '
+                                   f'{self.swap_growth_window_s:.0f} s (thrashing guard)',
+                                'swap_growth_rate',
+                                {'swap_used': s.get('swap_used'), 'window_baseline_swap_used': baseline,
+                                 'growth_bytes': growth, 'window_span_s': span,
+                                 'swap_growth_limit_bytes': self.swap_growth_limit,
+                                 'swap_growth_window_s': self.swap_growth_window_s})
                 self._halt.wait(self.interval)
 
     def stop(self):
@@ -663,6 +795,21 @@ def _child_env_check():
 
 def _launch_limit(out_dir):
     return int(_load_launch(out_dir)['thresholds']['rss_limit_bytes'])
+
+
+def _child_watchdog(out_dir, mode):
+    """The child's watchdog, configured from launch.json: the limit AND (W13) the gating
+    measure and the thrashing-guard thresholds, so every guard in force is the one the parent
+    recorded before the run."""
+    th = _load_launch(out_dir).get('thresholds') or {}
+    return Watchdog(
+        out_dir, mode,
+        limit_bytes=int(th['rss_limit_bytes']),
+        min_available=int(th.get('min_available_bytes', MIN_AVAILABLE_BYTES)),
+        gating_measure=th.get('gating_measure', GATING_MEASURE_DEFAULT),
+        swap_used_limit=int(th.get('swap_used_limit_bytes', SWAP_USED_LIMIT_BYTES)),
+        swap_growth_limit=int(th.get('swap_growth_limit_bytes', SWAP_GROWTH_LIMIT_BYTES)),
+        swap_growth_window_s=float(th.get('swap_growth_window_s', SWAP_GROWTH_WINDOW_S)))
 
 
 def _load_launch(out_dir):
@@ -912,7 +1059,7 @@ def child_build(args):
     out_dir = label_dir(args.label)
     started = time.time()
     _child_env_check()
-    wd = Watchdog(out_dir, 'build', limit_bytes=_launch_limit(out_dir))
+    wd = _child_watchdog(out_dir, 'build')
     wd.start()
     stages = StageLog(os.path.join(out_dir, 'stages_build.jsonl'), wd)
     launch = _load_launch(out_dir)
@@ -1106,8 +1253,14 @@ def child_build(args):
                   'verify_failures': guard_failures},
         'watchdog': {'limit_bytes': wd.limit, 'sample_interval_s': SAMPLE_INTERVAL_S,
                      'n_samples': wd.n_samples, 'peak': wd.peak,
-                     'min_available_bytes': MIN_AVAILABLE_BYTES},
-        'peak_under_limit': wd.peak['measure'] < wd.limit,
+                     'min_available_bytes': MIN_AVAILABLE_BYTES,
+                     # W13: the gating measure and every guard threshold in force
+                     'gating_measure': wd.gating_measure, 'thresholds': wd.thresholds()},
+        # W13: the gate that decides whether the cycle child runs uses the GATING measure;
+        # the footprint-based comparison is kept alongside it, recorded, not gating.
+        'peak_under_limit': wd.peak['gating_value'] < wd.limit,
+        'peak_under_limit_gating_measure': wd.gating_measure,
+        'peak_footprint_measure_under_limit': wd.peak['measure'] < wd.limit,
         'memory_final': final,
         'ru_maxrss_self_final': resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
         'ru_maxrss_units': 'bytes on macOS',
@@ -1231,7 +1384,7 @@ def child_cycle(args):
     out_dir = label_dir(args.label)
     started = time.time()
     _child_env_check()
-    wd = Watchdog(out_dir, 'cycle', limit_bytes=_launch_limit(out_dir))
+    wd = _child_watchdog(out_dir, 'cycle')
     wd.start()
     stages = StageLog(os.path.join(out_dir, 'stages_cycle.jsonl'), wd)
     launch = _load_launch(out_dir)
@@ -1370,7 +1523,9 @@ def child_cycle(args):
         'network_failures_summary': report.get('network_failures_summary'),
         'arm_solve_profile': report.get('solve_profile'),
         'g_report_path': os.path.relpath(report_path, REPO),
-        'watchdog': {'limit_bytes': wd.limit, 'n_samples': wd.n_samples, 'peak': wd.peak},
+        'watchdog': {'limit_bytes': wd.limit, 'n_samples': wd.n_samples, 'peak': wd.peak,
+                     # W13: the gating measure and every guard threshold in force
+                     'gating_measure': wd.gating_measure, 'thresholds': wd.thresholds()},
         'memory_final': final,
         'ru_maxrss_self': resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
         'ru_maxrss_children_ipopt': resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss,
@@ -1458,7 +1613,11 @@ def run_child(mode, args, out_dir, log):
             raise RuntimeError(f'refusing to overwrite {p}')
     t0 = time.time()
     backstop = None
-    peak = {'measure': 0, 'rss_tree': 0}
+    # W13: the parent backstop polls the SAME gating measure the child's watchdog gates on
+    # (otherwise the parent would keep killing on footprint after the child stopped doing so);
+    # both quantities are still peak-tracked here.
+    measure_name = args.watchdog_measure
+    peak = {'measure': 0, 'rss_tree': 0, 'gating_measure': measure_name, 'gating_value': 0}
     with open(out_path, 'w') as out_h, open(err_path, 'w') as err_h:
         proc = subprocess.Popen(cmd, cwd=REPO, env=env, stdout=out_h, stderr=err_h)
         log(f'{mode} child started pid={proc.pid}: {" ".join(cmd)}')
@@ -1469,24 +1628,31 @@ def run_child(mode, args, out_dir, log):
                 break
             mem = tree_memory(proc.pid)
             if mem:
+                gate = gating_value(mem, measure_name)
                 peak['measure'] = max(peak['measure'], mem['measure'])
                 peak['rss_tree'] = max(peak['rss_tree'], mem['rss_tree'])
-                if mem['measure'] > backstop_bytes and backstop is None:
+                peak['gating_value'] = max(peak['gating_value'], gate)
+                if gate > backstop_bytes and backstop is None:
                     backstop = {'mode': mode, 'status': 'parent_backstop_kill', 'memory': mem,
+                                'gating_measure': measure_name, 'gating_value': gate,
                                 'limit_bytes': backstop_bytes, 'utc': _utc(),
                                 'elapsed_s': time.time() - t0}
                     killed = _kill_descendants(proc.pid)
                     os.kill(proc.pid, signal.SIGKILL)
                     backstop['killed'] = [proc.pid] + killed
-                    log(f'PARENT BACKSTOP: child tree above {backstop_bytes / GIB:.1f} GiB -- killed')
+                    log(f'PARENT BACKSTOP: child tree {measure_name} above '
+                        f'{backstop_bytes / GIB:.1f} GiB -- killed')
             if time.time() - last_note > 60:
-                log(f'{mode} child alive: tree_rss={mem and mem["rss_tree"]} peak={peak["measure"]}')
+                log(f'{mode} child alive: tree_rss={mem and mem["rss_tree"]} '
+                    f'footprint_measure={mem and mem["measure"]} swap_used={psutil.swap_memory().used} '
+                    f'peak_{measure_name}={peak["gating_value"]} peak_footprint_measure={peak["measure"]}')
                 last_note = time.time()
             time.sleep(PARENT_POLL_S)
         proc.returncode = os.waitstatus_to_exitcode(status)
     exit_code = proc.returncode if backstop is None else EXIT_BACKSTOP
     info = {'mode': mode, 'command': cmd, 'exit_code': exit_code, 'raw_returncode': proc.returncode,
             'wall_s': time.time() - t0, 'parent_observed_peak': peak,
+            'parent_backstop_gating_measure': measure_name, 'parent_backstop_bytes': backstop_bytes,
             'wait4_rusage': {k: getattr(ru, k) for k in ('ru_utime', 'ru_stime', 'ru_maxrss', 'ru_minflt',
                                                           'ru_majflt', 'ru_nvcsw', 'ru_nivcsw')},
             'thread_caps_in_child_env': THREAD_CAP_ENV}
@@ -1570,6 +1736,10 @@ def scale_measurement_block(args, launch, build_record, build_info, cycle_info, 
             'cycle_child_ru_maxrss_self': cycle_record.get('ru_maxrss_self'),
             'cycle_child_ru_maxrss_children_ipopt': cycle_record.get('ru_maxrss_children_ipopt'),
             'watchdog_limit_bytes': (launch.get('thresholds') or {}).get('rss_limit_bytes'),
+            # W13: which quantity the limit gated on, and every guard threshold in force
+            'watchdog_gating_measure': (launch.get('thresholds') or {}).get('gating_measure'),
+            'watchdog_thresholds': launch.get('thresholds'),
+            'watchdog_thresholds_note': launch.get('thresholds_note'),
         },
         'objective_scale': {
             'sigma_fixed': scale.get('sigma_fixed'), 'sigma_computed': scale.get('sigma_computed'),
@@ -1634,7 +1804,10 @@ def main_parent(args):
         os.makedirs(out_dir)
         log = ParentLog(os.path.join(out_dir, 'parent_run.log'))
         log(f'{STAGE}: label={args.label} instance={args.instance} time_one_cycle={args.time_one_cycle} '
-            f'rss_limit_gib={args.rss_limit_gib} snapshots={args.snapshots}')
+            f'rss_limit_gib={args.rss_limit_gib} watchdog_measure={args.watchdog_measure} '
+            f'snapshots={args.snapshots} min_available_gib={MIN_AVAILABLE_BYTES / GIB:.1f} '
+            f'swap_used_limit_gib={SWAP_USED_LIMIT_BYTES / GIB:.1f} '
+            f'swap_growth_limit_gib={SWAP_GROWTH_LIMIT_BYTES / GIB:.1f}/{SWAP_GROWTH_WINDOW_S:.0f}s')
         case_dir = os.path.join(out_dir, 'case')
         os.makedirs(case_dir)
         overrides_cli = {'years': (json.loads(args.override_years) if args.override_years else None),
@@ -1662,10 +1835,30 @@ def main_parent(args):
             'script_sha256': sha256_file(SCRIPT_PATH), 'git_head': _git(['rev-parse', 'HEAD']),
             'git_tracked_changes': tracked_dirty.splitlines(),
             'nlp_solver_path_env': os.environ.get('NLP_SOLVER_PATH'),
+            # W13: EVERY guard threshold, and the NAME of the quantity the memory limit gates
+            # on, stated here before the run and read back by both children.
             'thresholds': {'rss_limit_bytes': int(args.rss_limit_gib * GIB), 'rss_limit_gib': args.rss_limit_gib,
                            'rss_limit_is_spec_default': args.rss_limit_gib == RSS_LIMIT_GIB_DEFAULT,
+                           'gating_measure': args.watchdog_measure,
+                           'gating_measure_sample_field': GATING_MEASURE_FIELD[args.watchdog_measure],
+                           'gating_measure_is_default': args.watchdog_measure == GATING_MEASURE_DEFAULT,
+                           'gating_measures_available': list(GATING_MEASURES),
                            'parent_backstop_bytes': int(args.rss_limit_gib * GIB) + BACKSTOP_MARGIN_BYTES,
-                           'min_available_bytes': MIN_AVAILABLE_BYTES, 'sample_interval_s': SAMPLE_INTERVAL_S},
+                           'parent_backstop_gating_measure': args.watchdog_measure,
+                           'min_available_bytes': MIN_AVAILABLE_BYTES,
+                           'swap_used_limit_bytes': SWAP_USED_LIMIT_BYTES,
+                           'swap_growth_limit_bytes': SWAP_GROWTH_LIMIT_BYTES,
+                           'swap_growth_window_s': SWAP_GROWTH_WINDOW_S,
+                           'sample_interval_s': SAMPLE_INTERVAL_S},
+            'thresholds_note': (
+                'P5.15 Addendum 27 W13. The memory limit gates on `gating_measure`: "rss_tree" '
+                '(default) = RSS of the child and its descendants; "footprint" = the pre-W13 '
+                'quantity `measure` = max(rss_tree, macOS phys_footprint + descendants\' RSS), '
+                'which counts COMPRESSED pages. Both are computed and recorded on every sample '
+                'whichever gates. Guards in force: (1) gating measure > rss_limit_bytes; '
+                '(2) system available memory < min_available_bytes; (3) thrashing -- swap used '
+                '> swap_used_limit_bytes, or swap used grown by more than swap_growth_limit_bytes '
+                'within any swap_growth_window_s window.'),
             'runs_alone_enforced': runs_alone, 'time_one_cycle_requested': args.time_one_cycle,
             # Addendum 27 item 1 (W12): the AA dict both spec_like declarations hand the harness hook
             'case_file_anderson_acceleration_declared': dict(CASE_FILE_AA),
@@ -1708,8 +1901,9 @@ def main_parent(args):
                 'stage_wall_s': [(e['stage'], e['wall_s'], e['rss_tree_after']) for e in build_record.get('stages', [])],
             }
         if abort:
-            summary['build_abort'] = {k: abort.get(k) for k in ('cause', 'stage_at_abort', 'rss_reached',
-                                                                'elapsed_s', 'peak_so_far')}
+            summary['build_abort'] = {k: abort.get(k) for k in (
+                'cause', 'guard_triggered', 'guard_detail', 'gating_measure', 'gating_value_at_abort',
+                'thresholds', 'stage_at_abort', 'rss_reached', 'elapsed_s', 'peak_so_far')}
         exit_code = build_info['exit_code']
         if args.time_one_cycle:
             fits = (build_info['exit_code'] == EXIT_OK and build_record is not None
@@ -1729,8 +1923,10 @@ def main_parent(args):
                         'objective_scale', 'snapshot_setting', 'anderson_acceleration_effective_in_child',
                         'configuration_checks', 'arm_solve_profile')}
                 if cycle_abort:
-                    summary['cycle_abort'] = {k: cycle_abort.get(k) for k in ('cause', 'stage_at_abort',
-                                                                              'rss_reached', 'elapsed_s')}
+                    summary['cycle_abort'] = {k: cycle_abort.get(k) for k in (
+                        'cause', 'guard_triggered', 'guard_detail', 'gating_measure',
+                        'gating_value_at_abort', 'thresholds', 'stage_at_abort', 'rss_reached',
+                        'elapsed_s', 'peak_so_far')}
                 exit_code = exit_code or cycle_info['exit_code']
             else:
                 summary['time_one_cycle']['skipped_reason'] = 'build did not complete under the watchdog'
@@ -1772,6 +1968,16 @@ def main():
                               'no pristine base is cloned and no per-cycle capture is taken.'))
     parser.add_argument('--rss-limit-gib', type=float, default=RSS_LIMIT_GIB_DEFAULT,
                         help='watchdog limit in GiB (default 24 = the spec; lower ONLY to test the abort path)')
+    parser.add_argument('--watchdog-measure', choices=GATING_MEASURES, default=GATING_MEASURE_DEFAULT,
+                        help=('P5.15 Addendum 27 W13: WHICH measured quantity the memory limit '
+                              'gates on. "rss_tree" (default) = RSS of the child and its '
+                              'descendants -- what actually occupies physical RAM. "footprint" = '
+                              'the pre-W13 quantity max(rss_tree, macOS phys_footprint + '
+                              'descendants\' RSS), which counts COMPRESSED pages and aborted '
+                              'label paper_cycle_snapoff_r1 at 25.78 GB footprint while rss_tree '
+                              'was 15.93 GB and the machine had 12.14 GB available. Both are '
+                              'recorded on every sample whichever gates; the name in force is '
+                              'written into launch.json, every record and watchdog_abort_*.json.'))
     parser.add_argument('--no-deep-counts', action='store_true',
                         help='skip the full-iteration counts (fixed vars, active constraints)')
     parser.add_argument('--override-years', default=None,
