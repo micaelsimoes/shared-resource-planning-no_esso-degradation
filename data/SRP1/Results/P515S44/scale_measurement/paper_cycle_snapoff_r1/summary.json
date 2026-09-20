@@ -1,0 +1,484 @@
+{
+ "schema": "p515_s44_scale_measurement_v1",
+ "label": "paper_cycle_snapoff_r1",
+ "instance": "paper",
+ "launch": "launch.json",
+ "build_child": {
+  "mode": "build",
+  "command": [
+   "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+   "-u",
+   "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_scale_measurement.py",
+   "--child",
+   "build",
+   "--label",
+   "paper_cycle_snapoff_r1"
+  ],
+  "exit_code": 0,
+  "raw_returncode": 0,
+  "wall_s": 300.3366918563843,
+  "parent_observed_peak": {
+   "measure": 19621919384,
+   "rss_tree": 16274784256
+  },
+  "wait4_rusage": {
+   "ru_utime": 280.04906,
+   "ru_stime": 19.228782,
+   "ru_maxrss": 16285810688,
+   "ru_minflt": 8600346,
+   "ru_majflt": 23,
+   "ru_nvcsw": 53,
+   "ru_nivcsw": 30012
+  },
+  "thread_caps_in_child_env": {
+   "OMP_NUM_THREADS": "1",
+   "MKL_NUM_THREADS": "1",
+   "OPENBLAS_NUM_THREADS": "1",
+   "VECLIB_MAXIMUM_THREADS": "1",
+   "NUMEXPR_NUM_THREADS": "1"
+  }
+ },
+ "build_status": "complete",
+ "build": {
+  "d_configuration_checks": {
+   "configuration_checks": {
+    "rho_v_matches_D": true,
+    "rho_pf_matches_D": true,
+    "rho_ess_matches_D": true,
+    "tau_is_0": true,
+    "gamma_policy_tied_to_rho": true,
+    "balancing_exempt_until_matches_D": true,
+    "balancing_exempt_channels_empty": true,
+    "freeze_after_unchanged_cycles_is_10": true,
+    "freeze_backstop_cycle_is_200": true,
+    "minimum_consecutive_converged_cycles_matches_spec": true,
+    "shared_ess_initialization_is_standalone": true,
+    "num_max_iters_is_spec_cap": true,
+    "anderson_acceleration_case_file_matches_declaration": true,
+    "anderson_acceleration_case_file_memory_regularization_frozen": true,
+    "persistent_workers_off": true,
+    "parallel_execution_off": true
+   },
+   "case_file_anderson_acceleration_declared": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "anderson_acceleration_effective": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "overrides_applied": {},
+   "declaration_note": "spec_like declares configuration.case_file_anderson_acceleration; the harness hook checks the loaded AA equals it exactly and raises otherwise (p515_s44_campaign_harness._config_hook_factory)"
+  },
+  "snapshot_setting": {
+   "requested": "off",
+   "tso_mode_before": "lightweight",
+   "dso_mode_before": "lightweight",
+   "tso_mode_after": "off",
+   "dso_mode_after": "off",
+   "expected": [
+    "off",
+    "off"
+   ],
+   "took_effect": true,
+   "persistent_workers_enabled": false
+  },
+  "block_counts": {
+   "tso_blocks": 20,
+   "dso_blocks": 60,
+   "dso_blocks_per_node": {
+    "5": 20,
+    "7": 20,
+    "9": 20
+   },
+   "esso_models": 3,
+   "network_build_model_calls": 80,
+   "pristine_clone_blocks": {},
+   "network_blocks": 80
+  },
+  "counts_by_agent": {
+   "TSO": {
+    "models": 20,
+    "len_counts": {
+     "var": 1780200,
+     "constraint": 1507170,
+     "expression": 759740,
+     "param": 65220,
+     "objective": 60,
+     "suffix": 0
+    },
+    "deep": {
+     "var_data": 1780200,
+     "var_fixed": 294000,
+     "var_free": 1486200,
+     "constraint_data": 1507170,
+     "constraint_active": 1507170,
+     "constraint_active_equality": 728700,
+     "constraint_active_inequality": 778470,
+     "objective_active": 20
+    }
+   },
+   "DSO": {
+    "models": 60,
+    "len_counts": {
+     "var": 16150200,
+     "constraint": 11480685,
+     "expression": 6239220,
+     "param": 2391240,
+     "objective": 180,
+     "suffix": 0
+    },
+    "deep": {
+     "var_data": 16150200,
+     "var_fixed": 96000,
+     "var_free": 16054200,
+     "constraint_data": 11480685,
+     "constraint_active": 11480685,
+     "constraint_active_equality": 6284700,
+     "constraint_active_inequality": 5195985,
+     "objective_active": 60
+    }
+   },
+   "ESSO": {
+    "models": 3,
+    "len_counts": {
+     "var": 20715,
+     "constraint": 24960,
+     "expression": 9,
+     "param": 5871,
+     "objective": 6,
+     "suffix": 0
+    },
+    "deep": {
+     "var_data": 20715,
+     "var_fixed": 11760,
+     "var_free": 8955,
+     "constraint_data": 24960,
+     "constraint_active": 6090,
+     "constraint_active_equality": 1755,
+     "constraint_active_inequality": 4335,
+     "objective_active": 3
+    }
+   },
+   "ALL": {
+    "models": 83,
+    "len_counts": {
+     "var": 17951115,
+     "constraint": 13012815,
+     "expression": 6998969,
+     "param": 2462331,
+     "objective": 246,
+     "suffix": 0
+    },
+    "deep": {
+     "var_data": 17951115,
+     "var_fixed": 401760,
+     "var_free": 17549355,
+     "constraint_data": 13012815,
+     "constraint_active": 12993945,
+     "constraint_active_equality": 7015155,
+     "constraint_active_inequality": 5978790,
+     "objective_active": 83
+    }
+   }
+  },
+  "memory_at_build_complete": {
+   "t": 232.837,
+   "stage": "child start",
+   "rss_self": 15083896832,
+   "rss_children": 0,
+   "n_children": 0,
+   "rss_tree": 15083896832,
+   "footprint_self": 19620674200,
+   "measure": 19620674200,
+   "sys_available": 13003522048,
+   "sys_used_pct": 62.2,
+   "swap_used": 262144
+  },
+  "watchdog_peak": {
+   "measure": 19621903000,
+   "rss_tree": 16096362496,
+   "rss_self": 16096362496,
+   "footprint_self": 19621903000,
+   "stage_at_peak_measure": "model counting (len per component type, all models; deep iteration, all models)",
+   "t_at_peak_measure": 240.519
+  },
+  "ru_maxrss_self_final": 16285810688,
+  "guard": {
+   "permitted": [],
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "declared_solves": 0,
+   "verify_failures": []
+  },
+  "interceptor_check": {
+   "declared": {
+    "dso": 3,
+    "tso": 1,
+    "esso_init": 1
+   },
+   "observed": {
+    "dso": 3,
+    "tso": 1,
+    "esso_init": 1
+   },
+   "exact_match": true
+  },
+  "scenario_checksum": "1e8bdd3e5233442a87fbe44b78281c8ae61b09c09700388fed20ab9684d18aef",
+  "stage_wall_s": [
+   [
+    "import production modules",
+    1.195,
+    218185728
+   ],
+   [
+    "read_planning_problem (data, copula/KDE scenario generation, networks, ESS)",
+    12.267,
+    379912192
+   ],
+   [
+    "provenance (IPOPT identity probe: `ipopt --version`, not a solve)",
+    0.104,
+    385105920
+   ],
+   [
+    "oracle construction: _construct_arm_planning (fresh_planning deepcopy, results redirect, budget, candidate C*)",
+    0.125,
+    403734528
+   ],
+   [
+    "create_admm_variables",
+    0.013,
+    404045824
+   ],
+   [
+    "create_distribution_networks_models (sequential; optimize intercepted)",
+    197.731,
+    16017145856
+   ],
+   [
+    "create_transmission_network_model (optimize intercepted)",
+    13.009,
+    15230648320
+   ],
+   [
+    "create_shared_energy_storage_model (optimize intercepted)",
+    0.16,
+    15254847488
+   ],
+   [
+    "_prepare_distribution/transmission_objectives_for_admm",
+    0.013,
+    15256928256
+   ],
+   [
+    "_compute_common_admm_objective_scale (attempted on unsolved blocks)",
+    7.841,
+    15035400192
+   ],
+   [
+    "ADMM preparation: ESSO AL scale; update_*_to_admm (TSO/DSO under patched_admm_objectives); ESSO AL objective; consensus initialization",
+    0.302,
+    15083864064
+   ],
+   [
+    "update_interface_power_flow_variables (skips unsolved blocks)",
+    0.012,
+    15083896832
+   ],
+   [
+    "get_updated_capacities",
+    0.012,
+    15083896832
+   ],
+   [
+    "pristine clones kept by the ADMM loop (tso_pristine_base, dso_pristine_base)",
+    0.012,
+    15083896832
+   ],
+   [
+    "model counting (len per component type, all models; deep iteration, all models)",
+    8.883,
+    15200829440
+   ]
+  ]
+ },
+ "time_one_cycle": {
+  "requested": true,
+  "build_fits_under_watchdog": true
+ },
+ "cycle_child": {
+  "mode": "cycle",
+  "command": [
+   "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+   "-u",
+   "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_scale_measurement.py",
+   "--child",
+   "cycle",
+   "--label",
+   "paper_cycle_snapoff_r1"
+  ],
+  "exit_code": 97,
+  "raw_returncode": 97,
+  "wall_s": 933.9559640884399,
+  "parent_observed_peak": {
+   "measure": 25746394360,
+   "rss_tree": 19534757888
+  },
+  "wait4_rusage": {
+   "ru_utime": 910.153873,
+   "ru_stime": 30.37735,
+   "ru_maxrss": 19577143296,
+   "ru_minflt": 9941718,
+   "ru_majflt": 3525,
+   "ru_nvcsw": 13334,
+   "ru_nivcsw": 47016
+  },
+  "thread_caps_in_child_env": {
+   "OMP_NUM_THREADS": "1",
+   "MKL_NUM_THREADS": "1",
+   "OPENBLAS_NUM_THREADS": "1",
+   "VECLIB_MAXIMUM_THREADS": "1",
+   "NUMEXPR_NUM_THREADS": "1"
+  }
+ },
+ "cycle_status": "watchdog_abort",
+ "cycle_abort": {
+  "cause": "process-tree memory above 24.00 GiB (25769803776 bytes)",
+  "stage_at_abort": "init: DSO build + solve",
+  "rss_reached": {
+   "t": 933.154,
+   "stage": "init: DSO build + solve",
+   "rss_self": 15925100544,
+   "rss_children": 0,
+   "n_children": 0,
+   "rss_tree": 15925100544,
+   "footprint_self": 25782963472,
+   "measure": 25782963472,
+   "sys_available": 12137349120,
+   "sys_used_pct": 64.7,
+   "swap_used": 262144
+  },
+  "elapsed_s": 933.162
+ },
+ "parent_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "scale_measurement": {
+  "instance": "paper",
+  "label": "paper_cycle_snapoff_r1",
+  "snapshots_requested": "off",
+  "snapshot_setting_build": {
+   "requested": "off",
+   "tso_mode_before": "lightweight",
+   "dso_mode_before": "lightweight",
+   "tso_mode_after": "off",
+   "dso_mode_after": "off",
+   "expected": [
+    "off",
+    "off"
+   ],
+   "took_effect": true,
+   "persistent_workers_enabled": false
+  },
+  "snapshot_setting_cycle": null,
+  "case_file_anderson_acceleration_declared": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "anderson_acceleration_effective_cycle": null,
+  "anderson_acceleration_effective_build": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "timing_s": {
+   "build_child_wall_s": 300.3366918563843,
+   "build_stage_wall_s": 232.837,
+   "initialization_s": null,
+   "one_cycle_s": null,
+   "one_cycle_production_printed_s": null,
+   "run_admm_arm_wall_clock_s": null,
+   "cycle_child_wall_s": 933.9559640884399
+  },
+  "peak_rss_bytes": {
+   "build_child_watchdog_peak": {
+    "measure": 19621903000,
+    "rss_tree": 16096362496,
+    "rss_self": 16096362496,
+    "footprint_self": 19621903000,
+    "stage_at_peak_measure": "model counting (len per component type, all models; deep iteration, all models)",
+    "t_at_peak_measure": 240.519
+   },
+   "build_child_parent_observed_peak": {
+    "measure": 19621919384,
+    "rss_tree": 16274784256
+   },
+   "cycle_child_watchdog_peak": null,
+   "cycle_child_parent_observed_peak": {
+    "measure": 25746394360,
+    "rss_tree": 19534757888
+   },
+   "cycle_child_ru_maxrss_self": null,
+   "cycle_child_ru_maxrss_children_ipopt": null,
+   "watchdog_limit_bytes": 25769803776
+  },
+  "objective_scale": {
+   "sigma_fixed": null,
+   "sigma_computed": null,
+   "ratio_sigma_computed_over_fixed": null,
+   "assert_factor": null,
+   "calibration_check_passed": null,
+   "al_scale_esso": null
+  },
+  "solves": {
+   "declared_base": null,
+   "derivation": null,
+   "solves_per_cycle": null,
+   "recovered_tier1": null,
+   "recovered_tier2": null,
+   "reconciled_expected": null,
+   "observed": null,
+   "identity": null,
+   "identity_holds": null,
+   "guard_verify_failures": null,
+   "build_child_zero_solve_guard": {
+    "permitted": [],
+    "counts": {
+     "permitted_solve": 0,
+     "permitted_exec": 0,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "declared_solves": 0,
+    "verify_failures": []
+   }
+  },
+  "failures": {
+   "n_blocks_with_failures": null,
+   "classes": null,
+   "n_frozen_snapshots": null,
+   "n_esso_recovery_events": null,
+   "local_solves_ok_cycle_1": null
+  }
+ },
+ "exit_code": 97,
+ "ended_utc": "2026-09-20T00:09:53.797303+00:00"
+}
