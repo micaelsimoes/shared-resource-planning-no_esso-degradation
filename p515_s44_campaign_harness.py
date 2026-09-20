@@ -110,6 +110,14 @@ a post-certification reference is D iff its EFFECTIVE AA is off (declaration +
 overrides; undeclared records: no overrides); error / parent-synthesized
 records carry `anderson_acceleration_effective_in_child` and
 `case_file_sha256_in_child` (None when unknowable).
+Addendum 27 (W14, the A1 year ladder): an entry may carry `investment_year` --
+the SINGLE cohort year its candidate is placed at (`canonical_candidate`, hence
+the candidate key); omitted => 2025, so every pre-W14 spec key, eval key, eval
+dir and working-dir id is byte-identical. The child validates the year against
+THIS instance's investment years (`instance_investment_years`, read from the
+shared-ESS data, not a literal) and forwards it to `run_admm_arm`, which writes
+`candidate['investment'][node][year]` there. Multi-cohort (staging) candidates
+are NOT supported.
 AFTER the run, in the child, inside `run_admm_arm`'s post_run_hook (same live
 models/state), `run_post_certification` does, only if the trajectory is
 certified under the spec's bar (else it records `status: skipped` + reason):
@@ -179,7 +187,9 @@ SUPPORTED_AA_OVERRIDE_SUBKEYS = frozenset({'enabled', 'reject_policy'})
 FROZEN_AA_MEMORY = 5
 FROZEN_AA_REGULARIZATION = 1e-10
 POST_CERTIFICATION_KEYS = frozenset({'persist_certified_models', 'hull_polish', 'reference'})
-EVALUATION_OPTION_KEYS = frozenset({'overrides', 'post_certification'})
+# Addendum 27 (W14): 'investment_year' is the SINGLE cohort year this evaluation's candidate is
+# placed at; omitted => INVESTMENT_YEAR (2025), so every spec frozen before W14 is unchanged.
+EVALUATION_OPTION_KEYS = frozenset({'overrides', 'post_certification', 'investment_year'})
 ACTIVE_NODES = (5, 7, 9)
 INVESTMENT_YEAR = 2025
 BAR_WINDOW = 10  # STEP4 2.5: "its bar (max objective step over the last 10 cycles)"
@@ -289,6 +299,20 @@ def candidate_key(canonical):
 
 def investment_map_from_canonical(canonical):
     return {int(n): (v[0], v[1]) for n, v in canonical['nodes'].items()}
+
+
+def investment_year_from_canonical(canonical):
+    """The SINGLE cohort year of a canonical candidate (Addendum 27, W14)."""
+    return int(canonical['investment_year'])
+
+
+def instance_investment_years():
+    """THIS instance's investment years, read from the shared-ESS data of the
+    baseline planning problem (`p56a_oracle.load_baseline`, cached, zero solves)
+    -- never a literal. CHILD-SIDE ONLY: the parent imports no model code on the
+    evaluation path, so this import is local to the function."""
+    import p56a_oracle as O  # local: model code, child side only
+    return [int(y) for y in O.load_baseline()['planning'].shared_ess_data.years]
 
 
 def eval_ids(campaign_id, key):
@@ -502,6 +526,11 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         `validate_overrides`: the AA flag and its reject-policy only);
       - 'post_certification': {'persist_certified_models': bool, 'hull_polish':
         bool, 'reference': {'eval_dir': ...} | None} (`resolve_post_certification`).
+      - 'investment_year' (Addendum 27, W14): the SINGLE cohort year this
+        candidate is placed at; omitted => `INVESTMENT_YEAR` (2025). It enters
+        the canonical form (`canonical_candidate`), hence the candidate key --
+        the canonical SHAPE is unchanged, so every key of every spec frozen
+        before W14 is byte-identical. Multi-cohort candidates are not supported.
     One entry = one EVALUATION: its `eval_key` (`evaluation_key`) identifies
     candidate x configuration; labels and eval keys must be unique (the same
     candidate may appear under two configurations)."""
@@ -521,7 +550,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         if bad:
             raise ValueError(f'unsupported evaluation options {bad} for {label}; supported: '
                              f'{sorted(EVALUATION_OPTION_KEYS)}')
-        canon = canonical_candidate(cand)
+        canon = canonical_candidate(cand, investment_year=options.get('investment_year',
+                                                                      INVESTMENT_YEAR))
         key = candidate_key(canon)
         eff_overrides = validate_overrides(options['overrides']) if 'overrides' in options else dict(overrides)
         ekey = evaluation_key(key, eff_overrides, case_file_aa=case_file_aa)
@@ -761,13 +791,25 @@ def _entry_eval_key(entry):
 def _spec_candidate(ctx, candidate):
     """Resolve one batch item to its spec entry: a str is an evaluation LABEL;
     a dict is a candidate, which must then match exactly one entry (a candidate
-    listed under two configurations must be named by label)."""
+    listed under two configurations must be named by label).
+
+    Addendum 27 (W14): a candidate dict carrying the key `investment_year` is read
+    as the CANONICAL shape `{'investment_year': y, 'nodes': {node: (s, e)}}`; a
+    plain `{node: (s, e)}` map keeps its pre-W14 meaning exactly (year 2025)."""
     if isinstance(candidate, str):
         hits = [e for e in ctx.spec['candidates'] if e['label'] == candidate]
         if len(hits) != 1:
             raise ValueError(f'evaluation label {candidate!r} is not (uniquely) in the frozen campaign spec')
         return hits[0]
-    canon = canonical_candidate(candidate)
+    if 'investment_year' in candidate:
+        if set(candidate) != {'investment_year', 'nodes'}:
+            raise ValueError("a candidate naming 'investment_year' must be "
+                             "{'investment_year': y, 'nodes': {node: (s, e)}}; got keys "
+                             f'{sorted(candidate)}')
+        canon = canonical_candidate(candidate['nodes'],
+                                    investment_year=candidate['investment_year'])
+    else:
+        canon = canonical_candidate(candidate)
     key = candidate_key(canon)
     hits = [e for e in ctx.spec['candidates'] if e['key'] == key]
     if len(hits) > 1:
@@ -1532,9 +1574,14 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             raise RuntimeError(f'working dir id already used (never reusable): {eid}')
     label = spec['configuration']['arm_label']
     investment_map = investment_map_from_canonical(entry['canonical'])
-    if entry['canonical']['investment_year'] != G.N.INVEST_YEAR:
-        raise RuntimeError(f"candidate investment year {entry['canonical']['investment_year']} != "
-                           f'run_admm_arm investment year {G.N.INVEST_YEAR}')
+    # Addendum 27 (W14): the candidate carries its own SINGLE cohort year. It must be one of
+    # THIS instance's investment years, read from the shared-ESS data rather than compared to
+    # the 2025 literal `G.N.INVEST_YEAR`; anything else still raises before any solve.
+    investment_year = investment_year_from_canonical(entry['canonical'])
+    instance_years = instance_investment_years()
+    if investment_year not in instance_years:
+        raise RuntimeError(f'candidate investment year {investment_year} is not one of the instance '
+                           f'investment years {instance_years}')
 
     _cc, floor_rows_by_node, _fc = _build_floor_rows(ids['precheck'])
     paths = {
@@ -1593,7 +1640,8 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             label, eval_dir, k_override=None, investment_map=investment_map,
             num_max_iters_override=int(spec['cap']), eval_id=ids['run'], apply_rho=False,
             full_diagnostics_in_rows=True, post_run_hook=post_run_hook,
-            pre_solve_hook=_config_hook_factory(spec, holder, overrides=eff_overrides))
+            pre_solve_hook=_config_hook_factory(spec, holder, overrides=eff_overrides),
+            investment_year=investment_year)
     run_wall = time.time() - t0
 
     rows = report.get('cycle_trajectory') or []

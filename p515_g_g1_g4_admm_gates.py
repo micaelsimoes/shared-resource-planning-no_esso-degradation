@@ -1058,7 +1058,8 @@ def _group_diagnostics_by_round(diagnostics, n_active_nodes, cycles_run):
 
 def _construct_arm_planning(label, out_dir, report, k_override=None,
                              investment_map=None, eval_id=None,
-                             num_max_iters_override=None, apply_rho=True):
+                             num_max_iters_override=None, apply_rho=True,
+                             investment_year=None):
     """G2PREP: everything `run_admm_arm` does up to (NOT including) the
     `planning.run_operational_planning(...)` call -- eval-dir freshness check,
     `O.fresh_planning`, Fix 1's `results_dir` redirection (away from the shared
@@ -1078,6 +1079,16 @@ def _construct_arm_planning(label, out_dir, report, k_override=None,
     spec ("the harness MUST NOT apply p514_n_instrumented_cstar.RHO").
     Defaults to True so every other arm (g1, g2, s31, s31c, ...) is
     unaffected.
+
+    `investment_year` (Addendum 27, W14): the SINGLE cohort year the candidate's
+    capacity is written into (`candidate['investment'][node][year]`). None (the
+    default) means `N.INVEST_YEAR` (2025), so every existing arm is byte-identical
+    -- `report['instance']` included, since its `'year'` is the same 2025 value.
+    The year must be one of THIS instance's investment years, read from the
+    shared-ESS data (`sed.years`), never from a literal; anything else raises.
+    Multi-cohort (staging) candidates are NOT supported here: exactly one cohort
+    year is written, and `srp._rebuild_candidate_total_capacities` then propagates
+    it forward over the cohort's calendar life.
     """
     eval_name = eval_id if eval_id is not None else f'p515g_{label}'
     if eval_id is not None and os.path.exists(os.path.join(O.WORK_DIR, eval_id)):
@@ -1127,18 +1138,25 @@ def _construct_arm_planning(label, out_dir, report, k_override=None,
     report['k_in_force'] = {str(y): getattr(sed.shared_energy_storages[y][0], 'cl_eff', None)
                             for y in sed.years}
 
+    # Addendum 27 (W14): the cohort year the candidate is written into. Validated against
+    # THIS instance's investment years (shared-ESS data), not against a literal.
+    invest_year = N.INVEST_YEAR if investment_year is None else int(investment_year)
+    if invest_year not in list(sed.years):
+        raise ValueError(f'investment year {invest_year} is not one of the instance investment '
+                         f'years {list(sed.years)}')
+
     candidate = planning.get_initial_candidate_solution()
     if investment_map is None:
         for node_id in sed.active_distribution_network_nodes:
-            candidate['investment'][node_id][N.INVEST_YEAR]['s'] = N.S_INV
-            candidate['investment'][node_id][N.INVEST_YEAR]['e'] = N.E_INV
-        report['instance'] = {'s_mva': N.S_INV, 'e_mwh': N.E_INV, 'year': N.INVEST_YEAR,
+            candidate['investment'][node_id][invest_year]['s'] = N.S_INV
+            candidate['investment'][node_id][invest_year]['e'] = N.E_INV
+        report['instance'] = {'s_mva': N.S_INV, 'e_mwh': N.E_INV, 'year': invest_year,
                                'assignment': 'uniform across active nodes (control/perturbation)'}
     else:
         for node_id, (s_val, e_val) in investment_map.items():
-            candidate['investment'][node_id][N.INVEST_YEAR]['s'] = s_val
-            candidate['investment'][node_id][N.INVEST_YEAR]['e'] = e_val
-        report['instance'] = {'year': N.INVEST_YEAR, 'assignment': 'per-node',
+            candidate['investment'][node_id][invest_year]['s'] = s_val
+            candidate['investment'][node_id][invest_year]['e'] = e_val
+        report['instance'] = {'year': invest_year, 'assignment': 'per-node',
                                'investment_map': {str(k): v for k, v in investment_map.items()}}
     srp._rebuild_candidate_total_capacities(planning, candidate)
     return planning, sed, candidate
@@ -1146,7 +1164,8 @@ def _construct_arm_planning(label, out_dir, report, k_override=None,
 
 def run_admm_arm(label, out_dir, k_override=None, investment_map=None,
                   num_max_iters_override=None, eval_id=None, post_run_hook=None,
-                  apply_rho=True, full_diagnostics_in_rows=False, pre_solve_hook=None):
+                  apply_rho=True, full_diagnostics_in_rows=False, pre_solve_hook=None,
+                  investment_year=None):
     """One full cold ADMM arm through the production path, reusing p514_n's own
     module-level constants and capture helpers verbatim. `investment_map`, if given,
     overrides the uniform S_INV/E_INV assignment for specific node_ids (others left at
@@ -1179,6 +1198,9 @@ def run_admm_arm(label, out_dir, k_override=None, investment_map=None,
 
     `apply_rho`: forwarded to `_construct_arm_planning` (see its docstring).
     Defaults to True so every arm other than s32 is unaffected.
+
+    `investment_year`: forwarded to `_construct_arm_planning` (see its docstring).
+    Defaults to None = `N.INVEST_YEAR` (2025), so every existing arm is unaffected.
 
     `full_diagnostics_in_rows` (P5.15 Step 3.2+3.3(a), s32 arm): when True,
     each trajectory row is the RAW `admm_diagnostics` entry (every Boyd field
@@ -1229,7 +1251,7 @@ def run_admm_arm(label, out_dir, k_override=None, investment_map=None,
                 label, out_dir, report, k_override=k_override,
                 investment_map=investment_map, eval_id=eval_id,
                 num_max_iters_override=num_max_iters_override,
-                apply_rho=apply_rho)
+                apply_rho=apply_rho, investment_year=investment_year)
 
             if pre_solve_hook is not None:
                 pre_solve_hook(planning=planning, sed=sed, candidate=candidate, report=report)
