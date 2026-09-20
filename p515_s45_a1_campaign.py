@@ -28,15 +28,19 @@ FOUR STAGES (`--stage`), one campaign root and one frozen spec each:
        Spec v15 A2 also names 2 STAGING points: NOT available here, see
        `STAGING_NOT_AVAILABLE` -- the launcher refuses such a point instead of
        mis-specifying it as single-cohort.
-  a3   <= 4 points -- resolution probe around the incumbent: (P*, E* +- 0.5) and
-       (P* +- 0.25, E*); a proposal is kept only if 2 <= E/P <= 4, E <= 5, P and
-       E on the 0.25 MVA / 0.5 MWh lattice and the candidate is not already
-       evaluated (spec v15 `execution.cache`: a cache hit never re-evaluates).
-       Every dropped proposal is recorded with its reason.
-a1b, a2 and a3 are implemented but NOT frozen by W15: their points are functions
-of the PRIOR stages' outcomes, so each `--freeze` reads the prior stages'
-COMMITTED `campaign_results.json`, pins them by sha256, recomputes the selection
-rule and records every input it used.
+  a3    5 points -- the resolution ladder at node 7 (0.25 MVA / 0.5 MWh lattice
+       step), FIXED by the Planner (task W17) to the 5 BUDGET-FEASIBLE
+       candidates of the 14 priced by W16: (P, E) = (0.5, 1.5), (0.75, 1.5),
+       (0.75, 2.5), (1.0, 2.5), (1.25, 2.5) MVA/MWh at node 7 alone, 2025. The
+       other 9 were excluded by Planner decision (all above 3.5 MWh, where
+       I(x) > B = 1e6). `A3_SELECTION_RULE` / `A3_PURPOSE` / `A3_ANCHOR_RULE`
+       carry the rule, the purpose (measure sigma_Q at the lattice step) and
+       the x = 0 incumbent ruling; the anchor is still COMPUTED and the freeze
+       refuses if it is not the Planner-declared one.
+a1b, a2 and a3 are implemented but NOT frozen by W15: their points (a1b, a2) or
+their anchor and provenance (a3) are functions of the PRIOR stages' outcomes, so
+each `--freeze` reads the prior stages' COMMITTED `campaign_results.json`, pins
+them by sha256, recomputes the selection rule and records every input it used.
 
 SELECTION RULES (frozen in spec v15 A1/A3; implemented here so that nothing is
 decided by judgement at run time). F(x) = I(x) + Q(x), Q = the certified
@@ -45,7 +49,12 @@ decided by judgement at run time). F(x) = I(x) + Q(x), Q = the certified
                               (then, if still tied, the lower label: recorded).
   * best setting for node n = argmin F within node n's a1a ladder (same tie rule).
   * incumbent               = argmin F over everything certified so far (A0 +
-                              a1a + a1b + a2 as available; same tie rule).
+                              a1a + a1b; same tie rule). It is x = 0.
+  * A3 anchor               = the incumbent when it is non-zero; when it is
+                              x = 0 (the case here), the best NON-ZERO point of
+                              A1's ladders (`A3_ANCHOR_RULE`, Planner ruling
+                              W17). The best non-zero over ALL prior stages is
+                              recorded beside it with the difference.
 
 BATCHING AND STOP RULE. Waves of `CONCURRENCY` (7) points in spec order (a1a:
 5 waves = 7+7+7+7+2); the stop rule is evaluated after every wave, and points
@@ -68,9 +77,13 @@ spec (`A0_SPEC`), so the two launchers cannot drift apart silently.
 RECORDED PER POINT in campaign_results.json: status, certification cycle, Q
 (gross, settlement-excluded), the bar (gross-step definition), the rule-ten
 terminal-step-to-threshold ratio, terminal_salvage_value, net operational
-recourse, I(x) for that candidate AND year (from W2's committed
-`investment_cost/investment_cost_results.json`, 9e623dd3, matched by candidate
-key -- every point must be found), F = I + Q, the budget slack at B = 1e6 EUR
+recourse, I(x) for that candidate AND year (from the ORDERED list of pinned
+I(x) tables `I_X_SOURCES`: W2's committed
+`investment_cost/investment_cost_results.json` (9e623dd3) first, then W16's
+`investment_cost_a2a3/investment_cost_a2a3_results.json` (1f2ca6f7) -- matched
+by candidate key, every point must be found, a key held by more than one source
+must agree EXACTLY on I(x), and the source used is recorded per point),
+F = I + Q, the budget slack at B = 1e6 EUR
 (REPORTED, never applied: spec v15 master_constraints.budget), wall time, peak
 RSS, the AA action counts and the per-cycle trajectory path (+ sha256).
 OBJECTIVE CONVENTION on every table: F uses GROSS; salvage is reported
@@ -105,6 +118,10 @@ EXACT COMMANDS (repo root, canonical interpreter):
     /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s45_a1_campaign.py \\
         --stage a1a --run --spec-sha256 <sha256 printed by --freeze> \\
         > data/SRP1/Results/P515S45/campaign_s45_a1a_launch.log 2>&1
+  the same two commands with `--stage a1b`, `--stage a2`, `--stage a3` and that
+  stage's log name (`campaign_s45_<stage>_freeze_launch.log` /
+  `campaign_s45_<stage>_launch.log`); each --run takes the sha256 its own
+  --freeze printed. One stage at a time, attached, never detached.
 """
 
 import argparse
@@ -148,6 +165,37 @@ INVESTMENT_COST_RESULTS = {'path': os.path.join(_P45, 'investment_cost', 'invest
                            'sha256': '28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b',
                            'commit': '9e623dd304837f2632964f47130d0860c1f016ca',
                            'field': 'candidates.<label>.I_new_eur (corrected cost file), matched by candidate_key'}
+INVESTMENT_COST_RESULTS_A2A3 = {
+    'path': os.path.join(_P45, 'investment_cost_a2a3', 'investment_cost_a2a3_results.json'),
+    'sha256': 'a7e3cca5564d4a77e93ba32d2bc48a029b9001ffd2894aa033fc0d70e51dff19',
+    'commit': '1f2ca6f79f181a18f82ec513f38c4c11647d1e7a',
+    'field': 'candidates.<label>.I_new_eur (corrected cost file), matched by candidate_key'}
+# ORDERED list of pinned I(x) sources (Planner task W17 item 1): searched in this order, the FIRST source that
+# holds the candidate key supplies I(x); a key present in more than one source must agree EXACTLY on I(x) or the
+# freeze fails loudly. Each point records which source its I(x) came from and what every source holding it says.
+# The two tables use different field names for the same quantities, so each source declares its own field map.
+I_X_SOURCES = (
+    dict(INVESTMENT_COST_RESULTS, name='w2_frozen_table', order=1,
+         produced_by='p515_s45_investment_cost_recompute.py (task W2)',
+         covers=('x = 0, the reference plans (paper plan, C*, lattice plan, lattice C*, 2 x C*, node7_empty) and '
+                 'the SINGLE-NODE ladders at 2025 / 2030 / 2035'),
+         fields={'I_x_eur': 'I_new_eur', 'budget_slack_eur': 'slack_new_eur', 'I_power_eur': 'I_new_power_eur',
+                 'I_energy_eur': 'I_new_energy_eur', 'budget_feasible': 'budget_feasible_new',
+                 'first_stage_feasible': 'first_stage_feasible_new_production_check'}),
+    dict(INVESTMENT_COST_RESULTS_A2A3, name='w16_a2a3_table', order=2,
+         produced_by='p515_s45_investment_cost_a2a3.py (task W16); SECOND, ADDITIVE table, the first is unchanged',
+         covers=('the A2 presence design (4 multi-node points) + the lattice C* (reused from the first table) and '
+                 'the 14 new node-7 A3 resolution candidates at 2025'),
+         fields={'I_x_eur': 'I_new_eur', 'budget_slack_eur': 'budget_slack_B_minus_I_eur',
+                 'I_power_eur': 'I_new_power_eur', 'I_energy_eur': 'I_new_energy_eur',
+                 'budget_feasible': 'budget_feasible',
+                 'first_stage_feasible': 'first_stage_feasible_production_check'}),
+)
+I_X_SOURCE_RULE = ('I(x) is read from an ORDERED list of pinned I(x) tables (path + sha256 in this spec): '
+                   + ' then '.join(f'{s["order"]}. {s["name"]} ({s["path"]})' for s in I_X_SOURCES)
+                   + '. The first source holding the candidate key supplies I(x); a key held by more than one '
+                     'source must agree EXACTLY on I(x) (any disagreement fails the freeze); every point records '
+                     'the source used and the value each holding source gives.')
 # A0's frozen spec: the source of the memory-preflight rule text and of the shared campaign settings.
 A0_SPEC = {'path': os.path.join(_P45, 'campaign_s45_a0_c7', 'campaign_spec_s45_a0_c7_9d08ad2f.json'),
            'sha256': '9d08ad2f144b67ea97dae8dc25d91288fc86a77dd52c7f53276a52c5f00f8b34'}
@@ -198,6 +246,10 @@ AUTHORITY = [
     'Planner task W15: stages a1a/a1b/a2/a3, the operational stop rule, the selection rules as code',
     'Planner decision W6: Phase A concurrency 7, memory preflight wired + anonymous + compressor-occupied',
     'W14 (85c147fa): per-point investment_year in the campaign harness (2030 / 2035 verified)',
+    'W16 (1f2ca6f7): the second, additive I(x) table for the A2 presence design and the A3 resolution '
+    'candidates, and the zero-solve sigma_Q estimate from the existing ladders',
+    'Planner task W17: the ordered list of pinned I(x) sources; the Planner-fixed a3 point set (the 5 '
+    'budget-feasible resolution candidates); the x = 0 incumbent / anchor ruling for A3',
 ]
 EXTRA_CLEAN_FILES = (os.path.basename(__file__), 'p515_s45_a0_campaign.py', 'p515_s45_harness_phasea_check.py')
 
@@ -449,9 +501,9 @@ def _evaluated_keys(records):
 
 
 def _refuse_cache_hits(stage, points, records):
-    """spec v15 execution.cache: a cache hit never re-evaluates. For a1b / a2 a repeat is a specification
-    error, so the freeze REFUSES (the Planner removes the point or reuses the prior record); a3 drops its
-    own repeats instead (see _a3_points), because its proposals are generated, not specified."""
+    """spec v15 execution.cache: a cache hit never re-evaluates. For a1b / a2 / a3 a repeat is a specification
+    error, so the freeze REFUSES (the Planner removes the point or reuses the prior record). a3's points are
+    Planner-specified since W17, so it is refused there too rather than silently dropped."""
     seen = _evaluated_keys(records)
     hits = [(label, seen[_key_of(nodes, year)]) for label, nodes, year in points
             if _key_of(nodes, year) in seen]
@@ -514,59 +566,160 @@ def build_a2_points(records):
     return points, provenance
 
 
-def _a3_proposals(power, energy):
-    return (('E_plus', power, energy + LATTICE_E_STEP),
-            ('E_minus', power, energy - LATTICE_E_STEP),
-            ('P_plus', power + LATTICE_P_STEP, energy),
-            ('P_minus', power - LATTICE_P_STEP, energy))
+# ---- stage a3: the Planner-fixed resolution set (task W17 item 4) ----------------------------------------------
+A3_NODE = 7
+A3_YEAR = 2025
+A3_POINTS_P_E_MVA_MWH = ((0.5, 1.5), (0.75, 1.5), (0.75, 2.5), (1.0, 2.5), (1.25, 2.5))
+A3_PLANNER_DECLARED_ANCHOR_LABEL = 'n7_4h_e1'
+A3_SELECTION_RULE = (
+    'Planner task W17 item 4 (replacing the generated probe of W15): the a3 points are FIXED by the Planner to the '
+    'five BUDGET-FEASIBLE candidates of the 14 new node-7 resolution candidates priced by W16 '
+    '(data/SRP1/Results/P515S45/investment_cost_a2a3/investment_cost_a2a3_results.json, 1f2ca6f7): '
+    '(P, E) = (0.5, 1.5), (0.75, 1.5), (0.75, 2.5), (1.0, 2.5), (1.25, 2.5) MVA/MWh at node 7 ALONE, the other '
+    'active nodes zero, investment year 2025. The remaining 9 of W16\'s 14 were EXCLUDED BY PLANNER DECISION '
+    'because they all lie above 3.5 MWh, where I(x) exceeds the EUR 1e6 budget (B - I(x) < 0 for every one of '
+    'them; see points_provenance.w16_a3_candidates.excluded), so the budget of Phase B could never reach them. '
+    'The two single-P-step '
+    'neighbours of the anchor are not new points either: P* + 0.25 = 0.5 MVA at E* = 1.0 MWh is a CACHE HIT '
+    '(a1a:n7_2h_e1, spec v15 execution.cache: a cache hit never re-evaluates) and P* - 0.25 = 0 MVA does not exist '
+    '(P = 0 <=> E = 0).')
+A3_ANCHOR_RULE = (
+    'A3 anchor (Planner ruling, task W17 item 2). The incumbent = argmin F over everything certified so far is '
+    'recorded as always. When the incumbent is x = 0 -- as it is here: no storage point beats x0 by F -- the '
+    'resolution probe cannot be centred on it (a zero candidate has no P*, E* to step around), and W15\'s builder '
+    'raised. The Planner ruling is that in that case the A3 anchor is the BEST NON-ZERO POINT, argmin F over the '
+    'certified non-zero candidates. The scope of that argmin is A1\'s ladders (stages a1a and a1b), which is what '
+    'spec v15 A3 names: "resolution probe folded into A1\'s best ladder". The argmin over ALL pinned prior stages '
+    '(A0 included) is computed and recorded beside it, with the difference, so the scope is visible rather than '
+    'implied. Both the incumbent and the anchor are recorded; the freeze fails if the computed anchor is not the '
+    f'one the Planner declared ({A3_PLANNER_DECLARED_ANCHOR_LABEL}).')
+A3_PURPOSE = (
+    'Purpose (Planner task W17 item 4): measure sigma_Q at the 0.5 MWh / 0.25 MVA lattice resolution IN THE '
+    'BUDGET-FEASIBLE REGION, replacing the provisional 1.1e-4 of STEP4_DFO_METHOD.md 4.3. W16\'s zero-solve '
+    'estimate from the existing 1 MWh ladders gives sigma_Q max 28,208.38 EUR (4.319e-05 of Q), median '
+    '14,374.98 EUR (2.200e-05), min 5,208.63 EUR over 10 ladders, i.e. 0.393 / 0.200 of the provisional figure; '
+    'and in 5 of those 10 ladders sigma_Q is NOT separated from the per-point bar (the harness bar, max over the '
+    'last 10 cycles of the gross-cost step). A3 measures it on a ladder actually spaced at the lattice step.')
+
+
+def select_a3_anchor(records):
+    """The incumbent and the A3 anchor (A3_ANCHOR_RULE). Returns (anchor_record, evidence); the anchor is the
+    incumbent itself when the incumbent is non-zero, and the best non-zero A1-ladder point when it is x = 0."""
+    incumbent = select_incumbent(records)
+    non_zero = [r for r in records if r['status'] == 'certified' and r.get('F_eur') is not None and r['nodes']]
+    best_all, evidence_all = _argmin_F(non_zero, 'best NON-ZERO certified point over every pinned prior stage '
+                                                 '(recorded for scope, not used as the anchor); ties -> lower I(x)')
+    a1_ladders = [r for r in non_zero if r['stage'] in ('a1a', 'a1b')]
+    best_a1, evidence_a1 = _argmin_F(a1_ladders, 'A3 anchor = argmin F over the certified NON-ZERO points of A1\'s '
+                                                 'ladders (stages a1a, a1b); ties -> lower I(x)')
+    incumbent_is_zero = not incumbent['nodes']
+    anchor = best_a1 if incumbent_is_zero else incumbent['record']
+    evidence = {
+        'rule': A3_ANCHOR_RULE,
+        'incumbent': {k: v for k, v in incumbent.items() if k != 'record'},
+        'incumbent_is_x0': incumbent_is_zero,
+        'anchor_label': anchor['label'], 'anchor_stage': anchor['stage'],
+        'anchor_candidate_key': anchor['candidate_key'], 'anchor_nodes': anchor['nodes'],
+        'anchor_investment_year': anchor['investment_year'], 'anchor_F_eur': anchor['F_eur'],
+        'anchor_I_x_eur': anchor['I_x_eur'], 'anchor_Q_gross_eur': anchor['Q_gross_eur'],
+        'anchor_selection_evidence': evidence_a1,
+        'best_non_zero_over_all_prior_stages': {
+            'label': best_all['label'], 'stage': best_all['stage'], 'nodes': best_all['nodes'],
+            'F_eur': best_all['F_eur'], 'I_x_eur': best_all['I_x_eur'], 'Q_gross_eur': best_all['Q_gross_eur'],
+            'equals_anchor': best_all['label'] == anchor['label'],
+            'F_minus_anchor_F_eur': best_all['F_eur'] - anchor['F_eur'],
+            'note': ('recorded for scope: if this differs from the anchor, the A1-ladder scope of spec v15 A3 is '
+                     'what decided, and the difference is stated here rather than left implicit'),
+            'evidence': evidence_all},
+        'planner_declared_anchor_label': A3_PLANNER_DECLARED_ANCHOR_LABEL,
+        'computed_anchor_equals_planner_declaration': anchor['label'] == A3_PLANNER_DECLARED_ANCHOR_LABEL,
+    }
+    if anchor['label'] != A3_PLANNER_DECLARED_ANCHOR_LABEL:
+        raise SystemExit(f'[S45-A1 REFUSED] stage a3: the computed A3 anchor is {anchor["label"]!r} '
+                         f'(F = {anchor["F_eur"]}), not the Planner-declared anchor '
+                         f'{A3_PLANNER_DECLARED_ANCHOR_LABEL!r}. {A3_ANCHOR_RULE}')
+    return anchor, evidence
+
+
+def _a3_w16_candidate_context(selected_labels):
+    """The A3 section of W16's pinned table: which of its 14 new candidates this stage keeps and which the
+    Planner excluded, each with I(x), the budget slack and the feasibility the table records."""
+    with open(os.path.join(REPO, INVESTMENT_COST_RESULTS_A2A3['path'])) as handle:
+        table = json.load(handle)
+    summary = table['A3_resolution_points']['summary']
+    cands = table['candidates']
+    kept, excluded = [], []
+    for label in summary['new_labels']:
+        entry = cands.get(label) or {}
+        item = {'label': label, 'nodes_nonzero': entry.get('nodes_nonzero'),
+                'investment_year': entry.get('investment_year'),
+                'I_x_eur': entry.get('I_new_eur'), 'budget_slack_eur': entry.get('budget_slack_B_minus_I_eur'),
+                'budget_feasible': entry.get('budget_feasible'),
+                'first_stage_feasible_production_check': entry.get('first_stage_feasible_production_check')}
+        (kept if label in selected_labels else excluded).append(item)
+    return {'source': dict(INVESTMENT_COST_RESULTS_A2A3),
+            'w16_rule': summary.get('rule'),
+            'n_proposals_considered': summary.get('n_proposals_considered'),
+            'n_new_in_w16': summary.get('n_new'), 'n_kept_here': len(kept), 'n_excluded_here': len(excluded),
+            'already_evaluated_labels': summary.get('already_evaluated_labels'),
+            'kept': kept, 'excluded': excluded,
+            'exclusion_reason': ('excluded by Planner decision (task W17): every excluded candidate lies above '
+                                 f'3.5 MWh and has I(x) > B = {BUDGET_EUR:g} EUR (budget slack negative), so the '
+                                 'budget cannot reach it'),
+            'all_excluded_are_budget_infeasible': all(item['budget_feasible'] is False for item in excluded),
+            'all_kept_are_budget_feasible': all(item['budget_feasible'] is True for item in kept),
+            'sigma_Q_estimate_from_w16': {k: table['sigma_Q_estimate'].get(k) for k in (
+                'n_ladders', 'sigma_Q_max_eur', 'sigma_Q_median_eur', 'sigma_Q_min_eur', 'sigma_Q_max_fraction',
+                'sigma_Q_median_fraction', 'provisional_fraction', 'ratio_estimate_max_over_provisional',
+                'ratio_estimate_median_over_provisional')}}
 
 
 def build_a3_points(records):
-    """The resolution probe around the incumbent: (P*, E* +- 0.5) and (P* +- 0.25, E*), each KEPT only if
-    2 <= E/P <= 4, E <= 5 and both coordinates are on the lattice; a proposal already evaluated is dropped
-    (spec v15 execution.cache). Every drop is recorded with its reason."""
-    incumbent = select_incumbent(records)
-    node, power, energy = _single_node(incumbent['record'], 'A3 incumbent')
-    year = incumbent['investment_year']
-    seen = _evaluated_keys(records)
-    kept, dropped = [], []
-    for direction, new_p, new_e in _a3_proposals(power, energy):
+    """The Planner-fixed resolution set at node 7 (A3_SELECTION_RULE), with the incumbent and the anchor
+    recorded (A3_ANCHOR_RULE). Every point is checked against the lattice, the duration band and the maximum
+    capacity, and refused (not silently dropped) if it fails one: the set is specified, not generated."""
+    anchor, anchor_evidence = select_a3_anchor(records)
+    points, admissibility = [], []
+    for power, energy in A3_POINTS_P_E_MVA_MWH:
         reasons = []
-        if new_p <= 0.0 or new_e <= 0.0:
-            reasons.append(f'P = {new_p:g}, E = {new_e:g}: not both positive (P = 0 <=> E = 0)')
-        else:
-            duration = new_e / new_p
-            if not (DURATION_MIN_H - TOL <= duration <= DURATION_MAX_H + TOL):
-                reasons.append(f'duration E/P = {duration:.6g} h outside [{DURATION_MIN_H:g}, {DURATION_MAX_H:g}]')
-        if new_e > MAX_ENERGY_MWH + TOL:
-            reasons.append(f'E = {new_e:g} > {MAX_ENERGY_MWH:g} MWh (max_capacity)')
-        if not _on_lattice(new_p, LATTICE_P_STEP):
-            reasons.append(f'P = {new_p:g} not on the {LATTICE_P_STEP:g} MVA lattice')
-        if not _on_lattice(new_e, LATTICE_E_STEP):
-            reasons.append(f'E = {new_e:g} not on the {LATTICE_E_STEP:g} MWh lattice')
-        key = _key_of(_nodes_full({node: (new_p, new_e)}), year) if (new_p > 0.0 and new_e > 0.0) else None
-        if key is not None and key in seen:
-            reasons.append(f'already evaluated as {seen[key]} (spec v15 execution.cache: a cache hit never '
-                           f're-evaluates)')
-        label = f'res_n{node}_p{new_p:g}_e{new_e:g}_y{year}'
-        item = {'direction': direction, 'label': label, 'node': node, 'P_mva': new_p, 'E_mwh': new_e,
-                'investment_year': year, 'candidate_key': key}
+        duration = energy / power
+        if not (DURATION_MIN_H - TOL <= duration <= DURATION_MAX_H + TOL):
+            reasons.append(f'duration E/P = {duration:.6g} h outside [{DURATION_MIN_H:g}, {DURATION_MAX_H:g}]')
+        if energy > MAX_ENERGY_MWH + TOL:
+            reasons.append(f'E = {energy:g} > {MAX_ENERGY_MWH:g} MWh (max_capacity)')
+        if not _on_lattice(power, LATTICE_P_STEP):
+            reasons.append(f'P = {power:g} not on the {LATTICE_P_STEP:g} MVA lattice')
+        if not _on_lattice(energy, LATTICE_E_STEP):
+            reasons.append(f'E = {energy:g} not on the {LATTICE_E_STEP:g} MWh lattice')
+        label = f'res_n{A3_NODE}_p{power:g}_e{energy:g}_y{A3_YEAR}'
+        nodes = _nodes_full({A3_NODE: (power, energy)})
         if reasons:
-            dropped.append(dict(item, dropped_because=reasons))
-        else:
-            kept.append((label, _nodes_full({node: (new_p, new_e)}), year))
-            item['kept'] = True
-    points = tuple(kept)
+            raise SystemExit(f'[S45-A1 REFUSED] stage a3: the Planner-specified point {label!r} is inadmissible: '
+                             f'{reasons}. The a3 set is specified, not generated: a point that fails the master '
+                             f'constraints is a specification error, not a drop.')
+        admissibility.append({'label': label, 'node': A3_NODE, 'P_mva': power, 'E_mwh': energy,
+                              'duration_h': duration, 'investment_year': A3_YEAR,
+                              'candidate_key': _key_of(nodes, A3_YEAR), 'admissible': True})
+        points.append((label, nodes, A3_YEAR))
+    points = tuple(points)
+    _refuse_cache_hits('a3', points, records)
+    selected = {label for label, _n, _y in points}
     provenance = {
-        'rule': ('Planner task W15 / spec v15 A3: 4 resolution points around the incumbent -- (P*, E* +- 0.5) and '
-                 '(P* +- 0.25, E*) -- each kept only if 2 <= E/P <= 4, E <= 5 MWh and P, E on the 0.25 / 0.5 '
-                 'lattice; any proposal that is not, or that is already evaluated, is dropped and reported'),
-        'incumbent': {k: v for k, v in incumbent.items() if k != 'record'},
-        'incumbent_P_mva': power, 'incumbent_E_mwh': energy, 'incumbent_node': node, 'investment_year': year,
-        'proposals_kept': [label for label, _n, _y in points],
-        'proposals_dropped': dropped,
-        'n_kept': len(points), 'n_dropped': len(dropped),
+        'rule': A3_SELECTION_RULE,
+        'purpose': A3_PURPOSE,
+        'anchor': anchor_evidence,
+        'anchor_node': next(iter(anchor['nodes'])) if anchor['nodes'] else None,
+        'points_node': A3_NODE,
+        'points_node_equals_anchor_node': (bool(anchor['nodes']) and next(iter(anchor['nodes'])) == A3_NODE),
+        'investment_year': A3_YEAR,
+        'points_admissibility': admissibility,
+        'w16_a3_candidates': _a3_w16_candidate_context(selected),
+        'n_points': len(points),
     }
+    if not provenance['points_node_equals_anchor_node']:
+        raise SystemExit(f'[S45-A1 REFUSED] stage a3: the fixed points sit at node {A3_NODE} but the anchor '
+                         f'{anchor["label"]!r} is at nodes {sorted(anchor["nodes"] or {})}. Planner decision '
+                         f'required.')
     return points, provenance
 
 
@@ -604,15 +757,17 @@ STAGES = {
     },
     'a3': {
         'campaign_id': 's45_a3',
-        'description': ('P5.15 Addendum 27 Phase A, A3 -- the resolution probe around the incumbent: up to 4 '
-                        'points'),
+        'description': ('P5.15 Addendum 27 Phase A, A3 -- the resolution ladder at node 7: the 5 budget-feasible '
+                        'lattice points of W16\'s resolution candidates, at the 0.5 MWh / 0.25 MVA step'),
+        # a2 is NOT a prior of a3 (Planner task W17): the a3 points are FIXED by the Planner, so they do not
+        # depend on a2's outcome and a3 is frozen before a2 runs. The incumbent and the anchor are computed
+        # over the committed a0 + a1a + a1b results, which is the whole certified evidence base at freeze time.
         'prior': ({'stage': 'a0', 'path': A0_RESULTS_PATH},
                   {'stage': 'a1a', 'path': os.path.join(_P45, 'campaign_s45_a1a', 'campaign_results.json')},
-                  {'stage': 'a1b', 'path': os.path.join(_P45, 'campaign_s45_a1b', 'campaign_results.json')},
-                  {'stage': 'a2', 'path': os.path.join(_P45, 'campaign_s45_a2', 'campaign_results.json')}),
+                  {'stage': 'a1b', 'path': os.path.join(_P45, 'campaign_s45_a1b', 'campaign_results.json')}),
         'builder': build_a3_points,
         'points': None,
-        'expected_n': None,  # <= 4 after the lattice / cache drops
+        'expected_n': 5,
     },
 }
 
@@ -651,8 +806,11 @@ def _check_case_file_loads_to_declaration():
 
 def _check_pinned_files():
     out = {}
-    for name, pin in (('spec_v15', SPEC_V15), ('cost_file', COST_FILE),
-                      ('investment_cost_results', INVESTMENT_COST_RESULTS), ('a0_spec', A0_SPEC)):
+    pins = [('spec_v15', SPEC_V15), ('cost_file', COST_FILE),
+            ('investment_cost_results', INVESTMENT_COST_RESULTS)]
+    pins += [(f'investment_cost_source_{source["name"]}', source) for source in I_X_SOURCES]
+    pins.append(('a0_spec', A0_SPEC))
+    for name, pin in pins:
         path = os.path.join(REPO, pin['path'])
         got = H.sha256_file(path) if os.path.isfile(path) else None
         out[name] = {'path': pin['path'], 'sha256_pinned': pin['sha256'], 'sha256_on_disk': got,
@@ -673,38 +831,74 @@ def _memory_rule_matches_a0():
             'match': extra.get('memory_preflight_rule') == MEMORY_RULE}
 
 
+def _load_i_x_sources():
+    """The pinned I(x) tables, in order. Each entry: (source, {label: candidate record})."""
+    loaded = []
+    for source in I_X_SOURCES:
+        with open(os.path.join(REPO, source['path'])) as handle:
+            loaded.append((source, json.load(handle)['candidates']))
+    return loaded
+
+
 def investment_costs(points):
-    """I(x) per point from W2's committed file, BY CANDIDATE KEY (candidate AND investment year); every
-    point must be found, every entry carrying that key must agree on I, and the budget slack the file
-    records at B = 1e6 must equal B - I. Returns (per_point, problems)."""
-    with open(os.path.join(REPO, INVESTMENT_COST_RESULTS['path'])) as handle:
-        cands = json.load(handle)['candidates']
+    """I(x) per point from the ORDERED list of pinned I(x) tables (I_X_SOURCES), BY CANDIDATE KEY (candidate
+    AND investment year). Every point must be found in at least one source; within a source every entry
+    carrying that key must agree on I; ACROSS sources a key held by more than one must agree EXACTLY on I(x)
+    (otherwise the freeze fails); the first source holding the key supplies the value, and the source used is
+    recorded. The budget slack the source records at B = 1e6 must equal B - I. Returns (per_point, problems)."""
+    sources = _load_i_x_sources()
     per_point, problems = {}, []
     for label, nodes, year in points:
         key = _key_of(nodes, year)
-        hits = {name: c for name, c in cands.items() if c.get('candidate_key') == key}
-        values = sorted({c.get('I_new_eur') for c in hits.values()}, key=repr)
-        if not hits:
-            problems.append(f'{label}: candidate key {key[:16]} (year {year}) not found in '
-                            f'{INVESTMENT_COST_RESULTS["path"]}; I(x) for this candidate must be computed and '
-                            f'committed first (p515_s45_investment_cost_recompute.py, zero solves)')
-            per_point[label] = {'candidate_key': key, 'investment_year': year, 'found': False}
+        found = []
+        for source, cands in sources:
+            hits = {name: c for name, c in cands.items() if c.get('candidate_key') == key}
+            if not hits:
+                continue
+            fields = source['fields']
+            values = sorted({c.get(fields['I_x_eur']) for c in hits.values()}, key=repr)
+            if len(values) != 1 or values[0] is None:
+                problems.append(f'{label}: entries with key {key[:16]} in {source["name"]} disagree on / lack '
+                                f'{fields["I_x_eur"]}: {values}')
+                continue
+            entry = hits[sorted(hits)[0]]
+            found.append({'source': source['name'], 'source_path': source['path'], 'source_order': source['order'],
+                          'matched_entries': sorted(hits), 'I_x_eur': values[0],
+                          '_entry': entry, '_fields': fields})
+        if not found:
+            problems.append(f'{label}: candidate key {key[:16]} (year {year}) not found in any pinned I(x) source '
+                            f'{[s["path"] for s, _c in sources]}; I(x) for this candidate must be computed and '
+                            f'committed first (p515_s45_investment_cost_recompute.py / '
+                            f'p515_s45_investment_cost_a2a3.py, zero solves)')
+            per_point[label] = {'candidate_key': key, 'investment_year': year, 'found': False,
+                                'sources_searched': [s['path'] for s, _c in sources]}
             continue
-        if len(values) != 1 or values[0] is None:
-            problems.append(f'{label}: entries with key {key[:16]} disagree on / lack I_new_eur: {values}')
-        first = hits[sorted(hits)[0]]
-        i_x = values[0] if len(values) == 1 else None
+        per_source = [{k: v for k, v in item.items() if not k.startswith('_')} for item in found]
+        distinct = sorted({item['I_x_eur'] for item in found})
+        if len(distinct) > 1:
+            problems.append(f'{label}: candidate key {key[:16]} is held by {len(found)} pinned I(x) sources which '
+                            f'DISAGREE on I(x): {[(i["source"], i["I_x_eur"]) for i in per_source]}')
+        chosen = found[0]
+        entry, fields = chosen['_entry'], chosen['_fields']
+        i_x = chosen['I_x_eur'] if len(distinct) == 1 else None
         slack = (BUDGET_EUR - i_x) if i_x is not None else None
-        file_slack = first.get('slack_new_eur')
+        file_slack = entry.get(fields['budget_slack_eur'])
         if slack is not None and file_slack is not None and abs(slack - file_slack) > 1e-6:
-            problems.append(f'{label}: budget slack B - I = {slack} != the file\'s slack_new_eur {file_slack}')
+            problems.append(f'{label}: budget slack B - I = {slack} != {chosen["source"]}\'s '
+                            f'{fields["budget_slack_eur"]} {file_slack}')
         per_point[label] = {
-            'candidate_key': key, 'investment_year': year, 'found': True, 'matched_entries': sorted(hits),
-            'I_x_eur': i_x, 'I_power_eur': first.get('I_new_power_eur'), 'I_energy_eur': first.get('I_new_energy_eur'),
+            'candidate_key': key, 'investment_year': year, 'found': True,
+            'I_x_source': chosen['source'], 'I_x_source_path': chosen['source_path'],
+            'I_x_sources_holding_this_key': per_source,
+            'I_x_sources_agree': len(distinct) == 1,
+            'matched_entries': chosen['matched_entries'],
+            'I_x_eur': i_x, 'I_power_eur': entry.get(fields['I_power_eur']),
+            'I_energy_eur': entry.get(fields['I_energy_eur']),
             'budget_slack_eur': slack, 'budget_slack_in_cost_file_eur': file_slack,
-            'budget_feasible_corrected_file': first.get('budget_feasible_new'),
-            'first_stage_feasible_production_check': first.get('first_stage_feasible_new_production_check'),
+            'budget_feasible_corrected_file': entry.get(fields['budget_feasible']),
+            'first_stage_feasible_production_check': entry.get(fields['first_stage_feasible']),
             'nodes': {str(n): list(v) for n, v in nodes.items()},
+            'source_rule': I_X_SOURCE_RULE,
             'note': BUDGET_CONVENTION}
     return per_point, problems
 
@@ -844,6 +1038,10 @@ def _validate_spec(stage, spec, points, i_x):
         'spec_v15_recorded': spec['extra'].get('spec_v15') == SPEC_V15,
         'cost_file_recorded': (spec['extra'].get('cost_file') or {}).get('sha256') == COST_FILE['sha256'],
         'investment_cost_results_recorded': spec['extra'].get('investment_cost_results') == INVESTMENT_COST_RESULTS,
+        'investment_cost_sources_recorded': (spec['extra'].get('investment_cost_sources') == [dict(s) for s in
+                                                                                             I_X_SOURCES]
+                                             and spec['extra'].get('investment_cost_source_rule')
+                                             == I_X_SOURCE_RULE),
         'memory_rule_recorded': spec['extra'].get('memory_preflight_rule') == MEMORY_RULE,
         'stop_rule_recorded': spec['extra'].get('stop_rule') == STOP_RULE,
         'launch_plan_recorded': (spec['extra'].get('launch_plan') == LAUNCH_PLAN
@@ -872,6 +1070,10 @@ def _validate_spec(stage, spec, points, i_x):
         checks[f'{label}:budget_slack_frozen'] = (recorded.get('budget_slack_eur') is not None
                                                   and recorded.get('budget_slack_eur')
                                                   == point_i.get('budget_slack_eur'))
+        checks[f'{label}:I_x_source_frozen'] = (recorded.get('I_x_source') in
+                                                {source['name'] for source in I_X_SOURCES}
+                                                and recorded.get('I_x_source') == point_i.get('I_x_source')
+                                                and recorded.get('I_x_sources_agree') is True)
     return checks
 
 
@@ -953,6 +1155,8 @@ def freeze(stage, started):
                'cost_file': dict(COST_FILE,
                                  sha256_on_disk_at_freeze=evidence['pinned_files']['cost_file']['sha256_on_disk']),
                'investment_cost_results': dict(INVESTMENT_COST_RESULTS),
+               'investment_cost_sources': [dict(source) for source in I_X_SOURCES],
+               'investment_cost_source_rule': I_X_SOURCE_RULE,
                'a0_spec': dict(A0_SPEC),
                'points': recorded_points,
                'points_provenance': evidence['points_provenance'],
@@ -978,9 +1182,11 @@ def freeze(stage, started):
     _log(f'[{tag}] frozen campaign spec: {os.path.relpath(spec_path, REPO)} sha256={spec_sha}')
     for entry in spec['candidates']:
         point = recorded_points[entry['label']]
+        holders = [(item['source'], item['I_x_eur']) for item in point.get('I_x_sources_holding_this_key', [])]
         _log(f"[{tag}]   {entry['label']}: year={point['investment_year']} nodes={point['nodes']} "
              f"key={entry['key'][:16]} eval_key={entry['eval_key'][:16]} eval_dir={entry['eval_dir']} "
-             f"I(x)={point['I_x_eur']} budget_slack={point['budget_slack_eur']}")
+             f"I(x)={point['I_x_eur']} budget_slack={point['budget_slack_eur']} "
+             f"I_source={point.get('I_x_source')} I_sources_holding_key={holders}")
     _log(f'[{tag}] spec checks: all={all(checks.values())} failing={[k for k, v in checks.items() if not v]}')
     _log(f"[{tag}] case file AA (production loader): {evidence['case_file_aa']}")
     _log(f"[{tag}] pinned files: {evidence['pinned_files']}")
