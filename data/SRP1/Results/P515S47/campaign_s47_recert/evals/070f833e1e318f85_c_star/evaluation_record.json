@@ -1,0 +1,1270 @@
+{
+ "schema": "p515_s44_evaluation_record_v2",
+ "campaign_id": "s47_recert",
+ "campaign_spec_path": "data/SRP1/Results/P515S47/campaign_s47_recert/campaign_spec_s47_recert_902f93aa.json",
+ "campaign_spec_sha256": "902f93aa22093455daa50927bdfa28bc885b2c5491151d211dc943bb3de86ee4",
+ "candidate_label": "c_star",
+ "candidate_canonical": {
+  "investment_year": 2025,
+  "nodes": {
+   "5": [
+    0.96875,
+    3.875
+   ],
+   "7": [
+    0.96875,
+    3.875
+   ],
+   "9": [
+    0.96875,
+    3.875
+   ]
+  }
+ },
+ "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+ "instance_note": "candidate_key = sha256 of the canonical candidate; identifies the problem instance",
+ "working_dir_ids": {
+  "precheck": "p515s44_s47_recert_070f833e1e318f85_precheck",
+  "run": "p515s44_s47_recert_070f833e1e318f85_run"
+ },
+ "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_recert/evals/070f833e1e318f85_c_star",
+ "configuration": {
+  "apply_rho": false,
+  "arm_label": "s39_D",
+  "case_file": "data/SRP1/SRP1_params.json",
+  "case_file_anderson_acceleration": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "case_file_last_commit": "b5629311c092863c78cc508eaf34676382ac9f83",
+  "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "ess_ageing_baseline": {
+   "calendar_life_years": 15,
+   "calendar_retention_per_year": 0.985,
+   "calibration": {
+    "cycles_n": 10000,
+    "eol_retention_r": 0.8,
+    "reference_dod_d": 0.8,
+    "status": "ACTIVE"
+   },
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7
+  },
+  "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "ess_params_file": {
+   "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "full_diagnostics_in_rows": true,
+  "name": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70): the case file alone (AA keep_memory adopted in data/SRP1/SRP1_params.json) with the ESS ageing parameters declared",
+  "note": "no overrides; no model variant; no post-certification; the ESS ageing declaration is checked against the loaded parameters and read back from the built ESSO models in the child; num_max_iters := cap",
+  "overrides": {}
+ },
+ "cap": 500,
+ "required_consecutive_cycles": 10,
+ "status": "certified",
+ "barrier": false,
+ "barrier_cause": null,
+ "objective_convention": "gross_operational_cost: settlement-EXCLUDED gross operational cost (the oracle cost convention); net_operational_recourse = gross minus terminal salvage credit",
+ "certified_cost": 650912327.1956586,
+ "terminal_gross_operational_cost": 650912327.1956586,
+ "terminal_net_operational_recourse": 650912327.1956586,
+ "bar": {
+  "definition": "max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (settlement-excluded gross cost; the predecessor of the first window row is taken from the full trajectory; a step is unavailable when cycle k-1 is absent or either gross value is None)",
+  "value": 25146.48616361618,
+  "n_cycles_in_window": 10,
+  "n_steps_available": 10,
+  "trajectory_cycles_contiguous_from_1": true,
+  "window": [
+   {
+    "cycle": 78,
+    "gross_operational_cost": 650985739.5905018,
+    "predecessor_cycle": 77,
+    "predecessor_gross_operational_cost": 651010886.0766654,
+    "gross_step_abs": 25146.48616361618
+   },
+   {
+    "cycle": 79,
+    "gross_operational_cost": 650973402.588026,
+    "predecessor_cycle": 78,
+    "predecessor_gross_operational_cost": 650985739.5905018,
+    "gross_step_abs": 12337.002475738525
+   },
+   {
+    "cycle": 80,
+    "gross_operational_cost": 650961066.0290823,
+    "predecessor_cycle": 79,
+    "predecessor_gross_operational_cost": 650973402.588026,
+    "gross_step_abs": 12336.558943748474
+   },
+   {
+    "cycle": 81,
+    "gross_operational_cost": 650949455.8756642,
+    "predecessor_cycle": 80,
+    "predecessor_gross_operational_cost": 650961066.0290823,
+    "gross_step_abs": 11610.153418064117
+   },
+   {
+    "cycle": 82,
+    "gross_operational_cost": 650939025.5014057,
+    "predecessor_cycle": 81,
+    "predecessor_gross_operational_cost": 650949455.8756642,
+    "gross_step_abs": 10430.374258518219
+   },
+   {
+    "cycle": 83,
+    "gross_operational_cost": 650930111.7895559,
+    "predecessor_cycle": 82,
+    "predecessor_gross_operational_cost": 650939025.5014057,
+    "gross_step_abs": 8913.711849808693
+   },
+   {
+    "cycle": 84,
+    "gross_operational_cost": 650922907.8737471,
+    "predecessor_cycle": 83,
+    "predecessor_gross_operational_cost": 650930111.7895559,
+    "gross_step_abs": 7203.915808796883
+   },
+   {
+    "cycle": 85,
+    "gross_operational_cost": 650917553.0312266,
+    "predecessor_cycle": 84,
+    "predecessor_gross_operational_cost": 650922907.8737471,
+    "gross_step_abs": 5354.842520475388
+   },
+   {
+    "cycle": 86,
+    "gross_operational_cost": 650914080.809588,
+    "predecessor_cycle": 85,
+    "predecessor_gross_operational_cost": 650917553.0312266,
+    "gross_step_abs": 3472.2216386795044
+   },
+   {
+    "cycle": 87,
+    "gross_operational_cost": 650912327.1956586,
+    "predecessor_cycle": 86,
+    "predecessor_gross_operational_cost": 650914080.809588,
+    "gross_step_abs": 1753.6139293909073
+   }
+  ]
+ },
+ "bar_net_recourse_step_reported": {
+  "definition": "max objective_change_abs over the last 10 cycles (production: |net_operational_recourse[k] - net_operational_recourse[k-1]|, shared_resources_planning.py:2849/2814; NET of the terminal salvage credit; reported, not the bar)",
+  "value": 25146.48616361618,
+  "n_cycles_in_window": 10,
+  "n_steps_available": 10,
+  "window": [
+   {
+    "cycle": 78,
+    "objective_change_abs": 25146.48616361618
+   },
+   {
+    "cycle": 79,
+    "objective_change_abs": 12337.002475738525
+   },
+   {
+    "cycle": 80,
+    "objective_change_abs": 12336.558943748474
+   },
+   {
+    "cycle": 81,
+    "objective_change_abs": 11610.153418064117
+   },
+   {
+    "cycle": 82,
+    "objective_change_abs": 10430.374258518219
+   },
+   {
+    "cycle": 83,
+    "objective_change_abs": 8913.711849808693
+   },
+   {
+    "cycle": 84,
+    "objective_change_abs": 7203.915808796883
+   },
+   {
+    "cycle": 85,
+    "objective_change_abs": 5354.842520475388
+   },
+   {
+    "cycle": 86,
+    "objective_change_abs": 3472.2216386795044
+   },
+   {
+    "cycle": 87,
+    "objective_change_abs": 1753.6139293909073
+   }
+  ]
+ },
+ "certification": {
+  "certified": true,
+  "certification_cycle": 87,
+  "cycles_run": 87,
+  "cap": 500,
+  "required_consecutive_cycles": 10,
+  "terminal_cycle_convergence": true,
+  "terminal_consecutive_converged_cycles": 10,
+  "local_solve_failures_total": 0
+ },
+ "certification_cycle": 87,
+ "cycles_run": 87,
+ "stopped_by_trajectory": {
+  "stopped_by": "boyd",
+  "converged_at_cycle": 78,
+  "stop_run_cycles": [
+   78,
+   79,
+   80,
+   81,
+   82,
+   83,
+   84,
+   85,
+   86,
+   87
+  ]
+ },
+ "first_pass_cycle_per_channel": {
+  "v": 44,
+  "pf": 78,
+  "ess": 70
+ },
+ "terminal_ratios_per_channel": {
+  "v": {
+   "primal": 0.06218175089741249,
+   "dual": 0.2831903838791007,
+   "max": 0.2831903838791007
+  },
+  "pf": {
+   "primal": 0.4437601857171503,
+   "dual": 0.6250958363377348,
+   "max": 0.6250958363377348
+  },
+  "ess": {
+   "primal": 0.5851965735475879,
+   "dual": 0.5689352009686929,
+   "max": 0.5851965735475879
+  }
+ },
+ "rule_ten": {
+  "reported_not_gated": true,
+  "terminal_objective_change_abs": 1753.6139293909073,
+  "terminal_objective_tolerance": 65091.4080809588,
+  "terminal_step_over_threshold": 0.026940789592534445,
+  "boyd_terminal_ratio_max_per_channel": {
+   "v": 0.2831903838791007,
+   "pf": 0.6250958363377348,
+   "ess": 0.5851965735475879
+  }
+ },
+ "component_decomposition_totals_weighted": {
+  "generation_cost": 443903604.9986557,
+  "flexibility_cost_internal": 207021523.66944823,
+  "load_curtailment_cost": 0.0,
+  "res_curtailment_penalty": 0.0,
+  "ess_usage_cost": 0.0,
+  "flexibility_cost_tso_adn_interface_definitional": 0.0,
+  "voltage_slack": -11796.939852234516,
+  "node_balance_slack": 0.0,
+  "branch_flow_slack": 0.0,
+  "flexibility_p_day_balance_slack": -946.4784372830474,
+  "local_ess_day_balance_slack": 0.0,
+  "shared_ess_day_balance_slack": -58.054156002092846,
+  "detector_penalty_total": -12801.47244551966,
+  "ess_complementarity_bilinear_definitional": 9.42779342411067,
+  "orphan_flex_q_day_balance_slack_raw": 0.0,
+  "orphan_tso_adn_flex_p_day_balance_slack_raw": 0.0,
+  "orphan_flex_q_day_balance_penalty_at_PENALTY_FLEXIBILITY_definitional": 0.0,
+  "orphan_tso_adn_flex_p_day_balance_penalty_at_PENALTY_FLEXIBILITY_definitional": 0.0,
+  "res_curtailment_definitional_at_weight_1": 578.2994837924566
+ },
+ "recourse_components": {
+  "gross_operational_cost": 650912327.1956586,
+  "gross_operational_cost_including_settlement": 650938633.7830445,
+  "interface_settlement_tso": -1132596352.1821296,
+  "interface_settlement_dso": {
+   "5": 428546382.1007554,
+   "7": 311430651.4058303,
+   "9": 392645625.2629298
+  },
+  "interface_settlement_total": 26306.587385892868,
+  "terminal_salvage_value": -1.9285001043605776e-34,
+  "net_operational_recourse": 650912327.1956586,
+  "detector_penalty_total": -12801.47244551966,
+  "detector_components": {
+   "voltage_slack": -11796.939852234516,
+   "node_balance_slack": 0.0,
+   "branch_flow_slack": 0.0,
+   "flexibility_p_day_balance_slack": -946.4784372830474,
+   "local_ess_day_balance_slack": 0.0,
+   "shared_ess_day_balance_slack": -58.054156002092846,
+   "detector_penalty_total": -12801.47244551966
+  },
+  "economic_recourse_all_D_excluded": 650925128.668104,
+  "economic_recourse_voltage_excluded": 650924124.1355108
+ },
+ "settlement_remainder": {
+  "definition": "recourse_components.interface_settlement_total: T_TSO + sum(T_DSO), the non-cancelling interface settlement at the terminal point, excluded from the cost",
+  "value": 26306.587385892868
+ },
+ "storage_per_node": {
+  "5": {
+   "s_mva": 0.96875,
+   "e_mwh": 3.875,
+   "has_storage": true,
+   "efc_per_day_max": 1.0108244296172724,
+   "efc_per_day_per_cohort_year": {
+    "(0, 0)": 1.0108244296172724,
+    "(0, 1)": 0.8905290626221776,
+    "(0, 2)": 0.6518604267357059
+   },
+   "terminal_soh_per_active_cohort_year": {
+    "(0, 0)": 0.8807126891922906,
+    "(0, 1)": 0.7804192059570005,
+    "(0, 2)": 0.6999999900000167
+   },
+   "terminal_soh_min_over_active_cohort_years": 0.6999999900000167,
+   "soh_floor_rows_active_at_terminal": [
+    "(0, 2)"
+   ],
+   "published_available_capacity_terminal": {
+    "2025": {
+     "s_available": 0.96875,
+     "e_available": 3.4127616706201263
+    },
+    "2030": {
+     "s_available": 0.96875,
+     "e_available": 3.0241244230833773
+    },
+    "2035": {
+     "s_available": 0.96875,
+     "e_available": 2.7124999612500647
+    }
+   },
+   "note_zero_node": null
+  },
+  "7": {
+   "s_mva": 0.96875,
+   "e_mwh": 3.875,
+   "has_storage": true,
+   "efc_per_day_max": 1.0099813271342903,
+   "efc_per_day_per_cohort_year": {
+    "(0, 0)": 1.0099813271342903,
+    "(0, 1)": 0.8907983366570352,
+    "(0, 2)": 0.6524342551838218
+   },
+   "terminal_soh_per_active_cohort_year": {
+    "(0, 0)": 0.8807504882665702,
+    "(0, 1)": 0.7804420027412551,
+    "(0, 2)": 0.699999990000017
+   },
+   "terminal_soh_min_over_active_cohort_years": 0.699999990000017,
+   "soh_floor_rows_active_at_terminal": [
+    "(0, 2)"
+   ],
+   "published_available_capacity_terminal": {
+    "2025": {
+     "s_available": 0.96875,
+     "e_available": 3.4129081420329594
+    },
+    "2030": {
+     "s_available": 0.96875,
+     "e_available": 3.0242127606223637
+    },
+    "2035": {
+     "s_available": 0.96875,
+     "e_available": 2.7124999612500655
+    }
+   },
+   "note_zero_node": null
+  },
+  "9": {
+   "s_mva": 0.96875,
+   "e_mwh": 3.875,
+   "has_storage": true,
+   "efc_per_day_max": 1.0101570290562394,
+   "efc_per_day_per_cohort_year": {
+    "(0, 0)": 1.0101570290562394,
+    "(0, 1)": 0.8916886437329145,
+    "(0, 2)": 0.651368246185991
+   },
+   "terminal_soh_per_active_cohort_year": {
+    "(0, 0)": 0.8807426108341707,
+    "(0, 1)": 0.7803996533722211,
+    "(0, 2)": 0.6999999900000169
+   },
+   "terminal_soh_min_over_active_cohort_years": 0.6999999900000169,
+   "soh_floor_rows_active_at_terminal": [
+    "(0, 2)"
+   ],
+   "published_available_capacity_terminal": {
+    "2025": {
+     "s_available": 0.96875,
+     "e_available": 3.4128776169824118
+    },
+    "2030": {
+     "s_available": 0.96875,
+     "e_available": 3.024048656817356
+    },
+    "2035": {
+     "s_available": 0.96875,
+     "e_available": 2.712499961250065
+    }
+   },
+   "note_zero_node": null
+  }
+ },
+ "local_solve_failures": 0,
+ "network_failures_summary": {
+  "n_blocks": 37,
+  "classes": {
+   "recovered_tier1": 34,
+   "recovered_tier2": 3,
+   "unrecovered": 0,
+   "not_attempted": 0,
+   "indeterminate": 0,
+   "recovered": 37
+  },
+  "n_frozen_snapshots": 2,
+  "n_esso_recovery_events": 0,
+  "path": "data/SRP1/Results/P515S47/campaign_s47_recert/evals/070f833e1e318f85_c_star/network_failures_s39_D.jsonl"
+ },
+ "solve_profile": {
+  "observed": {
+   "permitted_solve": 4528,
+   "permitted_exec": 4528,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "identity_holds": false
+ },
+ "wall_time_s": {
+  "child_process_s": 2858.417144060135,
+  "run_admm_arm_s": 2844.608808994293,
+  "run_admm_arm_reported_wall_clock_s": 2843.3735637664795
+ },
+ "peak_rss": {
+  "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+  "child_python_process_ru_maxrss": 2577645568,
+  "production_state_peak_rss_ru_maxrss": 2577629184,
+  "solver_subprocesses_max_ru_maxrss": 57131008,
+  "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+ },
+ "record_capture_checklist_asserted_before_run": {
+  "trajectory_field_boyd_all_pass": true,
+  "trajectory_field_boyd_ess_channel_pass": true,
+  "trajectory_field_boyd_ess_dual_ratio": true,
+  "trajectory_field_boyd_ess_primal_ratio": true,
+  "trajectory_field_boyd_pf_channel_pass": true,
+  "trajectory_field_boyd_pf_dual_ratio": true,
+  "trajectory_field_boyd_pf_primal_ratio": true,
+  "trajectory_field_boyd_stop": true,
+  "trajectory_field_boyd_v_channel_pass": true,
+  "trajectory_field_boyd_v_dual_ratio": true,
+  "trajectory_field_boyd_v_primal_ratio": true,
+  "trajectory_field_consecutive_converged_cycles": true,
+  "trajectory_field_cycle": true,
+  "trajectory_field_cycle_convergence": true,
+  "trajectory_field_efc_per_day_max": true,
+  "trajectory_field_gross_operational_cost": true,
+  "trajectory_field_local_solves_ok": true,
+  "trajectory_field_objective_change_abs": true,
+  "trajectory_field_objective_change_ratio": true,
+  "trajectory_field_objective_tolerance": true,
+  "trajectory_field_recourse": true,
+  "trajectory_field_rho_ess_action": true,
+  "trajectory_field_rho_ess_after": true,
+  "trajectory_field_rho_freeze_active": true,
+  "trajectory_field_rho_pf_action": true,
+  "trajectory_field_rho_pf_after": true,
+  "trajectory_field_rho_v_action": true,
+  "trajectory_field_rho_v_after": true,
+  "trajectory_field_terminal_salvage_value": true,
+  "esso_capture_attr_es_avg_ch_dch_per_unit": true,
+  "esso_capture_attr_es_soh_per_unit_cumul": true,
+  "esso_capture_attr_es_e_rated_per_unit": true,
+  "harness_fn_run_admm_arm": true,
+  "harness_fn_write_boyd_terminal_s35ref": true,
+  "harness_fn_s38_pf_capture_hooks": true,
+  "harness_fn_s39_exempt_until_capture_hooks": true,
+  "harness_fn__s35ref_terminal_floor_and_efc": true,
+  "harness_fn__derive_stopped_by_from_trajectory": true,
+  "harness_fn__identify_soh_floor_rows": true,
+  "evaluator_fn__certification_from_trajectory": true,
+  "evaluator_fn__first_pass_cycle": true,
+  "evaluator_fn__terminal_ratios": true,
+  "component_levels_recourse_key_interface_settlement_total": true,
+  "run_admm_arm_accepts_investment_map": true,
+  "run_admm_arm_post_run_hook_gets_state": true,
+  "production_state_has_peak_rss": true
+ },
+ "eval_key": "070f833e1e318f8500f51a85c05993425e11081db6d17065e1e60463db26e6cb",
+ "evaluation_overrides_effective": {},
+ "post_certification_capture_checklist_asserted_before_run": null,
+ "post_certification": null,
+ "post_certification_path": null,
+ "aa_per_cycle": {
+  "path": "data/SRP1/Results/P515S47/campaign_s47_recert/evals/070f833e1e318f85_c_star/aa_per_cycle.jsonl",
+  "n_rows": 87,
+  "action_counts": {
+   "insufficient memory (m_k=0)": 9,
+   "accepted": 40,
+   "rejected (safeguard; memory retained)": 28,
+   "off (all channels within Boyd tolerance)": 10
+  },
+  "n_accepted": 40,
+  "n_rejected": 28,
+  "rejections_with_memory_retained": [
+   {
+    "cycle": 14,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 15,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 16,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 17,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 18,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 19,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 22,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 25,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 28,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 37,
+    "memory_size_before": 1,
+    "memory_size_after": 2,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 39,
+    "memory_size_before": 3,
+    "memory_size_after": 4,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 40,
+    "memory_size_before": 4,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 42,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 43,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 44,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 45,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 47,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 48,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 52,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 53,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 55,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 58,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 62,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 63,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 67,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 70,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 73,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 74,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   }
+  ],
+  "first_accept_cycle": 4,
+  "first_reject_cycle": 14
+ },
+ "configuration_checks_in_child": {
+  "rho_v_matches_D": true,
+  "rho_pf_matches_D": true,
+  "rho_ess_matches_D": true,
+  "tau_is_0": true,
+  "gamma_policy_tied_to_rho": true,
+  "balancing_exempt_until_matches_D": true,
+  "balancing_exempt_channels_empty": true,
+  "freeze_after_unchanged_cycles_is_10": true,
+  "freeze_backstop_cycle_is_200": true,
+  "minimum_consecutive_converged_cycles_matches_spec": true,
+  "shared_ess_initialization_is_standalone": true,
+  "num_max_iters_is_spec_cap": true,
+  "anderson_acceleration_case_file_matches_declaration": true,
+  "anderson_acceleration_case_file_memory_regularization_frozen": true,
+  "persistent_workers_off": true,
+  "parallel_execution_off": true
+ },
+ "overrides_applied_in_child": {},
+ "anderson_acceleration_effective_in_child": {
+  "enabled": true,
+  "memory": 5,
+  "regularization": 1e-10,
+  "reject_policy": "keep_memory"
+ },
+ "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+ "thread_caps_seen_by_child": {
+  "OMP_NUM_THREADS": "1",
+  "MKL_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "VECLIB_MAXIMUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1"
+ },
+ "PYTHONHASHSEED_in_child": null,
+ "nlp_solver_path_in_child": "/usr/local/bin/ipopt",
+ "campaign_lock_seen_by_child": {
+  "pid": 14155,
+  "campaign_id": "s47_recert",
+  "campaign_spec_sha256": "902f93aa22093455daa50927bdfa28bc885b2c5491151d211dc943bb3de86ee4",
+  "started_utc": "2026-09-21T14:51:50.151099+00:00"
+ },
+ "child_pid": 14191,
+ "parent_pid": 14155,
+ "report_path": "data/SRP1/Results/P515S47/campaign_s47_recert/evals/070f833e1e318f85_c_star/g_s39_D.json",
+ "per_cycle_record_path": "data/SRP1/Results/P515S47/campaign_s47_recert/evals/070f833e1e318f85_c_star/per_cycle_record.jsonl",
+ "ess_ageing_baseline": {
+  "calendar_life_years": 15,
+  "calendar_retention_per_year": 0.985,
+  "cycle_life_nominal": 10000,
+  "depth_of_discharge_nominal": 0.8,
+  "minimum_soh": 0.7,
+  "calibration": {
+   "status": "ACTIVE",
+   "cycles_n": 10000,
+   "reference_dod_d": 0.8,
+   "eol_retention_r": 0.8
+  }
+ },
+ "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+ "ess_params_sha256_in_child": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+ "ess_ageing_verified_pre_run": {
+  "declared": {
+   "calendar_life_years": 15,
+   "calendar_retention_per_year": 0.985,
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7,
+   "calibration": {
+    "status": "ACTIVE",
+    "cycles_n": 10000,
+    "reference_dod_d": 0.8,
+    "eol_retention_r": 0.8
+   }
+  },
+  "loaded": {
+   "calendar_life_years": 15,
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7,
+   "calendar_retention_per_year": 0.985,
+   "calibration": {
+    "status": "ACTIVE",
+    "cycles_n": 10000,
+    "reference_dod_d": 0.8,
+    "eol_retention_r": 0.8
+   }
+  },
+  "file_used_by_production": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+  "file_sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+  "pin": {
+   "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "k_production": 35851.3609417964,
+  "per_ess": [
+   {
+    "year": "2025",
+    "bus": 5,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2025",
+    "bus": 7,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2025",
+    "bus": 9,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2030",
+    "bus": 5,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2030",
+    "bus": 7,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2030",
+    "bus": 9,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2035",
+    "bus": 5,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2035",
+    "bus": 7,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2035",
+    "bus": 9,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   }
+  ],
+  "checks": {
+   "pin_path_is_ess_params_file": true,
+   "file_used_by_production_is_pinned_file": true,
+   "file_sha256_equals_pin": true,
+   "loaded_equals_declaration_types_included": true,
+   "every_ess_soh_min_is_declared": true,
+   "every_ess_phi_cal_is_declared": true,
+   "every_ess_cl_eff_is_production_k": true
+  },
+  "readback_pre_run": {
+   "expected": {
+    "k": 35851.3609417964,
+    "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.8)",
+    "phi_cal_in_model": 0.985,
+    "floor_row_lower": 0.7,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": true,
+    "d_row_form": "D * 2kE == 365 n avg"
+   },
+   "per_node": {
+    "5": {
+     "readback": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 1,
+      "n_years_data": 5,
+      "d_row_form": "D * 2kE == 365 n avg",
+      "k": 35851.3609417964,
+      "n_years_from_d_row": 5.0,
+      "phi_cal_in_model": 0.985,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "end",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 0.95,
+       "D": 0.2,
+       "X": 0.9,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8277224476758176
+      },
+      "floor_row_lower": 0.7
+     },
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true,
+      "floor_row_lower": true
+     }
+    },
+    "7": {
+     "readback": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 1,
+      "n_years_data": 5,
+      "d_row_form": "D * 2kE == 365 n avg",
+      "k": 35851.3609417964,
+      "n_years_from_d_row": 5.0,
+      "phi_cal_in_model": 0.985,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "end",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 0.95,
+       "D": 0.2,
+       "X": 0.9,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8277224476758176
+      },
+      "floor_row_lower": 0.7
+     },
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true,
+      "floor_row_lower": true
+     }
+    },
+    "9": {
+     "readback": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 1,
+      "n_years_data": 5,
+      "d_row_form": "D * 2kE == 365 n avg",
+      "k": 35851.3609417964,
+      "n_years_from_d_row": 5.0,
+      "phi_cal_in_model": 0.985,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "end",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 0.95,
+       "D": 0.2,
+       "X": 0.9,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8277224476758176
+      },
+      "floor_row_lower": 0.7
+     },
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true,
+      "floor_row_lower": true
+     }
+    }
+   },
+   "all_match": true,
+   "method": "numerical read-back from the built rows (model_variant_readback) against the declaration's closed forms; on probe models"
+  },
+  "floor_rows_identical_to_precheck": true
+ },
+ "ess_ageing_readback_terminal": {
+  "expected": {
+   "k": 35851.3609417964,
+   "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.8)",
+   "phi_cal_in_model": 0.985,
+   "floor_row_lower": 0.7,
+   "available_energy_soh_point": "end",
+   "ageing_enabled": true,
+   "d_row_form": "D * 2kE == 365 n avg"
+  },
+  "per_node": {
+   "5": {
+    "readback": {
+     "y_inv": 0,
+     "y0": 0,
+     "y1_available_row": 1,
+     "n_years_data": 5,
+     "d_row_form": "D * 2kE == 365 n avg",
+     "k": 35851.3609417964,
+     "n_years_from_d_row": 5.0,
+     "phi_cal_in_model": 0.985,
+     "soh_row_exp_form_ok": true,
+     "available_energy_soh_point": "end",
+     "available_row_probe": {
+      "soh_end": 0.9,
+      "soh_prev": 0.95,
+      "D": 0.2,
+      "X": 0.9,
+      "X_end": 0.9,
+      "X_mid_closed_form": 0.8277224476758176
+     },
+     "floor_row_lower": 0.7
+    },
+    "checks": {
+     "k": true,
+     "n_years_from_d_row_equals_data": true,
+     "phi_cal_in_model": true,
+     "d_row_form": true,
+     "available_energy_soh_point": true,
+     "soh_row_exp_form": true,
+     "floor_row_lower": true
+    }
+   },
+   "7": {
+    "readback": {
+     "y_inv": 0,
+     "y0": 0,
+     "y1_available_row": 1,
+     "n_years_data": 5,
+     "d_row_form": "D * 2kE == 365 n avg",
+     "k": 35851.3609417964,
+     "n_years_from_d_row": 5.0,
+     "phi_cal_in_model": 0.985,
+     "soh_row_exp_form_ok": true,
+     "available_energy_soh_point": "end",
+     "available_row_probe": {
+      "soh_end": 0.9,
+      "soh_prev": 0.95,
+      "D": 0.2,
+      "X": 0.9,
+      "X_end": 0.9,
+      "X_mid_closed_form": 0.8277224476758176
+     },
+     "floor_row_lower": 0.7
+    },
+    "checks": {
+     "k": true,
+     "n_years_from_d_row_equals_data": true,
+     "phi_cal_in_model": true,
+     "d_row_form": true,
+     "available_energy_soh_point": true,
+     "soh_row_exp_form": true,
+     "floor_row_lower": true
+    }
+   },
+   "9": {
+    "readback": {
+     "y_inv": 0,
+     "y0": 0,
+     "y1_available_row": 1,
+     "n_years_data": 5,
+     "d_row_form": "D * 2kE == 365 n avg",
+     "k": 35851.3609417964,
+     "n_years_from_d_row": 5.0,
+     "phi_cal_in_model": 0.985,
+     "soh_row_exp_form_ok": true,
+     "available_energy_soh_point": "end",
+     "available_row_probe": {
+      "soh_end": 0.9,
+      "soh_prev": 0.95,
+      "D": 0.2,
+      "X": 0.9,
+      "X_end": 0.9,
+      "X_mid_closed_form": 0.8277224476758176
+     },
+     "floor_row_lower": 0.7
+    },
+    "checks": {
+     "k": true,
+     "n_years_from_d_row_equals_data": true,
+     "phi_cal_in_model": true,
+     "d_row_form": true,
+     "available_energy_soh_point": true,
+     "soh_row_exp_form": true,
+     "floor_row_lower": true
+    }
+   }
+  },
+  "all_match": true,
+  "method": "numerical read-back from the built rows (model_variant_readback) against the declaration's closed forms; on clones of the given models"
+ },
+ "ageing_trajectory_terminal": {
+  "available_energy_soh_point": "end",
+  "ageing_enabled": true,
+  "nodes": {
+   "5": {
+    "cells": [
+     {
+      "y_inv": 0,
+      "investment_year": "2025",
+      "y": 0,
+      "block_year": "2025",
+      "n_years": 5,
+      "e_rated": 3.875,
+      "avg_ch_dch": 7.833889329533862,
+      "efc_per_day": 1.0108244296172724,
+      "D": 0.05145563614855306,
+      "soh_prev_end": 1.0,
+      "soh_end": 0.8807126891922906,
+      "soh_used_for_available_energy": 0.8807126891922906,
+      "e_available": 3.4127616706201263,
+      "soh_mid_closed_form": 0.9384629397010255,
+      "phi_cal_in_model": 0.985,
+      "cl_eff": 35851.3609417964
+     },
+     {
+      "y_inv": 0,
+      "investment_year": "2025",
+      "y": 1,
+      "block_year": "2030",
+      "n_years": 5,
+      "e_rated": 3.875,
+      "avg_ch_dch": 6.901600235321876,
+      "efc_per_day": 0.8905290626221776,
+      "D": 0.045332045885899896,
+      "soh_prev_end": 0.8807126891922906,
+      "soh_end": 0.7804192059570005,
+      "soh_used_for_available_energy": 0.7804192059570005,
+      "e_available": 3.0241244230833773,
+      "soh_mid_closed_form": 0.8290507207497634,
+      "phi_cal_in_model": 0.985,
+      "cl_eff": 35851.3609417964
+     },
+     {
+      "y_inv": 0,
+      "investment_year": "2025",
+      "y": 2,
+      "block_year": "2035",
+      "n_years": 5,
+      "e_rated": 3.875,
+      "avg_ch_dch": 5.051918307201721,
+      "efc_per_day": 0.6518604267357059,
+      "D": 0.03318270903924724,
+      "soh_prev_end": 0.7804192059570005,
+      "soh_end": 0.6999999900000167,
+      "soh_used_for_available_energy": 0.6999999900000167,
+      "e_available": 2.7124999612500647,
+      "soh_mid_closed_form": 0.7391166595103383,
+      "phi_cal_in_model": 0.985,
+      "cl_eff": 35851.3609417964
+     }
+    ],
+    "salvage_value": -1.1778101866001669e-35
+   },
+   "7": {
+    "cells": [
+     {
+      "y_inv": 0,
+      "investment_year": "2025",
+      "y": 0,
+      "block_year": "2025",
+      "n_years": 5,
+      "e_rated": 3.875,
+      "avg_ch_dch": 7.82735528529075,
+      "efc_per_day": 1.0099813271342903,
+      "D": 0.051412718334807005,
+      "soh_prev_end": 1.0,
+      "soh_end": 0.8807504882665702,
+      "soh_used_for_available_energy": 0.8807504882665702,
+      "e_available": 3.4129081420329594,
+      "soh_mid_closed_form": 0.9384830783059278,
+      "phi_cal_in_model": 0.985,
+      "cl_eff": 35851.3609417964
+     },
+     {
+      "y_inv": 0,
+      "investment_year": "2025",
+      "y": 1,
+      "block_year": "2030",
+      "n_years": 5,
+      "e_rated": 3.875,
+      "avg_ch_dch": 6.903687109092023,
+      "efc_per_day": 0.8907983366570352,
+      "D": 0.045345753179032035,
+      "soh_prev_end": 0.8807504882665702,
+      "soh_end": 0.7804420027412551,
+      "soh_used_for_available_energy": 0.7804420027412552,
+      "e_available": 3.0242127606223637,
+      "soh_mid_closed_form": 0.8290806203127054,
+      "phi_cal_in_model": 0.985,
+      "cl_eff": 35851.3609417964
+     },
+     {
+      "y_inv": 0,
+      "investment_year": "2025",
+      "y": 2,
+      "block_year": "2035",
+      "n_years": 5,
+      "e_rated": 3.875,
+      "avg_ch_dch": 5.056365477674619,
+      "efc_per_day": 0.6524342551838218,
+      "D": 0.03321191955986073,
+      "soh_prev_end": 0.7804420027412551,
+      "soh_end": 0.699999990000017,
+      "soh_used_for_available_energy": 0.6999999900000169,
+      "e_available": 2.7124999612500655,
+      "soh_mid_closed_form": 0.7391274545803801,
+      "phi_cal_in_model": 0.985,
+      "cl_eff": 35851.3609417964
+     }
+    ],
+    "salvage_value": -1.8054449460233752e-34
+   },
+   "9": {
+    "cells": [
+     {
+      "y_inv": 0,
+      "investment_year": "2025",
+      "y": 0,
+      "block_year": "2025",
+      "n_years": 5,
+      "e_rated": 3.875,
+      "avg_ch_dch": 7.828716975185855,
+      "efc_per_day": 1.0101570290562394,
+      "D": 0.05142166237484157,
+      "soh_prev_end": 1.0,
+      "soh_end": 0.8807426108341707,
+      "soh_used_for_available_energy": 0.8807426108341708,
+      "e_available": 3.4128776169824118,
+      "soh_mid_closed_form": 0.9384788814002001,
+      "phi_cal_in_model": 0.985,
+      "cl_eff": 35851.3609417964
+     },
+     {
+      "y_inv": 0,
+      "investment_year": "2025",
+      "y": 1,
+      "block_year": "2030",
+      "n_years": 5,
+      "e_rated": 3.875,
+      "avg_ch_dch": 6.910586988930087,
+      "efc_per_day": 0.8916886437329145,
+      "D": 0.04539107392476655,
+      "soh_prev_end": 0.8807426108341707,
+      "soh_end": 0.7803996533722211,
+      "soh_used_for_available_energy": 0.780399653372221,
+      "e_available": 3.024048656817356,
+      "soh_mid_closed_form": 0.8290544181205066,
+      "phi_cal_in_model": 0.985,
+      "cl_eff": 35851.3609417964
+     },
+     {
+      "y_inv": 0,
+      "investment_year": "2025",
+      "y": 2,
+      "block_year": "2035",
+      "n_years": 5,
+      "e_rated": 3.875,
+      "avg_ch_dch": 5.04810390794143,
+      "efc_per_day": 0.651368246185991,
+      "D": 0.03315765477409151,
+      "soh_prev_end": 0.7803996533722211,
+      "soh_end": 0.6999999900000169,
+      "soh_used_for_available_energy": 0.6999999900000168,
+      "e_available": 2.712499961250065,
+      "soh_mid_closed_form": 0.7391074005559486,
+      "phi_cal_in_model": 0.985,
+      "cl_eff": 35851.3609417964
+     }
+    ],
+    "salvage_value": -5.274139677185478e-37
+   }
+  }
+ }
+}
