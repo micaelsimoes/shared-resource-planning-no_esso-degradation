@@ -1,0 +1,117 @@
+{
+ "after_review": {
+  "memory_task": {
+   "decision_rule_recorded_before_run": "resident after initialization <= 26 GiB AND flat across cycles AND one cycle <= 25 min -> the three paper-scale evaluations (x = 0, smallest unit, one larger design) run serially on this machine after the code-path generalization and row 18; otherwise the >= 64 GiB machine or the SRP1-with-caveat fallback",
+   "fix": "what is bookkeeping; gate: bitwise identity on two SRP1 cycles",
+   "profile": "resident before/after the first and second solve of one block; load_solutions on/off; NL symbol maps and solution objects cleared after value extraction; classify: one-time bookkeeping / inherent IPOPT-NL workspace / per-solve leak (second-solve increment = leak, fixed regardless)",
+   "stop": "STOP FOR REVIEW after the memory task",
+   "then": "re-measure paper-scale build + initialization and time one cycle",
+   "when": "after the Phase B record, machine alone"
+  },
+  "phase_B_record": "formal record under the current baseline (C3): MADS poll from x = 0 under B = 1e6; cached neighbours; own frozen spec"
+ },
+ "ageing_batch": {
+  "Q0_unchanged": "x = 0 has no storage, so Q(0) is identical under every ageing variant; value_variant = Q(0) - Q_variant(x)",
+  "baseline_value_C3": {
+   "Q0": 653859461.2279255,
+   "Q_C3": 653597653.7234993,
+   "source": "A1a d0dbd186",
+   "value": 261807.5
+  },
+  "candidate": {
+   "I_x_eur": 317957.0085035586,
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "investment_year": 2025,
+   "label": "n7_4h_e1",
+   "nodes": {
+    "7": [
+     0.25,
+     1.0
+    ]
+   }
+  },
+  "execution": "one batch, 5 evaluations, concurrency 5, cap 500; non-certified variants reported with cause",
+  "floor_note": "soh_min is held at 0.50 in every variant; the floor was never active in Phase A. The author decides the baseline calibration and the floor together (Addendum 28)",
+  "labelling": "each variant is a MODEL VARIANT: its own campaign, its own evaluation keys, never mixed with the baseline in a table",
+  "predictions_recorded_before_run": {
+   "Planner": "agrees in ordering (no_ageing > C2 > C4 > C2_calfade ~ C3_midblock > C3); expects C2 and no_ageing to bring the smallest unit to or past break-even, C2 within resolution of it (predicted +4k against sigma_Q 10-18k) - i.e. the sign under C2 may be indeterminate at the smallest unit",
+   "break_even_multiplier_smallest_unit": 1.2145,
+   "expert_value_multiplier_vs_C3": {
+    "C2": 1.23,
+    "C2_calfade": 1.1,
+    "C3_midblock": 1.09,
+    "C4": 1.16,
+    "no_ageing": 1.36
+   },
+   "implied_value_eur": {
+    "C2": 322023,
+    "C2_calfade": 287988,
+    "C3_midblock": 285370,
+    "C4": 303697,
+    "no_ageing": 356058
+   },
+   "implied_value_minus_I_eur": {
+    "C2": 4066,
+    "C2_calfade": -29969,
+    "C3_midblock": -32587,
+    "C4": -14260,
+    "no_ageing": 38101
+   },
+   "resolution": "a variant's value - I is reported with the sum of its bar and x0's bar and with sigma_Q; a difference below them is indeterminate"
+  },
+  "stop": "STOP FOR REVIEW after the ageing batch",
+  "variants": {
+   "C2": "EOL retention 0.80 (cycles 10000, DoD 0.80) -> k = 35851; soh_min 0.50; phi_cal 1.0",
+   "C2_calfade": "C2 with calendar fade phi_cal = 0.985 per year",
+   "C3_midblock": "C3 with available energy in each block evaluated at mid-block SoH instead of end-of-block (formula to be fixed and recorded before the run)",
+   "C4": "EOL retention 0.70 -> k = 22429; soh_min 0.50; phi_cal 1.0",
+   "no_ageing": "SoH identically 1 (no cycle or calendar loss)"
+  }
+ },
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 28 and Addendum 29",
+  "STEP4_DFO_METHOD.md (updated by the author: measured sigma_Q, affine objective, open decisions)",
+  "P5_15_ADDENDUM27_PHASE_A_REPORT.md (accepted)"
+ ],
+ "baseline": {
+  "ageing_calibration": "C3 = (cycles 10000, reference DoD 0.80, EOL retention 0.50), k = 11541.56, soh_min 0.50, calendar ageing off (phi_cal = 1.0) - data/SRP1/SharedESS/SRP1_ESS_Params.json",
+  "configuration": "AA-on keep_memory from the case file (b5629311); cap 500; 10 consecutive cycles",
+  "cost_file_sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+  "objective_convention": "F = I(x) + Q, Q = certified gross_operational_cost (settlement excluded); salvage and settlement remainder reported, excluded"
+ },
+ "case_file_edit": {
+  "change": "data/SRP1/SharedESS/SRP1_ESS_Params.json max_energy_to_power_factor 10 -> 4 (Addendum 28; master-only)",
+  "gate": "zero solves: the oracle-path build at C* and at x=0 produces identical model digests (every TSO/DSO/ESSO block: Params, Var bounds/values/fixed, active flags) before and after; list every reader of the key and show none is on the oracle path"
+ },
+ "concurrency": {
+  "effective_for": [
+   "ageing batch",
+   "Phase B record"
+  ],
+  "rule": "the largest concurrency with no steady-state swap growth (Addendum 29; the author observed 1.5 GB swap at 7)",
+  "srp1": 5
+ },
+ "not_now": [
+  "reduced-scenario variant (deferred)",
+  "staging (not wanted)",
+  "code-path generalization (after the machine is known)"
+ ],
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S45/frozen_s45_phaseA_spec_v15_5feefd7b.json",
+  "sha256": "5feefd7b642fc3d480156ad5e52ed6e1cf9d6698cfd40dbb33389bab6e6229fe"
+ },
+ "stage": "P5.15 Addenda 28-29 - zero-solve reports, case-file consistency edit, ageing batch (model variants) at the smallest node-7 4 h unit; then (after review) the Phase B formal record and the paper-scale memory task - frozen specification v16",
+ "zero_solve_items": {
+  "Z1_branch_endpoints": "from-bus and to-bus of the binding DN interface branch at node 7 (the branch whose rating network.py:get_interface_branch_rating sums), and the bus at which the shared storage injects, in one line, from the built model and data (no solve); confirm the binding element is downstream of the injection",
+  "Z2_ageing_trajectory": "phi_cal as consumed, and the SoH trajectory (per cohort-year pair, the value used for available energy) at the smallest node-7 4 h unit (0.25 MVA / 1.0 MWh, 2025) from the committed A1a record",
+  "Z3_discount": {
+   "note": "the rate stays at 2 % and is not tuned toward a result (Addendum 28)",
+   "prediction_expert": "gain at most ~+10 % at 0 %; ~-12 % at 5 %; ~-21 % at 8 % (value relative to 2 %)",
+   "what": "re-weight the per-representative-year components of Q(x) - Q(0) at n7 0.25/1.0 2025 for discount rates 0, 2, 5, 8 %, holding I(x) at its 2025 undiscounted value, and report value-to-cost at each"
+  },
+  "Z4_price_spread": {
+   "prediction_expert": "captured ~55-60 EUR/MWh per full cycle",
+   "what": "average daily price spread in the SRP1 market data against the captured spread implied by the value per MWh"
+  }
+ }
+}
