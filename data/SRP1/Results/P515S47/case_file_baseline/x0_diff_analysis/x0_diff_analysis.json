@@ -1,0 +1,553 @@
+{
+ "stage": "P5.15 Addendum 30 W21 item 1(b): x = 0 ESSO digest difference analysis (zero solves, no model)",
+ "timestamp_utc": "2026-09-21T14:45:10.002931+00:00",
+ "script": "p515_s47_case_file_x0_diff_analysis.py",
+ "script_sha256": "f858c94d54ed6495423359425817817d98850210ef7ead2149147aaed06e8b48",
+ "inputs": {
+  "before": {
+   "path": "data/SRP1/Results/P515S47/case_file_baseline/before/case_file_baseline_before.json",
+   "sha256": "0e145c503b481907260df073929c7983e60d8a88301127565718ff8f3f376843"
+  },
+  "after": {
+   "path": "data/SRP1/Results/P515S47/case_file_baseline/after/case_file_baseline_after.json",
+   "sha256": "867a51032c2482315c26e52c14eb32673b18fd14d0e2f90de19bb1563fbeb977"
+  }
+ },
+ "gate_literal_criterion": "x = 0 oracle-path model digests identical before/after (every TSO/DSO/ESSO block): FAILED in the gate record (3 ESSO blocks differ)",
+ "network_blocks_differing": [],
+ "per_esso_block": {
+  "ESSO|node5": {
+   "components_differing": [
+    "Constraint:energy_storage_capacity_degradation",
+    "Expression:salvage_credit",
+    "Expression:salvage_value"
+   ],
+   "degradation_rows_differing": 18,
+   "degradation_rows_total": 18,
+   "degradation_rows_differing_all_inactive_both_phases": true,
+   "objective": {
+    "before": {
+     "None": "(True, 'feasibility_penalty')"
+    },
+    "after": {
+     "None": "(True, 'feasibility_penalty')"
+    }
+   },
+   "objective_identical_and_feasibility_penalty_only": true,
+   "salvage_variables": [
+    "es_e_available_per_unit[0,2]",
+    "es_e_available_per_unit[1,2]",
+    "es_e_available_per_unit[2,2]",
+    "es_e_rated_per_unit[0,2]",
+    "es_e_rated_per_unit[1,2]",
+    "es_e_rated_per_unit[2,2]"
+   ],
+   "salvage_variable_pins": {
+    "before": {
+     "es_e_available_per_unit[0,2]": {
+      "pinned_by": "available_e_capacity_unit (E_av == E_rated * SoH) with E_rated pinned",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_available_per_unit[0,2] - es_e_rated_per_unit[0,2]*es_soh_per_unit_cumul[0,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_available_per_unit[1,2]": {
+      "pinned_by": "available_e_capacity_unit (E_av == E_rated * SoH) with E_rated pinned",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_available_per_unit[1,2] - es_e_rated_per_unit[1,2]*es_soh_per_unit_cumul[1,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_available_per_unit[2,2]": {
+      "pinned_by": "available_e_capacity_unit (E_av == E_rated * SoH) with E_rated pinned",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_available_per_unit[2,2] - es_e_rated_per_unit[2,2]*es_soh_per_unit_cumul[2,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_rated_per_unit[0,2]": {
+      "pinned_by": "rated_e_capacity_unit",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_rated_per_unit[0,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_rated_per_unit[1,2]": {
+      "pinned_by": "rated_e_capacity_unit",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_rated_per_unit[1,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_rated_per_unit[2,2]": {
+      "pinned_by": "rated_e_capacity_unit",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_rated_per_unit[2,2]"
+      ],
+      "pinned_to_zero": true
+     }
+    },
+    "after": {
+     "es_e_available_per_unit[0,2]": {
+      "pinned_by": "available_e_capacity_unit (E_av == E_rated * SoH) with E_rated pinned",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_available_per_unit[0,2] - es_e_rated_per_unit[0,2]*es_soh_per_unit_cumul[0,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_available_per_unit[1,2]": {
+      "pinned_by": "available_e_capacity_unit (E_av == E_rated * SoH) with E_rated pinned",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_available_per_unit[1,2] - es_e_rated_per_unit[1,2]*es_soh_per_unit_cumul[1,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_available_per_unit[2,2]": {
+      "pinned_by": "available_e_capacity_unit (E_av == E_rated * SoH) with E_rated pinned",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_available_per_unit[2,2] - es_e_rated_per_unit[2,2]*es_soh_per_unit_cumul[2,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_rated_per_unit[0,2]": {
+      "pinned_by": "rated_e_capacity_unit",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_rated_per_unit[0,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_rated_per_unit[1,2]": {
+      "pinned_by": "rated_e_capacity_unit",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_rated_per_unit[1,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_rated_per_unit[2,2]": {
+      "pinned_by": "rated_e_capacity_unit",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_rated_per_unit[2,2]"
+      ],
+      "pinned_to_zero": true
+     }
+    }
+   },
+   "salvage_variables_all_pinned_to_zero_both_phases": true,
+   "salvage_expression": {
+    "before": "0.0*(0.0*es_e_rated_per_unit[0,2] + (es_e_available_per_unit[0,2] - 0.5*es_e_rated_per_unit[0,2])/0.5) + 51564.90634635041*(0.0*es_e_rated_per_unit[1,2] + (es_e_available_per_unit[1,2] - 0.5*es_e_rated_per_unit[1,2])/0.5) + 95456.65000661698*(0.0*es_e_rated_per_unit[2,2] + (es_e_available_per_unit[2,2] - 0.5*es_e_rated_per_unit[2,2])/0.5)",
+    "after": "0.0*(0.0*es_e_rated_per_unit[0,2] + (es_e_available_per_unit[0,2] - 0.7*es_e_rated_per_unit[0,2])/0.30000000000000004) + 51564.90634635041*(0.0*es_e_rated_per_unit[1,2] + (es_e_available_per_unit[1,2] - 0.7*es_e_rated_per_unit[1,2])/0.30000000000000004) + 95456.65000661698*(0.0*es_e_rated_per_unit[2,2] + (es_e_available_per_unit[2,2] - 0.7*es_e_rated_per_unit[2,2])/0.30000000000000004)"
+   },
+   "nl": {
+    "before": {
+     "sha256": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+     "bytes": 37146,
+     "error": null
+    },
+    "after": {
+     "sha256": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+     "bytes": 37146,
+     "error": null
+    },
+    "identical": true
+   }
+  },
+  "ESSO|node7": {
+   "components_differing": [
+    "Constraint:energy_storage_capacity_degradation",
+    "Expression:salvage_credit",
+    "Expression:salvage_value"
+   ],
+   "degradation_rows_differing": 18,
+   "degradation_rows_total": 18,
+   "degradation_rows_differing_all_inactive_both_phases": true,
+   "objective": {
+    "before": {
+     "None": "(True, 'feasibility_penalty')"
+    },
+    "after": {
+     "None": "(True, 'feasibility_penalty')"
+    }
+   },
+   "objective_identical_and_feasibility_penalty_only": true,
+   "salvage_variables": [
+    "es_e_available_per_unit[0,2]",
+    "es_e_available_per_unit[1,2]",
+    "es_e_available_per_unit[2,2]",
+    "es_e_rated_per_unit[0,2]",
+    "es_e_rated_per_unit[1,2]",
+    "es_e_rated_per_unit[2,2]"
+   ],
+   "salvage_variable_pins": {
+    "before": {
+     "es_e_available_per_unit[0,2]": {
+      "pinned_by": "available_e_capacity_unit (E_av == E_rated * SoH) with E_rated pinned",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_available_per_unit[0,2] - es_e_rated_per_unit[0,2]*es_soh_per_unit_cumul[0,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_available_per_unit[1,2]": {
+      "pinned_by": "available_e_capacity_unit (E_av == E_rated * SoH) with E_rated pinned",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_available_per_unit[1,2] - es_e_rated_per_unit[1,2]*es_soh_per_unit_cumul[1,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_available_per_unit[2,2]": {
+      "pinned_by": "available_e_capacity_unit (E_av == E_rated * SoH) with E_rated pinned",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_available_per_unit[2,2] - es_e_rated_per_unit[2,2]*es_soh_per_unit_cumul[2,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_rated_per_unit[0,2]": {
+      "pinned_by": "rated_e_capacity_unit",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_rated_per_unit[0,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_rated_per_unit[1,2]": {
+      "pinned_by": "rated_e_capacity_unit",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_rated_per_unit[1,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_rated_per_unit[2,2]": {
+      "pinned_by": "rated_e_capacity_unit",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_rated_per_unit[2,2]"
+      ],
+      "pinned_to_zero": true
+     }
+    },
+    "after": {
+     "es_e_available_per_unit[0,2]": {
+      "pinned_by": "available_e_capacity_unit (E_av == E_rated * SoH) with E_rated pinned",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_available_per_unit[0,2] - es_e_rated_per_unit[0,2]*es_soh_per_unit_cumul[0,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_available_per_unit[1,2]": {
+      "pinned_by": "available_e_capacity_unit (E_av == E_rated * SoH) with E_rated pinned",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_available_per_unit[1,2] - es_e_rated_per_unit[1,2]*es_soh_per_unit_cumul[1,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_available_per_unit[2,2]": {
+      "pinned_by": "available_e_capacity_unit (E_av == E_rated * SoH) with E_rated pinned",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_available_per_unit[2,2] - es_e_rated_per_unit[2,2]*es_soh_per_unit_cumul[2,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_rated_per_unit[0,2]": {
+      "pinned_by": "rated_e_capacity_unit",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_rated_per_unit[0,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_rated_per_unit[1,2]": {
+      "pinned_by": "rated_e_capacity_unit",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_rated_per_unit[1,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_rated_per_unit[2,2]": {
+      "pinned_by": "rated_e_capacity_unit",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_rated_per_unit[2,2]"
+      ],
+      "pinned_to_zero": true
+     }
+    }
+   },
+   "salvage_variables_all_pinned_to_zero_both_phases": true,
+   "salvage_expression": {
+    "before": "0.0*(0.0*es_e_rated_per_unit[0,2] + (es_e_available_per_unit[0,2] - 0.5*es_e_rated_per_unit[0,2])/0.5) + 51564.90634635041*(0.0*es_e_rated_per_unit[1,2] + (es_e_available_per_unit[1,2] - 0.5*es_e_rated_per_unit[1,2])/0.5) + 95456.65000661698*(0.0*es_e_rated_per_unit[2,2] + (es_e_available_per_unit[2,2] - 0.5*es_e_rated_per_unit[2,2])/0.5)",
+    "after": "0.0*(0.0*es_e_rated_per_unit[0,2] + (es_e_available_per_unit[0,2] - 0.7*es_e_rated_per_unit[0,2])/0.30000000000000004) + 51564.90634635041*(0.0*es_e_rated_per_unit[1,2] + (es_e_available_per_unit[1,2] - 0.7*es_e_rated_per_unit[1,2])/0.30000000000000004) + 95456.65000661698*(0.0*es_e_rated_per_unit[2,2] + (es_e_available_per_unit[2,2] - 0.7*es_e_rated_per_unit[2,2])/0.30000000000000004)"
+   },
+   "nl": {
+    "before": {
+     "sha256": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+     "bytes": 37146,
+     "error": null
+    },
+    "after": {
+     "sha256": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+     "bytes": 37146,
+     "error": null
+    },
+    "identical": true
+   }
+  },
+  "ESSO|node9": {
+   "components_differing": [
+    "Constraint:energy_storage_capacity_degradation",
+    "Expression:salvage_credit",
+    "Expression:salvage_value"
+   ],
+   "degradation_rows_differing": 18,
+   "degradation_rows_total": 18,
+   "degradation_rows_differing_all_inactive_both_phases": true,
+   "objective": {
+    "before": {
+     "None": "(True, 'feasibility_penalty')"
+    },
+    "after": {
+     "None": "(True, 'feasibility_penalty')"
+    }
+   },
+   "objective_identical_and_feasibility_penalty_only": true,
+   "salvage_variables": [
+    "es_e_available_per_unit[0,2]",
+    "es_e_available_per_unit[1,2]",
+    "es_e_available_per_unit[2,2]",
+    "es_e_rated_per_unit[0,2]",
+    "es_e_rated_per_unit[1,2]",
+    "es_e_rated_per_unit[2,2]"
+   ],
+   "salvage_variable_pins": {
+    "before": {
+     "es_e_available_per_unit[0,2]": {
+      "pinned_by": "available_e_capacity_unit (E_av == E_rated * SoH) with E_rated pinned",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_available_per_unit[0,2] - es_e_rated_per_unit[0,2]*es_soh_per_unit_cumul[0,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_available_per_unit[1,2]": {
+      "pinned_by": "available_e_capacity_unit (E_av == E_rated * SoH) with E_rated pinned",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_available_per_unit[1,2] - es_e_rated_per_unit[1,2]*es_soh_per_unit_cumul[1,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_available_per_unit[2,2]": {
+      "pinned_by": "available_e_capacity_unit (E_av == E_rated * SoH) with E_rated pinned",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_available_per_unit[2,2] - es_e_rated_per_unit[2,2]*es_soh_per_unit_cumul[2,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_rated_per_unit[0,2]": {
+      "pinned_by": "rated_e_capacity_unit",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_rated_per_unit[0,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_rated_per_unit[1,2]": {
+      "pinned_by": "rated_e_capacity_unit",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_rated_per_unit[1,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_rated_per_unit[2,2]": {
+      "pinned_by": "rated_e_capacity_unit",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_rated_per_unit[2,2]"
+      ],
+      "pinned_to_zero": true
+     }
+    },
+    "after": {
+     "es_e_available_per_unit[0,2]": {
+      "pinned_by": "available_e_capacity_unit (E_av == E_rated * SoH) with E_rated pinned",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_available_per_unit[0,2] - es_e_rated_per_unit[0,2]*es_soh_per_unit_cumul[0,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_available_per_unit[1,2]": {
+      "pinned_by": "available_e_capacity_unit (E_av == E_rated * SoH) with E_rated pinned",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_available_per_unit[1,2] - es_e_rated_per_unit[1,2]*es_soh_per_unit_cumul[1,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_available_per_unit[2,2]": {
+      "pinned_by": "available_e_capacity_unit (E_av == E_rated * SoH) with E_rated pinned",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_available_per_unit[2,2] - es_e_rated_per_unit[2,2]*es_soh_per_unit_cumul[2,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_rated_per_unit[0,2]": {
+      "pinned_by": "rated_e_capacity_unit",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_rated_per_unit[0,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_rated_per_unit[1,2]": {
+      "pinned_by": "rated_e_capacity_unit",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_rated_per_unit[1,2]"
+      ],
+      "pinned_to_zero": true
+     },
+     "es_e_rated_per_unit[2,2]": {
+      "pinned_by": "rated_e_capacity_unit",
+      "row": [
+       true,
+       0.0,
+       0.0,
+       "es_e_rated_per_unit[2,2]"
+      ],
+      "pinned_to_zero": true
+     }
+    }
+   },
+   "salvage_variables_all_pinned_to_zero_both_phases": true,
+   "salvage_expression": {
+    "before": "0.0*(0.0*es_e_rated_per_unit[0,2] + (es_e_available_per_unit[0,2] - 0.5*es_e_rated_per_unit[0,2])/0.5) + 51564.90634635041*(0.0*es_e_rated_per_unit[1,2] + (es_e_available_per_unit[1,2] - 0.5*es_e_rated_per_unit[1,2])/0.5) + 95456.65000661698*(0.0*es_e_rated_per_unit[2,2] + (es_e_available_per_unit[2,2] - 0.5*es_e_rated_per_unit[2,2])/0.5)",
+    "after": "0.0*(0.0*es_e_rated_per_unit[0,2] + (es_e_available_per_unit[0,2] - 0.7*es_e_rated_per_unit[0,2])/0.30000000000000004) + 51564.90634635041*(0.0*es_e_rated_per_unit[1,2] + (es_e_available_per_unit[1,2] - 0.7*es_e_rated_per_unit[1,2])/0.30000000000000004) + 95456.65000661698*(0.0*es_e_rated_per_unit[2,2] + (es_e_available_per_unit[2,2] - 0.7*es_e_rated_per_unit[2,2])/0.30000000000000004)"
+   },
+   "nl": {
+    "before": {
+     "sha256": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+     "bytes": 37146,
+     "error": null
+    },
+    "after": {
+     "sha256": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+     "bytes": 37146,
+     "error": null
+    },
+    "identical": true
+   }
+  }
+ },
+ "checks": {
+  "X1_differing_components_are_degradation_rows_and_salvage_expressions_only": true,
+  "X2_every_differing_degradation_row_inactive_both_phases": true,
+  "X3_esso_objective_identical_feasibility_penalty_only": true,
+  "X4_salvage_variables_pinned_to_zero_by_active_rows_both_phases": true,
+  "X5_esso_nl_identical_before_after": true,
+  "X6_network_blocks_identical": true,
+  "guard_zero_solves_verified": true
+ },
+ "all_ok": true,
+ "solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "wall_clock_s": 0.033928871154785156
+}

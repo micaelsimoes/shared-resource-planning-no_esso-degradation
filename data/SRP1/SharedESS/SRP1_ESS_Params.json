@@ -17,13 +17,14 @@
 		"calendar_life_years": 15,
 		"cycle_life_nominal": 10000,
 		"depth_of_discharge_nominal": 0.80,
-		"minimum_soh": 0.50,
+		"minimum_soh": 0.70,
+		"calendar_retention_per_year": 0.985,
 		"calibration": {
 			"status": "ACTIVE",
 			"cycles_n": 10000,
 			"reference_dod_d": 0.80,
-			"eol_retention_r": 0.50,
-			"_note": "k = cycles_n * reference_dod_d / (-ln eol_retention_r). ACTIVE since P5.13-D: calibration C3 = (10000, 0.80, 0.50) gives k = 11541.560327111707, consumed by the degradation law in place of cycle_life_nominal. See P5_13_B_CYCLING_CALIBRATION.md for the candidates and P5_13_D_* for the impact gate. Setting status back to DECLARED_NOT_CONSUMED restores k = cycle_life_nominal exactly."
+			"eol_retention_r": 0.80,
+			"_note": "k = cycles_n * reference_dod_d / (-ln eol_retention_r). ACTIVE calibration since P5.15 Addendum 30: C2 = (10000, 0.80, 0.80), k = 35851.36, the ageing BASELINE together with calendar_retention_per_year 0.985 and minimum_soh 0.70 (frozen spec v17 baseline). HISTORY: ACTIVE from P5.13-D until Addendum 30: calibration C3 = (10000, 0.80, 0.50) gives k = 11541.560327111707, consumed by the degradation law in place of cycle_life_nominal. See P5_13_B_CYCLING_CALIBRATION.md for the candidates and P5_13_D_* for the impact gate. Setting status back to DECLARED_NOT_CONSUMED restores k = cycle_life_nominal exactly."
 		}
 	},
 	"solver": {
