@@ -186,12 +186,35 @@ Authority: Addendum 27 (with the author's decisions) and `STEP4_DFO_METHOD.md`. 
   - the row-18 scenario-deviation penalties activate at 25 scenarios;
   - the paper's investment years (2025/28/31/34/37) do not map onto SRP1's.
 
-**Order** (Addendum 27):
-1. A0: 8 points, AA-on, 7 + 1 batches, running.
-2. The paper-scale bounded task, including the timed cycle, run alone.
-3. A1: the 2025 ladders (30), the year ladder (20), A2, A3.
-4. **Stop for review.**
-5. Phase B under spec v16.
+**Order** (Addendum 27): A0 → paper-scale task → A1 (ladders, year ladder, A2, A3) → **stop for review** → Phase B.
+
+### Phase A COMPLETE — stopped for review (2026-09-21). Report: `P5_15_ADDENDUM27_PHASE_A_REPORT.md`
+
+- **68/68 evaluations certified** (A0 8, A1a 30, A1b 20, A2 5, A3 5); no barrier points. Five bitwise determinism
+  reproductions in total, four of them across campaigns.
+- **x = 0 minimises F on SRP1 under the corrected costs, within the frozen AA-on configuration.**
+  - F(x = 0) = 653,859,461. The smallest margin is +52,801 (node 5, 0.25 / 0.5).
+  - It holds across size, duration, node, investment year, node combinations, and gross vs net-of-salvage.
+- **Q is linear and separable within resolution.**
+  - value = 14,295 + 227,727·E + 51,714·P EUR (node 7, 2025, n = 16, residual rms 10,285).
+  - Node combinations are additive (the triple is 1.000 of the sum).
+  - Mechanism: the storage injects at the DSO reference (interface) bus, so it cannot relieve the binding DN interface branch.
+- **σ_Q ≈ 10–18k (1.6–2.8e-5 of Q)** replaces the provisional 1.1e-4.
+- **Break-even energy cost:** 176,576 EUR/MWh at the margin and 197,728 for the first 4 h unit. Under the *original* costs the smallest unit is indeterminate.
+- **Caveats (Advisor):**
+  - the margin is below the 72k between-configuration spread at C\*;
+  - the end-of-block SoH convention is conservative against storage (~9 %);
+  - SRP1 is single-scenario, so option value is unmeasured.
+- **Paper scale.**
+  - The build fits with snapshot clones off (19.6 GiB).
+  - One cycle was NOT timed: both attempts ran out of memory during initialization.
+  - Projection: ≥ 1,272 s per cycle, 33–54 h per certified evaluation, ~40–50 GiB. It does not fit this 32 GiB machine.
+- **Pending author decisions (report §7):**
+  - Phase B as a cache-served formality;
+  - an SoH-convention sensitivity arm;
+  - a reduced-scenario option-value probe;
+  - staging (needs a multi-cohort candidate form);
+  - the paper-scale route.
 
 ---
 
