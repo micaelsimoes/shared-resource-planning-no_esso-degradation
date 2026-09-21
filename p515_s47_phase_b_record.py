@@ -1,5 +1,5 @@
 """
-P5.15 Addendum 30 (task W23) -- Phase B FORMAL RECORD under the ageing BASELINE (spec v17 step S4):
+P5.15 Addendum 30 (tasks W23, W24) -- Phase B FORMAL RECORD under the ageing BASELINE (spec v17 step S4):
 the STEP4_DFO_METHOD.md section 5 MADS poll from the incumbent, under the budget B = 1e6 EUR, with every
 committed certified BASELINE evaluation as the cache, through the campaign harness
 (`p515_s44_campaign_harness.py`, unchanged) with the SAME declared `ess_ageing_baseline` as S2/S3
@@ -19,7 +19,7 @@ investment year: z = (zP5, zE5, zP7, zE7, zP9, zE9, zY), n = 7, P = 0.25 zP MVA,
 l.121-122: z = D^-1 x, D = diag(0.25, 0.5, ...)), zY = index into the instance years (2025, 2030, 2035; the
 ordinal "5-year timing" step, STEP4 8 l.277). The harness's canonical candidate carries ONE investment year
 for the whole candidate (`canonical_candidate`; multi-cohort not supported), so per-node years (the 9-variable
-form of STEP4 1.1 l.25-26) are NOT evaluable by the frozen oracle -- see the worker report (ambiguity A1).
+form of STEP4 1.1 l.25-26) are NOT evaluable by the frozen oracle (ambiguity A1; ACCEPTED by the Planner, W24).
 
 Constraints (STEP4 1.2 l.30-40), closed form, before any evaluation (5.5 l.214): zP, zE >= 0; P = 0 <=> E = 0;
 2P <= E <= 4P  <=>  zP <= zE <= 2 zP; E <= 5 MWh  <=>  zE <= 10; zY in {0, 1, 2}; I(x) <= B = 1e6.
@@ -40,6 +40,20 @@ direction projected on the unit lattice at poll size Delta as d = round(Delta h 
 from zero), so ||d||_inf = Delta (NOMAD 4 GMesh scaleAndProjectOnMesh with mesh size 1). FULL POLL: every
 direction is evaluated (no opportunistic stop), in batches of <= CONCURRENCY = 5; the incumbent is updated after
 the whole poll (5.3 l.200-201). Cache hits are never re-evaluated (2.6 l.101).
+
+UNIT-POLL COMPLETION (Planner ruling A2, W24): at every poll of unit size (Delta = 1) the poll set is the UNION of
+the rounded OrthoMADS directions and the POLL COMPLETION = every bound-, rule- and budget-feasible canonical lattice
+point within l_inf distance 1 of the incumbent in the 7 variables (zP5, zE5, zP7, zE7, zP9, zE9, zY)
+(`Lattice.neighbourhood`). At Delta = 1 every feasible rounded-direction point is itself such a neighbour, so the
+union equals the completion; direction points are listed first, completion points already polled by a direction
+are recorded as duplicates. Rationale (recorded as ruled): at x = 0 the constraints P = 0 <=> E = 0 and
+zP <= zE <= 2 zP make every rounded direction infeasible, so a unit-poll failure without the completion certifies
+nothing; with it the termination certificate is "no feasible lattice neighbour of the incumbent improves F".
+CAP: if the completion has more than COMPLETION_CAP = 30 feasible points the poll is REFUSED (nothing of that poll
+is evaluated, the completion is never truncated) and the run STOPS FOR REVIEW. At x = 0 the completion is the 14
+points 0.25 MVA / 0.5 MWh at every non-empty subset of the nodes {5, 7, 9} x {2025, 2030}. Option (b) of the
+ruling -- a per-node reparametrization (zP, zE - zP) -- is a METHOD CHANGE REFERRED TO THE AUTHOR and is NOT
+implemented.
 
 Mesh / poll size (STEP4 5.2 l.189-195): Delta_0 = 4 scaled units; Delta doubles on success and halves on
 failure, never below 1; the mesh size is 1 lattice unit in every coordinate (the granularity floor: for
@@ -66,9 +80,27 @@ outcome 'barrier' / 'barrier_infeasible_not_evaluated', and a missing / infinite
 campaign for review (2.4 l.95-96): STOP after a batch if >= 2 NEW barrier evaluations in the current poll or
 >= 3 overall (a1a's stop rule, transcribed; ambiguity A7).
 
-Termination (STEP4 3 l.123-126): the poll at unit poll size (Delta = 1) fails -> mesh-local optimum; or the
-evaluation budget MAX_NEW_EVALUATIONS is exhausted (a poll that would exceed it is not launched; the incumbent
-is reported with the poll size reached); or MAX_POLLS (safety); or the barrier stop rule.
+Termination (STEP4 3 l.123-126): the poll at unit poll size (Delta = 1, directions + completion) fails ->
+mesh-local optimum, with the certificate "no feasible lattice neighbour of the incumbent improves F" (every
+feasible l_inf-1 neighbour polled; none a determinate improvement; indeterminate neighbours listed unresolved,
+barrier neighbours F = +inf); or the evaluation budget MAX_NEW_EVALUATIONS is exhausted (a poll that would exceed
+it is not launched; the incumbent is reported with the poll size reached); or MAX_POLLS (safety); or the barrier
+stop rule; or the completion cap (STOP_FOR_REVIEW_completion_cap). The completion cap is checked before the
+evaluation budget.
+
+PLANNER RULINGS on the W23 list (task W24; frozen verbatim in substance as `PLANNER_RULINGS` in the spec):
+  A1  ACCEPTED: 7 variables with one common year (single-cohort form; the harness carries one year per candidate).
+  A2  RULED (main): unit-poll completion as above, cap 30 -> STOP FOR REVIEW (no truncation); option (b)
+      (per-node reparametrization (zP, zE - zP)) referred to the author as a method change, NOT implemented.
+  A3  ACCEPTED: STEP4 5.2 double-on-success / halve-on-failure rule.
+  A4  ACCEPTED: improvement threshold max(bar_x + bar_inc, sigma_Q); indeterminate points recorded, not accepted.
+  A5  ACCEPTED: direction details as implemented (recorded in PLANNER_RULINGS['A5']).
+  A6  ACCEPTED: sigma_Q from phase_a_tables T3 (C3-era); under the baseline the bar sum (~50k at S2) dominates it.
+  A7  ACCEPTED: barrier stop thresholds 2 per poll, 3 overall.
+  A8  RULED: MAX_NEW_EVALUATIONS = 20, MAX_POLLS = 60.
+  A9  OPEN ITEM: the STEP4 section 6 NOMAD comparison is NOT done (PyNomad not installed; installing it is an
+      unauthorised environment change).
+  A10, A11  ACCEPTED as implemented (items of the W23 worker report; launcher 4b8854b0).
 
 Initial incumbent (task W23): argmin F over the budget-feasible, on-lattice, CERTIFIED cache entries plus x = 0
 (ties: lower I, then label). x = 0 is NOT re-run: Q(0) is pinned from the A0 x0 record (ageing-independent,
@@ -102,8 +134,9 @@ S3 is finished and committed):
       > data/SRP1/Results/P515S47/campaign_s47_phase_b_freeze_launch.log 2>&1
   /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s47_phase_b_record.py --run \\
       --spec-sha256 <sha> > data/SRP1/Results/P515S47/campaign_s47_phase_b_launch.log 2>&1
-Exit codes (--run): 0 terminated by the unit-poll failure; 2 evaluation budget / MAX_POLLS reached; 3
-STOP_FOR_REVIEW (barrier stop rule); 1 harness / guard / precondition failure.
+Exit codes (--run): 0 terminated by the unit-poll failure (with its certificate holding); 2 evaluation budget /
+MAX_POLLS reached; 3 STOP_FOR_REVIEW (barrier stop rule or completion cap); 1 harness / guard / precondition
+failure, or a unit-poll termination whose certificate does not hold.
 """
 
 import argparse
@@ -168,6 +201,9 @@ MAX_NEW_EVALUATIONS = 20
 MAX_POLLS = 60
 BARRIER_STOP_PER_POLL = 2
 BARRIER_STOP_OVERALL = 3
+UNIT_POLL_COMPLETION = True  # Planner ruling A2 (W24)
+COMPLETION_CAP = 30  # Planner ruling A2: > 30 feasible completion points -> refuse, STOP FOR REVIEW (never truncate)
+X0_COMPLETION_SIZE = 14  # Planner ruling A2: 0.25/0.5 at every non-empty node subset x {2025, 2030}
 
 # ---- pins ----
 SPEC_V17 = {'path': os.path.join(_P47, 'frozen_s47_baseline_spec_v17_ff0056b8.json'),
@@ -210,6 +246,54 @@ RESOLUTION_RULE = ('a polled x improves the incumbent iff F(inc) - F(x) > max(ba
 STOP_RULE = (f'STOP_FOR_REVIEW (no further batch) if >= {BARRIER_STOP_PER_POLL} NEW barrier evaluations in one poll '
              f'or >= {BARRIER_STOP_OVERALL} overall (STEP4 2.4 "a run of barrier points in a region stops the '
              'campaign for review"; a1a stop-rule thresholds)')
+COMPLETION_RULE = (
+    'at every poll of unit size (Delta = 1) the poll set is the union of the rounded OrthoMADS directions and the '
+    'POLL COMPLETION: every bound-, rule- and budget-feasible canonical lattice point within l_inf distance 1 of the '
+    'incumbent in the 7 variables (zP5, zE5, zP7, zE7, zP9, zE9, zY); if the completion has more than '
+    f'{COMPLETION_CAP} feasible points the poll is refused (nothing evaluated, never truncated) and the run STOPS FOR '
+    'REVIEW (STOP_FOR_REVIEW_completion_cap); the cap is checked before the evaluation budget')
+TERMINATION_CERTIFICATE = ('no feasible lattice neighbour of the incumbent improves F: every bound-, rule- and '
+                           'budget-feasible lattice point within l_inf distance 1 of the incumbent in (zP5, zE5, zP7, '
+                           'zE7, zP9, zE9, zY) was polled at the final unit poll and none is a determinate improvement '
+                           '(F(inc) - F(x) > max(bar_x + bar_inc, sigma_Q)); indeterminate neighbours are listed '
+                           'unresolved, barrier neighbours are F = +inf (extreme barrier)')
+PLANNER_RULINGS = {
+    'source': 'Planner rulings on the W23 worker-report list (task W24, P5.15 Addendum 30), recorded verbatim in substance',
+    'A1': ('ACCEPTED: 7 variables (zP5, zE5, zP7, zE7, zP9, zE9, zY) with ONE common investment year (single-cohort '
+           'form); the harness carries one year per candidate, so per-node years are not evaluable.'),
+    'A2': ('RULED (main): at the final unit poll (Delta = 1) the poll set is the union of the rounded OrthoMADS '
+           'directions and the POLL COMPLETION: every bound-, rule- and budget-feasible lattice point within l_inf '
+           'distance 1 of the incumbent in the 7 variables (zP5, zE5, zP7, zE7, zP9, zE9, zY). Rationale: at x = 0 the '
+           'constraints P = 0 <=> E = 0 and zP <= zE <= 2 zP make every rounded direction infeasible, so a unit-poll '
+           'failure without completion certifies nothing; completion makes the termination certificate "no feasible '
+           'lattice neighbour of the incumbent improves F". Cap: if the completion has more than 30 feasible points, '
+           'refuse and STOP FOR REVIEW (do not truncate). At x = 0 the completion is the 14 points 0.25/0.5 at every '
+           'non-empty node subset x {2025, 2030}. Implemented at EVERY poll of unit size (the final unit poll is '
+           'the one that fails).'),
+    'A2_option_b': ('NOT IMPLEMENTED -- recorded as a METHOD CHANGE REFERRED TO THE AUTHOR: per-node '
+                    'reparametrization (zP, zE - zP).'),
+    'A3': 'ACCEPTED: STEP4 5.2 double/halve rule (double on success, halve on failure, never below 1; Delta_0 = 4).',
+    'A4': ('ACCEPTED: improvement threshold max(bar_x + bar_inc, sigma_Q); 0 < F(inc) - F(x) <= threshold is '
+           'INDETERMINATE: recorded and not accepted.'),
+    'A5': ('ACCEPTED, direction details as implemented: OrthoMADS n+1 NEG; Halton bases = the first 7 primes; '
+           't = t0 + k with t0 = p_7 = 17 and k the poll counter from 0; v = (2 u_t - 1)/||2 u_t - 1||; '
+           'H = I - 2 v v^T; directions = the 7 columns of H and -(sum of the columns); each projected as '
+           'd = round_half_away_from_zero(Delta h / ||h||_inf) so ||d||_inf = Delta; mesh size 1 lattice unit; full '
+           'poll (no opportunistic stop) in batches of <= 5; incumbent updated after the whole poll to the argmin F '
+           'among determinate improvers (ties: lower I, then label); canonical form (P = 0 -> E = 0; no storage -> '
+           'year y1), inactive-only moves and duplicate eval keys dropped.'),
+    'A6': ('ACCEPTED: sigma_Q = phase_a_tables T3 residual_max_abs_eur = 18,449.66 EUR (C3-era, not re-measured '
+           'under the baseline). Under the baseline the bar sum (~50k at S2) dominates it: S2 bars 25,146.49 '
+           '(c_star) + 25,104.65 (n7_4h_e1) = 50,251.14 EUR; n7_4h_e1 + pinned x0 (9,629.98) = 34,734.63 EUR.'),
+    'A7': 'ACCEPTED: stop thresholds 2 new barrier evaluations per poll, 3 overall.',
+    'A8': 'RULED: MAX_NEW_EVALUATIONS = 20, MAX_POLLS = 60.',
+    'A9': ('OPEN ITEM: the STEP4 section 6 NOMAD comparison is NOT done -- PyNomad is not installed and installing '
+           'it is an unauthorised environment change.'),
+    'A10': 'ACCEPTED as implemented (W23 worker-report item A10; launcher commit 4b8854b0).',
+    'A11': 'ACCEPTED as implemented (W23 worker-report item A11; launcher commit 4b8854b0).',
+}
+OPEN_ITEMS = [PLANNER_RULINGS['A9']]
+METHOD_CHANGES_REFERRED_TO_AUTHOR = [PLANNER_RULINGS['A2_option_b']]
 AUTHORITY = [
     'PLANNER_BRIEF_2026-09-13.md Addenda 27, 28, 29, 30 (Phase B formal record under the chosen baseline)',
     'STEP4_DFO_METHOD.md sections 1.2, 1.3, 2.4, 2.6, 3, 5.2-5.5, 6, 8',
@@ -221,8 +305,8 @@ EXTRA_CLEAN_FILES = (os.path.basename(__file__), H.ESS_PARAMS_FILE_REL, 'shared_
 
 POLL_RECORD_FIELDS = ('poll_index', 'halton_t', 'poll_size_delta', 'mesh_size', 'incumbent', 'directions',
                       'candidates', 'n_new_evaluations', 'n_cache_hits', 'batches', 'decision', 'next_incumbent',
-                      'next_poll_size', 'unit_poll')
-CANDIDATE_RECORD_FIELDS = ('direction_index', 'direction', 'z', 'label', 'eval_key', 'canonical', 'feasible',
+                      'next_poll_size', 'unit_poll', 'completion')
+CANDIDATE_RECORD_FIELDS = ('poll_part', 'direction_index', 'direction', 'z', 'label', 'eval_key', 'canonical', 'feasible',
                            'infeasibility_reasons', 'I_x_eur', 'disposition', 'source', 'status', 'barrier_cause',
                            'Q_eur', 'F_eur', 'bar_eur', 'incumbent_bar_eur', 'bar_sum_eur', 'sigma_Q_eur',
                            'resolution_eur', 'F_inc_minus_F_eur', 'outcome')
@@ -354,6 +438,31 @@ class Lattice:
                 out.append(z)
         return sorted(out)
 
+    def completion(self, z_inc):
+        """Planner ruling A2: the unit-poll completion = `neighbourhood(z_inc)` (every feasible canonical lattice
+        point within l_inf distance 1), with the rejected raw neighbours counted by violated-constraint class and
+        the budget-rejected ones listed (label, I(x)). Pure; nothing is evaluated here."""
+        z_inc = self.canonical_z(z_inc)
+        rejected, budget_rejected, seen_b = {}, [], set()
+        for d in product((-1, 0, 1), repeat=N_VARS):
+            raw = tuple(a + b for a, b in zip(z_inc, d))
+            why = self.reasons(raw)
+            if not why:
+                continue
+            for cls in sorted({r.split(':', 1)[0] for r in why}):
+                rejected[cls] = rejected.get(cls, 0) + 1
+            if any(r.startswith('budget') for r in why):
+                zc = self.canonical_z(raw)
+                if zc not in seen_b:
+                    seen_b.add(zc)
+                    budget_rejected.append({'label': self.label(zc), 'I_x_eur': self.investment_cost(zc)})
+        feasible = self.neighbourhood(z_inc)
+        return {'rule': COMPLETION_RULE, 'n_feasible': len(feasible), 'cap': COMPLETION_CAP,
+                'over_cap': len(feasible) > COMPLETION_CAP, 'points': [self.label(z) for z in feasible],
+                'z': [list(z) for z in feasible], 'n_raw_offsets': 3 ** N_VARS - 1,
+                'rejected_raw_offsets_by_class': rejected, 'budget_rejected': sorted(budget_rejected,
+                                                                                    key=lambda e: e['label'])}
+
 
 # ======================================================================================================================
 #  OrthoMADS directions (pure)
@@ -475,10 +584,12 @@ def initial_incumbent(lattice, cache, x0_eval_key, sigma_q):
 
 def run_mads(lattice, cache, key_of, incumbent, evaluate_fn, sigma_q, delta0=DELTA_0,
              max_new_evaluations=MAX_NEW_EVALUATIONS, max_polls=MAX_POLLS, batch_size=CONCURRENCY,
-             log=_log, on_poll=None):
+             log=_log, on_poll=None, on_poll_start=None):
     """The Phase B loop. `cache`: eval_key -> {'status', 'Q', 'bar', 'canonical', 'source', ...} (extended in place
     with new evaluations). `key_of(z)` -> eval key of the canonical z. `evaluate_fn(list[z]) -> list[cache entry]`
-    (<= batch_size per call). Returns the terminal record."""
+    (<= batch_size per call). At Delta = 1 the poll is the directions UNION the completion (ruling A2).
+    `on_poll_start(record)` is called after the poll set is listed and before anything of it is evaluated.
+    Returns the terminal record."""
     inc = dict(incumbent)
     delta = int(delta0)
     history, n_new, n_barrier_new = [], 0, 0
@@ -493,10 +604,15 @@ def run_mads(lattice, cache, key_of, incumbent, evaluate_fn, sigma_q, delta0=DEL
         t, u, dirs = poll_directions(k, delta)
         inc_view = {kk: inc[kk] for kk in ('label', 'eval_key', 'z', 'I', 'Q', 'F', 'bar')}
         cands, seen = [], {}
-        for j, d in enumerate(dirs):
-            raw = tuple(a + b for a, b in zip(inc['z'], d))
+        completion = lattice.completion(tuple(inc['z'])) if (UNIT_POLL_COMPLETION and delta == DELTA_MIN) else None
+        points = [('direction', j, tuple(d), tuple(a + b for a, b in zip(inc['z'], d))) for j, d in enumerate(dirs)]
+        if completion is not None and not completion['over_cap']:
+            points += [('completion', None, tuple(a - b for a, b in zip(z, inc['z'])), tuple(z))
+                       for z in completion['z']]
+        for part, j, d, raw in points:
             why = lattice.reasons(raw)
-            entry = {'direction_index': j, 'direction': list(d), 'z': list(raw), 'label': None, 'eval_key': None,
+            entry = {'poll_part': part, 'direction_index': j, 'direction': list(d), 'z': list(raw), 'label': None,
+                     'eval_key': None,
                      'canonical': None, 'feasible': not why, 'infeasibility_reasons': why, 'I_x_eur': None,
                      'disposition': None, 'source': None, 'status': None, 'barrier_cause': None, 'Q_eur': None,
                      'F_eur': None, 'bar_eur': None, 'incumbent_bar_eur': inc['bar'], 'bar_sum_eur': None,
@@ -514,12 +630,12 @@ def run_mads(lattice, cache, key_of, incumbent, evaluate_fn, sigma_q, delta0=DEL
             if z == tuple(inc['z']):
                 entry.update({'disposition': 'dropped_inactive_only', 'outcome': 'dropped'})
             elif entry['eval_key'] in seen:
-                entry.update({'disposition': f"duplicate_of_direction_{seen[entry['eval_key']]}", 'outcome': 'dropped'})
+                entry.update({'disposition': f"duplicate_of_{seen[entry['eval_key']]}", 'outcome': 'dropped'})
             elif entry['eval_key'] in cache:
-                seen[entry['eval_key']] = j
+                seen[entry['eval_key']] = f'direction_{j}' if part == 'direction' else 'completion'
                 entry['disposition'] = 'cache_hit'
             else:
-                seen[entry['eval_key']] = j
+                seen[entry['eval_key']] = f'direction_{j}' if part == 'direction' else 'completion'
                 entry['disposition'] = 'new_evaluation'
             cands.append(entry)
         new = [c for c in cands if c['disposition'] == 'new_evaluation']
@@ -527,7 +643,23 @@ def run_mads(lattice, cache, key_of, incumbent, evaluate_fn, sigma_q, delta0=DEL
                   'incumbent': inc_view, 'directions': [list(d) for d in dirs], 'candidates': cands,
                   'n_new_evaluations': len(new), 'n_cache_hits': sum(c['disposition'] == 'cache_hit' for c in cands),
                   'batches': [], 'decision': None, 'next_incumbent': None, 'next_poll_size': None,
-                  'unit_poll': delta == DELTA_MIN}
+                  'unit_poll': delta == DELTA_MIN,
+                  'completion': None if completion is None else {kk: v for kk, v in completion.items() if kk != 'z'}}
+        if on_poll_start:
+            on_poll_start(record)
+        if completion is not None and completion['over_cap']:
+            record['decision'] = 'stopped_for_review_completion_cap'
+            for c in cands:
+                if c['disposition'] in ('cache_hit', 'new_evaluation'):
+                    c['outcome'] = 'not_evaluated_completion_cap'
+            _finish(record)
+            termination = {'reason': 'STOP_FOR_REVIEW_completion_cap', 'poll_size_reached': delta,
+                           'completion_n_feasible': completion['n_feasible'], 'cap': COMPLETION_CAP,
+                           'rule': COMPLETION_RULE,
+                           'detail': f"poll {k}: the unit-poll completion of {inc['label']} has "
+                                     f"{completion['n_feasible']} feasible points > {COMPLETION_CAP}; refused, "
+                                     'nothing of this poll evaluated, not truncated'}
+            break
         if n_new + len(new) > max_new_evaluations:
             record['decision'] = 'not_launched_evaluation_budget'
             _finish(record)
@@ -603,7 +735,20 @@ def run_mads(lattice, cache, key_of, incumbent, evaluate_fn, sigma_q, delta0=DEL
         termination = {'reason': 'max_polls_reached', 'poll_size_reached': delta}
     last = history[-1] if history else None
     unresolved = [c for c in (last['candidates'] if last else []) if c['outcome'] == 'indeterminate']
-    return {'termination': termination,
+    certificate = None
+    if termination['reason'] == 'mesh_local_optimum_unit_poll_failed':
+        polled = {c['eval_key']: c['outcome'] for c in last['candidates']
+                  if c['disposition'] in ('cache_hit', 'new_evaluation')}
+        nb_keys = [key_of(z) for z in lattice.neighbourhood(tuple(inc['z']))]
+        outcomes = [polled.get(kk) for kk in nb_keys]
+        certificate = {'statement': TERMINATION_CERTIFICATE, 'incumbent': inc['label'],
+                       'n_feasible_neighbours': len(nb_keys),
+                       'all_feasible_neighbours_polled': all(kk in polled for kk in nb_keys),
+                       'n_no_improvement': outcomes.count('no_improvement'),
+                       'n_indeterminate_unresolved': outcomes.count('indeterminate'),
+                       'n_barrier': outcomes.count('barrier'), 'n_improvement': outcomes.count('improvement')}
+        certificate['holds'] = certificate['all_feasible_neighbours_polled'] and certificate['n_improvement'] == 0
+    return {'termination': termination, 'termination_certificate': certificate,
             'incumbent': {kk: inc[kk] for kk in ('label', 'eval_key', 'z', 'I', 'Q', 'F', 'bar')},
             'n_polls': len(history), 'n_new_evaluations': n_new, 'n_barrier_new_evaluations': n_barrier_new,
             'final_poll_unresolved_indeterminate': [{k: c[k] for k in ('label', 'F_eur', 'F_inc_minus_F_eur',
@@ -982,11 +1127,22 @@ def rule_eleven(lattice, sigma_q):
         poll = out['history'][0]
         checks['poll_record_fields'] = all(f in poll for f in POLL_RECORD_FIELDS)
         checks['candidate_record_fields'] = all(all(f in c for f in CANDIDATE_RECORD_FIELDS) for c in poll['candidates'])
-        checks['terminal_record_fields'] = all(f in out for f in ('termination', 'incumbent', 'history',
-                                                                    'final_poll_unresolved_indeterminate',
+        checks['terminal_record_fields'] = all(f in out for f in ('termination', 'termination_certificate', 'incumbent',
+                                                                    'history', 'final_poll_unresolved_indeterminate',
                                                                     'lattice_neighbourhood_of_incumbent'))
+        # the unit poll (ruling A2): the completion record and the completion candidates are produced
+        out1 = run_mads(lattice, dict(fake_cache), key_of, inc, _no_eval, sigma_q, delta0=DELTA_MIN, max_polls=1,
+                        log=lambda m: None)
+        p1 = out1['history'][0]
+        checks['unit_poll_completion_record'] = (
+            p1['unit_poll'] and isinstance(p1['completion'], dict)
+            and all(f in p1['completion'] for f in ('n_feasible', 'cap', 'over_cap', 'points', 'budget_rejected',
+                                                     'rejected_raw_offsets_by_class'))
+            and sum(c['poll_part'] == 'completion' for c in p1['candidates']) == p1['completion']['n_feasible']
+            and all(all(f in c for f in CANDIDATE_RECORD_FIELDS) for c in p1['candidates']))
     except AssertionError:
         checks['poll_record_fields'] = checks['candidate_record_fields'] = checks['terminal_record_fields'] = False
+        checks['unit_poll_completion_record'] = False
     missing = sorted(k for k, v in checks.items() if not v)
     if missing:
         raise AssertionError(f'RULE ELEVEN (Phase B record): capture paths missing: {missing}')
@@ -1078,16 +1234,28 @@ def build_inputs(own_root_rel):
 def expected_first_poll(lattice, cache, key_of, inc, sigma_q):
     """Zero-solve dry run of the poll sequence from the incumbent: follows the loop as long as no new evaluation
     is needed (cache hits and infeasible points are known); stops at the first poll that needs one."""
-    needed = []
+    needed, started = [], []
 
     def _dry_eval(batch):
         needed.extend(batch)
         raise _DryStop()
     try:
-        out = run_mads(lattice, dict(cache), key_of, inc, _dry_eval, sigma_q, log=lambda m: None)
+        out = run_mads(lattice, dict(cache), key_of, inc, _dry_eval, sigma_q, log=lambda m: None,
+                       on_poll_start=started.append)
         return {'complete_without_new_evaluations': True, 'result': out}
     except _DryStop:
-        return {'complete_without_new_evaluations': False, 'first_new_evaluations': [lattice.label(z) for z in needed]}
+        poll = started[-1]
+        new = [c for c in poll['candidates'] if c['disposition'] == 'new_evaluation']
+        return {'complete_without_new_evaluations': False, 'first_new_evaluations': [lattice.label(z) for z in needed],
+                'first_evaluating_poll': {
+                    'poll_index': poll['poll_index'], 'Delta': poll['poll_size_delta'],
+                    'incumbent': poll['incumbent']['label'], 'unit_poll': poll['unit_poll'],
+                    'completion_n_feasible': (poll['completion'] or {}).get('n_feasible'),
+                    'n_new_evaluations': len(new), 'n_cache_hits': poll['n_cache_hits'],
+                    'new_evaluations': [{'label': c['label'], 'poll_part': c['poll_part'], 'I_x_eur': c['I_x_eur']}
+                                        for c in new],
+                    'batch_sizes': [len(new[b:b + CONCURRENCY]) for b in range(0, len(new), CONCURRENCY)]},
+                'earlier_polls': [_summarize_poll(p) for p in started[:-1]]}
 
 
 class _DryStop(Exception):
@@ -1097,8 +1265,10 @@ class _DryStop(Exception):
 def _summarize_poll(poll):
     return {'poll_index': poll['poll_index'], 'Delta': poll['poll_size_delta'], 'halton_t': poll['halton_t'],
             'incumbent': poll['incumbent']['label'], 'decision': poll['decision'],
-            'candidates': [{'d': c['direction'], 'label': c['label'], 'disposition': c['disposition'],
-                            'reasons': c['infeasibility_reasons'], 'outcome': c['outcome']} for c in poll['candidates']]}
+            'completion_n_feasible': (poll['completion'] or {}).get('n_feasible'),
+            'candidates': [{'part': c['poll_part'], 'd': c['direction'], 'label': c['label'],
+                            'disposition': c['disposition'], 'reasons': c['infeasibility_reasons'],
+                            'outcome': c['outcome']} for c in poll['candidates']]}
 
 
 # ======================================================================================================================
@@ -1113,6 +1283,9 @@ def _extra(ev, domain, lattice, key_of, dry):
             'label': LABEL, 'stage': STAGE, 'spec_v17': dict(SPEC_V17), 'spec_v17_S4': ev['spec_v17_S4'],
             'spec_v17_S4_prediction': ev['spec_v17_S4_prediction'], 'pins': ev['pins'],
             'objective_convention': OBJECTIVE_CONVENTION, 'resolution_rule': RESOLUTION_RULE, 'stop_rule': STOP_RULE,
+            'completion_rule': COMPLETION_RULE, 'termination_certificate': TERMINATION_CERTIFICATE,
+            'planner_rulings': PLANNER_RULINGS, 'open_items': OPEN_ITEMS,
+            'method_changes_referred_to_author': METHOD_CHANGES_REFERRED_TO_AUTHOR,
             'master_problem': {'nodes': list(ACTIVE_NODES), 'years': list(lattice.years), 'granule_P_mva': GRANULE_P_MVA,
                                'granule_E_mwh': GRANULE_E_MWH, 'E_max_mwh': E_MAX_MWH, 'duration_h': [2, 4],
                                'budget_eur': BUDGET_EUR, 'form': 'single-cohort, ONE common investment year (n = 7)',
@@ -1124,7 +1297,9 @@ def _extra(ev, domain, lattice, key_of, dry):
                             'rounding': 'd = round_half_away(Delta h / ||h||_inf)', 'delta_0': DELTA_0,
                             'delta_min': DELTA_MIN, 'mesh_size': MESH_SIZE, 'success': 'Delta *= 2',
                             'failure': 'Delta = max(1, Delta // 2)', 'full_poll': True, 'batch_size': CONCURRENCY,
-                            'max_new_evaluations': MAX_NEW_EVALUATIONS, 'max_polls': MAX_POLLS},
+                            'max_new_evaluations': MAX_NEW_EVALUATIONS, 'max_polls': MAX_POLLS,
+                            'unit_poll_completion': UNIT_POLL_COMPLETION, 'completion_cap': COMPLETION_CAP,
+                            'completion_size_at_x0': len(lattice.neighbourhood(lattice.x0()))},
             'sigma_Q': ev['sigma_Q'], 'degradation_clause': ev['degradation_clause'],
             'I_x_cross_check_vs_W2': ev['I_x_cross_check_vs_W2'], 'domain_summary': ev['domain'],
             'domain_I_x_eur': {lattice.label(z): lattice.investment_cost(z) for z in domain},
@@ -1141,6 +1316,7 @@ def _dry_summary(lattice, cache, key_of, inc, sigma_q):
     if dry['complete_without_new_evaluations']:
         res = dry['result']
         return {'complete_without_new_evaluations': True, 'termination': res['termination'],
+                'termination_certificate': res['termination_certificate'],
                 'incumbent': res['incumbent']['label'], 'polls': [_summarize_poll(p) for p in res['history']],
                 'lattice_neighbourhood_of_incumbent': res['lattice_neighbourhood_of_incumbent']}
     return dry
@@ -1221,6 +1397,12 @@ def validate_spec(spec, lattice, key_of, domain, ev):
         'domain_I_x_frozen': all(abs(extra.get('domain_I_x_eur', {}).get(lattice.label(z), -1.0)
                                      - lattice.investment_cost(z)) <= 1e-6 for z in domain),
         'c3_exclusion_ok': (extra.get('c3_exclusion') or {}).get('ok') is True,
+        'planner_rulings_frozen': extra.get('planner_rulings') == PLANNER_RULINGS,
+        'completion_frozen': ((extra.get('poll_design') or {}).get('unit_poll_completion') is True
+                              and (extra.get('poll_design') or {}).get('completion_cap') == COMPLETION_CAP
+                              and extra.get('completion_rule') == COMPLETION_RULE),
+        'x0_completion_is_14': (len(lattice.neighbourhood(lattice.x0())) == X0_COMPLETION_SIZE
+                                and (extra.get('poll_design') or {}).get('completion_size_at_x0') == X0_COMPLETION_SIZE),
     }
     return checks
 
@@ -1312,6 +1494,9 @@ def run(campaign_id, started, spec_sha256):
         'LABEL': LABEL, 'stage': STAGE, 'authority': AUTHORITY, 'timestamp_utc': datetime.now(timezone.utc).isoformat(),
         'git_head_at_run': head, 'campaign_spec_path': os.path.relpath(spec_path, REPO), 'campaign_spec_sha256': spec_sha256,
         'objective_convention': OBJECTIVE_CONVENTION, 'resolution_rule': RESOLUTION_RULE, 'stop_rule': STOP_RULE,
+        'completion_rule': COMPLETION_RULE, 'planner_rulings': PLANNER_RULINGS, 'open_items': OPEN_ITEMS,
+        'method_changes_referred_to_author': METHOD_CHANGES_REFERRED_TO_AUTHOR,
+        'termination_certificate': result['termination_certificate'],
         'STOP_FOR_REVIEW': result['termination']['reason'].startswith('STOP_FOR_REVIEW'),
         'termination': result['termination'], 'final_incumbent': result['incumbent'],
         'initial_incumbent': ev['initial_incumbent'], 'sigma_Q': ev['sigma_Q'],
@@ -1320,9 +1505,12 @@ def run(campaign_id, started, spec_sha256):
         'final_poll_unresolved_indeterminate': result['final_poll_unresolved_indeterminate'],
         'final_poll_feasible_points': result['final_poll_feasible_points'],
         'lattice_neighbourhood_of_incumbent': result['lattice_neighbourhood_of_incumbent'],
-        'claim_scope': ('mesh-local optimality is claimed only over the POLLED directions of the final unit poll '
-                        '(STEP4 3, 8); lattice_neighbourhood_of_incumbent lists every feasible ||dz||_inf <= 1 '
-                        'neighbour with whether it was polled or cached'),
+        'claim_scope': ('on termination by the unit-poll failure the claim is the termination_certificate (ruling A2: '
+                        'the final unit poll = rounded directions UNION the completion of every feasible ||dz||_inf '
+                        '<= 1 lattice neighbour; certificate.holds must be true); indeterminate neighbours are '
+                        'unresolved, not improvements; on any other termination no mesh-local claim is made; '
+                        'lattice_neighbourhood_of_incumbent lists every feasible neighbour with whether it was '
+                        'polled or cached'),
         'poll_history': result['history'],
         # cache-compatible schema, so a later baseline campaign / resume reads these as cache (load_cache_source)
         'points': {lab: {'status': r['status'], 'eval_key': r['eval_key'], 'candidate_canonical': r['canonical'],
@@ -1350,6 +1538,9 @@ def run(campaign_id, started, spec_sha256):
         _log(f'[S47-PHASE-B] NOT OK guard={guard} harness_errors={harness_errors} readback={readback_mismatch}')
         sys.exit(1)
     reason = result['termination']['reason']
+    if reason == 'mesh_local_optimum_unit_poll_failed' and not (result['termination_certificate'] or {}).get('holds'):
+        _log(f"[S47-PHASE-B] NOT OK: termination certificate does not hold {result['termination_certificate']}")
+        sys.exit(1)
     if reason.startswith('STOP_FOR_REVIEW'):
         sys.exit(3)
     if reason != 'mesh_local_optimum_unit_poll_failed':

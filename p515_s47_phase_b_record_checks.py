@@ -1,5 +1,5 @@
 """
-P5.15 Addendum 30 (task W23) -- checks of the Phase B record launcher `p515_s47_phase_b_record.py` with a FAKED
+P5.15 Addendum 30 (tasks W23, W24) -- checks of the Phase B record launcher `p515_s47_phase_b_record.py` with a FAKED
 evaluate() and a SYNTHETIC cache. ZERO SOLVES: the launcher's module-level SolveProfileGuard(permitted=()) is
 installed on import and verified at exactly 0 at the end; nothing here builds a model, takes the campaign lock,
 freezes a spec or launches a harness child.
@@ -18,6 +18,19 @@ Tests:
   plus: cache hits never re-evaluated; batches <= 5; evaluation-budget stop; direction properties; lattice /
   eval-key identity vs the harness; cache loader acceptance / C3 exclusion / duplicate rule on synthetic files;
   the expected poll sequence from x = 0 on the real inputs.
+W24 (Planner ruling A2, the unit-poll completion):
+  (f)  from x = 0 the completion is exactly the 14 points 0.25/0.5 at every non-empty node subset x {2025, 2030},
+       all evaluated in batches 5 + 5 + 4, none cached; all worse -> terminates at x = 0 with the certificate
+  (g)  one completion point better by more than the resolution -> accepted, Delta doubles, the run continues
+  (h)  a completion of > 30 feasible points at a synthetic interior incumbent -> refused, STOP FOR REVIEW, nothing
+       evaluated, the completion not truncated
+  (i)  an over-budget (I(x) > B) completion point is never evaluated (synthetic B = 400,000 EUR so that the x = 0
+       completion contains over-budget points)
+  (c3) a <= 30-point completion, every point indeterminate -> unit-poll failure, all listed unresolved,
+       certificate with the indeterminate count
+W23 checks whose expectation changes under ruling A2 (the unit poll of an interior incumbent now meets the cap):
+  (a) renamed (poll + completion); (a2) and (c) now end with the completion-cap refusal; the evaluation-budget
+  check now binds on the x = 0 unit poll (14 new > a synthetic budget of 10).
 
 Usage (repo root, canonical interpreter, attached):
   python -u p515_s47_phase_b_record_checks.py --scratch <dir outside the repo> --out <results.json> > <log> 2>&1
@@ -205,10 +218,13 @@ def test_a(lattice, key_of, sigma_q):
     fake = FakeOracle(lattice, key_of, lambda z: Q0 - 0.8 * lattice.investment_cost(z), cache_before=cache)
     out = B.run_mads(lattice, dict(cache), key_of, inc, fake, sigma_q, log=lambda m: None)
     deltas = [p['poll_size_delta'] for p in out['history']]
-    check('(a) from x = 0 (literal STEP4 5 poll): terminates at x = 0 by the unit-poll failure',
+    check('(a) from x = 0 (STEP4 5 poll + unit-poll completion, ruling A2): terminates at x = 0 by the unit-poll '
+          'failure, certificate holds',
           out['termination']['reason'] == 'mesh_local_optimum_unit_poll_failed' and out['incumbent']['label'] == 'x0'
-          and deltas == [4, 2, 1],
+          and deltas == [4, 2, 1] and out['termination_certificate']['holds'],
           {'deltas': deltas, 'n_new_evaluations': out['n_new_evaluations'],
+           'feasible_direction_points_per_poll': [sum(c['feasible'] for c in p['candidates']
+                                                      if c['poll_part'] == 'direction') for p in out['history']],
            'feasible_points_polled_per_poll': [sum(c['feasible'] for c in p['candidates']) for p in out['history']],
            'rejection_reasons_poll0': [c['infeasibility_reasons'] for c in out['history'][0]['candidates']],
            'lattice_neighbourhood_of_x0_polled': [n for n in out['lattice_neighbourhood_of_incumbent']
@@ -222,13 +238,18 @@ def test_a(lattice, key_of, sigma_q):
     inc2 = inc_of(lattice, key_of, cache2, z_inc)
     fake2 = FakeOracle(lattice, key_of, lambda z: inc2['F'] - lattice.investment_cost(z) + 1e6, cache_before=cache2)
     out2 = B.run_mads(lattice, dict(cache2), key_of, inc2, fake2, sigma_q, log=lambda m: None)
-    check('(a2) interior incumbent, every polled neighbour worse -> stays; Delta 4 -> 2 -> 1; unit-poll failure',
+    check('(a2) interior incumbent, every polled neighbour worse -> stays; Delta 4 -> 2 -> 1; the unit poll is '
+          'refused by the completion cap (ruling A2: > 30 feasible neighbours) -> STOP FOR REVIEW',
           out2['incumbent']['label'] == inc2['label'] and [p['poll_size_delta'] for p in out2['history']] == [4, 2, 1]
-          and out2['termination']['reason'] == 'mesh_local_optimum_unit_poll_failed'
-          and all(c['outcome'] in ('no_improvement', 'barrier_infeasible_not_evaluated', 'dropped', None)
+          and [p['decision'] for p in out2['history']] == ['failure', 'failure', 'stopped_for_review_completion_cap']
+          and out2['termination']['reason'] == 'STOP_FOR_REVIEW_completion_cap'
+          and out2['history'][-1]['completion']['n_feasible'] > B.COMPLETION_CAP
+          and out2['history'][-1]['batches'] == []
+          and all(c['outcome'] in ('no_improvement', 'barrier_infeasible_not_evaluated', 'dropped',
+                                   'not_evaluated_completion_cap', None)
                   for p in out2['history'] for c in p['candidates']),
           {'incumbent': inc2['label'], 'n_new_evaluations': out2['n_new_evaluations'],
-           'evaluated': [lattice.label(z) for z in fake2.evaluated()]})
+           'evaluated': [lattice.label(z) for z in fake2.evaluated()], 'termination': out2['termination']})
     return z_inc
 
 
@@ -269,14 +290,17 @@ def test_c(lattice, key_of, sigma_q, z_inc):
     res = max(8_000.0 + inc['bar'], sigma_q)
     fake = FakeOracle(lattice, key_of, lambda z: inc['F'] - 0.5 * res - lattice.investment_cost(z), cache_before=cache)
     out = B.run_mads(lattice, dict(cache), key_of, inc, fake, sigma_q, log=lambda m: None)
-    outcomes = sorted({c['outcome'] for p in out['history'] for c in p['candidates'] if c['disposition'] == 'new_evaluation'})
-    check('(c) better but within the resolution -> INDETERMINATE, not accepted; Delta halves; listed unresolved',
+    outcomes = sorted({c['outcome'] for p in out['history'][:-1] for c in p['candidates']
+                       if c['disposition'] == 'new_evaluation'})
+    refused = sorted({c['outcome'] for c in out['history'][-1]['candidates'] if c['disposition'] == 'new_evaluation'})
+    check('(c) better but within the resolution -> INDETERMINATE, not accepted; Delta halves; the unit poll of this '
+          'interior incumbent is refused by the completion cap (unresolved listing: see (c3))',
           out['incumbent']['label'] == inc['label'] and outcomes == ['indeterminate']
-          and [p['decision'] for p in out['history']] == ['failure', 'failure', 'failure_at_unit_poll_size']
-          and len(out['final_poll_unresolved_indeterminate']) > 0,
+          and refused in ([], ['not_evaluated_completion_cap'])
+          and [p['decision'] for p in out['history']] == ['failure', 'failure', 'stopped_for_review_completion_cap'],
           {'incumbent': inc['label'], 'improvement_by': 0.5 * res, 'resolution': res, 'outcomes': outcomes,
-           'decisions': [p['decision'] for p in out['history']],
-           'unresolved_at_end': out['final_poll_unresolved_indeterminate']})
+           'refused_unit_poll_outcomes': refused, 'decisions': [p['decision'] for p in out['history']],
+           'termination': out['termination']})
     # boundary: exactly equal to the resolution is NOT an improvement (strict >)
     check('(c2) classify: diff == resolution -> indeterminate; diff > resolution -> improvement; <= 0 -> none',
           B.classify(100.0, 100.0 - res, res) == 'indeterminate' and B.classify(100.0, 100.0 - res - 1e-6, res) ==
@@ -364,6 +388,161 @@ def test_e(lattice, key_of, sigma_q, z_inc):
            'n_new_needed': p0['n_new_evaluations'], 'n_evaluated': out_s['n_new_evaluations']})
 
 
+# ======================================================================================================================
+#  W24: the unit-poll completion (Planner ruling A2)
+# ======================================================================================================================
+def x0_completion_expected(lattice):
+    """The Planner's statement, built independently of Lattice.neighbourhood: 0.25 MVA / 0.5 MWh at every non-empty
+    subset of the nodes x {2025, 2030}."""
+    out = set()
+    for mask in range(1, 2 ** len(B.ACTIVE_NODES)):
+        for yi in (lattice.years.index(2025), lattice.years.index(2030)):
+            z = [0] * B.N_VARS
+            for i in range(len(B.ACTIVE_NODES)):
+                if mask >> i & 1:
+                    z[2 * i], z[2 * i + 1] = 1, 1
+            z[-1] = yi
+            out.add(tuple(z))
+    return out
+
+
+def test_f(lattice, key_of, sigma_q):
+    x0_key, x0e = x0_cache_entry(lattice, key_of)
+    cache = {x0_key: x0e}
+    inc = inc_of(lattice, key_of, cache, lattice.x0())
+    expected = x0_completion_expected(lattice)
+    fake = FakeOracle(lattice, key_of, lambda z: Q0 + 1e5 - 0.5 * lattice.investment_cost(z), cache_before=cache)
+    out = B.run_mads(lattice, dict(cache), key_of, inc, fake, sigma_q, log=lambda m: None)
+    unit = out['history'][-1]
+    comp = [c for c in unit['candidates'] if c['poll_part'] == 'completion']
+    evaluated = [lattice.canonical_z(z) for z in fake.evaluated()]
+    cert = out['termination_certificate']
+    check('(f) x = 0: the completion is exactly the 14 points 0.25/0.5 at every non-empty node subset x {2025, 2030}',
+          len(expected) == B.X0_COMPLETION_SIZE == 14 and unit['completion']['n_feasible'] == 14
+          and {tuple(c['z']) for c in comp} == expected and len(comp) == 14,
+          {'completion': unit['completion']['points'], 'rejected_raw_offsets_by_class':
+           unit['completion']['rejected_raw_offsets_by_class'], 'budget_rejected': unit['completion']['budget_rejected']})
+    check('(f) x = 0: every rounded direction infeasible at every poll; all 14 completion points evaluated, none '
+          'cached, batches 5 + 5 + 4, nothing else evaluated',
+          all(not c['feasible'] for p in out['history'] for c in p['candidates'] if c['poll_part'] == 'direction')
+          and all(c['disposition'] == 'new_evaluation' for c in comp) and unit['n_cache_hits'] == 0
+          and sorted(evaluated) == sorted(expected) and [len(b) for b in fake.calls] == [5, 5, 4]
+          and [len(b) for b in unit['batches']] == [5, 5, 4] and out['n_new_evaluations'] == 14,
+          {'batches': unit['batches'], 'n_new_evaluations': out['n_new_evaluations'],
+           'polls': [(p['poll_index'], p['poll_size_delta'], p['n_new_evaluations'], p['decision'])
+                     for p in out['history']]})
+    check('(f) x = 0, all 14 worse -> terminates at x = 0 by the unit-poll failure with the certificate stated',
+          out['termination']['reason'] == 'mesh_local_optimum_unit_poll_failed' and out['incumbent']['label'] == 'x0'
+          and cert is not None and cert['holds'] and cert['statement'] == B.TERMINATION_CERTIFICATE
+          and cert['n_feasible_neighbours'] == 14 and cert['all_feasible_neighbours_polled']
+          and cert['n_no_improvement'] == 14 and all(c['outcome'] == 'no_improvement' for c in comp),
+          {'termination': out['termination'], 'certificate': cert})
+
+
+def test_g(lattice, key_of, sigma_q):
+    x0_key, x0e = x0_cache_entry(lattice, key_of)
+    cache = {x0_key: x0e}
+    inc = inc_of(lattice, key_of, cache, lattice.x0())
+    target = (0, 0, 1, 1, 0, 0, 0)  # y2025__n7_p0.25_e0.5, a completion point of x = 0
+    fake_bar = 8_000.0
+    res = max(fake_bar + inc['bar'], sigma_q)
+    margin = 5 * res
+
+    def q_of(z):
+        if lattice.canonical_z(z) == target:
+            return inc['F'] - margin - lattice.investment_cost(z)
+        return inc['F'] + 1e6 - lattice.investment_cost(z)
+    fake = FakeOracle(lattice, key_of, q_of, bar=fake_bar, cache_before=cache)
+    out = B.run_mads(lattice, dict(cache), key_of, inc, fake, sigma_q, log=lambda m: None)
+    h = out['history']
+    hit = [c for c in h[2]['candidates'] if c['label'] == lattice.label(target)] if len(h) > 2 else []
+    check('(g) one completion point better by more than the resolution -> accepted; Delta doubles; the run continues',
+          len(h) > 3 and h[2]['unit_poll'] and h[2]['decision'] == 'success'
+          and h[2]['next_incumbent'] == lattice.label(target) and h[2]['next_poll_size'] == 2
+          and hit and hit[0]['poll_part'] == 'completion' and hit[0]['outcome'] == 'improvement'
+          and hit[0]['F_inc_minus_F_eur'] > hit[0]['resolution_eur']
+          and h[3]['poll_size_delta'] == 2 and h[3]['incumbent']['label'] == lattice.label(target)
+          and out['incumbent']['label'] == lattice.label(target),
+          {'F_inc_minus_F': hit[0]['F_inc_minus_F_eur'] if hit else None,
+           'resolution': hit[0]['resolution_eur'] if hit else None,
+           'polls': [(p['poll_index'], p['poll_size_delta'], p['incumbent']['label'], p['n_new_evaluations'],
+                      (p['completion'] or {}).get('n_feasible'), p['decision']) for p in h],
+           'termination': out['termination'], 'n_new_evaluations': out['n_new_evaluations']})
+    return {'polls': [(p['poll_index'], p['poll_size_delta'], p['incumbent']['label'], p['n_new_evaluations'],
+                       (p['completion'] or {}).get('n_feasible'), p['decision']) for p in h],
+            'termination': out['termination'], 'n_new_evaluations': out['n_new_evaluations']}
+
+
+def test_h(lattice, key_of, sigma_q, z_inc):
+    x0_key, x0e = x0_cache_entry(lattice, key_of)
+    cache = {x0_key: x0e, key_of(z_inc): {'label': lattice.label(z_inc), 'status': 'certified', 'Q': Q0 - 5e6,
+                                         'bar': 8_000.0, 'canonical': B.canonical_of(lattice, z_inc),
+                                         'source': 'synthetic'}}
+    inc = inc_of(lattice, key_of, cache, z_inc)
+    fake = FakeOracle(lattice, key_of, lambda z: inc['F'] - 1e6 - lattice.investment_cost(z), cache_before=cache)
+    out = B.run_mads(lattice, dict(cache), key_of, inc, fake, sigma_q, delta0=B.DELTA_MIN, log=lambda m: None)
+    p0 = out['history'][0]
+    n_nb = len(lattice.neighbourhood(z_inc))
+    check('(h) completion > 30 feasible points at a synthetic interior incumbent -> refused: STOP FOR REVIEW, nothing '
+          'of that poll evaluated (not even the directions), the completion recorded in full (not truncated)',
+          n_nb > B.COMPLETION_CAP and out['termination']['reason'] == 'STOP_FOR_REVIEW_completion_cap'
+          and out['termination']['reason'].startswith('STOP_FOR_REVIEW') and p0['decision'] ==
+          'stopped_for_review_completion_cap' and not fake.calls and out['n_new_evaluations'] == 0
+          and p0['completion']['n_feasible'] == n_nb and len(p0['completion']['points']) == n_nb
+          and not any(c['poll_part'] == 'completion' for c in p0['candidates'])
+          and out['incumbent']['label'] == inc['label'] and out['termination_certificate'] is None
+          and len(out['history']) == 1,
+          {'incumbent': inc['label'], 'completion_n_feasible': p0['completion']['n_feasible'],
+           'termination': out['termination']})
+
+
+def test_i(sigma_q, w2):
+    costs = B.unit_costs_from_w2(w2)
+    small = B.Lattice(tuple(sorted(costs)), costs, budget=400_000.0)  # synthetic B (test fixture only)
+    key_small = B.make_key_of(small)
+    x0_key, x0e = x0_cache_entry(small, key_small)
+    cache = {x0_key: x0e}
+    inc = inc_of(small, key_small, cache, small.x0())
+    fake = FakeOracle(small, key_small, lambda z: Q0 + 1e5, cache_before=cache)
+    out = B.run_mads(small, dict(cache), key_small, inc, fake, sigma_q, delta0=B.DELTA_MIN, log=lambda m: None)
+    p0 = out['history'][0]
+    over = [z for z in x0_completion_expected(small) if small.investment_cost(z) > small.budget]
+    evaluated = [small.canonical_z(z) for z in fake.evaluated()]
+    check('(i) budget: an over-budget completion point (I(x) > B) is never evaluated -- synthetic B = 400,000 EUR; '
+          'x = 0 completion 14 -> 12 feasible, the 2 three-node points rejected by the budget',
+          len(over) == 2 and p0['completion']['n_feasible'] == 12
+          and sorted(e['label'] for e in p0['completion']['budget_rejected']) == sorted(small.label(z) for z in over)
+          and not any(z in evaluated for z in over) and not any(small.investment_cost(z) > small.budget
+                                                                  for z in evaluated)
+          and len(evaluated) == 12 and out['termination_certificate']['holds']
+          and out['termination_certificate']['n_feasible_neighbours'] == 12,
+          {'budget_rejected': p0['completion']['budget_rejected'], 'n_evaluated': len(evaluated),
+           'batches': [len(b) for b in fake.calls], 'termination': out['termination']})
+
+
+def test_c3(lattice, key_of, sigma_q):
+    z_inc = (0, 0, 1, 1, 0, 0, 0)  # y2025__n7_p0.25_e0.5: completion of exactly 30 (= the cap, admitted)
+    x0_key, x0e = x0_cache_entry(lattice, key_of)
+    cache = {x0_key: x0e, key_of(z_inc): {'label': lattice.label(z_inc), 'status': 'certified', 'Q': Q0 - 5e6,
+                                         'bar': 8_000.0, 'canonical': B.canonical_of(lattice, z_inc),
+                                         'source': 'synthetic'}}
+    inc = inc_of(lattice, key_of, cache, z_inc)
+    res = max(8_000.0 + inc['bar'], sigma_q)
+    fake = FakeOracle(lattice, key_of, lambda z: inc['F'] - 0.5 * res - lattice.investment_cost(z), cache_before=cache)
+    out = B.run_mads(lattice, dict(cache), key_of, inc, fake, sigma_q, delta0=B.DELTA_MIN, max_new_evaluations=40,
+                     log=lambda m: None)
+    p0 = out['history'][0]
+    cert = out['termination_certificate']
+    check('(c3) completion of exactly 30 (= cap, admitted); every new completion point within the resolution -> '
+          'INDETERMINATE, not accepted; unit-poll failure; all listed unresolved; certificate counts them '
+          '(synthetic evaluation budget 40 > the 29 new points)',
+          p0['completion']['n_feasible'] == 30 and p0['decision'] == 'failure_at_unit_poll_size'
+          and out['incumbent']['label'] == inc['label'] and len(out['final_poll_unresolved_indeterminate']) == 29
+          and cert['holds'] and cert['n_indeterminate_unresolved'] == 29 and cert['n_no_improvement'] == 1
+          and p0['n_cache_hits'] == 1 and all(len(b) <= 5 for b in fake.calls),
+          {'certificate': cert, 'batches': [len(b) for b in fake.calls], 'n_new': out['n_new_evaluations']})
+
+
 def test_cache_hits_batches_budget(lattice, key_of, sigma_q, z_inc):
     x0_key, x0e = x0_cache_entry(lattice, key_of)
     cache = {x0_key: x0e, key_of(z_inc): {'label': lattice.label(z_inc), 'status': 'certified', 'Q': Q0 - 5e6,
@@ -397,11 +576,17 @@ def test_cache_hits_batches_budget(lattice, key_of, sigma_q, z_inc):
           [5, p0['n_new_evaluations'] - 5] and len(fake_i.calls[0]) == 5 and p0['decision'] == 'failure',
           {'n_new': p0['n_new_evaluations'], 'batches': p0['batches'],
            'rejected': [(c['direction'], c['infeasibility_reasons']) for c in p0['candidates'] if not c['feasible']]})
-    fake2 = FakeOracle(lattice, key_of, lambda z: inc['F'] + 1e6 - lattice.investment_cost(z), cache_before=cache)
-    out2 = B.run_mads(lattice, dict(cache), key_of, inc, fake2, sigma_q, max_new_evaluations=1, log=lambda m: None)
-    check('evaluation budget: a poll that would exceed it is not launched; incumbent reported with the poll size',
-          out2['termination']['reason'] == 'evaluation_budget_exhausted' and out2['n_new_evaluations'] <= 1
-          and out2['history'][-1]['decision'] == 'not_launched_evaluation_budget',
+    # W24: from x = 0 the only evaluating poll is the unit poll (14 completion points); a synthetic budget of 10
+    x0_key3, x0e3 = x0_cache_entry(lattice, key_of)
+    cache3 = {x0_key3: x0e3}
+    inc3 = inc_of(lattice, key_of, cache3, lattice.x0())
+    fake2 = FakeOracle(lattice, key_of, lambda z: inc3['F'] + 1e6 - lattice.investment_cost(z), cache_before=cache3)
+    out2 = B.run_mads(lattice, dict(cache3), key_of, inc3, fake2, sigma_q, max_new_evaluations=10, log=lambda m: None)
+    check('evaluation budget: a poll that would exceed it is not launched (x = 0 unit poll with its 14-point '
+          'completion vs a synthetic budget of 10); incumbent reported with the poll size',
+          out2['termination']['reason'] == 'evaluation_budget_exhausted' and out2['n_new_evaluations'] == 0
+          and not fake2.calls and out2['history'][-1]['decision'] == 'not_launched_evaluation_budget'
+          and out2['history'][-1]['unit_poll'] and out2['history'][-1]['n_new_evaluations'] == 14,
           {'termination': out2['termination'], 'n_new': out2['n_new_evaluations']})
 
 
@@ -528,12 +713,20 @@ def expected_poll_from_x0(lattice, key_of, s2_entries, s3_spec, sigma_q):
                 planner.append({'label': lattice.label(z), 'I_x_eur': lattice.investment_cost(z),
                                 'budget_feasible': not lattice.reasons(z), 'in_S2': s2_keys.get(key_of(z)),
                                 'in_S3_spec': s3_keys.get(key_of(z))})
-    check('real: expected poll sequence from x = 0 computed (zero solves, S2 + pinned x0 as cache)', True,
-          {'initial_incumbent_with_S2_only': rec['incumbent']['label'], 'dry': {
-              'complete_without_new_evaluations': dry.get('complete_without_new_evaluations'),
-              'termination': dry.get('termination')}})
+    fp = dry.get('first_evaluating_poll') or {}
+    check('real: expected run from x = 0 (zero solves, S2 + pinned x0 as cache; ruling A2): polls Delta 4, 2 need no '
+          'evaluation; the unit poll (k = 2) needs the 14 completion points, batches 5 + 5 + 4; none of them in S2 '
+          'or in the frozen S3 spec',
+          rec['is_x0'] and dry.get('complete_without_new_evaluations') is False and fp.get('poll_index') == 2
+          and fp.get('Delta') == 1 and fp.get('n_new_evaluations') == 14 and fp.get('batch_sizes') == [5, 5, 4]
+          and fp.get('completion_n_feasible') == 14 and all(n['in_S2'] is None and n['in_S3_spec'] is None for n in nb),
+          {'initial_incumbent_with_S2_only': rec['incumbent']['label'], 'first_evaluating_poll': fp})
+    sizes = {lattice.label(z): len(lattice.neighbourhood(z)) for z in lattice.neighbourhood(lattice.x0())}
     return {'initial_incumbent_record_S2_only': rec, 'dry_run': dry,
-            'lattice_neighbourhood_of_x0_inf_norm_1': nb, 'planner_example_units_single_node': planner}
+            'lattice_neighbourhood_of_x0_inf_norm_1': nb, 'planner_example_units_single_node': planner,
+            'completion_size_at_each_x0_neighbour': sizes,
+            'x0_neighbours_whose_completion_exceeds_the_cap': sorted(k for k, v in sizes.items()
+                                                                    if v > B.COMPLETION_CAP)}
 
 
 def main():
@@ -570,6 +763,11 @@ def main():
         test_d(lattice, key_of, sigma_q)
         test_e(lattice, key_of, sigma_q, z_inc)
         test_cache_hits_batches_budget(lattice, key_of, sigma_q, z_inc)
+        test_f(lattice, key_of, sigma_q)
+        extra['g_run'] = test_g(lattice, key_of, sigma_q)
+        test_h(lattice, key_of, sigma_q, z_inc)
+        test_i(sigma_q, w2)
+        test_c3(lattice, key_of, sigma_q)
         test_initial_incumbent_ties(lattice, key_of, sigma_q)
         test_cache_loader(lattice, key_of, scratch)
         s2_entries = test_real_c3_exclusion_and_s2(lattice, key_of, domain)
