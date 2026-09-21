@@ -1,0 +1,4502 @@
+{
+ "stage": "P5.15 Addendum 16 item 1 (s35ref, run 1) -- reference equilibrium at cap 500, rho_ess=0.1125 -- terminal report",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 16 item 1",
+  "data/SRP1/Results/P515S35/frozen_s35_reference_spec_v5_995548ab.json"
+ ],
+ "spec_file": "data/SRP1/Results/P515S35/frozen_s35_reference_spec_v5_995548ab.json",
+ "spec_file_sha256": "995548ababa1b428e9bc4354a078ffd8322cc54d00f04b9ef7a694e43311c7ba",
+ "predecessor_spec_file": "data/SRP1/Results/P515S34/frozen_s34_spec_v4_966940a7.json",
+ "predecessor_spec_sha256": "966940a789db3093a57d5fdc23be8ccb172b762bf02d0cd09eeaaf0f52f544e9",
+ "timestamp_utc": "2026-09-21T16:47:21.874652+00:00",
+ "label": "s39_D",
+ "objective_convention": "gross_operational_cost (matched-cycle and terminal comparisons below use gross, NOT net_operational_recourse -- see CLAUDE.md \"Reporting conventions\")",
+ "cycles": 112,
+ "stopped_by": "cap",
+ "converged_at_cycle": 97,
+ "consecutive_converged_at_stop": 10,
+ "consecutive_converged_run_began_at_cycle": 103,
+ "binding_test_per_channel": {
+  "v": {
+   "r": 0.0001885098866983461,
+   "s": 5.614608220390527e-05,
+   "eps_pri": 0.0034263966459928824,
+   "eps_dual": 0.00029405006607608066,
+   "primal_ratio": 0.05501694817463865,
+   "dual_ratio": 0.19094055292399897,
+   "dual_ratio_balance": 0.19094055292399897,
+   "primal_pass": true,
+   "dual_pass": true,
+   "channel_pass": true
+  },
+  "pf": {
+   "r": 0.0002899825348662243,
+   "s": 0.0001205037719803306,
+   "eps_pri": 0.001374745192275463,
+   "eps_dual": 0.0004546464915054458,
+   "primal_ratio": 0.21093547844037078,
+   "dual_ratio": 0.26504938283217166,
+   "dual_ratio_balance": 0.26504938283217166,
+   "primal_pass": true,
+   "dual_pass": true,
+   "channel_pass": true
+  },
+  "ess": {
+   "r": 0.00046136012350091556,
+   "s": 0.0006386166576358191,
+   "eps_pri": 0.0008789346917948486,
+   "eps_dual": 0.0007206882111335629,
+   "primal_ratio": 0.5249083098071651,
+   "dual_ratio": 0.8861205827570645,
+   "dual_ratio_balance": 0.8861205827570645,
+   "primal_pass": true,
+   "dual_pass": true,
+   "channel_pass": true
+  }
+ },
+ "rho_gamma_freeze_trajectory_per_channel": {
+  "v": [
+   {
+    "cycle": 1,
+    "rho_before": 0.0076999999999999985,
+    "rho_after": 0.011549999999999998,
+    "action": "increased",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 2,
+    "rho_before": 0.011549999999999998,
+    "rho_after": 0.01732500000000001,
+    "action": "increased",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 3,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 1,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 4,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 2,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 5,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 3,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 6,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 4,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 7,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 5,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 8,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 6,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 9,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 7,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 10,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 8,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 11,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 9,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 12,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 13,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 14,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 15,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 16,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 17,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 18,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 19,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 20,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 21,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 22,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 23,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 24,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 25,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 26,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 27,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 28,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 29,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 30,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 31,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 32,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 33,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 34,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 35,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 36,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 37,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 38,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 39,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 40,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 41,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 42,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 43,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 44,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 45,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 46,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 47,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 48,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 49,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 50,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 51,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 52,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 53,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 54,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 55,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 56,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 57,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 58,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 59,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 60,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 61,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 62,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 63,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 64,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 65,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 66,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 67,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 68,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 69,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 70,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 71,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 72,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 73,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 74,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 75,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 76,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 77,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 78,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 79,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 80,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 81,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 82,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 83,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 84,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 85,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 86,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 87,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 88,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 89,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 90,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 91,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 92,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 93,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 94,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 95,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 96,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 97,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 98,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 99,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 100,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 101,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 102,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 103,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 104,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 105,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 106,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 107,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 108,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 109,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 110,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 111,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 112,
+    "rho_before": 0.01732500000000001,
+    "rho_after": 0.01732500000000001,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   }
+  ],
+  "pf": [
+   {
+    "cycle": 1,
+    "rho_before": 0.1980000000000002,
+    "rho_after": 0.1980000000000002,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 1,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 2,
+    "rho_before": 0.1980000000000002,
+    "rho_after": 0.13199999999999992,
+    "action": "decreased",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 3,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 1,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 4,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 2,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 5,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 3,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 6,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 4,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 7,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 5,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 8,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 6,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 9,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 7,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 10,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 8,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 11,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 9,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 12,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 13,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 14,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 15,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 16,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 17,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 18,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 19,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 20,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 21,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 22,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 23,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 24,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 25,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 26,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 27,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 28,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 29,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 30,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 31,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 32,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 33,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 34,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 35,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 36,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 37,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 38,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 39,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 40,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 41,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 42,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 43,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 44,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 45,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 46,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 47,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 48,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 49,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 50,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 51,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 52,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 53,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 54,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 55,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 56,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 57,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 58,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 59,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 60,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 61,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 62,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 63,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 64,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 65,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 66,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 67,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 68,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 69,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 70,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 71,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 72,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 73,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 74,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 75,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 76,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 77,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 78,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 79,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 80,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 81,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 82,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 83,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 84,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 85,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 86,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 87,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 88,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 89,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 90,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 91,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 92,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 93,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 94,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 95,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 96,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 97,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 98,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 99,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 100,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 101,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 102,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 103,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 104,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 105,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 106,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 107,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 108,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 109,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 110,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 111,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 112,
+    "rho_before": 0.13199999999999992,
+    "rho_after": 0.13199999999999992,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   }
+  ],
+  "ess": [
+   {
+    "cycle": 1,
+    "rho_before": 0.010000000000000004,
+    "rho_after": 0.010000000000000004,
+    "action": "exempt (fixed)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 2,
+    "rho_before": 0.010000000000000004,
+    "rho_after": 0.010000000000000004,
+    "action": "exempt (fixed)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 3,
+    "rho_before": 0.010000000000000004,
+    "rho_after": 0.010000000000000004,
+    "action": "exempt (fixed)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 4,
+    "rho_before": 0.010000000000000004,
+    "rho_after": 0.010000000000000004,
+    "action": "exempt (fixed)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 5,
+    "rho_before": 0.010000000000000004,
+    "rho_after": 0.010000000000000004,
+    "action": "exempt (fixed)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 6,
+    "rho_before": 0.010000000000000004,
+    "rho_after": 0.010000000000000004,
+    "action": "exempt (fixed)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 7,
+    "rho_before": 0.010000000000000004,
+    "rho_after": 0.010000000000000004,
+    "action": "exempt (fixed)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 8,
+    "rho_before": 0.010000000000000004,
+    "rho_after": 0.010000000000000004,
+    "action": "exempt (fixed)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 9,
+    "rho_before": 0.010000000000000004,
+    "rho_after": 0.010000000000000004,
+    "action": "exempt (fixed)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 10,
+    "rho_before": 0.010000000000000004,
+    "rho_after": 0.010000000000000004,
+    "action": "exempt (fixed)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 11,
+    "rho_before": 0.010000000000000004,
+    "rho_after": 0.010000000000000004,
+    "action": "exempt (fixed)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 12,
+    "rho_before": 0.010000000000000004,
+    "rho_after": 0.010000000000000004,
+    "action": "exempt (fixed)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 13,
+    "rho_before": 0.010000000000000004,
+    "rho_after": 0.010000000000000004,
+    "action": "exempt (fixed)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 14,
+    "rho_before": 0.010000000000000004,
+    "rho_after": 0.010000000000000004,
+    "action": "exempt (fixed)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 15,
+    "rho_before": 0.010000000000000004,
+    "rho_after": 0.015000000000000012,
+    "action": "increased",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 16,
+    "rho_before": 0.015000000000000012,
+    "rho_after": 0.022499999999999985,
+    "action": "increased",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 17,
+    "rho_before": 0.022499999999999985,
+    "rho_after": 0.03374999999999997,
+    "action": "increased",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 18,
+    "rho_before": 0.03374999999999997,
+    "rho_after": 0.05062500000000001,
+    "action": "increased",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 19,
+    "rho_before": 0.05062500000000001,
+    "rho_after": 0.0759375000000001,
+    "action": "increased",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 20,
+    "rho_before": 0.0759375000000001,
+    "rho_after": 0.11390625000000007,
+    "action": "increased",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 21,
+    "rho_before": 0.11390625000000007,
+    "rho_after": 0.17085937499999998,
+    "action": "increased",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 22,
+    "rho_before": 0.17085937499999998,
+    "rho_after": 0.25628906250000033,
+    "action": "increased",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 23,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 1,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 24,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 2,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 25,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 3,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 26,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 4,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 27,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 5,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 28,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 6,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 29,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 7,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 30,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 8,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 31,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 9,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 32,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 33,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 34,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 35,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 36,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 37,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 38,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 39,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 40,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 41,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 42,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 43,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 44,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 45,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 46,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 47,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 48,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 49,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 50,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 51,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 52,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 53,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 54,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 55,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 56,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 57,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 58,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 59,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 60,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 61,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 62,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 63,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 64,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 65,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 66,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 67,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 68,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 69,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 70,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 71,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 72,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 73,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 74,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 75,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 76,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 77,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 78,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 79,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 80,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 81,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 82,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 83,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 84,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 85,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 86,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 87,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 88,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 89,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 90,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 91,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 92,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 93,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 94,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 95,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 96,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 97,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 98,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 99,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 100,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 101,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 102,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 103,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 104,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 105,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 106,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 107,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 108,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 109,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 110,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 111,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 112,
+    "rho_before": 0.25628906250000033,
+    "rho_after": 0.25628906250000033,
+    "action": "held (frozen after 10 unchanged cycles)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": true,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   }
+  ]
+ },
+ "sigma_fixed": 93635360.0,
+ "sigma_computed": 93635492.69926704,
+ "al_scale_esso": 227210.9966521344,
+ "shared_ess_reference_rating_mva": 2.5,
+ "initial_rho": {
+  "v": {
+   "case9": 0.0077,
+   "case33_1": 0.0077,
+   "case33_2": 0.0077,
+   "case33_3": 0.0077
+  },
+  "pf": {
+   "case9": 0.198,
+   "case33_1": 0.198,
+   "case33_2": 0.198,
+   "case33_3": 0.198
+  },
+  "ess": {
+   "case9": 0.01,
+   "case33_1": 0.01,
+   "case33_2": 0.01,
+   "case33_3": 0.01,
+   "esso": 0.01
+  }
+ },
+ "initial_rho_ess_value_v5": 0.1125,
+ "freeze_after_unchanged_cycles": 10,
+ "freeze_backstop_cycle": 200,
+ "freeze_cycle_per_channel": {
+  "v": 12,
+  "pf": 12,
+  "ess": 32
+ },
+ "rho_at_clamp_per_channel_at_terminal": {
+  "v": false,
+  "pf": false,
+  "ess": false
+ },
+ "rho_at_clamp_any_true_gate_failure_flag": false,
+ "efc_per_day_max_terminal": 1.0204385345807276,
+ "soh_floor_multiplier_and_efc_per_cohort_year_terminal": {
+  "available": true,
+  "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S47/campaign_s47_a1a_baseline/evals/1c1ef751d9334f40_n5_2h_e2/soh_floor_sidecar_baseline.jsonl",
+  "cycle": 112,
+  "dual_sign_convention": "model.dual.get(con) as returned by Pyomo (Suffix direction=IMPORT_EXPORT, populated from the IPOPT .sol file) for the row es_soh_per_unit_cumul[y_inv, y] >= soh_min; NO sign flip applied -- the SAME mechanism _duals_for_keys uses elsewhere in this harness",
+  "threshold_efc_binding": 1.4612,
+  "per_node_per_cohort_year": [
+   {
+    "node_id": 5,
+    "y_inv": "0",
+    "y": "0",
+    "constraint_idx": 3,
+    "dual": 5.042604159526573e-10,
+    "es_soh_per_unit_cumul": 0.8802817717561177,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": 1.0204385345807276,
+    "efc_margin_to_threshold": 0.4407614654192724,
+    "efc_fraction_of_threshold": 0.69835651148421
+   },
+   {
+    "node_id": 5,
+    "y_inv": "0",
+    "y": "1",
+    "constraint_idx": 6,
+    "dual": 1.1242065238823308e-09,
+    "es_soh_per_unit_cumul": 0.7808650200407362,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": 0.8696962043763263,
+    "efc_margin_to_threshold": 0.5915037956236737,
+    "efc_fraction_of_threshold": 0.5951931319301439
+   },
+   {
+    "node_id": 5,
+    "y_inv": "0",
+    "y": "2",
+    "constraint_idx": 9,
+    "dual": 5270.545040185035,
+    "es_soh_per_unit_cumul": 0.6999999900000171,
+    "soh_min": 0.7,
+    "active": true,
+    "efc_per_day": 0.6630791800180847,
+    "efc_margin_to_threshold": 0.7981208199819153,
+    "efc_fraction_of_threshold": 0.4537908431549991
+   },
+   {
+    "node_id": 5,
+    "y_inv": "1",
+    "y": "1",
+    "constraint_idx": 12,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 5,
+    "y_inv": "1",
+    "y": "2",
+    "constraint_idx": 15,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 5,
+    "y_inv": "2",
+    "y": "2",
+    "constraint_idx": 18,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 7,
+    "y_inv": "0",
+    "y": "0",
+    "constraint_idx": 3,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 7,
+    "y_inv": "0",
+    "y": "1",
+    "constraint_idx": 6,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 7,
+    "y_inv": "0",
+    "y": "2",
+    "constraint_idx": 9,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 7,
+    "y_inv": "1",
+    "y": "1",
+    "constraint_idx": 12,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 7,
+    "y_inv": "1",
+    "y": "2",
+    "constraint_idx": 15,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 7,
+    "y_inv": "2",
+    "y": "2",
+    "constraint_idx": 18,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 9,
+    "y_inv": "0",
+    "y": "0",
+    "constraint_idx": 3,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 9,
+    "y_inv": "0",
+    "y": "1",
+    "constraint_idx": 6,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 9,
+    "y_inv": "0",
+    "y": "2",
+    "constraint_idx": 9,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 9,
+    "y_inv": "1",
+    "y": "1",
+    "constraint_idx": 12,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 9,
+    "y_inv": "1",
+    "y": "2",
+    "constraint_idx": 15,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 9,
+    "y_inv": "2",
+    "y": "2",
+    "constraint_idx": 18,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   }
+  ],
+  "per_node_max_efc_per_day": {
+   "5": {
+    "efc_per_day": 1.0204385345807276,
+    "y_inv": "0",
+    "y": "0",
+    "margin_to_threshold": 0.4407614654192724,
+    "fraction_of_threshold": 0.69835651148421
+   }
+  }
+ },
+ "soh_floor_row_counts_by_node": {
+  "5": 6,
+  "7": 6,
+  "9": 6
+ },
+ "system_cost_vs_s31c_s32_s33e2_s34": {
+  "s31c": {
+   "available": true,
+   "reference_path": "data/SRP1/Results/P515S31C_run/g_baseline.json",
+   "matched_cycles": [
+    {
+     "cycle": 1,
+     "s34_gross_operational_cost": 1589196525.9314592,
+     "s31c_gross_operational_cost": 2359311749.284464,
+     "difference": -770115223.3530047
+    },
+    {
+     "cycle": 2,
+     "s34_gross_operational_cost": 742273945.271133,
+     "s31c_gross_operational_cost": 1635793408.6698973,
+     "difference": -893519463.3987644
+    },
+    {
+     "cycle": 3,
+     "s34_gross_operational_cost": 705628106.7632046,
+     "s31c_gross_operational_cost": 1416323507.6458967,
+     "difference": -710695400.8826921
+    },
+    {
+     "cycle": 5,
+     "s34_gross_operational_cost": 693083924.2178555,
+     "s31c_gross_operational_cost": 1357909196.3566816,
+     "difference": -664825272.1388261
+    },
+    {
+     "cycle": 10,
+     "s34_gross_operational_cost": 664937686.6795135,
+     "s31c_gross_operational_cost": 1191551992.2462602,
+     "difference": -526614305.5667467
+    },
+    {
+     "cycle": 18,
+     "s34_gross_operational_cost": 653347780.9513535,
+     "s31c_gross_operational_cost": 769937233.8928746,
+     "difference": -116589452.94152105
+    },
+    {
+     "cycle": 20,
+     "s34_gross_operational_cost": 653979715.3760995,
+     "s31c_gross_operational_cost": 741234151.594587,
+     "difference": -87254436.2184875
+    },
+    {
+     "cycle": 30,
+     "s34_gross_operational_cost": 653558715.1033707,
+     "s31c_gross_operational_cost": 698488996.893102,
+     "difference": -44930281.78973138
+    },
+    {
+     "cycle": 40,
+     "s34_gross_operational_cost": 653601707.4530487,
+     "s31c_gross_operational_cost": 683675506.8801093,
+     "difference": -30073799.427060604
+    },
+    {
+     "cycle": 50,
+     "s34_gross_operational_cost": 653425887.7775619,
+     "s31c_gross_operational_cost": 674927476.3556473,
+     "difference": -21501588.578085423
+    },
+    {
+     "cycle": 60,
+     "s34_gross_operational_cost": 653480600.1639447,
+     "s31c_gross_operational_cost": 669638772.4486934,
+     "difference": -16158172.284748673
+    },
+    {
+     "cycle": 70,
+     "s34_gross_operational_cost": 653388974.0992804,
+     "s31c_gross_operational_cost": 666034738.7840765,
+     "difference": -12645764.684796095
+    },
+    {
+     "cycle": 80,
+     "s34_gross_operational_cost": 653441893.8536355,
+     "s31c_gross_operational_cost": 663414745.036254,
+     "difference": -9972851.182618499
+    },
+    {
+     "cycle": 90,
+     "s34_gross_operational_cost": 653353289.5592384,
+     "s31c_gross_operational_cost": 661400927.7360976,
+     "difference": -8047638.17685914
+    }
+   ],
+   "terminal": {
+    "s34_cycle": 112,
+    "s31c_cycle": 90,
+    "s34_gross_operational_cost": 653340344.2917778,
+    "s31c_gross_operational_cost": 661400927.7360976,
+    "difference": -8060583.444319725,
+    "s34_terminal_step_objective_change_abs": 4117.956779956818,
+    "s31c_terminal_step_objective_change_abs": 129616.68283557892,
+    "error_bar_sum_of_terminal_steps": 133734.63961553574,
+    "determinate_at_gt_error_bar": true
+   }
+  },
+  "s32": {
+   "available": true,
+   "reference_path": "data/SRP1/Results/P515S32_run/g_baseline.json",
+   "matched_cycles": [
+    {
+     "cycle": 1,
+     "s34_gross_operational_cost": 1589196525.9314592,
+     "s32_gross_operational_cost": 968494925.0938367,
+     "difference": 620701600.8376225
+    },
+    {
+     "cycle": 2,
+     "s34_gross_operational_cost": 742273945.271133,
+     "s32_gross_operational_cost": 1219820650.0962644,
+     "difference": -477546704.8251314
+    },
+    {
+     "cycle": 3,
+     "s34_gross_operational_cost": 705628106.7632046,
+     "s32_gross_operational_cost": 1157573767.643047,
+     "difference": -451945660.8798425
+    },
+    {
+     "cycle": 5,
+     "s34_gross_operational_cost": 693083924.2178555,
+     "s32_gross_operational_cost": 799099849.7294499,
+     "difference": -106015925.51159441
+    },
+    {
+     "cycle": 10,
+     "s34_gross_operational_cost": 664937686.6795135,
+     "s32_gross_operational_cost": 651281159.4925663,
+     "difference": 13656527.186947107
+    },
+    {
+     "cycle": 18,
+     "s34_gross_operational_cost": 653347780.9513535,
+     "s32_gross_operational_cost": 668778321.7290717,
+     "difference": -15430540.777718186
+    },
+    {
+     "cycle": 20,
+     "s34_gross_operational_cost": 653979715.3760995,
+     "s32_gross_operational_cost": 666033865.8841152,
+     "difference": -12054150.508015752
+    },
+    {
+     "cycle": 30,
+     "s34_gross_operational_cost": 653558715.1033707,
+     "s32_gross_operational_cost": 663771540.0656254,
+     "difference": -10212824.962254763
+    },
+    {
+     "cycle": 40,
+     "s34_gross_operational_cost": 653601707.4530487,
+     "s32_gross_operational_cost": 661375572.9197404,
+     "difference": -7773865.466691732
+    },
+    {
+     "cycle": 50,
+     "s34_gross_operational_cost": 653425887.7775619,
+     "s32_gross_operational_cost": 659201581.6713443,
+     "difference": -5775693.893782377
+    },
+    {
+     "cycle": 60,
+     "s34_gross_operational_cost": 653480600.1639447,
+     "s32_gross_operational_cost": 656728359.2641778,
+     "difference": -3247759.100233078
+    },
+    {
+     "cycle": 70,
+     "s34_gross_operational_cost": 653388974.0992804,
+     "s32_gross_operational_cost": 656305061.1237264,
+     "difference": -2916087.0244460106
+    },
+    {
+     "cycle": 80,
+     "s34_gross_operational_cost": 653441893.8536355,
+     "s32_gross_operational_cost": 655989618.7225174,
+     "difference": -2547724.8688818216
+    },
+    {
+     "cycle": 90,
+     "s34_gross_operational_cost": 653353289.5592384,
+     "s32_gross_operational_cost": 655287809.9766437,
+     "difference": -1934520.4174052477
+    },
+    {
+     "cycle": 100,
+     "s34_gross_operational_cost": 653337787.3564656,
+     "s32_gross_operational_cost": 655370576.9586096,
+     "difference": -2032789.602144003
+    }
+   ],
+   "terminal": {
+    "s34_cycle": 112,
+    "s32_cycle": 150,
+    "s34_gross_operational_cost": 653340344.2917778,
+    "s32_gross_operational_cost": 654413409.7351172,
+    "difference": -1073065.4433393478,
+    "s34_terminal_step_objective_change_abs": 4117.956779956818,
+    "s32_terminal_step_objective_change_abs": 30394.44314610958,
+    "error_bar_sum_of_terminal_steps": 34512.3999260664,
+    "determinate_at_gt_error_bar": true
+   }
+  },
+  "s33e2": {
+   "available": true,
+   "reference_path": "data/SRP1/Results/P515S33_E2_run/g_baseline.json",
+   "matched_cycles": [
+    {
+     "cycle": 1,
+     "s34_gross_operational_cost": 1589196525.9314592,
+     "s33e2_gross_operational_cost": 968494925.0938367,
+     "difference": 620701600.8376225
+    },
+    {
+     "cycle": 2,
+     "s34_gross_operational_cost": 742273945.271133,
+     "s33e2_gross_operational_cost": 1219820650.0962644,
+     "difference": -477546704.8251314
+    },
+    {
+     "cycle": 3,
+     "s34_gross_operational_cost": 705628106.7632046,
+     "s33e2_gross_operational_cost": 1157551155.8654451,
+     "difference": -451923049.10224056
+    },
+    {
+     "cycle": 5,
+     "s34_gross_operational_cost": 693083924.2178555,
+     "s33e2_gross_operational_cost": 754691931.0576913,
+     "difference": -61608006.83983588
+    },
+    {
+     "cycle": 10,
+     "s34_gross_operational_cost": 664937686.6795135,
+     "s33e2_gross_operational_cost": 729117524.632208,
+     "difference": -64179837.952694535
+    },
+    {
+     "cycle": 18,
+     "s34_gross_operational_cost": 653347780.9513535,
+     "s33e2_gross_operational_cost": 668264192.1941049,
+     "difference": -14916411.24275136
+    },
+    {
+     "cycle": 20,
+     "s34_gross_operational_cost": 653979715.3760995,
+     "s33e2_gross_operational_cost": 665167144.6515703,
+     "difference": -11187429.275470853
+    },
+    {
+     "cycle": 30,
+     "s34_gross_operational_cost": 653558715.1033707,
+     "s33e2_gross_operational_cost": 656532453.3443153,
+     "difference": -2973738.240944624
+    },
+    {
+     "cycle": 40,
+     "s34_gross_operational_cost": 653601707.4530487,
+     "s33e2_gross_operational_cost": 655343731.7834339,
+     "difference": -1742024.3303852081
+    },
+    {
+     "cycle": 50,
+     "s34_gross_operational_cost": 653425887.7775619,
+     "s33e2_gross_operational_cost": 654342996.6751572,
+     "difference": -917108.8975952864
+    },
+    {
+     "cycle": 60,
+     "s34_gross_operational_cost": 653480600.1639447,
+     "s33e2_gross_operational_cost": 654511335.7735177,
+     "difference": -1030735.6095730066
+    },
+    {
+     "cycle": 70,
+     "s34_gross_operational_cost": 653388974.0992804,
+     "s33e2_gross_operational_cost": 654121198.046416,
+     "difference": -732223.9471356869
+    },
+    {
+     "cycle": 80,
+     "s34_gross_operational_cost": 653441893.8536355,
+     "s33e2_gross_operational_cost": 653999992.0886226,
+     "difference": -558098.2349870205
+    },
+    {
+     "cycle": 90,
+     "s34_gross_operational_cost": 653353289.5592384,
+     "s33e2_gross_operational_cost": 654075530.833818,
+     "difference": -722241.274579525
+    },
+    {
+     "cycle": 100,
+     "s34_gross_operational_cost": 653337787.3564656,
+     "s33e2_gross_operational_cost": 653965596.2455195,
+     "difference": -627808.8890539408
+    }
+   ],
+   "terminal": {
+    "s34_cycle": 112,
+    "s33e2_cycle": 150,
+    "s34_gross_operational_cost": 653340344.2917778,
+    "s33e2_gross_operational_cost": 653826841.6344557,
+    "difference": -486497.34267783165,
+    "s34_terminal_step_objective_change_abs": 4117.956779956818,
+    "s33e2_terminal_step_objective_change_abs": 5179.306692242622,
+    "error_bar_sum_of_terminal_steps": 9297.26347219944,
+    "determinate_at_gt_error_bar": true
+   }
+  },
+  "s34": {
+   "available": true,
+   "reference_path": "data/SRP1/Results/P515S34_run/g_baseline.json",
+   "matched_cycles": [
+    {
+     "cycle": 1,
+     "s35ref_gross_operational_cost": 1589196525.9314592,
+     "s34_gross_operational_cost": 907716715.668015,
+     "difference": 681479810.2634442
+    },
+    {
+     "cycle": 2,
+     "s35ref_gross_operational_cost": 742273945.271133,
+     "s34_gross_operational_cost": 1124883514.3571718,
+     "difference": -382609569.0860388
+    },
+    {
+     "cycle": 3,
+     "s35ref_gross_operational_cost": 705628106.7632046,
+     "s34_gross_operational_cost": 1054599784.1834378,
+     "difference": -348971677.42023325
+    },
+    {
+     "cycle": 5,
+     "s35ref_gross_operational_cost": 693083924.2178555,
+     "s34_gross_operational_cost": 695849750.9617386,
+     "difference": -2765826.743883133
+    },
+    {
+     "cycle": 10,
+     "s35ref_gross_operational_cost": 664937686.6795135,
+     "s34_gross_operational_cost": 677327878.808085,
+     "difference": -12390192.12857151
+    },
+    {
+     "cycle": 18,
+     "s35ref_gross_operational_cost": 653347780.9513535,
+     "s34_gross_operational_cost": 655244166.7838066,
+     "difference": -1896385.8324530125
+    },
+    {
+     "cycle": 20,
+     "s35ref_gross_operational_cost": 653979715.3760995,
+     "s34_gross_operational_cost": 653157324.952465,
+     "difference": 822390.4236344099
+    },
+    {
+     "cycle": 30,
+     "s35ref_gross_operational_cost": 653558715.1033707,
+     "s34_gross_operational_cost": 653639902.2050092,
+     "difference": -81187.10163855553
+    },
+    {
+     "cycle": 40,
+     "s35ref_gross_operational_cost": 653601707.4530487,
+     "s34_gross_operational_cost": 652224218.0889473,
+     "difference": 1377489.36410141
+    },
+    {
+     "cycle": 50,
+     "s35ref_gross_operational_cost": 653425887.7775619,
+     "s34_gross_operational_cost": 651856201.6016469,
+     "difference": 1569686.1759150028
+    },
+    {
+     "cycle": 60,
+     "s35ref_gross_operational_cost": 653480600.1639447,
+     "s34_gross_operational_cost": 652049624.1263955,
+     "difference": 1430976.0375492573
+    },
+    {
+     "cycle": 70,
+     "s35ref_gross_operational_cost": 653388974.0992804,
+     "s34_gross_operational_cost": 651583620.2933795,
+     "difference": 1805353.8059008121
+    },
+    {
+     "cycle": 80,
+     "s35ref_gross_operational_cost": 653441893.8536355,
+     "s34_gross_operational_cost": 651420441.2675678,
+     "difference": 2021452.5860677958
+    },
+    {
+     "cycle": 90,
+     "s35ref_gross_operational_cost": 653353289.5592384,
+     "s34_gross_operational_cost": 651359149.0640671,
+     "difference": 1994140.4951713085
+    },
+    {
+     "cycle": 100,
+     "s35ref_gross_operational_cost": 653337787.3564656,
+     "s34_gross_operational_cost": 651430412.147897,
+     "difference": 1907375.208568573
+    }
+   ],
+   "terminal": {
+    "s35ref_cycle": 112,
+    "s34_cycle": 150,
+    "s35ref_gross_operational_cost": 653340344.2917778,
+    "s34_gross_operational_cost": 651180637.2519937,
+    "difference": 2159707.039784193,
+    "s35ref_terminal_step_objective_change_abs": 4117.956779956818,
+    "s34_terminal_step_objective_change_abs": 4682.301938891411,
+    "error_bar_sum_of_terminal_steps": 8800.258718848228,
+    "determinate_at_gt_error_bar": true
+   }
+  }
+ },
+ "network_failures_summary": {
+  "n_blocks": 26,
+  "classes": {
+   "recovered_tier1": 26,
+   "recovered_tier2": 0,
+   "unrecovered": 0,
+   "not_attempted": 0,
+   "indeterminate": 0,
+   "recovered": 26
+  },
+  "n_frozen_snapshots": 2,
+  "n_esso_recovery_events": 0,
+  "path": "data/SRP1/Results/P515S47/campaign_s47_a1a_baseline/evals/1c1ef751d9334f40_n5_2h_e2/network_failures_s39_D.jsonl"
+ },
+ "component_levels_terminal_and_settlement_detail_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S47/campaign_s47_a1a_baseline/evals/1c1ef751d9334f40_n5_2h_e2/interface_settlement_detail_s31c.json",
+ "interface_voltage_terminal_path": "data/SRP1/Results/P515S47/campaign_s47_a1a_baseline/evals/1c1ef751d9334f40_n5_2h_e2/interface_voltage_terminal.json",
+ "recourse_jump_sidecar_path": "data/SRP1/Results/P515S47/campaign_s47_a1a_baseline/evals/1c1ef751d9334f40_n5_2h_e2/recourse_jump_sidecar_baseline.jsonl",
+ "ess_entry_stride_sidecar_path": "data/SRP1/Results/P515S47/campaign_s47_a1a_baseline/evals/1c1ef751d9334f40_n5_2h_e2/ess_entry_stride_baseline.jsonl",
+ "soh_floor_sidecar_path": "data/SRP1/Results/P515S47/campaign_s47_a1a_baseline/evals/1c1ef751d9334f40_n5_2h_e2/soh_floor_sidecar_baseline.jsonl",
+ "note_D_rows_and_cancellation_residual": "D rows are in component_levels_terminal.json (written by write_component_levels_terminal, called first by write_interface_settlement_detail_s31c above); the cancellation residual T_TSO + sum(T_DSO) is \"t_tso_plus_t_dso_terminal\" and per-DSO settlement/flexibility volumes are \"interface_consensus_residual_per_dso\" / \"flexibility_volumes_per_dso\" in interface_settlement_detail_s31c.json."
+}
