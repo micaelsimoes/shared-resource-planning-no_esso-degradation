@@ -11,6 +11,12 @@ from model_construction_helpers import period_duration_hours
 from helper_functions import *
 
 
+# P5.15 Addenda 28-29 (task W20): the admissible values of
+# `SharedEnergyStorageData.available_energy_soh_point` (see `_esso_ageing_model_settings`).
+AVAILABLE_ENERGY_SOH_POINTS = ('end', 'mid')
+AVAILABLE_ENERGY_SOH_POINT_DEFAULT = 'end'
+
+
 # ======================================================================================================================
 #  SHARED ENERGY STORAGE Information
 # ======================================================================================================================
@@ -49,6 +55,18 @@ class SharedEnergyStorageData:
         # `_optimize` for every ESSO subproblem solve; see
         # `_get_esso_complementarity_diagnostics`.
         self.esso_complementarity_diagnostics = list()
+        # P5.15 Addenda 28-29 (task W20): two ageing-MODEL switches, consumed by
+        # `_build_subproblem` / `_build_terminal_salvage_value_expression` through
+        # `_esso_ageing_model_settings`. The defaults reproduce the pre-W20 model
+        # exactly; they are changed only by a model-variant evaluation
+        # (`p515_s44_campaign_harness`, `model_variant`), never by a case file.
+        #   available_energy_soh_point: 'end' (default) -- the available energy of
+        #       block y uses the END-of-block SoH; 'mid' -- the MID-block SoH (see
+        #       `_esso_ageing_model_settings`).
+        #   ageing_enabled: True (default); False -- D == 0 and phi_cal == 1, so
+        #       SoH == 1 everywhere (available energy == rated energy).
+        self.available_energy_soh_point = AVAILABLE_ENERGY_SOH_POINT_DEFAULT
+        self.ageing_enabled = True
 
     def build_master_problem(self):
         return _build_master_problem(self)
@@ -576,12 +594,38 @@ def _build_subproblem(shared_ess_data, node_id):
     # ESSO beyond the converter circle and the one `exp` per cohort-year in the
     # SoH chain; recorded here as a deliberate, scope-preserving choice, not an
     # oversight (see P5_15_1_REPORT.md).
+    #
+    # P5.15 Addenda 28-29 (task W20): `available_energy_soh_point` selects the SoH
+    # this row uses. 'end' (default): the row below is built exactly as before.
+    # 'mid': inside the cohort's calendar-life window (the same window, num_years
+    # and phi_cal as the degradation rows below) the row uses the MID-block SoH
+    # (`_esso_ageing_model_settings` states the formula); outside it the row is
+    # unchanged (e_rated is fixed at 0 there, so both forms give 0).
+    soh_point, ageing_enabled = _esso_ageing_model_settings(shared_ess_data)
+    mid_block_context = dict()
+    if soh_point == 'mid':
+        for y_inv in model.years:
+            shared_energy_storage = shared_ess_data.shared_energy_storages[repr_years[y_inv]][shared_ess_idx]
+            num_years = shared_ess_data.years[repr_years[y_inv]]
+            tcal_norm = round(shared_energy_storage.t_cal / (shared_ess_data.years[repr_years[y_inv]]))
+            max_tcal_norm = min(y_inv + tcal_norm, len(shared_ess_data.years))
+            phi_cal = shared_energy_storage.phi_cal if ageing_enabled else 1.00
+            for y in range(y_inv, max_tcal_norm):
+                mid_block_context[(y_inv, y)] = (num_years, phi_cal)
     model.available_s_capacity_unit = pe.ConstraintList()
     model.available_e_capacity_unit = pe.ConstraintList()
     for y_inv in model.years:
         for y in model.years:
             model.available_s_capacity_unit.add(model.es_s_available_per_unit[y_inv, y] == model.es_s_rated_per_unit[y_inv, y])
-            model.available_e_capacity_unit.add(model.es_e_available_per_unit[y_inv, y] == model.es_e_rated_per_unit[y_inv, y] * model.es_soh_per_unit_cumul[y_inv, y])
+            if (y_inv, y) in mid_block_context:
+                num_years, phi_cal = mid_block_context[(y_inv, y)]
+                prev_soh = 1.00
+                if y > y_inv:
+                    prev_soh = model.es_soh_per_unit_cumul[y_inv, y - 1]
+                soh_mid = prev_soh * pe.exp(-model.es_D_per_unit[y_inv, y] / 2.00) * (phi_cal ** (num_years / 2.00))
+                model.available_e_capacity_unit.add(model.es_e_available_per_unit[y_inv, y] == model.es_e_rated_per_unit[y_inv, y] * soh_mid)
+            else:
+                model.available_e_capacity_unit.add(model.es_e_available_per_unit[y_inv, y] == model.es_e_rated_per_unit[y_inv, y] * model.es_soh_per_unit_cumul[y_inv, y])
 
     # - Sum of charging and discharging power for the yearly average day (aux, used to estimate degradation of ESSs)
     model.energy_storage_charging_discharging = pe.ConstraintList()
@@ -636,6 +680,9 @@ def _build_subproblem(shared_ess_data, node_id):
         tcal_norm = round(shared_energy_storage.t_cal / (shared_ess_data.years[repr_years[y_inv]]))
         max_tcal_norm = min(y_inv + tcal_norm, len(shared_ess_data.years))
         phi_cal = shared_energy_storage.phi_cal
+        if not ageing_enabled:
+            # P5.15 Addenda 28-29 (task W20): ageing off -- no calendar loss.
+            phi_cal = 1.00
 
         for y in range(y_inv, max_tcal_norm):
 
@@ -649,10 +696,19 @@ def _build_subproblem(shared_ess_data, node_id):
             # bilinear D * Var product ("E_rated is now a constant", Step 1
             # item 2). This substitution is only valid within this y-range,
             # which is exactly where this row is defined.
-            _add_esso_cohort_constraint(
-                model, 'energy_storage_capacity_degradation', y_inv, y,
-                model.es_D_per_unit[y_inv, y] * (2 * shared_energy_storage.cl_eff * model.es_e_investment_fixed[y_inv])
-                == 365.00 * num_years * model.es_avg_ch_dch_per_unit[y_inv, y])
+            if ageing_enabled:
+                _add_esso_cohort_constraint(
+                    model, 'energy_storage_capacity_degradation', y_inv, y,
+                    model.es_D_per_unit[y_inv, y] * (2 * shared_energy_storage.cl_eff * model.es_e_investment_fixed[y_inv])
+                    == 365.00 * num_years * model.es_avg_ch_dch_per_unit[y_inv, y])
+            else:
+                # P5.15 Addenda 28-29 (task W20): ageing off -- D == 0 directly, so
+                # the characteristic constant cl_eff is never divided by (no
+                # "infinite k"). Same row family and position, so the
+                # (D, SoH, floor) triple structure per (y_inv, y) is unchanged.
+                _add_esso_cohort_constraint(
+                    model, 'energy_storage_capacity_degradation', y_inv, y,
+                    model.es_D_per_unit[y_inv, y] == 0.00)
 
             # Previous cumulative SoH
             prev_soh = 1.00
@@ -815,6 +871,7 @@ def _build_terminal_salvage_value_expression(shared_ess_data, model, shared_ess_
     terminal_year_idx = len(shared_ess_data.years) - 1
     terminal_discount = _get_terminal_discount_factor(shared_ess_data)
     salvage_value = 0.00
+    soh_point, _ageing_enabled = _esso_ageing_model_settings(shared_ess_data)
 
     for y_inv in model.years:
         year_inv = list(shared_ess_data.years)[y_inv]
@@ -825,6 +882,11 @@ def _build_terminal_salvage_value_expression(shared_ess_data, model, shared_ess_
 
         e_rated = model.es_e_rated_per_unit[y_inv, terminal_year_idx]
         e_available = model.es_e_available_per_unit[y_inv, terminal_year_idx]
+        if soh_point == 'mid':
+            # P5.15 Addenda 28-29 (task W20): with the mid-block available-energy
+            # variant, es_e_available_per_unit carries the MID-block SoH; the
+            # salvage keeps the END-of-block (terminal) SoH exactly as with 'end'.
+            e_available = e_rated * model.es_soh_per_unit_cumul[y_inv, terminal_year_idx]
         usable_energy_above_eol = (e_available - min_soh * e_rated) / (1.00 - min_soh)
         residual_energy = (
             params.recycling_floor_fraction * e_rated
@@ -1464,6 +1526,43 @@ def _map_available_capacity_sensitivities_to_investments(shared_ess_data, models
     return investment_sensitivities
 
 
+def _esso_ageing_model_settings(shared_ess_data):
+    """The two ageing-model switches (P5.15 Addenda 28-29, task W20), validated.
+
+    Returns `(available_energy_soh_point, ageing_enabled)`. Defaults ('end',
+    True) reproduce the pre-W20 ESSO model exactly. `getattr` defaults are used
+    because `SharedEnergyStorageData` objects pickled before W20 (preserved
+    fixtures) carry neither attribute; for them the default IS the model they
+    were built with.
+
+    SoH law (unchanged; `energy_storage_capacity_degradation`), per cohort y_inv
+    and block y of width n = num_years (the investment block's width):
+        D_y     = 365 * n * EFC/day_y / k          (k = cl_eff)
+        SoH_y   = SoH_{y-1} * exp(-D_y) * phi**n    (SoH_{y_inv - 1} = 1; END of block y)
+
+    `available_energy_soh_point`:
+      'end' (default): E_available_y = E_rated * SoH_y  (END-of-block SoH).
+      'mid':           E_available_y = E_rated * SoH_mid_y, with
+                           SoH_mid_y = SoH_{y-1} * exp(-D_y / 2) * phi**(n / 2).
+        Within block y the model's SoH decays exponentially, SoH(t) =
+        SoH_{y-1} * exp(-(D_y / n) * t) * phi**t for t in [0, n]; SoH_mid_y is
+        that curve at t = n / 2, which is also the GEOMETRIC mean of the block's
+        start and end values, sqrt(SoH_{y-1} * SoH_y). Only the available energy
+        changes: the END-of-block SoH_y still propagates to block y+1, to the
+        soh_min floor and to the terminal salvage exactly as with 'end'.
+    `ageing_enabled` False: D_y == 0 (the D row becomes `D == 0`, so k is never
+      divided by) and phi == 1, hence SoH == 1 everywhere and E_available ==
+      E_rated. The soh_min floor row is kept (trivially satisfied)."""
+    soh_point = getattr(shared_ess_data, 'available_energy_soh_point', AVAILABLE_ENERGY_SOH_POINT_DEFAULT)
+    ageing_enabled = getattr(shared_ess_data, 'ageing_enabled', True)
+    if soh_point not in AVAILABLE_ENERGY_SOH_POINTS:
+        raise ValueError(f'available_energy_soh_point must be one of {AVAILABLE_ENERGY_SOH_POINTS}, '
+                         f'got {soh_point!r}.')
+    if not isinstance(ageing_enabled, bool):
+        raise ValueError(f'ageing_enabled must be a bool, got {ageing_enabled!r}.')
+    return soh_point, ageing_enabled
+
+
 def _add_esso_cohort_constraint(model, constraint_name, y_inv, y, expr):
     constraint_list = getattr(model, constraint_name)
     constraint_list.add(expr)
@@ -1821,6 +1920,8 @@ def _process_soh_results_detailed(shared_ess_data, models):
             shared_energy_storage = shared_ess_data.shared_energy_storages[year_inv][shared_ess_idx]
             num_years = shared_ess_data.years[year_inv]
             phi_cal = shared_energy_storage.phi_cal
+            if not _esso_ageing_model_settings(shared_ess_data)[1]:
+                phi_cal = 1.00  # P5.15 Addenda 28-29 (W20): ageing off -- the phi the model used
             for y_curr in models[node_id].years:
                 year_curr = repr_years[y_curr]
                 s_rated = pe.value(models[node_id].es_s_rated_per_unit[y_inv, y_curr])

@@ -118,6 +118,20 @@ THIS instance's investment years (`instance_investment_years`, read from the
 shared-ESS data, not a literal) and forwards it to `run_admm_arm`, which writes
 `candidate['investment'][node][year]` there. Multi-cohort (staging) candidates
 are NOT supported.
+Addenda 28-29 (W20, the ageing batch): an entry may carry `model_variant` -- a
+MODEL VARIANT of the shared-ESS ageing law, a dict of EXACTLY
+`MODEL_VARIANT_KEYS` {eol_retention_r, calendar_retention_per_year,
+available_energy_soh_point, ageing_enabled} (`validate_model_variant`). It is
+applied in the child, in the configuration hook (before any ESSO model is
+built), to the evaluation's OWN deep-copied shared-ESS parameters
+(`apply_model_variant`; the committed case files are never edited), then READ
+BACK from ESSO models built by production (`model_variant_readback`: k, phi and
+the SoH-point mode recovered numerically from the built rows) -- once on
+pre-run probes (refusing on any mismatch) and once, post-run, on clones of the
+run's own ESSO models. It enters the eval key (`evaluation_key`); an entry
+without it keeps its exact key. A spec holding one carries
+`model_variant_label` == `MODEL_VARIANT_LABEL` at the top level and on each such
+entry, and every record of such an entry carries the variant and the label.
 AFTER the run, in the child, inside `run_admm_arm`'s post_run_hook (same live
 models/state), `run_post_certification` does, only if the trajectory is
 certified under the spec's bar (else it records `status: skipped` + reason):
@@ -189,7 +203,15 @@ FROZEN_AA_REGULARIZATION = 1e-10
 POST_CERTIFICATION_KEYS = frozenset({'persist_certified_models', 'hull_polish', 'reference'})
 # Addendum 27 (W14): 'investment_year' is the SINGLE cohort year this evaluation's candidate is
 # placed at; omitted => INVESTMENT_YEAR (2025), so every spec frozen before W14 is unchanged.
-EVALUATION_OPTION_KEYS = frozenset({'overrides', 'post_certification', 'investment_year'})
+EVALUATION_OPTION_KEYS = frozenset({'overrides', 'post_certification', 'investment_year', 'model_variant'})
+# Addenda 28-29 (W20): a MODEL VARIANT of the shared-ESS ageing law (see `validate_model_variant`). Exactly these
+# four keys; `available_energy_soh_point` values mirror shared_energy_storage_data.AVAILABLE_ENERGY_SOH_POINTS
+# (re-checked against production in the child, so the parent stays free of model imports).
+MODEL_VARIANT_KEYS = frozenset({'eol_retention_r', 'calendar_retention_per_year', 'available_energy_soh_point',
+                                'ageing_enabled'})
+MODEL_VARIANT_SOH_POINTS = ('end', 'mid')
+MODEL_VARIANT_LABEL = 'MODEL VARIANT \u2014 not the baseline'
+MODEL_VARIANT_READBACK_RTOL = 1e-12
 ACTIVE_NODES = (5, 7, 9)
 INVESTMENT_YEAR = 2025
 BAR_WINDOW = 10  # STEP4 2.5: "its bar (max objective step over the last 10 cycles)"
@@ -390,7 +412,46 @@ def effective_anderson_acceleration(case_file_aa, overrides):
     return merged
 
 
-def evaluation_key(candidate_key_hex, overrides, case_file_aa=None):
+def validate_model_variant(model_variant):
+    """Addenda 28-29 (W20): a MODEL VARIANT of the shared-ESS ageing law. None = no variant
+    (the baseline model). Otherwise a dict of EXACTLY `MODEL_VARIANT_KEYS`:
+      eol_retention_r              float in (0, 1): the calibration's end-of-life retention R
+                                   (k = N * D / (-ln R); N, D stay the case file's);
+      calendar_retention_per_year  float in (0, 1]: phi_cal;
+      available_energy_soh_point   'end' | 'mid' (shared_energy_storage_data._esso_ageing_model_settings);
+      ageing_enabled               bool (False: SoH == 1 everywhere).
+    Returns a normalized copy (floats as float, JSON-stable). No model import (parent side)."""
+    if model_variant is None:
+        return None
+    if not isinstance(model_variant, dict):
+        raise ValueError('model_variant must be a dict')
+    missing = sorted(MODEL_VARIANT_KEYS - set(model_variant))
+    extra = sorted(set(model_variant) - MODEL_VARIANT_KEYS)
+    if missing or extra:
+        raise ValueError(f'model_variant must carry exactly {sorted(MODEL_VARIANT_KEYS)}: missing={missing} '
+                         f'extra={extra}')
+    out = {}
+    for name in ('eol_retention_r', 'calendar_retention_per_year'):
+        value = model_variant[name]
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or value != value:
+            raise ValueError(f'model_variant.{name} must be a finite number, got {value!r}')
+        out[name] = float(value)
+    if not 0.0 < out['eol_retention_r'] < 1.0:
+        raise ValueError(f"model_variant.eol_retention_r must lie in (0, 1), got {out['eol_retention_r']}")
+    if not 0.0 < out['calendar_retention_per_year'] <= 1.0:
+        raise ValueError(f"model_variant.calendar_retention_per_year must lie in (0, 1], got "
+                         f"{out['calendar_retention_per_year']}")
+    if model_variant['available_energy_soh_point'] not in MODEL_VARIANT_SOH_POINTS:
+        raise ValueError(f'model_variant.available_energy_soh_point must be one of {MODEL_VARIANT_SOH_POINTS}, '
+                         f"got {model_variant['available_energy_soh_point']!r}")
+    out['available_energy_soh_point'] = model_variant['available_energy_soh_point']
+    if not isinstance(model_variant['ageing_enabled'], bool):
+        raise ValueError(f"model_variant.ageing_enabled must be a bool, got {model_variant['ageing_enabled']!r}")
+    out['ageing_enabled'] = model_variant['ageing_enabled']
+    return out
+
+
+def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_variant=None):
     """Identity of one EVALUATION (candidate x configuration). The case-file
     configuration (no overrides) keeps the candidate key itself, so a D
     evaluation's directory name is `<candidate key16>_<label>` as in s44_gate;
@@ -399,11 +460,23 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None):
     (`case_file_aa`), the key is sha256 of {candidate_key,
     effective_anderson_acceleration, overrides}, so a case-file-AA evaluation
     never collides with the D (or an AA-override) evaluation of the same
-    candidate. Specs without the declaration keep the formula above exactly."""
+    candidate. Specs without the declaration keep the formula above exactly.
+    Addenda 28-29 (W20): with a `model_variant` (validated), the key is sha256 of
+    the SAME payload plus 'model_variant' -- never the bare candidate key -- so a
+    variant evaluation can never collide with the baseline evaluation of the same
+    candidate. `model_variant=None` returns exactly what the formulas above return."""
+    model_variant = validate_model_variant(model_variant)
     if case_file_aa is not None:
-        text = json.dumps({'candidate_key': candidate_key_hex,
-                           'effective_anderson_acceleration': effective_anderson_acceleration(case_file_aa, overrides),
-                           'overrides': overrides or {}}, sort_keys=True, separators=(',', ':'))
+        payload = {'candidate_key': candidate_key_hex,
+                   'effective_anderson_acceleration': effective_anderson_acceleration(case_file_aa, overrides),
+                   'overrides': overrides or {}}
+        if model_variant is not None:
+            payload['model_variant'] = model_variant
+        text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
+        return hashlib.sha256(text.encode()).hexdigest()
+    if model_variant is not None:
+        text = json.dumps({'candidate_key': candidate_key_hex, 'overrides': overrides or {},
+                           'model_variant': model_variant}, sort_keys=True, separators=(',', ':'))
         return hashlib.sha256(text.encode()).hexdigest()
     if not overrides:
         return candidate_key_hex
@@ -531,6 +604,10 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         the canonical form (`canonical_candidate`), hence the candidate key --
         the canonical SHAPE is unchanged, so every key of every spec frozen
         before W14 is byte-identical. Multi-cohort candidates are not supported.
+      - 'model_variant' (Addenda 28-29, W20): a MODEL VARIANT of the ageing law
+        (`validate_model_variant`); enters the eval key; the entry and the spec
+        then carry `model_variant_label` == MODEL_VARIANT_LABEL. Entries without
+        it (and specs with no such entry) keep their exact format and keys.
     One entry = one EVALUATION: its `eval_key` (`evaluation_key`) identifies
     candidate x configuration; labels and eval keys must be unique (the same
     candidate may appear under two configurations)."""
@@ -540,6 +617,7 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
     # Addendum 27 item 1: optional declaration of the case file's AA dict (None = not declared).
     case_file_aa = validate_case_file_anderson_acceleration(configuration.get('case_file_anderson_acceleration'))
     cand_entries, seen_labels, seen_keys = [], set(), set()
+    any_model_variant = False
     for item in candidates:
         if len(item) == 2:
             (label, cand), options = item, {}
@@ -554,7 +632,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
                                                                       INVESTMENT_YEAR))
         key = candidate_key(canon)
         eff_overrides = validate_overrides(options['overrides']) if 'overrides' in options else dict(overrides)
-        ekey = evaluation_key(key, eff_overrides, case_file_aa=case_file_aa)
+        model_variant = validate_model_variant(options.get('model_variant'))
+        ekey = evaluation_key(key, eff_overrides, case_file_aa=case_file_aa, model_variant=model_variant)
         if label in seen_labels or ekey in seen_keys:
             raise ValueError(f'duplicate evaluation label or key (candidate x configuration): {label} / {ekey[:16]}')
         seen_labels.add(label)
@@ -566,6 +645,10 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
                       'working_dir_ids': eval_ids(campaign_id, ekey)}
         if case_file_aa is not None:  # only when declared, so undeclared specs keep their exact format
             cand_entry['effective_anderson_acceleration'] = effective_anderson_acceleration(case_file_aa, eff_overrides)
+        if model_variant is not None:  # only when given, so every other entry keeps its exact format (W20)
+            cand_entry['model_variant'] = model_variant
+            cand_entry['model_variant_label'] = MODEL_VARIANT_LABEL
+            any_model_variant = True
         cand_entries.append(cand_entry)
     os.makedirs(campaign_root, exist_ok=True)  # only after every validation above has passed
     try:
@@ -603,6 +686,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
     }
     if case_file_aa is not None:  # only when declared, so undeclared specs keep their exact format
         spec['configuration']['case_file_anderson_acceleration'] = case_file_aa
+    if any_model_variant:  # W20: a campaign holding a model variant says so at the top level
+        spec['model_variant_label'] = MODEL_VARIANT_LABEL
     text = json.dumps(spec, indent=1, sort_keys=True, default=str)
     digest = hashlib.sha256(text.encode()).hexdigest()
     path = os.path.join(campaign_root, f'campaign_spec_{_sanitize_id(campaign_id)}_{digest[:8]}.json')
@@ -853,6 +938,9 @@ def _barrier_record_for_missing(ctx, entry, eval_dir, exit_code):
         # Addendum 27 (W5): same schema as a child record; the parent cannot know the child's values.
         'anderson_acceleration_effective_in_child': None,
         'case_file_sha256_in_child': None,
+        # W20: a model-variant entry's record carries the variant and its label on every path.
+        **({'model_variant': entry['model_variant'], 'model_variant_label': MODEL_VARIANT_LABEL}
+           if entry.get('model_variant') is not None else {}),
     }
 
 
@@ -1248,7 +1336,271 @@ def _child_stub(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     _write_once_json(os.path.join(eval_dir, 'evaluation_record.json'), record)
 
 
-def _config_hook_factory(spec, holder, overrides=None):
+# ==============================================================================
+#  model variants (Addenda 28-29, W20) -- CHILD SIDE (model code imported locally)
+# ==============================================================================
+def model_variant_expected(model_variant, sed):
+    """The constants a validated `model_variant` MUST produce in the built ESSO model, from closed
+    forms and the case file's own (N, D): k = N * D / (-ln R) (None when ageing is off: the D row is
+    D == 0), phi as consumed by the SoH row (1.0 when ageing is off), the SoH-point mode."""
+    from math import log
+    model_variant = validate_model_variant(model_variant)
+    cal = sed.params.ageing.calibration
+    k = cal.cycles_n * cal.reference_dod_d / (-log(model_variant['eol_retention_r']))
+    enabled = model_variant['ageing_enabled']
+    return {'k': k if enabled else None,
+            'k_formula': f"cycles_n * reference_dod_d / (-ln eol_retention_r) = {cal.cycles_n} * "
+                         f"{cal.reference_dod_d} / (-ln {model_variant['eol_retention_r']})",
+            'phi_cal_in_model': model_variant['calendar_retention_per_year'] if enabled else 1.0,
+            'available_energy_soh_point': model_variant['available_energy_soh_point'],
+            'ageing_enabled': enabled,
+            'd_row_form': 'D * 2kE == 365 n avg' if enabled else 'D == 0'}
+
+
+def _ageing_state(sed):
+    ageing = sed.params.ageing
+    per_ess = []
+    for year in sed.years:
+        for ess in sed.shared_energy_storages[year]:
+            per_ess.append({'year': str(year), 'bus': ess.bus, 't_cal': ess.t_cal, 'cl_nom': ess.cl_nom,
+                            'dod_nom': ess.dod_nom, 'soh_min': ess.soh_min, 'cl_eff': ess.cl_eff,
+                            'phi_cal': ess.phi_cal})
+    return {'calibration': {'status': ageing.calibration.status, 'cycles_n': ageing.calibration.cycles_n,
+                            'reference_dod_d': ageing.calibration.reference_dod_d,
+                            'eol_retention_r': ageing.calibration.eol_retention_r},
+            'calendar_retention_per_year': ageing.calendar_retention_per_year,
+            'available_energy_soh_point': getattr(sed, 'available_energy_soh_point', None),
+            'ageing_enabled': getattr(sed, 'ageing_enabled', None),
+            'per_ess': per_ess}
+
+
+def apply_model_variant(sed, model_variant):
+    """Apply a validated `model_variant` to THIS evaluation's (deep-copied) shared-ESS data, BEFORE any
+    ESSO model is built: the calibration's eol_retention_r and calendar_retention_per_year on the loaded
+    ageing parameters, re-applied to every SharedEnergyStorage by production's own
+    `EnergyStorageAgeingParameters.apply_to` (so cl_eff = k is recomputed by production); the two
+    ageing-model switches on the shared-ESS data object. Verified to have taken effect: every ESS carries
+    the expected k and phi, and every other ageing constant is unchanged. Returns the applied record."""
+    import shared_energy_storage_data as SED
+    model_variant = validate_model_variant(model_variant)
+    if tuple(SED.AVAILABLE_ENERGY_SOH_POINTS) != MODEL_VARIANT_SOH_POINTS:
+        raise RuntimeError(f'MODEL_VARIANT_SOH_POINTS {MODEL_VARIANT_SOH_POINTS} != production '
+                           f'{SED.AVAILABLE_ENERGY_SOH_POINTS}')
+    ageing = sed.params.ageing
+    if not ageing.calibration.is_active():
+        raise RuntimeError('model_variant.eol_retention_r needs an ACTIVE degradation calibration (otherwise '
+                           'production consumes cl_nom and the retention would silently not apply)')
+    before = _ageing_state(sed)
+    ageing.calibration.eol_retention_r = model_variant['eol_retention_r']
+    ageing.calendar_retention_per_year = model_variant['calendar_retention_per_year']
+    for year in sed.years:
+        for ess in sed.shared_energy_storages[year]:
+            ageing.apply_to(ess)
+    sed.available_energy_soh_point = model_variant['available_energy_soh_point']
+    sed.ageing_enabled = model_variant['ageing_enabled']
+    settings = SED._esso_ageing_model_settings(sed)  # production's own validation
+    after = _ageing_state(sed)
+    expected = model_variant_expected(model_variant, sed)
+    k_expected = model_variant_expected(dict(model_variant, ageing_enabled=True), sed)['k']
+    unchanged = ('bus', 't_cal', 'cl_nom', 'dod_nom', 'soh_min')
+    checks = {
+        'settings_read_by_production': settings == (model_variant['available_energy_soh_point'],
+                                                    model_variant['ageing_enabled']),
+        'every_ess_cl_eff_is_k': all(e['cl_eff'] == k_expected for e in after['per_ess']),
+        'every_ess_phi_cal_is_variant': all(e['phi_cal'] == model_variant['calendar_retention_per_year']
+                                            for e in after['per_ess']),
+        'other_ageing_constants_unchanged': ([{k: e[k] for k in unchanged} for e in before['per_ess']]
+                                             == [{k: e[k] for k in unchanged} for e in after['per_ess']]),
+        'calibration_n_d_status_unchanged': all(before['calibration'][k] == after['calibration'][k]
+                                                for k in ('status', 'cycles_n', 'reference_dod_d')),
+    }
+    failed = sorted(k for k, v in checks.items() if not v)
+    if failed:
+        raise RuntimeError(f'model_variant did not take effect as specified: {failed}')
+    return {'model_variant': model_variant, 'label': MODEL_VARIANT_LABEL, 'before': before, 'after': after,
+            'expected_in_model': expected, 'k_of_calibration_as_applied': k_expected, 'checks': checks}
+
+
+def _eq_residual(con):
+    import pyomo.environ as pe
+    lhs, rhs = con.expr.args
+    return pe.value(lhs) - pe.value(rhs)
+
+
+def _degradation_triples(model, y_inv):
+    """{y: (D row, SoH row, floor row)} for cohort y_inv, from production's own construction-order
+    bookkeeping `model._esso_cohort_constraints` (the same grouping `_identify_soh_floor_rows` uses)."""
+    rows = [(idx, y) for name, idx, y in model._esso_cohort_constraints[y_inv]
+            if name == 'energy_storage_capacity_degradation']
+    if len(rows) % 3:
+        raise RuntimeError(f'energy_storage_capacity_degradation rows for cohort {y_inv} are not triples')
+    triples = {}
+    for i in range(0, len(rows), 3):
+        (i_d, y_d), (i_s, y_s), (i_f, y_f) = rows[i:i + 3]
+        if not y_d == y_s == y_f:
+            raise RuntimeError(f'degradation triple years disagree: {rows[i:i + 3]}')
+        family = model.energy_storage_capacity_degradation
+        triples[y_d] = (family[i_d], family[i_s], family[i_f])
+    return triples
+
+
+def _available_energy_row(model, y_inv, y):
+    from pyomo.core.expr.visitor import identify_variables
+    target = model.es_e_available_per_unit[y_inv, y]
+    hits = [con for con in model.available_e_capacity_unit.values()
+            if any(v is target for v in identify_variables(con.body, include_fixed=True))]
+    if len(hits) != 1:
+        raise RuntimeError(f'expected exactly one available-energy row for ({y_inv}, {y}), found {len(hits)}')
+    return hits[0]
+
+
+def model_variant_readback(model, sed, y_inv):
+    """READ BACK k, phi and the SoH-point mode from a BUILT ESSO model, numerically, from its own rows
+    (never from the settings): MUTATES Var/Param values of `model` -- call it on a probe or a clone only.
+      D row  (cohort y_inv, first block y0): residual r(D, avg) with E = 1: slope in D = 2kE -> k;
+             slope in avg = -365 n; a row with slope 1 in D, none in avg and zero intercept is D == 0.
+      SoH row (y0): with SoH = 0, D = 0 the residual is -phi**n -> phi (n from the data); with D = 0.3 the
+             ratio must be exp(-0.3) (the exponential form).
+      available row (y1 = y0 + 1 when in the window): with E_av = 0, E_rated = 1, SoH_end = 0.9,
+             SoH_prev = 0.95, D = 0.2 the residual is -X; X == SoH_end -> 'end',
+             X == SoH_prev * exp(-0.1) * phi**(n/2) -> 'mid'."""
+    from math import exp, isclose
+    import pyomo.environ as pe
+    years = list(sed.years)
+    n_data = sed.years[years[y_inv]]
+    triples = _degradation_triples(model, y_inv)
+    y0 = min(triples)
+    d_row, soh_row, floor_row = triples[y0]
+    e_inv = 1.0
+    model.es_e_investment_fixed[y_inv].set_value(e_inv)
+    d_var = model.es_D_per_unit[y_inv, y0]
+    a_var = model.es_avg_ch_dch_per_unit[y_inv, y0]
+    a_var.set_value(1.0)
+    d_var.set_value(0.0)
+    r00 = _eq_residual(d_row)
+    d_var.set_value(1.0)
+    r10 = _eq_residual(d_row)
+    a_var.set_value(2.0)
+    d_var.set_value(0.0)
+    r02 = _eq_residual(d_row)
+    slope_d, slope_avg = r10 - r00, r02 - r00
+    if slope_avg == 0.0 and slope_d == 1.0 and r00 == 0.0:
+        d_form, k, n_from_d = 'D == 0', None, None
+    else:
+        d_form, k, n_from_d = 'D * 2kE == 365 n avg', slope_d / (2.0 * e_inv), -slope_avg / 365.0
+    s_var = model.es_soh_per_unit_cumul[y_inv, y0]
+    s_var.set_value(0.0)
+    d_var.set_value(0.0)
+    phi_pow_n = -_eq_residual(soh_row)
+    phi = phi_pow_n ** (1.0 / n_data)
+    d_var.set_value(0.3)
+    exp_ratio = (-_eq_residual(soh_row)) / phi_pow_n
+    y1 = y0 + 1 if (y0 + 1) in triples else y0
+    row = _available_energy_row(model, y_inv, y1)
+    soh_end, soh_prev, d_val = 0.9, 0.95, 0.2
+    model.es_e_available_per_unit[y_inv, y1].set_value(0.0)
+    model.es_e_rated_per_unit[y_inv, y1].set_value(1.0)
+    model.es_soh_per_unit_cumul[y_inv, y1].set_value(soh_end)
+    if y1 > y0:
+        model.es_soh_per_unit_cumul[y_inv, y1 - 1].set_value(soh_prev)
+    else:
+        soh_prev = 1.0
+    model.es_D_per_unit[y_inv, y1].set_value(d_val)
+    x_val = -_eq_residual(row)
+    x_mid = soh_prev * exp(-d_val / 2.0) * phi ** (n_data / 2.0)
+    rtol = MODEL_VARIANT_READBACK_RTOL
+    mode = ('end' if isclose(x_val, soh_end, rel_tol=rtol, abs_tol=0.0) else
+            'mid' if isclose(x_val, x_mid, rel_tol=rtol, abs_tol=0.0) else 'unrecognized')
+    return {'y_inv': y_inv, 'y0': y0, 'y1_available_row': y1, 'n_years_data': n_data,
+            'd_row_form': d_form, 'k': k, 'n_years_from_d_row': n_from_d,
+            'phi_cal_in_model': phi, 'soh_row_exp_form_ok': isclose(exp_ratio, exp(-0.3), rel_tol=rtol),
+            'available_energy_soh_point': mode,
+            'available_row_probe': {'soh_end': soh_end, 'soh_prev': soh_prev, 'D': d_val, 'X': x_val,
+                                    'X_end': soh_end, 'X_mid_closed_form': x_mid},
+            'floor_row_lower': None if floor_row.lower is None else float(pe.value(floor_row.lower))}
+
+
+def compare_readback(readback, expected):
+    """Readback vs `model_variant_expected`: k and phi to MODEL_VARIANT_READBACK_RTOL (relative), the
+    D-row form, the SoH-point mode and the exponential form exactly. Returns {check: bool}."""
+    from math import isclose
+    rtol = MODEL_VARIANT_READBACK_RTOL
+    k_ok = ((readback['k'] is None and expected['k'] is None)
+            or (readback['k'] is not None and expected['k'] is not None
+                and isclose(readback['k'], expected['k'], rel_tol=rtol, abs_tol=0.0)))
+    n_ok = (readback['n_years_from_d_row'] is None
+            or isclose(readback['n_years_from_d_row'], readback['n_years_data'], rel_tol=rtol, abs_tol=0.0))
+    return {'k': k_ok,
+            'n_years_from_d_row_equals_data': n_ok,
+            'phi_cal_in_model': isclose(readback['phi_cal_in_model'], expected['phi_cal_in_model'],
+                                        rel_tol=rtol, abs_tol=0.0),
+            'd_row_form': readback['d_row_form'] == expected['d_row_form'],
+            'available_energy_soh_point': readback['available_energy_soh_point']
+            == expected['available_energy_soh_point'],
+            'soh_row_exp_form': readback['soh_row_exp_form_ok']}
+
+
+def model_variant_readback_models(models, sed, model_variant, investment_year, clone=True):
+    """`model_variant_readback` for every node's ESSO model at the cohort of `investment_year`, against
+    `model_variant_expected`. `clone=True` reads back from CLONES (the given models are left untouched)."""
+    expected = model_variant_expected(model_variant, sed)
+    y_inv = [int(y) for y in sed.years].index(int(investment_year))
+    per_node, all_ok = {}, True
+    for node_id, model in models.items():
+        target = model.clone() if clone else model
+        readback = model_variant_readback(target, sed, y_inv)
+        checks = compare_readback(readback, expected)
+        all_ok = all_ok and all(checks.values())
+        per_node[str(node_id)] = {'readback': readback, 'checks': checks}
+        if clone:
+            del target
+    return {'expected': expected, 'per_node': per_node, 'all_match': all_ok,
+            'method': ('numerical read-back from the built rows (model_variant_readback); '
+                       + ('on clones of the given models' if clone else 'on probe models'))}
+
+
+def ageing_trajectory_terminal(models, sed):
+    """READ-ONLY capture from the run's own ESSO models (no mutation): per node, per ACTIVE (y_inv, y)
+    (e_rated not fixed): E_rated, throughput, EFC/day = avg / (2 E_rated), D, the END-of-block SoH, the
+    SoH used for available energy (E_available / E_rated), the previous block's end SoH, and the mid-block
+    closed form SoH_prev * exp(-D/2) * phi**(n/2) beside it; plus each node's terminal salvage value."""
+    import pyomo.environ as pe
+    import shared_energy_storage_data as SED
+    from math import exp
+    soh_point, enabled = SED._esso_ageing_model_settings(sed)
+    years = list(sed.years)
+    out = {'available_energy_soh_point': soh_point, 'ageing_enabled': enabled, 'nodes': {}}
+    for node_id, model in models.items():
+        idx = sed.get_shared_energy_storage_idx(node_id)
+        cells = []
+        for y_inv in model.years:
+            ess = sed.shared_energy_storages[years[y_inv]][idx]
+            n = sed.years[years[y_inv]]
+            phi = ess.phi_cal if enabled else 1.0
+            for y in model.years:
+                if model.es_e_rated_per_unit[y_inv, y].fixed:
+                    continue
+                rated = pe.value(model.es_e_rated_per_unit[y_inv, y])
+                if not rated:
+                    continue
+                avg = pe.value(model.es_avg_ch_dch_per_unit[y_inv, y])
+                d_val = pe.value(model.es_D_per_unit[y_inv, y])
+                soh_end = pe.value(model.es_soh_per_unit_cumul[y_inv, y])
+                soh_prev = pe.value(model.es_soh_per_unit_cumul[y_inv, y - 1]) if y > y_inv else 1.0
+                e_av = pe.value(model.es_e_available_per_unit[y_inv, y])
+                cells.append({'y_inv': y_inv, 'investment_year': str(years[y_inv]), 'y': y,
+                              'block_year': str(years[y]), 'n_years': n, 'e_rated': rated,
+                              'avg_ch_dch': avg, 'efc_per_day': avg / (2.0 * rated), 'D': d_val,
+                              'soh_prev_end': soh_prev, 'soh_end': soh_end,
+                              'soh_used_for_available_energy': e_av / rated, 'e_available': e_av,
+                              'soh_mid_closed_form': soh_prev * exp(-d_val / 2.0) * phi ** (n / 2.0),
+                              'phi_cal_in_model': phi, 'cl_eff': ess.cl_eff})
+        out['nodes'][str(node_id)] = {'cells': cells, 'salvage_value': pe.value(model.salvage_value)}
+    return out
+
+
+def _config_hook_factory(spec, holder, overrides=None, model_variant=None, investment_year=INVESTMENT_YEAR,
+                         expected_floor_rows=None):
     """pre_solve_hook: verify the case file carries the D oracle configuration
     (same checks as `p515_s43_aa_run._aa_on_pre_solve_hook`), then apply the
     evaluation's overrides (`overrides`; default = the campaign-level
@@ -1261,8 +1613,16 @@ def _config_hook_factory(spec, holder, overrides=None):
     EQUAL that declaration exactly (and carry the frozen memory/regularization)
     in place of the "AA off before overrides" check; without the declaration
     the AA-off check stays, so a spec frozen before Addendum 27 can never run
-    AA from the case file."""
+    AA from the case file.
+    Addenda 28-29 (W20): with `model_variant` (validated), AFTER the checks above
+    the variant is applied to the evaluation's own shared-ESS data
+    (`apply_model_variant`) and READ BACK from probe ESSO models built by
+    production's `_build_subproblem` (`model_variant_readback_models`, cohort of
+    `investment_year`); any mismatch -- or a change of the SoH-floor row
+    identification against `expected_floor_rows` (the baseline probe's, used by
+    the floor sidecar) -- raises before any solve. Without it nothing changes."""
     import p515_g_g1_g4_admm_gates as G
+    model_variant = validate_model_variant(model_variant)
     if overrides is None:
         overrides = spec['configuration'].get('overrides') or {}
     overrides = validate_overrides(overrides)
@@ -1321,6 +1681,26 @@ def _config_hook_factory(spec, holder, overrides=None):
         holder['configuration_checks'] = checks
         holder['overrides_applied'] = applied
         holder['anderson_acceleration_effective'] = dict(a.anderson_acceleration)
+        if model_variant is not None:
+            import shared_energy_storage_data as SED
+            applied_mv = apply_model_variant(sed, model_variant)
+            probes = {node_id: SED._build_subproblem(sed, node_id)
+                      for node_id in sed.active_distribution_network_nodes}
+            floor_rows_variant, _floor_counts = G._identify_soh_floor_rows(probes)
+            readback = model_variant_readback_models(probes, sed, model_variant, investment_year, clone=False)
+            del probes
+            floor_rows_ok = expected_floor_rows is None or floor_rows_variant == expected_floor_rows
+            holder['model_variant_applied'] = applied_mv
+            holder['model_variant_readback_pre_run'] = readback
+            report['rule_eleven_checklist']['w20_model_variant'] = {
+                'model_variant': model_variant, 'label': MODEL_VARIANT_LABEL,
+                'apply_checks': applied_mv['checks'], 'readback_all_match': readback['all_match'],
+                'floor_rows_identical_to_baseline_probe': floor_rows_ok}
+            if not readback['all_match']:
+                raise RuntimeError(f'model_variant read-back from the built ESSO model does not match: '
+                                   f"{ {n: v['checks'] for n, v in readback['per_node'].items()} }")
+            if not floor_rows_ok:
+                raise RuntimeError('model_variant changed the SoH-floor row identification of the ESSO model')
     return hook
 
 
@@ -1561,6 +1941,12 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
         aa_on = bool(effective_anderson_acceleration(case_file_aa, eff_overrides).get('enabled'))
     case_file_sha256_in_child = sha256_file(CASE_FILE)
     progress['case_file_sha256_in_child'] = case_file_sha256_in_child
+    # Addenda 28-29 (W20): a model variant runs only under its explicit label, at spec AND entry level.
+    model_variant = validate_model_variant(entry.get('model_variant'))
+    if model_variant is not None and (spec.get('model_variant_label') != MODEL_VARIANT_LABEL
+                                      or entry.get('model_variant_label') != MODEL_VARIANT_LABEL):
+        raise RuntimeError(f'model_variant entry {entry["label"]!r} without the label {MODEL_VARIANT_LABEL!r} '
+                           f'at spec and entry level')
     post_request = entry.get('post_certification')
     post_checklist = None
     if post_request:
@@ -1606,6 +1992,10 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
                                      floor_rows_by_node=floor_rows_by_node, floor_sidecar_path=paths['floor'])
         caps = sed.get_updated_capacities(models['esso'])
         holder['published_caps'] = {str(n): {str(y): v for y, v in per_year.items()} for n, per_year in caps.items()}
+        if model_variant is not None:  # W20: read back from CLONES of the run's own ESSO models; read-only capture
+            holder['model_variant_readback_terminal'] = model_variant_readback_models(
+                models['esso'], sed, model_variant, investment_year, clone=True)
+            holder['ageing_trajectory_terminal'] = ageing_trajectory_terminal(models['esso'], sed)
         st = state or {}
         holder['peak_rss_ru_maxrss_production'] = st.get('peak_rss_ru_maxrss')
         holder['peak_rss_platform_units'] = st.get('peak_rss_platform_units')
@@ -1640,7 +2030,9 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             label, eval_dir, k_override=None, investment_map=investment_map,
             num_max_iters_override=int(spec['cap']), eval_id=ids['run'], apply_rho=False,
             full_diagnostics_in_rows=True, post_run_hook=post_run_hook,
-            pre_solve_hook=_config_hook_factory(spec, holder, overrides=eff_overrides),
+            pre_solve_hook=_config_hook_factory(spec, holder, overrides=eff_overrides, model_variant=model_variant,
+                                                investment_year=investment_year,
+                                                expected_floor_rows=floor_rows_by_node),
             investment_year=investment_year)
     run_wall = time.time() - t0
 
@@ -1672,6 +2064,15 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     }
     wall = {'child_process_s': time.time() - started, 'run_admm_arm_s': run_wall,
             'run_admm_arm_reported_wall_clock_s': report.get('wall_clock_s')}
+    variant_extra = {}
+    if model_variant is not None:  # W20: only for variant entries, so every other record keeps its format
+        variant_extra = {
+            'model_variant': model_variant, 'model_variant_label': MODEL_VARIANT_LABEL,
+            'model_variant_applied_in_child': holder.get('model_variant_applied'),
+            'model_variant_readback_pre_run': holder.get('model_variant_readback_pre_run'),
+            'model_variant_readback_terminal': holder.get('model_variant_readback_terminal'),
+            'ageing_trajectory_terminal': holder.get('ageing_trajectory_terminal'),
+        }
     record = build_evaluation_record(
         spec=spec, spec_path=spec_path, spec_sha256=args.spec_sha256, entry=entry, report=report,
         component_levels=component_levels,
@@ -1697,6 +2098,7 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             'child_pid': os.getpid(), 'parent_pid': os.getppid(),
             'report_path': os.path.relpath(report_path, REPO),
             'per_cycle_record_path': os.path.relpath(per_cycle_path, REPO),
+            **variant_extra,
         })
     _write_once_json(os.path.join(eval_dir, 'evaluation_record.json'), record)
     manifest = {}
@@ -1765,6 +2167,10 @@ def main_child(argv):
                 'anderson_acceleration_effective_in_child': (
                     (progress.get('holder') or {}).get('anderson_acceleration_effective')),
                 'case_file_sha256_in_child': progress.get('case_file_sha256_in_child'),
+                # W20: a model-variant entry's record carries the variant and its label on every path.
+                **({'model_variant': entry['model_variant'], 'model_variant_label': MODEL_VARIANT_LABEL,
+                    'model_variant_applied_in_child': (progress.get('holder') or {}).get('model_variant_applied')}
+                   if entry.get('model_variant') is not None else {}),
             })
         sys.exit(1)
 
